@@ -27,7 +27,8 @@ jobs:
         working-directory: ./api
         
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/Matrix.Api
+        working-directory: ./api
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
