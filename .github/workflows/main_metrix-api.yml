@@ -27,7 +27,7 @@ jobs:
         working-directory: ./api
         
       - name: Tests
-        run: dotnet tests
+        run: dotnet test
         working-directory: ./api
       
       - name: dotnet publish
