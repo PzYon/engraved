@@ -26,6 +26,10 @@ jobs:
         run: dotnet build --configuration Release
         working-directory: ./api
         
+      - name: Tests
+        run: dotnet tests
+        working-directory: ./api
+      
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/Matrix.Api
         working-directory: ./api
