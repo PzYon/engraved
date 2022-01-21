@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - metrix-api
 on:
   push:
     branches:
-      - main
+      - "*"
   workflow_dispatch:
 
 jobs:
@@ -22,22 +22,29 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
-      - name: Build with dotnet
+      - name: Build
         run: dotnet build --configuration Release
-        working-directory: /api/Matrix.Api
+        working-directory: ./api
         
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: Run tests
+        run: dotnet test
+        working-directory: ./api
+      
+      - name: Publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/Matrix.Api
+        working-directory: ./api
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.DOTNET_ROOT}}/Matrix.Api
 
   deploy:
     runs-on: windows-latest
     needs: build
+    if: github.ref == 'refs/heads/main'
+       
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -48,7 +55,7 @@ jobs:
         with:
           name: .net-app
 
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure App Service
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
