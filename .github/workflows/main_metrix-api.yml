@@ -22,19 +22,19 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
-      - name: Build with dotnet
+      - name: Build
         run: dotnet build --configuration Release
         working-directory: ./api
         
-      - name: Tests
+      - name: Run tests
         run: dotnet test
         working-directory: ./api
       
-      - name: dotnet publish
+      - name: Publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/Matrix.Api
         working-directory: ./api
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
@@ -55,7 +55,7 @@ jobs:
         with:
           name: .net-app
 
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure App Service
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
