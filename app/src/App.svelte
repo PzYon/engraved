@@ -17,6 +17,7 @@
 <style>
 	.success {
 		color: darkgreen;
+		font-weight: bold;
 	}
 
 	.error {
