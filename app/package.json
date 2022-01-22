@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": ""
+    "build": "cp index.html ./public"
   },
   "repository": {
     "type": "git",
