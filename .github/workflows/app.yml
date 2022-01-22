@@ -26,7 +26,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: your-app-name    # set this to your application's name
+  AZURE_WEBAPP_NAME: metrix-app    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: './app'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '16.x'                # set this to the node version to use
 
@@ -40,7 +40,7 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+        # cache: 'npm'
 
     - name: npm install, build, and test
       working-directory: ./app
