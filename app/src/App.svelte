@@ -4,8 +4,8 @@
 
 	fetch(new Request("https://metrix-api.azurewebsites.net/salimax"))
 			.then(response => response.json())
-			.then(result =>  resultMessage = "Success: " + JSON.stringify(result))
-			.catch(error => errorMessage = "Error: " + JSON.stringify(error));
+			.then(result =>  resultMessage = "From server: " + JSON.stringify(result))
+			.catch(error => errorMessage = "Server error: " + JSON.stringify(error));
 </script>
 
 <main>

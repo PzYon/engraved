@@ -6,7 +6,7 @@ name: Api
 on:
   push:
     paths:
-      - "api"
+      - ./api
     branches:
       - "*"
   workflow_dispatch:
