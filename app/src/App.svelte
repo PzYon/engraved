@@ -2,7 +2,7 @@
 	let resultMessage = "";
 	let errorMessage = "";
 
-	fetch(new Request("https://metrix-api.azurewebsites.net/salimax"))
+	fetch(new Request("https://metrix-api.azurewebsites.net/api/salimax"))
 			.then(response => response.json())
 			.then(result =>  resultMessage = "From server: " + JSON.stringify(result))
 			.catch(error => errorMessage = "Server error: " + JSON.stringify(error));
