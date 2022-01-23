@@ -48,7 +48,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: api
+          name: app
 
       - name: Deploy to Azure Static Web App
         id: builddeploy
