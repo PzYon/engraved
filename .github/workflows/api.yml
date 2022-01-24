@@ -1,0 +1,68 @@
+name: Api
+
+on:
+  push:
+  pull_request:
+    paths:
+      - 'api/**'
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build API
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+
+      - name: Build
+        run: dotnet build --configuration Release
+        working-directory: ./api
+        
+      - name: Run tests
+        run: dotnet test
+        working-directory: ./api
+      
+      - name: Publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/Matrix.Api
+        working-directory: ./api
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: api
+          path: ${{env.DOTNET_ROOT}}/Matrix.Api
+
+  deploy:
+    name: Deploy API
+    runs-on: windows-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+       
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: api
+
+      - name: Deploy to Azure App Service
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'metrix-api'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BD825C52928A4276A45C2A5EC3704B2E }}
+          package: .
