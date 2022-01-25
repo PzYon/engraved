@@ -2,6 +2,10 @@ name: Api
 
 on:
   push:
+    paths:
+      - 'api/**'
+    branches:
+      - '*'
   pull_request:
     paths:
       - 'api/**'

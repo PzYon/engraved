@@ -2,6 +2,10 @@ name: App
 
 on:
   push:
+    paths:
+      - 'api/**'
+    branches:
+      - '*'
   pull_request:
     paths:
       - 'app/**'
