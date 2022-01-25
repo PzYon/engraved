@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: app
-          path: app/public
+          path: app/build
 
   deploy:
     name: Deploy App
