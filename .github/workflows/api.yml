@@ -4,11 +4,7 @@ on:
   push:
     paths:
       - 'api/**'
-    branches:
-      - '*'
-  pull_request:
-    paths:
-      - 'api/**'
+      - '.github/workflows/api.yml'
     branches:
       - '*'
   workflow_dispatch:
