@@ -5,8 +5,6 @@ on:
     paths:
       - 'api/**'
       - '.github/workflows/api.yml'
-    branches:
-      - '*'
   workflow_dispatch:
 
 jobs:
