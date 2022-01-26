@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-
-// const apiBaseUrl = "https://localhost:7072/api";
-const apiBaseUrl = "https://metrix-api.azurewebsites.net/api";
+import { envSettings } from "./envSettings";
 
 interface IMeasurement {
   dateTime: string;
@@ -14,7 +12,9 @@ export const App: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string>();
 
   useEffect(() => {
-    fetch(new Request(apiBaseUrl + "/Measurements?metricKey=foo_bar"))
+    fetch(
+      new Request(envSettings.apiBaseUrl + "/Measurements?metricKey=foo_bar")
+    )
       .then((response) => response.json().then((data) => setMeasurements(data)))
       .catch((err) => setErrorMessage(JSON.stringify(err)));
   }, []);
