@@ -11,7 +11,8 @@ builder.Services.AddSwaggerGen();
 // Custom services
 builder.Services.AddTransient<IMeasurementsLoader, DummyMeasurementsLoader>();
 
-var app = builder.Build();
+var app = builderX.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
