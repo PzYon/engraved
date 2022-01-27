@@ -3,8 +3,8 @@ name: App
 on:
   push:
     paths:
-      - 'api/**'
-      - '.github/workflows/api.yml'
+      - 'app/**'
+      - '.github/workflows/app.yml'
   workflow_dispatch:
     inputs:
       deploy:
