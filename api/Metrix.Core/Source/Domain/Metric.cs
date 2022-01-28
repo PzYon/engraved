@@ -31,44 +31,44 @@ public class Measurement
   public DateTime DateTime { get; set; }
 }
 
+public interface IMetricsLoader
+{
+  Metric[] GetMetrics();
+}
+
+public class DummyMetricsLoader : IMetricsLoader
+{
+  public static readonly string MetricKey = "foo";
+
+  public static Metric Metric = new Metric
+  {
+    Key = MetricKey,
+    Name = "Dummy Metric",
+    Description = "Lorim ipsum dolares.",
+    Type = MetricType.Gauge,
+    Unit = "kg"
+  };
+
+  public Metric[] GetMetrics()
+  {
+    return new[] {Metric};
+  }
+}
+
 public interface IMeasurementsLoader
 {
   Measurement[] GetMeasurements(string metricKey);
-}
-
-public class MeasurementsLoader : IMeasurementsLoader
-{
-  private readonly IQueryable<Measurement> _allMeasurements;
-
-  public MeasurementsLoader(IQueryable<Measurement> allMeasurements)
-  {
-    _allMeasurements = allMeasurements;
-  }
-
-  public Measurement[] GetMeasurements(string metricKey)
-  {
-    return _allMeasurements.Where(m => m.Metric.Key == metricKey).ToArray();
-  }
 }
 
 public class DummyMeasurementsLoader : IMeasurementsLoader
 {
   public Measurement[] GetMeasurements(string metricKey)
   {
-    var metric = new Metric
-    {
-      Key = metricKey,
-      Name = "Dummy Metric",
-      Description = "Lorim ipsum dolares.",
-      Type = MetricType.Gauge,
-      Unit = "kg"
-    };
-
     return Enumerable.Range(0, 10)
       .Select(_ => new Measurement
       {
         DateTime = GetRandomDate(),
-        Metric = metric,
+        Metric = DummyMetricsLoader.Metric,
         Value = GetValue()
       })
       .ToArray();

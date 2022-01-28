@@ -10,6 +10,7 @@ builder.Services.AddSwaggerGen();
 
 // Custom services
 builder.Services.AddTransient<IMeasurementsLoader, DummyMeasurementsLoader>();
+builder.Services.AddTransient<IMetricsLoader, DummyMetricsLoader>();
 
 var app = builder.Build();
 

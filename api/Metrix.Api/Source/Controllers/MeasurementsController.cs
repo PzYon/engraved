@@ -1,23 +1,22 @@
 ﻿using Metrix.Core.Domain;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Metrix.Api.Controllers
+namespace Metrix.Api.Controllers;
+
+[ApiController]
+[Route("api/measurements")]
+public class MeasurementsController : ControllerBase
 {
-  [ApiController]
-  [Route("api/[controller]")]
-  public class MeasurementsController : ControllerBase
+  private readonly IMeasurementsLoader _measurementsLoader;
+
+  public MeasurementsController(IMeasurementsLoader measurementsLoader)
   {
-    private readonly IMeasurementsLoader _measurementsLoader;
+    _measurementsLoader = measurementsLoader;
+  }
 
-    public MeasurementsController(IMeasurementsLoader measurementsLoader)
-    {
-      _measurementsLoader = measurementsLoader;
-    }
-
-    [HttpGet]
-    public Measurement[] GetMeasurements([FromQuery] string metricKey)
-    {
-      return _measurementsLoader.GetMeasurements(metricKey);
-    }
+  [HttpGet]
+  public Measurement[] GetMeasurements([FromQuery] string metricKey)
+  {
+    return _measurementsLoader.GetMeasurements(metricKey);
   }
 }
