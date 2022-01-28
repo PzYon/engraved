@@ -8,6 +8,8 @@ on:
 
 jobs:
   build:
+    name: Build API
     runs-on: ubuntu-latest
+
     steps:
       - run: 'echo "No checks required"'
