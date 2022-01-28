@@ -19,6 +19,8 @@ export const App: React.FC = () => {
       .catch((err) => setErrorMessage(JSON.stringify(err)));
   }, []);
 
+  // TEMP
+
   return (
     <>
       <Title>Metrix</Title>
