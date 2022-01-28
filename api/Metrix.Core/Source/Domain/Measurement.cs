@@ -2,7 +2,7 @@
 
 public class Measurement
 {
-  public Metric Metric { get; set; }
+  public string MetricKey { get; set; }
 
   public long Value { get; set; }
 

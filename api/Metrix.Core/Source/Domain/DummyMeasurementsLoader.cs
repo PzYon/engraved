@@ -4,11 +4,11 @@ public class DummyMeasurementsLoader : IMeasurementsLoader
 {
   public Measurement[] GetMeasurements(string metricKey)
   {
-    return Enumerable.Range(0, 10)
+    return Enumerable.Range(0, Random.Shared.Next(5, 20))
       .Select(_ => new Measurement
       {
         DateTime = GetRandomDate(),
-        Metric = DummyMetricsLoader.Metric,
+        MetricKey = metricKey,
         Value = GetValue()
       })
       .ToArray();
@@ -16,7 +16,7 @@ public class DummyMeasurementsLoader : IMeasurementsLoader
 
   private static DateTime GetRandomDate()
   {
-    return DateTime.UtcNow.AddMinutes(Random.Shared.Next(0, 100));
+    return DateTime.UtcNow.AddSeconds(-Random.Shared.Next(1000, 100000));
   }
 
   private static int GetValue()

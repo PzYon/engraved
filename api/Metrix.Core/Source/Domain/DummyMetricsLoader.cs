@@ -2,19 +2,17 @@
 
 public class DummyMetricsLoader : IMetricsLoader
 {
-  public static readonly string MetricKey = "foo";
-
-  public static Metric Metric = new()
-  {
-    Key = MetricKey,
-    Name = "Dummy Metric",
-    Description = "Lorim ipsum dolares.",
-    Type = MetricType.Gauge,
-    Unit = "kg"
-  };
-
   public Metric[] GetMetrics()
   {
-    return new[] { Metric };
+    return Enumerable.Range(0, Random.Shared.Next(5, 30))
+      .Select(i => new Metric
+      {
+        Description = "Eifach irgendöpis.",
+        Key = "key" + i,
+        Name = "Metric " + i,
+        Type = MetricType.Gauge,
+        Unit = "kg"
+      })
+      .ToArray();
   }
 }
