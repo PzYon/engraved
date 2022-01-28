@@ -1,0 +1,13 @@
+name: App
+
+on:
+  push:
+    paths-ignore:
+      - "app/**"
+      - ".github/workflows/app.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "No checks required"'
