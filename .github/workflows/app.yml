@@ -3,8 +3,8 @@ name: App
 on:
   push:
     paths:
-      - 'api/**'
-      - '.github/workflows/api.yml'
+      - 'app/**'
+      - '.github/workflows/app.yml'
   workflow_dispatch:
     inputs:
       deploy:
@@ -31,7 +31,8 @@ jobs:
         working-directory: app
         run: |
           npm install
-          npm run build --if-present
+          npm run lint
+          npm run build
 
       - name: Run tests
         working-directory: app
