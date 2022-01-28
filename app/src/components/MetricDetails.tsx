@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { ServerApi } from "../serverApi/IMetric";
 import { envSettings } from "../envSettings";
+import { useParams } from "react-router";
+import { ServerApi } from "../serverApi/ServerApi";
 
 export const MetricDetails: React.FC = () => {
+  const { metricKey } = useParams();
+
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>();
 
   useEffect(() => {
     new ServerApi(envSettings.apiBaseUrl)
-      .getMeasurements("foo_bar")
+      .getMeasurements(metricKey)
       .then((data) => {
         setMeasurements(data);
       })
@@ -21,7 +24,6 @@ export const MetricDetails: React.FC = () => {
 
   return (
     <>
-      <Title>Metrix</Title>
       {measurements.length > 0 ? (
         <ul>
           {measurements.map((m) => (
@@ -35,10 +37,6 @@ export const MetricDetails: React.FC = () => {
     </>
   );
 };
-
-const Title = styled.h1`
-  color: darkgreen;
-`;
 
 const Error = styled.div`
   color: darkred;

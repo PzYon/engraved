@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { IMetric, ServerApi } from "../serverApi/IMetric";
+import { IMetric } from "../serverApi/IMetric";
 import { envSettings } from "../envSettings";
 import { MetricListItem } from "./MetricListItem";
+import { Link } from "react-router-dom";
+import { ServerApi } from "../serverApi/ServerApi";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string>();
 
   useEffect(() => {
     new ServerApi(envSettings.apiBaseUrl)
@@ -14,19 +15,21 @@ export const MetricList: React.FC = () => {
         setMetrics(data);
       })
       .catch((err) => {
-        setErrorMessage(typeof err === "string" ? err : JSON.stringify(err));
+        alert(
+          "Error: " + (typeof err === "string" ? err : JSON.stringify(err))
+        );
       });
   }, []);
 
   return (
     <ul>
-      {metrics.map((m) => {
-        return (
-          <li key={m.key} onClick={() => alert("selecting " + m.name)}>
+      {metrics.map((m) => (
+        <li key={m.key}>
+          <Link to={"/metrics/" + m.key}>
             <MetricListItem metric={m} />
-          </li>
-        );
-      })}
+          </Link>
+        </li>
+      ))}
     </ul>
   );
 };
