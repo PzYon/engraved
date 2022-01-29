@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { IMetric } from "../serverApi/IMetric";
 import { envSettings } from "../envSettings";
 import { MetricListItem } from "./MetricListItem";
-import { Link } from "react-router-dom";
 import { ServerApi } from "../serverApi/ServerApi";
+import { Grid } from "@mui/material";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
@@ -22,14 +22,12 @@ export const MetricList: React.FC = () => {
   }, []);
 
   return (
-    <ul>
+    <Grid container rowSpacing={2} columnSpacing={2}>
       {metrics.map((m) => (
-        <li key={m.key}>
-          <Link to={"/metrics/" + m.key}>
-            <MetricListItem metric={m} />
-          </Link>
-        </li>
+        <Grid item xs={6} sm={4} key={m.key}>
+          <MetricListItem metric={m} />
+        </Grid>
       ))}
-    </ul>
+    </Grid>
   );
 };
