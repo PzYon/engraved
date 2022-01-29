@@ -5,8 +5,9 @@ export const PageLayout: React.FC = ({ children }) => {
   return <Host elevation={3}>{children}</Host>;
 };
 
-const Host = styled(Paper)({
-  maxWidth: "1200px",
-  margin: "20px auto 20px auto",
-  padding: "20px",
-});
+const Host = styled(Paper)`
+  max-width: 1200px;
+  min-height: calc(100vh - 80px);
+  margin: 20px auto 20px auto;
+  padding: 20px;
+`;

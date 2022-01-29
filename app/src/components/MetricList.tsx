@@ -3,7 +3,9 @@ import { IMetric } from "../serverApi/IMetric";
 import { envSettings } from "../envSettings";
 import { MetricListItem } from "./MetricListItem";
 import { ServerApi } from "../serverApi/ServerApi";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
+import { GridItem } from "./GridItem";
+import { translations } from "../i18n/translations";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
@@ -23,10 +25,14 @@ export const MetricList: React.FC = () => {
 
   return (
     <Grid container rowSpacing={2} columnSpacing={2}>
+      <GridItem key={"add"} targetUrl={"/metrics/create"}>
+        <Typography variant={"h4"}>+</Typography>
+        <Typography variant={"subtitle1"}>{translations.create}</Typography>
+      </GridItem>
       {metrics.map((m) => (
-        <Grid item xs={6} sm={4} key={m.key}>
+        <GridItem key={m.key} targetUrl={`/metrics/view/${m.key}`}>
           <MetricListItem metric={m} />
-        </Grid>
+        </GridItem>
       ))}
     </Grid>
   );
