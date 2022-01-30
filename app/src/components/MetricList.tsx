@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IMetric } from "../serverApi/IMetric";
-import { envSettings } from "../envSettings";
+import { envSettings } from "../env/envSettings";
 import { MetricListItem } from "./MetricListItem";
 import { ServerApi } from "../serverApi/ServerApi";
 import { Grid, Typography } from "@mui/material";

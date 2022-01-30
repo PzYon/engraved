@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { envSettings } from "../envSettings";
+import { envSettings } from "../env/envSettings";
 import { useParams } from "react-router";
 import { ServerApi } from "../serverApi/ServerApi";
 import { Tab, Tabs } from "@mui/material";
