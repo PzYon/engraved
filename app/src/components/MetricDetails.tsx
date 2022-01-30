@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { envSettings } from "../envSettings";
 import { useParams } from "react-router";
@@ -33,11 +32,7 @@ export const MetricDetails: React.FC = () => {
           ))}
         </ul>
       ) : null}
-      {errorMessage ? <Error>{errorMessage}</Error> : null}
+      {errorMessage ? <div>{errorMessage}</div> : null}
     </>
   );
 };
-
-const Error = styled.div`
-  color: darkred;
-`;
