@@ -25,12 +25,16 @@ export const MetricList: React.FC = () => {
 
   return (
     <Grid container rowSpacing={2} columnSpacing={2}>
-      <GridItem key={"add"} targetUrl={"/metrics/create"}>
+      <GridItem reactKey={"add"} key={"add"} targetUrl={"/metrics/create"}>
         <Typography variant={"h4"}>+</Typography>
         <Typography variant={"subtitle1"}>{translations.create}</Typography>
       </GridItem>
       {metrics.map((m) => (
-        <GridItem key={m.key} targetUrl={`/metrics/view/${m.key}`}>
+        <GridItem
+          reactKey={m.key}
+          key={m.key}
+          targetUrl={`/metrics/view/${m.key}`}
+        >
           <MetricListItem metric={m} />
         </GridItem>
       ))}
