@@ -9,13 +9,13 @@ import { Link, LinkProps, Route, Routes, useLocation } from "react-router-dom";
 import { MeasurementsList } from "./MeasurementsList";
 import { MetricSummary } from "./MetricSummary";
 
-type NavigateTo = "summary" | "measurements";
+type TabKey = "summary" | "measurements";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
   const { pathname } = useLocation();
 
-  const [tabKey, setTabKey] = useState<NavigateTo>(() =>
+  const [tabKey, setTabKey] = useState<TabKey>(() =>
     pathname.indexOf("measurements") > -1 ? "measurements" : "summary"
   );
 
@@ -36,48 +36,49 @@ export const MetricDetails: React.FC = () => {
   return (
     <>
       <Tabs value={tabKey}>
-        <Tab
-          value={"summary"}
-          href={getOnClickUrl("summary")}
-          onClick={() => setTabKey("summary")}
+        <WrappedTab
+          value={getPath("summary")}
           label={translations.tab_summary}
-          LinkComponent={LinkToSummary}
+          onClick={setTabKey}
         />
-        <Tab
-          value={"measurements"}
-          href={getOnClickUrl("measurements")}
-          onClick={() => setTabKey("measurements")}
+        <WrappedTab
+          value={getPath("measurements")}
           label={translations.tab_measurements}
-          LinkComponent={LinkToMeasurements}
+          onClick={setTabKey}
         />
       </Tabs>
       <Routes>
         <Route index element={<MetricSummary />} />
-        <Route path={getOnClickUrl("summary")} element={<MetricSummary />} />
+        <Route path={getPath("summary")} element={<MetricSummary />} />
         <Route
-          path={getOnClickUrl("measurements")}
+          path={getPath("measurements")}
           element={<MeasurementsList measurements={measurements} />}
         />
       </Routes>
       {errorMessage ? <div>{errorMessage}</div> : null}
     </>
   );
-
-  function getOnClickUrl(target: NavigateTo) {
-    return target;
-  }
 };
 
-// eslint-disable-next-line react/display-name
-const LinkToMeasurements = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  (props, ref) => {
-    return <Link to={"measurements"} ref={ref} {...props} />;
-  }
-);
+const WrappedTab: React.FC<{
+  value: TabKey;
+  label: string;
+  onClick: (value: TabKey) => void;
+}> = ({ value, label, onClick }) => {
+  return (
+    <Tab
+      href={value}
+      onClick={() => onClick(value)}
+      label={label}
+      LinkComponent={React.forwardRef<HTMLAnchorElement, LinkProps>(
+        function ReactRouterLinkComponentWrapper(props, ref) {
+          return <Link to={value} ref={ref} {...props} />;
+        }
+      )}
+    />
+  );
+};
 
-// eslint-disable-next-line react/display-name
-const LinkToSummary = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  (props, ref) => {
-    return <Link to={"summary"} ref={ref} {...props} />;
-  }
-);
+function getPath(target: TabKey) {
+  return target;
+}
