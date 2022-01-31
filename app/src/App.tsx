@@ -15,7 +15,7 @@ export const App: React.FC = () => (
       <Routes>
         <Route path="/" element={<MetricList />} />
         <Route path="/metrics/create" element={<AddMetric />} />
-        <Route path="/metrics/view/:metricKey" element={<MetricDetails />} />
+        <Route path="/metrics/view/:metricKey/*" element={<MetricDetails />} />
       </Routes>
     </PageLayout>
   </BrowserRouter>
