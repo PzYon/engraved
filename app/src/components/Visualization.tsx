@@ -1,20 +1,23 @@
 import { IMeasurement } from "../serverApi/IMeasurement";
 import React from "react";
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
+  TimeScale,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
+import "chartjs-adapter-date-fns";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  TimeScale,
   PointElement,
   LineElement,
   Title,
@@ -25,19 +28,29 @@ ChartJS.register(
 export const Visualization: React.FC<{ measurements: IMeasurement[] }> = ({
   measurements,
 }) => {
-  const labels = measurements.map((m) => m.dateTime);
-  const values = measurements.map((m) => m.value);
+  const data = measurements.map((latency) => ({
+    timestamp: latency.dateTime,
+    value: latency.value,
+  }));
 
   return (
     <Chart
       type="line"
+      options={{
+        parsing: {
+          xAxisKey: "timestamp",
+          yAxisKey: "value",
+        },
+        scales: {
+          x: { type: "time" },
+        },
+      }}
       data={{
-        labels: labels,
         datasets: [
           {
-            data: values,
+            type: "line",
+            data: data,
             label: "My First Dataset",
-            fill: false,
             borderColor: "rgb(75, 192, 192)",
             tension: 0.1,
           },
