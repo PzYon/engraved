@@ -25,15 +25,17 @@ ChartJS.register(
 export const Visualization: React.FC<{ measurements: IMeasurement[] }> = ({
   measurements,
 }) => {
-  const fo = CategoryScale;
+  const labels = measurements.map((m) => m.dateTime);
+  const values = measurements.map((m) => m.value);
+
   return (
     <Chart
       type="line"
       data={{
-        labels: ["Mo", "Di"],
+        labels: labels,
         datasets: [
           {
-            data: [123, 23],
+            data: values,
             label: "My First Dataset",
             fill: false,
             borderColor: "rgb(75, 192, 192)",
