@@ -11,6 +11,7 @@ public class DummyMeasurementsLoader : IMeasurementsLoader
         MetricKey = metricKey,
         Value = GetValue()
       })
+      .OrderBy(m => m.DateTime)
       .ToArray();
   }
 

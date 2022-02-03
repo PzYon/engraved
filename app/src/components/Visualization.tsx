@@ -5,6 +5,7 @@ import {
   Chart as ChartJS,
   Legend,
   LinearScale,
+  LineController,
   LineElement,
   PointElement,
   TimeScale,
@@ -16,13 +17,14 @@ import "chartjs-adapter-date-fns";
 
 ChartJS.register(
   CategoryScale,
+  Legend,
   LinearScale,
-  TimeScale,
-  PointElement,
+  LineController,
   LineElement,
+  PointElement,
+  TimeScale,
   Title,
-  Tooltip,
-  Legend
+  Tooltip
 );
 
 export const Visualization: React.FC<{ measurements: IMeasurement[] }> = ({
