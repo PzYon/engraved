@@ -8,6 +8,9 @@ import { translations } from "../i18n/translations";
 import { Link, LinkProps, Route, Routes, useLocation } from "react-router-dom";
 import { MeasurementsList } from "./MeasurementsList";
 import { MetricSummary } from "./MetricSummary";
+import { Visualization } from "./charts/Visualization";
+import { PageTitle } from "./PageTitle";
+import { IMetric } from "../serverApi/IMetric";
 
 type TabKey = "summary" | "measurements";
 
@@ -19,22 +22,31 @@ export const MetricDetails: React.FC = () => {
     pathname.indexOf("measurements") > -1 ? "measurements" : "summary"
   );
 
+  const [metric, setMetric] = useState<IMetric>();
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [isDataReady, setIsDataReady] = useState(false);
 
   useEffect(() => {
-    new ServerApi(envSettings.apiBaseUrl)
-      .getMeasurements(metricKey)
-      .then((data) => {
-        setMeasurements(data);
-      })
-      .catch((err) => {
-        setErrorMessage(typeof err === "string" ? err : JSON.stringify(err));
-      });
+    const serverApi = new ServerApi(envSettings.apiBaseUrl);
+
+    Promise.all([
+      serverApi
+        .getMeasurements(metricKey)
+        .then(setMeasurements)
+        .catch(handleError),
+      serverApi.getMetric(metricKey).then(setMetric).catch(handleError),
+    ]).then(() => setIsDataReady(true));
   }, []);
+
+  if (!isDataReady) {
+    return null;
+  }
 
   return (
     <>
+      <PageTitle title={metric.name} />
+      <Visualization measurements={measurements} />
       <Tabs value={tabKey}>
         <WrappedTab
           value={getPath("summary")}
@@ -58,6 +70,10 @@ export const MetricDetails: React.FC = () => {
       {errorMessage ? <div>{errorMessage}</div> : null}
     </>
   );
+
+  function handleError(error: unknown) {
+    setErrorMessage(typeof error === "string" ? error : JSON.stringify(error));
+  }
 };
 
 const WrappedTab: React.FC<{

@@ -5,11 +5,18 @@ export class ServerApi {
   constructor(private apiBaseUrl: string) {}
 
   async getMetrics(): Promise<IMetric[]> {
-    const response = await fetch(
-      new Request(`${this.apiBaseUrl}/metrics?metricKey=foo_bar`)
-    );
+    const response = await fetch(new Request(`${this.apiBaseUrl}/metrics`));
 
     const data: Promise<IMetric[]> = await response.json();
+    return data;
+  }
+
+  async getMetric(metricKey: string): Promise<IMetric> {
+    const response = await fetch(
+      new Request(`${this.apiBaseUrl}/metrics/${metricKey}`)
+    );
+
+    const data: Promise<IMetric> = await response.json();
     return data;
   }
 
