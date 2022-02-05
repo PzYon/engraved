@@ -10,7 +10,7 @@ import { MeasurementsList } from "./MeasurementsList";
 import { MetricSummary } from "./MetricSummary";
 import { PageTitle } from "./layout/PageTitle";
 import { IMetric } from "../serverApi/IMetric";
-import { Visualization } from "./charts/Visualization";
+import { Visualization } from "./chart/Visualization";
 import { PageSubHeader } from "./layout/PageSubHeader";
 
 type TabKey = "summary" | "measurements";
