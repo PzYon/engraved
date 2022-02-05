@@ -11,6 +11,7 @@ import { MetricSummary } from "./MetricSummary";
 import { PageTitle } from "./layout/PageTitle";
 import { IMetric } from "../serverApi/IMetric";
 import { Visualization } from "./charts/Visualization";
+import { PageSubHeader } from "./layout/PageSubHeader";
 
 type TabKey = "summary" | "measurements";
 
@@ -45,7 +46,9 @@ export const MetricDetails: React.FC = () => {
 
   return (
     <>
-      <PageTitle title={metric.name} />
+      <PageSubHeader>
+        <PageTitle title={metric.name} />
+      </PageSubHeader>
       <Visualization measurements={measurements} />
       <Tabs value={tabKey}>
         <WrappedTab

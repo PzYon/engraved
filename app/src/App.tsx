@@ -5,13 +5,16 @@ import { MetricDetails } from "./components/MetricDetails";
 import { AddMetric } from "./components/AddMetric";
 import { Typography } from "@mui/material";
 import { PageLayout } from "./components/layout/PageLayout";
+import { PageHeader } from "./components/layout/PageHeader";
 
 export const App: React.FC = () => (
   <BrowserRouter>
     <PageLayout>
-      <Link to="/">
-        <Typography variant="h2">metrix</Typography>
-      </Link>
+      <PageHeader>
+        <Link to="/">
+          <Typography variant="h2">metrix</Typography>
+        </Link>
+      </PageHeader>
       <Routes>
         <Route path="/" element={<MetricList />} />
         <Route path="/metrics/create" element={<AddMetric />} />
