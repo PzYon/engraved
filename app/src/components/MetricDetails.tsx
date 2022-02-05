@@ -8,9 +8,9 @@ import { translations } from "../i18n/translations";
 import { Link, LinkProps, Route, Routes, useLocation } from "react-router-dom";
 import { MeasurementsList } from "./MeasurementsList";
 import { MetricSummary } from "./MetricSummary";
-import { Visualization } from "./charts/Visualization";
-import { PageTitle } from "./PageTitle";
+import { PageTitle } from "./layout/PageTitle";
 import { IMetric } from "../serverApi/IMetric";
+import { Visualization } from "./charts/Visualization";
 
 type TabKey = "summary" | "measurements";
 

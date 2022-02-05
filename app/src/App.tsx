@@ -2,9 +2,9 @@ import React from "react";
 import { MetricList } from "./components/MetricList";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import { MetricDetails } from "./components/MetricDetails";
-import { PageLayout } from "./components/PageLayout";
 import { AddMetric } from "./components/AddMetric";
 import { Typography } from "@mui/material";
+import { PageLayout } from "./components/layout/PageLayout";
 
 export const App: React.FC = () => (
   <BrowserRouter>
