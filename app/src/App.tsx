@@ -1,7 +1,7 @@
 import React from "react";
-import { MetricList } from "./components/MetricList";
+import { MetricList } from "./components/overview/MetricList";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
-import { MetricDetails } from "./components/MetricDetails";
+import { MetricDetails } from "./components/details/MetricDetails";
 import { AddMetric } from "./components/AddMetric";
 import { Typography } from "@mui/material";
 import { PageHeader } from "./components/layout/PageHeader";

@@ -1,4 +1,4 @@
-import { IMeasurement } from "../../serverApi/IMeasurement";
+import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { ChartProps } from "react-chartjs-2/dist/types";
 import { ChartType } from "chart.js";
 

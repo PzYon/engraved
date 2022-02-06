@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { IMetric } from "../serverApi/IMetric";
-import { envSettings } from "../env/envSettings";
+import { IMetric } from "../../serverApi/IMetric";
+import { envSettings } from "../../env/envSettings";
 import { MetricListItem } from "./MetricListItem";
-import { ServerApi } from "../serverApi/ServerApi";
+import { ServerApi } from "../../serverApi/ServerApi";
 import { Grid, Typography } from "@mui/material";
 import { GridItem } from "./GridItem";
-import { translations } from "../i18n/translations";
-import { Section } from "./layout/Section";
+import { translations } from "../../i18n/translations";
+import { Section } from "../layout/Section";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { IMeasurement } from "../serverApi/IMeasurement";
-import { envSettings } from "../env/envSettings";
+import { IMeasurement } from "../../serverApi/IMeasurement";
+import { envSettings } from "../../env/envSettings";
 import { useParams } from "react-router";
-import { ServerApi } from "../serverApi/ServerApi";
-import { MeasurementsList } from "./MeasurementsList";
-import { MetricSummary } from "./MetricSummary";
-import { PageTitle } from "./layout/PageTitle";
-import { IMetric } from "../serverApi/IMetric";
+import { ServerApi } from "../../serverApi/ServerApi";
+import { Measurements } from "./Measurements";
+import { Summary } from "./Summary";
+import { PageTitle } from "../layout/PageTitle";
+import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
-import { Section } from "./layout/Section";
-import { PageHeader } from "./layout/PageHeader";
+import { Section } from "../layout/Section";
+import { PageHeader } from "../layout/PageHeader";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -45,10 +45,10 @@ export const MetricDetails: React.FC = () => {
         <Visualization measurements={measurements} />
       </Section>
       <Section>
-        <MetricSummary />
+        <Summary />
       </Section>
       <Section>
-        <MeasurementsList measurements={measurements} />
+        <Measurements measurements={measurements} />
       </Section>
       {errorMessage ? <div>{errorMessage}</div> : null}
     </>
