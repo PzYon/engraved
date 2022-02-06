@@ -1,5 +1,5 @@
 import React from "react";
-import { IMetric } from "../serverApi/IMetric";
+import { IMetric } from "../../serverApi/IMetric";
 import { Typography } from "@mui/material";
 
 export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
