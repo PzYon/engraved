@@ -1,4 +1,6 @@
-﻿namespace Metrix.Core.Domain;
+﻿using static System.String;
+
+namespace Metrix.Core.Domain;
 
 public class DummyMeasurementsLoader : IMeasurementsLoader
 {
@@ -9,7 +11,8 @@ public class DummyMeasurementsLoader : IMeasurementsLoader
       {
         DateTime = GetRandomDate(),
         MetricKey = metricKey,
-        Value = GetValue()
+        Value = GetValue(),
+        Notes = Random.Shared.Next(1, 3) > 1 ? LoremUtil.LoremIpsum(3, 15, 1, 4) : Empty
       })
       .OrderBy(m => m.DateTime)
       .ToArray();

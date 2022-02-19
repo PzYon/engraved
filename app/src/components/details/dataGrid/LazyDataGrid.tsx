@@ -7,17 +7,34 @@ import {
 import { IDataGridProps } from "./IDataGridProps";
 import styled from "styled-components";
 import { format } from "date-fns";
+import { translations } from "../../../i18n/translations";
+
+enum ColumnName {
+  Date = "date",
+  Value = "value",
+  Notes = "notes",
+}
 
 const LazyDataGrid: React.FC<IDataGridProps> = ({ measurements }) => {
   const rows: GridRowsProp = measurements.map((m) => ({
     id: m.dateTime,
-    col1: format(new Date(m.dateTime), "dd.LL.yyyy kk:mm:ss"),
-    col2: m.value,
+    [ColumnName.Date]: format(new Date(m.dateTime), "dd.LL.yyyy kk:mm:ss"),
+    [ColumnName.Value]: m.value,
+    [ColumnName.Notes]: m.notes,
   }));
 
   const columns: GridColDef[] = [
-    { field: "col1", headerName: "Date", width: 300 },
-    { field: "col2", headerName: "Value" },
+    {
+      field: ColumnName.Date,
+      headerName: translations.columnName_date,
+      width: 300,
+    },
+    { field: ColumnName.Value, headerName: translations.columnName_value },
+    {
+      field: ColumnName.Notes,
+      headerName: translations.columnName_notes,
+      width: 500,
+    },
   ];
 
   return (
