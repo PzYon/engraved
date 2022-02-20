@@ -10,6 +10,7 @@ import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
 import { Section } from "../layout/Section";
 import { PageHeader } from "../layout/PageHeader";
+import { AddMeasurement } from "./AddMeasurement";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -40,7 +41,9 @@ export const MetricDetails: React.FC = () => {
       <PageHeader>
         <PageTitle title={metric.name} />
       </PageHeader>
-
+      <Section>
+        <AddMeasurement metricKey={metric.key} />
+      </Section>
       <Section>
         <Visualization measurements={measurements} />
       </Section>

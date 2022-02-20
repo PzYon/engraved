@@ -1,4 +1,4 @@
-﻿using Metrix.Core.Domain;
+﻿using Metrix.Api.Dtos;
 using Metrix.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,5 +19,14 @@ public class MeasurementsController : ControllerBase
   public Measurement[] GetMeasurements([FromQuery] string metricKey)
   {
     return _measurementsStore.GetMeasurements(metricKey);
+  }
+
+  [HttpPost]
+  public void AddMeasurement([FromBody] ApiMeasurement measurement)
+  {
+    _measurementsStore.AddMeasurement(new Measurement
+    {
+      MetricKey = measurement.MetricKey
+    });
   }
 }
