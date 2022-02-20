@@ -1,8 +1,10 @@
 ﻿namespace Metrix.Core.Domain;
 
-public interface IMetricsLoader
+public interface IMetricsStore
 {
   Metric[] GetMetrics();
 
   Metric GetMetric(string metricKey);
+
+  void Create(Metric metric);
 }

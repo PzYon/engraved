@@ -9,8 +9,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Custom services
-builder.Services.AddTransient<IMeasurementsLoader, DummyMeasurementsLoader>();
-builder.Services.AddTransient<IMetricsLoader, DummyMetricsLoader>();
+builder.Services.AddTransient<IMeasurementsStore, MeasurementsStore>(provider =>
+  new MeasurementsStore(DummyData.GetMeasurements().ToList()));
+
+builder.Services.AddTransient<IMetricsStore, DummyMetricsStore>();
 
 var app = builder.Build();
 

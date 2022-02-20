@@ -7,23 +7,23 @@ namespace Metrix.Api.Controllers;
 [Route("api/metrics")]
 public class MetricsController : ControllerBase
 {
-  private readonly IMetricsLoader _metricsLoader;
+  private readonly IMetricsStore _metricsStore;
 
-  public MetricsController(IMetricsLoader metricsLoader)
+  public MetricsController(IMetricsStore metricsStore)
   {
-    _metricsLoader = metricsLoader;
+    _metricsStore = metricsStore;
   }
 
   [HttpGet]
   public Metric[] GetMetrics()
   {
-    return _metricsLoader.GetMetrics();
+    return _metricsStore.GetMetrics();
   }
 
   [Route("{metricKey}")]
   [HttpGet]
   public Metric GetMetric(string metricKey)
   {
-    return _metricsLoader.GetMetric(metricKey);
+    return _metricsStore.GetMetric(metricKey);
   }
 }

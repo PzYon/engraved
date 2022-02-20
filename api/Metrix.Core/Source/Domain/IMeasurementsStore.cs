@@ -1,6 +1,8 @@
 ﻿namespace Metrix.Core.Domain;
 
-public interface IMeasurementsLoader
+public interface IMeasurementsStore
 {
   Measurement[] GetMeasurements(string metricKey);
+
+  void AddMeasurement(Measurement measurement);
 }

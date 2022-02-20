@@ -2,9 +2,11 @@
 
 namespace Metrix.Core.Domain;
 
-public class DummyMeasurementsLoader : IMeasurementsLoader
+public static class DummyData
 {
-  public Measurement[] GetMeasurements(string metricKey)
+  private static string metricKey = "m3tr1c";
+
+  public static Measurement[] GetMeasurements()
   {
     return Enumerable.Range(0, Random.Shared.Next(5, 20))
       .Select(_ => new Measurement

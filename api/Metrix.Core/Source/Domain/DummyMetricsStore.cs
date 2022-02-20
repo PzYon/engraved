@@ -1,8 +1,8 @@
 ﻿namespace Metrix.Core.Domain;
 
-public class DummyMetricsLoader : IMetricsLoader
+public class DummyMetricsStore : IMetricsStore
 {
-  private static readonly Metric[] _metrics = Enumerable.Range(0, Random.Shared.Next(5, 30))
+  private static readonly List<Metric> _metrics = Enumerable.Range(0, Random.Shared.Next(5, 30))
     .Select(i => new Metric
     {
       Description = LoremUtil.LoremIpsum(0, 12, 1, 3),
@@ -11,11 +11,11 @@ public class DummyMetricsLoader : IMetricsLoader
       Type = MetricType.Gauge,
       Unit = "kg"
     })
-    .ToArray();
+    .ToList();
 
   public Metric[] GetMetrics()
   {
-    return _metrics;
+    return _metrics.ToArray();
   }
 
   public Metric GetMetric(string metricKey)
@@ -23,4 +23,8 @@ public class DummyMetricsLoader : IMetricsLoader
     return _metrics.First(m => m.Key == metricKey);
   }
 
+  public void Create(Metric metric)
+  {
+    _metrics.Add(metric);
+  }
 }

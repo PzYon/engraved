@@ -7,16 +7,16 @@ namespace Metrix.Api.Controllers;
 [Route("api/measurements")]
 public class MeasurementsController : ControllerBase
 {
-  private readonly IMeasurementsLoader _measurementsLoader;
+  private readonly IMeasurementsStore _measurementsStore;
 
-  public MeasurementsController(IMeasurementsLoader measurementsLoader)
+  public MeasurementsController(IMeasurementsStore measurementsStore)
   {
-    _measurementsLoader = measurementsLoader;
+    _measurementsStore = measurementsStore;
   }
 
   [HttpGet]
   public Measurement[] GetMeasurements([FromQuery] string metricKey)
   {
-    return _measurementsLoader.GetMeasurements(metricKey);
+    return _measurementsStore.GetMeasurements(metricKey);
   }
 }
