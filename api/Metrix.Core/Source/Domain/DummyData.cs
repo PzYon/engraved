@@ -1,4 +1,5 @@
-﻿using static System.String;
+﻿using Metrix.Core.Domain.Measurements;
+using static System.String;
 
 namespace Metrix.Core.Domain;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Metrix.Core.Domain;
+namespace Metrix.Core.Domain.Metrics;
 
 [TestClass]
 public class MetricsStoreShould

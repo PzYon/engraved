@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Metrix.Core.Domain;
+namespace Metrix.Core.Domain.Measurements;
 
 [TestClass]
 public class MeasurementsStoreShould

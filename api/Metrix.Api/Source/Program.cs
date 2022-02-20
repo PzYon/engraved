@@ -1,4 +1,6 @@
 using Metrix.Core.Domain;
+using Metrix.Core.Domain.Measurements;
+using Metrix.Core.Domain.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 

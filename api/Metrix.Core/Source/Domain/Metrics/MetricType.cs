@@ -1,4 +1,4 @@
-﻿namespace Metrix.Core.Domain;
+﻿namespace Metrix.Core.Domain.Metrics;
 
 public enum MetricType
 {

@@ -1,4 +1,5 @@
 ﻿using Metrix.Core.Domain;
+using Metrix.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Metrix.Api.Controllers;
