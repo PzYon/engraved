@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Metrix.Core.Application.Commands.Measurements.Add;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Metrix.Core.Domain.Measurements;
@@ -6,6 +7,9 @@ namespace Metrix.Core.Domain.Measurements;
 [TestClass]
 public class MeasurementsStoreShould
 {
+  private const string metricKey = "m3tr1k3y";
+  private const string notesIdentifier = "foo-bar";
+
   private IMeasurementsStore store;
 
   [TestInitialize]
@@ -14,21 +18,38 @@ public class MeasurementsStoreShould
     store = new MeasurementsStore();
   }
 
-  [TestMethod]
-  public void AddMeasurement()
-  {
-    var metricKey = "m3tr1k3y";
-    var value = 43.34;
+  // USE CASE:
+  // Measure when a migraine medicine was taken. Requirements are:
+  // - Date time
+  // - Shape (Ausprägung), e.g. Irfen oder Aimovig
 
-    store.AddMeasurement(new Measurement
+  [TestMethod]
+  public void AddMeasurement_IsLinkedWithMetric()
+  {
+    store.AddMeasurement(new AddMeasurementCommand
     {
       MetricKey = metricKey,
-      Value = value
+      Notes = notesIdentifier
     });
 
-    var m = store.GetMeasurements(metricKey).FirstOrDefault(m => m.Value == value);
+    var m = store.GetMeasurements(metricKey).FirstOrDefault(m => m.Notes == notesIdentifier);
     Assert.IsNotNull(m);
-    Assert.AreEqual(value, m.Value);
     Assert.AreEqual(metricKey, m.MetricKey);
+  }
+
+  [TestMethod]
+  public void AddMeasurement_WithCurrentDateTime()
+  {
+    var command = new AddMeasurementCommand
+    {
+      MetricKey = metricKey,
+      Notes = notesIdentifier
+    };
+
+    store.AddMeasurement(command);
+
+    var m = store.GetMeasurements(metricKey).FirstOrDefault(m => m.Notes == notesIdentifier);
+    Assert.IsNotNull(m);
+    Assert.AreEqual(command.DateTime, m.DateTime);
   }
 }
