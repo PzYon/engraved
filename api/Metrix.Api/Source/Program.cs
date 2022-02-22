@@ -11,8 +11,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Custom services
-builder.Services.AddTransient<IMeasurementsStore, MeasurementsStore>(provider =>
-  new MeasurementsStore(DummyData.GetMeasurements().ToList()));
+builder.Services.AddTransient<IMeasurementsStore>(_ =>
+{
+  // we inject a (static) list here to simulate our DB
+  return new MeasurementsStore(DummyData.Measurements);
+});
 
 builder.Services.AddTransient<IMetricsStore, DummyMetricsStore>();
 

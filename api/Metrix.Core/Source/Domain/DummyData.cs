@@ -7,19 +7,16 @@ public static class DummyData
 {
   private static string metricKey = "m3tr1c";
 
-  public static Measurement[] GetMeasurements()
-  {
-    return Enumerable.Range(0, Random.Shared.Next(5, 20))
-      .Select(_ => new Measurement
-      {
-        DateTime = GetRandomDate(),
-        MetricKey = metricKey,
-        Value = GetValue(),
-        Notes = Random.Shared.Next(1, 3) > 1 ? LoremUtil.LoremIpsum(3, 15, 1, 4) : Empty
-      })
-      .OrderBy(m => m.DateTime)
-      .ToArray();
-  }
+  public static List<Measurement> Measurements = Enumerable.Range(0, Random.Shared.Next(5, 20))
+    .Select(_ => new Measurement
+    {
+      DateTime = GetRandomDate(),
+      MetricKey = metricKey,
+      Value = GetValue(),
+      Notes = Random.Shared.Next(1, 3) > 1 ? LoremUtil.LoremIpsum(3, 15, 1, 4) : Empty
+    })
+    .OrderBy(m => m.DateTime)
+    .ToList();
 
   private static DateTime GetRandomDate()
   {

@@ -11,7 +11,6 @@ export const AddMeasurement: React.FC<{ metricKey: string }> = ({
     <Button
       variant="contained"
       onClick={() => {
-        alert("Will create measurement for " + metricKey);
         new ServerApi(envSettings.apiBaseUrl).addMeasurement(metricKey);
       }}
     >
