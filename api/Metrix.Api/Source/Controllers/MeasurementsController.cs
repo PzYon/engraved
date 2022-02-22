@@ -1,5 +1,4 @@
-﻿using Metrix.Api.Dtos;
-using Metrix.Core.Application.Commands.Measurements.Add;
+﻿using Metrix.Core.Application.Commands.Measurements.Add;
 using Metrix.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,11 +22,8 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpPost]
-  public void Add([FromBody] ApiMeasurement measurement)
+  public void Add([FromBody] AddMeasurementCommand measurement)
   {
-    _measurementsStore.Add(new AddMeasurementCommand
-    {
-      MetricKey = measurement.MetricKey
-    });
+    _measurementsStore.Add(measurement);
   }
 }
