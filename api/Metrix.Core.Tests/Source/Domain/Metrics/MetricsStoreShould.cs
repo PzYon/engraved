@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Metrix.Core.Domain.Metrics;
 
@@ -10,23 +11,23 @@ public class MetricsStoreShould
   [TestInitialize]
   public void SetUp()
   {
-    store = new DummyMetricsStore();
+    store = new MetricsStore(new List<Metric>());
   }
 
   [TestMethod]
-  public void GetMetrics()
+  public void GetAll()
   {
-    Assert.IsNotNull(store.GetMetrics());
+    Assert.IsNotNull(store.GetAll());
   }
 
   [TestMethod]
-  public void CreateNewMetric()
+  public void Add()
   {
     var metricKey = "k3y";
 
-    store.Create(new Metric { Key = metricKey });
+    store.Add(new Metric { Key = metricKey });
 
-    Metric retrievedMetric = store.GetMetric(metricKey);
+    Metric retrievedMetric = store.Get(metricKey);
 
     Assert.IsNotNull(retrievedMetric);
     Assert.AreEqual(metricKey, retrievedMetric.Key);

@@ -6,21 +6,17 @@ public class MeasurementsStore : IMeasurementsStore
 {
   private readonly List<Measurement> _measurements;
 
-  public MeasurementsStore() : this(new List<Measurement>())
-  {
-  }
-
   public MeasurementsStore(List<Measurement> measurements)
   {
     _measurements = measurements;
   }
 
-  public Measurement[] GetMeasurements(string metricKey)
+  public Measurement[] GetAll(string metricKey)
   {
     return _measurements.Where(m => m.MetricKey == metricKey).ToArray();
   }
 
-  public void AddMeasurement(AddMeasurementCommand command)
+  public void Add(AddMeasurementCommand command)
   {
     // todo: check if metric exists, etc.
 

@@ -17,7 +17,11 @@ builder.Services.AddTransient<IMeasurementsStore>(_ =>
   return new MeasurementsStore(DummyData.Measurements);
 });
 
-builder.Services.AddTransient<IMetricsStore, DummyMetricsStore>();
+builder.Services.AddTransient<IMetricsStore>(_ =>
+{
+  // we inject a (static) list here to simulate our DB
+  return new MetricsStore(DummyData.Metrics);
+});
 
 var app = builder.Build();
 

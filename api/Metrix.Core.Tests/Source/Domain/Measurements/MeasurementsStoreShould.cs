@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Metrix.Core.Application.Commands.Measurements.Add;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,7 +16,7 @@ public class MeasurementsStoreShould
   [TestInitialize]
   public void SetUp()
   {
-    store = new MeasurementsStore();
+    store = new MeasurementsStore(new List<Measurement>());
   }
 
   // USE CASE:
@@ -26,13 +27,13 @@ public class MeasurementsStoreShould
   [TestMethod]
   public void AddMeasurement_IsLinkedWithMetric()
   {
-    store.AddMeasurement(new AddMeasurementCommand
+    store.Add(new AddMeasurementCommand
     {
       MetricKey = metricKey,
       Notes = notesIdentifier
     });
 
-    var m = store.GetMeasurements(metricKey).FirstOrDefault(m => m.Notes == notesIdentifier);
+    var m = store.GetAll(metricKey).FirstOrDefault(m => m.Notes == notesIdentifier);
     Assert.IsNotNull(m);
     Assert.AreEqual(metricKey, m.MetricKey);
   }
@@ -46,9 +47,9 @@ public class MeasurementsStoreShould
       Notes = notesIdentifier
     };
 
-    store.AddMeasurement(command);
+    store.Add(command);
 
-    var m = store.GetMeasurements(metricKey).FirstOrDefault(m => m.Notes == notesIdentifier);
+    var m = store.GetAll(metricKey).FirstOrDefault(m => m.Notes == notesIdentifier);
     Assert.IsNotNull(m);
     Assert.AreEqual(command.DateTime, m.DateTime);
   }

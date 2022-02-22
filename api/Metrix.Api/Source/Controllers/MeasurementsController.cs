@@ -17,15 +17,15 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpGet]
-  public Measurement[] GetMeasurements([FromQuery] string metricKey)
+  public Measurement[] GetAll([FromQuery] string metricKey)
   {
-    return _measurementsStore.GetMeasurements(metricKey);
+    return _measurementsStore.GetAll(metricKey);
   }
 
   [HttpPost]
-  public void AddMeasurement([FromBody] ApiMeasurement measurement)
+  public void Add([FromBody] ApiMeasurement measurement)
   {
-    _measurementsStore.AddMeasurement(new AddMeasurementCommand
+    _measurementsStore.Add(new AddMeasurementCommand
     {
       MetricKey = measurement.MetricKey
     });

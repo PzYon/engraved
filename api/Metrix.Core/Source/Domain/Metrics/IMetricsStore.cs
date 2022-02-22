@@ -2,9 +2,9 @@
 
 public interface IMetricsStore
 {
-  Metric[] GetMetrics();
+  Metric[] GetAll();
 
-  Metric GetMetric(string metricKey);
+  Metric Get(string metricKey);
 
-  void Create(Metric metric);
+  void Add(Metric metric);
 }

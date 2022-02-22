@@ -4,7 +4,7 @@ public class AddMeasurementCommand : ICommand
 {
   public string MetricKey { get; set; }
 
-  public DateTime DateTime { get; set; } = DateTime.UtcNow;
+  public DateTime DateTime { get;  } = DateTime.UtcNow;
   
   public string Notes { get; set; }
 }

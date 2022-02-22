@@ -16,15 +16,15 @@ public class MetricsController : ControllerBase
   }
 
   [HttpGet]
-  public Metric[] GetMetrics()
+  public Metric[] GetAll()
   {
-    return _metricsStore.GetMetrics();
+    return _metricsStore.GetAll();
   }
 
   [Route("{metricKey}")]
   [HttpGet]
-  public Metric GetMetric(string metricKey)
+  public Metric Get(string metricKey)
   {
-    return _metricsStore.GetMetric(metricKey);
+    return _metricsStore.Get(metricKey);
   }
 }
