@@ -1,4 +1,7 @@
 ﻿using Metrix.Core.Application.Commands.Measurements.Add;
+using Metrix.Core.Application.Persistence;
+using Metrix.Core.Application.Queries.Measurements;
+using Metrix.Core.Application.Queries.Measurements.GetAll;
 using Metrix.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,22 +11,23 @@ namespace Metrix.Api.Controllers;
 [Route("api/measurements")]
 public class MeasurementsController : ControllerBase
 {
-  private readonly IMeasurementsStore _measurementsStore;
+  private readonly IDb _db;
 
-  public MeasurementsController(IMeasurementsStore measurementsStore)
+  public MeasurementsController(IDb db)
   {
-    _measurementsStore = measurementsStore;
+    _db = db;
   }
 
   [HttpGet]
   public Measurement[] GetAll([FromQuery] string metricKey)
   {
-    return _measurementsStore.GetAll(metricKey);
+    var query = new GetAllMeasurementsQuery { MetricKey = metricKey };
+    return query.CreateExecutor().Execute(_db, query);
   }
 
   [HttpPost]
   public void Add([FromBody] AddMeasurementCommand measurement)
   {
-    _measurementsStore.Add(measurement);
+    measurement.CreateExecutor().Execute(_db, measurement);
   }
 }

@@ -1,3 +1,4 @@
+using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
@@ -11,17 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Custom services
-builder.Services.AddTransient<IMeasurementsStore>(_ =>
-{
-  // we inject a (static) list here to simulate our DB
-  return new MeasurementsStore(DummyData.Measurements);
-});
-
-builder.Services.AddTransient<IMetricsStore>(_ =>
-{
-  // we inject a (static) list here to simulate our DB
-  return new MetricsStore(DummyData.Metrics);
-});
+builder.Services.AddSingleton<IDb, FakeDb>();
 
 var app = builder.Build();
 

@@ -30,17 +30,12 @@ export class ServerApi {
   }
 
   async addMeasurement(metricKey: string): Promise<void> {
-    const response = await fetch(
-      new Request(`${this.apiBaseUrl}/measurements`),
-      {
-        method: "POST",
-        body: JSON.stringify({ metricKey: metricKey }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    await response.json();
+    await fetch(new Request(`${this.apiBaseUrl}/measurements`), {
+      method: "POST",
+      body: JSON.stringify({ metricKey: metricKey }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }
