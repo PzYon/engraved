@@ -28,4 +28,14 @@ export class ServerApi {
     const data: Promise<IMeasurement[]> = await response.json();
     return data;
   }
+
+  async addMeasurement(metricKey: string): Promise<void> {
+    await fetch(new Request(`${this.apiBaseUrl}/measurements`), {
+      method: "POST",
+      body: JSON.stringify({ metricKey: metricKey }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }

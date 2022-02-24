@@ -1,10 +1,10 @@
-﻿namespace Metrix.Core.Domain;
+﻿namespace Metrix.Core.Domain.Measurements;
 
 public class Measurement
 {
   public string MetricKey { get; set; }
 
-  public long Value { get; set; }
+  public double Value { get; set; }
 
   public string Notes { get; set; }
 
