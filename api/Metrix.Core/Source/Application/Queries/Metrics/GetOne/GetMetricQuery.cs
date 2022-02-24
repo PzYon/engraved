@@ -6,8 +6,5 @@ public class GetMetricQuery : IQuery<GetMetricQuery, Metric>
 {
   public string MetricKey { get; set; }
 
-  public IQueryExecutor<GetMetricQuery, Metric> CreateExecutor()
-  {
-    return new GetMetricQueryExecutor();
-  }
+  public IQueryExecutor<GetMetricQuery, Metric> CreateExecutor() => new GetMetricQueryExecutor();
 }
