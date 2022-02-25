@@ -6,6 +6,6 @@ public class GetAllMeasurementsQuery : IQuery<GetAllMeasurementsQuery, Measureme
 {
   public string MetricKey { get; set; }
 
-  public IQueryExecutor<GetAllMeasurementsQuery, Measurement[]> CreateExecutor() =>
-    new GetAllMeasurementsQueryExecutor();
+  IQueryExecutor<GetAllMeasurementsQuery, Measurement[]> IQuery<GetAllMeasurementsQuery, Measurement[]>.
+    CreateExecutor() => new GetAllMeasurementsQueryExecutor();
 }

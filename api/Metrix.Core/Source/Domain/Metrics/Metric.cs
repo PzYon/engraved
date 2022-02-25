@@ -9,6 +9,5 @@ public class Metric
   public string Description { get; set; }
 
   public MetricType Type { get; set; }
-
-  public string Unit { get; set; }
 }
+

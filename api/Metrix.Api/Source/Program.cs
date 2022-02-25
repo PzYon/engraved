@@ -1,7 +1,5 @@
+using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
-using Metrix.Core.Domain;
-using Metrix.Core.Domain.Measurements;
-using Metrix.Core.Domain.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +10,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Custom services
-builder.Services.AddSingleton<IDb, FakeDb>();
+builder.Services.AddSingleton<IDb, MockDb>();
+builder.Services.AddTransient<Dispatcher>();
 
 var app = builder.Build();
 

@@ -1,6 +1,6 @@
-﻿using Metrix.Core.Application.Persistence;
+﻿using Metrix.Core.Application;
+using Metrix.Core.Application.Queries.Metrics.Get;
 using Metrix.Core.Application.Queries.Metrics.GetAll;
-using Metrix.Core.Application.Queries.Metrics.GetOne;
 using Metrix.Core.Domain.Metrics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,25 +10,25 @@ namespace Metrix.Api.Controllers;
 [Route("api/metrics")]
 public class MetricsController : ControllerBase
 {
-  private readonly IDb _db;
+  private readonly Dispatcher _dispatcher;
 
-  public MetricsController(IDb db)
+  public MetricsController(Dispatcher dispatcher)
   {
-    _db = db;
+    _dispatcher = dispatcher;
   }
 
   [HttpGet]
   public Metric[] GetAll()
   {
     var query = new GetAllMetricsQuery();
-    return query.CreateExecutor().Execute(_db, query);
+    return _dispatcher.Query<GetAllMetricsQuery, Metric[]>(query);
   }
 
   [Route("{metricKey}")]
   [HttpGet]
   public Metric Get(string metricKey)
   {
-    var query = new GetMetricQuery { MetricKey = metricKey };
-    return query.CreateExecutor().Execute(_db, query);
+    var query = new GetMetricQuery {MetricKey = metricKey};
+    return _dispatcher.Query<GetMetricQuery, Metric>(query);
   }
 }
