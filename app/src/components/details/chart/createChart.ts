@@ -7,27 +7,30 @@ export const createChart = (
   measurements: IMeasurement[]
 ): ChartProps => {
   const data = measurements.map((measurement) => ({
-    timestamp: measurement.dateTime,
-    value: measurement.value,
+    x: new Date(measurement.dateTime),
+    y: measurement.value,
   }));
+
+  console.log(data.map((d) => d.x));
 
   return {
     type: type,
     options: {
-      parsing: {
-        xAxisKey: "timestamp",
-        yAxisKey: "value",
-      },
+      parsing: false,
+      normalized: true,
       scales: {
-        x: { type: "time" },
+        x: {
+          type: "time",
+          // time: { minUnit: "month", round: "minute" },
+        },
       },
     },
     data: {
       datasets: [
         {
-          type: type,
+          label: "Label",
+          normalized: true,
           data: data as never,
-          label: "My First Dataset",
           backgroundColor: "deeppink",
           tension: 0.3,
         },
