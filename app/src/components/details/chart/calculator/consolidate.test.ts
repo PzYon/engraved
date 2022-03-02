@@ -78,6 +78,27 @@ describe("consolidate should", () => {
     expect(secondGroupedMeasurement.label).toBe("10");
   });
 
+  it("group by day (2 measurements, same day, different month)", () => {
+    const measurements: IMeasurement[] = [
+      { value: 10, dateTime: createDate(2020, 5, 3) },
+      { value: 30, dateTime: createDate(2020, 6, 3) },
+    ];
+
+    const grouped = consolidate(measurements, GroupBy.Day);
+
+    expect(grouped.length).toBe(2);
+
+    const firstGroupedMeasurement = grouped[0];
+    expect(firstGroupedMeasurement.rawValues.length).toBe(1);
+    expect(firstGroupedMeasurement.value).toBe(10);
+    expect(firstGroupedMeasurement.label).toBe("3");
+
+    const secondGroupedMeasurement = grouped[1];
+    expect(secondGroupedMeasurement.rawValues.length).toBe(1);
+    expect(secondGroupedMeasurement.value).toBe(30);
+    expect(secondGroupedMeasurement.label).toBe("3");
+  });
+
   // todo:
   // - add test for same days in different months (e.g. 1st july vs 1st aug)
   // - add GroupBy.Week
