@@ -1,8 +1,5 @@
-import { consolidate, GroupBy } from "./consolidate";
+import { consolidate, GroupBy, GroupKey } from "./consolidate";
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
-
-const FIRST_MONTH = "1";
-const SECOND_MONTH = "2";
 
 describe("consolidate should", () => {
   it(" group by month (1 measurement)", () => {
@@ -17,7 +14,7 @@ describe("consolidate should", () => {
     const groupedMeasurement = grouped[0];
     expect(groupedMeasurement.rawValues.length).toBe(1);
     expect(groupedMeasurement.value).toBe(23);
-    expect(groupedMeasurement.label).toBe(FIRST_MONTH);
+    assertGroupKey(groupedMeasurement.groupKey, 2020, 1, 0);
   });
 
   it("group by month (2 measurements)", () => {
@@ -33,7 +30,7 @@ describe("consolidate should", () => {
     const groupedMeasurement = grouped[0];
     expect(groupedMeasurement.rawValues.length).toBe(2);
     expect(groupedMeasurement.value).toBe(30);
-    expect(groupedMeasurement.label).toBe(FIRST_MONTH);
+    assertGroupKey(groupedMeasurement.groupKey, 2020, 1, 0);
   });
 
   it("group by month (2 measurements, different months)", () => {
@@ -49,12 +46,12 @@ describe("consolidate should", () => {
     const firstGroupedMeasurement = grouped[0];
     expect(firstGroupedMeasurement.rawValues.length).toBe(1);
     expect(firstGroupedMeasurement.value).toBe(20);
-    expect(firstGroupedMeasurement.label).toBe(FIRST_MONTH);
+    assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 1, 0);
 
     const secondGroupedMeasurement = grouped[1];
     expect(secondGroupedMeasurement.rawValues.length).toBe(1);
     expect(secondGroupedMeasurement.value).toBe(10);
-    expect(secondGroupedMeasurement.label).toBe(SECOND_MONTH);
+    assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 2, 0);
   });
 
   it("group by day (2 measurements, same month)", () => {
@@ -70,12 +67,12 @@ describe("consolidate should", () => {
     const firstGroupedMeasurement = grouped[0];
     expect(firstGroupedMeasurement.rawValues.length).toBe(1);
     expect(firstGroupedMeasurement.value).toBe(6);
-    expect(firstGroupedMeasurement.label).toBe("9");
+    assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 6, 9);
 
     const secondGroupedMeasurement = grouped[1];
     expect(secondGroupedMeasurement.rawValues.length).toBe(1);
     expect(secondGroupedMeasurement.value).toBe(7);
-    expect(secondGroupedMeasurement.label).toBe("10");
+    assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 6, 10);
   });
 
   it("group by day (2 measurements, same day, different month)", () => {
@@ -91,12 +88,12 @@ describe("consolidate should", () => {
     const firstGroupedMeasurement = grouped[0];
     expect(firstGroupedMeasurement.rawValues.length).toBe(1);
     expect(firstGroupedMeasurement.value).toBe(10);
-    expect(firstGroupedMeasurement.label).toBe("3");
+    assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 5, 3);
 
     const secondGroupedMeasurement = grouped[1];
     expect(secondGroupedMeasurement.rawValues.length).toBe(1);
     expect(secondGroupedMeasurement.value).toBe(30);
-    expect(secondGroupedMeasurement.label).toBe("3");
+    assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 6, 3);
   });
 
   // todo:
@@ -112,5 +109,16 @@ function createDate(year: number, month: number, day: number): string {
 
 function ensureTrailingZero(number: number): string {
   const numberAsString = number.toString();
-  return numberAsString.length === 2 ? numberAsString : "0" + number;
+  return numberAsString.length === 2 ? numberAsString : "0" + numberAsString;
+}
+
+function assertGroupKey(
+  groupKey: GroupKey,
+  expectedYear: number,
+  expectedMonth: number,
+  expectedDay: number
+) {
+  expect(groupKey.year).toBe(expectedYear);
+  expect(groupKey.month).toBe(expectedMonth);
+  expect(groupKey.day).toBe(expectedDay);
 }

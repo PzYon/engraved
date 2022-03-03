@@ -7,7 +7,7 @@ export enum GroupBy {
 
 export interface IGroupedMeasurment {
   value: number;
-  label: string;
+  groupKey: GroupKey;
   rawValues: IMeasurement[];
 }
 
@@ -18,67 +18,69 @@ export function consolidate(
   const valuesByGroup: { [groupKey: string]: IMeasurement[] } = {};
 
   for (const measurement of measurements) {
-    const groupKey = getGroupKey(measurement, groupBy);
+    const groupKey = GroupKey.build(measurement.dateTime, groupBy);
 
-    if (!valuesByGroup[groupKey]) {
-      valuesByGroup[groupKey] = [];
+    const keyAsString = groupKey.serialize();
+    if (!valuesByGroup[keyAsString]) {
+      valuesByGroup[keyAsString] = [];
     }
 
-    valuesByGroup[groupKey].push(measurement);
+    valuesByGroup[keyAsString].push(measurement);
   }
 
-  return Object.keys(valuesByGroup).map((groupKey) => {
-    const measurements = valuesByGroup[groupKey];
+  return Object.keys(valuesByGroup).map((keyAsString) => {
+    const measurements = valuesByGroup[keyAsString];
 
     return {
       value: measurements
         .map((m) => m.value)
         .reduce((total, current) => total + current, 0),
-      label: groupKey,
+      groupKey: GroupKey.deserialize(keyAsString),
       rawValues: measurements,
     };
   });
 }
 
-function getGroupKey(measurement: IMeasurement, groupBy: GroupBy) {
-  switch (groupBy) {
-    case GroupBy.Day:
-      return new Date(measurement.dateTime).getDate();
-    case GroupBy.Month:
-      return new Date(measurement.dateTime).getMonth() + 1;
-    default:
-      throw new Error(`GroupBy ${groupBy} is not yet supported.`);
-  }
-}
+export class GroupKey {
+  private static readonly separator = "::";
 
-class GroupKey {
-  public uniqueKey: string;
-  public label: string;
+  private constructor(
+    public year: number,
+    public month: number,
+    public day: number
+  ) {}
 
-  public static getGroupKey(dateTime: string, groupBy: GroupBy): GroupKey {
+  static build(dateTime: string, groupBy: GroupBy): GroupKey {
     const date = new Date(dateTime);
 
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
-    const day = date.getDay();
+    const day = date.getDate();
 
     switch (groupBy) {
       case GroupBy.Day:
-        return {
-          label: `${day} (${year}-${month})`,
-          uniqueKey: GroupKey.concatKey(year, month, day),
-        };
+        return new GroupKey(year, month, day);
       case GroupBy.Month:
-        return {
-          label: `${month} (${year})`,
-          uniqueKey: GroupKey.concatKey(year, month),
-        };
+        return new GroupKey(year, month, 0);
       default:
         throw new Error(`GroupBy ${groupBy} is not yet supported.`);
     }
   }
 
-  private static concatKey(...values: number[]): string {
-    return values.join("::");
+  static deserialize(s: string): GroupKey {
+    const segments = s.split(GroupKey.separator);
+    if (segments.length !== 3) {
+      throw new Error(`${s} is not a valid GroupKey.`);
+    }
+
+    return new GroupKey(
+      parseInt(segments[0]),
+      parseInt(segments[1]),
+      parseInt(segments[2])
+    );
+  }
+
+  serialize(): string {
+    return [this.year, this.month, this.day].join(GroupKey.separator);
   }
 }
