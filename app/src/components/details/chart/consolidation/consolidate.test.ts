@@ -1,5 +1,7 @@
-import { consolidate, GroupBy, GroupKey } from "./consolidate";
+import { consolidate } from "./consolidate";
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
+import { GroupKey } from "./GroupKey";
+import { GroupBy } from "./GroupBy";
 
 describe("consolidate should", () => {
   it(" group by month (1 measurement)", () => {
