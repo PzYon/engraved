@@ -1,29 +1,30 @@
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
-import { GroupKey } from "./GroupKey";
+import { ConsolidationKey } from "./ConsolidationKey";
 import { GroupBy } from "./GroupBy";
-
-export interface IGroupedMeasurment {
-  value: number;
-  groupKey: GroupKey;
-  rawValues: IMeasurement[];
-}
+import { IConsolidatedMeasurements } from "./IConsolidatedMeasurements";
 
 export function consolidate(
   measurements: IMeasurement[],
   groupBy: GroupBy
-): IGroupedMeasurment[] {
-  const valuesByGroup: { [groupKey: string]: IMeasurement[] } = {};
+): IConsolidatedMeasurements[] {
+  const valuesByGroup = measurements.reduce(
+    (
+      previousValue: { [groupKey: string]: IMeasurement[] },
+      measurement: IMeasurement
+    ) => {
+      const groupKey = ConsolidationKey.build(measurement.dateTime, groupBy);
 
-  for (const measurement of measurements) {
-    const groupKey = GroupKey.build(measurement.dateTime, groupBy);
+      const keyAsString = groupKey.serialize();
+      if (!previousValue[keyAsString]) {
+        previousValue[keyAsString] = [];
+      }
 
-    const keyAsString = groupKey.serialize();
-    if (!valuesByGroup[keyAsString]) {
-      valuesByGroup[keyAsString] = [];
-    }
+      previousValue[keyAsString].push(measurement);
 
-    valuesByGroup[keyAsString].push(measurement);
-  }
+      return previousValue;
+    },
+    {}
+  );
 
   return Object.keys(valuesByGroup).map((keyAsString) => {
     const measurements = valuesByGroup[keyAsString];
@@ -32,8 +33,8 @@ export function consolidate(
       value: measurements
         .map((m) => m.value)
         .reduce((total, current) => total + current, 0),
-      groupKey: GroupKey.deserialize(keyAsString),
-      rawValues: measurements,
+      groupKey: ConsolidationKey.deserialize(keyAsString),
+      measurements: measurements,
     };
   });
 }

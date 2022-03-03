@@ -1,6 +1,6 @@
 import { consolidate } from "./consolidate";
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
-import { GroupKey } from "./GroupKey";
+import { ConsolidationKey } from "./ConsolidationKey";
 import { GroupBy } from "./GroupBy";
 
 describe("consolidate should", () => {
@@ -14,7 +14,7 @@ describe("consolidate should", () => {
     expect(grouped.length).toBe(1);
 
     const groupedMeasurement = grouped[0];
-    expect(groupedMeasurement.rawValues.length).toBe(1);
+    expect(groupedMeasurement.measurements.length).toBe(1);
     expect(groupedMeasurement.value).toBe(23);
     assertGroupKey(groupedMeasurement.groupKey, 2020, 1, 0);
   });
@@ -30,7 +30,7 @@ describe("consolidate should", () => {
     expect(grouped.length).toBe(1);
 
     const groupedMeasurement = grouped[0];
-    expect(groupedMeasurement.rawValues.length).toBe(2);
+    expect(groupedMeasurement.measurements.length).toBe(2);
     expect(groupedMeasurement.value).toBe(30);
     assertGroupKey(groupedMeasurement.groupKey, 2020, 1, 0);
   });
@@ -46,12 +46,12 @@ describe("consolidate should", () => {
     expect(grouped.length).toBe(2);
 
     const firstGroupedMeasurement = grouped[0];
-    expect(firstGroupedMeasurement.rawValues.length).toBe(1);
+    expect(firstGroupedMeasurement.measurements.length).toBe(1);
     expect(firstGroupedMeasurement.value).toBe(20);
     assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 1, 0);
 
     const secondGroupedMeasurement = grouped[1];
-    expect(secondGroupedMeasurement.rawValues.length).toBe(1);
+    expect(secondGroupedMeasurement.measurements.length).toBe(1);
     expect(secondGroupedMeasurement.value).toBe(10);
     assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 2, 0);
   });
@@ -67,12 +67,12 @@ describe("consolidate should", () => {
     expect(grouped.length).toBe(2);
 
     const firstGroupedMeasurement = grouped[0];
-    expect(firstGroupedMeasurement.rawValues.length).toBe(1);
+    expect(firstGroupedMeasurement.measurements.length).toBe(1);
     expect(firstGroupedMeasurement.value).toBe(6);
     assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 6, 9);
 
     const secondGroupedMeasurement = grouped[1];
-    expect(secondGroupedMeasurement.rawValues.length).toBe(1);
+    expect(secondGroupedMeasurement.measurements.length).toBe(1);
     expect(secondGroupedMeasurement.value).toBe(7);
     assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 6, 10);
   });
@@ -88,12 +88,12 @@ describe("consolidate should", () => {
     expect(grouped.length).toBe(2);
 
     const firstGroupedMeasurement = grouped[0];
-    expect(firstGroupedMeasurement.rawValues.length).toBe(1);
+    expect(firstGroupedMeasurement.measurements.length).toBe(1);
     expect(firstGroupedMeasurement.value).toBe(10);
     assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 5, 3);
 
     const secondGroupedMeasurement = grouped[1];
-    expect(secondGroupedMeasurement.rawValues.length).toBe(1);
+    expect(secondGroupedMeasurement.measurements.length).toBe(1);
     expect(secondGroupedMeasurement.value).toBe(30);
     assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 6, 3);
   });
@@ -115,7 +115,7 @@ function ensureTrailingZero(number: number): string {
 }
 
 function assertGroupKey(
-  groupKey: GroupKey,
+  groupKey: ConsolidationKey,
   expectedYear: number,
   expectedMonth: number,
   expectedDay: number

@@ -1,6 +1,6 @@
 import { GroupBy } from "./GroupBy";
 
-export class GroupKey {
+export class ConsolidationKey {
   private static readonly separator = "::";
 
   private constructor(
@@ -9,7 +9,7 @@ export class GroupKey {
     public day: number
   ) {}
 
-  static build(dateTime: string, groupBy: GroupBy): GroupKey {
+  static build(dateTime: string, groupBy: GroupBy): ConsolidationKey {
     const date = new Date(dateTime);
 
     const year = date.getFullYear();
@@ -18,21 +18,21 @@ export class GroupKey {
 
     switch (groupBy) {
       case GroupBy.Day:
-        return new GroupKey(year, month, day);
+        return new ConsolidationKey(year, month, day);
       case GroupBy.Month:
-        return new GroupKey(year, month, 0);
+        return new ConsolidationKey(year, month, 0);
       default:
         throw new Error(`GroupBy ${groupBy} is not yet supported.`);
     }
   }
 
-  static deserialize(s: string): GroupKey {
-    const segments = s.split(GroupKey.separator);
+  static deserialize(s: string): ConsolidationKey {
+    const segments = s.split(ConsolidationKey.separator);
     if (segments.length !== 3) {
-      throw new Error(`${s} is not a valid GroupKey.`);
+      throw new Error(`${s} is not a valid ConsolidationKey.`);
     }
 
-    return new GroupKey(
+    return new ConsolidationKey(
       parseInt(segments[0]),
       parseInt(segments[1]),
       parseInt(segments[2])
@@ -40,6 +40,6 @@ export class GroupKey {
   }
 
   serialize(): string {
-    return [this.year, this.month, this.day].join(GroupKey.separator);
+    return [this.year, this.month, this.day].join(ConsolidationKey.separator);
   }
 }
