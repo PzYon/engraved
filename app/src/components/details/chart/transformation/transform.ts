@@ -7,10 +7,11 @@ import { ITransformedMeasurement } from "./ITransformedMeasurement";
 
 export function transform(
   measurements: IMeasurement[],
-  metric: IMetric
+  metric: IMetric,
+  groupBy: GroupBy
 ): ITransformedMeasurement[] {
   if (metric.type === MetricType.Counter) {
-    return consolidate(measurements, GroupBy.Month).map((m) => {
+    return consolidate(measurements, groupBy).map((m) => {
       return {
         x: new Date(m.groupKey.year, m.groupKey.month - 1, m.groupKey.day),
         y: m.value,

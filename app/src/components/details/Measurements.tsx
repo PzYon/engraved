@@ -1,6 +1,6 @@
 import React from "react";
 import { IMeasurement } from "../../serverApi/IMeasurement";
-import { DataGrid } from "./dataGrid/DataGrid";
+import { DataGrid } from "./DataGrid";
 
 export const Measurements: React.FC<{ measurements: IMeasurement[] }> = ({
   measurements,

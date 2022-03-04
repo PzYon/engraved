@@ -12,8 +12,7 @@ export const createChart = (
   measurements: IMeasurement[],
   metric: IMetric
 ): ChartProps => {
-  const data = transform(measurements, metric);
-  console.log(data);
+  const data = transform(measurements, metric, groupBy);
 
   return {
     type: type,
@@ -22,7 +21,7 @@ export const createChart = (
       scales: {
         x: {
           type: "time",
-          time: { minUnit: getGroupByUnit(groupBy) },
+          time: { minUnit: getTimeUnit(groupBy) },
         },
       },
     },
@@ -40,7 +39,7 @@ export const createChart = (
   };
 };
 
-function getGroupByUnit(groupBy: GroupBy): TimeUnit {
+function getTimeUnit(groupBy: GroupBy): TimeUnit {
   switch (groupBy) {
     case GroupBy.None:
       return null;

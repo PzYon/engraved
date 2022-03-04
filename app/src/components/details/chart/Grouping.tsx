@@ -7,6 +7,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
+import { translations } from "../../../i18n/translations";
 
 export const Grouping: React.FC<{
   groupBy: GroupBy;
@@ -14,7 +15,7 @@ export const Grouping: React.FC<{
 }> = ({ groupBy, onGroupingChange }) => {
   return (
     <FormControl>
-      <InputLabel id="group-by-label">Group By</InputLabel>
+      <InputLabel id="group-by-label">{translations.groupByLabel}</InputLabel>
       <Select
         id="group-by"
         labelId="group-by-label"
@@ -24,8 +25,8 @@ export const Grouping: React.FC<{
           onGroupingChange(event.target.value as unknown as GroupBy);
         }}
       >
-        <MenuItem value={GroupBy.Day}>Day</MenuItem>
-        <MenuItem value={GroupBy.Month}>Month</MenuItem>
+        <MenuItem value={GroupBy.Day}>{translations.groupBy_day}</MenuItem>
+        <MenuItem value={GroupBy.Month}>{translations.groupBy_month}</MenuItem>
       </Select>
     </FormControl>
   );
