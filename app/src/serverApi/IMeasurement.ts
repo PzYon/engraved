@@ -1,5 +1,5 @@
 export interface IMeasurement {
   value: number;
-  notes: string;
+  notes?: string;
   dateTime: string;
 }

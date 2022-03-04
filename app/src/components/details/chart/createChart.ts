@@ -1,37 +1,52 @@
 import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { ChartProps } from "react-chartjs-2/dist/types";
 import { ChartType } from "chart.js";
+import { transform } from "./transformation/transform";
+import { IMetric } from "../../../serverApi/IMetric";
+import { GroupBy } from "./consolidation/GroupBy";
+import { TimeUnit } from "chart.js/types/adapters";
 
 export const createChart = (
   type: ChartType,
-  measurements: IMeasurement[]
+  groupBy: GroupBy,
+  measurements: IMeasurement[],
+  metric: IMetric
 ): ChartProps => {
-  const data = measurements.map((measurement) => ({
-    timestamp: measurement.dateTime,
-    value: measurement.value,
-  }));
+  const data = transform(measurements, metric);
+  console.log(data);
 
   return {
     type: type,
     options: {
-      parsing: {
-        xAxisKey: "timestamp",
-        yAxisKey: "value",
-      },
+      normalized: true,
       scales: {
-        x: { type: "time" },
+        x: {
+          type: "time",
+          time: { minUnit: getGroupByUnit(groupBy) },
+        },
       },
     },
     data: {
       datasets: [
         {
-          type: type,
+          label: metric.name,
+          normalized: true,
           data: data as never,
-          label: "My First Dataset",
-          borderColor: "rgb(75, 192, 192)",
-          tension: 0.1,
+          backgroundColor: "deeppink",
+          tension: 0.3,
         },
       ],
     },
   };
 };
+
+function getGroupByUnit(groupBy: GroupBy): TimeUnit {
+  switch (groupBy) {
+    case GroupBy.None:
+      return null;
+    case GroupBy.Day:
+      return "day";
+    case GroupBy.Month:
+      return "month";
+  }
+}

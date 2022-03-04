@@ -1,7 +1,7 @@
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Queries.Metrics.GetOne;
+namespace Metrix.Core.Application.Queries.Metrics.Get;
 
 public class GetMetricQueryExecutor : IQueryExecutor<GetMetricQuery, Metric>
 {

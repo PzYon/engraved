@@ -4,7 +4,6 @@ import { envSettings } from "../../env/envSettings";
 import { useParams } from "react-router";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { Measurements } from "./Measurements";
-import { Summary } from "./Summary";
 import { PageTitle } from "../layout/PageTitle";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
@@ -45,10 +44,7 @@ export const MetricDetails: React.FC = () => {
         <AddMeasurement metricKey={metric.key} />
       </Section>
       <Section>
-        <Visualization measurements={measurements} />
-      </Section>
-      <Section>
-        <Summary />
+        <Visualization measurements={measurements} metric={metric} />
       </Section>
       <Section>
         <Measurements measurements={measurements} />

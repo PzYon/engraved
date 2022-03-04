@@ -4,24 +4,23 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Persistence;
 
-public class FakeDb : IDb
+public class MockDb : IDb
 {
   public List<Measurement> Measurements { get; } = new();
 
-  public List<Metric> Metrics { get; }
+  public List<Metric> Metrics { get; } = new();
 
-  public FakeDb()
+  public MockDb()
   {
-    Metrics = Enumerable.Range(0, Random.Shared.Next(5, 30))
+    Metrics.AddRange(Enumerable.Range(0, Random.Shared.Next(5, 30))
       .Select(i => new Metric
       {
         Description = LoremIpsum(0, 12, 1, 3),
         Key = "key" + i,
         Name = LoremIpsum(1, 3, 1, 1),
         Type = MetricType.Gauge,
-        Unit = "kg"
       })
-      .ToList();
+      .ToList());
 
     foreach (var metric in Metrics)
     {
@@ -36,6 +35,15 @@ public class FakeDb : IDb
         .OrderBy(m => m.DateTime)
         .ToList());
     }
+    
+    AddSpecificCases();
+  }
+
+  private void AddSpecificCases()
+  {
+    var migraineMedicineCase = SpecificCases.GetMigraineMedicineCase();
+    Metrics.Insert(0, migraineMedicineCase.Metric);
+    Measurements.AddRange(migraineMedicineCase.Measurements);
   }
 
   private static DateTime GetRandomDate()

@@ -7,6 +7,9 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<GetAllMeasurements
 {
   public Measurement[] Execute(IDb db, GetAllMeasurementsQuery query)
   {
-    return db.Measurements.Where(m => m.MetricKey == query.MetricKey).ToArray();
+    return db.Measurements
+      .Where(m => m.MetricKey == query.MetricKey)
+      .OrderBy(m => m.DateTime)
+      .ToArray();
   }
 }
