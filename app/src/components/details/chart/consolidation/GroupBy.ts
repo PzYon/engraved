@@ -1,4 +1,5 @@
 export enum GroupBy {
-  Day,
-  Month,
+  None = "none",
+  Day = "day",
+  Month = "month",
 }

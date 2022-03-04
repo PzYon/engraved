@@ -7,7 +7,7 @@ export function consolidate(
   measurements: IMeasurement[],
   groupBy: GroupBy
 ): IConsolidatedMeasurements[] {
-  const valuesByGroup = measurements.reduce(
+  const valuesByGroupKey = measurements.reduce(
     (
       previousValue: { [groupKey: string]: IMeasurement[] },
       measurement: IMeasurement
@@ -26,8 +26,8 @@ export function consolidate(
     {}
   );
 
-  return Object.keys(valuesByGroup).map((keyAsString) => {
-    const measurements = valuesByGroup[keyAsString];
+  return Object.keys(valuesByGroupKey).map((keyAsString) => {
+    const measurements = valuesByGroupKey[keyAsString];
 
     return {
       value: measurements

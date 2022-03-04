@@ -32,8 +32,12 @@ ChartJS.register(
   Tooltip
 );
 
-const LazyChartJs: React.FC<IVisualizationProps> = ({ measurements }) => {
-  return <Chart {...createChart("bar", measurements)} />;
+const LazyChartJs: React.FC<IVisualizationProps> = ({
+  measurements,
+  metric,
+  groupBy,
+}) => {
+  return <Chart {...createChart("bar", groupBy, measurements, metric)} />;
 };
 
 export default LazyChartJs;

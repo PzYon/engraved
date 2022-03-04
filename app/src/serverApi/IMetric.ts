@@ -1,7 +1,9 @@
+import { MetricType } from "./MetricType";
+
 export interface IMetric {
   key: string;
   name: string;
   description: string;
-  type: string;
+  type: MetricType;
   unit: string;
 }

@@ -44,7 +44,7 @@ export const MetricDetails: React.FC = () => {
         <AddMeasurement metricKey={metric.key} />
       </Section>
       <Section>
-        <Visualization measurements={measurements} />
+        <Visualization measurements={measurements} metric={metric} />
       </Section>
       <Section>
         <Measurements measurements={measurements} />
