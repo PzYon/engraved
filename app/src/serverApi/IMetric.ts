@@ -5,5 +5,4 @@ export interface IMetric {
   name: string;
   description: string;
   type: MetricType;
-  unit: string;
 }

@@ -1,5 +1,6 @@
 import { IMeasurement } from "./IMeasurement";
 import { IMetric } from "./IMetric";
+import { MetricType } from "./MetricType";
 
 export class ServerApi {
   constructor(private apiBaseUrl: string) {}
@@ -18,6 +19,26 @@ export class ServerApi {
 
     const data: Promise<IMetric> = await response.json();
     return data;
+  }
+
+  async addMetric(
+    key: string,
+    name: string,
+    description: string,
+    type: MetricType
+  ): Promise<void> {
+    await fetch(new Request(`${this.apiBaseUrl}/metrics`), {
+      method: "POST",
+      body: JSON.stringify({
+        key: key,
+        name: name,
+        description: description,
+        type: type,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 
   async getMeasurements(metricKey: string): Promise<IMeasurement[]> {

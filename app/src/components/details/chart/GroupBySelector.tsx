@@ -9,13 +9,13 @@ import {
 } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 
-export const Grouping: React.FC<{
+export const GroupBySelector: React.FC<{
   groupBy: GroupBy;
   onGroupingChange: (groupBy: GroupBy) => void;
 }> = ({ groupBy, onGroupingChange }) => {
   return (
     <FormControl>
-      <InputLabel id="group-by-label">{translations.groupByLabel}</InputLabel>
+      <InputLabel id="group-by-label">{translations.label_groupBy}</InputLabel>
       <Select
         id="group-by"
         labelId="group-by-label"
