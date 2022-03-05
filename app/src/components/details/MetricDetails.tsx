@@ -11,6 +11,8 @@ import { Section } from "../layout/Section";
 import { PageHeader } from "../layout/PageHeader";
 import { AddMeasurement } from "./AddMeasurement";
 
+const serverApi = new ServerApi(envSettings.apiBaseUrl);
+
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
 
@@ -20,15 +22,9 @@ export const MetricDetails: React.FC = () => {
   const [isDataReady, setIsDataReady] = useState(false);
 
   useEffect(() => {
-    const serverApi = new ServerApi(envSettings.apiBaseUrl);
-
-    Promise.all([
-      serverApi
-        .getMeasurements(metricKey)
-        .then(setMeasurements)
-        .catch(handleError),
-      serverApi.getMetric(metricKey).then(setMetric).catch(handleError),
-    ]).then(() => setIsDataReady(true));
+    Promise.all([getMeasurements(), getMetric()]).then(() =>
+      setIsDataReady(true)
+    );
   }, []);
 
   if (!isDataReady) {
@@ -41,7 +37,7 @@ export const MetricDetails: React.FC = () => {
         <PageTitle title={metric.name} />
       </PageHeader>
       <Section>
-        <AddMeasurement metricKey={metric.key} />
+        <AddMeasurement metricKey={metric.key} onAdded={getMeasurements} />
       </Section>
       <Section>
         <Visualization measurements={measurements} metric={metric} />
@@ -52,6 +48,17 @@ export const MetricDetails: React.FC = () => {
       {errorMessage ? <div>{errorMessage}</div> : null}
     </>
   );
+
+  function getMetric() {
+    return serverApi.getMetric(metricKey).then(setMetric).catch(handleError);
+  }
+
+  function getMeasurements() {
+    return serverApi
+      .getMeasurements(metricKey)
+      .then(setMeasurements)
+      .catch(handleError);
+  }
 
   function handleError(error: unknown) {
     setErrorMessage(typeof error === "string" ? error : JSON.stringify(error));
