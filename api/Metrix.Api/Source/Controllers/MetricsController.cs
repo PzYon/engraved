@@ -1,4 +1,5 @@
 ﻿using Metrix.Core.Application;
+using Metrix.Core.Application.Commands.Metrics.Add;
 using Metrix.Core.Application.Queries.Metrics.Get;
 using Metrix.Core.Application.Queries.Metrics.GetAll;
 using Metrix.Core.Domain.Metrics;
@@ -30,5 +31,11 @@ public class MetricsController : ControllerBase
   {
     var query = new GetMetricQuery {MetricKey = metricKey};
     return _dispatcher.Query<GetMetricQuery, Metric>(query);
+  }
+
+  [HttpPost]
+  public void Add([FromBody] AddMetricCommand measurement)
+  {
+    _dispatcher.Command(measurement);
   }
 }
