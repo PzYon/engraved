@@ -1,22 +1,19 @@
 import React from "react";
-import { MetricList } from "./components/overview/MetricList";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
-import { MetricDetails } from "./components/details/MetricDetails";
-import { AddMetric } from "./components/AddMetric";
-import { Typography } from "@mui/material";
-import { PageHeader } from "./components/layout/PageHeader";
+import { BrowserRouter } from "react-router-dom";
+import { AppHeader } from "./components/layout/AppHeader";
+import { AppContent } from "./components/layout/AppContent";
+import { AppRoutes } from "./components/layout/AppRoutes";
+import { AppContextProvider } from "./AppContext";
 
-export const App: React.FC = () => (
-  <BrowserRouter>
-    <PageHeader>
-      <Link to="/">
-        <Typography variant="h2">metrix</Typography>
-      </Link>
-    </PageHeader>
-    <Routes>
-      <Route path="/" element={<MetricList />} />
-      <Route path="/metrics/create" element={<AddMetric />} />
-      <Route path="/metrics/view/:metricKey/*" element={<MetricDetails />} />
-    </Routes>
-  </BrowserRouter>
-);
+export const App: React.FC = () => {
+  return (
+    <AppContextProvider>
+      <BrowserRouter>
+        <AppHeader />
+        <AppContent>
+          <AppRoutes />
+        </AppContent>
+      </BrowserRouter>
+    </AppContextProvider>
+  );
+};
