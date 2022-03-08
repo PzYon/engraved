@@ -2,7 +2,9 @@
 
 public class AddMeasurementCommand : ICommand<AddMeasurementCommand>
 {
-  public string? MetricKey { get; set; }
+  public string MetricKey { get; set; }
+
+  public double? Value { get; set; }
 
   public string? Notes { get; set; }
 
