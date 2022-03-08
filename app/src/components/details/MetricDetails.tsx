@@ -4,17 +4,18 @@ import { envSettings } from "../../env/envSettings";
 import { useParams } from "react-router";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { Measurements } from "./Measurements";
-import { PageTitle } from "../layout/PageTitle";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
 import { Section } from "../layout/Section";
-import { PageHeader } from "../layout/PageHeader";
 import { AddMeasurement } from "./AddMeasurement";
+import { useAppContext } from "../../AppContext";
 
 const serverApi = new ServerApi(envSettings.apiBaseUrl);
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
+
+  const appContext = useAppContext();
 
   const [metric, setMetric] = useState<IMetric>();
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
@@ -27,15 +28,17 @@ export const MetricDetails: React.FC = () => {
     );
   }, []);
 
+  useEffect(() => {
+    appContext.setPageTitle(metric?.name);
+    return () => appContext.setPageTitle(null);
+  }, [metric]);
+
   if (!isDataReady) {
     return null;
   }
 
   return (
     <>
-      <PageHeader>
-        <PageTitle title={metric.name} />
-      </PageHeader>
       <Section>
         <AddMeasurement metricKey={metric.key} onAdded={getMeasurements} />
       </Section>
