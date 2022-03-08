@@ -15,11 +15,13 @@ export const MetricTypeSelector: React.FC<{
 }> = ({ metricType, onChange }) => {
   return (
     <FormControl margin="normal">
-      <InputLabel id="group-by-label">{translations.label_groupBy}</InputLabel>
+      <InputLabel id="metric-type-label">
+        {translations.label_metricType}
+      </InputLabel>
       <Select
-        id="group-by"
-        labelId="group-by-label"
-        label="Group By"
+        id="metric-type"
+        labelId="metric-type-label"
+        label={translations.label_metricType}
         value={metricType as unknown as string}
         onChange={(event: SelectChangeEvent) => {
           onChange(event.target.value as unknown as MetricType);

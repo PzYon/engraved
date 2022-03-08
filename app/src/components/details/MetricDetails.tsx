@@ -29,7 +29,7 @@ export const MetricDetails: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    appContext.setPageTitle(metric.name);
+    appContext.setPageTitle(metric?.name);
     return () => appContext.setPageTitle(null);
   }, [metric]);
 
