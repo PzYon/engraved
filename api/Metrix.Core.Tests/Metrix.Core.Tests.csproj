@@ -20,8 +20,4 @@
         <ProjectReference Include="..\Metrix.Core\Metrix.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Source\Domain" />
-    </ItemGroup>
-
 </Project>

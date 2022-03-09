@@ -10,37 +10,37 @@ public class AddMeasurementCommandExecutor : ICommandExecutor<AddMeasurementComm
   {
     if (string.IsNullOrEmpty(command.MetricKey))
     {
-      throw new InvalidCommandException(
-        typeof(AddMeasurementCommand),
-        $"A {nameof(AddMeasurementCommand.MetricKey)} must be specified."
-      );
+      throw CreateInvalidCommandException($"A {nameof(AddMeasurementCommand.MetricKey)} must be specified.");
     }
 
     Metric? metric = db.Metrics.FirstOrDefault(m => m.Key == command.MetricKey);
     if (metric == null)
     {
-      throw new InvalidCommandException(
-        typeof(AddMeasurementCommand),
-        $"A metric with key \"{command.MetricKey}\" does not exist."
-      );
+      throw CreateInvalidCommandException($"A metric with key \"{command.MetricKey}\" does not exist.");
     }
 
-    double? value = metric.Type == MetricType.Counter ? 1 : command.Value;
-
-    if (!value.HasValue)
-    {
-      throw new InvalidCommandException(
-        typeof(AddMeasurementCommand),
-        $"A \"{nameof(AddMeasurementCommand.Value)}\" must be specified."
-      );
-    }
-    
     db.Measurements.Add(new Measurement
     {
       MetricKey = command.MetricKey,
       Notes = command.Notes,
       DateTime = DateTime.UtcNow,
-      Value = value.Value
+      Value = GetValue(command, metric.Type)
     });
+  }
+
+  private static double GetValue(AddMeasurementCommand command, MetricType metricType)
+  {
+    double? value = metricType == MetricType.Counter ? 1 : command.Value;
+    if (value.HasValue)
+    {
+      return value.Value;
+    }
+
+    throw CreateInvalidCommandException($"A \"{nameof(AddMeasurementCommand.Value)}\" must be specified.");
+  }
+
+  private static InvalidCommandException CreateInvalidCommandException(String message)
+  {
+    return new InvalidCommandException(typeof(AddMeasurementCommand), message);
   }
 }
