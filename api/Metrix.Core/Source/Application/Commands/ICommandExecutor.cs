@@ -2,7 +2,7 @@ using Metrix.Core.Application.Persistence;
 
 namespace Metrix.Core.Application.Commands;
 
-public interface ICommandExecutor<TCommand> where TCommand : ICommand<TCommand>
+public interface ICommandExecutor
 {
-  void Execute(IDb db, TCommand command);
+  void Execute(IDb db);
 }

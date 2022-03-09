@@ -3,12 +3,19 @@ using Metrix.Core.Domain.Measurements;
 
 namespace Metrix.Core.Application.Queries.Measurements.GetAll;
 
-public class GetAllMeasurementsQueryExecutor : IQueryExecutor<GetAllMeasurementsQuery, Measurement[]>
+public class GetAllMeasurementsQueryExecutor : IQueryExecutor<Measurement[]>
 {
-  public Measurement[] Execute(IDb db, GetAllMeasurementsQuery query)
+  private readonly GetAllMeasurementsQuery _query;
+
+  public GetAllMeasurementsQueryExecutor(GetAllMeasurementsQuery query)
+  {
+    _query = query;
+  }
+
+  public Measurement[] Execute(IDb db)
   {
     return db.Measurements
-      .Where(m => m.MetricKey == query.MetricKey)
+      .Where(m => m.MetricKey == _query.MetricKey)
       .OrderBy(m => m.DateTime)
       .ToArray();
   }

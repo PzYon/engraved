@@ -2,10 +2,9 @@ using Metrix.Core.Domain.Measurements;
 
 namespace Metrix.Core.Application.Queries.Measurements.GetAll;
 
-public class GetAllMeasurementsQuery : IQuery<GetAllMeasurementsQuery, Measurement[]>
+public class GetAllMeasurementsQuery : IQuery<Measurement[]>
 {
   public string MetricKey { get; set; }
 
-  IQueryExecutor<GetAllMeasurementsQuery, Measurement[]> IQuery<GetAllMeasurementsQuery, Measurement[]>.
-    CreateExecutor() => new GetAllMeasurementsQueryExecutor();
+  IQueryExecutor<Measurement[]> IQuery<Measurement[]>.CreateExecutor() => new GetAllMeasurementsQueryExecutor(this);
 }

@@ -21,16 +21,14 @@ public class MetricsController : ControllerBase
   [HttpGet]
   public Metric[] GetAll()
   {
-    var query = new GetAllMetricsQuery();
-    return _dispatcher.Query<GetAllMetricsQuery, Metric[]>(query);
+    return _dispatcher.Query(new GetAllMetricsQuery());
   }
 
   [Route("{metricKey}")]
   [HttpGet]
   public Metric Get(string metricKey)
   {
-    var query = new GetMetricQuery {MetricKey = metricKey};
-    return _dispatcher.Query<GetMetricQuery, Metric>(query);
+    return _dispatcher.Query(new GetMetricQuery { MetricKey = metricKey });
   }
 
   [HttpPost]
