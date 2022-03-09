@@ -13,13 +13,13 @@ public class Dispatcher
     _db = db;
   }
 
-  public TResult Query<TQuery, TResult>(TQuery query) where TQuery : IQuery<TQuery, TResult>
+  public TResult Query<TResult>(IQuery<TResult> query)
   {
-    return query.CreateExecutor().Execute(_db, query);
+    return query.CreateExecutor().Execute(_db);
   }
 
-  public void Command<TCommand>(TCommand command) where TCommand : ICommand<TCommand>
+  public void Command(ICommand command)
   {
-    command.CreateExecutor().Execute(_db, command);
+    command.CreateExecutor().Execute(_db);
   }
 }

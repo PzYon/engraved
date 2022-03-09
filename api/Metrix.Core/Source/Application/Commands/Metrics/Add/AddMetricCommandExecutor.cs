@@ -3,9 +3,16 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Metrics.Add;
 
-public class AddMetricCommandExecutor : ICommandExecutor<AddMetricCommand>
+public class AddMetricCommandExecutor : ICommandExecutor
 {
-  public void Execute(IDb db, AddMetricCommand command)
+  private readonly AddMetricCommand _command;
+
+  public AddMetricCommandExecutor(AddMetricCommand command)
+  {
+    _command = command;
+  }
+
+  public void Execute(IDb db)
   {
     // todo:
     // - validate key is not null
@@ -15,10 +22,10 @@ public class AddMetricCommandExecutor : ICommandExecutor<AddMetricCommand>
 
     db.Metrics.Add(new Metric
     {
-      Key = string.IsNullOrEmpty(command.Key) ? Guid.NewGuid().ToString() : command.Key,
-      Description = command.Description,
-      Name = command.Name,
-      Type = command.Type
+      Key = string.IsNullOrEmpty(_command.Key) ? Guid.NewGuid().ToString() : _command.Key,
+      Description = _command.Description,
+      Name = _command.Name,
+      Type = _command.Type
     });
   }
 }

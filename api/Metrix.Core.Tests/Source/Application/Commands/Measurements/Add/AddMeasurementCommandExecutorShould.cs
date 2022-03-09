@@ -11,13 +11,11 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 public class AddMeasurementCommandExecutorShould
 {
   private TestDb testDb;
-  private AddMeasurementCommandExecutor executor;
 
   [TestInitialize]
   public void SetUp()
   {
     testDb = new TestDb();
-    executor = new AddMeasurementCommandExecutor();
   }
 
   [TestMethod]
@@ -26,7 +24,7 @@ public class AddMeasurementCommandExecutorShould
   {
     var command = new AddMeasurementCommand { MetricKey = string.Empty };
 
-    executor.Execute(testDb, command);
+    new AddMeasurementCommandExecutor(command).Execute(testDb);
   }
 
   [TestMethod]
@@ -40,7 +38,7 @@ public class AddMeasurementCommandExecutorShould
       Value = 42
     };
 
-    executor.Execute(testDb, command);
+    new AddMeasurementCommandExecutor(command).Execute(testDb);
   }
 
   [TestMethod]
@@ -58,7 +56,7 @@ public class AddMeasurementCommandExecutorShould
       Notes = "n0t3s"
     };
 
-    executor.Execute(testDb, command);
+    new AddMeasurementCommandExecutor(command).Execute(testDb);
 
     Assert.AreEqual(1, testDb.Measurements.Count);
 
@@ -67,7 +65,7 @@ public class AddMeasurementCommandExecutorShould
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(1, createdMeasurement.Value);
   }
-  
+
   [TestMethod]
   public void Set_ValueFromCommand_WhenTypeIsGauge()
   {
@@ -84,7 +82,7 @@ public class AddMeasurementCommandExecutorShould
       Value = 123.45
     };
 
-    executor.Execute(testDb, command);
+    new AddMeasurementCommandExecutor(command).Execute(testDb);
 
     Assert.AreEqual(1, testDb.Measurements.Count);
 
@@ -93,7 +91,7 @@ public class AddMeasurementCommandExecutorShould
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(123.45, createdMeasurement.Value);
   }
-  
+
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
   public void Throw_WhenTypeIsGaugeAndValueIsNull()
@@ -110,7 +108,7 @@ public class AddMeasurementCommandExecutorShould
       Value = null
     };
 
-    executor.Execute(testDb, command);
+    new AddMeasurementCommandExecutor(command).Execute(testDb);
   }
 
   private class TestDb : IDb

@@ -4,31 +4,38 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-public class AddMeasurementCommandExecutor : ICommandExecutor<AddMeasurementCommand>
+public class AddMeasurementCommandExecutor : ICommandExecutor
 {
-  public void Execute(IDb db, AddMeasurementCommand command)
+  private readonly AddMeasurementCommand _command;
+
+  public AddMeasurementCommandExecutor(AddMeasurementCommand command)
   {
-    if (string.IsNullOrEmpty(command.MetricKey))
+    _command = command;
+  }
+
+  public void Execute(IDb db)
+  {
+    if (string.IsNullOrEmpty(_command.MetricKey))
     {
       throw CreateInvalidCommandException($"A {nameof(AddMeasurementCommand.MetricKey)} must be specified.");
     }
 
-    Metric? metric = db.Metrics.FirstOrDefault(m => m.Key == command.MetricKey);
+    Metric? metric = db.Metrics.FirstOrDefault(m => m.Key == _command.MetricKey);
     if (metric == null)
     {
-      throw CreateInvalidCommandException($"A metric with key \"{command.MetricKey}\" does not exist.");
+      throw CreateInvalidCommandException($"A metric with key \"{_command.MetricKey}\" does not exist.");
     }
 
     db.Measurements.Add(new Measurement
     {
-      MetricKey = command.MetricKey,
-      Notes = command.Notes,
+      MetricKey = _command.MetricKey,
+      Notes = _command.Notes,
       DateTime = DateTime.UtcNow,
-      Value = GetValue(command, metric.Type)
+      Value = GetValue(_command, metric.Type)
     });
   }
 
-  private static double GetValue(AddMeasurementCommand command, MetricType metricType)
+  private double GetValue(AddMeasurementCommand command, MetricType metricType)
   {
     double? value = metricType == MetricType.Counter ? 1 : command.Value;
     if (value.HasValue)
@@ -39,8 +46,8 @@ public class AddMeasurementCommandExecutor : ICommandExecutor<AddMeasurementComm
     throw CreateInvalidCommandException($"A \"{nameof(AddMeasurementCommand.Value)}\" must be specified.");
   }
 
-  private static InvalidCommandException CreateInvalidCommandException(String message)
+  private InvalidCommandException CreateInvalidCommandException(String message)
   {
-    return new InvalidCommandException(typeof(AddMeasurementCommand), message);
+    return new InvalidCommandException(_command, message);
   }
 }

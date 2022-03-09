@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Core.Application.Queries;
 
-public interface IQuery<TQuery, TResult> where TQuery : IQuery<TQuery, TResult>
+public interface IQuery<TResult> 
 {
-  IQueryExecutor<TQuery, TResult> CreateExecutor();
+  IQueryExecutor<TResult> CreateExecutor();
 }

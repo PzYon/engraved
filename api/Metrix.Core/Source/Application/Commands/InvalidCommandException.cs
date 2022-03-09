@@ -2,10 +2,8 @@
 
 public class InvalidCommandException : Exception
 {
-  private readonly Type _commandType;
-
-  public InvalidCommandException(Type commandType, string message) : base(message)
+  public InvalidCommandException(ICommand command, string message)
+    : base(command.GetType().Name + ": " + message)
   {
-    _commandType = commandType;
   }
 }

@@ -3,10 +3,17 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Queries.Metrics.Get;
 
-public class GetMetricQueryExecutor : IQueryExecutor<GetMetricQuery, Metric>
+public class GetMetricQueryExecutor : IQueryExecutor<Metric>
 {
-  public Metric? Execute(IDb db, GetMetricQuery query)
+  private readonly GetMetricQuery _query;
+
+  public GetMetricQueryExecutor(GetMetricQuery query)
   {
-    return db.Metrics.FirstOrDefault(m => m.Key == query.MetricKey);
+    _query = query;
+  }
+
+  public Metric? Execute(IDb db)
+  {
+    return db.Metrics.FirstOrDefault(m => m.Key == _query.MetricKey);
   }
 }

@@ -20,8 +20,7 @@ public class MeasurementsController : ControllerBase
   [HttpGet]
   public Measurement[] GetAll([FromQuery] string metricKey)
   {
-    var query = new GetAllMeasurementsQuery {MetricKey = metricKey};
-    return _dispatcher.Query<GetAllMeasurementsQuery, Measurement[]>(query);
+    return _dispatcher.Query(new GetAllMeasurementsQuery { MetricKey = metricKey });
   }
 
   [HttpPost]

@@ -3,7 +3,7 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Metrics.Add;
 
-public class AddMetricCommand : ICommand<AddMetricCommand>
+public class AddMetricCommand : ICommand
 {
   public string? Key { get; set; }
 
@@ -13,5 +13,5 @@ public class AddMetricCommand : ICommand<AddMetricCommand>
   
   public MetricType Type { get; set; }
 
-  public ICommandExecutor<AddMetricCommand> CreateExecutor() => new AddMetricCommandExecutor();
+  public ICommandExecutor CreateExecutor() => new AddMetricCommandExecutor(this);
 }

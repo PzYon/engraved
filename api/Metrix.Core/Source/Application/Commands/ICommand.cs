@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Core.Application.Commands;
 
-public interface ICommand<TCommand> where TCommand : ICommand<TCommand>
+public interface ICommand
 {
-  ICommandExecutor<TCommand> CreateExecutor();
+  ICommandExecutor CreateExecutor();
 }
