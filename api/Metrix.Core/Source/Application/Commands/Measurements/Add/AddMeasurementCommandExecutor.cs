@@ -39,10 +39,14 @@ public class AddMeasurementCommandExecutor : ICommandExecutor
 
   private double GetValue(AddMeasurementCommand command, MetricType metricType)
   {
-    double? value = metricType == MetricType.Counter ? 1 : command.Value;
-    if (value.HasValue)
+    if (metricType == MetricType.Counter)
     {
-      return value.Value;
+      return 1;
+    }
+
+    if (command.Value.HasValue)
+    {
+      return command.Value.Value;
     }
 
     throw CreateInvalidCommandException($"A \"{nameof(AddMeasurementCommand.Value)}\" must be specified.");
