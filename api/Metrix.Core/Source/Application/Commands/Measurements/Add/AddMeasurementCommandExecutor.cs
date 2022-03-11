@@ -26,27 +26,33 @@ public class AddMeasurementCommandExecutor : ICommandExecutor
       throw CreateInvalidCommandException($"A metric with key \"{_command.MetricKey}\" does not exist.");
     }
 
-    db.Measurements.Add(new Measurement
-    {
-      MetricKey = _command.MetricKey,
-      Notes = _command.Notes,
-      DateTime = DateTime.UtcNow,
-      Value = GetValue(_command, metric.Type)
-    });
+    db.Measurements.Add(
+      new Measurement
+      {
+        MetricKey = _command.MetricKey,
+        Notes = _command.Notes,
+        DateTime = DateTime.UtcNow,
+        Value = GetValue(_command, metric.Type)
+      }
+    );
   }
 
   private double GetValue(AddMeasurementCommand command, MetricType metricType)
   {
-    double? value = metricType == MetricType.Counter ? 1 : command.Value;
-    if (value.HasValue)
+    if (metricType == MetricType.Counter)
     {
-      return value.Value;
+      return 1;
+    }
+
+    if (command.Value.HasValue)
+    {
+      return command.Value.Value;
     }
 
     throw CreateInvalidCommandException($"A \"{nameof(AddMeasurementCommand.Value)}\" must be specified.");
   }
 
-  private InvalidCommandException CreateInvalidCommandException(String message)
+  private InvalidCommandException CreateInvalidCommandException(string message)
   {
     return new InvalidCommandException(_command, message);
   }
