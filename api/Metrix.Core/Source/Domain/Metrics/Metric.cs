@@ -10,4 +10,3 @@ public class Metric
 
   public MetricType Type { get; set; }
 }
-

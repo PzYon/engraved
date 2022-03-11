@@ -8,5 +8,8 @@ public class AddMeasurementCommand : ICommand
 
   public string? Notes { get; set; }
 
-  public ICommandExecutor CreateExecutor() => new AddMeasurementCommandExecutor(this);
+  public ICommandExecutor CreateExecutor()
+  {
+    return new AddMeasurementCommandExecutor(this);
+  }
 }

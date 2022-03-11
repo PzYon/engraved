@@ -44,11 +44,13 @@ public class AddMeasurementCommandExecutorShould
   [TestMethod]
   public void Set_Value1_WhenTypeIsCounter()
   {
-    testDb.Metrics.Add(new Metric
-    {
-      Key = "k3y",
-      Type = MetricType.Counter
-    });
+    testDb.Metrics.Add(
+      new Metric
+      {
+        Key = "k3y",
+        Type = MetricType.Counter
+      }
+    );
 
     var command = new AddMeasurementCommand
     {
@@ -69,11 +71,13 @@ public class AddMeasurementCommandExecutorShould
   [TestMethod]
   public void Set_ValueFromCommand_WhenTypeIsGauge()
   {
-    testDb.Metrics.Add(new Metric
-    {
-      Key = "k3y",
-      Type = MetricType.Gauge
-    });
+    testDb.Metrics.Add(
+      new Metric
+      {
+        Key = "k3y",
+        Type = MetricType.Gauge
+      }
+    );
 
     var command = new AddMeasurementCommand
     {
@@ -96,11 +100,13 @@ public class AddMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public void Throw_WhenTypeIsGaugeAndValueIsNull()
   {
-    testDb.Metrics.Add(new Metric
-    {
-      Key = "k3y",
-      Type = MetricType.Gauge
-    });
+    testDb.Metrics.Add(
+      new Metric
+      {
+        Key = "k3y",
+        Type = MetricType.Gauge
+      }
+    );
 
     var command = new AddMeasurementCommand
     {

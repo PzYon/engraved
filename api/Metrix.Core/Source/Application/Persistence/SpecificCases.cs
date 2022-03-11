@@ -14,14 +14,14 @@ public static class SpecificCases
 {
   public static SpecificCase GetMigraineMedicineCase()
   {
-    return new()
+    return new SpecificCase
     {
-      Metric = new()
+      Metric = new Metric
       {
         Name = "Migraine Medicine",
         Description = "How many migraine medicines have been taken.",
         Key = "migraine-medicine",
-        Type = MetricType.Counter,
+        Type = MetricType.Counter
       },
       Measurements =
       {

@@ -20,12 +20,14 @@ public class AddMetricCommandExecutor : ICommandExecutor
     // - validate name is not null
     // - consider adding a created (and last modified?) date
 
-    db.Metrics.Add(new Metric
-    {
-      Key = string.IsNullOrEmpty(_command.Key) ? Guid.NewGuid().ToString() : _command.Key,
-      Description = _command.Description,
-      Name = _command.Name,
-      Type = _command.Type
-    });
+    db.Metrics.Add(
+      new Metric
+      {
+        Key = string.IsNullOrEmpty(_command.Key) ? Guid.NewGuid().ToString() : _command.Key,
+        Description = _command.Description,
+        Name = _command.Name,
+        Type = _command.Type
+      }
+    );
   }
 }

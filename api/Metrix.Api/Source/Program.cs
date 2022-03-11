@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
   .AddControllers()
@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IDb, MockDb>();
 builder.Services.AddTransient<Dispatcher>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
