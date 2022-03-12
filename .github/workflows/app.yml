@@ -3,14 +3,14 @@ name: App
 on:
   push:
     paths:
-      - 'app/**'
-      - '.github/workflows/app.yml'
+      - "app/**"
+      - ".github/workflows/app.yml"
   workflow_dispatch:
     inputs:
       deploy:
-        description: 'Force deployment'
+        description: "Force deployment"
         required: false
-        default: 'false'
+        default: "false"
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
         with:
           cache: npm
           cache-dependency-path: app/package-lock.json
-          
+
       - name: Install and build
         working-directory: app
         run: |
@@ -64,4 +64,4 @@ jobs:
           skip_app_build: true
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ORANGE_WAVE_031469303 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: 'upload'
+          action: "upload"
