@@ -2,7 +2,7 @@
 
 public class AddMeasurementCommand : ICommand
 {
-  public string MetricKey { get; set; }
+  public string MetricKey { get; set; } = null!;
 
   public double? Value { get; set; }
 

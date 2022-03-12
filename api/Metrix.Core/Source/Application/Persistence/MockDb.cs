@@ -32,7 +32,7 @@ public class MockDb : IDb
               DateTime = GetRandomDate(),
               MetricKey = metric.Key,
               Value = GetValue(),
-              Notes = Random.Shared.Next(1, 3) > 1 ? LoremIpsum(3, 15, 1, 4) : null
+              Notes = Random.Shared.Next(1, 3) > 1 ? LoremIpsum(3, 15, 1, 4) : null!
             }
           )
           .OrderBy(m => m.DateTime)

@@ -5,7 +5,7 @@ namespace Metrix.Core.Application.Persistence;
 
 public class SpecificCase
 {
-  public Metric Metric { get; set; }
+  public Metric Metric { get; set; } = null!;
 
   public List<Measurement> Measurements { get; } = new();
 }

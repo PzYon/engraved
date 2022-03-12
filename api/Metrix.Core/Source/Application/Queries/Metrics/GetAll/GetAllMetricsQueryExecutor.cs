@@ -12,7 +12,7 @@ public class GetAllMetricsQueryExecutor : IQueryExecutor<Metric[]>
     _command = command;
   }
 
-  public Metric?[] Execute(IDb db)
+  public Metric[] Execute(IDb db)
   {
     return db.Metrics.ToArray();
   }
