@@ -19,12 +19,12 @@ public class AddMetricCommandExecutor : ICommandExecutor
     // - validate key is unique
     // - validate name is not null (done below -> add test)
     // - consider adding a created (and last modified?) date
-    
+
     if (string.IsNullOrEmpty(_command.Name))
     {
       throw new InvalidCommandException(_command, $"\"{nameof(_command.Name)}\" must be specified");
     }
-    
+
     db.Metrics.Add(
       new Metric
       {
