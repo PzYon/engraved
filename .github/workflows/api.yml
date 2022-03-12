@@ -32,7 +32,7 @@ jobs:
         working-directory: ./api
 
       - name: Run tests
-        run: dotnet test -v=normal
+        run: dotnet test
         working-directory: ./api
 
       - name: Publish
