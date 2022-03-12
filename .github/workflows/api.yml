@@ -3,14 +3,14 @@ name: Api
 on:
   push:
     paths:
-      - 'api/**'
-      - '.github/workflows/api.yml'
+      - "api/**"
+      - ".github/workflows/api.yml"
   workflow_dispatch:
     inputs:
       deploy:
-        description: 'Force deployment'
+        description: "Force deployment"
         required: false
-        default: 'false'
+        default: "false"
 
 jobs:
   build:
@@ -24,17 +24,17 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: "6.0.x"
           include-prerelease: true
 
       - name: Build
         run: dotnet build --configuration Release
         working-directory: ./api
-        
+
       - name: Run tests
-        run: dotnet test
+        run: dotnet test -v=normal
         working-directory: ./api
-      
+
       - name: Publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/Matrix.Api
         working-directory: ./api
@@ -50,9 +50,9 @@ jobs:
     runs-on: windows-latest
     needs: build
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
-       
+
     environment:
-      name: 'Production'
+      name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -65,7 +65,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'metrix-api'
-          slot-name: 'Production'
+          app-name: "metrix-api"
+          slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BD825C52928A4276A45C2A5EC3704B2E }}
           package: .
