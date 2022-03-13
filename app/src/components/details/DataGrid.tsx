@@ -20,6 +20,7 @@ export const DataGrid: React.FC<{
           <TableCell>{translations.columnName_date}</TableCell>
           <TableCell>{translations.columnName_value}</TableCell>
           <TableCell>{translations.columnName_notes}</TableCell>
+          <TableCell>{translations.columnName_flag}</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -31,6 +32,7 @@ export const DataGrid: React.FC<{
               </TableCell>
               <TableCell>{measurement.value}</TableCell>
               <TableCell>{measurement.notes}</TableCell>
+              <TableCell>{measurement.metricFlagKey}</TableCell>
             </TableRow>
           );
         })}

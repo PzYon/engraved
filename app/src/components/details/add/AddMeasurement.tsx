@@ -10,8 +10,7 @@ export const AddMeasurement: React.FC<{
   metric: IMetric;
   onAdded: () => void;
 }> = ({ metric, onAdded }) => {
-  // fix default value here (empty should be possible)
-  const [flagKey, setFlagKey] = useState<string>("bla");
+  const [flagKey, setFlagKey] = useState<string>(""); // empty means nothing selected in the selector
 
   return (
     <FormControl>
@@ -28,7 +27,7 @@ export const AddMeasurement: React.FC<{
         {translations.create}
       </Button>
       <MetricFlagsSelector
-        flags={{ schluessel: "Schlü", bla: "Bla bla" }}
+        flags={{ schluessel: "Schlüssel", blaBla: "Bla bla" }}
         selectedFlagKey={flagKey}
         onFlagChange={(key) => setFlagKey(key)}
       />

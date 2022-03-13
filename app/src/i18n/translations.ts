@@ -9,6 +9,7 @@ export const translations: ITranslations = {
   columnName_date: "Date",
   columnName_notes: "Notes",
   columnName_value: "Value",
+  columnName_flag: "Flag",
   create: "Create",
   label_groupBy: "Group By",
   label_metricDescription: "Description",

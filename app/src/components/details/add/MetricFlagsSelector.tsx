@@ -31,6 +31,9 @@ export const MetricFlagsSelector: React.FC<{
           onFlagChange(event.target.value);
         }}
       >
+        <MenuItem key={""} value={""}>
+          &nbsp;
+        </MenuItem>
         {Object.entries(flags).map((kvps: [key: string, value: string]) => {
           return (
             <MenuItem key={kvps[0]} value={kvps[0]}>
