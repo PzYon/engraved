@@ -8,8 +8,9 @@ export interface ITranslations {
   columnName_value: string;
   columnName_date: string;
   label_groupBy: string;
-  label_metricName: string;
   label_metricDescription: string;
+  label_metricFlags: string;
+  label_metricName: string;
   label_metricType: string;
   tab_measurements: string;
   tab_summary: string;

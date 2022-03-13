@@ -50,10 +50,16 @@ export class ServerApi {
     return data;
   }
 
-  async addMeasurement(metricKey: string): Promise<void> {
+  async addMeasurement(
+    metricKey: string,
+    metricFlagKey?: string
+  ): Promise<void> {
     await fetch(new Request(`${this.apiBaseUrl}/measurements`), {
       method: "POST",
-      body: JSON.stringify({ metricKey: metricKey }),
+      body: JSON.stringify({
+        metricKey: metricKey,
+        metricFlagKey: metricFlagKey,
+      }),
       headers: {
         "Content-Type": "application/json",
       },

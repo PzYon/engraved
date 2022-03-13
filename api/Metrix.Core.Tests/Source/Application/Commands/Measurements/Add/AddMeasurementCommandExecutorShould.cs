@@ -42,7 +42,11 @@ public class AddMeasurementCommandExecutorShould
   }
 
   [TestMethod]
-  public void Set_Value1_WhenTypeIsCounter()
+  [DataRow(null)]
+  [DataRow(0)]
+  [DataRow(1)]
+  [DataRow(2)]
+  public void Set_Value1_WhenTypeIsCounter(int? value)
   {
     _testDb.Metrics.Add(
       new Metric
@@ -52,11 +56,7 @@ public class AddMeasurementCommandExecutorShould
       }
     );
 
-    var command = new AddMeasurementCommand
-    {
-      MetricKey = "k3y",
-      Notes = "n0t3s"
-    };
+    var command = new AddMeasurementCommand { MetricKey = "k3y", Value = value };
 
     new AddMeasurementCommandExecutor(command).Execute(_testDb);
 
@@ -64,7 +64,6 @@ public class AddMeasurementCommandExecutorShould
 
     Measurement createdMeasurement = _testDb.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
-    Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(1, createdMeasurement.Value);
   }
 
@@ -82,7 +81,6 @@ public class AddMeasurementCommandExecutorShould
     var command = new AddMeasurementCommand
     {
       MetricKey = "k3y",
-      Notes = "n0t3s",
       Value = 123.45
     };
 
@@ -92,8 +90,37 @@ public class AddMeasurementCommandExecutorShould
 
     Measurement createdMeasurement = _testDb.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
-    Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(123.45, createdMeasurement.Value);
+  }
+
+  [TestMethod]
+  public void MapAllFieldsCorrectly()
+  {
+    _testDb.Metrics.Add(
+      new Metric
+      {
+        Key = "k3y",
+        Type = MetricType.Gauge,
+        Flags = { { "x", "y" }, { "k3y", "v@lue" } }
+      }
+    );
+
+    var command = new AddMeasurementCommand
+    {
+      MetricKey = "k3y",
+      Notes = "n0t3s",
+      Value = 123.45,
+      MetricFlagKey = "k3y"
+    };
+
+    new AddMeasurementCommandExecutor(command).Execute(_testDb);
+
+    Assert.AreEqual(1, _testDb.Measurements.Count);
+
+    Measurement createdMeasurement = _testDb.Measurements.First();
+    Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
+    Assert.AreEqual(command.Notes, createdMeasurement.Notes);
+    Assert.AreEqual(command.MetricFlagKey, createdMeasurement.MetricFlagKey);
   }
 
   [TestMethod]
@@ -112,6 +139,28 @@ public class AddMeasurementCommandExecutorShould
     {
       MetricKey = "k3y",
       Value = null
+    };
+
+    new AddMeasurementCommandExecutor(command).Execute(_testDb);
+  }
+
+  [TestMethod]
+  [ExpectedException(typeof(InvalidCommandException))]
+  public void Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
+  {
+    _testDb.Metrics.Add(
+      new Metric
+      {
+        Key = "k3y"
+      }
+    );
+
+    var command = new AddMeasurementCommand
+    {
+      MetricKey = "k3y",
+      Notes = "n0t3s",
+      Value = 42,
+      MetricFlagKey = "fooBar"
     };
 
     new AddMeasurementCommandExecutor(command).Execute(_testDb);

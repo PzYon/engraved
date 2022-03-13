@@ -7,7 +7,7 @@ import { Measurements } from "./Measurements";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
 import { Section } from "../layout/Section";
-import { AddMeasurement } from "./AddMeasurement";
+import { AddMeasurement } from "./add/AddMeasurement";
 import { useAppContext } from "../../AppContext";
 
 const serverApi = new ServerApi(envSettings.apiBaseUrl);
@@ -40,7 +40,7 @@ export const MetricDetails: React.FC = () => {
   return (
     <>
       <Section>
-        <AddMeasurement metricKey={metric.key} onAdded={getMeasurements} />
+        <AddMeasurement metric={metric} onAdded={getMeasurements} />
       </Section>
       <Section>
         <Visualization measurements={measurements} metric={metric} />

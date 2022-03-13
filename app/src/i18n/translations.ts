@@ -12,6 +12,7 @@ export const translations: ITranslations = {
   create: "Create",
   label_groupBy: "Group By",
   label_metricDescription: "Description",
+  label_metricFlags: "Flags",
   label_metricName: "Name",
   label_metricType: "Metric Type",
   tab_measurements: "Measurements",
