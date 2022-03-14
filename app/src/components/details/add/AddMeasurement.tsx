@@ -27,7 +27,7 @@ export const AddMeasurement: React.FC<{
         {translations.create}
       </Button>
       <MetricFlagsSelector
-        flags={{ schluessel: "Schlüssel", blaBla: "Bla bla" }}
+        flags={metric.flags}
         selectedFlagKey={flagKey}
         onFlagChange={(key) => setFlagKey(key)}
       />

@@ -1,6 +1,7 @@
 import { IMeasurement } from "./IMeasurement";
 import { IMetric } from "./IMetric";
 import { MetricType } from "./MetricType";
+import { IMetricFlags } from "./IMetricFlags";
 
 export class ServerApi {
   constructor(private apiBaseUrl: string) {}
@@ -35,6 +36,19 @@ export class ServerApi {
         description: description,
         type: type,
       }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  async editMetric(
+    metricKey: string,
+    metricFlags: IMetricFlags
+  ): Promise<void> {
+    await fetch(new Request(`${this.apiBaseUrl}/metrics/`), {
+      method: "PUT",
+      body: JSON.stringify({ metricKey: metricKey, flags: metricFlags }),
       headers: {
         "Content-Type": "application/json",
       },

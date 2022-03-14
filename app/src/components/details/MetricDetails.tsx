@@ -3,12 +3,13 @@ import { IMeasurement } from "../../serverApi/IMeasurement";
 import { envSettings } from "../../env/envSettings";
 import { useParams } from "react-router";
 import { ServerApi } from "../../serverApi/ServerApi";
-import { Measurements } from "./Measurements";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
 import { Section } from "../layout/Section";
 import { AddMeasurement } from "./add/AddMeasurement";
 import { useAppContext } from "../../AppContext";
+import { EditMetric } from "./edit/EditMetric";
+import { MeasurementsList } from "./MeasurementsList";
 
 const serverApi = new ServerApi(envSettings.apiBaseUrl);
 
@@ -43,10 +44,13 @@ export const MetricDetails: React.FC = () => {
         <AddMeasurement metric={metric} onAdded={getMeasurements} />
       </Section>
       <Section>
+        <EditMetric metric={metric} />
+      </Section>
+      <Section>
         <Visualization measurements={measurements} metric={metric} />
       </Section>
       <Section>
-        <Measurements measurements={measurements} />
+        <MeasurementsList metric={metric} measurements={measurements} />
       </Section>
       {errorMessage ? <div>{errorMessage}</div> : null}
     </>

@@ -10,5 +10,5 @@ public class Metric
 
   public MetricType Type { get; set; }
 
-  public Dictionary<string, string> Flags { get; } = new();
+  public Dictionary<string, string> Flags { get; set; } = new();
 }

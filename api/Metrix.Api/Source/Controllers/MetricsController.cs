@@ -1,5 +1,6 @@
 ﻿using Metrix.Core.Application;
 using Metrix.Core.Application.Commands.Metrics.Add;
+using Metrix.Core.Application.Commands.Metrics.Edit;
 using Metrix.Core.Application.Queries.Metrics.Get;
 using Metrix.Core.Application.Queries.Metrics.GetAll;
 using Metrix.Core.Domain.Metrics;
@@ -32,8 +33,14 @@ public class MetricsController : ControllerBase
   }
 
   [HttpPost]
-  public void Add([FromBody] AddMetricCommand measurement)
+  public void Add([FromBody] AddMetricCommand command)
   {
-    _dispatcher.Command(measurement);
+    _dispatcher.Command(command);
+  }
+
+  [HttpPut]
+  public void Edit([FromBody] EditMetricCommand command)
+  {
+    _dispatcher.Command(command);
   }
 }
