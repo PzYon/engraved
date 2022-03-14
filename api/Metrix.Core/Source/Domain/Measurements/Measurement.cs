@@ -9,4 +9,6 @@ public class Measurement
   public string? Notes { get; set; }
 
   public DateTime? DateTime { get; set; }
+
+  public string? MetricFlagKey { get; set; }
 }

@@ -8,6 +8,8 @@ public class AddMeasurementCommand : ICommand
 
   public string? Notes { get; set; }
 
+  public string? MetricFlagKey { get; set; }
+
   public ICommandExecutor CreateExecutor()
   {
     return new AddMeasurementCommandExecutor(this);

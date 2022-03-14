@@ -9,4 +9,6 @@ public class Metric
   public string? Description { get; set; }
 
   public MetricType Type { get; set; }
+
+  public Dictionary<string, string> Flags { get; set; } = new();
 }

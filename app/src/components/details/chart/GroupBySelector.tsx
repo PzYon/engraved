@@ -19,7 +19,7 @@ export const GroupBySelector: React.FC<{
       <Select
         id="group-by"
         labelId="group-by-label"
-        label="Group By"
+        label={translations.label_groupBy}
         value={groupBy as unknown as string}
         onChange={(event: SelectChangeEvent) => {
           onGroupingChange(event.target.value as unknown as GroupBy);

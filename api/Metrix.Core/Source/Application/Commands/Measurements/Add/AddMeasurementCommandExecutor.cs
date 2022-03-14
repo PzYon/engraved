@@ -15,16 +15,12 @@ public class AddMeasurementCommandExecutor : ICommandExecutor
 
   public void Execute(IDb db)
   {
-    if (string.IsNullOrEmpty(_command.MetricKey))
-    {
-      throw CreateInvalidCommandException($"A {nameof(AddMeasurementCommand.MetricKey)} must be specified.");
-    }
+    EnsureMetricKeyIsPresent();
 
     Metric? metric = db.Metrics.FirstOrDefault(m => m.Key == _command.MetricKey);
-    if (metric == null)
-    {
-      throw CreateInvalidCommandException($"A metric with key \"{_command.MetricKey}\" does not exist.");
-    }
+
+    EnsureMetricExists(metric);
+    ValidateMetricFlag(metric);
 
     db.Measurements.Add(
       new Measurement
@@ -32,9 +28,34 @@ public class AddMeasurementCommandExecutor : ICommandExecutor
         MetricKey = _command.MetricKey,
         Notes = _command.Notes,
         DateTime = DateTime.UtcNow,
-        Value = GetValue(_command, metric.Type)
+        Value = GetValue(_command, metric.Type),
+        MetricFlagKey = _command.MetricFlagKey
       }
     );
+  }
+
+  private void ValidateMetricFlag(Metric? metric)
+  {
+    if (!string.IsNullOrEmpty(_command.MetricFlagKey) && !metric.Flags.ContainsKey(_command.MetricFlagKey))
+    {
+      throw CreateInvalidCommandException($"Flag \"{_command.MetricFlagKey}\" does not exist on metric.");
+    }
+  }
+
+  private void EnsureMetricExists(Metric? metric)
+  {
+    if (metric == null)
+    {
+      throw CreateInvalidCommandException($"A metric with key \"{_command.MetricKey}\" does not exist.");
+    }
+  }
+
+  private void EnsureMetricKeyIsPresent()
+  {
+    if (string.IsNullOrEmpty(_command.MetricKey))
+    {
+      throw CreateInvalidCommandException($"A {nameof(AddMeasurementCommand.MetricKey)} must be specified.");
+    }
   }
 
   private double GetValue(AddMeasurementCommand command, MetricType metricType)
