@@ -5,7 +5,6 @@ import { Section } from "./layout/Section";
 import { MetricTypeSelector } from "./MetricTypeSelector";
 import { MetricType } from "../serverApi/MetricType";
 import { ServerApi } from "../serverApi/ServerApi";
-import { envSettings } from "../env/envSettings";
 
 export const AddMetric: React.FC = () => {
   const [name, setName] = useState("");
@@ -33,12 +32,7 @@ export const AddMetric: React.FC = () => {
         <Button
           variant="outlined"
           onClick={() => {
-            new ServerApi(envSettings.apiBaseUrl).addMetric(
-              "",
-              name,
-              description,
-              metricType
-            );
+            ServerApi.addMetric("", name, description, metricType);
           }}
         >
           {translations.create}

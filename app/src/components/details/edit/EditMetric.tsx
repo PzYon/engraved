@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
-import { envSettings } from "../../../env/envSettings";
 
 export const EditMetric: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const [flagJson, setFlagJson] = useState(
@@ -22,10 +21,7 @@ export const EditMetric: React.FC<{ metric: IMetric }> = ({ metric }) => {
       <Button
         variant="outlined"
         onClick={() => {
-          new ServerApi(envSettings.apiBaseUrl).editMetric(
-            metric.key,
-            JSON.parse(flagJson)
-          );
+          ServerApi.editMetric(metric.key, JSON.parse(flagJson));
         }}
       >
         {translations.save}

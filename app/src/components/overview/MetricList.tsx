@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { IMetric } from "../../serverApi/IMetric";
-import { envSettings } from "../../env/envSettings";
 import { MetricListItem } from "./MetricListItem";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { Grid, Typography } from "@mui/material";
@@ -12,8 +11,7 @@ export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
 
   useEffect(() => {
-    new ServerApi(envSettings.apiBaseUrl)
-      .getMetrics()
+    ServerApi.getMetrics()
       .then((data) => {
         setMetrics(data);
       })

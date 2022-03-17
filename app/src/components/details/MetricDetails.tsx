@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { IMeasurement } from "../../serverApi/IMeasurement";
-import { envSettings } from "../../env/envSettings";
 import { useParams } from "react-router";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
@@ -10,8 +9,6 @@ import { AddMeasurement } from "./add/AddMeasurement";
 import { useAppContext } from "../../AppContext";
 import { EditMetric } from "./edit/EditMetric";
 import { MeasurementsList } from "./MeasurementsList";
-
-const serverApi = new ServerApi(envSettings.apiBaseUrl);
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -57,12 +54,11 @@ export const MetricDetails: React.FC = () => {
   );
 
   function getMetric() {
-    return serverApi.getMetric(metricKey).then(setMetric).catch(handleError);
+    return ServerApi.getMetric(metricKey).then(setMetric).catch(handleError);
   }
 
   function getMeasurements() {
-    return serverApi
-      .getMeasurements(metricKey)
+    return ServerApi.getMeasurements(metricKey)
       .then(setMeasurements)
       .catch(handleError);
   }
