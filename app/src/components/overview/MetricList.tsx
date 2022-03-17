@@ -15,11 +15,7 @@ export const MetricList: React.FC = () => {
       .then((data) => {
         setMetrics(data);
       })
-      .catch((err) => {
-        alert(
-          "Error: " + (typeof err === "string" ? err : JSON.stringify(err))
-        );
-      });
+      .catch((e) => alert(e));
   }, []);
 
   return (
