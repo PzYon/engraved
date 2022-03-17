@@ -22,6 +22,8 @@ public class MetricsController : ControllerBase
   [HttpGet]
   public Metric[] GetAll()
   {
+    throw new Exception("Fuuck off!");
+    
     return _dispatcher.Query(new GetAllMetricsQuery());
   }
 

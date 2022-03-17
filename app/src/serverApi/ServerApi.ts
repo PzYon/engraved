@@ -69,12 +69,29 @@ export class ServerApi {
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
   ): Promise<Response> {
-    return await fetch(new Request(envSettings.apiBaseUrl + url), {
-      method: method,
-      body: payload ? JSON.stringify(payload) : null,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response: Response = await fetch(
+        new Request(envSettings.apiBaseUrl + url),
+        {
+          method: method,
+          body: payload ? JSON.stringify(payload) : null,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status.toString().startsWith("2")) {
+        if (response.bodyUsed) {
+          return await response.json();
+        } else {
+          return null;
+        }
+      }
+
+      return response;
+    } catch (err) {
+      debugger;
+    }
   }
 }

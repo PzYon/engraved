@@ -6,16 +6,19 @@ import { Grid, Typography } from "@mui/material";
 import { GridItem } from "./GridItem";
 import { translations } from "../../i18n/translations";
 import { Section } from "../layout/Section";
+import { useErrorHandler } from "../../AppErrorBoundary";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
+
+  const errorHandler = useErrorHandler();
 
   useEffect(() => {
     ServerApi.getMetrics()
       .then((data) => {
         setMetrics(data);
       })
-      .catch((e) => alert(e));
+      .catch(errorHandler);
   }, []);
 
   return (
