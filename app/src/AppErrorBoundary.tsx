@@ -19,19 +19,17 @@ export class AppErrorBoundary extends React.PureComponent<
   }
 
   public render(): ReactNode {
-    if (this.state.error) {
-      return (
-        <>
+    return (
+      <>
+        {this.state.error ? (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
             ...
-          </Alert>{" "}
-          {this.props.children}
-        </>
-      );
-    }
-
-    return this.props.children;
+          </Alert>
+        ) : null}
+        {this.props.children}
+      </>
+    );
   }
 }
 

@@ -16,9 +16,13 @@ export const MetricList: React.FC = () => {
   useEffect(() => {
     ServerApi.getMetrics()
       .then((data) => {
+        debugger;
         setMetrics(data);
       })
-      .catch(errorHandler);
+      .catch((e) => {
+        setMetrics([]);
+        errorHandler(e);
+      });
   }, []);
 
   return (

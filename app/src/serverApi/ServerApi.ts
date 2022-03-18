@@ -9,13 +9,11 @@ import { envSettings } from "../env/envSettings";
 
 export class ServerApi {
   static async getMetrics(): Promise<IMetric[]> {
-    const response = await this.executeRequest(`/metrics/`);
-    return await response.json();
+    return await this.executeRequest(`/metrics/`);
   }
 
   static async getMetric(metricKey: string): Promise<IMetric> {
-    const response = await this.executeRequest(`/metrics/${metricKey}`);
-    return await response.json();
+    return await this.executeRequest(`/metrics/${metricKey}`);
   }
 
   static async addMetric(
@@ -42,14 +40,12 @@ export class ServerApi {
       metricKey: metricKey,
       flags: metricFlags,
     };
+
     await this.executeRequest("/metrics/", "PUT", payload);
   }
 
   static async getMeasurements(metricKey: string): Promise<IMeasurement[]> {
-    const response = await this.executeRequest(
-      `/measurements?metricKey=${metricKey}`
-    );
-    return await response.json();
+    return await this.executeRequest(`/measurements?metricKey=${metricKey}`);
   }
 
   static async addMeasurement(
@@ -64,11 +60,11 @@ export class ServerApi {
     await this.executeRequest("/measurements", "POST", payload);
   }
 
-  static async executeRequest(
+  static async executeRequest<T = void>(
     url: string,
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
-  ): Promise<Response> {
+  ): Promise<T> {
     try {
       const response: Response = await fetch(
         new Request(envSettings.apiBaseUrl + url),
@@ -81,17 +77,16 @@ export class ServerApi {
         }
       );
 
-      if (response.status.toString().startsWith("2")) {
-        if (response.bodyUsed) {
-          return await response.json();
-        } else {
-          return null;
-        }
+      const json = await response.json();
+
+      if (response.ok) {
+        return json;
       }
 
-      return response;
-    } catch (err) {
+      throw new Error(json.message);
+    } catch (err: any) {
       debugger;
+      throw new Error(err.message);
     }
   }
 }
