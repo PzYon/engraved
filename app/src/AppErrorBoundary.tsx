@@ -1,4 +1,3 @@
-import { Alert, AlertTitle } from "@mui/material";
 import * as React from "react";
 import { ReactNode } from "react";
 
@@ -19,17 +18,7 @@ export class AppErrorBoundary extends React.PureComponent<
   }
 
   public render(): ReactNode {
-    return (
-      <>
-        {this.state.error ? (
-          <Alert severity="error">
-            <AlertTitle>Error</AlertTitle>
-            ...
-          </Alert>
-        ) : null}
-        {this.props.children}
-      </>
-    );
+    return this.props.children;
   }
 }
 

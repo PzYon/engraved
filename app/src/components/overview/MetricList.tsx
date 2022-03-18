@@ -6,12 +6,12 @@ import { Grid, Typography } from "@mui/material";
 import { GridItem } from "./GridItem";
 import { translations } from "../../i18n/translations";
 import { Section } from "../layout/Section";
-import { useErrorHandler } from "../../AppErrorBoundary";
+import { useAppContext } from "../../AppContext";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
 
-  const errorHandler = useErrorHandler();
+  const { setAppAlert } = useAppContext();
 
   useEffect(() => {
     ServerApi.getMetrics()
@@ -20,8 +20,12 @@ export const MetricList: React.FC = () => {
         setMetrics(data);
       })
       .catch((e) => {
-        setMetrics([]);
-        errorHandler(e);
+        // setMetrics([]);
+        setAppAlert({
+          message: e.message,
+          title: e.message,
+          type: "todo",
+        });
       });
   }, []);
 

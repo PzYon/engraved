@@ -5,16 +5,18 @@ import { AppContent } from "./components/layout/AppContent";
 import { AppRoutes } from "./components/layout/AppRoutes";
 import { AppContextProvider } from "./AppContext";
 import { AppErrorBoundary } from "./AppErrorBoundary";
+import { AppAlertBar } from "./AppAlertBar";
 
 export const App: React.FC = () => (
   <AppContextProvider>
-    <AppErrorBoundary>
-      <BrowserRouter>
-        <AppHeader />
+    <BrowserRouter>
+      <AppHeader />
+      <AppAlertBar />
+      <AppErrorBoundary>
         <AppContent>
           <AppRoutes />
         </AppContent>
-      </BrowserRouter>
-    </AppErrorBoundary>
+      </AppErrorBoundary>
+    </BrowserRouter>
   </AppContextProvider>
 );
