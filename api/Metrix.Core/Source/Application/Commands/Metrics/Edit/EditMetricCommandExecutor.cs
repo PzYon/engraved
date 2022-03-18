@@ -19,6 +19,11 @@ public class EditMetricCommandExecutor : ICommandExecutor
       throw new InvalidCommandException(_command, $"{nameof(EditMetricCommand.MetricKey)} must be specified.");
     }
 
+    if (string.IsNullOrEmpty(_command.Name))
+    {
+      throw new InvalidCommandException(_command, $"{nameof(EditMetricCommand.Name)} must be specified.");
+    }
+    
     Metric? metric = db.Metrics.FirstOrDefault(m => m.Key == _command.MetricKey);
 
     if (metric == null)
@@ -27,5 +32,6 @@ public class EditMetricCommandExecutor : ICommandExecutor
     }
 
     metric.Flags = _command.Flags;
+    metric.Name = _command.Name;
   }
 }

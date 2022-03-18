@@ -16,6 +16,13 @@ export const AddMeasurement: React.FC<{
 
   return (
     <FormControl>
+      {Object.keys(metric.flags || {}).length ? (
+        <MetricFlagsSelector
+          flags={metric.flags}
+          selectedFlagKey={flagKey}
+          onFlagChange={(key) => setFlagKey(key)}
+        />
+      ) : null}
       <Button
         variant="outlined"
         onClick={() => {
@@ -36,13 +43,8 @@ export const AddMeasurement: React.FC<{
           onAdded();
         }}
       >
-        {translations.create}
+        {translations.add}
       </Button>
-      <MetricFlagsSelector
-        flags={metric.flags}
-        selectedFlagKey={flagKey}
-        onFlagChange={(key) => setFlagKey(key)}
-      />
     </FormControl>
   );
 };

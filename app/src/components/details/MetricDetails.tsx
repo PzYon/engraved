@@ -10,6 +10,7 @@ import { useAppContext } from "../../AppContext";
 import { EditMetric } from "./edit/EditMetric";
 import { MeasurementsList } from "./MeasurementsList";
 import { IApiError } from "../../serverApi/IApiError";
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -37,10 +38,10 @@ export const MetricDetails: React.FC = () => {
 
   return (
     <>
-      <Section>
+      <Section title="Add Measurement">
         <AddMeasurement metric={metric} onAdded={getMeasurements} />
       </Section>
-      <Section>
+      <Section title="Edit Metric">
         <EditMetric metric={metric} />
       </Section>
       <Section>

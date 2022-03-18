@@ -16,5 +16,6 @@ export interface ITranslations {
   tab_measurements: string;
   tab_summary: string;
   create: string;
+  add: string;
   save: string;
 }
