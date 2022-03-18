@@ -16,15 +16,18 @@ export const MetricList: React.FC = () => {
   useEffect(() => {
     ServerApi.getMetrics()
       .then((data) => {
-        debugger;
         setMetrics(data);
+        setAppAlert({
+          title: "Loaded metrics.",
+          message: "Awesome.",
+          type: "success",
+        });
       })
       .catch((e) => {
-        // setMetrics([]);
         setAppAlert({
-          message: e.message,
           title: e.message,
-          type: "todo",
+          message: e.message,
+          type: "error",
         });
       });
   }, []);

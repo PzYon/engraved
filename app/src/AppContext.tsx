@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { IAppAlert } from "./AppAlertBar";
+import { IAppAlert } from "./components/errorHandling/AppAlertBar";
 
 export interface IAppContext {
   pageTitle: string;

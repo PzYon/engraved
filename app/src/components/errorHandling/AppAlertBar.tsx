@@ -1,11 +1,11 @@
 import React from "react";
 import { Alert, AlertTitle } from "@mui/material";
-import { useAppContext } from "./AppContext";
+import { useAppContext } from "../../AppContext";
 
 export interface IAppAlert {
   message: string;
   title: string;
-  type: string; // todo
+  type: "success" | "info" | "warning" | "error";
 }
 
 export const AppAlertBar: React.FC = () => {
@@ -16,7 +16,7 @@ export const AppAlertBar: React.FC = () => {
   }
 
   return (
-    <Alert severity="error">
+    <Alert severity={appAlert.type}>
       <AlertTitle>{appAlert.title}</AlertTitle>
       {appAlert.message}
     </Alert>

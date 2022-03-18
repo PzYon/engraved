@@ -4,8 +4,8 @@ import { AppHeader } from "./components/layout/AppHeader";
 import { AppContent } from "./components/layout/AppContent";
 import { AppRoutes } from "./components/layout/AppRoutes";
 import { AppContextProvider } from "./AppContext";
-import { AppErrorBoundary } from "./AppErrorBoundary";
-import { AppAlertBar } from "./AppAlertBar";
+import { AppErrorBoundary } from "./components/errorHandling/AppErrorBoundary";
+import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 
 export const App: React.FC = () => (
   <AppContextProvider>
