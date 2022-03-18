@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { IMetric } from "../../serverApi/IMetric";
-import { envSettings } from "../../env/envSettings";
 import { MetricListItem } from "./MetricListItem";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { Grid, Typography } from "@mui/material";
 import { GridItem } from "./GridItem";
 import { translations } from "../../i18n/translations";
 import { Section } from "../layout/Section";
+import { useAppContext } from "../../AppContext";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
 
+  const { setAppAlert } = useAppContext();
+
   useEffect(() => {
-    new ServerApi(envSettings.apiBaseUrl)
-      .getMetrics()
+    ServerApi.getMetrics()
       .then((data) => {
         setMetrics(data);
       })
-      .catch((err) => {
-        alert(
-          "Error: " + (typeof err === "string" ? err : JSON.stringify(err))
-        );
+      .catch((e) => {
+        setAppAlert({
+          title: e.message,
+          message: e.message,
+          type: "error",
+        });
       });
   }, []);
 

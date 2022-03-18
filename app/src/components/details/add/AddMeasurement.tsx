@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Button, FormControl } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
-import { envSettings } from "../../../env/envSettings";
 import { IMetric } from "../../../serverApi/IMetric";
 import { MetricFlagsSelector } from "./MetricFlagsSelector";
+import { useAppContext } from "../../../AppContext";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
@@ -12,15 +12,27 @@ export const AddMeasurement: React.FC<{
 }> = ({ metric, onAdded }) => {
   const [flagKey, setFlagKey] = useState<string>(""); // empty means nothing selected in the selector
 
+  const { setAppAlert } = useAppContext();
+
   return (
     <FormControl>
       <Button
         variant="outlined"
-        onClick={async () => {
-          await new ServerApi(envSettings.apiBaseUrl).addMeasurement(
-            metric.key,
-            flagKey
-          );
+        onClick={() => {
+          ServerApi.addMeasurement(metric.key, flagKey)
+            .then(() => {
+              setAppAlert({
+                title: `Added measurement`,
+                type: "success",
+              });
+            })
+            .catch((e) => {
+              setAppAlert({
+                title: "Failed to add measurement",
+                message: e.message,
+                type: "error",
+              });
+            });
           onAdded();
         }}
       >

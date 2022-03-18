@@ -2,81 +2,89 @@ import { IMeasurement } from "./IMeasurement";
 import { IMetric } from "./IMetric";
 import { MetricType } from "./MetricType";
 import { IMetricFlags } from "./IMetricFlags";
+import { IAddMetricCommand } from "./commands/IAddMetricCommand";
+import { IAddMeasurementCommand } from "./commands/IAddMeasurementCommand";
+import { IEditMetricCommand } from "./commands/IEditMetricCommand";
+import { envSettings } from "../env/envSettings";
+import { IApiError } from "./IApiError";
 
 export class ServerApi {
-  constructor(private apiBaseUrl: string) {}
-
-  async getMetrics(): Promise<IMetric[]> {
-    const response = await fetch(new Request(`${this.apiBaseUrl}/metrics`));
-
-    const data: Promise<IMetric[]> = await response.json();
-    return data;
+  static async getMetrics(): Promise<IMetric[]> {
+    return await this.executeRequest(`/metrics/`);
   }
 
-  async getMetric(metricKey: string): Promise<IMetric> {
-    const response = await fetch(
-      new Request(`${this.apiBaseUrl}/metrics/${metricKey}`)
-    );
-
-    const data: Promise<IMetric> = await response.json();
-    return data;
+  static async getMetric(metricKey: string): Promise<IMetric> {
+    return await this.executeRequest(`/metrics/${metricKey}`);
   }
 
-  async addMetric(
+  static async addMetric(
     key: string,
     name: string,
     description: string,
     type: MetricType
   ): Promise<void> {
-    await fetch(new Request(`${this.apiBaseUrl}/metrics`), {
-      method: "POST",
-      body: JSON.stringify({
-        key: key,
-        name: name,
-        description: description,
-        type: type,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const payload: IAddMetricCommand = {
+      key: key,
+      name: name,
+      description: description,
+      type: type,
+    };
+
+    await this.executeRequest("/metrics", "POST", payload);
   }
 
-  async editMetric(
+  static async editMetric(
     metricKey: string,
     metricFlags: IMetricFlags
   ): Promise<void> {
-    await fetch(new Request(`${this.apiBaseUrl}/metrics/`), {
-      method: "PUT",
-      body: JSON.stringify({ metricKey: metricKey, flags: metricFlags }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const payload: IEditMetricCommand = {
+      metricKey: metricKey,
+      flags: metricFlags,
+    };
+
+    await this.executeRequest("/metrics/", "PUT", payload);
   }
 
-  async getMeasurements(metricKey: string): Promise<IMeasurement[]> {
-    const response = await fetch(
-      new Request(`${this.apiBaseUrl}/measurements?metricKey=${metricKey}`)
-    );
-
-    const data: Promise<IMeasurement[]> = await response.json();
-    return data;
+  static async getMeasurements(metricKey: string): Promise<IMeasurement[]> {
+    return await this.executeRequest(`/measurements?metricKey=${metricKey}`);
   }
 
-  async addMeasurement(
+  static async addMeasurement(
     metricKey: string,
     metricFlagKey?: string
   ): Promise<void> {
-    await fetch(new Request(`${this.apiBaseUrl}/measurements`), {
-      method: "POST",
-      body: JSON.stringify({
-        metricKey: metricKey,
-        metricFlagKey: metricFlagKey,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const payload: IAddMeasurementCommand = {
+      metricKey: metricKey,
+      metricFlagKey: metricFlagKey,
+    };
+
+    await this.executeRequest("/measurements", "POST", payload);
+  }
+
+  static async executeRequest<T = void>(
+    url: string,
+    method: "GET" | "PUT" | "POST" = "GET",
+    payload: unknown = undefined
+  ): Promise<T> {
+    const response: Response = await fetch(
+      new Request(envSettings.apiBaseUrl + url),
+      {
+        method: method,
+        body: payload ? JSON.stringify(payload) : null,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const text = await response.text();
+    const json = text ? JSON.parse(text) : null;
+
+    if (response.ok) {
+      return json;
+    }
+
+    const apiError = json as IApiError;
+    throw new Error(apiError.message);
   }
 }
