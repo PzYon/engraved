@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
+using Metrix.Api.Filters;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-  .AddControllers()
+  .AddControllers(options => options.Filters.Add<HttpExceptionFilter>())
   .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

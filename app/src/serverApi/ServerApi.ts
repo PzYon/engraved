@@ -6,6 +6,7 @@ import { IAddMetricCommand } from "./commands/IAddMetricCommand";
 import { IAddMeasurementCommand } from "./commands/IAddMeasurementCommand";
 import { IEditMetricCommand } from "./commands/IEditMetricCommand";
 import { envSettings } from "../env/envSettings";
+import { IApiError } from "./IApiError";
 
 export class ServerApi {
   static async getMetrics(): Promise<IMetric[]> {
@@ -65,28 +66,25 @@ export class ServerApi {
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
   ): Promise<T> {
-    try {
-      const response: Response = await fetch(
-        new Request(envSettings.apiBaseUrl + url),
-        {
-          method: method,
-          body: payload ? JSON.stringify(payload) : null,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const json = await response.json();
-
-      if (response.ok) {
-        return json;
+    const response: Response = await fetch(
+      new Request(envSettings.apiBaseUrl + url),
+      {
+        method: method,
+        body: payload ? JSON.stringify(payload) : null,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
+    );
 
-      throw new Error(json.message);
-    } catch (err: any) {
-      debugger;
-      throw new Error(err.message);
+    const text = await response.text();
+    const json = text ? JSON.parse(text) : null;
+
+    if (response.ok) {
+      return json;
     }
+
+    const apiError = json as IApiError;
+    throw new Error(apiError.message);
   }
 }

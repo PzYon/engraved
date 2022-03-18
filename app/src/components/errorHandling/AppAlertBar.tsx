@@ -9,14 +9,14 @@ export interface IAppAlert {
 }
 
 export const AppAlertBar: React.FC = () => {
-  const { appAlert } = useAppContext();
+  const { appAlert, setAppAlert } = useAppContext();
 
   if (!appAlert) {
     return null;
   }
 
   return (
-    <Alert severity={appAlert.type}>
+    <Alert severity={appAlert.type} onClose={() => setAppAlert(undefined)}>
       <AlertTitle>{appAlert.title}</AlertTitle>
       {appAlert.message}
     </Alert>
