@@ -22,7 +22,7 @@ export const AddMeasurement: React.FC<{
           ServerApi.addMeasurement(metric.key, flagKey)
             .then(() => {
               setAppAlert({
-                title: `Added measurement ${metric.name}`,
+                title: `Added measurement`,
                 type: "success",
               });
             })

@@ -17,11 +17,6 @@ export const MetricList: React.FC = () => {
     ServerApi.getMetrics()
       .then((data) => {
         setMetrics(data);
-        setAppAlert({
-          title: "Loaded metrics.",
-          message: "Awesome.",
-          type: "success",
-        });
       })
       .catch((e) => {
         setAppAlert({
