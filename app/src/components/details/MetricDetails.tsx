@@ -9,15 +9,15 @@ import { AddMeasurement } from "./add/AddMeasurement";
 import { useAppContext } from "../../AppContext";
 import { EditMetric } from "./edit/EditMetric";
 import { MeasurementsList } from "./MeasurementsList";
+import { IApiError } from "../../serverApi/IApiError";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
 
-  const appContext = useAppContext();
+  const { setPageTitle, setAppAlert } = useAppContext();
 
   const [metric, setMetric] = useState<IMetric>();
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string>();
   const [isDataReady, setIsDataReady] = useState(false);
 
   useEffect(() => {
@@ -27,8 +27,8 @@ export const MetricDetails: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    appContext.setPageTitle(metric?.name);
-    return () => appContext.setPageTitle(null);
+    setPageTitle(metric?.name);
+    return () => setPageTitle(null);
   }, [metric]);
 
   if (!isDataReady) {
@@ -44,26 +44,31 @@ export const MetricDetails: React.FC = () => {
         <EditMetric metric={metric} />
       </Section>
       <Section>
-        <Visualization measurements={measurements} metric={metric} />
+        <Visualization metric={metric} measurements={measurements} />
       </Section>
       <Section>
         <MeasurementsList metric={metric} measurements={measurements} />
       </Section>
-      {errorMessage ? <div>{errorMessage}</div> : null}
     </>
   );
 
   function getMetric() {
-    return ServerApi.getMetric(metricKey).then(setMetric).catch(handleError);
+    return ServerApi.getMetric(metricKey)
+      .then(setMetric)
+      .catch((e) => handleError(`Error loading Metric ${metricKey}`, e));
   }
 
   function getMeasurements() {
     return ServerApi.getMeasurements(metricKey)
       .then(setMeasurements)
-      .catch(handleError);
+      .catch((e) => handleError("Error loading measurements", e));
   }
 
-  function handleError(error: unknown) {
-    setErrorMessage(typeof error === "string" ? error : JSON.stringify(error));
+  function handleError(title: string, error: Error | IApiError) {
+    setAppAlert({
+      title: title,
+      message: error.message,
+      type: "error",
+    });
   }
 };

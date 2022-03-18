@@ -5,11 +5,14 @@ import { Section } from "./layout/Section";
 import { MetricTypeSelector } from "./MetricTypeSelector";
 import { MetricType } from "../serverApi/MetricType";
 import { ServerApi } from "../serverApi/ServerApi";
+import { useAppContext } from "../AppContext";
 
 export const AddMetric: React.FC = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [metricType, setMetricType] = useState(MetricType.Counter);
+
+  const { setAppAlert } = useAppContext();
 
   return (
     <Section>
@@ -32,7 +35,20 @@ export const AddMetric: React.FC = () => {
         <Button
           variant="outlined"
           onClick={() => {
-            ServerApi.addMetric("", name, description, metricType);
+            ServerApi.addMetric("", name, description, metricType)
+              .then(() => {
+                setAppAlert({
+                  title: `Added metric ${name}`,
+                  type: "success",
+                });
+              })
+              .catch((e) => {
+                setAppAlert({
+                  title: "Failed to add metric",
+                  message: e.message,
+                  type: "error",
+                });
+              });
           }}
         >
           {translations.create}

@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
+import { useAppContext } from "../../../AppContext";
 
 export const EditMetric: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const [flagJson, setFlagJson] = useState(
     metric.flags ? JSON.stringify(metric.flags) : ""
   );
+
+  const { setAppAlert } = useAppContext();
 
   return (
     <FormControl>
@@ -21,7 +24,20 @@ export const EditMetric: React.FC<{ metric: IMetric }> = ({ metric }) => {
       <Button
         variant="outlined"
         onClick={() => {
-          ServerApi.editMetric(metric.key, JSON.parse(flagJson));
+          ServerApi.editMetric(metric.key, JSON.parse(flagJson))
+            .then(() => {
+              setAppAlert({
+                title: `Saved metric ${metric.name}`,
+                type: "success",
+              });
+            })
+            .catch((e) => {
+              setAppAlert({
+                title: "Failed to edit metric",
+                message: e.message,
+                type: "error",
+              });
+            });
         }}
       >
         {translations.save}

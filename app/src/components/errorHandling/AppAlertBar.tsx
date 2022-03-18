@@ -3,7 +3,7 @@ import { Alert, AlertTitle } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 
 export interface IAppAlert {
-  message: string;
+  message?: string;
   title: string;
   type: "success" | "info" | "warning" | "error";
 }
