@@ -4,13 +4,12 @@ import { useParams } from "react-router";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
-import { Section } from "../layout/Section";
 import { AddMeasurement } from "./add/AddMeasurement";
 import { useAppContext } from "../../AppContext";
 import { EditMetric } from "./edit/EditMetric";
 import { MeasurementsList } from "./MeasurementsList";
 import { IApiError } from "../../serverApi/IApiError";
-import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import { AccordionSection } from "../layout/AccordionSection";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -38,18 +37,21 @@ export const MetricDetails: React.FC = () => {
 
   return (
     <>
-      <Section title="Add Measurement">
+      <AccordionSection title="Add Measurement">
         <AddMeasurement metric={metric} onAdded={getMeasurements} />
-      </Section>
-      <Section title="Edit Metric">
-        <EditMetric metric={metric} />
-      </Section>
-      <Section>
+      </AccordionSection>
+
+      <AccordionSection title="Chart" expanded={true}>
         <Visualization metric={metric} measurements={measurements} />
-      </Section>
-      <Section>
+      </AccordionSection>
+
+      <AccordionSection title="Edit Metric">
+        <EditMetric metric={metric} />
+      </AccordionSection>
+
+      <AccordionSection title="All Measurements">
         <MeasurementsList metric={metric} measurements={measurements} />
-      </Section>
+      </AccordionSection>
     </>
   );
 
