@@ -20,4 +20,6 @@ export const translations: ITranslations = {
   create: "Create",
   save: "Save",
   add: "Add",
+  edit: "Edit",
+  close: "Close",
 };

@@ -10,11 +10,13 @@ import { EditMetric } from "./edit/EditMetric";
 import { MeasurementsList } from "./MeasurementsList";
 import { IApiError } from "../../serverApi/IApiError";
 import { AccordionSection } from "../layout/AccordionSection";
+import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
+import { translations } from "../../i18n/translations";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
 
-  const { setPageTitle, setAppAlert } = useAppContext();
+  const { setPageTitle, setTitleActions, setAppAlert } = useAppContext();
 
   const [metric, setMetric] = useState<IMetric>();
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
@@ -28,7 +30,24 @@ export const MetricDetails: React.FC = () => {
 
   useEffect(() => {
     setPageTitle(metric?.name);
-    return () => setPageTitle(null);
+    setTitleActions([
+      {
+        key: "edit",
+        label: translations.edit,
+        onClick: () => alert("TODO: redirect to edit page"),
+        icon: <ModeEditOutlineOutlined />,
+      },
+      {
+        key: "add",
+        label: translations.add,
+        onClick: () => alert("TODO: show add measurement dialog"),
+        icon: <AddOutlined />,
+      },
+    ]);
+    return () => {
+      setPageTitle(null);
+      setTitleActions([]);
+    };
   }, [metric]);
 
   if (!isDataReady) {

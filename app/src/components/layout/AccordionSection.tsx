@@ -3,37 +3,36 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  IconButton,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import styled from "styled-components";
-
-export interface IAccordionHeaderAction {
-  key: string;
-  icon: React.ReactNode;
-  label: string;
-  onClick: () => void;
-}
+import { HeaderActions, IAction } from "./HeaderActions";
 
 export const AccordionSection: React.FC<{
   title: string;
+  subTitle?: string;
   expanded?: boolean;
-  headerActions?: IAccordionHeaderAction[];
-}> = ({ title, expanded, headerActions, children }) => {
+  headerActions?: IAction[];
+  expandIcon?: React.ReactNode;
+}> = ({ title, subTitle, expanded, headerActions, expandIcon, children }) => {
   return (
     <StyledAccordion defaultExpanded={expanded}>
-      <AccordionSummary expandIcon={<ExpandMore />}>
-        <Typography>{title}</Typography>
-        {headerActions?.length ? (
-          <ButtonContainer>
-            {headerActions.map((a) => (
-              <IconButton key={a.key} color="secondary" aria-label={a.label}>
-                {a.icon}
-              </IconButton>
-            ))}
-          </ButtonContainer>
-        ) : null}
+      <AccordionSummary expandIcon={expandIcon ?? <ExpandMore />}>
+        <HeaderContainer>
+          <TextContainer>
+            <Typography sx={{ flexShrink: 0 }}>{title}</Typography>
+            {subTitle ? (
+              <>
+                <MiddleDotContainer>&#183;</MiddleDotContainer>
+                <Typography sx={{ color: "text.secondary" }} noWrap={true}>
+                  {subTitle}
+                </Typography>
+              </>
+            ) : null}
+          </TextContainer>
+          <HeaderActions actions={headerActions} />
+        </HeaderContainer>
       </AccordionSummary>
       <AccordionDetails>{children}</AccordionDetails>
     </StyledAccordion>
@@ -44,8 +43,18 @@ const StyledAccordion = styled(Accordion)`
   margin: 20px 0;
 `;
 
-const ButtonContainer = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
+  width: 100%;
+`;
+
+const TextContainer = styled.div`
   flex-grow: 1;
-  justify-content: end;
+  display: flex;
+  align-items: center;
+`;
+
+const MiddleDotContainer = styled.div`
+  display: inline-block;
+  padding: 0 15px;
 `;

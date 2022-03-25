@@ -17,5 +17,7 @@ export interface ITranslations {
   tab_summary: string;
   create: string;
   add: string;
+  edit: string;
+  close: string;
   save: string;
 }
