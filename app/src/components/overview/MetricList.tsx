@@ -7,14 +7,14 @@ import { Section } from "../layout/Section";
 import { HeaderActions } from "../layout/HeaderActions";
 import { Typography } from "@mui/material";
 import styled from "styled-components";
-import { AddMeasurementDialog } from "../details/add/AddMeasurementDialog";
+import { useDialogContext } from "../../DialogContext";
+import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementDialog";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
 
-  const [showAddMeasurementFor, setShowAddMeasurementFor] = useState<IMetric>();
-
   const { setAppAlert } = useAppContext();
+  const { renderDialog } = useDialogContext();
 
   useEffect(() => {
     ServerApi.getMetrics()
@@ -32,12 +32,6 @@ export const MetricList: React.FC = () => {
 
   return (
     <>
-      {showAddMeasurementFor ? (
-        <AddMeasurementDialog
-          metric={showAddMeasurementFor}
-          onClose={() => setShowAddMeasurementFor(null)}
-        />
-      ) : null}
       {metrics.map((m) => (
         <Section key={m.key}>
           <MainContainer>
@@ -52,7 +46,7 @@ export const MetricList: React.FC = () => {
                     key: "add_measurement",
                     label: "Add Measurement",
                     icon: <AddOutlined />,
-                    onClick: () => setShowAddMeasurementFor(m),
+                    onClick: () => renderAddMeasurementDialog(renderDialog, m),
                   },
                   {
                     key: "view",

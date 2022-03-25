@@ -6,17 +6,20 @@ import { AppRoutes } from "./components/layout/AppRoutes";
 import { AppContextProvider } from "./AppContext";
 import { AppErrorBoundary } from "./components/errorHandling/AppErrorBoundary";
 import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
+import { DialogContextProvider } from "./DialogContext";
 
 export const App: React.FC = () => (
   <AppContextProvider>
-    <BrowserRouter>
-      <AppHeader />
-      <AppAlertBar />
-      <AppErrorBoundary>
-        <AppContent>
-          <AppRoutes />
-        </AppContent>
-      </AppErrorBoundary>
-    </BrowserRouter>
+    <DialogContextProvider>
+      <BrowserRouter>
+        <AppHeader />
+        <AppAlertBar />
+        <AppErrorBoundary>
+          <AppContent>
+            <AppRoutes />
+          </AppContent>
+        </AppErrorBoundary>
+      </BrowserRouter>
+    </DialogContextProvider>
   </AppContextProvider>
 );

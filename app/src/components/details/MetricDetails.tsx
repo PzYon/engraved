@@ -12,11 +12,15 @@ import { IApiError } from "../../serverApi/IApiError";
 import { AccordionSection } from "../layout/AccordionSection";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
 import { translations } from "../../i18n/translations";
+import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
+import { useDialogContext } from "../../DialogContext";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
 
   const { setPageTitle, setTitleActions, setAppAlert } = useAppContext();
+
+  const { renderDialog } = useDialogContext();
 
   const [metric, setMetric] = useState<IMetric>();
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
@@ -40,7 +44,7 @@ export const MetricDetails: React.FC = () => {
       {
         key: "add",
         label: translations.add,
-        onClick: () => alert("TODO: show add measurement dialog"),
+        onClick: () => renderAddMeasurementDialog(renderDialog, metric),
         icon: <AddOutlined />,
       },
     ]);
