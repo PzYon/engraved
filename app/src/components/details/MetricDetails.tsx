@@ -13,7 +13,7 @@ import { AccordionSection } from "../layout/AccordionSection";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
 import { translations } from "../../i18n/translations";
 import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
-import { useDialogContext } from "../../DialogContext";
+import { useDialogContext } from "../layout/dialogs/DialogContext";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();

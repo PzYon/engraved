@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import React from "react";
-import { translations } from "../../i18n/translations";
+import { translations } from "../../../i18n/translations";
 
 export const DialogWrapper: React.FC<{
   title: string;

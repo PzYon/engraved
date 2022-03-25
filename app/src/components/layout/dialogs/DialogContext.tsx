@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState } from "react";
-import { DialogWrapper } from "./components/layout/DialogWrapper";
 
 export interface IDialogProps {
   render: () => React.ReactNode;
@@ -8,10 +7,13 @@ export interface IDialogProps {
 
 export interface IDialogContext {
   renderDialog(dialogProps: IDialogProps): void;
+
+  dialogProps: IDialogProps;
 }
 
 export const DialogContext = createContext<IDialogContext>({
   renderDialog: null,
+  dialogProps: null,
 });
 
 export const useDialogContext = () => {
@@ -27,17 +29,10 @@ export const DialogContextProvider: React.FC = ({ children }) => {
         renderDialog: (props: IDialogProps) => {
           setDialogProps(props);
         },
+        dialogProps: dialogProps,
       }}
     >
       {children}
-      {dialogProps ? (
-        <DialogWrapper
-          title={dialogProps.title}
-          onClose={() => setDialogProps(null)}
-        >
-          {dialogProps.render()}
-        </DialogWrapper>
-      ) : null}
     </DialogContext.Provider>
   );
 };

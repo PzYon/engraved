@@ -7,7 +7,7 @@ import { Section } from "../layout/Section";
 import { HeaderActions } from "../layout/HeaderActions";
 import { Typography } from "@mui/material";
 import styled from "styled-components";
-import { useDialogContext } from "../../DialogContext";
+import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementDialog";
 
 export const MetricList: React.FC = () => {

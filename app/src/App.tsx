@@ -6,7 +6,8 @@ import { AppRoutes } from "./components/layout/AppRoutes";
 import { AppContextProvider } from "./AppContext";
 import { AppErrorBoundary } from "./components/errorHandling/AppErrorBoundary";
 import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
-import { DialogContextProvider } from "./DialogContext";
+import { DialogContextProvider } from "./components/layout/dialogs/DialogContext";
+import { DialogHost } from "./components/layout/dialogs/DialogHost";
 
 export const App: React.FC = () => (
   <AppContextProvider>
@@ -18,6 +19,7 @@ export const App: React.FC = () => (
           <AppContent>
             <AppRoutes />
           </AppContent>
+          <DialogHost />
         </AppErrorBoundary>
       </BrowserRouter>
     </DialogContextProvider>
