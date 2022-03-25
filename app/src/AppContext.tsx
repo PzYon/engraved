@@ -11,7 +11,7 @@ export interface IAppContext {
   setAppAlert: (appAlert: IAppAlert) => void;
 }
 
-export const AppContext = createContext<IAppContext>({
+const AppContext = createContext<IAppContext>({
   pageTitle: null,
   setPageTitle: null,
   appAlert: null,

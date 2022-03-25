@@ -7,11 +7,10 @@ export interface IDialogProps {
 
 export interface IDialogContext {
   renderDialog(dialogProps: IDialogProps): void;
-
   dialogProps: IDialogProps;
 }
 
-export const DialogContext = createContext<IDialogContext>({
+const DialogContext = createContext<IDialogContext>({
   renderDialog: null,
   dialogProps: null,
 });
