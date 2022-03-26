@@ -19,4 +19,7 @@ export const translations: ITranslations = {
   tab_summary: "Summary",
   create: "Create",
   save: "Save",
+  add: "Add",
+  edit: "Edit",
+  close: "Close",
 };

@@ -10,10 +10,18 @@ export const EditMetric: React.FC<{ metric: IMetric }> = ({ metric }) => {
     metric.flags ? JSON.stringify(metric.flags) : ""
   );
 
+  const [name, setName] = useState(metric.name);
+
   const { setAppAlert } = useAppContext();
 
   return (
     <FormControl>
+      <TextField
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        label={translations.label_metricName}
+        margin={"normal"}
+      />
       <TextField
         value={flagJson}
         onChange={(event) => setFlagJson(event.target.value)}
@@ -24,7 +32,7 @@ export const EditMetric: React.FC<{ metric: IMetric }> = ({ metric }) => {
       <Button
         variant="outlined"
         onClick={() => {
-          ServerApi.editMetric(metric.key, JSON.parse(flagJson))
+          ServerApi.editMetric(metric.key, name, JSON.parse(flagJson))
             .then(() => {
               setAppAlert({
                 title: `Saved metric ${metric.name}`,

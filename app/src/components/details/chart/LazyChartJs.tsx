@@ -37,7 +37,8 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
   metric,
   groupBy,
 }) => {
-  return <Chart {...createChart("bar", groupBy, measurements, metric)} />;
+  const chart = createChart("bar", groupBy, measurements, metric);
+  return <Chart {...chart} />;
 };
 
 export default LazyChartJs;

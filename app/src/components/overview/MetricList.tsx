@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { IMetric } from "../../serverApi/IMetric";
-import { MetricListItem } from "./MetricListItem";
 import { ServerApi } from "../../serverApi/ServerApi";
-import { Grid, Typography } from "@mui/material";
-import { GridItem } from "./GridItem";
-import { translations } from "../../i18n/translations";
-import { Section } from "../layout/Section";
 import { useAppContext } from "../../AppContext";
+import { Section } from "../layout/Section";
+import { Typography } from "@mui/material";
+import styled from "styled-components";
+import { MetricListHeaderActions } from "./MetricListHeaderActions";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
@@ -28,22 +27,30 @@ export const MetricList: React.FC = () => {
   }, []);
 
   return (
-    <Section>
-      <Grid container rowSpacing={2} columnSpacing={2}>
-        <GridItem reactKey={"add"} key={"add"} targetUrl={"/metrics/create"}>
-          <Typography variant={"h4"}>+</Typography>
-          <Typography variant={"subtitle1"}>{translations.create}</Typography>
-        </GridItem>
-        {metrics.map((m) => (
-          <GridItem
-            reactKey={m.key}
-            key={m.key}
-            targetUrl={`/metrics/view/${m.key}`}
-          >
-            <MetricListItem metric={m} />
-          </GridItem>
-        ))}
-      </Grid>
-    </Section>
+    <>
+      {metrics.map((metric) => (
+        <Section key={metric.key}>
+          <MainContainer>
+            <LeftContainer>
+              <Typography variant="h5">{metric.name}</Typography>
+              <Typography>{metric.description}</Typography>
+            </LeftContainer>
+            <ChildContainer>
+              <MetricListHeaderActions metric={metric} />
+            </ChildContainer>
+          </MainContainer>
+        </Section>
+      ))}
+    </>
   );
 };
+
+const MainContainer = styled.div`
+  display: flex;
+`;
+
+const ChildContainer = styled.div``;
+
+const LeftContainer = styled(ChildContainer)`
+  flex-grow: 1;
+`;

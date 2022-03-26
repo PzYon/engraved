@@ -4,17 +4,23 @@ import { useParams } from "react-router";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
-import { Section } from "../layout/Section";
 import { AddMeasurement } from "./add/AddMeasurement";
 import { useAppContext } from "../../AppContext";
 import { EditMetric } from "./edit/EditMetric";
 import { MeasurementsList } from "./MeasurementsList";
 import { IApiError } from "../../serverApi/IApiError";
+import { AccordionSection } from "../layout/AccordionSection";
+import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
+import { translations } from "../../i18n/translations";
+import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
+import { useDialogContext } from "../layout/dialogs/DialogContext";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
 
-  const { setPageTitle, setAppAlert } = useAppContext();
+  const { setPageTitle, setTitleActions, setAppAlert } = useAppContext();
+
+  const { renderDialog } = useDialogContext();
 
   const [metric, setMetric] = useState<IMetric>();
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
@@ -28,7 +34,24 @@ export const MetricDetails: React.FC = () => {
 
   useEffect(() => {
     setPageTitle(metric?.name);
-    return () => setPageTitle(null);
+    setTitleActions([
+      {
+        key: "edit",
+        label: translations.edit,
+        onClick: () => alert("TODO: redirect to edit page"),
+        icon: <ModeEditOutlineOutlined />,
+      },
+      {
+        key: "add",
+        label: translations.add,
+        onClick: () => renderAddMeasurementDialog(renderDialog, metric),
+        icon: <AddOutlined />,
+      },
+    ]);
+    return () => {
+      setPageTitle(null);
+      setTitleActions([]);
+    };
   }, [metric]);
 
   if (!isDataReady) {
@@ -37,18 +60,21 @@ export const MetricDetails: React.FC = () => {
 
   return (
     <>
-      <Section>
+      <AccordionSection title="Add Measurement">
         <AddMeasurement metric={metric} onAdded={getMeasurements} />
-      </Section>
-      <Section>
-        <EditMetric metric={metric} />
-      </Section>
-      <Section>
+      </AccordionSection>
+
+      <AccordionSection title="Chart" expanded={true}>
         <Visualization metric={metric} measurements={measurements} />
-      </Section>
-      <Section>
+      </AccordionSection>
+
+      <AccordionSection title="Edit Metric">
+        <EditMetric metric={metric} />
+      </AccordionSection>
+
+      <AccordionSection title="All Measurements">
         <MeasurementsList metric={metric} measurements={measurements} />
-      </Section>
+      </AccordionSection>
     </>
   );
 
