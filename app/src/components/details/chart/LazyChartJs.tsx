@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   BarController,
   BarElement,
@@ -17,7 +17,6 @@ import { Chart } from "react-chartjs-2";
 import "chartjs-adapter-date-fns";
 import { createChart } from "./createChart";
 import { IVisualizationProps } from "./IVisualizationProps";
-import { ChartProps } from "react-chartjs-2/dist/types";
 
 ChartJS.register(
   BarController,
@@ -38,11 +37,7 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
   metric,
   groupBy,
 }) => {
-  const chart = useMemo<ChartProps>(() => {
-    console.log("Creating chart");
-    return createChart("bar", groupBy, measurements, metric);
-  }, [metric.key]);
-
+  const chart = createChart("bar", groupBy, measurements, metric);
   return <Chart {...chart} />;
 };
 

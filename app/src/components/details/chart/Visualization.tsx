@@ -4,11 +4,11 @@ import { GroupBySelector } from "./GroupBySelector";
 import { GroupBy } from "./consolidation/GroupBy";
 import { MetricType } from "../../../serverApi/MetricType";
 
+const ChartJs = React.lazy(() => import("./LazyChartJs"));
+
 export const Visualization: React.FC<IVisualizationProps> = (
   props: IVisualizationProps
 ) => {
-  const ChartJs = React.lazy(() => import("./LazyChartJs"));
-
   const [groupBy, setGroupBy] = useState(GroupBy.Month);
 
   return (
