@@ -4,7 +4,6 @@ import { useParams } from "react-router";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
-import { AddMeasurement } from "./add/AddMeasurement";
 import { useAppContext } from "../../AppContext";
 import { EditMetric } from "./edit/EditMetric";
 import { MeasurementsList } from "./MeasurementsList";
@@ -14,6 +13,7 @@ import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
 import { translations } from "../../i18n/translations";
 import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
+import { Route, Routes } from "react-router-dom";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -38,7 +38,7 @@ export const MetricDetails: React.FC = () => {
       {
         key: "edit",
         label: translations.edit,
-        onClick: () => alert("TODO: redirect to edit page"),
+        href: `/metrics/${metricKey}/edit`,
         icon: <ModeEditOutlineOutlined />,
       },
       {
@@ -59,23 +59,23 @@ export const MetricDetails: React.FC = () => {
   }
 
   return (
-    <>
-      <AccordionSection title="Add Measurement">
-        <AddMeasurement metric={metric} onAdded={getMeasurements} />
-      </AccordionSection>
+    <Routes>
+      <Route path="/edit" element={<EditMetric metric={metric} />} />
+      <Route
+        path="/"
+        element={
+          <>
+            <AccordionSection title="Chart" expanded={true}>
+              <Visualization metric={metric} measurements={measurements} />
+            </AccordionSection>
 
-      <AccordionSection title="Chart" expanded={true}>
-        <Visualization metric={metric} measurements={measurements} />
-      </AccordionSection>
-
-      <AccordionSection title="Edit Metric">
-        <EditMetric metric={metric} />
-      </AccordionSection>
-
-      <AccordionSection title="All Measurements">
-        <MeasurementsList metric={metric} measurements={measurements} />
-      </AccordionSection>
-    </>
+            <AccordionSection title="All Measurements">
+              <MeasurementsList metric={metric} measurements={measurements} />
+            </AccordionSection>
+          </>
+        }
+      />
+    </Routes>
   );
 
   function getMetric() {
