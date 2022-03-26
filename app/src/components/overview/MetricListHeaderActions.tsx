@@ -16,7 +16,7 @@ export const MetricListHeaderActions: React.FC<{ metric: IMetric }> = ({
         key: "add_measurement",
         label: "Add Measurement",
         icon: <AddOutlined />,
-        onClick: () => renderAddMeasurementDialog(renderDialog, metric),
+        onClick: () => renderAddMeasurementDialog(metric, renderDialog),
       },
       {
         key: "edit",

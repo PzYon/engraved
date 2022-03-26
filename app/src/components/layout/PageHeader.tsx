@@ -16,4 +16,5 @@ const Host = styled.header`
 const ContentWrapper = styled.div`
   max-width: 1200px;
   margin: auto;
+  display: flex;
 `;
