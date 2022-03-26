@@ -5,7 +5,6 @@ import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
 import { useAppContext } from "../../AppContext";
-import { EditMetric } from "./edit/EditMetric";
 import { MeasurementsList } from "./MeasurementsList";
 import { IApiError } from "../../serverApi/IApiError";
 import { AccordionSection } from "../layout/AccordionSection";
@@ -14,6 +13,7 @@ import { translations } from "../../i18n/translations";
 import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { Route, Routes } from "react-router-dom";
+import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -59,23 +59,19 @@ export const MetricDetails: React.FC = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/edit" element={<EditMetric metric={metric} />} />
-      <Route
-        path="/"
-        element={
-          <>
-            <AccordionSection title="Chart" expanded={true}>
-              <Visualization metric={metric} measurements={measurements} />
-            </AccordionSection>
+    <>
+      <AccordionSection title="Chart" expanded={true}>
+        <Visualization metric={metric} measurements={measurements} />
+      </AccordionSection>
 
-            <AccordionSection title="All Measurements">
-              <MeasurementsList metric={metric} measurements={measurements} />
-            </AccordionSection>
-          </>
-        }
-      />
-    </Routes>
+      <AccordionSection title="All Measurements">
+        <MeasurementsList metric={metric} measurements={measurements} />
+      </AccordionSection>
+
+      <Routes>
+        <Route path="/edit" element={<EditMetricLauncher metric={metric} />} />
+      </Routes>
+    </>
   );
 
   function getMetric() {
