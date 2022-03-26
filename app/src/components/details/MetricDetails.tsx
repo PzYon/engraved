@@ -30,6 +30,16 @@ export const MetricDetails: React.FC = () => {
     Promise.all([getMeasurements(), getMetric()]).then(() =>
       setIsDataReady(true)
     );
+
+    setInterval(
+      () =>
+        setAppAlert({
+          title: "foo:" + Math.random(),
+          type: "warning",
+          message: "ja",
+        }),
+      4000
+    );
   }, []);
 
   useEffect(() => {

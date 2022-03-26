@@ -16,7 +16,6 @@ export const Visualization: React.FC<IVisualizationProps> = (
       {props.metric.type === MetricType.Counter ? (
         <GroupBySelector groupBy={groupBy} onGroupingChange={setGroupBy} />
       ) : null}
-
       <ChartJs {...props} groupBy={groupBy} />
     </Suspense>
   );
