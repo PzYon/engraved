@@ -3,13 +3,22 @@ import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IMetric } from "../../../serverApi/IMetric";
 
 export const renderAddMeasurementDialog = (
+  metric: IMetric,
   renderDialog: (dialogProps: IDialogProps) => void,
-  metric: IMetric
+  onAdded?: () => void
 ): void => {
   renderDialog({
     title: "Add measurement",
     render: () => (
-      <AddMeasurement metric={metric} onAdded={() => alert("DONE!")} />
+      <AddMeasurement
+        metric={metric}
+        onAdded={() => {
+          if (onAdded) {
+            onAdded();
+          }
+          renderDialog(null);
+        }}
+      />
     ),
   });
 };

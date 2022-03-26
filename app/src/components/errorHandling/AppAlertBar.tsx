@@ -1,6 +1,7 @@
 import React from "react";
 import { Alert, AlertTitle } from "@mui/material";
 import { useAppContext } from "../../AppContext";
+import styled from "styled-components";
 
 export interface IAppAlert {
   message?: string;
@@ -16,9 +17,22 @@ export const AppAlertBar: React.FC = () => {
   }
 
   return (
-    <Alert severity={appAlert.type} onClose={() => setAppAlert(undefined)}>
-      <AlertTitle>{appAlert.title}</AlertTitle>
-      {appAlert.message}
-    </Alert>
+    <Host>
+      <Alert
+        severity={appAlert.type}
+        variant="filled"
+        onClose={() => setAppAlert(null)}
+      >
+        <AlertTitle>{appAlert.title}</AlertTitle>
+        {appAlert.message}
+      </Alert>
+    </Host>
   );
 };
+
+const Host = styled.div`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1234;
+`;

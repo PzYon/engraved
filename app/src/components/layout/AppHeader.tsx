@@ -2,7 +2,6 @@ import React from "react";
 import { PageHeader } from "./PageHeader";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { PageTitle } from "./PageTitle";
 import { useAppContext } from "../../AppContext";
 import styled from "styled-components";
 import { HeaderActions } from "./HeaderActions";
@@ -18,7 +17,9 @@ export const AppHeader: React.FC = () => {
         </Link>
       </PageHeader>
       <PageHeader>
-        <PageTitle title={pageTitle} />
+        <Typography variant="h3" sx={{ flexGrow: 1 }}>
+          {pageTitle}
+        </Typography>
         <HeaderActions actions={titleActions} />
       </PageHeader>
     </Host>

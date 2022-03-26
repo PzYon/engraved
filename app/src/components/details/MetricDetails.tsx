@@ -44,7 +44,8 @@ export const MetricDetails: React.FC = () => {
       {
         key: "add",
         label: translations.add,
-        onClick: () => renderAddMeasurementDialog(renderDialog, metric),
+        onClick: () =>
+          renderAddMeasurementDialog(metric, renderDialog, getMeasurements),
         icon: <AddOutlined />,
       },
     ]);

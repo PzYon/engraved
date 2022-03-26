@@ -8,7 +8,7 @@ import { useAppContext } from "../../../AppContext";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
-  onAdded: () => void;
+  onAdded?: () => void;
 }> = ({ metric, onAdded }) => {
   const [flagKey, setFlagKey] = useState<string>(""); // empty means nothing selected in the selector
 
@@ -40,7 +40,10 @@ export const AddMeasurement: React.FC<{
                 type: "error",
               });
             });
-          onAdded();
+
+          if (onAdded) {
+            onAdded();
+          }
         }}
       >
         {translations.add}
