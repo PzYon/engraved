@@ -4,6 +4,8 @@ import { DialogWrapper } from "./DialogWrapper";
 export interface IDialogProps {
   render: () => React.ReactNode;
   title: string;
+  isFullScreen?: boolean;
+  onClose?: () => void;
 }
 
 export interface IDialogContext {
@@ -26,8 +28,17 @@ export const DialogContextProvider: React.FC = ({ children }) => {
       {children}
       {dialogProps ? (
         <DialogWrapper
+          props={{
+            fullScreen: dialogProps.isFullScreen,
+          }}
           title={dialogProps.title}
-          onClose={() => setDialogProps(null)}
+          onClose={() => {
+            setDialogProps(null);
+
+            if (dialogProps.onClose) {
+              dialogProps.onClose();
+            }
+          }}
         >
           {dialogProps.render()}
         </DialogWrapper>

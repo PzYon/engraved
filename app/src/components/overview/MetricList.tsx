@@ -6,6 +6,7 @@ import { Section } from "../layout/Section";
 import { Typography } from "@mui/material";
 import styled from "styled-components";
 import { MetricListHeaderActions } from "./MetricListHeaderActions";
+import { Link } from "react-router-dom";
 
 export const MetricList: React.FC = () => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
@@ -32,7 +33,9 @@ export const MetricList: React.FC = () => {
         <Section key={metric.key}>
           <MainContainer>
             <LeftContainer>
-              <Typography variant="h5">{metric.name}</Typography>
+              <Link to={`metrics/${metric.key}`}>
+                <Typography variant="h5">{metric.name}</Typography>
+              </Link>
               <Typography>{metric.description}</Typography>
             </LeftContainer>
             <ChildContainer>
