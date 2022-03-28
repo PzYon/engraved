@@ -27,6 +27,7 @@ export const HeaderActions: React.FC<{ actions: IAction[] }> = ({
           key={action.key}
           color="default"
           aria-label={action.label}
+          sx={{ color: "primary.main" }}
           onClick={(e) => {
             e.stopPropagation();
 

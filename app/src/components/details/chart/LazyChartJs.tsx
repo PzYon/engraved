@@ -33,6 +33,8 @@ ChartJS.register(
   Tooltip
 );
 
+ChartJS.defaults.font.family = "Rubik";
+
 const LazyChartJs: React.FC<IVisualizationProps> = ({
   measurements,
   metric,

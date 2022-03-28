@@ -14,18 +14,19 @@ export const AppHeader: React.FC = () => {
         sx={{
           backgroundColor: "primary.main",
           color: "white",
+          marginBottom: "20px",
         }}
       >
         <ContentWrapper>
           <Link to="/">
-            <Typography variant="h2" sx={{ fontFamily: "Lilita One" }}>
+            <Typography variant="h1" sx={{ fontFamily: "Lilita One" }}>
               metrix
             </Typography>
           </Link>
         </ContentWrapper>
       </Box>
       <ContentWrapper>
-        <Typography variant="h3" sx={{ flexGrow: 1 }}>
+        <Typography variant="h2" sx={{ flexGrow: 1 }}>
           {pageTitle}
         </Typography>
         <HeaderActions actions={titleActions} />

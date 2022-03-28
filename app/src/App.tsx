@@ -8,15 +8,20 @@ import { AppErrorBoundary } from "./components/errorHandling/AppErrorBoundary";
 import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContext";
 
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-
-// todo:
-// - text no 100% black
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { GlobalStyles } from "@mui/styled-engine-sc";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#39c6b8",
+      main: "#c70039",
+    },
+    text: {
+      primary: "#444444",
+    },
+    background: {
+      default: "#c70039",
+      paper: "#c70039",
     },
   },
   typography: {
@@ -26,6 +31,18 @@ const theme = createTheme({
 
 export const App: React.FC = () => (
   <ThemeProvider theme={theme}>
+    <GlobalStyles
+      styles={{
+        a: {
+          color: theme.palette.primary.main + " !important;",
+          textDecoration: "none",
+        },
+
+        html: {
+          background: theme.palette.background.default,
+        },
+      }}
+    />
     <AppContextProvider>
       <DialogContextProvider>
         <BrowserRouter>
