@@ -3,11 +3,10 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
-  styled,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
+import styled from "styled-components";
 import { HeaderActions, IAction } from "./HeaderActions";
 
 export const AccordionSection: React.FC<{
@@ -40,22 +39,22 @@ export const AccordionSection: React.FC<{
   );
 };
 
-const StyledAccordion = styled(Accordion)({
-  margin: "20px 0",
-});
+const StyledAccordion = styled(Accordion)`
+  margin: 20px 0;
+`;
 
-const HeaderContainer = styled(Box)({
-  display: "flex",
-  width: "100%",
-});
+const HeaderContainer = styled.div`
+  display: flex;
+  width: 100%;
+`;
 
-const TextContainer = styled(Box)({
-  flexGrow: 1,
-  display: "flex",
-  alignItems: "center",
-});
+const TextContainer = styled.div`
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+`;
 
-const MiddleDotContainer = styled(Box)({
-  display: "inline-block",
-  padding: "0 15px",
-});
+const MiddleDotContainer = styled.div`
+  display: inline-block;
+  padding: 0 15px;
+`;

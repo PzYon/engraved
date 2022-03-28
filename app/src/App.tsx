@@ -10,19 +10,21 @@ import { DialogContextProvider } from "./components/layout/dialogs/DialogContext
 import { ThemeAndStylesProvider } from "./theming/ThemeAndStylesProvider";
 
 export const App: React.FC = () => (
-  <ThemeAndStylesProvider>
-    <AppContextProvider>
-      <DialogContextProvider>
-        <BrowserRouter>
-          <AppHeader />
-          <AppAlertBar />
-          <AppErrorBoundary>
-            <AppContent>
-              <AppRoutes />
-            </AppContent>
-          </AppErrorBoundary>
-        </BrowserRouter>
-      </DialogContextProvider>
-    </AppContextProvider>
-  </ThemeAndStylesProvider>
+  <React.StrictMode>
+    <ThemeAndStylesProvider>
+      <AppContextProvider>
+        <DialogContextProvider>
+          <BrowserRouter>
+            <AppHeader />
+            <AppAlertBar />
+            <AppErrorBoundary>
+              <AppContent>
+                <AppRoutes />
+              </AppContent>
+            </AppErrorBoundary>
+          </BrowserRouter>
+        </DialogContextProvider>
+      </AppContextProvider>
+    </ThemeAndStylesProvider>
+  </React.StrictMode>
 );

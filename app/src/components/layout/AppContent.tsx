@@ -1,7 +1,7 @@
-import { Box, styled } from "@mui/material";
+import styled from "styled-components";
 
-export const AppContent = styled(Box)({
-  maxWidth: "1200px",
-  boxSizing: "border-box",
-  margin: "auto",
-});
+export const AppContent = styled.div`
+  max-width: 1200px;
+  box-sizing: border-box;
+  margin: auto;
+`;
