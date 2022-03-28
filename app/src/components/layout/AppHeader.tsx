@@ -1,19 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import styled from "styled-components";
 import { HeaderActions } from "./HeaderActions";
 
 export const AppHeader: React.FC = () => {
   const { pageTitle, titleActions } = useAppContext();
 
   return (
-    <Host>
+    <Box sx={{ marginBottom: "20px" }}>
       <Box
         sx={{
-          backgroundColor: "primary.main",
-          color: "white",
+          backgroundColor: "secondary.main",
           marginBottom: "20px",
         }}
       >
@@ -31,20 +29,16 @@ export const AppHeader: React.FC = () => {
         </Typography>
         <HeaderActions actions={titleActions} />
       </ContentWrapper>
-    </Host>
+    </Box>
   );
 };
 
-const Host = styled.div`
-  margin-bottom: 20px;
-`;
+const ContentWrapper = styled(Box)({
+  maxWidth: "1200px",
+  margin: "auto",
+  display: "flex",
 
-const ContentWrapper = styled.div`
-  max-width: 1200px;
-  margin: auto;
-  display: flex;
-
-  a {
-    color: white !important;
-  }
-`;
+  a: {
+    color: "white !important",
+  },
+});

@@ -3,8 +3,7 @@ import { IMetric } from "../../serverApi/IMetric";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { useAppContext } from "../../AppContext";
 import { Section } from "../layout/Section";
-import { Typography } from "@mui/material";
-import styled from "styled-components";
+import { Box, Typography } from "@mui/material";
 import { MetricListHeaderActions } from "./MetricListHeaderActions";
 import { Link } from "react-router-dom";
 
@@ -31,29 +30,19 @@ export const MetricList: React.FC = () => {
     <>
       {metrics.map((metric) => (
         <Section key={metric.key}>
-          <MainContainer>
-            <LeftContainer>
+          <Box sx={{ display: "flex" }}>
+            <Box sx={{ flexGrow: 1 }}>
               <Link to={`metrics/${metric.key}`}>
                 <Typography variant="h5">{metric.name}</Typography>
               </Link>
               <Typography>{metric.description}</Typography>
-            </LeftContainer>
-            <ChildContainer>
+            </Box>
+            <Box>
               <MetricListHeaderActions metric={metric} />
-            </ChildContainer>
-          </MainContainer>
+            </Box>
+          </Box>
         </Section>
       ))}
     </>
   );
 };
-
-const MainContainer = styled.div`
-  display: flex;
-`;
-
-const ChildContainer = styled.div``;
-
-const LeftContainer = styled(ChildContainer)`
-  flex-grow: 1;
-`;

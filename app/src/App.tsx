@@ -7,42 +7,10 @@ import { AppContextProvider } from "./AppContext";
 import { AppErrorBoundary } from "./components/errorHandling/AppErrorBoundary";
 import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContext";
-
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { GlobalStyles } from "@mui/styled-engine-sc";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#c70039",
-    },
-    text: {
-      primary: "#444444",
-    },
-    background: {
-      default: "#c70039",
-      paper: "#c70039",
-    },
-  },
-  typography: {
-    fontFamily: "Rubik",
-  },
-});
+import { ThemeAndStylesProvider } from "./theming/ThemeAndStylesProvider";
 
 export const App: React.FC = () => (
-  <ThemeProvider theme={theme}>
-    <GlobalStyles
-      styles={{
-        a: {
-          color: theme.palette.primary.main + " !important;",
-          textDecoration: "none",
-        },
-
-        html: {
-          background: theme.palette.background.default,
-        },
-      }}
-    />
+  <ThemeAndStylesProvider>
     <AppContextProvider>
       <DialogContextProvider>
         <BrowserRouter>
@@ -56,5 +24,5 @@ export const App: React.FC = () => (
         </BrowserRouter>
       </DialogContextProvider>
     </AppContextProvider>
-  </ThemeProvider>
+  </ThemeAndStylesProvider>
 );

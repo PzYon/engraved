@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { IconButton } from "@mui/material";
-import styled from "styled-components";
+import { Box, IconButton, styled } from "@mui/material";
 
 export interface IAction {
   key: string;
@@ -45,8 +44,8 @@ export const HeaderActions: React.FC<{ actions: IAction[] }> = ({
   );
 };
 
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-grow: 1;
-  justify-content: end;
-`;
+const ButtonContainer = styled(Box)({
+  display: "flex",
+  flexGrow: 1,
+  justifyContent: "end",
+});
