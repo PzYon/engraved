@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material/styles";
 export const metrixTheme = createTheme({
   palette: {
     primary: {
-      main: "#c70039",
+      main: "#2a7b9b",
     },
     secondary: {
       main: "#2a7b9b",
@@ -12,7 +12,7 @@ export const metrixTheme = createTheme({
       primary: "#444444",
     },
     background: {
-      default: "#eddd53",
+      default: "#d4e3eb",
       paper: "#ffffff",
     },
   },

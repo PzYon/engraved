@@ -12,7 +12,7 @@ export const AppHeader: React.FC = () => {
     <Host>
       <Box
         sx={{
-          backgroundColor: "secondary.main",
+          backgroundColor: "primary.main",
           marginBottom: "20px",
         }}
       >

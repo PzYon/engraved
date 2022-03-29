@@ -25,9 +25,7 @@ export const AccordionSection: React.FC<{
             {subTitle ? (
               <>
                 <MiddleDotContainer>&#183;</MiddleDotContainer>
-                <Typography sx={{ color: "text.secondary" }} noWrap={true}>
-                  {subTitle}
-                </Typography>
+                <Typography noWrap={true}>{subTitle}</Typography>
               </>
             ) : null}
           </TextContainer>
