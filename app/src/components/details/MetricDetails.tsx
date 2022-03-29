@@ -7,7 +7,7 @@ import { Visualization } from "./chart/Visualization";
 import { useAppContext } from "../../AppContext";
 import { MeasurementsList } from "./MeasurementsList";
 import { IApiError } from "../../serverApi/IApiError";
-import { AccordionSection } from "../layout/AccordionSection";
+import { DetailsSection } from "../layout/DetailsSection";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
 import { translations } from "../../i18n/translations";
 import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
@@ -61,13 +61,13 @@ export const MetricDetails: React.FC = () => {
 
   return (
     <>
-      <AccordionSection title="Chart" expanded={true}>
+      <DetailsSection>
         <Visualization metric={metric} measurements={measurements} />
-      </AccordionSection>
+      </DetailsSection>
 
-      <AccordionSection title="All Measurements">
+      <DetailsSection title="All Measurements">
         <MeasurementsList metric={metric} measurements={measurements} />
-      </AccordionSection>
+      </DetailsSection>
 
       <Routes>
         <Route path="/edit" element={<EditMetricLauncher metric={metric} />} />
