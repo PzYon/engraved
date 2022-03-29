@@ -33,7 +33,9 @@ ChartJS.register(
   Tooltip
 );
 
-ChartJS.defaults.font.family = "Rubik";
+// todo: use them for this
+ChartJS.defaults.font.family = "Karla";
+ChartJS.defaults.font.size = 14;
 
 const LazyChartJs: React.FC<IVisualizationProps> = ({
   measurements,
