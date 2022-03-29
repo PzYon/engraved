@@ -18,7 +18,7 @@ export const AppHeader: React.FC = () => {
       >
         <ContentWrapper>
           <Link to="/">
-            <Typography variant="h1" sx={{ fontFamily: "Lilita One" }}>
+            <Typography variant="h1" sx={{ fontFamily: "Chewy" }}>
               metrix
             </Typography>
           </Link>

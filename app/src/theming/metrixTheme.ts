@@ -17,6 +17,13 @@ export const metrixTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Rubik",
+    fontFamily: "Karla",
+    htmlFontSize: 14,
+    h1: {
+      fontSize: "3rem",
+    },
+    h2: {
+      fontSize: "2rem",
+    },
   },
 });
