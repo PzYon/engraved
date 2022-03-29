@@ -14,6 +14,7 @@ import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { Route, Routes } from "react-router-dom";
 import { EditMetricLauncher } from "./edit/EditMetricLauncher";
+import { Typography } from "@mui/material";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -59,8 +60,16 @@ export const MetricDetails: React.FC = () => {
     return null;
   }
 
+  if (!metric) {
+    return <Typography>Nothing here.</Typography>;
+  }
+
   return (
     <>
+      {metric.description ? (
+        <Typography>{metric.description}</Typography>
+      ) : null}
+
       <DetailsSection>
         <Visualization metric={metric} measurements={measurements} />
       </DetailsSection>

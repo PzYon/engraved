@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 export const Section: React.FC<{ title?: string }> = ({ children, title }) => {
   return (
-    <Host elevation={0}>
+    <Host>
       {title ? <Title variant="h4">{title}</Title> : null}
       {children}
     </Host>

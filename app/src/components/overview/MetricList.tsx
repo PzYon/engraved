@@ -6,11 +6,15 @@ import { Section } from "../layout/Section";
 import { Box, Typography } from "@mui/material";
 import { MetricListHeaderActions } from "./MetricListHeaderActions";
 import { Link } from "react-router-dom";
+import { AddOutlined } from "@mui/icons-material";
+import { AddMetricLauncher } from "./AddMetricLauncher";
 
-export const MetricList: React.FC = () => {
+export const MetricList: React.FC<{ showCreate?: boolean }> = ({
+  showCreate,
+}) => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
 
-  const { setAppAlert } = useAppContext();
+  const { setAppAlert, setPageTitle, setTitleActions } = useAppContext();
 
   useEffect(() => {
     ServerApi.getMetrics()
@@ -24,6 +28,22 @@ export const MetricList: React.FC = () => {
           type: "error",
         });
       });
+
+    setPageTitle("All Your Metrix");
+
+    setTitleActions([
+      {
+        href: "/metrics/create",
+        icon: <AddOutlined />,
+        label: "Add Metric",
+        key: "add_metric",
+      },
+    ]);
+
+    return () => {
+      setPageTitle(null);
+      setTitleActions([]);
+    };
   }, []);
 
   return (
@@ -32,7 +52,7 @@ export const MetricList: React.FC = () => {
         <Section key={metric.key}>
           <Box sx={{ display: "flex" }}>
             <Box sx={{ flexGrow: 1 }}>
-              <Link to={`metrics/${metric.key}`}>
+              <Link to={`/metrics/${metric.key}`}>
                 <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                   {metric.name}
                 </Typography>
@@ -45,6 +65,8 @@ export const MetricList: React.FC = () => {
           </Box>
         </Section>
       ))}
+
+      {showCreate ? <AddMetricLauncher /> : null}
     </>
   );
 };

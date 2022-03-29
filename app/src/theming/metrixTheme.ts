@@ -26,4 +26,11 @@ export const metrixTheme = createTheme({
       fontSize: "2rem",
     },
   },
+  components: {
+    MuiPaper: {
+      defaultProps: {
+        elevation: 0,
+      },
+    },
+  },
 });

@@ -7,7 +7,7 @@ export const DetailsSection: React.FC<{
   subTitle?: string;
 }> = ({ title, children }) => {
   return (
-    <Host elevation={0}>
+    <Host>
       {title ? <Typography sx={{ flexShrink: 0 }}>{title}</Typography> : null}
       {children}
     </Host>

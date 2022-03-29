@@ -1,11 +1,11 @@
 import { Button, FormControl, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { translations } from "../i18n/translations";
-import { Section } from "./layout/Section";
-import { MetricTypeSelector } from "./MetricTypeSelector";
-import { MetricType } from "../serverApi/MetricType";
-import { ServerApi } from "../serverApi/ServerApi";
-import { useAppContext } from "../AppContext";
+import { translations } from "../../i18n/translations";
+import { Section } from "../layout/Section";
+import { MetricTypeSelector } from "../MetricTypeSelector";
+import { MetricType } from "../../serverApi/MetricType";
+import { ServerApi } from "../../serverApi/ServerApi";
+import { useAppContext } from "../../AppContext";
 
 export const AddMetric: React.FC = () => {
   const [name, setName] = useState("");
