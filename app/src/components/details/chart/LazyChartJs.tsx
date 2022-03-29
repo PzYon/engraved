@@ -33,7 +33,7 @@ ChartJS.register(
   Tooltip
 );
 
-// todo: use them for this
+// todo: use theme for this
 ChartJS.defaults.font.family = "Karla";
 ChartJS.defaults.font.size = 14;
 
