@@ -17,7 +17,7 @@ export const AccordionSection: React.FC<{
   expandIcon?: React.ReactNode;
 }> = ({ title, subTitle, expanded, headerActions, expandIcon, children }) => {
   return (
-    <StyledAccordion defaultExpanded={expanded}>
+    <StyledAccordion elevation={0} defaultExpanded={expanded}>
       <AccordionSummary expandIcon={expandIcon ?? <ExpandMore />}>
         <HeaderContainer>
           <TextContainer>
@@ -38,7 +38,7 @@ export const AccordionSection: React.FC<{
 };
 
 const StyledAccordion = styled(Accordion)`
-  margin: 20px 0;
+  //margin: 20px 0;
 `;
 
 const HeaderContainer = styled.div`
