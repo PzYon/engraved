@@ -10,7 +10,8 @@ export const createChart = (
   type: ChartType,
   groupBy: GroupBy,
   measurements: IMeasurement[],
-  metric: IMetric
+  metric: IMetric,
+  color: string
 ): ChartProps => {
   const data = transform(measurements, metric, groupBy);
 
@@ -31,7 +32,7 @@ export const createChart = (
           label: metric.name,
           normalized: true,
           data: data as never,
-          backgroundColor: "deeppink",
+          backgroundColor: color,
           tension: 0.3,
         },
       ],

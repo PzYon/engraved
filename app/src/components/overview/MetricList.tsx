@@ -3,15 +3,18 @@ import { IMetric } from "../../serverApi/IMetric";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { useAppContext } from "../../AppContext";
 import { Section } from "../layout/Section";
-import { Typography } from "@mui/material";
-import styled from "styled-components";
+import { Box, Typography } from "@mui/material";
 import { MetricListHeaderActions } from "./MetricListHeaderActions";
 import { Link } from "react-router-dom";
+import { AddOutlined } from "@mui/icons-material";
+import { AddMetricLauncher } from "./AddMetricLauncher";
 
-export const MetricList: React.FC = () => {
+export const MetricList: React.FC<{ showCreate?: boolean }> = ({
+  showCreate,
+}) => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
 
-  const { setAppAlert } = useAppContext();
+  const { setAppAlert, setPageTitle, setTitleActions } = useAppContext();
 
   useEffect(() => {
     ServerApi.getMetrics()
@@ -25,35 +28,45 @@ export const MetricList: React.FC = () => {
           type: "error",
         });
       });
+
+    setPageTitle("All Your Metrix");
+
+    setTitleActions([
+      {
+        href: "/metrics/create",
+        icon: <AddOutlined />,
+        label: "Add Metric",
+        key: "add_metric",
+      },
+    ]);
+
+    return () => {
+      setPageTitle(null);
+      setTitleActions([]);
+    };
   }, []);
 
   return (
     <>
       {metrics.map((metric) => (
         <Section key={metric.key}>
-          <MainContainer>
-            <LeftContainer>
-              <Link to={`metrics/${metric.key}`}>
-                <Typography variant="h5">{metric.name}</Typography>
+          <Box sx={{ display: "flex" }}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Link to={`/metrics/${metric.key}`}>
+                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  {metric.name}
+                </Typography>
               </Link>
               <Typography>{metric.description}</Typography>
-            </LeftContainer>
-            <ChildContainer>
+            </Box>
+            <Box>
               <MetricListHeaderActions metric={metric} />
-            </ChildContainer>
-          </MainContainer>
+            </Box>
+          </Box>
         </Section>
       ))}
+
+      {showCreate ? <AddMetricLauncher /> : null}
     </>
   );
 };
-
-const MainContainer = styled.div`
-  display: flex;
-`;
-
-const ChildContainer = styled.div``;
-
-const LeftContainer = styled(ChildContainer)`
-  flex-grow: 1;
-`;

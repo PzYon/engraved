@@ -3,12 +3,12 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogProps,
   DialogTitle,
   Slide,
 } from "@mui/material";
 import React from "react";
 import { translations } from "../../../i18n/translations";
-import { DialogProps } from "@mui/material/Dialog/Dialog";
 import { AppContent } from "../AppContent";
 
 const SlideUp = React.forwardRef(function Transition(props, ref) {

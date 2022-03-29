@@ -17,6 +17,7 @@ import { Chart } from "react-chartjs-2";
 import "chartjs-adapter-date-fns";
 import { createChart } from "./createChart";
 import { IVisualizationProps } from "./IVisualizationProps";
+import { useTheme } from "@mui/material/styles";
 
 ChartJS.register(
   BarController,
@@ -32,12 +33,25 @@ ChartJS.register(
   Tooltip
 );
 
+// todo: use theme for this
+ChartJS.defaults.font.family = "Karla";
+ChartJS.defaults.font.size = 14;
+
 const LazyChartJs: React.FC<IVisualizationProps> = ({
   measurements,
   metric,
   groupBy,
 }) => {
-  const chart = createChart("bar", groupBy, measurements, metric);
+  const theme = useTheme();
+
+  const chart = createChart(
+    "bar",
+    groupBy,
+    measurements,
+    metric,
+    theme.palette.primary.main
+  );
+
   return <Chart {...chart} />;
 };
 

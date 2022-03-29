@@ -7,13 +7,14 @@ import { Visualization } from "./chart/Visualization";
 import { useAppContext } from "../../AppContext";
 import { MeasurementsList } from "./MeasurementsList";
 import { IApiError } from "../../serverApi/IApiError";
-import { AccordionSection } from "../layout/AccordionSection";
+import { DetailsSection } from "../layout/DetailsSection";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
 import { translations } from "../../i18n/translations";
 import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { Route, Routes } from "react-router-dom";
 import { EditMetricLauncher } from "./edit/EditMetricLauncher";
+import { Typography } from "@mui/material";
 
 export const MetricDetails: React.FC = () => {
   const { metricKey } = useParams();
@@ -59,15 +60,23 @@ export const MetricDetails: React.FC = () => {
     return null;
   }
 
+  if (!metric) {
+    return <Typography>Nothing here.</Typography>;
+  }
+
   return (
     <>
-      <AccordionSection title="Chart" expanded={true}>
-        <Visualization metric={metric} measurements={measurements} />
-      </AccordionSection>
+      {metric.description ? (
+        <Typography>{metric.description}</Typography>
+      ) : null}
 
-      <AccordionSection title="All Measurements">
+      <DetailsSection>
+        <Visualization metric={metric} measurements={measurements} />
+      </DetailsSection>
+
+      <DetailsSection title="All Measurements">
         <MeasurementsList metric={metric} measurements={measurements} />
-      </AccordionSection>
+      </DetailsSection>
 
       <Routes>
         <Route path="/edit" element={<EditMetricLauncher metric={metric} />} />
