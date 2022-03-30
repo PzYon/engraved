@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 import { DialogWrapper } from "./DialogWrapper";
 
 export interface IDialogProps {
-  render: () => React.ReactNode;
+  render: (closeDialog: () => void) => React.ReactNode;
   title: string;
   isFullScreen?: boolean;
   onClose?: () => void;
@@ -28,21 +28,21 @@ export const DialogContextProvider: React.FC = ({ children }) => {
       {children}
       {dialogProps ? (
         <DialogWrapper
-          props={{
-            fullScreen: dialogProps.isFullScreen,
-          }}
+          props={{ fullScreen: dialogProps.isFullScreen }}
           title={dialogProps.title}
-          onClose={() => {
-            setDialogProps(null);
-
-            if (dialogProps.onClose) {
-              dialogProps.onClose();
-            }
-          }}
+          onClose={closeDialog}
         >
-          {dialogProps.render()}
+          {dialogProps.render(closeDialog)}
         </DialogWrapper>
       ) : null}
     </DialogContext.Provider>
   );
+
+  function closeDialog() {
+    if (dialogProps.onClose) {
+      dialogProps.onClose();
+    }
+
+    setDialogProps(null);
+  }
 };

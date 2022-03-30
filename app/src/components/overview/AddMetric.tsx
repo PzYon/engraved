@@ -6,13 +6,16 @@ import { MetricTypeSelector } from "../MetricTypeSelector";
 import { MetricType } from "../../serverApi/MetricType";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { useAppContext } from "../../AppContext";
+import { useNavigate } from "react-router-dom";
 
-export const AddMetric: React.FC = () => {
+export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [metricType, setMetricType] = useState(MetricType.Counter);
 
   const { setAppAlert } = useAppContext();
+
+  const navigate = useNavigate();
 
   return (
     <Section>
@@ -35,8 +38,12 @@ export const AddMetric: React.FC = () => {
         <Button
           variant="outlined"
           onClick={() => {
-            ServerApi.addMetric("", name, description, metricType)
-              .then(() => {
+            const key = createUuidV4();
+            ServerApi.addMetric(key, name, description, metricType)
+              .then(async () => {
+                await onAdded();
+                navigate(`/metrics/${key}`);
+
                 setAppAlert({
                   title: `Added metric ${name}`,
                   type: "success",
@@ -57,3 +64,26 @@ export const AddMetric: React.FC = () => {
     </Section>
   );
 };
+
+// https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
+function createUuidV4() {
+  let d = new Date().getTime(); //Timestamp
+  let d2 =
+    (typeof performance !== "undefined" &&
+      performance.now &&
+      performance.now() * 1000) ||
+    0; //Time in microseconds since page-load or 0 if unsupported
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    let r = Math.random() * 16; //random number between 0 and 16
+    if (d > 0) {
+      //Use timestamp until depleted
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
+    } else {
+      //Use microseconds since page-load if supported
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
+    }
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}

@@ -79,18 +79,23 @@ export const MetricDetails: React.FC = () => {
       </DetailsSection>
 
       <Routes>
-        <Route path="/edit" element={<EditMetricLauncher metric={metric} />} />
+        <Route
+          path="/edit"
+          element={
+            <EditMetricLauncher metric={metric} reloadMetric={getMetric} />
+          }
+        />
       </Routes>
     </>
   );
 
-  function getMetric() {
+  function getMetric(): Promise<void> {
     return ServerApi.getMetric(metricKey)
       .then(setMetric)
       .catch((e) => handleError(`Error loading Metric ${metricKey}`, e));
   }
 
-  function getMeasurements() {
+  function getMeasurements(): Promise<void> {
     return ServerApi.getMeasurements(metricKey)
       .then(setMeasurements)
       .catch((e) => handleError("Error loading measurements", e));

@@ -13,8 +13,8 @@ export const App: React.FC = () => (
   <React.StrictMode>
     <ThemeAndStylesProvider>
       <AppContextProvider>
-        <DialogContextProvider>
-          <BrowserRouter>
+        <BrowserRouter>
+          <DialogContextProvider>
             <AppHeader />
             <AppAlertBar />
             <AppErrorBoundary>
@@ -22,8 +22,8 @@ export const App: React.FC = () => (
                 <AppRoutes />
               </AppContent>
             </AppErrorBoundary>
-          </BrowserRouter>
-        </DialogContextProvider>
+          </DialogContextProvider>
+        </BrowserRouter>
       </AppContextProvider>
     </ThemeAndStylesProvider>
   </React.StrictMode>

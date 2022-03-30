@@ -4,9 +4,10 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useNavigate } from "react-router-dom";
 import { EditMetric } from "./EditMetric";
 
-export const EditMetricLauncher: React.FC<{ metric: IMetric }> = ({
-  metric,
-}) => {
+export const EditMetricLauncher: React.FC<{
+  metric: IMetric;
+  reloadMetric: () => Promise<void>;
+}> = ({ metric, reloadMetric }) => {
   const { renderDialog } = useDialogContext();
 
   const navigate = useNavigate();
@@ -15,7 +16,14 @@ export const EditMetricLauncher: React.FC<{ metric: IMetric }> = ({
     renderDialog({
       isFullScreen: true,
       title: "Edit " + metric.name,
-      render: () => <EditMetric metric={metric} />,
+      render: () => (
+        <EditMetric
+          metric={metric}
+          onSaved={async () => {
+            await reloadMetric();
+          }}
+        />
+      ),
       onClose: () => {
         navigate(`/metrics/${metric.key}`);
       },
