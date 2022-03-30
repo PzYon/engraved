@@ -1,7 +1,6 @@
 import React from "react";
-import { Alert, AlertTitle } from "@mui/material";
+import { Alert, AlertTitle, styled } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import styled from "styled-components";
 
 export interface IAppAlert {
   message?: string;
@@ -30,9 +29,9 @@ export const AppAlertBar: React.FC = () => {
   );
 };
 
-const Host = styled.div`
+const Host = styled("div")`
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: ${(p) => p.theme.spacing(2)};
+  right: ${(p) => p.theme.spacing(2)};
   z-index: 1234;
 `;

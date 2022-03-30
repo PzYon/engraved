@@ -8,7 +8,6 @@ export interface IAppErrorBoundaryClass {
 
 export class AppErrorBoundaryClass extends React.PureComponent<IAppErrorBoundaryClass> {
   public componentDidCatch(error: Error): void {
-    debugger;
     this.props.setError({
       message: error.message,
       title: "React error",
