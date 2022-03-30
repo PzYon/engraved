@@ -1,8 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import styled from "styled-components";
 import { HeaderActions } from "./HeaderActions";
 
 export const AppHeader: React.FC = () => {
@@ -13,7 +12,7 @@ export const AppHeader: React.FC = () => {
       <Box
         sx={{
           backgroundColor: "primary.main",
-          marginBottom: "20px",
+          mb: 2,
         }}
       >
         <ContentWrapper>
@@ -34,16 +33,17 @@ export const AppHeader: React.FC = () => {
   );
 };
 
-const Host = styled.div`
-  margin-bottom: 20px;
+const Host = styled("div")`
+  margin-bottom: ${(p) => p.theme.spacing(2)};
 `;
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled("div")`
   max-width: 1200px;
   margin: auto;
+  padding: 0 ${(p) => p.theme.spacing(2)};
   display: flex;
 
   a {
-    color: white !important;
+    color: ${(p) => p.theme.palette.common.white} !important;
   }
 `;

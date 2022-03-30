@@ -1,6 +1,5 @@
 import React from "react";
-import { Paper, Typography } from "@mui/material";
-import styled from "styled-components";
+import { Paper, styled, Typography } from "@mui/material";
 
 export const DetailsSection: React.FC<{
   title?: string;
@@ -15,6 +14,6 @@ export const DetailsSection: React.FC<{
 };
 
 const Host = styled(Paper)`
-  margin: 20px 0;
-  padding: 20px;
+  margin: ${(p) => p.theme.spacing(2)} 0;
+  padding: ${(p) => p.theme.spacing(2)};
 `;

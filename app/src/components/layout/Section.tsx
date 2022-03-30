@@ -1,6 +1,5 @@
 import React from "react";
-import { Paper, Typography } from "@mui/material";
-import styled from "styled-components";
+import { Paper, styled, Typography } from "@mui/material";
 
 export const Section: React.FC<{ title?: string }> = ({ children, title }) => {
   return (
@@ -12,11 +11,11 @@ export const Section: React.FC<{ title?: string }> = ({ children, title }) => {
 };
 
 const Host = styled(Paper)`
-  margin: 30px auto;
-  padding: 20px;
+  margin: ${(p) => p.theme.spacing(2)} auto;
+  padding: ${(p) => p.theme.spacing(2)};
 `;
 
 const Title = styled(Typography)`
   font-size: inherit !important;
-  margin-bottom: 20px !important;
+  margin-bottom: ${(p) => p.theme.spacing(2)} !important;
 `;
