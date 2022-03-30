@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BarController,
   BarElement,
@@ -33,23 +33,24 @@ ChartJS.register(
   Tooltip
 );
 
-// todo: use theme for this
-ChartJS.defaults.font.family = "Karla";
-ChartJS.defaults.font.size = 14;
-
 const LazyChartJs: React.FC<IVisualizationProps> = ({
   measurements,
   metric,
   groupBy,
 }) => {
-  const theme = useTheme();
+  const { typography, palette } = useTheme();
+
+  useEffect(() => {
+    ChartJS.defaults.font.family = typography.fontFamily;
+    ChartJS.defaults.font.size = typography.htmlFontSize;
+  }, []);
 
   const chart = createChart(
     "bar",
     groupBy,
     measurements,
     metric,
-    theme.palette.primary.main
+    palette.primary.main
   );
 
   return <Chart {...chart} />;

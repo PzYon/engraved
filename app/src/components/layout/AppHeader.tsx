@@ -41,6 +41,7 @@ const Host = styled.div`
 const ContentWrapper = styled.div`
   max-width: 1200px;
   margin: auto;
+  padding: 0 20px;
   display: flex;
 
   a {

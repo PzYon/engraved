@@ -12,7 +12,7 @@ export const Section: React.FC<{ title?: string }> = ({ children, title }) => {
 };
 
 const Host = styled(Paper)`
-  margin: 30px auto;
+  margin: 20px auto;
   padding: 20px;
 `;
 
