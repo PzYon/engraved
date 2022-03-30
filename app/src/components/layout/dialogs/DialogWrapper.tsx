@@ -1,14 +1,14 @@
+import { Close } from "@mui/icons-material";
 import {
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogProps,
   DialogTitle,
+  IconButton,
   Slide,
+  styled,
 } from "@mui/material";
 import React from "react";
-import { translations } from "../../../i18n/translations";
 import { AppContent } from "../AppContent";
 
 const SlideUp = React.forwardRef(function Transition(props, ref) {
@@ -33,16 +33,31 @@ export const DialogWrapper: React.FC<{
       {...props}
       open={true}
       onClose={onClose}
-      aria-labelledby="alert-dialog-title"
       TransitionComponent={SlideUp as never}
     >
       <RootBodyElement>
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+        <Header>
+          <StyledDialogTitle>{title}</StyledDialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            sx={{ color: (theme) => theme.palette.grey[500] }}
+          >
+            <Close />
+          </IconButton>
+        </Header>
         <DialogContent>{children}</DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>{translations.close}</Button>
-        </DialogActions>
       </RootBodyElement>
     </Dialog>
   );
 };
+
+const Header = styled("div")`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+`;
+
+const StyledDialogTitle = styled(DialogTitle)`
+  flex-grow: 1;
+`;

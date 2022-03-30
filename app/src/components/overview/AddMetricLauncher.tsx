@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { AddMetric } from "./AddMetric";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
+import { useNavigate } from "react-router-dom";
 
 export const AddMetricLauncher: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -12,7 +12,7 @@ export const AddMetricLauncher: React.FC = () => {
     renderDialog({
       isFullScreen: true,
       title: "Create Metric",
-      render: () => <AddMetric />,
+      render: (closeDialog: () => void) => <AddMetric onAdded={closeDialog} />,
       onClose: () => navigate(`/metrics`),
     });
   }, []);

@@ -33,5 +33,5 @@ const Host = styled("div")`
   position: fixed;
   bottom: ${(p) => p.theme.spacing(2)};
   right: ${(p) => p.theme.spacing(2)};
-  z-index: 1234;
+  z-index: 4321;
 `;

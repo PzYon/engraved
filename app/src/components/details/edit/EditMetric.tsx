@@ -5,7 +5,10 @@ import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 
-export const EditMetric: React.FC<{ metric: IMetric }> = ({ metric }) => {
+export const EditMetric: React.FC<{
+  metric: IMetric;
+  onSaved: () => Promise<unknown>;
+}> = ({ metric, onSaved }) => {
   const [flagJson, setFlagJson] = useState(
     metric.flags ? JSON.stringify(metric.flags) : ""
   );
@@ -35,9 +38,11 @@ export const EditMetric: React.FC<{ metric: IMetric }> = ({ metric }) => {
           ServerApi.editMetric(metric.key, name, JSON.parse(flagJson))
             .then(() => {
               setAppAlert({
-                title: `Saved metric ${metric.name}`,
+                title: "Saved metric",
                 type: "success",
               });
+
+              onSaved();
             })
             .catch((e) => {
               setAppAlert({
