@@ -7,21 +7,6 @@ import { GroupBy } from "./consolidation/GroupBy";
 import { TimeUnit } from "chart.js/types/adapters";
 import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
 
-function createDataSet(
-  data: ITransformedMeasurement[],
-  label: string,
-  backgroundColor: string
-): ChartDataset {
-  return {
-    label: label,
-    normalized: true,
-    data: data as never,
-    backgroundColor: backgroundColor,
-    tension: 0.3,
-    // stack: label,
-  };
-}
-
 export const createChart = (
   type: ChartType,
   groupBy: GroupBy,
@@ -29,30 +14,12 @@ export const createChart = (
   metric: IMetric,
   color: string
 ): ChartProps => {
-  const flags = Object.keys(metric.flags || {});
-  const hasFlags = flags.length;
-
-  const dataSets: ChartDataset[] = [];
-
-  if (hasFlags) {
-    for (const flag of flags) {
-      const measurementsForFlag = measurements.filter(
-        (m) => m.metricFlagKey == flag
-      );
-
-      const data = transform(measurementsForFlag, metric, groupBy);
-      const dataSet = createDataSet(
-        data,
-        flag,
-        flag == "irf" ? color : "deeppink"
-      );
-      dataSets.push(dataSet);
-    }
-  } else {
-    const data = transform(measurements, metric, groupBy);
-    const dataSet = createDataSet(data, metric.name, color);
-    dataSets.push(dataSet);
-  }
+  const dataSets: ChartDataset[] = createDataSets(
+    metric,
+    measurements,
+    groupBy,
+    color
+  );
 
   return {
     type: type,
@@ -74,6 +41,55 @@ export const createChart = (
     },
   };
 };
+
+function createDataSets(
+  metric: IMetric,
+  measurements: IMeasurement[],
+  groupBy: GroupBy,
+  color: string
+) {
+  const allFlags = Object.keys(metric.flags || {});
+  allFlags.push(null); // null is for measurements without a flag
+
+  const dataSets: ChartDataset[] = [];
+
+  for (const flag of allFlags) {
+    const measurementsForFlag = measurements.filter((m) =>
+      flag ? m.metricFlagKey === flag : !m.metricFlagKey
+    );
+
+    if (!measurementsForFlag.length) {
+      continue;
+    }
+
+    const data = transform(measurementsForFlag, metric, groupBy);
+
+    const dataSet = createDataSet(
+      data,
+      flag || metric.name,
+      flag == "irf" ? color : "deeppink"
+    );
+
+    dataSets.push(dataSet);
+  }
+
+  return dataSets;
+}
+
+function createDataSet(
+  data: ITransformedMeasurement[],
+  label: string,
+  backgroundColor: string
+): ChartDataset {
+  return {
+    label: label,
+    normalized: true,
+    data: data as never,
+    backgroundColor: backgroundColor,
+    tension: 0.3,
+    // stack: label,
+  };
+}
 
 function getTimeUnit(groupBy: GroupBy): TimeUnit {
   switch (groupBy) {
