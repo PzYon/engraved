@@ -5,7 +5,6 @@ import { transform } from "./transformation/transform";
 import { IMetric } from "../../../serverApi/IMetric";
 import { GroupBy } from "./consolidation/GroupBy";
 import { TimeUnit } from "chart.js/types/adapters";
-import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
 
 export const createChart = (
   type: ChartType,
@@ -64,31 +63,17 @@ function createDataSets(
 
     const data = transform(measurementsForFlag, metric, groupBy);
 
-    const dataSet = createDataSet(
-      data,
-      flag || metric.name,
-      flag == "irf" ? color : "deeppink"
-    );
-
-    dataSets.push(dataSet);
+    dataSets.push({
+      label: flag || metric.name,
+      normalized: true,
+      data: data as never,
+      backgroundColor: flag == "irf" ? color : "deeppink",
+      tension: 0.3,
+      // stack: label,
+    });
   }
 
   return dataSets;
-}
-
-function createDataSet(
-  data: ITransformedMeasurement[],
-  label: string,
-  backgroundColor: string
-): ChartDataset {
-  return {
-    label: label,
-    normalized: true,
-    data: data as never,
-    backgroundColor: backgroundColor,
-    tension: 0.3,
-    // stack: label,
-  };
 }
 
 function getTimeUnit(groupBy: GroupBy): TimeUnit {
