@@ -1,10 +1,26 @@
 import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { ChartProps } from "react-chartjs-2/dist/types";
-import { ChartType } from "chart.js";
+import { ChartDataset, ChartType } from "chart.js";
 import { transform } from "./transformation/transform";
 import { IMetric } from "../../../serverApi/IMetric";
 import { GroupBy } from "./consolidation/GroupBy";
 import { TimeUnit } from "chart.js/types/adapters";
+import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
+
+function createDataSet(
+  data: ITransformedMeasurement[],
+  label: string,
+  backgroundColor: string
+): ChartDataset {
+  return {
+    label: label,
+    normalized: true,
+    data: data as never,
+    backgroundColor: backgroundColor,
+    tension: 0.3,
+    // stack: label,
+  };
+}
 
 export const createChart = (
   type: ChartType,
@@ -13,7 +29,30 @@ export const createChart = (
   metric: IMetric,
   color: string
 ): ChartProps => {
-  const data = transform(measurements, metric, groupBy);
+  const flags = Object.keys(metric.flags || {});
+  const hasFlags = flags.length;
+
+  const dataSets: ChartDataset[] = [];
+
+  if (hasFlags) {
+    for (const flag of flags) {
+      const measurementsForFlag = measurements.filter(
+        (m) => m.metricFlagKey == flag
+      );
+
+      const data = transform(measurementsForFlag, metric, groupBy);
+      const dataSet = createDataSet(
+        data,
+        flag,
+        flag == "irf" ? color : "deeppink"
+      );
+      dataSets.push(dataSet);
+    }
+  } else {
+    const data = transform(measurements, metric, groupBy);
+    const dataSet = createDataSet(data, metric.name, color);
+    dataSets.push(dataSet);
+  }
 
   return {
     type: type,
@@ -21,21 +60,17 @@ export const createChart = (
       normalized: true,
       scales: {
         x: {
+          stacked: true,
           type: "time",
           time: { minUnit: getTimeUnit(groupBy) },
         },
+        // y: {
+        //  stacked: true,
+        // },
       },
     },
     data: {
-      datasets: [
-        {
-          label: metric.name,
-          normalized: true,
-          data: data as never,
-          backgroundColor: color,
-          tension: 0.3,
-        },
-      ],
+      datasets: dataSets,
     },
   };
 };
