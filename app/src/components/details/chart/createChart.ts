@@ -5,6 +5,7 @@ import { transform } from "./transformation/transform";
 import { IMetric } from "../../../serverApi/IMetric";
 import { GroupBy } from "./consolidation/GroupBy";
 import { TimeUnit } from "chart.js/types/adapters";
+import { lighten } from "@mui/material";
 
 export const createChart = (
   type: ChartType,
@@ -43,37 +44,54 @@ export const createChart = (
 
 function createDataSets(
   metric: IMetric,
-  measurements: IMeasurement[],
+  allMeasurements: IMeasurement[],
   groupBy: GroupBy,
   color: string
 ) {
   const allFlags = Object.keys(metric.flags || {});
   allFlags.push(null); // null is for measurements without a flag
 
-  const dataSets: ChartDataset[] = [];
-
-  for (const flag of allFlags) {
-    const measurementsForFlag = measurements.filter((m) =>
-      flag ? m.metricFlagKey === flag : !m.metricFlagKey
+  const dataSets: ChartDataset[] = allFlags
+    .map((flag) => filterMeasurementsByFlag(allMeasurements, flag))
+    .filter((measurements) => measurements.length)
+    .map((measurements) =>
+      transformMeasurementsTDataSet(measurements, metric, groupBy)
     );
 
-    if (!measurementsForFlag.length) {
-      continue;
-    }
+  const diffPerDataSet = 0.8 / (dataSets.length - 1);
 
-    const data = transform(measurementsForFlag, metric, groupBy);
+  return dataSets.map((dataSet, i) => {
+    return {
+      ...dataSet,
+      backgroundColor: lighten(color, i * diffPerDataSet),
+    };
+  });
+}
 
-    dataSets.push({
-      label: flag || metric.name,
-      normalized: true,
-      data: data as never,
-      backgroundColor: flag == "irf" ? color : "deeppink",
-      tension: 0.3,
-      // stack: label,
-    });
-  }
+function filterMeasurementsByFlag(
+  measurements: IMeasurement[],
+  flag: string
+): IMeasurement[] {
+  return measurements.filter((m) =>
+    flag ? m.metricFlagKey === flag : !m.metricFlagKey
+  );
+}
 
-  return dataSets;
+function transformMeasurementsTDataSet(
+  measurements: IMeasurement[],
+  metric: IMetric,
+  groupBy: GroupBy
+) {
+  const data = transform(measurements, metric, groupBy);
+
+  const metricFlagKey = measurements[0].metricFlagKey;
+
+  return {
+    label: metricFlagKey ? metric.flags[metricFlagKey] : metric.name,
+    normalized: true,
+    data: data as never,
+    tension: 0.3,
+  };
 }
 
 function getTimeUnit(groupBy: GroupBy): TimeUnit {

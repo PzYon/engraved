@@ -16,6 +16,7 @@ public static class SpecificCases
   {
     const string irfenKey = "irf";
     const string eletriptanKey = "ele";
+    const string imigranKey = "imi";
     
     return new SpecificCase
     {
@@ -29,6 +30,7 @@ public static class SpecificCases
         {
           { irfenKey, "Irfen" },
           { eletriptanKey, "Eletriptan" },
+          { imigranKey, "Imigran" },
         }
       },
       Measurements =
@@ -46,6 +48,13 @@ public static class SpecificCases
           Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-30),
           MetricFlagKey = irfenKey
+        },
+        new Measurement
+        {
+          MetricKey = "migraine-medicine",
+          Value = 1,
+          DateTime = DateTime.UtcNow.AddDays(-30),
+          MetricFlagKey = imigranKey
         },
         new Measurement
         {
@@ -74,6 +83,20 @@ public static class SpecificCases
           Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-5),
           MetricFlagKey = eletriptanKey
+        },
+        new Measurement
+        {
+          MetricKey = "migraine-medicine",
+          Value = 1,
+          DateTime = DateTime.UtcNow.AddDays(-3),
+          MetricFlagKey = imigranKey
+        },
+        new Measurement
+        {
+          MetricKey = "migraine-medicine",
+          Value = 1,
+          DateTime = DateTime.UtcNow.AddDays(-3),
+          MetricFlagKey = irfenKey
         }
       }
     };
