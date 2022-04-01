@@ -8,10 +8,10 @@ import { TimeUnit } from "chart.js/types/adapters";
 import { lighten } from "@mui/material";
 
 export const createChart = (
-  type: ChartType,
-  groupBy: GroupBy,
   measurements: IMeasurement[],
   metric: IMetric,
+  type: ChartType,
+  groupBy: GroupBy,
   color: string
 ): ChartProps => {
   const dataSets: ChartDataset[] = createDataSets(
