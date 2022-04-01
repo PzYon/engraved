@@ -33,6 +33,9 @@ export const createChart = (
         },
         y: {
           stacked: true,
+          ticks: {
+            stepSize: 1,
+          },
         },
       },
     },
@@ -55,10 +58,10 @@ function createDataSets(
     .map((flag) => filterMeasurementsByFlag(allMeasurements, flag))
     .filter((measurements) => measurements.length)
     .map((measurements) =>
-      transformMeasurementsTDataSet(measurements, metric, groupBy)
+      measurementsToDataSet(measurements, metric, groupBy)
     );
 
-  const diffPerDataSet = 0.8 / (dataSets.length - 1);
+  const diffPerDataSet = 0.8 / Math.max(dataSets.length - 1, 1);
 
   return dataSets.map((dataSet, i) => {
     return {
@@ -77,7 +80,7 @@ function filterMeasurementsByFlag(
   );
 }
 
-function transformMeasurementsTDataSet(
+function measurementsToDataSet(
   measurements: IMeasurement[],
   metric: IMetric,
   groupBy: GroupBy
