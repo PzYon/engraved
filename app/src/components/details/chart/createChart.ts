@@ -30,9 +30,9 @@ export const createChart = (
           type: "time",
           time: { minUnit: getTimeUnit(groupBy) },
         },
-        // y: {
-        //  stacked: true,
-        // },
+        y: {
+          stacked: true,
+        },
       },
     },
     data: {
