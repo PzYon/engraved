@@ -33,5 +33,6 @@ public class EditMetricCommandExecutor : ICommandExecutor
 
     metric.Flags = _command.Flags;
     metric.Name = _command.Name;
+    metric.Description = _command.Description;
   }
 }
