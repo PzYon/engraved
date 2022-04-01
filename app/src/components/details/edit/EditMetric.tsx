@@ -14,6 +14,7 @@ export const EditMetric: React.FC<{
   );
 
   const [name, setName] = useState(metric.name);
+  const [description, setDescription] = useState(metric.description);
 
   const { setAppAlert } = useAppContext();
 
@@ -26,6 +27,13 @@ export const EditMetric: React.FC<{
         margin={"normal"}
       />
       <TextField
+        value={description}
+        onChange={(event) => setDescription(event.target.value)}
+        multiline={true}
+        label={"Description"}
+        margin={"normal"}
+      />
+      <TextField
         value={flagJson}
         onChange={(event) => setFlagJson(event.target.value)}
         multiline={true}
@@ -35,7 +43,12 @@ export const EditMetric: React.FC<{
       <Button
         variant="outlined"
         onClick={() => {
-          ServerApi.editMetric(metric.key, name, JSON.parse(flagJson))
+          ServerApi.editMetric(
+            metric.key,
+            name,
+            description,
+            JSON.parse(flagJson)
+          )
             .then(() => {
               setAppAlert({
                 title: "Saved metric",

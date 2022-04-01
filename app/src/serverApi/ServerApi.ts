@@ -36,11 +36,13 @@ export class ServerApi {
   static async editMetric(
     metricKey: string,
     name: string,
+    description: string,
     metricFlags: IMetricFlags
   ): Promise<void> {
     const payload: IEditMetricCommand = {
       metricKey: metricKey,
       name: name,
+      description: description,
       flags: metricFlags,
     };
 
