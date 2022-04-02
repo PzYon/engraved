@@ -55,11 +55,13 @@ export class ServerApi {
 
   static async addMeasurement(
     metricKey: string,
+    notes?: string,
     metricFlagKey?: string
   ): Promise<void> {
     const payload: IAddMeasurementCommand = {
       metricKey: metricKey,
       metricFlagKey: metricFlagKey,
+      notes: notes,
     };
 
     await this.executeRequest("/measurements", "POST", payload);
