@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, FormControl } from "@mui/material";
+import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
@@ -11,6 +11,7 @@ export const AddMeasurement: React.FC<{
   onAdded?: () => void;
 }> = ({ metric, onAdded }) => {
   const [flagKey, setFlagKey] = useState<string>(""); // empty means nothing selected in the selector
+  const [notes, setNotes] = useState<string>("");
 
   const { setAppAlert } = useAppContext();
 
@@ -23,10 +24,17 @@ export const AddMeasurement: React.FC<{
           onFlagChange={(key) => setFlagKey(key)}
         />
       ) : null}
+      <TextField
+        value={notes}
+        onChange={(event) => setNotes(event.target.value)}
+        multiline={true}
+        label={"Notes"}
+        margin={"normal"}
+      />
       <Button
         variant="outlined"
         onClick={() => {
-          ServerApi.addMeasurement(metric.key, flagKey)
+          ServerApi.addMeasurement(metric.key, notes, flagKey)
             .then(() => {
               setAppAlert({
                 title: `Added measurement`,
