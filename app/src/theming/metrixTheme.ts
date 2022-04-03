@@ -1,5 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 
+const textColor = "#444444";
+
 export const metrixTheme = createTheme({
   palette: {
     primary: {
@@ -9,7 +11,7 @@ export const metrixTheme = createTheme({
       main: "#2a7b9b",
     },
     text: {
-      primary: "#444444",
+      primary: textColor,
     },
     background: {
       default: "#d4e3eb",
@@ -19,11 +21,15 @@ export const metrixTheme = createTheme({
   typography: {
     fontFamily: "Karla",
     htmlFontSize: 14,
+    body1: {
+      color: textColor,
+    },
     h1: {
       fontSize: "3rem",
     },
     h2: {
       fontSize: "2rem",
+      color: textColor,
     },
   },
   components: {

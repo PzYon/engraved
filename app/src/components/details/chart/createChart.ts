@@ -38,6 +38,15 @@ export const createChart = (
           },
         },
       },
+      plugins: {
+        tooltip: {
+          backgroundColor: color,
+          cornerRadius: 4,
+        },
+        legend: {
+          position: "top",
+        },
+      },
     },
     data: {
       datasets: dataSets,
