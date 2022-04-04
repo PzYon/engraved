@@ -64,7 +64,7 @@ export class ServerApi {
       notes: notes,
     };
 
-    await this.executeRequest("/measurements", "POST", payload);
+    return await this.executeRequest("/measurements", "POST", payload);
   }
 
   static async executeRequest<T = void>(
