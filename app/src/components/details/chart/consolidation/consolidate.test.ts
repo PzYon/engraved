@@ -56,6 +56,17 @@ describe("consolidate should", () => {
     assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 2, 0);
   });
 
+  it("group by month (2 measurements - first and last days of month)", () => {
+    const measurements: IMeasurement[] = [
+      { value: 20, dateTime: createDate(2020, 3, 31) },
+      { value: 10, dateTime: createDate(2020, 4, 1) },
+    ];
+
+    const grouped = consolidate(measurements, GroupBy.Month);
+
+    expect(grouped.length).toBe(2);
+  });
+
   it("group by day (2 measurements, same month)", () => {
     const measurements: IMeasurement[] = [
       { value: 6, dateTime: createDate(2020, 6, 9) },

@@ -12,8 +12,11 @@ export function transform(
 ): ITransformedMeasurement[] {
   if (metric.type === MetricType.Counter) {
     return consolidate(measurements, groupBy).map((m) => {
+      const month = m.groupKey.month - 1;
+      const day = m.groupKey.day || 1;
+
       return {
-        x: new Date(m.groupKey.year, m.groupKey.month - 1, m.groupKey.day),
+        x: new Date(m.groupKey.year, month, day),
         y: m.value,
       };
     });

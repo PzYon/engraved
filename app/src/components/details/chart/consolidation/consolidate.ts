@@ -12,9 +12,9 @@ export function consolidate(
       previousValue: { [groupKey: string]: IMeasurement[] },
       measurement: IMeasurement
     ) => {
-      const groupKey = ConsolidationKey.build(measurement.dateTime, groupBy);
+      const key = ConsolidationKey.build(measurement.dateTime, groupBy);
+      const keyAsString = key.serialize();
 
-      const keyAsString = groupKey.serialize();
       if (!previousValue[keyAsString]) {
         previousValue[keyAsString] = [];
       }
