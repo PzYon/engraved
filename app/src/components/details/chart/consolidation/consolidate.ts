@@ -31,10 +31,19 @@ export function consolidate(
 
     return {
       value: measurements
-        .map((m) => m.value)
+        .map(getValue)
         .reduce((total, current) => total + current, 0),
       groupKey: ConsolidationKey.deserialize(keyAsString),
       measurements: measurements,
     };
   });
+}
+
+function getValue(m: IMeasurement) {
+  // at the moment we use the number of measurements as
+  // this is only called when counter and there the value
+  // is always one.
+  // i guess that's correct, however this should also be
+  // possible for other metric types i suppose?
+  return m.value ?? 1;
 }

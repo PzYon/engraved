@@ -1,10 +1,8 @@
 ﻿namespace Metrix.Core.Domain.Measurements;
 
-public class Measurement
+public abstract class BaseMeasurement
 {
-  public string MetricKey { get; set; } = null!;
-
-  public double Value { get; set; }
+  public string MetricKey { get; set; }
 
   public string? Notes { get; set; }
 

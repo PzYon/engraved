@@ -22,23 +22,22 @@ public class AddMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public void Throw_WhenMetricKeyIsNotSpecified()
   {
-    var command = new AddMeasurementCommand { MetricKey = string.Empty };
+    var command = new AddCounterMeasurementCommand { MetricKey = string.Empty };
 
-    new AddMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb);
   }
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
   public void Throw_WhenMetricDoesNotExist()
   {
-    var command = new AddMeasurementCommand
+    var command = new AddCounterMeasurementCommand
     {
       MetricKey = "k3y",
-      Notes = "n0t3s",
-      Value = 42
+      Notes = "n0t3s"
     };
 
-    new AddMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb);
   }
 
   [TestMethod]
@@ -56,15 +55,17 @@ public class AddMeasurementCommandExecutorShould
       }
     );
 
-    var command = new AddMeasurementCommand { MetricKey = "k3y", Value = value };
+    var command = new AddCounterMeasurementCommand { MetricKey = "k3y" };
 
-    new AddMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb);
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
-    Measurement createdMeasurement = _testDb.Measurements.First();
+    BaseMeasurement createdMeasurement = _testDb.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
-    Assert.AreEqual(1, createdMeasurement.Value);
+
+    var counterMeasurement = createdMeasurement as CounterMeasurement;
+    Assert.IsNotNull(counterMeasurement);
   }
 
   [TestMethod]
@@ -78,19 +79,22 @@ public class AddMeasurementCommandExecutorShould
       }
     );
 
-    var command = new AddMeasurementCommand
+    var command = new AddGaugeMeasurementCommand
     {
       MetricKey = "k3y",
       Value = 123.45
     };
 
-    new AddMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb);
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
-    Measurement createdMeasurement = _testDb.Measurements.First();
+    BaseMeasurement createdMeasurement = _testDb.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
-    Assert.AreEqual(123.45, createdMeasurement.Value);
+
+    var counterMeasurement = createdMeasurement as GaugeMeasurement;
+    Assert.IsNotNull(counterMeasurement);
+    Assert.AreEqual(123.45, counterMeasurement.Value);
   }
 
   [TestMethod]
@@ -105,7 +109,7 @@ public class AddMeasurementCommandExecutorShould
       }
     );
 
-    var command = new AddMeasurementCommand
+    var command = new AddGaugeMeasurementCommand
     {
       MetricKey = "k3y",
       Notes = "n0t3s",
@@ -113,35 +117,14 @@ public class AddMeasurementCommandExecutorShould
       MetricFlagKey = "k3y"
     };
 
-    new AddMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb);
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
-    Measurement createdMeasurement = _testDb.Measurements.First();
+    BaseMeasurement createdMeasurement = _testDb.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(command.MetricFlagKey, createdMeasurement.MetricFlagKey);
-  }
-
-  [TestMethod]
-  [ExpectedException(typeof(InvalidCommandException))]
-  public void Throw_WhenTypeIsGaugeAndValueIsNull()
-  {
-    _testDb.Metrics.Add(
-      new Metric
-      {
-        Key = "k3y",
-        Type = MetricType.Gauge
-      }
-    );
-
-    var command = new AddMeasurementCommand
-    {
-      MetricKey = "k3y",
-      Value = null
-    };
-
-    new AddMeasurementCommandExecutor(command).Execute(_testDb);
   }
 
   [TestMethod]
@@ -155,7 +138,7 @@ public class AddMeasurementCommandExecutorShould
       }
     );
 
-    var command = new AddMeasurementCommand
+    var command = new AddGaugeMeasurementCommand
     {
       MetricKey = "k3y",
       Notes = "n0t3s",
@@ -163,12 +146,12 @@ public class AddMeasurementCommandExecutorShould
       MetricFlagKey = "fooBar"
     };
 
-    new AddMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb);
   }
 
   private class TestDb : IDb
   {
-    public List<Measurement> Measurements { get; } = new();
+    public List<BaseMeasurement> Measurements { get; } = new();
 
     public List<Metric> Metrics { get; } = new();
   }

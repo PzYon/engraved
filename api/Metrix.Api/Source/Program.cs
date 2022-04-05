@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
+using Metrix.Api.Filters;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
-using Metrix.Api.Filters;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

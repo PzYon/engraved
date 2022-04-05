@@ -7,7 +7,7 @@ public class SpecificCase
 {
   public Metric Metric { get; set; } = null!;
 
-  public List<Measurement> Measurements { get; } = new();
+  public List<BaseMeasurement> Measurements { get; } = new();
 }
 
 public static class SpecificCases
@@ -24,15 +24,13 @@ public static class SpecificCases
       },
       Measurements =
       {
-        new Measurement
+        new CounterMeasurement
         {
-          DateTime = new DateTime(2022, 3, 31, 21, 23, 0, DateTimeKind.Utc),
-          Value = 1
+          DateTime = new DateTime(2022, 3, 31, 21, 23, 0, DateTimeKind.Utc)
         },
-        new Measurement
+        new CounterMeasurement
         {
-          DateTime = new DateTime(2022, 4, 1, 2, 1, 0, DateTimeKind.Utc),
-          Value = 1
+          DateTime = new DateTime(2022, 4, 1, 2, 1, 0, DateTimeKind.Utc)
         }
       }
     };
@@ -56,62 +54,53 @@ public static class SpecificCases
         {
           { irfenKey, "Irfen" },
           { eletriptanKey, "Eletriptan" },
-          { imigranKey, "Imigran" },
+          { imigranKey, "Imigran" }
         }
       },
       Measurements =
       {
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-30),
           MetricFlagKey = eletriptanKey
         },
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-30),
           MetricFlagKey = irfenKey
         },
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-30),
           MetricFlagKey = imigranKey
         },
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-30),
           MetricFlagKey = eletriptanKey
         },
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-28),
           MetricFlagKey = irfenKey
         },
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-10),
           MetricFlagKey = eletriptanKey
         },
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-5),
           MetricFlagKey = eletriptanKey
         },
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-3),
           MetricFlagKey = imigranKey
         },
-        new Measurement
+        new CounterMeasurement
         {
-          Value = 1,
           DateTime = DateTime.UtcNow.AddDays(-3),
           MetricFlagKey = irfenKey
         }

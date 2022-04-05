@@ -18,13 +18,28 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpGet]
-  public Measurement[] GetAll([FromQuery] string metricKey)
+  public BaseMeasurement[] GetAll([FromQuery] string metricKey)
   {
     return _dispatcher.Query(new GetAllMeasurementsQuery { MetricKey = metricKey });
   }
 
   [HttpPost]
-  public void Add([FromBody] AddMeasurementCommand measurement)
+  [Route("counter")]
+  public void Add([FromBody] AddCounterMeasurementCommand measurement)
+  {
+    _dispatcher.Command(measurement);
+  }
+
+  [HttpPost]
+  [Route("gauge")]
+  public void Add([FromBody] AddGaugeMeasurementCommand measurement)
+  {
+    _dispatcher.Command(measurement);
+  }
+
+  [HttpPost]
+  [Route("timer")]
+  public void Add([FromBody] AddTimerMeasurementCommand measurement)
   {
     _dispatcher.Command(measurement);
   }
