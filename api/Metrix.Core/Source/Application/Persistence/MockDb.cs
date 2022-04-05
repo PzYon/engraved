@@ -49,9 +49,23 @@ public class MockDb : IDb
 
   private void AddSpecificCases()
   {
-    SpecificCase migraineMedicineCase = SpecificCases.GetMigraineMedicineCase();
-    Metrics.Insert(0, migraineMedicineCase.Metric);
-    Measurements.AddRange(migraineMedicineCase.Measurements);
+    AddSpecificCase(SpecificCases.GetMigraineMedicineCase());
+    AddSpecificCase(SpecificCases.GetOffByOneEdgeCase());
+  }
+
+  private void AddSpecificCase(SpecificCase specificCase)
+  {
+    Metrics.Insert(0, specificCase.Metric);
+    
+    Measurements.AddRange(
+      specificCase.Measurements.Select(
+        m =>
+        {
+          m.MetricKey = specificCase.Metric.Key;
+          return m;
+        }
+      )
+    );
   }
 
   private static DateTime GetRandomDate()

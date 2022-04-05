@@ -21,7 +21,7 @@ export const metrixTheme = createTheme({
   typography: {
     fontFamily: "Karla",
     htmlFontSize: 14,
-    body1: {
+    body2: {
       color: textColor,
     },
     h1: {
