@@ -91,13 +91,13 @@ export const MetricDetails: React.FC = () => {
 
   function getMetric(): Promise<void> {
     return ServerApi.getMetric(metricKey)
-      .then(setMetric)
+      .then((m) => setMetric(m))
       .catch((e) => handleError(`Error loading Metric ${metricKey}`, e));
   }
 
   function getMeasurements(): Promise<void> {
     return ServerApi.getMeasurements(metricKey)
-      .then(setMeasurements)
+      .then((m) => setMeasurements(m))
       .catch((e) => handleError("Error loading measurements", e));
   }
 
