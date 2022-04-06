@@ -6,6 +6,7 @@ import { IMetric } from "../../../serverApi/IMetric";
 import { MetricFlagsSelector } from "./MetricFlagsSelector";
 import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
+import { IAddMeasurementCommand } from "../../../serverApi/commands/IAddMeasurementCommand";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
@@ -38,7 +39,13 @@ export const AddMeasurement: React.FC<{
       <Button
         variant="outlined"
         onClick={() => {
-          ServerApi.addMeasurement(metric, notes, flagKey)
+          const command: IAddMeasurementCommand = {
+            notes: notes,
+            metricFlagKey: flagKey,
+            metricKey: metric.key,
+          };
+
+          ServerApi.addMeasurement(command, metric.type.toLowerCase())
             .then(() => {
               setAppAlert({
                 title: `Added measurement`,

@@ -49,6 +49,28 @@ public class AddGaugeMeasurementCommandExecutorShould
   }
 
   [TestMethod]
+  [ExpectedException(typeof(InvalidCommandException))]
+  public void Throw_WhenNoValueIsSpecified()
+  {
+    _testDb.Metrics.Add(
+      new Metric
+      {
+        Key = "k3y",
+        Type = MetricType.Gauge
+      }
+    );
+
+    var command = new AddGaugeMeasurementCommand
+    {
+      MetricKey = "k3y",
+      Notes = "n0t3s",
+      Value = null
+    };
+
+    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb);
+  }
+
+  [TestMethod]
   public void MapAllFieldsCorrectly()
   {
     _testDb.Metrics.Add(

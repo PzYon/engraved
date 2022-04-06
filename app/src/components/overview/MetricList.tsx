@@ -54,7 +54,7 @@ export const MetricList: React.FC<{ showCreate?: boolean }> = ({
             <Box sx={{ flexGrow: 1 }}>
               <Link to={`/metrics/${metric.key}`}>
                 <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                  {metric.name}
+                  [{metric.type}] {metric.name}
                 </Typography>
               </Link>
               <Typography>{metric.description}</Typography>

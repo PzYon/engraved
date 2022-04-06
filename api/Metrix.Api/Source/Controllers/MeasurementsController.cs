@@ -25,21 +25,28 @@ public class MeasurementsController : ControllerBase
 
   [HttpPost]
   [Route("counter")]
-  public void Add([FromBody] AddCounterMeasurementCommand measurement)
+  public void AddCounter([FromBody] AddCounterMeasurementCommand measurement)
   {
     _dispatcher.Command(measurement);
   }
 
   [HttpPost]
   [Route("gauge")]
-  public void Add([FromBody] AddGaugeMeasurementCommand measurement)
+  public void AddGauge([FromBody] AddGaugeMeasurementCommand measurement)
   {
     _dispatcher.Command(measurement);
   }
 
   [HttpPost]
-  [Route("timer")]
-  public void Add([FromBody] AddTimerMeasurementCommand measurement)
+  [Route("timer_start")]
+  public void StartTimer([FromBody] StartTimerMeasurementCommand measurement)
+  {
+    _dispatcher.Command(measurement);
+  }
+
+  [HttpPost]
+  [Route("timer_end")]
+  public void EndTimer([FromBody] EndTimerMeasurementCommand measurement)
   {
     _dispatcher.Command(measurement);
   }

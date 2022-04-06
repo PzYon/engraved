@@ -54,20 +54,13 @@ export class ServerApi {
   }
 
   static async addMeasurement(
-    metric: IMetric,
-    notes?: string,
-    metricFlagKey?: string
+    command: IAddMeasurementCommand,
+    urlSegment: string
   ): Promise<void> {
-    const payload: IAddMeasurementCommand = {
-      metricKey: metric.key,
-      metricFlagKey: metricFlagKey,
-      notes: notes,
-    };
-
     return await this.executeRequest(
-      "/measurements/" + metric.type.toLowerCase(),
+      "/measurements/" + urlSegment,
       "POST",
-      payload
+      command
     );
   }
 

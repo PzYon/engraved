@@ -1,3 +1,4 @@
+using Metrix.Core.Application.Commands.Metrics;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
@@ -8,24 +9,27 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
   where TCommand : BaseAddMeasurementCommand
   where TMeasurement : IMeasurement
 {
+  protected TCommand Command { get; }
+
+  protected abstract TMeasurement CreateMeasurement();
+
+  protected virtual void PerformAdditionalValidation(IDb db, Metric metric) { }
+
   protected BaseAddMeasurementCommandExecutor(TCommand command)
   {
     Command = command;
   }
 
-  protected TCommand Command { get; }
-
   public void Execute(IDb db)
   {
-    EnsureMetricKeyIsPresent();
+    Metric metric = MetricUtil.LoadAndValidateMetric(db, Command, Command.MetricKey);
 
-    Metric? metric = db.Metrics.FirstOrDefault(m => m.Key == Command.MetricKey);
-
-    EnsureMetricExists(metric);
+    EnsureCompatibleMetricType(metric);
     ValidateMetricFlag(metric);
+    
+    PerformAdditionalValidation(db, metric);
 
     IMeasurement measurement = CreateMeasurement();
-
     measurement.MetricKey = Command.MetricKey;
     measurement.Notes = Command.Notes;
     measurement.DateTime = DateTime.UtcNow;
@@ -34,9 +38,17 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
     db.Measurements.Add(measurement);
   }
 
-  protected abstract TMeasurement CreateMeasurement();
+  private void EnsureCompatibleMetricType(Metric metric)
+  {
+    if (metric.Type != Command.GetSupportedMetricType())
+    {
+      throw CreateInvalidCommandException(
+        $"Command with metric type \"{Command.GetSupportedMetricType()}\" is not compatible with metric of type \"{metric.Type}\"."
+      );
+    }
+  }
 
-  private void ValidateMetricFlag(Metric? metric)
+  private void ValidateMetricFlag(Metric metric)
   {
     if (!string.IsNullOrEmpty(Command.MetricFlagKey) && !metric.Flags.ContainsKey(Command.MetricFlagKey))
     {
@@ -44,23 +56,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
     }
   }
 
-  private void EnsureMetricExists(Metric? metric)
-  {
-    if (metric == null)
-    {
-      throw CreateInvalidCommandException($"A metric with key \"{Command.MetricKey}\" does not exist.");
-    }
-  }
-
-  private void EnsureMetricKeyIsPresent()
-  {
-    if (string.IsNullOrEmpty(Command.MetricKey))
-    {
-      throw CreateInvalidCommandException($"A {nameof(BaseAddMeasurementCommand.MetricKey)} must be specified.");
-    }
-  }
-
-  private InvalidCommandException CreateInvalidCommandException(string message)
+  protected InvalidCommandException CreateInvalidCommandException(string message)
   {
     return new InvalidCommandException(Command, message);
   }
