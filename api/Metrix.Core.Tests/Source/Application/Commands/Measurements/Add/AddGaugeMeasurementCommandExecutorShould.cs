@@ -17,7 +17,10 @@ public class AddGaugeMeasurementCommandExecutorShould
   }
 
   [TestMethod]
-  public void Set_ValueFromCommand_WhenTypeIsGauge()
+  [DataRow(0)]
+  [DataRow(1)]
+  [DataRow(123.456)]
+  public void Set_ValueFromCommand(double value)
   {
     _testDb.Metrics.Add(
       new Metric
@@ -27,8 +30,6 @@ public class AddGaugeMeasurementCommandExecutorShould
       }
     );
 
-    const double value = 123.45;
-    
     var command = new AddGaugeMeasurementCommand
     {
       MetricKey = "k3y",
@@ -60,7 +61,7 @@ public class AddGaugeMeasurementCommandExecutorShould
     );
 
     const double value = 123.45;
-    
+
     var command = new AddGaugeMeasurementCommand
     {
       MetricKey = "k3y",
