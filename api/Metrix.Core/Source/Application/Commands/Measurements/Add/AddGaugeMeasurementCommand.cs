@@ -4,7 +4,7 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 public class AddGaugeMeasurementCommand : BaseAddMeasurementCommand
 {
-  public double Value { get; set; }
+  public double? Value { get; set; }
 
   public override MetricType GetSupportedMetricType()
   {
