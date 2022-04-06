@@ -4,8 +4,9 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-public abstract class BaseAddMeasurementCommandExecutor<TCommand> : ICommandExecutor
+public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> : ICommandExecutor
   where TCommand : BaseAddMeasurementCommand
+  where TMeasurement : IMeasurement
 {
   protected BaseAddMeasurementCommandExecutor(TCommand command)
   {
@@ -33,7 +34,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand> : ICommandExec
     db.Measurements.Add(measurement);
   }
 
-  protected abstract IMeasurement CreateMeasurement();
+  protected abstract TMeasurement CreateMeasurement();
 
   private void ValidateMetricFlag(Metric? metric)
   {

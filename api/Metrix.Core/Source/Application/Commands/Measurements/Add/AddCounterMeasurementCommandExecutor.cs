@@ -2,11 +2,13 @@
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-public class AddCounterMeasurementCommandExecutor : BaseAddMeasurementCommandExecutor<AddCounterMeasurementCommand>
+public class AddCounterMeasurementCommandExecutor : BaseAddMeasurementCommandExecutor<
+  AddCounterMeasurementCommand,
+  CounterMeasurement>
 {
   public AddCounterMeasurementCommandExecutor(AddCounterMeasurementCommand command) : base(command) { }
 
-  protected override IMeasurement CreateMeasurement()
+  protected override CounterMeasurement CreateMeasurement()
   {
     return new CounterMeasurement();
   }
