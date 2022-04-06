@@ -40,7 +40,7 @@ public class AddGaugeMeasurementCommandExecutorShould
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
-    BaseMeasurement createdMeasurement = _testDb.Measurements.First();
+    IMeasurement createdMeasurement = _testDb.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
 
     var counterMeasurement = createdMeasurement as GaugeMeasurement;
@@ -74,7 +74,7 @@ public class AddGaugeMeasurementCommandExecutorShould
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
-    BaseMeasurement createdMeasurement = _testDb.Measurements.First();
+    IMeasurement createdMeasurement = _testDb.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(command.MetricFlagKey, createdMeasurement.MetricFlagKey);

@@ -6,7 +6,7 @@ public class AddGaugeMeasurementCommandExecutor : BaseAddMeasurementCommandExecu
 {
   public AddGaugeMeasurementCommandExecutor(AddGaugeMeasurementCommand command) : base(command) { }
 
-  protected override BaseMeasurement CreateMeasurement()
+  protected override IMeasurement CreateMeasurement()
   {
     return new GaugeMeasurement
     {

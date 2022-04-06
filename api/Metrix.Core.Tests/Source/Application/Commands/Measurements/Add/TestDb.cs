@@ -7,7 +7,7 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 internal class TestDb : IDb
 {
-  public List<BaseMeasurement> Measurements { get; } = new();
+  public List<IMeasurement> Measurements { get; } = new();
 
   public List<Metric> Metrics { get; } = new();
 }

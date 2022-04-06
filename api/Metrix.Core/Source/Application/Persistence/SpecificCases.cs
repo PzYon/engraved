@@ -7,7 +7,7 @@ public class SpecificCase
 {
   public Metric Metric { get; set; } = null!;
 
-  public List<BaseMeasurement> Measurements { get; } = new();
+  public List<IMeasurement> Measurements { get; } = new();
 }
 
 public static class SpecificCases

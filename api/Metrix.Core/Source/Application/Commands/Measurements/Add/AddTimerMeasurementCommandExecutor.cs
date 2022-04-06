@@ -6,7 +6,7 @@ public class AddTimerMeasurementCommandExecutor : BaseAddMeasurementCommandExecu
 {
   public AddTimerMeasurementCommandExecutor(AddTimerMeasurementCommand command) : base(command) { }
 
-  protected override BaseMeasurement CreateMeasurement()
+  protected override IMeasurement CreateMeasurement()
   {
     return new TimerMeasurement();
   }

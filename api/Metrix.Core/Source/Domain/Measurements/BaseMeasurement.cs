@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Core.Domain.Measurements;
 
-public abstract class BaseMeasurement
+public abstract class BaseMeasurement : IMeasurement
 {
   public string MetricKey { get; set; }
 

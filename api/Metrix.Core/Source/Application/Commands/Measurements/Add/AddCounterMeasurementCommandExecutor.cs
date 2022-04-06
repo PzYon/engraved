@@ -6,7 +6,7 @@ public class AddCounterMeasurementCommandExecutor : BaseAddMeasurementCommandExe
 {
   public AddCounterMeasurementCommandExecutor(AddCounterMeasurementCommand command) : base(command) { }
 
-  protected override BaseMeasurement CreateMeasurement()
+  protected override IMeasurement CreateMeasurement()
   {
     return new CounterMeasurement();
   }

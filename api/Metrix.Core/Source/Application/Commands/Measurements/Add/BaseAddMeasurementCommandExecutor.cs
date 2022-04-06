@@ -23,7 +23,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand> : ICommandExec
     EnsureMetricExists(metric);
     ValidateMetricFlag(metric);
 
-    BaseMeasurement measurement = CreateMeasurement();
+    IMeasurement measurement = CreateMeasurement();
 
     measurement.MetricKey = Command.MetricKey;
     measurement.Notes = Command.Notes;
@@ -33,7 +33,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand> : ICommandExec
     db.Measurements.Add(measurement);
   }
 
-  protected abstract BaseMeasurement CreateMeasurement();
+  protected abstract IMeasurement CreateMeasurement();
 
   private void ValidateMetricFlag(Metric? metric)
   {

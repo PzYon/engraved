@@ -3,7 +3,7 @@ using Metrix.Core.Domain.Measurements;
 
 namespace Metrix.Core.Application.Queries.Measurements.GetAll;
 
-public class GetAllMeasurementsQueryExecutor : IQueryExecutor<BaseMeasurement[]>
+public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
 {
   private readonly GetAllMeasurementsQuery _query;
 
@@ -12,7 +12,7 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<BaseMeasurement[]>
     _query = query;
   }
 
-  public BaseMeasurement[] Execute(IDb db)
+  public IMeasurement[] Execute(IDb db)
   {
     return db.Measurements
       .Where(m => m.MetricKey == _query.MetricKey)

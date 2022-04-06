@@ -18,7 +18,7 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpGet]
-  public BaseMeasurement[] GetAll([FromQuery] string metricKey)
+  public IMeasurement[] GetAll([FromQuery] string metricKey)
   {
     return _dispatcher.Query(new GetAllMeasurementsQuery { MetricKey = metricKey });
   }
