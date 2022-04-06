@@ -29,7 +29,7 @@ public class MetricsController : ControllerBase
   [HttpGet]
   public Metric Get(string metricKey)
   {
-    return _dispatcher.Query(new GetMetricQuery {MetricKey = metricKey});
+    return _dispatcher.Query(new GetMetricQuery { MetricKey = metricKey });
   }
 
   [HttpPost]

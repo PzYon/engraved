@@ -1,17 +1,12 @@
 ﻿namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-public class AddMeasurementCommand : ICommand
+public abstract class BaseAddMeasurementCommand : ICommand
 {
   public string MetricKey { get; set; } = null!;
-
-  public double? Value { get; set; }
 
   public string? Notes { get; set; }
 
   public string? MetricFlagKey { get; set; }
 
-  public ICommandExecutor CreateExecutor()
-  {
-    return new AddMeasurementCommandExecutor(this);
-  }
+  public abstract ICommandExecutor CreateExecutor();
 }

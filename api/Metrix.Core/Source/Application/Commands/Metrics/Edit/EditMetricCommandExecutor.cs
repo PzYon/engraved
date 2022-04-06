@@ -23,7 +23,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
     {
       throw new InvalidCommandException(_command, $"{nameof(EditMetricCommand.Name)} must be specified.");
     }
-    
+
     Metric? metric = db.Metrics.FirstOrDefault(m => m.Key == _command.MetricKey);
 
     if (metric == null)

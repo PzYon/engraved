@@ -5,9 +5,9 @@ public class EditMetricCommand : ICommand
   public string MetricKey { get; set; }
 
   public string? Name { get; set; }
-  
+
   public string? Description { get; set; }
-  
+
   public Dictionary<string, string> Flags { get; set; } = new();
 
   public ICommandExecutor CreateExecutor()

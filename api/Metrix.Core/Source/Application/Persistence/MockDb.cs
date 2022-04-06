@@ -27,7 +27,7 @@ public class MockDb : IDb
       Measurements.AddRange(
         Enumerable.Range(0, Random.Shared.Next(5, 20))
           .Select(
-            _ => new Measurement
+            _ => new GaugeMeasurement
             {
               DateTime = GetRandomDate(),
               MetricKey = metric.Key,
@@ -43,7 +43,7 @@ public class MockDb : IDb
     AddSpecificCases();
   }
 
-  public List<Measurement> Measurements { get; } = new();
+  public List<IMeasurement> Measurements { get; } = new();
 
   public List<Metric> Metrics { get; } = new();
 
@@ -56,7 +56,7 @@ public class MockDb : IDb
   private void AddSpecificCase(SpecificCase specificCase)
   {
     Metrics.Insert(0, specificCase.Metric);
-    
+
     Measurements.AddRange(
       specificCase.Measurements.Select(
         m =>

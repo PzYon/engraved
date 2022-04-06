@@ -5,6 +5,7 @@ import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
 import { MetricFlagsSelector } from "./MetricFlagsSelector";
 import { useAppContext } from "../../../AppContext";
+import { MetricType } from "../../../serverApi/MetricType";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
@@ -31,10 +32,13 @@ export const AddMeasurement: React.FC<{
         label={"Notes"}
         margin={"normal"}
       />
+
+      {metric.type === MetricType.Timer ? <div>stopwatch!</div> : null}
+
       <Button
         variant="outlined"
         onClick={() => {
-          ServerApi.addMeasurement(metric.key, notes, flagKey)
+          ServerApi.addMeasurement(metric, notes, flagKey)
             .then(() => {
               setAppAlert({
                 title: `Added measurement`,

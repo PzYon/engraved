@@ -5,7 +5,7 @@ namespace Metrix.Core.Application.Persistence;
 
 public interface IDb
 {
-  List<Measurement> Measurements { get; }
+  List<IMeasurement> Measurements { get; }
 
   List<Metric> Metrics { get; }
 }
