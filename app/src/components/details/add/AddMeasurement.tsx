@@ -51,6 +51,10 @@ export const AddMeasurement: React.FC<{
                 title: `Added measurement`,
                 type: "success",
               });
+
+              if (onAdded) {
+                onAdded();
+              }
             })
             .catch((e) => {
               setAppAlert({
@@ -59,10 +63,6 @@ export const AddMeasurement: React.FC<{
                 type: "error",
               });
             });
-
-          if (onAdded) {
-            onAdded();
-          }
         }}
       >
         {translations.add}
