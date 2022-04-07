@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
@@ -8,6 +8,7 @@ import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IAddMeasurementCommand } from "../../../serverApi/commands/IAddMeasurementCommand";
 import { IAddGaugeMeasurementCommand } from "../../../serverApi/commands/IAddGaugeMeasurementCommand";
+import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
@@ -17,7 +18,15 @@ export const AddMeasurement: React.FC<{
   const [notes, setNotes] = useState<string>("");
   const [value, setValue] = useState<string>("");
 
+  const [isTimerAndIsRunning, setIsTimerAndIsRunning] = useState(false);
+
   const { setAppAlert } = useAppContext();
+
+  useEffect(() => {
+    if (metric.type === MetricType.Timer) {
+      loadIsRunning();
+    }
+  }, []);
 
   return (
     <FormControl>
@@ -35,8 +44,6 @@ export const AddMeasurement: React.FC<{
         label={"Notes"}
         margin={"normal"}
       />
-
-      {metric.type === MetricType.Timer ? <div>stopwatch!</div> : null}
 
       {metric.type === MetricType.Gauge ? (
         <TextField
@@ -64,7 +71,7 @@ export const AddMeasurement: React.FC<{
               : undefined;
           }
 
-          ServerApi.addMeasurement(command, metric.type.toLowerCase())
+          ServerApi.addMeasurement(command, getUrlSegment())
             .then(() => {
               setAppAlert({
                 title: `Added measurement`,
@@ -84,8 +91,33 @@ export const AddMeasurement: React.FC<{
             });
         }}
       >
-        {translations.add}
+        {getAddButtonLabel()}
       </Button>
     </FormControl>
   );
+
+  async function loadIsRunning(): Promise<void> {
+    const measurements = await ServerApi.getMeasurements(metric.key);
+    const isRunning =
+      measurements.filter((m) => !(m as ITimerMeasurement).endDate).length ===
+      1;
+
+    setIsTimerAndIsRunning(isRunning);
+  }
+
+  function getUrlSegment() {
+    if (metric.type === MetricType.Timer) {
+      return isTimerAndIsRunning ? "timer_end" : "timer_start  ";
+    }
+
+    return metric.type.toLowerCase();
+  }
+
+  function getAddButtonLabel(): string {
+    if (metric.type === MetricType.Timer) {
+      return isTimerAndIsRunning ? "Stop" : "Start";
+    }
+
+    return translations.add;
+  }
 };
