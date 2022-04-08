@@ -2,9 +2,9 @@
 
 namespace Metrix.Core.Application.Queries.Metrics.GetAll;
 
-public class GetAllMetricsQuery : IQuery<Metric[]>
+public class GetAllMetricsQuery : IQuery<IMetric[]>
 {
-  IQueryExecutor<Metric[]> IQuery<Metric[]>.CreateExecutor()
+  IQueryExecutor<IMetric[]> IQuery<IMetric[]>.CreateExecutor()
   {
     return new GetAllMetricsQueryExecutor(this);
   }

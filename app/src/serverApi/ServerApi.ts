@@ -50,7 +50,7 @@ export class ServerApi {
   }
 
   static async getMeasurements(metricKey: string): Promise<IMeasurement[]> {
-    return await this.executeRequest(`/measurements?metricKey=${metricKey}`);
+    return await this.executeRequest(`/measurements/${metricKey}`);
   }
 
   static async addMeasurement(

@@ -5,15 +5,18 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> : ICommandExecutor
+public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
   where TCommand : BaseAddMeasurementCommand
   where TMeasurement : IMeasurement
+  where TMetric : IMetric
 {
   protected TCommand Command { get; }
 
   protected abstract TMeasurement CreateMeasurement();
 
-  protected virtual void PerformAdditionalValidation(IDb db, Metric metric) { }
+  protected virtual void PerformAdditionalValidation(IDb db, TMetric metric) { }
+
+  protected virtual void UpdateMetric(TMetric metric) { }
 
   protected BaseAddMeasurementCommandExecutor(TCommand command)
   {
@@ -22,23 +25,27 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
 
   public void Execute(IDb db)
   {
-    Metric metric = MetricUtil.LoadAndValidateMetric(db, Command, Command.MetricKey);
+    var metric = MetricUtil.LoadAndValidateMetric<TMetric>(db, Command, Command.MetricKey);
 
     EnsureCompatibleMetricType(metric);
     ValidateMetricFlag(metric);
-    
+
     PerformAdditionalValidation(db, metric);
 
-    IMeasurement measurement = CreateMeasurement();
+    TMeasurement measurement = CreateMeasurement();
     measurement.MetricKey = Command.MetricKey;
     measurement.Notes = Command.Notes;
     measurement.DateTime = DateTime.UtcNow;
     measurement.MetricFlagKey = Command.MetricFlagKey;
 
     db.Measurements.Add(measurement);
+
+    UpdateMetric(metric);
+
+    metric.LastMeasurementDate = DateTime.UtcNow;
   }
 
-  private void EnsureCompatibleMetricType(Metric metric)
+  private void EnsureCompatibleMetricType(IMetric metric)
   {
     if (metric.Type != Command.GetSupportedMetricType())
     {
@@ -48,7 +55,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
     }
   }
 
-  private void ValidateMetricFlag(Metric metric)
+  private void ValidateMetricFlag(IMetric metric)
   {
     if (!string.IsNullOrEmpty(Command.MetricFlagKey) && !metric.Flags.ContainsKey(Command.MetricFlagKey))
     {

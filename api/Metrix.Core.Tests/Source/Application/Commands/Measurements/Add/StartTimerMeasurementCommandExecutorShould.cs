@@ -19,15 +19,9 @@ public class StartTimerMeasurementCommandExecutorShould
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
-  public void Throw_WhenMetricAlreadyHasRunningTImer()
+  public void Throw_WhenMetricAlreadyHasRunningTimer()
   {
-    _testDb.Metrics.Add(
-      new Metric
-      {
-        Type = MetricType.Timer,
-        Key = "test"
-      }
-    );
+    _testDb.Metrics.Add(new TimerMetric { Key = "test" });
 
     _testDb.Measurements.Add(
       new TimerMeasurement
@@ -46,13 +40,7 @@ public class StartTimerMeasurementCommandExecutorShould
   [TestMethod]
   public void CreateTimerMeasurement()
   {
-    _testDb.Metrics.Add(
-      new Metric
-      {
-        Type = MetricType.Timer,
-        Key = "test"
-      }
-    );
+    _testDb.Metrics.Add(new TimerMetric { Key = "test" });
 
     var command = new StartTimerMeasurementCommand { MetricKey = "test" };
 
@@ -71,5 +59,10 @@ public class StartTimerMeasurementCommandExecutorShould
     Assert.IsTrue(diffBetweenNow.TotalSeconds < 5);
 
     Assert.IsNull(counterMeasurement.EndDate);
+
+    TimerMetric metric = _testDb.Metrics.OfType<TimerMetric>().First(m => m.Key == "test");
+    Assert.IsNotNull(metric);
+    Assert.IsNotNull(metric.StartDate);
+    Assert.AreEqual(counterMeasurement.StartDate, metric.StartDate);
   }
 }

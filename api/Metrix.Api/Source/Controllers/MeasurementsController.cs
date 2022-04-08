@@ -18,9 +18,11 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpGet]
-  public IMeasurement[] GetAll([FromQuery] string metricKey)
+  [Route("{metricKey}")]
+  public object[] GetAll(string metricKey)
   {
-    return _dispatcher.Query(new GetAllMeasurementsQuery { MetricKey = metricKey });
+    IMeasurement[] measurements = _dispatcher.Query(new GetAllMeasurementsQuery { MetricKey = metricKey });
+    return measurements.EnsurePolymorphismWhenSerializing();
   }
 
   [HttpPost]

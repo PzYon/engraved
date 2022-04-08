@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Core.Domain.Metrics;
 
-public class Metric
+public abstract class BaseMetric : IMetric
 {
   public string Key { get; set; } = null!;
 
@@ -8,7 +8,9 @@ public class Metric
 
   public string? Description { get; set; }
 
-  public MetricType Type { get; set; }
+  public MetricType Type { get; protected set; }
 
   public Dictionary<string, string> Flags { get; set; } = new();
+  
+  public DateTime? LastMeasurementDate { get; set; }
 }
