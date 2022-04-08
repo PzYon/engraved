@@ -59,7 +59,7 @@ export const AddMeasurement: React.FC<{
 
           if (metric.type === MetricType.Gauge) {
             (command as IAddGaugeMeasurementCommand).value = !isNaN(
-              value as any
+              value as never
             )
               ? Number(value)
               : undefined;
