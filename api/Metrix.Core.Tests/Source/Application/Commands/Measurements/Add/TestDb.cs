@@ -9,5 +9,5 @@ internal class TestDb : IDb
 {
   public List<IMeasurement> Measurements { get; } = new();
 
-  public List<Metric> Metrics { get; } = new();
+  public List<IMetric> Metrics { get; } = new();
 }

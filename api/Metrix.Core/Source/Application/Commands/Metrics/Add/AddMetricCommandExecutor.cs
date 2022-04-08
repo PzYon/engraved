@@ -25,14 +25,26 @@ public class AddMetricCommandExecutor : ICommandExecutor
       throw new InvalidCommandException(_command, $"\"{nameof(_command.Name)}\" must be specified");
     }
 
-    db.Metrics.Add(
-      new Metric
-      {
-        Key = string.IsNullOrEmpty(_command.Key) ? Guid.NewGuid().ToString() : _command.Key,
-        Description = _command.Description,
-        Name = _command.Name,
-        Type = _command.Type
-      }
-    );
+    IMetric metric = CreateMetric(_command.Type);
+    metric.Key = string.IsNullOrEmpty(_command.Key) ? Guid.NewGuid().ToString() : _command.Key;
+    metric.Description = _command.Description;
+    metric.Name = _command.Name;
+
+    db.Metrics.Add(metric);
+  }
+
+  private static IMetric CreateMetric(MetricType type)
+  {
+    switch (type)
+    {
+      case MetricType.Counter:
+        return new CounterMetric();
+      case MetricType.Gauge:
+        return new GaugeMetric();
+      case MetricType.Timer:
+        return new TimerMetric();
+      default:
+        throw new ArgumentOutOfRangeException(nameof(type), type, null);
+    }
   }
 }

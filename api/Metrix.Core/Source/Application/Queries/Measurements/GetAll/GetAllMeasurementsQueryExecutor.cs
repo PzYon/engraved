@@ -15,32 +15,21 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
 
   public IMeasurement[] Execute(IDb db)
   {
-    Metric? metric = db.Metrics.FirstOrDefault(m => m.Key == _query.MetricKey);
+    if (string.IsNullOrEmpty(_query.MetricKey))
+    {
+      throw new Exception($"{nameof(GetAllMeasurementsQuery.MetricKey)} must be specified.");
+    }
+
+    IMetric? metric = db.Metrics.FirstOrDefault(m => m.Key == _query.MetricKey);
 
     if (metric == null)
     {
       throw new Exception($"Metric with key \"{_query.MetricKey}\" does not exist.");
     }
 
-    switch (metric.Type)
-    {
-      case MetricType.Counter:
-        return GetMeasurements<CounterMeasurement>(db);
-      case MetricType.Gauge:
-        return GetMeasurements<GaugeMeasurement>(db);
-      case MetricType.Timer:
-        return GetMeasurements<TimerMeasurement>(db);
-      default:
-        throw new NotImplementedException($"Metric type \"{metric.Type}\" is not yet supported.");
-    }
-  }
-
-  private T[] GetMeasurements<T>(IDb db) where T : IMeasurement
-  {
     return db.Measurements
       .Where(m => m.MetricKey == _query.MetricKey)
       .OrderBy(m => m.DateTime)
-      .OfType<T>()
       .ToArray();
   }
 }

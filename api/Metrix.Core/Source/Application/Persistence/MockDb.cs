@@ -8,21 +8,29 @@ public class MockDb : IDb
 {
   public MockDb()
   {
+    Metrics.Add(
+      new TimerMetric
+      {
+        Key = "my_timer",
+        Name = "My Timer",
+        StartDateTime = DateTime.Now.AddMinutes(200),
+      }
+    );
+
     Metrics.AddRange(
       Enumerable.Range(0, Random.Shared.Next(5, 30))
         .Select(
-          i => new Metric
+          i => new GaugeMetric
           {
             Description = LoremIpsum(0, 12, 1, 3),
             Key = "key" + i,
-            Name = LoremIpsum(1, 3, 1, 1),
-            Type = MetricType.Gauge
+            Name = LoremIpsum(1, 3, 1, 1)
           }
         )
         .ToList()
     );
 
-    foreach (Metric metric in Metrics)
+    foreach (IMetric metric in Metrics)
     {
       Measurements.AddRange(
         Enumerable.Range(0, Random.Shared.Next(5, 20))
@@ -45,7 +53,7 @@ public class MockDb : IDb
 
   public List<IMeasurement> Measurements { get; } = new();
 
-  public List<Metric> Metrics { get; } = new();
+  public List<IMetric> Metrics { get; } = new();
 
   private void AddSpecificCases()
   {

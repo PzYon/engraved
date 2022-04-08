@@ -20,14 +20,15 @@ public class MetricsController : ControllerBase
   }
 
   [HttpGet]
-  public Metric[] GetAll()
+  public object[] GetAll()
   {
-    return _dispatcher.Query(new GetAllMetricsQuery());
+    IMetric[] metrics = _dispatcher.Query(new GetAllMetricsQuery());
+    return metrics.EnsurePolymorphismWhenSerializing();
   }
 
   [Route("{metricKey}")]
   [HttpGet]
-  public Metric Get(string metricKey)
+  public IMetric Get(string metricKey)
   {
     return _dispatcher.Query(new GetMetricQuery { MetricKey = metricKey });
   }

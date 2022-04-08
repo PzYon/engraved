@@ -16,7 +16,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
 
   public void Execute(IDb db)
   {
-    Metric metric = MetricUtil.LoadAndValidateMetric(db, _command, _command.MetricKey);
+    IMetric metric = MetricUtil.LoadAndValidateMetric(db, _command, _command.MetricKey);
 
     if (metric.Type != MetricType.Timer)
     {

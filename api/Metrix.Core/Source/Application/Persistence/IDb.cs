@@ -7,5 +7,5 @@ public interface IDb
 {
   List<IMeasurement> Measurements { get; }
 
-  List<Metric> Metrics { get; }
+  List<IMetric> Metrics { get; }
 }

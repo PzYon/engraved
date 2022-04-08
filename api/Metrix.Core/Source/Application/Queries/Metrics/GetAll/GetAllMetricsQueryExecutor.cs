@@ -3,7 +3,7 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Queries.Metrics.GetAll;
 
-public class GetAllMetricsQueryExecutor : IQueryExecutor<Metric[]>
+public class GetAllMetricsQueryExecutor : IQueryExecutor<IMetric[]>
 {
   private readonly GetAllMetricsQuery _command;
 
@@ -12,7 +12,7 @@ public class GetAllMetricsQueryExecutor : IQueryExecutor<Metric[]>
     _command = command;
   }
 
-  public Metric[] Execute(IDb db)
+  public IMetric[] Execute(IDb db)
   {
     return db.Metrics.ToArray();
   }

@@ -22,13 +22,7 @@ public class AddGaugeMeasurementCommandExecutorShould
   [DataRow(123.456)]
   public void Set_ValueFromCommand(double value)
   {
-    _testDb.Metrics.Add(
-      new Metric
-      {
-        Key = "k3y",
-        Type = MetricType.Gauge
-      }
-    );
+    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
     var command = new AddGaugeMeasurementCommand
     {
@@ -52,13 +46,7 @@ public class AddGaugeMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public void Throw_WhenNoValueIsSpecified()
   {
-    _testDb.Metrics.Add(
-      new Metric
-      {
-        Key = "k3y",
-        Type = MetricType.Gauge
-      }
-    );
+    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
     var command = new AddGaugeMeasurementCommand
     {
@@ -74,10 +62,9 @@ public class AddGaugeMeasurementCommandExecutorShould
   public void MapAllFieldsCorrectly()
   {
     _testDb.Metrics.Add(
-      new Metric
+      new GaugeMetric
       {
         Key = "k3y",
-        Type = MetricType.Gauge,
         Flags = { { "x", "y" }, { "k3y", "v@lue" } }
       }
     );
@@ -110,12 +97,7 @@ public class AddGaugeMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public void Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
   {
-    _testDb.Metrics.Add(
-      new Metric
-      {
-        Key = "k3y"
-      }
-    );
+    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
     var command = new AddGaugeMeasurementCommand
     {

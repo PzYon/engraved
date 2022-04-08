@@ -13,7 +13,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
 
   protected abstract TMeasurement CreateMeasurement();
 
-  protected virtual void PerformAdditionalValidation(IDb db, Metric metric) { }
+  protected virtual void PerformAdditionalValidation(IDb db, IMetric metric) { }
 
   protected BaseAddMeasurementCommandExecutor(TCommand command)
   {
@@ -22,7 +22,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
 
   public void Execute(IDb db)
   {
-    Metric metric = MetricUtil.LoadAndValidateMetric(db, Command, Command.MetricKey);
+    IMetric metric = MetricUtil.LoadAndValidateMetric(db, Command, Command.MetricKey);
 
     EnsureCompatibleMetricType(metric);
     ValidateMetricFlag(metric);
@@ -38,7 +38,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
     db.Measurements.Add(measurement);
   }
 
-  private void EnsureCompatibleMetricType(Metric metric)
+  private void EnsureCompatibleMetricType(IMetric metric)
   {
     if (metric.Type != Command.GetSupportedMetricType())
     {
@@ -48,7 +48,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement> 
     }
   }
 
-  private void ValidateMetricFlag(Metric metric)
+  private void ValidateMetricFlag(IMetric metric)
   {
     if (!string.IsNullOrEmpty(Command.MetricFlagKey) && !metric.Flags.ContainsKey(Command.MetricFlagKey))
     {

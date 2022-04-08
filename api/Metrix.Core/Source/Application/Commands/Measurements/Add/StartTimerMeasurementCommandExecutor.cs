@@ -11,7 +11,7 @@ public class StartTimerMeasurementCommandExecutor : BaseAddMeasurementCommandExe
 {
   public StartTimerMeasurementCommandExecutor(StartTimerMeasurementCommand command) : base(command) { }
 
-  protected override void PerformAdditionalValidation(IDb db, Metric metric)
+  protected override void PerformAdditionalValidation(IDb db, IMetric metric)
   {
     if (db.Measurements
         .Where(m => m.MetricKey == metric.Key)

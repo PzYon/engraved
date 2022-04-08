@@ -5,7 +5,7 @@ namespace Metrix.Core.Application.Persistence;
 
 public class SpecificCase
 {
-  public Metric Metric { get; set; } = null!;
+  public IMetric Metric { get; set; } = null!;
 
   public List<IMeasurement> Measurements { get; } = new();
 }
@@ -16,11 +16,10 @@ public static class SpecificCases
   {
     return new SpecificCase
     {
-      Metric = new Metric
+      Metric = new CounterMetric
       {
         Key = "edge-case",
-        Name = "Date Edge Case",
-        Type = MetricType.Counter
+        Name = "Date Edge Case"
       },
       Measurements =
       {
@@ -44,12 +43,11 @@ public static class SpecificCases
 
     return new SpecificCase
     {
-      Metric = new Metric
+      Metric = new CounterMetric()
       {
         Key = "migraine-medicine",
         Name = "Migraine Medicine",
         Description = "How many migraine medicines have been taken.",
-        Type = MetricType.Counter,
         Flags = new Dictionary<string, string>
         {
           { irfenKey, "Irfen" },

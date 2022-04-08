@@ -2,11 +2,11 @@
 
 namespace Metrix.Core.Application.Queries.Metrics.Get;
 
-public class GetMetricQuery : IQuery<Metric>
+public class GetMetricQuery : IQuery<IMetric>
 {
   public string? MetricKey { get; set; }
 
-  IQueryExecutor<Metric> IQuery<Metric>.CreateExecutor()
+  IQueryExecutor<IMetric> IQuery<IMetric>.CreateExecutor()
   {
     return new GetMetricQueryExecutor(this);
   }

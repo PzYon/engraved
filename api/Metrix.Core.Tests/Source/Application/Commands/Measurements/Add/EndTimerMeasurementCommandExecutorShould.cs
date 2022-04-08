@@ -21,38 +21,27 @@ public class EndTimerMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public void Throw_WhenNoTimerIsStartedForMetric()
   {
-    _testDb.Metrics.Add(
-      new Metric
-      {
-        Type = MetricType.Timer,
-        Key = "test"
-      }
-    );
-    
+    _testDb.Metrics.Add(new TimerMetric { Key = "test" });
+
     var command = new EndTimerMeasurementCommand { MetricKey = "test" };
     new EndTimerMeasurementCommandExecutor(command).Execute(_testDb);
-
   }
-  
+
   [TestMethod]
   public void SetEndDate()
   {
-    _testDb.Metrics.Add(
-      new Metric
-      {
-        Type = MetricType.Timer,
-        Key = "test"
-      }
-    );
+    _testDb.Metrics.Add(new TimerMetric { Key = "test" });
 
     DateTime now = DateTime.UtcNow;
-    
-    _testDb.Measurements.Add(new TimerMeasurement
-    {
-      DateTime = now.AddMinutes(-30),
-      StartDate = now.AddMinutes(-30),
-      MetricKey = "test"
-    });
+
+    _testDb.Measurements.Add(
+      new TimerMeasurement
+      {
+        DateTime = now.AddMinutes(-30),
+        StartDate = now.AddMinutes(-30),
+        MetricKey = "test"
+      }
+    );
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
@@ -65,7 +54,7 @@ public class EndTimerMeasurementCommandExecutorShould
     TimerMeasurement timerMeasurement = _testDb.Measurements.OfType<TimerMeasurement>().First();
 
     Assert.IsNotNull(timerMeasurement.EndDate);
-    
+
     TimeSpan diffBetweenNow = timerMeasurement.EndDate.Value - now;
     Assert.IsTrue(diffBetweenNow.TotalSeconds < 5);
   }

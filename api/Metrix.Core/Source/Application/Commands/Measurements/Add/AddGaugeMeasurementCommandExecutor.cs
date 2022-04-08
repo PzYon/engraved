@@ -11,7 +11,7 @@ public class AddGaugeMeasurementCommandExecutor : BaseAddMeasurementCommandExecu
 {
   public AddGaugeMeasurementCommandExecutor(AddGaugeMeasurementCommand command) : base(command) { }
 
-  protected override void PerformAdditionalValidation(IDb db, Metric metric)
+  protected override void PerformAdditionalValidation(IDb db, IMetric metric)
   {
     if (Command.Value == null)
     {
