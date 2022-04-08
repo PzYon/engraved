@@ -7,4 +7,5 @@ export interface IMetric {
   name: string;
   description: string;
   type: MetricType;
+  lastMeasurementDate: string;
 }

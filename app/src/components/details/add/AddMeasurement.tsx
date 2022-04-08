@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
@@ -8,7 +8,7 @@ import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IAddMeasurementCommand } from "../../../serverApi/commands/IAddMeasurementCommand";
 import { IAddGaugeMeasurementCommand } from "../../../serverApi/commands/IAddGaugeMeasurementCommand";
-import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
+import { ITimerMetric } from "../../../serverApi/ITimerMetric";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
@@ -18,15 +18,9 @@ export const AddMeasurement: React.FC<{
   const [notes, setNotes] = useState<string>("");
   const [value, setValue] = useState<string>("");
 
-  const [isTimerAndIsRunning, setIsTimerAndIsRunning] = useState(false);
-
   const { setAppAlert } = useAppContext();
 
-  useEffect(() => {
-    if (metric.type === MetricType.Timer) {
-      loadIsRunning();
-    }
-  }, []);
+  const isTimerAndIsRunning = !!(metric as ITimerMetric).startDate;
 
   return (
     <FormControl>
@@ -95,15 +89,6 @@ export const AddMeasurement: React.FC<{
       </Button>
     </FormControl>
   );
-
-  async function loadIsRunning(): Promise<void> {
-    const measurements = await ServerApi.getMeasurements(metric.key);
-    const isRunning =
-      measurements.filter((m) => !(m as ITimerMeasurement).endDate).length ===
-      1;
-
-    setIsTimerAndIsRunning(isRunning);
-  }
 
   function getUrlSegment() {
     if (metric.type === MetricType.Timer) {

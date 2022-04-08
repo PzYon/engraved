@@ -8,15 +8,6 @@ public class MockDb : IDb
 {
   public MockDb()
   {
-    Metrics.Add(
-      new TimerMetric
-      {
-        Key = "my_timer",
-        Name = "My Timer",
-        StartDate = DateTime.Now.AddMinutes(200),
-      }
-    );
-
     Metrics.AddRange(
       Enumerable.Range(0, Random.Shared.Next(5, 30))
         .Select(
@@ -48,6 +39,8 @@ public class MockDb : IDb
       );
     }
 
+    AddTimerMetricIncludingMeasurement();
+
     AddSpecificCases();
   }
 
@@ -59,6 +52,28 @@ public class MockDb : IDb
   {
     AddSpecificCase(SpecificCases.GetMigraineMedicineCase());
     AddSpecificCase(SpecificCases.GetOffByOneEdgeCase());
+  }
+
+  private void AddTimerMetricIncludingMeasurement()
+  {
+    DateTime date = DateTime.Now.AddMinutes(200);
+    Metrics.Add(
+      new TimerMetric
+      {
+        Key = "my_timer",
+        Name = "My Timer",
+        StartDate = date,
+      }
+    );
+
+    Measurements.Add(
+      new TimerMeasurement
+      {
+        MetricKey = "my_timer",
+        DateTime = date,
+        StartDate = date
+      }
+    );
   }
 
   private void AddSpecificCase(SpecificCase specificCase)
