@@ -6,12 +6,13 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 public class AddGaugeMeasurementCommandExecutor : BaseAddMeasurementCommandExecutor<
   AddGaugeMeasurementCommand,
-  GaugeMeasurement
+  GaugeMeasurement,
+  GaugeMetric
 >
 {
   public AddGaugeMeasurementCommandExecutor(AddGaugeMeasurementCommand command) : base(command) { }
 
-  protected override void PerformAdditionalValidation(IDb db, IMetric metric)
+  protected override void PerformAdditionalValidation(IDb db, GaugeMetric metric)
   {
     if (Command.Value == null)
     {

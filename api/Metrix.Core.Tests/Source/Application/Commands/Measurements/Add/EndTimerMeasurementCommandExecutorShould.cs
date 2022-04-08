@@ -30,15 +30,15 @@ public class EndTimerMeasurementCommandExecutorShould
   [TestMethod]
   public void SetEndDate()
   {
-    _testDb.Metrics.Add(new TimerMetric { Key = "test" });
+    DateTime startDate = DateTime.UtcNow.AddMinutes(-30);
 
-    DateTime now = DateTime.UtcNow;
+    _testDb.Metrics.Add(new TimerMetric { Key = "test", StartDate = startDate });
 
     _testDb.Measurements.Add(
       new TimerMeasurement
       {
-        DateTime = now.AddMinutes(-30),
-        StartDate = now.AddMinutes(-30),
+        DateTime = startDate,
+        StartDate = startDate,
         MetricKey = "test"
       }
     );
@@ -55,7 +55,11 @@ public class EndTimerMeasurementCommandExecutorShould
 
     Assert.IsNotNull(timerMeasurement.EndDate);
 
-    TimeSpan diffBetweenNow = timerMeasurement.EndDate.Value - now;
+    TimeSpan diffBetweenNow = timerMeasurement.EndDate.Value - DateTime.Now;
     Assert.IsTrue(diffBetweenNow.TotalSeconds < 5);
+
+    TimerMetric metric = _testDb.Metrics.OfType<TimerMetric>().First(m => m.Key == "test");
+    Assert.IsNotNull(metric);
+    Assert.IsNull(metric.StartDate);
   }
 }

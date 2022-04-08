@@ -11,4 +11,6 @@ public abstract class BaseMetric : IMetric
   public MetricType Type { get; protected set; }
 
   public Dictionary<string, string> Flags { get; set; } = new();
+  
+  public DateTime? LastMeasurementDate { get; set; }
 }

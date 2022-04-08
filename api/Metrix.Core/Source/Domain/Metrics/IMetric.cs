@@ -11,4 +11,6 @@ public interface IMetric
   MetricType Type { get; }
 
   Dictionary<string, string> Flags { get; set; }
+
+  DateTime? LastMeasurementDate { get; set; }
 }

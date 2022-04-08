@@ -2,7 +2,7 @@
 
 public class TimerMetric : BaseMetric
 {
-  public DateTime? StartDateTime { get; set; } = null;
+  public DateTime? StartDate { get; set; }
 
   public TimerMetric()
   {

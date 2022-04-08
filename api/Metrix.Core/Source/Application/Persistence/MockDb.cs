@@ -13,7 +13,7 @@ public class MockDb : IDb
       {
         Key = "my_timer",
         Name = "My Timer",
-        StartDateTime = DateTime.Now.AddMinutes(200),
+        StartDate = DateTime.Now.AddMinutes(200),
       }
     );
 
