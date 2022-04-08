@@ -2,7 +2,7 @@
 
 public class EditMetricCommand : ICommand
 {
-  public string MetricKey { get; set; }
+  public string? MetricKey { get; set; }
 
   public string? Name { get; set; }
 

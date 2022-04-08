@@ -23,7 +23,7 @@ public class AddGaugeMeasurementCommandExecutor : BaseAddMeasurementCommandExecu
   {
     return new GaugeMeasurement
     {
-      Value = Command.Value.Value
+      Value = Command.Value!.Value
     };
   }
 }
