@@ -4,5 +4,5 @@ namespace Metrix.Core.Application.Commands;
 
 public interface ICommandExecutor
 {
-  void Execute(IDb db);
+  void Execute(IDb db, IDateService dateService);
 }

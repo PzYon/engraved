@@ -7,10 +7,12 @@ namespace Metrix.Core.Application;
 public class Dispatcher
 {
   private readonly IDb _db;
+  private readonly IDateService _dateService;
 
-  public Dispatcher(IDb db)
+  public Dispatcher(IDb db, IDateService dateService)
   {
     _db = db;
+    _dateService = dateService;
   }
 
   public TResult Query<TResult>(IQuery<TResult> query)
@@ -20,6 +22,6 @@ public class Dispatcher
 
   public void Command(ICommand command)
   {
-    command.CreateExecutor().Execute(_db);
+    command.CreateExecutor().Execute(_db, _dateService);
   }
 }

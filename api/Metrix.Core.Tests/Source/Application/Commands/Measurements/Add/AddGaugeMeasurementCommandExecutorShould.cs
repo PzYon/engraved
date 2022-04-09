@@ -30,7 +30,7 @@ public class AddGaugeMeasurementCommandExecutorShould
       Value = value
     };
 
-    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
@@ -55,7 +55,7 @@ public class AddGaugeMeasurementCommandExecutorShould
       Value = null
     };
 
-    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 
   [TestMethod]
@@ -79,7 +79,7 @@ public class AddGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "k3y"
     };
 
-    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
@@ -107,6 +107,6 @@ public class AddGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "fooBar"
     };
 
-    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 }

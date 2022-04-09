@@ -34,7 +34,7 @@ public class StartTimerMeasurementCommandExecutorShould
 
     var command = new StartTimerMeasurementCommand { MetricKey = "test" };
 
-    new StartTimerMeasurementCommandExecutor(command).Execute(_testDb);
+    new StartTimerMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 
   [TestMethod]
@@ -44,7 +44,7 @@ public class StartTimerMeasurementCommandExecutorShould
 
     var command = new StartTimerMeasurementCommand { MetricKey = "test" };
 
-    new StartTimerMeasurementCommandExecutor(command).Execute(_testDb);
+    new StartTimerMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 

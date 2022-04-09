@@ -10,10 +10,12 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 public class EndTimerMeasurementCommandExecutorShould
 {
   private TestDb _testDb = null!;
+  private FakeDateService _fakeDateService = null!;
 
   [TestInitialize]
   public void SetUp()
   {
+    _fakeDateService = new FakeDateService();
     _testDb = new TestDb();
   }
 
@@ -24,13 +26,13 @@ public class EndTimerMeasurementCommandExecutorShould
     _testDb.Metrics.Add(new TimerMetric { Key = "test" });
 
     var command = new EndTimerMeasurementCommand { MetricKey = "test" };
-    new EndTimerMeasurementCommandExecutor(command).Execute(_testDb);
+    new EndTimerMeasurementCommandExecutor(command).Execute(_testDb, _fakeDateService);
   }
 
   [TestMethod]
   public void SetEndDate()
   {
-    DateTime startDate = DateTime.UtcNow.AddMinutes(-30);
+    DateTime startDate = _fakeDateService.UtcNow.AddMinutes(-30);
 
     _testDb.Metrics.Add(new TimerMetric { Key = "test", StartDate = startDate });
 
@@ -47,7 +49,7 @@ public class EndTimerMeasurementCommandExecutorShould
 
     var command = new EndTimerMeasurementCommand { MetricKey = "test" };
 
-    new EndTimerMeasurementCommandExecutor(command).Execute(_testDb);
+    new EndTimerMeasurementCommandExecutor(command).Execute(_testDb, _fakeDateService);
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
@@ -55,8 +57,7 @@ public class EndTimerMeasurementCommandExecutorShould
 
     Assert.IsNotNull(timerMeasurement.EndDate);
 
-    TimeSpan diffBetweenNow = timerMeasurement.EndDate.Value - DateTime.Now;
-    Assert.IsTrue(diffBetweenNow.TotalSeconds < 5);
+    Assert.AreEqual(_fakeDateService.UtcNow, timerMeasurement.EndDate.Value);
 
     TimerMetric metric = _testDb.Metrics.OfType<TimerMetric>().First(m => m.Key == "test");
     Assert.IsNotNull(metric);

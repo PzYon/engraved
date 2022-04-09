@@ -11,7 +11,7 @@ public class AddCounterMeasurementCommandExecutor : BaseAddMeasurementCommandExe
 {
   public AddCounterMeasurementCommandExecutor(AddCounterMeasurementCommand command) : base(command) { }
 
-  protected override CounterMeasurement CreateMeasurement()
+  protected override CounterMeasurement CreateMeasurement(IDateService dateService)
   {
     return new CounterMeasurement();
   }

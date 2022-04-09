@@ -14,7 +14,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public void Execute(IDb db)
+  public void Execute(IDb db, IDateService dateService)
   {
     var metric = MetricUtil.LoadAndValidateMetric<TimerMetric>(db, _command, _command.MetricKey);
 
@@ -35,7 +35,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
       throw new InvalidCommandException(_command, $"Metric \"{metric.Key}\" has no started timer.");
     }
 
-    measurement.EndDate = DateTime.UtcNow;
+    measurement.EndDate = dateService.UtcNow;
 
     metric.StartDate = null;
   }
