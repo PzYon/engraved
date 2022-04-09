@@ -20,7 +20,7 @@ public class AddGaugeMeasurementCommandExecutor : BaseAddMeasurementCommandExecu
     }
   }
 
-  protected override GaugeMeasurement CreateMeasurement()
+  protected override GaugeMeasurement CreateMeasurement(IDateService dateService)
   {
     return new GaugeMeasurement
     {

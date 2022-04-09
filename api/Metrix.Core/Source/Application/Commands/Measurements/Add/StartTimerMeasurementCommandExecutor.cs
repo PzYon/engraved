@@ -10,8 +10,6 @@ public class StartTimerMeasurementCommandExecutor : BaseAddMeasurementCommandExe
   TimerMetric
 >
 {
-  private readonly Lazy<DateTime> _utcNow = new(() => DateTime.UtcNow);
-
   public StartTimerMeasurementCommandExecutor(StartTimerMeasurementCommand command) : base(command) { }
 
   protected override void PerformAdditionalValidation(IDb db, TimerMetric metric)
@@ -25,16 +23,16 @@ public class StartTimerMeasurementCommandExecutor : BaseAddMeasurementCommandExe
     }
   }
 
-  protected override void UpdateMetric(TimerMetric metric)
+  protected override void UpdateMetric(TimerMetric metric, IDateService dateService)
   {
-    metric.StartDate = _utcNow.Value;
+    metric.StartDate = dateService.UtcNow;
   }
 
-  protected override TimerMeasurement CreateMeasurement()
+  protected override TimerMeasurement CreateMeasurement(IDateService dateService)
   {
     return new TimerMeasurement
     {
-      StartDate = _utcNow.Value
+      StartDate = dateService.UtcNow
     };
   }
 }

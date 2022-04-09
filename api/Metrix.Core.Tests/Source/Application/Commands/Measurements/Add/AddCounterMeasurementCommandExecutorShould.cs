@@ -19,7 +19,7 @@ public class AddCounterMeasurementCommandExecutorShould
   {
     var command = new AddCounterMeasurementCommand { MetricKey = string.Empty };
 
-    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 
   [TestMethod]
@@ -32,6 +32,6 @@ public class AddCounterMeasurementCommandExecutorShould
       Notes = "n0t3s"
     };
 
-    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb);
+    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 }

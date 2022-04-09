@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 
 // Custom services
 builder.Services.AddSingleton<IDb, MockDb>();
+builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
 
 WebApplication app = builder.Build();

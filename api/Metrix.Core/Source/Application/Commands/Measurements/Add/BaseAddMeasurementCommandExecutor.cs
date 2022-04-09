@@ -12,18 +12,18 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
 {
   protected TCommand Command { get; }
 
-  protected abstract TMeasurement CreateMeasurement();
+  protected abstract TMeasurement CreateMeasurement(IDateService dateService);
 
   protected virtual void PerformAdditionalValidation(IDb db, TMetric metric) { }
 
-  protected virtual void UpdateMetric(TMetric metric) { }
+  protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
 
   protected BaseAddMeasurementCommandExecutor(TCommand command)
   {
     Command = command;
   }
 
-  public void Execute(IDb db)
+  public void Execute(IDb db, IDateService dateService)
   {
     var metric = MetricUtil.LoadAndValidateMetric<TMetric>(db, Command, Command.MetricKey);
 
@@ -32,17 +32,17 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
 
     PerformAdditionalValidation(db, metric);
 
-    TMeasurement measurement = CreateMeasurement();
+    TMeasurement measurement = CreateMeasurement(dateService);
     measurement.MetricKey = Command.MetricKey;
     measurement.Notes = Command.Notes;
-    measurement.DateTime = DateTime.UtcNow;
+    measurement.DateTime = dateService.UtcNow;
     measurement.MetricFlagKey = Command.MetricFlagKey;
 
     db.Measurements.Add(measurement);
 
-    UpdateMetric(metric);
+    UpdateMetric(metric, dateService);
 
-    metric.LastMeasurementDate = DateTime.UtcNow;
+    metric.LastMeasurementDate = dateService.UtcNow;
   }
 
   private void EnsureCompatibleMetricType(IMetric metric)
