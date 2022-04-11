@@ -24,12 +24,6 @@ export const MetricListHeaderActions: React.FC<{ metric: IMetric }> = ({
         icon: <Edit />,
         href: `/metrics/${metric.key}/edit`,
       },
-      {
-        key: "view",
-        label: "View",
-        icon: <VisibilityOutlined />,
-        href: `/metrics/${metric.key}`,
-      },
     ],
     [metric]
   );

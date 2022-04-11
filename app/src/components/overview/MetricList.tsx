@@ -8,6 +8,7 @@ import { MetricListHeaderActions } from "./MetricListHeaderActions";
 import { Link } from "react-router-dom";
 import { AddOutlined } from "@mui/icons-material";
 import { AddMetricLauncher } from "./AddMetricLauncher";
+import { MetricTypeIcon } from "../common/MetricTypeIcon";
 
 export const MetricList: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
@@ -51,10 +52,18 @@ export const MetricList: React.FC<{ showCreate?: boolean }> = ({
       {metrics.map((metric) => (
         <Section key={metric.key}>
           <Box sx={{ display: "flex" }}>
-            <Box sx={{ flexGrow: 1 }}>
+            <MetricTypeIcon type={metric.type} />
+            <Box sx={{ flexGrow: 1, pl: 3 }}>
               <Link to={`/metrics/${metric.key}`}>
-                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                  [{metric.type}] {metric.name}
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: "bold",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {metric.name}
                 </Typography>
               </Link>
               <Typography>{metric.description}</Typography>
