@@ -3,8 +3,8 @@ import { IAppAlert } from "./components/errorHandling/AppAlertBar";
 import { IAction } from "./components/layout/HeaderActions";
 
 export interface IAppContext {
-  pageTitle: string;
-  setPageTitle: (pageTitle: string) => void;
+  pageTitle: React.ReactNode;
+  setPageTitle: (pageTitle: React.ReactNode) => void;
   titleActions: IAction[];
   setTitleActions: (actions: IAction[]) => void;
   appAlert: IAppAlert;
@@ -25,7 +25,7 @@ export const useAppContext = () => {
 };
 
 export const AppContextProvider: React.FC = ({ children }) => {
-  const [pageTitle, setPageTitle] = useState("");
+  const [pageTitle, setPageTitle] = useState<React.ReactNode>(undefined);
   const [titleActions, setTitleActions] = useState<IAction[]>([]);
   const [appAlert, setAppAlert] = useState<IAppAlert>(undefined);
 
