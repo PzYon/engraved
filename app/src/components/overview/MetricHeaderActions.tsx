@@ -5,7 +5,7 @@ import { HeaderActions, IAction } from "../layout/HeaderActions";
 import { AddOutlined, Edit } from "@mui/icons-material";
 import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementDialog";
 
-export const MetricListHeaderActions: React.FC<{ metric: IMetric }> = ({
+export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
   metric,
 }) => {
   const { renderDialog } = useDialogContext();

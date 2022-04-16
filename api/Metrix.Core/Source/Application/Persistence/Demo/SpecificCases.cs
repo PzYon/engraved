@@ -43,7 +43,7 @@ public static class SpecificCases
 
     return new SpecificCase
     {
-      Metric = new CounterMetric()
+      Metric = new CounterMetric
       {
         Key = "migraine-medicine",
         Name = "Migraine Medicine",

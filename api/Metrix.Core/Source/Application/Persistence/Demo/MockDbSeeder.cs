@@ -1,21 +1,24 @@
 ﻿using System.Text;
 using Metrix.Core.Application.Commands.Measurements.Add;
 using Metrix.Core.Application.Commands.Metrics.Add;
+using Metrix.Core.Application.Commands.Metrics.Edit;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Persistence;
+namespace Metrix.Core.Application.Persistence.Demo;
 
-public class MockDb : IDb
+public class MockDbSeeder
 {
-  public List<IMeasurement> Measurements { get; } = new();
+  private readonly IDb _db;
 
-  public List<IMetric> Metrics { get; } = new();
+  public MockDbSeeder(IDb db)
+  {
+    _db = db;
+  }
 
-  public MockDb()
+  public void Seed()
   {
     CreateRandomMetricsAndMeasurements();
-
     AddSpecificCases();
   }
 
@@ -34,24 +37,29 @@ public class MockDb : IDb
 
       var dateService = new SelfIncrementingDateService();
 
-      command.CreateExecutor().Execute(this, dateService);
+      command.CreateExecutor().Execute(_db, dateService);
 
-      IMetric metric = Metrics.First(m => m.Key == metricKey);
+      IMetric metric = _db.Metrics.First(m => m.Key == metricKey);
 
-      switch (metric)
-      {
-        case CounterMetric counterMetric:
-          AddMeasurements(counterMetric, dateService);
-          break;
-        case GaugeMetric gaugeMetric:
-          AddMeasurements(gaugeMetric, dateService);
-          break;
-        case TimerMetric timerMetric:
-          AddMeasurements(timerMetric, dateService.UtcNow);
-          break;
-        default:
-          throw new Exception($"Metric type \"{metric.Type}\" is not yet supported.");
-      }
+      AddMeasurements(metric, dateService);
+    }
+  }
+
+  private void AddMeasurements(IMetric metric, IDateService dateService)
+  {
+    switch (metric)
+    {
+      case CounterMetric counterMetric:
+        AddMeasurements(counterMetric, dateService);
+        break;
+      case GaugeMetric gaugeMetric:
+        AddMeasurements(gaugeMetric, dateService);
+        break;
+      case TimerMetric timerMetric:
+        AddMeasurements(timerMetric, dateService.UtcNow);
+        break;
+      default:
+        throw new Exception($"Metric type \"{metric.Type}\" is not yet supported.");
     }
   }
 
@@ -64,7 +72,7 @@ public class MockDb : IDb
         MetricKey = metric.Key
       };
 
-      new AddCounterMeasurementCommandExecutor(command).Execute(this, dateService);
+      new AddCounterMeasurementCommandExecutor(command).Execute(_db, dateService);
     }
   }
 
@@ -78,7 +86,7 @@ public class MockDb : IDb
         Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
       };
 
-      new AddGaugeMeasurementCommandExecutor(command).Execute(this, dateService);
+      new AddGaugeMeasurementCommandExecutor(command).Execute(_db, dateService);
     }
   }
 
@@ -91,16 +99,16 @@ public class MockDb : IDb
     foreach (int measurementIndex in count)
     {
       int remainingSteps = (count.Length - measurementIndex) * 2;
-      
+
       dateService.SetNext(remainingSteps);
 
       var startTimerCommand = new StartTimerMeasurementCommand { MetricKey = metric.Key };
-      new StartTimerMeasurementCommandExecutor(startTimerCommand).Execute(this, dateService);
+      new StartTimerMeasurementCommandExecutor(startTimerCommand).Execute(_db, dateService);
 
       dateService.SetNext(remainingSteps);
 
       var endTimerCommand = new EndTimerMeasurementCommand { MetricKey = metric.Key };
-      new EndTimerMeasurementCommandExecutor(endTimerCommand).Execute(this, dateService);
+      new EndTimerMeasurementCommandExecutor(endTimerCommand).Execute(_db, dateService);
     }
   }
 
@@ -112,17 +120,61 @@ public class MockDb : IDb
 
   private void AddSpecificCase(SpecificCase specificCase)
   {
-    Metrics.Insert(0, specificCase.Metric);
+    var dateService = new SelfIncrementingDateService();
+    IMetric metric = specificCase.Metric;
+    string metricKey = metric.Key;
 
-    Measurements.AddRange(
-      specificCase.Measurements.Select(
-        m =>
+    new AddMetricCommand
+      {
+        Key = metricKey,
+        Description = metric.Description,
+        Name = metric.Name,
+        Type = metric.Type,
+      }
+      .CreateExecutor()
+      .Execute(_db, dateService);
+
+    if (metric.Flags.Any())
+    {
+      new EditMetricCommand
         {
-          m.MetricKey = specificCase.Metric.Key;
-          return m;
+          MetricKey = metricKey,
+          Flags = metric.Flags,
+          Description = metric.Description,
+          Name = metric.Name
         }
-      )
-    );
+        .CreateExecutor()
+        .Execute(_db, dateService);
+    }
+
+    foreach (IMeasurement measurement in specificCase.Measurements)
+    {
+      BaseAddMeasurementCommand command;
+
+      switch (measurement)
+      {
+        case CounterMeasurement:
+          command = new AddCounterMeasurementCommand();
+          break;
+        case GaugeMeasurement gaugeMeasurement:
+          command = new AddGaugeMeasurementCommand { Value = gaugeMeasurement.Value };
+          break;
+        case TimerMeasurement:
+          throw new NotImplementedException();
+        default:
+          throw new ArgumentOutOfRangeException(nameof(measurement));
+      }
+
+      command.Notes = measurement.Notes;
+      command.MetricKey = metricKey;
+      command.MetricFlagKey = measurement.MetricFlagKey;
+
+      IDateService measurementDateService = measurement.DateTime != null
+        ? new FakeDateService(measurement.DateTime.Value)
+        : (IDateService)dateService;
+
+      command.CreateExecutor().Execute(_db, measurementDateService);
+    }
   }
 
   private static MetricType GetRandomMetricType()

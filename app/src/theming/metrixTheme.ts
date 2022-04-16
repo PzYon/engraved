@@ -31,6 +31,9 @@ export const metrixTheme = createTheme({
       fontSize: "2rem",
       color: textColor,
     },
+    h5: {
+      fontSize: "2rem",
+    },
   },
   components: {
     MuiPaper: {
