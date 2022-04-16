@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Metrix.Api.Filters;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
+using Metrix.Core.Application.Persistence.Demo;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Custom services
-builder.Services.AddSingleton<IDb, MockDb>();
+builder.Services.AddSingleton(
+  _ =>
+  {
+    IDb db = new MockDb();
+    new MockDbSeeder(db).Seed();
+    return db;
+  }
+);
+
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
 
