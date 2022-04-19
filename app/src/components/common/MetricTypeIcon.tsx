@@ -1,7 +1,7 @@
 import React from "react";
 import { MetricType } from "../../serverApi/MetricType";
-import { BarChartSharp, PlusOneSharp, TimerSharp } from "@mui/icons-material";
 import { styled } from "@mui/material";
+import { MetricTypeFactory } from "../../metricTypes/MetricTypeFactory";
 
 export enum MetricTypeIconStyle {
   Overview,
@@ -15,19 +15,8 @@ export const MetricTypeIcon: React.FC<{
   const Host =
     style === MetricTypeIconStyle.Overview ? OverviewHost : PageTitleHost;
 
-  return <Host>{getIcon(type)}</Host>;
+  return <Host>{MetricTypeFactory.create(type).getIcon()}</Host>;
 };
-
-function getIcon(type: MetricType) {
-  switch (type) {
-    case MetricType.Counter:
-      return <PlusOneSharp />;
-    case MetricType.Gauge:
-      return <BarChartSharp />;
-    case MetricType.Timer:
-      return <TimerSharp />;
-  }
-}
 
 const PageTitleHost = styled("div")`
   svg {
