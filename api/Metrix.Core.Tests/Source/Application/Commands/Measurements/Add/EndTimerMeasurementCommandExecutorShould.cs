@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,16 +22,16 @@ public class EndTimerMeasurementCommandExecutorShould
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
-  public void Throw_WhenNoTimerIsStartedForMetric()
+  public async Task Throw_WhenNoTimerIsStartedForMetric()
   {
     _testDb.Metrics.Add(new TimerMetric { Key = "test" });
 
     var command = new EndTimerMeasurementCommand { MetricKey = "test" };
-    new EndTimerMeasurementCommandExecutor(command).Execute(_testDb, _fakeDateService);
+    await new EndTimerMeasurementCommandExecutor(command).Execute(_testDb, _fakeDateService);
   }
 
   [TestMethod]
-  public void SetEndDate()
+  public async Task SetEndDate()
   {
     DateTime startDate = _fakeDateService.UtcNow.AddMinutes(-30);
 
@@ -49,7 +50,7 @@ public class EndTimerMeasurementCommandExecutorShould
 
     var command = new EndTimerMeasurementCommand { MetricKey = "test" };
 
-    new EndTimerMeasurementCommandExecutor(command).Execute(_testDb, _fakeDateService);
+    await new EndTimerMeasurementCommandExecutor(command).Execute(_testDb, _fakeDateService);
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 

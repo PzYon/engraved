@@ -12,7 +12,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public void Execute(IDb db, IDateService dateService)
+  public async Task Execute(IDb db, IDateService dateService)
   {
     if (string.IsNullOrEmpty(_command.MetricKey))
     {

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,7 +21,7 @@ public class AddGaugeMeasurementCommandExecutorShould
   [DataRow(0)]
   [DataRow(1)]
   [DataRow(123.456)]
-  public void Set_ValueFromCommand(double value)
+  public async Task Set_ValueFromCommand(double value)
   {
     _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
@@ -30,7 +31,7 @@ public class AddGaugeMeasurementCommandExecutorShould
       Value = value
     };
 
-    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
@@ -44,7 +45,7 @@ public class AddGaugeMeasurementCommandExecutorShould
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
-  public void Throw_WhenNoValueIsSpecified()
+  public async Task Throw_WhenNoValueIsSpecified()
   {
     _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
@@ -55,11 +56,11 @@ public class AddGaugeMeasurementCommandExecutorShould
       Value = null
     };
 
-    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 
   [TestMethod]
-  public void MapAllFieldsCorrectly()
+  public async Task MapAllFieldsCorrectly()
   {
     _testDb.Metrics.Add(
       new GaugeMetric
@@ -79,7 +80,7 @@ public class AddGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "k3y"
     };
 
-    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 
@@ -95,7 +96,7 @@ public class AddGaugeMeasurementCommandExecutorShould
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
-  public void Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
+  public async Task Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
   {
     _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
@@ -107,6 +108,6 @@ public class AddGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "fooBar"
     };
 
-    new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 }

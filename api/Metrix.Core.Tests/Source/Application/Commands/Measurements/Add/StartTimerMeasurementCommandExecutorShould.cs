@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,7 +20,7 @@ public class StartTimerMeasurementCommandExecutorShould
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
-  public void Throw_WhenMetricAlreadyHasRunningTimer()
+  public async Task Throw_WhenMetricAlreadyHasRunningTimer()
   {
     _testDb.Metrics.Add(new TimerMetric { Key = "test" });
 
@@ -34,17 +35,17 @@ public class StartTimerMeasurementCommandExecutorShould
 
     var command = new StartTimerMeasurementCommand { MetricKey = "test" };
 
-    new StartTimerMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new StartTimerMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 
   [TestMethod]
-  public void CreateTimerMeasurement()
+  public async Task CreateTimerMeasurement()
   {
     _testDb.Metrics.Add(new TimerMetric { Key = "test" });
 
     var command = new StartTimerMeasurementCommand { MetricKey = "test" };
 
-    new StartTimerMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new StartTimerMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
 
     Assert.AreEqual(1, _testDb.Measurements.Count);
 

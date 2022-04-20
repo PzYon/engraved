@@ -12,7 +12,7 @@ public class AddMetricCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public void Execute(IDb db, IDateService dateService)
+  public async Task Execute(IDb db, IDateService dateService)
   {
     // todo:
     // - validate key is not null

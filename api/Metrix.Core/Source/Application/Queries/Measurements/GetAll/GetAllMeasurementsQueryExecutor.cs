@@ -13,7 +13,7 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
     _query = query;
   }
 
-  public IMeasurement[] Execute(IDb db)
+  public async Task<IMeasurement[]> Execute(IDb db)
   {
     if (string.IsNullOrEmpty(_query.MetricKey))
     {

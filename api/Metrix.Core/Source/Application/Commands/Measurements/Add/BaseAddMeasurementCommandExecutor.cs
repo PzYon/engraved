@@ -23,7 +23,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
     Command = command;
   }
 
-  public void Execute(IDb db, IDateService dateService)
+  public async Task Execute(IDb db, IDateService dateService)
   {
     var metric = MetricUtil.LoadAndValidateMetric<TMetric>(db, Command, Command.MetricKey);
 

@@ -19,37 +19,37 @@ public class MeasurementsController : ControllerBase
 
   [HttpGet]
   [Route("{metricKey}")]
-  public object[] GetAll(string metricKey)
+  public async Task<object[]> GetAll(string metricKey)
   {
-    IMeasurement[] measurements = _dispatcher.Query(new GetAllMeasurementsQuery { MetricKey = metricKey });
+    IMeasurement[] measurements = await _dispatcher.Query(new GetAllMeasurementsQuery { MetricKey = metricKey });
     return measurements.EnsurePolymorphismWhenSerializing();
   }
 
   [HttpPost]
   [Route("counter")]
-  public void AddCounter([FromBody] AddCounterMeasurementCommand measurement)
+  public async Task AddCounter([FromBody] AddCounterMeasurementCommand measurement)
   {
-    _dispatcher.Command(measurement);
+    await _dispatcher.Command(measurement);
   }
 
   [HttpPost]
   [Route("gauge")]
-  public void AddGauge([FromBody] AddGaugeMeasurementCommand measurement)
+  public async Task AddGauge([FromBody] AddGaugeMeasurementCommand measurement)
   {
-    _dispatcher.Command(measurement);
+    await _dispatcher.Command(measurement);
   }
 
   [HttpPost]
   [Route("timer_start")]
-  public void StartTimer([FromBody] StartTimerMeasurementCommand measurement)
+  public async Task StartTimer([FromBody] StartTimerMeasurementCommand measurement)
   {
-    _dispatcher.Command(measurement);
+    await _dispatcher.Command(measurement);
   }
 
   [HttpPost]
   [Route("timer_end")]
-  public void EndTimer([FromBody] EndTimerMeasurementCommand measurement)
+  public async Task EndTimer([FromBody] EndTimerMeasurementCommand measurement)
   {
-    _dispatcher.Command(measurement);
+    await _dispatcher.Command(measurement);
   }
 }

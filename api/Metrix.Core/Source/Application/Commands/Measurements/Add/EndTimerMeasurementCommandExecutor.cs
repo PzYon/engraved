@@ -14,7 +14,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public void Execute(IDb db, IDateService dateService)
+  public async Task Execute(IDb db, IDateService dateService)
   {
     var metric = MetricUtil.LoadAndValidateMetric<TimerMetric>(db, _command, _command.MetricKey);
 

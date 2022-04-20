@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
@@ -15,16 +16,16 @@ public class AddCounterMeasurementCommandExecutorShould
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
-  public void Throw_WhenMetricKeyIsNotSpecified()
+  public async Task Throw_WhenMetricKeyIsNotSpecified()
   {
     var command = new AddCounterMeasurementCommand { MetricKey = string.Empty };
 
-    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddCounterMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
-  public void Throw_WhenMetricDoesNotExist()
+  public async Task Throw_WhenMetricDoesNotExist()
   {
     var command = new AddCounterMeasurementCommand
     {
@@ -32,6 +33,6 @@ public class AddCounterMeasurementCommandExecutorShould
       Notes = "n0t3s"
     };
 
-    new AddCounterMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddCounterMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
   }
 }

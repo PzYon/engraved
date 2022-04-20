@@ -12,8 +12,8 @@ public class GetMetricQueryExecutor : IQueryExecutor<IMetric>
     _query = query;
   }
 
-  public IMetric Execute(IDb db)
+  public Task<IMetric> Execute(IDb db)
   {
-    return db.Metrics.FirstOrDefault(m => m.Key == _query.MetricKey)!;
+    return db.GetMetric(_query.MetricKey);
   }
 }
