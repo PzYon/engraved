@@ -3,7 +3,7 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add;
+namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
 
 public class EndTimerMeasurementCommandExecutor : ICommandExecutor
 {
@@ -16,7 +16,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
 
   public async Task Execute(IDb db, IDateService dateService)
   {
-    var metric = MetricUtil.LoadAndValidateMetric<TimerMetric>(db, _command, _command.MetricKey);
+    var metric = await MetricUtil.LoadAndValidateMetric<TimerMetric>(db, _command, _command.MetricKey);
 
     if (metric.Type != MetricType.Timer)
     {
@@ -26,9 +26,14 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
       );
     }
 
-    TimerMeasurement? measurement = db.Measurements
+    // we get all measurements here from the db and do the following filtering
+    // in memory. this could be improved, however it would require new method(s)
+    // in IDb. for the time being we will skip that.
+    IMeasurement[] allMeasurements = await db.GetAllMeasurements(metric.Key);
+
+    TimerMeasurement? measurement = allMeasurements
       .OfType<TimerMeasurement>()
-      .FirstOrDefault(m => m.MetricKey == metric.Key && m.EndDate == null);
+      .FirstOrDefault(m => m.EndDate == null);
 
     if (measurement == null)
     {

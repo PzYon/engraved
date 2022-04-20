@@ -1,6 +1,6 @@
 ﻿using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add;
+namespace Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 
 public class AddGaugeMeasurementCommand : BaseAddMeasurementCommand
 {

@@ -6,21 +6,21 @@ namespace Metrix.Core.Application.Commands.Metrics;
 
 public static class MetricUtil
 {
-  public static TMetric LoadAndValidateMetric<TMetric>(IDb db, ICommand command, string metricKey)
-    where TMetric : IMetric
+  public static async Task<TMetric> LoadAndValidateMetric<TMetric>(IDb db, ICommand command, string metricKey)
+    where TMetric : class, IMetric
   {
     if (string.IsNullOrEmpty(metricKey))
     {
       throw new InvalidCommandException(command, $"A {nameof(BaseAddMeasurementCommand.MetricKey)} must be specified.");
     }
 
-    TMetric? metric = db.Metrics.OfType<TMetric>().FirstOrDefault(m => m.Key == metricKey);
+    IMetric? metric = await db.GetMetric(metricKey);
 
-    if (metric == null)
+    if (metric is not TMetric specificMetric)
     {
       throw new InvalidCommandException(command, $"A metric with key \"{metricKey}\" does not exist.");
     }
 
-    return metric;
+    return specificMetric;
   }
 }

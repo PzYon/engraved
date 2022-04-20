@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

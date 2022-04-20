@@ -2,7 +2,7 @@
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add;
+namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
 
 public class StartTimerMeasurementCommandExecutor : BaseAddMeasurementCommandExecutor<
   StartTimerMeasurementCommand,
@@ -12,10 +12,14 @@ public class StartTimerMeasurementCommandExecutor : BaseAddMeasurementCommandExe
 {
   public StartTimerMeasurementCommandExecutor(StartTimerMeasurementCommand command) : base(command) { }
 
-  protected override void PerformAdditionalValidation(IDb db, TimerMetric metric)
+  protected override async Task PerformAdditionalValidation(IDb db, TimerMetric metric)
   {
-    if (db.Measurements
-        .Where(m => m.MetricKey == metric.Key)
+    // we get all measurements here from the db and do the following filtering
+    // in memory. this could be improved, however it would require new method(s)
+    // in IDb. for the time being we will skip that.
+    IMeasurement[] allMeasurements = await db.GetAllMeasurements(metric.Key);
+    
+    if (allMeasurements
         .OfType<TimerMeasurement>()
         .Any(m => m.EndDate == null))
     {

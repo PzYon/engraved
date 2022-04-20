@@ -30,7 +30,7 @@ public class AddMetricCommandExecutor : ICommandExecutor
     metric.Description = _command.Description;
     metric.Name = _command.Name;
 
-    db.Metrics.Add(metric);
+    await db.AddMetric(metric);
   }
 
   private static IMetric CreateMetric(MetricType type)

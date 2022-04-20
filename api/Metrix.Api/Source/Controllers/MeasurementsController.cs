@@ -1,5 +1,9 @@
 ﻿using Metrix.Core.Application;
 using Metrix.Core.Application.Commands.Measurements.Add;
+using Metrix.Core.Application.Commands.Measurements.Add.Counter;
+using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
+using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
+using Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
 using Metrix.Core.Application.Queries.Measurements.GetAll;
 using Metrix.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Mvc;

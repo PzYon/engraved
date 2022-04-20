@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Metrix.Core.Application.Commands.Measurements.Add.Counter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;

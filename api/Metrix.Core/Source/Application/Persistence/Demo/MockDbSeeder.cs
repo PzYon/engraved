@@ -1,5 +1,9 @@
 ﻿using System.Text;
 using Metrix.Core.Application.Commands.Measurements.Add;
+using Metrix.Core.Application.Commands.Measurements.Add.Counter;
+using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
+using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
+using Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
 using Metrix.Core.Application.Commands.Metrics.Add;
 using Metrix.Core.Application.Commands.Metrics.Edit;
 using Metrix.Core.Domain.Measurements;
@@ -16,13 +20,13 @@ public class MockDbSeeder
     _db = db;
   }
 
-  public void Seed()
+  public async Task Seed()
   {
-    CreateRandomMetricsAndMeasurements();
+    await CreateRandomMetricsAndMeasurements();
     AddSpecificCases();
   }
 
-  private void CreateRandomMetricsAndMeasurements()
+  private async Task CreateRandomMetricsAndMeasurements()
   {
     foreach (int metricIndex in Enumerable.Range(0, Random.Shared.Next(5, 30)))
     {
@@ -39,7 +43,7 @@ public class MockDbSeeder
 
       command.CreateExecutor().Execute(_db, dateService);
 
-      IMetric metric = _db.Metrics.First(m => m.Key == metricKey);
+      IMetric metric = await _db.GetMetric(metricKey);
 
       AddMeasurements(metric, dateService);
     }

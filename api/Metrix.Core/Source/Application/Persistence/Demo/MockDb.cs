@@ -14,8 +14,29 @@ public class MockDb : IDb
     return Task.FromResult(Metrics.ToArray());
   }
 
-  public Task<IMetric> GetMetric(string metricKey)
+  public async Task<IMetric> GetMetric(string metricKey)
   {
-    return Task.FromResult(Metrics.FirstOrDefault(m => m.Key == metricKey));
+    return Metrics.FirstOrDefault(m => m.Key == metricKey);
+  }
+
+  public async Task<IMeasurement[]> GetAllMeasurements(string metricKey)
+  {
+    return Measurements.Where(m => m.MetricKey == metricKey).ToArray();
+  }
+
+  public async Task AddMetric(IMetric metric)
+  {
+    Metrics.Add(metric);
+  }
+
+  public async Task UpdateMetric(IMetric metric)
+  {
+    // nothing to do here as metric is updated by reference and
+    // hence implicitly updated in "List<IMetric> Metrics"
+  }
+
+  public async Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  {
+    Measurements.Add(measurement);
   }
 }
