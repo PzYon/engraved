@@ -12,12 +12,14 @@ public class AddGaugeMeasurementCommandExecutor : BaseAddMeasurementCommandExecu
 {
   public AddGaugeMeasurementCommandExecutor(AddGaugeMeasurementCommand command) : base(command) { }
 
-  protected override async Task PerformAdditionalValidation(IDb db, GaugeMetric metric)
+  protected override Task PerformAdditionalValidation(IDb db, GaugeMetric metric)
   {
     if (Command.Value == null)
     {
       throw CreateInvalidCommandException($"\"{nameof(AddGaugeMeasurementCommand.Value)}\" must be specified");
     }
+
+    return Task.CompletedTask;
   }
 
   protected override GaugeMeasurement CreateMeasurement(IDateService dateService)

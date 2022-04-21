@@ -14,7 +14,10 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
 
   protected abstract TMeasurement CreateMeasurement(IDateService dateService);
 
-  protected virtual async Task PerformAdditionalValidation(IDb db, TMetric metric) { }
+  protected virtual Task PerformAdditionalValidation(IDb db, TMetric metric)
+  {
+    return Task.CompletedTask;
+  }
 
   protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
 

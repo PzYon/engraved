@@ -41,48 +41,48 @@ public class MockDbSeeder
 
       var dateService = new SelfIncrementingDateService();
 
-      command.CreateExecutor().Execute(_db, dateService);
+      await command.CreateExecutor().Execute(_db, dateService);
 
-      IMetric metric = await _db.GetMetric(metricKey);
+      IMetric? metric = await _db.GetMetric(metricKey);
 
-      AddMeasurements(metric, dateService);
+      await AddMeasurements(metric!, dateService);
     }
   }
 
-  private void AddMeasurements(IMetric metric, IDateService dateService)
+  private async Task AddMeasurements(IMetric metric, IDateService dateService)
   {
     switch (metric)
     {
       case CounterMetric counterMetric:
-        AddMeasurements(counterMetric, dateService);
+        await AddMeasurements(counterMetric, dateService);
         break;
       case GaugeMetric gaugeMetric:
-        AddMeasurements(gaugeMetric, dateService);
+        await AddMeasurements(gaugeMetric, dateService);
         break;
       case TimerMetric timerMetric:
-        AddMeasurements(timerMetric, dateService.UtcNow);
+        await AddMeasurements(timerMetric, dateService.UtcNow);
         break;
       default:
         throw new Exception($"Metric type \"{metric.Type}\" is not yet supported.");
     }
   }
 
-  private void AddMeasurements(CounterMetric metric, IDateService dateService)
+  private async Task AddMeasurements(CounterMetric metric, IDateService dateService)
   {
-    foreach (int measurementIndex in Enumerable.Range(0, Random.Shared.Next(0, 30)))
+    foreach (int _ in Enumerable.Range(0, Random.Shared.Next(0, 30)))
     {
       var command = new AddCounterMeasurementCommand
       {
         MetricKey = metric.Key
       };
 
-      new AddCounterMeasurementCommandExecutor(command).Execute(_db, dateService);
+      await new AddCounterMeasurementCommandExecutor(command).Execute(_db, dateService);
     }
   }
 
-  private void AddMeasurements(GaugeMetric metric, IDateService dateService)
+  private async Task AddMeasurements(GaugeMetric metric, IDateService dateService)
   {
-    foreach (int measurementIndex in Enumerable.Range(0, Random.Shared.Next(0, 30)))
+    foreach (int _ in Enumerable.Range(0, Random.Shared.Next(0, 30)))
     {
       var command = new AddGaugeMeasurementCommand
       {
@@ -90,11 +90,11 @@ public class MockDbSeeder
         Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
       };
 
-      new AddGaugeMeasurementCommandExecutor(command).Execute(_db, dateService);
+      await new AddGaugeMeasurementCommandExecutor(command).Execute(_db, dateService);
     }
   }
 
-  private void AddMeasurements(TimerMetric metric, DateTime metricDate)
+  private async Task AddMeasurements(TimerMetric metric, DateTime metricDate)
   {
     FakeDateService dateService = new FakeDateService(metricDate);
 
@@ -107,12 +107,12 @@ public class MockDbSeeder
       dateService.SetNext(remainingSteps);
 
       var startTimerCommand = new StartTimerMeasurementCommand { MetricKey = metric.Key };
-      new StartTimerMeasurementCommandExecutor(startTimerCommand).Execute(_db, dateService);
+      await new StartTimerMeasurementCommandExecutor(startTimerCommand).Execute(_db, dateService);
 
       dateService.SetNext(remainingSteps);
 
       var endTimerCommand = new EndTimerMeasurementCommand { MetricKey = metric.Key };
-      new EndTimerMeasurementCommandExecutor(endTimerCommand).Execute(_db, dateService);
+      await new EndTimerMeasurementCommandExecutor(endTimerCommand).Execute(_db, dateService);
     }
   }
 

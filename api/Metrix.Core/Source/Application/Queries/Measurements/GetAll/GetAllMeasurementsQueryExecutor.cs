@@ -17,14 +17,20 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
   {
     if (string.IsNullOrEmpty(_query.MetricKey))
     {
-      throw new Exception($"{nameof(GetAllMeasurementsQuery.MetricKey)} must be specified.");
+      throw new InvalidQueryException<IMeasurement[]>(
+        _query,
+        $"{nameof(GetAllMeasurementsQuery.MetricKey)} must be specified."
+      );
     }
 
     IMetric? metric = await db.GetMetric(_query.MetricKey);
 
     if (metric == null)
     {
-      throw new Exception($"Metric with key \"{_query.MetricKey}\" does not exist.");
+      throw new InvalidQueryException<IMeasurement[]>(
+        _query,
+        $"Metric with key \"{_query.MetricKey}\" does not exist."
+      );
     }
 
     IMeasurement[] allMeasurements = await db.GetAllMeasurements(_query.MetricKey);

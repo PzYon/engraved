@@ -18,29 +18,34 @@ internal class TestDb : IDb
     return Task.FromResult(Metrics.ToArray());
   }
 
-  public async Task<IMetric> GetMetric(string metricKey)
+  public Task<IMetric?> GetMetric(string metricKey)
   {
-    return Metrics.FirstOrDefault(m => m.Key == metricKey);
+    return Task.FromResult(Metrics.FirstOrDefault(m => m.Key == metricKey));
   }
 
-  public async Task<IMeasurement[]> GetAllMeasurements(string metricKey)
+  public Task<IMeasurement[]> GetAllMeasurements(string metricKey)
   {
-    return Measurements.Where(m => m.MetricKey == metricKey).ToArray();
+    return Task.FromResult(Measurements.Where(m => m.MetricKey == metricKey).ToArray());
   }
 
-  public async Task AddMetric(IMetric metric)
+  public Task AddMetric(IMetric metric)
   {
     Metrics.Add(metric);
+    return Task.CompletedTask;
   }
 
-  public async Task UpdateMetric(IMetric metric)
+  public Task UpdateMetric(IMetric metric)
   {
     // nothing to do here as metric is updated by reference and
     // hence implicitly updated in "List<IMetric> Metrics"
+
+    return Task.CompletedTask;
   }
 
-  public async Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
     Measurements.Add(measurement);
+
+    return Task.CompletedTask;
   }
 }

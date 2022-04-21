@@ -14,15 +14,13 @@ public interface IDatabaseSettings
 
 public class DbService : IDb
 {
-  private static MongoClient _client;
-
   private readonly IMongoCollection<IMetric> _metrics;
 
   public DbService(IDatabaseSettings settings)
   {
-    _client = new MongoClient(settings.MongoConnectionString);
+    var client = new MongoClient(settings.MongoConnectionString);
 
-    IMongoDatabase? db = _client.GetDatabase(settings.DatabaseName);
+    IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
     _metrics = db.GetCollection<IMetric>(settings.MetricCollectionName);
   }
 
@@ -32,7 +30,7 @@ public class DbService : IDb
     return asyncCursor.Current.ToArray();
   }
 
-  public async Task<IMetric> GetMetric(string metricKey)
+  public async Task<IMetric?> GetMetric(string metricKey)
   {
     IAsyncCursor<IMetric> asyncCursor = await _metrics.FindAsync(metric => metric.Key == metricKey);
     return asyncCursor.Current.FirstOrDefault();
