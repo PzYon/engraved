@@ -12,8 +12,15 @@ public class GetMetricQueryExecutor : IQueryExecutor<IMetric>
     _query = query;
   }
 
-  public IMetric Execute(IDb db)
+  public async Task<IMetric> Execute(IDb db)
   {
-    return db.Metrics.FirstOrDefault(m => m.Key == _query.MetricKey)!;
+    if (string.IsNullOrEmpty(_query.MetricKey))
+    {
+      throw new InvalidQueryException<IMetric>(_query, $"{nameof(_query.MetricKey)} must be specified.");
+    }
+
+    IMetric metric = (await db.GetMetric(_query.MetricKey))!;
+
+    return metric;
   }
 }

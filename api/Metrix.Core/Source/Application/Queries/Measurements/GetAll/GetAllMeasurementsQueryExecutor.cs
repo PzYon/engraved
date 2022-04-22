@@ -13,22 +13,29 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
     _query = query;
   }
 
-  public IMeasurement[] Execute(IDb db)
+  public async Task<IMeasurement[]> Execute(IDb db)
   {
     if (string.IsNullOrEmpty(_query.MetricKey))
     {
-      throw new Exception($"{nameof(GetAllMeasurementsQuery.MetricKey)} must be specified.");
+      throw new InvalidQueryException<IMeasurement[]>(
+        _query,
+        $"{nameof(GetAllMeasurementsQuery.MetricKey)} must be specified."
+      );
     }
 
-    IMetric? metric = db.Metrics.FirstOrDefault(m => m.Key == _query.MetricKey);
+    IMetric? metric = await db.GetMetric(_query.MetricKey);
 
     if (metric == null)
     {
-      throw new Exception($"Metric with key \"{_query.MetricKey}\" does not exist.");
+      throw new InvalidQueryException<IMeasurement[]>(
+        _query,
+        $"Metric with key \"{_query.MetricKey}\" does not exist."
+      );
     }
 
-    return db.Measurements
-      .Where(m => m.MetricKey == _query.MetricKey)
+    IMeasurement[] allMeasurements = await db.GetAllMeasurements(_query.MetricKey);
+
+    return allMeasurements
       .OrderBy(m => m.DateTime)
       .ToArray();
   }

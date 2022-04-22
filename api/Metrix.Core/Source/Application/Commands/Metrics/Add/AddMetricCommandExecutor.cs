@@ -12,7 +12,7 @@ public class AddMetricCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public void Execute(IDb db, IDateService dateService)
+  public async Task Execute(IDb db, IDateService dateService)
   {
     // todo:
     // - validate key is not null
@@ -30,7 +30,7 @@ public class AddMetricCommandExecutor : ICommandExecutor
     metric.Description = _command.Description;
     metric.Name = _command.Name;
 
-    db.Metrics.Add(metric);
+    await db.AddMetric(metric);
   }
 
   private static IMetric CreateMetric(MetricType type)

@@ -5,7 +5,15 @@ namespace Metrix.Core.Application.Persistence;
 
 public interface IDb
 {
-  List<IMeasurement> Measurements { get; }
+  Task<IMetric[]> GetAllMetrics();
 
-  List<IMetric> Metrics { get; }
+  Task<IMetric?> GetMetric(string metricKey);
+
+  Task<IMeasurement[]> GetAllMeasurements(string metricKey);
+  
+  Task AddMetric(IMetric metric);
+
+  Task UpdateMetric(IMetric metric);
+  
+  Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
 }

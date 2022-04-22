@@ -20,28 +20,28 @@ public class MetricsController : ControllerBase
   }
 
   [HttpGet]
-  public object[] GetAll()
+  public async Task<object[]> GetAll()
   {
-    IMetric[] metrics = _dispatcher.Query(new GetAllMetricsQuery());
+    IMetric[] metrics = await _dispatcher.Query(new GetAllMetricsQuery());
     return metrics.EnsurePolymorphismWhenSerializing();
   }
 
   [Route("{metricKey}")]
   [HttpGet]
-  public IMetric Get(string metricKey)
+  public async Task<IMetric> Get(string metricKey)
   {
-    return _dispatcher.Query(new GetMetricQuery { MetricKey = metricKey });
+    return await _dispatcher.Query(new GetMetricQuery { MetricKey = metricKey });
   }
 
   [HttpPost]
-  public void Add([FromBody] AddMetricCommand command)
+  public async Task Add([FromBody] AddMetricCommand command)
   {
-    _dispatcher.Command(command);
+    await _dispatcher.Command(command);
   }
 
   [HttpPut]
-  public void Edit([FromBody] EditMetricCommand command)
+  public async Task Edit([FromBody] EditMetricCommand command)
   {
-    _dispatcher.Command(command);
+    await _dispatcher.Command(command);
   }
 }

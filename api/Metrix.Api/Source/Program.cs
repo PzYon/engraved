@@ -16,10 +16,10 @@ builder.Services.AddSwaggerGen();
 
 // Custom services
 builder.Services.AddSingleton(
-  _ =>
+  async _ =>
   {
     IDb db = new MockDb();
-    new MockDbSeeder(db).Seed();
+    await new MockDbSeeder(db).Seed();
     return db;
   }
 );

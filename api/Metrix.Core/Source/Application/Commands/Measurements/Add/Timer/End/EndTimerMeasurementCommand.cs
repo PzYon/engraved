@@ -1,4 +1,4 @@
-﻿namespace Metrix.Core.Application.Commands.Measurements.Add;
+﻿namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
 
 public class EndTimerMeasurementCommand : ICommand
 {

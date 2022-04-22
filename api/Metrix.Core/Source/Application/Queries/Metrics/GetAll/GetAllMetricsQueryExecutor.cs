@@ -12,8 +12,8 @@ public class GetAllMetricsQueryExecutor : IQueryExecutor<IMetric[]>
     _command = command;
   }
 
-  public IMetric[] Execute(IDb db)
+  public async Task<IMetric[]> Execute(IDb db)
   {
-    return db.Metrics.ToArray();
+    return await db.GetAllMetrics();
   }
 }

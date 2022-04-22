@@ -15,13 +15,13 @@ public class Dispatcher
     _dateService = dateService;
   }
 
-  public TResult Query<TResult>(IQuery<TResult> query)
+  public async Task<TResult> Query<TResult>(IQuery<TResult> query)
   {
-    return query.CreateExecutor().Execute(_db);
+    return await query.CreateExecutor().Execute(_db);
   }
 
-  public void Command(ICommand command)
+  public async Task Command(ICommand command)
   {
-    command.CreateExecutor().Execute(_db, _dateService);
+    await command.CreateExecutor().Execute(_db, _dateService);
   }
 }

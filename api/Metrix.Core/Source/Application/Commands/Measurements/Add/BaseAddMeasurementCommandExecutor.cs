@@ -8,13 +8,16 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
   where TCommand : BaseAddMeasurementCommand
   where TMeasurement : IMeasurement
-  where TMetric : IMetric
+  where TMetric : class, IMetric
 {
   protected TCommand Command { get; }
 
   protected abstract TMeasurement CreateMeasurement(IDateService dateService);
 
-  protected virtual void PerformAdditionalValidation(IDb db, TMetric metric) { }
+  protected virtual Task PerformAdditionalValidation(IDb db, TMetric metric)
+  {
+    return Task.CompletedTask;
+  }
 
   protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
 
@@ -23,14 +26,14 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
     Command = command;
   }
 
-  public void Execute(IDb db, IDateService dateService)
+  public async Task Execute(IDb db, IDateService dateService)
   {
-    var metric = MetricUtil.LoadAndValidateMetric<TMetric>(db, Command, Command.MetricKey);
+    var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(db, Command, Command.MetricKey);
 
     EnsureCompatibleMetricType(metric);
     ValidateMetricFlag(metric);
 
-    PerformAdditionalValidation(db, metric);
+    await PerformAdditionalValidation(db, metric);
 
     TMeasurement measurement = CreateMeasurement(dateService);
     measurement.MetricKey = Command.MetricKey;
@@ -38,7 +41,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
     measurement.DateTime = dateService.UtcNow;
     measurement.MetricFlagKey = Command.MetricFlagKey;
 
-    db.Measurements.Add(measurement);
+    await db.AddMeasurement(measurement);
 
     UpdateMetric(metric, dateService);
 
