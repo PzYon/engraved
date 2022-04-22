@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Core", "Metrix.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Core.Tests", "Metrix.Core.Tests\Metrix.Core.Tests.csproj", "{DF5B6710-B0B4-405A-9BA0-EF03B0C6EBD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Persistence.Mongo", "Metrix.Persistence.Mongo\Metrix.Persistence.Mongo.csproj", "{D8520933-AB8E-408D-B014-3FE4701E2FF0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{DF5B6710-B0B4-405A-9BA0-EF03B0C6EBD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF5B6710-B0B4-405A-9BA0-EF03B0C6EBD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF5B6710-B0B4-405A-9BA0-EF03B0C6EBD5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D8520933-AB8E-408D-B014-3FE4701E2FF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8520933-AB8E-408D-B014-3FE4701E2FF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8520933-AB8E-408D-B014-3FE4701E2FF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8520933-AB8E-408D-B014-3FE4701E2FF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
