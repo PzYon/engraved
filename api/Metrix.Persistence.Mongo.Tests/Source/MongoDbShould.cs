@@ -9,8 +9,8 @@ public class TestMongoDbSettings : IDatabaseSettings
 {
   public string MongoConnectionString => "mongodb://localhost:27017";
   public string DatabaseName => "metrix_test";
-  public string MetricCollectionName => "metrics";
-  public string MeasurementCollectionName => "measurements";
+  public string MetricsCollectionName => "metrics";
+  public string MeasurementsCollectionName => "measurements";
 }
 
 public class MongoDbShould

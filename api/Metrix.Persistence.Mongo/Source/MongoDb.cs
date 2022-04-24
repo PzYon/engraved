@@ -2,6 +2,7 @@
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Metrix.Persistence.Mongo;
@@ -17,8 +18,8 @@ public class MongoDb : IDb
 
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
-    _metrics = db.GetCollection<IMetricDocument>(settings.MetricCollectionName);
-    _measurements = db.GetCollection<IMeasurement>(settings.MeasurementCollectionName);
+    _metrics = db.GetCollection<IMetricDocument>(settings.MetricsCollectionName);
+    _measurements = db.GetCollection<IMeasurement>(settings.MeasurementsCollectionName);
   }
 
   public async Task<IMetric[]> GetAllMetrics()
@@ -52,6 +53,10 @@ public class MongoDb : IDb
   public async Task AddMetric(IMetric metric)
   {
     IMetricDocument document = MetricDocumentMapper.ToDocument(metric);
+    
+    // this should not really be required... why is it!?
+    document.Id = ObjectId.GenerateNewId();
+    
     await _metrics.InsertOneAsync(document);
   }
 

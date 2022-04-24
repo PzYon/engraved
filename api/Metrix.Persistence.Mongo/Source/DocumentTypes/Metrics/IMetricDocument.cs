@@ -1,10 +1,11 @@
 ﻿using Metrix.Core.Domain.Metrics;
+using MongoDB.Bson;
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 
 public interface IMetricDocument
 {
-  public string? Id { get; set; }
+  public ObjectId Id { get; set; }
 
   public string Key { get; set; }
 
