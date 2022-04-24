@@ -1,14 +1,14 @@
 ﻿using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
-using Metrix.Persistence.Mongo.DocumentTypes;
+using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 using MongoDB.Driver;
 
 namespace Metrix.Persistence.Mongo;
 
 public class MongoDb : IDb
 {
-  private readonly IMongoCollection<BaseMetricDocument> _metrics;
+  private readonly IMongoCollection<IMetricDocument> _metrics;
   private readonly IMongoCollection<IMeasurement> _measurements;
 
   public MongoDb(IDatabaseSettings settings)
@@ -17,26 +17,30 @@ public class MongoDb : IDb
 
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
-    _metrics = db.GetCollection<BaseMetricDocument>(settings.MetricCollectionName);
+    _metrics = db.GetCollection<IMetricDocument>(settings.MetricCollectionName);
     _measurements = db.GetCollection<IMeasurement>(settings.MeasurementCollectionName);
   }
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<BaseMetricDocument> metrics = await _metrics.Find(Builders<BaseMetricDocument>.Filter.Empty).ToListAsync();
-    return metrics.Select(MetricDocumentMapper.FromDocument).ToArray();
+    List<IMetricDocument> metrics = await _metrics.Find(Builders<IMetricDocument>.Filter.Empty).ToListAsync();
+    return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
   }
 
   public async Task<IMetric?> GetMetric(string metricKey)
   {
-    FilterDefinition<BaseMetricDocument> filter = Builders<BaseMetricDocument>.Filter.Eq(m => m.Key, metricKey);
-    List<BaseMetricDocument> metrics = await _metrics.Find(filter).ToListAsync();
+    FilterDefinition<IMetricDocument> filter = Builders<IMetricDocument>.Filter.Eq(
+      nameof(IMetricDocument.Key),
+      metricKey
+    );
 
-    BaseMetricDocument? baseMetricDocument = metrics.FirstOrDefault();
+    List<IMetricDocument> metrics = await _metrics.Find(filter).ToListAsync();
 
-    return baseMetricDocument == null
+    IMetricDocument? document = metrics.FirstOrDefault();
+
+    return document == null
       ? null
-      : MetricDocumentMapper.FromDocument(baseMetricDocument);
+      : MetricDocumentMapper.FromDocument<IMetric>(document);
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(string metricKey)
@@ -47,7 +51,7 @@ public class MongoDb : IDb
 
   public async Task AddMetric(IMetric metric)
   {
-    BaseMetricDocument document = MetricDocumentMapper.ToDocument(metric);
+    IMetricDocument document = MetricDocumentMapper.ToDocument(metric);
     await _metrics.InsertOneAsync(document);
   }
 
