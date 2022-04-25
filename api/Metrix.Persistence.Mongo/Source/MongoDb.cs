@@ -15,7 +15,6 @@ public class MongoDb : IDb
   public MongoDb(IDatabaseSettings settings)
   {
     IMongoClient client = new MongoClient(settings.MongoConnectionString);
-
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
     _metrics = db.GetCollection<IMetricDocument>(settings.MetricsCollectionName);

@@ -1,3 +1,8 @@
-﻿namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
+﻿using Metrix.Core.Domain.Metrics;
 
-public class GaugeMetricDocument : BaseMetricDocument { }
+namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
+
+public class GaugeMetricDocument : BaseMetricDocument
+{
+  public override MetricType Type => MetricType.Gauge;
+}

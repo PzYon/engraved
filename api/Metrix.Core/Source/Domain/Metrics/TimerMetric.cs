@@ -2,10 +2,7 @@
 
 public class TimerMetric : BaseMetric
 {
-  public DateTime? StartDate { get; set; }
+  public override MetricType Type => MetricType.Timer;
 
-  public TimerMetric()
-  {
-    Type = MetricType.Timer;
-  }
+  public DateTime? StartDate { get; set; }
 }

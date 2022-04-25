@@ -2,8 +2,6 @@
 
 public class GaugeMetric : BaseMetric
 {
-  public GaugeMetric()
-  {
-    Type = MetricType.Gauge;
-  }
+  public override MetricType Type => MetricType.Gauge;
+
 }

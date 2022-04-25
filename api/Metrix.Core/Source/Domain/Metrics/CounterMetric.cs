@@ -2,8 +2,5 @@
 
 public class CounterMetric : BaseMetric
 {
-  public CounterMetric()
-  {
-    Type = MetricType.Counter;
-  }
+  public override MetricType Type => MetricType.Counter;
 }
