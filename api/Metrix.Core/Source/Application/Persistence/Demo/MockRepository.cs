@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Metrix.Core.Application.Persistence;
-using Metrix.Core.Domain.Measurements;
+﻿using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add;
+namespace Metrix.Core.Application.Persistence.Demo;
 
-internal class TestDb : IDb
+public class MockRepository : IRepository
 {
   public List<IMeasurement> Measurements { get; } = new();
 

@@ -11,13 +11,13 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Persistence.Demo;
 
-public class MockDbSeeder
+public class MockRepositorySeeder
 {
-  private readonly IDb _db;
+  private readonly IRepository _repository;
 
-  public MockDbSeeder(IDb db)
+  public MockRepositorySeeder(IRepository repository)
   {
-    _db = db;
+    _repository = repository;
   }
 
   public async Task Seed()
@@ -41,9 +41,9 @@ public class MockDbSeeder
 
       var dateService = new SelfIncrementingDateService();
 
-      await command.CreateExecutor().Execute(_db, dateService);
+      await command.CreateExecutor().Execute(_repository, dateService);
 
-      IMetric? metric = await _db.GetMetric(metricKey);
+      IMetric? metric = await _repository.GetMetric(metricKey);
 
       await AddMeasurements(metric!, dateService);
     }
@@ -76,7 +76,7 @@ public class MockDbSeeder
         MetricKey = metric.Key
       };
 
-      await new AddCounterMeasurementCommandExecutor(command).Execute(_db, dateService);
+      await new AddCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
     }
   }
 
@@ -90,7 +90,7 @@ public class MockDbSeeder
         Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
       };
 
-      await new AddGaugeMeasurementCommandExecutor(command).Execute(_db, dateService);
+      await new AddGaugeMeasurementCommandExecutor(command).Execute(_repository, dateService);
     }
   }
 
@@ -107,12 +107,12 @@ public class MockDbSeeder
       dateService.SetNext(remainingSteps);
 
       var startTimerCommand = new StartTimerMeasurementCommand { MetricKey = metric.Key };
-      await new StartTimerMeasurementCommandExecutor(startTimerCommand).Execute(_db, dateService);
+      await new StartTimerMeasurementCommandExecutor(startTimerCommand).Execute(_repository, dateService);
 
       dateService.SetNext(remainingSteps);
 
       var endTimerCommand = new EndTimerMeasurementCommand { MetricKey = metric.Key };
-      await new EndTimerMeasurementCommandExecutor(endTimerCommand).Execute(_db, dateService);
+      await new EndTimerMeasurementCommandExecutor(endTimerCommand).Execute(_repository, dateService);
     }
   }
 
@@ -136,7 +136,7 @@ public class MockDbSeeder
         Type = metric.Type,
       }
       .CreateExecutor()
-      .Execute(_db, dateService);
+      .Execute(_repository, dateService);
 
     if (metric.Flags.Any())
     {
@@ -148,7 +148,7 @@ public class MockDbSeeder
           Name = metric.Name
         }
         .CreateExecutor()
-        .Execute(_db, dateService);
+        .Execute(_repository, dateService);
     }
 
     foreach (IMeasurement measurement in specificCase.Measurements)
@@ -177,7 +177,7 @@ public class MockDbSeeder
         ? new FakeDateService(measurement.DateTime.Value)
         : (IDateService)dateService;
 
-      command.CreateExecutor().Execute(_db, measurementDateService);
+      command.CreateExecutor().Execute(_repository, measurementDateService);
     }
   }
 

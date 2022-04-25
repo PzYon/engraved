@@ -3,7 +3,7 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Persistence;
 
-public interface IDb
+public interface IRepository
 {
   Task<IMetric[]> GetAllMetrics();
 

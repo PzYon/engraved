@@ -7,12 +7,12 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 [TestClass]
 public class AddCounterMeasurementCommandExecutorShould
 {
-  private TestDb _testDb = null!;
+  private TestRepository _testRepository = null!;
 
   [TestInitialize]
   public void SetUp()
   {
-    _testDb = new TestDb();
+    _testRepository = new TestRepository();
   }
 
   [TestMethod]
@@ -21,7 +21,7 @@ public class AddCounterMeasurementCommandExecutorShould
   {
     var command = new AddCounterMeasurementCommand { MetricKey = string.Empty };
 
-    await new AddCounterMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 
   [TestMethod]
@@ -34,6 +34,6 @@ public class AddCounterMeasurementCommandExecutorShould
       Notes = "n0t3s"
     };
 
-    await new AddCounterMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 }

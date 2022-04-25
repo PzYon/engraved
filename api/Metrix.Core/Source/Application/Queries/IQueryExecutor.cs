@@ -4,5 +4,5 @@ namespace Metrix.Core.Application.Queries;
 
 public interface IQueryExecutor<TResult>
 {
-  Task<TResult> Execute(IDb db);
+  Task<TResult> Execute(IRepository repository);
 }

@@ -14,7 +14,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
 
   protected abstract TMeasurement CreateMeasurement(IDateService dateService);
 
-  protected virtual Task PerformAdditionalValidation(IDb db, TMetric metric)
+  protected virtual Task PerformAdditionalValidation(IRepository repository, TMetric metric)
   {
     return Task.CompletedTask;
   }
@@ -26,14 +26,14 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
     Command = command;
   }
 
-  public async Task Execute(IDb db, IDateService dateService)
+  public async Task Execute(IRepository repository, IDateService dateService)
   {
-    var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(db, Command, Command.MetricKey);
+    var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricKey);
 
     EnsureCompatibleMetricType(metric);
     ValidateMetricFlag(metric);
 
-    await PerformAdditionalValidation(db, metric);
+    await PerformAdditionalValidation(repository, metric);
 
     TMeasurement measurement = CreateMeasurement(dateService);
     measurement.MetricKey = Command.MetricKey;
@@ -41,7 +41,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
     measurement.DateTime = dateService.UtcNow;
     measurement.MetricFlagKey = Command.MetricFlagKey;
 
-    await db.AddMeasurement(measurement);
+    await repository.AddMeasurement(measurement);
 
     UpdateMetric(metric, dateService);
 

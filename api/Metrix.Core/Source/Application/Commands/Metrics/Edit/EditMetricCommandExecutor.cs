@@ -12,7 +12,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public async Task Execute(IDb db, IDateService dateService)
+  public async Task Execute(IRepository repository, IDateService dateService)
   {
     if (string.IsNullOrEmpty(_command.MetricKey))
     {
@@ -24,7 +24,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
       throw new InvalidCommandException(_command, $"{nameof(EditMetricCommand.Name)} must be specified.");
     }
 
-    IMetric? metric = await db.GetMetric(_command.MetricKey);
+    IMetric? metric = await repository.GetMetric(_command.MetricKey);
 
     if (metric == null)
     {
@@ -35,6 +35,6 @@ public class EditMetricCommandExecutor : ICommandExecutor
     metric.Name = _command.Name;
     metric.Description = _command.Description;
 
-    await db.UpdateMetric(metric);
+    await repository.UpdateMetric(metric);
   }
 }

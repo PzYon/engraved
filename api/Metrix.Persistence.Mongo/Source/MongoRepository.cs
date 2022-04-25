@@ -7,14 +7,14 @@ using MongoDB.Driver;
 
 namespace Metrix.Persistence.Mongo;
 
-public class MongoDb : IDb
+public class MongoRepository : IRepository
 {
   private readonly IMongoCollection<IMetricDocument> _metrics;
   private readonly IMongoCollection<IMeasurement> _measurements;
 
-  public MongoDb(IDatabaseSettings settings)
+  public MongoRepository(IMongoRepositorySettings settings)
   {
-    IMongoClient client = new MongoClient(settings.MongoConnectionString);
+    IMongoClient client = new MongoClient(settings.MongoDbConnectionString);
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
     _metrics = db.GetCollection<IMetricDocument>(settings.MetricsCollectionName);
@@ -52,10 +52,10 @@ public class MongoDb : IDb
   public async Task AddMetric(IMetric metric)
   {
     IMetricDocument document = MetricDocumentMapper.ToDocument(metric);
-    
+
     // this should not really be required... why is it!?
     document.Id = ObjectId.GenerateNewId();
-    
+
     await _metrics.InsertOneAsync(document);
   }
 

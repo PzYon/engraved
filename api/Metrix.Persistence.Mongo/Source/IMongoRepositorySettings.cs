@@ -1,8 +1,8 @@
 ﻿namespace Metrix.Persistence.Mongo;
 
-public interface IDatabaseSettings
+public interface IMongoRepositorySettings
 {
-  string MongoConnectionString { get; }
+  string MongoDbConnectionString { get; }
   string DatabaseName { get; }
   string MetricsCollectionName { get; }
   string MeasurementsCollectionName { get; }

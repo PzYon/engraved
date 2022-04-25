@@ -12,12 +12,12 @@ public class StartTimerMeasurementCommandExecutor : BaseAddMeasurementCommandExe
 {
   public StartTimerMeasurementCommandExecutor(StartTimerMeasurementCommand command) : base(command) { }
 
-  protected override async Task PerformAdditionalValidation(IDb db, TimerMetric metric)
+  protected override async Task PerformAdditionalValidation(IRepository repository, TimerMetric metric)
   {
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IDb. for the time being we will skip that.
-    IMeasurement[] allMeasurements = await db.GetAllMeasurements(metric.Key);
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Key);
     
     if (allMeasurements
         .OfType<TimerMeasurement>()

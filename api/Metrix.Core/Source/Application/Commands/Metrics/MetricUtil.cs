@@ -6,7 +6,7 @@ namespace Metrix.Core.Application.Commands.Metrics;
 
 public static class MetricUtil
 {
-  public static async Task<TMetric> LoadAndValidateMetric<TMetric>(IDb db, ICommand command, string metricKey)
+  public static async Task<TMetric> LoadAndValidateMetric<TMetric>(IRepository repository, ICommand command, string metricKey)
     where TMetric : class, IMetric
   {
     if (string.IsNullOrEmpty(metricKey))
@@ -14,7 +14,7 @@ public static class MetricUtil
       throw new InvalidCommandException(command, $"A {nameof(BaseAddMeasurementCommand.MetricKey)} must be specified.");
     }
 
-    IMetric? metric = await db.GetMetric(metricKey);
+    IMetric? metric = await repository.GetMetric(metricKey);
 
     if (metric is not TMetric specificMetric)
     {

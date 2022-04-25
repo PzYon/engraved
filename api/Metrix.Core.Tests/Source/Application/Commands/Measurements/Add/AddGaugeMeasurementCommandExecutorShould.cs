@@ -10,12 +10,12 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 [TestClass]
 public class AddGaugeMeasurementCommandExecutorShould
 {
-  private TestDb _testDb = null!;
+  private TestRepository _testRepository = null!;
 
   [TestInitialize]
   public void SetUp()
   {
-    _testDb = new TestDb();
+    _testRepository = new TestRepository();
   }
 
   [TestMethod]
@@ -24,7 +24,7 @@ public class AddGaugeMeasurementCommandExecutorShould
   [DataRow(123.456)]
   public async Task Set_ValueFromCommand(double value)
   {
-    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
     var command = new AddGaugeMeasurementCommand
     {
@@ -32,11 +32,11 @@ public class AddGaugeMeasurementCommandExecutorShould
       Value = value
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
 
-    Assert.AreEqual(1, _testDb.Measurements.Count);
+    Assert.AreEqual(1, _testRepository.Measurements.Count);
 
-    IMeasurement createdMeasurement = _testDb.Measurements.First();
+    IMeasurement createdMeasurement = _testRepository.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
 
     var counterMeasurement = createdMeasurement as GaugeMeasurement;
@@ -48,7 +48,7 @@ public class AddGaugeMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenNoValueIsSpecified()
   {
-    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
     var command = new AddGaugeMeasurementCommand
     {
@@ -57,13 +57,13 @@ public class AddGaugeMeasurementCommandExecutorShould
       Value = null
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 
   [TestMethod]
   public async Task MapAllFieldsCorrectly()
   {
-    _testDb.Metrics.Add(
+    _testRepository.Metrics.Add(
       new GaugeMetric
       {
         Key = "k3y",
@@ -81,11 +81,11 @@ public class AddGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "k3y"
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
 
-    Assert.AreEqual(1, _testDb.Measurements.Count);
+    Assert.AreEqual(1, _testRepository.Measurements.Count);
 
-    IMeasurement createdMeasurement = _testDb.Measurements.First();
+    IMeasurement createdMeasurement = _testRepository.Measurements.First();
     Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(command.MetricFlagKey, createdMeasurement.MetricFlagKey);
@@ -99,7 +99,7 @@ public class AddGaugeMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
   {
-    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
     var command = new AddGaugeMeasurementCommand
     {
@@ -109,6 +109,6 @@ public class AddGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "fooBar"
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 }

@@ -12,7 +12,7 @@ public class AddGaugeMeasurementCommandExecutor : BaseAddMeasurementCommandExecu
 {
   public AddGaugeMeasurementCommandExecutor(AddGaugeMeasurementCommand command) : base(command) { }
 
-  protected override Task PerformAdditionalValidation(IDb db, GaugeMetric metric)
+  protected override Task PerformAdditionalValidation(IRepository repository, GaugeMetric metric)
   {
     if (Command.Value == null)
     {
