@@ -29,12 +29,7 @@ public class MongoRepository : IRepository
 
   public async Task<IMetric?> GetMetric(string metricKey)
   {
-    FilterDefinition<IMetricDocument> filter = Builders<IMetricDocument>.Filter.Eq(
-      nameof(IMetricDocument.Key),
-      metricKey
-    );
-
-    List<IMetricDocument> metrics = await _metrics.Find(filter).ToListAsync();
+    List<IMetricDocument> metrics = await _metrics.Find(GetFilterByKey(metricKey)).ToListAsync();
 
     IMetricDocument? document = metrics.FirstOrDefault();
 
@@ -59,13 +54,22 @@ public class MongoRepository : IRepository
     await _metrics.InsertOneAsync(document);
   }
 
-  public Task UpdateMetric(IMetric metric)
+  public async Task UpdateMetric(IMetric metric)
   {
-    throw new NotImplementedException();
+    UpdateDefinition<IMetricDocument>? update = Builders<IMetricDocument>.Update
+      .Set(nameof(IMetricDocument.Name), metric.Name)
+      .Set(nameof(IMetricDocument.Description), metric.Description);
+
+    await _metrics.FindOneAndUpdateAsync(GetFilterByKey(metric.Key), update);
   }
 
   public Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
     throw new NotImplementedException();
+  }
+
+  private static FilterDefinition<IMetricDocument> GetFilterByKey(string metricKey)
+  {
+    return Builders<IMetricDocument>.Filter.Eq(nameof(IMetricDocument.Key), metricKey);
   }
 }

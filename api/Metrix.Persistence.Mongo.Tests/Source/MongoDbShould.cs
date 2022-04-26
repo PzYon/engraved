@@ -5,14 +5,7 @@ using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
 
-public class TestMongoRepositorySettings : IMongoRepositorySettings
-{
-  public string MongoDbConnectionString => "mongodb://localhost:27017";
-  public string DatabaseName => "metrix_test";
-  public string MetricsCollectionName => "metrics";
-  public string MeasurementsCollectionName => "measurements";
-}
-
+[Ignore("Requires local MongoDB.")]
 public class MongoDbShould
 {
   private MongoRepository _repository = null!;
@@ -54,5 +47,20 @@ public class MongoDbShould
     IMetric[] allMetrics = await _repository.GetAllMetrics();
 
     Assert.AreEqual(allMetrics.Length, 2);
+  }
+
+  [Test]
+  public async Task CreateMetric_Then_Update()
+  {
+    var counterMetric = new CounterMetric { Key = "Foo", Name = "First" };
+    await _repository.AddMetric(counterMetric);
+
+    counterMetric.Name = "Second";
+    await _repository.UpdateMetric(counterMetric);
+
+    IMetric? updateMetric = await _repository.GetMetric(counterMetric.Key);
+    Assert.IsNotNull(updateMetric);
+    Assert.AreEqual(counterMetric.Key, updateMetric!.Key);
+    Assert.AreEqual(counterMetric.Name, updateMetric.Name);
   }
 }
