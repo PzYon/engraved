@@ -1,6 +1,7 @@
 ﻿using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -10,7 +11,7 @@ namespace Metrix.Persistence.Mongo;
 public class MongoRepository : IRepository
 {
   private readonly IMongoCollection<IMetricDocument> _metrics;
-  private readonly IMongoCollection<IMeasurement> _measurements;
+  private readonly IMongoCollection<IMeasurementDocument> _measurements;
 
   public MongoRepository(IMongoRepositorySettings settings)
   {
@@ -18,7 +19,7 @@ public class MongoRepository : IRepository
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
     _metrics = db.GetCollection<IMetricDocument>(settings.MetricsCollectionName);
-    _measurements = db.GetCollection<IMeasurement>(settings.MeasurementsCollectionName);
+    _measurements = db.GetCollection<IMeasurementDocument>(settings.MeasurementsCollectionName);
   }
 
   public async Task<IMetric[]> GetAllMetrics()
@@ -40,8 +41,11 @@ public class MongoRepository : IRepository
 
   public async Task<IMeasurement[]> GetAllMeasurements(string metricKey)
   {
-    List<IMeasurement> measurements = await _measurements.Find(Builders<IMeasurement>.Filter.Empty).ToListAsync();
-    return measurements.ToArray();
+    List<IMeasurementDocument> measurements = await _measurements
+      .Find(Builders<IMeasurementDocument>.Filter.Empty)
+      .ToListAsync();
+
+    return measurements.Select(MeasurementDocumentMapper.FromDocument<IMeasurement>).ToArray();
   }
 
   public async Task AddMetric(IMetric metric)
