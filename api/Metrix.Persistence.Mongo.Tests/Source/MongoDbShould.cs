@@ -80,19 +80,22 @@ public class MongoDbShould
   [Test]
   public async Task CreateMeasurements_Then_GetAll()
   {
+    const string metricKey = "k3y";
+    
     var timerMetric = new GaugeMetric
     {
-      Key = "k3y",
+      Key = metricKey,
       Name = "N@me"
     };
 
     await _repository.AddMetric(timerMetric);
 
-    await _repository.AddMeasurement(new GaugeMeasurement {MetricKey = "k3y", Value = 123});
-    await _repository.AddMeasurement(new GaugeMeasurement {MetricKey = "k3y", Value = 321});
+    await _repository.AddMeasurement(new GaugeMeasurement {MetricKey = metricKey, Value = 123});
+    await _repository.AddMeasurement(new GaugeMeasurement {MetricKey = "wrongKey", Value = 456});
+    await _repository.AddMeasurement(new GaugeMeasurement {MetricKey = metricKey, Value = 789});
 
-    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements("metricKey");
+    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(metricKey);
 
-    Assert.AreEqual(allMeasurements.Length, 2);
+    Assert.AreEqual(2, allMeasurements.Length);
   }
 }

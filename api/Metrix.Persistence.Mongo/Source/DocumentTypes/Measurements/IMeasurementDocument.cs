@@ -1,7 +1,11 @@
-﻿namespace Metrix.Persistence.Mongo.DocumentTypes.Measurements;
+﻿using MongoDB.Bson;
+
+namespace Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 
 public interface IMeasurementDocument
 {
+  ObjectId Id { get; set; }
+
   string MetricKey { get; set; }
 
   string? Notes { get; set; }

@@ -42,10 +42,12 @@ public class MongoRepository : IRepository
   public async Task<IMeasurement[]> GetAllMeasurements(string metricKey)
   {
     List<IMeasurementDocument> measurements = await _measurements
-      .Find(Builders<IMeasurementDocument>.Filter.Empty)
+      .Find(Builders<IMeasurementDocument>.Filter.Eq(nameof(IMeasurementDocument.MetricKey), metricKey))
       .ToListAsync();
 
-    return measurements.Select(MeasurementDocumentMapper.FromDocument<IMeasurement>).ToArray();
+    return measurements
+      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
+      .ToArray();
   }
 
   public async Task AddMetric(IMetric metric)
@@ -67,9 +69,14 @@ public class MongoRepository : IRepository
     await _metrics.FindOneAndUpdateAsync(GetFilterByKey(metric.Key), update);
   }
 
-  public Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public async Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
-    throw new NotImplementedException();
+    IMeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+
+    // this should not really be required... why is it!?
+    document.Id = ObjectId.GenerateNewId();
+
+    await _measurements.InsertOneAsync(document);
   }
 
   private static FilterDefinition<IMetricDocument> GetFilterByKey(string metricKey)
