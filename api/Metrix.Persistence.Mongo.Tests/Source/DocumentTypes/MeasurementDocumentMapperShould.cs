@@ -1,12 +1,14 @@
 ﻿using System;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
+using MongoDB.Bson;
 using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests.DocumentTypes;
 
 public class MeasurementDocumentMapperShould
 {
+  private static readonly string Id = ObjectId.GenerateNewId().ToString();
   private static readonly string Key = "k3y";
 
   [Test]
@@ -14,6 +16,7 @@ public class MeasurementDocumentMapperShould
   {
     var measurement = new CounterMeasurement
     {
+      Id = Id,
       MetricKey = Key,
       DateTime = DateTime.UtcNow,
       MetricFlagKey = "wh@t3v3r"
@@ -31,6 +34,7 @@ public class MeasurementDocumentMapperShould
   {
     var document = new CounterMeasurementDocument
     {
+      Id = new ObjectId(Id),
       Notes = "n0t3",
       MetricKey = Key,
       DateTime = DateTime.UtcNow,
@@ -47,6 +51,7 @@ public class MeasurementDocumentMapperShould
   {
     var measurement = new GaugeMeasurement
     {
+      Id = Id,
       Notes = "n0t3",
       MetricKey = Key,
       DateTime = DateTime.UtcNow,
@@ -70,6 +75,7 @@ public class MeasurementDocumentMapperShould
   {
     var document = new GaugeMeasurementDocument
     {
+      Id = new ObjectId(Id),
       Notes = "n0t3",
       MetricKey = Key,
       DateTime = DateTime.UtcNow,
@@ -87,6 +93,7 @@ public class MeasurementDocumentMapperShould
   {
     var measurement = new TimerMeasurement
     {
+      Id = Id,
       MetricKey = Key,
       DateTime = DateTime.UtcNow,
       MetricFlagKey = "wh@t3v3r",
@@ -111,6 +118,7 @@ public class MeasurementDocumentMapperShould
   {
     var document = new TimerMeasurementDocument
     {
+      Id = new ObjectId(Id),
       Notes = "n0t3",
       MetricKey = Key,
       DateTime = DateTime.UtcNow,
@@ -134,6 +142,7 @@ public class MeasurementDocumentMapperShould
 
   private static void AssertEqual(MeasurementDocument expected, IMeasurement actual)
   {
+    Assert.AreEqual(expected.Id.ToString(), actual!.Id);
     Assert.AreEqual(expected.DateTime, actual.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
     Assert.AreEqual(expected.MetricKey, actual.MetricKey);

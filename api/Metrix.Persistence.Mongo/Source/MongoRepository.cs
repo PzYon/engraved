@@ -79,11 +79,15 @@ public class MongoRepository : IRepository
     await _measurements.InsertOneAsync(document);
   }
 
-  public Task UpdateMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public async Task UpdateMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
-    
-    // await _measurements.UpdateOne(document);
+
+    await _measurements.ReplaceOneAsync(
+      Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.Id), measurement.Id),
+      document,
+      new ReplaceOptions()
+    );
   }
 
   private static FilterDefinition<MetricDocument> GetMetricFilterByKey(string metricKey)

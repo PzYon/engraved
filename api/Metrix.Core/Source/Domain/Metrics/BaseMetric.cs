@@ -2,6 +2,8 @@
 
 public abstract class BaseMetric : IMetric
 {
+  public string? Id { get; set; }
+  
   public string Key { get; set; } = null!;
 
   public string Name { get; set; } = null!;

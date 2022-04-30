@@ -11,16 +11,6 @@ public static class MetricDocumentMapper
 
   static MetricDocumentMapper()
   {
-/*    BsonClassMap.RegisterClassMap<IMeasurementDocument>(cm => {
-      cm.AutoMap();
-      cm.SetIsRootClass(true);
-    });
-    
-    BsonClassMap.RegisterClassMap<IMetricDocument>(cm => {
-      cm.AutoMap();
-      cm.SetIsRootClass(true);
-    });
- */   
     BsonClassMap.RegisterClassMap<CounterMeasurementDocument>();
     BsonClassMap.RegisterClassMap<CounterMetricDocument>();
     BsonClassMap.RegisterClassMap<GaugeMeasurementDocument>();

@@ -11,7 +11,7 @@ namespace Metrix.Persistence.Mongo.Tests;
 // await new AddCounterMeasurementCommand().CreateExecutor().Execute(_repository, null);
 
 //[Ignore("Requires local MongoDB.")]
-public class MongoDbShould
+public class MongoRepositoryShould
 {
   private MongoRepository _repository = null!;
 
