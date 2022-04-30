@@ -23,7 +23,7 @@ public class MetricDocumentMapperShould
       LastMeasurementDate = DateTime.UtcNow
     };
 
-    IMetricDocument metricDocument = MetricDocumentMapper.ToDocument(counterMetric);
+    MetricDocument metricDocument = MetricDocumentMapper.ToDocument(counterMetric);
 
     var createdMetric = metricDocument as CounterMetricDocument;
     Assert.IsNotNull(createdMetric);
@@ -58,7 +58,7 @@ public class MetricDocumentMapperShould
       Description = Description
     };
 
-    IMetricDocument metricDocument = MetricDocumentMapper.ToDocument(gaugeMetric);
+    MetricDocument metricDocument = MetricDocumentMapper.ToDocument(gaugeMetric);
 
     var createdMetric = metricDocument as GaugeMetricDocument;
     Assert.IsNotNull(createdMetric);
@@ -94,7 +94,7 @@ public class MetricDocumentMapperShould
       Flags = new Dictionary<string, string> { { "fl@g", "fl@g_value" } }
     };
 
-    IMetricDocument metricDocument = MetricDocumentMapper.ToDocument(timerMetric);
+    MetricDocument metricDocument = MetricDocumentMapper.ToDocument(timerMetric);
 
     var createdMetric = metricDocument as TimerMetricDocument;
     Assert.IsNotNull(createdMetric);
@@ -121,7 +121,7 @@ public class MetricDocumentMapperShould
     AssertEqual(timerMetricDocument, metric);
   }
 
-  private static void AssertEqual(IMetric expected, IMetricDocument? actual)
+  private static void AssertEqual(IMetric expected, MetricDocument? actual)
   {
     Assert.AreEqual(expected.Key, actual!.Key);
     Assert.AreEqual(expected.Name, actual.Name);
@@ -130,7 +130,7 @@ public class MetricDocumentMapperShould
     Assert.AreEqual(expected.LastMeasurementDate, actual.LastMeasurementDate);
   }
 
-  private static void AssertEqual(IMetricDocument expected, IMetric actual)
+  private static void AssertEqual(MetricDocument expected, IMetric actual)
   {
     Assert.AreEqual(expected.Key, actual!.Key);
     Assert.AreEqual(expected.Name, actual.Name);

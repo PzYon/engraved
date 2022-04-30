@@ -10,7 +10,7 @@ namespace Metrix.Persistence.Mongo.Tests;
 // have a more end-to-end view, e.g. something like this:
 // await new AddCounterMeasurementCommand().CreateExecutor().Execute(_repository, null);
 
-[Ignore("Requires local MongoDB.")]
+//[Ignore("Requires local MongoDB.")]
 public class MongoDbShould
 {
   private MongoRepository _repository = null!;

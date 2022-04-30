@@ -10,29 +10,29 @@ namespace Metrix.Persistence.Mongo;
 
 public class MongoRepository : IRepository
 {
-  private readonly IMongoCollection<IMetricDocument> _metrics;
-  private readonly IMongoCollection<IMeasurementDocument> _measurements;
+  private readonly IMongoCollection<MetricDocument> _metrics;
+  private readonly IMongoCollection<MeasurementDocument> _measurements;
 
   public MongoRepository(IMongoRepositorySettings settings)
   {
     IMongoClient client = new MongoClient(settings.MongoDbConnectionString);
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
-    _metrics = db.GetCollection<IMetricDocument>(settings.MetricsCollectionName);
-    _measurements = db.GetCollection<IMeasurementDocument>(settings.MeasurementsCollectionName);
+    _metrics = db.GetCollection<MetricDocument>(settings.MetricsCollectionName);
+    _measurements = db.GetCollection<MeasurementDocument>(settings.MeasurementsCollectionName);
   }
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<IMetricDocument> metrics = await _metrics.Find(Builders<IMetricDocument>.Filter.Empty).ToListAsync();
+    List<MetricDocument> metrics = await _metrics.Find(Builders<MetricDocument>.Filter.Empty).ToListAsync();
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
   }
 
   public async Task<IMetric?> GetMetric(string metricKey)
   {
-    List<IMetricDocument> metrics = await _metrics.Find(GetFilterByKey(metricKey)).ToListAsync();
+    List<MetricDocument> metrics = await _metrics.Find(GetFilterByKey(metricKey)).ToListAsync();
 
-    IMetricDocument? document = metrics.FirstOrDefault();
+    MetricDocument? document = metrics.FirstOrDefault();
 
     return document == null
       ? null
@@ -41,8 +41,8 @@ public class MongoRepository : IRepository
 
   public async Task<IMeasurement[]> GetAllMeasurements(string metricKey)
   {
-    List<IMeasurementDocument> measurements = await _measurements
-      .Find(Builders<IMeasurementDocument>.Filter.Eq(nameof(IMeasurementDocument.MetricKey), metricKey))
+    List<MeasurementDocument> measurements = await _measurements
+      .Find(Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricKey), metricKey))
       .ToListAsync();
 
     return measurements
@@ -52,7 +52,7 @@ public class MongoRepository : IRepository
 
   public async Task AddMetric(IMetric metric)
   {
-    IMetricDocument document = MetricDocumentMapper.ToDocument(metric);
+    MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
     // this should not really be required... why is it!?
     document.Id = ObjectId.GenerateNewId();
@@ -62,16 +62,16 @@ public class MongoRepository : IRepository
 
   public async Task UpdateMetric(IMetric metric)
   {
-    UpdateDefinition<IMetricDocument>? update = Builders<IMetricDocument>.Update
-      .Set(nameof(IMetricDocument.Name), metric.Name)
-      .Set(nameof(IMetricDocument.Description), metric.Description);
+    UpdateDefinition<MetricDocument>? update = Builders<MetricDocument>.Update
+      .Set(nameof(MetricDocument.Name), metric.Name)
+      .Set(nameof(MetricDocument.Description), metric.Description);
 
     await _metrics.FindOneAndUpdateAsync(GetFilterByKey(metric.Key), update);
   }
 
   public async Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
-    IMeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+    MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     // this should not really be required... why is it!?
     document.Id = ObjectId.GenerateNewId();
@@ -79,8 +79,8 @@ public class MongoRepository : IRepository
     await _measurements.InsertOneAsync(document);
   }
 
-  private static FilterDefinition<IMetricDocument> GetFilterByKey(string metricKey)
+  private static FilterDefinition<MetricDocument> GetFilterByKey(string metricKey)
   {
-    return Builders<IMetricDocument>.Filter.Eq(nameof(IMetricDocument.Key), metricKey);
+    return Builders<MetricDocument>.Filter.Eq(nameof(MetricDocument.Key), metricKey);
   }
 }

@@ -19,7 +19,7 @@ public class MeasurementDocumentMapperShould
       MetricFlagKey = "wh@t3v3r"
     };
 
-    IMeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+    MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     Assert.IsNotNull(document);
     AssertEqual(measurement, document);
@@ -54,7 +54,7 @@ public class MeasurementDocumentMapperShould
       Value = 4.20
     };
 
-    IMeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+    MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     Assert.IsNotNull(document);
 
@@ -94,7 +94,7 @@ public class MeasurementDocumentMapperShould
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
 
-    IMeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+    MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     Assert.IsNotNull(document);
 
@@ -124,7 +124,7 @@ public class MeasurementDocumentMapperShould
     AssertEqual(document, timerMeasurement);
   }
 
-  private static void AssertEqual(IMeasurement expected, IMeasurementDocument actual)
+  private static void AssertEqual(IMeasurement expected, MeasurementDocument actual)
   {
     Assert.AreEqual(expected.DateTime, actual!.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
@@ -132,7 +132,7 @@ public class MeasurementDocumentMapperShould
     Assert.AreEqual(expected.MetricFlagKey, actual.MetricFlagKey);
   }
 
-  private static void AssertEqual(IMeasurementDocument expected, IMeasurement actual)
+  private static void AssertEqual(MeasurementDocument expected, IMeasurement actual)
   {
     Assert.AreEqual(expected.DateTime, actual.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);

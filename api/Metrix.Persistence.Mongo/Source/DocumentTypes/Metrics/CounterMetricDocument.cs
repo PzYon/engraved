@@ -2,7 +2,7 @@
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 
-public class CounterMetricDocument : BaseMetricDocument
+public class CounterMetricDocument : MetricDocument
 {
   public override MetricType Type => MetricType.Counter;
 }

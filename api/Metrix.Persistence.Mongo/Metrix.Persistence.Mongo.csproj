@@ -15,4 +15,8 @@
       <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Source\DocumentTypes\Measurements\BaseMeasurementDocument.cs" />
+    </ItemGroup>
+
 </Project>

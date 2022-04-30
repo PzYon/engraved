@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 
-public class TimerMeasurementDocument : BaseMeasurementDocument
+public class TimerMeasurementDocument : MeasurementDocument
 {
   public DateTime StartDate { get; set; }
 

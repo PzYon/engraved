@@ -12,7 +12,7 @@ public static class MeasurementDocumentMapper
     var configuration = new MapperConfiguration(
       cfg =>
       {
-        cfg.CreateMap<IMeasurement, IMeasurementDocument>()
+        cfg.CreateMap<IMeasurement, MeasurementDocument>()
           .Include<CounterMeasurement, CounterMeasurementDocument>()
           .Include<GaugeMeasurement, GaugeMeasurementDocument>()
           .Include<TimerMeasurement, TimerMeasurementDocument>();
@@ -21,7 +21,7 @@ public static class MeasurementDocumentMapper
         cfg.CreateMap<GaugeMeasurement, GaugeMeasurementDocument>();
         cfg.CreateMap<TimerMeasurement, TimerMeasurementDocument>();
 
-        cfg.CreateMap<IMeasurementDocument, IMeasurement>()
+        cfg.CreateMap<MeasurementDocument, IMeasurement>()
           .Include<CounterMeasurementDocument, CounterMeasurement>()
           .Include<GaugeMeasurementDocument, GaugeMeasurement>()
           .Include<TimerMeasurementDocument, TimerMeasurement>();
@@ -37,12 +37,12 @@ public static class MeasurementDocumentMapper
     Mapper = configuration.CreateMapper();
   }
 
-  public static IMeasurementDocument ToDocument(IMeasurement metric)
+  public static MeasurementDocument ToDocument(IMeasurement metric)
   {
-    return Mapper.Map<IMeasurementDocument>(metric);
+    return Mapper.Map<MeasurementDocument>(metric);
   }
 
-  public static TMeasurement FromDocument<TMeasurement>(IMeasurementDocument document) where TMeasurement : IMeasurement
+  public static TMeasurement FromDocument<TMeasurement>(MeasurementDocument document) where TMeasurement : IMeasurement
   {
     return (TMeasurement)Mapper.Map(document, document.GetType(), typeof(TMeasurement));
   }

@@ -22,8 +22,15 @@ public class MockRepositorySeeder
 
   public async Task Seed()
   {
-    await CreateRandomMetricsAndMeasurements();
-    AddSpecificCases();
+    try
+    {
+      await CreateRandomMetricsAndMeasurements();
+      AddSpecificCases();
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
   }
 
   private async Task CreateRandomMetricsAndMeasurements()
@@ -106,13 +113,15 @@ public class MockRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      var startTimerCommand = new StartTimerMeasurementCommand { MetricKey = metric.Key };
-      await new StartTimerMeasurementCommandExecutor(startTimerCommand).Execute(_repository, dateService);
+      await new StartTimerMeasurementCommand { MetricKey = metric.Key }
+        .CreateExecutor()
+        .Execute(_repository, dateService);
 
       dateService.SetNext(remainingSteps);
 
-      var endTimerCommand = new EndTimerMeasurementCommand { MetricKey = metric.Key };
-      await new EndTimerMeasurementCommandExecutor(endTimerCommand).Execute(_repository, dateService);
+      await new EndTimerMeasurementCommand { MetricKey = metric.Key }
+        .CreateExecutor()
+        .Execute(_repository, dateService);
     }
   }
 

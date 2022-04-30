@@ -2,7 +2,7 @@
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 
-public class TimerMetricDocument : BaseMetricDocument
+public class TimerMetricDocument : MetricDocument
 {
   public override MetricType Type => MetricType.Timer;
 
