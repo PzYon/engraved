@@ -10,10 +10,12 @@ public interface IRepository
   Task<IMetric?> GetMetric(string metricKey);
 
   Task<IMeasurement[]> GetAllMeasurements(string metricKey);
-  
+
   Task AddMetric(IMetric metric);
 
   Task UpdateMetric(IMetric metric);
-  
+
   Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
+
+  Task UpdateMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
 }

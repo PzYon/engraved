@@ -11,44 +11,38 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Persistence.Demo;
 
-public class MockRepositorySeeder
+public class DemoDataRepositorySeeder
 {
   private readonly IRepository _repository;
 
-  public MockRepositorySeeder(IRepository repository)
+  public DemoDataRepositorySeeder(IRepository repository)
   {
     _repository = repository;
   }
 
   public async Task Seed()
   {
-    try
-    {
-      await CreateRandomMetricsAndMeasurements();
-      AddSpecificCases();
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine(ex.Message);
-    }
+    await CreateRandomMetricsAndMeasurements();
+    await AddSpecificCases();
   }
 
   private async Task CreateRandomMetricsAndMeasurements()
   {
     foreach (int metricIndex in Enumerable.Range(0, Random.Shared.Next(5, 30)))
     {
-      string metricKey = "key" + metricIndex;
-      var command = new AddMetricCommand
-      {
-        Key = metricKey,
-        Description = LoremIpsum(0, 12, 1, 3),
-        Name = LoremIpsum(1, 3, 1, 1),
-        Type = GetRandomMetricType()
-      };
+      string metricKey = "key_" + metricIndex;
 
       var dateService = new SelfIncrementingDateService();
 
-      await command.CreateExecutor().Execute(_repository, dateService);
+      await new AddMetricCommand
+        {
+          Key = metricKey,
+          Description = LoremIpsum(0, 12, 1, 3),
+          Name = LoremIpsum(1, 3, 1, 1),
+          Type = GetRandomMetricType()
+        }
+        .CreateExecutor()
+        .Execute(_repository, dateService);
 
       IMetric? metric = await _repository.GetMetric(metricKey);
 
@@ -125,19 +119,19 @@ public class MockRepositorySeeder
     }
   }
 
-  private void AddSpecificCases()
+  private async Task AddSpecificCases()
   {
-    AddSpecificCase(SpecificCases.GetMigraineMedicineCase());
-    AddSpecificCase(SpecificCases.GetOffByOneEdgeCase());
+    await AddSpecificCase(SpecificCases.GetMigraineMedicineCase());
+    await AddSpecificCase(SpecificCases.GetOffByOneEdgeCase());
   }
 
-  private void AddSpecificCase(SpecificCase specificCase)
+  private async Task AddSpecificCase(SpecificCase specificCase)
   {
     var dateService = new SelfIncrementingDateService();
     IMetric metric = specificCase.Metric;
     string metricKey = metric.Key;
 
-    new AddMetricCommand
+    await new AddMetricCommand
       {
         Key = metricKey,
         Description = metric.Description,
@@ -149,7 +143,7 @@ public class MockRepositorySeeder
 
     if (metric.Flags.Any())
     {
-      new EditMetricCommand
+      await new EditMetricCommand
         {
           MetricKey = metricKey,
           Flags = metric.Flags,
@@ -186,7 +180,7 @@ public class MockRepositorySeeder
         ? new FakeDateService(measurement.DateTime.Value)
         : (IDateService)dateService;
 
-      command.CreateExecutor().Execute(_repository, measurementDateService);
+      await command.CreateExecutor().Execute(_repository, measurementDateService);
     }
   }
 

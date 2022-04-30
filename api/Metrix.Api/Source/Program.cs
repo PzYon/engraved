@@ -20,7 +20,7 @@ builder.Services.AddSingleton(
   _ =>
   {
     IRepository repository = new MongoRepository(new MongoRepositorySettings());
-    Task seed = new MockRepositorySeeder(repository).Seed();
+    Task seed = new DemoDataRepositorySeeder(repository).Seed();
     if (!seed.IsCompleted)
     {
       seed.Wait();

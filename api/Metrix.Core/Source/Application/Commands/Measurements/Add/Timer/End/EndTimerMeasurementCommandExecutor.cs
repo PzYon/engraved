@@ -43,5 +43,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
     measurement.EndDate = dateService.UtcNow;
 
     metric.StartDate = null;
+
+    await repository.UpdateMeasurement(measurement);
   }
 }

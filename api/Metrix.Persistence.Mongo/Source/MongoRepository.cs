@@ -30,7 +30,7 @@ public class MongoRepository : IRepository
 
   public async Task<IMetric?> GetMetric(string metricKey)
   {
-    List<MetricDocument> metrics = await _metrics.Find(GetFilterByKey(metricKey)).ToListAsync();
+    List<MetricDocument> metrics = await _metrics.Find(GetMetricFilterByKey(metricKey)).ToListAsync();
 
     MetricDocument? document = metrics.FirstOrDefault();
 
@@ -42,7 +42,7 @@ public class MongoRepository : IRepository
   public async Task<IMeasurement[]> GetAllMeasurements(string metricKey)
   {
     List<MeasurementDocument> measurements = await _measurements
-      .Find(Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricKey), metricKey))
+      .Find(GetMeasurementFilterByKey(metricKey))
       .ToListAsync();
 
     return measurements
@@ -66,7 +66,7 @@ public class MongoRepository : IRepository
       .Set(nameof(MetricDocument.Name), metric.Name)
       .Set(nameof(MetricDocument.Description), metric.Description);
 
-    await _metrics.FindOneAndUpdateAsync(GetFilterByKey(metric.Key), update);
+    await _metrics.FindOneAndUpdateAsync(GetMetricFilterByKey(metric.Key), update);
   }
 
   public async Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
@@ -79,8 +79,20 @@ public class MongoRepository : IRepository
     await _measurements.InsertOneAsync(document);
   }
 
-  private static FilterDefinition<MetricDocument> GetFilterByKey(string metricKey)
+  public Task UpdateMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  {
+    MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+    
+    // await _measurements.UpdateOne(document);
+  }
+
+  private static FilterDefinition<MetricDocument> GetMetricFilterByKey(string metricKey)
   {
     return Builders<MetricDocument>.Filter.Eq(nameof(MetricDocument.Key), metricKey);
+  }
+
+  private static FilterDefinition<MeasurementDocument> GetMeasurementFilterByKey(string metricKey)
+  {
+    return Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricKey), metricKey);
   }
 }

@@ -48,4 +48,9 @@ internal class TestRepository : IRepository
 
     return Task.CompletedTask;
   }
+
+  public Task UpdateMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  {
+    return Task.CompletedTask;
+  }
 }
