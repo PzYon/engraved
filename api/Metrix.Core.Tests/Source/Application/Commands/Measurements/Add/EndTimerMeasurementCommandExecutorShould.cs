@@ -25,9 +25,9 @@ public class EndTimerMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenNoTimerIsStartedForMetric()
   {
-    _testRepository.Metrics.Add(new TimerMetric { Id = "626dab25f1a93c5c724d820a", Key = "test" });
+    _testRepository.Metrics.Add(new TimerMetric { Id = "626dab25f1a93c5c724d820a" });
 
-    var command = new EndTimerMeasurementCommand { MetricKey = "test" };
+    var command = new EndTimerMeasurementCommand { MetricId = "test" };
     await new EndTimerMeasurementCommandExecutor(command).Execute(_testRepository, _fakeDateService);
   }
 
@@ -36,7 +36,7 @@ public class EndTimerMeasurementCommandExecutorShould
   {
     DateTime startDate = _fakeDateService.UtcNow.AddMinutes(-30);
 
-    _testRepository.Metrics.Add(new TimerMetric { Key = "test", StartDate = startDate });
+    _testRepository.Metrics.Add(new TimerMetric { Id = "test", StartDate = startDate });
 
     _testRepository.Measurements.Add(
       new TimerMeasurement
@@ -44,13 +44,13 @@ public class EndTimerMeasurementCommandExecutorShould
         Id = "626dab25f1a93c5c724d820a",
         DateTime = startDate,
         StartDate = startDate,
-        MetricKey = "test"
+        MetricId = "test"
       }
     );
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 
-    var command = new EndTimerMeasurementCommand { MetricKey = "test" };
+    var command = new EndTimerMeasurementCommand { MetricId = "test" };
 
     await new EndTimerMeasurementCommandExecutor(command).Execute(_testRepository, _fakeDateService);
 
@@ -62,7 +62,7 @@ public class EndTimerMeasurementCommandExecutorShould
 
     Assert.AreEqual(_fakeDateService.UtcNow, timerMeasurement.EndDate.Value);
 
-    TimerMetric metric = _testRepository.Metrics.OfType<TimerMetric>().First(m => m.Key == "test");
+    TimerMetric metric = _testRepository.Metrics.OfType<TimerMetric>().First(m => m.Id == "test");
     Assert.IsNotNull(metric);
     Assert.IsNull(metric.StartDate);
   }

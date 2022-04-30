@@ -11,7 +11,7 @@ public static class MetricUtil
   {
     if (string.IsNullOrEmpty(metricKey))
     {
-      throw new InvalidCommandException(command, $"A {nameof(BaseUpsertMeasurementCommand.MetricKey)} must be specified.");
+      throw new InvalidCommandException(command, $"A {nameof(BaseUpsertMeasurementCommand.MetricId)} must be specified.");
     }
 
     IMetric? metric = await repository.GetMetric(metricKey);

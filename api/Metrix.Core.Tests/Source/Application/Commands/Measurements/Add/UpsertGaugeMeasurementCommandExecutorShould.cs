@@ -24,11 +24,11 @@ public class UpsertGaugeMeasurementCommandExecutorShould
   [DataRow(123.456)]
   public async Task Set_ValueFromCommand(double value)
   {
-    _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
     var command = new UpsertGaugeMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Value = value
     };
 
@@ -37,7 +37,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 
     IMeasurement createdMeasurement = _testRepository.Measurements.First();
-    Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
+    Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
 
     var counterMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(counterMeasurement);
@@ -48,11 +48,11 @@ public class UpsertGaugeMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenNoValueIsSpecified()
   {
-    _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
     var command = new UpsertGaugeMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Notes = "n0t3s",
       Value = null
     };
@@ -66,7 +66,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     _testRepository.Metrics.Add(
       new GaugeMetric
       {
-        Key = "k3y",
+        Id = "k3y",
         Flags = { { "x", "y" }, { "k3y", "v@lue" } }
       }
     );
@@ -75,7 +75,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
 
     var command = new UpsertGaugeMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Notes = "n0t3s",
       Value = value,
       MetricFlagKey = "k3y"
@@ -86,7 +86,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 
     IMeasurement createdMeasurement = _testRepository.Measurements.First();
-    Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
+    Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(command.MetricFlagKey, createdMeasurement.MetricFlagKey);
 
@@ -99,11 +99,11 @@ public class UpsertGaugeMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
   {
-    _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
     var command = new UpsertGaugeMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Notes = "n0t3s",
       Value = 42,
       MetricFlagKey = "fooBar"

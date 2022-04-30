@@ -10,7 +10,6 @@ namespace Metrix.Persistence.Mongo.Tests.DocumentTypes;
 public class MetricDocumentMapperShould
 {
   private static readonly string Id = ObjectId.GenerateNewId().ToString();
-  private static readonly string Key = "k3y";
   private static readonly string Name = "N@me";
   private static readonly string Description = "D3scription";
 
@@ -20,7 +19,6 @@ public class MetricDocumentMapperShould
     var counterMetric = new CounterMetric
     {
       Id = Id,
-      Key = Key,
       Name = Name,
       Description = Description,
       LastMeasurementDate = DateTime.UtcNow
@@ -40,7 +38,6 @@ public class MetricDocumentMapperShould
     var counterMetricDocument = new CounterMetricDocument
     {
       Id = new ObjectId(Id),
-      Key = Key,
       Description = Description,
       Name = Name
     };
@@ -58,7 +55,6 @@ public class MetricDocumentMapperShould
     var gaugeMetric = new GaugeMetric
     {
       Id = Id,
-      Key = Key,
       Name = Name,
       Description = Description
     };
@@ -77,7 +73,6 @@ public class MetricDocumentMapperShould
     var gaugeMetricDocument = new GaugeMetricDocument
     {
       Id = new ObjectId(Id),
-      Key = Key,
       Description = Description,
       Name = Name
     };
@@ -95,7 +90,6 @@ public class MetricDocumentMapperShould
     var timerMetric = new TimerMetric
     {
       Id = Id,
-      Key = Key,
       Name = Name,
       Description = Description,
       Flags = new Dictionary<string, string> { { "fl@g", "fl@g_value" } }
@@ -117,7 +111,6 @@ public class MetricDocumentMapperShould
     var timerMetricDocument = new TimerMetricDocument
     {
       Id = new ObjectId(Id),
-      Key = Key,
       Description = Description,
       Name = Name
     };
@@ -135,7 +128,6 @@ public class MetricDocumentMapperShould
     var metric = new CounterMetric
     {
       Id = Id,
-      Key = Key,
       Description = Description,
       Name = Name,
       Flags = new Dictionary<string, string>
@@ -158,7 +150,6 @@ public class MetricDocumentMapperShould
   private static void AssertEqual(IMetric expected, MetricDocument? actual)
   {
     Assert.AreEqual(expected.Id, actual!.Id.ToString());
-    Assert.AreEqual(expected.Key, actual!.Key);
     Assert.AreEqual(expected.Name, actual.Name);
     Assert.AreEqual(expected.Type, actual.Type);
     Assert.AreEqual(expected.Description, actual.Description);
@@ -168,7 +159,6 @@ public class MetricDocumentMapperShould
   private static void AssertEqual(MetricDocument expected, IMetric actual)
   {
     Assert.AreEqual(expected.Id.ToString(), actual!.Id);
-    Assert.AreEqual(expected.Key, actual!.Key);
     Assert.AreEqual(expected.Name, actual.Name);
     Assert.AreEqual(expected.Type, actual.Type);
     Assert.AreEqual(expected.Description, actual.Description);

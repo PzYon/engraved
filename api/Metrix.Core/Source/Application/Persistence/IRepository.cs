@@ -7,9 +7,9 @@ public interface IRepository
 {
   Task<IMetric[]> GetAllMetrics();
 
-  Task<IMetric?> GetMetric(string metricKey);
+  Task<IMetric?> GetMetric(string metricId);
 
-  Task<IMeasurement[]> GetAllMeasurements(string metricKey);
+  Task<IMeasurement[]> GetAllMeasurements(string metricId);
 
   Task AddMetric(IMetric metric);
 

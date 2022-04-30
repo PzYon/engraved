@@ -28,9 +28,14 @@ public class MongoRepository : IRepository
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
   }
 
-  public async Task<IMetric?> GetMetric(string metricKey)
+  public async Task<IMetric?> GetMetric(string metricId)
   {
-    List<MetricDocument> metrics = await _metrics.Find(GetMetricFilterByKey(metricKey)).ToListAsync();
+    if (string.IsNullOrEmpty(metricId))
+    {
+      throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
+    }
+
+    List<MetricDocument> metrics = await _metrics.Find(GetMetricFilterById(metricId)).ToListAsync();
 
     MetricDocument? document = metrics.FirstOrDefault();
 
@@ -39,10 +44,10 @@ public class MongoRepository : IRepository
       : MetricDocumentMapper.FromDocument<IMetric>(document);
   }
 
-  public async Task<IMeasurement[]> GetAllMeasurements(string metricKey)
+  public async Task<IMeasurement[]> GetAllMeasurements(string metricId)
   {
     List<MeasurementDocument> measurements = await _measurements
-      .Find(GetMeasurementFilterByKey(metricKey))
+      .Find(GetMeasurementFilterById(metricId))
       .ToListAsync();
 
     return measurements
@@ -63,7 +68,7 @@ public class MongoRepository : IRepository
   public async Task UpdateMetric(IMetric metric)
   {
     await _metrics.ReplaceOneAsync(
-      GetMetricFilterByKey(metric.Key),
+      GetMetricFilterById(metric.Id),
       MetricDocumentMapper.ToDocument(metric),
       new ReplaceOptions { IsUpsert = true }
     );
@@ -80,19 +85,19 @@ public class MongoRepository : IRepository
     }
 
     await _measurements.ReplaceOneAsync(
-      Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.Id), document.Id),
+      GetMeasurementFilterById(document.Id.ToString()),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
   }
 
-  private static FilterDefinition<MetricDocument> GetMetricFilterByKey(string metricKey)
+  private static FilterDefinition<MetricDocument> GetMetricFilterById(string metricId)
   {
-    return Builders<MetricDocument>.Filter.Eq(nameof(MetricDocument.Key), metricKey);
+    return Builders<MetricDocument>.Filter.Eq(nameof(MetricDocument.Id), metricId);
   }
 
-  private static FilterDefinition<MeasurementDocument> GetMeasurementFilterByKey(string metricKey)
+  private static FilterDefinition<MeasurementDocument> GetMeasurementFilterById(string metricId)
   {
-    return Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricKey), metricKey);
+    return Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), metricId);
   }
 }

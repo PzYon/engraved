@@ -17,7 +17,7 @@ public class MeasurementDocumentMapperShould
     var measurement = new CounterMeasurement
     {
       Id = Id,
-      MetricKey = Key,
+      MetricId = Key,
       DateTime = DateTime.UtcNow,
       MetricFlagKey = "wh@t3v3r"
     };
@@ -36,7 +36,7 @@ public class MeasurementDocumentMapperShould
     {
       Id = new ObjectId(Id),
       Notes = "n0t3",
-      MetricKey = Key,
+      MetricId = Key,
       DateTime = DateTime.UtcNow,
       MetricFlagKey = "wh@t3v3r",
     };
@@ -53,7 +53,7 @@ public class MeasurementDocumentMapperShould
     {
       Id = Id,
       Notes = "n0t3",
-      MetricKey = Key,
+      MetricId = Key,
       DateTime = DateTime.UtcNow,
       MetricFlagKey = "wh@t3v3r",
       Value = 4.20
@@ -77,7 +77,7 @@ public class MeasurementDocumentMapperShould
     {
       Id = new ObjectId(Id),
       Notes = "n0t3",
-      MetricKey = Key,
+      MetricId = Key,
       DateTime = DateTime.UtcNow,
       MetricFlagKey = "wh@t3v3r",
       Value = 4321
@@ -94,7 +94,7 @@ public class MeasurementDocumentMapperShould
     var measurement = new TimerMeasurement
     {
       Id = Id,
-      MetricKey = Key,
+      MetricId = Key,
       DateTime = DateTime.UtcNow,
       MetricFlagKey = "wh@t3v3r",
       StartDate = DateTime.UtcNow.AddHours(-200),
@@ -120,7 +120,7 @@ public class MeasurementDocumentMapperShould
     {
       Id = new ObjectId(Id),
       Notes = "n0t3",
-      MetricKey = Key,
+      MetricId = Key,
       DateTime = DateTime.UtcNow,
       MetricFlagKey = "wh@t3v3r",
       StartDate = DateTime.UtcNow.AddHours(-200),
@@ -136,7 +136,7 @@ public class MeasurementDocumentMapperShould
   {
     Assert.AreEqual(expected.DateTime, actual!.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.MetricKey, actual.MetricKey);
+    Assert.AreEqual(expected.MetricId, actual.MetricId);
     Assert.AreEqual(expected.MetricFlagKey, actual.MetricFlagKey);
   }
 
@@ -145,7 +145,7 @@ public class MeasurementDocumentMapperShould
     Assert.AreEqual(expected.Id.ToString(), actual!.Id);
     Assert.AreEqual(expected.DateTime, actual.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.MetricKey, actual.MetricKey);
+    Assert.AreEqual(expected.MetricId, actual.MetricId);
     Assert.AreEqual(expected.MetricFlagKey, actual.MetricFlagKey);
   }
 }

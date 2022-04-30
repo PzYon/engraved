@@ -14,14 +14,14 @@ public class MockRepository : IRepository
     return Task.FromResult(Metrics.ToArray());
   }
 
-  public Task<IMetric?> GetMetric(string metricKey)
+  public Task<IMetric?> GetMetric(string metricId)
   {
-    return Task.FromResult(Metrics.FirstOrDefault(m => m.Key == metricKey));
+    return Task.FromResult(Metrics.FirstOrDefault(m => m.Id == metricId));
   }
 
-  public Task<IMeasurement[]> GetAllMeasurements(string metricKey)
+  public Task<IMeasurement[]> GetAllMeasurements(string metricId)
   {
-    return Task.FromResult(Measurements.Where(m => m.MetricKey == metricKey).ToArray());
+    return Task.FromResult(Measurements.Where(m => m.MetricId == metricId).ToArray());
   }
 
   public Task AddMetric(IMetric metric)

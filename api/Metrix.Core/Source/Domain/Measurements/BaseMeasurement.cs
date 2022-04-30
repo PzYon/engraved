@@ -4,7 +4,7 @@ public abstract class BaseMeasurement : IMeasurement
 {
   public string? Id { get; set; }
   
-  public string MetricKey { get; set; } = null!;
+  public string MetricId { get; set; } = null!;
 
   public string? Notes { get; set; }
 

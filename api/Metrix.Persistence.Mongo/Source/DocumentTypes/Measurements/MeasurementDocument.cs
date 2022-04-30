@@ -6,7 +6,7 @@ public abstract class MeasurementDocument
 {
   public ObjectId? Id { get; set; }
 
-  public string MetricKey { get; set; }
+  public string MetricId { get; set; }
 
   public string? Notes { get; set; }
 

@@ -16,7 +16,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
 
   public async Task Execute(IRepository repository, IDateService dateService)
   {
-    var metric = await MetricUtil.LoadAndValidateMetric<TimerMetric>(repository, _command, _command.MetricKey);
+    var metric = await MetricUtil.LoadAndValidateMetric<TimerMetric>(repository, _command, _command.MetricId);
 
     if (metric.Type != MetricType.Timer)
     {
@@ -29,7 +29,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IDb. for the time being we will skip that.
-    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Key);
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id);
 
     TimerMeasurement? measurement = allMeasurements
       .OfType<TimerMeasurement>()
@@ -37,7 +37,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
 
     if (measurement == null)
     {
-      throw new InvalidCommandException(_command, $"Metric \"{metric.Key}\" has no started timer.");
+      throw new InvalidCommandException(_command, $"Metric \"{metric.Id}\" has no started timer.");
     }
 
     measurement.EndDate = dateService.UtcNow;

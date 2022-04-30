@@ -19,7 +19,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenMetricKeyIsNotSpecified()
   {
-    var command = new UpsertCounterMeasurementCommand { MetricKey = string.Empty };
+    var command = new UpsertCounterMeasurementCommand { MetricId = string.Empty };
 
     await new UpsertCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
@@ -30,7 +30,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
   {
     var command = new UpsertCounterMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Notes = "n0t3s"
     };
 

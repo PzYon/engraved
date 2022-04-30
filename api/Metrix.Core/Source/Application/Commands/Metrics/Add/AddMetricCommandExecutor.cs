@@ -26,7 +26,6 @@ public class AddMetricCommandExecutor : ICommandExecutor
     }
 
     IMetric metric = CreateMetric(_command.Type);
-    metric.Key = string.IsNullOrEmpty(_command.Key) ? Guid.NewGuid().ToString() : _command.Key;
     metric.Description = _command.Description;
     metric.Name = _command.Name;
 

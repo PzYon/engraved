@@ -18,7 +18,6 @@ public static class SpecificCases
     {
       Metric = new CounterMetric
       {
-        Key = "edge-case",
         Name = "Date Edge Case"
       },
       Measurements =
@@ -45,7 +44,6 @@ public static class SpecificCases
     {
       Metric = new CounterMetric
       {
-        Key = "migraine-medicine",
         Name = "Migraine Medicine",
         Description = "How many migraine medicines have been taken.",
         Flags = new Dictionary<string, string>

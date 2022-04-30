@@ -17,13 +17,13 @@ public class StartTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommand
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IRepository. for the time being we will skip that.
-    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Key);
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id);
     
     if (allMeasurements
         .OfType<TimerMeasurement>()
         .Any(m => m.EndDate == null))
     {
-      throw CreateInvalidCommandException($"Metric \"{metric.Key}\" already has a started timer.");
+      throw CreateInvalidCommandException($"Metric \"{metric.Id}\" already has a started timer.");
     }
   }
 

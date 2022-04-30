@@ -74,7 +74,7 @@ public class DemoDataRepositorySeeder
     {
       var command = new UpsertCounterMeasurementCommand
       {
-        MetricKey = metric.Key
+        MetricId = metric.Id
       };
 
       await new UpsertCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
@@ -87,7 +87,7 @@ public class DemoDataRepositorySeeder
     {
       var command = new UpsertGaugeMeasurementCommand
       {
-        MetricKey = metric.Key,
+        MetricId = metric.Id,
         Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
       };
 
@@ -107,13 +107,13 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new StartTimerMeasurementCommand { MetricKey = metric.Key }
+      await new StartTimerMeasurementCommand { MetricId = metric.Id }
         .CreateExecutor()
         .Execute(_repository, dateService);
 
       dateService.SetNext(remainingSteps);
 
-      await new EndTimerMeasurementCommand { MetricKey = metric.Key }
+      await new EndTimerMeasurementCommand { MetricId = metric.Id }
         .CreateExecutor()
         .Execute(_repository, dateService);
     }
@@ -129,11 +129,9 @@ public class DemoDataRepositorySeeder
   {
     var dateService = new SelfIncrementingDateService();
     IMetric metric = specificCase.Metric;
-    string metricKey = metric.Key;
 
     await new AddMetricCommand
       {
-        Key = metricKey,
         Description = metric.Description,
         Name = metric.Name,
         Type = metric.Type,
@@ -141,11 +139,12 @@ public class DemoDataRepositorySeeder
       .CreateExecutor()
       .Execute(_repository, dateService);
 
+    throw new Exception("We need metric id down below");
+    
     if (metric.Flags.Any())
     {
       await new EditMetricCommand
         {
-          MetricKey = metricKey,
           Flags = metric.Flags,
           Description = metric.Description,
           Name = metric.Name
@@ -173,7 +172,6 @@ public class DemoDataRepositorySeeder
       }
 
       command.Notes = measurement.Notes;
-      command.MetricKey = metricKey;
       command.MetricFlagKey = measurement.MetricFlagKey;
 
       IDateService measurementDateService = measurement.DateTime != null
