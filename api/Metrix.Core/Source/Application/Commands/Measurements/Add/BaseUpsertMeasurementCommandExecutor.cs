@@ -5,8 +5,8 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
-  where TCommand : BaseAddMeasurementCommand
+public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
+  where TCommand : BaseUpsertMeasurementCommand
   where TMeasurement : IMeasurement
   where TMetric : class, IMetric
 {
@@ -21,7 +21,7 @@ public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, 
 
   protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
 
-  protected BaseAddMeasurementCommandExecutor(TCommand command)
+  protected BaseUpsertMeasurementCommandExecutor(TCommand command)
   {
     Command = command;
   }

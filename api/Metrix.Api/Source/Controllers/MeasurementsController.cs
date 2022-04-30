@@ -31,14 +31,14 @@ public class MeasurementsController : ControllerBase
 
   [HttpPost]
   [Route("counter")]
-  public async Task AddCounter([FromBody] AddCounterMeasurementCommand measurement)
+  public async Task AddCounter([FromBody] UpsertCounterMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
   }
 
   [HttpPost]
   [Route("gauge")]
-  public async Task AddGauge([FromBody] AddGaugeMeasurementCommand measurement)
+  public async Task AddGauge([FromBody] UpsertGaugeMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
   }

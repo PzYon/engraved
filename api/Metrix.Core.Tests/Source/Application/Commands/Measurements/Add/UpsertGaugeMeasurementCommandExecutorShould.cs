@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 [TestClass]
-public class AddGaugeMeasurementCommandExecutorShould
+public class UpsertGaugeMeasurementCommandExecutorShould
 {
   private TestRepository _testRepository = null!;
 
@@ -26,13 +26,13 @@ public class AddGaugeMeasurementCommandExecutorShould
   {
     _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
-    var command = new AddGaugeMeasurementCommand
+    var command = new UpsertGaugeMeasurementCommand
     {
       MetricKey = "k3y",
       Value = value
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 
@@ -50,14 +50,14 @@ public class AddGaugeMeasurementCommandExecutorShould
   {
     _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
-    var command = new AddGaugeMeasurementCommand
+    var command = new UpsertGaugeMeasurementCommand
     {
       MetricKey = "k3y",
       Notes = "n0t3s",
       Value = null
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 
   [TestMethod]
@@ -73,7 +73,7 @@ public class AddGaugeMeasurementCommandExecutorShould
 
     const double value = 123.45;
 
-    var command = new AddGaugeMeasurementCommand
+    var command = new UpsertGaugeMeasurementCommand
     {
       MetricKey = "k3y",
       Notes = "n0t3s",
@@ -81,7 +81,7 @@ public class AddGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "k3y"
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 
@@ -101,7 +101,7 @@ public class AddGaugeMeasurementCommandExecutorShould
   {
     _testRepository.Metrics.Add(new GaugeMetric { Key = "k3y" });
 
-    var command = new AddGaugeMeasurementCommand
+    var command = new UpsertGaugeMeasurementCommand
     {
       MetricKey = "k3y",
       Notes = "n0t3s",
@@ -109,6 +109,6 @@ public class AddGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "fooBar"
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 }

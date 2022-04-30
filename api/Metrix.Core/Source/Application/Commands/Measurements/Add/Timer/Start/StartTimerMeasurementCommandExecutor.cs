@@ -4,7 +4,7 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
 
-public class StartTimerMeasurementCommandExecutor : BaseAddMeasurementCommandExecutor<
+public class StartTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
   StartTimerMeasurementCommand,
   TimerMeasurement,
   TimerMetric

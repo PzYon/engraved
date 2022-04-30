@@ -72,12 +72,12 @@ public class DemoDataRepositorySeeder
   {
     foreach (int _ in Enumerable.Range(0, Random.Shared.Next(0, 30)))
     {
-      var command = new AddCounterMeasurementCommand
+      var command = new UpsertCounterMeasurementCommand
       {
         MetricKey = metric.Key
       };
 
-      await new AddCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
+      await new UpsertCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
     }
   }
 
@@ -85,13 +85,13 @@ public class DemoDataRepositorySeeder
   {
     foreach (int _ in Enumerable.Range(0, Random.Shared.Next(0, 30)))
     {
-      var command = new AddGaugeMeasurementCommand
+      var command = new UpsertGaugeMeasurementCommand
       {
         MetricKey = metric.Key,
         Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
       };
 
-      await new AddGaugeMeasurementCommandExecutor(command).Execute(_repository, dateService);
+      await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_repository, dateService);
     }
   }
 
@@ -156,15 +156,15 @@ public class DemoDataRepositorySeeder
 
     foreach (IMeasurement measurement in specificCase.Measurements)
     {
-      BaseAddMeasurementCommand command;
+      BaseUpsertMeasurementCommand command;
 
       switch (measurement)
       {
         case CounterMeasurement:
-          command = new AddCounterMeasurementCommand();
+          command = new UpsertCounterMeasurementCommand();
           break;
         case GaugeMeasurement gaugeMeasurement:
-          command = new AddGaugeMeasurementCommand { Value = gaugeMeasurement.Value };
+          command = new UpsertGaugeMeasurementCommand { Value = gaugeMeasurement.Value };
           break;
         case TimerMeasurement:
           throw new NotImplementedException();

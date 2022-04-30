@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 [TestClass]
-public class AddCounterMeasurementCommandExecutorShould
+public class UpsertCounterMeasurementCommandExecutorShould
 {
   private TestRepository _testRepository = null!;
 
@@ -19,21 +19,21 @@ public class AddCounterMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenMetricKeyIsNotSpecified()
   {
-    var command = new AddCounterMeasurementCommand { MetricKey = string.Empty };
+    var command = new UpsertCounterMeasurementCommand { MetricKey = string.Empty };
 
-    await new AddCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    await new UpsertCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenMetricDoesNotExist()
   {
-    var command = new AddCounterMeasurementCommand
+    var command = new UpsertCounterMeasurementCommand
     {
       MetricKey = "k3y",
       Notes = "n0t3s"
     };
 
-    await new AddCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    await new UpsertCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 }

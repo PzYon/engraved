@@ -2,7 +2,7 @@
 
 namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
 
-public class StartTimerMeasurementCommand : BaseAddMeasurementCommand
+public class StartTimerMeasurementCommand : BaseUpsertMeasurementCommand
 {
   public override MetricType GetSupportedMetricType()
   {

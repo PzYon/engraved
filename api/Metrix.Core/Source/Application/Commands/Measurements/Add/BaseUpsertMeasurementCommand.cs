@@ -2,7 +2,7 @@
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-public abstract class BaseAddMeasurementCommand : ICommand
+public abstract class BaseUpsertMeasurementCommand : ICommand
 {
   public string MetricKey { get; set; } = null!;
 
