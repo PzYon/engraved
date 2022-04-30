@@ -62,31 +62,27 @@ public class MongoRepository : IRepository
 
   public async Task UpdateMetric(IMetric metric)
   {
-    UpdateDefinition<MetricDocument>? update = Builders<MetricDocument>.Update
-      .Set(nameof(MetricDocument.Name), metric.Name)
-      .Set(nameof(MetricDocument.Description), metric.Description);
-
-    await _metrics.FindOneAndUpdateAsync(GetMetricFilterByKey(metric.Key), update);
+    await _metrics.ReplaceOneAsync(
+      GetMetricFilterByKey(metric.Key),
+      MetricDocumentMapper.ToDocument(metric),
+      new ReplaceOptions { IsUpsert = true }
+    );
   }
 
-  public async Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public async Task UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     // this should not really be required... why is it!?
-    document.Id = ObjectId.GenerateNewId();
-
-    await _measurements.InsertOneAsync(document);
-  }
-
-  public async Task UpdateMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
-  {
-    MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+    if (document.Id == null)
+    {
+      document.Id = ObjectId.GenerateNewId();
+    }
 
     await _measurements.ReplaceOneAsync(
-      Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.Id), measurement.Id),
+      Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.Id), document.Id),
       document,
-      new ReplaceOptions()
+      new ReplaceOptions { IsUpsert = true }
     );
   }
 

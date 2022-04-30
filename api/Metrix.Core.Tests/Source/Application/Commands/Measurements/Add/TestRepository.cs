@@ -42,15 +42,28 @@ internal class TestRepository : IRepository
     return Task.CompletedTask;
   }
 
-  public Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public Task UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
+    RemoveMeasurement(measurement);
+
     Measurements.Add(measurement);
 
     return Task.CompletedTask;
   }
 
-  public Task UpdateMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  private void RemoveMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
-    return Task.CompletedTask;
+    if (string.IsNullOrEmpty(measurement.Id))
+    {
+      return;
+    }
+
+    IMeasurement? firstOrDefault = Measurements.FirstOrDefault(m => m.Id == measurement.Id);
+    if (firstOrDefault == null)
+    {
+      return;
+    }
+
+    Measurements.Remove(firstOrDefault);
   }
 }

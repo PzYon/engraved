@@ -4,7 +4,7 @@ namespace Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 
 public abstract class MeasurementDocument
 {
-  public ObjectId Id { get; set; }
+  public ObjectId? Id { get; set; }
 
   public string MetricKey { get; set; }
 

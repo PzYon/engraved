@@ -15,7 +15,5 @@ public interface IRepository
 
   Task UpdateMetric(IMetric metric);
 
-  Task AddMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
-
-  Task UpdateMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
+  Task UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
 }

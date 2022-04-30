@@ -34,7 +34,7 @@ public class StartTimerMeasurementCommandExecutorShould
       }
     );
 
-    var command = new StartTimerMeasurementCommand { MetricKey = "test" };
+    var command = new StartTimerMeasurementCommand { Id = "626dab25f1a93c5c724d820a", MetricKey = "test" };
 
     await new StartTimerMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }

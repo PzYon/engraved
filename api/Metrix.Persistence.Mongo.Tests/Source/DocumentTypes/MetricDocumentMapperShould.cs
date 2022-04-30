@@ -129,6 +129,32 @@ public class MetricDocumentMapperShould
     AssertEqual(timerMetricDocument, metric);
   }
 
+  [Test]
+  public void Counter_Flags()
+  {
+    var metric = new CounterMetric
+    {
+      Id = Id,
+      Key = Key,
+      Description = Description,
+      Name = Name,
+      Flags = new Dictionary<string, string>
+      {
+        { "foo", "Foo" },
+        { "bar", "Bar" }
+      }
+    };
+
+    MetricDocument document = MetricDocumentMapper.ToDocument(metric);
+
+    Assert.IsNotNull(document.Flags);
+    Assert.AreEqual(2, document.Flags.Count);
+    Assert.IsTrue(document.Flags.ContainsKey("foo"));
+    Assert.IsTrue(document.Flags["foo"] == "Foo");
+    Assert.IsTrue(document.Flags.ContainsKey("bar"));
+    Assert.IsTrue(document.Flags["bar"] == "Bar");
+  }
+
   private static void AssertEqual(IMetric expected, MetricDocument? actual)
   {
     Assert.AreEqual(expected.Id, actual!.Id.ToString());

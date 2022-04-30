@@ -4,6 +4,8 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 public abstract class BaseUpsertMeasurementCommand : ICommand
 {
+  public string? Id { get; set; }
+  
   public string MetricKey { get; set; } = null!;
 
   public string? Notes { get; set; }

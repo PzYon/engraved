@@ -41,7 +41,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     measurement.DateTime = dateService.UtcNow;
     measurement.MetricFlagKey = Command.MetricFlagKey;
 
-    await repository.AddMeasurement(measurement);
+    await repository.UpsertMeasurement(measurement);
 
     UpdateMetric(metric, dateService);
 
