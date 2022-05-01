@@ -4,5 +4,5 @@ namespace Metrix.Core.Application.Commands;
 
 public interface ICommandExecutor
 {
-  Task Execute(IRepository repository, IDateService dateService);
+  Task<CommandResult> Execute(IRepository repository, IDateService dateService);
 }

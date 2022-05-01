@@ -1,8 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using MongoDB.Bson;
 using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
@@ -33,9 +34,9 @@ public class MongoRepositoryShould
   [Test]
   public async Task CreateOneMetric_Then_GetMetric()
   {
-    await _repository.AddMetric(new CounterMetric());
+    UpsertResult result = await _repository.UpsertMetric(new CounterMetric());
 
-    IMetric? metric = await _repository.GetMetric(null);
+    IMetric? metric = await _repository.GetMetric(result.EntityId);
 
     Assert.IsNotNull(metric);
   }
@@ -43,8 +44,8 @@ public class MongoRepositoryShould
   [Test]
   public async Task CreateMetrics_Then_GetAllMetrics()
   {
-    await _repository.AddMetric(new CounterMetric { Id = "626dc92c4f598ca9fc09c3c4" });
-    await _repository.AddMetric(new CounterMetric { Id = "626dc93b91c44b5a20f9ea27" });
+    await _repository.UpsertMetric(new CounterMetric());
+    await _repository.UpsertMetric(new CounterMetric());
 
     IMetric[] allMetrics = await _repository.GetAllMetrics();
 
@@ -55,18 +56,16 @@ public class MongoRepositoryShould
   public async Task CreateMetric_Then_Update()
   {
     var counterMetric = new CounterMetric { Name = "First" };
-    await _repository.AddMetric(counterMetric);
+    UpsertResult result = await _repository.UpsertMetric(counterMetric);
 
-    throw new Exception("We need metric id down below");
-
-    counterMetric = (CounterMetric)await _repository.GetMetric(counterMetric.Id);
+    counterMetric = (CounterMetric)await _repository.GetMetric(result.EntityId);
 
     Assert.IsNotNull(counterMetric);
 
     counterMetric!.Name = "Second";
-    await _repository.UpdateMetric(counterMetric);
+    await _repository.UpsertMetric(counterMetric);
 
-    IMetric? updateMetric = await _repository.GetMetric(counterMetric.Id);
+    IMetric? updateMetric = await _repository.GetMetric(result.EntityId);
     Assert.IsNotNull(updateMetric);
     Assert.AreEqual(counterMetric.Id, updateMetric!.Id);
     Assert.AreEqual(counterMetric.Name, updateMetric.Name);
@@ -81,9 +80,9 @@ public class MongoRepositoryShould
       Flags = new Dictionary<string, string> { { "fl@g", "fl@g_value" } }
     };
 
-    await _repository.AddMetric(counterMetric);
+    UpsertResult result = await _repository.UpsertMetric(counterMetric);
 
-    IMetric? metric = await _repository.GetMetric(counterMetric.Id);
+    IMetric? metric = await _repository.GetMetric(result.EntityId);
     Assert.IsNotNull(metric);
     Assert.IsNotNull(metric!.Flags);
     Assert.Contains("fl@g", metric.Flags.Keys);
@@ -93,7 +92,7 @@ public class MongoRepositoryShould
   [Test]
   public async Task GetAllMeasurements_Empty()
   {
-    IMeasurement[] allMetrics = await _repository.GetAllMeasurements("metricKey");
+    IMeasurement[] allMetrics = await _repository.GetAllMeasurements(ObjectId.GenerateNewId().ToString());
 
     Assert.AreEqual(allMetrics.Length, 0);
   }
@@ -101,20 +100,14 @@ public class MongoRepositoryShould
   [Test]
   public async Task CreateMeasurements_Then_GetAll()
   {
-    const string metricId = "626dab25f1a93c5c724d820a";
-    var timerMetric = new GaugeMetric
-    {
-      Id = metricId,
-      Name = "N@me"
-    };
+    var timerMetric = new GaugeMetric { Name = "N@me" };
+    UpsertResult result = await _repository.UpsertMetric(timerMetric);
 
-    await _repository.AddMetric(timerMetric);
-
-    await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = metricId, Value = 123 });
+    await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = result.EntityId, Value = 123 });
     await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = "wrongId", Value = 456 });
-    await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = metricId, Value = 789 });
+    await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = result.EntityId, Value = 789 });
 
-    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(metricId);
+    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId);
 
     Assert.AreEqual(2, allMeasurements.Length);
   }

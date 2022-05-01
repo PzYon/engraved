@@ -32,7 +32,12 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       Value = value
     };
 
-    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    CommandResult commandResult = await new UpsertGaugeMeasurementCommandExecutor(command).Execute(
+      _testRepository,
+      new FakeDateService()
+    );
+    
+    Assert.IsFalse(string.IsNullOrEmpty(commandResult.EntityId));
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 

@@ -26,7 +26,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     Command = command;
   }
 
-  public async Task Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
     var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
 
@@ -41,11 +41,13 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     measurement.DateTime = dateService.UtcNow;
     measurement.MetricFlagKey = Command.MetricFlagKey;
 
-    await repository.UpsertMeasurement(measurement);
+    UpsertResult result = await repository.UpsertMeasurement(measurement);
 
     UpdateMetric(metric, dateService);
 
     metric.LastMeasurementDate = dateService.UtcNow;
+
+    return new CommandResult { EntityId = result.EntityId };
   }
 
   private void EnsureCompatibleMetricType(IMetric metric)

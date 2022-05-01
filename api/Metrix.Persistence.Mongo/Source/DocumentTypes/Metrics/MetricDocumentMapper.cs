@@ -53,6 +53,6 @@ public static class MetricDocumentMapper
 
   public static TMetric FromDocument<TMetric>(MetricDocument document) where TMetric : IMetric
   {
-    return (TMetric) Mapper.Map(document, document.GetType(), typeof(TMetric));
+    return (TMetric)Mapper.Map(document, document.GetType(), typeof(TMetric));
   }
 }

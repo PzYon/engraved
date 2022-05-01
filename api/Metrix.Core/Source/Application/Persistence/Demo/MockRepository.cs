@@ -24,27 +24,36 @@ public class MockRepository : IRepository
     return Task.FromResult(Measurements.Where(m => m.MetricId == metricId).ToArray());
   }
 
-  public Task AddMetric(IMetric metric)
+  public Task<UpsertResult> UpsertMetric(IMetric metric)
   {
+    if (string.IsNullOrEmpty(metric.Id))
+    {
+      metric.Id = GenerateId();
+    }
+    else
+    {
+      RemoveMetric(metric);
+    }
+
     Metrics.Add(metric);
-    return Task.CompletedTask;
+
+    return Task.FromResult(new UpsertResult { EntityId = metric.Id });
   }
 
-  public Task UpdateMetric(IMetric metric)
+  public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
-    // nothing to do here as metric is updated by reference and
-    // hence implicitly updated in "List<IMetric> Metrics"
-
-    return Task.CompletedTask;
-  }
-
-  public Task UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
-  {
-    RemoveMeasurement(measurement);
+    if (string.IsNullOrEmpty(measurement.Id))
+    {
+      measurement.Id = GenerateId();
+    }
+    else
+    {
+      RemoveMeasurement(measurement);
+    }
 
     Measurements.Add(measurement);
 
-    return Task.CompletedTask;
+    return Task.FromResult(new UpsertResult() { EntityId = measurement.Id });
   }
 
   private void RemoveMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
@@ -61,5 +70,26 @@ public class MockRepository : IRepository
     }
 
     Measurements.Remove(firstOrDefault);
+  }
+
+  private void RemoveMetric<TMetric>(TMetric metric) where TMetric : IMetric
+  {
+    if (string.IsNullOrEmpty(metric.Id))
+    {
+      return;
+    }
+
+    IMetric? firstOrDefault = Metrics.FirstOrDefault(m => m.Id == metric.Id);
+    if (firstOrDefault == null)
+    {
+      return;
+    }
+
+    Metrics.Remove(firstOrDefault);
+  }
+
+  private string GenerateId()
+  {
+    return Guid.NewGuid().ToString("N");
   }
 }

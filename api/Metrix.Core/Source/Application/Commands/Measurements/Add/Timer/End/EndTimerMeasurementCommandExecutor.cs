@@ -14,7 +14,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public async Task Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
     var metric = await MetricUtil.LoadAndValidateMetric<TimerMetric>(repository, _command, _command.MetricId);
 
@@ -41,9 +41,11 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
     }
 
     measurement.EndDate = dateService.UtcNow;
-    await repository.UpsertMeasurement(measurement);
+    UpsertResult result = await repository.UpsertMeasurement(measurement);
 
     metric.StartDate = null;
-    await repository.UpdateMetric(metric);
+    await repository.UpsertMetric(metric);
+
+    return new CommandResult { EntityId = result.EntityId };
   }
 }

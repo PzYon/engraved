@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Metrix.Core.Application.Commands;
 using Metrix.Core.Application.Commands.Measurements.Add;
 using Metrix.Core.Application.Commands.Measurements.Add.Counter;
 using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
@@ -28,15 +29,12 @@ public class DemoDataRepositorySeeder
 
   private async Task CreateRandomMetricsAndMeasurements()
   {
-    foreach (int metricIndex in Enumerable.Range(0, Random.Shared.Next(5, 30)))
+    foreach (int _ in Enumerable.Range(0, Random.Shared.Next(5, 30)))
     {
-      string metricKey = "key_" + metricIndex;
-
       var dateService = new SelfIncrementingDateService();
 
-      await new AddMetricCommand
+      CommandResult result = await new AddMetricCommand
         {
-          Key = metricKey,
           Description = LoremIpsum(0, 12, 1, 3),
           Name = LoremIpsum(1, 3, 1, 1),
           Type = GetRandomMetricType()
@@ -44,7 +42,7 @@ public class DemoDataRepositorySeeder
         .CreateExecutor()
         .Execute(_repository, dateService);
 
-      IMetric? metric = await _repository.GetMetric(metricKey);
+      IMetric? metric = await _repository.GetMetric(result.EntityId);
 
       await AddMeasurements(metric!, dateService);
     }
@@ -97,7 +95,7 @@ public class DemoDataRepositorySeeder
 
   private async Task AddMeasurements(TimerMetric metric, DateTime metricDate)
   {
-    FakeDateService dateService = new FakeDateService(metricDate);
+    var dateService = new FakeDateService(metricDate);
 
     int[] count = Enumerable.Range(0, Random.Shared.Next(0, 30)).ToArray();
 
@@ -130,7 +128,7 @@ public class DemoDataRepositorySeeder
     var dateService = new SelfIncrementingDateService();
     IMetric metric = specificCase.Metric;
 
-    await new AddMetricCommand
+    CommandResult result = await new AddMetricCommand
       {
         Description = metric.Description,
         Name = metric.Name,
@@ -139,12 +137,13 @@ public class DemoDataRepositorySeeder
       .CreateExecutor()
       .Execute(_repository, dateService);
 
-    throw new Exception("We need metric id down below");
+    string metricId = result.EntityId;
     
     if (metric.Flags.Any())
     {
       await new EditMetricCommand
         {
+          MetricId = metricId,
           Flags = metric.Flags,
           Description = metric.Description,
           Name = metric.Name
@@ -171,6 +170,7 @@ public class DemoDataRepositorySeeder
           throw new ArgumentOutOfRangeException(nameof(measurement));
       }
 
+      command.MetricId = metricId;
       command.Notes = measurement.Notes;
       command.MetricFlagKey = measurement.MetricFlagKey;
 
