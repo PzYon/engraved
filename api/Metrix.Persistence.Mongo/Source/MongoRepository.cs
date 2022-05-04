@@ -65,7 +65,7 @@ public class MongoRepository : IRepository
       new ReplaceOptions { IsUpsert = true }
     );
 
-    string? id = string.IsNullOrEmpty(metric.Id) ? replaceOneResult.UpsertedId.ToString() : metric.Id;
+    string id = (string.IsNullOrEmpty(metric.Id) ? replaceOneResult.UpsertedId.ToString() : metric.Id)!;
     return new UpsertResult { EntityId = id };
   }
 
@@ -80,7 +80,7 @@ public class MongoRepository : IRepository
       new ReplaceOptions { IsUpsert = true }
     );
 
-    string? id = string.IsNullOrEmpty(measurement.Id) ? replaceOneResult.UpsertedId.ToString() : measurement.Id;
+    string id = (string.IsNullOrEmpty(measurement.Id) ? replaceOneResult.UpsertedId.ToString() : measurement.Id)!;
     return new UpsertResult { EntityId = id };
   }
 

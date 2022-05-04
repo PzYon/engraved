@@ -17,7 +17,7 @@ public class StartTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommand
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IRepository. for the time being we will skip that.
-    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id);
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id!);
     
     if (allMeasurements
         .OfType<TimerMeasurement>()

@@ -72,7 +72,7 @@ public class DemoDataRepositorySeeder
     {
       var command = new UpsertCounterMeasurementCommand
       {
-        MetricId = metric.Id
+        MetricId = metric.Id!
       };
 
       await new UpsertCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
@@ -85,7 +85,7 @@ public class DemoDataRepositorySeeder
     {
       var command = new UpsertGaugeMeasurementCommand
       {
-        MetricId = metric.Id,
+        MetricId = metric.Id!,
         Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
       };
 
@@ -105,13 +105,13 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new StartTimerMeasurementCommand { MetricId = metric.Id }
+      await new StartTimerMeasurementCommand { MetricId = metric.Id! }
         .CreateExecutor()
         .Execute(_repository, dateService);
 
       dateService.SetNext(remainingSteps);
 
-      await new EndTimerMeasurementCommand { MetricId = metric.Id }
+      await new EndTimerMeasurementCommand { MetricId = metric.Id! }
         .CreateExecutor()
         .Execute(_repository, dateService);
     }

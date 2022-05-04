@@ -12,13 +12,13 @@ public abstract class MetricDocument
   [BsonIgnoreIfDefault]
   public ObjectId Id { get; set; }
 
-  public string Name { get; set; }
+  public string? Name { get; set; }
 
   public string? Description { get; set; }
 
   public abstract MetricType Type { get; }
 
-  public Dictionary<string, string> Flags { get; set; }
+  public Dictionary<string, string> Flags { get; set; } = new();
 
   public DateTime? LastMeasurementDate { get; set; }
 }

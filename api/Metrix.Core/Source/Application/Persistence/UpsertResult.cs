@@ -2,5 +2,5 @@
 
 public class UpsertResult
 {
-  public string EntityId { get; set; } 
+  public string EntityId { get; set; } = null!;
 }
