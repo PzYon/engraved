@@ -7,56 +7,55 @@ import { IAddMeasurementCommand } from "./commands/IAddMeasurementCommand";
 import { IEditMetricCommand } from "./commands/IEditMetricCommand";
 import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
+import { ICommandResult } from "./ICommandResult";
 
 export class ServerApi {
   static async getMetrics(): Promise<IMetric[]> {
     return await this.executeRequest(`/metrics/`);
   }
 
-  static async getMetric(metricKey: string): Promise<IMetric> {
-    return await this.executeRequest(`/metrics/${metricKey}`);
+  static async getMetric(metricId: string): Promise<IMetric> {
+    return await this.executeRequest(`/metrics/${metricId}`);
   }
 
   static async addMetric(
-    key: string,
     name: string,
     description: string,
     type: MetricType
-  ): Promise<void> {
+  ): Promise<ICommandResult> {
     const payload: IAddMetricCommand = {
-      key: key,
       name: name,
       description: description,
       type: type,
     };
 
-    await this.executeRequest("/metrics", "POST", payload);
+    return await this.executeRequest("/metrics", "POST", payload);
   }
 
   static async editMetric(
-    metricKey: string,
+    metricId: string,
     name: string,
     description: string,
     metricFlags: IMetricFlags
-  ): Promise<void> {
+  ): Promise<ICommandResult> {
     const payload: IEditMetricCommand = {
-      metricKey: metricKey,
+      metricId: metricId,
       name: name,
       description: description,
       flags: metricFlags,
     };
 
-    await this.executeRequest("/metrics/", "PUT", payload);
+    return await this.executeRequest("/metrics/", "PUT", payload);
   }
 
-  static async getMeasurements(metricKey: string): Promise<IMeasurement[]> {
-    return await this.executeRequest(`/measurements/${metricKey}`);
+  static async getMeasurements(metricId: string): Promise<IMeasurement[]> {
+    return await this.executeRequest(`/measurements/${metricId}`);
   }
 
   static async addMeasurement(
     command: IAddMeasurementCommand,
     urlSegment: string
-  ): Promise<void> {
+  ): Promise<ICommandResult> {
     return await this.executeRequest(
       "/measurements/" + urlSegment,
       "POST",

@@ -44,7 +44,7 @@ export const EditMetric: React.FC<{
         variant="outlined"
         onClick={() => {
           ServerApi.editMetric(
-            metric.key,
+            metric.id,
             name,
             description,
             JSON.parse(flagJson)

@@ -19,7 +19,7 @@ import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
 import styled from "styled-components";
 
 export const MetricDetails: React.FC = () => {
-  const { metricKey } = useParams();
+  const { metricId } = useParams();
 
   const { setPageTitle, setTitleActions, setAppAlert } = useAppContext();
 
@@ -41,7 +41,7 @@ export const MetricDetails: React.FC = () => {
       {
         key: "edit",
         label: translations.edit,
-        href: `/metrics/${metricKey}/edit`,
+        href: `/metrics/${metricId}/edit`,
         icon: <ModeEditOutlineOutlined />,
       },
       {
@@ -95,13 +95,13 @@ export const MetricDetails: React.FC = () => {
   );
 
   function getMetric(): Promise<void> {
-    return ServerApi.getMetric(metricKey)
+    return ServerApi.getMetric(metricId)
       .then(setMetric)
-      .catch((e) => handleError(`Error loading Metric ${metricKey}`, e));
+      .catch((e) => handleError(`Error loading Metric ${metricId}`, e));
   }
 
   function getMeasurements(): Promise<void> {
-    return ServerApi.getMeasurements(metricKey)
+    return ServerApi.getMeasurements(metricId)
       .then(setMeasurements)
       .catch((e) => handleError("Error loading measurements", e));
   }

@@ -1,7 +1,7 @@
 import { IMetricFlags } from "../IMetricFlags";
 
 export interface IEditMetricCommand {
-  metricKey: string;
+  metricId: string;
   name: string;
   description: string;
   flags: IMetricFlags;

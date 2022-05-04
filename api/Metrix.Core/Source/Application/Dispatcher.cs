@@ -20,8 +20,8 @@ public class Dispatcher
     return await query.CreateExecutor().Execute(_repository);
   }
 
-  public async Task Command(ICommand command)
+  public async Task<CommandResult> Command(ICommand command)
   {
-    await command.CreateExecutor().Execute(_repository, _dateService);
+    return await command.CreateExecutor().Execute(_repository, _dateService);
   }
 }

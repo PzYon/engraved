@@ -25,7 +25,7 @@ export const EditMetricLauncher: React.FC<{
         />
       ),
       onClose: () => {
-        navigate(`/metrics/${metric.key}`);
+        navigate(`/metrics/${metric.id}`);
       },
     });
   }, []);
