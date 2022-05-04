@@ -12,11 +12,11 @@ public class EditMetricCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public async Task Execute(IDb db, IDateService dateService)
+  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
-    if (string.IsNullOrEmpty(_command.MetricKey))
+    if (string.IsNullOrEmpty(_command.MetricId))
     {
-      throw new InvalidCommandException(_command, $"{nameof(EditMetricCommand.MetricKey)} must be specified.");
+      throw new InvalidCommandException(_command, $"{nameof(EditMetricCommand.MetricId)} must be specified.");
     }
 
     if (string.IsNullOrEmpty(_command.Name))
@@ -24,17 +24,19 @@ public class EditMetricCommandExecutor : ICommandExecutor
       throw new InvalidCommandException(_command, $"{nameof(EditMetricCommand.Name)} must be specified.");
     }
 
-    IMetric? metric = await db.GetMetric(_command.MetricKey);
+    IMetric? metric = await repository.GetMetric(_command.MetricId);
 
     if (metric == null)
     {
-      throw new InvalidCommandException(_command, $"Metric with key \"{_command.MetricKey}\" does not exist.");
+      throw new InvalidCommandException(_command, $"Metric with key \"{_command.MetricId}\" does not exist.");
     }
 
     metric.Flags = _command.Flags;
     metric.Name = _command.Name;
     metric.Description = _command.Description;
 
-    await db.UpdateMetric(metric);
+    UpsertResult result = await repository.UpsertMetric(metric);
+
+    return new CommandResult { EntityId = result.EntityId };
   }
 }

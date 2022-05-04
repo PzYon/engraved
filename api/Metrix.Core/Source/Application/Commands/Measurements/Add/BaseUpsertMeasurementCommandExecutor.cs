@@ -5,48 +5,50 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-public abstract class BaseAddMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
-  where TCommand : BaseAddMeasurementCommand
+public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
+  where TCommand : BaseUpsertMeasurementCommand
   where TMeasurement : IMeasurement
   where TMetric : class, IMetric
 {
+  protected BaseUpsertMeasurementCommandExecutor(TCommand command)
+  {
+    Command = command;
+  }
+
   protected TCommand Command { get; }
+
+  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  {
+    var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
+
+    EnsureCompatibleMetricType(metric);
+    ValidateMetricFlag(metric);
+
+    await PerformAdditionalValidation(repository, metric);
+
+    TMeasurement measurement = CreateMeasurement(dateService);
+    measurement.MetricId = Command.MetricId;
+    measurement.Notes = Command.Notes;
+    measurement.DateTime = dateService.UtcNow;
+    measurement.MetricFlagKey = Command.MetricFlagKey;
+
+    UpsertResult result = await repository.UpsertMeasurement(measurement);
+
+    UpdateMetric(metric, dateService);
+
+    metric.LastMeasurementDate = dateService.UtcNow;
+
+    return new CommandResult { EntityId = result.EntityId };
+  }
 
   protected abstract TMeasurement CreateMeasurement(IDateService dateService);
 
-  protected virtual Task PerformAdditionalValidation(IDb db, TMetric metric)
+  protected virtual Task PerformAdditionalValidation(IRepository repository, TMetric metric)
   {
     return Task.CompletedTask;
   }
 
   protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
-
-  protected BaseAddMeasurementCommandExecutor(TCommand command)
-  {
-    Command = command;
-  }
-
-  public async Task Execute(IDb db, IDateService dateService)
-  {
-    var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(db, Command, Command.MetricKey);
-
-    EnsureCompatibleMetricType(metric);
-    ValidateMetricFlag(metric);
-
-    await PerformAdditionalValidation(db, metric);
-
-    TMeasurement measurement = CreateMeasurement(dateService);
-    measurement.MetricKey = Command.MetricKey;
-    measurement.Notes = Command.Notes;
-    measurement.DateTime = dateService.UtcNow;
-    measurement.MetricFlagKey = Command.MetricFlagKey;
-
-    await db.AddMeasurement(measurement);
-
-    UpdateMetric(metric, dateService);
-
-    metric.LastMeasurementDate = dateService.UtcNow;
-  }
 
   private void EnsureCompatibleMetricType(IMetric metric)
   {

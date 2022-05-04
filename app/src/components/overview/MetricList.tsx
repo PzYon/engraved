@@ -46,7 +46,7 @@ export const MetricList: React.FC<{ showCreate?: boolean }> = ({
   return (
     <>
       {metrics.map((metric) => (
-        <MetricListItem key={metric.key} metric={metric} />
+        <MetricListItem key={metric.id} metric={metric} />
       ))}
 
       {showCreate ? <AddMetricLauncher /> : null}

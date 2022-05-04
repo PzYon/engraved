@@ -2,7 +2,7 @@
 
 namespace Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 
-public class AddGaugeMeasurementCommand : BaseAddMeasurementCommand
+public class UpsertGaugeMeasurementCommand : BaseUpsertMeasurementCommand
 {
   public double? Value { get; set; }
 
@@ -13,6 +13,6 @@ public class AddGaugeMeasurementCommand : BaseAddMeasurementCommand
 
   public override ICommandExecutor CreateExecutor()
   {
-    return new AddGaugeMeasurementCommandExecutor(this);
+    return new UpsertGaugeMeasurementCommandExecutor(this);
   }
 }

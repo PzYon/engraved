@@ -4,19 +4,19 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 
-public class AddGaugeMeasurementCommandExecutor : BaseAddMeasurementCommandExecutor<
-  AddGaugeMeasurementCommand,
+public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
+  UpsertGaugeMeasurementCommand,
   GaugeMeasurement,
   GaugeMetric
 >
 {
-  public AddGaugeMeasurementCommandExecutor(AddGaugeMeasurementCommand command) : base(command) { }
+  public UpsertGaugeMeasurementCommandExecutor(UpsertGaugeMeasurementCommand command) : base(command) { }
 
-  protected override Task PerformAdditionalValidation(IDb db, GaugeMetric metric)
+  protected override Task PerformAdditionalValidation(IRepository repository, GaugeMetric metric)
   {
     if (Command.Value == null)
     {
-      throw CreateInvalidCommandException($"\"{nameof(AddGaugeMeasurementCommand.Value)}\" must be specified");
+      throw CreateInvalidCommandException($"\"{nameof(UpsertGaugeMeasurementCommand.Value)}\" must be specified");
     }
 
     return Task.CompletedTask;

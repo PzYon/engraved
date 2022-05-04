@@ -22,7 +22,7 @@ export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
         key: "edit",
         label: "Edit",
         icon: <Edit />,
-        href: `/metrics/${metric.key}/edit`,
+        href: `/metrics/${metric.id}/edit`,
       },
     ],
     [metric]

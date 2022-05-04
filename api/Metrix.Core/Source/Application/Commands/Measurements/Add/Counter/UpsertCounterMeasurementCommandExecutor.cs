@@ -3,13 +3,13 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add.Counter;
 
-public class AddCounterMeasurementCommandExecutor : BaseAddMeasurementCommandExecutor<
-  AddCounterMeasurementCommand,
+public class UpsertCounterMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
+  UpsertCounterMeasurementCommand,
   CounterMeasurement,
   CounterMetric
 >
 {
-  public AddCounterMeasurementCommandExecutor(AddCounterMeasurementCommand command) : base(command) { }
+  public UpsertCounterMeasurementCommandExecutor(UpsertCounterMeasurementCommand command) : base(command) { }
 
   protected override CounterMeasurement CreateMeasurement(IDateService dateService)
   {

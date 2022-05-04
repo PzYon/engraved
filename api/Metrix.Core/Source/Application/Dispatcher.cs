@@ -6,22 +6,22 @@ namespace Metrix.Core.Application;
 
 public class Dispatcher
 {
-  private readonly IDb _db;
   private readonly IDateService _dateService;
+  private readonly IRepository _repository;
 
-  public Dispatcher(IDb db, IDateService dateService)
+  public Dispatcher(IRepository repository, IDateService dateService)
   {
-    _db = db;
+    _repository = repository;
     _dateService = dateService;
   }
 
   public async Task<TResult> Query<TResult>(IQuery<TResult> query)
   {
-    return await query.CreateExecutor().Execute(_db);
+    return await query.CreateExecutor().Execute(_repository);
   }
 
-  public async Task Command(ICommand command)
+  public async Task<CommandResult> Command(ICommand command)
   {
-    await command.CreateExecutor().Execute(_db, _dateService);
+    return await command.CreateExecutor().Execute(_repository, _dateService);
   }
 }

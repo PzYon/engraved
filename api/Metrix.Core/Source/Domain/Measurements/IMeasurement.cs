@@ -2,7 +2,9 @@
 
 public interface IMeasurement
 {
-  string MetricKey { get; set; }
+  string? Id { get; set; }
+
+  string MetricId { get; set; }
 
   string? Notes { get; set; }
 

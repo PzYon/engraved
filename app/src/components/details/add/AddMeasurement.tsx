@@ -54,7 +54,7 @@ export const AddMeasurement: React.FC<{
           const command: IAddMeasurementCommand = {
             notes: notes,
             metricFlagKey: flagKey,
-            metricKey: metric.key,
+            metricId: metric.id,
           };
 
           if (metric.type === MetricType.Gauge) {

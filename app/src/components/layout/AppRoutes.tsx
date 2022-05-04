@@ -12,7 +12,7 @@ export const AppRoutes: React.FC = () => {
       />
       <Route path="/metrics" element={<MetricList />} />
       <Route path="/" element={<MetricList />} />
-      <Route path="/metrics/:metricKey/*" element={<MetricDetails />} />
+      <Route path="/metrics/:metricId/*" element={<MetricDetails />} />
     </Routes>
   );
 };

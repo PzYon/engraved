@@ -1,5 +1,4 @@
 ﻿using Metrix.Core.Application;
-using Metrix.Core.Application.Commands.Measurements.Add;
 using Metrix.Core.Application.Commands.Measurements.Add.Counter;
 using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
@@ -31,14 +30,14 @@ public class MeasurementsController : ControllerBase
 
   [HttpPost]
   [Route("counter")]
-  public async Task AddCounter([FromBody] AddCounterMeasurementCommand measurement)
+  public async Task AddCounter([FromBody] UpsertCounterMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
   }
 
   [HttpPost]
   [Route("gauge")]
-  public async Task AddGauge([FromBody] AddGaugeMeasurementCommand measurement)
+  public async Task AddGauge([FromBody] UpsertGaugeMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
   }

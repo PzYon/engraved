@@ -2,15 +2,15 @@
 
 public abstract class BaseMetric : IMetric
 {
-  public string Key { get; set; } = null!;
+  public string? Id { get; set; }
 
   public string Name { get; set; } = null!;
 
   public string? Description { get; set; }
 
-  public MetricType Type { get; protected set; }
+  public abstract MetricType Type { get; }
 
   public Dictionary<string, string> Flags { get; set; } = new();
-  
+
   public DateTime? LastMeasurementDate { get; set; }
 }

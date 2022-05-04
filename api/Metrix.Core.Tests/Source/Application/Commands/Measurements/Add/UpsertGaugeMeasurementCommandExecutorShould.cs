@@ -8,14 +8,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 [TestClass]
-public class AddGaugeMeasurementCommandExecutorShould
+public class UpsertGaugeMeasurementCommandExecutorShould
 {
-  private TestDb _testDb = null!;
+  private TestRepository _testRepository = null!;
 
   [TestInitialize]
   public void SetUp()
   {
-    _testDb = new TestDb();
+    _testRepository = new TestRepository();
   }
 
   [TestMethod]
@@ -24,20 +24,25 @@ public class AddGaugeMeasurementCommandExecutorShould
   [DataRow(123.456)]
   public async Task Set_ValueFromCommand(double value)
   {
-    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
-    var command = new AddGaugeMeasurementCommand
+    var command = new UpsertGaugeMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Value = value
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    CommandResult commandResult = await new UpsertGaugeMeasurementCommandExecutor(command).Execute(
+      _testRepository,
+      new FakeDateService()
+    );
 
-    Assert.AreEqual(1, _testDb.Measurements.Count);
+    Assert.IsFalse(string.IsNullOrEmpty(commandResult.EntityId));
 
-    IMeasurement createdMeasurement = _testDb.Measurements.First();
-    Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
+    Assert.AreEqual(1, _testRepository.Measurements.Count);
+
+    IMeasurement createdMeasurement = _testRepository.Measurements.First();
+    Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
 
     var counterMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(counterMeasurement);
@@ -48,45 +53,45 @@ public class AddGaugeMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenNoValueIsSpecified()
   {
-    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
-    var command = new AddGaugeMeasurementCommand
+    var command = new UpsertGaugeMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Notes = "n0t3s",
       Value = null
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 
   [TestMethod]
   public async Task MapAllFieldsCorrectly()
   {
-    _testDb.Metrics.Add(
+    _testRepository.Metrics.Add(
       new GaugeMetric
       {
-        Key = "k3y",
+        Id = "k3y",
         Flags = { { "x", "y" }, { "k3y", "v@lue" } }
       }
     );
 
     const double value = 123.45;
 
-    var command = new AddGaugeMeasurementCommand
+    var command = new UpsertGaugeMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Notes = "n0t3s",
       Value = value,
       MetricFlagKey = "k3y"
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
 
-    Assert.AreEqual(1, _testDb.Measurements.Count);
+    Assert.AreEqual(1, _testRepository.Measurements.Count);
 
-    IMeasurement createdMeasurement = _testDb.Measurements.First();
-    Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
+    IMeasurement createdMeasurement = _testRepository.Measurements.First();
+    Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
     Assert.AreEqual(command.MetricFlagKey, createdMeasurement.MetricFlagKey);
 
@@ -99,16 +104,16 @@ public class AddGaugeMeasurementCommandExecutorShould
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
   {
-    _testDb.Metrics.Add(new GaugeMetric { Key = "k3y" });
+    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
-    var command = new AddGaugeMeasurementCommand
+    var command = new UpsertGaugeMeasurementCommand
     {
-      MetricKey = "k3y",
+      MetricId = "k3y",
       Notes = "n0t3s",
       Value = 42,
       MetricFlagKey = "fooBar"
     };
 
-    await new AddGaugeMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 }

@@ -16,11 +16,17 @@ builder.Services.AddSwaggerGen();
 
 // Custom services
 builder.Services.AddSingleton(
-  async _ =>
+  _ =>
   {
-    IDb db = new MockDb();
-    await new MockDbSeeder(db).Seed();
-    return db;
+    //IRepository repository = new MongoRepository(new MongoRepositorySettings());
+    IRepository repository = new InMemoryRespository();
+    Task seed = new DemoDataRepositorySeeder(repository).Seed();
+    if (!seed.IsCompleted)
+    {
+      seed.Wait();
+    }
+
+    return repository;
   }
 );
 

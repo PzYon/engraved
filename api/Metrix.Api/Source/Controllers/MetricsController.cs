@@ -1,4 +1,5 @@
 ﻿using Metrix.Core.Application;
+using Metrix.Core.Application.Commands;
 using Metrix.Core.Application.Commands.Metrics.Add;
 using Metrix.Core.Application.Commands.Metrics.Edit;
 using Metrix.Core.Application.Queries.Metrics.Get;
@@ -34,14 +35,14 @@ public class MetricsController : ControllerBase
   }
 
   [HttpPost]
-  public async Task Add([FromBody] AddMetricCommand command)
+  public async Task<CommandResult> Add([FromBody] AddMetricCommand command)
   {
-    await _dispatcher.Command(command);
+    return await _dispatcher.Command(command);
   }
 
   [HttpPut]
-  public async Task Edit([FromBody] EditMetricCommand command)
+  public async Task<CommandResult> Edit([FromBody] EditMetricCommand command)
   {
-    await _dispatcher.Command(command);
+    return await _dispatcher.Command(command);
   }
 }

@@ -1,5 +1,5 @@
 export interface IAddMeasurementCommand {
-  metricKey: string;
+  metricId: string;
   metricFlagKey?: string;
   notes?: string;
 }

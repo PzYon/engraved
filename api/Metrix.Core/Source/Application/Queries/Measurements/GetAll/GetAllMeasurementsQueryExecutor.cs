@@ -13,7 +13,7 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
     _query = query;
   }
 
-  public async Task<IMeasurement[]> Execute(IDb db)
+  public async Task<IMeasurement[]> Execute(IRepository repository)
   {
     if (string.IsNullOrEmpty(_query.MetricKey))
     {
@@ -23,7 +23,7 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
       );
     }
 
-    IMetric? metric = await db.GetMetric(_query.MetricKey);
+    IMetric? metric = await repository.GetMetric(_query.MetricKey);
 
     if (metric == null)
     {
@@ -33,7 +33,7 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
       );
     }
 
-    IMeasurement[] allMeasurements = await db.GetAllMeasurements(_query.MetricKey);
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(_query.MetricKey);
 
     return allMeasurements
       .OrderBy(m => m.DateTime)

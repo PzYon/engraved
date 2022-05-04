@@ -11,47 +11,47 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 [TestClass]
 public class StartTimerMeasurementCommandExecutorShould
 {
-  private TestDb _testDb = null!;
+  private TestRepository _testRepository = null!;
 
   [TestInitialize]
   public void SetUp()
   {
-    _testDb = new TestDb();
+    _testRepository = new TestRepository();
   }
 
   [TestMethod]
   [ExpectedException(typeof(InvalidCommandException))]
   public async Task Throw_WhenMetricAlreadyHasRunningTimer()
   {
-    _testDb.Metrics.Add(new TimerMetric { Key = "test" });
+    _testRepository.Metrics.Add(new TimerMetric { Id = "test" });
 
-    _testDb.Measurements.Add(
+    _testRepository.Measurements.Add(
       new TimerMeasurement
       {
-        MetricKey = "test",
+        MetricId = "test",
         DateTime = DateTime.Now,
         StartDate = DateTime.Now.AddMinutes(23)
       }
     );
 
-    var command = new StartTimerMeasurementCommand { MetricKey = "test" };
+    var command = new StartTimerMeasurementCommand { Id = "626dab25f1a93c5c724d820a", MetricId = "test" };
 
-    await new StartTimerMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new StartTimerMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
   }
 
   [TestMethod]
   public async Task CreateTimerMeasurement()
   {
-    _testDb.Metrics.Add(new TimerMetric { Key = "test" });
+    _testRepository.Metrics.Add(new TimerMetric { Id = "test" });
 
-    var command = new StartTimerMeasurementCommand { MetricKey = "test" };
+    var command = new StartTimerMeasurementCommand { MetricId = "test" };
 
-    await new StartTimerMeasurementCommandExecutor(command).Execute(_testDb, new FakeDateService());
+    await new StartTimerMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
 
-    Assert.AreEqual(1, _testDb.Measurements.Count);
+    Assert.AreEqual(1, _testRepository.Measurements.Count);
 
-    IMeasurement createdMeasurement = _testDb.Measurements.First();
-    Assert.AreEqual(command.MetricKey, createdMeasurement.MetricKey);
+    IMeasurement createdMeasurement = _testRepository.Measurements.First();
+    Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
 
     var counterMeasurement = createdMeasurement as TimerMeasurement;
     Assert.IsNotNull(counterMeasurement);
@@ -62,7 +62,7 @@ public class StartTimerMeasurementCommandExecutorShould
 
     Assert.IsNull(counterMeasurement.EndDate);
 
-    TimerMetric metric = _testDb.Metrics.OfType<TimerMetric>().First(m => m.Key == "test");
+    TimerMetric metric = _testRepository.Metrics.OfType<TimerMetric>().First(m => m.Id == "test");
     Assert.IsNotNull(metric);
     Assert.IsNotNull(metric.StartDate);
     Assert.AreEqual(counterMeasurement.StartDate, metric.StartDate);

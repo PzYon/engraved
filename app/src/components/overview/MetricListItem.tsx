@@ -9,14 +9,14 @@ import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
 
 export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
   return (
-    <Section key={metric.key}>
+    <Section key={metric.id}>
       <Box sx={{ display: "flex" }}>
         <MetricTypeIcon
           type={metric.type}
           style={MetricTypeIconStyle.Overview}
         />
         <Box sx={{ flexGrow: 1, pl: 3 }}>
-          <Link to={`/metrics/${metric.key}`}>
+          <Link to={`/metrics/${metric.id}`}>
             <Typography
               variant="h5"
               sx={{

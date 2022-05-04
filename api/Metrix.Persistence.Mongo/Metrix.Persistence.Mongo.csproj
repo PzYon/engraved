@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Metrix.Core\Metrix.Core.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="11.0.1"/>
+        <PackageReference Include="MongoDB.Driver" Version="2.15.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Source\DocumentTypes\Measurements\BaseMeasurementDocument.cs"/>
+    </ItemGroup>
+
+</Project>

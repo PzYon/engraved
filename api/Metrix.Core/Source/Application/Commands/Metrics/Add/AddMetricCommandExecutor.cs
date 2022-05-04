@@ -12,7 +12,7 @@ public class AddMetricCommandExecutor : ICommandExecutor
     _command = command;
   }
 
-  public async Task Execute(IDb db, IDateService dateService)
+  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
     // todo:
     // - validate key is not null
@@ -26,11 +26,12 @@ public class AddMetricCommandExecutor : ICommandExecutor
     }
 
     IMetric metric = CreateMetric(_command.Type);
-    metric.Key = string.IsNullOrEmpty(_command.Key) ? Guid.NewGuid().ToString() : _command.Key;
     metric.Description = _command.Description;
     metric.Name = _command.Name;
 
-    await db.AddMetric(metric);
+    UpsertResult result = await repository.UpsertMetric(metric);
+
+    return new CommandResult { EntityId = result.EntityId };
   }
 
   private static IMetric CreateMetric(MetricType type)

@@ -2,7 +2,7 @@
 
 namespace Metrix.Core.Application.Commands.Measurements.Add.Counter;
 
-public class AddCounterMeasurementCommand : BaseAddMeasurementCommand
+public class UpsertCounterMeasurementCommand : BaseUpsertMeasurementCommand
 {
   public override MetricType GetSupportedMetricType()
   {
@@ -11,6 +11,6 @@ public class AddCounterMeasurementCommand : BaseAddMeasurementCommand
 
   public override ICommandExecutor CreateExecutor()
   {
-    return new AddCounterMeasurementCommandExecutor(this);
+    return new UpsertCounterMeasurementCommandExecutor(this);
   }
 }
