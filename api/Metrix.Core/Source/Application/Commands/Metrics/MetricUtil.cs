@@ -6,12 +6,19 @@ namespace Metrix.Core.Application.Commands.Metrics;
 
 public static class MetricUtil
 {
-  public static async Task<TMetric> LoadAndValidateMetric<TMetric>(IRepository repository, ICommand command, string metricKey)
+  public static async Task<TMetric> LoadAndValidateMetric<TMetric>(
+    IRepository repository,
+    ICommand command,
+    string metricKey
+    )
     where TMetric : class, IMetric
   {
     if (string.IsNullOrEmpty(metricKey))
     {
-      throw new InvalidCommandException(command, $"A {nameof(BaseUpsertMeasurementCommand.MetricId)} must be specified.");
+      throw new InvalidCommandException(
+        command,
+        $"A {nameof(BaseUpsertMeasurementCommand.MetricId)} must be specified."
+      );
     }
 
     IMetric? metric = await repository.GetMetric(metricKey);

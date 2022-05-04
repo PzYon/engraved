@@ -12,7 +12,7 @@ public class DemoDataRepositorySeederShould
   {
     IRepository repository = await Util.CreateMongoRepository();
 
-    DemoDataRepositorySeeder seeder = new DemoDataRepositorySeeder(repository);
+    var seeder = new DemoDataRepositorySeeder(repository);
 
     await seeder.Seed();
   }

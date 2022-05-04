@@ -17,7 +17,7 @@ public static class MetricDocumentMapper
     BsonClassMap.RegisterClassMap<GaugeMetricDocument>();
     BsonClassMap.RegisterClassMap<TimerMeasurementDocument>();
     BsonClassMap.RegisterClassMap<TimerMetricDocument>();
-    
+
     var configuration = new MapperConfiguration(
       cfg =>
       {

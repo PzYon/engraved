@@ -18,7 +18,7 @@ public class StartTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommand
     // in memory. this could be improved, however it would require new method(s)
     // in IRepository. for the time being we will skip that.
     IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id!);
-    
+
     if (allMeasurements
         .OfType<TimerMeasurement>()
         .Any(m => m.EndDate == null))

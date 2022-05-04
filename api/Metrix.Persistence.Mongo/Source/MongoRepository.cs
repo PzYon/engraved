@@ -10,8 +10,8 @@ namespace Metrix.Persistence.Mongo;
 
 public class MongoRepository : IRepository
 {
-  private readonly IMongoCollection<MetricDocument> _metrics;
   private readonly IMongoCollection<MeasurementDocument> _measurements;
+  private readonly IMongoCollection<MetricDocument> _metrics;
 
   public MongoRepository(IMongoRepositorySettings settings)
   {

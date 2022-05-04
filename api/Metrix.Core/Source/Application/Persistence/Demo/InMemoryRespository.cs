@@ -53,7 +53,7 @@ public class InMemoryRespository : IRepository
 
     Measurements.Add(measurement);
 
-    return Task.FromResult(new UpsertResult() { EntityId = measurement.Id });
+    return Task.FromResult(new UpsertResult { EntityId = measurement.Id });
   }
 
   private void RemoveMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement

@@ -13,5 +13,4 @@ public static class Util
 
     return new MongoRepository(new TestMongoRepositorySettings());
   }
-
 }

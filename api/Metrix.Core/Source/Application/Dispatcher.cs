@@ -6,8 +6,8 @@ namespace Metrix.Core.Application;
 
 public class Dispatcher
 {
-  private readonly IRepository _repository;
   private readonly IDateService _dateService;
+  private readonly IRepository _repository;
 
   public Dispatcher(IRepository repository, IDateService dateService)
   {

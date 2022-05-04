@@ -11,8 +11,8 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 [TestClass]
 public class EndTimerMeasurementCommandExecutorShould
 {
-  private TestRepository _testRepository = null!;
   private FakeDateService _fakeDateService = null!;
+  private TestRepository _testRepository = null!;
 
   [TestInitialize]
   public void SetUp()

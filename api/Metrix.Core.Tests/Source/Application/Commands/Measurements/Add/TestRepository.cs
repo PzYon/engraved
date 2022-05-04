@@ -2,6 +2,4 @@
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-internal class TestRepository : InMemoryRespository
-{
-}
+internal class TestRepository : InMemoryRespository { }

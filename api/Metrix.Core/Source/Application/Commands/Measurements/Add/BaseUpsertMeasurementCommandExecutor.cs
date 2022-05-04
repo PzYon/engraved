@@ -10,21 +10,12 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
   where TMeasurement : IMeasurement
   where TMetric : class, IMetric
 {
-  protected TCommand Command { get; }
-
-  protected abstract TMeasurement CreateMeasurement(IDateService dateService);
-
-  protected virtual Task PerformAdditionalValidation(IRepository repository, TMetric metric)
-  {
-    return Task.CompletedTask;
-  }
-
-  protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
-
   protected BaseUpsertMeasurementCommandExecutor(TCommand command)
   {
     Command = command;
   }
+
+  protected TCommand Command { get; }
 
   public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
@@ -49,6 +40,15 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
     return new CommandResult { EntityId = result.EntityId };
   }
+
+  protected abstract TMeasurement CreateMeasurement(IDateService dateService);
+
+  protected virtual Task PerformAdditionalValidation(IRepository repository, TMetric metric)
+  {
+    return Task.CompletedTask;
+  }
+
+  protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
 
   private void EnsureCompatibleMetricType(IMetric metric)
   {

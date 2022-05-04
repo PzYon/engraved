@@ -3,7 +3,7 @@
 public abstract class BaseMeasurement : IMeasurement
 {
   public string? Id { get; set; }
-  
+
   public string MetricId { get; set; } = null!;
 
   public string? Notes { get; set; }

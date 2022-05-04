@@ -36,7 +36,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       _testRepository,
       new FakeDateService()
     );
-    
+
     Assert.IsFalse(string.IsNullOrEmpty(commandResult.EntityId));
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);

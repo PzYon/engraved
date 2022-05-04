@@ -132,13 +132,13 @@ public class DemoDataRepositorySeeder
       {
         Description = metric.Description,
         Name = metric.Name,
-        Type = metric.Type,
+        Type = metric.Type
       }
       .CreateExecutor()
       .Execute(_repository, dateService);
 
     string metricId = result.EntityId;
-    
+
     if (metric.Flags.Any())
     {
       await new EditMetricCommand

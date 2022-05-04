@@ -38,7 +38,7 @@ public class MeasurementDocumentMapperShould
       Notes = "n0t3",
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricFlagKey = "wh@t3v3r",
+      MetricFlagKey = "wh@t3v3r"
     };
 
     var counterMeasurement = MeasurementDocumentMapper.FromDocument<CounterMeasurement>(document);
