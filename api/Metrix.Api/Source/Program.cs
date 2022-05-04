@@ -3,7 +3,6 @@ using Metrix.Api.Filters;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
-using Metrix.Persistence.Mongo;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +18,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton(
   _ =>
   {
-    IRepository repository = new MongoRepository(new MongoRepositorySettings());
+    //IRepository repository = new MongoRepository(new MongoRepositorySettings());
+    IRepository repository = new InMemoryRespository();
     Task seed = new DemoDataRepositorySeeder(repository).Seed();
     if (!seed.IsCompleted)
     {

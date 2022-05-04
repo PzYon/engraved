@@ -3,7 +3,7 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Persistence.Demo;
 
-public class MockRepository : IRepository
+public class InMemoryRespository : IRepository
 {
   public List<IMeasurement> Measurements { get; } = new();
 
