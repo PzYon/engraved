@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
+using Metrix.Api;
 using Metrix.Api.Filters;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
+using Metrix.Persistence.Mongo;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +20,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton(
   _ =>
   {
-    //IRepository repository = new MongoRepository(new MongoRepositorySettings());
-    IRepository repository = new InMemoryRespository();
-    Task seed = new DemoDataRepositorySeeder(repository).Seed();
-    if (!seed.IsCompleted)
-    {
-      seed.Wait();
-    }
+    IRepository repository = builder.Environment.IsDevelopment()
+      ? GetInMemoryRepo()
+      : GetMongoDbRepo();
 
     return repository;
   }
@@ -51,3 +49,22 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+IRepository GetInMemoryRepo()
+{
+  IRepository repo = new InMemoryRespository();
+
+  Task seed = new DemoDataRepositorySeeder(repo).Seed();
+  if (!seed.IsCompleted)
+  {
+    seed.Wait();
+  }
+
+  return repo;
+}
+
+IRepository GetMongoDbRepo()
+{
+  var connectionString = builder.Configuration.GetConnectionString("metrix_db");
+  return new MongoRepository(new MongoRepositorySettings(connectionString));
+}

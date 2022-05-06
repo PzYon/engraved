@@ -1,4 +1,5 @@
-﻿using Metrix.Core.Application.Persistence;
+﻿using System.Security.Authentication;
+using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
@@ -15,7 +16,7 @@ public class MongoRepository : IRepository
 
   public MongoRepository(IMongoRepositorySettings settings)
   {
-    IMongoClient client = new MongoClient(settings.MongoDbConnectionString);
+    IMongoClient client = CreateMongoClient(settings);
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
     _metrics = db.GetCollection<MetricDocument>(settings.MetricsCollectionName);
@@ -35,9 +36,7 @@ public class MongoRepository : IRepository
       throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
     }
 
-    List<MetricDocument> metrics = await _metrics.Find(GetMetricFilterById(metricId)).ToListAsync();
-
-    MetricDocument? document = metrics.FirstOrDefault();
+    MetricDocument? document = await _metrics.Find(GetMetricFilterById(metricId)).FirstOrDefaultAsync();
 
     return document == null
       ? null
@@ -88,7 +87,7 @@ public class MongoRepository : IRepository
   {
     return Builders<MetricDocument>.Filter.Eq(
       nameof(MetricDocument.Id),
-      string.IsNullOrEmpty(metricId) ? ObjectId.GenerateNewId() : new ObjectId(metricId)
+      string.IsNullOrEmpty(metricId) ? ObjectId.GenerateNewId() : ParseObjectId(metricId)
     );
   }
 
@@ -96,7 +95,25 @@ public class MongoRepository : IRepository
   {
     return Builders<MeasurementDocument>.Filter.Eq(
       nameof(MeasurementDocument.Id),
-      string.IsNullOrEmpty(measurementId) ? ObjectId.GenerateNewId() : new ObjectId(measurementId)
+      string.IsNullOrEmpty(measurementId) ? ObjectId.GenerateNewId() : ParseObjectId(measurementId)
     );
+  }
+
+  private static ObjectId ParseObjectId(string entityId)
+  {
+    if (ObjectId.TryParse(entityId, out ObjectId objectId))
+    {
+      return objectId;
+    }
+
+    throw new ArgumentOutOfRangeException(nameof(entityId), $"\"{entityId}\" is not a valid ID.");
+  }
+
+  private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
+  {
+    MongoClientSettings clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
+    clientSettings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
+
+    return new MongoClient(clientSettings);
   }
 }
