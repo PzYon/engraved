@@ -11,7 +11,7 @@ public abstract class MeasurementDocument
   [BsonIgnoreIfDefault]
   public ObjectId Id { get; set; }
 
-  public string MetricId { get; set; }
+  public string MetricId { get; set; } = null!;
 
   public string? Notes { get; set; }
 

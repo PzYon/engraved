@@ -16,18 +16,7 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Custom services
-builder.Services.AddSingleton(
-  _ =>
-  {
-    IRepository repository = builder.Environment.IsDevelopment()
-      ? GetInMemoryRepo()
-      : GetMongoDbRepo();
-
-    return repository;
-  }
-);
-
+builder.Services.AddSingleton(_ => GetRepository(builder));
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
 
@@ -49,6 +38,15 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+IRepository GetRepository(WebApplicationBuilder webApplicationBuilder)
+{
+  IRepository repository = webApplicationBuilder.Environment.IsDevelopment()
+    ? GetInMemoryRepo()
+    : GetMongoDbRepo();
+
+  return repository;
+}
 
 IRepository GetInMemoryRepo()
 {
