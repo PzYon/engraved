@@ -10,6 +10,12 @@ import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
 
 export class ServerApi {
+  private static _token: string;
+
+  static setToken(token: string): void {
+    this._token = token;
+  }
+
   static async getMetrics(): Promise<IMetric[]> {
     return await this.executeRequest(`/metrics/`);
   }
@@ -68,12 +74,17 @@ export class ServerApi {
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
   ): Promise<T> {
+    if (!this._token) {
+      throw new Error("You are not authenticated.");
+    }
+
     const response: Response = await fetch(
       new Request(envSettings.apiBaseUrl + url),
       {
         method: method,
         body: payload ? JSON.stringify(payload) : null,
         headers: {
+          Authorization: "Bearer " + this._token,
           "Content-Type": "application/json",
         },
       }
@@ -87,6 +98,6 @@ export class ServerApi {
     }
 
     const apiError = json as IApiError;
-    throw new Error(apiError.message);
+    throw new Error(response.status + ": " + apiError?.message || " -");
   }
 }

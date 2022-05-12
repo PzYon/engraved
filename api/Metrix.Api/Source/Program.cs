@@ -4,7 +4,10 @@ using Metrix.Api.Filters;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
+using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +15,31 @@ builder.Services
   .AddControllers(options => options.Filters.Add<HttpExceptionFilter>())
   .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddTransient<IUserStore<IUser>, UserStore>();
+builder.Services.AddIdentityCore<IUser>();
+
+builder.Services.AddAuthentication(
+    options =>
+    {
+      options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+      options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+      options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+    }
+  )
+  .AddJwtBearer(
+    o =>
+    {
+      o.SecurityTokenValidators.Clear();
+      o.SecurityTokenValidators.Add(new GoogleTokenValidator());
+    }
+  );
+
+// custom dependencies
 builder.Services.AddSingleton(_ => GetRepository(builder));
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
@@ -33,6 +57,7 @@ app.UseHttpsRedirection();
 
 app.UseCors(policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
