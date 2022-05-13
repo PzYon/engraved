@@ -1,15 +1,13 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using Metrix.Api;
-using Metrix.Api.Controllers;
 using Metrix.Api.Filters;
+using Metrix.Api.Settings;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
-using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -22,8 +20,8 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IUserStore<IUser>, UserStore>();
-builder.Services.AddIdentityCore<IUser>();
+IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
+builder.Services.Configure<AuthenticationConfig>(authConfigSection);
 
 // custom dependencies
 builder.Services.AddSingleton(_ => GetRepository(builder));
@@ -31,21 +29,23 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
 
 builder.Services.AddAuthentication(
-    x =>
+    options =>
     {
-      x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-      x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+      options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     }
   )
   .AddJwtBearer(
-    x =>
+    options =>
     {
-      x.RequireHttpsMetadata = false;
-      x.SaveToken = true;
-      x.TokenValidationParameters = new TokenValidationParameters
+      options.RequireHttpsMetadata = false;
+      options.SaveToken = true;
+      options.TokenValidationParameters = new TokenValidationParameters
       {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AuthController.Secret)),
+        IssuerSigningKey = new SymmetricSecurityKey(
+          Encoding.ASCII.GetBytes(authConfigSection.GetValue<string>(nameof(AuthenticationConfig.JwtSecret)))
+        ),
         ValidateIssuer = false,
         ValidateAudience = false
       };
@@ -74,11 +74,9 @@ app.Run();
 
 IRepository GetRepository(WebApplicationBuilder webApplicationBuilder)
 {
-  IRepository repository = webApplicationBuilder.Environment.IsDevelopment()
+  return webApplicationBuilder.Environment.IsDevelopment()
     ? GetInMemoryRepo()
     : GetMongoDbRepo();
-
-  return repository;
 }
 
 IRepository GetInMemoryRepo()

@@ -8,16 +8,20 @@ import { IEditMetricCommand } from "./commands/IEditMetricCommand";
 import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
+import { IAuthResult } from "./IAuthResult";
 
 export class ServerApi {
-  private static _token: string;
+  private static _jwtToken: string;
 
-  static setToken(token: string): void {
-    this._token = token;
-  }
+  static async authenticate(token: string): Promise<IAuthResult> {
+    const authResult: IAuthResult = await this.executeRequest(
+      "/auth/google?token=" + token,
+      "POST"
+    );
 
-  static async transformToken(token: string): Promise<unknown> {
-    return await this.executeRequest("/auth/google?token=" + token, "POST");
+    this._jwtToken = authResult.jwtToken;
+
+    return authResult;
   }
 
   static async getMetrics(): Promise<IMetric[]> {
@@ -78,20 +82,22 @@ export class ServerApi {
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
   ): Promise<T> {
-    //if (!this._token) {
-    // throw new Error("You are not authenticated.");
-    //}
+    const requestConfig = {
+      method: method,
+      body: payload ? JSON.stringify(payload) : null,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (this._jwtToken) {
+      (requestConfig.headers as unknown as any)["Authorization"] =
+        "Bearer " + this._jwtToken;
+    }
 
     const response: Response = await fetch(
       new Request(envSettings.apiBaseUrl + url),
-      {
-        method: method,
-        body: payload ? JSON.stringify(payload) : null,
-        headers: {
-          Authorization: "Bearer " + this._token,
-          "Content-Type": "application/json",
-        },
-      }
+      requestConfig
     );
 
     const text = await response.text();

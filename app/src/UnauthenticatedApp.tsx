@@ -1,34 +1,54 @@
 import React, { useState } from "react";
-import { GoogleLoginResponse, useGoogleLogin } from "react-google-login";
+import GoogleLogin, {
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+  useGoogleLogin,
+} from "react-google-login";
 import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
 import { envSettings } from "./env/envSettings";
+import styled from "styled-components";
 
 export const UnauthenticatedApp: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const { signIn } = useGoogleLogin({
-    redirectUri: envSettings.auth.google.redirectUri,
-    clientId: envSettings.auth.google.clientId,
-    uxMode: "popup",
-    onSuccess: (response) => {
-      debugger;
-      const idToken = (response as GoogleLoginResponse).tokenObj.id_token;
-
-      ServerApi.transformToken(idToken).then((x) => {
-        ServerApi.setToken((x as any).token);
-        setIsAuthenticated(true);
-      });
-    },
-    onFailure: (error) => {
-      alert("Auth error, see console for details");
-      console.log("Auth error", error);
-    },
-  });
 
   if (isAuthenticated) {
     return <App />;
   }
 
-  return <button onClick={signIn}>Sign-in with Google</button>;
+  return (
+    <Host>
+      <GoogleLogin
+        clientId={envSettings.auth.google.clientId}
+        redirectUri={envSettings.auth.google.redirectUri}
+        buttonText="Login with Google"
+        onSuccess={(response) => {
+          signInWithJwt(response);
+        }}
+        onFailure={(error) => {
+          alert("Auth error, see console for details");
+          console.log("Auth error", error);
+        }}
+        cookiePolicy={"single_host_origin"}
+      />{" "}
+    </Host>
+  );
+
+  function signInWithJwt(
+    response: GoogleLoginResponse | GoogleLoginResponseOffline
+  ) {
+    const idToken = (response as GoogleLoginResponse).tokenObj.id_token;
+
+    ServerApi.authenticate(idToken).then(() => {
+      setIsAuthenticated(true);
+    });
+  }
 };
+
+const Host = styled.div`
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+`;

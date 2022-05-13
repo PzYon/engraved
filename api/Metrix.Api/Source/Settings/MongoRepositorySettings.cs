@@ -1,6 +1,6 @@
 ﻿using Metrix.Persistence.Mongo;
 
-namespace Metrix.Api;
+namespace Metrix.Api.Settings;
 
 public class MongoRepositorySettings : IMongoRepositorySettings
 {
