@@ -16,6 +16,10 @@ export class ServerApi {
     this._token = token;
   }
 
+  static async transformToken(token: string): Promise<unknown> {
+    return await this.executeRequest("/auth/google?token=" + token, "POST");
+  }
+
   static async getMetrics(): Promise<IMetric[]> {
     return await this.executeRequest(`/metrics/`);
   }
@@ -74,9 +78,9 @@ export class ServerApi {
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
   ): Promise<T> {
-    if (!this._token) {
-      throw new Error("You are not authenticated.");
-    }
+    //if (!this._token) {
+    // throw new Error("You are not authenticated.");
+    //}
 
     const response: Response = await fetch(
       new Request(envSettings.apiBaseUrl + url),

@@ -13,9 +13,12 @@ export const UnauthenticatedApp: React.FC = () => {
     uxMode: "popup",
     onSuccess: (response) => {
       debugger;
-      const accessToken = (response as GoogleLoginResponse).tokenObj.id_token;
-      ServerApi.setToken(accessToken);
-      setIsAuthenticated(true);
+      const idToken = (response as GoogleLoginResponse).tokenObj.id_token;
+
+      ServerApi.transformToken(idToken).then((x) => {
+        ServerApi.setToken((x as any).token);
+        setIsAuthenticated(true);
+      });
     },
     onFailure: (error) => {
       alert("Auth error, see console for details");

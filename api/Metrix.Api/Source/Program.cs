@@ -1,5 +1,7 @@
+using System.Text;
 using System.Text.Json.Serialization;
 using Metrix.Api;
+using Metrix.Api.Controllers;
 using Metrix.Api.Filters;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
@@ -8,6 +10,7 @@ using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -22,27 +25,32 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IUserStore<IUser>, UserStore>();
 builder.Services.AddIdentityCore<IUser>();
 
-builder.Services.AddAuthentication(
-    options =>
-    {
-      options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-      options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-      options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-    }
-  )
-  .AddJwtBearer(
-    o =>
-    {
-      o.SecurityTokenValidators.Clear();
-      o.SecurityTokenValidators.Add(new GoogleTokenValidator());
-    }
-  );
-
 // custom dependencies
 builder.Services.AddSingleton(_ => GetRepository(builder));
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
+
+builder.Services.AddAuthentication(
+    x =>
+    {
+      x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+      x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }
+  )
+  .AddJwtBearer(
+    x =>
+    {
+      x.RequireHttpsMetadata = false;
+      x.SaveToken = true;
+      x.TokenValidationParameters = new TokenValidationParameters
+      {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AuthController.Secret)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+      };
+    }
+  );
 
 WebApplication app = builder.Build();
 
