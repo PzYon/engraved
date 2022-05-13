@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import GoogleLogin, {
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
-  useGoogleLogin,
 } from "react-google-login";
 import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
