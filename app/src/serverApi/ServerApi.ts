@@ -82,7 +82,7 @@ export class ServerApi {
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
   ): Promise<T> {
-    const requestConfig = {
+    const requestConfig: RequestInit = {
       method: method,
       body: payload ? JSON.stringify(payload) : null,
       headers: {

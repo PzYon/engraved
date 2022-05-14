@@ -22,7 +22,7 @@ export const UnauthenticatedApp: React.FC = () => {
         redirectUri={envSettings.auth.google.redirectUri}
         buttonText="Login with Google"
         onSuccess={(response) => {
-          signInWithJwt(response);
+          signInWithJwt(response as GoogleLoginResponse);
         }}
         onFailure={(error) => {
           alert("Auth error, see console for details");
@@ -33,10 +33,8 @@ export const UnauthenticatedApp: React.FC = () => {
     </Host>
   );
 
-  function signInWithJwt(
-    response: GoogleLoginResponse | GoogleLoginResponseOffline
-  ) {
-    const idToken = (response as GoogleLoginResponse).tokenObj.id_token;
+  function signInWithJwt(response: GoogleLoginResponse) {
+    const idToken = response.tokenObj.id_token;
 
     ServerApi.authenticate(idToken).then(() => {
       setIsAuthenticated(true);

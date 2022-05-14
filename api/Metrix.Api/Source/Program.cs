@@ -1,6 +1,9 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
-using Metrix.Api;
+using Metrix.Api.Authentication;
+using Metrix.Api.Controllers;
 using Metrix.Api.Filters;
 using Metrix.Api.Settings;
 using Metrix.Core.Application;
@@ -19,11 +22,12 @@ builder.Services
 // https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
-
-// custom dependencies
+builder.Services.AddTransient<TokenTranslator>();
 builder.Services.AddSingleton(_ => GetRepository(builder));
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
@@ -48,6 +52,20 @@ builder.Services.AddAuthentication(
         ),
         ValidateIssuer = false,
         ValidateAudience = false
+      };
+      options.Events = new JwtBearerEvents
+      {
+        OnTokenValidated = context =>
+        {
+          var jwtToken = (JwtSecurityToken)context.SecurityToken;
+          Claim nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
+
+          context.HttpContext.RequestServices
+            .GetRequiredService<ICurrentUserService>()
+            .SetUserName(nameClaim.Value);
+
+          return Task.CompletedTask;
+        }
       };
     }
   );
