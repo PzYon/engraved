@@ -2,5 +2,5 @@
 
 public class AuthResult
 {
-  public string? JwtToken { get; set; } 
+  public string? JwtToken { get; set; }
 }

@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Metrix.Api.Authentication;
-using Metrix.Api.Controllers;
 using Metrix.Api.Filters;
 using Metrix.Api.Settings;
 using Metrix.Core.Application;
@@ -112,6 +111,6 @@ IRepository GetInMemoryRepo()
 
 IRepository GetMongoDbRepo()
 {
-  var connectionString = builder.Configuration.GetConnectionString("metrix_db");
+  string? connectionString = builder.Configuration.GetConnectionString("metrix_db");
   return new MongoRepository(new MongoRepositorySettings(connectionString));
 }

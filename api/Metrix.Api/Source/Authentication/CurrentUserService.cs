@@ -2,9 +2,8 @@
 
 public class CurrentUserService : ICurrentUserService
 {
+  private const string Key = "AuthenticatedUserId";
   private readonly IHttpContextAccessor _httpContextAccessor;
-
-  const string Key = "AuthenticatedUserId";
 
   public CurrentUserService(IHttpContextAccessor httpContextAccessor)
   {

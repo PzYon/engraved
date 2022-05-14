@@ -124,7 +124,7 @@ public class MetricDocumentMapperShould
 
     var metric = MetricDocumentMapper.FromDocument<IMetric>(timerMetricDocument);
 
-    TimerMetric timerMetric = (TimerMetric)metric;
+    var timerMetric = (TimerMetric)metric;
     Assert.IsNotNull(timerMetric);
     Assert.AreEqual(MetricType.Timer, metric.Type);
     Assert.AreEqual(startDate, timerMetric.StartDate);
