@@ -6,4 +6,5 @@ public class TestMongoRepositorySettings : IMongoRepositorySettings
   public string DatabaseName => "metrix_test";
   public string MetricsCollectionName => "metrics";
   public string MeasurementsCollectionName => "measurements";
+  public string UsersCollectionName => "users";
 }

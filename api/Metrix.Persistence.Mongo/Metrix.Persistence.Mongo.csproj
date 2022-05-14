@@ -7,16 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Metrix.Core\Metrix.Core.csproj"/>
+        <ProjectReference Include="..\Metrix.Core\Metrix.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="11.0.1"/>
-        <PackageReference Include="MongoDB.Driver" Version="2.15.0"/>
+        <PackageReference Include="AutoMapper" Version="11.0.1" />
+        <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Source\DocumentTypes\Measurements\BaseMeasurementDocument.cs"/>
+        <Compile Remove="Source\DocumentTypes\Measurements\BaseMeasurementDocument.cs" />
     </ItemGroup>
 
 </Project>

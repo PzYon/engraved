@@ -2,8 +2,10 @@
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
+using Metrix.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -13,6 +15,7 @@ public class MongoRepository : IRepository
 {
   private readonly IMongoCollection<MeasurementDocument> _measurements;
   private readonly IMongoCollection<MetricDocument> _metrics;
+  private readonly IMongoCollection<UserDocument> _users;
 
   public MongoRepository(IMongoRepositorySettings settings)
   {
@@ -21,6 +24,40 @@ public class MongoRepository : IRepository
 
     _metrics = db.GetCollection<MetricDocument>(settings.MetricsCollectionName);
     _measurements = db.GetCollection<MeasurementDocument>(settings.MeasurementsCollectionName);
+    _users = db.GetCollection<UserDocument>(settings.UsersCollectionName);
+  }
+
+  public async Task<IUser?> GetUser(string name)
+  {
+    if (string.IsNullOrEmpty(name))
+    {
+      throw new ArgumentNullException(nameof(name), "Username must be specified.");
+    }
+
+    UserDocument? document = await _users
+      .Find(Builders<UserDocument>.Filter.Eq(nameof(UserDocument.Id), name))
+      .FirstOrDefaultAsync();
+
+    return document == null
+      ? null
+      : UserDocumentMapper.FromDocument(document);
+  }
+
+  public async Task<UpsertResult> UpsertUser(IUser user)
+  {
+    UserDocument document = UserDocumentMapper.ToDocument(user);
+
+    ReplaceOneResult replaceOneResult = await _users.ReplaceOneAsync(
+      Builders<UserDocument>.Filter.Eq(
+        nameof(UserDocument.Id),
+        string.IsNullOrEmpty(user.Id) ? ObjectId.GenerateNewId() : ParseObjectId(user.Id)
+      ),
+      document,
+      new ReplaceOptions { IsUpsert = true }
+    );
+
+    string id = (string.IsNullOrEmpty(user.Id) ? replaceOneResult.UpsertedId.ToString() : user.Id)!;
+    return new UpsertResult { EntityId = id };
   }
 
   public async Task<IMetric[]> GetAllMetrics()

@@ -19,7 +19,7 @@ builder.Services
   .AddControllers(options => options.Filters.Add<HttpExceptionFilter>())
   .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-// https://aka.ms/aspnetcore/swashbuckle
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
@@ -99,7 +99,7 @@ IRepository GetRepository(WebApplicationBuilder webApplicationBuilder)
 
 IRepository GetInMemoryRepo()
 {
-  IRepository repo = new InMemoryRespository();
+  IRepository repo = new InMemoryRepository();
 
   Task seed = new DemoDataRepositorySeeder(repo).Seed();
   if (!seed.IsCompleted)

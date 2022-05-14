@@ -47,6 +47,11 @@ public class TokenTranslator
 
   private SigningCredentials GetSigningCredentials()
   {
+    if (string.IsNullOrEmpty(_authenticationConfig.JwtSecret))
+    {
+      throw new Exception($"\"{nameof(AuthenticationConfig.JwtSecret)}\" must be set on the config.");
+    }
+
     return new SigningCredentials(
       new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_authenticationConfig.JwtSecret)),
       SecurityAlgorithms.HmacSha256Signature

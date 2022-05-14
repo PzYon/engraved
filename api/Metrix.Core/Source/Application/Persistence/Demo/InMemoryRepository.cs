@@ -1,13 +1,37 @@
 ﻿using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.User;
 
 namespace Metrix.Core.Application.Persistence.Demo;
 
-public class InMemoryRespository : IRepository
+public class InMemoryRepository : IRepository
 {
+  public List<IUser> Users { get; } = new();
+
   public List<IMeasurement> Measurements { get; } = new();
 
   public List<IMetric> Metrics { get; } = new();
+
+  public Task<IUser?> GetUser(string name)
+  {
+    return Task.FromResult(Users.FirstOrDefault(u => u.Name == name));
+  }
+
+  public Task<UpsertResult> UpsertUser(IUser user)
+  {
+    if (string.IsNullOrEmpty(user.Id))
+    {
+      user.Id = GenerateId();
+    }
+    else
+    {
+      RemoveUser(user);
+    }
+
+    Users.Add(user);
+
+    return Task.FromResult(new UpsertResult { EntityId = user.Id });
+  }
 
   public Task<IMetric[]> GetAllMetrics()
   {
@@ -86,6 +110,22 @@ public class InMemoryRespository : IRepository
     }
 
     Metrics.Remove(firstOrDefault);
+  }
+
+  private void RemoveUser(IUser user)
+  {
+    if (string.IsNullOrEmpty(user.Name))
+    {
+      return;
+    }
+
+    IUser? firstOrDefault = Users.FirstOrDefault(m => m.Name == user.Name);
+    if (firstOrDefault == null)
+    {
+      return;
+    }
+
+    Users.Remove(firstOrDefault);
   }
 
   private string GenerateId()
