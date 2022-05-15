@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Metrix.Core.Domain.User;
-using MongoDB.Bson.Serialization;
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Users;
 
@@ -10,9 +9,18 @@ public static class UserDocumentMapper
 
   static UserDocumentMapper()
   {
-    BsonClassMap.RegisterClassMap<UserDocument>();
-
-    var configuration = new MapperConfiguration(cfg => cfg.CreateMap<IUser, UserDocument>());
+    var configuration = new MapperConfiguration(
+      cfg =>
+      {
+        cfg.CreateMap<IUser, UserDocument>();
+        cfg.CreateMap<User, UserDocument>();
+        cfg.CreateMap<UserDocument, IUser>()
+          .ConstructUsing(
+            (document, context) => context.Mapper.Map<UserDocument, User>(document)
+          );
+        cfg.CreateMap<UserDocument, User>();
+      }
+    );
 
     // configuration.AssertConfigurationIsValid();
 

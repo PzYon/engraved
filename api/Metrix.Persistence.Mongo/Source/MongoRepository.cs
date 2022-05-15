@@ -27,7 +27,7 @@ public class MongoRepository : IRepository
     _users = db.GetCollection<UserDocument>(settings.UsersCollectionName);
   }
 
-  public async Task<IUser?> GetUser(string name)
+  public virtual async Task<IUser?> GetUser(string name)
   {
     if (string.IsNullOrEmpty(name))
     {
@@ -35,7 +35,7 @@ public class MongoRepository : IRepository
     }
 
     UserDocument? document = await _users
-      .Find(Builders<UserDocument>.Filter.Eq(nameof(UserDocument.Id), name))
+      .Find(Builders<UserDocument>.Filter.Eq(nameof(UserDocument.Name), name))
       .FirstOrDefaultAsync();
 
     return document == null
@@ -43,7 +43,7 @@ public class MongoRepository : IRepository
       : UserDocumentMapper.FromDocument(document);
   }
 
-  public async Task<UpsertResult> UpsertUser(IUser user)
+  public virtual async Task<UpsertResult> UpsertUser(IUser user)
   {
     UserDocument document = UserDocumentMapper.ToDocument(user);
 
@@ -62,8 +62,13 @@ public class MongoRepository : IRepository
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<MetricDocument> metrics = await _metrics.Find(Builders<MetricDocument>.Filter.Empty).ToListAsync();
+    List<MetricDocument> metrics = await _metrics.Find(GetAllMetricsFilter()).ToListAsync();
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
+  }
+
+  protected virtual FilterDefinition<MetricDocument> GetAllMetricsFilter()
+  {
+    return Builders<MetricDocument>.Filter.Empty;
   }
 
   public async Task<IMetric?> GetMetric(string metricId)

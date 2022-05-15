@@ -1,4 +1,6 @@
-﻿namespace Metrix.Api.Authentication;
+﻿using Metrix.Core.Application;
+
+namespace Metrix.Api.Authentication;
 
 public class CurrentUserService : ICurrentUserService
 {
