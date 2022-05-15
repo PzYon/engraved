@@ -39,9 +39,7 @@ public class MongoRepository : IRepository
       .Find(Builders<UserDocument>.Filter.Eq(nameof(UserDocument.Name), name))
       .FirstOrDefaultAsync();
 
-    return document == null
-      ? null
-      : UserDocumentMapper.FromDocument(document);
+    return UserDocumentMapper.FromDocument(document);
   }
 
   public virtual async Task<UpsertResult> UpsertUser(IUser user)
@@ -73,12 +71,11 @@ public class MongoRepository : IRepository
       throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
     }
 
-    MetricDocument? document = await _metrics.Find(GetDocumentByIdFilter<MetricDocument>(metricId))
+    MetricDocument? document = await _metrics
+      .Find(GetDocumentByIdFilter<MetricDocument>(metricId))
       .FirstOrDefaultAsync();
 
-    return document == null
-      ? null
-      : MetricDocumentMapper.FromDocument<IMetric>(document);
+    return MetricDocumentMapper.FromDocument<IMetric>(document);
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(string metricId)

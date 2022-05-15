@@ -45,8 +45,10 @@ public static class MetricDocumentMapper
     return Mapper.Map<MetricDocument>(metric);
   }
 
-  public static TMetric FromDocument<TMetric>(MetricDocument document) where TMetric : IMetric
+  public static TMetric FromDocument<TMetric>(MetricDocument? document) where TMetric : class, IMetric
   {
-    return (TMetric)Mapper.Map(document, document.GetType(), typeof(TMetric));
+    return document == null
+      ? null!
+      : (TMetric)Mapper.Map(document, document.GetType(), typeof(TMetric));
   }
 }
