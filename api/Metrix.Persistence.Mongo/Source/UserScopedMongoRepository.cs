@@ -1,8 +1,7 @@
 ﻿using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
-using Metrix.Core.Domain;
 using Metrix.Core.Domain.User;
-using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
+using Metrix.Persistence.Mongo.DocumentTypes;
 using MongoDB.Driver;
 
 namespace Metrix.Persistence.Mongo;
@@ -11,7 +10,12 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 {
   private readonly ICurrentUserService _currentUserService;
 
-  public Lazy<IUser> CurrentUser => new(() => base.GetUser(_currentUserService.GetUserName()).Result);
+  public Lazy<IUser> CurrentUser => new(() =>
+    {
+      string? name = _currentUserService.GetUserName();
+      return base.GetUser(name).Result;
+    }
+  );
 
   public UserScopedMongoRepository(
     IMongoRepositorySettings settings,
@@ -44,17 +48,13 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     return await base.UpsertUser(user);
   }
 
-  protected override FilterDefinition<MetricDocument> GetAllMetricsFilter()
+  protected override FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
   {
-    return Builders<MetricDocument>.Filter.Eq(nameof(IUserScoped.UserId), CurrentUser.Value.Id);
+    string id = CurrentUser.Value.Id;
+    return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), id);
   }
 
   /*
-
-  Task<IMetric?> GetMetric(string metricId);
-
-  Task<IMeasurement[]> GetAllMeasurements(string metricId);
-
   Task<UpsertResult> UpsertMetric(IMetric metric);
 
   Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;

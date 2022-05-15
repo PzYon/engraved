@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Users;
 
-public class UserDocument
+public class UserDocument : IDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]

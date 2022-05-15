@@ -3,6 +3,7 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
+using Metrix.Persistence.Mongo.DocumentTypes;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 using Metrix.Persistence.Mongo.DocumentTypes.Users;
@@ -49,26 +50,20 @@ public class MongoRepository : IRepository
 
     ReplaceOneResult replaceOneResult = await _users.ReplaceOneAsync(
       Builders<UserDocument>.Filter.Eq(
-        nameof(UserDocument.Id),
+        nameof(IDocument.Id),
         string.IsNullOrEmpty(user.Id) ? ObjectId.GenerateNewId() : ParseObjectId(user.Id)
       ),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
-    string id = (string.IsNullOrEmpty(user.Id) ? replaceOneResult.UpsertedId.ToString() : user.Id)!;
-    return new UpsertResult { EntityId = id };
+    return CreateUpsertResult(user.Id, replaceOneResult);
   }
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<MetricDocument> metrics = await _metrics.Find(GetAllMetricsFilter()).ToListAsync();
+    List<MetricDocument> metrics = await _metrics.Find(GetAllDocumentsFilter<MetricDocument>()).ToListAsync();
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
-  }
-
-  protected virtual FilterDefinition<MetricDocument> GetAllMetricsFilter()
-  {
-    return Builders<MetricDocument>.Filter.Empty;
   }
 
   public async Task<IMetric?> GetMetric(string metricId)
@@ -78,7 +73,8 @@ public class MongoRepository : IRepository
       throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
     }
 
-    MetricDocument? document = await _metrics.Find(GetMetricFilterById(metricId)).FirstOrDefaultAsync();
+    MetricDocument? document = await _metrics.Find(GetDocumentByIdFilter<MetricDocument>(metricId))
+      .FirstOrDefaultAsync();
 
     return document == null
       ? null
@@ -87,8 +83,14 @@ public class MongoRepository : IRepository
 
   public async Task<IMeasurement[]> GetAllMeasurements(string metricId)
   {
+    FilterDefinition<MeasurementDocument>? filter = Builders<MeasurementDocument>.Filter
+      .And(
+        GetAllDocumentsFilter<MeasurementDocument>(),
+        Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), new ObjectId(metricId))
+      );
+
     List<MeasurementDocument> measurements = await _measurements
-      .Find(Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), new ObjectId(metricId)))
+      .Find(filter)
       .ToListAsync();
 
     return measurements
@@ -101,13 +103,12 @@ public class MongoRepository : IRepository
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
     ReplaceOneResult replaceOneResult = await _metrics.ReplaceOneAsync(
-      GetMetricFilterById(metric.Id),
+      GetDocumentByIdFilter<MetricDocument>(metric.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
-    string id = (string.IsNullOrEmpty(metric.Id) ? replaceOneResult.UpsertedId.ToString() : metric.Id)!;
-    return new UpsertResult { EntityId = id };
+    return CreateUpsertResult(metric.Id, replaceOneResult);
   }
 
   public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
@@ -116,29 +117,35 @@ public class MongoRepository : IRepository
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     ReplaceOneResult replaceOneResult = await _measurements.ReplaceOneAsync(
-      GetMeasurementFilterById(measurement.Id),
+      GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
-    string id = (string.IsNullOrEmpty(measurement.Id) ? replaceOneResult.UpsertedId.ToString() : measurement.Id)!;
+    return CreateUpsertResult(measurement.Id, replaceOneResult);
+  }
+
+  protected virtual FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>() where TDocument : IUserScopedDocument
+  {
+    return Builders<TDocument>.Filter.Empty;
+  }
+
+  private FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
+    where TDocument : IUserScopedDocument
+  {
+    return Builders<TDocument>.Filter.And(
+      GetAllDocumentsFilter<TDocument>(),
+      Builders<TDocument>.Filter.Eq(
+        nameof(IDocument.Id),
+        string.IsNullOrEmpty(documentId) ? ObjectId.GenerateNewId() : ParseObjectId(documentId)
+      )
+    );
+  }
+
+  private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
+  {
+    string id = (string.IsNullOrEmpty(entityId) ? replaceOneResult.UpsertedId.ToString() : entityId)!;
     return new UpsertResult { EntityId = id };
-  }
-
-  private static FilterDefinition<MetricDocument> GetMetricFilterById(string? metricId)
-  {
-    return Builders<MetricDocument>.Filter.Eq(
-      nameof(MetricDocument.Id),
-      string.IsNullOrEmpty(metricId) ? ObjectId.GenerateNewId() : ParseObjectId(metricId)
-    );
-  }
-
-  private static FilterDefinition<MeasurementDocument> GetMeasurementFilterById(string? measurementId)
-  {
-    return Builders<MeasurementDocument>.Filter.Eq(
-      nameof(MeasurementDocument.Id),
-      string.IsNullOrEmpty(measurementId) ? ObjectId.GenerateNewId() : ParseObjectId(measurementId)
-    );
   }
 
   private static ObjectId ParseObjectId(string entityId)

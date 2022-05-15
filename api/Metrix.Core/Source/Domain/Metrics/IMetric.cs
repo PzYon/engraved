@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Core.Domain.Metrics;
 
-public interface IMetric
+public interface IMetric : IUserScoped
 {
   string? Id { get; set; }
 
