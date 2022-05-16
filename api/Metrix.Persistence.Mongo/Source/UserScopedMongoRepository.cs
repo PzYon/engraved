@@ -53,6 +53,8 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     string id = CurrentUser.Value.Id;
     return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), id);
   }
+  
+  
 
   /*
   Task<UpsertResult> UpsertMetric(IMetric metric);

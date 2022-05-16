@@ -82,23 +82,7 @@ export class ServerApi {
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
   ): Promise<T> {
-    const requestConfig: RequestInit = {
-      method: method,
-      body: payload ? JSON.stringify(payload) : null,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    if (this._jwtToken) {
-      (requestConfig.headers as unknown as any)["Authorization"] =
-        "Bearer " + this._jwtToken;
-    }
-
-    const response: Response = await fetch(
-      new Request(envSettings.apiBaseUrl + url),
-      requestConfig
-    );
+    const response = await this.getResponse(url, method, payload);
 
     const text = await response.text();
     const json = text ? JSON.parse(text) : null;
@@ -109,5 +93,30 @@ export class ServerApi {
 
     const apiError = json as IApiError;
     throw new Error(response.status + ": " + apiError?.message || " -");
+  }
+
+  private static async getResponse(
+    url: string,
+    method: "GET" | "PUT" | "POST",
+    payload: unknown
+  ) {
+    const headers: { [key: string]: string } = {
+      "Content-Type": "application/json",
+    };
+
+    if (this._jwtToken) {
+      headers["Authorization"] = "Bearer " + this._jwtToken;
+    }
+
+    const requestConfig: RequestInit = {
+      method: method,
+      body: payload ? JSON.stringify(payload) : null,
+      headers: headers,
+    };
+
+    return await fetch(
+      new Request(envSettings.apiBaseUrl + url),
+      requestConfig
+    );
   }
 }

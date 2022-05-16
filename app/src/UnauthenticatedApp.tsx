@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import GoogleLogin, {
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from "react-google-login";
+import GoogleLogin, { GoogleLoginResponse } from "react-google-login";
 import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
 import { envSettings } from "./env/envSettings";
