@@ -1,5 +1,7 @@
 ﻿using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
+using Metrix.Core.Domain;
+using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo.DocumentTypes;
 using MongoDB.Driver;
@@ -10,7 +12,8 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 {
   private readonly ICurrentUserService _currentUserService;
 
-  public Lazy<IUser> CurrentUser => new(() =>
+  public Lazy<IUser> CurrentUser => new(
+    () =>
     {
       string? name = _currentUserService.GetUserName();
       return base.GetUser(name).Result;
@@ -40,12 +43,22 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
   public override async Task<UpsertResult> UpsertUser(IUser user)
   {
-    if (user.Id != CurrentUser.Value.Id)
-    {
-      throw new UnallowedOperationException();
-    }
+    EnsureValidUser(user.Id);
 
     return await base.UpsertUser(user);
+  }
+
+  public override async Task<UpsertResult> UpsertMetric(IMetric metric)
+  {
+    EnsureValidUser(metric);
+
+    return await base.UpsertMetric(metric);
+  }
+
+  public override async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
+  {
+    EnsureValidUser(measurement);
+    return await base.UpsertMeasurement(measurement);
   }
 
   protected override FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
@@ -53,12 +66,17 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     string id = CurrentUser.Value.Id;
     return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), id);
   }
-  
-  
 
-  /*
-  Task<UpsertResult> UpsertMetric(IMetric metric);
+  private void EnsureValidUser(IUserScoped entity)
+  {
+    EnsureValidUser(entity.UserId);
+  }
 
-  Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
-  */
+  private void EnsureValidUser(string entityId)
+  {
+    if (entityId != CurrentUser.Value.Id)
+    {
+      throw new UnallowedOperationException();
+    }
+  }
 }

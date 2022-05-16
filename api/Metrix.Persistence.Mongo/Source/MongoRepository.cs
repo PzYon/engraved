@@ -47,10 +47,7 @@ public class MongoRepository : IRepository
     UserDocument document = UserDocumentMapper.ToDocument(user);
 
     ReplaceOneResult replaceOneResult = await _users.ReplaceOneAsync(
-      Builders<UserDocument>.Filter.Eq(
-        nameof(IDocument.Id),
-        string.IsNullOrEmpty(user.Id) ? ObjectId.GenerateNewId() : ParseObjectId(user.Id)
-      ),
+      Builders<UserDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(user.Id)),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
@@ -80,14 +77,12 @@ public class MongoRepository : IRepository
 
   public async Task<IMeasurement[]> GetAllMeasurements(string metricId)
   {
-    FilterDefinition<MeasurementDocument>? filter = Builders<MeasurementDocument>.Filter
-      .And(
-        GetAllDocumentsFilter<MeasurementDocument>(),
-        Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), new ObjectId(metricId))
-      );
-
     List<MeasurementDocument> measurements = await _measurements
-      .Find(filter)
+      .Find(
+        CreateScopedQuery(
+          Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId))
+        )
+      )
       .ToListAsync();
 
     return measurements
@@ -95,7 +90,7 @@ public class MongoRepository : IRepository
       .ToArray();
   }
 
-  public async Task<UpsertResult> UpsertMetric(IMetric metric)
+  public virtual async Task<UpsertResult> UpsertMetric(IMetric metric)
   {
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
@@ -108,7 +103,7 @@ public class MongoRepository : IRepository
     return CreateUpsertResult(metric.Id, replaceOneResult);
   }
 
-  public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
+  public virtual async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
     where TMeasurement : IMeasurement
   {
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
@@ -122,27 +117,43 @@ public class MongoRepository : IRepository
     return CreateUpsertResult(measurement.Id, replaceOneResult);
   }
 
-  protected virtual FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>() where TDocument : IUserScopedDocument
+  protected virtual FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
+    where TDocument : IUserScopedDocument
   {
     return Builders<TDocument>.Filter.Empty;
+  }
+
+  private FilterDefinition<TDocument> CreateScopedQuery<TDocument>(FilterDefinition<TDocument> query)
+    where TDocument : IUserScopedDocument
+  {
+    return Builders<TDocument>.Filter.And(GetAllDocumentsFilter<TDocument>(), query);
   }
 
   private FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
     where TDocument : IUserScopedDocument
   {
-    return Builders<TDocument>.Filter.And(
-      GetAllDocumentsFilter<TDocument>(),
-      Builders<TDocument>.Filter.Eq(
-        nameof(IDocument.Id),
-        string.IsNullOrEmpty(documentId) ? ObjectId.GenerateNewId() : ParseObjectId(documentId)
-      )
+    return CreateScopedQuery(
+      Builders<TDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(documentId))
     );
   }
 
   private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
   {
-    string id = (string.IsNullOrEmpty(entityId) ? replaceOneResult.UpsertedId.ToString() : entityId)!;
-    return new UpsertResult { EntityId = id };
+    string id = (string.IsNullOrEmpty(entityId)
+      ? replaceOneResult.UpsertedId.ToString()
+      : entityId)!;
+
+    return new UpsertResult
+    {
+      EntityId = id
+    };
+  }
+
+  private ObjectId EnsureObjectId(string? id)
+  {
+    return string.IsNullOrEmpty(id)
+      ? ObjectId.GenerateNewId()
+      : ParseObjectId(id);
   }
 
   private static ObjectId ParseObjectId(string entityId)
