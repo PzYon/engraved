@@ -9,19 +9,16 @@ namespace Metrix.Api.Controllers;
 [AllowAnonymous]
 public class AuthController : Controller
 {
-  private readonly TokenTranslator _tokenTranslator;
+  private readonly ILoginHandler _loginHandler;
 
-  public AuthController(TokenTranslator tokenTranslator)
+  public AuthController(ILoginHandler loginHandler)
   {
-    _tokenTranslator = tokenTranslator;
+    _loginHandler = loginHandler;
   }
 
   [HttpPost("google")]
-  [ProducesDefaultResponseType]
   public async Task<AuthResult> GoogleLogin(string token)
   {
-    string jwt = await _tokenTranslator.GoogleTokenToJwtToken(token);
-
-    return new AuthResult { JwtToken = jwt };
+    return await _loginHandler.Login(token);
   }
 }

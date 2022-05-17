@@ -1,35 +1,52 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Google.Apis.Auth;
 using Metrix.Api.Settings;
+using Metrix.Core.Application.Persistence;
+using Metrix.Core.Domain.User;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Metrix.Api.Authentication;
 
-public class TokenTranslator
+public class LoginHandler : ILoginHandler
 {
+  private readonly GoogleTokenValidator _tokenValidator;
+  private readonly IRepository _repository;
   private readonly AuthenticationConfig _authenticationConfig;
 
-  public TokenTranslator(IOptions<AuthenticationConfig> configuration)
+  public LoginHandler(
+    GoogleTokenValidator tokenValidator,
+    IRepository repository,
+    IOptions<AuthenticationConfig> configuration
+    )
   {
+    _tokenValidator = tokenValidator;
+    _repository = repository;
     _authenticationConfig = configuration.Value;
   }
 
-  public async Task<string> GoogleTokenToJwtToken(string token)
+  public async Task<AuthResult> Login(string token)
   {
-    var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+    ParsedToken parsedToken = await _tokenValidator.ParseAndValidate(token);
+
+    var user = new User
     {
-      Audience = new[] { _authenticationConfig.GoogleClientId }
+      Name = parsedToken.UserName,
+      ImageUrl = parsedToken.ImageUrl
     };
 
-    GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
+    UpsertResult result = await _repository.UpsertUser(user);
+    user.Id = result.EntityId;
 
-    return GenerateJwtToken(payload.Email);
+    return new AuthResult
+    {
+      JwtToken = ToJwtToken(token),
+      User = user
+    };
   }
 
-  private string GenerateJwtToken(string userId)
+  private string ToJwtToken(string userId)
   {
     var tokenDescriptor = new SecurityTokenDescriptor
     {

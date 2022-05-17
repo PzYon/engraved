@@ -4,12 +4,14 @@ import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
 import { envSettings } from "./env/envSettings";
 import styled from "styled-components";
+import { IAuthResult } from "./serverApi/IAuthResult";
+import { IUser } from "./serverApi/IUser";
 
 export const UnauthenticatedApp: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<IUser>();
 
-  if (isAuthenticated) {
-    return <App />;
+  if (user) {
+    return <App user={user} />;
   }
 
   return (
@@ -18,6 +20,8 @@ export const UnauthenticatedApp: React.FC = () => {
         clientId={envSettings.auth.google.clientId}
         redirectUri={envSettings.auth.google.redirectUri}
         buttonText="Login with Google"
+        cookiePolicy={"single_host_origin"}
+        uxMode="popup"
         onSuccess={(response) => {
           signInWithJwt(response as GoogleLoginResponse);
         }}
@@ -25,7 +29,6 @@ export const UnauthenticatedApp: React.FC = () => {
           alert("Auth error, see console for details");
           console.log("Auth error", error);
         }}
-        cookiePolicy={"single_host_origin"}
       />{" "}
     </Host>
   );
@@ -33,8 +36,8 @@ export const UnauthenticatedApp: React.FC = () => {
   function signInWithJwt(response: GoogleLoginResponse) {
     const idToken = response.tokenObj.id_token;
 
-    ServerApi.authenticate(idToken).then(() => {
-      setIsAuthenticated(true);
+    ServerApi.authenticate(idToken).then((authResult: IAuthResult) => {
+      setUser(authResult.user);
     });
   }
 };
