@@ -28,7 +28,7 @@ public class MongoRepository : IRepository
     _users = db.GetCollection<UserDocument>(settings.UsersCollectionName);
   }
 
-  public virtual async Task<IUser?> GetUser(string name)
+  public virtual async Task<IUser?> GetUser(string? name)
   {
     if (string.IsNullOrEmpty(name))
     {

@@ -12,13 +12,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 {
   private readonly ICurrentUserService _currentUserService;
 
-  public Lazy<IUser> CurrentUser => new(
-    () =>
-    {
-      string? name = _currentUserService.GetUserName();
-      return base.GetUser(name).Result;
-    }
-  );
+  public Lazy<IUser> CurrentUser => new(LoadUser);
 
   public UserScopedMongoRepository(
     IMongoRepositorySettings settings,
@@ -29,7 +23,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     _currentUserService = currentUserService;
   }
 
-  public override async Task<IUser?> GetUser(string name)
+  public override async Task<IUser?> GetUser(string? name)
   {
     IUser? user = await base.GetUser(name);
 
@@ -72,11 +66,24 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     EnsureValidUser(entity.UserId);
   }
 
-  private void EnsureValidUser(string entityId)
+  private void EnsureValidUser(string entityUserId)
   {
-    if (entityId != CurrentUser.Value.Id)
+    if (entityUserId != CurrentUser.Value.Id)
     {
-      throw new UnallowedOperationException();
+      throw new UnallowedOperationException("Entity does not belong to current user.");
     }
+  }
+
+  private IUser LoadUser()
+  {
+    string? name = _currentUserService.GetUserName();
+    IUser? result = base.GetUser(name).Result;
+
+    if (result == null)
+    {
+      throw new UnallowedOperationException("Current user not set.");
+    }
+
+    return result;
   }
 }
