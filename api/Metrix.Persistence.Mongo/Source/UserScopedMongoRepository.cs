@@ -38,14 +38,12 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   public override async Task<UpsertResult> UpsertUser(IUser user)
   {
     EnsureValidUser(user.Id);
-
     return await base.UpsertUser(user);
   }
 
   public override async Task<UpsertResult> UpsertMetric(IMetric metric)
   {
     EnsureValidUser(metric);
-
     return await base.UpsertMetric(metric);
   }
 
@@ -57,8 +55,13 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
   protected override FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
   {
-    string id = CurrentUser.Value.Id;
-    return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), id);
+    string? userId = CurrentUser.Value.Id;
+    if (string.IsNullOrEmpty(userId))
+    {
+      throw new ArgumentException("Current user is not available.");
+    }
+
+    return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), userId);
   }
 
   private void EnsureValidUser(IUserScoped entity)
@@ -66,7 +69,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     EnsureValidUser(entity.UserId);
   }
 
-  private void EnsureValidUser(string entityUserId)
+  private void EnsureValidUser(string? entityUserId)
   {
     if (entityUserId != CurrentUser.Value.Id)
     {

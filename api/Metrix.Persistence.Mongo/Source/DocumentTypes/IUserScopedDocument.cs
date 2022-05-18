@@ -2,5 +2,5 @@
 
 public interface IUserScopedDocument : IDocument
 {
-  string UserId { get; set; }
+  string? UserId { get; set; }
 }

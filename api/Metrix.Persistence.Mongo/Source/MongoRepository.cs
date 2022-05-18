@@ -46,13 +46,25 @@ public class MongoRepository : IRepository
   {
     UserDocument document = UserDocumentMapper.ToDocument(user);
 
+    IUser? existingUser = await GetUser(user.Name);
+    if (existingUser != null && string.IsNullOrEmpty(user.Id))
+    {
+      throw new ArgumentException("ID must be specified for existing users.");
+    }
+
     ReplaceOneResult replaceOneResult = await _users.ReplaceOneAsync(
-      Builders<UserDocument>.Filter.Eq(nameof(IUser.Name), EnsureObjectId(user.Name)),
+      Builders<UserDocument>.Filter.Eq(nameof(IUser.Name), user.Name),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
     return CreateUpsertResult(user.Id, replaceOneResult);
+  }
+
+  public async Task<IUser[]> GetAllUsers()
+  {
+    List<UserDocument> users = await _users.Find(GetAllDocumentsFilter<UserDocument>()).ToListAsync();
+    return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
   public async Task<IMetric[]> GetAllMetrics()
@@ -118,7 +130,7 @@ public class MongoRepository : IRepository
   }
 
   protected virtual FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
-    where TDocument : IUserScopedDocument
+    where TDocument : IDocument
   {
     return Builders<TDocument>.Filter.Empty;
   }
@@ -149,7 +161,7 @@ public class MongoRepository : IRepository
     };
   }
 
-  private ObjectId EnsureObjectId(string? id)
+  private static ObjectId EnsureObjectId(string? id)
   {
     return string.IsNullOrEmpty(id)
       ? ObjectId.GenerateNewId()

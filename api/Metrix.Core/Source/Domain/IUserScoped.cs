@@ -2,5 +2,5 @@
 
 public interface IUserScoped
 {
-  string UserId { get; set; }
+  string? UserId { get; set; }
 }

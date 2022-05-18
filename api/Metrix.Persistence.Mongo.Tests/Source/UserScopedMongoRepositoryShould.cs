@@ -14,45 +14,41 @@ public class UserScopedMongoRepositoryShould
   private MongoRepository _repository = null!;
   private UserScopedMongoRepository _userScopedRepository = null!;
 
-  private static readonly string currentUserName = "me";
+  private const string CurrentUserName = "me";
   private string _currentUserId = null!;
 
-  private static readonly string otherUserName = "other";
+  private const string OtherUserName = "other";
   private string _otherUserId = null!;
 
   [SetUp]
   public async Task Setup()
   {
     _repository = await Util.CreateMongoRepository();
-    _currentUserId = (await _repository.UpsertUser(new User { Name = currentUserName })).EntityId;
-    _otherUserId = (await _repository.UpsertUser(new User { Name = otherUserName })).EntityId;
+    _currentUserId = (await _repository.UpsertUser(new User { Name = CurrentUserName })).EntityId;
+    _otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
 
-    _userScopedRepository = await Util.CreateUserScopedMongoRepository(currentUserName, true);
+    _userScopedRepository = await Util.CreateUserScopedMongoRepository(CurrentUserName, true);
   }
 
   [Test]
   public async Task GetUser_Returns_CurrentUser()
   {
     await _repository.UpsertUser(new User { Name = "franz" });
-    await _repository.UpsertUser(new User { Name = otherUserName });
-    await _repository.UpsertUser(new User { Name = currentUserName });
-    await _repository.UpsertUser(new User { Name = "maz" });
+    await _repository.UpsertUser(new User { Name = "max" });
 
-    IUser? user = await _userScopedRepository.GetUser(currentUserName);
+    IUser? user = await _userScopedRepository.GetUser(CurrentUserName);
 
     Assert.IsNotNull(user);
-    Assert.AreEqual(currentUserName, user.Name);
+    Assert.AreEqual(CurrentUserName, user!.Name);
   }
 
   [Test]
   public async Task GetUser_DoesNotReturn_OtherUser()
   {
     await _repository.UpsertUser(new User { Name = "franz" });
-    await _repository.UpsertUser(new User { Name = otherUserName });
-    await _repository.UpsertUser(new User { Name = currentUserName });
-    await _repository.UpsertUser(new User { Name = "maz" });
+    await _repository.UpsertUser(new User { Name = "max" });
 
-    IUser? user = await _userScopedRepository.GetUser(otherUserName);
+    IUser? user = await _userScopedRepository.GetUser(OtherUserName);
 
     Assert.IsNull(user);
   }
@@ -60,27 +56,21 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task UpsertUser_ShouldUpdate_CurrentUser()
   {
-    await _repository.UpsertUser(new User { Name = otherUserName });
-    await _repository.UpsertUser(new User { Name = currentUserName });
+    IUser? current = await _repository.GetUser(CurrentUserName);
+    Assert.IsNotNull(current);
 
-    IUser? current = await _repository.GetUser(currentUserName);
-    Assert.IsNotNull(current!);
-
-    UpsertResult result = await _userScopedRepository.UpsertUser(current);
+    UpsertResult result = await _userScopedRepository.UpsertUser(current!);
 
     Assert.AreEqual(_userScopedRepository.CurrentUser.Value.Id, result.EntityId);
   }
 
   [Test]
-  public async Task UpsertUser_ShouldThrow_WhenUpdating_OtherUser()
+  public void UpsertUser_ShouldThrow_WhenUpdating_OtherUser()
   {
-    var other = new User { Name = otherUserName };
-    await _repository.UpsertUser(other);
-
-    await _repository.UpsertUser(new User { Name = currentUserName });
-
     Assert.ThrowsAsync<UnallowedOperationException>(
-      async () => await _userScopedRepository.UpsertUser(other)
+      async () => await _userScopedRepository.UpsertUser(
+        new User { Id = _otherUserId, Name = OtherUserName }
+      )
     );
   }
 

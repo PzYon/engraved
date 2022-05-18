@@ -10,6 +10,8 @@ public interface IRepository
 
   Task<UpsertResult> UpsertUser(IUser user);
 
+  Task<IUser[]> GetAllUsers();
+
   Task<IMetric[]> GetAllMetrics();
 
   Task<IMetric?> GetMetric(string metricId);

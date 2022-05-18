@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.User;
 using MongoDB.Bson;
 using NUnit.Framework;
 
@@ -55,7 +57,7 @@ public class MongoRepositoryShould
   [Test]
   public async Task CreateMetric_Then_Update()
   {
-    var counterMetric = new CounterMetric { Name = "First" };
+    CounterMetric counterMetric = new CounterMetric { Name = "First" };
     UpsertResult result = await _repository.UpsertMetric(counterMetric);
 
     counterMetric = (CounterMetric)await _repository.GetMetric(result.EntityId);
@@ -110,5 +112,15 @@ public class MongoRepositoryShould
     IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId);
 
     Assert.AreEqual(2, allMeasurements.Length);
+  }
+
+  [Test]
+  public async Task Not_CreateUser_WithSameName()
+  {
+    await _repository.UpsertUser(new User { Name = "schorsch" });
+
+    Assert.ThrowsAsync<ArgumentException>(
+      async () => await _repository.UpsertUser(new User { Name = "schorsch" })
+    );
   }
 }

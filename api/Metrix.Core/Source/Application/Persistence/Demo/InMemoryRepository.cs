@@ -33,6 +33,11 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(new UpsertResult { EntityId = user.Id });
   }
 
+  public Task<IUser[]> GetAllUsers()
+  {
+    return Task.FromResult(Users.ToArray());
+  }
+
   public Task<IMetric[]> GetAllMetrics()
   {
     return Task.FromResult(Metrics.ToArray());

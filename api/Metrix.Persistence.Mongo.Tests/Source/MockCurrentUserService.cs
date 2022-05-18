@@ -4,7 +4,7 @@ namespace Metrix.Persistence.Mongo.Tests;
 
 public class MockCurrentUserService : ICurrentUserService
 {
-  private string _userName;
+  private string? _userName;
 
   public string? GetUserName()
   {

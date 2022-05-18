@@ -11,7 +11,7 @@ public abstract class MeasurementDocument : IUserScopedDocument
   [BsonIgnoreIfDefault]
   public ObjectId Id { get; set; }
 
-  public string UserId { get; set; }
+  public string? UserId { get; set; }
 
   public string MetricId { get; set; } = null!;
 
