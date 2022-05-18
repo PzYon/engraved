@@ -7,4 +7,6 @@ public interface IUser
   string Name { get; set; }
 
   string ImageUrl { get; set; }
+  
+  DateTime LastLoginDate { get; set; }
 }

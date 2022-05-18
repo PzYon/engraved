@@ -47,7 +47,7 @@ public class MongoRepository : IRepository
     UserDocument document = UserDocumentMapper.ToDocument(user);
 
     ReplaceOneResult replaceOneResult = await _users.ReplaceOneAsync(
-      Builders<UserDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(user.Id)),
+      Builders<UserDocument>.Filter.Eq(nameof(IUser.Name), EnsureObjectId(user.Name)),
       document,
       new ReplaceOptions { IsUpsert = true }
     );

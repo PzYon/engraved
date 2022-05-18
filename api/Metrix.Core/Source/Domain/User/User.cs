@@ -7,4 +7,6 @@ public class User : IUser
   public string? Name { get; set; }
 
   public string? ImageUrl { get; set; }
+  
+  public DateTime LastLoginDate { get; set; }
 }
