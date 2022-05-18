@@ -11,9 +11,9 @@ namespace Metrix.Api.Authentication;
 
 public class LoginHandler : ILoginHandler
 {
-  private readonly GoogleTokenValidator _tokenValidator;
-  private readonly IRepository _repository;
   private readonly AuthenticationConfig _authenticationConfig;
+  private readonly IRepository _repository;
+  private readonly GoogleTokenValidator _tokenValidator;
 
   public LoginHandler(
     GoogleTokenValidator tokenValidator,

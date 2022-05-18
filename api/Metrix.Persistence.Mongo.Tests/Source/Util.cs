@@ -14,9 +14,10 @@ public static class Util
     return new MongoRepository(Settings);
   }
 
-
-
-  public static async Task<UserScopedMongoRepository> CreateUserScopedMongoRepository(string userName, bool doNotDropDatabase)
+  public static async Task<UserScopedMongoRepository> CreateUserScopedMongoRepository(
+    string userName,
+    bool doNotDropDatabase
+    )
   {
     if (!doNotDropDatabase)
     {
@@ -28,7 +29,7 @@ public static class Util
 
     return new UserScopedMongoRepository(Settings, userService);
   }
-  
+
   private static async Task DropDatabase()
   {
     var client = new MongoClient(Settings.MongoDbConnectionString);
