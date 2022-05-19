@@ -15,6 +15,13 @@ public class GoogleTokenValidator
 
   public async Task<ParsedToken> ParseAndValidate(string token)
   {
+    if (string.IsNullOrEmpty(_authenticationConfig.GoogleClientId))
+    {
+      throw new ArgumentException(
+        $"\"{nameof(AuthenticationConfig.GoogleClientId)}\" is not set, please do so in your environment settings."
+      );
+    }
+    
     var validationSettings = new GoogleJsonWebSignature.ValidationSettings
     {
       Audience = new[] { _authenticationConfig.GoogleClientId }

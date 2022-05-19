@@ -28,6 +28,11 @@ public class LoginHandler : ILoginHandler
 
   public async Task<AuthResult> Login(string token)
   {
+    if (string.IsNullOrEmpty(token))
+    {
+      throw new ArgumentException("Token is null or empty, cannot login.");
+    }
+    
     ParsedToken parsedToken = await _tokenValidator.ParseAndValidate(token);
 
     var user = new User
