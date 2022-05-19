@@ -29,6 +29,7 @@ builder.Services.Configure<AuthenticationConfig>(authConfigSection);
 builder.Services.AddTransient<GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddSingleton(_ => GetRepository(builder));
+builder.Services.AddTransient<IUserScopedRepository>(_ => GetUserScopedRepository(builder))
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
 
@@ -89,6 +90,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+IRepository GetUserScopedRepository(WebApplicationBuilder builder)
+{
+  ICurrentUserService currentUserService = builder.Services.
+  string? connectionString = builder.Configuration.GetConnectionString("metrix_db");
+  return new UserScopedMongoRepository(currentUserService, new MongoRepositorySettings(connectionString));
+}
 
 IRepository GetRepository(WebApplicationBuilder webApplicationBuilder)
 {
