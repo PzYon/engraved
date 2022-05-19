@@ -23,13 +23,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
+builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddSingleton(_ => GetRepository(builder));
-builder.Services.AddTransient<IUserScopedRepository>(_ => GetUserScopedRepository(builder))
+builder.Services.AddTransient(
+  provider => GetUserScopedRepository(builder, provider.GetService<ICurrentUserService>()!)
+);
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
 
@@ -58,7 +60,7 @@ builder.Services.AddAuthentication(
       {
         OnTokenValidated = context =>
         {
-          var jwtToken = (JwtSecurityToken)context.SecurityToken;
+          var jwtToken = (JwtSecurityToken) context.SecurityToken;
           Claim nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
 
           context.HttpContext.RequestServices
@@ -91,11 +93,13 @@ app.MapControllers();
 
 app.Run();
 
-IRepository GetUserScopedRepository(WebApplicationBuilder builder)
+IUserScopedRepository GetUserScopedRepository(
+  WebApplicationBuilder webApplicationBuilder,
+  ICurrentUserService userService
+  )
 {
-  ICurrentUserService currentUserService = builder.Services.
-  string? connectionString = builder.Configuration.GetConnectionString("metrix_db");
-  return new UserScopedMongoRepository(currentUserService, new MongoRepositorySettings(connectionString));
+  string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("metrix_db");
+  return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);
 }
 
 IRepository GetRepository(WebApplicationBuilder webApplicationBuilder)
