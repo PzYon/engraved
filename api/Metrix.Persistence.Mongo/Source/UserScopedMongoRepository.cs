@@ -84,7 +84,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
     if (result == null)
     {
-      throw new UnallowedOperationException("Current user not set.");
+      throw new UnallowedOperationException($"Current user '{name}' does not exists.");
     }
 
     return result;

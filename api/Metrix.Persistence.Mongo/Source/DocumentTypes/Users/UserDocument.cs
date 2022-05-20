@@ -8,6 +8,8 @@ public class UserDocument : IDocument
 {
   public string? Name { get; set; }
 
+  public string? DisplayName { get; set; }
+
   public string? ImageUrl { get; set; }
 
   [BsonId(IdGenerator = typeof(GuidGenerator))]

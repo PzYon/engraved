@@ -5,7 +5,8 @@ test("placeholder test (that doesn't fail)", () => {
   render(
     <App
       user={{
-        name: "Gebhard",
+        name: "gebhard@gmail.com",
+        displayName: "Gebhard",
         imageUrl: "https://www.foo.ch/gebhard.jpg",
         id: "1234",
       }}

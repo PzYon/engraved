@@ -32,12 +32,15 @@ public class LoginHandler : ILoginHandler
     {
       throw new ArgumentException("Token is null or empty, cannot login.");
     }
-    
+
     ParsedToken parsedToken = await _tokenValidator.ParseAndValidate(token);
+
+    string userName = parsedToken.UserName;
 
     var user = new User
     {
-      Name = parsedToken.UserName,
+      Name = userName,
+      DisplayName = parsedToken.UserDisplayName,
       ImageUrl = parsedToken.ImageUrl,
       LastLoginDate = DateTime.UtcNow
     };
@@ -47,7 +50,7 @@ public class LoginHandler : ILoginHandler
 
     return new AuthResult
     {
-      JwtToken = ToJwtToken(token),
+      JwtToken = ToJwtToken(userName),
       User = user
     };
   }

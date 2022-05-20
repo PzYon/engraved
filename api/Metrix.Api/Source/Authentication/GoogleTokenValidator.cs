@@ -31,7 +31,8 @@ public class GoogleTokenValidator
 
     return new ParsedToken
     {
-      UserName = payload.Name,
+      UserName = payload.Email,
+      UserDisplayName = payload.Name,
       ImageUrl = payload.Picture
     };
   }

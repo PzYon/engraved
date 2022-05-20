@@ -22,7 +22,7 @@ export const AppHeader: React.FC = () => {
             </Typography>
           </Link>
           <Avatar
-            alt={user.name}
+            alt={user.displayName}
             src={user.imageUrl}
             imgProps={{ referrerPolicy: "no-referrer" }}
           />
