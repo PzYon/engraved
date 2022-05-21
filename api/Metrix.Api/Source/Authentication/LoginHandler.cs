@@ -37,13 +37,12 @@ public class LoginHandler : ILoginHandler
 
     string userName = parsedToken.UserName;
 
-    var user = new User
-    {
-      Name = userName,
-      DisplayName = parsedToken.UserDisplayName,
-      ImageUrl = parsedToken.ImageUrl,
-      LastLoginDate = DateTime.UtcNow
-    };
+    IUser user = await _repository.GetUser(userName)
+                 ?? new User { Name = userName };
+
+    user.DisplayName = parsedToken.UserDisplayName;
+    user.ImageUrl = parsedToken.ImageUrl;
+    user.LastLoginDate = DateTime.UtcNow;
 
     UpsertResult result = await _repository.UpsertUser(user);
     user.Id = result.EntityId;
