@@ -27,6 +27,5 @@ public class AuthController : Controller
     {
       throw new Exception(ex.Message + ":::::Inner:" + ex.InnerException?.Message);
     }
-
   }
 }
