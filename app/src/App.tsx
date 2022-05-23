@@ -8,11 +8,12 @@ import { AppErrorBoundary } from "./components/errorHandling/AppErrorBoundary";
 import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContext";
 import { ThemeAndStylesProvider } from "./theming/ThemeAndStylesProvider";
+import { IUser } from "./serverApi/IUser";
 
-export const App: React.FC = () => (
+export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <React.StrictMode>
     <ThemeAndStylesProvider>
-      <AppContextProvider>
+      <AppContextProvider user={user}>
         <BrowserRouter>
           <DialogContextProvider>
             <AppHeader />

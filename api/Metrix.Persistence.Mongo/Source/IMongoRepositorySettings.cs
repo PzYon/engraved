@@ -6,4 +6,5 @@ public interface IMongoRepositorySettings
   string DatabaseName { get; }
   string MetricsCollectionName { get; }
   string MeasurementsCollectionName { get; }
+  string UsersCollectionName { get; }
 }

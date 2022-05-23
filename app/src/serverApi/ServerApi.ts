@@ -8,8 +8,22 @@ import { IEditMetricCommand } from "./commands/IEditMetricCommand";
 import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
+import { IAuthResult } from "./IAuthResult";
 
 export class ServerApi {
+  private static _jwtToken: string;
+
+  static async authenticate(token: string): Promise<IAuthResult> {
+    const authResult: IAuthResult = await this.executeRequest(
+      "/auth/google?token=" + token,
+      "POST"
+    );
+
+    this._jwtToken = authResult.jwtToken;
+
+    return authResult;
+  }
+
   static async getMetrics(): Promise<IMetric[]> {
     return await this.executeRequest(`/metrics/`);
   }
@@ -68,16 +82,7 @@ export class ServerApi {
     method: "GET" | "PUT" | "POST" = "GET",
     payload: unknown = undefined
   ): Promise<T> {
-    const response: Response = await fetch(
-      new Request(envSettings.apiBaseUrl + url),
-      {
-        method: method,
-        body: payload ? JSON.stringify(payload) : null,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await this.getResponse(url, method, payload);
 
     const text = await response.text();
     const json = text ? JSON.parse(text) : null;
@@ -87,6 +92,31 @@ export class ServerApi {
     }
 
     const apiError = json as IApiError;
-    throw new Error(apiError.message);
+    throw new Error(response.status + ": " + apiError?.message || " -");
+  }
+
+  private static async getResponse(
+    url: string,
+    method: "GET" | "PUT" | "POST",
+    payload: unknown
+  ) {
+    const headers: { [key: string]: string } = {
+      "Content-Type": "application/json",
+    };
+
+    if (this._jwtToken) {
+      headers["Authorization"] = "Bearer " + this._jwtToken;
+    }
+
+    const requestConfig: RequestInit = {
+      method: method,
+      body: payload ? JSON.stringify(payload) : null,
+      headers: headers,
+    };
+
+    return await fetch(
+      new Request(envSettings.apiBaseUrl + url),
+      requestConfig
+    );
   }
 }

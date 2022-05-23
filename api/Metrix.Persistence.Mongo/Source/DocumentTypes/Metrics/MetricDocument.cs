@@ -5,12 +5,14 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 
-public abstract class MetricDocument
+public abstract class MetricDocument : IUserScopedDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]
   [BsonIgnoreIfDefault]
   public ObjectId Id { get; set; }
+
+  public string? UserId { get; set; }
 
   public string? Name { get; set; }
 

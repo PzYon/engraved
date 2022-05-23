@@ -87,12 +87,15 @@ public class MetricDocumentMapperShould
   [Test]
   public void Timer_ToDocument()
   {
+    DateTime startDate = DateTime.UtcNow;
+
     var timerMetric = new TimerMetric
     {
       Id = Id,
       Name = Name,
       Description = Description,
-      Flags = new Dictionary<string, string> { { "fl@g", "fl@g_value" } }
+      Flags = new Dictionary<string, string> { { "fl@g", "fl@g_value" } },
+      StartDate = startDate
     };
 
     MetricDocument metricDocument = MetricDocumentMapper.ToDocument(timerMetric);
@@ -101,6 +104,7 @@ public class MetricDocumentMapperShould
     Assert.IsNotNull(createdMetric);
     Assert.AreEqual(MetricType.Timer, createdMetric!.Type);
     AssertEqual(timerMetric, metricDocument);
+    Assert.AreEqual(startDate, createdMetric.StartDate);
     Assert.Contains("fl@g", metricDocument.Flags.Keys);
     Assert.AreEqual("fl@g_value", metricDocument.Flags["fl@g"]);
   }
@@ -108,17 +112,22 @@ public class MetricDocumentMapperShould
   [Test]
   public void Timer_FromDocument()
   {
+    DateTime startDate = DateTime.UtcNow;
+
     var timerMetricDocument = new TimerMetricDocument
     {
       Id = new ObjectId(Id),
       Description = Description,
-      Name = Name
+      Name = Name,
+      StartDate = startDate
     };
 
     var metric = MetricDocumentMapper.FromDocument<IMetric>(timerMetricDocument);
 
-    Assert.IsTrue(metric is TimerMetric);
+    var timerMetric = (TimerMetric)metric;
+    Assert.IsNotNull(timerMetric);
     Assert.AreEqual(MetricType.Timer, metric.Type);
+    Assert.AreEqual(startDate, timerMetric.StartDate);
     AssertEqual(timerMetricDocument, metric);
   }
 

@@ -2,8 +2,11 @@
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.User;
+using Metrix.Persistence.Mongo.DocumentTypes;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
+using Metrix.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -13,6 +16,7 @@ public class MongoRepository : IRepository
 {
   private readonly IMongoCollection<MeasurementDocument> _measurements;
   private readonly IMongoCollection<MetricDocument> _metrics;
+  private readonly IMongoCollection<UserDocument> _users;
 
   public MongoRepository(IMongoRepositorySettings settings)
   {
@@ -21,11 +25,51 @@ public class MongoRepository : IRepository
 
     _metrics = db.GetCollection<MetricDocument>(settings.MetricsCollectionName);
     _measurements = db.GetCollection<MeasurementDocument>(settings.MeasurementsCollectionName);
+    _users = db.GetCollection<UserDocument>(settings.UsersCollectionName);
+  }
+
+  public virtual async Task<IUser?> GetUser(string? name)
+  {
+    if (string.IsNullOrEmpty(name))
+    {
+      throw new ArgumentNullException(nameof(name), "Username must be specified.");
+    }
+
+    UserDocument? document = await _users
+      .Find(Builders<UserDocument>.Filter.Eq(nameof(UserDocument.Name), name))
+      .FirstOrDefaultAsync();
+
+    return UserDocumentMapper.FromDocument(document);
+  }
+
+  public virtual async Task<UpsertResult> UpsertUser(IUser user)
+  {
+    UserDocument document = UserDocumentMapper.ToDocument(user);
+
+    IUser? existingUser = await GetUser(user.Name);
+    if (existingUser != null && string.IsNullOrEmpty(user.Id))
+    {
+      throw new ArgumentException("ID must be specified for existing users.");
+    }
+
+    ReplaceOneResult replaceOneResult = await _users.ReplaceOneAsync(
+      Builders<UserDocument>.Filter.Eq(nameof(IUser.Name), user.Name),
+      document,
+      new ReplaceOptions { IsUpsert = true }
+    );
+
+    return CreateUpsertResult(user.Id, replaceOneResult);
+  }
+
+  public async Task<IUser[]> GetAllUsers()
+  {
+    List<UserDocument> users = await _users.Find(GetAllDocumentsFilter<UserDocument>()).ToListAsync();
+    return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<MetricDocument> metrics = await _metrics.Find(Builders<MetricDocument>.Filter.Empty).ToListAsync();
+    List<MetricDocument> metrics = await _metrics.Find(GetAllDocumentsFilter<MetricDocument>()).ToListAsync();
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
   }
 
@@ -36,17 +80,21 @@ public class MongoRepository : IRepository
       throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
     }
 
-    MetricDocument? document = await _metrics.Find(GetMetricFilterById(metricId)).FirstOrDefaultAsync();
+    MetricDocument? document = await _metrics
+      .Find(GetDocumentByIdFilter<MetricDocument>(metricId))
+      .FirstOrDefaultAsync();
 
-    return document == null
-      ? null
-      : MetricDocumentMapper.FromDocument<IMetric>(document);
+    return MetricDocumentMapper.FromDocument<IMetric>(document);
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(string metricId)
   {
     List<MeasurementDocument> measurements = await _measurements
-      .Find(Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), new ObjectId(metricId)))
+      .Find(
+        CreateScopedQuery(
+          Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId))
+        )
+      )
       .ToListAsync();
 
     return measurements
@@ -54,49 +102,70 @@ public class MongoRepository : IRepository
       .ToArray();
   }
 
-  public async Task<UpsertResult> UpsertMetric(IMetric metric)
+  public virtual async Task<UpsertResult> UpsertMetric(IMetric metric)
   {
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
     ReplaceOneResult replaceOneResult = await _metrics.ReplaceOneAsync(
-      GetMetricFilterById(metric.Id),
+      GetDocumentByIdFilter<MetricDocument>(metric.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
-    string id = (string.IsNullOrEmpty(metric.Id) ? replaceOneResult.UpsertedId.ToString() : metric.Id)!;
-    return new UpsertResult { EntityId = id };
+    return CreateUpsertResult(metric.Id, replaceOneResult);
   }
 
-  public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
+  public virtual async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
     where TMeasurement : IMeasurement
   {
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     ReplaceOneResult replaceOneResult = await _measurements.ReplaceOneAsync(
-      GetMeasurementFilterById(measurement.Id),
+      GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
-    string id = (string.IsNullOrEmpty(measurement.Id) ? replaceOneResult.UpsertedId.ToString() : measurement.Id)!;
-    return new UpsertResult { EntityId = id };
+    return CreateUpsertResult(measurement.Id, replaceOneResult);
   }
 
-  private static FilterDefinition<MetricDocument> GetMetricFilterById(string? metricId)
+  protected virtual FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
+    where TDocument : IDocument
   {
-    return Builders<MetricDocument>.Filter.Eq(
-      nameof(MetricDocument.Id),
-      string.IsNullOrEmpty(metricId) ? ObjectId.GenerateNewId() : ParseObjectId(metricId)
+    return Builders<TDocument>.Filter.Empty;
+  }
+
+  private FilterDefinition<TDocument> CreateScopedQuery<TDocument>(FilterDefinition<TDocument> query)
+    where TDocument : IUserScopedDocument
+  {
+    return Builders<TDocument>.Filter.And(GetAllDocumentsFilter<TDocument>(), query);
+  }
+
+  private FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
+    where TDocument : IUserScopedDocument
+  {
+    return CreateScopedQuery(
+      Builders<TDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(documentId))
     );
   }
 
-  private static FilterDefinition<MeasurementDocument> GetMeasurementFilterById(string? measurementId)
+  private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
   {
-    return Builders<MeasurementDocument>.Filter.Eq(
-      nameof(MeasurementDocument.Id),
-      string.IsNullOrEmpty(measurementId) ? ObjectId.GenerateNewId() : ParseObjectId(measurementId)
-    );
+    string id = (string.IsNullOrEmpty(entityId)
+      ? replaceOneResult.UpsertedId.ToString()
+      : entityId)!;
+
+    return new UpsertResult
+    {
+      EntityId = id
+    };
+  }
+
+  private static ObjectId EnsureObjectId(string? id)
+  {
+    return string.IsNullOrEmpty(id)
+      ? ObjectId.GenerateNewId()
+      : ParseObjectId(id);
   }
 
   private static ObjectId ParseObjectId(string entityId)

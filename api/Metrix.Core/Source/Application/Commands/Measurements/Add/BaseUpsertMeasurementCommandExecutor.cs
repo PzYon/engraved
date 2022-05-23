@@ -35,8 +35,9 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     UpsertResult result = await repository.UpsertMeasurement(measurement);
 
     UpdateMetric(metric, dateService);
-
     metric.LastMeasurementDate = dateService.UtcNow;
+
+    await repository.UpsertMetric(metric);
 
     return new CommandResult { EntityId = result.EntityId };
   }

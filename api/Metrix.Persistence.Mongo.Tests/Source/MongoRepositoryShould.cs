@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.User;
 using MongoDB.Bson;
 using NUnit.Framework;
 
@@ -12,7 +14,7 @@ namespace Metrix.Persistence.Mongo.Tests;
 // have a more end-to-end view, e.g. something like this:
 // await new AddCounterMeasurementCommand().CreateExecutor().Execute(_repository, null);
 
-[Ignore("Requires local MongoDB.")]
+//[Ignore("Requires local MongoDB.")]
 public class MongoRepositoryShould
 {
   private MongoRepository _repository = null!;
@@ -58,7 +60,7 @@ public class MongoRepositoryShould
     var counterMetric = new CounterMetric { Name = "First" };
     UpsertResult result = await _repository.UpsertMetric(counterMetric);
 
-    counterMetric = (CounterMetric)await _repository.GetMetric(result.EntityId);
+    counterMetric = (CounterMetric?)await _repository.GetMetric(result.EntityId);
 
     Assert.IsNotNull(counterMetric);
 
@@ -110,5 +112,15 @@ public class MongoRepositoryShould
     IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId);
 
     Assert.AreEqual(2, allMeasurements.Length);
+  }
+
+  [Test]
+  public async Task Not_CreateUser_WithSameName()
+  {
+    await _repository.UpsertUser(new User { Name = "schorsch" });
+
+    Assert.ThrowsAsync<ArgumentException>(
+      async () => await _repository.UpsertUser(new User { Name = "schorsch" })
+    );
   }
 }

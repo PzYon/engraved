@@ -5,12 +5,14 @@ using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
 using Metrix.Core.Application.Queries.Measurements.GetAll;
 using Metrix.Core.Domain.Measurements;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Metrix.Api.Controllers;
 
 [ApiController]
 [Route("api/measurements")]
+[Authorize]
 public class MeasurementsController : ControllerBase
 {
   private readonly Dispatcher _dispatcher;

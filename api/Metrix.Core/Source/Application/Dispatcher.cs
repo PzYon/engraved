@@ -9,7 +9,7 @@ public class Dispatcher
   private readonly IDateService _dateService;
   private readonly IRepository _repository;
 
-  public Dispatcher(IRepository repository, IDateService dateService)
+  public Dispatcher(IUserScopedRepository repository, IDateService dateService)
   {
     _repository = repository;
     _dateService = dateService;

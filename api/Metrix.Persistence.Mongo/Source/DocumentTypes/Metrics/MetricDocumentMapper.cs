@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Metrix.Core.Domain.Metrics;
-using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
-using MongoDB.Bson.Serialization;
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 
@@ -11,13 +9,6 @@ public static class MetricDocumentMapper
 
   static MetricDocumentMapper()
   {
-    BsonClassMap.RegisterClassMap<CounterMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<CounterMetricDocument>();
-    BsonClassMap.RegisterClassMap<GaugeMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<GaugeMetricDocument>();
-    BsonClassMap.RegisterClassMap<TimerMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<TimerMetricDocument>();
-
     var configuration = new MapperConfiguration(
       cfg =>
       {
@@ -51,8 +42,10 @@ public static class MetricDocumentMapper
     return Mapper.Map<MetricDocument>(metric);
   }
 
-  public static TMetric FromDocument<TMetric>(MetricDocument document) where TMetric : IMetric
+  public static TMetric FromDocument<TMetric>(MetricDocument? document) where TMetric : class, IMetric
   {
-    return (TMetric)Mapper.Map(document, document.GetType(), typeof(TMetric));
+    return document == null
+      ? null!
+      : (TMetric)Mapper.Map(document, document.GetType(), typeof(TMetric));
   }
 }

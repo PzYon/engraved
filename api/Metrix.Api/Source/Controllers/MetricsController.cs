@@ -5,12 +5,14 @@ using Metrix.Core.Application.Commands.Metrics.Edit;
 using Metrix.Core.Application.Queries.Metrics.Get;
 using Metrix.Core.Application.Queries.Metrics.GetAll;
 using Metrix.Core.Domain.Metrics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Metrix.Api.Controllers;
 
 [ApiController]
 [Route("api/metrics")]
+[Authorize]
 public class MetricsController : ControllerBase
 {
   private readonly Dispatcher _dispatcher;

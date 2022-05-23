@@ -4,34 +4,35 @@ using System.Threading.Tasks;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-[TestClass]
 public class EndTimerMeasurementCommandExecutorShould
 {
   private FakeDateService _fakeDateService = null!;
   private TestRepository _testRepository = null!;
 
-  [TestInitialize]
+  [SetUp]
   public void SetUp()
   {
     _fakeDateService = new FakeDateService();
     _testRepository = new TestRepository();
   }
 
-  [TestMethod]
-  [ExpectedException(typeof(InvalidCommandException))]
-  public async Task Throw_WhenNoTimerIsStartedForMetric()
+  [Test]
+  public void Throw_WhenNoTimerIsStartedForMetric()
   {
     _testRepository.Metrics.Add(new TimerMetric { Id = "626dab25f1a93c5c724d820a" });
 
     var command = new EndTimerMeasurementCommand { MetricId = "test" };
-    await new EndTimerMeasurementCommandExecutor(command).Execute(_testRepository, _fakeDateService);
+
+    Assert.ThrowsAsync<InvalidCommandException>(
+      async () => { await new EndTimerMeasurementCommandExecutor(command).Execute(_testRepository, _fakeDateService); }
+    );
   }
 
-  [TestMethod]
+  [Test]
   public async Task SetEndDate()
   {
     DateTime startDate = _fakeDateService.UtcNow.AddMinutes(-30);
@@ -60,7 +61,7 @@ public class EndTimerMeasurementCommandExecutorShould
 
     Assert.IsNotNull(timerMeasurement.EndDate);
 
-    Assert.AreEqual(_fakeDateService.UtcNow, timerMeasurement.EndDate.Value);
+    Assert.AreEqual(_fakeDateService.UtcNow, timerMeasurement.EndDate!.Value);
 
     TimerMetric metric = _testRepository.Metrics.OfType<TimerMetric>().First(m => m.Id == "test");
     Assert.IsNotNull(metric);

@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, styled, Typography } from "@mui/material";
+import { Avatar, Box, styled, Typography } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 import { HeaderActions } from "./HeaderActions";
 
 export const AppHeader: React.FC = () => {
-  const { pageTitle, titleActions } = useAppContext();
+  const { pageTitle, titleActions, user } = useAppContext();
 
   return (
     <Host>
@@ -16,11 +16,16 @@ export const AppHeader: React.FC = () => {
         }}
       >
         <ContentWrapper>
-          <Link to="/">
+          <Link to="/" style={{ flexGrow: 1 }}>
             <Typography variant="h1" sx={{ fontFamily: "Chewy" }}>
               metrix
             </Typography>
           </Link>
+          <Avatar
+            alt={user.displayName}
+            src={user.imageUrl}
+            imgProps={{ referrerPolicy: "no-referrer" }}
+          />
         </ContentWrapper>
       </Box>
       <ContentWrapper>
@@ -42,6 +47,7 @@ const ContentWrapper = styled("div")`
   margin: auto;
   padding: 0 ${(p) => p.theme.spacing(2)};
   display: flex;
+  align-items: center;
 
   a {
     color: ${(p) => p.theme.palette.common.white} !important;
