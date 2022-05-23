@@ -3,25 +3,24 @@ using System.Threading.Tasks;
 using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-[TestClass]
 public class UpsertGaugeMeasurementCommandExecutorShould
 {
   private TestRepository _testRepository = null!;
 
-  [TestInitialize]
+  [SetUp]
   public void SetUp()
   {
     _testRepository = new TestRepository();
   }
 
-  [TestMethod]
-  [DataRow(0)]
-  [DataRow(1)]
-  [DataRow(123.456)]
+  [Test]
+  [TestCase(0)]
+  [TestCase(1)]
+  [TestCase(123.456)]
   public async Task Set_ValueFromCommand(double value)
   {
     _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
@@ -49,9 +48,8 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     Assert.AreEqual(value, counterMeasurement.Value);
   }
 
-  [TestMethod]
-  [ExpectedException(typeof(InvalidCommandException))]
-  public async Task Throw_WhenNoValueIsSpecified()
+  [Test]
+  public void Throw_WhenNoValueIsSpecified()
   {
     _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
@@ -62,10 +60,15 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       Value = null
     };
 
-    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    Assert.ThrowsAsync<InvalidCommandException>(
+      async () =>
+      {
+        await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+      }
+    );
   }
 
-  [TestMethod]
+  [Test]
   public async Task MapAllFieldsCorrectly()
   {
     _testRepository.Metrics.Add(
@@ -100,9 +103,8 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     Assert.AreEqual(value, gaugeMeasurement.Value);
   }
 
-  [TestMethod]
-  [ExpectedException(typeof(InvalidCommandException))]
-  public async Task Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
+  [Test]
+  public void Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
   {
     _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
@@ -114,6 +116,11 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       MetricFlagKey = "fooBar"
     };
 
-    await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    Assert.ThrowsAsync<InvalidCommandException>(
+      async () =>
+      {
+        await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+      }
+    );
   }
 }

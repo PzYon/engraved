@@ -4,24 +4,22 @@ using System.Threading.Tasks;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add;
 
-[TestClass]
 public class StartTimerMeasurementCommandExecutorShould
 {
   private TestRepository _testRepository = null!;
 
-  [TestInitialize]
+  [SetUp]
   public void SetUp()
   {
     _testRepository = new TestRepository();
   }
 
-  [TestMethod]
-  [ExpectedException(typeof(InvalidCommandException))]
-  public async Task Throw_WhenMetricAlreadyHasRunningTimer()
+  [Test]
+  public void Throw_WhenMetricAlreadyHasRunningTimer()
   {
     _testRepository.Metrics.Add(new TimerMetric { Id = "test" });
 
@@ -36,10 +34,15 @@ public class StartTimerMeasurementCommandExecutorShould
 
     var command = new StartTimerMeasurementCommand { Id = "626dab25f1a93c5c724d820a", MetricId = "test" };
 
-    await new StartTimerMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+    Assert.ThrowsAsync<InvalidCommandException>(
+      async () =>
+      {
+        await new StartTimerMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
+      }
+    );
   }
 
-  [TestMethod]
+  [Test]
   public async Task CreateTimerMeasurement()
   {
     _testRepository.Metrics.Add(new TimerMetric { Id = "test" });

@@ -1,14 +1,13 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Metrix.Core.Application;
 
-[TestClass]
 public class FakeDateServiceShould
 {
-  private readonly int totalSteps = 100;
+  private const int TotalSteps = 100;
 
-  [TestMethod]
+  [Test]
   public void IncrementAndBeGreaterThanLastAndBeSmallerThanRealUtcNow()
   {
     for (var i = 0; i < 100; i++)
@@ -23,9 +22,9 @@ public class FakeDateServiceShould
 
     DateTime lastNow = service.UtcNow;
 
-    for (var i = 0; i < totalSteps; i++)
+    for (var i = 0; i < TotalSteps; i++)
     {
-      service.SetNext(totalSteps - i);
+      service.SetNext(TotalSteps - i);
 
       DateTime nextNow = service.UtcNow;
 
