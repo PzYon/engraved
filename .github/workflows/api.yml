@@ -36,7 +36,7 @@ jobs:
         working-directory: ./api
 
       - name: Publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/Metrix.Api
+        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o ${{env.DOTNET_ROOT}}/Metrix.Api
         working-directory: ./api
 
       - name: Upload artifact
