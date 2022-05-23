@@ -21,7 +21,7 @@ public class GoogleTokenValidator
         $"\"{nameof(AuthenticationConfig.GoogleClientId)}\" is not set, please do so in your environment settings."
       );
     }
-    
+
     var validationSettings = new GoogleJsonWebSignature.ValidationSettings
     {
       Audience = new[] { _authenticationConfig.GoogleClientId }

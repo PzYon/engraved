@@ -7,7 +7,7 @@ public class User : IUser
   public string Name { get; set; } = null!;
 
   public string? DisplayName { get; set; }
-  
+
   public string? ImageUrl { get; set; }
 
   public DateTime? LastLoginDate { get; set; }
