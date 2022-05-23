@@ -58,7 +58,7 @@ public class StartTimerMeasurementCommandExecutorShould
 
     var counterMeasurement = createdMeasurement as TimerMeasurement;
     Assert.IsNotNull(counterMeasurement);
-    Assert.IsNotNull(counterMeasurement.StartDate);
+    Assert.IsNotNull(counterMeasurement!.StartDate);
 
     TimeSpan diffBetweenNow = counterMeasurement.StartDate - DateTime.UtcNow;
     Assert.IsTrue(diffBetweenNow.TotalSeconds < 5);

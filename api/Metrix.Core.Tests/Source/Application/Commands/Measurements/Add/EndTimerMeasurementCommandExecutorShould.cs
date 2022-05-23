@@ -61,7 +61,7 @@ public class EndTimerMeasurementCommandExecutorShould
 
     Assert.IsNotNull(timerMeasurement.EndDate);
 
-    Assert.AreEqual(_fakeDateService.UtcNow, timerMeasurement.EndDate.Value);
+    Assert.AreEqual(_fakeDateService.UtcNow, timerMeasurement.EndDate!.Value);
 
     TimerMetric metric = _testRepository.Metrics.OfType<TimerMetric>().First(m => m.Id == "test");
     Assert.IsNotNull(metric);

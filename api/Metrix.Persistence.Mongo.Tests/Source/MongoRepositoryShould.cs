@@ -57,10 +57,10 @@ public class MongoRepositoryShould
   [Test]
   public async Task CreateMetric_Then_Update()
   {
-    var counterMetric = new CounterMetric { Name = "First" };
+    CounterMetric? counterMetric = new CounterMetric { Name = "First" };
     UpsertResult result = await _repository.UpsertMetric(counterMetric);
 
-    counterMetric = (CounterMetric)await _repository.GetMetric(result.EntityId);
+    counterMetric = (CounterMetric?)await _repository.GetMetric(result.EntityId);
 
     Assert.IsNotNull(counterMetric);
 

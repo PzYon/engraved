@@ -45,7 +45,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
 
     var counterMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(counterMeasurement);
-    Assert.AreEqual(value, counterMeasurement.Value);
+    Assert.AreEqual(value, counterMeasurement!.Value);
   }
 
   [Test]
@@ -100,7 +100,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
 
     var gaugeMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(gaugeMeasurement);
-    Assert.AreEqual(value, gaugeMeasurement.Value);
+    Assert.AreEqual(value, gaugeMeasurement!.Value);
   }
 
   [Test]
