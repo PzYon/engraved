@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
@@ -8,7 +9,6 @@ using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
 
-// [Ignore("Requires local MongoDB.")]
 public class UserScopedMongoRepositoryShould
 {
   private MongoRepository _repository = null!;
@@ -71,6 +71,55 @@ public class UserScopedMongoRepositoryShould
       async () => await _userScopedRepository.UpsertUser(
         new User { Id = _otherUserId, Name = OtherUserName }
       )
+    );
+  }
+
+  [Test]
+  public async Task UpsertMetric_Ensures_CurrentUser_Id()
+  {
+    IMetric metric = new TimerMetric();
+
+    UpsertResult result = await _userScopedRepository.UpsertMetric(metric);
+    IMetric? createdMetric = await _repository.GetMetric(result.EntityId);
+
+    Assert.AreEqual(result.EntityId, createdMetric!.Id);
+    Assert.AreEqual(_currentUserId, createdMetric.UserId);
+  }
+
+  [Test]
+  public void UpsertMetric_ThrowsWhen_EntityFromOtherUser()
+  {
+    IMetric metric = new TimerMetric { UserId = _otherUserId };
+
+    Assert.ThrowsAsync<UnallowedOperationException>(
+      async () => { await _userScopedRepository.UpsertMetric(metric); }
+    );
+  }
+
+  [Test]
+  public async Task UpsertMeasurement_Ensures_CurrentUser_Id()
+  {
+    var metricId = ObjectId.GenerateNewId().ToString();
+
+    IMeasurement measurement = new TimerMeasurement { MetricId = metricId };
+
+    UpsertResult result = await _userScopedRepository.UpsertMeasurement(measurement);
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(metricId);
+
+    Assert.True(measurements.All(m => m.UserId == _currentUserId));
+  }
+
+  [Test]
+  public void UpsertMeasurement_ThrowsWhen_EntityFromOtherUser()
+  {
+    IMeasurement measurement = new TimerMeasurement
+    {
+      MetricId = ObjectId.GenerateNewId().ToString(),
+      UserId = _otherUserId
+    };
+
+    Assert.ThrowsAsync<UnallowedOperationException>(
+      async () => { await _userScopedRepository.UpsertMeasurement(measurement); }
     );
   }
 

@@ -37,7 +37,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
   public override async Task<UpsertResult> UpsertUser(IUser user)
   {
-    EnsureValidUser(user.Id);
+    ValidateUser(user.Id);
     return await base.UpsertUser(user);
   }
 
@@ -66,10 +66,15 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
   private void EnsureValidUser(IUserScoped entity)
   {
-    EnsureValidUser(entity.UserId);
+    if (string.IsNullOrEmpty(entity.UserId))
+    {
+      entity.UserId = CurrentUser.Value.Id;
+    }
+    
+    ValidateUser(entity.UserId);
   }
 
-  private void EnsureValidUser(string? entityUserId)
+  private void ValidateUser(string? entityUserId)
   {
     if (entityUserId != CurrentUser.Value.Id)
     {
@@ -84,7 +89,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
     if (result == null)
     {
-      throw new UnallowedOperationException($"Current user '{name}' does not exists.");
+      throw new UnallowedOperationException($"Current user '{name}' does not exist.");
     }
 
     return result;
