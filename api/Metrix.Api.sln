@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Persistence.Mongo", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Persistence.Mongo.Tests", "Metrix.Persistence.Mongo.Tests\Metrix.Persistence.Mongo.Tests.csproj", "{5BD03C03-1468-4483-A6D4-362CF5F1ABDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Api.Tests", "Metrix.Api.Tests\Metrix.Api.Tests.csproj", "{333D8FF4-F604-4D52-99EE-D312EF720A89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5BD03C03-1468-4483-A6D4-362CF5F1ABDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BD03C03-1468-4483-A6D4-362CF5F1ABDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BD03C03-1468-4483-A6D4-362CF5F1ABDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

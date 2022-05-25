@@ -25,14 +25,14 @@ builder.Services.AddHttpContextAccessor();
 
 IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
+builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
-builder.Services.AddTransient<GoogleTokenValidator>();
+builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddSingleton(_ => GetRepository(builder));
 builder.Services.AddTransient(
   provider => GetUserScopedRepository(builder, provider.GetService<ICurrentUserService>()!)
 );
-builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<Dispatcher>();
 
 builder.Services.AddAuthentication(
