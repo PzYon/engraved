@@ -4,13 +4,15 @@ using Microsoft.Extensions.Options;
 
 namespace Metrix.Api.Authentication;
 
-public class GoogleTokenValidator
+public class GoogleTokenValidator : IGoogleTokenValidator
 {
   private readonly AuthenticationConfig _authenticationConfig;
 
-  public GoogleTokenValidator(IOptions<AuthenticationConfig> configuration)
+  public GoogleTokenValidator(IOptions<AuthenticationConfig> configuration) : this(configuration.Value) { }
+
+  public GoogleTokenValidator(AuthenticationConfig configuration)
   {
-    _authenticationConfig = configuration.Value;
+    _authenticationConfig = configuration;
   }
 
   public async Task<ParsedToken> ParseAndValidate(string token)
@@ -22,18 +24,25 @@ public class GoogleTokenValidator
       );
     }
 
-    var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+    try
     {
-      Audience = new[] { _authenticationConfig.GoogleClientId }
-    };
+      var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+      {
+        Audience = new[] { _authenticationConfig.GoogleClientId }
+      };
 
-    GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
+      GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
 
-    return new ParsedToken
+      return new ParsedToken
+      {
+        UserName = payload.Email,
+        UserDisplayName = payload.Name,
+        ImageUrl = payload.Picture
+      };
+    }
+    catch (Exception ex)
     {
-      UserName = payload.Email,
-      UserDisplayName = payload.Name,
-      ImageUrl = payload.Picture
-    };
+      throw new GoogleTokenValidationException($"Failed to validate google token: {ex.Message}");
+    }
   }
 }

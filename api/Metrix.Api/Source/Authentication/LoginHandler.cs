@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Metrix.Api.Settings;
+using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.User;
 using Microsoft.Extensions.Options;
@@ -12,18 +13,28 @@ namespace Metrix.Api.Authentication;
 public class LoginHandler : ILoginHandler
 {
   private readonly AuthenticationConfig _authenticationConfig;
+  private readonly IDateService _dateService;
   private readonly IRepository _repository;
-  private readonly GoogleTokenValidator _tokenValidator;
+  private readonly IGoogleTokenValidator _tokenValidator;
 
   public LoginHandler(
-    GoogleTokenValidator tokenValidator,
+    IGoogleTokenValidator tokenValidator,
     IRepository repository,
-    IOptions<AuthenticationConfig> configuration
+    IOptions<AuthenticationConfig> configuration,
+    IDateService dateService
+    ) : this(tokenValidator, repository, configuration.Value, dateService) { }
+
+  public LoginHandler(
+    IGoogleTokenValidator tokenValidator,
+    IRepository repository,
+    AuthenticationConfig configuration,
+    IDateService dateService
     )
   {
     _tokenValidator = tokenValidator;
     _repository = repository;
-    _authenticationConfig = configuration.Value;
+    _authenticationConfig = configuration;
+    _dateService = dateService;
   }
 
   public async Task<AuthResult> Login(string token)
@@ -42,7 +53,7 @@ public class LoginHandler : ILoginHandler
 
     user.DisplayName = parsedToken.UserDisplayName;
     user.ImageUrl = parsedToken.ImageUrl;
-    user.LastLoginDate = DateTime.UtcNow;
+    user.LastLoginDate = _dateService.UtcNow;
 
     UpsertResult result = await _repository.UpsertUser(user);
     user.Id = result.EntityId;
@@ -59,7 +70,7 @@ public class LoginHandler : ILoginHandler
     var tokenDescriptor = new SecurityTokenDescriptor
     {
       Subject = new ClaimsIdentity(GetClaims(userId)),
-      Expires = DateTime.UtcNow.AddDays(7),
+      Expires = _dateService.UtcNow.AddHours(6),
       Issuer = _authenticationConfig.TokenIssuer,
       Audience = _authenticationConfig.TokenAudience,
       SigningCredentials = GetSigningCredentials()
