@@ -15,8 +15,9 @@ export class ServerApi {
 
   static async authenticate(token: string): Promise<IAuthResult> {
     const authResult: IAuthResult = await this.executeRequest(
-      "/auth/google?token=" + token,
-      "POST"
+      "/auth/google",
+      "POST",
+      { token: token }
     );
 
     this._jwtToken = authResult.jwtToken;
