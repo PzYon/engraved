@@ -17,15 +17,8 @@ public class AuthController : Controller
   }
 
   [HttpPost("google")]
-  public async Task<AuthResult> GoogleLogin(string token)
+  public async Task<AuthResult> GoogleLogin(LoginPayload payload)
   {
-    try
-    {
-      return await _loginHandler.Login(token);
-    }
-    catch (Exception ex)
-    {
-      throw new Exception(ex.Message + ":::::Inner:" + ex.InnerException?.Message);
-    }
+    return await _loginHandler.Login(payload.Token);
   }
 }
