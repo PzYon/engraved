@@ -11,11 +11,14 @@ import {
 import React from "react";
 import { AppContent } from "../AppContent";
 
-const SlideUp = React.forwardRef(function Transition(props, ref) {
+const SlideUp = React.forwardRef(function Transition(
+  props: { children: React.ReactNode },
+  ref
+) {
   return (
     <Slide direction="up" ref={ref} {...props}>
       {/* eslint-disable-next-line react/prop-types */}
-      {(props as any).children as never}
+      {props.children as never}
     </Slide>
   );
 });

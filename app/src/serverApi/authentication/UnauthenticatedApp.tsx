@@ -12,8 +12,11 @@ export const UnauthenticatedApp: React.FC = () => {
   const ref = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    return signInWithGoogle(signInWithJwt, ref.current);
-  }, [ref]);
+    if (!ref.current) {
+      return;
+    }
+    return signInWithGoogle(onSignedIn, ref.current);
+  }, []);
 
   if (user) {
     return <App user={user} />;
@@ -25,7 +28,7 @@ export const UnauthenticatedApp: React.FC = () => {
     </Host>
   );
 
-  function signInWithJwt(response: GoogleInitializeResponse) {
+  function onSignedIn(response: GoogleInitializeResponse) {
     ServerApi.authenticate(response.credential).then(
       (authResult: IAuthResult) => {
         setUser(authResult.user);

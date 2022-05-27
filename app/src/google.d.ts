@@ -1,8 +1,3 @@
-const google = {
-  accounts: {
-    id: {
-      initialize: (o: { client_id: string; callback: any }) => Promise,
-      renderButton: any,
-    },
-  },
-};
+import { Google } from "./serverApi/authentication/google/GoogleTypes";
+
+declare const google: Google;

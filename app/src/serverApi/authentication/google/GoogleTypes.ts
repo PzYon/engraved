@@ -13,7 +13,10 @@ export type Google = {
   accounts: {
     id: {
       initialize: (input: GoogleInitializeInput) => void;
-      renderButton: any;
+      renderButton: (
+        domElement: HTMLElement,
+        params: { theme: string; size: string }
+      ) => void;
     };
   };
 };
