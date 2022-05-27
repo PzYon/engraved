@@ -8,6 +8,7 @@ using Metrix.Api.Settings;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
+using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -29,17 +30,13 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
-builder.Services.AddSingleton(
-  _ => UseInMemoryRepo()
-    ? GetInMemoryRepo()
-    : GetMongoDbRepo()
-);
+builder.Services.AddSingleton(_ => UseInMemoryRepo() ? GetInMemoryRepo() : GetMongoDbRepo());
 builder.Services.AddTransient(
   provider =>
   {
     ICurrentUserService userService = provider.GetService<ICurrentUserService>()!;
     return UseInMemoryRepo()
-      ? GetInMemoryUserScopedRepo()
+      ? GetInMemoryUserScopedRepo(provider.GetService<IRepository>()!)
       : GetInMongoDbUserScopedRepo(builder, userService);
   }
 );
@@ -70,7 +67,7 @@ builder.Services.AddAuthentication(
       {
         OnTokenValidated = context =>
         {
-          var jwtToken = (JwtSecurityToken) context.SecurityToken;
+          var jwtToken = (JwtSecurityToken)context.SecurityToken;
           Claim nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
 
           context.HttpContext.RequestServices
@@ -116,9 +113,18 @@ IUserScopedRepository GetInMongoDbUserScopedRepo(
   return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);
 }
 
-IUserScopedRepository GetInMemoryUserScopedRepo()
+IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository)
 {
-  var repo = new UserScopedInMemoryRepository("markus.doggweiler@gmail.com");
+  var repo = new UserScopedInMemoryRepository(
+    repository,
+    new User()
+    {
+      Id = "markus.doggweiler@gmail.com",
+      Name = "markus.doggweiler@gmail.com",
+      DisplayName = "Mar Dog",
+      ImageUrl = "https://lh3.googleusercontent.com/a-/AOh14Gg94v3JIJeHjaTjU0_QTccEhr4-H8o358PN7odm2g=s96-c",
+    }
+  );
   SeedRepo(repo);
   return repo;
 }
