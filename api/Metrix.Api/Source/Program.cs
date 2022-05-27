@@ -8,6 +8,7 @@ using Metrix.Api.Settings;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
+using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -29,9 +30,15 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
-builder.Services.AddSingleton(_ => GetRepository(builder));
+builder.Services.AddSingleton(_ => UseInMemoryRepo() ? GetInMemoryRepo() : GetMongoDbRepo());
 builder.Services.AddTransient(
-  provider => GetUserScopedRepository(builder, provider.GetService<ICurrentUserService>()!)
+  provider =>
+  {
+    ICurrentUserService userService = provider.GetService<ICurrentUserService>()!;
+    return UseInMemoryRepo()
+      ? GetInMemoryUserScopedRepo(provider.GetService<IRepository>()!)
+      : GetInMongoDbUserScopedRepo(builder, userService);
+  }
 );
 builder.Services.AddTransient<Dispatcher>();
 
@@ -75,7 +82,6 @@ builder.Services.AddAuthentication(
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
@@ -93,7 +99,12 @@ app.MapControllers();
 
 app.Run();
 
-IUserScopedRepository GetUserScopedRepository(
+bool UseInMemoryRepo()
+{
+  return builder.Environment.IsDevelopment();
+}
+
+IUserScopedRepository GetInMongoDbUserScopedRepo(
   WebApplicationBuilder webApplicationBuilder,
   ICurrentUserService userService
   )
@@ -102,24 +113,26 @@ IUserScopedRepository GetUserScopedRepository(
   return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);
 }
 
-IRepository GetRepository(WebApplicationBuilder webApplicationBuilder)
+IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository)
 {
-  return GetMongoDbRepo();
-  return webApplicationBuilder.Environment.IsDevelopment()
-    ? GetInMemoryRepo()
-    : GetMongoDbRepo();
+  var repo = new UserScopedInMemoryRepository(
+    repository,
+    new User()
+    {
+      Id = "markus.doggweiler@gmail.com",
+      Name = "markus.doggweiler@gmail.com",
+      DisplayName = "Mar Dog",
+      ImageUrl = "https://lh3.googleusercontent.com/a-/AOh14Gg94v3JIJeHjaTjU0_QTccEhr4-H8o358PN7odm2g=s96-c",
+    }
+  );
+  SeedRepo(repo);
+  return repo;
 }
 
 IRepository GetInMemoryRepo()
 {
   IRepository repo = new InMemoryRepository();
-
-  Task seed = new DemoDataRepositorySeeder(repo).Seed();
-  if (!seed.IsCompleted)
-  {
-    seed.Wait();
-  }
-
+  SeedRepo(repo);
   return repo;
 }
 
@@ -127,4 +140,13 @@ IRepository GetMongoDbRepo()
 {
   string? connectionString = builder.Configuration.GetConnectionString("metrix_db");
   return new MongoRepository(new MongoRepositorySettings(connectionString));
+}
+
+void SeedRepo(IRepository repo)
+{
+  Task seed = new DemoDataRepositorySeeder(repo).Seed();
+  if (!seed.IsCompleted)
+  {
+    seed.Wait();
+  }
 }

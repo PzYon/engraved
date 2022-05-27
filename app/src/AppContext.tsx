@@ -27,10 +27,10 @@ export const useAppContext = () => {
   return useContext(AppContext);
 };
 
-export const AppContextProvider: React.FC<{ user: IUser }> = ({
-  children,
-  user,
-}) => {
+export const AppContextProvider: React.FC<{
+  children: React.ReactNode;
+  user: IUser;
+}> = ({ children, user }) => {
   const [pageTitle, setPageTitle] = useState<React.ReactNode>(undefined);
   const [titleActions, setTitleActions] = useState<IAction[]>([]);
   const [appAlert, setAppAlert] = useState<IAppAlert>(undefined);

@@ -2,5 +2,5 @@
 
 public class LoginPayload
 {
-  public string Token { get; set; }
+  public string? Token { get; set; }
 }

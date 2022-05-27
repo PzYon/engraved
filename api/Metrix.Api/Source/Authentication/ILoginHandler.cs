@@ -2,5 +2,5 @@
 
 public interface ILoginHandler
 {
-  Task<AuthResult> Login(string token);
+  Task<AuthResult> Login(string? token);
 }

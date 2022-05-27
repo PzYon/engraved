@@ -3,7 +3,9 @@ import React from "react";
 import { metrixTheme } from "./metrixTheme";
 import { ThemeProvider } from "@mui/material";
 
-export const ThemeAndStylesProvider: React.FC = ({ children }) => (
+export const ThemeAndStylesProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => (
   <ThemeProvider theme={metrixTheme}>
     <GlobalStyles
       styles={{

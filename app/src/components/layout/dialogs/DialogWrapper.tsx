@@ -11,7 +11,10 @@ import {
 import React from "react";
 import { AppContent } from "../AppContent";
 
-const SlideUp = React.forwardRef(function Transition(props, ref) {
+const SlideUp = React.forwardRef(function Transition(
+  props: { children: React.ReactNode },
+  ref
+) {
   return (
     <Slide direction="up" ref={ref} {...props}>
       {/* eslint-disable-next-line react/prop-types */}
@@ -21,6 +24,7 @@ const SlideUp = React.forwardRef(function Transition(props, ref) {
 });
 
 export const DialogWrapper: React.FC<{
+  children: React.ReactNode;
   title: string;
   onClose: () => void;
   props: Partial<DialogProps>;

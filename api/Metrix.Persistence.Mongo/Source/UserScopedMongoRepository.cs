@@ -56,10 +56,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   protected override FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
   {
     string? userId = CurrentUser.Value.Id;
-    if (string.IsNullOrEmpty(userId))
-    {
-      throw new ArgumentException("Current user is not available.");
-    }
+    EnsureUserNameIsSet(userId);
 
     return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), userId);
   }
@@ -70,8 +67,22 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     {
       entity.UserId = CurrentUser.Value.Id;
     }
-    
+
     ValidateUser(entity.UserId);
+  }
+
+  private IUser LoadUser()
+  {
+    string? name = _currentUserService.GetUserName();
+    EnsureUserNameIsSet(name);
+
+    IUser? result = base.GetUser(name).Result;
+    if (result == null)
+    {
+      throw new UnallowedOperationException($"Current user '{name}' does not exist.");
+    }
+
+    return result;
   }
 
   private void ValidateUser(string? entityUserId)
@@ -82,16 +93,11 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     }
   }
 
-  private IUser LoadUser()
+  private static void EnsureUserNameIsSet(string? name)
   {
-    string? name = _currentUserService.GetUserName();
-    IUser? result = base.GetUser(name).Result;
-
-    if (result == null)
+    if (string.IsNullOrEmpty(name))
     {
-      throw new UnallowedOperationException($"Current user '{name}' does not exist.");
+      throw new UnallowedOperationException($"Current user is not available.");
     }
-
-    return result;
   }
 }

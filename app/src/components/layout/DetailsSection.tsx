@@ -2,8 +2,8 @@ import React from "react";
 import { Paper, styled, Typography } from "@mui/material";
 
 export const DetailsSection: React.FC<{
+  children: React.ReactNode;
   title?: string;
-  subTitle?: string;
 }> = ({ title, children }) => {
   return (
     <Host>
