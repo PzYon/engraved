@@ -37,7 +37,7 @@ public class LoginHandler : ILoginHandler
     _dateService = dateService;
   }
 
-  public async Task<AuthResult> Login(string token)
+  public async Task<AuthResult> Login(string? token)
   {
     if (string.IsNullOrEmpty(token))
     {
