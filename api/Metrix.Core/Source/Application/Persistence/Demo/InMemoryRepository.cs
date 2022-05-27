@@ -30,7 +30,7 @@ public class InMemoryRepository : IRepository
 
     Users.Add(user);
 
-    return Task.FromResult(new UpsertResult { EntityId = user.Id });
+    return Task.FromResult(new UpsertResult {EntityId = user.Id});
   }
 
   public Task<IUser[]> GetAllUsers()
@@ -66,7 +66,7 @@ public class InMemoryRepository : IRepository
 
     Metrics.Add(metric);
 
-    return Task.FromResult(new UpsertResult { EntityId = metric.Id });
+    return Task.FromResult(new UpsertResult {EntityId = metric.Id});
   }
 
   public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
@@ -82,7 +82,7 @@ public class InMemoryRepository : IRepository
 
     Measurements.Add(measurement);
 
-    return Task.FromResult(new UpsertResult { EntityId = measurement.Id });
+    return Task.FromResult(new UpsertResult {EntityId = measurement.Id});
   }
 
   private void RemoveMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement

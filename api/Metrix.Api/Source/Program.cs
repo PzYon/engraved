@@ -29,9 +29,19 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
-builder.Services.AddSingleton(_ => GetRepository(builder));
+builder.Services.AddSingleton(
+  _ => UseInMemoryRepo()
+    ? GetInMemoryRepo()
+    : GetMongoDbRepo()
+);
 builder.Services.AddTransient(
-  provider => GetUserScopedRepository(builder, provider.GetService<ICurrentUserService>()!)
+  provider =>
+  {
+    ICurrentUserService userService = provider.GetService<ICurrentUserService>()!;
+    return UseInMemoryRepo()
+      ? GetInMemoryUserScopedRepo()
+      : GetInMongoDbUserScopedRepo(builder, userService);
+  }
 );
 builder.Services.AddTransient<Dispatcher>();
 
@@ -60,7 +70,7 @@ builder.Services.AddAuthentication(
       {
         OnTokenValidated = context =>
         {
-          var jwtToken = (JwtSecurityToken)context.SecurityToken;
+          var jwtToken = (JwtSecurityToken) context.SecurityToken;
           Claim nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
 
           context.HttpContext.RequestServices
@@ -75,7 +85,6 @@ builder.Services.AddAuthentication(
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
@@ -93,7 +102,12 @@ app.MapControllers();
 
 app.Run();
 
-IUserScopedRepository GetUserScopedRepository(
+bool UseInMemoryRepo()
+{
+  return builder.Environment.IsDevelopment();
+}
+
+IUserScopedRepository GetInMongoDbUserScopedRepo(
   WebApplicationBuilder webApplicationBuilder,
   ICurrentUserService userService
   )
@@ -102,24 +116,17 @@ IUserScopedRepository GetUserScopedRepository(
   return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);
 }
 
-IRepository GetRepository(WebApplicationBuilder webApplicationBuilder)
+IUserScopedRepository GetInMemoryUserScopedRepo()
 {
-  return GetMongoDbRepo();
-  return webApplicationBuilder.Environment.IsDevelopment()
-    ? GetInMemoryRepo()
-    : GetMongoDbRepo();
+  var repo = new UserScopedInMemoryRepository("markus.doggweiler@gmail.com");
+  SeedRepo(repo);
+  return repo;
 }
 
 IRepository GetInMemoryRepo()
 {
   IRepository repo = new InMemoryRepository();
-
-  Task seed = new DemoDataRepositorySeeder(repo).Seed();
-  if (!seed.IsCompleted)
-  {
-    seed.Wait();
-  }
-
+  SeedRepo(repo);
   return repo;
 }
 
@@ -127,4 +134,13 @@ IRepository GetMongoDbRepo()
 {
   string? connectionString = builder.Configuration.GetConnectionString("metrix_db");
   return new MongoRepository(new MongoRepositorySettings(connectionString));
+}
+
+void SeedRepo(IRepository repo)
+{
+  Task seed = new DemoDataRepositorySeeder(repo).Seed();
+  if (!seed.IsCompleted)
+  {
+    seed.Wait();
+  }
 }
