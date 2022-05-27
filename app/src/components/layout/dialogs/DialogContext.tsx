@@ -20,7 +20,9 @@ export const useDialogContext = () => {
   return useContext(DialogContext);
 };
 
-export const DialogContextProvider: React.FC = ({ children }) => {
+export const DialogContextProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [dialogProps, setDialogProps] = useState<IDialogProps>(null);
 
   return (

@@ -15,12 +15,13 @@ const SlideUp = React.forwardRef(function Transition(props, ref) {
   return (
     <Slide direction="up" ref={ref} {...props}>
       {/* eslint-disable-next-line react/prop-types */}
-      {props.children as never}
+      {(props as any).children as never}
     </Slide>
   );
 });
 
 export const DialogWrapper: React.FC<{
+  children: React.ReactNode;
   title: string;
   onClose: () => void;
   props: Partial<DialogProps>;

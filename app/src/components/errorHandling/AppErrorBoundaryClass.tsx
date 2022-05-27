@@ -2,11 +2,12 @@ import * as React from "react";
 import { ReactNode } from "react";
 import { IAppAlert } from "./AppAlertBar";
 
-export interface IAppErrorBoundaryClass {
+export interface IAppErrorBoundaryClassProps {
   setError: (alert: IAppAlert) => void;
+  children: React.ReactNode;
 }
 
-export class AppErrorBoundaryClass extends React.PureComponent<IAppErrorBoundaryClass> {
+export class AppErrorBoundaryClass extends React.PureComponent<IAppErrorBoundaryClassProps> {
   public componentDidCatch(error: Error): void {
     this.props.setError({
       message: error.message,

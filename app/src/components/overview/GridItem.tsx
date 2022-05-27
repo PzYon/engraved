@@ -3,6 +3,7 @@ import { Card, CardContent, Grid, styled } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export const GridItem: React.FC<{
+  children: React.ReactNode;
   reactKey: string;
   targetUrl: string;
 }> = ({ children, reactKey, targetUrl }) => {

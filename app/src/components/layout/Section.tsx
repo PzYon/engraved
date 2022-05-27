@@ -1,7 +1,10 @@
 import React from "react";
 import { Paper, styled, Typography } from "@mui/material";
 
-export const Section: React.FC<{ title?: string }> = ({ children, title }) => {
+export const Section: React.FC<{
+  children: React.ReactNode;
+  title?: string;
+}> = ({ children, title }) => {
   return (
     <Host>
       {title ? <Title variant="h4">{title}</Title> : null}
