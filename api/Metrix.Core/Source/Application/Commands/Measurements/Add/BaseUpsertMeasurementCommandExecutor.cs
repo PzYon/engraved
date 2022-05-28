@@ -30,7 +30,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
     measurement.DateTime = dateService.UtcNow;
-    measurement.MetricFlagKeys = Command.MetricFlagKeys;
+    measurement.MetricFlagKeys = Command.MetricAttributeValues;
 
     UpsertResult result = await repository.UpsertMeasurement(measurement);
 
@@ -63,14 +63,14 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
   private void ValidateMetricFlag(IMetric metric)
   {
-    if (Command.MetricFlagKeys.Keys.Count == 0)
+    if (Command.MetricAttributeValues.Keys.Count == 0)
     {
       return;
     }
 
     List<string> errors = new List<string>();
 
-    foreach (KeyValuePair<string, string[]> x in Command.MetricFlagKeys)
+    foreach (KeyValuePair<string, string[]> x in Command.MetricAttributeValues)
     {
       if (metric.Attributes.ContainsKey(x.Key))
       {

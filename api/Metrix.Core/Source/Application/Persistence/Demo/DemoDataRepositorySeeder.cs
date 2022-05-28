@@ -172,7 +172,7 @@ public class DemoDataRepositorySeeder
 
       command.MetricId = metricId;
       command.Notes = measurement.Notes;
-      command.MetricFlagKeys = measurement.MetricFlagKeys;
+      command.MetricAttributeValues = measurement.MetricFlagKeys;
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)

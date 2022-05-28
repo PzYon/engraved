@@ -97,7 +97,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       MetricId = "k3y",
       Notes = "n0t3s",
       Value = value,
-      MetricFlagKeys = new Dictionary<string, string[]>
+      MetricAttributeValues = new Dictionary<string, string[]>
       {
         {
           "stuff", new[] { "k3y" }
@@ -132,7 +132,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       MetricId = "k3y",
       Notes = "n0t3s",
       Value = 42,
-      MetricFlagKeys = new Dictionary<string, string[]> { { "fooBar", new[] { "x" } } }
+      MetricAttributeValues = new Dictionary<string, string[]> { { "fooBar", new[] { "x" } } }
     };
 
     Assert.ThrowsAsync<InvalidCommandException>(
