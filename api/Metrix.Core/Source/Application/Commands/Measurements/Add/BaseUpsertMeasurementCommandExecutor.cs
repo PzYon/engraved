@@ -72,11 +72,11 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
     foreach (KeyValuePair<string, string[]> x in Command.MetricFlagKeys)
     {
-      if (metric.Flags.ContainsKey(x.Key))
+      if (metric.Attributes.ContainsKey(x.Key))
       {
         foreach (string valueKey in x.Value)
         {
-          if (!metric.Flags[x.Key].Values.ContainsKey(valueKey))
+          if (!metric.Attributes[x.Key].Values.ContainsKey(valueKey))
           {
             errors.Add("Value key: " + valueKey + " (for " + x.Key);
           }

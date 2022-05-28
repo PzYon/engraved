@@ -139,12 +139,12 @@ public class DemoDataRepositorySeeder
 
     string metricId = result.EntityId;
 
-    if (metric.Flags.Any())
+    if (metric.Attributes.Any())
     {
       await new EditMetricCommand
         {
           MetricId = metricId,
-          Flags = metric.Flags,
+          Flags = metric.Attributes,
           Description = metric.Description,
           Name = metric.Name
         }

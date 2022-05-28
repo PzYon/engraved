@@ -1,8 +1,8 @@
 ﻿namespace Metrix.Core.Domain.Metrics;
 
-public class MetricProps
+public class MetricAttribute
 {
-  public string Name { get; set; }
+  public string Name { get; set; } = null!;
 
   public Dictionary<string, string> Values { get; set; } = new();
 }

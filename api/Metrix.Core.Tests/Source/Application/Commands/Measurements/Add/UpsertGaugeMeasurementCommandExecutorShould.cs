@@ -76,11 +76,11 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       new GaugeMetric
       {
         Id = "k3y",
-        Flags =
+        Attributes =
         {
           {
             "stuff",
-            new MetricProps
+            new MetricAttribute
             {
               Name = "Stuff",
               Values = { { "x", "y" }, { "k3y", "v@lue" } }

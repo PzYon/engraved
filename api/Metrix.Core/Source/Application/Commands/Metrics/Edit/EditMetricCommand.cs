@@ -10,7 +10,7 @@ public class EditMetricCommand : ICommand
 
   public string? Description { get; set; }
 
-  public Dictionary<string, MetricProps> Flags { get; set; } = new();
+  public Dictionary<string, MetricAttribute> Flags { get; set; } = new();
 
   public ICommandExecutor CreateExecutor()
   {

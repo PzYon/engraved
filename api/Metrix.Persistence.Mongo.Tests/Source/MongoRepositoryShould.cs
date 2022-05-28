@@ -78,11 +78,11 @@ public class MongoRepositoryShould
     var counterMetric = new CounterMetric
     {
       Name = "First",
-      Flags = new Dictionary<string, MetricProps>
+      Attributes = new Dictionary<string, MetricAttribute>
       {
         {
           "flags",
-          new MetricProps
+          new MetricAttribute
           {
             Name = "Random Values",
             Values = { { "fl@g", "fl@g_value" } }
@@ -95,12 +95,12 @@ public class MongoRepositoryShould
 
     IMetric? metric = await _repository.GetMetric(result.EntityId);
     Assert.IsNotNull(metric);
-    Assert.IsNotNull(metric!.Flags);
+    Assert.IsNotNull(metric!.Attributes);
 
-    Assert.Contains("flags", metric.Flags.Keys);
-    MetricProps props = metric.Flags["flags"];
-    Assert.Contains("fl@g", props.Values.Keys);
-    Assert.AreEqual("fl@g_value", props.Values["fl@g"]);
+    Assert.Contains("flags", metric.Attributes.Keys);
+    MetricAttribute attribute = metric.Attributes["flags"];
+    Assert.Contains("fl@g", attribute.Values.Keys);
+    Assert.AreEqual("fl@g_value", attribute.Values["fl@g"]);
   }
 
   [Test]

@@ -46,11 +46,11 @@ public static class SpecificCases
       {
         Name = "Migraine Medicine",
         Description = "How many migraine medicines have been taken.",
-        Flags = new Dictionary<string, MetricProps>
+        Attributes = new Dictionary<string, MetricAttribute>
         {
           {
             "medicine",
-            new MetricProps
+            new MetricAttribute
             {
               Name = "Medicine Type",
               Values =
