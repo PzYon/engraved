@@ -1,4 +1,6 @@
-﻿namespace Metrix.Core.Application.Commands.Metrics.Edit;
+﻿using Metrix.Core.Domain.Metrics;
+
+namespace Metrix.Core.Application.Commands.Metrics.Edit;
 
 public class EditMetricCommand : ICommand
 {
@@ -8,7 +10,7 @@ public class EditMetricCommand : ICommand
 
   public string? Description { get; set; }
 
-  public Dictionary<string, string> Flags { get; set; } = new();
+  public Dictionary<string, MetricProps> Flags { get; set; } = new();
 
   public ICommandExecutor CreateExecutor()
   {

@@ -94,7 +94,16 @@ public class MetricDocumentMapperShould
       Id = Id,
       Name = Name,
       Description = Description,
-      Flags = new Dictionary<string, string> { { "fl@g", "fl@g_value" } },
+      Flags = new Dictionary<string, MetricProps>
+      {
+        {
+          "flags", new MetricProps()
+          {
+            Name = "Flags",
+            Values = { { "fl@g", "fl@g_value" } }
+          }
+        }
+      },
       StartDate = startDate
     };
 
@@ -105,8 +114,12 @@ public class MetricDocumentMapperShould
     Assert.AreEqual(MetricType.Timer, createdMetric!.Type);
     AssertEqual(timerMetric, metricDocument);
     Assert.AreEqual(startDate, createdMetric.StartDate);
-    Assert.Contains("fl@g", metricDocument.Flags.Keys);
-    Assert.AreEqual("fl@g_value", metricDocument.Flags["fl@g"]);
+
+    Assert.Contains("flags", metricDocument.Flags.Keys);
+    MetricProps props = metricDocument.Flags["flags"];
+    Assert.AreEqual("Flags", props.Name);
+    Assert.Contains("fl@g", props.Values.Keys);
+    Assert.AreEqual("fl@g_value",props.Values["fl@g"]);
   }
 
   [Test]
@@ -139,21 +152,36 @@ public class MetricDocumentMapperShould
       Id = Id,
       Description = Description,
       Name = Name,
-      Flags = new Dictionary<string, string>
+      Flags = new Dictionary<string, MetricProps>
       {
-        { "foo", "Foo" },
-        { "bar", "Bar" }
+        {
+          "values",
+          new MetricProps
+          {
+            Name = "Some Values",
+            Values =
+            {
+              { "foo", "Foo" },
+              { "bar", "Bar" }
+            }
+          }
+        }
       }
     };
 
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
     Assert.IsNotNull(document.Flags);
-    Assert.AreEqual(2, document.Flags.Count);
-    Assert.IsTrue(document.Flags.ContainsKey("foo"));
-    Assert.IsTrue(document.Flags["foo"] == "Foo");
-    Assert.IsTrue(document.Flags.ContainsKey("bar"));
-    Assert.IsTrue(document.Flags["bar"] == "Bar");
+    Assert.AreEqual(1, document.Flags.Count);
+    Assert.IsTrue(document.Flags.ContainsKey("values"));
+
+    MetricProps props = document.Flags["values"];
+
+    Assert.AreEqual(2, props.Values.Count);
+    Assert.IsTrue(props.Values.ContainsKey("foo"));
+    Assert.IsTrue(props.Values["foo"] == "Foo");
+    Assert.IsTrue(props.Values.ContainsKey("bar"));
+    Assert.IsTrue(props.Values["bar"] == "Bar");
   }
 
   private static void AssertEqual(IMetric expected, MetricDocument? actual)

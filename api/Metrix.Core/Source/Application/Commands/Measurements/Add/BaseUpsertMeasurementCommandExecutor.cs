@@ -30,7 +30,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
     measurement.DateTime = dateService.UtcNow;
-    measurement.MetricFlagKey = Command.MetricFlagKey;
+    measurement.MetricFlagKeys = Command.MetricFlagKeys;
 
     UpsertResult result = await repository.UpsertMeasurement(measurement);
 
@@ -63,9 +63,34 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
   private void ValidateMetricFlag(IMetric metric)
   {
-    if (!string.IsNullOrEmpty(Command.MetricFlagKey) && !metric.Flags.ContainsKey(Command.MetricFlagKey))
+    if (Command.MetricFlagKeys.Keys.Count == 0)
     {
-      throw CreateInvalidCommandException($"Flag \"{Command.MetricFlagKey}\" does not exist on metric.");
+      return;
+    }
+
+    List<string> errors = new List<string>();
+
+    foreach (KeyValuePair<string, string[]> x in Command.MetricFlagKeys)
+    {
+      if (metric.Flags.ContainsKey(x.Key))
+      {
+        foreach (string valueKey in x.Value)
+        {
+          if (!metric.Flags[x.Key].Values.ContainsKey(valueKey))
+          {
+            errors.Add("Value key: " + valueKey + " (for " + x.Key);
+          }
+        }
+      }
+      else
+      {
+        errors.Add("Attribute key: " + x.Key);
+      }
+    }
+
+    if (errors.Any())
+    {
+      throw new InvalidCommandException(Command, "Invalid attributes: " + string.Join(", ", errors));
     }
   }
 

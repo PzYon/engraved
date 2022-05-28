@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 using Metrix.Core.Domain.Measurements;
@@ -75,7 +76,17 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       new GaugeMetric
       {
         Id = "k3y",
-        Flags = { { "x", "y" }, { "k3y", "v@lue" } }
+        Flags =
+        {
+          {
+            "stuff",
+            new MetricProps
+            {
+              Name = "Stuff",
+              Values = { { "x", "y" }, { "k3y", "v@lue" } }
+            }
+          }
+        }
       }
     );
 
@@ -86,7 +97,12 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       MetricId = "k3y",
       Notes = "n0t3s",
       Value = value,
-      MetricFlagKey = "k3y"
+      MetricFlagKeys = new Dictionary<string, string[]>
+      {
+        {
+          "stuff", new[] { "k3y" }
+        }
+      }
     };
 
     await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
@@ -96,13 +112,16 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     IMeasurement createdMeasurement = _testRepository.Measurements.First();
     Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
-    Assert.AreEqual(command.MetricFlagKey, createdMeasurement.MetricFlagKey);
+
+    // TODO: compare correctly!
+    // Assert.AreEqual(command.MetricFlagKeys, createdMeasurement.MetricFlagKeys);
 
     var gaugeMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(gaugeMeasurement);
     Assert.AreEqual(value, gaugeMeasurement!.Value);
   }
 
+  // TODO: Add test for value key
   [Test]
   public void Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
   {
@@ -113,7 +132,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       MetricId = "k3y",
       Notes = "n0t3s",
       Value = 42,
-      MetricFlagKey = "fooBar"
+      MetricFlagKeys = new Dictionary<string, string[]> { { "fooBar", new[] { "x" } } }
     };
 
     Assert.ThrowsAsync<InvalidCommandException>(

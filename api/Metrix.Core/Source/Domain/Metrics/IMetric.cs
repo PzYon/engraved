@@ -10,7 +10,7 @@ public interface IMetric : IUserScoped
 
   MetricType Type { get; }
 
-  Dictionary<string, string> Flags { get; set; }
+  Dictionary<string, MetricProps> Flags { get; set; }
 
   DateTime? LastMeasurementDate { get; set; }
 }

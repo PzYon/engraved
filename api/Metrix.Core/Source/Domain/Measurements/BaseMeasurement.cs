@@ -12,5 +12,5 @@ public abstract class BaseMeasurement : IMeasurement
 
   public DateTime? DateTime { get; set; }
 
-  public string? MetricFlagKey { get; set; }
+  public Dictionary<string, string[]> MetricFlagKeys { get; set; } = new();
 }

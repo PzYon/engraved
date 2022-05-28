@@ -10,7 +10,7 @@ public abstract class BaseUpsertMeasurementCommand : ICommand
 
   public string? Notes { get; set; }
 
-  public string? MetricFlagKey { get; set; }
+  public Dictionary<string, string[]> MetricFlagKeys { get; set; } = new();
 
   public abstract ICommandExecutor CreateExecutor();
 
