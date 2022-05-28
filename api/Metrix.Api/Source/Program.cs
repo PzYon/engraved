@@ -117,7 +117,7 @@ IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository)
 {
   var repo = new UserScopedInMemoryRepository(
     repository,
-    new User()
+    new User
     {
       Id = "markus.doggweiler@gmail.com",
       Name = "markus.doggweiler@gmail.com",

@@ -8,6 +8,7 @@ using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 using Metrix.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace Metrix.Persistence.Mongo;
@@ -17,7 +18,20 @@ public class MongoRepository : IRepository
   private readonly IMongoCollection<MeasurementDocument> _measurements;
   private readonly IMongoCollection<MetricDocument> _metrics;
   private readonly IMongoCollection<UserDocument> _users;
-
+  
+  static MongoRepository()
+  {
+    // below stuff is required for polymorphic document types to work. it would
+    // somehow be nicer if this handled by every document-class itself, but that
+    // doesn't work for whatever reasons.
+    BsonClassMap.RegisterClassMap<CounterMeasurementDocument>();
+    BsonClassMap.RegisterClassMap<TimerMeasurementDocument>();
+    BsonClassMap.RegisterClassMap<GaugeMeasurementDocument>();
+    BsonClassMap.RegisterClassMap<CounterMetricDocument>();
+    BsonClassMap.RegisterClassMap<TimerMetricDocument>();
+    BsonClassMap.RegisterClassMap<GaugeMetricDocument>();
+  }
+  
   public MongoRepository(IMongoRepositorySettings settings)
   {
     IMongoClient client = CreateMongoClient(settings);
