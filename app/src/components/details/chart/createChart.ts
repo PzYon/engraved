@@ -11,8 +11,8 @@ export const createChart = (
   measurements: IMeasurement[],
   metric: IMetric,
   type: ChartType,
-  groupBy: GroupByTime,
   color: string,
+  groupBy: GroupByTime,
   attributeKey: string
 ): ChartProps => {
   const dataSets: ChartDataset[] = createDataSets(
