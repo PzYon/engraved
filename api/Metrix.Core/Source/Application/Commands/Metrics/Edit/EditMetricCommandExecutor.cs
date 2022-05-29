@@ -31,7 +31,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
       throw new InvalidCommandException(_command, $"Metric with key \"{_command.MetricId}\" does not exist.");
     }
 
-    metric.Attributes = _command.Flags;
+    metric.Attributes = _command.Attributes;
     metric.Name = _command.Name;
     metric.Description = _command.Description;
 

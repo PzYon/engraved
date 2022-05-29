@@ -19,5 +19,5 @@ public abstract class MeasurementDocument : IUserScopedDocument
 
   public DateTime? DateTime { get; set; }
 
-  public Dictionary<string, string[]> MetricFlagKeys { get; set; } = new();
+  public Dictionary<string, string[]> MetricAttributeValues { get; set; } = new();
 }

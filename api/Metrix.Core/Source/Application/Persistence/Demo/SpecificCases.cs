@@ -68,47 +68,47 @@ public static class SpecificCases
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
         },
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
         },
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-28),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
         },
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-10),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-5),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-3),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
         },
         new CounterMeasurement
         {
           DateTime = DateTime.UtcNow.AddDays(-3),
-          MetricFlagKeys = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
+          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
         }
       }
     };

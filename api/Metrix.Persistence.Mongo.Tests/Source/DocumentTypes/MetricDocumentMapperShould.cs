@@ -145,7 +145,7 @@ public class MetricDocumentMapperShould
   }
 
   [Test]
-  public void Counter_Flags()
+  public void Counter_Attributes()
   {
     var metric = new CounterMetric
     {

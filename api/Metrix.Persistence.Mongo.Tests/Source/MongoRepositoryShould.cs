@@ -73,7 +73,7 @@ public class MongoRepositoryShould
   }
 
   [Test]
-  public async Task CreateMetric_WithFlags()
+  public async Task CreateMetric_WithAttributes()
   {
     var counterMetric = new CounterMetric
     {

@@ -123,7 +123,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
 
   // TODO: Add test for value key
   [Test]
-  public void Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
+  public void Throw_WhenMetricAttributeKeyDoesNotExistOnMetric()
   {
     _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 

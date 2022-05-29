@@ -22,7 +22,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
 
     EnsureCompatibleMetricType(metric);
-    ValidateMetricFlag(metric);
+    ValidateMetricAttributes(metric);
 
     await PerformAdditionalValidation(repository, metric);
 
@@ -30,7 +30,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
     measurement.DateTime = dateService.UtcNow;
-    measurement.MetricFlagKeys = Command.MetricAttributeValues;
+    measurement.MetricAttributeValues = Command.MetricAttributeValues;
 
     UpsertResult result = await repository.UpsertMeasurement(measurement);
 
@@ -61,7 +61,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     }
   }
 
-  private void ValidateMetricFlag(IMetric metric)
+  private void ValidateMetricAttributes(IMetric metric)
   {
     if (Command.MetricAttributeValues.Keys.Count == 0)
     {
