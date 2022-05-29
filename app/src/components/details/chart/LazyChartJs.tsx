@@ -50,7 +50,8 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
     metric,
     "bar",
     groupBy,
-    palette.primary.main
+    palette.primary.main,
+    null
   );
 
   return <Chart {...chart} />;

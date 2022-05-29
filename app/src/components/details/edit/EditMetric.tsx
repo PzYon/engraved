@@ -10,7 +10,7 @@ export const EditMetric: React.FC<{
   onSaved: () => Promise<unknown>;
 }> = ({ metric, onSaved }) => {
   const [flagJson, setFlagJson] = useState(
-    metric.flags ? JSON.stringify(metric.flags) : ""
+    metric.attributes ? JSON.stringify(metric.attributes) : ""
   );
 
   const [name, setName] = useState(metric.name);

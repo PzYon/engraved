@@ -1,8 +1,8 @@
-import { IMetricFlags } from "../IMetricFlags";
+import { IMetricAttributes } from "../IMetricAttributes";
 
 export interface IEditMetricCommand {
   metricId: string;
   name: string;
   description: string;
-  flags: IMetricFlags;
+  flags: IMetricAttributes;
 }

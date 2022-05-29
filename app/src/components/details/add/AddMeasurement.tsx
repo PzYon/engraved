@@ -3,7 +3,7 @@ import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
-import { MetricFlagsSelector } from "./MetricFlagsSelector";
+import { MetricAttributesSelector } from "./MetricAttributesSelector";
 import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IAddMeasurementCommand } from "../../../serverApi/commands/IAddMeasurementCommand";
@@ -24,9 +24,9 @@ export const AddMeasurement: React.FC<{
 
   return (
     <FormControl>
-      {Object.keys(metric.flags || {}).length ? (
-        <MetricFlagsSelector
-          flags={metric.flags}
+      {Object.keys(metric.attributes || {}).length ? (
+        <MetricAttributesSelector
+          attributes={metric.attributes}
           selectedFlagKey={flagKey}
           onFlagChange={(key) => setFlagKey(key)}
         />

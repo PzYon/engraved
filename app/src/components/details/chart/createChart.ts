@@ -12,13 +12,15 @@ export const createChart = (
   metric: IMetric,
   type: ChartType,
   groupBy: GroupBy,
-  color: string
+  color: string,
+  attributeKey: string
 ): ChartProps => {
   const dataSets: ChartDataset[] = createDataSets(
     metric,
     measurements,
     groupBy,
-    color
+    color,
+    attributeKey
   );
 
   return {
@@ -58,16 +60,19 @@ function createDataSets(
   metric: IMetric,
   allMeasurements: IMeasurement[],
   groupBy: GroupBy,
-  color: string
+  color: string,
+  attributeKey: string
 ) {
-  const allFlags = Object.keys(metric.flags || {});
-  allFlags.push(null); // null is for measurements without a flag
+  const allValueKeys = Object.keys(metric.attributes[attributeKey] || {});
+  allValueKeys.push(null); // null is for measurements without a flag
 
-  const dataSets: ChartDataset[] = allFlags
-    .map((flag) => filterMeasurementsByFlag(allMeasurements, flag))
+  const dataSets: ChartDataset[] = allValueKeys
+    .map((valueKey) =>
+      filterMeasurementsByFlag(allMeasurements, attributeKey, valueKey)
+    )
     .filter((measurements) => measurements.length)
     .map((measurements) =>
-      measurementsToDataSet(measurements, metric, groupBy)
+      measurementsToDataSet(measurements, metric, groupBy, attributeKey)
     );
 
   const diffPerDataSet = 0.8 / Math.max(dataSets.length - 1, 1);
@@ -82,24 +87,31 @@ function createDataSets(
 
 function filterMeasurementsByFlag(
   measurements: IMeasurement[],
-  flag: string
+  attributeKey: string,
+  valueKey: string
 ): IMeasurement[] {
   return measurements.filter((m) =>
-    flag ? m.metricFlagKey === flag : !m.metricFlagKey
+    valueKey
+      ? m.metricAttributeValues[attributeKey].indexOf(valueKey) > -1
+      : !m.metricAttributeValues
   );
 }
 
 function measurementsToDataSet(
   measurements: IMeasurement[],
   metric: IMetric,
-  groupBy: GroupBy
+  groupBy: GroupBy,
+  attributeKey: string
 ) {
   const data = transform(measurements, metric, groupBy);
 
-  const metricFlagKey = measurements[0].metricFlagKey;
+  // TODO: we use indexer here to get (only) the first item. what if there's more?
+  const valueKey = measurements[0].metricAttributeValues[attributeKey][0];
 
   return {
-    label: metricFlagKey ? metric.flags[metricFlagKey] : metric.name,
+    label: valueKey
+      ? metric.attributes[attributeKey].values[valueKey]
+      : metric.name,
     normalized: true,
     data: data as never,
     tension: 0.3,

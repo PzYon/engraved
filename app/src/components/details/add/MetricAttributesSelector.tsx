@@ -7,16 +7,22 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { translations } from "../../../i18n/translations";
+import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 
-export interface IMetricFlags {
-  [key: string]: string;
-}
-
-export const MetricFlagsSelector: React.FC<{
-  flags: IMetricFlags;
+export const MetricAttributesSelector: React.FC<{
+  attributes: IMetricAttributes;
   selectedFlagKey: string;
   onFlagChange: (key: string) => void;
-}> = ({ flags, selectedFlagKey, onFlagChange }) => {
+}> = ({ attributes, selectedFlagKey, onFlagChange }) => {
+  return (
+    <>
+      {Object.keys(attributes).map((a) => {
+        return <div key={a}>{attributes[a].name}</div>;
+      })}
+    </>
+  );
+
+  /*
   return (
     <FormControl>
       <InputLabel id="metric-flags-label">
@@ -34,14 +40,17 @@ export const MetricFlagsSelector: React.FC<{
         <MenuItem key={""} value={""}>
           &nbsp;
         </MenuItem>
-        {Object.entries(flags).map((kvps: [key: string, value: string]) => {
-          return (
-            <MenuItem key={kvps[0]} value={kvps[0]}>
-              {kvps[1]}
-            </MenuItem>
-          );
-        })}
+        {Object.entries(attributes).map(
+          (kvps: [key: string, value: string]) => {
+            return (
+              <MenuItem key={kvps[0]} value={kvps[0]}>
+                {kvps[1]}
+              </MenuItem>
+            );
+          }
+        )}
       </Select>
     </FormControl>
   );
+   */
 };
