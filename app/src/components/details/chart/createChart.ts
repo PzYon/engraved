@@ -3,7 +3,7 @@ import { ChartProps } from "react-chartjs-2/dist/types";
 import { ChartDataset, ChartType } from "chart.js";
 import { transform } from "./transformation/transform";
 import { IMetric } from "../../../serverApi/IMetric";
-import { GroupBy } from "./consolidation/GroupBy";
+import { GroupByTime } from "./consolidation/GroupByTime";
 import { TimeUnit } from "chart.js/types/adapters";
 import { lighten } from "@mui/material";
 
@@ -11,7 +11,7 @@ export const createChart = (
   measurements: IMeasurement[],
   metric: IMetric,
   type: ChartType,
-  groupBy: GroupBy,
+  groupBy: GroupByTime,
   color: string,
   attributeKey: string
 ): ChartProps => {
@@ -59,7 +59,7 @@ export const createChart = (
 function createDataSets(
   metric: IMetric,
   allMeasurements: IMeasurement[],
-  groupBy: GroupBy,
+  groupByTime: GroupByTime,
   color: string,
   attributeKey: string
 ) {
@@ -78,7 +78,7 @@ function createDataSets(
     )
     .filter((measurements) => measurements.length)
     .map((measurements) =>
-      measurementsToDataSet(measurements, metric, groupBy, attributeKey)
+      measurementsToDataSet(measurements, metric, groupByTime, attributeKey)
     );
 
   const diffPerDataSet = 0.8 / Math.max(dataSets.length - 1, 1);
@@ -106,10 +106,10 @@ function filterMeasurementsByAttributeValue(
 function measurementsToDataSet(
   measurements: IMeasurement[],
   metric: IMetric,
-  groupBy: GroupBy,
+  groupByTime: GroupByTime,
   attributeKey: string
 ) {
-  const data = transform(measurements, metric, groupBy);
+  const data = transform(measurements, metric, groupByTime);
 
   // TODO: we use indexer here to get (only) the first item. what if there's more?
   const valueKey = measurements[0]?.metricAttributeValues?.[attributeKey]?.[0];
@@ -124,13 +124,13 @@ function measurementsToDataSet(
   };
 }
 
-function getTimeUnit(groupBy: GroupBy): TimeUnit {
-  switch (groupBy) {
-    case GroupBy.None:
+function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
+  switch (groupByTime) {
+    case GroupByTime.None:
       return null;
-    case GroupBy.Day:
+    case GroupByTime.Day:
       return "day";
-    case GroupBy.Month:
+    case GroupByTime.Month:
       return "month";
   }
 }

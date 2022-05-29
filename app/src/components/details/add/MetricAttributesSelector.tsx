@@ -1,12 +1,4 @@
 import React from "react";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
-import { translations } from "../../../i18n/translations";
 import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 
 export const MetricAttributesSelector: React.FC<{
@@ -14,6 +6,8 @@ export const MetricAttributesSelector: React.FC<{
   selectedFlagKey: string;
   onFlagChange: (key: string) => void;
 }> = ({ attributes, selectedFlagKey, onFlagChange }) => {
+  console.log(selectedFlagKey, onFlagChange);
+
   return (
     <>
       {Object.keys(attributes).map((a) => {

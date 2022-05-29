@@ -1,7 +1,7 @@
 import { consolidate } from "./consolidate";
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
 import { ConsolidationKey } from "./ConsolidationKey";
-import { GroupBy } from "./GroupBy";
+import { GroupByTime } from "./GroupByTime";
 
 describe("consolidate should", () => {
   it(" group by month (1 measurement)", () => {
@@ -9,7 +9,7 @@ describe("consolidate should", () => {
       { value: 23, dateTime: createDate(2020, 1, 1) },
     ];
 
-    const grouped = consolidate(measurements, GroupBy.Month);
+    const grouped = consolidate(measurements, GroupByTime.Month);
 
     expect(grouped.length).toBe(1);
 
@@ -25,7 +25,7 @@ describe("consolidate should", () => {
       { value: 10, dateTime: createDate(2020, 1, 2) },
     ];
 
-    const grouped = consolidate(measurements, GroupBy.Month);
+    const grouped = consolidate(measurements, GroupByTime.Month);
 
     expect(grouped.length).toBe(1);
 
@@ -41,7 +41,7 @@ describe("consolidate should", () => {
       { value: 10, dateTime: createDate(2020, 2, 1) },
     ];
 
-    const grouped = consolidate(measurements, GroupBy.Month);
+    const grouped = consolidate(measurements, GroupByTime.Month);
 
     expect(grouped.length).toBe(2);
 
@@ -62,7 +62,7 @@ describe("consolidate should", () => {
       { value: 10, dateTime: createDate(2020, 4, 1) },
     ];
 
-    const grouped = consolidate(measurements, GroupBy.Month);
+    const grouped = consolidate(measurements, GroupByTime.Month);
 
     expect(grouped.length).toBe(2);
   });
@@ -73,7 +73,7 @@ describe("consolidate should", () => {
       { value: 7, dateTime: createDate(2020, 6, 10) },
     ];
 
-    const grouped = consolidate(measurements, GroupBy.Day);
+    const grouped = consolidate(measurements, GroupByTime.Day);
 
     expect(grouped.length).toBe(2);
 
@@ -94,7 +94,7 @@ describe("consolidate should", () => {
       { value: 30, dateTime: createDate(2020, 6, 3) },
     ];
 
-    const grouped = consolidate(measurements, GroupBy.Day);
+    const grouped = consolidate(measurements, GroupByTime.Day);
 
     expect(grouped.length).toBe(2);
 
