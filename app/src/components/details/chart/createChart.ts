@@ -63,12 +63,18 @@ function createDataSets(
   color: string,
   attributeKey: string
 ) {
-  const allValueKeys = Object.keys(metric.attributes[attributeKey] || {});
+  const allValueKeys = Object.keys(
+    metric.attributes[attributeKey]?.values || {}
+  );
   allValueKeys.push(null); // null is for measurements without a flag
 
   const dataSets: ChartDataset[] = allValueKeys
     .map((valueKey) =>
-      filterMeasurementsByFlag(allMeasurements, attributeKey, valueKey)
+      filterMeasurementsByAttributeValue(
+        allMeasurements,
+        attributeKey,
+        valueKey
+      )
     )
     .filter((measurements) => measurements.length)
     .map((measurements) =>
@@ -85,15 +91,15 @@ function createDataSets(
   });
 }
 
-function filterMeasurementsByFlag(
+function filterMeasurementsByAttributeValue(
   measurements: IMeasurement[],
   attributeKey: string,
   valueKey: string
 ): IMeasurement[] {
   return measurements.filter((m) =>
     valueKey
-      ? m.metricAttributeValues[attributeKey].indexOf(valueKey) > -1
-      : !m.metricAttributeValues
+      ? m.metricAttributeValues[attributeKey]?.indexOf(valueKey) > -1
+      : true
   );
 }
 
@@ -106,7 +112,7 @@ function measurementsToDataSet(
   const data = transform(measurements, metric, groupBy);
 
   // TODO: we use indexer here to get (only) the first item. what if there's more?
-  const valueKey = measurements[0].metricAttributeValues[attributeKey][0];
+  const valueKey = measurements[0]?.metricAttributeValues?.[attributeKey]?.[0];
 
   return {
     label: valueKey
