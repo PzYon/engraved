@@ -15,12 +15,12 @@ export const GroupByTimeSelector: React.FC<{
 }> = ({ groupByTime, onGroupingChange }) => {
   return (
     <FormControl sx={{ minWidth: 150, marginRight: "20px" }}>
-      <InputLabel id="group-by-label">
+      <InputLabel id="group-by-time-label">
         {translations.label_groupBy_time}
       </InputLabel>
       <Select
         id="group-by-time"
-        labelId="group-by-label"
+        labelId="group-by-time-label"
         label={translations.label_groupBy_time}
         value={groupByTime as unknown as string}
         onChange={(event: SelectChangeEvent) => {

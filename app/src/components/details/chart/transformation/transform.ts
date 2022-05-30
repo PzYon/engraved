@@ -10,7 +10,10 @@ export function transform(
   metric: IMetric,
   groupBy: GroupByTime
 ): ITransformedMeasurement[] {
-  if (MetricTypeFactory.create(metric.type).isGroupable) {
+  if (
+    MetricTypeFactory.create(metric.type).isGroupable &&
+    groupBy !== GroupByTime.None
+  ) {
     return consolidate(measurements, groupBy).map((m) => {
       const month = m.groupKey.month - 1;
       const day = m.groupKey.day || 1;

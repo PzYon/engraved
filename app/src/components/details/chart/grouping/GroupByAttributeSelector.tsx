@@ -16,21 +16,19 @@ export const GroupByAttributeSelector: React.FC<{
 }> = ({ selectedAttributeKey, attributes, onGroupingChange }) => {
   return (
     <FormControl sx={{ minWidth: 150 }}>
-      <InputLabel id="group-by-label">
+      <InputLabel id="group-by-attribute-label">
         {translations.label_groupBy_attribute}
       </InputLabel>
       <Select
         id="group-by-attribute"
-        labelId="group-by-label"
+        labelId="group-by-attribute-label"
         label={translations.label_groupBy_time}
         value={selectedAttributeKey}
         onChange={(event: SelectChangeEvent) => {
           onGroupingChange(event.target.value as unknown as string);
         }}
       >
-        <MenuItem value={""} key={"_none"}>
-          -
-        </MenuItem>
+        <MenuItem value={""}>-</MenuItem>
         {Object.keys(attributes).map((key) => {
           return (
             <MenuItem value={key} key={key}>

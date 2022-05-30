@@ -11,7 +11,7 @@ export const Visualization: React.FC<IVisualizationProps> = (
   props: IVisualizationProps
 ) => {
   const [groupByTime, setGroupByTime] = useState(GroupByTime.Month);
-  const [attributeKey, setAttributeKey] = useState<string>();
+  const [attributeKey, setAttributeKey] = useState("");
   return (
     <Suspense fallback={<div />}>
       {MetricTypeFactory.create(props.metric.type).isGroupable ? (
