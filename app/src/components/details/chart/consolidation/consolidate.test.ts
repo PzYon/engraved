@@ -3,8 +3,8 @@ import { IMeasurement } from "../../../../serverApi/IMeasurement";
 import { ConsolidationKey } from "./ConsolidationKey";
 import { GroupByTime } from "./GroupByTime";
 
-describe("consolidate should", () => {
-  it(" group by month (1 measurement)", () => {
+describe("consolidate", () => {
+  it("should group by month (1 measurement)", () => {
     const measurements: IMeasurement[] = [
       { value: 23, dateTime: createDate(2020, 1, 1) },
     ];
@@ -19,7 +19,7 @@ describe("consolidate should", () => {
     assertGroupKey(groupedMeasurement.groupKey, 2020, 1, 0);
   });
 
-  it("group by month (2 measurements)", () => {
+  it("should group by month (2 measurements)", () => {
     const measurements: IMeasurement[] = [
       { value: 20, dateTime: createDate(2020, 1, 1) },
       { value: 10, dateTime: createDate(2020, 1, 2) },
@@ -35,7 +35,7 @@ describe("consolidate should", () => {
     assertGroupKey(groupedMeasurement.groupKey, 2020, 1, 0);
   });
 
-  it("group by month (2 measurements, different months)", () => {
+  it("should group by month (2 measurements, different months)", () => {
     const measurements: IMeasurement[] = [
       { value: 20, dateTime: createDate(2020, 1, 1) },
       { value: 10, dateTime: createDate(2020, 2, 1) },
@@ -56,7 +56,7 @@ describe("consolidate should", () => {
     assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 2, 0);
   });
 
-  it("group by month (2 measurements - first and last days of month)", () => {
+  it("should group by month (2 measurements - first and last days of month)", () => {
     const measurements: IMeasurement[] = [
       { value: 20, dateTime: createDate(2020, 3, 31) },
       { value: 10, dateTime: createDate(2020, 4, 1) },
@@ -67,7 +67,7 @@ describe("consolidate should", () => {
     expect(grouped.length).toBe(2);
   });
 
-  it("group by day (2 measurements, same month)", () => {
+  it("should group by day (2 measurements, same month)", () => {
     const measurements: IMeasurement[] = [
       { value: 6, dateTime: createDate(2020, 6, 9) },
       { value: 7, dateTime: createDate(2020, 6, 10) },
@@ -88,7 +88,7 @@ describe("consolidate should", () => {
     assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 6, 10);
   });
 
-  it("group by day (2 measurements, same day, different month)", () => {
+  it("should group by day (2 measurements, same day, different month)", () => {
     const measurements: IMeasurement[] = [
       { value: 10, dateTime: createDate(2020, 5, 3) },
       { value: 30, dateTime: createDate(2020, 6, 3) },

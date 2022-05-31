@@ -4,18 +4,12 @@ import { IMetric } from "../../../../serverApi/IMetric";
 import { MetricType } from "../../../../serverApi/MetricType";
 import { createDataSets } from "./createDataSets";
 
-describe("createDataSet", () => {
+describe("createDataSets", () => {
   it("should group by nothing", () => {
     const metric: IMetric = createMetric();
     const measurements: IMeasurement[] = createMeasurements();
 
-    const dataSets = createDataSets(
-      metric,
-      measurements,
-      GroupByTime.None,
-      "#ffffff",
-      ""
-    );
+    const dataSets = createDataSets(measurements, metric, GroupByTime.None, "");
 
     expect(dataSets.length).toBe(1);
     expect(dataSets[0].data.length).toBe(4);
@@ -26,10 +20,9 @@ describe("createDataSet", () => {
     const measurements: IMeasurement[] = createMeasurements();
 
     const dataSets = createDataSets(
-      metric,
       measurements,
+      metric,
       GroupByTime.None,
-      "#ffffff",
       "colors"
     );
 

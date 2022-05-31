@@ -49,10 +49,10 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
   const chart = createChart(
     measurements,
     metric,
-    "bar",
-    palette.primary.main,
     groupByTime,
-    groupByAttribute
+    groupByAttribute,
+    "bar",
+    palette.primary.main
   );
 
   return <Chart {...chart} />;

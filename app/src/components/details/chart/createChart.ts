@@ -10,20 +10,28 @@ import { lighten } from "@mui/material";
 export const createChart = (
   measurements: IMeasurement[],
   metric: IMetric,
-  type: ChartType,
-  color: string,
   groupByTime: GroupByTime,
-  attributeKey: string
+  attributeKey: string,
+  type: ChartType,
+  color: string
 ): ChartProps => {
   const dataSets: IDataSet[] = createDataSets(
-    metric,
     measurements,
+    metric,
     groupByTime,
-    color,
     attributeKey
   );
 
-  const diffPerDataSet = 0.8 / Math.max(dataSets.length - 1, 1);
+  const diffFactorPerDataSet = 0.8 / Math.max(dataSets.length - 1, 1);
+
+  const decoratedDataSets = dataSets.map((dataSet, i) => {
+    return {
+      ...dataSet,
+      normalized: true,
+      tension: 0.3,
+      backgroundColor: lighten(color, i * diffFactorPerDataSet),
+    };
+  });
 
   return {
     type: type,
@@ -53,14 +61,7 @@ export const createChart = (
       },
     },
     data: {
-      datasets: dataSets.map((dataSet, i) => {
-        return {
-          ...dataSet,
-          normalized: true,
-          tension: 0.3,
-          backgroundColor: lighten(color, i * diffPerDataSet),
-        };
-      }) as any,
+      datasets: decoratedDataSets as never,
     },
   };
 };

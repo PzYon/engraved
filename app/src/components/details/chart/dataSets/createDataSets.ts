@@ -6,19 +6,16 @@ import { IDataSet } from "./IDataSet";
 import { IMetricAttributes } from "../../../../serverApi/IMetricAttributes";
 
 export function createDataSets(
-  metric: IMetric,
   allMeasurements: IMeasurement[],
+  metric: IMetric,
   groupByTime: GroupByTime,
-  color: string,
   attributeKey: string
 ) {
-  const measurementsPerAttribute = getMeasurementsPerAttribute(
+  return getMeasurementsPerAttribute(
     metric.attributes,
     allMeasurements,
     attributeKey
-  );
-
-  return measurementsPerAttribute
+  )
     .filter((measurementsByAttribute) => measurementsByAttribute.length)
     .map((measurements) =>
       measurementsToDataSet(measurements, metric, groupByTime, attributeKey)
