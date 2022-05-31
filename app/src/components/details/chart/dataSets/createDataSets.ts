@@ -12,8 +12,8 @@ export function createDataSets(
   attributeKey: string
 ) {
   return getMeasurementsPerAttribute(
-    metric.attributes,
     allMeasurements,
+    metric.attributes,
     attributeKey
   )
     .filter((measurementsByAttribute) => measurementsByAttribute.length)
@@ -42,8 +42,8 @@ function measurementsToDataSet(
 }
 
 function getMeasurementsPerAttribute(
-  metricAttributes: IMetricAttributes,
   allMeasurements: IMeasurement[],
+  metricAttributes: IMetricAttributes,
   attributeKey: string
 ) {
   const allValueKeys = [

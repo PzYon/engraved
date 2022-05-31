@@ -12,8 +12,8 @@ import { translations } from "../../../../i18n/translations";
 export const GroupByAttributeSelector: React.FC<{
   selectedAttributeKey: string;
   attributes: IMetricAttributes;
-  onGroupingChange: (attributeKey: string) => void;
-}> = ({ selectedAttributeKey, attributes, onGroupingChange }) => {
+  onChange: (attributeKey: string) => void;
+}> = ({ selectedAttributeKey, attributes, onChange }) => {
   return (
     <FormControl sx={{ minWidth: 150 }}>
       <InputLabel id="group-by-attribute-label">
@@ -25,7 +25,7 @@ export const GroupByAttributeSelector: React.FC<{
         label={translations.label_groupBy_time}
         value={selectedAttributeKey}
         onChange={(event: SelectChangeEvent) => {
-          onGroupingChange(event.target.value as unknown as string);
+          onChange(event.target.value as unknown as string);
         }}
       >
         <MenuItem value={""}>-</MenuItem>
