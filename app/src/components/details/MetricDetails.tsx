@@ -30,16 +30,12 @@ export const MetricDetails: React.FC = () => {
   const [isDataReady, setIsDataReady] = useState(false);
 
   useEffect(() => {
-    console.log("MetricDetails.didMount - metricId from URL is " + metricId);
-
     Promise.all([getMeasurements(), getMetric()]).then(() =>
       setIsDataReady(true)
     );
   }, []);
 
   useEffect(() => {
-    console.log("idChange: " + metric?.id);
-
     setPageTitle(<PageTitle metric={metric} />);
     setTitleActions([
       {

@@ -41,30 +41,17 @@ export const AppContextProvider: React.FC<{
   const [titleActions, setTitleActions] = useState<IAction[]>([]);
   const [appAlert, setAppAlert] = useState<IAppAlert>(undefined);
 
-  useEffect(() => {
-    console.log("AppContext.didMount");
-  }, []);
-
   const contextValue = useMemo(() => {
-    debugger;
     return {
       pageTitle,
       setPageTitle,
-      titleActions: titleActions,
-      setTitleActions: setTitleActions,
-      appAlert: appAlert,
-      setAppAlert: setAppAlert,
-      user: user,
+      titleActions,
+      setTitleActions,
+      appAlert,
+      setAppAlert,
+      user,
     };
-  }, [
-    pageTitle,
-    setPageTitle,
-    titleActions,
-    setTitleActions,
-    appAlert,
-    setAppAlert,
-    user,
-  ]);
+  }, [pageTitle, titleActions, appAlert, user]);
 
   return (
     <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
