@@ -11,21 +11,19 @@ import { ThemeAndStylesProvider } from "./theming/ThemeAndStylesProvider";
 import { IUser } from "./serverApi/IUser";
 
 export const App: React.FC<{ user: IUser }> = ({ user }) => (
-  <React.StrictMode>
-    <ThemeAndStylesProvider>
-      <AppContextProvider user={user}>
-        <BrowserRouter>
-          <DialogContextProvider>
-            <AppHeader />
-            <AppAlertBar />
-            <AppErrorBoundary>
-              <AppContent>
-                <AppRoutes />
-              </AppContent>
-            </AppErrorBoundary>
-          </DialogContextProvider>
-        </BrowserRouter>
-      </AppContextProvider>
-    </ThemeAndStylesProvider>
-  </React.StrictMode>
+  <ThemeAndStylesProvider>
+    <AppContextProvider user={user}>
+      <BrowserRouter>
+        <DialogContextProvider>
+          <AppHeader />
+          <AppAlertBar />
+          <AppErrorBoundary>
+            <AppContent>
+              <AppRoutes />
+            </AppContent>
+          </AppErrorBoundary>
+        </DialogContextProvider>
+      </BrowserRouter>
+    </AppContextProvider>
+  </ThemeAndStylesProvider>
 );

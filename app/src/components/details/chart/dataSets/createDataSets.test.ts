@@ -1,51 +1,47 @@
-import { createChart } from "./createChart";
-import { GroupByTime } from "./consolidation/GroupByTime";
-import { IMeasurement } from "../../../serverApi/IMeasurement";
-import { IMetric } from "../../../serverApi/IMetric";
-import { MetricType } from "../../../serverApi/MetricType";
+import { GroupByTime } from "../consolidation/GroupByTime";
+import { IMeasurement } from "../../../../serverApi/IMeasurement";
+import { IMetric } from "../../../../serverApi/IMetric";
+import { MetricType } from "../../../../serverApi/MetricType";
+import { createDataSets } from "./createDataSets";
 
-describe("createChart", () => {
+describe("createDataSet", () => {
   it("should group by nothing", () => {
     const metric: IMetric = createMetric();
     const measurements: IMeasurement[] = createMeasurements();
-    const type = "bar";
 
-    const chart = createChart(
-      measurements,
+    const dataSets = createDataSets(
       metric,
-      type,
-      "#ffffff",
+      measurements,
       GroupByTime.None,
+      "#ffffff",
       ""
     );
 
-    expect(chart.data.datasets.length).toBe(1);
-    expect(chart.data.datasets[0].data.length).toBe(4);
+    expect(dataSets.length).toBe(1);
+    expect(dataSets[0].data.length).toBe(4);
   });
 
   it("should group by attribute key", () => {
     const metric: IMetric = createMetric();
     const measurements: IMeasurement[] = createMeasurements();
-    const type = "bar";
 
-    const chart = createChart(
-      measurements,
+    const dataSets = createDataSets(
       metric,
-      type,
-      "#ffffff",
+      measurements,
       GroupByTime.None,
+      "#ffffff",
       "colors"
     );
 
-    expect(chart.data.datasets.length).toBe(3);
+    expect(dataSets.length).toBe(3);
 
-    const rotData = chart.data.datasets.find((d) => d.label == "Rot").data;
+    const rotData = dataSets.find((d) => d.label == "Rot").data;
     expect(rotData.length).toBe(1);
 
-    const gruenData = chart.data.datasets.find((d) => d.label == "Gruen").data;
+    const gruenData = dataSets.find((d) => d.label == "Gruen").data;
     expect(gruenData.length).toBe(2);
 
-    const restData = chart.data.datasets.find((d) => d.label == "Name").data;
+    const restData = dataSets.find((d) => d.label == "Name").data;
     expect(restData.length).toBe(1);
   });
 });
@@ -68,6 +64,8 @@ function createMetric() {
 }
 
 function createMeasurements() {
+  // we use exactly the same date for everything, in order to be
+  // sure that time-grouping doesn't interfere here.
   const dateTime = new Date().toString();
 
   return [

@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { MetricList } from "../overview/MetricList";
 import { MetricDetails } from "../details/MetricDetails";
 
 export const AppRoutes: React.FC = () => {
+  useEffect(() => {
+    console.log("AppRoutes.didMount");
+  }, []);
+
   return (
     <Routes>
       <Route
