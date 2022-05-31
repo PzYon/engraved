@@ -13,23 +13,23 @@ export const MetricAttributesSelector: React.FC<{
 }> = ({ attributes, selectedAttributeValues, onChange }) => {
   return (
     <>
-      {Object.keys(attributes).map((a) => {
-        const attribute: IMetricAttribute = attributes[a];
+      {Object.keys(attributes).map((attributeKey) => {
+        const attribute: IMetricAttribute = attributes[attributeKey];
 
         return (
-          <FormControl key={a}>
-            <InputLabel id={"metric-attribute-label-" + a}>
+          <FormControl key={attributeKey}>
+            <InputLabel id={"metric-attribute-label-" + attributeKey}>
               {attribute.name}
             </InputLabel>
             <Select
-              id={"metric-attribute-" + a}
-              labelId={"metric-attribute-label-" + a}
+              id={"metric-attribute-" + attributeKey}
+              labelId={"metric-attribute-label-" + attributeKey}
               label={attribute.name}
-              value={selectedAttributeValues[a]?.[0] || ""}
+              value={selectedAttributeValues[attributeKey]?.[0] || ""}
               onChange={(event: SelectChangeEvent) => {
                 onChange({
                   ...selectedAttributeValues,
-                  ...{ [a]: [event.target.value] },
+                  ...{ [attributeKey]: [event.target.value] },
                 });
               }}
             >
@@ -51,36 +51,4 @@ export const MetricAttributesSelector: React.FC<{
       })}
     </>
   );
-
-  /*
-  return (
-    <FormControl>
-      <InputLabel id="metric-attribute-label">
-        {translations.label_metricFlags}
-      </InputLabel>
-      <Select
-        id="metric-attribute"
-        labelId="metric-attribute-label"
-        label={translations.label_metricFlags}
-        value={selectedFlagKey}
-        onChange={(event: SelectChangeEvent) => {
-          onFlagChange(event.target.value);
-        }}
-      >
-        <MenuItem key={""} value={""}>
-          &nbsp;
-        </MenuItem>
-        {Object.entries(attributes).map(
-          (kvps: [key: string, value: string]) => {
-            return (
-              <MenuItem key={kvps[0]} value={kvps[0]}>
-                {kvps[1]}
-              </MenuItem>
-            );
-          }
-        )}
-      </Select>
-    </FormControl>
-  );
-   */
 };

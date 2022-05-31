@@ -11,8 +11,8 @@ import { translations } from "../../../../i18n/translations";
 
 export const GroupByTimeSelector: React.FC<{
   groupByTime: GroupByTime;
-  onGroupingChange: (groupByTime: GroupByTime) => void;
-}> = ({ groupByTime, onGroupingChange }) => {
+  onChange: (groupByTime: GroupByTime) => void;
+}> = ({ groupByTime, onChange }) => {
   return (
     <FormControl sx={{ minWidth: 150, marginRight: "20px" }}>
       <InputLabel id="group-by-time-label">
@@ -24,7 +24,7 @@ export const GroupByTimeSelector: React.FC<{
         label={translations.label_groupBy_time}
         value={groupByTime as unknown as string}
         onChange={(event: SelectChangeEvent) => {
-          onGroupingChange(event.target.value as unknown as GroupByTime);
+          onChange(event.target.value as unknown as GroupByTime);
         }}
       >
         <MenuItem value={GroupByTime.Day}>{translations.groupBy_day}</MenuItem>

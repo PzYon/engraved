@@ -17,14 +17,14 @@ export const Visualization: React.FC<IVisualizationProps> = (
       {MetricTypeFactory.create(props.metric.type).isGroupable ? (
         <GroupByTimeSelector
           groupByTime={groupByTime}
-          onGroupingChange={setGroupByTime}
+          onChange={setGroupByTime}
         />
       ) : null}
       {Object.keys(props.metric.attributes).length > 0 ? (
         <GroupByAttributeSelector
           attributes={props.metric.attributes}
           selectedAttributeKey={attributeKey}
-          onGroupingChange={setAttributeKey}
+          onChange={setAttributeKey}
         />
       ) : null}
       <ChartJs

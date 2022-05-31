@@ -68,23 +68,24 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
       return;
     }
 
-    List<string> errors = new List<string>();
+    var errors = new List<string>();
 
-    foreach (KeyValuePair<string, string[]> x in Command.MetricAttributeValues)
+    foreach (KeyValuePair<string, string[]> kvp in Command.MetricAttributeValues)
     {
-      if (metric.Attributes.ContainsKey(x.Key))
+      string attributeKey = kvp.Key;
+      string[] attributeValues = kvp.Value;
+
+      if (metric.Attributes.ContainsKey(attributeKey))
       {
-        foreach (string valueKey in x.Value)
-        {
-          if (!metric.Attributes[x.Key].Values.ContainsKey(valueKey))
-          {
-            errors.Add("Value key: " + valueKey + " (for " + x.Key);
-          }
-        }
+        errors.AddRange(
+          attributeValues
+            .Where(valueKey => !metric.Attributes[attributeKey].Values.ContainsKey(valueKey))
+            .Select(valueKey => "Value key: " + valueKey + " (for " + attributeKey)
+        );
       }
       else
       {
-        errors.Add("Attribute key: " + x.Key);
+        errors.Add("Attribute key: " + attributeKey);
       }
     }
 
