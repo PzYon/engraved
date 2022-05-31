@@ -9,12 +9,14 @@ import { MetricType } from "../../../serverApi/MetricType";
 import { IAddMeasurementCommand } from "../../../serverApi/commands/IAddMeasurementCommand";
 import { IAddGaugeMeasurementCommand } from "../../../serverApi/commands/IAddGaugeMeasurementCommand";
 import { ITimerMetric } from "../../../serverApi/ITimerMetric";
+import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
   onAdded?: () => void;
 }> = ({ metric, onAdded }) => {
-  const [flagKey, setFlagKey] = useState<string>(""); // empty means nothing selected in the selector
+  const [attributeValues, setAttributeValues] =
+    useState<IMetricAttributeValues>({}); // empty means nothing selected in the selector
   const [notes, setNotes] = useState<string>("");
   const [value, setValue] = useState<string>("");
 
@@ -27,8 +29,8 @@ export const AddMeasurement: React.FC<{
       {Object.keys(metric.attributes || {}).length ? (
         <MetricAttributesSelector
           attributes={metric.attributes}
-          selectedFlagKey={flagKey}
-          onFlagChange={(key) => setFlagKey(key)}
+          selectedAttributeValues={attributeValues}
+          onChange={(key) => setAttributeValues(key)}
         />
       ) : null}
       <TextField
@@ -53,7 +55,7 @@ export const AddMeasurement: React.FC<{
         onClick={() => {
           const command: IAddMeasurementCommand = {
             notes: notes,
-            metricFlagKey: flagKey,
+            metricAttributeValues: attributeValues,
             metricId: metric.id,
           };
 

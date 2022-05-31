@@ -1,5 +1,7 @@
+import { IMetricAttributeValues } from "../IMetricAttributeValues";
+
 export interface IAddMeasurementCommand {
   metricId: string;
-  metricFlagKey?: string;
+  metricAttributeValues?: IMetricAttributeValues;
   notes?: string;
 }
