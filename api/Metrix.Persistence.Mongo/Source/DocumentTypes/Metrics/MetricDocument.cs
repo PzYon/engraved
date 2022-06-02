@@ -20,7 +20,7 @@ public abstract class MetricDocument : IUserScopedDocument
 
   public abstract MetricType Type { get; }
 
-  public Dictionary<string, string> Flags { get; set; } = new();
+  public Dictionary<string, MetricAttribute> Attributes { get; set; } = new();
 
   public DateTime? LastMeasurementDate { get; set; }
 }

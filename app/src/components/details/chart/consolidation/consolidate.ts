@@ -1,18 +1,18 @@
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
 import { ConsolidationKey } from "./ConsolidationKey";
-import { GroupBy } from "./GroupBy";
+import { GroupByTime } from "./GroupByTime";
 import { IConsolidatedMeasurements } from "./IConsolidatedMeasurements";
 
 export function consolidate(
   measurements: IMeasurement[],
-  groupBy: GroupBy
+  groupByTime: GroupByTime
 ): IConsolidatedMeasurements[] {
   const valuesByGroupKey = measurements.reduce(
     (
       previousValue: { [groupKey: string]: IMeasurement[] },
       measurement: IMeasurement
     ) => {
-      const key = ConsolidationKey.build(measurement.dateTime, groupBy);
+      const key = ConsolidationKey.build(measurement.dateTime, groupByTime);
       const keyAsString = key.serialize();
 
       if (!previousValue[keyAsString]) {

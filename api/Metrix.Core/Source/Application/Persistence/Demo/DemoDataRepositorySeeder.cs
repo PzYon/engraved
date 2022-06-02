@@ -139,12 +139,12 @@ public class DemoDataRepositorySeeder
 
     string metricId = result.EntityId;
 
-    if (metric.Flags.Any())
+    if (metric.Attributes.Any())
     {
       await new EditMetricCommand
         {
           MetricId = metricId,
-          Flags = metric.Flags,
+          Attributes = metric.Attributes,
           Description = metric.Description,
           Name = metric.Name
         }
@@ -172,7 +172,7 @@ public class DemoDataRepositorySeeder
 
       command.MetricId = metricId;
       command.Notes = measurement.Notes;
-      command.MetricFlagKey = measurement.MetricFlagKey;
+      command.MetricAttributeValues = measurement.MetricAttributeValues;
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)

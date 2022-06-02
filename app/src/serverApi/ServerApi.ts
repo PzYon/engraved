@@ -1,7 +1,7 @@
 import { IMeasurement } from "./IMeasurement";
 import { IMetric } from "./IMetric";
 import { MetricType } from "./MetricType";
-import { IMetricFlags } from "./IMetricFlags";
+import { IMetricAttributes } from "./IMetricAttributes";
 import { IAddMetricCommand } from "./commands/IAddMetricCommand";
 import { IAddMeasurementCommand } from "./commands/IAddMeasurementCommand";
 import { IEditMetricCommand } from "./commands/IEditMetricCommand";
@@ -51,13 +51,13 @@ export class ServerApi {
     metricId: string,
     name: string,
     description: string,
-    metricFlags: IMetricFlags
+    attributes: IMetricAttributes
   ): Promise<ICommandResult> {
     const payload: IEditMetricCommand = {
       metricId: metricId,
       name: name,
       description: description,
-      flags: metricFlags,
+      attributes: attributes,
     };
 
     return await this.executeRequest("/metrics/", "PUT", payload);

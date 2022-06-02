@@ -36,7 +36,8 @@ ChartJS.register(
 const LazyChartJs: React.FC<IVisualizationProps> = ({
   measurements,
   metric,
-  groupBy,
+  groupByTime,
+  groupByAttribute,
 }) => {
   const { typography, palette } = useTheme();
 
@@ -48,8 +49,9 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
   const chart = createChart(
     measurements,
     metric,
+    groupByTime,
+    groupByAttribute,
     "bar",
-    groupBy,
     palette.primary.main
   );
 

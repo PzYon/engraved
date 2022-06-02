@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 using MongoDB.Bson;
@@ -19,7 +20,7 @@ public class MeasurementDocumentMapperShould
       Id = Id,
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricFlagKey = "wh@t3v3r"
+      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
     };
 
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
@@ -38,7 +39,7 @@ public class MeasurementDocumentMapperShould
       Notes = "n0t3",
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricFlagKey = "wh@t3v3r"
+      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
     };
 
     var counterMeasurement = MeasurementDocumentMapper.FromDocument<CounterMeasurement>(document);
@@ -55,7 +56,7 @@ public class MeasurementDocumentMapperShould
       Notes = "n0t3",
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricFlagKey = "wh@t3v3r",
+      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
       Value = 4.20
     };
 
@@ -79,7 +80,7 @@ public class MeasurementDocumentMapperShould
       Notes = "n0t3",
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricFlagKey = "wh@t3v3r",
+      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
       Value = 4321
     };
 
@@ -96,7 +97,7 @@ public class MeasurementDocumentMapperShould
       Id = Id,
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricFlagKey = "wh@t3v3r",
+      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
       StartDate = DateTime.UtcNow.AddHours(-200),
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
@@ -122,7 +123,7 @@ public class MeasurementDocumentMapperShould
       Notes = "n0t3",
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricFlagKey = "wh@t3v3r",
+      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
       StartDate = DateTime.UtcNow.AddHours(-200),
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
@@ -137,7 +138,7 @@ public class MeasurementDocumentMapperShould
     Assert.AreEqual(expected.DateTime, actual!.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
     Assert.AreEqual(expected.MetricId, actual.MetricId);
-    Assert.AreEqual(expected.MetricFlagKey, actual.MetricFlagKey);
+    Assert.AreEqual(expected.MetricAttributeValues, actual.MetricAttributeValues);
   }
 
   private static void AssertEqual(MeasurementDocument expected, IMeasurement actual)
@@ -146,6 +147,6 @@ public class MeasurementDocumentMapperShould
     Assert.AreEqual(expected.DateTime, actual.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
     Assert.AreEqual(expected.MetricId, actual.MetricId);
-    Assert.AreEqual(expected.MetricFlagKey, actual.MetricFlagKey);
+    Assert.AreEqual(expected.MetricAttributeValues, actual.MetricAttributeValues);
   }
 }

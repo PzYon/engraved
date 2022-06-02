@@ -13,6 +13,10 @@ using Metrix.Persistence.Mongo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
+// <HackZone>
+var isSeeded = false;
+// </HackZone>
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
@@ -113,6 +117,7 @@ IUserScopedRepository GetInMongoDbUserScopedRepo(
   return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);
 }
 
+
 IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository)
 {
   var repo = new UserScopedInMemoryRepository(
@@ -125,7 +130,13 @@ IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository)
       ImageUrl = "https://lh3.googleusercontent.com/a-/AOh14Gg94v3JIJeHjaTjU0_QTccEhr4-H8o358PN7odm2g=s96-c",
     }
   );
-  SeedRepo(repo);
+
+  if (!isSeeded)
+  {
+    SeedRepo(repo);
+    isSeeded = true;
+  }
+
   return repo;
 }
 

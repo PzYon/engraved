@@ -3,18 +3,20 @@ import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
-import { MetricFlagsSelector } from "./MetricFlagsSelector";
+import { MetricAttributesSelector } from "./MetricAttributesSelector";
 import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IAddMeasurementCommand } from "../../../serverApi/commands/IAddMeasurementCommand";
 import { IAddGaugeMeasurementCommand } from "../../../serverApi/commands/IAddGaugeMeasurementCommand";
 import { ITimerMetric } from "../../../serverApi/ITimerMetric";
+import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
   onAdded?: () => void;
 }> = ({ metric, onAdded }) => {
-  const [flagKey, setFlagKey] = useState<string>(""); // empty means nothing selected in the selector
+  const [attributeValues, setAttributeValues] =
+    useState<IMetricAttributeValues>({}); // empty means nothing selected in the selector
   const [notes, setNotes] = useState<string>("");
   const [value, setValue] = useState<string>("");
 
@@ -24,11 +26,11 @@ export const AddMeasurement: React.FC<{
 
   return (
     <FormControl>
-      {Object.keys(metric.flags || {}).length ? (
-        <MetricFlagsSelector
-          flags={metric.flags}
-          selectedFlagKey={flagKey}
-          onFlagChange={(key) => setFlagKey(key)}
+      {Object.keys(metric.attributes || {}).length ? (
+        <MetricAttributesSelector
+          attributes={metric.attributes}
+          selectedAttributeValues={attributeValues}
+          onChange={(key) => setAttributeValues(key)}
         />
       ) : null}
       <TextField
@@ -53,7 +55,7 @@ export const AddMeasurement: React.FC<{
         onClick={() => {
           const command: IAddMeasurementCommand = {
             notes: notes,
-            metricFlagKey: flagKey,
+            metricAttributeValues: attributeValues,
             metricId: metric.id,
           };
 

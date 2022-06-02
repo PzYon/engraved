@@ -1,11 +1,11 @@
 import { MetricType } from "./MetricType";
-import { IMetricFlags } from "./IMetricFlags";
+import { IMetricAttributes } from "./IMetricAttributes";
 
 export interface IMetric {
-  id: string;
-  flags: IMetricFlags;
-  name: string;
-  description: string;
+  id?: string;
+  attributes?: IMetricAttributes;
+  name?: string;
+  description?: string;
   type: MetricType;
-  lastMeasurementDate: string;
+  lastMeasurementDate?: string;
 }

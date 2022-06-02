@@ -55,11 +55,12 @@ export const MetricDetails: React.FC = () => {
         icon: <AddOutlined />,
       },
     ]);
+
     return () => {
       setPageTitle(null);
       setTitleActions([]);
     };
-  }, [metric]);
+  }, [metric?.id]);
 
   if (!isDataReady) {
     return null;

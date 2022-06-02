@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 using Metrix.Core.Domain.Measurements;
@@ -75,7 +76,17 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       new GaugeMetric
       {
         Id = "k3y",
-        Flags = { { "x", "y" }, { "k3y", "v@lue" } }
+        Attributes =
+        {
+          {
+            "stuff",
+            new MetricAttribute
+            {
+              Name = "Stuff",
+              Values = { { "x", "y" }, { "k3y", "v@lue" } }
+            }
+          }
+        }
       }
     );
 
@@ -86,7 +97,12 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       MetricId = "k3y",
       Notes = "n0t3s",
       Value = value,
-      MetricFlagKey = "k3y"
+      MetricAttributeValues = new Dictionary<string, string[]>
+      {
+        {
+          "stuff", new[] { "k3y" }
+        }
+      }
     };
 
     await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
@@ -96,15 +112,33 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     IMeasurement createdMeasurement = _testRepository.Measurements.First();
     Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
-    Assert.AreEqual(command.MetricFlagKey, createdMeasurement.MetricFlagKey);
+
+    AssertMetricAttributeValuesEqual(command.MetricAttributeValues, createdMeasurement.MetricAttributeValues);
 
     var gaugeMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(gaugeMeasurement);
     Assert.AreEqual(value, gaugeMeasurement!.Value);
   }
 
+  private static void AssertMetricAttributeValuesEqual(Dictionary<string, string[]> d1, Dictionary<string, string[]> d2)
+  {
+    bool areEqual = d1 == d2
+                    || d1.Keys.Count == d2.Keys.Count && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k]));
+    if (!areEqual)
+    {
+      Assert.Fail("MetricAttributeValues are not equal.");
+    }
+  }
+
+  private static bool AreEqual(IEnumerable<string> first, IEnumerable<string> second)
+  {
+    CollectionAssert.AreEquivalent(first, second);
+    return true;
+  }
+
+  // TODO: Add test for value key
   [Test]
-  public void Throw_WhenMetricFlagKeyDoesNotExistOnMetric()
+  public void Throw_WhenMetricAttributeKeyDoesNotExistOnMetric()
   {
     _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
 
@@ -113,7 +147,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       MetricId = "k3y",
       Notes = "n0t3s",
       Value = 42,
-      MetricFlagKey = "fooBar"
+      MetricAttributeValues = new Dictionary<string, string[]> { { "fooBar", new[] { "x" } } }
     };
 
     Assert.ThrowsAsync<InvalidCommandException>(

@@ -31,7 +31,7 @@ export const MeasurementsList: React.FC<{
             {format(new Date(measurement.dateTime), "PPPPpppp")}
           </TableCell>
           <TableCell>{measurement.value}</TableCell>
-          <TableCell>{metric.flags[measurement.metricFlagKey]}</TableCell>
+          <TableCell>{JSON.stringify(metric.attributes)}</TableCell>
           <TableCell>{measurement.notes}</TableCell>
         </TableRow>
       ))}

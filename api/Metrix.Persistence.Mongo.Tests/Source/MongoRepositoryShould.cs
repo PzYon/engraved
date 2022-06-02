@@ -73,21 +73,34 @@ public class MongoRepositoryShould
   }
 
   [Test]
-  public async Task CreateMetric_WithFlags()
+  public async Task CreateMetric_WithAttributes()
   {
     var counterMetric = new CounterMetric
     {
       Name = "First",
-      Flags = new Dictionary<string, string> { { "fl@g", "fl@g_value" } }
+      Attributes = new Dictionary<string, MetricAttribute>
+      {
+        {
+          "flags",
+          new MetricAttribute
+          {
+            Name = "Random Values",
+            Values = { { "fl@g", "fl@g_value" } }
+          }
+        }
+      }
     };
 
     UpsertResult result = await _repository.UpsertMetric(counterMetric);
 
     IMetric? metric = await _repository.GetMetric(result.EntityId);
     Assert.IsNotNull(metric);
-    Assert.IsNotNull(metric!.Flags);
-    Assert.Contains("fl@g", metric.Flags.Keys);
-    Assert.AreEqual("fl@g_value", metric.Flags["fl@g"]);
+    Assert.IsNotNull(metric!.Attributes);
+
+    Assert.Contains("flags", metric.Attributes.Keys);
+    MetricAttribute attribute = metric.Attributes["flags"];
+    Assert.Contains("fl@g", attribute.Values.Keys);
+    Assert.AreEqual("fl@g_value", attribute.Values["fl@g"]);
   }
 
   [Test]

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import { IAppAlert } from "./components/errorHandling/AppAlertBar";
 import { IAction } from "./components/layout/HeaderActions";
 import { IUser } from "./serverApi/IUser";
@@ -35,19 +35,19 @@ export const AppContextProvider: React.FC<{
   const [titleActions, setTitleActions] = useState<IAction[]>([]);
   const [appAlert, setAppAlert] = useState<IAppAlert>(undefined);
 
+  const contextValue = useMemo(() => {
+    return {
+      pageTitle,
+      setPageTitle,
+      titleActions,
+      setTitleActions,
+      appAlert,
+      setAppAlert,
+      user,
+    };
+  }, [pageTitle, titleActions, appAlert, user]);
+
   return (
-    <AppContext.Provider
-      value={{
-        pageTitle,
-        setPageTitle,
-        titleActions: titleActions,
-        setTitleActions: setTitleActions,
-        appAlert: appAlert,
-        setAppAlert: setAppAlert,
-        user: user,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
   );
 };

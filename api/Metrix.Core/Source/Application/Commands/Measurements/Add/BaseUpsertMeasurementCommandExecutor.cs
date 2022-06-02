@@ -22,7 +22,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
 
     EnsureCompatibleMetricType(metric);
-    ValidateMetricFlag(metric);
+    ValidateMetricAttributes(metric);
 
     await PerformAdditionalValidation(repository, metric);
 
@@ -30,7 +30,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
     measurement.DateTime = dateService.UtcNow;
-    measurement.MetricFlagKey = Command.MetricFlagKey;
+    measurement.MetricAttributeValues = Command.MetricAttributeValues;
 
     UpsertResult result = await repository.UpsertMeasurement(measurement);
 
@@ -61,11 +61,37 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     }
   }
 
-  private void ValidateMetricFlag(IMetric metric)
+  private void ValidateMetricAttributes(IMetric metric)
   {
-    if (!string.IsNullOrEmpty(Command.MetricFlagKey) && !metric.Flags.ContainsKey(Command.MetricFlagKey))
+    if (Command.MetricAttributeValues.Keys.Count == 0)
     {
-      throw CreateInvalidCommandException($"Flag \"{Command.MetricFlagKey}\" does not exist on metric.");
+      return;
+    }
+
+    var errors = new List<string>();
+
+    foreach (KeyValuePair<string, string[]> kvp in Command.MetricAttributeValues)
+    {
+      string attributeKey = kvp.Key;
+      string[] attributeValues = kvp.Value;
+
+      if (metric.Attributes.ContainsKey(attributeKey))
+      {
+        errors.AddRange(
+          attributeValues
+            .Where(valueKey => !metric.Attributes[attributeKey].Values.ContainsKey(valueKey))
+            .Select(valueKey => "Value key: " + valueKey + " (for " + attributeKey)
+        );
+      }
+      else
+      {
+        errors.Add("Attribute key: " + attributeKey);
+      }
+    }
+
+    if (errors.Any())
+    {
+      throw new InvalidCommandException(Command, "Invalid attributes: " + string.Join(", ", errors));
     }
   }
 
