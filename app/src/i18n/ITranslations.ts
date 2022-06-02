@@ -11,7 +11,6 @@ export interface ITranslations {
   label_groupBy_time: string;
   label_groupBy_attribute: string;
   label_metricDescription: string;
-  label_metricFlags: string;
   label_metricName: string;
   label_metricType: string;
   tab_measurements: string;

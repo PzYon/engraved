@@ -113,12 +113,27 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
 
-    // TODO: compare correctly!
-    // Assert.AreEqual(command.MetricFlagKeys, createdMeasurement.MetricFlagKeys);
+    AssertMetricAttributeValuesEqual(command.MetricAttributeValues, createdMeasurement.MetricAttributeValues);
 
     var gaugeMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(gaugeMeasurement);
     Assert.AreEqual(value, gaugeMeasurement!.Value);
+  }
+
+  private static void AssertMetricAttributeValuesEqual(Dictionary<string, string[]> d1, Dictionary<string, string[]> d2)
+  {
+    bool areEqual = d1 == d2
+                    || d1.Keys.Count == d2.Keys.Count && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k]));
+    if (!areEqual)
+    {
+      Assert.Fail("MetricAttributeValues are not equal.");
+    }
+  }
+
+  private static bool AreEqual(IEnumerable<string> first, IEnumerable<string> second)
+  {
+    CollectionAssert.AreEquivalent(first, second);
+    return true;
   }
 
   // TODO: Add test for value key

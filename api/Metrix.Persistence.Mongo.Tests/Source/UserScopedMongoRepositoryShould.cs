@@ -103,7 +103,7 @@ public class UserScopedMongoRepositoryShould
 
     IMeasurement measurement = new TimerMeasurement { MetricId = metricId };
 
-    UpsertResult result = await _userScopedRepository.UpsertMeasurement(measurement);
+    await _userScopedRepository.UpsertMeasurement(measurement);
     IMeasurement[] measurements = await _repository.GetAllMeasurements(metricId);
 
     Assert.True(measurements.All(m => m.UserId == _currentUserId));

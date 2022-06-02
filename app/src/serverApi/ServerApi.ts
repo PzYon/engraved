@@ -51,13 +51,13 @@ export class ServerApi {
     metricId: string,
     name: string,
     description: string,
-    metricFlags: IMetricAttributes
+    attributes: IMetricAttributes
   ): Promise<ICommandResult> {
     const payload: IEditMetricCommand = {
       metricId: metricId,
       name: name,
       description: description,
-      flags: metricFlags,
+      attributes: attributes,
     };
 
     return await this.executeRequest("/metrics/", "PUT", payload);

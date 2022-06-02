@@ -4,5 +4,5 @@ export interface IEditMetricCommand {
   metricId: string;
   name: string;
   description: string;
-  flags: IMetricAttributes;
+  attributes: IMetricAttributes;
 }

@@ -1,4 +1,5 @@
-﻿using Metrix.Core.Domain.Measurements;
+﻿using System.Text.Json;
+using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
 
@@ -28,29 +29,33 @@ public class InMemoryRepository : IRepository
       RemoveUser(user);
     }
 
-    Users.Add(user);
+    Users.Add(user.Copy());
 
-    return Task.FromResult(new UpsertResult {EntityId = user.Id});
+    return Task.FromResult(new UpsertResult { EntityId = user.Id });
   }
 
   public Task<IUser[]> GetAllUsers()
   {
-    return Task.FromResult(Users.ToArray());
+    return Task.FromResult(Users.Select(u => u.Copy()).ToArray());
   }
 
   public Task<IMetric[]> GetAllMetrics()
   {
-    return Task.FromResult(Metrics.ToArray());
+    return Task.FromResult(Metrics.Select(m => m.Copy()).ToArray());
   }
 
   public Task<IMetric?> GetMetric(string metricId)
   {
-    return Task.FromResult(Metrics.FirstOrDefault(m => m.Id == metricId));
+    return Task.FromResult(Metrics.FirstOrDefault(m => m.Id == metricId).Copy());
   }
 
   public Task<IMeasurement[]> GetAllMeasurements(string metricId)
   {
-    return Task.FromResult(Measurements.Where(m => m.MetricId == metricId).ToArray());
+    return Task.FromResult(
+      Measurements.Where(m => m.MetricId == metricId)
+        .Select(m => m.Copy())
+        .ToArray()
+    );
   }
 
   public Task<UpsertResult> UpsertMetric(IMetric metric)
@@ -64,9 +69,9 @@ public class InMemoryRepository : IRepository
       RemoveMetric(metric);
     }
 
-    Metrics.Add(metric);
+    Metrics.Add(metric.Copy());
 
-    return Task.FromResult(new UpsertResult {EntityId = metric.Id});
+    return Task.FromResult(new UpsertResult { EntityId = metric.Id });
   }
 
   public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
@@ -80,9 +85,9 @@ public class InMemoryRepository : IRepository
       RemoveMeasurement(measurement);
     }
 
-    Measurements.Add(measurement);
+    Measurements.Add(measurement.Copy());
 
-    return Task.FromResult(new UpsertResult {EntityId = measurement.Id});
+    return Task.FromResult(new UpsertResult { EntityId = measurement.Id });
   }
 
   private void RemoveMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement

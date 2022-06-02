@@ -9,7 +9,7 @@ export const EditMetric: React.FC<{
   metric: IMetric;
   onSaved: () => Promise<unknown>;
 }> = ({ metric, onSaved }) => {
-  const [flagJson, setFlagJson] = useState(
+  const [attributeJson, setAttributeJson] = useState(
     metric.attributes ? JSON.stringify(metric.attributes) : ""
   );
 
@@ -34,10 +34,10 @@ export const EditMetric: React.FC<{
         margin={"normal"}
       />
       <TextField
-        value={flagJson}
-        onChange={(event) => setFlagJson(event.target.value)}
+        value={attributeJson}
+        onChange={(event) => setAttributeJson(event.target.value)}
         multiline={true}
-        label={"Metric Flags as JSON"}
+        label={"Metric Attributes JSON"}
         margin={"normal"}
       />
       <Button
@@ -47,7 +47,7 @@ export const EditMetric: React.FC<{
             metric.id,
             name,
             description,
-            JSON.parse(flagJson)
+            JSON.parse(attributeJson)
           )
             .then(() => {
               setAppAlert({
