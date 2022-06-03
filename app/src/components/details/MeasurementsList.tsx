@@ -20,7 +20,7 @@ export const MeasurementsList: React.FC<{
       <TableRow>
         <TableCell>{translations.columnName_date}</TableCell>
         <TableCell>{translations.columnName_value}</TableCell>
-        <TableCell>{translations.columnName_flag}</TableCell>
+        <TableCell>{translations.columnName_attributes}</TableCell>
         <TableCell>{translations.columnName_notes}</TableCell>
       </TableRow>
     </TableHead>
