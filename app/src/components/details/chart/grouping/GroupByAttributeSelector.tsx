@@ -22,7 +22,7 @@ export const GroupByAttributeSelector: React.FC<{
       <Select
         id="group-by-attribute"
         labelId="group-by-attribute-label"
-        label={translations.label_groupBy_time}
+        label={translations.label_groupBy_attribute}
         value={selectedAttributeKey}
         onChange={(event: SelectChangeEvent) => {
           onChange(event.target.value as unknown as string);

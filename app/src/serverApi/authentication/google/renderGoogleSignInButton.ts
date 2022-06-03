@@ -3,7 +3,7 @@ import { envSettings } from "../../../env/envSettings";
 
 const scriptUrl = "https://accounts.google.com/gsi/client";
 
-export function signInWithGoogle(
+export function renderGoogleSignInButton(
   signInWithJwt: (response: GoogleInitializeResponse) => void,
   domElement: HTMLElement
 ) {

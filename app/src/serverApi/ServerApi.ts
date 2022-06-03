@@ -9,9 +9,18 @@ import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
 import { IAuthResult } from "./IAuthResult";
+import { IUser } from "./IUser";
+import { AuthTokenStorage } from "./authentication/AuthTokenStorage";
+import { ApiError } from "./ApiError";
 
 export class ServerApi {
   private static _jwtToken: string;
+
+  static async tryAuthenticate(token: string): Promise<IUser> {
+    this._jwtToken = token;
+
+    return await this.executeRequest<IUser>("/user");
+  }
 
   static async authenticate(token: string): Promise<IAuthResult> {
     const authResult: IAuthResult = await this.executeRequest(
@@ -19,6 +28,8 @@ export class ServerApi {
       "POST",
       { token: token }
     );
+
+    new AuthTokenStorage().setAuthResult(authResult);
 
     this._jwtToken = authResult.jwtToken;
 
@@ -92,8 +103,7 @@ export class ServerApi {
       return json;
     }
 
-    const apiError = json as IApiError;
-    throw new Error(response.status + ": " + apiError?.message || " -");
+    throw new ApiError(response.status, json as IApiError);
   }
 
   private static async getResponse(
