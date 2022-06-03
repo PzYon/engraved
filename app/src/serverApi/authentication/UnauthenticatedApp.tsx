@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { IAuthResult } from "../IAuthResult";
 import { IUser } from "../IUser";
 import { GoogleInitializeResponse } from "./google/GoogleTypes";
-import { signInWithGoogle } from "./google/signInWithGoogle";
+import { renderGoogleSignInButton } from "./google/renderGoogleSignInButton";
 import { AuthTokenStorage } from "./AuthTokenStorage";
 import { ApiError } from "../ApiError";
 
@@ -20,7 +20,7 @@ export const UnauthenticatedApp: React.FC = () => {
 
     const storage = new AuthTokenStorage();
     if (!storage.hasResult()) {
-      return signInWithGoogle(onSignedIn, ref.current);
+      return renderGoogleSignInButton(onSignedIn, ref.current);
     }
 
     ServerApi.tryAuthenticate(storage.getAuthResult().jwtToken)
@@ -29,7 +29,7 @@ export const UnauthenticatedApp: React.FC = () => {
       })
       .catch((e: ApiError) => {
         if (e.status === 401) {
-          signInWithGoogle(onSignedIn, ref.current);
+          renderGoogleSignInButton(onSignedIn, ref.current);
         }
       });
   }, []);
