@@ -6,8 +6,8 @@ export class AuthTokenStorage {
 
   private storageUtil: StorageUtil;
 
-  constructor(storage: Storage) {
-    this.storageUtil = new StorageUtil(storage);
+  constructor() {
+    this.storageUtil = new StorageUtil(sessionStorage);
   }
 
   hasResult(): boolean {

@@ -6,6 +6,8 @@ import { IAuthResult } from "../IAuthResult";
 import { IUser } from "../IUser";
 import { GoogleInitializeResponse } from "./google/GoogleTypes";
 import { signInWithGoogle } from "./google/signInWithGoogle";
+import { AuthTokenStorage } from "./AuthTokenStorage";
+import { ApiError } from "../ApiError";
 
 export const UnauthenticatedApp: React.FC = () => {
   const [user, setUser] = useState<IUser>();
@@ -15,7 +17,21 @@ export const UnauthenticatedApp: React.FC = () => {
     if (!ref.current) {
       return;
     }
-    return signInWithGoogle(onSignedIn, ref.current);
+
+    const storage = new AuthTokenStorage();
+    if (!storage.hasResult()) {
+      return signInWithGoogle(onSignedIn, ref.current);
+    }
+
+    ServerApi.tryAuthenticate(storage.getAuthResult().jwtToken)
+      .then((u) => {
+        setUser(u);
+      })
+      .catch((e: ApiError) => {
+        if (e.status === 401) {
+          signInWithGoogle(onSignedIn, ref.current);
+        }
+      });
   }, []);
 
   if (user) {
