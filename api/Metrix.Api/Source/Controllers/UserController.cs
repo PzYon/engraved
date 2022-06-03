@@ -18,7 +18,7 @@ public class UserController : Controller
   }
 
   [HttpGet]
-  public async Task<IUser> GetCurrentUser()
+  public IUser GetCurrentUser()
   {
     return _userScopedRepository.CurrentUser.Value;
   }
