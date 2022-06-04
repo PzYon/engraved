@@ -28,7 +28,7 @@ export const AddMeasurement: React.FC<{
     <FormControl>
       {Object.keys(metric.attributes || {}).length ? (
         <MetricAttributesSelector
-          attributes={metric.attributes}
+          metric={metric}
           selectedAttributeValues={attributeValues}
           onChange={(key) => setAttributeValues(key)}
         />
