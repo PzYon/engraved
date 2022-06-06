@@ -19,7 +19,6 @@ export const MetricAttributesSelector: React.FC<{
         return (
           <React.Fragment key={attributeKey}>
             <MetricAttributeSelector
-              metric={metric}
               attributeKey={attributeKey}
               attribute={attribute}
               selectedAttributeValues={selectedAttributeValues}

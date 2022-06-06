@@ -10,6 +10,7 @@ import { IAddMeasurementCommand } from "../../../serverApi/commands/IAddMeasurem
 import { IAddGaugeMeasurementCommand } from "../../../serverApi/commands/IAddGaugeMeasurementCommand";
 import { ITimerMetric } from "../../../serverApi/ITimerMetric";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
+import { ApiError } from "../../../serverApi/ApiError";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
@@ -30,7 +31,7 @@ export const AddMeasurement: React.FC<{
         <MetricAttributesSelector
           metric={metric}
           selectedAttributeValues={attributeValues}
-          onChange={(key) => setAttributeValues(key)}
+          onChange={(values) => setAttributeValues(values)}
         />
       ) : null}
       <TextField
@@ -52,39 +53,59 @@ export const AddMeasurement: React.FC<{
 
       <Button
         variant="outlined"
-        onClick={() => {
-          const command: IAddMeasurementCommand = {
-            notes: notes,
-            metricAttributeValues: attributeValues,
-            metricId: metric.id,
-          };
+        onClick={async () => {
+          try {
+            let hasNewValues = false;
 
-          if (metric.type === MetricType.Gauge) {
-            (command as IAddGaugeMeasurementCommand).value = !isNaN(
-              value as never
-            )
-              ? Number(value)
-              : undefined;
-          }
-
-          ServerApi.addMeasurement(command, getUrlSegment())
-            .then(() => {
-              setAppAlert({
-                title: `Added measurement`,
-                type: "success",
-              });
-
-              if (onAdded) {
-                onAdded();
+            for (const keyInValues in attributeValues) {
+              for (const value of attributeValues[keyInValues]) {
+                if (!metric.attributes[keyInValues].values[value]) {
+                  metric.attributes[keyInValues].values[value] = value;
+                  hasNewValues = true;
+                }
               }
-            })
-            .catch((e) => {
-              setAppAlert({
-                title: "Failed to add measurement",
-                message: e.message,
-                type: "error",
-              });
+            }
+
+            if (hasNewValues) {
+              await ServerApi.editMetric(
+                metric.id,
+                metric.name,
+                metric.description,
+                metric.attributes
+              );
+            }
+
+            const command: IAddMeasurementCommand = {
+              notes: notes,
+              metricAttributeValues: attributeValues,
+              metricId: metric.id,
+            };
+
+            if (metric.type === MetricType.Gauge) {
+              (command as IAddGaugeMeasurementCommand).value = !isNaN(
+                value as never
+              )
+                ? Number(value)
+                : undefined;
+            }
+
+            await ServerApi.addMeasurement(command, getUrlSegment());
+
+            setAppAlert({
+              title: `Added measurement`,
+              type: "success",
             });
+
+            if (onAdded) {
+              onAdded();
+            }
+          } catch (e) {
+            setAppAlert({
+              title: "Failed to add measurement",
+              message: (e as ApiError).message,
+              type: "error",
+            });
+          }
         }}
       >
         {getAddButtonLabel()}
