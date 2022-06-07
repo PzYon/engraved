@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { IMetricAttribute } from "../../../serverApi/IMetricAttribute";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
-import { Autocomplete, createFilterOptions, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  createFilterOptions,
+  FilterOptionsState,
+  TextField,
+} from "@mui/material";
 
 interface IOption {
   key: string;
@@ -20,41 +25,23 @@ export const MetricAttributeSelector: React.FC<{
   selectedAttributeValues: IMetricAttributeValues;
   onChange: (attributesValues: IMetricAttributeValues) => void;
 }> = ({ attributeKey, attribute, selectedAttributeValues, onChange }) => {
-  return (
-    <Autocomplete
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={attribute.name}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <React.Fragment>{params.InputProps.endAdornment}</React.Fragment>
-            ),
-          }}
-        />
-      )}
-      selectOnFocus
-      clearOnBlur
-      handleHomeEndKeys
-      getOptionLabel={(o) => {
-        const option = o as IOption;
-
-        return option.addNewKey &&
-          getSelectedAttributeValue() == option.addNewKey
-          ? option.addNewKey + " *"
-          : option.label;
-      }}
-      isOptionEqualToValue={(option, value) => {
-        const o = option as IOption;
-        const v = value as IOption;
-
-        return o.key == v.key;
-      }}
-      options={Object.entries(attribute.values).map((arr) => ({
+  const options = useMemo(
+    () =>
+      Object.entries(attribute.values).map((arr) => ({
         key: arr[0],
         label: arr[1],
-      }))}
+      })),
+    [attribute.values]
+  );
+
+  return (
+    <Autocomplete
+      options={options}
+      getOptionLabel={(option) => getOptionLabel(option as IOption)}
+      isOptionEqualToValue={(option, value) =>
+        areOptionsEqual(option as IOption, value as IOption)
+      }
+      filterOptions={filterOptions}
       onChange={async (_, selectedOption) => {
         const option: IOption = selectedOption as IOption;
 
@@ -63,27 +50,54 @@ export const MetricAttributeSelector: React.FC<{
           ...{ [attributeKey]: [option?.addNewKey || option?.key] },
         });
       }}
-      filterOptions={(options: IOption[], params) => {
-        const { inputValue } = params;
-        const isExisting = options.some((o) => inputValue === o.label);
-
-        const filtered = filter(options, params);
-
-        if (inputValue !== "" && !isExisting) {
-          filtered.push({
-            key: inputValue,
-            addNewKey: inputValue,
-            label: `Add "${inputValue}"`,
-          });
-        }
-
-        return filtered;
-      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={attribute.name}
+          InputProps={params.InputProps}
+        />
+      )}
+      selectOnFocus
+      clearOnBlur
+      handleHomeEndKeys
     />
   );
 
   function getSelectedAttributeValue(): string {
     const values = selectedAttributeValues?.[attributeKey] || [];
     return values[0];
+  }
+
+  function areOptionsEqual(a: IOption, b: IOption): boolean {
+    return a.key == b.key;
+  }
+
+  function filterOptions(
+    options: IOption[],
+    params: FilterOptionsState<IOption>
+  ): IOption[] {
+    const { inputValue } = params;
+
+    const isExisting = options.some(
+      (o) => inputValue?.toLowerCase() === o.label?.toLowerCase()
+    );
+
+    const filtered = filter(options, params);
+
+    if (inputValue !== "" && !isExisting) {
+      filtered.push({
+        key: inputValue,
+        addNewKey: inputValue,
+        label: `Add "${inputValue}"`,
+      });
+    }
+
+    return filtered;
+  }
+
+  function getOptionLabel(option: IOption): string {
+    return option.addNewKey && getSelectedAttributeValue() == option.addNewKey
+      ? option.addNewKey + " *"
+      : option.label;
   }
 };

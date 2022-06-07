@@ -2,15 +2,13 @@ import React from "react";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 import { IMetricAttribute } from "../../../serverApi/IMetricAttribute";
 import { MetricAttributeSelector } from "./MetricAttributeSelector";
-import { IMetric } from "../../../serverApi/IMetric";
+import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 
 export const MetricAttributesSelector: React.FC<{
-  metric: IMetric;
+  attributes: IMetricAttributes;
   selectedAttributeValues: IMetricAttributeValues;
   onChange: (attributesValues: IMetricAttributeValues) => void;
-}> = ({ metric, selectedAttributeValues, onChange }) => {
-  const attributes = metric.attributes;
-
+}> = ({ attributes, selectedAttributeValues, onChange }) => {
   return (
     <>
       {Object.keys(attributes).map((attributeKey) => {
