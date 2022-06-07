@@ -4,13 +4,15 @@ import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
+import { MetricAttributesEditor } from "./MetricAttributesEditor";
+import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 
 export const EditMetric: React.FC<{
   metric: IMetric;
   onSaved: () => Promise<unknown>;
 }> = ({ metric, onSaved }) => {
-  const [attributeJson, setAttributeJson] = useState(
-    metric.attributes ? JSON.stringify(metric.attributes) : ""
+  const [attributes, setAttributes] = useState<IMetricAttributes>(
+    metric.attributes
   );
 
   const [name, setName] = useState(metric.name);
@@ -33,22 +35,14 @@ export const EditMetric: React.FC<{
         label={"Description"}
         margin={"normal"}
       />
-      <TextField
-        value={attributeJson}
-        onChange={(event) => setAttributeJson(event.target.value)}
-        multiline={true}
-        label={"Metric Attributes JSON"}
-        margin={"normal"}
+      <MetricAttributesEditor
+        attributes={attributes}
+        setAttributes={setAttributes}
       />
       <Button
         variant="outlined"
         onClick={() => {
-          ServerApi.editMetric(
-            metric.id,
-            name,
-            description,
-            JSON.parse(attributeJson)
-          )
+          ServerApi.editMetric(metric.id, name, description, attributes)
             .then(() => {
               setAppAlert({
                 title: "Saved metric",

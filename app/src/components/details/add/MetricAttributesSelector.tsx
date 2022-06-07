@@ -15,14 +15,13 @@ export const MetricAttributesSelector: React.FC<{
         const attribute: IMetricAttribute = attributes[attributeKey];
 
         return (
-          <React.Fragment key={attributeKey}>
-            <MetricAttributeSelector
-              attributeKey={attributeKey}
-              attribute={attribute}
-              selectedAttributeValues={selectedAttributeValues}
-              onChange={onChange}
-            />
-          </React.Fragment>
+          <MetricAttributeSelector
+            key={attributeKey}
+            attributeKey={attributeKey}
+            attribute={attribute}
+            selectedAttributeValues={selectedAttributeValues}
+            onChange={onChange}
+          />
         );
       })}
     </>
