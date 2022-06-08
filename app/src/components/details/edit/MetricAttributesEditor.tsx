@@ -1,19 +1,24 @@
 import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
-import React from "react";
+import React, { useState } from "react";
 import { MetricAttributeEditor } from "./MetricAttributeEditor";
 import {
   List,
   ListItem,
+  ListItemButton,
+  ListItemIcon,
   ListItemText,
   ListSubheader,
   styled,
 } from "@mui/material";
 import { ListItemTextField } from "./ListItemTextField";
+import { AddCircleOutline } from "@mui/icons-material";
 
 export const MetricAttributesEditor: React.FC<{
   attributes: IMetricAttributes;
   setAttributes: (attributes: IMetricAttributes) => void;
 }> = ({ attributes, setAttributes }) => {
+  const [showAddNewInput, setShowAddNewInput] = useState(false);
+
   return (
     <Host>
       <List subheader={<ListSubheader>Attributes</ListSubheader>}>
@@ -31,7 +36,26 @@ export const MetricAttributesEditor: React.FC<{
 
         <ListItem key={"add_new_attribute"}>
           <ListItemText>
-            <ListItemTextField onBlur={(newValue: string) => alert(newValue)} />
+            {showAddNewInput ? (
+              <ListItemTextField
+                onBlur={(newValue: string) => {
+                  const newAttributes = { ...attributes };
+                  newAttributes[newValue] = {
+                    name: newValue,
+                    values: {},
+                  };
+
+                  setAttributes(newAttributes);
+                  setShowAddNewInput(false);
+                }}
+              />
+            ) : (
+              <ListItemButton onClick={() => setShowAddNewInput(true)}>
+                <ListItemIcon>
+                  <AddCircleOutline fontSize="small" />
+                </ListItemIcon>
+              </ListItemButton>
+            )}
           </ListItemText>
         </ListItem>
       </List>
