@@ -1,7 +1,14 @@
 import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 import React from "react";
 import { MetricAttributeEditor } from "./MetricAttributeEditor";
-import { List, ListItem, ListSubheader, styled } from "@mui/material";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListSubheader,
+  styled,
+} from "@mui/material";
+import { ListItemTextField } from "./ListItemTextField";
 
 export const MetricAttributesEditor: React.FC<{
   attributes: IMetricAttributes;
@@ -9,26 +16,24 @@ export const MetricAttributesEditor: React.FC<{
 }> = ({ attributes, setAttributes }) => {
   return (
     <Host>
-      <List
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            Attributes
-          </ListSubheader>
-        }
-      >
-        {Object.entries(attributes).map(([key, value]) => {
-          return (
-            <MetricAttributeEditor
-              key={key}
-              attribute={value}
-              onChange={(attribute) => {
-                const newAttributes = { ...attributes };
-                newAttributes[key] = attribute;
-                setAttributes(newAttributes);
-              }}
-            />
-          );
-        })}
+      <List subheader={<ListSubheader>Attributes</ListSubheader>}>
+        {Object.entries(attributes).map(([key, value]) => (
+          <MetricAttributeEditor
+            key={key}
+            attribute={value}
+            onChange={(attribute) => {
+              const newAttributes = { ...attributes };
+              newAttributes[key] = attribute;
+              setAttributes(newAttributes);
+            }}
+          />
+        ))}
+
+        <ListItem key={"add_new_attribute"}>
+          <ListItemText>
+            <ListItemTextField onBlur={(newValue: string) => alert(newValue)} />
+          </ListItemText>
+        </ListItem>
       </List>
     </Host>
   );
