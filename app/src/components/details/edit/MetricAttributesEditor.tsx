@@ -7,8 +7,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
   styled,
+  Typography,
 } from "@mui/material";
 import { ListItemTextField } from "./ListItemTextField";
 import { AddCircleOutline } from "@mui/icons-material";
@@ -20,8 +20,8 @@ export const MetricAttributesEditor: React.FC<{
   const [showAddNewInput, setShowAddNewInput] = useState(false);
 
   return (
-    <Host>
-      <List subheader={<ListSubheader>Attributes</ListSubheader>}>
+    <FormSection title="Attributes">
+      <List>
         {Object.entries(attributes).map(([key, value]) => (
           <MetricAttributeEditor
             key={key}
@@ -59,11 +59,34 @@ export const MetricAttributesEditor: React.FC<{
           </ListItemText>
         </ListItem>
       </List>
+    </FormSection>
+  );
+};
+
+const FormSection: React.FC<{
+  children: React.ReactElement;
+  title: string;
+}> = ({ children, title }) => {
+  return (
+    <Host>
+      <Title>{title}</Title>
+      {children}
     </Host>
   );
 };
 
 const Host = styled("div")`
+  margin-top: 15px;
+  position: relative;
   border-radius: 4px;
   border: 1px solid rgb(0 0 0 / 23%);
+`;
+
+const Title = styled(Typography)`
+  position: absolute;
+  top: -10px;
+  font-size: small;
+  left: 6px;
+  background-color: rgb(255 255 255);
+  padding: 0 5px;
 `;
