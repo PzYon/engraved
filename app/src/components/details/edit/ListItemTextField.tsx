@@ -8,7 +8,7 @@ export const ListItemTextField: React.FC<{
 }> = ({ defaultValue, onBlur, isExisting }) => {
   const [disabled, setDisabled] = useState(isExisting);
 
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState(defaultValue ?? "");
 
   return (
     <TextField

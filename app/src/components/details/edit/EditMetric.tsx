@@ -73,4 +73,5 @@ export const EditMetric: React.FC<{
 
 const ButtonContainer = styled("div")`
   margin-top: 15px;
+  text-align: right;
 `;
