@@ -29,7 +29,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     TMeasurement measurement = CreateMeasurement(dateService);
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
-    measurement.DateTime = dateService.UtcNow;
+    measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
     measurement.MetricAttributeValues = Command.MetricAttributeValues;
 
     UpsertResult result = await repository.UpsertMeasurement(measurement);

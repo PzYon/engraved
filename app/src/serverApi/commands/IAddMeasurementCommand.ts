@@ -4,4 +4,5 @@ export interface IAddMeasurementCommand {
   metricId: string;
   metricAttributeValues?: IMetricAttributeValues;
   notes?: string;
+  dateTime?: Date;
 }

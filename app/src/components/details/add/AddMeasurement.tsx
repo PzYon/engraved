@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, FormControl, TextField } from "@mui/material";
+import { Button, FormControl, styled, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
@@ -11,6 +11,7 @@ import { IAddGaugeMeasurementCommand } from "../../../serverApi/commands/IAddGau
 import { ITimerMetric } from "../../../serverApi/ITimerMetric";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 import { ApiError } from "../../../serverApi/ApiError";
+import { DateTimeSelector } from "../../common/DateTimeSelector";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
@@ -20,6 +21,7 @@ export const AddMeasurement: React.FC<{
     useState<IMetricAttributeValues>({}); // empty means nothing selected in the selector
   const [notes, setNotes] = useState<string>("");
   const [value, setValue] = useState<string>("");
+  const [date, setDate] = useState<Date>(undefined);
 
   const { setAppAlert } = useAppContext();
 
@@ -34,6 +36,9 @@ export const AddMeasurement: React.FC<{
           onChange={(values) => setAttributeValues(values)}
         />
       ) : null}
+      <FormElementContainer>
+        <DateTimeSelector setDate={setDate} date={date} />
+      </FormElementContainer>
       <TextField
         value={notes}
         onChange={(event) => setNotes(event.target.value)}
@@ -79,6 +84,7 @@ export const AddMeasurement: React.FC<{
               notes: notes,
               metricAttributeValues: attributeValues,
               metricId: metric.id,
+              dateTime: new Date(date),
             };
 
             if (metric.type === MetricType.Gauge) {
@@ -129,3 +135,7 @@ export const AddMeasurement: React.FC<{
     return translations.add;
   }
 };
+
+const FormElementContainer = styled("div")`
+  margin-top: 15px;
+`;
