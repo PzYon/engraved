@@ -10,6 +10,8 @@ public abstract class BaseUpsertMeasurementCommand : ICommand
 
   public string? Notes { get; set; }
 
+  public DateTime? DateTime { get; set; }
+
   public Dictionary<string, string[]> MetricAttributeValues { get; set; } = new();
 
   public abstract ICommandExecutor CreateExecutor();
