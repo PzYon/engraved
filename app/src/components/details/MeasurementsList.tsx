@@ -14,7 +14,7 @@ import { IMetric } from "../../serverApi/IMetric";
 export const MeasurementsList: React.FC<{
   metric: IMetric;
   measurements: IMeasurement[];
-}> = ({ metric, measurements }) => (
+}> = ({ measurements }) => (
   <Table>
     <TableHead>
       <TableRow>
@@ -31,7 +31,9 @@ export const MeasurementsList: React.FC<{
             {format(new Date(measurement.dateTime), "PPPPpppp")}
           </TableCell>
           <TableCell>{measurement.value}</TableCell>
-          <TableCell>{JSON.stringify(metric.attributes)}</TableCell>
+          <TableCell>
+            {JSON.stringify(measurement.metricAttributeValues)}
+          </TableCell>
           <TableCell>{measurement.notes}</TableCell>
         </TableRow>
       ))}

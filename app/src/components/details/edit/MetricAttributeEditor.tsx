@@ -5,9 +5,14 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import {
+  ExpandLess,
+  ExpandMore,
+  RemoveCircleOutline,
+} from "@mui/icons-material";
 import { ListItemTextField } from "./ListItemTextField";
 
 export const MetricAttributeEditor: React.FC<{
@@ -32,6 +37,11 @@ export const MetricAttributeEditor: React.FC<{
                 isExisting={true}
                 onBlur={(newValue) => handleOnChange(key, newValue)}
               />
+              <ListItemButton onClick={() => handleOnChange(key, null)}>
+                <ListItemIcon>
+                  <RemoveCircleOutline fontSize="small" />
+                </ListItemIcon>
+              </ListItemButton>
             </ListItem>
           ))}
         </List>
@@ -49,7 +59,12 @@ export const MetricAttributeEditor: React.FC<{
 
   function handleOnChange(attributeKey: string, value: string) {
     const updatedAttribute = { ...attribute };
-    updatedAttribute.values[attributeKey] = value;
+
+    if (value) {
+      updatedAttribute.values[attributeKey] = value;
+    } else {
+      delete updatedAttribute.values[attributeKey];
+    }
 
     return onChange(updatedAttribute);
   }

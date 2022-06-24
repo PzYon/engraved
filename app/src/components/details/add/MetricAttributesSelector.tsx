@@ -3,6 +3,7 @@ import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValue
 import { IMetricAttribute } from "../../../serverApi/IMetricAttribute";
 import { MetricAttributeSelector } from "./MetricAttributeSelector";
 import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
+import { FormElementContainer } from "../../common/FormUtils";
 
 export const MetricAttributesSelector: React.FC<{
   attributes: IMetricAttributes;
@@ -15,13 +16,14 @@ export const MetricAttributesSelector: React.FC<{
         const attribute: IMetricAttribute = attributes[attributeKey];
 
         return (
-          <MetricAttributeSelector
-            key={attributeKey}
-            attributeKey={attributeKey}
-            attribute={attribute}
-            selectedAttributeValues={selectedAttributeValues}
-            onChange={onChange}
-          />
+          <FormElementContainer key={attributeKey}>
+            <MetricAttributeSelector
+              attributeKey={attributeKey}
+              attribute={attribute}
+              selectedAttributeValues={selectedAttributeValues}
+              onChange={onChange}
+            />
+          </FormElementContainer>
         );
       })}
     </>

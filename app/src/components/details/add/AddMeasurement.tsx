@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, FormControl, styled, TextField } from "@mui/material";
+import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
@@ -12,6 +12,7 @@ import { ITimerMetric } from "../../../serverApi/ITimerMetric";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 import { ApiError } from "../../../serverApi/ApiError";
 import { DateTimeSelector } from "../../common/DateTimeSelector";
+import { FormElementContainer } from "../../common/FormUtils";
 
 export const AddMeasurement: React.FC<{
   metric: IMetric;
@@ -29,24 +30,6 @@ export const AddMeasurement: React.FC<{
 
   return (
     <FormControl>
-      {Object.keys(metric.attributes || {}).length ? (
-        <MetricAttributesSelector
-          attributes={metric.attributes}
-          selectedAttributeValues={attributeValues}
-          onChange={(values) => setAttributeValues(values)}
-        />
-      ) : null}
-      <FormElementContainer>
-        <DateTimeSelector setDate={setDate} date={date} />
-      </FormElementContainer>
-      <TextField
-        value={notes}
-        onChange={(event) => setNotes(event.target.value)}
-        multiline={true}
-        label={"Notes"}
-        margin={"normal"}
-      />
-
       {metric.type === MetricType.Gauge ? (
         <TextField
           value={value}
@@ -55,6 +38,26 @@ export const AddMeasurement: React.FC<{
           margin={"normal"}
         />
       ) : null}
+
+      <FormElementContainer>
+        <DateTimeSelector setDate={setDate} date={date} />
+      </FormElementContainer>
+
+      {Object.keys(metric.attributes || {}).length ? (
+        <MetricAttributesSelector
+          attributes={metric.attributes}
+          selectedAttributeValues={attributeValues}
+          onChange={(values) => setAttributeValues(values)}
+        />
+      ) : null}
+
+      <TextField
+        value={notes}
+        onChange={(event) => setNotes(event.target.value)}
+        multiline={true}
+        label={"Notes"}
+        margin={"normal"}
+      />
 
       <Button
         variant="outlined"
@@ -135,7 +138,3 @@ export const AddMeasurement: React.FC<{
     return translations.add;
   }
 };
-
-const FormElementContainer = styled("div")`
-  margin-top: 15px;
-`;

@@ -60,7 +60,7 @@ export const MetricDetails: React.FC = () => {
       setPageTitle(null);
       setTitleActions([]);
     };
-  }, [metric?.id]);
+  }, [metric]);
 
   if (!isDataReady) {
     return null;
