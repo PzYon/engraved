@@ -20,7 +20,7 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
 
   return (
     <Section>
-      <FormControl>
+      <FormControl sx={{ width: "100%" }}>
         <TextField
           value={name}
           onChange={(event) => setName(event.target.value)}

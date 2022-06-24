@@ -1,16 +1,17 @@
 import React, { useMemo } from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { HeaderActions, IAction } from "../layout/HeaderActions";
+import { HeaderActions } from "../layout/HeaderActions";
 import { AddOutlined, Edit } from "@mui/icons-material";
 import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementDialog";
+import { IIconButtonAction } from "../common/IconButtonWrapper";
 
 export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
   metric,
 }) => {
   const { renderDialog } = useDialogContext();
 
-  const actions = useMemo<IAction[]>(
+  const actions = useMemo<IIconButtonAction[]>(
     () => [
       {
         key: "add_measurement",

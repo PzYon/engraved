@@ -17,6 +17,7 @@ import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 import { Typography } from "@mui/material";
 import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
 import styled from "styled-components";
+import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 
 export const MetricDetails: React.FC = () => {
   const { metricId } = useParams();
@@ -60,7 +61,7 @@ export const MetricDetails: React.FC = () => {
       setPageTitle(null);
       setTitleActions([]);
     };
-  }, [metric?.id]);
+  }, [metric]);
 
   if (!isDataReady) {
     return null;
@@ -89,6 +90,16 @@ export const MetricDetails: React.FC = () => {
           path="/edit"
           element={
             <EditMetricLauncher metric={metric} reloadMetric={getMetric} />
+          }
+        />
+        <Route
+          path="/measurements/:measurementId/edit"
+          element={
+            <EditMeasurementLauncher
+              metric={metric}
+              measurements={measurements}
+              reloadMetric={getMetric}
+            />
           }
         />
       </Routes>

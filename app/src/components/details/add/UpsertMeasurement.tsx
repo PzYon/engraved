@@ -1,27 +1,37 @@
 import React, { useState } from "react";
-import { Button, FormControl, styled, TextField } from "@mui/material";
+import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
 import { MetricAttributesSelector } from "./MetricAttributesSelector";
 import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
-import { IAddMeasurementCommand } from "../../../serverApi/commands/IAddMeasurementCommand";
-import { IAddGaugeMeasurementCommand } from "../../../serverApi/commands/IAddGaugeMeasurementCommand";
+import { IUpsertMeasurementCommand } from "../../../serverApi/commands/IUpsertMeasurementCommand";
+import { IUpsertGaugeMeasurementCommand } from "../../../serverApi/commands/IUpsertGaugeMeasurementCommand";
 import { ITimerMetric } from "../../../serverApi/ITimerMetric";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 import { ApiError } from "../../../serverApi/ApiError";
 import { DateTimeSelector } from "../../common/DateTimeSelector";
+import { FormElementContainer } from "../../common/FormUtils";
+import { IMeasurement } from "../../../serverApi/IMeasurement";
 
-export const AddMeasurement: React.FC<{
+export const UpsertMeasurement: React.FC<{
   metric: IMetric;
-  onAdded?: () => void;
-}> = ({ metric, onAdded }) => {
+  measurement?: IMeasurement;
+  onSaved?: () => void;
+}> = ({ metric, measurement, onSaved }) => {
   const [attributeValues, setAttributeValues] =
-    useState<IMetricAttributeValues>({}); // empty means nothing selected in the selector
-  const [notes, setNotes] = useState<string>("");
-  const [value, setValue] = useState<string>("");
-  const [date, setDate] = useState<Date>(undefined);
+    useState<IMetricAttributeValues>(measurement?.metricAttributeValues || {}); // empty means nothing selected in the selector
+
+  const [notes, setNotes] = useState<string>(measurement?.notes || "");
+
+  const [value, setValue] = useState<string>(
+    measurement?.value?.toString() || ""
+  );
+
+  const [date, setDate] = useState<Date>(
+    measurement?.dateTime ? new Date(measurement.dateTime) : undefined
+  );
 
   const { setAppAlert } = useAppContext();
 
@@ -29,24 +39,6 @@ export const AddMeasurement: React.FC<{
 
   return (
     <FormControl>
-      {Object.keys(metric.attributes || {}).length ? (
-        <MetricAttributesSelector
-          attributes={metric.attributes}
-          selectedAttributeValues={attributeValues}
-          onChange={(values) => setAttributeValues(values)}
-        />
-      ) : null}
-      <FormElementContainer>
-        <DateTimeSelector setDate={setDate} date={date} />
-      </FormElementContainer>
-      <TextField
-        value={notes}
-        onChange={(event) => setNotes(event.target.value)}
-        multiline={true}
-        label={"Notes"}
-        margin={"normal"}
-      />
-
       {metric.type === MetricType.Gauge ? (
         <TextField
           value={value}
@@ -55,6 +47,26 @@ export const AddMeasurement: React.FC<{
           margin={"normal"}
         />
       ) : null}
+
+      <FormElementContainer>
+        <DateTimeSelector setDate={setDate} date={date} />
+      </FormElementContainer>
+
+      {Object.keys(metric.attributes || {}).length ? (
+        <MetricAttributesSelector
+          attributes={metric.attributes}
+          selectedAttributeValues={attributeValues}
+          onChange={(values) => setAttributeValues(values)}
+        />
+      ) : null}
+
+      <TextField
+        value={notes}
+        onChange={(event) => setNotes(event.target.value)}
+        multiline={true}
+        label={"Notes"}
+        margin={"normal"}
+      />
 
       <Button
         variant="outlined"
@@ -80,7 +92,7 @@ export const AddMeasurement: React.FC<{
               );
             }
 
-            const command: IAddMeasurementCommand = {
+            const command: IUpsertMeasurementCommand = {
               notes: notes,
               metricAttributeValues: attributeValues,
               metricId: metric.id,
@@ -88,7 +100,7 @@ export const AddMeasurement: React.FC<{
             };
 
             if (metric.type === MetricType.Gauge) {
-              (command as IAddGaugeMeasurementCommand).value = !isNaN(
+              (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
                 value as never
               )
                 ? Number(value)
@@ -98,12 +110,12 @@ export const AddMeasurement: React.FC<{
             await ServerApi.addMeasurement(command, getUrlSegment());
 
             setAppAlert({
-              title: `Added measurement`,
+              title: `${measurement.id ? "Updated" : "Added"} measurement`,
               type: "success",
             });
 
-            if (onAdded) {
-              onAdded();
+            if (onSaved) {
+              onSaved();
             }
           } catch (e) {
             setAppAlert({
@@ -135,7 +147,3 @@ export const AddMeasurement: React.FC<{
     return translations.add;
   }
 };
-
-const FormElementContainer = styled("div")`
-  margin-top: 15px;
-`;
