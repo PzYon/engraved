@@ -1,3 +1,3 @@
 import { IUpsertMeasurementCommand } from "./IUpsertMeasurementCommand";
 
-export type IStartTimerMeasurementCommand = IUpsertMeasurementCommand;
+export type IUpsertCounterMeasurementCommand = IUpsertMeasurementCommand;

@@ -1,6 +1,7 @@
 import { IMetricAttributeValues } from "../IMetricAttributeValues";
 
-export interface IAddMeasurementCommand {
+export interface IUpsertMeasurementCommand {
+  id?: string;
   metricId: string;
   metricAttributeValues?: IMetricAttributeValues;
   notes?: string;

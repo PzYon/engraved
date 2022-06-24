@@ -1,4 +1,4 @@
-import { AddMeasurement } from "./AddMeasurement";
+import { UpsertMeasurement } from "./UpsertMeasurement";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IMetric } from "../../../serverApi/IMetric";
 
@@ -10,9 +10,9 @@ export const renderAddMeasurementDialog = (
   renderDialog({
     title: "Add measurement",
     render: () => (
-      <AddMeasurement
+      <UpsertMeasurement
         metric={metric}
-        onAdded={() => {
+        onSaved={() => {
           if (onAdded) {
             onAdded();
           }

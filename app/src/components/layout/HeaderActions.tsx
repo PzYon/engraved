@@ -1,21 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { IconButton } from "@mui/material";
 import styled from "styled-components";
+import {
+  IconButtonWrapper,
+  IIconButtonAction,
+} from "../common/IconButtonWrapper";
 
-export interface IAction {
-  key: string;
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-  href?: string;
-}
-
-export const HeaderActions: React.FC<{ actions: IAction[] }> = ({
+export const HeaderActions: React.FC<{ actions: IIconButtonAction[] }> = ({
   actions,
 }) => {
-  const navigate = useNavigate();
-
   if (!actions?.length) {
     return null;
   }
@@ -23,23 +15,7 @@ export const HeaderActions: React.FC<{ actions: IAction[] }> = ({
   return (
     <ButtonContainer>
       {actions.map((action) => (
-        <IconButton
-          key={action.key}
-          color="default"
-          aria-label={action.label}
-          sx={{ color: "primary.main" }}
-          onClick={(e) => {
-            e.stopPropagation();
-
-            if (action.href) {
-              navigate(action.href);
-            } else if (action.onClick) {
-              action.onClick();
-            }
-          }}
-        >
-          {action.icon}
-        </IconButton>
+        <IconButtonWrapper key={action.key} action={action} />
       ))}
     </ButtonContainer>
   );

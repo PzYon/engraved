@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
 import { IAppAlert } from "./components/errorHandling/AppAlertBar";
-import { IAction } from "./components/layout/HeaderActions";
 import { IUser } from "./serverApi/IUser";
+import { IIconButtonAction } from "./components/common/IconButtonWrapper";
 
 export interface IAppContext {
   pageTitle: React.ReactNode;
   setPageTitle: (pageTitle: React.ReactNode) => void;
-  titleActions: IAction[];
-  setTitleActions: (actions: IAction[]) => void;
+  titleActions: IIconButtonAction[];
+  setTitleActions: (actions: IIconButtonAction[]) => void;
   appAlert: IAppAlert;
   setAppAlert: (appAlert: IAppAlert) => void;
   user: IUser;
@@ -32,7 +32,7 @@ export const AppContextProvider: React.FC<{
   user: IUser;
 }> = ({ children, user }) => {
   const [pageTitle, setPageTitle] = useState<React.ReactNode>(undefined);
-  const [titleActions, setTitleActions] = useState<IAction[]>([]);
+  const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
   const [appAlert, setAppAlert] = useState<IAppAlert>(undefined);
 
   const contextValue = useMemo(() => {

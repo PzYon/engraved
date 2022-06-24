@@ -3,7 +3,7 @@ import { IMetric } from "./IMetric";
 import { MetricType } from "./MetricType";
 import { IMetricAttributes } from "./IMetricAttributes";
 import { IAddMetricCommand } from "./commands/IAddMetricCommand";
-import { IAddMeasurementCommand } from "./commands/IAddMeasurementCommand";
+import { IUpsertMeasurementCommand } from "./commands/IUpsertMeasurementCommand";
 import { IEditMetricCommand } from "./commands/IEditMetricCommand";
 import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
@@ -79,7 +79,7 @@ export class ServerApi {
   }
 
   static async addMeasurement(
-    command: IAddMeasurementCommand,
+    command: IUpsertMeasurementCommand,
     urlSegment: string
   ): Promise<ICommandResult> {
     return await this.executeRequest(

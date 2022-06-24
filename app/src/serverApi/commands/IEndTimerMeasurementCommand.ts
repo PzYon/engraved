@@ -1,3 +1,3 @@
-import { IAddMeasurementCommand } from "./IAddMeasurementCommand";
+import { IUpsertMeasurementCommand } from "./IUpsertMeasurementCommand";
 
-export type IEndTimerMeasurementCommand = IAddMeasurementCommand;
+export type IEndTimerMeasurementCommand = IUpsertMeasurementCommand;
