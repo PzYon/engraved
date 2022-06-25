@@ -98,7 +98,7 @@ export const MetricDetails: React.FC = () => {
             <EditMeasurementLauncher
               metric={metric}
               measurements={measurements}
-              reloadMetric={getMetric}
+              onSaved={getMeasurements}
             />
           }
         />

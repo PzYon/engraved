@@ -93,6 +93,7 @@ export const UpsertMeasurement: React.FC<{
             }
 
             const command: IUpsertMeasurementCommand = {
+              id: measurement.id,
               notes: notes,
               metricAttributeValues: attributeValues,
               metricId: metric.id,
@@ -114,9 +115,7 @@ export const UpsertMeasurement: React.FC<{
               type: "success",
             });
 
-            if (onSaved) {
-              onSaved();
-            }
+            onSaved?.();
           } catch (e) {
             setAppAlert({
               title: "Failed to add measurement",

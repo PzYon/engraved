@@ -32,11 +32,8 @@ public class StartTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommand
     metric.StartDate = dateService.UtcNow;
   }
 
-  protected override TimerMeasurement CreateMeasurement(IDateService dateService)
+  protected override void SetSpecificValues(TimerMeasurement measurement, IDateService dateService)
   {
-    return new TimerMeasurement
-    {
-      StartDate = dateService.UtcNow
-    };
+    measurement.StartDate = dateService.UtcNow;
   }
 }

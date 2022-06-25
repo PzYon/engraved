@@ -7,7 +7,7 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
   where TCommand : BaseUpsertMeasurementCommand
-  where TMeasurement : IMeasurement
+  where TMeasurement : IMeasurement, new()
   where TMetric : class, IMetric
 {
   protected BaseUpsertMeasurementCommandExecutor(TCommand command)
@@ -26,7 +26,10 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
     await PerformAdditionalValidation(repository, metric);
 
-    TMeasurement measurement = await GetMeasurement(repository, dateService);
+    TMeasurement measurement = await GetMeasurement(repository);
+
+    SetSpecificValues(measurement, dateService);
+
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
     measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
@@ -42,7 +45,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     return new CommandResult { EntityId = result.EntityId };
   }
 
-  protected abstract TMeasurement CreateMeasurement(IDateService dateService);
+  protected abstract void SetSpecificValues(TMeasurement measurement, IDateService dateService);
 
   protected virtual Task PerformAdditionalValidation(IRepository repository, TMetric metric)
   {
@@ -95,11 +98,11 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     }
   }
 
-  private async Task<TMeasurement> GetMeasurement(IRepository repository, IDateService dateService)
+  private async Task<TMeasurement> GetMeasurement(IRepository repository)
   {
     if (string.IsNullOrEmpty(Command.Id))
     {
-      return CreateMeasurement(dateService);
+      return new TMeasurement();
     }
 
     IMeasurement[] allMeasurements = await repository.GetAllMeasurements(Command.MetricId);

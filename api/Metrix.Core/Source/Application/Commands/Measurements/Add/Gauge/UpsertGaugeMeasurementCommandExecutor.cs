@@ -22,11 +22,8 @@ public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementComman
     return Task.CompletedTask;
   }
 
-  protected override GaugeMeasurement CreateMeasurement(IDateService dateService)
+  protected override void SetSpecificValues(GaugeMeasurement measurement, IDateService dateService)
   {
-    return new GaugeMeasurement
-    {
-      Value = Command.Value!.Value
-    };
+    measurement.Value = Command.Value!.Value;
   }
 }
