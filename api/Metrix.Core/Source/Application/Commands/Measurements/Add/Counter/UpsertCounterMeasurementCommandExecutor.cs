@@ -11,8 +11,5 @@ public class UpsertCounterMeasurementCommandExecutor : BaseUpsertMeasurementComm
 {
   public UpsertCounterMeasurementCommandExecutor(UpsertCounterMeasurementCommand command) : base(command) { }
 
-  protected override CounterMeasurement CreateMeasurement(IDateService dateService)
-  {
-    return new CounterMeasurement();
-  }
+  protected override void SetSpecificValues(CounterMeasurement measurement, IDateService dateService) { }
 }

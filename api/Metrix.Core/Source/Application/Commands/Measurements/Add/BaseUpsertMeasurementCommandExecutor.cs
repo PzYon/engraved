@@ -7,7 +7,7 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
   where TCommand : BaseUpsertMeasurementCommand
-  where TMeasurement : IMeasurement
+  where TMeasurement : IMeasurement, new()
   where TMetric : class, IMetric
 {
   protected BaseUpsertMeasurementCommandExecutor(TCommand command)
@@ -26,7 +26,10 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
     await PerformAdditionalValidation(repository, metric);
 
-    TMeasurement measurement = CreateMeasurement(dateService);
+    TMeasurement measurement = await GetMeasurement(repository);
+
+    SetSpecificValues(measurement, dateService);
+
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
     measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
@@ -42,7 +45,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     return new CommandResult { EntityId = result.EntityId };
   }
 
-  protected abstract TMeasurement CreateMeasurement(IDateService dateService);
+  protected abstract void SetSpecificValues(TMeasurement measurement, IDateService dateService);
 
   protected virtual Task PerformAdditionalValidation(IRepository repository, TMetric metric)
   {
@@ -93,6 +96,17 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     {
       throw new InvalidCommandException(Command, "Invalid attributes: " + string.Join(", ", errors));
     }
+  }
+
+  private async Task<TMeasurement> GetMeasurement(IRepository repository)
+  {
+    if (string.IsNullOrEmpty(Command.Id))
+    {
+      return new TMeasurement();
+    }
+
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(Command.MetricId);
+    return allMeasurements.OfType<TMeasurement>().First(m => m.Id == Command.Id);
   }
 
   protected InvalidCommandException CreateInvalidCommandException(string message)

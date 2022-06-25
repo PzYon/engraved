@@ -9,8 +9,8 @@ import { useParams } from "react-router";
 export const EditMeasurementLauncher: React.FC<{
   metric: IMetric;
   measurements: IMeasurement[];
-  reloadMetric: () => Promise<void>;
-}> = ({ metric, measurements, reloadMetric }) => {
+  onSaved: () => Promise<void>;
+}> = ({ metric, measurements, onSaved }) => {
   const { renderDialog } = useDialogContext();
   const { measurementId } = useParams();
 
@@ -24,7 +24,7 @@ export const EditMeasurementLauncher: React.FC<{
           metric={metric}
           measurement={measurements.find((m) => m.id === measurementId)}
           onSaved={async () => {
-            await reloadMetric();
+            await onSaved();
           }}
         />
       ),
