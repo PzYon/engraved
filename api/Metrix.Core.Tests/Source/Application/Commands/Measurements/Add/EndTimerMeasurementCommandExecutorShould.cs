@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
+using Metrix.Core.Application.Persistence.Demo;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using NUnit.Framework;
@@ -11,13 +12,13 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 public class EndTimerMeasurementCommandExecutorShould
 {
   private FakeDateService _fakeDateService = null!;
-  private TestRepository _testRepository = null!;
+  private InMemoryRepository _testRepository = null!;
 
   [SetUp]
   public void SetUp()
   {
     _fakeDateService = new FakeDateService();
-    _testRepository = new TestRepository();
+    _testRepository = new InMemoryRepository();
   }
 
   [Test]
