@@ -35,8 +35,9 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
 
     IMeasurement[] allMeasurements = await repository.GetAllMeasurements(_query.MetricKey);
 
+    // consider: moving OrderByDescending logic to DB
     return allMeasurements
-      .OrderBy(m => m.DateTime)
+      .OrderByDescending(m => m.DateTime)
       .ToArray();
   }
 }

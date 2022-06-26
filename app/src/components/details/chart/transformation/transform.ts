@@ -1,6 +1,6 @@
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
 import { IMetric } from "../../../../serverApi/IMetric";
-import { consolidate } from "../consolidation/consolidate";
+import { consolidate, getValue } from "../consolidation/consolidate";
 import { GroupByTime } from "../consolidation/GroupByTime";
 import { ITransformedMeasurement } from "./ITransformedMeasurement";
 import { MetricTypeFactory } from "../../../../metricTypes/MetricTypeFactory";
@@ -28,7 +28,7 @@ export function transform(
   return measurements.map((m) => {
     return {
       x: new Date(m.dateTime),
-      y: m.value,
+      y: getValue(m),
     };
   });
 }
