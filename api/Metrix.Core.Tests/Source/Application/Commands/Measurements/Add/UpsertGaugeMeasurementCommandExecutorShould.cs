@@ -137,7 +137,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     return true;
   }
 
-  // TODO: Add test for value key
+  // todo: Add test for value key
   [Test]
   public void Throw_WhenMetricAttributeKeyDoesNotExistOnMetric()
   {

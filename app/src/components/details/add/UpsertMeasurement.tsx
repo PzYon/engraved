@@ -14,6 +14,7 @@ import { ApiError } from "../../../serverApi/ApiError";
 import { DateTimeSelector } from "../../common/DateTimeSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
+import { IGaugeMeasurement } from "../../../serverApi/ITimerMeasurement";
 
 export const UpsertMeasurement: React.FC<{
   metric: IMetric;
@@ -26,7 +27,7 @@ export const UpsertMeasurement: React.FC<{
   const [notes, setNotes] = useState<string>(measurement?.notes || "");
 
   const [value, setValue] = useState<string>(
-    measurement?.value?.toString() || ""
+    (measurement as IGaugeMeasurement)?.value?.toString() || ""
   );
 
   const [date, setDate] = useState<Date>(

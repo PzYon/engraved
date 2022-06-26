@@ -1,6 +1,6 @@
 import { MetricType } from "../serverApi/MetricType";
 import { PlusOneSharp } from "@mui/icons-material";
-import { IMetricType } from "./IMetricType";
+import { IMeasurementsListColumnDefinition, IMetricType } from "./IMetricType";
 
 export class CounterMetricType implements IMetricType {
   type = MetricType.Counter;
@@ -9,5 +9,9 @@ export class CounterMetricType implements IMetricType {
 
   getIcon() {
     return <PlusOneSharp />;
+  }
+
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
+    return [];
   }
 }

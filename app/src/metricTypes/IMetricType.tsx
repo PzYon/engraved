@@ -1,5 +1,6 @@
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
+import { IMeasurement } from "../serverApi/IMeasurement";
 
 // todo:
 // - AddMeasurement contains lots MetricType-checks -> improve!
@@ -14,4 +15,12 @@ export interface IMetricType {
   isGroupable?: boolean;
 
   getIcon(): React.ReactNode;
+
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[];
+}
+
+export interface IMeasurementsListColumnDefinition {
+  key: string;
+  header: string;
+  getValue: (measurement: IMeasurement) => React.ReactNode;
 }

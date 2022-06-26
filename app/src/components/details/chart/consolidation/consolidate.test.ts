@@ -2,10 +2,11 @@ import { consolidate } from "./consolidate";
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
 import { ConsolidationKey } from "./ConsolidationKey";
 import { GroupByTime } from "./GroupByTime";
+import { IGaugeMeasurement } from "../../../../serverApi/ITimerMeasurement";
 
 describe("consolidate", () => {
   it("should group by month (1 measurement)", () => {
-    const measurements: IMeasurement[] = [
+    const measurements: IGaugeMeasurement[] = [
       { value: 23, dateTime: createDate(2020, 1, 1) },
     ];
 
@@ -20,7 +21,7 @@ describe("consolidate", () => {
   });
 
   it("should group by month (2 measurements)", () => {
-    const measurements: IMeasurement[] = [
+    const measurements: IGaugeMeasurement[] = [
       { value: 20, dateTime: createDate(2020, 1, 1) },
       { value: 10, dateTime: createDate(2020, 1, 2) },
     ];
@@ -36,7 +37,7 @@ describe("consolidate", () => {
   });
 
   it("should group by month (2 measurements, different months)", () => {
-    const measurements: IMeasurement[] = [
+    const measurements: IGaugeMeasurement[] = [
       { value: 20, dateTime: createDate(2020, 1, 1) },
       { value: 10, dateTime: createDate(2020, 2, 1) },
     ];
@@ -57,7 +58,7 @@ describe("consolidate", () => {
   });
 
   it("should group by month (2 measurements - first and last days of month)", () => {
-    const measurements: IMeasurement[] = [
+    const measurements: IGaugeMeasurement[] = [
       { value: 20, dateTime: createDate(2020, 3, 31) },
       { value: 10, dateTime: createDate(2020, 4, 1) },
     ];
@@ -68,7 +69,7 @@ describe("consolidate", () => {
   });
 
   it("should group by day (2 measurements, same month)", () => {
-    const measurements: IMeasurement[] = [
+    const measurements: IGaugeMeasurement[] = [
       { value: 6, dateTime: createDate(2020, 6, 9) },
       { value: 7, dateTime: createDate(2020, 6, 10) },
     ];
@@ -89,7 +90,7 @@ describe("consolidate", () => {
   });
 
   it("should group by day (2 measurements, same day, different month)", () => {
-    const measurements: IMeasurement[] = [
+    const measurements: IGaugeMeasurement[] = [
       { value: 10, dateTime: createDate(2020, 5, 3) },
       { value: 30, dateTime: createDate(2020, 6, 3) },
     ];
