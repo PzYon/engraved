@@ -81,7 +81,7 @@ export const MetricDetails: React.FC = () => {
         <Visualization metric={metric} measurements={measurements} />
       </DetailsSection>
 
-      <DetailsSection title="All Measurements">
+      <DetailsSection title="All Measurements" overflowXScroll={true}>
         <MeasurementsList metric={metric} measurements={measurements} />
       </DetailsSection>
 

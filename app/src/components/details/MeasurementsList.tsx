@@ -39,9 +39,11 @@ export const MeasurementsList: React.FC<{
       <TableBody>
         {measurements.map((measurement) => (
           <TableRow key={measurement.dateTime}>
-            <TableCell>
-              <FormatDate value={measurement.dateTime} />
-            </TableCell>
+            {!metricType.hideDateColumnInMeasurementsList ? (
+              <TableCell>
+                <FormatDate value={measurement.dateTime} />
+              </TableCell>
+            ) : null}
             {columns.map((c) => {
               return (
                 <TableCell key={c.key}>{c.getValue(measurement)}</TableCell>

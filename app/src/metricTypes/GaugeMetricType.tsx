@@ -1,6 +1,10 @@
 import { MetricType } from "../serverApi/MetricType";
 import { BarChartSharp } from "@mui/icons-material";
-import { IMeasurementsListColumnDefinition, IMetricType } from "./IMetricType";
+import {
+  IMeasurementsListColumnDefinition,
+  IMetricOverviewPropertyDefinition,
+  IMetricType,
+} from "./IMetricType";
 import { IGaugeMeasurement } from "../serverApi/ITimerMeasurement";
 import { IMeasurement } from "../serverApi/IMeasurement";
 
@@ -20,5 +24,9 @@ export class GaugeMetricType implements IMetricType {
           (measurement as IGaugeMeasurement).value,
       },
     ];
+  }
+
+  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
+    return [];
   }
 }

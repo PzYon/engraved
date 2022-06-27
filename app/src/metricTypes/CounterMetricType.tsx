@@ -1,7 +1,12 @@
 import { MetricType } from "../serverApi/MetricType";
 import { PlusOneSharp } from "@mui/icons-material";
-import { IMeasurementsListColumnDefinition, IMetricType } from "./IMetricType";
+import {
+  IMeasurementsListColumnDefinition,
+  IMetricOverviewPropertyDefinition,
+  IMetricType,
+} from "./IMetricType";
 
+// consider: introducing generics here
 export class CounterMetricType implements IMetricType {
   type = MetricType.Counter;
 
@@ -12,6 +17,10 @@ export class CounterMetricType implements IMetricType {
   }
 
   getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
+    return [];
+  }
+
+  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
   }
 }

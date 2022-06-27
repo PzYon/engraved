@@ -14,6 +14,7 @@ public class GetAllMetricsQueryExecutor : IQueryExecutor<IMetric[]>
 
   public async Task<IMetric[]> Execute(IRepository repository)
   {
-    return await repository.GetAllMetrics();
+    IMetric[] allMetrics = await repository.GetAllMetrics();
+    return allMetrics.OrderByDescending(m => m.LastMeasurementDate).ToArray();
   }
 }
