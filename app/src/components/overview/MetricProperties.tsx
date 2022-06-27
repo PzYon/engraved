@@ -1,27 +1,36 @@
 import React from "react";
 import { IMetric } from "../../serverApi/IMetric";
-import { formatDistanceToNow } from "date-fns";
 import { styled, Typography } from "@mui/material";
-import { ITimerMetric } from "../../serverApi/ITimerMetric";
+import { MetricTypeFactory } from "../../metricTypes/MetricTypeFactory";
+import { IMetricOverviewPropertyDefinition } from "../../metricTypes/IMetricType";
+import { FormatDate } from "../common/FormatDate";
 
 export const MetricProperties: React.FC<{ metric: IMetric }> = ({ metric }) => {
+  const properties: IMetricOverviewPropertyDefinition[] =
+    MetricTypeFactory.create(metric.type).getOverviewProperties(metric);
+
+  const allProperties: IMetricOverviewPropertyDefinition[] = [
+    {
+      key: "last-measurement-date",
+      node: <FormatDate value={metric.lastMeasurementDate} />,
+      label: "Last measurement",
+    },
+    ...properties,
+  ];
+
   return (
     <>
-      <Property>{formatToNow(metric.lastMeasurementDate)}</Property>
-      <Property>{formatToNow((metric as ITimerMetric).startDate)}</Property>
+      {allProperties.map((p) => (
+        <Property key={p.key}>
+          <Typography sx={{ color: "primary.main" }} component="span">
+            {p.label}:
+          </Typography>{" "}
+          {p.node}
+        </Property>
+      ))}
     </>
   );
 };
-
-function formatToNow(dateString: string): string {
-  if (!dateString) {
-    return "n/a";
-  }
-
-  return formatDistanceToNow(new Date(dateString), {
-    addSuffix: true,
-  });
-}
 
 const Property = styled(Typography)`
   word-break: break-word;

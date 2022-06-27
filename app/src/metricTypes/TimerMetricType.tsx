@@ -1,10 +1,16 @@
 import { MetricType } from "../serverApi/MetricType";
 import { TimerSharp } from "@mui/icons-material";
-import { IMeasurementsListColumnDefinition, IMetricType } from "./IMetricType";
+import {
+  IMeasurementsListColumnDefinition,
+  IMetricOverviewPropertyDefinition,
+  IMetricType,
+} from "./IMetricType";
 import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { formatDistanceStrict } from "date-fns";
+import { IMetric } from "../serverApi/IMetric";
+import { ITimerMetric } from "../serverApi/ITimerMetric";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -52,5 +58,21 @@ export class TimerMetricType implements IMetricType {
         },
       },
     ];
+  }
+
+  getOverviewProperties(metric: IMetric): IMetricOverviewPropertyDefinition[] {
+    const timerMetric = metric as ITimerMetric;
+
+    if (timerMetric.startDate) {
+      return [
+        {
+          node: <FormatDate key="start-date" value={timerMetric.startDate} />,
+          key: "start-date",
+          label: "Start date",
+        },
+      ];
+    }
+
+    return [];
   }
 }

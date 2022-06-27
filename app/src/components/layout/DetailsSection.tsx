@@ -4,9 +4,10 @@ import { Paper, styled, Typography } from "@mui/material";
 export const DetailsSection: React.FC<{
   children: React.ReactNode;
   title?: string;
-}> = ({ title, children }) => {
+  overflowXScroll?: boolean;
+}> = ({ title, children, overflowXScroll }) => {
   return (
-    <Host>
+    <Host style={{ overflowX: overflowXScroll ? "scroll" : "hidden" }}>
       {title ? <Typography sx={{ flexShrink: 0 }}>{title}</Typography> : null}
       {children}
     </Host>
