@@ -94,7 +94,7 @@ export const UpsertMeasurement: React.FC<{
             }
 
             const command: IUpsertMeasurementCommand = {
-              id: measurement.id,
+              id: measurement?.id,
               notes: notes,
               metricAttributeValues: attributeValues,
               metricId: metric.id,
@@ -112,7 +112,7 @@ export const UpsertMeasurement: React.FC<{
             await ServerApi.addMeasurement(command, getUrlSegment());
 
             setAppAlert({
-              title: `${measurement.id ? "Updated" : "Added"} measurement`,
+              title: `${measurement?.id ? "Updated" : "Added"} measurement`,
               type: "success",
             });
 
