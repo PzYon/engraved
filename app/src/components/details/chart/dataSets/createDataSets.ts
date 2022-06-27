@@ -30,7 +30,7 @@ function measurementsToDataSet(
 ): IDataSet {
   const data = transform(measurements, metric, groupByTime);
 
-  // TODO: we use indexer here to get (only) the first item. what if there's more?
+  // todo: we use indexer here to get (only) the first item. what if there's more?
   const valueKey = measurements[0]?.metricAttributeValues?.[attributeKey]?.[0];
 
   return {
