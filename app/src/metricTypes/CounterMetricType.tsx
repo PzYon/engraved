@@ -5,7 +5,6 @@ import {
   IMetricOverviewPropertyDefinition,
   IMetricType,
 } from "./IMetricType";
-import { IMetric } from "../serverApi/IMetric";
 
 // consider: introducing generics here
 export class CounterMetricType implements IMetricType {
@@ -21,7 +20,7 @@ export class CounterMetricType implements IMetricType {
     return [];
   }
 
-  getOverviewProperties(metric: IMetric): IMetricOverviewPropertyDefinition[] {
+  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
   }
 }

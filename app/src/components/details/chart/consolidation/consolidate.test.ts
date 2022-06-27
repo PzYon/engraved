@@ -1,5 +1,4 @@
 import { consolidate } from "./consolidate";
-import { IMeasurement } from "../../../../serverApi/IMeasurement";
 import { ConsolidationKey } from "./ConsolidationKey";
 import { GroupByTime } from "./GroupByTime";
 import { IGaugeMeasurement } from "../../../../serverApi/ITimerMeasurement";

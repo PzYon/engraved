@@ -7,7 +7,6 @@ import {
 } from "./IMetricType";
 import { IGaugeMeasurement } from "../serverApi/ITimerMeasurement";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { IMetric } from "../serverApi/IMetric";
 
 export class GaugeMetricType implements IMetricType {
   type = MetricType.Gauge;
@@ -27,7 +26,7 @@ export class GaugeMetricType implements IMetricType {
     ];
   }
 
-  getOverviewProperties(metric: IMetric): IMetricOverviewPropertyDefinition[] {
+  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
   }
 }
