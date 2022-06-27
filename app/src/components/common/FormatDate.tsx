@@ -2,6 +2,7 @@ import { format, formatDistanceToNow } from "date-fns";
 
 export enum DateFormat {
   relativeToNow,
+  numerical,
   full,
   ticks,
 }
@@ -22,6 +23,8 @@ export const formatDate = (
   switch (dateFormat) {
     case DateFormat.full:
       return format(date, "PPPPpppp");
+    case DateFormat.numerical:
+      return format(date, "Pp");
     case DateFormat.ticks:
       return format(date, "T");
     case DateFormat.relativeToNow:
@@ -36,8 +39,21 @@ export const formatDate = (
 export const FormatDate = (props: {
   value: Date | string | number;
   dateFormat?: DateFormat;
-}) => (
-  <span title={formatDate(props.value, props.dateFormat || DateFormat.full)}>
-    {formatDate(props.value)}
-  </span>
-);
+}) => {
+  if (!props.value) {
+    return null;
+  }
+
+  return (
+    <span
+      title={formatDate(
+        props.value,
+        props.dateFormat === DateFormat.relativeToNow
+          ? DateFormat.full
+          : DateFormat.relativeToNow
+      )}
+    >
+      {formatDate(props.value, props.dateFormat)}
+    </span>
+  );
+};

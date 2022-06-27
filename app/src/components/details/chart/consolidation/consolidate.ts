@@ -6,7 +6,7 @@ import {
   IGaugeMeasurement,
   ITimerMeasurement,
 } from "../../../../serverApi/ITimerMeasurement";
-import { differenceInHours } from "date-fns";
+import { differenceInMinutes } from "date-fns";
 
 export function consolidate(
   measurements: IMeasurement[],
@@ -53,13 +53,19 @@ export function getValue(m: IMeasurement) {
 
   const timerMeasurement = m as ITimerMeasurement;
   if (timerMeasurement.startDate) {
-    return differenceInHours(
-      timerMeasurement.endDate
-        ? new Date(timerMeasurement.endDate)
-        : new Date(),
-      new Date(timerMeasurement.startDate)
-    );
+    return getTimerMeasurementValue(timerMeasurement);
   }
 
   return (m as IGaugeMeasurement).value ?? 1;
+}
+
+export function getTimerMeasurementValue(timerMeasurement: ITimerMeasurement) {
+  if (!timerMeasurement.startDate) {
+    return 0;
+  }
+
+  return differenceInMinutes(
+    timerMeasurement.endDate ? new Date(timerMeasurement.endDate) : new Date(),
+    new Date(timerMeasurement.startDate)
+  );
 }

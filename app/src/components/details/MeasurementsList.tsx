@@ -18,15 +18,16 @@ export const MeasurementsList: React.FC<{
   metric: IMetric;
   measurements: IMeasurement[];
 }> = ({ metric, measurements }) => {
-  const columns = MetricTypeFactory.create(
-    metric.type
-  ).getMeasurementsListColumns();
+  const metricType = MetricTypeFactory.create(metric.type);
+  const columns = metricType.getMeasurementsListColumns();
 
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>{translations.columnName_date}</TableCell>
+          {!metricType.hideDateColumnInMeasurementsList ? (
+            <TableCell>{translations.columnName_date}</TableCell>
+          ) : null}
           {columns.map((c) => (
             <TableCell key={c.key}>{c.header}</TableCell>
           ))}
