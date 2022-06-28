@@ -141,7 +141,7 @@ export const UpsertMeasurement: React.FC<{
 
   function getAddButtonLabel(): string {
     if (metric.type === MetricType.Timer) {
-      return isTimerAndIsRunning ? "Stop" : "Start";
+      return isTimerAndIsRunning ? "Stop timer" : "Start timer";
     }
 
     return translations.add;
