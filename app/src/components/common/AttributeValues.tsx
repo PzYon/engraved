@@ -15,27 +15,29 @@ export const AttributeValues: React.FC<{
 
   return (
     <>
-      {Object.entries(attributeValues).flatMap((value) => {
-        const attributeKey = value[0];
-        const valueKeys = value[1];
-        const attribute = attributes[attributeKey];
+      {Object.entries(attributeValues)
+        .sort()
+        .flatMap((value) => {
+          const attributeKey = value[0];
+          const valueKeys = value[1];
+          const attribute = attributes[attributeKey];
 
-        return valueKeys.map((k) => {
-          const value = attribute.values[k];
-          return (
-            <Chip
-              key={k}
-              sx={{
-                backgroundColor: colorByAttributeKey[attributeKey],
-                color: "common.white",
-                marginLeft: "5px",
-              }}
-              title={attribute.name + ": " + value}
-              label={value}
-            />
-          );
-        });
-      })}
+          return valueKeys.map((k) => {
+            const value = attribute.values[k];
+            return (
+              <Chip
+                key={k}
+                sx={{
+                  backgroundColor: colorByAttributeKey[attributeKey],
+                  color: "common.white",
+                  marginLeft: "5px",
+                }}
+                title={attribute.name + ": " + value}
+                label={value}
+              />
+            );
+          });
+        })}
     </>
   );
 };

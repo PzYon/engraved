@@ -11,6 +11,8 @@ import { IMeasurement } from "../serverApi/IMeasurement";
 export class GaugeMetricType implements IMetricType {
   type = MetricType.Gauge;
 
+  isGroupable = true;
+
   getIcon() {
     return <BarChartSharp />;
   }
