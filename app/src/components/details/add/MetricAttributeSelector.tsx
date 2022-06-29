@@ -34,9 +34,14 @@ export const MetricAttributeSelector: React.FC<{
     [attribute.values]
   );
 
+  const selectedOption = options.filter((o) => {
+    return selectedAttributeValues[attributeKey]?.indexOf(o.key) > -1;
+  })[0];
+
   return (
     <Autocomplete
       options={options}
+      defaultValue={selectedOption}
       getOptionLabel={(option) => getOptionLabel(option as IOption)}
       isOptionEqualToValue={(option, value) =>
         areOptionsEqual(option as IOption, value as IOption)
