@@ -6,6 +6,7 @@ import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
 import { ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
+import { getCoefficient } from "../../common/utils";
 
 export const createChart = (
   measurements: IMeasurement[],
@@ -22,14 +23,12 @@ export const createChart = (
     attributeKey
   );
 
-  const diffFactorPerDataSet = 0.8 / Math.max(dataSets.length - 1, 1);
-
   const decoratedDataSets = dataSets.map((dataSet, i) => {
     return {
       ...dataSet,
       normalized: true,
       tension: 0.3,
-      backgroundColor: lighten(color, i * diffFactorPerDataSet),
+      backgroundColor: lighten(color, getCoefficient(i, dataSets.length)),
     };
   });
 
