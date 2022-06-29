@@ -13,6 +13,7 @@ import { Edit } from "@mui/icons-material";
 import { IconButtonWrapper } from "../common/IconButtonWrapper";
 import { FormatDate } from "../common/FormatDate";
 import { MetricTypeFactory } from "../../metricTypes/MetricTypeFactory";
+import { AttributeValues } from "../common/AttributeValues";
 
 export const MeasurementsList: React.FC<{
   metric: IMetric;
@@ -38,7 +39,7 @@ export const MeasurementsList: React.FC<{
       </TableHead>
       <TableBody>
         {measurements.map((measurement) => (
-          <TableRow key={measurement.dateTime}>
+          <TableRow key={measurement.id}>
             {!metricType.hideDateColumnInMeasurementsList ? (
               <TableCell>
                 <FormatDate value={measurement.dateTime} />
@@ -50,7 +51,10 @@ export const MeasurementsList: React.FC<{
               );
             })}
             <TableCell>
-              {JSON.stringify(measurement.metricAttributeValues)}
+              <AttributeValues
+                attributes={metric.attributes}
+                attributeValues={measurement.metricAttributeValues}
+              />
             </TableCell>
             <TableCell>{measurement.notes}</TableCell>
             <TableCell>

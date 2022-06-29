@@ -34,9 +34,18 @@ export const MetricAttributeSelector: React.FC<{
     [attribute.values]
   );
 
+  const selectedOption = useMemo(
+    () =>
+      options.filter((o) => {
+        return selectedAttributeValues[attributeKey]?.indexOf(o.key) > -1;
+      })[0],
+    []
+  );
+
   return (
     <Autocomplete
       options={options}
+      defaultValue={selectedOption}
       getOptionLabel={(option) => getOptionLabel(option as IOption)}
       isOptionEqualToValue={(option, value) =>
         areOptionsEqual(option as IOption, value as IOption)
@@ -45,10 +54,13 @@ export const MetricAttributeSelector: React.FC<{
       onChange={async (_, selectedOption) => {
         const option: IOption = selectedOption as IOption;
 
-        onChange({
-          ...selectedAttributeValues,
-          ...{ [attributeKey]: [option?.addNewKey || option?.key] },
-        });
+        const attributesValues = { ...selectedAttributeValues };
+
+        if (option) {
+          attributesValues[attributeKey] = [option.addNewKey || option.key];
+        }
+
+        onChange(attributesValues);
       }}
       renderInput={(params) => (
         <TextField

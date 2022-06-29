@@ -7,7 +7,7 @@ export const DetailsSection: React.FC<{
   overflowXScroll?: boolean;
 }> = ({ title, children, overflowXScroll }) => {
   return (
-    <Host style={{ overflowX: overflowXScroll ? "scroll" : "hidden" }}>
+    <Host style={{ overflowX: overflowXScroll ? "auto" : "hidden" }}>
       {title ? <Typography sx={{ flexShrink: 0 }}>{title}</Typography> : null}
       {children}
     </Host>
