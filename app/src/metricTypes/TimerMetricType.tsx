@@ -15,6 +15,8 @@ import { ITimerMetric } from "../serverApi/ITimerMetric";
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
 
+  isGroupable = true;
+
   hideDateColumnInMeasurementsList = true;
 
   getIcon() {
