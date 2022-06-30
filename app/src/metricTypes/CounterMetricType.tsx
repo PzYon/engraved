@@ -5,6 +5,7 @@ import {
   IMetricOverviewPropertyDefinition,
   IMetricType,
 } from "./IMetricType";
+import { IMetric } from "../serverApi/IMetric";
 
 // consider: introducing generics here
 export class CounterMetricType implements IMetricType {
@@ -22,5 +23,9 @@ export class CounterMetricType implements IMetricType {
 
   getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
+  }
+
+  getYAxisLabel(metric: IMetric): string {
+    return "Count";
   }
 }

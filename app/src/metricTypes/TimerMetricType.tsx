@@ -82,4 +82,8 @@ export class TimerMetricType implements IMetricType {
 
     return [];
   }
+
+  getYAxisLabel(metric: IMetric): string {
+    return "Hours";
+  }
 }
