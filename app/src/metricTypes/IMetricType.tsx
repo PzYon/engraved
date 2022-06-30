@@ -13,6 +13,7 @@ import { IMetric } from "../serverApi/IMetric";
 export interface IMetricType {
   type: MetricType;
 
+  // consider: removing isGroupable as currently it is true everywhere.
   isGroupable?: boolean;
 
   getIcon(): React.ReactNode;
