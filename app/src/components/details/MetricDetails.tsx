@@ -5,7 +5,7 @@ import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { Visualization } from "./chart/Visualization";
 import { useAppContext } from "../../AppContext";
-import { MeasurementsList } from "./MeasurementsList";
+import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { IApiError } from "../../serverApi/IApiError";
 import { DetailsSection } from "../layout/DetailsSection";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
@@ -81,7 +81,7 @@ export const MetricDetails: React.FC = () => {
         <Visualization metric={metric} measurements={measurements} />
       </DetailsSection>
 
-      <DetailsSection title="All Measurements" overflowXScroll={true}>
+      <DetailsSection overflowXScroll={true}>
         <MeasurementsList metric={metric} measurements={measurements} />
       </DetailsSection>
 

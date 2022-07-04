@@ -1,16 +1,13 @@
 import { MetricType } from "../serverApi/MetricType";
 import { TimerSharp } from "@mui/icons-material";
-import {
-  IMeasurementsListColumnDefinition,
-  IMetricOverviewPropertyDefinition,
-  IMetricType,
-} from "./IMetricType";
+import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
 import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { differenceInMinutes } from "date-fns";
 import { IMetric } from "../serverApi/IMetric";
 import { ITimerMetric } from "../serverApi/ITimerMetric";
+import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -23,12 +20,12 @@ export class TimerMetricType implements IMetricType {
     return <TimerSharp />;
   }
 
-  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
+  getMeasurementsListColumns(): IDataTableColumnDefinition[] {
     return [
       {
         key: "_start",
         header: "Start",
-        getValue: (measurement: IMeasurement) => (
+        getValueReactNode: (measurement: IMeasurement) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).startDate}
             dateFormat={DateFormat.numerical}
@@ -38,7 +35,7 @@ export class TimerMetricType implements IMetricType {
       {
         key: "_end",
         header: "End",
-        getValue: (measurement: IMeasurement) => (
+        getValueReactNode: (measurement: IMeasurement) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).endDate}
             dateFormat={DateFormat.numerical}
@@ -48,7 +45,7 @@ export class TimerMetricType implements IMetricType {
       {
         key: "_duration",
         header: "Duration",
-        getValue: (measurement: IMeasurement) => {
+        getValueReactNode: (measurement: IMeasurement) => {
           const timerMeasurement = measurement as ITimerMeasurement;
 
           const totalMinutes = differenceInMinutes(
