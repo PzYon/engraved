@@ -48,7 +48,7 @@ export const FormatDate = (props: {
     <span
       title={formatDate(
         props.value,
-        props.dateFormat === DateFormat.relativeToNow
+        props.dateFormat === DateFormat.relativeToNow || !props.dateFormat
           ? DateFormat.full
           : DateFormat.relativeToNow
       )}

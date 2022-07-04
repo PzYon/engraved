@@ -23,6 +23,8 @@ export interface IMetricType {
   hideDateColumnInMeasurementsList?: boolean;
 
   getOverviewProperties(metric: IMetric): IMetricOverviewPropertyDefinition[];
+
+  getYAxisLabel(metric: IMetric): string;
 }
 
 export interface IMetricOverviewPropertyDefinition {

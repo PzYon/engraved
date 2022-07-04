@@ -7,6 +7,7 @@ import { ChartProps } from "react-chartjs-2";
 import { ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
 import { getCoefficient } from "../../common/utils";
+import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 
 export const createChart = (
   measurements: IMeasurement[],
@@ -32,6 +33,8 @@ export const createChart = (
     };
   });
 
+  const metricType = MetricTypeFactory.create(metric.type);
+
   return {
     type: type,
     options: {
@@ -46,6 +49,10 @@ export const createChart = (
           stacked: true,
           ticks: {
             stepSize: 1,
+          },
+          title: {
+            display: true,
+            text: metricType.getYAxisLabel(metric),
           },
         },
       },

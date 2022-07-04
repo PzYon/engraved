@@ -23,4 +23,8 @@ export class CounterMetricType implements IMetricType {
   getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
   }
+
+  getYAxisLabel(): string {
+    return "Count";
+  }
 }

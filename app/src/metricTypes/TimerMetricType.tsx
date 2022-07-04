@@ -8,7 +8,7 @@ import {
 import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { formatDistanceStrict } from "date-fns";
+import { differenceInMinutes } from "date-fns";
 import { IMetric } from "../serverApi/IMetric";
 import { ITimerMetric } from "../serverApi/ITimerMetric";
 
@@ -51,12 +51,17 @@ export class TimerMetricType implements IMetricType {
         getValue: (measurement: IMeasurement) => {
           const timerMeasurement = measurement as ITimerMeasurement;
 
-          return formatDistanceStrict(
+          const totalMinutes = differenceInMinutes(
             timerMeasurement.endDate
               ? new Date(timerMeasurement.endDate)
               : new Date(),
             new Date(timerMeasurement.startDate)
           );
+
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+
+          return `${hours}:${minutes < 10 ? "0" + minutes : minutes} h`;
         },
       },
     ];
@@ -76,5 +81,9 @@ export class TimerMetricType implements IMetricType {
     }
 
     return [];
+  }
+
+  getYAxisLabel(): string {
+    return "Hours";
   }
 }

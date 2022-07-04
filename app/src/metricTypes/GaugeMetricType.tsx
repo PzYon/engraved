@@ -31,4 +31,8 @@ export class GaugeMetricType implements IMetricType {
   getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
   }
+
+  getYAxisLabel(): string {
+    return "Unit [todo]";
+  }
 }
