@@ -7,7 +7,6 @@ import {
 } from "./IMetricType";
 import { IGaugeMeasurement } from "../serverApi/ITimerMeasurement";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { IMetric } from "../serverApi/IMetric";
 
 export class GaugeMetricType implements IMetricType {
   type = MetricType.Gauge;
@@ -33,7 +32,7 @@ export class GaugeMetricType implements IMetricType {
     return [];
   }
 
-  getYAxisLabel(metric: IMetric): string {
+  getYAxisLabel(): string {
     return "Unit [todo]";
   }
 }
