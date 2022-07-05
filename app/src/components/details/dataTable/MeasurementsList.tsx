@@ -23,7 +23,7 @@ const getColumnsBefore = (): IDataTableColumnDefinition[] => [
 const getColumnsAfter = (metric: IMetric): IDataTableColumnDefinition[] => [
   {
     header: translations.columnName_attributes,
-    key: "_date",
+    key: "_attributes",
     getValueReactNode: (measurement) => (
       <AttributeValues
         attributes={metric.attributes}
@@ -33,12 +33,12 @@ const getColumnsAfter = (metric: IMetric): IDataTableColumnDefinition[] => [
   },
   {
     header: translations.columnName_notes,
-    key: "_date",
+    key: "_notes",
     getValueReactNode: (measurement) => measurement.notes,
   },
   {
     header: translations.columnName_edit,
-    key: "_date",
+    key: "_edit",
     getValueReactNode: (measurement) => (
       <IconButtonWrapper
         action={{
