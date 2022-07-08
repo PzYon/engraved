@@ -8,5 +8,6 @@ export interface IDataTableColumnDefinition {
   getValueReactNode: (measurement: IMeasurement) => React.ReactNode;
   getRawValue?: (measurement: IMeasurement) => number;
   isSummable?: boolean;
-  doHide?(metric: IMetric): boolean;
+  doHide?: (metric: IMetric) => boolean;
+  getGroupKey?: (measurement: IMeasurement) => string;
 }

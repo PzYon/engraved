@@ -15,6 +15,7 @@ export const DataTable: React.FC<{
   measurements: IMeasurement[];
 }> = ({ columns, measurements }) => {
   const sums: { [key: string]: number } = {};
+  const groupKeys: { [key: string]: string } = {};
 
   return (
     <Table>
@@ -42,6 +43,14 @@ export const DataTable: React.FC<{
 
                 sums[c.key] += c.getRawValue(measurement);
               }
+
+              const currentGroupKey = c.getGroupKey?.(measurement);
+
+              if (currentGroupKey && currentGroupKey === groupKeys[c.key]) {
+                return <TableCell key={c.key} />;
+              }
+
+              groupKeys[c.key] = currentGroupKey;
 
               return (
                 <TableCell key={c.key}>

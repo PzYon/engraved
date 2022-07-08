@@ -4,19 +4,34 @@ import { translations } from "../../../i18n/translations";
 import { IMetric } from "../../../serverApi/IMetric";
 import { Edit } from "@mui/icons-material";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
-import { FormatDate } from "../../common/FormatDate";
+import { DateFormat, FormatDate } from "../../common/FormatDate";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { AttributeValues } from "../../common/AttributeValues";
 import { DataTable } from "./DataTable";
 import { IDataTableColumnDefinition } from "./IDataTableColumnDefinition";
+import { format } from "date-fns";
+import { Typography } from "@mui/material";
 
 const getColumnsBefore = (): IDataTableColumnDefinition[] => [
   {
     header: translations.columnName_date,
     key: "_date",
     getValueReactNode: (measurement) => (
-      <FormatDate value={measurement.dateTime} />
+      <>
+        <FormatDate
+          value={measurement.dateTime}
+          dateFormat={DateFormat.dateOnly}
+        />
+        <br />
+        <Typography sx={{ opacity: 0.5 }} fontSize={"smaller"}>
+          <FormatDate value={measurement.dateTime} />
+        </Typography>
+      </>
     ),
+    getGroupKey: (measurement) => {
+      const date = new Date(measurement.dateTime);
+      return format(date, "u-LL-dd");
+    },
   },
 ];
 
