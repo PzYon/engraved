@@ -3,6 +3,7 @@ import { format, formatDistanceToNow } from "date-fns";
 export enum DateFormat {
   relativeToNow,
   numerical,
+  dateOnly,
   full,
   ticks,
 }
@@ -21,6 +22,8 @@ export const formatDate = (
   }
 
   switch (dateFormat) {
+    case DateFormat.dateOnly:
+      return format(date, "PPPP");
     case DateFormat.full:
       return format(date, "PPPPpppp");
     case DateFormat.numerical:
