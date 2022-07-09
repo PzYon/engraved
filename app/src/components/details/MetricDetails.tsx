@@ -18,6 +18,7 @@ import { Typography } from "@mui/material";
 import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
 import styled from "styled-components";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
+import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 
 export const MetricDetails: React.FC = () => {
   const { metricId } = useParams();
@@ -99,6 +100,15 @@ export const MetricDetails: React.FC = () => {
               metric={metric}
               measurements={measurements}
               onSaved={getMeasurements}
+            />
+          }
+        />
+        <Route
+          path="/measurements/:measurementId/delete"
+          element={
+            <DeleteMeasurementLauncher
+              metric={metric}
+              onDeleted={getMeasurements}
             />
           }
         />

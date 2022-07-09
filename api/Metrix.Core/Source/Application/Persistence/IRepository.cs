@@ -21,4 +21,8 @@ public interface IRepository
   Task<UpsertResult> UpsertMetric(IMetric metric);
 
   Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
+
+  Task DeleteMeasurement(string measurementId);
+
+  Task<IMeasurement?> GetMeasurement(string measurementId);
 }

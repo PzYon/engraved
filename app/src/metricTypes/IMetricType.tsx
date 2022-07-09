@@ -1,6 +1,5 @@
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
-import { IMeasurement } from "../serverApi/IMeasurement";
 import { IMetric } from "../serverApi/IMetric";
 import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
 

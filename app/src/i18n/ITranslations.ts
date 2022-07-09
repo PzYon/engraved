@@ -8,7 +8,7 @@ export interface ITranslations {
   columnName_value: string;
   columnName_date: string;
   columnName_attributes: string;
-  columnName_edit: string;
+  columnName_actions: string;
   label_groupBy_time: string;
   label_groupBy_attribute: string;
   label_metricDescription: string;

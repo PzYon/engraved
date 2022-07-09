@@ -2,8 +2,6 @@ import React, { useMemo } from "react";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { translations } from "../../../i18n/translations";
 import { IMetric } from "../../../serverApi/IMetric";
-import { Edit } from "@mui/icons-material";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { DateFormat, FormatDate } from "../../common/FormatDate";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { AttributeValues } from "../../common/AttributeValues";
@@ -11,6 +9,7 @@ import { DataTable } from "./DataTable";
 import { IDataTableColumnDefinition } from "./IDataTableColumnDefinition";
 import { format } from "date-fns";
 import { Typography } from "@mui/material";
+import { ActionButtons } from "./ActionButtons";
 
 const getColumnsBefore = (): IDataTableColumnDefinition[] => [
   {
@@ -54,17 +53,10 @@ const getColumnsAfter = (metric: IMetric): IDataTableColumnDefinition[] => [
     getValueReactNode: (measurement) => measurement.notes,
   },
   {
-    header: translations.columnName_edit,
-    key: "_edit",
+    header: translations.columnName_actions,
+    key: "_actions",
     getValueReactNode: (measurement) => (
-      <IconButtonWrapper
-        action={{
-          key: "edit-measurement",
-          label: "Edit Measurement",
-          href: `/metrics/${metric.id}/measurements/${measurement.id}/edit`,
-          icon: <Edit fontSize="small" />,
-        }}
-      />
+      <ActionButtons measurement={measurement} metricId={metric.id} />
     ),
   },
 ];

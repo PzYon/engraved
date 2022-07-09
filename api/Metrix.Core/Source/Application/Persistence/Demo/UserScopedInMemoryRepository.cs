@@ -64,4 +64,26 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     measurement.UserId = CurrentUser.Value.Id;
     return _repository.UpsertMeasurement(measurement);
   }
+
+  public async Task DeleteMeasurement(string measurementId)
+  {
+    // get measurement only returns if measurement belongs to current user
+    IMeasurement? measurement = await GetMeasurement(measurementId);
+
+    if (measurement == null)
+    {
+      return;
+    }
+
+    await _repository.DeleteMeasurement(measurementId);
+  }
+
+  public async Task<IMeasurement?> GetMeasurement(string measurementId)
+  {
+    IMeasurement? measurement = await _repository.GetMeasurement(measurementId);
+
+    return measurement != null && measurement.UserId == CurrentUser.Value.Id
+      ? measurement
+      : null;
+  }
 }

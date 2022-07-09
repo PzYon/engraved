@@ -42,8 +42,11 @@ public static class MeasurementDocumentMapper
     return Mapper.Map<MeasurementDocument>(metric);
   }
 
-  public static TMeasurement FromDocument<TMeasurement>(MeasurementDocument document) where TMeasurement : IMeasurement
+  public static TMeasurement FromDocument<TMeasurement>(MeasurementDocument? document)
+    where TMeasurement : class, IMeasurement
   {
-    return (TMeasurement)Mapper.Map(document, document.GetType(), typeof(TMeasurement));
+    return document == null
+      ? null!
+      : (TMeasurement)Mapper.Map(document, document.GetType(), typeof(TMeasurement));
   }
 }

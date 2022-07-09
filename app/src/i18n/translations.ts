@@ -10,7 +10,7 @@ export const translations: ITranslations = {
   columnName_notes: "Notes",
   columnName_value: "Value",
   columnName_attributes: "Attributes",
-  columnName_edit: "Edit",
+  columnName_actions: "Actions",
   label_groupBy_time: "Group by time",
   label_groupBy_attribute: "Group by attribute",
   label_metricDescription: "Description",
