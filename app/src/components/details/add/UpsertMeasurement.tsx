@@ -69,67 +69,66 @@ export const UpsertMeasurement: React.FC<{
         margin={"normal"}
       />
 
-      <Button
-        variant="outlined"
-        onClick={async () => {
-          try {
-            let hasNewValues = false;
-
-            for (const keyInValues in attributeValues) {
-              for (const value of attributeValues[keyInValues]) {
-                if (!metric.attributes[keyInValues].values[value]) {
-                  metric.attributes[keyInValues].values[value] = value;
-                  hasNewValues = true;
-                }
-              }
-            }
-
-            if (hasNewValues) {
-              await ServerApi.editMetric(
-                metric.id,
-                metric.name,
-                metric.description,
-                metric.attributes
-              );
-            }
-
-            const command: IUpsertMeasurementCommand = {
-              id: measurement?.id,
-              notes: notes,
-              metricAttributeValues: attributeValues,
-              metricId: metric.id,
-              dateTime: new Date(date),
-            };
-
-            if (metric.type === MetricType.Gauge) {
-              (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
-                value as never
-              )
-                ? Number(value)
-                : undefined;
-            }
-
-            await ServerApi.addMeasurement(command, getUrlSegment());
-
-            setAppAlert({
-              title: `${measurement?.id ? "Updated" : "Added"} measurement`,
-              type: "success",
-            });
-
-            onSaved?.();
-          } catch (e) {
-            setAppAlert({
-              title: "Failed to add measurement",
-              message: (e as ApiError).message,
-              type: "error",
-            });
-          }
-        }}
-      >
+      <Button variant="outlined" onClick={upsertMeasurment}>
         {getAddButtonLabel()}
       </Button>
     </FormControl>
   );
+
+  async function upsertMeasurment() {
+    try {
+      let hasNewValues = false;
+
+      for (const keyInValues in attributeValues) {
+        for (const value of attributeValues[keyInValues]) {
+          if (!metric.attributes[keyInValues].values[value]) {
+            metric.attributes[keyInValues].values[value] = value;
+            hasNewValues = true;
+          }
+        }
+      }
+
+      if (hasNewValues) {
+        await ServerApi.editMetric(
+          metric.id,
+          metric.name,
+          metric.description,
+          metric.attributes
+        );
+      }
+
+      const command: IUpsertMeasurementCommand = {
+        id: measurement?.id,
+        notes: notes,
+        metricAttributeValues: attributeValues,
+        metricId: metric.id,
+        dateTime: new Date(date),
+      };
+
+      if (metric.type === MetricType.Gauge) {
+        (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
+          value as never
+        )
+          ? Number(value)
+          : undefined;
+      }
+
+      await ServerApi.addMeasurement(command, getUrlSegment());
+
+      setAppAlert({
+        title: `${measurement?.id ? "Updated" : "Added"} measurement`,
+        type: "success",
+      });
+
+      onSaved?.();
+    } catch (e) {
+      setAppAlert({
+        title: "Failed to add measurement",
+        message: (e as ApiError).message,
+        type: "error",
+      });
+    }
+  }
 
   function getUrlSegment() {
     if (metric.type === MetricType.Timer) {
@@ -144,6 +143,6 @@ export const UpsertMeasurement: React.FC<{
       return isTimerAndIsRunning ? "Stop timer" : "Start timer";
     }
 
-    return translations.add;
+    return metric.id ? translations.edit : translations.add;
   }
 };
