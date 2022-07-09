@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Metrix.Core.Domain.Measurements;
+﻿using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
 
@@ -74,7 +73,8 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(new UpsertResult { EntityId = metric.Id });
   }
 
-  public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
+    where TMeasurement : IMeasurement
   {
     if (string.IsNullOrEmpty(measurement.Id))
     {
@@ -82,28 +82,33 @@ public class InMemoryRepository : IRepository
     }
     else
     {
-      RemoveMeasurement(measurement);
+      await DeleteMeasurement(measurement.Id);
     }
 
     Measurements.Add(measurement.Copy());
 
-    return Task.FromResult(new UpsertResult { EntityId = measurement.Id });
+    return new UpsertResult { EntityId = measurement.Id };
   }
 
-  private void RemoveMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public async Task DeleteMeasurement(string measurementId)
   {
-    if (string.IsNullOrEmpty(measurement.Id))
+    if (string.IsNullOrEmpty(measurementId))
     {
       return;
     }
 
-    IMeasurement? firstOrDefault = Measurements.FirstOrDefault(m => m.Id == measurement.Id);
-    if (firstOrDefault == null)
+    IMeasurement? measurement = await GetMeasurement(measurementId);
+    if (measurement == null)
     {
       return;
     }
 
-    Measurements.Remove(firstOrDefault);
+    Measurements.Remove(measurement);
+  }
+
+  public Task<IMeasurement?> GetMeasurement(string measurementId)
+  {
+    return Task.FromResult(Measurements.FirstOrDefault(m => m.Id == measurementId));
   }
 
   private void RemoveMetric<TMetric>(TMetric metric) where TMetric : IMetric

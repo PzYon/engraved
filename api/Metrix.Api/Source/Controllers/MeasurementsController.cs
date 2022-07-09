@@ -3,6 +3,7 @@ using Metrix.Core.Application.Commands.Measurements.Add.Counter;
 using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
+using Metrix.Core.Application.Commands.Measurements.Delete;
 using Metrix.Core.Application.Queries.Measurements.GetAll;
 using Metrix.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Authorization;
@@ -56,5 +57,12 @@ public class MeasurementsController : ControllerBase
   public async Task EndTimer([FromBody] EndTimerMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
+  }
+
+  [HttpDelete]
+  [Route("{measurementId}")]
+  public async Task Delete(string measurementId)
+  {
+    await _dispatcher.Command(new DeleteMeasurementCommand { Id = measurementId });
   }
 }

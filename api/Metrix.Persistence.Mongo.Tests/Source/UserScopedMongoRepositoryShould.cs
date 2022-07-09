@@ -203,4 +203,42 @@ public class UserScopedMongoRepositoryShould
     IMeasurement[] currentUserMeasurements = await _userScopedRepository.GetAllMeasurements(currentUserMetricId);
     Assert.AreEqual(10, currentUserMeasurements.Length);
   }
+
+  [Test]
+  public async Task DeleteMeasurement()
+  {
+    UpsertResult result = await _repository.UpsertMeasurement(
+      new CounterMeasurement
+      {
+        UserId = _currentUserId,
+        Notes = "WillBeDeleted"
+      }
+    );
+
+    IMeasurement? measurement = await _repository.GetMeasurement(result.EntityId);
+    Assert.IsNotNull(measurement);
+
+    await _userScopedRepository.DeleteMeasurement(result.EntityId);
+
+    measurement = await _repository.GetMeasurement(result.EntityId);
+    Assert.IsNull(measurement);
+  }
+
+  [Test]
+  public async Task DeleteMeasurement_ShouldNotDelete_FromOtherUser()
+  {
+    UpsertResult result = await _repository.UpsertMeasurement(
+      new CounterMeasurement
+      {
+        UserId = _otherUserId,
+        Notes = "WillBeDeleted"
+      }
+    );
+
+    IMeasurement? measurement = await _repository.GetMeasurement(result.EntityId);
+    Assert.IsNotNull(measurement);
+
+    await _userScopedRepository.DeleteMeasurement(result.EntityId);
+    Assert.IsNotNull(measurement);
+  }
 }

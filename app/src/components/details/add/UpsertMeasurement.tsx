@@ -143,6 +143,6 @@ export const UpsertMeasurement: React.FC<{
       return isTimerAndIsRunning ? "Stop timer" : "Start timer";
     }
 
-    return metric.id ? translations.edit : translations.add;
+    return measurement.id ? translations.edit : translations.add;
   }
 };

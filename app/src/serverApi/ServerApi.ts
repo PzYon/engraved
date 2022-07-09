@@ -13,6 +13,8 @@ import { IUser } from "./IUser";
 import { AuthTokenStorage } from "./authentication/AuthTokenStorage";
 import { ApiError } from "./ApiError";
 
+type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
+
 export class ServerApi {
   private static _jwtToken: string;
 
@@ -83,15 +85,23 @@ export class ServerApi {
     urlSegment: string
   ): Promise<ICommandResult> {
     return await this.executeRequest(
-      "/measurements/" + urlSegment,
+      `/measurements/${urlSegment}`,
       "POST",
       command
     );
   }
 
+  static async deleteMeasurement(measurementId: string): Promise<void> {
+    return await this.executeRequest(
+      `/measurements/${measurementId}`,
+      "DELETE",
+      null
+    );
+  }
+
   static async executeRequest<T = void>(
     url: string,
-    method: "GET" | "PUT" | "POST" = "GET",
+    method: HttpMethod = "GET",
     payload: unknown = undefined
   ): Promise<T> {
     const response = await this.getResponse(url, method, payload);
@@ -108,7 +118,7 @@ export class ServerApi {
 
   private static async getResponse(
     url: string,
-    method: "GET" | "PUT" | "POST",
+    method: HttpMethod,
     payload: unknown
   ) {
     const headers: { [key: string]: string } = {

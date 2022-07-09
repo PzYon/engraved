@@ -18,7 +18,7 @@ public class MongoRepository : IRepository
   private readonly IMongoCollection<MeasurementDocument> _measurements;
   private readonly IMongoCollection<MetricDocument> _metrics;
   private readonly IMongoCollection<UserDocument> _users;
-  
+
   static MongoRepository()
   {
     // below stuff is required for polymorphic document types to work. it would
@@ -31,7 +31,7 @@ public class MongoRepository : IRepository
     BsonClassMap.RegisterClassMap<TimerMetricDocument>();
     BsonClassMap.RegisterClassMap<GaugeMetricDocument>();
   }
-  
+
   public MongoRepository(IMongoRepositorySettings settings)
   {
     IMongoClient client = CreateMongoClient(settings);
@@ -141,6 +141,25 @@ public class MongoRepository : IRepository
     );
 
     return CreateUpsertResult(measurement.Id, replaceOneResult);
+  }
+
+  public async Task DeleteMeasurement(string measurementId)
+  {
+    await _measurements.DeleteOneAsync(GetDocumentByIdFilter<MeasurementDocument>(measurementId));
+  }
+
+  public async Task<IMeasurement?> GetMeasurement(string measurementId)
+  {
+    if (string.IsNullOrEmpty(measurementId))
+    {
+      throw new ArgumentNullException(nameof(measurementId), "Id must be specified.");
+    }
+
+    MeasurementDocument? document = await _measurements
+      .Find(GetDocumentByIdFilter<MeasurementDocument>(measurementId))
+      .FirstOrDefaultAsync();
+
+    return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
   }
 
   protected virtual FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
