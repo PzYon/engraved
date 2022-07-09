@@ -10,7 +10,7 @@ const ChartJs = React.lazy(() => import("./LazyChartJs"));
 export const Visualization: React.FC<IVisualizationProps> = (
   props: IVisualizationProps
 ) => {
-  const [groupByTime, setGroupByTime] = useState(GroupByTime.Month);
+  const [groupByTime, setGroupByTime] = useState(GroupByTime.Day);
   const [attributeKey, setAttributeKey] = useState("");
   return (
     <Suspense fallback={<div />}>
