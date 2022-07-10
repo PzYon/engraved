@@ -22,10 +22,12 @@ export const MetricProperties: React.FC<{ metric: IMetric }> = ({ metric }) => {
     <>
       {allProperties.map((p) => (
         <Property key={p.key}>
-          <Typography sx={{ color: "primary.main" }} component="span">
+          <Typography component="span" sx={{ fontWeight: "200" }}>
             {p.label}:
           </Typography>{" "}
-          {p.node}
+          <Typography sx={{ color: "primary.main" }} component="span">
+            {p.node}
+          </Typography>
         </Property>
       ))}
     </>

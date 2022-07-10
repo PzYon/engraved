@@ -20,7 +20,7 @@ export const metrixTheme = createTheme({
   },
   typography: {
     fontFamily: "Karla",
-    htmlFontSize: 14,
+    htmlFontSize: 15,
     body2: {
       color: textColor,
     },

@@ -39,5 +39,7 @@ const OverviewHost = styled("div")`
     padding: 8px;
     color: ${(p) => p.theme.palette.primary.main};
     background-color: ${(p) => p.theme.palette.background.default};
+    width: 0.8em;
+    height: 0.8em;
   }
 `;
