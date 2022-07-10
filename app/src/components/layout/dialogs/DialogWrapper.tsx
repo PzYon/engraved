@@ -50,7 +50,7 @@ export const DialogWrapper: React.FC<{
             <Close />
           </IconButton>
         </Header>
-        <DialogContent>{children}</DialogContent>
+        <DialogContent sx={{ paddingTop: 0 }}>{children}</DialogContent>
       </RootBodyElement>
     </Dialog>
   );

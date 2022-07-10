@@ -32,6 +32,7 @@ export const AttributeValues: React.FC<{
                   color: "common.white",
                   marginLeft: "5px",
                   fontSize: "small",
+                  height: "22px",
                 }}
                 title={attribute.name + ": " + value}
                 label={value}
