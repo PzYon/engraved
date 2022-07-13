@@ -25,6 +25,8 @@ export interface IMetricType {
   getOverviewProperties(metric: IMetric): IMetricOverviewPropertyDefinition[];
 
   getYAxisLabel(metric: IMetric): string;
+
+  getValueLabel?(value: number): string;
 }
 
 export interface IMetricOverviewPropertyDefinition {
