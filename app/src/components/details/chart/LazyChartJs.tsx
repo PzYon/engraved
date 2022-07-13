@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import {
+  ArcElement,
   BarController,
   BarElement,
   CategoryScale,
@@ -20,6 +21,7 @@ import { IVisualizationProps } from "./IVisualizationProps";
 import { useTheme } from "@mui/material/styles";
 
 ChartJS.register(
+  ArcElement,
   BarController,
   BarElement,
   CategoryScale,
@@ -51,7 +53,7 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
     metric,
     groupByTime,
     groupByAttribute,
-    "bar",
+    "pie",
     palette.primary.main
   );
 

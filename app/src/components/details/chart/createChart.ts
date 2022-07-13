@@ -8,6 +8,7 @@ import { ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
 import { getCoefficient } from "../../common/utils";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
+import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
 
 export const createChart = (
   measurements: IMeasurement[],
@@ -17,6 +18,79 @@ export const createChart = (
   type: ChartType,
   color: string
 ): ChartProps => {
+  if (type === "bar") {
+    return createBarChart(
+      measurements,
+      color,
+      metric,
+      groupByTime,
+      attributeKey
+    );
+  }
+
+  if (type === "pie") {
+    return createPieChart(measurements, metric, groupByTime, attributeKey);
+  }
+};
+
+function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
+  switch (groupByTime) {
+    case GroupByTime.None:
+      return undefined;
+    case GroupByTime.Day:
+      return "day";
+    case GroupByTime.Month:
+      return "month";
+  }
+}
+
+function createPieChart(
+  measurements: IMeasurement[],
+  metric: IMetric,
+  groupByTime: GroupByTime,
+  attributeKey: string
+): ChartProps {
+  const dataSets: IDataSet[] = createDataSets(
+    measurements,
+    metric,
+    groupByTime,
+    attributeKey
+  );
+
+  const attributeKeys = Object.keys(metric.attributes);
+
+  debugger;
+  return {
+    type: "pie",
+    data: {
+      labels: dataSets.map((d) => d.label),
+      datasets: [
+        {
+          label: "My First Dataset",
+          data: dataSets.map(
+            (d) =>
+              d.data
+                .map((d) => d.y)
+                .reduce(
+                  (previousValue: number, currentValue: number) =>
+                    previousValue + currentValue
+                ),
+            0
+          ),
+          hoverOffset: 4,
+        },
+      ],
+    },
+  };
+}
+
+function createBarChart(
+  measurements: IMeasurement[],
+  color: string,
+  metric: IMetric,
+  groupByTime: GroupByTime,
+  attributeKey: string
+): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
     measurements,
     metric,
@@ -36,7 +110,7 @@ export const createChart = (
   const metricType = MetricTypeFactory.create(metric.type);
 
   return {
-    type: type,
+    type: "bar",
     options: {
       normalized: true,
       scales: {
@@ -74,15 +148,4 @@ export const createChart = (
       datasets: decoratedDataSets as never,
     },
   };
-};
-
-function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
-  switch (groupByTime) {
-    case GroupByTime.None:
-      return undefined;
-    case GroupByTime.Day:
-      return "day";
-    case GroupByTime.Month:
-      return "month";
-  }
 }
