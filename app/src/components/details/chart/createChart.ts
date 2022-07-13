@@ -48,7 +48,11 @@ export const createChart = (
         y: {
           stacked: true,
           ticks: {
-            stepSize: 1,
+            callback: (value) => {
+              return metricType.getValueLabel
+                ? metricType.getValueLabel(value as number)
+                : value;
+            },
           },
           title: {
             display: true,

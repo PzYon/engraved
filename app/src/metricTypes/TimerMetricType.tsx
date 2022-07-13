@@ -83,4 +83,8 @@ export class TimerMetricType implements IMetricType {
   getYAxisLabel(): string {
     return "Hours";
   }
+
+  getValueLabel(value: number): string {
+    return Math.round((value as number) / 60).toString();
+  }
 }
