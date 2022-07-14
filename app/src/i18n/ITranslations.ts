@@ -11,6 +11,7 @@ export interface ITranslations {
   columnName_actions: string;
   label_groupBy_time: string;
   label_groupBy_attribute: string;
+  label_chartType: string;
   label_metricDescription: string;
   label_metricName: string;
   label_metricType: string;

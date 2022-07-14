@@ -17,24 +17,27 @@ export const createChart = (
   type: ChartType,
   color: string
 ): ChartProps => {
-  if (type === "bar") {
-    return createBarChart(
-      measurements,
-      color,
-      metric,
-      groupByTime,
-      attributeKey
-    );
-  }
+  switch (type) {
+    case "bar":
+      return createBarChart(
+        measurements,
+        color,
+        metric,
+        groupByTime,
+        attributeKey
+      );
 
-  if (type === "pie") {
-    return createPieChart(
-      measurements,
-      color,
-      metric,
-      groupByTime,
-      attributeKey
-    );
+    case "doughnut":
+      return createPieChart(
+        measurements,
+        color,
+        metric,
+        groupByTime,
+        attributeKey
+      );
+
+    default:
+      throw new Error(`Chart type '${type}' is not supported.`);
   }
 };
 

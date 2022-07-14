@@ -15,7 +15,7 @@ export const GroupByAttributeSelector: React.FC<{
   onChange: (attributeKey: string) => void;
 }> = ({ selectedAttributeKey, attributes, onChange }) => {
   return (
-    <FormControl sx={{ minWidth: 150 }}>
+    <FormControl>
       <InputLabel id="group-by-attribute-label">
         {translations.label_groupBy_attribute}
       </InputLabel>

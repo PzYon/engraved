@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   ArcElement,
   BarController,
   BarElement,
   CategoryScale,
   Chart as ChartJS,
+  ChartTypeRegistry,
   Legend,
   LinearScale,
   LineController,
@@ -40,6 +41,7 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
   metric,
   groupByTime,
   groupByAttribute,
+  chartType,
 }) => {
   const { typography, palette } = useTheme();
 
@@ -48,16 +50,20 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
     ChartJS.defaults.font.size = typography.htmlFontSize;
   }, []);
 
-  const chart = createChart(
-    measurements,
-    metric,
-    groupByTime,
-    groupByAttribute,
-    "pie",
-    palette.primary.main
+  const chart = useMemo(
+    () =>
+      createChart(
+        measurements,
+        metric,
+        groupByTime,
+        groupByAttribute,
+        chartType as keyof ChartTypeRegistry,
+        palette.primary.main
+      ),
+    [measurements, groupByTime, groupByAttribute, chartType]
   );
 
-  return <Chart {...chart} />;
+  return <Chart key={chartType} {...chart} />;
 };
 
 export default LazyChartJs;
