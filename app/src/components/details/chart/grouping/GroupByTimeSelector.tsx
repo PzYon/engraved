@@ -14,7 +14,7 @@ export const GroupByTimeSelector: React.FC<{
   onChange: (groupByTime: GroupByTime) => void;
 }> = ({ groupByTime, onChange }) => {
   return (
-    <FormControl sx={{ minWidth: 150, marginRight: "20px" }}>
+    <FormControl>
       <InputLabel id="group-by-time-label">
         {translations.label_groupBy_time}
       </InputLabel>

@@ -7,4 +7,5 @@ export interface IVisualizationProps {
   metric: IMetric;
   groupByTime?: GroupByTime;
   groupByAttribute?: string;
+  chartType?: string;
 }

@@ -13,6 +13,7 @@ export const translations: ITranslations = {
   columnName_actions: "Actions",
   label_groupBy_time: "Group by time",
   label_groupBy_attribute: "Group by attribute",
+  label_chartType: "Chart type",
   label_metricDescription: "Description",
   label_metricName: "Name",
   label_metricType: "Metric Type",
