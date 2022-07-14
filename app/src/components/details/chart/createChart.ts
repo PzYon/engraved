@@ -6,9 +6,8 @@ import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
 import { ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
-import { getCoefficient } from "../../common/utils";
+import { getCoefficient, getColorShades } from "../../common/utils";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
-import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
 
 export const createChart = (
   measurements: IMeasurement[],
@@ -29,23 +28,19 @@ export const createChart = (
   }
 
   if (type === "pie") {
-    return createPieChart(measurements, metric, groupByTime, attributeKey);
+    return createPieChart(
+      measurements,
+      color,
+      metric,
+      groupByTime,
+      attributeKey
+    );
   }
 };
 
-function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
-  switch (groupByTime) {
-    case GroupByTime.None:
-      return undefined;
-    case GroupByTime.Day:
-      return "day";
-    case GroupByTime.Month:
-      return "month";
-  }
-}
-
 function createPieChart(
   measurements: IMeasurement[],
+  color: string,
   metric: IMetric,
   groupByTime: GroupByTime,
   attributeKey: string
@@ -57,27 +52,23 @@ function createPieChart(
     attributeKey
   );
 
-  const attributeKeys = Object.keys(metric.attributes);
-
-  debugger;
   return {
-    type: "pie",
+    type: "doughnut",
     data: {
       labels: dataSets.map((d) => d.label),
       datasets: [
         {
-          label: "My First Dataset",
+          backgroundColor: getColorShades(dataSets.length, color),
           data: dataSets.map(
-            (d) =>
-              d.data
-                .map((d) => d.y)
+            (sets) =>
+              sets.data
+                .map((set) => set.y)
                 .reduce(
                   (previousValue: number, currentValue: number) =>
                     previousValue + currentValue
                 ),
             0
           ),
-          hoverOffset: 4,
         },
       ],
     },
@@ -148,4 +139,15 @@ function createBarChart(
       datasets: decoratedDataSets as never,
     },
   };
+}
+
+function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
+  switch (groupByTime) {
+    case GroupByTime.None:
+      return undefined;
+    case GroupByTime.Day:
+      return "day";
+    case GroupByTime.Month:
+      return "month";
+  }
 }
