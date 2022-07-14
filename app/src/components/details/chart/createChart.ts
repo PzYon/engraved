@@ -54,6 +54,9 @@ function createPieChart(
 
   return {
     type: "doughnut",
+    options: {
+      aspectRatio: 3,
+    },
     data: {
       labels: dataSets.map((d) => d.label),
       datasets: [
