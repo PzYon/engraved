@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { IMeasurement } from "../../serverApi/IMeasurement";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
@@ -34,7 +40,9 @@ export const MetricDetailsContextProvider: React.FC<{
 }> = ({ children, metricId }) => {
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
   const [metric, setMetric] = useState<IMetric>(null);
-  const [togglers, setTogglers] = useState<{ [key: string]: string[] }>({});
+  const [selectedAttributeValues, setSelectedAttributeValues] = useState<{
+    [key: string]: string[];
+  }>({});
 
   const [allMeasurements, setAllMeasurements] = useState<IMeasurement[]>([]);
 
@@ -49,16 +57,18 @@ export const MetricDetailsContextProvider: React.FC<{
     reloadMetric();
   }, [metricId]);
 
+  const contextValue = useMemo(() => {
+    return {
+      measurements,
+      metric,
+      reloadMetric,
+      reloadMeasurements,
+      toggleAttributeValue,
+    };
+  }, [measurements, metric]);
+
   return (
-    <MetricDetailsContext.Provider
-      value={{
-        measurements,
-        metric,
-        reloadMetric,
-        reloadMeasurements,
-        toggleAttributeValue,
-      }}
-    >
+    <MetricDetailsContext.Provider value={contextValue}>
       {children}
     </MetricDetailsContext.Provider>
   );
@@ -67,26 +77,26 @@ export const MetricDetailsContextProvider: React.FC<{
     attributeKey: string,
     attributeValueKey: string
   ) {
-    const newTogglers = { ...togglers };
+    const values = { ...selectedAttributeValues };
 
-    if (!newTogglers[attributeKey]) {
-      newTogglers[attributeKey] = [];
+    if (!values[attributeKey]) {
+      values[attributeKey] = [];
     }
 
-    const index = newTogglers[attributeKey].indexOf(attributeValueKey);
+    const index = values[attributeKey].indexOf(attributeValueKey);
     if (index > -1) {
-      newTogglers[attributeKey].splice(index);
+      values[attributeKey].splice(index);
     } else {
-      newTogglers[attributeKey].push(attributeValueKey);
+      values[attributeKey].push(attributeValueKey);
     }
+
+    const keysWithValues = Object.keys(values).filter(
+      (key) => values[key]?.length
+    );
 
     const newMeasurements = allMeasurements.filter((m) => {
-      const keysWithValues = Object.keys(newTogglers).filter(
-        (key) => newTogglers[key]?.length
-      );
-
-      for (const k of keysWithValues) {
-        if (m.metricAttributeValues[k]?.indexOf(attributeValueKey) === -1) {
+      for (const key of keysWithValues) {
+        if (m.metricAttributeValues[key]?.indexOf(attributeValueKey) === -1) {
           return false;
         }
       }
@@ -95,7 +105,7 @@ export const MetricDetailsContextProvider: React.FC<{
     });
 
     setMeasurements(newMeasurements);
-    setTogglers(newTogglers);
+    setSelectedAttributeValues(values);
   }
 
   function reloadMetric(): Promise<void> {
