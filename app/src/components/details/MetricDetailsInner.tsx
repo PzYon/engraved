@@ -16,12 +16,18 @@ import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Route, Routes } from "react-router-dom";
 import { DetailsSection } from "../layout/DetailsSection";
 import { MeasurementsList } from "./dataTable/MeasurementsList";
+import { SelectedAttributeValues } from "./SelectedAttributeValues";
 
 export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
   metricId,
 }) => {
-  const { metric, measurements, reloadMeasurements, reloadMetric } =
-    useMetricDetailsContext();
+  const {
+    metric,
+    measurements,
+    reloadMeasurements,
+    reloadMetric,
+    selectedAttributeValues,
+  } = useMetricDetailsContext();
 
   const { setPageTitle, setTitleActions } = useAppContext();
 
@@ -70,6 +76,12 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
 
       <DetailsSection>
         <Visualization metric={metric} measurements={measurements} />
+      </DetailsSection>
+
+      <DetailsSection>
+        <SelectedAttributeValues
+          selectedAttributeValues={selectedAttributeValues}
+        />
       </DetailsSection>
 
       <DetailsSection overflowXScroll={true}>

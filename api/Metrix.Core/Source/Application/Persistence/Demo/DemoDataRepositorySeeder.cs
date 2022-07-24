@@ -42,10 +42,32 @@ public class DemoDataRepositorySeeder
         .CreateExecutor()
         .Execute(_repository, dateService);
 
-      IMetric? metric = await _repository.GetMetric(result.EntityId);
+      IMetric metric = (await _repository.GetMetric(result.EntityId))!;
+      await AddAttributes(metric, dateService);
 
-      await AddMeasurements(metric!, dateService);
+      metric = (await _repository.GetMetric(result.EntityId))!;
+      await AddMeasurements(metric, dateService);
     }
+  }
+
+  private async Task AddAttributes(IMetric metric, IDateService dateService)
+  {
+    var command = new EditMetricCommand
+    {
+      Name = metric.Name,
+      MetricId = metric.Id,
+      Description = metric.Description,
+      Attributes = CreateRandomDict(
+        "attributeKey",
+        i => new MetricAttribute
+        {
+          Name = "Attribute-" + i,
+          Values = CreateRandomDict("valueKey1", s => "value" + s)
+        }
+      )
+    };
+
+    await new EditMetricCommandExecutor(command).Execute(_repository, dateService);
   }
 
   private async Task AddMeasurements(IMetric metric, IDateService dateService)
@@ -75,6 +97,8 @@ public class DemoDataRepositorySeeder
         MetricId = metric.Id!
       };
 
+      EnsureAttributeValues(metric, command);
+
       await new UpsertCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
     }
   }
@@ -86,10 +110,20 @@ public class DemoDataRepositorySeeder
       var command = new UpsertGaugeMeasurementCommand
       {
         MetricId = metric.Id!,
-        Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
+        Value = Random.Shared.Next(0, Random.Shared.Next(5, 150)),
       };
 
+      EnsureAttributeValues(metric, command);
+
       await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_repository, dateService);
+    }
+  }
+
+  private static void EnsureAttributeValues(IMetric metric, BaseUpsertMeasurementCommand command)
+  {
+    foreach (var kvp in metric.Attributes)
+    {
+      command.MetricAttributeValues.Add(kvp.Key, new[] { kvp.Value.Values.First().Key });
     }
   }
 
@@ -105,7 +139,11 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new StartTimerMeasurementCommand { MetricId = metric.Id! }
+      var command = new StartTimerMeasurementCommand { MetricId = metric.Id! };
+
+      EnsureAttributeValues(metric, command);
+
+      await command
         .CreateExecutor()
         .Execute(_repository, dateService);
 
@@ -185,6 +223,20 @@ public class DemoDataRepositorySeeder
   private static MetricType GetRandomMetricType()
   {
     return (MetricType)Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
+  }
+
+  private Dictionary<string, T> CreateRandomDict<T>(string key, Func<int, T> createValue)
+  {
+    int count = Random.Shared.Next(0, 7);
+
+    Dictionary<string, T> dict = new Dictionary<string, T>();
+
+    for (int i = 0; i < count; i++)
+    {
+      dict.Add(key + i, createValue(i));
+    }
+
+    return dict;
   }
 
   // https://stackoverflow.com/questions/4286487/is-there-any-lorem-ipsum-generator-in-c

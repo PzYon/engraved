@@ -20,6 +20,7 @@ export interface IMetricDetailsContext {
     attributeKey: string,
     attributeValueKey: string
   ) => void;
+  selectedAttributeValues: { [key: string]: string[] };
 }
 
 const MetricDetailsContext = createContext<IMetricDetailsContext>({
@@ -28,6 +29,7 @@ const MetricDetailsContext = createContext<IMetricDetailsContext>({
   reloadMetric: null,
   reloadMeasurements: null,
   toggleAttributeValue: null,
+  selectedAttributeValues: {},
 });
 
 export const useMetricDetailsContext = () => {
@@ -64,8 +66,9 @@ export const MetricDetailsContextProvider: React.FC<{
       reloadMetric,
       reloadMeasurements,
       toggleAttributeValue,
+      selectedAttributeValues,
     };
-  }, [measurements, metric]);
+  }, [measurements, metric, selectedAttributeValues]);
 
   return (
     <MetricDetailsContext.Provider value={contextValue}>
