@@ -74,7 +74,7 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
       </DetailsSection>
 
       <DetailsSection>
-        <SelectedAttributeValues />
+        <SelectedAttributeValues attributes={metric.attributes} />
       </DetailsSection>
 
       <DetailsSection overflowXScroll={true}>

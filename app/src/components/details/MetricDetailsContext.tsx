@@ -99,7 +99,7 @@ export const MetricDetailsContextProvider: React.FC<{
 
     const newMeasurements = allMeasurements.filter((m) => {
       for (const key of keysWithValues) {
-        if (m.metricAttributeValues[key]?.indexOf(attributeValueKey) === -1) {
+        if (m.metricAttributeValues[key].indexOf(attributeValueKey) === -1) {
           return false;
         }
       }
