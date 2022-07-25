@@ -21,13 +21,8 @@ import { SelectedAttributeValues } from "./SelectedAttributeValues";
 export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
   metricId,
 }) => {
-  const {
-    metric,
-    measurements,
-    reloadMeasurements,
-    reloadMetric,
-    selectedAttributeValues,
-  } = useMetricDetailsContext();
+  const { metric, measurements, reloadMeasurements, reloadMetric } =
+    useMetricDetailsContext();
 
   const { setPageTitle, setTitleActions } = useAppContext();
 
@@ -79,9 +74,7 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
       </DetailsSection>
 
       <DetailsSection>
-        <SelectedAttributeValues
-          selectedAttributeValues={selectedAttributeValues}
-        />
+        <SelectedAttributeValues />
       </DetailsSection>
 
       <DetailsSection overflowXScroll={true}>
