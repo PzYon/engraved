@@ -7,9 +7,9 @@ export const SelectedAttributeValues: React.FC<{
     <div>
       {Object.keys(selectedAttributeValues).map((x) => {
         return (
-          <span key={x}>
+          <div key={x}>
             {x}: {selectedAttributeValues[x].join(",")}
-          </span>
+          </div>
         );
       })}
     </div>

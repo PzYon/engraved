@@ -29,7 +29,7 @@ export const AttributeValues: React.FC<{
             const value = attribute.values[k];
             return (
               <Chip
-                key={k}
+                key={`${attributeKey}::${k}`}
                 sx={{
                   backgroundColor: colorByAttributeKey[attributeKey],
                   color: "common.white",

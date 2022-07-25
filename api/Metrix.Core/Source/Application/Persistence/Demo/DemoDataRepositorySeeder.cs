@@ -62,7 +62,7 @@ public class DemoDataRepositorySeeder
         i => new MetricAttribute
         {
           Name = "Attribute-" + i,
-          Values = CreateRandomDict("valueKey1", s => "value" + s)
+          Values = CreateRandomDict("valueKey", s => "value" + s)
         }
       )
     };
@@ -123,7 +123,18 @@ public class DemoDataRepositorySeeder
   {
     foreach (var kvp in metric.Attributes)
     {
-      command.MetricAttributeValues.Add(kvp.Key, new[] { kvp.Value.Values.First().Key });
+      var attributeKey = kvp.Key;
+      var valueKeys = kvp.Value.Values.Keys.ToArray();
+      var numberOfValueKeys = valueKeys.Length;
+      
+      if (numberOfValueKeys == 0)
+      {
+        break;
+      }
+
+      string randomValue = valueKeys[Random.Shared.Next(0, numberOfValueKeys)];
+
+      command.MetricAttributeValues.Add(attributeKey, new[] {randomValue});
     }
   }
 
@@ -139,7 +150,7 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      var command = new StartTimerMeasurementCommand { MetricId = metric.Id! };
+      var command = new StartTimerMeasurementCommand {MetricId = metric.Id!};
 
       EnsureAttributeValues(metric, command);
 
@@ -149,7 +160,7 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new EndTimerMeasurementCommand { MetricId = metric.Id! }
+      await new EndTimerMeasurementCommand {MetricId = metric.Id!}
         .CreateExecutor()
         .Execute(_repository, dateService);
     }
@@ -200,7 +211,7 @@ public class DemoDataRepositorySeeder
           command = new UpsertCounterMeasurementCommand();
           break;
         case GaugeMeasurement gaugeMeasurement:
-          command = new UpsertGaugeMeasurementCommand { Value = gaugeMeasurement.Value };
+          command = new UpsertGaugeMeasurementCommand {Value = gaugeMeasurement.Value};
           break;
         case TimerMeasurement:
           throw new NotImplementedException();
@@ -214,7 +225,7 @@ public class DemoDataRepositorySeeder
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)
-        : (IDateService)dateService;
+        : (IDateService) dateService;
 
       await command.CreateExecutor().Execute(_repository, measurementDateService);
     }
@@ -222,10 +233,10 @@ public class DemoDataRepositorySeeder
 
   private static MetricType GetRandomMetricType()
   {
-    return (MetricType)Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
+    return (MetricType) Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
   }
 
-  private Dictionary<string, T> CreateRandomDict<T>(string key, Func<int, T> createValue)
+  private Dictionary<string, T> CreateRandomDict<T>(string keyPrefix, Func<int, T> createValue)
   {
     int count = Random.Shared.Next(0, 7);
 
@@ -233,7 +244,7 @@ public class DemoDataRepositorySeeder
 
     for (int i = 0; i < count; i++)
     {
-      dict.Add(key + i, createValue(i));
+      dict.Add(keyPrefix + i, createValue(i));
     }
 
     return dict;
