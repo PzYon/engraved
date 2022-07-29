@@ -25,11 +25,11 @@ export const AttributeValues: React.FC<{
           const valueKeys = value[1];
           const attribute = attributes[attributeKey];
 
-          return valueKeys.map((k) => {
-            const value = attribute.values[k];
+          return valueKeys.map((valueKey) => {
+            const value = attribute.values[valueKey];
             return (
               <Chip
-                key={k}
+                key={`${attributeKey}::${valueKey}`}
                 sx={{
                   backgroundColor: colorByAttributeKey[attributeKey],
                   color: "common.white",
@@ -40,7 +40,7 @@ export const AttributeValues: React.FC<{
                 title={attribute.name + ": " + value}
                 label={value}
                 onClick={() => {
-                  toggleAttributeValue(attributeKey, k);
+                  toggleAttributeValue(attributeKey, valueKey);
                 }}
               />
             );

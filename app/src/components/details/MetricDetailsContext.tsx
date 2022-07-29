@@ -20,6 +20,7 @@ export interface IMetricDetailsContext {
     attributeKey: string,
     attributeValueKey: string
   ) => void;
+  selectedAttributeValues: { [key: string]: string[] };
 }
 
 const MetricDetailsContext = createContext<IMetricDetailsContext>({
@@ -28,6 +29,7 @@ const MetricDetailsContext = createContext<IMetricDetailsContext>({
   reloadMetric: null,
   reloadMeasurements: null,
   toggleAttributeValue: null,
+  selectedAttributeValues: {},
 });
 
 export const useMetricDetailsContext = () => {
@@ -64,8 +66,9 @@ export const MetricDetailsContextProvider: React.FC<{
       reloadMetric,
       reloadMeasurements,
       toggleAttributeValue,
+      selectedAttributeValues,
     };
-  }, [measurements, metric]);
+  }, [measurements, metric, selectedAttributeValues]);
 
   return (
     <MetricDetailsContext.Provider value={contextValue}>
@@ -90,13 +93,13 @@ export const MetricDetailsContextProvider: React.FC<{
       values[attributeKey].push(attributeValueKey);
     }
 
-    const keysWithValues = Object.keys(values).filter(
-      (key) => values[key]?.length
-    );
-
     const newMeasurements = allMeasurements.filter((m) => {
-      for (const key of keysWithValues) {
-        if (m.metricAttributeValues[key]?.indexOf(attributeValueKey) === -1) {
+      for (const key of Object.keys(values)) {
+        const value = values[key];
+        if (
+          value?.length &&
+          m.metricAttributeValues[key].indexOf(value[0]) === -1
+        ) {
           return false;
         }
       }

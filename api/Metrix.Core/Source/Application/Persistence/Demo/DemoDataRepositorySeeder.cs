@@ -42,10 +42,32 @@ public class DemoDataRepositorySeeder
         .CreateExecutor()
         .Execute(_repository, dateService);
 
-      IMetric? metric = await _repository.GetMetric(result.EntityId);
+      IMetric metric = (await _repository.GetMetric(result.EntityId))!;
+      await AddAttributes(metric, dateService);
 
-      await AddMeasurements(metric!, dateService);
+      metric = (await _repository.GetMetric(result.EntityId))!;
+      await AddMeasurements(metric, dateService);
     }
+  }
+
+  private async Task AddAttributes(IMetric metric, IDateService dateService)
+  {
+    var command = new EditMetricCommand
+    {
+      Name = metric.Name,
+      MetricId = metric.Id,
+      Description = metric.Description,
+      Attributes = CreateRandomDict(
+        "attributeKey",
+        i => new MetricAttribute
+        {
+          Name = "Attribute-" + i,
+          Values = CreateRandomDict("valueKey", s => "value" + s)
+        }
+      )
+    };
+
+    await new EditMetricCommandExecutor(command).Execute(_repository, dateService);
   }
 
   private async Task AddMeasurements(IMetric metric, IDateService dateService)
@@ -75,6 +97,8 @@ public class DemoDataRepositorySeeder
         MetricId = metric.Id!
       };
 
+      EnsureAttributeValues(metric, command);
+
       await new UpsertCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
     }
   }
@@ -86,10 +110,31 @@ public class DemoDataRepositorySeeder
       var command = new UpsertGaugeMeasurementCommand
       {
         MetricId = metric.Id!,
-        Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
+        Value = Random.Shared.Next(0, Random.Shared.Next(5, 150)),
       };
 
+      EnsureAttributeValues(metric, command);
+
       await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_repository, dateService);
+    }
+  }
+
+  private static void EnsureAttributeValues(IMetric metric, BaseUpsertMeasurementCommand command)
+  {
+    foreach (var kvp in metric.Attributes)
+    {
+      var attributeKey = kvp.Key;
+      var valueKeys = kvp.Value.Values.Keys.ToArray();
+      var numberOfValueKeys = valueKeys.Length;
+      
+      if (numberOfValueKeys == 0)
+      {
+        break;
+      }
+
+      string randomValue = valueKeys[Random.Shared.Next(0, numberOfValueKeys)];
+
+      command.MetricAttributeValues.Add(attributeKey, new[] {randomValue});
     }
   }
 
@@ -105,13 +150,17 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new StartTimerMeasurementCommand { MetricId = metric.Id! }
+      var command = new StartTimerMeasurementCommand {MetricId = metric.Id!};
+
+      EnsureAttributeValues(metric, command);
+
+      await command
         .CreateExecutor()
         .Execute(_repository, dateService);
 
       dateService.SetNext(remainingSteps);
 
-      await new EndTimerMeasurementCommand { MetricId = metric.Id! }
+      await new EndTimerMeasurementCommand {MetricId = metric.Id!}
         .CreateExecutor()
         .Execute(_repository, dateService);
     }
@@ -162,7 +211,7 @@ public class DemoDataRepositorySeeder
           command = new UpsertCounterMeasurementCommand();
           break;
         case GaugeMeasurement gaugeMeasurement:
-          command = new UpsertGaugeMeasurementCommand { Value = gaugeMeasurement.Value };
+          command = new UpsertGaugeMeasurementCommand {Value = gaugeMeasurement.Value};
           break;
         case TimerMeasurement:
           throw new NotImplementedException();
@@ -176,7 +225,7 @@ public class DemoDataRepositorySeeder
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)
-        : (IDateService)dateService;
+        : (IDateService) dateService;
 
       await command.CreateExecutor().Execute(_repository, measurementDateService);
     }
@@ -184,7 +233,21 @@ public class DemoDataRepositorySeeder
 
   private static MetricType GetRandomMetricType()
   {
-    return (MetricType)Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
+    return (MetricType) Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
+  }
+
+  private Dictionary<string, T> CreateRandomDict<T>(string keyPrefix, Func<int, T> createValue)
+  {
+    int count = Random.Shared.Next(0, 7);
+
+    Dictionary<string, T> dict = new Dictionary<string, T>();
+
+    for (int i = 0; i < count; i++)
+    {
+      dict.Add(keyPrefix + i, createValue(i));
+    }
+
+    return dict;
   }
 
   // https://stackoverflow.com/questions/4286487/is-there-any-lorem-ipsum-generator-in-c
