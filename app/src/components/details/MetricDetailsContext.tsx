@@ -93,13 +93,13 @@ export const MetricDetailsContextProvider: React.FC<{
       values[attributeKey].push(attributeValueKey);
     }
 
-    const keysWithValues = Object.keys(values).filter(
-      (key) => values[key]?.length
-    );
-
     const newMeasurements = allMeasurements.filter((m) => {
-      for (const key of keysWithValues) {
-        if (m.metricAttributeValues[key].indexOf(attributeValueKey) === -1) {
+      for (const key of Object.keys(values)) {
+        const value = values[key];
+        if (
+          value?.length &&
+          m.metricAttributeValues[key].indexOf(value[0]) === -1
+        ) {
           return false;
         }
       }

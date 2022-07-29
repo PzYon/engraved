@@ -38,7 +38,7 @@ export const SelectedAttributeValues: React.FC<{
               title={value}
               label={value}
               onClick={() => {
-                toggleAttributeValue(attributeKey, value);
+                toggleAttributeValue(attributeKey, valueKey);
               }}
             />
           </React.Fragment>
