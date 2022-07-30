@@ -1,8 +1,8 @@
 import { IAuthResult } from "../IAuthResult";
 import { StorageUtil } from "../../util/StorageUtil";
 
-export class AuthTokenStorage {
-  private static key = "metrix::auth-token";
+export class AuthStorage {
+  private static key = "metrix::auth";
 
   private storageUtil: StorageUtil;
 
@@ -15,10 +15,10 @@ export class AuthTokenStorage {
   }
 
   getAuthResult(): IAuthResult {
-    return this.storageUtil.getValue(AuthTokenStorage.key);
+    return this.storageUtil.getValue(AuthStorage.key);
   }
 
   setAuthResult(result: IAuthResult): void {
-    this.storageUtil.setValue(AuthTokenStorage.key, result);
+    this.storageUtil.setValue(AuthStorage.key, result);
   }
 }

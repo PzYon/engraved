@@ -10,13 +10,17 @@ import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
 import { IAuthResult } from "./IAuthResult";
 import { IUser } from "./IUser";
-import { AuthTokenStorage } from "./authentication/AuthTokenStorage";
+import { AuthStorage } from "./authentication/AuthStorage";
 import { ApiError } from "./ApiError";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
 export class ServerApi {
   private static _jwtToken: string;
+
+  static async wakeMeUp() {
+    return await this.executeRequest<void>("/wake/me/up");
+  }
 
   static async tryAuthenticate(token: string): Promise<IUser> {
     this._jwtToken = token;
@@ -31,7 +35,7 @@ export class ServerApi {
       { token: token }
     );
 
-    new AuthTokenStorage().setAuthResult(authResult);
+    new AuthStorage().setAuthResult(authResult);
 
     this._jwtToken = authResult.jwtToken;
 
