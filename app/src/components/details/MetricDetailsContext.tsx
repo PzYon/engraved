@@ -98,7 +98,7 @@ export const MetricDetailsContextProvider: React.FC<{
         const value = values[key];
         if (
           value?.length &&
-          m.metricAttributeValues[key].indexOf(value[0]) === -1
+          m.metricAttributeValues[key]?.indexOf(value[0]) === -1
         ) {
           return false;
         }
