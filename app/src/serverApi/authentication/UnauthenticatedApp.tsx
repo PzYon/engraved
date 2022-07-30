@@ -9,14 +9,6 @@ import { renderGoogleSignInButton } from "./google/renderGoogleSignInButton";
 import { AuthStorage } from "./AuthStorage";
 import { ApiError } from "../ApiError";
 
-function wakeUpApi() {
-  const start = performance.now();
-  ServerApi.wakeMeUp().then(() => {
-    const end = performance.now();
-    console.log(`API has woken up after ${Math.round(end - start)}ms`);
-  });
-}
-
 export const UnauthenticatedApp: React.FC = () => {
   const [user, setUser] = useState<IUser>();
   const ref = useRef<HTMLDivElement>();
@@ -62,6 +54,14 @@ export const UnauthenticatedApp: React.FC = () => {
     );
   }
 };
+
+function wakeUpApi() {
+  const start = performance.now();
+  ServerApi.wakeMeUp().then(() => {
+    const end = performance.now();
+    console.log(`API has woken up after ${Math.round(end - start)}ms`);
+  });
+}
 
 const Host = styled.div`
   display: flex;
