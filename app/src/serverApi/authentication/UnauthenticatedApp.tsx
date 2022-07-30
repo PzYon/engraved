@@ -6,7 +6,7 @@ import { IAuthResult } from "../IAuthResult";
 import { IUser } from "../IUser";
 import { GoogleInitializeResponse } from "./google/GoogleTypes";
 import { renderGoogleSignInButton } from "./google/renderGoogleSignInButton";
-import { AuthTokenStorage } from "./AuthTokenStorage";
+import { AuthStorage } from "./AuthStorage";
 import { ApiError } from "../ApiError";
 
 export const UnauthenticatedApp: React.FC = () => {
@@ -18,7 +18,9 @@ export const UnauthenticatedApp: React.FC = () => {
       return;
     }
 
-    const storage = new AuthTokenStorage();
+    wakeUpApi();
+
+    const storage = new AuthStorage();
     if (!storage.hasResult()) {
       return renderGoogleSignInButton(onSignedIn, ref.current);
     }
@@ -52,6 +54,14 @@ export const UnauthenticatedApp: React.FC = () => {
     );
   }
 };
+
+function wakeUpApi() {
+  const start = performance.now();
+  ServerApi.wakeMeUp().then(() => {
+    const end = performance.now();
+    console.log(`API has woken up after ${Math.round(end - start)}ms`);
+  });
+}
 
 const Host = styled.div`
   display: flex;
