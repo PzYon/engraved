@@ -10,6 +10,7 @@ import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
+import { hasValues } from "../../util/MeasurementUtil";
 
 export interface IMetricDetailsContext {
   metric: IMetric;
@@ -80,35 +81,25 @@ export const MetricDetailsContextProvider: React.FC<{
     attributeKey: string,
     attributeValueKey: string
   ) {
-    const values = { ...selectedAttributeValues };
+    const selectedValues = { ...selectedAttributeValues };
 
-    if (!values[attributeKey]) {
-      values[attributeKey] = [];
+    if (!selectedValues[attributeKey]) {
+      selectedValues[attributeKey] = [];
     }
 
-    const index = values[attributeKey].indexOf(attributeValueKey);
+    const index = selectedValues[attributeKey].indexOf(attributeValueKey);
     if (index > -1) {
-      values[attributeKey].splice(index);
+      selectedValues[attributeKey].splice(index);
     } else {
-      values[attributeKey].push(attributeValueKey);
+      selectedValues[attributeKey].push(attributeValueKey);
     }
 
-    const newMeasurements = allMeasurements.filter((m) => {
-      for (const key of Object.keys(values)) {
-        const value = values[key];
-        if (
-          value?.length &&
-          m.metricAttributeValues[key]?.indexOf(value[0]) === -1
-        ) {
-          return false;
-        }
-      }
-
-      return true;
-    });
+    const newMeasurements = allMeasurements.filter((measurement) =>
+      hasValues(measurement.metricAttributeValues, selectedValues)
+    );
 
     setMeasurements(newMeasurements);
-    setSelectedAttributeValues(values);
+    setSelectedAttributeValues(selectedValues);
   }
 
   function reloadMetric(): Promise<void> {
