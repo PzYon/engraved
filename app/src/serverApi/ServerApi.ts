@@ -160,14 +160,8 @@ export class ServerApi {
     const network = total - server;
     const status = response.status;
 
-    console.table({
-      method,
-      url,
-      status,
-      total,
-      server,
-      network,
-      dummy: "chrome hides last line - why?",
-    });
+    console.info(
+      `-- ${method} ${url} [${status}]: Server ${server} + Network ${network} = Total ${total} `
+    );
   }
 }
