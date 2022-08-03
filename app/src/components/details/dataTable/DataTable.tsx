@@ -61,15 +61,17 @@ export const DataTable: React.FC<{
           </TableRow>
         ))}
       </TableBody>
-      <TableFooter>
-        <TableRow>
-          {columns.map((c) => (
-            <TableCell key={c.key}>
-              {c.isSummable ? sums[c.key] : null}
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableFooter>
+      {columns.filter((c) => c.isSummable).length ? (
+        <TableFooter>
+          <TableRow>
+            {columns.map((c) => (
+              <TableCell key={c.key}>
+                {c.isSummable ? sums[c.key] : null}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableFooter>
+      ) : null}
     </Table>
   );
 };
