@@ -20,7 +20,12 @@ var isSeeded = false;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-  .AddControllers(options => options.Filters.Add<HttpExceptionFilter>())
+  .AddControllers(
+    options =>
+    {
+      options.Filters.Add<PerfFilter>();
+      options.Filters.Add<HttpExceptionFilter>();
+    })
   .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

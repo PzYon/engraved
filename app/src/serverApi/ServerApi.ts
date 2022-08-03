@@ -108,7 +108,11 @@ export class ServerApi {
     method: HttpMethod = "GET",
     payload: unknown = undefined
   ): Promise<T> {
+    const start = performance.now();
+
     const response = await this.getResponse(url, method, payload);
+
+    this.printPerfData(method, url, response, start);
 
     const text = await response.text();
     const json = text ? JSON.parse(text) : null;
@@ -142,6 +146,22 @@ export class ServerApi {
     return await fetch(
       new Request(envSettings.apiBaseUrl + url),
       requestConfig
+    );
+  }
+
+  private static printPerfData(
+    method: HttpMethod,
+    url: string,
+    response: Response,
+    start: number
+  ) {
+    const total = Math.round(performance.now() - start);
+    const server = Number(response.headers.get("server-action-duration"));
+    const network = total - server;
+    const status = response.status;
+
+    console.info(
+      `-- ${method} ${url} [${status}]: Server ${server} + Network ${network} = Total ${total} `
     );
   }
 }
