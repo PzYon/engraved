@@ -5,6 +5,8 @@ namespace Metrix.Api.Filters;
 
 public class PerfFilter : IActionFilter
 {
+  private static readonly string durationHeaderName = "server-action-duration";
+
   private Stopwatch _stopwatch;
 
   public void OnActionExecuting(ActionExecutingContext context)
@@ -14,7 +16,7 @@ public class PerfFilter : IActionFilter
 
   public void OnActionExecuted(ActionExecutedContext context)
   {
-    context.HttpContext.Response.Headers.Add("access-control-expose-headers", "server-action-duration");
-    context.HttpContext.Response.Headers.Add("server-action-duration", _stopwatch.ElapsedMilliseconds.ToString());
+    context.HttpContext.Response.Headers.Add("access-control-expose-headers", durationHeaderName);
+    context.HttpContext.Response.Headers.Add(durationHeaderName, _stopwatch.ElapsedMilliseconds.ToString());
   }
 }
