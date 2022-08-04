@@ -6,6 +6,7 @@ export enum DateFormat {
   dateOnly,
   full,
   ticks,
+  timeOnly,
 }
 
 export const formatDate = (
@@ -30,6 +31,8 @@ export const formatDate = (
       return format(date, "Pp");
     case DateFormat.ticks:
       return format(date, "T");
+    case DateFormat.timeOnly:
+      return format(date, "HH:mm");
     case DateFormat.relativeToNow:
     default:
       return formatDistanceToNow(date, {

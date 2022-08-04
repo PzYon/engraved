@@ -4,7 +4,7 @@ import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
 import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { differenceInMinutes } from "date-fns";
+import { differenceInMinutes, formatDistanceStrict } from "date-fns";
 import { IMetric } from "../serverApi/IMetric";
 import { ITimerMetric } from "../serverApi/ITimerMetric";
 import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
@@ -28,7 +28,7 @@ export class TimerMetricType implements IMetricType {
         getValueReactNode: (measurement: IMeasurement) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).startDate}
-            dateFormat={DateFormat.numerical}
+            dateFormat={DateFormat.timeOnly}
           />
         ),
       },
@@ -38,7 +38,7 @@ export class TimerMetricType implements IMetricType {
         getValueReactNode: (measurement: IMeasurement) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).endDate}
-            dateFormat={DateFormat.numerical}
+            dateFormat={DateFormat.timeOnly}
           />
         ),
       },
@@ -48,17 +48,21 @@ export class TimerMetricType implements IMetricType {
         getValueReactNode: (measurement: IMeasurement) => {
           const timerMeasurement = measurement as ITimerMeasurement;
 
-          const totalMinutes = differenceInMinutes(
-            timerMeasurement.endDate
-              ? new Date(timerMeasurement.endDate)
-              : new Date(),
-            new Date(timerMeasurement.startDate)
-          );
+          const endDate = timerMeasurement.endDate
+            ? new Date(timerMeasurement.endDate)
+            : new Date();
+          const startDate = new Date(timerMeasurement.startDate);
+
+          const totalMinutes = differenceInMinutes(endDate, startDate);
+
+          if (totalMinutes < 60 || totalMinutes > 1440) {
+            return formatDistanceStrict(endDate, startDate);
+          }
 
           const hours = Math.floor(totalMinutes / 60);
           const minutes = totalMinutes % 60;
 
-          return `${hours}:${minutes < 10 ? "0" + minutes : minutes} h`;
+          return `${hours}:${minutes < 10 ? "0" + minutes : minutes}h`;
         },
       },
     ];

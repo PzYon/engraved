@@ -15,6 +15,7 @@ import { DateTimeSelector } from "../../common/DateTimeSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { IGaugeMeasurement } from "../../../serverApi/ITimerMeasurement";
+import { stripTime } from "../../common/utils";
 
 export const UpsertMeasurement: React.FC<{
   metric: IMetric;
@@ -31,7 +32,9 @@ export const UpsertMeasurement: React.FC<{
   );
 
   const [date, setDate] = useState<Date>(
-    measurement?.dateTime ? new Date(measurement.dateTime) : undefined
+    measurement?.dateTime
+      ? new Date(measurement.dateTime)
+      : stripTime(new Date())
   );
 
   const { setAppAlert } = useAppContext();
