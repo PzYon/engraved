@@ -2,7 +2,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { TextField } from "@mui/material";
 import React from "react";
-import { removeTime } from "./utils";
+import { stripTime } from "./utils";
 
 export const DateTimeSelector: React.FC<{
   setDate: (date: Date) => void;
@@ -14,7 +14,7 @@ export const DateTimeSelector: React.FC<{
         renderInput={(params) => <TextField {...params} />}
         value={date}
         onChange={(d) => {
-          const date = removeTime(d);
+          const date = stripTime(d);
           setDate(date);
         }}
       />

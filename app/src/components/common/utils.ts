@@ -15,6 +15,6 @@ export function getColorShades(length: number, color: string): string[] {
   return colors;
 }
 
-export function removeTime(date: Date): Date {
+export function stripTime(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
