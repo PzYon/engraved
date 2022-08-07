@@ -67,5 +67,5 @@ jobs:
         with:
           app-name: "metrix-api"
           slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BD825C52928A4276A45C2A5EC3704B2E }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C73DA976C93E4096B745D8FA1460090E }}
           package: .
