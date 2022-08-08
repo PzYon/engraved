@@ -4,16 +4,21 @@ import { GroupByTime } from "./consolidation/GroupByTime";
 import { createDataSets } from "./dataSets/createDataSets";
 import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
-import { ChartType, TimeUnit } from "chart.js";
+import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
 import { getCoefficient, getColorShades } from "../../common/utils";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
+import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
 
 export const createChart = (
   measurements: IMeasurement[],
   metric: IMetric,
   groupByTime: GroupByTime,
   attributeKey: string,
+  toggleAttributeValue: (
+    attributeKey: string,
+    attributeValueKey: string
+  ) => void,
   type: ChartType,
   color: string
 ): ChartProps => {
@@ -23,6 +28,7 @@ export const createChart = (
         measurements,
         color,
         metric,
+        toggleAttributeValue,
         groupByTime,
         attributeKey
       );
@@ -85,6 +91,10 @@ function createBarChart(
   measurements: IMeasurement[],
   color: string,
   metric: IMetric,
+  toggleAttributeValue: (
+    attributeKey: string,
+    attributeValueKey: string
+  ) => void,
   groupByTime: GroupByTime,
   attributeKey: string
 ): ChartProps {
@@ -109,6 +119,20 @@ function createBarChart(
   return {
     type: "bar",
     options: {
+      onClick: (_: ChartEvent, elements: ActiveElement[]) => {
+        if (!attributeKey) {
+          return;
+        }
+
+        const raw = (elements[0].element as unknown as any).$context
+          .raw as ITransformedMeasurement;
+
+        const attributeValues = raw.measurements.map(
+          (m) => m.metricAttributeValues?.[attributeKey]
+        );
+
+        toggleAttributeValue(attributeKey, attributeValues[0][0]);
+      },
       normalized: true,
       scales: {
         x: {

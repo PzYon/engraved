@@ -21,6 +21,7 @@ export function transform(
       return {
         x: new Date(m.groupKey.year, month, day),
         y: m.value,
+        measurements: m.measurements,
       };
     });
   }
@@ -29,6 +30,7 @@ export function transform(
     return {
       x: new Date(m.dateTime),
       y: getValue(m),
+      measurements: [m],
     };
   });
 }
