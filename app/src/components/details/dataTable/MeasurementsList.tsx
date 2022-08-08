@@ -23,7 +23,10 @@ const getColumnsBefore = (): IDataTableColumnDefinition[] => [
         />
         <br />
         <Typography sx={{ opacity: 0.5 }} fontSize={"smaller"}>
-          <FormatDate value={measurement.dateTime} />
+          <FormatDate
+            value={measurement.dateTime}
+            dateFormat={DateFormat.relativeToNowDayPlus}
+          />
         </Typography>
       </>
     ),

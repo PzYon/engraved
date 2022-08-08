@@ -1,7 +1,8 @@
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, isToday } from "date-fns";
 
 export enum DateFormat {
   relativeToNow,
+  relativeToNowDayPlus,
   numerical,
   dateOnly,
   full,
@@ -33,6 +34,13 @@ export const formatDate = (
       return format(date, "T");
     case DateFormat.timeOnly:
       return format(date, "HH:mm");
+    case DateFormat.relativeToNowDayPlus:
+      return isToday(date)
+        ? "today"
+        : formatDistanceToNow(date, {
+            addSuffix: true,
+            includeSeconds: true,
+          });
     case DateFormat.relativeToNow:
     default:
       return formatDistanceToNow(date, {
