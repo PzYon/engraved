@@ -22,6 +22,7 @@ import "chartjs-adapter-date-fns";
 import { createChart } from "./createChart";
 import { IVisualizationProps } from "./IVisualizationProps";
 import { useTheme } from "@mui/material/styles";
+import { useMetricDetailsContext } from "../MetricDetailsContext";
 
 ChartJS.register(
   ArcElement,
@@ -54,6 +55,8 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
     ChartJS.defaults.font.size = typography.htmlFontSize;
   }, []);
 
+  const { toggleAttributeValue } = useMetricDetailsContext();
+
   const chart = useMemo(
     () =>
       createChart(
@@ -61,6 +64,7 @@ const LazyChartJs: React.FC<IVisualizationProps> = ({
         metric,
         groupByTime,
         groupByAttribute,
+        toggleAttributeValue,
         chartType as keyof ChartTypeRegistry,
         palette.primary.main
       ),

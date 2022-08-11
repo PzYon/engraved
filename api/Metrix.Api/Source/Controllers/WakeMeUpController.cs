@@ -6,10 +6,11 @@ namespace Metrix.Api.Controllers;
 [ApiController]
 [Route("api/wake/me/up")]
 [AllowAnonymous]
-public class WakeMeController : Controller
+public class WakeMeUpController : Controller
 {
   [HttpGet]
-  public async Task GoogleLogin()
+  public Task GoogleLogin()
   {
+    return Task.CompletedTask;
   }
 }
