@@ -96,6 +96,7 @@ export const UpsertMeasurement: React.FC<{
           metric.id,
           metric.name,
           metric.description,
+          metric.notes,
           metric.attributes
         );
       }

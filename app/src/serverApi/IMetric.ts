@@ -6,6 +6,7 @@ export interface IMetric {
   attributes?: IMetricAttributes;
   name?: string;
   description?: string;
+  notes?: string;
   type: MetricType;
   lastMeasurementDate?: string;
 }

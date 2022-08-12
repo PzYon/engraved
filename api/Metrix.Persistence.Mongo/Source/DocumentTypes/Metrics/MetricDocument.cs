@@ -17,6 +17,8 @@ public abstract class MetricDocument : IUserScopedDocument
   public string? Name { get; set; }
 
   public string? Description { get; set; }
+  
+  public string? Notes { get; set; }
 
   public abstract MetricType Type { get; }
 

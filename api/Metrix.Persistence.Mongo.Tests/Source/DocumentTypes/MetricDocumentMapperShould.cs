@@ -12,6 +12,7 @@ public class MetricDocumentMapperShould
   private static readonly string Id = ObjectId.GenerateNewId().ToString();
   private static readonly string Name = "N@me";
   private static readonly string Description = "D3scription";
+  private static readonly string Notes = "N0t3s";
 
   [Test]
   public void Counter_ToDocument()
@@ -21,6 +22,7 @@ public class MetricDocumentMapperShould
       Id = Id,
       Name = Name,
       Description = Description,
+      Notes = Notes,
       LastMeasurementDate = DateTime.UtcNow
     };
 
@@ -39,6 +41,7 @@ public class MetricDocumentMapperShould
     {
       Id = new ObjectId(Id),
       Description = Description,
+      Notes = Notes,
       Name = Name
     };
 
@@ -56,7 +59,8 @@ public class MetricDocumentMapperShould
     {
       Id = Id,
       Name = Name,
-      Description = Description
+      Description = Description,
+      Notes = Notes
     };
 
     MetricDocument metricDocument = MetricDocumentMapper.ToDocument(gaugeMetric);
@@ -74,7 +78,8 @@ public class MetricDocumentMapperShould
     {
       Id = new ObjectId(Id),
       Description = Description,
-      Name = Name
+      Name = Name,
+      Notes = Notes
     };
 
     var metric = MetricDocumentMapper.FromDocument<IMetric>(gaugeMetricDocument);
@@ -94,6 +99,7 @@ public class MetricDocumentMapperShould
       Id = Id,
       Name = Name,
       Description = Description,
+      Notes = Notes,
       Attributes = new Dictionary<string, MetricAttribute>
       {
         {
@@ -132,6 +138,7 @@ public class MetricDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Name = Name,
+      Notes = Notes,
       StartDate = startDate
     };
 
@@ -152,6 +159,7 @@ public class MetricDocumentMapperShould
       Id = Id,
       Description = Description,
       Name = Name,
+      Notes = Notes,
       Attributes = new Dictionary<string, MetricAttribute>
       {
         {
@@ -190,6 +198,7 @@ public class MetricDocumentMapperShould
     Assert.AreEqual(expected.Name, actual.Name);
     Assert.AreEqual(expected.Type, actual.Type);
     Assert.AreEqual(expected.Description, actual.Description);
+    Assert.AreEqual(expected.Notes, actual.Notes);
     Assert.AreEqual(expected.LastMeasurementDate, actual.LastMeasurementDate);
   }
 
@@ -199,6 +208,7 @@ public class MetricDocumentMapperShould
     Assert.AreEqual(expected.Name, actual.Name);
     Assert.AreEqual(expected.Type, actual.Type);
     Assert.AreEqual(expected.Description, actual.Description);
+    Assert.AreEqual(expected.Notes, actual.Notes);
     Assert.AreEqual(expected.LastMeasurementDate, actual.LastMeasurementDate);
   }
 }

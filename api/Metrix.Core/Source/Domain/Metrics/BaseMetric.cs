@@ -9,6 +9,8 @@ public abstract class BaseMetric : IMetric
   public string Name { get; set; } = null!;
 
   public string? Description { get; set; }
+  
+  public string? Notes { get; set; }
 
   public abstract MetricType Type { get; }
 
