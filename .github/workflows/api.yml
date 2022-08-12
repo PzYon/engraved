@@ -18,6 +18,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - run: |
+          Set-Service mongodb -StartupType Automatic          
+          Start-Service -Name mongodb
+
       - name: Checkout repo
         uses: actions/checkout@v3
 
