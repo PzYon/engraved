@@ -68,19 +68,17 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
       {metric.description ? (
         <Typography>{metric.description}</Typography>
       ) : null}
-
+      <br />
+      Nots: {metric.notes}
       <DetailsSection>
         <Visualization metric={metric} measurements={measurements} />
       </DetailsSection>
-
       <DetailsSection>
         <SelectedAttributeValues attributes={metric.attributes} />
       </DetailsSection>
-
       <DetailsSection overflowXScroll={true}>
         <MeasurementsList metric={metric} measurements={measurements} />
       </DetailsSection>
-
       <Routes>
         <Route
           path="/edit"
