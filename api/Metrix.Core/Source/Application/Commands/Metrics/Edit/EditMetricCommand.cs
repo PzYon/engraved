@@ -10,6 +10,8 @@ public class EditMetricCommand : ICommand
 
   public string? Description { get; set; }
 
+  public string? Notes { get; set; }
+  
   public Dictionary<string, MetricAttribute> Attributes { get; set; } = new();
 
   public ICommandExecutor CreateExecutor()

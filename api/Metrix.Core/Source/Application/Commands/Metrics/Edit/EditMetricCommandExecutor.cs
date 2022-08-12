@@ -34,6 +34,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
     metric.Attributes = _command.Attributes;
     metric.Name = _command.Name;
     metric.Description = _command.Description;
+    metric.Notes = _command.Notes;
 
     UpsertResult result = await repository.UpsertMetric(metric);
 

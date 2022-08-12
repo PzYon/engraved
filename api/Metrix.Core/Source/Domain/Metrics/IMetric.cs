@@ -8,6 +8,8 @@ public interface IMetric : IUserScoped
 
   string? Description { get; set; }
 
+  string? Notes { get; set; }
+
   MetricType Type { get; }
 
   Dictionary<string, MetricAttribute> Attributes { get; set; }
