@@ -68,12 +68,14 @@ export class ServerApi {
     metricId: string,
     name: string,
     description: string,
+    notes: string,
     attributes: IMetricAttributes
   ): Promise<ICommandResult> {
     const payload: IEditMetricCommand = {
       metricId: metricId,
       name: name,
       description: description,
+      notes: notes,
       attributes: attributes,
     };
 

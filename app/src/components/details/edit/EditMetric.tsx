@@ -46,7 +46,13 @@ export const EditMetric: React.FC<{
           variant="outlined"
           color="primary"
           onClick={() => {
-            ServerApi.editMetric(metric.id, name, description, attributes)
+            ServerApi.editMetric(
+              metric.id,
+              name,
+              description,
+              metric.notes,
+              attributes
+            )
               .then(() => {
                 setAppAlert({
                   title: "Saved metric",

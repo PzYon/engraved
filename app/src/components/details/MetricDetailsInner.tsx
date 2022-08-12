@@ -17,6 +17,7 @@ import { Route, Routes } from "react-router-dom";
 import { DetailsSection } from "../layout/DetailsSection";
 import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { SelectedAttributeValues } from "./SelectedAttributeValues";
+import { MetricNotes } from "./edit/MetricNotes";
 
 export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
   metricId,
@@ -68,8 +69,9 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
       {metric.description ? (
         <Typography>{metric.description}</Typography>
       ) : null}
-      <br />
-      Nots: {metric.notes}
+      <DetailsSection>
+        <MetricNotes metric={metric} />
+      </DetailsSection>
       <DetailsSection>
         <Visualization metric={metric} measurements={measurements} />
       </DetailsSection>
