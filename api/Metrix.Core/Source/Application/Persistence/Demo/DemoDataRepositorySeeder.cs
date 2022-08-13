@@ -57,14 +57,15 @@ public class DemoDataRepositorySeeder
       Name = metric.Name,
       MetricId = metric.Id,
       Description = metric.Description,
+      Notes = Random.Shared.Next(0, 10) > 7 ? LoremIpsum(0, 12, 1, 3) : null,
       Attributes = CreateRandomDict(
-        "attributeKey",
-        i => new MetricAttribute
+      "attributeKey",
+      i => new MetricAttribute
         {
           Name = "Attribute-" + i,
           Values = CreateRandomDict("valueKey", s => "value" + s)
         }
-      )
+        )
     };
 
     await new EditMetricCommandExecutor(command).Execute(_repository, dateService);
@@ -126,7 +127,7 @@ public class DemoDataRepositorySeeder
       var attributeKey = kvp.Key;
       var valueKeys = kvp.Value.Values.Keys.ToArray();
       var numberOfValueKeys = valueKeys.Length;
-      
+
       if (numberOfValueKeys == 0)
       {
         break;
@@ -134,7 +135,7 @@ public class DemoDataRepositorySeeder
 
       string randomValue = valueKeys[Random.Shared.Next(0, numberOfValueKeys)];
 
-      command.MetricAttributeValues.Add(attributeKey, new[] {randomValue});
+      command.MetricAttributeValues.Add(attributeKey, new[] { randomValue });
     }
   }
 
@@ -150,7 +151,7 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      var command = new StartTimerMeasurementCommand {MetricId = metric.Id!};
+      var command = new StartTimerMeasurementCommand { MetricId = metric.Id! };
 
       EnsureAttributeValues(metric, command);
 
@@ -160,7 +161,7 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new EndTimerMeasurementCommand {MetricId = metric.Id!}
+      await new EndTimerMeasurementCommand { MetricId = metric.Id! }
         .CreateExecutor()
         .Execute(_repository, dateService);
     }
@@ -211,7 +212,7 @@ public class DemoDataRepositorySeeder
           command = new UpsertCounterMeasurementCommand();
           break;
         case GaugeMeasurement gaugeMeasurement:
-          command = new UpsertGaugeMeasurementCommand {Value = gaugeMeasurement.Value};
+          command = new UpsertGaugeMeasurementCommand { Value = gaugeMeasurement.Value };
           break;
         case TimerMeasurement:
           throw new NotImplementedException();
@@ -225,7 +226,7 @@ public class DemoDataRepositorySeeder
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)
-        : (IDateService) dateService;
+        : (IDateService)dateService;
 
       await command.CreateExecutor().Execute(_repository, measurementDateService);
     }
@@ -233,7 +234,7 @@ public class DemoDataRepositorySeeder
 
   private static MetricType GetRandomMetricType()
   {
-    return (MetricType) Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
+    return (MetricType)Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
   }
 
   private Dictionary<string, T> CreateRandomDict<T>(string keyPrefix, Func<int, T> createValue)
