@@ -32,7 +32,7 @@ export const AppHeader: React.FC = () => {
         <Typography variant="h2" sx={{ flexGrow: 1 }}>
           {pageTitle}
         </Typography>
-        <HeaderActions actions={titleActions} />
+        <HeaderActions actions={titleActions} enableFloatingActions={true} />
       </ContentWrapper>
     </Host>
   );
