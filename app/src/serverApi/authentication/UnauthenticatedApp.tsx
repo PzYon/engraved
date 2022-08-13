@@ -8,10 +8,13 @@ import { GoogleInitializeResponse } from "./google/GoogleTypes";
 import { renderGoogleSignInButton } from "./google/renderGoogleSignInButton";
 import { AuthStorage } from "./AuthStorage";
 import { ApiError } from "../ApiError";
+import { CircularProgress } from "@mui/material";
 
 export const UnauthenticatedApp: React.FC = () => {
   const [user, setUser] = useState<IUser>();
   const ref = useRef<HTMLDivElement>();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!ref.current) {
@@ -26,9 +29,7 @@ export const UnauthenticatedApp: React.FC = () => {
     }
 
     ServerApi.tryAuthenticate(storage.getAuthResult().jwtToken)
-      .then((u) => {
-        setUser(u);
-      })
+      .then(setUser)
       .catch((e: ApiError) => {
         if (e.status === 401) {
           renderGoogleSignInButton(onSignedIn, ref.current);
@@ -40,18 +41,18 @@ export const UnauthenticatedApp: React.FC = () => {
     return <App user={user} />;
   }
 
-  return (
-    <Host>
-      <div ref={ref} />
-    </Host>
-  );
+  return <Host>{isLoading ? <CircularProgress /> : <div ref={ref} />}</Host>;
 
   function onSignedIn(response: GoogleInitializeResponse) {
-    ServerApi.authenticate(response.credential).then(
-      (authResult: IAuthResult) => {
+    setIsLoading(true);
+
+    ServerApi.authenticate(response.credential)
+      .then((authResult: IAuthResult) => {
         setUser(authResult.user);
-      }
-    );
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 };
 
