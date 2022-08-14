@@ -28,7 +28,7 @@ jobs:
           include-prerelease: false
 
       - name: Build
-        run: dotnet build --configuration Release -p:SourceRevisionId=$GITHUB_SHA+$GITHUB_RUN_NUMBER
+        run: dotnet build --configuration Release -p:SourceRevisionId=${GITHUB_SHA}+${GITHUB_RUN_NUMBER}
         working-directory: ./api
 
       - name: Start MongoDB (for tests)
