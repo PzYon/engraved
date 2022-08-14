@@ -32,7 +32,7 @@ jobs:
           include-prerelease: false
 
       - name: Build
-        run: dotnet build --configuration Release -p:SourceRevisionId=$env:GITHUB_RUN_NUMBER+$env:GITHUB_SHA
+        run: dotnet build --configuration Release -p:SourceRevisionId=${{env.GITHUB_SHA}}+${{env.GITHUB_RUN_NUMBER}}
         working-directory: ./api
 
       - name: Run tests
