@@ -28,7 +28,7 @@ jobs:
           include-prerelease: false
 
       - name: Build
-        run: dotnet build --configuration Release -p:SourceRevisionId=${{github.sha}}+${{github.run_number}}
+        run: dotnet build --configuration Release
         working-directory: ./api
 
       - name: Start MongoDB (for tests)
@@ -41,7 +41,7 @@ jobs:
         working-directory: ./api
 
       - name: Publish
-        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o ${{env.DOTNET_ROOT}}/Metrix.Api
+        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o ${{env.DOTNET_ROOT}}/Metrix.Api -p:SourceRevisionId=${{github.sha}}+${{github.run_number}}
         working-directory: ./api
 
       - name: Upload artifact
