@@ -4,6 +4,9 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <!-- for dev purposes, will be replaced during build time -->
+        <InformationalVersion>1.2.3+xxx+yyy</InformationalVersion>
+        <AssemblyVersion>1.2.3</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>

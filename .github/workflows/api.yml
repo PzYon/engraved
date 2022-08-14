@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - run: |
-          Set-Service mongodb -StartupType Automatic          
+          Set-Service mongodb -StartupType Automatic
           Start-Service -Name mongodb
 
       - name: Checkout repo
@@ -32,7 +32,7 @@ jobs:
           include-prerelease: false
 
       - name: Build
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release -p:SourceRevisionId=$env:GITHUB_RUN_NUMBER+$env:GITHUB_SHA
         working-directory: ./api
 
       - name: Run tests
