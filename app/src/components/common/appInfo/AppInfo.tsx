@@ -26,7 +26,8 @@ export const AppInfo: React.FC = () => {
             process.env.REACT_APP_COMMIT_HASH ??
             "78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f",
           version: process.env.REACT_APP_VERSION ?? "42",
-          mergeDateTime: process.env.REACT_MERGE_DATE_TIME,
+          mergeDateTime:
+            process.env.REACT_APP_MERGE_DATE_TIME ?? "2017-04-20T07:56:16Z",
         }}
         label={"App"}
       />
@@ -48,7 +49,7 @@ const SystemInfo: React.FC<{ label: string; systemInfo: ISystemInfo }> = ({
         target="_blank"
         rel="noreferrer"
       >
-        View in github
+        View commit in github
       </a>
     </Typography>
   );
