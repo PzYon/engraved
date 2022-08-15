@@ -12,6 +12,7 @@ import { IAuthResult } from "./IAuthResult";
 import { IUser } from "./IUser";
 import { AuthStorage } from "./authentication/AuthStorage";
 import { ApiError } from "./ApiError";
+import { ISystemInfo } from "./ISystemInfo";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -103,6 +104,10 @@ export class ServerApi {
       "DELETE",
       null
     );
+  }
+
+  static async getSystemInfo(): Promise<ISystemInfo> {
+    return await this.executeRequest(`/system_info`, "GET", null);
   }
 
   static async executeRequest<T = void>(
