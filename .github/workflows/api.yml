@@ -41,7 +41,7 @@ jobs:
         working-directory: ./api
 
       - name: Publish
-        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o ${{env.DOTNET_ROOT}}/Metrix.Api -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+$([DateTime]::UtcNow)
+        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o ${{env.DOTNET_ROOT}}/Metrix.Api -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${[DateTime]::UtcNow}
         working-directory: ./api
 
       - name: Upload artifact
