@@ -19,10 +19,7 @@ public class SystemInfoController : Controller
 {
   public SystemInfo Get()
   {
-    var value = GetInformationalAssemblyVersion()
-                ?? "1.0.0+42+78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f+2017-04-20T07:56:16Z";
-
-    string[] segments = value.Split("+");
+    string[] segments = GetInformationalAssemblyVersion().Split("+");
 
     if (segments.Length == 4)
     {
@@ -42,11 +39,15 @@ public class SystemInfoController : Controller
     };
   }
 
-  private static string? GetInformationalAssemblyVersion()
+  private static string GetInformationalAssemblyVersion()
   {
-    return (Assembly
+    string? informationalAssemblyVersion = (Assembly
       .GetExecutingAssembly()
       .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute))
       .FirstOrDefault() as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+
+    return string.IsNullOrEmpty(informationalAssemblyVersion) || informationalAssemblyVersion == "1.0.0"
+      ? "1.0.0+42+78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f+2017-04-20T07:56:16Z"
+      : informationalAssemblyVersion;
   }
 }
