@@ -8,10 +8,10 @@ public class SystemInfo
 {
   public string Version { get; set; }
 
-  public DateTime BuildDateTime { get; set; }
+  public DateTime MergeDateTime { get; set; }
 
   public string CommitHash { get; set; }
-  
+
   public string ALL { get; set; }
 }
 
@@ -28,25 +28,28 @@ public class SystemInfoController : Controller
       .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute))
       .FirstOrDefault() as AssemblyInformationalVersionAttribute;
 
-    if (customAttributeData == null)
+    if (customAttributeData != null)
     {
-      // local/dev mode
-      return new SystemInfo()
+      string[] segments = customAttributeData.InformationalVersion.Split("+");
+
+      if (segments.Length == 3)
       {
-        Version = "42",
-        CommitHash = "78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f",
-        BuildDateTime = DateTime.UtcNow.AddYears(37),
-      };
+        return new SystemInfo
+        {
+          ALL = customAttributeData.InformationalVersion,
+          Version = segments[0],
+          CommitHash = segments[1],
+          MergeDateTime = DateTime.Parse(segments[2])
+        };
+      }
     }
 
-    string[] segments = customAttributeData.InformationalVersion.Split("+");
-
+    // local/dev mode
     return new SystemInfo
     {
-      ALL = customAttributeData.InformationalVersion,
-      Version = segments[0],
-      CommitHash = segments[1],
-      BuildDateTime = DateTime.UtcNow
+      Version = "42",
+      CommitHash = "78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f",
+      MergeDateTime = DateTime.UtcNow.AddYears(-37),
     };
   }
 }

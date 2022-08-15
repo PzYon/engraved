@@ -32,6 +32,7 @@ jobs:
         env:
           REACT_APP_COMMIT_HASH: ${{github.sha}}
           REACT_APP_VERSION: ${{github.run_number}}
+          REACT_MERGE_DATE_TIME: ${{github.event.repository.updated_at}}
         run: |
           npm install
           npm run lint
