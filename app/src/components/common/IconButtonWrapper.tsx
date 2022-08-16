@@ -1,6 +1,7 @@
 import React from "react";
-import { IconButton } from "@mui/material";
+import { IconButton, Theme } from "@mui/material";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { SxProps } from "@mui/system";
 
 export interface IIconButtonAction {
   key: string;
@@ -8,6 +9,7 @@ export interface IIconButtonAction {
   label: string;
   onClick?: () => void;
   href?: string;
+  sx?: SxProps<Theme>;
 }
 
 export const IconButtonWrapper: React.FC<{
@@ -20,7 +22,7 @@ export const IconButtonWrapper: React.FC<{
       key={action.key}
       color="default"
       aria-label={action.label}
-      sx={{ color: "primary.main" }}
+      sx={{ color: "primary.main", ...(action.sx || {}) }}
       onClick={(e) => executeActionClick(e, action, navigate)}
     >
       {action.icon}

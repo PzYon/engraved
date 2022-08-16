@@ -29,6 +29,10 @@ jobs:
 
       - name: Install and build
         working-directory: app
+        env:
+          REACT_APP_COMMIT_HASH: ${{github.sha}}
+          REACT_APP_VERSION: ${{github.run_number}}
+          REACT_APP_MERGE_DATE_TIME: ${{github.event.repository.pushed_at}}
         run: |
           npm install
           npm run lint

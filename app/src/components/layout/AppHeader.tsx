@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Avatar, Box, styled, Typography } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 import { HeaderActions } from "./HeaderActions";
+import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 
 export const AppHeader: React.FC = () => {
   const { pageTitle, titleActions, user } = useAppContext();
@@ -21,6 +22,7 @@ export const AppHeader: React.FC = () => {
               metrix
             </Typography>
           </Link>
+          <AppInfoLauncher />
           <Avatar
             alt={user.displayName}
             src={user.imageUrl}
