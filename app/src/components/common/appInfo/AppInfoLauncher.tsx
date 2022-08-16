@@ -28,7 +28,7 @@ export const AppInfoLauncher: React.FC = () => {
         onClose={() => setShowInfo(false)}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "left",
+          horizontal: "center",
         }}
       >
         <AppInfo />

@@ -18,20 +18,36 @@ export const AppInfo: React.FC = () => {
   }
 
   return (
-    <Container>
-      <SystemInfo systemInfo={systemInfo} label={"API"} />
-      <SystemInfo
-        systemInfo={{
-          commitHash:
-            process.env.REACT_APP_COMMIT_HASH ??
-            "78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f",
-          version: process.env.REACT_APP_VERSION ?? "42",
-          mergeDateTime:
-            process.env.REACT_APP_MERGE_DATE_TIME ?? "2017-04-20T07:56:16Z",
-        }}
-        label={"App"}
-      />
-    </Container>
+    <Host>
+      <ItemContainer>
+        <SystemInfo systemInfo={systemInfo} label={"API"} />
+      </ItemContainer>
+      <ItemContainer>
+        <SystemInfo
+          systemInfo={{
+            commitHash:
+              process.env.REACT_APP_COMMIT_HASH ??
+              "78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f",
+            version: process.env.REACT_APP_VERSION ?? "42",
+            mergeDateTime:
+              process.env.REACT_APP_MERGE_DATE_TIME ?? "2017-04-20T07:56:16Z",
+          }}
+          label={"App"}
+        />
+      </ItemContainer>
+      <ItemContainer>
+        <Typography fontSize="small">
+          <a
+            href="https://github.com/PzYon/metrix/issues"
+            target="_blank"
+            rel="noreferrer"
+          >
+            View
+          </a>{" "}
+          issues in github.
+        </Typography>
+      </ItemContainer>
+    </Host>
   );
 };
 
@@ -49,12 +65,17 @@ const SystemInfo: React.FC<{ label: string; systemInfo: ISystemInfo }> = ({
         target="_blank"
         rel="noreferrer"
       >
-        View commit in github
-      </a>
+        View
+      </a>{" "}
+      commit in github.
     </Typography>
   );
 };
 
-const Container = styled("div")`
+const Host = styled("div")`
   padding: 15px;
+`;
+
+const ItemContainer = styled("div")`
+  padding: 8px 0 8px 0;
 `;
