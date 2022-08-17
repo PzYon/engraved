@@ -17,7 +17,7 @@ public class SystemInfo
 public class SystemInfoController : Controller
 {
   private const string devInformationalVersion =
-    "1.0.0+42+78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f+2017-04-20T07:56:16Z";
+    "1.0.0+42+78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f+2017-04-20T07:56:16.666Z";
 
   public SystemInfo Get()
   {
