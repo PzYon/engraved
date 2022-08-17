@@ -40,8 +40,12 @@ jobs:
         run: dotnet test
         working-directory: ./api
 
+      - name: Get current time
+        id: current-time
+        uses: gerred/actions/current-time@master
+
       - name: Publish
-        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o ${{env.DOTNET_ROOT}}/Metrix.Api -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{github.event.repository.pushed_at}}
+        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o ${{env.DOTNET_ROOT}}/Metrix.Api -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
         working-directory: ./api
 
       - name: Upload artifact

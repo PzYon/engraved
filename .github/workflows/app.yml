@@ -27,12 +27,16 @@ jobs:
           cache: npm
           cache-dependency-path: app/package-lock.json
 
+      - name: Get current time
+        id: current-time
+        uses: gerred/actions/current-time@master
+
       - name: Install and build
         working-directory: app
         env:
           REACT_APP_COMMIT_HASH: ${{github.sha}}
           REACT_APP_VERSION: ${{github.run_number}}
-          REACT_APP_MERGE_DATE_TIME: ${{github.event.repository.pushed_at}}
+          REACT_APP_MERGE_DATE_TIME: ${{steps.current-time.outputs.time}}
         run: |
           npm install
           npm run lint
