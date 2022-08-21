@@ -2,6 +2,7 @@
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.Permissions;
 using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo.DocumentTypes;
 using MongoDB.Driver;
@@ -58,6 +59,26 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     string? userId = CurrentUser.Value.Id;
     EnsureUserNameIsSet(userId);
 
+    FilterDefinition<TDocument> currentUserFilter = GetCurrentUserFilter<TDocument>(userId);
+
+    if (typeof(TDocument).IsAssignableTo(typeof(IHasPerissionsDocument)))
+    {
+      return Builders<TDocument>.Filter.Or(currentUserFilter, GetHasPermissionsFilter<TDocument>(userId));
+    }
+
+    return currentUserFilter;
+  }
+
+  private static FilterDefinition<TDocument> GetHasPermissionsFilter<TDocument>(string? userId)
+  {
+    return Builders<TDocument>.Filter.Gt(
+      nameof(IHasPerissionsDocument.Permissions) + "." + userId,
+      PermissionKind.None
+    );
+  }
+
+  private static FilterDefinition<TDocument> GetCurrentUserFilter<TDocument>(string? userId)
+  {
     return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), userId);
   }
 

@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
 
-public class UserScopedMongoRepository_MetricPermissions_Should
+public class UserScopedMongoRepository_Permissions_Should
 {
   private MongoRepository _repository = null!;
   private UserScopedMongoRepository _userScopedRepository = null!;
@@ -30,7 +30,7 @@ public class UserScopedMongoRepository_MetricPermissions_Should
   }
 
   [Test]
-  public async Task Return_Only_My()
+  public async Task Return_OnlyMy()
   {
     await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
     await _repository.UpsertMetric(new CounterMetric { Name = "thy-metric", UserId = _otherUserId });
@@ -39,6 +39,51 @@ public class UserScopedMongoRepository_MetricPermissions_Should
 
     Assert.AreEqual(1, allMetrics.Length);
     Assert.AreEqual("my-metric", allMetrics.First().Name);
+  }
+  
+  [Test]
+  public async Task Return_OnlyMy_WhenOtherOtherUserHasPermissions()
+  {
+    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+
+    UpsertResult otherMetric = await _repository.UpsertMetric(
+      new CounterMetric
+      {
+        Name = "thy-metric", UserId = _otherUserId
+      }
+    );
+
+    await _repository.ModifyMetricPermissions(
+      otherMetric.EntityId,
+      new Permissions { { _otherUserId + "_another_one", PermissionKind.Write } }
+    );
+
+    IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
+
+    Assert.AreEqual(1, allMetrics.Length);
+  }
+
+
+  [Test]
+  public async Task Return_MyAndThy_WhenIMoreThanEnoughHavePermissions()
+  {
+    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+
+    UpsertResult otherMetric = await _repository.UpsertMetric(
+      new CounterMetric
+      {
+        Name = "thy-metric", UserId = _otherUserId
+      }
+    );
+
+    await _repository.ModifyMetricPermissions(
+      otherMetric.EntityId,
+      new Permissions { { _currentUserId, PermissionKind.Write } }
+    );
+
+    IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
+
+    Assert.AreEqual(2, allMetrics.Length);
   }
 
   [Test]
@@ -53,9 +98,10 @@ public class UserScopedMongoRepository_MetricPermissions_Should
       }
     );
 
-    Permissions permissions = new() { { _currentUserId, PermissionKind.Read } };
-
-    await _repository.ModifyMetricPermissions(otherMetric.EntityId, permissions);
+    await _repository.ModifyMetricPermissions(
+      otherMetric.EntityId,
+      new Permissions { { _currentUserId, PermissionKind.Read } }
+    );
 
     IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
 
