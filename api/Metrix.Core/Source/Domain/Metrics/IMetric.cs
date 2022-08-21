@@ -1,6 +1,8 @@
-﻿namespace Metrix.Core.Domain.Metrics;
+﻿using Metrix.Core.Domain.Permissions;
 
-public interface IMetric : IUserScoped
+namespace Metrix.Core.Domain.Metrics;
+
+public interface IMetric : IUserScoped, IHasPermissions
 {
   string? Id { get; set; }
 

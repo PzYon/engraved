@@ -1,5 +1,6 @@
 ﻿using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.Permissions;
 using Metrix.Core.Domain.User;
 
 namespace Metrix.Core.Application.Persistence.Demo;
@@ -57,6 +58,17 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   {
     metric.UserId = CurrentUser.Value.Id;
     return _repository.UpsertMetric(metric);
+  }
+
+  public async Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  {
+    IMetric? metric = await GetMetric(metricId);
+    if (metric == null)
+    {
+      throw new Exception("Does not exist or no access");
+    }
+
+    await _repository.ModifyMetricPermissions(metricId, permissions);
   }
 
   public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement

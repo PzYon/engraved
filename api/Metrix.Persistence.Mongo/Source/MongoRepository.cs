@@ -2,6 +2,7 @@
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.Permissions;
 using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo.DocumentTypes;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
@@ -127,6 +128,20 @@ public class MongoRepository : IRepository
     );
 
     return CreateUpsertResult(metric.Id, replaceOneResult);
+  }
+
+  public async Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  {
+    IMetric? metric = await GetMetric(metricId);
+    if (metric == null)
+    {
+      // should we throw here?
+      return;
+    }
+
+    PermissionsUtil.EnsurePermissions(metric, permissions);
+
+    await UpsertMetric(metric);
   }
 
   public virtual async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)

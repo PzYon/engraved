@@ -17,4 +17,6 @@ public abstract class BaseMetric : IMetric
   public Dictionary<string, MetricAttribute> Attributes { get; set; } = new();
 
   public DateTime? LastMeasurementDate { get; set; }
+
+  public Permissions.Permissions Permissions { get; set; } = new();
 }

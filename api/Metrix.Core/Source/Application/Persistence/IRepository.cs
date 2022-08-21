@@ -1,5 +1,6 @@
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.Permissions;
 using Metrix.Core.Domain.User;
 
 namespace Metrix.Core.Application.Persistence;
@@ -19,6 +20,8 @@ public interface IRepository
   Task<IMeasurement[]> GetAllMeasurements(string metricId);
 
   Task<UpsertResult> UpsertMetric(IMetric metric);
+
+  Task ModifyMetricPermissions(string metricId, Permissions permissions);
 
   Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
 
