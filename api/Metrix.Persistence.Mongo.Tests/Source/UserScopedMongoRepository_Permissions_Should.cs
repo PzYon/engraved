@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Persistence;
+using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.Permissions;
 using Metrix.Core.Domain.User;
@@ -30,7 +31,7 @@ public class UserScopedMongoRepository_Permissions_Should
   }
 
   [Test]
-  public async Task Return_OnlyMy()
+  public async Task GetAllMetrics_Return_OnlyMy()
   {
     await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
     await _repository.UpsertMetric(new CounterMetric { Name = "thy-metric", UserId = _otherUserId });
@@ -40,9 +41,9 @@ public class UserScopedMongoRepository_Permissions_Should
     Assert.AreEqual(1, allMetrics.Length);
     Assert.AreEqual("my-metric", allMetrics.First().Name);
   }
-  
+
   [Test]
-  public async Task Return_OnlyMy_WhenOtherOtherUserHasPermissions()
+  public async Task GetAllMetrics_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
   {
     await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
 
@@ -63,9 +64,8 @@ public class UserScopedMongoRepository_Permissions_Should
     Assert.AreEqual(1, allMetrics.Length);
   }
 
-
   [Test]
-  public async Task Return_MyAndThy_WhenIMoreThanEnoughHavePermissions()
+  public async Task GetAllMetrics_Return_MyAndThy_WhenIMoreThanEnoughHavePermissions()
   {
     await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
 
@@ -87,7 +87,7 @@ public class UserScopedMongoRepository_Permissions_Should
   }
 
   [Test]
-  public async Task Return_MyAndThy_WhenIHavePermissions()
+  public async Task GetAllMetrics_Return_MyAndThy_WhenIHavePermissions()
   {
     await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
 
@@ -106,5 +106,65 @@ public class UserScopedMongoRepository_Permissions_Should
     IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
 
     Assert.AreEqual(2, allMetrics.Length);
+  }
+
+  // XXXXXXXXXXXXXXXXXXXXXXXXX
+  [Test]
+  public async Task GetAllMeasurements_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
+  {
+    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+
+    UpsertResult otherMetric = await _repository.UpsertMetric(
+      new CounterMetric
+      {
+        Name = "thy-metric", UserId = _otherUserId
+      }
+    );
+
+    await _repository.ModifyMetricPermissions(
+      otherMetric.EntityId,
+      new Permissions { { _otherUserId + "_another_one", PermissionKind.Write } }
+    );
+
+    await _repository.UpsertMeasurement(
+      new CounterMeasurement
+      {
+        MetricId = otherMetric.EntityId
+      }
+    );
+
+    IMeasurement[] allMeasurements = await _userScopedRepository.GetAllMeasurements(otherMetric.EntityId);
+
+    Assert.AreEqual(0, allMeasurements.Length);
+  }
+
+  // XXXXXXXXXXXXXXXXXXXXXXXXX
+  [Test]
+  public async Task GetAllMeasurements_Return_MyAndThy_WhenIHavePermissions()
+  {
+    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+
+    UpsertResult otherMetric = await _repository.UpsertMetric(
+      new CounterMetric
+      {
+        Name = "thy-metric", UserId = _otherUserId
+      }
+    );
+
+    await _repository.ModifyMetricPermissions(
+      otherMetric.EntityId,
+      new Permissions { { _currentUserId, PermissionKind.Read } }
+    );
+
+    await _repository.UpsertMeasurement(
+      new CounterMeasurement
+      {
+        MetricId = otherMetric.EntityId
+      }
+    );
+
+    IMeasurement[] allMeasurements = await _userScopedRepository.GetAllMeasurements(otherMetric.EntityId);
+
+    Assert.AreEqual(1, allMeasurements.Length);
   }
 }

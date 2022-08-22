@@ -84,7 +84,7 @@ public class MongoRepository : IRepository
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<MetricDocument> metrics = await _metrics.Find(GetAllDocumentsFilter<MetricDocument>()).ToListAsync();
+    List<MetricDocument> metrics = await _metrics.Find(GetAllMetricDocumentsFilter<MetricDocument>()).ToListAsync();
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
   }
 
@@ -96,20 +96,31 @@ public class MongoRepository : IRepository
     }
 
     MetricDocument? document = await _metrics
-      .Find(GetDocumentByIdFilter<MetricDocument>(metricId))
+      .Find(GetMetricDocumentByIdFilter<MetricDocument>(metricId))
       .FirstOrDefaultAsync();
 
     return MetricDocumentMapper.FromDocument<IMetric>(document);
   }
 
+  private FilterDefinition<TDocument> GetMetricDocumentByIdFilter<TDocument>(string metricId)
+    where TDocument : IDocument
+  {
+    return Builders<TDocument>.Filter.And(
+      GetAllMetricDocumentsFilter<TDocument>(),
+      GetDocumentByIdFilter<TDocument>(metricId)
+    );
+  }
+
   public async Task<IMeasurement[]> GetAllMeasurements(string metricId)
   {
+    IMetric? metric = await GetMetric(metricId);
+    if (metric == null)
+    {
+      return Array.Empty<IMeasurement>();
+    }
+
     List<MeasurementDocument> measurements = await _measurements
-      .Find(
-        CreateScopedQuery(
-          Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId))
-        )
-      )
+      .Find(Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId)))
       .ToListAsync();
 
     return measurements
@@ -177,24 +188,21 @@ public class MongoRepository : IRepository
     return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
   }
 
-  protected virtual FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
+  protected virtual FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>()
+    where TDocument : IDocument
+  {
+    return GetAllDocumentsFilter<TDocument>();
+  }
+
+  private static FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
     where TDocument : IDocument
   {
     return Builders<TDocument>.Filter.Empty;
   }
 
-  private FilterDefinition<TDocument> CreateScopedQuery<TDocument>(FilterDefinition<TDocument> query)
-    where TDocument : IUserScopedDocument
+  private static FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
   {
-    return Builders<TDocument>.Filter.And(GetAllDocumentsFilter<TDocument>(), query);
-  }
-
-  private FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
-    where TDocument : IUserScopedDocument
-  {
-    return CreateScopedQuery(
-      Builders<TDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(documentId))
-    );
+    return Builders<TDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(documentId));
   }
 
   private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)

@@ -54,7 +54,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     return await base.UpsertMeasurement(measurement);
   }
 
-  protected override FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
+  protected override FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>()
   {
     string? userId = CurrentUser.Value.Id;
     EnsureUserNameIsSet(userId);
