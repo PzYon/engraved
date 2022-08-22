@@ -56,5 +56,5 @@ public class PermissionsUtilShould
 
 public class TestPermissionHolder : IHasPermissions
 {
-  public Permissions Permissions { get; set; }
+  public Permissions Permissions { get; set; } = null!;
 }
