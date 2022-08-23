@@ -78,7 +78,7 @@ public class MongoRepository : IRepository
 
   public async Task<IUser[]> GetAllUsers()
   {
-    List<UserDocument> users = await _users.Find(GetAllDocumentsFilter<UserDocument>()).ToListAsync();
+    List<UserDocument> users = await _users.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>()).ToListAsync();
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
@@ -107,7 +107,7 @@ public class MongoRepository : IRepository
   {
     return Builders<TDocument>.Filter.And(
       GetAllMetricDocumentsFilter<TDocument>(),
-      GetDocumentByIdFilter<TDocument>(metricId)
+      MongoUtil.GetDocumentByIdFilter<TDocument>(metricId)
     );
   }
 
@@ -133,7 +133,7 @@ public class MongoRepository : IRepository
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
     ReplaceOneResult replaceOneResult = await _metrics.ReplaceOneAsync(
-      GetDocumentByIdFilter<MetricDocument>(metric.Id),
+      MongoUtil.GetDocumentByIdFilter<MetricDocument>(metric.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
@@ -161,7 +161,7 @@ public class MongoRepository : IRepository
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     ReplaceOneResult replaceOneResult = await _measurements.ReplaceOneAsync(
-      GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
+      MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
@@ -171,7 +171,7 @@ public class MongoRepository : IRepository
 
   public async Task DeleteMeasurement(string measurementId)
   {
-    await _measurements.DeleteOneAsync(GetDocumentByIdFilter<MeasurementDocument>(measurementId));
+    await _measurements.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId));
   }
 
   public async Task<IMeasurement?> GetMeasurement(string measurementId)
@@ -182,7 +182,7 @@ public class MongoRepository : IRepository
     }
 
     MeasurementDocument? document = await _measurements
-      .Find(GetDocumentByIdFilter<MeasurementDocument>(measurementId))
+      .Find(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId))
       .FirstOrDefaultAsync();
 
     return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
@@ -191,18 +191,7 @@ public class MongoRepository : IRepository
   protected virtual FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>()
     where TDocument : IDocument
   {
-    return GetAllDocumentsFilter<TDocument>();
-  }
-
-  private static FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
-    where TDocument : IDocument
-  {
-    return Builders<TDocument>.Filter.Empty;
-  }
-
-  private static FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
-  {
-    return Builders<TDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(documentId));
+    return MongoUtil.GetAllDocumentsFilter<TDocument>();
   }
 
   private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
@@ -215,23 +204,6 @@ public class MongoRepository : IRepository
     {
       EntityId = id
     };
-  }
-
-  private static ObjectId EnsureObjectId(string? id)
-  {
-    return string.IsNullOrEmpty(id)
-      ? ObjectId.GenerateNewId()
-      : ParseObjectId(id);
-  }
-
-  private static ObjectId ParseObjectId(string entityId)
-  {
-    if (ObjectId.TryParse(entityId, out ObjectId objectId))
-    {
-      return objectId;
-    }
-
-    throw new ArgumentOutOfRangeException(nameof(entityId), $"\"{entityId}\" is not a valid ID.");
   }
 
   private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
