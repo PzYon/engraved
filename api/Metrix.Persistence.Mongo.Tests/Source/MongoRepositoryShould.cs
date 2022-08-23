@@ -106,7 +106,7 @@ public class MongoRepositoryShould
   [Test]
   public async Task GetAllMeasurements_Empty()
   {
-    IMeasurement[] allMetrics = await _repository.GetAllMeasurements(ObjectId.GenerateNewId().ToString());
+    IMeasurement[] allMetrics = await _repository.GetAllMeasurements(MongoUtil.GenerateNewIdAsString());
 
     Assert.AreEqual(allMetrics.Length, 0);
   }

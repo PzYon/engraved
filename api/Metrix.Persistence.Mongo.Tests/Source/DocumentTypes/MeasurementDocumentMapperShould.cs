@@ -9,7 +9,7 @@ namespace Metrix.Persistence.Mongo.Tests.DocumentTypes;
 
 public class MeasurementDocumentMapperShould
 {
-  private static readonly string Id = ObjectId.GenerateNewId().ToString();
+  private static readonly string Id = MongoUtil.GenerateNewIdAsString();
   private static readonly string Key = "k3y";
 
   [Test]

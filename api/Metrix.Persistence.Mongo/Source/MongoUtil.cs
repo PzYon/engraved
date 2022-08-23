@@ -6,22 +6,32 @@ namespace Metrix.Persistence.Mongo;
 
 public static class MongoUtil
 {
-  internal static FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
+  public static FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
     where TDocument : IDocument
   {
     return Builders<TDocument>.Filter.Empty;
   }
 
-  internal static FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
+  public static FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
   {
     return Builders<TDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(documentId));
+  }
+
+  public static string GenerateNewIdAsString()
+  {
+    return GenerateNewId().ToString();
   }
 
   private static ObjectId EnsureObjectId(string? id)
   {
     return string.IsNullOrEmpty(id)
-      ? ObjectId.GenerateNewId()
+      ? GenerateNewId()
       : ParseObjectId(id);
+  }
+
+  private static ObjectId GenerateNewId()
+  {
+    return ObjectId.GenerateNewId();
   }
 
   private static ObjectId ParseObjectId(string id)
@@ -34,4 +44,3 @@ public static class MongoUtil
     throw new ArgumentOutOfRangeException(nameof(id), $"\"{id}\" is not a valid ID.");
   }
 }
- 

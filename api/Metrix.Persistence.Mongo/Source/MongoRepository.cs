@@ -84,11 +84,19 @@ public class MongoRepository : IRepository
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<MetricDocument> metrics = await _metrics.Find(GetAllMetricDocumentsFilter<MetricDocument>()).ToListAsync();
+    List<MetricDocument> metrics = await _metrics
+      .Find(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read))
+      .ToListAsync();
+
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
   }
 
   public async Task<IMetric?> GetMetric(string metricId)
+  {
+    return await GetMetric(metricId, PermissionKind.Read);
+  }
+
+  protected async Task<IMetric?> GetMetric(string metricId, PermissionKind permissionKind)
   {
     if (string.IsNullOrEmpty(metricId))
     {
@@ -96,17 +104,17 @@ public class MongoRepository : IRepository
     }
 
     MetricDocument? document = await _metrics
-      .Find(GetMetricDocumentByIdFilter<MetricDocument>(metricId))
+      .Find(GetMetricDocumentByIdFilter<MetricDocument>(metricId, permissionKind))
       .FirstOrDefaultAsync();
 
     return MetricDocumentMapper.FromDocument<IMetric>(document);
   }
 
-  private FilterDefinition<TDocument> GetMetricDocumentByIdFilter<TDocument>(string metricId)
+  private FilterDefinition<TDocument> GetMetricDocumentByIdFilter<TDocument>(string metricId, PermissionKind kind)
     where TDocument : IDocument
   {
     return Builders<TDocument>.Filter.And(
-      GetAllMetricDocumentsFilter<TDocument>(),
+      GetAllMetricDocumentsFilter<TDocument>(kind),
       MongoUtil.GetDocumentByIdFilter<TDocument>(metricId)
     );
   }
@@ -188,7 +196,7 @@ public class MongoRepository : IRepository
     return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
   }
 
-  protected virtual FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>()
+  protected virtual FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
     where TDocument : IDocument
   {
     return MongoUtil.GetAllDocumentsFilter<TDocument>();

@@ -99,7 +99,8 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task UpsertMeasurement_Ensures_CurrentUser_Id()
   {
-    var metricId = ObjectId.GenerateNewId().ToString();
+    UpsertResult upsertMetric = await _userScopedRepository.UpsertMetric(new TimerMetric());
+    var metricId = upsertMetric.EntityId;
 
     IMeasurement measurement = new TimerMeasurement { MetricId = metricId };
 
@@ -114,7 +115,7 @@ public class UserScopedMongoRepositoryShould
   {
     IMeasurement measurement = new TimerMeasurement
     {
-      MetricId = ObjectId.GenerateNewId().ToString(),
+      MetricId = MongoUtil.GenerateNewIdAsString(),
       UserId = _otherUserId
     };
 
