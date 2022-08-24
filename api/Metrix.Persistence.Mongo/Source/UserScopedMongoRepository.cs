@@ -66,7 +66,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     IMetric? metric = await GetMetric(metricId, kind);
     if (metric == null)
     {
-      throw new Exception("Dörfsch nöd!");
+      throw new UnallowedOperationException("Metric doesn't exist or you do not have permissions.");
     }
   }
 
