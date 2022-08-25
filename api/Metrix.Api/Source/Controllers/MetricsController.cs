@@ -2,9 +2,11 @@
 using Metrix.Core.Application.Commands;
 using Metrix.Core.Application.Commands.Metrics.Add;
 using Metrix.Core.Application.Commands.Metrics.Edit;
+using Metrix.Core.Application.Commands.Metrics.Permissions;
 using Metrix.Core.Application.Queries.Metrics.Get;
 using Metrix.Core.Application.Queries.Metrics.GetAll;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,11 +31,11 @@ public class MetricsController : ControllerBase
     return metrics.EnsurePolymorphismWhenSerializing();
   }
 
-  [Route("{metricKey}")]
+  [Route("{metricId}")]
   [HttpGet]
-  public async Task<IMetric> Get(string metricKey)
+  public async Task<IMetric> Get(string metricId)
   {
-    return await _dispatcher.Query(new GetMetricQuery { MetricKey = metricKey });
+    return await _dispatcher.Query(new GetMetricQuery { MetricKey = metricId });
   }
 
   [HttpPost]
@@ -45,6 +47,19 @@ public class MetricsController : ControllerBase
   [HttpPut]
   public async Task<CommandResult> Edit([FromBody] EditMetricCommand command)
   {
+    return await _dispatcher.Command(command);
+  }
+
+  [Route("{metricId}/permissions")]
+  [HttpPut]
+  public async Task<CommandResult> Permissions([FromBody] Permissions permissions, string metricId)
+  {
+    var command = new ModifyMetricPermissionsCommand
+    {
+      MetricId = metricId,
+      Permissions = permissions
+    };
+
     return await _dispatcher.Command(command);
   }
 }

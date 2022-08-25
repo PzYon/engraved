@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Metrix.Api.Controllers;
@@ -14,11 +15,13 @@ public class SystemInfo
 
 [ApiController]
 [Route("api/system_info")]
+[Authorize]
 public class SystemInfoController : Controller
 {
-  private const string devInformationalVersion =
+  private const string DevInformationalVersion =
     "1.0.0+42+78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f+2017-04-20T07:56:16.666Z";
 
+  [HttpGet]
   public SystemInfo Get()
   {
     string[] segments = GetInformationalAssemblyVersion().Split("+");
@@ -49,7 +52,7 @@ public class SystemInfoController : Controller
       .FirstOrDefault() as AssemblyInformationalVersionAttribute)?.InformationalVersion;
 
     return string.IsNullOrEmpty(informationalAssemblyVersion) || informationalAssemblyVersion == "1.0.0"
-      ? devInformationalVersion
+      ? DevInformationalVersion
       : informationalAssemblyVersion;
   }
 }

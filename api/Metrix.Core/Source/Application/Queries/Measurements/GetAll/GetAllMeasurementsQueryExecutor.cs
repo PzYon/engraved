@@ -15,25 +15,25 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
 
   public async Task<IMeasurement[]> Execute(IRepository repository)
   {
-    if (string.IsNullOrEmpty(_query.MetricKey))
+    if (string.IsNullOrEmpty(_query.MetricId))
     {
       throw new InvalidQueryException<IMeasurement[]>(
         _query,
-        $"{nameof(GetAllMeasurementsQuery.MetricKey)} must be specified."
+        $"{nameof(GetAllMeasurementsQuery.MetricId)} must be specified."
       );
     }
 
-    IMetric? metric = await repository.GetMetric(_query.MetricKey);
+    IMetric? metric = await repository.GetMetric(_query.MetricId);
 
     if (metric == null)
     {
       throw new InvalidQueryException<IMeasurement[]>(
         _query,
-        $"Metric with key \"{_query.MetricKey}\" does not exist."
+        $"Metric with key \"{_query.MetricId}\" does not exist."
       );
     }
 
-    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(_query.MetricKey);
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(_query.MetricId);
 
     // consider: moving OrderByDescending logic to DB
     return allMeasurements

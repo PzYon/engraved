@@ -1,11 +1,12 @@
 ﻿using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.Permissions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 
-public abstract class MetricDocument : IUserScopedDocument
+public abstract class MetricDocument : IUserScopedDocument,IHasPerissionsDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]
@@ -25,4 +26,6 @@ public abstract class MetricDocument : IUserScopedDocument
   public Dictionary<string, MetricAttribute> Attributes { get; set; } = new();
 
   public DateTime? LastMeasurementDate { get; set; }
+
+  public Permissions Permissions { get; set; } = new();
 }

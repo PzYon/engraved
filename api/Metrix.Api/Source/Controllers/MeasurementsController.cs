@@ -24,10 +24,10 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpGet]
-  [Route("{metricKey}")]
-  public async Task<object[]> GetAll(string metricKey)
+  [Route("{metricId}")]
+  public async Task<object[]> GetAll(string metricId)
   {
-    IMeasurement[] measurements = await _dispatcher.Query(new GetAllMeasurementsQuery { MetricKey = metricKey });
+    IMeasurement[] measurements = await _dispatcher.Query(new GetAllMeasurementsQuery { MetricId = metricId });
     return measurements.EnsurePolymorphismWhenSerializing();
   }
 

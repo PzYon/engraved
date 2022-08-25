@@ -1,5 +1,6 @@
 ﻿using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.Permissions;
 using Metrix.Core.Domain.User;
 
 namespace Metrix.Core.Application.Persistence.Demo;
@@ -71,6 +72,11 @@ public class InMemoryRepository : IRepository
     Metrics.Add(metric.Copy());
 
     return Task.FromResult(new UpsertResult { EntityId = metric.Id });
+  }
+
+  public Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  {
+    throw new NotImplementedException("cannot yet give permissions");
   }
 
   public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)

@@ -2,6 +2,7 @@
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
+using Metrix.Core.Domain.Permissions;
 using Metrix.Core.Domain.User;
 using Metrix.Persistence.Mongo.DocumentTypes;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
@@ -77,17 +78,25 @@ public class MongoRepository : IRepository
 
   public async Task<IUser[]> GetAllUsers()
   {
-    List<UserDocument> users = await _users.Find(GetAllDocumentsFilter<UserDocument>()).ToListAsync();
+    List<UserDocument> users = await _users.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>()).ToListAsync();
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<MetricDocument> metrics = await _metrics.Find(GetAllDocumentsFilter<MetricDocument>()).ToListAsync();
+    List<MetricDocument> metrics = await _metrics
+      .Find(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read))
+      .ToListAsync();
+
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
   }
 
   public async Task<IMetric?> GetMetric(string metricId)
+  {
+    return await GetMetric(metricId, PermissionKind.Read);
+  }
+
+  protected async Task<IMetric?> GetMetric(string metricId, PermissionKind permissionKind)
   {
     if (string.IsNullOrEmpty(metricId))
     {
@@ -95,20 +104,31 @@ public class MongoRepository : IRepository
     }
 
     MetricDocument? document = await _metrics
-      .Find(GetDocumentByIdFilter<MetricDocument>(metricId))
+      .Find(GetMetricDocumentByIdFilter<MetricDocument>(metricId, permissionKind))
       .FirstOrDefaultAsync();
 
     return MetricDocumentMapper.FromDocument<IMetric>(document);
   }
 
+  private FilterDefinition<TDocument> GetMetricDocumentByIdFilter<TDocument>(string metricId, PermissionKind kind)
+    where TDocument : IDocument
+  {
+    return Builders<TDocument>.Filter.And(
+      GetAllMetricDocumentsFilter<TDocument>(kind),
+      MongoUtil.GetDocumentByIdFilter<TDocument>(metricId)
+    );
+  }
+
   public async Task<IMeasurement[]> GetAllMeasurements(string metricId)
   {
+    IMetric? metric = await GetMetric(metricId);
+    if (metric == null)
+    {
+      return Array.Empty<IMeasurement>();
+    }
+
     List<MeasurementDocument> measurements = await _measurements
-      .Find(
-        CreateScopedQuery(
-          Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId))
-        )
-      )
+      .Find(Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId)))
       .ToListAsync();
 
     return measurements
@@ -121,12 +141,26 @@ public class MongoRepository : IRepository
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
     ReplaceOneResult replaceOneResult = await _metrics.ReplaceOneAsync(
-      GetDocumentByIdFilter<MetricDocument>(metric.Id),
+      MongoUtil.GetDocumentByIdFilter<MetricDocument>(metric.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
     return CreateUpsertResult(metric.Id, replaceOneResult);
+  }
+
+  public async Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  {
+    IMetric? metric = await GetMetric(metricId);
+    if (metric == null)
+    {
+      // should we throw here?
+      return;
+    }
+
+    PermissionsUtil.EnsurePermissions(metric, permissions);
+
+    await UpsertMetric(metric);
   }
 
   public virtual async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
@@ -135,7 +169,7 @@ public class MongoRepository : IRepository
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
     ReplaceOneResult replaceOneResult = await _measurements.ReplaceOneAsync(
-      GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
+      MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
@@ -145,7 +179,7 @@ public class MongoRepository : IRepository
 
   public async Task DeleteMeasurement(string measurementId)
   {
-    await _measurements.DeleteOneAsync(GetDocumentByIdFilter<MeasurementDocument>(measurementId));
+    await _measurements.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId));
   }
 
   public async Task<IMeasurement?> GetMeasurement(string measurementId)
@@ -156,30 +190,16 @@ public class MongoRepository : IRepository
     }
 
     MeasurementDocument? document = await _measurements
-      .Find(GetDocumentByIdFilter<MeasurementDocument>(measurementId))
+      .Find(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId))
       .FirstOrDefaultAsync();
 
     return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
   }
 
-  protected virtual FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
+  protected virtual FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
     where TDocument : IDocument
   {
-    return Builders<TDocument>.Filter.Empty;
-  }
-
-  private FilterDefinition<TDocument> CreateScopedQuery<TDocument>(FilterDefinition<TDocument> query)
-    where TDocument : IUserScopedDocument
-  {
-    return Builders<TDocument>.Filter.And(GetAllDocumentsFilter<TDocument>(), query);
-  }
-
-  private FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
-    where TDocument : IUserScopedDocument
-  {
-    return CreateScopedQuery(
-      Builders<TDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(documentId))
-    );
+    return MongoUtil.GetAllDocumentsFilter<TDocument>();
   }
 
   private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
@@ -192,23 +212,6 @@ public class MongoRepository : IRepository
     {
       EntityId = id
     };
-  }
-
-  private static ObjectId EnsureObjectId(string? id)
-  {
-    return string.IsNullOrEmpty(id)
-      ? ObjectId.GenerateNewId()
-      : ParseObjectId(id);
-  }
-
-  private static ObjectId ParseObjectId(string entityId)
-  {
-    if (ObjectId.TryParse(entityId, out ObjectId objectId))
-    {
-      return objectId;
-    }
-
-    throw new ArgumentOutOfRangeException(nameof(entityId), $"\"{entityId}\" is not a valid ID.");
   }
 
   private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)

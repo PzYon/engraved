@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Metrix.Api.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Metrix.Api.Filters;
@@ -16,7 +17,7 @@ public class HttpExceptionFilter : IActionFilter
 
     context.Result = new ObjectResult(ApiError.FromException(context.Exception))
     {
-      StatusCode = 500
+      StatusCode = context.Exception is ITokenValidationException ? 401 : 500
     };
 
     context.ExceptionHandled = true;
