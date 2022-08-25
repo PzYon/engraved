@@ -4,7 +4,7 @@ namespace Metrix.Core.Application.Queries.Measurements.GetAll;
 
 public class GetAllMeasurementsQuery : IQuery<IMeasurement[]>
 {
-  public string? MetricKey { get; set; }
+  public string? MetricId { get; set; }
 
   IQueryExecutor<IMeasurement[]> IQuery<IMeasurement[]>.CreateExecutor()
   {
