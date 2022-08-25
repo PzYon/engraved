@@ -20,7 +20,7 @@ public class MeasurementDocumentMapperShould
       Id = Id,
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
     };
 
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
@@ -39,7 +39,7 @@ public class MeasurementDocumentMapperShould
       Notes = "n0t3",
       MetricId = Key,
       DateTime = DateTime.UtcNow,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
     };
 
     var counterMeasurement = MeasurementDocumentMapper.FromDocument<CounterMeasurement>(document);

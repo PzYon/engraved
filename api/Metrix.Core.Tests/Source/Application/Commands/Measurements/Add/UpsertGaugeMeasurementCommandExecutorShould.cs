@@ -124,7 +124,8 @@ public class UpsertGaugeMeasurementCommandExecutorShould
   private static void AssertMetricAttributeValuesEqual(Dictionary<string, string[]> d1, Dictionary<string, string[]> d2)
   {
     bool areEqual = d1 == d2
-                    || d1.Keys.Count == d2.Keys.Count && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k]));
+                    || (d1.Keys.Count == d2.Keys.Count
+                        && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k])));
     if (!areEqual)
     {
       Assert.Fail("MetricAttributeValues are not equal.");

@@ -1,4 +1,4 @@
-﻿namespace Metrix.Api.Authentication;
+﻿namespace Metrix.Api.Authentication.Google;
 
 public interface IGoogleTokenValidator
 {

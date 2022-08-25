@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Metrix.Api.Authentication;
+using Metrix.Api.Authentication.Google;
 using Metrix.Api.Settings;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;

@@ -36,8 +36,8 @@ public class UpsertCounterMeasurementCommandExecutorShould
   {
     _testRepository.Metrics.Add(new GaugeMetric { Id = "metric_id" });
 
-    var createCommand = new UpsertGaugeMeasurementCommand { MetricId = "metric_id", Notes = "foo", Value = 123};
-    var result =
+    var createCommand = new UpsertGaugeMeasurementCommand { MetricId = "metric_id", Notes = "foo", Value = 123 };
+    CommandResult? result =
       await new UpsertGaugeMeasurementCommandExecutor(createCommand).Execute(_testRepository, new FakeDateService());
 
     var updateCommand = new UpsertGaugeMeasurementCommand
@@ -47,7 +47,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
       Notes = "bar",
       Value = 42
     };
-    
+
     await new UpsertGaugeMeasurementCommandExecutor(updateCommand).Execute(_testRepository, new FakeDateService());
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);

@@ -59,13 +59,13 @@ public class DemoDataRepositorySeeder
       Description = metric.Description,
       Notes = Random.Shared.Next(0, 10) > 7 ? LoremIpsum(0, 12, 1, 3) : null,
       Attributes = CreateRandomDict(
-      "attributeKey",
-      i => new MetricAttribute
+        "attributeKey",
+        i => new MetricAttribute
         {
           Name = "Attribute-" + i,
           Values = CreateRandomDict("valueKey", s => "value" + s)
         }
-        )
+      )
     };
 
     await new EditMetricCommandExecutor(command).Execute(_repository, dateService);
@@ -111,7 +111,7 @@ public class DemoDataRepositorySeeder
       var command = new UpsertGaugeMeasurementCommand
       {
         MetricId = metric.Id!,
-        Value = Random.Shared.Next(0, Random.Shared.Next(5, 150)),
+        Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
       };
 
       EnsureAttributeValues(metric, command);
@@ -122,11 +122,11 @@ public class DemoDataRepositorySeeder
 
   private static void EnsureAttributeValues(IMetric metric, BaseUpsertMeasurementCommand command)
   {
-    foreach (var kvp in metric.Attributes)
+    foreach (KeyValuePair<string, MetricAttribute> kvp in metric.Attributes)
     {
-      var attributeKey = kvp.Key;
-      var valueKeys = kvp.Value.Values.Keys.ToArray();
-      var numberOfValueKeys = valueKeys.Length;
+      string? attributeKey = kvp.Key;
+      string[]? valueKeys = kvp.Value.Values.Keys.ToArray();
+      int numberOfValueKeys = valueKeys.Length;
 
       if (numberOfValueKeys == 0)
       {
@@ -241,9 +241,9 @@ public class DemoDataRepositorySeeder
   {
     int count = Random.Shared.Next(0, 7);
 
-    Dictionary<string, T> dict = new Dictionary<string, T>();
+    var dict = new Dictionary<string, T>();
 
-    for (int i = 0; i < count; i++)
+    for (var i = 0; i < count; i++)
     {
       dict.Add(keyPrefix + i, createValue(i));
     }
