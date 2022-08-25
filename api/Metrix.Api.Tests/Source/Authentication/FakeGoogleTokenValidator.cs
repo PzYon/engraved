@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Metrix.Api.Authentication;
+using Metrix.Api.Authentication.Google;
 
 namespace Metrix.Api.Tests.Authentication;
 

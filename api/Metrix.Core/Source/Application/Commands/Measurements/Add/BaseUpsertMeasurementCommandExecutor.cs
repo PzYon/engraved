@@ -32,10 +32,10 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
-    
+
     // this is not correct, as this assumes that the current update is the "newest".
     measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
-    
+
     measurement.MetricAttributeValues = Command.MetricAttributeValues;
 
     UpsertResult result = await repository.UpsertMeasurement(measurement);

@@ -13,7 +13,7 @@ public static class ObjectExtensions
 
   private static bool IsPrimitive(this Type type)
   {
-    return type == typeof(String) || type.IsValueType & type.IsPrimitive;
+    return type == typeof(string) || type.IsValueType & type.IsPrimitive;
   }
 
   private static object? Copy(this object? originalObject)
@@ -28,7 +28,7 @@ public static class ObjectExtensions
       return null;
     }
 
-    var typeToReflect = originalObject.GetType();
+    Type? typeToReflect = originalObject.GetType();
     if (IsPrimitive(typeToReflect))
     {
       return originalObject;
@@ -44,13 +44,13 @@ public static class ObjectExtensions
       return null;
     }
 
-    var cloneObject = CloneMethod.Invoke(originalObject, null)!;
+    object? cloneObject = CloneMethod.Invoke(originalObject, null)!;
     if (typeToReflect.IsArray)
     {
-      var arrayType = typeToReflect.GetElementType()!;
+      Type? arrayType = typeToReflect.GetElementType()!;
       if (IsPrimitive(arrayType) == false)
       {
-        var clonedArray = ((Array) cloneObject)!;
+        var clonedArray = ((Array)cloneObject)!;
         clonedArray.ForEach(
           (array, indices) => array.SetValue(InternalCopy(clonedArray.GetValue(indices), visited), indices)
         );
@@ -96,17 +96,25 @@ public static class ObjectExtensions
   {
     foreach (FieldInfo fieldInfo in typeToReflect.GetFields(bindingFlags))
     {
-      if (filter != null && filter(fieldInfo) == false) continue;
-      if (IsPrimitive(fieldInfo.FieldType)) continue;
-      var originalFieldValue = fieldInfo.GetValue(originalObject);
-      var clonedFieldValue = InternalCopy(originalFieldValue, visited);
+      if (filter != null && filter(fieldInfo) == false)
+      {
+        continue;
+      }
+
+      if (IsPrimitive(fieldInfo.FieldType))
+      {
+        continue;
+      }
+
+      object? originalFieldValue = fieldInfo.GetValue(originalObject);
+      object? clonedFieldValue = InternalCopy(originalFieldValue, visited);
       fieldInfo.SetValue(cloneObject, clonedFieldValue);
     }
   }
 
   public static T Copy<T>(this T original)
   {
-    return (T) Copy((object) original!)!;
+    return (T)Copy((object)original!)!;
   }
 }
 
@@ -132,10 +140,16 @@ public static class ArrayExtensions
 {
   public static void ForEach(this Array array, Action<Array, int[]> action)
   {
-    if (array.LongLength == 0) return;
-    ArrayTraverse walker = new ArrayTraverse(array);
-    do action(array, walker.Position);
-    while (walker.Step());
+    if (array.LongLength == 0)
+    {
+      return;
+    }
+
+    var walker = new ArrayTraverse(array);
+    do
+    {
+      action(array, walker.Position);
+    } while (walker.Step());
   }
 }
 
@@ -147,7 +161,7 @@ internal class ArrayTraverse
   public ArrayTraverse(Array array)
   {
     maxLengths = new int[array.Rank];
-    for (int i = 0; i < array.Rank; ++i)
+    for (var i = 0; i < array.Rank; ++i)
     {
       maxLengths[i] = array.GetLength(i) - 1;
     }
@@ -157,12 +171,12 @@ internal class ArrayTraverse
 
   public bool Step()
   {
-    for (int i = 0; i < Position.Length; ++i)
+    for (var i = 0; i < Position.Length; ++i)
     {
       if (Position[i] < maxLengths[i])
       {
         Position[i]++;
-        for (int j = 0; j < i; j++)
+        for (var j = 0; j < i; j++)
         {
           Position[j] = 0;
         }

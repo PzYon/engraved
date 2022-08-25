@@ -125,7 +125,7 @@ public class MetricDocumentMapperShould
     MetricAttribute attribute = metricDocument.Attributes["flags"];
     Assert.AreEqual("Flags", attribute.Name);
     Assert.Contains("fl@g", attribute.Values.Keys);
-    Assert.AreEqual("fl@g_value",attribute.Values["fl@g"]);
+    Assert.AreEqual("fl@g_value", attribute.Values["fl@g"]);
   }
 
   [Test]

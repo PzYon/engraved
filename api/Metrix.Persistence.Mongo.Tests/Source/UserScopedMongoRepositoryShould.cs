@@ -100,7 +100,7 @@ public class UserScopedMongoRepositoryShould
   public async Task UpsertMeasurement_Ensures_CurrentUser_Id()
   {
     UpsertResult upsertMetric = await _userScopedRepository.UpsertMetric(new TimerMetric());
-    var metricId = upsertMetric.EntityId;
+    string? metricId = upsertMetric.EntityId;
 
     IMeasurement measurement = new TimerMeasurement { MetricId = metricId };
 

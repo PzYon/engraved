@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Metrix.Api.Authentication;
+using Metrix.Api.Authentication.Google;
 using Metrix.Api.Filters;
 using Metrix.Api.Settings;
 using Metrix.Core.Application;
@@ -78,7 +79,7 @@ builder.Services.AddSingleton(_ => UseInMemoryRepo() ? GetInMemoryRepo() : GetMo
 builder.Services.AddTransient(
   provider =>
   {
-    ICurrentUserService userService = provider.GetService<ICurrentUserService>()!;
+    var userService = provider.GetService<ICurrentUserService>()!;
     return UseInMemoryRepo()
       ? GetInMemoryUserScopedRepo(provider.GetService<IRepository>()!)
       : GetInMongoDbUserScopedRepo(builder, userService);
@@ -166,7 +167,7 @@ IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository)
       Id = "markus.doggweiler@gmail.com",
       Name = "markus.doggweiler@gmail.com",
       DisplayName = "Mar Dog",
-      ImageUrl = "https://lh3.googleusercontent.com/a-/AOh14Gg94v3JIJeHjaTjU0_QTccEhr4-H8o358PN7odm2g=s96-c",
+      ImageUrl = "https://lh3.googleusercontent.com/a-/AOh14Gg94v3JIJeHjaTjU0_QTccEhr4-H8o358PN7odm2g=s96-c"
     }
   );
 

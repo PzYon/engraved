@@ -6,7 +6,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 
-public abstract class MetricDocument : IUserScopedDocument,IHasPerissionsDocument
+public abstract class MetricDocument : IUserScopedDocument, IHasPerissionsDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]
@@ -18,7 +18,7 @@ public abstract class MetricDocument : IUserScopedDocument,IHasPerissionsDocumen
   public string? Name { get; set; }
 
   public string? Description { get; set; }
-  
+
   public string? Notes { get; set; }
 
   public abstract MetricType Type { get; }

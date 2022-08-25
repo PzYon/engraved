@@ -2,7 +2,7 @@
 using Metrix.Api.Settings;
 using Microsoft.Extensions.Options;
 
-namespace Metrix.Api.Authentication;
+namespace Metrix.Api.Authentication.Google;
 
 public class GoogleTokenValidator : IGoogleTokenValidator
 {
