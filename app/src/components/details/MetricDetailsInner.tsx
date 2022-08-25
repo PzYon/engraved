@@ -18,6 +18,7 @@ import { DetailsSection } from "../layout/DetailsSection";
 import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { SelectedAttributeValues } from "./SelectedAttributeValues";
 import { MetricNotes } from "./edit/MetricNotes";
+import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 
 export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
   metricId,
@@ -31,6 +32,8 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
 
   useEffect(() => {
     setPageTitle(<PageTitle metric={metric} />);
+
+    // todo: consider merging these actions with the ones from MetricHeaderActions
     setTitleActions([
       {
         key: "edit",
@@ -87,6 +90,10 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
           element={
             <EditMetricLauncher metric={metric} reloadMetric={reloadMetric} />
           }
+        />
+        <Route
+          path="/permissions"
+          element={<EditMetricPermissionsLauncher metric={metric} />}
         />
         <Route
           path="/measurements/:measurementId/edit"
