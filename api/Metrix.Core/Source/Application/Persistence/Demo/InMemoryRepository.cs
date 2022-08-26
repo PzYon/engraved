@@ -83,6 +83,7 @@ public class InMemoryRepository : IRepository
     }
 
     PermissionsUtil.EnsurePermissions(metric, permissions);
+    await UpsertMetric(metric);
   }
 
   public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)

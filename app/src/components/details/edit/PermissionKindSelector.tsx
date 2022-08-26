@@ -21,7 +21,7 @@ export const PermissionKindSelector: React.FC<{
         label={"Permission"}
         value={permissionKind.toString()}
         onChange={(event: SelectChangeEvent) => {
-          // onChange(event.target.value);
+          onChange(Number(event.target.value));
         }}
       >
         <MenuItem value="0">None</MenuItem>
