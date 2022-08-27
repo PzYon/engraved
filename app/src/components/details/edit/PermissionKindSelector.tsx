@@ -24,7 +24,6 @@ export const PermissionKindSelector: React.FC<{
           onChange(Number(event.target.value));
         }}
       >
-        <MenuItem value="0">None</MenuItem>
         <MenuItem value="1">Read</MenuItem>
         <MenuItem value="2">Write</MenuItem>
       </Select>

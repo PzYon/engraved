@@ -79,7 +79,7 @@ public class PermissionsEnsurerShould
   }
 }
 
-public class TestPermissionHolder : IHasPermissions
+public class TestPermissionHolder : IPermissionHolder
 {
   public Permissions Permissions { get; set; } = null!;
 }

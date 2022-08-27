@@ -6,6 +6,8 @@ import { PermissionKind } from "../../../serverApi/PermissionKind";
 import { IPermissions } from "../../../serverApi/IPermissions";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
+import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { DeleteOutlined } from "@mui/icons-material";
 
 export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
   metric,
@@ -23,14 +25,23 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
       {Object.keys(metric.permissions).map((k) => (
         <div key={k}>
           {k}: {metric.permissions[k]}
+          <IconButtonWrapper
+            action={{
+              key: "remove",
+              label: "Remove",
+              icon: <DeleteOutlined fontSize="small" />,
+              onClick: () => setPermissions(k, PermissionKind.None),
+            }}
+          />
         </div>
       ))}
-      <Typography>New Permissions:</Typography>
-      {Object.keys(newPermissions).map((k) => (
-        <div key={k}>
-          {k}: {newPermissions[k]}
-        </div>
-      ))}
+      <Typography color={"gray"}>
+        {Object.keys(newPermissions).map((k) => (
+          <div key={k}>
+            {k}: {newPermissions[k]}
+          </div>
+        ))}
+      </Typography>
       <TextField
         onChange={(event) => setUserName(event.target.value)}
         value={userName}
@@ -42,9 +53,7 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
       <Button
         variant="outlined"
         onClick={() => {
-          const tempPermissions = { ...newPermissions };
-          tempPermissions[userName] = permissionKind;
-          setNewPermissions(tempPermissions);
+          setPermissions(userName, permissionKind);
 
           setUserName("");
           setPermissionKind(PermissionKind.Read);
@@ -77,4 +86,10 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
       </div>
     </div>
   );
+
+  function setPermissions(userName: string, permissionKind: PermissionKind) {
+    const tempPermissions = { ...newPermissions };
+    tempPermissions[userName] = permissionKind;
+    setNewPermissions(tempPermissions);
+  }
 };

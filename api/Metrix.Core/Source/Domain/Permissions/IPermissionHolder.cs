@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Core.Domain.Permissions;
 
-public interface IHasPermissions
+public interface IPermissionHolder
 {
   Permissions Permissions { get; set; }
 }
