@@ -5,20 +5,29 @@ using NUnit.Framework;
 
 namespace Metrix.Core.Domain.Permissions;
 
-public class PermissionsUtilShould
+public class PermissionsEnsurerShould
 {
-  private static readonly IRepository _repository = new InMemoryRepository()
+  private static IRepository _repository = null!;
+  private PermissionsEnsurer _permissionsEnsurer = null!;
+
+  [SetUp]
+  public void SetUp()
   {
-    Users =
+    _repository = new InMemoryRepository
     {
-      new User.User
+      Users =
       {
-        Id = "123",
-        Name = "mar@foo.ch",
-        DisplayName = "Mar Dog"
+        new User.User
+        {
+          Id = "123",
+          Name = "mar@foo.ch",
+          DisplayName = "Mar Dog"
+        }
       }
-    }
-  };
+    };
+
+    _permissionsEnsurer = new PermissionsEnsurer(_repository, _repository.UpsertUser);
+  }
 
   [Test]
   public async Task RemovePermissions_When_None()
@@ -28,9 +37,7 @@ public class PermissionsUtilShould
       Permissions = new Permissions { { "123", PermissionKind.Read } }
     };
 
-    await PermissionsUtil.EnsurePermissions(
-      _repository,
-      _repository.UpsertUser,
+    await _permissionsEnsurer.EnsurePermissions(
       holder,
       new Permissions { { "mar@foo.ch", PermissionKind.None } }
     );
@@ -46,9 +53,7 @@ public class PermissionsUtilShould
       Permissions = new Permissions { { "123", PermissionKind.Read } }
     };
 
-    await PermissionsUtil.EnsurePermissions(
-      _repository,
-      _repository.UpsertUser,
+    await _permissionsEnsurer.EnsurePermissions(
       holder,
       new Permissions { { "mar@foo.ch", PermissionKind.Write } }
     );
@@ -65,9 +70,7 @@ public class PermissionsUtilShould
       Permissions = new Permissions { { "123", PermissionKind.Read } }
     };
 
-    await PermissionsUtil.EnsurePermissions(
-      _repository,
-      _repository.UpsertUser,
+    await _permissionsEnsurer.EnsurePermissions(
       holder,
       new Permissions { { "bar@foo.ch", PermissionKind.Read } }
     );

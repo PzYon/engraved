@@ -3,18 +3,25 @@ using Metrix.Core.Domain.User;
 
 namespace Metrix.Core.Domain.Permissions;
 
-public static class PermissionsUtil
+public class PermissionsEnsurer
 {
-  public static async Task EnsurePermissions(
+  private readonly IRepository _repo;
+  private readonly Func<IUser, Task<UpsertResult>> _upsertUser;
+
+  public PermissionsEnsurer(
     IRepository repo,
-    Func<IUser, Task<UpsertResult>> upsertUser,
-    IHasPermissions permissionHolder,
-    Permissions permissionsToEnsure
+    Func<IUser, Task<UpsertResult>> upsertUser
     )
+  {
+    _repo = repo;
+    _upsertUser = upsertUser;
+  }
+
+  public async Task EnsurePermissions(IHasPermissions permissionHolder, Permissions permissionsToEnsure)
   {
     foreach ((string? userName, PermissionKind permissionKind) in permissionsToEnsure)
     {
-      string userId = await EnsureUserAndGetId(repo, upsertUser, userName);
+      string userId = await EnsureUserAndGetId(userName);
 
       if (permissionKind == PermissionKind.None)
       {
@@ -26,19 +33,15 @@ public static class PermissionsUtil
     }
   }
 
-  private static async Task<string> EnsureUserAndGetId(
-    IRepository repo,
-    Func<IUser, Task<UpsertResult>> upsertUser,
-    string userName
-    )
+  private async Task<string> EnsureUserAndGetId(string userName)
   {
-    IUser? user = await repo.GetUser(userName);
+    IUser? user = await _repo.GetUser(userName);
     if (user != null)
     {
       return user.Id!;
     }
 
-    UpsertResult result = await upsertUser(
+    UpsertResult result = await _upsertUser(
       new User.User
       {
         Name = userName

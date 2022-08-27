@@ -71,7 +71,7 @@ public class InMemoryRepository : IRepository
 
     Metrics.Add(metric.Copy());
 
-    return Task.FromResult(new UpsertResult {EntityId = metric.Id});
+    return Task.FromResult(new UpsertResult { EntityId = metric.Id });
   }
 
   public async Task ModifyMetricPermissions(string metricId, Permissions permissions)
@@ -82,7 +82,9 @@ public class InMemoryRepository : IRepository
       return;
     }
 
-    await PermissionsUtil.EnsurePermissions(this, UpsertUser, metric, permissions);
+    var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUser);
+    await permissionsEnsurer.EnsurePermissions(metric, permissions);
+    
     await UpsertMetric(metric);
   }
 
@@ -100,7 +102,7 @@ public class InMemoryRepository : IRepository
 
     Measurements.Add(measurement.Copy());
 
-    return new UpsertResult {EntityId = measurement.Id};
+    return new UpsertResult { EntityId = measurement.Id };
   }
 
   public async Task DeleteMeasurement(string measurementId)

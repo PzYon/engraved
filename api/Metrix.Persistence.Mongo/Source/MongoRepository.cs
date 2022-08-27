@@ -163,7 +163,8 @@ public class MongoRepository : IRepository
       return;
     }
 
-    await PermissionsUtil.EnsurePermissions(this, UpsertUserInternal, metric, permissions);
+    var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUserInternal);
+    await permissionsEnsurer.EnsurePermissions(metric, permissions);
 
     await UpsertMetric(metric);
   }
