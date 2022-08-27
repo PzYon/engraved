@@ -146,7 +146,8 @@ app.Run();
 
 bool UseInMemoryRepo()
 {
-  return builder.Environment.IsDevelopment();
+  return false;
+  // return builder.Environment.IsDevelopment();
 }
 
 IUserScopedRepository GetMongoDbUserScopedRepo(

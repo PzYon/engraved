@@ -82,7 +82,7 @@ public class InMemoryRepository : IRepository
       return;
     }
 
-    PermissionsUtil.EnsurePermissions(metric, permissions);
+    await PermissionsUtil.EnsurePermissions(this, UpsertUser, metric, permissions);
     await UpsertMetric(metric);
   }
 

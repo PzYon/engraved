@@ -24,18 +24,6 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     _currentUserService = currentUserService;
   }
 
-  public override async Task<IUser?> GetUser(string? name)
-  {
-    IUser? user = await base.GetUser(name);
-
-    if (user != null && user.Id != CurrentUser.Value.Id)
-    {
-      return null;
-    }
-
-    return user;
-  }
-
   public override async Task<UpsertResult> UpsertUser(IUser user)
   {
     ValidateUser(user.Id);
@@ -73,7 +61,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   protected override FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
   {
     string? userId = CurrentUser.Value.Id;
-    EnsureUserNameIsSet(userId);
+    EnsureUserIsSet(userId);
 
     // for current user we do not care which PermissionKind is requested, as if user
     // is owner, then everything is allowed.
@@ -116,7 +104,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   private IUser LoadUser()
   {
     string? name = _currentUserService.GetUserName();
-    EnsureUserNameIsSet(name);
+    EnsureUserIsSet(name);
 
     IUser? result = base.GetUser(name).Result;
     if (result == null)
@@ -135,9 +123,9 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     }
   }
 
-  private static void EnsureUserNameIsSet(string? name)
+  private static void EnsureUserIsSet(string? nameOrId)
   {
-    if (string.IsNullOrEmpty(name))
+    if (string.IsNullOrEmpty(nameOrId))
     {
       throw new UnallowedOperationException($"Current user is not available.");
     }

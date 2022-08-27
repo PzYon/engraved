@@ -1,18 +1,36 @@
-﻿using NUnit.Framework;
+﻿using System.Threading.Tasks;
+using Metrix.Core.Application.Persistence;
+using Metrix.Core.Application.Persistence.Demo;
+using NUnit.Framework;
 
 namespace Metrix.Core.Domain.Permissions;
 
 public class PermissionsUtilShould
 {
+  private static readonly IRepository _repository = new InMemoryRepository()
+  {
+    Users =
+    {
+      new User.User
+      {
+        Id = "123",
+        Name = "mar@foo.ch",
+        DisplayName = "Mar Dog"
+      }
+    }
+  };
+
   [Test]
-  public void RemovePermissions_When_None()
+  public async Task RemovePermissions_When_None()
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new Permissions { { "mar@foo.ch", PermissionKind.Read } }
+      Permissions = new Permissions { { "123", PermissionKind.Read } }
     };
 
-    PermissionsUtil.EnsurePermissions(
+    await PermissionsUtil.EnsurePermissions(
+      _repository,
+      _repository.UpsertUser,
       holder,
       new Permissions { { "mar@foo.ch", PermissionKind.None } }
     );
@@ -21,31 +39,35 @@ public class PermissionsUtilShould
   }
 
   [Test]
-  public void ChangePermissions_When_AlreadySet()
+  public async Task ChangePermissions_When_AlreadySet()
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new Permissions { { "mar@foo.ch", PermissionKind.Read } }
+      Permissions = new Permissions { { "123", PermissionKind.Read } }
     };
 
-    PermissionsUtil.EnsurePermissions(
+    await PermissionsUtil.EnsurePermissions(
+      _repository,
+      _repository.UpsertUser,
       holder,
       new Permissions { { "mar@foo.ch", PermissionKind.Write } }
     );
 
     Assert.AreEqual(1, holder.Permissions.Count);
-    Assert.AreEqual(PermissionKind.Write, holder.Permissions["mar@foo.ch"]);
+    Assert.AreEqual(PermissionKind.Write, holder.Permissions["123"]);
   }
 
   [Test]
-  public void AddPermissions_When_NotThereYet()
+  public async Task AddPermissions_When_NotThereYet()
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new Permissions { { "mar@foo.ch", PermissionKind.Read } }
+      Permissions = new Permissions { { "123", PermissionKind.Read } }
     };
 
-    PermissionsUtil.EnsurePermissions(
+    await PermissionsUtil.EnsurePermissions(
+      _repository,
+      _repository.UpsertUser,
       holder,
       new Permissions { { "bar@foo.ch", PermissionKind.Read } }
     );

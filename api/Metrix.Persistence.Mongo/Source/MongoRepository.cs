@@ -59,6 +59,11 @@ public class MongoRepository : IRepository
 
   public virtual async Task<UpsertResult> UpsertUser(IUser user)
   {
+    return await UpsertUserInternal(user);
+  }
+
+  private async Task<UpsertResult> UpsertUserInternal(IUser user)
+  {
     UserDocument document = UserDocumentMapper.ToDocument(user);
 
     IUser? existingUser = await GetUser(user.Name);
@@ -158,7 +163,7 @@ public class MongoRepository : IRepository
       return;
     }
 
-    PermissionsUtil.EnsurePermissions(metric, permissions);
+    await PermissionsUtil.EnsurePermissions(this, UpsertUserInternal, metric, permissions);
 
     await UpsertMetric(metric);
   }

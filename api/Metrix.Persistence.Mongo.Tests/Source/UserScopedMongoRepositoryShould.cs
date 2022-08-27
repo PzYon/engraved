@@ -43,14 +43,14 @@ public class UserScopedMongoRepositoryShould
   }
 
   [Test]
-  public async Task GetUser_DoesNotReturn_OtherUser()
+  public async Task GetUser_DoesReturn_OtherUser()
   {
     await _repository.UpsertUser(new User { Name = "franz" });
     await _repository.UpsertUser(new User { Name = "max" });
 
     IUser? user = await _userScopedRepository.GetUser(OtherUserName);
 
-    Assert.IsNull(user);
+    Assert.IsNotNull(user);
   }
 
   [Test]
