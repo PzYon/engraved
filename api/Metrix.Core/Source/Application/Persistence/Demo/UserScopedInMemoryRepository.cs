@@ -74,7 +74,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return _repository.UpsertMetric(metric);
   }
 
-  public async Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  public async Task ModifyMetricPermissions(string metricId, UserPermissions permissions)
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)

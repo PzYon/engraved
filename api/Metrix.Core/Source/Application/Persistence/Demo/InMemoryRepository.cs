@@ -74,7 +74,7 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(new UpsertResult { EntityId = metric.Id });
   }
 
-  public async Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  public async Task ModifyMetricPermissions(string metricId, UserPermissions permissions)
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)

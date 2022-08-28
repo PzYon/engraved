@@ -9,5 +9,5 @@ public interface IUserScopedDocument : IDocument
 
 public interface IHasPerissionsDocument : IDocument
 {
-  Permissions Permissions { get; set; }
+  UserPermissions Permissions { get; set; }
 }

@@ -1,4 +1,6 @@
-﻿namespace Metrix.Core.Domain.Metrics;
+﻿using Metrix.Core.Domain.Permissions;
+
+namespace Metrix.Core.Domain.Metrics;
 
 public abstract class BaseMetric : IMetric
 {
@@ -18,5 +20,5 @@ public abstract class BaseMetric : IMetric
 
   public DateTime? LastMeasurementDate { get; set; }
 
-  public Permissions.Permissions Permissions { get; set; } = new();
+  public UserPermissions Permissions { get; set; } = new();
 }

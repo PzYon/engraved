@@ -21,7 +21,7 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
 
   return (
     <div>
-      <Typography>Existing Permissions:</Typography>
+      <Typography>Permissions</Typography>
       {Object.keys(metric.permissions).map((k) => (
         <div key={k}>
           {k}: {metric.permissions[k]}

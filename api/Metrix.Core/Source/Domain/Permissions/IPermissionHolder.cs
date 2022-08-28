@@ -2,5 +2,5 @@
 
 public interface IPermissionHolder
 {
-  Permissions Permissions { get; set; }
+  UserPermissions Permissions { get; set; }
 }

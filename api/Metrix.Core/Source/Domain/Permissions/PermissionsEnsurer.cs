@@ -17,7 +17,7 @@ public class PermissionsEnsurer
     _upsertUser = upsertUser;
   }
 
-  public async Task EnsurePermissions(IPermissionHolder permissionHolder, Permissions permissionsToEnsure)
+  public async Task EnsurePermissions(IPermissionHolder permissionHolder, UserPermissions permissionsToEnsure)
   {
     foreach ((string? userName, PermissionKind permissionKind) in permissionsToEnsure)
     {

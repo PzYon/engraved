@@ -52,7 +52,7 @@ public class MetricsController : ControllerBase
 
   [Route("{metricId}/permissions")]
   [HttpPut]
-  public async Task<CommandResult> Permissions([FromBody] Permissions permissions, string metricId)
+  public async Task<CommandResult> Permissions([FromBody] UserPermissions permissions, string metricId)
   {
     var command = new ModifyMetricPermissionsCommand
     {
