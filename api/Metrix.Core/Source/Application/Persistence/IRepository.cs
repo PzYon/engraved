@@ -11,17 +11,19 @@ public interface IRepository
 
   Task<UpsertResult> UpsertUser(IUser user);
 
+  Task<IUser[]> GetUsers(params string[] userIds);
+
   Task<IUser[]> GetAllUsers();
 
   Task<IMetric[]> GetAllMetrics();
 
   Task<IMetric?> GetMetric(string metricId);
 
-  Task<IMeasurement[]> GetAllMeasurements(string metricId);
-
   Task<UpsertResult> UpsertMetric(IMetric metric);
 
   Task ModifyMetricPermissions(string metricId, UserPermissions permissions);
+
+  Task<IMeasurement[]> GetAllMeasurements(string metricId);
 
   Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
 

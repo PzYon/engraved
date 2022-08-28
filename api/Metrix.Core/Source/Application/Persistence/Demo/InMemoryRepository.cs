@@ -34,6 +34,12 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(new UpsertResult { EntityId = user.Id });
   }
 
+  public async Task<IUser[]> GetUsers(string[] userIds)
+  {
+    IUser[] allUsers = await GetAllUsers();
+    return allUsers.Where(u => userIds.Contains(u.Id)).ToArray();
+  }
+
   public Task<IUser[]> GetAllUsers()
   {
     return Task.FromResult(Users.Select(u => u.Copy()).ToArray());

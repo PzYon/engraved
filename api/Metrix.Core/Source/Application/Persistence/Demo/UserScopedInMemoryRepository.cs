@@ -6,7 +6,6 @@ using Metrix.Core.Domain.User;
 namespace Metrix.Core.Application.Persistence.Demo;
 
 // we need test users!
-
 /*
 new User
     {
@@ -38,6 +37,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   public Task<UpsertResult> UpsertUser(IUser user)
   {
     return _repository.UpsertUser(user);
+  }
+
+  public Task<IUser[]> GetUsers(string[] userIds)
+  {
+    return _repository.GetAllUsers();
   }
 
   public async Task<IUser[]> GetAllUsers()

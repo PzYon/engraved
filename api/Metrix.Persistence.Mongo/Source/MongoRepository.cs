@@ -62,6 +62,15 @@ public class MongoRepository : IRepository
     return await UpsertUserInternal(user);
   }
 
+  public async Task<IUser[]> GetUsers(params string[] userIds)
+  {
+    List<UserDocument> users = await _users
+      .Find(Builders<UserDocument>.Filter.Or(userIds.Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
+      .ToListAsync();
+
+    return users.Select(UserDocumentMapper.FromDocument).ToArray();
+  }
+
   private async Task<UpsertResult> UpsertUserInternal(IUser user)
   {
     UserDocument document = UserDocumentMapper.ToDocument(user);
