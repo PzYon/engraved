@@ -1,3 +1,12 @@
-﻿namespace Metrix.Core.Domain.Permissions;
+﻿using Metrix.Core.Domain.User;
 
-public class UserPermissions : Dictionary<string, PermissionKind> { }
+namespace Metrix.Core.Domain.Permissions;
+
+public class PermissionDefinition
+{
+  public PermissionKind Kind { get; set; }
+  
+  public IUser? User { get; set; }
+}
+
+public class UserPermissions : Dictionary<string, PermissionDefinition> { }

@@ -56,7 +56,8 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await _repository.ModifyMetricPermissions(
       otherMetric.EntityId,
-      new UserPermissions { { OtherUserName + "_another_one", PermissionKind.Write } }
+      new UserPermissions
+        { { OtherUserName + "_another_one", new PermissionDefinition { Kind = PermissionKind.Write } } }
     );
 
     IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
@@ -116,7 +117,8 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await _repository.ModifyMetricPermissions(
       otherMetric.EntityId,
-      new UserPermissions { { _otherUserId + "_another_one", PermissionKind.Write } }
+      new UserPermissions
+        { { _otherUserId + "_another_one", new PermissionDefinition { Kind = PermissionKind.Write } } }
     );
 
     await _repository.UpsertMeasurement(
@@ -342,10 +344,7 @@ public class UserScopedMongoRepository_Permissions_Should
   {
     await _repository.ModifyMetricPermissions(
       metricId,
-      new UserPermissions
-      {
-        { CurrentUserName, kind }
-      }
+      new UserPermissions { { CurrentUserName, new PermissionDefinition { Kind = kind } } }
     );
   }
 }

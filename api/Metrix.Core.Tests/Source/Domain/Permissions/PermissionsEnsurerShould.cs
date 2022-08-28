@@ -34,12 +34,12 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "123", PermissionKind.Read } }
+      Permissions = new UserPermissions { { "123", new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new UserPermissions { { "mar@foo.ch", PermissionKind.None } }
+      new UserPermissions { { "mar@foo.ch", new PermissionDefinition { Kind = PermissionKind.None } } }
     );
 
     Assert.AreEqual(0, holder.Permissions.Count);
@@ -50,16 +50,16 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "123", PermissionKind.Read } }
+      Permissions = new UserPermissions { { "123", new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new UserPermissions { { "mar@foo.ch", PermissionKind.Write } }
+      new UserPermissions { { "mar@foo.ch", new PermissionDefinition { Kind = PermissionKind.Write } } }
     );
 
     Assert.AreEqual(1, holder.Permissions.Count);
-    Assert.AreEqual(PermissionKind.Write, holder.Permissions["123"]);
+    Assert.AreEqual(PermissionKind.Write, holder.Permissions["123"].Kind);
   }
 
   [Test]
@@ -67,12 +67,12 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "123", PermissionKind.Read } }
+      Permissions = new UserPermissions { { "123", new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new UserPermissions { { "bar@foo.ch", PermissionKind.Read } }
+      new UserPermissions { { "bar@foo.ch", new PermissionDefinition { Kind = PermissionKind.Read } } }
     );
 
     Assert.AreEqual(2, holder.Permissions.Count);

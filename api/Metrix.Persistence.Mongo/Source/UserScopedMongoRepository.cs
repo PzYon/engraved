@@ -81,7 +81,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     )
   {
     return Builders<TDocument>.Filter.Gte(
-      nameof(IHasPerissionsDocument.Permissions) + "." + userId,
+      string.Join(".", nameof(IHasPerissionsDocument.Permissions), userId, nameof(PermissionDefinition.Kind)),
       permissionKind
     );
   }

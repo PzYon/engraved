@@ -19,17 +19,17 @@ public class PermissionsEnsurer
 
   public async Task EnsurePermissions(IPermissionHolder permissionHolder, UserPermissions permissionsToEnsure)
   {
-    foreach ((string? userName, PermissionKind permissionKind) in permissionsToEnsure)
+    foreach ((string? userName, PermissionDefinition permissionDefinition) in permissionsToEnsure)
     {
       string userId = await EnsureUserAndGetId(userName);
 
-      if (permissionKind == PermissionKind.None)
+      if (permissionDefinition.Kind == PermissionKind.None)
       {
         permissionHolder.Permissions.Remove(userId);
         return;
       }
 
-      permissionHolder.Permissions[userId] = permissionKind;
+      permissionHolder.Permissions[userId] = new PermissionDefinition { Kind = permissionDefinition.Kind };
     }
   }
 

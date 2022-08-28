@@ -64,6 +64,11 @@ public class MongoRepository : IRepository
 
   public async Task<IUser[]> GetUsers(params string[] userIds)
   {
+    if (userIds.Length == 0)
+    {
+      return Array.Empty<IUser>();
+    }
+    
     List<UserDocument> users = await _users
       .Find(Builders<UserDocument>.Filter.Or(userIds.Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
       .ToListAsync();
