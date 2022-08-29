@@ -1,5 +1,5 @@
-import { PermissionKind } from "./PermissionKind";
+import { IPermissionDefinition } from "./IPermissionDefinition";
 
 export interface IUserPermissions {
-  [userid: string]: PermissionKind;
+  [userid: string]: IPermissionDefinition;
 }
