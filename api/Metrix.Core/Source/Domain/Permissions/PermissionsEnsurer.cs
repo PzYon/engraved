@@ -17,19 +17,22 @@ public class PermissionsEnsurer
     _upsertUser = upsertUser;
   }
 
-  public async Task EnsurePermissions(IPermissionHolder permissionHolder, UserPermissions permissionsToEnsure)
+  public async Task EnsurePermissions(
+    IPermissionHolder permissionHolder,
+    Dictionary<string, PermissionKind> permissionsToEnsure
+    )
   {
-    foreach ((string? userName, PermissionDefinition permissionDefinition) in permissionsToEnsure)
+    foreach ((string? userName, PermissionKind kind) in permissionsToEnsure)
     {
       string userId = await EnsureUserAndGetId(userName);
 
-      if (permissionDefinition.Kind == PermissionKind.None)
+      if (kind == PermissionKind.None)
       {
         permissionHolder.Permissions.Remove(userId);
         return;
       }
 
-      permissionHolder.Permissions[userId] = new PermissionDefinition { Kind = permissionDefinition.Kind };
+      permissionHolder.Permissions[userId] = new PermissionDefinition { Kind = kind };
     }
   }
 

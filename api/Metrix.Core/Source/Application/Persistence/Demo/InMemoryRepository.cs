@@ -80,7 +80,7 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(new UpsertResult { EntityId = metric.Id });
   }
 
-  public async Task ModifyMetricPermissions(string metricId, UserPermissions permissions)
+  public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)

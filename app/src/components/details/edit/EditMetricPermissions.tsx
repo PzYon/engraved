@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button, TextField, Typography } from "@mui/material";
 import { PermissionKindSelector } from "./PermissionKindSelector";
 import { PermissionKind } from "../../../serverApi/PermissionKind";
-import { IPermissions } from "../../../serverApi/IPermissions";
+import { IUserPermissions } from "../../../serverApi/IUserPermissions";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
@@ -17,7 +17,7 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
   const [userName, setUserName] = useState("");
   const [permissionKind, setPermissionKind] = useState(PermissionKind.Read);
 
-  const [newPermissions, setNewPermissions] = useState<IPermissions>({});
+  const [newPermissions, setNewPermissions] = useState<IUserPermissions>({});
 
   return (
     <div>

@@ -6,7 +6,7 @@ public class ModifyMetricPermissionsCommand : ICommand
 {
   public string? MetricId { get; set; }
 
-  public UserPermissions? Permissions { get; set; }
+  public Dictionary<string, PermissionKind>? Permissions { get; set; }
 
   public ICommandExecutor CreateExecutor()
   {

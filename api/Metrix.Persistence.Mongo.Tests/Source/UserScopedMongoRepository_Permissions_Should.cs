@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
@@ -56,8 +57,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await _repository.ModifyMetricPermissions(
       otherMetric.EntityId,
-      new UserPermissions
-        { { OtherUserName + "_another_one", new PermissionDefinition { Kind = PermissionKind.Write } } }
+      new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
     );
 
     IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
@@ -117,8 +117,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await _repository.ModifyMetricPermissions(
       otherMetric.EntityId,
-      new UserPermissions
-        { { _otherUserId + "_another_one", new PermissionDefinition { Kind = PermissionKind.Write } } }
+      new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
     );
 
     await _repository.UpsertMeasurement(
@@ -344,7 +343,7 @@ public class UserScopedMongoRepository_Permissions_Should
   {
     await _repository.ModifyMetricPermissions(
       metricId,
-      new UserPermissions { { CurrentUserName, new PermissionDefinition { Kind = kind } } }
+      new Dictionary<string, PermissionKind> { { CurrentUserName, kind } }
     );
   }
 }

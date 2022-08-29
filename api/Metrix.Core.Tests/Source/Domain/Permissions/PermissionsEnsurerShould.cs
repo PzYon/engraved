@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
 using NUnit.Framework;
@@ -39,7 +40,7 @@ public class PermissionsEnsurerShould
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new UserPermissions { { "mar@foo.ch", new PermissionDefinition { Kind = PermissionKind.None } } }
+      new Dictionary<string, PermissionKind> { { "mar@foo.ch", PermissionKind.None } }
     );
 
     Assert.AreEqual(0, holder.Permissions.Count);
@@ -55,7 +56,7 @@ public class PermissionsEnsurerShould
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new UserPermissions { { "mar@foo.ch", new PermissionDefinition { Kind = PermissionKind.Write } } }
+      new Dictionary<string, PermissionKind> { { "mar@foo.ch", PermissionKind.Write } }
     );
 
     Assert.AreEqual(1, holder.Permissions.Count);
@@ -72,7 +73,7 @@ public class PermissionsEnsurerShould
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new UserPermissions { { "bar@foo.ch", new PermissionDefinition { Kind = PermissionKind.Read } } }
+      new Dictionary<string, PermissionKind> { { "bar@foo.ch", PermissionKind.Read } }
     );
 
     Assert.AreEqual(2, holder.Permissions.Count);

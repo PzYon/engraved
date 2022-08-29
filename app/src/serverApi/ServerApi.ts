@@ -13,7 +13,7 @@ import { IUser } from "./IUser";
 import { AuthStorage } from "./authentication/AuthStorage";
 import { ApiError } from "./ApiError";
 import { ISystemInfo } from "./ISystemInfo";
-import { IPermissions } from "./IPermissions";
+import { IUserPermissions } from "./IUserPermissions";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -86,7 +86,7 @@ export class ServerApi {
 
   static async modifyMetricPermissions(
     metricId: string,
-    permissions: IPermissions
+    permissions: IUserPermissions
   ): Promise<unknown> {
     return await this.executeRequest(
       `/metrics/${metricId}/permissions`,

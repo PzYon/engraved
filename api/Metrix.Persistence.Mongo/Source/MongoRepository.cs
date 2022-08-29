@@ -168,7 +168,7 @@ public class MongoRepository : IRepository
     return CreateUpsertResult(metric.Id, replaceOneResult);
   }
 
-  public async Task ModifyMetricPermissions(string metricId, UserPermissions permissions)
+  public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
