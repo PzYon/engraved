@@ -4,7 +4,7 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Metrics;
 
-public static class MetricUtil
+public static class MetricCommandUtil
 {
   public static async Task<TMetric> LoadAndValidateMetric<TMetric>(
     IRepository repository,

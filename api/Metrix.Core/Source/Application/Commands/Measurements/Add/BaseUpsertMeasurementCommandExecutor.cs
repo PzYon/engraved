@@ -19,7 +19,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
   public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
-    var metric = await MetricUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
+    var metric = await MetricCommandUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
 
     EnsureCompatibleMetricType(metric);
     ValidateMetricAttributes(metric);

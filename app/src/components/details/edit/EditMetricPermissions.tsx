@@ -1,6 +1,6 @@
 import { IMetric } from "../../../serverApi/IMetric";
 import React, { useState } from "react";
-import { Button, TextField, Typography } from "@mui/material";
+import { Avatar, Button, TextField, Typography } from "@mui/material";
 import { PermissionKindSelector } from "./PermissionKindSelector";
 import { PermissionKind } from "../../../serverApi/PermissionKind";
 import { ServerApi } from "../../../serverApi/ServerApi";
@@ -8,6 +8,7 @@ import { useAppContext } from "../../../AppContext";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { DeleteOutlined } from "@mui/icons-material";
 import { IUpdatePermissions } from "../../../serverApi/IUpdatePermissions";
+import { IPermissionDefinition } from "../../../serverApi/IPermissionDefinition";
 
 export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
   metric,
@@ -24,16 +25,9 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
       <Typography>Permissions</Typography>
       {Object.keys(metric.permissions).map((k) => (
         <Typography key={k}>
-          <span>
-            {k}: {metric.permissions[k].kind}
-          </span>
-          <IconButtonWrapper
-            action={{
-              key: "remove",
-              label: "Remove",
-              icon: <DeleteOutlined fontSize="small" />,
-              onClick: () => setPermissions(k, PermissionKind.None),
-            }}
+          <UserPermission
+            permissionDefinition={metric.permissions[k]}
+            setPermissions={setPermissions}
           />
         </Typography>
       ))}
@@ -96,24 +90,34 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
   }
 };
 
-/*
 export const UserPermission: React.FC<{
   permissionDefinition: IPermissionDefinition;
-}> = ({ permissionDefinition }) => {
+  setPermissions: (userName: string, permissionKind: PermissionKind) => void;
+}> = ({ permissionDefinition, setPermissions }) => {
+  if (!permissionDefinition.user) {
+    return <div>no user, why?</div>;
+  }
+
   return (
-    <Typography key={k}>
-      <span>
-        permissionDefinition.: {metric.permissions[k].kind}
-      </span>
+    <Typography>
+      <Avatar
+        alt={
+          permissionDefinition.user.displayName ||
+          permissionDefinition.user.name
+        }
+        src={permissionDefinition.user.imageUrl}
+      />
+
+      {permissionDefinition.kind}
       <IconButtonWrapper
         action={{
           key: "remove",
           label: "Remove",
           icon: <DeleteOutlined fontSize="small" />,
-          onClick: () => setPermissions(k, PermissionKind.None),
+          onClick: () =>
+            setPermissions(permissionDefinition.user.name, PermissionKind.None),
         }}
       />
     </Typography>
   );
 };
-*/

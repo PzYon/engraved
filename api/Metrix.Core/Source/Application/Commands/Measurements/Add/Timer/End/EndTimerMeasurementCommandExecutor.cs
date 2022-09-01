@@ -16,7 +16,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
 
   public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
-    var metric = await MetricUtil.LoadAndValidateMetric<TimerMetric>(repository, _command, _command.MetricId);
+    var metric = await MetricCommandUtil.LoadAndValidateMetric<TimerMetric>(repository, _command, _command.MetricId);
 
     if (metric.Type != MetricType.Timer)
     {
