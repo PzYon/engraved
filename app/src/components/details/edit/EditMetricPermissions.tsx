@@ -1,14 +1,12 @@
 import { IMetric } from "../../../serverApi/IMetric";
 import React, { useState } from "react";
-import { Avatar, Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import { PermissionKindSelector } from "./PermissionKindSelector";
 import { PermissionKind } from "../../../serverApi/PermissionKind";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
-import { DeleteOutlined } from "@mui/icons-material";
 import { IUpdatePermissions } from "../../../serverApi/IUpdatePermissions";
-import { IPermissionDefinition } from "../../../serverApi/IPermissionDefinition";
+import { UserPermission } from "./UserPermission";
 
 export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
   metric,
@@ -17,12 +15,10 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
 
   const [userName, setUserName] = useState("");
   const [permissionKind, setPermissionKind] = useState(PermissionKind.Read);
-
   const [newPermissions, setNewPermissions] = useState<IUpdatePermissions>({});
 
   return (
     <div>
-      <Typography>Permissions</Typography>
       {Object.keys(metric.permissions).map((k) => (
         <Typography key={k}>
           <UserPermission
@@ -33,9 +29,14 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
       ))}
       <Typography color={"gray"}>
         {Object.keys(newPermissions).map((k) => (
-          <div key={k}>
-            {k}: {newPermissions[k]}
-          </div>
+          <UserPermission
+            key={k}
+            permissionDefinition={{
+              kind: newPermissions[k],
+              user: { name: k },
+            }}
+            setPermissions={() => alert("Not yet implemented")}
+          />
         ))}
       </Typography>
       <TextField
@@ -88,36 +89,4 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
     tempPermissions[userName] = permissionKind;
     setNewPermissions(tempPermissions);
   }
-};
-
-export const UserPermission: React.FC<{
-  permissionDefinition: IPermissionDefinition;
-  setPermissions: (userName: string, permissionKind: PermissionKind) => void;
-}> = ({ permissionDefinition, setPermissions }) => {
-  if (!permissionDefinition.user) {
-    return <div>no user, why?</div>;
-  }
-
-  return (
-    <Typography>
-      <Avatar
-        alt={
-          permissionDefinition.user.displayName ||
-          permissionDefinition.user.name
-        }
-        src={permissionDefinition.user.imageUrl}
-      />
-
-      {permissionDefinition.kind}
-      <IconButtonWrapper
-        action={{
-          key: "remove",
-          label: "Remove",
-          icon: <DeleteOutlined fontSize="small" />,
-          onClick: () =>
-            setPermissions(permissionDefinition.user.name, PermissionKind.None),
-        }}
-      />
-    </Typography>
-  );
 };

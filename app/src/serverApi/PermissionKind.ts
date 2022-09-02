@@ -1,5 +1,5 @@
 export enum PermissionKind {
-  None = 0,
-  Read = 1,
-  Write = 2,
+  None = "None",
+  Read = "Read",
+  Write = "Write",
 }

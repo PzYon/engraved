@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Avatar, Box, styled, Typography } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 import { HeaderActions } from "./HeaderActions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
+import { User } from "../common/User";
 
 export const AppHeader: React.FC = () => {
   const { pageTitle, titleActions, user } = useAppContext();
@@ -23,11 +24,7 @@ export const AppHeader: React.FC = () => {
             </Typography>
           </Link>
           <AppInfoLauncher />
-          <Avatar
-            alt={user.displayName}
-            src={user.imageUrl}
-            imgProps={{ referrerPolicy: "no-referrer" }}
-          />
+          <User user={user} />
         </ContentWrapper>
       </Box>
       <ContentWrapper>

@@ -13,7 +13,7 @@ export const EditMetricPermissionsLauncher: React.FC<{ metric: IMetric }> = ({
 
   useEffect(() => {
     renderDialog({
-      title: "Edit Measurement",
+      title: "Edit Metric Permissions",
       render: () => <EditMetricPermissions metric={metric} />,
       onClose: () => {
         navigate(`/metrics/${metric.id}`);
