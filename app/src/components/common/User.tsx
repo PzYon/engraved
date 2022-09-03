@@ -2,14 +2,15 @@ import React from "react";
 import { IUser } from "../../serverApi/IUser";
 import { Avatar, styled, Typography } from "@mui/material";
 
-export const User: React.FC<{ user: IUser; showUserName?: boolean }> = ({
-  user,
-  showUserName,
-}) => {
+export const User: React.FC<{
+  user: IUser;
+  showUserName?: boolean;
+  style?: React.CSSProperties;
+}> = ({ user, showUserName, style }) => {
   const userName = user.displayName || user.name;
 
   return (
-    <Host>
+    <Host style={style}>
       <Avatar title={userName} src={user.imageUrl} />
       {showUserName ? (
         <Typography sx={{ padding: "10px;" }}>{userName}</Typography>

@@ -1,6 +1,5 @@
 import React from "react";
 import { IPermissionDefinition } from "../../../serverApi/IPermissionDefinition";
-import { PermissionKind } from "../../../serverApi/PermissionKind";
 import { Chip, Typography } from "@mui/material";
 import { User } from "../../common/User";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
@@ -8,15 +7,19 @@ import { DeleteOutlined } from "@mui/icons-material";
 
 export const UserPermission: React.FC<{
   permissionDefinition: IPermissionDefinition;
-  setPermissions: (userName: string, permissionKind: PermissionKind) => void;
-}> = ({ permissionDefinition, setPermissions }) => {
+  removePermissions: (userName: string) => void;
+}> = ({ permissionDefinition, removePermissions }) => {
   if (!permissionDefinition.user) {
     return <div>no user, why?</div>;
   }
 
   return (
     <Typography sx={{ display: "flex", alignItems: "center" }}>
-      <User user={permissionDefinition.user} showUserName={true} />
+      <User
+        user={permissionDefinition.user}
+        showUserName={true}
+        style={{ flexGrow: 1 }}
+      />
       <Chip
         label={permissionDefinition.kind?.toString()}
         title={permissionDefinition.kind?.toString()}
@@ -26,8 +29,7 @@ export const UserPermission: React.FC<{
           key: "remove",
           label: "Remove",
           icon: <DeleteOutlined fontSize="small" />,
-          onClick: () =>
-            setPermissions(permissionDefinition.user.name, PermissionKind.None),
+          onClick: () => removePermissions(permissionDefinition.user.name),
         }}
       />
     </Typography>
