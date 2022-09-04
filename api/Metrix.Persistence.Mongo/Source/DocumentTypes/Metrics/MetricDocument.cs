@@ -27,5 +27,5 @@ public abstract class MetricDocument : IUserScopedDocument, IHasPerissionsDocume
 
   public DateTime? LastMeasurementDate { get; set; }
 
-  public Permissions Permissions { get; set; } = new();
+  public UserPermissions Permissions { get; set; } = new();
 }

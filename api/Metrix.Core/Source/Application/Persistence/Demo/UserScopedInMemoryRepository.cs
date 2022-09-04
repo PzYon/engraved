@@ -5,16 +5,28 @@ using Metrix.Core.Domain.User;
 
 namespace Metrix.Core.Application.Persistence.Demo;
 
+// we need test users!
+/*
+new User
+    {
+      Id = "markus.doggweiler@gmail.com",
+      Name = "markus.doggweiler@gmail.com",
+      DisplayName = "Mar Dog",
+      ImageUrl = "https://lh3.googleusercontent.com/a-/AOh14Gg94v3JIJeHjaTjU0_QTccEhr4-H8o358PN7odm2g=s96-c"
+    }
+ */
+
 public class UserScopedInMemoryRepository : IUserScopedRepository
 {
   private readonly IRepository _repository;
+  private readonly ICurrentUserService _currentUserService;
 
-  public Lazy<IUser> CurrentUser { get; }
+  public Lazy<IUser> CurrentUser => new(LoadUser);
 
-  public UserScopedInMemoryRepository(IRepository repository, IUser currentUser)
+  public UserScopedInMemoryRepository(IRepository repository, ICurrentUserService currentUserService)
   {
     _repository = repository;
-    CurrentUser = new Lazy<IUser>(currentUser);
+    _currentUserService = currentUserService;
   }
 
   public Task<IUser?> GetUser(string name)
@@ -27,6 +39,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return _repository.UpsertUser(user);
   }
 
+  public Task<IUser[]> GetUsers(string[] userIds)
+  {
+    return _repository.GetAllUsers();
+  }
+
   public async Task<IUser[]> GetAllUsers()
   {
     return (await _repository.GetAllUsers())
@@ -36,7 +53,8 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    return (await _repository.GetAllMetrics())
+    IMetric[] allMetrics = (await _repository.GetAllMetrics());
+    return allMetrics
       .Where(m => m.UserId == CurrentUser.Value.Id)
       .ToArray();
   }
@@ -60,7 +78,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return _repository.UpsertMetric(metric);
   }
 
-  public async Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -97,5 +115,27 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return measurement != null && measurement.UserId == CurrentUser.Value.Id
       ? measurement
       : null;
+  }
+
+  private IUser LoadUser()
+  {
+    string? name = _currentUserService.GetUserName();
+    EnsureUserNameIsSet(name);
+
+    IUser? result = _repository.GetUser(name!).Result;
+    if (result == null)
+    {
+      throw new UnallowedOperationException($"Current user '{name}' does not exist.");
+    }
+
+    return result;
+  }
+
+  private static void EnsureUserNameIsSet(string? name)
+  {
+    if (string.IsNullOrEmpty(name))
+    {
+      throw new UnallowedOperationException($"Current user is not available.");
+    }
   }
 }

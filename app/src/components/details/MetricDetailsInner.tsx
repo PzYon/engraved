@@ -4,10 +4,7 @@ import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
 import styled from "styled-components";
 import { useMetricDetailsContext } from "./MetricDetailsContext";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { translations } from "../../i18n/translations";
 import { useAppContext } from "../../AppContext";
-import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
-import { renderAddMeasurementDialog } from "./add/renderAddMeasurementDialog";
 import { Typography } from "@mui/material";
 import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 import { Visualization } from "./chart/Visualization";
@@ -18,10 +15,10 @@ import { DetailsSection } from "../layout/DetailsSection";
 import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { SelectedAttributeValues } from "./SelectedAttributeValues";
 import { MetricNotes } from "./edit/MetricNotes";
+import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
+import { getMetricHeaderActions } from "../overview/getMetricHeaderActions";
 
-export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
-  metricId,
-}) => {
+export const MetricDetailsInner: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
     useMetricDetailsContext();
 
@@ -31,24 +28,13 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
 
   useEffect(() => {
     setPageTitle(<PageTitle metric={metric} />);
-    setTitleActions([
-      {
-        key: "edit",
-        label: translations.edit,
-        href: `/metrics/${metricId}/edit`,
-        icon: <ModeEditOutlineOutlined />,
-      },
-      {
-        key: "add",
-        label: translations.add,
-        onClick: () =>
-          renderAddMeasurementDialog(metric, renderDialog, () => {
-            reloadMeasurements();
-            reloadMetric();
-          }),
-        icon: <AddOutlined />,
-      },
-    ]);
+
+    setTitleActions(
+      getMetricHeaderActions(metric, renderDialog, () => {
+        reloadMeasurements();
+        reloadMetric();
+      })
+    );
 
     return () => {
       setPageTitle(null);
@@ -87,6 +73,10 @@ export const MetricDetailsInner: React.FC<{ metricId: string }> = ({
           element={
             <EditMetricLauncher metric={metric} reloadMetric={reloadMetric} />
           }
+        />
+        <Route
+          path="/permissions"
+          element={<EditMetricPermissionsLauncher metric={metric} />}
         />
         <Route
           path="/measurements/:measurementId/edit"

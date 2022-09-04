@@ -59,6 +59,25 @@ public class MongoRepository : IRepository
 
   public virtual async Task<UpsertResult> UpsertUser(IUser user)
   {
+    return await UpsertUserInternal(user);
+  }
+
+  public async Task<IUser[]> GetUsers(params string[] userIds)
+  {
+    if (userIds.Length == 0)
+    {
+      return Array.Empty<IUser>();
+    }
+    
+    List<UserDocument> users = await _users
+      .Find(Builders<UserDocument>.Filter.Or(userIds.Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
+      .ToListAsync();
+
+    return users.Select(UserDocumentMapper.FromDocument).ToArray();
+  }
+
+  private async Task<UpsertResult> UpsertUserInternal(IUser user)
+  {
     UserDocument document = UserDocumentMapper.ToDocument(user);
 
     IUser? existingUser = await GetUser(user.Name);
@@ -149,7 +168,7 @@ public class MongoRepository : IRepository
     return CreateUpsertResult(metric.Id, replaceOneResult);
   }
 
-  public async Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -158,7 +177,8 @@ public class MongoRepository : IRepository
       return;
     }
 
-    PermissionsUtil.EnsurePermissions(metric, permissions);
+    var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUserInternal);
+    await permissionsEnsurer.EnsurePermissions(metric, permissions);
 
     await UpsertMetric(metric);
   }

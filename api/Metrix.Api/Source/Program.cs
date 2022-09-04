@@ -81,8 +81,8 @@ builder.Services.AddTransient(
   {
     var userService = provider.GetService<ICurrentUserService>()!;
     return UseInMemoryRepo()
-      ? GetInMemoryUserScopedRepo(provider.GetService<IRepository>()!)
-      : GetInMongoDbUserScopedRepo(builder, userService);
+      ? GetInMemoryUserScopedRepo(provider.GetService<IRepository>()!, userService)
+      : GetMongoDbUserScopedRepo(builder, userService);
   }
 );
 builder.Services.AddTransient<Dispatcher>();
@@ -146,10 +146,11 @@ app.Run();
 
 bool UseInMemoryRepo()
 {
-  return builder.Environment.IsDevelopment();
+  // return builder.Environment.IsDevelopment();
+  return false;
 }
 
-IUserScopedRepository GetInMongoDbUserScopedRepo(
+IUserScopedRepository GetMongoDbUserScopedRepo(
   WebApplicationBuilder webApplicationBuilder,
   ICurrentUserService userService
   )
@@ -158,18 +159,9 @@ IUserScopedRepository GetInMongoDbUserScopedRepo(
   return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);
 }
 
-IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository)
+IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository, ICurrentUserService userService)
 {
-  var repo = new UserScopedInMemoryRepository(
-    repository,
-    new User
-    {
-      Id = "markus.doggweiler@gmail.com",
-      Name = "markus.doggweiler@gmail.com",
-      DisplayName = "Mar Dog",
-      ImageUrl = "https://lh3.googleusercontent.com/a-/AOh14Gg94v3JIJeHjaTjU0_QTccEhr4-H8o358PN7odm2g=s96-c"
-    }
-  );
+  var repo = new UserScopedInMemoryRepository(repository, userService);
 
   if (!isSeeded)
   {

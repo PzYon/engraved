@@ -8,7 +8,7 @@ export const MetricDetails: React.FC = () => {
 
   return (
     <MetricDetailsContextProvider metricId={metricId}>
-      <MetricDetailsInner metricId={metricId} />
+      <MetricDetailsInner />
     </MetricDetailsContextProvider>
   );
 };

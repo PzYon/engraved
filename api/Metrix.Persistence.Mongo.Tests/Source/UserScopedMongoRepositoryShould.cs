@@ -43,14 +43,26 @@ public class UserScopedMongoRepositoryShould
   }
 
   [Test]
-  public async Task GetUser_DoesNotReturn_OtherUser()
+  public async Task GetUser_DoesReturn_OtherUser()
   {
     await _repository.UpsertUser(new User { Name = "franz" });
     await _repository.UpsertUser(new User { Name = "max" });
 
     IUser? user = await _userScopedRepository.GetUser(OtherUserName);
 
-    Assert.IsNull(user);
+    Assert.IsNotNull(user);
+  }
+
+  [Test]
+  public async Task GetUsers_Returns_RequestedUsers()
+  {
+    UpsertResult result1 = await _repository.UpsertUser(new User { Name = "franz" });
+    await _repository.UpsertUser(new User { Name = "max" });
+    UpsertResult result3 = await _repository.UpsertUser(new User { Name = "gusti" });
+
+    IUser[] users = await _userScopedRepository.GetUsers(result1.EntityId, result3.EntityId);
+
+    Assert.AreEqual(2, users.Length);
   }
 
   [Test]

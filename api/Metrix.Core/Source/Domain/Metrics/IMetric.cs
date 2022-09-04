@@ -2,7 +2,7 @@
 
 namespace Metrix.Core.Domain.Metrics;
 
-public interface IMetric : IUserScoped, IHasPermissions
+public interface IMetric : IUserScoped, IPermissionHolder
 {
   string? Id { get; set; }
 

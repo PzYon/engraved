@@ -3,7 +3,7 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Queries.Metrics.Get;
 
-public class GetMetricQueryExecutor : IQueryExecutor<IMetric>
+public class GetMetricQueryExecutor : IQueryExecutor<IMetric?>
 {
   private readonly GetMetricQuery _query;
 
@@ -12,15 +12,20 @@ public class GetMetricQueryExecutor : IQueryExecutor<IMetric>
     _query = query;
   }
 
-  public async Task<IMetric> Execute(IRepository repository)
+  public async Task<IMetric?> Execute(IRepository repository)
   {
     if (string.IsNullOrEmpty(_query.MetricKey))
     {
       throw new InvalidQueryException<IMetric>(_query, $"{nameof(_query.MetricKey)} must be specified.");
     }
 
-    IMetric metric = (await repository.GetMetric(_query.MetricKey))!;
+    IMetric? metric = await repository.GetMetric(_query.MetricKey);
+    if (metric == null)
+    {
+      return null;
+    }
 
-    return metric;
+    IMetric[] metricWithEnsuredPermissions = await MetricQueryUtil.EnsurePermissionUsers(repository, metric);
+    return metricWithEnsuredPermissions.First();
   }
 }

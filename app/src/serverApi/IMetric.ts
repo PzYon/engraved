@@ -1,5 +1,6 @@
 import { MetricType } from "./MetricType";
 import { IMetricAttributes } from "./IMetricAttributes";
+import { IUserPermissions } from "./IUserPermissions";
 
 export interface IMetric {
   id?: string;
@@ -9,4 +10,5 @@ export interface IMetric {
   notes?: string;
   type: MetricType;
   lastMeasurementDate?: string;
+  permissions?: IUserPermissions;
 }

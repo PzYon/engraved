@@ -34,6 +34,12 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(new UpsertResult { EntityId = user.Id });
   }
 
+  public async Task<IUser[]> GetUsers(string[] userIds)
+  {
+    IUser[] allUsers = await GetAllUsers();
+    return allUsers.Where(u => userIds.Contains(u.Id)).ToArray();
+  }
+
   public Task<IUser[]> GetAllUsers()
   {
     return Task.FromResult(Users.Select(u => u.Copy()).ToArray());
@@ -74,9 +80,18 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(new UpsertResult { EntityId = metric.Id });
   }
 
-  public Task ModifyMetricPermissions(string metricId, Permissions permissions)
+  public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
   {
-    throw new NotImplementedException("cannot yet give permissions");
+    IMetric? metric = await GetMetric(metricId);
+    if (metric == null)
+    {
+      return;
+    }
+
+    var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUser);
+    await permissionsEnsurer.EnsurePermissions(metric, permissions);
+    
+    await UpsertMetric(metric);
   }
 
   public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)

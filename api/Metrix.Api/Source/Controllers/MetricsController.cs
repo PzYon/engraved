@@ -35,7 +35,9 @@ public class MetricsController : ControllerBase
   [HttpGet]
   public async Task<IMetric> Get(string metricId)
   {
-    return await _dispatcher.Query(new GetMetricQuery { MetricKey = metricId });
+    var command = new GetMetricQuery { MetricKey = metricId };
+    
+    return await _dispatcher.Query(command);
   }
 
   [HttpPost]
@@ -52,7 +54,7 @@ public class MetricsController : ControllerBase
 
   [Route("{metricId}/permissions")]
   [HttpPut]
-  public async Task<CommandResult> Permissions([FromBody] Permissions permissions, string metricId)
+  public async Task<CommandResult> Permissions([FromBody] Dictionary<string, PermissionKind> permissions, string metricId)
   {
     var command = new ModifyMetricPermissionsCommand
     {

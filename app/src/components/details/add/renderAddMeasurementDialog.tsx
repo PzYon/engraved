@@ -13,9 +13,7 @@ export const renderAddMeasurementDialog = (
       <UpsertMeasurement
         metric={metric}
         onSaved={() => {
-          if (onAdded) {
-            onAdded();
-          }
+          onAdded?.();
           renderDialog(null);
         }}
       />

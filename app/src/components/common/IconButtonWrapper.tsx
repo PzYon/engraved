@@ -14,7 +14,8 @@ export interface IIconButtonAction {
 
 export const IconButtonWrapper: React.FC<{
   action: IIconButtonAction;
-}> = ({ action }) => {
+  disabled?: boolean;
+}> = ({ action, disabled }) => {
   const navigate = useNavigate();
 
   return (
@@ -24,6 +25,7 @@ export const IconButtonWrapper: React.FC<{
       aria-label={action.label}
       sx={{ color: "primary.main", ...(action.sx || {}) }}
       onClick={(e) => executeActionClick(e, action, navigate)}
+      disabled={disabled}
     >
       {action.icon}
     </IconButton>
