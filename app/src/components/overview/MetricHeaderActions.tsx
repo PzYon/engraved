@@ -2,9 +2,8 @@ import React, { useMemo } from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { HeaderActions } from "../layout/HeaderActions";
-import { AddOutlined, EditOutlined, ShareOutlined } from "@mui/icons-material";
-import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementDialog";
 import { IIconButtonAction } from "../common/IconButtonWrapper";
+import { getMetricHeaderActions } from "./getMetricHeaderActions";
 
 export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
   metric,
@@ -12,26 +11,7 @@ export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
   const { renderDialog } = useDialogContext();
 
   const actions = useMemo<IIconButtonAction[]>(
-    () => [
-      {
-        key: "add_measurement",
-        label: "Add Measurement",
-        icon: <AddOutlined />,
-        onClick: () => renderAddMeasurementDialog(metric, renderDialog),
-      },
-      {
-        key: "edit",
-        label: "Edit",
-        icon: <EditOutlined />,
-        href: `/metrics/${metric.id}/edit`,
-      },
-      {
-        key: "permissions",
-        label: "Permissions",
-        icon: <ShareOutlined />,
-        href: `/metrics/${metric.id}/permissions`,
-      },
-    ],
+    () => getMetricHeaderActions(metric, renderDialog),
     [metric]
   );
 
