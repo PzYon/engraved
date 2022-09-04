@@ -19,12 +19,13 @@ public class GetMetricQueryExecutor : IQueryExecutor<IMetric?>
       throw new InvalidQueryException<IMetric>(_query, $"{nameof(_query.MetricKey)} must be specified.");
     }
 
-    IMetric? metric = (await repository.GetMetric(_query.MetricKey));
+    IMetric? metric = await repository.GetMetric(_query.MetricKey);
     if (metric == null)
     {
       return null;
     }
 
-    return (await MetricQueryUtil.EnsurePermissionUsers(repository, metric)).First();
+    IMetric[] metricWithEnsuredPermissions = await MetricQueryUtil.EnsurePermissionUsers(repository, metric);
+    return metricWithEnsuredPermissions.First();
   }
 }

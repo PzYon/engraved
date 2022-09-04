@@ -43,6 +43,7 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
           />
         ))}
       </Typography>
+
       <AddNewContainer>
         <TextField
           label={"Mail Address"}

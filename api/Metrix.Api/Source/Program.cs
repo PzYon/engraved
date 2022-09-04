@@ -112,7 +112,7 @@ builder.Services.AddAuthentication(
       {
         OnTokenValidated = context =>
         {
-          var jwtToken = (JwtSecurityToken) context.SecurityToken;
+          var jwtToken = (JwtSecurityToken)context.SecurityToken;
           Claim nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
 
           context.HttpContext.RequestServices
@@ -146,8 +146,8 @@ app.Run();
 
 bool UseInMemoryRepo()
 {
-  return false;
   // return builder.Environment.IsDevelopment();
+  return false;
 }
 
 IUserScopedRepository GetMongoDbUserScopedRepo(
