@@ -55,7 +55,12 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(Metrics.FirstOrDefault(m => m.Id == metricId).Copy());
   }
 
-  public Task<IMeasurement[]> GetAllMeasurements(string metricId)
+  public Task<IMeasurement[]> GetAllMeasurements(
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    IDictionary<string, string[]> attributeValues
+    )
   {
     return Task.FromResult(
       Measurements.Where(m => m.MetricId == metricId)
@@ -90,7 +95,7 @@ public class InMemoryRepository : IRepository
 
     var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUser);
     await permissionsEnsurer.EnsurePermissions(metric, permissions);
-    
+
     await UpsertMetric(metric);
   }
 

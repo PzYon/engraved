@@ -117,7 +117,7 @@ public class UserScopedMongoRepositoryShould
     IMeasurement measurement = new TimerMeasurement { MetricId = metricId };
 
     await _userScopedRepository.UpsertMeasurement(measurement);
-    IMeasurement[] measurements = await _repository.GetAllMeasurements(metricId);
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(metricId, null, null, null);
 
     Assert.True(measurements.All(m => m.UserId == _currentUserId));
   }
@@ -217,10 +217,14 @@ public class UserScopedMongoRepositoryShould
       );
     }
 
-    IMeasurement[] otherUserMeasurements = await _userScopedRepository.GetAllMeasurements(otherUserMetricId);
+    IMeasurement[] otherUserMeasurements =
+      await _userScopedRepository.GetAllMeasurements(otherUserMetricId, null, null, null);
+
     Assert.IsEmpty(otherUserMeasurements);
 
-    IMeasurement[] currentUserMeasurements = await _userScopedRepository.GetAllMeasurements(currentUserMetricId);
+    IMeasurement[] currentUserMeasurements =
+      await _userScopedRepository.GetAllMeasurements(currentUserMetricId, null, null, null);
+
     Assert.AreEqual(10, currentUserMeasurements.Length);
   }
 

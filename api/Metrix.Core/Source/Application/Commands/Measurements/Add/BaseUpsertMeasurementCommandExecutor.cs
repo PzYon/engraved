@@ -7,7 +7,7 @@ namespace Metrix.Core.Application.Commands.Measurements.Add;
 
 public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
   where TCommand : BaseUpsertMeasurementCommand
-  where TMeasurement : IMeasurement, new()
+  where TMeasurement : class, IMeasurement, new()
   where TMetric : class, IMetric
 {
   protected BaseUpsertMeasurementCommandExecutor(TCommand command)
@@ -108,8 +108,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
       return new TMeasurement();
     }
 
-    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(Command.MetricId);
-    return allMeasurements.OfType<TMeasurement>().First(m => m.Id == Command.Id);
+    return (TMeasurement)(await repository.GetMeasurement(Command.Id))!;
   }
 
   protected InvalidCommandException CreateInvalidCommandException(string message)

@@ -106,7 +106,8 @@ public class MongoRepositoryShould
   [Test]
   public async Task GetAllMeasurements_Empty()
   {
-    IMeasurement[] allMetrics = await _repository.GetAllMeasurements(MongoUtil.GenerateNewIdAsString());
+    IMeasurement[] allMetrics =
+      await _repository.GetAllMeasurements(MongoUtil.GenerateNewIdAsString(), null, null, null);
 
     Assert.AreEqual(allMetrics.Length, 0);
   }
@@ -121,7 +122,7 @@ public class MongoRepositoryShould
     await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = "wrongId", Value = 456 });
     await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = result.EntityId, Value = 789 });
 
-    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId);
+    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId, null, null, null);
 
     Assert.AreEqual(2, allMeasurements.Length);
   }
