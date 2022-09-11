@@ -58,7 +58,7 @@ public class MongoRepository_GetAllMeasurements_Should
 
     Assert.AreEqual(0, measurements.Length);
   }
-  
+
   [Test]
   public async Task Consider_FromAndToDate_Positive()
   {

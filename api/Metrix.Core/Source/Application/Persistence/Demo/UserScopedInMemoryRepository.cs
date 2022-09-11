@@ -53,7 +53,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    IMetric[] allMetrics = (await _repository.GetAllMetrics());
+    IMetric[] allMetrics = await _repository.GetAllMetrics();
     return allMetrics
       .Where(m => m.UserId == CurrentUser.Value.Id)
       .ToArray();

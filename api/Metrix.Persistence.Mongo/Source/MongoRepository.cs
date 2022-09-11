@@ -1,6 +1,5 @@
 ﻿using System.Security.Authentication;
 using Metrix.Core.Application.Persistence;
-using Metrix.Core.Application.Queries.Metrics.GetAll;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.Permissions;
@@ -165,6 +164,11 @@ public class MongoRepository : IRepository
     if (toDate.HasValue)
     {
       filters.Add(Builders<MeasurementDocument>.Filter.Lte(nameof(MeasurementDocument.DateTime), toDate.Value));
+    }
+
+    if (attributeValues is { Count: > 0 })
+    {
+      throw new Exception($"{nameof(attributeValues)} are not yet supported.");
     }
 
     List<MeasurementDocument> measurements = await _measurements
