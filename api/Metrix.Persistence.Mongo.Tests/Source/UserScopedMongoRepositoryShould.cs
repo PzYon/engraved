@@ -99,12 +99,21 @@ public class UserScopedMongoRepositoryShould
   }
 
   [Test]
-  public void UpsertMetric_ThrowsWhen_EntityFromOtherUser()
+  public async Task UpsertMetric_ThrowsWhen_EntityFromOtherUser()
   {
-    IMetric metric = new TimerMetric { UserId = _otherUserId };
+    UpsertResult result = await _repository.UpsertMetric(new TimerMetric { UserId = _otherUserId });
 
     Assert.ThrowsAsync<UnallowedOperationException>(
-      async () => { await _userScopedRepository.UpsertMetric(metric); }
+      async () =>
+      {
+        await _userScopedRepository.UpsertMetric(
+          new TimerMetric
+          {
+            Id = result.EntityId,
+            Notes = "Random"
+          }
+        );
+      }
     );
   }
 
@@ -117,7 +126,7 @@ public class UserScopedMongoRepositoryShould
     IMeasurement measurement = new TimerMeasurement { MetricId = metricId };
 
     await _userScopedRepository.UpsertMeasurement(measurement);
-    IMeasurement[] measurements = await _repository.GetAllMeasurements(metricId);
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(metricId, null, null, null);
 
     Assert.True(measurements.All(m => m.UserId == _currentUserId));
   }
@@ -217,10 +226,14 @@ public class UserScopedMongoRepositoryShould
       );
     }
 
-    IMeasurement[] otherUserMeasurements = await _userScopedRepository.GetAllMeasurements(otherUserMetricId);
+    IMeasurement[] otherUserMeasurements =
+      await _userScopedRepository.GetAllMeasurements(otherUserMetricId, null, null, null);
+
     Assert.IsEmpty(otherUserMeasurements);
 
-    IMeasurement[] currentUserMeasurements = await _userScopedRepository.GetAllMeasurements(currentUserMetricId);
+    IMeasurement[] currentUserMeasurements =
+      await _userScopedRepository.GetAllMeasurements(currentUserMetricId, null, null, null);
+
     Assert.AreEqual(10, currentUserMeasurements.Length);
   }
 

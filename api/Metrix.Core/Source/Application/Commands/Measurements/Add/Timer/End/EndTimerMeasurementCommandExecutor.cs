@@ -29,7 +29,7 @@ public class EndTimerMeasurementCommandExecutor : ICommandExecutor
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IDb. for the time being we will skip that.
-    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id!);
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id!, null, null, null);
 
     TimerMeasurement? measurement = allMeasurements
       .OfType<TimerMeasurement>()

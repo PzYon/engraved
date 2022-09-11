@@ -68,9 +68,9 @@ public class MongoRepository : IRepository
     {
       return Array.Empty<IUser>();
     }
-    
+
     List<UserDocument> users = await _users
-      .Find(Builders<UserDocument>.Filter.Or(userIds.Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
+      .Find(Builders<UserDocument>.Filter.Or(userIds.Distinct().Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
       .ToListAsync();
 
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
@@ -138,7 +138,12 @@ public class MongoRepository : IRepository
     );
   }
 
-  public async Task<IMeasurement[]> GetAllMeasurements(string metricId)
+  public async Task<IMeasurement[]> GetAllMeasurements(
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    IDictionary<string, string[]> attributeValues
+    )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -146,8 +151,28 @@ public class MongoRepository : IRepository
       return Array.Empty<IMeasurement>();
     }
 
+    var filters = new List<FilterDefinition<MeasurementDocument>>
+    {
+      Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId))
+    };
+
+    if (fromDate.HasValue)
+    {
+      filters.Add(Builders<MeasurementDocument>.Filter.Gte(nameof(MeasurementDocument.DateTime), fromDate.Value));
+    }
+
+    if (toDate.HasValue)
+    {
+      filters.Add(Builders<MeasurementDocument>.Filter.Lte(nameof(MeasurementDocument.DateTime), toDate.Value));
+    }
+
+    if (attributeValues is { Count: > 0 })
+    {
+      throw new Exception($"{nameof(attributeValues)} are not yet supported.");
+    }
+
     List<MeasurementDocument> measurements = await _measurements
-      .Find(Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId)))
+      .Find(Builders<MeasurementDocument>.Filter.And(filters))
       .ToListAsync();
 
     return measurements

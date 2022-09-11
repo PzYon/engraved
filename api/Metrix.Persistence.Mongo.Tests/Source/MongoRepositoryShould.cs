@@ -5,7 +5,6 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
-using MongoDB.Bson;
 using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
@@ -104,14 +103,6 @@ public class MongoRepositoryShould
   }
 
   [Test]
-  public async Task GetAllMeasurements_Empty()
-  {
-    IMeasurement[] allMetrics = await _repository.GetAllMeasurements(MongoUtil.GenerateNewIdAsString());
-
-    Assert.AreEqual(allMetrics.Length, 0);
-  }
-
-  [Test]
   public async Task CreateMeasurements_Then_GetAll()
   {
     var timerMetric = new GaugeMetric { Name = "N@me" };
@@ -121,7 +112,7 @@ public class MongoRepositoryShould
     await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = "wrongId", Value = 456 });
     await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = result.EntityId, Value = 789 });
 
-    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId);
+    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId, null, null, null);
 
     Assert.AreEqual(2, allMeasurements.Length);
   }

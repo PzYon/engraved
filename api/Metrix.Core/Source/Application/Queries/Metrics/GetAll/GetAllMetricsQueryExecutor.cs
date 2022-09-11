@@ -19,9 +19,7 @@ public class GetAllMetricsQueryExecutor : IQueryExecutor<IMetric[]>
     IMetric[] allMetrics = await repository.GetAllMetrics();
 
     allMetrics = await MetricQueryUtil.EnsurePermissionUsers(repository, allMetrics);
-    
+
     return allMetrics.OrderByDescending(m => m.LastMeasurementDate).ToArray();
   }
-
- 
 }

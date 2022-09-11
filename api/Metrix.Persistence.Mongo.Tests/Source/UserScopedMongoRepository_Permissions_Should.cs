@@ -127,7 +127,8 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IMeasurement[] allMeasurements = await _userScopedRepository.GetAllMeasurements(otherMetric.EntityId);
+    IMeasurement[] allMeasurements =
+      await _userScopedRepository.GetAllMeasurements(otherMetric.EntityId, null, null, null);
 
     Assert.AreEqual(0, allMeasurements.Length);
   }
@@ -153,7 +154,8 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IMeasurement[] allMeasurements = await _userScopedRepository.GetAllMeasurements(otherMetric.EntityId);
+    IMeasurement[] allMeasurements =
+      await _userScopedRepository.GetAllMeasurements(otherMetric.EntityId, null, null, null);
 
     Assert.AreEqual(1, allMeasurements.Length);
   }
