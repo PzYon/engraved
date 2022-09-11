@@ -25,9 +25,17 @@ public class MeasurementsController : ControllerBase
 
   [HttpGet]
   [Route("{metricId}")]
-  public async Task<object[]> GetAll(string metricId)
+  public async Task<object[]> GetAll(string metricId, DateTime? fromDate, DateTime? toDate)
   {
-    IMeasurement[] measurements = await _dispatcher.Query(new GetAllMeasurementsQuery { MetricId = metricId });
+    var query = new GetAllMeasurementsQuery
+    {
+      MetricId = metricId,
+      FromDate = fromDate,
+      ToDate = toDate
+    };
+
+    IMeasurement[] measurements = await _dispatcher.Query(query);
+
     return measurements.EnsurePolymorphismWhenSerializing();
   }
 
