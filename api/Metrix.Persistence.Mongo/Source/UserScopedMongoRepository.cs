@@ -26,36 +26,22 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
   public override async Task<UpsertResult> UpsertUser(IUser user)
   {
-    ValidateUser(user.Id);
+    EnsureEntityBelongsToUser(user.Id);
     return await base.UpsertUser(user);
   }
 
   public override async Task<UpsertResult> UpsertMetric(IMetric metric)
   {
-    EnsureValidUser(metric);
+    EnsureUserId(metric);
     await EnsureUserHasPermission(metric.Id, PermissionKind.Write);
     return await base.UpsertMetric(metric);
   }
 
   public override async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
   {
-    EnsureValidUser(measurement);
+    EnsureUserId(measurement);
     await EnsureUserHasPermission(measurement.MetricId, PermissionKind.Write);
     return await base.UpsertMeasurement(measurement);
-  }
-
-  private async Task EnsureUserHasPermission(string? metricId, PermissionKind kind)
-  {
-    if (string.IsNullOrEmpty(metricId))
-    {
-      return;
-    }
-
-    IMetric? metric = await GetMetric(metricId, kind);
-    if (metric == null)
-    {
-      throw new UnallowedOperationException("Metric doesn't exist or you do not have permissions.");
-    }
   }
 
   protected override FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
@@ -91,16 +77,6 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), userId);
   }
 
-  private void EnsureValidUser(IUserScoped entity)
-  {
-    if (string.IsNullOrEmpty(entity.UserId))
-    {
-      entity.UserId = CurrentUser.Value.Id;
-    }
-
-    ValidateUser(entity.UserId);
-  }
-
   private IUser LoadUser()
   {
     string? name = _currentUserService.GetUserName();
@@ -115,7 +91,29 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     return result;
   }
 
-  private void ValidateUser(string? entityUserId)
+  private void EnsureUserId(IUserScoped entity)
+  {
+    if (string.IsNullOrEmpty(entity.UserId))
+    {
+      entity.UserId = CurrentUser.Value.Id;
+    }
+  }
+
+  private async Task EnsureUserHasPermission(string? metricId, PermissionKind kind)
+  {
+    if (string.IsNullOrEmpty(metricId))
+    {
+      return;
+    }
+
+    IMetric? metric = await GetMetric(metricId, kind);
+    if (metric == null)
+    {
+      throw new UnallowedOperationException("Metric doesn't exist or you do not have permissions.");
+    }
+  }
+
+  private void EnsureEntityBelongsToUser(string? entityUserId)
   {
     if (entityUserId != CurrentUser.Value.Id)
     {

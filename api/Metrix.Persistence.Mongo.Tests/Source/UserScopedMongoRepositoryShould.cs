@@ -99,12 +99,21 @@ public class UserScopedMongoRepositoryShould
   }
 
   [Test]
-  public void UpsertMetric_ThrowsWhen_EntityFromOtherUser()
+  public async Task UpsertMetric_ThrowsWhen_EntityFromOtherUser()
   {
-    IMetric metric = new TimerMetric { UserId = _otherUserId };
+    UpsertResult result = await _repository.UpsertMetric(new TimerMetric { UserId = _otherUserId });
 
     Assert.ThrowsAsync<UnallowedOperationException>(
-      async () => { await _userScopedRepository.UpsertMetric(metric); }
+      async () =>
+      {
+        await _userScopedRepository.UpsertMetric(
+          new TimerMetric
+          {
+            Id = result.EntityId,
+            Notes = "Random"
+          }
+        );
+      }
     );
   }
 
