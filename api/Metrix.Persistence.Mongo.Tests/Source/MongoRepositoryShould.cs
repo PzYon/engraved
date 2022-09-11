@@ -5,7 +5,6 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
-using MongoDB.Bson;
 using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
@@ -101,15 +100,6 @@ public class MongoRepositoryShould
     MetricAttribute attribute = metric.Attributes["flags"];
     Assert.Contains("fl@g", attribute.Values.Keys);
     Assert.AreEqual("fl@g_value", attribute.Values["fl@g"]);
-  }
-
-  [Test]
-  public async Task GetAllMeasurements_Empty()
-  {
-    IMeasurement[] allMetrics =
-      await _repository.GetAllMeasurements(MongoUtil.GenerateNewIdAsString(), null, null, null);
-
-    Assert.AreEqual(allMetrics.Length, 0);
   }
 
   [Test]
