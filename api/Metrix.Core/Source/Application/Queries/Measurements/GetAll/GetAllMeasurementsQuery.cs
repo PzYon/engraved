@@ -10,7 +10,7 @@ public class GetAllMeasurementsQuery : IQuery<IMeasurement[]>
 
   public DateTime? ToDate { get; set; }
 
-  public IDictionary<string, string[]> Attributes { get; set; } = new Dictionary<string, string[]>();
+  public IDictionary<string, string[]> AttributeValues { get; set; } = new Dictionary<string, string[]>();
 
   IQueryExecutor<IMeasurement[]> IQuery<IMeasurement[]>.CreateExecutor()
   {

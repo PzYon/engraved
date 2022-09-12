@@ -10,7 +10,6 @@ import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
-import { hasValues } from "../../util/MeasurementUtil";
 
 export interface IMetricDetailsContext {
   metric: IMetric;
@@ -47,16 +46,13 @@ export const MetricDetailsContextProvider: React.FC<{
     [key: string]: string[];
   }>({});
 
-  const [allMeasurements, setAllMeasurements] = useState<IMeasurement[]>([]);
-
   const { setAppAlert } = useAppContext();
 
   useEffect(() => {
-    getMeasurements().then((m) => {
-      setAllMeasurements(m);
-      setMeasurements(m);
-    });
+    getMeasurements().then(setMeasurements);
+  }, [metricId, selectedAttributeValues]);
 
+  useEffect(() => {
     reloadMetric();
   }, [metricId]);
 
@@ -94,11 +90,6 @@ export const MetricDetailsContextProvider: React.FC<{
       selectedValues[attributeKey].push(attributeValueKey);
     }
 
-    const newMeasurements = allMeasurements.filter((measurement) =>
-      hasValues(measurement.metricAttributeValues, selectedValues)
-    );
-
-    setMeasurements(newMeasurements);
     setSelectedAttributeValues(selectedValues);
   }
 
@@ -113,7 +104,7 @@ export const MetricDetailsContextProvider: React.FC<{
   }
 
   function getMeasurements(): Promise<IMeasurement[]> {
-    return ServerApi.getMeasurements(metricId)
+    return ServerApi.getMeasurements(metricId, selectedAttributeValues)
       .then((m) => m)
       .catch((e) => {
         handleError("Error loading measurements", e);

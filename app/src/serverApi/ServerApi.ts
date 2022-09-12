@@ -14,6 +14,8 @@ import { AuthStorage } from "./authentication/AuthStorage";
 import { ApiError } from "./ApiError";
 import { ISystemInfo } from "./ISystemInfo";
 import { IUpdatePermissions } from "./IUpdatePermissions";
+import { IMetricAttributeValues } from "./IMetricAttributeValues";
+import { stringifyAttributeValues } from "./stringifyAttributeValues";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -95,8 +97,17 @@ export class ServerApi {
     );
   }
 
-  static async getMeasurements(metricId: string): Promise<IMeasurement[]> {
-    return await this.executeRequest(`/measurements/${metricId}`);
+  static async getMeasurements(
+    metricId: string,
+    attributeValues: IMetricAttributeValues
+  ): Promise<IMeasurement[]> {
+    const attributeValuesString = stringifyAttributeValues(attributeValues);
+
+    const param = attributeValuesString
+      ? `?attributeValues=${attributeValuesString}`
+      : "";
+
+    return await this.executeRequest(`/measurements/${metricId}${param}`);
   }
 
   static async addMeasurement(
