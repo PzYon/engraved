@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Persistence;
@@ -12,7 +13,7 @@ public class MongoRepository_GetAllMeasurements_Should
 {
   private MongoRepository _repository = null!;
   private string _metricId = null!;
-  private string _userId = MongoUtil.GenerateNewIdAsString();
+  private readonly string _userId = MongoUtil.GenerateNewIdAsString();
 
   [SetUp]
   public async Task Setup()
@@ -29,6 +30,18 @@ public class MongoRepository_GetAllMeasurements_Should
     IMeasurement[] measurements = await _repository.GetAllMeasurements(_metricId, null, null, null);
 
     Assert.AreEqual(0, measurements.Length);
+  }
+
+  [Test]
+  public async Task Consider_ToDate()
+  {
+    string measurementId = await AddMeasurement(DateTime.Now.AddDays(-1));
+    await AddMeasurement(DateTime.Now.AddDays(1));
+
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(_metricId, null, DateTime.Now, null);
+
+    Assert.AreEqual(1, measurements.Length);
+    Assert.AreEqual(measurementId, measurements.First().Id);
   }
 
   [Test]
@@ -76,24 +89,91 @@ public class MongoRepository_GetAllMeasurements_Should
   }
 
   [Test]
-  public async Task Consider_ToDate()
+  public async Task Consider_Simple_AttributeValue_Positive()
   {
-    string measurementId = await AddMeasurement(DateTime.Now.AddDays(-1));
-    await AddMeasurement(DateTime.Now.AddDays(1));
+    var attributeValues = new Dictionary<string, string[]> { { "attr", new[] { "xyz" } } };
 
-    IMeasurement[] measurements = await _repository.GetAllMeasurements(_metricId, null, DateTime.Now, null);
+    await AddMeasurement(DateTime.Now, attributeValues);
+
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(
+      _metricId,
+      null,
+      null,
+      attributeValues
+    );
 
     Assert.AreEqual(1, measurements.Length);
-    Assert.AreEqual(measurementId, measurements.First().Id);
   }
 
-  private async Task<string> AddMeasurement(DateTime? date)
+  [Test]
+  public async Task Consider_Simple_AttributeValue_Negative()
+  {
+    var attributeValues = new Dictionary<string, string[]> { { "attr", new[] { "xyz" } } };
+
+    await AddMeasurement(DateTime.Now, attributeValues);
+
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(
+      _metricId,
+      null,
+      null,
+      new Dictionary<string, string[]> { { "attr", new[] { "abc" } } }
+    );
+
+    Assert.AreEqual(0, measurements.Length);
+  }
+
+  [Test]
+  public async Task Consider_Multiple_AttributeValues_OnSource_Positive()
+  {
+    var attributeValues = new Dictionary<string, string[]>
+    {
+      { "color", new[] { "blue" } },
+      { "size", new[] { "XL" } }
+    };
+
+    await AddMeasurement(DateTime.Now, attributeValues);
+
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(
+      _metricId,
+      null,
+      null,
+      new Dictionary<string, string[]> { { "size", new[] { "XL" } } }
+    );
+
+    Assert.AreEqual(1, measurements.Length);
+  }
+
+  [Test]
+  public async Task Consider_Multiple_AttributeValues_InQuery_Negative()
+  {
+    var attributeValues = new Dictionary<string, string[]>
+    {
+      { "size", new[] { "XL" } }
+    };
+
+    await AddMeasurement(DateTime.Now, attributeValues);
+
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(
+      _metricId,
+      null,
+      null,
+      new Dictionary<string, string[]>
+      {
+        { "size", new[] { "XL" } }, { "color", new[] { "blue" } },
+      }
+    );
+
+    Assert.AreEqual(0, measurements.Length);
+  }
+
+  private async Task<string> AddMeasurement(DateTime? date, Dictionary<string, string[]> attributeValues = null)
   {
     var measurement = new CounterMeasurement
     {
       MetricId = _metricId,
       UserId = _userId,
-      DateTime = date
+      DateTime = date,
+      MetricAttributeValues = attributeValues
     };
 
     UpsertResult result = await _repository.UpsertMeasurement(measurement);

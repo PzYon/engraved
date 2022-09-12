@@ -8,7 +8,6 @@ using Metrix.Persistence.Mongo.DocumentTypes;
 using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
 using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
 using Metrix.Persistence.Mongo.DocumentTypes.Users;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
@@ -51,7 +50,7 @@ public class MongoRepository : IRepository
     }
 
     UserDocument? document = await _users
-      .Find(Builders<UserDocument>.Filter.Eq(nameof(UserDocument.Name), name))
+      .Find(Builders<UserDocument>.Filter.Where(d => d.Name == name))
       .FirstOrDefaultAsync();
 
     return UserDocumentMapper.FromDocument(document);
@@ -87,7 +86,7 @@ public class MongoRepository : IRepository
     }
 
     ReplaceOneResult replaceOneResult = await _users.ReplaceOneAsync(
-      Builders<UserDocument>.Filter.Eq(nameof(IUser.Name), user.Name),
+      Builders<UserDocument>.Filter.Where(d => d.Name == user.Name),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
@@ -142,7 +141,7 @@ public class MongoRepository : IRepository
     string metricId,
     DateTime? fromDate,
     DateTime? toDate,
-    IDictionary<string, string[]> attributeValues
+    IDictionary<string, string[]>? attributeValues
     )
   {
     IMetric? metric = await GetMetric(metricId);
@@ -153,22 +152,31 @@ public class MongoRepository : IRepository
 
     var filters = new List<FilterDefinition<MeasurementDocument>>
     {
-      Builders<MeasurementDocument>.Filter.Eq(nameof(MeasurementDocument.MetricId), ObjectId.Parse(metricId))
+      Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId)
     };
 
     if (fromDate.HasValue)
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Gte(nameof(MeasurementDocument.DateTime), fromDate.Value));
+      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => d.DateTime >= fromDate.Value));
     }
 
     if (toDate.HasValue)
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Lte(nameof(MeasurementDocument.DateTime), toDate.Value));
+      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => d.DateTime <= toDate.Value));
     }
 
-    if (attributeValues is { Count: > 0 })
+    if (attributeValues != null)
     {
-      throw new Exception($"{nameof(attributeValues)} are not yet supported.");
+      foreach (KeyValuePair<string, string[]> attributeValue in attributeValues)
+      {
+        filters.AddRange(
+          attributeValue.Value.Select(
+            s => Builders<MeasurementDocument>.Filter.Where(
+              d => d.MetricAttributeValues[attributeValue.Key].Contains(s)
+            )
+          )
+        );
+      }
     }
 
     List<MeasurementDocument> measurements = await _measurements
