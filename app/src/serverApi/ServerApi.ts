@@ -16,6 +16,8 @@ import { ISystemInfo } from "./ISystemInfo";
 import { IUpdatePermissions } from "./IUpdatePermissions";
 import { IMetricAttributeValues } from "./IMetricAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
+import { IDateConditions } from "../components/details/MetricDetailsContext";
+import { toDateOnlyIsoString } from "../components/common/utils";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -99,15 +101,28 @@ export class ServerApi {
 
   static async getMeasurements(
     metricId: string,
-    attributeValues: IMetricAttributeValues
+    attributeValues: IMetricAttributeValues,
+    dateConditions: IDateConditions
   ): Promise<IMeasurement[]> {
     const attributeValuesString = stringifyAttributeValues(attributeValues);
 
-    const param = attributeValuesString
-      ? `?attributeValues=${attributeValuesString}`
-      : "";
+    const urlParams: string[] = [];
 
-    return await this.executeRequest(`/measurements/${metricId}${param}`);
+    if (attributeValuesString) {
+      urlParams.push(`attributeValues=${attributeValuesString}`);
+    }
+
+    if (dateConditions.from) {
+      urlParams.push(`fromDate=${toDateOnlyIsoString(dateConditions.from)}`);
+    }
+
+    if (dateConditions.to) {
+      urlParams.push(`toDate=${toDateOnlyIsoString(dateConditions.to)}`);
+    }
+
+    const params = urlParams.length ? `?${urlParams.join("&")}` : "";
+
+    return await this.executeRequest(`/measurements/${metricId}${params}`);
   }
 
   static async addMeasurement(

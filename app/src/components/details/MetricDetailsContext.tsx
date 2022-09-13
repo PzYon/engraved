@@ -11,6 +11,11 @@ import { IMetric } from "../../serverApi/IMetric";
 import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
 
+export interface IDateConditions {
+  from?: Date;
+  to?: Date;
+}
+
 export interface IMetricDetailsContext {
   metric: IMetric;
   measurements: IMeasurement[];
@@ -21,6 +26,8 @@ export interface IMetricDetailsContext {
     attributeValueKey: string
   ) => void;
   selectedAttributeValues: { [key: string]: string[] };
+  setDateConditions: (conditions: IDateConditions) => void;
+  dateConditions: IDateConditions;
 }
 
 const MetricDetailsContext = createContext<IMetricDetailsContext>({
@@ -30,6 +37,8 @@ const MetricDetailsContext = createContext<IMetricDetailsContext>({
   reloadMeasurements: null,
   toggleAttributeValue: null,
   selectedAttributeValues: {},
+  setDateConditions: null,
+  dateConditions: {},
 });
 
 export const useMetricDetailsContext = () => {
@@ -45,12 +54,14 @@ export const MetricDetailsContextProvider: React.FC<{
   const [selectedAttributeValues, setSelectedAttributeValues] = useState<{
     [key: string]: string[];
   }>({});
+  const [dateConditions, setDateConditions] = useState<IDateConditions>({});
 
   const { setAppAlert } = useAppContext();
 
   useEffect(() => {
+    console.log("LOADING MEASUREMENTS");
     getMeasurements().then(setMeasurements);
-  }, [metricId, selectedAttributeValues]);
+  }, [metricId, selectedAttributeValues, dateConditions]);
 
   useEffect(() => {
     reloadMetric();
@@ -64,8 +75,10 @@ export const MetricDetailsContextProvider: React.FC<{
       reloadMeasurements,
       toggleAttributeValue,
       selectedAttributeValues,
+      setDateConditions,
+      dateConditions,
     };
-  }, [measurements, metric, selectedAttributeValues]);
+  }, [measurements, metric, selectedAttributeValues, dateConditions]);
 
   return (
     <MetricDetailsContext.Provider value={contextValue}>
@@ -104,7 +117,11 @@ export const MetricDetailsContextProvider: React.FC<{
   }
 
   function getMeasurements(): Promise<IMeasurement[]> {
-    return ServerApi.getMeasurements(metricId, selectedAttributeValues)
+    return ServerApi.getMeasurements(
+      metricId,
+      selectedAttributeValues,
+      dateConditions
+    )
       .then((m) => m)
       .catch((e) => {
         handleError("Error loading measurements", e);

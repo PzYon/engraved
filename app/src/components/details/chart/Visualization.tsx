@@ -6,6 +6,7 @@ import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { GroupByAttributeSelector } from "./grouping/GroupByAttributeSelector";
 import { ChartTypeSelector } from "./grouping/ChartTypeSelector";
 import { styled } from "@mui/material";
+import { DateConditions } from "./dateSelection/DateConditions";
 
 const ChartJs = React.lazy(() => import("./LazyChartJs"));
 
@@ -13,7 +14,7 @@ export const Visualization: React.FC<IVisualizationProps> = (
   props: IVisualizationProps
 ) => {
   const [groupByTime, setGroupByTime] = useState(GroupByTime.Day);
-  const [attributeKey, setAttributeKey] = useState("");
+  const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState("bar");
 
   return (
@@ -33,6 +34,7 @@ export const Visualization: React.FC<IVisualizationProps> = (
           />
         ) : null}
         <ChartTypeSelector chartType={chartType} onChange={setChartType} />
+        <DateConditions />
         <ChartJs
           {...props}
           groupByTime={groupByTime}

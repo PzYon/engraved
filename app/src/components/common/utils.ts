@@ -19,6 +19,10 @@ export function stripTime(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+export function toDateOnlyIsoString(date: Date): string {
+  return date.toISOString().split("T")[0];
+}
+
 export function isValidEmail(address: string): boolean {
   // https://stackoverflow.com/a/8829363/4092115
   return !!address.match(

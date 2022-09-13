@@ -3,16 +3,10 @@ import { IMetricAttributeValues } from "./IMetricAttributeValues";
 export function stringifyAttributeValues(
   attributeValues: IMetricAttributeValues
 ): string {
-  let result = "";
-
-  for (const attributeKey in attributeValues) {
-    const values = attributeValues[attributeKey];
-    if (!values?.length) {
-      continue;
-    }
-
-    result += `${attributeKey}:${values.join(",")};`;
-  }
-
-  return result;
+  return Object.keys(attributeValues)
+    .map((attributeKey) => {
+      const values = attributeValues[attributeKey];
+      return !values?.length ? null : `${attributeKey}:${values.join(",")};`;
+    })
+    .join(";");
 }
