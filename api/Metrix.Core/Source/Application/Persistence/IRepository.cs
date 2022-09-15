@@ -27,7 +27,7 @@ public interface IRepository
     string metricId,
     DateTime? fromDate,
     DateTime? toDate,
-    IDictionary<string, string[]> attributeValues
+    IDictionary<string, string[]>? attributeValues
     );
 
   Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;

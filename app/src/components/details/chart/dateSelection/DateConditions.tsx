@@ -38,7 +38,7 @@ export const DateConditions: React.FC = () => {
           setDateConditions({ ...dateConditions, to: d });
         }}
       />
-      <FormControl margin="normal">
+      <FormControl margin="none">
         <InputLabel id="date-range-label">Date Range</InputLabel>
         <Select
           id="date-range"
