@@ -9,6 +9,9 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { calculateDateRange } from "./calculateDateRange";
+import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { addDays, differenceInDays } from "date-fns";
 
 export enum DateRange {
   Week,
@@ -65,6 +68,22 @@ export const DateConditions: React.FC = () => {
           <MenuItem value={DateRange.Custom}>Custom</MenuItem>
         </Select>
       </FormControl>
+      <IconButtonWrapper
+        action={{
+          onClick: () => go("left"),
+          icon: <ChevronLeft />,
+          label: "Previous",
+          key: "go_left",
+        }}
+      />
+      <IconButtonWrapper
+        action={{
+          onClick: () => go("right"),
+          icon: <ChevronRight />,
+          label: "Previous",
+          key: "go_left",
+        }}
+      />
     </>
   );
 
@@ -81,5 +100,40 @@ export const DateConditions: React.FC = () => {
     }
 
     setDateConditions(conditions);
+  }
+
+  function go(direction: "left" | "right") {
+    switch (dateRange) {
+      case DateRange.Month:
+        break;
+
+      case DateRange.Year: {
+        const year =
+          dateConditions.from.getFullYear() + (direction === "left" ? -1 : 1);
+
+        setDateConditions({
+          from: new Date(year, 0, 1),
+          to: new Date(year, 11, 31),
+        });
+        break;
+      }
+
+      case DateRange.All:
+        // do nothing, can't go to infinity ;)
+        break;
+
+      case DateRange.Week:
+      case DateRange.Custom: {
+        const diffInDays =
+          differenceInDays(dateConditions.to, dateConditions.from) *
+          (direction === "left" ? -1 : 1);
+
+        setDateConditions({
+          from: addDays(dateConditions.from, diffInDays),
+          to: addDays(dateConditions.to, diffInDays),
+        });
+        break;
+      }
+    }
   }
 };
