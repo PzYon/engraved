@@ -10,6 +10,7 @@ import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
+import { getDefaultDateConditions } from "./chart/dateSelection/DateConditions";
 
 export interface IDateConditions {
   from?: Date;
@@ -51,10 +52,14 @@ export const MetricDetailsContextProvider: React.FC<{
 }> = ({ children, metricId }) => {
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
   const [metric, setMetric] = useState<IMetric>(null);
+
   const [selectedAttributeValues, setSelectedAttributeValues] = useState<{
     [key: string]: string[];
   }>({});
-  const [dateConditions, setDateConditions] = useState<IDateConditions>({});
+
+  const [dateConditions, setDateConditions] = useState<IDateConditions>(() =>
+    getDefaultDateConditions()
+  );
 
   const { setAppAlert } = useAppContext();
 

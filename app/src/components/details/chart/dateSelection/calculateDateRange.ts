@@ -14,19 +14,25 @@ export const calculateDateRange = (
   date: Date
 ): IDateConditions => {
   switch (dateRange) {
-    case DateRange.All:
-      return {};
     case DateRange.Week:
       return {
         from: startOfWeek(date),
         to: endOfWeek(date),
       };
+
     case DateRange.Month:
       return {
         from: startOfMonth(date),
         to: endOfMonth(date),
       };
+
     case DateRange.Year:
       return { from: startOfYear(date), to: endOfYear(date) };
+
+    case DateRange.Custom:
+      return null;
+
+    case DateRange.All:
+      return {};
   }
 };
