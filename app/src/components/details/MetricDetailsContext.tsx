@@ -10,7 +10,12 @@ import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
-import { hasValues } from "../../util/MeasurementUtil";
+import { getDefaultDateConditions } from "./chart/dateSelection/DateConditions";
+
+export interface IDateConditions {
+  from?: Date;
+  to?: Date;
+}
 
 export interface IMetricDetailsContext {
   metric: IMetric;
@@ -22,6 +27,8 @@ export interface IMetricDetailsContext {
     attributeValueKey: string
   ) => void;
   selectedAttributeValues: { [key: string]: string[] };
+  setDateConditions: (conditions: IDateConditions) => void;
+  dateConditions: IDateConditions;
 }
 
 const MetricDetailsContext = createContext<IMetricDetailsContext>({
@@ -31,6 +38,8 @@ const MetricDetailsContext = createContext<IMetricDetailsContext>({
   reloadMeasurements: null,
   toggleAttributeValue: null,
   selectedAttributeValues: {},
+  setDateConditions: null,
+  dateConditions: {},
 });
 
 export const useMetricDetailsContext = () => {
@@ -43,20 +52,23 @@ export const MetricDetailsContextProvider: React.FC<{
 }> = ({ children, metricId }) => {
   const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
   const [metric, setMetric] = useState<IMetric>(null);
+
   const [selectedAttributeValues, setSelectedAttributeValues] = useState<{
     [key: string]: string[];
   }>({});
 
-  const [allMeasurements, setAllMeasurements] = useState<IMeasurement[]>([]);
+  const [dateConditions, setDateConditions] = useState<IDateConditions>(() =>
+    getDefaultDateConditions()
+  );
 
   const { setAppAlert } = useAppContext();
 
   useEffect(() => {
-    getMeasurements().then((m) => {
-      setAllMeasurements(m);
-      setMeasurements(m);
-    });
+    console.log("LOADING MEASUREMENTS");
+    getMeasurements().then(setMeasurements);
+  }, [metricId, selectedAttributeValues, dateConditions]);
 
+  useEffect(() => {
     reloadMetric();
   }, [metricId]);
 
@@ -68,8 +80,10 @@ export const MetricDetailsContextProvider: React.FC<{
       reloadMeasurements,
       toggleAttributeValue,
       selectedAttributeValues,
+      setDateConditions,
+      dateConditions,
     };
-  }, [measurements, metric, selectedAttributeValues]);
+  }, [measurements, metric, selectedAttributeValues, dateConditions]);
 
   return (
     <MetricDetailsContext.Provider value={contextValue}>
@@ -94,11 +108,6 @@ export const MetricDetailsContextProvider: React.FC<{
       selectedValues[attributeKey].push(attributeValueKey);
     }
 
-    const newMeasurements = allMeasurements.filter((measurement) =>
-      hasValues(measurement.metricAttributeValues, selectedValues)
-    );
-
-    setMeasurements(newMeasurements);
     setSelectedAttributeValues(selectedValues);
   }
 
@@ -113,7 +122,11 @@ export const MetricDetailsContextProvider: React.FC<{
   }
 
   function getMeasurements(): Promise<IMeasurement[]> {
-    return ServerApi.getMeasurements(metricId)
+    return ServerApi.getMeasurements(
+      metricId,
+      selectedAttributeValues,
+      dateConditions
+    )
       .then((m) => m)
       .catch((e) => {
         handleError("Error loading measurements", e);

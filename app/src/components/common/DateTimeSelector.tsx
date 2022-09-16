@@ -7,10 +7,12 @@ import { stripTime } from "./utils";
 export const DateTimeSelector: React.FC<{
   setDate: (date: Date) => void;
   date: Date;
-}> = ({ setDate, date }) => {
+  label?: string;
+}> = ({ setDate, date, label }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
+        label={label}
         renderInput={(params) => <TextField {...params} />}
         value={date}
         onChange={(d) => {

@@ -37,7 +37,7 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
       _query.MetricId,
       _query.FromDate,
       _query.ToDate,
-      _query.Attributes
+      _query.AttributeValues
     );
 
     // consider: moving OrderByDescending logic to DB

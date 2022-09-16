@@ -25,13 +25,14 @@ public class MeasurementsController : ControllerBase
 
   [HttpGet]
   [Route("{metricId}")]
-  public async Task<object[]> GetAll(string metricId, DateTime? fromDate, DateTime? toDate)
+  public async Task<object[]> GetAll(string metricId, DateTime? fromDate, DateTime? toDate, string? attributeValues)
   {
     var query = new GetAllMeasurementsQuery
     {
       MetricId = metricId,
       FromDate = fromDate,
-      ToDate = toDate
+      ToDate = toDate,
+      AttributeValues = AttributeValueParser.Parse(attributeValues)
     };
 
     IMeasurement[] measurements = await _dispatcher.Query(query);
