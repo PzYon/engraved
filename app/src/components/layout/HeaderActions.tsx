@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import {
   IconButtonWrapper,
@@ -12,7 +12,14 @@ export const HeaderActions: React.FC<{
   enableFloatingActions?: boolean;
 }> = ({ actions, enableFloatingActions }) => {
   const buttonContainerRef = useRef<HTMLDivElement>();
+
   const areHeaderActionsInViewPort = useIsInViewport(buttonContainerRef);
+
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setIsReady(true), 1000);
+  }, []);
 
   if (!actions?.length) {
     return null;
@@ -20,7 +27,7 @@ export const HeaderActions: React.FC<{
 
   return (
     <>
-      {!areHeaderActionsInViewPort && enableFloatingActions ? (
+      {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
       <ButtonContainer ref={buttonContainerRef}>
