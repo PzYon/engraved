@@ -19,7 +19,10 @@ export const Visualization: React.FC<IVisualizationProps> = (
 
   return (
     <Suspense fallback={<div />}>
-      <Selectors>
+      <Row>
+        <DateConditions />
+      </Row>
+      <Row>
         {MetricTypeFactory.create(props.metric.type).isGroupable ? (
           <GroupByTimeSelector
             groupByTime={groupByTime}
@@ -34,21 +37,30 @@ export const Visualization: React.FC<IVisualizationProps> = (
           />
         ) : null}
         <ChartTypeSelector chartType={chartType} onChange={setChartType} />
-        <DateConditions />
-        <ChartJs
-          {...props}
-          groupByTime={groupByTime}
-          groupByAttribute={attributeKey}
-          chartType={chartType}
-        />
-      </Selectors>
+      </Row>
+      <ChartJs
+        {...props}
+        groupByTime={groupByTime}
+        groupByAttribute={attributeKey}
+        chartType={chartType}
+      />
     </Suspense>
   );
 };
 
-const Selectors = styled("div")`
-  .MuiFormControl-root {
-    margin-right: 20px;
-    min-width: 160px;
+const Row = styled("div")`
+  display: flex;
+  justify-items: center;
+  margin-bottom: 20px;
+
+  & > * {
+    display: flex;
+    flex-basis: 0;
+    flex-grow: 1;
+    margin-right: 20px !important;
+
+    &:last-of-type {
+      margin-right: 0 !important;
+    }
   }
 `;

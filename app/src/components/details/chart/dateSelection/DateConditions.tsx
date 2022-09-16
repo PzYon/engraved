@@ -7,11 +7,11 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  styled,
 } from "@mui/material";
-import { calculateDateRange } from "./calculateDateRange";
+import { dateRangeFunctions, getDateCondition } from "./dateRangeFunctions";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { addDays, differenceInDays } from "date-fns";
 
 export enum DateRange {
   Week,
@@ -24,7 +24,7 @@ export enum DateRange {
 const defaultDateRange = DateRange.Month;
 
 export const getDefaultDateConditions = () => {
-  return calculateDateRange(defaultDateRange, new Date());
+  return dateRangeFunctions(defaultDateRange, new Date());
 };
 
 export const DateConditions: React.FC = () => {
@@ -34,6 +34,48 @@ export const DateConditions: React.FC = () => {
 
   return (
     <>
+      <RangeContainer>
+        <FormControl margin="none" sx={{ flexGrow: 1 }}>
+          <InputLabel id="date-range-label">Date Range</InputLabel>
+          <Select
+            id="date-range"
+            labelId="date-range-label"
+            label="Date Range"
+            value={dateRange as unknown as string}
+            onChange={(event: SelectChangeEvent) => {
+              onChange(event.target.value as unknown as DateRange);
+            }}
+          >
+            <MenuItem value={DateRange.Week}>Week</MenuItem>
+            <MenuItem value={DateRange.Month}>Month</MenuItem>
+            <MenuItem value={DateRange.Year}>Year</MenuItem>
+            <MenuItem value={DateRange.All}>All</MenuItem>
+            <MenuItem value={DateRange.Custom}>Custom</MenuItem>
+          </Select>
+        </FormControl>
+        <IconButtonWrapper
+          action={{
+            onClick: () =>
+              setDateConditions(
+                getDateCondition("previous", dateRange, dateConditions)
+              ),
+            icon: <ChevronLeft />,
+            label: "Previous",
+            key: "go_left",
+          }}
+        />
+        <IconButtonWrapper
+          action={{
+            onClick: () =>
+              setDateConditions(
+                getDateCondition("next", dateRange, dateConditions)
+              ),
+            icon: <ChevronRight />,
+            label: "Previous",
+            key: "go_left",
+          }}
+        />
+      </RangeContainer>
       <DateTimeSelector
         label="From"
         date={dateConditions.from}
@@ -50,47 +92,13 @@ export const DateConditions: React.FC = () => {
           setDateRange(DateRange.Custom);
         }}
       />
-      <FormControl margin="none">
-        <InputLabel id="date-range-label">Date Range</InputLabel>
-        <Select
-          id="date-range"
-          labelId="date-range-label"
-          label="Date Range"
-          value={dateRange as unknown as string}
-          onChange={(event: SelectChangeEvent) => {
-            onChange(event.target.value as unknown as DateRange);
-          }}
-        >
-          <MenuItem value={DateRange.Week}>Week</MenuItem>
-          <MenuItem value={DateRange.Month}>Month</MenuItem>
-          <MenuItem value={DateRange.Year}>Year</MenuItem>
-          <MenuItem value={DateRange.All}>All</MenuItem>
-          <MenuItem value={DateRange.Custom}>Custom</MenuItem>
-        </Select>
-      </FormControl>
-      <IconButtonWrapper
-        action={{
-          onClick: () => go("left"),
-          icon: <ChevronLeft />,
-          label: "Previous",
-          key: "go_left",
-        }}
-      />
-      <IconButtonWrapper
-        action={{
-          onClick: () => go("right"),
-          icon: <ChevronRight />,
-          label: "Previous",
-          key: "go_left",
-        }}
-      />
     </>
   );
 
   function onChange(range: DateRange): void {
     setDateRange(range);
 
-    const conditions = calculateDateRange(
+    const conditions = dateRangeFunctions(
       range,
       dateConditions.from ?? new Date()
     );
@@ -101,39 +109,8 @@ export const DateConditions: React.FC = () => {
 
     setDateConditions(conditions);
   }
-
-  function go(direction: "left" | "right") {
-    switch (dateRange) {
-      case DateRange.Month:
-        break;
-
-      case DateRange.Year: {
-        const year =
-          dateConditions.from.getFullYear() + (direction === "left" ? -1 : 1);
-
-        setDateConditions({
-          from: new Date(year, 0, 1),
-          to: new Date(year, 11, 31),
-        });
-        break;
-      }
-
-      case DateRange.All:
-        // do nothing, can't go to infinity ;)
-        break;
-
-      case DateRange.Week:
-      case DateRange.Custom: {
-        const diffInDays =
-          differenceInDays(dateConditions.to, dateConditions.from) *
-          (direction === "left" ? -1 : 1);
-
-        setDateConditions({
-          from: addDays(dateConditions.from, diffInDays),
-          to: addDays(dateConditions.to, diffInDays),
-        });
-        break;
-      }
-    }
-  }
 };
+
+const RangeContainer = styled("div")`
+  display: flex;
+`;
