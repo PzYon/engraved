@@ -1,14 +1,15 @@
-import { DateConditions } from "./dateSelection/DateConditions";
+import { DateFilters } from "./DateFilters";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
-import { GroupByTimeSelector } from "./grouping/GroupByTimeSelector";
-import { GroupByAttributeSelector } from "./grouping/GroupByAttributeSelector";
-import { ChartTypeSelector } from "./grouping/ChartTypeSelector";
+import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
+import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
+import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 import React, { useState } from "react";
 import { styled } from "@mui/material";
-import { GroupByTime } from "./consolidation/GroupByTime";
+import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { IMetric } from "../../../serverApi/IMetric";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { FilterAltOutlined } from "@mui/icons-material";
+import { AttributeFilters } from "./AttributeFilters";
 
 export const Filters: React.FC<{
   metric: IMetric;
@@ -47,7 +48,10 @@ export const Filters: React.FC<{
   return (
     <>
       <Row>
-        <DateConditions />
+        <DateFilters />
+      </Row>
+      <Row>
+        <AttributeFilters />
       </Row>
       <Row>
         {MetricTypeFactory.create(metric.type).isGroupable ? (

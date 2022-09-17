@@ -1,7 +1,8 @@
 import React, { Suspense, useState } from "react";
 import { IVisualizationProps } from "./IVisualizationProps";
 import { GroupByTime } from "./consolidation/GroupByTime";
-import { Filters } from "./Filters";
+import { Filters } from "../filters/Filters";
+import { DetailsSection } from "../../layout/DetailsSection";
 
 const ChartJs = React.lazy(() => import("./LazyChartJs"));
 
@@ -14,21 +15,25 @@ export const Visualization: React.FC<IVisualizationProps> = (
 
   return (
     <Suspense fallback={<div />}>
-      <Filters
-        metric={props.metric}
-        groupByTime={groupByTime}
-        setGroupByTime={setGroupByTime}
-        attributeKey={attributeKey}
-        setAttributeKey={setAttributeKey}
-        chartType={chartType}
-        setChartType={setChartType}
-      />
-      <ChartJs
-        {...props}
-        groupByTime={groupByTime}
-        groupByAttribute={attributeKey}
-        chartType={chartType}
-      />
+      <DetailsSection>
+        <Filters
+          metric={props.metric}
+          groupByTime={groupByTime}
+          setGroupByTime={setGroupByTime}
+          attributeKey={attributeKey}
+          setAttributeKey={setAttributeKey}
+          chartType={chartType}
+          setChartType={setChartType}
+        />
+      </DetailsSection>
+      <DetailsSection>
+        <ChartJs
+          {...props}
+          groupByTime={groupByTime}
+          groupByAttribute={attributeKey}
+          chartType={chartType}
+        />
+      </DetailsSection>
     </Suspense>
   );
 };
