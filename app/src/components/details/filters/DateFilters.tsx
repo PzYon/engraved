@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { DateTimeSelector } from "../../../common/DateTimeSelector";
-import { useMetricDetailsContext } from "../../MetricDetailsContext";
+import { DateTimeSelector } from "../../common/DateTimeSelector";
+import { useMetricDetailsContext } from "../MetricDetailsContext";
 import {
   FormControl,
   InputLabel,
@@ -10,7 +10,7 @@ import {
   styled,
 } from "@mui/material";
 import { dateRangeFunctions, getDateCondition } from "./dateRangeFunctions";
-import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
 export enum DateRange {
@@ -27,7 +27,7 @@ export const getDefaultDateConditions = () => {
   return dateRangeFunctions(defaultDateRange, new Date());
 };
 
-export const DateConditions: React.FC = () => {
+export const DateFilters: React.FC = () => {
   const { dateConditions, setDateConditions } = useMetricDetailsContext();
 
   const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);

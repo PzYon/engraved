@@ -13,7 +13,6 @@ import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Route, Routes } from "react-router-dom";
 import { DetailsSection } from "../layout/DetailsSection";
 import { MeasurementsList } from "./dataTable/MeasurementsList";
-import { SelectedAttributeValues } from "./SelectedAttributeValues";
 import { MetricNotes } from "./edit/MetricNotes";
 import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 import { getMetricHeaderActions } from "../overview/getMetricHeaderActions";
@@ -58,12 +57,7 @@ export const MetricDetailsInner: React.FC = () => {
       <DetailsSection>
         <MetricNotes metric={metric} />
       </DetailsSection>
-      <DetailsSection>
-        <Visualization metric={metric} measurements={measurements} />
-      </DetailsSection>
-      <DetailsSection>
-        <SelectedAttributeValues attributes={metric.attributes} />
-      </DetailsSection>
+      <Visualization metric={metric} measurements={measurements} />
       <DetailsSection overflowXScroll={true}>
         <MeasurementsList metric={metric} measurements={measurements} />
       </DetailsSection>

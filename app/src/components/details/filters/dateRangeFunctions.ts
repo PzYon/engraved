@@ -1,5 +1,5 @@
-import { DateRange } from "./DateConditions";
-import { IDateConditions } from "../../MetricDetailsContext";
+import { DateRange } from "./DateFilters";
+import { IDateConditions } from "../MetricDetailsContext";
 import {
   addDays,
   differenceInDays,

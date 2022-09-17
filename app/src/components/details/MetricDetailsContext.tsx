@@ -10,7 +10,7 @@ import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
 import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
-import { getDefaultDateConditions } from "./chart/dateSelection/DateConditions";
+import { getDefaultDateConditions } from "./filters/DateFilters";
 
 export interface IDateConditions {
   from?: Date;
@@ -26,6 +26,10 @@ export interface IMetricDetailsContext {
     attributeKey: string,
     attributeValueKey: string
   ) => void;
+  setSelectedAttributeValue: (
+    attributeKey: string,
+    attributeValueKey: string
+  ) => void;
   selectedAttributeValues: { [key: string]: string[] };
   setDateConditions: (conditions: IDateConditions) => void;
   dateConditions: IDateConditions;
@@ -37,6 +41,7 @@ const MetricDetailsContext = createContext<IMetricDetailsContext>({
   reloadMetric: null,
   reloadMeasurements: null,
   toggleAttributeValue: null,
+  setSelectedAttributeValue: null,
   selectedAttributeValues: {},
   setDateConditions: null,
   dateConditions: {},
@@ -64,7 +69,6 @@ export const MetricDetailsContextProvider: React.FC<{
   const { setAppAlert } = useAppContext();
 
   useEffect(() => {
-    console.log("LOADING MEASUREMENTS");
     getMeasurements().then(setMeasurements);
   }, [metricId, selectedAttributeValues, dateConditions]);
 
@@ -80,6 +84,7 @@ export const MetricDetailsContextProvider: React.FC<{
       reloadMeasurements,
       toggleAttributeValue,
       selectedAttributeValues,
+      setSelectedAttributeValue,
       setDateConditions,
       dateConditions,
     };
@@ -90,6 +95,15 @@ export const MetricDetailsContextProvider: React.FC<{
       {children}
     </MetricDetailsContext.Provider>
   );
+
+  function setSelectedAttributeValue(
+    attributeKey: string,
+    attributeValueKey: string
+  ) {
+    const selectedValues = { ...selectedAttributeValues };
+    selectedValues[attributeKey] = [attributeValueKey];
+    setSelectedAttributeValues(selectedValues);
+  }
 
   function toggleAttributeValue(
     attributeKey: string,
