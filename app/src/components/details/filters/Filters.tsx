@@ -3,12 +3,10 @@ import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
 import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
-import React, { useState } from "react";
+import React from "react";
 import { styled } from "@mui/material";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { IMetric } from "../../../serverApi/IMetric";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
-import { FilterAltOutlined } from "@mui/icons-material";
 import { AttributeFilters } from "./AttributeFilters";
 
 export const Filters: React.FC<{
@@ -28,23 +26,6 @@ export const Filters: React.FC<{
   chartType,
   setChartType,
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  if (!isVisible) {
-    return (
-      <ButtonContainer>
-        <IconButtonWrapper
-          action={{
-            key: "collapse",
-            icon: <FilterAltOutlined />,
-            label: "Expand filters",
-            onClick: () => setIsVisible(true),
-          }}
-        />
-      </ButtonContainer>
-    );
-  }
-
   return (
     <>
       <Row>
@@ -72,11 +53,6 @@ export const Filters: React.FC<{
     </>
   );
 };
-
-const ButtonContainer = styled("div")`
-  display: flex;
-  justify-content: end; ;
-`;
 
 const Row = styled("div")`
   display: flex;

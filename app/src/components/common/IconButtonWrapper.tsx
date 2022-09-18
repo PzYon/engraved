@@ -10,6 +10,7 @@ export interface IIconButtonAction {
   onClick?: () => void;
   href?: string;
   sx?: SxProps<Theme>;
+  isNotActive?: boolean;
 }
 
 export const IconButtonWrapper: React.FC<{
@@ -22,8 +23,13 @@ export const IconButtonWrapper: React.FC<{
     <IconButton
       key={action.key}
       color="default"
+      title={action.label}
       aria-label={action.label}
-      sx={{ color: "primary.main", ...(action.sx || {}) }}
+      sx={{
+        color: "primary.main",
+        opacity: action.isNotActive ? 0.4 : 1,
+        ...(action.sx || {}),
+      }}
       onClick={(e) => executeActionClick(e, action, navigate)}
       disabled={disabled}
     >

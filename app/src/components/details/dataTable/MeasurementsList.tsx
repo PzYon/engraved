@@ -11,6 +11,21 @@ import { format } from "date-fns";
 import { Typography } from "@mui/material";
 import { ActionButtons } from "./ActionButtons";
 
+export const MeasurementsList: React.FC<{
+  metric: IMetric;
+  measurements: IMeasurement[];
+}> = ({ metric, measurements }) => {
+  const columns = useMemo(() => {
+    return [
+      ...getColumnsBefore(),
+      ...MetricTypeFactory.create(metric.type).getMeasurementsListColumns(),
+      ...getColumnsAfter(metric),
+    ].filter((c) => c.doHide?.(metric) !== true);
+  }, [metric]);
+
+  return <DataTable measurements={measurements} columns={columns} />;
+};
+
 const getColumnsBefore = (): IDataTableColumnDefinition[] => [
   {
     header: translations.columnName_date,
@@ -63,18 +78,3 @@ const getColumnsAfter = (metric: IMetric): IDataTableColumnDefinition[] => [
     ),
   },
 ];
-
-export const MeasurementsList: React.FC<{
-  metric: IMetric;
-  measurements: IMeasurement[];
-}> = ({ metric, measurements }) => {
-  const columns = useMemo(() => {
-    return [
-      ...getColumnsBefore(),
-      ...MetricTypeFactory.create(metric.type).getMeasurementsListColumns(),
-      ...getColumnsAfter(metric),
-    ].filter((c) => c.doHide?.(metric) !== true);
-  }, [metric]);
-
-  return <DataTable measurements={measurements} columns={columns} />;
-};

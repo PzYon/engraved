@@ -18,14 +18,16 @@ export const FloatingHeaderActions: React.FC<{
       sx={{ position: "fixed", top: 16, right: 16 }}
       icon={<SpeedDialIcon />}
     >
-      {actions.map((action) => (
-        <SpeedDialAction
-          key={action.key}
-          icon={action.icon}
-          tooltipTitle={action.label}
-          onClick={(e) => executeActionClick(e, action, navigate)}
-        />
-      ))}
+      {actions
+        .filter((a) => !!a)
+        .map((action) => (
+          <SpeedDialAction
+            key={action.key}
+            icon={action.icon}
+            tooltipTitle={action.label}
+            onClick={(e) => executeActionClick(e, action, navigate)}
+          />
+        ))}
     </SpeedDial>
   );
 };
