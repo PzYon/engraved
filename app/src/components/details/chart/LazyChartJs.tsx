@@ -20,7 +20,7 @@ import {
 import { Chart } from "react-chartjs-2";
 import "chartjs-adapter-date-fns";
 import { createChart } from "./createChart";
-import { IVisualizationProps } from "./IVisualizationProps";
+import { IChartProps } from "./IChartProps";
 import { useTheme } from "@mui/material/styles";
 import { useMetricDetailsContext } from "../MetricDetailsContext";
 
@@ -41,7 +41,7 @@ ChartJS.register(
   Tooltip
 );
 
-const LazyChartJs: React.FC<IVisualizationProps> = ({
+const LazyChartJs: React.FC<IChartProps> = ({
   measurements,
   metric,
   groupByTime,

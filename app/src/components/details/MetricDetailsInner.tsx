@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
 import styled from "styled-components";
@@ -7,7 +7,6 @@ import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useAppContext } from "../../AppContext";
 import { Typography } from "@mui/material";
 import { EditMetricLauncher } from "./edit/EditMetricLauncher";
-import { Visualization } from "./chart/Visualization";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Route, Routes } from "react-router-dom";
@@ -16,6 +15,9 @@ import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { MetricNotes } from "./edit/MetricNotes";
 import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 import { getMetricHeaderActions } from "../overview/getMetricHeaderActions";
+import { Filters } from "./filters/Filters";
+import { GroupByTime } from "./chart/consolidation/GroupByTime";
+import { Chart } from "./chart/Chart";
 
 export const MetricDetailsInner: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
@@ -25,15 +27,20 @@ export const MetricDetailsInner: React.FC = () => {
 
   const { renderDialog } = useDialogContext();
 
+  const [groupByTime, setGroupByTime] = useState(GroupByTime.Day);
+  const [attributeKey, setAttributeKey] = useState("-");
+  const [chartType, setChartType] = useState("bar");
+
   useEffect(() => {
     setPageTitle(<PageTitle metric={metric} />);
 
-    setTitleActions(
-      getMetricHeaderActions(metric, renderDialog, () => {
+    setTitleActions([
+      // add action for filter and for chart,
+      ...getMetricHeaderActions(metric, renderDialog, () => {
         reloadMeasurements();
         reloadMetric();
-      })
-    );
+      }),
+    ]);
 
     return () => {
       setPageTitle(null);
@@ -54,13 +61,37 @@ export const MetricDetailsInner: React.FC = () => {
       {metric.description ? (
         <Typography>{metric.description}</Typography>
       ) : null}
+
       <DetailsSection>
         <MetricNotes metric={metric} />
       </DetailsSection>
-      <Visualization metric={metric} measurements={measurements} />
+
+      <DetailsSection>
+        <Filters
+          metric={metric}
+          groupByTime={groupByTime}
+          setGroupByTime={setGroupByTime}
+          attributeKey={attributeKey}
+          setAttributeKey={setAttributeKey}
+          chartType={chartType}
+          setChartType={setChartType}
+        />
+      </DetailsSection>
+
+      <DetailsSection>
+        <Chart
+          measurements={measurements}
+          metric={metric}
+          groupByTime={groupByTime}
+          groupByAttribute={attributeKey}
+          chartType={chartType}
+        />
+      </DetailsSection>
+
       <DetailsSection overflowXScroll={true}>
         <MeasurementsList metric={metric} measurements={measurements} />
       </DetailsSection>
+
       <Routes>
         <Route
           path="/edit"
