@@ -22,6 +22,7 @@ export const IconButtonWrapper: React.FC<{
     <IconButton
       key={action.key}
       color="default"
+      title={action.label}
       aria-label={action.label}
       sx={{ color: "primary.main", ...(action.sx || {}) }}
       onClick={(e) => executeActionClick(e, action, navigate)}

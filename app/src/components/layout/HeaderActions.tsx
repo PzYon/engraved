@@ -31,9 +31,13 @@ export const HeaderActions: React.FC<{
         <FloatingHeaderActions actions={actions} />
       ) : null}
       <ButtonContainer ref={buttonContainerRef}>
-        {actions.map((action) => (
-          <IconButtonWrapper key={action.key} action={action} />
-        ))}
+        {actions.map((action) =>
+          action ? (
+            <IconButtonWrapper key={action.key} action={action} />
+          ) : (
+            <Separator />
+          )
+        )}
       </ButtonContainer>
     </>
   );
@@ -43,4 +47,21 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-grow: 1;
   justify-content: end;
+  align-items: center;
 `;
+
+const Separator: React.FC = () => {
+  return (
+    <>
+      <div style={{ marginLeft: "20px" }} />
+      <div
+        style={{
+          height: "30px",
+          width: "2px",
+          backgroundColor: "white",
+        }}
+      />
+      <div style={{ marginRight: "20px" }} />
+    </>
+  );
+};

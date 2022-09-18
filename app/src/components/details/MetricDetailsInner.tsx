@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
 import styled from "styled-components";
@@ -18,6 +18,7 @@ import { getMetricHeaderActions } from "../overview/getMetricHeaderActions";
 import { Filters } from "./filters/Filters";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import { Chart } from "./chart/Chart";
+import { FilterAltOutlined, ShowChartOutlined } from "@mui/icons-material";
 
 export const MetricDetailsInner: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
@@ -31,11 +32,26 @@ export const MetricDetailsInner: React.FC = () => {
   const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState("bar");
 
+  const [showFilters, setShowFilters] = useState(false);
+  const [showChart, setShowChart] = useState(false);
+
   useEffect(() => {
     setPageTitle(<PageTitle metric={metric} />);
 
     setTitleActions([
-      // add action for filter and for chart,
+      {
+        key: "chart",
+        icon: <ShowChartOutlined />,
+        label: "Show chart",
+        onClick: () => setShowChart(!showChart),
+      },
+      {
+        key: "collapse",
+        icon: <FilterAltOutlined />,
+        label: "Show filters",
+        onClick: () => setShowFilters(!showFilters),
+      },
+      null, // null means separator - ugly, but it works for the moment
       ...getMetricHeaderActions(metric, renderDialog, () => {
         reloadMeasurements();
         reloadMetric();
@@ -46,7 +62,7 @@ export const MetricDetailsInner: React.FC = () => {
       setPageTitle(null);
       setTitleActions([]);
     };
-  }, [metric]);
+  }, [metric, showFilters, showChart]);
 
   if (!metric || !measurements) {
     return null;
@@ -66,27 +82,33 @@ export const MetricDetailsInner: React.FC = () => {
         <MetricNotes metric={metric} />
       </DetailsSection>
 
-      <DetailsSection>
-        <Filters
-          metric={metric}
-          groupByTime={groupByTime}
-          setGroupByTime={setGroupByTime}
-          attributeKey={attributeKey}
-          setAttributeKey={setAttributeKey}
-          chartType={chartType}
-          setChartType={setChartType}
-        />
-      </DetailsSection>
+      {showFilters ? (
+        <DetailsSection>
+          <Filters
+            metric={metric}
+            groupByTime={groupByTime}
+            setGroupByTime={setGroupByTime}
+            attributeKey={attributeKey}
+            setAttributeKey={setAttributeKey}
+            chartType={chartType}
+            setChartType={setChartType}
+          />
+        </DetailsSection>
+      ) : null}
 
-      <DetailsSection>
-        <Chart
-          measurements={measurements}
-          metric={metric}
-          groupByTime={groupByTime}
-          groupByAttribute={attributeKey}
-          chartType={chartType}
-        />
-      </DetailsSection>
+      {showChart ? (
+        <Suspense fallback={<div />}>
+          <DetailsSection>
+            <Chart
+              measurements={measurements}
+              metric={metric}
+              groupByTime={groupByTime}
+              groupByAttribute={attributeKey}
+              chartType={chartType}
+            />
+          </DetailsSection>
+        </Suspense>
+      ) : null}
 
       <DetailsSection overflowXScroll={true}>
         <MeasurementsList metric={metric} measurements={measurements} />
