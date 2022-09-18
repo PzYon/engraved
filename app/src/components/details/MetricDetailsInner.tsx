@@ -44,12 +44,14 @@ export const MetricDetailsInner: React.FC = () => {
         icon: <ShowChartOutlined />,
         label: "Show chart",
         onClick: () => setShowChart(!showChart),
+        isNotActive: !showChart,
       },
       {
         key: "collapse",
         icon: <FilterAltOutlined />,
         label: "Show filters",
         onClick: () => setShowFilters(!showFilters),
+        isNotActive: !showFilters,
       },
       null, // null means separator - ugly, but it works for the moment
       ...getMetricHeaderActions(metric, renderDialog, () => {
