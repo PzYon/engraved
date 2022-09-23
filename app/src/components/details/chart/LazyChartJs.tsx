@@ -19,6 +19,7 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import "chartjs-adapter-date-fns";
+import annotationPlugin from "chartjs-plugin-annotation";
 import { createChart } from "./createChart";
 import { IChartProps } from "./IChartProps";
 import { useTheme } from "@mui/material/styles";
@@ -38,7 +39,8 @@ ChartJS.register(
   PointElement,
   TimeScale,
   Title,
-  Tooltip
+  Tooltip,
+  annotationPlugin
 );
 
 const LazyChartJs: React.FC<IChartProps> = ({

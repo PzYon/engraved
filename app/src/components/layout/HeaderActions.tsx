@@ -35,7 +35,7 @@ export const HeaderActions: React.FC<{
           action ? (
             <IconButtonWrapper key={action.key} action={action} />
           ) : (
-            <Separator />
+            <Separator key={"separator"} />
           )
         )}
       </ButtonContainer>

@@ -164,6 +164,19 @@ function createBarChart(
         legend: {
           position: "top",
         },
+        annotation: {
+          annotations: {
+            y: {
+              type: "line",
+              borderColor: color,
+              borderDash: [12, 6],
+              borderDashOffset: 0,
+              borderWidth: 1,
+              scaleID: "y",
+              value: (ctx) => average(ctx),
+            },
+          },
+        },
       },
     },
     data: {
@@ -181,4 +194,17 @@ function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
     case GroupByTime.Month:
       return "month";
   }
+}
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+function average(ctx: any) {
+  const values = ctx.chart.data.datasets[0].data;
+  return (
+    values.reduce(
+      (total: number, currentMeasurement: ITransformedMeasurement) => {
+        return currentMeasurement.y + total;
+      },
+      0
+    ) / values.length
+  );
 }
