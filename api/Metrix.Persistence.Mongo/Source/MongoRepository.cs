@@ -167,16 +167,19 @@ public class MongoRepository : IRepository
 
     if (attributeValues != null)
     {
-      foreach (KeyValuePair<string, string[]> attributeValue in attributeValues)
-      {
-        filters.AddRange(
-          attributeValue.Value.Select(
-            s => Builders<MeasurementDocument>.Filter.Where(
-              d => d.MetricAttributeValues[attributeValue.Key].Contains(s)
-            )
+      filters.AddRange(
+        attributeValues
+          .Select(
+            attributeValue =>
+              Builders<MeasurementDocument>.Filter.Or(
+                attributeValue.Value.Select(
+                  s => Builders<MeasurementDocument>.Filter.Where(
+                    d => d.MetricAttributeValues[attributeValue.Key].Contains(s)
+                  )
+                )
+              )
           )
-        );
-      }
+      );
     }
 
     List<MeasurementDocument> measurements = await _measurements

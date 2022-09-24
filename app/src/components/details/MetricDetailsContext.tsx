@@ -26,9 +26,9 @@ export interface IMetricDetailsContext {
     attributeKey: string,
     attributeValueKey: string
   ) => void;
-  setSelectedAttributeValue: (
+  setSelectedAttributeValues: (
     attributeKey: string,
-    attributeValueKey: string
+    attributeValueKeys: string[]
   ) => void;
   selectedAttributeValues: { [key: string]: string[] };
   setDateConditions: (conditions: IDateConditions) => void;
@@ -41,7 +41,7 @@ const MetricDetailsContext = createContext<IMetricDetailsContext>({
   reloadMetric: null,
   reloadMeasurements: null,
   toggleAttributeValue: null,
-  setSelectedAttributeValue: null,
+  setSelectedAttributeValues: null,
   selectedAttributeValues: {},
   setDateConditions: null,
   dateConditions: {},
@@ -84,7 +84,7 @@ export const MetricDetailsContextProvider: React.FC<{
       reloadMeasurements,
       toggleAttributeValue,
       selectedAttributeValues,
-      setSelectedAttributeValue,
+      setSelectedAttributeValues: setSelectedAttributeValuesInternal,
       setDateConditions,
       dateConditions,
     };
@@ -96,12 +96,12 @@ export const MetricDetailsContextProvider: React.FC<{
     </MetricDetailsContext.Provider>
   );
 
-  function setSelectedAttributeValue(
+  function setSelectedAttributeValuesInternal(
     attributeKey: string,
-    attributeValueKey: string
+    attributeValueKeys: string[]
   ) {
     const selectedValues = { ...selectedAttributeValues };
-    selectedValues[attributeKey] = [attributeValueKey];
+    selectedValues[attributeKey] = attributeValueKeys;
     setSelectedAttributeValues(selectedValues);
   }
 

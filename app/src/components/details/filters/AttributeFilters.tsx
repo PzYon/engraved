@@ -8,8 +8,10 @@ import {
 import React from "react";
 import { useMetricDetailsContext } from "../MetricDetailsContext";
 
+const noElementsValue = "-";
+
 export const AttributeFilters: React.FC = () => {
-  const { selectedAttributeValues, setSelectedAttributeValue, metric } =
+  const { selectedAttributeValues, setSelectedAttributeValues, metric } =
     useMetricDetailsContext();
 
   if (!Object.keys(metric.attributes || {}).length) {
@@ -20,7 +22,11 @@ export const AttributeFilters: React.FC = () => {
     <>
       {Object.keys(metric.attributes).map((attributeKey) => {
         const attribute = metric.attributes[attributeKey];
-        const value = selectedAttributeValues?.[attributeKey]?.[0] ?? "-";
+
+        const selectedValues = selectedAttributeValues?.[attributeKey];
+        const keys: string[] = selectedValues?.length
+          ? selectedValues
+          : [noElementsValue];
 
         return (
           <FormControl key={attributeKey} margin="none" sx={{ flexGrow: 1 }}>
@@ -31,18 +37,30 @@ export const AttributeFilters: React.FC = () => {
               id={`metric-attribute-${attributeKey}`}
               labelId={`metric-attribute-${attributeKey}-label`}
               label={attribute.name}
-              value={value}
-              onChange={(event: SelectChangeEvent) => {
-                const selectedKey = event.target.value;
+              multiple
+              value={keys}
+              onChange={(event: SelectChangeEvent<string[]>) => {
+                const selectedKeys = event.target.value as string[];
 
-                setSelectedAttributeValue(
+                if (
+                  selectedKeys.indexOf(noElementsValue) > -1 &&
+                  keys.indexOf(noElementsValue) === -1
+                ) {
+                  setSelectedAttributeValues(attributeKey, []);
+                  return;
+                }
+
+                setSelectedAttributeValues(
                   attributeKey,
-                  selectedKey === "-" ? null : selectedKey
+                  selectedKeys?.length === 1 &&
+                    selectedKeys[0] === noElementsValue
+                    ? []
+                    : selectedKeys.filter((k) => k !== noElementsValue)
                 );
               }}
             >
-              <MenuItem key={"-"} value={"-"}>
-                -
+              <MenuItem key={noElementsValue} value={noElementsValue}>
+                {noElementsValue}
               </MenuItem>
               {Object.keys(attribute.values).map((valueKey) => (
                 <MenuItem key={valueKey} value={valueKey}>

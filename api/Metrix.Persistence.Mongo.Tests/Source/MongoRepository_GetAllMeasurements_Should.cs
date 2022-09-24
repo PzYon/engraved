@@ -166,6 +166,26 @@ public class MongoRepository_GetAllMeasurements_Should
     Assert.AreEqual(0, measurements.Length);
   }
 
+  [Test]
+  public async Task Consider_Multiple_AttributeValues_Or()
+  {
+    var attributeValues = new Dictionary<string, string[]>
+    {
+      { "size", new[] { "XL" } }
+    };
+
+    await AddMeasurement(DateTime.Now, attributeValues);
+
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(
+      _metricId,
+      null,
+      null,
+      new Dictionary<string, string[]> { { "size", new[] { "XL", "L" } } }
+    );
+
+    Assert.AreEqual(1, measurements.Length);
+  }
+
   private async Task<string> AddMeasurement(DateTime? date, Dictionary<string, string[]> attributeValues = null)
   {
     var measurement = new CounterMeasurement
