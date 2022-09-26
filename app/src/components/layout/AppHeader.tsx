@@ -5,9 +5,12 @@ import { useAppContext } from "../../AppContext";
 import { HeaderActions } from "./HeaderActions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
+import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 
 export const AppHeader: React.FC = () => {
   const { pageTitle, titleActions, user } = useAppContext();
+
+  const deviceWidth = useDeviceWidth();
 
   return (
     <Host>
@@ -27,11 +30,22 @@ export const AppHeader: React.FC = () => {
           <User user={user} />
         </ContentWrapper>
       </Box>
-      <ContentWrapper>
+      <ContentWrapper
+        style={
+          deviceWidth === DeviceWidth.Small
+            ? { flexDirection: "column", alignItems: "start" }
+            : null
+        }
+      >
         <Typography variant="h2" sx={{ flexGrow: 1 }}>
           {pageTitle}
         </Typography>
-        <HeaderActions actions={titleActions} enableFloatingActions={true} />
+
+        <HeaderActions
+          style={deviceWidth === DeviceWidth.Small ? { width: "100%" } : null}
+          actions={titleActions}
+          enableFloatingActions={true}
+        />
       </ContentWrapper>
     </Host>
   );

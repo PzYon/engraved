@@ -2,12 +2,13 @@ import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import React from "react";
+import { styled } from "@mui/material";
 
 export const ActionButtons: React.FC<{
   measurement: IMeasurement;
   metricId: string;
 }> = ({ measurement, metricId }) => (
-  <>
+  <Host>
     <IconButtonWrapper
       action={{
         key: "edit-measurement",
@@ -24,5 +25,9 @@ export const ActionButtons: React.FC<{
         icon: <DeleteOutlined fontSize="small" />,
       }}
     />
-  </>
+  </Host>
 );
+
+const Host = styled("div")`
+  min-width: 80px;
+`;

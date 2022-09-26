@@ -10,7 +10,8 @@ import { useIsInViewport } from "../common/useIsInViewPort";
 export const HeaderActions: React.FC<{
   actions: IIconButtonAction[];
   enableFloatingActions?: boolean;
-}> = ({ actions, enableFloatingActions }) => {
+  style?: React.CSSProperties;
+}> = ({ actions, enableFloatingActions, style }) => {
   const buttonContainerRef = useRef<HTMLDivElement>();
 
   const areHeaderActionsInViewPort = useIsInViewport(buttonContainerRef);
@@ -26,7 +27,7 @@ export const HeaderActions: React.FC<{
   }
 
   return (
-    <>
+    <div style={style}>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
@@ -39,7 +40,7 @@ export const HeaderActions: React.FC<{
           )
         )}
       </ButtonContainer>
-    </>
+    </div>
   );
 };
 

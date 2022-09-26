@@ -77,7 +77,9 @@ export const MetricDetailsInner: React.FC = () => {
   return (
     <>
       {metric.description ? (
-        <Typography>{metric.description}</Typography>
+        <DetailsSection>
+          <Typography>{metric.description}</Typography>
+        </DetailsSection>
       ) : null}
 
       <DetailsSection>
