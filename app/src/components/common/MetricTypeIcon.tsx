@@ -23,9 +23,8 @@ const PageTitleHost = styled("div")`
     border-radius: 100%;
     height: 0.8em;
     width: 0.8em;
-    color: ${(p) => p.theme.palette.text.primary};
-    border-color: ${(p) => p.theme.palette.text.primary};
-    border: 2px solid ${(p) => p.theme.palette.text.primary};
+    color: ${(p) => p.theme.palette.primary.main};
+    border: 2px solid ${(p) => p.theme.palette.primary.main};
     margin-top: 5px;
     margin-right: 10px;
     padding: 2px;

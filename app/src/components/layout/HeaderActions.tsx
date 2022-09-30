@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 import {
   IconButtonWrapper,
   IIconButtonAction,
 } from "../common/IconButtonWrapper";
 import { FloatingHeaderActions } from "./FloatingHeaderActions";
 import { useIsInViewport } from "../common/useIsInViewPort";
+import { styled } from "@mui/material";
 
 export const HeaderActions: React.FC<{
   actions: IIconButtonAction[];
@@ -36,7 +36,7 @@ export const HeaderActions: React.FC<{
           action ? (
             <IconButtonWrapper key={action.key} action={action} />
           ) : (
-            <Separator key={"separator"} />
+            <SeparatorElement key={"separator"} />
           )
         )}
       </ButtonContainer>
@@ -44,25 +44,19 @@ export const HeaderActions: React.FC<{
   );
 };
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled("div")`
   display: flex;
   flex-grow: 1;
   justify-content: end;
   align-items: center;
+  background-color: ${(p) => p.theme.palette.background.default};
+  border-radius: 20px;
+  padding-right: 10px;
 `;
 
-const Separator: React.FC = () => {
-  return (
-    <>
-      <div style={{ marginLeft: "20px" }} />
-      <div
-        style={{
-          height: "30px",
-          width: "2px",
-          backgroundColor: "white",
-        }}
-      />
-      <div style={{ marginRight: "20px" }} />
-    </>
-  );
-};
+const SeparatorElement = styled("div")`
+  height: 30px;
+  width: 1px;
+  background-color: ${(p) => p.theme.palette.primary.main};
+  margin: 0 20px;
+`;
