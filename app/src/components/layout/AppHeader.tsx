@@ -37,7 +37,7 @@ export const AppHeader: React.FC = () => {
             : null
         }
       >
-        <Typography variant="h2" sx={{ flexGrow: 1 }}>
+        <Typography variant="h2" sx={{ flexGrow: 1, color: "primary.main" }}>
           {pageTitle}
         </Typography>
 

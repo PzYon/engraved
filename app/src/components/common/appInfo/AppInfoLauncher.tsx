@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { IconButtonWrapper } from "../IconButtonWrapper";
 import { HelpOutline } from "@mui/icons-material";
-import { Popover } from "@mui/material";
 import { AppInfo } from "./AppInfo";
+import { DialogWrapper } from "../../layout/dialogs/DialogWrapper";
 
 export const AppInfoLauncher: React.FC = () => {
   const [showInfo, setShowInfo] = useState(false);
@@ -14,25 +14,22 @@ export const AppInfoLauncher: React.FC = () => {
         <IconButtonWrapper
           action={{
             icon: <HelpOutline />,
-            onClick: () => setShowInfo(!showInfo),
+            onClick: () => setShowInfo(true),
             label: "Show App Info",
             key: "app_info",
             sx: { color: "white" },
           }}
         />
       </span>
-      <Popover
-        id={"app_info_callout"}
-        open={showInfo}
-        anchorEl={iconRef.current}
-        onClose={() => setShowInfo(false)}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-      >
-        <AppInfo />
-      </Popover>
+      {showInfo ? (
+        <DialogWrapper
+          onClose={() => setShowInfo(false)}
+          props={{ fullScreen: false }}
+          title="App Info"
+        >
+          <AppInfo />
+        </DialogWrapper>
+      ) : null}
     </>
   );
 };

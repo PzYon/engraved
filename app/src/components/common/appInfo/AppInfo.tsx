@@ -18,7 +18,7 @@ export const AppInfo: React.FC = () => {
   }
 
   return (
-    <Host>
+    <>
       <ItemContainer>
         <SystemInfo systemInfo={systemInfo} label={"API"} />
       </ItemContainer>
@@ -36,7 +36,7 @@ export const AppInfo: React.FC = () => {
         />
       </ItemContainer>
       <ItemContainer>
-        <Typography fontSize="small">
+        <Typography>
           <a
             href="https://github.com/PzYon/metrix/issues"
             target="_blank"
@@ -47,7 +47,7 @@ export const AppInfo: React.FC = () => {
           issues in github.
         </Typography>
       </ItemContainer>
-    </Host>
+    </>
   );
 };
 
@@ -56,7 +56,7 @@ const SystemInfo: React.FC<{ label: string; systemInfo: ISystemInfo }> = ({
   systemInfo,
 }) => {
   return (
-    <Typography fontSize="small">
+    <Typography>
       {label} v{systemInfo.version} (released{" "}
       <FormatDate value={systemInfo.mergeDateTime} />)
       <br />
@@ -71,10 +71,6 @@ const SystemInfo: React.FC<{ label: string; systemInfo: ISystemInfo }> = ({
     </Typography>
   );
 };
-
-const Host = styled("div")`
-  padding: 15px;
-`;
 
 const ItemContainer = styled("div")`
   padding: 8px 0 8px 0;
