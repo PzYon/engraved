@@ -45,7 +45,7 @@ jobs:
         uses: gerred/actions/current-time@master
 
       - name: Publish
-        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o ${{env.DOTNET_ROOT}}\Metrix.Api -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
+        run: dotnet publish ./Metrix.Api/Metrix.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}\Metrix.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
         working-directory: ./api
 
       - name: Upload artifact
