@@ -10,7 +10,7 @@ export const AppInfoLauncher: React.FC = () => {
 
   return (
     <>
-      <span ref={iconRef}>
+      <span ref={iconRef} style={{ paddingRight: "15px" }}>
         <IconButtonWrapper
           action={{
             icon: <HelpOutline />,

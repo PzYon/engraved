@@ -49,6 +49,9 @@ const ButtonContainer = styled("div")`
   flex-grow: 1;
   justify-content: end;
   align-items: center;
+  background-color: ${(p) => p.theme.palette.background.default};
+  border-radius: 20px;
+  padding-right: 10px;
 `;
 
 const SeparatorElement = styled("div")`
