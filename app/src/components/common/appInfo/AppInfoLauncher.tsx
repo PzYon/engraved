@@ -17,7 +17,7 @@ export const AppInfoLauncher: React.FC = () => {
             onClick: () => setShowInfo(true),
             label: "Show App Info",
             key: "app_info",
-            sx: { color: "white" },
+            sx: { color: "common.white" },
           }}
         />
       </span>
