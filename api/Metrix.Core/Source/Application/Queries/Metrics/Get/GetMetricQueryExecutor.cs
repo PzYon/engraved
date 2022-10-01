@@ -16,7 +16,7 @@ public class GetMetricQueryExecutor : IQueryExecutor<IMetric?>
   {
     if (string.IsNullOrEmpty(_query.MetricKey))
     {
-      throw new InvalidQueryException<IMetric>(_query, $"{nameof(_query.MetricKey)} must be specified.");
+      throw new InvalidQueryException<IMetric>(_query!, $"{nameof(_query.MetricKey)} must be specified.");
     }
 
     IMetric? metric = await repository.GetMetric(_query.MetricKey);

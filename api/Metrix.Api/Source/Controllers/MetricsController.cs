@@ -33,7 +33,7 @@ public class MetricsController : ControllerBase
 
   [Route("{metricId}")]
   [HttpGet]
-  public async Task<IMetric> Get(string metricId)
+  public async Task<IMetric?> Get(string metricId)
   {
     var command = new GetMetricQuery { MetricKey = metricId };
 

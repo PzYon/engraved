@@ -186,14 +186,14 @@ public class MongoRepository_GetAllMeasurements_Should
     Assert.AreEqual(1, measurements.Length);
   }
 
-  private async Task<string> AddMeasurement(DateTime? date, Dictionary<string, string[]> attributeValues = null)
+  private async Task<string> AddMeasurement(DateTime? date, Dictionary<string, string[]>? attributeValues = null)
   {
     var measurement = new CounterMeasurement
     {
       MetricId = _metricId,
       UserId = _userId,
       DateTime = date,
-      MetricAttributeValues = attributeValues
+      MetricAttributeValues = attributeValues ?? new Dictionary<string, string[]>()
     };
 
     UpsertResult result = await _repository.UpsertMeasurement(measurement);
