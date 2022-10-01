@@ -51,12 +51,11 @@ const ButtonContainer = styled("div")`
   align-items: center;
   background-color: ${(p) => p.theme.palette.background.default};
   border-radius: 20px;
-  padding-right: 10px;
 `;
 
 const SeparatorElement = styled("div")`
   height: 30px;
   width: 1px;
   background-color: ${(p) => p.theme.palette.primary.main};
-  margin: 0 20px;
+  margin: 0 ${(p) => p.theme.spacing(2)};
 `;

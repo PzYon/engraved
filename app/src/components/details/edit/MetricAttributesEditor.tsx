@@ -76,7 +76,7 @@ const FormSection: React.FC<{
 };
 
 const Host = styled("div")`
-  margin-top: 15px;
+  margin-top: ${(p) => p.theme.spacing(2)};
   position: relative;
   border-radius: 4px;
   border: 1px solid rgb(0 0 0 / 23%);

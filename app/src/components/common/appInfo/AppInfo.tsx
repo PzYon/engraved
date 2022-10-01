@@ -73,5 +73,5 @@ const SystemInfo: React.FC<{ label: string; systemInfo: ISystemInfo }> = ({
 };
 
 const ItemContainer = styled("div")`
-  padding: 8px 0 8px 0;
+  padding: ${(p) => p.theme.spacing(1)} 0;
 `;

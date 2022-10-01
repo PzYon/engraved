@@ -57,13 +57,13 @@ export const Filters: React.FC<{
 const Row = styled("div")`
   display: flex;
   justify-items: center;
-  margin-bottom: 20px;
+  margin-bottom: ${(p) => p.theme.spacing(2)};
 
   & > * {
     display: flex;
     flex-basis: 0;
     flex-grow: 1;
-    margin-right: 20px !important;
+    margin-right: ${(p) => p.theme.spacing(2)} !important;
 
     &:last-of-type {
       margin-right: 0 !important;

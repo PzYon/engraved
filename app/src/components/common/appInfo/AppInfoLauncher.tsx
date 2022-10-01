@@ -1,16 +1,16 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { IconButtonWrapper } from "../IconButtonWrapper";
 import { HelpOutline } from "@mui/icons-material";
 import { AppInfo } from "./AppInfo";
 import { DialogWrapper } from "../../layout/dialogs/DialogWrapper";
+import { styled } from "@mui/material";
 
 export const AppInfoLauncher: React.FC = () => {
   const [showInfo, setShowInfo] = useState(false);
-  const iconRef = useRef();
 
   return (
     <>
-      <span ref={iconRef} style={{ paddingRight: "15px" }}>
+      <LauncherContainer>
         <IconButtonWrapper
           action={{
             icon: <HelpOutline />,
@@ -20,7 +20,7 @@ export const AppInfoLauncher: React.FC = () => {
             sx: { color: "common.white" },
           }}
         />
-      </span>
+      </LauncherContainer>
       {showInfo ? (
         <DialogWrapper
           onClose={() => setShowInfo(false)}
@@ -33,3 +33,7 @@ export const AppInfoLauncher: React.FC = () => {
     </>
   );
 };
+
+const LauncherContainer = styled("span")`
+  padding-right: ${(p) => p.theme.spacing(1)};
+`;

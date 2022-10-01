@@ -38,7 +38,7 @@ const Property = styled(Typography)`
   word-break: break-word;
   display: inline-block;
   font-weight: lighter;
-  margin-top: 16px;
+  margin-top: ${(p) => p.theme.spacing(2)};
 
   :not(:last-of-type)::after {
     content: "\\00B7";

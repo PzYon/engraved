@@ -113,11 +113,11 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
 };
 
 const AddNewContainer = styled("div")`
-  margin: 30px 0 15px 0;
+  margin: ${(p) => p.theme.spacing(4)} 0 ${(p) => p.theme.spacing(2)} 0;
   display: flex;
   justify-items: center;
   & > * {
-    margin-right: 15px;
+    margin-right: ${(p) => p.theme.spacing(2)};
 
     &:last-of-type {
       margin-right: 0;
