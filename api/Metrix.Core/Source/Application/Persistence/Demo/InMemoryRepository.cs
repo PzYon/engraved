@@ -59,7 +59,7 @@ public class InMemoryRepository : IRepository
     string metricId,
     DateTime? fromDate,
     DateTime? toDate,
-    IDictionary<string, string[]> attributeValues
+    IDictionary<string, string[]>? attributeValues
     )
   {
     return Task.FromResult(
