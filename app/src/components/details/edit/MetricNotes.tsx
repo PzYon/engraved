@@ -20,7 +20,7 @@ export const MetricNotes: React.FC<{
       }}
       multiline={true}
       label={"Notes"}
-      sx={{ width: "100%", marginTop: "8px" }}
+      sx={{ width: "100%", marginTop: 1 }}
       margin={"normal"}
     />
   );

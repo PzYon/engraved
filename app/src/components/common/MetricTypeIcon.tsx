@@ -35,7 +35,7 @@ const OverviewHost = styled("div")`
   svg {
     border-radius: 100%;
     border: 2px solid ${(p) => p.theme.palette.primary.main};
-    padding: 8px;
+    padding: ${(p) => p.theme.spacing(1)};
     color: ${(p) => p.theme.palette.primary.main};
     background-color: ${(p) => p.theme.palette.background.default};
     width: 0.8em;

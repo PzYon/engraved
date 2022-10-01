@@ -78,6 +78,6 @@ export const EditMetric: React.FC<{
 };
 
 const ButtonContainer = styled("div")`
-  margin-top: 15px;
+  margin-top: ${(p) => p.theme.spacing(2)};
   text-align: right;
 `;
