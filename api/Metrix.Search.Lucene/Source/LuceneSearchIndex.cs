@@ -5,6 +5,11 @@ using Metrix.Core.Application.Search;
 
 namespace Metrix.Search.Lucene;
 
+// problems:
+// - performance?
+// - grouping
+// - storing actual metric values instead of keys in index
+
 public class LuceneSearchIndex : ISearchIndex
 {
   private readonly MemoryLuceneIndex _index = new();
@@ -34,8 +39,8 @@ public class LuceneSearchIndex : ISearchIndex
       foreach (string fieldName in metricAttributeValues.SelectMany(v => v.Keys).Distinct())
       {
         termQuery.Clauses.Add(new BooleanClause(new TermQuery(new Term(fieldName, searchTerm)), Occur.SHOULD));
-        termQuery.Clauses.Add(new BooleanClause(new FuzzyQuery(new Term(fieldName, searchTerm)), Occur.SHOULD));
         termQuery.Clauses.Add(new BooleanClause(new WildcardQuery(new Term(fieldName, searchTerm + "*")), Occur.SHOULD));
+        termQuery.Clauses.Add(new BooleanClause(new FuzzyQuery(new Term(fieldName, searchTerm)), Occur.SHOULD));
       }
 
       query.Clauses.Add(new BooleanClause(termQuery, Occur.MUST));

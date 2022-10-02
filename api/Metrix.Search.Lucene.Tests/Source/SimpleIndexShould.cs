@@ -30,7 +30,19 @@ public class SimpleIndexShould
     Assert.AreEqual(1, search.Count);
   }
 
-  private IEnumerable<Dictionary<string, string[]>> GetSimpleValues()
+  [Test]
+  public void ReturnOnlyDistinctResults()
+  {
+    List<Dictionary<string, string[]>> search = new LuceneSearchIndex().Search(
+      "red beta",
+      GetSimpleValues().Union(GetSimpleValues()).Union(GetSimpleValues()).ToArray()
+    );
+
+    Assert.IsNotEmpty(search);
+    Assert.AreEqual(1, search.Count);
+  }
+
+  private static IEnumerable<Dictionary<string, string[]>> GetSimpleValues()
   {
     yield return new Dictionary<string, string[]>
     {
