@@ -1,15 +1,13 @@
-﻿using Lucene.Net.Analysis.En;
-using Lucene.Net.Documents;
+﻿using Lucene.Net.Documents;
 using Lucene.Net.Index;
-using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
-using Lucene.Net.Util;
+using Metrix.Core.Application.Search;
 
 namespace Metrix.Search.Lucene;
 
-public class SimpleIndexWrapper
+public class LuceneSearchIndex : ISearchIndex
 {
-  private readonly SimpleIndex _index = new();
+  private readonly MemoryLuceneIndex _index = new();
 
   public List<Dictionary<string, string[]>> Search(
     string searchText,
@@ -35,8 +33,9 @@ public class SimpleIndexWrapper
 
       foreach (string fieldName in metricAttributeValues.SelectMany(v => v.Keys).Distinct())
       {
-        // consider also adding fuzzy query here
         termQuery.Clauses.Add(new BooleanClause(new TermQuery(new Term(fieldName, searchTerm)), Occur.SHOULD));
+        termQuery.Clauses.Add(new BooleanClause(new FuzzyQuery(new Term(fieldName, searchTerm)), Occur.SHOULD));
+        termQuery.Clauses.Add(new BooleanClause(new WildcardQuery(new Term(fieldName, searchTerm + "*")), Occur.SHOULD));
       }
 
       query.Clauses.Add(new BooleanClause(termQuery, Occur.MUST));

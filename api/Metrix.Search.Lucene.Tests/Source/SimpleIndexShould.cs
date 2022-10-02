@@ -9,7 +9,7 @@ public class SimpleIndexShould
   [Test]
   public void MatchSingleTerm()
   {
-    List<Dictionary<string, string[]>> search = new SimpleIndexWrapper().Search(
+    List<Dictionary<string, string[]>> search = new LuceneSearchIndex().Search(
       "red",
       GetSimpleValues().ToArray()
     );
@@ -21,7 +21,7 @@ public class SimpleIndexShould
   [Test]
   public void MatchMultipleTerms()
   {
-    List<Dictionary<string, string[]>> search = new SimpleIndexWrapper().Search(
+    List<Dictionary<string, string[]>> search = new LuceneSearchIndex().Search(
       "red beta",
       GetSimpleValues().ToArray()
     );

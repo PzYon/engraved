@@ -8,14 +8,14 @@ using Lucene.Net.Util;
 
 namespace Metrix.Search.Lucene;
 
-public class SimpleIndex
+public class MemoryLuceneIndex
 {
   private const LuceneVersion LuceneVersion = global::Lucene.Net.Util.LuceneVersion.LUCENE_48;
 
   private IndexWriter _indexWriter;
   private RAMDirectory _directory;
 
-  public SimpleIndex()
+  public MemoryLuceneIndex()
   {
     _directory = new RAMDirectory();
 
