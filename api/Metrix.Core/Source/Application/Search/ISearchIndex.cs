@@ -2,7 +2,7 @@
 
 public interface ISearchIndex
 {
-  List<Dictionary<string, string[]>> Search(
+  List<SearchResult> Search(
     string searchText,
     params Dictionary<string, string[]>[] metricAttributeValues
     );

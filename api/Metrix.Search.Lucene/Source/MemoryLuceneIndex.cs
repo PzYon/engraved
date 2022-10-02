@@ -5,6 +5,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
+using Metrix.Core.Application.Search;
 
 namespace Metrix.Search.Lucene;
 
@@ -24,19 +25,13 @@ public class MemoryLuceneIndex
     _indexWriter = new IndexWriter(_directory, config);
   }
 
-  public void AddDocument(Document doc)
-  {
-    _indexWriter.AddDocument(doc);
-    _indexWriter.Commit();
-  }
-
   public void AddDocuments(IEnumerable<Document> docs)
   {
     _indexWriter.AddDocuments(docs);
     _indexWriter.Commit();
   }
 
-  public List<Dictionary<string, string[]>> Search(Query query)
+  public List<SearchResult> Search(Query query)
   {
     DirectoryReader? dirReader = DirectoryReader.Open(_directory);
 
@@ -44,7 +39,8 @@ public class MemoryLuceneIndex
 
     ScoreDoc[] scoreDocs = searcher.Search(query, null, 10).ScoreDocs;
 
-    var results = new List<Dictionary<string, string[]>>();
+    var results = new List<SearchResult>();
+
     foreach (ScoreDoc scoreDoc in scoreDocs)
     {
       Document d = searcher.Doc(scoreDoc.Doc);
@@ -52,10 +48,19 @@ public class MemoryLuceneIndex
       var fieldValues = new Dictionary<string, string[]>();
       foreach (IIndexableField field in d.Fields)
       {
+        // todo: skip __ and co.
+
         fieldValues[field.Name] = field.GetStringValue().Split(",");
       }
 
-      results.Add(fieldValues);
+      results.Add(
+        new SearchResult
+        {
+          Values = fieldValues,
+          OccurrenceCount = d.GetField("__count").GetInt32Value() ?? 1,
+          Score = scoreDoc.Score
+        }
+      );
     }
 
     return results;

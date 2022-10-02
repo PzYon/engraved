@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Metrix.Core.Application.Search;
 using NUnit.Framework;
 
 namespace Metrix.Search.Lucene;
@@ -9,7 +10,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchSingleTerm()
   {
-    List<Dictionary<string, string[]>> search = new LuceneSearchIndex().Search(
+    List<SearchResult> search = new LuceneSearchIndex().Search(
       "red",
       GetSimpleValues().ToArray()
     );
@@ -21,7 +22,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchMultipleTerms()
   {
-    List<Dictionary<string, string[]>> search = new LuceneSearchIndex().Search(
+    List<SearchResult> search = new LuceneSearchIndex().Search(
       "red beta",
       GetSimpleValues().ToArray()
     );
@@ -33,7 +34,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void ReturnOnlyDistinctResults()
   {
-    List<Dictionary<string, string[]>> search = new LuceneSearchIndex().Search(
+    List<SearchResult> search = new LuceneSearchIndex().Search(
       "red beta",
       GetSimpleValues().Union(GetSimpleValues()).Union(GetSimpleValues()).ToArray()
     );
@@ -45,7 +46,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void ReturnOnlyDistinctResultsWeightedBasedOnOccurrence()
   {
-    List<Dictionary<string, string[]>> search = new LuceneSearchIndex().Search(
+    List<SearchResult> search = new LuceneSearchIndex().Search(
       "occurs",
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Once" } } },
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Three Times" } } },
@@ -58,9 +59,9 @@ public class LuceneSearchIndexShould
     Assert.IsNotEmpty(search);
     Assert.AreEqual(3, search.Count);
 
-    Assert.AreEqual("Occurs Three Times", search.ToArray()[0]["attr1"][0]);
-    Assert.AreEqual("Occurs Twice", search.ToArray()[1]["attr1"][0]);
-    Assert.AreEqual("Occurs Once", search.ToArray()[2]["attr1"][0]);
+    Assert.AreEqual("Occurs Three Times", search.ToArray()[0].Values["attr1"][0]);
+    Assert.AreEqual("Occurs Twice", search.ToArray()[1].Values["attr1"][0]);
+    Assert.AreEqual("Occurs Once", search.ToArray()[2].Values["attr1"][0]);
   }
 
   private static IEnumerable<Dictionary<string, string[]>> GetSimpleValues()

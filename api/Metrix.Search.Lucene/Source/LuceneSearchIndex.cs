@@ -20,7 +20,7 @@ public class LuceneSearchIndex : ISearchIndex
 
   private readonly MemoryLuceneIndex _index = new();
 
-  public List<Dictionary<string, string[]>> Search(
+  public List<SearchResult> Search(
     string searchText,
     params Dictionary<string, string[]>[] metricAttributeValues
     )

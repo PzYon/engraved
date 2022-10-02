@@ -23,7 +23,7 @@ public class SearchController : ControllerBase
 
   [Route("metric_attributes/{metricId}")]
   [HttpGet]
-  public async Task<List<Dictionary<string, string[]>>> GetAll(string metricId, string searchText)
+  public async Task<List<SearchResult>> GetAll(string metricId, string searchText)
   {
     IMeasurement[] measurements = await _dispatcher.Query(new GetAllMeasurementsQuery { MetricId = metricId });
     return _searchIndex.Search(searchText, measurements.Select(s => s.MetricAttributeValues).ToArray());
