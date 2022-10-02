@@ -30,6 +30,12 @@ public class MemoryLuceneIndex
     _indexWriter.Commit();
   }
 
+  public void AddDocuments(IEnumerable<Document> docs)
+  {
+    _indexWriter.AddDocuments(docs);
+    _indexWriter.Commit();
+  }
+
   public List<Dictionary<string, string[]>> Search(Query query)
   {
     DirectoryReader? dirReader = DirectoryReader.Open(_directory);
