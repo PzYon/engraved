@@ -31,7 +31,7 @@ public class MemoryLuceneIndex
     _indexWriter.Commit();
   }
 
-  public List<SearchResult> Search(Query query)
+  public List<InternalSearchResult> Search(Query query)
   {
     DirectoryReader? dirReader = DirectoryReader.Open(_directory);
 
@@ -39,25 +39,17 @@ public class MemoryLuceneIndex
 
     ScoreDoc[] scoreDocs = searcher.Search(query, null, 10).ScoreDocs;
 
-    var results = new List<SearchResult>();
+    var results = new List<InternalSearchResult>();
 
     foreach (ScoreDoc scoreDoc in scoreDocs)
     {
       Document d = searcher.Doc(scoreDoc.Doc);
 
-      var fieldValues = new Dictionary<string, string[]>();
-      foreach (IIndexableField field in d.Fields)
-      {
-        // todo: skip __ and co.
-
-        fieldValues[field.Name] = field.GetStringValue().Split(",");
-      }
-
       results.Add(
-        new SearchResult
+        new InternalSearchResult
         {
-          Values = fieldValues,
-          OccurrenceCount = d.GetField("__count").GetInt32Value() ?? 1,
+          Key = d.GetField(LuceneSearchIndex.uniqueValueFieldName).GetStringValue(),
+          Occurrence = d.GetField(LuceneSearchIndex.countFieldName).GetInt32Value() ?? 0,
           Score = scoreDoc.Score
         }
       );

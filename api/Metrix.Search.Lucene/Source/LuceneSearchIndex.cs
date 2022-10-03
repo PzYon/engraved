@@ -16,7 +16,8 @@ namespace Metrix.Search.Lucene;
 
 public class LuceneSearchIndex : ISearchIndex
 {
-  private static readonly string countFieldName = "__count";
+  public static readonly string countFieldName = "__count";
+  public static readonly string uniqueValueFieldName = "__unique";
 
   private readonly MemoryLuceneIndex _index = new();
 
@@ -25,11 +26,22 @@ public class LuceneSearchIndex : ISearchIndex
     params Dictionary<string, string[]>[] metricAttributeValues
     )
   {
-    AddDocumentsToIndex(metricAttributeValues);
+    Dictionary<string, Dictionary<string, string[]>> addDocumentsToIndex = AddDocumentsToIndex(metricAttributeValues);
 
     Query query = CreateQuery(metricAttributeValues, searchText);
 
-    return _index.Search(query);
+    List<InternalSearchResult> searchResults = _index.Search(query);
+
+    return searchResults
+      .Select(
+        r => new SearchResult
+        {
+          Score = r.Score,
+          OccurrenceCount = r.Occurrence,
+          Values = addDocumentsToIndex[r.Key]
+        }
+      )
+      .ToList();
   }
 
   private static Query CreateQuery(Dictionary<string, string[]>[] metricAttributeValues, string searchText)
@@ -64,15 +76,18 @@ public class LuceneSearchIndex : ISearchIndex
     return query;
   }
 
-  private void AddDocumentsToIndex(IEnumerable<Dictionary<string, string[]>> metricAttributeValues)
+  private Dictionary<string, Dictionary<string, string[]>> AddDocumentsToIndex(
+    IEnumerable<Dictionary<string, string[]>> metricAttributeValues
+    )
   {
-    Dictionary<string, Document> docs = new();
+    Dictionary<string, Document> docsByUniqueString = new();
+    Dictionary<string, Dictionary<string, string[]>> valuesByUniqueString = new();
 
     foreach (Dictionary<string, string[]> attributeValues in metricAttributeValues)
     {
       string uniqueValueString = GetUniqueValueString(attributeValues);
 
-      if (docs.TryGetValue(uniqueValueString, out Document existingDoc))
+      if (docsByUniqueString.TryGetValue(uniqueValueString, out Document existingDoc))
       {
         int count = existingDoc.GetField(countFieldName).GetInt32Value() ?? 0;
         existingDoc.RemoveField(countFieldName);
@@ -82,11 +97,16 @@ public class LuceneSearchIndex : ISearchIndex
       {
         Document document = CreateDocument(attributeValues);
         document.Add(new Int32Field(countFieldName, 1, Field.Store.YES));
-        docs.Add(uniqueValueString, document);
+        document.Add(new StringField(uniqueValueFieldName, uniqueValueString, Field.Store.YES));
+
+        docsByUniqueString.Add(uniqueValueString, document);
+        valuesByUniqueString.Add(uniqueValueString, attributeValues);
       }
     }
 
-    _index.AddDocuments(docs.Values);
+    _index.AddDocuments(docsByUniqueString.Values);
+
+    return valuesByUniqueString;
   }
 
   private static string GetUniqueValueString(Dictionary<string, string[]> attributeValues)
