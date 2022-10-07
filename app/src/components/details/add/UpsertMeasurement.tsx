@@ -16,6 +16,7 @@ import { FormElementContainer } from "../../common/FormUtils";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { IGaugeMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { stripTime } from "../../common/utils";
+import { AttributeComboSearch } from "./AttributeComboSearch";
 
 export const UpsertMeasurement: React.FC<{
   metric: IMetric;
@@ -26,6 +27,8 @@ export const UpsertMeasurement: React.FC<{
     useState<IMetricAttributeValues>(measurement?.metricAttributeValues || {}); // empty means nothing selected in the selector
 
   const [notes, setNotes] = useState<string>(measurement?.notes || "");
+
+  const [forceResetSelectors, setForceResetSelectors] = useState("initial");
 
   const [value, setValue] = useState<string>(
     (measurement as IGaugeMeasurement)?.value?.toString() || ""
@@ -49,6 +52,9 @@ export const UpsertMeasurement: React.FC<{
           onChange={(event) => setValue(event.target.value)}
           label={"Value"}
           margin={"normal"}
+          sx={{
+            marginBottom: "0",
+          }}
         />
       ) : null}
 
@@ -56,11 +62,30 @@ export const UpsertMeasurement: React.FC<{
         <DateTimeSelector setDate={setDate} date={date} />
       </FormElementContainer>
 
+      <FormElementContainer>
+        <AttributeComboSearch
+          metric={metric}
+          onChange={(values) => {
+            resetSelectors();
+            setAttributeValues(
+              Object.keys(metric.attributes).reduce(
+                (previousValue: IMetricAttributeValues, key: string) => {
+                  previousValue[key] = values[key] ?? null;
+                  return previousValue;
+                },
+                {}
+              )
+            );
+          }}
+        />
+      </FormElementContainer>
+
       {Object.keys(metric.attributes || {}).length ? (
         <MetricAttributesSelector
+          key={forceResetSelectors}
           attributes={metric.attributes}
           selectedAttributeValues={attributeValues}
-          onChange={(values) => setAttributeValues(values)}
+          onChange={setAttributeValues}
         />
       ) : null}
 
@@ -72,9 +97,11 @@ export const UpsertMeasurement: React.FC<{
         margin={"normal"}
       />
 
-      <Button variant="outlined" onClick={upsertMeasurment}>
-        {getAddButtonLabel()}
-      </Button>
+      <FormElementContainer>
+        <Button variant="outlined" onClick={upsertMeasurment}>
+          {getAddButtonLabel()}
+        </Button>
+      </FormElementContainer>
     </FormControl>
   );
 
@@ -148,5 +175,9 @@ export const UpsertMeasurement: React.FC<{
     }
 
     return measurement?.id ? translations.edit : translations.add;
+  }
+
+  function resetSelectors() {
+    setForceResetSelectors(Math.random().toString());
   }
 };

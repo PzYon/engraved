@@ -11,7 +11,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchSingleTerm()
   {
-    SearchResult[] results = new LuceneSearchIndex().Search(
+    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "red",
       new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().ToArray()
@@ -24,7 +24,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchMultipleTerms()
   {
-    SearchResult[] results = new LuceneSearchIndex().Search(
+    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "red beta",
       new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().ToArray()
@@ -37,7 +37,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void ReturnOnlyDistinctResults()
   {
-    SearchResult[] results = new LuceneSearchIndex().Search(
+    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "red beta",
       new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().Union(GetSimpleValues()).Union(GetSimpleValues()).ToArray()
@@ -50,7 +50,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void ReturnOnlyDistinctResultsWeightedBasedOnOccurrence()
   {
-    SearchResult[] results = new LuceneSearchIndex().Search(
+    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "occurs",
       new Dictionary<string, MetricAttribute>(),
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Once" } } },
@@ -88,7 +88,7 @@ public class LuceneSearchIndexShould
       }
     };
 
-    SearchResult[] results = new LuceneSearchIndex().Search(
+    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "banana",
       metricAttributes,
       new Dictionary<string, string[]>

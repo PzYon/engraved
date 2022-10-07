@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { AppContent } from "../AppContent";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 
 const SlideUp = React.forwardRef(function Transition(
   props: { children: React.ReactNode },
@@ -29,8 +30,13 @@ export const DialogWrapper: React.FC<{
   onClose: () => void;
   props: Partial<DialogProps>;
 }> = ({ title, onClose, props, children }) => {
-  // eslint-disable-next-line react/prop-types
-  const RootBodyElement = props.fullScreen ? AppContent : React.Fragment;
+  const deviceWidth = useDeviceWidth();
+
+  const RootBodyElement =
+    // eslint-disable-next-line react/prop-types
+    props.fullScreen || deviceWidth === DeviceWidth.Small
+      ? AppContent
+      : DialogHost;
 
   return (
     <Dialog
@@ -50,7 +56,7 @@ export const DialogWrapper: React.FC<{
             <Close />
           </IconButton>
         </Header>
-        <DialogContent sx={{ paddingTop: 0 }}>{children}</DialogContent>
+        <StyledDialogContent>{children}</StyledDialogContent>
       </RootBodyElement>
     </Dialog>
   );
@@ -64,4 +70,16 @@ const Header = styled("div")`
 
 const StyledDialogTitle = styled(DialogTitle)`
   flex-grow: 1;
+`;
+
+const DialogHost = styled("div")`
+  max-width: 100%;
+  width: 800px;
+`;
+
+const StyledDialogContent = styled(DialogContent)`
+  .MuiFormControl-root {
+    width: 100%;
+    padding-top: 0;
+  }
 `;
