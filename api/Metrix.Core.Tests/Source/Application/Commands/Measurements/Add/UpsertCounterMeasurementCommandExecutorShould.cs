@@ -56,7 +56,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
   }
 
   [Test]
-  public void Throw_WhenMetricKeyIsNotSpecified()
+  public void Throw_WhenMetricIdIsNotSpecified()
   {
     var command = new UpsertCounterMeasurementCommand { MetricId = string.Empty };
 

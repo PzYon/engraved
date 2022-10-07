@@ -14,12 +14,12 @@ public class GetMetricQueryExecutor : IQueryExecutor<IMetric?>
 
   public async Task<IMetric?> Execute(IRepository repository)
   {
-    if (string.IsNullOrEmpty(_query.MetricKey))
+    if (string.IsNullOrEmpty(_query.MetricId))
     {
-      throw new InvalidQueryException<IMetric>(_query!, $"{nameof(_query.MetricKey)} must be specified.");
+      throw new InvalidQueryException<IMetric>(_query!, $"{nameof(_query.MetricId)} must be specified.");
     }
 
-    IMetric? metric = await repository.GetMetric(_query.MetricKey);
+    IMetric? metric = await repository.GetMetric(_query.MetricId);
     if (metric == null)
     {
       return null;

@@ -6,6 +6,7 @@ using Lucene.Net.Queries.Function;
 using Lucene.Net.Queries.Function.ValueSources;
 using Lucene.Net.Search;
 using Metrix.Core.Application.Search;
+using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Search.Lucene;
 
@@ -23,12 +24,14 @@ public class LuceneSearchIndex : ISearchIndex
 
   public List<SearchResult> Search(
     string searchText,
-    params Dictionary<string, string[]>[] metricAttributeValues
+    Dictionary<string, MetricAttribute> attributes,
+    params Dictionary<string, string[]>[] attributeValues
     )
   {
-    Dictionary<string, Dictionary<string, string[]>> addDocumentsToIndex = AddDocumentsToIndex(metricAttributeValues);
+    Dictionary<string, Dictionary<string, string[]>> addDocumentsToIndex =
+      AddDocumentsToIndex(attributes, attributeValues);
 
-    Query query = CreateQuery(metricAttributeValues, searchText);
+    Query query = CreateQuery(attributeValues, searchText);
 
     List<InternalSearchResult> searchResults = _index.Search(query);
 
@@ -77,6 +80,7 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private Dictionary<string, Dictionary<string, string[]>> AddDocumentsToIndex(
+    Dictionary<string, MetricAttribute> metricAttributes,
     IEnumerable<Dictionary<string, string[]>> metricAttributeValues
     )
   {
@@ -95,7 +99,7 @@ public class LuceneSearchIndex : ISearchIndex
       }
       else
       {
-        Document document = CreateDocument(attributeValues);
+        Document document = CreateDocument(metricAttributes, attributeValues);
         document.Add(new Int32Field(countFieldName, 1, Field.Store.YES));
         document.Add(new StringField(uniqueValueFieldName, uniqueValueString, Field.Store.YES));
 
@@ -121,15 +125,33 @@ public class LuceneSearchIndex : ISearchIndex
     return sb.ToString();
   }
 
-  private static Document CreateDocument(Dictionary<string, string[]> attributeValues)
+  private static Document CreateDocument(
+    Dictionary<string, MetricAttribute> metricAttributes,
+    Dictionary<string, string[]> attributeValues
+    )
   {
     var document = new Document();
 
     foreach (KeyValuePair<string, string[]> attributeValue in attributeValues)
     {
-      document.Add(new TextField(attributeValue.Key, string.Join(",", attributeValue.Value), Field.Store.YES));
+      string attributeKey = attributeValue.Key;
+      string[] valueKeys = attributeValue.Value;
+
+      MetricAttribute? attribute = metricAttributes.ContainsKey(attributeKey) ? metricAttributes[attributeKey] : null;
+      string[] labelValues = GetLabelValues(valueKeys, attribute);
+
+      document.Add(new TextField(attributeKey, string.Join(",", labelValues), Field.Store.YES));
     }
 
     return document;
+  }
+
+  private static string[] GetLabelValues(string[] valueKeys, MetricAttribute? attribute)
+  {
+    return valueKeys
+      .Select(
+        valueKey => attribute != null && attribute.Values.TryGetValue(valueKey, out string value) ? value : valueKey
+      )
+      .ToArray();
   }
 }

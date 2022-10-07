@@ -1,9 +1,12 @@
-﻿namespace Metrix.Core.Application.Search;
+﻿using Metrix.Core.Domain.Metrics;
+
+namespace Metrix.Core.Application.Search;
 
 public interface ISearchIndex
 {
   List<SearchResult> Search(
     string searchText,
-    params Dictionary<string, string[]>[] metricAttributeValues
+    Dictionary<string, MetricAttribute> attributes,
+    params Dictionary<string, string[]>[] attributeValues
     );
 }
