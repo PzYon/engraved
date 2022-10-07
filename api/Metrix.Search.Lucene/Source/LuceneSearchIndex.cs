@@ -22,7 +22,7 @@ public class LuceneSearchIndex : ISearchIndex
 
   private readonly MemoryLuceneIndex _index = new();
 
-  public List<SearchResult> Search(
+  public SearchResult[] Search(
     string searchText,
     Dictionary<string, MetricAttribute> attributes,
     params Dictionary<string, string[]>[] attributeValues
@@ -33,7 +33,7 @@ public class LuceneSearchIndex : ISearchIndex
 
     Query query = CreateQuery(attributeValues, searchText);
 
-    List<InternalSearchResult> searchResults = _index.Search(query);
+    InternalSearchResult[] searchResults = _index.Search(query);
 
     return searchResults
       .Select(
@@ -44,7 +44,7 @@ public class LuceneSearchIndex : ISearchIndex
           Values = addDocumentsToIndex[r.Key]
         }
       )
-      .ToList();
+      .ToArray();
   }
 
   private static Query CreateQuery(Dictionary<string, string[]>[] metricAttributeValues, string searchText)
