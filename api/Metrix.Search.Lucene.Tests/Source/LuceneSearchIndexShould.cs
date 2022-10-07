@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Lucene.Net.Analysis.Hunspell;
 using Metrix.Core.Application.Search;
 using Metrix.Core.Domain.Metrics;
 using NUnit.Framework;
@@ -12,46 +11,46 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchSingleTerm()
   {
-    List<SearchResult> results = new LuceneSearchIndex().Search(
+    SearchResult[] results = new LuceneSearchIndex().Search(
       "red",
       new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().ToArray()
     );
 
     Assert.IsNotEmpty(results);
-    Assert.AreEqual(2, results.Count);
+    Assert.AreEqual(2, results.Length);
   }
 
   [Test]
   public void MatchMultipleTerms()
   {
-    List<SearchResult> results = new LuceneSearchIndex().Search(
+    SearchResult[] results = new LuceneSearchIndex().Search(
       "red beta",
       new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().ToArray()
     );
 
     Assert.IsNotEmpty(results);
-    Assert.AreEqual(1, results.Count);
+    Assert.AreEqual(1, results.Length);
   }
 
   [Test]
   public void ReturnOnlyDistinctResults()
   {
-    List<SearchResult> results = new LuceneSearchIndex().Search(
+    SearchResult[] results = new LuceneSearchIndex().Search(
       "red beta",
       new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().Union(GetSimpleValues()).Union(GetSimpleValues()).ToArray()
     );
 
     Assert.IsNotEmpty(results);
-    Assert.AreEqual(1, results.Count);
+    Assert.AreEqual(1, results.Length);
   }
 
   [Test]
   public void ReturnOnlyDistinctResultsWeightedBasedOnOccurrence()
   {
-    List<SearchResult> results = new LuceneSearchIndex().Search(
+    SearchResult[] results = new LuceneSearchIndex().Search(
       "occurs",
       new Dictionary<string, MetricAttribute>(),
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Once" } } },
@@ -63,7 +62,7 @@ public class LuceneSearchIndexShould
     );
 
     Assert.IsNotEmpty(results);
-    Assert.AreEqual(3, results.Count);
+    Assert.AreEqual(3, results.Length);
 
     Assert.AreEqual("Occurs Three Times", results.ToArray()[0].Values["attr1"][0]);
     Assert.AreEqual("Occurs Twice", results.ToArray()[1].Values["attr1"][0]);
@@ -89,7 +88,7 @@ public class LuceneSearchIndexShould
       }
     };
 
-    List<SearchResult> results = new LuceneSearchIndex().Search(
+    SearchResult[] results = new LuceneSearchIndex().Search(
       "banana",
       metricAttributes,
       new Dictionary<string, string[]>
@@ -103,7 +102,7 @@ public class LuceneSearchIndexShould
     );
 
     Assert.IsNotEmpty(results);
-    Assert.AreEqual(1, results.Count);
+    Assert.AreEqual(1, results.Length);
     Assert.AreEqual(results.First().Values["fruit"].First(), "yellow");
   }
 

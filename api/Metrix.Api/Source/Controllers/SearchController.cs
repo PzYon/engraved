@@ -25,7 +25,7 @@ public class SearchController : ControllerBase
 
   [Route("metric_attributes/{metricId}")]
   [HttpGet]
-  public async Task<List<SearchResult>> GetAll(string metricId, string searchText)
+  public async Task<SearchResult[]> GetAll(string metricId, string searchText)
   {
     IMetric? metric = await _dispatcher.Query(new GetMetricQuery { MetricId = metricId });
     if (metric == null)
