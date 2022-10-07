@@ -34,7 +34,7 @@ public class SearchController : ControllerBase
     }
 
     IMeasurement[] measurements = await _dispatcher.Query(new GetAllMeasurementsQuery { MetricId = metricId });
-    
+
     return _searchIndex.Search(
       searchText,
       metric.Attributes,

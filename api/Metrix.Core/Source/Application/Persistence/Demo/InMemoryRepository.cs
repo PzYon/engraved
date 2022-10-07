@@ -60,7 +60,7 @@ public class InMemoryRepository : IRepository
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
-    )
+  )
   {
     return Task.FromResult(
       Measurements.Where(m => m.MetricId == metricId)

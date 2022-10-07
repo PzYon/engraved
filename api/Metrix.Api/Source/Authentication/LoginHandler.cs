@@ -23,14 +23,14 @@ public class LoginHandler : ILoginHandler
     IRepository repository,
     IOptions<AuthenticationConfig> configuration,
     IDateService dateService
-    ) : this(tokenValidator, repository, configuration.Value, dateService) { }
+  ) : this(tokenValidator, repository, configuration.Value, dateService) { }
 
   public LoginHandler(
     IGoogleTokenValidator tokenValidator,
     IRepository repository,
     AuthenticationConfig configuration,
     IDateService dateService
-    )
+  )
   {
     _tokenValidator = tokenValidator;
     _repository = repository;

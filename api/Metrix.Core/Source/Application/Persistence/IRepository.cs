@@ -28,7 +28,7 @@ public interface IRepository
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
-    );
+  );
 
   Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
 

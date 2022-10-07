@@ -57,7 +57,7 @@ public class MetricsController : ControllerBase
   public async Task<CommandResult> Permissions(
     [FromBody] Dictionary<string, PermissionKind> permissions,
     string metricId
-    )
+  )
   {
     var command = new ModifyMetricPermissionsCommand
     {

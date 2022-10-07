@@ -8,5 +8,5 @@ public interface ISearchIndex
     string searchText,
     Dictionary<string, MetricAttribute> attributes,
     params Dictionary<string, string[]>[] attributeValues
-    );
+  );
 }

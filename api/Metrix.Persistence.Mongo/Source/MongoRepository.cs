@@ -142,7 +142,7 @@ public class MongoRepository : IRepository
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
-    )
+  )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)

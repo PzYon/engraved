@@ -18,7 +18,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   public UserScopedMongoRepository(
     IMongoRepositorySettings settings,
     ICurrentUserService currentUserService
-    )
+  )
     : base(settings)
   {
     _currentUserService = currentUserService;
@@ -64,7 +64,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   private static FilterDefinition<TDocument> GetHasPermissionsFilter<TDocument>(
     string? userId,
     PermissionKind permissionKind
-    )
+  )
   {
     return Builders<TDocument>.Filter.Gte(
       string.Join(".", nameof(IHasPerissionsDocument.Permissions), userId, nameof(PermissionDefinition.Kind)),

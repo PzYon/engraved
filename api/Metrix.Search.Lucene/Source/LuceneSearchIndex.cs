@@ -26,7 +26,7 @@ public class LuceneSearchIndex : ISearchIndex
     string searchText,
     Dictionary<string, MetricAttribute> attributes,
     params Dictionary<string, string[]>[] attributeValues
-    )
+  )
   {
     Dictionary<string, Dictionary<string, string[]>> addDocumentsToIndex =
       AddDocumentsToIndex(attributes, attributeValues);
@@ -82,7 +82,7 @@ public class LuceneSearchIndex : ISearchIndex
   private Dictionary<string, Dictionary<string, string[]>> AddDocumentsToIndex(
     Dictionary<string, MetricAttribute> metricAttributes,
     IEnumerable<Dictionary<string, string[]>> metricAttributeValues
-    )
+  )
   {
     Dictionary<string, Document> docsByUniqueString = new();
     Dictionary<string, Dictionary<string, string[]>> valuesByUniqueString = new();
@@ -128,7 +128,7 @@ public class LuceneSearchIndex : ISearchIndex
   private static Document CreateDocument(
     Dictionary<string, MetricAttribute> metricAttributes,
     Dictionary<string, string[]> attributeValues
-    )
+  )
   {
     var document = new Document();
 

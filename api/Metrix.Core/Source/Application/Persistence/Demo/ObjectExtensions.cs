@@ -68,7 +68,7 @@ public static class ObjectExtensions
     IDictionary<object, object> visited,
     object cloneObject,
     Type typeToReflect
-    )
+  )
   {
     if (typeToReflect.BaseType != null)
     {
@@ -92,7 +92,7 @@ public static class ObjectExtensions
     BindingFlags bindingFlags =
       BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy,
     Func<FieldInfo, bool>? filter = null
-    )
+  )
   {
     foreach (FieldInfo fieldInfo in typeToReflect.GetFields(bindingFlags))
     {

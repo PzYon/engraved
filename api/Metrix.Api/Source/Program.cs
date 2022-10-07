@@ -155,7 +155,7 @@ bool UseInMemoryRepo()
 IUserScopedRepository GetMongoDbUserScopedRepo(
   WebApplicationBuilder webApplicationBuilder,
   ICurrentUserService userService
-  )
+)
 {
   string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("metrix_db");
   return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);

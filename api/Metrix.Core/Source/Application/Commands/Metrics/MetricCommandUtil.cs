@@ -10,7 +10,7 @@ public static class MetricCommandUtil
     IRepository repository,
     ICommand command,
     string metricId
-    )
+  )
     where TMetric : class, IMetric
   {
     if (string.IsNullOrEmpty(metricId))

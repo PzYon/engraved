@@ -14,7 +14,7 @@ public class LuceneSearchIndexShould
   {
     List<SearchResult> results = new LuceneSearchIndex().Search(
       "red",
-      new(),
+      new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().ToArray()
     );
 
@@ -27,7 +27,7 @@ public class LuceneSearchIndexShould
   {
     List<SearchResult> results = new LuceneSearchIndex().Search(
       "red beta",
-      new(),
+      new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().ToArray()
     );
 
@@ -40,7 +40,7 @@ public class LuceneSearchIndexShould
   {
     List<SearchResult> results = new LuceneSearchIndex().Search(
       "red beta",
-      new(),
+      new Dictionary<string, MetricAttribute>(),
       GetSimpleValues().Union(GetSimpleValues()).Union(GetSimpleValues()).ToArray()
     );
 
@@ -53,7 +53,7 @@ public class LuceneSearchIndexShould
   {
     List<SearchResult> results = new LuceneSearchIndex().Search(
       "occurs",
-      new(),
+      new Dictionary<string, MetricAttribute>(),
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Once" } } },
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Three Times" } } },
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Twice" } } },
