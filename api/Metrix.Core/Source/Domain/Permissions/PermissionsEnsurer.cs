@@ -11,7 +11,7 @@ public class PermissionsEnsurer
   public PermissionsEnsurer(
     IRepository repo,
     Func<IUser, Task<UpsertResult>> upsertUser
-    )
+  )
   {
     _repo = repo;
     _upsertUser = upsertUser;
@@ -20,7 +20,7 @@ public class PermissionsEnsurer
   public async Task EnsurePermissions(
     IPermissionHolder permissionHolder,
     Dictionary<string, PermissionKind> permissionsToEnsure
-    )
+  )
   {
     foreach ((string? userName, PermissionKind kind) in permissionsToEnsure)
     {

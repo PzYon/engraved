@@ -70,7 +70,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
-    )
+  )
   {
     return (await _repository.GetAllMeasurements(metricId, fromDate, toDate, attributeValues))
       .Where(m => m.UserId == CurrentUser.Value.Id)

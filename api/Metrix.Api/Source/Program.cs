@@ -9,8 +9,9 @@ using Metrix.Api.Settings;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
-using Metrix.Core.Domain.User;
+using Metrix.Core.Application.Search;
 using Metrix.Persistence.Mongo;
+using Metrix.Search.Lucene;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -75,6 +76,7 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
+builder.Services.AddTransient<ISearchIndex, LuceneSearchIndex>();
 builder.Services.AddSingleton(_ => UseInMemoryRepo() ? GetInMemoryRepo() : GetMongoDbRepo());
 builder.Services.AddTransient(
   provider =>
@@ -153,7 +155,7 @@ bool UseInMemoryRepo()
 IUserScopedRepository GetMongoDbUserScopedRepo(
   WebApplicationBuilder webApplicationBuilder,
   ICurrentUserService userService
-  )
+)
 {
   string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("metrix_db");
   return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);

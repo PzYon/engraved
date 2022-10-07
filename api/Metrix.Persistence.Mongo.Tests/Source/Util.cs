@@ -17,7 +17,7 @@ public static class Util
   public static async Task<UserScopedMongoRepository> CreateUserScopedMongoRepository(
     string userName,
     bool doNotDropDatabase
-    )
+  )
   {
     if (!doNotDropDatabase)
     {

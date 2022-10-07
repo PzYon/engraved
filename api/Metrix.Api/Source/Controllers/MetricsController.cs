@@ -35,7 +35,7 @@ public class MetricsController : ControllerBase
   [HttpGet]
   public async Task<IMetric?> Get(string metricId)
   {
-    var command = new GetMetricQuery { MetricKey = metricId };
+    var command = new GetMetricQuery { MetricId = metricId };
 
     return await _dispatcher.Query(command);
   }
@@ -57,7 +57,7 @@ public class MetricsController : ControllerBase
   public async Task<CommandResult> Permissions(
     [FromBody] Dictionary<string, PermissionKind> permissions,
     string metricId
-    )
+  )
   {
     var command = new ModifyMetricPermissionsCommand
     {

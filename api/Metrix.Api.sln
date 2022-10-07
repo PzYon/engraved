@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Persistence.Mongo.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Api.Tests", "Metrix.Api.Tests\Metrix.Api.Tests.csproj", "{333D8FF4-F604-4D52-99EE-D312EF720A89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Search.Lucene", "Metrix.Search.Lucene\Metrix.Search.Lucene.csproj", "{3A51A2C8-7895-4BC4-B7E6-151CE61871CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Search.Lucene.Tests", "Metrix.Search.Lucene.Tests\Metrix.Search.Lucene.Tests.csproj", "{1AF0E382-E9E2-405E-BDAB-7A0ADBD20246}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A51A2C8-7895-4BC4-B7E6-151CE61871CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A51A2C8-7895-4BC4-B7E6-151CE61871CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A51A2C8-7895-4BC4-B7E6-151CE61871CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A51A2C8-7895-4BC4-B7E6-151CE61871CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AF0E382-E9E2-405E-BDAB-7A0ADBD20246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AF0E382-E9E2-405E-BDAB-7A0ADBD20246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AF0E382-E9E2-405E-BDAB-7A0ADBD20246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AF0E382-E9E2-405E-BDAB-7A0ADBD20246}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

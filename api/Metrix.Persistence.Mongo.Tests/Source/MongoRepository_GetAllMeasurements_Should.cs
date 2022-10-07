@@ -159,7 +159,7 @@ public class MongoRepository_GetAllMeasurements_Should
       null,
       new Dictionary<string, string[]>
       {
-        { "size", new[] { "XL" } }, { "color", new[] { "blue" } },
+        { "size", new[] { "XL" } }, { "color", new[] { "blue" } }
       }
     );
 

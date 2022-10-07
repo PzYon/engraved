@@ -10,7 +10,7 @@ public static class AttributeValueParser
     {
       return dict;
     }
-    
+
     foreach (string s in attributeValues.Split(";", StringSplitOptions.RemoveEmptyEntries))
     {
       string[] strings = s.Split(":");
