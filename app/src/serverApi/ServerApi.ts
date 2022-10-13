@@ -18,6 +18,7 @@ import { IMetricAttributeValues } from "./IMetricAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/MetricDetailsContext";
 import { toDateOnlyIsoString } from "../components/common/utils";
+import { IAttributeSearchResult } from "./IAttributeSearchResult";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -140,6 +141,17 @@ export class ServerApi {
     return await this.executeRequest(
       `/measurements/${measurementId}`,
       "DELETE",
+      null
+    );
+  }
+
+  static async searchMetricAttributes(
+    metricId: string,
+    searchText: string
+  ): Promise<IAttributeSearchResult[]> {
+    return await this.executeRequest(
+      `/search/metric_attributes/${metricId}?searchText=${searchText}`,
+      "GET",
       null
     );
   }

@@ -9,7 +9,8 @@ import { useMetricDetailsContext } from "../details/MetricDetailsContext";
 export const AttributeValues: React.FC<{
   attributes: IMetricAttributes;
   attributeValues: IMetricAttributeValues;
-}> = ({ attributes, attributeValues }) => {
+  preventOnClick?: boolean;
+}> = ({ attributes, attributeValues, preventOnClick }) => {
   const { palette } = useTheme();
 
   const { toggleAttributeValue } = useMetricDetailsContext();
@@ -40,6 +41,9 @@ export const AttributeValues: React.FC<{
                 title={attribute.name + ": " + value}
                 label={value}
                 onClick={() => {
+                  if (preventOnClick) {
+                    return;
+                  }
                   toggleAttributeValue(attributeKey, valueKey);
                 }}
               />

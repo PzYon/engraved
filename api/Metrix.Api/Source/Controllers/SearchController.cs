@@ -25,8 +25,10 @@ public class SearchController : ControllerBase
 
   [Route("metric_attributes/{metricId}")]
   [HttpGet]
-  public async Task<SearchResult[]> GetAll(string metricId, string searchText)
+  public async Task<AttributeSearchResult[]> GetAll(string metricId, string searchText)
   {
+    // todo: do i need an IQuery for this, e.g. in order to remove logic from the controller?
+
     IMetric? metric = await _dispatcher.Query(new GetMetricQuery { MetricId = metricId });
     if (metric == null)
     {

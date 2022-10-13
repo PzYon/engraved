@@ -22,7 +22,7 @@ public class LuceneSearchIndex : ISearchIndex
 
   private readonly MemoryLuceneIndex _index = new();
 
-  public SearchResult[] Search(
+  public AttributeSearchResult[] Search(
     string searchText,
     Dictionary<string, MetricAttribute> attributes,
     params Dictionary<string, string[]>[] attributeValues
@@ -37,7 +37,7 @@ public class LuceneSearchIndex : ISearchIndex
 
     return searchResults
       .Select(
-        r => new SearchResult
+        r => new AttributeSearchResult
         {
           Score = r.Score,
           OccurrenceCount = r.Occurrence,

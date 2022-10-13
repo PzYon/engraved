@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Core.Application.Search;
 
-public class SearchResult
+public class AttributeSearchResult
 {
   public Dictionary<string, string[]> Values { get; set; } = new();
 

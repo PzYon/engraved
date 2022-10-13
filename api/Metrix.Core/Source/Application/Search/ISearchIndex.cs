@@ -4,7 +4,7 @@ namespace Metrix.Core.Application.Search;
 
 public interface ISearchIndex
 {
-  SearchResult[] Search(
+  AttributeSearchResult[] Search(
     string searchText,
     Dictionary<string, MetricAttribute> attributes,
     params Dictionary<string, string[]>[] attributeValues

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMediaQuery } from "@mui/material";
 
 export enum DeviceWidth {
   Small,
@@ -8,32 +8,7 @@ export enum DeviceWidth {
 const thresholdInPx = 600;
 
 export const useDeviceWidth = (): DeviceWidth => {
-  const [deviceWidth, setDeviceWidth] = useState<DeviceWidth>();
+  const isMatch = useMediaQuery(`(min-width:${thresholdInPx}px)`);
 
-  useEffect(() => {
-    onResize();
-
-    window.addEventListener("resize", onResize);
-    window.addEventListener("orientationchange", onOrientationChange);
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("orientationchange", onOrientationChange);
-    };
-  }, []);
-
-  function onResize() {
-    const deviceWidth =
-      window.innerWidth >= thresholdInPx
-        ? DeviceWidth.Normal
-        : DeviceWidth.Small;
-
-    setDeviceWidth(deviceWidth);
-  }
-
-  function onOrientationChange() {
-    onResize();
-  }
-
-  return deviceWidth;
+  return isMatch ? DeviceWidth.Normal : DeviceWidth.Small;
 };
