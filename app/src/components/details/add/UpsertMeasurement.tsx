@@ -17,6 +17,7 @@ import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { IGaugeMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { stripTime } from "../../common/utils";
 import { AttributeComboSearch } from "./AttributeComboSearch";
+import { hasAttributes } from "../../../util/MeasurementUtil";
 
 export const UpsertMeasurement: React.FC<{
   metric: IMetric;
@@ -46,9 +47,14 @@ export const UpsertMeasurement: React.FC<{
 
   return (
     <FormControl>
+      <FormElementContainer>
+        <DateTimeSelector setDate={setDate} date={date} />
+      </FormElementContainer>
+
       {metric.type === MetricType.Gauge ? (
         <TextField
           value={value}
+          type="number"
           onChange={(event) => setValue(event.target.value)}
           label={"Value"}
           margin={"normal"}
@@ -58,29 +64,27 @@ export const UpsertMeasurement: React.FC<{
         />
       ) : null}
 
-      <FormElementContainer>
-        <DateTimeSelector setDate={setDate} date={date} />
-      </FormElementContainer>
+      {hasAttributes(metric) ? (
+        <FormElementContainer>
+          <AttributeComboSearch
+            metric={metric}
+            onChange={(values) => {
+              resetSelectors();
+              setAttributeValues(
+                Object.keys(metric.attributes).reduce(
+                  (previousValue: IMetricAttributeValues, key: string) => {
+                    previousValue[key] = values[key] ?? [];
+                    return previousValue;
+                  },
+                  {}
+                )
+              );
+            }}
+          />
+        </FormElementContainer>
+      ) : null}
 
-      <FormElementContainer>
-        <AttributeComboSearch
-          metric={metric}
-          onChange={(values) => {
-            resetSelectors();
-            setAttributeValues(
-              Object.keys(metric.attributes).reduce(
-                (previousValue: IMetricAttributeValues, key: string) => {
-                  previousValue[key] = values[key] ?? null;
-                  return previousValue;
-                },
-                {}
-              )
-            );
-          }}
-        />
-      </FormElementContainer>
-
-      {Object.keys(metric.attributes || {}).length ? (
+      {hasAttributes(metric) ? (
         <MetricAttributesSelector
           key={forceResetSelectors}
           attributes={metric.attributes}

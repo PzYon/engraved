@@ -41,6 +41,7 @@ export const AttributeComboSearch: React.FC<{
             <AttributeValues
               attributes={metric.attributes}
               attributeValues={option.values}
+              preventOnClick={true}
             />
           </MenuItem>
         );

@@ -12,20 +12,22 @@ export const MetricAttributesSelector: React.FC<{
 }> = ({ attributes, selectedAttributeValues, onChange }) => {
   return (
     <>
-      {Object.keys(attributes).map((attributeKey) => {
-        const attribute: IMetricAttribute = attributes[attributeKey];
+      {Object.keys(attributes)
+        .sort()
+        .map((attributeKey) => {
+          const attribute: IMetricAttribute = attributes[attributeKey];
 
-        return (
-          <FormElementContainer key={attributeKey}>
-            <MetricAttributeSelector
-              attributeKey={attributeKey}
-              attribute={attribute}
-              selectedAttributeValues={selectedAttributeValues}
-              onChange={onChange}
-            />
-          </FormElementContainer>
-        );
-      })}
+          return (
+            <FormElementContainer key={attributeKey}>
+              <MetricAttributeSelector
+                attributeKey={attributeKey}
+                attribute={attribute}
+                selectedAttributeValues={selectedAttributeValues}
+                onChange={onChange}
+              />
+            </FormElementContainer>
+          );
+        })}
     </>
   );
 };
