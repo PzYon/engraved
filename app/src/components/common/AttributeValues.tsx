@@ -40,12 +40,13 @@ export const AttributeValues: React.FC<{
                 }}
                 title={attribute.name + ": " + value}
                 label={value}
-                onClick={() => {
-                  if (preventOnClick) {
-                    return;
-                  }
-                  toggleAttributeValue(attributeKey, valueKey);
-                }}
+                onClick={
+                  preventOnClick || !toggleAttributeValue
+                    ? null
+                    : () => {
+                        toggleAttributeValue(attributeKey, valueKey);
+                      }
+                }
               />
             );
           });
@@ -55,7 +56,7 @@ export const AttributeValues: React.FC<{
 };
 
 function getColorsByKey(attributes: IMetricAttributes, baseColor: string) {
-  const attributeKeys = Object.keys(attributes);
+  const attributeKeys = Object.keys(attributes).sort();
   return attributeKeys.reduce(
     (
       aggregated: { [attributeKey: string]: string },

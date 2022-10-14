@@ -1,4 +1,9 @@
 import { IMetricAttributeValues } from "../serverApi/IMetricAttributeValues";
+import { IMetric } from "../serverApi/IMetric";
+
+export function hasAttributes(metric: IMetric): boolean {
+  return Object.keys(metric?.attributes || {}).length > 0;
+}
 
 export function hasValues(
   metricAttributeValues: IMetricAttributeValues,

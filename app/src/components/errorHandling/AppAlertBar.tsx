@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Alert, AlertTitle, styled } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 
@@ -10,6 +10,12 @@ export interface IAppAlert {
 
 export const AppAlertBar: React.FC = () => {
   const { appAlert, setAppAlert } = useAppContext();
+
+  useEffect(() => {
+    if (appAlert?.type === "success") {
+      setTimeout(() => setAppAlert(null), 4000);
+    }
+  }, [appAlert]);
 
   if (!appAlert) {
     return null;
