@@ -5,6 +5,8 @@ namespace Metrix.Core.Application.Queries.Metrics.Get;
 
 public class GetMetricQueryExecutor : IQueryExecutor<IMetric?>
 {
+  public bool DisableCache => false;
+  
   private readonly GetMetricQuery _query;
 
   public GetMetricQueryExecutor(GetMetricQuery query)

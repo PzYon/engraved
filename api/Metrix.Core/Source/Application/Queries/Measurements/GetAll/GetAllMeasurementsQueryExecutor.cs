@@ -6,6 +6,8 @@ namespace Metrix.Core.Application.Queries.Measurements.GetAll;
 
 public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
 {
+  public bool DisableCache => false;
+  
   private readonly GetAllMeasurementsQuery _query;
 
   public GetAllMeasurementsQueryExecutor(GetAllMeasurementsQuery query)

@@ -7,6 +7,8 @@ namespace Metrix.Core.Application.Queries.Metrics.GetAll;
 
 public class GetAllMetricsQueryExecutor : IQueryExecutor<IMetric[]>
 {
+  public bool DisableCache => false;
+  
   private readonly GetAllMetricsQuery _command;
 
   public GetAllMetricsQueryExecutor(GetAllMetricsQuery command)
