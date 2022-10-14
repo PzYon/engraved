@@ -2,7 +2,6 @@
 using Metrix.Core.Application.Commands;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Queries;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Metrix.Core.Application;
 
@@ -10,13 +9,13 @@ public class Dispatcher
 {
   private readonly IRepository _repository;
   private readonly IDateService _dateService;
-  private readonly IMemoryCache _memoryCache;
+  private readonly QueryCache _queryCache;
 
-  public Dispatcher(IUserScopedRepository repository, IDateService dateService, IMemoryCache memoryCache)
+  public Dispatcher(IUserScopedRepository repository, IDateService dateService, QueryCache queryCache)
   {
     _repository = repository;
     _dateService = dateService;
-    _memoryCache = memoryCache;
+    _queryCache = queryCache;
   }
 
   public async Task<TResult> Query<TResult>(IQuery<TResult> query)
@@ -53,29 +52,14 @@ public class Dispatcher
   {
     IQueryExecutor<TResult> queryExecutor = query.CreateExecutor();
 
-    string cacheKey = query.GetType().FullName!;
-
-    if (!queryExecutor.DisableCache && _memoryCache.TryGetValue(cacheKey, out CacheItem<TResult> cachedResult))
+    if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult cachedResult))
     {
-      return cachedResult.Value;
+      return cachedResult;
     }
 
     TResult result = await queryExecutor.Execute(_repository);
-
-    var cacheItem = new CacheItem<TResult>
-    {
-      Value = result
-    };
-
-    _memoryCache.Set(cacheKey, cacheItem);
+    _queryCache.Set(queryExecutor, query, result);
 
     return result;
   }
-}
-
-public class CacheItem<TResult>
-{
-  public TResult Value { get; set; }
-
-  public string Token { get; set; }
 }

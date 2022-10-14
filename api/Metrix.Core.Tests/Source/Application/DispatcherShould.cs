@@ -14,10 +14,15 @@ public class DispatcherShould
   {
     var query = new FakeQuery();
 
-    var d = new Dispatcher(null!, null!, new MemoryCache(new MemoryCacheOptions()));
+    var d = new Dispatcher(null!, null!, CreateQueryCache());
     Guid guid = await d.Query(query);
 
     Assert.IsTrue(guid != Guid.Empty);
+  }
+
+  private static QueryCache CreateQueryCache()
+  {
+    return new QueryCache(new MemoryCache(new MemoryCacheOptions()));
   }
 
   [Test]
@@ -25,7 +30,7 @@ public class DispatcherShould
   {
     var query = new FakeQuery();
 
-    var d = new Dispatcher(null!, null!, new MemoryCache(new MemoryCacheOptions()));
+    var d = new Dispatcher(null!, null!, CreateQueryCache());
 
     Guid resultFirstExecution = await d.Query(query);
     Guid resultSecondExecution = await d.Query(query);
