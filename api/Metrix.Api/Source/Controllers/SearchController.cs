@@ -1,9 +1,6 @@
 ﻿using Metrix.Core.Application;
-using Metrix.Core.Application.Queries.Measurements.GetAll;
-using Metrix.Core.Application.Queries.Metrics.Get;
+using Metrix.Core.Application.Queries.Search;
 using Metrix.Core.Application.Search;
-using Metrix.Core.Domain.Measurements;
-using Metrix.Core.Domain.Metrics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,20 +24,18 @@ public class SearchController : ControllerBase
   [HttpGet]
   public async Task<AttributeSearchResult[]> GetAll(string metricId, string searchText)
   {
-    // todo: do i need an IQuery for this, e.g. in order to remove logic from the controller?
-
-    IMetric? metric = await _dispatcher.Query(new GetMetricQuery { MetricId = metricId });
-    if (metric == null)
+    var searchAttributesQuery = new SearchAttributesQuery
     {
-      throw new Exception("Metric not found.");
-    }
+      MetricId = metricId,
+      SearchText = searchText,
+    };
 
-    IMeasurement[] measurements = await _dispatcher.Query(new GetAllMeasurementsQuery { MetricId = metricId });
+    // it's not good that we inject dependencies here like this,
+    // but for the moment it's the easiest. i guess the best solution
+    // would be to have the actions be created by the framework's DI.
+    searchAttributesQuery.SetSearchIndex(_searchIndex);
+    searchAttributesQuery.SetDispatcher(_dispatcher);
 
-    return _searchIndex.Search(
-      searchText,
-      metric.Attributes,
-      measurements.Select(s => s.MetricAttributeValues).ToArray()
-    );
+    return await _dispatcher.Query(searchAttributesQuery);
   }
 }
