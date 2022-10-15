@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
 namespace Metrix.Core.Application.Queries;
 
@@ -9,7 +9,7 @@ public class QueryCache
   {
     public TResult Value { get; set; }
 
-    public int ConfigHash { get; set; }
+    public string ConfigToken { get; set; }
   }
 
   private readonly IMemoryCache _memoryCache;
@@ -26,7 +26,7 @@ public class QueryCache
       new CacheItem<TValue>
       {
         Value = value,
-        ConfigHash = GetConfigHash(query)
+        ConfigToken = GetConfigToken(query)
       }
     );
   }
@@ -40,7 +40,7 @@ public class QueryCache
       return false;
     }
 
-    if (cacheItem.ConfigHash != GetConfigHash(query))
+    if (cacheItem.ConfigToken != GetConfigToken(query))
     {
       return false;
     }
@@ -54,8 +54,8 @@ public class QueryCache
     return queryExecutor.GetType().FullName!;
   }
 
-  private static int GetConfigHash<TValue>(IQuery<TValue> query)
+  private static string GetConfigToken<TValue>(IQuery<TValue> query)
   {
-    return JsonSerializer.Serialize(query).GetHashCode();
+    return JsonConvert.SerializeObject(query);
   }
 }

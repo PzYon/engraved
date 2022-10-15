@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Metrix.Core.Application.Commands;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Queries;
 using Microsoft.Extensions.Caching.Memory;
@@ -37,10 +38,55 @@ public class DispatcherShould
 
     Assert.AreEqual(resultFirstExecution, resultSecondExecution);
   }
+
+  [Test]
+  public async Task ExecuteQueryWithCacheAfterCommand()
+  {
+    var query = new FakeQuery();
+
+    var d = new Dispatcher(null!, null!, CreateQueryCache());
+
+    Guid resultFirstExecution = await d.Query(query);
+
+    await d.Command(new FakeCommand());
+
+    Guid resultSecondExecution = await d.Query(query);
+
+    Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
+  }
+
+  [Test]
+  public async Task ExecuteQueryWithCacheWithDifferentConfig()
+  {
+    var d = new Dispatcher(null!, null!, CreateQueryCache());
+
+    Guid resultFirstExecution = await d.Query(new FakeQuery { DummyValue = "123" });
+    Guid resultSecondExecution = await d.Query(new FakeQuery { DummyValue = "456" });
+    
+    Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
+  }
+}
+
+public class FakeCommand : ICommand
+{
+  public ICommandExecutor CreateExecutor()
+  {
+    return new FakeCommandExecutor();
+  }
+}
+
+public class FakeCommandExecutor : ICommandExecutor
+{
+  public Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  {
+    return Task.FromResult(new CommandResult());
+  }
 }
 
 public class FakeQuery : IQuery<Guid>
 {
+  public string DummyValue { get; set; }
+  
   public IQueryExecutor<Guid> CreateExecutor()
   {
     return new FakeQueryExecutor();
