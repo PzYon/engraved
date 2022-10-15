@@ -37,7 +37,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
     _testRepository.Metrics.Add(new GaugeMetric { Id = "metric_id" });
 
     var createCommand = new UpsertGaugeMeasurementCommand { MetricId = "metric_id", Notes = "foo", Value = 123 };
-    CommandResult? result =
+    CommandResult result =
       await new UpsertGaugeMeasurementCommandExecutor(createCommand).Execute(_testRepository, new FakeDateService());
 
     var updateCommand = new UpsertGaugeMeasurementCommand

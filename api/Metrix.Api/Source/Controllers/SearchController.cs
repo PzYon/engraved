@@ -27,7 +27,7 @@ public class SearchController : ControllerBase
     var searchAttributesQuery = new SearchAttributesQuery
     {
       MetricId = metricId,
-      SearchText = searchText,
+      SearchText = searchText
     };
 
     // it's not good that we inject dependencies here like this,

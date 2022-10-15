@@ -4,7 +4,6 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
-using MongoDB.Bson;
 using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
@@ -121,7 +120,7 @@ public class UserScopedMongoRepositoryShould
   public async Task UpsertMeasurement_Ensures_CurrentUser_Id()
   {
     UpsertResult upsertMetric = await _userScopedRepository.UpsertMetric(new TimerMetric());
-    string? metricId = upsertMetric.EntityId;
+    string metricId = upsertMetric.EntityId;
 
     IMeasurement measurement = new TimerMeasurement { MetricId = metricId };
 

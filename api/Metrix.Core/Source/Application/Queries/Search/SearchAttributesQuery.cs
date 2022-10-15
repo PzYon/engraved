@@ -4,13 +4,13 @@ namespace Metrix.Core.Application.Queries.Search;
 
 public class SearchAttributesQuery : IQuery<AttributeSearchResult[]>
 {
-  public string MetricId { get; set; }
+  public string MetricId { get; set; } = null!;
 
-  public string SearchText { get; set; }
+  public string SearchText { get; set; } = null!;
 
   // hack - this stuff should be injected via DI
-  private ISearchIndex _searchIndex;
-  private Dispatcher _dispatcher;
+  private ISearchIndex _searchIndex = null!;
+  private Dispatcher _dispatcher = null!;
 
   public IQueryExecutor<AttributeSearchResult[]> CreateExecutor()
   {

@@ -47,8 +47,8 @@ public class MemoryLuceneIndex
 
           return new InternalSearchResult
           {
-            Key = d.GetField(LuceneSearchIndex.uniqueValueFieldName).GetStringValue(),
-            Occurrence = d.GetField(LuceneSearchIndex.countFieldName).GetInt32Value() ?? 0,
+            Key = d.GetField(LuceneSearchIndex.UniqueValueFieldName).GetStringValue(),
+            Occurrence = d.GetField(LuceneSearchIndex.CountFieldName).GetInt32Value() ?? 0,
             Score = scoreDoc.Score
           };
         }

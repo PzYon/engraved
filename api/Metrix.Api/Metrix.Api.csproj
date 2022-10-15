@@ -7,16 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.24.0" />
+        <PackageReference Include="Google.Apis.Auth" Version="1.57.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.24.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Metrix.Core\Metrix.Core.csproj" />
-        <ProjectReference Include="..\Metrix.Persistence.Mongo\Metrix.Persistence.Mongo.csproj" />
-        <ProjectReference Include="..\Metrix.Search.Lucene\Metrix.Search.Lucene.csproj" />
+        <ProjectReference Include="..\Metrix.Core\Metrix.Core.csproj"/>
+        <ProjectReference Include="..\Metrix.Persistence.Mongo\Metrix.Persistence.Mongo.csproj"/>
+        <ProjectReference Include="..\Metrix.Search.Lucene\Metrix.Search.Lucene.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -10,7 +10,7 @@ namespace Metrix.Core.Application;
 
 public class DispatcherShould
 {
-  private IMemoryCache _memoryCache;
+  private IMemoryCache _memoryCache = null!;
 
   [SetUp]
   public void SetUp()
@@ -129,7 +129,7 @@ public class FakeCommandExecutor : ICommandExecutor
 
 public class FakeQuery : IQuery<Guid>
 {
-  public string DummyValue { get; set; }
+  public string? DummyValue { get; set; }
 
   public IQueryExecutor<Guid> CreateExecutor()
   {

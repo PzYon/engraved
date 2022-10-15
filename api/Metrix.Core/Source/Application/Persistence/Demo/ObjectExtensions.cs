@@ -28,7 +28,7 @@ public static class ObjectExtensions
       return null;
     }
 
-    Type? typeToReflect = originalObject.GetType();
+    Type typeToReflect = originalObject.GetType();
     if (IsPrimitive(typeToReflect))
     {
       return originalObject;
@@ -44,13 +44,13 @@ public static class ObjectExtensions
       return null;
     }
 
-    object? cloneObject = CloneMethod.Invoke(originalObject, null)!;
+    object cloneObject = CloneMethod.Invoke(originalObject, null)!;
     if (typeToReflect.IsArray)
     {
-      Type? arrayType = typeToReflect.GetElementType()!;
+      Type arrayType = typeToReflect.GetElementType()!;
       if (IsPrimitive(arrayType) == false)
       {
-        var clonedArray = ((Array)cloneObject)!;
+        var clonedArray = (Array)cloneObject;
         clonedArray.ForEach(
           (array, indices) => array.SetValue(InternalCopy(clonedArray.GetValue(indices), visited), indices)
         );
@@ -156,14 +156,14 @@ public static class ArrayExtensions
 internal class ArrayTraverse
 {
   public int[] Position;
-  private int[] maxLengths;
+  private int[] _maxLengths;
 
   public ArrayTraverse(Array array)
   {
-    maxLengths = new int[array.Rank];
+    _maxLengths = new int[array.Rank];
     for (var i = 0; i < array.Rank; ++i)
     {
-      maxLengths[i] = array.GetLength(i) - 1;
+      _maxLengths[i] = array.GetLength(i) - 1;
     }
 
     Position = new int[array.Rank];
@@ -173,7 +173,7 @@ internal class ArrayTraverse
   {
     for (var i = 0; i < Position.Length; ++i)
     {
-      if (Position[i] < maxLengths[i])
+      if (Position[i] < _maxLengths[i])
       {
         Position[i]++;
         for (var j = 0; j < i; j++)
