@@ -5,4 +5,6 @@ namespace Metrix.Core.Application.Queries;
 public interface IQueryExecutor<TResult>
 {
   Task<TResult> Execute(IRepository repository);
+
+  bool DisableCache { get; }
 }
