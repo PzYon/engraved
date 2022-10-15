@@ -9,6 +9,7 @@ using Metrix.Api.Settings;
 using Metrix.Core.Application;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Application.Persistence.Demo;
+using Metrix.Core.Application.Queries;
 using Metrix.Core.Application.Search;
 using Metrix.Persistence.Mongo;
 using Metrix.Search.Lucene;
@@ -87,6 +88,8 @@ builder.Services.AddTransient(
       : GetMongoDbUserScopedRepo(builder, userService);
   }
 );
+builder.Services.AddMemoryCache();
+builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
 
 builder.Services.AddAuthentication(
