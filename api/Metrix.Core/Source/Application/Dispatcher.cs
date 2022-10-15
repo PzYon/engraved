@@ -7,7 +7,7 @@ namespace Metrix.Core.Application;
 
 public class Dispatcher
 {
-  private readonly IRepository _repository;
+  private readonly IUserScopedRepository _repository;
   private readonly IDateService _dateService;
   private readonly QueryCache _queryCache;
 
@@ -26,12 +26,34 @@ public class Dispatcher
     );
   }
 
+  private async Task<TResult> ExecuteQuery<TResult>(IQuery<TResult> query)
+  {
+    IQueryExecutor<TResult> queryExecutor = query.CreateExecutor();
+
+    if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult cachedResult))
+    {
+      return cachedResult;
+    }
+
+    TResult result = await queryExecutor.Execute(_repository);
+    _queryCache.Set(queryExecutor, query, result);
+
+    return result;
+  }
+
   public async Task<CommandResult> Command(ICommand command)
   {
     return await Execute(
-      async () => await command.CreateExecutor().Execute(_repository, _dateService),
+      () => ExecuteCommand(command),
       $"Command {command.GetType().Name}"
     );
+  }
+
+  private async Task<CommandResult> ExecuteCommand(ICommand command)
+  {
+    _queryCache.ClearForCurrentUser();
+
+    return await command.CreateExecutor().Execute(_repository, _dateService);
   }
 
   private static async Task<TExecutionResult> Execute<TExecutionResult>(
@@ -44,21 +66,6 @@ public class Dispatcher
     TExecutionResult result = await action();
 
     Console.WriteLine($"{labelPrefix} executed in {watch.ElapsedMilliseconds}ms");
-
-    return result;
-  }
-
-  private async Task<TResult> ExecuteQuery<TResult>(IQuery<TResult> query)
-  {
-    IQueryExecutor<TResult> queryExecutor = query.CreateExecutor();
-
-    if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult cachedResult))
-    {
-      return cachedResult;
-    }
-
-    TResult result = await queryExecutor.Execute(_repository);
-    _queryCache.Set(queryExecutor, query, result);
 
     return result;
   }
