@@ -204,7 +204,7 @@ public class MetricDocumentMapperShould
 
   private static void AssertEqual(MetricDocument expected, IMetric actual)
   {
-    Assert.AreEqual(expected.Id.ToString(), actual!.Id);
+    Assert.AreEqual(expected.Id.ToString(), actual.Id);
     Assert.AreEqual(expected.Name, actual.Name);
     Assert.AreEqual(expected.Type, actual.Type);
     Assert.AreEqual(expected.Description, actual.Description);

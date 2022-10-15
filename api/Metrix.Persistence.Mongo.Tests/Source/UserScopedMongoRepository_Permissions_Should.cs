@@ -16,7 +16,6 @@ public class UserScopedMongoRepository_Permissions_Should
   private UserScopedMongoRepository _userScopedRepository = null!;
 
   private const string CurrentUserName = "me";
-  private string _currentUserId = null!;
 
   private const string OtherUserName = "other";
   private string _otherUserId = null!;
@@ -25,7 +24,7 @@ public class UserScopedMongoRepository_Permissions_Should
   public async Task Setup()
   {
     _repository = await Util.CreateMongoRepository();
-    _currentUserId = (await _repository.UpsertUser(new User { Name = CurrentUserName })).EntityId;
+    await _repository.UpsertUser(new User { Name = CurrentUserName });
     _otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
 
     _userScopedRepository = await Util.CreateUserScopedMongoRepository(CurrentUserName, true);
@@ -337,7 +336,7 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IMeasurement? measurement = (await _repository.GetMeasurement(result.EntityId))!;
+    IMeasurement measurement = (await _repository.GetMeasurement(result.EntityId))!;
     Assert.AreEqual(newNotesValues, measurement.Notes);
   }
 

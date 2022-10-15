@@ -11,7 +11,10 @@ public class QueryCache
   private readonly ICurrentUserService _currentUserService;
 
   private Dictionary<string, HashSet<string>> QueryKeysByUser
-    => _memoryCache.GetOrCreate<Dictionary<string, HashSet<string>>>(KeysByUserKey, _ => new());
+    => _memoryCache.GetOrCreate<Dictionary<string, HashSet<string>>>(
+      KeysByUserKey,
+      _ => new Dictionary<string, HashSet<string>>()
+    );
 
   public QueryCache(IMemoryCache memoryCache, ICurrentUserService currentUserService)
   {
@@ -55,7 +58,7 @@ public class QueryCache
 
   public void ClearForCurrentUser()
   {
-    if (!QueryKeysByUser.TryGetValue(GetUserName(), out HashSet<string> keys))
+    if (!QueryKeysByUser.TryGetValue(GetUserName(), out HashSet<string>? keys))
     {
       return;
     }
@@ -78,7 +81,7 @@ public class QueryCache
 
   private void RememberQueryKeyForUser(string queryKey)
   {
-    if (!QueryKeysByUser.TryGetValue(GetUserName(), out HashSet<string> queryKeys))
+    if (!QueryKeysByUser.TryGetValue(GetUserName(), out HashSet<string>? queryKeys))
     {
       queryKeys = new HashSet<string>();
       QueryKeysByUser.Add(GetUserName(), queryKeys);
@@ -100,8 +103,8 @@ public class QueryCache
 
   private class CacheItem<TResult>
   {
-    public TResult Value { get; set; }
+    public TResult Value { get; set; } = default!;
 
-    public string ConfigToken { get; set; }
+    public string ConfigToken { get; set; } = null!;
   }
 }

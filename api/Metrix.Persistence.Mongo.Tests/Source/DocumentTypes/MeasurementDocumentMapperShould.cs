@@ -111,7 +111,7 @@ public class MeasurementDocumentMapperShould
     var gaugeDocument = document as TimerMeasurementDocument;
     Assert.IsNotNull(gaugeDocument);
     Assert.AreEqual(measurement.StartDate, gaugeDocument!.StartDate);
-    Assert.AreEqual(measurement.EndDate, gaugeDocument!.EndDate);
+    Assert.AreEqual(measurement.EndDate, gaugeDocument.EndDate);
   }
 
   [Test]
@@ -135,7 +135,7 @@ public class MeasurementDocumentMapperShould
 
   private static void AssertEqual(IMeasurement expected, MeasurementDocument actual)
   {
-    Assert.AreEqual(expected.DateTime, actual!.DateTime);
+    Assert.AreEqual(expected.DateTime, actual.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
     Assert.AreEqual(expected.MetricId, actual.MetricId);
     Assert.AreEqual(expected.MetricAttributeValues, actual.MetricAttributeValues);
@@ -143,7 +143,7 @@ public class MeasurementDocumentMapperShould
 
   private static void AssertEqual(MeasurementDocument expected, IMeasurement actual)
   {
-    Assert.AreEqual(expected.Id.ToString(), actual!.Id);
+    Assert.AreEqual(expected.Id.ToString(), actual.Id);
     Assert.AreEqual(expected.DateTime, actual.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
     Assert.AreEqual(expected.MetricId, actual.MetricId);

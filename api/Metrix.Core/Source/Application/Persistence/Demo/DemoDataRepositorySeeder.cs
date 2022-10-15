@@ -124,8 +124,8 @@ public class DemoDataRepositorySeeder
   {
     foreach (KeyValuePair<string, MetricAttribute> kvp in metric.Attributes)
     {
-      string? attributeKey = kvp.Key;
-      string[]? valueKeys = kvp.Value.Values.Keys.ToArray();
+      string attributeKey = kvp.Key;
+      string[] valueKeys = kvp.Value.Values.Keys.ToArray();
       int numberOfValueKeys = valueKeys.Length;
 
       if (numberOfValueKeys == 0)

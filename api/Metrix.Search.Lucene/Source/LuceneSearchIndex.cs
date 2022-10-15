@@ -17,8 +17,8 @@ namespace Metrix.Search.Lucene;
 
 public class LuceneSearchIndex : ISearchIndex
 {
-  public static readonly string countFieldName = "__count";
-  public static readonly string uniqueValueFieldName = "__unique";
+  public const string CountFieldName = "__count";
+  public const string UniqueValueFieldName = "__unique";
 
   private readonly MemoryLuceneIndex _index = new();
 
@@ -71,7 +71,7 @@ public class LuceneSearchIndex : ISearchIndex
       }
 
       // give a higher score when there's a high occurrence.
-      Query modifiedQuery = new CustomScoreQuery(termQuery, new FunctionQuery(new Int32FieldSource(countFieldName)));
+      Query modifiedQuery = new CustomScoreQuery(termQuery, new FunctionQuery(new Int32FieldSource(CountFieldName)));
 
       query.Clauses.Add(new BooleanClause(modifiedQuery, Occur.MUST));
     }
@@ -91,17 +91,17 @@ public class LuceneSearchIndex : ISearchIndex
     {
       string uniqueValueString = GetUniqueValueString(attributeValues);
 
-      if (docsByUniqueString.TryGetValue(uniqueValueString, out Document existingDoc))
+      if (docsByUniqueString.TryGetValue(uniqueValueString, out Document? existingDoc))
       {
-        int count = existingDoc.GetField(countFieldName).GetInt32Value() ?? 0;
-        existingDoc.RemoveField(countFieldName);
-        existingDoc.Add(new Int32Field(countFieldName, count + 1, Field.Store.YES));
+        int count = existingDoc.GetField(CountFieldName).GetInt32Value() ?? 0;
+        existingDoc.RemoveField(CountFieldName);
+        existingDoc.Add(new Int32Field(CountFieldName, count + 1, Field.Store.YES));
       }
       else
       {
         Document document = CreateDocument(metricAttributes, attributeValues);
-        document.Add(new Int32Field(countFieldName, 1, Field.Store.YES));
-        document.Add(new StringField(uniqueValueFieldName, uniqueValueString, Field.Store.YES));
+        document.Add(new Int32Field(CountFieldName, 1, Field.Store.YES));
+        document.Add(new StringField(UniqueValueFieldName, uniqueValueString, Field.Store.YES));
 
         docsByUniqueString.Add(uniqueValueString, document);
         valuesByUniqueString.Add(uniqueValueString, attributeValues);
@@ -150,7 +150,7 @@ public class LuceneSearchIndex : ISearchIndex
   {
     return valueKeys
       .Select(
-        valueKey => attribute != null && attribute.Values.TryGetValue(valueKey, out string value) ? value : valueKey
+        valueKey => attribute != null && attribute.Values.TryGetValue(valueKey, out string? value) ? value : valueKey
       )
       .ToArray();
   }
