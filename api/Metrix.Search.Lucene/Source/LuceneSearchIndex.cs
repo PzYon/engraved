@@ -10,11 +10,6 @@ using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Search.Lucene;
 
-// problems:
-// - performance?
-// - grouping
-// - storing actual metric values instead of keys in index
-
 public class LuceneSearchIndex : ISearchIndex
 {
   public const string CountFieldName = "__count";
@@ -28,11 +23,10 @@ public class LuceneSearchIndex : ISearchIndex
     params Dictionary<string, string[]>[] attributeValues
   )
   {
-    Dictionary<string, Dictionary<string, string[]>> addDocumentsToIndex =
-      AddDocumentsToIndex(attributes, attributeValues);
+    Dictionary<string, Dictionary<string, string[]>>
+      documentsInIndex = AddDocumentsToIndex(attributes, attributeValues);
 
     Query query = CreateQuery(attributeValues, searchText);
-
     InternalSearchResult[] searchResults = _index.Search(query);
 
     return searchResults
@@ -41,7 +35,7 @@ public class LuceneSearchIndex : ISearchIndex
         {
           Score = r.Score,
           OccurrenceCount = r.Occurrence,
-          Values = addDocumentsToIndex[r.Key]
+          Values = documentsInIndex[r.Key]
         }
       )
       .ToArray();
