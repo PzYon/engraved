@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
-import { Autocomplete, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, Chip, MenuItem, TextField } from "@mui/material";
 import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResult";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { AttributeValues } from "../../common/AttributeValues";
@@ -36,13 +36,28 @@ export const AttributeComboSearch: React.FC<{
         return "";
       }}
       renderOption={(props, option) => {
+        const searchResult = option as IAttributeSearchResult;
+
         return (
-          <MenuItem {...props} key={JSON.stringify(option)}>
-            <AttributeValues
-              attributes={metric.attributes}
-              attributeValues={option.values}
-              preventOnClick={true}
-            />
+          <MenuItem {...props} key={JSON.stringify(searchResult)}>
+            <>
+              <AttributeValues
+                attributes={metric.attributes}
+                attributeValues={searchResult.values}
+                preventOnClick={true}
+              />
+              <Chip
+                key="count"
+                sx={{
+                  color: "common.black",
+                  marginLeft: "5px",
+                  fontSize: "small",
+                  height: "22px",
+                }}
+                title={searchResult.occurrenceCount.toString() + "x"}
+                label={searchResult.occurrenceCount.toString() + "x"}
+              />
+            </>
           </MenuItem>
         );
       }}
