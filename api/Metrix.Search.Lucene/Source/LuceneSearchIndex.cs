@@ -45,32 +45,34 @@ public class LuceneSearchIndex : ISearchIndex
   {
     var query = new BooleanQuery();
 
-    string[] searchTerms = searchText.Split(" ");
-
-    foreach (string searchTerm in searchTerms)
+    foreach (string searchTerm in searchText.ToLower().Split(" "))
     {
-      var termQuery = new BooleanQuery();
-
-      foreach (string fieldName in metricAttributeValues.SelectMany(v => v.Keys).Distinct())
-      {
-        termQuery.Clauses.Add(
-          new BooleanClause(new TermQuery(new Term(fieldName, searchTerm)), Occur.SHOULD)
-        );
-        termQuery.Clauses.Add(
-          new BooleanClause(new WildcardQuery(new Term(fieldName, searchTerm + "*")), Occur.SHOULD)
-        );
-        termQuery.Clauses.Add(
-          new BooleanClause(new FuzzyQuery(new Term(fieldName, searchTerm)), Occur.SHOULD)
-        );
-      }
-
-      // give a higher score when there's a high occurrence.
-      Query modifiedQuery = new CustomScoreQuery(termQuery, new FunctionQuery(new Int32FieldSource(CountFieldName)));
-
-      query.Clauses.Add(new BooleanClause(modifiedQuery, Occur.MUST));
+      Query termQuery = GetQueryForTerm(metricAttributeValues, searchTerm);
+      query.Clauses.Add(new BooleanClause(termQuery, Occur.MUST));
     }
 
     return query;
+  }
+
+  private static Query GetQueryForTerm(Dictionary<string, string[]>[] metricAttributeValues, string searchTerm)
+  {
+    var termQuery = new BooleanQuery();
+
+    foreach (string fieldName in metricAttributeValues.SelectMany(v => v.Keys).Distinct())
+    {
+      termQuery.Clauses.Add(
+        new BooleanClause(new TermQuery(new Term(fieldName, searchTerm)), Occur.SHOULD)
+      );
+      termQuery.Clauses.Add(
+        new BooleanClause(new WildcardQuery(new Term(fieldName, searchTerm + "*")), Occur.SHOULD)
+      );
+      termQuery.Clauses.Add(
+        new BooleanClause(new FuzzyQuery(new Term(fieldName, searchTerm)), Occur.SHOULD)
+      );
+    }
+
+    // give a higher score when there's a high occurrence.
+    return new CustomScoreQuery(termQuery, new FunctionQuery(new Int32FieldSource(CountFieldName)));
   }
 
   private Dictionary<string, Dictionary<string, string[]>> AddDocumentsToIndex(
