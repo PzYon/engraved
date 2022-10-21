@@ -56,9 +56,9 @@ export const MetricAttributeSelector: React.FC<{
 
         const attributesValues = { ...selectedAttributeValues };
 
-        if (option) {
-          attributesValues[attributeKey] = [option.addNewKey || option.key];
-        }
+        attributesValues[attributeKey] = option
+          ? [option.addNewKey || option.key]
+          : [];
 
         onChange(attributesValues);
       }}

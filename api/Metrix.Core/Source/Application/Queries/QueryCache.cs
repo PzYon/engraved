@@ -11,10 +11,7 @@ public class QueryCache
   private readonly ICurrentUserService _currentUserService;
 
   private Dictionary<string, HashSet<string>> QueryKeysByUser
-    => _memoryCache.GetOrCreate<Dictionary<string, HashSet<string>>>(
-      KeysByUserKey,
-      _ => new Dictionary<string, HashSet<string>>()
-    );
+    => _memoryCache.GetOrCreate(KeysByUserKey, _ => new Dictionary<string, HashSet<string>>());
 
   public QueryCache(IMemoryCache memoryCache, ICurrentUserService currentUserService)
   {
