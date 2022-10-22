@@ -5,7 +5,6 @@ import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { differenceInMinutes, formatDistanceStrict } from "date-fns";
-import { IMetric } from "../serverApi/IMetric";
 import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
 
 export class TimerMetricType implements IMetricType {
@@ -67,7 +66,7 @@ export class TimerMetricType implements IMetricType {
     ];
   }
 
-  getOverviewProperties(metric: IMetric): IMetricOverviewPropertyDefinition[] {
+  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
   }
 
