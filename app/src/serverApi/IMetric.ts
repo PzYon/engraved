@@ -9,6 +9,6 @@ export interface IMetric {
   description?: string;
   notes?: string;
   type: MetricType;
-  lastMeasurementDate?: string;
+  editedOn?: string;
   permissions?: IUserPermissions;
 }

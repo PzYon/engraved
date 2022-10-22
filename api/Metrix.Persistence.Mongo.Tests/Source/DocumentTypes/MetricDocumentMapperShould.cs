@@ -23,7 +23,7 @@ public class MetricDocumentMapperShould
       Name = Name,
       Description = Description,
       Notes = Notes,
-      LastMeasurementDate = DateTime.UtcNow
+      EditedOn = DateTime.UtcNow
     };
 
     MetricDocument metricDocument = MetricDocumentMapper.ToDocument(counterMetric);
@@ -199,7 +199,7 @@ public class MetricDocumentMapperShould
     Assert.AreEqual(expected.Type, actual.Type);
     Assert.AreEqual(expected.Description, actual.Description);
     Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.LastMeasurementDate, actual.LastMeasurementDate);
+    Assert.AreEqual(expected.EditedOn, actual.EditedOn);
   }
 
   private static void AssertEqual(MetricDocument expected, IMetric actual)
@@ -209,6 +209,6 @@ public class MetricDocumentMapperShould
     Assert.AreEqual(expected.Type, actual.Type);
     Assert.AreEqual(expected.Description, actual.Description);
     Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.LastMeasurementDate, actual.LastMeasurementDate);
+    Assert.AreEqual(expected.EditedOn, actual.EditedOn);
   }
 }

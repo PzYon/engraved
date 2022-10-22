@@ -13,6 +13,6 @@ public class GetAllMetricsQueryExecutor : IQueryExecutor<IMetric[]>
 
     allMetrics = await MetricQueryUtil.EnsurePermissionUsers(repository, allMetrics);
 
-    return allMetrics.OrderByDescending(m => m.LastMeasurementDate).ToArray();
+    return allMetrics.OrderByDescending(m => m.EditedOn).ToArray();
   }
 }

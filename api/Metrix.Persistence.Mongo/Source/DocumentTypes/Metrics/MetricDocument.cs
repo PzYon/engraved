@@ -25,7 +25,7 @@ public abstract class MetricDocument : IUserScopedDocument, IHasPerissionsDocume
 
   public Dictionary<string, MetricAttribute> Attributes { get; set; } = new();
 
-  public DateTime? LastMeasurementDate { get; set; }
+  public DateTime? EditedOn { get; set; }
 
   public UserPermissions Permissions { get; set; } = new();
 }

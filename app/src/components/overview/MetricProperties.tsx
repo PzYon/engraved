@@ -11,9 +11,9 @@ export const MetricProperties: React.FC<{ metric: IMetric }> = ({ metric }) => {
 
   const allProperties: IMetricOverviewPropertyDefinition[] = [
     {
-      key: "last-measurement-date",
-      node: <FormatDate value={metric.lastMeasurementDate} />,
-      label: "Last measurement",
+      key: "edited-on-date",
+      node: <FormatDate value={metric.editedOn} />,
+      label: "Edited",
     },
     ...properties,
   ];
