@@ -41,7 +41,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     UpsertResult result = await repository.UpsertMeasurement(measurement);
 
     UpdateMetric(metric, dateService);
-    metric.LastMeasurementDate = measurement.DateTime;
+    metric.EditedOn = measurement.DateTime;
 
     await repository.UpsertMetric(metric);
 

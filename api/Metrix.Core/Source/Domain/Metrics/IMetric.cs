@@ -16,5 +16,5 @@ public interface IMetric : IUserScoped, IPermissionHolder
 
   Dictionary<string, MetricAttribute> Attributes { get; set; }
 
-  DateTime? LastMeasurementDate { get; set; }
+  DateTime? EditedOn { get; set; }
 }

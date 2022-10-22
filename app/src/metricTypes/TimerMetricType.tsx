@@ -5,8 +5,6 @@ import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { differenceInMinutes, formatDistanceStrict } from "date-fns";
-import { IMetric } from "../serverApi/IMetric";
-import { ITimerMetric } from "../serverApi/ITimerMetric";
 import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
 
 export class TimerMetricType implements IMetricType {
@@ -68,19 +66,7 @@ export class TimerMetricType implements IMetricType {
     ];
   }
 
-  getOverviewProperties(metric: IMetric): IMetricOverviewPropertyDefinition[] {
-    const timerMetric = metric as ITimerMetric;
-
-    if (timerMetric.startDate) {
-      return [
-        {
-          node: <FormatDate key="start-date" value={timerMetric.startDate} />,
-          key: "start-date",
-          label: "Start date",
-        },
-      ];
-    }
-
+  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
   }
 
