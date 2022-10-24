@@ -4,6 +4,7 @@ export const translations: ITranslations = {
   metricType_counter: "Counter",
   metricType_gauge: "Value",
   metricType_timer: "Timer",
+  metricType_notes: "Notes",
   groupBy_day: "Day",
   groupBy_month: "Month",
   columnName_date: "Date",
