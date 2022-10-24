@@ -44,6 +44,8 @@ public class AddMetricCommandExecutor : ICommandExecutor
         return new GaugeMetric();
       case MetricType.Timer:
         return new TimerMetric();
+      case MetricType.Notes:
+        return new NotesMetric();
       default:
         throw new ArgumentOutOfRangeException(nameof(type), type, null);
     }

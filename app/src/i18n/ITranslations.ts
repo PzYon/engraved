@@ -2,6 +2,7 @@ export interface ITranslations {
   metricType_timer: string;
   metricType_gauge: string;
   metricType_counter: string;
+  metricType_notes: string;
   groupBy_day: string;
   groupBy_month: string;
   columnName_notes: string;
