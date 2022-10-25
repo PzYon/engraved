@@ -84,6 +84,9 @@ public class DemoDataRepositorySeeder
       case TimerMetric timerMetric:
         await AddMeasurements(timerMetric, dateService.UtcNow);
         break;
+      case NotesMetric:
+        // notes do not have metrics
+        break;
       default:
         throw new Exception($"Metric type \"{metric.Type}\" is not yet supported.");
     }
