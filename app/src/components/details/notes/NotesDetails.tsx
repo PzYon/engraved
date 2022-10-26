@@ -5,12 +5,15 @@ import "easymde/dist/easymde.min.css";
 import { Options } from "easymde";
 import { Button, Typography } from "@mui/material";
 import { ServerApi } from "../../../serverApi/ServerApi";
+import { useAppContext } from "../../../AppContext";
 
 // markdown editor:
 // https://www.npmjs.com/package/easymde#simplemde-fork
 
 export const NotesDetails: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const [notes, setNotes] = useState(metric.notes);
+
+  const { setAppAlert } = useAppContext();
 
   const onChange = useCallback((value: string) => {
     setNotes(value);
@@ -43,6 +46,19 @@ export const NotesDetails: React.FC<{ metric: IMetric }> = ({ metric }) => {
       metric.description,
       notes,
       metric.attributes
-    );
+    )
+      .then(() => {
+        setAppAlert({
+          title: "Saved metric",
+          type: "success",
+        });
+      })
+      .catch((e) => {
+        setAppAlert({
+          title: "Failed to edit metric",
+          message: e.message,
+          type: "error",
+        });
+      });
   }
 };
