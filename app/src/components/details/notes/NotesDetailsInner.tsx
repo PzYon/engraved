@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { IMetric } from "../../../serverApi/IMetric";
 import SimpleMdeReact from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
@@ -6,14 +6,25 @@ import { Options } from "easymde";
 import { Button, Typography } from "@mui/material";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
+import { getMetricHeaderActions } from "../../overview/getMetricHeaderActions";
 
 // markdown editor:
 // https://www.npmjs.com/package/easymde#simplemde-fork
 
-export const NotesDetails: React.FC<{ metric: IMetric }> = ({ metric }) => {
+export const NotesDetailsInner: React.FC<{ metric: IMetric }> = ({
+  metric,
+}) => {
   const [notes, setNotes] = useState(metric.notes);
 
-  const { setAppAlert } = useAppContext();
+  const { setAppAlert, setTitleActions } = useAppContext();
+
+  useEffect(() => {
+    setTitleActions(getMetricHeaderActions(metric));
+
+    return () => {
+      setTitleActions([]);
+    };
+  }, [metric]);
 
   const onChange = useCallback((value: string) => {
     setNotes(value);

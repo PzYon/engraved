@@ -1,7 +1,4 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { IMetric } from "../../serverApi/IMetric";
-import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
-import styled from "styled-components";
 import { useMetricDetailsContext } from "./MetricDetailsContext";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useAppContext } from "../../AppContext";
@@ -24,7 +21,7 @@ export const MetricDetailsInner: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
     useMetricDetailsContext();
 
-  const { setPageTitle, setTitleActions } = useAppContext();
+  const { setTitleActions } = useAppContext();
 
   const { renderDialog } = useDialogContext();
 
@@ -36,8 +33,6 @@ export const MetricDetailsInner: React.FC = () => {
   const [showChart, setShowChart] = useState(false);
 
   useEffect(() => {
-    setPageTitle(<PageTitle metric={metric} />);
-
     setTitleActions([
       {
         key: "chart",
@@ -61,7 +56,6 @@ export const MetricDetailsInner: React.FC = () => {
     ]);
 
     return () => {
-      setPageTitle(null);
       setTitleActions([]);
     };
   }, [metric, showFilters, showChart]);
@@ -76,12 +70,6 @@ export const MetricDetailsInner: React.FC = () => {
 
   return (
     <>
-      {metric.description ? (
-        <DetailsSection>
-          <Typography>{metric.description}</Typography>
-        </DetailsSection>
-      ) : null}
-
       <DetailsSection>
         <MetricNotes metric={metric} />
       </DetailsSection>
@@ -152,28 +140,3 @@ export const MetricDetailsInner: React.FC = () => {
     </>
   );
 };
-
-const PageTitle: React.FC<{ metric: IMetric }> = ({ metric }) => {
-  if (!metric) {
-    return null;
-  }
-
-  return (
-    <Host>
-      <MetricTypeIcon
-        type={metric?.type}
-        style={MetricTypeIconStyle.PageTitle}
-      />
-      <Title>{metric?.name}</Title>
-    </Host>
-  );
-};
-
-const Host = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const Title = styled.div`
-  flex-grow: 1;
-`;
