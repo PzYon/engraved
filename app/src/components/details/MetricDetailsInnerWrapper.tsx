@@ -7,6 +7,8 @@ import { useAppContext } from "../../AppContext";
 import { PageTitle } from "./PageTitle";
 import { DetailsSection } from "../layout/DetailsSection";
 import { Typography } from "@mui/material";
+import { Route, Routes } from "react-router-dom";
+import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 
 export const MetricDetailsInnerWrapper: React.FC = () => {
   const { metric } = useMetricDetailsContext();
@@ -37,6 +39,13 @@ export const MetricDetailsInnerWrapper: React.FC = () => {
       ) : (
         <MetricDetailsInner />
       )}
+
+      <Routes>
+        <Route
+          path="/permissions"
+          element={<EditMetricPermissionsLauncher metric={metric} />}
+        />
+      </Routes>
     </>
   );
 };

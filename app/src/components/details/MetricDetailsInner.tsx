@@ -3,19 +3,18 @@ import { useMetricDetailsContext } from "./MetricDetailsContext";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useAppContext } from "../../AppContext";
 import { Typography } from "@mui/material";
-import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Route, Routes } from "react-router-dom";
 import { DetailsSection } from "../layout/DetailsSection";
 import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { MetricNotes } from "./edit/MetricNotes";
-import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 import { getMetricHeaderActions } from "../overview/getMetricHeaderActions";
 import { Filters } from "./filters/Filters";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import { Chart } from "./chart/Chart";
 import { FilterAltOutlined, ShowChartOutlined } from "@mui/icons-material";
+import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 
 export const MetricDetailsInner: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
@@ -112,10 +111,6 @@ export const MetricDetailsInner: React.FC = () => {
           element={
             <EditMetricLauncher metric={metric} reloadMetric={reloadMetric} />
           }
-        />
-        <Route
-          path="/permissions"
-          element={<EditMetricPermissionsLauncher metric={metric} />}
         />
         <Route
           path="/measurements/:measurementId/edit"

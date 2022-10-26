@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IMetric } from "../../../serverApi/IMetric";
-import SimpleMdeReact from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
-import { Options } from "easymde";
-import { Button, Typography } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { getMetricHeaderActions } from "../../overview/getMetricHeaderActions";
+import { Route, Routes } from "react-router-dom";
 
 // markdown editor:
 // https://www.npmjs.com/package/easymde#simplemde-fork
@@ -26,28 +24,21 @@ export const NotesDetailsInner: React.FC<{ metric: IMetric }> = ({
     };
   }, [metric]);
 
-  const onChange = useCallback((value: string) => {
-    setNotes(value);
-  }, []);
-
-  const autofocusNoSpellcheckerOptions = useMemo(() => {
-    return {
-      autofocus: true,
-      spellChecker: false,
-    } as Options;
-  }, []);
-
   return (
-    <Typography>
-      <SimpleMdeReact
-        options={autofocusNoSpellcheckerOptions}
-        value={notes}
-        onChange={onChange}
-      />
-      <Button variant="outlined" onClick={saveNote}>
-        Save
-      </Button>
-    </Typography>
+    <>
+      <Typography>
+        <TextField
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+        />
+        <Button variant="outlined" onClick={saveNote}>
+          Save
+        </Button>
+      </Typography>
+      <Routes>
+        <Route path="/edit" element={<div>Here comes edit stuff.</div>} />
+      </Routes>
+    </>
   );
 
   function saveNote() {
