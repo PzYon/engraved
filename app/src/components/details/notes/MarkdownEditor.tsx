@@ -7,7 +7,10 @@ import { IMetric } from "../../../serverApi/IMetric";
 import { useAppContext } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
 
-export const MarkdownEditor: React.FC<{ metric: IMetric }> = ({ metric }) => {
+export const MarkdownEditor: React.FC<{
+  metric: IMetric;
+  onSaved: (notes: string) => void;
+}> = ({ metric, onSaved }) => {
   const { setAppAlert } = useAppContext();
   const navigate = useNavigate();
 
@@ -40,7 +43,9 @@ export const MarkdownEditor: React.FC<{ metric: IMetric }> = ({ metric }) => {
           type: "success",
         });
 
-        navigate("(/");
+        onSaved(notes);
+
+        navigate("..");
       })
       .catch((e) => {
         setAppAlert({
