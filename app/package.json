@@ -14,7 +14,7 @@
     "@types/jest": "29.2.0",
     "@types/node": "16.18.2",
     "@types/react": "18.0.24",
-    "@types/react-dom": "18.0.7",
+    "@types/react-dom": "18.0.8",
     "chart.js": "3.9.1",
     "chartjs-adapter-date-fns": "2.0.0",
     "chartjs-plugin-annotation": "2.0.1",
