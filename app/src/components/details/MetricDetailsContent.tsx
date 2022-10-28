@@ -1,30 +1,26 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { IMetric } from "../../serverApi/IMetric";
-import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
-import styled from "styled-components";
 import { useMetricDetailsContext } from "./MetricDetailsContext";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useAppContext } from "../../AppContext";
 import { Typography } from "@mui/material";
-import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Route, Routes } from "react-router-dom";
 import { DetailsSection } from "../layout/DetailsSection";
 import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { MetricNotes } from "./edit/MetricNotes";
-import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 import { getMetricHeaderActions } from "../overview/getMetricHeaderActions";
 import { Filters } from "./filters/Filters";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import { Chart } from "./chart/Chart";
 import { FilterAltOutlined, ShowChartOutlined } from "@mui/icons-material";
+import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 
-export const MetricDetailsInner: React.FC = () => {
+export const MetricDetailsContent: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
     useMetricDetailsContext();
 
-  const { setPageTitle, setTitleActions } = useAppContext();
+  const { setTitleActions } = useAppContext();
 
   const { renderDialog } = useDialogContext();
 
@@ -36,8 +32,6 @@ export const MetricDetailsInner: React.FC = () => {
   const [showChart, setShowChart] = useState(false);
 
   useEffect(() => {
-    setPageTitle(<PageTitle metric={metric} />);
-
     setTitleActions([
       {
         key: "chart",
@@ -61,7 +55,6 @@ export const MetricDetailsInner: React.FC = () => {
     ]);
 
     return () => {
-      setPageTitle(null);
       setTitleActions([]);
     };
   }, [metric, showFilters, showChart]);
@@ -76,12 +69,6 @@ export const MetricDetailsInner: React.FC = () => {
 
   return (
     <>
-      {metric.description ? (
-        <DetailsSection>
-          <Typography>{metric.description}</Typography>
-        </DetailsSection>
-      ) : null}
-
       <DetailsSection>
         <MetricNotes metric={metric} />
       </DetailsSection>
@@ -126,10 +113,6 @@ export const MetricDetailsInner: React.FC = () => {
           }
         />
         <Route
-          path="/permissions"
-          element={<EditMetricPermissionsLauncher metric={metric} />}
-        />
-        <Route
           path="/measurements/:measurementId/edit"
           element={
             <EditMeasurementLauncher
@@ -152,28 +135,3 @@ export const MetricDetailsInner: React.FC = () => {
     </>
   );
 };
-
-const PageTitle: React.FC<{ metric: IMetric }> = ({ metric }) => {
-  if (!metric) {
-    return null;
-  }
-
-  return (
-    <Host>
-      <MetricTypeIcon
-        type={metric?.type}
-        style={MetricTypeIconStyle.PageTitle}
-      />
-      <Title>{metric?.name}</Title>
-    </Host>
-  );
-};
-
-const Host = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const Title = styled.div`
-  flex-grow: 1;
-`;
