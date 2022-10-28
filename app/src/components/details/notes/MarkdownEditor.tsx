@@ -22,7 +22,7 @@ export const MarkdownEditor: React.FC<{
       <CodeMirror
         value={notes}
         extensions={[markdown({})]}
-        onChange={(value) => setNotes(value)}
+        onChange={(value: string) => setNotes(value)}
       />
       <ButtonContainer>
         <Button variant="outlined" onClick={saveNote}>
