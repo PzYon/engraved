@@ -1,10 +1,13 @@
 import MarkdownIt from "markdown-it";
 import React, { useMemo } from "react";
-import { Typography } from "@mui/material";
 import styled from "styled-components";
 
 export const Markdown: React.FC<{ value: string }> = ({ value }) => {
   const mdAsHtml = useMemo(() => {
+    if (!value) {
+      return null;
+    }
+
     return (
       MarkdownIt("default", { linkify: true })
         //.use(require("markdown-it-anchor").default)
@@ -13,11 +16,7 @@ export const Markdown: React.FC<{ value: string }> = ({ value }) => {
     );
   }, [value]);
 
-  return (
-    <Typography>
-      <ContentContainer dangerouslySetInnerHTML={{ __html: mdAsHtml }} />
-    </Typography>
-  );
+  return <ContentContainer dangerouslySetInnerHTML={{ __html: mdAsHtml }} />;
 };
 
 const ContentContainer = styled("div")`

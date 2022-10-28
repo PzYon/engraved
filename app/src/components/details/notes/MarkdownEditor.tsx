@@ -11,10 +11,11 @@ export const MarkdownEditor: React.FC<{
   metric: IMetric;
   onSaved: (notes: string) => void;
 }> = ({ metric, onSaved }) => {
-  const { setAppAlert } = useAppContext();
   const navigate = useNavigate();
 
-  const [notes, setNotes] = useState(metric.notes);
+  const { setAppAlert } = useAppContext();
+
+  const [notes, setNotes] = useState(metric.notes ?? "");
 
   return (
     <>
