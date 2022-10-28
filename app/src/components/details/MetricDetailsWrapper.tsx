@@ -5,10 +5,10 @@ import { MetricDetailsContent } from "./MetricDetailsContent";
 import { NotesDetailsContent } from "./notes/NotesDetailsContent";
 import { useAppContext } from "../../AppContext";
 import { PageTitle } from "./PageTitle";
-import { DetailsSection } from "../layout/DetailsSection";
-import { Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
+import { FormatDate } from "../common/FormatDate";
 
 export const MetricDetailsWrapper: React.FC = () => {
   const { metric } = useMetricDetailsContext();
@@ -29,11 +29,18 @@ export const MetricDetailsWrapper: React.FC = () => {
 
   return (
     <>
-      {metric.description ? (
-        <DetailsSection>
-          <Typography>{metric.description}</Typography>
-        </DetailsSection>
-      ) : null}
+      <Typography>
+        <PropertiesContainer>
+          {metric.editedOn ? (
+            <PropertyContainer>
+              Edited <FormatDate value={metric.editedOn} />
+            </PropertyContainer>
+          ) : null}
+          {metric.description ? (
+            <PropertyContainer>{metric.description}</PropertyContainer>
+          ) : null}
+        </PropertiesContainer>
+      </Typography>
 
       {metric.type === MetricType.Notes ? (
         <NotesDetailsContent metric={metric} />
@@ -50,3 +57,14 @@ export const MetricDetailsWrapper: React.FC = () => {
     </>
   );
 };
+
+const PropertiesContainer = styled("div")`
+  & > span {
+    &:not(:last-of-type)::after {
+      content: "\\00B7";
+      margin: 0 ${(p) => p.theme.spacing(2)};
+    }
+  }
+`;
+
+const PropertyContainer = styled("span")``;
