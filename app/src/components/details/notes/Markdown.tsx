@@ -1,6 +1,6 @@
 import MarkdownIt from "markdown-it";
 import React, { useMemo } from "react";
-import styled from "styled-components";
+import { styled } from "@mui/material";
 
 export const Markdown: React.FC<{ value: string }> = ({ value }) => {
   const mdAsHtml = useMemo(() => {
@@ -21,6 +21,8 @@ export const Markdown: React.FC<{ value: string }> = ({ value }) => {
 
 const ContentContainer = styled("div")`
   overflow: auto;
+
+  font-family: ${(p) => p.theme.typography.fontFamily};
 
   h1,
   h2,

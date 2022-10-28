@@ -1,6 +1,6 @@
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
-import { Button } from "@mui/material";
+import { Button, styled } from "@mui/material";
 import React, { useState } from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
@@ -24,9 +24,11 @@ export const MarkdownEditor: React.FC<{
         extensions={[markdown({})]}
         onChange={(value) => setNotes(value)}
       />
-      <Button variant="outlined" onClick={saveNote}>
-        Save
-      </Button>
+      <ButtonContainer>
+        <Button variant="outlined" onClick={saveNote}>
+          Save
+        </Button>
+      </ButtonContainer>
     </>
   );
 
@@ -57,3 +59,8 @@ export const MarkdownEditor: React.FC<{
       });
   }
 };
+
+const ButtonContainer = styled("div")`
+  text-align: right;
+  margin-top: ${(p) => p.theme.spacing(2)};
+`;
