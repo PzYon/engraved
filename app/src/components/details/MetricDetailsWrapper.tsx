@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useMetricDetailsContext } from "./MetricDetailsContext";
 import { MetricType } from "../../serverApi/MetricType";
-import { MetricDetailsInner } from "./MetricDetailsInner";
-import { NotesDetailsInner } from "./notes/NotesDetailsInner";
+import { MetricDetailsContent } from "./MetricDetailsContent";
+import { NotesDetailsContent } from "./notes/NotesDetailsContent";
 import { useAppContext } from "../../AppContext";
 import { PageTitle } from "./PageTitle";
 import { DetailsSection } from "../layout/DetailsSection";
@@ -10,7 +10,7 @@ import { Typography } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 
-export const MetricDetailsInnerWrapper: React.FC = () => {
+export const MetricDetailsWrapper: React.FC = () => {
   const { metric } = useMetricDetailsContext();
 
   const { setPageTitle } = useAppContext();
@@ -34,10 +34,11 @@ export const MetricDetailsInnerWrapper: React.FC = () => {
           <Typography>{metric.description}</Typography>
         </DetailsSection>
       ) : null}
+
       {metric.type === MetricType.Notes ? (
-        <NotesDetailsInner metric={metric} />
+        <NotesDetailsContent metric={metric} />
       ) : (
-        <MetricDetailsInner />
+        <MetricDetailsContent />
       )}
 
       <Routes>

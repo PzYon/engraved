@@ -7,7 +7,7 @@ import { Markdown } from "./Markdown";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { DetailsSection } from "../../layout/DetailsSection";
 
-export const NotesDetailsInner: React.FC<{ metric: IMetric }> = ({
+export const NotesDetailsContent: React.FC<{ metric: IMetric }> = ({
   metric,
 }) => {
   const { setTitleActions } = useAppContext();

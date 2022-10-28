@@ -16,7 +16,7 @@ import { Chart } from "./chart/Chart";
 import { FilterAltOutlined, ShowChartOutlined } from "@mui/icons-material";
 import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 
-export const MetricDetailsInner: React.FC = () => {
+export const MetricDetailsContent: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
     useMetricDetailsContext();
 
