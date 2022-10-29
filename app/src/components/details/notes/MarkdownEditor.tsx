@@ -1,11 +1,13 @@
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
-import { Button, styled } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
 import { useAppContext } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
+import { SaveOutlined } from "@mui/icons-material";
+import { editActionKey } from "../../overview/getMetricHeaderActions";
+import { styled } from "@mui/material";
 
 export const MarkdownEditor: React.FC<{
   metric: IMetric;
@@ -13,23 +15,33 @@ export const MarkdownEditor: React.FC<{
 }> = ({ metric, onSaved }) => {
   const navigate = useNavigate();
 
-  const { setAppAlert } = useAppContext();
+  const { setAppAlert, titleActions, setTitleActions } = useAppContext();
 
   const [notes, setNotes] = useState(metric.notes ?? "");
 
+  useEffect(() => {
+    const editIndex = titleActions.findIndex((a) => a.key === editActionKey);
+    const newActions = [...titleActions];
+
+    newActions[editIndex] = {
+      label: "Save",
+      onClick: saveNote,
+      icon: <SaveOutlined />,
+      key: "save",
+    };
+    setTitleActions(newActions);
+
+    return () => setTitleActions(titleActions);
+  }, []);
+
   return (
-    <>
+    <Host>
       <CodeMirror
         value={notes}
         extensions={[markdown({})]}
         onChange={(value: string) => setNotes(value)}
       />
-      <ButtonContainer>
-        <Button variant="outlined" onClick={saveNote}>
-          Save
-        </Button>
-      </ButtonContainer>
-    </>
+    </Host>
   );
 
   function saveNote() {
@@ -60,7 +72,6 @@ export const MarkdownEditor: React.FC<{
   }
 };
 
-const ButtonContainer = styled("div")`
-  text-align: right;
+const Host = styled("div")`
   margin-top: ${(p) => p.theme.spacing(2)};
 `;

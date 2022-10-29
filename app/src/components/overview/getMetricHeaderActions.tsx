@@ -5,6 +5,8 @@ import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementD
 import { IIconButtonAction } from "../common/IconButtonWrapper";
 import { MetricType } from "../../serverApi/MetricType";
 
+export const editActionKey = "edit";
+
 export function getMetricHeaderActions(
   metric: IMetric,
   renderDialog?: (dialogProps: IDialogProps) => void,
@@ -28,7 +30,7 @@ export function getMetricHeaderActions(
 
   actions.push(
     {
-      key: "edit",
+      key: editActionKey,
       label: "Edit",
       icon: <EditOutlined />,
       href: `/metrics/${metric.id}/edit`,
