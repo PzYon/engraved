@@ -29,7 +29,7 @@ export const MetricDetailsWrapper: React.FC = () => {
 
   return (
     <>
-      <Typography>
+      <Typography component="div">
         <PropertiesContainer>
           {metric.editedOn ? (
             <PropertyContainer>
