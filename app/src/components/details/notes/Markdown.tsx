@@ -68,7 +68,7 @@ const ContentContainer = styled("div")`
     max-width: 100%;
   }
 
-  div > :first-child {
+  div > :first-of-type {
     margin-top: 0 !important;
   }
 

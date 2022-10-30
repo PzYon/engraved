@@ -7,30 +7,21 @@ import { useAppContext } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
 import { SaveOutlined } from "@mui/icons-material";
 import { editActionKey } from "../../overview/getMetricHeaderActions";
-import { styled } from "@mui/material";
+import { styled, useTheme } from "@mui/material";
+import { EditorView } from "@codemirror/view";
 
 export const MarkdownEditor: React.FC<{
   metric: IMetric;
   onSaved: (notes: string) => void;
 }> = ({ metric, onSaved }) => {
   const navigate = useNavigate();
-
   const { setAppAlert, titleActions, setTitleActions } = useAppContext();
+  const { typography, palette } = useTheme();
 
   const [notes, setNotes] = useState(metric.notes ?? "");
 
   useEffect(() => {
-    const editIndex = titleActions.findIndex((a) => a.key === editActionKey);
-    const newActions = [...titleActions];
-
-    newActions[editIndex] = {
-      label: "Save",
-      onClick: saveNote,
-      icon: <SaveOutlined />,
-      key: "save",
-    };
-    setTitleActions(newActions);
-
+    replaceAction(notes);
     return () => setTitleActions(titleActions);
   }, []);
 
@@ -39,17 +30,53 @@ export const MarkdownEditor: React.FC<{
       <CodeMirror
         value={notes}
         extensions={[markdown({})]}
-        onChange={(value: string) => setNotes(value)}
+        onChange={(value: string) => {
+          setNotes(value);
+          replaceAction(value);
+        }}
+        theme={EditorView.theme({
+          "&": {
+            fontSize: typography.fontSize + "px",
+            backgroundColor: palette.common.white,
+          },
+        })}
       />
     </Host>
   );
 
-  function saveNote() {
+  // hack: this is hideous. main problem is that the whole
+  // action adding stuff does not really work nicely.
+  // this needs to be changed big time, but don't really
+  // know how for the moment.
+  function replaceAction(value: string) {
+    const newActions = [...titleActions];
+
+    const index = newActions.findIndex(
+      (a) => a.key === editActionKey || a.key === "save"
+    );
+
+    const action = {
+      label: "Save",
+      onClick: () => saveNote(value),
+      icon: <SaveOutlined />,
+      key: "save",
+    };
+
+    if (index === -1) {
+      newActions.push(action);
+    } else {
+      newActions[index] = action;
+    }
+
+    setTitleActions(newActions);
+  }
+
+  function saveNote(notesValue: string) {
     ServerApi.editMetric(
       metric.id,
       metric.name,
       metric.description,
-      notes,
+      notesValue,
       metric.attributes
     )
       .then(() => {
@@ -58,7 +85,7 @@ export const MarkdownEditor: React.FC<{
           type: "success",
         });
 
-        onSaved(notes);
+        onSaved(notesValue);
 
         navigate("..");
       })
