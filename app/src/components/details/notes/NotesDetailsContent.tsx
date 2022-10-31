@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { IMetric } from "../../../serverApi/IMetric";
 import { useAppContext } from "../../../AppContext";
 import { getMetricHeaderActions } from "../../overview/getMetricHeaderActions";
 import { Route, Routes } from "react-router-dom";
 import { Markdown } from "./Markdown";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { DetailsSection } from "../../layout/DetailsSection";
+import { useMetricDetailsContext } from "../MetricDetailsContext";
 
-export const NotesDetailsContent: React.FC<{ metric: IMetric }> = ({
-  metric,
-}) => {
+export const NotesDetailsContent: React.FC = () => {
+  const { metric, reloadMetric } = useMetricDetailsContext();
+
   const { setTitleActions } = useAppContext();
 
   const [notes, setNotes] = useState(metric.notes);
@@ -34,7 +34,15 @@ export const NotesDetailsContent: React.FC<{ metric: IMetric }> = ({
       />
       <Route
         path="/edit"
-        element={<MarkdownEditor metric={metric} onSaved={setNotes} />}
+        element={
+          <MarkdownEditor
+            metric={metric}
+            onSaved={(value) => {
+              setNotes(value);
+              reloadMetric();
+            }}
+          />
+        }
       />
     </Routes>
   );

@@ -43,7 +43,7 @@ export const MetricDetailsWrapper: React.FC = () => {
       </Typography>
 
       {metric.type === MetricType.Notes ? (
-        <NotesDetailsContent metric={metric} />
+        <NotesDetailsContent />
       ) : (
         <MetricDetailsContent />
       )}
