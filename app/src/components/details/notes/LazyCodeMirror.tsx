@@ -8,18 +8,26 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   value,
   onChange,
   theme,
-}) => (
-  <CodeMirror
-    value={value}
-    extensions={[markdown({})]}
-    onChange={onChange}
-    theme={EditorView.theme({
-      "&": {
-        fontSize: theme.typography.fontSize + "px",
-        backgroundColor: theme.palette.common.white,
-      },
-    })}
-  />
-);
+}) => {
+  return (
+    <CodeMirror
+      value={value}
+      extensions={[markdown({}), EditorView.lineWrapping]}
+      onChange={onChange}
+      theme={EditorView.theme({
+        "&": {
+          fontSize: theme.typography.fontSize + "px",
+          backgroundColor: theme.palette.common.white,
+        },
+        ".cm-focused": {
+          outline: 0,
+        },
+        ".cm-activeLine": {
+          backgroundColor: theme.palette.background.default,
+        },
+      })}
+    />
+  );
+};
 
 export default LazyCodeMirror;
