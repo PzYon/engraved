@@ -1,14 +1,19 @@
-import CodeMirror from "@uiw/react-codemirror";
-import { markdown } from "@codemirror/lang-markdown";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
 import { useAppContext } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
 import { SaveOutlined } from "@mui/icons-material";
 import { editActionKey } from "../../overview/getMetricHeaderActions";
-import { styled, useTheme } from "@mui/material";
-import { EditorView } from "@codemirror/view";
+import { styled, Theme, useTheme } from "@mui/material";
+
+export interface ICodeMirrorProps {
+  value: string;
+  onChange: (value: string) => void;
+  theme: Theme;
+}
+
+const LazyCodeMirror = React.lazy(() => import("./LazyCodeMirror"));
 
 export const MarkdownEditor: React.FC<{
   metric: IMetric;
@@ -16,7 +21,7 @@ export const MarkdownEditor: React.FC<{
 }> = ({ metric, onSaved }) => {
   const navigate = useNavigate();
   const { setAppAlert, titleActions, setTitleActions } = useAppContext();
-  const { typography, palette } = useTheme();
+  const theme = useTheme();
 
   const [notes, setNotes] = useState(metric.notes ?? "");
 
@@ -27,20 +32,16 @@ export const MarkdownEditor: React.FC<{
 
   return (
     <Host>
-      <CodeMirror
-        value={notes}
-        extensions={[markdown({})]}
-        onChange={(value: string) => {
-          setNotes(value);
-          replaceAction(value);
-        }}
-        theme={EditorView.theme({
-          "&": {
-            fontSize: typography.fontSize + "px",
-            backgroundColor: palette.common.white,
-          },
-        })}
-      />
+      <Suspense fallback={<div />}>
+        <LazyCodeMirror
+          value={notes}
+          onChange={(value: string) => {
+            setNotes(value);
+            replaceAction(value);
+          }}
+          theme={theme}
+        />
+      </Suspense>
     </Host>
   );
 

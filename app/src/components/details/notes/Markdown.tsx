@@ -3,18 +3,11 @@ import React, { useMemo } from "react";
 import { styled } from "@mui/material";
 
 export const Markdown: React.FC<{ value: string }> = ({ value }) => {
-  const mdAsHtml = useMemo(() => {
-    if (!value) {
-      return null;
-    }
-
-    return (
-      MarkdownIt("default", { linkify: true })
-        //.use(require("markdown-it-anchor").default)
-        //.use(require("markdown-it-table-of-contents"))
-        .render(value)
-    );
-  }, [value]);
+  const mdAsHtml = useMemo(
+    () =>
+      value ? MarkdownIt("default", { linkify: true }).render(value) : null,
+    [value]
+  );
 
   return <ContentContainer dangerouslySetInnerHTML={{ __html: mdAsHtml }} />;
 };
@@ -28,6 +21,7 @@ const ContentContainer = styled("div")`
   h2,
   h3 {
     margin: 1rem 0;
+    font-weight: normal;
   }
 
   p,
