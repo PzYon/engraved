@@ -13,8 +13,13 @@ import { getMetricHeaderActions } from "../overview/getMetricHeaderActions";
 import { Filters } from "./filters/Filters";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import { Chart } from "./chart/Chart";
-import { FilterAltOutlined, ShowChartOutlined } from "@mui/icons-material";
+import {
+  FilterAltOutlined,
+  PanToolOutlined,
+  ShowChartOutlined,
+} from "@mui/icons-material";
 import { EditMetricLauncher } from "./edit/EditMetricLauncher";
+import { Thresholds } from "./thresholds/Thresholds";
 
 export const MetricDetailsContent: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
@@ -30,6 +35,7 @@ export const MetricDetailsContent: React.FC = () => {
 
   const [showFilters, setShowFilters] = useState(false);
   const [showChart, setShowChart] = useState(false);
+  const [showThresholds, setShowThresholds] = useState(false);
 
   useEffect(() => {
     setTitleActions([
@@ -47,6 +53,13 @@ export const MetricDetailsContent: React.FC = () => {
         onClick: () => setShowFilters(!showFilters),
         isNotActive: !showFilters,
       },
+      {
+        key: "thresholds",
+        icon: <PanToolOutlined />,
+        label: "Show thresholds",
+        onClick: () => setShowThresholds(!showThresholds),
+        isNotActive: !showThresholds,
+      },
       null, // null means separator - ugly, but it works for the moment
       ...getMetricHeaderActions(metric, renderDialog, () => {
         reloadMeasurements();
@@ -57,7 +70,7 @@ export const MetricDetailsContent: React.FC = () => {
     return () => {
       setTitleActions([]);
     };
-  }, [metric, showFilters, showChart]);
+  }, [metric, showFilters, showChart, showThresholds]);
 
   if (!metric || !measurements) {
     return null;
@@ -99,6 +112,12 @@ export const MetricDetailsContent: React.FC = () => {
             />
           </DetailsSection>
         </Suspense>
+      ) : null}
+
+      {showThresholds ? (
+        <DetailsSection>
+          <Thresholds metric={metric} />
+        </DetailsSection>
       ) : null}
 
       <DetailsSection overflowXScroll={true}>

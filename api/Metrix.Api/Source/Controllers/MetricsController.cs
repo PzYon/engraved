@@ -5,6 +5,7 @@ using Metrix.Core.Application.Commands.Metrics.Edit;
 using Metrix.Core.Application.Commands.Metrics.Permissions;
 using Metrix.Core.Application.Queries.Metrics.Get;
 using Metrix.Core.Application.Queries.Metrics.GetAll;
+using Metrix.Core.Application.Queries.Metrics.GetThresholdValues;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.Permissions;
 using Microsoft.AspNetCore.Authorization;
@@ -66,5 +67,23 @@ public class MetricsController : ControllerBase
     };
 
     return await _dispatcher.Command(command);
+  }
+
+  [Route("{metricId}/threshold_values")]
+  [HttpGet]
+  public async Task<IDictionary<string, IDictionary<string, double>>> GetThresholdValues(
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate
+  )
+  {
+    var query = new GetThresholdValuesQuery
+    {
+      MetricId = metricId,
+      FromDate = fromDate,
+      ToDate = toDate,
+    };
+
+    return await _dispatcher.Query(query);
   }
 }
