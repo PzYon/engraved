@@ -71,7 +71,7 @@ public class MetricsController : ControllerBase
 
   [Route("{metricId}/threshold_values")]
   [HttpGet]
-  public async Task<IDictionary<string, IDictionary<string, double>>> GetThresholdValues(
+  public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> GetThresholdValues(
     string metricId,
     DateTime? fromDate,
     DateTime? toDate

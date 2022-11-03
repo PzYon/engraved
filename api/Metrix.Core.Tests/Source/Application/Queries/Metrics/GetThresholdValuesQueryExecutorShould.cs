@@ -41,17 +41,17 @@ public class GetThresholdValuesQueryExecutorShould
         },
         Thresholds = new Dictionary<string, Dictionary<string, double>>
         {
-          { "colors", new Dictionary<string, double> { { "green", 1 }, { "blue", 1 } } }
+          { "colors", new Dictionary<string, double> { { "green", 3 }, { "blue", 6 } } }
         }
       }
     );
 
     AddMeasurement(2, "blue");
     AddMeasurement(5, "blue");
-    AddMeasurement(3, "green");
+    AddMeasurement(4, "green");
     AddMeasurement(3, "blue");
 
-    IDictionary<string, IDictionary<string, double>> results = await new GetThresholdValuesQuery
+    IDictionary<string, IDictionary<string, ThresholdResult>> results = await new GetThresholdValuesQuery
       {
         FromDate = DateTime.UtcNow.AddHours(-1),
         ToDate = DateTime.UtcNow.AddHours(1),
@@ -63,15 +63,17 @@ public class GetThresholdValuesQueryExecutorShould
     Assert.NotNull(results);
 
     Assert.That(results.ContainsKey("colors"));
-    IDictionary<string, double> colorsThresholds = results["colors"];
+    IDictionary<string, ThresholdResult> colorsThresholds = results["colors"];
     Assert.NotNull(colorsThresholds);
 
     Assert.AreEqual(2, colorsThresholds.Count);
     Assert.That(colorsThresholds.ContainsKey("blue"));
-    Assert.AreEqual(10, colorsThresholds["blue"]);
+    Assert.AreEqual(10, colorsThresholds["blue"].ActualValue);
+    Assert.AreEqual(6, colorsThresholds["blue"].ThresholdValue);
 
     Assert.That(colorsThresholds.ContainsKey("green"));
-    Assert.AreEqual(3, colorsThresholds["green"]);
+    Assert.AreEqual(4, colorsThresholds["green"].ActualValue);
+    Assert.AreEqual(3, colorsThresholds["green"].ThresholdValue);
   }
 
   private void AddMeasurement(int value, string attributeValueKey)

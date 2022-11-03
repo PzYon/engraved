@@ -1,6 +1,6 @@
 ﻿namespace Metrix.Core.Application.Queries.Metrics.GetThresholdValues;
 
-public class GetThresholdValuesQuery : IQuery<IDictionary<string, IDictionary<string, double>>>
+public class GetThresholdValuesQuery : IQuery<IDictionary<string, IDictionary<string, ThresholdResult>>>
 {
   public string? MetricId { get; set; }
 
@@ -8,7 +8,7 @@ public class GetThresholdValuesQuery : IQuery<IDictionary<string, IDictionary<st
 
   public DateTime? ToDate { get; set; }
 
-  public IQueryExecutor<IDictionary<string, IDictionary<string, double>>> CreateExecutor()
+  public IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>> CreateExecutor()
   {
     return new GetThresholdValuesQueryExecutor(this);
   }

@@ -11,7 +11,7 @@ namespace Metrix.Core.Application.Queries.Metrics.GetThresholdValues;
 // - consider introducing IMetric.GetValue() so there's no need to cast in CalculateThresholds
 // - what should be returned in results? only value/total? or also threshold limit, etc.?
 
-public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string, IDictionary<string, double>>>
+public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>>
 {
   public bool DisableCache => false;
 
@@ -22,14 +22,14 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
     _query = query;
   }
 
-  public async Task<IDictionary<string, IDictionary<string, double>>> Execute(IRepository repository)
+  public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> Execute(IRepository repository)
   {
     var metricQuery = new GetMetricQueryExecutor(new GetMetricQuery { MetricId = _query.MetricId });
     IMetric? metric = await metricQuery.Execute(repository);
 
-    if (metric == null)
+    if (metric == null || metric.Thresholds.Count == 0)
     {
-      return new Dictionary<string, IDictionary<string, double>>();
+      return new Dictionary<string, IDictionary<string, ThresholdResult>>();
     }
 
     IMeasurement[] measurements = await repository.GetAllMeasurements(
@@ -42,18 +42,18 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
     return CalculateThresholds(metric, measurements);
   }
 
-  private static IDictionary<string, IDictionary<string, double>> CalculateThresholds(
+  private static IDictionary<string, IDictionary<string, ThresholdResult>> CalculateThresholds(
     IMetric metric,
     IMeasurement[] measurements
   )
   {
-    Dictionary<string, IDictionary<string, double>> results = new();
+    Dictionary<string, IDictionary<string, ThresholdResult>> results = new();
 
     foreach ((string? attributeKey, Dictionary<string, double>? thresholds) in metric.Thresholds)
     {
-      Dictionary<string, double> attributeResults = new();
+      Dictionary<string, ThresholdResult> attributeResults = new();
 
-      foreach ((string? attributeValueKey, double _) in thresholds)
+      foreach ((string? attributeValueKey, double thresholdValue) in thresholds)
       {
         double total = measurements.Where(
             m => m.MetricAttributeValues.TryGetValue(attributeKey, out string[]? valueKeys)
@@ -62,7 +62,14 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
           .OfType<GaugeMeasurement>()
           .Sum(m => m.Value);
 
-        attributeResults.Add(attributeValueKey, total);
+        attributeResults.Add(
+          attributeValueKey,
+          new ThresholdResult
+          {
+            ActualValue = total,
+            ThresholdValue = thresholdValue
+          }
+        );
       }
 
       if (attributeResults.Count > 0)
