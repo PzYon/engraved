@@ -8,8 +8,6 @@ namespace Metrix.Core.Application.Queries.Metrics.GetThresholdValues;
 // todo:
 // - consider a specific time period for threshold (must be configured and
 //   used in calculations)
-// - consider introducing IMetric.GetValue() so there's no need to cast in CalculateThresholds
-// - what should be returned in results? only value/total? or also threshold limit, etc.?
 
 public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>>
 {
@@ -55,12 +53,12 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
 
       foreach ((string? attributeValueKey, double thresholdValue) in thresholds)
       {
-        double total = measurements.Where(
+        double total = measurements
+          .Where(
             m => m.MetricAttributeValues.TryGetValue(attributeKey, out string[]? valueKeys)
                  && valueKeys.Contains(attributeValueKey)
           )
-          .OfType<GaugeMeasurement>()
-          .Sum(m => m.Value);
+          .Sum(m => m.GetValue());
 
         attributeResults.Add(
           attributeValueKey,
