@@ -46,53 +46,57 @@ export const EditMetric: React.FC<{
           />
         </FormControl>
       </DetailsSection>
+
       <DetailsSection title={"Attributes"}>
         <MetricAttributesEditor
           attributes={attributes}
           setAttributes={setAttributes}
         />
       </DetailsSection>
+
       <DetailsSection title={"Thresholds"}>
         <EditThresholds metric={metric} onChange={setThresholds} />
       </DetailsSection>
-      <ButtonContainer>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => {
-            ServerApi.editMetric(
-              metric.id,
-              name,
-              description,
-              metric.notes,
-              attributes,
-              thresholds
-            )
-              .then(() => {
-                setAppAlert({
-                  title: "Saved metric",
-                  type: "success",
-                });
 
-                onSaved();
-              })
-              .catch((e) => {
-                setAppAlert({
-                  title: "Failed to edit metric",
-                  message: e.message,
-                  type: "error",
+      <DetailsSection>
+        <ButtonContainer>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              ServerApi.editMetric(
+                metric.id,
+                name,
+                description,
+                metric.notes,
+                attributes,
+                thresholds
+              )
+                .then(() => {
+                  setAppAlert({
+                    title: "Saved metric",
+                    type: "success",
+                  });
+
+                  onSaved();
+                })
+                .catch((e) => {
+                  setAppAlert({
+                    title: "Failed to edit metric",
+                    message: e.message,
+                    type: "error",
+                  });
                 });
-              });
-          }}
-        >
-          {translations.save}
-        </Button>
-      </ButtonContainer>
+            }}
+          >
+            {translations.save}
+          </Button>
+        </ButtonContainer>
+      </DetailsSection>
     </>
   );
 };
 
 const ButtonContainer = styled("div")`
-  margin-top: ${(p) => p.theme.spacing(2)};
   text-align: right;
 `;

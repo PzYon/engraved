@@ -2,6 +2,8 @@ import { IThresholdDefinition, ThresholdRow } from "./ThresholdRow";
 import React, { useState } from "react";
 import { IMetric } from "../../../serverApi/IMetric";
 import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
+import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
+import { styled } from "@mui/material";
 
 export const EditThresholds: React.FC<{
   metric: IMetric;
@@ -9,7 +11,7 @@ export const EditThresholds: React.FC<{
 }> = ({ metric, onChange }) => {
   const [thresholdDefinitions, setThresholdDefinitions] = useState<
     IThresholdDefinition[]
-  >([...createDefinitions(metric.thresholds), createNewDefinition()]);
+  >(createDefinitions(metric.thresholds));
 
   metric.thresholds;
 
@@ -17,30 +19,53 @@ export const EditThresholds: React.FC<{
     <>
       {thresholdDefinitions.map((oldDefinition, i) => {
         return (
-          <ThresholdRow
+          <RowContainer
             key={
               oldDefinition.key ??
               oldDefinition.attributeKey +
                 "-" +
                 oldDefinition.attributeValueKeys.join()
             }
-            definition={oldDefinition}
-            metric={metric}
-            onChange={(definition) => {
-              if (isIncomplete(definition) || !isIncomplete(oldDefinition)) {
-                return;
-              }
+          >
+            <ThresholdRow
+              styles={{ flexGrow: 1 }}
+              definition={oldDefinition}
+              metric={metric}
+              onChange={(definition) => {
+                if (isIncomplete(definition) || !isIncomplete(oldDefinition)) {
+                  return;
+                }
 
-              const newDefinitions = [...thresholdDefinitions];
-              newDefinitions[i] = definition;
-              newDefinitions.push(createNewDefinition());
+                const newDefinitions = [...thresholdDefinitions];
+                newDefinitions[i] = definition;
 
-              setThresholdDefinitions(newDefinitions);
-              onChange(createThresholds(newDefinitions));
-            }}
-          />
+                setThresholdDefinitions(newDefinitions);
+                onChange(createThresholds(newDefinitions));
+              }}
+            />
+            <RemoveCircleOutline
+              fontSize="small"
+              sx={{ marginLeft: "16px" }}
+              onClick={() => {
+                const newDefinitions = [...thresholdDefinitions];
+                newDefinitions.splice(i, 1);
+
+                setThresholdDefinitions(newDefinitions);
+                onChange(createThresholds(newDefinitions));
+              }}
+            />
+          </RowContainer>
         );
       })}
+      <AddCircleOutline
+        fontSize="small"
+        onClick={() => {
+          setThresholdDefinitions([
+            ...thresholdDefinitions,
+            createNewDefinition(),
+          ]);
+        }}
+      />
     </>
   );
 };
@@ -92,3 +117,8 @@ function isIncomplete(definition: IThresholdDefinition) {
     !(definition.threshold > 0)
   );
 }
+
+const RowContainer = styled("div")`
+  display: flex;
+  align-items: center;
+`;

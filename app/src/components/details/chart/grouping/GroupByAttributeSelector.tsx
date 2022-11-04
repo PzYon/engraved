@@ -7,22 +7,20 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { translations } from "../../../../i18n/translations";
 
 export const GroupByAttributeSelector: React.FC<{
   selectedAttributeKey: string;
   attributes: IMetricAttributes;
   onChange: (attributeKey: string) => void;
-}> = ({ selectedAttributeKey, attributes, onChange }) => {
+  label: string;
+}> = ({ selectedAttributeKey, attributes, onChange, label }) => {
   return (
     <FormControl>
-      <InputLabel id="group-by-attribute-label">
-        {translations.label_groupBy_attribute}
-      </InputLabel>
+      <InputLabel id="group-by-attribute-label">{label}</InputLabel>
       <Select
         id="group-by-attribute"
         labelId="group-by-attribute-label"
-        label={translations.label_groupBy_attribute}
+        label={label}
         value={selectedAttributeKey}
         onChange={(event: SelectChangeEvent) => {
           onChange(event.target.value as unknown as string);

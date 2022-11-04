@@ -8,6 +8,7 @@ import { styled } from "@mui/material";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { IMetric } from "../../../serverApi/IMetric";
 import { AttributeFilters } from "./AttributeFilters";
+import { translations } from "../../../i18n/translations";
 
 export const Filters: React.FC<{
   metric: IMetric;
@@ -46,6 +47,7 @@ export const Filters: React.FC<{
             attributes={metric.attributes}
             selectedAttributeKey={attributeKey}
             onChange={setAttributeKey}
+            label={translations.label_groupBy_attribute}
           />
         ) : null}
         <ChartTypeSelector chartType={chartType} onChange={setChartType} />

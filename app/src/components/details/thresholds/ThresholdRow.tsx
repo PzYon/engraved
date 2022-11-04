@@ -1,8 +1,8 @@
 import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
-import { MetricAttributeSelector } from "../add/MetricAttributeSelector";
 import React, { useEffect, useState } from "react";
 import { IMetric } from "../../../serverApi/IMetric";
 import { styled, TextField } from "@mui/material";
+import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 
 export interface IThresholdDefinition {
   attributeKey: string;
@@ -15,7 +15,8 @@ export const ThresholdRow: React.FC<{
   metric: IMetric;
   definition: IThresholdDefinition;
   onChange: (definition: IThresholdDefinition) => void;
-}> = ({ metric, definition, onChange }) => {
+  styles: React.CSSProperties;
+}> = ({ metric, definition, onChange, styles }) => {
   const [attributeKey, setAttributeKey] = useState(
     definition?.attributeKey ?? ""
   );
@@ -33,24 +34,24 @@ export const ThresholdRow: React.FC<{
   }, [attributeKey, attributeValueKeys, threshold]);
 
   return (
-    <Host>
+    <Host sx={styles}>
       <GroupByAttributeSelector
         attributes={metric.attributes}
         onChange={setAttributeKey}
         selectedAttributeKey={attributeKey}
+        label={"Attribute"}
       />
       {attributeKey ? (
-        <MetricAttributeSelector
-          attributeKey={attributeKey}
+        <AttributeValueSelector
           attribute={metric.attributes[attributeKey]}
-          selectedAttributeValues={{ [attributeKey]: attributeValueKeys }}
           onChange={(attributesValues) => {
-            setAttributeValueKeys(attributesValues[attributeKey]);
+            setAttributeValueKeys(attributesValues);
           }}
         />
       ) : null}
       {Object.keys(attributeValueKeys).length ? (
         <TextField
+          label={"Threshold Value"}
           type="number"
           defaultValue={threshold}
           onBlur={(event) => setThreshold(event.target.value)}
