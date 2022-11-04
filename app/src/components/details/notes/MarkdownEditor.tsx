@@ -78,7 +78,8 @@ export const MarkdownEditor: React.FC<{
       metric.name,
       metric.description,
       notesValue,
-      metric.attributes
+      metric.attributes,
+      metric.thresholds
     )
       .then(() => {
         setAppAlert({

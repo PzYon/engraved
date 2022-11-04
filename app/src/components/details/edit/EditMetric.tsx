@@ -51,7 +51,8 @@ export const EditMetric: React.FC<{
               name,
               description,
               metric.notes,
-              attributes
+              attributes,
+              metric.thresholds
             )
               .then(() => {
                 setAppAlert({

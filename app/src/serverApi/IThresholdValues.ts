@@ -1,5 +1,8 @@
 export interface IThresholdValues {
   [attributeKey: string]: {
-    [valueKey: string]: number;
+    [valueKey: string]: {
+      thresholdValue: number;
+      actualValue: number;
+    };
   };
 }
