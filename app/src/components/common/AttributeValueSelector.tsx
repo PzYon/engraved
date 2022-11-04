@@ -10,14 +10,16 @@ import { IMetricAttribute } from "../../serverApi/IMetricAttribute";
 
 export const AttributeValueSelector: React.FC<{
   attribute: IMetricAttribute;
+  selectedValue: string;
   onChange: (attributesValues: string[]) => void;
-}> = ({ attribute, onChange }) => {
+}> = ({ attribute, selectedValue, onChange }) => {
   return (
     <FormControl>
       <InputLabel id="attribute-values-label">Value</InputLabel>
       <Select
         id="attribute-values"
         label="Value"
+        value={selectedValue}
         labelId="attribute-values-label"
         onChange={(event: SelectChangeEvent) => {
           onChange([event.target.value as unknown as string]);

@@ -5,7 +5,6 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
 } from "@mui/material";
 import {
@@ -14,6 +13,7 @@ import {
   RemoveCircleOutline,
 } from "@mui/icons-material";
 import { ListItemTextField } from "./ListItemTextField";
+import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 
 export const MetricAttributeEditor: React.FC<{
   attribute: IMetricAttribute;
@@ -40,11 +40,14 @@ export const MetricAttributeEditor: React.FC<{
                 isExisting={true}
                 onBlur={(newValue) => handleOnChange(key, newValue)}
               />
-              <ListItemButton onClick={() => handleOnChange(key, null)}>
-                <ListItemIcon>
-                  <RemoveCircleOutline fontSize="small" />
-                </ListItemIcon>
-              </ListItemButton>
+              <IconButtonWrapper
+                action={{
+                  key: "remove",
+                  label: "Remove",
+                  icon: <RemoveCircleOutline fontSize="small" />,
+                  onClick: () => handleOnChange(key, null),
+                }}
+              />
             </ListItem>
           ))}
         </List>

@@ -1,15 +1,10 @@
 import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 import React, { useState } from "react";
 import { MetricAttributeEditor } from "./MetricAttributeEditor";
-import {
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import { List } from "@mui/material";
 import { ListItemTextField } from "./ListItemTextField";
 import { AddCircleOutline } from "@mui/icons-material";
+import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 
 export const MetricAttributesEditor: React.FC<{
   attributes: IMetricAttributes;
@@ -31,30 +26,29 @@ export const MetricAttributesEditor: React.FC<{
         />
       ))}
 
-      <ListItem key={"add_new_attribute"}>
-        <ListItemText>
-          {showAddNewInput ? (
-            <ListItemTextField
-              onBlur={(newValue: string) => {
-                const newAttributes = { ...attributes };
-                newAttributes[newValue] = {
-                  name: newValue,
-                  values: {},
-                };
+      {showAddNewInput ? (
+        <ListItemTextField
+          onBlur={(newValue: string) => {
+            const newAttributes = { ...attributes };
+            newAttributes[newValue] = {
+              name: newValue,
+              values: {},
+            };
 
-                setAttributes(newAttributes);
-                setShowAddNewInput(false);
-              }}
-            />
-          ) : (
-            <ListItemButton onClick={() => setShowAddNewInput(true)}>
-              <ListItemIcon>
-                <AddCircleOutline fontSize="small" />
-              </ListItemIcon>
-            </ListItemButton>
-          )}
-        </ListItemText>
-      </ListItem>
+            setAttributes(newAttributes);
+            setShowAddNewInput(false);
+          }}
+        />
+      ) : (
+        <IconButtonWrapper
+          action={{
+            key: "add",
+            label: "Add",
+            icon: <AddCircleOutline fontSize="small" />,
+            onClick: () => setShowAddNewInput(true),
+          }}
+        />
+      )}
     </List>
   );
 };

@@ -44,6 +44,7 @@ export const ThresholdRow: React.FC<{
       {attributeKey ? (
         <AttributeValueSelector
           attribute={metric.attributes[attributeKey]}
+          selectedValue={attributeValueKeys[0]}
           onChange={(attributesValues) => {
             setAttributeValueKeys(attributesValues);
           }}

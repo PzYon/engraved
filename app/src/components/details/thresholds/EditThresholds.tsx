@@ -4,6 +4,7 @@ import { IMetric } from "../../../serverApi/IMetric";
 import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { styled } from "@mui/material";
+import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 
 export const EditThresholds: React.FC<{
   metric: IMetric;
@@ -43,27 +44,36 @@ export const EditThresholds: React.FC<{
                 onChange(createThresholds(newDefinitions));
               }}
             />
-            <RemoveCircleOutline
-              fontSize="small"
-              sx={{ marginLeft: "16px" }}
-              onClick={() => {
-                const newDefinitions = [...thresholdDefinitions];
-                newDefinitions.splice(i, 1);
 
-                setThresholdDefinitions(newDefinitions);
-                onChange(createThresholds(newDefinitions));
+            <IconButtonWrapper
+              action={{
+                key: "remove",
+                label: "Remove",
+                icon: <RemoveCircleOutline fontSize="small" />,
+                onClick: () => {
+                  const newDefinitions = [...thresholdDefinitions];
+                  newDefinitions.splice(i, 1);
+
+                  setThresholdDefinitions(newDefinitions);
+                  onChange(createThresholds(newDefinitions));
+                },
               }}
             />
           </RowContainer>
         );
       })}
-      <AddCircleOutline
-        fontSize="small"
-        onClick={() => {
-          setThresholdDefinitions([
-            ...thresholdDefinitions,
-            createNewDefinition(),
-          ]);
+
+      <IconButtonWrapper
+        action={{
+          key: "add",
+          label: "Add",
+          icon: <AddCircleOutline fontSize="small" />,
+          onClick: () => {
+            setThresholdDefinitions([
+              ...thresholdDefinitions,
+              createNewDefinition(),
+            ]);
+          },
         }}
       />
     </>
