@@ -1,11 +1,12 @@
 import { IThresholdDefinition, ThresholdRow } from "./ThresholdRow";
 import React, { useState } from "react";
-import { Button, styled } from "@mui/material";
 import { IMetric } from "../../../serverApi/IMetric";
-import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
 
-export const EditThresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
+export const EditThresholds: React.FC<{
+  metric: IMetric;
+  onChange: (thresholds: IMetricThresholds) => void;
+}> = ({ metric, onChange }) => {
   const [thresholdDefinitions, setThresholdDefinitions] = useState<
     IThresholdDefinition[]
   >([...createDefinitions(metric.thresholds), createNewDefinition()]);
@@ -13,17 +14,20 @@ export const EditThresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
   metric.thresholds;
 
   return (
-    <Host>
-      {thresholdDefinitions.map((d, i) => {
+    <>
+      {thresholdDefinitions.map((oldDefinition, i) => {
         return (
           <ThresholdRow
             key={
-              d.key ?? d.attributeKey ?? "-" + "_" + d.attributeValueKeys.join()
+              oldDefinition.key ??
+              oldDefinition.attributeKey +
+                "-" +
+                oldDefinition.attributeValueKeys.join()
             }
-            definition={d}
+            definition={oldDefinition}
             metric={metric}
             onChange={(definition) => {
-              if (isIncomplete(definition) || !isIncomplete(d)) {
+              if (isIncomplete(definition) || !isIncomplete(oldDefinition)) {
                 return;
               }
 
@@ -32,25 +36,12 @@ export const EditThresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
               newDefinitions.push(createNewDefinition());
 
               setThresholdDefinitions(newDefinitions);
+              onChange(createThresholds(newDefinitions));
             }}
           />
         );
       })}
-      <Button
-        onClick={() => {
-          ServerApi.editMetric(
-            metric.id,
-            metric.name,
-            metric.description,
-            metric.notes,
-            metric.attributes,
-            createThresholds(thresholdDefinitions)
-          );
-        }}
-      >
-        Save
-      </Button>
-    </Host>
+    </>
   );
 };
 
@@ -101,5 +92,3 @@ function isIncomplete(definition: IThresholdDefinition) {
     !(definition.threshold > 0)
   );
 }
-
-const Host = styled("div")``;

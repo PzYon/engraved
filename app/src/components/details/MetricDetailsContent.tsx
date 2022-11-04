@@ -5,7 +5,7 @@ import { useAppContext } from "../../AppContext";
 import { Typography } from "@mui/material";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { DetailsSection } from "../layout/DetailsSection";
 import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { MetricNotes } from "./edit/MetricNotes";
@@ -18,8 +18,8 @@ import {
   PanToolOutlined,
   ShowChartOutlined,
 } from "@mui/icons-material";
-import { EditMetricLauncher } from "./edit/EditMetricLauncher";
 import { Thresholds } from "./thresholds/Thresholds";
+import { EditMetric } from "./edit/EditMetric";
 
 export const MetricDetailsContent: React.FC = () => {
   const { metric, measurements, reloadMeasurements, reloadMetric } =
@@ -28,6 +28,8 @@ export const MetricDetailsContent: React.FC = () => {
   const { setTitleActions } = useAppContext();
 
   const { renderDialog } = useDialogContext();
+
+  const navigate = useNavigate();
 
   const [groupByTime, setGroupByTime] = useState(GroupByTime.Day);
   const [attributeKey, setAttributeKey] = useState("-");
@@ -82,53 +84,65 @@ export const MetricDetailsContent: React.FC = () => {
 
   return (
     <>
-      <DetailsSection>
-        <MetricNotes metric={metric} />
-      </DetailsSection>
-
-      {showFilters ? (
-        <DetailsSection>
-          <Filters
-            metric={metric}
-            groupByTime={groupByTime}
-            setGroupByTime={setGroupByTime}
-            attributeKey={attributeKey}
-            setAttributeKey={setAttributeKey}
-            chartType={chartType}
-            setChartType={setChartType}
-          />
-        </DetailsSection>
-      ) : null}
-
-      {showChart ? (
-        <Suspense fallback={<div />}>
-          <DetailsSection>
-            <Chart
-              measurements={measurements}
-              metric={metric}
-              groupByTime={groupByTime}
-              groupByAttribute={attributeKey}
-              chartType={chartType}
-            />
-          </DetailsSection>
-        </Suspense>
-      ) : null}
-
-      {showThresholds ? (
-        <DetailsSection>
-          <Thresholds metric={metric} />
-        </DetailsSection>
-      ) : null}
-
-      <DetailsSection overflowXScroll={true}>
-        <MeasurementsList metric={metric} measurements={measurements} />
-      </DetailsSection>
-
       <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <DetailsSection>
+                <MetricNotes metric={metric} />
+              </DetailsSection>
+
+              {showFilters ? (
+                <DetailsSection>
+                  <Filters
+                    metric={metric}
+                    groupByTime={groupByTime}
+                    setGroupByTime={setGroupByTime}
+                    attributeKey={attributeKey}
+                    setAttributeKey={setAttributeKey}
+                    chartType={chartType}
+                    setChartType={setChartType}
+                  />
+                </DetailsSection>
+              ) : null}
+
+              {showChart ? (
+                <Suspense fallback={<div />}>
+                  <DetailsSection>
+                    <Chart
+                      measurements={measurements}
+                      metric={metric}
+                      groupByTime={groupByTime}
+                      groupByAttribute={attributeKey}
+                      chartType={chartType}
+                    />
+                  </DetailsSection>
+                </Suspense>
+              ) : null}
+
+              {showThresholds ? (
+                <DetailsSection>
+                  <Thresholds metric={metric} />
+                </DetailsSection>
+              ) : null}
+
+              <DetailsSection overflowXScroll={true}>
+                <MeasurementsList metric={metric} measurements={measurements} />
+              </DetailsSection>
+            </>
+          }
+        />
         <Route
           path="/edit"
           element={
-            <EditMetricLauncher metric={metric} reloadMetric={reloadMetric} />
+            <EditMetric
+              metric={metric}
+              onSaved={async () => {
+                navigate("..");
+                await reloadMetric();
+              }}
+            />
           }
         />
         <Route

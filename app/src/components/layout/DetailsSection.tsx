@@ -8,7 +8,11 @@ export const DetailsSection: React.FC<{
 }> = ({ title, children, overflowXScroll }) => {
   return (
     <Host style={{ overflowX: overflowXScroll ? "auto" : "hidden" }}>
-      {title ? <Typography sx={{ flexShrink: 0 }}>{title}</Typography> : null}
+      {title ? (
+        <Typography sx={{ flexShrink: 0, fontWeight: "bold" }}>
+          {title}
+        </Typography>
+      ) : null}
       {children}
     </Host>
   );

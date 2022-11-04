@@ -61,11 +61,9 @@ export const MetricDetailsWrapper: React.FC = () => {
 const PropertiesContainer = styled("div")`
   padding: 0 ${(p) => p.theme.spacing(2)};
 
-  & > span {
-    &:not(:last-of-type)::after {
-      content: "\\00B7";
-      margin: 0 ${(p) => p.theme.spacing(2)};
-    }
+  & > span:not(:last-of-type)::after {
+    content: "\\00B7";
+    margin: 0 ${(p) => p.theme.spacing(2)};
   }
 `;
 

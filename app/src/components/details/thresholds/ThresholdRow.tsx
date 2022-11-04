@@ -61,9 +61,20 @@ export const ThresholdRow: React.FC<{
 };
 
 const Host = styled("div")`
+  padding: ${(p) => p.theme.spacing(1)} 0;
+
   display: flex;
 
-  .MuiFormControl-root {
-    min-width: 160px;
+  & > div:not(:last-of-type) {
+    margin-right: ${(p) => p.theme.spacing(1)};
+  }
+
+  .MuiFormControl-root,
+  .MuiAutocomplete-root {
+    width: 33%;
+  }
+
+  .MuiAutocomplete-root .MuiFormControl-root {
+    width: 100%;
   }
 `;

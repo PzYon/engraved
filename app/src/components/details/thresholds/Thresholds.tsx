@@ -4,7 +4,6 @@ import { ServerApi } from "../../../serverApi/ServerApi";
 import { useMetricDetailsContext } from "../MetricDetailsContext";
 import { IThresholdValues } from "../../../serverApi/IThresholdValues";
 import { styled } from "@mui/material";
-import { EditThresholds } from "./EditThresholds";
 
 export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const { dateConditions } = useMetricDetailsContext();
@@ -22,24 +21,21 @@ export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
   }
 
   return (
-    <>
-      <EditThresholds metric={metric} />
-      <Host>
-        {Object.keys(thresholdValues).flatMap((attributeKey) => {
-          const attributeThresholds = thresholdValues[attributeKey];
+    <Host>
+      {Object.keys(thresholdValues).flatMap((attributeKey) => {
+        const attributeThresholds = thresholdValues[attributeKey];
 
-          return Object.keys(attributeThresholds).map((valueKey) => {
-            const threshold = attributeThresholds[valueKey];
-            return (
-              <div key={attributeKey + "_" + valueKey}>
-                {attributeKey}.{valueKey}: Threshold: {threshold.thresholdValue}{" "}
-                | Actual: {threshold.actualValue}
-              </div>
-            );
-          });
-        })}
-      </Host>
-    </>
+        return Object.keys(attributeThresholds).map((valueKey) => {
+          const threshold = attributeThresholds[valueKey];
+          return (
+            <div key={attributeKey + "_" + valueKey}>
+              {attributeKey}.{valueKey}: Threshold: {threshold.thresholdValue} |
+              Actual: {threshold.actualValue}
+            </div>
+          );
+        });
+      })}
+    </Host>
   );
 };
 

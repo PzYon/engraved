@@ -6,6 +6,9 @@ import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { MetricAttributesEditor } from "./MetricAttributesEditor";
 import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
+import { EditThresholds } from "../thresholds/EditThresholds";
+import { DetailsSection } from "../../layout/DetailsSection";
+import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
 
 export const EditMetric: React.FC<{
   metric: IMetric;
@@ -15,6 +18,10 @@ export const EditMetric: React.FC<{
     metric.attributes
   );
 
+  const [thresholds, setThresholds] = useState<IMetricThresholds>(
+    metric.thresholds ?? {}
+  );
+
   const [name, setName] = useState(metric.name);
   const [description, setDescription] = useState(metric.description);
 
@@ -22,25 +29,32 @@ export const EditMetric: React.FC<{
 
   return (
     <>
-      <FormControl sx={{ width: "100%" }}>
-        <TextField
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          label={translations.label_metricName}
-          margin={"normal"}
-        />
-        <TextField
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          multiline={true}
-          label={"Description"}
-          margin={"normal"}
-        />
+      <DetailsSection title={"Properties"}>
+        <FormControl sx={{ width: "100%" }}>
+          <TextField
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            label={translations.label_metricName}
+            margin={"normal"}
+          />
+          <TextField
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            multiline={true}
+            label={"Description"}
+            margin={"normal"}
+          />
+        </FormControl>
+      </DetailsSection>
+      <DetailsSection title={"Attributes"}>
         <MetricAttributesEditor
           attributes={attributes}
           setAttributes={setAttributes}
         />
-      </FormControl>
+      </DetailsSection>
+      <DetailsSection title={"Thresholds"}>
+        <EditThresholds metric={metric} onChange={setThresholds} />
+      </DetailsSection>
       <ButtonContainer>
         <Button
           variant="outlined"
@@ -52,7 +66,7 @@ export const EditMetric: React.FC<{
               description,
               metric.notes,
               attributes,
-              metric.thresholds
+              thresholds
             )
               .then(() => {
                 setAppAlert({

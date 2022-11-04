@@ -23,7 +23,10 @@ export const MetricAttributeEditor: React.FC<{
 
   return (
     <>
-      <ListItemButton onClick={() => setIsCollapsed(!isCollapsed)}>
+      <ListItemButton
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        sx={{ border: "1px solid lightgray", marginBottom: "16px" }}
+      >
         <ListItemText primary={attribute.name} />
         {isCollapsed ? <ExpandMore /> : <ExpandLess />}
       </ListItemButton>
