@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
 import { useMetricDetailsContext } from "./MetricDetailsContext";
 import { MetricType } from "../../serverApi/MetricType";
-import { MetricDetailsRouter } from "./MetricDetailsRouter";
-import { NotesDetailsRouter } from "./notes/NotesDetailsRouter";
 import { useAppContext } from "../../AppContext";
 import { PageTitle } from "./PageTitle";
 import { styled, Typography } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 import { FormatDate } from "../common/FormatDate";
+import { NotesViewPage } from "./notes/NotesViewPage";
+import { NotesEditPage } from "./notes/NotesEditPage";
+import { MetricViewPage } from "./MetricViewPage";
+import { MetricEditPage } from "./edit/MetricEditPage";
 
 export const MetricDetailsWrapper: React.FC = () => {
   const { metric } = useMetricDetailsContext();
@@ -42,13 +44,18 @@ export const MetricDetailsWrapper: React.FC = () => {
         </PropertiesContainer>
       </Typography>
 
-      {metric.type === MetricType.Notes ? (
-        <NotesDetailsRouter />
-      ) : (
-        <MetricDetailsRouter />
-      )}
-
       <Routes>
+        {metric.type === MetricType.Notes ? (
+          <>
+            <Route path="/" element={<NotesViewPage />} />
+            <Route path="/edit" element={<NotesEditPage />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<MetricViewPage />} />
+            <Route path="/edit" element={<MetricEditPage />} />
+          </>
+        )}
         <Route
           path="/permissions"
           element={<EditMetricPermissionsLauncher metric={metric} />}
