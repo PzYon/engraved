@@ -1,6 +1,5 @@
-import { IMetric } from "../../../serverApi/IMetric";
 import React, { useState } from "react";
-import { Button, FormControl, styled, TextField } from "@mui/material";
+import { FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
@@ -9,11 +8,16 @@ import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 import { EditThresholds } from "../thresholds/EditThresholds";
 import { DetailsSection } from "../../layout/DetailsSection";
 import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
+import { useMetricDetailsContext } from "../MetricDetailsContext";
+import { useNavigate } from "react-router-dom";
+import { Page } from "../../common/Page";
+import { SaveOutlined } from "@mui/icons-material";
 
-export const EditMetric: React.FC<{
-  metric: IMetric;
-  onSaved: () => Promise<unknown>;
-}> = ({ metric, onSaved }) => {
+export const MetricEditPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const { metric, reloadMetric } = useMetricDetailsContext();
+
   const [attributes, setAttributes] = useState<IMetricAttributes>(
     metric.attributes
   );
@@ -28,7 +32,42 @@ export const EditMetric: React.FC<{
   const { setAppAlert } = useAppContext();
 
   return (
-    <>
+    <Page
+      actions={[
+        {
+          key: "save",
+          label: "Save",
+          icon: <SaveOutlined fontSize="small" />,
+          onClick: () => {
+            ServerApi.editMetric(
+              metric.id,
+              name,
+              description,
+              metric.notes,
+              attributes,
+              thresholds
+            )
+              .then(async () => {
+                await reloadMetric();
+
+                setAppAlert({
+                  title: "Saved metric",
+                  type: "success",
+                });
+
+                navigate("./..");
+              })
+              .catch((e) => {
+                setAppAlert({
+                  title: "Failed to edit metric",
+                  message: e.message,
+                  type: "error",
+                });
+              });
+          },
+        },
+      ]}
+    >
       <DetailsSection title={"Properties"}>
         <FormControl sx={{ width: "100%" }}>
           <TextField
@@ -57,46 +96,6 @@ export const EditMetric: React.FC<{
       <DetailsSection title={"Thresholds"}>
         <EditThresholds metric={metric} onChange={setThresholds} />
       </DetailsSection>
-
-      <DetailsSection>
-        <ButtonContainer>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              ServerApi.editMetric(
-                metric.id,
-                name,
-                description,
-                metric.notes,
-                attributes,
-                thresholds
-              )
-                .then(() => {
-                  setAppAlert({
-                    title: "Saved metric",
-                    type: "success",
-                  });
-
-                  onSaved();
-                })
-                .catch((e) => {
-                  setAppAlert({
-                    title: "Failed to edit metric",
-                    message: e.message,
-                    type: "error",
-                  });
-                });
-            }}
-          >
-            {translations.save}
-          </Button>
-        </ButtonContainer>
-      </DetailsSection>
-    </>
+    </Page>
   );
 };
-
-const ButtonContainer = styled("div")`
-  text-align: right;
-`;

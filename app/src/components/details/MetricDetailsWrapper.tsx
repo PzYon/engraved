@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useMetricDetailsContext } from "./MetricDetailsContext";
 import { MetricType } from "../../serverApi/MetricType";
-import { MetricDetailsContent } from "./MetricDetailsContent";
-import { NotesDetailsContent } from "./notes/NotesDetailsContent";
+import { MetricDetailsRouter } from "./MetricDetailsRouter";
+import { NotesDetailsRouter } from "./notes/NotesDetailsRouter";
 import { useAppContext } from "../../AppContext";
 import { PageTitle } from "./PageTitle";
 import { styled, Typography } from "@mui/material";
@@ -43,9 +43,9 @@ export const MetricDetailsWrapper: React.FC = () => {
       </Typography>
 
       {metric.type === MetricType.Notes ? (
-        <NotesDetailsContent />
+        <NotesDetailsRouter />
       ) : (
-        <MetricDetailsContent />
+        <MetricDetailsRouter />
       )}
 
       <Routes>
