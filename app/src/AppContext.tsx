@@ -4,12 +4,15 @@ import { IUser } from "./serverApi/IUser";
 import { IIconButtonAction } from "./components/common/IconButtonWrapper";
 
 export interface IAppContext {
+  // todo: move these props to IPageContext
   pageTitle: React.ReactNode;
   setPageTitle: (pageTitle: React.ReactNode) => void;
   titleActions: IIconButtonAction[];
   setTitleActions: (actions: IIconButtonAction[]) => void;
+  // todo: move these props to IAlertContext or INotificationContext
   appAlert: IAppAlert;
   setAppAlert: (appAlert: IAppAlert) => void;
+  // todo: IUserContext?
   user: IUser;
 }
 

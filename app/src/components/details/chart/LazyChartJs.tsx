@@ -23,7 +23,7 @@ import annotationPlugin from "chartjs-plugin-annotation";
 import { createChart } from "./createChart";
 import { IChartProps } from "./IChartProps";
 import { useTheme } from "@mui/material/styles";
-import { useMetricDetailsContext } from "../MetricDetailsContext";
+import { useMetricContext } from "../MetricDetailsContext";
 
 ChartJS.register(
   ArcElement,
@@ -57,7 +57,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
     ChartJS.defaults.font.size = typography.htmlFontSize;
   }, []);
 
-  const { toggleAttributeValue } = useMetricDetailsContext();
+  const { toggleAttributeValue } = useMetricContext();
 
   const chart = useMemo(
     () =>

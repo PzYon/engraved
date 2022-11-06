@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DateTimeSelector } from "../../common/DateTimeSelector";
-import { useMetricDetailsContext } from "../MetricDetailsContext";
+import { useMetricContext } from "../MetricDetailsContext";
 import {
   FormControl,
   InputLabel,
@@ -28,7 +28,7 @@ export const getDefaultDateConditions = () => {
 };
 
 export const DateFilters: React.FC = () => {
-  const { dateConditions, setDateConditions } = useMetricDetailsContext();
+  const { dateConditions, setDateConditions } = useMetricContext();
 
   const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
 

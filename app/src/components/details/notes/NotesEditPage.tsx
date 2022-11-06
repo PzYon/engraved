@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { MarkdownEditor } from "./MarkdownEditor";
-import { useMetricDetailsContext } from "../MetricDetailsContext";
+import { useMetricContext } from "../MetricDetailsContext";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../../AppContext";
 import { Page } from "../../common/Page";
 import { SaveOutlined } from "@mui/icons-material";
+import { PageTitle } from "../PageTitle";
 
 export const NotesEditPage: React.FC = () => {
   const navigate = useNavigate();
   const { setAppAlert } = useAppContext();
-  const { metric, reloadMetric } = useMetricDetailsContext();
+  const { metric, reloadMetric } = useMetricContext();
   const [notes, setNotes] = useState(metric.notes);
 
   return (
     <Page
+      title={<PageTitle metric={metric} />}
       actions={[
         {
           key: "save",

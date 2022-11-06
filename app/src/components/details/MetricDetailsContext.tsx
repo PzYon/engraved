@@ -17,7 +17,7 @@ export interface IDateConditions {
   to?: Date;
 }
 
-export interface IMetricDetailsContext {
+export interface IMetricContext {
   metric: IMetric;
   measurements: IMeasurement[];
   reloadMetric: () => Promise<void>;
@@ -35,7 +35,7 @@ export interface IMetricDetailsContext {
   dateConditions: IDateConditions;
 }
 
-const MetricDetailsContext = createContext<IMetricDetailsContext>({
+const MetricContext = createContext<IMetricContext>({
   metric: null,
   measurements: [],
   reloadMetric: null,
@@ -47,11 +47,11 @@ const MetricDetailsContext = createContext<IMetricDetailsContext>({
   dateConditions: {},
 });
 
-export const useMetricDetailsContext = () => {
-  return useContext(MetricDetailsContext);
+export const useMetricContext = () => {
+  return useContext(MetricContext);
 };
 
-export const MetricDetailsContextProvider: React.FC<{
+export const MetricContextProvider: React.FC<{
   children: React.ReactNode;
   metricId: string;
 }> = ({ children, metricId }) => {
@@ -91,9 +91,9 @@ export const MetricDetailsContextProvider: React.FC<{
   }, [measurements, metric, selectedAttributeValues, dateConditions]);
 
   return (
-    <MetricDetailsContext.Provider value={contextValue}>
+    <MetricContext.Provider value={contextValue}>
       {children}
-    </MetricDetailsContext.Provider>
+    </MetricContext.Provider>
   );
 
   function setSelectedAttributeValuesInternal(

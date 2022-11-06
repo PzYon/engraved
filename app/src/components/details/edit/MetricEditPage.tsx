@@ -8,15 +8,16 @@ import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 import { EditThresholds } from "../thresholds/EditThresholds";
 import { DetailsSection } from "../../layout/DetailsSection";
 import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
-import { useMetricDetailsContext } from "../MetricDetailsContext";
+import { useMetricContext } from "../MetricDetailsContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../common/Page";
 import { SaveOutlined } from "@mui/icons-material";
+import { PageTitle } from "../PageTitle";
 
 export const MetricEditPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const { metric, reloadMetric } = useMetricDetailsContext();
+  const { metric, reloadMetric } = useMetricContext();
 
   const [attributes, setAttributes] = useState<IMetricAttributes>(
     metric.attributes
@@ -33,6 +34,7 @@ export const MetricEditPage: React.FC = () => {
 
   return (
     <Page
+      title={<PageTitle metric={metric} />}
       actions={[
         {
           key: "save",

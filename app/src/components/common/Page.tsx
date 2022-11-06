@@ -5,12 +5,19 @@ import { styled } from "@mui/material";
 
 export const Page: React.FC<{
   actions: IIconButtonAction[];
+  title: React.ReactNode;
   children: React.ReactNode;
-}> = ({ actions, children }) => {
-  const { setTitleActions } = useAppContext();
+}> = ({ actions, title, children }) => {
+  const { setTitleActions, setPageTitle } = useAppContext();
+
+  useEffect(() => {
+    setPageTitle(title);
+    return () => setPageTitle(null);
+  }, [title]);
 
   useEffect(() => {
     setTitleActions(actions);
+    return () => setTitleActions([]);
   }, [actions]);
 
   return <Host>{children}</Host>;

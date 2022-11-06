@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { useMetricDetailsContext } from "./MetricDetailsContext";
+import { useMetricContext } from "./MetricDetailsContext";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import { IIconButtonAction } from "../common/IconButtonWrapper";
 import {
@@ -19,12 +19,13 @@ import { Route, Routes } from "react-router-dom";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Page } from "../common/Page";
+import { PageTitle } from "./PageTitle";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
 
   const { metric, reloadMetric, measurements, reloadMeasurements } =
-    useMetricDetailsContext();
+    useMetricContext();
 
   const [groupByTime, setGroupByTime] = useState(GroupByTime.Day);
   const [attributeKey, setAttributeKey] = useState("-");
@@ -72,7 +73,7 @@ export const MetricViewPage: React.FC = () => {
   }, [metric, showFilters, showChart, showThresholds]);
 
   return (
-    <Page actions={titleActions}>
+    <Page title={<PageTitle metric={metric} />} actions={titleActions}>
       <DetailsSection>
         <MetricNotes metric={metric} />
       </DetailsSection>

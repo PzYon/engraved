@@ -1,12 +1,12 @@
 import { IMetric } from "../../../serverApi/IMetric";
 import React, { useEffect, useState } from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
-import { useMetricDetailsContext } from "../MetricDetailsContext";
+import { useMetricContext } from "../MetricDetailsContext";
 import { IThresholdValues } from "../../../serverApi/IThresholdValues";
 import { styled } from "@mui/material";
 
 export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
-  const { dateConditions } = useMetricDetailsContext();
+  const { dateConditions } = useMetricContext();
 
   const [thresholdValues, setThresholdValues] = useState<IThresholdValues>();
 
