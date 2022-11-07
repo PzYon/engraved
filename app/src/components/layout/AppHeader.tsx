@@ -6,9 +6,11 @@ import { HeaderActions } from "./HeaderActions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
+import { usePageContext } from "./pages/PageContext";
 
 export const AppHeader: React.FC = () => {
-  const { pageTitle, titleActions, user } = useAppContext();
+  const { user } = useAppContext();
+  const { pageTitle, pageActions } = usePageContext();
 
   const deviceWidth = useDeviceWidth();
 
@@ -43,7 +45,7 @@ export const AppHeader: React.FC = () => {
 
         <HeaderActions
           style={deviceWidth === DeviceWidth.Small ? { width: "100%" } : null}
-          actions={titleActions}
+          actions={pageActions}
           enableFloatingActions={true}
         />
       </ContentWrapper>

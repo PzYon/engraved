@@ -2,7 +2,7 @@ import React from "react";
 import { DetailsSection } from "../../layout/DetailsSection";
 import { useMetricContext } from "../MetricDetailsContext";
 import { Markdown } from "./Markdown";
-import { Page } from "../../common/Page";
+import { Page } from "../../layout/pages/Page";
 import { getMetricHeaderActions } from "../../overview/getMetricHeaderActions";
 import { PageTitle } from "../PageTitle";
 

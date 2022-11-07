@@ -10,7 +10,7 @@ import { DetailsSection } from "../../layout/DetailsSection";
 import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
 import { useMetricContext } from "../MetricDetailsContext";
 import { useNavigate } from "react-router-dom";
-import { Page } from "../../common/Page";
+import { Page } from "../../layout/pages/Page";
 import { SaveOutlined } from "@mui/icons-material";
 import { PageTitle } from "../PageTitle";
 

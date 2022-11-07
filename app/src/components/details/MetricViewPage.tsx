@@ -18,7 +18,7 @@ import { MeasurementsList } from "./dataTable/MeasurementsList";
 import { Route, Routes } from "react-router-dom";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
-import { Page } from "../common/Page";
+import { Page } from "../layout/pages/Page";
 import { PageTitle } from "./PageTitle";
 
 export const MetricViewPage: React.FC = () => {

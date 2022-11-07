@@ -5,7 +5,7 @@ import { useAppContext } from "../../AppContext";
 import { AddOutlined } from "@mui/icons-material";
 import { AddMetricLauncher } from "./AddMetricLauncher";
 import { MetricListItem } from "./MetricListItem";
-import { Page } from "../common/Page";
+import { Page } from "../layout/pages/Page";
 
 export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
