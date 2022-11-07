@@ -11,8 +11,8 @@ import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
 import { useMetricContext } from "../MetricDetailsContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
-import { SaveOutlined } from "@mui/icons-material";
 import { PageTitle } from "../PageTitle";
+import { getEditModeActions } from "../../overview/getCommonActions";
 
 export const MetricEditPage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,40 +35,7 @@ export const MetricEditPage: React.FC = () => {
   return (
     <Page
       title={<PageTitle metric={metric} />}
-      actions={[
-        {
-          key: "save",
-          label: "Save",
-          icon: <SaveOutlined fontSize="small" />,
-          onClick: () => {
-            ServerApi.editMetric(
-              metric.id,
-              name,
-              description,
-              metric.notes,
-              attributes,
-              thresholds
-            )
-              .then(async () => {
-                await reloadMetric();
-
-                setAppAlert({
-                  title: "Saved metric",
-                  type: "success",
-                });
-
-                navigate("./..");
-              })
-              .catch((e) => {
-                setAppAlert({
-                  title: "Failed to edit metric",
-                  message: e.message,
-                  type: "error",
-                });
-              });
-          },
-        },
-      ]}
+      actions={getEditModeActions(onSave, navigate)}
     >
       <DetailsSection title={"Properties"}>
         <FormControl sx={{ width: "100%" }}>
@@ -100,4 +67,34 @@ export const MetricEditPage: React.FC = () => {
       </DetailsSection>
     </Page>
   );
+
+  function onSave() {
+    {
+      ServerApi.editMetric(
+        metric.id,
+        name,
+        description,
+        metric.notes,
+        attributes,
+        thresholds
+      )
+        .then(async () => {
+          await reloadMetric();
+
+          setAppAlert({
+            title: "Saved metric",
+            type: "success",
+          });
+
+          navigate("./..");
+        })
+        .catch((e) => {
+          setAppAlert({
+            title: "Failed to edit metric",
+            message: e.message,
+            type: "error",
+          });
+        });
+    }
+  }
 };

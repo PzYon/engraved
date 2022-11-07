@@ -3,7 +3,7 @@ import { DetailsSection } from "../../layout/DetailsSection";
 import { useMetricContext } from "../MetricDetailsContext";
 import { Markdown } from "./Markdown";
 import { Page } from "../../layout/pages/Page";
-import { getMetricHeaderActions } from "../../overview/getMetricHeaderActions";
+import { getCommonActions } from "../../overview/getCommonActions";
 import { PageTitle } from "../PageTitle";
 
 export const NotesViewPage: React.FC = () => {
@@ -12,7 +12,7 @@ export const NotesViewPage: React.FC = () => {
   return (
     <Page
       title={<PageTitle metric={metric} />}
-      actions={getMetricHeaderActions(metric)}
+      actions={getCommonActions(metric)}
     >
       <DetailsSection>
         <Markdown value={metric.notes} />

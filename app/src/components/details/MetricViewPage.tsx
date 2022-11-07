@@ -8,7 +8,7 @@ import {
   PanToolOutlined,
   ShowChartOutlined,
 } from "@mui/icons-material";
-import { getMetricHeaderActions } from "../overview/getMetricHeaderActions";
+import { getCommonActions } from "../overview/getCommonActions";
 import { DetailsSection } from "../layout/DetailsSection";
 import { MetricNotes } from "./edit/MetricNotes";
 import { Filters } from "./filters/Filters";
@@ -61,7 +61,7 @@ export const MetricViewPage: React.FC = () => {
         isNotActive: !showThresholds,
       },
       null, // null means separator - ugly, but it works for the moment
-      ...getMetricHeaderActions(metric, renderDialog, () => {
+      ...getCommonActions(metric, renderDialog, () => {
         reloadMeasurements();
         reloadMetric();
       }),

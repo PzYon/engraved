@@ -5,8 +5,8 @@ import { ServerApi } from "../../../serverApi/ServerApi";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../../AppContext";
 import { Page } from "../../layout/pages/Page";
-import { SaveOutlined } from "@mui/icons-material";
 import { PageTitle } from "../PageTitle";
+import { getEditModeActions } from "../../overview/getCommonActions";
 
 export const NotesEditPage: React.FC = () => {
   const navigate = useNavigate();
@@ -17,14 +17,7 @@ export const NotesEditPage: React.FC = () => {
   return (
     <Page
       title={<PageTitle metric={metric} />}
-      actions={[
-        {
-          key: "save",
-          label: "Save",
-          icon: <SaveOutlined fontSize="small" />,
-          onClick: saveNote,
-        },
-      ]}
+      actions={getEditModeActions(saveNote, navigate)}
     >
       <MarkdownEditor value={notes} onChange={setNotes} />
     </Page>
