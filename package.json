@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/PzYon/metrix#readme",
   "devDependencies": {
-    "husky": "8.0.1",
+    "husky": "8.0.2",
     "pretty-quick": "3.1.3"
   }
 }
