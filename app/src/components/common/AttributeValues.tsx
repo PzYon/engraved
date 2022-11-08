@@ -4,7 +4,7 @@ import { IMetricAttributes } from "../../serverApi/IMetricAttributes";
 import { Chip, lighten } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { getCoefficient } from "./utils";
-import { useMetricDetailsContext } from "../details/MetricDetailsContext";
+import { useMetricContext } from "../details/MetricDetailsContext";
 
 export const AttributeValues: React.FC<{
   attributes: IMetricAttributes;
@@ -13,7 +13,7 @@ export const AttributeValues: React.FC<{
 }> = ({ attributes, attributeValues, preventOnClick }) => {
   const { palette } = useTheme();
 
-  const { toggleAttributeValue } = useMetricDetailsContext();
+  const { toggleAttributeValue } = useMetricContext();
 
   const colorByAttributeKey = getColorsByKey(attributes, palette.primary.main);
 

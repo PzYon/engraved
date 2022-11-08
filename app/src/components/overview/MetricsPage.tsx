@@ -5,13 +5,14 @@ import { useAppContext } from "../../AppContext";
 import { AddOutlined } from "@mui/icons-material";
 import { AddMetricLauncher } from "./AddMetricLauncher";
 import { MetricListItem } from "./MetricListItem";
+import { Page } from "../layout/pages/Page";
 
-export const MetricList: React.FC<{ showCreate?: boolean }> = ({
+export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
 }) => {
   const [metrics, setMetrics] = useState<IMetric[]>([]);
 
-  const { setAppAlert, setPageTitle, setTitleActions } = useAppContext();
+  const { setAppAlert } = useAppContext();
 
   useEffect(() => {
     ServerApi.getMetrics()
@@ -25,31 +26,25 @@ export const MetricList: React.FC<{ showCreate?: boolean }> = ({
           type: "error",
         });
       });
-
-    setPageTitle("All Your Metrix");
-
-    setTitleActions([
-      {
-        href: "/metrics/create",
-        icon: <AddOutlined />,
-        label: "Add Metric",
-        key: "add_metric",
-      },
-    ]);
-
-    return () => {
-      setPageTitle(null);
-      setTitleActions([]);
-    };
   }, []);
 
   return (
-    <>
+    <Page
+      title="All Your Metrix"
+      actions={[
+        {
+          href: "/metrics/create",
+          icon: <AddOutlined />,
+          label: "Add Metric",
+          key: "add_metric",
+        },
+      ]}
+    >
       {metrics.map((metric) => (
         <MetricListItem key={metric.id} metric={metric} />
       ))}
 
       {showCreate ? <AddMetricLauncher /> : null}
-    </>
+    </Page>
   );
 };

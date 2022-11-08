@@ -19,6 +19,8 @@ import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/MetricDetailsContext";
 import { toDateOnlyIsoString } from "../components/common/utils";
 import { IAttributeSearchResult } from "./IAttributeSearchResult";
+import { IThresholdValues } from "./IThresholdValues";
+import { IMetricThresholds } from "./IMetricThresholds";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -76,7 +78,8 @@ export class ServerApi {
     name: string,
     description: string,
     notes: string,
-    attributes: IMetricAttributes
+    attributes: IMetricAttributes,
+    thresholds: IMetricThresholds
   ): Promise<ICommandResult> {
     const payload: IEditMetricCommand = {
       metricId: metricId,
@@ -84,6 +87,7 @@ export class ServerApi {
       description: description,
       notes: notes,
       attributes: attributes,
+      thresholds: thresholds,
     };
 
     return await this.executeRequest("/metrics/", "PUT", payload);
@@ -97,6 +101,27 @@ export class ServerApi {
       `/metrics/${metricId}/permissions`,
       "PUT",
       permissions
+    );
+  }
+
+  static async getThresholdValues(
+    metricId: string,
+    dateConditions: IDateConditions
+  ): Promise<IThresholdValues> {
+    const urlParams: string[] = [];
+
+    if (dateConditions.from) {
+      urlParams.push(`fromDate=${toDateOnlyIsoString(dateConditions.from)}`);
+    }
+
+    if (dateConditions.to) {
+      urlParams.push(`toDate=${toDateOnlyIsoString(dateConditions.to)}`);
+    }
+
+    const params = urlParams.length ? `?${urlParams.join("&")}` : "";
+
+    return await this.executeRequest(
+      `/metrics/${metricId}/threshold_values${params}`
     );
   }
 

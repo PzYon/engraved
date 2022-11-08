@@ -7,36 +7,32 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { translations } from "../../../../i18n/translations";
 
 export const GroupByAttributeSelector: React.FC<{
   selectedAttributeKey: string;
   attributes: IMetricAttributes;
   onChange: (attributeKey: string) => void;
-}> = ({ selectedAttributeKey, attributes, onChange }) => {
-  return (
-    <FormControl>
-      <InputLabel id="group-by-attribute-label">
-        {translations.label_groupBy_attribute}
-      </InputLabel>
-      <Select
-        id="group-by-attribute"
-        labelId="group-by-attribute-label"
-        label={translations.label_groupBy_attribute}
-        value={selectedAttributeKey}
-        onChange={(event: SelectChangeEvent) => {
-          onChange(event.target.value as unknown as string);
-        }}
-      >
-        <MenuItem value={"-"}>-</MenuItem>
-        {Object.keys(attributes).map((key) => {
-          return (
-            <MenuItem value={key} key={key}>
-              {attributes[key].name}
-            </MenuItem>
-          );
-        })}
-      </Select>
-    </FormControl>
-  );
-};
+  label: string;
+}> = ({ selectedAttributeKey, attributes, onChange, label }) => (
+  <FormControl>
+    <InputLabel id="group-by-attribute-label">{label}</InputLabel>
+    <Select
+      id="group-by-attribute"
+      labelId="group-by-attribute-label"
+      label={label}
+      value={selectedAttributeKey}
+      onChange={(event: SelectChangeEvent) => {
+        onChange(event.target.value as unknown as string);
+      }}
+    >
+      <MenuItem value={"-"}>-</MenuItem>
+      {Object.keys(attributes).map((key) => {
+        return (
+          <MenuItem value={key} key={key}>
+            {attributes[key].name}
+          </MenuItem>
+        );
+      })}
+    </Select>
+  </FormControl>
+);

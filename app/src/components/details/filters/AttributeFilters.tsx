@@ -6,13 +6,13 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
-import { useMetricDetailsContext } from "../MetricDetailsContext";
+import { useMetricContext } from "../MetricDetailsContext";
 
 const noElementsValue = "-";
 
 export const AttributeFilters: React.FC = () => {
   const { selectedAttributeValues, setSelectedAttributeValues, metric } =
-    useMetricDetailsContext();
+    useMetricContext();
 
   if (!Object.keys(metric.attributes || {}).length) {
     return null;

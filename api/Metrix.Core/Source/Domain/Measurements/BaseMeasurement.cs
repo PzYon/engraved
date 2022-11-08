@@ -13,4 +13,6 @@ public abstract class BaseMeasurement : IMeasurement
   public DateTime? DateTime { get; set; }
 
   public Dictionary<string, string[]> MetricAttributeValues { get; set; } = new();
+
+  public abstract double GetValue();
 }

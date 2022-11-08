@@ -1,13 +1,40 @@
 import { IMetric } from "../../serverApi/IMetric";
 import { IDialogProps } from "../layout/dialogs/DialogContext";
-import { AddOutlined, EditOutlined, ShareOutlined } from "@mui/icons-material";
+import {
+  AddOutlined,
+  Close,
+  EditOutlined,
+  SaveOutlined,
+  ShareOutlined,
+} from "@mui/icons-material";
 import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementDialog";
 import { IIconButtonAction } from "../common/IconButtonWrapper";
 import { MetricType } from "../../serverApi/MetricType";
+import { NavigateFunction } from "react-router-dom";
 
 export const editActionKey = "edit";
 
-export function getMetricHeaderActions(
+export function getEditModeActions(
+  onSave: () => void,
+  navigate: NavigateFunction
+): IIconButtonAction[] {
+  return [
+    {
+      key: "cancel",
+      label: "Cancel",
+      icon: <Close fontSize="small" />,
+      onClick: () => navigate("./.."),
+    },
+    {
+      key: "save",
+      label: "Save",
+      icon: <SaveOutlined fontSize="small" />,
+      onClick: onSave,
+    },
+  ];
+}
+
+export function getCommonActions(
   metric: IMetric,
   renderDialog?: (dialogProps: IDialogProps) => void,
   onMeasurementAdded?: () => void

@@ -3,7 +3,7 @@ import { IMetric } from "../../serverApi/IMetric";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { HeaderActions } from "../layout/HeaderActions";
 import { IIconButtonAction } from "../common/IconButtonWrapper";
-import { getMetricHeaderActions } from "./getMetricHeaderActions";
+import { getCommonActions } from "./getCommonActions";
 
 export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
   metric,
@@ -11,7 +11,7 @@ export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
   const { renderDialog } = useDialogContext();
 
   const actions = useMemo<IIconButtonAction[]>(
-    () => getMetricHeaderActions(metric, renderDialog),
+    () => getCommonActions(metric, renderDialog),
     [metric]
   );
 

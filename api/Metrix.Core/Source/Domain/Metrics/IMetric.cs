@@ -16,5 +16,7 @@ public interface IMetric : IUserScoped, IPermissionHolder
 
   Dictionary<string, MetricAttribute> Attributes { get; set; }
 
+  Dictionary<string, Dictionary<string, double>> Thresholds { get; set; }
+
   DateTime? EditedOn { get; set; }
 }

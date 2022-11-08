@@ -1,18 +1,18 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { MetricList } from "../overview/MetricList";
-import { MetricDetails } from "../details/MetricDetails";
+import { MetricsPage } from "../overview/MetricsPage";
+import { MetricPageWrapper } from "../details/MetricPageWrapper";
 
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route
         path="/metrics/create"
-        element={<MetricList showCreate={true} />}
+        element={<MetricsPage showCreate={true} />}
       />
-      <Route path="/metrics" element={<MetricList />} />
-      <Route path="/" element={<MetricList />} />
-      <Route path="/metrics/:metricId/*" element={<MetricDetails />} />
+      <Route path="/metrics" element={<MetricsPage />} />
+      <Route path="/" element={<MetricsPage />} />
+      <Route path="/metrics/:metricId/*" element={<MetricPageWrapper />} />
     </Routes>
   );
 };
