@@ -3,12 +3,23 @@ import { useMediaQuery } from "@mui/material";
 export enum DeviceWidth {
   Small,
   Normal,
+  Large,
 }
 
-const thresholdInPx = 600;
+export const maxWidthInPx = 1200;
+export const minWidthInPx = 600;
 
 export const useDeviceWidth = (): DeviceWidth => {
-  const isMatch = useMediaQuery(`(min-width:${thresholdInPx}px)`);
+  const isLarge = useMediaQuery(`(min-width:${maxWidthInPx}px)`);
+  const isNormal = useMediaQuery(`(min-width:${minWidthInPx}px)`);
 
-  return isMatch ? DeviceWidth.Normal : DeviceWidth.Small;
+  if (isLarge) {
+    return DeviceWidth.Large;
+  }
+
+  if (isNormal) {
+    return DeviceWidth.Normal;
+  }
+
+  return DeviceWidth.Small;
 };

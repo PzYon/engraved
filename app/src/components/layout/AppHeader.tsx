@@ -11,7 +11,6 @@ import { usePageContext } from "./pages/PageContext";
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
   const { pageTitle, pageActions } = usePageContext();
-
   const deviceWidth = useDeviceWidth();
 
   return (
