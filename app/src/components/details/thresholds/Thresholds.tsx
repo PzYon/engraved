@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useMetricContext } from "../MetricDetailsContext";
 import { IThresholdValues } from "../../../serverApi/IThresholdValues";
-import { styled } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 
 export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const { dateConditions } = useMetricContext();
@@ -27,11 +27,25 @@ export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
 
         return Object.keys(attributeThresholds).map((valueKey) => {
           const threshold = attributeThresholds[valueKey];
+          const attributeName =
+            metric.attributes[attributeKey].name ?? attributeKey;
+          const valueName =
+            metric.attributes[attributeKey].values[valueKey] ?? valueKey;
+
           return (
-            <div key={attributeKey + "_" + valueKey}>
-              {attributeKey}.{valueKey}: Threshold: {threshold.thresholdValue} |
-              Actual: {threshold.actualValue}
-            </div>
+            <RowContainer key={attributeKey + "_" + valueKey}>
+              <Typography>
+                {valueName} <Lighter>({attributeName})</Lighter>
+              </Typography>
+              <Typography>
+                <ActualValue
+                  isBelow={threshold.actualValue - threshold.thresholdValue < 0}
+                >
+                  {threshold.actualValue}
+                </ActualValue>{" "}
+                <Lighter>{threshold.thresholdValue}</Lighter>
+              </Typography>
+            </RowContainer>
           );
         });
       })}
@@ -40,3 +54,16 @@ export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
 };
 
 const Host = styled("div")``;
+
+const RowContainer = styled("div")`
+  margin-bottom: 15px;
+`;
+
+const ActualValue = styled("span")<{ isBelow: boolean }>`
+  font-size: x-large;
+  color: ${(p) => (p.isBelow ? "green" : "red")};
+`;
+
+const Lighter = styled("span")`
+  font-weight: lighter;
+`;
