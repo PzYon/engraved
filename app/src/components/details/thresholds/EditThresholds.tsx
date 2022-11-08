@@ -33,7 +33,8 @@ export const EditThresholds: React.FC<{
               definition={oldDefinition}
               metric={metric}
               onChange={(definition) => {
-                if (isIncomplete(definition) || !isIncomplete(oldDefinition)) {
+                const isCurrentIncomplete = isIncomplete(definition);
+                if (isCurrentIncomplete) {
                   return;
                 }
 

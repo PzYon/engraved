@@ -106,11 +106,7 @@ export const MetricViewPage: React.FC = () => {
         </Suspense>
       ) : null}
 
-      {showThresholds ? (
-        <DetailsSection>
-          <Thresholds metric={metric} />
-        </DetailsSection>
-      ) : null}
+      {showThresholds ? <Thresholds metric={metric} /> : null}
 
       <DetailsSection overflowXScroll={true}>
         <MeasurementsList metric={metric} measurements={measurements} />

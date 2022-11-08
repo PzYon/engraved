@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useMetricContext } from "../MetricDetailsContext";
 import { IThresholdValues } from "../../../serverApi/IThresholdValues";
-import { styled, Typography } from "@mui/material";
+import { Card, Grid, styled, Typography } from "@mui/material";
 
 export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const { dateConditions } = useMetricContext();
@@ -21,7 +21,7 @@ export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
   }
 
   return (
-    <Host>
+    <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
       {Object.keys(thresholdValues).flatMap((attributeKey) => {
         const attributeThresholds = thresholdValues[attributeKey];
 
@@ -33,34 +33,33 @@ export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
             metric.attributes[attributeKey].values[valueKey] ?? valueKey;
 
           return (
-            <RowContainer key={attributeKey + "_" + valueKey}>
-              <Typography>
-                {valueName} <Lighter>({attributeName})</Lighter>
-              </Typography>
-              <Typography>
-                <ActualValue
-                  isBelow={threshold.actualValue - threshold.thresholdValue < 0}
-                >
-                  {threshold.actualValue}
-                </ActualValue>{" "}
-                <Lighter>{threshold.thresholdValue}</Lighter>
-              </Typography>
-            </RowContainer>
+            <Grid item xs={2} sm={4} md={4} key={attributeKey + "_" + valueKey}>
+              <Card sx={{ p: 2 }}>
+                <Typography>
+                  {valueName} <Lighter>({attributeName})</Lighter>
+                </Typography>
+                <Typography>
+                  <ActualValue
+                    isBelow={
+                      threshold.actualValue - threshold.thresholdValue < 0
+                    }
+                  >
+                    {threshold.actualValue}
+                  </ActualValue>{" "}
+                  <Lighter>{threshold.thresholdValue}</Lighter>
+                </Typography>
+              </Card>
+            </Grid>
           );
         });
       })}
-    </Host>
+    </Grid>
   );
 };
 
-const Host = styled("div")``;
-
-const RowContainer = styled("div")`
-  margin-bottom: 15px;
-`;
-
 const ActualValue = styled("span")<{ isBelow: boolean }>`
-  font-size: x-large;
+  font-size: xx-large;
+  font-weight: bold;
   color: ${(p) => (p.isBelow ? "green" : "red")};
 `;
 
