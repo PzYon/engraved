@@ -18,7 +18,7 @@ export const MarkdownEditor: React.FC<{
   return (
     <Host>
       <Suspense fallback={<div />}>
-        <LazyCodeMirror value={value} onChange={onChange} theme={theme} />
+        <LazyCodeMirror value={value ?? ""} onChange={onChange} theme={theme} />
       </Suspense>
     </Host>
   );
