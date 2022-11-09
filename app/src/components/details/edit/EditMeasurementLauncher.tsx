@@ -19,20 +19,26 @@ export const EditMeasurementLauncher: React.FC<{
   useEffect(() => {
     renderDialog({
       title: "Edit Measurement",
-      render: () => (
+      render: (closeDialog) => (
         <UpsertMeasurement
           metric={metric}
           measurement={measurements.find((m) => m.id === measurementId)}
           onSaved={async () => {
             await onSaved();
+            closeDialog();
+            goToMetric();
           }}
         />
       ),
       onClose: () => {
-        navigate(`/metrics/${metric.id}`);
+        goToMetric();
       },
     });
   }, []);
 
   return null;
+
+  function goToMetric() {
+    navigate(`/metrics/${metric.id}`);
+  }
 };

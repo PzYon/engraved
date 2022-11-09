@@ -37,6 +37,8 @@ export const MetricViewPage: React.FC = () => {
 
   const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
 
+  const [reloadToken, setReloadToken] = useState(Math.random());
+
   useEffect(() => {
     setTitleActions([
       {
@@ -61,10 +63,7 @@ export const MetricViewPage: React.FC = () => {
         isNotActive: !showThresholds,
       },
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonActions(metric, renderDialog, () => {
-        reloadMeasurements();
-        reloadMetric();
-      }),
+      ...getCommonActions(metric, renderDialog, reload),
     ]);
 
     return () => {
@@ -106,7 +105,9 @@ export const MetricViewPage: React.FC = () => {
         </Suspense>
       ) : null}
 
-      {showThresholds ? <Thresholds metric={metric} /> : null}
+      {showThresholds ? (
+        <Thresholds reloadToken={reloadToken} metric={metric} />
+      ) : null}
 
       <DetailsSection overflowXScroll={true}>
         <MeasurementsList metric={metric} measurements={measurements} />
@@ -119,20 +120,22 @@ export const MetricViewPage: React.FC = () => {
             <EditMeasurementLauncher
               metric={metric}
               measurements={measurements}
-              onSaved={reloadMeasurements}
+              onSaved={reload}
             />
           }
         />
         <Route
           path="/measurements/:measurementId/delete"
           element={
-            <DeleteMeasurementLauncher
-              metric={metric}
-              onDeleted={reloadMeasurements}
-            />
+            <DeleteMeasurementLauncher metric={metric} onDeleted={reload} />
           }
         />
       </Routes>
     </Page>
   );
+
+  async function reload(): Promise<void> {
+    setReloadToken(Math.random());
+    await Promise.all([reloadMetric(), reloadMeasurements()]);
+  }
 };

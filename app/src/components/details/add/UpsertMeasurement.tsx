@@ -102,14 +102,14 @@ export const UpsertMeasurement: React.FC<{
       />
 
       <FormElementContainer>
-        <Button variant="outlined" onClick={upsertMeasurment}>
+        <Button variant="outlined" onClick={upsertMeasurement}>
           {getAddButtonLabel()}
         </Button>
       </FormElementContainer>
     </FormControl>
   );
 
-  async function upsertMeasurment() {
+  async function upsertMeasurement() {
     try {
       let hasNewValues = false;
 

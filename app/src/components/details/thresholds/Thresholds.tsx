@@ -5,7 +5,10 @@ import { useMetricContext } from "../MetricDetailsContext";
 import { IThresholdValues } from "../../../serverApi/IThresholdValues";
 import { Card, Grid, styled, Typography } from "@mui/material";
 
-export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
+export const Thresholds: React.FC<{ metric: IMetric; reloadToken: number }> = ({
+  metric,
+  reloadToken,
+}) => {
   const { dateConditions } = useMetricContext();
 
   const [thresholdValues, setThresholdValues] = useState<IThresholdValues>();
@@ -14,7 +17,7 @@ export const Thresholds: React.FC<{ metric: IMetric }> = ({ metric }) => {
     ServerApi.getThresholdValues(metric.id, dateConditions).then(
       setThresholdValues
     );
-  }, []);
+  }, [reloadToken]);
 
   if (!thresholdValues) {
     return null;
