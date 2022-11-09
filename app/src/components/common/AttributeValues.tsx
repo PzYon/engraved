@@ -35,6 +35,7 @@ export const AttributeValues: React.FC<{
                   backgroundColor: colorByAttributeKey[attributeKey],
                   color: "common.white",
                   marginLeft: "5px",
+                  marginBottom: "4px",
                   fontSize: "small",
                   height: "22px",
                 }}

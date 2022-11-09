@@ -37,13 +37,13 @@ export const MetricDetails: React.FC = () => {
       <Routes>
         {metric.type === MetricType.Notes ? (
           <>
-            <Route path="/" element={<NotesViewPage />} />
             <Route path="/edit" element={<NotesEditPage />} />
+            <Route path="/*" element={<NotesViewPage />} />
           </>
         ) : (
           <>
-            <Route path="/" element={<MetricViewPage />} />
             <Route path="/edit" element={<MetricEditPage />} />
+            <Route path="/*" element={<MetricViewPage />} />
           </>
         )}
         <Route
