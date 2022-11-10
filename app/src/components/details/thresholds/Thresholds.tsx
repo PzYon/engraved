@@ -5,9 +5,19 @@ import { useMetricContext } from "../MetricDetailsContext";
 import { IThresholdValues } from "../../../serverApi/IThresholdValues";
 import { Card, Grid, styled, Typography } from "@mui/material";
 
-export const Thresholds: React.FC<{ metric: IMetric; reloadToken: number }> = ({
+export const Thresholds: React.FC<{
+  metric: IMetric;
+  reloadToken: number;
+  selectedAttributeValues: { [key: string]: string[] };
+  setSelectedAttributeValues: (
+    attributeKey: string,
+    attributeValueKeys: string[]
+  ) => void;
+}> = ({
   metric,
   reloadToken,
+  selectedAttributeValues,
+  setSelectedAttributeValues,
 }) => {
   const { dateConditions } = useMetricContext();
 
@@ -35,9 +45,27 @@ export const Thresholds: React.FC<{ metric: IMetric; reloadToken: number }> = ({
           const valueName =
             metric.attributes[attributeKey].values[valueKey] ?? valueKey;
 
+          const currentSelectedValue =
+            selectedAttributeValues[attributeKey]?.[0];
+
           return (
             <Grid item xs={2} sm={4} md={4} key={attributeKey + "_" + valueKey}>
-              <Card sx={{ p: 2 }}>
+              <Card
+                sx={{
+                  p: 2,
+                  cursor: "pointer",
+                  opacity:
+                    !currentSelectedValue || currentSelectedValue === valueKey
+                      ? 1
+                      : 0.5,
+                }}
+                onClick={() => {
+                  setSelectedAttributeValues(
+                    attributeKey,
+                    currentSelectedValue === valueKey ? [] : [valueKey]
+                  );
+                }}
+              >
                 <Typography>
                   {valueName} <Lighter>({attributeName})</Lighter>
                 </Typography>
