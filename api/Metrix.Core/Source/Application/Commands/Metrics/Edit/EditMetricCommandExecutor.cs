@@ -1,4 +1,5 @@
 ﻿using Metrix.Core.Application.Persistence;
+using Metrix.Core.Application.Utils;
 using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Metrics.Edit;
@@ -31,7 +32,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
       throw new InvalidCommandException(_command, $"Metric with key \"{_command.MetricId}\" does not exist.");
     }
 
-    metric.Attributes = _command.Attributes;
+    metric.Attributes = NormalizeKeys(_command.Attributes);
     metric.Name = _command.Name;
     metric.Description = _command.Description;
     metric.Notes = _command.Notes;
@@ -40,6 +41,19 @@ public class EditMetricCommandExecutor : ICommandExecutor
 
     UpsertResult result = await repository.UpsertMetric(metric);
 
-    return new CommandResult {EntityId = result.EntityId};
+    return new CommandResult { EntityId = result.EntityId };
+  }
+
+  // todo: add tests for this stuff
+  private static Dictionary<string, MetricAttribute> NormalizeKeys(Dictionary<string, MetricAttribute> attributes)
+  {
+    Dictionary<string, MetricAttribute> metricAttributes = KeyNormalizer.Normalize(attributes);
+
+    foreach (KeyValuePair<string, MetricAttribute> metricAttribute in metricAttributes)
+    {
+      metricAttribute.Value.Values = KeyNormalizer.Normalize(metricAttribute.Value.Values);
+    }
+
+    return metricAttributes;
   }
 }

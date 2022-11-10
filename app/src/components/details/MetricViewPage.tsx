@@ -24,8 +24,14 @@ import { PageTitle } from "./PageTitle";
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
 
-  const { metric, reloadMetric, measurements, reloadMeasurements } =
-    useMetricContext();
+  const {
+    metric,
+    reloadMetric,
+    measurements,
+    reloadMeasurements,
+    setSelectedAttributeValues,
+    selectedAttributeValues,
+  } = useMetricContext();
 
   const [groupByTime, setGroupByTime] = useState(GroupByTime.Day);
   const [attributeKey, setAttributeKey] = useState("-");
@@ -106,7 +112,12 @@ export const MetricViewPage: React.FC = () => {
       ) : null}
 
       {showThresholds ? (
-        <Thresholds reloadToken={reloadToken} metric={metric} />
+        <Thresholds
+          reloadToken={reloadToken}
+          metric={metric}
+          setSelectedAttributeValues={setSelectedAttributeValues}
+          selectedAttributeValues={selectedAttributeValues}
+        />
       ) : null}
 
       <DetailsSection overflowXScroll={true}>
