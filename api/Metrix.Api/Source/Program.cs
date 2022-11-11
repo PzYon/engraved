@@ -107,9 +107,7 @@ builder.Services.AddAuthentication(
       options.TokenValidationParameters = new TokenValidationParameters
       {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(
-          Encoding.ASCII.GetBytes(authConfigSection.GetValue<string>(nameof(AuthenticationConfig.JwtSecret)))
-        ),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
         ValidateIssuer = false,
         ValidateAudience = false
       };
@@ -117,8 +115,8 @@ builder.Services.AddAuthentication(
       {
         OnTokenValidated = context =>
         {
-          var jwtToken = (JwtSecurityToken)context.SecurityToken;
-          Claim nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
+          var jwtToken = (JwtSecurityToken) context.SecurityToken;
+          Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
 
           context.HttpContext.RequestServices
             .GetRequiredService<ICurrentUserService>()
@@ -160,8 +158,7 @@ IUserScopedRepository GetMongoDbUserScopedRepo(
   ICurrentUserService userService
 )
 {
-  string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("metrix_db");
-  return new UserScopedMongoRepository(new MongoRepositorySettings(connectionString), userService);
+  return new UserScopedMongoRepository(CreateRepositorySettings(webApplicationBuilder), userService);
 }
 
 IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository, ICurrentUserService userService)
@@ -186,8 +183,7 @@ IRepository GetInMemoryRepo()
 
 IRepository GetMongoDbRepo()
 {
-  string? connectionString = builder.Configuration.GetConnectionString("metrix_db");
-  return new MongoRepository(new MongoRepositorySettings(connectionString));
+  return new MongoRepository(CreateRepositorySettings(builder));
 }
 
 void SeedRepo(IRepository repo)
@@ -197,4 +193,26 @@ void SeedRepo(IRepository repo)
   {
     seed.Wait();
   }
+}
+
+MongoRepositorySettings CreateRepositorySettings(WebApplicationBuilder webApplicationBuilder)
+{
+  string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("metrix_db");
+  if (string.IsNullOrEmpty(connectionString))
+  {
+    throw new Exception("App Service Config: No connection string available.");
+  }
+
+  return new MongoRepositorySettings(connectionString);
+}
+
+string GetJwtSecret(IConfigurationSection configurationSection)
+{
+  var jwtSecret = configurationSection.GetValue<string>(nameof(AuthenticationConfig.JwtSecret));
+  if (string.IsNullOrEmpty(jwtSecret))
+  {
+    throw new Exception("App Service Config: No JWT Secret available.");
+  }
+
+  return jwtSecret;
 }

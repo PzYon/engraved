@@ -108,7 +108,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
       return new TMeasurement();
     }
 
-    return (TMeasurement)(await repository.GetMeasurement(Command.Id))!;
+    return (TMeasurement) (await repository.GetMeasurement(Command.Id))!;
   }
 
   protected InvalidCommandException CreateInvalidCommandException(string message)

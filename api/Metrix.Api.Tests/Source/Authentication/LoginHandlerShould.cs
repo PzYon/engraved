@@ -13,11 +13,9 @@ namespace Metrix.Api.Tests.Authentication;
 
 public class LoginHandlerShould
 {
-  private IRepository _testRepository = null!;
-
-  private LoginHandler _loginHandler = null!;
-
   private IDateService _dateService = null!;
+  private LoginHandler _loginHandler = null!;
+  private IRepository _testRepository = null!;
 
   private readonly AuthenticationConfig _authenticationConfig = new()
   {

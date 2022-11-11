@@ -78,7 +78,7 @@ public class LoginHandler : ILoginHandler
     };
 
     var tokenHandler = new JwtSecurityTokenHandler();
-    SecurityToken securityToken = tokenHandler.CreateToken(tokenDescriptor);
+    SecurityToken? securityToken = tokenHandler.CreateToken(tokenDescriptor);
     return tokenHandler.WriteToken(securityToken);
   }
 

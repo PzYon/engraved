@@ -22,4 +22,3 @@ public class KeyNormalizer
     return newDict;
   }
 }
-

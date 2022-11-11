@@ -103,7 +103,7 @@ public class MetricDocumentMapperShould
       Attributes = new Dictionary<string, MetricAttribute>
       {
         {
-          "flags", new MetricAttribute()
+          "flags", new MetricAttribute
           {
             Name = "Flags",
             Values = { { "fl@g", "fl@g_value" } }
@@ -144,7 +144,7 @@ public class MetricDocumentMapperShould
 
     var metric = MetricDocumentMapper.FromDocument<IMetric>(timerMetricDocument);
 
-    var timerMetric = (TimerMetric)metric;
+    var timerMetric = (TimerMetric) metric;
     Assert.IsNotNull(timerMetric);
     Assert.AreEqual(MetricType.Timer, metric.Type);
     Assert.AreEqual(startDate, timerMetric.StartDate);
