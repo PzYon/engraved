@@ -11,6 +11,6 @@ public interface IMeasurement : IUserScoped
   DateTime? DateTime { get; set; }
 
   Dictionary<string, string[]> MetricAttributeValues { get; set; }
-  
+
   double GetValue();
 }

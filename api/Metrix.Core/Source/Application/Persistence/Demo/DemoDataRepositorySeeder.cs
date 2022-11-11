@@ -229,7 +229,7 @@ public class DemoDataRepositorySeeder
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)
-        : (IDateService)dateService;
+        : (IDateService) dateService;
 
       await command.CreateExecutor().Execute(_repository, measurementDateService);
     }
@@ -237,7 +237,7 @@ public class DemoDataRepositorySeeder
 
   private static MetricType GetRandomMetricType()
   {
-    return (MetricType)Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
+    return (MetricType) Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
   }
 
   private Dictionary<string, T> CreateRandomDict<T>(string keyPrefix, Func<int, T> createValue)

@@ -50,6 +50,6 @@ public static class MetricDocumentMapper
   {
     return document == null
       ? null!
-      : (TMetric)Mapper.Map(document, document.GetType(), typeof(TMetric));
+      : (TMetric) Mapper.Map(document, document.GetType(), typeof(TMetric));
   }
 }

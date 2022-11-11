@@ -31,7 +31,7 @@ public class GoogleTokenValidator : IGoogleTokenValidator
         Audience = new[] { _authenticationConfig.GoogleClientId }
       };
 
-      GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
+      GoogleJsonWebSignature.Payload? payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
 
       return new ParsedToken
       {

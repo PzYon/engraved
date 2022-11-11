@@ -132,7 +132,7 @@ public class LuceneSearchIndexShould
       {
         { "attr1", new[] { "tennis" } },
         { "attr2", new[] { "gugu" } },
-        { "attr3", new[] { "player" } },
+        { "attr3", new[] { "player" } }
       },
       new Dictionary<string, string[]>
       {
@@ -156,7 +156,7 @@ public class LuceneSearchIndexShould
       {
         { "attr1", new[] { "Table" } },
         { "attr2", new[] { "TEST" } },
-        { "attr3", new[] { "bla" } },
+        { "attr3", new[] { "bla" } }
       },
       new Dictionary<string, string[]>
       {

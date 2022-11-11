@@ -13,8 +13,8 @@ public class MemoryLuceneIndex
 {
   private const LuceneVersion LuceneVersion = global::Lucene.Net.Util.LuceneVersion.LUCENE_48;
 
-  private IndexWriter _indexWriter;
-  private RAMDirectory _directory;
+  private readonly RAMDirectory _directory;
+  private readonly IndexWriter _indexWriter;
 
   public MemoryLuceneIndex()
   {
@@ -43,7 +43,7 @@ public class MemoryLuceneIndex
       .Select(
         scoreDoc =>
         {
-          Document d = searcher.Doc(scoreDoc.Doc);
+          Document? d = searcher.Doc(scoreDoc.Doc);
 
           return new InternalSearchResult
           {

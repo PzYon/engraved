@@ -76,25 +76,6 @@ public class MongoRepository : IRepository
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
-  private async Task<UpsertResult> UpsertUserInternal(IUser user)
-  {
-    UserDocument document = UserDocumentMapper.ToDocument(user);
-
-    IUser? existingUser = await GetUser(user.Name);
-    if (existingUser != null && string.IsNullOrEmpty(user.Id))
-    {
-      throw new ArgumentException("ID must be specified for existing users.");
-    }
-
-    ReplaceOneResult replaceOneResult = await _users.ReplaceOneAsync(
-      Builders<UserDocument>.Filter.Where(d => d.Name == user.Name),
-      document,
-      new ReplaceOptions { IsUpsert = true }
-    );
-
-    return CreateUpsertResult(user.Id, replaceOneResult);
-  }
-
   public async Task<IUser[]> GetAllUsers()
   {
     List<UserDocument> users = await _users.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>()).ToListAsync();
@@ -113,29 +94,6 @@ public class MongoRepository : IRepository
   public async Task<IMetric?> GetMetric(string metricId)
   {
     return await GetMetric(metricId, PermissionKind.Read);
-  }
-
-  protected async Task<IMetric?> GetMetric(string metricId, PermissionKind permissionKind)
-  {
-    if (string.IsNullOrEmpty(metricId))
-    {
-      throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
-    }
-
-    MetricDocument? document = await _metrics
-      .Find(GetMetricDocumentByIdFilter<MetricDocument>(metricId, permissionKind))
-      .FirstOrDefaultAsync();
-
-    return MetricDocumentMapper.FromDocument<IMetric>(document);
-  }
-
-  private FilterDefinition<TDocument> GetMetricDocumentByIdFilter<TDocument>(string metricId, PermissionKind kind)
-    where TDocument : IDocument
-  {
-    return Builders<TDocument>.Filter.And(
-      GetAllMetricDocumentsFilter<TDocument>(kind),
-      MongoUtil.GetDocumentByIdFilter<TDocument>(metricId)
-    );
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
@@ -196,7 +154,7 @@ public class MongoRepository : IRepository
   {
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
-    ReplaceOneResult replaceOneResult = await _metrics.ReplaceOneAsync(
+    ReplaceOneResult? replaceOneResult = await _metrics.ReplaceOneAsync(
       MongoUtil.GetDocumentByIdFilter<MetricDocument>(metric.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
@@ -225,7 +183,7 @@ public class MongoRepository : IRepository
   {
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
-    ReplaceOneResult replaceOneResult = await _measurements.ReplaceOneAsync(
+    ReplaceOneResult? replaceOneResult = await _measurements.ReplaceOneAsync(
       MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
@@ -253,6 +211,48 @@ public class MongoRepository : IRepository
     return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
   }
 
+  private async Task<UpsertResult> UpsertUserInternal(IUser user)
+  {
+    UserDocument document = UserDocumentMapper.ToDocument(user);
+
+    IUser? existingUser = await GetUser(user.Name);
+    if (existingUser != null && string.IsNullOrEmpty(user.Id))
+    {
+      throw new ArgumentException("ID must be specified for existing users.");
+    }
+
+    ReplaceOneResult? replaceOneResult = await _users.ReplaceOneAsync(
+      Builders<UserDocument>.Filter.Where(d => d.Name == user.Name),
+      document,
+      new ReplaceOptions { IsUpsert = true }
+    );
+
+    return CreateUpsertResult(user.Id, replaceOneResult);
+  }
+
+  protected async Task<IMetric?> GetMetric(string metricId, PermissionKind permissionKind)
+  {
+    if (string.IsNullOrEmpty(metricId))
+    {
+      throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
+    }
+
+    MetricDocument? document = await _metrics
+      .Find(GetMetricDocumentByIdFilter<MetricDocument>(metricId, permissionKind))
+      .FirstOrDefaultAsync();
+
+    return MetricDocumentMapper.FromDocument<IMetric>(document);
+  }
+
+  private FilterDefinition<TDocument> GetMetricDocumentByIdFilter<TDocument>(string metricId, PermissionKind kind)
+    where TDocument : IDocument
+  {
+    return Builders<TDocument>.Filter.And(
+      GetAllMetricDocumentsFilter<TDocument>(kind),
+      MongoUtil.GetDocumentByIdFilter<TDocument>(metricId)
+    );
+  }
+
   protected virtual FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
     where TDocument : IDocument
   {
@@ -273,7 +273,7 @@ public class MongoRepository : IRepository
 
   private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
   {
-    MongoClientSettings clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
+    MongoClientSettings? clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
     clientSettings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
 
     return new MongoClient(clientSettings);

@@ -27,7 +27,7 @@ public static class MetricQueryUtil
 
   private static IMetric EnsureUsers(IMetric metric, IReadOnlyDictionary<string, IUser> userById)
   {
-    foreach ((string? key, PermissionDefinition? value) in metric.Permissions)
+    foreach ((string? key, PermissionDefinition value) in metric.Permissions)
     {
       value.User = userById[key];
     }

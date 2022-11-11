@@ -10,14 +10,14 @@ public class QueryCache
   private readonly IMemoryCache _memoryCache;
   private readonly ICurrentUserService _currentUserService;
 
-  private Dictionary<string, HashSet<string>> QueryKeysByUser
-    => _memoryCache.GetOrCreate(KeysByUserKey, _ => new Dictionary<string, HashSet<string>>());
-
   public QueryCache(IMemoryCache memoryCache, ICurrentUserService currentUserService)
   {
     _memoryCache = memoryCache;
     _currentUserService = currentUserService;
   }
+
+  private Dictionary<string, HashSet<string>> QueryKeysByUser
+    => _memoryCache.GetOrCreate(KeysByUserKey, _ => new Dictionary<string, HashSet<string>>())!;
 
   public void Set<TValue>(IQueryExecutor<TValue> queryExecutor, IQuery<TValue> query, TValue value)
   {
@@ -35,15 +35,15 @@ public class QueryCache
     );
   }
 
-  public bool TryGetValue<TValue>(IQueryExecutor<TValue> queryExecutor, IQuery<TValue> query, out TValue value)
+  public bool TryGetValue<TValue>(IQueryExecutor<TValue> queryExecutor, IQuery<TValue> query, out TValue? value)
   {
-    if (!_memoryCache.TryGetValue(GetKey(queryExecutor), out CacheItem<TValue> cacheItem))
+    if (!_memoryCache.TryGetValue(GetKey(queryExecutor), out CacheItem<TValue>? cacheItem))
     {
-      value = default!;
+      value = default;
       return false;
     }
 
-    if (cacheItem.ConfigToken != GetConfigToken(query))
+    if (cacheItem!.ConfigToken != GetConfigToken(query))
     {
       value = default!;
       return false;

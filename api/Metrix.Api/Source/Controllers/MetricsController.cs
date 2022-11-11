@@ -81,7 +81,7 @@ public class MetricsController : ControllerBase
     {
       MetricId = metricId,
       FromDate = fromDate,
-      ToDate = toDate,
+      ToDate = toDate
     };
 
     return await _dispatcher.Query(query);

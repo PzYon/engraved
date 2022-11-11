@@ -30,9 +30,9 @@ public class Dispatcher
   {
     IQueryExecutor<TResult> queryExecutor = query.CreateExecutor();
 
-    if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult cachedResult))
+    if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult? cachedResult))
     {
-      return cachedResult;
+      return cachedResult!;
     }
 
     TResult result = await queryExecutor.Execute(_repository);
