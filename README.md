@@ -1,11 +1,11 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 # metrix
-Store personal metrics in an easy manor.
+Store personal metrics and notes in an easy manor.
 
 ## Technologies Used
 ### Backend
-- C#, .net core 6
+- C#, .net core 7
 - Web API
 - MongoDB
 - NUnit
@@ -13,9 +13,8 @@ Store personal metrics in an easy manor.
 ### Frontend
 - TypeScript
 - React
-- React MUI
 - Styled Components
-- ChartJS
+- Component libraries: React MUI, ChartJS, Codemirror
 
 ## URLs
 - Renovate job runs: https://app.renovatebot.com/dashboard#github/PzYon/metrix/
