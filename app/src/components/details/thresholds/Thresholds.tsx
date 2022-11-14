@@ -75,9 +75,10 @@ export const Thresholds: React.FC<{
                       threshold.actualValue - threshold.thresholdValue < 0
                     }
                   >
-                    {threshold.actualValue}
+                    {threshold.thresholdValue - threshold.actualValue}
                   </ActualValue>{" "}
-                  <Lighter>{threshold.thresholdValue}</Lighter>
+                  {threshold.actualValue}
+                  <Lighter> / {threshold.thresholdValue}</Lighter>
                 </Typography>
               </Card>
             </Grid>
@@ -92,6 +93,7 @@ const ActualValue = styled("span")<{ isBelow: boolean }>`
   font-size: xx-large;
   font-weight: bold;
   color: ${(p) => (p.isBelow ? "green" : "red")};
+  margin-right: ${(p) => p.theme.spacing(1)};
 `;
 
 const Lighter = styled("span")`
