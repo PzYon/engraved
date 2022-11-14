@@ -5,6 +5,7 @@ import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import { IIconButtonAction } from "../common/IconButtonWrapper";
 import {
   FilterAltOutlined,
+  MessageOutlined,
   PanToolOutlined,
   ShowChartOutlined,
 } from "@mui/icons-material";
@@ -37,6 +38,7 @@ export const MetricViewPage: React.FC = () => {
   const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState("bar");
 
+  const [showNotes, setShowNotes] = useState(!!metric.notes);
   const [showFilters, setShowFilters] = useState(false);
   const [showChart, setShowChart] = useState(false);
   const [showThresholds, setShowThresholds] = useState(false);
@@ -47,6 +49,13 @@ export const MetricViewPage: React.FC = () => {
 
   useEffect(() => {
     setTitleActions([
+      {
+        key: "notes",
+        icon: <MessageOutlined />,
+        label: "Show notes",
+        onClick: () => setShowNotes(!showNotes),
+        isNotActive: !showNotes,
+      },
       {
         key: "chart",
         icon: <ShowChartOutlined />,
@@ -75,13 +84,15 @@ export const MetricViewPage: React.FC = () => {
     return () => {
       setTitleActions([]);
     };
-  }, [metric, showFilters, showChart, showThresholds]);
+  }, [metric, showNotes, showFilters, showChart, showThresholds]);
 
   return (
     <Page title={<PageTitle metric={metric} />} actions={titleActions}>
-      <DetailsSection>
-        <MetricNotes metric={metric} />
-      </DetailsSection>
+      {showNotes ? (
+        <DetailsSection>
+          <MetricNotes metric={metric} />
+        </DetailsSection>
+      ) : null}
 
       {showFilters ? (
         <DetailsSection>
