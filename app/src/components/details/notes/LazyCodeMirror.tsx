@@ -19,7 +19,7 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
           fontSize: theme.typography.fontSize + "px",
           backgroundColor: theme.palette.common.white,
         },
-        ".cm-focused": {
+        "&.cm-editor.cm-focused": {
           outline: 0,
         },
         ".cm-activeLine": {
