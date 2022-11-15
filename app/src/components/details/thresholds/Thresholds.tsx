@@ -75,7 +75,9 @@ export const Thresholds: React.FC<{
                       threshold.actualValue - threshold.thresholdValue < 0
                     }
                   >
-                    {threshold.thresholdValue - threshold.actualValue}
+                    {Math.round(
+                      threshold.thresholdValue - threshold.actualValue
+                    )}
                   </ActualValue>{" "}
                   {threshold.actualValue}
                   <Lighter> / {threshold.thresholdValue}</Lighter>
