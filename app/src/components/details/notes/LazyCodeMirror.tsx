@@ -3,6 +3,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { EditorView } from "@codemirror/view";
 import { ICodeMirrorProps } from "./MarkdownEditor";
+import { alpha } from "@mui/material";
 
 const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   value,
@@ -19,11 +20,17 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
           fontSize: theme.typography.fontSize + "px",
           backgroundColor: theme.palette.common.white,
         },
-        ".cm-focused": {
+        "&.cm-editor.cm-focused": {
           outline: 0,
         },
         ".cm-activeLine": {
+          backgroundColor: alpha(theme.palette.background.default, 0.3),
+        },
+        ".cm-selectionBackground": {
           backgroundColor: theme.palette.background.default,
+        },
+        ".cm-selectionMatch": {
+          backgroundColor: alpha(theme.palette.background.default, 0.7),
         },
       })}
     />
