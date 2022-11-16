@@ -4,27 +4,25 @@ import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { MetricAttributesEditor } from "./MetricAttributesEditor";
-import { IMetricAttributes } from "../../../serverApi/IMetricAttributes";
 import { EditThresholds } from "../thresholds/EditThresholds";
 import { DetailsSection } from "../../layout/DetailsSection";
-import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
 import { useMetricContext } from "../MetricDetailsContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../PageTitle";
 import { getEditModeActions } from "../../overview/getCommonActions";
+import { MetricUiSettings } from "./MetricUiSettings";
+import { GroupByTime } from "../chart/consolidation/GroupByTime";
 
 export const MetricEditPage: React.FC = () => {
   const navigate = useNavigate();
 
   const { metric, reloadMetric } = useMetricContext();
 
-  const [attributes, setAttributes] = useState<IMetricAttributes>(
-    metric.attributes
-  );
-
-  const [thresholds, setThresholds] = useState<IMetricThresholds>(
-    metric.thresholds ?? {}
+  const [attributes, setAttributes] = useState(metric.attributes);
+  const [thresholds, setThresholds] = useState(metric.thresholds ?? {});
+  const [uiSettings, setUiSettings] = useState(
+    metric.uiSettings ?? { showChart: true, groupByTime: GroupByTime.Month }
   );
 
   const [name, setName] = useState(metric.name);
@@ -64,6 +62,10 @@ export const MetricEditPage: React.FC = () => {
 
       <DetailsSection title={"Thresholds"}>
         <EditThresholds metric={metric} onChange={setThresholds} />
+      </DetailsSection>
+
+      <DetailsSection title={"UI Settings"}>
+        <MetricUiSettings uiSettings={uiSettings} onChange={setUiSettings} />
       </DetailsSection>
     </Page>
   );

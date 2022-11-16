@@ -2,6 +2,7 @@ import { MetricType } from "./MetricType";
 import { IMetricAttributes } from "./IMetricAttributes";
 import { IUserPermissions } from "./IUserPermissions";
 import { IMetricThresholds } from "./IMetricThresholds";
+import { IMetricUiSettings } from "../components/details/edit/MetricUiSettings";
 
 export interface IMetric {
   id?: string;
@@ -13,4 +14,5 @@ export interface IMetric {
   editedOn?: string;
   thresholds?: IMetricThresholds;
   permissions?: IUserPermissions;
+  uiSettings?: IMetricUiSettings;
 }
