@@ -129,7 +129,8 @@ export const UpsertMeasurement: React.FC<{
           metric.description,
           metric.notes,
           metric.attributes,
-          metric.thresholds
+          metric.thresholds,
+          metric.uiSettings
         );
       }
 

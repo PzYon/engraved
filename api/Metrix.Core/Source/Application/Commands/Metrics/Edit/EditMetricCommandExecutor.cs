@@ -37,6 +37,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
     metric.Description = _command.Description;
     metric.Notes = _command.Notes;
     metric.Thresholds = _command.Thresholds;
+    metric.UiSettings = _command.UiSettings;
     metric.EditedOn = dateService.UtcNow;
 
     UpsertResult result = await repository.UpsertMetric(metric);

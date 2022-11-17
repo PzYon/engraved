@@ -16,7 +16,8 @@ export const MetricNotes: React.FC<{
           metric.description,
           event.target.value,
           metric.attributes,
-          metric.thresholds
+          metric.thresholds,
+          metric.uiSettings
         );
       }}
       multiline={true}

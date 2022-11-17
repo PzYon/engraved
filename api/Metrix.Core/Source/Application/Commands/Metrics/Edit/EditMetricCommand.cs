@@ -15,6 +15,8 @@ public class EditMetricCommand : ICommand
   public Dictionary<string, MetricAttribute> Attributes { get; set; } = new();
 
   public Dictionary<string, Dictionary<string, double>> Thresholds { get; set; } = new();
+  
+  public Dictionary<string, object> UiSettings { get; set; } = new();
 
   public ICommandExecutor CreateExecutor()
   {

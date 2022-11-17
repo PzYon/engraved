@@ -34,14 +34,19 @@ export const MetricViewPage: React.FC = () => {
     selectedAttributeValues,
   } = useMetricContext();
 
-  const [groupByTime, setGroupByTime] = useState(GroupByTime.Day);
+  const [groupByTime, setGroupByTime] = useState(
+    metric.uiSettings?.groupByTime ?? GroupByTime.Day
+  );
   const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState("bar");
 
   const [showNotes, setShowNotes] = useState(!!metric.notes);
   const [showFilters, setShowFilters] = useState(false);
-  const [showChart, setShowChart] = useState(false);
-  const [showThresholds, setShowThresholds] = useState(false);
+
+  const [showChart, setShowChart] = useState(!!metric.uiSettings?.showChart);
+  const [showThresholds, setShowThresholds] = useState(
+    !!metric.uiSettings?.showThresholds
+  );
 
   const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
 

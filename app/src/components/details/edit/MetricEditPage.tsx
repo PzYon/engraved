@@ -78,7 +78,8 @@ export const MetricEditPage: React.FC = () => {
         description,
         metric.notes,
         attributes,
-        thresholds
+        thresholds,
+        uiSettings
       )
         .then(async () => {
           await reloadMetric();

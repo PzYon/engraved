@@ -22,5 +22,7 @@ public abstract class BaseMetric : IMetric
 
   public DateTime? EditedOn { get; set; }
 
+  public Dictionary<string, object> UiSettings { get; set; } = new();
+
   public UserPermissions Permissions { get; set; } = new();
 }
