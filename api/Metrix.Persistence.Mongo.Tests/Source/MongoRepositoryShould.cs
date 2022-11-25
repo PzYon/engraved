@@ -5,6 +5,7 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
@@ -133,16 +134,18 @@ public class MongoRepositoryShould
     var metric = new GaugeMetric
     {
       Name = "N@me",
-      UiSettings = new Dictionary<string, object>
+      CustomProps = new Dictionary<string, string>
       {
-        { "simpleSetting", true }
+        {
+          "uiSettings", JsonConvert.SerializeObject(new Dictionary<string, object> { { "simpleSetting", true } })
+        }
       }
     };
 
     UpsertResult result = await _repository.UpsertMetric(metric);
     IMetric reloadedMetric = (await _repository.GetMetric(result.EntityId))!;
 
-    Assert.IsTrue(reloadedMetric.UiSettings.ContainsKey("simpleSetting"));
-    Assert.AreEqual(reloadedMetric.UiSettings["simpleSetting"], true);
+    Assert.IsTrue(reloadedMetric.CustomProps.ContainsKey("simpleSetting"));
+    Assert.AreEqual(reloadedMetric.CustomProps["simpleSetting"], true);
   }
 }

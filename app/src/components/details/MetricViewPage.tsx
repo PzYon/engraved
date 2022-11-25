@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useMetricContext } from "./MetricDetailsContext";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
@@ -21,6 +21,7 @@ import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Page } from "../layout/pages/Page";
 import { PageTitle } from "./PageTitle";
+import { IMetricUiSettings } from "./edit/MetricUiSettings";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -34,8 +35,16 @@ export const MetricViewPage: React.FC = () => {
     selectedAttributeValues,
   } = useMetricContext();
 
+  const uiSettings = useMemo<IMetricUiSettings>(
+    () =>
+      metric.customProps?.uiSettings
+        ? JSON.parse(metric.customProps.uiSettings)
+        : {},
+    [metric?.customProps?.uiSettings]
+  );
+
   const [groupByTime, setGroupByTime] = useState(
-    metric.uiSettings?.groupByTime ?? GroupByTime.Day
+    uiSettings?.groupByTime ?? GroupByTime.Day
   );
   const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState("bar");
@@ -43,9 +52,9 @@ export const MetricViewPage: React.FC = () => {
   const [showNotes, setShowNotes] = useState(!!metric.notes);
   const [showFilters, setShowFilters] = useState(false);
 
-  const [showChart, setShowChart] = useState(!!metric.uiSettings?.showChart);
+  const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
   const [showThresholds, setShowThresholds] = useState(
-    !!metric.uiSettings?.showThresholds
+    !!uiSettings?.showThresholds
   );
 
   const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
@@ -113,7 +122,7 @@ export const MetricViewPage: React.FC = () => {
         </DetailsSection>
       ) : null}
 
-      {showChart ? (
+      {showChart && measurements ? (
         <Suspense fallback={<div />}>
           <DetailsSection>
             <Chart

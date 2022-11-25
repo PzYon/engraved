@@ -81,7 +81,7 @@ export class ServerApi {
     notes: string,
     attributes: IMetricAttributes,
     thresholds: IMetricThresholds,
-    uiSettings: IMetricUiSettings
+    uiSettings: IMetricUiSettings | string
   ): Promise<ICommandResult> {
     const payload: IEditMetricCommand = {
       metricId: metricId,
@@ -90,7 +90,12 @@ export class ServerApi {
       notes: notes,
       attributes: attributes,
       thresholds: thresholds,
-      uiSettings: uiSettings,
+      customProps: {
+        uiSettings:
+          typeof uiSettings === "string"
+            ? uiSettings
+            : JSON.stringify(uiSettings),
+      },
     };
 
     return await this.executeRequest("/metrics/", "PUT", payload);

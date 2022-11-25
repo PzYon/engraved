@@ -31,5 +31,5 @@ public abstract class MetricDocument : IUserScopedDocument, IHasPerissionsDocume
 
   public UserPermissions Permissions { get; set; } = new();
 
-  public Dictionary<string, object> UiSettings { get; set; } = new();
+  public Dictionary<string, string> CustomProps { get; set; } = new();
 }

@@ -20,5 +20,5 @@ public interface IMetric : IUserScoped, IPermissionHolder
 
   DateTime? EditedOn { get; set; }
 
-  Dictionary<string, object> UiSettings { get; set; }
+  Dictionary<string, string> CustomProps { get; set; }
 }

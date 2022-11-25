@@ -22,7 +22,9 @@ export const MetricEditPage: React.FC = () => {
   const [attributes, setAttributes] = useState(metric.attributes);
   const [thresholds, setThresholds] = useState(metric.thresholds ?? {});
   const [uiSettings, setUiSettings] = useState(
-    metric.uiSettings ?? { showChart: true, groupByTime: GroupByTime.Month }
+    metric.customProps?.uiSettings
+      ? JSON.parse(metric.customProps.uiSettings)
+      : { showChart: true, groupByTime: GroupByTime.Month }
   );
 
   const [name, setName] = useState(metric.name);
