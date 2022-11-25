@@ -61,19 +61,21 @@ const LazyChartJs: React.FC<IChartProps> = ({
 
   const chart = useMemo(
     () =>
-      createChart(
-        measurements,
-        metric,
-        groupByTime,
-        groupByAttribute,
-        toggleAttributeValue,
-        chartType as keyof ChartTypeRegistry,
-        palette.primary.main
-      ),
+      measurements
+        ? createChart(
+            measurements,
+            metric,
+            groupByTime,
+            groupByAttribute,
+            toggleAttributeValue,
+            chartType as keyof ChartTypeRegistry,
+            palette.primary.main
+          )
+        : null,
     [measurements, groupByTime, groupByAttribute, chartType]
   );
 
-  return <Chart key={chartType} {...chart} />;
+  return chart ? <Chart key={chartType} {...chart} /> : null;
 };
 
 export default LazyChartJs;
