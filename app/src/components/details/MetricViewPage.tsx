@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useMetricContext } from "./MetricDetailsContext";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
@@ -21,6 +21,7 @@ import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Page } from "../layout/pages/Page";
 import { PageTitle } from "./PageTitle";
+import { IMetricUiSettings } from "./edit/MetricUiSettings";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -34,14 +35,27 @@ export const MetricViewPage: React.FC = () => {
     selectedAttributeValues,
   } = useMetricContext();
 
-  const [groupByTime, setGroupByTime] = useState(GroupByTime.Day);
+  const uiSettings = useMemo<IMetricUiSettings>(
+    () =>
+      metric.customProps?.uiSettings
+        ? JSON.parse(metric.customProps.uiSettings)
+        : {},
+    [metric?.customProps?.uiSettings]
+  );
+
+  const [groupByTime, setGroupByTime] = useState(
+    uiSettings?.groupByTime ?? GroupByTime.Day
+  );
   const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState("bar");
 
   const [showNotes, setShowNotes] = useState(!!metric.notes);
   const [showFilters, setShowFilters] = useState(false);
-  const [showChart, setShowChart] = useState(false);
-  const [showThresholds, setShowThresholds] = useState(false);
+
+  const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
+  const [showThresholds, setShowThresholds] = useState(
+    !!uiSettings?.showThresholds
+  );
 
   const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
 
@@ -70,13 +84,15 @@ export const MetricViewPage: React.FC = () => {
         onClick: () => setShowFilters(!showFilters),
         isNotActive: !showFilters,
       },
-      {
-        key: "thresholds",
-        icon: <PanToolOutlined />,
-        label: "Show thresholds",
-        onClick: () => setShowThresholds(!showThresholds),
-        isNotActive: !showThresholds,
-      },
+      Object.keys(metric.thresholds || {}).length
+        ? {
+            key: "thresholds",
+            icon: <PanToolOutlined />,
+            label: "Show thresholds",
+            onClick: () => setShowThresholds(!showThresholds),
+            isNotActive: !showThresholds,
+          }
+        : undefined,
       null, // null means separator - ugly, but it works for the moment
       ...getCommonActions(metric, renderDialog, reload),
     ]);
@@ -108,7 +124,7 @@ export const MetricViewPage: React.FC = () => {
         </DetailsSection>
       ) : null}
 
-      {showChart ? (
+      {showChart && measurements ? (
         <Suspense fallback={<div />}>
           <DetailsSection>
             <Chart

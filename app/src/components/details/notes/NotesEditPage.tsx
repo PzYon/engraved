@@ -30,7 +30,8 @@ export const NotesEditPage: React.FC = () => {
       metric.description,
       notes,
       metric.attributes,
-      metric.thresholds
+      metric.thresholds,
+      {}
     )
       .then(async () => {
         await reloadMetric();

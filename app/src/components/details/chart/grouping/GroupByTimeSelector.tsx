@@ -8,13 +8,16 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { translations } from "../../../../i18n/translations";
+import { SxProps } from "@mui/system";
+import { Theme } from "@mui/material/styles";
 
 export const GroupByTimeSelector: React.FC<{
   groupByTime: GroupByTime;
   onChange: (groupByTime: GroupByTime) => void;
-}> = ({ groupByTime, onChange }) => {
+  sx?: SxProps<Theme>;
+}> = ({ groupByTime, onChange, sx }) => {
   return (
-    <FormControl>
+    <FormControl sx={sx}>
       <InputLabel id="group-by-time-label">
         {translations.label_groupBy_time}
       </InputLabel>

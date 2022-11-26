@@ -21,6 +21,7 @@ import { toDateOnlyIsoString } from "../components/common/utils";
 import { IAttributeSearchResult } from "./IAttributeSearchResult";
 import { IThresholdValues } from "./IThresholdValues";
 import { IMetricThresholds } from "./IMetricThresholds";
+import { IMetricUiSettings } from "../components/details/edit/MetricUiSettings";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -79,7 +80,8 @@ export class ServerApi {
     description: string,
     notes: string,
     attributes: IMetricAttributes,
-    thresholds: IMetricThresholds
+    thresholds: IMetricThresholds,
+    uiSettings: IMetricUiSettings | string
   ): Promise<ICommandResult> {
     const payload: IEditMetricCommand = {
       metricId: metricId,
@@ -88,6 +90,12 @@ export class ServerApi {
       notes: notes,
       attributes: attributes,
       thresholds: thresholds,
+      customProps: {
+        uiSettings:
+          typeof uiSettings === "string"
+            ? uiSettings
+            : JSON.stringify(uiSettings),
+      },
     };
 
     return await this.executeRequest("/metrics/", "PUT", payload);

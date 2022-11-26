@@ -5,6 +5,7 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
@@ -58,7 +59,7 @@ public class MongoRepositoryShould
     var counterMetric = new CounterMetric { Name = "First" };
     UpsertResult result = await _repository.UpsertMetric(counterMetric);
 
-    counterMetric = (CounterMetric?) await _repository.GetMetric(result.EntityId);
+    counterMetric = (CounterMetric?)await _repository.GetMetric(result.EntityId);
 
     Assert.IsNotNull(counterMetric);
 
@@ -105,8 +106,8 @@ public class MongoRepositoryShould
   [Test]
   public async Task CreateMeasurements_Then_GetAll()
   {
-    var timerMetric = new GaugeMetric { Name = "N@me" };
-    UpsertResult result = await _repository.UpsertMetric(timerMetric);
+    var metric = new GaugeMetric { Name = "N@me" };
+    UpsertResult result = await _repository.UpsertMetric(metric);
 
     await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = result.EntityId, Value = 123 });
     await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = "wrongId", Value = 456 });
@@ -125,5 +126,26 @@ public class MongoRepositoryShould
     Assert.ThrowsAsync<ArgumentException>(
       async () => await _repository.UpsertUser(new User { Name = "schorsch" })
     );
+  }
+
+  [Test]
+  public async Task Persist_UiSettings()
+  {
+    var metric = new GaugeMetric
+    {
+      Name = "N@me",
+      CustomProps = new Dictionary<string, string>
+      {
+        {
+          "uiSettings", JsonConvert.SerializeObject(new Dictionary<string, object> { { "simpleSetting", true } })
+        }
+      }
+    };
+
+    UpsertResult result = await _repository.UpsertMetric(metric);
+    IMetric reloadedMetric = (await _repository.GetMetric(result.EntityId))!;
+
+    Assert.IsTrue(reloadedMetric.CustomProps.ContainsKey("simpleSetting"));
+    Assert.AreEqual(reloadedMetric.CustomProps["simpleSetting"], true);
   }
 }

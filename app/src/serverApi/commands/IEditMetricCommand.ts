@@ -1,5 +1,6 @@
 import { IMetricAttributes } from "../IMetricAttributes";
 import { IMetricThresholds } from "../IMetricThresholds";
+import { IMetricCustomProps } from "../IMetricCustomProps";
 
 export interface IEditMetricCommand {
   metricId: string;
@@ -8,4 +9,5 @@ export interface IEditMetricCommand {
   notes: string;
   attributes: IMetricAttributes;
   thresholds: IMetricThresholds;
+  customProps: IMetricCustomProps;
 }
