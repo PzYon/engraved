@@ -84,13 +84,15 @@ export const MetricViewPage: React.FC = () => {
         onClick: () => setShowFilters(!showFilters),
         isNotActive: !showFilters,
       },
-      {
-        key: "thresholds",
-        icon: <PanToolOutlined />,
-        label: "Show thresholds",
-        onClick: () => setShowThresholds(!showThresholds),
-        isNotActive: !showThresholds,
-      },
+      Object.keys(metric.thresholds || {}).length
+        ? {
+            key: "thresholds",
+            icon: <PanToolOutlined />,
+            label: "Show thresholds",
+            onClick: () => setShowThresholds(!showThresholds),
+            isNotActive: !showThresholds,
+          }
+        : undefined,
       null, // null means separator - ugly, but it works for the moment
       ...getCommonActions(metric, renderDialog, reload),
     ]);

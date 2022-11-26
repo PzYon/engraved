@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useMetricContext } from "../MetricDetailsContext";
 import { IThresholdValues } from "../../../serverApi/IThresholdValues";
-import { Card, Grid, styled, Typography } from "@mui/material";
+import { Card, styled, Typography } from "@mui/material";
+import { GridContainer, GridItem } from "../../common/Grid";
 
 export const Thresholds: React.FC<{
   metric: IMetric;
@@ -34,7 +35,7 @@ export const Thresholds: React.FC<{
   }
 
   return (
-    <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
+    <GridContainer>
       {Object.keys(thresholdValues).flatMap((attributeKey) => {
         const attributeThresholds = thresholdValues[attributeKey];
 
@@ -49,7 +50,7 @@ export const Thresholds: React.FC<{
             selectedAttributeValues[attributeKey]?.[0];
 
           return (
-            <Grid item xs={2} sm={4} md={4} key={attributeKey + "_" + valueKey}>
+            <GridItem key={attributeKey + "_" + valueKey}>
               <Card
                 sx={{
                   p: 2,
@@ -83,11 +84,11 @@ export const Thresholds: React.FC<{
                   <Lighter> / {threshold.thresholdValue}</Lighter>
                 </Typography>
               </Card>
-            </Grid>
+            </GridItem>
           );
         });
       })}
-    </Grid>
+    </GridContainer>
   );
 };
 

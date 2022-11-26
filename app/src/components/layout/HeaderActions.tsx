@@ -32,13 +32,15 @@ export const HeaderActions: React.FC<{
         <FloatingHeaderActions actions={actions} />
       ) : null}
       <ButtonContainer ref={buttonContainerRef}>
-        {actions.map((action) =>
-          action ? (
-            <IconButtonWrapper key={action.key} action={action} />
-          ) : (
-            <SeparatorElement key={"separator"} />
-          )
-        )}
+        {actions
+          .filter((a) => a !== undefined)
+          .map((action) =>
+            action ? (
+              <IconButtonWrapper key={action.key} action={action} />
+            ) : (
+              <SeparatorElement key={"separator"} />
+            )
+          )}
       </ButtonContainer>
     </div>
   );
