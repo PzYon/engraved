@@ -131,21 +131,18 @@ public class MongoRepositoryShould
   [Test]
   public async Task Persist_UiSettings()
   {
+    string value = JsonConvert.SerializeObject(new Dictionary<string, object> { { "simpleSetting", true } });
+
     var metric = new GaugeMetric
     {
       Name = "N@me",
-      CustomProps = new Dictionary<string, string>
-      {
-        {
-          "uiSettings", JsonConvert.SerializeObject(new Dictionary<string, object> { { "simpleSetting", true } })
-        }
-      }
+      CustomProps = new Dictionary<string, string> { { "uiSettings", value } }
     };
 
     UpsertResult result = await _repository.UpsertMetric(metric);
     IMetric reloadedMetric = (await _repository.GetMetric(result.EntityId))!;
 
-    Assert.IsTrue(reloadedMetric.CustomProps.ContainsKey("simpleSetting"));
-    Assert.AreEqual(reloadedMetric.CustomProps["simpleSetting"], true);
+    Assert.IsTrue(reloadedMetric.CustomProps.ContainsKey("uiSettings"));
+    Assert.AreEqual(reloadedMetric.CustomProps["uiSettings"], value);
   }
 }
