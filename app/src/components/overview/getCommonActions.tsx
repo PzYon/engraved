@@ -14,7 +14,7 @@ import { NavigateFunction } from "react-router-dom";
 
 export const editActionKey = "edit";
 
-export function getEditModeActions(
+export function getCommonEditModeActions(
   onSave: () => void,
   navigate: NavigateFunction
 ): IIconButtonAction[] {

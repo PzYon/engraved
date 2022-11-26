@@ -1,5 +1,4 @@
 import React from "react";
-import { DetailsSection } from "../../layout/DetailsSection";
 import { useMetricContext } from "../MetricDetailsContext";
 import { Markdown } from "./Markdown";
 import { Page } from "../../layout/pages/Page";
@@ -14,9 +13,7 @@ export const NotesViewPage: React.FC = () => {
       title={<PageTitle metric={metric} />}
       actions={getCommonActions(metric)}
     >
-      <DetailsSection>
-        <Markdown value={metric.notes} />
-      </DetailsSection>
+      <Markdown value={metric.notes} />
     </Page>
   );
 };

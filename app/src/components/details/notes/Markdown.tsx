@@ -1,6 +1,7 @@
 import MarkdownIt from "markdown-it";
 import React, { useMemo } from "react";
 import { styled } from "@mui/material";
+import { DetailsSection } from "../../layout/DetailsSection";
 
 export const Markdown: React.FC<{ value: string }> = ({ value }) => {
   const mdAsHtml = useMemo(
@@ -9,7 +10,11 @@ export const Markdown: React.FC<{ value: string }> = ({ value }) => {
     [value]
   );
 
-  return <ContentContainer dangerouslySetInnerHTML={{ __html: mdAsHtml }} />;
+  return (
+    <DetailsSection>
+      <ContentContainer dangerouslySetInnerHTML={{ __html: mdAsHtml }} />
+    </DetailsSection>
+  );
 };
 
 const ContentContainer = styled("div")`
