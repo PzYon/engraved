@@ -10,7 +10,7 @@ import { useMetricContext } from "../MetricDetailsContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../PageTitle";
-import { getEditModeActions } from "../../overview/getCommonActions";
+import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { MetricUiSettings } from "./MetricUiSettings";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 
@@ -35,7 +35,7 @@ export const MetricEditPage: React.FC = () => {
   return (
     <Page
       title={<PageTitle metric={metric} />}
-      actions={getEditModeActions(onSave, navigate)}
+      actions={getCommonEditModeActions(onSave, navigate)}
     >
       <DetailsSection title={"Properties"}>
         <FormControl sx={{ width: "100%" }}>
