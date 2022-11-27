@@ -22,7 +22,7 @@ import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Page } from "../layout/pages/Page";
 import { PageTitle } from "./PageTitle";
 import { IMetricUiSettings } from "./edit/MetricUiSettings";
-import { getDateConditions } from "./filters/getDateConditions";
+import { createDateConditions } from "./filters/createDateConditions";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -68,7 +68,7 @@ export const MetricViewPage: React.FC = () => {
       return;
     }
 
-    setDateConditions(getDateConditions(uiSettings.dateRange, new Date()));
+    setDateConditions(createDateConditions(uiSettings.dateRange, new Date()));
   }, [uiSettings?.dateRange]);
 
   useEffect(() => {

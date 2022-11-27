@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { DateTimeSelector } from "../../common/DateTimeSelector";
 import { useMetricContext } from "../MetricDetailsContext";
 import { styled } from "@mui/material";
-import { getDateConditions, getNextDateConditions } from "./getDateConditions";
+import {
+  createDateConditions,
+  createNextDateConditions,
+} from "./createDateConditions";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { DateRangeSelector } from "./DateRangeSelector";
@@ -18,7 +21,7 @@ export enum DateRange {
 const defaultDateRange = DateRange.Month;
 
 export const getDefaultDateConditions = () => {
-  return getDateConditions(defaultDateRange, new Date());
+  return createDateConditions(defaultDateRange, new Date());
 };
 
 export const DateFilters: React.FC = () => {
@@ -34,7 +37,7 @@ export const DateFilters: React.FC = () => {
           action={{
             onClick: () =>
               setDateConditions(
-                getNextDateConditions("previous", dateRange, dateConditions)
+                createNextDateConditions("previous", dateRange, dateConditions)
               ),
             icon: <ChevronLeft />,
             label: "Previous",
@@ -45,7 +48,7 @@ export const DateFilters: React.FC = () => {
           action={{
             onClick: () =>
               setDateConditions(
-                getNextDateConditions("next", dateRange, dateConditions)
+                createNextDateConditions("next", dateRange, dateConditions)
               ),
             icon: <ChevronRight />,
             label: "Previous",
@@ -75,7 +78,7 @@ export const DateFilters: React.FC = () => {
   function onChange(range: DateRange): void {
     setDateRange(range);
 
-    const conditions = getDateConditions(
+    const conditions = createDateConditions(
       range,
       dateConditions.from ?? new Date()
     );

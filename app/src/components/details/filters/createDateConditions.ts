@@ -12,7 +12,7 @@ import {
   startOfYear,
 } from "date-fns";
 
-export const getDateConditions = (
+export const createDateConditions = (
   dateRange: DateRange,
   date: Date
 ): IDateConditions => {
@@ -40,7 +40,7 @@ export const getDateConditions = (
   }
 };
 
-export function getNextDateConditions(
+export function createNextDateConditions(
   direction: "previous" | "next",
   dateRange: DateRange,
   currentConditions: IDateConditions
@@ -54,7 +54,7 @@ export function getNextDateConditions(
         offset * (direction === "previous" ? -1 : 1)
       );
 
-      return getDateConditions(DateRange.Month, newDate);
+      return createDateConditions(DateRange.Month, newDate);
     }
 
     case DateRange.Year: {
