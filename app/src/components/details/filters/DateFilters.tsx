@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import { DateTimeSelector } from "../../common/DateTimeSelector";
 import { useMetricContext } from "../MetricDetailsContext";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  styled,
-} from "@mui/material";
-import { dateRangeFunctions, getDateCondition } from "./dateRangeFunctions";
+import { styled } from "@mui/material";
+import { getDateConditions, getNextDateConditions } from "./getDateConditions";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { DateRangeSelector } from "./DateRangeSelector";
 
 export enum DateRange {
   Week,
@@ -24,7 +18,7 @@ export enum DateRange {
 const defaultDateRange = DateRange.Month;
 
 export const getDefaultDateConditions = () => {
-  return dateRangeFunctions(defaultDateRange, new Date());
+  return getDateConditions(defaultDateRange, new Date());
 };
 
 export const DateFilters: React.FC = () => {
@@ -35,29 +29,12 @@ export const DateFilters: React.FC = () => {
   return (
     <>
       <RangeContainer>
-        <FormControl margin="none" sx={{ flexGrow: 1 }}>
-          <InputLabel id="date-range-label">Date Range</InputLabel>
-          <Select
-            id="date-range"
-            labelId="date-range-label"
-            label="Date Range"
-            value={dateRange as unknown as string}
-            onChange={(event: SelectChangeEvent) => {
-              onChange(event.target.value as unknown as DateRange);
-            }}
-          >
-            <MenuItem value={DateRange.Week}>Week</MenuItem>
-            <MenuItem value={DateRange.Month}>Month</MenuItem>
-            <MenuItem value={DateRange.Year}>Year</MenuItem>
-            <MenuItem value={DateRange.All}>All</MenuItem>
-            <MenuItem value={DateRange.Custom}>Custom</MenuItem>
-          </Select>
-        </FormControl>
+        <DateRangeSelector dateRange={dateRange} onChange={onChange} />
         <IconButtonWrapper
           action={{
             onClick: () =>
               setDateConditions(
-                getDateCondition("previous", dateRange, dateConditions)
+                getNextDateConditions("previous", dateRange, dateConditions)
               ),
             icon: <ChevronLeft />,
             label: "Previous",
@@ -68,7 +45,7 @@ export const DateFilters: React.FC = () => {
           action={{
             onClick: () =>
               setDateConditions(
-                getDateCondition("next", dateRange, dateConditions)
+                getNextDateConditions("next", dateRange, dateConditions)
               ),
             icon: <ChevronRight />,
             label: "Previous",
@@ -98,7 +75,7 @@ export const DateFilters: React.FC = () => {
   function onChange(range: DateRange): void {
     setDateRange(range);
 
-    const conditions = dateRangeFunctions(
+    const conditions = getDateConditions(
       range,
       dateConditions.from ?? new Date()
     );

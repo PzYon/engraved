@@ -4,11 +4,14 @@ import { PanToolOutlined, ShowChartOutlined } from "@mui/icons-material";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { GridContainer, GridItem } from "../../common/Grid";
+import { DateRange } from "../filters/DateFilters";
+import { DateRangeSelector } from "../filters/DateRangeSelector";
 
 export interface IMetricUiSettings {
   showChart?: boolean;
   showThresholds?: boolean;
   groupByTime?: GroupByTime;
+  dateRange?: DateRange;
 }
 
 export const MetricUiSettings: React.FC<{
@@ -52,7 +55,19 @@ export const MetricUiSettings: React.FC<{
           <GroupByTimeSelector
             sx={{ width: "100%" }}
             groupByTime={uiSettings.groupByTime}
-            onChange={(groupByTime) => onChange({ ...uiSettings, groupByTime })}
+            onChange={(groupByTime) => {
+              debugger;
+              onChange({ ...uiSettings, groupByTime });
+            }}
+          />
+        </GridItem>
+        <GridItem>
+          <DateRangeSelector
+            dateRange={uiSettings.dateRange}
+            onChange={(dateRange) => {
+              debugger;
+              onChange({ ...uiSettings, dateRange });
+            }}
           />
         </GridItem>
       </GridContainer>
