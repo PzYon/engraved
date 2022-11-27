@@ -52,8 +52,8 @@ export const MetricViewPage: React.FC = () => {
   const [chartType, setChartType] = useState("bar");
 
   const [showNotes, setShowNotes] = useState(!!metric.notes);
-  const [showFilters, setShowFilters] = useState(false);
 
+  const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
   const [showThresholds, setShowThresholds] = useState(
     !!uiSettings?.showThresholds
