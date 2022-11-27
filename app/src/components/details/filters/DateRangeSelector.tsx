@@ -11,11 +11,9 @@ import { DateRange } from "./DateFilters";
 export const DateRangeSelector: React.FC<{
   dateRange: DateRange;
   onChange: (dateRange: DateRange) => void;
-}> = (dateRange, onChange) => {
-  console.log("DateRangeSelector.onChange: " + onChange);
-
+}> = ({ dateRange, onChange }) => {
   return (
-    <FormControl margin="none" sx={{ flexGrow: 1 }}>
+    <FormControl margin="none" sx={{ flexGrow: 1, width: "100%" }}>
       <InputLabel id="date-range-label">Date Range</InputLabel>
       <Select
         id="date-range"
@@ -23,7 +21,6 @@ export const DateRangeSelector: React.FC<{
         label="Date Range"
         value={dateRange as unknown as string}
         onChange={(event: SelectChangeEvent) => {
-          debugger;
           onChange(event.target.value as unknown as DateRange);
         }}
       >

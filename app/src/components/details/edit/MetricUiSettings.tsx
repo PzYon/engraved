@@ -56,7 +56,6 @@ export const MetricUiSettings: React.FC<{
             sx={{ width: "100%" }}
             groupByTime={uiSettings.groupByTime}
             onChange={(groupByTime) => {
-              debugger;
               onChange({ ...uiSettings, groupByTime });
             }}
           />
@@ -65,7 +64,6 @@ export const MetricUiSettings: React.FC<{
           <DateRangeSelector
             dateRange={uiSettings.dateRange}
             onChange={(dateRange) => {
-              debugger;
               onChange({ ...uiSettings, dateRange });
             }}
           />
