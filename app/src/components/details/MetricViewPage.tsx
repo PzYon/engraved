@@ -22,6 +22,7 @@ import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Page } from "../layout/pages/Page";
 import { PageTitle } from "./PageTitle";
 import { IMetricUiSettings } from "./edit/MetricUiSettings";
+import { createDateConditions } from "./filters/createDateConditions";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -33,6 +34,7 @@ export const MetricViewPage: React.FC = () => {
     reloadMeasurements,
     setSelectedAttributeValues,
     selectedAttributeValues,
+    setDateConditions,
   } = useMetricContext();
 
   const uiSettings = useMemo<IMetricUiSettings>(
@@ -50,8 +52,8 @@ export const MetricViewPage: React.FC = () => {
   const [chartType, setChartType] = useState("bar");
 
   const [showNotes, setShowNotes] = useState(!!metric.notes);
-  const [showFilters, setShowFilters] = useState(false);
 
+  const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
   const [showThresholds, setShowThresholds] = useState(
     !!uiSettings?.showThresholds
@@ -60,6 +62,14 @@ export const MetricViewPage: React.FC = () => {
   const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
 
   const [reloadToken, setReloadToken] = useState(Math.random());
+
+  useEffect(() => {
+    if (!uiSettings?.dateRange) {
+      return;
+    }
+
+    setDateConditions(createDateConditions(uiSettings.dateRange, new Date()));
+  }, [uiSettings?.dateRange]);
 
   useEffect(() => {
     setTitleActions([

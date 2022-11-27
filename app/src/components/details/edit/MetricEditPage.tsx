@@ -24,7 +24,7 @@ export const MetricEditPage: React.FC = () => {
   const [uiSettings, setUiSettings] = useState(
     metric.customProps?.uiSettings
       ? JSON.parse(metric.customProps.uiSettings)
-      : { showChart: true, groupByTime: GroupByTime.Month }
+      : { groupByTime: GroupByTime.Month }
   );
 
   const [name, setName] = useState(metric.name);

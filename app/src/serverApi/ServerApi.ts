@@ -118,11 +118,11 @@ export class ServerApi {
   ): Promise<IThresholdValues> {
     const urlParams: string[] = [];
 
-    if (dateConditions.from) {
+    if (dateConditions?.from) {
       urlParams.push(`fromDate=${toDateOnlyIsoString(dateConditions.from)}`);
     }
 
-    if (dateConditions.to) {
+    if (dateConditions?.to) {
       urlParams.push(`toDate=${toDateOnlyIsoString(dateConditions.to)}`);
     }
 
