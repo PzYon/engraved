@@ -3,17 +3,27 @@ import React, { useMemo } from "react";
 import { styled } from "@mui/material";
 import { DetailsSection } from "../../layout/DetailsSection";
 
+const sectionSeparator = "<--->";
+
 export const Markdown: React.FC<{ value: string }> = ({ value }) => {
-  const mdAsHtml = useMemo(
+  const sectionHtmls = useMemo<string[]>(
     () =>
-      value ? MarkdownIt("default", { linkify: true }).render(value) : null,
+      value
+        ? value
+            .split(sectionSeparator)
+            .map((v) => MarkdownIt("default", { linkify: true }).render(v))
+        : [],
     [value]
   );
 
   return (
-    <DetailsSection>
-      <ContentContainer dangerouslySetInnerHTML={{ __html: mdAsHtml }} />
-    </DetailsSection>
+    <>
+      {sectionHtmls.map((html) => (
+        <DetailsSection key={html}>
+          <ContentContainer dangerouslySetInnerHTML={{ __html: html }} />
+        </DetailsSection>
+      ))}
+    </>
   );
 };
 
