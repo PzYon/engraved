@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import { DialogWrapper } from "./DialogWrapper";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 
 export interface IDialogProps {
   render: (closeDialog: () => void) => React.ReactNode;
@@ -25,12 +26,17 @@ export const DialogContextProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [dialogProps, setDialogProps] = useState<IDialogProps>(null);
 
+  const deviceWidth = useDeviceWidth();
+
   return (
     <DialogContext.Provider value={{ renderDialog: setDialogProps }}>
       {children}
       {dialogProps ? (
         <DialogWrapper
-          props={{ fullScreen: dialogProps.isFullScreen }}
+          props={{
+            fullScreen:
+              deviceWidth === DeviceWidth.Small || dialogProps.isFullScreen,
+          }}
           title={dialogProps.title}
           onClose={closeDialog}
         >
