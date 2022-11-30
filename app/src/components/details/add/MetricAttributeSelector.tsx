@@ -45,14 +45,17 @@ export const MetricAttributeSelector: React.FC<{
   return (
     <Autocomplete
       options={options}
-      defaultValue={selectedOption}
+      multiple={false}
+      defaultValue={
+        selectedOption ? (selectedOption as unknown as IOption) : undefined
+      }
       getOptionLabel={(option) => getOptionLabel(option as IOption)}
       isOptionEqualToValue={(option, value) =>
         areOptionsEqual(option as IOption, value as IOption)
       }
       filterOptions={filterOptions}
       onChange={async (_, selectedOption) => {
-        const option: IOption = selectedOption as IOption;
+        const option: IOption = selectedOption as unknown as IOption;
 
         const attributesValues = { ...selectedAttributeValues };
 
