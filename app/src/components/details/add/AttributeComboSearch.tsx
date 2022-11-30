@@ -27,7 +27,7 @@ export const AttributeComboSearch: React.FC<{
         }
 
         setOptions([]);
-        onChange((value as IAttributeSearchResult).values);
+        onChange((value as unknown as IAttributeSearchResult).values);
       }}
       getOptionLabel={() => {
         // label is used as value in input field when selected. as we
@@ -40,24 +40,22 @@ export const AttributeComboSearch: React.FC<{
 
         return (
           <MenuItem {...props} key={JSON.stringify(searchResult)}>
-            <>
-              <AttributeValues
-                attributes={metric.attributes}
-                attributeValues={searchResult.values}
-                preventOnClick={true}
-              />
-              <Chip
-                key="count"
-                sx={{
-                  color: "common.black",
-                  marginLeft: "5px",
-                  fontSize: "small",
-                  height: "22px",
-                }}
-                title={searchResult.occurrenceCount.toString() + "x"}
-                label={searchResult.occurrenceCount.toString() + "x"}
-              />
-            </>
+            <AttributeValues
+              attributes={metric.attributes}
+              attributeValues={searchResult.values}
+              preventOnClick={true}
+            />
+            <Chip
+              key="count"
+              sx={{
+                color: "common.black",
+                marginLeft: "5px",
+                fontSize: "small",
+                height: "22px",
+              }}
+              title={searchResult.occurrenceCount.toString() + "x"}
+              label={searchResult.occurrenceCount.toString() + "x"}
+            />
           </MenuItem>
         );
       }}
