@@ -11,6 +11,7 @@ export const NotesViewPage: React.FC = () => {
   return (
     <Page
       title={<PageTitle metric={metric} />}
+      documentTitle={metric.name}
       actions={getCommonActions(metric)}
     >
       <Markdown value={metric.notes} />

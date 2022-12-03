@@ -20,6 +20,7 @@ export const NotesEditPage: React.FC = () => {
   return (
     <Page
       title={<PageTitle metric={metric} />}
+      documentTitle={`Edit ${metric.name}`}
       actions={[
         ...getCommonEditModeActions(saveNote, navigate),
         {

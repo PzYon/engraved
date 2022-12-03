@@ -1,7 +1,15 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { IIconButtonAction } from "../../common/IconButtonWrapper";
 
 export interface IPageContext {
+  documentTitle: string;
+  setDocumentTitle: (documentTitle: string) => void;
   pageTitle: React.ReactNode;
   setPageTitle: (pageTitle: React.ReactNode) => void;
   pageActions: IIconButtonAction[];
@@ -9,6 +17,8 @@ export interface IPageContext {
 }
 
 const PageContext = createContext<IPageContext>({
+  documentTitle: null,
+  setDocumentTitle: null,
   pageTitle: null,
   setPageTitle: null,
   pageActions: null,
@@ -22,11 +32,18 @@ export const usePageContext = () => {
 export const PageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
+  const [documentTitle, setDocumentTitle] = useState<string>(undefined);
   const [pageTitle, setPageTitle] = useState<React.ReactNode>(undefined);
   const [pageActions, setPageActions] = useState<IIconButtonAction[]>([]);
 
+  useEffect(() => {
+    document.title = documentTitle ? documentTitle + " | metrix" : "metrix";
+  }, [documentTitle]);
+
   const contextValue = useMemo(() => {
     return {
+      documentTitle,
+      setDocumentTitle,
       pageTitle,
       setPageTitle,
       pageActions,
