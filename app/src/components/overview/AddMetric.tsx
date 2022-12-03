@@ -12,7 +12,7 @@ import { ICommandResult } from "../../serverApi/ICommandResult";
 export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [metricType, setMetricType] = useState(MetricType.Counter);
+  const [metricType, setMetricType] = useState(MetricType.Notes);
 
   const { setAppAlert } = useAppContext();
 
@@ -42,7 +42,11 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
             ServerApi.addMetric(name, description, metricType)
               .then(async (result: ICommandResult) => {
                 await onAdded();
-                navigate(`/metrics/${result.entityId}`);
+                navigate(
+                  `/metrics/${result.entityId}/${
+                    metricType === MetricType.Notes ? "edit" : ""
+                  }`
+                );
 
                 setAppAlert({
                   title: `Added metric ${name}`,

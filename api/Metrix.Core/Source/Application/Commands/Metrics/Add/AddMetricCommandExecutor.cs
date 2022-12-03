@@ -28,6 +28,7 @@ public class AddMetricCommandExecutor : ICommandExecutor
     IMetric metric = CreateMetric(_command.Type);
     metric.Description = _command.Description;
     metric.Name = _command.Name;
+    metric.EditedOn = dateService.UtcNow;
 
     UpsertResult result = await repository.UpsertMetric(metric);
 
@@ -36,18 +37,13 @@ public class AddMetricCommandExecutor : ICommandExecutor
 
   private static IMetric CreateMetric(MetricType type)
   {
-    switch (type)
+    return type switch
     {
-      case MetricType.Counter:
-        return new CounterMetric();
-      case MetricType.Gauge:
-        return new GaugeMetric();
-      case MetricType.Timer:
-        return new TimerMetric();
-      case MetricType.Notes:
-        return new NotesMetric();
-      default:
-        throw new ArgumentOutOfRangeException(nameof(type), type, null);
-    }
+      MetricType.Counter => new CounterMetric(),
+      MetricType.Gauge => new GaugeMetric(),
+      MetricType.Timer => new TimerMetric(),
+      MetricType.Notes => new NotesMetric(),
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+    };
   }
 }
