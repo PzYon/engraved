@@ -6,12 +6,14 @@ import { usePageContext } from "./PageContext";
 export const Page: React.FC<{
   actions: IIconButtonAction[];
   title: React.ReactNode;
+  documentTitle?: string;
   children: React.ReactNode;
-}> = ({ actions, title, children }) => {
-  const { setPageActions, setPageTitle } = usePageContext();
+}> = ({ actions, title, documentTitle, children }) => {
+  const { setPageActions, setPageTitle, setDocumentTitle } = usePageContext();
 
   useEffect(() => {
     setPageTitle(title);
+    setDocumentTitle(documentTitle);
     return () => setPageTitle(null);
   }, [title]);
 

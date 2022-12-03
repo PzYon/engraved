@@ -113,7 +113,11 @@ export const MetricViewPage: React.FC = () => {
   }, [metric, showNotes, showFilters, showChart, showThresholds]);
 
   return (
-    <Page title={<PageTitle metric={metric} />} actions={titleActions}>
+    <Page
+      title={<PageTitle metric={metric} />}
+      documentTitle={metric.name}
+      actions={titleActions}
+    >
       {showNotes ? (
         <DetailsSection>
           <MetricNotes metric={metric} />
