@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { FormControl, TextField } from "@mui/material";
-import { translations } from "../../../i18n/translations";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { MetricAttributesEditor } from "./MetricAttributesEditor";
@@ -13,6 +11,7 @@ import { PageTitle } from "../PageTitle";
 import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { MetricUiSettings } from "./MetricUiSettings";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
+import { EditCommonProperties } from "./EditCommonProperties";
 
 export const MetricEditPage: React.FC = () => {
   const navigate = useNavigate();
@@ -38,23 +37,12 @@ export const MetricEditPage: React.FC = () => {
       documentTitle={`Edit ${metric.name}`}
       actions={getCommonEditModeActions(onSave, navigate)}
     >
-      <DetailsSection title={"Properties"}>
-        <FormControl sx={{ width: "100%" }}>
-          <TextField
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            label={translations.label_metricName}
-            margin={"normal"}
-          />
-          <TextField
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            multiline={true}
-            label={"Description"}
-            margin={"normal"}
-          />
-        </FormControl>
-      </DetailsSection>
+      <EditCommonProperties
+        name={name}
+        setName={setName}
+        description={description}
+        setDescription={setDescription}
+      />
 
       <DetailsSection title={"Attributes"}>
         <MetricAttributesEditor
