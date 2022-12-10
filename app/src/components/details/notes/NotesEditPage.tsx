@@ -9,12 +9,17 @@ import { PageTitle } from "../PageTitle";
 import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { VisibilityOutlined } from "@mui/icons-material";
 import { Markdown } from "./Markdown";
+import { EditCommonProperties } from "../edit/EditCommonProperties";
 
 export const NotesEditPage: React.FC = () => {
   const navigate = useNavigate();
   const { setAppAlert } = useAppContext();
   const { metric, reloadMetric } = useMetricContext();
+
+  const [name, setName] = useState(metric.name);
+  const [description, setDescription] = useState(metric.description);
   const [notes, setNotes] = useState(metric.notes);
+
   const [isPreview, setIsPreview] = useState(false);
 
   return (
@@ -36,7 +41,15 @@ export const NotesEditPage: React.FC = () => {
       {isPreview ? (
         <Markdown value={notes} />
       ) : (
-        <MarkdownEditor value={notes} onChange={setNotes} />
+        <>
+          <EditCommonProperties
+            name={name}
+            setName={setName}
+            description={description}
+            setDescription={setDescription}
+          />
+          <MarkdownEditor value={notes} onChange={setNotes} />
+        </>
       )}
     </Page>
   );
@@ -44,8 +57,8 @@ export const NotesEditPage: React.FC = () => {
   function saveNote() {
     ServerApi.editMetric(
       metric.id,
-      metric.name,
-      metric.description,
+      name,
+      description,
       notes,
       metric.attributes,
       metric.thresholds,
