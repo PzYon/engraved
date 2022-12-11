@@ -22,12 +22,17 @@ export const NotesEditPage: React.FC = () => {
 
   const [isPreview, setIsPreview] = useState(false);
 
+  const disableSave =
+    notes === metric.notes &&
+    name === metric.name &&
+    description === metric.description;
+
   return (
     <Page
       title={<PageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
       actions={[
-        ...getCommonEditModeActions(saveNote, navigate),
+        ...getCommonEditModeActions(navigate, saveNote, disableSave),
         {
           key: "preview",
           label: "Preview",
@@ -38,18 +43,16 @@ export const NotesEditPage: React.FC = () => {
         },
       ]}
     >
+      <EditCommonProperties
+        name={name}
+        setName={setName}
+        description={description}
+        setDescription={setDescription}
+      />
       {isPreview ? (
         <Markdown value={notes} />
       ) : (
-        <>
-          <EditCommonProperties
-            name={name}
-            setName={setName}
-            description={description}
-            setDescription={setDescription}
-          />
-          <MarkdownEditor value={notes} onChange={setNotes} />
-        </>
+        <MarkdownEditor value={notes} onChange={setNotes} />
       )}
     </Page>
   );

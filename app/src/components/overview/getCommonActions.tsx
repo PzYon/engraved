@@ -15,8 +15,9 @@ import { NavigateFunction } from "react-router-dom";
 export const editActionKey = "edit";
 
 export function getCommonEditModeActions(
+  navigate: NavigateFunction,
   onSave: () => void,
-  navigate: NavigateFunction
+  disableSave?: boolean
 ): IIconButtonAction[] {
   return [
     {
@@ -30,6 +31,7 @@ export function getCommonEditModeActions(
       label: "Save",
       icon: <SaveOutlined fontSize="small" />,
       onClick: onSave,
+      isDisabled: disableSave,
     },
   ];
 }

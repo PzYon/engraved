@@ -59,10 +59,10 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
           onChange={(kind) => setPermissionKind(kind)}
         />
         <IconButtonWrapper
-          disabled={!canAdd}
           action={{
             key: "add",
             label: "Add",
+            isDisabled: !canAdd,
             icon: <AddOutlined fontSize="small" />,
             onClick: () => {
               setPermissions(userName, permissionKind);

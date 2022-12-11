@@ -11,19 +11,19 @@ export interface IIconButtonAction {
   href?: string;
   sx?: SxProps<Theme>;
   isNotActive?: boolean;
+  isDisabled?: boolean;
 }
 
 export const IconButtonWrapper: React.FC<{
   action: IIconButtonAction;
-  disabled?: boolean;
-}> = ({ action, disabled }) => {
+}> = ({ action }) => {
   const navigate = useNavigate();
 
   return (
     <IconButton
       key={action.key}
-      color="default"
       title={action.label}
+      color="default"
       aria-label={action.label}
       sx={{
         color: "primary.main",
@@ -31,7 +31,7 @@ export const IconButtonWrapper: React.FC<{
         ...(action.sx || {}),
       }}
       onClick={(e) => executeActionClick(e, action, navigate)}
-      disabled={disabled}
+      disabled={action.isDisabled}
     >
       {action.icon}
     </IconButton>
