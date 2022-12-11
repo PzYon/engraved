@@ -35,7 +35,7 @@ export const MetricEditPage: React.FC = () => {
     <Page
       title={<PageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
-      actions={getCommonEditModeActions(onSave, navigate)}
+      actions={getCommonEditModeActions(navigate, onSave)}
     >
       <EditCommonProperties
         name={name}

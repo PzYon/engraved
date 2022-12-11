@@ -23,7 +23,7 @@ export const MetricProperties: React.FC<{ metric: IMetric }> = ({ metric }) => {
       {allProperties.map((p) => (
         <Property key={p.key}>
           <Typography component="span" sx={{ fontWeight: "200" }}>
-            {p.label}:
+            {p.label}
           </Typography>{" "}
           <Typography sx={{ color: "primary.main" }} component="span">
             {p.node}
