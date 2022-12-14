@@ -21,4 +21,11 @@ export const DetailsSection: React.FC<{
 const Host = styled(Paper)`
   margin: ${(p) => p.theme.spacing(2)} 0;
   padding: ${(p) => p.theme.spacing(2)};
+
+  // hack: make sure first heading does not have top margin.
+  // hack because it does not matter, if the h1 is the first
+  // child or somewhere else.
+  h1:first-of-type {
+    margin-top: 0;
+  }
 `;

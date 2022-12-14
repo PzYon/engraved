@@ -37,6 +37,7 @@ export const NotesEditPage: React.FC = () => {
           key: "preview",
           label: "Preview",
           icon: <VisibilityOutlined fontSize="small" />,
+          isNotActive: !isPreview,
           onClick: () => {
             setIsPreview(!isPreview);
           },

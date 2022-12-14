@@ -15,6 +15,7 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
       value={value}
       extensions={[markdown({}), EditorView.lineWrapping]}
       onChange={onChange}
+      autoFocus={true}
       theme={EditorView.theme({
         "&": {
           fontSize: theme.typography.fontSize + "px",

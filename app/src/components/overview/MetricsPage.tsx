@@ -30,11 +30,11 @@ export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
 
   return (
     <Page
-      title="All Your Metrix"
+      title="Overview"
       actions={[
         {
           href: "/metrics/create",
-          icon: <AddOutlined />,
+          icon: <AddOutlined fontSize="small" />,
           label: "Add Metric",
           key: "add_metric",
         },

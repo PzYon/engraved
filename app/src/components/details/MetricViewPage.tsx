@@ -75,21 +75,21 @@ export const MetricViewPage: React.FC = () => {
     setTitleActions([
       {
         key: "notes",
-        icon: <MessageOutlined />,
+        icon: <MessageOutlined fontSize="small" />,
         label: "Show notes",
         onClick: () => setShowNotes(!showNotes),
         isNotActive: !showNotes,
       },
       {
         key: "chart",
-        icon: <ShowChartOutlined />,
+        icon: <ShowChartOutlined fontSize="small" />,
         label: "Show chart",
         onClick: () => setShowChart(!showChart),
         isNotActive: !showChart,
       },
       {
         key: "collapse",
-        icon: <FilterAltOutlined />,
+        icon: <FilterAltOutlined fontSize="small" />,
         label: "Show filters",
         onClick: () => setShowFilters(!showFilters),
         isNotActive: !showFilters,
@@ -97,7 +97,7 @@ export const MetricViewPage: React.FC = () => {
       Object.keys(metric.thresholds || {}).length
         ? {
             key: "thresholds",
-            icon: <PanToolOutlined />,
+            icon: <PanToolOutlined fontSize="small" />,
             label: "Show thresholds",
             onClick: () => setShowThresholds(!showThresholds),
             isNotActive: !showThresholds,
