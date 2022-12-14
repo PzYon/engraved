@@ -51,7 +51,7 @@ export function getCommonActions(
     actions.push({
       key: "add_measurement",
       label: "Add Measurement",
-      icon: <AddOutlined />,
+      icon: <AddOutlined fontSize="small" />,
       onClick: () =>
         renderAddMeasurementDialog(metric, renderDialog, onMeasurementAdded),
     });
@@ -61,13 +61,13 @@ export function getCommonActions(
     {
       key: editActionKey,
       label: "Edit",
-      icon: <EditOutlined />,
+      icon: <EditOutlined fontSize="small" />,
       href: `/metrics/${metric.id}/edit`,
     },
     {
       key: "permissions",
       label: "Permissions",
-      icon: <ShareOutlined />,
+      icon: <ShareOutlined fontSize="small" />,
       href: `/metrics/${metric.id}/permissions`,
     }
   );

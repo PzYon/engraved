@@ -39,7 +39,7 @@ export const DateFilters: React.FC = () => {
               setDateConditions(
                 createNextDateConditions("previous", dateRange, dateConditions)
               ),
-            icon: <ChevronLeft />,
+            icon: <ChevronLeft fontSize="small" />,
             label: "Previous",
             key: "go_left",
           }}
@@ -50,7 +50,7 @@ export const DateFilters: React.FC = () => {
               setDateConditions(
                 createNextDateConditions("next", dateRange, dateConditions)
               ),
-            icon: <ChevronRight />,
+            icon: <ChevronRight fontSize="small" />,
             label: "Previous",
             key: "go_left",
           }}
