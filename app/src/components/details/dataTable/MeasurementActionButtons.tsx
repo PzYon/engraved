@@ -4,7 +4,7 @@ import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import React from "react";
 import { styled } from "@mui/material";
 
-export const ActionButtons: React.FC<{
+export const MeasurementActionButtons: React.FC<{
   measurement: IMeasurement;
   metricId: string;
 }> = ({ measurement, metricId }) => (

@@ -7,6 +7,7 @@ import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { usePageContext } from "./pages/PageContext";
+import { Typing } from "../common/Typing";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -21,10 +22,10 @@ export const AppHeader: React.FC = () => {
           mb: 2,
         }}
       >
-        <ContentWrapper>
+        <ContentWrapper sx={{ display: "flex", height: "64px" }}>
           <Link to="/" style={{ flexGrow: 1 }}>
             <Typography variant="h1" sx={{ fontFamily: "Chewy" }}>
-              metrix
+              <Typing textToType="metrix." />
             </Typography>
           </Link>
           <AppInfoLauncher />
