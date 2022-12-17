@@ -83,6 +83,19 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return _repository.UpsertMetric(metric);
   }
 
+  public async Task DeleteMetric(string metricId)
+  {
+    // get metric only returns if measurement belongs to current user
+    IMetric? metric = await GetMetric(metricId);
+
+    if (metric == null)
+    {
+      return;
+    }
+
+    await _repository.DeleteMetric(metricId);
+  }
+
   public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
   {
     IMetric? metric = await GetMetric(metricId);

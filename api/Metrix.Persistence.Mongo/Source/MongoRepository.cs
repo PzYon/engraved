@@ -15,9 +15,10 @@ namespace Metrix.Persistence.Mongo;
 
 public class MongoRepository : IRepository
 {
-  private readonly IMongoCollection<MeasurementDocument> _measurements;
-  private readonly IMongoCollection<MetricDocument> _metrics;
-  private readonly IMongoCollection<UserDocument> _users;
+  // protected so they can be accessed from TestRepository
+  protected readonly IMongoCollection<MeasurementDocument> _measurements;
+  protected readonly IMongoCollection<MetricDocument> _metrics;
+  protected readonly IMongoCollection<UserDocument> _users;
 
   static MongoRepository()
   {
@@ -161,6 +162,18 @@ public class MongoRepository : IRepository
     );
 
     return CreateUpsertResult(metric.Id, replaceOneResult);
+  }
+
+  public virtual async Task DeleteMetric(string metricId)
+  {
+    IMetric? metric = await GetMetric(metricId);
+    if (metric == null)
+    {
+      return;
+    }
+
+    await _measurements.DeleteManyAsync(Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId));
+    await _metrics.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId));
   }
 
   public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)

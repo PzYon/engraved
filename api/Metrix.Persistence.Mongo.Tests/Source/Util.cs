@@ -7,14 +7,14 @@ public static class Util
 {
   private static TestMongoRepositorySettings Settings => new();
 
-  public static async Task<MongoRepository> CreateMongoRepository()
+  public static async Task<TestMongoRepository> CreateMongoRepository()
   {
     await DropDatabase();
 
-    return new MongoRepository(Settings);
+    return new TestMongoRepository(Settings);
   }
 
-  public static async Task<UserScopedMongoRepository> CreateUserScopedMongoRepository(
+  public static async Task<TestUserScopedMongoRepository> CreateUserScopedMongoRepository(
     string userName,
     bool doNotDropDatabase
   )
@@ -27,7 +27,7 @@ public static class Util
     var userService = new MockCurrentUserService();
     userService.SetUserName(userName);
 
-    return new UserScopedMongoRepository(Settings, userService);
+    return new TestUserScopedMongoRepository(Settings, userService);
   }
 
   private static async Task DropDatabase()
