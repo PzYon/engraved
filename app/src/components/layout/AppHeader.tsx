@@ -18,7 +18,7 @@ export const AppHeader: React.FC = () => {
     <Host>
       <Box
         sx={{
-          backgroundColor: "primary.main",
+          background: "linear-gradient(146deg, #444444 0%, #2a7b9b 100%)",
           mb: 2,
         }}
       >
