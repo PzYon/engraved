@@ -9,7 +9,7 @@ import { DataTable } from "./DataTable";
 import { IDataTableColumnDefinition } from "./IDataTableColumnDefinition";
 import { format } from "date-fns";
 import { Typography } from "@mui/material";
-import { ActionButtons } from "./ActionButtons";
+import { MeasurementActionButtons } from "./MeasurementActionButtons";
 
 export const MeasurementsList: React.FC<{
   metric: IMetric;
@@ -74,7 +74,10 @@ const getColumnsAfter = (metric: IMetric): IDataTableColumnDefinition[] => [
     header: translations.columnName_actions,
     key: "_actions",
     getValueReactNode: (measurement) => (
-      <ActionButtons measurement={measurement} metricId={metric.id} />
+      <MeasurementActionButtons
+        measurement={measurement}
+        metricId={metric.id}
+      />
     ),
   },
 ];

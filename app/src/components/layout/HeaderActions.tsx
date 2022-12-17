@@ -5,7 +5,8 @@ import {
 } from "../common/IconButtonWrapper";
 import { FloatingHeaderActions } from "./FloatingHeaderActions";
 import { useIsInViewport } from "../common/useIsInViewPort";
-import { styled } from "@mui/material";
+import { IconButton, styled } from "@mui/material";
+import { AssistWalker } from "@mui/icons-material";
 
 export const HeaderActions: React.FC<{
   actions: IIconButtonAction[];
@@ -32,6 +33,11 @@ export const HeaderActions: React.FC<{
         <FloatingHeaderActions actions={actions} />
       ) : null}
       <ButtonContainer ref={buttonContainerRef}>
+        <IconButton
+          sx={{ visibility: "hidden", width: "1px", margin: 0, padding: 0 }}
+        >
+          <AssistWalker />
+        </IconButton>
         {actions
           .filter((a) => a !== undefined)
           .map((action) =>
@@ -56,7 +62,7 @@ const ButtonContainer = styled("div")`
 `;
 
 const SeparatorElement = styled("div")`
-  height: 30px;
+  height: 25px;
   width: 1px;
   background-color: ${(p) => p.theme.palette.primary.main};
   margin: 0 ${(p) => p.theme.spacing(2)};

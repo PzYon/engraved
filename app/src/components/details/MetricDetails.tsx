@@ -64,4 +64,6 @@ const PropertiesContainer = styled("div")<{ isNotLarge?: boolean }>`
   }
 `;
 
-const PropertyContainer = styled("span")``;
+const PropertyContainer = styled("span")`
+  color: ${(p) => p.theme.palette.text.primary};
+`;
