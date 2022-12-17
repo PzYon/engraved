@@ -33,7 +33,9 @@ export const HeaderActions: React.FC<{
         <FloatingHeaderActions actions={actions} />
       ) : null}
       <ButtonContainer ref={buttonContainerRef}>
-        <IconButton sx={{ visibility: "hidden", width: "1px" }}>
+        <IconButton
+          sx={{ visibility: "hidden", width: "1px", margin: 0, padding: 0 }}
+        >
           <AssistWalker />
         </IconButton>
         {actions
