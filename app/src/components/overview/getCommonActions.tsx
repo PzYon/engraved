@@ -3,6 +3,7 @@ import { IDialogProps } from "../layout/dialogs/DialogContext";
 import {
   AddOutlined,
   Close,
+  DeleteOutlined,
   EditOutlined,
   SaveOutlined,
   ShareOutlined,
@@ -69,6 +70,12 @@ export function getCommonActions(
       label: "Permissions",
       icon: <ShareOutlined fontSize="small" />,
       href: `/metrics/${metric.id}/permissions`,
+    },
+    {
+      key: "delete",
+      label: "Delete",
+      icon: <DeleteOutlined fontSize="small" />,
+      href: `/metrics/${metric.id}/delete`,
     }
   );
 

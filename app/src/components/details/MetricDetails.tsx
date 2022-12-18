@@ -2,7 +2,7 @@ import React from "react";
 import { useMetricContext } from "./MetricDetailsContext";
 import { MetricType } from "../../serverApi/MetricType";
 import { styled, Typography } from "@mui/material";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 import { FormatDate } from "../common/FormatDate";
 import { NotesViewPage } from "./notes/NotesViewPage";
@@ -10,10 +10,12 @@ import { NotesEditPage } from "./notes/NotesEditPage";
 import { MetricViewPage } from "./MetricViewPage";
 import { MetricEditPage } from "./edit/MetricEditPage";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
+import { DeleteMetricLauncher } from "./edit/DeleteMetricLauncher";
 
 export const MetricDetails: React.FC = () => {
   const { metric } = useMetricContext();
   const deviceWidth = useDeviceWidth();
+  const navigate = useNavigate();
 
   if (!metric) {
     return null;
@@ -49,6 +51,18 @@ export const MetricDetails: React.FC = () => {
         <Route
           path="/permissions"
           element={<EditMetricPermissionsLauncher metric={metric} />}
+        />
+        <Route
+          path="/delete"
+          element={
+            <DeleteMetricLauncher
+              metric={metric}
+              onDeleted={() => {
+                debugger;
+                navigate("../../");
+              }}
+            />
+          }
         />
       </Routes>
     </>

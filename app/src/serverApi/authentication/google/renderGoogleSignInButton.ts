@@ -8,7 +8,7 @@ export function renderGoogleSignInButton(
   domElement: HTMLElement
 ) {
   if (!domElement) {
-    return null;
+    return undefined;
   }
 
   loadGoogleScript()

@@ -1,20 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { App } from "../../App";
 import { ServerApi } from "../ServerApi";
-import styled from "styled-components";
 import { IAuthResult } from "../IAuthResult";
 import { IUser } from "../IUser";
 import { GoogleInitializeResponse } from "./google/GoogleTypes";
 import { renderGoogleSignInButton } from "./google/renderGoogleSignInButton";
 import { AuthStorage } from "./AuthStorage";
 import { ApiError } from "../ApiError";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, styled } from "@mui/material";
 
 export const UnauthenticatedApp: React.FC = () => {
   const [user, setUser] = useState<IUser>();
   const ref = useRef<HTMLDivElement>();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isNotVisible, setIsNotVisible] = useState(true);
 
   useEffect(() => {
     if (!ref.current) {
@@ -24,8 +24,11 @@ export const UnauthenticatedApp: React.FC = () => {
     wakeUpApi();
 
     const storage = new AuthStorage();
+
     if (!storage.hasResult()) {
-      return renderGoogleSignInButton(onSignedIn, ref.current);
+      setIsNotVisible(false);
+      renderGoogleSignInButton(onSignedIn, ref.current);
+      return;
     }
 
     ServerApi.tryAuthenticate(storage.getAuthResult().jwtToken)
@@ -34,14 +37,26 @@ export const UnauthenticatedApp: React.FC = () => {
         if (e.status === 401) {
           renderGoogleSignInButton(onSignedIn, ref.current);
         }
-      });
-  }, []);
+      })
+      .finally(() => setIsNotVisible(false));
+  }, [ref.current]);
 
   if (user) {
     return <App user={user} />;
   }
 
-  return <Host>{isLoading ? <CircularProgress /> : <div ref={ref} />}</Host>;
+  return (
+    <Host isNotVisible={isNotVisible}>
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
+        <WelcomeContainer>
+          <WelcomeText>metrix.</WelcomeText>
+          <div ref={ref} />
+        </WelcomeContainer>
+      )}
+    </Host>
+  );
 
   function onSignedIn(response: GoogleInitializeResponse) {
     setIsLoading(true);
@@ -64,10 +79,29 @@ function wakeUpApi() {
   });
 }
 
-const Host = styled.div`
+const Host = styled("div")<{ isNotVisible: boolean }>`
   display: flex;
   height: 100vh;
   width: 100%;
   justify-content: center;
   align-items: center;
+  background: linear-gradient(
+    146deg,
+    ${(p) => p.theme.palette.text.primary} 0%,
+    ${(p) => p.theme.palette.primary.main} 100%
+  );
+  visibility: ${(p) => (p.isNotVisible ? "hidden" : "visible")};
+`;
+
+const WelcomeContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const WelcomeText = styled("div")`
+  font-family: Chewy, serif;
+  color: ${(p) => p.theme.palette.common.white};
+  font-size: 90px;
+  margin-bottom: 30px;
 `;
