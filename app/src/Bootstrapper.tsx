@@ -48,7 +48,7 @@ export const Bootstrapper: React.FC = () => {
   return (
     <Host isNotVisible={isNotVisible}>
       {isLoading ? (
-        <CircularProgress />
+        <CircularProgress sx={{ color: "common.white" }} />
       ) : (
         <WelcomeContainer>
           <WelcomeText>metrix.</WelcomeText>
