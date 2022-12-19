@@ -5,17 +5,6 @@ using Metrix.Core.Domain.User;
 
 namespace Metrix.Core.Application.Persistence.Demo;
 
-// we need test users!
-/*
-new User
-    {
-      Id = "markus.doggweiler@gmail.com",
-      Name = "markus.doggweiler@gmail.com",
-      DisplayName = "Mar Dog",
-      ImageUrl = "https://lh3.googleusercontent.com/a-/AOh14Gg94v3JIJeHjaTjU0_QTccEhr4-H8o358PN7odm2g=s96-c"
-    }
- */
-
 public class UserScopedInMemoryRepository : IUserScopedRepository
 {
   private readonly IRepository _repository;
@@ -85,7 +74,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public async Task DeleteMetric(string metricId)
   {
-    // get metric only returns if measurement belongs to current user
+    // get metric only returns if metric belongs to current user
     IMetric? metric = await GetMetric(metricId);
 
     if (metric == null)

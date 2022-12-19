@@ -57,10 +57,7 @@ export const MetricDetails: React.FC = () => {
           element={
             <DeleteMetricLauncher
               metric={metric}
-              onDeleted={() => {
-                debugger;
-                navigate("../../");
-              }}
+              onDeleted={() => navigate("../../")}
             />
           }
         />
