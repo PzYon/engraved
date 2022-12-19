@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { App } from "../../App";
-import { ServerApi } from "../ServerApi";
-import { IAuthResult } from "../IAuthResult";
-import { IUser } from "../IUser";
-import { GoogleInitializeResponse } from "./google/GoogleTypes";
-import { renderGoogleSignInButton } from "./google/renderGoogleSignInButton";
-import { AuthStorage } from "./AuthStorage";
-import { ApiError } from "../ApiError";
+import { App } from "./App";
+import { ServerApi } from "./serverApi/ServerApi";
+import { IAuthResult } from "./serverApi/IAuthResult";
+import { IUser } from "./serverApi/IUser";
+import { GoogleInitializeResponse } from "./serverApi/authentication/google/GoogleTypes";
+import { renderGoogleSignInButton } from "./serverApi/authentication/google/renderGoogleSignInButton";
+import { AuthStorage } from "./serverApi/authentication/AuthStorage";
+import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled } from "@mui/material";
 
-export const UnauthenticatedApp: React.FC = () => {
+export const Bootstrapper: React.FC = () => {
   const [user, setUser] = useState<IUser>();
   const ref = useRef<HTMLDivElement>();
 
