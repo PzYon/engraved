@@ -4,14 +4,17 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 using Metrix.Core.Domain.User;
+using Metrix.Persistence.Mongo.DocumentTypes.Measurements;
+using Metrix.Persistence.Mongo.DocumentTypes.Metrics;
+using MongoDB.Driver;
 using NUnit.Framework;
 
 namespace Metrix.Persistence.Mongo.Tests;
 
 public class UserScopedMongoRepositoryShould
 {
-  private MongoRepository _repository = null!;
-  private UserScopedMongoRepository _userScopedRepository = null!;
+  private TestMongoRepository _repository = null!;
+  private TestUserScopedMongoRepository _userScopedRepository = null!;
 
   private const string CurrentUserName = "me";
   private string _currentUserId = null!;
@@ -272,5 +275,40 @@ public class UserScopedMongoRepositoryShould
 
     await _userScopedRepository.DeleteMeasurement(result.EntityId);
     Assert.IsNotNull(measurement);
+  }
+
+  [Test]
+  public async Task DeleteMetric_AndItsMeasurements()
+  {
+    UpsertResult metric = await _repository.UpsertMetric(
+      new CounterMetric
+      {
+        UserId = _currentUserId,
+      }
+    );
+
+    await _repository.UpsertMeasurement(
+      new CounterMeasurement
+      {
+        MetricId = metric.EntityId,
+        UserId = _currentUserId
+      }
+    );
+
+    Assert.AreEqual(1, await _repository.Metrics.CountDocumentsAsync(FilterDefinition<MetricDocument>.Empty));
+    Assert.AreEqual(
+      1,
+      (await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty))
+    );
+
+    await _repository.DeleteMetric(metric.EntityId);
+
+    Assert.AreEqual(0, (await _repository.GetAllMetrics()).Length);
+
+    Assert.AreEqual(0, await _repository.Metrics.CountDocumentsAsync(FilterDefinition<MetricDocument>.Empty));
+    Assert.AreEqual(
+      0,
+      (await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty))
+    );
   }
 }

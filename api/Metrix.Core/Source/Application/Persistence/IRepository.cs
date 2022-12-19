@@ -21,6 +21,8 @@ public interface IRepository
 
   Task<UpsertResult> UpsertMetric(IMetric metric);
 
+  Task DeleteMetric(string metricId);
+
   Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions);
 
   Task<IMeasurement[]> GetAllMeasurements(

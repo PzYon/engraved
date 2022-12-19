@@ -44,6 +44,12 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     return await base.UpsertMeasurement(measurement);
   }
 
+  public override async Task DeleteMetric(string metricId)
+  {
+    await EnsureUserHasPermission(metricId, PermissionKind.Write);
+    await base.DeleteMetric(metricId);
+  }
+
   protected override FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
   {
     string? userId = CurrentUser.Value.Id;

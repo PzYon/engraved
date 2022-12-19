@@ -85,6 +85,22 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(new UpsertResult { EntityId = metric.Id });
   }
 
+  public async Task DeleteMetric(string metricId)
+  {
+    if (string.IsNullOrEmpty(metricId))
+    {
+      return;
+    }
+
+    IMetric? metric = await GetMetric(metricId);
+    if (metric == null)
+    {
+      return;
+    }
+
+    Metrics.Remove(metric);
+  }
+
   public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
   {
     IMetric? metric = await GetMetric(metricId);

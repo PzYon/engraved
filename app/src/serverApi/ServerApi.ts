@@ -101,6 +101,10 @@ export class ServerApi {
     return await this.executeRequest("/metrics/", "PUT", payload);
   }
 
+  static async deleteMetric(metricId: string): Promise<unknown> {
+    return await this.executeRequest(`/metrics/${metricId}/`, "DELETE");
+  }
+
   static async modifyMetricPermissions(
     metricId: string,
     permissions: IUpdatePermissions

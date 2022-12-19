@@ -1,23 +1,21 @@
 import React, { useEffect } from "react";
 import { IMetric } from "../../../serverApi/IMetric";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
-import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 import { ServerApi } from "../../../serverApi/ServerApi";
 
-export const DeleteMeasurementLauncher: React.FC<{
+export const DeleteMetricLauncher: React.FC<{
   metric: IMetric;
   onDeleted: () => void;
 }> = ({ metric, onDeleted }) => {
   const { renderDialog } = useDialogContext();
-  const { measurementId } = useParams();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     renderDialog({
-      title: "Delete Measurement",
+      title: "Delete Metric",
       render: (closeDialog) => {
         return (
           <>
@@ -28,7 +26,7 @@ export const DeleteMeasurementLauncher: React.FC<{
             <Button
               variant="text"
               color="primary"
-              onClick={() => deleteMeasurement(closeDialog)}
+              onClick={() => deleteMetric(closeDialog)}
             >
               Yes
             </Button>
@@ -43,9 +41,9 @@ export const DeleteMeasurementLauncher: React.FC<{
 
   return null;
 
-  async function deleteMeasurement(closeDialog: () => void) {
-    await ServerApi.deleteMeasurement(measurementId);
-    await onDeleted();
+  async function deleteMetric(closeDialog: () => void) {
+    await ServerApi.deleteMetric(metric.id);
     closeDialog();
+    await onDeleted();
   }
 };
