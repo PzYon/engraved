@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, styled, Typography } from "@mui/material";
+import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 import { HeaderActions } from "./HeaderActions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
@@ -13,12 +13,13 @@ export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
   const { pageTitle, pageActions } = usePageContext();
   const deviceWidth = useDeviceWidth();
+  const { palette } = useTheme();
 
   return (
     <Host>
       <Box
         sx={{
-          background: "linear-gradient(146deg, #444444 0%, #2a7b9b 100%)",
+          background: `linear-gradient(146deg, ${palette.text.primary} 0%, ${palette.primary.main} 100%)`,
           mb: 2,
         }}
       >
