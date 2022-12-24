@@ -1,5 +1,4 @@
-﻿using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
-using Metrix.Core.Application.Commands.Metrics;
+﻿using Metrix.Core.Application.Commands.Metrics;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
@@ -36,15 +35,25 @@ public class UpsertTimerMeasurementCommandExecutor : ICommandExecutor
       .OfType<TimerMeasurement>()
       .FirstOrDefault(m => m.EndDate == null);
 
-    if (measurement == null)
+    if (measurement != null)
     {
-      throw new InvalidCommandException(_command, $"Metric \"{metric.Id}\" has no started timer.");
+      measurement.EndDate = dateService.UtcNow;
     }
-
-    measurement.EndDate = dateService.UtcNow;
+    else
+    {
+      measurement = new TimerMeasurement
+      {
+        StartDate = dateService.UtcNow,
+        MetricId = metric.Id!
+      };
+    }
+    
     UpsertResult result = await repository.UpsertMeasurement(measurement);
 
-    metric.StartDate = null;
+    // metric.StartDate = null;
+
+    metric.EditedOn = dateService.UtcNow;
+    
     await repository.UpsertMetric(metric);
 
     return new CommandResult { EntityId = result.EntityId };

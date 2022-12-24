@@ -1,13 +1,24 @@
-﻿namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.Upsert;
+﻿using Metrix.Core.Domain.Metrics;
 
-public class UpsertTimerMeasurementCommand : ICommand
+namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.Upsert;
+
+public class UpsertTimerMeasurementCommand : BaseUpsertMeasurementCommand
 {
   public string MetricId { get; set; } = null!;
 
-  // what about Notes?
+  public DateTime StartDate { get; set; }
 
-  public ICommandExecutor CreateExecutor()
+  public DateTime? EndDate { get; set; }
+
+  public string Notes { get; set; }
+
+  public override ICommandExecutor CreateExecutor()
   {
     return new UpsertTimerMeasurementCommandExecutor(this);
+  }
+
+  public override MetricType GetSupportedMetricType()
+  {
+    return MetricType.Timer;
   }
 }
