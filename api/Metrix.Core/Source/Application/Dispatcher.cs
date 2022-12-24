@@ -51,9 +51,11 @@ public class Dispatcher
 
   private async Task<CommandResult> ExecuteCommand(ICommand command)
   {
+    CommandResult commandResult = await command.CreateExecutor().Execute(_repository, _dateService);
+
     _queryCache.ClearForCurrentUser();
 
-    return await command.CreateExecutor().Execute(_repository, _dateService);
+    return commandResult;
   }
 
   private static async Task<TExecutionResult> Execute<TExecutionResult>(

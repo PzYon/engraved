@@ -3,6 +3,7 @@ using Metrix.Core.Application.Commands.Measurements.Add.Counter;
 using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
+using Metrix.Core.Application.Commands.Measurements.Add.Timer.Upsert;
 using Metrix.Core.Application.Commands.Measurements.Delete;
 using Metrix.Core.Application.Queries.Measurements.GetAll;
 using Metrix.Core.Domain.Measurements;
@@ -64,6 +65,13 @@ public class MeasurementsController : ControllerBase
   [HttpPost]
   [Route("timer_end")]
   public async Task EndTimer([FromBody] EndTimerMeasurementCommand measurement)
+  {
+    await _dispatcher.Command(measurement);
+  }
+  
+  [HttpPost]
+  [Route("timer")]
+  public async Task StartTimer([FromBody] UpsertTimerMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
   }
