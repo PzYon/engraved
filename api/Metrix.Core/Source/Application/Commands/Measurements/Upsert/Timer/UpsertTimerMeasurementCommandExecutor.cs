@@ -21,7 +21,7 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
 
     return allMeasurements
       .OfType<TimerMeasurement>()
-      .FirstOrDefault(m => m.EndDate != null || m.StartDate != null);
+      .FirstOrDefault(m => m.EndDate == null);
   }
 
   protected override void SetTypeSpecificValues(TimerMeasurement measurement, IDateService dateService)
