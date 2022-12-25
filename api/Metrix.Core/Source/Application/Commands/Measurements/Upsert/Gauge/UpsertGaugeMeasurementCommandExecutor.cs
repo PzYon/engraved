@@ -12,7 +12,7 @@ public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementComman
 {
   public UpsertGaugeMeasurementCommandExecutor(UpsertGaugeMeasurementCommand command) : base(command) { }
 
-  protected override Task PerformTypeSpecificValidation(IRepository repository, GaugeMetric metric)
+  protected override Task PerformTypeSpecificValidation()
   {
     if (Command.Value == null)
     {

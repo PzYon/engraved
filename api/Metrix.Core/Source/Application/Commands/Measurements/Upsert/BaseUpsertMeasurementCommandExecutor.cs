@@ -21,24 +21,38 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
   {
     var metric = await MetricCommandUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
 
-    EnsureCompatibleMetricType(metric);
-    
-    ValidateMetricAttributes(metric);
-    await PerformTypeSpecificValidation(repository, metric);
+    await ValidateCommand(metric);
 
-    TMeasurement measurement = await GetMeasurement(repository, metric);
+    UpsertResult result = await UpsertMeasurement(repository, dateService, metric);
+
+    await UpdateMetric(repository, dateService, metric);
+
+    return new CommandResult { EntityId = result.EntityId };
+  }
+
+  private async Task ValidateCommand(TMetric metric)
+  {
+    EnsureCompatibleMetricType(metric);
+
+    ValidateMetricAttributes(metric);
+    await PerformTypeSpecificValidation();
+  }
+
+  private async Task<UpsertResult> UpsertMeasurement(IRepository repository, IDateService dateService, TMetric metric)
+  {
+    TMeasurement measurement = await GetOrCreateNewMeasurement(repository, metric);
 
     SetCommonValues(measurement, dateService);
     SetTypeSpecificValues(measurement, dateService);
 
     UpsertResult result = await repository.UpsertMeasurement(measurement);
+    return result;
+  }
 
-    UpdateMetric(metric, dateService);
+  private static async Task UpdateMetric(IRepository repository, IDateService dateService, TMetric metric)
+  {
     metric.EditedOn = dateService.UtcNow;
-
     await repository.UpsertMetric(metric);
-
-    return new CommandResult { EntityId = result.EntityId };
   }
 
   private void SetCommonValues(TMeasurement measurement, IDateService dateService)
@@ -51,14 +65,9 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
   protected abstract void SetTypeSpecificValues(TMeasurement measurement, IDateService dateService);
 
-  protected virtual Task PerformTypeSpecificValidation(IRepository repository, TMetric metric)
+  protected virtual Task PerformTypeSpecificValidation()
   {
     return Task.CompletedTask;
-  }
-
-  protected virtual void UpdateMetric(TMetric metric, IDateService dateService)
-  {
-    // this can be removed once we get rid of old Start-/End classes
   }
 
   protected virtual Task<TMeasurement?> LoadMeasurementToUpdate(IRepository repository, TMetric metric)
@@ -110,7 +119,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     }
   }
 
-  private async Task<TMeasurement> GetMeasurement(IRepository repository, TMetric metric)
+  private async Task<TMeasurement> GetOrCreateNewMeasurement(IRepository repository, TMetric metric)
   {
     return await LoadMeasurementById(repository)
            ?? await LoadMeasurementToUpdate(repository, metric)
