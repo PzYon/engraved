@@ -69,10 +69,12 @@ public class UpsertTimerMeasurementCommandExecutorShould
   [Test]
   public async Task UpdateExistingMeasurement_WithValuesFromCommand()
   {
+    var measurementId = Guid.NewGuid().ToString("N");
+    
     _testRepository.Measurements.Add(
       new TimerMeasurement
       {
-        Id = Guid.NewGuid().ToString("N"),
+        Id = measurementId,
         MetricId = MetricId,
         StartDate = _fakeDateService.UtcNow.AddMinutes(-50),
         EndDate = _fakeDateService.UtcNow.AddMinutes(-10)
@@ -86,6 +88,7 @@ public class UpsertTimerMeasurementCommandExecutorShould
     
     var command = new UpsertTimerMeasurementCommand
     {
+      Id = measurementId,
       MetricId = MetricId,
       StartDate = newStartDate,
       EndDate = newEndDate

@@ -1,61 +1,45 @@
-﻿using Metrix.Core.Application.Commands.Metrics;
-using Metrix.Core.Application.Persistence;
+﻿using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
 namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.Upsert;
 
-public class UpsertTimerMeasurementCommandExecutor : ICommandExecutor
+public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
+  UpsertTimerMeasurementCommand,
+  TimerMeasurement,
+  TimerMetric
+>
 {
-  private readonly UpsertTimerMeasurementCommand _command;
+  public UpsertTimerMeasurementCommandExecutor(UpsertTimerMeasurementCommand command) : base(command) { }
 
-  public UpsertTimerMeasurementCommandExecutor(UpsertTimerMeasurementCommand command)
+  protected override async Task<TimerMeasurement?> LoadFallbackMeasurement(IRepository repository, TimerMetric metric)
   {
-    _command = command;
-  }
-
-  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
-  {
-    var metric = await MetricCommandUtil.LoadAndValidateMetric<TimerMetric>(repository, _command, _command.MetricId);
-
-    if (metric.Type != MetricType.Timer)
-    {
-      throw new InvalidCommandException(
-        _command,
-        $"Command with metric type \"{MetricType.Timer}\" is not compatible with metric of type \"{metric.Type}\"."
-      );
-    }
-
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IDb. for the time being we will skip that.
     IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id!, null, null, null);
 
-    TimerMeasurement? measurement = allMeasurements
+    return allMeasurements
       .OfType<TimerMeasurement>()
-      .FirstOrDefault(m => m.EndDate == null);
+      .FirstOrDefault(m => m.EndDate != null || m.StartDate != null);
+  }
 
-    if (measurement != null)
+  protected override void SetSpecificValues(TimerMeasurement measurement, IDateService dateService)
+  {
+    if (!string.IsNullOrEmpty(Command.Id))
     {
-      measurement.EndDate = dateService.UtcNow;
+      measurement.StartDate = Command.StartDate;
+      measurement.EndDate = Command.EndDate;
+      return;
+    }
+
+    if (measurement.StartDate == null)
+    {
+      measurement.StartDate = dateService.UtcNow;
     }
     else
     {
-      measurement = new TimerMeasurement
-      {
-        StartDate = dateService.UtcNow,
-        MetricId = metric.Id!
-      };
+      measurement.EndDate = dateService.UtcNow;
     }
-    
-    UpsertResult result = await repository.UpsertMeasurement(measurement);
-
-    // metric.StartDate = null;
-
-    metric.EditedOn = dateService.UtcNow;
-    
-    await repository.UpsertMetric(metric);
-
-    return new CommandResult { EntityId = result.EntityId };
   }
 }

@@ -26,7 +26,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
     await PerformAdditionalValidation(repository, metric);
 
-    TMeasurement measurement = await GetMeasurement(repository);
+    TMeasurement measurement = await GetMeasurement(repository, metric);
 
     SetSpecificValues(measurement, dateService);
 
@@ -53,6 +53,11 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
   }
 
   protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
+
+  protected virtual Task<TMeasurement?> LoadFallbackMeasurement(IRepository repository, TMetric metric)
+  {
+    return Task.FromResult<TMeasurement?>(null);
+  }
 
   private void EnsureCompatibleMetricType(IMetric metric)
   {
@@ -98,14 +103,16 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     }
   }
 
-  private async Task<TMeasurement> GetMeasurement(IRepository repository)
+  private async Task<TMeasurement> GetMeasurement(IRepository repository, TMetric metric)
   {
-    if (string.IsNullOrEmpty(Command.Id))
+    if (!string.IsNullOrEmpty(Command.Id))
     {
-      return new TMeasurement();
+      return (TMeasurement)(await repository.GetMeasurement(Command.Id))!;
     }
 
-    return (TMeasurement) (await repository.GetMeasurement(Command.Id))!;
+    TMeasurement? fallbackMeasurement = await LoadFallbackMeasurement(repository, metric);
+
+    return fallbackMeasurement ?? new TMeasurement();
   }
 
   protected InvalidCommandException CreateInvalidCommandException(string message)
