@@ -12,7 +12,7 @@ public class StartTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommand
 {
   public StartTimerMeasurementCommandExecutor(StartTimerMeasurementCommand command) : base(command) { }
 
-  protected override async Task PerformAdditionalValidation(IRepository repository, TimerMetric metric)
+  protected override async Task PerformTypeSpecificValidation(IRepository repository, TimerMetric metric)
   {
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
@@ -32,7 +32,7 @@ public class StartTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommand
     metric.StartDate = dateService.UtcNow;
   }
 
-  protected override void SetSpecificValues(TimerMeasurement measurement, IDateService dateService)
+  protected override void SetTypeSpecificValues(TimerMeasurement measurement, IDateService dateService)
   {
     measurement.StartDate = dateService.UtcNow;
   }

@@ -12,7 +12,7 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
 {
   public UpsertTimerMeasurementCommandExecutor(UpsertTimerMeasurementCommand command) : base(command) { }
 
-  protected override async Task<TimerMeasurement?> LoadFallbackMeasurement(IRepository repository, TimerMetric metric)
+  protected override async Task<TimerMeasurement?> LoadMeasurementToUpdate(IRepository repository, TimerMetric metric)
   {
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
@@ -24,7 +24,7 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
       .FirstOrDefault(m => m.EndDate != null || m.StartDate != null);
   }
 
-  protected override void SetSpecificValues(TimerMeasurement measurement, IDateService dateService)
+  protected override void SetTypeSpecificValues(TimerMeasurement measurement, IDateService dateService)
   {
     if (!string.IsNullOrEmpty(Command.Id))
     {

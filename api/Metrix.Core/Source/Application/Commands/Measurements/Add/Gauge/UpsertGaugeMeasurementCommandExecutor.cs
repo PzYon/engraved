@@ -12,7 +12,7 @@ public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementComman
 {
   public UpsertGaugeMeasurementCommandExecutor(UpsertGaugeMeasurementCommand command) : base(command) { }
 
-  protected override Task PerformAdditionalValidation(IRepository repository, GaugeMetric metric)
+  protected override Task PerformTypeSpecificValidation(IRepository repository, GaugeMetric metric)
   {
     if (Command.Value == null)
     {
@@ -22,7 +22,7 @@ public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementComman
     return Task.CompletedTask;
   }
 
-  protected override void SetSpecificValues(GaugeMeasurement measurement, IDateService dateService)
+  protected override void SetTypeSpecificValues(GaugeMeasurement measurement, IDateService dateService)
   {
     measurement.Value = Command.Value!.Value;
   }
