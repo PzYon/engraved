@@ -1,9 +1,8 @@
-﻿using Metrix.Core.Application.Commands.Measurements.Upsert.Gauge;
-using Metrix.Core.Application.Persistence;
+﻿using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add.Gauge;
+namespace Metrix.Core.Application.Commands.Measurements.Upsert.Gauge;
 
 public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
   UpsertGaugeMeasurementCommand,

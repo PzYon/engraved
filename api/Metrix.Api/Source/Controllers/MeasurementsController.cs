@@ -1,6 +1,4 @@
 ﻿using Metrix.Core.Application;
-using Metrix.Core.Application.Commands.Measurements.Add.Counter;
-using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
 using Metrix.Core.Application.Commands.Measurements.Delete;
 using Metrix.Core.Application.Commands.Measurements.Upsert.Counter;
 using Metrix.Core.Application.Commands.Measurements.Upsert.Gauge;

@@ -1,9 +1,6 @@
 ﻿using System.Text;
 using Metrix.Core.Application.Commands;
-using Metrix.Core.Application.Commands.Measurements.Add;
-using Metrix.Core.Application.Commands.Measurements.Add.Counter;
-using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
-using Metrix.Core.Application.Commands.Measurements.Add.Timer.Upsert;
+using Metrix.Core.Application.Commands.Measurements.Upsert;
 using Metrix.Core.Application.Commands.Measurements.Upsert.Counter;
 using Metrix.Core.Application.Commands.Measurements.Upsert.Gauge;
 using Metrix.Core.Application.Commands.Measurements.Upsert.Timer;

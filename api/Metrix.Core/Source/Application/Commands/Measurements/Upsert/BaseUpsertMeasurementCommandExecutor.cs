@@ -3,7 +3,7 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add;
+namespace Metrix.Core.Application.Commands.Measurements.Upsert;
 
 public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
   where TCommand : BaseUpsertMeasurementCommand
