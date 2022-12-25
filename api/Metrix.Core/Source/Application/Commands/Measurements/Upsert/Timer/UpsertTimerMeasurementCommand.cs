@@ -1,6 +1,8 @@
-﻿using Metrix.Core.Domain.Metrics;
+﻿using Metrix.Core.Application.Commands.Measurements.Add;
+using Metrix.Core.Application.Commands.Measurements.Add.Timer.Upsert;
+using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add.Timer.Upsert;
+namespace Metrix.Core.Application.Commands.Measurements.Upsert.Timer;
 
 public class UpsertTimerMeasurementCommand : BaseUpsertMeasurementCommand
 {

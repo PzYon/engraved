@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Metrix.Core.Application.Commands.Measurements.Add.Timer.Upsert;
+using Metrix.Core.Application.Commands.Measurements.Upsert.Timer;
 using Metrix.Core.Application.Persistence.Demo;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;

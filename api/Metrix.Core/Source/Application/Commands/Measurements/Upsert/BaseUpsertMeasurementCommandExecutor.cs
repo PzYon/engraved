@@ -22,8 +22,8 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     var metric = await MetricCommandUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
 
     EnsureCompatibleMetricType(metric);
+    
     ValidateMetricAttributes(metric);
-
     await PerformTypeSpecificValidation(repository, metric);
 
     TMeasurement measurement = await GetMeasurement(repository, metric);
@@ -56,7 +56,10 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     return Task.CompletedTask;
   }
 
-  protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
+  protected virtual void UpdateMetric(TMetric metric, IDateService dateService)
+  {
+    // this can be removed once we get rid of old Start-/End classes
+  }
 
   protected virtual Task<TMeasurement?> LoadMeasurementToUpdate(IRepository repository, TMetric metric)
   {
