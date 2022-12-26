@@ -3,6 +3,7 @@ using Metrix.Core.Application.Commands.Measurements.Delete;
 using Metrix.Core.Application.Commands.Measurements.Upsert.Counter;
 using Metrix.Core.Application.Commands.Measurements.Upsert.Gauge;
 using Metrix.Core.Application.Commands.Measurements.Upsert.Timer;
+using Metrix.Core.Application.Queries.Measurements.GetActive;
 using Metrix.Core.Application.Queries.Measurements.GetAll;
 using Metrix.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +38,13 @@ public class MeasurementsController : ControllerBase
     IMeasurement[] measurements = await _dispatcher.Query(query);
 
     return measurements.EnsurePolymorphismWhenSerializing();
+  }
+
+  [HttpGet]
+  [Route("{metricId}/active")]
+  public async Task<IMeasurement?> GetActive(string metricId)
+  {
+    return await _dispatcher.Query(new GetActiveMeasurementQuery { MetricId = metricId });
   }
 
   [HttpPost]
