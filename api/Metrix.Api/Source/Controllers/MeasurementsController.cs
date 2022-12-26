@@ -1,9 +1,8 @@
 ﻿using Metrix.Core.Application;
-using Metrix.Core.Application.Commands.Measurements.Add.Counter;
-using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
-using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
-using Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
 using Metrix.Core.Application.Commands.Measurements.Delete;
+using Metrix.Core.Application.Commands.Measurements.Upsert.Counter;
+using Metrix.Core.Application.Commands.Measurements.Upsert.Gauge;
+using Metrix.Core.Application.Commands.Measurements.Upsert.Timer;
 using Metrix.Core.Application.Queries.Measurements.GetAll;
 using Metrix.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Authorization;
@@ -55,15 +54,8 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpPost]
-  [Route("timer_start")]
-  public async Task StartTimer([FromBody] StartTimerMeasurementCommand measurement)
-  {
-    await _dispatcher.Command(measurement);
-  }
-
-  [HttpPost]
-  [Route("timer_end")]
-  public async Task EndTimer([FromBody] EndTimerMeasurementCommand measurement)
+  [Route("timer")]
+  public async Task StartTimer([FromBody] UpsertTimerMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
   }

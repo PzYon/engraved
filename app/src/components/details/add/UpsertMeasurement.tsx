@@ -8,7 +8,6 @@ import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IUpsertMeasurementCommand } from "../../../serverApi/commands/IUpsertMeasurementCommand";
 import { IUpsertGaugeMeasurementCommand } from "../../../serverApi/commands/IUpsertGaugeMeasurementCommand";
-import { ITimerMetric } from "../../../serverApi/ITimerMetric";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 import { ApiError } from "../../../serverApi/ApiError";
 import { DateTimeSelector } from "../../common/DateTimeSelector";
@@ -42,8 +41,6 @@ export const UpsertMeasurement: React.FC<{
   );
 
   const { setAppAlert } = useAppContext();
-
-  const isTimerAndIsRunning = !!(metric as ITimerMetric).startDate;
 
   return (
     <FormControl>
@@ -103,7 +100,7 @@ export const UpsertMeasurement: React.FC<{
 
       <FormElementContainer>
         <Button variant="outlined" onClick={upsertMeasurement}>
-          {getAddButtonLabel()}
+          {measurement?.id ? translations.edit : translations.add}
         </Button>
       </FormElementContainer>
     </FormControl>
@@ -150,7 +147,7 @@ export const UpsertMeasurement: React.FC<{
           : undefined;
       }
 
-      await ServerApi.addMeasurement(command, getUrlSegment());
+      await ServerApi.upsertMeasurement(command, metric.type.toLowerCase());
 
       setAppAlert({
         title: `${measurement?.id ? "Updated" : "Added"} measurement`,
@@ -165,22 +162,6 @@ export const UpsertMeasurement: React.FC<{
         type: "error",
       });
     }
-  }
-
-  function getUrlSegment() {
-    if (metric.type === MetricType.Timer) {
-      return isTimerAndIsRunning ? "timer_end" : "timer_start  ";
-    }
-
-    return metric.type.toLowerCase();
-  }
-
-  function getAddButtonLabel(): string {
-    if (metric.type === MetricType.Timer) {
-      return isTimerAndIsRunning ? "Stop timer" : "Start timer";
-    }
-
-    return measurement?.id ? translations.edit : translations.add;
   }
 
   function resetSelectors() {

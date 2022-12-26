@@ -1,10 +1,9 @@
 ﻿using System.Text;
 using Metrix.Core.Application.Commands;
-using Metrix.Core.Application.Commands.Measurements.Add;
-using Metrix.Core.Application.Commands.Measurements.Add.Counter;
-using Metrix.Core.Application.Commands.Measurements.Add.Gauge;
-using Metrix.Core.Application.Commands.Measurements.Add.Timer.End;
-using Metrix.Core.Application.Commands.Measurements.Add.Timer.Start;
+using Metrix.Core.Application.Commands.Measurements.Upsert;
+using Metrix.Core.Application.Commands.Measurements.Upsert.Counter;
+using Metrix.Core.Application.Commands.Measurements.Upsert.Gauge;
+using Metrix.Core.Application.Commands.Measurements.Upsert.Timer;
 using Metrix.Core.Application.Commands.Metrics.Add;
 using Metrix.Core.Application.Commands.Metrics.Edit;
 using Metrix.Core.Domain.Measurements;
@@ -154,7 +153,7 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      var command = new StartTimerMeasurementCommand { MetricId = metric.Id! };
+      var command = new UpsertTimerMeasurementCommand { MetricId = metric.Id! };
 
       EnsureAttributeValues(metric, command);
 
@@ -164,7 +163,7 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new EndTimerMeasurementCommand { MetricId = metric.Id! }
+      await new UpsertTimerMeasurementCommand { MetricId = metric.Id! }
         .CreateExecutor()
         .Execute(_repository, dateService);
     }

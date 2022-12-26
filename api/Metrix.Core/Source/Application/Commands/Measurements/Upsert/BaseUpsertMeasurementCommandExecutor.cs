@@ -3,7 +3,7 @@ using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add;
+namespace Metrix.Core.Application.Commands.Measurements.Upsert;
 
 public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
   where TCommand : BaseUpsertMeasurementCommand
@@ -21,41 +21,59 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
   {
     var metric = await MetricCommandUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
 
-    EnsureCompatibleMetricType(metric);
-    ValidateMetricAttributes(metric);
+    await ValidateCommand(metric);
 
-    await PerformAdditionalValidation(repository, metric);
+    UpsertResult result = await UpsertMeasurement(repository, dateService, metric);
 
-    TMeasurement measurement = await GetMeasurement(repository);
-
-    SetSpecificValues(measurement, dateService);
-
-    measurement.MetricId = Command.MetricId;
-    measurement.Notes = Command.Notes;
-
-    // this is not correct, as this assumes that the current update is the "newest".
-    measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
-
-    measurement.MetricAttributeValues = Command.MetricAttributeValues;
-
-    UpsertResult result = await repository.UpsertMeasurement(measurement);
-
-    UpdateMetric(metric, dateService);
-    metric.EditedOn = dateService.UtcNow;
-
-    await repository.UpsertMetric(metric);
+    await UpdateMetric(repository, dateService, metric);
 
     return new CommandResult { EntityId = result.EntityId };
   }
 
-  protected abstract void SetSpecificValues(TMeasurement measurement, IDateService dateService);
+  private async Task ValidateCommand(TMetric metric)
+  {
+    EnsureCompatibleMetricType(metric);
 
-  protected virtual Task PerformAdditionalValidation(IRepository repository, TMetric metric)
+    ValidateMetricAttributes(metric);
+    await PerformTypeSpecificValidation();
+  }
+
+  private async Task<UpsertResult> UpsertMeasurement(IRepository repository, IDateService dateService, TMetric metric)
+  {
+    TMeasurement measurement = await GetOrCreateNewMeasurement(repository, metric);
+
+    SetCommonValues(measurement, dateService);
+    SetTypeSpecificValues(measurement, dateService);
+
+    UpsertResult result = await repository.UpsertMeasurement(measurement);
+    return result;
+  }
+
+  private static async Task UpdateMetric(IRepository repository, IDateService dateService, TMetric metric)
+  {
+    metric.EditedOn = dateService.UtcNow;
+    await repository.UpsertMetric(metric);
+  }
+
+  private void SetCommonValues(TMeasurement measurement, IDateService dateService)
+  {
+    measurement.MetricId = Command.MetricId;
+    measurement.Notes = Command.Notes;
+    measurement.MetricAttributeValues = Command.MetricAttributeValues;
+    measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
+  }
+
+  protected abstract void SetTypeSpecificValues(TMeasurement measurement, IDateService dateService);
+
+  protected virtual Task PerformTypeSpecificValidation()
   {
     return Task.CompletedTask;
   }
 
-  protected virtual void UpdateMetric(TMetric metric, IDateService dateService) { }
+  protected virtual Task<TMeasurement?> LoadMeasurementToUpdate(IRepository repository, TMetric metric)
+  {
+    return Task.FromResult<TMeasurement?>(null);
+  }
 
   private void EnsureCompatibleMetricType(IMetric metric)
   {
@@ -101,14 +119,21 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     }
   }
 
-  private async Task<TMeasurement> GetMeasurement(IRepository repository)
+  private async Task<TMeasurement> GetOrCreateNewMeasurement(IRepository repository, TMetric metric)
   {
-    if (string.IsNullOrEmpty(Command.Id))
+    return await LoadMeasurementById(repository)
+           ?? await LoadMeasurementToUpdate(repository, metric)
+           ?? new TMeasurement();
+  }
+
+  private async Task<TMeasurement?> LoadMeasurementById(IRepository repository)
+  {
+    if (!string.IsNullOrEmpty(Command.Id))
     {
-      return new TMeasurement();
+      return (TMeasurement)(await repository.GetMeasurement(Command.Id))!;
     }
 
-    return (TMeasurement) (await repository.GetMeasurement(Command.Id))!;
+    return null;
   }
 
   protected InvalidCommandException CreateInvalidCommandException(string message)

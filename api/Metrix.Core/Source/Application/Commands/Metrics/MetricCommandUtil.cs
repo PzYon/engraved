@@ -1,4 +1,4 @@
-﻿using Metrix.Core.Application.Commands.Measurements.Add;
+﻿using Metrix.Core.Application.Commands.Measurements.Upsert;
 using Metrix.Core.Application.Persistence;
 using Metrix.Core.Domain.Metrics;
 

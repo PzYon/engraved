@@ -1,7 +1,7 @@
 ﻿using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add.Counter;
+namespace Metrix.Core.Application.Commands.Measurements.Upsert.Counter;
 
 public class UpsertCounterMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
   UpsertCounterMeasurementCommand,
@@ -11,5 +11,5 @@ public class UpsertCounterMeasurementCommandExecutor : BaseUpsertMeasurementComm
 {
   public UpsertCounterMeasurementCommandExecutor(UpsertCounterMeasurementCommand command) : base(command) { }
 
-  protected override void SetSpecificValues(CounterMeasurement measurement, IDateService dateService) { }
+  protected override void SetTypeSpecificValues(CounterMeasurement measurement, IDateService dateService) { }
 }

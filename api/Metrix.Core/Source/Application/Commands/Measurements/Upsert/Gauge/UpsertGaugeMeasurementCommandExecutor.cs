@@ -2,7 +2,7 @@
 using Metrix.Core.Domain.Measurements;
 using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add.Gauge;
+namespace Metrix.Core.Application.Commands.Measurements.Upsert.Gauge;
 
 public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
   UpsertGaugeMeasurementCommand,
@@ -12,7 +12,7 @@ public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementComman
 {
   public UpsertGaugeMeasurementCommandExecutor(UpsertGaugeMeasurementCommand command) : base(command) { }
 
-  protected override Task PerformAdditionalValidation(IRepository repository, GaugeMetric metric)
+  protected override Task PerformTypeSpecificValidation()
   {
     if (Command.Value == null)
     {
@@ -22,7 +22,7 @@ public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementComman
     return Task.CompletedTask;
   }
 
-  protected override void SetSpecificValues(GaugeMeasurement measurement, IDateService dateService)
+  protected override void SetTypeSpecificValues(GaugeMeasurement measurement, IDateService dateService)
   {
     measurement.Value = Command.Value!.Value;
   }

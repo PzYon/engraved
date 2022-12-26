@@ -1,6 +1,6 @@
 ﻿using Metrix.Core.Domain.Metrics;
 
-namespace Metrix.Core.Application.Commands.Measurements.Add.Counter;
+namespace Metrix.Core.Application.Commands.Measurements.Upsert.Counter;
 
 public class UpsertCounterMeasurementCommand : BaseUpsertMeasurementCommand
 {
