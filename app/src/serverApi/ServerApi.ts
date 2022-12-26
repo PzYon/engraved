@@ -60,6 +60,10 @@ export class ServerApi {
     return await this.executeRequest(`/metrics/${metricId}`);
   }
 
+  static async getActiveMeasurement(metricId: string): Promise<IMeasurement> {
+    return await this.executeRequest(`/measurements/${metricId}/active`);
+  }
+
   static async addMetric(
     name: string,
     description: string,
