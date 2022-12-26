@@ -163,7 +163,7 @@ export class ServerApi {
     return await this.executeRequest(`/measurements/${metricId}${params}`);
   }
 
-  static async addMeasurement(
+  static async upsertMeasurement(
     command: IUpsertMeasurementCommand,
     urlSegment: string
   ): Promise<ICommandResult> {
