@@ -33,9 +33,7 @@ export const UpsertMeasurementWrapper: React.FC<{
 
   useEffect(() => {
     if (metric.type === MetricType.Timer) {
-      ServerApi.getActiveMeasurement(metric.id).then((m) => {
-        setMeasurement(m);
-      });
+      ServerApi.getActiveMeasurement(metric.id).then(setMeasurement);
     } else {
       setMeasurement(null);
     }
@@ -45,5 +43,11 @@ export const UpsertMeasurementWrapper: React.FC<{
     return null;
   }
 
-  return <UpsertMeasurement metric={metric} onSaved={onSaved} />;
+  return (
+    <UpsertMeasurement
+      metric={metric}
+      measurement={measurement}
+      onSaved={onSaved}
+    />
+  );
 };

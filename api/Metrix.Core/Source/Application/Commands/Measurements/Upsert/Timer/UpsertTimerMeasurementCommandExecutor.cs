@@ -17,9 +17,9 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
     return await GetActiveMeasurement(repository, metric);
   }
 
-  protected override void SetTypeSpecificValues(TimerMeasurement measurement, IDateService dateService)
+  protected override void SetTypeSpecificValues(IDateService dateService, TimerMeasurement measurement)
   {
-    if (!string.IsNullOrEmpty(Command.Id))
+    if (!string.IsNullOrEmpty(Command.Id) && (Command.EndDate != null || Command.StartDate != null))
     {
       measurement.StartDate = Command.StartDate;
       measurement.EndDate = Command.EndDate;

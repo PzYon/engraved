@@ -10,13 +10,17 @@ import { IUpsertMeasurementCommand } from "../../../serverApi/commands/IUpsertMe
 import { IUpsertGaugeMeasurementCommand } from "../../../serverApi/commands/IUpsertGaugeMeasurementCommand";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 import { ApiError } from "../../../serverApi/ApiError";
-import { DateTimeSelector } from "../../common/DateTimeSelector";
+import { DateSelector } from "../../common/DateSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
-import { IGaugeMeasurement } from "../../../serverApi/ITimerMeasurement";
+import {
+  IGaugeMeasurement,
+  ITimerMeasurement,
+} from "../../../serverApi/ITimerMeasurement";
 import { stripTime } from "../../common/utils";
 import { AttributeComboSearch } from "./AttributeComboSearch";
 import { hasAttributes } from "../../../util/MeasurementUtil";
+import { DateTimeSelector } from "../../common/DateTimeSelector";
 
 export const UpsertMeasurement: React.FC<{
   metric: IMetric;
@@ -44,9 +48,11 @@ export const UpsertMeasurement: React.FC<{
 
   return (
     <FormControl>
-      <FormElementContainer>
-        <DateTimeSelector setDate={setDate} date={date} />
-      </FormElementContainer>
+      {metric.type !== MetricType.Timer ? (
+        <FormElementContainer>
+          <DateSelector setDate={setDate} date={date} />
+        </FormElementContainer>
+      ) : null}
 
       {metric.type === MetricType.Gauge ? (
         <TextField
@@ -59,6 +65,31 @@ export const UpsertMeasurement: React.FC<{
             marginBottom: "0",
           }}
         />
+      ) : null}
+
+      {metric.type === MetricType.Timer ? (
+        <>
+          <FormElementContainer>
+            <DateTimeSelector
+              label={"Start date"}
+              initialDate={
+                (measurement as ITimerMeasurement).startDate
+                  ? new Date((measurement as ITimerMeasurement).startDate)
+                  : undefined
+              }
+            />
+          </FormElementContainer>
+          <FormElementContainer>
+            <DateTimeSelector
+              label={"End date"}
+              initialDate={
+                (measurement as ITimerMeasurement).endDate
+                  ? new Date((measurement as ITimerMeasurement).endDate)
+                  : undefined
+              }
+            />
+          </FormElementContainer>
+        </>
       ) : null}
 
       {hasAttributes(metric) ? (

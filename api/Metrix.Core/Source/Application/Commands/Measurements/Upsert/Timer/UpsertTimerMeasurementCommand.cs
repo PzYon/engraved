@@ -4,7 +4,7 @@ namespace Metrix.Core.Application.Commands.Measurements.Upsert.Timer;
 
 public class UpsertTimerMeasurementCommand : BaseUpsertMeasurementCommand
 {
-  public DateTime StartDate { get; set; }
+  public DateTime? StartDate { get; set; }
 
   public DateTime? EndDate { get; set; }
   
