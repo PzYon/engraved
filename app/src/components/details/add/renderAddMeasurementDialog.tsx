@@ -1,6 +1,10 @@
 import { UpsertMeasurement } from "./UpsertMeasurement";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IMetric } from "../../../serverApi/IMetric";
+import React, { useEffect, useState } from "react";
+import { MetricType } from "../../../serverApi/MetricType";
+import { ServerApi } from "../../../serverApi/ServerApi";
+import { IMeasurement } from "../../../serverApi/IMeasurement";
 
 export const renderAddMeasurementDialog = (
   metric: IMetric,
@@ -10,7 +14,7 @@ export const renderAddMeasurementDialog = (
   renderDialog({
     title: "Add measurement",
     render: () => (
-      <UpsertMeasurement
+      <UpsertMeasurementWrapper
         metric={metric}
         onSaved={() => {
           onAdded?.();
@@ -19,4 +23,31 @@ export const renderAddMeasurementDialog = (
       />
     ),
   });
+};
+
+export const UpsertMeasurementWrapper: React.FC<{
+  metric: IMetric;
+  onSaved: () => void;
+}> = ({ metric, onSaved }) => {
+  const [measurement, setMeasurement] = useState<IMeasurement>(undefined);
+
+  useEffect(() => {
+    if (metric.type === MetricType.Timer) {
+      ServerApi.getActiveMeasurement(metric.id).then(setMeasurement);
+    } else {
+      setMeasurement(null);
+    }
+  }, []);
+
+  if (measurement === undefined) {
+    return null;
+  }
+
+  return (
+    <UpsertMeasurement
+      metric={metric}
+      measurement={measurement}
+      onSaved={onSaved}
+    />
+  );
 };

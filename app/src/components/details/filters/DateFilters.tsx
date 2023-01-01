@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DateTimeSelector } from "../../common/DateTimeSelector";
+import { DateSelector } from "../../common/DateSelector";
 import { useMetricContext } from "../MetricDetailsContext";
 import { styled } from "@mui/material";
 import {
@@ -56,7 +56,7 @@ export const DateFilters: React.FC = () => {
           }}
         />
       </RangeContainer>
-      <DateTimeSelector
+      <DateSelector
         label="From"
         date={dateConditions.from}
         setDate={(d) => {
@@ -64,7 +64,7 @@ export const DateFilters: React.FC = () => {
           setDateRange(DateRange.Custom);
         }}
       />
-      <DateTimeSelector
+      <DateSelector
         label="To"
         date={dateConditions.to}
         setDate={(d) => {

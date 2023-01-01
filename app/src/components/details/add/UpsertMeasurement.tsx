@@ -10,13 +10,18 @@ import { IUpsertMeasurementCommand } from "../../../serverApi/commands/IUpsertMe
 import { IUpsertGaugeMeasurementCommand } from "../../../serverApi/commands/IUpsertGaugeMeasurementCommand";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
 import { ApiError } from "../../../serverApi/ApiError";
-import { DateTimeSelector } from "../../common/DateTimeSelector";
+import { DateSelector } from "../../common/DateSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
-import { IGaugeMeasurement } from "../../../serverApi/ITimerMeasurement";
+import {
+  IGaugeMeasurement,
+  ITimerMeasurement,
+} from "../../../serverApi/ITimerMeasurement";
 import { stripTime } from "../../common/utils";
 import { AttributeComboSearch } from "./AttributeComboSearch";
 import { hasAttributes } from "../../../util/MeasurementUtil";
+import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";
+import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUpsertTimerMeasurementCommand";
 
 export const UpsertMeasurement: React.FC<{
   metric: IMetric;
@@ -40,13 +45,23 @@ export const UpsertMeasurement: React.FC<{
       : stripTime(new Date())
   );
 
+  const [startDate, setStartDate] = useState(
+    (measurement as ITimerMeasurement)?.startDate
+  );
+
+  const [endDate, setEndDate] = useState(
+    (measurement as ITimerMeasurement)?.endDate
+  );
+
   const { setAppAlert } = useAppContext();
 
   return (
     <FormControl>
-      <FormElementContainer>
-        <DateTimeSelector setDate={setDate} date={date} />
-      </FormElementContainer>
+      {metric.type !== MetricType.Timer ? (
+        <FormElementContainer>
+          <DateSelector setDate={setDate} date={date} />
+        </FormElementContainer>
+      ) : null}
 
       {metric.type === MetricType.Gauge ? (
         <TextField
@@ -58,6 +73,15 @@ export const UpsertMeasurement: React.FC<{
           sx={{
             marginBottom: "0",
           }}
+        />
+      ) : null}
+
+      {metric.type === MetricType.Timer && measurement ? (
+        <UpsertTimerMeasurement
+          startDate={startDate}
+          setStartDate={(d) => setStartDate(d?.toString())}
+          endDate={endDate}
+          setEndDate={(d) => setEndDate(d?.toString())}
         />
       ) : null}
 
@@ -139,12 +163,23 @@ export const UpsertMeasurement: React.FC<{
         dateTime: new Date(date),
       };
 
-      if (metric.type === MetricType.Gauge) {
-        (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
-          value as never
-        )
-          ? Number(value)
-          : undefined;
+      switch (metric.type) {
+        case MetricType.Gauge:
+          (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
+            value as never
+          )
+            ? Number(value)
+            : undefined;
+          break;
+
+        case MetricType.Timer:
+          (command as IUpsertTimerMeasurementCommand).startDate = new Date(
+            startDate
+          );
+          (command as IUpsertTimerMeasurementCommand).endDate = new Date(
+            endDate
+          );
+          break;
       }
 
       await ServerApi.upsertMeasurement(command, metric.type.toLowerCase());

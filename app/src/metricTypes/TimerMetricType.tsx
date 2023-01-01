@@ -45,22 +45,10 @@ export class TimerMetricType implements IMetricType {
         header: "Duration",
         getValueReactNode: (measurement: IMeasurement) => {
           const timerMeasurement = measurement as ITimerMeasurement;
-
-          const endDate = timerMeasurement.endDate
-            ? new Date(timerMeasurement.endDate)
-            : new Date();
-          const startDate = new Date(timerMeasurement.startDate);
-
-          const totalMinutes = differenceInMinutes(endDate, startDate);
-
-          if (totalMinutes < 60 || totalMinutes > 1440) {
-            return formatDistanceStrict(endDate, startDate);
-          }
-
-          const hours = Math.floor(totalMinutes / 60);
-          const minutes = totalMinutes % 60;
-
-          return `${hours}:${minutes < 10 ? "0" + minutes : minutes}h`;
+          return TimerMetricType.getDuration(
+            timerMeasurement.startDate,
+            timerMeasurement.endDate
+          );
         },
       },
     ];
@@ -76,5 +64,21 @@ export class TimerMetricType implements IMetricType {
 
   getValueLabel(value: number): string {
     return Math.round((value as number) / 60).toString();
+  }
+
+  public static getDuration(start: string, end: string): string {
+    const endDate = end ? new Date(end) : new Date();
+    const startDate = new Date(start);
+
+    const totalMinutes = differenceInMinutes(endDate, startDate);
+
+    if (totalMinutes < 60 || totalMinutes > 1440) {
+      return formatDistanceStrict(endDate, startDate);
+    }
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${hours}:${minutes < 10 ? "0" + minutes : minutes}h`;
   }
 }

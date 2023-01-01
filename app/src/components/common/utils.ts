@@ -1,4 +1,5 @@
 import { lighten } from "@mui/material";
+import { format } from "date-fns";
 
 export function getCoefficient(
   currentIndex: number,
@@ -21,6 +22,10 @@ export function stripTime(date: Date): Date {
 
 export function toDateOnlyIsoString(date: Date): string {
   return date.toISOString().split("T")[0];
+}
+
+export function getTimeIncludingSeconds(date: Date): string {
+  return format(date, "kk:mm:ss");
 }
 
 export function isValidEmail(address: string): boolean {

@@ -42,8 +42,8 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
   {
     TMeasurement measurement = await GetOrCreateNewMeasurement(repository, metric);
 
-    SetCommonValues(measurement, dateService);
-    SetTypeSpecificValues(measurement, dateService);
+    SetCommonValues(dateService, measurement);
+    SetTypeSpecificValues(dateService, measurement);
 
     UpsertResult result = await repository.UpsertMeasurement(measurement);
     return result;
@@ -55,7 +55,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     await repository.UpsertMetric(metric);
   }
 
-  private void SetCommonValues(TMeasurement measurement, IDateService dateService)
+  private void SetCommonValues(IDateService dateService, TMeasurement measurement)
   {
     measurement.MetricId = Command.MetricId;
     measurement.Notes = Command.Notes;
@@ -63,7 +63,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
   }
 
-  protected abstract void SetTypeSpecificValues(TMeasurement measurement, IDateService dateService);
+  protected abstract void SetTypeSpecificValues(IDateService dateService, TMeasurement measurement);
 
   protected virtual Task PerformTypeSpecificValidation()
   {

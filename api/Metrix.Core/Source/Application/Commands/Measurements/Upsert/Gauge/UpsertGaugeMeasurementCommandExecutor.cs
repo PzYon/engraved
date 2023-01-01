@@ -22,7 +22,7 @@ public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementComman
     return Task.CompletedTask;
   }
 
-  protected override void SetTypeSpecificValues(GaugeMeasurement measurement, IDateService dateService)
+  protected override void SetTypeSpecificValues(IDateService dateService, GaugeMeasurement measurement)
   {
     measurement.Value = Command.Value!.Value;
   }
