@@ -79,9 +79,9 @@ export const UpsertMeasurement: React.FC<{
       {metric.type === MetricType.Timer && measurement ? (
         <UpsertTimerMeasurement
           startDate={startDate}
-          setStartDate={(d) => setStartDate(d.toString())}
+          setStartDate={(d) => setStartDate(d?.toString())}
           endDate={endDate}
-          setEndDate={(d) => setEndDate(d.toString())}
+          setEndDate={(d) => setEndDate(d?.toString())}
         />
       ) : null}
 
