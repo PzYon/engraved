@@ -30,7 +30,7 @@ export const DateSelector: React.FC<{
           ampm={false}
           inputFormat="HH:mm:ss"
           mask="__:__:__"
-          views={["hours", "minutes", "seconds"]}
+          views={["hours", "minutes"]}
           value={date}
           onChange={setDate}
           renderInput={(params) => <TextField {...params} />}

@@ -1,23 +1,20 @@
-import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { FormElementContainer } from "../../common/FormUtils";
 import { DateSelector } from "../../common/DateSelector";
 import React, { useEffect } from "react";
+import { TimerMetricType } from "../../../metricTypes/TimerMetricType";
+import { Typography } from "@mui/material";
 
 export const UpsertTimerMeasurement: React.FC<{
-  measurement: ITimerMeasurement;
+  startDate: string;
   setStartDate: (startDate: Date) => void;
+  endDate: string;
   setEndDate: (endDate: Date) => void;
-}> = ({ measurement, setStartDate, setEndDate }) => {
-  const startDate = measurement?.startDate
-    ? new Date(measurement.startDate)
-    : undefined;
-
-  const endDate = measurement?.endDate
-    ? new Date(measurement.endDate)
-    : undefined;
+}> = ({ setStartDate, startDate, setEndDate, endDate }) => {
+  const start = startDate ? new Date(startDate) : undefined;
+  const end = endDate ? new Date(endDate) : undefined;
 
   useEffect(() => {
-    if (startDate && !endDate) {
+    if (start && !end) {
       setEndDate(new Date());
     }
   }, []);
@@ -27,7 +24,7 @@ export const UpsertTimerMeasurement: React.FC<{
       <FormElementContainer>
         <DateSelector
           label={"Start date"}
-          date={startDate}
+          date={start}
           setDate={setStartDate}
           showTime={true}
         />
@@ -35,10 +32,16 @@ export const UpsertTimerMeasurement: React.FC<{
       <FormElementContainer>
         <DateSelector
           label={"End date"}
-          date={endDate}
+          date={end}
           setDate={setEndDate}
           showTime={true}
         />
+      </FormElementContainer>
+      <FormElementContainer>
+        <Typography fontSize="small">
+          Duration:{" "}
+          {TimerMetricType.getDuration(start?.toString(), end?.toString())}
+        </Typography>
       </FormElementContainer>
     </>
   );
