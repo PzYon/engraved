@@ -17,8 +17,7 @@ export const DateSelector: React.FC<{
         renderInput={(params) => <TextField {...params} />}
         value={date}
         onChange={(d) => {
-          const date = stripTime(d);
-          setDate(date);
+          setDate(stripTime(d));
         }}
       />
     </LocalizationProvider>

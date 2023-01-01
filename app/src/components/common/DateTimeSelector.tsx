@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { DateSelector } from "./DateSelector";
 import { TextField } from "@mui/material";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import de from "date-fns/locale/de";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 
 export const DateTimeSelector: React.FC<{
   initialDate: Date;
@@ -8,18 +11,20 @@ export const DateTimeSelector: React.FC<{
 }> = ({ initialDate, label }) => {
   const [date, setDate] = useState<Date>(initialDate);
 
-  const [time, setTime] = useState<string>(() => {
-    const segments = initialDate.toTimeString().split(":");
-    return segments[0] + ":" + segments[1];
-  });
-
   return (
     <>
       <DateSelector setDate={setDate} date={date} label={label} />
-      <TextField
-        defaultValue={time}
-        onChange={(event) => setTime(event.target.value)}
-      />
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
+        <TimePicker
+          ampm={false}
+          inputFormat="HH:mm:ss"
+          mask="__:__:__"
+          views={["hours", "minutes", "seconds"]}
+          value={date}
+          onChange={setDate}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
     </>
   );
 };
