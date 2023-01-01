@@ -20,7 +20,8 @@ import {
 import { stripTime } from "../../common/utils";
 import { AttributeComboSearch } from "./AttributeComboSearch";
 import { hasAttributes } from "../../../util/MeasurementUtil";
-import { DateTimeSelector } from "../../common/DateTimeSelector";
+import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";
+import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUpsertTimerMeasurementCommand";
 
 export const UpsertMeasurement: React.FC<{
   metric: IMetric;
@@ -42,6 +43,14 @@ export const UpsertMeasurement: React.FC<{
     measurement?.dateTime
       ? new Date(measurement.dateTime)
       : stripTime(new Date())
+  );
+
+  const [startDate, setStartDate] = useState(
+    (measurement as ITimerMeasurement)?.startDate
+  );
+
+  const [endDate, setEndDate] = useState(
+    (measurement as ITimerMeasurement)?.endDate
   );
 
   const { setAppAlert } = useAppContext();
@@ -67,29 +76,12 @@ export const UpsertMeasurement: React.FC<{
         />
       ) : null}
 
-      {metric.type === MetricType.Timer ? (
-        <>
-          <FormElementContainer>
-            <DateTimeSelector
-              label={"Start date"}
-              initialDate={
-                (measurement as ITimerMeasurement).startDate
-                  ? new Date((measurement as ITimerMeasurement).startDate)
-                  : undefined
-              }
-            />
-          </FormElementContainer>
-          <FormElementContainer>
-            <DateTimeSelector
-              label={"End date"}
-              initialDate={
-                (measurement as ITimerMeasurement).endDate
-                  ? new Date((measurement as ITimerMeasurement).endDate)
-                  : undefined
-              }
-            />
-          </FormElementContainer>
-        </>
+      {metric.type === MetricType.Timer && measurement ? (
+        <UpsertTimerMeasurement
+          measurement={measurement as ITimerMeasurement}
+          setStartDate={(d) => setStartDate(d.toString())}
+          setEndDate={(d) => setEndDate(d.toString())}
+        />
       ) : null}
 
       {hasAttributes(metric) ? (
@@ -170,12 +162,23 @@ export const UpsertMeasurement: React.FC<{
         dateTime: new Date(date),
       };
 
-      if (metric.type === MetricType.Gauge) {
-        (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
-          value as never
-        )
-          ? Number(value)
-          : undefined;
+      switch (metric.type) {
+        case MetricType.Gauge:
+          (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
+            value as never
+          )
+            ? Number(value)
+            : undefined;
+          break;
+
+        case MetricType.Timer:
+          (command as IUpsertTimerMeasurementCommand).startDate = new Date(
+            startDate
+          );
+          (command as IUpsertTimerMeasurementCommand).endDate = new Date(
+            endDate
+          );
+          break;
       }
 
       await ServerApi.upsertMeasurement(command, metric.type.toLowerCase());
