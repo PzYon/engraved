@@ -2,6 +2,7 @@ import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { IMetric } from "../serverApi/IMetric";
 import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
+import { IMeasurement } from "../serverApi/IMeasurement";
 
 // todo:
 // - AddMeasurement contains lots MetricType-checks -> improve!
@@ -27,6 +28,8 @@ export interface IMetricType {
   getYAxisLabel(metric: IMetric): string;
 
   getValueLabel?(value: number): string;
+
+  getValue(measurement: IMeasurement): number;
 }
 
 export interface IMetricOverviewPropertyDefinition {

@@ -4,6 +4,7 @@ import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
 import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
 
 // consider: introducing generics here
+
 export class CounterMetricType implements IMetricType {
   type = MetricType.Counter;
 
@@ -23,5 +24,9 @@ export class CounterMetricType implements IMetricType {
 
   getYAxisLabel(): string {
     return "Count";
+  }
+
+  getValue(): number {
+    return 1;
   }
 }

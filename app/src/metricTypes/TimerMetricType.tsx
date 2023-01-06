@@ -4,7 +4,11 @@ import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
 import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { differenceInMinutes, formatDistanceStrict } from "date-fns";
+import {
+  differenceInMinutes,
+  differenceInSeconds,
+  formatDistanceStrict,
+} from "date-fns";
 import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
 
 export class TimerMetricType implements IMetricType {
@@ -43,6 +47,9 @@ export class TimerMetricType implements IMetricType {
       {
         key: "_duration",
         header: "Duration",
+        getRawValue: () => {
+          throw new Error("should return duration as number (e.g. in seconds)");
+        },
         getValueReactNode: (measurement: IMeasurement) => {
           const timerMeasurement = measurement as ITimerMeasurement;
           return TimerMetricType.getDuration(
@@ -64,6 +71,15 @@ export class TimerMetricType implements IMetricType {
 
   getValueLabel(value: number): string {
     return Math.round((value as number) / 60).toString();
+  }
+
+  getValue(measurement: IMeasurement): number {
+    const m = measurement as ITimerMeasurement;
+
+    return differenceInSeconds(
+      m.endDate ? new Date(m.endDate) : new Date(),
+      new Date(m.startDate)
+    );
   }
 
   public static getDuration(start: string, end: string): string {

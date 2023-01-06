@@ -10,6 +10,7 @@ import { IDataTableColumnDefinition } from "./IDataTableColumnDefinition";
 import { format } from "date-fns";
 import { Typography } from "@mui/material";
 import { MeasurementActionButtons } from "./MeasurementActionButtons";
+import { getMeasurementsTableGroups } from "./measurementsStuff";
 
 export const MeasurementsList: React.FC<{
   metric: IMetric;
@@ -23,7 +24,11 @@ export const MeasurementsList: React.FC<{
     ].filter((c) => c.doHide?.(metric) !== true);
   }, [metric]);
 
-  return <DataTable measurements={measurements} columns={columns} />;
+  const tableGroups = getMeasurementsTableGroups(measurements, metric.type);
+
+  debugger;
+
+  return <DataTable tableGroups={tableGroups} columns={columns} />;
 };
 
 const getColumnsBefore = (): IDataTableColumnDefinition[] => [

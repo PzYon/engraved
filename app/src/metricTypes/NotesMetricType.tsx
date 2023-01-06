@@ -22,4 +22,8 @@ export class NotesMetricType implements IMetricType {
   getYAxisLabel(): string {
     return "";
   }
+
+  getValue(): number {
+    return 0;
+  }
 }
