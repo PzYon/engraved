@@ -47,9 +47,8 @@ export class TimerMetricType implements IMetricType {
       {
         key: "_duration",
         header: "Duration",
-        getRawValue: () => {
-          throw new Error("should return duration as number (e.g. in seconds)");
-        },
+        isSummable: true,
+        getRawValue: (measurement: IMeasurement) => this.getValue(measurement),
         getValueReactNode: (measurement: IMeasurement) => {
           const timerMeasurement = measurement as ITimerMeasurement;
           return TimerMetricType.getDuration(

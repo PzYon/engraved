@@ -10,10 +10,6 @@ export interface IMeasurementsTableGroup {
   label: string;
 }
 
-export interface IMeasurementsTable {
-  groups: IMeasurementsTableGroup[];
-}
-
 export function getMeasurementsTableGroups(
   measurements: IMeasurement[],
   metricType: MetricType

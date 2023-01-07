@@ -26,8 +26,6 @@ export const MeasurementsList: React.FC<{
 
   const tableGroups = getMeasurementsTableGroups(measurements, metric.type);
 
-  debugger;
-
   return <DataTable tableGroups={tableGroups} columns={columns} />;
 };
 
