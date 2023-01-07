@@ -30,6 +30,8 @@ export interface IMetricType {
   getValueLabel?(value: number): string;
 
   getValue(measurement: IMeasurement): number;
+
+  formatTotalValue?(totalValue: number): string;
 }
 
 export interface IMetricOverviewPropertyDefinition {

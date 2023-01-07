@@ -74,7 +74,7 @@ export const DataTable: React.FC<{
                   <>
                     {columns.map((c) => {
                       return c.isSummable ? (
-                        <TableCell>{group.total}</TableCell>
+                        <TableCell>{group.totalString}</TableCell>
                       ) : (
                         <TableCell />
                       );

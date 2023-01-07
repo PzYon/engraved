@@ -5,9 +5,10 @@ import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { format } from "date-fns";
 
 export interface IMeasurementsTableGroup {
-  measurements: IMeasurement[];
-  total: number;
   label: string;
+  measurements: IMeasurement[];
+  totalValue: number;
+  totalString: string;
 }
 
 export function getMeasurementsTableGroups(
@@ -22,11 +23,19 @@ export function getMeasurementsTableGroups(
     const groupKey = getGroupKey(metricType, measurement);
 
     if (!groupsByKey[groupKey]) {
-      groupsByKey[groupKey] = { measurements: [], label: groupKey, total: 0 };
+      groupsByKey[groupKey] = {
+        label: groupKey,
+        measurements: [],
+        totalValue: 0,
+        totalString: "0",
+      };
     }
 
     groupsByKey[groupKey].measurements.push(measurement);
-    groupsByKey[groupKey].total += type.getValue(measurement);
+    groupsByKey[groupKey].totalValue += type.getValue(measurement);
+    groupsByKey[groupKey].totalString = type.formatTotalValue
+      ? type.formatTotalValue(groupsByKey[groupKey].totalValue)
+      : groupsByKey[groupKey].totalValue.toString();
   }
 
   return Object.values(groupsByKey);

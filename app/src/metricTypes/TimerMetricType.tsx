@@ -81,6 +81,13 @@ export class TimerMetricType implements IMetricType {
     );
   }
 
+  formatTotalValue(totalValue: number): string {
+    const hours = Math.floor(totalValue / 60);
+    const minutes = totalValue % 60;
+
+    return `${hours}:${minutes < 10 ? "0" + minutes : minutes}h`;
+  }
+
   public static getDuration(start: string, end: string): string {
     const endDate = end ? new Date(end) : new Date();
     const startDate = new Date(start);
