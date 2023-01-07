@@ -3,7 +3,7 @@ import { BarChartSharp } from "@mui/icons-material";
 import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
 import { IGaugeMeasurement } from "../serverApi/ITimerMeasurement";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/dataTable/IMeasurementsListColumnDefinition";
 import { getValue } from "../components/details/chart/consolidation/consolidate";
 
 export class GaugeMetricType implements IMetricType {
@@ -15,7 +15,7 @@ export class GaugeMetricType implements IMetricType {
     return <BarChartSharp />;
   }
 
-  getMeasurementsListColumns(): IDataTableColumnDefinition[] {
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
     return [
       {
         key: "_value",

@@ -9,7 +9,7 @@ import {
   differenceInSeconds,
   formatDistanceStrict,
 } from "date-fns";
-import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/dataTable/IMeasurementsListColumnDefinition";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -22,7 +22,7 @@ export class TimerMetricType implements IMetricType {
     return <TimerSharp />;
   }
 
-  getMeasurementsListColumns(): IDataTableColumnDefinition[] {
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
     return [
       {
         key: "_start",

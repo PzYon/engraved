@@ -1,15 +1,8 @@
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { IMetric } from "../serverApi/IMetric";
-import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/dataTable/IMeasurementsListColumnDefinition";
 import { IMeasurement } from "../serverApi/IMeasurement";
-
-// todo:
-// - AddMeasurement contains lots MetricType-checks -> improve!
-// - Table props
-// - Props in over
-// - Details or introduction
-// - ...
 
 export interface IMetricType {
   type: MetricType;
@@ -19,7 +12,7 @@ export interface IMetricType {
 
   getIcon(): React.ReactNode;
 
-  getMeasurementsListColumns(): IDataTableColumnDefinition[];
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[];
 
   hideDateColumnInMeasurementsList?: boolean;
 

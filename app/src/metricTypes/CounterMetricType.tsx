@@ -1,7 +1,7 @@
 import { MetricType } from "../serverApi/MetricType";
 import { PlusOneSharp } from "@mui/icons-material";
 import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
-import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/dataTable/IMeasurementsListColumnDefinition";
 
 // consider: introducing generics here
 
@@ -14,7 +14,7 @@ export class CounterMetricType implements IMetricType {
     return <PlusOneSharp />;
   }
 
-  getMeasurementsListColumns(): IDataTableColumnDefinition[] {
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
     return [];
   }
 
