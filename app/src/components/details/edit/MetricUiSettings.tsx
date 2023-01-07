@@ -2,6 +2,7 @@ import React from "react";
 import { Checkbox, FormControlLabel, styled } from "@mui/material";
 import {
   FilterAltOutlined,
+  FunctionsOutlined,
   PanToolOutlined,
   ShowChartOutlined,
 } from "@mui/icons-material";
@@ -12,6 +13,7 @@ import { DateRange } from "../filters/DateFilters";
 import { DateRangeSelector } from "../filters/DateRangeSelector";
 
 export interface IMetricUiSettings {
+  showGroupTotals?: boolean;
   showChart?: boolean;
   showThresholds?: boolean;
   showFilters?: boolean;
@@ -69,6 +71,21 @@ export const MetricUiSettings: React.FC<{
               />
             }
             label="Show filters by default"
+          />
+        </GridItem>
+        <GridItem>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={uiSettings.showGroupTotals}
+                onChange={(_, checked) =>
+                  onChange({ ...uiSettings, showGroupTotals: checked })
+                }
+                icon={<FunctionsOutlined sx={{ opacity: 0.5 }} />}
+                checkedIcon={<FunctionsOutlined />}
+              />
+            }
+            label="Show group totals by default"
           />
         </GridItem>
         <GridItem>

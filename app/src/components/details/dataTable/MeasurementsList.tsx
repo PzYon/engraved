@@ -14,7 +14,8 @@ import { getGroupKey, getMeasurementsTableGroups } from "./measurementsStuff";
 export const MeasurementsList: React.FC<{
   metric: IMetric;
   measurements: IMeasurement[];
-}> = ({ metric, measurements }) => {
+  showGroupTotals: boolean;
+}> = ({ metric, measurements, showGroupTotals }) => {
   const columns = useMemo(() => {
     return [
       ...getColumnsBefore(metric),
@@ -25,7 +26,13 @@ export const MeasurementsList: React.FC<{
 
   const tableGroups = getMeasurementsTableGroups(measurements, metric.type);
 
-  return <DataTable tableGroups={tableGroups} columns={columns} />;
+  return (
+    <DataTable
+      tableGroups={tableGroups}
+      columns={columns}
+      showGroupTotals={showGroupTotals}
+    />
+  );
 };
 
 const getColumnsBefore = (metric: IMetric): IDataTableColumnDefinition[] => [

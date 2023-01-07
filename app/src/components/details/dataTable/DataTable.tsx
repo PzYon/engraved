@@ -13,7 +13,8 @@ import { IMeasurementsTableGroup } from "./measurementsStuff";
 export const DataTable: React.FC<{
   columns: IDataTableColumnDefinition[];
   tableGroups: IMeasurementsTableGroup[];
-}> = ({ columns, tableGroups }) => {
+  showGroupTotals: boolean;
+}> = ({ columns, tableGroups, showGroupTotals }) => {
   const sums: { [key: string]: number } = {};
   const groupKeys: { [key: string]: string } = {};
 
@@ -68,17 +69,19 @@ export const DataTable: React.FC<{
                   </TableRow>
                 </>
               ))}
-              <TableRow>
-                <>
-                  {columns.map((c) => {
-                    return c.isSummable ? (
-                      <TableCell>{group.total}</TableCell>
-                    ) : (
-                      <TableCell />
-                    );
-                  })}
-                </>
-              </TableRow>
+              {showGroupTotals ? (
+                <TableRow>
+                  <>
+                    {columns.map((c) => {
+                      return c.isSummable ? (
+                        <TableCell>{group.total}</TableCell>
+                      ) : (
+                        <TableCell />
+                      );
+                    })}
+                  </>
+                </TableRow>
+              ) : null}
             </>
           );
         })}
