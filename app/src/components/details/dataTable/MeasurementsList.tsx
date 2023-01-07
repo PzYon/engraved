@@ -7,10 +7,9 @@ import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { AttributeValues } from "../../common/AttributeValues";
 import { DataTable } from "./DataTable";
 import { IDataTableColumnDefinition } from "./IDataTableColumnDefinition";
-import { format } from "date-fns";
 import { Typography } from "@mui/material";
 import { MeasurementActionButtons } from "./MeasurementActionButtons";
-import { getMeasurementsTableGroups } from "./measurementsStuff";
+import { getGroupKey, getMeasurementsTableGroups } from "./measurementsStuff";
 
 export const MeasurementsList: React.FC<{
   metric: IMetric;
@@ -18,7 +17,7 @@ export const MeasurementsList: React.FC<{
 }> = ({ metric, measurements }) => {
   const columns = useMemo(() => {
     return [
-      ...getColumnsBefore(),
+      ...getColumnsBefore(metric),
       ...MetricTypeFactory.create(metric.type).getMeasurementsListColumns(),
       ...getColumnsAfter(metric),
     ].filter((c) => c.doHide?.(metric) !== true);
@@ -29,7 +28,7 @@ export const MeasurementsList: React.FC<{
   return <DataTable tableGroups={tableGroups} columns={columns} />;
 };
 
-const getColumnsBefore = (): IDataTableColumnDefinition[] => [
+const getColumnsBefore = (metric: IMetric): IDataTableColumnDefinition[] => [
   {
     header: translations.columnName_date,
     key: "_date",
@@ -48,10 +47,7 @@ const getColumnsBefore = (): IDataTableColumnDefinition[] => [
         </Typography>
       </>
     ),
-    getGroupKey: (measurement) => {
-      const date = new Date(measurement.dateTime);
-      return format(date, "u-LL-dd");
-    },
+    getGroupKey: (measurement) => getGroupKey(metric.type, measurement),
   },
 ];
 

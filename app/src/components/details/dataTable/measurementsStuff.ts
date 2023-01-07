@@ -32,7 +32,7 @@ export function getMeasurementsTableGroups(
   return Object.values(groupsByKey);
 }
 
-function getGroupKey(metricType: MetricType, measurement: IMeasurement) {
+export function getGroupKey(metricType: MetricType, measurement: IMeasurement) {
   return format(
     new Date(
       metricType === MetricType.Timer
