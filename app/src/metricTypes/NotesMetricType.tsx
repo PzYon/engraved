@@ -1,5 +1,5 @@
 import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
-import { IMeasurementsListColumnDefinition } from "../components/details/dataTable/IMeasurementsListColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { TextSnippetOutlined } from "@mui/icons-material";

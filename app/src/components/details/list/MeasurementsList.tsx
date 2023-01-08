@@ -38,9 +38,6 @@ export const MeasurementsList: React.FC<{
     return getMeasurementsTableGroups(measurements, metric.type);
   }, [measurements]);
 
-  const sums: { [key: string]: number } = {};
-  const groupKeys: { [key: string]: string } = {};
-
   return (
     <Table>
       <TableHead>
@@ -51,70 +48,53 @@ export const MeasurementsList: React.FC<{
         </TableRow>
       </TableHead>
       <TableBody>
-        {tableGroups.map((group) => {
-          return (
-            <>
-              {group.measurements.map((measurement) => (
-                <>
-                  <TableRow key={measurement.id}>
-                    {columns.map((c) => {
-                      if (c.isSummable) {
-                        if (!c.getRawValue) {
-                          throw new Error(
-                            "getRawValue must be defined for summable columns,"
-                          );
-                        }
-
-                        if (!sums[c.key]) {
-                          sums[c.key] = 0;
-                        }
-
-                        sums[c.key] += c.getRawValue(measurement);
-                      }
-
-                      const currentGroupKey = c.getGroupKey?.(measurement);
-
-                      const isKnownColumnWithKey =
-                        currentGroupKey && currentGroupKey === groupKeys[c.key];
-
-                      if (isKnownColumnWithKey) {
-                        return <TableCell key={c.key} />;
-                      }
-
-                      groupKeys[c.key] = currentGroupKey;
-
-                      return (
-                        <TableCell key={c.key}>
-                          {c.getValueReactNode(measurement)}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                </>
-              ))}
-              {showGroupTotals ? (
-                <TableRow>
-                  <>
-                    {columns.map((c) => {
-                      return c.isSummable ? (
-                        <TableCell>{group.totalString}</TableCell>
-                      ) : (
-                        <TableCell />
-                      );
-                    })}
-                  </>
+        {tableGroups.map((group) => (
+          <>
+            {group.measurements.map((measurement, i) => (
+              <>
+                <TableRow key={measurement.id}>
+                  {columns.map((c) =>
+                    i > 0 && c.getGroupKey?.(measurement) ? (
+                      <TableCell key={c.key} />
+                    ) : (
+                      <TableCell key={c.key}>
+                        {c.getValueReactNode(measurement)}
+                      </TableCell>
+                    )
+                  )}
                 </TableRow>
-              ) : null}
-            </>
-          );
-        })}
+              </>
+            ))}
+            {showGroupTotals ? (
+              <TableRow>
+                <>
+                  {columns.map((c) => {
+                    return c.isSummable ? (
+                      <TableCell>{group.totalString}</TableCell>
+                    ) : (
+                      <TableCell />
+                    );
+                  })}
+                </>
+              </TableRow>
+            ) : null}
+          </>
+        ))}
       </TableBody>
-      {columns.filter((c) => c.isSummable).length ? (
+      {measurements.length && columns.filter((c) => c.isSummable).length ? (
         <TableFooter>
           <TableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
-                {c.isSummable ? sums[c.key] : null}
+                {c.isSummable
+                  ? tableGroups
+                      .map((g) => g.totalValue)
+                      .reduce(
+                        (previousValue, currentValue) =>
+                          previousValue + currentValue,
+                        0
+                      )
+                  : null}
               </TableCell>
             ))}
           </TableRow>
@@ -157,7 +137,7 @@ function getColumnsAfter(metric: IMetric): IMeasurementsListColumnDefinition[] {
       header: translations.columnName_attributes,
       key: "_attributes",
       doHide: (metric: IMetric): boolean =>
-        !metric.attributes || !Object.keys(metric.attributes).length,
+        !Object.keys(metric.attributes ?? {}).length,
       getValueReactNode: (measurement) => (
         <AttributeValues
           attributes={metric.attributes}
@@ -204,22 +184,23 @@ function getMeasurementsTableGroups(
     }
 
     groupsByKey[groupKey].measurements.push(measurement);
-    groupsByKey[groupKey].totalValue += type.getValue(measurement);
+
+    const total = groupsByKey[groupKey].totalValue + type.getValue(measurement);
+
+    groupsByKey[groupKey].totalValue = total;
     groupsByKey[groupKey].totalString = type.formatTotalValue
-      ? type.formatTotalValue(groupsByKey[groupKey].totalValue)
-      : groupsByKey[groupKey].totalValue.toString();
+      ? type.formatTotalValue(total)
+      : total.toString();
   }
 
   return Object.values(groupsByKey);
 }
 
 function getGroupKey(metricType: MetricType, measurement: IMeasurement) {
-  return format(
-    new Date(
-      metricType === MetricType.Timer
-        ? (measurement as ITimerMeasurement).startDate
-        : measurement.dateTime
-    ),
-    "u-LL-dd"
-  );
+  const relevantDate =
+    metricType === MetricType.Timer
+      ? (measurement as ITimerMeasurement).startDate
+      : measurement.dateTime;
+
+  return format(new Date(relevantDate), "u-LL-dd");
 }

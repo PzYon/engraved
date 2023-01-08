@@ -1,7 +1,7 @@
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { IMetric } from "../serverApi/IMetric";
-import { IMeasurementsListColumnDefinition } from "../components/details/dataTable/IMeasurementsListColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
 import { IMeasurement } from "../serverApi/IMeasurement";
 
 export interface IMetricType {

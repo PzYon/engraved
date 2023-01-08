@@ -1,7 +1,7 @@
 import { MetricType } from "../serverApi/MetricType";
 import { PlusOneSharp } from "@mui/icons-material";
 import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
-import { IMeasurementsListColumnDefinition } from "../components/details/dataTable/IMeasurementsListColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
 
 // consider: introducing generics here
 

@@ -9,7 +9,7 @@ import {
   differenceInSeconds,
   formatDistanceStrict,
 } from "date-fns";
-import { IMeasurementsListColumnDefinition } from "../components/details/dataTable/IMeasurementsListColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;

@@ -16,7 +16,7 @@ import { MetricNotes } from "./edit/MetricNotes";
 import { Filters } from "./filters/Filters";
 import { Chart } from "./chart/Chart";
 import { Thresholds } from "./thresholds/Thresholds";
-import { MeasurementsList } from "./dataTable/MeasurementsList";
+import { MeasurementsList } from "./list/MeasurementsList";
 import { Route, Routes } from "react-router-dom";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
