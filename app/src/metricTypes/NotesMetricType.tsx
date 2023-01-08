@@ -1,5 +1,5 @@
 import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
-import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { TextSnippetOutlined } from "@mui/icons-material";
@@ -11,7 +11,7 @@ export class NotesMetricType implements IMetricType {
     return <TextSnippetOutlined />;
   }
 
-  getMeasurementsListColumns(): IDataTableColumnDefinition[] {
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
     return [];
   }
 
@@ -21,5 +21,9 @@ export class NotesMetricType implements IMetricType {
 
   getYAxisLabel(): string {
     return "";
+  }
+
+  getValue(): number {
+    return 0;
   }
 }

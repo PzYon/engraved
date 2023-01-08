@@ -1,9 +1,10 @@
 import { MetricType } from "../serverApi/MetricType";
 import { PlusOneSharp } from "@mui/icons-material";
 import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
-import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
+import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
 
 // consider: introducing generics here
+
 export class CounterMetricType implements IMetricType {
   type = MetricType.Counter;
 
@@ -13,7 +14,7 @@ export class CounterMetricType implements IMetricType {
     return <PlusOneSharp />;
   }
 
-  getMeasurementsListColumns(): IDataTableColumnDefinition[] {
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
     return [];
   }
 
@@ -23,5 +24,9 @@ export class CounterMetricType implements IMetricType {
 
   getYAxisLabel(): string {
     return "Count";
+  }
+
+  getValue(): number {
+    return 1;
   }
 }

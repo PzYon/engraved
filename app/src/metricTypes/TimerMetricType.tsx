@@ -4,8 +4,12 @@ import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
 import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { differenceInMinutes, formatDistanceStrict } from "date-fns";
-import { IDataTableColumnDefinition } from "../components/details/dataTable/IDataTableColumnDefinition";
+import {
+  differenceInMinutes,
+  differenceInSeconds,
+  formatDistanceStrict,
+} from "date-fns";
+import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -18,7 +22,7 @@ export class TimerMetricType implements IMetricType {
     return <TimerSharp />;
   }
 
-  getMeasurementsListColumns(): IDataTableColumnDefinition[] {
+  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
     return [
       {
         key: "_start",
@@ -43,6 +47,8 @@ export class TimerMetricType implements IMetricType {
       {
         key: "_duration",
         header: "Duration",
+        isSummable: true,
+        getRawValue: (measurement: IMeasurement) => this.getValue(measurement),
         getValueReactNode: (measurement: IMeasurement) => {
           const timerMeasurement = measurement as ITimerMeasurement;
           return TimerMetricType.getDuration(
@@ -64,6 +70,22 @@ export class TimerMetricType implements IMetricType {
 
   getValueLabel(value: number): string {
     return Math.round((value as number) / 60).toString();
+  }
+
+  getValue(measurement: IMeasurement): number {
+    const m = measurement as ITimerMeasurement;
+
+    return differenceInSeconds(
+      m.endDate ? new Date(m.endDate) : new Date(),
+      new Date(m.startDate)
+    );
+  }
+
+  formatTotalValue(totalValue: number): string {
+    const hours = Math.floor(totalValue / 60);
+    const minutes = totalValue % 60;
+
+    return `${hours}:${minutes < 10 ? "0" + minutes : minutes}h`;
   }
 
   public static getDuration(start: string, end: string): string {

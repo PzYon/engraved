@@ -5,6 +5,7 @@ import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import { IIconButtonAction } from "../common/IconButtonWrapper";
 import {
   FilterAltOutlined,
+  FunctionsOutlined,
   MessageOutlined,
   PanToolOutlined,
   ShowChartOutlined,
@@ -15,7 +16,7 @@ import { MetricNotes } from "./edit/MetricNotes";
 import { Filters } from "./filters/Filters";
 import { Chart } from "./chart/Chart";
 import { Thresholds } from "./thresholds/Thresholds";
-import { MeasurementsList } from "./dataTable/MeasurementsList";
+import { MeasurementsList } from "./list/MeasurementsList";
 import { Route, Routes } from "react-router-dom";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
@@ -58,6 +59,9 @@ export const MetricViewPage: React.FC = () => {
   const [showThresholds, setShowThresholds] = useState(
     !!uiSettings?.showThresholds
   );
+  const [showGroupTotals, setShowGroupTotals] = useState(
+    !!uiSettings?.showGroupTotals
+  );
 
   const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
 
@@ -88,11 +92,18 @@ export const MetricViewPage: React.FC = () => {
         isNotActive: !showChart,
       },
       {
-        key: "collapse",
+        key: "filters",
         icon: <FilterAltOutlined fontSize="small" />,
         label: "Show filters",
         onClick: () => setShowFilters(!showFilters),
         isNotActive: !showFilters,
+      },
+      {
+        key: "groupTotals",
+        icon: <FunctionsOutlined fontSize="small" />,
+        label: "Show group total",
+        onClick: () => setShowGroupTotals(!showGroupTotals),
+        isNotActive: !showGroupTotals,
       },
       Object.keys(metric.thresholds || {}).length
         ? {
@@ -110,7 +121,14 @@ export const MetricViewPage: React.FC = () => {
     return () => {
       setTitleActions([]);
     };
-  }, [metric, showNotes, showFilters, showChart, showThresholds]);
+  }, [
+    metric,
+    showNotes,
+    showFilters,
+    showChart,
+    showThresholds,
+    showGroupTotals,
+  ]);
 
   return (
     <Page
@@ -162,7 +180,11 @@ export const MetricViewPage: React.FC = () => {
       ) : null}
 
       <DetailsSection overflowXScroll={true}>
-        <MeasurementsList metric={metric} measurements={measurements} />
+        <MeasurementsList
+          metric={metric}
+          measurements={measurements}
+          showGroupTotals={showGroupTotals}
+        />
       </DetailsSection>
 
       <Routes>
