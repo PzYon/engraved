@@ -4,12 +4,12 @@ import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
 import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import {
-  differenceInMinutes,
-  differenceInSeconds,
-  formatDistanceStrict,
-} from "date-fns";
+import { differenceInSeconds } from "date-fns";
 import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
+import {
+  getDurationAsHhMmSs,
+  getDurationAsHhMmSsFromSeconds,
+} from "../util/getDurationAsHhMmSs";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -82,25 +82,13 @@ export class TimerMetricType implements IMetricType {
   }
 
   formatTotalValue(totalValue: number): string {
-    const hours = Math.floor(totalValue / 60);
-    const minutes = totalValue % 60;
-
-    return `${hours}:${minutes < 10 ? "0" + minutes : minutes}h`;
+    return getDurationAsHhMmSsFromSeconds(totalValue);
   }
 
   public static getDuration(start: string, end: string): string {
-    const endDate = end ? new Date(end) : new Date();
     const startDate = new Date(start);
+    const endDate = end ? new Date(end) : new Date();
 
-    const totalMinutes = differenceInMinutes(endDate, startDate);
-
-    if (totalMinutes < 60 || totalMinutes > 1440) {
-      return formatDistanceStrict(endDate, startDate);
-    }
-
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    return `${hours}:${minutes < 10 ? "0" + minutes : minutes}h`;
+    return getDurationAsHhMmSs(startDate, endDate);
   }
 }

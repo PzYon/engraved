@@ -17,7 +17,7 @@ import {
   IGaugeMeasurement,
   ITimerMeasurement,
 } from "../../../serverApi/ITimerMeasurement";
-import { stripTime } from "../../common/utils";
+import { stripTime } from "../../../util/utils";
 import { AttributeComboSearch } from "./AttributeComboSearch";
 import { hasAttributes } from "../../../util/MeasurementUtil";
 import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";

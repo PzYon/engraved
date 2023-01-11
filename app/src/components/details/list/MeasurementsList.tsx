@@ -38,6 +38,10 @@ export const MeasurementsList: React.FC<{
     return getMeasurementsTableGroups(measurements, metric.type);
   }, [measurements]);
 
+  const type = useMemo(() => {
+    return MetricTypeFactory.create(metric.type);
+  }, [metric?.type]);
+
   return (
     <Table>
       <TableHead>
@@ -51,31 +55,25 @@ export const MeasurementsList: React.FC<{
         {tableGroups.map((group) => (
           <>
             {group.measurements.map((measurement, i) => (
-              <>
-                <TableRow key={measurement.id}>
-                  {columns.map((c) =>
-                    i > 0 && c.getGroupKey?.(measurement) ? (
-                      <TableCell key={c.key} />
-                    ) : (
-                      <TableCell key={c.key}>
-                        {c.getValueReactNode(measurement)}
-                      </TableCell>
-                    )
-                  )}
-                </TableRow>
-              </>
+              <TableRow key={measurement.id}>
+                {columns.map((c) =>
+                  i > 0 && c.getGroupKey?.(measurement) ? (
+                    <TableCell key={c.key} />
+                  ) : (
+                    <TableCell key={c.key}>
+                      {c.getValueReactNode(measurement)}
+                    </TableCell>
+                  )
+                )}
+              </TableRow>
             ))}
             {showGroupTotals ? (
               <TableRow>
-                <>
-                  {columns.map((c) => {
-                    return c.isSummable ? (
-                      <TableCell>{group.totalString}</TableCell>
-                    ) : (
-                      <TableCell />
-                    );
-                  })}
-                </>
+                {columns.map((c) => (
+                  <TableCell key={c.key} sx={{ opacity: 0.5 }}>
+                    {c.isSummable ? group.totalString : ""}
+                  </TableCell>
+                ))}
               </TableRow>
             ) : null}
           </>
@@ -87,13 +85,11 @@ export const MeasurementsList: React.FC<{
             {columns.map((c) => (
               <TableCell key={c.key}>
                 {c.isSummable
-                  ? tableGroups
-                      .map((g) => g.totalValue)
-                      .reduce(
-                        (previousValue, currentValue) =>
-                          previousValue + currentValue,
-                        0
-                      )
+                  ? type.formatTotalValue(
+                      tableGroups
+                        .map((g) => g.totalValue)
+                        .reduce((total, current) => total + current, 0)
+                    )
                   : null}
               </TableCell>
             ))}

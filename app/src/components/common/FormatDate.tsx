@@ -33,7 +33,7 @@ export const formatDate = (
     case DateFormat.ticks:
       return format(date, "T");
     case DateFormat.timeOnly:
-      return format(date, "HH:mm");
+      return format(date, "HH:mm:ss");
     case DateFormat.relativeToNowDayPlus:
       return isToday(date)
         ? "today"
