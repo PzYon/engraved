@@ -3,7 +3,7 @@ import React from "react";
 import { IMetricAttributes } from "../../serverApi/IMetricAttributes";
 import { Chip, lighten } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { getCoefficient } from "./utils";
+import { getCoefficient } from "../../util/utils";
 import { useMetricContext } from "../details/MetricDetailsContext";
 
 export const AttributeValues: React.FC<{

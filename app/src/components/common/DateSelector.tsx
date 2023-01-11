@@ -6,7 +6,7 @@ import {
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { TextField } from "@mui/material";
 import React from "react";
-import { stripTime } from "./utils";
+import { stripTime } from "../../util/utils";
 import de from "date-fns/locale/de";
 
 export const DateSelector: React.FC<{

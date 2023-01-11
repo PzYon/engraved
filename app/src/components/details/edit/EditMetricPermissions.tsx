@@ -9,7 +9,7 @@ import { IUpdatePermissions } from "../../../serverApi/IUpdatePermissions";
 import { UserPermission } from "./UserPermission";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
-import { isValidEmail } from "../../common/utils";
+import { isValidEmail } from "../../../util/utils";
 
 export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
   metric,

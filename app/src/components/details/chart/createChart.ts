@@ -6,7 +6,7 @@ import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
 import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
-import { getCoefficient, getColorShades } from "../../common/utils";
+import { getCoefficient, getColorShades } from "../../../util/utils";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
 

@@ -17,7 +17,7 @@ import { IUpdatePermissions } from "./IUpdatePermissions";
 import { IMetricAttributeValues } from "./IMetricAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/MetricDetailsContext";
-import { toDateOnlyIsoString } from "../components/common/utils";
+import { toDateOnlyIsoString } from "../util/utils";
 import { IAttributeSearchResult } from "./IAttributeSearchResult";
 import { IThresholdValues } from "./IThresholdValues";
 import { IMetricThresholds } from "./IMetricThresholds";
