@@ -20,6 +20,7 @@ import { MetricType } from "../../../serverApi/MetricType";
 import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { format } from "date-fns";
 import { IMeasurementsTableGroup } from "./IMeasurementsListGroup";
+import { IMetricType } from "../../../metricTypes/IMetricType";
 
 export const MeasurementsList: React.FC<{
   metric: IMetric;
@@ -84,13 +85,7 @@ export const MeasurementsList: React.FC<{
           <TableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
-                {c.isSummable
-                  ? type.formatTotalValue(
-                      tableGroups
-                        .map((g) => g.totalValue)
-                        .reduce((total, current) => total + current, 0)
-                    )
-                  : null}
+                {getTotalValue(c, type, tableGroups)}
               </TableCell>
             ))}
           </TableRow>
@@ -199,4 +194,24 @@ function getGroupKey(metricType: MetricType, measurement: IMeasurement) {
       : measurement.dateTime;
 
   return format(new Date(relevantDate), "u-LL-dd");
+}
+
+function getTotalValue(
+  c: IMeasurementsListColumnDefinition,
+  type: IMetricType,
+  tableGroups: IMeasurementsTableGroup[]
+) {
+  if (!c.isSummable) {
+    return null;
+  }
+
+  const totalValue = tableGroups
+    .map((g) => g.totalValue)
+    .reduce((total, current) => total + current, 0);
+
+  if (type.formatTotalValue) {
+    return type.formatTotalValue(totalValue);
+  }
+
+  return totalValue;
 }
