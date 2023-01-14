@@ -11,11 +11,11 @@ import { MetricViewPage } from "./MetricViewPage";
 import { MetricEditPage } from "./edit/MetricEditPage";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { DeleteMetricLauncher } from "./edit/DeleteMetricLauncher";
+import { IMetric } from "../../serverApi/IMetric";
 
 export const MetricDetails: React.FC = () => {
   const { metric } = useMetricContext();
   const deviceWidth = useDeviceWidth();
-  const navigate = useNavigate();
 
   if (!metric) {
     return null;
@@ -48,21 +48,31 @@ export const MetricDetails: React.FC = () => {
             <Route path="/*" element={<MetricViewPage />} />
           </>
         )}
-        <Route
-          path="/permissions"
-          element={<EditMetricPermissionsLauncher metric={metric} />}
-        />
-        <Route
-          path="/delete"
-          element={
-            <DeleteMetricLauncher
-              metric={metric}
-              onDeleted={() => navigate("../../")}
-            />
-          }
-        />
       </Routes>
+      <SubRoutes metric={metric} />
     </>
+  );
+};
+
+const SubRoutes: React.FC<{ metric: IMetric }> = ({ metric }) => {
+  const navigate = useNavigate();
+
+  return (
+    <Routes>
+      <Route
+        path="/permissions"
+        element={<EditMetricPermissionsLauncher metric={metric} />}
+      />
+      <Route
+        path="/delete"
+        element={
+          <DeleteMetricLauncher
+            metric={metric}
+            onDeleted={() => navigate("../../")}
+          />
+        }
+      />
+    </Routes>
   );
 };
 
