@@ -44,11 +44,7 @@ export const AppHeader: React.FC = () => {
           {pageTitle}
         </Typography>
 
-        <HeaderActions
-          style={deviceWidth === DeviceWidth.Small ? { width: "100%" } : null}
-          actions={pageActions}
-          enableFloatingActions={true}
-        />
+        <HeaderActions actions={pageActions} enableFloatingActions={true} />
       </ContentWrapper>
     </Host>
   );

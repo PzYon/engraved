@@ -6,8 +6,11 @@ import { MetricHeaderActions } from "./MetricHeaderActions";
 import { Section } from "../layout/Section";
 import { MetricProperties } from "./MetricProperties";
 import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
+import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 
 export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
+  const deviceWidth = useDeviceWidth();
+
   return (
     <Section key={metric.id}>
       <Box sx={{ display: "flex" }}>
@@ -30,10 +33,17 @@ export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
           </Link>
           <Typography>{metric.description}</Typography>
           <MetricProperties metric={metric} />
+          {deviceWidth === DeviceWidth.Small ? (
+            <Box sx={{ display: "flex", mt: 2 }}>
+              <MetricHeaderActions metric={metric} />
+            </Box>
+          ) : null}
         </Box>
-        <Box>
-          <MetricHeaderActions metric={metric} />
-        </Box>
+        {deviceWidth !== DeviceWidth.Small ? (
+          <Box>
+            <MetricHeaderActions metric={metric} />
+          </Box>
+        ) : null}
       </Box>
     </Section>
   );
