@@ -11,8 +11,7 @@ import { AssistWalker } from "@mui/icons-material";
 export const HeaderActions: React.FC<{
   actions: IIconButtonAction[];
   enableFloatingActions?: boolean;
-  style?: React.CSSProperties;
-}> = ({ actions, enableFloatingActions, style }) => {
+}> = ({ actions, enableFloatingActions }) => {
   const buttonContainerRef = useRef<HTMLDivElement>();
 
   const areHeaderActionsInViewPort = useIsInViewport(buttonContainerRef);
@@ -28,7 +27,7 @@ export const HeaderActions: React.FC<{
   }
 
   return (
-    <div style={style}>
+    <>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
@@ -48,13 +47,12 @@ export const HeaderActions: React.FC<{
             )
           )}
       </ButtonContainer>
-    </div>
+    </>
   );
 };
 
 const ButtonContainer = styled("div")`
   display: flex;
-  flex-grow: 1;
   justify-content: end;
   align-items: center;
   background-color: ${(p) => p.theme.palette.background.default};
