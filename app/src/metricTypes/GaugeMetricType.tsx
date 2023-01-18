@@ -12,7 +12,7 @@ export class GaugeMetricType implements IMetricType {
   isGroupable = true;
 
   getIcon() {
-    return <BarChartSharp />;
+    return <BarChartSharp style={{ backgroundColor: "FFFFDF" }} />;
   }
 
   getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {

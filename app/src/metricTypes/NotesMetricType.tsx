@@ -8,7 +8,7 @@ export class NotesMetricType implements IMetricType {
   type: MetricType;
 
   getIcon(): React.ReactNode {
-    return <TextSnippetOutlined />;
+    return <TextSnippetOutlined style={{ backgroundColor: "#DFEEFF" }} />;
   }
 
   getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
