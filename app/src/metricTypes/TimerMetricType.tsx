@@ -19,7 +19,7 @@ export class TimerMetricType implements IMetricType {
   hideDateColumnInMeasurementsList = true;
 
   getIcon() {
-    return <TimerSharp />;
+    return <TimerSharp style={{ backgroundColor: "#FFDFEC" }} />;
   }
 
   getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {

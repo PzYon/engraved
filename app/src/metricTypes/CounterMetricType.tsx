@@ -11,7 +11,7 @@ export class CounterMetricType implements IMetricType {
   isGroupable = true;
 
   getIcon() {
-    return <PlusOneSharp />;
+    return <PlusOneSharp style={{ backgroundColor: "#DFFFE3" }} />;
   }
 
   getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
