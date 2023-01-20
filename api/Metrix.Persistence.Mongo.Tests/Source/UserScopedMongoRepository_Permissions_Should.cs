@@ -164,7 +164,7 @@ public class UserScopedMongoRepository_Permissions_Should
   {
     string metricId = await CreateMetricForOtherUser();
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await UpsertOtherMeasurementAsMe(metricId); }
     );
   }
@@ -175,7 +175,7 @@ public class UserScopedMongoRepository_Permissions_Should
     string metricId = await CreateMetricForOtherUser();
     await GiveMePermissions(metricId, PermissionKind.Read);
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await UpsertOtherMeasurementAsMe(metricId); }
     );
   }
@@ -186,7 +186,7 @@ public class UserScopedMongoRepository_Permissions_Should
     string metricId = await CreateMetricForOtherUser();
     await GiveMePermissions(metricId, PermissionKind.None);
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await UpsertOtherMeasurementAsMe(metricId); }
     );
   }
@@ -205,7 +205,7 @@ public class UserScopedMongoRepository_Permissions_Should
   {
     string metricId = await CreateMetricForOtherUser();
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await UpsertMetricAsMe(metricId); }
     );
   }
@@ -217,7 +217,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await GiveMePermissions(metricId, PermissionKind.Read);
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await UpsertMetricAsMe(metricId); }
     );
   }
@@ -229,7 +229,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await GiveMePermissions(metricId, PermissionKind.None);
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await UpsertMetricAsMe(metricId); }
     );
   }
@@ -249,7 +249,7 @@ public class UserScopedMongoRepository_Permissions_Should
   {
     string metricId = await CreateMetricForOtherUser();
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await AddMeasurementAsMe(metricId); }
     );
   }
@@ -260,7 +260,7 @@ public class UserScopedMongoRepository_Permissions_Should
     string metricId = await CreateMetricForOtherUser();
     await GiveMePermissions(metricId, PermissionKind.Read);
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await AddMeasurementAsMe(metricId); }
     );
   }
@@ -271,7 +271,7 @@ public class UserScopedMongoRepository_Permissions_Should
     string metricId = await CreateMetricForOtherUser();
     await GiveMePermissions(metricId, PermissionKind.None);
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await AddMeasurementAsMe(metricId); }
     );
   }

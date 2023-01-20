@@ -3,7 +3,7 @@ using Metrix.Core.Application.Commands;
 using Metrix.Core.Application.Commands.Metrics.Add;
 using Metrix.Core.Application.Commands.Metrics.Delete;
 using Metrix.Core.Application.Commands.Metrics.Edit;
-using Metrix.Core.Application.Commands.Metrics.Permissions;
+using Metrix.Core.Application.Commands.Metrics.EditPermissions;
 using Metrix.Core.Application.Queries.Metrics.Get;
 using Metrix.Core.Application.Queries.Metrics.GetAll;
 using Metrix.Core.Application.Queries.Metrics.GetThresholdValues;
@@ -61,7 +61,7 @@ public class MetricsController : ControllerBase
     string metricId
   )
   {
-    var command = new ModifyMetricPermissionsCommand
+    var command = new EditMetricPermissionsCommand
     {
       MetricId = metricId,
       Permissions = permissions
@@ -87,7 +87,7 @@ public class MetricsController : ControllerBase
 
     return await _dispatcher.Query(query);
   }
-  
+
   [HttpDelete]
   [Route("{metricId}")]
   public async Task Delete(string metricId)

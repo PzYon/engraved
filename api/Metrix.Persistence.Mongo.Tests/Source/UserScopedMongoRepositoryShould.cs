@@ -81,7 +81,7 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public void UpsertUser_ShouldThrow_WhenUpdating_OtherUser()
   {
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => await _userScopedRepository.UpsertUser(
         new User { Id = _otherUserId, Name = OtherUserName }
       )
@@ -105,7 +105,7 @@ public class UserScopedMongoRepositoryShould
   {
     UpsertResult result = await _repository.UpsertMetric(new TimerMetric { UserId = _otherUserId });
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () =>
       {
         await _userScopedRepository.UpsertMetric(
@@ -142,7 +142,7 @@ public class UserScopedMongoRepositoryShould
       UserId = _otherUserId
     };
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await _userScopedRepository.UpsertMeasurement(measurement); }
     );
   }
@@ -283,7 +283,7 @@ public class UserScopedMongoRepositoryShould
     UpsertResult metric = await _repository.UpsertMetric(
       new CounterMetric
       {
-        UserId = _currentUserId,
+        UserId = _currentUserId
       }
     );
 
@@ -298,7 +298,7 @@ public class UserScopedMongoRepositoryShould
     Assert.AreEqual(1, await _repository.Metrics.CountDocumentsAsync(FilterDefinition<MetricDocument>.Empty));
     Assert.AreEqual(
       1,
-      (await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty))
+      await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty)
     );
 
     await _repository.DeleteMetric(metric.EntityId);
@@ -308,7 +308,7 @@ public class UserScopedMongoRepositoryShould
     Assert.AreEqual(0, await _repository.Metrics.CountDocumentsAsync(FilterDefinition<MetricDocument>.Empty));
     Assert.AreEqual(
       0,
-      (await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty))
+      await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty)
     );
   }
 }

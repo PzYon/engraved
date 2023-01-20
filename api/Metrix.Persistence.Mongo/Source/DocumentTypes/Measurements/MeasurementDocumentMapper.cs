@@ -32,7 +32,7 @@ public static class MeasurementDocumentMapper
       }
     );
 
-    // configuration.AssertConfigurationIsValid();
+    configuration.AssertConfigurationIsValid();
 
     Mapper = configuration.CreateMapper();
   }
@@ -47,6 +47,6 @@ public static class MeasurementDocumentMapper
   {
     return document == null
       ? null!
-      : (TMeasurement) Mapper.Map(document, document.GetType(), typeof(TMeasurement));
+      : (TMeasurement)Mapper.Map(document, document.GetType(), typeof(TMeasurement));
   }
 }

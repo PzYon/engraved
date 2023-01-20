@@ -7,7 +7,7 @@ public class UpsertTimerMeasurementCommand : BaseUpsertMeasurementCommand
   public DateTime? StartDate { get; set; }
 
   public DateTime? EndDate { get; set; }
-  
+
   public override ICommandExecutor CreateExecutor()
   {
     return new UpsertTimerMeasurementCommandExecutor(this);

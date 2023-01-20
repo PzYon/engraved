@@ -1,12 +1,12 @@
 ﻿using Metrix.Core.Application.Persistence;
 
-namespace Metrix.Core.Application.Commands.Metrics.Permissions;
+namespace Metrix.Core.Application.Commands.Metrics.EditPermissions;
 
-public class ModifyMetricPermissionsCommandExecutor : ICommandExecutor
+public class EditMetricPermissionsCommandExecutor : ICommandExecutor
 {
-  private readonly ModifyMetricPermissionsCommand _command;
+  private readonly EditMetricPermissionsCommand _command;
 
-  public ModifyMetricPermissionsCommandExecutor(ModifyMetricPermissionsCommand command)
+  public EditMetricPermissionsCommandExecutor(EditMetricPermissionsCommand command)
   {
     _command = command;
   }
@@ -15,7 +15,7 @@ public class ModifyMetricPermissionsCommandExecutor : ICommandExecutor
   {
     if (string.IsNullOrEmpty(_command.MetricId))
     {
-      throw new InvalidCommandException(_command, $"{nameof(ModifyMetricPermissionsCommand.MetricId)} is required");
+      throw new InvalidCommandException(_command, $"{nameof(EditMetricPermissionsCommand.MetricId)} is required");
     }
 
     if (_command.Permissions?.Count > 0)

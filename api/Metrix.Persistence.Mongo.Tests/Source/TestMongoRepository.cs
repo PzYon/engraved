@@ -10,6 +10,6 @@ public class TestMongoRepository : MongoRepository
   public IMongoCollection<MetricDocument> Metrics => _metrics;
   public IMongoCollection<MeasurementDocument> Measurements => _measurements;
   public IMongoCollection<UserDocument> Users => _users;
-  
+
   public TestMongoRepository(IMongoRepositorySettings settings) : base(settings) { }
 }

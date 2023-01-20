@@ -91,7 +91,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     IUser? result = base.GetUser(name).Result;
     if (result == null)
     {
-      throw new UnallowedOperationException($"Current user '{name}' does not exist.");
+      throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
     }
 
     return result;
@@ -115,7 +115,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     IMetric? metric = await GetMetric(metricId, kind);
     if (metric == null)
     {
-      throw new UnallowedOperationException("Metric doesn't exist or you do not have permissions.");
+      throw new NotAllowedOperationException("Metric doesn't exist or you do not have permissions.");
     }
   }
 
@@ -123,7 +123,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   {
     if (entityUserId != CurrentUser.Value.Id)
     {
-      throw new UnallowedOperationException("Entity does not belong to current user.");
+      throw new NotAllowedOperationException("Entity does not belong to current user.");
     }
   }
 
@@ -131,7 +131,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   {
     if (string.IsNullOrEmpty(nameOrId))
     {
-      throw new UnallowedOperationException($"Current user is not available.");
+      throw new NotAllowedOperationException($"Current user is not available.");
     }
   }
 }
