@@ -81,7 +81,7 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public void UpsertUser_ShouldThrow_WhenUpdating_OtherUser()
   {
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => await _userScopedRepository.UpsertUser(
         new User { Id = _otherUserId, Name = OtherUserName }
       )
@@ -105,7 +105,7 @@ public class UserScopedMongoRepositoryShould
   {
     UpsertResult result = await _repository.UpsertMetric(new TimerMetric { UserId = _otherUserId });
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () =>
       {
         await _userScopedRepository.UpsertMetric(
@@ -142,7 +142,7 @@ public class UserScopedMongoRepositoryShould
       UserId = _otherUserId
     };
 
-    Assert.ThrowsAsync<UnallowedOperationException>(
+    Assert.ThrowsAsync<NotAllowedOperationException>(
       async () => { await _userScopedRepository.UpsertMeasurement(measurement); }
     );
   }

@@ -44,12 +44,7 @@ public class PermissionsEnsurer
       return user.Id!;
     }
 
-    UpsertResult result = await _upsertUser(
-      new User.User
-      {
-        Name = userName
-      }
-    );
+    UpsertResult result = await _upsertUser(new User.User { Name = userName });
 
     return result.EntityId;
   }

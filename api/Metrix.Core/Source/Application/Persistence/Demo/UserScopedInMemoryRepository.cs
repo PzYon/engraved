@@ -132,7 +132,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     IUser? result = _repository.GetUser(name!).Result;
     if (result == null)
     {
-      throw new UnallowedOperationException($"Current user '{name}' does not exist.");
+      throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
     }
 
     return result;
@@ -142,7 +142,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   {
     if (string.IsNullOrEmpty(name))
     {
-      throw new UnallowedOperationException($"Current user is not available.");
+      throw new NotAllowedOperationException($"Current user is not available.");
     }
   }
 }

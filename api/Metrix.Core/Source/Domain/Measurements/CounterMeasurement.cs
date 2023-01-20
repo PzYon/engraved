@@ -2,8 +2,5 @@
 
 public class CounterMeasurement : BaseMeasurement
 {
-  public override double GetValue()
-  {
-    return 1;
-  }
+  public override double GetValue() => 1;
 }

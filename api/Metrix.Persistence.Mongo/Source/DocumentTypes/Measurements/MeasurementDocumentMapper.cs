@@ -32,7 +32,7 @@ public static class MeasurementDocumentMapper
       }
     );
 
-    // configuration.AssertConfigurationIsValid();
+    configuration.AssertConfigurationIsValid();
 
     Mapper = configuration.CreateMapper();
   }

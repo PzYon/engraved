@@ -1,8 +1,8 @@
 ﻿using Metrix.Core.Domain.Permissions;
 
-namespace Metrix.Core.Application.Commands.Metrics.Permissions;
+namespace Metrix.Core.Application.Commands.Metrics.EditPermissions;
 
-public class ModifyMetricPermissionsCommand : ICommand
+public class EditMetricPermissionsCommand : ICommand
 {
   public string? MetricId { get; set; }
 
@@ -10,6 +10,6 @@ public class ModifyMetricPermissionsCommand : ICommand
 
   public ICommandExecutor CreateExecutor()
   {
-    return new ModifyMetricPermissionsCommandExecutor(this);
+    return new EditMetricPermissionsCommandExecutor(this);
   }
 }
