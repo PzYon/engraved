@@ -54,7 +54,7 @@ export const MeasurementsList: React.FC<{
       </TableHead>
       <TableBody>
         {tableGroups.map((group) => (
-          <>
+          <React.Fragment key={group.label}>
             {group.measurements.map((measurement, i) => (
               <TableRow key={measurement.id}>
                 {columns.map((c) =>
@@ -77,7 +77,7 @@ export const MeasurementsList: React.FC<{
                 ))}
               </TableRow>
             ) : null}
-          </>
+          </React.Fragment>
         ))}
       </TableBody>
       {measurements.length && columns.filter((c) => c.isSummable).length ? (
@@ -209,9 +209,5 @@ function getTotalValue(
     .map((g) => g.totalValue)
     .reduce((total, current) => total + current, 0);
 
-  if (type.formatTotalValue) {
-    return type.formatTotalValue(totalValue);
-  }
-
-  return totalValue;
+  return type.formatTotalValue?.(totalValue) ?? totalValue;
 }
