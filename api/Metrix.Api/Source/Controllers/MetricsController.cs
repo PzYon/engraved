@@ -87,7 +87,7 @@ public class MetricsController : ControllerBase
 
     return await _dispatcher.Query(query);
   }
-  
+
   [HttpDelete]
   [Route("{metricId}")]
   public async Task Delete(string metricId)

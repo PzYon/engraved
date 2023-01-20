@@ -283,7 +283,7 @@ public class UserScopedMongoRepositoryShould
     UpsertResult metric = await _repository.UpsertMetric(
       new CounterMetric
       {
-        UserId = _currentUserId,
+        UserId = _currentUserId
       }
     );
 
@@ -298,7 +298,7 @@ public class UserScopedMongoRepositoryShould
     Assert.AreEqual(1, await _repository.Metrics.CountDocumentsAsync(FilterDefinition<MetricDocument>.Empty));
     Assert.AreEqual(
       1,
-      (await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty))
+      await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty)
     );
 
     await _repository.DeleteMetric(metric.EntityId);
@@ -308,7 +308,7 @@ public class UserScopedMongoRepositoryShould
     Assert.AreEqual(0, await _repository.Metrics.CountDocumentsAsync(FilterDefinition<MetricDocument>.Empty));
     Assert.AreEqual(
       0,
-      (await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty))
+      await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty)
     );
   }
 }
