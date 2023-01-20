@@ -22,6 +22,9 @@ import { AttributeComboSearch } from "./AttributeComboSearch";
 import { hasAttributes } from "../../../util/MeasurementUtil";
 import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";
 import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUpsertTimerMeasurementCommand";
+import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
+
+const storage = new LastSelectedDateStorage();
 
 export const UpsertMeasurement: React.FC<{
   metric: IMetric;
@@ -42,7 +45,7 @@ export const UpsertMeasurement: React.FC<{
   const [date, setDate] = useState<Date>(
     measurement?.dateTime
       ? new Date(measurement.dateTime)
-      : stripTime(new Date())
+      : stripTime(storage.getLastSelectedDate())
   );
 
   const [startDate, setStartDate] = useState(
@@ -59,7 +62,13 @@ export const UpsertMeasurement: React.FC<{
     <FormControl>
       {metric.type !== MetricType.Timer ? (
         <FormElementContainer>
-          <DateSelector setDate={setDate} date={date} />
+          <DateSelector
+            setDate={(d) => {
+              setDate(d);
+              storage.setLastSelectedDate(d);
+            }}
+            date={date}
+          />
         </FormElementContainer>
       ) : null}
 

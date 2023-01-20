@@ -6,6 +6,7 @@ export class StorageUtil {
   }
 
   public getValue<T>(key: string): T {
-    return JSON.parse(this.storage.getItem(key)) as T;
+    const item = this.storage.getItem(key);
+    return item ? (JSON.parse(item) as T) : undefined;
   }
 }
