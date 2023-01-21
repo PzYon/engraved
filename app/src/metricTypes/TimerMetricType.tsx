@@ -6,10 +6,8 @@ import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { differenceInSeconds } from "date-fns";
 import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
-import {
-  getDurationAsHhMmSs,
-  getDurationAsHhMmSsFromSeconds,
-} from "../util/getDurationAsHhMmSs";
+import { getDurationAsHhMmSsFromSeconds } from "../util/getDurationAsHhMmSs";
+import { FormatDuration } from "../components/common/FormatDuration";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -51,9 +49,12 @@ export class TimerMetricType implements IMetricType {
         getRawValue: (measurement: IMeasurement) => this.getValue(measurement),
         getValueReactNode: (measurement: IMeasurement) => {
           const timerMeasurement = measurement as ITimerMeasurement;
-          return TimerMetricType.getDuration(
-            timerMeasurement.startDate,
-            timerMeasurement.endDate
+
+          return (
+            <FormatDuration
+              start={timerMeasurement.startDate}
+              end={timerMeasurement.endDate}
+            />
           );
         },
       },
@@ -83,12 +84,5 @@ export class TimerMetricType implements IMetricType {
 
   formatTotalValue(totalValue: number): string {
     return getDurationAsHhMmSsFromSeconds(totalValue);
-  }
-
-  public static getDuration(start: string, end: string): string {
-    const startDate = new Date(start);
-    const endDate = end ? new Date(end) : new Date();
-
-    return getDurationAsHhMmSs(startDate, endDate);
   }
 }

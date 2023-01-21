@@ -1,4 +1,12 @@
-import { format, formatDistanceToNow, isToday } from "date-fns";
+import {
+  differenceInHours,
+  format,
+  formatDistanceToNow,
+  isToday,
+} from "date-fns";
+import React, { useEffect, useState } from "react";
+
+const autoUpdateIntervalSeconds = 120;
 
 export enum DateFormat {
   relativeToNow,
@@ -10,18 +18,23 @@ export enum DateFormat {
   timeOnly,
 }
 
+function getAsDate(value: string | number | Date): Date {
+  if (typeof value === "string" || typeof value === "number") {
+    return new Date(value);
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  throw new Error(`'${value}' is an invalid date.`);
+}
+
 export const formatDate = (
   value: string | number | Date,
   dateFormat?: DateFormat
 ): string => {
-  let date;
-  if (typeof value === "string" || typeof value === "number") {
-    date = new Date(value);
-  } else if (value instanceof Date) {
-    date = value;
-  } else {
-    throw new Error(`'${value}' is an invalid date.`);
-  }
+  const date = getAsDate(value);
 
   switch (dateFormat) {
     case DateFormat.dateOnly:
@@ -58,16 +71,33 @@ export const FormatDate = (props: {
     return null;
   }
 
-  return (
-    <span
-      title={formatDate(
+  const [values, setValues] = useState<{ title: string; label: string }>(
+    calculateValues()
+  );
+
+  useEffect(() => {
+    if (differenceInHours(new Date(), getAsDate(props.value)) > 2) {
+      return;
+    }
+
+    const i = setInterval(
+      () => setValues(calculateValues()),
+      autoUpdateIntervalSeconds * 1000
+    );
+    return () => clearInterval(i);
+  }, [props.value, props.dateFormat]);
+
+  return <span title={values.title}>{values.label}</span>;
+
+  function calculateValues() {
+    return {
+      title: formatDate(
         props.value,
         props.dateFormat === DateFormat.relativeToNow || !props.dateFormat
           ? DateFormat.full
           : DateFormat.relativeToNow
-      )}
-    >
-      {formatDate(props.value, props.dateFormat)}
-    </span>
-  );
+      ),
+      label: formatDate(props.value, props.dateFormat),
+    };
+  }
 };

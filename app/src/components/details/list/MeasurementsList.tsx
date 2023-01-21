@@ -27,21 +27,22 @@ export const MeasurementsList: React.FC<{
   measurements: IMeasurement[];
   showGroupTotals: boolean;
 }> = ({ metric, measurements, showGroupTotals }) => {
+  const type = useMemo(
+    () => MetricTypeFactory.create(metric.type),
+    [metric?.type]
+  );
+
   const columns = useMemo(() => {
     return [
       ...getColumnsBefore(metric),
-      ...MetricTypeFactory.create(metric.type).getMeasurementsListColumns(),
+      ...type.getMeasurementsListColumns(),
       ...getColumnsAfter(metric),
     ].filter((c) => c.doHide?.(metric) !== true);
   }, [metric]);
 
   const tableGroups = useMemo(() => {
-    return getMeasurementsTableGroups(measurements, metric.type);
+    return getMeasurementsTableGroups(measurements, type);
   }, [measurements]);
-
-  const type = useMemo(() => {
-    return MetricTypeFactory.create(metric.type);
-  }, [metric?.type]);
 
   return (
     <Table>
@@ -156,14 +157,12 @@ function getColumnsAfter(metric: IMetric): IMeasurementsListColumnDefinition[] {
 
 function getMeasurementsTableGroups(
   measurements: IMeasurement[],
-  metricType: MetricType
+  type: IMetricType
 ): IMeasurementsTableGroup[] {
-  const type = MetricTypeFactory.create(metricType);
-
   const groupsByKey: { [groupKey: string]: IMeasurementsTableGroup } = {};
 
   for (const measurement of measurements) {
-    const groupKey = getGroupKey(metricType, measurement);
+    const groupKey = getGroupKey(type.type, measurement);
 
     if (!groupsByKey[groupKey]) {
       groupsByKey[groupKey] = {
