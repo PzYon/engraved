@@ -45,9 +45,9 @@ export const MeasurementsList: React.FC<{
   useEffect(() => {
     updateGroups();
 
-    if (type.type === MetricType.Timer) {
-      setInterval(updateGroups, 10000);
-    }
+    const interval =
+      type.type === MetricType.Timer ? setInterval(updateGroups, 10000) : null;
+    return () => clearInterval(interval);
   }, []);
 
   function updateGroups() {
