@@ -1,8 +1,8 @@
 import { FormElementContainer } from "../../common/FormUtils";
 import { DateSelector } from "../../common/DateSelector";
 import React, { useEffect } from "react";
-import { TimerMetricType } from "../../../metricTypes/TimerMetricType";
 import { Typography } from "@mui/material";
+import { FormatDuration } from "../../common/FormatDuration";
 
 export const UpsertTimerMeasurement: React.FC<{
   startDate: string;
@@ -39,8 +39,7 @@ export const UpsertTimerMeasurement: React.FC<{
       </FormElementContainer>
       <FormElementContainer>
         <Typography fontSize="small">
-          Duration:{" "}
-          {TimerMetricType.getDuration(start?.toString(), end?.toString())}
+          Duration: <FormatDuration start={start} end={end} />
         </Typography>
       </FormElementContainer>
     </>

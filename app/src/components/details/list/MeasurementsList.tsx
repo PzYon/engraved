@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { translations } from "../../../i18n/translations";
 import { IMetric } from "../../../serverApi/IMetric";
@@ -27,21 +27,32 @@ export const MeasurementsList: React.FC<{
   measurements: IMeasurement[];
   showGroupTotals: boolean;
 }> = ({ metric, measurements, showGroupTotals }) => {
+  const type = useMemo(
+    () => MetricTypeFactory.create(metric.type),
+    [metric?.type]
+  );
+
   const columns = useMemo(() => {
     return [
       ...getColumnsBefore(metric),
-      ...MetricTypeFactory.create(metric.type).getMeasurementsListColumns(),
+      ...type.getMeasurementsListColumns(),
       ...getColumnsAfter(metric),
     ].filter((c) => c.doHide?.(metric) !== true);
   }, [metric]);
 
-  const tableGroups = useMemo(() => {
-    return getMeasurementsTableGroups(measurements, metric.type);
-  }, [measurements]);
+  const [tableGroups, setTableGroups] = useState<IMeasurementsTableGroup[]>([]);
 
-  const type = useMemo(() => {
-    return MetricTypeFactory.create(metric.type);
-  }, [metric?.type]);
+  useEffect(() => {
+    updateGroups();
+
+    if (type.type === MetricType.Timer) {
+      setInterval(updateGroups, 10000);
+    }
+  }, []);
+
+  function updateGroups() {
+    setTableGroups(getMeasurementsTableGroups(measurements, type));
+  }
 
   return (
     <Table>
@@ -85,7 +96,7 @@ export const MeasurementsList: React.FC<{
           <TableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
-                {getTotalValue(c, type, tableGroups)}
+                {getTotalValue(c, tableGroups, type)}
               </TableCell>
             ))}
           </TableRow>
@@ -156,14 +167,12 @@ function getColumnsAfter(metric: IMetric): IMeasurementsListColumnDefinition[] {
 
 function getMeasurementsTableGroups(
   measurements: IMeasurement[],
-  metricType: MetricType
+  type: IMetricType
 ): IMeasurementsTableGroup[] {
-  const type = MetricTypeFactory.create(metricType);
-
   const groupsByKey: { [groupKey: string]: IMeasurementsTableGroup } = {};
 
   for (const measurement of measurements) {
-    const groupKey = getGroupKey(metricType, measurement);
+    const groupKey = getGroupKey(type.type, measurement);
 
     if (!groupsByKey[groupKey]) {
       groupsByKey[groupKey] = {
@@ -197,11 +206,11 @@ function getGroupKey(metricType: MetricType, measurement: IMeasurement) {
 }
 
 function getTotalValue(
-  c: IMeasurementsListColumnDefinition,
-  type: IMetricType,
-  tableGroups: IMeasurementsTableGroup[]
+  columnDefinition: IMeasurementsListColumnDefinition,
+  tableGroups: IMeasurementsTableGroup[],
+  type: IMetricType
 ) {
-  if (!c.isSummable) {
+  if (!columnDefinition.isSummable) {
     return null;
   }
 
