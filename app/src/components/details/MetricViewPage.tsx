@@ -179,13 +179,15 @@ export const MetricViewPage: React.FC = () => {
         />
       ) : null}
 
-      <DetailsSection overflowXScroll={true}>
-        <MeasurementsList
-          metric={metric}
-          measurements={measurements}
-          showGroupTotals={showGroupTotals}
-        />
-      </DetailsSection>
+      {measurements.length ? (
+        <DetailsSection overflowXScroll={true}>
+          <MeasurementsList
+            metric={metric}
+            measurements={measurements}
+            showGroupTotals={showGroupTotals}
+          />
+        </DetailsSection>
+      ) : null}
 
       <Routes>
         <Route
