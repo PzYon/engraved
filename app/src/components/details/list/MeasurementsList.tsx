@@ -48,7 +48,7 @@ export const MeasurementsList: React.FC<{
     const interval =
       type.type === MetricType.Timer ? setInterval(updateGroups, 10000) : null;
     return () => clearInterval(interval);
-  }, []);
+  }, [metric, measurements]);
 
   function updateGroups() {
     setTableGroups(getMeasurementsTableGroups(measurements, type));
