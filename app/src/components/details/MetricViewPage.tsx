@@ -35,6 +35,7 @@ export const MetricViewPage: React.FC = () => {
     reloadMeasurements,
     setSelectedAttributeValues,
     selectedAttributeValues,
+    dateConditions,
     setDateConditions,
   } = useMetricContext();
 
@@ -123,6 +124,8 @@ export const MetricViewPage: React.FC = () => {
     };
   }, [
     metric,
+    dateConditions,
+    selectedAttributeValues,
     showNotes,
     showFilters,
     showChart,
