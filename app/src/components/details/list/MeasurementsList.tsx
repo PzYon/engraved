@@ -7,6 +7,7 @@ import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IMeasurementsListColumnDefinition } from "./IMeasurementsListColumnDefinition";
 import {
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -21,6 +22,7 @@ import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { format } from "date-fns";
 import { IMeasurementsTableGroup } from "./IMeasurementsListGroup";
 import { IMetricType } from "../../../metricTypes/IMetricType";
+import { ExpandMore } from "@mui/icons-material";
 
 export const MeasurementsList: React.FC<{
   metric: IMetric;
@@ -65,30 +67,12 @@ export const MeasurementsList: React.FC<{
       </TableHead>
       <TableBody>
         {tableGroups.map((group) => (
-          <React.Fragment key={group.label}>
-            {group.measurements.map((measurement, i) => (
-              <TableRow key={measurement.id}>
-                {columns.map((c) =>
-                  i > 0 && c.getGroupKey?.(measurement) ? (
-                    <TableCell key={c.key} />
-                  ) : (
-                    <TableCell key={c.key}>
-                      {c.getValueReactNode(measurement)}
-                    </TableCell>
-                  )
-                )}
-              </TableRow>
-            ))}
-            {showGroupTotals ? (
-              <TableRow>
-                {columns.map((c) => (
-                  <TableCell key={c.key} sx={{ opacity: 0.5 }}>
-                    {c.isSummable ? group.totalString : ""}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ) : null}
-          </React.Fragment>
+          <Groupppp
+            key={group.label}
+            group={group}
+            columns={columns}
+            showGroupTotals={showGroupTotals}
+          />
         ))}
       </TableBody>
       {measurements.length && columns.filter((c) => c.isSummable).length ? (
@@ -110,6 +94,15 @@ function getColumnsBefore(
   metric: IMetric
 ): IMeasurementsListColumnDefinition[] {
   return [
+    {
+      header: undefined,
+      key: "_collapse",
+      getValueReactNode: (_, onClick) => (
+        <IconButton onClick={onClick}>
+          <ExpandMore />
+        </IconButton>
+      ),
+    },
     {
       header: translations.columnName_date,
       key: "_date",
@@ -220,3 +213,65 @@ function getTotalValue(
 
   return type.formatTotalValue?.(totalValue) ?? totalValue;
 }
+
+export const Groupppp: React.FC<{
+  group: IMeasurementsTableGroup;
+  columns: IMeasurementsListColumnDefinition[];
+  showGroupTotals: boolean;
+}> = ({ group, columns, showGroupTotals }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  if (isCollapsed) {
+    return (
+      <TableRow key={group.label}>
+        {columns.map((c) => {
+          if (c.key === "_collapse") {
+            return (
+              <TableCell key={c.key}>
+                {c.getValueReactNode(null, () => setIsCollapsed(!isCollapsed))}
+              </TableCell>
+            );
+          }
+
+          return (
+            <TableCell key={c.key}>
+              {c.key === "_date"
+                ? c.getValueReactNode(group.measurements[0])
+                : ""}
+            </TableCell>
+          );
+        })}
+      </TableRow>
+    );
+  }
+
+  return (
+    <>
+      {group.measurements.map((measurement, i) => (
+        <TableRow key={measurement.id}>
+          {columns.map((c) => (
+            <TableCell key={c.key}>
+              {i > 0 && c.getGroupKey?.(measurement)
+                ? ""
+                : c.getValueReactNode(
+                    measurement,
+                    c.key === "_collapse"
+                      ? () => setIsCollapsed(!isCollapsed)
+                      : null
+                  )}
+            </TableCell>
+          ))}
+        </TableRow>
+      ))}
+      {showGroupTotals ? (
+        <TableRow>
+          {columns.map((c) => (
+            <TableCell key={c.key} sx={{ opacity: 0.5 }}>
+              {c.isSummable ? group.totalString : ""}
+            </TableCell>
+          ))}
+        </TableRow>
+      ) : null}
+    </>
+  );
+};
