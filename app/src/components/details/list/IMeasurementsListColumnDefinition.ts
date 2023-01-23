@@ -8,6 +8,7 @@ export interface IMeasurementsListColumnDefinition {
   header: string;
   getValueReactNode: (
     measurement: IMeasurement,
+    isFirstRowOfGroup: boolean,
     onClick?: () => void
   ) => React.ReactNode;
 
@@ -15,10 +16,14 @@ export interface IMeasurementsListColumnDefinition {
   // -  how to deal with injecting setIsCollapsible
   // - clean up the whole mess - it's terrible
   // - implement below method where required
-  getGroupReactNode?: (group: IMeasurementsTableGroup) => React.ReactNode;
+  getGroupReactNode?: (
+    group: IMeasurementsTableGroup,
+    onClick?: () => void
+  ) => React.ReactNode;
 
   getRawValue?: (measurement: IMeasurement) => number;
   isSummable?: boolean;
   doHide?: (metric: IMetric) => boolean;
   getGroupKey?: (measurement: IMeasurement) => string;
+  width?: string;
 }

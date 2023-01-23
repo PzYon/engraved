@@ -57,6 +57,7 @@ export class TimerMetricType implements IMetricType {
             />
           );
         },
+        getGroupReactNode: (group) => group.totalString,
       },
     ];
   }

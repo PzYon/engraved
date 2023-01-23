@@ -22,7 +22,8 @@ import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { format } from "date-fns";
 import { IMeasurementsTableGroup } from "./IMeasurementsListGroup";
 import { IMetricType } from "../../../metricTypes/IMetricType";
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 
 export const MeasurementsList: React.FC<{
   metric: IMetric;
@@ -61,7 +62,12 @@ export const MeasurementsList: React.FC<{
       <TableHead>
         <TableRow>
           {columns.map((c) => (
-            <TableCell key={c.key}>{c.header}</TableCell>
+            <TableCell
+              key={c.key}
+              sx={c.width ? { width: c.width } : undefined}
+            >
+              {c.header}
+            </TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -97,30 +103,63 @@ function getColumnsBefore(
     {
       header: undefined,
       key: "_collapse",
-      getValueReactNode: (_, onClick) => (
+      width: "40px",
+      getValueReactNode: (_, isFirstRowOfGroup, onClick) => {
+        if (!isFirstRowOfGroup) {
+          return null;
+        }
+
+        return (
+          <IconButtonWrapper
+            action={{
+              key: "expand",
+              label: "Expand",
+              onClick: onClick,
+              icon: <ExpandMore fontSize="small" />,
+            }}
+          />
+        );
+      },
+      getGroupReactNode: (group, onClick) => (
         <IconButton onClick={onClick}>
-          <ExpandMore />
+          <IconButtonWrapper
+            action={{
+              key: "collapse",
+              label: "Collapse",
+              onClick: onClick,
+              icon: <ExpandLess fontSize="small" />,
+            }}
+          />
         </IconButton>
       ),
     },
     {
       header: translations.columnName_date,
       key: "_date",
-      getValueReactNode: (measurement) => (
-        <>
-          <FormatDate
-            value={measurement.dateTime}
-            dateFormat={DateFormat.dateOnly}
-          />
-          <br />
-          <Typography sx={{ opacity: 0.5 }} fontSize={"smaller"}>
+      getGroupReactNode: (group) => {
+        return <>{group.label}</>;
+      },
+      getValueReactNode: (measurement, isFirstRowOfGroup) => {
+        if (!isFirstRowOfGroup) {
+          return null;
+        }
+
+        return (
+          <>
             <FormatDate
               value={measurement.dateTime}
-              dateFormat={DateFormat.relativeToNowDayPlus}
+              dateFormat={DateFormat.dateOnly}
             />
-          </Typography>
-        </>
-      ),
+            <br />
+            <Typography sx={{ opacity: 0.5 }} fontSize={"smaller"}>
+              <FormatDate
+                value={measurement.dateTime}
+                dateFormat={DateFormat.relativeToNowDayPlus}
+              />
+            </Typography>
+          </>
+        );
+      },
       getGroupKey: (measurement) => getGroupKey(metric.type, measurement),
     },
   ];
@@ -148,6 +187,7 @@ function getColumnsAfter(metric: IMetric): IMeasurementsListColumnDefinition[] {
     {
       header: translations.columnName_actions,
       key: "_actions",
+      width: "80px",
       getValueReactNode: (measurement) => (
         <MeasurementActionButtons
           measurement={measurement}
@@ -225,19 +265,9 @@ export const Groupppp: React.FC<{
     return (
       <TableRow key={group.label}>
         {columns.map((c) => {
-          if (c.key === "_collapse") {
-            return (
-              <TableCell key={c.key}>
-                {c.getValueReactNode(null, () => setIsCollapsed(!isCollapsed))}
-              </TableCell>
-            );
-          }
-
           return (
             <TableCell key={c.key}>
-              {c.key === "_date"
-                ? c.getValueReactNode(group.measurements[0])
-                : ""}
+              {c.getGroupReactNode?.(group, () => setIsCollapsed(!isCollapsed))}
             </TableCell>
           );
         })}
@@ -251,14 +281,9 @@ export const Groupppp: React.FC<{
         <TableRow key={measurement.id}>
           {columns.map((c) => (
             <TableCell key={c.key}>
-              {i > 0 && c.getGroupKey?.(measurement)
-                ? ""
-                : c.getValueReactNode(
-                    measurement,
-                    c.key === "_collapse"
-                      ? () => setIsCollapsed(!isCollapsed)
-                      : null
-                  )}
+              {c.getValueReactNode(measurement, i === 0, () =>
+                setIsCollapsed(!isCollapsed)
+              )}
             </TableCell>
           ))}
         </TableRow>
