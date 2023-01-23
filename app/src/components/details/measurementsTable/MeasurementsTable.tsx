@@ -2,10 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { translations } from "../../../i18n/translations";
 import { IMetric } from "../../../serverApi/IMetric";
-import { DateFormat, FormatDate } from "../../common/FormatDate";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { AttributeValues } from "../../common/AttributeValues";
-import { IMeasurementsListColumnDefinition } from "./IMeasurementsListColumnDefinition";
+import { IMeasurementsTableColumnDefinition } from "./IMeasurementsTableColumnDefinition";
 import {
   Table,
   TableBody,
@@ -13,16 +12,19 @@ import {
   TableFooter,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
 import { MeasurementActionButtons } from "./MeasurementActionButtons";
 import { MetricType } from "../../../serverApi/MetricType";
 import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { format } from "date-fns";
-import { IMeasurementsTableGroup } from "./IMeasurementsListGroup";
 import { IMetricType } from "../../../metricTypes/IMetricType";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { IMeasurementsTableGroup } from "./IMeasurementsTableGroup";
+import { MeasurementsDateTableCell } from "./MeasurementsDateTableCell";
+import { MeasurementsTableBodyGroup } from "./MeasurementsTableBodyGroup";
 
-export const MeasurementsList: React.FC<{
+export const MeasurementsTable: React.FC<{
   metric: IMetric;
   measurements: IMeasurement[];
   showGroupTotals: boolean;
@@ -32,13 +34,17 @@ export const MeasurementsList: React.FC<{
     [metric?.type]
   );
 
+  const [collapseAll, setCollapseAll] = useState<boolean>(undefined);
+
   const columns = useMemo(() => {
     return [
-      ...getColumnsBefore(metric),
-      ...type.getMeasurementsListColumns(),
+      ...getColumnsBefore(metric, collapseAll, () =>
+        setCollapseAll(!collapseAll)
+      ),
+      ...type.getMeasurementsTableColumns(),
       ...getColumnsAfter(metric),
     ].filter((c) => c.doHide?.(metric) !== true);
-  }, [metric]);
+  }, [metric, collapseAll]);
 
   const [tableGroups, setTableGroups] = useState<IMeasurementsTableGroup[]>([]);
 
@@ -47,48 +53,35 @@ export const MeasurementsList: React.FC<{
 
     const interval =
       type.type === MetricType.Timer ? setInterval(updateGroups, 10000) : null;
+
     return () => clearInterval(interval);
   }, [metric, measurements]);
-
-  function updateGroups() {
-    setTableGroups(getMeasurementsTableGroups(measurements, type));
-  }
 
   return (
     <Table>
       <TableHead>
         <TableRow>
           {columns.map((c) => (
-            <TableCell key={c.key}>{c.header}</TableCell>
+            <TableCell
+              key={c.key}
+              sx={c.width ? { width: c.width } : undefined}
+            >
+              {c.getHeaderReactNode(() => setCollapseAll(!collapseAll))}
+            </TableCell>
           ))}
         </TableRow>
       </TableHead>
       <TableBody>
-        {tableGroups.map((group) => (
-          <React.Fragment key={group.label}>
-            {group.measurements.map((measurement, i) => (
-              <TableRow key={measurement.id}>
-                {columns.map((c) =>
-                  i > 0 && c.getGroupKey?.(measurement) ? (
-                    <TableCell key={c.key} />
-                  ) : (
-                    <TableCell key={c.key}>
-                      {c.getValueReactNode(measurement)}
-                    </TableCell>
-                  )
-                )}
-              </TableRow>
-            ))}
-            {showGroupTotals ? (
-              <TableRow>
-                {columns.map((c) => (
-                  <TableCell key={c.key} sx={{ opacity: 0.5 }}>
-                    {c.isSummable ? group.totalString : ""}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ) : null}
-          </React.Fragment>
+        {tableGroups.map((group, i) => (
+          <MeasurementsTableBodyGroup
+            key={group.label}
+            group={group}
+            columns={columns}
+            showGroupTotals={showGroupTotals}
+            isGroupCollapsed={
+              collapseAll === undefined && i !== 0 ? true : collapseAll
+            }
+          />
         ))}
       </TableBody>
       {measurements.length && columns.filter((c) => c.isSummable).length ? (
@@ -104,43 +97,99 @@ export const MeasurementsList: React.FC<{
       ) : null}
     </Table>
   );
+
+  function updateGroups() {
+    setTableGroups(getMeasurementsTableGroups(measurements, type));
+  }
 };
 
 function getColumnsBefore(
-  metric: IMetric
-): IMeasurementsListColumnDefinition[] {
+  metric: IMetric,
+  collapseAll: boolean,
+  onHeaderClick: () => void
+): IMeasurementsTableColumnDefinition[] {
   return [
     {
-      header: translations.columnName_date,
-      key: "_date",
-      getValueReactNode: (measurement) => (
-        <>
-          <FormatDate
-            value={measurement.dateTime}
-            dateFormat={DateFormat.dateOnly}
+      getHeaderReactNode: () =>
+        collapseAll ? (
+          <IconButtonWrapper
+            action={{
+              key: "collapse",
+              label: "Collapse all",
+              onClick: onHeaderClick,
+              icon: <ExpandLess fontSize="small" />,
+            }}
           />
-          <br />
-          <Typography sx={{ opacity: 0.5 }} fontSize={"smaller"}>
-            <FormatDate
-              value={measurement.dateTime}
-              dateFormat={DateFormat.relativeToNowDayPlus}
-            />
-          </Typography>
-        </>
+        ) : (
+          <IconButtonWrapper
+            action={{
+              key: "collapse",
+              label: "Collapse",
+              onClick: onHeaderClick,
+              icon: <ExpandMore fontSize="small" />,
+            }}
+          />
+        ),
+      key: "_collapse",
+      width: "40px",
+      getValueReactNode: (group, _, isFirstRowOfGroup, onClick) => {
+        if (!isFirstRowOfGroup || group.measurements.length < 2) {
+          return null;
+        }
+
+        return (
+          <IconButtonWrapper
+            action={{
+              key: "expand",
+              label: "Expand",
+              onClick: onClick,
+              icon: <ExpandMore fontSize="small" />,
+            }}
+          />
+        );
+      },
+      getGroupReactNode: (group, onClick) => {
+        if (group.measurements.length < 2) {
+          return null;
+        }
+
+        return (
+          <IconButtonWrapper
+            action={{
+              key: "collapse",
+              label: "Collapse",
+              onClick: onClick,
+              icon: <ExpandLess fontSize="small" />,
+            }}
+          />
+        );
+      },
+    },
+    {
+      getHeaderReactNode: () => translations.columnName_date,
+      key: "_date",
+      getGroupReactNode: (group) => (
+        <MeasurementsDateTableCell date={new Date(group.label)} />
       ),
+      getValueReactNode: (group, measurement, isFirstRowOfGroup) =>
+        isFirstRowOfGroup ? (
+          <MeasurementsDateTableCell date={measurement.dateTime} />
+        ) : null,
       getGroupKey: (measurement) => getGroupKey(metric.type, measurement),
     },
   ];
 }
 
-function getColumnsAfter(metric: IMetric): IMeasurementsListColumnDefinition[] {
+function getColumnsAfter(
+  metric: IMetric
+): IMeasurementsTableColumnDefinition[] {
   return [
     {
-      header: translations.columnName_attributes,
+      getHeaderReactNode: () => translations.columnName_attributes,
       key: "_attributes",
       doHide: (metric: IMetric): boolean =>
         !Object.keys(metric.attributes ?? {}).length,
-      getValueReactNode: (measurement) => (
+      getValueReactNode: (_, measurement) => (
         <AttributeValues
           attributes={metric.attributes}
           attributeValues={measurement.metricAttributeValues}
@@ -148,14 +197,15 @@ function getColumnsAfter(metric: IMetric): IMeasurementsListColumnDefinition[] {
       ),
     },
     {
-      header: translations.columnName_notes,
+      getHeaderReactNode: () => translations.columnName_notes,
       key: "_notes",
-      getValueReactNode: (measurement) => measurement.notes,
+      getValueReactNode: (_, measurement) => measurement.notes,
     },
     {
-      header: translations.columnName_actions,
+      getHeaderReactNode: () => translations.columnName_actions,
       key: "_actions",
-      getValueReactNode: (measurement) => (
+      width: "80px",
+      getValueReactNode: (_, measurement) => (
         <MeasurementActionButtons
           measurement={measurement}
           metricId={metric.id}
@@ -206,7 +256,7 @@ function getGroupKey(metricType: MetricType, measurement: IMeasurement) {
 }
 
 function getTotalValue(
-  columnDefinition: IMeasurementsListColumnDefinition,
+  columnDefinition: IMeasurementsTableColumnDefinition,
   tableGroups: IMeasurementsTableGroup[],
   type: IMetricType
 ) {

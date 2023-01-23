@@ -3,8 +3,9 @@ import { BarChartSharp } from "@mui/icons-material";
 import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
 import { IGaugeMeasurement } from "../serverApi/ITimerMeasurement";
 import { IMeasurement } from "../serverApi/IMeasurement";
-import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
+import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { getValue } from "../components/details/chart/consolidation/consolidate";
+import { IMeasurementsTableGroup } from "../components/details/measurementsTable/IMeasurementsTableGroup";
 
 export class GaugeMetricType implements IMetricType {
   type = MetricType.Gauge;
@@ -15,14 +16,18 @@ export class GaugeMetricType implements IMetricType {
     return <BarChartSharp style={{ backgroundColor: "FFFFDF" }} />;
   }
 
-  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
+  getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
     return [
       {
         key: "_value",
-        header: "Value",
+        getHeaderReactNode: () => "Value",
         isSummable: true,
         getRawValue: (measurement: IMeasurement) => getValue(measurement),
-        getValueReactNode: (measurement: IMeasurement) => getValue(measurement),
+        getValueReactNode: (
+          _: IMeasurementsTableGroup,
+          measurement: IMeasurement
+        ) => getValue(measurement),
+        getGroupReactNode: (group) => group.totalString,
       },
     ];
   }
