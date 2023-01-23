@@ -23,6 +23,7 @@ export class GaugeMetricType implements IMetricType {
         isSummable: true,
         getRawValue: (measurement: IMeasurement) => getValue(measurement),
         getValueReactNode: (measurement: IMeasurement) => getValue(measurement),
+        getGroupReactNode: (group) => group.totalString,
       },
     ];
   }
