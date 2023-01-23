@@ -5,6 +5,7 @@ import { IGaugeMeasurement } from "../serverApi/ITimerMeasurement";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { getValue } from "../components/details/chart/consolidation/consolidate";
+import { IMeasurementsTableGroup } from "../components/details/measurementsTable/IMeasurementsTableGroup";
 
 export class GaugeMetricType implements IMetricType {
   type = MetricType.Gauge;
@@ -22,7 +23,10 @@ export class GaugeMetricType implements IMetricType {
         getHeaderReactNode: () => "Value",
         isSummable: true,
         getRawValue: (measurement: IMeasurement) => getValue(measurement),
-        getValueReactNode: (measurement: IMeasurement) => getValue(measurement),
+        getValueReactNode: (
+          _: IMeasurementsTableGroup,
+          measurement: IMeasurement
+        ) => getValue(measurement),
         getGroupReactNode: (group) => group.totalString,
       },
     ];

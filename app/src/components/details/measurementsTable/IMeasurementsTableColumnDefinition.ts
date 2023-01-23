@@ -9,6 +9,7 @@ export interface IMeasurementsTableColumnDefinition {
   getHeaderReactNode: (onClick: () => void) => React.ReactNode;
 
   getValueReactNode: (
+    group: IMeasurementsTableGroup,
     measurement: IMeasurement,
     isFirstRowOfGroup: boolean,
     onClick?: () => void

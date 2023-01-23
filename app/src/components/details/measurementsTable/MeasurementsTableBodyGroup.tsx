@@ -33,7 +33,7 @@ export const MeasurementsTableBodyGroup: React.FC<{
         <TableRow key={measurement.id}>
           {columns.map((c) => (
             <TableCell key={c.key}>
-              {c.getValueReactNode(measurement, i === 0, () =>
+              {c.getValueReactNode(group, measurement, i === 0, () =>
                 setIsCollapsed(!isCollapsed)
               )}
             </TableCell>

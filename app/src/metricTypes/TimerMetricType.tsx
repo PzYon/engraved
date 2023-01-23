@@ -8,13 +8,12 @@ import { differenceInSeconds } from "date-fns";
 import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { getDurationAsHhMmSsFromSeconds } from "../util/getDurationAsHhMmSs";
 import { FormatDuration } from "../components/common/FormatDuration";
+import { IMeasurementsTableGroup } from "../components/details/measurementsTable/IMeasurementsTableGroup";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
 
   isGroupable = true;
-
-  hideDateColumnInMeasurementsList = true;
 
   getIcon() {
     return <TimerSharp style={{ backgroundColor: "#FFDFEC" }} />;
@@ -25,7 +24,10 @@ export class TimerMetricType implements IMetricType {
       {
         key: "_start",
         getHeaderReactNode: () => "Start",
-        getValueReactNode: (measurement: IMeasurement) => (
+        getValueReactNode: (
+          _: IMeasurementsTableGroup,
+          measurement: IMeasurement
+        ) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).startDate}
             dateFormat={DateFormat.timeOnly}
@@ -35,7 +37,10 @@ export class TimerMetricType implements IMetricType {
       {
         key: "_end",
         getHeaderReactNode: () => "End",
-        getValueReactNode: (measurement: IMeasurement) => (
+        getValueReactNode: (
+          _: IMeasurementsTableGroup,
+          measurement: IMeasurement
+        ) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).endDate}
             dateFormat={DateFormat.timeOnly}
@@ -47,7 +52,10 @@ export class TimerMetricType implements IMetricType {
         getHeaderReactNode: () => "Duration",
         isSummable: true,
         getRawValue: (measurement: IMeasurement) => this.getValue(measurement),
-        getValueReactNode: (measurement: IMeasurement) => {
+        getValueReactNode: (
+          group: IMeasurementsTableGroup,
+          measurement: IMeasurement
+        ) => {
           const timerMeasurement = measurement as ITimerMeasurement;
 
           return (

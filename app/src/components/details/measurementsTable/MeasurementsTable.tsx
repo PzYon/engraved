@@ -132,8 +132,8 @@ function getColumnsBefore(
         ),
       key: "_collapse",
       width: "40px",
-      getValueReactNode: (_, isFirstRowOfGroup, onClick) => {
-        if (!isFirstRowOfGroup) {
+      getValueReactNode: (group, _, isFirstRowOfGroup, onClick) => {
+        if (!isFirstRowOfGroup || group.measurements.length < 2) {
           return null;
         }
 
@@ -148,16 +148,22 @@ function getColumnsBefore(
           />
         );
       },
-      getGroupReactNode: (group, onClick) => (
-        <IconButtonWrapper
-          action={{
-            key: "collapse",
-            label: "Collapse",
-            onClick: onClick,
-            icon: <ExpandLess fontSize="small" />,
-          }}
-        />
-      ),
+      getGroupReactNode: (group, onClick) => {
+        if (group.measurements.length < 2) {
+          return null;
+        }
+
+        return (
+          <IconButtonWrapper
+            action={{
+              key: "collapse",
+              label: "Collapse",
+              onClick: onClick,
+              icon: <ExpandLess fontSize="small" />,
+            }}
+          />
+        );
+      },
     },
     {
       getHeaderReactNode: () => translations.columnName_date,
@@ -165,7 +171,7 @@ function getColumnsBefore(
       getGroupReactNode: (group) => (
         <MeasurementsDateTableCell date={new Date(group.label)} />
       ),
-      getValueReactNode: (measurement, isFirstRowOfGroup) =>
+      getValueReactNode: (group, measurement, isFirstRowOfGroup) =>
         isFirstRowOfGroup ? (
           <MeasurementsDateTableCell date={measurement.dateTime} />
         ) : null,
@@ -183,7 +189,7 @@ function getColumnsAfter(
       key: "_attributes",
       doHide: (metric: IMetric): boolean =>
         !Object.keys(metric.attributes ?? {}).length,
-      getValueReactNode: (measurement) => (
+      getValueReactNode: (_, measurement) => (
         <AttributeValues
           attributes={metric.attributes}
           attributeValues={measurement.metricAttributeValues}
@@ -193,13 +199,13 @@ function getColumnsAfter(
     {
       getHeaderReactNode: () => translations.columnName_notes,
       key: "_notes",
-      getValueReactNode: (measurement) => measurement.notes,
+      getValueReactNode: (_, measurement) => measurement.notes,
     },
     {
       getHeaderReactNode: () => translations.columnName_actions,
       key: "_actions",
       width: "80px",
-      getValueReactNode: (measurement) => (
+      getValueReactNode: (_, measurement) => (
         <MeasurementActionButtons
           measurement={measurement}
           metricId={metric.id}
