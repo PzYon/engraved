@@ -1,7 +1,7 @@
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { IMetric } from "../serverApi/IMetric";
-import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
+import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { IMeasurement } from "../serverApi/IMeasurement";
 
 export interface IMetricType {
@@ -12,7 +12,7 @@ export interface IMetricType {
 
   getIcon(): React.ReactNode;
 
-  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[];
+  getMeasurementsListColumns(): IMeasurementsTableColumnDefinition[];
 
   hideDateColumnInMeasurementsList?: boolean;
 

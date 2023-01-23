@@ -1,5 +1,5 @@
 import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
-import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
+import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { TextSnippetOutlined } from "@mui/icons-material";
@@ -11,7 +11,7 @@ export class NotesMetricType implements IMetricType {
     return <TextSnippetOutlined style={{ backgroundColor: "#DFEEFF" }} />;
   }
 
-  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
+  getMeasurementsListColumns(): IMeasurementsTableColumnDefinition[] {
     return [];
   }
 

@@ -5,7 +5,7 @@ import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { differenceInSeconds } from "date-fns";
-import { IMeasurementsListColumnDefinition } from "../components/details/list/IMeasurementsListColumnDefinition";
+import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { getDurationAsHhMmSsFromSeconds } from "../util/getDurationAsHhMmSs";
 import { FormatDuration } from "../components/common/FormatDuration";
 
@@ -20,11 +20,11 @@ export class TimerMetricType implements IMetricType {
     return <TimerSharp style={{ backgroundColor: "#FFDFEC" }} />;
   }
 
-  getMeasurementsListColumns(): IMeasurementsListColumnDefinition[] {
+  getMeasurementsListColumns(): IMeasurementsTableColumnDefinition[] {
     return [
       {
         key: "_start",
-        header: "Start",
+        getHeader: () => "Start",
         getValueReactNode: (measurement: IMeasurement) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).startDate}
@@ -34,7 +34,7 @@ export class TimerMetricType implements IMetricType {
       },
       {
         key: "_end",
-        header: "End",
+        getHeader: () => "End",
         getValueReactNode: (measurement: IMeasurement) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).endDate}
@@ -44,7 +44,7 @@ export class TimerMetricType implements IMetricType {
       },
       {
         key: "_duration",
-        header: "Duration",
+        getHeader: () => "Duration",
         isSummable: true,
         getRawValue: (measurement: IMeasurement) => this.getValue(measurement),
         getValueReactNode: (measurement: IMeasurement) => {
