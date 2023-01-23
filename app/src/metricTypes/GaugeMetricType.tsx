@@ -15,11 +15,11 @@ export class GaugeMetricType implements IMetricType {
     return <BarChartSharp style={{ backgroundColor: "FFFFDF" }} />;
   }
 
-  getMeasurementsListColumns(): IMeasurementsTableColumnDefinition[] {
+  getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
     return [
       {
         key: "_value",
-        getHeader: () => "Value",
+        getHeaderReactNode: () => "Value",
         isSummable: true,
         getRawValue: (measurement: IMeasurement) => getValue(measurement),
         getValueReactNode: (measurement: IMeasurement) => getValue(measurement),

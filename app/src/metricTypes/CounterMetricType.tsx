@@ -14,7 +14,7 @@ export class CounterMetricType implements IMetricType {
     return <PlusOneSharp style={{ backgroundColor: "#DFFFE3" }} />;
   }
 
-  getMeasurementsListColumns(): IMeasurementsTableColumnDefinition[] {
+  getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
     return [];
   }
 

@@ -11,7 +11,7 @@ export class NotesMetricType implements IMetricType {
     return <TextSnippetOutlined style={{ backgroundColor: "#DFEEFF" }} />;
   }
 
-  getMeasurementsListColumns(): IMeasurementsTableColumnDefinition[] {
+  getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
     return [];
   }
 

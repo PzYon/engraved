@@ -12,7 +12,7 @@ export interface IMetricType {
 
   getIcon(): React.ReactNode;
 
-  getMeasurementsListColumns(): IMeasurementsTableColumnDefinition[];
+  getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[];
 
   hideDateColumnInMeasurementsList?: boolean;
 

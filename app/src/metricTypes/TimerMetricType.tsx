@@ -20,11 +20,11 @@ export class TimerMetricType implements IMetricType {
     return <TimerSharp style={{ backgroundColor: "#FFDFEC" }} />;
   }
 
-  getMeasurementsListColumns(): IMeasurementsTableColumnDefinition[] {
+  getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
     return [
       {
         key: "_start",
-        getHeader: () => "Start",
+        getHeaderReactNode: () => "Start",
         getValueReactNode: (measurement: IMeasurement) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).startDate}
@@ -34,7 +34,7 @@ export class TimerMetricType implements IMetricType {
       },
       {
         key: "_end",
-        getHeader: () => "End",
+        getHeaderReactNode: () => "End",
         getValueReactNode: (measurement: IMeasurement) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).endDate}
@@ -44,7 +44,7 @@ export class TimerMetricType implements IMetricType {
       },
       {
         key: "_duration",
-        getHeader: () => "Duration",
+        getHeaderReactNode: () => "Duration",
         isSummable: true,
         getRawValue: (measurement: IMeasurement) => this.getValue(measurement),
         getValueReactNode: (measurement: IMeasurement) => {
