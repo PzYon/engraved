@@ -149,10 +149,6 @@ function getColumnsBefore(
         );
       },
       getGroupReactNode: (group, onClick) => {
-        if (group.measurements.length < 2) {
-          return null;
-        }
-
         return (
           <IconButtonWrapper
             action={{
