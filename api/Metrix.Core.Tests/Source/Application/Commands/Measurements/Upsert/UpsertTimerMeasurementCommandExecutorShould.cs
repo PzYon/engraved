@@ -103,6 +103,7 @@ public class UpsertTimerMeasurementCommandExecutorShould
 
     Assert.IsNotNull(measurement);
     Assert.AreEqual(newStartDate, measurement?.StartDate);
+    Assert.AreEqual(newStartDate, measurement?.DateTime);
     Assert.AreEqual(newEndDate, measurement?.EndDate);
   }
 }

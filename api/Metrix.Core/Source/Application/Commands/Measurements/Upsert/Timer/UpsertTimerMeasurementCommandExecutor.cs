@@ -22,6 +22,7 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
     if (!string.IsNullOrEmpty(Command.Id) && (Command.EndDate != null || Command.StartDate != null))
     {
       measurement.StartDate = Command.StartDate;
+      measurement.DateTime = Command.StartDate ?? dateService.UtcNow;
       measurement.EndDate = Command.EndDate;
       return;
     }
@@ -29,6 +30,7 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
     if (measurement.StartDate == null)
     {
       measurement.StartDate = dateService.UtcNow;
+      measurement.DateTime = DateTime.UtcNow;
     }
     else
     {
