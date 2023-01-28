@@ -16,7 +16,10 @@ export function renderGoogleSignInButton(
       google.accounts.id.initialize({
         client_id: envSettings.auth.google.clientId,
         callback: signInWithJwt,
+        auto_select: true,
       });
+
+      google.accounts.id.prompt();
 
       google.accounts.id.renderButton(domElement, {
         theme: "outline",
