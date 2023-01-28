@@ -21,8 +21,6 @@ export const Bootstrapper: React.FC = () => {
       return;
     }
 
-    wakeUpApi();
-
     const storage = new AuthStorage();
 
     if (!storage.hasResult()) {
@@ -70,14 +68,6 @@ export const Bootstrapper: React.FC = () => {
       });
   }
 };
-
-function wakeUpApi() {
-  const start = performance.now();
-  ServerApi.wakeMeUp().then(() => {
-    const end = performance.now();
-    console.log(`API has woken up after ${Math.round(end - start)}ms`);
-  });
-}
 
 const Host = styled("div")<{ isNotVisible: boolean }>`
   display: flex;
