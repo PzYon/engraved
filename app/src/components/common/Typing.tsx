@@ -1,34 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { Typer } from "./Typer";
-import { useTheme } from "@mui/material";
 
 export const Typing = (props: { textToType: string }) => {
   const [currentValue, setCurrentValue] = useState("");
-  const [isCursorVisible, toggleIsCursorVisible] = useFlag(true);
-  const theme = useTheme();
 
   useEffect(() => {
-    const typer = new Typer(
-      props.textToType,
-      setCurrentValue,
-      toggleIsCursorVisible
-    );
+    const typer = new Typer(props.textToType, setCurrentValue);
     typer.start();
 
     return typer.end;
   }, []);
 
-  return (
-    <span
-      style={
-        isCursorVisible
-          ? { borderRight: `2px solid ${theme.palette.common.white}` }
-          : null
-      }
-    >
-      {currentValue}
-    </span>
-  );
+  return <>{currentValue}</>;
 };
 
 // thanks to https://github.com/streamich/react-use/blob/master/src/useToggle.ts

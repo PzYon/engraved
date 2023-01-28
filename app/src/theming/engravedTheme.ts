@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material/styles";
 
 const textColor = "#444444";
 
-export const metrixTheme = createTheme({
+export const engravedTheme = createTheme({
   palette: {
     primary: {
       main: "#2a7b9b",

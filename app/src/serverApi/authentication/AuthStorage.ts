@@ -2,7 +2,7 @@ import { IAuthResult } from "../IAuthResult";
 import { StorageUtil } from "../../util/StorageUtil";
 
 export class AuthStorage {
-  private static key = "metrix::auth";
+  private static key = "engraved::auth";
 
   private storageUtil = new StorageUtil(sessionStorage);
 

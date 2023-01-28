@@ -37,7 +37,9 @@ export const PageContextProvider: React.FC<{
   const [pageActions, setPageActions] = useState<IIconButtonAction[]>([]);
 
   useEffect(() => {
-    document.title = documentTitle ? documentTitle + " | metrix" : "metrix";
+    document.title = documentTitle
+      ? documentTitle + " | engraved."
+      : "engraved.";
   }, [documentTitle]);
 
   const contextValue = useMemo(() => {
