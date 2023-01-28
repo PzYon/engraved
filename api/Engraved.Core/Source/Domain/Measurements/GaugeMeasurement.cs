@@ -1,0 +1,11 @@
+﻿namespace Engraved.Core.Domain.Measurements;
+
+public class GaugeMeasurement : BaseMeasurement
+{
+  public double Value { get; set; }
+
+  public override double GetValue()
+  {
+    return Value;
+  }
+}

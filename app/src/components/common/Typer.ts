@@ -28,7 +28,7 @@ export class Typer {
   }
 
   public end = (): void => {
-    this.toggleCursor(false);
+    this.toggleCursor?.(false);
     clearTimeout(this.typeTimer as number);
     clearInterval(this.cursorInterval as number);
   };
