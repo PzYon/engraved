@@ -1,0 +1,28 @@
+﻿using Engraved.Core.Application.Persistence;
+
+namespace Engraved.Core.Application.Commands.Metrics.EditPermissions;
+
+public class EditMetricPermissionsCommandExecutor : ICommandExecutor
+{
+  private readonly EditMetricPermissionsCommand _command;
+
+  public EditMetricPermissionsCommandExecutor(EditMetricPermissionsCommand command)
+  {
+    _command = command;
+  }
+
+  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  {
+    if (string.IsNullOrEmpty(_command.MetricId))
+    {
+      throw new InvalidCommandException(_command, $"{nameof(EditMetricPermissionsCommand.MetricId)} is required");
+    }
+
+    if (_command.Permissions?.Count > 0)
+    {
+      await repository.ModifyMetricPermissions(_command.MetricId, _command.Permissions);
+    }
+
+    return new CommandResult();
+  }
+}

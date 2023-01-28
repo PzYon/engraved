@@ -49,7 +49,7 @@ export const Bootstrapper: React.FC = () => {
         <CircularProgress sx={{ color: "common.white" }} />
       ) : (
         <WelcomeContainer>
-          <WelcomeText>metrix.</WelcomeText>
+          <WelcomeText>engraved.</WelcomeText>
           <div ref={ref} />
         </WelcomeContainer>
       )}
@@ -90,7 +90,7 @@ const WelcomeContainer = styled("div")`
 `;
 
 const WelcomeText = styled("div")`
-  font-family: Chewy, serif;
+  font-family: Pacifico, serif;
   color: ${(p) => p.theme.palette.common.white};
   font-size: 90px;
   margin-bottom: 30px;

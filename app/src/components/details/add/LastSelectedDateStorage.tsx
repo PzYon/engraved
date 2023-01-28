@@ -1,7 +1,7 @@
 import { StorageUtil } from "../../../util/StorageUtil";
 
 export class LastSelectedDateStorage {
-  private static key = "metrix::lastSelectedDate";
+  private static key = "engraved::lastSelectedDate";
 
   private storageUtil = new StorageUtil(sessionStorage);
 

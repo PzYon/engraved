@@ -9,12 +9,14 @@ export class Typer {
   public constructor(
     private textToType: string,
     private printText: (text: string) => void,
-    private toggleCursor: (show?: boolean) => void
+    private toggleCursor?: (show?: boolean) => void
   ) {
-    this.cursorInterval = setInterval(
-      this.toggleCursor,
-      this.blinkDurationMs
-    ) as never;
+    if (toggleCursor) {
+      this.cursorInterval = setInterval(
+        this.toggleCursor,
+        this.blinkDurationMs
+      ) as never;
+    }
   }
 
   private static getTypeInMs() {
@@ -26,7 +28,7 @@ export class Typer {
   }
 
   public end = (): void => {
-    this.toggleCursor(false);
+    this.toggleCursor?.(false);
     clearTimeout(this.typeTimer as number);
     clearInterval(this.cursorInterval as number);
   };

@@ -25,8 +25,15 @@ export const AppHeader: React.FC = () => {
       >
         <ContentWrapper sx={{ display: "flex", height: "64px" }}>
           <Link to="/" style={{ flexGrow: 1 }}>
-            <Typography variant="h1" sx={{ fontFamily: "Chewy" }}>
-              <Typing textToType="metrix." />
+            <Typography
+              variant="h1"
+              sx={{
+                fontFamily: "Pacifico",
+                fontSize: "35px",
+                marginTop: "-10px",
+              }}
+            >
+              <Typing textToType="engraved." />
             </Typography>
           </Link>
           <AppInfoLauncher />

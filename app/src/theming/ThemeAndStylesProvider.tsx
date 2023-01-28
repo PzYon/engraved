@@ -1,16 +1,16 @@
 import { GlobalStyles } from "@mui/styled-engine";
 import React from "react";
-import { metrixTheme } from "./metrixTheme";
+import { engravedTheme } from "./engravedTheme";
 import { ThemeProvider } from "@mui/material";
 
 export const ThemeAndStylesProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => (
-  <ThemeProvider theme={metrixTheme}>
+  <ThemeProvider theme={engravedTheme}>
     <GlobalStyles
       styles={{
         html: {
-          background: metrixTheme.palette.background.default,
+          background: engravedTheme.palette.background.default,
         },
 
         body: {
@@ -19,7 +19,7 @@ export const ThemeAndStylesProvider: React.FC<{
         },
 
         a: {
-          color: metrixTheme.palette.primary.main + " !important;",
+          color: engravedTheme.palette.primary.main + " !important;",
           textDecoration: "none",
         },
       }}
