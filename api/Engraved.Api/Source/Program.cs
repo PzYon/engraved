@@ -197,7 +197,7 @@ void SeedRepo(IRepository repo)
 
 MongoRepositorySettings CreateRepositorySettings(WebApplicationBuilder webApplicationBuilder)
 {
-  string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("metrix_db");
+  string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("engraved_db");
   if (string.IsNullOrEmpty(connectionString))
   {
     throw new Exception("App Service Config: No connection string available.");

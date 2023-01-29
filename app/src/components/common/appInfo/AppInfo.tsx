@@ -38,7 +38,7 @@ export const AppInfo: React.FC = () => {
       <ItemContainer>
         <Typography>
           <a
-            href="https://github.com/PzYon/metrix/issues"
+            href="https://github.com/PzYon/engraved/issues"
             target="_blank"
             rel="noreferrer"
           >
@@ -61,7 +61,9 @@ const SystemInfo: React.FC<{ label: string; systemInfo: ISystemInfo }> = ({
       <FormatDate value={systemInfo.mergeDateTime} />)
       <br />
       <a
-        href={"https://github.com/PzYon/metrix/commit/" + systemInfo.commitHash}
+        href={
+          "https://github.com/PzYon/engraved/commit/" + systemInfo.commitHash
+        }
         target="_blank"
         rel="noreferrer"
       >

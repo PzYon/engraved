@@ -1,5 +1,5 @@
 {
-  "name": "metrix",
+  "name": "engraved",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PzYon/metrix.git"
+    "url": "git+https://github.com/PzYon/engraved.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/PzYon/metrix/issues"
+    "url": "https://github.com/PzYon/engraved/issues"
   },
-  "homepage": "https://github.com/PzYon/metrix#readme",
+  "homepage": "https://github.com/PzYon/engraved#readme",
   "devDependencies": {
     "husky": "8.0.3",
     "pretty-quick": "3.1.3"
