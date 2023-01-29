@@ -75,5 +75,5 @@ jobs:
         with:
           app-name: "engraved"
           slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C73DA976C93E4096B745D8FA1460090E }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E }}
           package: .
