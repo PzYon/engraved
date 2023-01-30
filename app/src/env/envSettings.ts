@@ -3,7 +3,7 @@ export const envSettings = {
   auth: {
     google: {
       clientId:
-        "147930987098-feu514ne5nol9fhdpd2p3sm3fnj2eicf.apps.googleusercontent.com",
+        "791638561996-u8a0gf3af7b33qtk178djpek4054ir4d.apps.googleusercontent.com",
     },
   },
 };
