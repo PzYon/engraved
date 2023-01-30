@@ -19,10 +19,10 @@ public class LoginHandlerShould
 
   private readonly AuthenticationConfig _authenticationConfig = new()
   {
-    JwtSecret = "asdfasjvv3q9r28fuvhfadsioüeruwg4thrbjvkdöaowi34uwhtrjbsgnvcm",
+    JwtSecret = "cfadd57e-990a-4e95-9141-aa2493417126",
     TokenAudience = "http://au.dien.ce",
     TokenIssuer = "http://is.su.er",
-    GoogleClientId = "147930987098-feu514ne5nol9fhdpd2p3sm3fnj2eicf.apps.googleusercontent.com"
+    GoogleClientId = "791638561996-u8a0gf3af7b33qtk178djpek4054ir4d.apps.googleusercontent.com"
   };
 
   [SetUp]
