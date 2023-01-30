@@ -19,12 +19,14 @@ export function renderGoogleSignInButton(
         auto_select: true,
       });
 
-      google.accounts.id.prompt();
-
       google.accounts.id.renderButton(domElement, {
         theme: "outline",
         size: "large",
+        shape: "pill",
+        type: "standard",
       });
+
+      google.accounts.id.prompt();
     })
     .catch(console.error);
 

@@ -1,5 +1,4 @@
 export type GoogleInitializeResponse = {
-  clientId: string;
   credential: string;
   select_by: string;
 };
@@ -15,7 +14,7 @@ export type Google = {
       initialize: (input: GoogleInitializeInput) => void;
       renderButton: (
         domElement: HTMLElement,
-        params: { theme: string; size: string }
+        params: { theme: string; size: string; shape: string; type: string }
       ) => void;
     };
   };
