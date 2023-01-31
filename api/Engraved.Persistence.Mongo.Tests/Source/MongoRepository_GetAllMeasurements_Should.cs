@@ -35,8 +35,8 @@ public class MongoRepository_GetAllMeasurements_Should
   [Test]
   public async Task Consider_ToDate()
   {
-    string measurementId = await AddMeasurement(DateTime.Now.AddDays(-1));
-    await AddMeasurement(DateTime.Now.AddDays(1));
+    string measurementId = await AddMeasurement(DateTime.Now.AddDays(-3));
+    await AddMeasurement(DateTime.Now.AddDays(3));
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(_metricId, null, DateTime.Now, null);
 
@@ -86,6 +86,32 @@ public class MongoRepository_GetAllMeasurements_Should
     );
 
     Assert.AreEqual(2, measurements.Length);
+  }
+
+  [Test]
+  public async Task Consider_Dates_AtTheBeginningAndEndOfRange()
+  {
+    var lastInLastMonth = new DateTime(2000, 6, 30, 5, 30, 0);
+    var firstInCurrentMonth = new DateTime(2000, 7, 1, 5, 30, 0);
+    var lastInCurrentMonth = new DateTime(2000, 7, 31, 5, 30, 0);
+    var firstInNextMonth = new DateTime(2000, 8, 1, 5, 30, 0);
+
+    await AddMeasurement(lastInLastMonth);
+    string expectedId1 = await AddMeasurement(firstInCurrentMonth);
+    string expectedId2 = await AddMeasurement(lastInCurrentMonth);
+    await AddMeasurement(firstInNextMonth);
+
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(
+      _metricId,
+      new DateTime(2000, 7, 1),
+      new DateTime(2000, 7, 31),
+      null
+    );
+
+    Assert.AreEqual(2, measurements.Length);
+
+    Assert.IsTrue(measurements.Select(m => m.Id).Contains(expectedId1));
+    Assert.IsTrue(measurements.Select(m => m.Id).Contains(expectedId2));
   }
 
   [Test]
