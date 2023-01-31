@@ -89,6 +89,32 @@ public class MongoRepository_GetAllMeasurements_Should
   }
 
   [Test]
+  public async Task Consider_Dates_AtTheBeginningAndEndOfRange()
+  {
+    var lastInLastMonth = new DateTime(2000, 6, 30, 5, 30, 0);
+    var firstInCurrentMonth = new DateTime(2000, 7, 1, 5, 30, 0);
+    var lastInCurrentMonth = new DateTime(2000, 7, 31, 5, 30, 0);
+    var firstInNextMonth = new DateTime(2000, 8, 1, 5, 30, 0);
+
+    await AddMeasurement(lastInLastMonth);
+    string expectedId1 = await AddMeasurement(firstInCurrentMonth);
+    string expectedId2 = await AddMeasurement(lastInCurrentMonth);
+    await AddMeasurement(firstInNextMonth);
+
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(
+      _metricId,
+      new DateTime(2000, 7, 1),
+      new DateTime(2000, 7, 31),
+      null
+    );
+
+    Assert.AreEqual(2, measurements.Length);
+
+    Assert.IsTrue(measurements.Select(m => m.Id).Contains(expectedId1));
+    Assert.IsTrue(measurements.Select(m => m.Id).Contains(expectedId2));
+  }
+
+  [Test]
   public async Task Consider_Simple_AttributeValue_Positive()
   {
     var attributeValues = new Dictionary<string, string[]> { { "attr", new[] { "xyz" } } };

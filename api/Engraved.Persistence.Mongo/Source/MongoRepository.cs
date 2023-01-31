@@ -98,11 +98,11 @@ public class MongoRepository : IRepository
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
-  )
+      string metricId,
+      DateTime? fromDate,
+      DateTime? toDate,
+      IDictionary<string, string[]>? attributeValues
+    )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -122,7 +122,7 @@ public class MongoRepository : IRepository
 
     if (toDate.HasValue)
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => d.DateTime <= toDate.Value));
+      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => d.DateTime < toDate.Value.AddDays(1)));
     }
 
     if (attributeValues != null)
