@@ -35,8 +35,8 @@ public class MongoRepository_GetAllMeasurements_Should
   [Test]
   public async Task Consider_ToDate()
   {
-    string measurementId = await AddMeasurement(DateTime.Now.AddDays(-1));
-    await AddMeasurement(DateTime.Now.AddDays(1));
+    string measurementId = await AddMeasurement(DateTime.Now.AddDays(-3));
+    await AddMeasurement(DateTime.Now.AddDays(3));
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(_metricId, null, DateTime.Now, null);
 
