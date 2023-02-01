@@ -1,3 +1,6 @@
+[![Api](https://github.com/PzYon/engraved/actions/workflows/api.yml/badge.svg)](https://github.com/PzYon/engraved/actions/workflows/api.yml)
+[![App](https://github.com/PzYon/engraved/actions/workflows/app.yml/badge.svg)](https://github.com/PzYon/engraved/actions/workflows/app.yml)
+
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 # engraved.
