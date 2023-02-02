@@ -4,7 +4,7 @@ import {
   formatDistanceToNow,
   isToday,
 } from "date-fns";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const autoUpdateIntervalSeconds = 120;
 
