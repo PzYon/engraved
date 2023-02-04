@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
@@ -16,9 +16,11 @@ export const AppHeader: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const { palette } = useTheme();
 
-  const [isLoading, setIsLoading] = useState(ServerApi.isLoading);
+  const [isLoading, setIsLoading] = useState(false);
 
-  ServerApi.registerIsLoading((loading) => setIsLoading(loading));
+  useEffect(() => {
+    ServerApi.registerIsLoading((loading) => setIsLoading(loading));
+  }, []);
 
   return (
     <Host>
@@ -84,7 +86,7 @@ const ContentWrapper = styled("div")`
 `;
 
 const Dot = styled("span")`
-  &:is-active {
+  &.is-active {
     animation: pulse 1s infinite;
   }
 
