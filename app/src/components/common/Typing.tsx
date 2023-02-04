@@ -10,7 +10,7 @@ export const Typing = (props: {
 
   useEffect(() => {
     const typer = new Typer(props.textToType, setCurrentValue);
-    typer.start(() => setIsComplete(true));
+    typer.start().then(() => setIsComplete(true));
 
     return typer.end;
   }, []);

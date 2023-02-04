@@ -31,18 +31,11 @@ export class ServerApi {
 
   private static onLoadingToggle: (loading: boolean) => void;
 
-  static registerIsLoading(onToggle: (loading: boolean) => void): void {
+  static registerOnLoadingToggle(onToggle: (loading: boolean) => void): void {
     ServerApi.onLoadingToggle = onToggle;
   }
 
-  private static updateCounter(direction: "oneMore" | "oneLess") {
-    const diff = direction == "oneMore" ? 1 : -1;
-    ServerApi._loadingCounter = ServerApi._loadingCounter + diff;
-
-    ServerApi.onLoadingToggle?.(ServerApi._loadingCounter > 0);
-  }
-
-  static async wakeMeUp() {
+  static async wakeMeUp(): Promise<void> {
     return await this.executeRequest<void>("/wake/me/up");
   }
 
@@ -265,6 +258,25 @@ export class ServerApi {
       new Request(envSettings.apiBaseUrl + url),
       requestConfig
     );
+  }
+
+  private static timer: unknown;
+
+  private static updateCounter(direction: "oneMore" | "oneLess") {
+    const diff = direction == "oneMore" ? 1 : -1;
+    ServerApi._loadingCounter = ServerApi._loadingCounter + diff;
+
+    clearTimeout(ServerApi.timer as never);
+
+    const isOver = ServerApi._loadingCounter > 0;
+
+    if (isOver) {
+      ServerApi.timer = setTimeout(() => {
+        ServerApi.onLoadingToggle?.(true);
+      }, 700);
+    } else {
+      ServerApi.onLoadingToggle?.(false);
+    }
   }
 
   private static printPerfData(

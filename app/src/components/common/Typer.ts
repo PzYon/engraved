@@ -23,8 +23,8 @@ export class Typer {
     return Math.random() * 200 + 50;
   }
 
-  public start(onComplete: () => void) {
-    this.typeNextChar(0, onComplete);
+  public start(): Promise<void> {
+    return this.startTyping();
   }
 
   public end = (): void => {
@@ -33,7 +33,14 @@ export class Typer {
     clearInterval(this.cursorInterval as number);
   };
 
-  private typeNextChar(index: number, onComplete: () => void): void {
+  private startTyping(index = 0): Promise<void> {
+    return new Promise((resolve) => this.typeNextChar(index, resolve));
+  }
+
+  private typeNextChar(
+    index: number,
+    resolve: (value: PromiseLike<void> | void) => void
+  ) {
     const hasNotStarted = index === 0;
     const isDone = index > this.textToType.length;
     const delay =
@@ -41,15 +48,15 @@ export class Typer {
 
     this.typeTimer = setTimeout(() => {
       if (isDone) {
-        onComplete();
         this.end();
+        resolve();
         return;
       }
 
       const nextIndex = this.getNextIndex(index);
 
       this.printText(this.textToType.substring(0, nextIndex));
-      this.typeNextChar(nextIndex, onComplete);
+      return this.typeNextChar(nextIndex, resolve);
     }, delay);
   }
 
