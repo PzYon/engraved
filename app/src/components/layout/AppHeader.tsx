@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
@@ -8,12 +8,17 @@ import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { usePageContext } from "./pages/PageContext";
 import { Typing } from "../common/Typing";
+import { ServerApi } from "../../serverApi/ServerApi";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
   const { pageTitle, pageActions } = usePageContext();
   const deviceWidth = useDeviceWidth();
   const { palette } = useTheme();
+
+  const [isLoading, setIsLoading] = useState(ServerApi.isLoading);
+
+  ServerApi.registerIsLoading((loading) => setIsLoading(loading));
 
   return (
     <Host>
@@ -33,7 +38,12 @@ export const AppHeader: React.FC = () => {
                 marginTop: "-10px",
               }}
             >
-              <Typing textToType="engraved." />
+              <Typing
+                textToType="engraved"
+                renderAtEnd={
+                  <Dot className={isLoading ? "is-active" : undefined}>.</Dot>
+                }
+              />
             </Typography>
           </Link>
           <AppInfoLauncher />
@@ -71,4 +81,12 @@ const ContentWrapper = styled("div")`
   a {
     color: ${(p) => p.theme.palette.common.white} !important;
   }
+`;
+
+const Dot = styled("span")`
+  &:is-active {
+    animation: pulse 1s infinite;
+  }
+
+  color: white;
 `;

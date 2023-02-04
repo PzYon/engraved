@@ -2,7 +2,7 @@ export class Typer {
   private typeTimer: unknown;
   private readonly cursorInterval: unknown;
 
-  private readonly typoProbability: number = 0.1;
+  private readonly typoProbability: number = 0.05;
   private readonly blinkDurationMs = 500;
   private readonly idleBlinkDuration = this.blinkDurationMs * 2;
 
@@ -23,8 +23,8 @@ export class Typer {
     return Math.random() * 200 + 50;
   }
 
-  public start() {
-    this.typeNextChar();
+  public start(onComplete: () => void) {
+    this.typeNextChar(0, onComplete);
   }
 
   public end = (): void => {
@@ -33,7 +33,7 @@ export class Typer {
     clearInterval(this.cursorInterval as number);
   };
 
-  private typeNextChar(index = 0): void {
+  private typeNextChar(index: number, onComplete: () => void): void {
     const hasNotStarted = index === 0;
     const isDone = index > this.textToType.length;
     const delay =
@@ -41,6 +41,7 @@ export class Typer {
 
     this.typeTimer = setTimeout(() => {
       if (isDone) {
+        onComplete();
         this.end();
         return;
       }
@@ -48,7 +49,7 @@ export class Typer {
       const nextIndex = this.getNextIndex(index);
 
       this.printText(this.textToType.substring(0, nextIndex));
-      this.typeNextChar(nextIndex);
+      this.typeNextChar(nextIndex, onComplete);
     }, delay);
   }
 

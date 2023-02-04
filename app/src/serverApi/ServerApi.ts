@@ -28,6 +28,8 @@ type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 export class ServerApi {
   private static _jwtToken: string;
 
+  static isLoading = false;
+
   static async wakeMeUp() {
     return await this.executeRequest<void>("/wake/me/up");
   }
@@ -206,20 +208,28 @@ export class ServerApi {
     method: HttpMethod = "GET",
     payload: unknown = undefined
   ): Promise<T> {
-    const start = performance.now();
+    try {
+      ServerApi.loadingCounter++;
 
-    const response = await this.getResponse(url, method, payload);
+      const start = performance.now();
 
-    this.printPerfData(method, url, response, start);
+      const response = await this.getResponse(url, method, payload);
 
-    const text = await response.text();
-    const json = text ? JSON.parse(text) : null;
+      this.printPerfData(method, url, response, start);
 
-    if (response.ok) {
-      return json;
+      const text = await response.text();
+      const json = text ? JSON.parse(text) : null;
+
+      if (response.ok) {
+        return json;
+      }
+
+      throw new ApiError(response.status, json as IApiError);
+    } finally {
+      ServerApi.loadingCounter--;
     }
 
-    throw new ApiError(response.status, json as IApiError);
+    ServerApi.onLoadingToggle(ServerApi.loadingCounter === 0);
   }
 
   private static async getResponse(
@@ -262,4 +272,12 @@ export class ServerApi {
       `-- ${method} ${url} [${status}]: Server ${server} + Network ${network} = Total ${total} `
     );
   }
+
+  static registerIsLoading(onToggle: (loading: boolean) => void): void {
+    ServerApi.onLoadingToggle = onToggle;
+  }
+
+  private static loadingCounter = 0;
+
+  private static onLoadingToggle: (loading: boolean) => void;
 }
