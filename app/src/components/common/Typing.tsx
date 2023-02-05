@@ -12,7 +12,7 @@ export const Typing = (props: {
     const typer = new Typer(props.textToType, setCurrentValue);
     typer.start().then(() => setIsComplete(true));
 
-    return typer.end;
+    return () => typer.end();
   }, []);
 
   return (

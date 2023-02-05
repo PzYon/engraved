@@ -138,7 +138,6 @@ export const MetricContextProvider: React.FC<{
 
   function getMeasurements(): Promise<IMeasurement[]> {
     if (metric?.type === MetricType.Notes) {
-      console.log("skipping");
       return Promise.resolve([]);
     }
 

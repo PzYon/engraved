@@ -4,7 +4,7 @@ export class Typer {
 
   private readonly typoProbability: number = 0.05;
   private readonly blinkDurationMs = 500;
-  private readonly idleBlinkDuration = this.blinkDurationMs * 2;
+  private readonly idleBlinkDuration = this.blinkDurationMs;
 
   public constructor(
     private textToType: string,
@@ -27,20 +27,17 @@ export class Typer {
     return this.startTyping();
   }
 
-  public end = (): void => {
+  public end(): void {
     this.toggleCursor?.(false);
     clearTimeout(this.typeTimer as number);
     clearInterval(this.cursorInterval as number);
-  };
+  }
 
   private startTyping(index = 0): Promise<void> {
     return new Promise((resolve) => this.typeNextChar(index, resolve));
   }
 
-  private typeNextChar(
-    index: number,
-    resolve: (value: PromiseLike<void> | void) => void
-  ) {
+  private typeNextChar(index: number, resolve: () => void) {
     const hasNotStarted = index === 0;
     const isDone = index > this.textToType.length;
     const delay =
@@ -56,7 +53,7 @@ export class Typer {
       const nextIndex = this.getNextIndex(index);
 
       this.printText(this.textToType.substring(0, nextIndex));
-      return this.typeNextChar(nextIndex, resolve);
+      this.typeNextChar(nextIndex, resolve);
     }, delay);
   }
 
