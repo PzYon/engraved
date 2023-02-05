@@ -13,6 +13,15 @@ export const PulsatingDot: React.FC = () => {
 };
 
 const Dot = styled("span")`
+  @keyframes pulse {
+    0% {
+      color: white;
+    }
+    100% {
+      color: transparent;
+    }
+  }
+
   &.is-active {
     animation: pulse 0.7s infinite;
   }

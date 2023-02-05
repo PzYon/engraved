@@ -20,7 +20,7 @@ export class Typer {
   }
 
   private static getTypeInMs() {
-    return Math.random() * 200 + 50;
+    return Math.random() * 150 + 50;
   }
 
   public start(): Promise<void> {
