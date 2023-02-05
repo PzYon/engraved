@@ -1,35 +1,24 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typer } from "./Typer";
 
-export const Typing = (props: { textToType: string }) => {
-  const [currentValue, setCurrentValue] = useState("");
+export const Typing = (props: {
+  textToType: string;
+  renderOnComplete: React.ReactNode;
+}) => {
+  const [currentValue, setCurrentValue] = useState<React.ReactNode>("");
+  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     const typer = new Typer(props.textToType, setCurrentValue);
-    typer.start();
+    typer.start().then(() => setIsComplete(true));
 
-    return typer.end;
+    return () => typer.end();
   }, []);
 
-  return <>{currentValue}</>;
-};
-
-// thanks to https://github.com/streamich/react-use/blob/master/src/useToggle.ts
-export const useFlag = (
-  initialValue: boolean
-): [boolean, (nextValue?: unknown) => void] => {
-  const [flag, setFlag] = useState<boolean>(initialValue);
-
-  const toggleFlag = useCallback(
-    (nextValue?: unknown) => {
-      if (typeof nextValue === "boolean") {
-        setFlag(nextValue);
-      } else {
-        setFlag((currentValue) => !currentValue);
-      }
-    },
-    [setFlag]
+  return (
+    <>
+      {currentValue}
+      {isComplete ? props.renderOnComplete : null}
+    </>
   );
-
-  return [flag, toggleFlag];
 };

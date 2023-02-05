@@ -8,6 +8,7 @@ import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { usePageContext } from "./pages/PageContext";
 import { Typing } from "../common/Typing";
+import { PulsatingDot } from "../common/PulsatingDot";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -33,7 +34,10 @@ export const AppHeader: React.FC = () => {
                 marginTop: "-10px",
               }}
             >
-              <Typing textToType="engraved." />
+              <Typing
+                textToType="engraved"
+                renderOnComplete={<PulsatingDot />}
+              />
             </Typography>
           </Link>
           <AppInfoLauncher />

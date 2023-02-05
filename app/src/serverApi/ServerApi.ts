@@ -27,8 +27,16 @@ type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
 export class ServerApi {
   private static _jwtToken: string;
+  private static _loadingCounter = 0;
+  private static _timer: unknown;
 
-  static async wakeMeUp() {
+  private static onLoadingToggle: (loading: boolean) => void;
+
+  static registerOnLoadingToggle(onToggle: (loading: boolean) => void): void {
+    ServerApi.onLoadingToggle = onToggle;
+  }
+
+  static async wakeMeUp(): Promise<void> {
     return await this.executeRequest<void>("/wake/me/up");
   }
 
@@ -206,20 +214,26 @@ export class ServerApi {
     method: HttpMethod = "GET",
     payload: unknown = undefined
   ): Promise<T> {
-    const start = performance.now();
+    try {
+      ServerApi.updateCounter("oneMore");
 
-    const response = await this.getResponse(url, method, payload);
+      const start = performance.now();
 
-    this.printPerfData(method, url, response, start);
+      const response = await this.getResponse(url, method, payload);
 
-    const text = await response.text();
-    const json = text ? JSON.parse(text) : null;
+      this.printPerfData(method, url, response, start);
 
-    if (response.ok) {
-      return json;
+      const text = await response.text();
+      const json = text ? JSON.parse(text) : null;
+
+      if (response.ok) {
+        return json;
+      }
+
+      throw new ApiError(response.status, json as IApiError);
+    } finally {
+      ServerApi.updateCounter("oneLess");
     }
-
-    throw new ApiError(response.status, json as IApiError);
   }
 
   private static async getResponse(
@@ -245,6 +259,27 @@ export class ServerApi {
       new Request(envSettings.apiBaseUrl + url),
       requestConfig
     );
+  }
+
+  private static updateCounter(direction: "oneMore" | "oneLess") {
+    const diff = direction == "oneMore" ? 1 : -1;
+    ServerApi._loadingCounter = ServerApi._loadingCounter + diff;
+    this.callOnLoadingToggle();
+  }
+
+  private static callOnLoadingToggle() {
+    clearTimeout(ServerApi._timer as never);
+
+    const isOver = ServerApi._loadingCounter === 0;
+
+    if (!isOver) {
+      ServerApi.onLoadingToggle?.(true);
+      return;
+    }
+
+    ServerApi._timer = setTimeout(() => {
+      ServerApi.onLoadingToggle?.(false);
+    }, 700);
   }
 
   private static printPerfData(
