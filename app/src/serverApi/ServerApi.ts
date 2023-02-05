@@ -28,6 +28,7 @@ type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 export class ServerApi {
   private static _jwtToken: string;
   private static _loadingCounter = 0;
+  private static _timer: unknown;
 
   private static onLoadingToggle: (loading: boolean) => void;
 
@@ -260,23 +261,25 @@ export class ServerApi {
     );
   }
 
-  private static timer: unknown;
-
   private static updateCounter(direction: "oneMore" | "oneLess") {
     const diff = direction == "oneMore" ? 1 : -1;
     ServerApi._loadingCounter = ServerApi._loadingCounter + diff;
+    this.callOnLoadingToggle();
+  }
 
-    clearTimeout(ServerApi.timer as never);
+  private static callOnLoadingToggle() {
+    clearTimeout(ServerApi._timer as never);
 
-    const isOver = ServerApi._loadingCounter > 0;
+    const isOver = ServerApi._loadingCounter === 0;
 
-    if (isOver) {
-      ServerApi.timer = setTimeout(() => {
-        ServerApi.onLoadingToggle?.(true);
-      }, 700);
-    } else {
-      ServerApi.onLoadingToggle?.(false);
+    if (!isOver) {
+      ServerApi.onLoadingToggle?.(true);
+      return;
     }
+
+    ServerApi._timer = setTimeout(() => {
+      ServerApi.onLoadingToggle?.(false);
+    }, 700);
   }
 
   private static printPerfData(

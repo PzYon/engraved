@@ -11,6 +11,7 @@ import { IMetric } from "../../serverApi/IMetric";
 import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
 import { getDefaultDateConditions } from "./filters/DateFilters";
+import { MetricType } from "../../serverApi/MetricType";
 
 export interface IDateConditions {
   from?: Date;
@@ -136,6 +137,11 @@ export const MetricContextProvider: React.FC<{
   }
 
   function getMeasurements(): Promise<IMeasurement[]> {
+    if (metric?.type === MetricType.Notes) {
+      console.log("skipping");
+      return Promise.resolve([]);
+    }
+
     return ServerApi.getMeasurements(
       metricId,
       selectedAttributeValues,
