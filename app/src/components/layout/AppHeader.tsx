@@ -34,7 +34,10 @@ export const AppHeader: React.FC = () => {
                 marginTop: "-10px",
               }}
             >
-              <Typing textToType="engraved" renderAtEnd={<PulsatingDot />} />
+              <Typing
+                textToType="engraved"
+                renderOnComplete={<PulsatingDot />}
+              />
             </Typography>
           </Link>
           <AppInfoLauncher />

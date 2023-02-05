@@ -3,7 +3,7 @@ import { Typer } from "./Typer";
 
 export const Typing = (props: {
   textToType: string;
-  renderAtEnd: React.ReactNode;
+  renderOnComplete: React.ReactNode;
 }) => {
   const [currentValue, setCurrentValue] = useState<React.ReactNode>("");
   const [isComplete, setIsComplete] = useState(false);
@@ -18,7 +18,7 @@ export const Typing = (props: {
   return (
     <>
       {currentValue}
-      {isComplete ? props.renderAtEnd : null}
+      {isComplete ? props.renderOnComplete : null}
     </>
   );
 };
