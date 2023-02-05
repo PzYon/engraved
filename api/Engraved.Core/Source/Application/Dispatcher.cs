@@ -19,7 +19,7 @@ public class Dispatcher
   }
 
   public async Task<TResult> Query<TResult>(IQuery<TResult> query)
-  { 
+  {
     return await Execute(
       () => ExecuteQuery(query),
       $"Query {query.GetType().Name}"
