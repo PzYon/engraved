@@ -1,4 +1,6 @@
 export class LoadingHandler {
+  delayMs = 700;
+
   private _loadingCounter = 0;
   private _interval: unknown;
   private _currentState: "first" | "last" | "other";
@@ -46,7 +48,7 @@ export class LoadingHandler {
 
       clearInterval(this._interval as never);
       this.callHandlers(false);
-    }, 700);
+    }, this.delayMs);
   }
 
   private getCurrentState(direction: "oneMore" | "oneLess") {
