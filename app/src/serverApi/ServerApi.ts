@@ -22,21 +22,14 @@ import { IAttributeSearchResult } from "./IAttributeSearchResult";
 import { IThresholdValues } from "./IThresholdValues";
 import { IMetricThresholds } from "./IMetricThresholds";
 import { IMetricUiSettings } from "../components/details/edit/MetricUiSettings";
+import { LoadingHandler } from "./LoadingHandler";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
 export class ServerApi {
   private static _jwtToken: string;
 
-  private static _loadingCounter = 0;
-  private static _interval: unknown;
-  private static _currentState: "first" | "last" | "other";
-
-  private static onLoadingToggle: (loading: boolean) => void;
-
-  static registerOnLoadingToggle(onToggle: (loading: boolean) => void): void {
-    ServerApi.onLoadingToggle = onToggle;
-  }
+  static loadingHandler: LoadingHandler = new LoadingHandler();
 
   static async wakeMeUp(): Promise<void> {
     return await this.executeRequest<void>("/wake/me/up");
@@ -217,7 +210,7 @@ export class ServerApi {
     payload: unknown = undefined
   ): Promise<T> {
     try {
-      ServerApi.updateCounter("oneMore");
+      ServerApi.loadingHandler.oneMore();
 
       const start = performance.now();
 
@@ -234,7 +227,7 @@ export class ServerApi {
 
       throw new ApiError(response.status, json as IApiError);
     } finally {
-      ServerApi.updateCounter("oneLess");
+      ServerApi.loadingHandler.oneLess();
     }
   }
 
@@ -261,31 +254,6 @@ export class ServerApi {
       new Request(envSettings.apiBaseUrl + url),
       requestConfig
     );
-  }
-
-  private static updateCounter(direction: "oneMore" | "oneLess") {
-    const diff = direction == "oneMore" ? 1 : -1;
-    ServerApi._loadingCounter = ServerApi._loadingCounter + diff;
-
-    ServerApi._currentState =
-      ServerApi._loadingCounter === 1 && direction === "oneMore"
-        ? "first"
-        : ServerApi._loadingCounter === 0 && direction === "oneLess"
-        ? "last"
-        : "other";
-
-    if (ServerApi._currentState === "first") {
-      ServerApi.onLoadingToggle?.(true);
-
-      ServerApi._interval = setInterval(() => {
-        if (ServerApi._currentState !== "last") {
-          return;
-        }
-
-        clearInterval(ServerApi._interval as never);
-        ServerApi.onLoadingToggle(false);
-      }, 700);
-    }
   }
 
   private static printPerfData(

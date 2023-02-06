@@ -6,7 +6,10 @@ export const PulsatingDot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    ServerApi.registerOnLoadingToggle((loading) => setIsLoading(loading));
+    ServerApi.loadingHandler.registerHandler("pulsating-dot", (loading) =>
+      setIsLoading(loading)
+    );
+    return () => ServerApi.loadingHandler.unregisterHandler("pulsating-dot");
   }, []);
 
   return <Dot className={isLoading ? "is-active" : undefined}>.</Dot>;
