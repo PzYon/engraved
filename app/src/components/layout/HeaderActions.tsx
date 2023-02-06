@@ -27,11 +27,11 @@ export const HeaderActions: React.FC<{
   }
 
   return (
-    <>
+    <div ref={buttonContainerRef}>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
-      <ButtonContainer ref={buttonContainerRef}>
+      <ButtonContainer>
         <IconButton
           sx={{ visibility: "hidden", width: "1px", margin: 0, padding: 0 }}
         >
@@ -47,7 +47,7 @@ export const HeaderActions: React.FC<{
             )
           )}
       </ButtonContainer>
-    </>
+    </div>
   );
 };
 
