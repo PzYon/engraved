@@ -9,6 +9,7 @@ import { lighten } from "@mui/material";
 import { getCoefficient, getColorShades } from "../../../util/utils";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
+import { MetricType } from "../../../serverApi/MetricType";
 
 export const createChart = (
   measurements: IMeasurement[],
@@ -149,6 +150,7 @@ function createBarChart(
                 ? metricType.getValueLabel(value as number)
                 : value;
             },
+            precision: metricType.type === MetricType.Counter ? 0 : undefined,
           },
           title: {
             display: true,
@@ -160,6 +162,10 @@ function createBarChart(
         tooltip: {
           backgroundColor: color,
           cornerRadius: 4,
+          // use this to set custom tooltip:
+          // callbacks: {
+          //  title: (tooltipItem) => {},
+          // },
         },
         legend: {
           position: "top",
