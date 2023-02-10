@@ -10,6 +10,8 @@ import { getCoefficient, getColorShades } from "../../../util/utils";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
 import { MetricType } from "../../../serverApi/MetricType";
+import { format } from "date-fns";
+import { IMetricType } from "../../../metricTypes/IMetricType";
 
 export const createChart = (
   measurements: IMeasurement[],
@@ -88,6 +90,20 @@ function createPieChart(
   };
 }
 
+function getTooltipTitleFormat(groupByTime: GroupByTime) {
+  switch (groupByTime) {
+    case GroupByTime.Day:
+      return "EEE dd.LL.yy";
+    case GroupByTime.Month:
+      return "MMMM yy";
+    default:
+  }
+}
+
+function getTooltipValue(type: IMetricType, value: number): string {
+  return (type.formatTotalValue?.(value) ?? value).toString();
+}
+
 function createBarChart(
   measurements: IMeasurement[],
   color: string,
@@ -164,12 +180,16 @@ function createBarChart(
           cornerRadius: 4,
           callbacks: {
             title: (tooltipItems) => {
-              return (
-                tooltipItems[0].raw as ITransformedMeasurement
-              ).x.toString();
+              return format(
+                new Date((tooltipItems[0].raw as ITransformedMeasurement).x),
+                getTooltipTitleFormat(groupByTime)
+              );
             },
             label: (tooltipItem): string | string[] | void => {
-              return "unit: " + (tooltipItem.raw as ITransformedMeasurement).y;
+              return getTooltipValue(
+                metricType,
+                (tooltipItem.raw as ITransformedMeasurement).y
+              );
             },
           },
         },
