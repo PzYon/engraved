@@ -162,10 +162,16 @@ function createBarChart(
         tooltip: {
           backgroundColor: color,
           cornerRadius: 4,
-          // use this to set custom tooltip:
-          // callbacks: {
-          //  title: (tooltipItem) => {},
-          // },
+          callbacks: {
+            title: (tooltipItems) => {
+              return (
+                tooltipItems[0].raw as ITransformedMeasurement
+              ).x.toString();
+            },
+            label: (tooltipItem): string | string[] | void => {
+              return "unit: " + (tooltipItem.raw as ITransformedMeasurement).y;
+            },
+          },
         },
         legend: {
           position: "top",
