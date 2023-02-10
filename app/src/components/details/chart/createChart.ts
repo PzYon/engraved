@@ -163,7 +163,7 @@ function createBarChart(
           ticks: {
             callback: (value) => {
               return metricType.getValueLabel
-                ? metricType.getValueLabel(value as number)
+                ? metricType.formatTotalValue?.(value as number) ?? value
                 : value;
             },
             precision: metricType.type === MetricType.Counter ? 0 : undefined,
