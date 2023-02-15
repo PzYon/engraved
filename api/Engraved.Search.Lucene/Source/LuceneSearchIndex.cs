@@ -61,10 +61,10 @@ public class LuceneSearchIndex : ISearchIndex
     foreach (string fieldName in metricAttributeValues.SelectMany(v => v.Keys).Distinct())
     {
       termQuery.Clauses.Add(
-        new BooleanClause(new TermQuery(new Term(fieldName, searchTerm)), Occur.SHOULD)
+        new BooleanClause(new TermQuery(new Term(fieldName, searchTerm)) { Boost = 2 }, Occur.SHOULD)
       );
       termQuery.Clauses.Add(
-        new BooleanClause(new WildcardQuery(new Term(fieldName, searchTerm + "*")), Occur.SHOULD)
+        new BooleanClause(new WildcardQuery(new Term(fieldName, searchTerm + "*")) { Boost = 1.5f }, Occur.SHOULD)
       );
       termQuery.Clauses.Add(
         new BooleanClause(new FuzzyQuery(new Term(fieldName, searchTerm)), Occur.SHOULD)
