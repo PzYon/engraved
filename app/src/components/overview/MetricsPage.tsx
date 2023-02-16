@@ -1,32 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { ServerApi } from "../../serverApi/ServerApi";
-import { useAppContext } from "../../AppContext";
 import { AddOutlined } from "@mui/icons-material";
 import { AddMetricLauncher } from "./AddMetricLauncher";
 import { MetricListItem } from "./MetricListItem";
 import { Page } from "../layout/pages/Page";
+import { useQuery } from "react-query";
 
 export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
 }) => {
-  const [metrics, setMetrics] = useState<IMetric[]>([]);
+  const { data } = useQuery<IMetric[]>({
+    queryKey: "all-metrics",
+    queryFn: () => ServerApi.getMetrics(),
+  });
 
-  const { setAppAlert } = useAppContext();
-
-  useEffect(() => {
-    ServerApi.getMetrics()
-      .then((data) => {
-        setMetrics(data);
-      })
-      .catch((e) => {
-        setAppAlert({
-          title: e.message,
-          message: e.message,
-          type: "error",
-        });
-      });
-  }, []);
+  if (!data) {
+    return null;
+  }
 
   return (
     <Page
@@ -40,7 +31,7 @@ export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
         },
       ]}
     >
-      {metrics.map((metric) => (
+      {data.map((metric) => (
         <MetricListItem key={metric.id} metric={metric} />
       ))}
 

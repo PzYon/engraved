@@ -9,21 +9,34 @@ import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContext";
 import { IUser } from "./serverApi/IUser";
 import { PageContextProvider } from "./components/layout/pages/PageContext";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      useErrorBoundary: true,
+    },
+  },
+});
 
 export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <AppContextProvider user={user}>
-    <BrowserRouter>
-      <DialogContextProvider>
-        <PageContextProvider>
-          <AppHeader />
-          <AppAlertBar />
-          <AppErrorBoundary>
-            <AppContent>
-              <AppRoutes />
-            </AppContent>
-          </AppErrorBoundary>
-        </PageContextProvider>
-      </DialogContextProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <BrowserRouter>
+        <DialogContextProvider>
+          <PageContextProvider>
+            <AppHeader />
+            <AppAlertBar />
+            <AppErrorBoundary>
+              <AppContent>
+                <AppRoutes />
+              </AppContent>
+            </AppErrorBoundary>
+          </PageContextProvider>
+        </DialogContextProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   </AppContextProvider>
 );
