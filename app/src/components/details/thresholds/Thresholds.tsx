@@ -1,10 +1,10 @@
 import { IMetric } from "../../../serverApi/IMetric";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useMetricContext } from "../MetricDetailsContext";
-import { IThresholdValues } from "../../../serverApi/IThresholdValues";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
+import { useQuery } from "react-query";
 
 export const Thresholds: React.FC<{
   metric: IMetric;
@@ -22,13 +22,10 @@ export const Thresholds: React.FC<{
 }) => {
   const { dateConditions } = useMetricContext();
 
-  const [thresholdValues, setThresholdValues] = useState<IThresholdValues>();
-
-  useEffect(() => {
-    ServerApi.getThresholdValues(metric.id, dateConditions).then(
-      setThresholdValues
-    );
-  }, [reloadToken]);
+  const { data: thresholdValues } = useQuery(
+    [reloadToken, metric.id, dateConditions],
+    () => ServerApi.getThresholdValues(metric.id, dateConditions)
+  );
 
   if (!thresholdValues) {
     return null;

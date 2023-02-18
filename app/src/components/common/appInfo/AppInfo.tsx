@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { ISystemInfo } from "../../../serverApi/ISystemInfo";
 import { FormatDate } from "../FormatDate";
 import { styled, Typography } from "@mui/material";
+import { useQuery } from "react-query";
 
 export const AppInfo: React.FC = () => {
-  const [systemInfo, setSystemInfo] = useState<ISystemInfo>();
-
-  useEffect(() => {
-    ServerApi.getSystemInfo().then((si: ISystemInfo) => {
-      setSystemInfo(si);
-    });
-  }, []);
+  const { data: systemInfo } = useQuery([], () => ServerApi.getSystemInfo());
 
   if (!systemInfo) {
     return null;

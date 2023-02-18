@@ -182,7 +182,7 @@ export const MetricViewPage: React.FC = () => {
         />
       ) : null}
 
-      {measurements.length ? (
+      {measurements?.length ? (
         <DetailsSection overflowXScroll={true}>
           <MeasurementsTable
             metric={metric}

@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import { IMeasurement } from "../../serverApi/IMeasurement";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
@@ -12,6 +6,7 @@ import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
 import { getDefaultDateConditions } from "./filters/DateFilters";
 import { MetricType } from "../../serverApi/MetricType";
+import { useQuery } from "react-query";
 
 export interface IDateConditions {
   from?: Date;
@@ -56,9 +51,6 @@ export const MetricContextProvider: React.FC<{
   children: React.ReactNode;
   metricId: string;
 }> = ({ children, metricId }) => {
-  const [measurements, setMeasurements] = useState<IMeasurement[]>([]);
-  const [metric, setMetric] = useState<IMetric>(null);
-
   const [selectedAttributeValues, setSelectedAttributeValues] = useState<{
     [key: string]: string[];
   }>({});
@@ -69,20 +61,25 @@ export const MetricContextProvider: React.FC<{
 
   const { setAppAlert } = useAppContext();
 
-  useEffect(() => {
-    getMeasurements().then(setMeasurements);
-  }, [metricId, selectedAttributeValues, dateConditions]);
+  const { data: measurements, refetch: reloadMeasurements } = useQuery(
+    [metricId, selectedAttributeValues, dateConditions],
+    () => getMeasurements()
+  );
 
-  useEffect(() => {
-    reloadMetric();
-  }, [metricId]);
+  const { data: metric, refetch: reloadMetric } = useQuery([metricId], () =>
+    ServerApi.getMetric(metricId)
+  );
 
   const contextValue = useMemo(() => {
     return {
       measurements,
       metric,
-      reloadMetric,
-      reloadMeasurements,
+      reloadMetric: async () => {
+        await reloadMetric();
+      },
+      reloadMeasurements: async () => {
+        await reloadMeasurements();
+      },
       toggleAttributeValue,
       selectedAttributeValues,
       setSelectedAttributeValues: setSelectedAttributeValuesInternal,
@@ -124,16 +121,6 @@ export const MetricContextProvider: React.FC<{
     }
 
     setSelectedAttributeValues(selectedValues);
-  }
-
-  function reloadMetric(): Promise<void> {
-    return ServerApi.getMetric(metricId)
-      .then(setMetric)
-      .catch((e) => handleError(`Error loading Metric ${metricId}`, e));
-  }
-
-  function reloadMeasurements(): Promise<void> {
-    return getMeasurements().then(setMeasurements);
   }
 
   function getMeasurements(): Promise<IMeasurement[]> {
