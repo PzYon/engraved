@@ -26,18 +26,8 @@ export const queryKeysFactory = {
     return ["system-info"];
   },
 
-  getMetricThresholdValues(
-    reloadToken: number,
-    metricId: string,
-    dateConditions: IDateConditions
-  ) {
-    return [
-      "metrics",
-      metricId,
-      "threshold-values",
-      reloadToken,
-      dateConditions,
-    ];
+  getMetricThresholdValues(metricId: string, dateConditions: IDateConditions) {
+    return ["metrics", metricId, "threshold-values", dateConditions];
   },
 
   editMetric(metricId: string) {

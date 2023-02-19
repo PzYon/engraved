@@ -14,7 +14,7 @@ import { EditCommonProperties } from "../edit/EditCommonProperties";
 export const NotesEditPage: React.FC = () => {
   const navigate = useNavigate();
   const { setAppAlert } = useAppContext();
-  const { metric, reloadMetric } = useMetricContext();
+  const { metric } = useMetricContext();
 
   const [name, setName] = useState(metric.name);
   const [description, setDescription] = useState(metric.description);
@@ -69,7 +69,8 @@ export const NotesEditPage: React.FC = () => {
       {}
     )
       .then(async () => {
-        await reloadMetric();
+        // note: this will also be handled by react-query
+        // await reloadMetric();
 
         setAppAlert({
           title: "Saved note",

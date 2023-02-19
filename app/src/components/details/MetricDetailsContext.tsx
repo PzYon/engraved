@@ -17,8 +17,6 @@ export interface IDateConditions {
 export interface IMetricContext {
   metric: IMetric;
   measurements: IMeasurement[];
-  reloadMetric: () => Promise<void>;
-  reloadMeasurements: () => Promise<void>;
   toggleAttributeValue: (
     attributeKey: string,
     attributeValueKey: string
@@ -35,8 +33,6 @@ export interface IMetricContext {
 const MetricContext = createContext<IMetricContext>({
   metric: null,
   measurements: [],
-  reloadMetric: null,
-  reloadMeasurements: null,
   toggleAttributeValue: null,
   setSelectedAttributeValues: null,
   selectedAttributeValues: {},
@@ -62,7 +58,7 @@ export const MetricContextProvider: React.FC<{
 
   const { setAppAlert } = useAppContext();
 
-  const { data: measurements, refetch: reloadMeasurements } = useQuery(
+  const { data: measurements } = useQuery(
     queryKeysFactory.getMeasurements(
       metricId,
       dateConditions,
@@ -82,9 +78,6 @@ export const MetricContextProvider: React.FC<{
       metric,
       reloadMetric: async () => {
         await reloadMetric();
-      },
-      reloadMeasurements: async () => {
-        await reloadMeasurements();
       },
       toggleAttributeValue,
       selectedAttributeValues,

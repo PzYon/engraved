@@ -10,8 +10,7 @@ import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const renderAddMeasurementDialog = (
   metric: IMetric,
-  renderDialog: (dialogProps: IDialogProps) => void,
-  onAdded?: () => void
+  renderDialog: (dialogProps: IDialogProps) => void
 ): void => {
   renderDialog({
     title: "Add measurement",
@@ -19,7 +18,6 @@ export const renderAddMeasurementDialog = (
       <UpsertMeasurementWrapper
         metric={metric}
         onSaved={() => {
-          onAdded?.();
           renderDialog(null);
         }}
       />

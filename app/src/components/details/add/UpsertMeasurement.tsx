@@ -23,6 +23,8 @@ import { hasAttributes } from "../../../util/MeasurementUtil";
 import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";
 import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUpsertTimerMeasurementCommand";
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
+import { useQueryClient } from "react-query";
+import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 const storage = new LastSelectedDateStorage();
 
@@ -37,6 +39,8 @@ export const UpsertMeasurement: React.FC<{
   const [notes, setNotes] = useState<string>(measurement?.notes || "");
 
   const [forceResetSelectors, setForceResetSelectors] = useState("initial");
+
+  const queryClient = useQueryClient();
 
   const [value, setValue] = useState<string>(
     (measurement as IGaugeMeasurement)?.value?.toString() || ""
@@ -197,6 +201,10 @@ export const UpsertMeasurement: React.FC<{
         title: `${measurement?.id ? "Updated" : "Added"} measurement`,
         type: "success",
       });
+
+      await queryClient.invalidateQueries(
+        queryKeysFactory.getMetric(metric.id)
+      );
 
       onSaved?.();
     } catch (e) {

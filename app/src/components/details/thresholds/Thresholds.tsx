@@ -9,26 +9,16 @@ import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const Thresholds: React.FC<{
   metric: IMetric;
-  reloadToken: number;
   selectedAttributeValues: { [key: string]: string[] };
   setSelectedAttributeValues: (
     attributeKey: string,
     attributeValueKeys: string[]
   ) => void;
-}> = ({
-  metric,
-  reloadToken,
-  selectedAttributeValues,
-  setSelectedAttributeValues,
-}) => {
+}> = ({ metric, selectedAttributeValues, setSelectedAttributeValues }) => {
   const { dateConditions } = useMetricContext();
 
   const { data: thresholdValues } = useQuery(
-    queryKeysFactory.getMetricThresholdValues(
-      reloadToken,
-      metric.id,
-      dateConditions
-    ),
+    queryKeysFactory.getMetricThresholdValues(metric.id, dateConditions),
     () => ServerApi.getThresholdValues(metric.id, dateConditions)
   );
 
