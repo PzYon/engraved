@@ -5,6 +5,7 @@ import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResul
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IMetric } from "../../../serverApi/IMetric";
+import { useMutation } from "react-query";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let timer: any;
@@ -16,6 +17,15 @@ export const AttributeComboSearch: React.FC<{
   onChange: (attributesValues: IMetricAttributeValues) => void;
 }> = ({ metric, onChange }) => {
   const [options, setOptions] = useState<IAttributeSearchResult[]>([]);
+
+  const searchAttributesMutation = useMutation(
+    (variables: { metricId: string; searchText: string }) => {
+      return ServerApi.searchMetricAttributes(
+        variables.metricId,
+        variables.searchText
+      );
+    }
+  );
 
   return (
     <Autocomplete
@@ -83,7 +93,11 @@ export const AttributeComboSearch: React.FC<{
 
     timer = setTimeout(() => {
       lastLoadedSearchText = searchText;
-      ServerApi.searchMetricAttributes(metric.id, searchText).then(setOptions);
+
+      searchAttributesMutation.mutate({
+        metricId: metric.id,
+        searchText: searchText,
+      });
     }, 300);
   }
 };
