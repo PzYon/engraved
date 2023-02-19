@@ -1,10 +1,12 @@
 import { UpsertMeasurement } from "./UpsertMeasurement";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IMetric } from "../../../serverApi/IMetric";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { MetricType } from "../../../serverApi/MetricType";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
+import { useQuery } from "react-query";
+import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const renderAddMeasurementDialog = (
   metric: IMetric,
@@ -29,15 +31,10 @@ export const UpsertMeasurementWrapper: React.FC<{
   metric: IMetric;
   onSaved: () => void;
 }> = ({ metric, onSaved }) => {
-  const [measurement, setMeasurement] = useState<IMeasurement>(undefined);
-
-  useEffect(() => {
-    if (metric.type === MetricType.Timer) {
-      ServerApi.getActiveMeasurement(metric.id).then(setMeasurement);
-    } else {
-      setMeasurement(null);
-    }
-  }, []);
+  const { data: measurement } = useQuery(
+    queryKeysFactory.getActiveMeasurement(metric.id),
+    () => getActiveMeasurement()
+  );
 
   if (measurement === undefined) {
     return null;
@@ -50,4 +47,12 @@ export const UpsertMeasurementWrapper: React.FC<{
       onSaved={onSaved}
     />
   );
+
+  function getActiveMeasurement(): Promise<IMeasurement> {
+    if (metric.type === MetricType.Timer) {
+      return ServerApi.getActiveMeasurement(metric.id);
+    } else {
+      return Promise.resolve(null);
+    }
+  }
 };

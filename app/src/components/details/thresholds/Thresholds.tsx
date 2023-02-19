@@ -5,6 +5,7 @@ import { useMetricContext } from "../MetricDetailsContext";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
 import { useQuery } from "react-query";
+import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const Thresholds: React.FC<{
   metric: IMetric;
@@ -23,7 +24,11 @@ export const Thresholds: React.FC<{
   const { dateConditions } = useMetricContext();
 
   const { data: thresholdValues } = useQuery(
-    [reloadToken, metric.id, dateConditions],
+    queryKeysFactory.getMetricThresholdValues(
+      reloadToken,
+      metric.id,
+      dateConditions
+    ),
     () => ServerApi.getThresholdValues(metric.id, dateConditions)
   );
 

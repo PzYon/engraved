@@ -4,9 +4,12 @@ import { ISystemInfo } from "../../../serverApi/ISystemInfo";
 import { FormatDate } from "../FormatDate";
 import { styled, Typography } from "@mui/material";
 import { useQuery } from "react-query";
+import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const AppInfo: React.FC = () => {
-  const { data: systemInfo } = useQuery([], () => ServerApi.getSystemInfo());
+  const { data: systemInfo } = useQuery(queryKeysFactory.getSystemInfo(), () =>
+    ServerApi.getSystemInfo()
+  );
 
   if (!systemInfo) {
     return null;

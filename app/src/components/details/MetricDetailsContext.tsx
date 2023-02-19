@@ -7,6 +7,7 @@ import { useAppContext } from "../../AppContext";
 import { getDefaultDateConditions } from "./filters/DateFilters";
 import { MetricType } from "../../serverApi/MetricType";
 import { useQuery } from "react-query";
+import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
 
 export interface IDateConditions {
   from?: Date;
@@ -62,12 +63,17 @@ export const MetricContextProvider: React.FC<{
   const { setAppAlert } = useAppContext();
 
   const { data: measurements, refetch: reloadMeasurements } = useQuery(
-    [metricId, selectedAttributeValues, dateConditions],
+    queryKeysFactory.getMeasurements(
+      metricId,
+      dateConditions,
+      selectedAttributeValues
+    ),
     () => getMeasurements()
   );
 
-  const { data: metric, refetch: reloadMetric } = useQuery([metricId], () =>
-    ServerApi.getMetric(metricId)
+  const { data: metric, refetch: reloadMetric } = useQuery(
+    queryKeysFactory.getMetric(metricId),
+    () => ServerApi.getMetric(metricId)
   );
 
   const contextValue = useMemo(() => {
