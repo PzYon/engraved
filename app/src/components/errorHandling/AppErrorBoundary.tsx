@@ -13,19 +13,3 @@ export const AppErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
     </AppErrorBoundaryClass>
   );
 };
-
-//credits to https://github.com/bvaughn/react-error-boundary/blob/master/src/index.tsx
-export function useErrorHandler(
-  givenError?: unknown
-): (error: unknown) => void {
-  const [error, setError] = React.useState<unknown>(null);
-  if (givenError != null) {
-    throw givenError;
-  }
-
-  if (error != null) {
-    throw error;
-  }
-
-  return setError;
-}

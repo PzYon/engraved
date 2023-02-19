@@ -17,6 +17,9 @@ const queryClient = new QueryClient({
     queries: {
       useErrorBoundary: true,
     },
+    mutations: {
+      useErrorBoundary: true,
+    },
   },
 });
 

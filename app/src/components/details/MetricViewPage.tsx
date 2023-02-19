@@ -173,7 +173,7 @@ export const MetricViewPage: React.FC = () => {
         </Suspense>
       ) : null}
 
-      {showThresholds ? (
+      {showThresholds && Object.keys(metric.thresholds).length ? (
         <Thresholds
           reloadToken={reloadToken}
           metric={metric}
