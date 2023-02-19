@@ -12,11 +12,13 @@ import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { MetricUiSettings } from "./MetricUiSettings";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { EditCommonProperties } from "./EditCommonProperties";
+import { useMutation } from "react-query";
+import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const MetricEditPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const { metric, reloadMetric } = useMetricContext();
+  const { metric } = useMetricContext();
 
   const [attributes, setAttributes] = useState(metric.attributes);
   const [thresholds, setThresholds] = useState(metric.thresholds ?? {});
@@ -31,11 +33,46 @@ export const MetricEditPage: React.FC = () => {
 
   const { setAppAlert } = useAppContext();
 
+  const editMetricMutation = useMutation({
+    mutationKey: queryKeysFactory.editMetric(metric.id),
+    mutationFn: async () => {
+      await ServerApi.editMetric(
+        metric.id,
+        name,
+        description,
+        metric.notes,
+        attributes,
+        thresholds,
+        uiSettings
+      );
+    },
+    onSuccess: () => {
+      setAppAlert({
+        title: "Saved metric",
+        type: "success",
+      });
+
+      // todo: reload metric here!
+
+      navigate("./..");
+    },
+    onError: (error) => {
+      // use error boundary for this?
+      setAppAlert({
+        title: "Failed to edit metric",
+        message: error.toString(),
+        type: "error",
+      });
+    },
+  });
+
   return (
     <Page
       title={<PageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
-      actions={getCommonEditModeActions(navigate, onSave)}
+      actions={getCommonEditModeActions(navigate, () =>
+        editMetricMutation.mutate()
+      )}
     >
       <EditCommonProperties
         name={name}
@@ -60,35 +97,4 @@ export const MetricEditPage: React.FC = () => {
       </DetailsSection>
     </Page>
   );
-
-  function onSave() {
-    {
-      ServerApi.editMetric(
-        metric.id,
-        name,
-        description,
-        metric.notes,
-        attributes,
-        thresholds,
-        uiSettings
-      )
-        .then(async () => {
-          await reloadMetric();
-
-          setAppAlert({
-            title: "Saved metric",
-            type: "success",
-          });
-
-          navigate("./..");
-        })
-        .catch((e) => {
-          setAppAlert({
-            title: "Failed to edit metric",
-            message: e.message,
-            type: "error",
-          });
-        });
-    }
-  }
 };

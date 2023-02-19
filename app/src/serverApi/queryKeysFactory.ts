@@ -5,23 +5,24 @@ export const queryKeysFactory = {
     return ["metrics"];
   },
 
-  getMetric: (metricId: string) => {
+  getMetric(metricId: string) {
     return ["metrics", metricId];
   },
 
-  getMeasurements: (
+  getMeasurements(
     metricId: string,
     dateConditions: IDateConditions,
     attributeValues: { [key: string]: string[] }
-  ) => {
+  ) {
     return [
       "metrics",
       metricId,
+      "measurements",
       { filters: { dateConditions, attributeValues } },
     ];
   },
 
-  getSystemInfo: () => {
+  getSystemInfo() {
     return ["system-info"];
   },
 
@@ -39,15 +40,19 @@ export const queryKeysFactory = {
     ];
   },
 
+  editMetric(metricId: string) {
+    return ["metrics", metricId, "edit"];
+  },
+
   updateMeasurement(metricId: string, measurementId: string) {
-    return ["metrics", metricId, "update", measurementId];
+    return ["metrics", metricId, "measurement", "update", measurementId];
   },
 
   deleteMeasurement(metricId: string, measurementId: string) {
-    return ["metrics", metricId, "delete", measurementId];
+    return ["metrics", metricId, "measurement", "delete", measurementId];
   },
 
   getActiveMeasurement(metricId: string) {
-    return ["metrics", metricId, "active-measurement"];
+    return ["metrics", metricId, "measurement", "get-active"];
   },
 };
