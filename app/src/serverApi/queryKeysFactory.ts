@@ -1,8 +1,12 @@
 import { IDateConditions } from "../components/details/MetricDetailsContext";
 
 export const queryKeysFactory = {
+  getMetrics() {
+    return ["metrics"];
+  },
+
   getMetric: (metricId: string) => {
-    return ["metric", metricId];
+    return ["metrics", metricId];
   },
 
   getMeasurements: (
@@ -11,7 +15,7 @@ export const queryKeysFactory = {
     attributeValues: { [key: string]: string[] }
   ) => {
     return [
-      "metric",
+      "metrics",
       metricId,
       { filters: { dateConditions, attributeValues } },
     ];
@@ -27,7 +31,7 @@ export const queryKeysFactory = {
     dateConditions: IDateConditions
   ) {
     return [
-      "metric",
+      "metrics",
       metricId,
       "threshold-values",
       reloadToken,
@@ -36,14 +40,14 @@ export const queryKeysFactory = {
   },
 
   updateMeasurement(metricId: string, measurementId: string) {
-    return ["metric", metricId, "update", measurementId];
+    return ["metrics", metricId, "update", measurementId];
   },
 
   deleteMeasurement(metricId: string, measurementId: string) {
-    return ["metric", metricId, "delete", measurementId];
+    return ["metrics", metricId, "delete", measurementId];
   },
 
   getActiveMeasurement(metricId: string) {
-    return ["metric", metricId, "active-measurement"];
+    return ["metrics", metricId, "active-measurement"];
   },
 };

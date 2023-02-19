@@ -6,12 +6,13 @@ import { AddMetricLauncher } from "./AddMetricLauncher";
 import { MetricListItem } from "./MetricListItem";
 import { Page } from "../layout/pages/Page";
 import { useQuery } from "react-query";
+import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
 
 export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
 }) => {
   const { data } = useQuery<IMetric[]>({
-    queryKey: "all-metrics",
+    queryKey: queryKeysFactory.getMetrics(),
     queryFn: () => ServerApi.getMetrics(),
   });
 
