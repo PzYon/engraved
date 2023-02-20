@@ -6,7 +6,7 @@ import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
 import { getDefaultDateConditions } from "./filters/DateFilters";
 import { MetricType } from "../../serverApi/MetricType";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
 
 export interface IDateConditions {

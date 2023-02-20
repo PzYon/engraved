@@ -4,7 +4,7 @@ import { ServerApi } from "../../../serverApi/ServerApi";
 import { useMetricContext } from "../MetricDetailsContext";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const Thresholds: React.FC<{

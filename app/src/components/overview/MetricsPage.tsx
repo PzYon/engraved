@@ -5,7 +5,7 @@ import { AddOutlined } from "@mui/icons-material";
 import { AddMetricLauncher } from "./AddMetricLauncher";
 import { MetricListItem } from "./MetricListItem";
 import { Page } from "../layout/pages/Page";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
 
 export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({

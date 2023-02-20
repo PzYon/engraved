@@ -23,7 +23,7 @@ import { hasAttributes } from "../../../util/MeasurementUtil";
 import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";
 import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUpsertTimerMeasurementCommand";
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 const storage = new LastSelectedDateStorage();

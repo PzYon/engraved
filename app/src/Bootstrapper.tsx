@@ -9,6 +9,8 @@ import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled } from "@mui/material";
 
+const storage = new AuthStorage();
+
 export const Bootstrapper: React.FC = () => {
   const [user, setUser] = useState<IUser>();
   const ref = useRef<HTMLDivElement>();
@@ -20,8 +22,6 @@ export const Bootstrapper: React.FC = () => {
     if (!ref.current) {
       return;
     }
-
-    const storage = new AuthStorage();
 
     if (!storage.hasResult()) {
       setIsNotVisible(false);

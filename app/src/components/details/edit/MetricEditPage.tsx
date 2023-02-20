@@ -12,7 +12,7 @@ import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { MetricUiSettings } from "./MetricUiSettings";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { EditCommonProperties } from "./EditCommonProperties";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const MetricEditPage: React.FC = () => {

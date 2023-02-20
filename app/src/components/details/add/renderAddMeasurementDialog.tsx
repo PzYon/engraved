@@ -5,7 +5,7 @@ import React from "react";
 import { MetricType } from "../../../serverApi/MetricType";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const renderAddMeasurementDialog = (

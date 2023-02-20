@@ -5,7 +5,7 @@ import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResul
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IMetric } from "../../../serverApi/IMetric";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let timer: any;

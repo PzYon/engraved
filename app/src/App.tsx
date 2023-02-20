@@ -9,8 +9,8 @@ import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContext";
 import { IUser } from "./serverApi/IUser";
 import { PageContextProvider } from "./components/layout/pages/PageContext";
-import { ReactQueryDevtools } from "react-query/devtools";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient({
   defaultOptions: {

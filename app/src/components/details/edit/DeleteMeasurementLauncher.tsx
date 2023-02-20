@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 import { ServerApi } from "../../../serverApi/ServerApi";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const DeleteMeasurementLauncher: React.FC<{
