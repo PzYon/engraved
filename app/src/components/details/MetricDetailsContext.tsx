@@ -6,7 +6,7 @@ import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
 import { getDefaultDateConditions } from "./filters/DateFilters";
 import { MetricType } from "../../serverApi/MetricType";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
 
 export interface IDateConditions {
@@ -67,18 +67,24 @@ export const MetricContextProvider: React.FC<{
     () => getMeasurements()
   );
 
-  const { data: metric, refetch: reloadMetric } = useQuery(
-    queryKeysFactory.metric(metricId),
-    () => ServerApi.getMetric(metricId)
-  );
+  const queryClient = useQueryClient();
+
+  const { data: metric } = useQuery({
+    queryKey: queryKeysFactory.metric(metricId),
+    queryFn: () => ServerApi.getMetric(metricId),
+    onSuccess: (loadedMetric) => {
+      queryClient.setQueriesData(
+        { queryKey: queryKeysFactory.metrics(), exact: true },
+        (metrics: IMetric[]) =>
+          metrics.map((m) => (m.id === loadedMetric.id ? loadedMetric : m))
+      );
+    },
+  });
 
   const contextValue = useMemo(() => {
     return {
       measurements,
       metric,
-      reloadMetric: async () => {
-        await reloadMetric();
-      },
       toggleAttributeValue,
       selectedAttributeValues,
       setSelectedAttributeValues: setSelectedAttributeValuesInternal,

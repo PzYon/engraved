@@ -76,6 +76,8 @@ export const FormatDate = (props: {
   );
 
   useEffect(() => {
+    setValues(calculateValues());
+
     if (differenceInHours(new Date(), getAsDate(props.value)) > 2) {
       return;
     }
