@@ -9,6 +9,18 @@ export const queryKeysFactory = {
     return ["metrics", metricId];
   },
 
+  editMetric(metricId: string) {
+    return ["metrics", metricId, "edit"];
+  },
+
+  deleteMetric(metricId: string) {
+    return ["metrics", metricId, "delete"];
+  },
+
+  metricThresholdValues(metricId: string, dateConditions: IDateConditions) {
+    return ["metrics", metricId, "threshold-values", dateConditions];
+  },
+
   measurements(
     metricId: string,
     dateConditions: IDateConditions,
@@ -22,18 +34,6 @@ export const queryKeysFactory = {
     ];
   },
 
-  systemInfo() {
-    return ["system-info"];
-  },
-
-  metricThresholdValues(metricId: string, dateConditions: IDateConditions) {
-    return ["metrics", metricId, "threshold-values", dateConditions];
-  },
-
-  editMetric(metricId: string) {
-    return ["metrics", metricId, "edit"];
-  },
-
   updateMeasurement(metricId: string, measurementId: string) {
     return ["metrics", metricId, "measurement", "update", measurementId];
   },
@@ -44,5 +44,9 @@ export const queryKeysFactory = {
 
   activeMeasurement(metricId: string) {
     return ["metrics", metricId, "measurements", "get-active"];
+  },
+
+  systemInfo() {
+    return ["system-info"];
   },
 };

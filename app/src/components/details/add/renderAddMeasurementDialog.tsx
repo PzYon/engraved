@@ -4,7 +4,6 @@ import { IMetric } from "../../../serverApi/IMetric";
 import React from "react";
 import { MetricType } from "../../../serverApi/MetricType";
 import { ServerApi } from "../../../serverApi/ServerApi";
-import { IMeasurement } from "../../../serverApi/IMeasurement";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
@@ -31,7 +30,10 @@ export const UpsertMeasurementWrapper: React.FC<{
 }> = ({ metric, onSaved }) => {
   const { data: measurement } = useQuery(
     queryKeysFactory.activeMeasurement(metric.id),
-    () => getActiveMeasurement()
+    () =>
+      metric.type === MetricType.Timer
+        ? ServerApi.getActiveMeasurement(metric.id)
+        : Promise.resolve(null)
   );
 
   if (measurement === undefined) {
@@ -45,12 +47,4 @@ export const UpsertMeasurementWrapper: React.FC<{
       onSaved={onSaved}
     />
   );
-
-  function getActiveMeasurement(): Promise<IMeasurement> {
-    if (metric.type === MetricType.Timer) {
-      return ServerApi.getActiveMeasurement(metric.id);
-    } else {
-      return Promise.resolve(null);
-    }
-  }
 };

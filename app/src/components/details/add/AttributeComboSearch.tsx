@@ -19,12 +19,8 @@ export const AttributeComboSearch: React.FC<{
   const [options, setOptions] = useState<IAttributeSearchResult[]>([]);
 
   const searchAttributesMutation = useMutation(
-    (variables: { metricId: string; searchText: string }) => {
-      return ServerApi.searchMetricAttributes(
-        variables.metricId,
-        variables.searchText
-      );
-    }
+    (variables: { metricId: string; searchText: string }) =>
+      ServerApi.searchMetricAttributes(metric.id, variables.searchText)
   );
 
   return (
@@ -93,11 +89,7 @@ export const AttributeComboSearch: React.FC<{
 
     timer = setTimeout(() => {
       lastLoadedSearchText = searchText;
-
-      searchAttributesMutation.mutate({
-        metricId: metric.id,
-        searchText: searchText,
-      });
+      searchAttributesMutation.mutate({ searchText: searchText });
     }, 300);
   }
 };
