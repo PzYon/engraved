@@ -18,7 +18,7 @@ export const Thresholds: React.FC<{
   const { dateConditions } = useMetricContext();
 
   const { data: thresholdValues } = useQuery(
-    queryKeysFactory.getMetricThresholdValues(metric.id, dateConditions),
+    queryKeysFactory.metricThresholdValues(metric.id, dateConditions),
     () => ServerApi.getThresholdValues(metric.id, dateConditions)
   );
 

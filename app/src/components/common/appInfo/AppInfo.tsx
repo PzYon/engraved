@@ -7,7 +7,7 @@ import { useQuery } from "react-query";
 import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 export const AppInfo: React.FC = () => {
-  const { data: systemInfo } = useQuery(queryKeysFactory.getSystemInfo(), () =>
+  const { data: systemInfo } = useQuery(queryKeysFactory.systemInfo(), () =>
     ServerApi.getSystemInfo()
   );
 

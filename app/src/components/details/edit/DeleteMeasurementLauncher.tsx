@@ -25,9 +25,7 @@ export const DeleteMeasurementLauncher: React.FC<{
       return ServerApi.deleteMeasurement(variables.measurementId);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(
-        queryKeysFactory.getMetric(metric.id)
-      );
+      await queryClient.invalidateQueries(queryKeysFactory.metric(metric.id));
     },
   });
 

@@ -54,9 +54,7 @@ export const MetricEditPage: React.FC = () => {
         type: "success",
       });
 
-      await queryClient.invalidateQueries(
-        queryKeysFactory.getMetric(metric.id)
-      );
+      await queryClient.invalidateQueries(queryKeysFactory.metric(metric.id));
 
       navigate("./..");
     },

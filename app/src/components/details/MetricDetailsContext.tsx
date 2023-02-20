@@ -59,7 +59,7 @@ export const MetricContextProvider: React.FC<{
   const { setAppAlert } = useAppContext();
 
   const { data: measurements } = useQuery(
-    queryKeysFactory.getMeasurements(
+    queryKeysFactory.measurements(
       metricId,
       dateConditions,
       selectedAttributeValues
@@ -68,7 +68,7 @@ export const MetricContextProvider: React.FC<{
   );
 
   const { data: metric, refetch: reloadMetric } = useQuery(
-    queryKeysFactory.getMetric(metricId),
+    queryKeysFactory.metric(metricId),
     () => ServerApi.getMetric(metricId)
   );
 

@@ -30,7 +30,7 @@ export const UpsertMeasurementWrapper: React.FC<{
   onSaved: () => void;
 }> = ({ metric, onSaved }) => {
   const { data: measurement } = useQuery(
-    queryKeysFactory.getActiveMeasurement(metric.id),
+    queryKeysFactory.activeMeasurement(metric.id),
     () => getActiveMeasurement()
   );
 

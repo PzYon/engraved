@@ -12,7 +12,7 @@ export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
 }) => {
   const { data } = useQuery<IMetric[]>({
-    queryKey: queryKeysFactory.getMetrics(),
+    queryKey: queryKeysFactory.metrics(),
     queryFn: () => ServerApi.getMetrics(),
   });
 

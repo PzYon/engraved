@@ -1,15 +1,15 @@
 import { IDateConditions } from "../components/details/MetricDetailsContext";
 
 export const queryKeysFactory = {
-  getMetrics() {
+  metrics() {
     return ["metrics"];
   },
 
-  getMetric(metricId: string) {
+  metric(metricId: string) {
     return ["metrics", metricId];
   },
 
-  getMeasurements(
+  measurements(
     metricId: string,
     dateConditions: IDateConditions,
     attributeValues: { [key: string]: string[] }
@@ -22,11 +22,11 @@ export const queryKeysFactory = {
     ];
   },
 
-  getSystemInfo() {
+  systemInfo() {
     return ["system-info"];
   },
 
-  getMetricThresholdValues(metricId: string, dateConditions: IDateConditions) {
+  metricThresholdValues(metricId: string, dateConditions: IDateConditions) {
     return ["metrics", metricId, "threshold-values", dateConditions];
   },
 
@@ -42,7 +42,7 @@ export const queryKeysFactory = {
     return ["metrics", metricId, "measurement", "delete", measurementId];
   },
 
-  getActiveMeasurement(metricId: string) {
-    return ["metrics", metricId, "measurement", "get-active"];
+  activeMeasurement(metricId: string) {
+    return ["metrics", metricId, "measurements", "get-active"];
   },
 };
