@@ -224,6 +224,11 @@ public class MongoRepository : IRepository
     return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
   }
 
+  public async Task WakeMeUp()
+  {
+    await _users.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>("wake@me.up"));
+  }
+
   private async Task<UpsertResult> UpsertUserInternal(IUser user)
   {
     UserDocument document = UserDocumentMapper.ToDocument(user);
