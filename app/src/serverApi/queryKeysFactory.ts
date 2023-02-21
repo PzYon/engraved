@@ -9,6 +9,10 @@ export const queryKeysFactory = {
     return ["metrics", metricId];
   },
 
+  addMetric() {
+    return ["metrics", "add"];
+  },
+
   editMetric(metricId: string) {
     return ["metrics", metricId, "edit"];
   },

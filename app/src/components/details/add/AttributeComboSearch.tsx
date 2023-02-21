@@ -19,7 +19,7 @@ export const AttributeComboSearch: React.FC<{
   const [options, setOptions] = useState<IAttributeSearchResult[]>([]);
 
   const searchAttributesMutation = useMutation(
-    (variables: { metricId: string; searchText: string }) =>
+    (variables: { searchText: string }) =>
       ServerApi.searchMetricAttributes(metric.id, variables.searchText)
   );
 

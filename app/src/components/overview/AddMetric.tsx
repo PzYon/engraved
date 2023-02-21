@@ -7,6 +7,8 @@ import { MetricType } from "../../serverApi/MetricType";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { useAppContext } from "../../AppContext";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
 import { ICommandResult } from "../../serverApi/ICommandResult";
 
 export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
@@ -17,6 +19,32 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
   const { setAppAlert } = useAppContext();
 
   const navigate = useNavigate();
+
+  const addMetricMutation = useMutation({
+    mutationKey: queryKeysFactory.addMetric(),
+    mutationFn: () => ServerApi.addMetric(name, description, metricType),
+    onSuccess: async (result: ICommandResult) => {
+      await onAdded();
+
+      navigate(
+        `/metrics/${result.entityId}/${
+          metricType === MetricType.Notes ? "edit" : ""
+        }`
+      );
+
+      setAppAlert({
+        title: `Added metric ${name}`,
+        type: "success",
+      });
+    },
+    onError: (error: Error) => {
+      setAppAlert({
+        title: "Failed to add metric",
+        message: error.message,
+        type: "error",
+      });
+    },
+  });
 
   return (
     <Section>
@@ -36,32 +64,7 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
           margin={"normal"}
         />
         <MetricTypeSelector metricType={metricType} onChange={setMetricType} />
-        <Button
-          variant="outlined"
-          onClick={() => {
-            ServerApi.addMetric(name, description, metricType)
-              .then(async (result: ICommandResult) => {
-                await onAdded();
-                navigate(
-                  `/metrics/${result.entityId}/${
-                    metricType === MetricType.Notes ? "edit" : ""
-                  }`
-                );
-
-                setAppAlert({
-                  title: `Added metric ${name}`,
-                  type: "success",
-                });
-              })
-              .catch((e) => {
-                setAppAlert({
-                  title: "Failed to add metric",
-                  message: e.message,
-                  type: "error",
-                });
-              });
-          }}
-        >
+        <Button variant="outlined" onClick={() => addMetricMutation.mutate()}>
           {translations.create}
         </Button>
       </FormControl>
