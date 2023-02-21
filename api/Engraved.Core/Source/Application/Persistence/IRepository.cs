@@ -37,4 +37,6 @@ public interface IRepository
   Task DeleteMeasurement(string measurementId);
 
   Task<IMeasurement?> GetMeasurement(string measurementId);
+
+  Task WakeMeUp();
 }
