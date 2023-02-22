@@ -2,12 +2,11 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 import { IMeasurement } from "../../serverApi/IMeasurement";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
-import { IApiError } from "../../serverApi/IApiError";
 import { useAppContext } from "../../AppContext";
 import { getDefaultDateConditions } from "./filters/DateFilters";
-import { MetricType } from "../../serverApi/MetricType";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
+import { ApiError } from "../../serverApi/ApiError";
 
 export interface IDateConditions {
   from?: Date;
@@ -56,30 +55,13 @@ export const MetricContextProvider: React.FC<{
     getDefaultDateConditions()
   );
 
-  const { setAppAlert } = useAppContext();
+  const metric = useMetricQuery(metricId);
 
-  const { data: measurements } = useQuery(
-    queryKeysFactory.measurements(
-      metricId,
-      dateConditions,
-      selectedAttributeValues
-    ),
-    () => getMeasurements()
+  const measurements = useMeasurementsQuery(
+    metricId,
+    dateConditions,
+    selectedAttributeValues
   );
-
-  const queryClient = useQueryClient();
-
-  const { data: metric } = useQuery({
-    queryKey: queryKeysFactory.metric(metricId),
-    queryFn: () => ServerApi.getMetric(metricId),
-    onSuccess: (loadedMetric) => {
-      queryClient.setQueriesData(
-        { queryKey: queryKeysFactory.metrics(), exact: true },
-        (metrics: IMetric[]) =>
-          metrics.map((m) => (m.id === loadedMetric.id ? loadedMetric : m))
-      );
-    },
-  });
 
   const contextValue = useMemo(() => {
     return {
@@ -127,29 +109,53 @@ export const MetricContextProvider: React.FC<{
 
     setSelectedAttributeValues(selectedValues);
   }
+};
 
-  function getMeasurements(): Promise<IMeasurement[]> {
-    if (metric?.type === MetricType.Notes) {
-      return Promise.resolve([]);
-    }
+export const useMetricQuery = (metricId: string) => {
+  const queryClient = useQueryClient();
 
-    return ServerApi.getMeasurements(
+  const { data: metric } = useQuery({
+    queryKey: queryKeysFactory.metric(metricId),
+
+    queryFn: () => ServerApi.getMetric(metricId),
+
+    onSuccess: (loadedMetric) => {
+      queryClient.setQueriesData(
+        { queryKey: queryKeysFactory.metrics(), exact: true },
+        (metrics: IMetric[]) =>
+          metrics.map((m) => (m.id === loadedMetric.id ? loadedMetric : m))
+      );
+    },
+  });
+
+  return metric;
+};
+
+export const useMeasurementsQuery = (
+  metricId: string,
+  dateConditions: IDateConditions,
+  attributeValues: { [key: string]: string[] }
+) => {
+  const { setAppAlert } = useAppContext();
+
+  const { data: measurements } = useQuery({
+    queryKey: queryKeysFactory.measurements(
       metricId,
-      selectedAttributeValues,
-      dateConditions
-    )
-      .then((m) => m)
-      .catch((e) => {
-        handleError("Error loading measurements", e);
-        return [];
-      });
-  }
+      dateConditions,
+      attributeValues
+    ),
 
-  function handleError(title: string, error: Error | IApiError) {
-    setAppAlert({
-      title: title,
-      message: error.message,
-      type: "error",
-    });
-  }
+    queryFn: () =>
+      ServerApi.getMeasurements(metricId, attributeValues, dateConditions),
+
+    onError: (e: ApiError) => {
+      setAppAlert({
+        title: "Error loading measurements",
+        message: e.message,
+        type: "error",
+      });
+    },
+  });
+
+  return measurements;
 };
