@@ -9,7 +9,6 @@ import { MetricType } from "../../../serverApi/MetricType";
 import { IUpsertMeasurementCommand } from "../../../serverApi/commands/IUpsertMeasurementCommand";
 import { IUpsertGaugeMeasurementCommand } from "../../../serverApi/commands/IUpsertGaugeMeasurementCommand";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
-import { ApiError } from "../../../serverApi/ApiError";
 import { DateSelector } from "../../common/DateSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
@@ -98,9 +97,9 @@ export const UpsertMeasurement: React.FC<{
         type: "success",
       });
 
-      await queryClient.invalidateQueries(queryKeysFactory.metrics());
-
       onSaved?.();
+
+      await queryClient.invalidateQueries(queryKeysFactory.metrics());
     },
     onError: (error) => {
       setAppAlert({

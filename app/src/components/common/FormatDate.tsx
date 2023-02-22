@@ -6,7 +6,7 @@ import {
 } from "date-fns";
 import { useEffect, useState } from "react";
 
-const autoUpdateIntervalSeconds = 120;
+const autoUpdateIntervalSeconds = 30;
 
 export enum DateFormat {
   relativeToNow,
