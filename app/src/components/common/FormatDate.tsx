@@ -82,11 +82,11 @@ export const FormatDate = (props: {
       return;
     }
 
-    const i = setInterval(
+    const interval = setInterval(
       () => setValues(calculateValues()),
       autoUpdateIntervalSeconds * 1000
     );
-    return () => clearInterval(i);
+    return () => clearInterval(interval);
   }, [props.value, props.dateFormat]);
 
   return <span title={values.title}>{values.label}</span>;

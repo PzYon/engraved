@@ -23,7 +23,7 @@ import { hasAttributes } from "../../../util/MeasurementUtil";
 import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";
 import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUpsertTimerMeasurementCommand";
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
 
 const storage = new LastSelectedDateStorage();
@@ -39,8 +39,6 @@ export const UpsertMeasurement: React.FC<{
   const [notes, setNotes] = useState<string>(measurement?.notes || "");
 
   const [forceResetSelectors, setForceResetSelectors] = useState("initial");
-
-  const queryClient = useQueryClient();
 
   const [value, setValue] = useState<string>(
     (measurement as IGaugeMeasurement)?.value?.toString() || ""
@@ -61,6 +59,57 @@ export const UpsertMeasurement: React.FC<{
   );
 
   const { setAppAlert } = useAppContext();
+
+  const queryClient = useQueryClient();
+
+  const editMetricMutation = useMutation({
+    mutationKey: queryKeysFactory.editMetric(metric.id),
+    mutationFn: async () => {
+      await ServerApi.editMetric(
+        metric.id,
+        metric.name,
+        metric.description,
+        metric.notes,
+        metric.attributes,
+        metric.thresholds,
+        metric.customProps?.uiSettings
+      );
+    },
+    onError: (error) => {
+      setAppAlert({
+        title: "Failed to edit metric",
+        message: error.toString(),
+        type: "error",
+      });
+    },
+  });
+
+  const upsertMeasurementMutation = useMutation({
+    mutationKey: queryKeysFactory.updateMeasurement(metric.id, measurement?.id),
+    mutationFn: async (variables: { command: IUpsertMeasurementCommand }) => {
+      await ServerApi.upsertMeasurement(
+        variables.command,
+        metric.type.toLowerCase()
+      );
+    },
+    onSuccess: async () => {
+      setAppAlert({
+        title: `${measurement?.id ? "Updated" : "Added"} measurement`,
+        type: "success",
+      });
+
+      await queryClient.invalidateQueries(queryKeysFactory.metrics());
+
+      onSaved?.();
+    },
+    onError: (error) => {
+      setAppAlert({
+        title: "Failed to upsert measurement",
+        message: error.toString(),
+        type: "error",
+      });
+    },
+  });
 
   return (
     <FormControl>
@@ -136,81 +185,64 @@ export const UpsertMeasurement: React.FC<{
       />
 
       <FormElementContainer>
-        <Button variant="outlined" onClick={upsertMeasurement}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            ensureNewAttributeValues();
+
+            const command = createCommand();
+
+            upsertMeasurementMutation.mutate({ command });
+          }}
+        >
           {measurement?.id ? translations.edit : translations.add}
         </Button>
       </FormElementContainer>
     </FormControl>
   );
 
-  async function upsertMeasurement() {
-    try {
-      let hasNewValues = false;
+  function createCommand() {
+    const command: IUpsertMeasurementCommand = {
+      id: measurement?.id,
+      notes: notes,
+      metricAttributeValues: attributeValues,
+      metricId: metric.id,
+      dateTime: new Date(date),
+    };
 
-      for (const keyInValues in attributeValues) {
-        for (const value of attributeValues[keyInValues]) {
-          if (!metric.attributes[keyInValues].values[value]) {
-            metric.attributes[keyInValues].values[value] = value;
-            hasNewValues = true;
-          }
+    switch (metric.type) {
+      case MetricType.Gauge:
+        (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
+          value as never
+        )
+          ? Number(value)
+          : undefined;
+        break;
+
+      case MetricType.Timer:
+        (command as IUpsertTimerMeasurementCommand).startDate = new Date(
+          startDate
+        );
+        (command as IUpsertTimerMeasurementCommand).endDate = new Date(endDate);
+        break;
+    }
+    return command;
+  }
+
+  function ensureNewAttributeValues() {
+    let hasNewValues = false;
+
+    for (const keyInValues in attributeValues) {
+      for (const value of attributeValues[keyInValues]) {
+        if (!metric.attributes[keyInValues].values[value]) {
+          metric.attributes[keyInValues].values[value] = value;
+          hasNewValues = true;
         }
       }
+    }
 
-      if (hasNewValues) {
-        await ServerApi.editMetric(
-          metric.id,
-          metric.name,
-          metric.description,
-          metric.notes,
-          metric.attributes,
-          metric.thresholds,
-          metric.customProps?.uiSettings
-        );
-      }
-
-      const command: IUpsertMeasurementCommand = {
-        id: measurement?.id,
-        notes: notes,
-        metricAttributeValues: attributeValues,
-        metricId: metric.id,
-        dateTime: new Date(date),
-      };
-
-      switch (metric.type) {
-        case MetricType.Gauge:
-          (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
-            value as never
-          )
-            ? Number(value)
-            : undefined;
-          break;
-
-        case MetricType.Timer:
-          (command as IUpsertTimerMeasurementCommand).startDate = new Date(
-            startDate
-          );
-          (command as IUpsertTimerMeasurementCommand).endDate = new Date(
-            endDate
-          );
-          break;
-      }
-
-      await ServerApi.upsertMeasurement(command, metric.type.toLowerCase());
-
-      setAppAlert({
-        title: `${measurement?.id ? "Updated" : "Added"} measurement`,
-        type: "success",
-      });
-
-      await queryClient.invalidateQueries(queryKeysFactory.metric(metric.id));
-
-      onSaved?.();
-    } catch (e) {
-      setAppAlert({
-        title: "Failed to add measurement",
-        message: (e as ApiError).message,
-        type: "error",
-      });
+    if (hasNewValues) {
+      editMetricMutation.mutate();
     }
   }
 
