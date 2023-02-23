@@ -2,8 +2,8 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 import { IMeasurement } from "../../serverApi/IMeasurement";
 import { IMetric } from "../../serverApi/IMetric";
 import { getDefaultDateConditions } from "./filters/DateFilters";
-import { useMetricQuery } from "../../serverApi/queries/useMetricQuery";
-import { useMeasurementsQuery } from "../../serverApi/queries/useMeasurementsQuery";
+import { useMetricQuery } from "../../serverApi/reactQuery/queries/useMetricQuery";
+import { useMeasurementsQuery } from "../../serverApi/reactQuery/queries/useMeasurementsQuery";
 
 export interface IDateConditions {
   from?: Date;

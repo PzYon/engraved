@@ -2,7 +2,7 @@ import { IMetric } from "../../../serverApi/IMetric";
 import React from "react";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { useMetricThresholdsValuesQuery } from "../../../serverApi/queries/useMetricThresholdsValuesQuery";
+import { useMetricThresholdsValuesQuery } from "../../../serverApi/reactQuery/queries/useMetricThresholdsValuesQuery";
 
 export const Thresholds: React.FC<{
   metric: IMetric;

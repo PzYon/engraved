@@ -4,26 +4,22 @@ import { translations } from "../../i18n/translations";
 import { Section } from "../layout/Section";
 import { MetricTypeSelector } from "../MetricTypeSelector";
 import { MetricType } from "../../serverApi/MetricType";
-import { ServerApi } from "../../serverApi/ServerApi";
-import { useAppContext } from "../../AppContext";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
 import { ICommandResult } from "../../serverApi/ICommandResult";
+import { useAddMetricMutation } from "../../serverApi/reactQuery/mutations/useAddMetricMutation";
 
 export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [metricType, setMetricType] = useState(MetricType.Notes);
 
-  const { setAppAlert } = useAppContext();
-
   const navigate = useNavigate();
 
-  const addMetricMutation = useMutation({
-    mutationKey: queryKeysFactory.addMetric(),
-    mutationFn: () => ServerApi.addMetric(name, description, metricType),
-    onSuccess: async (result: ICommandResult) => {
+  const addMetricMutation = useAddMetricMutation(
+    name,
+    description,
+    metricType,
+    async (result: ICommandResult) => {
       await onAdded();
 
       navigate(
@@ -31,20 +27,8 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
           metricType === MetricType.Notes ? "edit" : ""
         }`
       );
-
-      setAppAlert({
-        title: `Added metric ${name}`,
-        type: "success",
-      });
-    },
-    onError: (error: Error) => {
-      setAppAlert({
-        title: "Failed to add metric",
-        message: error.message,
-        type: "error",
-      });
-    },
-  });
+    }
+  );
 
   return (
     <Section>

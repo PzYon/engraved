@@ -2,7 +2,7 @@ import { UpsertMeasurement } from "./UpsertMeasurement";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IMetric } from "../../../serverApi/IMetric";
 import React from "react";
-import { useActiveMeasurementQuery } from "../../../serverApi/queries/useActiveMeasurementQuery";
+import { useActiveMeasurementQuery } from "../../../serverApi/reactQuery/queries/useActiveMeasurementQuery";
 
 export const renderAddMeasurementDialog = (
   metric: IMetric,
