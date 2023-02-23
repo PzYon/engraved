@@ -1,12 +1,9 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
 import { IMeasurement } from "../../serverApi/IMeasurement";
-import { ServerApi } from "../../serverApi/ServerApi";
 import { IMetric } from "../../serverApi/IMetric";
-import { useAppContext } from "../../AppContext";
 import { getDefaultDateConditions } from "./filters/DateFilters";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
-import { ApiError } from "../../serverApi/ApiError";
+import { useMetricQuery } from "../../serverApi/queries/useMetricQuery";
+import { useMeasurementsQuery } from "../../serverApi/queries/useMeasurementsQuery";
 
 export interface IDateConditions {
   from?: Date;
@@ -109,53 +106,4 @@ export const MetricContextProvider: React.FC<{
 
     setSelectedAttributeValues(selectedValues);
   }
-};
-
-export const useMetricQuery = (metricId: string) => {
-  const queryClient = useQueryClient();
-
-  const { data: metric } = useQuery({
-    queryKey: queryKeysFactory.metric(metricId),
-
-    queryFn: () => ServerApi.getMetric(metricId),
-
-    onSuccess: (loadedMetric) => {
-      queryClient.setQueriesData(
-        { queryKey: queryKeysFactory.metrics(), exact: true },
-        (metrics: IMetric[]) =>
-          metrics.map((m) => (m.id === loadedMetric.id ? loadedMetric : m))
-      );
-    },
-  });
-
-  return metric;
-};
-
-export const useMeasurementsQuery = (
-  metricId: string,
-  dateConditions: IDateConditions,
-  attributeValues: { [key: string]: string[] }
-) => {
-  const { setAppAlert } = useAppContext();
-
-  const { data: measurements } = useQuery({
-    queryKey: queryKeysFactory.measurements(
-      metricId,
-      dateConditions,
-      attributeValues
-    ),
-
-    queryFn: () =>
-      ServerApi.getMeasurements(metricId, attributeValues, dateConditions),
-
-    onError: (e: ApiError) => {
-      setAppAlert({
-        title: "Error loading measurements",
-        message: e.message,
-        type: "error",
-      });
-    },
-  });
-
-  return measurements;
 };
