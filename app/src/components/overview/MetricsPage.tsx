@@ -1,22 +1,16 @@
 import React from "react";
-import { IMetric } from "../../serverApi/IMetric";
-import { ServerApi } from "../../serverApi/ServerApi";
 import { AddOutlined } from "@mui/icons-material";
 import { AddMetricLauncher } from "./AddMetricLauncher";
 import { MetricListItem } from "./MetricListItem";
 import { Page } from "../layout/pages/Page";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../serverApi/queryKeysFactory";
+import { useMetricsQuery } from "../../serverApi/reactQuery/queries/useMetricsQuery";
 
 export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
 }) => {
-  const { data } = useQuery<IMetric[]>({
-    queryKey: queryKeysFactory.metrics(),
-    queryFn: () => ServerApi.getMetrics(),
-  });
+  const metrics = useMetricsQuery();
 
-  if (!data) {
+  if (!metrics) {
     return null;
   }
 
@@ -32,7 +26,7 @@ export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
         },
       ]}
     >
-      {data.map((metric) => (
+      {metrics.map((metric) => (
         <MetricListItem key={metric.id} metric={metric} />
       ))}
 

@@ -9,25 +9,11 @@ import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContext";
 import { IUser } from "./serverApi/IUser";
 import { PageContextProvider } from "./components/layout/pages/PageContext";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      useErrorBoundary: true,
-    },
-    mutations: {
-      useErrorBoundary: true,
-    },
-  },
-});
+import { ReactQueryProviderWrapper } from "./serverApi/reactQuery/ReactQueryProviderWrapper";
 
 export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <AppContextProvider user={user}>
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
+    <ReactQueryProviderWrapper>
       <BrowserRouter>
         <DialogContextProvider>
           <PageContextProvider>
@@ -41,6 +27,6 @@ export const App: React.FC<{ user: IUser }> = ({ user }) => (
           </PageContextProvider>
         </DialogContextProvider>
       </BrowserRouter>
-    </QueryClientProvider>
+    </ReactQueryProviderWrapper>
   </AppContextProvider>
 );

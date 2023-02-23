@@ -1,15 +1,11 @@
 import React from "react";
-import { ServerApi } from "../../../serverApi/ServerApi";
 import { ISystemInfo } from "../../../serverApi/ISystemInfo";
 import { FormatDate } from "../FormatDate";
 import { styled, Typography } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
+import { useAppInfoQuery } from "../../../serverApi/reactQuery/queries/useAppInfoQuery";
 
 export const AppInfo: React.FC = () => {
-  const { data: systemInfo } = useQuery(queryKeysFactory.systemInfo(), () =>
-    ServerApi.getSystemInfo()
-  );
+  const systemInfo = useAppInfoQuery();
 
   if (!systemInfo) {
     return null;
