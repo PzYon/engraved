@@ -7,7 +7,7 @@
     "@mui/icons-material": "5.11.9",
     "@mui/material": "5.11.10",
     "@mui/styled-engine-sc": "5.11.9",
-    "@mui/x-date-pickers": "5.0.19",
+    "@mui/x-date-pickers": "5.0.20",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
     "@testing-library/user-event": "14.4.3",
