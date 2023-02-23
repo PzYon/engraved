@@ -4,9 +4,7 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
-import { ServerApi } from "../../../serverApi/ServerApi";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
+import { useDeleteMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMeasurementMutation";
 
 export const DeleteMeasurementLauncher: React.FC<{
   metric: IMetric;
@@ -17,17 +15,10 @@ export const DeleteMeasurementLauncher: React.FC<{
 
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
-
-  const deleteMeasurementMutation = useMutation({
-    mutationKey: queryKeysFactory.deleteMeasurement(metric.id, measurementId),
-    mutationFn: (variables: { measurementId: string }) => {
-      return ServerApi.deleteMeasurement(variables.measurementId);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(queryKeysFactory.metric(metric.id));
-    },
-  });
+  const deleteMeasurementMutation = useDeleteMeasurementMutation(
+    metric.id,
+    measurementId
+  );
 
   useEffect(() => {
     renderDialog({

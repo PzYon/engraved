@@ -3,9 +3,7 @@ import { IMetric } from "../../../serverApi/IMetric";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
-import { ServerApi } from "../../../serverApi/ServerApi";
-import { useMutation } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
+import { useDeleteMetricMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMetricMutation";
 
 export const DeleteMetricLauncher: React.FC<{
   metric: IMetric;
@@ -15,16 +13,7 @@ export const DeleteMetricLauncher: React.FC<{
 
   const navigate = useNavigate();
 
-  const deleteMetricMutation = useMutation({
-    mutationKey: queryKeysFactory.deleteMetric(metric.id),
-    mutationFn: async () => {
-      await ServerApi.deleteMetric(metric.id);
-    },
-    onSuccess: async (_, variables: { closeDialog: () => void }) => {
-      variables.closeDialog();
-      await onDeleted();
-    },
-  });
+  const deleteMetricMutation = useDeleteMetricMutation(metric.id);
 
   useEffect(() => {
     renderDialog({
@@ -39,7 +28,14 @@ export const DeleteMetricLauncher: React.FC<{
             <Button
               variant="text"
               color="primary"
-              onClick={() => deleteMetricMutation.mutate({ closeDialog })}
+              onClick={() =>
+                deleteMetricMutation.mutate({
+                  onSuccess: async () => {
+                    closeDialog();
+                    await onDeleted();
+                  },
+                })
+              }
             >
               Yes
             </Button>

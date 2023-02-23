@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { ServerApi } from "../../../serverApi/ServerApi";
-import { useAppContext } from "../../../AppContext";
 import { MetricAttributesEditor } from "./MetricAttributesEditor";
 import { EditThresholds } from "../thresholds/EditThresholds";
 import { DetailsSection } from "../../layout/DetailsSection";
@@ -12,14 +10,13 @@ import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { MetricUiSettings } from "./MetricUiSettings";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { EditCommonProperties } from "./EditCommonProperties";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
+import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
 
 export const MetricEditPage: React.FC = () => {
-  const navigate = useNavigate();
-
   const { metric } = useMetricContext();
 
+  const [name, setName] = useState(metric.name);
+  const [description, setDescription] = useState(metric.description);
   const [attributes, setAttributes] = useState(metric.attributes);
   const [thresholds, setThresholds] = useState(metric.thresholds ?? {});
   const [uiSettings, setUiSettings] = useState(
@@ -28,45 +25,23 @@ export const MetricEditPage: React.FC = () => {
       : { groupByTime: GroupByTime.Month }
   );
 
-  const [name, setName] = useState(metric.name);
-  const [description, setDescription] = useState(metric.description);
+  const navigate = useNavigate();
 
-  const { setAppAlert } = useAppContext();
-
-  const queryClient = useQueryClient();
-
-  const editMetricMutation = useMutation({
-    mutationKey: queryKeysFactory.editMetric(metric.id),
-    mutationFn: async () => {
-      await ServerApi.editMetric(
-        metric.id,
-        name,
-        description,
-        metric.notes,
-        attributes,
-        thresholds,
-        uiSettings
-      );
+  const editMetricMutation = useEditMetricMutation(
+    {
+      ...metric,
+      name,
+      description,
+      attributes,
+      thresholds,
+      customProps: {
+        uiSettings,
+      },
     },
-    onSuccess: async () => {
-      setAppAlert({
-        title: "Saved metric",
-        type: "success",
-      });
-
-      await queryClient.invalidateQueries(queryKeysFactory.metric(metric.id));
-
+    () => {
       navigate("./..");
-    },
-    onError: (error) => {
-      // use error boundary for this?
-      setAppAlert({
-        title: "Failed to edit metric",
-        message: error.toString(),
-        type: "error",
-      });
-    },
-  });
+    }
+  );
 
   return (
     <Page

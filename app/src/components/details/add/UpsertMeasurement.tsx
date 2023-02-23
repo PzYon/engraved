@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
-import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
 import { MetricAttributesSelector } from "./MetricAttributesSelector";
-import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IUpsertMeasurementCommand } from "../../../serverApi/commands/IUpsertMeasurementCommand";
 import { IUpsertGaugeMeasurementCommand } from "../../../serverApi/commands/IUpsertGaugeMeasurementCommand";
@@ -22,8 +20,8 @@ import { hasAttributes } from "../../../util/MeasurementUtil";
 import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";
 import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUpsertTimerMeasurementCommand";
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
+import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
+import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 
 const storage = new LastSelectedDateStorage();
 
@@ -57,58 +55,13 @@ export const UpsertMeasurement: React.FC<{
     (measurement as ITimerMeasurement)?.endDate
   );
 
-  const { setAppAlert } = useAppContext();
+  const editMetricMutation = useEditMetricMutation(metric);
 
-  const queryClient = useQueryClient();
-
-  const editMetricMutation = useMutation({
-    mutationKey: queryKeysFactory.editMetric(metric.id),
-    mutationFn: async () => {
-      await ServerApi.editMetric(
-        metric.id,
-        metric.name,
-        metric.description,
-        metric.notes,
-        metric.attributes,
-        metric.thresholds,
-        metric.customProps?.uiSettings
-      );
-    },
-    onError: (error) => {
-      setAppAlert({
-        title: "Failed to edit metric",
-        message: error.toString(),
-        type: "error",
-      });
-    },
-  });
-
-  const upsertMeasurementMutation = useMutation({
-    mutationKey: queryKeysFactory.updateMeasurement(metric.id, measurement?.id),
-    mutationFn: async (variables: { command: IUpsertMeasurementCommand }) => {
-      await ServerApi.upsertMeasurement(
-        variables.command,
-        metric.type.toLowerCase()
-      );
-    },
-    onSuccess: async () => {
-      setAppAlert({
-        title: `${measurement?.id ? "Updated" : "Added"} measurement`,
-        type: "success",
-      });
-
-      onSaved?.();
-
-      await queryClient.invalidateQueries(queryKeysFactory.metrics());
-    },
-    onError: (error) => {
-      setAppAlert({
-        title: "Failed to upsert measurement",
-        message: error.toString(),
-        type: "error",
-      });
-    },
-  });
+  const upsertMeasurementMutation = useUpsertMeasurementMutation(
+    metric,
+    measurement,
+    onSaved
+  );
 
   return (
     <FormControl>
@@ -189,9 +142,7 @@ export const UpsertMeasurement: React.FC<{
           onClick={() => {
             ensureNewAttributeValues();
 
-            const command = createCommand();
-
-            upsertMeasurementMutation.mutate({ command });
+            upsertMeasurementMutation.mutate({ command: createCommand() });
           }}
         >
           {measurement?.id ? translations.edit : translations.add}
