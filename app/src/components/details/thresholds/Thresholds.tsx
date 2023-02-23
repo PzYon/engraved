@@ -1,11 +1,8 @@
 import { IMetric } from "../../../serverApi/IMetric";
 import React from "react";
-import { ServerApi } from "../../../serverApi/ServerApi";
-import { useMetricContext } from "../MetricDetailsContext";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../../serverApi/queryKeysFactory";
+import { useMetricThresholdsValuesQuery } from "../../../serverApi/queries/useMetricThresholdsValuesQuery";
 
 export const Thresholds: React.FC<{
   metric: IMetric;
@@ -15,12 +12,7 @@ export const Thresholds: React.FC<{
     attributeValueKeys: string[]
   ) => void;
 }> = ({ metric, selectedAttributeValues, setSelectedAttributeValues }) => {
-  const { dateConditions } = useMetricContext();
-
-  const { data: thresholdValues } = useQuery(
-    queryKeysFactory.metricThresholdValues(metric.id, dateConditions),
-    () => ServerApi.getThresholdValues(metric.id, dateConditions)
-  );
+  const thresholdValues = useMetricThresholdsValuesQuery(metric.id);
 
   if (!thresholdValues) {
     return null;
