@@ -7,12 +7,9 @@ export const useDeleteMetricMutation = (metricId: string) => {
     mutationKey: queryKeysFactory.deleteMetric(metricId),
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    mutationFn: async (_: { onSuccess: () => Promise<void> }) => {
-      await ServerApi.deleteMetric(metricId);
-    },
+    mutationFn: async (_: { onSuccess: () => Promise<void> }) =>
+      await ServerApi.deleteMetric(metricId),
 
-    onSuccess: async (_, variables) => {
-      await variables.onSuccess();
-    },
+    onSuccess: async (_, variables) => await variables.onSuccess(),
   });
 };

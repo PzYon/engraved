@@ -1,24 +1,23 @@
 import { TextField } from "@mui/material";
 import React from "react";
 import { IMetric } from "../../../serverApi/IMetric";
-import { ServerApi } from "../../../serverApi/ServerApi";
+import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
 
 export const MetricNotes: React.FC<{
   metric: IMetric;
 }> = ({ metric }) => {
+  const editMetricMutation = useEditMetricMutation(metric.id);
+
   return (
     <TextField
       defaultValue={metric.notes}
       onBlur={(event) => {
-        ServerApi.editMetric(
-          metric.id,
-          metric.name,
-          metric.description,
-          event.target.value,
-          metric.attributes,
-          metric.thresholds,
-          metric.customProps?.uiSettings
-        );
+        editMetricMutation.mutate({
+          metric: {
+            ...metric,
+            notes: event.target.value,
+          },
+        });
       }}
       multiline={true}
       label={"Notes"}

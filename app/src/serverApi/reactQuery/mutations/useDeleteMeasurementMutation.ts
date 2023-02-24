@@ -11,12 +11,10 @@ export const useDeleteMeasurementMutation = (
   return useMutation({
     mutationKey: queryKeysFactory.deleteMeasurement(metricId, measurementId),
 
-    mutationFn: (variables: { measurementId: string }) => {
-      return ServerApi.deleteMeasurement(variables.measurementId);
-    },
+    mutationFn: (variables: { measurementId: string }) =>
+      ServerApi.deleteMeasurement(variables.measurementId),
 
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
-    },
+    onSuccess: async () =>
+      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId)),
   });
 };

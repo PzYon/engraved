@@ -55,7 +55,7 @@ export const UpsertMeasurement: React.FC<{
     (measurement as ITimerMeasurement)?.endDate
   );
 
-  const editMetricMutation = useEditMetricMutation(metric);
+  const editMetricMutation = useEditMetricMutation(metric.id);
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
     metric,
@@ -192,7 +192,7 @@ export const UpsertMeasurement: React.FC<{
     }
 
     if (hasNewValues) {
-      editMetricMutation.mutate();
+      editMetricMutation.mutate({ metric: metric });
     }
   }
 

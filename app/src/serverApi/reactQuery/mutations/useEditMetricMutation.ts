@@ -5,19 +5,21 @@ import { ServerApi } from "../../ServerApi";
 import { IMetric } from "../../IMetric";
 import { MetricType } from "../../MetricType";
 
-export const useEditMetricMutation = (
-  metric: IMetric,
-  onSuccess?: () => void
-) => {
+export const useEditMetricMutation = (metricId: string) => {
   const { setAppAlert } = useAppContext();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.editMetric(metric.id),
+    mutationKey: queryKeysFactory.editMetric(metricId),
 
-    mutationFn: async () => {
+    mutationFn: async (variables: {
+      metric: IMetric;
+      onSuccess?: () => void;
+    }) => {
+      const metric = variables.metric;
+
       await ServerApi.editMetric(
-        metric.id,
+        metricId,
         metric.name,
         metric.description,
         metric.notes,
@@ -27,19 +29,18 @@ export const useEditMetricMutation = (
       );
     },
 
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(queryKeysFactory.metric(metric.id));
-      onSuccess?.();
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
+      variables.onSuccess?.();
     },
 
-    onError: (error) => {
+    onError: (error, variables) =>
       setAppAlert({
         title: `Failed to edit ${
-          metric.type === MetricType.Notes ? "note" : "metric"
+          variables.metric.type === MetricType.Notes ? "note" : "metric"
         }`,
         message: error.toString(),
         type: "error",
-      });
-    },
+      }),
   });
 };

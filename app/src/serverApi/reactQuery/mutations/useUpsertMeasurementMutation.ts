@@ -36,12 +36,11 @@ export const useUpsertMeasurementMutation = (
       await queryClient.invalidateQueries(queryKeysFactory.metrics());
     },
 
-    onError: (error) => {
+    onError: (error) =>
       setAppAlert({
         title: "Failed to upsert measurement",
         message: error.toString(),
         type: "error",
-      });
-    },
+      }),
   });
 };

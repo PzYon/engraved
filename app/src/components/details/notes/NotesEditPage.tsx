@@ -20,10 +20,7 @@ export const NotesEditPage: React.FC = () => {
 
   const [isPreview, setIsPreview] = useState(false);
 
-  const editMetricMutation = useEditMetricMutation(
-    { ...metric, name, description, notes },
-    () => navigate("./..")
-  );
+  const editMetricMutation = useEditMetricMutation(metric.id);
 
   const disableSave =
     notes === metric.notes &&
@@ -37,7 +34,11 @@ export const NotesEditPage: React.FC = () => {
       actions={[
         ...getCommonEditModeActions(
           navigate,
-          editMetricMutation.mutate,
+          () =>
+            editMetricMutation.mutate({
+              metric: { ...metric, name, description, notes },
+              onSuccess: () => navigate("./.."),
+            }),
           disableSave
         ),
         {

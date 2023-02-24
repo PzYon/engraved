@@ -24,12 +24,11 @@ export const useAddMetricMutation = (
         type: "success",
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error) =>
       setAppAlert({
         title: "Failed to add metric",
         message: error.message,
         type: "error",
-      });
-    },
+      }),
   });
 };

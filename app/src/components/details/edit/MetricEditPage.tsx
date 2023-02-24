@@ -27,28 +27,28 @@ export const MetricEditPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const editMetricMutation = useEditMetricMutation(
-    {
-      ...metric,
-      name,
-      description,
-      attributes,
-      thresholds,
-      customProps: {
-        uiSettings,
-      },
-    },
-    () => {
-      navigate("./..");
-    }
-  );
+  const editMetricMutation = useEditMetricMutation(metric.id);
 
   return (
     <Page
       title={<PageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
       actions={getCommonEditModeActions(navigate, () =>
-        editMetricMutation.mutate()
+        editMetricMutation.mutate({
+          metric: {
+            ...metric,
+            name,
+            description,
+            attributes,
+            thresholds,
+            customProps: {
+              uiSettings,
+            },
+          },
+          onSuccess: () => {
+            navigate("./..");
+          },
+        })
       )}
     >
       <EditCommonProperties
