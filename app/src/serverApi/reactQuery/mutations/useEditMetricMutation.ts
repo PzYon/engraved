@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { IMetric } from "../../IMetric";
+import { MetricType } from "../../MetricType";
 
 export const useEditMetricMutation = (
   metric: IMetric,
@@ -33,7 +34,9 @@ export const useEditMetricMutation = (
 
     onError: (error) => {
       setAppAlert({
-        title: "Failed to edit metric",
+        title: `Failed to edit ${
+          metric.type === MetricType.Notes ? "note" : "metric"
+        }`,
         message: error.toString(),
         type: "error",
       });

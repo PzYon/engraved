@@ -6,10 +6,11 @@ import { ServerApi } from "../../ServerApi";
 export const useMetricThresholdsValuesQuery = (metricId: string) => {
   const { dateConditions } = useMetricContext();
 
-  const { data: thresholdValues } = useQuery(
-    queryKeysFactory.metricThresholdValues(metricId, dateConditions),
-    () => ServerApi.getThresholdValues(metricId, dateConditions)
-  );
+  const { data: thresholdValues } = useQuery({
+    queryKey: queryKeysFactory.metricThresholdValues(metricId, dateConditions),
+
+    queryFn: () => ServerApi.getThresholdValues(metricId, dateConditions),
+  });
 
   return thresholdValues;
 };

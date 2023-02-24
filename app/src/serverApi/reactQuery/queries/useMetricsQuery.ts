@@ -6,6 +6,7 @@ import { ServerApi } from "../../ServerApi";
 export const useMetricsQuery = () => {
   const { data } = useQuery<IMetric[]>({
     queryKey: queryKeysFactory.metrics(),
+
     queryFn: () => ServerApi.getMetrics(),
   });
 

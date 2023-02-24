@@ -6,7 +6,9 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
       useErrorBoundary: true,
+      staleTime: 20_000,
     },
     mutations: {
       useErrorBoundary: true,
@@ -16,11 +18,9 @@ const queryClient = new QueryClient({
 
 export const ReactQueryProviderWrapper: React.FC<{
   children: React.ReactNode;
-}> = ({ children }) => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      {children}
-    </QueryClientProvider>
-  );
-};
+}> = ({ children }) => (
+  <QueryClientProvider client={queryClient}>
+    {children}
+    <ReactQueryDevtools initialIsOpen={false} />
+  </QueryClientProvider>
+);
