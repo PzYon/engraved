@@ -3,23 +3,24 @@ import React, { useState } from "react";
 import { Button, styled, TextField, Typography } from "@mui/material";
 import { PermissionKindSelector } from "./PermissionKindSelector";
 import { PermissionKind } from "../../../serverApi/PermissionKind";
-import { ServerApi } from "../../../serverApi/ServerApi";
-import { useAppContext } from "../../../AppContext";
 import { IUpdatePermissions } from "../../../serverApi/IUpdatePermissions";
 import { UserPermission } from "./UserPermission";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
 import { isValidEmail } from "../../../util/utils";
+import { useModifyMetricPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyMetricPermissionsMutation";
 
 export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
   metric,
 }) => {
-  const { setAppAlert } = useAppContext();
-
   const [userName, setUserName] = useState("");
   const [canAdd, setCanAdd] = useState(false);
   const [permissionKind, setPermissionKind] = useState(PermissionKind.Read);
   const [newPermissions, setNewPermissions] = useState<IUpdatePermissions>({});
+
+  const modifyMetricPermissionsMutation = useModifyMetricPermissionsMutation(
+    metric.id
+  );
 
   return (
     <div>
@@ -77,22 +78,9 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
       <Button
         variant="outlined"
         color="primary"
-        onClick={() => {
-          ServerApi.modifyMetricPermissions(metric.id, newPermissions)
-            .then(async () => {
-              setAppAlert({
-                title: `Modified metric permissions`,
-                type: "success",
-              });
-            })
-            .catch((e) => {
-              setAppAlert({
-                title: "Failed to modify metric permissions",
-                message: e.message,
-                type: "error",
-              });
-            });
-        }}
+        onClick={() =>
+          modifyMetricPermissionsMutation.mutate({ newPermissions })
+        }
       >
         Save
       </Button>
@@ -116,6 +104,7 @@ const AddNewContainer = styled("div")`
   margin: ${(p) => p.theme.spacing(4)} 0 ${(p) => p.theme.spacing(2)} 0;
   display: flex;
   justify-items: center;
+
   & > * {
     margin-right: ${(p) => p.theme.spacing(2)};
 

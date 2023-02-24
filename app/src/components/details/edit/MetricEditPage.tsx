@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { ServerApi } from "../../../serverApi/ServerApi";
-import { useAppContext } from "../../../AppContext";
 import { MetricAttributesEditor } from "./MetricAttributesEditor";
 import { EditThresholds } from "../thresholds/EditThresholds";
 import { DetailsSection } from "../../layout/DetailsSection";
@@ -12,12 +10,13 @@ import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { MetricUiSettings } from "./MetricUiSettings";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { EditCommonProperties } from "./EditCommonProperties";
+import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
 
 export const MetricEditPage: React.FC = () => {
-  const navigate = useNavigate();
+  const { metric } = useMetricContext();
 
-  const { metric, reloadMetric } = useMetricContext();
-
+  const [name, setName] = useState(metric.name);
+  const [description, setDescription] = useState(metric.description);
   const [attributes, setAttributes] = useState(metric.attributes);
   const [thresholds, setThresholds] = useState(metric.thresholds ?? {});
   const [uiSettings, setUiSettings] = useState(
@@ -26,16 +25,31 @@ export const MetricEditPage: React.FC = () => {
       : { groupByTime: GroupByTime.Month }
   );
 
-  const [name, setName] = useState(metric.name);
-  const [description, setDescription] = useState(metric.description);
+  const navigate = useNavigate();
 
-  const { setAppAlert } = useAppContext();
+  const editMetricMutation = useEditMetricMutation(metric.id);
 
   return (
     <Page
       title={<PageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
-      actions={getCommonEditModeActions(navigate, onSave)}
+      actions={getCommonEditModeActions(navigate, () =>
+        editMetricMutation.mutate({
+          metric: {
+            ...metric,
+            name,
+            description,
+            attributes,
+            thresholds,
+            customProps: {
+              uiSettings,
+            },
+          },
+          onSuccess: () => {
+            navigate("./..");
+          },
+        })
+      )}
     >
       <EditCommonProperties
         name={name}
@@ -60,35 +74,4 @@ export const MetricEditPage: React.FC = () => {
       </DetailsSection>
     </Page>
   );
-
-  function onSave() {
-    {
-      ServerApi.editMetric(
-        metric.id,
-        name,
-        description,
-        metric.notes,
-        attributes,
-        thresholds,
-        uiSettings
-      )
-        .then(async () => {
-          await reloadMetric();
-
-          setAppAlert({
-            title: "Saved metric",
-            type: "success",
-          });
-
-          navigate("./..");
-        })
-        .catch((e) => {
-          setAppAlert({
-            title: "Failed to edit metric",
-            message: e.message,
-            type: "error",
-          });
-        });
-    }
-  }
 };

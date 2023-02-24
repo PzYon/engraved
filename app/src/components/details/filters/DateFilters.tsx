@@ -58,7 +58,7 @@ export const DateFilters: React.FC = () => {
       </RangeContainer>
       <DateSelector
         label="From"
-        date={dateConditions.from}
+        date={dateConditions?.from}
         setDate={(d) => {
           setDateConditions({ ...dateConditions, from: d });
           setDateRange(DateRange.Custom);
@@ -66,7 +66,7 @@ export const DateFilters: React.FC = () => {
       />
       <DateSelector
         label="To"
-        date={dateConditions.to}
+        date={dateConditions?.to}
         setDate={(d) => {
           setDateConditions({ ...dateConditions, to: d });
           setDateRange(DateRange.Custom);

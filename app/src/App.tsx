@@ -9,21 +9,24 @@ import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContext";
 import { IUser } from "./serverApi/IUser";
 import { PageContextProvider } from "./components/layout/pages/PageContext";
+import { ReactQueryProviderWrapper } from "./serverApi/reactQuery/ReactQueryProviderWrapper";
 
 export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <AppContextProvider user={user}>
-    <BrowserRouter>
-      <DialogContextProvider>
-        <PageContextProvider>
-          <AppHeader />
-          <AppAlertBar />
-          <AppErrorBoundary>
-            <AppContent>
-              <AppRoutes />
-            </AppContent>
-          </AppErrorBoundary>
-        </PageContextProvider>
-      </DialogContextProvider>
-    </BrowserRouter>
+    <ReactQueryProviderWrapper>
+      <BrowserRouter>
+        <DialogContextProvider>
+          <PageContextProvider>
+            <AppHeader />
+            <AppAlertBar />
+            <AppErrorBoundary>
+              <AppContent>
+                <AppRoutes />
+              </AppContent>
+            </AppErrorBoundary>
+          </PageContextProvider>
+        </DialogContextProvider>
+      </BrowserRouter>
+    </ReactQueryProviderWrapper>
   </AppContextProvider>
 );

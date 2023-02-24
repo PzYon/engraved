@@ -1,34 +1,18 @@
 import { IMetric } from "../../../serverApi/IMetric";
-import React, { useEffect, useState } from "react";
-import { ServerApi } from "../../../serverApi/ServerApi";
-import { useMetricContext } from "../MetricDetailsContext";
-import { IThresholdValues } from "../../../serverApi/IThresholdValues";
+import React from "react";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
+import { useMetricThresholdsValuesQuery } from "../../../serverApi/reactQuery/queries/useMetricThresholdsValuesQuery";
 
 export const Thresholds: React.FC<{
   metric: IMetric;
-  reloadToken: number;
   selectedAttributeValues: { [key: string]: string[] };
   setSelectedAttributeValues: (
     attributeKey: string,
     attributeValueKeys: string[]
   ) => void;
-}> = ({
-  metric,
-  reloadToken,
-  selectedAttributeValues,
-  setSelectedAttributeValues,
-}) => {
-  const { dateConditions } = useMetricContext();
-
-  const [thresholdValues, setThresholdValues] = useState<IThresholdValues>();
-
-  useEffect(() => {
-    ServerApi.getThresholdValues(metric.id, dateConditions).then(
-      setThresholdValues
-    );
-  }, [reloadToken]);
+}> = ({ metric, selectedAttributeValues, setSelectedAttributeValues }) => {
+  const thresholdValues = useMetricThresholdsValuesQuery(metric.id);
 
   if (!thresholdValues) {
     return null;

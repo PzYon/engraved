@@ -30,9 +30,7 @@ export const MetricViewPage: React.FC = () => {
 
   const {
     metric,
-    reloadMetric,
     measurements,
-    reloadMeasurements,
     setSelectedAttributeValues,
     selectedAttributeValues,
     dateConditions,
@@ -65,8 +63,6 @@ export const MetricViewPage: React.FC = () => {
   );
 
   const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
-
-  const [reloadToken, setReloadToken] = useState(Math.random());
 
   useEffect(() => {
     if (!uiSettings?.dateRange) {
@@ -116,7 +112,7 @@ export const MetricViewPage: React.FC = () => {
           }
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonActions(metric, renderDialog, reload),
+      ...getCommonActions(metric, renderDialog),
     ]);
 
     return () => {
@@ -173,16 +169,15 @@ export const MetricViewPage: React.FC = () => {
         </Suspense>
       ) : null}
 
-      {showThresholds ? (
+      {showThresholds && Object.keys(metric.thresholds).length ? (
         <Thresholds
-          reloadToken={reloadToken}
           metric={metric}
           setSelectedAttributeValues={setSelectedAttributeValues}
           selectedAttributeValues={selectedAttributeValues}
         />
       ) : null}
 
-      {measurements.length ? (
+      {measurements?.length ? (
         <DetailsSection overflowXScroll={true}>
           <MeasurementsTable
             metric={metric}
@@ -199,22 +194,14 @@ export const MetricViewPage: React.FC = () => {
             <EditMeasurementLauncher
               metric={metric}
               measurements={measurements}
-              onSaved={reload}
             />
           }
         />
         <Route
           path="/measurements/:measurementId/delete"
-          element={
-            <DeleteMeasurementLauncher metric={metric} onDeleted={reload} />
-          }
+          element={<DeleteMeasurementLauncher metric={metric} />}
         />
       </Routes>
     </Page>
   );
-
-  async function reload(): Promise<void> {
-    setReloadToken(Math.random());
-    await Promise.all([reloadMetric(), reloadMeasurements()]);
-  }
 };

@@ -1,32 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { IMetric } from "../../serverApi/IMetric";
-import { ServerApi } from "../../serverApi/ServerApi";
-import { useAppContext } from "../../AppContext";
+import React from "react";
 import { AddOutlined } from "@mui/icons-material";
 import { AddMetricLauncher } from "./AddMetricLauncher";
 import { MetricListItem } from "./MetricListItem";
 import { Page } from "../layout/pages/Page";
+import { useMetricsQuery } from "../../serverApi/reactQuery/queries/useMetricsQuery";
 
 export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
 }) => {
-  const [metrics, setMetrics] = useState<IMetric[]>([]);
+  const metrics = useMetricsQuery();
 
-  const { setAppAlert } = useAppContext();
-
-  useEffect(() => {
-    ServerApi.getMetrics()
-      .then((data) => {
-        setMetrics(data);
-      })
-      .catch((e) => {
-        setAppAlert({
-          title: e.message,
-          message: e.message,
-          type: "error",
-        });
-      });
-  }, []);
+  if (!metrics) {
+    return null;
+  }
 
   return (
     <Page

@@ -39,8 +39,7 @@ export function getCommonEditModeActions(
 
 export function getCommonActions(
   metric: IMetric,
-  renderDialog?: (dialogProps: IDialogProps) => void,
-  onMeasurementAdded?: () => void
+  renderDialog?: (dialogProps: IDialogProps) => void
 ): IIconButtonAction[] {
   if (!metric) {
     return [];
@@ -53,8 +52,7 @@ export function getCommonActions(
       key: "add_measurement",
       label: "Add Measurement",
       icon: <AddOutlined fontSize="small" />,
-      onClick: () =>
-        renderAddMeasurementDialog(metric, renderDialog, onMeasurementAdded),
+      onClick: () => renderAddMeasurementDialog(metric, renderDialog),
     });
   }
 

@@ -6,7 +6,7 @@ import {
 } from "date-fns";
 import { useEffect, useState } from "react";
 
-const autoUpdateIntervalSeconds = 120;
+const autoUpdateIntervalSeconds = 30;
 
 export enum DateFormat {
   relativeToNow,
@@ -76,15 +76,17 @@ export const FormatDate = (props: {
   );
 
   useEffect(() => {
+    setValues(calculateValues());
+
     if (differenceInHours(new Date(), getAsDate(props.value)) > 2) {
       return;
     }
 
-    const i = setInterval(
+    const interval = setInterval(
       () => setValues(calculateValues()),
       autoUpdateIntervalSeconds * 1000
     );
-    return () => clearInterval(i);
+    return () => clearInterval(interval);
   }, [props.value, props.dateFormat]);
 
   return <span title={values.title}>{values.label}</span>;

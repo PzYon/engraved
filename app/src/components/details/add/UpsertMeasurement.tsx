@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { Button, FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
-import { ServerApi } from "../../../serverApi/ServerApi";
 import { IMetric } from "../../../serverApi/IMetric";
 import { MetricAttributesSelector } from "./MetricAttributesSelector";
-import { useAppContext } from "../../../AppContext";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IUpsertMeasurementCommand } from "../../../serverApi/commands/IUpsertMeasurementCommand";
 import { IUpsertGaugeMeasurementCommand } from "../../../serverApi/commands/IUpsertGaugeMeasurementCommand";
 import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
-import { ApiError } from "../../../serverApi/ApiError";
 import { DateSelector } from "../../common/DateSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IMeasurement } from "../../../serverApi/IMeasurement";
@@ -23,6 +20,8 @@ import { hasAttributes } from "../../../util/MeasurementUtil";
 import { UpsertTimerMeasurement } from "./UpsertTimerMeasurement";
 import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUpsertTimerMeasurementCommand";
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
+import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
+import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 
 const storage = new LastSelectedDateStorage();
 
@@ -56,7 +55,13 @@ export const UpsertMeasurement: React.FC<{
     (measurement as ITimerMeasurement)?.endDate
   );
 
-  const { setAppAlert } = useAppContext();
+  const editMetricMutation = useEditMetricMutation(metric.id);
+
+  const upsertMeasurementMutation = useUpsertMeasurementMutation(
+    metric,
+    measurement,
+    onSaved
+  );
 
   return (
     <FormControl>
@@ -132,79 +137,62 @@ export const UpsertMeasurement: React.FC<{
       />
 
       <FormElementContainer>
-        <Button variant="outlined" onClick={upsertMeasurement}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            ensureNewAttributeValues();
+
+            upsertMeasurementMutation.mutate({ command: createCommand() });
+          }}
+        >
           {measurement?.id ? translations.edit : translations.add}
         </Button>
       </FormElementContainer>
     </FormControl>
   );
 
-  async function upsertMeasurement() {
-    try {
-      let hasNewValues = false;
+  function createCommand() {
+    const command: IUpsertMeasurementCommand = {
+      id: measurement?.id,
+      notes: notes,
+      metricAttributeValues: attributeValues,
+      metricId: metric.id,
+      dateTime: new Date(date),
+    };
 
-      for (const keyInValues in attributeValues) {
-        for (const value of attributeValues[keyInValues]) {
-          if (!metric.attributes[keyInValues].values[value]) {
-            metric.attributes[keyInValues].values[value] = value;
-            hasNewValues = true;
-          }
+    switch (metric.type) {
+      case MetricType.Gauge:
+        (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
+          value as never
+        )
+          ? Number(value)
+          : undefined;
+        break;
+
+      case MetricType.Timer:
+        (command as IUpsertTimerMeasurementCommand).startDate = new Date(
+          startDate
+        );
+        (command as IUpsertTimerMeasurementCommand).endDate = new Date(endDate);
+        break;
+    }
+    return command;
+  }
+
+  function ensureNewAttributeValues() {
+    let hasNewValues = false;
+
+    for (const keyInValues in attributeValues) {
+      for (const value of attributeValues[keyInValues]) {
+        if (!metric.attributes[keyInValues].values[value]) {
+          metric.attributes[keyInValues].values[value] = value;
+          hasNewValues = true;
         }
       }
+    }
 
-      if (hasNewValues) {
-        await ServerApi.editMetric(
-          metric.id,
-          metric.name,
-          metric.description,
-          metric.notes,
-          metric.attributes,
-          metric.thresholds,
-          metric.customProps?.uiSettings
-        );
-      }
-
-      const command: IUpsertMeasurementCommand = {
-        id: measurement?.id,
-        notes: notes,
-        metricAttributeValues: attributeValues,
-        metricId: metric.id,
-        dateTime: new Date(date),
-      };
-
-      switch (metric.type) {
-        case MetricType.Gauge:
-          (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
-            value as never
-          )
-            ? Number(value)
-            : undefined;
-          break;
-
-        case MetricType.Timer:
-          (command as IUpsertTimerMeasurementCommand).startDate = new Date(
-            startDate
-          );
-          (command as IUpsertTimerMeasurementCommand).endDate = new Date(
-            endDate
-          );
-          break;
-      }
-
-      await ServerApi.upsertMeasurement(command, metric.type.toLowerCase());
-
-      setAppAlert({
-        title: `${measurement?.id ? "Updated" : "Added"} measurement`,
-        type: "success",
-      });
-
-      onSaved?.();
-    } catch (e) {
-      setAppAlert({
-        title: "Failed to add measurement",
-        message: (e as ApiError).message,
-        type: "error",
-      });
+    if (hasNewValues) {
+      editMetricMutation.mutate({ metric: metric });
     }
   }
 
