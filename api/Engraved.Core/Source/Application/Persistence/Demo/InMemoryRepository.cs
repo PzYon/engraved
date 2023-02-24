@@ -153,6 +153,11 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(Measurements.FirstOrDefault(m => m.Id == measurementId));
   }
 
+  public Task WakeMeUp()
+  {
+    return Task.CompletedTask;
+  }
+
   private void RemoveMetric<TMetric>(TMetric metric) where TMetric : IMetric
   {
     if (string.IsNullOrEmpty(metric.Id))

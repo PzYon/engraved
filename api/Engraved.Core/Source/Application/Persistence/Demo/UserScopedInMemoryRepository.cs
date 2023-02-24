@@ -124,6 +124,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
       : null;
   }
 
+  public Task WakeMeUp()
+  {
+    return Task.CompletedTask;
+  }
+
   private IUser LoadUser()
   {
     string? name = _currentUserService.GetUserName();
