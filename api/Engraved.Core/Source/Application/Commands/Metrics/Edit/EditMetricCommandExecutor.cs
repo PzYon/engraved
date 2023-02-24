@@ -42,7 +42,7 @@ public class EditMetricCommandExecutor : ICommandExecutor
 
     UpsertResult result = await repository.UpsertMetric(metric);
 
-    return new CommandResult { EntityId = result.EntityId };
+    return new CommandResult(result.EntityId, metric.Permissions.GetUserIdsWithAccess());
   }
 
   // todo: add tests for this stuff

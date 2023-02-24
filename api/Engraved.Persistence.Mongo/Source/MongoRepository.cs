@@ -16,9 +16,9 @@ namespace Engraved.Persistence.Mongo;
 public class MongoRepository : IRepository
 {
   // protected so they can be accessed from TestRepository
-  protected readonly IMongoCollection<MeasurementDocument> _measurements;
-  protected readonly IMongoCollection<MetricDocument> _metrics;
-  protected readonly IMongoCollection<UserDocument> _users;
+  protected readonly IMongoCollection<MeasurementDocument> MeasurementsCollection;
+  protected readonly IMongoCollection<MetricDocument> MetricsCollection;
+  protected readonly IMongoCollection<UserDocument> UsersCollection;
 
   static MongoRepository()
   {
@@ -39,9 +39,9 @@ public class MongoRepository : IRepository
     IMongoClient client = CreateMongoClient(settings);
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
-    _metrics = db.GetCollection<MetricDocument>(settings.MetricsCollectionName);
-    _measurements = db.GetCollection<MeasurementDocument>(settings.MeasurementsCollectionName);
-    _users = db.GetCollection<UserDocument>(settings.UsersCollectionName);
+    MetricsCollection = db.GetCollection<MetricDocument>(settings.MetricsCollectionName);
+    MeasurementsCollection = db.GetCollection<MeasurementDocument>(settings.MeasurementsCollectionName);
+    UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
   }
 
   public virtual async Task<IUser?> GetUser(string? name)
@@ -51,7 +51,7 @@ public class MongoRepository : IRepository
       throw new ArgumentNullException(nameof(name), "Username must be specified.");
     }
 
-    UserDocument? document = await _users
+    UserDocument? document = await UsersCollection
       .Find(Builders<UserDocument>.Filter.Where(d => d.Name == name))
       .FirstOrDefaultAsync();
 
@@ -70,7 +70,7 @@ public class MongoRepository : IRepository
       return Array.Empty<IUser>();
     }
 
-    List<UserDocument> users = await _users
+    List<UserDocument> users = await UsersCollection
       .Find(Builders<UserDocument>.Filter.Or(userIds.Distinct().Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
       .ToListAsync();
 
@@ -79,13 +79,13 @@ public class MongoRepository : IRepository
 
   public async Task<IUser[]> GetAllUsers()
   {
-    List<UserDocument> users = await _users.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>()).ToListAsync();
+    List<UserDocument> users = await UsersCollection.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>()).ToListAsync();
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
   public async Task<IMetric[]> GetAllMetrics()
   {
-    List<MetricDocument> metrics = await _metrics
+    List<MetricDocument> metrics = await MetricsCollection
       .Find(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read))
       .ToListAsync();
 
@@ -142,7 +142,7 @@ public class MongoRepository : IRepository
       );
     }
 
-    List<MeasurementDocument> measurements = await _measurements
+    List<MeasurementDocument> measurements = await MeasurementsCollection
       .Find(Builders<MeasurementDocument>.Filter.And(filters))
       .ToListAsync();
 
@@ -155,7 +155,7 @@ public class MongoRepository : IRepository
   {
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
 
-    ReplaceOneResult? replaceOneResult = await _metrics.ReplaceOneAsync(
+    ReplaceOneResult? replaceOneResult = await MetricsCollection.ReplaceOneAsync(
       MongoUtil.GetDocumentByIdFilter<MetricDocument>(metric.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
@@ -172,8 +172,8 @@ public class MongoRepository : IRepository
       return;
     }
 
-    await _measurements.DeleteManyAsync(Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId));
-    await _metrics.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId));
+    await MeasurementsCollection.DeleteManyAsync(Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId));
+    await MetricsCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId));
   }
 
   public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
@@ -196,7 +196,7 @@ public class MongoRepository : IRepository
   {
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
 
-    ReplaceOneResult? replaceOneResult = await _measurements.ReplaceOneAsync(
+    ReplaceOneResult? replaceOneResult = await MeasurementsCollection.ReplaceOneAsync(
       MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
@@ -207,7 +207,7 @@ public class MongoRepository : IRepository
 
   public async Task DeleteMeasurement(string measurementId)
   {
-    await _measurements.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId));
+    await MeasurementsCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId));
   }
 
   public async Task<IMeasurement?> GetMeasurement(string measurementId)
@@ -217,7 +217,7 @@ public class MongoRepository : IRepository
       throw new ArgumentNullException(nameof(measurementId), "Id must be specified.");
     }
 
-    MeasurementDocument? document = await _measurements
+    MeasurementDocument? document = await MeasurementsCollection
       .Find(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId))
       .FirstOrDefaultAsync();
 
@@ -226,7 +226,7 @@ public class MongoRepository : IRepository
 
   public async Task WakeMeUp()
   {
-    await _users.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>("wake@me.up"));
+    await UsersCollection.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>("wake@me.up"));
   }
 
   private async Task<UpsertResult> UpsertUserInternal(IUser user)
@@ -239,7 +239,7 @@ public class MongoRepository : IRepository
       throw new ArgumentException("ID must be specified for existing users.");
     }
 
-    ReplaceOneResult? replaceOneResult = await _users.ReplaceOneAsync(
+    ReplaceOneResult? replaceOneResult = await UsersCollection.ReplaceOneAsync(
       Builders<UserDocument>.Filter.Where(d => d.Name == user.Name),
       document,
       new ReplaceOptions { IsUpsert = true }
@@ -255,7 +255,7 @@ public class MongoRepository : IRepository
       throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
     }
 
-    MetricDocument? document = await _metrics
+    MetricDocument? document = await MetricsCollection
       .Find(GetMetricDocumentByIdFilter<MetricDocument>(metricId, permissionKind))
       .FirstOrDefaultAsync();
 

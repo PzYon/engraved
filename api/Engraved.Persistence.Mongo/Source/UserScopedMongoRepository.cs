@@ -13,7 +13,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 {
   private readonly ICurrentUserService _currentUserService;
 
-  public Lazy<IUser> CurrentUser => new(LoadUser);
+  public Lazy<IUser> CurrentUser { get; }
 
   public UserScopedMongoRepository(
     IMongoRepositorySettings settings,
@@ -22,6 +22,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     : base(settings)
   {
     _currentUserService = currentUserService;
+    CurrentUser = new Lazy<IUser>(LoadUser);
   }
 
   public override async Task<UpsertResult> UpsertUser(IUser user)

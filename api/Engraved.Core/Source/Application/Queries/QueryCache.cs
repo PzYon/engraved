@@ -1,23 +1,25 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.User;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
 namespace Engraved.Core.Application.Queries;
 
 public class QueryCache
 {
-  private const string KeysByUserKey = "___keysByUser";
+  private const string KeysByUserId = "___keysByUserId";
 
   private readonly IMemoryCache _memoryCache;
-  private readonly ICurrentUserService _currentUserService;
+  private readonly Lazy<IUser> _currentUser;
 
-  public QueryCache(IMemoryCache memoryCache, ICurrentUserService currentUserService)
+  public QueryCache(IMemoryCache memoryCache, IUserScopedRepository repository)
   {
     _memoryCache = memoryCache;
-    _currentUserService = currentUserService;
+    _currentUser = repository.CurrentUser;
   }
 
   private Dictionary<string, HashSet<string>> QueryKeysByUser
-    => _memoryCache.GetOrCreate(KeysByUserKey, _ => new Dictionary<string, HashSet<string>>())!;
+    => _memoryCache.GetOrCreate(KeysByUserId, _ => new Dictionary<string, HashSet<string>>())!;
 
   public void Set<TValue>(IQueryExecutor<TValue> queryExecutor, IQuery<TValue> query, TValue value)
   {
@@ -53,9 +55,17 @@ public class QueryCache
     return true;
   }
 
-  public void ClearForCurrentUser()
+  public void Invalidate(string[] affectedUserIds)
   {
-    if (!QueryKeysByUser.TryGetValue(GetUserName(), out HashSet<string>? keys))
+    foreach (string user in affectedUserIds)
+    {
+      ClearForUser(user);
+    }
+  }
+
+  private void ClearForUser(string userName)
+  {
+    if (!QueryKeysByUser.TryGetValue(userName, out HashSet<string>? keys))
     {
       return;
     }
@@ -68,7 +78,7 @@ public class QueryCache
 
   private string GetKey<TValue>(IQueryExecutor<TValue> queryExecutor)
   {
-    return _currentUserService.GetUserName() + "_" + queryExecutor.GetType().FullName!;
+    return _currentUser.Value.Id + "_" + queryExecutor.GetType().FullName!;
   }
 
   private static string GetConfigToken<TValue>(IQuery<TValue> query)
@@ -78,24 +88,24 @@ public class QueryCache
 
   private void RememberQueryKeyForUser(string queryKey)
   {
-    if (!QueryKeysByUser.TryGetValue(GetUserName(), out HashSet<string>? queryKeys))
+    if (!QueryKeysByUser.TryGetValue(GetUserId(), out HashSet<string>? queryKeys))
     {
       queryKeys = new HashSet<string>();
-      QueryKeysByUser.Add(GetUserName(), queryKeys);
+      QueryKeysByUser.Add(GetUserId(), queryKeys);
     }
 
     queryKeys.Add(queryKey);
   }
 
-  private string GetUserName()
+  private string GetUserId()
   {
-    string? userName = _currentUserService.GetUserName();
-    if (string.IsNullOrEmpty(userName))
+    string? userId = _currentUser.Value.Id;
+    if (string.IsNullOrEmpty(userId))
     {
-      throw new Exception("Username is not available.");
+      throw new Exception("User ID is not available.");
     }
 
-    return userName;
+    return userId;
   }
 
   private class CacheItem<TResult>

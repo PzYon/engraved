@@ -7,9 +7,9 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public class TestMongoRepository : MongoRepository
 {
-  public IMongoCollection<MetricDocument> Metrics => _metrics;
-  public IMongoCollection<MeasurementDocument> Measurements => _measurements;
-  public IMongoCollection<UserDocument> Users => _users;
+  public IMongoCollection<MetricDocument> Metrics => MetricsCollection;
+  public IMongoCollection<MeasurementDocument> Measurements => MeasurementsCollection;
+  public IMongoCollection<UserDocument> Users => UsersCollection;
 
   public TestMongoRepository(IMongoRepositorySettings settings) : base(settings) { }
 }

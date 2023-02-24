@@ -53,7 +53,11 @@ public class Dispatcher
   {
     CommandResult commandResult = await command.CreateExecutor().Execute(_repository, _dateService);
 
-    _queryCache.ClearForCurrentUser();
+    string[] affectedUserIds = commandResult.AffectedUserIds
+      .Union(new[] { _repository.CurrentUser.Value.Id! })
+      .ToArray();
+
+    _queryCache.Invalidate(affectedUserIds);
 
     return commandResult;
   }
