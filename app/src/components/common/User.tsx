@@ -11,7 +11,7 @@ export const User: React.FC<{
 
   return (
     <Host style={style}>
-      <Avatar title={userName} src={user.imageUrl} />
+      <Avatar title={`${userName} (${user.name})`} src={user.imageUrl} />
       {showUserName ? (
         <Typography sx={{ padding: "10px;" }}>{userName}</Typography>
       ) : null}
