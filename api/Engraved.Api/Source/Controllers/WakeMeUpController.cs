@@ -17,7 +17,7 @@ public class WakeMeUpController : Controller
   }
 
   [HttpGet]
-  public async Task GoogleLogin()
+  public async Task WakeMeUp()
   {
     await _repository.WakeMeUp();
   }

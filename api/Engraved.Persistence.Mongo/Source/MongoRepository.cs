@@ -20,6 +20,8 @@ public class MongoRepository : IRepository
   protected readonly IMongoCollection<MetricDocument> MetricsCollection;
   protected readonly IMongoCollection<UserDocument> UsersCollection;
 
+  private const string RandomDocId = "63f949da880b5bf2518be721";
+
   static MongoRepository()
   {
     // below stuff is required for polymorphic document types to work. it would
@@ -79,7 +81,9 @@ public class MongoRepository : IRepository
 
   public async Task<IUser[]> GetAllUsers()
   {
-    List<UserDocument> users = await UsersCollection.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>()).ToListAsync();
+    List<UserDocument> users = await UsersCollection.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>())
+      .ToListAsync();
+
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
@@ -98,11 +102,11 @@ public class MongoRepository : IRepository
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-      string metricId,
-      DateTime? fromDate,
-      DateTime? toDate,
-      IDictionary<string, string[]>? attributeValues
-    )
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    IDictionary<string, string[]>? attributeValues
+  )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -172,7 +176,9 @@ public class MongoRepository : IRepository
       return;
     }
 
-    await MeasurementsCollection.DeleteManyAsync(Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId));
+    await MeasurementsCollection.DeleteManyAsync(
+      Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId)
+    );
     await MetricsCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId));
   }
 
@@ -226,7 +232,7 @@ public class MongoRepository : IRepository
 
   public async Task WakeMeUp()
   {
-    await UsersCollection.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>("wake@me.up"));
+    await UsersCollection.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>(RandomDocId));
   }
 
   private async Task<UpsertResult> UpsertUserInternal(IUser user)
