@@ -90,6 +90,25 @@ public class DispatcherShould
     Assert.AreEqual(firstResultOtherUser, secondResultOtherUser);
   }
 
+  [Test]
+  public async Task ResetCachePerAffectedUserAfterCommand()
+  {
+    var query = new FakeQuery();
+
+    Dispatcher dispatcher0 = CreateDispatcher("user_zero");
+    Guid firstResultOtherUser = await dispatcher0.Query(query);
+
+    Dispatcher dispatcher1 = CreateDispatcher("user_one");
+    Guid resultFirstExecution = await dispatcher1.Query(query);
+    await dispatcher1.Command(new FakeCommand { AffectedUsers = new List<string> { "user_zero", "user_one" } });
+    
+    Guid resultSecondExecution = await dispatcher1.Query(query);
+    Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
+
+    Guid secondResultOtherUser = await dispatcher0.Query(query);
+    Assert.AreNotEqual(firstResultOtherUser, secondResultOtherUser);
+  }
+
   private Dispatcher CreateDispatcher(string userName)
   {
     var currentUser = new Lazy<IUser>(() => new User { Id = userName, Name = userName });
@@ -101,17 +120,26 @@ public class DispatcherShould
 
 public class FakeCommand : ICommand
 {
+  public List<string> AffectedUsers { get; set; } = new();
+
   public ICommandExecutor CreateExecutor()
   {
-    return new FakeCommandExecutor();
+    return new FakeCommandExecutor(AffectedUsers);
   }
 }
 
 public class FakeCommandExecutor : ICommandExecutor
 {
+  private readonly List<string> _affectedUsers;
+
+  public FakeCommandExecutor(List<string> affectedUsers)
+  {
+    _affectedUsers = affectedUsers;
+  }
+
   public Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
-    return Task.FromResult(new CommandResult());
+    return Task.FromResult(new CommandResult("123", _affectedUsers.ToArray()));
   }
 }
 
@@ -190,11 +218,11 @@ public class FakeUserScopedRepository : IUserScopedRepository
   }
 
   public Task<IMeasurement[]> GetAllMeasurements(
-      string metricId,
-      DateTime? fromDate,
-      DateTime? toDate,
-      IDictionary<string, string[]>? attributeValues
-    )
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    IDictionary<string, string[]>? attributeValues
+  )
   {
     throw new NotImplementedException();
   }
