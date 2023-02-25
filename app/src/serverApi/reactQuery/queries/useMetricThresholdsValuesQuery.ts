@@ -9,7 +9,11 @@ export const useMetricThresholdsValuesQuery = (metricId: string) => {
   const { data: thresholdValues } = useQuery({
     queryKey: queryKeysFactory.metricThresholdValues(metricId, dateConditions),
 
-    queryFn: () => ServerApi.getThresholdValues(metricId, dateConditions),
+    queryFn: () => {
+      return dateConditions
+        ? ServerApi.getThresholdValues(metricId, dateConditions)
+        : Promise.resolve({});
+    },
   });
 
   return thresholdValues;
