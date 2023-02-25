@@ -10,12 +10,13 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   private readonly IRepository _repository;
   private readonly ICurrentUserService _currentUserService;
 
-  public Lazy<IUser> CurrentUser => new(LoadUser);
+  public Lazy<IUser> CurrentUser { get; }
 
   public UserScopedInMemoryRepository(IRepository repository, ICurrentUserService currentUserService)
   {
     _repository = repository;
     _currentUserService = currentUserService;
+    CurrentUser = new Lazy<IUser>(LoadUser);
   }
 
   public Task<IUser?> GetUser(string name)
@@ -55,11 +56,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
-  )
+      string metricId,
+      DateTime? fromDate,
+      DateTime? toDate,
+      IDictionary<string, string[]>? attributeValues
+    )
   {
     return (await _repository.GetAllMeasurements(metricId, fromDate, toDate, attributeValues))
       .Where(m => m.UserId == CurrentUser.Value.Id)

@@ -1,5 +1,4 @@
-﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.User;
+﻿using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
@@ -12,10 +11,10 @@ public class QueryCache
   private readonly IMemoryCache _memoryCache;
   private readonly Lazy<IUser> _currentUser;
 
-  public QueryCache(IMemoryCache memoryCache, IUserScopedRepository repository)
+  public QueryCache(IMemoryCache memoryCache, Lazy<IUser> currentUser)
   {
     _memoryCache = memoryCache;
-    _currentUser = repository.CurrentUser;
+    _currentUser = currentUser;
   }
 
   private Dictionary<string, HashSet<string>> QueryKeysByUser
