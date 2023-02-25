@@ -32,7 +32,7 @@ public class AddMetricCommandExecutor : ICommandExecutor
 
     UpsertResult result = await repository.UpsertMetric(metric);
 
-    return new CommandResult { EntityId = result.EntityId };
+    return new CommandResult(result.EntityId, Array.Empty<string>());
   }
 
   private static IMetric CreateMetric(MetricType type)

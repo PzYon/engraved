@@ -228,7 +228,7 @@ public class DemoDataRepositorySeeder
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)
-        : (IDateService)dateService;
+        : dateService;
 
       await command.CreateExecutor().Execute(_repository, measurementDateService);
     }

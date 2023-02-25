@@ -6,5 +6,6 @@ public class PermissionDefinition
 {
   public PermissionKind Kind { get; set; }
 
+  // user is null and only set before returning to client
   public IUser? User { get; set; }
 }

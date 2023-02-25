@@ -20,7 +20,9 @@ export const useMeasurementsQuery = (
     ),
 
     queryFn: () =>
-      ServerApi.getMeasurements(metricId, attributeValues, dateConditions),
+      dateConditions
+        ? ServerApi.getMeasurements(metricId, attributeValues, dateConditions)
+        : Promise.resolve([]),
 
     onError: (e: ApiError) => {
       setAppAlert({

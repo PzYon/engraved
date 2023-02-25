@@ -1,5 +1,4 @@
-﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.Measurements;
+﻿using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;

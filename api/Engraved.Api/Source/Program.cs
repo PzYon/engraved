@@ -11,6 +11,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Search;
+using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo;
 using Engraved.Search.Lucene;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -88,6 +89,9 @@ builder.Services.AddTransient(
       : GetMongoDbUserScopedRepo(builder, userService);
   }
 );
+builder.Services.AddTransient<Lazy<IUser>>(
+  provider => provider.GetService<IUserScopedRepository>()!.CurrentUser
+);
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
@@ -115,7 +119,7 @@ builder.Services.AddAuthentication(
       {
         OnTokenValidated = context =>
         {
-          var jwtToken = (JwtSecurityToken)context.SecurityToken;
+          var jwtToken = (JwtSecurityToken) context.SecurityToken;
           Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
 
           context.HttpContext.RequestServices
@@ -154,9 +158,9 @@ bool UseInMemoryRepo()
 }
 
 IUserScopedRepository GetMongoDbUserScopedRepo(
-  WebApplicationBuilder webApplicationBuilder,
-  ICurrentUserService userService
-)
+    WebApplicationBuilder webApplicationBuilder,
+    ICurrentUserService userService
+  )
 {
   return new UserScopedMongoRepository(CreateRepositorySettings(webApplicationBuilder), userService);
 }

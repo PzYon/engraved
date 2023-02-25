@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
 import { IMeasurement } from "../../serverApi/IMeasurement";
 import { IMetric } from "../../serverApi/IMetric";
-import { getDefaultDateConditions } from "./filters/DateFilters";
 import { useMetricQuery } from "../../serverApi/reactQuery/queries/useMetricQuery";
 import { useMeasurementsQuery } from "../../serverApi/reactQuery/queries/useMeasurementsQuery";
 
@@ -48,9 +47,7 @@ export const MetricContextProvider: React.FC<{
     [key: string]: string[];
   }>({});
 
-  const [dateConditions, setDateConditions] = useState<IDateConditions>(() =>
-    getDefaultDateConditions()
-  );
+  const [dateConditions, setDateConditions] = useState<IDateConditions>(null);
 
   const metric = useMetricQuery(metricId);
 

@@ -8,9 +8,9 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public class TestUserScopedMongoRepository : UserScopedMongoRepository
 {
-  public IMongoCollection<MetricDocument> Metrics => _metrics;
-  public IMongoCollection<MeasurementDocument> Measurements => _measurements;
-  public IMongoCollection<UserDocument> Users => _users;
+  public IMongoCollection<MetricDocument> Metrics => MetricsCollection;
+  public IMongoCollection<MeasurementDocument> Measurements => MeasurementsCollection;
+  public IMongoCollection<UserDocument> Users => UsersCollection;
 
   public TestUserScopedMongoRepository(IMongoRepositorySettings settings, ICurrentUserService currentUserService) :
     base(settings, currentUserService) { }

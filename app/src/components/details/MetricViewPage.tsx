@@ -24,6 +24,7 @@ import { Page } from "../layout/pages/Page";
 import { PageTitle } from "./PageTitle";
 import { IMetricUiSettings } from "./edit/MetricUiSettings";
 import { createDateConditions } from "./filters/createDateConditions";
+import { getDefaultDateConditions } from "./filters/DateFilters";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -65,11 +66,11 @@ export const MetricViewPage: React.FC = () => {
   const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
 
   useEffect(() => {
-    if (!uiSettings?.dateRange) {
-      return;
-    }
-
-    setDateConditions(createDateConditions(uiSettings.dateRange, new Date()));
+    setDateConditions(
+      !uiSettings?.dateRange
+        ? getDefaultDateConditions()
+        : createDateConditions(uiSettings.dateRange, new Date())
+    );
   }, [uiSettings?.dateRange]);
 
   useEffect(() => {

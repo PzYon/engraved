@@ -53,15 +53,24 @@ public class Dispatcher
   {
     CommandResult commandResult = await command.CreateExecutor().Execute(_repository, _dateService);
 
-    _queryCache.ClearForCurrentUser();
+    InvalidateCache(commandResult);
 
     return commandResult;
   }
 
+  private void InvalidateCache(CommandResult commandResult)
+  {
+    string[] affectedUserIds = commandResult.AffectedUserIds
+      .Union(new[] { _repository.CurrentUser.Value.Id! })
+      .ToArray();
+
+    _queryCache.Invalidate(affectedUserIds);
+  }
+
   private static async Task<TExecutionResult> Execute<TExecutionResult>(
-    Func<Task<TExecutionResult>> action,
-    string labelPrefix
-  )
+      Func<Task<TExecutionResult>> action,
+      string labelPrefix
+    )
   {
     var watch = Stopwatch.StartNew();
 

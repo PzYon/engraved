@@ -27,7 +27,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
     await UpdateMetric(repository, dateService, metric);
 
-    return new CommandResult { EntityId = result.EntityId };
+    return new CommandResult(result.EntityId, metric.Permissions.GetUserIdsWithAccess());
   }
 
   private async Task ValidateCommand(TMetric metric)
