@@ -14,8 +14,6 @@ export interface IMetricType {
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[];
 
-  getOverviewProperties(metric: IMetric): IMetricOverviewPropertyDefinition[];
-
   getYAxisLabel(metric: IMetric): string;
 
   getValueLabel?(value: number): string;

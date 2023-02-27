@@ -1,4 +1,4 @@
-import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
+import { IMetricType } from "./IMetricType";
 import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
@@ -12,10 +12,6 @@ export class NotesMetricType implements IMetricType {
   }
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
-    return [];
-  }
-
-  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
     return [];
   }
 

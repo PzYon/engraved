@@ -12,6 +12,7 @@ import { MetricEditPage } from "./edit/MetricEditPage";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { DeleteMetricLauncher } from "./edit/DeleteMetricLauncher";
 import { IMetric } from "../../serverApi/IMetric";
+import { SharedWith } from "../common/SharedWith";
 
 export const MetricDetails: React.FC = () => {
   const { metric } = useMetricContext();
@@ -28,6 +29,11 @@ export const MetricDetails: React.FC = () => {
           {metric.editedOn ? (
             <PropertyContainer>
               Edited <FormatDate value={metric.editedOn} />
+            </PropertyContainer>
+          ) : null}
+          {Object.keys(metric.permissions).length > 0 ? (
+            <PropertyContainer>
+              Shared with <SharedWith metric={metric} />
             </PropertyContainer>
           ) : null}
           {metric.description ? (
