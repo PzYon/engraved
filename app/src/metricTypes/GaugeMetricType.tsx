@@ -1,6 +1,6 @@
 import { MetricType } from "../serverApi/MetricType";
 import { BarChartSharp } from "@mui/icons-material";
-import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
+import { IMetricType } from "./IMetricType";
 import { IGaugeMeasurement } from "../serverApi/ITimerMeasurement";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
@@ -34,10 +34,6 @@ export class GaugeMetricType implements IMetricType {
 
   getValue(measurement: IMeasurement): number {
     return (measurement as IGaugeMeasurement).value;
-  }
-
-  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
-    return [];
   }
 
   getYAxisLabel(): string {

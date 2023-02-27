@@ -1,6 +1,6 @@
 import { MetricType } from "../serverApi/MetricType";
 import { TimerSharp } from "@mui/icons-material";
-import { IMetricOverviewPropertyDefinition, IMetricType } from "./IMetricType";
+import { IMetricType } from "./IMetricType";
 import { ITimerMeasurement } from "../serverApi/ITimerMeasurement";
 import { DateFormat, FormatDate } from "../components/common/FormatDate";
 import { IMeasurement } from "../serverApi/IMeasurement";
@@ -68,10 +68,6 @@ export class TimerMetricType implements IMetricType {
         getGroupReactNode: (group) => group.totalString,
       },
     ];
-  }
-
-  getOverviewProperties(): IMetricOverviewPropertyDefinition[] {
-    return [];
   }
 
   getYAxisLabel(): string {
