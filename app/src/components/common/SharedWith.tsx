@@ -6,12 +6,14 @@ export const SharedWith: React.FC<{ metric: IMetric }> = ({ metric }) => {
   return (
     <AvatarGroup max={4} sx={{ display: "inline-flex" }}>
       {Object.keys(metric.permissions).map((i) => {
-        const u = metric.permissions[i].user;
+        const user = metric.permissions[i].user;
+        const title = user.displayName || user.name || i;
         return (
           <Avatar
             key={i}
-            alt={u.displayName || u.name}
-            src={u.imageUrl}
+            title={title}
+            alt={title}
+            src={user.imageUrl}
             sx={{ width: "15px", height: "15px", backgroundColor: "#2a7b9b" }}
           />
         );
