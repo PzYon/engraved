@@ -15,7 +15,7 @@ export const MetricProperties: React.FC<{ metric: IMetric }> = ({ metric }) => {
     {
       key: "shared-with",
       node: <SharedWith metric={metric} />,
-      hideWhen: () => false,
+      hideWhen: () => !Object.keys(metric.permissions).length,
       label: "Shared with",
     },
   ];
