@@ -1,4 +1,4 @@
-import { GoogleInitializeResponse } from "./GoogleTypes";
+import { GoogleInitializeResponse, GoogleNotification } from "./GoogleTypes";
 import { envSettings } from "../../../env/envSettings";
 
 const scriptUrl = "https://accounts.google.com/gsi/client";
@@ -19,14 +19,18 @@ export function renderGoogleSignInButton(
         auto_select: true,
       });
 
-      google.accounts.id.renderButton(domElement, {
-        theme: "outline",
-        size: "large",
-        shape: "pill",
-        type: "standard",
-      });
+      google.accounts.id.prompt((n: GoogleNotification) => {
+        if (!n.isNotDisplayed() && !n.isSkippedMoment()) {
+          return;
+        }
 
-      google.accounts.id.prompt();
+        google.accounts.id.renderButton(domElement, {
+          theme: "outline",
+          size: "large",
+          shape: "pill",
+          type: "standard",
+        });
+      });
     })
     .catch(console.error);
 
