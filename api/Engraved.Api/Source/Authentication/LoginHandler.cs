@@ -38,14 +38,14 @@ public class LoginHandler : ILoginHandler
     _dateService = dateService;
   }
 
-  public async Task<AuthResult> Login(string? token)
+  public async Task<AuthResult> Login(string? idToken)
   {
-    if (string.IsNullOrEmpty(token))
+    if (string.IsNullOrEmpty(idToken))
     {
       throw new ArgumentException("Token is null or empty, cannot login.");
     }
 
-    ParsedToken parsedToken = await _tokenValidator.ParseAndValidate(token);
+    ParsedToken parsedToken = await _tokenValidator.ParseAndValidate(idToken);
 
     string userName = parsedToken.UserName;
 
@@ -71,7 +71,8 @@ public class LoginHandler : ILoginHandler
     var tokenDescriptor = new SecurityTokenDescriptor
     {
       Subject = new ClaimsIdentity(GetClaims(userId)),
-      Expires = _dateService.UtcNow.AddHours(6),
+      IssuedAt = _dateService.UtcNow,
+      Expires = _dateService.UtcNow.AddSeconds(15),
       Issuer = _authenticationConfig.TokenIssuer,
       Audience = _authenticationConfig.TokenAudience,
       SigningCredentials = GetSigningCredentials()

@@ -15,7 +15,7 @@ public class GoogleTokenValidator : IGoogleTokenValidator
     _authenticationConfig = configuration;
   }
 
-  public async Task<ParsedToken> ParseAndValidate(string token)
+  public async Task<ParsedToken> ParseAndValidate(string idToken)
   {
     if (string.IsNullOrEmpty(_authenticationConfig.GoogleClientId))
     {
@@ -31,7 +31,7 @@ public class GoogleTokenValidator : IGoogleTokenValidator
         Audience = new[] { _authenticationConfig.GoogleClientId }
       };
 
-      GoogleJsonWebSignature.Payload? payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
+      GoogleJsonWebSignature.Payload? payload = await GoogleJsonWebSignature.ValidateAsync(idToken, validationSettings);
 
       return new ParsedToken
       {

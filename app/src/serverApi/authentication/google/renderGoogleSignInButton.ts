@@ -19,6 +19,8 @@ export function renderGoogleSignInButton(
         auto_select: true,
       });
 
+      (window as any)["relogin"] = google.accounts.id.prompt;
+
       google.accounts.id.prompt((n: GoogleNotification) => {
         if (!n.isNotDisplayed() && !n.isSkippedMoment()) {
           return;

@@ -17,7 +17,7 @@ public class FakeGoogleTokenValidator : IGoogleTokenValidator
     _displayName = displayName;
   }
 
-  public Task<ParsedToken> ParseAndValidate(string token)
+  public Task<ParsedToken> ParseAndValidate(string idToken)
   {
     return Task.FromResult(
       new ParsedToken

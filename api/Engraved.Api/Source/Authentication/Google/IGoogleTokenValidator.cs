@@ -2,5 +2,5 @@
 
 public interface IGoogleTokenValidator
 {
-  Task<ParsedToken> ParseAndValidate(string token);
+  Task<ParsedToken> ParseAndValidate(string idToken);
 }
