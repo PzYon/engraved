@@ -39,7 +39,7 @@ export class ServerApi {
 
   private static onAuthenticated: () => void;
 
-  static async doMeRelogin(): Promise<boolean> {
+  static async tryToLoginAgain(): Promise<boolean> {
     return new Promise((resolve) => {
       if (!this.googlePrompt) {
         resolve(false);
@@ -53,10 +53,6 @@ export class ServerApi {
         };
       });
     });
-  }
-
-  static async callGooglePrompt(): Promise<{ isSuccess: boolean }> {
-    return this.googlePrompt();
   }
 
   static async wakeMeUp(): Promise<void> {
@@ -238,7 +234,8 @@ export class ServerApi {
   static async executeRequest<T = void>(
     url: string,
     method: HttpMethod = "GET",
-    payload: unknown = undefined
+    payload: unknown = undefined,
+    isRetry = false
   ): Promise<T> {
     try {
       ServerApi.loadingHandler.oneMore();
@@ -256,13 +253,18 @@ export class ServerApi {
         return json;
       }
 
-      throw new ApiError(response.status, json as IApiError);
-    } catch (err) {
-      return this.doMeRelogin().then((isSuccess) => {
-        if (isSuccess) {
-          return this.executeRequest(url, method, payload);
+      if (response.status === 401 && !isRetry) {
+        const isLoginSuccessful = await this.tryToLoginAgain();
+
+        if (!isLoginSuccessful) {
+          throw new ApiError(401, { message: "Failed to login again." });
         }
-      });
+
+        console.log("Yes, I am authenticated again");
+        return await this.executeRequest(url, method, payload, true);
+      }
+
+      throw new ApiError(response.status, json as IApiError);
     } finally {
       ServerApi.loadingHandler.oneLess();
     }

@@ -20,15 +20,17 @@ export function renderGoogleSignInButton(
         auto_select: true,
       });
 
-      ServerApi.setGooglePrompt(function (): Promise<{ isSuccess: boolean }> {
+      const googlePrompt = function (): Promise<{ isSuccess: boolean }> {
         return new Promise((resolve) => {
           google.accounts.id.prompt((n: GoogleNotification) => {
             resolve({ isSuccess: !n.isNotDisplayed() && !n.isSkippedMoment() });
           });
         });
-      });
+      };
 
-      ServerApi.callGooglePrompt().then((result: { isSuccess: boolean }) => {
+      ServerApi.setGooglePrompt(googlePrompt);
+
+      googlePrompt().then((result: { isSuccess: boolean }) => {
         if (result.isSuccess) {
           return;
         }
