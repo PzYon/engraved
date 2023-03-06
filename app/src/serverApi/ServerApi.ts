@@ -31,6 +31,16 @@ export class ServerApi {
 
   static loadingHandler: LoadingHandler = new LoadingHandler();
 
+  private static googlePrompt: () => Promise<{ isSuccess: boolean }>;
+
+  static setGooglePrompt(googlePrompt: () => Promise<{ isSuccess: boolean }>) {
+    this.googlePrompt = googlePrompt;
+  }
+
+  static async callGooglePrompt(): Promise<{ isSuccess: boolean }> {
+    return this.googlePrompt();
+  }
+
   static async wakeMeUp(): Promise<void> {
     return await this.executeRequest<void>("/wake/me/up");
   }
@@ -226,6 +236,12 @@ export class ServerApi {
       }
 
       throw new ApiError(response.status, json as IApiError);
+    } catch (err) {
+      return (window as any).relogin().then((x: { isSuccess: boolean }) => {
+        if (x.isSuccess) {
+          return this.executeRequest(url, method, payload);
+        }
+      });
     } finally {
       ServerApi.loadingHandler.oneLess();
     }

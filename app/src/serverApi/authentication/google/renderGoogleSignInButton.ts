@@ -1,5 +1,6 @@
 import { GoogleInitializeResponse, GoogleNotification } from "./GoogleTypes";
 import { envSettings } from "../../../env/envSettings";
+import { ServerApi } from "../../ServerApi";
 
 const scriptUrl = "https://accounts.google.com/gsi/client";
 
@@ -19,10 +20,22 @@ export function renderGoogleSignInButton(
         auto_select: true,
       });
 
-      (window as any)["relogin"] = google.accounts.id.prompt;
+      ServerApi.setGooglePrompt(function (): Promise<{ isSuccess: boolean }> {
+        return new Promise((resolve) => {
+          google.accounts.id.prompt((n: GoogleNotification) => {
+            if (!n.isNotDisplayed() && !n.isSkippedMoment()) {
+              setTimeout(() => {
+                resolve({
+                  isSuccess: !n.isNotDisplayed() && !n.isSkippedMoment(),
+                });
+              }, 7000);
+            }
+          });
+        });
+      });
 
-      google.accounts.id.prompt((n: GoogleNotification) => {
-        if (!n.isNotDisplayed() && !n.isSkippedMoment()) {
+      ServerApi.callGooglePrompt().then((result: { isSuccess: boolean }) => {
+        if (result.isSuccess) {
           return;
         }
 
