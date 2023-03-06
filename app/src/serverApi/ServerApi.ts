@@ -32,26 +32,21 @@ export class ServerApi {
   static loadingHandler: LoadingHandler = new LoadingHandler();
 
   private static googlePrompt: () => Promise<{ isSuccess: boolean }>;
+  private static onAuthenticated: () => void;
 
   static setGooglePrompt(googlePrompt: () => Promise<{ isSuccess: boolean }>) {
     this.googlePrompt = googlePrompt;
   }
 
-  private static onAuthenticated: () => void;
-
   static async tryToLoginAgain(): Promise<boolean> {
     return new Promise((resolve) => {
       if (!this.googlePrompt) {
         resolve(false);
-        return;
+      } else {
+        this.googlePrompt().then(
+          () => (this.onAuthenticated = () => resolve(true))
+        );
       }
-
-      this.googlePrompt().then(() => {
-        this.onAuthenticated = () => {
-          console.log("Yes, I am authenticated again");
-          resolve(true);
-        };
-      });
     });
   }
 
