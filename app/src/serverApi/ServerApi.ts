@@ -37,6 +37,24 @@ export class ServerApi {
     this.googlePrompt = googlePrompt;
   }
 
+  private static onAuthenticated: () => void;
+
+  static async doMeRelogin(): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (!this.googlePrompt) {
+        resolve(false);
+        return;
+      }
+
+      this.googlePrompt().then(() => {
+        this.onAuthenticated = () => {
+          console.log("Yes, I am authenticated again");
+          resolve(true);
+        };
+      });
+    });
+  }
+
   static async callGooglePrompt(): Promise<{ isSuccess: boolean }> {
     return this.googlePrompt();
   }
@@ -61,6 +79,9 @@ export class ServerApi {
     new AuthStorage().setAuthResult(authResult);
 
     this._jwtToken = authResult.jwtToken;
+
+    this.onAuthenticated?.();
+    this.onAuthenticated = null;
 
     return authResult;
   }
@@ -237,8 +258,8 @@ export class ServerApi {
 
       throw new ApiError(response.status, json as IApiError);
     } catch (err) {
-      return (window as any).relogin().then((x: { isSuccess: boolean }) => {
-        if (x.isSuccess) {
+      return this.doMeRelogin().then((isSuccess) => {
+        if (isSuccess) {
           return this.executeRequest(url, method, payload);
         }
       });

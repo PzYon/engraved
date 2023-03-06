@@ -23,13 +23,7 @@ export function renderGoogleSignInButton(
       ServerApi.setGooglePrompt(function (): Promise<{ isSuccess: boolean }> {
         return new Promise((resolve) => {
           google.accounts.id.prompt((n: GoogleNotification) => {
-            if (!n.isNotDisplayed() && !n.isSkippedMoment()) {
-              setTimeout(() => {
-                resolve({
-                  isSuccess: !n.isNotDisplayed() && !n.isSkippedMoment(),
-                });
-              }, 7000);
-            }
+            resolve({ isSuccess: !n.isNotDisplayed() && !n.isSkippedMoment() });
           });
         });
       });
