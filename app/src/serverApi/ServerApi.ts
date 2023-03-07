@@ -40,12 +40,12 @@ export class ServerApi {
 
   static async tryToLoginAgain(): Promise<boolean> {
     return new Promise((resolve) => {
-      if (!this.googlePrompt) {
-        resolve(false);
-      } else {
+      if (this.googlePrompt) {
         this.googlePrompt().then(
           () => (this.onAuthenticated = () => resolve(true))
         );
+      } else {
+        resolve(false);
       }
     });
   }
@@ -249,14 +249,19 @@ export class ServerApi {
       }
 
       if (response.status === 401 && !isRetry) {
-        const isLoginSuccessful = await this.tryToLoginAgain();
+        try {
+          ServerApi.loadingHandler.oneMore();
 
-        if (!isLoginSuccessful) {
-          throw new ApiError(401, { message: "Failed to login again." });
+          const isLoginSuccessful = await this.tryToLoginAgain();
+
+          if (!isLoginSuccessful) {
+            throw new ApiError(401, { message: "Failed to login again." });
+          }
+
+          return await this.executeRequest(url, method, payload, true);
+        } finally {
+          ServerApi.loadingHandler.oneLess();
         }
-
-        console.log("Yes, I am authenticated again");
-        return await this.executeRequest(url, method, payload, true);
       }
 
       throw new ApiError(response.status, json as IApiError);
