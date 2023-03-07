@@ -38,14 +38,18 @@ export class ServerApi {
     this.googlePrompt = googlePrompt;
   }
 
-  static async tryToLoginAgain(): Promise<boolean> {
-    return new Promise((resolve) => {
+  static async tryToLoginAgain(): Promise<void> {
+    return new Promise((resolve, reject) => {
       if (this.googlePrompt) {
-        this.googlePrompt().then(
-          () => (this.onAuthenticated = () => resolve(true))
-        );
+        this.googlePrompt()
+          .then(() => (this.onAuthenticated = () => resolve()))
+          .catch(reject);
       } else {
-        resolve(false);
+        reject(
+          new ApiError(401, {
+            message: "Failed to login again as google prompt is not available.",
+          })
+        );
       }
     });
   }
@@ -251,13 +255,7 @@ export class ServerApi {
       if (response.status === 401 && !isRetry) {
         try {
           ServerApi.loadingHandler.oneMore();
-
-          const isLoginSuccessful = await this.tryToLoginAgain();
-
-          if (!isLoginSuccessful) {
-            throw new ApiError(401, { message: "Failed to login again." });
-          }
-
+          await this.tryToLoginAgain();
           return await this.executeRequest(url, method, payload, true);
         } finally {
           ServerApi.loadingHandler.oneLess();
