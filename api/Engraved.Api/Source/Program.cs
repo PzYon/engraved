@@ -108,7 +108,7 @@ builder.Services.AddAuthentication(
     {
       options.RequireHttpsMetadata = false;
       options.SaveToken = true;
-      var optionsTokenValidationParameters = new TokenValidationParameters
+      options.TokenValidationParameters = new TokenValidationParameters
       {
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
         ValidateAudience = false,
@@ -117,7 +117,6 @@ builder.Services.AddAuthentication(
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
       };
-      options.TokenValidationParameters = optionsTokenValidationParameters;
       options.Events = new JwtBearerEvents
       {
         OnTokenValidated = context =>
