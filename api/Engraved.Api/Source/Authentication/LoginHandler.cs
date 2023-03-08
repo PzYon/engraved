@@ -19,18 +19,18 @@ public class LoginHandler : ILoginHandler
   private readonly IGoogleTokenValidator _tokenValidator;
 
   public LoginHandler(
-    IGoogleTokenValidator tokenValidator,
-    IRepository repository,
-    IOptions<AuthenticationConfig> configuration,
-    IDateService dateService
-  ) : this(tokenValidator, repository, configuration.Value, dateService) { }
+      IGoogleTokenValidator tokenValidator,
+      IRepository repository,
+      IOptions<AuthenticationConfig> configuration,
+      IDateService dateService
+    ) : this(tokenValidator, repository, configuration.Value, dateService) { }
 
   public LoginHandler(
-    IGoogleTokenValidator tokenValidator,
-    IRepository repository,
-    AuthenticationConfig configuration,
-    IDateService dateService
-  )
+      IGoogleTokenValidator tokenValidator,
+      IRepository repository,
+      AuthenticationConfig configuration,
+      IDateService dateService
+    )
   {
     _tokenValidator = tokenValidator;
     _repository = repository;

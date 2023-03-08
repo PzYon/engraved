@@ -30,7 +30,7 @@ export const WakeMeUp: React.FC = () => {
             setShowMe(false);
           },
           label: "Wake up server",
-          key: "wake_me_up",
+          key: "wake-me-up",
           sx: { color: "common.white" },
         }}
       />
