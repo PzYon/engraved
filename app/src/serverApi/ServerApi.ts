@@ -31,6 +31,29 @@ export class ServerApi {
 
   static loadingHandler: LoadingHandler = new LoadingHandler();
 
+  private static googlePrompt: () => Promise<{ isSuccess: boolean }>;
+  private static onAuthenticated: () => void;
+
+  static setGooglePrompt(googlePrompt: () => Promise<{ isSuccess: boolean }>) {
+    this.googlePrompt = googlePrompt;
+  }
+
+  static async tryToLoginAgain(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.googlePrompt) {
+        this.googlePrompt()
+          .then(() => (this.onAuthenticated = () => resolve()))
+          .catch(reject);
+      } else {
+        reject(
+          new ApiError(401, {
+            message: "Failed to login again as google prompt is not available.",
+          })
+        );
+      }
+    });
+  }
+
   static async wakeMeUp(): Promise<void> {
     return await this.executeRequest<void>("/wake/me/up");
   }
@@ -51,6 +74,9 @@ export class ServerApi {
     new AuthStorage().setAuthResult(authResult);
 
     this._jwtToken = authResult.jwtToken;
+
+    this.onAuthenticated?.();
+    this.onAuthenticated = null;
 
     return authResult;
   }
@@ -207,7 +233,8 @@ export class ServerApi {
   static async executeRequest<T = void>(
     url: string,
     method: HttpMethod = "GET",
-    payload: unknown = undefined
+    payload: unknown = undefined,
+    isRetry = false
   ): Promise<T> {
     try {
       ServerApi.loadingHandler.oneMore();
@@ -223,6 +250,16 @@ export class ServerApi {
 
       if (response.ok) {
         return json;
+      }
+
+      if (response.status === 401 && !isRetry) {
+        try {
+          ServerApi.loadingHandler.oneMore();
+          await this.tryToLoginAgain();
+          return await this.executeRequest(url, method, payload, true);
+        } finally {
+          ServerApi.loadingHandler.oneLess();
+        }
       }
 
       throw new ApiError(response.status, json as IApiError);

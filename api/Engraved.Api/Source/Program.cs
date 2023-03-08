@@ -110,22 +110,22 @@ builder.Services.AddAuthentication(
       options.SaveToken = true;
       options.TokenValidationParameters = new TokenValidationParameters
       {
-        ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
+        ValidateAudience = false,
         ValidateIssuer = false,
-        ValidateAudience = false
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
       };
       options.Events = new JwtBearerEvents
       {
         OnTokenValidated = context =>
         {
-          var jwtToken = (JwtSecurityToken) context.SecurityToken;
+          var jwtToken = (JwtSecurityToken)context.SecurityToken;
           Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
-
           context.HttpContext.RequestServices
             .GetRequiredService<ICurrentUserService>()
             .SetUserName(nameClaim.Value);
-
           return Task.CompletedTask;
         }
       };
@@ -158,9 +158,9 @@ bool UseInMemoryRepo()
 }
 
 IUserScopedRepository GetMongoDbUserScopedRepo(
-    WebApplicationBuilder webApplicationBuilder,
-    ICurrentUserService userService
-  )
+  WebApplicationBuilder webApplicationBuilder,
+  ICurrentUserService userService
+)
 {
   return new UserScopedMongoRepository(CreateRepositorySettings(webApplicationBuilder), userService);
 }
