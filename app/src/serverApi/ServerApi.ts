@@ -35,14 +35,14 @@ export class ServerApi {
   private static onAuthenticated: () => void;
 
   static setGooglePrompt(googlePrompt: () => Promise<{ isSuccess: boolean }>) {
-    this.googlePrompt = googlePrompt;
+    ServerApi.googlePrompt = googlePrompt;
   }
 
   static async tryToLoginAgain(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.googlePrompt) {
-        this.googlePrompt()
-          .then(() => (this.onAuthenticated = () => resolve()))
+      if (ServerApi.googlePrompt) {
+        ServerApi.googlePrompt()
+          .then(() => (ServerApi.onAuthenticated = () => resolve()))
           .catch(reject);
       } else {
         reject(
@@ -55,17 +55,17 @@ export class ServerApi {
   }
 
   static async wakeMeUp(): Promise<void> {
-    return await this.executeRequest<void>("/wake/me/up");
+    return await ServerApi.executeRequest<void>("/wake/me/up");
   }
 
   static async tryAuthenticate(token: string): Promise<IUser> {
-    this._jwtToken = token;
+    ServerApi._jwtToken = token;
 
-    return await this.executeRequest<IUser>("/user");
+    return await ServerApi.executeRequest<IUser>("/user");
   }
 
   static async authenticate(token: string): Promise<IAuthResult> {
-    const authResult: IAuthResult = await this.executeRequest(
+    const authResult: IAuthResult = await ServerApi.executeRequest(
       "/auth/google",
       "POST",
       { token: token }
@@ -73,24 +73,24 @@ export class ServerApi {
 
     new AuthStorage().setAuthResult(authResult);
 
-    this._jwtToken = authResult.jwtToken;
+    ServerApi._jwtToken = authResult.jwtToken;
 
-    this.onAuthenticated?.();
-    this.onAuthenticated = null;
+    ServerApi.onAuthenticated?.();
+    ServerApi.onAuthenticated = null;
 
     return authResult;
   }
 
   static async getMetrics(): Promise<IMetric[]> {
-    return await this.executeRequest(`/metrics/`);
+    return await ServerApi.executeRequest(`/metrics/`);
   }
 
   static async getMetric(metricId: string): Promise<IMetric> {
-    return await this.executeRequest(`/metrics/${metricId}`);
+    return await ServerApi.executeRequest(`/metrics/${metricId}`);
   }
 
   static async getActiveMeasurement(metricId: string): Promise<IMeasurement> {
-    return await this.executeRequest(`/measurements/${metricId}/active`);
+    return await ServerApi.executeRequest(`/measurements/${metricId}/active`);
   }
 
   static async addMetric(
@@ -104,7 +104,7 @@ export class ServerApi {
       type: type,
     };
 
-    return await this.executeRequest("/metrics", "POST", payload);
+    return await ServerApi.executeRequest("/metrics", "POST", payload);
   }
 
   static async editMetric(
@@ -131,18 +131,18 @@ export class ServerApi {
       },
     };
 
-    return await this.executeRequest("/metrics/", "PUT", payload);
+    return await ServerApi.executeRequest("/metrics/", "PUT", payload);
   }
 
   static async deleteMetric(metricId: string): Promise<unknown> {
-    return await this.executeRequest(`/metrics/${metricId}/`, "DELETE");
+    return await ServerApi.executeRequest(`/metrics/${metricId}/`, "DELETE");
   }
 
   static async modifyMetricPermissions(
     metricId: string,
     permissions: IUpdatePermissions
   ): Promise<unknown> {
-    return await this.executeRequest(
+    return await ServerApi.executeRequest(
       `/metrics/${metricId}/permissions`,
       "PUT",
       permissions
@@ -165,7 +165,7 @@ export class ServerApi {
 
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";
 
-    return await this.executeRequest(
+    return await ServerApi.executeRequest(
       `/metrics/${metricId}/threshold_values${params}`
     );
   }
@@ -193,14 +193,14 @@ export class ServerApi {
 
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";
 
-    return await this.executeRequest(`/measurements/${metricId}${params}`);
+    return await ServerApi.executeRequest(`/measurements/${metricId}${params}`);
   }
 
   static async upsertMeasurement(
     command: IUpsertMeasurementCommand,
     urlSegment: string
   ): Promise<ICommandResult> {
-    return await this.executeRequest(
+    return await ServerApi.executeRequest(
       `/measurements/${urlSegment}`,
       "POST",
       command
@@ -208,7 +208,7 @@ export class ServerApi {
   }
 
   static async deleteMeasurement(measurementId: string): Promise<void> {
-    return await this.executeRequest(
+    return await ServerApi.executeRequest(
       `/measurements/${measurementId}`,
       "DELETE",
       null
@@ -219,7 +219,7 @@ export class ServerApi {
     metricId: string,
     searchText: string
   ): Promise<IAttributeSearchResult[]> {
-    return await this.executeRequest(
+    return await ServerApi.executeRequest(
       `/search/metric_attributes/${metricId}?searchText=${searchText}`,
       "GET",
       null
@@ -227,7 +227,7 @@ export class ServerApi {
   }
 
   static async getSystemInfo(): Promise<ISystemInfo> {
-    return await this.executeRequest(`/system_info`, "GET", null);
+    return await ServerApi.executeRequest(`/system_info`, "GET", null);
   }
 
   static async executeRequest<T = void>(
@@ -241,9 +241,9 @@ export class ServerApi {
 
       const start = performance.now();
 
-      const response = await this.getResponse(url, method, payload);
+      const response = await ServerApi.getResponse(url, method, payload);
 
-      this.printPerfData(method, url, response, start);
+      ServerApi.printPerfData(method, url, response, start);
 
       const text = await response.text();
       const json = text ? JSON.parse(text) : null;
@@ -255,8 +255,8 @@ export class ServerApi {
       if (response.status === 401 && !isRetry) {
         try {
           ServerApi.loadingHandler.oneMore();
-          await this.tryToLoginAgain();
-          return await this.executeRequest(url, method, payload, true);
+          await ServerApi.tryToLoginAgain();
+          return await ServerApi.executeRequest(url, method, payload, true);
         } finally {
           ServerApi.loadingHandler.oneLess();
         }
@@ -277,8 +277,8 @@ export class ServerApi {
       "Content-Type": "application/json",
     };
 
-    if (this._jwtToken) {
-      headers["Authorization"] = "Bearer " + this._jwtToken;
+    if (ServerApi._jwtToken) {
+      headers["Authorization"] = "Bearer " + ServerApi._jwtToken;
     }
 
     const requestConfig: RequestInit = {
