@@ -3,12 +3,15 @@ import { SyncOutlined } from "@mui/icons-material";
 import { IconButtonWrapper } from "./IconButtonWrapper";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { styled } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 
 const tenMinutes = 10 * 60 * 1000;
 
 export const WakeMeUp: React.FC = () => {
   const [showMe, setShowMe] = useState(false);
   const [doRotate, setDoRotate] = useState(false);
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     setTimeout(() => setShowMe(true), tenMinutes);
@@ -26,6 +29,7 @@ export const WakeMeUp: React.FC = () => {
           onClick: async () => {
             setDoRotate(true);
             await ServerApi.getSystemInfo();
+            await queryClient.invalidateQueries();
             setDoRotate(false);
             setShowMe(false);
           },

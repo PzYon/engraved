@@ -4,9 +4,10 @@ import { ServerApi } from "../../ServerApi";
 
 const scriptUrl = "https://accounts.google.com/gsi/client";
 
-export function renderGoogleSignInButton(
+export function registerGooglePrompt(
   signInWithJwt: (response: GoogleInitializeResponse) => void,
-  domElement: HTMLElement
+  domElement: HTMLElement,
+  doNotPrompt = false
 ) {
   if (!domElement) {
     return undefined;
@@ -29,6 +30,10 @@ export function renderGoogleSignInButton(
       };
 
       ServerApi.setGooglePrompt(googlePrompt);
+
+      if (doNotPrompt) {
+        return;
+      }
 
       googlePrompt().then((result: { isSuccess: boolean }) => {
         if (result.isSuccess) {
