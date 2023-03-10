@@ -1,6 +1,6 @@
 import React from "react";
 import { IPermissionDefinition } from "../../../serverApi/IPermissionDefinition";
-import { Chip, Typography } from "@mui/material";
+import { Chip, styled } from "@mui/material";
 import { User } from "../../common/User";
 import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { DeleteOutlined } from "@mui/icons-material";
@@ -14,7 +14,7 @@ export const UserPermission: React.FC<{
   }
 
   return (
-    <Typography sx={{ display: "flex", alignItems: "center" }}>
+    <Host>
       <User
         user={permissionDefinition.user}
         showUserName={true}
@@ -32,6 +32,11 @@ export const UserPermission: React.FC<{
           onClick: () => removePermissions(permissionDefinition.user.name),
         }}
       />
-    </Typography>
+    </Host>
   );
 };
+
+const Host = styled("div")`
+  display: flex;
+  align-items: center;
+`;

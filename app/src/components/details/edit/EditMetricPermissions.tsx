@@ -1,6 +1,6 @@
 import { IMetric } from "../../../serverApi/IMetric";
 import React, { useState } from "react";
-import { Button, styled, TextField, Typography } from "@mui/material";
+import { Button, styled, TextField } from "@mui/material";
 import { PermissionKindSelector } from "./PermissionKindSelector";
 import { PermissionKind } from "../../../serverApi/PermissionKind";
 import { IUpdatePermissions } from "../../../serverApi/IUpdatePermissions";
@@ -23,27 +23,28 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
   );
 
   return (
-    <div>
+    <>
       {Object.keys(metric.permissions).map((k) => (
-        <Typography key={k}>
-          <UserPermission
-            permissionDefinition={metric.permissions[k]}
-            removePermissions={(u) => setPermissions(u, PermissionKind.None)}
-          />
-        </Typography>
+        <UserPermission
+          key={k}
+          permissionDefinition={metric.permissions[k]}
+          removePermissions={(u) => setPermissions(u, PermissionKind.None)}
+        />
       ))}
-      <Typography color={"primary.main"}>
-        {Object.keys(newPermissions).map((k) => (
-          <UserPermission
-            key={k}
-            permissionDefinition={{
-              kind: newPermissions[k],
-              user: { name: k },
-            }}
-            removePermissions={removeNewPermissions}
-          />
-        ))}
-      </Typography>
+      {Object.keys(newPermissions).length ? (
+        <NewPermissionsContainer style={{ backgroundColor: "#f4f2f2" }}>
+          {Object.keys(newPermissions).map((k) => (
+            <UserPermission
+              key={k}
+              permissionDefinition={{
+                kind: newPermissions[k],
+                user: { name: k },
+              }}
+              removePermissions={removeNewPermissions}
+            />
+          ))}
+        </NewPermissionsContainer>
+      ) : null}
 
       <AddNewContainer>
         <TextField
@@ -84,7 +85,7 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
       >
         Save
       </Button>
-    </div>
+    </>
   );
 
   function removeNewPermissions(userName: string) {
@@ -112,4 +113,8 @@ const AddNewContainer = styled("div")`
       margin-right: 0;
     }
   }
+`;
+
+const NewPermissionsContainer = styled("div")`
+  background-color: #f4f2f2;
 `;
