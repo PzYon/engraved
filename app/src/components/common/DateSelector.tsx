@@ -4,7 +4,7 @@ import {
   TimePicker,
 } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import React from "react";
 import { stripTime } from "../../util/utils";
 import de from "date-fns/locale/de";
@@ -15,13 +15,13 @@ export const DateSelector: React.FC<{
   date: Date;
   label?: string;
   showTime?: boolean;
-}> = ({ setDate, date, label, showTime }) => {
+  showClear?: boolean;
+}> = ({ setDate, date, label, showTime, showClear }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
       <DesktopDatePicker
         label={label}
-        renderInput={(params) => <TextField {...params} />}
-        value={date}
+        value={date || null}
         onChange={(d) => {
           setDate(stripTime(d));
         }}
@@ -30,12 +30,10 @@ export const DateSelector: React.FC<{
         <>
           <TimePicker
             ampm={false}
-            inputFormat="HH:mm:ss"
-            mask="__:__:__"
+            format="HH:mm:ss"
             views={["hours", "minutes"]}
-            value={date}
+            value={date || null}
             onChange={setDate}
-            renderInput={(params) => <TextField {...params} />}
           />
           <Button
             variant="text"
@@ -51,6 +49,15 @@ export const DateSelector: React.FC<{
           >
             +5min
           </Button>
+          {showClear ? (
+            <Button
+              variant="text"
+              sx={{ fontSize: "small" }}
+              onClick={() => setDate(null)}
+            >
+              Clear
+            </Button>
+          ) : null}
         </>
       ) : null}
     </LocalizationProvider>

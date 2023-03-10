@@ -35,6 +35,7 @@ export const UpsertTimerMeasurement: React.FC<{
           date={end}
           setDate={setEndDate}
           showTime={true}
+          showClear={true}
         />
       </FormElementContainer>
       <FormElementContainer>
