@@ -4,7 +4,7 @@ import { ServerApi } from "./serverApi/ServerApi";
 import { IAuthResult } from "./serverApi/IAuthResult";
 import { IUser } from "./serverApi/IUser";
 import { GoogleInitializeResponse } from "./serverApi/authentication/google/GoogleTypes";
-import { renderGoogleSignInButton } from "./serverApi/authentication/google/renderGoogleSignInButton";
+import { registerGooglePrompt } from "./serverApi/authentication/google/registerGooglePrompt";
 import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled } from "@mui/material";
@@ -25,15 +25,18 @@ export const Bootstrapper: React.FC = () => {
 
     if (!storage.hasResult()) {
       setIsNotVisible(false);
-      renderGoogleSignInButton(onSignedIn, ref.current);
+      registerGooglePrompt(onSignedIn, ref.current);
       return;
     }
 
     ServerApi.tryAuthenticate(storage.getAuthResult().jwtToken)
-      .then(setUser)
+      .then((u) => {
+        setUser(u);
+        registerGooglePrompt(onSignedIn, ref.current, true);
+      })
       .catch((e: ApiError) => {
         if (e.status === 401) {
-          renderGoogleSignInButton(onSignedIn, ref.current);
+          registerGooglePrompt(onSignedIn, ref.current);
         }
       })
       .finally(() => setIsNotVisible(false));
