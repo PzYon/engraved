@@ -3,14 +3,14 @@ import { useMetricContext } from "../MetricDetailsContext";
 import { Markdown } from "./Markdown";
 import { Page } from "../../layout/pages/Page";
 import { getCommonActions } from "../../overview/getCommonActions";
-import { PageTitle } from "../PageTitle";
+import { MetricPageTitle } from "../MetricPageTitle";
 
 export const NotesViewPage: React.FC = () => {
   const { metric } = useMetricContext();
 
   return (
     <Page
-      title={<PageTitle metric={metric} />}
+      title={<MetricPageTitle metric={metric} />}
       documentTitle={metric.name}
       actions={getCommonActions(metric)}
     >

@@ -21,7 +21,7 @@ import { Route, Routes } from "react-router-dom";
 import { EditMeasurementLauncher } from "./edit/EditMeasurementLauncher";
 import { DeleteMeasurementLauncher } from "./edit/DeleteMeasurementLauncher";
 import { Page } from "../layout/pages/Page";
-import { PageTitle } from "./PageTitle";
+import { MetricPageTitle } from "./MetricPageTitle";
 import { IMetricUiSettings } from "./edit/MetricUiSettings";
 import { createDateConditions } from "./filters/createDateConditions";
 import { getDefaultDateConditions } from "./filters/DateFilters";
@@ -132,7 +132,7 @@ export const MetricViewPage: React.FC = () => {
 
   return (
     <Page
-      title={<PageTitle metric={metric} />}
+      title={<MetricPageTitle metric={metric} />}
       documentTitle={metric.name}
       actions={titleActions}
     >

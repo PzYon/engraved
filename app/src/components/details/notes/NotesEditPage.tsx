@@ -3,7 +3,7 @@ import { MarkdownEditor } from "./MarkdownEditor";
 import { useMetricContext } from "../MetricDetailsContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
-import { PageTitle } from "../PageTitle";
+import { MetricPageTitle } from "../MetricPageTitle";
 import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { VisibilityOutlined } from "@mui/icons-material";
 import { Markdown } from "./Markdown";
@@ -29,7 +29,7 @@ export const NotesEditPage: React.FC = () => {
 
   return (
     <Page
-      title={<PageTitle metric={metric} />}
+      title={<MetricPageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
       actions={[
         ...getCommonEditModeActions(

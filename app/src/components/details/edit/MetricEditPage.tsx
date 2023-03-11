@@ -5,12 +5,12 @@ import { DetailsSection } from "../../layout/DetailsSection";
 import { useMetricContext } from "../MetricDetailsContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
-import { PageTitle } from "../PageTitle";
 import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { MetricUiSettings } from "./MetricUiSettings";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { EditCommonProperties } from "./EditCommonProperties";
 import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
+import { MetricPageTitle } from "../MetricPageTitle";
 
 export const MetricEditPage: React.FC = () => {
   const { metric } = useMetricContext();
@@ -31,7 +31,7 @@ export const MetricEditPage: React.FC = () => {
 
   return (
     <Page
-      title={<PageTitle metric={metric} />}
+      title={<MetricPageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
       actions={getCommonEditModeActions(navigate, () =>
         editMetricMutation.mutate({
