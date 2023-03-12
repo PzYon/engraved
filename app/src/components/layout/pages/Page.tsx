@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { IIconButtonAction } from "../../common/IconButtonWrapper";
-import { styled } from "@mui/material";
 import { usePageContext } from "./PageContext";
+import { FadeInContainer } from "../../common/FadeInContainer";
 
 export const Page: React.FC<{
   actions: IIconButtonAction[];
@@ -22,7 +22,5 @@ export const Page: React.FC<{
     return () => setPageActions([]);
   }, [actions]);
 
-  return <Host>{children}</Host>;
+  return <FadeInContainer>{children}</FadeInContainer>;
 };
-
-const Host = styled("section")``;
