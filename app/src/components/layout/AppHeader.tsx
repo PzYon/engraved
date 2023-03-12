@@ -54,7 +54,7 @@ export const AppHeader: React.FC = () => {
         }
       >
         <Typography variant="h2" sx={{ flexGrow: 1, color: "primary.main" }}>
-          {pageTitle}
+          {pageTitle ?? <>&nbsp;</>}
         </Typography>
 
         <HeaderActions actions={pageActions} enableFloatingActions={true} />
