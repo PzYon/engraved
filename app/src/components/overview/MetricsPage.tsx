@@ -4,7 +4,7 @@ import { AddMetricLauncher } from "./AddMetricLauncher";
 import { MetricListItem } from "./MetricListItem";
 import { Page } from "../layout/pages/Page";
 import { useMetricsQuery } from "../../serverApi/reactQuery/queries/useMetricsQuery";
-import { PageTitle } from "../details/PageTitle";
+import { PageTitle } from "../layout/pages/PageTitle";
 import { MetricTypeIconStyle } from "../common/MetricTypeIcon";
 import { Icon } from "../common/Icon";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
-import { PageTitle } from "./PageTitle";
+import { PageTitle } from "../layout/pages/PageTitle";
 
 export const MetricPageTitle: React.FC<{ metric: IMetric }> = ({ metric }) => {
   if (!metric) {
