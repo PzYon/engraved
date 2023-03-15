@@ -8,6 +8,7 @@ import { alpha } from "@mui/material";
 const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   value,
   onChange,
+  onBlur,
   theme,
 }) => {
   return (
@@ -15,6 +16,7 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
       value={value}
       extensions={[markdown({}), EditorView.lineWrapping]}
       onChange={onChange}
+      onBlur={onBlur}
       autoFocus={true}
       basicSetup={{
         lineNumbers: false,

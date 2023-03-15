@@ -2,6 +2,7 @@
 using Engraved.Core.Application.Commands.Measurements.Delete;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Counter;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;
+using Engraved.Core.Application.Commands.Measurements.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Timer;
 using Engraved.Core.Application.Queries.Measurements.GetActive;
 using Engraved.Core.Application.Queries.Measurements.GetAll;
@@ -49,14 +50,21 @@ public class MeasurementsController : ControllerBase
 
   [HttpPost]
   [Route("counter")]
-  public async Task AddCounter([FromBody] UpsertCounterMeasurementCommand measurement)
+  public async Task UpsertCounter([FromBody] UpsertCounterMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
   }
 
   [HttpPost]
   [Route("gauge")]
-  public async Task AddGauge([FromBody] UpsertGaugeMeasurementCommand measurement)
+  public async Task UpsertGauge([FromBody] UpsertGaugeMeasurementCommand measurement)
+  {
+    await _dispatcher.Command(measurement);
+  }
+
+  [HttpPost]
+  [Route("scraps")]
+  public async Task UpsertScraps([FromBody] UpsertScrapsMeasurementCommand measurement)
   {
     await _dispatcher.Command(measurement);
   }

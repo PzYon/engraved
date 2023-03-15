@@ -13,6 +13,7 @@ import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { DeleteMetricLauncher } from "./edit/DeleteMetricLauncher";
 import { IMetric } from "../../serverApi/IMetric";
 import { SharedWith } from "../common/SharedWith";
+import { Scraps } from "./notes/scraps/Scraps";
 
 export const MetricDetails: React.FC = () => {
   const { metric } = useMetricContext();
@@ -48,6 +49,8 @@ export const MetricDetails: React.FC = () => {
             <Route path="/edit" element={<NotesEditPage />} />
             <Route path="/*" element={<NotesViewPage />} />
           </>
+        ) : metric.type === MetricType.Scraps ? (
+          <Route path="/*" element={<Scraps />} />
         ) : (
           <>
             <Route path="/edit" element={<MetricEditPage />} />

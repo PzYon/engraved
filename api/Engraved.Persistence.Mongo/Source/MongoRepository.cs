@@ -30,10 +30,12 @@ public class MongoRepository : IRepository
     BsonClassMap.RegisterClassMap<CounterMeasurementDocument>();
     BsonClassMap.RegisterClassMap<TimerMeasurementDocument>();
     BsonClassMap.RegisterClassMap<GaugeMeasurementDocument>();
+    BsonClassMap.RegisterClassMap<ScrapsMeasurementDocument>();
     BsonClassMap.RegisterClassMap<CounterMetricDocument>();
     BsonClassMap.RegisterClassMap<TimerMetricDocument>();
     BsonClassMap.RegisterClassMap<GaugeMetricDocument>();
     BsonClassMap.RegisterClassMap<NotesMetricDocument>();
+    BsonClassMap.RegisterClassMap<ScrapsMetricDocument>();
   }
 
   public MongoRepository(IMongoRepositorySettings settings)

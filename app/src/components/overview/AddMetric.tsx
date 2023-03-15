@@ -11,7 +11,7 @@ import { useAddMetricMutation } from "../../serverApi/reactQuery/mutations/useAd
 export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [metricType, setMetricType] = useState(MetricType.Notes);
+  const [metricType, setMetricType] = useState(MetricType.Scraps);
 
   const navigate = useNavigate();
 

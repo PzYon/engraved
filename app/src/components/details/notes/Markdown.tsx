@@ -5,7 +5,10 @@ import { DetailsSection } from "../../layout/DetailsSection";
 
 const sectionSeparator = "<--->";
 
-export const Markdown: React.FC<{ value: string }> = ({ value }) => {
+export const Markdown: React.FC<{ value: string; onClick?: () => void }> = ({
+  value,
+  onClick,
+}) => {
   const sectionHtmls = useMemo<string[]>(
     () =>
       value
@@ -17,13 +20,13 @@ export const Markdown: React.FC<{ value: string }> = ({ value }) => {
   );
 
   return (
-    <>
+    <div onClick={onClick}>
       {sectionHtmls.map((html) => (
         <DetailsSection key={html}>
           <ContentContainer dangerouslySetInnerHTML={{ __html: html }} />
         </DetailsSection>
       ))}
-    </>
+    </div>
   );
 };
 
