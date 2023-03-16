@@ -49,7 +49,7 @@ export const DeleteMeasurementLauncher: React.FC<{
   return null;
 
   async function deleteMeasurement(closeDialog: () => void) {
-    deleteMeasurementMutation.mutate({ measurementId: measurementId });
+    deleteMeasurementMutation.mutate();
 
     if (onDeleted) {
       await onDeleted();

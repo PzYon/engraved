@@ -11,8 +11,7 @@ export const useDeleteMeasurementMutation = (
   return useMutation({
     mutationKey: queryKeysFactory.deleteMeasurement(metricId, measurementId),
 
-    mutationFn: (variables: { measurementId: string }) =>
-      ServerApi.deleteMeasurement(variables.measurementId),
+    mutationFn: () => ServerApi.deleteMeasurement(measurementId),
 
     onSuccess: async () =>
       await queryClient.invalidateQueries(queryKeysFactory.metric(metricId)),

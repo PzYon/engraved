@@ -27,6 +27,9 @@ export const MetricTypeSelector: React.FC<{
           onChange(event.target.value as unknown as MetricType);
         }}
       >
+        <MenuItem value={MetricType.Scraps}>
+          {translations.metricType_scraps}
+        </MenuItem>
         <MenuItem value={MetricType.Notes}>
           {translations.metricType_notes}
         </MenuItem>

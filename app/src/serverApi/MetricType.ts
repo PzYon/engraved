@@ -3,4 +3,5 @@ export enum MetricType {
   Gauge = "Gauge",
   Timer = "Timer",
   Notes = "Notes",
+  Scraps = "Scraps",
 }

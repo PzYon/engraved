@@ -84,6 +84,7 @@ public class DemoDataRepositorySeeder
         await AddMeasurements(timerMetric, dateService.UtcNow);
         break;
       case NotesMetric:
+      case ScrapsMetric:
         // notes do not have metrics
         break;
       default:

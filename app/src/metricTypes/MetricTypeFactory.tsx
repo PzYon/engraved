@@ -4,6 +4,7 @@ import { GaugeMetricType } from "./GaugeMetricType";
 import { TimerMetricType } from "./TimerMetricType";
 import { IMetricType } from "./IMetricType";
 import { NotesMetricType } from "./NotesMetricType";
+import { ScrapsMetricType } from "./ScrapsMetricType";
 
 export class MetricTypeFactory {
   public static create(type: MetricType): IMetricType {
@@ -16,6 +17,8 @@ export class MetricTypeFactory {
         return new TimerMetricType();
       case MetricType.Notes:
         return new NotesMetricType();
+      case MetricType.Scraps:
+        return new ScrapsMetricType();
     }
   }
 }

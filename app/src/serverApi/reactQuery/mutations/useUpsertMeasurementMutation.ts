@@ -4,10 +4,11 @@ import { IUpsertMeasurementCommand } from "../../commands/IUpsertMeasurementComm
 import { ServerApi } from "../../ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { IMeasurement } from "../../IMeasurement";
-import { IMetric } from "../../IMetric";
+import { MetricType } from "../../MetricType";
 
 export const useUpsertMeasurementMutation = (
-  metric: IMetric,
+  metricId: string,
+  metricType: MetricType,
   measurement: IMeasurement,
   onSaved?: () => void
 ) => {
@@ -16,12 +17,12 @@ export const useUpsertMeasurementMutation = (
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.updateMeasurement(metric.id, measurement?.id),
+    mutationKey: queryKeysFactory.updateMeasurement(metricId, measurement?.id),
 
     mutationFn: async (variables: { command: IUpsertMeasurementCommand }) => {
       await ServerApi.upsertMeasurement(
         variables.command,
-        metric.type.toLowerCase()
+        metricType.toLowerCase()
       );
     },
 

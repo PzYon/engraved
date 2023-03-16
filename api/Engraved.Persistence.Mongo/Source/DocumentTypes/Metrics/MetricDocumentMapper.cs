@@ -16,23 +16,27 @@ public static class MetricDocumentMapper
           .Include<CounterMetric, CounterMetricDocument>()
           .Include<GaugeMetric, GaugeMetricDocument>()
           .Include<TimerMetric, TimerMetricDocument>()
-          .Include<NotesMetric, NotesMetricDocument>();
+          .Include<NotesMetric, NotesMetricDocument>()
+          .Include<ScrapsMetric, ScrapsMetricDocument>();
 
         cfg.CreateMap<CounterMetric, CounterMetricDocument>();
         cfg.CreateMap<GaugeMetric, GaugeMetricDocument>();
         cfg.CreateMap<TimerMetric, TimerMetricDocument>();
         cfg.CreateMap<NotesMetric, NotesMetricDocument>();
+        cfg.CreateMap<ScrapsMetric, ScrapsMetricDocument>();
 
         cfg.CreateMap<MetricDocument, IMetric>()
           .Include<CounterMetricDocument, CounterMetric>()
           .Include<GaugeMetricDocument, GaugeMetric>()
           .Include<TimerMetricDocument, TimerMetric>()
-          .Include<NotesMetricDocument, NotesMetric>();
+          .Include<NotesMetricDocument, NotesMetric>()
+          .Include<ScrapsMetricDocument, ScrapsMetric>();
 
         cfg.CreateMap<CounterMetricDocument, CounterMetric>();
         cfg.CreateMap<GaugeMetricDocument, GaugeMetric>();
         cfg.CreateMap<TimerMetricDocument, TimerMetric>();
         cfg.CreateMap<NotesMetricDocument, NotesMetric>();
+        cfg.CreateMap<ScrapsMetricDocument, ScrapsMetric>();
       }
     );
 

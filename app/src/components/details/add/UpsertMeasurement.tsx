@@ -58,7 +58,8 @@ export const UpsertMeasurement: React.FC<{
   const editMetricMutation = useEditMetricMutation(metric.id);
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
-    metric,
+    metric.id,
+    metric.type,
     measurement,
     onSaved
   );
