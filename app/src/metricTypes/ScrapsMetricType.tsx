@@ -11,7 +11,9 @@ export class ScrapsMetricType implements IMetricType {
   }
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
-    return [];
+    throw new Error(
+      "getMeasurementsTableColumns is currently not supported for Scraps."
+    );
   }
 
   getValue(): number {

@@ -12,14 +12,16 @@ export class NotesMetricType implements IMetricType {
   }
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
-    return [];
-  }
-
-  getYAxisLabel(): string {
-    return "";
+    throw new Error(
+      "getMeasurementsTableColumns is currently not supported for Notes."
+    );
   }
 
   getValue(): number {
-    return 0;
+    throw new Error("getValue is currently not supported for Notes.");
+  }
+
+  getYAxisLabel(): string {
+    throw new Error("getYAxisLabel is currently not supported for Notes.");
   }
 }

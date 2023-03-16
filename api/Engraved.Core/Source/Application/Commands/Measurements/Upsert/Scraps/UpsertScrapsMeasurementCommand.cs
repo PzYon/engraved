@@ -4,8 +4,6 @@ namespace Engraved.Core.Application.Commands.Measurements.Upsert.Scraps;
 
 public class UpsertScrapsMeasurementCommand : BaseUpsertMeasurementCommand
 {
-  public double? Value { get; set; }
-
   public override MetricType GetSupportedMetricType()
   {
     return MetricType.Scraps;
