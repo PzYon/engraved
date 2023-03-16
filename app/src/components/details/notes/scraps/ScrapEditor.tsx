@@ -22,7 +22,13 @@ export const ScrapEditor: React.FC<{
       value={notes}
       onChange={setNotes}
       onBlur={async () => {
+        onBlur();
+
         if (!notes) {
+          return;
+        }
+
+        if (scrap.notes === notes) {
           return;
         }
 
@@ -35,7 +41,6 @@ export const ScrapEditor: React.FC<{
             dateTime: new Date(),
           } as IUpsertMeasurementCommand,
         });
-        onBlur();
       }}
     ></MarkdownEditor>
   );

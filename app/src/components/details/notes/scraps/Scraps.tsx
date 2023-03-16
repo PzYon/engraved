@@ -4,10 +4,12 @@ import { AddOutlined } from "@mui/icons-material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { useMetricContext } from "../../MetricDetailsContext";
 import { IMeasurement } from "../../../../serverApi/IMeasurement";
+import { MetricPageTitle } from "../../MetricPageTitle";
+import { getCommonActions } from "../../../overview/getCommonActions";
+import { Page } from "../../../layout/pages/Page";
 
 // todo:
 // - how can i delete a measurement?
-// - do note update/save if nothing has changed
 
 export const Scraps: React.FC = () => {
   const {
@@ -27,7 +29,11 @@ export const Scraps: React.FC = () => {
   }
 
   return (
-    <>
+    <Page
+      title={<MetricPageTitle metric={metric} />}
+      documentTitle={metric.name}
+      actions={getCommonActions(metric)}
+    >
       {newScrap ? <Scrap scrap={newScrap} /> : null}
 
       {scraps.map((s) => (
@@ -49,6 +55,6 @@ export const Scraps: React.FC = () => {
           },
         }}
       />
-    </>
+    </Page>
   );
 };

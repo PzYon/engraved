@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { styled, Theme, useTheme } from "@mui/material";
+import { Theme, useTheme } from "@mui/material";
 
 export interface ICodeMirrorProps {
   value: string;
@@ -14,18 +14,12 @@ export const MarkdownEditor: React.FC<ICodeMirrorProps> = (props) => {
   const theme = useTheme();
 
   return (
-    <Host>
-      <Suspense fallback={<div />}>
-        <LazyCodeMirror
-          {...props}
-          value={props.value ?? ""}
-          theme={props.theme ?? theme}
-        />
-      </Suspense>
-    </Host>
+    <Suspense fallback={<div />}>
+      <LazyCodeMirror
+        {...props}
+        value={props.value ?? ""}
+        theme={props.theme ?? theme}
+      />
+    </Suspense>
   );
 };
-
-const Host = styled("div")`
-  margin-top: ${(p) => p.theme.spacing(2)};
-`;

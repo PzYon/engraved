@@ -7,7 +7,10 @@ export const DetailsSection: React.FC<{
   overflowXScroll?: boolean;
 }> = ({ title, children, overflowXScroll }) => {
   return (
-    <Host style={{ overflowX: overflowXScroll ? "auto" : "hidden" }}>
+    <Host
+      className={"details-section"}
+      style={{ overflowX: overflowXScroll ? "auto" : "hidden" }}
+    >
       {title ? (
         <Typography sx={{ flexShrink: 0, fontWeight: "bold" }}>
           {title}
@@ -27,5 +30,10 @@ const Host = styled(Paper)`
   // child or somewhere else.
   h1:first-of-type {
     margin-top: 0;
+  }
+
+  .details-section {
+    margin: 0;
+    padding: 0;
   }
 `;
