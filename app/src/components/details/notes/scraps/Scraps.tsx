@@ -8,9 +8,6 @@ import { MetricPageTitle } from "../../MetricPageTitle";
 import { getCommonActions } from "../../../overview/getCommonActions";
 import { Page } from "../../../layout/pages/Page";
 
-// todo:
-// - how can i delete a measurement?
-
 export const Scraps: React.FC = () => {
   const {
     metric,
@@ -21,8 +18,13 @@ export const Scraps: React.FC = () => {
   const [newScrap, setNewScrap] = useState<IMeasurement>(null);
 
   useEffect(() => {
+    // we need to set date conditions in order for data to be loaded
     setDateConditions({});
   }, []);
+
+  useEffect(() => {
+    setNewScrap(null);
+  }, [scraps]);
 
   if (!scraps) {
     return;
