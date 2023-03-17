@@ -2,4 +2,5 @@
 
 public class ScrapsMeasurementDocument : MeasurementDocument
 {
+  public string Title { get; set; }
 }

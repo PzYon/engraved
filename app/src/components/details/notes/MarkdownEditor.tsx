@@ -6,6 +6,7 @@ export interface ICodeMirrorProps {
   onChange: (value: string) => void;
   onBlur?: () => void;
   theme?: Theme;
+  disableAutoFocus?: boolean;
 }
 
 const LazyCodeMirror = React.lazy(() => import("./LazyCodeMirror"));
