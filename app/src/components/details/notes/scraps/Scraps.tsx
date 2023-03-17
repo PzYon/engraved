@@ -3,10 +3,10 @@ import { Scrap } from "./Scrap";
 import { AddOutlined } from "@mui/icons-material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { useMetricContext } from "../../MetricDetailsContext";
-import { IMeasurement } from "../../../../serverApi/IMeasurement";
 import { MetricPageTitle } from "../../MetricPageTitle";
 import { getCommonActions } from "../../../overview/getCommonActions";
 import { Page } from "../../../layout/pages/Page";
+import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 
 export const Scraps: React.FC = () => {
   const {
@@ -15,7 +15,7 @@ export const Scraps: React.FC = () => {
     setDateConditions,
   } = useMetricContext();
 
-  const [newScrap, setNewScrap] = useState<IMeasurement>(null);
+  const [newScrap, setNewScrap] = useState<IScrapMeasurement>(null);
 
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
@@ -38,7 +38,7 @@ export const Scraps: React.FC = () => {
     >
       {newScrap ? <Scrap scrap={newScrap} /> : null}
 
-      {scraps.map((s) => (
+      {(scraps as IScrapMeasurement[]).map((s) => (
         <Scrap key={s.id} scrap={s} />
       ))}
 
@@ -52,6 +52,7 @@ export const Scraps: React.FC = () => {
               id: null,
               dateTime: null,
               notes: "",
+              title: "",
               metricId: metric.id,
             });
           },
