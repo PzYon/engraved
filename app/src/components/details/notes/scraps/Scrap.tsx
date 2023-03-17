@@ -16,7 +16,10 @@ import { MarkdownEditor } from "../MarkdownEditor";
 export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
-  const [isEditMode, setIsEditMode] = useState(!scrap.id);
+
+  const [editMode, setEditMode] = useState<"no" | "fromTitle" | "fromNotes">(
+    scrap.id ? "no" : "fromNotes"
+  );
 
   const deleteMeasurementMutation = useDeleteMeasurementMutation(
     scrap.metricId,
@@ -36,22 +39,26 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
         onChange={(v) => setTitle(v.target.value)}
         placeholder={"Title"}
         onBlur={upsertScrap}
+        onClick={() => setEditMode("fromTitle")}
         sx={{ width: "100%" }}
       />
-      {isEditMode ? (
+      {editMode !== "no" ? (
         <EditorContainer>
           <MarkdownEditor
             value={notes ?? ""}
             onChange={setNotes}
-            disableAutoFocus={!scrap.id}
+            disableAutoFocus={editMode === "fromTitle"}
             onBlur={async () => {
-              setIsEditMode(false);
+              setEditMode("no");
               await upsertScrap();
             }}
           />
         </EditorContainer>
       ) : (
-        <Markdown onClick={() => setIsEditMode(true)} value={scrap.notes} />
+        <Markdown
+          onClick={() => setEditMode("fromNotes")}
+          value={scrap.notes}
+        />
       )}
       <FooterContainer>
         <Typography fontSize="small" component="span">
