@@ -9,6 +9,7 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   value,
   onChange,
   onBlur,
+  onFocus,
   theme,
   disableAutoFocus,
 }) => {
@@ -18,6 +19,7 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
       extensions={[markdown({}), EditorView.lineWrapping]}
       onChange={onChange}
       onBlur={onBlur}
+      onFocus={onFocus}
       autoFocus={!disableAutoFocus}
       basicSetup={{
         lineNumbers: false,
