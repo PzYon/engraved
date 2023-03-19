@@ -1,24 +1,9 @@
 import React from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
-import { EditorView, keymap } from "@codemirror/view";
-import { defaultKeymap } from "@codemirror/commands";
+import { EditorView } from "@codemirror/view";
 import { ICodeMirrorProps } from "./MarkdownEditor";
 import { alpha } from "@mui/material";
-
-const customKeyMap = [
-  {
-    key: "Tab",
-    run: () => true,
-    shift: () => true,
-  },
-  {
-    key: "Tab-Shift",
-    run: () => true,
-    shift: () => true,
-  },
-  ...defaultKeymap,
-];
 
 const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   value,
@@ -32,11 +17,7 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   return (
     <CodeMirror
       value={value}
-      extensions={[
-        markdown({}),
-        EditorView.lineWrapping,
-        keymap.of(customKeyMap),
-      ]}
+      extensions={[markdown({}), EditorView.lineWrapping]}
       onChange={onChange}
       onBlur={onBlur}
       onFocus={onFocus}
