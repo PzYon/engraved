@@ -24,9 +24,7 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
-  const [editMode, setEditMode] = useState<"no" | "fromTitle" | "fromNotes">(
-    scrap.id ? "no" : "fromNotes"
-  );
+  const [editMode, setEditMode] = useState(!scrap.id);
 
   const deleteMeasurementMutation = useDeleteMeasurementMutation(
     scrap.metricId,
@@ -39,23 +37,31 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
     scrap
   );
 
+  const isNew = editMode === true || !scrap.id;
+
   return (
     <DetailsSection>
       <StyledTextField
+        placeholder={"Title"}
+        autoFocus={isNew}
         value={title}
         onChange={(event) => {
           clearTimeout(timer);
           setTitle(event.target.value);
         }}
-        placeholder={"Title"}
+        onFocus={() => {
+          clearTimeout(timer);
+          setEditMode(true);
+        }}
         onBlur={onBlur}
-        onClick={() => setEditMode("fromTitle")}
+        onClick={() => setEditMode(true)}
         sx={{ width: "100%" }}
       />
-      {editMode !== "no" ? (
+      {editMode ? (
         <EditorContainer>
           <MarkdownEditor
-            disableAutoFocus={editMode === "fromTitle"}
+            disableAutoFocus={true}
+            showOutlineWhenFocused={true}
             value={notes ?? ""}
             onChange={(value) => {
               clearTimeout(timer);
@@ -66,10 +72,7 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
           />
         </EditorContainer>
       ) : (
-        <Markdown
-          onClick={() => setEditMode("fromNotes")}
-          value={scrap.notes}
-        />
+        <Markdown onClick={() => setEditMode(true)} value={scrap.notes} />
       )}
       <FooterContainer>
         <Typography fontSize="small" component="span">
@@ -93,7 +96,7 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
     // we use a timeout here in order to let the browser have time to
     // move the focus to the next element
     timer = setTimeout(() => {
-      setEditMode("no");
+      setEditMode(false);
       upsertScrap();
     });
   }

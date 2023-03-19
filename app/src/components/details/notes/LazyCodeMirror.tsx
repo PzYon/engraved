@@ -1,9 +1,24 @@
 import React from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
-import { EditorView } from "@codemirror/view";
+import { EditorView, keymap } from "@codemirror/view";
+import { defaultKeymap } from "@codemirror/commands";
 import { ICodeMirrorProps } from "./MarkdownEditor";
 import { alpha } from "@mui/material";
+
+const customKeyMap = [
+  {
+    key: "Tab",
+    run: () => true,
+    shift: () => true,
+  },
+  {
+    key: "Tab-Shift",
+    run: () => true,
+    shift: () => true,
+  },
+  ...defaultKeymap,
+];
 
 const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   value,
@@ -12,11 +27,16 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   onFocus,
   theme,
   disableAutoFocus,
+  showOutlineWhenFocused,
 }) => {
   return (
     <CodeMirror
       value={value}
-      extensions={[markdown({}), EditorView.lineWrapping]}
+      extensions={[
+        markdown({}),
+        EditorView.lineWrapping,
+        keymap.of(customKeyMap),
+      ]}
       onChange={onChange}
       onBlur={onBlur}
       onFocus={onFocus}
@@ -34,7 +54,10 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
           padding: theme.spacing(2),
         },
         "&.cm-editor.cm-focused": {
-          outline: 0,
+          outline: showOutlineWhenFocused
+            ? `2px solid ${theme.palette.primary.main}`
+            : 0,
+          borderRadius: "3px",
         },
         ".cm-activeLine": {
           backgroundColor: alpha(theme.palette.background.default, 0.3),

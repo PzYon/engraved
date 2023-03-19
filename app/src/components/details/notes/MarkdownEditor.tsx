@@ -8,6 +8,7 @@ export interface ICodeMirrorProps {
   onFocus?: () => void;
   theme?: Theme;
   disableAutoFocus?: boolean;
+  showOutlineWhenFocused?: boolean;
 }
 
 let isPreloaded = false;
