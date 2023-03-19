@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Markdown } from "../Markdown";
 import { FormatDate } from "../../../common/FormatDate";
 import { DetailsSection } from "../../../layout/DetailsSection";
@@ -11,15 +11,20 @@ import { MetricType } from "../../../../serverApi/MetricType";
 import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 import { IUpsertScrapsMeasurementCommand } from "../../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { engravedTheme } from "../../../../theming/engravedTheme";
-import { MarkdownEditor } from "../MarkdownEditor";
+import { MarkdownEditor, preloadLazyCodeMirror } from "../MarkdownEditor";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let timer: any;
 
 export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
+  useEffect(() => {
+    preloadLazyCodeMirror();
+  }, []);
+
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
-  const [editMode, setEditMode] = useState<"no" | "fromTitle" | "fromNotes">(
-    scrap.id ? "no" : "fromNotes"
-  );
+  const [editMode, setEditMode] = useState(!scrap.id);
 
   const deleteMeasurementMutation = useDeleteMeasurementMutation(
     scrap.metricId,
@@ -32,33 +37,42 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
     scrap
   );
 
+  const isNew = editMode === true || !scrap.id;
+
   return (
     <DetailsSection>
       <StyledTextField
-        value={title}
-        onChange={(v) => setTitle(v.target.value)}
         placeholder={"Title"}
-        onBlur={upsertScrap}
-        onClick={() => setEditMode("fromTitle")}
+        autoFocus={isNew}
+        value={title}
+        onChange={(event) => {
+          clearTimeout(timer);
+          setTitle(event.target.value);
+        }}
+        onFocus={() => {
+          clearTimeout(timer);
+          setEditMode(true);
+        }}
+        onBlur={onBlur}
+        onClick={() => setEditMode(true)}
         sx={{ width: "100%" }}
       />
-      {editMode !== "no" ? (
+      {editMode ? (
         <EditorContainer>
           <MarkdownEditor
+            disableAutoFocus={true}
+            showOutlineWhenFocused={true}
             value={notes ?? ""}
-            onChange={setNotes}
-            disableAutoFocus={editMode === "fromTitle"}
-            onBlur={async () => {
-              setEditMode("no");
-              await upsertScrap();
+            onChange={(value) => {
+              clearTimeout(timer);
+              setNotes(value);
             }}
+            onBlur={onBlur}
+            onFocus={() => clearTimeout(timer)}
           />
         </EditorContainer>
       ) : (
-        <Markdown
-          onClick={() => setEditMode("fromNotes")}
-          value={scrap.notes}
-        />
+        <Markdown onClick={() => setEditMode(true)} value={scrap.notes} />
       )}
       <FooterContainer>
         <Typography fontSize="small" component="span">
@@ -75,6 +89,17 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
       </FooterContainer>
     </DetailsSection>
   );
+
+  function onBlur() {
+    clearTimeout(timer);
+
+    // we use a timeout here in order to let the browser have time to
+    // move the focus to the next element
+    timer = setTimeout(() => {
+      setEditMode(false);
+      upsertScrap();
+    });
+  }
 
   async function upsertScrap() {
     if (scrap.notes === notes && scrap.title === title) {
@@ -113,6 +138,7 @@ const StyledTextField = styled(TextField)({
     input: {
       padding: 0,
       color: engravedTheme.palette.primary.main,
+      fontSize: "larger",
     },
     fieldset: {
       borderWidth: 0,

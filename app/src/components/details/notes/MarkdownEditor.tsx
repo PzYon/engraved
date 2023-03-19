@@ -5,9 +5,19 @@ export interface ICodeMirrorProps {
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
+  onFocus?: () => void;
   theme?: Theme;
   disableAutoFocus?: boolean;
+  showOutlineWhenFocused?: boolean;
 }
+
+let isPreloaded = false;
+export const preloadLazyCodeMirror = () => {
+  if (isPreloaded) {
+    return;
+  }
+  import("./LazyCodeMirror").then(() => (isPreloaded = true));
+};
 
 const LazyCodeMirror = React.lazy(() => import("./LazyCodeMirror"));
 

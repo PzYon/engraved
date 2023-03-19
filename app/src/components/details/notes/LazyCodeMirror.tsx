@@ -9,8 +9,10 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   value,
   onChange,
   onBlur,
+  onFocus,
   theme,
   disableAutoFocus,
+  showOutlineWhenFocused,
 }) => {
   return (
     <CodeMirror
@@ -18,6 +20,7 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
       extensions={[markdown({}), EditorView.lineWrapping]}
       onChange={onChange}
       onBlur={onBlur}
+      onFocus={onFocus}
       autoFocus={!disableAutoFocus}
       basicSetup={{
         lineNumbers: false,
@@ -32,7 +35,10 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
           padding: theme.spacing(2),
         },
         "&.cm-editor.cm-focused": {
-          outline: 0,
+          outline: showOutlineWhenFocused
+            ? `2px solid ${theme.palette.primary.main}`
+            : 0,
+          borderRadius: "3px",
         },
         ".cm-activeLine": {
           backgroundColor: alpha(theme.palette.background.default, 0.3),

@@ -8,11 +8,13 @@ export const FadeInContainer = (props: {
   const containerEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerEl.current) {
-      return;
-    }
+    setTimeout(() => {
+      if (!containerEl.current) {
+        return;
+      }
 
-    setTimeout(() => (containerEl.current.style.opacity = "1"));
+      containerEl.current.style.opacity = "1";
+    });
   }, [containerEl]);
 
   return (
