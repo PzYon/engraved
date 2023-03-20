@@ -5,10 +5,11 @@ import { DetailsSection } from "../../layout/DetailsSection";
 
 const sectionSeparator = "<--->";
 
-export const Markdown: React.FC<{ value: string; onClick?: () => void }> = ({
-  value,
-  onClick,
-}) => {
+export const Markdown: React.FC<{
+  value: string;
+  onClick?: () => void;
+  disableCustomSection?: boolean;
+}> = ({ value, onClick, disableCustomSection }) => {
   const sectionHtmls = useMemo<string[]>(
     () =>
       value
@@ -19,15 +20,21 @@ export const Markdown: React.FC<{ value: string; onClick?: () => void }> = ({
     [value]
   );
 
+  const Section = disableCustomSection ? HtmlSection : DetailsSection;
+
   return (
     <div onClick={onClick}>
       {sectionHtmls.map((html) => (
-        <DetailsSection key={html}>
+        <Section key={html}>
           <ContentContainer dangerouslySetInnerHTML={{ __html: html }} />
-        </DetailsSection>
+        </Section>
       ))}
     </div>
   );
+};
+
+const HtmlSection: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return <div>{children}</div>;
 };
 
 const ContentContainer = styled("div")`
