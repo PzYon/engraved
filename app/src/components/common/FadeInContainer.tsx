@@ -1,21 +1,15 @@
 import { CSSProperties, ReactNode, useEffect, useRef } from "react";
-import styled from "styled-components";
+import { styled } from "@mui/material";
 
 export const FadeInContainer = (props: {
   style?: CSSProperties;
   children: ReactNode;
 }) => {
-  const containerEl = useRef<HTMLDivElement>(null);
+  const containerEl = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    setTimeout(() => {
-      if (!containerEl.current) {
-        return;
-      }
-
-      containerEl.current.style.opacity = "1";
-    });
-  }, [containerEl]);
+    containerEl.current.style.opacity = "1";
+  }, []);
 
   return (
     <ContainerSection style={props.style} ref={containerEl}>
@@ -24,7 +18,7 @@ export const FadeInContainer = (props: {
   );
 };
 
-const ContainerSection = styled.section`
+const ContainerSection = styled("section")`
   opacity: 0;
   transition: opacity 700ms;
 `;

@@ -12,15 +12,12 @@ import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 import { IUpsertScrapsMeasurementCommand } from "../../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { engravedTheme } from "../../../../theming/engravedTheme";
 import { MarkdownEditor, preloadLazyCodeMirror } from "../MarkdownEditor";
+import { FadeInContainer } from "../../../common/FadeInContainer";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let timer: any;
+const timers: { [scrapId: string]: any } = {};
 
 export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
-  useEffect(() => {
-    preloadLazyCodeMirror();
-  }, []);
-
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
@@ -39,6 +36,10 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
     scrap
   );
 
+  useEffect(() => {
+    preloadLazyCodeMirror();
+  }, []);
+
   const isNew = editMode !== "off" || !scrap.id;
 
   return (
@@ -48,11 +49,11 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
         autoFocus={isNew}
         value={title}
         onChange={(event) => {
-          clearTimeout(timer);
+          clearTimeout(timers[scrap.id]);
           setTitle(event.target.value);
         }}
         onFocus={() => {
-          clearTimeout(timer);
+          clearTimeout(timers[scrap.id]);
           setEditMode("fromTitle");
         }}
         onBlur={onBlur}
@@ -66,19 +67,21 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
             showOutlineWhenFocused={true}
             value={notes ?? ""}
             onChange={(value) => {
-              clearTimeout(timer);
+              clearTimeout(timers[scrap.id]);
               setNotes(value);
             }}
             onBlur={onBlur}
-            onFocus={() => clearTimeout(timer)}
+            onFocus={() => clearTimeout(timers[scrap.id])}
           />
         </EditorContainer>
       ) : (
-        <Markdown
-          onClick={() => setEditMode("fromBody")}
-          value={scrap.notes}
-          disableCustomSection={true}
-        />
+        <FadeInContainer>
+          <Markdown
+            onClick={() => setEditMode("fromBody")}
+            value={scrap.notes}
+            disableCustomSection={true}
+          />
+        </FadeInContainer>
       )}
       <FooterContainer>
         <Typography fontSize="small" component="span">
@@ -97,11 +100,11 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
   );
 
   function onBlur() {
-    clearTimeout(timer);
+    clearTimeout(timers[scrap.id]);
 
     // we use a timeout here in order to let the browser have time to
     // move the focus to the next element
-    timer = setTimeout(async () => {
+    timers[scrap.id] = setTimeout(async () => {
       await upsertScrap();
       setEditMode("off");
     });

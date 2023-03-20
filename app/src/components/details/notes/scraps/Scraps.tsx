@@ -26,7 +26,7 @@ export const Scraps: React.FC = () => {
     setNewScrap(null);
   }, [scraps]);
 
-  if (!scraps) {
+  if (!scraps || !metric) {
     return;
   }
 
