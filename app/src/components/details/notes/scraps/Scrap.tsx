@@ -22,7 +22,7 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
   const [title, setTitle] = useState(scrap.title);
 
   const [editMode, setEditMode] = useState<"off" | "fromTitle" | "fromBody">(
-    !scrap.id ? "fromTitle" : "fromBody"
+    !scrap.id ? "fromTitle" : "off"
   );
 
   const deleteMeasurementMutation = useDeleteMeasurementMutation(

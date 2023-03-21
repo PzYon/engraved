@@ -6,9 +6,7 @@ export const FadeInContainer: React.FC<{
 }> = ({ children }) => {
   const [isRendered, setIsRendered] = useState(false);
 
-  useEffect(() => {
-    setIsRendered(true);
-  }, []);
+  useEffect(() => setIsRendered(true), []);
 
   return (
     <ContainerSection style={{ opacity: isRendered ? 1 : 0 }}>
