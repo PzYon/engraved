@@ -20,7 +20,7 @@ export const Markdown: React.FC<{
     [value]
   );
 
-  const Section = disableCustomSection ? HtmlSection : DetailsSection;
+  const Section = disableCustomSection ? React.Fragment : DetailsSection;
 
   return (
     <div onClick={onClick}>
@@ -31,10 +31,6 @@ export const Markdown: React.FC<{
       ))}
     </div>
   );
-};
-
-const HtmlSection: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <div>{children}</div>;
 };
 
 const ContentContainer = styled("div")`
