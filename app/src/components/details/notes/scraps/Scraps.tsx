@@ -30,11 +30,26 @@ export const Scraps: React.FC = () => {
     return;
   }
 
+  const addNewAction = {
+    key: "add-scrap",
+    label: "Add new",
+    icon: <AddOutlined fontSize="small" />,
+    onClick: () => {
+      setNewScrap({
+        id: null,
+        dateTime: null,
+        notes: "",
+        title: "",
+        metricId: metric.id,
+      });
+    },
+  };
+
   return (
     <Page
       title={<MetricPageTitle metric={metric} />}
       documentTitle={metric.name}
-      actions={getCommonActions(metric)}
+      actions={[addNewAction, ...getCommonActions(metric)]}
     >
       {newScrap ? <Scrap scrap={newScrap} /> : null}
 
@@ -42,22 +57,7 @@ export const Scraps: React.FC = () => {
         <Scrap key={s.id} scrap={s} />
       ))}
 
-      <IconButtonWrapper
-        action={{
-          key: "add-scrap",
-          label: "Add new",
-          icon: <AddOutlined fontSize="small" />,
-          onClick: () => {
-            setNewScrap({
-              id: null,
-              dateTime: null,
-              notes: "",
-              title: "",
-              metricId: metric.id,
-            });
-          },
-        }}
-      />
+      <IconButtonWrapper action={addNewAction} />
     </Page>
   );
 };
