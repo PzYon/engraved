@@ -4,7 +4,7 @@ import { FormatDate } from "../../../common/FormatDate";
 import { DetailsSection } from "../../../layout/DetailsSection";
 import { styled, TextField, Typography } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
-import { DeleteOutlined } from "@mui/icons-material";
+import { ContentCopyOutlined, DeleteOutlined } from "@mui/icons-material";
 import { useDeleteMeasurementMutation } from "../../../../serverApi/reactQuery/mutations/useDeleteMeasurementMutation";
 import { useUpsertMeasurementMutation } from "../../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../../serverApi/MetricType";
@@ -87,6 +87,16 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
         <Typography fontSize="small" component="span">
           {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
         </Typography>
+        <IconButtonWrapper
+          action={{
+            key: "copy",
+            label: "Copy",
+            icon: <ContentCopyOutlined fontSize="small" />,
+            onClick: async () => {
+              await navigator.clipboard.writeText(scrap.notes);
+            },
+          }}
+        />
         <IconButtonWrapper
           action={{
             key: "delete",
