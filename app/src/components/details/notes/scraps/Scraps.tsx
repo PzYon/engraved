@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Scrap } from "./Scrap";
 import { AddOutlined } from "@mui/icons-material";
-import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { useMetricContext } from "../../MetricDetailsContext";
 import { MetricPageTitle } from "../../MetricPageTitle";
 import { getCommonActions } from "../../../overview/getCommonActions";
@@ -30,34 +29,34 @@ export const Scraps: React.FC = () => {
     return;
   }
 
-  const addNewAction = {
-    key: "add-scrap",
-    label: "Add new",
-    icon: <AddOutlined fontSize="small" />,
-    onClick: () => {
-      setNewScrap({
-        id: null,
-        dateTime: null,
-        notes: "",
-        title: "",
-        metricId: metric.id,
-      });
-    },
-  };
-
   return (
     <Page
       title={<MetricPageTitle metric={metric} />}
       documentTitle={metric.name}
-      actions={[addNewAction, ...getCommonActions(metric)]}
+      actions={[getAddNewAction(), ...getCommonActions(metric)]}
     >
       {newScrap ? <Scrap scrap={newScrap} /> : null}
 
       {(scraps as IScrapMeasurement[]).map((s) => (
         <Scrap key={s.id} scrap={s} />
       ))}
-
-      <IconButtonWrapper action={addNewAction} />
     </Page>
   );
+
+  function getAddNewAction() {
+    return {
+      key: "add-scrap",
+      label: "Add new",
+      icon: <AddOutlined fontSize="small" />,
+      onClick: () => {
+        setNewScrap({
+          id: null,
+          dateTime: null,
+          notes: "",
+          title: "",
+          metricId: metric.id,
+        });
+      },
+    };
+  }
 };
