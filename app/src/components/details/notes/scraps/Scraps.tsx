@@ -6,6 +6,8 @@ import { MetricPageTitle } from "../../MetricPageTitle";
 import { getCommonActions } from "../../../overview/getCommonActions";
 import { Page } from "../../../layout/pages/Page";
 import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
+import { Route, Routes } from "react-router-dom";
+import { DeleteMeasurementLauncher } from "../../edit/DeleteMeasurementLauncher";
 
 export const Scraps: React.FC = () => {
   const {
@@ -40,6 +42,13 @@ export const Scraps: React.FC = () => {
       {(scraps as IScrapMeasurement[]).map((s) => (
         <Scrap key={s.id} scrap={s} />
       ))}
+
+      <Routes>
+        <Route
+          path="/measurements/:measurementId/delete"
+          element={<DeleteMeasurementLauncher metric={metric} />}
+        />
+      </Routes>
     </Page>
   );
 

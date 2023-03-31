@@ -3,9 +3,7 @@ import { Markdown } from "../Markdown";
 import { FormatDate } from "../../../common/FormatDate";
 import { DetailsSection } from "../../../layout/DetailsSection";
 import { styled, TextField, Typography } from "@mui/material";
-import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { ContentCopyOutlined, DeleteOutlined } from "@mui/icons-material";
-import { useDeleteMeasurementMutation } from "../../../../serverApi/reactQuery/mutations/useDeleteMeasurementMutation";
 import { useUpsertMeasurementMutation } from "../../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../../serverApi/MetricType";
 import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
@@ -13,6 +11,7 @@ import { IUpsertScrapsMeasurementCommand } from "../../../../serverApi/commands/
 import { engravedTheme } from "../../../../theming/engravedTheme";
 import { MarkdownEditor, preloadLazyCodeMirror } from "../MarkdownEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
+import { HeaderActions } from "../../../layout/HeaderActions";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const timers: { [scrapId: string]: any } = {};
@@ -23,11 +22,6 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
 
   const [editMode, setEditMode] = useState<"off" | "fromTitle" | "fromBody">(
     !scrap.id ? "fromTitle" : "off"
-  );
-
-  const deleteMeasurementMutation = useDeleteMeasurementMutation(
-    scrap.metricId,
-    scrap.id
   );
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
@@ -77,33 +71,38 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
       ) : (
         <FadeInContainer>
           <Markdown
-            onClick={() => setEditMode("fromBody")}
+            onClick={(e) => {
+              if (e.detail == 2) {
+                setEditMode("fromBody");
+              }
+            }}
             value={scrap.notes}
             disableCustomSection={true}
           />
         </FadeInContainer>
       )}
       <FooterContainer>
-        <Typography fontSize="small" component="span">
+        <Typography fontSize="small" component="span" sx={{ mr: 2 }}>
           {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
         </Typography>
-        <IconButtonWrapper
-          action={{
-            key: "copy",
-            label: "Copy",
-            icon: <ContentCopyOutlined fontSize="small" />,
-            onClick: async () => {
-              await navigator.clipboard.writeText(scrap.notes);
+
+        <HeaderActions
+          actions={[
+            {
+              key: "copy",
+              label: "Copy",
+              icon: <ContentCopyOutlined fontSize="small" />,
+              onClick: async () => {
+                await navigator.clipboard.writeText(scrap.notes);
+              },
             },
-          }}
-        />
-        <IconButtonWrapper
-          action={{
-            key: "delete",
-            label: "Delete",
-            icon: <DeleteOutlined fontSize="small" />,
-            onClick: () => deleteMeasurementMutation.mutate(),
-          }}
+            {
+              key: "delete",
+              label: "Delete",
+              icon: <DeleteOutlined fontSize="small" />,
+              href: `measurements/${scrap.id}/delete`,
+            },
+          ]}
         />
       </FooterContainer>
     </DetailsSection>
@@ -143,7 +142,9 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
 };
 
 const FooterContainer = styled("div")`
-  text-align: right;
+  display: flex;
+  justify-content: end;
+  align-items: center;
 `;
 
 const EditorContainer = styled("div")`
