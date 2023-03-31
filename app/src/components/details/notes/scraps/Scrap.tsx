@@ -5,7 +5,6 @@ import { DetailsSection } from "../../../layout/DetailsSection";
 import { styled, TextField, Typography } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { ContentCopyOutlined, DeleteOutlined } from "@mui/icons-material";
-import { useDeleteMeasurementMutation } from "../../../../serverApi/reactQuery/mutations/useDeleteMeasurementMutation";
 import { useUpsertMeasurementMutation } from "../../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../../serverApi/MetricType";
 import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
@@ -23,11 +22,6 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
 
   const [editMode, setEditMode] = useState<"off" | "fromTitle" | "fromBody">(
     !scrap.id ? "fromTitle" : "off"
-  );
-
-  const deleteMeasurementMutation = useDeleteMeasurementMutation(
-    scrap.metricId,
-    scrap.id
   );
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
@@ -106,7 +100,7 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
             key: "delete",
             label: "Delete",
             icon: <DeleteOutlined fontSize="small" />,
-            onClick: () => deleteMeasurementMutation.mutate(),
+            href: `measurements/${scrap.id}/delete`,
           }}
         />
       </FooterContainer>

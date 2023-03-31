@@ -26,13 +26,29 @@ export const useUpsertMeasurementMutation = (
       );
     },
 
-    onSuccess: async () => {
+    onSuccess: async (_, variables) => {
       setAppAlert({
         title: `${measurement?.id ? "Updated" : "Added"} measurement`,
         type: "success",
       });
 
       onSaved?.();
+
+      queryClient.setQueriesData(
+        {
+          queryKey: queryKeysFactory.measurements(metricId, {}, {}),
+          exact: true,
+        },
+        (measurements: IMeasurement[]) =>
+          measurements.map((m) => {
+            if (m.id === measurement.id) {
+              m.notes = variables.command.notes;
+              m.dateTime = new Date().toString();
+            }
+
+            return m;
+          })
+      );
 
       await queryClient.invalidateQueries(queryKeysFactory.metrics());
     },
