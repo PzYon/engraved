@@ -1,5 +1,5 @@
 import MarkdownIt from "markdown-it";
-import React, { useMemo } from "react";
+import React, { MouseEventHandler, useMemo } from "react";
 import { styled } from "@mui/material";
 import { DetailsSection } from "../../layout/DetailsSection";
 
@@ -7,7 +7,7 @@ const sectionSeparator = "<--->";
 
 export const Markdown: React.FC<{
   value: string;
-  onClick?: () => void;
+  onClick?: MouseEventHandler;
   disableCustomSection?: boolean;
 }> = ({ value, onClick, disableCustomSection }) => {
   const sectionHtmls = useMemo<string[]>(

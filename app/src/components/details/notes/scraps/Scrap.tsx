@@ -77,7 +77,11 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
       ) : (
         <FadeInContainer>
           <Markdown
-            onClick={() => setEditMode("fromBody")}
+            onClick={(e) => {
+              if (e.detail == 2) {
+                setEditMode("fromBody");
+              }
+            }}
             value={scrap.notes}
             disableCustomSection={true}
           />
