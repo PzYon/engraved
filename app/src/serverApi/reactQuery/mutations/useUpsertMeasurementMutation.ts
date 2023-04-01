@@ -34,6 +34,10 @@ export const useUpsertMeasurementMutation = (
 
       onSaved?.();
 
+      if (metricType !== MetricType.Scraps || !measurement?.id) {
+        return;
+      }
+
       queryClient.setQueriesData(
         {
           queryKey: queryKeysFactory.measurements(metricId, {}, {}),
