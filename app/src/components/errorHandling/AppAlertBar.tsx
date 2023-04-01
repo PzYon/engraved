@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Alert, AlertTitle, styled } from "@mui/material";
+import React from "react";
+import { Alert, AlertTitle, Snackbar, styled } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 
 export interface IAppAlert {
@@ -11,33 +11,45 @@ export interface IAppAlert {
 export const AppAlertBar: React.FC = () => {
   const { appAlert, setAppAlert } = useAppContext();
 
-  useEffect(() => {
-    if (appAlert?.type === "success") {
-      setTimeout(() => setAppAlert(null), 4000);
-    }
-  }, [appAlert]);
-
   if (!appAlert) {
     return null;
   }
 
   return (
-    <Host>
-      <Alert
+    <Snackbar
+      open={true}
+      autoHideDuration={appAlert.type === "success" ? 4000 : null}
+      onClose={() => setAppAlert(null)}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+    >
+      <StyledAlert
         severity={appAlert.type}
         variant="filled"
         onClose={() => setAppAlert(null)}
       >
         <AlertTitle>{appAlert.title}</AlertTitle>
         {appAlert.message}
-      </Alert>
-    </Host>
+      </StyledAlert>
+    </Snackbar>
   );
 };
 
-const Host = styled("div")`
-  position: fixed;
-  bottom: ${(p) => p.theme.spacing(2)};
-  right: ${(p) => p.theme.spacing(2)};
-  z-index: 4321;
+const StyledAlert = styled(Alert)`
+  align-items: center;
+
+  .MuiAlert-message {
+    padding: 0;
+  }
+
+  .MuiTypography-root {
+    margin: 0;
+  }
+
+  .MuiAlert-icon {
+    padding: 0;
+  }
+
+  .MuiAlert-action {
+    padding-top: 0;
+  }
 `;
