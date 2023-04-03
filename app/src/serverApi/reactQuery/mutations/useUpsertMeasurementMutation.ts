@@ -34,25 +34,9 @@ export const useUpsertMeasurementMutation = (
 
       onSaved?.();
 
-      if (metricType !== MetricType.Scraps || !measurement?.id) {
-        return;
+      if (!measurement?.id) {
+        updateExistingMeasurementInCache(variables);
       }
-
-      queryClient.setQueriesData(
-        {
-          queryKey: queryKeysFactory.measurements(metricId, {}, {}),
-          exact: true,
-        },
-        (measurements: IMeasurement[]) =>
-          measurements.map((m) => {
-            if (m.id === measurement.id) {
-              m.notes = variables.command.notes;
-              m.dateTime = new Date().toString();
-            }
-
-            return m;
-          })
-      );
 
       await queryClient.invalidateQueries(queryKeysFactory.metrics());
     },
@@ -64,4 +48,27 @@ export const useUpsertMeasurementMutation = (
         type: "error",
       }),
   });
+
+  function updateExistingMeasurementInCache(variables: {
+    command: IUpsertMeasurementCommand;
+  }) {
+    queryClient.setQueriesData(
+      {
+        queryKey: queryKeysFactory.measurements(metricId, {}, {}),
+        exact: true,
+      },
+      (measurements: IMeasurement[]) =>
+        measurements.map((m) => {
+          if (m.id === measurement.id) {
+            m = {
+              ...m,
+              ...variables.command,
+              dateTime: new Date().toString(),
+            };
+          }
+
+          return m;
+        })
+    );
+  }
 };
