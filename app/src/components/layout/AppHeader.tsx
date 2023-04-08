@@ -43,7 +43,9 @@ export const AppHeader: React.FC = () => {
           </Link>
           <WakeMeUp />
           <AppInfoLauncher />
-          <User user={user} />
+          <Link to="/users/me">
+            <User user={user} />
+          </Link>
         </ContentWrapper>
       </Box>
       <ContentWrapper
