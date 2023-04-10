@@ -78,7 +78,6 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
-builder.Services.AddTransient<ISearchIndex, LuceneSearchIndex>();
 builder.Services.AddSingleton(_ => UseInMemoryRepo() ? GetInMemoryRepo() : GetMongoDbRepo());
 builder.Services.AddTransient(
   provider =>
@@ -95,6 +94,9 @@ builder.Services.AddTransient<Lazy<IUser>>(
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
+
+builder.Services.AddTransient<ISearchIndex, LuceneSearchIndex>();
+LuceneSearchIndex.WakeUp();
 
 builder.Services.AddAuthentication(
     options =>

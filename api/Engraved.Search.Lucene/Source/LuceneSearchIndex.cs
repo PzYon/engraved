@@ -17,11 +17,20 @@ public class LuceneSearchIndex : ISearchIndex
 
   private readonly MemoryLuceneIndex _index = new();
 
+  public static void WakeUp()
+  {
+    // touch a random index in order for all assemblies to be loaded and make first real request faster.
+    Document tempDoc = CreateDocument(new Dictionary<string, MetricAttribute>(), new Dictionary<string, string[]>());
+    var tempIndex = new MemoryLuceneIndex();
+    tempIndex.AddDocuments(new List<Document> { tempDoc });
+    tempIndex.Search(CreateQuery(Array.Empty<Dictionary<string, string[]>>(), string.Empty));
+  }
+
   public AttributeSearchResult[] Search(
-    string searchText,
-    Dictionary<string, MetricAttribute> attributes,
-    params Dictionary<string, string[]>[] attributeValues
-  )
+      string searchText,
+      Dictionary<string, MetricAttribute> attributes,
+      params Dictionary<string, string[]>[] attributeValues
+    )
   {
     Dictionary<string, Dictionary<string, string[]>>
       documentsInIndex = AddDocumentsToIndex(attributes, attributeValues);
@@ -76,9 +85,9 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private Dictionary<string, Dictionary<string, string[]>> AddDocumentsToIndex(
-    Dictionary<string, MetricAttribute> metricAttributes,
-    IEnumerable<Dictionary<string, string[]>> metricAttributeValues
-  )
+      Dictionary<string, MetricAttribute> metricAttributes,
+      IEnumerable<Dictionary<string, string[]>> metricAttributeValues
+    )
   {
     Dictionary<string, Document> docsByUniqueString = new();
     Dictionary<string, Dictionary<string, string[]>> valuesByUniqueString = new();
@@ -122,9 +131,9 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private static Document CreateDocument(
-    Dictionary<string, MetricAttribute> metricAttributes,
-    Dictionary<string, string[]> attributeValues
-  )
+      Dictionary<string, MetricAttribute> metricAttributes,
+      Dictionary<string, string[]> attributeValues
+    )
   {
     var document = new Document();
 
