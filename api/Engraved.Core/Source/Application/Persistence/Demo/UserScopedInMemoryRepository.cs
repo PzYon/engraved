@@ -67,6 +67,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
       .ToArray();
   }
 
+  public Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
+  {
+    return _repository.GetNewestMeasurements(metricIds, limit);
+  }
+
   public Task<UpsertResult> UpsertMetric(IMetric metric)
   {
     metric.UserId = CurrentUser.Value.Id;

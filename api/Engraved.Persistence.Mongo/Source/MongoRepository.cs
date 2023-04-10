@@ -157,6 +157,11 @@ public class MongoRepository : IRepository
       .ToArray();
   }
 
+  public Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
+  {
+    throw new NotImplementedException();
+  }
+
   public virtual async Task<UpsertResult> UpsertMetric(IMetric metric)
   {
     MetricDocument document = MetricDocumentMapper.ToDocument(metric);
