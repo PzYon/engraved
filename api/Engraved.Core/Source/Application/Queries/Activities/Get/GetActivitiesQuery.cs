@@ -1,4 +1,4 @@
-namespace Engraved.Core.Application.Queries.Activities;
+namespace Engraved.Core.Application.Queries.Activities.Get;
 
 public class GetActivitiesQuery : IQuery<GetActivitiesQueryResult>
 {

@@ -2,7 +2,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.Metrics;
 
-namespace Engraved.Core.Application.Queries.Activities;
+namespace Engraved.Core.Application.Queries.Activities.Get;
 
 public class GetActivitiesQueryExecutor : IQueryExecutor<GetActivitiesQueryResult>
 {

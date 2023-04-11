@@ -1,5 +1,6 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Queries.Activities;
+using Engraved.Core.Application.Queries.Activities.Get;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
