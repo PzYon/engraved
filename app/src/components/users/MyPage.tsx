@@ -5,7 +5,7 @@ import { Icon } from "../common/Icon";
 import { MetricTypeIconStyle } from "../common/MetricTypeIcon";
 import { SentimentSatisfiedAltOutlined } from "@mui/icons-material";
 import { useAppContext } from "../../AppContext";
-import { Typography } from "@mui/material";
+import { Activities } from "../activities/Activities";
 
 export const MyPage: React.FC = () => {
   const { user } = useAppContext();
@@ -28,7 +28,7 @@ export const MyPage: React.FC = () => {
       }
       actions={[]}
     >
-      <Typography>Work in progress...</Typography>
+      <Activities />
     </Page>
   );
 };
