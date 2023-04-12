@@ -157,9 +157,17 @@ public class MongoRepository : IRepository
       .ToArray();
   }
 
-  public Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
+  // attention: there's no security here for the moment. might not be required as
+  // you explicitly need to specify the metric IDs.
+  public async Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
   {
-    throw new NotImplementedException();
+    List<MeasurementDocument> measurements = await MeasurementsCollection
+      .Find(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)))
+      .ToListAsync();
+
+    return measurements
+      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
+      .ToArray();
   }
 
   public virtual async Task<UpsertResult> UpsertMetric(IMetric metric)
