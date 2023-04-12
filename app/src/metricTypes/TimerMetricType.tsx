@@ -9,6 +9,8 @@ import { IMeasurementsTableColumnDefinition } from "../components/details/measur
 import { getDurationAsHhMmSsFromSeconds } from "../util/getDurationAsHhMmSs";
 import { FormatDuration } from "../components/common/FormatDuration";
 import { IMeasurementsTableGroup } from "../components/details/measurementsTable/IMeasurementsTableGroup";
+import { IMetric } from "../serverApi/IMetric";
+import React from "react";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -17,6 +19,10 @@ export class TimerMetricType implements IMetricType {
 
   getIcon() {
     return <TimerSharp style={{ backgroundColor: "#FFDFEC" }} />;
+  }
+
+  getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
+    return <>{metric.name}</>;
   }
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {

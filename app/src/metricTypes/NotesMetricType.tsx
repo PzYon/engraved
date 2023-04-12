@@ -3,12 +3,18 @@ import { IMeasurementsTableColumnDefinition } from "../components/details/measur
 import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { TextSnippetOutlined } from "@mui/icons-material";
+import { IMetric } from "../serverApi/IMetric";
+import { IMeasurement } from "../serverApi/IMeasurement";
 
 export class NotesMetricType implements IMetricType {
   type: MetricType;
 
   getIcon(): React.ReactNode {
     return <TextSnippetOutlined style={{ backgroundColor: "#DFEEFF" }} />;
+  }
+
+  getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
+    return <>{metric.name}</>;
   }
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {

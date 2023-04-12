@@ -6,6 +6,8 @@ import { IMeasurement } from "../serverApi/IMeasurement";
 import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { getValue } from "../components/details/chart/consolidation/consolidate";
 import { IMeasurementsTableGroup } from "../components/details/measurementsTable/IMeasurementsTableGroup";
+import { IMetric } from "../serverApi/IMetric";
+import React from "react";
 
 export class GaugeMetricType implements IMetricType {
   type = MetricType.Gauge;
@@ -14,6 +16,10 @@ export class GaugeMetricType implements IMetricType {
 
   getIcon() {
     return <BarChartSharp style={{ backgroundColor: "FFFFDF" }} />;
+  }
+
+  getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
+    return <>{metric.name}</>;
   }
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {

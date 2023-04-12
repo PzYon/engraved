@@ -12,6 +12,8 @@ export interface IMetricType {
 
   getIcon(): React.ReactNode;
 
+  getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode;
+
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[];
 
   getYAxisLabel(metric: IMetric): string;
@@ -21,11 +23,4 @@ export interface IMetricType {
   getValue(measurement: IMeasurement): number;
 
   formatTotalValue?(totalValue: number): string;
-}
-
-export interface IMetricOverviewPropertyDefinition {
-  node: React.ReactNode;
-  label: string;
-  key: string;
-  hideWhen?: () => boolean;
 }

@@ -1,9 +1,9 @@
 import React from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { styled, Typography } from "@mui/material";
-import { IMetricOverviewPropertyDefinition } from "../../metricTypes/IMetricType";
 import { FormatDate } from "../common/FormatDate";
 import { SharedWith } from "../common/SharedWith";
+import { IMetricOverviewPropertyDefinition } from "../../metricTypes/IMetricOverviewPropertyDefinition";
 
 export const MetricProperties: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const allProperties: IMetricOverviewPropertyDefinition[] = [
