@@ -26,49 +26,54 @@ export const useUpsertMeasurementMutation = (
       );
     },
 
-    onSuccess: async (_, variables) => {
+    onMutate: (variables) => {
+      if (measurement?.id) {
+        updateExistingMeasurementInCache(variables.command);
+      }
+    },
+
+    onSuccess: async () => {
       setAppAlert({
         title: `${measurement?.id ? "Updated" : "Added"} measurement`,
         type: "success",
       });
 
       onSaved?.();
-
-      if (!measurement?.id) {
-        updateExistingMeasurementInCache(variables);
-      }
-
-      await queryClient.invalidateQueries(queryKeysFactory.metrics());
     },
 
-    onError: (error) =>
+    onError: (error) => {
       setAppAlert({
         title: "Failed to upsert measurement",
         message: error.toString(),
         type: "error",
-      }),
+      });
+    },
+
+    onSettled: async () => {
+      await queryClient.invalidateQueries(queryKeysFactory.metrics());
+    },
   });
 
-  function updateExistingMeasurementInCache(variables: {
-    command: IUpsertMeasurementCommand;
-  }) {
-    queryClient.setQueriesData(
-      {
-        queryKey: queryKeysFactory.measurements(metricId, {}, {}),
-        exact: true,
-      },
+  function updateExistingMeasurementInCache(
+    command: IUpsertMeasurementCommand
+  ) {
+    queryClient.setQueryData(
+      queryKeysFactory.measurements(metricId, {}, {}),
       (measurements: IMeasurement[]) =>
-        measurements.map((m) => {
-          if (m.id === measurement.id) {
-            m = {
-              ...m,
-              ...variables.command,
-              dateTime: new Date().toString(),
-            };
-          }
-
-          return m;
-        })
+        measurements.map((m) =>
+          m.id === measurement.id ? createCacheMeasurement(m, command) : m
+        )
     );
+  }
+
+  function createCacheMeasurement(
+    measurement: IMeasurement,
+    command: IUpsertMeasurementCommand
+  ) {
+    return {
+      ...measurement,
+      ...command,
+      dateTime: new Date().toString(),
+    };
   }
 };
