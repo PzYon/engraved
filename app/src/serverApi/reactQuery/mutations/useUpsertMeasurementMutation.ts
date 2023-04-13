@@ -59,10 +59,15 @@ export const useUpsertMeasurementMutation = (
   ) {
     queryClient.setQueryData(
       queryKeysFactory.measurements(metricId, {}, {}),
-      (measurements: IMeasurement[]) =>
-        measurements.map((m) =>
+      (measurements: IMeasurement[]) => {
+        if (!measurements) {
+          return measurements;
+        }
+
+        return measurements.map((m) =>
           m.id === measurement.id ? createCacheMeasurement(m, command) : m
-        )
+        );
+      }
     );
   }
 
