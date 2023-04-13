@@ -5,7 +5,7 @@ import { IMeasurementsTableColumnDefinition } from "../components/details/measur
 import { IMetric } from "../serverApi/IMetric";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import React from "react";
-import { CounterMeasurementActivity } from "./activities/CounterMeasurementActivity";
+import { Activity } from "./Activity";
 
 // consider: introducing generics here
 
@@ -20,7 +20,9 @@ export class CounterMetricType implements IMetricType {
 
   getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
     return (
-      <CounterMeasurementActivity metric={metric} measurement={measurement} />
+      <Activity metric={metric} measurement={measurement}>
+        +1
+      </Activity>
     );
   }
 

@@ -5,8 +5,7 @@ import { MetricListItem } from "./MetricListItem";
 import { Page } from "../layout/pages/Page";
 import { useMetricsQuery } from "../../serverApi/reactQuery/queries/useMetricsQuery";
 import { PageTitle } from "../layout/pages/PageTitle";
-import { MetricTypeIconStyle } from "../common/MetricTypeIcon";
-import { Icon } from "../common/Icon";
+import { Icon, IconStyle } from "../common/Icon";
 
 export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
   showCreate,
@@ -23,7 +22,7 @@ export const MetricsPage: React.FC<{ showCreate?: boolean }> = ({
         <PageTitle
           title={"Overview"}
           icon={
-            <Icon style={MetricTypeIconStyle.PageTitle}>
+            <Icon style={IconStyle.PageTitle}>
               <VisibilityOutlined />
             </Icon>
           }

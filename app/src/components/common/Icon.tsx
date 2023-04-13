@@ -1,13 +1,16 @@
 import React from "react";
 import { styled } from "@mui/material";
-import { MetricTypeIconStyle } from "./MetricTypeIcon";
+
+export enum IconStyle {
+  Overview,
+  PageTitle,
+}
 
 export const Icon: React.FC<{
   children: React.ReactNode;
-  style: MetricTypeIconStyle;
+  style: IconStyle;
 }> = ({ children, style }) => {
-  const Host =
-    style === MetricTypeIconStyle.Overview ? OverviewHost : PageTitleHost;
+  const Host = style === IconStyle.Overview ? OverviewHost : PageTitleHost;
 
   return <Host>{children}</Host>;
 };

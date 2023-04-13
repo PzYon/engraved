@@ -5,8 +5,9 @@ import { Link } from "react-router-dom";
 import { MetricHeaderActions } from "./MetricHeaderActions";
 import { Section } from "../layout/Section";
 import { MetricProperties } from "./MetricProperties";
-import { MetricTypeIcon, MetricTypeIconStyle } from "../common/MetricTypeIcon";
+import { MetricTypeIcon } from "../common/MetricTypeIcon";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
+import { IconStyle } from "../common/Icon";
 
 export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const deviceWidth = useDeviceWidth();
@@ -14,10 +15,7 @@ export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
   return (
     <Section key={metric.id}>
       <Box sx={{ display: "flex" }}>
-        <MetricTypeIcon
-          type={metric.type}
-          style={MetricTypeIconStyle.Overview}
-        />
+        <MetricTypeIcon type={metric.type} style={IconStyle.Overview} />
         <Box sx={{ flexGrow: 1, pl: 3, wordBreak: "break-all" }}>
           <Link to={`/metrics/${metric.id}`}>
             <Typography

@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface IMetricOverviewPropertyDefinition {
+export interface IPropertyDefinition {
   node: React.ReactNode;
   label: string;
   key: string;
