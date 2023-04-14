@@ -13,7 +13,7 @@ export const Activity: React.FC<{
   children: React.ReactNode;
 }> = ({ metric, measurement, children }) => {
   return (
-    <Typography>
+    <>
       <Properties
         properties={[
           {
@@ -21,7 +21,7 @@ export const Activity: React.FC<{
             node: (
               <MetricTypeIcon type={metric.type} style={IconStyle.PageTitle} />
             ),
-            label: "Metric type",
+            label: "",
           },
           {
             key: "name",
@@ -36,10 +36,12 @@ export const Activity: React.FC<{
         ]}
       />
       <ValueContainer>{children}</ValueContainer>
-    </Typography>
+    </>
   );
 };
 
 const ValueContainer = styled("div")`
-  font-weight: bold;
+  border-top: 1px solid ${(p) => p.theme.palette.background.default};
+  padding-top: ${(p) => p.theme.spacing(2)};
+  margin-top: ${(p) => p.theme.spacing(2)};
 `;

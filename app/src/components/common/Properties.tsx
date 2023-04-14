@@ -32,5 +32,4 @@ const Property = styled(Typography)`
   word-break: break-word;
   display: inline-block;
   font-weight: lighter;
-  margin-top: ${(p) => p.theme.spacing(2)};
 `;

@@ -8,6 +8,7 @@ import { Page } from "../../../layout/pages/Page";
 import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../../edit/DeleteMeasurementLauncher";
+import { DetailsSection } from "../../../layout/DetailsSection";
 
 export const Scraps: React.FC = () => {
   const {
@@ -37,10 +38,16 @@ export const Scraps: React.FC = () => {
       documentTitle={metric.name}
       actions={[getAddNewAction(), ...getCommonActions(metric)]}
     >
-      {newScrap ? <Scrap scrap={newScrap} /> : null}
+      {newScrap ? (
+        <DetailsSection key="new">
+          <Scrap scrap={newScrap} />
+        </DetailsSection>
+      ) : null}
 
       {(scraps as IScrapMeasurement[]).map((s) => (
-        <Scrap key={s.id} scrap={s} />
+        <DetailsSection key={s.id}>
+          <Scrap scrap={s} />
+        </DetailsSection>
       ))}
 
       <Routes>

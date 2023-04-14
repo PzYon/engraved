@@ -37,7 +37,7 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
   const isNew = editMode !== "off" || !scrap.id;
 
   return (
-    <DetailsSection>
+    <>
       <StyledTextField
         placeholder={"Title"}
         autoFocus={isNew}
@@ -105,7 +105,7 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
           ]}
         />
       </FooterContainer>
-    </DetailsSection>
+    </>
   );
 
   function onBlur() {
