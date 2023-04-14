@@ -6,6 +6,7 @@ import { IMetric } from "../serverApi/IMetric";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import React from "react";
 import { Activity } from "./Activity";
+import { AttributeValues } from "../components/common/AttributeValues";
 
 // consider: introducing generics here
 
@@ -22,6 +23,10 @@ export class CounterMetricType implements IMetricType {
     return (
       <Activity metric={metric} measurement={measurement}>
         +1
+        <AttributeValues
+          attributes={metric.attributes}
+          attributeValues={measurement.metricAttributeValues}
+        />
       </Activity>
     );
   }

@@ -2,7 +2,7 @@ import React from "react";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import { IMetric } from "../serverApi/IMetric";
 import { FormatDate } from "../components/common/FormatDate";
-import { styled, Typography } from "@mui/material";
+import { styled } from "@mui/material";
 import { Properties } from "../components/common/Properties";
 import { MetricTypeIcon } from "../components/common/MetricTypeIcon";
 import { IconStyle } from "../components/common/Icon";
@@ -19,7 +19,7 @@ export const Activity: React.FC<{
           {
             key: "metric-type",
             node: (
-              <MetricTypeIcon type={metric.type} style={IconStyle.PageTitle} />
+              <MetricTypeIcon type={metric.type} style={IconStyle.Activity} />
             ),
             label: "",
           },
@@ -31,7 +31,7 @@ export const Activity: React.FC<{
           {
             key: "date",
             node: <FormatDate value={measurement.dateTime} />,
-            label: "Date",
+            label: "",
           },
         ]}
       />

@@ -20,7 +20,7 @@ public class GetActivitiesQueryExecutor : IQueryExecutor<GetActivitiesQueryResul
     IMetric[] allMetrics = await repository.GetAllMetrics();
     string[] allMetricIds = allMetrics.Select(m => m.Id!).ToArray();
 
-    IMeasurement[] allMeasurements = await repository.GetNewestMeasurements(allMetricIds, _query.Limit ?? 10);
+    IMeasurement[] allMeasurements = await repository.GetNewestMeasurements(allMetricIds, _query.Limit ?? 20);
     string[] relevantMetricIds = allMeasurements.Select(m => m.MetricId).ToArray();
 
     return new GetActivitiesQueryResult

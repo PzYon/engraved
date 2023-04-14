@@ -19,7 +19,7 @@ export class ScrapsMetricType implements IMetricType {
   getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
     return (
       <Activity metric={metric} measurement={measurement}>
-        <Scrap scrap={measurement as IScrapMeasurement} />
+        <Scrap scrap={measurement as IScrapMeasurement} hideDate={true} />
       </Activity>
     );
   }

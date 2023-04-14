@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Markdown } from "../Markdown";
 import { FormatDate } from "../../../common/FormatDate";
-import { DetailsSection } from "../../../layout/DetailsSection";
 import { styled, TextField, Typography } from "@mui/material";
 import { ContentCopyOutlined, DeleteOutlined } from "@mui/icons-material";
 import { useUpsertMeasurementMutation } from "../../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
@@ -16,7 +15,10 @@ import { HeaderActions } from "../../../layout/HeaderActions";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const timers: { [scrapId: string]: any } = {};
 
-export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
+export const Scrap: React.FC<{
+  scrap: IScrapMeasurement;
+  hideDate?: boolean;
+}> = ({ scrap, hideDate }) => {
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
@@ -82,9 +84,11 @@ export const Scrap: React.FC<{ scrap: IScrapMeasurement }> = ({ scrap }) => {
         </FadeInContainer>
       )}
       <FooterContainer>
-        <Typography fontSize="small" component="span" sx={{ mr: 2 }}>
-          {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
-        </Typography>
+        {hideDate ? null : (
+          <Typography fontSize="small" component="span" sx={{ mr: 2 }}>
+            {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
+          </Typography>
+        )}
 
         <HeaderActions
           actions={[

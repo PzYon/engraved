@@ -4,13 +4,19 @@ import { styled } from "@mui/material";
 export enum IconStyle {
   Overview,
   PageTitle,
+  Activity,
 }
 
 export const Icon: React.FC<{
   children: React.ReactNode;
   style: IconStyle;
 }> = ({ children, style }) => {
-  const Host = style === IconStyle.Overview ? OverviewHost : PageTitleHost;
+  const Host =
+    style === IconStyle.Overview
+      ? OverviewHost
+      : style === IconStyle.Activity
+      ? ActivityHost
+      : PageTitleHost;
 
   return <Host>{children}</Host>;
 };
@@ -37,5 +43,16 @@ const OverviewHost = styled("span")`
     color: ${(p) => p.theme.palette.primary.main};
     width: 0.8em;
     height: 0.8em;
+  }
+`;
+
+const ActivityHost = styled("span")`
+  svg {
+    border-radius: 100%;
+    border: 1px solid ${(p) => p.theme.palette.primary.main};
+    padding: ${(p) => p.theme.spacing(0.5)};
+    color: ${(p) => p.theme.palette.primary.main};
+    width: 0.6em;
+    height: 0.6em;
   }
 `;

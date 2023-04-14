@@ -9,22 +9,27 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
     {properties
       .filter((p) => !p.hideWhen || !p.hideWhen())
       .map((p) => (
-        <Property className="property" as="div" key={p.key}>
-          <Typography component="span" sx={{ fontWeight: "200" }}>
-            {p.label}
-          </Typography>{" "}
-          <Typography sx={{ color: "primary.main" }} component="span">
-            {p.node}
-          </Typography>
-        </Property>
+        <span key={p.key} className="property">
+          <Property as="span">
+            <Typography component="span" sx={{ fontWeight: "200" }}>
+              {p.label}
+            </Typography>{" "}
+            <Typography sx={{ color: "primary.main" }} component="span">
+              {p.node}
+            </Typography>
+          </Property>
+        </span>
       ))}
   </Host>
 );
 
 const Host = styled("div")`
+  display: flex;
+  align-items: center;
+
   .property:not(:last-of-type)::after {
     content: "\\00B7";
-    margin: 0 0.8rem;
+    margin: 0 0.6rem;
   }
 `;
 

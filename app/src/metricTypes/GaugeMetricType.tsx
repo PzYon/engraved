@@ -9,6 +9,7 @@ import { IMeasurementsTableGroup } from "../components/details/measurementsTable
 import { IMetric } from "../serverApi/IMetric";
 import React from "react";
 import { Activity } from "./Activity";
+import { AttributeValues } from "../components/common/AttributeValues";
 
 export class GaugeMetricType implements IMetricType {
   type = MetricType.Gauge;
@@ -23,6 +24,10 @@ export class GaugeMetricType implements IMetricType {
     return (
       <Activity metric={metric} measurement={measurement}>
         {(measurement as IGaugeMeasurement).value}
+        <AttributeValues
+          attributes={metric.attributes}
+          attributeValues={measurement.metricAttributeValues}
+        />
       </Activity>
     );
   }
