@@ -5,6 +5,9 @@ import { IMeasurementsTableColumnDefinition } from "../components/details/measur
 import { IMetric } from "../serverApi/IMetric";
 import { IMeasurement } from "../serverApi/IMeasurement";
 import React from "react";
+import { Activity } from "./Activity";
+import { Scrap } from "../components/details/notes/scraps/Scrap";
+import { IScrapMeasurement } from "../serverApi/IScrapMeasurement";
 
 export class ScrapsMetricType implements IMetricType {
   type = MetricType.Scraps;
@@ -14,7 +17,11 @@ export class ScrapsMetricType implements IMetricType {
   }
 
   getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
-    return <>{metric.name}</>;
+    return (
+      <Activity metric={metric} measurement={measurement}>
+        <Scrap scrap={measurement as IScrapMeasurement} />
+      </Activity>
+    );
   }
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {

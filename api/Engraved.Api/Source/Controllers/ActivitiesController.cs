@@ -19,9 +19,26 @@ public class ActivitiesController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<object> GetAll()
+  public async Task<GetActivitiesQueryApiResult> GetAll()
   {
     GetActivitiesQueryResult result = await _dispatcher.Query(new GetActivitiesQuery());
-    return result;
+    return GetActivitiesQueryApiResult.FromResult(result);
+  }
+}
+
+// we need this class in order to support polymorphism for serialization.
+// the important thing here is to use object.
+public class GetActivitiesQueryApiResult
+{
+  public object[] Metrics { get; set; } = null!;
+  public object[] Measurements { get; set; } = null!;
+
+  public static GetActivitiesQueryApiResult FromResult(GetActivitiesQueryResult result)
+  {
+    return new GetActivitiesQueryApiResult
+    {
+      Measurements = result.Measurements,
+      Metrics = result.Metrics
+    };
   }
 }

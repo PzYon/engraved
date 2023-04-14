@@ -15,7 +15,7 @@ export const Icon: React.FC<{
   return <Host>{children}</Host>;
 };
 
-const PageTitleHost = styled("div")`
+const PageTitleHost = styled("span")`
   svg {
     border-radius: 100%;
     height: 0.8em;
@@ -29,7 +29,7 @@ const PageTitleHost = styled("div")`
   }
 `;
 
-const OverviewHost = styled("div")`
+const OverviewHost = styled("span")`
   svg {
     border-radius: 100%;
     border: 2px solid ${(p) => p.theme.palette.primary.main};
