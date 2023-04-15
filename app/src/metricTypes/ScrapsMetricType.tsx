@@ -12,6 +12,8 @@ import { IScrapMeasurement } from "../serverApi/IScrapMeasurement";
 export class ScrapsMetricType implements IMetricType {
   type = MetricType.Scraps;
 
+  isGroupable = false;
+
   getIcon() {
     return <DynamicFeedOutlined style={{ backgroundColor: "E6CCFF" }} />;
   }

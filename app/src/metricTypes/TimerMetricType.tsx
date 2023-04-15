@@ -11,7 +11,7 @@ import { FormatDuration } from "../components/common/FormatDuration";
 import { IMeasurementsTableGroup } from "../components/details/measurementsTable/IMeasurementsTableGroup";
 import { IMetric } from "../serverApi/IMetric";
 import React from "react";
-import { Activity } from "./Activity";
+import { ActivityWithValue } from "./ActivityWithValue";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -24,9 +24,25 @@ export class TimerMetricType implements IMetricType {
 
   getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
     return (
-      <Activity metric={metric} measurement={measurement}>
-        {this.getFormatDuration(measurement)}
-      </Activity>
+      <ActivityWithValue
+        value={
+          <>
+            <FormatDate
+              value={(measurement as ITimerMeasurement).startDate}
+              dateFormat={DateFormat.timeOnly}
+            />
+            {" - "}
+            <FormatDate
+              value={(measurement as ITimerMeasurement).endDate}
+              dateFormat={DateFormat.timeOnly}
+              fallbackValue={"now"}
+            />{" "}
+            (duration: {this.getFormatDuration(measurement)})
+          </>
+        }
+        metric={metric}
+        measurement={measurement}
+      />
     );
   }
 

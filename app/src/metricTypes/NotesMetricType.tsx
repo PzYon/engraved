@@ -4,6 +4,8 @@ import { MetricType } from "../serverApi/MetricType";
 import React from "react";
 import { TextSnippetOutlined } from "@mui/icons-material";
 
+// consider: introducing generics here
+
 export class NotesMetricType implements IMetricType {
   type: MetricType;
 

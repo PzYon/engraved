@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import { HeaderActions } from "./HeaderActions";
+import { Actions } from "../common/Actions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
@@ -59,7 +59,7 @@ export const AppHeader: React.FC = () => {
           {pageTitle ?? <>&nbsp;</>}
         </Typography>
 
-        <HeaderActions actions={pageActions} enableFloatingActions={true} />
+        <Actions actions={pageActions} enableFloatingActions={true} />
       </ContentWrapper>
     </Host>
   );

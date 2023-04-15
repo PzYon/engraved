@@ -10,7 +10,7 @@ import { IUpsertScrapsMeasurementCommand } from "../../../../serverApi/commands/
 import { engravedTheme } from "../../../../theming/engravedTheme";
 import { MarkdownEditor, preloadLazyCodeMirror } from "../MarkdownEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
-import { HeaderActions } from "../../../layout/HeaderActions";
+import { Actions } from "../../../common/Actions";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const timers: { [scrapId: string]: any } = {};
@@ -90,7 +90,7 @@ export const Scrap: React.FC<{
           </Typography>
         )}
 
-        <HeaderActions
+        <Actions
           actions={[
             {
               key: "copy",

@@ -4,7 +4,7 @@ import {
   formatDistanceToNow,
   isToday,
 } from "date-fns";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const autoUpdateIntervalSeconds = 30;
 
@@ -63,12 +63,13 @@ export const formatDate = (
   }
 };
 
-export const FormatDate = (props: {
+export const FormatDate: React.FC<{
   value: Date | string | number;
   dateFormat?: DateFormat;
-}) => {
-  if (!props.value) {
-    return null;
+  fallbackValue?: React.ReactNode;
+}> = ({ value, dateFormat, fallbackValue }) => {
+  if (!value) {
+    return <>{fallbackValue}</>;
   }
 
   const [values, setValues] = useState<{ title: string; label: string }>(
@@ -78,7 +79,7 @@ export const FormatDate = (props: {
   useEffect(() => {
     setValues(calculateValues());
 
-    if (differenceInHours(new Date(), getAsDate(props.value)) > 2) {
+    if (differenceInHours(new Date(), getAsDate(value)) > 2) {
       return;
     }
 
@@ -87,19 +88,19 @@ export const FormatDate = (props: {
       autoUpdateIntervalSeconds * 1000
     );
     return () => clearInterval(interval);
-  }, [props.value, props.dateFormat]);
+  }, [value, dateFormat]);
 
   return <span title={values.title}>{values.label}</span>;
 
   function calculateValues() {
     return {
       title: formatDate(
-        props.value,
-        props.dateFormat === DateFormat.relativeToNow || !props.dateFormat
+        value,
+        dateFormat === DateFormat.relativeToNow || !dateFormat
           ? DateFormat.full
           : DateFormat.relativeToNow
       ),
-      label: formatDate(props.value, props.dateFormat),
+      label: formatDate(value, dateFormat),
     };
   }
 };

@@ -6,6 +6,7 @@ import { styled } from "@mui/material";
 import { Properties } from "../components/common/Properties";
 import { MetricTypeIcon } from "../components/common/MetricTypeIcon";
 import { IconStyle } from "../components/common/Icon";
+import { Link } from "react-router-dom";
 
 export const Activity: React.FC<{
   metric: IMetric;
@@ -25,7 +26,7 @@ export const Activity: React.FC<{
           },
           {
             key: "name",
-            node: metric.name,
+            node: <Link to={`/metrics/${metric.id}`}>{metric.name}</Link>,
             label: "Metric",
           },
           {

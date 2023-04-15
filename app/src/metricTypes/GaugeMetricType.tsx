@@ -8,8 +8,7 @@ import { getValue } from "../components/details/chart/consolidation/consolidate"
 import { IMeasurementsTableGroup } from "../components/details/measurementsTable/IMeasurementsTableGroup";
 import { IMetric } from "../serverApi/IMetric";
 import React from "react";
-import { Activity } from "./Activity";
-import { AttributeValues } from "../components/common/AttributeValues";
+import { ActivityWithValue } from "./ActivityWithValue";
 
 export class GaugeMetricType implements IMetricType {
   type = MetricType.Gauge;
@@ -22,13 +21,11 @@ export class GaugeMetricType implements IMetricType {
 
   getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
     return (
-      <Activity metric={metric} measurement={measurement}>
-        {(measurement as IGaugeMeasurement).value}
-        <AttributeValues
-          attributes={metric.attributes}
-          attributeValues={measurement.metricAttributeValues}
-        />
-      </Activity>
+      <ActivityWithValue
+        value={(measurement as IGaugeMeasurement).value}
+        metric={metric}
+        measurement={measurement}
+      />
     );
   }
 
