@@ -50,6 +50,10 @@ export const queryKeysFactory = {
     return ["metrics", metricId, "measurements", "get-active"];
   },
 
+  activities() {
+    return ["activities"];
+  },
+
   systemInfo() {
     return ["system-info"];
   },

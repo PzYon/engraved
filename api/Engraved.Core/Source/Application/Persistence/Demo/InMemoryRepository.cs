@@ -69,6 +69,16 @@ public class InMemoryRepository : IRepository
     );
   }
 
+  public Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
+  {
+    return Task.FromResult(
+      Measurements.OrderByDescending(m => m.DateTime)
+        .Where(m => metricIds.Contains(m.MetricId))
+        .Take(limit)
+        .ToArray()
+    );
+  }
+
   public Task<UpsertResult> UpsertMetric(IMetric metric)
   {
     if (string.IsNullOrEmpty(metric.Id))

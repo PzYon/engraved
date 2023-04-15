@@ -83,7 +83,8 @@ public class MongoRepository : IRepository
 
   public async Task<IUser[]> GetAllUsers()
   {
-    List<UserDocument> users = await UsersCollection.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>())
+    List<UserDocument> users = await UsersCollection
+      .Find(MongoUtil.GetAllDocumentsFilter<UserDocument>())
       .ToListAsync();
 
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
@@ -93,6 +94,7 @@ public class MongoRepository : IRepository
   {
     List<MetricDocument> metrics = await MetricsCollection
       .Find(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read))
+      .Sort(Builders<MetricDocument>.Sort.Descending(d => d.EditedOn))
       .ToListAsync();
 
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
@@ -150,6 +152,22 @@ public class MongoRepository : IRepository
 
     List<MeasurementDocument> measurements = await MeasurementsCollection
       .Find(Builders<MeasurementDocument>.Filter.And(filters))
+      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.DateTime))
+      .ToListAsync();
+
+    return measurements
+      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
+      .ToArray();
+  }
+
+  // attention: there's no security here for the moment. might not be required as
+  // you explicitly need to specify the metric IDs.
+  public async Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
+  {
+    List<MeasurementDocument> measurements = await MeasurementsCollection
+      .Find(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)))
+      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.DateTime))
+      .Limit(limit)
       .ToListAsync();
 
     return measurements

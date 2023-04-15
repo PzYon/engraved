@@ -99,11 +99,11 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
       string attributeKey = kvp.Key;
       string[] attributeValues = kvp.Value;
 
-      if (metric.Attributes.ContainsKey(attributeKey))
+      if (metric.Attributes.TryGetValue(attributeKey, out MetricAttribute? attribute))
       {
         errors.AddRange(
           attributeValues
-            .Where(valueKey => !metric.Attributes[attributeKey].Values.ContainsKey(valueKey))
+            .Where(valueKey => !attribute.Values.ContainsKey(valueKey))
             .Select(valueKey => "Value key: " + valueKey + " (for " + attributeKey)
         );
       }

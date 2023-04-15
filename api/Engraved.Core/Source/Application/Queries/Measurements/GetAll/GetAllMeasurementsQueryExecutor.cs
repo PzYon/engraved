@@ -40,16 +40,11 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
       return Array.Empty<IMeasurement>();
     }
 
-    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(
+    return await repository.GetAllMeasurements(
       _query.MetricId,
       _query.FromDate,
       _query.ToDate,
       _query.AttributeValues
     );
-
-    // consider: moving OrderByDescending logic to DB
-    return allMeasurements
-      .OrderByDescending(m => m.DateTime)
-      .ToArray();
   }
 }

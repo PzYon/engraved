@@ -9,6 +9,9 @@ import { IMeasurementsTableColumnDefinition } from "../components/details/measur
 import { getDurationAsHhMmSsFromSeconds } from "../util/getDurationAsHhMmSs";
 import { FormatDuration } from "../components/common/FormatDuration";
 import { IMeasurementsTableGroup } from "../components/details/measurementsTable/IMeasurementsTableGroup";
+import { IMetric } from "../serverApi/IMetric";
+import React from "react";
+import { ActivityWithValue } from "./ActivityWithValue";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -17,6 +20,30 @@ export class TimerMetricType implements IMetricType {
 
   getIcon() {
     return <TimerSharp style={{ backgroundColor: "#FFDFEC" }} />;
+  }
+
+  getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
+    return (
+      <ActivityWithValue
+        value={
+          <>
+            <FormatDate
+              value={(measurement as ITimerMeasurement).startDate}
+              dateFormat={DateFormat.timeOnly}
+            />
+            {" - "}
+            <FormatDate
+              value={(measurement as ITimerMeasurement).endDate}
+              dateFormat={DateFormat.timeOnly}
+              fallbackValue={"now"}
+            />{" "}
+            (duration: {this.getFormatDuration(measurement)})
+          </>
+        }
+        metric={metric}
+        measurement={measurement}
+      />
+    );
   }
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
@@ -56,14 +83,7 @@ export class TimerMetricType implements IMetricType {
           group: IMeasurementsTableGroup,
           measurement: IMeasurement
         ) => {
-          const timerMeasurement = measurement as ITimerMeasurement;
-
-          return (
-            <FormatDuration
-              start={timerMeasurement.startDate}
-              end={timerMeasurement.endDate}
-            />
-          );
+          return this.getFormatDuration(measurement);
         },
         getGroupReactNode: (group) => group.totalString,
       },
@@ -89,5 +109,16 @@ export class TimerMetricType implements IMetricType {
 
   formatTotalValue(totalValue: number): string {
     return getDurationAsHhMmSsFromSeconds(totalValue);
+  }
+
+  private getFormatDuration(measurement: IMeasurement) {
+    const timerMeasurement = measurement as ITimerMeasurement;
+
+    return (
+      <FormatDuration
+        start={timerMeasurement.startDate}
+        end={timerMeasurement.endDate}
+      />
+    );
   }
 }

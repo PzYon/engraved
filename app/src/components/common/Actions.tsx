@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  IconButtonWrapper,
-  IIconButtonAction,
-} from "../common/IconButtonWrapper";
-import { FloatingHeaderActions } from "./FloatingHeaderActions";
-import { useIsInViewport } from "../common/useIsInViewPort";
+import { IconButtonWrapper, IIconButtonAction } from "./IconButtonWrapper";
+import { FloatingHeaderActions } from "../layout/FloatingHeaderActions";
+import { useIsInViewport } from "./useIsInViewPort";
 import { IconButton, styled } from "@mui/material";
 import { AssistWalker } from "@mui/icons-material";
 
-export const HeaderActions: React.FC<{
+export const Actions: React.FC<{
   actions: IIconButtonAction[];
   enableFloatingActions?: boolean;
 }> = ({ actions, enableFloatingActions }) => {

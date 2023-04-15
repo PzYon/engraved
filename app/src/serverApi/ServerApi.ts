@@ -23,6 +23,7 @@ import { IThresholdValues } from "./IThresholdValues";
 import { IMetricThresholds } from "./IMetricThresholds";
 import { IMetricUiSettings } from "../components/details/edit/MetricUiSettings";
 import { LoadingHandler } from "./LoadingHandler";
+import { IGetActivitiesQueryResult } from "./IGetActivitiesQueryResult";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -91,6 +92,10 @@ export class ServerApi {
 
   static async getActiveMeasurement(metricId: string): Promise<IMeasurement> {
     return await ServerApi.executeRequest(`/measurements/${metricId}/active`);
+  }
+
+  static async getActivities(): Promise<IGetActivitiesQueryResult> {
+    return await ServerApi.executeRequest(`/activities`);
   }
 
   static async addMetric(

@@ -4,13 +4,16 @@ import { IMetric } from "../serverApi/IMetric";
 import { IMeasurementsTableColumnDefinition } from "../components/details/measurementsTable/IMeasurementsTableColumnDefinition";
 import { IMeasurement } from "../serverApi/IMeasurement";
 
+// consider: introducing generics here
+
 export interface IMetricType {
   type: MetricType;
 
-  // consider: removing isGroupable as currently it is true everywhere.
   isGroupable?: boolean;
 
   getIcon(): React.ReactNode;
+
+  getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode;
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[];
 
@@ -21,11 +24,4 @@ export interface IMetricType {
   getValue(measurement: IMeasurement): number;
 
   formatTotalValue?(totalValue: number): string;
-}
-
-export interface IMetricOverviewPropertyDefinition {
-  node: React.ReactNode;
-  label: string;
-  key: string;
-  hideWhen?: () => boolean;
 }

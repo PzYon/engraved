@@ -142,7 +142,10 @@ public class LuceneSearchIndex : ISearchIndex
       string attributeKey = attributeValue.Key;
       string[] valueKeys = attributeValue.Value;
 
-      MetricAttribute? attribute = metricAttributes.ContainsKey(attributeKey) ? metricAttributes[attributeKey] : null;
+      MetricAttribute? attribute = metricAttributes.TryGetValue(attributeKey, out MetricAttribute? metricAttribute)
+        ? metricAttribute
+        : null;
+
       string[] labelValues = GetLabelValues(valueKeys, attribute);
 
       document.Add(new TextField(attributeKey, string.Join(",", labelValues), Field.Store.YES));

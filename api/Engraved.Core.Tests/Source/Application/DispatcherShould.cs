@@ -227,6 +227,11 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
+  public Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
+  {
+    throw new NotImplementedException();
+  }
+
   public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
   {
     throw new NotImplementedException();
