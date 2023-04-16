@@ -15,6 +15,9 @@ export const ActivityWithValue: React.FC<{
   return (
     <Activity metric={metric} measurement={measurement}>
       <Typography component={"span"}>{value}</Typography>
+      <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
+        {measurement.notes ? ` - ${measurement.notes}` : ""}
+      </Typography>
       <AttributeValues
         attributes={metric.attributes}
         attributeValues={measurement.metricAttributeValues}

@@ -16,6 +16,10 @@ export const EditMeasurementLauncher: React.FC<{
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!measurements?.length) {
+      return;
+    }
+
     renderDialog({
       title: "Edit Measurement",
       render: (closeDialog) => (
@@ -32,7 +36,7 @@ export const EditMeasurementLauncher: React.FC<{
         goToMetric();
       },
     });
-  }, []);
+  }, [measurements]);
 
   return null;
 

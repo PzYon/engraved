@@ -2,7 +2,7 @@ import React from "react";
 import { Page } from "../layout/pages/Page";
 import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
-import { SentimentSatisfiedAltOutlined } from "@mui/icons-material";
+import { HistoryOutlined } from "@mui/icons-material";
 import { useAppContext } from "../../AppContext";
 import { Activities } from "../activities/Activities";
 
@@ -17,10 +17,10 @@ export const MyPage: React.FC = () => {
     <Page
       title={
         <PageTitle
-          title={"This is me."}
+          title={"My Activities"}
           icon={
             <Icon style={IconStyle.PageTitle}>
-              <SentimentSatisfiedAltOutlined />
+              <HistoryOutlined />
             </Icon>
           }
         />
