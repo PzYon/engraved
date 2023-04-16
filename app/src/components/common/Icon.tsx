@@ -18,7 +18,14 @@ export const Icon: React.FC<{
       ? ActivityHost
       : PageTitleHost;
 
-  return <Host>{children}</Host>;
+  return (
+    <Host
+      style={{ display: "flex", flexDirection: "row" }}
+      className="ngrvd-icon"
+    >
+      {children}
+    </Host>
+  );
 };
 
 const PageTitleHost = styled("span")`
