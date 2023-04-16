@@ -5,6 +5,5 @@ public enum MetricType
   Counter,
   Gauge,
   Timer,
-  Notes,
   Scraps
 }
