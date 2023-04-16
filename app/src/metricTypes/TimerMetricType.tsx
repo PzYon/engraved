@@ -12,6 +12,7 @@ import { IMeasurementsTableGroup } from "../components/details/measurementsTable
 import { IMetric } from "../serverApi/IMetric";
 import React from "react";
 import { ActivityWithValue } from "./ActivityWithValue";
+import { Typography } from "@mui/material";
 
 export class TimerMetricType implements IMetricType {
   type = MetricType.Timer;
@@ -37,7 +38,9 @@ export class TimerMetricType implements IMetricType {
               dateFormat={DateFormat.timeOnly}
               fallbackValue={"now"}
             />{" "}
-            (duration: {this.getFormatDuration(measurement)})
+            <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
+              (duration: {this.getFormatDuration(measurement)})
+            </Typography>
           </>
         }
         metric={metric}

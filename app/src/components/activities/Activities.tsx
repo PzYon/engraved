@@ -14,12 +14,12 @@ export const Activities: React.FC = () => {
   return (
     <>
       {activities.measurements.map((m) => (
-        <Section key={m.id}>{renderMeasurement(m)}</Section>
+        <Section key={m.id}>{renderActivity(m)}</Section>
       ))}
     </>
   );
 
-  function renderMeasurement(measurement: IMeasurement) {
+  function renderActivity(measurement: IMeasurement) {
     const metric = activities.metrics.find(
       (a) => a.id === measurement.metricId
     );

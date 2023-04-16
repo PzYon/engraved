@@ -30,22 +30,30 @@ export const MetricTypeSelector: React.FC<{
           onChange(event.target.value as unknown as MetricType);
         }}
       >
-        <MetricTypeMenuItem
-          metricType={MetricType.Scraps}
-          label={translations.metricType_scraps}
-        />
-        <MetricTypeMenuItem
-          metricType={MetricType.Counter}
-          label={translations.metricType_counter}
-        />
-        <MetricTypeMenuItem
-          metricType={MetricType.Gauge}
-          label={translations.metricType_gauge}
-        />
-        <MetricTypeMenuItem
-          metricType={MetricType.Timer}
-          label={translations.metricType_timer}
-        />
+        <MenuItem value={MetricType.Scraps}>
+          <MetricTypeMenuItem
+            metricType={MetricType.Scraps}
+            label={translations.metricType_scraps}
+          />
+        </MenuItem>
+        <MenuItem value={MetricType.Counter}>
+          <MetricTypeMenuItem
+            metricType={MetricType.Counter}
+            label={translations.metricType_counter}
+          />
+        </MenuItem>
+        <MenuItem value={MetricType.Gauge}>
+          <MetricTypeMenuItem
+            metricType={MetricType.Gauge}
+            label={translations.metricType_gauge}
+          />
+        </MenuItem>
+        <MenuItem value={MetricType.Timer}>
+          <MetricTypeMenuItem
+            metricType={MetricType.Timer}
+            label={translations.metricType_timer}
+          />
+        </MenuItem>
       </Select>
     </FormControl>
   );
@@ -56,12 +64,10 @@ const MetricTypeMenuItem: React.FC<{
   label: string;
 }> = ({ metricType, label }) => {
   return (
-    <MenuItem value={metricType}>
-      <MenuItemContainer>
-        <MetricTypeIcon type={metricType} style={IconStyle.Activity} />
-        {label}
-      </MenuItemContainer>
-    </MenuItem>
+    <MenuItemContainer>
+      <MetricTypeIcon type={metricType} style={IconStyle.Activity} />
+      {label}
+    </MenuItemContainer>
   );
 };
 
