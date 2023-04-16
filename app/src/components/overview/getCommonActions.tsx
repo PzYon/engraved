@@ -47,7 +47,7 @@ export function getCommonActions(
 
   const actions = [];
 
-  if (metric.type !== MetricType.Notes && metric.type !== MetricType.Scraps) {
+  if (metric.type !== MetricType.Scraps) {
     actions.push({
       key: "add_measurement",
       label: "Add Measurement",
