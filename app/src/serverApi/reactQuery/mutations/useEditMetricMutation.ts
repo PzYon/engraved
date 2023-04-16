@@ -33,7 +33,7 @@ export const useEditMetricMutation = (metricId: string) => {
       variables.onSuccess?.();
     },
 
-    onError: (error, variables) =>
+    onError: (error) =>
       setAppAlert({
         title: `Failed to edit metric`,
         message: error.toString(),
