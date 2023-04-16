@@ -15,7 +15,7 @@ export class ScrapsMetricType implements IMetricType {
   isGroupable = false;
 
   getIcon() {
-    return <DynamicFeedOutlined style={{ backgroundColor: "E6CCFF" }} />;
+    return <DynamicFeedOutlined style={{ backgroundColor: "#DFEEFF" }} />;
   }
 
   getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {

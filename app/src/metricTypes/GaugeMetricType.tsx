@@ -16,7 +16,7 @@ export class GaugeMetricType implements IMetricType {
   isGroupable = true;
 
   getIcon() {
-    return <BarChartSharp style={{ backgroundColor: "FFFFDF" }} />;
+    return <BarChartSharp style={{ backgroundColor: "#FFFFDF" }} />;
   }
 
   getActivity(metric: IMetric, measurement: IMeasurement): React.ReactNode {
