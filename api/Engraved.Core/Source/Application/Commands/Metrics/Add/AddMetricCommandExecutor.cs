@@ -42,7 +42,6 @@ public class AddMetricCommandExecutor : ICommandExecutor
       MetricType.Counter => new CounterMetric(),
       MetricType.Gauge => new GaugeMetric(),
       MetricType.Timer => new TimerMetric(),
-      MetricType.Notes => new NotesMetric(),
       MetricType.Scraps => new ScrapsMetric(),
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };

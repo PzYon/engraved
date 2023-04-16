@@ -30,9 +30,6 @@ export const MetricTypeSelector: React.FC<{
         <MenuItem value={MetricType.Scraps}>
           {translations.metricType_scraps}
         </MenuItem>
-        <MenuItem value={MetricType.Notes}>
-          {translations.metricType_notes}
-        </MenuItem>
         <MenuItem value={MetricType.Counter}>
           {translations.metricType_counter}
         </MenuItem>

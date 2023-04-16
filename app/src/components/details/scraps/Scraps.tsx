@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Scrap } from "./Scrap";
 import { AddOutlined } from "@mui/icons-material";
-import { useMetricContext } from "../../MetricDetailsContext";
-import { MetricPageTitle } from "../../MetricPageTitle";
-import { getCommonActions } from "../../../overview/getCommonActions";
-import { Page } from "../../../layout/pages/Page";
-import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
+import { useMetricContext } from "../MetricDetailsContext";
+import { MetricPageTitle } from "../MetricPageTitle";
+import { getCommonActions } from "../../overview/getCommonActions";
+import { Page } from "../../layout/pages/Page";
+import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { Route, Routes } from "react-router-dom";
-import { DeleteMeasurementLauncher } from "../../edit/DeleteMeasurementLauncher";
-import { DetailsSection } from "../../../layout/DetailsSection";
+import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
+import { DetailsSection } from "../../layout/DetailsSection";
 
 export const Scraps: React.FC = () => {
   const {

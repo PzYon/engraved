@@ -22,11 +22,7 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
     async (result: ICommandResult) => {
       await onAdded();
 
-      navigate(
-        `/metrics/${result.entityId}/${
-          metricType === MetricType.Notes ? "edit" : ""
-        }`
-      );
+      navigate(`/metrics/${result.entityId}/`);
     }
   );
 

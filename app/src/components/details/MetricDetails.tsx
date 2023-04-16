@@ -5,15 +5,13 @@ import { styled, Typography } from "@mui/material";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { EditMetricPermissionsLauncher } from "./edit/EditMetricPermissionsLauncher";
 import { FormatDate } from "../common/FormatDate";
-import { NotesViewPage } from "./notes/NotesViewPage";
-import { NotesEditPage } from "./notes/NotesEditPage";
 import { MetricViewPage } from "./MetricViewPage";
 import { MetricEditPage } from "./edit/MetricEditPage";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { DeleteMetricLauncher } from "./edit/DeleteMetricLauncher";
 import { IMetric } from "../../serverApi/IMetric";
 import { SharedWith } from "../common/SharedWith";
-import { Scraps } from "./notes/scraps/Scraps";
+import { Scraps } from "./scraps/Scraps";
 
 export const MetricDetails: React.FC = () => {
   const { metric } = useMetricContext();
@@ -44,12 +42,7 @@ export const MetricDetails: React.FC = () => {
       </Typography>
 
       <Routes>
-        {metric.type === MetricType.Notes ? (
-          <>
-            <Route path="/edit" element={<NotesEditPage />} />
-            <Route path="/*" element={<NotesViewPage />} />
-          </>
-        ) : metric.type === MetricType.Scraps ? (
+        {metric.type === MetricType.Scraps ? (
           <Route path="/*" element={<Scraps />} />
         ) : (
           <>

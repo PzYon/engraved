@@ -35,11 +35,6 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
       );
     }
 
-    if (metric.Type == MetricType.Notes)
-    {
-      return Array.Empty<IMeasurement>();
-    }
-
     return await repository.GetAllMeasurements(
       _query.MetricId,
       _query.FromDate,
