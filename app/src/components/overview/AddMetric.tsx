@@ -1,4 +1,4 @@
-import { Button, FormControl, TextField } from "@mui/material";
+import { Button, FormControl, styled, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { translations } from "../../i18n/translations";
 import { Section } from "../layout/Section";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ICommandResult } from "../../serverApi/ICommandResult";
 import { useAddMetricMutation } from "../../serverApi/reactQuery/mutations/useAddMetricMutation";
 
-export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
+export const AddMetric: React.FC = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [metricType, setMetricType] = useState(MetricType.Scraps);
@@ -20,8 +20,6 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
     description,
     metricType,
     async (result: ICommandResult) => {
-      await onAdded();
-
       navigate(`/metrics/${result.entityId}/`);
     }
   );
@@ -44,10 +42,23 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
           margin={"normal"}
         />
         <MetricTypeSelector metricType={metricType} onChange={setMetricType} />
-        <Button variant="outlined" onClick={() => addMetricMutation.mutate()}>
-          {translations.create}
-        </Button>
+        <ButtonContainer>
+          <Button variant="outlined" onClick={() => navigate("/metrics")}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => addMetricMutation.mutate()}
+          >
+            {translations.create}
+          </Button>
+        </ButtonContainer>
       </FormControl>
     </Section>
   );
 };
+
+const ButtonContainer = styled("div")`
+  display: flex;
+  justify-content: end;
+`;
