@@ -9,10 +9,12 @@ import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
 import { isValidEmail } from "../../../util/utils";
 import { useModifyMetricPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyMetricPermissionsMutation";
+import { FormButtonContainer } from "../../common/FormButtonContainer";
 
-export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
-  metric,
-}) => {
+export const EditMetricPermissions: React.FC<{
+  metric: IMetric;
+  onCancel: () => void;
+}> = ({ metric, onCancel }) => {
   const [userName, setUserName] = useState("");
   const [canAdd, setCanAdd] = useState(false);
   const [permissionKind, setPermissionKind] = useState(PermissionKind.Read);
@@ -76,15 +78,19 @@ export const EditMetricPermissions: React.FC<{ metric: IMetric }> = ({
         />
       </AddNewContainer>
 
-      <Button
-        variant="outlined"
-        color="primary"
-        onClick={() =>
-          modifyMetricPermissionsMutation.mutate({ newPermissions })
-        }
-      >
-        Save
-      </Button>
+      <FormButtonContainer>
+        <Button variant="outlined" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() =>
+            modifyMetricPermissionsMutation.mutate({ newPermissions })
+          }
+        >
+          Save
+        </Button>
+      </FormButtonContainer>
     </>
   );
 

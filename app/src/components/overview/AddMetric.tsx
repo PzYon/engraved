@@ -7,8 +7,9 @@ import { MetricType } from "../../serverApi/MetricType";
 import { useNavigate } from "react-router-dom";
 import { ICommandResult } from "../../serverApi/ICommandResult";
 import { useAddMetricMutation } from "../../serverApi/reactQuery/mutations/useAddMetricMutation";
+import { FormButtonContainer } from "../common/FormButtonContainer";
 
-export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
+export const AddMetric: React.FC = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [metricType, setMetricType] = useState(MetricType.Scraps);
@@ -20,8 +21,6 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
     description,
     metricType,
     async (result: ICommandResult) => {
-      await onAdded();
-
       navigate(`/metrics/${result.entityId}/`);
     }
   );
@@ -30,12 +29,14 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
     <Section>
       <FormControl sx={{ width: "100%" }}>
         <TextField
+          autoComplete="off"
           value={name}
           onChange={(event) => setName(event.target.value)}
           required={true}
           label={translations.label_metricName}
           margin={"normal"}
         />
+        <MetricTypeSelector metricType={metricType} onChange={setMetricType} />
         <TextField
           value={description}
           onChange={(event) => setDescription(event.target.value)}
@@ -43,10 +44,18 @@ export const AddMetric: React.FC<{ onAdded: () => void }> = ({ onAdded }) => {
           label={translations.label_metricDescription}
           margin={"normal"}
         />
-        <MetricTypeSelector metricType={metricType} onChange={setMetricType} />
-        <Button variant="outlined" onClick={() => addMetricMutation.mutate()}>
-          {translations.create}
-        </Button>
+
+        <FormButtonContainer>
+          <Button variant="outlined" onClick={() => navigate("/metrics")}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => addMetricMutation.mutate()}
+          >
+            {translations.create}
+          </Button>
+        </FormButtonContainer>
       </FormControl>
     </Section>
   );

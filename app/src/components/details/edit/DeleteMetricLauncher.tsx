@@ -4,6 +4,7 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 import { useDeleteMetricMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMetricMutation";
+import { FormButtonContainer } from "../../common/FormButtonContainer";
 
 export const DeleteMetricLauncher: React.FC<{
   metric: IMetric;
@@ -21,24 +22,28 @@ export const DeleteMetricLauncher: React.FC<{
       render: (closeDialog) => {
         return (
           <>
-            <Typography>Are you sure?</Typography>
-            <Button variant="outlined" onClick={closeDialog}>
-              No
-            </Button>
-            <Button
-              variant="text"
-              color="primary"
-              onClick={() =>
-                deleteMetricMutation.mutate({
-                  onSuccess: async () => {
-                    closeDialog();
-                    await onDeleted();
-                  },
-                })
-              }
-            >
-              Yes
-            </Button>
+            <Typography>
+              Are you sure you want to delete &apos;{metric.name}&apos;? You
+              will not be able to recover this metric and all its measurements.
+            </Typography>
+            <FormButtonContainer>
+              <Button variant="contained" onClick={closeDialog}>
+                No
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  deleteMetricMutation.mutate({
+                    onSuccess: async () => {
+                      closeDialog();
+                      await onDeleted();
+                    },
+                  })
+                }
+              >
+                Yes, delete!
+              </Button>
+            </FormButtonContainer>
           </>
         );
       },

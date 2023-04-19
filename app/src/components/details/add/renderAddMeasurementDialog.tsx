@@ -10,10 +10,11 @@ export const renderAddMeasurementDialog = (
 ): void => {
   renderDialog({
     title: "Add measurement",
-    render: () => (
+    render: (closeDialog) => (
       <UpsertMeasurementWrapper
         metric={metric}
         onSaved={() => renderDialog(null)}
+        onCancel={closeDialog}
       />
     ),
   });
@@ -22,7 +23,8 @@ export const renderAddMeasurementDialog = (
 const UpsertMeasurementWrapper: React.FC<{
   metric: IMetric;
   onSaved: () => void;
-}> = ({ metric, onSaved }) => {
+  onCancel: () => void;
+}> = ({ metric, onSaved, onCancel }) => {
   const measurement = useActiveMeasurementQuery(metric);
   if (measurement === undefined) {
     return null;
@@ -33,6 +35,7 @@ const UpsertMeasurementWrapper: React.FC<{
       metric={metric}
       measurement={measurement}
       onSaved={onSaved}
+      onCancel={onCancel}
     />
   );
 };

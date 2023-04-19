@@ -5,6 +5,7 @@ import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 import { useDeleteMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMeasurementMutation";
+import { FormButtonContainer } from "../../common/FormButtonContainer";
 
 export const DeleteMeasurementLauncher: React.FC<{
   metric: IMetric;
@@ -26,17 +27,22 @@ export const DeleteMeasurementLauncher: React.FC<{
       render: (closeDialog) => {
         return (
           <>
-            <Typography>Are you sure?</Typography>
-            <Button variant="outlined" onClick={closeDialog}>
-              No
-            </Button>
-            <Button
-              variant="text"
-              color="primary"
-              onClick={() => deleteMeasurement(closeDialog)}
-            >
-              Yes
-            </Button>
+            <Typography>
+              Are you sure you want to delete this measurement? You will not be
+              able to recover it.
+            </Typography>
+            <FormButtonContainer>
+              <Button variant="contained" onClick={closeDialog}>
+                No
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => deleteMeasurement(closeDialog)}
+              >
+                Yes, delete!
+              </Button>
+            </FormButtonContainer>
           </>
         );
       },
