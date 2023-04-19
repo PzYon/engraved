@@ -1,4 +1,4 @@
-import { Button, FormControl, styled, TextField } from "@mui/material";
+import { Button, FormControl, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { translations } from "../../i18n/translations";
 import { Section } from "../layout/Section";
@@ -7,6 +7,7 @@ import { MetricType } from "../../serverApi/MetricType";
 import { useNavigate } from "react-router-dom";
 import { ICommandResult } from "../../serverApi/ICommandResult";
 import { useAddMetricMutation } from "../../serverApi/reactQuery/mutations/useAddMetricMutation";
+import { FormButtonContainer } from "../common/FormButtonContainer";
 
 export const AddMetric: React.FC = () => {
   const [name, setName] = useState("");
@@ -28,12 +29,14 @@ export const AddMetric: React.FC = () => {
     <Section>
       <FormControl sx={{ width: "100%" }}>
         <TextField
+          autoComplete="off"
           value={name}
           onChange={(event) => setName(event.target.value)}
           required={true}
           label={translations.label_metricName}
           margin={"normal"}
         />
+        <MetricTypeSelector metricType={metricType} onChange={setMetricType} />
         <TextField
           value={description}
           onChange={(event) => setDescription(event.target.value)}
@@ -41,8 +44,8 @@ export const AddMetric: React.FC = () => {
           label={translations.label_metricDescription}
           margin={"normal"}
         />
-        <MetricTypeSelector metricType={metricType} onChange={setMetricType} />
-        <ButtonContainer>
+
+        <FormButtonContainer>
           <Button variant="outlined" onClick={() => navigate("/metrics")}>
             Cancel
           </Button>
@@ -52,13 +55,8 @@ export const AddMetric: React.FC = () => {
           >
             {translations.create}
           </Button>
-        </ButtonContainer>
+        </FormButtonContainer>
       </FormControl>
     </Section>
   );
 };
-
-const ButtonContainer = styled("div")`
-  display: flex;
-  justify-content: end;
-`;

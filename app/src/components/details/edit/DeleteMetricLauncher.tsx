@@ -4,6 +4,7 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 import { useDeleteMetricMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMetricMutation";
+import { FormButtonContainer } from "../../common/FormButtonContainer";
 
 export const DeleteMetricLauncher: React.FC<{
   metric: IMetric;
@@ -22,23 +23,24 @@ export const DeleteMetricLauncher: React.FC<{
         return (
           <>
             <Typography>Are you sure?</Typography>
-            <Button variant="outlined" onClick={closeDialog}>
-              No
-            </Button>
-            <Button
-              variant="text"
-              color="primary"
-              onClick={() =>
-                deleteMetricMutation.mutate({
-                  onSuccess: async () => {
-                    closeDialog();
-                    await onDeleted();
-                  },
-                })
-              }
-            >
-              Yes
-            </Button>
+            <FormButtonContainer>
+              <Button variant="contained" onClick={closeDialog}>
+                No
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  deleteMetricMutation.mutate({
+                    onSuccess: async () => {
+                      closeDialog();
+                      await onDeleted();
+                    },
+                  })
+                }
+              >
+                Yes
+              </Button>
+            </FormButtonContainer>
           </>
         );
       },

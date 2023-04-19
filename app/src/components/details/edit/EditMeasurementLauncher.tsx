@@ -30,6 +30,7 @@ export const EditMeasurementLauncher: React.FC<{
             closeDialog();
             goToMetric();
           }}
+          onCancel={closeDialog}
         />
       ),
       onClose: () => {
