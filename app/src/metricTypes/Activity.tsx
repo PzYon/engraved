@@ -31,7 +31,11 @@ export const Activity: React.FC<{
           },
           {
             key: "date",
-            node: <FormatDate value={measurement.dateTime} />,
+            node: (
+              <FormatDate
+                value={measurement.editedOn || measurement.dateTime}
+              />
+            ),
             label: "",
           },
         ]}

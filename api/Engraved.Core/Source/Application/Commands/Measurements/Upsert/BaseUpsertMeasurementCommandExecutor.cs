@@ -61,6 +61,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     measurement.Notes = Command.Notes;
     measurement.MetricAttributeValues = Command.MetricAttributeValues;
     measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
+    measurement.EditedOn = dateService.UtcNow;
   }
 
   protected abstract void SetTypeSpecificValues(IDateService dateService, TMeasurement measurement);

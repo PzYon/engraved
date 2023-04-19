@@ -227,7 +227,7 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
-  public Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
+  public Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, int limit)
   {
     throw new NotImplementedException();
   }

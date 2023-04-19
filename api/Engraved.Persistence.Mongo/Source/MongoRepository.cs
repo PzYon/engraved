@@ -161,11 +161,11 @@ public class MongoRepository : IRepository
 
   // attention: there's no security here for the moment. might not be required as
   // you explicitly need to specify the metric IDs.
-  public async Task<IMeasurement[]> GetNewestMeasurements(string[] metricIds, int limit)
+  public async Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, int limit)
   {
     List<MeasurementDocument> measurements = await MeasurementsCollection
       .Find(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)))
-      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.DateTime))
+      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.DateTime))
       .Limit(limit)
       .ToListAsync();
 
