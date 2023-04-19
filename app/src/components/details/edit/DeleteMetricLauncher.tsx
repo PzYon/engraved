@@ -41,7 +41,7 @@ export const DeleteMetricLauncher: React.FC<{
                   })
                 }
               >
-                Yes
+                Yes, delete!
               </Button>
             </FormButtonContainer>
           </>

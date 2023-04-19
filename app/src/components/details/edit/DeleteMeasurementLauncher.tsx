@@ -40,7 +40,7 @@ export const DeleteMeasurementLauncher: React.FC<{
                 color="primary"
                 onClick={() => deleteMeasurement(closeDialog)}
               >
-                Yes
+                Yes, delete!
               </Button>
             </FormButtonContainer>
           </>
