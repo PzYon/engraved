@@ -22,7 +22,10 @@ export const DeleteMetricLauncher: React.FC<{
       render: (closeDialog) => {
         return (
           <>
-            <Typography>Are you sure?</Typography>
+            <Typography>
+              Are you sure you want to delete &apos;{metric.name}&apos;? You
+              will not be able to recover this metric and all its measurements.
+            </Typography>
             <FormButtonContainer>
               <Button variant="contained" onClick={closeDialog}>
                 No

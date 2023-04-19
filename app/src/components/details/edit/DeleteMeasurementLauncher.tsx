@@ -27,7 +27,10 @@ export const DeleteMeasurementLauncher: React.FC<{
       render: (closeDialog) => {
         return (
           <>
-            <Typography>Are you sure?</Typography>
+            <Typography>
+              Are you sure you want to delete this measurement? You will not be
+              able to recover it.
+            </Typography>
             <FormButtonContainer>
               <Button variant="contained" onClick={closeDialog}>
                 No
