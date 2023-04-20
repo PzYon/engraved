@@ -6,6 +6,7 @@ export interface IAppAlert {
   message?: string;
   title: string;
   type: "success" | "info" | "warning" | "error";
+  hideDurationSec?: number;
 }
 
 export const AppAlertBar: React.FC = () => {
@@ -18,7 +19,11 @@ export const AppAlertBar: React.FC = () => {
   return (
     <Snackbar
       open={true}
-      autoHideDuration={appAlert.type === "success" ? 4000 : null}
+      autoHideDuration={
+        appAlert.type === "success"
+          ? (appAlert.hideDurationSec ?? 4) * 1000
+          : null
+      }
       onClose={() => setAppAlert(null)}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
     >
