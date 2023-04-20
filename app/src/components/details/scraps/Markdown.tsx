@@ -1,35 +1,21 @@
 import MarkdownIt from "markdown-it";
 import React, { MouseEventHandler, useMemo } from "react";
 import { styled } from "@mui/material";
-import { DetailsSection } from "../../layout/DetailsSection";
-
-const sectionSeparator = "<--->";
 
 export const Markdown: React.FC<{
   value: string;
   onClick?: MouseEventHandler;
-  disableCustomSection?: boolean;
-}> = ({ value, onClick, disableCustomSection }) => {
-  const sectionHtmls = useMemo<string[]>(
-    () =>
-      value
-        ? value
-            .split(sectionSeparator)
-            .map((v) => MarkdownIt("default", { linkify: true }).render(v))
-        : [],
+}> = ({ value, onClick }) => {
+  const html = useMemo<string>(
+    () => (value ? MarkdownIt("default", { linkify: true }).render(value) : ""),
     [value]
   );
 
-  const Section = disableCustomSection ? React.Fragment : DetailsSection;
-
   return (
-    <div onClick={onClick}>
-      {sectionHtmls.map((html) => (
-        <Section key={html}>
-          <ContentContainer dangerouslySetInnerHTML={{ __html: html }} />
-        </Section>
-      ))}
-    </div>
+    <ContentContainer
+      onClick={onClick}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 };
 

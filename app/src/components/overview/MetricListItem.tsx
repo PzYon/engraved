@@ -3,17 +3,17 @@ import { IMetric } from "../../serverApi/IMetric";
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { MetricHeaderActions } from "./MetricHeaderActions";
-import { Section } from "../layout/Section";
 import { MetricProperties } from "./MetricProperties";
 import { MetricTypeIcon } from "../common/MetricTypeIcon";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { IconStyle } from "../common/Icon";
+import { PageSection } from "../layout/pages/PageSection";
 
 export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
   const deviceWidth = useDeviceWidth();
 
   return (
-    <Section key={metric.id}>
+    <PageSection key={metric.id}>
       <Box sx={{ display: "flex" }}>
         <MetricTypeIcon type={metric.type} style={IconStyle.Overview} />
         <Box sx={{ flexGrow: 1, pl: 3, wordBreak: "break-all" }}>
@@ -43,6 +43,6 @@ export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
           </Box>
         ) : null}
       </Box>
-    </Section>
+    </PageSection>
   );
 };

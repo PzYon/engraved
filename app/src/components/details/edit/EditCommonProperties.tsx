@@ -1,6 +1,6 @@
 import { FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
-import { DetailsSection } from "../../layout/DetailsSection";
+import { PageSection } from "../../layout/pages/PageSection";
 import React from "react";
 
 export const EditCommonProperties: React.FC<{
@@ -10,7 +10,7 @@ export const EditCommonProperties: React.FC<{
   setDescription: (description: string) => void;
 }> = ({ name, setName, description, setDescription }) => {
   return (
-    <DetailsSection title={"Properties"}>
+    <PageSection title={"Properties"}>
       <FormControl sx={{ width: "100%" }}>
         <TextField
           value={name}
@@ -26,6 +26,6 @@ export const EditCommonProperties: React.FC<{
           margin={"normal"}
         />
       </FormControl>
-    </DetailsSection>
+    </PageSection>
   );
 };

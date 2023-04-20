@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
 import { useDeleteMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMeasurementMutation";
-import { FormButtonContainer } from "../../common/FormButtonContainer";
+import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 
 export const DeleteMeasurementLauncher: React.FC<{
   metric: IMetric;
@@ -31,7 +31,7 @@ export const DeleteMeasurementLauncher: React.FC<{
               Are you sure you want to delete this measurement? You will not be
               able to recover it.
             </Typography>
-            <FormButtonContainer>
+            <DialogFormButtonContainer>
               <Button variant="contained" onClick={closeDialog}>
                 No
               </Button>
@@ -42,7 +42,7 @@ export const DeleteMeasurementLauncher: React.FC<{
               >
                 Yes, delete!
               </Button>
-            </FormButtonContainer>
+            </DialogFormButtonContainer>
           </>
         );
       },

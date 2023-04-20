@@ -8,9 +8,9 @@ import { Page } from "../../layout/pages/Page";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
-import { DetailsSection } from "../../layout/DetailsSection";
+import { PageSection } from "../../layout/pages/PageSection";
 
-export const Scraps: React.FC = () => {
+export const ScrapsViewPage: React.FC = () => {
   const {
     metric,
     measurements: scraps,
@@ -39,15 +39,15 @@ export const Scraps: React.FC = () => {
       actions={[getAddNewAction(), ...getCommonActions(metric)]}
     >
       {newScrap ? (
-        <DetailsSection key="new">
+        <PageSection key="new">
           <Scrap scrap={newScrap} />
-        </DetailsSection>
+        </PageSection>
       ) : null}
 
       {(scraps as IScrapMeasurement[]).map((s) => (
-        <DetailsSection key={s.id}>
+        <PageSection key={s.id}>
           <Scrap scrap={s} />
-        </DetailsSection>
+        </PageSection>
       ))}
 
       <Routes>

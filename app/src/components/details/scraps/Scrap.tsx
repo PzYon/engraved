@@ -82,7 +82,6 @@ export const Scrap: React.FC<{
               }
             }}
             value={scrap.notes}
-            disableCustomSection={true}
           />
         </FadeInContainer>
       )}

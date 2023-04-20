@@ -1,8 +1,7 @@
 import { styled } from "@mui/material";
 
-export const FormButtonContainer = styled("div")`
+const FormButtonContainer = styled("div")`
   display: flex;
-  justify-content: end;
   padding-top: ${(p) => p.theme.spacing(2)};
 
   button {
@@ -12,4 +11,12 @@ export const FormButtonContainer = styled("div")`
       margin-right: ${(p) => p.theme.spacing(2)};
     }
   }
+`;
+
+export const DialogFormButtonContainer = styled(FormButtonContainer)`
+  justify-content: end;
+`;
+
+export const PageFormButtonContainer = styled(FormButtonContainer)`
+  justify-content: start;
 `;
