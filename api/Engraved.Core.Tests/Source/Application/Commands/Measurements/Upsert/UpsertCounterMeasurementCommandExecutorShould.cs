@@ -34,11 +34,14 @@ public class UpsertCounterMeasurementCommandExecutorShould
   [Test]
   public async Task UpdateExisting()
   {
+    IDateService dateService = new FakeDateService();
+
     _testRepository.Metrics.Add(new GaugeMetric { Id = "metric_id" });
 
     var createCommand = new UpsertGaugeMeasurementCommand { MetricId = "metric_id", Notes = "foo", Value = 123 };
-    CommandResult result =
-      await new UpsertGaugeMeasurementCommandExecutor(createCommand).Execute(_testRepository, new FakeDateService());
+
+    var commandExecutor = new UpsertGaugeMeasurementCommandExecutor(createCommand);
+    CommandResult result = await commandExecutor.Execute(_testRepository, dateService);
 
     var updateCommand = new UpsertGaugeMeasurementCommand
     {
@@ -48,10 +51,12 @@ public class UpsertCounterMeasurementCommandExecutorShould
       Value = 42
     };
 
-    await new UpsertGaugeMeasurementCommandExecutor(updateCommand).Execute(_testRepository, new FakeDateService());
+    commandExecutor = new UpsertGaugeMeasurementCommandExecutor(updateCommand);
+    await commandExecutor.Execute(_testRepository, dateService);
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);
     Assert.AreEqual("bar", _testRepository.Measurements.First().Notes);
+    Assert.AreEqual(dateService.UtcNow, _testRepository.Measurements.First().EditedOn);
     Assert.AreEqual(42, _testRepository.Measurements.OfType<GaugeMeasurement>().First().Value);
   }
 

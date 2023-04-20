@@ -4,6 +4,7 @@ export interface IMeasurement {
   id?: string;
   notes?: string;
   dateTime: string;
+  editedOn?: string;
   metricAttributeValues?: IMetricAttributeValues;
   metricId?: string;
 }

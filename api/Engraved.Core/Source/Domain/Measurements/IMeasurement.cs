@@ -1,6 +1,6 @@
 ﻿namespace Engraved.Core.Domain.Measurements;
 
-public interface IMeasurement : IUserScoped
+public interface IMeasurement : IUserScoped, IEditable
 {
   string? Id { get; set; }
 

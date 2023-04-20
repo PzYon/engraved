@@ -30,7 +30,7 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
     if (measurement.StartDate == null)
     {
       measurement.StartDate = dateService.UtcNow;
-      measurement.DateTime = DateTime.UtcNow;
+      measurement.DateTime = dateService.UtcNow;
     }
     else
     {

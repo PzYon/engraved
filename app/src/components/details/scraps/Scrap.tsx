@@ -11,6 +11,7 @@ import { engravedTheme } from "../../../theming/engravedTheme";
 import { MarkdownEditor, preloadLazyCodeMirror } from "./MarkdownEditor";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { Actions } from "../../common/Actions";
+import { useAppContext } from "../../../AppContext";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const timers: { [scrapId: string]: any } = {};
@@ -35,6 +36,8 @@ export const Scrap: React.FC<{
   useEffect(() => {
     preloadLazyCodeMirror();
   }, []);
+
+  const { setAppAlert } = useAppContext();
 
   const isNew = editMode !== "off" || !scrap.id;
 
@@ -98,6 +101,11 @@ export const Scrap: React.FC<{
               icon: <ContentCopyOutlined fontSize="small" />,
               onClick: async () => {
                 await navigator.clipboard.writeText(scrap.notes);
+                setAppAlert({
+                  type: "success",
+                  title: "Successfully copied text to clipboard.",
+                  hideDurationSec: 1,
+                });
               },
             },
             {

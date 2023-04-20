@@ -2,7 +2,7 @@
 
 namespace Engraved.Core.Domain.Metrics;
 
-public interface IMetric : IUserScoped, IPermissionHolder
+public interface IMetric : IUserScoped, IPermissionHolder, IEditable
 {
   string? Id { get; set; }
 
@@ -17,8 +17,6 @@ public interface IMetric : IUserScoped, IPermissionHolder
   Dictionary<string, MetricAttribute> Attributes { get; set; }
 
   Dictionary<string, Dictionary<string, double>> Thresholds { get; set; }
-
-  DateTime? EditedOn { get; set; }
 
   // basic idea here is to enable clients to store whatever they want while
   // the server is completely unaware of what's going on here. i.e. server
