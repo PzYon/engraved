@@ -10,7 +10,7 @@ import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { DetailsSection } from "../../layout/DetailsSection";
 
-export const Scraps: React.FC = () => {
+export const ScrapsViewPage: React.FC = () => {
   const {
     metric,
     measurements: scraps,

@@ -52,6 +52,7 @@ export const AddMetric: React.FC = () => {
           <Button
             variant="contained"
             onClick={() => addMetricMutation.mutate()}
+            disabled={!name}
           >
             {translations.create}
           </Button>
