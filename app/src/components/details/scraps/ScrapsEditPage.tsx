@@ -6,6 +6,7 @@ import { MetricPageTitle } from "../MetricPageTitle";
 import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { EditCommonProperties } from "../edit/EditCommonProperties";
 import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
+import { EditPageFooterButtons } from "../../common/EditPageFooterButtons";
 
 export const ScrapsEditPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,20 +20,14 @@ export const ScrapsEditPage: React.FC = () => {
   const disableSave =
     name === metric.name && description === metric.description;
 
+  const navigateToViewPage = () => navigate("./..");
+
   return (
     <Page
       title={<MetricPageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
       actions={[
-        ...getCommonEditModeActions(
-          navigate,
-          () =>
-            editMetricMutation.mutate({
-              metric: { ...metric, name, description },
-              onSuccess: () => navigate("./.."),
-            }),
-          disableSave
-        ),
+        ...getCommonEditModeActions(navigateToViewPage, save, disableSave),
       ]}
     >
       <EditCommonProperties
@@ -41,6 +36,18 @@ export const ScrapsEditPage: React.FC = () => {
         description={description}
         setDescription={setDescription}
       />
+      <EditPageFooterButtons
+        onSave={save}
+        disableSave={disableSave}
+        onCancel={navigateToViewPage}
+      />
     </Page>
   );
+
+  function save() {
+    editMetricMutation.mutate({
+      metric: { ...metric, name, description },
+      onSuccess: navigateToViewPage,
+    });
+  }
 };

@@ -11,6 +11,7 @@ import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { EditCommonProperties } from "./EditCommonProperties";
 import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
 import { MetricPageTitle } from "../MetricPageTitle";
+import { EditPageFooterButtons } from "../../common/EditPageFooterButtons";
 
 export const MetricEditPage: React.FC = () => {
   const { metric } = useMetricContext();
@@ -29,27 +30,27 @@ export const MetricEditPage: React.FC = () => {
 
   const editMetricMutation = useEditMetricMutation(metric.id);
 
+  const navigateToViewPage = () => navigate("./..");
+
+  const save = () =>
+    editMetricMutation.mutate({
+      metric: {
+        ...metric,
+        name,
+        description,
+        attributes,
+        thresholds,
+        customProps: {
+          uiSettings,
+        },
+      },
+      onSuccess: navigateToViewPage,
+    });
   return (
     <Page
       title={<MetricPageTitle metric={metric} />}
       documentTitle={`Edit ${metric.name}`}
-      actions={getCommonEditModeActions(navigate, () =>
-        editMetricMutation.mutate({
-          metric: {
-            ...metric,
-            name,
-            description,
-            attributes,
-            thresholds,
-            customProps: {
-              uiSettings,
-            },
-          },
-          onSuccess: () => {
-            navigate("./..");
-          },
-        })
-      )}
+      actions={getCommonEditModeActions(navigateToViewPage, save)}
     >
       <EditCommonProperties
         name={name}
@@ -72,6 +73,12 @@ export const MetricEditPage: React.FC = () => {
       <DetailsSection title={"UI Settings"}>
         <MetricUiSettings uiSettings={uiSettings} onChange={setUiSettings} />
       </DetailsSection>
+
+      <EditPageFooterButtons
+        onSave={save}
+        disableSave={false}
+        onCancel={navigateToViewPage}
+      />
     </Page>
   );
 };

@@ -11,12 +11,11 @@ import {
 import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementDialog";
 import { IIconButtonAction } from "../common/IconButtonWrapper";
 import { MetricType } from "../../serverApi/MetricType";
-import { NavigateFunction } from "react-router-dom";
 
 export const editActionKey = "edit";
 
 export function getCommonEditModeActions(
-  navigate: NavigateFunction,
+  onCancel: () => void,
   onSave: () => void,
   disableSave?: boolean
 ): IIconButtonAction[] {
@@ -25,7 +24,7 @@ export function getCommonEditModeActions(
       key: "cancel",
       label: "Cancel",
       icon: <Close fontSize="small" />,
-      onClick: () => navigate("./.."),
+      onClick: onCancel,
     },
     {
       key: "save",
