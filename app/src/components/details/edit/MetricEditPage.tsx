@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { MetricAttributesEditor } from "./MetricAttributesEditor";
 import { EditThresholds } from "../thresholds/EditThresholds";
-import { DetailsSection } from "../../layout/DetailsSection";
+import { PageSection } from "../../layout/pages/PageSection";
 import { useMetricContext } from "../MetricDetailsContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
@@ -59,20 +59,20 @@ export const MetricEditPage: React.FC = () => {
         setDescription={setDescription}
       />
 
-      <DetailsSection title={"Attributes"}>
+      <PageSection title={"Attributes"}>
         <MetricAttributesEditor
           attributes={attributes}
           setAttributes={setAttributes}
         />
-      </DetailsSection>
+      </PageSection>
 
-      <DetailsSection title={"Thresholds"}>
+      <PageSection title={"Thresholds"}>
         <EditThresholds metric={metric} onChange={setThresholds} />
-      </DetailsSection>
+      </PageSection>
 
-      <DetailsSection title={"UI Settings"}>
+      <PageSection title={"UI Settings"}>
         <MetricUiSettings uiSettings={uiSettings} onChange={setUiSettings} />
-      </DetailsSection>
+      </PageSection>
 
       <EditPageFooterButtons
         onSave={save}

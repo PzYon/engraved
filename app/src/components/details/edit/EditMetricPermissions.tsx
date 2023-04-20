@@ -9,7 +9,7 @@ import { IconButtonWrapper } from "../../common/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
 import { isValidEmail } from "../../../util/utils";
 import { useModifyMetricPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyMetricPermissionsMutation";
-import { FormButtonContainer } from "../../common/FormButtonContainer";
+import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 
 export const EditMetricPermissions: React.FC<{
   metric: IMetric;
@@ -78,7 +78,7 @@ export const EditMetricPermissions: React.FC<{
         />
       </AddNewContainer>
 
-      <FormButtonContainer>
+      <DialogFormButtonContainer>
         <Button variant="outlined" onClick={onCancel}>
           Cancel
         </Button>
@@ -90,7 +90,7 @@ export const EditMetricPermissions: React.FC<{
         >
           Save
         </Button>
-      </FormButtonContainer>
+      </DialogFormButtonContainer>
     </>
   );
 

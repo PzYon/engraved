@@ -11,7 +11,7 @@ import {
   ShowChartOutlined,
 } from "@mui/icons-material";
 import { getCommonActions } from "../overview/getCommonActions";
-import { DetailsSection } from "../layout/DetailsSection";
+import { PageSection } from "../layout/pages/PageSection";
 import { MetricNotes } from "./edit/MetricNotes";
 import { Filters } from "./filters/Filters";
 import { Chart } from "./chart/Chart";
@@ -137,13 +137,13 @@ export const MetricViewPage: React.FC = () => {
       actions={titleActions}
     >
       {showNotes ? (
-        <DetailsSection>
+        <PageSection>
           <MetricNotes metric={metric} />
-        </DetailsSection>
+        </PageSection>
       ) : null}
 
       {showFilters ? (
-        <DetailsSection>
+        <PageSection>
           <Filters
             metric={metric}
             groupByTime={groupByTime}
@@ -153,12 +153,12 @@ export const MetricViewPage: React.FC = () => {
             chartType={chartType}
             setChartType={setChartType}
           />
-        </DetailsSection>
+        </PageSection>
       ) : null}
 
       {showChart && measurements ? (
         <Suspense fallback={<div />}>
-          <DetailsSection>
+          <PageSection>
             <Chart
               measurements={measurements}
               metric={metric}
@@ -166,7 +166,7 @@ export const MetricViewPage: React.FC = () => {
               groupByAttribute={attributeKey}
               chartType={chartType}
             />
-          </DetailsSection>
+          </PageSection>
         </Suspense>
       ) : null}
 
@@ -179,13 +179,13 @@ export const MetricViewPage: React.FC = () => {
       ) : null}
 
       {measurements?.length ? (
-        <DetailsSection overflowXScroll={true}>
+        <PageSection overflowXScroll={true}>
           <MeasurementsTable
             metric={metric}
             measurements={measurements}
             showGroupTotals={showGroupTotals}
           />
-        </DetailsSection>
+        </PageSection>
       ) : null}
 
       <Routes>

@@ -1,7 +1,7 @@
 import MarkdownIt from "markdown-it";
 import React, { MouseEventHandler, useMemo } from "react";
 import { styled } from "@mui/material";
-import { DetailsSection } from "../../layout/DetailsSection";
+import { PageSection } from "../../layout/pages/PageSection";
 
 const sectionSeparator = "<--->";
 
@@ -20,7 +20,7 @@ export const Markdown: React.FC<{
     [value]
   );
 
-  const Section = disableCustomSection ? React.Fragment : DetailsSection;
+  const Section = disableCustomSection ? React.Fragment : PageSection;
 
   return (
     <div onClick={onClick}>

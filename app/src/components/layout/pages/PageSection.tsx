@@ -1,7 +1,7 @@
 import React from "react";
 import { Paper, styled, Typography } from "@mui/material";
 
-export const DetailsSection: React.FC<{
+export const PageSection: React.FC<{
   children: React.ReactNode;
   title?: string;
   overflowXScroll?: boolean;

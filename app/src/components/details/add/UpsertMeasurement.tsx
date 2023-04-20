@@ -22,7 +22,7 @@ import { IUpsertTimerMeasurementCommand } from "../../../serverApi/commands/IUps
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
 import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
-import { FormButtonContainer } from "../../common/FormButtonContainer";
+import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 
 const storage = new LastSelectedDateStorage();
 
@@ -139,7 +139,7 @@ export const UpsertMeasurement: React.FC<{
         margin={"normal"}
       />
 
-      <FormButtonContainer>
+      <DialogFormButtonContainer>
         <Button variant="outlined" onClick={onCancel}>
           Cancel
         </Button>
@@ -153,7 +153,7 @@ export const UpsertMeasurement: React.FC<{
         >
           {measurement?.id ? translations.edit : translations.add}
         </Button>
-      </FormButtonContainer>
+      </DialogFormButtonContainer>
     </FormControl>
   );
 

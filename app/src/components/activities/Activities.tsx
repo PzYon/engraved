@@ -1,8 +1,8 @@
 import React from "react";
 import { useActivitiesQuery } from "../../serverApi/reactQuery/queries/useActivitiesQuery";
-import { Section } from "../layout/Section";
 import { MetricTypeFactory } from "../../metricTypes/MetricTypeFactory";
 import { IMeasurement } from "../../serverApi/IMeasurement";
+import { PageSection } from "../layout/pages/PageSection";
 
 export const Activities: React.FC = () => {
   const activities = useActivitiesQuery();
@@ -14,7 +14,7 @@ export const Activities: React.FC = () => {
   return (
     <>
       {activities.measurements.map((m) => (
-        <Section key={m.id}>{renderActivity(m)}</Section>
+        <PageSection key={m.id}>{renderActivity(m)}</PageSection>
       ))}
     </>
   );
