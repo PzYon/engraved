@@ -165,7 +165,7 @@ public class MongoRepository : IRepository
   {
     List<MeasurementDocument> measurements = await MeasurementsCollection
       .Find(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)))
-      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.DateTime))
+      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn))
       .Limit(limit)
       .ToListAsync();
 
