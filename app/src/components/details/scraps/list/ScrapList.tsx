@@ -11,12 +11,14 @@ import { AddOutlined } from "@mui/icons-material";
 let blurTimer: any;
 
 export const ScrapList: React.FC<{
-  listItems: ISCrapListItem[];
+  value: string;
   onFocus: () => void;
-  onChange: (listItems: ISCrapListItem[]) => void;
+  onChange: (json: string) => void;
   onBlur: () => void;
-}> = ({ listItems, onFocus, onChange, onBlur }) => {
-  const [items, setItems] = useState<ISCrapListItem[]>(listItems);
+}> = ({ value, onFocus, onChange, onBlur }) => {
+  const [items, setItems] = useState<ISCrapListItem[]>(
+    value ? JSON.parse(value) : []
+  );
 
   return (
     <ScrapListContextProvider>
@@ -33,7 +35,7 @@ export const ScrapList: React.FC<{
                     updatedItems[index] = updatedItem;
                     setItems(updatedItems);
 
-                    onChange(updatedItems);
+                    onChange(JSON.stringify(updatedItems));
 
                     enqueueOnBlur();
                   }}

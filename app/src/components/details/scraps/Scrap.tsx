@@ -110,8 +110,8 @@ export const Scrap: React.FC<{
   function renderListBody() {
     return (
       <ScrapList
-        listItems={scrap.notes ? JSON.parse(scrap.notes) : []}
-        onChange={(listItems) => onChange(JSON.stringify(listItems))}
+        value={notes}
+        onChange={onChange}
         onBlur={onBlur}
         onFocus={onFocus}
       />
