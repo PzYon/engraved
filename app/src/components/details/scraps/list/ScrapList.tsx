@@ -7,13 +7,15 @@ import { ScrapListItem } from "./ScrapListItem";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let blurTimer: any;
 
 export const ScrapList: React.FC<{
   listItems: ISCrapListItem[];
+  onFocus: () => void;
   onChange: (listItems: ISCrapListItem[]) => void;
   onBlur: () => void;
-}> = ({ listItems, onChange, onBlur }) => {
+}> = ({ listItems, onFocus, onChange, onBlur }) => {
   const [items, setItems] = useState<ISCrapListItem[]>(listItems);
 
   return (
@@ -44,6 +46,7 @@ export const ScrapList: React.FC<{
                   }}
                   onFocus={() => {
                     clearTimeout(blurTimer);
+                    onFocus();
                   }}
                 />
               </ListItem>

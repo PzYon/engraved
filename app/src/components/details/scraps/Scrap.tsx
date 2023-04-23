@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Markdown } from "./markdown/Markdown";
 import { FormatDate } from "../../common/FormatDate";
 import { styled, TextField, Typography } from "@mui/material";
 import { ContentCopyOutlined, DeleteOutlined } from "@mui/icons-material";
@@ -11,11 +10,7 @@ import {
 } from "../../../serverApi/IScrapMeasurement";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { engravedTheme } from "../../../theming/engravedTheme";
-import {
-  MarkdownEditor,
-  preloadLazyCodeMirror,
-} from "./markdown/MarkdownEditor";
-import { FadeInContainer } from "../../common/FadeInContainer";
+import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
 import { Actions } from "../../common/Actions";
 import { useAppContext } from "../../../AppContext";
 import { ScrapList } from "./list/ScrapList";
@@ -69,7 +64,9 @@ export const Scrap: React.FC<{
         onClick={() => setEditMode("fromTitle")}
         sx={{ width: "100%" }}
       />
+
       {renderBody()}
+
       <FooterContainer>
         {hideDate ? null : (
           <Typography fontSize="small" component="span" sx={{ mr: 2 }}>
@@ -114,10 +111,9 @@ export const Scrap: React.FC<{
     return (
       <ScrapList
         listItems={scrap.notes ? JSON.parse(scrap.notes) : []}
-        onChange={(listItems) => {
-          setNotes(JSON.stringify(listItems));
-        }}
+        onChange={(listItems) => onChange(JSON.stringify(listItems))}
         onBlur={onBlur}
+        onFocus={onFocus}
       />
     );
   }
@@ -126,14 +122,22 @@ export const Scrap: React.FC<{
     return (
       <ScrapMarkdown
         editMode={editMode}
+        setEditMode={setEditMode}
         value={notes}
-        onChange={(value) => {
-          clearTimeout(timers[scrap.id]);
-          setNotes(value);
-        }}
+        onChange={onChange}
         onBlur={onBlur}
+        onFocus={onFocus}
       />
     );
+  }
+
+  function onFocus() {
+    clearTimeout(timers[scrap.id]);
+  }
+
+  function onChange(value: string) {
+    clearTimeout(timers[scrap.id]);
+    setNotes(value);
   }
 
   function onBlur() {

@@ -7,10 +7,12 @@ import { styled } from "@mui/material";
 
 export const ScrapMarkdown: React.FC<{
   editMode: editModeKind;
+  setEditMode: (mode: editModeKind) => void;
   value: string;
   onChange: (value: string) => void;
   onBlur: () => void;
-}> = ({ editMode, value, onChange, onBlur }) => {
+  onFocus: () => void;
+}> = ({ editMode, setEditMode, value, onChange, onBlur, onFocus }) => {
   if (editMode !== "off") {
     return (
       <EditorContainer>
@@ -18,12 +20,9 @@ export const ScrapMarkdown: React.FC<{
           disableAutoFocus={editMode !== "fromBody"}
           showOutlineWhenFocused={true}
           value={value ?? ""}
-          onChange={(value) => {
-            clearTimeout(timers[scrap.id]);
-            onChange(value);
-          }}
+          onChange={onChange}
           onBlur={onBlur}
-          onFocus={() => clearTimeout(timers[scrap.id])}
+          onFocus={onFocus}
         />
       </EditorContainer>
     );
