@@ -15,14 +15,6 @@ export const ScrapList: React.FC<{
 }> = ({ listItems, onBlur }) => {
   const [items, setItems] = useState<ISCrapListItem[]>(listItems);
 
-  function enqueueUpdate() {
-    clearTimeout(timers);
-
-    timers = setTimeout(() => {
-      onBlur(items);
-    });
-  }
-
   return (
     <ScrapListContextProvider>
       <PageSection>
@@ -37,7 +29,7 @@ export const ScrapList: React.FC<{
                     const updatedItems = [...items];
                     updatedItems[index] = updatedItem;
                     setItems(updatedItems);
-                    enqueueUpdate();
+                    enqueueUpdate(updatedItems);
                   }}
                   onKeyUp={(direction) => {
                     switch (direction) {
@@ -65,6 +57,14 @@ export const ScrapList: React.FC<{
       </PageSection>
     </ScrapListContextProvider>
   );
+
+  function enqueueUpdate(newItems: ISCrapListItem[]) {
+    clearTimeout(timers);
+
+    timers = setTimeout(() => {
+      onBlur(newItems);
+    });
+  }
 
   function addNew() {
     setItems([...items, { label: "", isCompleted: false }]);

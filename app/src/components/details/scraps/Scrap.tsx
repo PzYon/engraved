@@ -99,9 +99,9 @@ export const Scrap: React.FC<{
   );
 
   function renderBody() {
-    return scrap.scrapType === ScrapType.Markdown
-      ? renderScrapBody()
-      : renderListBody();
+    return scrap.scrapType === ScrapType.List
+      ? renderListBody()
+      : renderScrapBody();
   }
 
   function renderListBody() {
@@ -109,11 +109,13 @@ export const Scrap: React.FC<{
       <ScrapList
         listItems={scrap.notes ? JSON.parse(scrap.notes) : []}
         onBlur={(listItems) => {
-          debugger;
-          setNotes(JSON.stringify(listItems));
-          setTimeout(() => {
-            onBlur();
-          }, 100);
+          const itemsAsJson = JSON.stringify(listItems);
+          setNotes(itemsAsJson);
+
+          console.log("Scrap:", itemsAsJson);
+
+          // PROBLEM: this does not consider newest values
+          onBlur();
         }}
       />
     );
