@@ -7,12 +7,13 @@ import { ScrapListItem } from "./ScrapListItem";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
 
-let timers: any;
+let blurTimer: any;
 
 export const ScrapList: React.FC<{
   listItems: ISCrapListItem[];
-  onBlur: (listItems: ISCrapListItem[]) => void;
-}> = ({ listItems, onBlur }) => {
+  onChange: (listItems: ISCrapListItem[]) => void;
+  onBlur: () => void;
+}> = ({ listItems, onChange, onBlur }) => {
   const [items, setItems] = useState<ISCrapListItem[]>(listItems);
 
   return (
@@ -29,7 +30,10 @@ export const ScrapList: React.FC<{
                     const updatedItems = [...items];
                     updatedItems[index] = updatedItem;
                     setItems(updatedItems);
-                    enqueueUpdate(updatedItems);
+
+                    onChange(updatedItems);
+
+                    enqueueOnBlur();
                   }}
                   onKeyUp={(direction) => {
                     switch (direction) {
@@ -39,7 +43,7 @@ export const ScrapList: React.FC<{
                     }
                   }}
                   onFocus={() => {
-                    clearTimeout(timers);
+                    clearTimeout(blurTimer);
                   }}
                 />
               </ListItem>
@@ -58,11 +62,11 @@ export const ScrapList: React.FC<{
     </ScrapListContextProvider>
   );
 
-  function enqueueUpdate(newItems: ISCrapListItem[]) {
-    clearTimeout(timers);
+  function enqueueOnBlur() {
+    clearTimeout(blurTimer);
 
-    timers = setTimeout(() => {
-      onBlur(newItems);
+    blurTimer = setTimeout(() => {
+      onBlur();
     });
   }
 

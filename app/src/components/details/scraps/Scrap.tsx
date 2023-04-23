@@ -108,15 +108,10 @@ export const Scrap: React.FC<{
     return (
       <ScrapList
         listItems={scrap.notes ? JSON.parse(scrap.notes) : []}
-        onBlur={(listItems) => {
-          const itemsAsJson = JSON.stringify(listItems);
-          setNotes(itemsAsJson);
-
-          console.log("Scrap:", itemsAsJson);
-
-          // PROBLEM: this does not consider newest values
-          onBlur();
+        onChange={(listItems) => {
+          setNotes(JSON.stringify(listItems));
         }}
+        onBlur={onBlur}
       />
     );
   }
