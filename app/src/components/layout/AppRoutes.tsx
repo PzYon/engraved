@@ -4,7 +4,6 @@ import { MetricsPage } from "../overview/MetricsPage";
 import { MetricPageWrapper } from "../details/MetricPageWrapper";
 import { MyPage } from "../users/MyPage";
 import { AddMetricPage } from "../overview/AddMetricPage";
-import { ScrapList } from "../details/scraps/list/ScrapList";
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -14,7 +13,6 @@ export const AppRoutes: React.FC = () => {
       <Route path="/" element={<MetricsPage />} />
       <Route path="/metrics/:metricId/*" element={<MetricPageWrapper />} />
       <Route path="/users/me" element={<MyPage />} />
-      <Route path="/list" element={<ScrapList />} />
     </Routes>
   );
 };

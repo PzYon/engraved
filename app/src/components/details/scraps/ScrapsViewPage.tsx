@@ -70,7 +70,7 @@ export const ScrapsViewPage: React.FC = () => {
     const isMarkdown = type === "markdown";
 
     return {
-      key: "add-scrap",
+      key: "add-scrap-" + type,
       label: "Add " + type,
       icon: isMarkdown ? (
         <AddOutlined fontSize="small" />

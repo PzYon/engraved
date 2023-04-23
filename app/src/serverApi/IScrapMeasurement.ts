@@ -1,8 +1,8 @@
 import { IMeasurement } from "./IMeasurement";
 
 export enum ScrapType {
-  Markdown,
-  List,
+  Markdown = "Markdown",
+  List = "List",
 }
 
 export interface IScrapMeasurement extends IMeasurement {

@@ -63,9 +63,7 @@ export const Scrap: React.FC<{
         onClick={() => setEditMode("fromTitle")}
         sx={{ width: "100%" }}
       />
-      {scrap.scrapType === ScrapType.Markdown
-        ? renderScrapBody()
-        : renderListBody()}
+      {renderBody()}
       <FooterContainer>
         {hideDate ? null : (
           <Typography fontSize="small" component="span" sx={{ mr: 2 }}>
@@ -100,8 +98,25 @@ export const Scrap: React.FC<{
     </>
   );
 
+  function renderBody() {
+    return scrap.scrapType === ScrapType.Markdown
+      ? renderScrapBody()
+      : renderListBody();
+  }
+
   function renderListBody() {
-    return <ScrapList />;
+    return (
+      <ScrapList
+        listItems={scrap.notes ? JSON.parse(scrap.notes) : []}
+        onBlur={(listItems) => {
+          debugger;
+          setNotes(JSON.stringify(listItems));
+          setTimeout(() => {
+            onBlur();
+          }, 100);
+        }}
+      />
+    );
   }
 
   function renderScrapBody() {
@@ -160,6 +175,7 @@ export const Scrap: React.FC<{
     await upsertMeasurementMutation.mutate({
       command: {
         id: scrap?.id,
+        scrapType: scrap.scrapType,
         notes: notes,
         title: title,
         metricAttributeValues: {},

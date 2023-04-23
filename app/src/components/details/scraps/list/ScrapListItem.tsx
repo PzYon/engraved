@@ -8,7 +8,8 @@ export const ScrapListItem: React.FC<{
   index: number;
   onChange: (listItem: ISCrapListItem) => void;
   onKeyUp: (direction: "enter") => void;
-}> = ({ listItem, index, onChange, onKeyUp }) => {
+  onFocus: () => void;
+}> = ({ listItem, index, onChange, onKeyUp, onFocus }) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
 
@@ -29,6 +30,7 @@ export const ScrapListItem: React.FC<{
         }}
       />
       <StyledTextField
+        onFocus={onFocus}
         value={label}
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
@@ -52,6 +54,7 @@ export const ScrapListItem: React.FC<{
         break;
       case "ArrowDown":
         ctx.giveFocus(index + 1);
+        break;
     }
   }
 

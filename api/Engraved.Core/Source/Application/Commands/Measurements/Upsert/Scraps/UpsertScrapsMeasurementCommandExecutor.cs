@@ -24,5 +24,6 @@ public class UpsertScrapsMeasurementCommandExecutor : BaseUpsertMeasurementComma
   protected override void SetTypeSpecificValues(IDateService dateService, ScrapsMeasurement measurement)
   {
     measurement.Title = Command.Title;
+    measurement.ScrapType = Command.ScrapType;
   }
 }
