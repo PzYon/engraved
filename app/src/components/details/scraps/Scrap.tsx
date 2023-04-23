@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Markdown } from "./Markdown";
+import { Markdown } from "./markdown/Markdown";
 import { FormatDate } from "../../common/FormatDate";
 import { styled, TextField, Typography } from "@mui/material";
 import { ContentCopyOutlined, DeleteOutlined } from "@mui/icons-material";
@@ -11,11 +11,17 @@ import {
 } from "../../../serverApi/IScrapMeasurement";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { engravedTheme } from "../../../theming/engravedTheme";
-import { MarkdownEditor, preloadLazyCodeMirror } from "./MarkdownEditor";
+import {
+  MarkdownEditor,
+  preloadLazyCodeMirror,
+} from "./markdown/MarkdownEditor";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { Actions } from "../../common/Actions";
 import { useAppContext } from "../../../AppContext";
 import { ScrapList } from "./list/ScrapList";
+import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
+
+export type editModeKind = "off" | "fromTitle" | "fromBody";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const timers: { [scrapId: string]: any } = {};
@@ -27,7 +33,7 @@ export const Scrap: React.FC<{
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
-  const [editMode, setEditMode] = useState<"off" | "fromTitle" | "fromBody">(
+  const [editMode, setEditMode] = useState<editModeKind>(
     !scrap.id ? "fromTitle" : "off"
   );
 
@@ -117,35 +123,16 @@ export const Scrap: React.FC<{
   }
 
   function renderScrapBody() {
-    if (editMode !== "off") {
-      return (
-        <EditorContainer>
-          <MarkdownEditor
-            disableAutoFocus={editMode !== "fromBody"}
-            showOutlineWhenFocused={true}
-            value={notes ?? ""}
-            onChange={(value) => {
-              clearTimeout(timers[scrap.id]);
-              setNotes(value);
-            }}
-            onBlur={onBlur}
-            onFocus={() => clearTimeout(timers[scrap.id])}
-          />
-        </EditorContainer>
-      );
-    }
-
     return (
-      <FadeInContainer>
-        <Markdown
-          onClick={(e) => {
-            if (e.detail == 2) {
-              setEditMode("fromBody");
-            }
-          }}
-          value={scrap.notes}
-        />
-      </FadeInContainer>
+      <ScrapMarkdown
+        editMode={editMode}
+        value={notes}
+        onChange={(value) => {
+          clearTimeout(timers[scrap.id]);
+          setNotes(value);
+        }}
+        onBlur={onBlur}
+      />
     );
   }
 
@@ -187,12 +174,6 @@ const FooterContainer = styled("div")`
   display: flex;
   justify-content: end;
   align-items: center;
-`;
-
-const EditorContainer = styled("div")`
-  .cm-editor {
-    padding: 0;
-  }
 `;
 
 const StyledTextField = styled(TextField)({
