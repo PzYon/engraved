@@ -7,7 +7,7 @@ export const ScrapListItem: React.FC<{
   listItem: ISCrapListItem;
   index: number;
   onChange: (listItem: ISCrapListItem) => void;
-  onKeyUp: (direction: "enter") => void;
+  onKeyUp: (key: "enter" | "delete") => void;
   onFocus: () => void;
 }> = ({ listItem, index, onChange, onKeyUp, onFocus }) => {
   const [label, setLabel] = useState(listItem.label);
@@ -46,6 +46,11 @@ export const ScrapListItem: React.FC<{
 
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
+      case "Delete":
+        onKeyUp("delete");
+        ctx.deleteInputRef(index);
+        ctx.giveFocus(index);
+        break;
       case "Enter":
         onKeyUp("enter");
         break;

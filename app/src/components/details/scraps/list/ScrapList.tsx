@@ -31,18 +31,15 @@ export const ScrapList: React.FC<{
                   index={index}
                   listItem={item}
                   onChange={(updatedItem) => {
-                    const updatedItems = [...items];
-                    updatedItems[index] = updatedItem;
-                    setItems(updatedItems);
-
-                    onChange(JSON.stringify(updatedItems));
-
-                    enqueueOnBlur();
+                    onChangeInternal(index, updatedItem);
                   }}
                   onKeyUp={(direction) => {
                     switch (direction) {
                       case "enter":
                         addNew();
+                        break;
+                      case "delete":
+                        onDeleteItem(index);
                         break;
                     }
                   }}
@@ -66,6 +63,26 @@ export const ScrapList: React.FC<{
       </PageSection>
     </ScrapListContextProvider>
   );
+
+  function onChangeInternal(index: number, updatedItem: ISCrapListItem) {
+    const updatedItems = [...items];
+    updatedItems[index] = updatedItem;
+    setItems(updatedItems);
+
+    onChange(JSON.stringify(updatedItems));
+
+    enqueueOnBlur();
+  }
+
+  function onDeleteItem(index: number) {
+    const updatedItems = [...items];
+    updatedItems.splice(index, 1);
+    setItems(updatedItems);
+
+    onChange(JSON.stringify(updatedItems));
+
+    enqueueOnBlur();
+  }
 
   function enqueueOnBlur() {
     clearTimeout(blurTimer);

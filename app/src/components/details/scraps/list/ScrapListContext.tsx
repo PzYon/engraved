@@ -5,12 +5,14 @@ export interface IScrapListContext {
     index: number,
     ref: React.MutableRefObject<HTMLInputElement>
   ) => void;
+  deleteInputRef: (index: number) => void;
   giveFocus: (index: number) => void;
 }
 
 const ScrapListContext = createContext<IScrapListContext>({
   giveFocus: null,
   setInputRef: null,
+  deleteInputRef: null,
 });
 
 export const useScrapListContext = () => {
@@ -28,6 +30,11 @@ export const ScrapListContextProvider: React.FC<{
     setInputRef: (index, ref) => {
       const updatedInputRefs = [...inputRefs];
       updatedInputRefs[index] = ref;
+      setInputRefs(updatedInputRefs);
+    },
+    deleteInputRef: (index) => {
+      const updatedInputRefs = [...inputRefs];
+      updatedInputRefs.splice(index, 1);
       setInputRefs(updatedInputRefs);
     },
     giveFocus: (index) => {
