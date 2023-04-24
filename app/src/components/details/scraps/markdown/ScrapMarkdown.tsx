@@ -3,7 +3,7 @@ import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
 import React from "react";
 import { editModeKind } from "../Scrap";
-import { styled } from "@mui/material";
+import { ClickAwayListener, styled } from "@mui/material";
 
 export const ScrapMarkdown: React.FC<{
   editMode: editModeKind;
@@ -15,16 +15,18 @@ export const ScrapMarkdown: React.FC<{
 }> = ({ editMode, setEditMode, value, onChange, onBlur, onFocus }) => {
   if (editMode !== "off") {
     return (
-      <EditorContainer>
-        <MarkdownEditor
-          disableAutoFocus={editMode !== "fromBody"}
-          showOutlineWhenFocused={true}
-          value={value ?? ""}
-          onChange={onChange}
-          onBlur={onBlur}
-          onFocus={onFocus}
-        />
-      </EditorContainer>
+      <ClickAwayListener onClickAway={() => setEditMode("fromBody")}>
+        <EditorContainer>
+          <MarkdownEditor
+            disableAutoFocus={editMode !== "fromBody"}
+            showOutlineWhenFocused={true}
+            value={value ?? ""}
+            onChange={onChange}
+            onBlur={onBlur}
+            onFocus={onFocus}
+          />
+        </EditorContainer>
+      </ClickAwayListener>
     );
   }
 

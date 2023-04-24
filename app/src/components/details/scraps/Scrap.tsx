@@ -18,6 +18,7 @@ import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 
 export type editModeKind = "off" | "fromTitle" | "fromBody";
 
+// we might not need this anymore
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const timers: { [scrapId: string]: any } = {};
 
@@ -27,6 +28,7 @@ export const Scrap: React.FC<{
 }> = ({ scrap, hideDate }) => {
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
+  const [blurToken, setBlurToken] = useState("initial");
 
   const [editMode, setEditMode] = useState<editModeKind>(
     !scrap.id ? "fromTitle" : "off"
@@ -41,6 +43,12 @@ export const Scrap: React.FC<{
   useEffect(() => {
     preloadLazyCodeMirror();
   }, []);
+
+  useEffect(() => {
+    if (notes !== scrap.notes) {
+      upsertScrap();
+    }
+  }, [blurToken]);
 
   const { setAppAlert } = useAppContext();
 
@@ -134,6 +142,7 @@ export const Scrap: React.FC<{
   }
 
   function onFocus() {
+    setEditMode("fromBody");
     clearTimeout(timers[scrap.id]);
   }
 
@@ -145,16 +154,7 @@ export const Scrap: React.FC<{
   }
 
   function onBlur() {
-    clearTimeout(timers[scrap.id]);
-
-    // we use a timeout here in order to let the browser have time to
-    // move the focus to the next element
-    timers[scrap.id] = setTimeout(async () => {
-      console.log("Scrap.tsx-onBlur: ", notes);
-
-      await upsertScrap();
-      setEditMode("off");
-    });
+    setBlurToken(Math.random().toString());
   }
 
   async function upsertScrap() {

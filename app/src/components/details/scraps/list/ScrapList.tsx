@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { styled } from "@mui/material";
+import { ClickAwayListener, styled } from "@mui/material";
 import { PageSection } from "../../../layout/pages/PageSection";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
@@ -24,52 +24,54 @@ export const ScrapList: React.FC<{
 
   return (
     <PageSection>
-      <ClickContainer onClick={() => setEditMode("fromBody")}>
-        <List>
-          {items.map((item, index) => (
-            <ListItem key={index + "_" + item.label}>
-              <ScrapListItem
-                editMode={editMode}
-                listItem={item}
-                onFocus={() => {
-                  setEditMode("fromBody");
-                  clearTimeout(blurTimer);
-                  onFocus();
-                }}
-                onChange={(updatedItem) => {
-                  const updatedItems = [...items];
+      <ClickAwayListener onClickAway={() => setEditMode("fromBody")}>
+        <div onClick={() => setEditMode("fromBody")}>
+          <List>
+            {items.map((item, index) => (
+              <ListItem key={index + "_" + item.label}>
+                <ScrapListItem
+                  editMode={editMode}
+                  listItem={item}
+                  onFocus={() => {
+                    setEditMode("fromBody");
+                    clearTimeout(blurTimer);
+                    onFocus();
+                  }}
+                  onChange={(updatedItem) => {
+                    const updatedItems = [...items];
 
-                  if (!updatedItem) {
-                    updatedItems.splice(index, 1);
-                  } else {
-                    updatedItems[index] = updatedItem;
-                  }
+                    if (!updatedItem) {
+                      updatedItems.splice(index, 1);
+                    } else {
+                      updatedItems[index] = updatedItem;
+                    }
 
-                  updateItems(updatedItems);
-                }}
-                onEnter={() => {
-                  const updatedItems = [...items];
+                    updateItems(updatedItems);
+                  }}
+                  onEnter={() => {
+                    const updatedItems = [...items];
 
-                  updatedItems.splice(index + 1, 0, {
-                    label: "",
-                    isCompleted: false,
-                  });
+                    updatedItems.splice(index + 1, 0, {
+                      label: "",
+                      isCompleted: false,
+                    });
 
-                  updateItems(updatedItems);
-                }}
-              />
-            </ListItem>
-          ))}
-        </List>
-        <IconButtonWrapper
-          action={{
-            key: "add",
-            label: "Add new",
-            icon: <AddOutlined fontSize="small" />,
-            onClick: addNew,
-          }}
-        />
-      </ClickContainer>
+                    updateItems(updatedItems);
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
+          <IconButtonWrapper
+            action={{
+              key: "add",
+              label: "Add new",
+              icon: <AddOutlined fontSize="small" />,
+              onClick: addNew,
+            }}
+          />
+        </div>
+      </ClickAwayListener>
     </PageSection>
   );
 
@@ -89,8 +91,6 @@ export const ScrapList: React.FC<{
     setItems([...items, { label: "", isCompleted: false }]);
   }
 };
-
-const ClickContainer = styled("div")``;
 
 const List = styled("ul")`
   list-style-type: none;
