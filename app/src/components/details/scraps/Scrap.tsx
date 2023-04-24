@@ -136,6 +136,8 @@ export const Scrap: React.FC<{
   }
 
   function onChange(value: string) {
+    console.log("Scrap.tsx-onChange: " + value);
+
     clearTimeout(timers[scrap.id]);
     setNotes(value);
   }
@@ -146,6 +148,8 @@ export const Scrap: React.FC<{
     // we use a timeout here in order to let the browser have time to
     // move the focus to the next element
     timers[scrap.id] = setTimeout(async () => {
+      console.log("Scrap.tsx-onBlur: ", notes);
+
       await upsertScrap();
       setEditMode("off");
     });

@@ -1,24 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
-import { useScrapListContext } from "./ScrapListContext";
 import { Checkbox, styled, TextField } from "@mui/material";
+import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
+import { RemoveCircleOutline } from "@mui/icons-material";
 
 export const ScrapListItem: React.FC<{
   listItem: ISCrapListItem;
-  index: number;
   onChange: (listItem: ISCrapListItem) => void;
-  onKeyUp: (key: "enter" | "delete") => void;
   onFocus: () => void;
-}> = ({ listItem, index, onChange, onKeyUp, onFocus }) => {
+  onEnter: () => void;
+  onDelete: () => void;
+}> = ({ listItem, onChange, onFocus, onEnter, onDelete }) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
-
-  const inputRef = useRef<HTMLInputElement>();
-  const ctx = useScrapListContext();
-
-  useEffect(() => {
-    ctx.setInputRef(index, inputRef);
-  }, []);
 
   return (
     <>
@@ -35,30 +29,26 @@ export const ScrapListItem: React.FC<{
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
         onBlur={() => emitOnChange()}
-        inputRef={inputRef}
         variant="standard"
         autoComplete={"off"}
         sx={{ flexGrow: 1 }}
         autoFocus={!listItem.label}
+      />
+      <IconButtonWrapper
+        action={{
+          key: "remove",
+          label: "Delete",
+          icon: <RemoveCircleOutline fontSize={"small"} />,
+          onClick: onDelete,
+        }}
       />
     </>
   );
 
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
-      case "Delete":
-        onKeyUp("delete");
-        ctx.deleteInputRef(index);
-        ctx.giveFocus(index);
-        break;
       case "Enter":
-        onKeyUp("enter");
-        break;
-      case "ArrowUp":
-        ctx.giveFocus(index - 1);
-        break;
-      case "ArrowDown":
-        ctx.giveFocus(index + 1);
+        onEnter();
         break;
     }
   }

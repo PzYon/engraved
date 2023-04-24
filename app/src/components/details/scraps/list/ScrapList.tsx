@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material";
 import { PageSection } from "../../../layout/pages/PageSection";
-import { ScrapListContextProvider } from "./ScrapListContext";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
@@ -21,62 +20,64 @@ export const ScrapList: React.FC<{
   );
 
   return (
-    <ScrapListContextProvider>
-      <PageSection>
-        <>
-          <List>
-            {items.map((item, index) => (
-              <ListItem key={index}>
-                <ScrapListItem
-                  index={index}
-                  listItem={item}
-                  onChange={(updatedItem) => {
-                    onChangeInternal(index, updatedItem);
-                  }}
-                  onKeyUp={(direction) => {
-                    switch (direction) {
-                      case "enter":
-                        addNew();
-                        break;
-                      case "delete":
-                        onDeleteItem(index);
-                        break;
-                    }
-                  }}
-                  onFocus={() => {
-                    clearTimeout(blurTimer);
-                    onFocus();
-                  }}
-                />
-              </ListItem>
-            ))}
-          </List>
-          <IconButtonWrapper
-            action={{
-              key: "add",
-              label: "Add new",
-              icon: <AddOutlined fontSize="small" />,
-              onClick: addNew,
-            }}
-          />
-        </>
-      </PageSection>
-    </ScrapListContextProvider>
+    <PageSection>
+      <>
+        <List>
+          {items.map((item, index) => (
+            <ListItem key={index + "_" + item.label}>
+              <ScrapListItem
+                listItem={item}
+                onChange={(updatedItem) => {
+                  onChangeInternal(index, updatedItem);
+                }}
+                onFocus={() => {
+                  clearTimeout(blurTimer);
+                  onFocus();
+                }}
+                onEnter={() => {
+                  const updatedItems = [...items];
+
+                  updatedItems.splice(index + 1, 0, {
+                    label: "",
+                    isCompleted: false,
+                  });
+
+                  setItems(updatedItems);
+
+                  onChange(JSON.stringify(updatedItems));
+
+                  enqueueOnBlur();
+                }}
+                onDelete={() => {
+                  const updatedItems = [...items];
+
+                  updatedItems.splice(index, 1);
+
+                  setItems(updatedItems);
+
+                  onChange(JSON.stringify(updatedItems));
+
+                  enqueueOnBlur();
+                }}
+              />
+            </ListItem>
+          ))}
+        </List>
+        <IconButtonWrapper
+          action={{
+            key: "add",
+            label: "Add new",
+            icon: <AddOutlined fontSize="small" />,
+            onClick: addNew,
+          }}
+        />
+      </>
+    </PageSection>
   );
 
   function onChangeInternal(index: number, updatedItem: ISCrapListItem) {
     const updatedItems = [...items];
     updatedItems[index] = updatedItem;
-    setItems(updatedItems);
-
-    onChange(JSON.stringify(updatedItems));
-
-    enqueueOnBlur();
-  }
-
-  function onDeleteItem(index: number) {
-    const updatedItems = [...items];
-    updatedItems.splice(index, 1);
     setItems(updatedItems);
 
     onChange(JSON.stringify(updatedItems));
