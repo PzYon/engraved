@@ -3,14 +3,15 @@ import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled, TextField } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
+import { editModeKind } from "../Scrap";
 
 export const ScrapListItem: React.FC<{
+  editMode: editModeKind;
   listItem: ISCrapListItem;
   onChange: (listItem: ISCrapListItem) => void;
   onFocus: () => void;
   onEnter: () => void;
-  onDelete: () => void;
-}> = ({ listItem, onChange, onFocus, onEnter, onDelete }) => {
+}> = ({ editMode, listItem, onChange, onFocus, onEnter }) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
 
@@ -20,7 +21,7 @@ export const ScrapListItem: React.FC<{
         checked={isCompleted}
         onChange={(_, checked) => {
           setIsCompleted(checked);
-          emitOnChange(checked);
+          onChange({ label, isCompleted: checked });
         }}
       />
       <StyledTextField
@@ -28,7 +29,7 @@ export const ScrapListItem: React.FC<{
         value={label}
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
-        onBlur={() => emitOnChange()}
+        onBlur={() => onChange({ label, isCompleted: isCompleted })}
         variant="standard"
         autoComplete={"off"}
         sx={{ flexGrow: 1 }}
@@ -36,10 +37,11 @@ export const ScrapListItem: React.FC<{
       />
       <IconButtonWrapper
         action={{
+          sx: editMode === "off" ? { visibility: "hidden" } : null,
           key: "remove",
           label: "Delete",
           icon: <RemoveCircleOutline fontSize={"small"} />,
-          onClick: onDelete,
+          onClick: () => onChange(null),
         }}
       />
     </>
@@ -52,14 +54,6 @@ export const ScrapListItem: React.FC<{
         break;
     }
   }
-
-  function emitOnChange(isCompletedOverride: boolean = undefined) {
-    onChange({
-      label,
-      isCompleted:
-        isCompletedOverride === undefined ? isCompleted : isCompletedOverride,
-    });
-  }
 };
 
 const StyledCheckbox = styled(Checkbox)`
@@ -69,5 +63,9 @@ const StyledCheckbox = styled(Checkbox)`
 const StyledTextField = styled(TextField)`
   input {
     padding: 2px 6px;
+  }
+
+  .MuiInput-root:before {
+    border: 0 !important;
   }
 `;

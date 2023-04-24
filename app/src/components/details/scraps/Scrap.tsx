@@ -110,6 +110,8 @@ export const Scrap: React.FC<{
   function renderListBody() {
     return (
       <ScrapList
+        editMode={editMode}
+        setEditMode={setEditMode}
         value={notes}
         onChange={onChange}
         onBlur={onBlur}

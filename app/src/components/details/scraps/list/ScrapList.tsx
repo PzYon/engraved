@@ -5,35 +5,46 @@ import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
+import { editModeKind } from "../Scrap";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let blurTimer: any;
 
 export const ScrapList: React.FC<{
+  editMode: editModeKind;
+  setEditMode: (mode: editModeKind) => void;
   value: string;
   onFocus: () => void;
   onChange: (json: string) => void;
   onBlur: () => void;
-}> = ({ value, onFocus, onChange, onBlur }) => {
+}> = ({ editMode, setEditMode, value, onFocus, onChange, onBlur }) => {
   const [items, setItems] = useState<ISCrapListItem[]>(
     value ? JSON.parse(value) : []
   );
 
   return (
     <PageSection>
-      <>
+      <ClickContainer onClick={() => setEditMode("fromBody")}>
         <List>
           {items.map((item, index) => (
             <ListItem key={index + "_" + item.label}>
               <ScrapListItem
+                editMode={editMode}
                 listItem={item}
                 onFocus={() => {
+                  setEditMode("fromBody");
                   clearTimeout(blurTimer);
                   onFocus();
                 }}
                 onChange={(updatedItem) => {
                   const updatedItems = [...items];
-                  updatedItems[index] = updatedItem;
+
+                  if (!updatedItem) {
+                    updatedItems.splice(index, 1);
+                  } else {
+                    updatedItems[index] = updatedItem;
+                  }
+
                   updateItems(updatedItems);
                 }}
                 onEnter={() => {
@@ -44,11 +55,6 @@ export const ScrapList: React.FC<{
                     isCompleted: false,
                   });
 
-                  updateItems(updatedItems);
-                }}
-                onDelete={() => {
-                  const updatedItems = [...items];
-                  updatedItems.splice(index, 1);
                   updateItems(updatedItems);
                 }}
               />
@@ -63,7 +69,7 @@ export const ScrapList: React.FC<{
             onClick: addNew,
           }}
         />
-      </>
+      </ClickContainer>
     </PageSection>
   );
 
@@ -83,6 +89,8 @@ export const ScrapList: React.FC<{
     setItems([...items, { label: "", isCompleted: false }]);
   }
 };
+
+const ClickContainer = styled("div")``;
 
 const List = styled("ul")`
   list-style-type: none;
