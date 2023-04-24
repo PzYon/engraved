@@ -7,10 +7,10 @@ import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
 
 export const ScrapList: React.FC<{
-  editMode: boolean;
+  isEditMode: boolean;
   value: string;
   onChange: (json: string) => void;
-}> = ({ editMode, value, onChange }) => {
+}> = ({ isEditMode, value, onChange }) => {
   const [items, setItems] = useState<ISCrapListItem[]>(
     value ? JSON.parse(value) : []
   );
@@ -21,7 +21,7 @@ export const ScrapList: React.FC<{
         {items.map((item, index) => (
           <ListItem key={index + "_" + item.label}>
             <ScrapListItem
-              editMode={editMode}
+              isEditMode={isEditMode}
               listItem={item}
               onChange={(updatedItem) => {
                 const updatedItems = [...items];

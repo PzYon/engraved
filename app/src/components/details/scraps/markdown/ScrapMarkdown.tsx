@@ -5,11 +5,11 @@ import React from "react";
 import { styled } from "@mui/material";
 
 export const ScrapMarkdown: React.FC<{
-  editMode: boolean;
+  isEditMode: boolean;
   value: string;
   onChange: (value: string) => void;
-}> = ({ editMode, value, onChange }) => {
-  if (editMode) {
+}> = ({ isEditMode, value, onChange }) => {
+  if (isEditMode) {
     return (
       <EditorContainer>
         <MarkdownEditor

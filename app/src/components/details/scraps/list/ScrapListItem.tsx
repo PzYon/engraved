@@ -5,11 +5,11 @@ import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 
 export const ScrapListItem: React.FC<{
-  editMode: boolean;
+  isEditMode: boolean;
   listItem: ISCrapListItem;
   onChange: (listItem: ISCrapListItem) => void;
   onEnter: () => void;
-}> = ({ editMode, listItem, onChange, onEnter }) => {
+}> = ({ isEditMode, listItem, onChange, onEnter }) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
 
@@ -17,12 +17,14 @@ export const ScrapListItem: React.FC<{
     <>
       <StyledCheckbox
         checked={isCompleted}
+        disabled={!isEditMode}
         onChange={(_, checked) => {
           setIsCompleted(checked);
           onChange({ label, isCompleted: checked });
         }}
       />
       <StyledTextField
+        disabled={!isEditMode}
         value={label}
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
@@ -34,7 +36,8 @@ export const ScrapListItem: React.FC<{
       />
       <IconButtonWrapper
         action={{
-          sx: !editMode ? { visibility: "hidden" } : null,
+          sx: !isEditMode ? { visibility: "hidden" } : null,
+          isDisabled: !isEditMode,
           key: "remove",
           label: "Delete",
           icon: <RemoveCircleOutline fontSize={"small"} />,
@@ -55,11 +58,20 @@ export const ScrapListItem: React.FC<{
 
 const StyledCheckbox = styled(Checkbox)`
   padding: 5px;
+
+  &.MuiCheckbox-root.Mui-disabled.MuiCheckbox-colorPrimary {
+    color: ${(p) => p.theme.palette.primary.main} !important;
+  }
 `;
 
 const StyledTextField = styled(TextField)`
   input {
     padding: 2px 6px;
+
+    &.Mui-disabled {
+      -webkit-text-fill-color: ${(p) =>
+        p.theme.palette.text.primary} !important;
+    }
   }
 
   .MuiInput-root:before {

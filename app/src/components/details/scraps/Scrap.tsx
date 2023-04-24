@@ -14,12 +14,11 @@ import {
   ScrapType,
 } from "../../../serverApi/IScrapMeasurement";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
-import { engravedTheme } from "../../../theming/engravedTheme";
 import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
 import { Actions } from "../../common/Actions";
 import { useAppContext } from "../../../AppContext";
-import { ScrapList } from "./list/ScrapList";
 import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
+import { ScrapList } from "./list/ScrapList";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -28,7 +27,7 @@ export const Scrap: React.FC<{
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
-  const [editMode, setEditMode] = useState(!scrap.id);
+  const [isEditMode, setIsEditMode] = useState(!scrap.id);
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
     scrap.metricId,
@@ -41,33 +40,41 @@ export const Scrap: React.FC<{
   }, []);
 
   useEffect(() => {
-    if (!editMode && notes !== scrap.notes) {
+    if (!isEditMode && notes !== scrap.notes) {
       upsertScrap();
     }
-  }, [editMode]);
+  }, [isEditMode]);
 
   const { setAppAlert } = useAppContext();
 
-  const isNew = editMode || !scrap.id;
-
   return (
-    <ClickAwayListener onClickAway={() => setEditMode(false)}>
-      <div onClick={() => setEditMode(true)}>
+    <ClickAwayListener onClickAway={() => setIsEditMode(false)}>
+      <div
+        onClick={(e) => {
+          if (e.detail === 2) {
+            setIsEditMode(true);
+          }
+        }}
+      >
         <StyledTextField
           placeholder={"Title"}
-          autoFocus={isNew}
           value={title}
+          disabled={!isEditMode}
           onChange={(event) => {
             setTitle(event.target.value);
           }}
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", color: "deeppink" }}
         />
 
         {scrap.scrapType === ScrapType.List ? (
-          <ScrapList editMode={editMode} value={notes} onChange={onChange} />
+          <ScrapList
+            isEditMode={isEditMode}
+            value={notes}
+            onChange={onChange}
+          />
         ) : (
           <ScrapMarkdown
-            editMode={editMode}
+            isEditMode={isEditMode}
             value={notes}
             onChange={onChange}
           />
@@ -141,15 +148,15 @@ const FooterContainer = styled("div")`
   align-items: center;
 `;
 
-const StyledTextField = styled(TextField)({
-  "& .MuiOutlinedInput-root": {
-    input: {
-      padding: 0,
-      color: engravedTheme.palette.primary.main,
-      fontSize: "larger",
-    },
-    fieldset: {
-      borderWidth: 0,
-    },
-  },
-});
+const StyledTextField = styled(TextField)`
+  input {
+    padding: 0;
+    font-size: larger;
+    color: ${(p) => p.theme.palette.primary.main} !important;
+    -webkit-text-fill-color: ${(p) => p.theme.palette.primary.main} !important;
+  }
+
+  fieldset {
+    border-width: 0;
+  }
+`;
