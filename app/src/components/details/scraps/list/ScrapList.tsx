@@ -27,12 +27,14 @@ export const ScrapList: React.FC<{
             <ListItem key={index + "_" + item.label}>
               <ScrapListItem
                 listItem={item}
-                onChange={(updatedItem) => {
-                  onChangeInternal(index, updatedItem);
-                }}
                 onFocus={() => {
                   clearTimeout(blurTimer);
                   onFocus();
+                }}
+                onChange={(updatedItem) => {
+                  const updatedItems = [...items];
+                  updatedItems[index] = updatedItem;
+                  updateItems(updatedItems);
                 }}
                 onEnter={() => {
                   const updatedItems = [...items];
@@ -42,22 +44,12 @@ export const ScrapList: React.FC<{
                     isCompleted: false,
                   });
 
-                  setItems(updatedItems);
-
-                  onChange(JSON.stringify(updatedItems));
-
-                  enqueueOnBlur();
+                  updateItems(updatedItems);
                 }}
                 onDelete={() => {
                   const updatedItems = [...items];
-
                   updatedItems.splice(index, 1);
-
-                  setItems(updatedItems);
-
-                  onChange(JSON.stringify(updatedItems));
-
-                  enqueueOnBlur();
+                  updateItems(updatedItems);
                 }}
               />
             </ListItem>
@@ -75,17 +67,11 @@ export const ScrapList: React.FC<{
     </PageSection>
   );
 
-  function onChangeInternal(index: number, updatedItem: ISCrapListItem) {
-    const updatedItems = [...items];
-    updatedItems[index] = updatedItem;
+  function updateItems(updatedItems: ISCrapListItem[]) {
     setItems(updatedItems);
 
     onChange(JSON.stringify(updatedItems));
 
-    enqueueOnBlur();
-  }
-
-  function enqueueOnBlur() {
     clearTimeout(blurTimer);
 
     blurTimer = setTimeout(() => {
