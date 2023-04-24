@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Markdown } from "./Markdown";
 import { FormatDate } from "../../common/FormatDate";
-import { styled, TextField, Typography } from "@mui/material";
+import {
+  ClickAwayListener,
+  styled,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { ContentCopyOutlined, DeleteOutlined } from "@mui/icons-material";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../serverApi/MetricType";
-import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import {
+  IScrapMeasurement,
+  ScrapType,
+} from "../../../serverApi/IScrapMeasurement";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
-import { engravedTheme } from "../../../theming/engravedTheme";
-import { MarkdownEditor, preloadLazyCodeMirror } from "./MarkdownEditor";
-import { FadeInContainer } from "../../common/FadeInContainer";
+import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
 import { Actions } from "../../common/Actions";
 import { useAppContext } from "../../../AppContext";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const timers: { [scrapId: string]: any } = {};
+import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
+import { ScrapList } from "./list/ScrapList";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -23,9 +27,20 @@ export const Scrap: React.FC<{
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
-  const [editMode, setEditMode] = useState<"off" | "fromTitle" | "fromBody">(
-    !scrap.id ? "fromTitle" : "off"
-  );
+  const [isEditMode, setIsEditMode] = useState(!scrap.id);
+  const [hasTitleFocus, setHasTitleFocus] = useState(false);
+
+  const { setAppAlert } = useAppContext();
+
+  useEffect(() => {
+    preloadLazyCodeMirror();
+  }, []);
+
+  useEffect(() => {
+    if (!isEditMode && notes !== scrap.notes) {
+      upsertScrap();
+    }
+  }, [isEditMode]);
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
     scrap.metricId,
@@ -33,101 +48,79 @@ export const Scrap: React.FC<{
     scrap
   );
 
-  useEffect(() => {
-    preloadLazyCodeMirror();
-  }, []);
-
-  const { setAppAlert } = useAppContext();
-
-  const isNew = editMode !== "off" || !scrap.id;
-
   return (
-    <>
-      <StyledTextField
-        placeholder={"Title"}
-        autoFocus={isNew}
-        value={title}
-        onChange={(event) => {
-          clearTimeout(timers[scrap.id]);
-          setTitle(event.target.value);
+    <ClickAwayListener onClickAway={() => setIsEditMode(false)}>
+      <div
+        onClick={(e) => {
+          if (e.detail === 2) {
+            setIsEditMode(true);
+          }
         }}
-        onFocus={() => {
-          clearTimeout(timers[scrap.id]);
-          setEditMode("fromTitle");
-        }}
-        onBlur={onBlur}
-        onClick={() => setEditMode("fromTitle")}
-        sx={{ width: "100%" }}
-      />
-      {editMode !== "off" ? (
-        <EditorContainer>
-          <MarkdownEditor
-            disableAutoFocus={editMode !== "fromBody"}
-            showOutlineWhenFocused={true}
-            value={notes ?? ""}
-            onChange={(value) => {
-              clearTimeout(timers[scrap.id]);
-              setNotes(value);
-            }}
-            onBlur={onBlur}
-            onFocus={() => clearTimeout(timers[scrap.id])}
+      >
+        <StyledTextField
+          placeholder={"Title"}
+          value={title}
+          disabled={!isEditMode}
+          onChange={(event) => {
+            setTitle(event.target.value);
+          }}
+          onFocus={() => setHasTitleFocus(true)}
+          onBlur={() => setHasTitleFocus(false)}
+          sx={{ width: "100%", color: "deeppink" }}
+        />
+
+        {scrap.scrapType === ScrapType.List ? (
+          <ScrapList
+            isEditMode={isEditMode}
+            hasTitleFocus={hasTitleFocus}
+            value={notes}
+            onChange={onChange}
           />
-        </EditorContainer>
-      ) : (
-        <FadeInContainer>
-          <Markdown
-            onClick={(e) => {
-              if (e.detail == 2) {
-                setEditMode("fromBody");
-              }
-            }}
-            value={scrap.notes}
+        ) : (
+          <ScrapMarkdown
+            isEditMode={isEditMode}
+            value={notes}
+            onChange={onChange}
           />
-        </FadeInContainer>
-      )}
-      <FooterContainer>
-        {hideDate ? null : (
-          <Typography fontSize="small" component="span" sx={{ mr: 2 }}>
-            {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
-          </Typography>
         )}
 
-        <Actions
-          actions={[
-            {
-              key: "copy",
-              label: "Copy",
-              icon: <ContentCopyOutlined fontSize="small" />,
-              onClick: async () => {
-                await navigator.clipboard.writeText(scrap.notes);
-                setAppAlert({
-                  type: "success",
-                  title: "Successfully copied text to clipboard.",
-                  hideDurationSec: 1,
-                });
+        <FooterContainer>
+          {hideDate ? null : (
+            <Typography fontSize="small" component="span" sx={{ mr: 2 }}>
+              {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
+            </Typography>
+          )}
+
+          <Actions
+            actions={[
+              {
+                key: "copy",
+                label: "Copy",
+                icon: <ContentCopyOutlined fontSize="small" />,
+                onClick: async () => {
+                  await navigator.clipboard.writeText(scrap.notes);
+                  setAppAlert({
+                    type: "success",
+                    title: "Successfully copied text to clipboard.",
+                    hideDurationSec: 1,
+                  });
+                },
               },
-            },
-            {
-              key: "delete",
-              label: "Delete",
-              icon: <DeleteOutlined fontSize="small" />,
-              href: `measurements/${scrap.id}/delete`,
-            },
-          ]}
-        />
-      </FooterContainer>
-    </>
+              {
+                key: "delete",
+                label: "Delete",
+                icon: <DeleteOutlined fontSize="small" />,
+                href: `measurements/${scrap.id}/delete`,
+              },
+            ]}
+          />
+        </FooterContainer>
+      </div>
+    </ClickAwayListener>
   );
 
-  function onBlur() {
-    clearTimeout(timers[scrap.id]);
-
-    // we use a timeout here in order to let the browser have time to
-    // move the focus to the next element
-    timers[scrap.id] = setTimeout(async () => {
-      await upsertScrap();
-      setEditMode("off");
-    });
+  function onChange(value: string) {
+    setNotes(value);
   }
 
   async function upsertScrap() {
@@ -142,6 +135,7 @@ export const Scrap: React.FC<{
     await upsertMeasurementMutation.mutate({
       command: {
         id: scrap?.id,
+        scrapType: scrap.scrapType,
         notes: notes,
         title: title,
         metricAttributeValues: {},
@@ -158,21 +152,15 @@ const FooterContainer = styled("div")`
   align-items: center;
 `;
 
-const EditorContainer = styled("div")`
-  .cm-editor {
+const StyledTextField = styled(TextField)`
+  input {
     padding: 0;
+    font-size: larger;
+    color: ${(p) => p.theme.palette.primary.main} !important;
+    -webkit-text-fill-color: ${(p) => p.theme.palette.primary.main} !important;
+  }
+
+  fieldset {
+    border-width: 0;
   }
 `;
-
-const StyledTextField = styled(TextField)({
-  "& .MuiOutlinedInput-root": {
-    input: {
-      padding: 0,
-      color: engravedTheme.palette.primary.main,
-      fontSize: "larger",
-    },
-    fieldset: {
-      borderWidth: 0,
-    },
-  },
-});

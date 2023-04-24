@@ -11,7 +11,6 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   onBlur,
   onFocus,
   theme,
-  disableAutoFocus,
   showOutlineWhenFocused,
 }) => {
   return (
@@ -21,7 +20,7 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
       onChange={onChange}
       onBlur={onBlur}
       onFocus={onFocus}
-      autoFocus={!disableAutoFocus}
+      autoFocus={true}
       basicSetup={{
         lineNumbers: false,
         syntaxHighlighting: false,

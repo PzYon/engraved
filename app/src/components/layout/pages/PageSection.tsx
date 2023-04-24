@@ -4,12 +4,16 @@ import { Paper, styled, Typography } from "@mui/material";
 export const PageSection: React.FC<{
   children: React.ReactNode;
   title?: string;
+  style?: React.CSSProperties;
   overflowXScroll?: boolean;
-}> = ({ title, children, overflowXScroll }) => {
+}> = ({ title, children, style, overflowXScroll }) => {
   return (
     <Host
       className={"details-section"}
-      style={{ overflowX: overflowXScroll ? "auto" : "hidden" }}
+      style={{
+        ...(style ?? {}),
+        overflowX: overflowXScroll ? "auto" : "hidden",
+      }}
     >
       {title ? (
         <Typography sx={{ flexShrink: 0, fontWeight: "bold" }}>

@@ -7,7 +7,6 @@ export interface ICodeMirrorProps {
   onBlur?: () => void;
   onFocus?: () => void;
   theme?: Theme;
-  disableAutoFocus?: boolean;
   showOutlineWhenFocused?: boolean;
 }
 

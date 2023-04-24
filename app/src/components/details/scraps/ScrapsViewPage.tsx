@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Scrap } from "./Scrap";
-import { AddOutlined } from "@mui/icons-material";
+import { CheckBoxOutlined, FormatAlignLeftOutlined } from "@mui/icons-material";
 import { useMetricContext } from "../MetricDetailsContext";
 import { MetricPageTitle } from "../MetricPageTitle";
 import { getCommonActions } from "../../overview/getCommonActions";
 import { Page } from "../../layout/pages/Page";
-import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import {
+  IScrapMeasurement,
+  ScrapType,
+} from "../../../serverApi/IScrapMeasurement";
 import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { PageSection } from "../../layout/pages/PageSection";
@@ -36,7 +39,12 @@ export const ScrapsViewPage: React.FC = () => {
     <Page
       title={<MetricPageTitle metric={metric} />}
       documentTitle={metric.name}
-      actions={[getAddNewAction(), ...getCommonActions(metric)]}
+      actions={[
+        getAddNewAction("markdown"),
+        getAddNewAction("list"),
+        null,
+        ...getCommonActions(metric),
+      ]}
     >
       {newScrap ? (
         <PageSection key="new">
@@ -59,11 +67,17 @@ export const ScrapsViewPage: React.FC = () => {
     </Page>
   );
 
-  function getAddNewAction() {
+  function getAddNewAction(type: "markdown" | "list") {
+    const isMarkdown = type === "markdown";
+
     return {
-      key: "add-scrap",
-      label: "Add new",
-      icon: <AddOutlined fontSize="small" />,
+      key: "add-scrap-" + type,
+      label: "Add " + type,
+      icon: isMarkdown ? (
+        <FormatAlignLeftOutlined fontSize="small" />
+      ) : (
+        <CheckBoxOutlined fontSize="small" />
+      ),
       onClick: () => {
         setNewScrap({
           id: null,
@@ -71,6 +85,7 @@ export const ScrapsViewPage: React.FC = () => {
           notes: "",
           title: "",
           metricId: metric.id,
+          scrapType: isMarkdown ? ScrapType.Markdown : ScrapType.List,
         });
       },
     };
