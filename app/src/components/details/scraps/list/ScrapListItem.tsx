@@ -3,15 +3,13 @@ import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled, TextField } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
-import { editModeKind } from "../Scrap";
 
 export const ScrapListItem: React.FC<{
-  editMode: editModeKind;
+  editMode: boolean;
   listItem: ISCrapListItem;
   onChange: (listItem: ISCrapListItem) => void;
-  onFocus: () => void;
   onEnter: () => void;
-}> = ({ editMode, listItem, onChange, onFocus, onEnter }) => {
+}> = ({ editMode, listItem, onChange, onEnter }) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
 
@@ -25,7 +23,6 @@ export const ScrapListItem: React.FC<{
         }}
       />
       <StyledTextField
-        onFocus={onFocus}
         value={label}
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
@@ -37,7 +34,7 @@ export const ScrapListItem: React.FC<{
       />
       <IconButtonWrapper
         action={{
-          sx: editMode === "off" ? { visibility: "hidden" } : null,
+          sx: !editMode ? { visibility: "hidden" } : null,
           key: "remove",
           label: "Delete",
           icon: <RemoveCircleOutline fontSize={"small"} />,
