@@ -28,16 +28,9 @@ export const Scrap: React.FC<{
   const [title, setTitle] = useState(scrap.title);
 
   const [isEditMode, setIsEditMode] = useState(!scrap.id);
-
-  const upsertMeasurementMutation = useUpsertMeasurementMutation(
-    scrap.metricId,
-    MetricType.Scraps,
-    scrap
-  );
+  const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   const { setAppAlert } = useAppContext();
-
-  const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   useEffect(() => {
     preloadLazyCodeMirror();
@@ -48,6 +41,12 @@ export const Scrap: React.FC<{
       upsertScrap();
     }
   }, [isEditMode]);
+
+  const upsertMeasurementMutation = useUpsertMeasurementMutation(
+    scrap.metricId,
+    MetricType.Scraps,
+    scrap
+  );
 
   return (
     <ClickAwayListener onClickAway={() => setIsEditMode(false)}>
