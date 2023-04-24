@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Scrap } from "./Scrap";
-import { AddOutlined, CheckBoxOutlined } from "@mui/icons-material";
+import { CheckBoxOutlined, FormatAlignLeftOutlined } from "@mui/icons-material";
 import { useMetricContext } from "../MetricDetailsContext";
 import { MetricPageTitle } from "../MetricPageTitle";
 import { getCommonActions } from "../../overview/getCommonActions";
@@ -42,6 +42,7 @@ export const ScrapsViewPage: React.FC = () => {
       actions={[
         getAddNewAction("markdown"),
         getAddNewAction("list"),
+        null,
         ...getCommonActions(metric),
       ]}
     >
@@ -73,7 +74,7 @@ export const ScrapsViewPage: React.FC = () => {
       key: "add-scrap-" + type,
       label: "Add " + type,
       icon: isMarkdown ? (
-        <AddOutlined fontSize="small" />
+        <FormatAlignLeftOutlined fontSize="small" />
       ) : (
         <CheckBoxOutlined fontSize="small" />
       ),

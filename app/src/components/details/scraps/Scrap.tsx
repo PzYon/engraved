@@ -35,6 +35,10 @@ export const Scrap: React.FC<{
     scrap
   );
 
+  const { setAppAlert } = useAppContext();
+
+  const [hasTitleFocus, setHasTitleFocus] = useState(false);
+
   useEffect(() => {
     preloadLazyCodeMirror();
   }, []);
@@ -44,8 +48,6 @@ export const Scrap: React.FC<{
       upsertScrap();
     }
   }, [isEditMode]);
-
-  const { setAppAlert } = useAppContext();
 
   return (
     <ClickAwayListener onClickAway={() => setIsEditMode(false)}>
@@ -63,12 +65,15 @@ export const Scrap: React.FC<{
           onChange={(event) => {
             setTitle(event.target.value);
           }}
+          onFocus={() => setHasTitleFocus(true)}
+          onBlur={() => setHasTitleFocus(false)}
           sx={{ width: "100%", color: "deeppink" }}
         />
 
         {scrap.scrapType === ScrapType.List ? (
           <ScrapList
             isEditMode={isEditMode}
+            hasTitleFocus={hasTitleFocus}
             value={notes}
             onChange={onChange}
           />

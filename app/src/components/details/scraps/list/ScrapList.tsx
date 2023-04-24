@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { styled } from "@mui/material";
+import { styled, useTheme } from "@mui/material";
 import { PageSection } from "../../../layout/pages/PageSection";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
@@ -9,14 +9,23 @@ import { AddOutlined } from "@mui/icons-material";
 export const ScrapList: React.FC<{
   isEditMode: boolean;
   value: string;
+  hasTitleFocus: boolean;
   onChange: (json: string) => void;
-}> = ({ isEditMode, value, onChange }) => {
+}> = ({ isEditMode, value, hasTitleFocus, onChange }) => {
+  const { palette } = useTheme();
+
   const [items, setItems] = useState<ISCrapListItem[]>(
     value ? JSON.parse(value) : []
   );
 
   return (
-    <PageSection>
+    <PageSection
+      style={
+        isEditMode && !hasTitleFocus
+          ? { outline: "2px solid " + palette.primary.main }
+          : {}
+      }
+    >
       <List>
         {items.map((item, index) => (
           <ListItem key={index + "_" + item.label}>
