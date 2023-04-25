@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ClickAwayListener, styled, TextField } from "@mui/material";
+import { ClickAwayListener } from "@mui/material";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../serverApi/MetricType";
 import {
@@ -10,6 +10,7 @@ import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUp
 import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
 import { ScripListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
+import { AutogrowTextField } from "../../common/AutogrowTextField";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -46,8 +47,10 @@ export const Scrap: React.FC<{
           }
         }}
       >
-        <StyledTextField
+        <AutogrowTextField
+          fieldType={"title"}
           placeholder={"Title"}
+          variant="outlined"
           value={title}
           disabled={!isEditMode}
           onChange={(event) => setTitle(event.target.value)}
@@ -103,16 +106,3 @@ export const Scrap: React.FC<{
     });
   }
 };
-
-const StyledTextField = styled(TextField)`
-  input {
-    padding: 0;
-    font-size: larger;
-    color: ${(p) => p.theme.palette.primary.main} !important;
-    -webkit-text-fill-color: ${(p) => p.theme.palette.primary.main} !important;
-  }
-
-  fieldset {
-    border-width: 0;
-  }
-`;

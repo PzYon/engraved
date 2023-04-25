@@ -28,33 +28,32 @@ export const ScrapList: React.FC<{
     >
       <List>
         {items.map((item, index) => (
-          <ListItem key={index + "_" + item.label}>
-            <ScrapListItem
-              isEditMode={isEditMode}
-              listItem={item}
-              onChange={(updatedItem) => {
-                const updatedItems = [...items];
+          <ScrapListItem
+            key={index + "_" + item.label}
+            isEditMode={isEditMode}
+            listItem={item}
+            onChange={(updatedItem) => {
+              const updatedItems = [...items];
 
-                if (!updatedItem) {
-                  updatedItems.splice(index, 1);
-                } else {
-                  updatedItems[index] = updatedItem;
-                }
+              if (!updatedItem) {
+                updatedItems.splice(index, 1);
+              } else {
+                updatedItems[index] = updatedItem;
+              }
 
-                updateItems(updatedItems);
-              }}
-              onEnter={() => {
-                const updatedItems = [...items];
+              updateItems(updatedItems);
+            }}
+            onEnter={() => {
+              const updatedItems = [...items];
 
-                updatedItems.splice(index + 1, 0, {
-                  label: "",
-                  isCompleted: false,
-                });
+              updatedItems.splice(index + 1, 0, {
+                label: "",
+                isCompleted: false,
+              });
 
-                updateItems(updatedItems);
-              }}
-            />
-          </ListItem>
+              updateItems(updatedItems);
+            }}
+          />
         ))}
       </List>
       {isEditMode ? (
@@ -85,9 +84,4 @@ const List = styled("ul")`
   list-style-type: none;
   margin: 0;
   padding: 0;
-`;
-
-const ListItem = styled("li")`
-  display: flex;
-  align-items: center;
 `;

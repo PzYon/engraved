@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
-import { Checkbox, styled, TextField } from "@mui/material";
+import { Checkbox, styled } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
+import { AutogrowTextField } from "../../../common/AutogrowTextField";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
@@ -14,7 +15,7 @@ export const ScrapListItem: React.FC<{
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
 
   return (
-    <>
+    <ListItem>
       <StyledCheckbox
         checked={isCompleted}
         disabled={!isEditMode}
@@ -23,21 +24,14 @@ export const ScrapListItem: React.FC<{
           onChange({ label, isCompleted: checked });
         }}
       />
-      <StyledTextField
+      <AutogrowTextField
+        fieldType="content"
         disabled={!isEditMode}
         value={label}
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-          }
-        }}
         onBlur={() => onChange({ label, isCompleted: isCompleted })}
-        variant="standard"
-        multiline={true}
-        autoComplete={"new-password"}
-        sx={{ flexGrow: 1 }}
+        sx={{ flexGrow: 1, marginTop: "6px" }}
         autoFocus={!listItem.label}
       />
       <IconButtonWrapper
@@ -50,7 +44,7 @@ export const ScrapListItem: React.FC<{
           onClick: () => onChange(null),
         }}
       />
-    </>
+    </ListItem>
   );
 
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
@@ -70,17 +64,7 @@ const StyledCheckbox = styled(Checkbox)`
   }
 `;
 
-const StyledTextField = styled(TextField)`
-  textarea {
-    padding: 2px 6px;
-
-    &.Mui-disabled {
-      -webkit-text-fill-color: ${(p) =>
-        p.theme.palette.text.primary} !important;
-    }
-  }
-
-  .MuiInput-root:before {
-    border: 0 !important;
-  }
+const ListItem = styled("li")`
+  display: flex;
+  align-items: start;
 `;
