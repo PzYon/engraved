@@ -30,7 +30,7 @@ export const AddMetric: React.FC = () => {
       <PageSection>
         <FormControl sx={{ width: "100%" }}>
           <TextField
-            autoComplete="off"
+            autoComplete="new-password"
             value={name}
             onChange={(event) => setName(event.target.value)}
             required={true}

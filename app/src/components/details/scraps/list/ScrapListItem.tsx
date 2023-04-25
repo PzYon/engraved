@@ -28,9 +28,15 @@ export const ScrapListItem: React.FC<{
         value={label}
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
         onBlur={() => onChange({ label, isCompleted: isCompleted })}
         variant="standard"
-        autoComplete={"off"}
+        multiline={true}
+        autoComplete={"new-password"}
         sx={{ flexGrow: 1 }}
         autoFocus={!listItem.label}
       />
@@ -65,7 +71,7 @@ const StyledCheckbox = styled(Checkbox)`
 `;
 
 const StyledTextField = styled(TextField)`
-  input {
+  textarea {
     padding: 2px 6px;
 
     &.Mui-disabled {
