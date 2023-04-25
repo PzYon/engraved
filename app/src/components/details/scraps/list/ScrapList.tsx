@@ -57,14 +57,16 @@ export const ScrapList: React.FC<{
           </ListItem>
         ))}
       </List>
-      <IconButtonWrapper
-        action={{
-          key: "add",
-          label: "Add new",
-          icon: <AddOutlined fontSize="small" />,
-          onClick: addNew,
-        }}
-      />
+      {isEditMode ? (
+        <IconButtonWrapper
+          action={{
+            key: "add",
+            label: "Add new",
+            icon: <AddOutlined fontSize="small" />,
+            onClick: addNew,
+          }}
+        />
+      ) : null}
     </PageSection>
   );
 
