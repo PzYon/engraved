@@ -11,6 +11,7 @@ export interface ICodeMirrorProps {
 }
 
 let isPreloaded = false;
+
 export const preloadLazyCodeMirror = () => {
   if (isPreloaded) {
     return;
