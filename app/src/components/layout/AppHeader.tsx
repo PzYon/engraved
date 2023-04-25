@@ -30,7 +30,6 @@ export const AppHeader: React.FC = () => {
             <Typography
               variant="h1"
               sx={{
-                fontFamily: "Pacifico",
                 fontSize: "35px",
                 marginTop: "-10px",
               }}

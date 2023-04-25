@@ -7,7 +7,7 @@ import { GoogleInitializeResponse } from "./serverApi/authentication/google/Goog
 import { registerGooglePrompt } from "./serverApi/authentication/google/registerGooglePrompt";
 import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
-import { CircularProgress, styled } from "@mui/material";
+import { CircularProgress, styled, Typography } from "@mui/material";
 
 const storage = new AuthStorage();
 
@@ -52,7 +52,17 @@ export const Bootstrapper: React.FC = () => {
         <CircularProgress sx={{ color: "common.white" }} />
       ) : (
         <WelcomeContainer>
-          <WelcomeText>engraved.</WelcomeText>
+          <Typography
+            variant={"h1"}
+            sx={{
+              color: "common.white",
+              fontSize: "90px",
+              pb: 2,
+              mb: 4,
+            }}
+          >
+            engraved.
+          </Typography>
           <div ref={ref} />
         </WelcomeContainer>
       )}
@@ -90,11 +100,4 @@ const WelcomeContainer = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const WelcomeText = styled("div")`
-  font-family: Pacifico, serif;
-  color: ${(p) => p.theme.palette.common.white};
-  font-size: 90px;
-  margin-bottom: 30px;
 `;

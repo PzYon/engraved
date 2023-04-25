@@ -26,6 +26,7 @@ export const engravedTheme = createTheme({
     },
     h1: {
       fontSize: "3rem",
+      fontFamily: "Pacifico",
     },
     h2: {
       fontSize: "2rem",
