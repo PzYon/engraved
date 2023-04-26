@@ -26,7 +26,7 @@ public class GetActivitiesQueryExecutor : IQueryExecutor<GetActivitiesQueryResul
     return new GetActivitiesQueryResult
     {
       Metrics = allMetrics.Where(m => relevantMetricIds.Contains(m.Id)).ToArray(),
-      Measurements = allMeasurements.OrderByDescending(m => m.DateTime).ToArray()
+      Measurements = allMeasurements.ToArray()
     };
   }
 }
