@@ -57,7 +57,7 @@ export const ScrapListItem: React.FC<{
 };
 
 const StyledCheckbox = styled(Checkbox)`
-  padding: 5px;
+  padding: 5px 5px 5px 0;
 
   &.MuiCheckbox-root.Mui-disabled.MuiCheckbox-colorPrimary {
     color: ${(p) => p.theme.palette.primary.main} !important;
