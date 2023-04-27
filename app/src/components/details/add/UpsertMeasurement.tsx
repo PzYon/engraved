@@ -145,10 +145,12 @@ export const UpsertMeasurement: React.FC<{
         </Button>
         <Button
           variant="contained"
-          onClick={() => {
-            ensureNewAttributeValues();
+          onClick={async () => {
+            await ensureNewAttributeValues();
 
-            upsertMeasurementMutation.mutate({ command: createCommand() });
+            await upsertMeasurementMutation.mutate({
+              command: createCommand(),
+            });
           }}
         >
           {measurement?.id ? translations.edit : translations.add}
@@ -185,7 +187,7 @@ export const UpsertMeasurement: React.FC<{
     return command;
   }
 
-  function ensureNewAttributeValues() {
+  async function ensureNewAttributeValues() {
     let hasNewValues = false;
 
     for (const keyInValues in attributeValues) {
@@ -198,7 +200,7 @@ export const UpsertMeasurement: React.FC<{
     }
 
     if (hasNewValues) {
-      editMetricMutation.mutate({ metric: metric });
+      await editMetricMutation.mutateAsync({ metric: metric });
     }
   }
 
