@@ -1,28 +1,30 @@
 import { IDateConditions } from "../components/details/MetricDetailsContext";
 
+const metrics = "metrics";
+
 export const queryKeysFactory = {
   metrics() {
-    return ["metrics"];
+    return [metrics];
   },
 
   metric(metricId: string) {
-    return ["metrics", metricId];
+    return [metrics, metricId];
   },
 
   addMetric() {
-    return ["metrics", "add"];
+    return [metrics, "add"];
   },
 
   editMetric(metricId: string) {
-    return ["metrics", metricId, "edit"];
+    return [metrics, metricId, "edit"];
   },
 
   deleteMetric(metricId: string) {
-    return ["metrics", metricId, "delete"];
+    return [metrics, metricId, "delete"];
   },
 
   metricThresholdValues(metricId: string, dateConditions: IDateConditions) {
-    return ["metrics", metricId, "threshold-values", dateConditions];
+    return [metrics, metricId, "threshold-values", dateConditions];
   },
 
   measurements(
@@ -31,7 +33,7 @@ export const queryKeysFactory = {
     attributeValues: { [key: string]: string[] }
   ) {
     return [
-      "metrics",
+      metrics,
       metricId,
       "measurements",
       { filters: { dateConditions, attributeValues } },
@@ -39,19 +41,19 @@ export const queryKeysFactory = {
   },
 
   updateMeasurement(metricId: string, measurementId: string) {
-    return ["metrics", metricId, "measurement", "update", measurementId];
+    return [metrics, metricId, "measurement", "update", measurementId];
   },
 
   deleteMeasurement(metricId: string, measurementId: string) {
-    return ["metrics", metricId, "measurement", "delete", measurementId];
+    return [metrics, metricId, "measurement", "delete", measurementId];
   },
 
   activeMeasurement(metricId: string) {
-    return ["metrics", metricId, "measurements", "get-active"];
+    return [metrics, metricId, "measurements", "get-active"];
   },
 
   activities() {
-    return ["activities"];
+    return [metrics, "activities"];
   },
 
   systemInfo() {
