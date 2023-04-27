@@ -31,7 +31,13 @@ export const ScrapListItem: React.FC<{
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
         onBlur={() => onChange({ label, isCompleted: isCompleted })}
-        sx={{ flexGrow: 1, marginTop: "6px" }}
+        sx={{
+          flexGrow: 1,
+          marginTop: "6px",
+          textarea: {
+            textDecoration: isCompleted ? "line-through" : "none",
+          },
+        }}
         autoFocus={!listItem.label}
       />
       <IconButtonWrapper

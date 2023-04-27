@@ -26,15 +26,6 @@ export const AutogrowTextField: React.FC<
 const StyledTextField = styled(TextField)`
   width: 100%;
 
-  textarea {
-    &,
-    &.Mui-disabled {
-      -webkit-text-fill-color: ${(p) =>
-        p.theme.palette.text.primary} !important;
-      color: ${(p) => p.theme.palette.text.primary} !important;
-    }
-  }
-
   .MuiInputBase-root {
     padding: 0;
   }
@@ -47,14 +38,29 @@ const StyledTextField = styled(TextField)`
   fieldset {
     border-width: 0;
   }
-`;
 
-const StyledTitleTextField = styled(StyledTextField)`
   textarea {
     &,
     &.Mui-disabled {
-    -webkit-text-fill-color: ${(p) => p.theme.palette.primary.main} !important;
-    color: ${(p) => p.theme.palette.primary.main} !important;
+      -webkit-text-fill-color: ${(p) =>
+        p.theme.palette.text.primary} !important;
+      color: ${(p) => p.theme.palette.text.primary} !important;
+    }
+  }
+`;
+
+const StyledTitleTextField = styled(StyledTextField)`
+  .MuiInputBase-root {
+    padding: 8px 0;
+  }
+
+  textarea {
+    &,
+    &.Mui-disabled {
+      -webkit-text-fill-color: ${(p) =>
+        p.theme.palette.primary.main} !important;
+      color: ${(p) => p.theme.palette.primary.main} !important;
       font-size: larger;
+    }
   }
 `;
