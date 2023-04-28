@@ -3,8 +3,12 @@ import { styled, useTheme } from "@mui/material";
 import { PageSection } from "../../../layout/pages/PageSection";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
-import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
-import { AddOutlined } from "@mui/icons-material";
+import {
+  AddOutlined,
+  MoveDownOutlined,
+  RemoveCircleOutline,
+} from "@mui/icons-material";
+import { Actions } from "../../../common/Actions";
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
@@ -57,14 +61,42 @@ export const ScrapList: React.FC<{
         ))}
       </List>
       {isEditMode ? (
-        <IconButtonWrapper
-          action={{
-            key: "add",
-            label: "Add new",
-            icon: <AddOutlined fontSize="small" />,
-            onClick: addNew,
-          }}
-        />
+        <ActionsContainer>
+          <Actions
+            actions={[
+              {
+                key: "add",
+                label: "Add new",
+                icon: <AddOutlined fontSize="small" />,
+                onClick: addNew,
+              },
+              {
+                key: "move-checked-to-bottom",
+                label: "Move checked to bottom",
+                icon: <MoveDownOutlined fontSize="small" />,
+                onClick: () => {
+                  updateItems(
+                    items.sort((a, b) => {
+                      return a.isCompleted == b.isCompleted
+                        ? 0
+                        : a.isCompleted
+                        ? 1
+                        : -1;
+                    })
+                  );
+                },
+              },
+              {
+                key: "delete-checked",
+                label: "Delete checked",
+                icon: <RemoveCircleOutline fontSize="small" />,
+                onClick: () => {
+                  updateItems(items.filter((i) => !i.isCompleted));
+                },
+              },
+            ]}
+          />
+        </ActionsContainer>
       ) : null}
     </PageSection>
   );
@@ -84,4 +116,8 @@ const List = styled("ul")`
   list-style-type: none;
   margin: 0;
   padding: 0;
+`;
+
+const ActionsContainer = styled("div")`
+  display: flex;
 `;
