@@ -69,11 +69,20 @@ jobs:
         with:
           name: api
 
-      - name: Deploy to Azure App Service
+      - name: Deploy to Azure App Service (Windows)
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: "engraved"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E }}
+          package: .
+
+      - name: Deploy to Azure App Service (Linux)
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "engraved-lnx"
+          slot-name: "Production"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E_LNX }}
           package: .
