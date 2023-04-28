@@ -24,6 +24,10 @@ const ContentContainer = styled("div")`
 
   font-family: ${(p) => p.theme.typography.fontFamily};
 
+  p {
+    font-size: large;
+  }
+
   h1,
   h2,
   h3 {
