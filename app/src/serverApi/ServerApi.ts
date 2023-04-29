@@ -30,6 +30,8 @@ type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 export class ServerApi {
   private static _jwtToken: string;
 
+  static serverOs: "lin" | "win" = "lin";
+
   static loadingHandler: LoadingHandler = new LoadingHandler();
 
   private static googlePrompt: () => Promise<{ isSuccess: boolean }>;
@@ -53,6 +55,14 @@ export class ServerApi {
         );
       }
     });
+  }
+
+  static setServerOs(os: "lin" | "win"): void {
+    ServerApi.serverOs = os;
+  }
+
+  static getServerOs() {
+    return ServerApi.serverOs;
   }
 
   static async wakeMeUp(): Promise<void> {
@@ -292,10 +302,13 @@ export class ServerApi {
       headers: headers,
     };
 
-    return await fetch(
-      new Request(envSettings.apiBaseUrl + url),
-      requestConfig
-    );
+    return await fetch(new Request(this.getBaseUrl() + url), requestConfig);
+  }
+
+  private static getBaseUrl() {
+    return ServerApi.serverOs === "win"
+      ? envSettings.apiBaseUrlWindows
+      : envSettings.apiBaseUrlLinux;
   }
 
   private static printPerfData(
@@ -310,7 +323,7 @@ export class ServerApi {
     const status = response.status;
 
     console.info(
-      `-- ${method} ${url} [${status}]: Server ${server} + Network ${network} = Total ${total} `
+      `-- ${method} ${url} (${ServerApi.serverOs}) [${status}]: Server ${server} + Network ${network} = Total ${total} `
     );
   }
 }

@@ -37,9 +37,7 @@ public class MetricsController : ControllerBase
   [HttpGet]
   public async Task<IMetric?> Get(string metricId)
   {
-    var command = new GetMetricQuery { MetricId = metricId };
-
-    return await _dispatcher.Query(command);
+    return await _dispatcher.Query(new GetMetricQuery { MetricId = metricId });
   }
 
   [HttpPost]

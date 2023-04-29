@@ -53,8 +53,8 @@ jobs:
           name: api
           path: ${{env.DOTNET_ROOT}}\Engraved.Api
 
-  deploy:
-    name: Deploy API
+  deploy-windows:
+    name: Deploy API (Linux)
     runs-on: windows-latest
     needs: build
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
@@ -69,11 +69,36 @@ jobs:
         with:
           name: api
 
-      - name: Deploy to Azure App Service
+      - name: Deploy to Azure App Service (Windows)
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: "engraved"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E }}
+          package: .
+
+  deploy-linux:
+    name: Deploy API (Windows)
+    runs-on: windows-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
+
+    environment:
+      name: "Production"
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: api
+
+      - name: Deploy to Azure App Service (Linux)
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "engraved-lnx"
+          slot-name: "Production"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E_LNX }}
           package: .
