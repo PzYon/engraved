@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { ISystemInfo } from "../../../serverApi/ISystemInfo";
 import { FormatDate } from "../FormatDate";
-import { styled, Typography } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  styled,
+  Typography,
+} from "@mui/material";
+import { ServerApi } from "../../../serverApi/ServerApi";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAppInfoQuery } from "../../../serverApi/reactQuery/queries/useAppInfoQuery";
 
 export const AppInfo: React.FC = () => {
   const systemInfo = useAppInfoQuery();
+  const queryClient = useQueryClient();
+
+  const [serverOs, setServerOs] = useState<"win" | "lin">(
+    ServerApi.getServerOs()
+  );
 
   if (!systemInfo) {
     return null;
@@ -40,6 +56,41 @@ export const AppInfo: React.FC = () => {
           </a>{" "}
           issues in github.
         </Typography>
+      </ItemContainer>
+      <ItemContainer
+        sx={{
+          borderTop: `1px solid`,
+          borderTopColor: "primary.main",
+          marginTop: 2,
+          pt: 3,
+        }}
+      >
+        <FormControl>
+          <FormLabel id="server-os-label">Server OS (in Azure)</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="server-os-label"
+            name="row-radio-buttons-group"
+            value={serverOs}
+            onChange={(_, value: string) => {
+              const v = value as "win" | "lin";
+              setServerOs(v);
+              ServerApi.setServerOs(v);
+            }}
+          >
+            <FormControlLabel value="win" control={<Radio />} label="Windows" />
+            <FormControlLabel value="lin" control={<Radio />} label="Linux" />
+          </RadioGroup>
+        </FormControl>
+      </ItemContainer>
+      <ItemContainer>
+        <Button
+          onClick={() => {
+            queryClient.clear();
+          }}
+        >
+          Clear cache
+        </Button>
       </ItemContainer>
     </>
   );

@@ -1,5 +1,6 @@
 export const envSettings = {
-  apiBaseUrl: process.env.REACT_APP_API_BASE_URL,
+  apiBaseUrlWindows: process.env.REACT_APP_API_BASE_URL,
+  apiBaseUrlLinux: process.env.REACT_APP_API_BASE_URL_LINUX,
   auth: {
     google: {
       clientId:

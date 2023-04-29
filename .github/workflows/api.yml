@@ -54,7 +54,7 @@ jobs:
           path: ${{env.DOTNET_ROOT}}\Engraved.Api
 
   deploy-windows:
-    name: Deploy API
+    name: Deploy API (Linux)
     runs-on: windows-latest
     needs: build
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
@@ -79,7 +79,7 @@ jobs:
           package: .
 
   deploy-linux:
-    name: Deploy API
+    name: Deploy API (Windows)
     runs-on: windows-latest
     needs: build
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
