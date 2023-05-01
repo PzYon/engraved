@@ -72,7 +72,7 @@ public class LoginHandler : ILoginHandler
     {
       Subject = new ClaimsIdentity(GetClaims(userId)),
       IssuedAt = _dateService.UtcNow,
-      Expires = _dateService.UtcNow.AddHours(2),
+      Expires = _dateService.UtcNow.AddHours(12),
       Issuer = _authenticationConfig.TokenIssuer,
       Audience = _authenticationConfig.TokenAudience,
       SigningCredentials = GetSigningCredentials()
