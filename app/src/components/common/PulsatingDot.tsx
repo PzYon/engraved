@@ -11,7 +11,8 @@ export const PulsatingDot: React.FC = () => {
     ServerApi.loadingHandler.registerHandler(keyForLoadingHandler, (loading) =>
       setIsLoading(loading)
     );
-    return () => ServerApi.loadingHandler.unregisterHandler("pulsating-dot");
+    return () =>
+      ServerApi.loadingHandler.unregisterHandler(keyForLoadingHandler);
   }, []);
 
   return <Dot className={isLoading ? "is-active" : undefined}>.</Dot>;

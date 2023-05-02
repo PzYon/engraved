@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import { styled } from "@mui/material";
 
 export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
   icon,
@@ -11,11 +11,11 @@ export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
   </Host>
 );
 
-const Host = styled.div`
+const Host = styled("div")`
   display: flex;
   justify-content: center;
 `;
 
-const Title = styled.div`
+const Title = styled("div")`
   flex-grow: 1;
 `;

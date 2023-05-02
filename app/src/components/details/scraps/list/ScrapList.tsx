@@ -120,4 +120,6 @@ const List = styled("ul")`
 
 const ActionsContainer = styled("div")`
   display: flex;
+  padding-left: 3px;
+  padding-bottom: 3px;
 `;
