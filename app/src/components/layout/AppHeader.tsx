@@ -9,7 +9,7 @@ import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { usePageContext } from "./pages/PageContext";
 import { Typing } from "../common/Typing";
 import { PulsatingDot } from "../common/PulsatingDot";
-import { WakeMeUp } from "../common/WakeMeUp";
+import { RefreshData } from "../common/RefreshData";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -40,8 +40,8 @@ export const AppHeader: React.FC = () => {
               />
             </Typography>
           </Link>
-          <WakeMeUp />
           <AppInfoLauncher />
+          <RefreshData />
           <Link to="/users/me">
             <User user={user} />
           </Link>

@@ -24,6 +24,8 @@ export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
                 fontWeight: "lighter",
                 display: "flex",
                 alignItems: "center",
+                lineHeight: 1,
+                marginTop: "-3px",
               }}
             >
               {metric.name}

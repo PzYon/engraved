@@ -1,40 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { SyncOutlined } from "@mui/icons-material";
 import { IconButtonWrapper } from "./IconButtonWrapper";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { styled } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
+import { RefreshOutlined } from "@mui/icons-material";
 
-const tenMinutes = 10 * 60 * 1000;
+const keyForLoadingHandler = "refresh-data";
 
-export const WakeMeUp: React.FC = () => {
-  const [showMe, setShowMe] = useState(false);
-  const [doRotate, setDoRotate] = useState(false);
-
+export const RefreshData: React.FC = () => {
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    setTimeout(() => setShowMe(true), tenMinutes);
-  }, [showMe]);
+  const [doRotate, setDoRotate] = useState(false);
 
-  if (!showMe) {
-    return null;
-  }
+  useEffect(() => {
+    ServerApi.loadingHandler.registerHandler(keyForLoadingHandler, setDoRotate);
+    return () =>
+      ServerApi.loadingHandler.unregisterHandler(keyForLoadingHandler);
+  }, []);
 
   return (
     <Host className={doRotate ? "rotate" : null}>
       <IconButtonWrapper
         action={{
-          icon: <SyncOutlined />,
-          onClick: async () => {
-            setDoRotate(true);
-            await ServerApi.getSystemInfo();
-            await queryClient.invalidateQueries();
-            setDoRotate(false);
-            setShowMe(false);
-          },
-          label: "Wake up server",
-          key: "wake-me-up",
+          icon: <RefreshOutlined />,
+          onClick: async () => await queryClient.invalidateQueries(),
+          label: "Refresh data",
+          key: "refresh",
           sx: { color: "common.white" },
         }}
       />
@@ -43,6 +34,9 @@ export const WakeMeUp: React.FC = () => {
 };
 
 const Host = styled("span")`
+  display: inline-block;
+  margin-right: ${(p) => p.theme.spacing(1)};
+
   @keyframes rotation {
     from {
       transform: rotate(0deg);
