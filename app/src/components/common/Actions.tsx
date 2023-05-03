@@ -9,14 +9,19 @@ export const Actions: React.FC<{
   actions: IIconButtonAction[];
   enableFloatingActions?: boolean;
 }> = ({ actions, enableFloatingActions }) => {
-  const buttonContainerRef = useRef<HTMLDivElement>();
+  const domElementRef = useRef<HTMLDivElement>();
 
-  const areHeaderActionsInViewPort = useIsInViewport(buttonContainerRef);
+  const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
 
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setIsReady(true), 1000);
+    const timer = setTimeout(() => setIsReady(true), 1000);
+
+    return () => {
+      clearTimeout(timer);
+      setIsReady(false);
+    };
   }, []);
 
   if (!actions?.length) {
@@ -24,11 +29,12 @@ export const Actions: React.FC<{
   }
 
   return (
-    <div ref={buttonContainerRef}>
+    <>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
       <ButtonContainer>
+        <div ref={domElementRef} />
         <IconButton
           sx={{ visibility: "hidden", width: "1px", margin: 0, padding: 0 }}
         >
@@ -44,7 +50,7 @@ export const Actions: React.FC<{
             )
           )}
       </ButtonContainer>
-    </div>
+    </>
   );
 };
 

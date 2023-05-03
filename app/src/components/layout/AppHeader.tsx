@@ -58,7 +58,11 @@ export const AppHeader: React.FC = () => {
           {pageTitle ?? <>&nbsp;</>}
         </Typography>
 
-        <Actions actions={pageActions} enableFloatingActions={true} />
+        <Actions
+          key={window.location.pathname}
+          actions={pageActions}
+          enableFloatingActions={true}
+        />
       </ContentWrapper>
     </Host>
   );
