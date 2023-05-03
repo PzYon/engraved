@@ -15,5 +15,5 @@ export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
     [metric]
   );
 
-  return <Actions actions={actions} enableFloatingActions={false} />;
+  return <Actions actions={actions} />;
 };

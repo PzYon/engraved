@@ -8,6 +8,10 @@ export const AutogrowTextField: React.FC<
   const TF =
     props.fieldType === "title" ? StyledTitleTextField : StyledTextField;
 
+  // forget fieldType
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { fieldType: _, ...realProps } = props;
+
   return (
     <TF
       variant="standard"
@@ -18,7 +22,7 @@ export const AutogrowTextField: React.FC<
           e.preventDefault();
         }
       }}
-      {...props}
+      {...realProps}
     />
   );
 };
