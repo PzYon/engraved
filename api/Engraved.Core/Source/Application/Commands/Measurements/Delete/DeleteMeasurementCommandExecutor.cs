@@ -24,7 +24,10 @@ public class DeleteMeasurementCommandExecutor : ICommandExecutor
     await repository.DeleteMeasurement(_command.Id);
 
     IMetric metric = (await repository.GetMetric(measurement.MetricId))!;
+    metric.EditedOn = dateService.UtcNow;
 
-    return new CommandResult( _command.Id, metric.Permissions.GetUserIdsWithAccess());
+    await repository.UpsertMetric(metric);
+
+    return new CommandResult(_command.Id, metric.Permissions.GetUserIdsWithAccess());
   }
 }
