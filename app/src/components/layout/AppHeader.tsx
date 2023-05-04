@@ -73,7 +73,7 @@ const Host = styled("div")`
 `;
 
 const ContentWrapper = styled("div")`
-  max-width: 1200px;
+  max-width: 1232px;
   margin: auto;
   padding: 0 ${(p) => p.theme.spacing(2)};
   display: flex;

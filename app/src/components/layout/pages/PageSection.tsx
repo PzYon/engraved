@@ -26,8 +26,8 @@ export const PageSection: React.FC<{
 };
 
 const Host = styled(Paper)`
-  margin: ${(p) => p.theme.spacing(2)} 0;
-  padding: ${(p) => p.theme.spacing(2)};
+  margin: ${(p) => p.theme.spacing(3)} 0;
+  padding: ${(p) => p.theme.spacing(3)};
 
   // hack: make sure first heading does not have top margin.
   // hack because it does not matter, if the h1 is the first
