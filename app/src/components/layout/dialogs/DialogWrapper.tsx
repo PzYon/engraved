@@ -9,8 +9,8 @@ import {
   styled,
 } from "@mui/material";
 import React from "react";
-import { AppContent } from "../AppContent";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { AppContent } from "../AppContent";
 
 const SlideUp = React.forwardRef(function Transition(
   props: { children: React.ReactNode },
