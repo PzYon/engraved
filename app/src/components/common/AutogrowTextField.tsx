@@ -49,6 +49,7 @@ const StyledTextField = styled(TextField)`
       -webkit-text-fill-color: ${(p) =>
         p.theme.palette.text.primary} !important;
       color: ${(p) => p.theme.palette.text.primary} !important;
+      font-size: 16px;
     }
   }
 `;

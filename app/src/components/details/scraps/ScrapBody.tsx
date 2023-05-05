@@ -7,11 +7,12 @@ import { DeleteOutlined } from "@mui/icons-material";
 
 export const ScrapBody: React.FC<{
   scrapId: string;
+  metricId: string;
   scrapDate: string;
   hideDate: boolean;
   children: React.ReactNode;
   actions: IIconButtonAction[];
-}> = ({ scrapId, scrapDate, hideDate, children, actions }) => {
+}> = ({ scrapId, metricId, scrapDate, hideDate, children, actions }) => {
   return (
     <>
       {children}
@@ -30,7 +31,7 @@ export const ScrapBody: React.FC<{
               key: "delete",
               label: "Delete",
               icon: <DeleteOutlined fontSize="small" />,
-              href: `measurements/${scrapId}/delete`,
+              href: `/metric/${metricId}/measurements/${scrapId}/delete`,
             },
           ]}
         />

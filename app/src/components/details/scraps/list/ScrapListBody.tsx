@@ -13,6 +13,7 @@ export const ScripListBody: React.FC<{
 }> = ({ scrap, hideDate, editMode, hasTitleFocus, value, onChange }) => {
   return (
     <ScrapBody
+      metricId={scrap.metricId}
       scrapId={scrap.id}
       scrapDate={scrap.dateTime}
       hideDate={hideDate}

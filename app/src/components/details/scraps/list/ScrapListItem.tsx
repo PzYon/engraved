@@ -46,7 +46,7 @@ export const ScrapListItem: React.FC<{
           isDisabled: !isEditMode,
           key: "remove",
           label: "Delete",
-          icon: <RemoveCircleOutline fontSize={"small"} />,
+          icon: <RemoveCircleOutline fontSize="small" />,
           onClick: () => onChange(null),
         }}
       />
