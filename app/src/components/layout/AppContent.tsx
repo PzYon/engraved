@@ -1,25 +1,20 @@
-import {
-  DeviceWidth,
-  maxWidthInPx,
-  useDeviceWidth,
-} from "../common/useDeviceWidth";
+import { Container } from "@mui/material";
 import React from "react";
-import { styled } from "@mui/material";
+import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 
-export const AppContent: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const AppContent: React.FC<{
+  children: React.ReactNode;
+  scope?: "header" | "body";
+}> = ({ children, scope }) => {
   const deviceWidth = useDeviceWidth();
+  const sx =
+    deviceWidth === DeviceWidth.Small && scope === "body"
+      ? { pl: 0, pr: 0 }
+      : {};
 
   return (
-    <Host sx={deviceWidth !== DeviceWidth.Small ? { pl: 2, pr: 2 } : undefined}>
+    <Container maxWidth="lg" sx={sx}>
       {children}
-    </Host>
+    </Container>
   );
 };
-
-const Host = styled("div")`
-  max-width: ${maxWidthInPx}px;
-  box-sizing: border-box;
-  margin: auto;
-`;

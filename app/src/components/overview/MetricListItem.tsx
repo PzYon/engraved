@@ -16,7 +16,7 @@ export const MetricListItem: React.FC<{ metric: IMetric }> = ({ metric }) => {
     <PageSection key={metric.id}>
       <Box sx={{ display: "flex" }}>
         <MetricTypeIcon type={metric.type} style={IconStyle.Overview} />
-        <Box sx={{ flexGrow: 1, pl: 2, wordBreak: "break-all" }}>
+        <Box sx={{ flexGrow: 1, pl: 3, wordBreak: "break-all" }}>
           <Link to={`/metrics/${metric.id}`}>
             <Typography
               variant="h5"

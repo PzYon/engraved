@@ -40,6 +40,7 @@ export const engravedTheme = createTheme({
     MuiPaper: {
       defaultProps: {
         elevation: 0,
+        sx: { borderRadius: "5px" },
       },
     },
   },

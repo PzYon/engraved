@@ -10,6 +10,7 @@ import { usePageContext } from "./pages/PageContext";
 import { Typing } from "../common/Typing";
 import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
+import { AppContent } from "./AppContent";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -25,45 +26,49 @@ export const AppHeader: React.FC = () => {
           mb: 2,
         }}
       >
-        <ContentWrapper sx={{ display: "flex", height: "64px" }}>
-          <Link to="/" style={{ flexGrow: 1 }}>
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: "35px",
-                marginTop: "-10px",
-              }}
-            >
-              <Typing
-                textToType="engraved"
-                renderOnComplete={<PulsatingDot />}
-              />
-            </Typography>
-          </Link>
-          <AppInfoLauncher />
-          <RefreshData />
-          <Link to="/users/me">
-            <User user={user} />
-          </Link>
-        </ContentWrapper>
+        <AppContent scope="header">
+          <ContentWrapper sx={{ display: "flex", height: "64px" }}>
+            <Link to="/" style={{ flexGrow: 1 }}>
+              <Typography
+                variant="h1"
+                sx={{
+                  fontSize: "35px",
+                  marginTop: "-10px",
+                }}
+              >
+                <Typing
+                  textToType="engraved"
+                  renderOnComplete={<PulsatingDot />}
+                />
+              </Typography>
+            </Link>
+            <AppInfoLauncher />
+            <RefreshData />
+            <Link to="/users/me">
+              <User user={user} />
+            </Link>
+          </ContentWrapper>
+        </AppContent>
       </Box>
-      <ContentWrapper
-        style={
-          deviceWidth === DeviceWidth.Small
-            ? { flexDirection: "column", alignItems: "start" }
-            : null
-        }
-      >
-        <Typography variant="h2" sx={{ flexGrow: 1, color: "primary.main" }}>
-          {pageTitle ?? <>&nbsp;</>}
-        </Typography>
+      <AppContent>
+        <ContentWrapper
+          style={
+            deviceWidth === DeviceWidth.Small
+              ? { flexDirection: "column", alignItems: "start" }
+              : null
+          }
+        >
+          <Typography variant="h2" sx={{ flexGrow: 1, color: "primary.main" }}>
+            {pageTitle ?? <>&nbsp;</>}
+          </Typography>
 
-        <Actions
-          key={window.location.pathname}
-          actions={pageActions}
-          enableFloatingActions={true}
-        />
-      </ContentWrapper>
+          <Actions
+            key={window.location.pathname}
+            actions={pageActions}
+            enableFloatingActions={true}
+          />
+        </ContentWrapper>
+      </AppContent>
     </Host>
   );
 };
@@ -73,9 +78,6 @@ const Host = styled("div")`
 `;
 
 const ContentWrapper = styled("div")`
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 ${(p) => p.theme.spacing(2)};
   display: flex;
   align-items: center;
 

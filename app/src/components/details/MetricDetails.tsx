@@ -25,7 +25,7 @@ export const MetricDetails: React.FC = () => {
   return (
     <>
       <Typography component="div">
-        <PropertiesContainer isNotLarge={deviceWidth !== DeviceWidth.Large}>
+        <PropertiesContainer isSmall={deviceWidth === DeviceWidth.Small}>
           {metric.editedOn ? (
             <PropertyContainer>
               Edited <FormatDate value={metric.editedOn} />
@@ -82,8 +82,8 @@ const SubRoutes: React.FC<{ metric: IMetric }> = ({ metric }) => {
   );
 };
 
-const PropertiesContainer = styled("div")<{ isNotLarge?: boolean }>`
-  padding: 0 ${(p) => (p.isNotLarge ? p.theme.spacing(2) : 0)};
+const PropertiesContainer = styled("div")<{ isSmall?: boolean }>`
+  padding: 0 ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
 
   & > span:not(:last-of-type)::after {
     content: "\\00B7";
