@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { IconButtonWrapper, IIconButtonAction } from "./IconButtonWrapper";
 import { FloatingHeaderActions } from "../layout/FloatingHeaderActions";
 import { useIsInViewport } from "./useIsInViewPort";
-import { IconButton, styled } from "@mui/material";
-import { AssistWalker } from "@mui/icons-material";
+import { styled } from "@mui/material";
 
 export const Actions: React.FC<{
   actions: IIconButtonAction[];
@@ -35,11 +34,6 @@ export const Actions: React.FC<{
       ) : null}
       <ButtonContainer>
         <div ref={domElementRef} />
-        <IconButton
-          sx={{ visibility: "hidden", width: "1px", margin: 0, padding: 0 }}
-        >
-          <AssistWalker />
-        </IconButton>
         {actions
           .filter((a) => a !== undefined)
           .map((action) =>
@@ -60,6 +54,10 @@ const ButtonContainer = styled("div")`
   align-items: center;
   background-color: ${(p) => p.theme.palette.background.default};
   border-radius: 20px;
+
+  .MuiButtonBase-root:first-of-type {
+    margin-left: 0;
+  }
 `;
 
 const SeparatorElement = styled("div")`

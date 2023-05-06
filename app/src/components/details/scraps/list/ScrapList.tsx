@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { styled, useTheme } from "@mui/material";
-import { PageSection } from "../../../layout/pages/PageSection";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
 import {
@@ -23,7 +22,7 @@ export const ScrapList: React.FC<{
   );
 
   return (
-    <PageSection
+    <Host
       style={
         isEditMode && !hasTitleFocus
           ? { outline: "2px solid " + palette.primary.main }
@@ -98,7 +97,7 @@ export const ScrapList: React.FC<{
           />
         </ActionsContainer>
       ) : null}
-    </PageSection>
+    </Host>
   );
 
   function updateItems(updatedItems: ISCrapListItem[]) {
@@ -111,6 +110,9 @@ export const ScrapList: React.FC<{
     setItems([...items, { label: "", isCompleted: false }]);
   }
 };
+const Host = styled("div")`
+  border-radius: 4px;
+`;
 
 const List = styled("ul")`
   list-style-type: none;

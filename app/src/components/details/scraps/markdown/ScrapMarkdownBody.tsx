@@ -16,8 +16,7 @@ export const ScrapMarkdownBody: React.FC<{
 
   return (
     <ScrapBody
-      scrapId={scrap.id}
-      scrapDate={scrap.dateTime}
+      scrap={scrap}
       hideDate={hideDate}
       actions={[
         {

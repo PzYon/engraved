@@ -1,5 +1,6 @@
 import React from "react";
 import { Paper, styled, Typography } from "@mui/material";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 
 export const PageSection: React.FC<{
   children: React.ReactNode;
@@ -7,11 +8,14 @@ export const PageSection: React.FC<{
   style?: React.CSSProperties;
   overflowXScroll?: boolean;
 }> = ({ title, children, style, overflowXScroll }) => {
+  const deviceWidth = useDeviceWidth();
+
   return (
     <Host
       className={"details-section"}
       style={{
         ...(style ?? {}),
+        padding: deviceWidth === DeviceWidth.Small ? "16px" : "24px",
         overflowX: overflowXScroll ? "auto" : "hidden",
       }}
     >
@@ -27,7 +31,6 @@ export const PageSection: React.FC<{
 
 const Host = styled(Paper)`
   margin: ${(p) => p.theme.spacing(3)} 0;
-  padding: ${(p) => p.theme.spacing(3)};
 
   // hack: make sure first heading does not have top margin.
   // hack because it does not matter, if the h1 is the first

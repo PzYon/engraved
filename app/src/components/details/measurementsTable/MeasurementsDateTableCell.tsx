@@ -9,7 +9,7 @@ export const MeasurementsDateTableCell: React.FC<{ date: Date | string }> = ({
     <>
       <FormatDate value={date} dateFormat={DateFormat.dateOnly} />
       <br />
-      <Typography sx={{ opacity: 0.5 }} fontSize={"smaller"}>
+      <Typography sx={{ opacity: 0.5 }} fontSize="small">
         <FormatDate value={date} dateFormat={DateFormat.relativeToNowDayPlus} />
       </Typography>
     </>
