@@ -30,7 +30,7 @@ export const ScrapBody: React.FC<{
               key: "delete",
               label: "Delete",
               icon: <DeleteOutlined fontSize="small" />,
-              href: `/metric/${scrap.metricId}/measurements/${scrap.id}/delete`,
+              href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/delete`,
             },
           ]}
         />
