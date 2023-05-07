@@ -135,6 +135,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return Task.CompletedTask;
   }
 
+  public async Task<IMeasurement[]> SearchMeasurements(string searchText)
+  {
+    return await _repository.SearchMeasurements(searchText);
+  }
+
   private IUser LoadUser()
   {
     string? name = _currentUserService.GetUserName();

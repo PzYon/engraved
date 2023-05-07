@@ -168,6 +168,11 @@ public class InMemoryRepository : IRepository
     return Task.CompletedTask;
   }
 
+  public Task<IMeasurement[]> SearchMeasurements(string searchText)
+  {
+    throw new NotImplementedException();
+  }
+
   private void RemoveMetric<TMetric>(TMetric metric) where TMetric : IMetric
   {
     if (string.IsNullOrEmpty(metric.Id))

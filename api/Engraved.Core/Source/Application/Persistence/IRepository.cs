@@ -26,11 +26,11 @@ public interface IRepository
   Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions);
 
   Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
-  );
+      string metricId,
+      DateTime? fromDate,
+      DateTime? toDate,
+      IDictionary<string, string[]>? attributeValues
+    );
 
   Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, int limit);
 
@@ -41,4 +41,6 @@ public interface IRepository
   Task<IMeasurement?> GetMeasurement(string measurementId);
 
   Task WakeMeUp();
+
+  Task<IMeasurement[]> SearchMeasurements(string searchText);
 }

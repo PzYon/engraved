@@ -59,7 +59,7 @@ public class MongoRepositoryShould
     var counterMetric = new CounterMetric { Name = "First" };
     UpsertResult result = await _repository.UpsertMetric(counterMetric);
 
-    counterMetric = (CounterMetric?)await _repository.GetMetric(result.EntityId);
+    counterMetric = (CounterMetric?) await _repository.GetMetric(result.EntityId);
 
     Assert.IsNotNull(counterMetric);
 

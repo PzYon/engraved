@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using System.Text.RegularExpressions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.Metrics;
@@ -8,6 +9,7 @@ using Engraved.Persistence.Mongo.DocumentTypes;
 using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
 using Engraved.Persistence.Mongo.DocumentTypes.Metrics;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
@@ -105,11 +107,11 @@ public class MongoRepository : IRepository
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
-  )
+      string metricId,
+      DateTime? fromDate,
+      DateTime? toDate,
+      IDictionary<string, string[]>? attributeValues
+    )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -247,6 +249,28 @@ public class MongoRepository : IRepository
       .FirstOrDefaultAsync();
 
     return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
+  }
+
+  public async Task<IMeasurement[]> SearchMeasurements(string searchText)
+  {
+    string[] searchTextSegments = searchText.Split(" ");
+    List<MeasurementDocument> documents = await MeasurementsCollection
+      .Find(
+        Builders<MeasurementDocument>.Filter.And(
+          searchTextSegments.Select(
+            segment => Builders<MeasurementDocument>.Filter.Regex(
+              d => d.Notes,
+              new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline))
+            )
+          )
+        )
+      )
+      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn))
+      .ToListAsync();
+
+    return documents
+      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
+      .ToArray();
   }
 
   public async Task WakeMeUp()
