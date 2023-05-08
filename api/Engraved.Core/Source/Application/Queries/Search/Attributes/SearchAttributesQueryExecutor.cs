@@ -5,7 +5,7 @@ using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.Metrics;
 
-namespace Engraved.Core.Application.Queries.Search;
+namespace Engraved.Core.Application.Queries.Search.Attributes;
 
 public class SearchAttributesQueryExecutor : IQueryExecutor<AttributeSearchResult[]>
 {

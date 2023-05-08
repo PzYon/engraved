@@ -241,6 +241,14 @@ export class ServerApi {
     );
   }
 
+  static async searchMeasurements(searchText: string): Promise<IMeasurement[]> {
+    return await ServerApi.executeRequest(
+      `/search/measurements?searchText=${searchText}`,
+      "GET",
+      null
+    );
+  }
+
   static async getSystemInfo(): Promise<ISystemInfo> {
     return await ServerApi.executeRequest(`/system_info`, "GET", null);
   }
