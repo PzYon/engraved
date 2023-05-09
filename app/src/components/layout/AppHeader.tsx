@@ -11,6 +11,8 @@ import { Typing } from "../common/Typing";
 import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
+import { IconButtonWrapper } from "../common/IconButtonWrapper";
+import { SearchOutlined } from "@mui/icons-material";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -44,6 +46,15 @@ export const AppHeader: React.FC = () => {
             </Link>
             <AppInfoLauncher />
             <RefreshData />
+            <IconButtonWrapper
+              action={{
+                key: "search",
+                icon: <SearchOutlined fontSize="small" />,
+                label: "Search",
+                href: "/search",
+                sx: { color: "common.white" },
+              }}
+            />
             <Link to="/users/me">
               <User user={user} />
             </Link>
