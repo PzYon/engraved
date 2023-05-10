@@ -104,8 +104,12 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/measurements/${metricId}/active`);
   }
 
-  static async getActivities(): Promise<IGetActivitiesQueryResult> {
-    return await ServerApi.executeRequest(`/activities`);
+  static async getActivities(
+    searchText: string
+  ): Promise<IGetActivitiesQueryResult> {
+    const params = searchText ? `?searchText=${searchText}` : "";
+
+    return await ServerApi.executeRequest(`/activities${params}`);
   }
 
   static async addMetric(

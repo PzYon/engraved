@@ -19,9 +19,10 @@ public class ActivitiesController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<GetActivitiesQueryApiResult> GetAll()
+  public async Task<GetActivitiesQueryApiResult> GetAll(string? searchText)
   {
-    GetActivitiesQueryResult result = await _dispatcher.Query(new GetActivitiesQuery());
+    var query = new GetActivitiesQuery { SearchText = searchText };
+    GetActivitiesQueryResult result = await _dispatcher.Query(query);
     return GetActivitiesQueryApiResult.FromResult(result);
   }
 }

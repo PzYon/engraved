@@ -67,9 +67,9 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
       .ToArray();
   }
 
-  public Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, int limit)
+  public Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
   {
-    return _repository.GetLastEditedMeasurements(metricIds, limit);
+    return _repository.GetLastEditedMeasurements(metricIds, searchText, limit);
   }
 
   public Task<UpsertResult> UpsertMetric(IMetric metric)
@@ -133,11 +133,6 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   public Task WakeMeUp()
   {
     return Task.CompletedTask;
-  }
-
-  public async Task<IMeasurement[]> SearchMeasurements(string searchText)
-  {
-    return await _repository.SearchMeasurements(searchText);
   }
 
   private IUser LoadUser()

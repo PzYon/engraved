@@ -1,8 +1,6 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Queries.Search.Attributes;
-using Engraved.Core.Application.Queries.Search.Measurements;
 using Engraved.Core.Application.Search;
-using Engraved.Core.Domain.Measurements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,16 +18,6 @@ public class SearchController : ControllerBase
   {
     _dispatcher = dispatcher;
     _searchIndex = searchIndex;
-  }
-
-  [Route("measurements")]
-  [HttpGet]
-  public async Task<object[]> SearchMeasurements(string searchText)
-  {
-    var query = new SearchMeasurementsQuery { SearchText = searchText };
-    IMeasurement[] measurements = await _dispatcher.Query(query);
-    
-    return measurements.EnsurePolymorphismWhenSerializing();
   }
 
   [Route("metric_attributes/{metricId}")]

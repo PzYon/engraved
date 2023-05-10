@@ -107,11 +107,11 @@ public class MongoRepository : IRepository
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-      string metricId,
-      DateTime? fromDate,
-      DateTime? toDate,
-      IDictionary<string, string[]>? attributeValues
-    )
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    IDictionary<string, string[]>? attributeValues
+  )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -163,10 +163,30 @@ public class MongoRepository : IRepository
 
   // attention: there's no security here for the moment. might not be required as
   // you explicitly need to specify the metric IDs.
-  public async Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, int limit)
+  public async Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
   {
+    List<FilterDefinition<MeasurementDocument>> filters = new();
+
+    FilterDefinition<MeasurementDocument> metricIdFilter =
+      Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId));
+
+    filters.Add(metricIdFilter);
+
+    if (!string.IsNullOrEmpty(searchText))
+    {
+      filters.AddRange(
+        searchText.Split(" ")
+          .Select(
+            segment => Builders<MeasurementDocument>.Filter.Regex(
+              d => d.Notes,
+              new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline))
+            )
+          )
+      );
+    }
+
     List<MeasurementDocument> measurements = await MeasurementsCollection
-      .Find(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)))
+      .Find(Builders<MeasurementDocument>.Filter.And(filters))
       .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn))
       .Limit(limit)
       .ToListAsync();
@@ -249,28 +269,6 @@ public class MongoRepository : IRepository
       .FirstOrDefaultAsync();
 
     return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
-  }
-
-  public async Task<IMeasurement[]> SearchMeasurements(string searchText)
-  {
-    string[] searchTextSegments = searchText.Split(" ");
-    List<MeasurementDocument> documents = await MeasurementsCollection
-      .Find(
-        Builders<MeasurementDocument>.Filter.And(
-          searchTextSegments.Select(
-            segment => Builders<MeasurementDocument>.Filter.Regex(
-              d => d.Notes,
-              new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline))
-            )
-          )
-        )
-      )
-      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn))
-      .ToListAsync();
-
-    return documents
-      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
-      .ToArray();
   }
 
   public async Task WakeMeUp()

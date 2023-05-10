@@ -4,13 +4,19 @@ import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
 import { SearchOutlined } from "@mui/icons-material";
 import { TextField } from "@mui/material";
-import { ServerApi } from "../../serverApi/ServerApi";
 import { IMeasurement } from "../../serverApi/IMeasurement";
 import { PageSection } from "../layout/pages/PageSection";
+import { useActivitiesQuery } from "../../serverApi/reactQuery/queries/useActivitiesQuery";
+import { MetricTypeFactory } from "../../metricTypes/MetricTypeFactory";
 
 export const SearchPage: React.FC = () => {
   const [searchText, setSearchText] = useState("");
-  const [measurements, setMeasurements] = useState([]);
+
+  const activities = useActivitiesQuery(searchText);
+
+  if (!activities) {
+    return null;
+  }
 
   return (
     <Page
@@ -29,30 +35,23 @@ export const SearchPage: React.FC = () => {
       <TextField
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            ServerApi.searchMeasurements(searchText).then((m) =>
-              setMeasurements(m)
-            );
-          }
-        }}
       />
-      {measurements.map((m) => (
+      {activities.measurements.map((m) => (
         <PageSection key={m.id}>{renderActivity(m)}</PageSection>
       ))}
     </Page>
   );
 
+  // copied from <Activities />
+
   function renderActivity(measurement: IMeasurement) {
-    return (
-      <div>
-        <div>Notes: {measurement.notes}</div>
-      </div>
+    const metric = activities.metrics.find(
+      (a) => a.id === measurement.metricId
     );
 
-    //return MetricTypeFactory.create(metric.type).getActivity(
-    //  metric,
-    //  measurement
-    //);
+    return MetricTypeFactory.create(metric.type).getActivity(
+      metric,
+      measurement
+    );
   }
 };

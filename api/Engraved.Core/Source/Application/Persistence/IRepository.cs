@@ -32,7 +32,7 @@ public interface IRepository
       IDictionary<string, string[]>? attributeValues
     );
 
-  Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, int limit);
+  Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit);
 
   Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
 
@@ -41,6 +41,4 @@ public interface IRepository
   Task<IMeasurement?> GetMeasurement(string measurementId);
 
   Task WakeMeUp();
-
-  Task<IMeasurement[]> SearchMeasurements(string searchText);
 }
