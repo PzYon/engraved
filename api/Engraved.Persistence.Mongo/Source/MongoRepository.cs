@@ -177,10 +177,20 @@ public class MongoRepository : IRepository
       filters.AddRange(
         searchText.Split(" ")
           .Select(
-            segment => Builders<MeasurementDocument>.Filter.Regex(
-              d => d.Notes,
-              new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline))
-            )
+            segment =>
+              Builders<MeasurementDocument>.Filter.Or(
+                Builders<MeasurementDocument>.Filter.Regex(
+                  d => d.Notes,
+                  getRegex(segment)
+                ),
+                Builders<MeasurementDocument>.Filter.Regex(
+                  d => (d as ScrapsMeasurementDocument).Title,
+                  getRegex(segment)
+                )
+/*                Builders<ScrapsMeasurementDocument>.Filter.Regex(
+                  d => d.Title,
+                  getRegex(segment)*/
+              )
           )
       );
     }
@@ -194,6 +204,11 @@ public class MongoRepository : IRepository
     return measurements
       .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
       .ToArray();
+  }
+
+  private static BsonRegularExpression getRegex(string segment)
+  {
+    return new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline));
   }
 
   public virtual async Task<UpsertResult> UpsertMetric(IMetric metric)

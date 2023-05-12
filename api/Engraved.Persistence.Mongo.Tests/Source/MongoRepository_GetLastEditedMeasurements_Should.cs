@@ -80,6 +80,6 @@ public class MongoRepository_GetLastEditedMeasurements_Should
 
     IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { result.EntityId }, "heiri", 10);
     Assert.AreEqual(1, results.Length);
-    Assert.AreEqual((results[0] as ScrapsMeasurement).Title, "Heiri");
+    Assert.AreEqual(((ScrapsMeasurement)results[0]).Title, "Heiri");
   }
 }
