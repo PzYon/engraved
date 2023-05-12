@@ -64,4 +64,22 @@ public class MongoRepository_GetLastEditedMeasurements_Should
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual(2, results[0].GetValue());
   }
+
+  [Test]
+  public async Task Consider_ScrapsTitle()
+  {
+    var metric = new ScrapsMetric { Name = "My Scrap" };
+    UpsertResult result = await _repository.UpsertMetric(metric);
+
+    await _repository.UpsertMeasurement(
+      new ScrapsMeasurement { MetricId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
+    );
+    await _repository.UpsertMeasurement(
+      new ScrapsMeasurement { MetricId = result.EntityId, ScrapType = ScrapType.List, Title = "Franz" }
+    );
+
+    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { result.EntityId }, "heiri", 10);
+    Assert.AreEqual(1, results.Length);
+    Assert.AreEqual((results[0] as ScrapsMeasurement).Title, "Heiri");
+  }
 }
