@@ -7,15 +7,21 @@ export const Page: React.FC<{
   actions: IIconButtonAction[];
   title: React.ReactNode;
   documentTitle?: string;
+  enableSearch?: boolean;
   children: React.ReactNode;
-}> = ({ actions, title, documentTitle, children }) => {
-  const { setPageActions, setPageTitle, setDocumentTitle } = usePageContext();
+}> = ({ actions, title, documentTitle, enableSearch, children }) => {
+  const { setPageActions, setPageTitle, setDocumentTitle, setShowSearchBox } =
+    usePageContext();
 
   useEffect(() => {
     setPageTitle(title);
     setDocumentTitle(documentTitle);
     return () => setPageTitle(null);
   }, [title]);
+
+  useEffect(() => {
+    setShowSearchBox(enableSearch);
+  }, [enableSearch]);
 
   useEffect(() => {
     setPageActions(actions);

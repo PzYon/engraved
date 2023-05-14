@@ -14,6 +14,10 @@ export interface IPageContext {
   setPageTitle: (pageTitle: React.ReactNode) => void;
   pageActions: IIconButtonAction[];
   setPageActions: (actions: IIconButtonAction[]) => void;
+  showSearchBox: boolean;
+  setShowSearchBox: (value: boolean) => void;
+  searchText: string;
+  setSearchText: (searchText: string) => void;
 }
 
 const PageContext = createContext<IPageContext>({
@@ -23,6 +27,10 @@ const PageContext = createContext<IPageContext>({
   setPageTitle: null,
   pageActions: null,
   setPageActions: null,
+  showSearchBox: null,
+  setShowSearchBox: null,
+  searchText: null,
+  setSearchText: null,
 });
 
 export const usePageContext = () => {
@@ -33,6 +41,8 @@ export const PageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
+  const [showSearchBox, setShowSearchBox] = useState(false);
+  const [searchText, setSearchText] = useState<string>(undefined);
   const [pageTitle, setPageTitle] = useState<React.ReactNode>(undefined);
   const [pageActions, setPageActions] = useState<IIconButtonAction[]>([]);
 
@@ -50,8 +60,12 @@ export const PageContextProvider: React.FC<{
       setPageTitle,
       pageActions,
       setPageActions,
+      showSearchBox,
+      setShowSearchBox,
+      searchText,
+      setSearchText,
     };
-  }, [pageTitle, pageActions]);
+  }, [pageTitle, pageActions, searchText, showSearchBox]);
 
   return (
     <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>

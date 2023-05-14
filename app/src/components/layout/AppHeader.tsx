@@ -13,6 +13,7 @@ import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import { IconButtonWrapper } from "../common/IconButtonWrapper";
 import { SearchOutlined } from "@mui/icons-material";
+import { SearchBox } from "./SearchBox";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -52,7 +53,7 @@ export const AppHeader: React.FC = () => {
                 icon: <SearchOutlined fontSize="small" />,
                 label: "Search",
                 href: "/search",
-                sx: { color: "common.white" },
+                sx: { color: "common.white", mr: 1 },
               }}
             />
             <Link to="/users/me">
@@ -72,6 +73,8 @@ export const AppHeader: React.FC = () => {
           <Typography variant="h2" sx={{ flexGrow: 1, color: "primary.main" }}>
             {pageTitle ?? <>&nbsp;</>}
           </Typography>
+
+          <SearchBox />
 
           <Actions
             key={window.location.pathname}

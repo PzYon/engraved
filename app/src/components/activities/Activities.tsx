@@ -3,9 +3,11 @@ import { useActivitiesQuery } from "../../serverApi/reactQuery/queries/useActivi
 import { MetricTypeFactory } from "../../metricTypes/MetricTypeFactory";
 import { IMeasurement } from "../../serverApi/IMeasurement";
 import { PageSection } from "../layout/pages/PageSection";
+import { usePageContext } from "../layout/pages/PageContext";
 
 export const Activities: React.FC = () => {
-  const activities = useActivitiesQuery();
+  const { searchText, showSearchBox } = usePageContext();
+  const activities = useActivitiesQuery(searchText);
 
   if (!activities) {
     return null;

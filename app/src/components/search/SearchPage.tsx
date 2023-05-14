@@ -3,7 +3,7 @@ import { Page } from "../layout/pages/Page";
 import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
 import { SearchOutlined } from "@mui/icons-material";
-import { SearchPageBody } from "./SearchPageBody";
+import { Typography } from "@mui/material";
 
 export const SearchPage: React.FC = () => (
   <Page
@@ -19,6 +19,6 @@ export const SearchPage: React.FC = () => (
     }
     actions={[]}
   >
-    <SearchPageBody />
+    <Typography>Not ready yet... Coming soon. Maybe. :)</Typography>
   </Page>
 );
