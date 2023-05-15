@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { InputAdornment, styled, TextField } from "@mui/material";
-import { usePageContext } from "./pages/PageContext";
+import { usePageContext } from "../../layout/pages/PageContext";
 import { SearchOutlined } from "@mui/icons-material";
-import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
+import { DeviceWidth, useDeviceWidth } from "../useDeviceWidth";
 import { SxProps } from "@mui/system";
 import { Theme } from "@mui/material/styles";
 
@@ -60,5 +60,9 @@ export const SearchBox: React.FC = () => {
 const StyledTextField = styled(TextField)`
   .MuiInputBase-root {
     border-radius: 30px;
+  }
+
+  fieldset {
+    border-color: transparent;
   }
 `;

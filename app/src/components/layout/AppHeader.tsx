@@ -13,7 +13,7 @@ import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import { IconButtonWrapper } from "../common/IconButtonWrapper";
 import { SearchOutlined } from "@mui/icons-material";
-import { SearchBox } from "./SearchBox";
+import { SearchBox } from "../common/search/SearchBox";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
