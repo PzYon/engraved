@@ -107,11 +107,11 @@ public class MongoRepository : IRepository
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
-  )
+      string metricId,
+      DateTime? fromDate,
+      DateTime? toDate,
+      IDictionary<string, string[]>? attributeValues
+    )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -181,15 +181,12 @@ public class MongoRepository : IRepository
               Builders<MeasurementDocument>.Filter.Or(
                 Builders<MeasurementDocument>.Filter.Regex(
                   d => d.Notes,
-                  getRegex(segment)
+                  GetRegex(segment)
                 ),
                 Builders<MeasurementDocument>.Filter.Regex(
-                  d => (d as ScrapsMeasurementDocument).Title,
-                  getRegex(segment)
+                  d => ((ScrapsMeasurementDocument) d).Title,
+                  GetRegex(segment)
                 )
-/*                Builders<ScrapsMeasurementDocument>.Filter.Regex(
-                  d => d.Title,
-                  getRegex(segment)*/
               )
           )
       );
@@ -204,11 +201,6 @@ public class MongoRepository : IRepository
     return measurements
       .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
       .ToArray();
-  }
-
-  private static BsonRegularExpression getRegex(string segment)
-  {
-    return new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline));
   }
 
   public virtual async Task<UpsertResult> UpsertMetric(IMetric metric)
@@ -349,6 +341,11 @@ public class MongoRepository : IRepository
     {
       EntityId = id
     };
+  }
+
+  private static BsonRegularExpression GetRegex(string searchText)
+  {
+    return new BsonRegularExpression(new Regex(searchText, RegexOptions.IgnoreCase | RegexOptions.Multiline));
   }
 
   private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)

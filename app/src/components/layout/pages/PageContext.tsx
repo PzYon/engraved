@@ -14,6 +14,7 @@ export interface IPageContext {
   setPageTitle: (pageTitle: React.ReactNode) => void;
   pageActions: IIconButtonAction[];
   setPageActions: (actions: IIconButtonAction[]) => void;
+  // consider moving below props to a SearchContext
   showSearchBox: boolean;
   setShowSearchBox: (value: boolean) => void;
   searchText: string;
