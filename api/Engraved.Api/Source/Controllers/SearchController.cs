@@ -1,5 +1,5 @@
 ﻿using Engraved.Core.Application;
-using Engraved.Core.Application.Queries.Search;
+using Engraved.Core.Application.Queries.Search.Attributes;
 using Engraved.Core.Application.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,7 @@ public class SearchController : ControllerBase
 
   [Route("metric_attributes/{metricId}")]
   [HttpGet]
-  public async Task<AttributeSearchResult[]> GetAll(string metricId, string searchText)
+  public async Task<AttributeSearchResult[]> SearchMetricAttributes(string metricId, string searchText)
   {
     var searchAttributesQuery = new SearchAttributesQuery
     {

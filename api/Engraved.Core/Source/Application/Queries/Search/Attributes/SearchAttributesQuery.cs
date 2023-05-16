@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Application.Search;
 
-namespace Engraved.Core.Application.Queries.Search;
+namespace Engraved.Core.Application.Queries.Search.Attributes;
 
 public class SearchAttributesQuery : IQuery<AttributeSearchResult[]>
 {

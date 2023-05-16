@@ -104,8 +104,12 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/measurements/${metricId}/active`);
   }
 
-  static async getActivities(): Promise<IGetActivitiesQueryResult> {
-    return await ServerApi.executeRequest(`/activities`);
+  static async getActivities(
+    searchText: string
+  ): Promise<IGetActivitiesQueryResult> {
+    const params = searchText ? `?searchText=${searchText}` : "";
+
+    return await ServerApi.executeRequest(`/activities${params}`);
   }
 
   static async addMetric(
@@ -236,6 +240,14 @@ export class ServerApi {
   ): Promise<IAttributeSearchResult[]> {
     return await ServerApi.executeRequest(
       `/search/metric_attributes/${metricId}?searchText=${searchText}`,
+      "GET",
+      null
+    );
+  }
+
+  static async searchMeasurements(searchText: string): Promise<IMeasurement[]> {
+    return await ServerApi.executeRequest(
+      `/search/measurements?searchText=${searchText}`,
       "GET",
       null
     );

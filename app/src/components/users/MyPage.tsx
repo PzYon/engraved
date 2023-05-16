@@ -25,6 +25,7 @@ export const MyPage: React.FC = () => {
           }
         />
       }
+      enableSearch={true}
       actions={[]}
     >
       <Activities />

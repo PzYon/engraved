@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using System.Text.RegularExpressions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.Metrics;
@@ -8,6 +9,7 @@ using Engraved.Persistence.Mongo.DocumentTypes;
 using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
 using Engraved.Persistence.Mongo.DocumentTypes.Metrics;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
@@ -105,11 +107,11 @@ public class MongoRepository : IRepository
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
-  )
+      string metricId,
+      DateTime? fromDate,
+      DateTime? toDate,
+      IDictionary<string, string[]>? attributeValues
+    )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -161,10 +163,37 @@ public class MongoRepository : IRepository
 
   // attention: there's no security here for the moment. might not be required as
   // you explicitly need to specify the metric IDs.
-  public async Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, int limit)
+  public async Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
   {
+    List<FilterDefinition<MeasurementDocument>> filters = new();
+
+    FilterDefinition<MeasurementDocument> metricIdFilter =
+      Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId));
+
+    filters.Add(metricIdFilter);
+
+    if (!string.IsNullOrEmpty(searchText))
+    {
+      filters.AddRange(
+        searchText.Split(" ")
+          .Select(
+            segment =>
+              Builders<MeasurementDocument>.Filter.Or(
+                Builders<MeasurementDocument>.Filter.Regex(
+                  d => d.Notes,
+                  GetRegex(segment)
+                ),
+                Builders<MeasurementDocument>.Filter.Regex(
+                  d => ((ScrapsMeasurementDocument) d).Title,
+                  GetRegex(segment)
+                )
+              )
+          )
+      );
+    }
+
     List<MeasurementDocument> measurements = await MeasurementsCollection
-      .Find(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)))
+      .Find(Builders<MeasurementDocument>.Filter.And(filters))
       .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn))
       .Limit(limit)
       .ToListAsync();
@@ -312,6 +341,11 @@ public class MongoRepository : IRepository
     {
       EntityId = id
     };
+  }
+
+  private static BsonRegularExpression GetRegex(string searchText)
+  {
+    return new BsonRegularExpression(new Regex(searchText, RegexOptions.IgnoreCase | RegexOptions.Multiline));
   }
 
   private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)

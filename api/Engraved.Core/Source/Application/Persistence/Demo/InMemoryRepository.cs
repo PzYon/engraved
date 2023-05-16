@@ -69,7 +69,7 @@ public class InMemoryRepository : IRepository
     );
   }
 
-  public Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, int limit)
+  public Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
   {
     return Task.FromResult(
       Measurements.OrderByDescending(m => m.DateTime)
@@ -166,6 +166,11 @@ public class InMemoryRepository : IRepository
   public Task WakeMeUp()
   {
     return Task.CompletedTask;
+  }
+
+  public Task<IMeasurement[]> SearchMeasurements(string searchText)
+  {
+    throw new NotImplementedException();
   }
 
   private void RemoveMetric<TMetric>(TMetric metric) where TMetric : IMetric

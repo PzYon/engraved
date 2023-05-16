@@ -35,7 +35,6 @@ export const RefreshData: React.FC = () => {
 
 const Host = styled("span")`
   display: inline-block;
-  margin-right: ${(p) => p.theme.spacing(1)};
 
   @keyframes rotation {
     from {
