@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { ClickAwayListener } from "@mui/material";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../serverApi/MetricType";
 import {
@@ -39,45 +38,45 @@ export const Scrap: React.FC<{
   );
 
   return (
-    <ClickAwayListener onClickAway={() => setIsEditMode(false)}>
-      <div
-        onClick={(e) => {
-          if (e.detail === 2) {
-            setIsEditMode(true);
-          }
-        }}
-      >
-        <AutogrowTextField
-          fieldType={"title"}
-          placeholder={"Title"}
-          variant="outlined"
-          value={title}
-          disabled={!isEditMode}
-          onChange={(event) => setTitle(event.target.value)}
-          onFocus={() => setHasTitleFocus(true)}
-          onBlur={() => setHasTitleFocus(false)}
-          sx={{ width: "100%" }}
+    <div
+      onClick={(e) => {
+        if (e.detail === 2) {
+          setIsEditMode(true);
+        }
+      }}
+    >
+      <AutogrowTextField
+        fieldType={"title"}
+        placeholder={"Title"}
+        variant="outlined"
+        value={title}
+        disabled={!isEditMode}
+        onChange={(event) => setTitle(event.target.value)}
+        onFocus={() => setHasTitleFocus(true)}
+        onBlur={() => setHasTitleFocus(false)}
+        sx={{ width: "100%" }}
+      />
+      {scrap.scrapType === ScrapType.List ? (
+        <ScripListBody
+          scrap={scrap}
+          hideDate={hideDate}
+          editMode={isEditMode}
+          setEditMode={setIsEditMode}
+          hasTitleFocus={hasTitleFocus}
+          value={notes}
+          onChange={onChange}
         />
-        {scrap.scrapType === ScrapType.List ? (
-          <ScripListBody
-            scrap={scrap}
-            hideDate={hideDate}
-            editMode={isEditMode}
-            hasTitleFocus={hasTitleFocus}
-            value={notes}
-            onChange={onChange}
-          />
-        ) : (
-          <ScrapMarkdownBody
-            scrap={scrap}
-            hideDate={hideDate}
-            editMode={isEditMode}
-            value={notes}
-            onChange={onChange}
-          />
-        )}
-      </div>
-    </ClickAwayListener>
+      ) : (
+        <ScrapMarkdownBody
+          scrap={scrap}
+          hideDate={hideDate}
+          editMode={isEditMode}
+          setEditMode={setIsEditMode}
+          value={notes}
+          onChange={onChange}
+        />
+      )}
+    </div>
   );
 
   function onChange(value: string) {

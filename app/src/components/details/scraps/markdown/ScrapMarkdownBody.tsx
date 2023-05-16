@@ -9,14 +9,17 @@ export const ScrapMarkdownBody: React.FC<{
   scrap: IScrapMeasurement;
   hideDate: boolean;
   editMode: boolean;
+  setEditMode: (value: boolean) => void;
   value: string;
   onChange: (value: string) => void;
-}> = ({ scrap, hideDate, editMode, value, onChange }) => {
+}> = ({ scrap, hideDate, editMode, setEditMode, value, onChange }) => {
   const { setAppAlert } = useAppContext();
 
   return (
     <ScrapBody
       scrap={scrap}
+      editMode={editMode}
+      setEditMode={setEditMode}
       hideDate={hideDate}
       actions={[
         {

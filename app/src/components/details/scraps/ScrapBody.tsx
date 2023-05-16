@@ -3,15 +3,21 @@ import { IIconButtonAction } from "../../common/IconButtonWrapper";
 import { styled, Typography } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
 import { Actions } from "../../common/Actions";
-import { DeleteOutlined } from "@mui/icons-material";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SaveOutlined,
+} from "@mui/icons-material";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapMeasurement;
   hideDate: boolean;
+  editMode: boolean;
+  setEditMode: (value: boolean) => void;
   children: React.ReactNode;
   actions: IIconButtonAction[];
-}> = ({ scrap, hideDate, children, actions }) => {
+}> = ({ scrap, hideDate, editMode, setEditMode, children, actions }) => {
   return (
     <>
       {children}
@@ -26,6 +32,19 @@ export const ScrapBody: React.FC<{
         <Actions
           actions={[
             ...actions,
+            editMode
+              ? {
+                  key: "save",
+                  label: "Save",
+                  icon: <SaveOutlined fontSize="small" />,
+                  onClick: () => setEditMode(false),
+                }
+              : {
+                  key: "edit",
+                  label: "Edit",
+                  icon: <EditOutlined fontSize="small" />,
+                  onClick: () => setEditMode(true),
+                },
             {
               key: "delete",
               label: "Delete",
