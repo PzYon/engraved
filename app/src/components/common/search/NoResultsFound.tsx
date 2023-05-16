@@ -18,5 +18,5 @@ const Host = styled("div")`
   flex-direction: column;
   align-items: center;
   margin-top: 30vh;
-  opacity: 0.5;
+  opacity: 0.4;
 `;
