@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { styled, useTheme } from "@mui/material";
+import { styled, Typography, useTheme } from "@mui/material";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
 import {
@@ -30,34 +30,38 @@ export const ScrapList: React.FC<{
       }
     >
       <List>
-        {items.map((item, index) => (
-          <ScrapListItem
-            key={index + "_" + item.label}
-            isEditMode={isEditMode}
-            listItem={item}
-            onChange={(updatedItem) => {
-              const updatedItems = [...items];
+        {!isEditMode && !items?.length ? (
+          <Typography sx={{ opacity: 0.4 }}>No items yet.</Typography>
+        ) : (
+          items.map((item, index) => (
+            <ScrapListItem
+              key={index + "_" + item.label}
+              isEditMode={isEditMode}
+              listItem={item}
+              onChange={(updatedItem) => {
+                const updatedItems = [...items];
 
-              if (!updatedItem) {
-                updatedItems.splice(index, 1);
-              } else {
-                updatedItems[index] = updatedItem;
-              }
+                if (!updatedItem) {
+                  updatedItems.splice(index, 1);
+                } else {
+                  updatedItems[index] = updatedItem;
+                }
 
-              updateItems(updatedItems);
-            }}
-            onEnter={() => {
-              const updatedItems = [...items];
+                updateItems(updatedItems);
+              }}
+              onEnter={() => {
+                const updatedItems = [...items];
 
-              updatedItems.splice(index + 1, 0, {
-                label: "",
-                isCompleted: false,
-              });
+                updatedItems.splice(index + 1, 0, {
+                  label: "",
+                  isCompleted: false,
+                });
 
-              updateItems(updatedItems);
-            }}
-          />
-        ))}
+                updateItems(updatedItems);
+              }}
+            />
+          ))
+        )}
       </List>
       {isEditMode ? (
         <ActionsContainer>
