@@ -4,7 +4,7 @@ const metrics = "metrics";
 
 export const queryKeysFactory = {
   metrics(searchText?: string) {
-    return [metrics, searchText];
+    return [metrics, "all", searchText];
   },
 
   metric(metricId: string) {
