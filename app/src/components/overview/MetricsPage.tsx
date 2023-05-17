@@ -5,8 +5,10 @@ import { Page } from "../layout/pages/Page";
 import { useMetricsQuery } from "../../serverApi/reactQuery/queries/useMetricsQuery";
 import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
+import { usePageContext } from "../layout/pages/PageContext";
 
 export const MetricsPage: React.FC = () => {
+  const { searchText } = usePageContext();
   const metrics = useMetricsQuery();
 
   if (!metrics) {
@@ -33,6 +35,7 @@ export const MetricsPage: React.FC = () => {
           key: "add_metric",
         },
       ]}
+      enableSearch={true}
     >
       {metrics.map((metric) => (
         <MetricListItem key={metric.id} metric={metric} />

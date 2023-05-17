@@ -91,11 +91,37 @@ public class MongoRepository : IRepository
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
-  public async Task<IMetric[]> GetAllMetrics()
+  public async Task<IMetric[]> GetAllMetrics(string? searchText = null, int? limit = null)
   {
+    List<FilterDefinition<MetricDocument>> filters = new()
+    {
+      GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read)
+    };
+
+    if (!string.IsNullOrEmpty(searchText))
+    {
+      filters.AddRange(
+        searchText.Split(" ")
+          .Select(
+            segment =>
+              Builders<MetricDocument>.Filter.Or(
+                Builders<MetricDocument>.Filter.Regex(
+                  d => d.Name,
+                  GetRegex(segment)
+                ),
+                Builders<MetricDocument>.Filter.Regex(
+                  d => d.Description,
+                  GetRegex(segment)
+                )
+              )
+          )
+      );
+    }
+    
     List<MetricDocument> metrics = await MetricsCollection
-      .Find(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read))
+      .Find(Builders<MetricDocument>.Filter.And(filters))
       .Sort(Builders<MetricDocument>.Sort.Descending(d => d.EditedOn))
+      .Limit(limit)
       .ToListAsync();
 
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
