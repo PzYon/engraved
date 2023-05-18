@@ -15,9 +15,11 @@ export const Page: React.FC<{
 
   useEffect(() => {
     setPageTitle(title);
+  }, [title]);
+
+  useEffect(() => {
     setDocumentTitle(documentTitle);
-    return () => setPageTitle(null);
-  }, [title, documentTitle]);
+  }, [documentTitle]);
 
   useEffect(() => {
     setShowSearchBox(enableSearch);
@@ -25,7 +27,6 @@ export const Page: React.FC<{
 
   useEffect(() => {
     setPageActions(actions);
-    return () => setPageActions([]);
   }, [actions]);
 
   return <FadeInContainer>{children}</FadeInContainer>;
