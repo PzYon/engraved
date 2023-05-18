@@ -1,7 +1,7 @@
+import { ThemeProvider } from "@mui/material/styles";
 import { GlobalStyles } from "@mui/styled-engine";
 import React from "react";
 import { engravedTheme } from "./engravedTheme";
-import { ThemeProvider } from "@mui/material";
 
 export const ThemeAndStylesProvider: React.FC<{
   children: React.ReactNode;

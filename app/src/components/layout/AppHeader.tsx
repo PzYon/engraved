@@ -18,9 +18,9 @@ import { SearchBox } from "../common/search/SearchBox";
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
   const { pageTitle, pageActions, showSearchBox } = usePageContext();
-  const deviceWidth = useDeviceWidth();
   const { palette } = useTheme();
 
+  const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
 
   return (
