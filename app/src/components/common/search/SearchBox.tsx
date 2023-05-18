@@ -50,7 +50,6 @@ export const SearchBox: React.FC = () => {
 
     if (deviceWidth === DeviceWidth.Small) {
       sx.width = "100%";
-      sx.mt = 2;
     }
 
     return sx;

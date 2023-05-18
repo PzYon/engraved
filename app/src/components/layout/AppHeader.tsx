@@ -74,17 +74,19 @@ export const AppHeader: React.FC = () => {
             {pageTitle ?? <>&nbsp;</>}
           </Typography>
 
-          <SearchBox />
+          <SearchAndActionsContainer isSmall={isSmall}>
+            <SearchBox />
 
-          {!isSmall && showSearchBox && pageActions.length ? (
-            <SeparatorElement style={{ marginLeft: "24px" }} />
-          ) : null}
+            {showSearchBox && pageActions.length ? (
+              <SeparatorElement style={{ marginLeft: "24px" }} />
+            ) : null}
 
-          <Actions
-            key={window.location.pathname}
-            actions={pageActions}
-            enableFloatingActions={true}
-          />
+            <Actions
+              key={window.location.pathname}
+              actions={pageActions}
+              enableFloatingActions={true}
+            />
+          </SearchAndActionsContainer>
         </ContentWrapper>
       </AppContent>
     </Host>
@@ -102,4 +104,11 @@ const ContentWrapper = styled("div")`
   a {
     color: ${(p) => p.theme.palette.common.white} !important;
   }
+`;
+
+const SearchAndActionsContainer = styled("div")<{ isSmall: boolean }>`
+  margin-top: ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
+  width: ${(p) => (p.isSmall ? "100%" : "auto")};
+  display: flex;
+  align-items: center;
 `;
