@@ -92,8 +92,9 @@ export class ServerApi {
     return authResult;
   }
 
-  static async getMetrics(): Promise<IMetric[]> {
-    return await ServerApi.executeRequest(`/metrics/`);
+  static async getMetrics(searchText?: string): Promise<IMetric[]> {
+    const params = searchText ? `?searchText=${searchText}` : "";
+    return await ServerApi.executeRequest(`/metrics${params}`);
   }
 
   static async getMetric(metricId: string): Promise<IMetric> {
@@ -108,7 +109,6 @@ export class ServerApi {
     searchText: string
   ): Promise<IGetActivitiesQueryResult> {
     const params = searchText ? `?searchText=${searchText}` : "";
-
     return await ServerApi.executeRequest(`/activities${params}`);
   }
 

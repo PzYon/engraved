@@ -3,8 +3,8 @@ import { IDateConditions } from "../components/details/MetricDetailsContext";
 const metrics = "metrics";
 
 export const queryKeysFactory = {
-  metrics() {
-    return [metrics];
+  metrics(searchText?: string) {
+    return [metrics, "all", searchText];
   },
 
   metric(metricId: string) {

@@ -1,4 +1,5 @@
-﻿using System.Security.Authentication;
+﻿using System.Linq.Expressions;
+using System.Security.Authentication;
 using System.Text.RegularExpressions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Measurements;
@@ -91,11 +92,20 @@ public class MongoRepository : IRepository
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
-  public async Task<IMetric[]> GetAllMetrics()
+  public async Task<IMetric[]> GetAllMetrics(string? searchText = null, int? limit = null)
   {
+    List<FilterDefinition<MetricDocument>> filters = GetFreeTextFilters<MetricDocument>(
+      searchText,
+      d => d.Name!,
+      d => d.Description!
+    );
+
+    filters.Add(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read));
+
     List<MetricDocument> metrics = await MetricsCollection
-      .Find(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read))
+      .Find(Builders<MetricDocument>.Filter.And(filters))
       .Sort(Builders<MetricDocument>.Sort.Descending(d => d.EditedOn))
+      .Limit(limit)
       .ToListAsync();
 
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
@@ -165,32 +175,13 @@ public class MongoRepository : IRepository
   // you explicitly need to specify the metric IDs.
   public async Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
   {
-    List<FilterDefinition<MeasurementDocument>> filters = new();
+    List<FilterDefinition<MeasurementDocument>> filters = GetFreeTextFilters<MeasurementDocument>(
+      searchText,
+      d => d.Notes!,
+      d => ((ScrapsMeasurementDocument) d).Title!
+    );
 
-    FilterDefinition<MeasurementDocument> metricIdFilter =
-      Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId));
-
-    filters.Add(metricIdFilter);
-
-    if (!string.IsNullOrEmpty(searchText))
-    {
-      filters.AddRange(
-        searchText.Split(" ")
-          .Select(
-            segment =>
-              Builders<MeasurementDocument>.Filter.Or(
-                Builders<MeasurementDocument>.Filter.Regex(
-                  d => d.Notes,
-                  GetRegex(segment)
-                ),
-                Builders<MeasurementDocument>.Filter.Regex(
-                  d => ((ScrapsMeasurementDocument) d).Title,
-                  GetRegex(segment)
-                )
-              )
-          )
-      );
-    }
+    filters.Add(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)));
 
     List<MeasurementDocument> measurements = await MeasurementsCollection
       .Find(Builders<MeasurementDocument>.Filter.And(filters))
@@ -343,9 +334,31 @@ public class MongoRepository : IRepository
     };
   }
 
-  private static BsonRegularExpression GetRegex(string searchText)
+  private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
+      string? searchText,
+      params Expression<Func<T, object>>[] fieldNameExpressions
+    ) where T : IDocument
   {
-    return new BsonRegularExpression(new Regex(searchText, RegexOptions.IgnoreCase | RegexOptions.Multiline));
+    if (string.IsNullOrEmpty(searchText))
+    {
+      return new List<FilterDefinition<T>>();
+    }
+
+    return searchText.Split(" ")
+      .Select(
+        segment =>
+        {
+          return Builders<T>.Filter.Or(
+            fieldNameExpressions.Select(
+              exp => Builders<T>.Filter.Regex(
+                exp,
+                new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline))
+              )
+            )
+          );
+        }
+      )
+      .ToList();
   }
 
   private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)

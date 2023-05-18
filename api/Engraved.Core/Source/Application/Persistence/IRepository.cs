@@ -15,7 +15,7 @@ public interface IRepository
 
   Task<IUser[]> GetAllUsers();
 
-  Task<IMetric[]> GetAllMetrics();
+  Task<IMetric[]> GetAllMetrics(string? searchText = null, int? limit = null);
 
   Task<IMetric?> GetMetric(string metricId);
 

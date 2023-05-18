@@ -192,7 +192,7 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
-  public Task<IMetric[]> GetAllMetrics()
+  public Task<IMetric[]> GetAllMetrics(string? searchText = null, int? limit = null)
   {
     throw new NotImplementedException();
   }

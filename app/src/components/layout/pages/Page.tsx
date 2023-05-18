@@ -17,7 +17,7 @@ export const Page: React.FC<{
     setPageTitle(title);
     setDocumentTitle(documentTitle);
     return () => setPageTitle(null);
-  }, [title]);
+  }, [title, documentTitle]);
 
   useEffect(() => {
     setShowSearchBox(enableSearch);

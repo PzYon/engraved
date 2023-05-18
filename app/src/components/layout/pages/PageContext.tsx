@@ -66,7 +66,7 @@ export const PageContextProvider: React.FC<{
       searchText,
       setSearchText,
     };
-  }, [pageTitle, pageActions, searchText, showSearchBox]);
+  }, [pageTitle, documentTitle, pageActions, searchText, showSearchBox]);
 
   return (
     <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>

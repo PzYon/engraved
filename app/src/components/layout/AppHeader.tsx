@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import { Actions } from "../common/Actions";
+import { Actions, SeparatorElement } from "../common/Actions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
@@ -17,9 +17,11 @@ import { SearchBox } from "../common/search/SearchBox";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
-  const { pageTitle, pageActions } = usePageContext();
+  const { pageTitle, pageActions, showSearchBox } = usePageContext();
   const deviceWidth = useDeviceWidth();
   const { palette } = useTheme();
+
+  const isSmall = deviceWidth === DeviceWidth.Small;
 
   return (
     <Host>
@@ -65,22 +67,26 @@ export const AppHeader: React.FC = () => {
       <AppContent>
         <ContentWrapper
           style={
-            deviceWidth === DeviceWidth.Small
-              ? { flexDirection: "column", alignItems: "start" }
-              : null
+            isSmall ? { flexDirection: "column", alignItems: "start" } : null
           }
         >
           <Typography variant="h2" sx={{ flexGrow: 1, color: "primary.main" }}>
             {pageTitle ?? <>&nbsp;</>}
           </Typography>
 
-          <SearchBox />
+          <SearchAndActionsContainer isSmall={isSmall}>
+            <SearchBox />
 
-          <Actions
-            key={window.location.pathname}
-            actions={pageActions}
-            enableFloatingActions={true}
-          />
+            {showSearchBox && pageActions.length ? (
+              <SeparatorElement style={{ marginLeft: "24px" }} />
+            ) : null}
+
+            <Actions
+              key={window.location.pathname}
+              actions={pageActions}
+              enableFloatingActions={true}
+            />
+          </SearchAndActionsContainer>
         </ContentWrapper>
       </AppContent>
     </Host>
@@ -98,4 +104,11 @@ const ContentWrapper = styled("div")`
   a {
     color: ${(p) => p.theme.palette.common.white} !important;
   }
+`;
+
+const SearchAndActionsContainer = styled("div")<{ isSmall: boolean }>`
+  margin-top: ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
+  width: ${(p) => (p.isSmall ? "100%" : "auto")};
+  display: flex;
+  align-items: center;
 `;

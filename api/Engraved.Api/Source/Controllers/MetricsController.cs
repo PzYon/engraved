@@ -27,9 +27,10 @@ public class MetricsController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<object[]> GetAll()
+  public async Task<object[]> GetAll(string? searchText)
   {
-    IMetric[] metrics = await _dispatcher.Query(new GetAllMetricsQuery());
+    var query = new GetAllMetricsQuery { SearchText = searchText };
+    IMetric[] metrics = await _dispatcher.Query(query);
     return metrics.EnsurePolymorphismWhenSerializing();
   }
 
@@ -55,9 +56,9 @@ public class MetricsController : ControllerBase
   [Route("{metricId}/permissions")]
   [HttpPut]
   public async Task<CommandResult> Permissions(
-    [FromBody] Dictionary<string, PermissionKind> permissions,
-    string metricId
-  )
+      [FromBody] Dictionary<string, PermissionKind> permissions,
+      string metricId
+    )
   {
     var command = new EditMetricPermissionsCommand
     {
@@ -71,10 +72,10 @@ public class MetricsController : ControllerBase
   [Route("{metricId}/threshold_values")]
   [HttpGet]
   public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> GetThresholdValues(
-    string metricId,
-    DateTime? fromDate,
-    DateTime? toDate
-  )
+      string metricId,
+      DateTime? fromDate,
+      DateTime? toDate
+    )
   {
     var query = new GetThresholdValuesQuery
     {
