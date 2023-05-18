@@ -21,6 +21,8 @@ export const AppHeader: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const { palette } = useTheme();
 
+  const isSmall = deviceWidth === DeviceWidth.Small;
+
   return (
     <Host>
       <Box
@@ -65,9 +67,7 @@ export const AppHeader: React.FC = () => {
       <AppContent>
         <ContentWrapper
           style={
-            deviceWidth === DeviceWidth.Small
-              ? { flexDirection: "column", alignItems: "start" }
-              : null
+            isSmall ? { flexDirection: "column", alignItems: "start" } : null
           }
         >
           <Typography variant="h2" sx={{ flexGrow: 1, color: "primary.main" }}>
@@ -76,7 +76,7 @@ export const AppHeader: React.FC = () => {
 
           <SearchBox />
 
-          {showSearchBox && pageActions.length ? (
+          {!isSmall && showSearchBox && pageActions.length ? (
             <SeparatorElement style={{ marginLeft: "24px" }} />
           ) : null}
 
