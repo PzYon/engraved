@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import { Actions } from "../common/Actions";
+import { Actions, SeparatorElement } from "../common/Actions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
@@ -17,7 +17,7 @@ import { SearchBox } from "../common/search/SearchBox";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
-  const { pageTitle, pageActions } = usePageContext();
+  const { pageTitle, pageActions, showSearchBox } = usePageContext();
   const deviceWidth = useDeviceWidth();
   const { palette } = useTheme();
 
@@ -75,6 +75,10 @@ export const AppHeader: React.FC = () => {
           </Typography>
 
           <SearchBox />
+
+          {showSearchBox && pageActions.length ? (
+            <SeparatorElement style={{ marginLeft: "24px" }} />
+          ) : null}
 
           <Actions
             key={window.location.pathname}
