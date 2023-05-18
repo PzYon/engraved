@@ -334,14 +334,14 @@ public class MongoRepository : IRepository
     };
   }
 
-  private static FilterDefinition<T>[] GetFreeTextFilters<T>(
+  private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
       string? searchText,
       params Expression<Func<T, object>>[] fieldNameExpressions
     ) where T : IDocument
   {
     if (string.IsNullOrEmpty(searchText))
     {
-      return Array.Empty<FilterDefinition<T>>();
+      return new List<FilterDefinition<T>>();
     }
 
     return searchText.Split(" ")
@@ -358,7 +358,7 @@ public class MongoRepository : IRepository
           );
         }
       )
-      .ToArray();
+      .ToList();
   }
 
   private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
