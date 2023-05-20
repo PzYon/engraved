@@ -10,8 +10,13 @@ export const Page: React.FC<{
   enableSearch?: boolean;
   children: React.ReactNode;
 }> = ({ actions, title, documentTitle, enableSearch, children }) => {
-  const { setPageActions, setPageTitle, setDocumentTitle, setShowSearchBox } =
-    usePageContext();
+  const {
+    setPageActions,
+    setPageTitle,
+    setDocumentTitle,
+    setShowSearchBox,
+    setSearchText,
+  } = usePageContext();
 
   useEffect(() => {
     setPageTitle(title);
@@ -28,6 +33,10 @@ export const Page: React.FC<{
   useEffect(() => {
     setPageActions(actions);
   }, [actions]);
+
+  useEffect(() => {
+    return () => setSearchText(null);
+  }, []);
 
   return <FadeInContainer>{children}</FadeInContainer>;
 };
