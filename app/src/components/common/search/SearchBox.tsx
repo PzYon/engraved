@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { InputAdornment, styled, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { IconButton, InputAdornment, styled, TextField } from "@mui/material";
 import { usePageContext } from "../../layout/pages/PageContext";
-import { SearchOutlined } from "@mui/icons-material";
+import { Clear, SearchOutlined } from "@mui/icons-material";
 import { DeviceWidth, useDeviceWidth } from "../useDeviceWidth";
 import { SxProps } from "@mui/system";
 import { Theme } from "@mui/material/styles";
@@ -13,13 +13,17 @@ export const SearchBox: React.FC = () => {
 
   const [currentFieldValue, setCurrentFieldValue] = useState(searchText);
 
+  useEffect(() => {
+    setCurrentFieldValue(searchText);
+  }, [searchText]);
+
   if (!showSearchBox) {
     return null;
   }
 
   return (
     <StyledTextField
-      defaultValue={searchText}
+      value={currentFieldValue}
       onKeyUp={(event) => {
         if (event.key === "Enter") {
           setSearchText(currentFieldValue);
@@ -34,6 +38,17 @@ export const SearchBox: React.FC = () => {
           <InputAdornment position="start">
             <SearchOutlined fontSize="small" />
           </InputAdornment>
+        ),
+        endAdornment: (
+          <IconButton
+            sx={{ visibility: currentFieldValue ? "visible" : "hidden" }}
+            onClick={() => {
+              setSearchText("");
+              setCurrentFieldValue("");
+            }}
+          >
+            <Clear fontSize="small" />
+          </IconButton>
         ),
       }}
     />

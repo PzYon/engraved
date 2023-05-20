@@ -43,7 +43,7 @@ export const PageContextProvider: React.FC<{
 }> = ({ children }) => {
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
   const [showSearchBox, setShowSearchBox] = useState(false);
-  const [searchText, setSearchText] = useState<string>(undefined);
+  const [searchText, setSearchText] = useState<string>("");
   const [pageTitle, setPageTitle] = useState<React.ReactNode>(undefined);
   const [pageActions, setPageActions] = useState<IIconButtonAction[]>([]);
 

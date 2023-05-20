@@ -74,18 +74,17 @@ export const AppHeader: React.FC = () => {
             {pageTitle ?? <>&nbsp;</>}
           </Typography>
 
-          <SearchAndActionsContainer isSmall={isSmall}>
-            <SearchBox />
+          <SearchAndActionsContainer
+            isSmall={isSmall}
+            key={window.location.pathname}
+          >
+            <Actions actions={pageActions} enableFloatingActions={true} />
 
             {showSearchBox && pageActions.length ? (
-              <SeparatorElement style={{ marginLeft: "24px" }} />
+              <SeparatorElement style={{ marginRight: "24px" }} />
             ) : null}
 
-            <Actions
-              key={window.location.pathname}
-              actions={pageActions}
-              enableFloatingActions={true}
-            />
+            <SearchBox />
           </SearchAndActionsContainer>
         </ContentWrapper>
       </AppContent>
