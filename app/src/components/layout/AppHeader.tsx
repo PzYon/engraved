@@ -14,11 +14,14 @@ import { AppContent } from "./AppContent";
 import { IconButtonWrapper } from "../common/IconButtonWrapper";
 import { AddOutlined, SearchOutlined } from "@mui/icons-material";
 import { SearchBox } from "../common/search/SearchBox";
+import { renderAddQuickScrapDialog } from "../details/add/renderAddQuickScrapDialog";
+import { useDialogContext } from "./dialogs/DialogContext";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
   const { pageTitle, pageActions, showSearchBox } = usePageContext();
   const { palette } = useTheme();
+  const { renderDialog } = useDialogContext();
 
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
@@ -63,8 +66,8 @@ export const AppHeader: React.FC = () => {
                 key: "add-quick-scrap-notes",
                 icon: <AddOutlined fontSize="small" />,
                 label: "Add quick scrap notes",
-                href: "/search",
                 sx: { color: "common.white", mr: 1 },
+                onClick: () => renderAddQuickScrapDialog(user, renderDialog),
               }}
             />
             <Link to="/users/me">
