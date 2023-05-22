@@ -11,4 +11,6 @@ public interface IUser
   string? ImageUrl { get; set; }
 
   DateTime? LastLoginDate { get; set; }
+
+  List<string> FavoriteMetricIds { get; set; }
 }
