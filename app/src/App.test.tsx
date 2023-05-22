@@ -18,6 +18,7 @@ test("placeholder test (that doesn't fail)", () => {
         displayName: "Gebhard",
         imageUrl: "https://www.foo.ch/gebhard.jpg",
         id: "1234",
+        favoriteMetricIds: ["123"],
       }}
     />
   );

@@ -4,7 +4,7 @@ import { IMetric } from "../../../serverApi/IMetric";
 import React from "react";
 import { useActiveMeasurementQuery } from "../../../serverApi/reactQuery/queries/useActiveMeasurementQuery";
 
-export const renderAddMeasurementDialog = (
+export const renderUpsertMeasurementDialog = (
   metric: IMetric,
   renderDialog: (dialogProps: IDialogProps) => void
 ): void => {

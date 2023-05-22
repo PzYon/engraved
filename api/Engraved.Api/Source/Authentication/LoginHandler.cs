@@ -4,6 +4,8 @@ using System.Text;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Metrics.Add;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Options;
@@ -19,18 +21,18 @@ public class LoginHandler : ILoginHandler
   private readonly IGoogleTokenValidator _tokenValidator;
 
   public LoginHandler(
-      IGoogleTokenValidator tokenValidator,
-      IRepository repository,
-      IOptions<AuthenticationConfig> configuration,
-      IDateService dateService
-    ) : this(tokenValidator, repository, configuration.Value, dateService) { }
+    IGoogleTokenValidator tokenValidator,
+    IRepository repository,
+    IOptions<AuthenticationConfig> configuration,
+    IDateService dateService
+  ) : this(tokenValidator, repository, configuration.Value, dateService) { }
 
   public LoginHandler(
-      IGoogleTokenValidator tokenValidator,
-      IRepository repository,
-      AuthenticationConfig configuration,
-      IDateService dateService
-    )
+    IGoogleTokenValidator tokenValidator,
+    IRepository repository,
+    AuthenticationConfig configuration,
+    IDateService dateService
+  )
   {
     _tokenValidator = tokenValidator;
     _repository = repository;
@@ -56,6 +58,11 @@ public class LoginHandler : ILoginHandler
     user.ImageUrl = parsedToken.ImageUrl;
     user.LastLoginDate = _dateService.UtcNow;
 
+    if (user.FavoriteMetricIds.Count == 0)
+    {
+      await EnsureQuickScraps(user);
+    }
+
     UpsertResult result = await _repository.UpsertUser(user);
     user.Id = result.EntityId;
 
@@ -65,6 +72,7 @@ public class LoginHandler : ILoginHandler
       User = user
     };
   }
+
 
   private string ToJwtToken(string userId)
   {
@@ -100,4 +108,18 @@ public class LoginHandler : ILoginHandler
   {
     return new[] { new Claim(ClaimTypes.NameIdentifier, userId) };
   }
+  
+  private async Task EnsureQuickScraps(IUser user)
+  {
+    var command = new AddMetricCommand
+    {
+      Name = "Quick Scraps"
+    };
+
+    var commandExecutor = new AddMetricCommandExecutor(command);
+    CommandResult result = await commandExecutor.Execute(_repository, _dateService);
+    
+    user.FavoriteMetricIds.Add(result.EntityId);
+  }
+
 }

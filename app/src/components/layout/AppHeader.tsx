@@ -12,7 +12,7 @@ import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import { IconButtonWrapper } from "../common/IconButtonWrapper";
-import { SearchOutlined } from "@mui/icons-material";
+import { AddOutlined, SearchOutlined } from "@mui/icons-material";
 import { SearchBox } from "../common/search/SearchBox";
 
 export const AppHeader: React.FC = () => {
@@ -54,6 +54,15 @@ export const AppHeader: React.FC = () => {
                 key: "search",
                 icon: <SearchOutlined fontSize="small" />,
                 label: "Search",
+                href: "/search",
+                sx: { color: "common.white" },
+              }}
+            />
+            <IconButtonWrapper
+              action={{
+                key: "add-quick-scrap-notes",
+                icon: <AddOutlined fontSize="small" />,
+                label: "Add quick scrap notes",
                 href: "/search",
                 sx: { color: "common.white", mr: 1 },
               }}
