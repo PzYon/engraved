@@ -62,7 +62,7 @@ export const UpsertMeasurement: React.FC<{
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
     metric.id,
     metric.type,
-    measurement,
+    measurement?.id,
     onSaved
   );
 

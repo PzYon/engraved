@@ -34,7 +34,7 @@ export const Scrap: React.FC<{
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
     scrap.metricId,
     MetricType.Scraps,
-    scrap
+    scrap.id
   );
 
   return (

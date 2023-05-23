@@ -29,33 +29,40 @@ export const ScrapBody: React.FC<{
           </Typography>
         )}
 
-        <Actions
-          actions={[
-            ...actions,
-            editMode
-              ? {
-                  key: "save",
-                  label: "Save",
-                  icon: <SaveOutlined fontSize="small" />,
-                  onClick: () => setEditMode(false),
-                }
-              : {
-                  key: "edit",
-                  label: "Edit",
-                  icon: <EditOutlined fontSize="small" />,
-                  onClick: () => setEditMode(true),
-                },
-            {
-              key: "delete",
-              label: "Delete",
-              icon: <DeleteOutlined fontSize="small" />,
-              href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/delete`,
-            },
-          ]}
-        />
+        <Actions actions={getActions()} />
       </FooterContainer>
     </>
   );
+
+  function getActions() {
+    const allActions = [
+      ...actions,
+      editMode
+        ? {
+            key: "save",
+            label: "Save",
+            icon: <SaveOutlined fontSize="small" />,
+            onClick: () => setEditMode(false),
+          }
+        : {
+            key: "edit",
+            label: "Edit",
+            icon: <EditOutlined fontSize="small" />,
+            onClick: () => setEditMode(true),
+          },
+    ];
+
+    if (scrap.id) {
+      allActions.push({
+        key: "delete",
+        label: "Delete",
+        icon: <DeleteOutlined fontSize="small" />,
+        href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/delete`,
+      });
+    }
+
+    return allActions;
+  }
 };
 
 const FooterContainer = styled("div")`

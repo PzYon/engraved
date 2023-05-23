@@ -7,6 +7,7 @@ using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Metrics.Add;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Metrics;
 using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -113,6 +114,7 @@ public class LoginHandler : ILoginHandler
   {
     var command = new AddMetricCommand
     {
+      Type = MetricType.Scraps,
       Name = "Quick Scraps"
     };
 

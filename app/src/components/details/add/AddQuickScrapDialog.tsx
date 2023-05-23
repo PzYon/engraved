@@ -1,32 +1,57 @@
-import React, { useState } from "react";
+import React from "react";
 import { IUser } from "../../../serverApi/IUser";
-import { ScrapMarkdown } from "../scraps/markdown/ScrapMarkdown";
-import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
-import { Button } from "@mui/material";
+import {
+  IScrapMeasurement,
+  ScrapType,
+} from "../../../serverApi/IScrapMeasurement";
+import { Scrap } from "../scraps/Scrap";
 
 export const AddQuickScrapDialog: React.FC<{ user: IUser }> = ({ user }) => {
-  const [value, setValue] = useState("");
+  return <Scrap scrap={getScrap()} />;
 
-  return (
-    <div>
-      <ScrapMarkdown
-        isEditMode={true}
-        value={value}
-        onChange={(newValue) => {
-          // this is called for every key press
-          console.log("value from ScrapMarkdown: " + newValue);
-          setValue(newValue);
+  // copied from ScrapsViewPage
+  function getScrap(): IScrapMeasurement {
+    debugger;
+    return {
+      id: null,
+      dateTime: null,
+      notes: "",
+      title: "",
+      metricId: user.favoriteMetricIds[0],
+      scrapType: ScrapType.Markdown,
+    };
+  }
+
+  /*
+    return (
+      <ScrapMarkdownBody
+        scrap={
+          {
+            metricId: user.favoriteMetricIds[0],
+            dateTime: new Date().toString(),
+          } as any
+        }
+        value={""}
+        editMode={true}
+        hideDate={true}
+        onChange={(v) => {
+          setValue(v);
         }}
-      />
-      <DialogFormButtonContainer>
-        <Button
-          variant="contained"
-          onClick={() => alert(value)}
-          disabled={!value}
-        >
-          Save
-        </Button>
-      </DialogFormButtonContainer>
-    </div>
-  );
+        setEditMode={(isEditMode) => {
+          const isSave = !isEditMode;
+          if (!isSave) {
+            return;
+          }
+
+          upsertMeasurementMutation.mutate({
+            command: {
+              scrapType: ScrapType.Markdown,
+              notes: value,
+              metricId: user.favoriteMetricIds[0],
+            } as IUpsertScrapsMeasurementCommand,
+          });
+        }}
+      ></ScrapMarkdownBody>
+    );
+     */
 };
