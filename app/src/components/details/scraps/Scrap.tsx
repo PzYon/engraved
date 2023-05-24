@@ -14,7 +14,8 @@ import { AutogrowTextField } from "../../common/AutogrowTextField";
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
   hideDate?: boolean;
-}> = ({ scrap, hideDate }) => {
+  onSuccess?: () => void;
+}> = ({ scrap, hideDate, onSuccess }) => {
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
@@ -103,5 +104,7 @@ export const Scrap: React.FC<{
         dateTime: new Date(),
       } as IUpsertScrapsMeasurementCommand,
     });
+
+    onSuccess?.();
   }
 };

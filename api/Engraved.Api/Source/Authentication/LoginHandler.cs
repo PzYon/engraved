@@ -4,8 +4,6 @@ using System.Text;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
-using Engraved.Core.Application.Commands;
-using Engraved.Core.Application.Commands.Metrics.Add;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Metrics;
 using Engraved.Core.Domain.User;
@@ -74,7 +72,6 @@ public class LoginHandler : ILoginHandler
     };
   }
 
-
   private string ToJwtToken(string userId)
   {
     var tokenDescriptor = new SecurityTokenDescriptor
@@ -109,19 +106,18 @@ public class LoginHandler : ILoginHandler
   {
     return new[] { new Claim(ClaimTypes.NameIdentifier, userId) };
   }
-  
+
   private async Task EnsureQuickScraps(IUser user)
   {
-    var command = new AddMetricCommand
+    IMetric metric = new ScrapsMetric
     {
-      Type = MetricType.Scraps,
-      Name = "Quick Scraps"
+      Name = "Quick Scraps",
+      EditedOn = _dateService.UtcNow,
+      UserId = user.Id
     };
 
-    var commandExecutor = new AddMetricCommandExecutor(command);
-    CommandResult result = await commandExecutor.Execute(_repository, _dateService);
-    
+    UpsertResult result = await _repository.UpsertMetric(metric);
+
     user.FavoriteMetricIds.Add(result.EntityId);
   }
-
 }

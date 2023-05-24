@@ -12,6 +12,7 @@ import {
 import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { PageSection } from "../../layout/pages/PageSection";
+import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 
 export const ScrapsViewPage: React.FC = () => {
   const {
@@ -79,14 +80,11 @@ export const ScrapsViewPage: React.FC = () => {
         <CheckBoxOutlined fontSize="small" />
       ),
       onClick: () => {
-        setNewScrap({
-          id: null,
-          dateTime: null,
-          notes: "",
-          title: "",
-          metricId: metric.id,
-          scrapType: isMarkdown ? ScrapType.Markdown : ScrapType.List,
-        });
+        const newScrap = ScrapsMetricType.createBlank();
+        newScrap.metricId = metric.id;
+        newScrap.scrapType = isMarkdown ? ScrapType.Markdown : ScrapType.List;
+
+        setNewScrap(newScrap);
       },
     };
   }

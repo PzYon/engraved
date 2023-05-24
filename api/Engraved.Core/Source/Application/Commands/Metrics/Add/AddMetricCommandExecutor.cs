@@ -29,7 +29,6 @@ public class AddMetricCommandExecutor : ICommandExecutor
     metric.Description = _command.Description;
     metric.Name = _command.Name;
     metric.EditedOn = dateService.UtcNow;
-
     UpsertResult result = await repository.UpsertMetric(metric);
 
     return new CommandResult(result.EntityId, Array.Empty<string>());
