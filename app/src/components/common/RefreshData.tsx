@@ -22,7 +22,7 @@ export const RefreshData: React.FC = () => {
     <Host className={doRotate ? "rotate" : null}>
       <IconButtonWrapper
         action={{
-          icon: <RefreshOutlined />,
+          icon: <RefreshOutlined fontSize="small" />,
           onClick: async () => await queryClient.invalidateQueries(),
           label: "Refresh data",
           key: "refresh",

@@ -12,7 +12,7 @@ import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import { IconButtonWrapper } from "../common/IconButtonWrapper";
-import { AddOutlined, SearchOutlined } from "@mui/icons-material";
+import { BoltOutlined, SearchOutlined } from "@mui/icons-material";
 import { SearchBox } from "../common/search/SearchBox";
 import { renderAddQuickScrapDialog } from "../details/add/renderAddQuickScrapDialog";
 import { useDialogContext } from "./dialogs/DialogContext";
@@ -64,7 +64,7 @@ export const AppHeader: React.FC = () => {
             <IconButtonWrapper
               action={{
                 key: "add-quick-scrap-notes",
-                icon: <AddOutlined fontSize="small" />,
+                icon: <BoltOutlined fontSize="small" />,
                 label: "Add Quick Scrap",
                 sx: { color: "common.white", mr: 1 },
                 onClick: () => renderAddQuickScrapDialog(user, renderDialog),
