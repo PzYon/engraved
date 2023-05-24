@@ -40,13 +40,17 @@ export class ScrapsMetricType implements IMetricType {
     throw new Error("getYAxisLabel is currently not supported for Scraps.");
   }
 
-  static createBlank(): IScrapMeasurement {
+  static createBlank(
+    metricId: string,
+    scrapType: ScrapType
+  ): IScrapMeasurement {
     return {
       id: null,
+      metricId: metricId,
       dateTime: null,
       notes: "",
       title: "",
-      scrapType: ScrapType.Markdown,
+      scrapType: scrapType,
     };
   }
 }

@@ -65,7 +65,7 @@ export const AppHeader: React.FC = () => {
               action={{
                 key: "add-quick-scrap-notes",
                 icon: <AddOutlined fontSize="small" />,
-                label: "Add quick scrap notes",
+                label: "Add Quick Scrap",
                 sx: { color: "common.white", mr: 1 },
                 onClick: () => renderAddQuickScrapDialog(user, renderDialog),
               }}

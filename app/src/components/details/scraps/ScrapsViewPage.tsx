@@ -74,18 +74,23 @@ export const ScrapsViewPage: React.FC = () => {
     return {
       key: "add-scrap-" + type,
       label: "Add " + type,
-      icon: isMarkdown ? (
-        <FormatAlignLeftOutlined fontSize="small" />
-      ) : (
-        <CheckBoxOutlined fontSize="small" />
-      ),
+      icon: isMarkdown ? <MarkdownScrapIcon /> : <ListScrapIcon />,
       onClick: () => {
-        const newScrap = ScrapsMetricType.createBlank();
-        newScrap.metricId = metric.id;
-        newScrap.scrapType = isMarkdown ? ScrapType.Markdown : ScrapType.List;
-
-        setNewScrap(newScrap);
+        setNewScrap(
+          ScrapsMetricType.createBlank(
+            metric.id,
+            isMarkdown ? ScrapType.Markdown : ScrapType.List
+          )
+        );
       },
     };
   }
+};
+
+export const MarkdownScrapIcon = () => {
+  return <FormatAlignLeftOutlined fontSize="small" />;
+};
+
+export const ListScrapIcon = () => {
+  return <CheckBoxOutlined fontSize="small" />;
 };
