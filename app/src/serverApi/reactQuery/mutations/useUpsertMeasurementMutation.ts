@@ -38,6 +38,8 @@ export const useUpsertMeasurementMutation = (
         type: "success",
       });
 
+      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
+
       onSaved?.();
     },
 
