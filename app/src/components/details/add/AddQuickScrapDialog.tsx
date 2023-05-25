@@ -32,11 +32,11 @@ export const AddQuickScrapDialog: React.FC<{
         >
           <ToggleButton value={ScrapType.Markdown} color="primary">
             <MarkdownScrapIcon />
-            Markdown
+            &nbsp;Markdown
           </ToggleButton>
           <ToggleButton value={ScrapType.List} color="primary">
             <ListScrapIcon />
-            List
+            &nbsp;List
           </ToggleButton>
         </ToggleButtonGroup>
       </ScrapTypeSelector>

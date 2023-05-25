@@ -1,6 +1,6 @@
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IUser } from "../../../serverApi/IUser";
-import { AddQuickScrapDialog } from "./addQuickScrapDialog";
+import { AddQuickScrapDialog } from "./AddQuickScrapDialog";
 
 export const renderAddQuickScrapDialog = (
   user: IUser,
