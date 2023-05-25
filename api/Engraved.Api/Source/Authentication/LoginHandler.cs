@@ -5,6 +5,7 @@ using Engraved.Api.Authentication.Google;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Metrics;
 using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -19,18 +20,18 @@ public class LoginHandler : ILoginHandler
   private readonly IGoogleTokenValidator _tokenValidator;
 
   public LoginHandler(
-      IGoogleTokenValidator tokenValidator,
-      IRepository repository,
-      IOptions<AuthenticationConfig> configuration,
-      IDateService dateService
-    ) : this(tokenValidator, repository, configuration.Value, dateService) { }
+    IGoogleTokenValidator tokenValidator,
+    IRepository repository,
+    IOptions<AuthenticationConfig> configuration,
+    IDateService dateService
+  ) : this(tokenValidator, repository, configuration.Value, dateService) { }
 
   public LoginHandler(
-      IGoogleTokenValidator tokenValidator,
-      IRepository repository,
-      AuthenticationConfig configuration,
-      IDateService dateService
-    )
+    IGoogleTokenValidator tokenValidator,
+    IRepository repository,
+    AuthenticationConfig configuration,
+    IDateService dateService
+  )
   {
     _tokenValidator = tokenValidator;
     _repository = repository;
@@ -55,6 +56,11 @@ public class LoginHandler : ILoginHandler
     user.DisplayName = parsedToken.UserDisplayName;
     user.ImageUrl = parsedToken.ImageUrl;
     user.LastLoginDate = _dateService.UtcNow;
+
+    if (user.FavoriteMetricIds.Count == 0)
+    {
+      await EnsureQuickScraps(user);
+    }
 
     UpsertResult result = await _repository.UpsertUser(user);
     user.Id = result.EntityId;
@@ -99,5 +105,19 @@ public class LoginHandler : ILoginHandler
   private static Claim[] GetClaims(string userId)
   {
     return new[] { new Claim(ClaimTypes.NameIdentifier, userId) };
+  }
+
+  private async Task EnsureQuickScraps(IUser user)
+  {
+    IMetric metric = new ScrapsMetric
+    {
+      Name = "Quick Scraps",
+      EditedOn = _dateService.UtcNow,
+      UserId = user.Id
+    };
+
+    UpsertResult result = await _repository.UpsertMetric(metric);
+
+    user.FavoriteMetricIds.Add(result.EntityId);
   }
 }

@@ -12,13 +12,16 @@ import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import { IconButtonWrapper } from "../common/IconButtonWrapper";
-import { SearchOutlined } from "@mui/icons-material";
+import { BoltOutlined, SearchOutlined } from "@mui/icons-material";
 import { SearchBox } from "../common/search/SearchBox";
+import { renderAddQuickScrapDialog } from "../details/add/renderAddQuickScrapDialog";
+import { useDialogContext } from "./dialogs/DialogContext";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
   const { pageTitle, pageActions, showSearchBox } = usePageContext();
   const { palette } = useTheme();
+  const { renderDialog } = useDialogContext();
 
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
@@ -55,7 +58,16 @@ export const AppHeader: React.FC = () => {
                 icon: <SearchOutlined fontSize="small" />,
                 label: "Search",
                 href: "/search",
+                sx: { color: "common.white" },
+              }}
+            />
+            <IconButtonWrapper
+              action={{
+                key: "add-quick-scrap-notes",
+                icon: <BoltOutlined fontSize="small" />,
+                label: "Add Quick Scrap",
                 sx: { color: "common.white", mr: 1 },
+                onClick: () => renderAddQuickScrapDialog(user, renderDialog),
               }}
             />
             <Link to="/users/me">

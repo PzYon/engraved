@@ -12,6 +12,7 @@ import {
 import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { PageSection } from "../../layout/pages/PageSection";
+import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 
 export const ScrapsViewPage: React.FC = () => {
   const {
@@ -73,21 +74,23 @@ export const ScrapsViewPage: React.FC = () => {
     return {
       key: "add-scrap-" + type,
       label: "Add " + type,
-      icon: isMarkdown ? (
-        <FormatAlignLeftOutlined fontSize="small" />
-      ) : (
-        <CheckBoxOutlined fontSize="small" />
-      ),
+      icon: isMarkdown ? <MarkdownScrapIcon /> : <ListScrapIcon />,
       onClick: () => {
-        setNewScrap({
-          id: null,
-          dateTime: null,
-          notes: "",
-          title: "",
-          metricId: metric.id,
-          scrapType: isMarkdown ? ScrapType.Markdown : ScrapType.List,
-        });
+        setNewScrap(
+          ScrapsMetricType.createBlank(
+            metric.id,
+            isMarkdown ? ScrapType.Markdown : ScrapType.List
+          )
+        );
       },
     };
   }
+};
+
+export const MarkdownScrapIcon = () => {
+  return <FormatAlignLeftOutlined fontSize="small" />;
+};
+
+export const ListScrapIcon = () => {
+  return <CheckBoxOutlined fontSize="small" />;
 };

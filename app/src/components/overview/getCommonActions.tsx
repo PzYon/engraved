@@ -8,7 +8,7 @@ import {
   SaveOutlined,
   ShareOutlined,
 } from "@mui/icons-material";
-import { renderAddMeasurementDialog } from "../details/add/renderAddMeasurementDialog";
+import { renderUpsertMeasurementDialog } from "../details/add/renderUpsertMeasurementDialog";
 import { IIconButtonAction } from "../common/IconButtonWrapper";
 import { MetricType } from "../../serverApi/MetricType";
 
@@ -51,7 +51,7 @@ export function getCommonActions(
       key: "add_measurement",
       label: "Add Measurement",
       icon: <AddOutlined fontSize="small" />,
-      onClick: () => renderAddMeasurementDialog(metric, renderDialog),
+      onClick: () => renderUpsertMeasurementDialog(metric, renderDialog),
     });
   }
 

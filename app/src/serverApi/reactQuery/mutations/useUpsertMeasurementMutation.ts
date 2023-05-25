@@ -9,7 +9,7 @@ import { MetricType } from "../../MetricType";
 export const useUpsertMeasurementMutation = (
   metricId: string,
   metricType: MetricType,
-  measurement: IMeasurement,
+  measurementId?: string,
   onSaved?: () => void
 ) => {
   const { setAppAlert } = useAppContext();
@@ -17,7 +17,7 @@ export const useUpsertMeasurementMutation = (
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.updateMeasurement(metricId, measurement?.id),
+    mutationKey: queryKeysFactory.updateMeasurement(metricId, measurementId),
 
     mutationFn: async (variables: { command: IUpsertMeasurementCommand }) => {
       await ServerApi.upsertMeasurement(
@@ -27,23 +27,25 @@ export const useUpsertMeasurementMutation = (
     },
 
     onMutate: (variables) => {
-      if (measurement?.id) {
+      if (measurementId) {
         updateExistingMeasurementInCache(variables.command);
       }
     },
 
     onSuccess: async () => {
       setAppAlert({
-        title: `${measurement?.id ? "Updated" : "Added"} measurement`,
+        title: `${measurementId ? "Updated" : "Added"} measurement`,
         type: "success",
       });
+
+      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
 
       onSaved?.();
     },
 
     onError: (error) => {
       setAppAlert({
-        title: "Failed to upsert measurement",
+        title: "Failed to upsert measurementId",
         message: error.toString(),
         type: "error",
       });
@@ -65,7 +67,7 @@ export const useUpsertMeasurementMutation = (
         }
 
         return measurements.map((m) =>
-          m.id === measurement.id ? createCacheMeasurement(m, command) : m
+          m.id === measurementId ? createCacheMeasurement(m, command) : m
         );
       }
     );

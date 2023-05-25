@@ -7,7 +7,7 @@ import { IMeasurement } from "../serverApi/IMeasurement";
 import React from "react";
 import { Activity } from "./Activity";
 import { Scrap } from "../components/details/scraps/Scrap";
-import { IScrapMeasurement } from "../serverApi/IScrapMeasurement";
+import { IScrapMeasurement, ScrapType } from "../serverApi/IScrapMeasurement";
 
 export class ScrapsMetricType implements IMetricType {
   type = MetricType.Scraps;
@@ -38,5 +38,19 @@ export class ScrapsMetricType implements IMetricType {
 
   getYAxisLabel(): string {
     throw new Error("getYAxisLabel is currently not supported for Scraps.");
+  }
+
+  static createBlank(
+    metricId: string,
+    scrapType: ScrapType
+  ): IScrapMeasurement {
+    return {
+      id: null,
+      metricId: metricId,
+      dateTime: null,
+      notes: "",
+      title: "",
+      scrapType: scrapType,
+    };
   }
 }

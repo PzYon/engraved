@@ -23,7 +23,7 @@ export const SearchBox: React.FC = () => {
 
   return (
     <StyledTextField
-      value={currentFieldValue}
+      value={currentFieldValue ?? ""}
       onKeyUp={(event) => {
         if (event.key === "Enter") {
           setSearchText(currentFieldValue);
