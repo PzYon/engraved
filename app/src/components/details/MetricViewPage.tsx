@@ -6,6 +6,7 @@ import { IIconButtonAction } from "../common/IconButtonWrapper";
 import {
   FilterAltOutlined,
   FunctionsOutlined,
+  LocalHotelOutlined,
   MessageOutlined,
   PanToolOutlined,
   ShowChartOutlined,
@@ -25,6 +26,7 @@ import { MetricPageTitle } from "./MetricPageTitle";
 import { IMetricUiSettings } from "./edit/MetricUiSettings";
 import { createDateConditions } from "./filters/createDateConditions";
 import { getDefaultDateConditions } from "./filters/DateFilters";
+import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -186,7 +188,12 @@ export const MetricViewPage: React.FC = () => {
             showGroupTotals={showGroupTotals}
           />
         </PageSection>
-      ) : null}
+      ) : (
+        <GenericEmptyPlaceholder
+          icon={LocalHotelOutlined}
+          message={"No measurements available."}
+        />
+      )}
 
       <Routes>
         <Route

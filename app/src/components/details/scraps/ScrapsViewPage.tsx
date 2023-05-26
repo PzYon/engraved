@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Scrap } from "./Scrap";
-import { CheckBoxOutlined, FormatAlignLeftOutlined } from "@mui/icons-material";
+import {
+  CheckBoxOutlined,
+  FormatAlignLeftOutlined,
+  SelfImprovementOutlined,
+} from "@mui/icons-material";
 import { useMetricContext } from "../MetricDetailsContext";
 import { MetricPageTitle } from "../MetricPageTitle";
 import { getCommonActions } from "../../overview/getCommonActions";
@@ -13,6 +17,7 @@ import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
+import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 
 export const ScrapsViewPage: React.FC = () => {
   const {
@@ -53,11 +58,18 @@ export const ScrapsViewPage: React.FC = () => {
         </PageSection>
       ) : null}
 
-      {(scraps as IScrapMeasurement[]).map((s) => (
-        <PageSection key={s.id}>
-          <Scrap scrap={s} />
-        </PageSection>
-      ))}
+      {scraps.length ? (
+        (scraps as IScrapMeasurement[]).map((s) => (
+          <PageSection key={s.id}>
+            <Scrap scrap={s} />
+          </PageSection>
+        ))
+      ) : (
+        <GenericEmptyPlaceholder
+          icon={SelfImprovementOutlined}
+          message={"Nothing here..."}
+        />
+      )}
 
       <Routes>
         <Route
