@@ -188,12 +188,12 @@ export const MetricViewPage: React.FC = () => {
             showGroupTotals={showGroupTotals}
           />
         </PageSection>
-      ) : (
+      ) : measurements ? (
         <GenericEmptyPlaceholder
           icon={LocalHotelOutlined}
           message={"No measurements available."}
         />
-      )}
+      ) : null}
 
       <Routes>
         <Route
