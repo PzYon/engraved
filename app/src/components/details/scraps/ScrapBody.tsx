@@ -28,8 +28,9 @@ export const ScrapBody: React.FC<{
             {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
           </Typography>
         )}
-
-        <Actions actions={getActions()} />
+        <ActionsContainer>
+          <Actions actions={getActions()} />
+        </ActionsContainer>
       </FooterContainer>
     </>
   );
@@ -69,4 +70,8 @@ const FooterContainer = styled("div")`
   display: flex;
   justify-content: end;
   align-items: center;
+`;
+
+const ActionsContainer = styled("div")`
+  margin-top: 4px;
 `;
