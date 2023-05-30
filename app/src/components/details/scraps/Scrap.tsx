@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../serverApi/MetricType";
 import {
@@ -15,7 +15,8 @@ export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
   hideDate?: boolean;
   onSuccess?: () => void;
-}> = ({ scrap, hideDate, onSuccess }) => {
+  style?: CSSProperties;
+}> = ({ scrap, hideDate, onSuccess, style }) => {
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
@@ -40,6 +41,7 @@ export const Scrap: React.FC<{
 
   return (
     <div
+      style={style}
       onClick={(e) => {
         if (e.detail === 2) {
           setIsEditMode(true);

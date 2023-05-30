@@ -19,7 +19,7 @@ export const AddQuickScrapDialog: React.FC<{
         <ToggleButtonGroup
           value={type}
           exclusive
-          sx={{ width: "100%", ".MuiButtonBase-root": { flexGrow: 1 } }}
+          sx={{ width: "100%", ".MuiButtonBase-root": { width: "50%" } }}
           onChange={(_, value) => {
             setType(
               value !== null
@@ -40,7 +40,12 @@ export const AddQuickScrapDialog: React.FC<{
           </ToggleButton>
         </ToggleButtonGroup>
       </ScrapTypeSelector>
-      <Scrap scrap={scrap} hideDate={true} onSuccess={onSuccess} />
+      <Scrap
+        scrap={scrap}
+        hideDate={true}
+        onSuccess={onSuccess}
+        style={{ marginTop: "3px" }}
+      />
     </>
   );
 };
