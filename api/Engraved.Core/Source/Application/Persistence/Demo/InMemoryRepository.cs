@@ -47,7 +47,8 @@ public class InMemoryRepository : IRepository
 
   public Task<IMetric[]> GetAllMetrics(string? searchText = null, MetricType[]? metricTypes = null, int? limit = null)
   {
-    throw new NotImplementedException();
+    // note: conditions are currently ignored, as they are not (yet?) need for these in memory tests.
+    return Task.FromResult(Metrics.ToArray());
   }
 
   public Task<IMetric[]> GetAllMetrics(string? searchText, int? limit)
