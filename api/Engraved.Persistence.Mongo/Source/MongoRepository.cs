@@ -110,7 +110,7 @@ public class MongoRepository : IRepository
     {
       filters.Add(
         Builders<MetricDocument>.Filter.Or(
-          metricTypes.Select(t => Builders<MetricDocument>.Filter.Eq("Type", t))
+          metricTypes.Select(t => Builders<MetricDocument>.Filter.Where(GetIsTypeExpression(t)))
         )
       );
     }
@@ -122,6 +122,30 @@ public class MongoRepository : IRepository
       .ToListAsync();
 
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
+  }
+
+  // there must be a better solution than this, but it works for the moment... i believe
+  // Builders<MetricDocument>.Filter.Where(t => t.Type == metricType) does not work because
+  // MetricDocument.Type is an ABSTRACT property.
+  private static Expression<Func<MetricDocument, bool>> GetIsTypeExpression(MetricType metricType)
+  {
+    switch (metricType)
+    {
+      case MetricType.Counter:
+        return d => d is CounterMetricDocument;
+      case MetricType.Gauge:
+        return d => d is GaugeMetricDocument;
+      case MetricType.Timer:
+        return d => d is TimerMetricDocument;
+      case MetricType.Scraps:
+        return d => d is ScrapsMetricDocument;
+      default:
+        throw new ArgumentOutOfRangeException(
+          nameof(metricType),
+          metricType,
+          $"{nameof(GetIsTypeExpression)} not defined for {metricType}."
+        );
+    }
   }
 
   public async Task<IMetric?> GetMetric(string metricId)
@@ -191,7 +215,7 @@ public class MongoRepository : IRepository
     List<FilterDefinition<MeasurementDocument>> filters = GetFreeTextFilters<MeasurementDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsMeasurementDocument)d).Title!
+      d => ((ScrapsMeasurementDocument) d).Title!
     );
 
     filters.Add(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)));
