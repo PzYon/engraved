@@ -25,7 +25,7 @@ export const MetricsPage: React.FC = () => (
         key: "add_metric",
       },
     ]}
-    enableSearch={true}
+    enableFilters={true}
   >
     <Metrics />
   </Page>

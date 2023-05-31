@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import { Actions, SeparatorElement } from "../common/Actions";
+import { Actions } from "../common/Actions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
@@ -11,20 +11,45 @@ import { Typing } from "../common/Typing";
 import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
-import { IconButtonWrapper } from "../common/IconButtonWrapper";
-import { BoltOutlined, SearchOutlined } from "@mui/icons-material";
-import { SearchBox } from "../common/search/SearchBox";
+import {
+  IconButtonWrapper,
+  IIconButtonAction,
+} from "../common/IconButtonWrapper";
+import {
+  BoltOutlined,
+  FilterAltOutlined,
+  SearchOutlined,
+} from "@mui/icons-material";
 import { renderAddQuickScrapDialog } from "../details/add/renderAddQuickScrapDialog";
 import { useDialogContext } from "./dialogs/DialogContext";
+import { PageFilters } from "../common/search/PageFilters";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
-  const { pageTitle, pageActions, showSearchBox } = usePageContext();
+  const {
+    pageTitle,
+    pageActions: pageActionsFromContext,
+    enableFilters,
+    showFilters,
+    setShowFilters,
+  } = usePageContext();
   const { palette } = useTheme();
   const { renderDialog } = useDialogContext();
 
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
+
+  const pageActions: IIconButtonAction[] = enableFilters
+    ? [
+        {
+          key: "filters",
+          icon: <FilterAltOutlined fontSize="small" />,
+          label: "Show filters",
+          onClick: () => setShowFilters(!showFilters),
+        },
+        ...pageActionsFromContext,
+      ]
+    : pageActionsFromContext;
 
   return (
     <Host>
@@ -89,16 +114,11 @@ export const AppHeader: React.FC = () => {
           <SearchAndActionsContainer
             isSmall={isSmall}
             key={window.location.pathname}
-          >
-            <Actions actions={pageActions} enableFloatingActions={true} />
-
-            {showSearchBox && pageActions.length ? (
-              <SeparatorElement style={{ marginRight: "24px" }} />
-            ) : null}
-
-            <SearchBox />
-          </SearchAndActionsContainer>
+          ></SearchAndActionsContainer>
+          <Actions actions={pageActions} enableFloatingActions={true} />
         </ContentWrapper>
+
+        {showFilters ? <PageFilters /> : null}
       </AppContent>
     </Host>
   );

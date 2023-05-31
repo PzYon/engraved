@@ -13,9 +13,10 @@ import { MetricTypeIcon } from "./common/MetricTypeIcon";
 import { IconStyle } from "./common/Icon";
 
 export const MetricTypeSelector: React.FC<{
-  metricType: MetricType;
-  onChange: (metricType: MetricType) => void;
-}> = ({ metricType, onChange }) => {
+  metricType: MetricType | MetricType[];
+  onChange: (metricType: MetricType | MetricType[]) => void;
+  allowMultiple?: boolean;
+}> = ({ metricType, onChange, allowMultiple }) => {
   return (
     <FormControl margin="normal">
       <InputLabel id="metric-type-label">
@@ -26,6 +27,7 @@ export const MetricTypeSelector: React.FC<{
         labelId="metric-type-label"
         label={translations.label_metricType}
         value={metricType as unknown as string}
+        multiple={allowMultiple ?? false}
         onChange={(event: SelectChangeEvent) => {
           onChange(event.target.value as unknown as MetricType);
         }}

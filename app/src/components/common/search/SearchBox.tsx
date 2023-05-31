@@ -9,7 +9,7 @@ import { Theme } from "@mui/material/styles";
 export const SearchBox: React.FC = () => {
   const deviceWidth = useDeviceWidth();
 
-  const { searchText, setSearchText, showSearchBox } = usePageContext();
+  const { searchText, setSearchText, showFilters } = usePageContext();
 
   const [currentFieldValue, setCurrentFieldValue] = useState(searchText);
 
@@ -17,7 +17,7 @@ export const SearchBox: React.FC = () => {
     setCurrentFieldValue(searchText);
   }, [searchText]);
 
-  if (!showSearchBox) {
+  if (!showFilters) {
     return null;
   }
 

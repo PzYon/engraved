@@ -27,9 +27,14 @@ public class MetricsController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<object[]> GetAll(string? searchText)
+  public async Task<object[]> GetAll(string? searchText, string? metricTypes)
   {
-    var query = new GetAllMetricsQuery { SearchText = searchText };
+    var query = new GetAllMetricsQuery
+    {
+      SearchText = searchText,
+      MetricTypes = ParseMetricTypes(metricTypes)
+    };
+
     IMetric[] metrics = await _dispatcher.Query(query);
     return metrics.EnsurePolymorphismWhenSerializing();
   }
@@ -56,9 +61,9 @@ public class MetricsController : ControllerBase
   [Route("{metricId}/permissions")]
   [HttpPut]
   public async Task<CommandResult> Permissions(
-      [FromBody] Dictionary<string, PermissionKind> permissions,
-      string metricId
-    )
+    [FromBody] Dictionary<string, PermissionKind> permissions,
+    string metricId
+  )
   {
     var command = new EditMetricPermissionsCommand
     {
@@ -72,10 +77,10 @@ public class MetricsController : ControllerBase
   [Route("{metricId}/threshold_values")]
   [HttpGet]
   public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> GetThresholdValues(
-      string metricId,
-      DateTime? fromDate,
-      DateTime? toDate
-    )
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate
+  )
   {
     var query = new GetThresholdValuesQuery
     {
@@ -92,5 +97,17 @@ public class MetricsController : ControllerBase
   public async Task Delete(string metricId)
   {
     await _dispatcher.Command(new DeleteMetricCommand { Id = metricId });
+  }
+
+  private static MetricType[]? ParseMetricTypes(string? metricTypes)
+  {
+    if (string.IsNullOrEmpty(metricTypes))
+    {
+      return null;
+    }
+
+    return metricTypes.Split(",")
+      .Select(Enum.Parse<MetricType>)
+      .ToArray();
   }
 }
