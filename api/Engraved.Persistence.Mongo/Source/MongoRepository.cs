@@ -94,8 +94,8 @@ public class MongoRepository : IRepository
 
   public async Task<IMetric[]> GetAllMetrics(
     string? searchText = null,
-    int? limit = null,
-    MetricType[]? metricTypes = null
+    MetricType[]? metricTypes = null,
+    int? limit = null
   )
   {
     List<FilterDefinition<MetricDocument>> filters = GetFreeTextFilters<MetricDocument>(
