@@ -45,6 +45,11 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(Users.Select(u => u.Copy()).ToArray());
   }
 
+  public Task<IMetric[]> GetAllMetrics(string? searchText = null, int? limit = null, MetricType[]? metricTypes = null)
+  {
+    throw new NotImplementedException();
+  }
+
   public Task<IMetric[]> GetAllMetrics(string? searchText, int? limit)
   {
     return Task.FromResult(Metrics.Select(m => m.Copy()).Take(limit ?? 20).ToArray());

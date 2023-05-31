@@ -16,7 +16,7 @@ public class GetAllMetricsQueryExecutor : IQueryExecutor<IMetric[]>
 
   public async Task<IMetric[]> Execute(IRepository repository)
   {
-    IMetric[] allMetrics = await repository.GetAllMetrics(_query.SearchText, _query.Limit);
+    IMetric[] allMetrics = await repository.GetAllMetrics(_query.SearchText, _query.Limit, _query.MetricTypes);
 
     return await MetricQueryUtil.EnsurePermissionUsers(repository, allMetrics);
   }

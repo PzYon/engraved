@@ -92,7 +92,11 @@ public class MongoRepository : IRepository
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
-  public async Task<IMetric[]> GetAllMetrics(string? searchText = null, int? limit = null)
+  public async Task<IMetric[]> GetAllMetrics(
+    string? searchText = null,
+    int? limit = null,
+    MetricType[]? metricTypes = null
+  )
   {
     List<FilterDefinition<MetricDocument>> filters = GetFreeTextFilters<MetricDocument>(
       searchText,
@@ -101,6 +105,15 @@ public class MongoRepository : IRepository
     );
 
     filters.Add(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read));
+
+    if (metricTypes is { Length: > 0 })
+    {
+      filters.Add(
+        Builders<MetricDocument>.Filter.Or(
+          metricTypes.Select(t => Builders<MetricDocument>.Filter.Eq("Type", t))
+        )
+      );
+    }
 
     List<MetricDocument> metrics = await MetricsCollection
       .Find(Builders<MetricDocument>.Filter.And(filters))
@@ -117,11 +130,11 @@ public class MongoRepository : IRepository
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-      string metricId,
-      DateTime? fromDate,
-      DateTime? toDate,
-      IDictionary<string, string[]>? attributeValues
-    )
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    IDictionary<string, string[]>? attributeValues
+  )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -178,7 +191,7 @@ public class MongoRepository : IRepository
     List<FilterDefinition<MeasurementDocument>> filters = GetFreeTextFilters<MeasurementDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsMeasurementDocument) d).Title!
+      d => ((ScrapsMeasurementDocument)d).Title!
     );
 
     filters.Add(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)));
@@ -218,7 +231,10 @@ public class MongoRepository : IRepository
     await MeasurementsCollection.DeleteManyAsync(
       Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId)
     );
-    await MetricsCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId));
+
+    await MetricsCollection.DeleteOneAsync(
+      MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId)
+    );
   }
 
   public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
@@ -335,9 +351,9 @@ public class MongoRepository : IRepository
   }
 
   private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
-      string? searchText,
-      params Expression<Func<T, object>>[] fieldNameExpressions
-    ) where T : IDocument
+    string? searchText,
+    params Expression<Func<T, object>>[] fieldNameExpressions
+  ) where T : IDocument
   {
     if (string.IsNullOrEmpty(searchText))
     {

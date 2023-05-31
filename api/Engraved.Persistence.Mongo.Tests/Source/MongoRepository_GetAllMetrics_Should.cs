@@ -52,4 +52,11 @@ public class MongoRepository_GetAllMetrics_Should
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual("Timer", results[0].Name);
   }
+  
+  [Test]
+  public async Task Return_Matching_MetricTypes()
+  {
+    IMetric[] results = await _repository.GetAllMetrics(null, null, new[] { MetricType.Timer, MetricType.Gauge } );
+    Assert.AreEqual(2, results.Length);
+  }
 }

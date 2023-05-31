@@ -8,6 +8,8 @@ public class GetAllMetricsQuery : IQuery<IMetric[]>
 
   public string? SearchText { get; set; }
   
+  public MetricType[]? MetricTypes { get; set; }
+  
   IQueryExecutor<IMetric[]> IQuery<IMetric[]>.CreateExecutor()
   {
     return new GetAllMetricsQueryExecutor(this);
