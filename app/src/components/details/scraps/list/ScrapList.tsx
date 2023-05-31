@@ -126,6 +126,5 @@ const List = styled("ul")`
 
 const ActionsContainer = styled("div")`
   display: flex;
-  padding-left: 3px;
-  padding-bottom: 3px;
+  padding: 3px 0 4px 3px;
 `;
