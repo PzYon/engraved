@@ -17,7 +17,7 @@ public class GetActivitiesQueryExecutor : IQueryExecutor<GetActivitiesQueryResul
 
   public async Task<GetActivitiesQueryResult> Execute(IRepository repository)
   {
-    IMetric[] allMetrics = await repository.GetAllMetrics(null, 100);
+    IMetric[] allMetrics = await repository.GetAllMetrics(null, null, 100);
     string[] allMetricIds = allMetrics.Select(m => m.Id!).ToArray();
 
     IMeasurement[] allMeasurements = await repository.GetLastEditedMeasurements(

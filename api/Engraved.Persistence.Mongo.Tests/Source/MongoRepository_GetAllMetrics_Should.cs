@@ -33,7 +33,7 @@ public class MongoRepository_GetAllMetrics_Should
   [Test]
   public async Task ReturnLimitedMetrics()
   {
-    IMetric[] results = await _repository.GetAllMetrics(null, 1);
+    IMetric[] results = await _repository.GetAllMetrics(null, null, 1);
     Assert.AreEqual(1, results.Length);
   }
   
