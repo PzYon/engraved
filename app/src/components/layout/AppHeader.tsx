@@ -45,6 +45,7 @@ export const AppHeader: React.FC = () => {
           key: "filters",
           icon: <FilterAltOutlined fontSize="small" />,
           label: "Show filters",
+          isNotActive: !showFilters,
           onClick: () => setShowFilters(!showFilters),
         },
         ...pageActionsFromContext,

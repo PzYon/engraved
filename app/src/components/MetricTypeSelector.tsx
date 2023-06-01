@@ -18,7 +18,7 @@ export const MetricTypeSelector: React.FC<{
   allowMultiple?: boolean;
 }> = ({ metricType, onChange, allowMultiple }) => {
   return (
-    <FormControl margin="normal">
+    <FormControl margin="normal" sx={{ backgroundColor: "common.white" }}>
       <InputLabel id="metric-type-label">
         {translations.label_metricType}
       </InputLabel>
@@ -74,7 +74,7 @@ const MetricTypeMenuItem: React.FC<{
 };
 
 const MenuItemContainer = styled("div")`
-  display: flex;
+  display: inline-flex;
   align-items: center;
 
   .ngrvd-icon {

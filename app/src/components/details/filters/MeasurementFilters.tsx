@@ -4,13 +4,13 @@ import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
 import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 import React from "react";
-import { styled } from "@mui/material";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { IMetric } from "../../../serverApi/IMetric";
 import { AttributeFilters } from "./AttributeFilters";
 import { translations } from "../../../i18n/translations";
+import { FiltersRow } from "./FiltersRow";
 
-export const Filters: React.FC<{
+export const MeasurementFilters: React.FC<{
   metric: IMetric;
   groupByTime: GroupByTime;
   setGroupByTime: (g: GroupByTime) => void;
@@ -29,13 +29,13 @@ export const Filters: React.FC<{
 }) => {
   return (
     <>
-      <Row>
+      <FiltersRow>
         <DateFilters />
-      </Row>
-      <Row>
+      </FiltersRow>
+      <FiltersRow>
         <AttributeFilters />
-      </Row>
-      <Row>
+      </FiltersRow>
+      <FiltersRow>
         {MetricTypeFactory.create(metric.type).isGroupable ? (
           <GroupByTimeSelector
             groupByTime={groupByTime}
@@ -51,24 +51,7 @@ export const Filters: React.FC<{
           />
         ) : null}
         <ChartTypeSelector chartType={chartType} onChange={setChartType} />
-      </Row>
+      </FiltersRow>
     </>
   );
 };
-
-const Row = styled("div")`
-  display: flex;
-  justify-items: center;
-  margin-bottom: ${(p) => p.theme.spacing(2)};
-
-  & > * {
-    display: flex;
-    flex-basis: 0;
-    flex-grow: 1;
-    margin-right: ${(p) => p.theme.spacing(2)} !important;
-
-    &:last-of-type {
-      margin-right: 0 !important;
-    }
-  }
-`;

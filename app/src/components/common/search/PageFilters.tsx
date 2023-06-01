@@ -1,28 +1,16 @@
 import { SearchBox } from "./SearchBox";
 import React from "react";
-import { MetricTypeSelector } from "../../MetricTypeSelector";
-import { MetricType } from "../../../serverApi/MetricType";
-import { usePageContext } from "../../layout/pages/PageContext";
+import { PageSection } from "../../layout/pages/PageSection";
+import { FiltersRow } from "../../details/filters/FiltersRow";
+import { PageMetricTypesSelector } from "./PageMetricTypesSelector";
 
 export const PageFilters: React.FC = () => {
   return (
-    <>
-      <SearchBox />
-      <PageMetricTypesSelector />
-    </>
-  );
-};
-
-export const PageMetricTypesSelector: React.FC = () => {
-  const { metricTypes, setMetricTypes } = usePageContext();
-
-  return (
-    <MetricTypeSelector
-      allowMultiple={true}
-      metricType={metricTypes}
-      onChange={(types: MetricType | MetricType[]) =>
-        setMetricTypes(types as MetricType[])
-      }
-    />
+    <PageSection>
+      <FiltersRow style={{ marginBottom: 0 }}>
+        <SearchBox />
+        <PageMetricTypesSelector />
+      </FiltersRow>
+    </PageSection>
   );
 };

@@ -5,8 +5,8 @@ import { NoResultsFound } from "../common/search/NoResultsFound";
 import { MetricListItem } from "./MetricListItem";
 
 export const Metrics: React.FC = () => {
-  const { searchText } = usePageContext();
-  const metrics = useMetricsQuery(searchText);
+  const { searchText, metricTypes } = usePageContext();
+  const metrics = useMetricsQuery(searchText, metricTypes);
 
   if (!metrics) {
     return null;

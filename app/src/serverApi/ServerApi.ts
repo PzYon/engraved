@@ -92,9 +92,23 @@ export class ServerApi {
     return authResult;
   }
 
-  static async getMetrics(searchText?: string): Promise<IMetric[]> {
-    const params = searchText ? `?searchText=${searchText}` : "";
-    return await ServerApi.executeRequest(`/metrics${params}`);
+  static async getMetrics(
+    searchText?: string,
+    metricTypes?: MetricType[]
+  ): Promise<IMetric[]> {
+    const params: string[] = [];
+
+    if (searchText) {
+      params.push(`searchText=${searchText}`);
+    }
+
+    if (metricTypes?.length) {
+      params.push(`metricTypes=${metricTypes.join(",")}`);
+    }
+
+    const paramsString = params.length ? `?${params.join("&")}` : "";
+
+    return await ServerApi.executeRequest(`/metrics${paramsString}`);
   }
 
   static async getMetric(metricId: string): Promise<IMetric> {
