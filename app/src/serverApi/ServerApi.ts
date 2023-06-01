@@ -96,18 +96,7 @@ export class ServerApi {
     searchText?: string,
     metricTypes?: MetricType[]
   ): Promise<IMetric[]> {
-    const params: string[] = [];
-
-    if (searchText) {
-      params.push(`searchText=${searchText}`);
-    }
-
-    if (metricTypes?.length) {
-      params.push(`metricTypes=${metricTypes.join(",")}`);
-    }
-
-    const paramsString = params.length ? `?${params.join("&")}` : "";
-
+    const paramsString = this.getParamsString(searchText, metricTypes);
     return await ServerApi.executeRequest(`/metrics${paramsString}`);
   }
 
@@ -120,10 +109,11 @@ export class ServerApi {
   }
 
   static async getActivities(
-    searchText: string
+    searchText: string,
+    metricTypes: MetricType[]
   ): Promise<IGetActivitiesQueryResult> {
-    const params = searchText ? `?searchText=${searchText}` : "";
-    return await ServerApi.executeRequest(`/activities${params}`);
+    const paramsString = this.getParamsString(searchText, metricTypes);
+    return await ServerApi.executeRequest(`/activities${paramsString}`);
   }
 
   static async addMetric(
@@ -329,6 +319,23 @@ export class ServerApi {
     };
 
     return await fetch(new Request(this.getBaseUrl() + url), requestConfig);
+  }
+
+  private static getParamsString(
+    searchText: string,
+    metricTypes: MetricType[]
+  ) {
+    const params: string[] = [];
+
+    if (searchText) {
+      params.push(`searchText=${searchText}`);
+    }
+
+    if (metricTypes?.length) {
+      params.push(`metricTypes=${metricTypes.join(",")}`);
+    }
+
+    return params.length ? `?${params.join("&")}` : "";
   }
 
   private static getBaseUrl() {

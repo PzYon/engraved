@@ -53,8 +53,8 @@ export const queryKeysFactory = {
     return [metrics, metricId, "measurements", "get-active"];
   },
 
-  activities(searchText: string) {
-    return [metrics, "activities", searchText];
+  activities(searchText: string, metricTypes: MetricType[]) {
+    return [metrics, "activities", searchText, metricTypes?.join()];
   },
 
   systemInfo() {

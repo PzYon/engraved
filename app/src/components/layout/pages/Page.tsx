@@ -15,6 +15,8 @@ export const Page: React.FC<{
     setPageTitle,
     setDocumentTitle,
     setEnableFilters,
+    setShowFilters,
+    setMetricTypes,
     setSearchText,
   } = usePageContext();
 
@@ -35,7 +37,12 @@ export const Page: React.FC<{
   }, [actions]);
 
   useEffect(() => {
-    return () => setSearchText(null);
+    return () => {
+      setShowFilters(false);
+      setEnableFilters(false);
+      setSearchText(null);
+      setMetricTypes([]);
+    };
   }, []);
 
   return <FadeInContainer>{children}</FadeInContainer>;

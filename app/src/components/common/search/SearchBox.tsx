@@ -3,7 +3,6 @@ import {
   FormControl,
   IconButton,
   InputAdornment,
-  styled,
   TextField,
 } from "@mui/material";
 import { usePageContext } from "../../layout/pages/PageContext";
@@ -24,7 +23,7 @@ export const SearchBox: React.FC = () => {
 
   return (
     <FormControl margin="dense">
-      <StyledTextField
+      <TextField
         value={currentFieldValue ?? ""}
         label="Search"
         placeholder="Search"
@@ -36,10 +35,7 @@ export const SearchBox: React.FC = () => {
         onChange={(event) => {
           setCurrentFieldValue(event.target.value);
         }}
-        sx={{
-          width: "100%",
-          input: {},
-        }}
+        sx={{ width: "100%" }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -62,8 +58,3 @@ export const SearchBox: React.FC = () => {
     </FormControl>
   );
 };
-
-const StyledTextField = styled(TextField)`
-  fieldset {
-  }
-`;

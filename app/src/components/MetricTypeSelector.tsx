@@ -35,7 +35,7 @@ export const MetricTypeSelector: React.FC<{
         onChange={(event: SelectChangeEvent) => {
           onChange(event.target.value as unknown as MetricType);
         }}
-        sx={{ display: "flex" }}
+        sx={{ ".MuiSelect-select": { display: "flex" } }}
       >
         <MenuItem value={MetricType.Scraps}>
           <MetricTypeMenuItem

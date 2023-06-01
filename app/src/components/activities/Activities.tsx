@@ -7,8 +7,8 @@ import { usePageContext } from "../layout/pages/PageContext";
 import { NoResultsFound } from "../common/search/NoResultsFound";
 
 export const Activities: React.FC = () => {
-  const { searchText } = usePageContext();
-  const activities = useActivitiesQuery(searchText);
+  const { searchText, metricTypes } = usePageContext();
+  const activities = useActivitiesQuery(searchText, metricTypes);
 
   if (!activities) {
     return null;
