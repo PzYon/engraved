@@ -23,7 +23,7 @@ export const SearchBox: React.FC = () => {
   }
 
   return (
-    <FormControl margin="normal">
+    <FormControl margin="dense">
       <StyledTextField
         value={currentFieldValue ?? ""}
         label="Search"

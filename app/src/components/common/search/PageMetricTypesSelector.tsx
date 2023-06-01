@@ -8,6 +8,7 @@ export const PageMetricTypesSelector: React.FC = () => {
 
   return (
     <MetricTypeSelector
+      margin="dense"
       allowMultiple={true}
       metricType={metricTypes}
       onChange={(types: MetricType | MetricType[]) =>

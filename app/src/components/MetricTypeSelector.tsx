@@ -16,9 +16,13 @@ export const MetricTypeSelector: React.FC<{
   metricType: MetricType | MetricType[];
   onChange: (metricType: MetricType | MetricType[]) => void;
   allowMultiple?: boolean;
-}> = ({ metricType, onChange, allowMultiple }) => {
+  margin?: "dense" | "normal";
+}> = ({ metricType, onChange, allowMultiple, margin }) => {
   return (
-    <FormControl margin="normal" sx={{ backgroundColor: "common.white" }}>
+    <FormControl
+      margin={margin ?? "normal"}
+      sx={{ backgroundColor: "common.white" }}
+    >
       <InputLabel id="metric-type-label">
         {translations.label_metricType}
       </InputLabel>
@@ -31,6 +35,7 @@ export const MetricTypeSelector: React.FC<{
         onChange={(event: SelectChangeEvent) => {
           onChange(event.target.value as unknown as MetricType);
         }}
+        sx={{ display: "flex" }}
       >
         <MenuItem value={MetricType.Scraps}>
           <MetricTypeMenuItem
