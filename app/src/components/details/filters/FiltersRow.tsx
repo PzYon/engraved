@@ -16,3 +16,11 @@ export const FiltersRow = styled("div")`
     }
   }
 `;
+
+export const FiltersRowColumn = styled(FiltersRow)`
+  flex-direction: column;
+
+  & > * {
+    margin-right: 0 !important;
+  }
+`;

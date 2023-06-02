@@ -1,21 +1,21 @@
 import { SearchBox } from "./SearchBox";
 import React from "react";
 import { PageSection } from "../../layout/pages/PageSection";
-import { FiltersRow } from "../../details/filters/FiltersRow";
+import { FiltersRow, FiltersRowColumn } from "../../details/filters/FiltersRow";
 import { PageMetricTypesSelector } from "./PageMetricTypesSelector";
 import { DeviceWidth, useDeviceWidth } from "../useDeviceWidth";
 
 export const PageFilters: React.FC = () => {
   const deviceWidth = useDeviceWidth();
 
-  const flexDirection = deviceWidth === DeviceWidth.Small ? "column" : "row";
+  const Row = deviceWidth === DeviceWidth.Small ? FiltersRowColumn : FiltersRow;
 
   return (
     <PageSection>
-      <FiltersRow style={{ marginBottom: 0, flexDirection: flexDirection }}>
+      <Row style={{ marginBottom: 0 }}>
         <SearchBox />
         <PageMetricTypesSelector />
-      </FiltersRow>
+      </Row>
     </PageSection>
   );
 };

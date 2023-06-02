@@ -67,9 +67,14 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
       .ToArray();
   }
 
-  public Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
+  public Task<IMeasurement[]> GetLastEditedMeasurements(
+    string[]? metricIds,
+    string? searchText,
+    MetricType[]? metricTypes,
+    int limit
+  )
   {
-    return _repository.GetLastEditedMeasurements(metricIds, searchText, limit);
+    return _repository.GetLastEditedMeasurements(metricIds, searchText, metricTypes, limit);
   }
 
   public Task<UpsertResult> UpsertMetric(IMetric metric)

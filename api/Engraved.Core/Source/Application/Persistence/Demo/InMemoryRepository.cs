@@ -75,7 +75,12 @@ public class InMemoryRepository : IRepository
     );
   }
 
-  public Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
+  public Task<IMeasurement[]> GetLastEditedMeasurements(
+    string[]? metricIds,
+    string? searchText,
+    MetricType[]? metricTypes,
+    int limit
+  )
   {
     return Task.FromResult(
       Measurements.OrderByDescending(m => m.DateTime)

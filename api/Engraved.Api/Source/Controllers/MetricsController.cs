@@ -32,7 +32,7 @@ public class MetricsController : ControllerBase
     var query = new GetAllMetricsQuery
     {
       SearchText = searchText,
-      MetricTypes = ParseMetricTypes(metricTypes)
+      MetricTypes = ControllerUtils.ParseMetricTypes(metricTypes)
     };
 
     IMetric[] metrics = await _dispatcher.Query(query);
@@ -97,17 +97,5 @@ public class MetricsController : ControllerBase
   public async Task Delete(string metricId)
   {
     await _dispatcher.Command(new DeleteMetricCommand { Id = metricId });
-  }
-
-  private static MetricType[]? ParseMetricTypes(string? metricTypes)
-  {
-    if (string.IsNullOrEmpty(metricTypes))
-    {
-      return null;
-    }
-
-    return metricTypes.Split(",")
-      .Select(Enum.Parse<MetricType>)
-      .ToArray();
   }
 }

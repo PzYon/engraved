@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FormControl,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { FormControl, IconButton, TextField } from "@mui/material";
 import { usePageContext } from "../../layout/pages/PageContext";
 import { Clear, SearchOutlined } from "@mui/icons-material";
 
@@ -37,21 +32,25 @@ export const SearchBox: React.FC = () => {
         }}
         sx={{ width: "100%" }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchOutlined fontSize="small" />
-            </InputAdornment>
-          ),
           endAdornment: (
-            <IconButton
-              sx={{ visibility: currentFieldValue ? "visible" : "hidden" }}
-              onClick={() => {
-                setSearchText("");
-                setCurrentFieldValue("");
-              }}
-            >
-              <Clear fontSize="small" />
-            </IconButton>
+            <>
+              <IconButton
+                sx={{ visibility: currentFieldValue ? "visible" : "hidden" }}
+                onClick={() => {
+                  setSearchText("");
+                  setCurrentFieldValue("");
+                }}
+              >
+                <Clear fontSize="small" />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  setSearchText(currentFieldValue);
+                }}
+              >
+                <SearchOutlined fontSize="small" />
+              </IconButton>
+            </>
           ),
         }}
       />
