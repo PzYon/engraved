@@ -5,6 +5,10 @@ export const FiltersRow = styled("div")`
   justify-items: center;
   margin-bottom: ${(p) => p.theme.spacing(2)};
 
+  &:last-of-type {
+    margin-bottom: 0 !important;
+  }
+
   & > * {
     display: flex;
     flex-basis: 0;
@@ -17,7 +21,7 @@ export const FiltersRow = styled("div")`
   }
 `;
 
-export const FiltersRowColumn = styled(FiltersRow)`
+export const FiltersColumn = styled(FiltersRow)`
   flex-direction: column;
 
   & > * {

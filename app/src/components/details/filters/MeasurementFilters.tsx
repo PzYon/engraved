@@ -32,9 +32,13 @@ export const MeasurementFilters: React.FC<{
       <FiltersRow>
         <DateFilters />
       </FiltersRow>
-      <FiltersRow>
-        <AttributeFilters />
-      </FiltersRow>
+
+      {!Object.keys(metric.attributes || {}).length ? null : (
+        <FiltersRow>
+          <AttributeFilters />
+        </FiltersRow>
+      )}
+
       <FiltersRow>
         {MetricTypeFactory.create(metric.type).isGroupable ? (
           <GroupByTimeSelector
