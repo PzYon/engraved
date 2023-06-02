@@ -45,6 +45,12 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(Users.Select(u => u.Copy()).ToArray());
   }
 
+  public Task<IMetric[]> GetAllMetrics(string? searchText = null, MetricType[]? metricTypes = null, int? limit = null)
+  {
+    // note: conditions are currently ignored, as they are not (yet?) needed for these in memory tests.
+    return Task.FromResult(Metrics.ToArray());
+  }
+
   public Task<IMetric[]> GetAllMetrics(string? searchText, int? limit)
   {
     return Task.FromResult(Metrics.Select(m => m.Copy()).Take(limit ?? 20).ToArray());
@@ -69,7 +75,12 @@ public class InMemoryRepository : IRepository
     );
   }
 
-  public Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
+  public Task<IMeasurement[]> GetLastEditedMeasurements(
+    string[]? metricIds,
+    string? searchText,
+    MetricType[]? metricTypes,
+    int limit
+  )
   {
     return Task.FromResult(
       Measurements.OrderByDescending(m => m.DateTime)

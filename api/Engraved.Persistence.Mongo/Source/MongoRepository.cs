@@ -92,7 +92,11 @@ public class MongoRepository : IRepository
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
-  public async Task<IMetric[]> GetAllMetrics(string? searchText = null, int? limit = null)
+  public async Task<IMetric[]> GetAllMetrics(
+    string? searchText = null,
+    MetricType[]? metricTypes = null,
+    int? limit = null
+  )
   {
     List<FilterDefinition<MetricDocument>> filters = GetFreeTextFilters<MetricDocument>(
       searchText,
@@ -101,6 +105,15 @@ public class MongoRepository : IRepository
     );
 
     filters.Add(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read));
+
+    if (metricTypes is { Length: > 0 })
+    {
+      filters.Add(
+        Builders<MetricDocument>.Filter.Or(
+          metricTypes.Select(t => Builders<MetricDocument>.Filter.Where(GetIsMetricTypeExpression(t)))
+        )
+      );
+    }
 
     List<MetricDocument> metrics = await MetricsCollection
       .Find(Builders<MetricDocument>.Filter.And(filters))
@@ -111,17 +124,62 @@ public class MongoRepository : IRepository
     return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
   }
 
+  // there must be a better solution than this, but it works for the moment... i believe
+  // Builders<MetricDocument>.Filter.Where(t => t.Type == metricType) does not work because
+  // MetricDocument.Type is an ABSTRACT property.
+  private static Expression<Func<MetricDocument, bool>> GetIsMetricTypeExpression(MetricType metricType)
+  {
+    switch (metricType)
+    {
+      case MetricType.Counter:
+        return d => d is CounterMetricDocument;
+      case MetricType.Gauge:
+        return d => d is GaugeMetricDocument;
+      case MetricType.Timer:
+        return d => d is TimerMetricDocument;
+      case MetricType.Scraps:
+        return d => d is ScrapsMetricDocument;
+      default:
+        throw new ArgumentOutOfRangeException(
+          nameof(metricType),
+          metricType,
+          $"{nameof(GetIsMetricTypeExpression)} not defined for {metricType}."
+        );
+    }
+  }
+
+  private static Expression<Func<MeasurementDocument, bool>> GetIsMeasurementTypeExpression(MetricType metricType)
+  {
+    switch (metricType)
+    {
+      case MetricType.Counter:
+        return d => d is CounterMeasurementDocument;
+      case MetricType.Gauge:
+        return d => d is GaugeMeasurementDocument;
+      case MetricType.Timer:
+        return d => d is TimerMeasurementDocument;
+      case MetricType.Scraps:
+        return d => d is ScrapsMeasurementDocument;
+      default:
+        throw new ArgumentOutOfRangeException(
+          nameof(metricType),
+          metricType,
+          $"{nameof(GetIsMeasurementTypeExpression)} not defined for {metricType}."
+        );
+    }
+  }
+
   public async Task<IMetric?> GetMetric(string metricId)
   {
     return await GetMetric(metricId, PermissionKind.Read);
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
-      string metricId,
-      DateTime? fromDate,
-      DateTime? toDate,
-      IDictionary<string, string[]>? attributeValues
-    )
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    IDictionary<string, string[]>? attributeValues
+  )
   {
     IMetric? metric = await GetMetric(metricId);
     if (metric == null)
@@ -173,15 +231,32 @@ public class MongoRepository : IRepository
 
   // attention: there's no security here for the moment. might not be required as
   // you explicitly need to specify the metric IDs.
-  public async Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit)
+  public async Task<IMeasurement[]> GetLastEditedMeasurements(
+    string[]? metricIds,
+    string? searchText,
+    MetricType[]? metricTypes,
+    int limit
+  )
   {
     List<FilterDefinition<MeasurementDocument>> filters = GetFreeTextFilters<MeasurementDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsMeasurementDocument) d).Title!
+      d => ((ScrapsMeasurementDocument)d).Title!
     );
 
-    filters.Add(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)));
+    if (metricIds is { Length: > 0 })
+    {
+      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)));
+    }
+
+    if (metricTypes is { Length: > 0 })
+    {
+      filters.Add(
+        Builders<MeasurementDocument>.Filter.Or(
+          metricTypes.Select(t => Builders<MeasurementDocument>.Filter.Where(GetIsMeasurementTypeExpression(t)))
+        )
+      );
+    }
 
     List<MeasurementDocument> measurements = await MeasurementsCollection
       .Find(Builders<MeasurementDocument>.Filter.And(filters))
@@ -218,7 +293,10 @@ public class MongoRepository : IRepository
     await MeasurementsCollection.DeleteManyAsync(
       Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId)
     );
-    await MetricsCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId));
+
+    await MetricsCollection.DeleteOneAsync(
+      MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId)
+    );
   }
 
   public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
@@ -335,9 +413,9 @@ public class MongoRepository : IRepository
   }
 
   private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
-      string? searchText,
-      params Expression<Func<T, object>>[] fieldNameExpressions
-    ) where T : IDocument
+    string? searchText,
+    params Expression<Func<T, object>>[] fieldNameExpressions
+  ) where T : IDocument
   {
     if (string.IsNullOrEmpty(searchText))
     {

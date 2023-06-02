@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { IIconButtonAction } from "../../common/IconButtonWrapper";
+import { MetricType } from "../../../serverApi/MetricType";
 
 export interface IPageContext {
   documentTitle: string;
@@ -15,10 +16,14 @@ export interface IPageContext {
   pageActions: IIconButtonAction[];
   setPageActions: (actions: IIconButtonAction[]) => void;
   // consider moving below props to a SearchContext
-  showSearchBox: boolean;
-  setShowSearchBox: (value: boolean) => void;
+  enableFilters: boolean;
+  setEnableFilters: (value: boolean) => void;
+  showFilters: boolean;
+  setShowFilters: (value: boolean) => void;
   searchText: string;
   setSearchText: (searchText: string) => void;
+  metricTypes: MetricType[];
+  setMetricTypes: (metricTypes: MetricType[]) => void;
 }
 
 const PageContext = createContext<IPageContext>({
@@ -28,10 +33,14 @@ const PageContext = createContext<IPageContext>({
   setPageTitle: null,
   pageActions: null,
   setPageActions: null,
-  showSearchBox: null,
-  setShowSearchBox: null,
+  enableFilters: null,
+  setEnableFilters: null,
+  showFilters: null,
+  setShowFilters: null,
   searchText: null,
   setSearchText: null,
+  metricTypes: null,
+  setMetricTypes: null,
 });
 
 export const usePageContext = () => {
@@ -42,8 +51,10 @@ export const PageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
-  const [showSearchBox, setShowSearchBox] = useState(false);
+  const [enableFilters, setEnableFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
+  const [metricTypes, setMetricTypes] = useState<MetricType[]>([]);
   const [pageTitle, setPageTitle] = useState<React.ReactNode>(undefined);
   const [pageActions, setPageActions] = useState<IIconButtonAction[]>([]);
 
@@ -61,12 +72,24 @@ export const PageContextProvider: React.FC<{
       setPageTitle,
       pageActions,
       setPageActions,
-      showSearchBox,
-      setShowSearchBox,
+      enableFilters,
+      setEnableFilters,
+      showFilters,
+      setShowFilters,
       searchText,
       setSearchText,
+      metricTypes,
+      setMetricTypes,
     };
-  }, [pageTitle, documentTitle, pageActions, searchText, showSearchBox]);
+  }, [
+    pageTitle,
+    documentTitle,
+    pageActions,
+    searchText,
+    metricTypes,
+    enableFilters,
+    showFilters,
+  ]);
 
   return (
     <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>

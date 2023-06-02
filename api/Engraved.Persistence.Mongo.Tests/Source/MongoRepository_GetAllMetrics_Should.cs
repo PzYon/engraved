@@ -33,7 +33,7 @@ public class MongoRepository_GetAllMetrics_Should
   [Test]
   public async Task ReturnLimitedMetrics()
   {
-    IMetric[] results = await _repository.GetAllMetrics(null, 1);
+    IMetric[] results = await _repository.GetAllMetrics(null, null, 1);
     Assert.AreEqual(1, results.Length);
   }
   
@@ -51,5 +51,12 @@ public class MongoRepository_GetAllMetrics_Should
     IMetric[] results = await _repository.GetAllMetrics("tim3r");
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual("Timer", results[0].Name);
+  }
+  
+  [Test]
+  public async Task Return_Matching_MetricTypes()
+  {
+    IMetric[] results = await _repository.GetAllMetrics(null, new[] { MetricType.Timer, MetricType.Gauge });
+    Assert.AreEqual(2, results.Length);
   }
 }

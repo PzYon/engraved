@@ -39,7 +39,7 @@ export const AddMetric: React.FC = () => {
           />
           <MetricTypeSelector
             metricType={metricType}
-            onChange={setMetricType}
+            onChange={(type) => setMetricType(type as MetricType)}
           />
           <TextField
             value={description}

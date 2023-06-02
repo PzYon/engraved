@@ -52,7 +52,9 @@ export const useUpsertMeasurementMutation = (
     },
 
     onSettled: async () => {
-      await queryClient.invalidateQueries(queryKeysFactory.metrics());
+      await queryClient.invalidateQueries(
+        queryKeysFactory.metrics(undefined, undefined)
+      );
     },
   });
 

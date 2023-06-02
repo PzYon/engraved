@@ -7,14 +7,16 @@ export const Page: React.FC<{
   actions: IIconButtonAction[];
   title: React.ReactNode;
   documentTitle?: string;
-  enableSearch?: boolean;
+  enableFilters?: boolean;
   children: React.ReactNode;
-}> = ({ actions, title, documentTitle, enableSearch, children }) => {
+}> = ({ actions, title, documentTitle, enableFilters, children }) => {
   const {
     setPageActions,
     setPageTitle,
     setDocumentTitle,
-    setShowSearchBox,
+    setEnableFilters,
+    setShowFilters,
+    setMetricTypes,
     setSearchText,
   } = usePageContext();
 
@@ -27,15 +29,20 @@ export const Page: React.FC<{
   }, [documentTitle]);
 
   useEffect(() => {
-    setShowSearchBox(enableSearch);
-  }, [enableSearch]);
+    setEnableFilters(enableFilters);
+  }, [enableFilters]);
 
   useEffect(() => {
     setPageActions(actions);
   }, [actions]);
 
   useEffect(() => {
-    return () => setSearchText(null);
+    return () => {
+      setShowFilters(false);
+      setEnableFilters(false);
+      setSearchText(null);
+      setMetricTypes([]);
+    };
   }, []);
 
   return <FadeInContainer>{children}</FadeInContainer>;

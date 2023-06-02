@@ -13,7 +13,10 @@ export const useMetricQuery = (metricId: string) => {
 
     onSuccess: (loadedMetric) => {
       queryClient.setQueriesData(
-        { queryKey: queryKeysFactory.metrics(), exact: true },
+        {
+          queryKey: queryKeysFactory.metrics(undefined, undefined),
+          exact: true,
+        },
         (metrics: IMetric[]) =>
           metrics.map((m) => (m.id === loadedMetric.id ? loadedMetric : m))
       );

@@ -1,10 +1,11 @@
 import { IDateConditions } from "../components/details/MetricDetailsContext";
+import { MetricType } from "./MetricType";
 
 const metrics = "metrics";
 
 export const queryKeysFactory = {
-  metrics(searchText?: string) {
-    return [metrics, "all", searchText];
+  metrics(searchText?: string, metricTypes?: MetricType[]) {
+    return [metrics, "all", searchText, metricTypes?.join()];
   },
 
   metric(metricId: string) {
@@ -52,8 +53,8 @@ export const queryKeysFactory = {
     return [metrics, metricId, "measurements", "get-active"];
   },
 
-  activities(searchText: string) {
-    return [metrics, "activities", searchText];
+  activities(searchText: string, metricTypes: MetricType[]) {
+    return [metrics, "activities", searchText, metricTypes?.join()];
   },
 
   systemInfo() {

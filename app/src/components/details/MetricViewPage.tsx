@@ -14,7 +14,7 @@ import {
 import { getCommonActions } from "../overview/getCommonActions";
 import { PageSection } from "../layout/pages/PageSection";
 import { MetricNotes } from "./edit/MetricNotes";
-import { Filters } from "./filters/Filters";
+import { MeasurementFilters } from "./filters/MeasurementFilters";
 import { Chart } from "./chart/Chart";
 import { Thresholds } from "./thresholds/Thresholds";
 import { MeasurementsTable } from "./measurementsTable/MeasurementsTable";
@@ -146,7 +146,7 @@ export const MetricViewPage: React.FC = () => {
 
       {showFilters ? (
         <PageSection>
-          <Filters
+          <MeasurementFilters
             metric={metric}
             groupByTime={groupByTime}
             setGroupByTime={setGroupByTime}

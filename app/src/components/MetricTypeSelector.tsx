@@ -13,11 +13,16 @@ import { MetricTypeIcon } from "./common/MetricTypeIcon";
 import { IconStyle } from "./common/Icon";
 
 export const MetricTypeSelector: React.FC<{
-  metricType: MetricType;
-  onChange: (metricType: MetricType) => void;
-}> = ({ metricType, onChange }) => {
+  metricType: MetricType | MetricType[];
+  onChange: (metricType: MetricType | MetricType[]) => void;
+  allowMultiple?: boolean;
+  margin?: "dense" | "normal";
+}> = ({ metricType, onChange, allowMultiple, margin }) => {
   return (
-    <FormControl margin="normal">
+    <FormControl
+      margin={margin ?? "normal"}
+      sx={{ backgroundColor: "common.white" }}
+    >
       <InputLabel id="metric-type-label">
         {translations.label_metricType}
       </InputLabel>
@@ -26,9 +31,11 @@ export const MetricTypeSelector: React.FC<{
         labelId="metric-type-label"
         label={translations.label_metricType}
         value={metricType as unknown as string}
+        multiple={allowMultiple ?? false}
         onChange={(event: SelectChangeEvent) => {
           onChange(event.target.value as unknown as MetricType);
         }}
+        sx={{ ".MuiSelect-select": { display: "flex" } }}
       >
         <MenuItem value={MetricType.Scraps}>
           <MetricTypeMenuItem
@@ -72,7 +79,7 @@ const MetricTypeMenuItem: React.FC<{
 };
 
 const MenuItemContainer = styled("div")`
-  display: flex;
+  display: inline-flex;
   align-items: center;
 
   .ngrvd-icon {

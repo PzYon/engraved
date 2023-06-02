@@ -15,7 +15,7 @@ public interface IRepository
 
   Task<IUser[]> GetAllUsers();
 
-  Task<IMetric[]> GetAllMetrics(string? searchText = null, int? limit = null);
+  Task<IMetric[]> GetAllMetrics(string? searchText = null, MetricType[]? metricTypes = null, int? limit = null);
 
   Task<IMetric?> GetMetric(string metricId);
 
@@ -26,13 +26,18 @@ public interface IRepository
   Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions);
 
   Task<IMeasurement[]> GetAllMeasurements(
-      string metricId,
-      DateTime? fromDate,
-      DateTime? toDate,
-      IDictionary<string, string[]>? attributeValues
-    );
+    string metricId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    IDictionary<string, string[]>? attributeValues
+  );
 
-  Task<IMeasurement[]> GetLastEditedMeasurements(string[] metricIds, string? searchText, int limit);
+  Task<IMeasurement[]> GetLastEditedMeasurements(
+    string[]? metricIds,
+    string? searchText,
+    MetricType[]? metricTypes,
+    int limit
+  );
 
   Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
 
