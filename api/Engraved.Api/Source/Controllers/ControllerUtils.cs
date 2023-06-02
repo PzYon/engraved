@@ -15,5 +15,4 @@ public static class ControllerUtils
       .Select(Enum.Parse<MetricType>)
       .ToArray();
   }
-
 }

@@ -50,9 +50,7 @@ public class MoveMeasurementCommandExecutor : ICommandExecutor
     IMetric sourceMetric = (await repository.GetMetric(measurement.MetricId))!;
 
     return targetMetric.Permissions.GetUserIdsWithAccess()
-      .Union(
-        sourceMetric.Permissions.GetUserIdsWithAccess()
-      )
+      .Union(sourceMetric.Permissions.GetUserIdsWithAccess())
       .Distinct()
       .ToArray();
   }

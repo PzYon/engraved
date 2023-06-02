@@ -47,7 +47,7 @@ public class InMemoryRepository : IRepository
 
   public Task<IMetric[]> GetAllMetrics(string? searchText = null, MetricType[]? metricTypes = null, int? limit = null)
   {
-    // note: conditions are currently ignored, as they are not (yet?) need for these in memory tests.
+    // note: conditions are currently ignored, as they are not (yet?) needed for these in memory tests.
     return Task.FromResult(Metrics.ToArray());
   }
 
