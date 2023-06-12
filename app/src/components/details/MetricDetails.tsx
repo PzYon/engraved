@@ -13,6 +13,7 @@ import { IMetric } from "../../serverApi/IMetric";
 import { SharedWith } from "../common/SharedWith";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
+import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
 
 export const MetricDetails: React.FC = () => {
   const { metric } = useMetricContext();
@@ -47,6 +48,10 @@ export const MetricDetails: React.FC = () => {
           <>
             <Route path="/edit" element={<ScrapsEditPage />} />
             <Route path="/*" element={<ScrapsViewPage />} />
+            <Route
+              path="/measurements/:measurementId/move"
+              element={<ScrapsMovePage />}
+            />
           </>
         ) : (
           <>

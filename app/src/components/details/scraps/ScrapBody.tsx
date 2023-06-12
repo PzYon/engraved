@@ -6,6 +6,7 @@ import { Actions } from "../../common/Actions";
 import {
   DeleteOutlined,
   EditOutlined,
+  Redo,
   SaveOutlined,
 } from "@mui/icons-material";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
@@ -38,6 +39,12 @@ export const ScrapBody: React.FC<{
   function getActions() {
     const allActions = [
       ...actions,
+      {
+        key: "move-to-other-scrap",
+        label: "Move to another scrap",
+        icon: <Redo fontSize="small" />,
+        href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/move`,
+      },
       editMode
         ? {
             key: "save",

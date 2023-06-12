@@ -238,6 +238,14 @@ export class ServerApi {
     );
   }
 
+  static async moveMeasurement(measurementId: string, targetMetricId: string) {
+    return await ServerApi.executeRequest(
+      `/measurements/${measurementId}/move${targetMetricId}`,
+      "PUT",
+      null
+    );
+  }
+
   static async searchMetricAttributes(
     metricId: string,
     searchText: string
