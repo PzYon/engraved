@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IMetric } from "../../IMetric";
-import { queryKeysFactory } from "../../queryKeysFactory";
+import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { MetricType } from "../../MetricType";
 

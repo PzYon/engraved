@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../queryKeysFactory";
+import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 
 export const useDeleteMeasurementMutation = (
