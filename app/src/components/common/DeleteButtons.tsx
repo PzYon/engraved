@@ -2,29 +2,29 @@ import React, { useState } from "react";
 import { DialogFormButtonContainer } from "./FormButtonContainer";
 import { Button, styled, TextField, Typography } from "@mui/material";
 
-export const SafeDeleteButton: React.FC<{
+export const DeleteButtons: React.FC<{
   onDelete: () => void;
   onCancel: () => void;
-}> = ({ onDelete, onCancel }) => {
-  const [isYes, setIsYes] = useState(false);
-  const [showFinalYes, setShowFinalYes] = useState(false);
+  requiresConfirmation: boolean;
+}> = ({ onDelete, onCancel, requiresConfirmation }) => {
+  const [isFirstYes, setIsFirstYes] = useState(false);
+  const [isSecondYes, setIsSecondYes] = useState(false);
 
   return (
     <>
       <DialogFormButtonContainer>
         <Button
-          variant={!showFinalYes ? "contained" : "outlined"}
+          variant={!isSecondYes ? "contained" : "outlined"}
           onClick={onCancel}
         >
           No
         </Button>
         <Button
-          variant={showFinalYes ? "contained" : "outlined"}
-          color="primary"
-          disabled={isYes && !showFinalYes}
+          variant={isSecondYes ? "contained" : "outlined"}
+          disabled={isFirstYes && !isSecondYes}
           onClick={() => {
-            if (!isYes) {
-              setIsYes(true);
+            if (requiresConfirmation && !isSecondYes) {
+              setIsFirstYes(true);
             } else {
               onDelete();
             }
@@ -33,14 +33,15 @@ export const SafeDeleteButton: React.FC<{
           Yes, delete!
         </Button>
       </DialogFormButtonContainer>
-      {isYes ? (
+      {isFirstYes ? (
         <ExtraContainer>
           <Typography>
-            Just to be really sure, please type &quot;yes&quot; to confirm.
+            Just to be really sure, please type &quot;delete&quot; to confirm.
           </Typography>
           <TextField
+            autoFocus={true}
             onChange={(event) => {
-              setShowFinalYes(event.target.value === "yes");
+              setIsSecondYes(event.target.value === "delete");
             }}
           />
         </ExtraContainer>

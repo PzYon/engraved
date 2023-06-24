@@ -4,7 +4,7 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { useDeleteMetricMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMetricMutation";
-import { SafeDeleteButton } from "../../common/SafeDeleteButton";
+import { DeleteButtons } from "../../common/DeleteButtons";
 
 export const DeleteMetricLauncher: React.FC<{
   metric: IMetric;
@@ -26,7 +26,9 @@ export const DeleteMetricLauncher: React.FC<{
               Are you sure you want to delete &apos;{metric.name}&apos;? You
               will not be able to recover this metric and all its measurements.
             </Typography>
-            <SafeDeleteButton
+            <DeleteButtons
+              requiresConfirmation={true}
+              onCancel={closeDialog}
               onDelete={() =>
                 deleteMetricMutation.mutate({
                   onSuccess: async () => {
@@ -35,7 +37,6 @@ export const DeleteMetricLauncher: React.FC<{
                   },
                 })
               }
-              onCancel={closeDialog}
             />
           </>
         );
