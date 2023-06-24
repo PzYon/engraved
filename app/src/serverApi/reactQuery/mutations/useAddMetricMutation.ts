@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../queryKeysFactory";
+import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { ICommandResult } from "../../ICommandResult";
 import { MetricType } from "../../MetricType";

@@ -1,5 +1,5 @@
-import { IDateConditions } from "../components/details/MetricDetailsContext";
-import { MetricType } from "./MetricType";
+import { IDateConditions } from "../../components/details/MetricDetailsContext";
+import { MetricType } from "./../MetricType";
 
 const metrics = "metrics";
 
@@ -49,8 +49,8 @@ export const queryKeysFactory = {
     return [metrics, metricId, "measurement", "delete", measurementId];
   },
 
-  activeMeasurement(metricId: string) {
-    return [metrics, metricId, "measurements", "get-active"];
+  activeMeasurement(metricId: string, metricType: MetricType) {
+    return [metrics, metricId, "measurements", metricType, "get-active"];
   },
 
   activities(searchText: string, metricTypes: MetricType[]) {

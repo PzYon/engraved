@@ -1,6 +1,6 @@
 import { ServerApi } from "../../ServerApi";
 import { useMutation } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../queryKeysFactory";
+import { queryKeysFactory } from "../queryKeysFactory";
 import { IUpdatePermissions } from "../../IUpdatePermissions";
 import { useAppContext } from "../../../AppContext";
 import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../queryKeysFactory";
+import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { IGetActivitiesQueryResult } from "../../IGetActivitiesQueryResult";
 import { MetricType } from "../../MetricType";

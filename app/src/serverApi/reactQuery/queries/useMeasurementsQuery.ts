@@ -1,6 +1,6 @@
 import { useAppContext } from "../../../AppContext";
 import { useQuery } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../queryKeysFactory";
+import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { ApiError } from "../../ApiError";
 import { IDateConditions } from "../../../components/details/MetricDetailsContext";
