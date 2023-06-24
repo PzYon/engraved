@@ -6,6 +6,8 @@ import { IMetric } from "../../IMetric";
 
 export const useActiveMeasurementQuery = (metric: IMetric) => {
   const { data: measurement } = useQuery({
+    cacheTime: 0,
+
     queryKey: queryKeysFactory.activeMeasurement(metric.id, metric.type),
 
     queryFn: () =>
