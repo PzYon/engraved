@@ -41,7 +41,7 @@ export const DeleteButtons: React.FC<{
           <TextField
             autoFocus={true}
             onChange={(event) => {
-              setIsSecondYes(event.target.value === "delete");
+              setIsSecondYes(event.target.value?.toLowerCase() === "delete");
             }}
           />
         </ExtraContainer>
