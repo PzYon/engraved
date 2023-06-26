@@ -36,11 +36,11 @@ export const AppInfo: React.FC = () => {
         <SystemInfo
           systemInfo={{
             commitHash:
-              process.env.REACT_APP_COMMIT_HASH ??
+              import.meta.env.VITE_COMMIT_HASH ??
               "78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f",
-            version: process.env.REACT_APP_VERSION ?? "42",
+            version: import.meta.env.VITE_VERSION ?? "42",
             mergeDateTime:
-              process.env.REACT_APP_MERGE_DATE_TIME ?? "2017-04-20T07:56:16Z",
+              import.meta.env.VITE_MERGE_DATE_TIME ?? "2017-04-20T07:56:16Z",
           }}
           label={"App"}
         />

@@ -1,6 +1,6 @@
 export const envSettings = {
-  apiBaseUrlWindows: process.env.REACT_APP_API_BASE_URL,
-  apiBaseUrlLinux: process.env.REACT_APP_API_BASE_URL_LINUX,
+  apiBaseUrlWindows: import.meta.env.VITE_API_BASE_URL,
+  apiBaseUrlLinux: import.meta.env.VITE_API_BASE_URL_LINUX,
   auth: {
     google: {
       clientId:
