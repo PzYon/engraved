@@ -10,6 +10,11 @@ export default () => {
     build: {
       rollupOptions: {
         output: {
+          chunkFileNames: (chunkInfo) => {
+            return chunkInfo.name === "envSettings"
+              ? `[name].js`
+              : `[name].[hash].js`;
+          },
           manualChunks: (id) => {
             if (id.includes("envSettings")) {
               return "envSettings";
