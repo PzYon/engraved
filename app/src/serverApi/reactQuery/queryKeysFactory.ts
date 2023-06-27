@@ -30,14 +30,14 @@ export const queryKeysFactory = {
 
   measurements(
     metricId: string,
-    dateConditions: IDateConditions,
-    attributeValues: { [key: string]: string[] }
+    dateConditions?: IDateConditions,
+    attributeValues?: { [key: string]: string[] }
   ) {
     return [
       metrics,
       metricId,
       "measurements",
-      { filters: { dateConditions, attributeValues } },
+      { filters: { dateConditions: dateConditions, attributeValues } },
     ];
   },
 
@@ -53,8 +53,8 @@ export const queryKeysFactory = {
     return [metrics, metricId, "measurements", metricType, "get-active"];
   },
 
-  activities(searchText: string, metricTypes: MetricType[]) {
-    return [metrics, "activities", searchText, metricTypes?.join()];
+  activities(searchText?: string, metricTypes?: MetricType[]) {
+    return [metrics, "activities", searchText ?? "", metricTypes?.join() ?? ""];
   },
 
   systemInfo() {
