@@ -7,5 +7,16 @@ export default () => {
       port: 3000,
     },
     plugins: [react()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            if (id.includes("envSettings")) {
+              return "envSettings";
+            }
+          },
+        },
+      },
+    },
   });
 };
