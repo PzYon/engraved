@@ -6,6 +6,10 @@ import { useAppContext } from "../../../AppContext";
 import { IMeasurement } from "../../IMeasurement";
 import { MetricType } from "../../MetricType";
 
+export interface IVariables {
+  command: IUpsertMeasurementCommand;
+}
+
 export const useUpsertMeasurementMutation = (
   metricId: string,
   metricType: MetricType,
@@ -19,42 +23,36 @@ export const useUpsertMeasurementMutation = (
   return useMutation({
     mutationKey: queryKeysFactory.updateMeasurement(metricId, measurementId),
 
-    mutationFn: async (variables: { command: IUpsertMeasurementCommand }) => {
+    mutationFn: async (variables: IVariables) => {
       await ServerApi.upsertMeasurement(
         variables.command,
         metricType.toLowerCase()
       );
     },
 
-    onMutate: (variables) => {
-      if (measurementId) {
-        updateExistingMeasurementInCache(variables.command);
-      }
-    },
-
-    onSuccess: async () => {
+    onSuccess: async (_: unknown, variables: IVariables) => {
       setAppAlert({
         title: `${measurementId ? "Updated" : "Added"} measurement`,
         type: "success",
       });
 
-      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
-
       onSaved?.();
+
+      if (measurementId) {
+        updateExistingMeasurementInCache(variables.command);
+      }
+
+      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
+      await queryClient.invalidateQueries(queryKeysFactory.metrics());
+      await queryClient.invalidateQueries(queryKeysFactory.activities());
     },
 
-    onError: (error) => {
+    onError: (error: unknown) => {
       setAppAlert({
         title: "Failed to upsert measurementId",
         message: error.toString(),
         type: "error",
       });
-    },
-
-    onSettled: async () => {
-      await queryClient.invalidateQueries(
-        queryKeysFactory.metrics(undefined, undefined)
-      );
     },
   });
 
@@ -62,7 +60,7 @@ export const useUpsertMeasurementMutation = (
     command: IUpsertMeasurementCommand
   ) {
     queryClient.setQueryData(
-      queryKeysFactory.measurements(metricId, {}, {}),
+      queryKeysFactory.measurements(metricId),
       (measurements: IMeasurement[]) => {
         if (!measurements) {
           return measurements;
