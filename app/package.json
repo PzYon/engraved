@@ -1,6 +1,7 @@
 {
   "name": "engraved-app",
   "version": "0.1.0",
+  "author": "PzYon",
   "private": true,
   "dependencies": {
     "@emotion/styled": "11.11.0",
