@@ -12,7 +12,7 @@ async function isNewVersionAvailable() {
 
   const response = await fetch("/envSettings.js");
   const text = await response.text();
-  const version = new RegExp(/version: "(\d+)"/gm).exec(text)[1];
+  const version = new RegExp(/version:"(\d+)"/gm).exec(text)[1];
 
   return version !== envSettings.version;
 }
@@ -46,6 +46,8 @@ const useIsNewVersionAvailableQuery = () => {
     queryFn: () => isNewVersionAvailable(),
 
     refetchInterval: thirtyMinutes,
+
+    refetchOnWindowFocus: true,
   });
 
   return isNewDataAvailable;
