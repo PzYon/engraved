@@ -60,4 +60,8 @@ export const queryKeysFactory = {
   systemInfo() {
     return ["system-info"];
   },
+
+  appVersion() {
+    return ["app-version"];
+  },
 };

@@ -10,4 +10,5 @@ export const envSettings = {
   commitHash: import.meta.env.VITE_COMMIT_HASH,
   version: import.meta.env.VITE_VERSION,
   mergeDateTime: import.meta.env.VITE_MERGE_DATE_TIME,
+  isDev: import.meta.env.DEV,
 };

@@ -36,11 +36,9 @@ export const AppInfo: React.FC = () => {
       <ItemContainer>
         <SystemInfo
           systemInfo={{
-            commitHash:
-              envSettings.commitHash ??
-              "78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f",
-            version: envSettings.version ?? "42",
-            mergeDateTime: envSettings.mergeDateTime ?? "2017-04-20T07:56:16Z",
+            commitHash: envSettings.commitHash,
+            version: envSettings.version,
+            mergeDateTime: envSettings.mergeDateTime,
           }}
           label={"App"}
         />
