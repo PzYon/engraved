@@ -23,6 +23,7 @@ import {
 import { renderAddQuickScrapDialog } from "../details/add/renderAddQuickScrapDialog";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
+import { VersionChecker } from "../../VersionChecker";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -76,6 +77,7 @@ export const AppHeader: React.FC = () => {
                 />
               </Typography>
             </Link>
+            <VersionChecker />
             <AppInfoLauncher />
             <RefreshData />
             <IconButtonWrapper

@@ -4,6 +4,9 @@ import { IMetric } from "../../../../serverApi/IMetric";
 import { MetricType } from "../../../../serverApi/MetricType";
 import { createDataSets } from "./createDataSets";
 
+// https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
+jest.mock("../../../../env/envSettings.ts", () => ({}));
+
 describe("createDataSets", () => {
   it("should group by nothing", () => {
     const metric: IMetric = createMetric();

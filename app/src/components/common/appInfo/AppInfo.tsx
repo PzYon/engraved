@@ -14,6 +14,7 @@ import {
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAppInfoQuery } from "../../../serverApi/reactQuery/queries/useAppInfoQuery";
+import { envSettings } from "../../../env/envSettings";
 
 export const AppInfo: React.FC = () => {
   const systemInfo = useAppInfoQuery();
@@ -35,12 +36,9 @@ export const AppInfo: React.FC = () => {
       <ItemContainer>
         <SystemInfo
           systemInfo={{
-            commitHash:
-              process.env.REACT_APP_COMMIT_HASH ??
-              "78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f",
-            version: process.env.REACT_APP_VERSION ?? "42",
-            mergeDateTime:
-              process.env.REACT_APP_MERGE_DATE_TIME ?? "2017-04-20T07:56:16Z",
+            commitHash: envSettings.commitHash,
+            version: envSettings.version,
+            mergeDateTime: envSettings.mergeDateTime,
           }}
           label={"App"}
         />
