@@ -35,9 +35,9 @@ jobs:
       - name: Install and build
         working-directory: app
         env:
-          REACT_APP_COMMIT_HASH: ${{github.sha}}
-          REACT_APP_VERSION: ${{github.run_number}}
-          REACT_APP_MERGE_DATE_TIME: ${{steps.current-time.outputs.time}}
+          VITE_COMMIT_HASH: ${{github.sha}}
+          VITE_VERSION: ${{github.run_number}}
+          VITE_MERGE_DATE_TIME: ${{steps.current-time.outputs.time}}
         run: |
           npm install
           npm run lint
@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app
-          path: app/build
+          path: app/dist
 
   deploy:
     name: Deploy App
