@@ -24,6 +24,13 @@ export const Scrap: React.FC<{
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   useEffect(() => {
+    console.log("new scrap, isEditMode: " + isEditMode);
+    if (isEditMode) {
+      alert("will update dirty scrap");
+    }
+  }, [scrap]);
+
+  useEffect(() => {
     preloadLazyCodeMirror();
   }, []);
 

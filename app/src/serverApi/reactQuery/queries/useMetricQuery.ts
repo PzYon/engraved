@@ -7,6 +7,8 @@ export const useMetricQuery = (metricId: string) => {
   const queryClient = useQueryClient();
 
   const { data: metric } = useQuery({
+    refetchOnWindowFocus: true,
+
     queryKey: queryKeysFactory.metric(metricId),
 
     queryFn: () => ServerApi.getMetric(metricId),
