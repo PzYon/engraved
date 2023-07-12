@@ -10,6 +10,7 @@ import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
 import { ScripListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
+import { useAppContext } from "../../../AppContext";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -23,12 +24,30 @@ export const Scrap: React.FC<{
   const [isEditMode, setIsEditMode] = useState(!scrap.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
-  useEffect(() => {
-    console.log("new scrap, isEditMode: " + isEditMode);
-    if (isEditMode) {
-      alert("will update dirty scrap");
-    }
-  }, [scrap]);
+  const { setAppAlert } = useAppContext();
+
+  useEffect(
+    () => {
+      if (isEditMode) {
+        setAppAlert({
+          message: "Would update as NOT DIRTY.",
+          type: "info",
+          hideDurationSec: 2,
+          title: "New scrap",
+        });
+      } else {
+        setAppAlert({
+          message: "Would notify as DIRTY.",
+          type: "info",
+          hideDurationSec: 2,
+          title: "New scrap",
+        });
+      }
+    },
+    // instead of [scrap] we could use scrap.changeToken...
+    // ... if we had that...!?
+    [scrap]
+  );
 
   useEffect(() => {
     preloadLazyCodeMirror();

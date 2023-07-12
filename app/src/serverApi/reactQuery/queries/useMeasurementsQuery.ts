@@ -13,8 +13,6 @@ export const useMeasurementsQuery = (
   const { setAppAlert } = useAppContext();
 
   const { data: measurements } = useQuery({
-    refetchOnWindowFocus: true,
-
     queryKey: queryKeysFactory.measurements(
       metricId,
       dateConditions,

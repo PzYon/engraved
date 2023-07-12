@@ -5,7 +5,7 @@ import React from "react";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
       refetchOnReconnect: false,
       useErrorBoundary: true,
       staleTime: 20_000,
