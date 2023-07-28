@@ -1,35 +1,68 @@
 import React, { useState } from "react";
-import { useParams } from "react-router";
 import { SearchBox } from "../../common/search/SearchBox";
-import { MetricTypeSelector } from "../../MetricTypeSelector";
 import { MetricType } from "../../../serverApi/MetricType";
 import { useMetricsQuery } from "../../../serverApi/reactQuery/queries/useMetricsQuery";
-import { Button, List, ListItem } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import { PageSection } from "../../layout/pages/PageSection";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { FiltersColumn, FiltersRow } from "../filters/FiltersRow";
+import { useMoveMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useMoveMeasurementMutation";
+import { useParams } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export const ScrapsMovePage: React.FC = () => {
-  const { metricId, measurementId } = useParams();
-
   const [searchText, setSearchText] = useState<string>("");
-  const [metricTypes, setMetricTypes] = useState<MetricType[]>([]);
-
   const [targetMetricId, setTargetMetricId] = useState<string>(undefined);
 
-  const metrics = useMetricsQuery(searchText, metricTypes);
+  const navigate = useNavigate();
+
+  const { measurementId, metricId } = useParams();
+  const mutation = useMoveMeasurementMutation(measurementId, metricId, () =>
+    navigate(`/metrics/${targetMetricId}`)
+  );
+
+  const metrics = useMetricsQuery(searchText, [MetricType.Scraps]);
+
+  const deviceWidth = useDeviceWidth();
+  const Row = deviceWidth === DeviceWidth.Small ? FiltersColumn : FiltersRow;
 
   return (
-    <div>
-      <SearchBox searchText={searchText} setSearchText={setSearchText} />
-      <MetricTypeSelector
-        allowMultiple={true}
-        metricType={metricTypes}
-        onChange={(x) => setMetricTypes(x as MetricType[])}
-      />
+    <PageSection>
+      <Row style={{ marginBottom: 0 }}>
+        <SearchBox searchText={searchText} setSearchText={setSearchText} />
+      </Row>
+
       {metrics?.length ? (
-        <List>
+        <List dense={true}>
           {metrics.map((x) => {
+            const isChecked = targetMetricId === x.id;
             return (
-              <ListItem key={x.id} onClick={() => setTargetMetricId(x.id)}>
-                <div key={x.id}>{x.name}</div>
+              <ListItem key={x.id}>
+                <ListItemButton
+                  role={undefined}
+                  onClick={() => {
+                    setTargetMetricId(isChecked ? undefined : x.id);
+                  }}
+                  dense
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      checked={isChecked}
+                      tabIndex={-1}
+                      disableRipple
+                    />
+                  </ListItemIcon>
+                  <ListItemText>{x.name}</ListItemText>
+                </ListItemButton>
               </ListItem>
             );
           })}
@@ -38,11 +71,13 @@ export const ScrapsMovePage: React.FC = () => {
       {targetMetricId ? (
         <Button
           variant="contained"
-          onClick={() => alert("move - create mutation")}
+          onClick={() => {
+            mutation.mutate({ targetMetricId: targetMetricId });
+          }}
         >
           Move
         </Button>
       ) : null}
-    </div>
+    </PageSection>
   );
 };

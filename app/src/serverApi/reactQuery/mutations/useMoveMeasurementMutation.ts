@@ -1,41 +1,35 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../queryKeysFactory";
-import { IUpsertMeasurementCommand } from "../../commands/IUpsertMeasurementCommand";
 import { ServerApi } from "../../ServerApi";
 import { useAppContext } from "../../../AppContext";
-import { IMeasurement } from "../../IMeasurement";
+import { queryKeysFactory } from "../queryKeysFactory";
 
-export const useMoveMeasurementMutation = (onSaved?: () => void) => {
+export const useMoveMeasurementMutation = (
+  measurementId: string,
+  metricId: string,
+  onSaved?: () => void
+) => {
   const { setAppAlert } = useAppContext();
 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.updateMeasurement(metricId, measurementId),
+    mutationKey: queryKeysFactory.moveMeasurement(measurementId, metricId),
 
-    mutationFn: async (variables: {
-      measurementId: string;
-      targetMetricId: string;
-    }) => {
-      await ServerApi.moveMeasurement(
-        variables.measurementId,
-        variables.targetMetricId
+    mutationFn: async (variables: { targetMetricId: string }) => {
+      await ServerApi.moveMeasurement(measurementId, variables.targetMetricId);
+    },
+
+    onSuccess: async (_, variables) => {
+      setAppAlert({
+        title: `Successfully moved measurement.`,
+        type: "success",
+      });
+
+      await queryClient.invalidateQueries(
+        queryKeysFactory.metric(variables.targetMetricId)
       );
-    },
 
-    onMutate: (variables) => {
-      //      if (measurementId) {
-      //        updateExistingMeasurementInCache(variables.command);
-      //      }
-    },
-
-    onSuccess: async (_, variables, _) => {
-      // setAppAlert({
-      //  title: `${measurementId ? "Updated" : "Added"} measurement`,
-      //  type: "success",
-      // });
-
-      // await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
+      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
 
       onSaved?.();
     },
@@ -54,32 +48,4 @@ export const useMoveMeasurementMutation = (onSaved?: () => void) => {
       );
     },
   });
-
-  function updateExistingMeasurementInCache(
-    command: IUpsertMeasurementCommand
-  ) {
-    queryClient.setQueryData(
-      queryKeysFactory.measurements(metricId, {}, {}),
-      (measurements: IMeasurement[]) => {
-        if (!measurements) {
-          return measurements;
-        }
-
-        return measurements.map((m) =>
-          m.id === measurementId ? createCacheMeasurement(m, command) : m
-        );
-      }
-    );
-  }
-
-  function createCacheMeasurement(
-    measurement: IMeasurement,
-    command: IUpsertMeasurementCommand
-  ) {
-    return {
-      ...measurement,
-      ...command,
-      dateTime: new Date().toString(),
-    };
-  }
 };
