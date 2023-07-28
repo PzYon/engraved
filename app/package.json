@@ -19,7 +19,7 @@
     "@types/react-dom": "18.2.7",
     "@vitejs/plugin-react": "4.0.3",
     "@uiw/codemirror-extensions-langs": "4.21.9",
-    "@uiw/react-codemirror": "4.21.8",
+    "@uiw/react-codemirror": "4.21.9",
     "chart.js": "4.3.2",
     "chartjs-adapter-date-fns": "3.0.0",
     "chartjs-plugin-annotation": "3.0.1",
