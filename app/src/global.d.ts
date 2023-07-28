@@ -1,3 +1,5 @@
+import "vite/client";
+
 import { Google } from "src/serverApi/authentication/google/GoogleTypes";
 
 declare global {

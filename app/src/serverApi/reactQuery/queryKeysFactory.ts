@@ -1,11 +1,11 @@
-import { IDateConditions } from "../components/details/MetricDetailsContext";
-import { MetricType } from "./MetricType";
+import { IDateConditions } from "../../components/details/MetricDetailsContext";
+import { MetricType } from "../MetricType";
 
 const metrics = "metrics";
 
 export const queryKeysFactory = {
   metrics(searchText?: string, metricTypes?: MetricType[]) {
-    return [metrics, "all", searchText, metricTypes?.join()];
+    return [metrics, "all", searchText ?? "", metricTypes?.join() ?? ""];
   },
 
   metric(metricId: string) {
@@ -30,14 +30,14 @@ export const queryKeysFactory = {
 
   measurements(
     metricId: string,
-    dateConditions: IDateConditions,
-    attributeValues: { [key: string]: string[] }
+    dateConditions?: IDateConditions,
+    attributeValues?: { [key: string]: string[] }
   ) {
     return [
       metrics,
       metricId,
       "measurements",
-      { filters: { dateConditions, attributeValues } },
+      { filters: { dateConditions: dateConditions, attributeValues } },
     ];
   },
 
@@ -49,15 +49,19 @@ export const queryKeysFactory = {
     return [metrics, metricId, "measurement", "delete", measurementId];
   },
 
-  activeMeasurement(metricId: string) {
-    return [metrics, metricId, "measurements", "get-active"];
+  activeMeasurement(metricId: string, metricType: MetricType) {
+    return [metrics, metricId, "measurements", metricType, "get-active"];
   },
 
-  activities(searchText: string, metricTypes: MetricType[]) {
-    return [metrics, "activities", searchText, metricTypes?.join()];
+  activities(searchText?: string, metricTypes?: MetricType[]) {
+    return [metrics, "activities", searchText ?? "", metricTypes?.join() ?? ""];
   },
 
   systemInfo() {
     return ["system-info"];
+  },
+
+  appVersion() {
+    return ["app-version"];
   },
 };

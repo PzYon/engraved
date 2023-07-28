@@ -3,9 +3,10 @@ import { IMetric } from "../../../serverApi/IMetric";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useDeleteMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMeasurementMutation";
-import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
+import { DeleteButtons } from "../../common/DeleteButtons";
+import { MetricType } from "../../../serverApi/MetricType";
 
 export const DeleteMeasurementLauncher: React.FC<{
   metric: IMetric;
@@ -31,18 +32,11 @@ export const DeleteMeasurementLauncher: React.FC<{
               Are you sure you want to delete this measurement? You will not be
               able to recover it.
             </Typography>
-            <DialogFormButtonContainer>
-              <Button variant="contained" onClick={closeDialog}>
-                No
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => deleteMeasurement(closeDialog)}
-              >
-                Yes, delete!
-              </Button>
-            </DialogFormButtonContainer>
+            <DeleteButtons
+              requiresConfirmation={metric.type === MetricType.Scraps}
+              onDelete={() => deleteMeasurement(closeDialog)}
+              onCancel={closeDialog}
+            />
           </>
         );
       },

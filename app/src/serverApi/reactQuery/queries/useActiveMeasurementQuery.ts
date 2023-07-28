@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../queryKeysFactory";
+import { queryKeysFactory } from "../queryKeysFactory";
 import { MetricType } from "../../MetricType";
 import { ServerApi } from "../../ServerApi";
 import { IMetric } from "../../IMetric";
 
 export const useActiveMeasurementQuery = (metric: IMetric) => {
   const { data: measurement } = useQuery({
-    queryKey: queryKeysFactory.activeMeasurement(metric.id),
+    cacheTime: 0,
+
+    queryKey: queryKeysFactory.activeMeasurement(metric.id, metric.type),
 
     queryFn: () =>
       metric.type === MetricType.Timer

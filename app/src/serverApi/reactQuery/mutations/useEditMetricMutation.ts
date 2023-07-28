@@ -1,6 +1,6 @@
 import { useAppContext } from "../../../AppContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeysFactory } from "../../queryKeysFactory";
+import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { IMetric } from "../../IMetric";
 
