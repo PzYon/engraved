@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { ICommandResult } from "../../ICommandResult";
@@ -12,12 +12,15 @@ export const useAddMetricMutation = (
   onAdded: (result: ICommandResult) => Promise<void>
 ) => {
   const { setAppAlert } = useAppContext();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: queryKeysFactory.addMetric(),
     mutationFn: () => ServerApi.addMetric(name, description, metricType),
     onSuccess: async (result: ICommandResult) => {
       await onAdded(result);
+
+      await queryClient.invalidateQueries(queryKeysFactory.metrics());
 
       setAppAlert({
         title: `Added metric ${name}`,
