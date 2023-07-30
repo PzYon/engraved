@@ -24,11 +24,13 @@ import { renderAddQuickScrapDialog } from "../details/add/renderAddQuickScrapDia
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
+import { Titles } from "./Titles";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
   const {
-    pageTitle,
+    title,
+    subTitle,
     pageActions: pageActionsFromContext,
     enableFilters,
     showFilters,
@@ -110,9 +112,7 @@ export const AppHeader: React.FC = () => {
             isSmall ? { flexDirection: "column", alignItems: "start" } : null
           }
         >
-          <Typography variant="h2" sx={{ flexGrow: 1, color: "primary.main" }}>
-            {pageTitle ?? <>&nbsp;</>}
-          </Typography>
+          <Titles title={title} subTitle={subTitle} />
 
           <SearchAndActionsContainer
             isSmall={isSmall}

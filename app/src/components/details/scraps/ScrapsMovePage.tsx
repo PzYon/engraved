@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MetricType } from "../../../serverApi/MetricType";
 import { useMetricsQuery } from "../../../serverApi/reactQuery/queries/useMetricsQuery";
 import {
@@ -15,8 +15,11 @@ import { PageSection } from "../../layout/pages/PageSection";
 import { useMoveMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useMoveMeasurementMutation";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
+import { usePageContext } from "../../layout/pages/PageContext";
 
 export const ScrapsMovePage: React.FC = () => {
+  const { setSubTitle } = usePageContext();
+
   const [targetMetricId, setTargetMetricId] = useState<string>(undefined);
 
   const navigate = useNavigate();
@@ -25,6 +28,10 @@ export const ScrapsMovePage: React.FC = () => {
   const mutation = useMoveMeasurementMutation(measurementId, metricId, () =>
     navigate(`/metrics/${targetMetricId}`)
   );
+
+  useEffect(() => {
+    setSubTitle("Move measurement to...");
+  }, []);
 
   const metrics = useMetricsQuery("", [MetricType.Scraps]);
 

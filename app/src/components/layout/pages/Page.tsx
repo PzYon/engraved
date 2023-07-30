@@ -12,7 +12,7 @@ export const Page: React.FC<{
 }> = ({ actions, title, documentTitle, enableFilters, children }) => {
   const {
     setPageActions,
-    setPageTitle,
+    setTitle,
     setDocumentTitle,
     setEnableFilters,
     setShowFilters,
@@ -21,7 +21,7 @@ export const Page: React.FC<{
   } = usePageContext();
 
   useEffect(() => {
-    setPageTitle(title);
+    setTitle(title);
   }, [title]);
 
   useEffect(() => {

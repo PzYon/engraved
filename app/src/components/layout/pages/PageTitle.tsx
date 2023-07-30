@@ -5,17 +5,12 @@ export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
   icon,
   title,
 }) => (
-  <Host>
+  <>
     {icon}
     <Title>{title}</Title>
-  </Host>
+  </>
 );
 
-const Host = styled("div")`
-  display: flex;
-  justify-content: center;
-`;
-
-const Title = styled("div")`
+const Title = styled("span")`
   flex-grow: 1;
 `;
