@@ -1,5 +1,6 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Commands.Measurements.Delete;
+using Engraved.Core.Application.Commands.Measurements.Move;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Counter;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Scraps;
@@ -81,5 +82,18 @@ public class MeasurementsController : ControllerBase
   public async Task Delete(string measurementId)
   {
     await _dispatcher.Command(new DeleteMeasurementCommand { Id = measurementId });
+  }
+
+  [HttpPut]
+  [Route("{measurementId}/move/{targetMetricId}")]
+  public async Task MoveMeasurementToMetric(string measurementId, string targetMetricId)
+  {
+    var command = new MoveMeasurementCommand
+    {
+      MeasurementId = measurementId,
+      TargetMetricId = targetMetricId
+    };
+
+    await _dispatcher.Command(command);
   }
 }

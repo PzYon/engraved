@@ -1,9 +1,9 @@
-import { SearchBox } from "./SearchBox";
 import React from "react";
-import { PageSection } from "../../layout/pages/PageSection";
-import { FiltersRow, FiltersColumn } from "../../details/filters/FiltersRow";
+import { FiltersColumn, FiltersRow } from "../../details/filters/FiltersRow";
 import { PageMetricTypesSelector } from "./PageMetricTypesSelector";
 import { DeviceWidth, useDeviceWidth } from "../useDeviceWidth";
+import { PageSearchBox } from "./PageSearchBox";
+import { PageSection } from "../../layout/pages/PageSection";
 
 export const PageFilters: React.FC = () => {
   const deviceWidth = useDeviceWidth();
@@ -13,7 +13,7 @@ export const PageFilters: React.FC = () => {
   return (
     <PageSection>
       <Row style={{ marginBottom: 0 }}>
-        <SearchBox />
+        <PageSearchBox />
         <PageMetricTypesSelector />
       </Row>
     </PageSection>

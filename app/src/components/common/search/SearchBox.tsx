@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { FormControl, IconButton, TextField } from "@mui/material";
-import { usePageContext } from "../../layout/pages/PageContext";
 import { Clear, SearchOutlined } from "@mui/icons-material";
 
-export const SearchBox: React.FC = () => {
-  const { searchText, setSearchText, showFilters } = usePageContext();
-
+export const SearchBox: React.FC<{
+  searchText: string;
+  setSearchText: (searchText: string) => void;
+}> = ({ searchText, setSearchText }) => {
   const [currentFieldValue, setCurrentFieldValue] = useState(searchText);
 
   useEffect(() => {
     setCurrentFieldValue(searchText);
   }, [searchText]);
-
-  if (!showFilters) {
-    return null;
-  }
 
   return (
     <FormControl margin="dense">
