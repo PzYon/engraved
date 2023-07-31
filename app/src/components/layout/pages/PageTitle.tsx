@@ -1,5 +1,4 @@
 import React from "react";
-import { styled } from "@mui/material";
 
 export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
   icon,
@@ -7,10 +6,6 @@ export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
 }) => (
   <>
     {icon}
-    <Title>{title}</Title>
+    <span>{title}</span>
   </>
 );
-
-const Title = styled("span")`
-  flex-grow: 1;
-`;

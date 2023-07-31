@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 
 export const Titles: React.FC<{
   title: React.ReactNode;
@@ -12,7 +12,7 @@ export const Titles: React.FC<{
         flexGrow: 1,
         color: "primary.main",
         display: "flex",
-        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       {getBody()}
@@ -30,8 +30,18 @@ export const Titles: React.FC<{
 
     return (
       <>
-        <>{title}</>|<>{subTitle}</>
+        <>{title}</>
+        <SubTitle>{subTitle}</SubTitle>
       </>
     );
   }
 };
+
+const SubTitle = styled("span")`
+  font-size: smaller;
+
+  &::before {
+    content: "\\00B7";
+    margin: 0 0.6rem;
+  }
+`;

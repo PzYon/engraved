@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MetricType } from "../../../serverApi/MetricType";
 import { useMetricsQuery } from "../../../serverApi/reactQuery/queries/useMetricsQuery";
+import { Page } from "../../layout/pages/Page";
 import {
   Button,
   Checkbox,
@@ -9,9 +10,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Typography,
 } from "@mui/material";
-import { PageSection } from "../../layout/pages/PageSection";
 import { useMoveMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useMoveMeasurementMutation";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
@@ -36,8 +35,7 @@ export const ScrapsMovePage: React.FC = () => {
   const metrics = useMetricsQuery("", [MetricType.Scraps]);
 
   return (
-    <PageSection>
-      <Typography>Move scrap to another metric...</Typography>
+    <Page subTitle="Move scrap to..." actions={[]}>
       {metrics?.length ? (
         <List dense={true}>
           {metrics
@@ -78,6 +76,6 @@ export const ScrapsMovePage: React.FC = () => {
           Move
         </Button>
       ) : null}
-    </PageSection>
+    </Page>
   );
 };
