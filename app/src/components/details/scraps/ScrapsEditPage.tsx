@@ -25,6 +25,7 @@ export const ScrapsEditPage: React.FC = () => {
   return (
     <Page
       title={<MetricPageTitle metric={metric} />}
+      subTitle="Edit"
       documentTitle={`Edit ${metric.name}`}
       actions={[
         ...getCommonEditModeActions(navigateToViewPage, save, disableSave),
