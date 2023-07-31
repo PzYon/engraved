@@ -49,6 +49,7 @@ export const MetricEditPage: React.FC = () => {
   return (
     <Page
       title={<MetricPageTitle metric={metric} />}
+      subTitle="Edit"
       documentTitle={`Edit ${metric.name}`}
       actions={getCommonEditModeActions(navigateToViewPage, save)}
     >

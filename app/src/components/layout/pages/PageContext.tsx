@@ -11,8 +11,10 @@ import { MetricType } from "../../../serverApi/MetricType";
 export interface IPageContext {
   documentTitle: string;
   setDocumentTitle: (documentTitle: string) => void;
-  pageTitle: React.ReactNode;
-  setPageTitle: (pageTitle: React.ReactNode) => void;
+  title: React.ReactNode;
+  setTitle: (title: React.ReactNode) => void;
+  subTitle: React.ReactNode;
+  setSubTitle: (subTitle: React.ReactNode) => void;
   pageActions: IIconButtonAction[];
   setPageActions: (actions: IIconButtonAction[]) => void;
   // consider moving below props to a SearchContext
@@ -29,8 +31,10 @@ export interface IPageContext {
 const PageContext = createContext<IPageContext>({
   documentTitle: null,
   setDocumentTitle: null,
-  pageTitle: null,
-  setPageTitle: null,
+  title: null,
+  setTitle: null,
+  subTitle: null,
+  setSubTitle: null,
   pageActions: null,
   setPageActions: null,
   enableFilters: null,
@@ -50,13 +54,14 @@ export const usePageContext = () => {
 export const PageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
+  const [title, setTitle] = useState<React.ReactNode>(undefined);
+  const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
+  const [pageActions, setPageActions] = useState<IIconButtonAction[]>([]);
   const [enableFilters, setEnableFilters] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
   const [metricTypes, setMetricTypes] = useState<MetricType[]>([]);
-  const [pageTitle, setPageTitle] = useState<React.ReactNode>(undefined);
-  const [pageActions, setPageActions] = useState<IIconButtonAction[]>([]);
 
   useEffect(() => {
     document.title = documentTitle
@@ -68,8 +73,10 @@ export const PageContextProvider: React.FC<{
     return {
       documentTitle,
       setDocumentTitle,
-      pageTitle,
-      setPageTitle,
+      title,
+      setTitle,
+      subTitle,
+      setSubTitle,
       pageActions,
       setPageActions,
       enableFilters,
@@ -82,7 +89,8 @@ export const PageContextProvider: React.FC<{
       setMetricTypes,
     };
   }, [
-    pageTitle,
+    title,
+    subTitle,
     documentTitle,
     pageActions,
     searchText,
