@@ -1,19 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
+import { ListItemRefs } from "./ScrapList";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
   listItem: ISCrapListItem;
+  listItemsRefs: ListItemRefs;
   onChange: (listItem: ISCrapListItem) => void;
   onEnter: () => void;
   onDelete: () => void;
-}> = ({ isEditMode, listItem, onChange, onEnter, onDelete }) => {
+  moveFocusDown: () => void;
+  moveFocusUp: () => void;
+}> = ({
+  isEditMode,
+  listItem,
+  listItemsRefs,
+  onChange,
+  onEnter,
+  onDelete,
+  moveFocusDown,
+  moveFocusUp,
+}) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
+  const ref: React.MutableRefObject<HTMLTextAreaElement> = useRef(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      debugger;
+      listItemsRefs.addRef(ref);
+    }
+  }, [ref]);
 
   return (
     <ListItem>
@@ -26,6 +47,7 @@ export const ScrapListItem: React.FC<{
         }}
       />
       <AutogrowTextField
+        forwardInputRef={ref}
         fieldType="content"
         disabled={!isEditMode}
         value={label}
@@ -57,6 +79,14 @@ export const ScrapListItem: React.FC<{
 
   function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
+      case "ArrowUp":
+        moveFocusUp();
+        break;
+
+      case "ArrowDown":
+        moveFocusDown();
+        break;
+
       case "Enter":
         e.preventDefault();
         break;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
@@ -9,6 +9,27 @@ import {
   SyncAltOutlined,
 } from "@mui/icons-material";
 import { Actions } from "../../../common/Actions";
+
+// todo:
+// - enter (new line): only works once
+// - delete: focus does not work correctly
+// - cycle when moving up/down (start from beginning)
+
+export class ListItemRefs {
+  private refs: React.MutableRefObject<HTMLTextAreaElement>[] = [];
+
+  addRef(ref: React.MutableRefObject<HTMLTextAreaElement>) {
+    this.refs.push(ref);
+  }
+
+  get(index: number): React.MutableRefObject<HTMLTextAreaElement> {
+    return this.refs[index];
+  }
+
+  remove(ref: React.MutableRefObject<HTMLTextAreaElement>) {
+    this.refs = this.refs.filter((r) => r === ref);
+  }
+}
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
@@ -21,6 +42,10 @@ export const ScrapList: React.FC<{
   const [items, setItems] = useState<ISCrapListItem[]>(
     value ? JSON.parse(value) : []
   );
+
+  const listItemsRefs = useMemo(() => {
+    return new ListItemRefs();
+  }, []);
 
   return (
     <Host
@@ -39,6 +64,13 @@ export const ScrapList: React.FC<{
               key={index + "_" + item.label + "_" + item.isCompleted}
               isEditMode={isEditMode}
               listItem={item}
+              listItemsRefs={listItemsRefs}
+              moveFocusDown={() => {
+                listItemsRefs.get(index + 1).current.focus();
+              }}
+              moveFocusUp={() => {
+                listItemsRefs.get(index - 1).current.focus();
+              }}
               onChange={(updatedItem) => {
                 const updatedItems = [...items];
 
@@ -54,6 +86,9 @@ export const ScrapList: React.FC<{
                 const updatedItems = [...items];
                 updatedItems.splice(index, 1);
                 updateItems(updatedItems);
+
+                listItemsRefs.remove(listItemsRefs.get(i));
+                listItemsRefs.get(index).current.focus();
               }}
               onEnter={() => {
                 if (!items[index].label) {
