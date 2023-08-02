@@ -6,6 +6,7 @@ import {
   AddOutlined,
   MoveDownOutlined,
   RemoveCircleOutline,
+  SyncAltOutlined,
 } from "@mui/icons-material";
 import { Actions } from "../../../common/Actions";
 
@@ -35,7 +36,7 @@ export const ScrapList: React.FC<{
         ) : (
           items.map((item, index) => (
             <ScrapListItem
-              key={index + "_" + item.label}
+              key={index + "_" + item.label + "_" + item.isCompleted}
               isEditMode={isEditMode}
               listItem={item}
               onChange={(updatedItem) => {
@@ -90,6 +91,29 @@ export const ScrapList: React.FC<{
                 },
               },
               {
+                key: "toggle-checked",
+                label: "Toggle checked",
+                icon: <SyncAltOutlined fontSize="small" />,
+                onClick: () => {
+                  const isMajorityCompleted =
+                    items.filter((i) => i.isCompleted).length >
+                    items.length / 2;
+
+                  const areAllSameState =
+                    items.filter((i) => i.isCompleted === isMajorityCompleted)
+                      .length === items.length;
+
+                  updateItems(
+                    items.map((i) => {
+                      i.isCompleted = areAllSameState
+                        ? !isMajorityCompleted
+                        : isMajorityCompleted;
+                      return i;
+                    })
+                  );
+                },
+              },
+              {
                 key: "delete-checked",
                 label: "Delete checked",
                 icon: <RemoveCircleOutline fontSize="small" />,
@@ -114,6 +138,7 @@ export const ScrapList: React.FC<{
     setItems([...items, { label: "", isCompleted: false }]);
   }
 };
+
 const Host = styled("div")`
   border-radius: 4px;
 `;
