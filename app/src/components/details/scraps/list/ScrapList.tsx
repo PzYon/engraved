@@ -50,7 +50,16 @@ export const ScrapList: React.FC<{
 
                 updateItems(updatedItems);
               }}
+              onDelete={() => {
+                const updatedItems = [...items];
+                updatedItems.splice(index, 1);
+                updateItems(updatedItems);
+              }}
               onEnter={() => {
+                if (!items[index].label) {
+                  return;
+                }
+
                 const updatedItems = [...items];
 
                 updatedItems.splice(index + 1, 0, {

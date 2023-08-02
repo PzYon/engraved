@@ -10,7 +10,8 @@ export const ScrapListItem: React.FC<{
   listItem: ISCrapListItem;
   onChange: (listItem: ISCrapListItem) => void;
   onEnter: () => void;
-}> = ({ isEditMode, listItem, onChange, onEnter }) => {
+  onDelete: () => void;
+}> = ({ isEditMode, listItem, onChange, onEnter, onDelete }) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
 
@@ -30,6 +31,7 @@ export const ScrapListItem: React.FC<{
         value={label}
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
+        onKeyDown={keyDown}
         onBlur={() => onChange({ label, isCompleted: isCompleted })}
         sx={{
           flexGrow: 1,
@@ -53,10 +55,30 @@ export const ScrapListItem: React.FC<{
     </ListItem>
   );
 
+  function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    switch (e.key) {
+      case "Enter":
+        e.preventDefault();
+        break;
+
+      case "Delete":
+        const target = e.target as HTMLTextAreaElement;
+        if (target.selectionStart !== target.selectionEnd) {
+          return;
+        }
+
+        onDelete();
+
+        break;
+    }
+  }
+
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
       case "Enter":
         onEnter();
+        e.preventDefault();
+
         break;
     }
   }
