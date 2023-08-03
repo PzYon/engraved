@@ -20,7 +20,7 @@
     "@vitejs/plugin-react": "4.0.4",
     "@uiw/codemirror-extensions-langs": "4.21.9",
     "@uiw/react-codemirror": "4.21.9",
-    "chart.js": "4.3.2",
+    "chart.js": "4.3.3",
     "chartjs-adapter-date-fns": "3.0.0",
     "chartjs-plugin-annotation": "3.0.1",
     "date-fns": "2.30.0",
