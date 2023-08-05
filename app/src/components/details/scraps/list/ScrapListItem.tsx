@@ -4,7 +4,6 @@ import { Checkbox, styled } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
-
 import { ListItemWrapper } from "./ListItemWrapper";
 
 export const ScrapListItem: React.FC<{

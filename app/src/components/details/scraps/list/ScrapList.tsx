@@ -10,10 +10,11 @@ import {
 } from "@mui/icons-material";
 import { Actions } from "../../../common/Actions";
 import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
-import { ListItemWrapper } from "./ListItemWrapper"; // todo:
+import { ListItemWrapper } from "./ListItemWrapper";
 
 // todo:
 // - cycle when moving up/down (start from beginning)
+// - deleting a rw with "DEL" removes first char of new line
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
@@ -61,14 +62,12 @@ export const ScrapList: React.FC<{
                 listItemsCollection.giveFocus(index - 1);
               }}
               onChange={(updatedItem) => {
-                console.log("on change:", index, updatedItem);
                 listItemsCollection.update(index, updatedItem);
               }}
               onDelete={() => {
                 listItemsCollection.remove(index);
               }}
               onEnter={() => {
-                console.log("on enter:", index, items[index]);
                 if (!items[index].label) {
                   return;
                 }

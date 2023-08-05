@@ -10,7 +10,7 @@ export class ListItemWrapperCollection {
 
   remove(index: number) {
     this.items = this.items.filter((_, i) => i !== index);
-    this.giveFocus(index);
+    this.giveFocus(Math.min(index, this.items.length - 1));
     this.fireOnChange();
   }
 
