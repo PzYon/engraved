@@ -8,63 +8,12 @@ import {
   RemoveCircleOutline,
   SyncAltOutlined,
 } from "@mui/icons-material";
-import { Actions } from "../../../common/Actions"; // todo:
+import { Actions } from "../../../common/Actions";
+import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
+import { ListItemWrapper } from "./ListItemWrapper"; // todo:
 
 // todo:
-// - enter (new line): only works once
-// - delete: focus does not work correctly
 // - cycle when moving up/down (start from beginning)
-
-export class ListItemWrapper {
-  constructor(private item: ISCrapListItem) {}
-
-  private ref: React.MutableRefObject<HTMLInputElement>;
-
-  readonly reactKey = "react-key-" + Math.random().toString();
-
-  get raw(): ISCrapListItem {
-    return this.item;
-  }
-
-  setRef(ref: React.MutableRefObject<HTMLInputElement>) {
-    this.ref = ref;
-  }
-
-  giveFocus() {
-    this.ref.current.focus();
-  }
-}
-
-export class ListItemWrapperCollection {
-  constructor(
-    public items: ListItemWrapper[],
-    private onChange: (value: ISCrapListItem[]) => void
-  ) {}
-
-  remove(index: number) {
-    this.items = this.items.filter((_, i) => i !== index);
-    this.giveFocus(index);
-    this.fireOnChange();
-  }
-
-  add(index: number, ...listItems: ListItemWrapper[]) {
-    this.items.splice(index, 0, ...listItems);
-    this.fireOnChange();
-  }
-
-  update(index: number, updatedItem: ISCrapListItem) {
-    this.items[index] = new ListItemWrapper(updatedItem);
-    this.fireOnChange();
-  }
-
-  giveFocus(index: number) {
-    this.items[index].giveFocus();
-  }
-
-  private fireOnChange() {
-    this.onChange(this.items.map((i) => i.raw));
-  }
-}
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
@@ -114,16 +63,6 @@ export const ScrapList: React.FC<{
               onChange={(updatedItem) => {
                 console.log("on change:", index, updatedItem);
                 listItemsCollection.update(index, updatedItem);
-
-                /*const updatedItems = [...items];
-
-                if (!updatedItem) {
-                  updatedItems.splice(index, 1);
-                } else {
-                  updatedItems[index] = updatedItem;
-                }
-
-                updateItems(updatedItems);*/
               }}
               onDelete={() => {
                 listItemsCollection.remove(index);

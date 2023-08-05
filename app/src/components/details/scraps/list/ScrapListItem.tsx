@@ -4,7 +4,8 @@ import { Checkbox, styled } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
-import { ListItemWrapper } from "./ScrapList";
+
+import { ListItemWrapper } from "./ListItemWrapper";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
@@ -106,7 +107,10 @@ export const ScrapListItem: React.FC<{
       case "Enter":
         onEnter();
         e.preventDefault();
+        break;
 
+      default:
+        onChange({ label, isCompleted });
         break;
     }
   }
