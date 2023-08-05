@@ -82,6 +82,20 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
+  addNewLine(index: number) {
+    if (!this.items[index].raw.label) {
+      return;
+    }
+
+    this.add(
+      index + 1,
+      new ListItemWrapper({
+        label: "",
+        isCompleted: false,
+      })
+    );
+  }
+
   toggleChecked() {
     const isMajorityCompleted =
       this.items.filter((i) => i.raw.isCompleted).length >

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
@@ -53,37 +53,15 @@ export const ScrapList: React.FC<{
               isEditMode={isEditMode}
               listItem={item.raw}
               listItemWrapper={item}
-              moveFocusUp={() => {
-                listItemsCollection.moveFocusUp(index);
-              }}
-              moveFocusDown={() => {
-                listItemsCollection.moveFocusDown(index);
-              }}
-              moveItemUp={() => {
-                listItemsCollection.moveItemUp(index);
-              }}
-              moveItemDown={() => {
-                listItemsCollection.moveItemDown(index);
-              }}
-              onChange={(updatedItem) => {
-                listItemsCollection.update(index, updatedItem);
-              }}
-              onDelete={() => {
-                listItemsCollection.remove(index);
-              }}
-              onEnter={() => {
-                if (!items[index].label) {
-                  return;
-                }
-
-                listItemsCollection.add(
-                  index + 1,
-                  new ListItemWrapper({
-                    label: "",
-                    isCompleted: false,
-                  })
-                );
-              }}
+              moveFocusUp={() => listItemsCollection.moveFocusUp(index)}
+              moveFocusDown={() => listItemsCollection.moveFocusDown(index)}
+              moveItemUp={() => listItemsCollection.moveItemUp(index)}
+              moveItemDown={() => listItemsCollection.moveItemDown(index)}
+              onChange={(updatedItem) =>
+                listItemsCollection.update(index, updatedItem)
+              }
+              onDelete={() => listItemsCollection.remove(index)}
+              onEnter={() => listItemsCollection.addNewLine(index)}
             />
           ))
         )}

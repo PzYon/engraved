@@ -30,7 +30,6 @@ export const ScrapListItem: React.FC<{
   moveItemDown,
 }) => {
   const [label, setLabel] = useState(listItem.label);
-  const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
   const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
 
   useEffect(() => listItemWrapper.setRef(ref), []);
@@ -38,10 +37,9 @@ export const ScrapListItem: React.FC<{
   return (
     <ListItem>
       <StyledCheckbox
-        checked={isCompleted}
+        checked={listItem.isCompleted}
         disabled={!isEditMode}
         onChange={(_, checked) => {
-          setIsCompleted(checked);
           onChange({ label, isCompleted: checked });
         }}
       />
@@ -53,12 +51,12 @@ export const ScrapListItem: React.FC<{
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
         onKeyDown={keyDown}
-        onBlur={() => onChange({ label, isCompleted: isCompleted })}
+        onBlur={() => onChange({ label, isCompleted: listItem.isCompleted })}
         sx={{
           flexGrow: 1,
           marginTop: "6px",
           textarea: {
-            textDecoration: isCompleted ? "line-through" : "none",
+            textDecoration: listItem.isCompleted ? "line-through" : "none",
           },
         }}
         autoFocus={!listItem.label}
@@ -121,8 +119,14 @@ export const ScrapListItem: React.FC<{
         e.preventDefault();
         break;
 
+      case " ":
+        if (e.ctrlKey) {
+          onChange({ label, isCompleted: !listItem.isCompleted });
+        }
+        break;
+
       default:
-        onChange({ label, isCompleted });
+        onChange({ label, isCompleted: listItem.isCompleted });
         break;
     }
   }
