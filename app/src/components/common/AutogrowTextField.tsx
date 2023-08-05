@@ -13,7 +13,7 @@ export const AutogrowTextField: React.FC<
 
   // forget fieldType
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { fieldType: _, ...realProps } = props;
+  const { fieldType: _, forwardInputRef: __, ...realProps } = props;
 
   return (
     <TF

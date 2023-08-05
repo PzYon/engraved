@@ -8,26 +8,61 @@ import {
   RemoveCircleOutline,
   SyncAltOutlined,
 } from "@mui/icons-material";
-import { Actions } from "../../../common/Actions";
+import { Actions } from "../../../common/Actions"; // todo:
 
 // todo:
 // - enter (new line): only works once
 // - delete: focus does not work correctly
 // - cycle when moving up/down (start from beginning)
 
-export class ListItemRefs {
-  private refs: React.MutableRefObject<HTMLTextAreaElement>[] = [];
+export class ListItemWrapper {
+  constructor(private item: ISCrapListItem) {}
 
-  addRef(ref: React.MutableRefObject<HTMLTextAreaElement>) {
-    this.refs.push(ref);
+  private ref: React.MutableRefObject<HTMLInputElement>;
+
+  readonly reactKey = "react-key-" + Math.random().toString();
+
+  get raw(): ISCrapListItem {
+    return this.item;
   }
 
-  get(index: number): React.MutableRefObject<HTMLTextAreaElement> {
-    return this.refs[index];
+  setRef(ref: React.MutableRefObject<HTMLInputElement>) {
+    this.ref = ref;
   }
 
-  remove(ref: React.MutableRefObject<HTMLTextAreaElement>) {
-    this.refs = this.refs.filter((r) => r === ref);
+  giveFocus() {
+    this.ref.current.focus();
+  }
+}
+
+export class ListItemWrapperCollection {
+  constructor(
+    public items: ListItemWrapper[],
+    private onChange: (value: ISCrapListItem[]) => void
+  ) {}
+
+  remove(index: number) {
+    this.items = this.items.filter((_, i) => i !== index);
+    this.giveFocus(index);
+    this.fireOnChange();
+  }
+
+  add(index: number, ...listItems: ListItemWrapper[]) {
+    this.items.splice(index, 0, ...listItems);
+    this.fireOnChange();
+  }
+
+  update(index: number, updatedItem: ISCrapListItem) {
+    this.items[index] = new ListItemWrapper(updatedItem);
+    this.fireOnChange();
+  }
+
+  giveFocus(index: number) {
+    this.items[index].giveFocus();
+  }
+
+  private fireOnChange() {
+    this.onChange(this.items.map((i) => i.raw));
   }
 }
 
@@ -43,9 +78,14 @@ export const ScrapList: React.FC<{
     value ? JSON.parse(value) : []
   );
 
-  const listItemsRefs = useMemo(() => {
-    return new ListItemRefs();
-  }, []);
+  const listItemsCollection = useMemo(
+    () =>
+      new ListItemWrapperCollection(
+        items.map((i) => new ListItemWrapper(i)),
+        setItems
+      ),
+    []
+  );
 
   return (
     <Host
@@ -59,20 +99,23 @@ export const ScrapList: React.FC<{
         {!isEditMode && !items?.length ? (
           <Typography sx={{ opacity: 0.4 }}>No items yet.</Typography>
         ) : (
-          items.map((item, index) => (
+          listItemsCollection.items.map((item, index) => (
             <ScrapListItem
-              key={index + "_" + item.label + "_" + item.isCompleted}
+              key={item.reactKey}
               isEditMode={isEditMode}
-              listItem={item}
-              listItemsRefs={listItemsRefs}
+              listItem={item.raw}
+              listItemWrapper={item}
               moveFocusDown={() => {
-                listItemsRefs.get(index + 1).current.focus();
+                listItemsCollection.giveFocus(index + 1);
               }}
               moveFocusUp={() => {
-                listItemsRefs.get(index - 1).current.focus();
+                listItemsCollection.giveFocus(index - 1);
               }}
               onChange={(updatedItem) => {
-                const updatedItems = [...items];
+                console.log("on change:", index, updatedItem);
+                listItemsCollection.update(index, updatedItem);
+
+                /*const updatedItems = [...items];
 
                 if (!updatedItem) {
                   updatedItems.splice(index, 1);
@@ -80,29 +123,24 @@ export const ScrapList: React.FC<{
                   updatedItems[index] = updatedItem;
                 }
 
-                updateItems(updatedItems);
+                updateItems(updatedItems);*/
               }}
               onDelete={() => {
-                const updatedItems = [...items];
-                updatedItems.splice(index, 1);
-                updateItems(updatedItems);
-
-                listItemsRefs.remove(listItemsRefs.get(i));
-                listItemsRefs.get(index).current.focus();
+                listItemsCollection.remove(index);
               }}
               onEnter={() => {
+                console.log("on enter:", index, items[index]);
                 if (!items[index].label) {
                   return;
                 }
 
-                const updatedItems = [...items];
-
-                updatedItems.splice(index + 1, 0, {
-                  label: "",
-                  isCompleted: false,
-                });
-
-                updateItems(updatedItems);
+                listItemsCollection.add(
+                  index + 1,
+                  new ListItemWrapper({
+                    label: "",
+                    isCompleted: false,
+                  })
+                );
               }}
             />
           ))

@@ -4,12 +4,12 @@ import { Checkbox, styled } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
-import { ListItemRefs } from "./ScrapList";
+import { ListItemWrapper } from "./ScrapList";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
   listItem: ISCrapListItem;
-  listItemsRefs: ListItemRefs;
+  listItemWrapper: ListItemWrapper;
   onChange: (listItem: ISCrapListItem) => void;
   onEnter: () => void;
   onDelete: () => void;
@@ -18,7 +18,7 @@ export const ScrapListItem: React.FC<{
 }> = ({
   isEditMode,
   listItem,
-  listItemsRefs,
+  listItemWrapper,
   onChange,
   onEnter,
   onDelete,
@@ -27,14 +27,9 @@ export const ScrapListItem: React.FC<{
 }) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
-  const ref: React.MutableRefObject<HTMLTextAreaElement> = useRef(null);
+  const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
 
-  useEffect(() => {
-    if (ref.current) {
-      debugger;
-      listItemsRefs.addRef(ref);
-    }
-  }, [ref]);
+  useEffect(() => listItemWrapper.setRef(ref), []);
 
   return (
     <ListItem>
@@ -51,7 +46,10 @@ export const ScrapListItem: React.FC<{
         fieldType="content"
         disabled={!isEditMode}
         value={label}
-        onChange={(event) => setLabel(event.target.value)}
+        onChange={(event) => {
+          console.log("onChange label: " + event.target.value);
+          setLabel(event.target.value);
+        }}
         onKeyUp={keyUp}
         onKeyDown={keyDown}
         onBlur={() => onChange({ label, isCompleted: isCompleted })}
