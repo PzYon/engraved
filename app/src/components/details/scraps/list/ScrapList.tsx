@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
@@ -12,10 +12,6 @@ import { Actions } from "../../../common/Actions";
 import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
 import { ListItemWrapper } from "./ListItemWrapper";
 
-// todo:
-// - cycle when moving up/down (start from beginning)
-// - deleting a rw with "DEL" removes first char of new line
-
 export const ScrapList: React.FC<{
   isEditMode: boolean;
   value: string;
@@ -28,14 +24,16 @@ export const ScrapList: React.FC<{
     value ? JSON.parse(value) : []
   );
 
-  const listItemsCollection = useMemo(
-    () =>
-      new ListItemWrapperCollection(
-        items.map((i) => new ListItemWrapper(i)),
-        setItems
-      ),
-    []
-  );
+  const listItemsCollection = useMemo(() => {
+    console.log("Creating listItemsCollection - Should only happen once!!");
+    return new ListItemWrapperCollection(
+      items.map((i) => new ListItemWrapper(i)),
+      (changedItems) => {
+        setItems(changedItems);
+        onChange(JSON.stringify(changedItems));
+      }
+    );
+  }, []);
 
   return (
     <Host
@@ -55,17 +53,17 @@ export const ScrapList: React.FC<{
               isEditMode={isEditMode}
               listItem={item.raw}
               listItemWrapper={item}
-              moveFocusDown={() => {
-                listItemsCollection.giveFocus(index + 1);
-              }}
               moveFocusUp={() => {
-                listItemsCollection.giveFocus(index - 1);
+                listItemsCollection.moveFocusUp(index);
+              }}
+              moveFocusDown={() => {
+                listItemsCollection.moveFocusDown(index);
               }}
               moveItemUp={() => {
-                listItemsCollection.moveUp(index);
+                listItemsCollection.moveItemUp(index);
               }}
               moveItemDown={() => {
-                listItemsCollection.moveDown(index);
+                listItemsCollection.moveItemDown(index);
               }}
               onChange={(updatedItem) => {
                 listItemsCollection.update(index, updatedItem);
@@ -104,48 +102,19 @@ export const ScrapList: React.FC<{
                 key: "move-checked-to-bottom",
                 label: "Move checked to bottom",
                 icon: <MoveDownOutlined fontSize="small" />,
-                onClick: () => {
-                  updateItems(
-                    items.sort((a, b) => {
-                      return a.isCompleted == b.isCompleted
-                        ? 0
-                        : a.isCompleted
-                        ? 1
-                        : -1;
-                    })
-                  );
-                },
+                onClick: () => listItemsCollection.moveCheckedToBottom(),
               },
               {
                 key: "toggle-checked",
                 label: "Toggle checked",
                 icon: <SyncAltOutlined fontSize="small" />,
-                onClick: () => {
-                  const isMajorityCompleted =
-                    items.filter((i) => i.isCompleted).length >
-                    items.length / 2;
-
-                  const areAllSameState =
-                    items.filter((i) => i.isCompleted === isMajorityCompleted)
-                      .length === items.length;
-
-                  updateItems(
-                    items.map((i) => {
-                      i.isCompleted = areAllSameState
-                        ? !isMajorityCompleted
-                        : isMajorityCompleted;
-                      return i;
-                    })
-                  );
-                },
+                onClick: () => listItemsCollection.toggleChecked(),
               },
               {
                 key: "delete-checked",
                 label: "Delete checked",
                 icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => {
-                  updateItems(items.filter((i) => !i.isCompleted));
-                },
+                onClick: () => listItemsCollection.deleteChecked(),
               },
             ]}
           />
@@ -154,14 +123,14 @@ export const ScrapList: React.FC<{
     </Host>
   );
 
-  function updateItems(updatedItems: ISCrapListItem[]) {
-    setItems(updatedItems);
-
-    onChange(JSON.stringify(updatedItems));
-  }
-
   function addNew() {
-    setItems([...items, { label: "", isCompleted: false }]);
+    listItemsCollection.add(
+      listItemsCollection.items.length,
+      new ListItemWrapper({
+        label: "",
+        isCompleted: false,
+      })
+    );
   }
 };
 

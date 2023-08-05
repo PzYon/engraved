@@ -50,10 +50,7 @@ export const ScrapListItem: React.FC<{
         fieldType="content"
         disabled={!isEditMode}
         value={label}
-        onChange={(event) => {
-          console.log("onChange label: " + event.target.value);
-          setLabel(event.target.value);
-        }}
+        onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
         onKeyDown={keyDown}
         onBlur={() => onChange({ label, isCompleted: isCompleted })}

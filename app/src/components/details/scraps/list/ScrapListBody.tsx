@@ -3,7 +3,7 @@ import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 import { ScrapBody } from "../ScrapBody";
 import { ScrapList } from "./ScrapList";
 
-export const ScripListBody: React.FC<{
+export const ScrapListBody: React.FC<{
   scrap: IScrapMeasurement;
   hideDate: boolean;
   hideActions?: boolean;
