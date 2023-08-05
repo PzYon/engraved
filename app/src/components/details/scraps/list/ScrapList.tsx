@@ -61,6 +61,12 @@ export const ScrapList: React.FC<{
               moveFocusUp={() => {
                 listItemsCollection.giveFocus(index - 1);
               }}
+              moveItemUp={() => {
+                listItemsCollection.moveUp(index);
+              }}
+              moveItemDown={() => {
+                listItemsCollection.moveDown(index);
+              }}
               onChange={(updatedItem) => {
                 listItemsCollection.update(index, updatedItem);
               }}

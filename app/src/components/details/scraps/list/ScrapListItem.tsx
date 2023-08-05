@@ -15,6 +15,8 @@ export const ScrapListItem: React.FC<{
   onDelete: () => void;
   moveFocusDown: () => void;
   moveFocusUp: () => void;
+  moveItemUp: () => void;
+  moveItemDown: () => void;
 }> = ({
   isEditMode,
   listItem,
@@ -24,6 +26,8 @@ export const ScrapListItem: React.FC<{
   onDelete,
   moveFocusDown,
   moveFocusUp,
+  moveItemUp,
+  moveItemDown,
 }) => {
   const [label, setLabel] = useState(listItem.label);
   const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
@@ -78,26 +82,38 @@ export const ScrapListItem: React.FC<{
   function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
       case "ArrowUp":
-        moveFocusUp();
+        if (e.altKey && e.ctrlKey) {
+          moveItemUp();
+        } else {
+          moveFocusUp();
+        }
+
         break;
 
       case "ArrowDown":
-        moveFocusDown();
+        if (e.altKey && e.ctrlKey) {
+          moveItemDown();
+        } else {
+          moveFocusDown();
+        }
         break;
 
       case "Enter":
         e.preventDefault();
         break;
 
-      case "Delete":
+      case "Backspace": {
         const target = e.target as HTMLTextAreaElement;
         if (target.selectionStart !== target.selectionEnd) {
           return;
         }
 
-        onDelete();
+        if (e.altKey && e.ctrlKey) {
+          onDelete();
+        }
 
         break;
+      }
     }
   }
 

@@ -28,6 +28,22 @@ export class ListItemWrapperCollection {
     this.items[index].giveFocus();
   }
 
+  moveUp(index: number) {
+    const lower = this.items[index];
+    const upper = this.items[index - 1];
+
+    this.items[index - 1] = lower;
+    this.items[index] = upper;
+  }
+
+  moveDown(index: number) {
+    const upper = this.items[index];
+    const lower = this.items[index + 1];
+
+    this.items[index + 1] = upper;
+    this.items[index] = lower;
+  }
+
   private fireOnChange() {
     this.onChange(this.items.map((i) => i.raw));
   }
