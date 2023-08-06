@@ -7,7 +7,7 @@ import {
 } from "../../../serverApi/IScrapMeasurement";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
-import { ScripListBody } from "./list/ScrapListBody";
+import { ScrapListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
 
@@ -61,7 +61,7 @@ export const Scrap: React.FC<{
         sx={{ width: "100%" }}
       />
       {scrap.scrapType === ScrapType.List ? (
-        <ScripListBody
+        <ScrapListBody
           scrap={scrap}
           hideDate={hideDate}
           hideActions={hideActions}
