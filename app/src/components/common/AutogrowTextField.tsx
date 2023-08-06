@@ -11,7 +11,7 @@ export const AutogrowTextField: React.FC<
   const TF =
     props.fieldType === "title" ? StyledTitleTextField : StyledTextField;
 
-  // forget fieldType
+  // forget fieldType and forwardInputRef
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { fieldType: _, forwardInputRef: __, ...realProps } = props;
 
