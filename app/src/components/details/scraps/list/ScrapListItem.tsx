@@ -8,7 +8,6 @@ import { ListItemWrapper } from "./ListItemWrapper";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
-  listItem: ISCrapListItem;
   listItemWrapper: ListItemWrapper;
   onChange: (listItem: ISCrapListItem) => void;
   onEnter: () => void;
@@ -19,7 +18,6 @@ export const ScrapListItem: React.FC<{
   moveItemDown: () => void;
 }> = ({
   isEditMode,
-  listItem,
   listItemWrapper,
   onChange,
   onEnter,
@@ -29,6 +27,8 @@ export const ScrapListItem: React.FC<{
   moveItemUp,
   moveItemDown,
 }) => {
+  const listItem = listItemWrapper.raw;
+
   const [label, setLabel] = useState(listItem.label);
   const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
 

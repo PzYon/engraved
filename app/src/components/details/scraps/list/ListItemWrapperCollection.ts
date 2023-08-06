@@ -105,16 +105,12 @@ export class ListItemWrapperCollection {
       this.items.filter((i) => i.raw.isCompleted === isMajorityCompleted)
         .length === this.items.length;
 
-    console.log("before", this.items);
-
     this.items = this.items.map((i) => {
       i.raw.isCompleted = areAllSameState
         ? !isMajorityCompleted
         : isMajorityCompleted;
       return i;
     });
-
-    console.log("after", this.items);
 
     this.fireOnChange();
   }

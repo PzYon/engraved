@@ -25,7 +25,6 @@ export const ScrapList: React.FC<{
   );
 
   const listItemsCollection = useMemo(() => {
-    console.log("Creating listItemsCollection - Should only happen once!!");
     return new ListItemWrapperCollection(
       items.map((i) => new ListItemWrapper(i)),
       (changedItems) => {
@@ -51,7 +50,6 @@ export const ScrapList: React.FC<{
             <ScrapListItem
               key={item.reactKey}
               isEditMode={isEditMode}
-              listItem={item.raw}
               listItemWrapper={item}
               moveFocusUp={() => listItemsCollection.moveFocusUp(index)}
               moveFocusDown={() => listItemsCollection.moveFocusDown(index)}

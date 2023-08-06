@@ -5,7 +5,7 @@ import { styled, TextField } from "@mui/material";
 export const AutogrowTextField: React.FC<
   TextFieldProps & {
     fieldType: "title" | "content";
-    forwardInputRef: React.ForwardedRef<HTMLInputElement>;
+    forwardInputRef?: React.ForwardedRef<HTMLInputElement>;
   }
 > = (props) => {
   const TF =
