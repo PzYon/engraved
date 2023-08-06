@@ -55,7 +55,7 @@ export const Bootstrapper: React.FC = () => {
           <Typography
             variant={"h1"}
             sx={{
-              color: "common.white",
+              color: "common.black",
               fontSize: "90px",
               pb: 2,
               mb: 4,
@@ -88,12 +88,17 @@ const Host = styled("div")<{ isNotVisible: boolean }>`
   width: 100%;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(
-    146deg,
-    ${(p) => p.theme.palette.text.primary} 0%,
-    ${(p) => p.theme.palette.primary.main} 100%
-  );
+
   visibility: ${(p) => (p.isNotVisible ? "hidden" : "visible")};
+
+  // https://www.eggradients.com/gradient/marley
+  background-color: #118ab2;
+  background-image: linear-gradient(
+    319deg,
+    #118ab2 0%,
+    #06d6a0 37%,
+    #ffd166 100%
+  );
 `;
 
 const WelcomeContainer = styled("div")`
