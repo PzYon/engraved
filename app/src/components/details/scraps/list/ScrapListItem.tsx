@@ -68,7 +68,7 @@ export const ScrapListItem: React.FC<{
           key: "remove",
           label: "Delete",
           icon: <RemoveCircleOutline fontSize="small" />,
-          onClick: () => onChange(null),
+          onClick: () => onDelete(),
         }}
       />
     </ListItem>
@@ -76,26 +76,28 @@ export const ScrapListItem: React.FC<{
 
   function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
-      case "ArrowUp":
+      case "ArrowUp": {
         if (e.altKey && e.ctrlKey) {
           moveItemUp();
         } else {
           moveFocusUp();
         }
-
         break;
+      }
 
-      case "ArrowDown":
+      case "ArrowDown": {
         if (e.altKey && e.ctrlKey) {
           moveItemDown();
         } else {
           moveFocusDown();
         }
         break;
+      }
 
-      case "Enter":
+      case "Enter": {
         e.preventDefault();
         break;
+      }
 
       case "Backspace": {
         const target = e.target as HTMLTextAreaElement;
@@ -114,20 +116,23 @@ export const ScrapListItem: React.FC<{
 
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
-      case "Enter":
+      case "Enter": {
         onEnter();
         e.preventDefault();
         break;
+      }
 
-      case " ":
+      case " ": {
         if (e.ctrlKey) {
           onChange({ label, isCompleted: !listItem.isCompleted });
         }
         break;
+      }
 
-      default:
+      default: {
         onChange({ label, isCompleted: listItem.isCompleted });
         break;
+      }
     }
   }
 };

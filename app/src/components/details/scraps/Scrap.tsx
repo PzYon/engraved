@@ -24,9 +24,7 @@ export const Scrap: React.FC<{
   const [isEditMode, setIsEditMode] = useState(!scrap.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
-  useEffect(() => {
-    preloadLazyCodeMirror();
-  }, []);
+  useEffect(() => preloadLazyCodeMirror(), []);
 
   useEffect(() => {
     if (!isEditMode && notes !== scrap.notes) {
