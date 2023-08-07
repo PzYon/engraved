@@ -1,5 +1,4 @@
 import { ISCrapListItem } from "./IScrapListItem";
-
 import { ListItemWrapper } from "./ListItemWrapper";
 
 export class ListItemWrapperCollection {
@@ -13,8 +12,15 @@ export class ListItemWrapperCollection {
   }
 
   remove(index: number) {
+    if (this.items.length <= 1) {
+      // we do not want to delete the last item
+      return;
+    }
+
     this.items = this.items.filter((_, i) => i !== index);
+
     this.items[Math.min(index, this.highestIndex)].giveFocus();
+
     this.fireOnChange();
   }
 
@@ -24,6 +30,14 @@ export class ListItemWrapperCollection {
   }
 
   update(index: number, updatedItem: ISCrapListItem) {
+    if (!this.items[index]) {
+      // we cannot update an item, that does not exist anymore.
+      // hack: we simply return here. the better solution would be to prevent
+      // update being called on an item that does not exist anymore, but this
+      // does not seam that easy at the moment...
+      return;
+    }
+
     this.items[index].raw = updatedItem;
     this.fireOnChange();
   }
