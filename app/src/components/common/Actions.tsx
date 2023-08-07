@@ -27,23 +27,24 @@ export const Actions: React.FC<{
     return null;
   }
 
-  if (!areHeaderActionsInViewPort && enableFloatingActions && isReady) {
-    return <FloatingHeaderActions actions={actions} />;
-  }
-
   return (
-    <ButtonContainer>
-      <div ref={domElementRef} />
-      {actions
-        .filter((a) => a !== undefined)
-        .map((action) =>
-          action ? (
-            <IconButtonWrapper key={action.key} action={action} />
-          ) : (
-            <SeparatorElement key={"separator"} />
-          )
-        )}
-    </ButtonContainer>
+    <>
+      {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
+        <FloatingHeaderActions actions={actions} />
+      ) : null}
+      <ButtonContainer>
+        <div ref={domElementRef} />
+        {actions
+          .filter((a) => a !== undefined)
+          .map((action) =>
+            action ? (
+              <IconButtonWrapper key={action.key} action={action} />
+            ) : (
+              <SeparatorElement key={"separator"} />
+            )
+          )}
+      </ButtonContainer>
+    </>
   );
 };
 
