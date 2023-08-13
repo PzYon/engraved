@@ -60,7 +60,7 @@ export const ScrapsViewPage: React.FC = () => {
 
       {scraps.length
         ? (scraps as IScrapMeasurement[]).map((s) => (
-            <PageSection key={s.id}>
+            <PageSection key={s.id + "_" + s.editedOn}>
               <Scrap scrap={s} />
             </PageSection>
           ))
