@@ -38,6 +38,7 @@ jobs:
           VITE_COMMIT_HASH: ${{github.sha}}
           VITE_VERSION: ${{github.run_number}}
           VITE_MERGE_DATE_TIME: ${{steps.current-time.outputs.time}}
+          VITE_APP_INSIGHTS_CONNECTING_STRING: ${{secrets.APP_INSIGHTS_CONNECTING_STRING}}
         run: |
           npm install
           npm run lint

@@ -11,4 +11,6 @@ export const envSettings = {
   version: import.meta.env.VITE_VERSION,
   mergeDateTime: import.meta.env.VITE_MERGE_DATE_TIME,
   isDev: import.meta.env.DEV,
+  appInsightsConnectionString: import.meta.env
+    .VITE_APP_INSIGHTS_CONNECTING_STRING,
 };
