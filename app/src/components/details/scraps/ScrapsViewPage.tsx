@@ -58,18 +58,20 @@ export const ScrapsViewPage: React.FC = () => {
         </PageSection>
       ) : null}
 
-      {scraps.length ? (
-        (scraps as IScrapMeasurement[]).map((s) => (
-          <PageSection key={s.id}>
-            <Scrap scrap={s} />
-          </PageSection>
-        ))
-      ) : (
+      {scraps.length
+        ? (scraps as IScrapMeasurement[]).map((s) => (
+            <PageSection key={s.id + "_" + s.editedOn}>
+              <Scrap scrap={s} />
+            </PageSection>
+          ))
+        : null}
+
+      {!scraps.length && !newScrap ? (
         <GenericEmptyPlaceholder
           icon={SelfImprovementOutlined}
           message={"Nothing here..."}
         />
-      )}
+      ) : null}
 
       <Routes>
         <Route

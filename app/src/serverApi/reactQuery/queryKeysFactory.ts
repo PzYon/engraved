@@ -49,6 +49,10 @@ export const queryKeysFactory = {
     return [metrics, metricId, "measurement", "delete", measurementId];
   },
 
+  moveMeasurement(measurementId: string, metricId: string) {
+    return [metrics, metricId, measurementId];
+  },
+
   activeMeasurement(metricId: string, metricType: MetricType) {
     return [metrics, metricId, "measurements", metricType, "get-active"];
   },

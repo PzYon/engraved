@@ -29,10 +29,11 @@ export const DeleteMeasurementLauncher: React.FC<{
         return (
           <>
             <Typography>
-              Are you sure you want to delete this measurement? You will not be
+              Are you sure you want to delete this <b>scrap</b>? You will not be
               able to recover it.
             </Typography>
             <DeleteButtons
+              entityType={"measurement"}
               requiresConfirmation={metric.type === MetricType.Scraps}
               onDelete={() => deleteMeasurement(closeDialog)}
               onCancel={closeDialog}
@@ -48,11 +49,11 @@ export const DeleteMeasurementLauncher: React.FC<{
 
   return null;
 
-  async function deleteMeasurement(closeDialog: () => void) {
+  function deleteMeasurement(closeDialog: () => void) {
     deleteMeasurementMutation.mutate();
 
     if (onDeleted) {
-      await onDeleted();
+      onDeleted();
     }
 
     closeDialog();

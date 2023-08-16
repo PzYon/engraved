@@ -4,15 +4,17 @@ import { usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 
 export const Page: React.FC<{
-  actions: IIconButtonAction[];
-  title: React.ReactNode;
+  actions?: IIconButtonAction[];
+  title?: React.ReactNode;
+  subTitle?: React.ReactNode;
   documentTitle?: string;
   enableFilters?: boolean;
   children: React.ReactNode;
-}> = ({ actions, title, documentTitle, enableFilters, children }) => {
+}> = ({ actions, title, subTitle, documentTitle, enableFilters, children }) => {
   const {
     setPageActions,
-    setPageTitle,
+    setTitle,
+    setSubTitle,
     setDocumentTitle,
     setEnableFilters,
     setShowFilters,
@@ -21,8 +23,16 @@ export const Page: React.FC<{
   } = usePageContext();
 
   useEffect(() => {
-    setPageTitle(title);
+    if (title === undefined) {
+      return;
+    }
+
+    setTitle(title);
   }, [title]);
+
+  useEffect(() => {
+    setSubTitle(subTitle);
+  }, [subTitle]);
 
   useEffect(() => {
     setDocumentTitle(documentTitle);
@@ -33,6 +43,10 @@ export const Page: React.FC<{
   }, [enableFilters]);
 
   useEffect(() => {
+    if (actions === undefined) {
+      return;
+    }
+
     setPageActions(actions);
   }, [actions]);
 

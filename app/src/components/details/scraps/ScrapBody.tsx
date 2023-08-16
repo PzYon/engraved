@@ -6,6 +6,7 @@ import { Actions } from "../../common/Actions";
 import {
   DeleteOutlined,
   EditOutlined,
+  Redo,
   SaveOutlined,
 } from "@mui/icons-material";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
@@ -13,11 +14,21 @@ import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 export const ScrapBody: React.FC<{
   scrap: IScrapMeasurement;
   hideDate: boolean;
+  hideActions: boolean;
   editMode: boolean;
   setEditMode: (value: boolean) => void;
   children: React.ReactNode;
   actions: IIconButtonAction[];
-}> = ({ scrap, hideDate, editMode, setEditMode, children, actions }) => {
+}> = ({
+  scrap,
+  hideDate,
+  hideActions,
+  editMode,
+  setEditMode,
+  children,
+  actions,
+}) => {
+  const allActions = getActions();
   return (
     <>
       {children}
@@ -28,16 +39,29 @@ export const ScrapBody: React.FC<{
             {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
           </Typography>
         )}
-        <ActionsContainer>
-          <Actions actions={getActions()} />
-        </ActionsContainer>
+
+        {allActions?.length ? (
+          <ActionsContainer>
+            <Actions actions={allActions} />
+          </ActionsContainer>
+        ) : null}
       </FooterContainer>
     </>
   );
 
   function getActions() {
+    if (hideActions) {
+      return [];
+    }
+
     const allActions = [
       ...actions,
+      {
+        key: "move-to-other-scrap",
+        label: "Move to another scrap",
+        icon: <Redo fontSize="small" />,
+        href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/move`,
+      },
       editMode
         ? {
             key: "save",

@@ -7,7 +7,7 @@ import {
 } from "../../../serverApi/IScrapMeasurement";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
-import { ScripListBody } from "./list/ScrapListBody";
+import { ScrapListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { useAppContext } from "../../../AppContext";
@@ -15,9 +15,10 @@ import { useAppContext } from "../../../AppContext";
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
   hideDate?: boolean;
+  hideActions?: boolean;
   onSuccess?: () => void;
   style?: CSSProperties;
-}> = ({ scrap, hideDate, onSuccess, style }) => {
+}> = ({ scrap, hideDate, hideActions, onSuccess, style }) => {
   const [notes, setNotes] = useState(scrap.notes);
   const [title, setTitle] = useState(scrap.title);
 
@@ -86,9 +87,10 @@ export const Scrap: React.FC<{
         sx={{ width: "100%" }}
       />
       {scrap.scrapType === ScrapType.List ? (
-        <ScripListBody
+        <ScrapListBody
           scrap={scrap}
           hideDate={hideDate}
+          hideActions={hideActions}
           editMode={isEditMode}
           setEditMode={setIsEditMode}
           hasTitleFocus={hasTitleFocus}
@@ -99,6 +101,7 @@ export const Scrap: React.FC<{
         <ScrapMarkdownBody
           scrap={scrap}
           hideDate={hideDate}
+          hideActions={hideActions}
           editMode={isEditMode}
           setEditMode={setIsEditMode}
           value={notes}

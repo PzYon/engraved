@@ -1,41 +1,62 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
+import { ListItemWrapper } from "./ListItemWrapper";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
-  listItem: ISCrapListItem;
+  listItemWrapper: ListItemWrapper;
   onChange: (listItem: ISCrapListItem) => void;
   onEnter: () => void;
-}> = ({ isEditMode, listItem, onChange, onEnter }) => {
+  onDelete: () => void;
+  moveFocusDown: () => void;
+  moveFocusUp: () => void;
+  moveItemUp: () => void;
+  moveItemDown: () => void;
+}> = ({
+  isEditMode,
+  listItemWrapper,
+  onChange,
+  onEnter,
+  onDelete,
+  moveFocusDown,
+  moveFocusUp,
+  moveItemUp,
+  moveItemDown,
+}) => {
+  const listItem = listItemWrapper.raw;
+
   const [label, setLabel] = useState(listItem.label);
-  const [isCompleted, setIsCompleted] = useState(listItem.isCompleted);
+  const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
+
+  useEffect(() => listItemWrapper.setRef(ref), []);
 
   return (
     <ListItem>
       <StyledCheckbox
-        checked={isCompleted}
+        checked={listItem.isCompleted}
         disabled={!isEditMode}
         onChange={(_, checked) => {
-          setIsCompleted(checked);
           onChange({ label, isCompleted: checked });
         }}
       />
       <AutogrowTextField
+        forwardInputRef={ref}
         fieldType="content"
         disabled={!isEditMode}
         value={label}
         onChange={(event) => setLabel(event.target.value)}
         onKeyUp={keyUp}
-        onBlur={() => onChange({ label, isCompleted: isCompleted })}
+        onKeyDown={keyDown}
+        onBlur={() => onChange({ label, isCompleted: listItem.isCompleted })}
         sx={{
           flexGrow: 1,
           marginTop: "6px",
           textarea: {
-            textDecoration: isCompleted ? "line-through" : "none",
+            textDecoration: listItem.isCompleted ? "line-through" : "none",
           },
         }}
         autoFocus={!listItem.label}
@@ -47,17 +68,71 @@ export const ScrapListItem: React.FC<{
           key: "remove",
           label: "Delete",
           icon: <RemoveCircleOutline fontSize="small" />,
-          onClick: () => onChange(null),
+          onClick: () => onDelete(),
         }}
       />
     </ListItem>
   );
 
+  function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    switch (e.key) {
+      case "ArrowUp": {
+        if (e.altKey && e.ctrlKey) {
+          moveItemUp();
+        } else {
+          moveFocusUp();
+        }
+        break;
+      }
+
+      case "ArrowDown": {
+        if (e.altKey && e.ctrlKey) {
+          moveItemDown();
+        } else {
+          moveFocusDown();
+        }
+        break;
+      }
+
+      case "Enter": {
+        e.preventDefault();
+        break;
+      }
+
+      case "Backspace": {
+        const target = e.target as HTMLTextAreaElement;
+        if (target.selectionStart !== target.selectionEnd) {
+          return;
+        }
+
+        if (e.altKey && e.ctrlKey) {
+          onDelete();
+        }
+
+        break;
+      }
+    }
+  }
+
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
-      case "Enter":
+      case "Enter": {
         onEnter();
+        e.preventDefault();
         break;
+      }
+
+      case " ": {
+        if (e.ctrlKey) {
+          onChange({ label, isCompleted: !listItem.isCompleted });
+        }
+        break;
+      }
+
+      default: {
+        onChange({ label, isCompleted: listItem.isCompleted });
+        break;
+      }
     }
   }
 };

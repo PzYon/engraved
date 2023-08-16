@@ -29,8 +29,19 @@ public class MoveMeasurementCommandExecutor : ICommandExecutor
       return new CommandResult();
     }
 
-    measurement.MetricId = targetMetric.Id!;
+    // update source metric EditedOn
+    IMetric sourceMetric = (await repository.GetMetric(measurement.MetricId))!;
+    sourceMetric.EditedOn = dateService.UtcNow;
+    await repository.UpsertMetric(sourceMetric);
 
+    // update target metric EditedOn
+    targetMetric.EditedOn = dateService.UtcNow;
+    await repository.UpsertMetric(targetMetric);
+
+    // update measurement
+    measurement.EditedOn = dateService.UtcNow;
+    measurement.DateTime = dateService.UtcNow;
+    measurement.MetricId = targetMetric.Id!;
     await repository.UpsertMeasurement(measurement);
 
     string[] affectedUserIds = await GetAffectedUserIds(repository, measurement, targetMetric);

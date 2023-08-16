@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Button, FormControl, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { IMetric } from "../../../serverApi/IMetric";
 import { MetricAttributesSelector } from "./MetricAttributesSelector";
@@ -57,6 +63,8 @@ export const UpsertMeasurement: React.FC<{
     (measurement as ITimerMeasurement)?.endDate
   );
 
+  const [showFullTimerForm, setShowFullTimerForm] = useState(false);
+
   const editMetricMutation = useEditMetricMutation(metric.id);
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
@@ -80,6 +88,26 @@ export const UpsertMeasurement: React.FC<{
         </FormElementContainer>
       ) : null}
 
+      {metric.type === MetricType.Timer && !measurement ? (
+        <FormControlLabel
+          label="Show full form"
+          control={
+            <Switch
+              onChange={(_, checked) => {
+                if (checked) {
+                  setStartDate(new Date().toString());
+                } else {
+                  setStartDate(undefined);
+                  setEndDate(undefined);
+                }
+
+                setShowFullTimerForm(checked);
+              }}
+            />
+          }
+        />
+      ) : null}
+
       {metric.type === MetricType.Gauge ? (
         <TextField
           value={value}
@@ -93,7 +121,8 @@ export const UpsertMeasurement: React.FC<{
         />
       ) : null}
 
-      {metric.type === MetricType.Timer && measurement ? (
+      {metric.type === MetricType.Timer &&
+      (measurement || showFullTimerForm) ? (
         <UpsertTimerMeasurement
           startDate={startDate}
           setStartDate={(d) => setStartDate(d?.toString())}

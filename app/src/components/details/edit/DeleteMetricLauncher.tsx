@@ -23,10 +23,12 @@ export const DeleteMetricLauncher: React.FC<{
         return (
           <>
             <Typography>
-              Are you sure you want to delete &apos;{metric.name}&apos;? You
-              will not be able to recover this metric and all its measurements.
+              Are you sure you want to delete <b>&apos;{metric.name}&apos;</b>?
+              You will not be able to recover this metric and all its
+              measurements.
             </Typography>
             <DeleteButtons
+              entityType="metric"
               requiresConfirmation={true}
               onCancel={closeDialog}
               onDelete={() =>

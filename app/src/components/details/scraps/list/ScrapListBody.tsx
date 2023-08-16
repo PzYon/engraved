@@ -3,9 +3,10 @@ import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 import { ScrapBody } from "../ScrapBody";
 import { ScrapList } from "./ScrapList";
 
-export const ScripListBody: React.FC<{
+export const ScrapListBody: React.FC<{
   scrap: IScrapMeasurement;
   hideDate: boolean;
+  hideActions?: boolean;
   editMode: boolean;
   setEditMode: (value: boolean) => void;
   hasTitleFocus: boolean;
@@ -14,6 +15,7 @@ export const ScripListBody: React.FC<{
 }> = ({
   scrap,
   hideDate,
+  hideActions,
   editMode,
   setEditMode,
   hasTitleFocus,
@@ -26,6 +28,7 @@ export const ScripListBody: React.FC<{
       editMode={editMode}
       setEditMode={setEditMode}
       hideDate={hideDate}
+      hideActions={hideActions}
       actions={[]}
     >
       <ScrapList

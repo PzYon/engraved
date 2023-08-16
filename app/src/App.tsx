@@ -13,20 +13,20 @@ import { AppHeader } from "./components/layout/AppHeader";
 
 export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <AppContextProvider user={user}>
-    <ReactQueryProviderWrapper>
-      <BrowserRouter>
-        <DialogContextProvider>
-          <PageContextProvider>
-            <AppHeader />
-            <AppAlertBar />
-            <AppErrorBoundary>
+    <AppErrorBoundary>
+      <ReactQueryProviderWrapper>
+        <BrowserRouter>
+          <DialogContextProvider>
+            <PageContextProvider>
+              <AppHeader />
+              <AppAlertBar />
               <AppContent scope="body">
                 <AppRoutes />
               </AppContent>
-            </AppErrorBoundary>
-          </PageContextProvider>
-        </DialogContextProvider>
-      </BrowserRouter>
-    </ReactQueryProviderWrapper>
+            </PageContextProvider>
+          </DialogContextProvider>
+        </BrowserRouter>
+      </ReactQueryProviderWrapper>
+    </AppErrorBoundary>
   </AppContextProvider>
 );
