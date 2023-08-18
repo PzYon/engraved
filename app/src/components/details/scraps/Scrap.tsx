@@ -27,28 +27,37 @@ export const Scrap: React.FC<{
 
   const { setAppAlert } = useAppContext();
 
-  useEffect(
-    () => {
-      if (isEditMode) {
-        setAppAlert({
-          message: "Would update as NOT DIRTY.",
-          type: "info",
-          hideDurationSec: 2,
-          title: "New scrap",
-        });
-      } else {
-        setAppAlert({
-          message: "Would notify as DIRTY.",
-          type: "info",
-          hideDurationSec: 2,
-          title: "New scrap",
-        });
-      }
-    },
-    // instead of [scrap] we could use scrap.changeToken...
-    // ... if we had that...!?
-    [scrap]
-  );
+  const [lastEditedOn, setLastEditedOn] = useState(scrap.editedOn);
+
+  useEffect(() => {
+    if (!scrap.editedOn) {
+      console.log("return because !scrap.editedOn");
+      return;
+    }
+
+    if (scrap.editedOn === lastEditedOn) {
+      console.log("return because scrap.editedOn === lastEditedOn");
+      return;
+    }
+
+    if (isEditMode) {
+      setAppAlert({
+        message: "Would NOTIFY (edit mode)",
+        type: "info",
+        hideDurationSec: 2,
+        title: "New scrap",
+      });
+    } else {
+      setAppAlert({
+        message: "Would UPDATE (view only)",
+        type: "info",
+        hideDurationSec: 2,
+        title: "New scrap",
+      });
+    }
+
+    setLastEditedOn(scrap.editedOn);
+  }, [scrap]);
 
   useEffect(() => {
     preloadLazyCodeMirror();
