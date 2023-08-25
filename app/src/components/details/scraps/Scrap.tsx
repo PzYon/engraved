@@ -27,7 +27,7 @@ export const Scrap: React.FC<{
 
   const { setAppAlert } = useAppContext();
 
-  const [lastEditedOn, setLastEditedOn] = useState(scrap.editedOn);
+  const [lastEditedOn, setLastEditedOn] = useState();
 
   useEffect(() => {
     if (!scrap.editedOn) {
