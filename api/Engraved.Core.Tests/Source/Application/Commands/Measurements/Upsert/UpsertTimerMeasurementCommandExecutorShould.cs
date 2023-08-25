@@ -24,6 +24,32 @@ public class UpsertTimerMeasurementCommandExecutorShould
   }
 
   [Test]
+  public async Task SaveNewMeasurement()
+  {
+    DateTime startDate = _fakeDateService.UtcNow.AddHours(-1);
+    DateTime endDate = _fakeDateService.UtcNow.AddHours(+1);
+
+    var command = new UpsertTimerMeasurementCommand
+    {
+      MetricId = MetricId,
+      StartDate = startDate,
+      EndDate = endDate
+    };
+
+    CommandResult result =
+      await new UpsertTimerMeasurementCommandExecutor(command).Execute(_testRepository, _fakeDateService);
+
+    Assert.IsNotNull(result.EntityId);
+    Assert.AreEqual(1, _testRepository.Measurements.Count);
+
+    var measurement = await _testRepository.GetMeasurement(result.EntityId) as TimerMeasurement;
+
+    Assert.IsNotNull(measurement);
+    Assert.AreEqual(startDate, measurement!.StartDate);
+    Assert.AreEqual(endDate, measurement.EndDate);
+  }
+
+  [Test]
   public async Task StartNewMeasurement_WhenBlankCommand()
   {
     var command = new UpsertTimerMeasurementCommand { MetricId = MetricId };
