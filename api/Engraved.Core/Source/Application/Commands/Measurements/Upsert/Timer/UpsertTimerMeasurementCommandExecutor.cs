@@ -19,23 +19,30 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
 
   protected override void SetTypeSpecificValues(IDateService dateService, TimerMeasurement measurement)
   {
-    if (!string.IsNullOrEmpty(Command.Id) && (Command.EndDate != null || Command.StartDate != null))
+    if (string.IsNullOrEmpty(measurement.Id))
     {
+      if (Command.StartDate == null)
+      {
+        measurement.StartDate = dateService.UtcNow;
+        measurement.DateTime = dateService.UtcNow;
+        return;
+      }
+
       measurement.StartDate = Command.StartDate;
-      measurement.DateTime = Command.StartDate ?? dateService.UtcNow;
+      measurement.DateTime = Command.StartDate;
       measurement.EndDate = Command.EndDate;
       return;
     }
 
-    if (measurement.StartDate == null)
-    {
-      measurement.StartDate = dateService.UtcNow;
-      measurement.DateTime = dateService.UtcNow;
-    }
-    else
+    if (measurement.EndDate == null && Command.EndDate == null)
     {
       measurement.EndDate = dateService.UtcNow;
+      return;
     }
+
+    measurement.StartDate = Command.StartDate;
+    measurement.DateTime = Command.StartDate;
+    measurement.EndDate = Command.EndDate;
   }
 
   public static async Task<TimerMeasurement?> GetActiveMeasurement(IRepository repository, TimerMetric metric)
