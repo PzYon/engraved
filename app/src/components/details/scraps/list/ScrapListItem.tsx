@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
-import { Checkbox, styled } from "@mui/material";
+import { Checkbox, styled, Typography } from "@mui/material";
 import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
@@ -43,24 +43,22 @@ export const ScrapListItem: React.FC<{
           onChange({ label, isCompleted: checked });
         }}
       />
-      <AutogrowTextField
-        forwardInputRef={ref}
-        fieldType="content"
-        disabled={!isEditMode}
-        value={label}
-        onChange={(event) => setLabel(event.target.value)}
-        onKeyUp={keyUp}
-        onKeyDown={keyDown}
-        onBlur={() => onChange({ label, isCompleted: listItem.isCompleted })}
-        sx={{
-          flexGrow: 1,
-          marginTop: "6px",
-          textarea: {
-            textDecoration: listItem.isCompleted ? "line-through" : "none",
-          },
-        }}
-        autoFocus={!listItem.label}
-      />
+      {isEditMode ? (
+        <AutogrowTextField
+          forwardInputRef={ref}
+          fieldType="content"
+          value={label}
+          onChange={(event) => setLabel(event.target.value)}
+          onKeyUp={keyUp}
+          onKeyDown={keyDown}
+          onBlur={() => onChange({ label, isCompleted: listItem.isCompleted })}
+          sx={getTextBoxStyle()}
+          autoFocus={!listItem.label}
+        />
+      ) : (
+        <Typography sx={getTextBoxStyle()}>{label}</Typography>
+      )}
+
       <IconButtonWrapper
         action={{
           sx: !isEditMode ? { visibility: "hidden" } : null,
@@ -73,6 +71,16 @@ export const ScrapListItem: React.FC<{
       />
     </ListItem>
   );
+
+  function getTextBoxStyle() {
+    return {
+      flexGrow: 1,
+      marginTop: "6px",
+      textarea: {
+        textDecoration: listItem.isCompleted ? "line-through" : "none",
+      },
+    };
+  }
 
   function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
