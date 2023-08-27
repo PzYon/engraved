@@ -25,7 +25,7 @@ export const AppAlertBar: React.FC = () => {
           : null
       }
       onClose={() => setAppAlert(null)}
-      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
       <StyledAlert
         severity={appAlert.type}
