@@ -18,24 +18,27 @@ export const Scrap: React.FC<{
   hideActions?: boolean;
   onSuccess?: () => void;
   style?: CSSProperties;
-}> = ({ scrap, hideDate, hideActions, onSuccess, style }) => {
-  const [notes, setNotes] = useState(scrap.notes);
-  const [title, setTitle] = useState(scrap.title);
+}> = ({ scrap: currentScrap, hideDate, hideActions, onSuccess, style }) => {
+  const [scrapToRender, setScrapToRender] = useState(currentScrap);
 
-  const [isEditMode, setIsEditMode] = useState(!scrap.id);
-  const [hasTitleFocus, setHasTitleFocus] = useState(false);
+  const [notes, setNotes] = useState(scrapToRender.notes);
+  const [title, setTitle] = useState(scrapToRender.title);
+
+  const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
   const { setAppAlert } = useAppContext();
 
+  // can be removed most probably and current srcap
+  // vs scrapToRender can be considered
   const [lastEditedOn, setLastEditedOn] = useState();
 
   useEffect(() => {
-    if (!scrap.editedOn) {
+    if (!scrapToRender.editedOn) {
       console.log("return because !scrap.editedOn");
       return;
     }
 
-    if (scrap.editedOn === lastEditedOn) {
+    if (scrapToRender.editedOn === lastEditedOn) {
       console.log("return because scrap.editedOn === lastEditedOn");
       return;
     }
@@ -54,14 +57,61 @@ export const Scrap: React.FC<{
         hideDurationSec: 2,
         title: "New scrap",
       });
+      setScrapToRender(currentScrap);
     }
 
-    setLastEditedOn(scrap.editedOn);
-  }, [scrap]);
+    setLastEditedOn(scrapToRender.editedOn);
+  }, [scrapToRender]);
 
   useEffect(() => {
     preloadLazyCodeMirror();
   }, []);
+
+  return (
+    <ScrapInner
+      scrap={scrapToRender}
+      title={title}
+      setTitle={setTitle}
+      notes={notes}
+      setNotes={setNotes}
+      isEditMode={isEditMode}
+      setIsEditMode={setIsEditMode}
+      hideDate={hideDate}
+      hideActions={hideActions}
+      onSuccess={onSuccess}
+      style={style}
+    />
+  );
+};
+
+export const ScrapInner: React.FC<{
+  scrap: IScrapMeasurement;
+  isEditMode: boolean;
+  setIsEditMode: (value: boolean) => void;
+
+  title: string;
+  setTitle: (value: string) => void;
+  notes: string;
+  setNotes: (value: string) => void;
+
+  hideDate?: boolean;
+  hideActions?: boolean;
+  onSuccess?: () => void;
+  style?: CSSProperties;
+}> = ({
+  scrap,
+  isEditMode,
+  setIsEditMode,
+  title,
+  setTitle,
+  notes,
+  setNotes,
+  hideDate,
+  hideActions,
+  onSuccess,
+  style,
+}) => {
+  const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   useEffect(() => {
     if (!isEditMode && notes !== scrap.notes) {
