@@ -19,6 +19,14 @@ export const Scrap: React.FC<{
   onSuccess?: () => void;
   style?: CSSProperties;
 }> = ({ scrap: currentScrap, hideDate, hideActions, onSuccess, style }) => {
+  useEffect(() => {
+    console.log("ctor");
+  }, []);
+
+  useEffect(() => {
+    console.log("currentScrap!!!!!!!!");
+  }, [currentScrap]);
+
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
 
   const [notes, setNotes] = useState(scrapToRender.notes);
@@ -28,17 +36,13 @@ export const Scrap: React.FC<{
 
   const { setAppAlert } = useAppContext();
 
-  // can be removed most probably and current srcap
-  // vs scrapToRender can be considered
-  const [lastEditedOn, setLastEditedOn] = useState();
-
   useEffect(() => {
-    if (!scrapToRender.editedOn) {
+    if (!currentScrap.editedOn) {
       console.log("return because !scrap.editedOn");
       return;
     }
 
-    if (scrapToRender.editedOn === lastEditedOn) {
+    if (currentScrap.editedOn === scrapToRender.editedOn) {
       console.log("return because scrap.editedOn === lastEditedOn");
       return;
     }
@@ -59,9 +63,7 @@ export const Scrap: React.FC<{
       });
       setScrapToRender(currentScrap);
     }
-
-    setLastEditedOn(scrapToRender.editedOn);
-  }, [scrapToRender]);
+  }, [currentScrap]);
 
   useEffect(() => {
     preloadLazyCodeMirror();
@@ -69,6 +71,7 @@ export const Scrap: React.FC<{
 
   return (
     <ScrapInner
+      key={scrapToRender.editedOn}
       scrap={scrapToRender}
       title={title}
       setTitle={setTitle}
