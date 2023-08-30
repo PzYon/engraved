@@ -19,14 +19,6 @@ export const Scrap: React.FC<{
   onSuccess?: () => void;
   style?: CSSProperties;
 }> = ({ scrap: currentScrap, hideDate, hideActions, onSuccess, style }) => {
-  useEffect(() => {
-    console.log("ctor");
-  }, []);
-
-  useEffect(() => {
-    console.log("currentScrap!!!!!!!!");
-  }, [currentScrap]);
-
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
 
   const [notes, setNotes] = useState(scrapToRender.notes);
@@ -71,7 +63,6 @@ export const Scrap: React.FC<{
 
   return (
     <ScrapInner
-      key={scrapToRender.editedOn}
       scrap={scrapToRender}
       title={title}
       setTitle={setTitle}
@@ -161,6 +152,7 @@ export const ScrapInner: React.FC<{
           setEditMode={setIsEditMode}
           value={notes}
           onChange={onChange}
+          onSave={upsertScrap}
         />
       )}
     </div>

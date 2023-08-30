@@ -11,6 +11,8 @@ export const Markdown: React.FC<{
     [value]
   );
 
+  console.log(html);
+
   return (
     <ContentContainer
       onClick={onClick}

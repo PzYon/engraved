@@ -13,6 +13,7 @@ export const ScrapMarkdownBody: React.FC<{
   setEditMode: (value: boolean) => void;
   value: string;
   onChange: (value: string) => void;
+  onSave: () => void;
 }> = ({
   scrap,
   hideDate,
@@ -21,6 +22,7 @@ export const ScrapMarkdownBody: React.FC<{
   setEditMode,
   value,
   onChange,
+  onSave,
 }) => {
   const { setAppAlert } = useAppContext();
 
@@ -31,6 +33,7 @@ export const ScrapMarkdownBody: React.FC<{
       setEditMode={setEditMode}
       hideDate={hideDate}
       hideActions={hideActions}
+      onSave={onSave}
       actions={[
         {
           key: "copy",
