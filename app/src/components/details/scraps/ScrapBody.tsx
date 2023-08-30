@@ -19,6 +19,7 @@ export const ScrapBody: React.FC<{
   setEditMode: (value: boolean) => void;
   children: React.ReactNode;
   actions: IIconButtonAction[];
+  onSave: () => void;
 }> = ({
   scrap,
   hideDate,
@@ -27,6 +28,7 @@ export const ScrapBody: React.FC<{
   setEditMode,
   children,
   actions,
+  onSave,
 }) => {
   const allActions = getActions();
   return (
@@ -67,7 +69,10 @@ export const ScrapBody: React.FC<{
             key: "save",
             label: "Save",
             icon: <SaveOutlined fontSize="small" />,
-            onClick: () => setEditMode(false),
+            onClick: () => {
+              onSave();
+              setEditMode(false);
+            },
           }
         : {
             key: "edit",

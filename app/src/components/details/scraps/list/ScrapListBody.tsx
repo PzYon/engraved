@@ -12,6 +12,7 @@ export const ScrapListBody: React.FC<{
   hasTitleFocus: boolean;
   value: string;
   onChange: (value: string) => void;
+  onSave: () => void;
 }> = ({
   scrap,
   hideDate,
@@ -21,6 +22,7 @@ export const ScrapListBody: React.FC<{
   hasTitleFocus,
   value,
   onChange,
+  onSave,
 }) => {
   return (
     <ScrapBody
@@ -30,6 +32,7 @@ export const ScrapListBody: React.FC<{
       hideDate={hideDate}
       hideActions={hideActions}
       actions={[]}
+      onSave={onSave}
     >
       <ScrapList
         isEditMode={editMode}

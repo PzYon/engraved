@@ -91,12 +91,10 @@ export const ScrapInner: React.FC<{
   scrap: IScrapMeasurement;
   isEditMode: boolean;
   setIsEditMode: (value: boolean) => void;
-
   title: string;
   setTitle: (value: string) => void;
   notes: string;
   setNotes: (value: string) => void;
-
   hideDate?: boolean;
   hideActions?: boolean;
   onSuccess?: () => void;
@@ -115,12 +113,6 @@ export const ScrapInner: React.FC<{
   style,
 }) => {
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
-
-  useEffect(() => {
-    if (!isEditMode && notes !== scrap.notes) {
-      upsertScrap();
-    }
-  }, [isEditMode]);
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
     scrap.metricId,
@@ -158,6 +150,7 @@ export const ScrapInner: React.FC<{
           hasTitleFocus={hasTitleFocus}
           value={notes}
           onChange={onChange}
+          onSave={upsertScrap}
         />
       ) : (
         <ScrapMarkdownBody
