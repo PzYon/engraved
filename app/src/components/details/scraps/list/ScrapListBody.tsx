@@ -23,23 +23,21 @@ export const ScrapListBody: React.FC<{
   value,
   onChange,
   onSave,
-}) => {
-  return (
-    <ScrapBody
-      scrap={scrap}
-      editMode={editMode}
-      setEditMode={setEditMode}
-      hideDate={hideDate}
-      hideActions={hideActions}
-      actions={[]}
-      onSave={onSave}
-    >
-      <ScrapList
-        isEditMode={editMode}
-        hasTitleFocus={hasTitleFocus}
-        value={value}
-        onChange={onChange}
-      />
-    </ScrapBody>
-  );
-};
+}) => (
+  <ScrapBody
+    scrap={scrap}
+    editMode={editMode}
+    setEditMode={setEditMode}
+    hideDate={hideDate}
+    hideActions={hideActions}
+    actions={[]}
+    onSave={onSave}
+  >
+    <ScrapList
+      isEditMode={editMode}
+      hasTitleFocus={hasTitleFocus}
+      value={value}
+      onChange={onChange}
+    />
+  </ScrapBody>
+);

@@ -14,8 +14,8 @@ export const Scrap: React.FC<{
 }> = ({ scrap: currentScrap, hideDate, hideActions, onSuccess, style }) => {
   const { setAppAlert } = useAppContext();
 
-  const [notes, setNotes] = useState<string>();
-  const [title, setTitle] = useState<string>();
+  const [notes, setNotes] = useState<string>(currentScrap.notes);
+  const [title, setTitle] = useState<string>(currentScrap.title);
 
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
