@@ -103,7 +103,7 @@ export const ScrapInner: React.FC<{
       return;
     }
 
-    await upsertMeasurementMutation.mutate({
+    await upsertMeasurementMutation.mutateAsync({
       command: {
         id: scrap?.id,
         scrapType: scrap.scrapType,

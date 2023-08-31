@@ -12,7 +12,7 @@ export const ScrapListBody: React.FC<{
   hasTitleFocus: boolean;
   value: string;
   onChange: (value: string) => void;
-  onSave: () => void;
+  onSave: () => Promise<void>;
 }> = ({
   scrap,
   hideDate,
