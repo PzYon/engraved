@@ -19,14 +19,18 @@ export const Scrap: React.FC<{
   onSuccess?: () => void;
   style?: CSSProperties;
 }> = ({ scrap: currentScrap, hideDate, hideActions, onSuccess, style }) => {
+  const { setAppAlert } = useAppContext();
+
+  const [notes, setNotes] = useState<string>();
+  const [title, setTitle] = useState<string>();
+
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
-
-  const [notes, setNotes] = useState(scrapToRender.notes);
-  const [title, setTitle] = useState(scrapToRender.title);
-
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
-  const { setAppAlert } = useAppContext();
+  useEffect(() => {
+    setTitle(currentScrap.title);
+    setNotes(currentScrap.notes);
+  }, [scrapToRender]);
 
   useEffect(() => {
     if (!currentScrap.editedOn) {
@@ -39,22 +43,17 @@ export const Scrap: React.FC<{
       return;
     }
 
-    if (isEditMode) {
-      setAppAlert({
-        message: "Would NOTIFY (edit mode)",
-        type: "info",
-        hideDurationSec: 2,
-        title: "New scrap",
-      });
-    } else {
-      setAppAlert({
-        message: "Would UPDATE (view only)",
-        type: "info",
-        hideDurationSec: 2,
-        title: "New scrap",
-      });
+    if (!isEditMode) {
       setScrapToRender(currentScrap);
+      return;
     }
+
+    setAppAlert({
+      message: "Would NOTIFY (edit mode)",
+      type: "info",
+      hideDurationSec: 2,
+      title: "New scrap",
+    });
   }, [currentScrap]);
 
   useEffect(() => {
