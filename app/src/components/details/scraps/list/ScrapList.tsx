@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
@@ -12,27 +12,42 @@ import { Actions } from "../../../common/Actions";
 import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
 import { ListItemWrapper } from "./ListItemWrapper";
 
-export const ScrapList: React.FC<{
-  isEditMode: boolean;
-  value: string;
-  hasTitleFocus: boolean;
-  onChange: (json: string) => void;
-}> = ({ isEditMode, value, hasTitleFocus, onChange }) => {
-  const { palette } = useTheme();
-
-  const [items, setItems] = useState<ISCrapListItem[]>(
-    value ? JSON.parse(value) : []
-  );
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useItemsHook = (
+  json: string,
+  onChange: (json: string) => void,
+  editedOn: string
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setItems] = useState<ISCrapListItem[]>(parseItems());
 
   const listItemsCollection = useMemo(() => {
     return new ListItemWrapperCollection(
-      items.map((i) => new ListItemWrapper(i)),
+      parseItems().map((i) => new ListItemWrapper(i)),
       (changedItems) => {
         setItems(changedItems);
         onChange(JSON.stringify(changedItems));
       }
     );
-  }, []);
+  }, [editedOn]);
+
+  return listItemsCollection;
+
+  function parseItems(): ISCrapListItem[] {
+    return json ? JSON.parse(json) : [];
+  }
+};
+
+export const ScrapList: React.FC<{
+  isEditMode: boolean;
+  value: string;
+  hasTitleFocus: boolean;
+  onChange: (json: string) => void;
+  editedOn: string;
+}> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn }) => {
+  const { palette } = useTheme();
+
+  const listItemsCollection = useItemsHook(value, onChange, editedOn);
 
   return (
     <Host
@@ -43,7 +58,7 @@ export const ScrapList: React.FC<{
       }
     >
       <List>
-        {!isEditMode && !items?.length ? (
+        {!isEditMode && !listItemsCollection.items?.length ? (
           <Typography sx={{ opacity: 0.4 }}>No items yet.</Typography>
         ) : (
           listItemsCollection.items.map((item, index) => (

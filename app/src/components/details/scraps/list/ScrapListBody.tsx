@@ -38,6 +38,7 @@ export const ScrapListBody: React.FC<{
       hasTitleFocus={hasTitleFocus}
       value={value}
       onChange={onChange}
+      editedOn={scrap.editedOn}
     />
   </ScrapBody>
 );
