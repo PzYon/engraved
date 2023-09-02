@@ -28,9 +28,7 @@ export const Scrap: React.FC<{
     }
 
     if (!isEditMode) {
-      setScrapToRender(currentScrap);
-      setTitle(currentScrap.title);
-      setNotes(currentScrap.notes);
+      updateScrapInState();
       return;
     }
 
@@ -47,9 +45,7 @@ export const Scrap: React.FC<{
               }}
               variant={"outlined"}
               onClick={() => {
-                setScrapToRender(currentScrap);
-                setTitle(currentScrap.title);
-                setNotes(currentScrap.notes);
+                updateScrapInState();
                 setAppAlert(null);
               }}
             >
@@ -93,4 +89,10 @@ export const Scrap: React.FC<{
       style={style}
     />
   );
+
+  function updateScrapInState() {
+    setScrapToRender(currentScrap);
+    setTitle(currentScrap.title);
+    setNotes(currentScrap.notes);
+  }
 };
