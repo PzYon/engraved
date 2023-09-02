@@ -12,6 +12,7 @@ export const ScrapListBody: React.FC<{
   hasTitleFocus: boolean;
   value: string;
   onChange: (value: string) => void;
+  onSave: () => Promise<void>;
 }> = ({
   scrap,
   hideDate,
@@ -21,22 +22,23 @@ export const ScrapListBody: React.FC<{
   hasTitleFocus,
   value,
   onChange,
-}) => {
-  return (
-    <ScrapBody
-      scrap={scrap}
-      editMode={editMode}
-      setEditMode={setEditMode}
-      hideDate={hideDate}
-      hideActions={hideActions}
-      actions={[]}
-    >
-      <ScrapList
-        isEditMode={editMode}
-        hasTitleFocus={hasTitleFocus}
-        value={value}
-        onChange={onChange}
-      />
-    </ScrapBody>
-  );
-};
+  onSave,
+}) => (
+  <ScrapBody
+    scrap={scrap}
+    editMode={editMode}
+    setEditMode={setEditMode}
+    hideDate={hideDate}
+    hideActions={hideActions}
+    actions={[]}
+    onSave={onSave}
+  >
+    <ScrapList
+      isEditMode={editMode}
+      hasTitleFocus={hasTitleFocus}
+      value={value}
+      onChange={onChange}
+      editedOn={scrap.editedOn}
+    />
+  </ScrapBody>
+);

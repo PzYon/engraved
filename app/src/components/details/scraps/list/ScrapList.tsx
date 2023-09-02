@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { styled, Typography, useTheme } from "@mui/material";
-import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
 import {
   AddOutlined,
@@ -9,30 +8,19 @@ import {
   SyncAltOutlined,
 } from "@mui/icons-material";
 import { Actions } from "../../../common/Actions";
-import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
 import { ListItemWrapper } from "./ListItemWrapper";
+import { useItemsHook } from "./UseItemsHook";
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
   value: string;
   hasTitleFocus: boolean;
   onChange: (json: string) => void;
-}> = ({ isEditMode, value, hasTitleFocus, onChange }) => {
+  editedOn: string;
+}> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn }) => {
   const { palette } = useTheme();
 
-  const [items, setItems] = useState<ISCrapListItem[]>(
-    value ? JSON.parse(value) : []
-  );
-
-  const listItemsCollection = useMemo(() => {
-    return new ListItemWrapperCollection(
-      items.map((i) => new ListItemWrapper(i)),
-      (changedItems) => {
-        setItems(changedItems);
-        onChange(JSON.stringify(changedItems));
-      }
-    );
-  }, []);
+  const listItemsCollection = useItemsHook(value, onChange, editedOn);
 
   return (
     <Host
@@ -43,7 +31,7 @@ export const ScrapList: React.FC<{
       }
     >
       <List>
-        {!isEditMode && !items?.length ? (
+        {!isEditMode && !listItemsCollection.items?.length ? (
           <Typography sx={{ opacity: 0.4 }}>No items yet.</Typography>
         ) : (
           listItemsCollection.items.map((item, index) => (

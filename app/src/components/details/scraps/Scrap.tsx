@@ -1,15 +1,8 @@
 import React, { CSSProperties, useEffect, useState } from "react";
-import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
-import { MetricType } from "../../../serverApi/MetricType";
-import {
-  IScrapMeasurement,
-  ScrapType,
-} from "../../../serverApi/IScrapMeasurement";
-import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
-import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
-import { ScrapListBody } from "./list/ScrapListBody";
-import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
-import { AutogrowTextField } from "../../common/AutogrowTextField";
+import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import { useAppContext } from "../../../AppContext";
+import { Button } from "@mui/material";
+import { ScrapInner } from "./ScrapInner";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -17,97 +10,89 @@ export const Scrap: React.FC<{
   hideActions?: boolean;
   onSuccess?: () => void;
   style?: CSSProperties;
-}> = ({ scrap, hideDate, hideActions, onSuccess, style }) => {
-  const [notes, setNotes] = useState(scrap.notes);
-  const [title, setTitle] = useState(scrap.title);
+}> = ({ scrap: currentScrap, hideDate, hideActions, onSuccess, style }) => {
+  const { setAppAlert } = useAppContext();
 
-  const [isEditMode, setIsEditMode] = useState(!scrap.id);
-  const [hasTitleFocus, setHasTitleFocus] = useState(false);
+  const [notes, setNotes] = useState<string>(currentScrap.notes);
+  const [title, setTitle] = useState<string>(currentScrap.title);
+  const [scrapToRender, setScrapToRender] = useState(currentScrap);
 
-  useEffect(() => preloadLazyCodeMirror(), []);
+  const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
   useEffect(() => {
-    if (!isEditMode && notes !== scrap.notes) {
-      upsertScrap();
+    if (
+      !currentScrap.editedOn ||
+      currentScrap.editedOn === scrapToRender.editedOn
+    ) {
+      return;
     }
-  }, [isEditMode]);
 
-  const upsertMeasurementMutation = useUpsertMeasurementMutation(
-    scrap.metricId,
-    MetricType.Scraps,
-    scrap.id
-  );
+    if (!isEditMode) {
+      updateScrapInState();
+      return;
+    }
+
+    setAppAlert({
+      message: (
+        <>
+          <div>Would you like to update? Any changes will be lost.</div>
+          <div style={{ margin: "8px 0" }}>
+            <Button
+              sx={{
+                color: "common.white",
+                border: "1px solid white;",
+                marginRight: "10px",
+              }}
+              variant={"outlined"}
+              onClick={() => {
+                updateScrapInState();
+                setAppAlert(null);
+              }}
+            >
+              YES
+            </Button>
+
+            <Button
+              sx={{
+                color: "common.white",
+                border: "1px solid white;",
+                paddingRight: "10px",
+              }}
+              variant={"outlined"}
+              onClick={() => {
+                setAppAlert(null);
+              }}
+            >
+              NO
+            </Button>
+          </div>
+        </>
+      ),
+      type: "info",
+      hideDurationSec: 2,
+      title: "Scrap has changed...",
+    });
+  }, [currentScrap]);
 
   return (
-    <div
+    <ScrapInner
+      scrap={scrapToRender}
+      title={title}
+      setTitle={setTitle}
+      notes={notes}
+      setNotes={setNotes}
+      isEditMode={isEditMode}
+      setIsEditMode={setIsEditMode}
+      hideDate={hideDate}
+      hideActions={hideActions}
+      onSuccess={onSuccess}
       style={style}
-      onClick={(e) => {
-        if (e.detail === 2) {
-          setIsEditMode(true);
-        }
-      }}
-    >
-      <AutogrowTextField
-        fieldType={"title"}
-        placeholder={"Title"}
-        variant="outlined"
-        value={title}
-        disabled={!isEditMode}
-        onChange={(event) => setTitle(event.target.value)}
-        onFocus={() => setHasTitleFocus(true)}
-        onBlur={() => setHasTitleFocus(false)}
-        sx={{ width: "100%" }}
-      />
-      {scrap.scrapType === ScrapType.List ? (
-        <ScrapListBody
-          scrap={scrap}
-          hideDate={hideDate}
-          hideActions={hideActions}
-          editMode={isEditMode}
-          setEditMode={setIsEditMode}
-          hasTitleFocus={hasTitleFocus}
-          value={notes}
-          onChange={onChange}
-        />
-      ) : (
-        <ScrapMarkdownBody
-          scrap={scrap}
-          hideDate={hideDate}
-          hideActions={hideActions}
-          editMode={isEditMode}
-          setEditMode={setIsEditMode}
-          value={notes}
-          onChange={onChange}
-        />
-      )}
-    </div>
+    />
   );
 
-  function onChange(value: string) {
-    setNotes(value);
-  }
-
-  async function upsertScrap() {
-    if (scrap.notes === notes && scrap.title === title) {
-      return;
-    }
-
-    if (!notes) {
-      return;
-    }
-
-    await upsertMeasurementMutation.mutate({
-      command: {
-        id: scrap?.id,
-        scrapType: scrap.scrapType,
-        notes: notes,
-        title: title,
-        metricAttributeValues: {},
-        metricId: scrap.metricId,
-        dateTime: new Date(),
-      } as IUpsertScrapsMeasurementCommand,
-    });
-
-    onSuccess?.();
+  function updateScrapInState() {
+    setScrapToRender(currentScrap);
+    setTitle(currentScrap.title);
+    setNotes(currentScrap.notes);
   }
 };

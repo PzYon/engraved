@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../../AppContext";
 import { ScrapBody } from "../ScrapBody";
 import { ContentCopyOutlined } from "@mui/icons-material";
 import { ScrapMarkdown } from "./ScrapMarkdown";
+import { preloadLazyCodeMirror } from "./MarkdownEditor";
 
 export const ScrapMarkdownBody: React.FC<{
   scrap: IScrapMeasurement;
@@ -13,6 +14,7 @@ export const ScrapMarkdownBody: React.FC<{
   setEditMode: (value: boolean) => void;
   value: string;
   onChange: (value: string) => void;
+  onSave: () => Promise<void>;
 }> = ({
   scrap,
   hideDate,
@@ -21,7 +23,10 @@ export const ScrapMarkdownBody: React.FC<{
   setEditMode,
   value,
   onChange,
+  onSave,
 }) => {
+  useEffect(() => preloadLazyCodeMirror(), []);
+
   const { setAppAlert } = useAppContext();
 
   return (
@@ -31,6 +36,7 @@ export const ScrapMarkdownBody: React.FC<{
       setEditMode={setEditMode}
       hideDate={hideDate}
       hideActions={hideActions}
+      onSave={onSave}
       actions={[
         {
           key: "copy",
