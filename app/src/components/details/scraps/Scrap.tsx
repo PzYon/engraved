@@ -1,6 +1,5 @@
 import React, { CSSProperties, useEffect, useState } from "react";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
-import { preloadLazyCodeMirror } from "./markdown/MarkdownEditor";
 import { useAppContext } from "../../../AppContext";
 import { Button } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
@@ -16,14 +15,9 @@ export const Scrap: React.FC<{
 
   const [notes, setNotes] = useState<string>(currentScrap.notes);
   const [title, setTitle] = useState<string>(currentScrap.title);
-
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
-  const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
-  useEffect(() => {
-    setTitle(currentScrap.title);
-    setNotes(currentScrap.notes);
-  }, [scrapToRender]);
+  const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
   useEffect(() => {
     if (
@@ -35,6 +29,8 @@ export const Scrap: React.FC<{
 
     if (!isEditMode) {
       setScrapToRender(currentScrap);
+      setTitle(currentScrap.title);
+      setNotes(currentScrap.notes);
       return;
     }
 
@@ -52,6 +48,8 @@ export const Scrap: React.FC<{
               variant={"outlined"}
               onClick={() => {
                 setScrapToRender(currentScrap);
+                setTitle(currentScrap.title);
+                setNotes(currentScrap.notes);
                 setAppAlert(null);
               }}
             >
@@ -79,10 +77,6 @@ export const Scrap: React.FC<{
       title: "Scrap has changed...",
     });
   }, [currentScrap]);
-
-  useEffect(() => {
-    preloadLazyCodeMirror();
-  }, []);
 
   return (
     <ScrapInner

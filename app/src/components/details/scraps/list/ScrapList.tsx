@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { styled, Typography, useTheme } from "@mui/material";
-import { ISCrapListItem } from "./IScrapListItem";
 import { ScrapListItem } from "./ScrapListItem";
 import {
   AddOutlined,
@@ -9,34 +8,8 @@ import {
   SyncAltOutlined,
 } from "@mui/icons-material";
 import { Actions } from "../../../common/Actions";
-import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
 import { ListItemWrapper } from "./ListItemWrapper";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useItemsHook = (
-  json: string,
-  onChange: (json: string) => void,
-  editedOn: string
-) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, setItems] = useState<ISCrapListItem[]>(parseItems());
-
-  const listItemsCollection = useMemo(() => {
-    return new ListItemWrapperCollection(
-      parseItems().map((i) => new ListItemWrapper(i)),
-      (changedItems) => {
-        setItems(changedItems);
-        onChange(JSON.stringify(changedItems));
-      }
-    );
-  }, [editedOn]);
-
-  return listItemsCollection;
-
-  function parseItems(): ISCrapListItem[] {
-    return json ? JSON.parse(json) : [];
-  }
-};
+import { useItemsHook } from "./UseItemsHook";
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;

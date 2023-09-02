@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../../AppContext";
 import { ScrapBody } from "../ScrapBody";
 import { ContentCopyOutlined } from "@mui/icons-material";
 import { ScrapMarkdown } from "./ScrapMarkdown";
+import { preloadLazyCodeMirror } from "./MarkdownEditor";
 
 export const ScrapMarkdownBody: React.FC<{
   scrap: IScrapMeasurement;
@@ -24,6 +25,8 @@ export const ScrapMarkdownBody: React.FC<{
   onChange,
   onSave,
 }) => {
+  useEffect(() => preloadLazyCodeMirror(), []);
+
   const { setAppAlert } = useAppContext();
 
   return (
