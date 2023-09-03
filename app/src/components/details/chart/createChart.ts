@@ -4,13 +4,7 @@ import { GroupByTime } from "./consolidation/GroupByTime";
 import { createDataSets } from "./dataSets/createDataSets";
 import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
-import {
-  ActiveElement,
-  ChartEvent,
-  ChartOptions,
-  ChartType,
-  TimeUnit,
-} from "chart.js";
+import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
 import { getCoefficient, getColorShades } from "../../../util/utils";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
