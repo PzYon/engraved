@@ -12,6 +12,7 @@ import { ITransformedMeasurement } from "./transformation/ITransformedMeasuremen
 import { MetricType } from "../../../serverApi/MetricType";
 import { format } from "date-fns";
 import { IMetricType } from "../../../metricTypes/IMetricType";
+import { IMetricUiSettings } from "../edit/MetricUiSettings";
 
 export const createChart = (
   measurements: IMeasurement[],
@@ -159,6 +160,17 @@ function createBarChart(
           time: { minUnit: getTimeUnit(groupByTime) },
         },
         y: {
+          min:
+            (JSON.parse(metric.customProps.uiSettings) as IMetricUiSettings)
+              ?.dynamicScales === true
+              ? Math.round(
+                  Math.min(
+                    ...measurements
+                      .map((x) => metricType.getValue(x))
+                      .filter((x) => x !== 0)
+                  ) * 0.9
+                )
+              : undefined,
           stacked: true,
           ticks: {
             callback: (value) => {

@@ -4,6 +4,7 @@ import {
   FilterAltOutlined,
   FunctionsOutlined,
   PanToolOutlined,
+  QueryStatsOutlined,
   ShowChartOutlined,
 } from "@mui/icons-material";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
@@ -19,6 +20,7 @@ export interface IMetricUiSettings {
   showFilters?: boolean;
   groupByTime?: GroupByTime;
   dateRange?: DateRange;
+  dynamicScales?: boolean;
 }
 
 export const MetricUiSettings: React.FC<{
@@ -103,6 +105,21 @@ export const MetricUiSettings: React.FC<{
             onChange={(dateRange) => {
               onChange({ ...uiSettings, dateRange });
             }}
+          />
+        </GridItem>
+        <GridItem>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={uiSettings.dynamicScales}
+                onChange={(_, checked) =>
+                  onChange({ ...uiSettings, dynamicScales: checked })
+                }
+                icon={<QueryStatsOutlined sx={{ opacity: 0.5 }} />}
+                checkedIcon={<QueryStatsOutlined />}
+              />
+            }
+            label="Dynamic scales"
           />
         </GridItem>
       </GridContainer>
