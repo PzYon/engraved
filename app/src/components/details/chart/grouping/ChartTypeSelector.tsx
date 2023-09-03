@@ -27,6 +27,7 @@ export const ChartTypeSelector: React.FC<{
         }}
       >
         <MenuItem value="bar">Bar</MenuItem>
+        <MenuItem value="line">Line</MenuItem>
         <MenuItem value="doughnut">Doughnut</MenuItem>
       </Select>
     </FormControl>

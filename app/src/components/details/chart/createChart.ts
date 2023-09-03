@@ -4,7 +4,13 @@ import { GroupByTime } from "./consolidation/GroupByTime";
 import { createDataSets } from "./dataSets/createDataSets";
 import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
-import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
+import {
+  ActiveElement,
+  ChartEvent,
+  ChartOptions,
+  ChartType,
+  TimeUnit,
+} from "chart.js";
 import { lighten } from "@mui/material";
 import { getCoefficient, getColorShades } from "../../../util/utils";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
@@ -37,6 +43,16 @@ export const createChart = (
         attributeKey
       );
 
+    case "line":
+      return createLineChart(
+        measurements,
+        color,
+        metric,
+        toggleAttributeValue,
+        groupByTime,
+        attributeKey
+      );
+
     case "doughnut":
       return createPieChart(
         measurements,
@@ -50,6 +66,34 @@ export const createChart = (
       throw new Error(`Chart type '${type}' is not supported.`);
   }
 };
+
+function createLineChart(
+  measurements: IMeasurement[],
+  color: string,
+  metric: IMetric,
+  toggleAttributeValue: (
+    attributeKey: string,
+    attributeValueKey: string
+  ) => void,
+  groupByTime: GroupByTime,
+  attributeKey: string
+): ChartProps {
+  // hack: for the moment we create a bar chart and then adjust
+  // the relevant properties
+  const chart = createBarChart(
+    measurements,
+    color,
+    metric,
+    toggleAttributeValue,
+    groupByTime,
+    attributeKey
+  );
+
+  chart.type = "line";
+  chart.options.borderColor = color;
+
+  return chart;
+}
 
 function createPieChart(
   measurements: IMeasurement[],
