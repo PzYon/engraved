@@ -8,12 +8,14 @@ import {
 } from "@mui/material";
 import { translations } from "../../../../i18n/translations";
 
+export type MyChartType = "bar" | "line" | "doughnut";
+
 export const ChartTypeSelector: React.FC<{
-  chartType: string;
-  onChange: (chartType: string) => void;
+  chartType: MyChartType;
+  onChange: (chartType: MyChartType) => void;
 }> = ({ chartType, onChange }) => {
   return (
-    <FormControl>
+    <FormControl sx={{ width: "100%" }}>
       <InputLabel id="chart-type-label">
         {translations.label_chartType}
       </InputLabel>
@@ -23,7 +25,7 @@ export const ChartTypeSelector: React.FC<{
         label={translations.label_groupBy_time}
         value={chartType}
         onChange={(event: SelectChangeEvent) => {
-          onChange(event.target.value);
+          onChange(event.target.value as MyChartType);
         }}
       >
         <MenuItem value="bar">Bar</MenuItem>

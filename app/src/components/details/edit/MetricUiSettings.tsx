@@ -12,9 +12,11 @@ import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { GridContainer, GridItem } from "../../common/Grid";
 import { DateRange } from "../filters/DateFilters";
 import { DateRangeSelector } from "../filters/DateRangeSelector";
+import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 
 export interface IMetricUiSettings {
   showGroupTotals?: boolean;
+  chartType?: "line" | "bar" | "doughnut";
   showChart?: boolean;
   showThresholds?: boolean;
   showFilters?: boolean;
@@ -120,6 +122,14 @@ export const MetricUiSettings: React.FC<{
               />
             }
             label="Dynamic scales"
+          />
+        </GridItem>
+        <GridItem>
+          <ChartTypeSelector
+            chartType={uiSettings.chartType}
+            onChange={(chartType) => {
+              onChange({ ...uiSettings, chartType });
+            }}
           />
         </GridItem>
       </GridContainer>

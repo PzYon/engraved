@@ -27,6 +27,7 @@ import { IMetricUiSettings } from "./edit/MetricUiSettings";
 import { createDateConditions } from "./filters/createDateConditions";
 import { getDefaultDateConditions } from "./filters/DateFilters";
 import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
+import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -52,7 +53,9 @@ export const MetricViewPage: React.FC = () => {
     uiSettings?.groupByTime ?? GroupByTime.Day
   );
   const [attributeKey, setAttributeKey] = useState("-");
-  const [chartType, setChartType] = useState("bar");
+  const [chartType, setChartType] = useState<MyChartType>(
+    uiSettings.chartType ?? "bar"
+  );
 
   const [showNotes, setShowNotes] = useState(!!metric.notes);
 
