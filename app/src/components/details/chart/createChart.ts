@@ -37,6 +37,16 @@ export const createChart = (
         attributeKey
       );
 
+    case "line":
+      return createLineChart(
+        measurements,
+        color,
+        metric,
+        toggleAttributeValue,
+        groupByTime,
+        attributeKey
+      );
+
     case "doughnut":
       return createPieChart(
         measurements,
@@ -50,6 +60,34 @@ export const createChart = (
       throw new Error(`Chart type '${type}' is not supported.`);
   }
 };
+
+function createLineChart(
+  measurements: IMeasurement[],
+  color: string,
+  metric: IMetric,
+  toggleAttributeValue: (
+    attributeKey: string,
+    attributeValueKey: string
+  ) => void,
+  groupByTime: GroupByTime,
+  attributeKey: string
+): ChartProps {
+  // hack: for the moment we create a bar chart and then adjust
+  // the relevant properties
+  const chart = createBarChart(
+    measurements,
+    color,
+    metric,
+    toggleAttributeValue,
+    groupByTime,
+    attributeKey
+  );
+
+  chart.type = "line";
+  chart.options.borderColor = color;
+
+  return chart;
+}
 
 function createPieChart(
   measurements: IMeasurement[],
