@@ -206,7 +206,7 @@ function createBarChart(
                     ...measurements
                       .map((x) => metricType.getValue(x))
                       .filter((x) => x !== 0)
-                  ) * 0.9
+                  ) * 0.95
                 )
               : undefined,
           stacked: true,

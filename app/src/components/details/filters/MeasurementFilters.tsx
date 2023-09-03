@@ -2,7 +2,10 @@ import { DateFilters } from "./DateFilters";
 import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
-import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
+import {
+  ChartTypeSelector,
+  MyChartType,
+} from "../chart/grouping/ChartTypeSelector";
 import React from "react";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { IMetric } from "../../../serverApi/IMetric";
@@ -16,8 +19,8 @@ export const MeasurementFilters: React.FC<{
   setGroupByTime: (g: GroupByTime) => void;
   attributeKey: string;
   setAttributeKey: (k: string) => void;
-  chartType: string;
-  setChartType: (t: string) => void;
+  chartType: MyChartType;
+  setChartType: (t: MyChartType) => void;
 }> = ({
   metric,
   groupByTime,
