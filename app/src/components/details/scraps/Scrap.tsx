@@ -20,10 +20,7 @@ export const Scrap: React.FC<{
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
   useEffect(() => {
-    if (
-      !currentScrap.editedOn ||
-      currentScrap.editedOn === scrapToRender.editedOn
-    ) {
+    if (!currentScrap.editedOn || areScrapsEqual()) {
       return;
     }
 
@@ -94,5 +91,13 @@ export const Scrap: React.FC<{
     setScrapToRender(currentScrap);
     setTitle(currentScrap.title);
     setNotes(currentScrap.notes);
+  }
+
+  function areScrapsEqual() {
+    return (
+      currentScrap.editedOn === scrapToRender.editedOn ||
+      (currentScrap.notes === scrapToRender.notes &&
+        currentScrap.title === scrapToRender.title)
+    );
   }
 };
