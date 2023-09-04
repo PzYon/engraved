@@ -7,7 +7,7 @@ export function hasAttributes(metric: IMetric): boolean {
 
 export function hasValues(
   metricAttributeValues: IMetricAttributeValues,
-  selectedValues: { [p: string]: string[] }
+  selectedValues: Record<string, string[]>
 ): boolean {
   const keys = Object.keys(selectedValues).filter(
     (k) => selectedValues[k].length

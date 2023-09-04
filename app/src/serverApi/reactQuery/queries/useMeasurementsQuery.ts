@@ -8,7 +8,7 @@ import { IDateConditions } from "../../../components/details/MetricDetailsContex
 export const useMeasurementsQuery = (
   metricId: string,
   dateConditions: IDateConditions,
-  attributeValues: { [key: string]: string[] }
+  attributeValues: Record<string, string[]>
 ) => {
   const { setAppAlert } = useAppContext();
 

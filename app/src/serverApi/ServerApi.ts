@@ -312,7 +312,7 @@ export class ServerApi {
     method: HttpMethod,
     payload: unknown
   ) {
-    const headers: { [key: string]: string } = {
+    const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 

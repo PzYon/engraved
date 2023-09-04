@@ -5,7 +5,7 @@ export class LoadingHandler {
   private _interval: unknown;
   private _currentState: "first" | "last" | "other";
 
-  private handlers: { [key: string]: (isLoading: boolean) => void } = {};
+  private handlers: Record<string, (isLoading: boolean) => void> = {};
 
   oneMore() {
     this.updateCounter("oneMore");
