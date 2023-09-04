@@ -3,7 +3,6 @@ import { queryKeysFactory } from "../queryKeysFactory";
 import { IUpsertMeasurementCommand } from "../../commands/IUpsertMeasurementCommand";
 import { ServerApi } from "../../ServerApi";
 import { useAppContext } from "../../../AppContext";
-import { IMeasurement } from "../../IMeasurement";
 import { MetricType } from "../../MetricType";
 
 export interface IVariables {
@@ -30,17 +29,13 @@ export const useUpsertMeasurementMutation = (
       );
     },
 
-    onSuccess: async (_: unknown, variables: IVariables) => {
+    onSuccess: async () => {
       setAppAlert({
         title: `${measurementId ? "Updated" : "Added"} measurement`,
         type: "success",
       });
 
       onSaved?.();
-
-      if (measurementId) {
-        updateExistingMeasurementInCache(variables.command);
-      }
 
       await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
       await queryClient.invalidateQueries(queryKeysFactory.metrics());
@@ -55,32 +50,4 @@ export const useUpsertMeasurementMutation = (
       });
     },
   });
-
-  function updateExistingMeasurementInCache(
-    command: IUpsertMeasurementCommand
-  ) {
-    queryClient.setQueryData(
-      queryKeysFactory.measurements(metricId),
-      (measurements: IMeasurement[]) => {
-        if (!measurements) {
-          return measurements;
-        }
-
-        return measurements.map((m) =>
-          m.id === measurementId ? createCacheMeasurement(m, command) : m
-        );
-      }
-    );
-  }
-
-  function createCacheMeasurement(
-    measurement: IMeasurement,
-    command: IUpsertMeasurementCommand
-  ) {
-    return {
-      ...measurement,
-      ...command,
-      dateTime: new Date().toString(),
-    };
-  }
 };
