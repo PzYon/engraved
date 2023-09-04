@@ -215,7 +215,7 @@ function getMeasurementsTableGroups(
   measurements: IMeasurement[],
   type: IMetricType
 ): IMeasurementsTableGroup[] {
-  const groupsByKey: { [groupKey: string]: IMeasurementsTableGroup } = {};
+  const groupsByKey: Record<string, IMeasurementsTableGroup> = {};
 
   for (const measurement of measurements) {
     const groupKey = getGroupKey(type.type, measurement);

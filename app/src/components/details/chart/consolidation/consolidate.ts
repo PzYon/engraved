@@ -14,7 +14,7 @@ export function consolidate(
 ): IConsolidatedMeasurements[] {
   const valuesByGroupKey = measurements.reduce(
     (
-      previousValue: { [groupKey: string]: IMeasurement[] },
+      previousValue: Record<string, IMeasurement[]>,
       measurement: IMeasurement
     ) => {
       const key = ConsolidationKey.build(measurement.dateTime, groupByTime);

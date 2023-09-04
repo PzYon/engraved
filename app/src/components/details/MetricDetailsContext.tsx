@@ -20,7 +20,7 @@ export interface IMetricContext {
     attributeKey: string,
     attributeValueKeys: string[]
   ) => void;
-  selectedAttributeValues: { [key: string]: string[] };
+  selectedAttributeValues: Record<string, string[]>;
   setDateConditions: (conditions: IDateConditions) => void;
   dateConditions: IDateConditions;
 }

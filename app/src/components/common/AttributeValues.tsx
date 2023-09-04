@@ -60,7 +60,7 @@ function getColorsByKey(attributes: IMetricAttributes, baseColor: string) {
   const attributeKeys = Object.keys(attributes).sort();
   return attributeKeys.reduce(
     (
-      aggregated: { [attributeKey: string]: string },
+      aggregated: Record<string, string>,
       attributeKey: string,
       currentIndex
     ) => {

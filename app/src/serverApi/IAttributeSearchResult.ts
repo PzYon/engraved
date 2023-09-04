@@ -1,5 +1,5 @@
 export interface IAttributeSearchResult {
-  values: { [key: string]: string[] };
+  values: Record<string, string[]>;
   occurrenceCount: number;
   score: number;
 }

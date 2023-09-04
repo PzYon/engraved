@@ -6,7 +6,7 @@ import { useMetricThresholdsValuesQuery } from "../../../serverApi/reactQuery/qu
 
 export const Thresholds: React.FC<{
   metric: IMetric;
-  selectedAttributeValues: { [key: string]: string[] };
+  selectedAttributeValues: Record<string, string[]>;
   setSelectedAttributeValues: (
     attributeKey: string,
     attributeValueKeys: string[]
