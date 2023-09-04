@@ -77,10 +77,12 @@ export const useUpsertMeasurementMutation = (
     measurement: IMeasurement,
     command: IUpsertMeasurementCommand
   ) {
+    const editedOn = new Date().toString();
     return {
       ...measurement,
       ...command,
-      dateTime: new Date().toString(),
+      dateTime: editedOn,
+      editedOn: editedOn,
     };
   }
 };
