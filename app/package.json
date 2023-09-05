@@ -6,9 +6,9 @@
   "dependencies": {
     "@emotion/styled": "11.11.0",
     "@microsoft/applicationinsights-web": "3.0.2",
-    "@mui/icons-material": "5.14.7",
-    "@mui/material": "5.14.7",
-    "@mui/styled-engine-sc": "5.14.7",
+    "@mui/icons-material": "5.14.8",
+    "@mui/material": "5.14.8",
+    "@mui/styled-engine-sc": "5.14.8",
     "@mui/x-date-pickers": "6.12.1",
     "@tanstack/react-query": "4.33.0",
     "@tanstack/react-query-devtools": "4.33.0",
