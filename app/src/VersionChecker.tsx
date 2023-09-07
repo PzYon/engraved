@@ -37,15 +37,11 @@ export const VersionChecker: React.FC = () => {
   );
 };
 
-const thirtyMinutes = 60 * 1000 * 30;
-
 const useIsNewVersionAvailableQuery = () => {
   const { data: isNewDataAvailable } = useQuery<boolean>({
     queryKey: queryKeysFactory.appVersion(),
 
     queryFn: () => isNewVersionAvailable(),
-
-    refetchInterval: thirtyMinutes,
 
     refetchOnWindowFocus: true,
   });
