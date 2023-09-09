@@ -1,8 +1,10 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../AppContext";
 import { Button } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
+
+import { ScrapWrapper } from "./ScrapWrapper";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -10,7 +12,17 @@ export const Scrap: React.FC<{
   hideActions?: boolean;
   onSuccess?: () => void;
   style?: CSSProperties;
-}> = ({ scrap: currentScrap, hideDate, hideActions, onSuccess, style }) => {
+  addScrapWrapper: (scrapWrapper: ScrapWrapper) => void;
+  index?: number;
+}> = ({
+  scrap: currentScrap,
+  hideDate,
+  hideActions,
+  onSuccess,
+  style,
+  addScrapWrapper,
+  index,
+}) => {
   const { setAppAlert } = useAppContext();
 
   const [notes, setNotes] = useState<string>(currentScrap.notes);
@@ -18,6 +30,21 @@ export const Scrap: React.FC<{
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
 
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
+
+  const domElementRef = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    if (!addScrapWrapper) {
+      return;
+    }
+
+    const scrapWrapper = new ScrapWrapper(currentScrap, () =>
+      setIsEditMode(true)
+    );
+
+    scrapWrapper.setRef(domElementRef);
+    addScrapWrapper(scrapWrapper);
+  }, []);
 
   useEffect(() => {
     if (
@@ -76,19 +103,21 @@ export const Scrap: React.FC<{
   }, [currentScrap]);
 
   return (
-    <ScrapInner
-      scrap={scrapToRender}
-      title={title}
-      setTitle={setTitle}
-      notes={notes}
-      setNotes={setNotes}
-      isEditMode={isEditMode}
-      setIsEditMode={setIsEditMode}
-      hideDate={hideDate}
-      hideActions={hideActions}
-      onSuccess={onSuccess}
-      style={style}
-    />
+    <div ref={domElementRef} tabIndex={index}>
+      <ScrapInner
+        scrap={scrapToRender}
+        title={title}
+        setTitle={setTitle}
+        notes={notes}
+        setNotes={setNotes}
+        isEditMode={isEditMode}
+        setIsEditMode={setIsEditMode}
+        hideDate={hideDate}
+        hideActions={hideActions}
+        onSuccess={onSuccess}
+        style={style}
+      />
+    </div>
   );
 
   function updateScrapInState() {

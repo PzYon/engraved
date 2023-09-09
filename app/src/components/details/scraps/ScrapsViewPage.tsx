@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Scrap } from "./Scrap";
 import {
   CheckBoxOutlined,
@@ -18,6 +18,8 @@ import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
+import { useHotkeys } from "react-hotkeys-hook";
+import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 
 export const ScrapsViewPage: React.FC = () => {
   const {
@@ -37,6 +39,12 @@ export const ScrapsViewPage: React.FC = () => {
     setNewScrap(null);
   }, [scraps]);
 
+  const collection = useMemo(() => new ScrapWrapperCollection(), []);
+
+  useHotkeys("ctrl+alt+up", () => collection.moveFocusUp());
+  useHotkeys("ctrl+alt+down", () => collection.moveFocusDown());
+  useHotkeys("ctrl+alt+e", () => collection.setEditMode());
+
   if (!scraps || !metric) {
     return;
   }
@@ -54,14 +62,18 @@ export const ScrapsViewPage: React.FC = () => {
     >
       {newScrap ? (
         <PageSection key="new">
-          <Scrap scrap={newScrap} />
+          <Scrap addScrapWrapper={() => alert("Not yet.")} scrap={newScrap} />
         </PageSection>
       ) : null}
 
       {scraps.length
-        ? (scraps as IScrapMeasurement[]).map((s) => (
+        ? (scraps as IScrapMeasurement[]).map((s, i) => (
             <PageSection key={s.id}>
-              <Scrap scrap={s} />
+              <Scrap
+                addScrapWrapper={(scrapWrapper) => collection.add(scrapWrapper)}
+                scrap={s}
+                index={i}
+              />
             </PageSection>
           ))
         : null}
