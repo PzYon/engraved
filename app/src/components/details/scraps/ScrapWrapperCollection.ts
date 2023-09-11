@@ -5,6 +5,10 @@ export class ScrapWrapperCollection {
 
   private index = -1;
 
+  private get highestIndex() {
+    return this.wrappers.length - 1;
+  }
+
   add(wrapper: ScrapWrapper) {
     this.wrappers.push(wrapper);
   }
@@ -14,12 +18,22 @@ export class ScrapWrapperCollection {
   }
 
   moveFocusDown() {
-    this.index = this.index + 1;
+    this.index = this.getNextHigherIndex(this.index);
     this.wrappers[this.index].giveFocus();
   }
 
   moveFocusUp() {
-    this.index = this.index - 1;
+    this.index = this.getNextLowerIndex(this.index);
     this.wrappers[this.index].giveFocus();
+  }
+
+  private getNextHigherIndex(index: number) {
+    const nextIndex = index + 1;
+    return nextIndex > this.highestIndex ? 0 : nextIndex;
+  }
+
+  private getNextLowerIndex(index: number) {
+    const nextIndex = index - 1;
+    return nextIndex < 0 ? this.highestIndex : nextIndex;
   }
 }

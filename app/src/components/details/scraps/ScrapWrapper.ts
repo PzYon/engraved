@@ -4,12 +4,9 @@ import React from "react";
 export class ScrapWrapper {
   constructor(
     private scrap: IScrapMeasurement,
-    public setIsEditMode: () => void
+    public setIsEditMode: () => void,
+    private ref: React.MutableRefObject<HTMLDivElement>
   ) {}
-
-  private ref: React.MutableRefObject<HTMLDivElement>;
-
-  readonly reactKey = "react-key-" + Math.random().toString();
 
   get raw(): IScrapMeasurement {
     return this.scrap;
@@ -17,10 +14,6 @@ export class ScrapWrapper {
 
   set raw(value: IScrapMeasurement) {
     this.scrap = value;
-  }
-
-  setRef(ref: React.MutableRefObject<HTMLDivElement>) {
-    this.ref = ref;
   }
 
   giveFocus() {

@@ -38,12 +38,9 @@ export const Scrap: React.FC<{
       return;
     }
 
-    const scrapWrapper = new ScrapWrapper(currentScrap, () =>
-      setIsEditMode(true)
+    addScrapWrapper(
+      new ScrapWrapper(currentScrap, () => setIsEditMode(true), domElementRef)
     );
-
-    scrapWrapper.setRef(domElementRef);
-    addScrapWrapper(scrapWrapper);
   }, []);
 
   useEffect(() => {
