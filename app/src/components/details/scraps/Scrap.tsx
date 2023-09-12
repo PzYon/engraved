@@ -5,6 +5,9 @@ import { Button } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
 
 import { ScrapWrapper } from "./ScrapWrapper";
+import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
+import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
+import { MetricType } from "../../../serverApi/MetricType";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -33,15 +36,26 @@ export const Scrap: React.FC<{
 
   const domElementRef = useRef<HTMLDivElement>();
 
+  const upsertMeasurementMutation = useUpsertMeasurementMutation(
+    currentScrap.metricId,
+    MetricType.Scraps,
+    currentScrap.id
+  );
+
   useEffect(() => {
     if (!addScrapWrapper) {
       return;
     }
 
     addScrapWrapper(
-      new ScrapWrapper(currentScrap, () => setIsEditMode(true), domElementRef)
+      new ScrapWrapper(
+        currentScrap,
+        domElementRef,
+        () => setIsEditMode(!isEditMode),
+        upsertScrap
+      )
     );
-  }, []);
+  }, [notes, title, currentScrap]);
 
   useEffect(() => {
     if (
@@ -111,7 +125,7 @@ export const Scrap: React.FC<{
         setIsEditMode={setIsEditMode}
         hideDate={hideDate}
         hideActions={hideActions}
-        onSuccess={onSuccess}
+        upsertScrap={upsertScrap}
         style={style}
       />
     </div>
@@ -121,5 +135,30 @@ export const Scrap: React.FC<{
     setScrapToRender(currentScrap);
     setTitle(currentScrap.title);
     setNotes(currentScrap.notes);
+  }
+
+  async function upsertScrap() {
+    if (currentScrap.notes === notes && currentScrap.title === title) {
+      return;
+    }
+
+    if (!notes) {
+      return;
+    }
+
+    await upsertMeasurementMutation.mutateAsync({
+      command: {
+        id: currentScrap?.id,
+        scrapType: currentScrap.scrapType,
+        notes: notes,
+        title: title,
+        metricAttributeValues: {},
+        metricId: currentScrap.metricId,
+        dateTime: new Date(),
+      } as IUpsertScrapsMeasurementCommand,
+    });
+
+    onSuccess?.();
+    setIsEditMode(false);
   }
 };

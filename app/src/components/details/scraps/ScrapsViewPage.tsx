@@ -39,11 +39,12 @@ export const ScrapsViewPage: React.FC = () => {
     setNewScrap(null);
   }, [scraps]);
 
-  const collection = useMemo(() => new ScrapWrapperCollection(), []);
+  const collection = useMemo(() => new ScrapWrapperCollection(), [scraps]);
 
   useHotkeys("ctrl+alt+up", () => collection.moveFocusUp());
   useHotkeys("ctrl+alt+down", () => collection.moveFocusDown());
   useHotkeys("ctrl+alt+e", () => collection.setEditMode());
+  useHotkeys("ctrl+alt+s", () => collection.update());
 
   if (!scraps || !metric) {
     return;
@@ -70,7 +71,9 @@ export const ScrapsViewPage: React.FC = () => {
         ? (scraps as IScrapMeasurement[]).map((s, i) => (
             <PageSection key={s.id}>
               <Scrap
-                addScrapWrapper={(scrapWrapper) => collection.add(scrapWrapper)}
+                addScrapWrapper={(scrapWrapper) =>
+                  collection.add(s.id, scrapWrapper)
+                }
                 scrap={s}
                 index={i}
               />

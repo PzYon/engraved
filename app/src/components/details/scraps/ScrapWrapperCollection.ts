@@ -9,12 +9,23 @@ export class ScrapWrapperCollection {
     return this.wrappers.length - 1;
   }
 
-  add(wrapper: ScrapWrapper) {
-    this.wrappers.push(wrapper);
+  add(scrapId: string, wrapper: ScrapWrapper) {
+    const existingIndex = this.wrappers.findIndex((w) => w.raw.id === scrapId);
+    if (existingIndex > -1) {
+      this.wrappers[existingIndex] = wrapper;
+    } else {
+      this.wrappers.push(wrapper);
+    }
   }
 
   setEditMode() {
     this.wrappers[this.index].setIsEditMode();
+  }
+
+  async update() {
+    debugger;
+    await this.wrappers[this.index].upsertScrap();
+    this.index = -1;
   }
 
   moveFocusDown() {
