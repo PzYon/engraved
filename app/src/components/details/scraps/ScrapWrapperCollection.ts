@@ -23,7 +23,6 @@ export class ScrapWrapperCollection {
   }
 
   async update() {
-    debugger;
     await this.wrappers[this.index].upsertScrap();
     this.index = -1;
   }

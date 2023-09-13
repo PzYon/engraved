@@ -53,7 +53,12 @@ export const ScrapMarkdownBody: React.FC<{
         },
       ]}
     >
-      <ScrapMarkdown isEditMode={editMode} value={value} onChange={onChange} />
+      <ScrapMarkdown
+        keyMappings={{ "Alt-s": onSave }}
+        isEditMode={editMode}
+        value={value}
+        onChange={onChange}
+      />
     </ScrapBody>
   );
 };

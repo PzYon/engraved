@@ -1,4 +1,4 @@
-import { MarkdownEditor } from "./MarkdownEditor";
+import { KeyMappings, MarkdownEditor } from "./MarkdownEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
 import React from "react";
@@ -8,7 +8,8 @@ export const ScrapMarkdown: React.FC<{
   isEditMode: boolean;
   value: string;
   onChange: (value: string) => void;
-}> = ({ isEditMode, value, onChange }) => {
+  keyMappings?: KeyMappings;
+}> = ({ isEditMode, value, onChange, keyMappings }) => {
   if (isEditMode) {
     return (
       <EditorContainer>
@@ -16,6 +17,7 @@ export const ScrapMarkdown: React.FC<{
           showOutlineWhenFocused={true}
           value={value ?? ""}
           onChange={onChange}
+          keyMappings={keyMappings}
         />
       </EditorContainer>
     );

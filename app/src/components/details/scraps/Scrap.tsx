@@ -55,7 +55,7 @@ export const Scrap: React.FC<{
         upsertScrap
       )
     );
-  }, [notes, title, currentScrap]);
+  }, [isEditMode, notes, title, currentScrap.editedOn]);
 
   useEffect(() => {
     if (
