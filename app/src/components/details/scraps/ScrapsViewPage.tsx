@@ -80,7 +80,7 @@ export const ScrapsViewPage: React.FC = () => {
     >
       {newScrap ? (
         <PageSection key="new">
-          <Scrap addScrapWrapper={() => alert("Not yet.")} scrap={newScrap} />
+          <Scrap scrap={newScrap} />
         </PageSection>
       ) : null}
 

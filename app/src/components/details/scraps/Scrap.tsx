@@ -1,7 +1,7 @@
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../AppContext";
-import { Button } from "@mui/material";
+import { Button, styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
 
 import { ScrapWrapper } from "./ScrapWrapper";
@@ -15,7 +15,7 @@ export const Scrap: React.FC<{
   hideActions?: boolean;
   onSuccess?: () => void;
   style?: CSSProperties;
-  addScrapWrapper: (scrapWrapper: ScrapWrapper) => void;
+  addScrapWrapper?: (scrapWrapper: ScrapWrapper) => void;
   index?: number;
 }> = ({
   scrap: currentScrap,
@@ -114,7 +114,7 @@ export const Scrap: React.FC<{
   }, [currentScrap]);
 
   return (
-    <div ref={domElementRef} tabIndex={index}>
+    <FocusableDiv ref={domElementRef} tabIndex={index}>
       <ScrapInner
         scrap={scrapToRender}
         title={title}
@@ -128,7 +128,7 @@ export const Scrap: React.FC<{
         upsertScrap={upsertScrap}
         style={style}
       />
-    </div>
+    </FocusableDiv>
   );
 
   function updateScrapInState() {
@@ -162,3 +162,10 @@ export const Scrap: React.FC<{
     setIsEditMode(false);
   }
 };
+
+const FocusableDiv = styled("div")`
+  &:focus {
+    outline: 2px solid ${(p) => p.theme.palette.primary.main};
+    border-radius: 3px;
+  }
+`;
