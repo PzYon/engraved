@@ -10,7 +10,10 @@ export class ScrapWrapperCollection {
   }
 
   add(scrapId: string, wrapper: ScrapWrapper) {
-    const existingIndex = this.wrappers.findIndex((w) => w.raw.id === scrapId);
+    const existingIndex = this.wrappers.findIndex(
+      (w) => w.scrap.id === scrapId
+    );
+
     if (existingIndex > -1) {
       this.wrappers[existingIndex] = wrapper;
     } else {

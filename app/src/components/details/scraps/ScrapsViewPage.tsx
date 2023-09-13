@@ -45,20 +45,17 @@ export const ScrapsViewPage: React.FC = () => {
 
   const collection = useMemo(() => new ScrapWrapperCollection(), [scraps]);
 
+  // alt+s (save) is handled by code mirror resp. list
+
   useHotkeys("alt+up", () => {
-    console.log("alt+up");
     collection.moveFocusUp();
   });
 
   useHotkeys("alt+down", () => {
-    console.log("alt+down");
     collection.moveFocusDown();
   });
 
-  // alt+s (save) is handled by code mirror resp. list
-
   useHotkeys("alt+e", (keyboardEvent) => {
-    console.log("alt+e");
     keyboardEvent.preventDefault();
     collection.setEditMode();
   });

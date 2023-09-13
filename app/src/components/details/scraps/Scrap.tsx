@@ -49,8 +49,8 @@ export const Scrap: React.FC<{
 
     addScrapWrapper(
       new ScrapWrapper(
-        currentScrap,
         domElementRef,
+        currentScrap,
         () => setIsEditMode(!isEditMode),
         upsertScrap
       )
