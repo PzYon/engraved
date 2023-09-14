@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ScrapListItem } from "./ScrapListItem";
 import {
@@ -22,6 +22,12 @@ export const ScrapList: React.FC<{
   const { palette } = useTheme();
 
   const listItemsCollection = useItemsHook(value, onChange, editedOn);
+
+  useEffect(() => {
+    if (isEditMode) {
+      listItemsCollection.giveFocus(0);
+    }
+  }, [isEditMode]);
 
   return (
     <Host
