@@ -43,7 +43,7 @@ export class ListItemWrapperCollection {
   }
 
   giveFocus(index: number) {
-    this.items[index].giveFocus();
+    this.items[index]?.giveFocus();
   }
 
   moveFocusUp(index: number) {
