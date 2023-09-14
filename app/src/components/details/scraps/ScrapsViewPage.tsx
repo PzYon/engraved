@@ -75,23 +75,18 @@ export const ScrapsViewPage: React.FC = () => {
         ...getCommonActions(metric),
       ]}
     >
-      {newScrap ? (
-        <PageSection key="new">
-          <Scrap scrap={newScrap} />
-        </PageSection>
-      ) : null}
+      {newScrap ? <Scrap key="new" scrap={newScrap} /> : null}
 
       {scraps.length
         ? (scraps as IScrapMeasurement[]).map((s, i) => (
-            <PageSection key={s.id + keyToken}>
-              <Scrap
-                addScrapWrapper={(scrapWrapper) =>
-                  collection.add(s.id, scrapWrapper)
-                }
-                scrap={s}
-                index={i}
-              />
-            </PageSection>
+            <Scrap
+              key={s.id + keyToken}
+              addScrapWrapper={(scrapWrapper) =>
+                collection.add(s.id, scrapWrapper)
+              }
+              scrap={s}
+              index={i}
+            />
           ))
         : null}
 

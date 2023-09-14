@@ -45,6 +45,7 @@ export const AddQuickScrapDialog: React.FC<{
         hideDate={true}
         onSuccess={onSuccess}
         style={{ marginTop: "3px" }}
+        withoutSection={true}
       />
     </>
   );
