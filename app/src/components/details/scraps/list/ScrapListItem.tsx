@@ -5,6 +5,7 @@ import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { ListItemWrapper } from "./ListItemWrapper";
+import { SxProps } from "@mui/system";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
@@ -16,6 +17,7 @@ export const ScrapListItem: React.FC<{
   moveFocusUp: () => void;
   moveItemUp: () => void;
   moveItemDown: () => void;
+  saveItem: () => void;
 }> = ({
   isEditMode,
   listItemWrapper,
@@ -26,6 +28,7 @@ export const ScrapListItem: React.FC<{
   moveFocusUp,
   moveItemUp,
   moveItemDown,
+  saveItem,
 }) => {
   const listItem = listItemWrapper.raw;
 
@@ -52,11 +55,11 @@ export const ScrapListItem: React.FC<{
           onKeyUp={keyUp}
           onKeyDown={keyDown}
           onBlur={() => onChange({ label, isCompleted: listItem.isCompleted })}
-          sx={getTextBoxStyle()}
+          sx={getSx("textbox")}
           autoFocus={!listItem.label}
         />
       ) : (
-        <Typography sx={getTextBoxStyle()}>{label}</Typography>
+        <Typography sx={getSx("plain")}>{label}</Typography>
       )}
 
       <IconButtonWrapper
@@ -72,14 +75,24 @@ export const ScrapListItem: React.FC<{
     </ListItem>
   );
 
-  function getTextBoxStyle() {
-    return {
+  function getSx(elementType: "plain" | "textbox") {
+    const sx: SxProps = {
       flexGrow: 1,
       marginTop: "6px",
-      textarea: {
-        textDecoration: listItem.isCompleted ? "line-through" : "none",
-      },
     };
+
+    if (!listItem.isCompleted) {
+      return sx;
+    }
+
+    if (elementType === "textbox") {
+      /* eslint-disable  @typescript-eslint/no-explicit-any */
+      (sx as any).textarea = { textDecoration: "line-through" };
+    } else if (elementType === "plain") {
+      sx.textDecoration = "line-through";
+    }
+
+    return sx;
   }
 
   function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
@@ -115,6 +128,14 @@ export const ScrapListItem: React.FC<{
 
         if (e.altKey && e.ctrlKey) {
           onDelete();
+        }
+
+        break;
+      }
+
+      case "s": {
+        if (e.altKey) {
+          saveItem();
         }
 
         break;

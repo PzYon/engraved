@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Scrap } from "./Scrap";
 import {
   CheckBoxOutlined,
@@ -18,6 +18,8 @@ import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
+import { useHotkeys } from "react-hotkeys-hook";
+import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 
 export const ScrapsViewPage: React.FC = () => {
   const {
@@ -36,6 +38,27 @@ export const ScrapsViewPage: React.FC = () => {
   useEffect(() => {
     setNewScrap(null);
   }, [scraps]);
+
+  const keyToken = useMemo(() => {
+    return Math.random();
+  }, [scraps]);
+
+  const collection = useMemo(() => new ScrapWrapperCollection(), [scraps]);
+
+  // alt+s (save) is handled by code mirror resp. list
+
+  useHotkeys("alt+up", () => {
+    collection.moveFocusUp();
+  });
+
+  useHotkeys("alt+down", () => {
+    collection.moveFocusDown();
+  });
+
+  useHotkeys("alt+e", (keyboardEvent) => {
+    keyboardEvent.preventDefault();
+    collection.setEditMode();
+  });
 
   if (!scraps || !metric) {
     return;
@@ -59,9 +82,15 @@ export const ScrapsViewPage: React.FC = () => {
       ) : null}
 
       {scraps.length
-        ? (scraps as IScrapMeasurement[]).map((s) => (
-            <PageSection key={s.id}>
-              <Scrap scrap={s} />
+        ? (scraps as IScrapMeasurement[]).map((s, i) => (
+            <PageSection key={s.id + keyToken}>
+              <Scrap
+                addScrapWrapper={(scrapWrapper) =>
+                  collection.add(s.id, scrapWrapper)
+                }
+                scrap={s}
+                index={i}
+              />
             </PageSection>
           ))
         : null}

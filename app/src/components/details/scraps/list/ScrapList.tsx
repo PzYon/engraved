@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ScrapListItem } from "./ScrapListItem";
 import {
@@ -17,10 +17,17 @@ export const ScrapList: React.FC<{
   hasTitleFocus: boolean;
   onChange: (json: string) => void;
   editedOn: string;
-}> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn }) => {
+  saveItem: () => Promise<void>;
+}> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn, saveItem }) => {
   const { palette } = useTheme();
 
   const listItemsCollection = useItemsHook(value, onChange, editedOn);
+
+  useEffect(() => {
+    if (isEditMode) {
+      listItemsCollection.giveFocus(0);
+    }
+  }, [isEditMode]);
 
   return (
     <Host
@@ -48,6 +55,7 @@ export const ScrapList: React.FC<{
               }
               onDelete={() => listItemsCollection.remove(index)}
               onEnter={() => listItemsCollection.addNewLine(index)}
+              saveItem={saveItem}
             />
           ))
         )}

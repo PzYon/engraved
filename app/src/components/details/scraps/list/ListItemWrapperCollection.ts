@@ -42,12 +42,16 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
+  giveFocus(index: number) {
+    this.items[index].giveFocus();
+  }
+
   moveFocusUp(index: number) {
-    this.items[this.getNextLowerIndex(index)].giveFocus();
+    this.giveFocus(this.getNextLowerIndex(index));
   }
 
   moveFocusDown(index: number) {
-    this.items[this.getNextHigherIndex(index)].giveFocus();
+    this.giveFocus(this.getNextHigherIndex(index));
   }
 
   moveItemUp(index: number) {

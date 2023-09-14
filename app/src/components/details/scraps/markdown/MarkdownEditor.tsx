@@ -1,6 +1,8 @@
 import React, { Suspense } from "react";
 import { Theme, useTheme } from "@mui/material";
 
+export type KeyMappings = Record<string, () => void>;
+
 export interface ICodeMirrorProps {
   value: string;
   onChange: (value: string) => void;
@@ -8,6 +10,7 @@ export interface ICodeMirrorProps {
   onFocus?: () => void;
   theme?: Theme;
   showOutlineWhenFocused?: boolean;
+  keyMappings?: KeyMappings;
 }
 
 let isPreloaded = false;

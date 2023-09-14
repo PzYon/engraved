@@ -71,7 +71,6 @@ export const ScrapBody: React.FC<{
             icon: <SaveOutlined fontSize="small" />,
             onClick: async () => {
               await onSave();
-              setEditMode(false);
             },
           }
         : {

@@ -1,8 +1,13 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../AppContext";
-import { Button } from "@mui/material";
+import { Button, styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
+
+import { ScrapWrapper } from "./ScrapWrapper";
+import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
+import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
+import { MetricType } from "../../../serverApi/MetricType";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -10,7 +15,17 @@ export const Scrap: React.FC<{
   hideActions?: boolean;
   onSuccess?: () => void;
   style?: CSSProperties;
-}> = ({ scrap: currentScrap, hideDate, hideActions, onSuccess, style }) => {
+  addScrapWrapper?: (scrapWrapper: ScrapWrapper) => void;
+  index?: number;
+}> = ({
+  scrap: currentScrap,
+  hideDate,
+  hideActions,
+  onSuccess,
+  style,
+  addScrapWrapper,
+  index,
+}) => {
   const { setAppAlert } = useAppContext();
 
   const [notes, setNotes] = useState<string>(currentScrap.notes);
@@ -18,6 +33,29 @@ export const Scrap: React.FC<{
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
 
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
+
+  const domElementRef = useRef<HTMLDivElement>();
+
+  const upsertMeasurementMutation = useUpsertMeasurementMutation(
+    currentScrap.metricId,
+    MetricType.Scraps,
+    currentScrap.id
+  );
+
+  useEffect(() => {
+    if (!addScrapWrapper) {
+      return;
+    }
+
+    addScrapWrapper(
+      new ScrapWrapper(
+        domElementRef,
+        currentScrap,
+        () => setIsEditMode(!isEditMode),
+        upsertScrap
+      )
+    );
+  }, [isEditMode, notes, title, currentScrap.editedOn]);
 
   useEffect(() => {
     if (
@@ -76,19 +114,21 @@ export const Scrap: React.FC<{
   }, [currentScrap]);
 
   return (
-    <ScrapInner
-      scrap={scrapToRender}
-      title={title}
-      setTitle={setTitle}
-      notes={notes}
-      setNotes={setNotes}
-      isEditMode={isEditMode}
-      setIsEditMode={setIsEditMode}
-      hideDate={hideDate}
-      hideActions={hideActions}
-      onSuccess={onSuccess}
-      style={style}
-    />
+    <FocusableDiv ref={domElementRef} tabIndex={index}>
+      <ScrapInner
+        scrap={scrapToRender}
+        title={title}
+        setTitle={setTitle}
+        notes={notes}
+        setNotes={setNotes}
+        isEditMode={isEditMode}
+        setIsEditMode={setIsEditMode}
+        hideDate={hideDate}
+        hideActions={hideActions}
+        upsertScrap={upsertScrap}
+        style={style}
+      />
+    </FocusableDiv>
   );
 
   function updateScrapInState() {
@@ -96,4 +136,39 @@ export const Scrap: React.FC<{
     setTitle(currentScrap.title);
     setNotes(currentScrap.notes);
   }
+
+  async function upsertScrap() {
+    if (currentScrap.notes === notes && currentScrap.title === title) {
+      return;
+    }
+
+    if (!notes) {
+      return;
+    }
+
+    await upsertMeasurementMutation.mutateAsync({
+      command: {
+        id: currentScrap?.id,
+        scrapType: currentScrap.scrapType,
+        notes: notes,
+        title: title,
+        metricAttributeValues: {},
+        metricId: currentScrap.metricId,
+        dateTime: new Date(),
+      } as IUpsertScrapsMeasurementCommand,
+    });
+
+    onSuccess?.();
+    setIsEditMode(false);
+  }
 };
+
+const FocusableDiv = styled("div")`
+  /*&:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${(p) => p.theme.palette.primary.main};
+  }*/
+`;

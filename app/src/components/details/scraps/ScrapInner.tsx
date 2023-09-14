@@ -3,12 +3,9 @@ import {
   IScrapMeasurement,
   ScrapType,
 } from "../../../serverApi/IScrapMeasurement";
-import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
-import { MetricType } from "../../../serverApi/MetricType";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { ScrapListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
-import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 
 export const ScrapInner: React.FC<{
   scrap: IScrapMeasurement;
@@ -20,7 +17,7 @@ export const ScrapInner: React.FC<{
   setNotes: (value: string) => void;
   hideDate?: boolean;
   hideActions?: boolean;
-  onSuccess?: () => void;
+  upsertScrap: () => Promise<void>;
   style?: CSSProperties;
 }> = ({
   scrap,
@@ -32,16 +29,10 @@ export const ScrapInner: React.FC<{
   setNotes,
   hideDate,
   hideActions,
-  onSuccess,
+  upsertScrap,
   style,
 }) => {
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
-
-  const upsertMeasurementMutation = useUpsertMeasurementMutation(
-    scrap.metricId,
-    MetricType.Scraps,
-    scrap.id
-  );
 
   return (
     <div
@@ -92,29 +83,5 @@ export const ScrapInner: React.FC<{
 
   function onChange(value: string) {
     setNotes(value);
-  }
-
-  async function upsertScrap() {
-    if (scrap.notes === notes && scrap.title === title) {
-      return;
-    }
-
-    if (!notes) {
-      return;
-    }
-
-    await upsertMeasurementMutation.mutateAsync({
-      command: {
-        id: scrap?.id,
-        scrapType: scrap.scrapType,
-        notes: notes,
-        title: title,
-        metricAttributeValues: {},
-        metricId: scrap.metricId,
-        dateTime: new Date(),
-      } as IUpsertScrapsMeasurementCommand,
-    });
-
-    onSuccess?.();
   }
 };

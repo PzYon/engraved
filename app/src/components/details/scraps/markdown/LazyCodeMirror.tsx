@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
-import { EditorView } from "@codemirror/view";
-import { ICodeMirrorProps } from "./MarkdownEditor";
+import { ICodeMirrorProps, KeyMappings } from "./MarkdownEditor";
 import { alpha } from "@mui/material";
+import { EditorView, keymap } from "@codemirror/view";
+import { defaultKeymap } from "@codemirror/commands";
 
 const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   value,
@@ -12,11 +13,18 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   onFocus,
   theme,
   showOutlineWhenFocused,
+  keyMappings = {},
 }) => {
+  const customKeymap = useMemo(() => getKeymap(keyMappings), [keyMappings]);
+
   return (
     <CodeMirror
       value={value}
-      extensions={[markdown({}), EditorView.lineWrapping]}
+      extensions={[
+        keymap.of(customKeymap),
+        markdown({}),
+        EditorView.lineWrapping,
+      ]}
       onChange={onChange}
       onBlur={onBlur}
       onFocus={onFocus}
@@ -52,5 +60,21 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
     />
   );
 };
+
+function getKeymap(keyMappings: KeyMappings) {
+  const newKeymap = [...defaultKeymap];
+
+  for (const map in keyMappings) {
+    newKeymap.push({
+      key: map,
+      run: () => {
+        keyMappings[map]();
+        return true;
+      },
+    });
+  }
+
+  return newKeymap;
+}
 
 export default LazyCodeMirror;
