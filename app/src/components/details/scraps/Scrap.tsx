@@ -164,8 +164,11 @@ export const Scrap: React.FC<{
 };
 
 const FocusableDiv = styled("div")`
-  &:focus {
-    outline: 2px solid ${(p) => p.theme.palette.primary.main};
-    border-radius: 3px;
+  /*&:focus {
+    outline: none;
   }
+
+  &:focus-visible {
+    outline: 2px solid ${(p) => p.theme.palette.primary.main};
+  }*/
 `;

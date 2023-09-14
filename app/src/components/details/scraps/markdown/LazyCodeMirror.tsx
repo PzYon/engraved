@@ -65,7 +65,6 @@ function getKeymap(keyMappings: KeyMappings) {
   const newKeymap = [...defaultKeymap];
 
   for (const map in keyMappings) {
-    debugger;
     newKeymap.push({
       key: map,
       run: () => {
