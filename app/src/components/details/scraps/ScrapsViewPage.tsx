@@ -81,6 +81,7 @@ export const ScrapsViewPage: React.FC = () => {
         ? (scraps as IScrapMeasurement[]).map((s, i) => (
             <Scrap
               key={s.id + keyToken}
+              onClick={() => collection.setFocus(i)}
               addScrapWrapper={(scrapWrapper) =>
                 collection.add(s.id, scrapWrapper)
               }

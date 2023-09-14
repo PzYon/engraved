@@ -30,16 +30,18 @@ export class ScrapWrapperCollection {
     this.index = -1;
   }
 
-  moveFocusDown() {
-    this.index = this.getNextHigherIndex(this.index);
-    this.wrappers[this.index].giveFocus();
+  setFocus(index: number) {
+    this.index = index;
+    this.wrappers[index].giveFocus();
     console.log("focus is at " + this.index);
   }
 
+  moveFocusDown() {
+    this.setFocus(this.getNextHigherIndex(this.index));
+  }
+
   moveFocusUp() {
-    this.index = this.getNextLowerIndex(this.index);
-    this.wrappers[this.index].giveFocus();
-    console.log("focus is at " + this.index);
+    this.setFocus(this.getNextLowerIndex(this.index));
   }
 
   private getNextHigherIndex(index: number) {

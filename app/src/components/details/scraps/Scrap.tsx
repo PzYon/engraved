@@ -19,6 +19,7 @@ export const Scrap: React.FC<{
   addScrapWrapper?: (scrapWrapper: ScrapWrapper) => void;
   index?: number;
   withoutSection?: boolean;
+  onClick?: () => void;
 }> = ({
   scrap: currentScrap,
   hideDate,
@@ -28,6 +29,7 @@ export const Scrap: React.FC<{
   addScrapWrapper,
   index,
   withoutSection,
+  onClick,
 }) => {
   const { setAppAlert } = useAppContext();
 
@@ -119,7 +121,7 @@ export const Scrap: React.FC<{
   const Container = withoutSection ? styled("div") : PageSection;
 
   return (
-    <Wrapper ref={domElementRef} tabIndex={index}>
+    <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
       <Container>
         <ScrapInner
           scrap={scrapToRender}
@@ -172,6 +174,8 @@ export const Scrap: React.FC<{
 
 const Wrapper = styled("div")`
   &:focus {
-    outline: 1px solid ${(p) => p.theme.palette.primary.main};
+    outline: 2px solid ${(p) => p.theme.palette.primary.main};
   }
+
+  border-radius: 3px;
 `;
