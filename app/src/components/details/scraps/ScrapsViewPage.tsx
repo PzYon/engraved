@@ -15,7 +15,6 @@ import {
 } from "../../../serverApi/IScrapMeasurement";
 import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
-import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { useHotkeys } from "react-hotkeys-hook";
