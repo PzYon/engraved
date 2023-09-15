@@ -6,7 +6,7 @@ export class Typer {
   private readonly blinkDurationMs = 500;
   private readonly idleBlinkDuration = this.blinkDurationMs;
 
-  public constructor(
+  constructor(
     private textToType: string,
     private printText: (text: string) => void,
     private toggleCursor?: (show?: boolean) => void
@@ -23,11 +23,11 @@ export class Typer {
     return Math.random() * 150 + 50;
   }
 
-  public start(): Promise<void> {
+  start(): Promise<void> {
     return this.startTyping();
   }
 
-  public end(): void {
+  end(): void {
     this.toggleCursor?.(false);
     clearTimeout(this.typeTimer as number);
     clearInterval(this.cursorInterval as number);
