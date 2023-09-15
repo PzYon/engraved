@@ -30,14 +30,23 @@ export class ScrapWrapperCollection {
     this.index = -1;
   }
 
+  setFocus(index: number) {
+    if (this.index === index) {
+      // if item already has focus (or is the last one that had focus),
+      // then do nothing in order to prevent cursors from moving around.
+      return;
+    }
+
+    this.index = index;
+    this.wrappers[index].giveFocus();
+  }
+
   moveFocusDown() {
-    this.index = this.getNextHigherIndex(this.index);
-    this.wrappers[this.index].giveFocus();
+    this.setFocus(this.getNextHigherIndex(this.index));
   }
 
   moveFocusUp() {
-    this.index = this.getNextLowerIndex(this.index);
-    this.wrappers[this.index].giveFocus();
+    this.setFocus(this.getNextLowerIndex(this.index));
   }
 
   private getNextHigherIndex(index: number) {

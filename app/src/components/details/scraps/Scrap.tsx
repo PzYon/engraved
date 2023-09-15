@@ -8,6 +8,7 @@ import { ScrapWrapper } from "./ScrapWrapper";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../serverApi/MetricType";
+import { PageSection } from "../../layout/pages/PageSection";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -17,6 +18,8 @@ export const Scrap: React.FC<{
   style?: CSSProperties;
   addScrapWrapper?: (scrapWrapper: ScrapWrapper) => void;
   index?: number;
+  withoutSection?: boolean;
+  onClick?: () => void;
 }> = ({
   scrap: currentScrap,
   hideDate,
@@ -25,6 +28,8 @@ export const Scrap: React.FC<{
   style,
   addScrapWrapper,
   index,
+  withoutSection,
+  onClick,
 }) => {
   const { setAppAlert } = useAppContext();
 
@@ -113,22 +118,26 @@ export const Scrap: React.FC<{
     });
   }, [currentScrap]);
 
+  const Container = withoutSection ? SimpleDiv : PageSection;
+
   return (
-    <FocusableDiv ref={domElementRef} tabIndex={index}>
-      <ScrapInner
-        scrap={scrapToRender}
-        title={title}
-        setTitle={setTitle}
-        notes={notes}
-        setNotes={setNotes}
-        isEditMode={isEditMode}
-        setIsEditMode={setIsEditMode}
-        hideDate={hideDate}
-        hideActions={hideActions}
-        upsertScrap={upsertScrap}
-        style={style}
-      />
-    </FocusableDiv>
+    <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
+      <Container>
+        <ScrapInner
+          scrap={scrapToRender}
+          title={title}
+          setTitle={setTitle}
+          notes={notes}
+          setNotes={setNotes}
+          isEditMode={isEditMode}
+          setIsEditMode={setIsEditMode}
+          hideDate={hideDate}
+          hideActions={hideActions}
+          upsertScrap={upsertScrap}
+          style={style}
+        />
+      </Container>
+    </Wrapper>
   );
 
   function updateScrapInState() {
@@ -163,12 +172,12 @@ export const Scrap: React.FC<{
   }
 };
 
-const FocusableDiv = styled("div")`
-  /*&:focus {
-    outline: none;
+const SimpleDiv = styled("div")``;
+
+const Wrapper = styled("div")`
+  &:focus {
+    outline: 2px solid ${(p) => p.theme.palette.primary.main};
   }
 
-  &:focus-visible {
-    outline: 2px solid ${(p) => p.theme.palette.primary.main};
-  }*/
+  border-radius: 3px;
 `;

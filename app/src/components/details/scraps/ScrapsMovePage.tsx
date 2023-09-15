@@ -99,16 +99,12 @@ export const ScrapsMovePage: React.FC = () => {
         </PageSection>
       ) : null}
 
-      <PageSection>
-        <Scrap
-          scrap={
-            measurements.find(
-              (m) => m.id === measurementId
-            ) as IScrapMeasurement
-          }
-          hideActions={true}
-        />
-      </PageSection>
+      <Scrap
+        scrap={
+          measurements.find((m) => m.id === measurementId) as IScrapMeasurement
+        }
+        hideActions={true}
+      />
     </Page>
   );
 };

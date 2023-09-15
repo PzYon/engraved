@@ -15,7 +15,6 @@ import {
 } from "../../../serverApi/IScrapMeasurement";
 import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
-import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -75,23 +74,19 @@ export const ScrapsViewPage: React.FC = () => {
         ...getCommonActions(metric),
       ]}
     >
-      {newScrap ? (
-        <PageSection key="new">
-          <Scrap scrap={newScrap} />
-        </PageSection>
-      ) : null}
+      {newScrap ? <Scrap key="new" scrap={newScrap} /> : null}
 
       {scraps.length
         ? (scraps as IScrapMeasurement[]).map((s, i) => (
-            <PageSection key={s.id + keyToken}>
-              <Scrap
-                addScrapWrapper={(scrapWrapper) =>
-                  collection.add(s.id, scrapWrapper)
-                }
-                scrap={s}
-                index={i}
-              />
-            </PageSection>
+            <Scrap
+              key={s.id + keyToken}
+              onClick={() => collection.setFocus(i)}
+              addScrapWrapper={(scrapWrapper) =>
+                collection.add(s.id, scrapWrapper)
+              }
+              scrap={s}
+              index={i}
+            />
           ))
         : null}
 
