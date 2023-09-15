@@ -13,6 +13,7 @@ export const ScrapListBody: React.FC<{
   value: string;
   onChange: (value: string) => void;
   onSave: () => Promise<void>;
+  reset: () => void;
 }> = ({
   scrap,
   hideDate,
@@ -23,6 +24,7 @@ export const ScrapListBody: React.FC<{
   value,
   onChange,
   onSave,
+  reset,
 }) => (
   <ScrapBody
     scrap={scrap}
@@ -32,6 +34,7 @@ export const ScrapListBody: React.FC<{
     hideActions={hideActions}
     actions={[]}
     onSave={onSave}
+    reset={reset}
   >
     <ScrapList
       isEditMode={editMode}
@@ -40,6 +43,7 @@ export const ScrapListBody: React.FC<{
       onChange={onChange}
       editedOn={scrap.editedOn}
       saveItem={onSave}
+      reset={reset}
     />
   </ScrapBody>
 );

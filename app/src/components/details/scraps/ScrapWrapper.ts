@@ -6,7 +6,8 @@ export class ScrapWrapper {
     private ref: React.MutableRefObject<HTMLDivElement>,
     public scrap: IScrapMeasurement,
     public setIsEditMode: () => void,
-    public upsertScrap: () => Promise<void>
+    public upsertScrap: () => Promise<void>,
+    public reset: () => void
   ) {}
 
   giveFocus() {

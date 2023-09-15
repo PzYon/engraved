@@ -18,7 +18,16 @@ export const ScrapList: React.FC<{
   onChange: (json: string) => void;
   editedOn: string;
   saveItem: () => Promise<void>;
-}> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn, saveItem }) => {
+  reset: () => void;
+}> = ({
+  isEditMode,
+  value,
+  hasTitleFocus,
+  onChange,
+  editedOn,
+  saveItem,
+  reset,
+}) => {
   const { palette } = useTheme();
 
   const listItemsCollection = useItemsHook(value, onChange, editedOn);
@@ -56,6 +65,7 @@ export const ScrapList: React.FC<{
               onDelete={() => listItemsCollection.remove(index)}
               onEnter={() => listItemsCollection.addNewLine(index)}
               saveItem={saveItem}
+              reset={reset}
             />
           ))
         )}

@@ -49,6 +49,10 @@ export class ScrapWrapperCollection {
     this.setFocus(this.getNextLowerIndex(this.index));
   }
 
+  discardChanges() {
+    this.wrappers[this.index].reset();
+  }
+
   private getNextHigherIndex(index: number) {
     const nextIndex = index + 1;
     return nextIndex > this.highestIndex ? 0 : nextIndex;

@@ -20,6 +20,7 @@ export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IIconButtonAction[];
   onSave: () => Promise<void>;
+  reset: () => void;
 }> = ({
   scrap,
   hideDate,
@@ -29,6 +30,7 @@ export const ScrapBody: React.FC<{
   children,
   actions,
   onSave,
+  reset,
 }) => {
   const allActions = getActions();
   return (
@@ -80,6 +82,10 @@ export const ScrapBody: React.FC<{
             onClick: () => setEditMode(true),
           },
     ];
+
+    if (reset) {
+      // todo: add reset action here depending on is dirty
+    }
 
     if (scrap.id) {
       allActions.push({

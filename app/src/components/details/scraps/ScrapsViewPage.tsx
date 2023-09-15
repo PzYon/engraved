@@ -59,6 +59,11 @@ export const ScrapsViewPage: React.FC = () => {
     collection.setEditMode();
   });
 
+  useHotkeys("alt+w", (keyboardEvent) => {
+    keyboardEvent.preventDefault();
+    collection.discardChanges();
+  });
+
   if (!scraps || !metric) {
     return;
   }

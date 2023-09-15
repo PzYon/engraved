@@ -18,6 +18,7 @@ export const ScrapListItem: React.FC<{
   moveItemUp: () => void;
   moveItemDown: () => void;
   saveItem: () => void;
+  reset: () => void;
 }> = ({
   isEditMode,
   listItemWrapper,
@@ -29,6 +30,7 @@ export const ScrapListItem: React.FC<{
   moveItemUp,
   moveItemDown,
   saveItem,
+  reset,
 }) => {
   const listItem = listItemWrapper.raw;
 
@@ -128,6 +130,14 @@ export const ScrapListItem: React.FC<{
 
         if (e.altKey && e.ctrlKey) {
           onDelete();
+        }
+
+        break;
+      }
+
+      case "Esc": {
+        if (e.altKey) {
+          reset();
         }
 
         break;

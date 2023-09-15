@@ -1,9 +1,14 @@
-import React, { CSSProperties, useEffect, useRef, useState } from "react";
+import React, {
+  CSSProperties,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../AppContext";
 import { Button, styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
-
 import { ScrapWrapper } from "./ScrapWrapper";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
@@ -47,6 +52,16 @@ export const Scrap: React.FC<{
     currentScrap.id
   );
 
+  const initialProps = useMemo(
+    () => ({ notes: currentScrap.notes, title: currentScrap.title }),
+    []
+  );
+
+  const isDirty = useMemo(
+    () => initialProps.notes !== notes || initialProps.title !== title,
+    [notes, title]
+  );
+
   useEffect(() => {
     if (!addScrapWrapper) {
       return;
@@ -57,10 +72,12 @@ export const Scrap: React.FC<{
         domElementRef,
         currentScrap,
         () => setIsEditMode(!isEditMode),
-        upsertScrap
+        upsertScrap,
+        isDirty ? () => reset() : null
       )
     );
-  }, [isEditMode, notes, title, currentScrap.editedOn]);
+    // todo: below, maybe we do not need notes/title here?
+  }, [isDirty, isEditMode, notes, title, currentScrap.editedOn]);
 
   useEffect(() => {
     if (
@@ -135,10 +152,16 @@ export const Scrap: React.FC<{
           hideActions={hideActions}
           upsertScrap={upsertScrap}
           style={style}
+          reset={reset}
         />
       </Container>
     </Wrapper>
   );
+
+  function reset() {
+    setNotes(initialProps.notes);
+    setTitle(initialProps.title);
+  }
 
   function updateScrapInState() {
     setScrapToRender(currentScrap);
