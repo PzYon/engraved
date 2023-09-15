@@ -33,7 +33,6 @@ export class ScrapWrapperCollection {
   setFocus(index: number) {
     this.index = index;
     this.wrappers[index].giveFocus();
-    console.log("focus is at " + this.index);
   }
 
   moveFocusDown() {
