@@ -6,7 +6,7 @@ import { IMetricType } from "./IMetricType";
 import { ScrapsMetricType } from "./ScrapsMetricType";
 
 export class MetricTypeFactory {
-  public static create(type: MetricType): IMetricType {
+  static create(type: MetricType): IMetricType {
     switch (type) {
       case MetricType.Counter:
         return new CounterMetricType();

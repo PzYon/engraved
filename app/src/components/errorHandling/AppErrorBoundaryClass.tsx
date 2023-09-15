@@ -9,7 +9,7 @@ export interface IAppErrorBoundaryClassProps {
 }
 
 export class AppErrorBoundaryClass extends React.PureComponent<IAppErrorBoundaryClassProps> {
-  public componentDidCatch(error: Error): void {
+  componentDidCatch(error: Error): void {
     logExceptionToAppInsights(error);
 
     this.props.setError({
@@ -19,7 +19,7 @@ export class AppErrorBoundaryClass extends React.PureComponent<IAppErrorBoundary
     });
   }
 
-  public render(): ReactNode {
+  render(): ReactNode {
     return this.props.children;
   }
 }

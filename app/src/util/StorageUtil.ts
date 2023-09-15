@@ -1,11 +1,11 @@
 export class StorageUtil {
   constructor(private storage: Storage) {}
 
-  public setValue(key: string, value: unknown): void {
+  setValue(key: string, value: unknown): void {
     this.storage.setItem(key, JSON.stringify(value));
   }
 
-  public getValue<T>(key: string): T {
+  getValue<T>(key: string): T {
     const item = this.storage.getItem(key);
     return item ? (JSON.parse(item) as T) : undefined;
   }
