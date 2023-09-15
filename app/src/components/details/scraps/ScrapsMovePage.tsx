@@ -103,7 +103,6 @@ export const ScrapsMovePage: React.FC = () => {
         scrap={
           measurements.find((m) => m.id === measurementId) as IScrapMeasurement
         }
-        withoutSection={true}
         hideActions={true}
       />
     </Page>

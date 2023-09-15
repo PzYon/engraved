@@ -31,6 +31,12 @@ export class ScrapWrapperCollection {
   }
 
   setFocus(index: number) {
+    if (this.index === index) {
+      // if item already has focus (or is the last one that had focus),
+      // then do nothing in order to prevent cursors from moving around.
+      return;
+    }
+
     this.index = index;
     this.wrappers[index].giveFocus();
   }

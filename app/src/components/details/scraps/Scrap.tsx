@@ -118,7 +118,7 @@ export const Scrap: React.FC<{
     });
   }, [currentScrap]);
 
-  const Container = withoutSection ? styled("div") : PageSection;
+  const Container = withoutSection ? SimpleDiv : PageSection;
 
   return (
     <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
@@ -171,6 +171,8 @@ export const Scrap: React.FC<{
     setIsEditMode(false);
   }
 };
+
+const SimpleDiv = styled("div")``;
 
 const Wrapper = styled("div")`
   &:focus {
