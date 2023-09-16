@@ -39,6 +39,7 @@ export const ScrapMarkdownBody: React.FC<{
       hideDate={hideDate}
       hideActions={hideActions}
       onSave={onSave}
+      reset={reset}
       actions={[
         {
           key: "copy",
@@ -58,7 +59,7 @@ export const ScrapMarkdownBody: React.FC<{
       <ScrapMarkdown
         keyMappings={{
           "Alt-s": onSave,
-          "Alt-r": reset,
+          "Alt-x": reset,
         }}
         isEditMode={editMode}
         value={value}

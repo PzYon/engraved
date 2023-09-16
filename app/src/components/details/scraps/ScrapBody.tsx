@@ -84,7 +84,12 @@ export const ScrapBody: React.FC<{
     ];
 
     if (reset) {
-      // todo: add reset action here depending on is dirty
+      allActions.push({
+        key: "rest",
+        label: "Reset",
+        icon: <EditOutlined fontSize="small" />,
+        onClick: reset,
+      });
     }
 
     if (scrap.id) {

@@ -135,7 +135,7 @@ export const ScrapListItem: React.FC<{
         break;
       }
 
-      case "Esc": {
+      case "x": {
         if (e.altKey) {
           reset();
         }

@@ -159,8 +159,10 @@ export const Scrap: React.FC<{
   );
 
   function reset() {
+    debugger;
     setNotes(initialProps.notes);
     setTitle(initialProps.title);
+    setIsEditMode(false);
   }
 
   function updateScrapInState() {

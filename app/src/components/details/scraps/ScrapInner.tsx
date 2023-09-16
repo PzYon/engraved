@@ -55,6 +55,7 @@ export const ScrapInner: React.FC<{
         onFocus={() => setHasTitleFocus(true)}
         onBlur={() => setHasTitleFocus(false)}
         sx={{ width: "100%" }}
+        // todo: consider shortcuts here?
       />
       {scrap.scrapType === ScrapType.List ? (
         <ScrapListBody
