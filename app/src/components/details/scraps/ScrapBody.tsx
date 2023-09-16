@@ -83,7 +83,7 @@ export const ScrapBody: React.FC<{
           },
     ];
 
-    if (reset) {
+    if (editMode && reset) {
       allActions.push({
         key: "rest",
         label: "Reset",

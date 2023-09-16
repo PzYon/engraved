@@ -52,13 +52,12 @@ export const Scrap: React.FC<{
     currentScrap.id
   );
 
-  const initialProps = useMemo(
-    () => ({ notes: currentScrap.notes, title: currentScrap.title }),
-    []
-  );
+  const initialScrap = useMemo(() => {
+    return currentScrap;
+  }, []);
 
   const isDirty = useMemo(
-    () => initialProps.notes !== notes || initialProps.title !== title,
+    () => initialScrap.notes !== notes || initialScrap.title !== title,
     [notes, title]
   );
 
@@ -159,9 +158,9 @@ export const Scrap: React.FC<{
   );
 
   function reset() {
-    debugger;
-    setNotes(initialProps.notes);
-    setTitle(initialProps.title);
+    setScrapToRender({ ...initialScrap });
+    setTitle(initialScrap.title);
+    setNotes(initialScrap.notes);
     setIsEditMode(false);
   }
 
