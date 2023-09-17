@@ -46,6 +46,7 @@ export const AddQuickScrapDialog: React.FC<{
         onSuccess={onSuccess}
         style={{ marginTop: "3px" }}
         withoutSection={true}
+        key={type}
       />
     </>
   );

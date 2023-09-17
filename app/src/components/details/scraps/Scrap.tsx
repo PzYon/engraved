@@ -151,7 +151,7 @@ export const Scrap: React.FC<{
           hideActions={hideActions}
           upsertScrap={upsertScrap}
           style={style}
-          reset={reset}
+          reset={isEditMode ? reset : null}
         />
       </Container>
     </Wrapper>
