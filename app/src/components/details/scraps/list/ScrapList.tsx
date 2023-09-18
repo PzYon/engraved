@@ -40,6 +40,7 @@ export const ScrapList: React.FC<{
 
   return (
     <Host
+      key={isEditMode.toString()}
       style={
         isEditMode && !hasTitleFocus
           ? { outline: "2px solid " + palette.primary.main }

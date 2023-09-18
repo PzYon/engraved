@@ -58,7 +58,7 @@ export const Scrap: React.FC<{
 
   const isDirty = useMemo(
     () => initialScrap.notes !== notes || initialScrap.title !== title,
-    [notes, title]
+    [initialScrap, notes, title]
   );
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export const Scrap: React.FC<{
         currentScrap,
         () => setIsEditMode(!isEditMode),
         upsertScrap,
-        isDirty ? () => reset() : null
+        getResetFunction()
       )
     );
     // todo: below, maybe we do not need notes/title here?
@@ -140,6 +140,7 @@ export const Scrap: React.FC<{
     <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
       <Container>
         <ScrapInner
+          key={isEditMode.toString()}
           scrap={scrapToRender}
           title={title}
           setTitle={setTitle}
@@ -151,7 +152,7 @@ export const Scrap: React.FC<{
           hideActions={hideActions}
           upsertScrap={upsertScrap}
           style={style}
-          reset={isEditMode ? reset : null}
+          reset={getResetFunction()}
         />
       </Container>
     </Wrapper>
@@ -193,6 +194,10 @@ export const Scrap: React.FC<{
 
     onSuccess?.();
     setIsEditMode(false);
+  }
+
+  function getResetFunction() {
+    return !isEditMode || !isDirty ? null : reset;
   }
 };
 

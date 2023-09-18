@@ -4,6 +4,7 @@ import { styled, Typography } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
 import { Actions } from "../../common/Actions";
 import {
+  ClearOutlined,
   DeleteOutlined,
   EditOutlined,
   Redo,
@@ -33,6 +34,7 @@ export const ScrapBody: React.FC<{
   reset,
 }) => {
   const allActions = getActions();
+
   return (
     <>
       {children}
@@ -83,11 +85,11 @@ export const ScrapBody: React.FC<{
           },
     ];
 
-    if (editMode && reset) {
+    if (reset) {
       allActions.push({
-        key: "rest",
-        label: "Reset",
-        icon: <EditOutlined fontSize="small" />,
+        key: "cancel-edit",
+        label: "Stop editing and reset",
+        icon: <ClearOutlined fontSize="small" />,
         onClick: reset,
       });
     }
