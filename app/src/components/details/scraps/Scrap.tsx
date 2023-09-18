@@ -75,8 +75,7 @@ export const Scrap: React.FC<{
         getCancelEditingFunction()
       )
     );
-    // todo: below, maybe we do not need notes/title here?
-  }, [isDirty, isEditMode, notes, title, currentScrap.editedOn]);
+  }, [isDirty, isEditMode, currentScrap.editedOn]);
 
   useEffect(() => {
     if (
