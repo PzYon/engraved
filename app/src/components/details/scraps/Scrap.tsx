@@ -1,9 +1,14 @@
-import React, { CSSProperties, useEffect, useRef, useState } from "react";
+import React, {
+  CSSProperties,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../AppContext";
 import { Button, styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
-
 import { ScrapWrapper } from "./ScrapWrapper";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
@@ -47,6 +52,15 @@ export const Scrap: React.FC<{
     currentScrap.id
   );
 
+  const initialScrap = useMemo(() => {
+    return currentScrap;
+  }, []);
+
+  const isDirty = useMemo(
+    () => initialScrap.notes !== notes || initialScrap.title !== title,
+    [initialScrap, notes, title]
+  );
+
   useEffect(() => {
     if (!addScrapWrapper) {
       return;
@@ -57,10 +71,11 @@ export const Scrap: React.FC<{
         domElementRef,
         currentScrap,
         () => setIsEditMode(!isEditMode),
-        upsertScrap
+        upsertScrap,
+        getCancelEditingFunction()
       )
     );
-  }, [isEditMode, notes, title, currentScrap.editedOn]);
+  }, [isDirty, isEditMode, currentScrap.editedOn]);
 
   useEffect(() => {
     if (
@@ -124,6 +139,7 @@ export const Scrap: React.FC<{
     <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
       <Container>
         <ScrapInner
+          key={isEditMode.toString()}
           scrap={scrapToRender}
           title={title}
           setTitle={setTitle}
@@ -135,10 +151,24 @@ export const Scrap: React.FC<{
           hideActions={hideActions}
           upsertScrap={upsertScrap}
           style={style}
+          cancelEditing={getCancelEditingFunction()}
         />
       </Container>
     </Wrapper>
   );
+
+  function getCancelEditingFunction() {
+    if (isEditMode && isDirty) {
+      return function () {
+        setScrapToRender(initialScrap);
+        setTitle(initialScrap.title);
+        setNotes(initialScrap.notes);
+        setIsEditMode(false);
+      };
+    }
+
+    return null;
+  }
 
   function updateScrapInState() {
     setScrapToRender(currentScrap);

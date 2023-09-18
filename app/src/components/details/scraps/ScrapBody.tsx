@@ -4,6 +4,7 @@ import { styled, Typography } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
 import { Actions } from "../../common/Actions";
 import {
+  ClearOutlined,
   DeleteOutlined,
   EditOutlined,
   Redo,
@@ -20,6 +21,7 @@ export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IIconButtonAction[];
   onSave: () => Promise<void>;
+  cancelEditing: () => void;
 }> = ({
   scrap,
   hideDate,
@@ -29,8 +31,10 @@ export const ScrapBody: React.FC<{
   children,
   actions,
   onSave,
+  cancelEditing,
 }) => {
   const allActions = getActions();
+
   return (
     <>
       {children}
@@ -80,6 +84,15 @@ export const ScrapBody: React.FC<{
             onClick: () => setEditMode(true),
           },
     ];
+
+    if (cancelEditing) {
+      allActions.push({
+        key: "cancel-edit",
+        label: "Stop editing and reset",
+        icon: <ClearOutlined fontSize="small" />,
+        onClick: cancelEditing,
+      });
+    }
 
     if (scrap.id) {
       allActions.push({
