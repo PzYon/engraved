@@ -19,7 +19,7 @@ export const ScrapInner: React.FC<{
   hideActions?: boolean;
   upsertScrap: () => Promise<void>;
   style?: CSSProperties;
-  reset: () => void;
+  cancelEditing: () => void;
 }> = ({
   scrap,
   isEditMode,
@@ -32,7 +32,7 @@ export const ScrapInner: React.FC<{
   hideActions,
   upsertScrap,
   style,
-  reset,
+  cancelEditing,
 }) => {
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
@@ -68,7 +68,7 @@ export const ScrapInner: React.FC<{
           value={notes}
           onChange={onChange}
           onSave={upsertScrap}
-          reset={reset}
+          cancelEditing={cancelEditing}
         />
       ) : (
         <ScrapMarkdownBody
@@ -80,7 +80,7 @@ export const ScrapInner: React.FC<{
           value={notes}
           onChange={onChange}
           onSave={upsertScrap}
-          reset={reset}
+          cancelEditing={cancelEditing}
         />
       )}
     </div>

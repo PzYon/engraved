@@ -72,7 +72,7 @@ export const Scrap: React.FC<{
         currentScrap,
         () => setIsEditMode(!isEditMode),
         upsertScrap,
-        getResetFunction()
+        getCancelEditingFunction()
       )
     );
     // todo: below, maybe we do not need notes/title here?
@@ -152,17 +152,23 @@ export const Scrap: React.FC<{
           hideActions={hideActions}
           upsertScrap={upsertScrap}
           style={style}
-          reset={getResetFunction()}
+          cancelEditing={getCancelEditingFunction()}
         />
       </Container>
     </Wrapper>
   );
 
-  function reset() {
-    setScrapToRender({ ...initialScrap });
-    setTitle(initialScrap.title);
-    setNotes(initialScrap.notes);
-    setIsEditMode(false);
+  function getCancelEditingFunction() {
+    if (isEditMode && isDirty) {
+      return function () {
+        setScrapToRender(initialScrap);
+        setTitle(initialScrap.title);
+        setNotes(initialScrap.notes);
+        setIsEditMode(false);
+      };
+    }
+
+    return null;
   }
 
   function updateScrapInState() {
@@ -194,10 +200,6 @@ export const Scrap: React.FC<{
 
     onSuccess?.();
     setIsEditMode(false);
-  }
-
-  function getResetFunction() {
-    return !isEditMode || !isDirty ? null : reset;
   }
 };
 

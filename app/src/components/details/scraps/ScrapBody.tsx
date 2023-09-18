@@ -21,7 +21,7 @@ export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IIconButtonAction[];
   onSave: () => Promise<void>;
-  reset: () => void;
+  cancelEditing: () => void;
 }> = ({
   scrap,
   hideDate,
@@ -31,7 +31,7 @@ export const ScrapBody: React.FC<{
   children,
   actions,
   onSave,
-  reset,
+  cancelEditing,
 }) => {
   const allActions = getActions();
 
@@ -85,12 +85,12 @@ export const ScrapBody: React.FC<{
           },
     ];
 
-    if (reset) {
+    if (cancelEditing) {
       allActions.push({
         key: "cancel-edit",
         label: "Stop editing and reset",
         icon: <ClearOutlined fontSize="small" />,
-        onClick: reset,
+        onClick: cancelEditing,
       });
     }
 

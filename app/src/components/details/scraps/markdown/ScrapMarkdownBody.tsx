@@ -15,7 +15,7 @@ export const ScrapMarkdownBody: React.FC<{
   value: string;
   onChange: (value: string) => void;
   onSave: () => Promise<void>;
-  reset: () => void;
+  cancelEditing: () => void;
 }> = ({
   scrap,
   hideDate,
@@ -25,7 +25,7 @@ export const ScrapMarkdownBody: React.FC<{
   value,
   onChange,
   onSave,
-  reset,
+  cancelEditing,
 }) => {
   useEffect(() => preloadLazyCodeMirror(), []);
 
@@ -39,7 +39,7 @@ export const ScrapMarkdownBody: React.FC<{
       hideDate={hideDate}
       hideActions={hideActions}
       onSave={onSave}
-      reset={reset}
+      cancelEditing={cancelEditing}
       actions={[
         {
           key: "copy",
@@ -59,7 +59,7 @@ export const ScrapMarkdownBody: React.FC<{
       <ScrapMarkdown
         keyMappings={{
           "Alt-s": onSave,
-          "Alt-x": reset,
+          "Alt-x": cancelEditing,
         }}
         isEditMode={editMode}
         value={value}
