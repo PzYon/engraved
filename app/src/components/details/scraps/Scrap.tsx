@@ -71,8 +71,7 @@ export const Scrap: React.FC<{
         domElementRef,
         currentScrap,
         () => setIsEditMode(!isEditMode),
-        upsertScrap,
-        getCancelEditingFunction()
+        upsertScrap
       )
     );
   }, [isDirty, isEditMode, currentScrap.editedOn]);

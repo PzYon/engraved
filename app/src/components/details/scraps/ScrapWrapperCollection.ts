@@ -5,6 +5,10 @@ export class ScrapWrapperCollection {
 
   private index = -1;
 
+  get current(): ScrapWrapper {
+    return this.wrappers[this.index];
+  }
+
   private get highestIndex() {
     return this.wrappers.length - 1;
   }
@@ -22,11 +26,11 @@ export class ScrapWrapperCollection {
   }
 
   setEditMode() {
-    this.wrappers[this.index].setIsEditMode();
+    this.current.setIsEditMode();
   }
 
   async update() {
-    await this.wrappers[this.index].upsertScrap();
+    await this.current.upsertScrap();
     this.index = -1;
   }
 
@@ -38,7 +42,7 @@ export class ScrapWrapperCollection {
     }
 
     this.index = index;
-    this.wrappers[index].giveFocus();
+    this.current.giveFocus();
   }
 
   moveFocusDown() {
@@ -47,10 +51,6 @@ export class ScrapWrapperCollection {
 
   moveFocusUp() {
     this.setFocus(this.getNextLowerIndex(this.index));
-  }
-
-  discardChanges() {
-    this.wrappers[this.index].reset();
   }
 
   private getNextHigherIndex(index: number) {

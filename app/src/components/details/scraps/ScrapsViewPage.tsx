@@ -13,7 +13,7 @@ import {
   IScrapMeasurement,
   ScrapType,
 } from "../../../serverApi/IScrapMeasurement";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
@@ -21,6 +21,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 
 export const ScrapsViewPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const {
     metric,
     measurements: scraps,
@@ -59,9 +61,9 @@ export const ScrapsViewPage: React.FC = () => {
     collection.setEditMode();
   });
 
-  useHotkeys("alt+w", (keyboardEvent) => {
+  useHotkeys("alt+d", (keyboardEvent) => {
     keyboardEvent.preventDefault();
-    collection.discardChanges();
+    navigate(`measurements/${collection.current.scrap.id}/delete`);
   });
 
   if (!scraps || !metric) {
