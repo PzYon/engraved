@@ -14,10 +14,17 @@ import { SharedWith } from "../common/SharedWith";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export const MetricDetails: React.FC = () => {
   const { metric } = useMetricContext();
   const deviceWidth = useDeviceWidth();
+  const navigate = useNavigate();
+
+  useHotkeys("alt+h", (keyboardEvent) => {
+    keyboardEvent.preventDefault();
+    navigate("/");
+  });
 
   if (!metric) {
     return null;
