@@ -63,7 +63,7 @@ export const ScrapsViewPage: React.FC = () => {
 
   useHotkeys("alt+d", (keyboardEvent) => {
     keyboardEvent.preventDefault();
-    navigate(`measurements/${collection.current.scrap.id}/delete`);
+    navigate(`measurements/${collection.current.internalObj.id}/delete`);
   });
 
   const addNewMarkdownAction = getAddNewAction("markdown");
@@ -97,14 +97,14 @@ export const ScrapsViewPage: React.FC = () => {
       {newScrap ? <Scrap key="new" scrap={newScrap} /> : null}
 
       {scraps.length
-        ? (scraps as IScrapMeasurement[]).map((s, i) => (
+        ? (scraps as IScrapMeasurement[]).map((scrap, i) => (
             <Scrap
-              key={s.id + keyToken}
+              key={scrap.id + keyToken}
               onClick={() => collection.setFocus(i)}
               addScrapWrapper={(scrapWrapper) =>
-                collection.add(s.id, scrapWrapper)
+                collection.add(scrap.id, scrapWrapper)
               }
-              scrap={s}
+              scrap={scrap}
               index={i}
             />
           ))

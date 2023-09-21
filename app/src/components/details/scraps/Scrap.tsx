@@ -9,11 +9,12 @@ import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../AppContext";
 import { Button, styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
-import { ScrapWrapper } from "./ScrapWrapper";
 import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
 import { MetricType } from "../../../serverApi/MetricType";
 import { PageSection } from "../../layout/pages/PageSection";
+import { ScrapItemWrapper } from "./ScrapItemWrapper";
+import { Wrapper } from "../../common/wrappers/Wrapper";
 
 export const Scrap: React.FC<{
   scrap: IScrapMeasurement;
@@ -21,7 +22,7 @@ export const Scrap: React.FC<{
   hideActions?: boolean;
   onSuccess?: () => void;
   style?: CSSProperties;
-  addScrapWrapper?: (scrapWrapper: ScrapWrapper) => void;
+  addScrapWrapper?: (scrapWrapper: ScrapItemWrapper) => void;
   index?: number;
   withoutSection?: boolean;
   onClick?: () => void;
@@ -67,7 +68,7 @@ export const Scrap: React.FC<{
     }
 
     addScrapWrapper(
-      new ScrapWrapper(
+      new ScrapItemWrapper(
         domElementRef,
         currentScrap,
         () => setIsEditMode(!isEditMode),
@@ -202,11 +203,3 @@ export const Scrap: React.FC<{
 };
 
 const SimpleDiv = styled("div")``;
-
-const Wrapper = styled("div")`
-  &:focus {
-    outline: 2px solid ${(p) => p.theme.palette.primary.main};
-  }
-
-  border-radius: 3px;
-`;
