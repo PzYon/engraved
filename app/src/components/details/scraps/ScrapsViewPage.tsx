@@ -66,6 +66,19 @@ export const ScrapsViewPage: React.FC = () => {
     navigate(`measurements/${collection.current.scrap.id}/delete`);
   });
 
+  const addNewMarkdownAction = getAddNewAction("markdown");
+  const addNewListAction = getAddNewAction("list");
+
+  useHotkeys("alt+m", (keyboardEvent) => {
+    keyboardEvent.preventDefault();
+    addNewMarkdownAction.onClick();
+  });
+
+  useHotkeys("alt+l", (keyboardEvent) => {
+    keyboardEvent.preventDefault();
+    addNewListAction.onClick();
+  });
+
   if (!scraps || !metric) {
     return;
   }
@@ -75,8 +88,8 @@ export const ScrapsViewPage: React.FC = () => {
       title={<MetricPageTitle metric={metric} />}
       documentTitle={metric.name}
       actions={[
-        getAddNewAction("markdown"),
-        getAddNewAction("list"),
+        addNewMarkdownAction,
+        addNewListAction,
         null,
         ...getCommonActions(metric),
       ]}
