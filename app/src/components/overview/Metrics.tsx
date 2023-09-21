@@ -7,7 +7,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { MetricWrapperCollection } from "./MetricWrapperCollection";
 
 export const Metrics: React.FC = () => {
-  const { searchText, metricTypes } = usePageContext();
+  const { searchText, metricTypes, showFilters, setShowFilters } =
+    usePageContext();
   const metrics = useMetricsQuery(searchText, metricTypes);
   const collection = useMemo(() => new MetricWrapperCollection(), [metrics]);
 
@@ -27,6 +28,11 @@ export const Metrics: React.FC = () => {
     collection.visit();
   });
 
+  useHotkeys("alt+f", (keyboardEvent) => {
+    keyboardEvent.preventDefault();
+    setShowFilters(!showFilters);
+  });
+
   if (!metrics) {
     return null;
   }
@@ -44,6 +50,7 @@ export const Metrics: React.FC = () => {
           addWrapper={(wrapper) => {
             collection.add(metric.id, wrapper);
           }}
+          onClick={() => collection.setFocus(i)}
           index={i}
         />
       ))}
