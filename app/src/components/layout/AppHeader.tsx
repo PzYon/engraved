@@ -20,7 +20,7 @@ import {
   FilterAltOutlined,
   SearchOutlined,
 } from "@mui/icons-material";
-import { renderAddQuickScrapDialog } from "../details/add/renderAddQuickScrapDialog";
+import { renderAddScrapDialog } from "../details/add/renderAddScrapDialog";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
@@ -97,7 +97,12 @@ export const AppHeader: React.FC = () => {
                 icon: <BoltOutlined fontSize="small" />,
                 label: "Add Quick Scrap",
                 sx: { color: "common.white", mr: 1 },
-                onClick: () => renderAddQuickScrapDialog(user, renderDialog),
+                onClick: () =>
+                  renderAddScrapDialog(
+                    user.favoriteMetricIds[0],
+                    renderDialog,
+                    "Add Quick Scrap"
+                  ),
               }}
             />
             <Link to="/users/me">
