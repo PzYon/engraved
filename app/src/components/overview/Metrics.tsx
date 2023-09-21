@@ -37,12 +37,12 @@ export const Metrics: React.FC = () => {
 
   return (
     <>
-      {metrics.map((m, i) => (
+      {metrics.map((metric, i) => (
         <MetricListItem
-          key={m.id}
-          metric={m}
+          key={metric.id}
+          metric={metric}
           addWrapper={(wrapper) => {
-            collection.add(m.id, wrapper);
+            collection.add(metric.id, wrapper);
           }}
           index={i}
         />

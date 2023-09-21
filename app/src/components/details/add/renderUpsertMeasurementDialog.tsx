@@ -3,11 +3,16 @@ import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IMetric } from "../../../serverApi/IMetric";
 import React from "react";
 import { useActiveMeasurementQuery } from "../../../serverApi/reactQuery/queries/useActiveMeasurementQuery";
+import { MetricType } from "../../../serverApi/MetricType";
 
 export const renderUpsertMeasurementDialog = (
   metric: IMetric,
   renderDialog: (dialogProps: IDialogProps) => void
 ): void => {
+  if (metric.type === MetricType.Scraps) {
+    return;
+  }
+
   renderDialog({
     title: "Add measurement",
     render: (closeDialog) => (
