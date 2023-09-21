@@ -44,6 +44,7 @@ export const Metrics: React.FC = () => {
           addWrapper={(wrapper) => {
             collection.add(metric.id, wrapper);
           }}
+          onClick={() => collection.setFocus(i)}
           index={i}
         />
       ))}

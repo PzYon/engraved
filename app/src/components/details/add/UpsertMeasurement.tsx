@@ -174,6 +174,7 @@ export const UpsertMeasurement: React.FC<{
         </Button>
         <Button
           variant="contained"
+          autoFocus={true}
           onClick={async () => {
             await ensureNewAttributeValues();
 

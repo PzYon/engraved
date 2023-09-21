@@ -17,7 +17,8 @@ export const MetricListItem: React.FC<{
   metric: IMetric;
   addWrapper?: (scrapWrapper: MetricItemWrapper) => void;
   index?: number;
-}> = ({ metric, addWrapper, index }) => {
+  onClick?: () => void;
+}> = ({ metric, addWrapper, index, onClick }) => {
   const { renderDialog } = useDialogContext();
   const deviceWidth = useDeviceWidth();
   const domElementRef = useRef<HTMLDivElement>();
@@ -36,10 +37,10 @@ export const MetricListItem: React.FC<{
         () => navigate("/metrics/" + metric.id)
       )
     );
-  }, [metric?.editedOn]);
+  }, [metric]);
 
   return (
-    <Wrapper ref={domElementRef} tabIndex={index}>
+    <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
       <PageSection key={metric.id}>
         <Box sx={{ display: "flex" }}>
           <MetricTypeIcon type={metric.type} style={IconStyle.Overview} />
