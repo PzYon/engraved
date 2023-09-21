@@ -1,5 +1,3 @@
-import { BaseItemWrapper } from "./BaseItemWrapper";
-
 export class BaseWrapperCollection<BaseItemWrapper> {
   private wrappers: BaseItemWrapper[] = [];
   private index = -1;
