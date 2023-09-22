@@ -33,6 +33,8 @@ export const Metrics: React.FC = () => {
     setShowFilters(!showFilters);
   });
 
+  const keyToken = useMemo(() => Math.random(), [metrics]);
+
   if (!metrics) {
     return null;
   }
@@ -45,7 +47,7 @@ export const Metrics: React.FC = () => {
     <>
       {metrics.map((metric, i) => (
         <MetricListItem
-          key={metric.id}
+          key={metric.id + keyToken}
           metric={metric}
           addWrapper={(wrapper) => {
             collection.add(metric.id, wrapper);
