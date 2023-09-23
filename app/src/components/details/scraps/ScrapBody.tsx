@@ -1,15 +1,11 @@
 import React from "react";
-import { IIconButtonAction } from "../../common/IconButtonWrapper";
+import {
+  ActionFactory,
+  IIconButtonAction,
+} from "../../common/IconButtonWrapper";
 import { styled, Typography } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
 import { Actions } from "../../common/Actions";
-import {
-  ClearOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  Redo,
-  SaveOutlined,
-} from "@mui/icons-material";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 
 export const ScrapBody: React.FC<{
@@ -62,45 +58,18 @@ export const ScrapBody: React.FC<{
 
     const allActions = [
       ...actions,
-      {
-        key: "move-to-other-scrap",
-        label: "Move to another scrap",
-        icon: <Redo fontSize="small" />,
-        href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/move`,
-      },
+      ActionFactory.moveToAnotherScrap(scrap),
       editMode
-        ? {
-            key: "save",
-            label: "Save",
-            icon: <SaveOutlined fontSize="small" />,
-            onClick: async () => {
-              await onSave();
-            },
-          }
-        : {
-            key: "edit",
-            label: "Edit",
-            icon: <EditOutlined fontSize="small" />,
-            onClick: () => setEditMode(true),
-          },
+        ? ActionFactory.save(async () => await onSave())
+        : ActionFactory.edit(() => setEditMode(true)),
     ];
 
     if (cancelEditing) {
-      allActions.push({
-        key: "cancel-edit",
-        label: "Stop editing and reset",
-        icon: <ClearOutlined fontSize="small" />,
-        onClick: cancelEditing,
-      });
+      allActions.push(ActionFactory.cancelEditing(cancelEditing));
     }
 
     if (scrap.id) {
-      allActions.push({
-        key: "delete",
-        label: "Delete",
-        icon: <DeleteOutlined fontSize="small" />,
-        href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/delete`,
-      });
+      allActions.push(ActionFactory.deleteScrap(scrap));
     }
 
     return allActions;

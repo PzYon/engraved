@@ -12,14 +12,11 @@ import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import {
+  ActionFactory,
   IconButtonWrapper,
   IIconButtonAction,
 } from "../common/IconButtonWrapper";
-import {
-  BoltOutlined,
-  FilterAltOutlined,
-  SearchOutlined,
-} from "@mui/icons-material";
+import { BoltOutlined, SearchOutlined } from "@mui/icons-material";
 import { renderAddScrapDialog } from "../details/add/renderAddScrapDialog";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
@@ -44,13 +41,7 @@ export const AppHeader: React.FC = () => {
 
   const pageActions: IIconButtonAction[] = enableFilters
     ? [
-        {
-          key: "filters",
-          icon: <FilterAltOutlined fontSize="small" />,
-          label: "Show filters",
-          isNotActive: !showFilters,
-          onClick: () => setShowFilters(!showFilters),
-        },
+        ActionFactory.toggleFilters(showFilters, setShowFilters),
         ...pageActionsFromContext,
       ]
     : pageActionsFromContext;

@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
 import { useAppContext } from "../../../../AppContext";
 import { ScrapBody } from "../ScrapBody";
-import { ContentCopyOutlined } from "@mui/icons-material";
 import { ScrapMarkdown } from "./ScrapMarkdown";
 import { preloadLazyCodeMirror } from "./MarkdownEditor";
+import { ActionFactory } from "../../../common/IconButtonWrapper";
 
 export const ScrapMarkdownBody: React.FC<{
   scrap: IScrapMeasurement;
@@ -40,21 +40,7 @@ export const ScrapMarkdownBody: React.FC<{
       hideActions={hideActions}
       onSave={onSave}
       cancelEditing={cancelEditing}
-      actions={[
-        {
-          key: "copy",
-          label: "Copy",
-          icon: <ContentCopyOutlined fontSize="small" />,
-          onClick: async () => {
-            await navigator.clipboard.writeText(value);
-            setAppAlert({
-              type: "success",
-              title: "Successfully copied text to clipboard.",
-              hideDurationSec: 1,
-            });
-          },
-        },
-      ]}
+      actions={[ActionFactory.copyValueToClipboard(value, setAppAlert)]}
     >
       <ScrapMarkdown
         keyMappings={{

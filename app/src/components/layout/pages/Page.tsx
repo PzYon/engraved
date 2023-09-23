@@ -23,6 +23,14 @@ export const Page: React.FC<{
   } = usePageContext();
 
   useEffect(() => {
+    if (actions === undefined) {
+      return;
+    }
+
+    setPageActions(actions);
+  }, [actions]);
+
+  useEffect(() => {
     if (title === undefined) {
       return;
     }
@@ -30,25 +38,11 @@ export const Page: React.FC<{
     setTitle(title);
   }, [title]);
 
-  useEffect(() => {
-    setSubTitle(subTitle);
-  }, [subTitle]);
+  useEffect(() => setSubTitle(subTitle), [subTitle]);
 
-  useEffect(() => {
-    setDocumentTitle(documentTitle);
-  }, [documentTitle]);
+  useEffect(() => setDocumentTitle(documentTitle), [documentTitle]);
 
-  useEffect(() => {
-    setEnableFilters(enableFilters);
-  }, [enableFilters]);
-
-  useEffect(() => {
-    if (actions === undefined) {
-      return;
-    }
-
-    setPageActions(actions);
-  }, [actions]);
+  useEffect(() => setEnableFilters(enableFilters), [enableFilters]);
 
   useEffect(() => {
     return () => {
