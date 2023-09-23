@@ -1,7 +1,9 @@
 import React from "react";
 import { envSettings } from "./env/envSettings";
-import { SwitchAccessShortcutOutlined } from "@mui/icons-material";
-import { IconButtonWrapper } from "./components/common/IconButtonWrapper";
+import {
+  ActionFactory,
+  IconButtonWrapper,
+} from "./components/common/IconButtonWrapper";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "./serverApi/reactQuery/queryKeysFactory";
 
@@ -24,17 +26,7 @@ export const VersionChecker: React.FC = () => {
     return null;
   }
 
-  return (
-    <IconButtonWrapper
-      action={{
-        icon: <SwitchAccessShortcutOutlined fontSize="small" />,
-        onClick: () => location.reload(),
-        label: "New version available - click to update.",
-        key: "update-to-new-version",
-        sx: { color: "#fdff00" },
-      }}
-    />
-  );
+  return <IconButtonWrapper action={ActionFactory.updateToNewVersion()} />;
 };
 
 const useIsNewVersionAvailableQuery = () => {

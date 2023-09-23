@@ -16,8 +16,7 @@ import {
   IconButtonWrapper,
   IIconButtonAction,
 } from "../common/IconButtonWrapper";
-import { BoltOutlined, SearchOutlined } from "@mui/icons-material";
-import { renderAddScrapDialog } from "../details/add/renderAddScrapDialog";
+import { SearchOutlined } from "@mui/icons-material";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
@@ -83,18 +82,7 @@ export const AppHeader: React.FC = () => {
               }}
             />
             <IconButtonWrapper
-              action={{
-                key: "add-quick-scrap-notes",
-                icon: <BoltOutlined fontSize="small" />,
-                label: "Add Quick Scrap",
-                sx: { color: "common.white", mr: 1 },
-                onClick: () =>
-                  renderAddScrapDialog(
-                    user.favoriteMetricIds[0],
-                    renderDialog,
-                    "Add Quick Scrap"
-                  ),
-              }}
+              action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
             <Link to="/users/me">
               <User user={user} />

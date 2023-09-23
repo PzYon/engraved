@@ -69,7 +69,7 @@ export const ScrapBody: React.FC<{
     }
 
     if (scrap.id) {
-      allActions.push(ActionFactory.deleteScrap(scrap));
+      allActions.push(ActionFactory.deleteMeasurement(scrap));
     }
 
     return allActions;

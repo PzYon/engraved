@@ -4,8 +4,8 @@ import { IMeasurement } from "../serverApi/IMeasurement";
 import { AttributeValues } from "../components/common/AttributeValues";
 import { styled, Typography } from "@mui/material";
 import { Activity } from "./Activity";
-import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import { Actions } from "../components/common/Actions";
+import { ActionFactory } from "../components/common/IconButtonWrapper";
 
 export const ActivityWithValue: React.FC<{
   value: React.ReactNode;
@@ -25,18 +25,8 @@ export const ActivityWithValue: React.FC<{
       <FooterContainer>
         <Actions
           actions={[
-            {
-              key: "edit",
-              label: "Edit",
-              icon: <EditOutlined fontSize="small" />,
-              href: `/metrics/${metric.id}/measurements/${measurement.id}/edit`,
-            },
-            {
-              key: "delete",
-              label: "Delete",
-              icon: <DeleteOutlined fontSize="small" />,
-              href: `/metrics/${metric.id}/measurements/${measurement.id}/delete`,
-            },
+            ActionFactory.editMeasurement(measurement),
+            ActionFactory.deleteMeasurement(measurement),
           ]}
         />
       </FooterContainer>

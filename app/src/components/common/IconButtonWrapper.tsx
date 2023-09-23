@@ -4,15 +4,23 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import { SxProps } from "@mui/system";
 import {
   AddOutlined,
+  BoltOutlined,
   ClearOutlined,
   Close,
   ContentCopyOutlined,
   DeleteOutlined,
   EditOutlined,
+  ExpandLess,
+  ExpandMore,
   FilterAltOutlined,
+  FunctionsOutlined,
+  MessageOutlined,
+  PanToolOutlined,
   Redo,
   SaveOutlined,
   ShareOutlined,
+  ShowChartOutlined,
+  SwitchAccessShortcutOutlined,
 } from "@mui/icons-material";
 import { IScrapMeasurement } from "../../serverApi/IScrapMeasurement";
 import { IAppAlert } from "../errorHandling/AppAlertBar";
@@ -20,6 +28,9 @@ import { editActionKey } from "../overview/getCommonActions";
 import { IDialogProps } from "../layout/dialogs/DialogContext";
 import { renderUpsertMeasurementDialog } from "../details/add/renderUpsertMeasurementDialog";
 import { IMetric } from "../../serverApi/IMetric";
+import { IMeasurement } from "../../serverApi/IMeasurement";
+import { renderAddScrapDialog } from "../details/add/renderAddScrapDialog";
+import { IUser } from "../../serverApi/IUser";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IIconButtonAction {
@@ -92,6 +103,32 @@ export class ActionFactory {
     };
   }
 
+  static toggleNotes(
+    showNotes: boolean,
+    setShowNotes: (value: boolean) => void
+  ) {
+    return {
+      key: "notes",
+      icon: <MessageOutlined fontSize="small" />,
+      label: "Show notes",
+      onClick: () => setShowNotes(!showNotes),
+      isNotActive: !showNotes,
+    };
+  }
+
+  static toggleShowChart(
+    showChart: boolean,
+    setShowChart: (value: boolean) => void
+  ) {
+    return {
+      key: "chart",
+      icon: <ShowChartOutlined fontSize="small" />,
+      label: "Show chart",
+      onClick: () => setShowChart(!showChart),
+      isNotActive: !showChart,
+    };
+  }
+
   static toggleFilters(
     showFilters: boolean,
     setShowFilters: (v: boolean) => void
@@ -102,6 +139,19 @@ export class ActionFactory {
       label: "Show filters",
       isNotActive: !showFilters,
       onClick: () => setShowFilters(!showFilters),
+    };
+  }
+
+  static toggleGroupTotals(
+    showGroupTotals: boolean,
+    setShowGroupTotals: (value: boolean) => void
+  ) {
+    return {
+      key: "groupTotals",
+      icon: <FunctionsOutlined fontSize="small" />,
+      label: "Show group total",
+      onClick: () => setShowGroupTotals(!showGroupTotals),
+      isNotActive: !showGroupTotals,
     };
   }
 
@@ -123,12 +173,21 @@ export class ActionFactory {
     };
   }
 
-  static deleteScrap(scrap: IScrapMeasurement): IIconButtonAction {
+  static deleteMeasurement(measurement: IMeasurement): IIconButtonAction {
     return {
       key: "delete",
       label: "Delete",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/delete`,
+      href: `/metrics/${measurement.metricId}/measurements/${measurement.id}/delete`,
+    };
+  }
+
+  static editMeasurement(measurement: IMeasurement): IIconButtonAction {
+    return {
+      key: "edit",
+      label: "Edit",
+      icon: <EditOutlined fontSize="small" />,
+      href: `/metrics/${measurement.metricId}/measurements/${measurement.id}/edit`,
     };
   }
 
@@ -157,6 +216,65 @@ export class ActionFactory {
           hideDurationSec: 1,
         });
       },
+    };
+  }
+
+  static addQuickScrap(
+    user: IUser,
+    renderDialog?: (dialogProps: IDialogProps) => void
+  ): IIconButtonAction {
+    return {
+      key: "add-quick-scrap",
+      icon: <BoltOutlined fontSize="small" />,
+      label: "Add Quick Scrap",
+      sx: { color: "common.white", mr: 1 },
+      onClick: () =>
+        renderAddScrapDialog(
+          user.favoriteMetricIds[0],
+          renderDialog,
+          "Add Quick Scrap"
+        ),
+    };
+  }
+
+  static toggleThresholds(
+    showThresholds: boolean,
+    setShowThresholds: (value: boolean) => void
+  ) {
+    return {
+      key: "thresholds",
+      icon: <PanToolOutlined fontSize="small" />,
+      label: "Show thresholds",
+      onClick: () => setShowThresholds(!showThresholds),
+      isNotActive: !showThresholds,
+    };
+  }
+
+  static updateToNewVersion() {
+    return {
+      icon: <SwitchAccessShortcutOutlined fontSize="small" />,
+      onClick: () => location.reload(),
+      label: "New version available - click to update.",
+      key: "update-to-new-version",
+      sx: { color: "#fdff00" },
+    };
+  }
+
+  static expand(onClick: () => void) {
+    return {
+      key: "expand",
+      label: "Expand",
+      onClick: onClick,
+      icon: <ExpandMore fontSize="small" />,
+    };
+  }
+
+  static collapse(onClick: () => void) {
+    return {
+      key: "collapse",
+      label: "Collapse",
+      onClick: onClick,
+      icon: <ExpandLess fontSize="small" />,
     };
   }
 }
