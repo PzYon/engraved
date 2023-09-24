@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IconButtonWrapper } from "./actions/IconButtonWrapper";
+import { ActionIconButton } from "./actions/ActionIconButton";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { styled } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ export const RefreshData: React.FC = () => {
 
   return (
     <Host className={doRotate ? "rotate" : null}>
-      <IconButtonWrapper action={ActionFactory.refreshData(queryClient)} />
+      <ActionIconButton action={ActionFactory.refreshData(queryClient)} />
     </Host>
   );
 };

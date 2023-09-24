@@ -6,7 +6,7 @@ import {
   createDateConditions,
   createNextDateConditions,
 } from "./createDateConditions";
-import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { DateRangeSelector } from "./DateRangeSelector";
 
@@ -33,7 +33,7 @@ export const DateFilters: React.FC = () => {
     <>
       <RangeContainer>
         <DateRangeSelector dateRange={dateRange} onChange={onChange} />
-        <IconButtonWrapper
+        <ActionIconButton
           action={{
             onClick: () =>
               setDateConditions(
@@ -44,7 +44,7 @@ export const DateFilters: React.FC = () => {
             key: "go_left",
           }}
         />
-        <IconButtonWrapper
+        <ActionIconButton
           action={{
             onClick: () =>
               setDateConditions(

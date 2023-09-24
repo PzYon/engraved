@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import { Actions } from "../common/actions/Actions";
+import { ActionGroup } from "../common/actions/ActionGroup";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
@@ -11,14 +11,14 @@ import { Typing } from "../common/Typing";
 import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
-import { IconButtonWrapper } from "../common/actions/IconButtonWrapper";
+import { ActionIconButton } from "../common/actions/ActionIconButton";
 import { SearchOutlined } from "@mui/icons-material";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
 import { Titles } from "./Titles";
 import { ActionFactory } from "../common/actions/ActionFactory";
-import { IIconButtonAction } from "../common/actions/IIconButtonAction";
+import { IAction } from "../common/actions/IAction";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -36,7 +36,7 @@ export const AppHeader: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
 
-  const pageActions: IIconButtonAction[] = enableFilters
+  const pageActions: IAction[] = enableFilters
     ? [
         ActionFactory.toggleFilters(showFilters, setShowFilters),
         ...pageActionsFromContext,
@@ -70,7 +70,7 @@ export const AppHeader: React.FC = () => {
             <VersionChecker />
             <AppInfoLauncher />
             <RefreshData />
-            <IconButtonWrapper
+            <ActionIconButton
               action={{
                 key: "search",
                 icon: <SearchOutlined fontSize="small" />,
@@ -79,7 +79,7 @@ export const AppHeader: React.FC = () => {
                 sx: { color: "common.white" },
               }}
             />
-            <IconButtonWrapper
+            <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
             <Link to="/users/me">
@@ -100,7 +100,7 @@ export const AppHeader: React.FC = () => {
             isSmall={isSmall}
             key={window.location.pathname}
           ></SearchAndActionsContainer>
-          <Actions actions={pageActions} enableFloatingActions={true} />
+          <ActionGroup actions={pageActions} enableFloatingActions={true} />
         </ContentWrapper>
 
         {showFilters ? <PageFilters /> : null}

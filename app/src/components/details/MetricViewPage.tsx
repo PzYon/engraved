@@ -21,7 +21,7 @@ import { getDefaultDateConditions } from "./filters/DateFilters";
 import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
 import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
-import { IIconButtonAction } from "../common/actions/IIconButtonAction";
+import { IAction } from "../common/actions/IAction";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -62,7 +62,7 @@ export const MetricViewPage: React.FC = () => {
     !!uiSettings?.showGroupTotals
   );
 
-  const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
+  const [titleActions, setTitleActions] = useState<IAction[]>([]);
 
   useEffect(() => {
     setDateConditions(

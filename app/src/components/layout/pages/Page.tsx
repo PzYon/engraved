@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
-import { IIconButtonAction } from "../../common/actions/IIconButtonAction";
+import { IAction } from "../../common/actions/IAction";
 
 export const Page: React.FC<{
-  actions?: IIconButtonAction[];
+  actions?: IAction[];
   title?: React.ReactNode;
   subTitle?: React.ReactNode;
   documentTitle?: string;

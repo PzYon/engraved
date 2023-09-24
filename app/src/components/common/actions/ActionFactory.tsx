@@ -31,10 +31,10 @@ import { IUser } from "../../../serverApi/IUser";
 import { renderAddScrapDialog } from "../../details/add/renderAddScrapDialog";
 import { QueryClient } from "@tanstack/react-query";
 
-import { IIconButtonAction } from "./IIconButtonAction";
+import { IAction } from "./IAction";
 
 export class ActionFactory {
-  static cancel(onClick: () => void): IIconButtonAction {
+  static cancel(onClick: () => void): IAction {
     return {
       key: "cancel",
       label: "Cancel",
@@ -43,10 +43,7 @@ export class ActionFactory {
     };
   }
 
-  static save(
-    onClick: () => Promise<void>,
-    isDisabled?: boolean
-  ): IIconButtonAction {
+  static save(onClick: () => Promise<void>, isDisabled?: boolean): IAction {
     return {
       key: "save",
       label: "Save",
@@ -56,7 +53,7 @@ export class ActionFactory {
     };
   }
 
-  static home(): IIconButtonAction {
+  static home(): IAction {
     return {
       key: "navigate-home",
       label: "Home",
@@ -65,7 +62,7 @@ export class ActionFactory {
     };
   }
 
-  static createMetric(): IIconButtonAction {
+  static createMetric(): IAction {
     return {
       href: "/metrics/create",
       icon: <AddOutlined fontSize="small" />,
@@ -74,7 +71,7 @@ export class ActionFactory {
     };
   }
 
-  static editMetric(metricId: string): IIconButtonAction {
+  static editMetric(metricId: string): IAction {
     return {
       key: editActionKey,
       label: "Edit",
@@ -83,7 +80,7 @@ export class ActionFactory {
     };
   }
 
-  static editMetricPermissions(metricId: string): IIconButtonAction {
+  static editMetricPermissions(metricId: string): IAction {
     return {
       key: "permissions",
       label: "Permissions",
@@ -92,7 +89,7 @@ export class ActionFactory {
     };
   }
 
-  static deleteMetric(metricId: string): IIconButtonAction {
+  static deleteMetric(metricId: string): IAction {
     return {
       key: "delete",
       label: "Delete",
@@ -104,7 +101,7 @@ export class ActionFactory {
   static addMeasurement(
     metric: IMetric,
     renderDialog?: (dialogProps: IDialogProps) => void
-  ): IIconButtonAction {
+  ): IAction {
     return {
       key: "add_measurement",
       label: "Add Measurement",
@@ -116,7 +113,7 @@ export class ActionFactory {
   static toggleNotes(
     showNotes: boolean,
     setShowNotes: (value: boolean) => void
-  ): IIconButtonAction {
+  ): IAction {
     return {
       key: "notes",
       icon: <MessageOutlined fontSize="small" />,
@@ -129,7 +126,7 @@ export class ActionFactory {
   static toggleShowChart(
     showChart: boolean,
     setShowChart: (value: boolean) => void
-  ): IIconButtonAction {
+  ): IAction {
     return {
       key: "chart",
       icon: <ShowChartOutlined fontSize="small" />,
@@ -142,7 +139,7 @@ export class ActionFactory {
   static toggleFilters(
     showFilters: boolean,
     setShowFilters: (v: boolean) => void
-  ): IIconButtonAction {
+  ): IAction {
     return {
       key: "filters",
       icon: <FilterAltOutlined fontSize="small" />,
@@ -155,7 +152,7 @@ export class ActionFactory {
   static toggleGroupTotals(
     showGroupTotals: boolean,
     setShowGroupTotals: (value: boolean) => void
-  ): IIconButtonAction {
+  ): IAction {
     return {
       key: "groupTotals",
       icon: <FunctionsOutlined fontSize="small" />,
@@ -165,7 +162,7 @@ export class ActionFactory {
     };
   }
 
-  static edit(onEdit: () => void): IIconButtonAction {
+  static edit(onEdit: () => void): IAction {
     return {
       key: "edit",
       label: "Edit",
@@ -174,7 +171,7 @@ export class ActionFactory {
     };
   }
 
-  static moveToAnotherScrap(scrap: IScrapMeasurement): IIconButtonAction {
+  static moveToAnotherScrap(scrap: IScrapMeasurement): IAction {
     return {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
@@ -183,7 +180,7 @@ export class ActionFactory {
     };
   }
 
-  static deleteMeasurement(measurement: IMeasurement): IIconButtonAction {
+  static deleteMeasurement(measurement: IMeasurement): IAction {
     return {
       key: "delete",
       label: "Delete",
@@ -192,7 +189,7 @@ export class ActionFactory {
     };
   }
 
-  static editMeasurement(measurement: IMeasurement): IIconButtonAction {
+  static editMeasurement(measurement: IMeasurement): IAction {
     return {
       key: "edit",
       label: "Edit",
@@ -201,7 +198,7 @@ export class ActionFactory {
     };
   }
 
-  static cancelEditing(onCancel: () => void): IIconButtonAction {
+  static cancelEditing(onCancel: () => void): IAction {
     return {
       key: "cancel-edit",
       label: "Stop editing and reset",
@@ -213,7 +210,7 @@ export class ActionFactory {
   static copyValueToClipboard(
     value: string,
     setAppAlert: (appAlert: IAppAlert) => void
-  ): IIconButtonAction {
+  ): IAction {
     return {
       key: "copy",
       label: "Copy",
@@ -232,7 +229,7 @@ export class ActionFactory {
   static addQuickScrap(
     user: IUser,
     renderDialog?: (dialogProps: IDialogProps) => void
-  ): IIconButtonAction {
+  ): IAction {
     return {
       key: "add-quick-scrap",
       icon: <BoltOutlined fontSize="small" />,
@@ -250,7 +247,7 @@ export class ActionFactory {
   static toggleThresholds(
     showThresholds: boolean,
     setShowThresholds: (value: boolean) => void
-  ): IIconButtonAction {
+  ): IAction {
     return {
       key: "thresholds",
       icon: <PanToolOutlined fontSize="small" />,
@@ -260,7 +257,7 @@ export class ActionFactory {
     };
   }
 
-  static updateToNewVersion(): IIconButtonAction {
+  static updateToNewVersion(): IAction {
     return {
       icon: <SwitchAccessShortcutOutlined fontSize="small" />,
       onClick: () => location.reload(),
@@ -270,7 +267,7 @@ export class ActionFactory {
     };
   }
 
-  static expand(onClick: () => void): IIconButtonAction {
+  static expand(onClick: () => void): IAction {
     return {
       key: "expand",
       label: "Expand",
@@ -279,7 +276,7 @@ export class ActionFactory {
     };
   }
 
-  static collapse(onClick: () => void): IIconButtonAction {
+  static collapse(onClick: () => void): IAction {
     return {
       key: "collapse",
       label: "Collapse",
@@ -288,7 +285,7 @@ export class ActionFactory {
     };
   }
 
-  static appInfo(showInfo: () => void): IIconButtonAction {
+  static appInfo(showInfo: () => void): IAction {
     return {
       icon: <HelpOutlineOutlined fontSize="small" />,
       onClick: () => showInfo(),
@@ -298,7 +295,7 @@ export class ActionFactory {
     };
   }
 
-  static refreshData(queryClient: QueryClient): IIconButtonAction {
+  static refreshData(queryClient: QueryClient): IAction {
     return {
       icon: <RefreshOutlined fontSize="small" />,
       onClick: async () => await queryClient.invalidateQueries(),

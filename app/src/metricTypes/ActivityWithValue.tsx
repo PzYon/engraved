@@ -4,7 +4,7 @@ import { IMeasurement } from "../serverApi/IMeasurement";
 import { AttributeValues } from "../components/common/AttributeValues";
 import { styled, Typography } from "@mui/material";
 import { Activity } from "./Activity";
-import { Actions } from "../components/common/actions/Actions";
+import { ActionGroup } from "../components/common/actions/ActionGroup";
 
 import { ActionFactory } from "../components/common/actions/ActionFactory";
 
@@ -24,7 +24,7 @@ export const ActivityWithValue: React.FC<{
         attributeValues={measurement.metricAttributeValues}
       />
       <FooterContainer>
-        <Actions
+        <ActionGroup
           actions={[
             ActionFactory.editMeasurement(measurement),
             ActionFactory.deleteMeasurement(measurement),

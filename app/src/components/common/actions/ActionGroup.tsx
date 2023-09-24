@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IconButtonWrapper } from "./IconButtonWrapper";
+import { ActionIconButton } from "./ActionIconButton";
 import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
 import { useIsInViewport } from "../useIsInViewPort";
 import { styled } from "@mui/material";
-import { IIconButtonAction } from "./IIconButtonAction";
+import { IAction } from "./IAction";
 
-export const Actions: React.FC<{
-  actions: IIconButtonAction[];
+export const ActionGroup: React.FC<{
+  actions: IAction[];
   enableFloatingActions?: boolean;
 }> = ({ actions, enableFloatingActions }) => {
   const domElementRef = useRef<HTMLDivElement>();
@@ -39,7 +39,7 @@ export const Actions: React.FC<{
           .filter((a) => a !== undefined)
           .map((action) =>
             action ? (
-              <IconButtonWrapper key={action.key} action={action} />
+              <ActionIconButton key={action.key} action={action} />
             ) : (
               <SeparatorElement key={"separator"} />
             )

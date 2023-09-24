@@ -21,8 +21,6 @@ export class BaseWrapperCollection<BaseItemWrapper> {
       return;
     }
 
-    console.log("setting focus to: " + index);
-
     this.setIndex(index);
     this.current.giveFocus();
   }

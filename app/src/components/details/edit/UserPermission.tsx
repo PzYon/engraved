@@ -2,7 +2,7 @@ import React from "react";
 import { IPermissionDefinition } from "../../../serverApi/IPermissionDefinition";
 import { Chip, styled } from "@mui/material";
 import { User } from "../../common/User";
-import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { DeleteOutlined } from "@mui/icons-material";
 
 export const UserPermission: React.FC<{
@@ -24,7 +24,7 @@ export const UserPermission: React.FC<{
         label={permissionDefinition.kind?.toString()}
         title={permissionDefinition.kind?.toString()}
       />
-      <IconButtonWrapper
+      <ActionIconButton
         action={{
           key: "remove",
           label: "Remove",

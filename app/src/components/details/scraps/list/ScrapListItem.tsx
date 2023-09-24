@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled, Typography } from "@mui/material";
-import { IconButtonWrapper } from "../../../common/actions/IconButtonWrapper";
+import { ActionIconButton } from "../../../common/actions/ActionIconButton";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { ListItemWrapper } from "./ListItemWrapper";
@@ -64,7 +64,7 @@ export const ScrapListItem: React.FC<{
         <Typography sx={getSx("plain")}>{label}</Typography>
       )}
 
-      <IconButtonWrapper
+      <ActionIconButton
         action={{
           sx: !isEditMode ? { visibility: "hidden" } : null,
           isDisabled: !isEditMode,

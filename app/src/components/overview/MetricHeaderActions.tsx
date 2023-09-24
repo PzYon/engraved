@@ -1,19 +1,19 @@
 import React, { useMemo } from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { Actions } from "../common/actions/Actions";
+import { ActionGroup } from "../common/actions/ActionGroup";
 import { getCommonActions } from "./getCommonActions";
-import { IIconButtonAction } from "../common/actions/IIconButtonAction";
+import { IAction } from "../common/actions/IAction";
 
 export const MetricHeaderActions: React.FC<{ metric: IMetric }> = ({
   metric,
 }) => {
   const { renderDialog } = useDialogContext();
 
-  const actions = useMemo<IIconButtonAction[]>(
+  const actions = useMemo<IAction[]>(
     () => getCommonActions(metric, renderDialog),
     [metric]
   );
 
-  return <Actions actions={actions} />;
+  return <ActionGroup actions={actions} />;
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { envSettings } from "./env/envSettings";
-import { IconButtonWrapper } from "./components/common/actions/IconButtonWrapper";
+import { ActionIconButton } from "./components/common/actions/ActionIconButton";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "./serverApi/reactQuery/queryKeysFactory";
 import { ActionFactory } from "./components/common/actions/ActionFactory";
@@ -24,7 +24,7 @@ export const VersionChecker: React.FC = () => {
     return null;
   }
 
-  return <IconButtonWrapper action={ActionFactory.updateToNewVersion()} />;
+  return <ActionIconButton action={ActionFactory.updateToNewVersion()} />;
 };
 
 const useIsNewVersionAvailableQuery = () => {

@@ -1,10 +1,10 @@
 import React from "react";
 import { styled, Typography } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
-import { Actions } from "../../common/actions/Actions";
+import { ActionGroup } from "../../common/actions/ActionGroup";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
 import { ActionFactory } from "../../common/actions/ActionFactory";
-import { IIconButtonAction } from "../../common/actions/IIconButtonAction";
+import { IAction } from "../../common/actions/IAction";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapMeasurement;
@@ -13,7 +13,7 @@ export const ScrapBody: React.FC<{
   editMode: boolean;
   setEditMode: (value: boolean) => void;
   children: React.ReactNode;
-  actions: IIconButtonAction[];
+  actions: IAction[];
   onSave: () => Promise<void>;
   cancelEditing: () => void;
 }> = ({
@@ -42,7 +42,7 @@ export const ScrapBody: React.FC<{
 
         {allActions?.length ? (
           <ActionsContainer>
-            <Actions actions={allActions} />
+            <ActionGroup actions={allActions} />
           </ActionsContainer>
         ) : null}
       </FooterContainer>

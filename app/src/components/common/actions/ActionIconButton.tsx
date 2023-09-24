@@ -1,10 +1,10 @@
 import React from "react";
 import { IconButton } from "@mui/material";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { IIconButtonAction } from "./IIconButtonAction";
+import { IAction } from "./IAction";
 
-export const IconButtonWrapper: React.FC<{
-  action: IIconButtonAction;
+export const ActionIconButton: React.FC<{
+  action: IAction;
 }> = ({ action }) => {
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ export const IconButtonWrapper: React.FC<{
 
 export function executeActionClick(
   e: React.MouseEvent<HTMLElement>,
-  action: IIconButtonAction,
+  action: IAction,
   navigate: NavigateFunction
 ) {
   e.stopPropagation();

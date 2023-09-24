@@ -18,7 +18,7 @@ import { MetricType } from "../../../serverApi/MetricType";
 import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { format } from "date-fns";
 import { IMetricType } from "../../../metricTypes/IMetricType";
-import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { IMeasurementsTableGroup } from "./IMeasurementsTableGroup";
 import { MeasurementsDateTableCell } from "./MeasurementsDateTableCell";
 import { MeasurementsTableBodyGroup } from "./MeasurementsTableBodyGroup";
@@ -112,9 +112,9 @@ function getColumnsBefore(
     {
       getHeaderReactNode: () =>
         collapseAll ? (
-          <IconButtonWrapper action={ActionFactory.expand(onHeaderClick)} />
+          <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
         ) : (
-          <IconButtonWrapper action={ActionFactory.expand(onHeaderClick)} />
+          <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
         ),
       key: "_collapse",
       width: "40px",
@@ -123,10 +123,10 @@ function getColumnsBefore(
           return null;
         }
 
-        return <IconButtonWrapper action={ActionFactory.expand(onClick)} />;
+        return <ActionIconButton action={ActionFactory.expand(onClick)} />;
       },
       getGroupReactNode: (_, onClick) => {
-        return <IconButtonWrapper action={ActionFactory.collapse(onClick)} />;
+        return <ActionIconButton action={ActionFactory.collapse(onClick)} />;
       },
     },
     {

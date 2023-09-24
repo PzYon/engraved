@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconButtonWrapper } from "../actions/IconButtonWrapper";
+import { ActionIconButton } from "../actions/ActionIconButton";
 import { AppInfo } from "./AppInfo";
 import { DialogWrapper } from "../../layout/dialogs/DialogWrapper";
 import { ActionFactory } from "../actions/ActionFactory";
@@ -9,7 +9,7 @@ export const AppInfoLauncher: React.FC = () => {
 
   return (
     <>
-      <IconButtonWrapper
+      <ActionIconButton
         action={ActionFactory.appInfo(() => setShowInfo(true))}
       />
       {showInfo ? (

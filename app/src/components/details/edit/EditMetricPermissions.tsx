@@ -5,7 +5,7 @@ import { PermissionKindSelector } from "./PermissionKindSelector";
 import { PermissionKind } from "../../../serverApi/PermissionKind";
 import { IUpdatePermissions } from "../../../serverApi/IUpdatePermissions";
 import { UserPermission } from "./UserPermission";
-import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { AddOutlined } from "@mui/icons-material";
 import { isValidEmail } from "../../../util/utils";
 import { useModifyMetricPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyMetricPermissionsMutation";
@@ -62,7 +62,7 @@ export const EditMetricPermissions: React.FC<{
           permissionKind={permissionKind}
           onChange={(kind) => setPermissionKind(kind)}
         />
-        <IconButtonWrapper
+        <ActionIconButton
           action={{
             key: "add",
             label: "Add",

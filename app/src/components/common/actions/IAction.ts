@@ -2,10 +2,10 @@ import React from "react";
 import { SxProps } from "@mui/system";
 import { Theme } from "@mui/material";
 
-export interface IIconButtonAction {
+export interface IAction {
   key: string;
-  icon: React.ReactNode;
   label: string;
+  icon: React.ReactNode;
   onClick?: () => void;
   href?: string;
   sx?: SxProps<Theme>;
