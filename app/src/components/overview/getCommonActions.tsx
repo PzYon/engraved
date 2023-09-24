@@ -1,8 +1,8 @@
 import { IMetric } from "../../serverApi/IMetric";
 import { IDialogProps } from "../layout/dialogs/DialogContext";
-import { IIconButtonAction } from "../common/actions/IconButtonWrapper";
 import { MetricType } from "../../serverApi/MetricType";
 import { ActionFactory } from "../common/actions/ActionFactory";
+import { IIconButtonAction } from "../common/actions/IIconButtonAction";
 
 export const editActionKey = "edit";
 

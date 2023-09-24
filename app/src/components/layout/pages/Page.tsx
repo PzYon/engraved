@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { IIconButtonAction } from "../../common/actions/IconButtonWrapper";
 import { usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
+import { IIconButtonAction } from "../../common/actions/IIconButtonAction";
 
 export const Page: React.FC<{
   actions?: IIconButtonAction[];

@@ -1,10 +1,8 @@
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
-import {
-  executeActionClick,
-  IIconButtonAction,
-} from "../common/actions/IconButtonWrapper";
+import { executeActionClick } from "../common/actions/IconButtonWrapper";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { IIconButtonAction } from "../common/actions/IIconButtonAction";
 
 export const FloatingHeaderActions: React.FC<{
   actions: IIconButtonAction[];

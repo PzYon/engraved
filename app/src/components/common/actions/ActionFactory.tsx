@@ -30,8 +30,8 @@ import { IAppAlert } from "../../errorHandling/AppAlertBar";
 import { IUser } from "../../../serverApi/IUser";
 import { renderAddScrapDialog } from "../../details/add/renderAddScrapDialog";
 import { QueryClient } from "@tanstack/react-query";
-import React from "react";
-import { IIconButtonAction } from "./IconButtonWrapper";
+
+import { IIconButtonAction } from "./IIconButtonAction";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IIconButtonAction {

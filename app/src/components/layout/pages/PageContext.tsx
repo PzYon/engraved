@@ -5,8 +5,8 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { IIconButtonAction } from "../../common/actions/IconButtonWrapper";
 import { MetricType } from "../../../serverApi/MetricType";
+import { IIconButtonAction } from "../../common/actions/IIconButtonAction";
 
 export interface IPageContext {
   documentTitle: string;

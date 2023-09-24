@@ -1,18 +1,7 @@
 import React from "react";
-import { IconButton, Theme } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { SxProps } from "@mui/system";
-
-export interface IIconButtonAction {
-  key: string;
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-  href?: string;
-  sx?: SxProps<Theme>;
-  isNotActive?: boolean;
-  isDisabled?: boolean;
-}
+import { IIconButtonAction } from "./IIconButtonAction";
 
 export const IconButtonWrapper: React.FC<{
   action: IIconButtonAction;

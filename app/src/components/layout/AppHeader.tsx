@@ -11,16 +11,14 @@ import { Typing } from "../common/Typing";
 import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
-import {
-  IconButtonWrapper,
-  IIconButtonAction,
-} from "../common/actions/IconButtonWrapper";
+import { IconButtonWrapper } from "../common/actions/IconButtonWrapper";
 import { SearchOutlined } from "@mui/icons-material";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
 import { Titles } from "./Titles";
 import { ActionFactory } from "../common/actions/ActionFactory";
+import { IIconButtonAction } from "../common/actions/IIconButtonAction";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
