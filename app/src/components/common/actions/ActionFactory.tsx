@@ -64,6 +64,7 @@ export class ActionFactory {
 
   static createMetric(): IAction {
     return {
+      hotkey: "alt+l",
       href: "/metrics/create",
       icon: <AddOutlined fontSize="small" />,
       label: "Add Metric",

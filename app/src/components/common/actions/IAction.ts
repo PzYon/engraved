@@ -11,4 +11,5 @@ export interface IAction {
   sx?: SxProps<Theme>;
   isNotActive?: boolean;
   isDisabled?: boolean;
+  hotkey?: string;
 }

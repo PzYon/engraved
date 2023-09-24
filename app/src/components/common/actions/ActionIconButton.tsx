@@ -2,11 +2,20 @@ import React from "react";
 import { IconButton } from "@mui/material";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { IAction } from "./IAction";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
 }> = ({ action }) => {
   const navigate = useNavigate();
+
+  useHotkeys(action.hotkey, () => {
+    if (!action.hotkey) {
+      return;
+    }
+
+    executeActionClick(null, action, navigate);
+  });
 
   return (
     <IconButton
@@ -32,7 +41,7 @@ export function executeActionClick(
   action: IAction,
   navigate: NavigateFunction
 ) {
-  e.stopPropagation();
+  e?.stopPropagation();
 
   if (action.href) {
     navigate(action.href);
