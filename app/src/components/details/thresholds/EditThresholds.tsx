@@ -4,7 +4,7 @@ import { IMetric } from "../../../serverApi/IMetric";
 import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { styled } from "@mui/material";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
 
 export const EditThresholds: React.FC<{
   metric: IMetric;

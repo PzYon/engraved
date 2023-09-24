@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import { Actions } from "../common/Actions";
+import { Actions } from "../common/actions/Actions";
 import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
@@ -12,15 +12,15 @@ import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import {
-  ActionFactory,
   IconButtonWrapper,
   IIconButtonAction,
-} from "../common/IconButtonWrapper";
+} from "../common/actions/IconButtonWrapper";
 import { SearchOutlined } from "@mui/icons-material";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
 import { Titles } from "./Titles";
+import { ActionFactory } from "../common/actions/ActionFactory";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();

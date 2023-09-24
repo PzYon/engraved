@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { IIconButtonAction } from "../../common/IconButtonWrapper";
+import { IIconButtonAction } from "../../common/actions/IconButtonWrapper";
 import { usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 

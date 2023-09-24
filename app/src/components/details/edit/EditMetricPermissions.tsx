@@ -5,7 +5,7 @@ import { PermissionKindSelector } from "./PermissionKindSelector";
 import { PermissionKind } from "../../../serverApi/PermissionKind";
 import { IUpdatePermissions } from "../../../serverApi/IUpdatePermissions";
 import { UserPermission } from "./UserPermission";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
 import { AddOutlined } from "@mui/icons-material";
 import { isValidEmail } from "../../../util/utils";
 import { useModifyMetricPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyMetricPermissionsMutation";

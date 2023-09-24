@@ -2,7 +2,7 @@ import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import {
   executeActionClick,
   IIconButtonAction,
-} from "../common/IconButtonWrapper";
+} from "../common/actions/IconButtonWrapper";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 

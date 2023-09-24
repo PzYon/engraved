@@ -1,10 +1,8 @@
 import { IMeasurement } from "../../../serverApi/IMeasurement";
-import {
-  ActionFactory,
-  IconButtonWrapper,
-} from "../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
 import React from "react";
 import { styled } from "@mui/material";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const MeasurementActionButtons: React.FC<{
   measurement: IMeasurement;

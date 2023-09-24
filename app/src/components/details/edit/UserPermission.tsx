@@ -2,7 +2,7 @@ import React from "react";
 import { IPermissionDefinition } from "../../../serverApi/IPermissionDefinition";
 import { Chip, styled } from "@mui/material";
 import { User } from "../../common/User";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
 import { DeleteOutlined } from "@mui/icons-material";
 
 export const UserPermission: React.FC<{

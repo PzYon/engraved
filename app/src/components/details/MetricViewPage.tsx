@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useMetricContext } from "./MetricDetailsContext";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
-import { ActionFactory, IIconButtonAction } from "../common/IconButtonWrapper";
+import { IIconButtonAction } from "../common/actions/IconButtonWrapper";
 import { LocalHotelOutlined } from "@mui/icons-material";
 import { getCommonActions } from "../overview/getCommonActions";
 import { PageSection } from "../layout/pages/PageSection";
@@ -21,6 +21,7 @@ import { createDateConditions } from "./filters/createDateConditions";
 import { getDefaultDateConditions } from "./filters/DateFilters";
 import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
 import { MyChartType } from "./chart/grouping/ChartTypeSelector";
+import { ActionFactory } from "../common/actions/ActionFactory";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();

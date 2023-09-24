@@ -4,8 +4,9 @@ import { IMeasurement } from "../serverApi/IMeasurement";
 import { AttributeValues } from "../components/common/AttributeValues";
 import { styled, Typography } from "@mui/material";
 import { Activity } from "./Activity";
-import { Actions } from "../components/common/Actions";
-import { ActionFactory } from "../components/common/IconButtonWrapper";
+import { Actions } from "../components/common/actions/Actions";
+
+import { ActionFactory } from "../components/common/actions/ActionFactory";
 
 export const ActivityWithValue: React.FC<{
   value: React.ReactNode;

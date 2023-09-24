@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { ActionFactory, IconButtonWrapper } from "./IconButtonWrapper";
+import { IconButtonWrapper } from "./actions/IconButtonWrapper";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { styled } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
+import { ActionFactory } from "./actions/ActionFactory";
 
 const keyForLoadingHandler = "refresh-data";
 

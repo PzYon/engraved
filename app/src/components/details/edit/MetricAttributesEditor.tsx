@@ -4,7 +4,7 @@ import { MetricAttributeEditor } from "./MetricAttributeEditor";
 import { List } from "@mui/material";
 import { ListItemTextField } from "./ListItemTextField";
 import { AddCircleOutline } from "@mui/icons-material";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
 
 export const MetricAttributesEditor: React.FC<{
   attributes: IMetricAttributes;

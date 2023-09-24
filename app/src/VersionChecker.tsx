@@ -1,11 +1,9 @@
 import React from "react";
 import { envSettings } from "./env/envSettings";
-import {
-  ActionFactory,
-  IconButtonWrapper,
-} from "./components/common/IconButtonWrapper";
+import { IconButtonWrapper } from "./components/common/actions/IconButtonWrapper";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "./serverApi/reactQuery/queryKeysFactory";
+import { ActionFactory } from "./components/common/actions/ActionFactory";
 
 async function isNewVersionAvailable() {
   if (envSettings.isDev) {

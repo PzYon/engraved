@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IconButtonWrapper, IIconButtonAction } from "./IconButtonWrapper";
-import { FloatingHeaderActions } from "../layout/FloatingHeaderActions";
-import { useIsInViewport } from "./useIsInViewPort";
+import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
+import { useIsInViewport } from "../useIsInViewPort";
 import { styled } from "@mui/material";
 
 export const Actions: React.FC<{

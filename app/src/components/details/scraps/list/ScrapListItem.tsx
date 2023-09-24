@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled, Typography } from "@mui/material";
-import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../../common/actions/IconButtonWrapper";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { ListItemWrapper } from "./ListItemWrapper";

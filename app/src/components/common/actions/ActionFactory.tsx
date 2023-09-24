@@ -1,7 +1,3 @@
-import React from "react";
-import { IconButton, Theme } from "@mui/material";
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import { SxProps } from "@mui/system";
 import {
   AddOutlined,
   BoltOutlined,
@@ -24,16 +20,18 @@ import {
   ShowChartOutlined,
   SwitchAccessShortcutOutlined,
 } from "@mui/icons-material";
-import { IScrapMeasurement } from "../../serverApi/IScrapMeasurement";
-import { IAppAlert } from "../errorHandling/AppAlertBar";
-import { editActionKey } from "../overview/getCommonActions";
-import { IDialogProps } from "../layout/dialogs/DialogContext";
-import { renderUpsertMeasurementDialog } from "../details/add/renderUpsertMeasurementDialog";
-import { IMetric } from "../../serverApi/IMetric";
-import { IMeasurement } from "../../serverApi/IMeasurement";
-import { renderAddScrapDialog } from "../details/add/renderAddScrapDialog";
-import { IUser } from "../../serverApi/IUser";
+import { editActionKey } from "../../overview/getCommonActions";
+import { IMetric } from "../../../serverApi/IMetric";
+import { IDialogProps } from "../../layout/dialogs/DialogContext";
+import { renderUpsertMeasurementDialog } from "../../details/add/renderUpsertMeasurementDialog";
+import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import { IMeasurement } from "../../../serverApi/IMeasurement";
+import { IAppAlert } from "../../errorHandling/AppAlertBar";
+import { IUser } from "../../../serverApi/IUser";
+import { renderAddScrapDialog } from "../../details/add/renderAddScrapDialog";
 import { QueryClient } from "@tanstack/react-query";
+import React from "react";
+import { IIconButtonAction } from "./IconButtonWrapper";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IIconButtonAction {
@@ -308,54 +306,5 @@ export class ActionFactory {
       key: "refresh",
       sx: { color: "common.white" },
     };
-  }
-}
-
-export interface IIconButtonAction {
-  key: string;
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-  href?: string;
-  sx?: SxProps<Theme>;
-  isNotActive?: boolean;
-  isDisabled?: boolean;
-}
-
-export const IconButtonWrapper: React.FC<{
-  action: IIconButtonAction;
-}> = ({ action }) => {
-  const navigate = useNavigate();
-
-  return (
-    <IconButton
-      key={action.key}
-      title={action.label}
-      color="default"
-      aria-label={action.label}
-      sx={{
-        color: "primary.main",
-        opacity: action.isNotActive ? 0.4 : 1,
-        ...(action.sx || {}),
-      }}
-      onClick={(e) => executeActionClick(e, action, navigate)}
-      disabled={action.isDisabled}
-    >
-      {action.icon}
-    </IconButton>
-  );
-};
-
-export function executeActionClick(
-  e: React.MouseEvent<HTMLElement>,
-  action: IIconButtonAction,
-  navigate: NavigateFunction
-) {
-  e.stopPropagation();
-
-  if (action.href) {
-    navigate(action.href);
-  } else if (action.onClick) {
-    action.onClick();
   }
 }

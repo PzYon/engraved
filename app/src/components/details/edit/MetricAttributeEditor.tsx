@@ -13,7 +13,7 @@ import {
   RemoveCircleOutline,
 } from "@mui/icons-material";
 import { ListItemTextField } from "./ListItemTextField";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
 
 export const MetricAttributeEditor: React.FC<{
   attribute: IMetricAttribute;

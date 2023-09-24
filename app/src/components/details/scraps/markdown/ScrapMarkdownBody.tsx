@@ -4,7 +4,8 @@ import { useAppContext } from "../../../../AppContext";
 import { ScrapBody } from "../ScrapBody";
 import { ScrapMarkdown } from "./ScrapMarkdown";
 import { preloadLazyCodeMirror } from "./MarkdownEditor";
-import { ActionFactory } from "../../../common/IconButtonWrapper";
+
+import { ActionFactory } from "../../../common/actions/ActionFactory";
 
 export const ScrapMarkdownBody: React.FC<{
   scrap: IScrapMeasurement;

@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { IIconButtonAction } from "../../common/IconButtonWrapper";
+import { IIconButtonAction } from "../../common/actions/IconButtonWrapper";
 import { MetricType } from "../../../serverApi/MetricType";
 
 export interface IPageContext {

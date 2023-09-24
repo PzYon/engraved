@@ -18,13 +18,11 @@ import { MetricType } from "../../../serverApi/MetricType";
 import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { format } from "date-fns";
 import { IMetricType } from "../../../metricTypes/IMetricType";
-import {
-  ActionFactory,
-  IconButtonWrapper,
-} from "../../common/IconButtonWrapper";
+import { IconButtonWrapper } from "../../common/actions/IconButtonWrapper";
 import { IMeasurementsTableGroup } from "./IMeasurementsTableGroup";
 import { MeasurementsDateTableCell } from "./MeasurementsDateTableCell";
 import { MeasurementsTableBodyGroup } from "./MeasurementsTableBodyGroup";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const MeasurementsTable: React.FC<{
   metric: IMetric;

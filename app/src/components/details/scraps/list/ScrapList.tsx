@@ -7,7 +7,7 @@ import {
   RemoveCircleOutline,
   SyncAltOutlined,
 } from "@mui/icons-material";
-import { Actions } from "../../../common/Actions";
+import { Actions } from "../../../common/actions/Actions";
 import { ListItemWrapper } from "./ListItemWrapper";
 import { useItemsHook } from "./UseItemsHook";
 

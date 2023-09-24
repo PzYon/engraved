@@ -1,12 +1,10 @@
 import React from "react";
-import {
-  ActionFactory,
-  IIconButtonAction,
-} from "../../common/IconButtonWrapper";
+import { IIconButtonAction } from "../../common/actions/IconButtonWrapper";
 import { styled, Typography } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
-import { Actions } from "../../common/Actions";
+import { Actions } from "../../common/actions/Actions";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapMeasurement;

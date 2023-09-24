@@ -19,7 +19,8 @@ import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
-import { ActionFactory } from "../../common/IconButtonWrapper";
+
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const ScrapsViewPage: React.FC = () => {
   const navigate = useNavigate();

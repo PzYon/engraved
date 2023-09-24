@@ -4,7 +4,8 @@ import { Page } from "../layout/pages/Page";
 import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
 import { Metrics } from "./Metrics";
-import { ActionFactory } from "../common/IconButtonWrapper";
+
+import { ActionFactory } from "../common/actions/ActionFactory";
 
 export const MetricsPage: React.FC = () => (
   <Page
