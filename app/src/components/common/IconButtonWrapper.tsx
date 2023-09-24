@@ -14,9 +14,11 @@ import {
   ExpandMore,
   FilterAltOutlined,
   FunctionsOutlined,
+  HelpOutlineOutlined,
   MessageOutlined,
   PanToolOutlined,
   Redo,
+  RefreshOutlined,
   SaveOutlined,
   ShareOutlined,
   ShowChartOutlined,
@@ -31,6 +33,7 @@ import { IMetric } from "../../serverApi/IMetric";
 import { IMeasurement } from "../../serverApi/IMeasurement";
 import { renderAddScrapDialog } from "../details/add/renderAddScrapDialog";
 import { IUser } from "../../serverApi/IUser";
+import { QueryClient } from "@tanstack/react-query";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IIconButtonAction {
@@ -61,6 +64,15 @@ export class ActionFactory {
       label: "Home",
       href: "/",
       icon: null,
+    };
+  }
+
+  static createMetric(): IIconButtonAction {
+    return {
+      href: "/metrics/create",
+      icon: <AddOutlined fontSize="small" />,
+      label: "Add Metric",
+      key: "add_metric",
     };
   }
 
@@ -106,7 +118,7 @@ export class ActionFactory {
   static toggleNotes(
     showNotes: boolean,
     setShowNotes: (value: boolean) => void
-  ) {
+  ): IIconButtonAction {
     return {
       key: "notes",
       icon: <MessageOutlined fontSize="small" />,
@@ -119,7 +131,7 @@ export class ActionFactory {
   static toggleShowChart(
     showChart: boolean,
     setShowChart: (value: boolean) => void
-  ) {
+  ): IIconButtonAction {
     return {
       key: "chart",
       icon: <ShowChartOutlined fontSize="small" />,
@@ -145,7 +157,7 @@ export class ActionFactory {
   static toggleGroupTotals(
     showGroupTotals: boolean,
     setShowGroupTotals: (value: boolean) => void
-  ) {
+  ): IIconButtonAction {
     return {
       key: "groupTotals",
       icon: <FunctionsOutlined fontSize="small" />,
@@ -240,7 +252,7 @@ export class ActionFactory {
   static toggleThresholds(
     showThresholds: boolean,
     setShowThresholds: (value: boolean) => void
-  ) {
+  ): IIconButtonAction {
     return {
       key: "thresholds",
       icon: <PanToolOutlined fontSize="small" />,
@@ -250,7 +262,7 @@ export class ActionFactory {
     };
   }
 
-  static updateToNewVersion() {
+  static updateToNewVersion(): IIconButtonAction {
     return {
       icon: <SwitchAccessShortcutOutlined fontSize="small" />,
       onClick: () => location.reload(),
@@ -260,7 +272,7 @@ export class ActionFactory {
     };
   }
 
-  static expand(onClick: () => void) {
+  static expand(onClick: () => void): IIconButtonAction {
     return {
       key: "expand",
       label: "Expand",
@@ -269,12 +281,32 @@ export class ActionFactory {
     };
   }
 
-  static collapse(onClick: () => void) {
+  static collapse(onClick: () => void): IIconButtonAction {
     return {
       key: "collapse",
       label: "Collapse",
       onClick: onClick,
       icon: <ExpandLess fontSize="small" />,
+    };
+  }
+
+  static appInfo(showInfo: () => void): IIconButtonAction {
+    return {
+      icon: <HelpOutlineOutlined fontSize="small" />,
+      onClick: () => showInfo(),
+      label: "Show App Info",
+      key: "app_info",
+      sx: { color: "common.white" },
+    };
+  }
+
+  static refreshData(queryClient: QueryClient): IIconButtonAction {
+    return {
+      icon: <RefreshOutlined fontSize="small" />,
+      onClick: async () => await queryClient.invalidateQueries(),
+      label: "Refresh data",
+      key: "refresh",
+      sx: { color: "common.white" },
     };
   }
 }

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { IconButtonWrapper } from "./IconButtonWrapper";
+import { ActionFactory, IconButtonWrapper } from "./IconButtonWrapper";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { styled } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import { RefreshOutlined } from "@mui/icons-material";
 
 const keyForLoadingHandler = "refresh-data";
 
@@ -20,15 +19,7 @@ export const RefreshData: React.FC = () => {
 
   return (
     <Host className={doRotate ? "rotate" : null}>
-      <IconButtonWrapper
-        action={{
-          icon: <RefreshOutlined fontSize="small" />,
-          onClick: async () => await queryClient.invalidateQueries(),
-          label: "Refresh data",
-          key: "refresh",
-          sx: { color: "common.white" },
-        }}
-      />
+      <IconButtonWrapper action={ActionFactory.refreshData(queryClient)} />
     </Host>
   );
 };
