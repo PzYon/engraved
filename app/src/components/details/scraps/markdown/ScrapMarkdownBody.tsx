@@ -4,7 +4,6 @@ import { useAppContext } from "../../../../AppContext";
 import { ScrapBody } from "../ScrapBody";
 import { ScrapMarkdown } from "./ScrapMarkdown";
 import { preloadLazyCodeMirror } from "./MarkdownEditor";
-
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 
 export const ScrapMarkdownBody: React.FC<{
@@ -17,6 +16,7 @@ export const ScrapMarkdownBody: React.FC<{
   onChange: (value: string) => void;
   onSave: () => Promise<void>;
   cancelEditing: () => void;
+  hasFocus?: boolean;
 }> = ({
   scrap,
   hideDate,
@@ -27,6 +27,7 @@ export const ScrapMarkdownBody: React.FC<{
   onChange,
   onSave,
   cancelEditing,
+  hasFocus,
 }) => {
   useEffect(() => preloadLazyCodeMirror(), []);
 
@@ -42,6 +43,7 @@ export const ScrapMarkdownBody: React.FC<{
       onSave={onSave}
       cancelEditing={cancelEditing}
       actions={[ActionFactory.copyValueToClipboard(value, setAppAlert)]}
+      enableHotkeys={hasFocus}
     >
       <ScrapMarkdown
         keyMappings={{

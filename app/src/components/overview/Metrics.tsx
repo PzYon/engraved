@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { usePageContext } from "../layout/pages/PageContext";
 import { useMetricsQuery } from "../../serverApi/reactQuery/queries/useMetricsQuery";
 import { NoResultsFound } from "../common/search/NoResultsFound";
@@ -10,7 +10,13 @@ export const Metrics: React.FC = () => {
   const { searchText, metricTypes, showFilters, setShowFilters } =
     usePageContext();
   const metrics = useMetricsQuery(searchText, metricTypes);
-  const collection = useMemo(() => new MetricWrapperCollection(), [metrics]);
+
+  const [focusIndex, setFocusIndex] = useState(-1);
+
+  const collection = useMemo(
+    () => new MetricWrapperCollection(focusIndex, setFocusIndex),
+    [metrics]
+  );
 
   useHotkeys("alt+up", () => {
     collection.moveFocusUp();
@@ -18,14 +24,6 @@ export const Metrics: React.FC = () => {
 
   useHotkeys("alt+down", () => {
     collection.moveFocusDown();
-  });
-
-  useHotkeys("alt+a", () => {
-    collection.addMeasurement();
-  });
-
-  useHotkeys("alt+enter", () => {
-    collection.visit();
   });
 
   useHotkeys("alt+f", (keyboardEvent) => {
@@ -54,6 +52,7 @@ export const Metrics: React.FC = () => {
           }}
           onClick={() => collection.setFocus(i)}
           index={i}
+          isFocused={i === collection.currentIndex}
         />
       ))}
     </>

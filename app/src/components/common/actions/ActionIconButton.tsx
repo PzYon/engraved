@@ -9,13 +9,14 @@ export const ActionIconButton: React.FC<{
 }> = ({ action }) => {
   const navigate = useNavigate();
 
-  useHotkeys(action.hotkey, () => {
-    if (!action.hotkey) {
-      return;
-    }
-
-    executeActionClick(null, action, navigate);
-  });
+  useHotkeys(
+    action.hotkey,
+    (keyboardEvent) => {
+      keyboardEvent.preventDefault();
+      executeActionClick(null, action, navigate);
+    },
+    { enabled: !!action.hotkey }
+  );
 
   return (
     <IconButton

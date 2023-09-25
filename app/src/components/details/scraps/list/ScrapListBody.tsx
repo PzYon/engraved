@@ -14,6 +14,7 @@ export const ScrapListBody: React.FC<{
   onChange: (value: string) => void;
   onSave: () => Promise<void>;
   cancelEditing: () => void;
+  hasFocus?: boolean;
 }> = ({
   scrap,
   hideDate,
@@ -25,6 +26,7 @@ export const ScrapListBody: React.FC<{
   onChange,
   onSave,
   cancelEditing,
+  hasFocus,
 }) => (
   <ScrapBody
     scrap={scrap}
@@ -35,6 +37,7 @@ export const ScrapListBody: React.FC<{
     actions={[]}
     onSave={onSave}
     cancelEditing={cancelEditing}
+    enableHotkeys={hasFocus || hasTitleFocus}
   >
     <ScrapList
       isEditMode={editMode}

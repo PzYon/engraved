@@ -1,10 +1,18 @@
 export class BaseWrapperCollection<BaseItemWrapper> {
   private wrappers: BaseItemWrapper[] = [];
-  private index = -1;
+
+  get currentIndex() {
+    return this.index;
+  }
 
   get current(): BaseItemWrapper {
     return this.wrappers[this.index];
   }
+
+  constructor(
+    private index: number,
+    private setFocusIndex: (value: number) => void
+  ) {}
 
   private get highestIndex() {
     return this.wrappers.length - 1;
@@ -12,6 +20,7 @@ export class BaseWrapperCollection<BaseItemWrapper> {
 
   protected setIndex(i: number) {
     this.index = i;
+    this.setFocusIndex(i);
   }
 
   setFocus(index: number) {

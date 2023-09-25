@@ -82,7 +82,7 @@ export const MetricViewPage: React.FC = () => {
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonActions(metric, renderDialog),
+      ...getCommonActions(metric, true, renderDialog),
     ]);
 
     return () => {

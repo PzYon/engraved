@@ -16,6 +16,7 @@ export const ScrapBody: React.FC<{
   actions: IAction[];
   onSave: () => Promise<void>;
   cancelEditing: () => void;
+  enableHotkeys?: boolean;
 }> = ({
   scrap,
   hideDate,
@@ -26,8 +27,9 @@ export const ScrapBody: React.FC<{
   actions,
   onSave,
   cancelEditing,
+  enableHotkeys,
 }) => {
-  const allActions = getActions();
+  const allActions = getActions(enableHotkeys);
 
   return (
     <>
@@ -49,7 +51,7 @@ export const ScrapBody: React.FC<{
     </>
   );
 
-  function getActions() {
+  function getActions(enableHotkeys: boolean) {
     if (hideActions) {
       return [];
     }
@@ -58,8 +60,8 @@ export const ScrapBody: React.FC<{
       ...actions,
       ActionFactory.moveToAnotherScrap(scrap),
       editMode
-        ? ActionFactory.save(async () => await onSave())
-        : ActionFactory.edit(() => setEditMode(true)),
+        ? ActionFactory.save(async () => await onSave(), false, enableHotkeys)
+        : ActionFactory.editScrap(() => setEditMode(true), enableHotkeys),
     ];
 
     if (cancelEditing) {

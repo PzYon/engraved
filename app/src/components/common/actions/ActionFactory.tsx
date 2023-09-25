@@ -43,8 +43,13 @@ export class ActionFactory {
     };
   }
 
-  static save(onClick: () => Promise<void>, isDisabled?: boolean): IAction {
+  static save(
+    onClick: () => Promise<void>,
+    isDisabled: boolean,
+    enableHotkeys: boolean
+  ): IAction {
     return {
+      hotkey: enableHotkeys ? "alt+s" : undefined,
       key: "save",
       label: "Save",
       icon: <SaveOutlined fontSize="small" />,
@@ -64,7 +69,7 @@ export class ActionFactory {
 
   static createMetric(): IAction {
     return {
-      hotkey: "alt+l",
+      hotkey: "alt+a",
       href: "/metrics/create",
       icon: <AddOutlined fontSize="small" />,
       label: "Add Metric",
@@ -72,8 +77,9 @@ export class ActionFactory {
     };
   }
 
-  static editMetric(metricId: string): IAction {
+  static editMetric(metricId: string, enableHotkey: boolean): IAction {
     return {
+      hotkey: enableHotkey ? "alt+e" : undefined,
       key: editActionKey,
       label: "Edit",
       icon: <EditOutlined fontSize="small" />,
@@ -90,8 +96,10 @@ export class ActionFactory {
     };
   }
 
-  static deleteMetric(metricId: string): IAction {
+  static deleteMetric(metricId: string, enableHotkeys: boolean): IAction {
+    console.log("delete metric with hotkeys enabled: " + enableHotkeys);
     return {
+      hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "delete",
       label: "Delete",
       icon: <DeleteOutlined fontSize="small" />,
@@ -163,8 +171,9 @@ export class ActionFactory {
     };
   }
 
-  static edit(onEdit: () => void): IAction {
+  static editScrap(onEdit: () => void, enableHotkey: boolean): IAction {
     return {
+      hotkey: enableHotkey ? "alt+e" : undefined,
       key: "edit",
       label: "Edit",
       icon: <EditOutlined fontSize="small" />,
@@ -183,6 +192,7 @@ export class ActionFactory {
 
   static deleteMeasurement(measurement: IMeasurement): IAction {
     return {
+      hotkey: "alt+d",
       key: "delete",
       label: "Delete",
       icon: <DeleteOutlined fontSize="small" />,
@@ -192,6 +202,7 @@ export class ActionFactory {
 
   static editMeasurement(measurement: IMeasurement): IAction {
     return {
+      hotkey: "alt+e",
       key: "edit",
       label: "Edit",
       icon: <EditOutlined fontSize="small" />,
