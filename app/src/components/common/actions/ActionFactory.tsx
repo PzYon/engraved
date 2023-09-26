@@ -97,7 +97,6 @@ export class ActionFactory {
   }
 
   static deleteMetric(metricId: string, enableHotkeys: boolean): IAction {
-    console.log("delete metric with hotkeys enabled: " + enableHotkeys);
     return {
       hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "delete",
@@ -113,7 +112,7 @@ export class ActionFactory {
     enableHotkey: boolean
   ): IAction {
     return {
-      hotkey: enableHotkey ? "alt+a" : null,
+      hotkey: enableHotkey ? "alt+a" : undefined,
       key: "add_measurement",
       label: "Add Measurement",
       icon: <AddOutlined fontSize="small" />,
@@ -313,6 +312,7 @@ export class ActionFactory {
 
   static refreshData(queryClient: QueryClient): IAction {
     return {
+      hotkey: "alt+r",
       icon: <RefreshOutlined fontSize="small" />,
       onClick: async () => await queryClient.invalidateQueries(),
       label: "Refresh data",
