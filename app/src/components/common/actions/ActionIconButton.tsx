@@ -2,21 +2,14 @@ import React from "react";
 import { IconButton } from "@mui/material";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { IAction } from "./IAction";
-import { useHotkeys } from "react-hotkeys-hook";
+import { useActionHotkeys } from "./useActionHotkeys";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
 }> = ({ action }) => {
   const navigate = useNavigate();
 
-  useHotkeys(
-    action.hotkey,
-    (keyboardEvent) => {
-      keyboardEvent.preventDefault();
-      executeActionClick(null, action, navigate);
-    },
-    { enabled: !!action.hotkey }
-  );
+  useActionHotkeys(action);
 
   return (
     <IconButton

@@ -60,6 +60,7 @@ export class ActionFactory {
 
   static home(): IAction {
     return {
+      hotkey: "alt+h",
       key: "navigate-home",
       label: "Home",
       href: "/",

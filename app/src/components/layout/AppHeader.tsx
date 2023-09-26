@@ -19,6 +19,7 @@ import { VersionChecker } from "../../VersionChecker";
 import { Titles } from "./Titles";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
+import { ActionLink } from "../common/actions/ActionLink";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -53,7 +54,7 @@ export const AppHeader: React.FC = () => {
       >
         <AppContent scope="header">
           <ContentWrapper sx={{ display: "flex", height: "64px" }}>
-            <Link to="/" style={{ flexGrow: 1 }}>
+            <ActionLink action={ActionFactory.home()} style={{ flexGrow: 1 }}>
               <Typography
                 variant="h1"
                 sx={{
@@ -66,7 +67,7 @@ export const AppHeader: React.FC = () => {
                   renderOnComplete={<PulsatingDot />}
                 />
               </Typography>
-            </Link>
+            </ActionLink>
             <VersionChecker />
             <AppInfoLauncher />
             <RefreshData />
