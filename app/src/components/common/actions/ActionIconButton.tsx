@@ -1,15 +1,16 @@
 import React from "react";
 import { IconButton } from "@mui/material";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { NavigateFunction } from "react-router-dom";
 import { IAction } from "./IAction";
 import { useActionHotkeys } from "./useActionHotkeys";
+import { ActionLink } from "./ActionLink";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
 }> = ({ action }) => {
-  const navigate = useNavigate();
-
   useActionHotkeys(action);
+
+  const child = action.href ? <ActionLink action={action} /> : action.icon;
 
   return (
     <IconButton
@@ -22,10 +23,10 @@ export const ActionIconButton: React.FC<{
         opacity: action.isNotActive ? 0.4 : 1,
         ...(action.sx || {}),
       }}
-      onClick={(e) => executeActionClick(e, action, navigate)}
+      onClick={action.onClick}
       disabled={action.isDisabled}
     >
-      {action.icon}
+      {child}
     </IconButton>
   );
 };
