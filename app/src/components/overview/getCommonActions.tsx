@@ -18,7 +18,9 @@ export function getCommonActions(
   const actions = [];
 
   if (metric.type !== MetricType.Scraps) {
-    actions.push(ActionFactory.addMeasurement(metric, renderDialog));
+    actions.push(
+      ActionFactory.addMeasurement(metric, renderDialog, enableHotkeys)
+    );
   }
 
   actions.push(

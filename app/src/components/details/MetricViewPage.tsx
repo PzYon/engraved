@@ -76,7 +76,7 @@ export const MetricViewPage: React.FC = () => {
     setTitleActions([
       ActionFactory.toggleNotes(showNotes, setShowNotes),
       ActionFactory.toggleShowChart(showChart, setShowChart),
-      ActionFactory.toggleFilters(showFilters, setShowFilters),
+      ActionFactory.toggleFilters(showFilters, setShowFilters, false),
       ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
       Object.keys(metric.thresholds || {}).length
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)

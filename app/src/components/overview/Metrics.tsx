@@ -7,8 +7,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { MetricWrapperCollection } from "./MetricWrapperCollection";
 
 export const Metrics: React.FC = () => {
-  const { searchText, metricTypes, showFilters, setShowFilters } =
-    usePageContext();
+  const { searchText, metricTypes } = usePageContext();
   const metrics = useMetricsQuery(searchText, metricTypes);
 
   const [focusIndex, setFocusIndex] = useState(-1);
@@ -24,11 +23,6 @@ export const Metrics: React.FC = () => {
 
   useHotkeys("alt+down", () => {
     collection.moveFocusDown();
-  });
-
-  useHotkeys("alt+f", (keyboardEvent) => {
-    keyboardEvent.preventDefault();
-    setShowFilters(!showFilters);
   });
 
   const keyToken = useMemo(() => Math.random(), [metrics]);

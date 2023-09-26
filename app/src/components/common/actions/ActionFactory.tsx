@@ -109,9 +109,11 @@ export class ActionFactory {
 
   static addMeasurement(
     metric: IMetric,
-    renderDialog?: (dialogProps: IDialogProps) => void
+    renderDialog: (dialogProps: IDialogProps) => void,
+    enableHotkey: boolean
   ): IAction {
     return {
+      hotkey: enableHotkey ? "alt+a" : null,
       key: "add_measurement",
       label: "Add Measurement",
       icon: <AddOutlined fontSize="small" />,
@@ -147,9 +149,11 @@ export class ActionFactory {
 
   static toggleFilters(
     showFilters: boolean,
-    setShowFilters: (v: boolean) => void
+    setShowFilters: (v: boolean) => void,
+    enableHotkey: boolean
   ): IAction {
     return {
+      hotkey: enableHotkey ? "alt+f" : undefined,
       key: "filters",
       icon: <FilterAltOutlined fontSize="small" />,
       label: "Show filters",

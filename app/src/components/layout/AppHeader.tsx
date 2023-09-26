@@ -38,7 +38,7 @@ export const AppHeader: React.FC = () => {
 
   const pageActions: IAction[] = enableFilters
     ? [
-        ActionFactory.toggleFilters(showFilters, setShowFilters),
+        ActionFactory.toggleFilters(showFilters, setShowFilters, true),
         ...pageActionsFromContext,
       ]
     : pageActionsFromContext;
