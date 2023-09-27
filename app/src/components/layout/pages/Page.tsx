@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { IIconButtonAction } from "../../common/IconButtonWrapper";
 import { usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
+import { IAction } from "../../common/actions/IAction";
 
 export const Page: React.FC<{
-  actions?: IIconButtonAction[];
+  actions?: IAction[];
   title?: React.ReactNode;
   subTitle?: React.ReactNode;
   documentTitle?: string;
@@ -23,6 +23,14 @@ export const Page: React.FC<{
   } = usePageContext();
 
   useEffect(() => {
+    if (actions === undefined) {
+      return;
+    }
+
+    setPageActions(actions);
+  }, [actions]);
+
+  useEffect(() => {
     if (title === undefined) {
       return;
     }
@@ -30,25 +38,11 @@ export const Page: React.FC<{
     setTitle(title);
   }, [title]);
 
-  useEffect(() => {
-    setSubTitle(subTitle);
-  }, [subTitle]);
+  useEffect(() => setSubTitle(subTitle), [subTitle]);
 
-  useEffect(() => {
-    setDocumentTitle(documentTitle);
-  }, [documentTitle]);
+  useEffect(() => setDocumentTitle(documentTitle), [documentTitle]);
 
-  useEffect(() => {
-    setEnableFilters(enableFilters);
-  }, [enableFilters]);
-
-  useEffect(() => {
-    if (actions === undefined) {
-      return;
-    }
-
-    setPageActions(actions);
-  }, [actions]);
+  useEffect(() => setEnableFilters(enableFilters), [enableFilters]);
 
   useEffect(() => {
     return () => {

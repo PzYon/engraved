@@ -13,16 +13,15 @@ import {
   IScrapMeasurement,
   ScrapType,
 } from "../../../serverApi/IScrapMeasurement";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
+import { IAction } from "../../common/actions/IAction";
 
 export const ScrapsViewPage: React.FC = () => {
-  const navigate = useNavigate();
-
   const {
     metric,
     measurements: scraps,
@@ -44,7 +43,12 @@ export const ScrapsViewPage: React.FC = () => {
     return Math.random();
   }, [scraps]);
 
-  const collection = useMemo(() => new ScrapWrapperCollection(), [scraps]);
+  const [focusIndex, setFocusIndex] = useState(-1);
+
+  const collection = useMemo(
+    () => new ScrapWrapperCollection(focusIndex, setFocusIndex),
+    [scraps]
+  );
 
   // alt+s (save) is handled by code mirror resp. list
 
@@ -56,29 +60,6 @@ export const ScrapsViewPage: React.FC = () => {
     collection.moveFocusDown();
   });
 
-  useHotkeys("alt+e", (keyboardEvent) => {
-    keyboardEvent.preventDefault();
-    collection.setEditMode();
-  });
-
-  useHotkeys("alt+d", (keyboardEvent) => {
-    keyboardEvent.preventDefault();
-    navigate(`measurements/${collection.current.internalObj.id}/delete`);
-  });
-
-  const addNewMarkdownAction = getAddNewAction("markdown");
-  const addNewListAction = getAddNewAction("list");
-
-  useHotkeys("alt+m", (keyboardEvent) => {
-    keyboardEvent.preventDefault();
-    addNewMarkdownAction.onClick();
-  });
-
-  useHotkeys("alt+l", (keyboardEvent) => {
-    keyboardEvent.preventDefault();
-    addNewListAction.onClick();
-  });
-
   if (!scraps || !metric) {
     return;
   }
@@ -88,10 +69,10 @@ export const ScrapsViewPage: React.FC = () => {
       title={<MetricPageTitle metric={metric} />}
       documentTitle={metric.name}
       actions={[
-        addNewMarkdownAction,
-        addNewListAction,
+        getAddNewAction("markdown"),
+        getAddNewAction("list"),
         null,
-        ...getCommonActions(metric),
+        ...getCommonActions(metric, false),
       ]}
     >
       {newScrap ? <Scrap key="new" scrap={newScrap} /> : null}
@@ -106,6 +87,7 @@ export const ScrapsViewPage: React.FC = () => {
               }
               scrap={scrap}
               index={i}
+              hasFocus={i === focusIndex}
             />
           ))
         : null}
@@ -126,10 +108,11 @@ export const ScrapsViewPage: React.FC = () => {
     </Page>
   );
 
-  function getAddNewAction(type: "markdown" | "list") {
+  function getAddNewAction(type: "markdown" | "list"): IAction {
     const isMarkdown = type === "markdown";
 
     return {
+      hotkey: isMarkdown ? "alt+m" : "alt+l",
       key: "add-scrap-" + type,
       label: "Add " + type,
       icon: isMarkdown ? <MarkdownScrapIcon /> : <ListScrapIcon />,

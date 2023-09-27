@@ -13,7 +13,7 @@ import {
   RemoveCircleOutline,
 } from "@mui/icons-material";
 import { ListItemTextField } from "./ListItemTextField";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
 export const MetricAttributeEditor: React.FC<{
   attribute: IMetricAttribute;
@@ -40,7 +40,7 @@ export const MetricAttributeEditor: React.FC<{
                 isExisting={true}
                 onBlur={(newValue) => handleOnChange(key, newValue)}
               />
-              <IconButtonWrapper
+              <ActionIconButton
                 action={{
                   key: "remove",
                   label: "Remove",

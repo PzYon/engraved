@@ -7,7 +7,7 @@ import {
   RemoveCircleOutline,
   SyncAltOutlined,
 } from "@mui/icons-material";
-import { Actions } from "../../../common/Actions";
+import { ActionGroup } from "../../../common/actions/ActionGroup";
 import { ListItemWrapper } from "./ListItemWrapper";
 import { useItemsHook } from "./UseItemsHook";
 
@@ -17,17 +17,7 @@ export const ScrapList: React.FC<{
   hasTitleFocus: boolean;
   onChange: (json: string) => void;
   editedOn: string;
-  saveItem: () => Promise<void>;
-  reset: () => void;
-}> = ({
-  isEditMode,
-  value,
-  hasTitleFocus,
-  onChange,
-  editedOn,
-  saveItem,
-  reset,
-}) => {
+}> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn }) => {
   const { palette } = useTheme();
 
   const listItemsCollection = useItemsHook(value, onChange, editedOn);
@@ -65,15 +55,13 @@ export const ScrapList: React.FC<{
               }
               onDelete={() => listItemsCollection.remove(index)}
               onEnter={() => listItemsCollection.addNewLine(index)}
-              saveItem={saveItem}
-              reset={reset}
             />
           ))
         )}
       </List>
       {isEditMode ? (
         <ActionsContainer>
-          <Actions
+          <ActionGroup
             actions={[
               {
                 key: "add",

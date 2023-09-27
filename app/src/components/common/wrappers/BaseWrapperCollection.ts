@@ -1,10 +1,20 @@
-export class BaseWrapperCollection<BaseItemWrapper> {
-  private wrappers: BaseItemWrapper[] = [];
-  private index = -1;
+import { BaseItemWrapper } from "./BaseItemWrapper";
 
-  get current(): BaseItemWrapper {
+export class BaseWrapperCollection<T extends BaseItemWrapper<{ id?: string }>> {
+  private wrappers: T[] = [];
+
+  get currentIndex() {
+    return this.index;
+  }
+
+  get current(): T {
     return this.wrappers[this.index];
   }
+
+  constructor(
+    private index: number,
+    private setFocusIndex: (value: number) => void
+  ) {}
 
   private get highestIndex() {
     return this.wrappers.length - 1;
@@ -12,6 +22,7 @@ export class BaseWrapperCollection<BaseItemWrapper> {
 
   protected setIndex(i: number) {
     this.index = i;
+    this.setFocusIndex(i);
   }
 
   setFocus(index: number) {
@@ -20,8 +31,6 @@ export class BaseWrapperCollection<BaseItemWrapper> {
       // then do nothing in order to prevent cursors from moving around.
       return;
     }
-
-    console.log("setting focus to: " + index);
 
     this.setIndex(index);
     this.current.giveFocus();
@@ -35,7 +44,7 @@ export class BaseWrapperCollection<BaseItemWrapper> {
     this.setFocus(this.getNextLowerIndex(this.index));
   }
 
-  add(id: string, wrapper: BaseItemWrapper) {
+  add(id: string, wrapper: T) {
     const existingIndex = this.wrappers.findIndex(
       (w) => w.internalObj.id === id
     );

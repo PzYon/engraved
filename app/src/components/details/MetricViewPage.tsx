@@ -2,15 +2,7 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useMetricContext } from "./MetricDetailsContext";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
-import { IIconButtonAction } from "../common/IconButtonWrapper";
-import {
-  FilterAltOutlined,
-  FunctionsOutlined,
-  LocalHotelOutlined,
-  MessageOutlined,
-  PanToolOutlined,
-  ShowChartOutlined,
-} from "@mui/icons-material";
+import { LocalHotelOutlined } from "@mui/icons-material";
 import { getCommonActions } from "../overview/getCommonActions";
 import { PageSection } from "../layout/pages/PageSection";
 import { MetricNotes } from "./edit/MetricNotes";
@@ -28,6 +20,8 @@ import { createDateConditions } from "./filters/createDateConditions";
 import { getDefaultDateConditions } from "./filters/DateFilters";
 import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
 import { MyChartType } from "./chart/grouping/ChartTypeSelector";
+import { ActionFactory } from "../common/actions/ActionFactory";
+import { IAction } from "../common/actions/IAction";
 
 export const MetricViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -68,7 +62,7 @@ export const MetricViewPage: React.FC = () => {
     !!uiSettings?.showGroupTotals
   );
 
-  const [titleActions, setTitleActions] = useState<IIconButtonAction[]>([]);
+  const [titleActions, setTitleActions] = useState<IAction[]>([]);
 
   useEffect(() => {
     setDateConditions(
@@ -80,45 +74,15 @@ export const MetricViewPage: React.FC = () => {
 
   useEffect(() => {
     setTitleActions([
-      {
-        key: "notes",
-        icon: <MessageOutlined fontSize="small" />,
-        label: "Show notes",
-        onClick: () => setShowNotes(!showNotes),
-        isNotActive: !showNotes,
-      },
-      {
-        key: "chart",
-        icon: <ShowChartOutlined fontSize="small" />,
-        label: "Show chart",
-        onClick: () => setShowChart(!showChart),
-        isNotActive: !showChart,
-      },
-      {
-        key: "filters",
-        icon: <FilterAltOutlined fontSize="small" />,
-        label: "Show filters",
-        onClick: () => setShowFilters(!showFilters),
-        isNotActive: !showFilters,
-      },
-      {
-        key: "groupTotals",
-        icon: <FunctionsOutlined fontSize="small" />,
-        label: "Show group total",
-        onClick: () => setShowGroupTotals(!showGroupTotals),
-        isNotActive: !showGroupTotals,
-      },
+      ActionFactory.toggleNotes(showNotes, setShowNotes),
+      ActionFactory.toggleShowChart(showChart, setShowChart),
+      ActionFactory.toggleFilters(showFilters, setShowFilters, false),
+      ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
       Object.keys(metric.thresholds || {}).length
-        ? {
-            key: "thresholds",
-            icon: <PanToolOutlined fontSize="small" />,
-            label: "Show thresholds",
-            onClick: () => setShowThresholds(!showThresholds),
-            isNotActive: !showThresholds,
-          }
+        ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonActions(metric, renderDialog),
+      ...getCommonActions(metric, true, renderDialog),
     ]);
 
     return () => {

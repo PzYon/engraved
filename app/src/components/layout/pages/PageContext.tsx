@@ -5,8 +5,8 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { IIconButtonAction } from "../../common/IconButtonWrapper";
 import { MetricType } from "../../../serverApi/MetricType";
+import { IAction } from "../../common/actions/IAction";
 
 export interface IPageContext {
   documentTitle: string;
@@ -15,8 +15,8 @@ export interface IPageContext {
   setTitle: (title: React.ReactNode) => void;
   subTitle: React.ReactNode;
   setSubTitle: (subTitle: React.ReactNode) => void;
-  pageActions: IIconButtonAction[];
-  setPageActions: (actions: IIconButtonAction[]) => void;
+  pageActions: IAction[];
+  setPageActions: (actions: IAction[]) => void;
   // consider moving below props to a SearchContext
   enableFilters: boolean;
   setEnableFilters: (value: boolean) => void;
@@ -57,7 +57,7 @@ export const PageContextProvider: React.FC<{
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
-  const [pageActions, setPageActions] = useState<IIconButtonAction[]>([]);
+  const [pageActions, setPageActions] = useState<IAction[]>([]);
   const [enableFilters, setEnableFilters] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [searchText, setSearchText] = useState<string>("");

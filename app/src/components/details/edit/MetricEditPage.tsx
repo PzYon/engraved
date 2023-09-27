@@ -33,7 +33,7 @@ export const MetricEditPage: React.FC = () => {
   const navigateToViewPage = () => navigate("./..");
 
   const save = () =>
-    editMetricMutation.mutate({
+    editMetricMutation.mutateAsync({
       metric: {
         ...metric,
         name,

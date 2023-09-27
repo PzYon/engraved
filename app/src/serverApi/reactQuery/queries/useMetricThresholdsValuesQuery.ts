@@ -2,8 +2,11 @@ import { useMetricContext } from "../../../components/details/MetricDetailsConte
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
+import { IThresholdValues } from "../../IThresholdValues";
 
-export const useMetricThresholdsValuesQuery = (metricId: string) => {
+export const useMetricThresholdsValuesQuery = (
+  metricId: string
+): IThresholdValues => {
   const { dateConditions } = useMetricContext();
 
   const { data: thresholdValues } = useQuery({

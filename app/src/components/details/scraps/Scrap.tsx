@@ -26,6 +26,7 @@ export const Scrap: React.FC<{
   index?: number;
   withoutSection?: boolean;
   onClick?: () => void;
+  hasFocus?: boolean;
 }> = ({
   scrap: currentScrap,
   hideDate,
@@ -36,6 +37,7 @@ export const Scrap: React.FC<{
   index,
   withoutSection,
   onClick,
+  hasFocus,
 }) => {
   const { setAppAlert } = useAppContext();
 
@@ -152,6 +154,7 @@ export const Scrap: React.FC<{
           upsertScrap={upsertScrap}
           style={style}
           cancelEditing={getCancelEditingFunction()}
+          hasFocus={hasFocus}
         />
       </Container>
     </Wrapper>

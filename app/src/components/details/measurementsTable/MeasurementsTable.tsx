@@ -18,11 +18,11 @@ import { MetricType } from "../../../serverApi/MetricType";
 import { ITimerMeasurement } from "../../../serverApi/ITimerMeasurement";
 import { format } from "date-fns";
 import { IMetricType } from "../../../metricTypes/IMetricType";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { IMeasurementsTableGroup } from "./IMeasurementsTableGroup";
 import { MeasurementsDateTableCell } from "./MeasurementsDateTableCell";
 import { MeasurementsTableBodyGroup } from "./MeasurementsTableBodyGroup";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const MeasurementsTable: React.FC<{
   metric: IMetric;
@@ -112,23 +112,9 @@ function getColumnsBefore(
     {
       getHeaderReactNode: () =>
         collapseAll ? (
-          <IconButtonWrapper
-            action={{
-              key: "collapse",
-              label: "Collapse all",
-              onClick: onHeaderClick,
-              icon: <ExpandLess fontSize="small" />,
-            }}
-          />
+          <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
         ) : (
-          <IconButtonWrapper
-            action={{
-              key: "collapse",
-              label: "Collapse",
-              onClick: onHeaderClick,
-              icon: <ExpandMore fontSize="small" />,
-            }}
-          />
+          <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
         ),
       key: "_collapse",
       width: "40px",
@@ -137,28 +123,10 @@ function getColumnsBefore(
           return null;
         }
 
-        return (
-          <IconButtonWrapper
-            action={{
-              key: "expand",
-              label: "Expand",
-              onClick: onClick,
-              icon: <ExpandMore fontSize="small" />,
-            }}
-          />
-        );
+        return <ActionIconButton action={ActionFactory.expand(onClick)} />;
       },
-      getGroupReactNode: (group, onClick) => {
-        return (
-          <IconButtonWrapper
-            action={{
-              key: "collapse",
-              label: "Collapse",
-              onClick: onClick,
-              icon: <ExpandLess fontSize="small" />,
-            }}
-          />
-        );
+      getGroupReactNode: (_, onClick) => {
+        return <ActionIconButton action={ActionFactory.collapse(onClick)} />;
       },
     },
     {
@@ -167,7 +135,7 @@ function getColumnsBefore(
       getGroupReactNode: (group) => (
         <MeasurementsDateTableCell date={new Date(group.label)} />
       ),
-      getValueReactNode: (group, measurement, isFirstRowOfGroup) =>
+      getValueReactNode: (_, measurement, isFirstRowOfGroup) =>
         isFirstRowOfGroup ? (
           <MeasurementsDateTableCell date={measurement.dateTime} />
         ) : null,
@@ -202,10 +170,7 @@ function getColumnsAfter(
       key: "_actions",
       width: "80px",
       getValueReactNode: (_, measurement) => (
-        <MeasurementActionButtons
-          measurement={measurement}
-          metricId={metric.id}
-        />
+        <MeasurementActionButtons measurement={measurement} />
       ),
     },
   ];

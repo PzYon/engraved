@@ -1,16 +1,11 @@
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
-import {
-  executeActionClick,
-  IIconButtonAction,
-} from "../common/IconButtonWrapper";
+import { ActionIconButton } from "../common/actions/ActionIconButton";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { IAction } from "../common/actions/IAction";
 
 export const FloatingHeaderActions: React.FC<{
-  actions: IIconButtonAction[];
+  actions: IAction[];
 }> = ({ actions }) => {
-  const navigate = useNavigate();
-
   return (
     <SpeedDial
       ariaLabel="SpeedDial basic example"
@@ -23,9 +18,8 @@ export const FloatingHeaderActions: React.FC<{
         .map((action) => (
           <SpeedDialAction
             key={action.key}
-            icon={action.icon}
+            icon={<ActionIconButton action={action} />}
             tooltipTitle={action.label}
-            onClick={(e) => executeActionClick(e, action, navigate)}
           />
         ))}
     </SpeedDial>

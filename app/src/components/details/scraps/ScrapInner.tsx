@@ -20,6 +20,7 @@ export const ScrapInner: React.FC<{
   upsertScrap: () => Promise<void>;
   style?: CSSProperties;
   cancelEditing: () => void;
+  hasFocus?: boolean;
 }> = ({
   scrap,
   isEditMode,
@@ -33,6 +34,7 @@ export const ScrapInner: React.FC<{
   upsertScrap,
   style,
   cancelEditing,
+  hasFocus,
 }) => {
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
@@ -55,8 +57,6 @@ export const ScrapInner: React.FC<{
         onFocus={() => setHasTitleFocus(true)}
         onBlur={() => setHasTitleFocus(false)}
         sx={{ width: "100%" }}
-        // todo: consider shortcuts here?!
-        onKeyDown={keyDown}
       />
       {scrap.scrapType === ScrapType.List ? (
         <ScrapListBody
@@ -70,6 +70,7 @@ export const ScrapInner: React.FC<{
           onChange={onChange}
           onSave={upsertScrap}
           cancelEditing={cancelEditing}
+          hasFocus={hasFocus}
         />
       ) : (
         <ScrapMarkdownBody
@@ -82,6 +83,7 @@ export const ScrapInner: React.FC<{
           onChange={onChange}
           onSave={upsertScrap}
           cancelEditing={cancelEditing}
+          hasFocus={hasFocus}
         />
       )}
     </div>
@@ -89,25 +91,5 @@ export const ScrapInner: React.FC<{
 
   function onChange(value: string) {
     setNotes(value);
-  }
-
-  function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    switch (e.key) {
-      case "x": {
-        if (e.altKey) {
-          cancelEditing();
-        }
-
-        break;
-      }
-
-      case "s": {
-        if (e.altKey) {
-          upsertScrap();
-        }
-
-        break;
-      }
-    }
   }
 };

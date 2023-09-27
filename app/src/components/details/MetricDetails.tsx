@@ -14,17 +14,10 @@ import { SharedWith } from "../common/SharedWith";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
-import { useHotkeys } from "react-hotkeys-hook";
 
 export const MetricDetails: React.FC = () => {
   const { metric } = useMetricContext();
   const deviceWidth = useDeviceWidth();
-  const navigate = useNavigate();
-
-  useHotkeys("alt+h", (keyboardEvent) => {
-    keyboardEvent.preventDefault();
-    navigate("/");
-  });
 
   if (!metric) {
     return null;
@@ -72,7 +65,9 @@ export const MetricDetails: React.FC = () => {
   );
 };
 
-const SubRoutes: React.FC<{ metric: IMetric }> = ({ metric }) => {
+const SubRoutes: React.FC<{
+  metric: IMetric;
+}> = ({ metric }) => {
   const navigate = useNavigate();
 
   return (
@@ -94,7 +89,9 @@ const SubRoutes: React.FC<{ metric: IMetric }> = ({ metric }) => {
   );
 };
 
-const PropertiesContainer = styled("div")<{ isSmall?: boolean }>`
+const PropertiesContainer = styled("div")<{
+  isSmall?: boolean;
+}>`
   padding: 0 ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
 
   & > span:not(:last-of-type)::after {

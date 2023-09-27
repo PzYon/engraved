@@ -1,30 +1,15 @@
 import { IMeasurement } from "../../../serverApi/IMeasurement";
-import { IconButtonWrapper } from "../../common/IconButtonWrapper";
-import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import React from "react";
 import { styled } from "@mui/material";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const MeasurementActionButtons: React.FC<{
   measurement: IMeasurement;
-  metricId: string;
-}> = ({ measurement, metricId }) => (
+}> = ({ measurement }) => (
   <Host>
-    <IconButtonWrapper
-      action={{
-        key: "edit-measurement",
-        label: "Edit Measurement",
-        href: `/metrics/${metricId}/measurements/${measurement.id}/edit`,
-        icon: <EditOutlined fontSize="small" />,
-      }}
-    />
-    <IconButtonWrapper
-      action={{
-        key: "delete-measurement",
-        label: "Delete Measurement",
-        href: `/metrics/${metricId}/measurements/${measurement.id}/delete`,
-        icon: <DeleteOutlined fontSize="small" />,
-      }}
-    />
+    <ActionIconButton action={ActionFactory.editMeasurement(measurement)} />
+    <ActionIconButton action={ActionFactory.deleteMeasurement(measurement)} />
   </Host>
 );
 

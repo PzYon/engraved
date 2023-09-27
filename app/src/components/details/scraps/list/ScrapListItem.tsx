@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled, Typography } from "@mui/material";
-import { IconButtonWrapper } from "../../../common/IconButtonWrapper";
+import { ActionIconButton } from "../../../common/actions/ActionIconButton";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { ListItemWrapper } from "./ListItemWrapper";
@@ -17,8 +17,6 @@ export const ScrapListItem: React.FC<{
   moveFocusUp: () => void;
   moveItemUp: () => void;
   moveItemDown: () => void;
-  saveItem: () => void;
-  reset: () => void;
 }> = ({
   isEditMode,
   listItemWrapper,
@@ -29,8 +27,6 @@ export const ScrapListItem: React.FC<{
   moveFocusUp,
   moveItemUp,
   moveItemDown,
-  saveItem,
-  reset,
 }) => {
   const listItem = listItemWrapper.raw;
 
@@ -64,7 +60,7 @@ export const ScrapListItem: React.FC<{
         <Typography sx={getSx("plain")}>{label}</Typography>
       )}
 
-      <IconButtonWrapper
+      <ActionIconButton
         action={{
           sx: !isEditMode ? { visibility: "hidden" } : null,
           isDisabled: !isEditMode,
@@ -130,22 +126,6 @@ export const ScrapListItem: React.FC<{
 
         if (e.altKey && e.ctrlKey) {
           onDelete();
-        }
-
-        break;
-      }
-
-      case "x": {
-        if (e.altKey) {
-          reset();
-        }
-
-        break;
-      }
-
-      case "s": {
-        if (e.altKey) {
-          saveItem();
         }
 
         break;

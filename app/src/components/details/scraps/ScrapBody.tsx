@@ -1,16 +1,10 @@
 import React from "react";
-import { IIconButtonAction } from "../../common/IconButtonWrapper";
 import { styled, Typography } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
-import { Actions } from "../../common/Actions";
-import {
-  ClearOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  Redo,
-  SaveOutlined,
-} from "@mui/icons-material";
+import { ActionGroup } from "../../common/actions/ActionGroup";
 import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { IAction } from "../../common/actions/IAction";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapMeasurement;
@@ -19,9 +13,10 @@ export const ScrapBody: React.FC<{
   editMode: boolean;
   setEditMode: (value: boolean) => void;
   children: React.ReactNode;
-  actions: IIconButtonAction[];
+  actions: IAction[];
   onSave: () => Promise<void>;
   cancelEditing: () => void;
+  enableHotkeys?: boolean;
 }> = ({
   scrap,
   hideDate,
@@ -32,8 +27,9 @@ export const ScrapBody: React.FC<{
   actions,
   onSave,
   cancelEditing,
+  enableHotkeys,
 }) => {
-  const allActions = getActions();
+  const allActions = getActions(enableHotkeys);
 
   return (
     <>
@@ -48,59 +44,34 @@ export const ScrapBody: React.FC<{
 
         {allActions?.length ? (
           <ActionsContainer>
-            <Actions actions={allActions} />
+            <ActionGroup actions={allActions} />
           </ActionsContainer>
         ) : null}
       </FooterContainer>
     </>
   );
 
-  function getActions() {
+  function getActions(enableHotkeys: boolean) {
     if (hideActions) {
       return [];
     }
 
     const allActions = [
       ...actions,
-      {
-        key: "move-to-other-scrap",
-        label: "Move to another scrap",
-        icon: <Redo fontSize="small" />,
-        href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/move`,
-      },
+      ActionFactory.moveToAnotherScrap(scrap),
       editMode
-        ? {
-            key: "save",
-            label: "Save",
-            icon: <SaveOutlined fontSize="small" />,
-            onClick: async () => {
-              await onSave();
-            },
-          }
-        : {
-            key: "edit",
-            label: "Edit",
-            icon: <EditOutlined fontSize="small" />,
-            onClick: () => setEditMode(true),
-          },
+        ? ActionFactory.save(async () => await onSave(), false, enableHotkeys)
+        : ActionFactory.editScrap(() => setEditMode(true), enableHotkeys),
     ];
 
     if (cancelEditing) {
-      allActions.push({
-        key: "cancel-edit",
-        label: "Stop editing and reset",
-        icon: <ClearOutlined fontSize="small" />,
-        onClick: cancelEditing,
-      });
+      allActions.push(
+        ActionFactory.cancelEditing(cancelEditing, enableHotkeys)
+      );
     }
 
     if (scrap.id) {
-      allActions.push({
-        key: "delete",
-        label: "Delete",
-        icon: <DeleteOutlined fontSize="small" />,
-        href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/delete`,
-      });
+      allActions.push(ActionFactory.deleteMeasurement(scrap));
     }
 
     return allActions;

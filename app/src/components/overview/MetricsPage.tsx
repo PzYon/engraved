@@ -1,9 +1,10 @@
 import React from "react";
-import { AddOutlined, VisibilityOutlined } from "@mui/icons-material";
+import { VisibilityOutlined } from "@mui/icons-material";
 import { Page } from "../layout/pages/Page";
 import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
 import { Metrics } from "./Metrics";
+import { ActionFactory } from "../common/actions/ActionFactory";
 
 export const MetricsPage: React.FC = () => (
   <Page
@@ -17,14 +18,7 @@ export const MetricsPage: React.FC = () => (
         }
       />
     }
-    actions={[
-      {
-        href: "/metrics/create",
-        icon: <AddOutlined fontSize="small" />,
-        label: "Add Metric",
-        key: "add_metric",
-      },
-    ]}
+    actions={[ActionFactory.newMetric()]}
     enableFilters={true}
   >
     <Metrics />
