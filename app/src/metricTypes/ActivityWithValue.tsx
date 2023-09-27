@@ -5,7 +5,6 @@ import { AttributeValues } from "../components/common/AttributeValues";
 import { styled, Typography } from "@mui/material";
 import { Activity } from "./Activity";
 import { ActionGroup } from "../components/common/actions/ActionGroup";
-
 import { ActionFactory } from "../components/common/actions/ActionFactory";
 
 export const ActivityWithValue: React.FC<{

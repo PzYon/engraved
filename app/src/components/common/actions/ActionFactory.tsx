@@ -30,7 +30,6 @@ import { IAppAlert } from "../../errorHandling/AppAlertBar";
 import { IUser } from "../../../serverApi/IUser";
 import { renderAddScrapDialog } from "../../details/add/renderAddScrapDialog";
 import { QueryClient } from "@tanstack/react-query";
-
 import { IAction } from "./IAction";
 
 export class ActionFactory {

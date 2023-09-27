@@ -2,6 +2,7 @@ import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
 import { Link, useNavigate } from "react-router-dom";
 import { useHotkeys } from "react-hotkeys-hook";
+
 export const ActionLink: React.FC<{
   action: IAction;
   children?: React.ReactElement;

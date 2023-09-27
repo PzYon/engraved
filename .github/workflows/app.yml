@@ -32,7 +32,7 @@ jobs:
         id: current-time
         uses: gerred/actions/current-time@master
 
-      - name: Install and build
+      - name: Install, lint and build
         working-directory: app
         env:
           VITE_COMMIT_HASH: ${{github.sha}}
