@@ -78,9 +78,9 @@ export class ActionFactory {
     };
   }
 
-  static createMetric(): IAction {
+  static newMetric(): IAction {
     return {
-      hotkey: "alt+a",
+      hotkey: "alt+n",
       href: "/metrics/create",
       icon: <AddOutlined fontSize="small" />,
       label: "Add Metric",
@@ -224,12 +224,13 @@ export class ActionFactory {
     };
   }
 
-  static cancelEditing(onCancel: () => void): IAction {
+  static cancelEditing(onCancel: () => void, enableHotkey: boolean): IAction {
     return {
+      hotkey: enableHotkey ? "alt+x" : undefined,
       key: "cancel-edit",
       label: "Stop editing and reset",
       icon: <ClearOutlined fontSize="small" />,
-      onClick: onCancel,
+      onClick: () => onCancel(),
     };
   }
 
@@ -257,6 +258,7 @@ export class ActionFactory {
     renderDialog?: (dialogProps: IDialogProps) => void
   ): IAction {
     return {
+      hotkey: "alt+q",
       key: "add-quick-scrap",
       icon: <BoltOutlined fontSize="small" />,
       label: "Add Quick Scrap",

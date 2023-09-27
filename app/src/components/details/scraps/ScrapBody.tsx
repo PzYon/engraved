@@ -65,7 +65,9 @@ export const ScrapBody: React.FC<{
     ];
 
     if (cancelEditing) {
-      allActions.push(ActionFactory.cancelEditing(cancelEditing));
+      allActions.push(
+        ActionFactory.cancelEditing(cancelEditing, enableHotkeys)
+      );
     }
 
     if (scrap.id) {

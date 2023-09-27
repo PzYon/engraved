@@ -19,7 +19,7 @@ export const MetricsPage: React.FC = () => (
         }
       />
     }
-    actions={[ActionFactory.createMetric()]}
+    actions={[ActionFactory.newMetric()]}
     enableFilters={true}
   >
     <Metrics />

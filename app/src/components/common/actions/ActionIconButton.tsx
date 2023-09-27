@@ -11,9 +11,12 @@ export const ActionIconButton: React.FC<{
     action.hotkey,
     (keyboardEvent) => {
       keyboardEvent.preventDefault();
-      action.onClick;
+      action.onClick();
     },
-    { enabled: !!action.hotkey && !action.href }
+    {
+      enabled: !!action.hotkey && !action.href,
+      enableOnFormTags: ["textarea", "input"],
+    }
   );
 
   if (action.href) {
