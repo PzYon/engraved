@@ -1,14 +1,21 @@
 import React from "react";
 import { IconButton } from "@mui/material";
 import { IAction } from "./IAction";
-import { useActionHotkeys } from "./useActionHotkeys";
 import { ActionLink } from "./ActionLink";
 import { NavigateFunction } from "react-router-dom";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
 }> = ({ action }) => {
-  useActionHotkeys(action);
+  useHotkeys(
+    action.hotkey,
+    (keyboardEvent) => {
+      keyboardEvent.preventDefault();
+      action.onClick;
+    },
+    { enabled: !!action.hotkey && !action.href }
+  );
 
   if (action.href) {
     return (
@@ -40,17 +47,3 @@ export const ActionIconButton: React.FC<{
     );
   }
 };
-
-export function executeActionClick(
-  e: React.MouseEvent<HTMLElement>,
-  action: IAction,
-  navigate: NavigateFunction
-) {
-  e?.stopPropagation();
-
-  if (action.href) {
-    navigate(action.href);
-  } else if (action.onClick) {
-    action.onClick();
-  }
-}
