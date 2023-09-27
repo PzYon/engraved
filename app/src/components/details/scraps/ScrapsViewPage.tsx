@@ -13,7 +13,7 @@ import {
   IScrapMeasurement,
   ScrapType,
 } from "../../../serverApi/IScrapMeasurement";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
 import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
@@ -22,8 +22,6 @@ import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 import { IAction } from "../../common/actions/IAction";
 
 export const ScrapsViewPage: React.FC = () => {
-  const navigate = useNavigate();
-
   const {
     metric,
     measurements: scraps,

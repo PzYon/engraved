@@ -10,6 +10,10 @@ export const ActionLink: React.FC<{
 }> = ({ action, style, children }) => {
   useActionHotkeys(action);
 
+  if (action.isDisabled) {
+    return <span style={style}>{children ?? action.icon}</span>;
+  }
+
   return (
     <Link to={action.href} style={style}>
       {children ?? action.icon}
