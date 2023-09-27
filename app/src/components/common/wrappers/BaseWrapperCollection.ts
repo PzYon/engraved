@@ -1,11 +1,13 @@
-export class BaseWrapperCollection<BaseItemWrapper> {
-  private wrappers: BaseItemWrapper[] = [];
+import { BaseItemWrapper } from "./BaseItemWrapper";
+
+export class BaseWrapperCollection<T extends BaseItemWrapper<{ id?: string }>> {
+  private wrappers: T[] = [];
 
   get currentIndex() {
     return this.index;
   }
 
-  get current(): BaseItemWrapper {
+  get current(): T {
     return this.wrappers[this.index];
   }
 
@@ -42,7 +44,7 @@ export class BaseWrapperCollection<BaseItemWrapper> {
     this.setFocus(this.getNextLowerIndex(this.index));
   }
 
-  add(id: string, wrapper: BaseItemWrapper) {
+  add(id: string, wrapper: T) {
     const existingIndex = this.wrappers.findIndex(
       (w) => w.internalObj.id === id
     );
