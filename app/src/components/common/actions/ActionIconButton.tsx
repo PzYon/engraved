@@ -2,7 +2,6 @@ import React from "react";
 import { IconButton } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
-import { NavigateFunction } from "react-router-dom";
 import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionIconButton: React.FC<{
