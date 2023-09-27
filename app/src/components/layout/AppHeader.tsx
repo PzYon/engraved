@@ -54,7 +54,7 @@ export const AppHeader: React.FC = () => {
       >
         <AppContent scope="header">
           <ContentWrapper sx={{ display: "flex", height: "64px" }}>
-            <ActionLink action={ActionFactory.home()} style={{ flexGrow: 1 }}>
+            <ActionLink action={ActionFactory.goHome()} style={{ flexGrow: 1 }}>
               <Typography
                 variant="h1"
                 sx={{

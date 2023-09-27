@@ -58,12 +58,22 @@ export class ActionFactory {
     };
   }
 
-  static home(): IAction {
+  static goHome(): IAction {
     return {
       hotkey: "alt+h",
       key: "navigate-home",
       label: "Home",
       href: "/",
+      icon: null,
+    };
+  }
+
+  static goToMetric(metricId: string, enableHotkeys: boolean): IAction {
+    return {
+      hotkey: enableHotkeys ? "alt+enter" : undefined,
+      key: `go-to-metric-${metricId}`,
+      href: `/metrics/${metricId}`,
+      label: "Go to metric",
       icon: null,
     };
   }

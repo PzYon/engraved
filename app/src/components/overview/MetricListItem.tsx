@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { IMetric } from "../../serverApi/IMetric";
 import { Box, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
 import { MetricHeaderActions } from "./MetricHeaderActions";
 import { MetricProperties } from "./MetricProperties";
 import { MetricTypeIcon } from "../common/MetricTypeIcon";
@@ -10,6 +9,8 @@ import { IconStyle } from "../common/Icon";
 import { PageSection } from "../layout/pages/PageSection";
 import { MetricItemWrapper } from "./MetricItemWrapper";
 import { Wrapper } from "../common/wrappers/Wrapper";
+import { ActionLink } from "../common/actions/ActionLink";
+import { ActionFactory } from "../common/actions/ActionFactory";
 
 export const MetricListItem: React.FC<{
   metric: IMetric;
@@ -35,7 +36,7 @@ export const MetricListItem: React.FC<{
         <Box sx={{ display: "flex" }}>
           <MetricTypeIcon type={metric.type} style={IconStyle.Overview} />
           <Box sx={{ flexGrow: 1, pl: 3, wordBreak: "break-all" }}>
-            <Link to={`/metrics/${metric.id}`}>
+            <ActionLink action={ActionFactory.goToMetric(metric.id, isFocused)}>
               <Typography
                 variant="h5"
                 sx={{
@@ -48,7 +49,7 @@ export const MetricListItem: React.FC<{
               >
                 {metric.name}
               </Typography>
-            </Link>
+            </ActionLink>
             <Typography>{metric.description}</Typography>
             <MetricProperties metric={metric} />
             {deviceWidth === DeviceWidth.Small ? (
