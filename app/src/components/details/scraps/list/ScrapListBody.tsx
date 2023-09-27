@@ -45,8 +45,6 @@ export const ScrapListBody: React.FC<{
       value={value}
       onChange={onChange}
       editedOn={scrap.editedOn}
-      saveItem={onSave}
-      reset={cancelEditing}
     />
   </ScrapBody>
 );
