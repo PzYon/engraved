@@ -8,7 +8,7 @@ export const Markdown: React.FC<{
 }> = ({ value, onClick }) => {
   const html = useMemo<string>(
     () => (value ? MarkdownIt("default", { linkify: true }).render(value) : ""),
-    [value]
+    [value],
   );
 
   return (

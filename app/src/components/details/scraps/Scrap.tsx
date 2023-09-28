@@ -52,7 +52,7 @@ export const Scrap: React.FC<{
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
     currentScrap.metricId,
     MetricType.Scraps,
-    currentScrap.id
+    currentScrap.id,
   );
 
   const initialScrap = useMemo(() => {
@@ -61,7 +61,7 @@ export const Scrap: React.FC<{
 
   const isDirty = useMemo(
     () => initialScrap.notes !== notes || initialScrap.title !== title,
-    [initialScrap, notes, title]
+    [initialScrap, notes, title],
   );
 
   useEffect(() => {
@@ -74,8 +74,8 @@ export const Scrap: React.FC<{
         domElementRef,
         currentScrap,
         () => setIsEditMode(!isEditMode),
-        upsertScrap
-      )
+        upsertScrap,
+      ),
     );
   }, [isDirty, isEditMode, currentScrap.editedOn]);
 

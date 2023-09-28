@@ -4,7 +4,7 @@ import { ListItemWrapper } from "./ListItemWrapper";
 export class ListItemWrapperCollection {
   constructor(
     public items: ListItemWrapper[],
-    private onChange: (value: ISCrapListItem[]) => void
+    private onChange: (value: ISCrapListItem[]) => void,
   ) {}
 
   private get highestIndex() {
@@ -110,7 +110,7 @@ export class ListItemWrapperCollection {
       new ListItemWrapper({
         label: "",
         isCompleted: false,
-      })
+      }),
     );
   }
 

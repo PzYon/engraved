@@ -31,7 +31,7 @@ export const MetricAttributeSelector: React.FC<{
         key: arr[0],
         label: arr[1],
       })),
-    [attribute.values]
+    [attribute.values],
   );
 
   const selectedOption = useMemo(
@@ -39,7 +39,7 @@ export const MetricAttributeSelector: React.FC<{
       options.filter((o) => {
         return selectedAttributeValues[attributeKey]?.indexOf(o.key) > -1;
       })[0],
-    []
+    [],
   );
 
   return (
@@ -89,12 +89,12 @@ export const MetricAttributeSelector: React.FC<{
 
   function filterOptions(
     options: IOption[],
-    params: FilterOptionsState<IOption>
+    params: FilterOptionsState<IOption>,
   ): IOption[] {
     const { inputValue } = params;
 
     const isExisting = options.some(
-      (o) => inputValue?.toLowerCase() === o.label?.toLowerCase()
+      (o) => inputValue?.toLowerCase() === o.label?.toLowerCase(),
     );
 
     const filtered = filter(options, params);

@@ -19,7 +19,7 @@ export type Google = {
       initialize: (input: GoogleInitializeInput) => void;
       renderButton: (
         domElement: HTMLElement,
-        params: { theme: string; size: string; shape: string; type: string }
+        params: { theme: string; size: string; shape: string; type: string },
       ) => void;
       prompt: (notification: GoogleNotification) => void;
     };

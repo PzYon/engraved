@@ -7,7 +7,7 @@ export class ScrapItemWrapper extends BaseItemWrapper<IScrapMeasurement> {
     ref: React.MutableRefObject<HTMLDivElement>,
     scrap: IScrapMeasurement,
     public setIsEditMode: () => void,
-    public upsertScrap: () => Promise<void>
+    public upsertScrap: () => Promise<void>,
   ) {
     super(ref, scrap);
   }

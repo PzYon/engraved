@@ -31,7 +31,7 @@ export const MeasurementsTable: React.FC<{
 }> = ({ metric, measurements, showGroupTotals }) => {
   const type = useMemo(
     () => MetricTypeFactory.create(metric.type),
-    [metric?.type]
+    [metric?.type],
   );
 
   const [collapseAll, setCollapseAll] = useState<boolean>(undefined);
@@ -39,7 +39,7 @@ export const MeasurementsTable: React.FC<{
   const columns = useMemo(() => {
     return [
       ...getColumnsBefore(metric, collapseAll, () =>
-        setCollapseAll(!collapseAll)
+        setCollapseAll(!collapseAll),
       ),
       ...type.getMeasurementsTableColumns(),
       ...getColumnsAfter(metric),
@@ -106,7 +106,7 @@ export const MeasurementsTable: React.FC<{
 function getColumnsBefore(
   metric: IMetric,
   collapseAll: boolean,
-  onHeaderClick: () => void
+  onHeaderClick: () => void,
 ): IMeasurementsTableColumnDefinition[] {
   return [
     {
@@ -145,7 +145,7 @@ function getColumnsBefore(
 }
 
 function getColumnsAfter(
-  metric: IMetric
+  metric: IMetric,
 ): IMeasurementsTableColumnDefinition[] {
   return [
     {
@@ -178,7 +178,7 @@ function getColumnsAfter(
 
 function getMeasurementsTableGroups(
   measurements: IMeasurement[],
-  type: IMetricType
+  type: IMetricType,
 ): IMeasurementsTableGroup[] {
   const groupsByKey: Record<string, IMeasurementsTableGroup> = {};
 
@@ -219,7 +219,7 @@ function getGroupKey(metricType: MetricType, measurement: IMeasurement) {
 function getTotalValue(
   columnDefinition: IMeasurementsTableColumnDefinition,
   tableGroups: IMeasurementsTableGroup[],
-  type: IMetricType
+  type: IMetricType,
 ) {
   if (!columnDefinition.isSummable) {
     return null;

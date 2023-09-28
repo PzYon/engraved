@@ -6,7 +6,7 @@ import { queryKeysFactory } from "../queryKeysFactory";
 export const useMoveMeasurementMutation = (
   measurementId: string,
   metricId: string,
-  onSaved?: () => void
+  onSaved?: () => void,
 ) => {
   const { setAppAlert } = useAppContext();
 
@@ -26,7 +26,7 @@ export const useMoveMeasurementMutation = (
       });
 
       await queryClient.invalidateQueries(
-        queryKeysFactory.metric(variables.targetMetricId)
+        queryKeysFactory.metric(variables.targetMetricId),
       );
 
       await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
@@ -44,7 +44,7 @@ export const useMoveMeasurementMutation = (
 
     onSettled: async () => {
       await queryClient.invalidateQueries(
-        queryKeysFactory.metrics(undefined, undefined)
+        queryKeysFactory.metrics(undefined, undefined),
       );
     },
   });

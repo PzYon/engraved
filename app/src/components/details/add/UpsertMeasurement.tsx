@@ -46,21 +46,21 @@ export const UpsertMeasurement: React.FC<{
   const [forceResetSelectors, setForceResetSelectors] = useState("initial");
 
   const [value, setValue] = useState<string>(
-    (measurement as IGaugeMeasurement)?.value?.toString() || ""
+    (measurement as IGaugeMeasurement)?.value?.toString() || "",
   );
 
   const [date, setDate] = useState<Date>(
     measurement?.dateTime
       ? new Date(measurement.dateTime)
-      : stripTime(storage.getLastSelectedDate())
+      : stripTime(storage.getLastSelectedDate()),
   );
 
   const [startDate, setStartDate] = useState(
-    (measurement as ITimerMeasurement)?.startDate
+    (measurement as ITimerMeasurement)?.startDate,
   );
 
   const [endDate, setEndDate] = useState(
-    (measurement as ITimerMeasurement)?.endDate
+    (measurement as ITimerMeasurement)?.endDate,
   );
 
   const [showFullTimerForm, setShowFullTimerForm] = useState(false);
@@ -71,7 +71,7 @@ export const UpsertMeasurement: React.FC<{
     metric.id,
     metric.type,
     measurement?.id,
-    onSaved
+    onSaved,
   );
 
   return (
@@ -143,8 +143,8 @@ export const UpsertMeasurement: React.FC<{
                     previousValue[key] = values[key] ?? [];
                     return previousValue;
                   },
-                  {}
-                )
+                  {},
+                ),
               );
             }}
           />
@@ -201,7 +201,7 @@ export const UpsertMeasurement: React.FC<{
     switch (metric.type) {
       case MetricType.Gauge:
         (command as IUpsertGaugeMeasurementCommand).value = !isNaN(
-          value as never
+          value as never,
         )
           ? Number(value)
           : undefined;
@@ -209,7 +209,7 @@ export const UpsertMeasurement: React.FC<{
 
       case MetricType.Timer:
         (command as IUpsertTimerMeasurementCommand).startDate = new Date(
-          startDate
+          startDate,
         );
         (command as IUpsertTimerMeasurementCommand).endDate = new Date(endDate);
         break;

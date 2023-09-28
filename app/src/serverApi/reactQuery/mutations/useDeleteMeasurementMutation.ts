@@ -4,7 +4,7 @@ import { ServerApi } from "../../ServerApi";
 
 export const useDeleteMeasurementMutation = (
   metricId: string,
-  measurementId: string
+  measurementId: string,
 ) => {
   const queryClient = useQueryClient();
 

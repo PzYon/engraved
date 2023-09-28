@@ -16,7 +16,7 @@ export const ActionIconButton: React.FC<{
     {
       enabled: !!action.hotkey && !action.href,
       enableOnFormTags: ["textarea", "input"],
-    }
+    },
   );
 
   if (action.href) {

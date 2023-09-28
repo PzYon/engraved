@@ -12,12 +12,12 @@ export interface IMeasurementsTableColumnDefinition {
     group: IMeasurementsTableGroup,
     measurement: IMeasurement,
     isFirstRowOfGroup: boolean,
-    onClick?: () => void
+    onClick?: () => void,
   ) => React.ReactNode;
 
   getGroupReactNode?: (
     group: IMeasurementsTableGroup,
-    onClick?: () => void
+    onClick?: () => void,
   ) => React.ReactNode;
 
   getRawValue?: (measurement: IMeasurement) => number;

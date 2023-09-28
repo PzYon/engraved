@@ -14,7 +14,7 @@ import { AppContent } from "../AppContent";
 
 const SlideUp = React.forwardRef(function Transition(
   props: { children: React.ReactNode },
-  ref
+  ref,
 ) {
   return (
     <Slide direction="up" ref={ref} {...props}>

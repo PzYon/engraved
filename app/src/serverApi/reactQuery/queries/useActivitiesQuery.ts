@@ -6,7 +6,7 @@ import { MetricType } from "../../MetricType";
 
 export const useActivitiesQuery = (
   searchText?: string,
-  metricTypes?: MetricType[]
+  metricTypes?: MetricType[],
 ) => {
   const { data: activities } = useQuery<IGetActivitiesQueryResult>({
     queryKey: queryKeysFactory.activities(searchText, metricTypes),

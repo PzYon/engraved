@@ -36,7 +36,7 @@ export const ScrapsMovePage: React.FC = () => {
 
   const { measurementId, metricId } = useParams();
   const mutation = useMoveMeasurementMutation(measurementId, metricId, () =>
-    navigate(`/metrics/${targetMetricId}`)
+    navigate(`/metrics/${targetMetricId}`),
   );
 
   useEffect(() => setSubTitle("Move scrap to..."), []);

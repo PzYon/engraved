@@ -26,7 +26,7 @@ export const AddQuickScrapDialog: React.FC<{
                 ? value
                 : type === ScrapType.Markdown
                 ? ScrapType.List
-                : ScrapType.Markdown
+                : ScrapType.Markdown,
             );
           }}
         >

@@ -21,7 +21,7 @@ export const EditMetricPermissions: React.FC<{
   const [newPermissions, setNewPermissions] = useState<IUpdatePermissions>({});
 
   const modifyMetricPermissionsMutation = useModifyMetricPermissionsMutation(
-    metric.id
+    metric.id,
   );
 
   return (

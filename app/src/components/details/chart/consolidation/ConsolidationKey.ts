@@ -6,7 +6,7 @@ export class ConsolidationKey {
   private constructor(
     public year: number,
     public month: number,
-    public day: number
+    public day: number,
   ) {}
 
   static build(dateTime: string, groupByTime: GroupByTime): ConsolidationKey {
@@ -35,7 +35,7 @@ export class ConsolidationKey {
     return new ConsolidationKey(
       parseInt(segments[0]),
       parseInt(segments[1]),
-      parseInt(segments[2])
+      parseInt(segments[2]),
     );
   }
 

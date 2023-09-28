@@ -9,7 +9,7 @@ export const editActionKey = "edit";
 export function getCommonActions(
   metric: IMetric,
   enableHotkeys: boolean,
-  renderDialog?: (dialogProps: IDialogProps) => void
+  renderDialog?: (dialogProps: IDialogProps) => void,
 ): IAction[] {
   if (!metric) {
     return [];
@@ -19,14 +19,14 @@ export function getCommonActions(
 
   if (metric.type !== MetricType.Scraps) {
     actions.push(
-      ActionFactory.addMeasurement(metric, renderDialog, enableHotkeys)
+      ActionFactory.addMeasurement(metric, renderDialog, enableHotkeys),
     );
   }
 
   actions.push(
     ActionFactory.editMetric(metric.id, enableHotkeys),
     ActionFactory.editMetricPermissions(metric.id),
-    ActionFactory.deleteMetric(metric.id, enableHotkeys)
+    ActionFactory.deleteMetric(metric.id, enableHotkeys),
   );
 
   return actions;
@@ -35,7 +35,7 @@ export function getCommonActions(
 export function getCommonEditModeActions(
   onCancel: () => void,
   onSave: () => Promise<void>,
-  disableSave?: boolean
+  disableSave?: boolean,
 ): IAction[] {
   return [
     ActionFactory.cancel(onCancel),

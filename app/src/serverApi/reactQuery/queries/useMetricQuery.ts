@@ -18,7 +18,7 @@ export const useMetricQuery = (metricId: string) => {
           exact: true,
         },
         (metrics: IMetric[]) =>
-          metrics.map((m) => (m.id === loadedMetric.id ? loadedMetric : m))
+          metrics.map((m) => (m.id === loadedMetric.id ? loadedMetric : m)),
       );
     },
   });

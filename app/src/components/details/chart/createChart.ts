@@ -21,10 +21,10 @@ export const createChart = (
   attributeKey: string,
   toggleAttributeValue: (
     attributeKey: string,
-    attributeValueKey: string
+    attributeValueKey: string,
   ) => void,
   type: ChartType,
-  color: string
+  color: string,
 ): ChartProps => {
   switch (type) {
     case "bar":
@@ -34,7 +34,7 @@ export const createChart = (
         metric,
         toggleAttributeValue,
         groupByTime,
-        attributeKey
+        attributeKey,
       );
 
     case "line":
@@ -44,7 +44,7 @@ export const createChart = (
         metric,
         toggleAttributeValue,
         groupByTime,
-        attributeKey
+        attributeKey,
       );
 
     case "doughnut":
@@ -53,7 +53,7 @@ export const createChart = (
         color,
         metric,
         groupByTime,
-        attributeKey
+        attributeKey,
       );
 
     default:
@@ -67,10 +67,10 @@ function createLineChart(
   metric: IMetric,
   toggleAttributeValue: (
     attributeKey: string,
-    attributeValueKey: string
+    attributeValueKey: string,
   ) => void,
   groupByTime: GroupByTime,
-  attributeKey: string
+  attributeKey: string,
 ): ChartProps {
   // hack: for the moment we create a bar chart and then adjust
   // the relevant properties
@@ -80,7 +80,7 @@ function createLineChart(
     metric,
     toggleAttributeValue,
     groupByTime,
-    attributeKey
+    attributeKey,
   );
 
   chart.type = "line";
@@ -94,13 +94,13 @@ function createPieChart(
   color: string,
   metric: IMetric,
   groupByTime: GroupByTime,
-  attributeKey: string
+  attributeKey: string,
 ): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
     measurements,
     metric,
     groupByTime,
-    attributeKey
+    attributeKey,
   );
 
   return {
@@ -119,9 +119,9 @@ function createPieChart(
                 .map((set) => set.y)
                 .reduce(
                   (previousValue: number, currentValue: number) =>
-                    previousValue + currentValue
+                    previousValue + currentValue,
                 ),
-            0
+            0,
           ),
         },
       ],
@@ -149,16 +149,16 @@ function createBarChart(
   metric: IMetric,
   toggleAttributeValue: (
     attributeKey: string,
-    attributeValueKey: string
+    attributeValueKey: string,
   ) => void,
   groupByTime: GroupByTime,
-  attributeKey: string
+  attributeKey: string,
 ): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
     measurements,
     metric,
     groupByTime,
-    attributeKey
+    attributeKey,
   );
 
   const decoratedDataSets = dataSets.map((dataSet, i) => {
@@ -185,7 +185,7 @@ function createBarChart(
           .raw as ITransformedMeasurement;
 
         const attributeValues = raw.measurements.map(
-          (m) => m.metricAttributeValues?.[attributeKey]
+          (m) => m.metricAttributeValues?.[attributeKey],
         );
 
         toggleAttributeValue(attributeKey, attributeValues[0][0]);
@@ -205,8 +205,8 @@ function createBarChart(
                   Math.min(
                     ...measurements
                       .map((x) => metricType.getValue(x))
-                      .filter((x) => x !== 0)
-                  ) * 0.95
+                      .filter((x) => x !== 0),
+                  ) * 0.95,
                 )
               : undefined,
           stacked: true,
@@ -232,13 +232,13 @@ function createBarChart(
             title: (tooltipItems) => {
               return format(
                 new Date((tooltipItems[0].raw as ITransformedMeasurement).x),
-                getTooltipTitleFormat(groupByTime)
+                getTooltipTitleFormat(groupByTime),
               );
             },
             label: (tooltipItem): string | string[] | void => {
               return getTooltipValue(
                 metricType,
-                (tooltipItem.raw as ITransformedMeasurement).y
+                (tooltipItem.raw as ITransformedMeasurement).y,
               );
             },
           },
@@ -291,7 +291,7 @@ function average(ctx: any) {
       (total: number, currentMeasurement: ITransformedMeasurement) => {
         return currentMeasurement.y + total;
       },
-      0
+      0,
     ) / values.length
   );
 }

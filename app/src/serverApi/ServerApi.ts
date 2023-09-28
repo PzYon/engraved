@@ -51,7 +51,7 @@ export class ServerApi {
         reject(
           new ApiError(401, {
             message: "Failed to login again as google prompt is not available.",
-          })
+          }),
         );
       }
     });
@@ -79,7 +79,7 @@ export class ServerApi {
     const authResult: IAuthResult = await ServerApi.executeRequest(
       "/auth/google",
       "POST",
-      { token: token }
+      { token: token },
     );
 
     new AuthStorage().setAuthResult(authResult);
@@ -94,7 +94,7 @@ export class ServerApi {
 
   static async getMetrics(
     searchText?: string,
-    metricTypes?: MetricType[]
+    metricTypes?: MetricType[],
   ): Promise<IMetric[]> {
     const paramsString = this.getParamsString(searchText, metricTypes);
     return await ServerApi.executeRequest(`/metrics${paramsString}`);
@@ -110,7 +110,7 @@ export class ServerApi {
 
   static async getActivities(
     searchText: string,
-    metricTypes: MetricType[]
+    metricTypes: MetricType[],
   ): Promise<IGetActivitiesQueryResult> {
     const paramsString = this.getParamsString(searchText, metricTypes);
     return await ServerApi.executeRequest(`/activities${paramsString}`);
@@ -119,7 +119,7 @@ export class ServerApi {
   static async addMetric(
     name: string,
     description: string,
-    type: MetricType
+    type: MetricType,
   ): Promise<ICommandResult> {
     const payload: IAddMetricCommand = {
       name: name,
@@ -137,7 +137,7 @@ export class ServerApi {
     notes: string,
     attributes: IMetricAttributes,
     thresholds: IMetricThresholds,
-    uiSettings: IMetricUiSettings | string
+    uiSettings: IMetricUiSettings | string,
   ): Promise<ICommandResult> {
     const payload: IEditMetricCommand = {
       metricId: metricId,
@@ -163,18 +163,18 @@ export class ServerApi {
 
   static async modifyMetricPermissions(
     metricId: string,
-    permissions: IUpdatePermissions
+    permissions: IUpdatePermissions,
   ): Promise<unknown> {
     return await ServerApi.executeRequest(
       `/metrics/${metricId}/permissions`,
       "PUT",
-      permissions
+      permissions,
     );
   }
 
   static async getThresholdValues(
     metricId: string,
-    dateConditions: IDateConditions
+    dateConditions: IDateConditions,
   ): Promise<IThresholdValues> {
     const urlParams: string[] = [];
 
@@ -189,14 +189,14 @@ export class ServerApi {
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";
 
     return await ServerApi.executeRequest(
-      `/metrics/${metricId}/threshold_values${params}`
+      `/metrics/${metricId}/threshold_values${params}`,
     );
   }
 
   static async getMeasurements(
     metricId: string,
     attributeValues: IMetricAttributeValues,
-    dateConditions: IDateConditions
+    dateConditions: IDateConditions,
   ): Promise<IMeasurement[]> {
     const attributeValuesString = stringifyAttributeValues(attributeValues);
 
@@ -221,12 +221,12 @@ export class ServerApi {
 
   static async upsertMeasurement(
     command: IUpsertMeasurementCommand,
-    urlSegment: string
+    urlSegment: string,
   ): Promise<ICommandResult> {
     return await ServerApi.executeRequest(
       `/measurements/${urlSegment}`,
       "POST",
-      command
+      command,
     );
   }
 
@@ -234,7 +234,7 @@ export class ServerApi {
     return await ServerApi.executeRequest(
       `/measurements/${measurementId}`,
       "DELETE",
-      null
+      null,
     );
   }
 
@@ -242,18 +242,18 @@ export class ServerApi {
     return await ServerApi.executeRequest(
       `/measurements/${measurementId}/move/${targetMetricId}`,
       "PUT",
-      null
+      null,
     );
   }
 
   static async searchMetricAttributes(
     metricId: string,
-    searchText: string
+    searchText: string,
   ): Promise<IAttributeSearchResult[]> {
     return await ServerApi.executeRequest(
       `/search/metric_attributes/${metricId}?searchText=${searchText}`,
       "GET",
-      null
+      null,
     );
   }
 
@@ -261,7 +261,7 @@ export class ServerApi {
     return await ServerApi.executeRequest(
       `/search/measurements?searchText=${searchText}`,
       "GET",
-      null
+      null,
     );
   }
 
@@ -273,7 +273,7 @@ export class ServerApi {
     url: string,
     method: HttpMethod = "GET",
     payload: unknown = undefined,
-    isRetry = false
+    isRetry = false,
   ): Promise<T> {
     try {
       ServerApi.loadingHandler.oneMore();
@@ -310,7 +310,7 @@ export class ServerApi {
   private static async getResponse(
     url: string,
     method: HttpMethod,
-    payload: unknown
+    payload: unknown,
   ) {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -331,7 +331,7 @@ export class ServerApi {
 
   private static getParamsString(
     searchText: string,
-    metricTypes: MetricType[]
+    metricTypes: MetricType[],
   ) {
     const params: string[] = [];
 
@@ -356,7 +356,7 @@ export class ServerApi {
     method: HttpMethod,
     url: string,
     response: Response,
-    start: number
+    start: number,
   ) {
     const total = Math.round(performance.now() - start);
     const server = Number(response.headers.get("server-action-duration"));
@@ -364,7 +364,7 @@ export class ServerApi {
     const status = response.status;
 
     console.info(
-      `-- ${method} ${url} (${ServerApi.serverOs}) [${status}]: Server ${server} + Network ${network} = Total ${total} `
+      `-- ${method} ${url} (${ServerApi.serverOs}) [${status}]: Server ${server} + Network ${network} = Total ${total} `,
     );
   }
 }

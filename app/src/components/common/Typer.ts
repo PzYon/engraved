@@ -9,12 +9,12 @@ export class Typer {
   constructor(
     private textToType: string,
     private printText: (text: string) => void,
-    private toggleCursor?: (show?: boolean) => void
+    private toggleCursor?: (show?: boolean) => void,
   ) {
     if (toggleCursor) {
       this.cursorInterval = setInterval(
         this.toggleCursor,
-        this.blinkDurationMs
+        this.blinkDurationMs,
       ) as never;
     }
   }

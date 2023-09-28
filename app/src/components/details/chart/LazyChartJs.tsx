@@ -40,7 +40,7 @@ ChartJS.register(
   TimeScale,
   Title,
   Tooltip,
-  annotationPlugin
+  annotationPlugin,
 );
 
 const LazyChartJs: React.FC<IChartProps> = ({
@@ -69,10 +69,10 @@ const LazyChartJs: React.FC<IChartProps> = ({
             groupByAttribute,
             toggleAttributeValue,
             chartType as keyof ChartTypeRegistry,
-            palette.primary.main
+            palette.primary.main,
           )
         : null,
-    [measurements, groupByTime, groupByAttribute, chartType]
+    [measurements, groupByTime, groupByAttribute, chartType],
   );
 
   return chart ? <Chart key={chartType} {...chart} /> : null;

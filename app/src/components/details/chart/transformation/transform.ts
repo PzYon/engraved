@@ -8,7 +8,7 @@ import { MetricTypeFactory } from "../../../../metricTypes/MetricTypeFactory";
 export function transform(
   measurements: IMeasurement[],
   metric: IMetric,
-  groupBy: GroupByTime
+  groupBy: GroupByTime,
 ): ITransformedMeasurement[] {
   if (
     MetricTypeFactory.create(metric.type).isGroupable &&

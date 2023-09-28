@@ -56,7 +56,7 @@ export class TimerMetricType implements IMetricType {
         getHeaderReactNode: () => "Start",
         getValueReactNode: (
           _: IMeasurementsTableGroup,
-          measurement: IMeasurement
+          measurement: IMeasurement,
         ) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).startDate}
@@ -69,7 +69,7 @@ export class TimerMetricType implements IMetricType {
         getHeaderReactNode: () => "End",
         getValueReactNode: (
           _: IMeasurementsTableGroup,
-          measurement: IMeasurement
+          measurement: IMeasurement,
         ) => (
           <FormatDate
             value={(measurement as ITimerMeasurement).endDate}
@@ -84,7 +84,7 @@ export class TimerMetricType implements IMetricType {
         getRawValue: (measurement: IMeasurement) => this.getValue(measurement),
         getValueReactNode: (
           group: IMeasurementsTableGroup,
-          measurement: IMeasurement
+          measurement: IMeasurement,
         ) => {
           return this.getFormatDuration(measurement);
         },
@@ -106,7 +106,7 @@ export class TimerMetricType implements IMetricType {
 
     return differenceInSeconds(
       m.endDate ? new Date(m.endDate) : new Date(),
-      new Date(m.startDate)
+      new Date(m.startDate),
     );
   }
 

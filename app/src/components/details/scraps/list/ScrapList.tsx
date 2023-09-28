@@ -100,7 +100,7 @@ export const ScrapList: React.FC<{
       new ListItemWrapper({
         label: "",
         isCompleted: false,
-      })
+      }),
     );
   }
 };

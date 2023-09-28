@@ -24,7 +24,7 @@ describe("hasValues", () => {
   it("match (2 selected values)", () => {
     const actual = hasValues(
       { unit: ["hour"], duration: ["long"] },
-      { unit: ["hour"], duration: ["long"] }
+      { unit: ["hour"], duration: ["long"] },
     );
     expect(actual).toBe(true);
   });
@@ -32,7 +32,7 @@ describe("hasValues", () => {
   it("non-match (2 selected values)", () => {
     const actual = hasValues(
       { unit: ["hour"], duration: ["long"] },
-      { unit: ["hour"], duration: ["short"] }
+      { unit: ["hour"], duration: ["short"] },
     );
     expect(actual).toBe(false);
   });

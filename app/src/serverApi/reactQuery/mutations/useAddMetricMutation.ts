@@ -9,7 +9,7 @@ export const useAddMetricMutation = (
   name: string,
   description: string,
   metricType: MetricType,
-  onAdded: (result: ICommandResult) => Promise<void>
+  onAdded: (result: ICommandResult) => Promise<void>,
 ) => {
   const { setAppAlert } = useAppContext();
   const queryClient = useQueryClient();

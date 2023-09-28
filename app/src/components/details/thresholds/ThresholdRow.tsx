@@ -18,10 +18,10 @@ export const ThresholdRow: React.FC<{
   styles: React.CSSProperties;
 }> = ({ metric, definition, onChange, styles }) => {
   const [attributeKey, setAttributeKey] = useState(
-    definition?.attributeKey ?? ""
+    definition?.attributeKey ?? "",
   );
   const [attributeValueKeys, setAttributeValueKeys] = useState<string[]>(
-    definition?.attributeValueKeys ?? []
+    definition?.attributeValueKeys ?? [],
   );
   const [threshold, setThreshold] = useState(definition?.threshold ?? "");
 

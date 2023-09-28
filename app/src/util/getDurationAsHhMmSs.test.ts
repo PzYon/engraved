@@ -5,8 +5,8 @@ describe("getDurationAsHhMmSs", () => {
     expect(
       getDurationAsHhMmSs(
         createDateFromTime(10, 0, 0),
-        createDateFromTime(10, 10, 12)
-      )
+        createDateFromTime(10, 10, 12),
+      ),
     ).toBe("00:10:12");
   });
 
@@ -14,8 +14,8 @@ describe("getDurationAsHhMmSs", () => {
     expect(
       getDurationAsHhMmSs(
         createDateFromTime(10, 0, 0),
-        createDateFromTime(10, 8, 12)
-      )
+        createDateFromTime(10, 8, 12),
+      ),
     ).toBe("00:08:12");
   });
 
@@ -23,8 +23,8 @@ describe("getDurationAsHhMmSs", () => {
     expect(
       getDurationAsHhMmSs(
         createDateFromTime(10, 0, 0),
-        createDateFromTime(10, 10, 2)
-      )
+        createDateFromTime(10, 10, 2),
+      ),
     ).toBe("00:10:02");
   });
 
@@ -32,8 +32,8 @@ describe("getDurationAsHhMmSs", () => {
     expect(
       getDurationAsHhMmSs(
         createDateFromTime(10, 0, 0),
-        createDateFromTime(10, 3, 2)
-      )
+        createDateFromTime(10, 3, 2),
+      ),
     ).toBe("00:03:02");
   });
 
@@ -41,8 +41,8 @@ describe("getDurationAsHhMmSs", () => {
     expect(
       getDurationAsHhMmSs(
         createDateFromTime(10, 0, 0),
-        createDateFromTime(16, 17, 18)
-      )
+        createDateFromTime(16, 17, 18),
+      ),
     ).toBe("06:17:18");
   });
 });
@@ -50,7 +50,7 @@ describe("getDurationAsHhMmSs", () => {
 function createDateFromTime(
   hours: number,
   minutes: number,
-  seconds: number
+  seconds: number,
 ): Date {
   const date = new Date();
   date.setHours(hours);

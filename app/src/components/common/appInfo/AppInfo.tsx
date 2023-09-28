@@ -21,7 +21,7 @@ export const AppInfo: React.FC = () => {
   const queryClient = useQueryClient();
 
   const [serverOs, setServerOs] = useState<"win" | "lin">(
-    ServerApi.getServerOs()
+    ServerApi.getServerOs(),
   );
 
   if (!systemInfo) {

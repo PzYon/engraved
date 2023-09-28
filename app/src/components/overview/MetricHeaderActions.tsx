@@ -13,7 +13,7 @@ export const MetricHeaderActions: React.FC<{
 
   const actions = useMemo<IAction[]>(
     () => getCommonActions(metric, enableHotkeys, renderDialog),
-    [metric, enableHotkeys]
+    [metric, enableHotkeys],
   );
 
   return <ActionGroup actions={actions} />;

@@ -9,16 +9,16 @@ export function createDataSets(
   allMeasurements: IMeasurement[],
   metric: IMetric,
   groupByTime: GroupByTime,
-  attributeKey: string
+  attributeKey: string,
 ) {
   return getMeasurementsPerAttribute(
     allMeasurements,
     metric.attributes,
-    attributeKey
+    attributeKey,
   )
     .filter((measurementsByAttribute) => measurementsByAttribute.length)
     .map((measurements) =>
-      measurementsToDataSet(measurements, metric, groupByTime, attributeKey)
+      measurementsToDataSet(measurements, metric, groupByTime, attributeKey),
     );
 }
 
@@ -26,7 +26,7 @@ function measurementsToDataSet(
   measurements: IMeasurement[],
   metric: IMetric,
   groupByTime: GroupByTime,
-  attributeKey: string
+  attributeKey: string,
 ): IDataSet {
   const data = transform(measurements, metric, groupByTime);
 
@@ -44,7 +44,7 @@ function measurementsToDataSet(
 function getMeasurementsPerAttribute(
   allMeasurements: IMeasurement[],
   metricAttributes: IMetricAttributes,
-  attributeKey: string
+  attributeKey: string,
 ) {
   const allValueKeys = [
     ...Object.keys(metricAttributes[attributeKey]?.values || {}),
@@ -52,7 +52,7 @@ function getMeasurementsPerAttribute(
   ];
 
   return allValueKeys.map((valueKey) =>
-    allMeasurements.filter(filterByAttribute(attributeKey, valueKey))
+    allMeasurements.filter(filterByAttribute(attributeKey, valueKey)),
   );
 }
 

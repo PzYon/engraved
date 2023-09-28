@@ -22,7 +22,7 @@ export const AddMetric: React.FC = () => {
     metricType,
     async (result: ICommandResult) => {
       navigate(`/metrics/${result.entityId}/`);
-    }
+    },
   );
 
   return (
