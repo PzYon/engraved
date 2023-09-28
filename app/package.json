@@ -40,7 +40,7 @@
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prettier": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\""
+    "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\""
   },
   "eslintConfig": {
     "extends": [
@@ -48,13 +48,12 @@
       "react-app/jest"
     ]
   },
-  "lint-staged":{
-    "**/*.{js,jsx,ts,tsx}":[
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,css,md,json}": [
       "npx prettier --write",
       "npx eslint --fix"
     ]
-  }
-,
+  },
   "browserslist": {
     "production": [
       ">0.2%",
