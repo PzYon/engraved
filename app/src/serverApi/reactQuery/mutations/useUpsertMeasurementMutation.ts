@@ -14,7 +14,7 @@ export const useUpsertMeasurementMutation = (
   metricId: string,
   metricType: MetricType,
   measurementId?: string,
-  onSaved?: () => void
+  onSaved?: () => void,
 ) => {
   const { setAppAlert } = useAppContext();
 
@@ -26,7 +26,7 @@ export const useUpsertMeasurementMutation = (
     mutationFn: async (variables: IVariables) => {
       await ServerApi.upsertMeasurement(
         variables.command,
-        metricType.toLowerCase()
+        metricType.toLowerCase(),
       );
     },
 
@@ -57,7 +57,7 @@ export const useUpsertMeasurementMutation = (
   });
 
   function updateExistingMeasurementInCache(
-    command: IUpsertMeasurementCommand
+    command: IUpsertMeasurementCommand,
   ) {
     queryClient.setQueryData(
       queryKeysFactory.measurements(metricId),
@@ -67,15 +67,15 @@ export const useUpsertMeasurementMutation = (
         }
 
         return measurements.map((m) =>
-          m.id === measurementId ? createCacheMeasurement(m, command) : m
+          m.id === measurementId ? createCacheMeasurement(m, command) : m,
         );
-      }
+      },
     );
   }
 
   function createCacheMeasurement(
     measurement: IMeasurement,
-    command: IUpsertMeasurementCommand
+    command: IUpsertMeasurementCommand,
   ) {
     const editedOn = new Date().toString();
     return {

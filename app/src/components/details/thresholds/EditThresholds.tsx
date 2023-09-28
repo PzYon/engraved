@@ -82,7 +82,7 @@ export const EditThresholds: React.FC<{
 };
 
 function createDefinitions(
-  thresholds: IMetricThresholds
+  thresholds: IMetricThresholds,
 ): IThresholdDefinition[] {
   return Object.keys(thresholds).flatMap((attributeKey) => {
     return Object.keys(thresholds[attributeKey]).map((x) => {
@@ -96,7 +96,7 @@ function createDefinitions(
 }
 
 function createThresholds(
-  thresholdDefinitions: IThresholdDefinition[]
+  thresholdDefinitions: IThresholdDefinition[],
 ): IMetricThresholds {
   const thresholds: IMetricThresholds = {};
 

@@ -116,7 +116,7 @@ describe("consolidate", () => {
 
 function createDate(year: number, month: number, day: number): string {
   return `${year}-${ensureTrailingZero(month)}-${ensureTrailingZero(
-    day
+    day,
   )}T00:00:00.0000000Z`;
 }
 
@@ -129,7 +129,7 @@ function assertGroupKey(
   groupKey: ConsolidationKey,
   expectedYear: number,
   expectedMonth: number,
-  expectedDay: number
+  expectedDay: number,
 ) {
   expect(groupKey.year).toBe(expectedYear);
   expect(groupKey.month).toBe(expectedMonth);

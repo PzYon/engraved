@@ -10,12 +10,12 @@ import { differenceInMinutes } from "date-fns";
 
 export function consolidate(
   measurements: IMeasurement[],
-  groupByTime: GroupByTime
+  groupByTime: GroupByTime,
 ): IConsolidatedMeasurements[] {
   const valuesByGroupKey = measurements.reduce(
     (
       previousValue: Record<string, IMeasurement[]>,
-      measurement: IMeasurement
+      measurement: IMeasurement,
     ) => {
       const key = ConsolidationKey.build(measurement.dateTime, groupByTime);
       const keyAsString = key.serialize();
@@ -28,7 +28,7 @@ export function consolidate(
 
       return previousValue;
     },
-    {}
+    {},
   );
 
   return Object.keys(valuesByGroupKey).map((keyAsString) => {
@@ -66,6 +66,6 @@ export function getTimerMeasurementValue(timerMeasurement: ITimerMeasurement) {
 
   return differenceInMinutes(
     timerMeasurement.endDate ? new Date(timerMeasurement.endDate) : new Date(),
-    new Date(timerMeasurement.startDate)
+    new Date(timerMeasurement.startDate),
   );
 }

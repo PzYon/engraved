@@ -26,7 +26,7 @@ describe("createDataSets", () => {
       measurements,
       metric,
       GroupByTime.None,
-      "colors"
+      "colors",
     );
 
     expect(dataSets.length).toBe(3);

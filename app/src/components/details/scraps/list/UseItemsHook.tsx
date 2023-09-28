@@ -6,7 +6,7 @@ import { ListItemWrapper } from "./ListItemWrapper";
 export const useItemsHook = (
   json: string,
   onChange: (json: string) => void,
-  editedOn: string
+  editedOn: string,
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setItems] = useState<ISCrapListItem[]>(parseItems());
@@ -14,7 +14,7 @@ export const useItemsHook = (
   return useMemo(() => {
     return new ListItemWrapperCollection(
       parseItems().map((i) => new ListItemWrapper(i)),
-      onChangeWrapper
+      onChangeWrapper,
     );
   }, [editedOn]);
 

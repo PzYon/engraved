@@ -28,12 +28,12 @@ export const Activities: React.FC = () => {
 
   function renderActivity(measurement: IMeasurement) {
     const metric = activities.metrics.find(
-      (a) => a.id === measurement.metricId
+      (a) => a.id === measurement.metricId,
     );
 
     return MetricTypeFactory.create(metric.type).getActivity(
       metric,
-      measurement
+      measurement,
     );
   }
 };

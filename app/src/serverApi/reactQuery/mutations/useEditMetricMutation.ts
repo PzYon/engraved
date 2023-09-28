@@ -24,7 +24,7 @@ export const useEditMetricMutation = (metricId: string) => {
         metric.notes,
         metric.attributes,
         metric.thresholds,
-        metric.customProps?.uiSettings
+        metric.customProps?.uiSettings,
       );
     },
 

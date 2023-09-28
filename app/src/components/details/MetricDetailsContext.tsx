@@ -14,11 +14,11 @@ export interface IMetricContext {
   measurements: IMeasurement[];
   toggleAttributeValue: (
     attributeKey: string,
-    attributeValueKey: string
+    attributeValueKey: string,
   ) => void;
   setSelectedAttributeValues: (
     attributeKey: string,
-    attributeValueKeys: string[]
+    attributeValueKeys: string[],
   ) => void;
   selectedAttributeValues: Record<string, string[]>;
   setDateConditions: (conditions: IDateConditions) => void;
@@ -54,7 +54,7 @@ export const MetricContextProvider: React.FC<{
   const measurements = useMeasurementsQuery(
     metricId,
     dateConditions,
-    selectedAttributeValues
+    selectedAttributeValues,
   );
 
   const contextValue = useMemo(() => {
@@ -77,7 +77,7 @@ export const MetricContextProvider: React.FC<{
 
   function setSelectedAttributeValuesInternal(
     attributeKey: string,
-    attributeValueKeys: string[]
+    attributeValueKeys: string[],
   ) {
     const selectedValues = { ...selectedAttributeValues };
     selectedValues[attributeKey] = attributeValueKeys;
@@ -86,7 +86,7 @@ export const MetricContextProvider: React.FC<{
 
   function toggleAttributeValue(
     attributeKey: string,
-    attributeValueKey: string
+    attributeValueKey: string,
   ) {
     const selectedValues = { ...selectedAttributeValues };
 

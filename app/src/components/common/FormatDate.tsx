@@ -32,7 +32,7 @@ function getAsDate(value: string | number | Date): Date {
 
 export const formatDate = (
   value: string | number | Date,
-  dateFormat?: DateFormat
+  dateFormat?: DateFormat,
 ): string => {
   const date = getAsDate(value);
 
@@ -73,7 +73,7 @@ export const FormatDate: React.FC<{
   }
 
   const [values, setValues] = useState<{ title: string; label: string }>(
-    calculateValues()
+    calculateValues(),
   );
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export const FormatDate: React.FC<{
 
     const interval = setInterval(
       () => setValues(calculateValues()),
-      autoUpdateIntervalSeconds * 1000
+      autoUpdateIntervalSeconds * 1000,
     );
     return () => clearInterval(interval);
   }, [value, dateFormat]);
@@ -98,7 +98,7 @@ export const FormatDate: React.FC<{
         value,
         dateFormat === DateFormat.relativeToNow || !dateFormat
           ? DateFormat.full
-          : DateFormat.relativeToNow
+          : DateFormat.relativeToNow,
       ),
       label: formatDate(value, dateFormat),
     };

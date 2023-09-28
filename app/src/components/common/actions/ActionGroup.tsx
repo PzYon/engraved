@@ -42,7 +42,7 @@ export const ActionGroup: React.FC<{
               <ActionIconButton key={action.key} action={action} />
             ) : (
               <SeparatorElement key={"separator"} />
-            )
+            ),
           )}
       </ButtonContainer>
     </>

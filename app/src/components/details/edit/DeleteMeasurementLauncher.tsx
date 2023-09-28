@@ -19,7 +19,7 @@ export const DeleteMeasurementLauncher: React.FC<{
 
   const deleteMeasurementMutation = useDeleteMeasurementMutation(
     metric.id,
-    measurementId
+    measurementId,
   );
 
   useEffect(() => {

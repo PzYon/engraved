@@ -47,7 +47,7 @@ export const ScrapsViewPage: React.FC = () => {
 
   const collection = useMemo(
     () => new ScrapWrapperCollection(focusIndex, setFocusIndex),
-    [scraps]
+    [scraps],
   );
 
   // alt+s (save) is handled by code mirror resp. list
@@ -120,8 +120,8 @@ export const ScrapsViewPage: React.FC = () => {
         setNewScrap(
           ScrapsMetricType.createBlank(
             metric.id,
-            isMarkdown ? ScrapType.Markdown : ScrapType.List
-          )
+            isMarkdown ? ScrapType.Markdown : ScrapType.List,
+          ),
         );
       },
     };

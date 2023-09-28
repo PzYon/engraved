@@ -14,7 +14,7 @@ import {
 
 export const createDateConditions = (
   dateRange: DateRange,
-  date: Date
+  date: Date,
 ): IDateConditions => {
   switch (dateRange) {
     case DateRange.Week:
@@ -43,7 +43,7 @@ export const createDateConditions = (
 export function createNextDateConditions(
   direction: "previous" | "next",
   dateRange: DateRange,
-  currentConditions: IDateConditions
+  currentConditions: IDateConditions,
 ): IDateConditions {
   switch (dateRange) {
     case DateRange.Month: {
@@ -51,7 +51,7 @@ export function createNextDateConditions(
 
       const newDate = addDays(
         currentConditions.from,
-        offset * (direction === "previous" ? -1 : 1)
+        offset * (direction === "previous" ? -1 : 1),
       );
 
       return createDateConditions(DateRange.Month, newDate);

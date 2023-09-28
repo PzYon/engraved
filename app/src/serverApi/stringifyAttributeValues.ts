@@ -1,7 +1,7 @@
 import { IMetricAttributeValues } from "./IMetricAttributeValues";
 
 export function stringifyAttributeValues(
-  attributeValues: IMetricAttributeValues
+  attributeValues: IMetricAttributeValues,
 ): string {
   return Object.keys(attributeValues)
     .map((attributeKey) => {

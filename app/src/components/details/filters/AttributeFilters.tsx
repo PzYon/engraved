@@ -55,7 +55,7 @@ export const AttributeFilters: React.FC = () => {
                   selectedKeys?.length === 1 &&
                     selectedKeys[0] === noElementsValue
                     ? []
-                    : selectedKeys.filter((k) => k !== noElementsValue)
+                    : selectedKeys.filter((k) => k !== noElementsValue),
                 );
               }}
             >

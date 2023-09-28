@@ -38,7 +38,7 @@ export class GaugeMetricType implements IMetricType {
         getRawValue: (measurement: IMeasurement) => getValue(measurement),
         getValueReactNode: (
           _: IMeasurementsTableGroup,
-          measurement: IMeasurement
+          measurement: IMeasurement,
         ) => getValue(measurement),
         getGroupReactNode: (group) => group.totalString,
       },

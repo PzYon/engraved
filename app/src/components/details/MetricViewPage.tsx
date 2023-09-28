@@ -40,15 +40,15 @@ export const MetricViewPage: React.FC = () => {
       metric.customProps?.uiSettings
         ? JSON.parse(metric.customProps.uiSettings)
         : {},
-    [metric?.customProps?.uiSettings]
+    [metric?.customProps?.uiSettings],
   );
 
   const [groupByTime, setGroupByTime] = useState(
-    uiSettings?.groupByTime ?? GroupByTime.Day
+    uiSettings?.groupByTime ?? GroupByTime.Day,
   );
   const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState<MyChartType>(
-    uiSettings.chartType ?? "bar"
+    uiSettings.chartType ?? "bar",
   );
 
   const [showNotes, setShowNotes] = useState(!!metric.notes);
@@ -56,10 +56,10 @@ export const MetricViewPage: React.FC = () => {
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
   const [showThresholds, setShowThresholds] = useState(
-    !!uiSettings?.showThresholds
+    !!uiSettings?.showThresholds,
   );
   const [showGroupTotals, setShowGroupTotals] = useState(
-    !!uiSettings?.showGroupTotals
+    !!uiSettings?.showGroupTotals,
   );
 
   const [titleActions, setTitleActions] = useState<IAction[]>([]);
@@ -68,7 +68,7 @@ export const MetricViewPage: React.FC = () => {
     setDateConditions(
       !uiSettings?.dateRange
         ? getDefaultDateConditions()
-        : createDateConditions(uiSettings.dateRange, new Date())
+        : createDateConditions(uiSettings.dateRange, new Date()),
     );
   }, [uiSettings?.dateRange]);
 

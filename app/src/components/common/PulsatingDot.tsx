@@ -9,7 +9,7 @@ export const PulsatingDot: React.FC = () => {
 
   useEffect(() => {
     ServerApi.loadingHandler.registerHandler(keyForLoadingHandler, (loading) =>
-      setIsLoading(loading)
+      setIsLoading(loading),
     );
     return () =>
       ServerApi.loadingHandler.unregisterHandler(keyForLoadingHandler);

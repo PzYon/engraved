@@ -15,7 +15,7 @@ export class LastSelectedDateStorage {
 
   getLastSelectedDate(): Date {
     const value = this.storageUtil.getValue<string>(
-      LastSelectedDateStorage.key
+      LastSelectedDateStorage.key,
     );
 
     return value ? new Date(value) : new Date();

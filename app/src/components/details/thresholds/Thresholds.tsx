@@ -9,7 +9,7 @@ export const Thresholds: React.FC<{
   selectedAttributeValues: Record<string, string[]>;
   setSelectedAttributeValues: (
     attributeKey: string,
-    attributeValueKeys: string[]
+    attributeValueKeys: string[],
   ) => void;
 }> = ({ metric, selectedAttributeValues, setSelectedAttributeValues }) => {
   const thresholdValues = useMetricThresholdsValuesQuery(metric.id);
@@ -47,7 +47,7 @@ export const Thresholds: React.FC<{
                 onClick={() => {
                   setSelectedAttributeValues(
                     attributeKey,
-                    currentSelectedValue === valueKey ? [] : [valueKey]
+                    currentSelectedValue === valueKey ? [] : [valueKey],
                   );
                 }}
               >
@@ -61,7 +61,7 @@ export const Thresholds: React.FC<{
                     }
                   >
                     {Math.round(
-                      threshold.thresholdValue - threshold.actualValue
+                      threshold.thresholdValue - threshold.actualValue,
                     )}
                   </ActualValue>{" "}
                   {threshold.actualValue}

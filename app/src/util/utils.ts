@@ -3,7 +3,7 @@ import { format } from "date-fns";
 
 export function getCoefficient(
   currentIndex: number,
-  instanceCount: number
+  instanceCount: number,
 ): number {
   return currentIndex * (0.5 / Math.max(instanceCount - 1, 1));
 }
@@ -32,7 +32,7 @@ export function isValidEmail(address: string): boolean {
   // https://stackoverflow.com/a/8829363/4092115
   return !!address.match(
     new RegExp(
-      "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-    )
+      "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+    ),
   );
 }

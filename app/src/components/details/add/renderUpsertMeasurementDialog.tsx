@@ -8,7 +8,7 @@ import { renderAddScrapDialog } from "./renderAddScrapDialog";
 
 export const renderUpsertMeasurementDialog = (
   metric: IMetric,
-  renderDialog: (dialogProps: IDialogProps) => void
+  renderDialog: (dialogProps: IDialogProps) => void,
 ): void => {
   if (metric.type === MetricType.Scraps) {
     renderAddScrapDialog(metric.id, renderDialog, "Add scrap");

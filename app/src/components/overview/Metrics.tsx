@@ -14,7 +14,7 @@ export const Metrics: React.FC = () => {
 
   const collection = useMemo(
     () => new MetricWrapperCollection(focusIndex, setFocusIndex),
-    [metrics]
+    [metrics],
   );
 
   useHotkeys("alt+up", () => {

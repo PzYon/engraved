@@ -13,7 +13,7 @@ export class BaseWrapperCollection<T extends BaseItemWrapper<{ id?: string }>> {
 
   constructor(
     private index: number,
-    private setFocusIndex: (value: number) => void
+    private setFocusIndex: (value: number) => void,
   ) {}
 
   private get highestIndex() {
@@ -46,7 +46,7 @@ export class BaseWrapperCollection<T extends BaseItemWrapper<{ id?: string }>> {
 
   add(id: string, wrapper: T) {
     const existingIndex = this.wrappers.findIndex(
-      (w) => w.internalObj.id === id
+      (w) => w.internalObj.id === id,
     );
 
     if (existingIndex > -1) {

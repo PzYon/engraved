@@ -45,7 +45,7 @@ export class ActionFactory {
   static save(
     onClick: () => Promise<void>,
     isDisabled: boolean,
-    enableHotkeys: boolean
+    enableHotkeys: boolean,
   ): IAction {
     return {
       hotkey: enableHotkeys ? "alt+s" : undefined,
@@ -119,7 +119,7 @@ export class ActionFactory {
   static addMeasurement(
     metric: IMetric,
     renderDialog: (dialogProps: IDialogProps) => void,
-    enableHotkey: boolean
+    enableHotkey: boolean,
   ): IAction {
     return {
       hotkey: enableHotkey ? "alt+a" : undefined,
@@ -132,7 +132,7 @@ export class ActionFactory {
 
   static toggleNotes(
     showNotes: boolean,
-    setShowNotes: (value: boolean) => void
+    setShowNotes: (value: boolean) => void,
   ): IAction {
     return {
       key: "notes",
@@ -145,7 +145,7 @@ export class ActionFactory {
 
   static toggleShowChart(
     showChart: boolean,
-    setShowChart: (value: boolean) => void
+    setShowChart: (value: boolean) => void,
   ): IAction {
     return {
       key: "chart",
@@ -159,7 +159,7 @@ export class ActionFactory {
   static toggleFilters(
     showFilters: boolean,
     setShowFilters: (v: boolean) => void,
-    enableHotkey: boolean
+    enableHotkey: boolean,
   ): IAction {
     return {
       hotkey: enableHotkey ? "alt+f" : undefined,
@@ -173,7 +173,7 @@ export class ActionFactory {
 
   static toggleGroupTotals(
     showGroupTotals: boolean,
-    setShowGroupTotals: (value: boolean) => void
+    setShowGroupTotals: (value: boolean) => void,
   ): IAction {
     return {
       key: "groupTotals",
@@ -235,7 +235,7 @@ export class ActionFactory {
 
   static copyValueToClipboard(
     value: string,
-    setAppAlert: (appAlert: IAppAlert) => void
+    setAppAlert: (appAlert: IAppAlert) => void,
   ): IAction {
     return {
       key: "copy",
@@ -254,7 +254,7 @@ export class ActionFactory {
 
   static addQuickScrap(
     user: IUser,
-    renderDialog?: (dialogProps: IDialogProps) => void
+    renderDialog?: (dialogProps: IDialogProps) => void,
   ): IAction {
     return {
       hotkey: "alt+q",
@@ -266,14 +266,14 @@ export class ActionFactory {
         renderAddScrapDialog(
           user.favoriteMetricIds[0],
           renderDialog,
-          "Add Quick Scrap"
+          "Add Quick Scrap",
         ),
     };
   }
 
   static toggleThresholds(
     showThresholds: boolean,
-    setShowThresholds: (value: boolean) => void
+    setShowThresholds: (value: boolean) => void,
   ): IAction {
     return {
       key: "thresholds",

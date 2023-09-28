@@ -32,7 +32,7 @@ export class ScrapsMetricType implements IMetricType {
 
   getMeasurementsTableColumns(): IMeasurementsTableColumnDefinition[] {
     throw new Error(
-      "getMeasurementsTableColumns is currently not supported for Scraps."
+      "getMeasurementsTableColumns is currently not supported for Scraps.",
     );
   }
 
@@ -46,7 +46,7 @@ export class ScrapsMetricType implements IMetricType {
 
   static createBlank(
     metricId: string,
-    scrapType: ScrapType
+    scrapType: ScrapType,
   ): IScrapMeasurement {
     return {
       id: null,

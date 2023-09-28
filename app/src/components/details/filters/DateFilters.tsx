@@ -37,7 +37,7 @@ export const DateFilters: React.FC = () => {
           action={{
             onClick: () =>
               setDateConditions(
-                createNextDateConditions("previous", dateRange, dateConditions)
+                createNextDateConditions("previous", dateRange, dateConditions),
               ),
             icon: <ChevronLeft fontSize="small" />,
             label: "Previous",
@@ -48,7 +48,7 @@ export const DateFilters: React.FC = () => {
           action={{
             onClick: () =>
               setDateConditions(
-                createNextDateConditions("next", dateRange, dateConditions)
+                createNextDateConditions("next", dateRange, dateConditions),
               ),
             icon: <ChevronRight fontSize="small" />,
             label: "Previous",
@@ -80,7 +80,7 @@ export const DateFilters: React.FC = () => {
 
     const conditions = createDateConditions(
       range,
-      dateConditions.from ?? new Date()
+      dateConditions.from ?? new Date(),
     );
 
     if (!conditions) {

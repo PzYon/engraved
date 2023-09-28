@@ -16,7 +16,7 @@ export const ActionLink: React.FC<{
       keyboardEvent.preventDefault();
       navigate(action.href);
     },
-    { enabled: !!action.hotkey }
+    { enabled: !!action.hotkey },
   );
 
   if (action.isDisabled) {

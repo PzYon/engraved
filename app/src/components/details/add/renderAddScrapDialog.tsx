@@ -4,7 +4,7 @@ import { AddQuickScrapDialog } from "./AddQuickScrapDialog";
 export const renderAddScrapDialog = (
   metricId: string,
   renderDialog: (dialogProps: IDialogProps) => void,
-  title: string
+  title: string,
 ): void => {
   renderDialog({
     title: title,

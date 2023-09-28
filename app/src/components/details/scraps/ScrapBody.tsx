@@ -66,7 +66,7 @@ export const ScrapBody: React.FC<{
 
     if (cancelEditing) {
       allActions.push(
-        ActionFactory.cancelEditing(cancelEditing, enableHotkeys)
+        ActionFactory.cancelEditing(cancelEditing, enableHotkeys),
       );
     }
 

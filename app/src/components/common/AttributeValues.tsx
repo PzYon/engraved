@@ -62,14 +62,14 @@ function getColorsByKey(attributes: IMetricAttributes, baseColor: string) {
     (
       aggregated: Record<string, string>,
       attributeKey: string,
-      currentIndex
+      currentIndex,
     ) => {
       aggregated[attributeKey] = lighten(
         baseColor,
-        getCoefficient(currentIndex, attributeKeys.length)
+        getCoefficient(currentIndex, attributeKeys.length),
       );
       return aggregated;
     },
-    {}
+    {},
   );
 }

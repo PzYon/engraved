@@ -6,7 +6,7 @@ import { MetricType } from "../../MetricType";
 
 export const useMetricsQuery = (
   searchText?: string,
-  metricTypes?: MetricType[]
+  metricTypes?: MetricType[],
 ) => {
   const queryClient = useQueryClient();
 
@@ -19,7 +19,7 @@ export const useMetricsQuery = (
       for (const metric of loadedMetrics) {
         queryClient.setQueryData(
           queryKeysFactory.metrics(metric.id, metricTypes),
-          () => metric
+          () => metric,
         );
       }
     },

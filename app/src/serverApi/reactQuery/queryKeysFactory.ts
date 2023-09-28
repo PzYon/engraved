@@ -31,7 +31,7 @@ export const queryKeysFactory = {
   measurements(
     metricId: string,
     dateConditions?: IDateConditions,
-    attributeValues?: Record<string, string[]>
+    attributeValues?: Record<string, string[]>,
   ) {
     return [
       metrics,

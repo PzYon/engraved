@@ -8,9 +8,9 @@ export function useIsInViewport(ref: MutableRefObject<HTMLDivElement>) {
   const observer = useMemo(
     () =>
       new IntersectionObserver(([entry]) =>
-        setIsIntersecting(entry.isIntersecting)
+        setIsIntersecting(entry.isIntersecting),
       ),
-    []
+    [],
   );
 
   useEffect(() => {

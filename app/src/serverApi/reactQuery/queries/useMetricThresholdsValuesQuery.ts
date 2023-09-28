@@ -5,7 +5,7 @@ import { ServerApi } from "../../ServerApi";
 import { IThresholdValues } from "../../IThresholdValues";
 
 export const useMetricThresholdsValuesQuery = (
-  metricId: string
+  metricId: string,
 ): IThresholdValues => {
   const { dateConditions } = useMetricContext();
 
