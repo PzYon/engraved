@@ -15,4 +15,5 @@ export const MeasurementActionButtons: React.FC<{
 
 const Host = styled("div")`
   min-width: 80px;
+  display: flex;
 `;
