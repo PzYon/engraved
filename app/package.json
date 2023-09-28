@@ -48,6 +48,9 @@
       "react-app/jest"
     ]
   },
+  "lint-staged": {
+    "*": "prettier"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
