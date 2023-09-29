@@ -84,7 +84,7 @@ public class InMemoryRepository : IRepository
   {
     return Task.FromResult(
       Measurements.OrderByDescending(m => m.DateTime)
-        .Where(m => metricIds.Contains(m.MetricId))
+        .Where(m => (metricIds ?? Enumerable.Empty<string>()).Contains(m.MetricId))
         .Take(limit)
         .ToArray()
     );

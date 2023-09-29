@@ -29,8 +29,8 @@ jobs:
           cache-dependency-path: app/package-lock.json
 
       - name: Get current time
+        uses: josStorer/get-current-time@v2
         id: current-time
-        uses: gerred/actions/current-time@master
 
       - name: Install, lint and build
         working-directory: app
