@@ -7,6 +7,10 @@ import { engravedTheme } from "../../../theming/engravedTheme";
 export const PageTabs: React.FC<{
   tabs: IPageTab[];
 }> = ({ tabs }) => {
+  if (!tabs?.length) {
+    return null;
+  }
+
   return (
     <Tabs value={tabs.find((t) => t.isSelected)?.key}>
       {tabs.map((tab) => (

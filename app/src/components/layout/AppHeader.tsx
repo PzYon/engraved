@@ -99,14 +99,13 @@ export const AppHeader: React.FC = () => {
         >
           <Titles title={title} subTitle={subTitle} />
 
-          <SearchAndActionsContainer
+          <ActionsAndTabContainer
             isSmall={isSmall}
             key={window.location.pathname}
-          />
-
-          <ActionGroup actions={pageActions} enableFloatingActions={true} />
-
-          {tabs?.length ? <PageTabs tabs={tabs} /> : null}
+          >
+            <ActionGroup actions={pageActions} enableFloatingActions={true} />
+            <PageTabs tabs={tabs} />
+          </ActionsAndTabContainer>
         </ContentWrapper>
 
         {showFilters ? <PageFilters /> : null}
@@ -128,9 +127,9 @@ const ContentWrapper = styled("div")`
   }
 `;
 
-const SearchAndActionsContainer = styled("div")<{ isSmall: boolean }>`
-  margin-top: ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
-  width: ${(p) => (p.isSmall ? "100%" : "auto")};
+const ActionsAndTabContainer = styled("div")<{ isSmall: boolean }>`
+  width: 100%;
   display: flex;
-  align-items: center;
+  justify-content: end;
+  margin-top: ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
 `;
