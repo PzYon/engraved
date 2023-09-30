@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IAction } from "../../common/actions/IAction";
+import { IPageTab } from "../tabs/IPageTab";
 
 export interface IPageContext {
   documentTitle: string;
@@ -26,6 +27,8 @@ export interface IPageContext {
   setSearchText: (searchText: string) => void;
   metricTypes: MetricType[];
   setMetricTypes: (metricTypes: MetricType[]) => void;
+  tabs: IPageTab[];
+  setTabs: (tabs: IPageTab[]) => void;
 }
 
 const PageContext = createContext<IPageContext>({
@@ -45,6 +48,8 @@ const PageContext = createContext<IPageContext>({
   setSearchText: null,
   metricTypes: null,
   setMetricTypes: null,
+  tabs: null,
+  setTabs: null,
 });
 
 export const usePageContext = () => {
@@ -62,6 +67,7 @@ export const PageContextProvider: React.FC<{
   const [showFilters, setShowFilters] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
   const [metricTypes, setMetricTypes] = useState<MetricType[]>([]);
+  const [tabs, setTabs] = useState<IPageTab[]>([]);
 
   useEffect(() => {
     document.title = documentTitle
@@ -87,6 +93,8 @@ export const PageContextProvider: React.FC<{
       setSearchText,
       metricTypes,
       setMetricTypes,
+      tabs,
+      setTabs,
     };
   }, [
     title,

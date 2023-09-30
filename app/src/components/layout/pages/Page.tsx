@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
+import { IPageTab } from "../tabs/IPageTab";
 
 export const Page: React.FC<{
   actions?: IAction[];
@@ -9,8 +10,17 @@ export const Page: React.FC<{
   subTitle?: React.ReactNode;
   documentTitle?: string;
   enableFilters?: boolean;
+  tabs?: IPageTab[];
   children: React.ReactNode;
-}> = ({ actions, title, subTitle, documentTitle, enableFilters, children }) => {
+}> = ({
+  actions,
+  title,
+  subTitle,
+  documentTitle,
+  enableFilters,
+  tabs,
+  children,
+}) => {
   const {
     setPageActions,
     setTitle,
@@ -20,6 +30,7 @@ export const Page: React.FC<{
     setShowFilters,
     setMetricTypes,
     setSearchText,
+    setTabs,
   } = usePageContext();
 
   useEffect(() => {
@@ -29,6 +40,14 @@ export const Page: React.FC<{
 
     setPageActions(actions);
   }, [actions]);
+
+  useEffect(() => {
+    if (tabs === undefined) {
+      return;
+    }
+
+    setTabs(tabs);
+  }, [tabs]);
 
   useEffect(() => {
     if (title === undefined) {
@@ -50,6 +69,7 @@ export const Page: React.FC<{
       setEnableFilters(false);
       setSearchText(null);
       setMetricTypes([]);
+      setTabs([]);
     };
   }, []);
 

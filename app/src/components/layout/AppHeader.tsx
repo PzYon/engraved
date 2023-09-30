@@ -20,6 +20,7 @@ import { Titles } from "./Titles";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { ActionLink } from "../common/actions/ActionLink";
+import { PageTabs } from "./tabs/PageTabs";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -30,6 +31,7 @@ export const AppHeader: React.FC = () => {
     enableFilters,
     showFilters,
     setShowFilters,
+    tabs,
   } = usePageContext();
   const { palette } = useTheme();
   const { renderDialog } = useDialogContext();
@@ -83,7 +85,7 @@ export const AppHeader: React.FC = () => {
             <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
-            <Link to="/users/me">
+            <Link to="/activities">
               <User user={user} />
             </Link>
           </ContentWrapper>
@@ -97,11 +99,10 @@ export const AppHeader: React.FC = () => {
         >
           <Titles title={title} subTitle={subTitle} />
 
-          <SearchAndActionsContainer
-            isSmall={isSmall}
-            key={window.location.pathname}
-          ></SearchAndActionsContainer>
-          <ActionGroup actions={pageActions} enableFloatingActions={true} />
+          <ActionsAndTabContainer isSmall={isSmall}>
+            <ActionGroup actions={pageActions} enableFloatingActions={true} />
+            <PageTabs tabs={tabs} />
+          </ActionsAndTabContainer>
         </ContentWrapper>
 
         {showFilters ? <PageFilters /> : null}
@@ -123,9 +124,9 @@ const ContentWrapper = styled("div")`
   }
 `;
 
-const SearchAndActionsContainer = styled("div")<{ isSmall: boolean }>`
-  margin-top: ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
-  width: ${(p) => (p.isSmall ? "100%" : "auto")};
+const ActionsAndTabContainer = styled("div")<{ isSmall: boolean }>`
+  width: 100%;
   display: flex;
-  align-items: center;
+  justify-content: end;
+  margin-top: ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
 `;

@@ -5,9 +5,11 @@ import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
 import { Metrics } from "./Metrics";
 import { ActionFactory } from "../common/actions/ActionFactory";
+import { getPageTabs } from "../layout/tabs/getPageTabs";
 
 export const MetricsPage: React.FC = () => (
   <Page
+    tabs={getPageTabs("metrics")}
     title={
       <PageTitle
         title={"Overview"}
