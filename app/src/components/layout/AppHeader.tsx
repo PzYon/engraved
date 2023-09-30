@@ -20,7 +20,7 @@ import { Titles } from "./Titles";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { ActionLink } from "../common/actions/ActionLink";
-import { NavigationTabs } from "./NavigationTabs";
+import { NavigationTabs } from "./tabs/NavigationTabs";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -85,7 +85,7 @@ export const AppHeader: React.FC = () => {
             <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
-            <Link to="/users/me">
+            <Link to="/activities">
               <User user={user} />
             </Link>
           </ContentWrapper>

@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { MetricType } from "../../../serverApi/MetricType";
 import { IAction } from "../../common/actions/IAction";
-import { ITab } from "./Page";
+import { ITab } from "../tabs/ITab";
 
 export interface IPageContext {
   documentTitle: string;

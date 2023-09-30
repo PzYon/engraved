@@ -2,21 +2,7 @@ import React, { useEffect } from "react";
 import { usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
-
-export const pageTabs: ITab[] = [
-  {
-    key: "metrics",
-    href: "/metrics",
-    label: "Metrics",
-  },
-  { key: "measurements", href: "/users/me", label: "Measurements" },
-];
-
-export interface ITab {
-  key: string;
-  label: string;
-  href: string;
-}
+import { ITab } from "../tabs/ITab";
 
 export const Page: React.FC<{
   actions?: IAction[];
@@ -83,6 +69,7 @@ export const Page: React.FC<{
       setEnableFilters(false);
       setSearchText(null);
       setMetricTypes([]);
+      setTabs([]);
     };
   }, []);
 

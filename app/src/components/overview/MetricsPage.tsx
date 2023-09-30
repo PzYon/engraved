@@ -1,14 +1,15 @@
 import React from "react";
 import { VisibilityOutlined } from "@mui/icons-material";
-import { Page, pageTabs } from "../layout/pages/Page";
+import { Page } from "../layout/pages/Page";
 import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
 import { Metrics } from "./Metrics";
 import { ActionFactory } from "../common/actions/ActionFactory";
+import { getPageTabs } from "../layout/tabs/getPageTabs";
 
 export const MetricsPage: React.FC = () => (
   <Page
-    tabs={pageTabs}
+    tabs={getPageTabs()}
     title={
       <PageTitle
         title={"Overview"}

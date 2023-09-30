@@ -5,8 +5,9 @@ import { Icon, IconStyle } from "../common/Icon";
 import { HistoryOutlined } from "@mui/icons-material";
 import { useAppContext } from "../../AppContext";
 import { Activities } from "../activities/Activities";
+import { getPageTabs } from "../layout/tabs/getPageTabs";
 
-export const MyPage: React.FC = () => {
+export const ActivitiesPage: React.FC = () => {
   const { user } = useAppContext();
 
   if (!user) {
@@ -15,9 +16,10 @@ export const MyPage: React.FC = () => {
 
   return (
     <Page
+      tabs={getPageTabs()}
       title={
         <PageTitle
-          title={"My Activities"}
+          title={"Activities"}
           icon={
             <Icon style={IconStyle.PageTitle}>
               <HistoryOutlined />
