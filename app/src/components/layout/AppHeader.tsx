@@ -20,6 +20,7 @@ import { Titles } from "./Titles";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { ActionLink } from "../common/actions/ActionLink";
+import { NavigationTabs } from "./NavigationTabs";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -30,6 +31,7 @@ export const AppHeader: React.FC = () => {
     enableFilters,
     showFilters,
     setShowFilters,
+    tabs,
   } = usePageContext();
   const { palette } = useTheme();
   const { renderDialog } = useDialogContext();
@@ -100,8 +102,11 @@ export const AppHeader: React.FC = () => {
           <SearchAndActionsContainer
             isSmall={isSmall}
             key={window.location.pathname}
-          ></SearchAndActionsContainer>
+          />
+
           <ActionGroup actions={pageActions} enableFloatingActions={true} />
+
+          {tabs?.length ? <NavigationTabs tabs={tabs} /> : null}
         </ContentWrapper>
 
         {showFilters ? <PageFilters /> : null}
