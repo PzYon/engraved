@@ -16,7 +16,7 @@ export const ActivitiesPage: React.FC = () => {
 
   return (
     <Page
-      tabs={getPageTabs()}
+      tabs={getPageTabs("activities")}
       title={
         <PageTitle
           title={"Activities"}

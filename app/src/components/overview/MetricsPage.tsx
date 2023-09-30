@@ -9,7 +9,7 @@ import { getPageTabs } from "../layout/tabs/getPageTabs";
 
 export const MetricsPage: React.FC = () => (
   <Page
-    tabs={getPageTabs()}
+    tabs={getPageTabs("metrics")}
     title={
       <PageTitle
         title={"Overview"}

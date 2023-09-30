@@ -1,12 +1,20 @@
-import { ITab } from "./ITab";
+import { IPageTab } from "./IPageTab";
 
-export const getPageTabs = (): ITab[] => {
+export const getPageTabs = (
+  selectedKey: "metrics" | "activities",
+): IPageTab[] => {
   return [
     {
       key: "metrics",
       href: "/metrics",
       label: "Metrics",
+      isSelected: selectedKey === "metrics",
     },
-    { key: "activities", href: "/activities", label: "Activities" },
+    {
+      key: "activities",
+      href: "/activities",
+      label: "Activities",
+      isSelected: selectedKey === "activities",
+    },
   ];
 };

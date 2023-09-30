@@ -1,22 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Tab, Tabs } from "@mui/material";
-import { ITab } from "./ITab";
+import { IPageTab } from "./IPageTab";
 import { engravedTheme } from "../../../theming/engravedTheme";
 
-export const NavigationTabs: React.FC<{
-  tabs: ITab[];
-  selectedKey?: string;
-}> = ({ tabs, selectedKey }) => {
-  const [value, setValue] = useState(selectedKey ?? tabs[0].key);
-
+export const PageTabs: React.FC<{
+  tabs: IPageTab[];
+}> = ({ tabs }) => {
   return (
-    <Tabs
-      value={value}
-      onChange={(_: React.SyntheticEvent, newValue: string) => {
-        setValue(newValue);
-      }}
-    >
+    <Tabs value={tabs.find((t) => t.isSelected)?.key}>
       {tabs.map((tab) => (
         <Tab
           key={tab.key}

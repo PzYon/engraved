@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
-import { ITab } from "../tabs/ITab";
+import { IPageTab } from "../tabs/IPageTab";
 
 export const Page: React.FC<{
   actions?: IAction[];
@@ -10,7 +10,7 @@ export const Page: React.FC<{
   subTitle?: React.ReactNode;
   documentTitle?: string;
   enableFilters?: boolean;
-  tabs?: ITab[];
+  tabs?: IPageTab[];
   children: React.ReactNode;
 }> = ({
   actions,
