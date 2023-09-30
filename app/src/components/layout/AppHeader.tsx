@@ -99,10 +99,7 @@ export const AppHeader: React.FC = () => {
         >
           <Titles title={title} subTitle={subTitle} />
 
-          <ActionsAndTabContainer
-            isSmall={isSmall}
-            key={window.location.pathname}
-          >
+          <ActionsAndTabContainer isSmall={isSmall}>
             <ActionGroup actions={pageActions} enableFloatingActions={true} />
             <PageTabs tabs={tabs} />
           </ActionsAndTabContainer>
