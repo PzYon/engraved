@@ -1,11 +1,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.User;
+using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
-using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
 using MongoDB.Driver;
 using NUnit.Framework;
 
@@ -120,30 +120,30 @@ public class UserScopedMongoRepositoryShould
   }
 
   [Test]
-  public async Task UpsertMeasurement_Ensures_CurrentUser_Id()
+  public async Task UpsertEntry_Ensures_CurrentUser_Id()
   {
     UpsertResult upsertJournal = await _userScopedRepository.UpsertJournal(new TimerJournal());
     string journalId = upsertJournal.EntityId;
 
-    IMeasurement measurement = new TimerMeasurement { ParentId = journalId };
+    IEntry entry = new TimerEntry { ParentId = journalId };
 
-    await _userScopedRepository.UpsertMeasurement(measurement);
-    IMeasurement[] measurements = await _repository.GetAllMeasurements(journalId, null, null, null);
+    await _userScopedRepository.UpsertEntry(entry);
+    IEntry[] entries = await _repository.GetAllEntries(journalId, null, null, null);
 
-    Assert.True(measurements.All(m => m.UserId == _currentUserId));
+    Assert.True(entries.All(m => m.UserId == _currentUserId));
   }
 
   [Test]
-  public void UpsertMeasurement_ThrowsWhen_EntityFromOtherUser()
+  public void UpsertEntry_ThrowsWhen_EntityFromOtherUser()
   {
-    IMeasurement measurement = new TimerMeasurement
+    IEntry entry = new TimerEntry
     {
       ParentId = MongoUtil.GenerateNewIdAsString(),
       UserId = _otherUserId
     };
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await _userScopedRepository.UpsertMeasurement(measurement); }
+      async () => { await _userScopedRepository.UpsertEntry(entry); }
     );
   }
 
@@ -195,7 +195,7 @@ public class UserScopedMongoRepositoryShould
   }
 
   [Test]
-  public async Task GetAllMeasurements()
+  public async Task GetAllEntries()
   {
     UpsertResult currentUserJournalResult =
       await _repository.UpsertJournal(new CounterJournal { UserId = _currentUserId });
@@ -209,8 +209,8 @@ public class UserScopedMongoRepositoryShould
 
     for (var i = 0; i < 10; i++)
     {
-      await _repository.UpsertMeasurement(
-        new CounterMeasurement
+      await _repository.UpsertEntry(
+        new CounterEntry
         {
           ParentId = currentUserJournalId,
           UserId = _currentUserId,
@@ -218,8 +218,8 @@ public class UserScopedMongoRepositoryShould
         }
       );
 
-      await _repository.UpsertMeasurement(
-        new CounterMeasurement
+      await _repository.UpsertEntry(
+        new CounterEntry
         {
           ParentId = otherUserJournalId,
           UserId = _otherUserId,
@@ -228,57 +228,55 @@ public class UserScopedMongoRepositoryShould
       );
     }
 
-    IMeasurement[] otherUserMeasurements =
-      await _userScopedRepository.GetAllMeasurements(otherUserJournalId, null, null, null);
+    IEntry[] otherUserEntries = await _userScopedRepository.GetAllEntries(otherUserJournalId, null, null, null);
 
-    Assert.IsEmpty(otherUserMeasurements);
+    Assert.IsEmpty(otherUserEntries);
 
-    IMeasurement[] currentUserMeasurements =
-      await _userScopedRepository.GetAllMeasurements(currentUserJournalId, null, null, null);
+    IEntry[] currentUserEntries = await _userScopedRepository.GetAllEntries(currentUserJournalId, null, null, null);
 
-    Assert.AreEqual(10, currentUserMeasurements.Length);
+    Assert.AreEqual(10, currentUserEntries.Length);
   }
 
   [Test]
-  public async Task DeleteMeasurement()
+  public async Task DeleteEntry()
   {
-    UpsertResult result = await _repository.UpsertMeasurement(
-      new CounterMeasurement
+    UpsertResult result = await _repository.UpsertEntry(
+      new CounterEntry
       {
         UserId = _currentUserId,
         Notes = "WillBeDeleted"
       }
     );
 
-    IMeasurement? measurement = await _repository.GetMeasurement(result.EntityId);
-    Assert.IsNotNull(measurement);
+    IEntry? entry = await _repository.GetEntry(result.EntityId);
+    Assert.IsNotNull(entry);
 
-    await _userScopedRepository.DeleteMeasurement(result.EntityId);
+    await _userScopedRepository.DeleteEntry(result.EntityId);
 
-    measurement = await _repository.GetMeasurement(result.EntityId);
-    Assert.IsNull(measurement);
+    entry = await _repository.GetEntry(result.EntityId);
+    Assert.IsNull(entry);
   }
 
   [Test]
-  public async Task DeleteMeasurement_ShouldNotDelete_FromOtherUser()
+  public async Task DeleteEntry_ShouldNotDelete_FromOtherUser()
   {
-    UpsertResult result = await _repository.UpsertMeasurement(
-      new CounterMeasurement
+    UpsertResult result = await _repository.UpsertEntry(
+      new CounterEntry
       {
         UserId = _otherUserId,
         Notes = "WillBeDeleted"
       }
     );
 
-    IMeasurement? measurement = await _repository.GetMeasurement(result.EntityId);
-    Assert.IsNotNull(measurement);
+    IEntry? entry = await _repository.GetEntry(result.EntityId);
+    Assert.IsNotNull(entry);
 
-    await _userScopedRepository.DeleteMeasurement(result.EntityId);
-    Assert.IsNotNull(measurement);
+    await _userScopedRepository.DeleteEntry(result.EntityId);
+    Assert.IsNotNull(entry);
   }
 
   [Test]
-  public async Task DeleteJournal_AndItsMeasurements()
+  public async Task DeleteJournal_AndItsEntries()
   {
     UpsertResult journal = await _repository.UpsertJournal(
       new CounterJournal
@@ -287,8 +285,8 @@ public class UserScopedMongoRepositoryShould
       }
     );
 
-    await _repository.UpsertMeasurement(
-      new CounterMeasurement
+    await _repository.UpsertEntry(
+      new CounterEntry
       {
         ParentId = journal.EntityId,
         UserId = _currentUserId
@@ -298,7 +296,7 @@ public class UserScopedMongoRepositoryShould
     Assert.AreEqual(1, await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty));
     Assert.AreEqual(
       1,
-      await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty)
+      await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)
     );
 
     await _repository.DeleteJournal(journal.EntityId);
@@ -308,7 +306,7 @@ public class UserScopedMongoRepositoryShould
     Assert.AreEqual(0, await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty));
     Assert.AreEqual(
       0,
-      await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty)
+      await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)
     );
   }
 }

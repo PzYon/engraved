@@ -1,6 +1,6 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 
 namespace Engraved.Core.Application.Queries.Activities.Get;
 
@@ -20,19 +20,19 @@ public class GetActivitiesQueryExecutor : IQueryExecutor<GetActivitiesQueryResul
     IJournal[] allJournals = await repository.GetAllJournals(null, null, 100);
     string[]? allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
-    IMeasurement[] allMeasurements = await repository.GetLastEditedMeasurements(
+    IEntry[] allEntries = await repository.GetLastEditedEntries(
       allJournalIds,
       _query.SearchText,
       _query.JournalTypes,
       _query.Limit ?? 20
     );
 
-    string[] relevantJournalIds = allMeasurements.Select(j => j.ParentId).ToArray();
+    string[] relevantJournalIds = allEntries.Select(j => j.ParentId).ToArray();
 
     return new GetActivitiesQueryResult
     {
       Journals = allJournals.Where(j => relevantJournalIds.Contains(j.Id)).ToArray(),
-      Measurements = allMeasurements.ToArray()
+      Entries = allEntries.ToArray()
     };
   }
 }

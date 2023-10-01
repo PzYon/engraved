@@ -2,13 +2,13 @@
 using System.Security.Authentication;
 using System.Text.RegularExpressions;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo.DocumentTypes;
+using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
-using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -19,7 +19,7 @@ namespace Engraved.Persistence.Mongo;
 public class MongoRepository : IRepository
 {
   // protected so they can be accessed from TestRepository
-  protected readonly IMongoCollection<MeasurementDocument> MeasurementsCollection;
+  protected readonly IMongoCollection<EntryDocument> EntriesCollection;
   protected readonly IMongoCollection<JournalDocument> JournalsCollection;
   protected readonly IMongoCollection<UserDocument> UsersCollection;
 
@@ -30,10 +30,10 @@ public class MongoRepository : IRepository
     // below stuff is required for polymorphic document types to work. it would
     // somehow be nicer if this handled by every document-class itself, but that
     // doesn't work for whatever reasons.
-    BsonClassMap.RegisterClassMap<CounterMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<TimerMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<GaugeMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<ScrapsMeasurementDocument>();
+    BsonClassMap.RegisterClassMap<CounterEntryDocument>();
+    BsonClassMap.RegisterClassMap<TimerEntryDocument>();
+    BsonClassMap.RegisterClassMap<GaugeEntryDocument>();
+    BsonClassMap.RegisterClassMap<ScrapsEntryDocument>();
     BsonClassMap.RegisterClassMap<CounterJournalDocument>();
     BsonClassMap.RegisterClassMap<TimerJournalDocument>();
     BsonClassMap.RegisterClassMap<GaugeJournalDocument>();
@@ -46,7 +46,7 @@ public class MongoRepository : IRepository
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
     JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
-    MeasurementsCollection = db.GetCollection<MeasurementDocument>(settings.MeasurementsCollectionName);
+    EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);
     UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
   }
 
@@ -148,23 +148,23 @@ public class MongoRepository : IRepository
     }
   }
 
-  private static Expression<Func<MeasurementDocument, bool>> GetIsMeasurementTypeExpression(JournalType journalType)
+  private static Expression<Func<EntryDocument, bool>> GetIsEntryTypeExpression(JournalType journalType)
   {
     switch (journalType)
     {
       case JournalType.Counter:
-        return d => d is CounterMeasurementDocument;
+        return d => d is CounterEntryDocument;
       case JournalType.Gauge:
-        return d => d is GaugeMeasurementDocument;
+        return d => d is GaugeEntryDocument;
       case JournalType.Timer:
-        return d => d is TimerMeasurementDocument;
+        return d => d is TimerEntryDocument;
       case JournalType.Scraps:
-        return d => d is ScrapsMeasurementDocument;
+        return d => d is ScrapsEntryDocument;
       default:
         throw new ArgumentOutOfRangeException(
           nameof(journalType),
           journalType,
-          $"{nameof(GetIsMeasurementTypeExpression)} not defined for {journalType}."
+          $"{nameof(GetIsEntryTypeExpression)} not defined for {journalType}."
         );
     }
   }
@@ -174,7 +174,7 @@ public class MongoRepository : IRepository
     return await GetJournal(journalId, PermissionKind.Read);
   }
 
-  public async Task<IMeasurement[]> GetAllMeasurements(
+  public async Task<IEntry[]> GetAllEntries(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
@@ -184,22 +184,22 @@ public class MongoRepository : IRepository
     IJournal? journal = await GetJournal(journalId);
     if (journal == null)
     {
-      return Array.Empty<IMeasurement>();
+      return Array.Empty<IEntry>();
     }
 
-    var filters = new List<FilterDefinition<MeasurementDocument>>
+    var filters = new List<FilterDefinition<EntryDocument>>
     {
-      Builders<MeasurementDocument>.Filter.Where(d => d.ParentId == journalId)
+      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
     };
 
     if (fromDate.HasValue)
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => d.DateTime >= fromDate.Value));
+      filters.Add(Builders<EntryDocument>.Filter.Where(d => d.DateTime >= fromDate.Value));
     }
 
     if (toDate.HasValue)
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => d.DateTime < toDate.Value.AddDays(1)));
+      filters.Add(Builders<EntryDocument>.Filter.Where(d => d.DateTime < toDate.Value.AddDays(1)));
     }
 
     if (attributeValues != null)
@@ -208,9 +208,9 @@ public class MongoRepository : IRepository
         attributeValues
           .Select(
             attributeValue =>
-              Builders<MeasurementDocument>.Filter.Or(
+              Builders<EntryDocument>.Filter.Or(
                 attributeValue.Value.Select(
-                  s => Builders<MeasurementDocument>.Filter.Where(
+                  s => Builders<EntryDocument>.Filter.Where(
                     d => d.JournalAttributeValues[attributeValue.Key].Contains(s)
                   )
                 )
@@ -219,53 +219,53 @@ public class MongoRepository : IRepository
       );
     }
 
-    List<MeasurementDocument> measurements = await MeasurementsCollection
-      .Find(Builders<MeasurementDocument>.Filter.And(filters))
-      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.DateTime))
+    List<EntryDocument> entries = await EntriesCollection
+      .Find(Builders<EntryDocument>.Filter.And(filters))
+      .Sort(Builders<EntryDocument>.Sort.Descending(d => d.DateTime))
       .ToListAsync();
 
-    return measurements
-      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
+    return entries
+      .Select(EntryDocumentMapper.FromDocument<IEntry>)
       .ToArray();
   }
 
   // attention: there's no security here for the moment. might not be required as
   // you explicitly need to specify the journal IDs.
-  public async Task<IMeasurement[]> GetLastEditedMeasurements(
+  public async Task<IEntry[]> GetLastEditedEntries(
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
     int limit
   )
   {
-    List<FilterDefinition<MeasurementDocument>> filters = GetFreeTextFilters<MeasurementDocument>(
+    List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsMeasurementDocument)d).Title!
+      d => ((ScrapsEntryDocument)d).Title!
     );
 
     if (journalIds is { Length: > 0 })
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => journalIds.Contains(d.ParentId)));
+      filters.Add(Builders<EntryDocument>.Filter.Where(d => journalIds.Contains(d.ParentId)));
     }
 
     if (journalTypes is { Length: > 0 })
     {
       filters.Add(
-        Builders<MeasurementDocument>.Filter.Or(
-          journalTypes.Select(t => Builders<MeasurementDocument>.Filter.Where(GetIsMeasurementTypeExpression(t)))
+        Builders<EntryDocument>.Filter.Or(
+          journalTypes.Select(t => Builders<EntryDocument>.Filter.Where(GetIsEntryTypeExpression(t)))
         )
       );
     }
 
-    List<MeasurementDocument> measurements = await MeasurementsCollection
-      .Find(Builders<MeasurementDocument>.Filter.And(filters))
-      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn))
+    List<EntryDocument> entries = await EntriesCollection
+      .Find(Builders<EntryDocument>.Filter.And(filters))
+      .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
       .Limit(limit)
       .ToListAsync();
 
-    return measurements
-      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
+    return entries
+      .Select(EntryDocumentMapper.FromDocument<IEntry>)
       .ToArray();
   }
 
@@ -290,8 +290,8 @@ public class MongoRepository : IRepository
       return;
     }
 
-    await MeasurementsCollection.DeleteManyAsync(
-      Builders<MeasurementDocument>.Filter.Where(d => d.ParentId == journalId)
+    await EntriesCollection.DeleteManyAsync(
+      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
     );
 
     await JournalsCollection.DeleteOneAsync(
@@ -314,37 +314,37 @@ public class MongoRepository : IRepository
     await UpsertJournal(journal);
   }
 
-  public virtual async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
-    where TMeasurement : IMeasurement
+  public virtual async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
+    where TEntry : IEntry
   {
-    MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
 
-    ReplaceOneResult? replaceOneResult = await MeasurementsCollection.ReplaceOneAsync(
-      MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
+    ReplaceOneResult? replaceOneResult = await EntriesCollection.ReplaceOneAsync(
+      MongoUtil.GetDocumentByIdFilter<EntryDocument>(entry.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
-    return CreateUpsertResult(measurement.Id, replaceOneResult);
+    return CreateUpsertResult(entry.Id, replaceOneResult);
   }
 
-  public async Task DeleteMeasurement(string measurementId)
+  public async Task DeleteEntry(string entryId)
   {
-    await MeasurementsCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId));
+    await EntriesCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId));
   }
 
-  public async Task<IMeasurement?> GetMeasurement(string measurementId)
+  public async Task<IEntry?> GetEntry(string entryId)
   {
-    if (string.IsNullOrEmpty(measurementId))
+    if (string.IsNullOrEmpty(entryId))
     {
-      throw new ArgumentNullException(nameof(measurementId), "Id must be specified.");
+      throw new ArgumentNullException(nameof(entryId), "Id must be specified.");
     }
 
-    MeasurementDocument? document = await MeasurementsCollection
-      .Find(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId))
+    EntryDocument? document = await EntriesCollection
+      .Find(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId))
       .FirstOrDefaultAsync();
 
-    return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
+    return EntryDocumentMapper.FromDocument<IEntry>(document);
   }
 
   public async Task WakeMeUp()

@@ -1,5 +1,5 @@
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 
@@ -25,25 +25,25 @@ public interface IRepository
 
   Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions);
 
-  Task<IMeasurement[]> GetAllMeasurements(
+  Task<IEntry[]> GetAllEntries(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
   );
 
-  Task<IMeasurement[]> GetLastEditedMeasurements(
+  Task<IEntry[]> GetLastEditedEntries(
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
     int limit
   );
 
-  Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
+  Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;
 
-  Task DeleteMeasurement(string measurementId);
+  Task DeleteEntry(string entryId);
 
-  Task<IMeasurement?> GetMeasurement(string measurementId);
+  Task<IEntry?> GetEntry(string entryId);
 
   Task WakeMeUp();
 }

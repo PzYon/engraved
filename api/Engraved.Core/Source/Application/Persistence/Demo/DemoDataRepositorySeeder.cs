@@ -1,13 +1,13 @@
 ﻿using System.Text;
 using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Entries.Upsert;
+using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
+using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
+using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Commands.Journals.Add;
 using Engraved.Core.Application.Commands.Journals.Edit;
-using Engraved.Core.Application.Commands.Measurements.Upsert;
-using Engraved.Core.Application.Commands.Measurements.Upsert.Counter;
-using Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;
-using Engraved.Core.Application.Commands.Measurements.Upsert.Timer;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 
 namespace Engraved.Core.Application.Persistence.Demo;
 
@@ -22,11 +22,11 @@ public class DemoDataRepositorySeeder
 
   public async Task Seed()
   {
-    await CreateRandomJournalsAndMeasurements();
+    await CreateRandomJournalsAndEntries();
     await AddSpecificCases();
   }
 
-  private async Task CreateRandomJournalsAndMeasurements()
+  private async Task CreateRandomJournalsAndEntries()
   {
     foreach (int _ in Enumerable.Range(0, Random.Shared.Next(5, 30)))
     {
@@ -45,7 +45,7 @@ public class DemoDataRepositorySeeder
       await AddAttributes(journal, dateService);
 
       journal = (await _repository.GetJournal(result.EntityId))!;
-      await AddMeasurements(journal, dateService);
+      await AddEntries(journal, dateService);
     }
   }
 
@@ -70,18 +70,18 @@ public class DemoDataRepositorySeeder
     await new EditJournalCommandExecutor(command).Execute(_repository, dateService);
   }
 
-  private async Task AddMeasurements(IJournal journal, IDateService dateService)
+  private async Task AddEntries(IJournal journal, IDateService dateService)
   {
     switch (journal)
     {
       case CounterJournal counterJournal:
-        await AddMeasurements(counterJournal, dateService);
+        await AddEntries(counterJournal, dateService);
         break;
       case GaugeJournal gaugeJournal:
-        await AddMeasurements(gaugeJournal, dateService);
+        await AddEntries(gaugeJournal, dateService);
         break;
       case TimerJournal timerJournal:
-        await AddMeasurements(timerJournal, dateService.UtcNow);
+        await AddEntries(timerJournal, dateService.UtcNow);
         break;
       case ScrapsJournal:
         // not yet implemented
@@ -91,26 +91,26 @@ public class DemoDataRepositorySeeder
     }
   }
 
-  private async Task AddMeasurements(CounterJournal journal, IDateService dateService)
+  private async Task AddEntries(CounterJournal journal, IDateService dateService)
   {
     foreach (int _ in Enumerable.Range(0, Random.Shared.Next(0, 30)))
     {
-      var command = new UpsertCounterMeasurementCommand
+      var command = new UpsertCounterEntryCommand
       {
         JournalId = journal.Id!
       };
 
       EnsureAttributeValues(journal, command);
 
-      await new UpsertCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
+      await new UpsertCounterEntryCommandExecutor(command).Execute(_repository, dateService);
     }
   }
 
-  private async Task AddMeasurements(GaugeJournal journal, IDateService dateService)
+  private async Task AddEntries(GaugeJournal journal, IDateService dateService)
   {
     foreach (int _ in Enumerable.Range(0, Random.Shared.Next(0, 30)))
     {
-      var command = new UpsertGaugeMeasurementCommand
+      var command = new UpsertGaugeEntryCommand
       {
         JournalId = journal.Id!,
         Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
@@ -118,11 +118,11 @@ public class DemoDataRepositorySeeder
 
       EnsureAttributeValues(journal, command);
 
-      await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_repository, dateService);
+      await new UpsertGaugeEntryCommandExecutor(command).Execute(_repository, dateService);
     }
   }
 
-  private static void EnsureAttributeValues(IJournal journal, BaseUpsertMeasurementCommand command)
+  private static void EnsureAttributeValues(IJournal journal, BaseUpsertEntryCommand command)
   {
     foreach (KeyValuePair<string, JournalAttribute> kvp in journal.Attributes)
     {
@@ -141,19 +141,19 @@ public class DemoDataRepositorySeeder
     }
   }
 
-  private async Task AddMeasurements(TimerJournal journal, DateTime journalDate)
+  private async Task AddEntries(TimerJournal journal, DateTime journalDate)
   {
     var dateService = new FakeDateService(journalDate);
 
     int[] count = Enumerable.Range(0, Random.Shared.Next(0, 30)).ToArray();
 
-    foreach (int measurementIndex in count)
+    foreach (int entryIndex in count)
     {
-      int remainingSteps = (count.Length - measurementIndex) * 2;
+      int remainingSteps = (count.Length - entryIndex) * 2;
 
       dateService.SetNext(remainingSteps);
 
-      var command = new UpsertTimerMeasurementCommand { JournalId = journal.Id! };
+      var command = new UpsertTimerEntryCommand { JournalId = journal.Id! };
 
       EnsureAttributeValues(journal, command);
 
@@ -163,7 +163,7 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new UpsertTimerMeasurementCommand { JournalId = journal.Id! }
+      await new UpsertTimerEntryCommand { JournalId = journal.Id! }
         .CreateExecutor()
         .Execute(_repository, dateService);
     }
@@ -204,33 +204,33 @@ public class DemoDataRepositorySeeder
         .Execute(_repository, dateService);
     }
 
-    foreach (IMeasurement measurement in specificCase.Measurements)
+    foreach (IEntry entry in specificCase.Entries)
     {
-      BaseUpsertMeasurementCommand command;
+      BaseUpsertEntryCommand command;
 
-      switch (measurement)
+      switch (entry)
       {
-        case CounterMeasurement:
-          command = new UpsertCounterMeasurementCommand();
+        case CounterEntry:
+          command = new UpsertCounterEntryCommand();
           break;
-        case GaugeMeasurement gaugeMeasurement:
-          command = new UpsertGaugeMeasurementCommand { Value = gaugeMeasurement.Value };
+        case GaugeEntry gaugeEntry:
+          command = new UpsertGaugeEntryCommand { Value = gaugeEntry.Value };
           break;
-        case TimerMeasurement:
+        case TimerEntry:
           throw new NotImplementedException();
         default:
-          throw new ArgumentOutOfRangeException(nameof(measurement));
+          throw new ArgumentOutOfRangeException(nameof(entry));
       }
 
       command.JournalId = journalId;
-      command.Notes = measurement.Notes;
-      command.JournalAttributeValues = measurement.JournalAttributeValues;
+      command.Notes = entry.Notes;
+      command.JournalAttributeValues = entry.JournalAttributeValues;
 
-      IDateService measurementDateService = measurement.DateTime != null
-        ? new FakeDateService(measurement.DateTime.Value)
+      IDateService entryDateService = entry.DateTime != null
+        ? new FakeDateService(entry.DateTime.Value)
         : dateService;
 
-      await command.CreateExecutor().Execute(_repository, measurementDateService);
+      await command.CreateExecutor().Execute(_repository, entryDateService);
     }
   }
 

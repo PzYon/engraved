@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Journals;
@@ -46,10 +46,10 @@ public class GetThresholdValuesQueryExecutorShould
       }
     );
 
-    AddMeasurement(2, "blue");
-    AddMeasurement(5, "blue");
-    AddMeasurement(4, "green");
-    AddMeasurement(3, "blue");
+    AddEntry(2, "blue");
+    AddEntry(5, "blue");
+    AddEntry(4, "green");
+    AddEntry(3, "blue");
 
     IDictionary<string, IDictionary<string, ThresholdResult>> results = await new GetThresholdValuesQuery
       {
@@ -76,10 +76,10 @@ public class GetThresholdValuesQueryExecutorShould
     Assert.AreEqual(3, colorsThresholds["green"].ThresholdValue);
   }
 
-  private void AddMeasurement(int value, string attributeValueKey)
+  private void AddEntry(int value, string attributeValueKey)
   {
-    _testRepository.Measurements.Add(
-      new GaugeMeasurement
+    _testRepository.Entries.Add(
+      new GaugeEntry
       {
         ParentId = JournalId,
         DateTime = DateTime.UtcNow,

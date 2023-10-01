@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Caching.Memory;
@@ -217,7 +217,7 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
-  public Task<IMeasurement[]> GetAllMeasurements(
+  public Task<IEntry[]> GetAllEntries(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
@@ -227,7 +227,7 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
-  public Task<IMeasurement[]> GetLastEditedMeasurements(
+  public Task<IEntry[]> GetLastEditedEntries(
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
@@ -237,17 +237,17 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
-  public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry
   {
     throw new NotImplementedException();
   }
 
-  public Task DeleteMeasurement(string measurementId)
+  public Task DeleteEntry(string entryId)
   {
     throw new NotImplementedException();
   }
 
-  public Task<IMeasurement?> GetMeasurement(string measurementId)
+  public Task<IEntry?> GetEntry(string entryId)
   {
     throw new NotImplementedException();
   }

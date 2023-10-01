@@ -1,9 +1,9 @@
 ﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Queries.Entries.GetAll;
 using Engraved.Core.Application.Queries.Journals.Get;
-using Engraved.Core.Application.Queries.Measurements.GetAll;
 using Engraved.Core.Application.Search;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 
 namespace Engraved.Core.Application.Queries.Search.Attributes;
 
@@ -28,15 +28,15 @@ public class SearchAttributesQueryExecutor : IQueryExecutor<AttributeSearchResul
       throw new Exception("Journal not found.");
     }
 
-    var measurementsQuery = new GetAllMeasurementsQuery { JournalId = _query.JournalId };
-    IMeasurement[] measurements = await _query.GetDispatcher().Query(measurementsQuery);
+    var entriesQuery = new GetAllEntriesQuery { JournalId = _query.JournalId };
+    IEntry[] entries = await _query.GetDispatcher().Query(entriesQuery);
 
     return _query
       .GetSearchIndex()
       .Search(
         _query.SearchText,
         journal.Attributes,
-        measurements.Select(s => s.JournalAttributeValues).ToArray()
+        entries.Select(s => s.JournalAttributeValues).ToArray()
       );
   }
 }

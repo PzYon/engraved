@@ -1,7 +1,7 @@
 ﻿using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries.Journals.Get;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 
 namespace Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 
@@ -30,19 +30,19 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
       return new Dictionary<string, IDictionary<string, ThresholdResult>>();
     }
 
-    IMeasurement[] measurements = await repository.GetAllMeasurements(
+    IEntry[] entries = await repository.GetAllEntries(
       _query.JournalId!,
       _query.FromDate,
       _query.ToDate,
       null
     );
 
-    return CalculateThresholds(journal, measurements);
+    return CalculateThresholds(journal, entries);
   }
 
   private static IDictionary<string, IDictionary<string, ThresholdResult>> CalculateThresholds(
     IJournal journal,
-    IMeasurement[] measurements
+    IEntry[] entries
   )
   {
     Dictionary<string, IDictionary<string, ThresholdResult>> results = new();
@@ -53,7 +53,7 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
 
       foreach ((string? attributeValueKey, double thresholdValue) in thresholds)
       {
-        double total = measurements
+        double total = entries
           .Where(
             m => m.JournalAttributeValues.TryGetValue(attributeKey, out string[]? valueKeys)
                  && valueKeys.Contains(attributeValueKey)

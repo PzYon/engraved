@@ -13,6 +13,6 @@ public class MongoRepositorySettings : IMongoRepositorySettings
 
   public string DatabaseName => "metrix_test";
   public string JournalsCollectionName => "journals";
-  public string MeasurementsCollectionName => "measurements";
+  public string EntriesCollectionName => "entries";
   public string UsersCollectionName => "users";
 }

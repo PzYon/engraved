@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Application.Commands.Measurements.Upsert;
+﻿using Engraved.Core.Application.Commands.Entries.Upsert;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
 
@@ -17,7 +17,7 @@ public static class JournalCommandUtil
     {
       throw new InvalidCommandException(
         command,
-        $"A {nameof(BaseUpsertMeasurementCommand.JournalId)} must be specified."
+        $"A {nameof(BaseUpsertEntryCommand.JournalId)} must be specified."
       );
     }
 

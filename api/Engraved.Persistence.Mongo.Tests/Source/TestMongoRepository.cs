@@ -1,5 +1,5 @@
-﻿using Engraved.Persistence.Mongo.DocumentTypes.Journals;
-using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
+﻿using Engraved.Persistence.Mongo.DocumentTypes.Entries;
+using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Driver;
 
@@ -8,7 +8,7 @@ namespace Engraved.Persistence.Mongo.Tests;
 public class TestMongoRepository : MongoRepository
 {
   public IMongoCollection<JournalDocument> Journals => JournalsCollection;
-  public IMongoCollection<MeasurementDocument> Measurements => MeasurementsCollection;
+  public IMongoCollection<EntryDocument> Entries => EntriesCollection;
   public IMongoCollection<UserDocument> Users => UsersCollection;
 
   public TestMongoRepository(IMongoRepositorySettings settings) : base(settings) { }

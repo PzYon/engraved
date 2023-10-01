@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Activities.Get;
@@ -21,11 +21,11 @@ public class GetActivitiesQueryExecutorShould
   }
 
   [Test]
-  public async Task Return_NewestMeasurementsAndTheirJournal()
+  public async Task Return_NewestEntriesAndTheirJournal()
   {
     _repo.Journals.Add(new CounterJournal { Id = "counter-journal-id" });
-    _repo.Measurements.Add(
-      new CounterMeasurement
+    _repo.Entries.Add(
+      new CounterEntry
       {
         ParentId = "counter-journal-id",
         DateTime = _dateService.UtcNow
@@ -34,8 +34,8 @@ public class GetActivitiesQueryExecutorShould
     _dateService.SetNext(2);
 
     _repo.Journals.Add(new GaugeJournal { Id = "gauge-journal-id" });
-    _repo.Measurements.Add(
-      new GaugeMeasurement
+    _repo.Entries.Add(
+      new GaugeEntry
       {
         ParentId = "gauge-journal-id",
         DateTime = _dateService.UtcNow
@@ -44,8 +44,8 @@ public class GetActivitiesQueryExecutorShould
     _dateService.SetNext(1);
 
     _repo.Journals.Add(new TimerJournal { Id = "timer-journal-id" });
-    _repo.Measurements.Add(
-      new TimerMeasurement
+    _repo.Entries.Add(
+      new TimerEntry
       {
         ParentId = "timer-journal-id",
         DateTime = _dateService.UtcNow
@@ -57,7 +57,7 @@ public class GetActivitiesQueryExecutorShould
 
     Assert.AreEqual(2, result.Journals.Length);
     Assert.IsFalse(result.Journals.Select(m => m.Id).Contains("counter-journal-id"));
-    Assert.AreEqual(2, result.Measurements.Length);
-    Assert.IsFalse(result.Measurements.Select(m => m.ParentId).Contains("counter-journal-id"));
+    Assert.AreEqual(2, result.Entries.Length);
+    Assert.IsFalse(result.Entries.Select(m => m.ParentId).Contains("counter-journal-id"));
   }
 }

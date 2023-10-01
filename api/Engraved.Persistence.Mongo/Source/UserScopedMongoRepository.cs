@@ -38,11 +38,11 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     return await base.UpsertJournal(journal);
   }
 
-  public override async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
+  public override async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
   {
-    EnsureUserId(measurement);
-    await EnsureUserHasPermission(measurement.ParentId, PermissionKind.Write);
-    return await base.UpsertMeasurement(measurement);
+    EnsureUserId(entry);
+    await EnsureUserHasPermission(entry.ParentId, PermissionKind.Write);
+    return await base.UpsertEntry(entry);
   }
 
   public override async Task DeleteJournal(string journalId)

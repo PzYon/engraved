@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
 using Engraved.Core.Domain.User;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -12,7 +12,7 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 // consider using Commands and Queries here to improve data consistency and 
 // have a more end-to-end view, e.g. something like this:
-// await new AddCounterMeasurementCommand().CreateExecutor().Execute(_repository, null);
+// await new AddCounterEntryCommand().CreateExecutor().Execute(_repository, null);
 
 public class MongoRepositoryShould
 {
@@ -104,18 +104,18 @@ public class MongoRepositoryShould
   }
 
   [Test]
-  public async Task CreateMeasurements_Then_GetAll()
+  public async Task CreateEntries_Then_GetAll()
   {
     var journal = new GaugeJournal { Name = "N@me" };
     UpsertResult result = await _repository.UpsertJournal(journal);
 
-    await _repository.UpsertMeasurement(new GaugeMeasurement { ParentId = result.EntityId, Value = 123 });
-    await _repository.UpsertMeasurement(new GaugeMeasurement { ParentId = "wrongId", Value = 456 });
-    await _repository.UpsertMeasurement(new GaugeMeasurement { ParentId = result.EntityId, Value = 789 });
+    await _repository.UpsertEntry(new GaugeEntry { ParentId = result.EntityId, Value = 123 });
+    await _repository.UpsertEntry(new GaugeEntry { ParentId = "wrongId", Value = 456 });
+    await _repository.UpsertEntry(new GaugeEntry { ParentId = result.EntityId, Value = 789 });
 
-    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId, null, null, null);
+    IEntry[] allEntries = await _repository.GetAllEntries(result.EntityId, null, null, null);
 
-    Assert.AreEqual(2, allMeasurements.Length);
+    Assert.AreEqual(2, allEntries.Length);
   }
 
   [Test]

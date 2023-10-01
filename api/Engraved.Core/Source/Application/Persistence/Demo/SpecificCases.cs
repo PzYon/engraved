@@ -1,5 +1,5 @@
-﻿using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Measurements;
+﻿using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Persistence.Demo;
 
@@ -7,7 +7,7 @@ public class SpecificCase
 {
   public IJournal Journal { get; set; } = null!;
 
-  public List<IMeasurement> Measurements { get; } = new();
+  public List<IEntry> Entries { get; } = new();
 }
 
 public static class SpecificCases
@@ -20,13 +20,13 @@ public static class SpecificCases
       {
         Name = "Date Edge Case"
       },
-      Measurements =
+      Entries =
       {
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = new DateTime(2022, 3, 31, 21, 23, 0, DateTimeKind.Utc)
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = new DateTime(2022, 4, 1, 2, 1, 0, DateTimeKind.Utc)
         }
@@ -63,49 +63,49 @@ public static class SpecificCases
           }
         }
       },
-      Measurements =
+      Entries =
       {
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-28),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-10),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-5),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-3),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-3),
           JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }

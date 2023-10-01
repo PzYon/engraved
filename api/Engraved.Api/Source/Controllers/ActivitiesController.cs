@@ -37,13 +37,13 @@ public class ActivitiesController : ControllerBase
 public class GetActivitiesQueryApiResult
 {
   public object[] Journals { get; set; } = null!;
-  public object[] Measurements { get; set; } = null!;
+  public object[] Entries { get; set; } = null!;
 
   public static GetActivitiesQueryApiResult FromResult(GetActivitiesQueryResult result)
   {
     return new GetActivitiesQueryApiResult
     {
-      Measurements = result.Measurements,
+      Entries = result.Entries,
       Journals = result.Journals
     };
   }
