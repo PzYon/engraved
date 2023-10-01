@@ -41,9 +41,9 @@ public static class MeasurementDocumentMapper
     Mapper = configuration.CreateMapper();
   }
 
-  public static MeasurementDocument ToDocument(IMeasurement metric)
+  public static MeasurementDocument ToDocument(IMeasurement journal)
   {
-    return Mapper.Map<MeasurementDocument>(metric);
+    return Mapper.Map<MeasurementDocument>(journal);
   }
 
   public static TMeasurement FromDocument<TMeasurement>(MeasurementDocument? document)

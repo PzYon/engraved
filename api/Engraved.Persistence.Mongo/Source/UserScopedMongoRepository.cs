@@ -51,7 +51,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     await base.DeleteJournal(journalId);
   }
 
-  protected override FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
+  protected override FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
   {
     string? userId = CurrentUser.Value.Id;
     EnsureUserIsSet(userId);
@@ -106,17 +106,17 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     }
   }
 
-  private async Task EnsureUserHasPermission(string? metricId, PermissionKind kind)
+  private async Task EnsureUserHasPermission(string? journalId, PermissionKind kind)
   {
-    if (string.IsNullOrEmpty(metricId))
+    if (string.IsNullOrEmpty(journalId))
     {
       return;
     }
 
-    IJournal? metric = await GetMetric(metricId, kind);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId, kind);
+    if (journal == null)
     {
-      throw new NotAllowedOperationException("Metric doesn't exist or you do not have permissions.");
+      throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
     }
   }
 

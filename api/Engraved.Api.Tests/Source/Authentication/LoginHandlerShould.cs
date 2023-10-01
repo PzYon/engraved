@@ -97,12 +97,12 @@ public class LoginHandlerShould
     Assert.AreEqual(imageUrl, user.ImageUrl);
     Assert.IsNotNull(user.Id);
     Assert.AreEqual(_dateService.UtcNow, user.LastLoginDate);
-    Assert.AreEqual(1, user.FavoriteMetricIds.Count);
+    Assert.AreEqual(1, user.FavoriteJournalIds.Count);
 
-    string quickNotesId = user.FavoriteMetricIds.First();
-    IJournal? metric = await _testRepository.GetJournal(quickNotesId);
-    Assert.IsNotNull(metric);
-    Assert.AreEqual(metric!.Id, quickNotesId);
+    string quickNotesId = user.FavoriteJournalIds.First();
+    IJournal? journal = await _testRepository.GetJournal(quickNotesId);
+    Assert.IsNotNull(journal);
+    Assert.AreEqual(journal!.Id, quickNotesId);
   }
 
   [Test]

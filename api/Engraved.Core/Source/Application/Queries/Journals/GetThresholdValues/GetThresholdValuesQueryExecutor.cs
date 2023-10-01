@@ -22,10 +22,10 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
 
   public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> Execute(IRepository repository)
   {
-    var metricQuery = new GetJournalQueryExecutor(new GetJournalQuery { JournalId = _query.JournalId });
-    IJournal? metric = await metricQuery.Execute(repository);
+    var journalQuery = new GetJournalQueryExecutor(new GetJournalQuery { JournalId = _query.JournalId });
+    IJournal? journal = await journalQuery.Execute(repository);
 
-    if (metric == null || metric.Thresholds.Count == 0)
+    if (journal == null || journal.Thresholds.Count == 0)
     {
       return new Dictionary<string, IDictionary<string, ThresholdResult>>();
     }
@@ -37,7 +37,7 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
       null
     );
 
-    return CalculateThresholds(metric, measurements);
+    return CalculateThresholds(journal, measurements);
   }
 
   private static IDictionary<string, IDictionary<string, ThresholdResult>> CalculateThresholds(

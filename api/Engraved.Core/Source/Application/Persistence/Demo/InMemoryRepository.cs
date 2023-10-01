@@ -73,7 +73,7 @@ public class InMemoryRepository : IRepository
   public Task<IMeasurement[]> GetLastEditedMeasurements(
     string[]? journalIds,
     string? searchText,
-    JournalType[]? metricTypes,
+    JournalType[]? journalTypes,
     int limit
   )
   {
@@ -108,27 +108,27 @@ public class InMemoryRepository : IRepository
       return;
     }
 
-    IJournal? metric = await GetJournal(journalId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
       return;
     }
 
-    Journals.Remove(metric);
+    Journals.Remove(journal);
   }
 
-  public async Task ModifyJournalPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
+  public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
   {
-    IJournal? metric = await GetJournal(metricId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
       return;
     }
 
     var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUser);
-    await permissionsEnsurer.EnsurePermissions(metric, permissions);
+    await permissionsEnsurer.EnsurePermissions(journal, permissions);
 
-    await UpsertJournal(metric);
+    await UpsertJournal(journal);
   }
 
   public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)

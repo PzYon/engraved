@@ -22,11 +22,11 @@ public class DemoDataRepositorySeeder
 
   public async Task Seed()
   {
-    await CreateRandomMetricsAndMeasurements();
+    await CreateRandomJournalsAndMeasurements();
     await AddSpecificCases();
   }
 
-  private async Task CreateRandomMetricsAndMeasurements()
+  private async Task CreateRandomJournalsAndMeasurements()
   {
     foreach (int _ in Enumerable.Range(0, Random.Shared.Next(5, 30)))
     {
@@ -36,7 +36,7 @@ public class DemoDataRepositorySeeder
         {
           Description = LoremIpsum(0, 12, 1, 3),
           Name = LoremIpsum(1, 3, 1, 1),
-          Type = GetRandomMetricType()
+          Type = GetRandomJournalType()
         }
         .CreateExecutor()
         .Execute(_repository, dateService);
@@ -74,20 +74,20 @@ public class DemoDataRepositorySeeder
   {
     switch (journal)
     {
-      case CounterJournal counterMetric:
-        await AddMeasurements(counterMetric, dateService);
+      case CounterJournal counterJournal:
+        await AddMeasurements(counterJournal, dateService);
         break;
-      case GaugeJournal gaugeMetric:
-        await AddMeasurements(gaugeMetric, dateService);
+      case GaugeJournal gaugeJournal:
+        await AddMeasurements(gaugeJournal, dateService);
         break;
-      case TimerJournal timerMetric:
-        await AddMeasurements(timerMetric, dateService.UtcNow);
+      case TimerJournal timerJournal:
+        await AddMeasurements(timerJournal, dateService.UtcNow);
         break;
       case ScrapsJournal:
         // not yet implemented
         break;
       default:
-        throw new Exception($"Metric type \"{journal.Type}\" is not yet supported.");
+        throw new Exception($"Journal type \"{journal.Type}\" is not yet supported.");
     }
   }
 
@@ -137,13 +137,13 @@ public class DemoDataRepositorySeeder
 
       string randomValue = valueKeys[Random.Shared.Next(0, numberOfValueKeys)];
 
-      command.MetricAttributeValues.Add(attributeKey, new[] { randomValue });
+      command.JournalAttributeValues.Add(attributeKey, new[] { randomValue });
     }
   }
 
-  private async Task AddMeasurements(TimerJournal journal, DateTime metricDate)
+  private async Task AddMeasurements(TimerJournal journal, DateTime journalDate)
   {
-    var dateService = new FakeDateService(metricDate);
+    var dateService = new FakeDateService(journalDate);
 
     int[] count = Enumerable.Range(0, Random.Shared.Next(0, 30)).ToArray();
 
@@ -189,13 +189,13 @@ public class DemoDataRepositorySeeder
       .CreateExecutor()
       .Execute(_repository, dateService);
 
-    string metricId = result.EntityId;
+    string journalId = result.EntityId;
 
     if (journal.Attributes.Any())
     {
       await new EditJournalCommand
         {
-          JournalId = metricId,
+          JournalId = journalId,
           Attributes = journal.Attributes,
           Description = journal.Description,
           Name = journal.Name
@@ -222,9 +222,9 @@ public class DemoDataRepositorySeeder
           throw new ArgumentOutOfRangeException(nameof(measurement));
       }
 
-      command.JournalId = metricId;
+      command.JournalId = journalId;
       command.Notes = measurement.Notes;
-      command.MetricAttributeValues = measurement.JournalAttributeValues;
+      command.JournalAttributeValues = measurement.JournalAttributeValues;
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)
@@ -234,12 +234,12 @@ public class DemoDataRepositorySeeder
     }
   }
 
-  private static JournalType GetRandomMetricType()
+  private static JournalType GetRandomJournalType()
   {
     return (JournalType)Random.Shared.Next(0, Enum.GetNames(typeof(JournalType)).Length);
   }
 
-  private Dictionary<string, T> CreateRandomDict<T>(string keyPrefix, Func<int, T> createValue)
+  private static Dictionary<string, T> CreateRandomDict<T>(string keyPrefix, Func<int, T> createValue)
   {
     int count = Random.Shared.Next(0, 7);
 

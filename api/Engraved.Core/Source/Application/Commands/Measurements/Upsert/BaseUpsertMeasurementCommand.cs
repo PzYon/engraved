@@ -12,9 +12,9 @@ public abstract class BaseUpsertMeasurementCommand : ICommand
 
   public DateTime? DateTime { get; set; }
 
-  public Dictionary<string, string[]> MetricAttributeValues { get; set; } = new();
+  public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 
   public abstract ICommandExecutor CreateExecutor();
 
-  public abstract JournalType GetSupportedMetricType();
+  public abstract JournalType GetSupportedJournalType();
 }

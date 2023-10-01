@@ -12,7 +12,7 @@ public class MongoRepositorySettings : IMongoRepositorySettings
   public string MongoDbConnectionString { get; }
 
   public string DatabaseName => "metrix_test";
-  public string JournalsCollectionName => "metrics";
+  public string JournalsCollectionName => "journals";
   public string MeasurementsCollectionName => "measurements";
   public string UsersCollectionName => "users";
 }

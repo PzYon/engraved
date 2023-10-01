@@ -11,17 +11,17 @@ public class MongoRepository_GetLastEditedMeasurements_Should
 {
   private MongoRepository _repository = null!;
 
-  private string _metricId = null!;
+  private string _journalId = null!;
 
   [SetUp]
   public async Task Setup()
   {
     _repository = await Util.CreateMongoRepository();
 
-    var metric = new GaugeJournal { Name = "Test" };
-    UpsertResult result = await _repository.UpsertJournal(metric);
+    var journal = new GaugeJournal { Name = "Test" };
+    UpsertResult result = await _repository.UpsertJournal(journal);
 
-    _metricId = result.EntityId;
+    _journalId = result.EntityId;
 
     await _repository.UpsertMeasurement(
       new GaugeMeasurement { ParentId = result.EntityId, Value = 1, Notes = "Lorem ipsum dolor" }
@@ -37,7 +37,7 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   [Test]
   public async Task FindMeasurements()
   {
-    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { _metricId }, "Beta", null, 10);
+    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { _journalId }, "Beta", null, 10);
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual(2, results[0].GetValue());
   }
@@ -45,7 +45,7 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   [Test]
   public async Task FindMeasurements_IgnoringCase()
   {
-    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { _metricId }, "beta", null, 10);
+    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { _journalId }, "beta", null, 10);
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual(2, results[0].GetValue());
   }
@@ -53,7 +53,7 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   [Test]
   public async Task FindMeasurements_MultipleWords()
   {
-    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { _metricId }, "beta gam", null, 10);
+    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { _journalId }, "beta gam", null, 10);
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual(2, results[0].GetValue());
   }
@@ -61,7 +61,7 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   [Test]
   public async Task FindMeasurements_NonConsecutiveWords()
   {
-    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { _metricId }, "alpha gam", null, 10);
+    IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { _journalId }, "alpha gam", null, 10);
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual(2, results[0].GetValue());
   }
@@ -69,8 +69,8 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   [Test]
   public async Task Consider_ScrapsTitle()
   {
-    var metric = new ScrapsJournal { Name = "My Scrap" };
-    UpsertResult result = await _repository.UpsertJournal(metric);
+    var journal = new ScrapsJournal { Name = "My Scrap" };
+    UpsertResult result = await _repository.UpsertJournal(journal);
 
     await _repository.UpsertMeasurement(
       new ScrapsMeasurement { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
@@ -85,7 +85,7 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   }
 
   [Test]
-  public async Task Consider_MetricTypes_Negative()
+  public async Task Consider_JournalTypes_Negative()
   {
     IMeasurement[] results = await _repository.GetLastEditedMeasurements(
       null,
@@ -98,10 +98,10 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   }
 
   [Test]
-  public async Task Consider_MetricTypes_Positive()
+  public async Task Consider_JournalTypes_Positive()
   {
-    var metric = new ScrapsJournal { Name = "My Scrap" };
-    UpsertResult result = await _repository.UpsertJournal(metric);
+    var journal = new ScrapsJournal { Name = "My Scrap" };
+    UpsertResult result = await _repository.UpsertJournal(journal);
 
     await _repository.UpsertMeasurement(
       new ScrapsMeasurement { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }

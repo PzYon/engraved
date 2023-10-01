@@ -31,103 +31,103 @@ public class UserScopedMongoRepository_Permissions_Should
   }
 
   [Test]
-  public async Task GetAllMetrics_Return_OnlyMy()
+  public async Task GetAllJournals_Return_OnlyMy()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
-    await _repository.UpsertJournal(new CounterJournal { Name = "thy-metric", UserId = _otherUserId });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
+    await _repository.UpsertJournal(new CounterJournal { Name = "thy-journal", UserId = _otherUserId });
 
-    IJournal[] allMetrics = await _userScopedRepository.GetAllJournals();
+    IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
 
-    Assert.AreEqual(1, allMetrics.Length);
-    Assert.AreEqual("my-metric", allMetrics.First().Name);
+    Assert.AreEqual(1, allJournals.Length);
+    Assert.AreEqual("my-journal", allJournals.First().Name);
   }
 
   [Test]
-  public async Task GetAllMetrics_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
+  public async Task GetAllJournals_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
-    UpsertResult otherMetric = await _repository.UpsertJournal(
+    UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
       {
-        Name = "thy-metric", UserId = _otherUserId
+        Name = "thy-journal", UserId = _otherUserId
       }
     );
 
     await _repository.ModifyJournalPermissions(
-      otherMetric.EntityId,
+      otherJournal.EntityId,
       new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
     );
 
-    IJournal[] allMetrics = await _userScopedRepository.GetAllJournals();
+    IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
 
-    Assert.AreEqual(1, allMetrics.Length);
+    Assert.AreEqual(1, allJournals.Length);
   }
 
   [Test]
-  public async Task GetAllMetrics_Return_MyAndThy_WhenIMoreThanEnoughHavePermissions()
+  public async Task GetAllJournals_Return_MyAndThy_WhenIMoreThanEnoughHavePermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
-    UpsertResult otherMetric = await _repository.UpsertJournal(
+    UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
       {
-        Name = "thy-metric", UserId = _otherUserId
+        Name = "thy-journal", UserId = _otherUserId
       }
     );
 
-    await GiveMePermissions(otherMetric.EntityId, PermissionKind.Write);
+    await GiveMePermissions(otherJournal.EntityId, PermissionKind.Write);
 
-    IJournal[] allMetrics = await _userScopedRepository.GetAllJournals();
+    IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
 
-    Assert.AreEqual(2, allMetrics.Length);
+    Assert.AreEqual(2, allJournals.Length);
   }
 
   [Test]
-  public async Task GetAllMetrics_Return_MyAndThy_WhenIHavePermissions()
+  public async Task GetAllJournals_Return_MyAndThy_WhenIHavePermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
-    UpsertResult otherMetric = await _repository.UpsertJournal(
+    UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
       {
-        Name = "thy-metric", UserId = _otherUserId
+        Name = "thy-journal", UserId = _otherUserId
       }
     );
 
-    await GiveMePermissions(otherMetric.EntityId, PermissionKind.Read);
+    await GiveMePermissions(otherJournal.EntityId, PermissionKind.Read);
 
-    IJournal[] allMetrics = await _userScopedRepository.GetAllJournals();
+    IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
 
-    Assert.AreEqual(2, allMetrics.Length);
+    Assert.AreEqual(2, allJournals.Length);
   }
 
   [Test]
   public async Task GetAllMeasurements_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
-    UpsertResult otherMetric = await _repository.UpsertJournal(
+    UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
       {
-        Name = "thy-metric", UserId = _otherUserId
+        Name = "thy-journal", UserId = _otherUserId
       }
     );
 
     await _repository.ModifyJournalPermissions(
-      otherMetric.EntityId,
+      otherJournal.EntityId,
       new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
     );
 
     await _repository.UpsertMeasurement(
       new CounterMeasurement
       {
-        ParentId = otherMetric.EntityId
+        ParentId = otherJournal.EntityId
       }
     );
 
     IMeasurement[] allMeasurements =
-      await _userScopedRepository.GetAllMeasurements(otherMetric.EntityId, null, null, null);
+      await _userScopedRepository.GetAllMeasurements(otherJournal.EntityId, null, null, null);
 
     Assert.AreEqual(0, allMeasurements.Length);
   }
@@ -135,26 +135,26 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllMeasurements_Return_MyAndThy_WhenIHavePermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
-    UpsertResult otherMetric = await _repository.UpsertJournal(
+    UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
       {
-        Name = "thy-metric", UserId = _otherUserId
+        Name = "thy-journal", UserId = _otherUserId
       }
     );
 
-    await GiveMePermissions(otherMetric.EntityId, PermissionKind.Read);
+    await GiveMePermissions(otherJournal.EntityId, PermissionKind.Read);
 
     await _repository.UpsertMeasurement(
       new CounterMeasurement
       {
-        ParentId = otherMetric.EntityId
+        ParentId = otherJournal.EntityId
       }
     );
 
     IMeasurement[] allMeasurements =
-      await _userScopedRepository.GetAllMeasurements(otherMetric.EntityId, null, null, null);
+      await _userScopedRepository.GetAllMeasurements(otherJournal.EntityId, null, null, null);
 
     Assert.AreEqual(1, allMeasurements.Length);
   }
@@ -162,164 +162,164 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task UpsertMeasurement_Update_NotPossible_WithNoPermissionsAtAll()
   {
-    string metricId = await CreateMetricForOtherUser();
+    string journalId = await CreateJournalForOtherUser();
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await UpsertOtherMeasurementAsMe(metricId); }
+      async () => { await UpsertOtherMeasurementAsMe(journalId); }
     );
   }
 
   [Test]
   public async Task UpsertMeasurement_Update_NotPossible_WithOnlyReadPermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
-    await GiveMePermissions(metricId, PermissionKind.Read);
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Read);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await UpsertOtherMeasurementAsMe(metricId); }
+      async () => { await UpsertOtherMeasurementAsMe(journalId); }
     );
   }
 
   [Test]
   public async Task UpsertMeasurement_Update_NotPossible_WithNonePermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
-    await GiveMePermissions(metricId, PermissionKind.None);
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.None);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await UpsertOtherMeasurementAsMe(metricId); }
+      async () => { await UpsertOtherMeasurementAsMe(journalId); }
     );
   }
 
   [Test]
   public async Task UpsertMeasurement_Update_Possible_WithWritePermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
-    await GiveMePermissions(metricId, PermissionKind.Write);
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Write);
 
-    await UpsertOtherMeasurementAsMe(metricId);
+    await UpsertOtherMeasurementAsMe(journalId);
   }
 
   [Test]
-  public async Task UpsertMetric_Update_NotPossible_WithNoPermissionsAtAll()
+  public async Task UpsertJournal_Update_NotPossible_WithNoPermissionsAtAll()
   {
-    string metricId = await CreateMetricForOtherUser();
+    string journalId = await CreateJournalForOtherUser();
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await UpsertMetricAsMe(metricId); }
+      async () => { await UpsertJournalAsMe(journalId); }
     );
   }
 
   [Test]
-  public async Task UpsertMetric_Update_NotPossible_WithReadPermissions()
+  public async Task UpsertJournal_Update_NotPossible_WithReadPermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
+    string journalId = await CreateJournalForOtherUser();
 
-    await GiveMePermissions(metricId, PermissionKind.Read);
+    await GiveMePermissions(journalId, PermissionKind.Read);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await UpsertMetricAsMe(metricId); }
+      async () => { await UpsertJournalAsMe(journalId); }
     );
   }
 
   [Test]
-  public async Task UpsertMetric_Update_NotPossible_WithNonePermissions()
+  public async Task UpsertJournal_Update_NotPossible_WithNonePermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
+    string journalId = await CreateJournalForOtherUser();
 
-    await GiveMePermissions(metricId, PermissionKind.None);
+    await GiveMePermissions(journalId, PermissionKind.None);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await UpsertMetricAsMe(metricId); }
+      async () => { await UpsertJournalAsMe(journalId); }
     );
   }
 
   [Test]
-  public async Task UpsertMetric_Update_Possible_WithWritePermissions()
+  public async Task UpsertJournal_Update_Possible_WithWritePermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
+    string journalId = await CreateJournalForOtherUser();
 
-    await GiveMePermissions(metricId, PermissionKind.Write);
+    await GiveMePermissions(journalId, PermissionKind.Write);
 
-    await UpsertMetricAsMe(metricId);
+    await UpsertJournalAsMe(journalId);
   }
 
   [Test]
   public async Task UpsertMeasurement_Add_NotPossible_WithNoPermissionsAtAll()
   {
-    string metricId = await CreateMetricForOtherUser();
+    string journalId = await CreateJournalForOtherUser();
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await AddMeasurementAsMe(metricId); }
+      async () => { await AddMeasurementAsMe(journalId); }
     );
   }
 
   [Test]
   public async Task UpsertMeasurement_Add_NotPossible_WithReadPermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
-    await GiveMePermissions(metricId, PermissionKind.Read);
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Read);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await AddMeasurementAsMe(metricId); }
+      async () => { await AddMeasurementAsMe(journalId); }
     );
   }
 
   [Test]
   public async Task UpsertMeasurement_Add_NotPossible_WithNonePermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
-    await GiveMePermissions(metricId, PermissionKind.None);
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.None);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await AddMeasurementAsMe(metricId); }
+      async () => { await AddMeasurementAsMe(journalId); }
     );
   }
 
   [Test]
   public async Task UpsertMeasurement_Add_Possible_WithWritePermissions()
   {
-    string metricId = await CreateMetricForOtherUser();
-    await GiveMePermissions(metricId, PermissionKind.Write);
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Write);
 
-    await AddMeasurementAsMe(metricId);
+    await AddMeasurementAsMe(journalId);
   }
 
-  private async Task UpsertMetricAsMe(string metricId)
+  private async Task UpsertJournalAsMe(string journalId)
   {
     await _userScopedRepository.UpsertJournal(
-      new CounterJournal { Id = metricId }
+      new CounterJournal { Id = journalId }
     );
   }
 
-  private async Task<string> CreateMetricForOtherUser()
+  private async Task<string> CreateJournalForOtherUser()
   {
     UpsertResult upsertResult = await _repository.UpsertJournal(
       new CounterJournal
       {
-        Name = "thy-metric", UserId = _otherUserId
+        Name = "thy-journal", UserId = _otherUserId
       }
     );
 
     return upsertResult.EntityId;
   }
 
-  private async Task AddMeasurementAsMe(string metricId)
+  private async Task AddMeasurementAsMe(string journalId)
   {
     await _userScopedRepository.UpsertMeasurement(
       new CounterMeasurement
       {
-        ParentId = metricId
+        ParentId = journalId
       }
     );
   }
 
-  private async Task UpsertOtherMeasurementAsMe(string metricId)
+  private async Task UpsertOtherMeasurementAsMe(string journalId)
   {
     UpsertResult result = await _repository.UpsertMeasurement(
       new CounterMeasurement
       {
-        ParentId = metricId,
+        ParentId = journalId,
         UserId = _otherUserId,
         Notes = "foo"
       }
@@ -331,7 +331,7 @@ public class UserScopedMongoRepository_Permissions_Should
       new CounterMeasurement
       {
         Id = result.EntityId,
-        ParentId = metricId,
+        ParentId = journalId,
         Notes = newNotesValues
       }
     );
@@ -340,10 +340,10 @@ public class UserScopedMongoRepository_Permissions_Should
     Assert.AreEqual(newNotesValues, measurement.Notes);
   }
 
-  private async Task GiveMePermissions(string metricId, PermissionKind kind)
+  private async Task GiveMePermissions(string journalId, PermissionKind kind)
   {
     await _repository.ModifyJournalPermissions(
-      metricId,
+      journalId,
       new Dictionary<string, PermissionKind> { { CurrentUserName, kind } }
     );
   }

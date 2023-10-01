@@ -70,9 +70,9 @@ public class LuceneSearchIndexShould
   }
 
   [Test]
-  public void ConsiderMetricAttributeValuesIfAvailable()
+  public void ConsiderJournalAttributeValuesIfAvailable()
   {
-    Dictionary<string, JournalAttribute> metricAttributes = new()
+    Dictionary<string, JournalAttribute> journalAttributes = new()
     {
       {
         "fruit",
@@ -90,7 +90,7 @@ public class LuceneSearchIndexShould
 
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "banana",
-      metricAttributes,
+      journalAttributes,
       new Dictionary<string, string[]>
       {
         { "fruit", new[] { "yellow" } }

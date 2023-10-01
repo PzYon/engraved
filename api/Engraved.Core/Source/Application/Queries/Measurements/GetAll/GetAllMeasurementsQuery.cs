@@ -4,7 +4,7 @@ namespace Engraved.Core.Application.Queries.Measurements.GetAll;
 
 public class GetAllMeasurementsQuery : IQuery<IMeasurement[]>
 {
-  public string? MetricId { get; set; }
+  public string? JournalId { get; set; }
 
   public DateTime? FromDate { get; set; }
 

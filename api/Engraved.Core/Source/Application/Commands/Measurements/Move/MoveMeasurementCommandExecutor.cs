@@ -15,9 +15,9 @@ public class MoveMeasurementCommandExecutor : ICommandExecutor
 
   public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
-    // can user access target metric?
-    IJournal? targetMetric = await repository.GetJournal(_command.TargetMetricId);
-    if (targetMetric == null)
+    // can user access target journal?
+    IJournal? targetJournal = await repository.GetJournal(_command.TargetJournalId);
+    if (targetJournal == null)
     {
       return new CommandResult();
     }
@@ -29,22 +29,22 @@ public class MoveMeasurementCommandExecutor : ICommandExecutor
       return new CommandResult();
     }
 
-    // update source metric EditedOn
+    // update source journal EditedOn
     IJournal sourceJournal = (await repository.GetJournal(measurement.ParentId))!;
     sourceJournal.EditedOn = dateService.UtcNow;
     await repository.UpsertJournal(sourceJournal);
 
-    // update target metric EditedOn
-    targetMetric.EditedOn = dateService.UtcNow;
-    await repository.UpsertJournal(targetMetric);
+    // update target journal EditedOn
+    targetJournal.EditedOn = dateService.UtcNow;
+    await repository.UpsertJournal(targetJournal);
 
     // update measurement
     measurement.EditedOn = dateService.UtcNow;
     measurement.DateTime = dateService.UtcNow;
-    measurement.ParentId = targetMetric.Id!;
+    measurement.ParentId = targetJournal.Id!;
     await repository.UpsertMeasurement(measurement);
 
-    string[] affectedUserIds = await GetAffectedUserIds(repository, measurement, targetMetric);
+    string[] affectedUserIds = await GetAffectedUserIds(repository, measurement, targetJournal);
 
     return new CommandResult(
       _command.MeasurementId,

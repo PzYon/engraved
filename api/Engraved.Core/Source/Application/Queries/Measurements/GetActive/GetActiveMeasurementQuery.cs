@@ -4,7 +4,7 @@ namespace Engraved.Core.Application.Queries.Measurements.GetActive;
 
 public class GetActiveMeasurementQuery : IQuery<IMeasurement?>
 {
-  public string? MetricId { get; set; }
+  public string? JournalId { get; set; }
 
   IQueryExecutor<IMeasurement?> IQuery<IMeasurement?>.CreateExecutor()
   {

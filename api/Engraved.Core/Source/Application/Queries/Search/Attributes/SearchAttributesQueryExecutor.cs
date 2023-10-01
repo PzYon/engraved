@@ -20,22 +20,22 @@ public class SearchAttributesQueryExecutor : IQueryExecutor<AttributeSearchResul
 
   public async Task<AttributeSearchResult[]> Execute(IRepository repository)
   {
-    var metricQuery = new GetJournalQuery { JournalId = _query.JournalId };
-    IJournal? metric = await _query.GetDispatcher().Query(metricQuery);
+    var journalQuery = new GetJournalQuery { JournalId = _query.JournalId };
+    IJournal? journal = await _query.GetDispatcher().Query(journalQuery);
 
-    if (metric == null)
+    if (journal == null)
     {
-      throw new Exception("Metric not found.");
+      throw new Exception("Journal not found.");
     }
 
-    var measurementsQuery = new GetAllMeasurementsQuery { MetricId = _query.JournalId };
+    var measurementsQuery = new GetAllMeasurementsQuery { JournalId = _query.JournalId };
     IMeasurement[] measurements = await _query.GetDispatcher().Query(measurementsQuery);
 
     return _query
       .GetSearchIndex()
       .Search(
         _query.SearchText,
-        metric.Attributes,
+        journal.Attributes,
         measurements.Select(s => s.JournalAttributeValues).ToArray()
       );
   }

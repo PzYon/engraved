@@ -212,7 +212,7 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
-  public Task ModifyJournalPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
+  public Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
   {
     throw new NotImplementedException();
   }
@@ -230,7 +230,7 @@ public class FakeUserScopedRepository : IUserScopedRepository
   public Task<IMeasurement[]> GetLastEditedMeasurements(
     string[]? journalIds,
     string? searchText,
-    JournalType[]? metricTypes,
+    JournalType[]? journalTypes,
     int limit
   )
   {

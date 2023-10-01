@@ -21,11 +21,11 @@ public static class JournalCommandUtil
       );
     }
 
-    IJournal? metric = await repository.GetJournal(journalId);
+    IJournal? journal = await repository.GetJournal(journalId);
 
-    if (metric is not TJournal specificJournal)
+    if (journal is not TJournal specificJournal)
     {
-      throw new InvalidCommandException(command, $"A metric with key \"{journalId}\" does not exist.");
+      throw new InvalidCommandException(command, $"A journal with key \"{journalId}\" does not exist.");
     }
 
     return specificJournal;

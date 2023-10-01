@@ -13,7 +13,7 @@ public class UpsertTimerMeasurementCommand : BaseUpsertMeasurementCommand
     return new UpsertTimerMeasurementCommandExecutor(this);
   }
 
-  public override JournalType GetSupportedMetricType()
+  public override JournalType GetSupportedJournalType()
   {
     return JournalType.Timer;
   }

@@ -4,7 +4,7 @@ namespace Engraved.Core.Application.Commands.Measurements.Upsert.Counter;
 
 public class UpsertCounterMeasurementCommand : BaseUpsertMeasurementCommand
 {
-  public override JournalType GetSupportedMetricType()
+  public override JournalType GetSupportedJournalType()
   {
     return JournalType.Counter;
   }

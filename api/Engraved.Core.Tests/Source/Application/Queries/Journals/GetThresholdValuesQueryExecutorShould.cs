@@ -7,11 +7,11 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries.Metrics;
+namespace Engraved.Core.Application.Queries.Journals;
 
 public class GetThresholdValuesQueryExecutorShould
 {
-  private const string MetricId = "metric-id";
+  private const string JournalId = "journal-id";
 
   private InMemoryRepository _testRepository = null!;
 
@@ -27,7 +27,7 @@ public class GetThresholdValuesQueryExecutorShould
     _testRepository.Journals.Add(
       new GaugeJournal
       {
-        Id = MetricId,
+        Id = JournalId,
         Attributes = new Dictionary<string, JournalAttribute>
         {
           {
@@ -55,7 +55,7 @@ public class GetThresholdValuesQueryExecutorShould
       {
         FromDate = DateTime.UtcNow.AddHours(-1),
         ToDate = DateTime.UtcNow.AddHours(1),
-        JournalId = MetricId
+        JournalId = JournalId
       }
       .CreateExecutor()
       .Execute(_testRepository);
@@ -81,7 +81,7 @@ public class GetThresholdValuesQueryExecutorShould
     _testRepository.Measurements.Add(
       new GaugeMeasurement
       {
-        ParentId = MetricId,
+        ParentId = JournalId,
         DateTime = DateTime.UtcNow,
         Value = value,
         JournalAttributeValues = new Dictionary<string, string[]>

@@ -9,7 +9,7 @@ public class UpsertScrapsMeasurementCommand : BaseUpsertMeasurementCommand
 
   public ScrapType ScrapType { get; set; } = ScrapType.Markdown;
   
-  public override JournalType GetSupportedMetricType()
+  public override JournalType GetSupportedJournalType()
   {
     return JournalType.Scraps;
   }

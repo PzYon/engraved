@@ -57,7 +57,7 @@ public class LoginHandler : ILoginHandler
     user.ImageUrl = parsedToken.ImageUrl;
     user.LastLoginDate = _dateService.UtcNow;
 
-    if (user.FavoriteMetricIds.Count == 0)
+    if (user.FavoriteJournalIds.Count == 0)
     {
       await EnsureQuickScraps(user);
     }
@@ -118,6 +118,6 @@ public class LoginHandler : ILoginHandler
 
     UpsertResult result = await _repository.UpsertJournal(journal);
 
-    user.FavoriteMetricIds.Add(result.EntityId);
+    user.FavoriteJournalIds.Add(result.EntityId);
   }
 }

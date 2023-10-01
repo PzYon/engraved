@@ -27,11 +27,11 @@ public class MeasurementsController : ControllerBase
 
   [HttpGet]
   [Route("{journalId}")]
-  public async Task<object[]> GetAll(string metricId, DateTime? fromDate, DateTime? toDate, string? attributeValues)
+  public async Task<object[]> GetAll(string journalId, DateTime? fromDate, DateTime? toDate, string? attributeValues)
   {
     var query = new GetAllMeasurementsQuery
     {
-      MetricId = metricId,
+      JournalId = journalId,
       FromDate = fromDate,
       ToDate = toDate,
       AttributeValues = AttributeValueParser.Parse(attributeValues)
@@ -43,10 +43,10 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpGet]
-  [Route("{metricId}/active")]
-  public async Task<IMeasurement?> GetActive(string metricId)
+  [Route("{journalId}/active")]
+  public async Task<IMeasurement?> GetActive(string journalId)
   {
-    return await _dispatcher.Query(new GetActiveMeasurementQuery { MetricId = metricId });
+    return await _dispatcher.Query(new GetActiveMeasurementQuery { JournalId = journalId });
   }
 
   [HttpPost]
@@ -85,13 +85,13 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpPut]
-  [Route("{measurementId}/move/{targetMetricId}")]
-  public async Task MoveMeasurementToMetric(string measurementId, string targetMetricId)
+  [Route("{measurementId}/move/{targetJournalId}")]
+  public async Task MoveMeasurementToJournal(string measurementId, string targetJournalId)
   {
     var command = new MoveMeasurementCommand
     {
       MeasurementId = measurementId,
-      TargetMetricId = targetMetricId
+      TargetJournalId = targetJournalId
     };
 
     await _dispatcher.Command(command);

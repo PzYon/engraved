@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Domain.Journals;
 
-namespace Engraved.Persistence.Mongo.DocumentTypes.Metrics;
+namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 
 public class GaugeJournalDocument : JournalDocument
 {

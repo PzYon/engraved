@@ -22,9 +22,9 @@ public class UpsertCounterMeasurementCommandExecutorShould
   [Test]
   public async Task CreateNew()
   {
-    _testRepository.Journals.Add(new CounterJournal { Id = "metric_id" });
+    _testRepository.Journals.Add(new CounterJournal { Id = "journal_id" });
 
-    var command = new UpsertCounterMeasurementCommand { JournalId = "metric_id", Notes = "foo" };
+    var command = new UpsertCounterMeasurementCommand { JournalId = "journal_id", Notes = "foo" };
     await new UpsertCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);
@@ -36,9 +36,9 @@ public class UpsertCounterMeasurementCommandExecutorShould
   {
     IDateService dateService = new FakeDateService();
 
-    _testRepository.Journals.Add(new GaugeJournal { Id = "metric_id" });
+    _testRepository.Journals.Add(new GaugeJournal { Id = "journal_id" });
 
-    var createCommand = new UpsertGaugeMeasurementCommand { JournalId = "metric_id", Notes = "foo", Value = 123 };
+    var createCommand = new UpsertGaugeMeasurementCommand { JournalId = "journal_id", Notes = "foo", Value = 123 };
 
     var commandExecutor = new UpsertGaugeMeasurementCommandExecutor(createCommand);
     CommandResult result = await commandExecutor.Execute(_testRepository, dateService);
@@ -46,7 +46,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
     var updateCommand = new UpsertGaugeMeasurementCommand
     {
       Id = result.EntityId,
-      JournalId = "metric_id",
+      JournalId = "journal_id",
       Notes = "bar",
       Value = 42
     };
@@ -61,7 +61,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
   }
 
   [Test]
-  public void Throw_WhenMetricIdIsNotSpecified()
+  public void Throw_WhenJournalIdIsNotSpecified()
   {
     var command = new UpsertCounterMeasurementCommand { JournalId = string.Empty };
 
@@ -74,7 +74,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
   }
 
   [Test]
-  public void Throw_WhenMetricDoesNotExist()
+  public void Throw_WhenJournalDoesNotExist()
   {
     var command = new UpsertCounterMeasurementCommand
     {

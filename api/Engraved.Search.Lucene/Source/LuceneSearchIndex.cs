@@ -50,24 +50,24 @@ public class LuceneSearchIndex : ISearchIndex
       .ToArray();
   }
 
-  private static Query CreateQuery(Dictionary<string, string[]>[] metricAttributeValues, string searchText)
+  private static Query CreateQuery(Dictionary<string, string[]>[] journalAttributeValues, string searchText)
   {
     var query = new BooleanQuery();
 
     foreach (string searchTerm in searchText.ToLower().Split(" "))
     {
-      Query termQuery = GetQueryForTerm(metricAttributeValues, searchTerm);
+      Query termQuery = GetQueryForTerm(journalAttributeValues, searchTerm);
       query.Clauses.Add(new BooleanClause(termQuery, Occur.MUST));
     }
 
     return query;
   }
 
-  private static Query GetQueryForTerm(Dictionary<string, string[]>[] metricAttributeValues, string searchTerm)
+  private static Query GetQueryForTerm(Dictionary<string, string[]>[] journalAttributeValues, string searchTerm)
   {
     var termQuery = new BooleanQuery();
 
-    foreach (string fieldName in metricAttributeValues.SelectMany(v => v.Keys).Distinct())
+    foreach (string fieldName in journalAttributeValues.SelectMany(v => v.Keys).Distinct())
     {
       termQuery.Clauses.Add(
         new BooleanClause(new TermQuery(new Term(fieldName, searchTerm)) { Boost = 2 }, Occur.SHOULD)
@@ -85,14 +85,14 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private Dictionary<string, Dictionary<string, string[]>> AddDocumentsToIndex(
-      Dictionary<string, JournalAttribute> metricAttributes,
-      IEnumerable<Dictionary<string, string[]>> metricAttributeValues
+      Dictionary<string, JournalAttribute> journalAttributes,
+      IEnumerable<Dictionary<string, string[]>> journalAttributeValues
     )
   {
     Dictionary<string, Document> docsByUniqueString = new();
     Dictionary<string, Dictionary<string, string[]>> valuesByUniqueString = new();
 
-    foreach (Dictionary<string, string[]> attributeValues in metricAttributeValues)
+    foreach (Dictionary<string, string[]> attributeValues in journalAttributeValues)
     {
       string uniqueValueString = GetUniqueValueString(attributeValues);
 
@@ -104,7 +104,7 @@ public class LuceneSearchIndex : ISearchIndex
       }
       else
       {
-        Document document = CreateDocument(metricAttributes, attributeValues);
+        Document document = CreateDocument(journalAttributes, attributeValues);
         document.Add(new Int32Field(CountFieldName, 1, Field.Store.YES));
         document.Add(new StringField(UniqueValueFieldName, uniqueValueString, Field.Store.YES));
 
@@ -131,7 +131,7 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private static Document CreateDocument(
-      Dictionary<string, JournalAttribute> metricAttributes,
+      Dictionary<string, JournalAttribute> journalAttributes,
       Dictionary<string, string[]> attributeValues
     )
   {
@@ -142,8 +142,8 @@ public class LuceneSearchIndex : ISearchIndex
       string attributeKey = attributeValue.Key;
       string[] valueKeys = attributeValue.Value;
 
-      JournalAttribute? attribute = metricAttributes.TryGetValue(attributeKey, out JournalAttribute? metricAttribute)
-        ? metricAttribute
+      JournalAttribute? attribute = journalAttributes.TryGetValue(attributeKey, out JournalAttribute? journalAttribute)
+        ? journalAttribute
         : null;
 
       string[] labelValues = GetLabelValues(valueKeys, attribute);

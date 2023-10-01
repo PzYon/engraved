@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class fMongoRepository_GetAllJournals_Should
+public class MongoRepository_GetAllJournals_Should
 {
   private MongoRepository _repository = null!;
 
@@ -54,7 +54,7 @@ public class fMongoRepository_GetAllJournals_Should
   }
 
   [Test]
-  public async Task Return_Matching_MetricTypes()
+  public async Task Return_Matching_JournalTypes()
   {
     IJournal[] results = await _repository.GetAllJournals(null, new[] { JournalType.Timer, JournalType.Gauge });
     Assert.AreEqual(2, results.Length);

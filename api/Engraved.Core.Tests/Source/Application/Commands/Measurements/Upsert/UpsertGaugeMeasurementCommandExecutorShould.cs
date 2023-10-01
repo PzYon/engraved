@@ -98,7 +98,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       JournalId = "k3y",
       Notes = "n0t3s",
       Value = value,
-      MetricAttributeValues = new Dictionary<string, string[]>
+      JournalAttributeValues = new Dictionary<string, string[]>
       {
         {
           "stuff", new[] { "k3y" }
@@ -114,21 +114,24 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     Assert.AreEqual(command.JournalId, createdMeasurement.ParentId);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
 
-    AssertMetricAttributeValuesEqual(command.MetricAttributeValues, createdMeasurement.JournalAttributeValues);
+    AssertJournalAttributeValuesEqual(command.JournalAttributeValues, createdMeasurement.JournalAttributeValues);
 
     var gaugeMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(gaugeMeasurement);
     Assert.AreEqual(value, gaugeMeasurement!.Value);
   }
 
-  private static void AssertMetricAttributeValuesEqual(Dictionary<string, string[]> d1, Dictionary<string, string[]> d2)
+  private static void AssertJournalAttributeValuesEqual(
+    Dictionary<string, string[]> d1,
+    Dictionary<string, string[]> d2
+  )
   {
     bool areEqual = d1 == d2
                     || (d1.Keys.Count == d2.Keys.Count
                         && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k])));
     if (!areEqual)
     {
-      Assert.Fail("MetricAttributeValues are not equal.");
+      Assert.Fail("JournalAttributeValues are not equal.");
     }
   }
 
@@ -140,7 +143,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
 
   // todo: Add test for value key
   [Test]
-  public void Throw_WhenMetricAttributeKeyDoesNotExistOnMetric()
+  public void Throw_WhenJournalAttributeKeyDoesNotExistOnJournal()
   {
     _testRepository.Journals.Add(new GaugeJournal { Id = "k3y" });
 
@@ -149,7 +152,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
       JournalId = "k3y",
       Notes = "n0t3s",
       Value = 42,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "fooBar", new[] { "x" } } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "fooBar", new[] { "x" } } }
     };
 
     Assert.ThrowsAsync<InvalidCommandException>(

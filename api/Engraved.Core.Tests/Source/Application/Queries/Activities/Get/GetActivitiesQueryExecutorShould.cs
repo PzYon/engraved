@@ -21,33 +21,33 @@ public class GetActivitiesQueryExecutorShould
   }
 
   [Test]
-  public async Task Return_NewestMeasurementsAndTheirMetric()
+  public async Task Return_NewestMeasurementsAndTheirJournal()
   {
-    _repo.Journals.Add(new CounterJournal { Id = "counter-metric-id" });
+    _repo.Journals.Add(new CounterJournal { Id = "counter-journal-id" });
     _repo.Measurements.Add(
       new CounterMeasurement
       {
-        ParentId = "counter-metric-id",
+        ParentId = "counter-journal-id",
         DateTime = _dateService.UtcNow
       }
     );
     _dateService.SetNext(2);
 
-    _repo.Journals.Add(new GaugeJournal { Id = "gauge-metric-id" });
+    _repo.Journals.Add(new GaugeJournal { Id = "gauge-journal-id" });
     _repo.Measurements.Add(
       new GaugeMeasurement
       {
-        ParentId = "gauge-metric-id",
+        ParentId = "gauge-journal-id",
         DateTime = _dateService.UtcNow
       }
     );
     _dateService.SetNext(1);
 
-    _repo.Journals.Add(new TimerJournal { Id = "timer-metric-id" });
+    _repo.Journals.Add(new TimerJournal { Id = "timer-journal-id" });
     _repo.Measurements.Add(
       new TimerMeasurement
       {
-        ParentId = "timer-metric-id",
+        ParentId = "timer-journal-id",
         DateTime = _dateService.UtcNow
       }
     );
@@ -56,8 +56,8 @@ public class GetActivitiesQueryExecutorShould
     GetActivitiesQueryResult result = (await new GetActivitiesQueryExecutor(query).Execute(_repo));
 
     Assert.AreEqual(2, result.Journals.Length);
-    Assert.IsFalse(result.Journals.Select(m => m.Id).Contains("counter-metric-id"));
+    Assert.IsFalse(result.Journals.Select(m => m.Id).Contains("counter-journal-id"));
     Assert.AreEqual(2, result.Measurements.Length);
-    Assert.IsFalse(result.Measurements.Select(m => m.ParentId).Contains("counter-metric-id"));
+    Assert.IsFalse(result.Measurements.Select(m => m.ParentId).Contains("counter-journal-id"));
   }
 }

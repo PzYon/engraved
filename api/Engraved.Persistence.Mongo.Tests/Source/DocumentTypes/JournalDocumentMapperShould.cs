@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Engraved.Core.Domain.Journals;
-using Engraved.Persistence.Mongo.DocumentTypes.Metrics;
+using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using MongoDB.Bson;
 using NUnit.Framework;
 
@@ -142,13 +142,13 @@ public class JournalDocumentMapperShould
       StartDate = startDate
     };
 
-    var metric = JournalDocumentMapper.FromDocument<IJournal>(timerJournalDocument);
+    var journal = JournalDocumentMapper.FromDocument<IJournal>(timerJournalDocument);
 
-    var timerJournal = (TimerJournal) metric;
+    var timerJournal = (TimerJournal) journal;
     Assert.IsNotNull(timerJournal);
-    Assert.AreEqual(JournalType.Timer, metric.Type);
+    Assert.AreEqual(JournalType.Timer, journal.Type);
     Assert.AreEqual(startDate, timerJournal.StartDate);
-    AssertEqual(timerJournalDocument, metric);
+    AssertEqual(timerJournalDocument, journal);
   }
 
   [Test]

@@ -4,7 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 
-namespace Engraved.Persistence.Mongo.DocumentTypes.Metrics;
+namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 
 public abstract class JournalDocument : IUserScopedDocument, IHasPerissionsDocument
 {

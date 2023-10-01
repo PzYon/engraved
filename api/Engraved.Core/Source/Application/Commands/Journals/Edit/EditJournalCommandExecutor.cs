@@ -29,7 +29,7 @@ public class EditJournalCommandExecutor : ICommandExecutor
 
     if (journal == null)
     {
-      throw new InvalidCommandException(_command, $"Metric with key \"{_command.JournalId}\" does not exist.");
+      throw new InvalidCommandException(_command, $"Journal with key \"{_command.JournalId}\" does not exist.");
     }
 
     journal.Attributes = NormalizeKeys(_command.Attributes);

@@ -7,12 +7,12 @@ namespace Engraved.Core.Application.Queries.Journals;
 
 public static class JournalQueryUtil
 {
-  public static async Task<IJournal[]> EnsurePermissionUsers(IRepository repository, params IJournal[] metrics)
+  public static async Task<IJournal[]> EnsurePermissionUsers(IRepository repository, params IJournal[] journals)
   {
-    List<string> userIds = metrics
+    List<string> userIds = journals
       .SelectMany(m => m.Permissions.Keys)
       .Union(
-        metrics.Where(m => !string.IsNullOrEmpty(m.UserId)).Select(m => m.UserId!)
+        journals.Where(m => !string.IsNullOrEmpty(m.UserId)).Select(m => m.UserId!)
       )
       .ToList();
 
@@ -22,7 +22,7 @@ public static class JournalQueryUtil
 
     Dictionary<string, IUser> userById = users.ToDictionary(u => u.Id!, u => u);
 
-    return metrics.Select(m => EnsureUsers(m, userById)).ToArray();
+    return journals.Select(m => EnsureUsers(m, userById)).ToArray();
   }
 
   private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, IUser> userById)
@@ -34,7 +34,7 @@ public static class JournalQueryUtil
 
     // todo: we might need something like this so we have all the relevant
     // user's information on the client.
-    // metric.User = userById[metric.UserId!];
+    // journal.User = userById[journal.UserId!];
 
     return journal;
   }

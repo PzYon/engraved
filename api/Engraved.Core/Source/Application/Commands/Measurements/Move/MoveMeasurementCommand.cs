@@ -4,7 +4,7 @@ public class MoveMeasurementCommand : ICommand
 {
   public string MeasurementId { get; set; } = null!;
   
-  public string TargetMetricId { get; set; } = null!;
+  public string TargetJournalId { get; set; } = null!;
 
   public ICommandExecutor CreateExecutor()
   {

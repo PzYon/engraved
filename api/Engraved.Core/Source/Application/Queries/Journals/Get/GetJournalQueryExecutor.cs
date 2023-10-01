@@ -21,13 +21,13 @@ public class GetJournalQueryExecutor : IQueryExecutor<IJournal?>
       throw new InvalidQueryException<IJournal>(_query!, $"{nameof(_query.JournalId)} must be specified.");
     }
 
-    IJournal? metric = await repository.GetJournal(_query.JournalId);
-    if (metric == null)
+    IJournal? journal = await repository.GetJournal(_query.JournalId);
+    if (journal == null)
     {
       return null;
     }
 
-    IJournal[] metricWithEnsuredPermissions = await JournalQueryUtil.EnsurePermissionUsers(repository, metric);
-    return metricWithEnsuredPermissions.First();
+    IJournal[] journalWithEnsuredPermissions = await JournalQueryUtil.EnsurePermissionUsers(repository, journal);
+    return journalWithEnsuredPermissions.First();
   }
 }

@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Application;
+using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
-using Engraved.Persistence.Mongo.DocumentTypes.Metrics;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Driver;
 

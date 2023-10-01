@@ -6,7 +6,7 @@ public class UpsertGaugeMeasurementCommand : BaseUpsertMeasurementCommand
 {
   public double? Value { get; set; }
 
-  public override JournalType GetSupportedMetricType()
+  public override JournalType GetSupportedJournalType()
   {
     return JournalType.Gauge;
   }

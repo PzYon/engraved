@@ -17,26 +17,26 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
 
   public async Task<IMeasurement[]> Execute(IRepository repository)
   {
-    if (string.IsNullOrEmpty(_query.MetricId))
+    if (string.IsNullOrEmpty(_query.JournalId))
     {
       throw new InvalidQueryException<IMeasurement[]>(
         _query,
-        $"{nameof(GetAllMeasurementsQuery.MetricId)} must be specified."
+        $"{nameof(GetAllMeasurementsQuery.JournalId)} must be specified."
       );
     }
 
-    IJournal? metric = await repository.GetJournal(_query.MetricId);
+    IJournal? journal = await repository.GetJournal(_query.JournalId);
 
-    if (metric == null)
+    if (journal == null)
     {
       throw new InvalidQueryException<IMeasurement[]>(
         _query,
-        $"Metric with key \"{_query.MetricId}\" does not exist."
+        $"Journal with key \"{_query.JournalId}\" does not exist."
       );
     }
 
     return await repository.GetAllMeasurements(
-      _query.MetricId,
+      _query.JournalId,
       _query.FromDate,
       _query.ToDate,
       _query.AttributeValues

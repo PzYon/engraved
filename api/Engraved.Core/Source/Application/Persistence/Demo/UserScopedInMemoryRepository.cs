@@ -43,16 +43,16 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public async Task<IJournal[]> GetAllJournals(string? searchText, JournalType[]? journalTypes = null, int? limit = null)
   {
-    IJournal[] allMetrics = await _repository.GetAllJournals(searchText, journalTypes, limit);
-    return allMetrics
-      .Where(m => m.UserId == CurrentUser.Value.Id)
+    IJournal[] allJournals = await _repository.GetAllJournals(searchText, journalTypes, limit);
+    return allJournals
+      .Where(j => j.UserId == CurrentUser.Value.Id)
       .ToArray();
   }
 
   public async Task<IJournal?> GetJournal(string journalId)
   {
-    IJournal? metric = await _repository.GetJournal(journalId);
-    return metric?.UserId == CurrentUser.Value.Id ? metric : null;
+    IJournal? journal = await _repository.GetJournal(journalId);
+    return journal?.UserId == CurrentUser.Value.Id ? journal : null;
   }
 
   public async Task<IMeasurement[]> GetAllMeasurements(
@@ -70,11 +70,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   public Task<IMeasurement[]> GetLastEditedMeasurements(
     string[]? journalIds,
     string? searchText,
-    JournalType[]? metricTypes,
+    JournalType[]? journalTypes,
     int limit
   )
   {
-    return _repository.GetLastEditedMeasurements(journalIds, searchText, metricTypes, limit);
+    return _repository.GetLastEditedMeasurements(journalIds, searchText, journalTypes, limit);
   }
 
   public Task<UpsertResult> UpsertJournal(IJournal journal)
@@ -85,10 +85,10 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public async Task DeleteJournal(string journalId)
   {
-    // get metric only returns if metric belongs to current user
-    IJournal? metric = await GetJournal(journalId);
+    // get journal only returns if journal belongs to current user
+    IJournal? journal = await GetJournal(journalId);
 
-    if (metric == null)
+    if (journal == null)
     {
       return;
     }
@@ -96,15 +96,15 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     await _repository.DeleteJournal(journalId);
   }
 
-  public async Task ModifyJournalPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
+  public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
   {
-    IJournal? metric = await GetJournal(metricId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
       throw new Exception("Does not exist or no access");
     }
 
-    await _repository.ModifyJournalPermissions(metricId, permissions);
+    await _repository.ModifyJournalPermissions(journalId, permissions);
   }
 
   public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement

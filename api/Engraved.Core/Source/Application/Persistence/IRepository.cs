@@ -23,7 +23,7 @@ public interface IRepository
 
   Task DeleteJournal(string journalId);
 
-  Task ModifyJournalPermissions(string metricId, Dictionary<string, PermissionKind> permissions);
+  Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions);
 
   Task<IMeasurement[]> GetAllMeasurements(
     string journalId,
@@ -35,7 +35,7 @@ public interface IRepository
   Task<IMeasurement[]> GetLastEditedMeasurements(
     string[]? journalIds,
     string? searchText,
-    JournalType[]? metricTypes,
+    JournalType[]? journalTypes,
     int limit
   );
 

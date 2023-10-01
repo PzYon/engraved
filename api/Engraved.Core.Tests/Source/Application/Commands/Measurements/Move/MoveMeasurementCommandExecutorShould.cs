@@ -20,24 +20,24 @@ public class MoveMeasurementCommandExecutorShould
   }
 
   [Test]
-  public async Task MoveMeasurementToOtherMetric()
+  public async Task MoveEntryToOtherJournal()
   {
     // given: source
-    _repo.Journals.Add(new CounterJournal { Id = "source-metric-id" });
+    _repo.Journals.Add(new CounterJournal { Id = "source-journal-id" });
     _repo.Measurements.Add(
       new CounterMeasurement
       {
         Id = "measurement-id",
-        ParentId = "source-metric-id",
+        ParentId = "source-journal-id",
         DateTime = _dateService.UtcNow
       }
     );
-    IMeasurement[] sourceMeasurements = await _repo.GetAllMeasurements("source-metric-id", null, null, null);
+    IMeasurement[] sourceMeasurements = await _repo.GetAllMeasurements("source-journal-id", null, null, null);
     Assert.AreEqual(1, sourceMeasurements.Length);
 
     // given: target
-    _repo.Journals.Add(new CounterJournal { Id = "target-metric-id" });
-    IMeasurement[] targetMeasurements = await _repo.GetAllMeasurements("target-metric-id", null, null, null);
+    _repo.Journals.Add(new CounterJournal { Id = "target-journal-id" });
+    IMeasurement[] targetMeasurements = await _repo.GetAllMeasurements("target-journal-id", null, null, null);
     Assert.AreEqual(0, targetMeasurements.Length);
 
     // when
@@ -45,15 +45,15 @@ public class MoveMeasurementCommandExecutorShould
       new MoveMeasurementCommand
       {
         MeasurementId = "measurement-id",
-        TargetMetricId = "target-metric-id"
+        TargetJournalId = "target-journal-id"
       }
     ).Execute(_repo, _dateService);
 
     // then
-    targetMeasurements = await _repo.GetAllMeasurements("target-metric-id", null, null, null);
+    targetMeasurements = await _repo.GetAllMeasurements("target-journal-id", null, null, null);
     Assert.AreEqual(1, targetMeasurements.Length);
 
-    sourceMeasurements = await _repo.GetAllMeasurements("source-metric-id", null, null, null);
+    sourceMeasurements = await _repo.GetAllMeasurements("source-journal-id", null, null, null);
     Assert.AreEqual(0, sourceMeasurements.Length);
   }
 }
