@@ -26,7 +26,7 @@ public class MeasurementsController : ControllerBase
   }
 
   [HttpGet]
-  [Route("{metricId}")]
+  [Route("{journalId}")]
   public async Task<object[]> GetAll(string metricId, DateTime? fromDate, DateTime? toDate, string? attributeValues)
   {
     var query = new GetAllMeasurementsQuery

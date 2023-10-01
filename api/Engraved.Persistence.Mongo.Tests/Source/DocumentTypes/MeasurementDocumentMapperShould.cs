@@ -18,9 +18,9 @@ public class MeasurementDocumentMapperShould
     var measurement = new CounterMeasurement
     {
       Id = Id,
-      MetricId = Key,
+      ParentId = Key,
       DateTime = DateTime.UtcNow,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
     };
 
     MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
@@ -37,9 +37,9 @@ public class MeasurementDocumentMapperShould
     {
       Id = new ObjectId(Id),
       Notes = "n0t3",
-      MetricId = Key,
+      ParentId = Key,
       DateTime = DateTime.UtcNow,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
     };
 
     var counterMeasurement = MeasurementDocumentMapper.FromDocument<CounterMeasurement>(document);
@@ -54,9 +54,9 @@ public class MeasurementDocumentMapperShould
     {
       Id = Id,
       Notes = "n0t3",
-      MetricId = Key,
+      ParentId = Key,
       DateTime = DateTime.UtcNow,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
       Value = 4.20
     };
 
@@ -78,9 +78,9 @@ public class MeasurementDocumentMapperShould
     {
       Id = new ObjectId(Id),
       Notes = "n0t3",
-      MetricId = Key,
+      ParentId = Key,
       DateTime = DateTime.UtcNow,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
       Value = 4321
     };
 
@@ -95,9 +95,9 @@ public class MeasurementDocumentMapperShould
     var measurement = new TimerMeasurement
     {
       Id = Id,
-      MetricId = Key,
+      ParentId = Key,
       DateTime = DateTime.UtcNow,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
       StartDate = DateTime.UtcNow.AddHours(-200),
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
@@ -121,9 +121,9 @@ public class MeasurementDocumentMapperShould
     {
       Id = new ObjectId(Id),
       Notes = "n0t3",
-      MetricId = Key,
+      ParentId = Key,
       DateTime = DateTime.UtcNow,
-      MetricAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
       StartDate = DateTime.UtcNow.AddHours(-200),
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
@@ -137,8 +137,8 @@ public class MeasurementDocumentMapperShould
   {
     Assert.AreEqual(expected.DateTime, actual.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.MetricId, actual.MetricId);
-    Assert.AreEqual(expected.MetricAttributeValues, actual.MetricAttributeValues);
+    Assert.AreEqual(expected.ParentId, actual.ParentId);
+    Assert.AreEqual(expected.JournalAttributeValues, actual.JournalAttributeValues);
   }
 
   private static void AssertEqual(MeasurementDocument expected, IMeasurement actual)
@@ -146,7 +146,7 @@ public class MeasurementDocumentMapperShould
     Assert.AreEqual(expected.Id.ToString(), actual.Id);
     Assert.AreEqual(expected.DateTime, actual.DateTime);
     Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.MetricId, actual.MetricId);
-    Assert.AreEqual(expected.MetricAttributeValues, actual.MetricAttributeValues);
+    Assert.AreEqual(expected.ParentId, actual.ParentId);
+    Assert.AreEqual(expected.JournalAttributeValues, actual.JournalAttributeValues);
   }
 }

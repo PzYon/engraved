@@ -13,7 +13,7 @@ public abstract class MeasurementDocument : IUserScopedDocument
 
   public string? UserId { get; set; }
 
-  public string MetricId { get; set; } = null!;
+  public string ParentId { get; set; } = null!;
 
   public string? Notes { get; set; }
 
@@ -21,5 +21,5 @@ public abstract class MeasurementDocument : IUserScopedDocument
 
   public DateTime? EditedOn { get; set; }
 
-  public Dictionary<string, string[]> MetricAttributeValues { get; set; } = new();
+  public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 }

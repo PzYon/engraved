@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Caching.Memory;
@@ -192,33 +192,33 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
-  public Task<IMetric[]> GetAllMetrics(string? searchText = null, MetricType[]? metricTypes = null, int? limit = null)
+  public Task<IJournal[]> GetAllJournals(string? searchText = null, JournalType[]? journalTypes = null, int? limit = null)
   {
     throw new NotImplementedException();
   }
 
-  public Task<IMetric?> GetMetric(string metricId)
+  public Task<IJournal?> GetJournal(string journalId)
   {
     throw new NotImplementedException();
   }
 
-  public Task<UpsertResult> UpsertMetric(IMetric metric)
+  public Task<UpsertResult> UpsertJournal(IJournal journal)
   {
     throw new NotImplementedException();
   }
 
-  public Task DeleteMetric(string metricId)
+  public Task DeleteJournal(string journalId)
   {
     throw new NotImplementedException();
   }
 
-  public Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
+  public Task ModifyJournalPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
   {
     throw new NotImplementedException();
   }
 
   public Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
+    string journalId,
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
@@ -228,9 +228,9 @@ public class FakeUserScopedRepository : IUserScopedRepository
   }
 
   public Task<IMeasurement[]> GetLastEditedMeasurements(
-    string[]? metricIds,
+    string[]? journalIds,
     string? searchText,
-    MetricType[]? metricTypes,
+    JournalType[]? metricTypes,
     int limit
   )
   {

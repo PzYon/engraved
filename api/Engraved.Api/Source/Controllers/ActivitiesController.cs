@@ -19,12 +19,12 @@ public class ActivitiesController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<GetActivitiesQueryApiResult> GetAll(string? searchText, string? metricTypes)
+  public async Task<GetActivitiesQueryApiResult> GetAll(string? searchText, string? journalTypes)
   {
     var query = new GetActivitiesQuery
     {
       SearchText = searchText,
-      MetricTypes = ControllerUtils.ParseMetricTypes(metricTypes)
+      JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
     };
     
     GetActivitiesQueryResult result = await _dispatcher.Query(query);
@@ -36,7 +36,7 @@ public class ActivitiesController : ControllerBase
 // the important thing here is to use object.
 public class GetActivitiesQueryApiResult
 {
-  public object[] Metrics { get; set; } = null!;
+  public object[] Journals { get; set; } = null!;
   public object[] Measurements { get; set; } = null!;
 
   public static GetActivitiesQueryApiResult FromResult(GetActivitiesQueryResult result)
@@ -44,7 +44,7 @@ public class GetActivitiesQueryApiResult
     return new GetActivitiesQueryApiResult
     {
       Measurements = result.Measurements,
-      Metrics = result.Metrics
+      Journals = result.Journals
     };
   }
 }

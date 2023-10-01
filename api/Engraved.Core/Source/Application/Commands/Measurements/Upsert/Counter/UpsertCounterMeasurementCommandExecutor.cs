@@ -1,12 +1,12 @@
-﻿using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Measurements;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert.Counter;
 
 public class UpsertCounterMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
   UpsertCounterMeasurementCommand,
   CounterMeasurement,
-  CounterMetric
+  CounterJournal
 >
 {
   public UpsertCounterMeasurementCommandExecutor(UpsertCounterMeasurementCommand command) : base(command) { }

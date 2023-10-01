@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;
 using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert;
@@ -25,11 +25,11 @@ public class UpsertGaugeMeasurementCommandExecutorShould
   [TestCase(123.456)]
   public async Task Set_ValueFromCommand(double value)
   {
-    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
+    _testRepository.Journals.Add(new GaugeJournal { Id = "k3y" });
 
     var command = new UpsertGaugeMeasurementCommand
     {
-      MetricId = "k3y",
+      JournalId = "k3y",
       Value = value
     };
 
@@ -43,7 +43,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 
     IMeasurement createdMeasurement = _testRepository.Measurements.First();
-    Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
+    Assert.AreEqual(command.JournalId, createdMeasurement.ParentId);
 
     var counterMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(counterMeasurement);
@@ -53,11 +53,11 @@ public class UpsertGaugeMeasurementCommandExecutorShould
   [Test]
   public void Throw_WhenNoValueIsSpecified()
   {
-    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
+    _testRepository.Journals.Add(new GaugeJournal { Id = "k3y" });
 
     var command = new UpsertGaugeMeasurementCommand
     {
-      MetricId = "k3y",
+      JournalId = "k3y",
       Notes = "n0t3s",
       Value = null
     };
@@ -73,15 +73,15 @@ public class UpsertGaugeMeasurementCommandExecutorShould
   [Test]
   public async Task MapAllFieldsCorrectly()
   {
-    _testRepository.Metrics.Add(
-      new GaugeMetric
+    _testRepository.Journals.Add(
+      new GaugeJournal
       {
         Id = "k3y",
         Attributes =
         {
           {
             "stuff",
-            new MetricAttribute
+            new JournalAttribute
             {
               Name = "Stuff",
               Values = { { "x", "y" }, { "k3y", "v@lue" } }
@@ -95,7 +95,7 @@ public class UpsertGaugeMeasurementCommandExecutorShould
 
     var command = new UpsertGaugeMeasurementCommand
     {
-      MetricId = "k3y",
+      JournalId = "k3y",
       Notes = "n0t3s",
       Value = value,
       MetricAttributeValues = new Dictionary<string, string[]>
@@ -111,10 +111,10 @@ public class UpsertGaugeMeasurementCommandExecutorShould
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 
     IMeasurement createdMeasurement = _testRepository.Measurements.First();
-    Assert.AreEqual(command.MetricId, createdMeasurement.MetricId);
+    Assert.AreEqual(command.JournalId, createdMeasurement.ParentId);
     Assert.AreEqual(command.Notes, createdMeasurement.Notes);
 
-    AssertMetricAttributeValuesEqual(command.MetricAttributeValues, createdMeasurement.MetricAttributeValues);
+    AssertMetricAttributeValuesEqual(command.MetricAttributeValues, createdMeasurement.JournalAttributeValues);
 
     var gaugeMeasurement = createdMeasurement as GaugeMeasurement;
     Assert.IsNotNull(gaugeMeasurement);
@@ -142,11 +142,11 @@ public class UpsertGaugeMeasurementCommandExecutorShould
   [Test]
   public void Throw_WhenMetricAttributeKeyDoesNotExistOnMetric()
   {
-    _testRepository.Metrics.Add(new GaugeMetric { Id = "k3y" });
+    _testRepository.Journals.Add(new GaugeJournal { Id = "k3y" });
 
     var command = new UpsertGaugeMeasurementCommand
     {
-      MetricId = "k3y",
+      JournalId = "k3y",
       Notes = "n0t3s",
       Value = 42,
       MetricAttributeValues = new Dictionary<string, string[]> { { "fooBar", new[] { "x" } } }

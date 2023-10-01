@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
 using NUnit.Framework;
 
@@ -18,19 +18,19 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   {
     _repository = await Util.CreateMongoRepository();
 
-    var metric = new GaugeMetric { Name = "Test" };
-    UpsertResult result = await _repository.UpsertMetric(metric);
+    var metric = new GaugeJournal { Name = "Test" };
+    UpsertResult result = await _repository.UpsertJournal(metric);
 
     _metricId = result.EntityId;
 
     await _repository.UpsertMeasurement(
-      new GaugeMeasurement { MetricId = result.EntityId, Value = 1, Notes = "Lorem ipsum dolor" }
+      new GaugeMeasurement { ParentId = result.EntityId, Value = 1, Notes = "Lorem ipsum dolor" }
     );
     await _repository.UpsertMeasurement(
-      new GaugeMeasurement { MetricId = result.EntityId, Value = 2, Notes = "Alpha Beta Gamma" }
+      new GaugeMeasurement { ParentId = result.EntityId, Value = 2, Notes = "Alpha Beta Gamma" }
     );
     await _repository.UpsertMeasurement(
-      new GaugeMeasurement { MetricId = result.EntityId, Value = 3, Notes = "Heiri Herbert Hans" }
+      new GaugeMeasurement { ParentId = result.EntityId, Value = 3, Notes = "Heiri Herbert Hans" }
     );
   }
 
@@ -69,14 +69,14 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   [Test]
   public async Task Consider_ScrapsTitle()
   {
-    var metric = new ScrapsMetric { Name = "My Scrap" };
-    UpsertResult result = await _repository.UpsertMetric(metric);
+    var metric = new ScrapsJournal { Name = "My Scrap" };
+    UpsertResult result = await _repository.UpsertJournal(metric);
 
     await _repository.UpsertMeasurement(
-      new ScrapsMeasurement { MetricId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
+      new ScrapsMeasurement { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
     );
     await _repository.UpsertMeasurement(
-      new ScrapsMeasurement { MetricId = result.EntityId, ScrapType = ScrapType.List, Title = "Franz" }
+      new ScrapsMeasurement { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Franz" }
     );
 
     IMeasurement[] results = await _repository.GetLastEditedMeasurements(new[] { result.EntityId }, "heiri", null, 10);
@@ -90,7 +90,7 @@ public class MongoRepository_GetLastEditedMeasurements_Should
     IMeasurement[] results = await _repository.GetLastEditedMeasurements(
       null,
       null,
-      new[] { MetricType.Counter },
+      new[] { JournalType.Counter },
       10
     );
 
@@ -100,17 +100,17 @@ public class MongoRepository_GetLastEditedMeasurements_Should
   [Test]
   public async Task Consider_MetricTypes_Positive()
   {
-    var metric = new ScrapsMetric { Name = "My Scrap" };
-    UpsertResult result = await _repository.UpsertMetric(metric);
+    var metric = new ScrapsJournal { Name = "My Scrap" };
+    UpsertResult result = await _repository.UpsertJournal(metric);
 
     await _repository.UpsertMeasurement(
-      new ScrapsMeasurement { MetricId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
+      new ScrapsMeasurement { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
     );
 
     IMeasurement[] results = await _repository.GetLastEditedMeasurements(
       null,
       null,
-      new[] { MetricType.Scraps },
+      new[] { JournalType.Scraps },
       10
     );
 

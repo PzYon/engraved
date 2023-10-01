@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -12,7 +12,7 @@ namespace Engraved.Persistence.Mongo.Tests;
 public class MongoRepository_GetAllMeasurements_Should
 {
   private MongoRepository _repository = null!;
-  private string _metricId = null!;
+  private string _journalId = null!;
   private readonly string _userId = MongoUtil.GenerateNewIdAsString();
 
   [SetUp]
@@ -20,14 +20,14 @@ public class MongoRepository_GetAllMeasurements_Should
   {
     _repository = await Util.CreateMongoRepository();
 
-    UpsertResult upsertMetric = await _repository.UpsertMetric(new CounterMetric());
-    _metricId = upsertMetric.EntityId;
+    UpsertResult upsertJournal = await _repository.UpsertJournal(new CounterJournal());
+    _journalId = upsertJournal.EntityId;
   }
 
   [Test]
   public async Task Return_Empty()
   {
-    IMeasurement[] measurements = await _repository.GetAllMeasurements(_metricId, null, null, null);
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(_journalId, null, null, null);
 
     Assert.AreEqual(0, measurements.Length);
   }
@@ -38,7 +38,7 @@ public class MongoRepository_GetAllMeasurements_Should
     string measurementId = await AddMeasurement(DateTime.Now.AddDays(-3));
     await AddMeasurement(DateTime.Now.AddDays(3));
 
-    IMeasurement[] measurements = await _repository.GetAllMeasurements(_metricId, null, DateTime.Now, null);
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(_journalId, null, DateTime.Now, null);
 
     Assert.AreEqual(1, measurements.Length);
     Assert.AreEqual(measurementId, measurements.First().Id);
@@ -50,7 +50,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(DateTime.Now.AddDays(-1));
     string measurementId = await AddMeasurement(DateTime.Now.AddDays(1));
 
-    IMeasurement[] measurements = await _repository.GetAllMeasurements(_metricId, DateTime.Now, null, null);
+    IMeasurement[] measurements = await _repository.GetAllMeasurements(_journalId, DateTime.Now, null, null);
 
     Assert.AreEqual(1, measurements.Length);
     Assert.AreEqual(measurementId, measurements.First().Id);
@@ -63,7 +63,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(DateTime.Now.AddDays(10));
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(
-      _metricId,
+      _journalId,
       DateTime.Now.AddDays(-1),
       DateTime.Now.AddDays(1),
       null
@@ -79,7 +79,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(DateTime.Now.AddDays(2));
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(
-      _metricId,
+      _journalId,
       DateTime.Now.AddDays(-5),
       DateTime.Now.AddDays(5),
       null
@@ -102,7 +102,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(firstInNextMonth);
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(
-      _metricId,
+      _journalId,
       new DateTime(2000, 7, 1),
       new DateTime(2000, 7, 31),
       null
@@ -122,7 +122,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(DateTime.Now, attributeValues);
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(
-      _metricId,
+      _journalId,
       null,
       null,
       attributeValues
@@ -139,7 +139,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(DateTime.Now, attributeValues);
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(
-      _metricId,
+      _journalId,
       null,
       null,
       new Dictionary<string, string[]> { { "attr", new[] { "abc" } } }
@@ -160,7 +160,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(DateTime.Now, attributeValues);
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(
-      _metricId,
+      _journalId,
       null,
       null,
       new Dictionary<string, string[]> { { "size", new[] { "XL" } } }
@@ -180,7 +180,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(DateTime.Now, attributeValues);
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(
-      _metricId,
+      _journalId,
       null,
       null,
       new Dictionary<string, string[]>
@@ -203,7 +203,7 @@ public class MongoRepository_GetAllMeasurements_Should
     await AddMeasurement(DateTime.Now, attributeValues);
 
     IMeasurement[] measurements = await _repository.GetAllMeasurements(
-      _metricId,
+      _journalId,
       null,
       null,
       new Dictionary<string, string[]> { { "size", new[] { "XL", "L" } } }
@@ -216,10 +216,10 @@ public class MongoRepository_GetAllMeasurements_Should
   {
     var measurement = new CounterMeasurement
     {
-      MetricId = _metricId,
+      ParentId = _journalId,
       UserId = _userId,
       DateTime = date,
-      MetricAttributeValues = attributeValues ?? new Dictionary<string, string[]>()
+      JournalAttributeValues = attributeValues ?? new Dictionary<string, string[]>()
     };
 
     UpsertResult result = await _repository.UpsertMeasurement(measurement);

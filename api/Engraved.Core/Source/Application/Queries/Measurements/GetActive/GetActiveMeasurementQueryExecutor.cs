@@ -1,8 +1,8 @@
 using Engraved.Core.Application.Commands.Measurements.Upsert.Timer;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries.Measurements.GetAll;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Queries.Measurements.GetActive;
 
@@ -27,7 +27,7 @@ public class GetActiveMeasurementQueryExecutor : IQueryExecutor<IMeasurement?>
       );
     }
 
-    IMetric? metric = await repository.GetMetric(_query.MetricId);
+    IJournal? metric = await repository.GetJournal(_query.MetricId);
 
     if (metric == null)
     {
@@ -37,12 +37,12 @@ public class GetActiveMeasurementQueryExecutor : IQueryExecutor<IMeasurement?>
       );
     }
 
-    if (metric.Type != MetricType.Timer)
+    if (metric.Type != JournalType.Timer)
     {
       return null;
     }
 
-    var timerMetric = (TimerMetric)metric;
+    var timerMetric = (TimerJournal)metric;
     return await UpsertTimerMeasurementCommandExecutor.GetActiveMeasurement(repository, timerMetric);
   }
 }

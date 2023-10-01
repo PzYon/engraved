@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence.Demo;
-using Engraved.Core.Application.Queries.Metrics.GetThresholdValues;
+using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Metrics;
@@ -24,15 +24,15 @@ public class GetThresholdValuesQueryExecutorShould
   [Test]
   public async Task DoSomething()
   {
-    _testRepository.Metrics.Add(
-      new GaugeMetric
+    _testRepository.Journals.Add(
+      new GaugeJournal
       {
         Id = MetricId,
-        Attributes = new Dictionary<string, MetricAttribute>
+        Attributes = new Dictionary<string, JournalAttribute>
         {
           {
             "colors",
-            new MetricAttribute
+            new JournalAttribute
             {
               Name = "Colors",
               Values = new Dictionary<string, string> { { "blue", "Blue" }, { "green", "Green" } }
@@ -55,7 +55,7 @@ public class GetThresholdValuesQueryExecutorShould
       {
         FromDate = DateTime.UtcNow.AddHours(-1),
         ToDate = DateTime.UtcNow.AddHours(1),
-        MetricId = MetricId
+        JournalId = MetricId
       }
       .CreateExecutor()
       .Execute(_testRepository);
@@ -81,10 +81,10 @@ public class GetThresholdValuesQueryExecutorShould
     _testRepository.Measurements.Add(
       new GaugeMeasurement
       {
-        MetricId = MetricId,
+        ParentId = MetricId,
         DateTime = DateTime.UtcNow,
         Value = value,
-        MetricAttributeValues = new Dictionary<string, string[]>
+        JournalAttributeValues = new Dictionary<string, string[]>
         {
           { "colors", new[] { attributeValueKey } }
         }

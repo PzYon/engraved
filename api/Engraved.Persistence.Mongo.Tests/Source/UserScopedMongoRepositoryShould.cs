@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
 using Engraved.Persistence.Mongo.DocumentTypes.Metrics;
@@ -91,10 +91,10 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task UpsertMetric_Ensures_CurrentUser_Id()
   {
-    IMetric metric = new TimerMetric();
+    IJournal journal = new TimerJournal();
 
-    UpsertResult result = await _userScopedRepository.UpsertMetric(metric);
-    IMetric? createdMetric = await _repository.GetMetric(result.EntityId);
+    UpsertResult result = await _userScopedRepository.UpsertJournal(journal);
+    IJournal? createdMetric = await _repository.GetJournal(result.EntityId);
 
     Assert.AreEqual(result.EntityId, createdMetric!.Id);
     Assert.AreEqual(_currentUserId, createdMetric.UserId);
@@ -103,13 +103,13 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task UpsertMetric_ThrowsWhen_EntityFromOtherUser()
   {
-    UpsertResult result = await _repository.UpsertMetric(new TimerMetric { UserId = _otherUserId });
+    UpsertResult result = await _repository.UpsertJournal(new TimerJournal { UserId = _otherUserId });
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
       async () =>
       {
-        await _userScopedRepository.UpsertMetric(
-          new TimerMetric
+        await _userScopedRepository.UpsertJournal(
+          new TimerJournal
           {
             Id = result.EntityId,
             Notes = "Random"
@@ -122,10 +122,10 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task UpsertMeasurement_Ensures_CurrentUser_Id()
   {
-    UpsertResult upsertMetric = await _userScopedRepository.UpsertMetric(new TimerMetric());
+    UpsertResult upsertMetric = await _userScopedRepository.UpsertJournal(new TimerJournal());
     string metricId = upsertMetric.EntityId;
 
-    IMeasurement measurement = new TimerMeasurement { MetricId = metricId };
+    IMeasurement measurement = new TimerMeasurement { ParentId = metricId };
 
     await _userScopedRepository.UpsertMeasurement(measurement);
     IMeasurement[] measurements = await _repository.GetAllMeasurements(metricId, null, null, null);
@@ -138,7 +138,7 @@ public class UserScopedMongoRepositoryShould
   {
     IMeasurement measurement = new TimerMeasurement
     {
-      MetricId = MongoUtil.GenerateNewIdAsString(),
+      ParentId = MongoUtil.GenerateNewIdAsString(),
       UserId = _otherUserId
     };
 
@@ -150,23 +150,23 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task GetMetric_ShouldLoadFrom_CurrentUser()
   {
-    UpsertResult currentUserResult = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult currentUserResult = await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "From Current User",
         UserId = _currentUserId
       }
     );
 
-    await _repository.UpsertMetric(
-      new CounterMetric
+    await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "From Other User",
         UserId = _otherUserId
       }
     );
 
-    IMetric? metric = await _userScopedRepository.GetMetric(currentUserResult.EntityId);
+    IJournal? metric = await _userScopedRepository.GetJournal(currentUserResult.EntityId);
     Assert.IsNotNull(metric);
     Assert.AreEqual(metric!.Name, "From Current User");
   }
@@ -174,23 +174,23 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task GetMetric_ShouldReturnNull_WhenLoadingFrom_OtherUser()
   {
-    await _repository.UpsertMetric(
-      new CounterMetric
+    await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "From Current User",
         UserId = _currentUserId
       }
     );
 
-    UpsertResult otherUserResult = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult otherUserResult = await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "From Other User",
         UserId = _otherUserId
       }
     );
 
-    IMetric? metric = await _userScopedRepository.GetMetric(otherUserResult.EntityId);
+    IJournal? metric = await _userScopedRepository.GetJournal(otherUserResult.EntityId);
     Assert.IsNull(metric);
   }
 
@@ -198,12 +198,12 @@ public class UserScopedMongoRepositoryShould
   public async Task GetAllMeasurements()
   {
     UpsertResult currentUserMetricResult =
-      await _repository.UpsertMetric(new CounterMetric { UserId = _currentUserId });
+      await _repository.UpsertJournal(new CounterJournal { UserId = _currentUserId });
 
     string currentUserMetricId = currentUserMetricResult.EntityId;
 
     UpsertResult otherUserMetricResult
-      = await _repository.UpsertMetric(new CounterMetric { UserId = _otherUserId });
+      = await _repository.UpsertJournal(new CounterJournal { UserId = _otherUserId });
 
     string otherUserMetricId = otherUserMetricResult.EntityId;
 
@@ -212,7 +212,7 @@ public class UserScopedMongoRepositoryShould
       await _repository.UpsertMeasurement(
         new CounterMeasurement
         {
-          MetricId = currentUserMetricId,
+          ParentId = currentUserMetricId,
           UserId = _currentUserId,
           Notes = i.ToString()
         }
@@ -221,7 +221,7 @@ public class UserScopedMongoRepositoryShould
       await _repository.UpsertMeasurement(
         new CounterMeasurement
         {
-          MetricId = otherUserMetricId,
+          ParentId = otherUserMetricId,
           UserId = _otherUserId,
           Notes = i.ToString()
         }
@@ -280,8 +280,8 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task DeleteMetric_AndItsMeasurements()
   {
-    UpsertResult metric = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult metric = await _repository.UpsertJournal(
+      new CounterJournal
       {
         UserId = _currentUserId
       }
@@ -290,22 +290,22 @@ public class UserScopedMongoRepositoryShould
     await _repository.UpsertMeasurement(
       new CounterMeasurement
       {
-        MetricId = metric.EntityId,
+        ParentId = metric.EntityId,
         UserId = _currentUserId
       }
     );
 
-    Assert.AreEqual(1, await _repository.Metrics.CountDocumentsAsync(FilterDefinition<MetricDocument>.Empty));
+    Assert.AreEqual(1, await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty));
     Assert.AreEqual(
       1,
       await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty)
     );
 
-    await _repository.DeleteMetric(metric.EntityId);
+    await _repository.DeleteJournal(metric.EntityId);
 
-    Assert.AreEqual(0, (await _repository.GetAllMetrics()).Length);
+    Assert.AreEqual(0, (await _repository.GetAllJournals()).Length);
 
-    Assert.AreEqual(0, await _repository.Metrics.CountDocumentsAsync(FilterDefinition<MetricDocument>.Empty));
+    Assert.AreEqual(0, await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty));
     Assert.AreEqual(
       0,
       await _repository.Measurements.CountDocumentsAsync(FilterDefinition<MeasurementDocument>.Empty)

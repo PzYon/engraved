@@ -1,9 +1,9 @@
 ﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Queries.Measurements.GetAll;
-using Engraved.Core.Application.Queries.Metrics.Get;
 using Engraved.Core.Application.Search;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Queries.Search.Attributes;
 
@@ -20,15 +20,15 @@ public class SearchAttributesQueryExecutor : IQueryExecutor<AttributeSearchResul
 
   public async Task<AttributeSearchResult[]> Execute(IRepository repository)
   {
-    var metricQuery = new GetMetricQuery { MetricId = _query.MetricId };
-    IMetric? metric = await _query.GetDispatcher().Query(metricQuery);
+    var metricQuery = new GetJournalQuery { JournalId = _query.JournalId };
+    IJournal? metric = await _query.GetDispatcher().Query(metricQuery);
 
     if (metric == null)
     {
       throw new Exception("Metric not found.");
     }
 
-    var measurementsQuery = new GetAllMeasurementsQuery { MetricId = _query.MetricId };
+    var measurementsQuery = new GetAllMeasurementsQuery { MetricId = _query.JournalId };
     IMeasurement[] measurements = await _query.GetDispatcher().Query(measurementsQuery);
 
     return _query
@@ -36,7 +36,7 @@ public class SearchAttributesQueryExecutor : IQueryExecutor<AttributeSearchResul
       .Search(
         _query.SearchText,
         metric.Attributes,
-        measurements.Select(s => s.MetricAttributeValues).ToArray()
+        measurements.Select(s => s.JournalAttributeValues).ToArray()
       );
   }
 }

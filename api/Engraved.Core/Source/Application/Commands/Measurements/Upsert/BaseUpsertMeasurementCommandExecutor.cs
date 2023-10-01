@@ -1,14 +1,14 @@
-using Engraved.Core.Application.Commands.Metrics;
+using Engraved.Core.Application.Commands.Journals;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert;
 
 public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasurement, TMetric> : ICommandExecutor
   where TCommand : BaseUpsertMeasurementCommand
   where TMeasurement : class, IMeasurement, new()
-  where TMetric : class, IMetric
+  where TMetric : class, IJournal
 {
   protected BaseUpsertMeasurementCommandExecutor(TCommand command)
   {
@@ -19,7 +19,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
 
   public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
-    var metric = await MetricCommandUtil.LoadAndValidateMetric<TMetric>(repository, Command, Command.MetricId);
+    var metric = await JournalCommandUtil.LoadAndValidateJournal<TMetric>(repository, Command, Command.JournalId);
 
     await ValidateCommand(metric);
 
@@ -52,14 +52,14 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
   private static async Task UpdateMetric(IRepository repository, IDateService dateService, TMetric metric)
   {
     metric.EditedOn = dateService.UtcNow;
-    await repository.UpsertMetric(metric);
+    await repository.UpsertJournal(metric);
   }
 
   private void SetCommonValues(IDateService dateService, TMeasurement measurement)
   {
-    measurement.MetricId = Command.MetricId;
+    measurement.ParentId = Command.JournalId;
     measurement.Notes = Command.Notes;
-    measurement.MetricAttributeValues = Command.MetricAttributeValues;
+    measurement.JournalAttributeValues = Command.MetricAttributeValues;
     measurement.DateTime = Command.DateTime ?? dateService.UtcNow;
     measurement.EditedOn = dateService.UtcNow;
   }
@@ -76,17 +76,17 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
     return Task.FromResult<TMeasurement?>(null);
   }
 
-  private void EnsureCompatibleMetricType(IMetric metric)
+  private void EnsureCompatibleMetricType(IJournal journal)
   {
-    if (metric.Type != Command.GetSupportedMetricType())
+    if (journal.Type != Command.GetSupportedMetricType())
     {
       throw CreateInvalidCommandException(
-        $"Command with metric type \"{Command.GetSupportedMetricType()}\" is not compatible with metric of type \"{metric.Type}\"."
+        $"Command with metric type \"{Command.GetSupportedMetricType()}\" is not compatible with metric of type \"{journal.Type}\"."
       );
     }
   }
 
-  private void ValidateMetricAttributes(IMetric metric)
+  private void ValidateMetricAttributes(IJournal journal)
   {
     if (Command.MetricAttributeValues.Keys.Count == 0)
     {
@@ -100,7 +100,7 @@ public abstract class BaseUpsertMeasurementCommandExecutor<TCommand, TMeasuremen
       string attributeKey = kvp.Key;
       string[] attributeValues = kvp.Value;
 
-      if (metric.Attributes.TryGetValue(attributeKey, out MetricAttribute? attribute))
+      if (journal.Attributes.TryGetValue(attributeKey, out JournalAttribute? attribute))
       {
         errors.AddRange(
           attributeValues

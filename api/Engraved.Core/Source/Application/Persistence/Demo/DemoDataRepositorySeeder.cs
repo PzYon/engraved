@@ -1,13 +1,13 @@
 ﻿using System.Text;
 using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Journals.Add;
+using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Application.Commands.Measurements.Upsert;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Counter;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Timer;
-using Engraved.Core.Application.Commands.Metrics.Add;
-using Engraved.Core.Application.Commands.Metrics.Edit;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Persistence.Demo;
 
@@ -32,7 +32,7 @@ public class DemoDataRepositorySeeder
     {
       var dateService = new SelfIncrementingDateService();
 
-      CommandResult result = await new AddMetricCommand
+      CommandResult result = await new AddJournalCommand
         {
           Description = LoremIpsum(0, 12, 1, 3),
           Name = LoremIpsum(1, 3, 1, 1),
@@ -41,25 +41,25 @@ public class DemoDataRepositorySeeder
         .CreateExecutor()
         .Execute(_repository, dateService);
 
-      IMetric metric = (await _repository.GetMetric(result.EntityId))!;
-      await AddAttributes(metric, dateService);
+      IJournal journal = (await _repository.GetJournal(result.EntityId))!;
+      await AddAttributes(journal, dateService);
 
-      metric = (await _repository.GetMetric(result.EntityId))!;
-      await AddMeasurements(metric, dateService);
+      journal = (await _repository.GetJournal(result.EntityId))!;
+      await AddMeasurements(journal, dateService);
     }
   }
 
-  private async Task AddAttributes(IMetric metric, IDateService dateService)
+  private async Task AddAttributes(IJournal journal, IDateService dateService)
   {
-    var command = new EditMetricCommand
+    var command = new EditJournalCommand
     {
-      Name = metric.Name,
-      MetricId = metric.Id,
-      Description = metric.Description,
+      Name = journal.Name,
+      JournalId = journal.Id,
+      Description = journal.Description,
       Notes = Random.Shared.Next(0, 10) > 7 ? LoremIpsum(0, 12, 1, 3) : null,
       Attributes = CreateRandomDict(
         "attributeKey",
-        i => new MetricAttribute
+        i => new JournalAttribute
         {
           Name = "Attribute-" + i,
           Values = CreateRandomDict("valueKey", s => "value" + s)
@@ -67,64 +67,64 @@ public class DemoDataRepositorySeeder
       )
     };
 
-    await new EditMetricCommandExecutor(command).Execute(_repository, dateService);
+    await new EditJournalCommandExecutor(command).Execute(_repository, dateService);
   }
 
-  private async Task AddMeasurements(IMetric metric, IDateService dateService)
+  private async Task AddMeasurements(IJournal journal, IDateService dateService)
   {
-    switch (metric)
+    switch (journal)
     {
-      case CounterMetric counterMetric:
+      case CounterJournal counterMetric:
         await AddMeasurements(counterMetric, dateService);
         break;
-      case GaugeMetric gaugeMetric:
+      case GaugeJournal gaugeMetric:
         await AddMeasurements(gaugeMetric, dateService);
         break;
-      case TimerMetric timerMetric:
+      case TimerJournal timerMetric:
         await AddMeasurements(timerMetric, dateService.UtcNow);
         break;
-      case ScrapsMetric:
+      case ScrapsJournal:
         // not yet implemented
         break;
       default:
-        throw new Exception($"Metric type \"{metric.Type}\" is not yet supported.");
+        throw new Exception($"Metric type \"{journal.Type}\" is not yet supported.");
     }
   }
 
-  private async Task AddMeasurements(CounterMetric metric, IDateService dateService)
+  private async Task AddMeasurements(CounterJournal journal, IDateService dateService)
   {
     foreach (int _ in Enumerable.Range(0, Random.Shared.Next(0, 30)))
     {
       var command = new UpsertCounterMeasurementCommand
       {
-        MetricId = metric.Id!
+        JournalId = journal.Id!
       };
 
-      EnsureAttributeValues(metric, command);
+      EnsureAttributeValues(journal, command);
 
       await new UpsertCounterMeasurementCommandExecutor(command).Execute(_repository, dateService);
     }
   }
 
-  private async Task AddMeasurements(GaugeMetric metric, IDateService dateService)
+  private async Task AddMeasurements(GaugeJournal journal, IDateService dateService)
   {
     foreach (int _ in Enumerable.Range(0, Random.Shared.Next(0, 30)))
     {
       var command = new UpsertGaugeMeasurementCommand
       {
-        MetricId = metric.Id!,
+        JournalId = journal.Id!,
         Value = Random.Shared.Next(0, Random.Shared.Next(5, 150))
       };
 
-      EnsureAttributeValues(metric, command);
+      EnsureAttributeValues(journal, command);
 
       await new UpsertGaugeMeasurementCommandExecutor(command).Execute(_repository, dateService);
     }
   }
 
-  private static void EnsureAttributeValues(IMetric metric, BaseUpsertMeasurementCommand command)
+  private static void EnsureAttributeValues(IJournal journal, BaseUpsertMeasurementCommand command)
   {
-    foreach (KeyValuePair<string, MetricAttribute> kvp in metric.Attributes)
+    foreach (KeyValuePair<string, JournalAttribute> kvp in journal.Attributes)
     {
       string attributeKey = kvp.Key;
       string[] valueKeys = kvp.Value.Values.Keys.ToArray();
@@ -141,7 +141,7 @@ public class DemoDataRepositorySeeder
     }
   }
 
-  private async Task AddMeasurements(TimerMetric metric, DateTime metricDate)
+  private async Task AddMeasurements(TimerJournal journal, DateTime metricDate)
   {
     var dateService = new FakeDateService(metricDate);
 
@@ -153,9 +153,9 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      var command = new UpsertTimerMeasurementCommand { MetricId = metric.Id! };
+      var command = new UpsertTimerMeasurementCommand { JournalId = journal.Id! };
 
-      EnsureAttributeValues(metric, command);
+      EnsureAttributeValues(journal, command);
 
       await command
         .CreateExecutor()
@@ -163,7 +163,7 @@ public class DemoDataRepositorySeeder
 
       dateService.SetNext(remainingSteps);
 
-      await new UpsertTimerMeasurementCommand { MetricId = metric.Id! }
+      await new UpsertTimerMeasurementCommand { JournalId = journal.Id! }
         .CreateExecutor()
         .Execute(_repository, dateService);
     }
@@ -178,27 +178,27 @@ public class DemoDataRepositorySeeder
   private async Task AddSpecificCase(SpecificCase specificCase)
   {
     var dateService = new SelfIncrementingDateService();
-    IMetric metric = specificCase.Metric;
+    IJournal journal = specificCase.Journal;
 
-    CommandResult result = await new AddMetricCommand
+    CommandResult result = await new AddJournalCommand
       {
-        Description = metric.Description,
-        Name = metric.Name,
-        Type = metric.Type
+        Description = journal.Description,
+        Name = journal.Name,
+        Type = journal.Type
       }
       .CreateExecutor()
       .Execute(_repository, dateService);
 
     string metricId = result.EntityId;
 
-    if (metric.Attributes.Any())
+    if (journal.Attributes.Any())
     {
-      await new EditMetricCommand
+      await new EditJournalCommand
         {
-          MetricId = metricId,
-          Attributes = metric.Attributes,
-          Description = metric.Description,
-          Name = metric.Name
+          JournalId = metricId,
+          Attributes = journal.Attributes,
+          Description = journal.Description,
+          Name = journal.Name
         }
         .CreateExecutor()
         .Execute(_repository, dateService);
@@ -222,9 +222,9 @@ public class DemoDataRepositorySeeder
           throw new ArgumentOutOfRangeException(nameof(measurement));
       }
 
-      command.MetricId = metricId;
+      command.JournalId = metricId;
       command.Notes = measurement.Notes;
-      command.MetricAttributeValues = measurement.MetricAttributeValues;
+      command.MetricAttributeValues = measurement.JournalAttributeValues;
 
       IDateService measurementDateService = measurement.DateTime != null
         ? new FakeDateService(measurement.DateTime.Value)
@@ -234,9 +234,9 @@ public class DemoDataRepositorySeeder
     }
   }
 
-  private static MetricType GetRandomMetricType()
+  private static JournalType GetRandomMetricType()
   {
-    return (MetricType)Random.Shared.Next(0, Enum.GetNames(typeof(MetricType)).Length);
+    return (JournalType)Random.Shared.Next(0, Enum.GetNames(typeof(JournalType)).Length);
   }
 
   private Dictionary<string, T> CreateRandomDict<T>(string keyPrefix, Func<int, T> createValue)

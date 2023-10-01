@@ -6,7 +6,7 @@ using Lucene.Net.Queries.Function;
 using Lucene.Net.Queries.Function.ValueSources;
 using Lucene.Net.Search;
 using Engraved.Core.Application.Search;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Search.Lucene;
 
@@ -20,7 +20,7 @@ public class LuceneSearchIndex : ISearchIndex
   public static void WakeUp()
   {
     // touch a random index in order for all assemblies to be loaded and make first real request faster.
-    Document tempDoc = CreateDocument(new Dictionary<string, MetricAttribute>(), new Dictionary<string, string[]>());
+    Document tempDoc = CreateDocument(new Dictionary<string, JournalAttribute>(), new Dictionary<string, string[]>());
     var tempIndex = new MemoryLuceneIndex();
     tempIndex.AddDocuments(new List<Document> { tempDoc });
     tempIndex.Search(CreateQuery(Array.Empty<Dictionary<string, string[]>>(), string.Empty));
@@ -28,7 +28,7 @@ public class LuceneSearchIndex : ISearchIndex
 
   public AttributeSearchResult[] Search(
       string searchText,
-      Dictionary<string, MetricAttribute> attributes,
+      Dictionary<string, JournalAttribute> attributes,
       params Dictionary<string, string[]>[] attributeValues
     )
   {
@@ -85,7 +85,7 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private Dictionary<string, Dictionary<string, string[]>> AddDocumentsToIndex(
-      Dictionary<string, MetricAttribute> metricAttributes,
+      Dictionary<string, JournalAttribute> metricAttributes,
       IEnumerable<Dictionary<string, string[]>> metricAttributeValues
     )
   {
@@ -131,7 +131,7 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private static Document CreateDocument(
-      Dictionary<string, MetricAttribute> metricAttributes,
+      Dictionary<string, JournalAttribute> metricAttributes,
       Dictionary<string, string[]> attributeValues
     )
   {
@@ -142,7 +142,7 @@ public class LuceneSearchIndex : ISearchIndex
       string attributeKey = attributeValue.Key;
       string[] valueKeys = attributeValue.Value;
 
-      MetricAttribute? attribute = metricAttributes.TryGetValue(attributeKey, out MetricAttribute? metricAttribute)
+      JournalAttribute? attribute = metricAttributes.TryGetValue(attributeKey, out JournalAttribute? metricAttribute)
         ? metricAttribute
         : null;
 
@@ -154,7 +154,7 @@ public class LuceneSearchIndex : ISearchIndex
     return document;
   }
 
-  private static string[] GetLabelValues(string[] valueKeys, MetricAttribute? attribute)
+  private static string[] GetLabelValues(string[] valueKeys, JournalAttribute? attribute)
   {
     return valueKeys
       .Select(

@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;
 
@@ -6,9 +6,9 @@ public class UpsertGaugeMeasurementCommand : BaseUpsertMeasurementCommand
 {
   public double? Value { get; set; }
 
-  public override MetricType GetSupportedMetricType()
+  public override JournalType GetSupportedMetricType()
   {
-    return MetricType.Gauge;
+    return JournalType.Gauge;
   }
 
   public override ICommandExecutor CreateExecutor()

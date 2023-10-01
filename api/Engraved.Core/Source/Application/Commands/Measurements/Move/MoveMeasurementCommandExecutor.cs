@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Commands.Measurements.Move;
 
@@ -16,7 +16,7 @@ public class MoveMeasurementCommandExecutor : ICommandExecutor
   public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
   {
     // can user access target metric?
-    IMetric? targetMetric = await repository.GetMetric(_command.TargetMetricId);
+    IJournal? targetMetric = await repository.GetJournal(_command.TargetMetricId);
     if (targetMetric == null)
     {
       return new CommandResult();
@@ -30,18 +30,18 @@ public class MoveMeasurementCommandExecutor : ICommandExecutor
     }
 
     // update source metric EditedOn
-    IMetric sourceMetric = (await repository.GetMetric(measurement.MetricId))!;
-    sourceMetric.EditedOn = dateService.UtcNow;
-    await repository.UpsertMetric(sourceMetric);
+    IJournal sourceJournal = (await repository.GetJournal(measurement.ParentId))!;
+    sourceJournal.EditedOn = dateService.UtcNow;
+    await repository.UpsertJournal(sourceJournal);
 
     // update target metric EditedOn
     targetMetric.EditedOn = dateService.UtcNow;
-    await repository.UpsertMetric(targetMetric);
+    await repository.UpsertJournal(targetMetric);
 
     // update measurement
     measurement.EditedOn = dateService.UtcNow;
     measurement.DateTime = dateService.UtcNow;
-    measurement.MetricId = targetMetric.Id!;
+    measurement.ParentId = targetMetric.Id!;
     await repository.UpsertMeasurement(measurement);
 
     string[] affectedUserIds = await GetAffectedUserIds(repository, measurement, targetMetric);
@@ -55,13 +55,13 @@ public class MoveMeasurementCommandExecutor : ICommandExecutor
   private static async Task<string[]> GetAffectedUserIds(
     IRepository repository,
     IMeasurement measurement,
-    IMetric targetMetric
+    IJournal targetJournal
   )
   {
-    IMetric sourceMetric = (await repository.GetMetric(measurement.MetricId))!;
+    IJournal sourceJournal = (await repository.GetJournal(measurement.ParentId))!;
 
-    return targetMetric.Permissions.GetUserIdsWithAccess()
-      .Union(sourceMetric.Permissions.GetUserIdsWithAccess())
+    return targetJournal.Permissions.GetUserIdsWithAccess()
+      .Union(sourceJournal.Permissions.GetUserIdsWithAccess())
       .Distinct()
       .ToArray();
   }

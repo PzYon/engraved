@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Timer;
 using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert;
@@ -12,7 +12,7 @@ public class UpsertTimerMeasurementCommandExecutorShould
 {
   private FakeDateService _fakeDateService = null!;
   private InMemoryRepository _testRepository = null!;
-  private const string MetricId = "626dab25f1a93c5c724d820a";
+  private const string JournalId = "626dab25f1a93c5c724d820a";
 
   [SetUp]
   public void SetUp()
@@ -20,7 +20,7 @@ public class UpsertTimerMeasurementCommandExecutorShould
     _fakeDateService = new FakeDateService();
     _testRepository = new InMemoryRepository();
 
-    _testRepository.Metrics.Add(new TimerMetric { Id = MetricId });
+    _testRepository.Journals.Add(new TimerJournal { Id = JournalId });
   }
 
   [Test]
@@ -31,7 +31,7 @@ public class UpsertTimerMeasurementCommandExecutorShould
 
     var command = new UpsertTimerMeasurementCommand
     {
-      MetricId = MetricId,
+      JournalId = JournalId,
       StartDate = startDate,
       EndDate = endDate
     };
@@ -52,7 +52,7 @@ public class UpsertTimerMeasurementCommandExecutorShould
   [Test]
   public async Task StartNewMeasurement_WhenBlankCommand()
   {
-    var command = new UpsertTimerMeasurementCommand { MetricId = MetricId };
+    var command = new UpsertTimerMeasurementCommand { JournalId = JournalId };
 
     CommandResult result =
       await new UpsertTimerMeasurementCommandExecutor(command).Execute(_testRepository, _fakeDateService);
@@ -72,14 +72,14 @@ public class UpsertTimerMeasurementCommandExecutorShould
       new TimerMeasurement
       {
         Id = Guid.NewGuid().ToString("N"),
-        MetricId = MetricId,
+        ParentId = JournalId,
         StartDate = _fakeDateService.UtcNow.AddMinutes(-10)
       }
     );
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);
 
-    var command = new UpsertTimerMeasurementCommand { MetricId = MetricId };
+    var command = new UpsertTimerMeasurementCommand { JournalId = JournalId };
 
     CommandResult result =
       await new UpsertTimerMeasurementCommandExecutor(command).Execute(_testRepository, _fakeDateService);
@@ -101,7 +101,7 @@ public class UpsertTimerMeasurementCommandExecutorShould
       new TimerMeasurement
       {
         Id = measurementId,
-        MetricId = MetricId,
+        ParentId = JournalId,
         StartDate = _fakeDateService.UtcNow.AddMinutes(-50),
         EndDate = _fakeDateService.UtcNow.AddMinutes(-10)
       }
@@ -115,7 +115,7 @@ public class UpsertTimerMeasurementCommandExecutorShould
     var command = new UpsertTimerMeasurementCommand
     {
       Id = measurementId,
-      MetricId = MetricId,
+      JournalId = JournalId,
       StartDate = newStartDate,
       EndDate = newEndDate
     };

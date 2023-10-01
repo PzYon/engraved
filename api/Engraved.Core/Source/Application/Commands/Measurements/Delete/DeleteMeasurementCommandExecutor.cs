@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Commands.Measurements.Delete;
 
@@ -23,11 +23,11 @@ public class DeleteMeasurementCommandExecutor : ICommandExecutor
 
     await repository.DeleteMeasurement(_command.Id);
 
-    IMetric metric = (await repository.GetMetric(measurement.MetricId))!;
-    metric.EditedOn = dateService.UtcNow;
+    IJournal journal = (await repository.GetJournal(measurement.ParentId))!;
+    journal.EditedOn = dateService.UtcNow;
 
-    await repository.UpsertMetric(metric);
+    await repository.UpsertJournal(journal);
 
-    return new CommandResult(_command.Id, metric.Permissions.GetUserIdsWithAccess());
+    return new CommandResult(_command.Id, journal.Permissions.GetUserIdsWithAccess());
   }
 }

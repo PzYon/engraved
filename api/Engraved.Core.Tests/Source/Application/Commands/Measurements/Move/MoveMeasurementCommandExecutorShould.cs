@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Commands.Measurements.Move;
@@ -23,12 +23,12 @@ public class MoveMeasurementCommandExecutorShould
   public async Task MoveMeasurementToOtherMetric()
   {
     // given: source
-    _repo.Metrics.Add(new CounterMetric { Id = "source-metric-id" });
+    _repo.Journals.Add(new CounterJournal { Id = "source-metric-id" });
     _repo.Measurements.Add(
       new CounterMeasurement
       {
         Id = "measurement-id",
-        MetricId = "source-metric-id",
+        ParentId = "source-metric-id",
         DateTime = _dateService.UtcNow
       }
     );
@@ -36,7 +36,7 @@ public class MoveMeasurementCommandExecutorShould
     Assert.AreEqual(1, sourceMeasurements.Length);
 
     // given: target
-    _repo.Metrics.Add(new CounterMetric { Id = "target-metric-id" });
+    _repo.Journals.Add(new CounterJournal { Id = "target-metric-id" });
     IMeasurement[] targetMeasurements = await _repo.GetAllMeasurements("target-metric-id", null, null, null);
     Assert.AreEqual(0, targetMeasurements.Length);
 

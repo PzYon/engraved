@@ -1,18 +1,18 @@
-﻿using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Api.Controllers;
 
 public static class ControllerUtils
 {
-  public static MetricType[]? ParseMetricTypes(string? metricTypes)
+  public static JournalType[]? ParseJournalTypes(string? journalTypes)
   {
-    if (string.IsNullOrEmpty(metricTypes))
+    if (string.IsNullOrEmpty(journalTypes))
     {
       return null;
     }
 
-    return metricTypes.Split(",")
-      .Select(Enum.Parse<MetricType>)
+    return journalTypes.Split(",")
+      .Select(Enum.Parse<JournalType>)
       .ToArray();
   }
 }

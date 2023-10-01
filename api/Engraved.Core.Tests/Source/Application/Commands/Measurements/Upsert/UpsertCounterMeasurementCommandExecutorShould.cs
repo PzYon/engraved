@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Counter;
 using Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;
 using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert;
@@ -22,9 +22,9 @@ public class UpsertCounterMeasurementCommandExecutorShould
   [Test]
   public async Task CreateNew()
   {
-    _testRepository.Metrics.Add(new CounterMetric { Id = "metric_id" });
+    _testRepository.Journals.Add(new CounterJournal { Id = "metric_id" });
 
-    var command = new UpsertCounterMeasurementCommand { MetricId = "metric_id", Notes = "foo" };
+    var command = new UpsertCounterMeasurementCommand { JournalId = "metric_id", Notes = "foo" };
     await new UpsertCounterMeasurementCommandExecutor(command).Execute(_testRepository, new FakeDateService());
 
     Assert.AreEqual(1, _testRepository.Measurements.Count);
@@ -36,9 +36,9 @@ public class UpsertCounterMeasurementCommandExecutorShould
   {
     IDateService dateService = new FakeDateService();
 
-    _testRepository.Metrics.Add(new GaugeMetric { Id = "metric_id" });
+    _testRepository.Journals.Add(new GaugeJournal { Id = "metric_id" });
 
-    var createCommand = new UpsertGaugeMeasurementCommand { MetricId = "metric_id", Notes = "foo", Value = 123 };
+    var createCommand = new UpsertGaugeMeasurementCommand { JournalId = "metric_id", Notes = "foo", Value = 123 };
 
     var commandExecutor = new UpsertGaugeMeasurementCommandExecutor(createCommand);
     CommandResult result = await commandExecutor.Execute(_testRepository, dateService);
@@ -46,7 +46,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
     var updateCommand = new UpsertGaugeMeasurementCommand
     {
       Id = result.EntityId,
-      MetricId = "metric_id",
+      JournalId = "metric_id",
       Notes = "bar",
       Value = 42
     };
@@ -63,7 +63,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
   [Test]
   public void Throw_WhenMetricIdIsNotSpecified()
   {
-    var command = new UpsertCounterMeasurementCommand { MetricId = string.Empty };
+    var command = new UpsertCounterMeasurementCommand { JournalId = string.Empty };
 
     Assert.ThrowsAsync<InvalidCommandException>(
       async () =>
@@ -78,7 +78,7 @@ public class UpsertCounterMeasurementCommandExecutorShould
   {
     var command = new UpsertCounterMeasurementCommand
     {
-      MetricId = "k3y",
+      JournalId = "k3y",
       Notes = "n0t3s"
     };
 

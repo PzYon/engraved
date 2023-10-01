@@ -1,12 +1,12 @@
-﻿using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Measurements;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert.Gauge;
 
 public class UpsertGaugeMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
   UpsertGaugeMeasurementCommand,
   GaugeMeasurement,
-  GaugeMetric
+  GaugeJournal
 >
 {
   public UpsertGaugeMeasurementCommandExecutor(UpsertGaugeMeasurementCommand command) : base(command) { }

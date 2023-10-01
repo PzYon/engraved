@@ -1,6 +1,6 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Queries.Activities.Get;
 
@@ -17,21 +17,21 @@ public class GetActivitiesQueryExecutor : IQueryExecutor<GetActivitiesQueryResul
 
   public async Task<GetActivitiesQueryResult> Execute(IRepository repository)
   {
-    IMetric[] allMetrics = await repository.GetAllMetrics(null, null, 100);
-    string[]? allMetricIds = allMetrics.Select(m => m.Id!).ToArray();
+    IJournal[] allJournals = await repository.GetAllJournals(null, null, 100);
+    string[]? allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
     IMeasurement[] allMeasurements = await repository.GetLastEditedMeasurements(
-      allMetricIds,
+      allJournalIds,
       _query.SearchText,
-      _query.MetricTypes,
+      _query.JournalTypes,
       _query.Limit ?? 20
     );
 
-    string[] relevantMetricIds = allMeasurements.Select(m => m.MetricId).ToArray();
+    string[] relevantJournalIds = allMeasurements.Select(j => j.ParentId).ToArray();
 
     return new GetActivitiesQueryResult
     {
-      Metrics = allMetrics.Where(m => relevantMetricIds.Contains(m.Id)).ToArray(),
+      Journals = allJournals.Where(j => relevantJournalIds.Contains(j.Id)).ToArray(),
       Measurements = allMeasurements.ToArray()
     };
   }

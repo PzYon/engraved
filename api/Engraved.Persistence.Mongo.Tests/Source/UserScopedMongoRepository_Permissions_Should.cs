@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using NUnit.Framework;
@@ -33,10 +33,10 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllMetrics_Return_OnlyMy()
   {
-    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
-    await _repository.UpsertMetric(new CounterMetric { Name = "thy-metric", UserId = _otherUserId });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
+    await _repository.UpsertJournal(new CounterJournal { Name = "thy-metric", UserId = _otherUserId });
 
-    IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
+    IJournal[] allMetrics = await _userScopedRepository.GetAllJournals();
 
     Assert.AreEqual(1, allMetrics.Length);
     Assert.AreEqual("my-metric", allMetrics.First().Name);
@@ -45,21 +45,21 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllMetrics_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
   {
-    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
 
-    UpsertResult otherMetric = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult otherMetric = await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "thy-metric", UserId = _otherUserId
       }
     );
 
-    await _repository.ModifyMetricPermissions(
+    await _repository.ModifyJournalPermissions(
       otherMetric.EntityId,
       new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
     );
 
-    IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
+    IJournal[] allMetrics = await _userScopedRepository.GetAllJournals();
 
     Assert.AreEqual(1, allMetrics.Length);
   }
@@ -67,10 +67,10 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllMetrics_Return_MyAndThy_WhenIMoreThanEnoughHavePermissions()
   {
-    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
 
-    UpsertResult otherMetric = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult otherMetric = await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "thy-metric", UserId = _otherUserId
       }
@@ -78,7 +78,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await GiveMePermissions(otherMetric.EntityId, PermissionKind.Write);
 
-    IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
+    IJournal[] allMetrics = await _userScopedRepository.GetAllJournals();
 
     Assert.AreEqual(2, allMetrics.Length);
   }
@@ -86,10 +86,10 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllMetrics_Return_MyAndThy_WhenIHavePermissions()
   {
-    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
 
-    UpsertResult otherMetric = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult otherMetric = await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "thy-metric", UserId = _otherUserId
       }
@@ -97,7 +97,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await GiveMePermissions(otherMetric.EntityId, PermissionKind.Read);
 
-    IMetric[] allMetrics = await _userScopedRepository.GetAllMetrics();
+    IJournal[] allMetrics = await _userScopedRepository.GetAllJournals();
 
     Assert.AreEqual(2, allMetrics.Length);
   }
@@ -105,16 +105,16 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllMeasurements_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
   {
-    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
 
-    UpsertResult otherMetric = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult otherMetric = await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "thy-metric", UserId = _otherUserId
       }
     );
 
-    await _repository.ModifyMetricPermissions(
+    await _repository.ModifyJournalPermissions(
       otherMetric.EntityId,
       new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
     );
@@ -122,7 +122,7 @@ public class UserScopedMongoRepository_Permissions_Should
     await _repository.UpsertMeasurement(
       new CounterMeasurement
       {
-        MetricId = otherMetric.EntityId
+        ParentId = otherMetric.EntityId
       }
     );
 
@@ -135,10 +135,10 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllMeasurements_Return_MyAndThy_WhenIHavePermissions()
   {
-    await _userScopedRepository.UpsertMetric(new CounterMetric { Name = "my-metric" });
+    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-metric" });
 
-    UpsertResult otherMetric = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult otherMetric = await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "thy-metric", UserId = _otherUserId
       }
@@ -149,7 +149,7 @@ public class UserScopedMongoRepository_Permissions_Should
     await _repository.UpsertMeasurement(
       new CounterMeasurement
       {
-        MetricId = otherMetric.EntityId
+        ParentId = otherMetric.EntityId
       }
     );
 
@@ -287,15 +287,15 @@ public class UserScopedMongoRepository_Permissions_Should
 
   private async Task UpsertMetricAsMe(string metricId)
   {
-    await _userScopedRepository.UpsertMetric(
-      new CounterMetric { Id = metricId }
+    await _userScopedRepository.UpsertJournal(
+      new CounterJournal { Id = metricId }
     );
   }
 
   private async Task<string> CreateMetricForOtherUser()
   {
-    UpsertResult upsertResult = await _repository.UpsertMetric(
-      new CounterMetric
+    UpsertResult upsertResult = await _repository.UpsertJournal(
+      new CounterJournal
       {
         Name = "thy-metric", UserId = _otherUserId
       }
@@ -309,7 +309,7 @@ public class UserScopedMongoRepository_Permissions_Should
     await _userScopedRepository.UpsertMeasurement(
       new CounterMeasurement
       {
-        MetricId = metricId
+        ParentId = metricId
       }
     );
   }
@@ -319,7 +319,7 @@ public class UserScopedMongoRepository_Permissions_Should
     UpsertResult result = await _repository.UpsertMeasurement(
       new CounterMeasurement
       {
-        MetricId = metricId,
+        ParentId = metricId,
         UserId = _otherUserId,
         Notes = "foo"
       }
@@ -331,7 +331,7 @@ public class UserScopedMongoRepository_Permissions_Should
       new CounterMeasurement
       {
         Id = result.EntityId,
-        MetricId = metricId,
+        ParentId = metricId,
         Notes = newNotesValues
       }
     );
@@ -342,7 +342,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
   private async Task GiveMePermissions(string metricId, PermissionKind kind)
   {
-    await _repository.ModifyMetricPermissions(
+    await _repository.ModifyJournalPermissions(
       metricId,
       new Dictionary<string, PermissionKind> { { CurrentUserName, kind } }
     );

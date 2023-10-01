@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert.Timer;
 
@@ -13,8 +13,8 @@ public class UpsertTimerMeasurementCommand : BaseUpsertMeasurementCommand
     return new UpsertTimerMeasurementCommandExecutor(this);
   }
 
-  public override MetricType GetSupportedMetricType()
+  public override JournalType GetSupportedMetricType()
   {
-    return MetricType.Timer;
+    return JournalType.Timer;
   }
 }

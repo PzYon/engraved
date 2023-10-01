@@ -1,7 +1,7 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo.DocumentTypes;
@@ -31,24 +31,24 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     return await base.UpsertUser(user);
   }
 
-  public override async Task<UpsertResult> UpsertMetric(IMetric metric)
+  public override async Task<UpsertResult> UpsertJournal(IJournal journal)
   {
-    EnsureUserId(metric);
-    await EnsureUserHasPermission(metric.Id, PermissionKind.Write);
-    return await base.UpsertMetric(metric);
+    EnsureUserId(journal);
+    await EnsureUserHasPermission(journal.Id, PermissionKind.Write);
+    return await base.UpsertJournal(journal);
   }
 
   public override async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
   {
     EnsureUserId(measurement);
-    await EnsureUserHasPermission(measurement.MetricId, PermissionKind.Write);
+    await EnsureUserHasPermission(measurement.ParentId, PermissionKind.Write);
     return await base.UpsertMeasurement(measurement);
   }
 
-  public override async Task DeleteMetric(string metricId)
+  public override async Task DeleteJournal(string journalId)
   {
-    await EnsureUserHasPermission(metricId, PermissionKind.Write);
-    await base.DeleteMetric(metricId);
+    await EnsureUserHasPermission(journalId, PermissionKind.Write);
+    await base.DeleteJournal(journalId);
   }
 
   protected override FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
@@ -113,7 +113,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
       return;
     }
 
-    IMetric? metric = await GetMetric(metricId, kind);
+    IJournal? metric = await GetMetric(metricId, kind);
     if (metric == null)
     {
       throw new NotAllowedOperationException("Metric doesn't exist or you do not have permissions.");

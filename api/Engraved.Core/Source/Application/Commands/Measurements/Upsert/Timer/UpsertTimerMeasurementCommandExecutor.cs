@@ -1,20 +1,20 @@
 ﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert.Timer;
 
 public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementCommandExecutor<
   UpsertTimerMeasurementCommand,
   TimerMeasurement,
-  TimerMetric
+  TimerJournal
 >
 {
   public UpsertTimerMeasurementCommandExecutor(UpsertTimerMeasurementCommand command) : base(command) { }
 
-  protected override async Task<TimerMeasurement?> LoadMeasurementToUpdate(IRepository repository, TimerMetric metric)
+  protected override async Task<TimerMeasurement?> LoadMeasurementToUpdate(IRepository repository, TimerJournal journal)
   {
-    return await GetActiveMeasurement(repository, metric);
+    return await GetActiveMeasurement(repository, journal);
   }
 
   protected override void SetTypeSpecificValues(IDateService dateService, TimerMeasurement measurement)
@@ -45,12 +45,12 @@ public class UpsertTimerMeasurementCommandExecutor : BaseUpsertMeasurementComman
     measurement.EndDate = Command.EndDate;
   }
 
-  public static async Task<TimerMeasurement?> GetActiveMeasurement(IRepository repository, TimerMetric metric)
+  public static async Task<TimerMeasurement?> GetActiveMeasurement(IRepository repository, TimerJournal journal)
   {
     // we get all measurements here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IDb. for the time being we will skip that.
-    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(metric.Id!, null, null, null);
+    IMeasurement[] allMeasurements = await repository.GetAllMeasurements(journal.Id!, null, null, null);
 
     return allMeasurements
       .OfType<TimerMeasurement>()

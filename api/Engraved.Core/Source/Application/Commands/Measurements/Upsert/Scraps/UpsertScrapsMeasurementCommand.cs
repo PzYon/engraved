@@ -1,5 +1,5 @@
-﻿using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Measurements;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert.Scraps;
 
@@ -9,9 +9,9 @@ public class UpsertScrapsMeasurementCommand : BaseUpsertMeasurementCommand
 
   public ScrapType ScrapType { get; set; } = ScrapType.Markdown;
   
-  public override MetricType GetSupportedMetricType()
+  public override JournalType GetSupportedMetricType()
   {
-    return MetricType.Scraps;
+    return JournalType.Scraps;
   }
 
   public override ICommandExecutor CreateExecutor()

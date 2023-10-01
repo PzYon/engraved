@@ -6,7 +6,7 @@ public abstract class BaseMeasurement : IMeasurement
 
   public string? UserId { get; set; }
 
-  public string MetricId { get; set; } = null!;
+  public string ParentId { get; set; } = null!;
 
   public string? Notes { get; set; }
 
@@ -14,7 +14,7 @@ public abstract class BaseMeasurement : IMeasurement
 
   public DateTime? EditedOn { get; set; }
 
-  public Dictionary<string, string[]> MetricAttributeValues { get; set; } = new();
+  public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 
   public abstract double GetValue();
 }

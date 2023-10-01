@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Journals;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class MongoRepository_GetAllMetrics_Should
+public class fMongoRepository_GetAllJournals_Should
 {
   private MongoRepository _repository = null!;
 
@@ -13,50 +13,50 @@ public class MongoRepository_GetAllMetrics_Should
   {
     _repository = await Util.CreateMongoRepository();
 
-    var gauge = new GaugeMetric { Name = "Gauge", Description = "G@ug3 Description" };
-    await _repository.UpsertMetric(gauge);
+    var gauge = new GaugeJournal { Name = "Gauge", Description = "G@ug3 Description" };
+    await _repository.UpsertJournal(gauge);
 
-    var counter = new CounterMetric { Name = "Counter", Description = "Count3r Description" };
-    await _repository.UpsertMetric(counter);
+    var counter = new CounterJournal { Name = "Counter", Description = "Count3r Description" };
+    await _repository.UpsertJournal(counter);
 
-    var timer = new TimerMetric { Name = "Timer", Description = "Tim3r Description" };
-    await _repository.UpsertMetric(timer);
+    var timer = new TimerJournal { Name = "Timer", Description = "Tim3r Description" };
+    await _repository.UpsertJournal(timer);
   }
 
   [Test]
-  public async Task ReturnAllMetrics_WithEmptyQuery()
+  public async Task ReturnAllJournals_WithEmptyQuery()
   {
-    IMetric[] results = await _repository.GetAllMetrics();
+    IJournal[] results = await _repository.GetAllJournals();
     Assert.AreEqual(3, results.Length);
   }
-  
+
   [Test]
-  public async Task ReturnLimitedMetrics()
+  public async Task ReturnLimitedJournals()
   {
-    IMetric[] results = await _repository.GetAllMetrics(null, null, 1);
+    IJournal[] results = await _repository.GetAllJournals(null, null, 1);
     Assert.AreEqual(1, results.Length);
   }
-  
+
   [Test]
   public async Task Return_Matching_Name()
   {
-    IMetric[] results = await _repository.GetAllMetrics("gauge");
+    IJournal[] results = await _repository.GetAllJournals("gauge");
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual("Gauge", results[0].Name);
   }
-  
+
   [Test]
   public async Task Return_Matching_Description()
   {
-    IMetric[] results = await _repository.GetAllMetrics("tim3r");
+    IJournal[] results = await _repository.GetAllJournals("tim3r");
     Assert.AreEqual(1, results.Length);
     Assert.AreEqual("Timer", results[0].Name);
   }
-  
+
   [Test]
   public async Task Return_Matching_MetricTypes()
   {
-    IMetric[] results = await _repository.GetAllMetrics(null, new[] { MetricType.Timer, MetricType.Gauge });
+    IJournal[] results = await _repository.GetAllJournals(null, new[] { JournalType.Timer, JournalType.Gauge });
     Assert.AreEqual(2, results.Length);
   }
 }

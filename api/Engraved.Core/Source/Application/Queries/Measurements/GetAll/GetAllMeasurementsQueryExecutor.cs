@@ -1,6 +1,6 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
 
 namespace Engraved.Core.Application.Queries.Measurements.GetAll;
 
@@ -25,7 +25,7 @@ public class GetAllMeasurementsQueryExecutor : IQueryExecutor<IMeasurement[]>
       );
     }
 
-    IMetric? metric = await repository.GetMetric(_query.MetricId);
+    IJournal? metric = await repository.GetJournal(_query.MetricId);
 
     if (metric == null)
     {

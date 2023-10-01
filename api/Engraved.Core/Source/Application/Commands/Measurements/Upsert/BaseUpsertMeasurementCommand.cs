@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Measurements.Upsert;
 
@@ -6,7 +6,7 @@ public abstract class BaseUpsertMeasurementCommand : ICommand
 {
   public string? Id { get; set; }
 
-  public string MetricId { get; set; } = null!;
+  public string JournalId { get; set; } = null!;
 
   public string? Notes { get; set; }
 
@@ -16,5 +16,5 @@ public abstract class BaseUpsertMeasurementCommand : ICommand
 
   public abstract ICommandExecutor CreateExecutor();
 
-  public abstract MetricType GetSupportedMetricType();
+  public abstract JournalType GetSupportedMetricType();
 }
