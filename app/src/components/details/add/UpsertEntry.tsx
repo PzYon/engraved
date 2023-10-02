@@ -19,7 +19,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
 import { stripTime } from "../../../util/utils";
 import { AttributeComboSearch } from "./AttributeComboSearch";
-import { hasAttributes } from "../../../util/MeasurementUtil";
+import { hasAttributes } from "../../../util/entryUtils";
 import { UpsertTimerEntry } from "./UpsertTimerEntry";
 import { IUpsertTimerEntryCommand } from "../../../serverApi/commands/IUpsertTimerEntryCommand";
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";

@@ -15,7 +15,7 @@ export const ScrapsEditPage: React.FC = () => {
   const [name, setName] = useState(journal.name);
   const [description, setDescription] = useState(journal.description);
 
-  const editMetricMutation = useEditJournalMutation(journal.id);
+  const editJournalMutation = useEditJournalMutation(journal.id);
 
   const disableSave =
     name === journal.name && description === journal.description;
@@ -46,7 +46,7 @@ export const ScrapsEditPage: React.FC = () => {
   );
 
   async function save() {
-    await editMetricMutation.mutateAsync({
+    await editJournalMutation.mutateAsync({
       journal: { ...journal, name, description },
       onSuccess: navigateToViewPage,
     });

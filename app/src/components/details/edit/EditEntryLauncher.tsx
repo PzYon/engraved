@@ -28,20 +28,20 @@ export const EditEntryLauncher: React.FC<{
           entry={entries.find((m) => m.id === entryId)}
           onSaved={async () => {
             closeDialog();
-            goToMetric();
+            goToJournal();
           }}
           onCancel={closeDialog}
         />
       ),
       onClose: () => {
-        goToMetric();
+        goToJournal();
       },
     });
   }, [entries]);
 
   return null;
 
-  function goToMetric() {
+  function goToJournal() {
     navigate(`/journals/${journal.id}`);
   }
 };

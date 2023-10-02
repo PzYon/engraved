@@ -32,7 +32,7 @@ export class ScrapsJournalType implements IJournalType {
 
   getEntriesTableColumns(): IEntriesTableColumnDefinition[] {
     throw new Error(
-      "getMeasurementsTableColumns is currently not supported for Scraps.",
+      "getEntriesTableColumns is currently not supported for Scraps.",
     );
   }
 

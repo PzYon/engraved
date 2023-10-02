@@ -3,7 +3,7 @@ import { ServerApi } from "../../ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { queryKeysFactory } from "../queryKeysFactory";
 
-export const useMoveMeasurementMutation = (
+export const useMoveEntryMutation = (
   entryId: string,
   journalId: string,
   onSaved?: () => void,
@@ -13,20 +13,20 @@ export const useMoveMeasurementMutation = (
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.moveMeasurement(entryId, journalId),
+    mutationKey: queryKeysFactory.moveEntry(entryId, journalId),
 
-    mutationFn: async (variables: { targetMetricId: string }) => {
-      await ServerApi.moveEntry(entryId, variables.targetMetricId);
+    mutationFn: async (variables: { targetJournalId: string }) => {
+      await ServerApi.moveEntry(entryId, variables.targetJournalId);
     },
 
     onSuccess: async (_, variables) => {
       setAppAlert({
-        title: `Successfully moved measurement.`,
+        title: `Successfully moved entry.`,
         type: "success",
       });
 
       await queryClient.invalidateQueries(
-        queryKeysFactory.journal(variables.targetMetricId),
+        queryKeysFactory.journal(variables.targetJournalId),
       );
 
       await queryClient.invalidateQueries(queryKeysFactory.journal(journalId));

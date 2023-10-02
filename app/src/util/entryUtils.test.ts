@@ -1,4 +1,4 @@
-import { hasValues } from "./MeasurementUtil";
+import { hasValues } from "./entryUtils";
 
 describe("hasValues", () => {
   it("match (0 selected values)", () => {

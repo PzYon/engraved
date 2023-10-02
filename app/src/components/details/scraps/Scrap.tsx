@@ -49,7 +49,7 @@ export const Scrap: React.FC<{
 
   const domElementRef = useRef<HTMLDivElement>();
 
-  const upsertMeasurementMutation = useUpsertEntryMutation(
+  const upsertEntryMutation = useUpsertEntryMutation(
     currentScrap.parentId,
     JournalType.Scraps,
     currentScrap.id,
@@ -188,7 +188,7 @@ export const Scrap: React.FC<{
       return;
     }
 
-    await upsertMeasurementMutation.mutateAsync({
+    await upsertEntryMutation.mutateAsync({
       command: {
         id: currentScrap?.id,
         scrapType: currentScrap.scrapType,

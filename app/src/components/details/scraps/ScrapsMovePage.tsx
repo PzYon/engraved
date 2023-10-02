@@ -11,7 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useMoveMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useMoveMeasurementMutation";
+import { useMoveEntryMutation } from "../../../serverApi/reactQuery/mutations/useMoveEntryMutation";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { usePageContext } from "../../layout/pages/PageContext";
@@ -29,14 +29,14 @@ export const ScrapsMovePage: React.FC = () => {
 
   const { entries } = useJournalContext();
 
-  const [targetMetricId, setTargetMetricId] = useState<string>(undefined);
+  const [targetJournalId, setTargetJournalId] = useState<string>(undefined);
   const [searchText, setSearchText] = useState("");
 
   const navigate = useNavigate();
 
   const { entryId, journalId } = useParams();
-  const mutation = useMoveMeasurementMutation(entryId, journalId, () =>
-    navigate(`/journals/${targetMetricId}`),
+  const mutation = useMoveEntryMutation(entryId, journalId, () =>
+    navigate(`/journals/${targetJournalId}`),
   );
 
   useEffect(() => setSubTitle("Move scrap to..."), []);
@@ -57,13 +57,13 @@ export const ScrapsMovePage: React.FC = () => {
             {journals
               .filter((m) => m.id !== journalId)
               .map((m) => {
-                const isChecked = targetMetricId === m.id;
+                const isChecked = targetJournalId === m.id;
                 return (
                   <ListItem key={m.id} sx={{ padding: 0 }}>
                     <ListItemButton
                       role={undefined}
                       onClick={() => {
-                        setTargetMetricId(isChecked ? undefined : m.id);
+                        setTargetJournalId(isChecked ? undefined : m.id);
                       }}
                       dense
                     >
@@ -84,13 +84,13 @@ export const ScrapsMovePage: React.FC = () => {
         ) : null}
       </PageSection>
 
-      {targetMetricId ? (
+      {targetJournalId ? (
         <PageSection>
           <PageFormButtonContainer style={{ paddingTop: 0 }}>
             <Button
               variant="contained"
               onClick={() => {
-                mutation.mutate({ targetMetricId: targetMetricId });
+                mutation.mutate({ targetJournalId: targetJournalId });
               }}
             >
               Move

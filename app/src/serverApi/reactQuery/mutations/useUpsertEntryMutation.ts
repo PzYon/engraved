@@ -21,7 +21,7 @@ export const useUpsertEntryMutation = (
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.updateMeasurement(journalId, entryId),
+    mutationKey: queryKeysFactory.updateEntries(journalId, entryId),
 
     mutationFn: async (variables: IVariables) => {
       await ServerApi.upsertEntry(variables.command, journalType.toLowerCase());
@@ -29,7 +29,7 @@ export const useUpsertEntryMutation = (
 
     onSuccess: async (_: unknown, variables: IVariables) => {
       setAppAlert({
-        title: `${entryId ? "Updated" : "Added"} measurement`,
+        title: `${entryId ? "Updated" : "Added"} entry`,
         type: "success",
       });
 
@@ -56,13 +56,13 @@ export const useUpsertEntryMutation = (
   function updateExistingEntryInCache(command: IUpsertEntryCommand) {
     queryClient.setQueryData(
       queryKeysFactory.entries(journalId),
-      (measurements: IEntry[]) => {
-        if (!measurements) {
-          return measurements;
+      (entries: IEntry[]) => {
+        if (!entries) {
+          return entries;
         }
 
-        return measurements.map((m) =>
-          m.id === entryId ? createCacheEntry(m, command) : m,
+        return entries.map((e) =>
+          e.id === entryId ? createCacheEntry(e, command) : e,
         );
       },
     );

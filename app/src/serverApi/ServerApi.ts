@@ -130,7 +130,7 @@ export class ServerApi {
     return await ServerApi.executeRequest("/journals", "POST", payload);
   }
 
-  static async editMetric(
+  static async editJournal(
     journalId: string,
     name: string,
     description: string,
@@ -157,7 +157,7 @@ export class ServerApi {
     return await ServerApi.executeRequest("/journals/", "PUT", payload);
   }
 
-  static async deleteMetric(journalId: string): Promise<unknown> {
+  static async deleteJournal(journalId: string): Promise<unknown> {
     return await ServerApi.executeRequest(`/journals/${journalId}/`, "DELETE");
   }
 

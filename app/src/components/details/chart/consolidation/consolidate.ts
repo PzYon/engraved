@@ -7,19 +7,19 @@ import { differenceInMinutes } from "date-fns";
 import { IGaugeEntry } from "../../../../serverApi/IGaugeEntry";
 
 export function consolidate(
-  measurements: IEntry[],
+  entries: IEntry[],
   groupByTime: GroupByTime,
 ): IConsolidatedEntries[] {
-  const valuesByGroupKey = measurements.reduce(
-    (previousValue: Record<string, IEntry[]>, measurement: IEntry) => {
-      const key = ConsolidationKey.build(measurement.dateTime, groupByTime);
+  const valuesByGroupKey = entries.reduce(
+    (previousValue: Record<string, IEntry[]>, entry: IEntry) => {
+      const key = ConsolidationKey.build(entry.dateTime, groupByTime);
       const keyAsString = key.serialize();
 
       if (!previousValue[keyAsString]) {
         previousValue[keyAsString] = [];
       }
 
-      previousValue[keyAsString].push(measurement);
+      previousValue[keyAsString].push(entry);
 
       return previousValue;
     },
@@ -27,40 +27,40 @@ export function consolidate(
   );
 
   return Object.keys(valuesByGroupKey).map((keyAsString) => {
-    const measurements = valuesByGroupKey[keyAsString];
+    const entries = valuesByGroupKey[keyAsString];
 
     return {
-      value: measurements
+      value: entries
         .map(getValue)
         .reduce((total, current) => total + current, 0),
       groupKey: ConsolidationKey.deserialize(keyAsString),
-      entries: measurements,
+      entries: entries,
     };
   });
 }
 
 export function getValue(m: IEntry) {
-  // at the moment we use the number of measurements as
+  // at the moment we use the number of entries as
   // this is only called when counter and there the value
   // is always one.
   // i guess that's correct, however this should also be
   // possible for other journal types i suppose?
 
-  const timerMeasurement = m as ITimerEntry;
-  if (timerMeasurement.startDate) {
-    return getTimerMeasurementValue(timerMeasurement);
+  const timerEntry = m as ITimerEntry;
+  if (timerEntry.startDate) {
+    return getTimerEntryValue(timerEntry);
   }
 
   return (m as IGaugeEntry).value ?? 1;
 }
 
-export function getTimerMeasurementValue(timerMeasurement: ITimerEntry) {
-  if (!timerMeasurement.startDate) {
+export function getTimerEntryValue(timerEntry: ITimerEntry) {
+  if (!timerEntry.startDate) {
     return 0;
   }
 
   return differenceInMinutes(
-    timerMeasurement.endDate ? new Date(timerMeasurement.endDate) : new Date(),
-    new Date(timerMeasurement.startDate),
+    timerEntry.endDate ? new Date(timerEntry.endDate) : new Date(),
+    new Date(timerEntry.startDate),
   );
 }

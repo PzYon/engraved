@@ -9,11 +9,11 @@ export const useDeleteJournalMutation = (journalId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.deleteMetric(journalId),
+    mutationKey: queryKeysFactory.deleteJournal(journalId),
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mutationFn: async (_: { onSuccess: () => Promise<void> }) =>
-      await ServerApi.deleteMetric(journalId),
+      await ServerApi.deleteJournal(journalId),
 
     onSuccess: async (_, variables) => {
       await variables.onSuccess();

@@ -9,7 +9,7 @@ export const useEditJournalMutation = (journalId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.editMetric(journalId),
+    mutationKey: queryKeysFactory.editJournal(journalId),
 
     mutationFn: async (variables: {
       journal: IJournal;
@@ -17,7 +17,7 @@ export const useEditJournalMutation = (journalId: string) => {
     }) => {
       const journal = variables.journal;
 
-      await ServerApi.editMetric(
+      await ServerApi.editJournal(
         journalId,
         journal.name,
         journal.description,

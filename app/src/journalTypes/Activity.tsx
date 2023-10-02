@@ -27,7 +27,7 @@ export const Activity: React.FC<{
           {
             key: "name",
             node: <Link to={`/journals/${journal.id}`}>{journal.name}</Link>,
-            label: "Metric",
+            label: "Journal",
           },
           {
             key: "date",

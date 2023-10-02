@@ -5,7 +5,7 @@ import { ServerApi } from "../../ServerApi";
 import { IJournal } from "../../IJournal";
 
 export const useActiveEntryQuery = (journal: IJournal) => {
-  const { data: measurement } = useQuery({
+  const { data: entry } = useQuery({
     cacheTime: 0,
 
     queryKey: queryKeysFactory.activeEntry(journal.id, journal.type),
@@ -16,5 +16,5 @@ export const useActiveEntryQuery = (journal: IJournal) => {
         : Promise.resolve(null),
   });
 
-  return measurement;
+  return entry;
 };

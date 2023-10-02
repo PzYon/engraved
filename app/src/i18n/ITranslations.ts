@@ -16,8 +16,6 @@ export interface ITranslations {
   label_journalDescription: string;
   label_journalName: string;
   label_journalType: string;
-  tab_entries: string;
-  tab_summary: string;
   create: string;
   add: string;
   edit: string;

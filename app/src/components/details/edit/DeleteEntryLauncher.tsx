@@ -4,7 +4,7 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { useDeleteMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useDeleteMeasurementMutation";
+import { useDeleteEntryMutation } from "../../../serverApi/reactQuery/mutations/useDeleteEntryMutation";
 import { DeleteButtons } from "../../common/DeleteButtons";
 import { JournalType } from "../../../serverApi/JournalType";
 
@@ -17,10 +17,7 @@ export const DeleteEntryLauncher: React.FC<{
 
   const navigate = useNavigate();
 
-  const deleteMeasurementMutation = useDeleteMeasurementMutation(
-    journal.id,
-    entryId,
-  );
+  const deleteEntryMutation = useDeleteEntryMutation(journal.id, entryId);
 
   useEffect(() => {
     renderDialog({
@@ -35,7 +32,7 @@ export const DeleteEntryLauncher: React.FC<{
             <DeleteButtons
               entityType={"entry"}
               requiresConfirmation={journal.type === JournalType.Scraps}
-              onDelete={() => deleteMeasurement(closeDialog)}
+              onDelete={() => deleteEntry(closeDialog)}
               onCancel={closeDialog}
             />
           </>
@@ -49,8 +46,8 @@ export const DeleteEntryLauncher: React.FC<{
 
   return null;
 
-  function deleteMeasurement(closeDialog: () => void) {
-    deleteMeasurementMutation.mutate();
+  function deleteEntry(closeDialog: () => void) {
+    deleteEntryMutation.mutate();
 
     if (onDeleted) {
       onDeleted();

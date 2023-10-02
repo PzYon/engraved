@@ -11,18 +11,14 @@ export function createDataSets(
   groupByTime: GroupByTime,
   attributeKey: string,
 ) {
-  return getMeasurementsPerAttribute(
-    allEntries,
-    journal.attributes,
-    attributeKey,
-  )
+  return getEntriesPerAttribute(allEntries, journal.attributes, attributeKey)
     .filter((entriesByAttribute) => entriesByAttribute.length)
     .map((entries) =>
-      measurementsToDataSet(entries, journal, groupByTime, attributeKey),
+      entriesToDataSet(entries, journal, groupByTime, attributeKey),
     );
 }
 
-function measurementsToDataSet(
+function entriesToDataSet(
   entries: IEntry[],
   journal: IJournal,
   groupByTime: GroupByTime,
@@ -41,14 +37,14 @@ function measurementsToDataSet(
   };
 }
 
-function getMeasurementsPerAttribute(
+function getEntriesPerAttribute(
   allEntries: IEntry[],
   journalAttributes: IJournalAttributes,
   attributeKey: string,
 ) {
   const allValueKeys = [
     ...Object.keys(journalAttributes[attributeKey]?.values || {}),
-    null, // null is for measurements without a flag
+    null, // null is for entries without a flag
   ];
 
   return allValueKeys.map((valueKey) =>

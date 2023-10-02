@@ -12,7 +12,7 @@ export const useEntriesQuery = (
 ) => {
   const { setAppAlert } = useAppContext();
 
-  const { data: measurements } = useQuery({
+  const { data: entries } = useQuery({
     queryKey: queryKeysFactory.entries(
       journalId,
       dateConditions,
@@ -26,12 +26,12 @@ export const useEntriesQuery = (
 
     onError: (e: ApiError) => {
       setAppAlert({
-        title: "Error loading measurements",
+        title: "Error loading entries",
         message: e.message,
         type: "error",
       });
     },
   });
 
-  return measurements;
+  return entries;
 };

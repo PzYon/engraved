@@ -16,11 +16,11 @@ export const queryKeysFactory = {
     return [journals, "add"];
   },
 
-  editMetric(journalId: string) {
+  editJournal(journalId: string) {
     return [journals, journalId, "edit"];
   },
 
-  deleteMetric(journalId: string) {
+  deleteJournal(journalId: string) {
     return [journals, journalId, "delete"];
   },
 
@@ -41,15 +41,15 @@ export const queryKeysFactory = {
     ];
   },
 
-  updateMeasurement(journalId: string, entryId: string) {
+  updateEntries(journalId: string, entryId: string) {
     return [journals, journalId, "entry", "update", entryId];
   },
 
-  deleteMeasurement(journalId: string, entryId: string) {
+  deleteEntry(journalId: string, entryId: string) {
     return [journals, journalId, "entry", "delete", entryId];
   },
 
-  moveMeasurement(entryId: string, journalId: string) {
+  moveEntry(entryId: string, journalId: string) {
     return [journals, journalId, entryId];
   },
 
