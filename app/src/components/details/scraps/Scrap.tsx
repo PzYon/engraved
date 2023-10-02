@@ -5,19 +5,19 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { Button, styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
-import { IUpsertScrapsMeasurementCommand } from "../../../serverApi/commands/IUpsertScrapsMeasurementCommand";
+import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
-import { MetricType } from "../../../serverApi/MetricType";
+import { JournalType } from "../../../serverApi/JournalType";
 import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
 import { Wrapper } from "../../common/wrappers/Wrapper";
 
 export const Scrap: React.FC<{
-  scrap: IScrapMeasurement;
+  scrap: IScrapEntry;
   hideDate?: boolean;
   hideActions?: boolean;
   onSuccess?: () => void;
@@ -50,8 +50,8 @@ export const Scrap: React.FC<{
   const domElementRef = useRef<HTMLDivElement>();
 
   const upsertMeasurementMutation = useUpsertMeasurementMutation(
-    currentScrap.metricId,
-    MetricType.Scraps,
+    currentScrap.parentId,
+    JournalType.Scraps,
     currentScrap.id,
   );
 
@@ -195,9 +195,9 @@ export const Scrap: React.FC<{
         notes: notes,
         title: title,
         metricAttributeValues: {},
-        metricId: currentScrap.metricId,
+        metricId: currentScrap.parentId,
         dateTime: new Date(),
-      } as IUpsertScrapsMeasurementCommand,
+      } as IUpsertScrapsEntryCommand,
     });
 
     onSuccess?.();

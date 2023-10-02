@@ -3,5 +3,5 @@ export interface IUser {
   name: string;
   displayName?: string;
   imageUrl?: string;
-  favoriteMetricIds?: string[];
+  favoriteJournalIds?: string[];
 }

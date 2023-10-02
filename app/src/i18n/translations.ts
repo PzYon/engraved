@@ -17,7 +17,7 @@ export const translations: ITranslations = {
   label_chartType: "Chart type",
   label_metricDescription: "Description",
   label_metricName: "Name",
-  label_metricType: "Metric Type",
+  label_journalType: "Metric Type",
   tab_measurements: "Measurements",
   tab_summary: "Summary",
   create: "Create",

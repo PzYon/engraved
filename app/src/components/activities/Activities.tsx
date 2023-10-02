@@ -1,14 +1,14 @@
 import React from "react";
 import { useActivitiesQuery } from "../../serverApi/reactQuery/queries/useActivitiesQuery";
-import { MetricTypeFactory } from "../../metricTypes/MetricTypeFactory";
-import { IMeasurement } from "../../serverApi/IMeasurement";
+import { JournalTypeFactory } from "../../journalTypes/JournalTypeFactory";
+import { IEntry } from "../../serverApi/IEntry";
 import { PageSection } from "../layout/pages/PageSection";
 import { usePageContext } from "../layout/pages/PageContext";
 import { NoResultsFound } from "../common/search/NoResultsFound";
 
 export const Activities: React.FC = () => {
-  const { searchText, metricTypes } = usePageContext();
-  const activities = useActivitiesQuery(searchText, metricTypes);
+  const { searchText, journalTypes } = usePageContext();
+  const activities = useActivitiesQuery(searchText, journalTypes);
 
   if (!activities) {
     return null;
@@ -26,12 +26,12 @@ export const Activities: React.FC = () => {
     </>
   );
 
-  function renderActivity(measurement: IMeasurement) {
+  function renderActivity(measurement: IEntry) {
     const metric = activities.metrics.find(
-      (a) => a.id === measurement.metricId,
+      (a) => a.id === measurement.parentId,
     );
 
-    return MetricTypeFactory.create(metric.type).getActivity(
+    return JournalTypeFactory.create(metric.type).getActivity(
       metric,
       measurement,
     );

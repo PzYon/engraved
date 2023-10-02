@@ -1,14 +1,14 @@
 import { IThresholdDefinition, ThresholdRow } from "./ThresholdRow";
 import React, { useState } from "react";
-import { IMetric } from "../../../serverApi/IMetric";
-import { IMetricThresholds } from "../../../serverApi/IMetricThresholds";
+import { IJournal } from "../../../serverApi/IJournal";
+import { IJournalThresholds } from "../../../serverApi/IJournalThresholds";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { styled } from "@mui/material";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
 export const EditThresholds: React.FC<{
-  metric: IMetric;
-  onChange: (thresholds: IMetricThresholds) => void;
+  metric: IJournal;
+  onChange: (thresholds: IJournalThresholds) => void;
 }> = ({ metric, onChange }) => {
   const [thresholdDefinitions, setThresholdDefinitions] = useState<
     IThresholdDefinition[]
@@ -82,7 +82,7 @@ export const EditThresholds: React.FC<{
 };
 
 function createDefinitions(
-  thresholds: IMetricThresholds,
+  thresholds: IJournalThresholds,
 ): IThresholdDefinition[] {
   return Object.keys(thresholds).flatMap((attributeKey) => {
     return Object.keys(thresholds[attributeKey]).map((x) => {
@@ -97,8 +97,8 @@ function createDefinitions(
 
 function createThresholds(
   thresholdDefinitions: IThresholdDefinition[],
-): IMetricThresholds {
-  const thresholds: IMetricThresholds = {};
+): IJournalThresholds {
+  const thresholds: IJournalThresholds = {};
 
   for (const definition of thresholdDefinitions) {
     if (!thresholds[definition.attributeKey]) {

@@ -1,18 +1,18 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { MetricsPage } from "../overview/MetricsPage";
-import { MetricPageWrapper } from "../details/MetricPageWrapper";
+import { JournalsPage } from "../overview/JournalsPage";
+import { JournalPageWrapper } from "../details/JournalPageWrapper";
 import { ActivitiesPage } from "../overview/ActivitiesPage";
-import { AddMetricPage } from "../overview/AddMetricPage";
+import { AddJournalPage } from "../overview/AddJournalPage";
 import { SearchPage } from "../search/SearchPage";
 
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/metrics/create" element={<AddMetricPage />} />
-      <Route path="/metrics" element={<MetricsPage />} />
-      <Route path="/" element={<MetricsPage />} />
-      <Route path="/metrics/:metricId/*" element={<MetricPageWrapper />} />
+      <Route path="/journals/create" element={<AddJournalPage />} />
+      <Route path="/journals" element={<JournalsPage />} />
+      <Route path="/" element={<JournalsPage />} />
+      <Route path="/journals/:metricId/*" element={<JournalPageWrapper />} />
       <Route path="/activities" element={<ActivitiesPage />} />
       <Route path="/search" element={<SearchPage />} />
     </Routes>

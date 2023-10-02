@@ -21,11 +21,11 @@ import {
   SwitchAccessShortcutOutlined,
 } from "@mui/icons-material";
 import { editActionKey } from "../../overview/getCommonActions";
-import { IMetric } from "../../../serverApi/IMetric";
+import { IJournal } from "../../../serverApi/IJournal";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
-import { renderUpsertMeasurementDialog } from "../../details/add/renderUpsertMeasurementDialog";
-import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
-import { IMeasurement } from "../../../serverApi/IMeasurement";
+import { renderUpsertEntryDialog } from "../../details/add/renderUpsertEntryDialog";
+import { IScrapEntry } from "../../../serverApi/IScrapEntry";
+import { IEntry } from "../../../serverApi/IEntry";
 import { IAppAlert } from "../../errorHandling/AppAlertBar";
 import { IUser } from "../../../serverApi/IUser";
 import { renderAddScrapDialog } from "../../details/add/renderAddScrapDialog";
@@ -67,66 +67,66 @@ export class ActionFactory {
     };
   }
 
-  static goToMetric(metricId: string, enableHotkeys: boolean): IAction {
+  static goToJournal(journalId: string, enableHotkeys: boolean): IAction {
     return {
       hotkey: enableHotkeys ? "alt+enter" : undefined,
-      key: `go-to-metric-${metricId}`,
-      href: `/metrics/${metricId}`,
+      key: `go-to-journal-${journalId}`,
+      href: `/journals/${journalId}`,
       label: "Go to metric",
       icon: null,
     };
   }
 
-  static newMetric(): IAction {
+  static newJournal(): IAction {
     return {
       hotkey: "alt+n",
-      href: "/metrics/create",
+      href: "/journals/create",
       icon: <AddOutlined fontSize="small" />,
       label: "Add Metric",
       key: "add_metric",
     };
   }
 
-  static editMetric(metricId: string, enableHotkey: boolean): IAction {
+  static editJournal(journalId: string, enableHotkey: boolean): IAction {
     return {
       hotkey: enableHotkey ? "alt+e" : undefined,
       key: editActionKey,
       label: "Edit",
       icon: <EditOutlined fontSize="small" />,
-      href: `/metrics/${metricId}/edit`,
+      href: `/journals/${journalId}/edit`,
     };
   }
 
-  static editMetricPermissions(metricId: string): IAction {
+  static editJournalPermissions(journalId: string): IAction {
     return {
       key: "permissions",
       label: "Permissions",
       icon: <ShareOutlined fontSize="small" />,
-      href: `/metrics/${metricId}/permissions`,
+      href: `/journals/${journalId}/permissions`,
     };
   }
 
-  static deleteMetric(metricId: string, enableHotkeys: boolean): IAction {
+  static deleteJournal(journalId: string, enableHotkeys: boolean): IAction {
     return {
       hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "delete",
       label: "Delete",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `/metrics/${metricId}/delete`,
+      href: `/journals/${journalId}/delete`,
     };
   }
 
-  static addMeasurement(
-    metric: IMetric,
+  static addEntry(
+    journal: IJournal,
     renderDialog: (dialogProps: IDialogProps) => void,
     enableHotkey: boolean,
   ): IAction {
     return {
       hotkey: enableHotkey ? "alt+a" : undefined,
-      key: "add_measurement",
-      label: "Add Measurement",
+      key: "add_entry",
+      label: "Add Entry",
       icon: <AddOutlined fontSize="small" />,
-      onClick: () => renderUpsertMeasurementDialog(metric, renderDialog),
+      onClick: () => renderUpsertEntryDialog(journal, renderDialog),
     };
   }
 
@@ -194,32 +194,32 @@ export class ActionFactory {
     };
   }
 
-  static moveToAnotherScrap(scrap: IScrapMeasurement): IAction {
+  static moveToAnotherScrap(scrap: IScrapEntry): IAction {
     return {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      href: `/metrics/${scrap.metricId}/measurements/${scrap.id}/move`,
+      href: `/journals/${scrap.parentId}/entries/${scrap.id}/move`,
     };
   }
 
-  static deleteMeasurement(measurement: IMeasurement): IAction {
+  static deleteEntry(entry: IEntry): IAction {
     return {
       hotkey: "alt+d",
       key: "delete",
       label: "Delete",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `/metrics/${measurement.metricId}/measurements/${measurement.id}/delete`,
+      href: `/journals/${entry.parentId}/entries/${entry.id}/delete`,
     };
   }
 
-  static editMeasurement(measurement: IMeasurement): IAction {
+  static editEntry(entry: IEntry): IAction {
     return {
       hotkey: "alt+e",
       key: "edit",
       label: "Edit",
       icon: <EditOutlined fontSize="small" />,
-      href: `/metrics/${measurement.metricId}/measurements/${measurement.id}/edit`,
+      href: `/journals/${entry.parentId}/entries/${entry.id}/edit`,
     };
   }
 
@@ -264,7 +264,7 @@ export class ActionFactory {
       sx: { color: "common.white", mr: 1 },
       onClick: () =>
         renderAddScrapDialog(
-          user.favoriteMetricIds[0],
+          user.favoriteJournalIds[0],
           renderDialog,
           "Add Quick Scrap",
         ),

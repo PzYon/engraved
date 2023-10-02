@@ -1,7 +1,7 @@
-import { IMeasurement } from "./IMeasurement";
-import { IMetric } from "./IMetric";
+import { IEntry } from "./IEntry";
+import { IJournal } from "./IJournal";
 
 export interface IGetActivitiesQueryResult {
-  metrics: IMetric[];
-  measurements: IMeasurement[];
+  metrics: IJournal[];
+  measurements: IEntry[];
 }

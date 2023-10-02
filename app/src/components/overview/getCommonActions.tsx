@@ -1,13 +1,13 @@
-import { IMetric } from "../../serverApi/IMetric";
+import { IJournal } from "../../serverApi/IJournal";
 import { IDialogProps } from "../layout/dialogs/DialogContext";
-import { MetricType } from "../../serverApi/MetricType";
+import { JournalType } from "../../serverApi/JournalType";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 
 export const editActionKey = "edit";
 
 export function getCommonActions(
-  metric: IMetric,
+  metric: IJournal,
   enableHotkeys: boolean,
   renderDialog?: (dialogProps: IDialogProps) => void,
 ): IAction[] {
@@ -17,16 +17,14 @@ export function getCommonActions(
 
   const actions = [];
 
-  if (metric.type !== MetricType.Scraps) {
-    actions.push(
-      ActionFactory.addMeasurement(metric, renderDialog, enableHotkeys),
-    );
+  if (metric.type !== JournalType.Scraps) {
+    actions.push(ActionFactory.addEntry(metric, renderDialog, enableHotkeys));
   }
 
   actions.push(
-    ActionFactory.editMetric(metric.id, enableHotkeys),
-    ActionFactory.editMetricPermissions(metric.id),
-    ActionFactory.deleteMetric(metric.id, enableHotkeys),
+    ActionFactory.editJournal(metric.id, enableHotkeys),
+    ActionFactory.editJournalPermissions(metric.id),
+    ActionFactory.deleteJournal(metric.id, enableHotkeys),
   );
 
   return actions;

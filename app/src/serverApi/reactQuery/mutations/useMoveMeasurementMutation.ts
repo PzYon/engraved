@@ -16,7 +16,7 @@ export const useMoveMeasurementMutation = (
     mutationKey: queryKeysFactory.moveMeasurement(measurementId, metricId),
 
     mutationFn: async (variables: { targetMetricId: string }) => {
-      await ServerApi.moveMeasurement(measurementId, variables.targetMetricId);
+      await ServerApi.moveEntry(measurementId, variables.targetMetricId);
     },
 
     onSuccess: async (_, variables) => {
@@ -26,10 +26,10 @@ export const useMoveMeasurementMutation = (
       });
 
       await queryClient.invalidateQueries(
-        queryKeysFactory.metric(variables.targetMetricId),
+        queryKeysFactory.journal(variables.targetMetricId),
       );
 
-      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
+      await queryClient.invalidateQueries(queryKeysFactory.journal(metricId));
 
       onSaved?.();
     },
@@ -44,7 +44,7 @@ export const useMoveMeasurementMutation = (
 
     onSettled: async () => {
       await queryClient.invalidateQueries(
-        queryKeysFactory.metrics(undefined, undefined),
+        queryKeysFactory.journals(undefined, undefined),
       );
     },
   });

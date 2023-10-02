@@ -1,17 +1,17 @@
-import { IMeasurement } from "../../../../serverApi/IMeasurement";
-import { IMetric } from "../../../../serverApi/IMetric";
+import { IEntry } from "../../../../serverApi/IEntry";
+import { IJournal } from "../../../../serverApi/IJournal";
 import { consolidate, getValue } from "../consolidation/consolidate";
 import { GroupByTime } from "../consolidation/GroupByTime";
-import { ITransformedMeasurement } from "./ITransformedMeasurement";
-import { MetricTypeFactory } from "../../../../metricTypes/MetricTypeFactory";
+import { ITransformedEntry } from "./ITransformedEntry";
+import { JournalTypeFactory } from "../../../../journalTypes/JournalTypeFactory";
 
 export function transform(
-  measurements: IMeasurement[],
-  metric: IMetric,
+  measurements: IEntry[],
+  metric: IJournal,
   groupBy: GroupByTime,
-): ITransformedMeasurement[] {
+): ITransformedEntry[] {
   if (
-    MetricTypeFactory.create(metric.type).isGroupable &&
+    JournalTypeFactory.create(metric.type).isGroupable &&
     groupBy !== GroupByTime.None
   ) {
     return consolidate(measurements, groupBy).map((m) => {
@@ -21,7 +21,7 @@ export function transform(
       return {
         x: new Date(m.groupKey.year, month, day),
         y: m.value,
-        measurements: m.measurements,
+        measurements: m.entries,
       };
     });
   }

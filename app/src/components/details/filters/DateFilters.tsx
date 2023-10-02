@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DateSelector } from "../../common/DateSelector";
-import { useMetricContext } from "../MetricDetailsContext";
+import { useJournalContext } from "../JournalDetailsContext";
 import { styled } from "@mui/material";
 import {
   createDateConditions,
@@ -25,7 +25,7 @@ export const getDefaultDateConditions = () => {
 };
 
 export const DateFilters: React.FC = () => {
-  const { dateConditions, setDateConditions } = useMetricContext();
+  const { dateConditions, setDateConditions } = useJournalContext();
 
   const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
 

@@ -1,18 +1,18 @@
-import { IMetric } from "../../../serverApi/IMetric";
+import { IJournal } from "../../../serverApi/IJournal";
 import React from "react";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { useMetricThresholdsValuesQuery } from "../../../serverApi/reactQuery/queries/useMetricThresholdsValuesQuery";
+import { useJournalThresholdsValuesQuery } from "../../../serverApi/reactQuery/queries/useJournalThresholdsValuesQuery";
 
 export const Thresholds: React.FC<{
-  metric: IMetric;
+  journal: IJournal;
   selectedAttributeValues: Record<string, string[]>;
   setSelectedAttributeValues: (
     attributeKey: string,
     attributeValueKeys: string[],
   ) => void;
-}> = ({ metric, selectedAttributeValues, setSelectedAttributeValues }) => {
-  const thresholdValues = useMetricThresholdsValuesQuery(metric.id);
+}> = ({ journal, selectedAttributeValues, setSelectedAttributeValues }) => {
+  const thresholdValues = useJournalThresholdsValuesQuery(journal.id);
 
   if (!thresholdValues) {
     return null;
@@ -26,9 +26,9 @@ export const Thresholds: React.FC<{
         return Object.keys(attributeThresholds).map((valueKey) => {
           const threshold = attributeThresholds[valueKey];
           const attributeName =
-            metric.attributes[attributeKey].name ?? attributeKey;
+            journal.attributes[attributeKey].name ?? attributeKey;
           const valueName =
-            metric.attributes[attributeKey].values[valueKey] ?? valueKey;
+            journal.attributes[attributeKey].values[valueKey] ?? valueKey;
 
           const currentSelectedValue =
             selectedAttributeValues[attributeKey]?.[0];

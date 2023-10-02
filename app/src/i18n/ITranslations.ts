@@ -15,7 +15,7 @@ export interface ITranslations {
   label_chartType: string;
   label_metricDescription: string;
   label_metricName: string;
-  label_metricType: string;
+  label_journalType: string;
   tab_measurements: string;
   tab_summary: string;
   create: string;

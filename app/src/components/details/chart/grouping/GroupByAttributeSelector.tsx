@@ -1,5 +1,5 @@
 import React from "react";
-import { IMetricAttributes } from "../../../../serverApi/IMetricAttributes";
+import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
 import {
   FormControl,
   InputLabel,
@@ -10,7 +10,7 @@ import {
 
 export const GroupByAttributeSelector: React.FC<{
   selectedAttributeKey: string;
-  attributes: IMetricAttributes;
+  attributes: IJournalAttributes;
   onChange: (attributeKey: string) => void;
   label: string;
 }> = ({ selectedAttributeKey, attributes, onChange, label }) => (

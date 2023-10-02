@@ -1,5 +1,5 @@
-import { IMeasurement } from "../../../serverApi/IMeasurement";
-import { IMetric } from "../../../serverApi/IMetric";
+import { IEntry } from "../../../serverApi/IEntry";
+import { IJournal } from "../../../serverApi/IJournal";
 import { GroupByTime } from "./consolidation/GroupByTime";
 import { createDataSets } from "./dataSets/createDataSets";
 import { IDataSet } from "./dataSets/IDataSet";
@@ -7,16 +7,16 @@ import { ChartProps } from "react-chartjs-2";
 import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
 import { getCoefficient, getColorShades } from "../../../util/utils";
-import { MetricTypeFactory } from "../../../metricTypes/MetricTypeFactory";
-import { ITransformedMeasurement } from "./transformation/ITransformedMeasurement";
-import { MetricType } from "../../../serverApi/MetricType";
+import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
+import { ITransformedEntry } from "./transformation/ITransformedEntry";
+import { JournalType } from "../../../serverApi/JournalType";
 import { format } from "date-fns";
-import { IMetricType } from "../../../metricTypes/IMetricType";
-import { IMetricUiSettings } from "../edit/MetricUiSettings";
+import { IJournalType } from "../../../journalTypes/IJournalType";
+import { IJournalUiSettings } from "../edit/JournalUiSettings";
 
 export const createChart = (
-  measurements: IMeasurement[],
-  metric: IMetric,
+  entries: IEntry[],
+  journal: IJournal,
   groupByTime: GroupByTime,
   attributeKey: string,
   toggleAttributeValue: (
@@ -29,9 +29,9 @@ export const createChart = (
   switch (type) {
     case "bar":
       return createBarChart(
-        measurements,
+        entries,
         color,
-        metric,
+        journal,
         toggleAttributeValue,
         groupByTime,
         attributeKey,
@@ -39,22 +39,16 @@ export const createChart = (
 
     case "line":
       return createLineChart(
-        measurements,
+        entries,
         color,
-        metric,
+        journal,
         toggleAttributeValue,
         groupByTime,
         attributeKey,
       );
 
     case "doughnut":
-      return createPieChart(
-        measurements,
-        color,
-        metric,
-        groupByTime,
-        attributeKey,
-      );
+      return createPieChart(entries, color, journal, groupByTime, attributeKey);
 
     default:
       throw new Error(`Chart type '${type}' is not supported.`);
@@ -62,9 +56,9 @@ export const createChart = (
 };
 
 function createLineChart(
-  measurements: IMeasurement[],
+  entries: IEntry[],
   color: string,
-  metric: IMetric,
+  journal: IJournal,
   toggleAttributeValue: (
     attributeKey: string,
     attributeValueKey: string,
@@ -75,9 +69,9 @@ function createLineChart(
   // hack: for the moment we create a bar chart and then adjust
   // the relevant properties
   const chart = createBarChart(
-    measurements,
+    entries,
     color,
-    metric,
+    journal,
     toggleAttributeValue,
     groupByTime,
     attributeKey,
@@ -90,15 +84,15 @@ function createLineChart(
 }
 
 function createPieChart(
-  measurements: IMeasurement[],
+  entries: IEntry[],
   color: string,
-  metric: IMetric,
+  journal: IJournal,
   groupByTime: GroupByTime,
   attributeKey: string,
 ): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
-    measurements,
-    metric,
+    entries,
+    journal,
     groupByTime,
     attributeKey,
   );
@@ -139,14 +133,14 @@ function getTooltipTitleFormat(groupByTime: GroupByTime) {
   }
 }
 
-function getTooltipValue(type: IMetricType, value: number): string {
+function getTooltipValue(type: IJournalType, value: number): string {
   return (type.formatTotalValue?.(value) ?? value).toString();
 }
 
 function createBarChart(
-  measurements: IMeasurement[],
+  entries: IEntry[],
   color: string,
-  metric: IMetric,
+  journal: IJournal,
   toggleAttributeValue: (
     attributeKey: string,
     attributeValueKey: string,
@@ -155,8 +149,8 @@ function createBarChart(
   attributeKey: string,
 ): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
-    measurements,
-    metric,
+    entries,
+    journal,
     groupByTime,
     attributeKey,
   );
@@ -170,7 +164,7 @@ function createBarChart(
     };
   });
 
-  const metricType = MetricTypeFactory.create(metric.type);
+  const metricType = JournalTypeFactory.create(journal.type);
 
   return {
     type: "bar",
@@ -182,10 +176,10 @@ function createBarChart(
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const raw = (elements[0].element as unknown as any).$context
-          .raw as ITransformedMeasurement;
+          .raw as ITransformedEntry;
 
         const attributeValues = raw.measurements.map(
-          (m) => m.metricAttributeValues?.[attributeKey],
+          (m) => m.journalAttributeValues?.[attributeKey],
         );
 
         toggleAttributeValue(attributeKey, attributeValues[0][0]);
@@ -199,11 +193,11 @@ function createBarChart(
         },
         y: {
           min:
-            (JSON.parse(metric.customProps.uiSettings) as IMetricUiSettings)
+            (JSON.parse(journal.customProps.uiSettings) as IJournalUiSettings)
               ?.dynamicScales === true
               ? Math.round(
                   Math.min(
-                    ...measurements
+                    ...entries
                       .map((x) => metricType.getValue(x))
                       .filter((x) => x !== 0),
                   ) * 0.95,
@@ -216,11 +210,11 @@ function createBarChart(
                 ? metricType.formatTotalValue?.(value as number) ?? value
                 : value;
             },
-            precision: metricType.type === MetricType.Counter ? 0 : undefined,
+            precision: metricType.type === JournalType.Counter ? 0 : undefined,
           },
           title: {
             display: true,
-            text: metricType.getYAxisLabel(metric),
+            text: metricType.getYAxisLabel(journal),
           },
         },
       },
@@ -231,14 +225,14 @@ function createBarChart(
           callbacks: {
             title: (tooltipItems) => {
               return format(
-                new Date((tooltipItems[0].raw as ITransformedMeasurement).x),
+                new Date((tooltipItems[0].raw as ITransformedEntry).x),
                 getTooltipTitleFormat(groupByTime),
               );
             },
             label: (tooltipItem): string | string[] | void => {
               return getTooltipValue(
                 metricType,
-                (tooltipItem.raw as ITransformedMeasurement).y,
+                (tooltipItem.raw as ITransformedEntry).y,
               );
             },
           },
@@ -287,11 +281,8 @@ function average(ctx: any) {
   }
 
   return (
-    values.reduce(
-      (total: number, currentMeasurement: ITransformedMeasurement) => {
-        return currentMeasurement.y + total;
-      },
-      0,
-    ) / values.length
+    values.reduce((total: number, currentEntry: ITransformedEntry) => {
+      return currentEntry.y + total;
+    }, 0) / values.length
   );
 }

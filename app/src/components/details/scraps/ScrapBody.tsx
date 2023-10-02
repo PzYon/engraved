@@ -2,12 +2,12 @@ import React from "react";
 import { styled, Typography } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
 import { ActionGroup } from "../../common/actions/ActionGroup";
-import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
 
 export const ScrapBody: React.FC<{
-  scrap: IScrapMeasurement;
+  scrap: IScrapEntry;
   hideDate: boolean;
   hideActions: boolean;
   editMode: boolean;
@@ -71,7 +71,7 @@ export const ScrapBody: React.FC<{
     }
 
     if (scrap.id) {
-      allActions.push(ActionFactory.deleteMeasurement(scrap));
+      allActions.push(ActionFactory.deleteEntry(scrap));
     }
 
     return allActions;

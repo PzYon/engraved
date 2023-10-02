@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { IScrapMeasurement } from "../../../../serverApi/IScrapMeasurement";
+import { IScrapEntry } from "../../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../../AppContext";
 import { ScrapBody } from "../ScrapBody";
 import { ScrapMarkdown } from "./ScrapMarkdown";
@@ -7,7 +7,7 @@ import { preloadLazyCodeMirror } from "./MarkdownEditor";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 
 export const ScrapMarkdownBody: React.FC<{
-  scrap: IScrapMeasurement;
+  scrap: IScrapEntry;
   hideDate: boolean;
   hideActions?: boolean;
   editMode: boolean;

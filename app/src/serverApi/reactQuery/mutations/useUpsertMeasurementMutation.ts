@@ -1,18 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
-import { IUpsertMeasurementCommand } from "../../commands/IUpsertMeasurementCommand";
+import { IUpsertEntryCommand } from "../../commands/IUpsertEntryCommand";
 import { ServerApi } from "../../ServerApi";
 import { useAppContext } from "../../../AppContext";
-import { IMeasurement } from "../../IMeasurement";
-import { MetricType } from "../../MetricType";
+import { IEntry } from "../../IEntry";
+import { JournalType } from "../../JournalType";
 
 export interface IVariables {
-  command: IUpsertMeasurementCommand;
+  command: IUpsertEntryCommand;
 }
 
 export const useUpsertMeasurementMutation = (
   metricId: string,
-  metricType: MetricType,
+  metricType: JournalType,
   measurementId?: string,
   onSaved?: () => void,
 ) => {
@@ -24,10 +24,7 @@ export const useUpsertMeasurementMutation = (
     mutationKey: queryKeysFactory.updateMeasurement(metricId, measurementId),
 
     mutationFn: async (variables: IVariables) => {
-      await ServerApi.upsertMeasurement(
-        variables.command,
-        metricType.toLowerCase(),
-      );
+      await ServerApi.upsertEntry(variables.command, metricType.toLowerCase());
     },
 
     onSuccess: async (_: unknown, variables: IVariables) => {
@@ -42,8 +39,8 @@ export const useUpsertMeasurementMutation = (
         updateExistingMeasurementInCache(variables.command);
       }
 
-      await queryClient.invalidateQueries(queryKeysFactory.metric(metricId));
-      await queryClient.invalidateQueries(queryKeysFactory.metrics());
+      await queryClient.invalidateQueries(queryKeysFactory.journal(metricId));
+      await queryClient.invalidateQueries(queryKeysFactory.journals());
       await queryClient.invalidateQueries(queryKeysFactory.activities());
     },
 
@@ -56,12 +53,10 @@ export const useUpsertMeasurementMutation = (
     },
   });
 
-  function updateExistingMeasurementInCache(
-    command: IUpsertMeasurementCommand,
-  ) {
+  function updateExistingMeasurementInCache(command: IUpsertEntryCommand) {
     queryClient.setQueryData(
-      queryKeysFactory.measurements(metricId),
-      (measurements: IMeasurement[]) => {
+      queryKeysFactory.entries(metricId),
+      (measurements: IEntry[]) => {
         if (!measurements) {
           return measurements;
         }
@@ -74,8 +69,8 @@ export const useUpsertMeasurementMutation = (
   }
 
   function createCacheMeasurement(
-    measurement: IMeasurement,
-    command: IUpsertMeasurementCommand,
+    measurement: IEntry,
+    command: IUpsertEntryCommand,
   ) {
     const editedOn = new Date().toString();
     return {

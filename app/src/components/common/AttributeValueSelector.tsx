@@ -6,10 +6,10 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
-import { IMetricAttribute } from "../../serverApi/IMetricAttribute";
+import { IJournalAttribute } from "../../serverApi/IJournalAttribute";
 
 export const AttributeValueSelector: React.FC<{
-  attribute: IMetricAttribute;
+  attribute: IJournalAttribute;
   selectedValue: string;
   onChange: (attributesValues: string[]) => void;
 }> = ({ attribute, selectedValue, onChange }) => {

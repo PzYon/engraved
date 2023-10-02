@@ -1,7 +1,7 @@
 import { GroupByTime } from "../consolidation/GroupByTime";
-import { IMeasurement } from "../../../../serverApi/IMeasurement";
-import { IMetric } from "../../../../serverApi/IMetric";
-import { MetricType } from "../../../../serverApi/MetricType";
+import { IEntry } from "../../../../serverApi/IEntry";
+import { IJournal } from "../../../../serverApi/IJournal";
+import { JournalType } from "../../../../serverApi/JournalType";
 import { createDataSets } from "./createDataSets";
 
 // https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
@@ -9,8 +9,8 @@ jest.mock("../../../../env/envSettings.ts", () => ({}));
 
 describe("createDataSets", () => {
   it("should group by nothing", () => {
-    const metric: IMetric = createMetric();
-    const measurements: IMeasurement[] = createMeasurements();
+    const metric: IJournal = createMetric();
+    const measurements: IEntry[] = createMeasurements();
 
     const dataSets = createDataSets(measurements, metric, GroupByTime.None, "");
 
@@ -19,8 +19,8 @@ describe("createDataSets", () => {
   });
 
   it("should group by attribute key", () => {
-    const metric: IMetric = createMetric();
-    const measurements: IMeasurement[] = createMeasurements();
+    const metric: IJournal = createMetric();
+    const measurements: IEntry[] = createMeasurements();
 
     const dataSets = createDataSets(
       measurements,
@@ -54,7 +54,7 @@ function createMetric() {
         },
       },
     },
-    type: MetricType.Counter,
+    type: JournalType.Counter,
     name: "Name",
   };
 }

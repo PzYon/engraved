@@ -1,6 +1,6 @@
 import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
 import React, { useEffect, useState } from "react";
-import { IMetric } from "../../../serverApi/IMetric";
+import { IJournal } from "../../../serverApi/IJournal";
 import { styled, TextField } from "@mui/material";
 import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 
@@ -12,7 +12,7 @@ export interface IThresholdDefinition {
 }
 
 export const ThresholdRow: React.FC<{
-  metric: IMetric;
+  metric: IJournal;
   definition: IThresholdDefinition;
   onChange: (definition: IThresholdDefinition) => void;
   styles: React.CSSProperties;

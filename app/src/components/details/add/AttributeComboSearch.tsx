@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { IMetricAttributeValues } from "../../../serverApi/IMetricAttributeValues";
+import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeValues";
 import { Autocomplete, Chip, MenuItem, TextField } from "@mui/material";
 import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResult";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { AttributeValues } from "../../common/AttributeValues";
-import { IMetric } from "../../../serverApi/IMetric";
+import { IJournal } from "../../../serverApi/IJournal";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let timer: any;
@@ -12,8 +12,8 @@ let timer: any;
 let lastLoadedSearchText = "";
 
 export const AttributeComboSearch: React.FC<{
-  metric: IMetric;
-  onChange: (attributesValues: IMetricAttributeValues) => void;
+  metric: IJournal;
+  onChange: (attributesValues: IJournalAttributeValues) => void;
 }> = ({ metric, onChange }) => {
   const [options, setOptions] = useState<IAttributeSearchResult[]>([]);
 
@@ -83,7 +83,7 @@ export const AttributeComboSearch: React.FC<{
 
     timer = setTimeout(() => {
       lastLoadedSearchText = searchText;
-      ServerApi.searchMetricAttributes(metric.id, searchText).then(setOptions);
+      ServerApi.searchJournalAttributes(metric.id, searchText).then(setOptions);
     }, 300);
   }
 };

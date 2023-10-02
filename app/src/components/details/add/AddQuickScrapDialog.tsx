@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import { ScrapType } from "../../../serverApi/IScrapMeasurement";
-import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
+import { ScrapType } from "../../../serverApi/IScrapEntry";
+import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { ListScrapIcon, MarkdownScrapIcon } from "../scraps/ScrapsViewPage";
 import { Scrap } from "../scraps/Scrap";
 
 export const AddQuickScrapDialog: React.FC<{
   onSuccess?: () => void;
-  metricId: string;
-}> = ({ onSuccess, metricId }) => {
+  journalId: string;
+}> = ({ onSuccess, journalId }) => {
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
 
-  const scrap = ScrapsMetricType.createBlank(metricId, type);
+  const scrap = ScrapsJournalType.createBlank(journalId, type);
 
   return (
     <>

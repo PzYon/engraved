@@ -1,112 +1,113 @@
 import { consolidate } from "./consolidate";
 import { ConsolidationKey } from "./ConsolidationKey";
 import { GroupByTime } from "./GroupByTime";
-import { IGaugeMeasurement } from "../../../../serverApi/ITimerMeasurement";
+
+import { IGaugeEntry } from "../../../../serverApi/IGaugeEntry";
 
 describe("consolidate", () => {
-  it("should group by month (1 measurement)", () => {
-    const measurements: IGaugeMeasurement[] = [
+  it("should group by month (1 entry)", () => {
+    const entries: IGaugeEntry[] = [
       { value: 23, dateTime: createDate(2020, 1, 1) },
     ];
 
-    const grouped = consolidate(measurements, GroupByTime.Month);
+    const grouped = consolidate(entries, GroupByTime.Month);
 
     expect(grouped.length).toBe(1);
 
-    const groupedMeasurement = grouped[0];
-    expect(groupedMeasurement.measurements.length).toBe(1);
-    expect(groupedMeasurement.value).toBe(23);
-    assertGroupKey(groupedMeasurement.groupKey, 2020, 1, 0);
+    const groupedEntry = grouped[0];
+    expect(groupedEntry.entries.length).toBe(1);
+    expect(groupedEntry.value).toBe(23);
+    assertGroupKey(groupedEntry.groupKey, 2020, 1, 0);
   });
 
-  it("should group by month (2 measurements)", () => {
-    const measurements: IGaugeMeasurement[] = [
+  it("should group by month (2 entries)", () => {
+    const entries: IGaugeEntry[] = [
       { value: 20, dateTime: createDate(2020, 1, 1) },
       { value: 10, dateTime: createDate(2020, 1, 2) },
     ];
 
-    const grouped = consolidate(measurements, GroupByTime.Month);
+    const grouped = consolidate(entries, GroupByTime.Month);
 
     expect(grouped.length).toBe(1);
 
-    const groupedMeasurement = grouped[0];
-    expect(groupedMeasurement.measurements.length).toBe(2);
-    expect(groupedMeasurement.value).toBe(30);
-    assertGroupKey(groupedMeasurement.groupKey, 2020, 1, 0);
+    const groupedEntry = grouped[0];
+    expect(groupedEntry.entries.length).toBe(2);
+    expect(groupedEntry.value).toBe(30);
+    assertGroupKey(groupedEntry.groupKey, 2020, 1, 0);
   });
 
-  it("should group by month (2 measurements, different months)", () => {
-    const measurements: IGaugeMeasurement[] = [
+  it("should group by month (2 entries, different months)", () => {
+    const entries: IGaugeEntry[] = [
       { value: 20, dateTime: createDate(2020, 1, 1) },
       { value: 10, dateTime: createDate(2020, 2, 1) },
     ];
 
-    const grouped = consolidate(measurements, GroupByTime.Month);
+    const grouped = consolidate(entries, GroupByTime.Month);
 
     expect(grouped.length).toBe(2);
 
-    const firstGroupedMeasurement = grouped[0];
-    expect(firstGroupedMeasurement.measurements.length).toBe(1);
-    expect(firstGroupedMeasurement.value).toBe(20);
-    assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 1, 0);
+    const firstGroupedEntry = grouped[0];
+    expect(firstGroupedEntry.entries.length).toBe(1);
+    expect(firstGroupedEntry.value).toBe(20);
+    assertGroupKey(firstGroupedEntry.groupKey, 2020, 1, 0);
 
-    const secondGroupedMeasurement = grouped[1];
-    expect(secondGroupedMeasurement.measurements.length).toBe(1);
-    expect(secondGroupedMeasurement.value).toBe(10);
-    assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 2, 0);
+    const secondGroupedEntry = grouped[1];
+    expect(secondGroupedEntry.entries.length).toBe(1);
+    expect(secondGroupedEntry.value).toBe(10);
+    assertGroupKey(secondGroupedEntry.groupKey, 2020, 2, 0);
   });
 
-  it("should group by month (2 measurements - first and last days of month)", () => {
-    const measurements: IGaugeMeasurement[] = [
+  it("should group by month (2 entries - first and last days of month)", () => {
+    const entries: IGaugeEntry[] = [
       { value: 20, dateTime: createDate(2020, 3, 31) },
       { value: 10, dateTime: createDate(2020, 4, 1) },
     ];
 
-    const grouped = consolidate(measurements, GroupByTime.Month);
+    const grouped = consolidate(entries, GroupByTime.Month);
 
     expect(grouped.length).toBe(2);
   });
 
-  it("should group by day (2 measurements, same month)", () => {
-    const measurements: IGaugeMeasurement[] = [
+  it("should group by day (2 entries, same month)", () => {
+    const entries: IGaugeEntry[] = [
       { value: 6, dateTime: createDate(2020, 6, 9) },
       { value: 7, dateTime: createDate(2020, 6, 10) },
     ];
 
-    const grouped = consolidate(measurements, GroupByTime.Day);
+    const grouped = consolidate(entries, GroupByTime.Day);
 
     expect(grouped.length).toBe(2);
 
-    const firstGroupedMeasurement = grouped[0];
-    expect(firstGroupedMeasurement.measurements.length).toBe(1);
-    expect(firstGroupedMeasurement.value).toBe(6);
-    assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 6, 9);
+    const firstGroupedEntry = grouped[0];
+    expect(firstGroupedEntry.entries.length).toBe(1);
+    expect(firstGroupedEntry.value).toBe(6);
+    assertGroupKey(firstGroupedEntry.groupKey, 2020, 6, 9);
 
-    const secondGroupedMeasurement = grouped[1];
-    expect(secondGroupedMeasurement.measurements.length).toBe(1);
-    expect(secondGroupedMeasurement.value).toBe(7);
-    assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 6, 10);
+    const secondGroupedEntry = grouped[1];
+    expect(secondGroupedEntry.entries.length).toBe(1);
+    expect(secondGroupedEntry.value).toBe(7);
+    assertGroupKey(secondGroupedEntry.groupKey, 2020, 6, 10);
   });
 
-  it("should group by day (2 measurements, same day, different month)", () => {
-    const measurements: IGaugeMeasurement[] = [
+  it("should group by day (2 Entrys, same day, different month)", () => {
+    const entries: IGaugeEntry[] = [
       { value: 10, dateTime: createDate(2020, 5, 3) },
       { value: 30, dateTime: createDate(2020, 6, 3) },
     ];
 
-    const grouped = consolidate(measurements, GroupByTime.Day);
+    const grouped = consolidate(entries, GroupByTime.Day);
 
     expect(grouped.length).toBe(2);
 
-    const firstGroupedMeasurement = grouped[0];
-    expect(firstGroupedMeasurement.measurements.length).toBe(1);
-    expect(firstGroupedMeasurement.value).toBe(10);
-    assertGroupKey(firstGroupedMeasurement.groupKey, 2020, 5, 3);
+    const firstGroupedEntry = grouped[0];
+    expect(firstGroupedEntry.entries.length).toBe(1);
+    expect(firstGroupedEntry.value).toBe(10);
+    assertGroupKey(firstGroupedEntry.groupKey, 2020, 5, 3);
 
-    const secondGroupedMeasurement = grouped[1];
-    expect(secondGroupedMeasurement.measurements.length).toBe(1);
-    expect(secondGroupedMeasurement.value).toBe(30);
-    assertGroupKey(secondGroupedMeasurement.groupKey, 2020, 6, 3);
+    const secondGroupedEntry = grouped[1];
+    expect(secondGroupedEntry.entries.length).toBe(1);
+    expect(secondGroupedEntry.value).toBe(30);
+    assertGroupKey(secondGroupedEntry.groupKey, 2020, 6, 3);
   });
 
   // todo:

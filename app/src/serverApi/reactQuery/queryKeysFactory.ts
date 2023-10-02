@@ -1,64 +1,69 @@
-import { IDateConditions } from "../../components/details/MetricDetailsContext";
-import { MetricType } from "../MetricType";
+import { IDateConditions } from "../../components/details/JournalDetailsContext";
+import { JournalType } from "../JournalType";
 
-const metrics = "metrics";
+const journals = "journals";
 
 export const queryKeysFactory = {
-  metrics(searchText?: string, metricTypes?: MetricType[]) {
-    return [metrics, "all", searchText ?? "", metricTypes?.join() ?? ""];
+  journals(searchText?: string, metricTypes?: JournalType[]) {
+    return [journals, "all", searchText ?? "", metricTypes?.join() ?? ""];
   },
 
-  metric(metricId: string) {
-    return [metrics, metricId];
+  journal(journalId: string) {
+    return [journals, journalId];
   },
 
-  addMetric() {
-    return [metrics, "add"];
+  addJournal() {
+    return [journals, "add"];
   },
 
-  editMetric(metricId: string) {
-    return [metrics, metricId, "edit"];
+  editMetric(journalId: string) {
+    return [journals, journalId, "edit"];
   },
 
-  deleteMetric(metricId: string) {
-    return [metrics, metricId, "delete"];
+  deleteMetric(journalId: string) {
+    return [journals, journalId, "delete"];
   },
 
-  metricThresholdValues(metricId: string, dateConditions: IDateConditions) {
-    return [metrics, metricId, "threshold-values", dateConditions];
+  journalThresholdValues(journalId: string, dateConditions: IDateConditions) {
+    return [journals, journalId, "threshold-values", dateConditions];
   },
 
-  measurements(
-    metricId: string,
+  entries(
+    journalId: string,
     dateConditions?: IDateConditions,
     attributeValues?: Record<string, string[]>,
   ) {
     return [
-      metrics,
-      metricId,
-      "measurements",
+      journals,
+      journalId,
+      "entries",
       { filters: { dateConditions: dateConditions, attributeValues } },
     ];
   },
 
-  updateMeasurement(metricId: string, measurementId: string) {
-    return [metrics, metricId, "measurement", "update", measurementId];
+  updateMeasurement(journalId: string, entryId: string) {
+    return [journals, journalId, "entry", "update", entryId];
   },
 
-  deleteMeasurement(metricId: string, measurementId: string) {
-    return [metrics, metricId, "measurement", "delete", measurementId];
+  deleteMeasurement(journalId: string, entryId: string) {
+    return [journals, journalId, "entry", "delete", entryId];
   },
 
-  moveMeasurement(measurementId: string, metricId: string) {
-    return [metrics, metricId, measurementId];
+  moveMeasurement(entryId: string, journalId: string) {
+    return [journals, journalId, entryId];
   },
 
-  activeMeasurement(metricId: string, metricType: MetricType) {
-    return [metrics, metricId, "measurements", metricType, "get-active"];
+  activeEntry(journalId: string, metricType: JournalType) {
+    return [journals, journalId, "entries", metricType, "get-active"];
   },
 
-  activities(searchText?: string, metricTypes?: MetricType[]) {
-    return [metrics, "activities", searchText ?? "", metricTypes?.join() ?? ""];
+  activities(searchText?: string, metricTypes?: JournalType[]) {
+    return [
+      journals,
+      "activities",
+      searchText ?? "",
+      metricTypes?.join() ?? "",
+    ];
   },
 
   systemInfo() {

@@ -28,7 +28,7 @@ export const Page: React.FC<{
     setDocumentTitle,
     setEnableFilters,
     setShowFilters,
-    setMetricTypes,
+    setJournalTypes,
     setSearchText,
     setTabs,
   } = usePageContext();
@@ -68,7 +68,7 @@ export const Page: React.FC<{
       setShowFilters(false);
       setEnableFilters(false);
       setSearchText(null);
-      setMetricTypes([]);
+      setJournalTypes([]);
       setTabs([]);
     };
   }, []);

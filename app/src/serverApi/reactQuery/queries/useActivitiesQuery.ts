@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { IGetActivitiesQueryResult } from "../../IGetActivitiesQueryResult";
-import { MetricType } from "../../MetricType";
+import { JournalType } from "../../JournalType";
 
 export const useActivitiesQuery = (
   searchText?: string,
-  metricTypes?: MetricType[],
+  metricTypes?: JournalType[],
 ) => {
   const { data: activities } = useQuery<IGetActivitiesQueryResult>({
     queryKey: queryKeysFactory.activities(searchText, metricTypes),

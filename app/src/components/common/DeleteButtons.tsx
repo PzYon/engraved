@@ -5,7 +5,7 @@ import { Button, styled, TextField, Typography } from "@mui/material";
 export const DeleteButtons: React.FC<{
   onDelete: () => void;
   onCancel: () => void;
-  entityType: "metric" | "measurement";
+  entityType: "journal" | "entry";
   requiresConfirmation: boolean;
 }> = ({ onDelete, onCancel, entityType, requiresConfirmation }) => {
   const [isFirstYes, setIsFirstYes] = useState(false);
@@ -38,7 +38,7 @@ export const DeleteButtons: React.FC<{
         <ExtraContainer>
           <Typography>
             You want to delete a{" "}
-            <b>{entityType === "metric" ? "metric" : "scrap"}</b>. Just to be
+            <b>{entityType === "journal" ? "journal" : "scrap"}</b>. Just to be
             really sure, please type &quot;delete&quot; to confirm.
           </Typography>
           <TextField

@@ -1,12 +1,12 @@
-import { IMetricAttributeValues } from "../serverApi/IMetricAttributeValues";
-import { IMetric } from "../serverApi/IMetric";
+import { IJournalAttributeValues } from "../serverApi/IJournalAttributeValues";
+import { IJournal } from "../serverApi/IJournal";
 
-export function hasAttributes(metric: IMetric): boolean {
+export function hasAttributes(metric: IJournal): boolean {
   return Object.keys(metric?.attributes || {}).length > 0;
 }
 
 export function hasValues(
-  metricAttributeValues: IMetricAttributeValues,
+  metricAttributeValues: IJournalAttributeValues,
   selectedValues: Record<string, string[]>,
 ): boolean {
   const keys = Object.keys(selectedValues).filter(
