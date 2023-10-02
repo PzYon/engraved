@@ -9,22 +9,22 @@ jest.mock("../../../../env/envSettings.ts", () => ({}));
 
 describe("createDataSets", () => {
   it("should group by nothing", () => {
-    const metric: IJournal = createMetric();
-    const measurements: IEntry[] = createMeasurements();
+    const journal: IJournal = createJournal();
+    const entries: IEntry[] = createEntries();
 
-    const dataSets = createDataSets(measurements, metric, GroupByTime.None, "");
+    const dataSets = createDataSets(entries, journal, GroupByTime.None, "");
 
     expect(dataSets.length).toBe(1);
     expect(dataSets[0].data.length).toBe(4);
   });
 
   it("should group by attribute key", () => {
-    const metric: IJournal = createMetric();
-    const measurements: IEntry[] = createMeasurements();
+    const journal: IJournal = createJournal();
+    const entries: IEntry[] = createEntries();
 
     const dataSets = createDataSets(
-      measurements,
-      metric,
+      entries,
+      journal,
       GroupByTime.None,
       "colors",
     );
@@ -42,7 +42,7 @@ describe("createDataSets", () => {
   });
 });
 
-function createMetric() {
+function createJournal() {
   return {
     attributes: {
       colors: {
@@ -59,29 +59,29 @@ function createMetric() {
   };
 }
 
-function createMeasurements() {
+function createEntries() {
   // we use exactly the same date for everything, in order to be
   // sure that time-grouping doesn't interfere here.
   const dateTime = new Date().toString();
 
   return [
     {
-      metricAttributeValues: { colors: ["red"] },
+      journalAttributeValues: { colors: ["red"] },
       value: 1,
       dateTime: dateTime,
     },
     {
-      metricAttributeValues: { colors: ["green"] },
+      journalAttributeValues: { colors: ["green"] },
       value: 1,
       dateTime: dateTime,
     },
     {
-      metricAttributeValues: { colors: ["green"] },
+      journalAttributeValues: { colors: ["green"] },
       value: 1,
       dateTime: dateTime,
     },
     {
-      metricAttributeValues: {},
+      journalAttributeValues: {},
       value: 1,
       dateTime: dateTime,
     },

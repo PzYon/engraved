@@ -12,11 +12,11 @@ export interface IThresholdDefinition {
 }
 
 export const ThresholdRow: React.FC<{
-  metric: IJournal;
+  journal: IJournal;
   definition: IThresholdDefinition;
   onChange: (definition: IThresholdDefinition) => void;
   styles: React.CSSProperties;
-}> = ({ metric, definition, onChange, styles }) => {
+}> = ({ journal, definition, onChange, styles }) => {
   const [attributeKey, setAttributeKey] = useState(
     definition?.attributeKey ?? "",
   );
@@ -36,14 +36,14 @@ export const ThresholdRow: React.FC<{
   return (
     <Host sx={styles}>
       <GroupByAttributeSelector
-        attributes={metric.attributes}
+        attributes={journal.attributes}
         onChange={setAttributeKey}
         selectedAttributeKey={attributeKey}
         label={"Attribute"}
       />
       {attributeKey ? (
         <AttributeValueSelector
-          attribute={metric.attributes[attributeKey]}
+          attribute={journal.attributes[attributeKey]}
           selectedValue={attributeValueKeys[0]}
           onChange={(attributesValues) => {
             setAttributeValueKeys(attributesValues);

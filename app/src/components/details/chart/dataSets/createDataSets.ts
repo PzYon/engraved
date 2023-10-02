@@ -6,53 +6,53 @@ import { IDataSet } from "./IDataSet";
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
 
 export function createDataSets(
-  allMeasurements: IEntry[],
-  metric: IJournal,
+  allEntries: IEntry[],
+  journal: IJournal,
   groupByTime: GroupByTime,
   attributeKey: string,
 ) {
   return getMeasurementsPerAttribute(
-    allMeasurements,
-    metric.attributes,
+    allEntries,
+    journal.attributes,
     attributeKey,
   )
-    .filter((measurementsByAttribute) => measurementsByAttribute.length)
-    .map((measurements) =>
-      measurementsToDataSet(measurements, metric, groupByTime, attributeKey),
+    .filter((entriesByAttribute) => entriesByAttribute.length)
+    .map((entries) =>
+      measurementsToDataSet(entries, journal, groupByTime, attributeKey),
     );
 }
 
 function measurementsToDataSet(
-  measurements: IEntry[],
-  metric: IJournal,
+  entries: IEntry[],
+  journal: IJournal,
   groupByTime: GroupByTime,
   attributeKey: string,
 ): IDataSet {
-  const data = transform(measurements, metric, groupByTime);
+  const data = transform(entries, journal, groupByTime);
 
   // todo: we use indexer here to get (only) the first item. what if there's more?
-  const valueKey = measurements[0]?.journalAttributeValues?.[attributeKey]?.[0];
+  const valueKey = entries[0]?.journalAttributeValues?.[attributeKey]?.[0];
 
   return {
     label: valueKey
-      ? metric.attributes[attributeKey].values[valueKey]
-      : metric.name,
+      ? journal.attributes[attributeKey].values[valueKey]
+      : journal.name,
     data: data,
   };
 }
 
 function getMeasurementsPerAttribute(
-  allMeasurements: IEntry[],
-  metricAttributes: IJournalAttributes,
+  allEntries: IEntry[],
+  journalAttributes: IJournalAttributes,
   attributeKey: string,
 ) {
   const allValueKeys = [
-    ...Object.keys(metricAttributes[attributeKey]?.values || {}),
+    ...Object.keys(journalAttributes[attributeKey]?.values || {}),
     null, // null is for measurements without a flag
   ];
 
   return allValueKeys.map((valueKey) =>
-    allMeasurements.filter(filterByAttribute(attributeKey, valueKey)),
+    allEntries.filter(filterByAttribute(attributeKey, valueKey)),
   );
 }
 

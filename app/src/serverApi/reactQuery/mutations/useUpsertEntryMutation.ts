@@ -10,10 +10,10 @@ export interface IVariables {
   command: IUpsertEntryCommand;
 }
 
-export const useUpsertMeasurementMutation = (
-  metricId: string,
-  metricType: JournalType,
-  measurementId?: string,
+export const useUpsertEntryMutation = (
+  journalId: string,
+  journalType: JournalType,
+  entryId?: string,
   onSaved?: () => void,
 ) => {
   const { setAppAlert } = useAppContext();
@@ -21,60 +21,57 @@ export const useUpsertMeasurementMutation = (
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.updateMeasurement(metricId, measurementId),
+    mutationKey: queryKeysFactory.updateMeasurement(journalId, entryId),
 
     mutationFn: async (variables: IVariables) => {
-      await ServerApi.upsertEntry(variables.command, metricType.toLowerCase());
+      await ServerApi.upsertEntry(variables.command, journalType.toLowerCase());
     },
 
     onSuccess: async (_: unknown, variables: IVariables) => {
       setAppAlert({
-        title: `${measurementId ? "Updated" : "Added"} measurement`,
+        title: `${entryId ? "Updated" : "Added"} measurement`,
         type: "success",
       });
 
       onSaved?.();
 
-      if (measurementId) {
-        updateExistingMeasurementInCache(variables.command);
+      if (entryId) {
+        updateExistingEntryInCache(variables.command);
       }
 
-      await queryClient.invalidateQueries(queryKeysFactory.journal(metricId));
+      await queryClient.invalidateQueries(queryKeysFactory.journal(journalId));
       await queryClient.invalidateQueries(queryKeysFactory.journals());
       await queryClient.invalidateQueries(queryKeysFactory.activities());
     },
 
     onError: (error: unknown) => {
       setAppAlert({
-        title: "Failed to upsert measurementId",
+        title: "Failed to upsert entryId",
         message: error.toString(),
         type: "error",
       });
     },
   });
 
-  function updateExistingMeasurementInCache(command: IUpsertEntryCommand) {
+  function updateExistingEntryInCache(command: IUpsertEntryCommand) {
     queryClient.setQueryData(
-      queryKeysFactory.entries(metricId),
+      queryKeysFactory.entries(journalId),
       (measurements: IEntry[]) => {
         if (!measurements) {
           return measurements;
         }
 
         return measurements.map((m) =>
-          m.id === measurementId ? createCacheMeasurement(m, command) : m,
+          m.id === entryId ? createCacheEntry(m, command) : m,
         );
       },
     );
   }
 
-  function createCacheMeasurement(
-    measurement: IEntry,
-    command: IUpsertEntryCommand,
-  ) {
+  function createCacheEntry(entry: IEntry, command: IUpsertEntryCommand) {
     const editedOn = new Date().toString();
     return {
-      ...measurement,
+      ...entry,
       ...command,
       dateTime: editedOn,
       editedOn: editedOn,

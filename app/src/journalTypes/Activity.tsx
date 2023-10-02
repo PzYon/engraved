@@ -9,10 +9,10 @@ import { IconStyle } from "../components/common/Icon";
 import { Link } from "react-router-dom";
 
 export const Activity: React.FC<{
-  metric: IJournal;
-  measurement: IEntry;
+  journal: IJournal;
+  entry: IEntry;
   children: React.ReactNode;
-}> = ({ metric, measurement, children }) => {
+}> = ({ journal, entry, children }) => {
   return (
     <>
       <Properties
@@ -20,22 +20,18 @@ export const Activity: React.FC<{
           {
             key: "journal-type",
             node: (
-              <JournalTypeIcon type={metric.type} style={IconStyle.Activity} />
+              <JournalTypeIcon type={journal.type} style={IconStyle.Activity} />
             ),
             label: "",
           },
           {
             key: "name",
-            node: <Link to={`/journals/${metric.id}`}>{metric.name}</Link>,
+            node: <Link to={`/journals/${journal.id}`}>{journal.name}</Link>,
             label: "Metric",
           },
           {
             key: "date",
-            node: (
-              <FormatDate
-                value={measurement.editedOn || measurement.dateTime}
-              />
-            ),
+            node: <FormatDate value={entry.editedOn || entry.dateTime} />,
             label: "",
           },
         ]}

@@ -6,12 +6,12 @@ import { JournalType } from "../../JournalType";
 
 export const useActivitiesQuery = (
   searchText?: string,
-  metricTypes?: JournalType[],
+  journalTypes?: JournalType[],
 ) => {
   const { data: activities } = useQuery<IGetActivitiesQueryResult>({
-    queryKey: queryKeysFactory.activities(searchText, metricTypes),
+    queryKey: queryKeysFactory.activities(searchText, journalTypes),
 
-    queryFn: () => ServerApi.getActivities(searchText, metricTypes),
+    queryFn: () => ServerApi.getActivities(searchText, journalTypes),
   });
 
   return activities;

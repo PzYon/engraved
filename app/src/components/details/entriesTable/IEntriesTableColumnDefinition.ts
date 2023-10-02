@@ -10,7 +10,7 @@ export interface IEntriesTableColumnDefinition {
 
   getValueReactNode: (
     group: IEntriesTableGroup,
-    measurement: IEntry,
+    entry: IEntry,
     isFirstRowOfGroup: boolean,
     onClick?: () => void,
   ) => React.ReactNode;
@@ -20,13 +20,13 @@ export interface IEntriesTableColumnDefinition {
     onClick?: () => void,
   ) => React.ReactNode;
 
-  getRawValue?: (measurement: IEntry) => number;
+  getRawValue?: (entry: IEntry) => number;
 
   isSummable?: boolean;
 
-  doHide?: (metric: IJournal) => boolean;
+  doHide?: (journal: IJournal) => boolean;
 
-  getGroupKey?: (measurement: IEntry) => string;
+  getGroupKey?: (entry: IEntry) => string;
 
   width?: string;
 }

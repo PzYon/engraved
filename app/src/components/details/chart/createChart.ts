@@ -164,7 +164,7 @@ function createBarChart(
     };
   });
 
-  const metricType = JournalTypeFactory.create(journal.type);
+  const journalType = JournalTypeFactory.create(journal.type);
 
   return {
     type: "bar",
@@ -178,7 +178,7 @@ function createBarChart(
         const raw = (elements[0].element as unknown as any).$context
           .raw as ITransformedEntry;
 
-        const attributeValues = raw.measurements.map(
+        const attributeValues = raw.entries.map(
           (m) => m.journalAttributeValues?.[attributeKey],
         );
 
@@ -198,7 +198,7 @@ function createBarChart(
               ? Math.round(
                   Math.min(
                     ...entries
-                      .map((x) => metricType.getValue(x))
+                      .map((x) => journalType.getValue(x))
                       .filter((x) => x !== 0),
                   ) * 0.95,
                 )
@@ -206,15 +206,15 @@ function createBarChart(
           stacked: true,
           ticks: {
             callback: (value) => {
-              return metricType.getValueLabel
-                ? metricType.formatTotalValue?.(value as number) ?? value
+              return journalType.getValueLabel
+                ? journalType.formatTotalValue?.(value as number) ?? value
                 : value;
             },
-            precision: metricType.type === JournalType.Counter ? 0 : undefined,
+            precision: journalType.type === JournalType.Counter ? 0 : undefined,
           },
           title: {
             display: true,
-            text: metricType.getYAxisLabel(journal),
+            text: journalType.getYAxisLabel(journal),
           },
         },
       },
@@ -231,7 +231,7 @@ function createBarChart(
             },
             label: (tooltipItem): string | string[] | void => {
               return getTooltipValue(
-                metricType,
+                journalType,
                 (tooltipItem.raw as ITransformedEntry).y,
               );
             },

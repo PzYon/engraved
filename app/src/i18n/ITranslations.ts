@@ -1,8 +1,8 @@
 export interface ITranslations {
-  metricType_timer: string;
-  metricType_gauge: string;
-  metricType_counter: string;
-  metricType_scraps: string;
+  journalType_timer: string;
+  journalType_gauge: string;
+  journalType_counter: string;
+  journalType_scraps: string;
   groupBy_day: string;
   groupBy_month: string;
   columnName_notes: string;
@@ -13,10 +13,10 @@ export interface ITranslations {
   label_groupBy_time: string;
   label_groupBy_attribute: string;
   label_chartType: string;
-  label_metricDescription: string;
-  label_metricName: string;
+  label_journalDescription: string;
+  label_journalName: string;
   label_journalType: string;
-  tab_measurements: string;
+  tab_entries: string;
   tab_summary: string;
   create: string;
   add: string;

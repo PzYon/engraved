@@ -7,14 +7,14 @@ import { styled } from "@mui/material";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
 export const EditThresholds: React.FC<{
-  metric: IJournal;
+  journal: IJournal;
   onChange: (thresholds: IJournalThresholds) => void;
-}> = ({ metric, onChange }) => {
+}> = ({ journal, onChange }) => {
   const [thresholdDefinitions, setThresholdDefinitions] = useState<
     IThresholdDefinition[]
-  >(createDefinitions(metric.thresholds));
+  >(createDefinitions(journal.thresholds));
 
-  metric.thresholds;
+  journal.thresholds;
 
   return (
     <>
@@ -31,7 +31,7 @@ export const EditThresholds: React.FC<{
             <ThresholdRow
               styles={{ flexGrow: 1 }}
               definition={oldDefinition}
-              metric={metric}
+              journal={journal}
               onChange={(definition) => {
                 const isCurrentIncomplete = isIncomplete(definition);
                 if (isCurrentIncomplete) {

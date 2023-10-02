@@ -11,7 +11,7 @@ export const EditEntryLauncher: React.FC<{
   entries: IEntry[];
 }> = ({ journal, entries }) => {
   const { renderDialog } = useDialogContext();
-  const { measurementId } = useParams();
+  const { entryId } = useParams();
 
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ export const EditEntryLauncher: React.FC<{
       render: (closeDialog) => (
         <UpsertEntry
           journal={journal}
-          entry={entries.find((m) => m.id === measurementId)}
+          entry={entries.find((m) => m.id === entryId)}
           onSaved={async () => {
             closeDialog();
             goToMetric();

@@ -13,13 +13,13 @@ export const DeleteEntryLauncher: React.FC<{
   onDeleted?: () => void;
 }> = ({ journal, onDeleted }) => {
   const { renderDialog } = useDialogContext();
-  const { measurementId } = useParams();
+  const { entryId } = useParams();
 
   const navigate = useNavigate();
 
   const deleteMeasurementMutation = useDeleteMeasurementMutation(
     journal.id,
-    measurementId,
+    entryId,
   );
 
   useEffect(() => {

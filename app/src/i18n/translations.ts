@@ -1,10 +1,10 @@
 import { ITranslations } from "./ITranslations";
 
 export const translations: ITranslations = {
-  metricType_counter: "Counter",
-  metricType_gauge: "Value",
-  metricType_timer: "Timer",
-  metricType_scraps: "Scraps",
+  journalType_counter: "Counter",
+  journalType_gauge: "Value",
+  journalType_timer: "Timer",
+  journalType_scraps: "Scraps",
   groupBy_day: "Day",
   groupBy_month: "Month",
   columnName_date: "Date",
@@ -15,10 +15,10 @@ export const translations: ITranslations = {
   label_groupBy_time: "Group by time",
   label_groupBy_attribute: "Group by attribute",
   label_chartType: "Chart type",
-  label_metricDescription: "Description",
-  label_metricName: "Name",
+  label_journalDescription: "Description",
+  label_journalName: "Name",
   label_journalType: "Metric Type",
-  tab_measurements: "Measurements",
+  tab_entries: "Measurements",
   tab_summary: "Summary",
   create: "Create",
   save: "Save",

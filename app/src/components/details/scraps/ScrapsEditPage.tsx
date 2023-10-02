@@ -47,7 +47,7 @@ export const ScrapsEditPage: React.FC = () => {
 
   async function save() {
     await editMetricMutation.mutateAsync({
-      metric: { ...journal, name, description },
+      journal: { ...journal, name, description },
       onSuccess: navigateToViewPage,
     });
   }

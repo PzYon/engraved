@@ -7,24 +7,24 @@ import { IAction } from "../common/actions/IAction";
 export const editActionKey = "edit";
 
 export function getCommonActions(
-  metric: IJournal,
+  journal: IJournal,
   enableHotkeys: boolean,
   renderDialog?: (dialogProps: IDialogProps) => void,
 ): IAction[] {
-  if (!metric) {
+  if (!journal) {
     return [];
   }
 
   const actions = [];
 
-  if (metric.type !== JournalType.Scraps) {
-    actions.push(ActionFactory.addEntry(metric, renderDialog, enableHotkeys));
+  if (journal.type !== JournalType.Scraps) {
+    actions.push(ActionFactory.addEntry(journal, renderDialog, enableHotkeys));
   }
 
   actions.push(
-    ActionFactory.editJournal(metric.id, enableHotkeys),
-    ActionFactory.editJournalPermissions(metric.id),
-    ActionFactory.deleteJournal(metric.id, enableHotkeys),
+    ActionFactory.editJournal(journal.id, enableHotkeys),
+    ActionFactory.editJournalPermissions(journal.id),
+    ActionFactory.deleteJournal(journal.id, enableHotkeys),
   );
 
   return actions;

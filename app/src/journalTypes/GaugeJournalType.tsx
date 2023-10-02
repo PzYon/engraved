@@ -19,12 +19,12 @@ export class GaugeJournalType implements IJournalType {
     return <BarChartSharp style={{ backgroundColor: "#FFFFDF" }} />;
   }
 
-  getActivity(metric: IJournal, measurement: IEntry): React.ReactNode {
+  getActivity(journal: IJournal, entry: IEntry): React.ReactNode {
     return (
       <ActivityWithValue
-        value={(measurement as IGaugeEntry).value}
-        journal={metric}
-        entry={measurement}
+        value={(entry as IGaugeEntry).value}
+        journal={journal}
+        entry={entry}
       />
     );
   }
@@ -35,16 +35,16 @@ export class GaugeJournalType implements IJournalType {
         key: "_value",
         getHeaderReactNode: () => "Value",
         isSummable: true,
-        getRawValue: (measurement: IEntry) => getValue(measurement),
-        getValueReactNode: (_: IEntriesTableGroup, measurement: IEntry) =>
-          getValue(measurement),
+        getRawValue: (entry: IEntry) => getValue(entry),
+        getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) =>
+          getValue(entry),
         getGroupReactNode: (group) => group.totalString,
       },
     ];
   }
 
-  getValue(measurement: IEntry): number {
-    return (measurement as IGaugeEntry).value;
+  getValue(entry: IEntry): number {
+    return (entry as IGaugeEntry).value;
   }
 
   getYAxisLabel(): string {

@@ -1,12 +1,12 @@
 import { IJournalAttributeValues } from "../serverApi/IJournalAttributeValues";
 import { IJournal } from "../serverApi/IJournal";
 
-export function hasAttributes(metric: IJournal): boolean {
-  return Object.keys(metric?.attributes || {}).length > 0;
+export function hasAttributes(journal: IJournal): boolean {
+  return Object.keys(journal?.attributes || {}).length > 0;
 }
 
 export function hasValues(
-  metricAttributeValues: IJournalAttributeValues,
+  journal: IJournalAttributeValues,
   selectedValues: Record<string, string[]>,
 ): boolean {
   const keys = Object.keys(selectedValues).filter(
@@ -15,7 +15,7 @@ export function hasValues(
 
   for (const key of keys) {
     const selectedValue = selectedValues[key];
-    const appliedValue = metricAttributeValues[key];
+    const appliedValue = journal[key];
 
     if (
       !appliedValue?.length ||

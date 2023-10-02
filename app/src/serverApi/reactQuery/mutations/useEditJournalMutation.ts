@@ -4,38 +4,38 @@ import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { IJournal } from "../../IJournal";
 
-export const useEditJournalMutation = (metricId: string) => {
+export const useEditJournalMutation = (journalId: string) => {
   const { setAppAlert } = useAppContext();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.editMetric(metricId),
+    mutationKey: queryKeysFactory.editMetric(journalId),
 
     mutationFn: async (variables: {
-      metric: IJournal;
+      journal: IJournal;
       onSuccess?: () => void;
     }) => {
-      const metric = variables.metric;
+      const journal = variables.journal;
 
       await ServerApi.editMetric(
-        metricId,
-        metric.name,
-        metric.description,
-        metric.notes,
-        metric.attributes,
-        metric.thresholds,
-        metric.customProps?.uiSettings,
+        journalId,
+        journal.name,
+        journal.description,
+        journal.notes,
+        journal.attributes,
+        journal.thresholds,
+        journal.customProps?.uiSettings,
       );
     },
 
     onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries(queryKeysFactory.journal(metricId));
+      await queryClient.invalidateQueries(queryKeysFactory.journal(journalId));
       variables.onSuccess?.();
     },
 
     onError: (error) =>
       setAppAlert({
-        title: `Failed to edit metric`,
+        title: `Failed to edit journal`,
         message: error.toString(),
         type: "error",
       }),

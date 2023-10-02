@@ -19,7 +19,7 @@ export const useDeleteJournalMutation = (journalId: string) => {
       await variables.onSuccess();
 
       setAppAlert({
-        title: `Successfully deleted metric.`,
+        title: `Successfully deleted journal.`,
         type: "success",
       });
 

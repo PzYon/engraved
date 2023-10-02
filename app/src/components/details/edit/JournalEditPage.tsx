@@ -34,7 +34,7 @@ export const JournalEditPage: React.FC = () => {
 
   const save = () =>
     editJournalMutation.mutateAsync({
-      metric: {
+      journal: {
         ...journal,
         name,
         description,
@@ -68,7 +68,7 @@ export const JournalEditPage: React.FC = () => {
       </PageSection>
 
       <PageSection title={"Thresholds"}>
-        <EditThresholds metric={journal} onChange={setThresholds} />
+        <EditThresholds journal={journal} onChange={setThresholds} />
       </PageSection>
 
       <PageSection title={"UI Settings"}>

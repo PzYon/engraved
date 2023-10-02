@@ -14,26 +14,21 @@ export const Activities: React.FC = () => {
     return null;
   }
 
-  if (!activities.measurements.length && searchText) {
+  if (!activities.entries.length && searchText) {
     return <NoResultsFound />;
   }
 
   return (
     <>
-      {activities.measurements.map((m) => (
-        <PageSection key={m.id}>{renderActivity(m)}</PageSection>
+      {activities.entries.map((e) => (
+        <PageSection key={e.id}>{renderActivity(e)}</PageSection>
       ))}
     </>
   );
 
-  function renderActivity(measurement: IEntry) {
-    const metric = activities.metrics.find(
-      (a) => a.id === measurement.parentId,
-    );
+  function renderActivity(entry: IEntry) {
+    const journal = activities.journals.find((j) => j.id === entry.parentId);
 
-    return JournalTypeFactory.create(metric.type).getActivity(
-      metric,
-      measurement,
-    );
+    return JournalTypeFactory.create(journal.type).getActivity(journal, entry);
   }
 };

@@ -4,8 +4,8 @@ import { useAppContext } from "../../../AppContext";
 import { queryKeysFactory } from "../queryKeysFactory";
 
 export const useMoveMeasurementMutation = (
-  measurementId: string,
-  metricId: string,
+  entryId: string,
+  journalId: string,
   onSaved?: () => void,
 ) => {
   const { setAppAlert } = useAppContext();
@@ -13,10 +13,10 @@ export const useMoveMeasurementMutation = (
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.moveMeasurement(measurementId, metricId),
+    mutationKey: queryKeysFactory.moveMeasurement(entryId, journalId),
 
     mutationFn: async (variables: { targetMetricId: string }) => {
-      await ServerApi.moveEntry(measurementId, variables.targetMetricId);
+      await ServerApi.moveEntry(entryId, variables.targetMetricId);
     },
 
     onSuccess: async (_, variables) => {
@@ -29,14 +29,14 @@ export const useMoveMeasurementMutation = (
         queryKeysFactory.journal(variables.targetMetricId),
       );
 
-      await queryClient.invalidateQueries(queryKeysFactory.journal(metricId));
+      await queryClient.invalidateQueries(queryKeysFactory.journal(journalId));
 
       onSaved?.();
     },
 
     onError: (error) => {
       setAppAlert({
-        title: "Failed to upsert measurementId",
+        title: "Failed to upsert entryId",
         message: error.toString(),
         type: "error",
       });

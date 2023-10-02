@@ -99,12 +99,12 @@ export const EntriesTable: React.FC<{
   );
 
   function updateGroups() {
-    setTableGroups(getMeasurementsTableGroups(entries, type));
+    setTableGroups(getEntriesTableGroups(entries, type));
   }
 };
 
 function getColumnsBefore(
-  metric: IJournal,
+  journal: IJournal,
   collapseAll: boolean,
   onHeaderClick: () => void,
 ): IEntriesTableColumnDefinition[] {
@@ -135,53 +135,51 @@ function getColumnsBefore(
       getGroupReactNode: (group) => (
         <EntriesDateTableCell date={new Date(group.label)} />
       ),
-      getValueReactNode: (_, measurement, isFirstRowOfGroup) =>
+      getValueReactNode: (_, entry, isFirstRowOfGroup) =>
         isFirstRowOfGroup ? (
-          <EntriesDateTableCell date={measurement.dateTime} />
+          <EntriesDateTableCell date={entry.dateTime} />
         ) : null,
-      getGroupKey: (measurement) => getGroupKey(metric.type, measurement),
+      getGroupKey: (entry) => getGroupKey(journal.type, entry),
     },
   ];
 }
 
-function getColumnsAfter(metric: IJournal): IEntriesTableColumnDefinition[] {
+function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
   return [
     {
       getHeaderReactNode: () => translations.columnName_attributes,
       key: "_attributes",
-      doHide: (metric: IJournal): boolean =>
-        !Object.keys(metric.attributes ?? {}).length,
-      getValueReactNode: (_, measurement) => (
+      doHide: (journal: IJournal): boolean =>
+        !Object.keys(journal.attributes ?? {}).length,
+      getValueReactNode: (_, entry) => (
         <AttributeValues
-          attributes={metric.attributes}
-          attributeValues={measurement.journalAttributeValues}
+          attributes={journal.attributes}
+          attributeValues={entry.journalAttributeValues}
         />
       ),
     },
     {
       getHeaderReactNode: () => translations.columnName_notes,
       key: "_notes",
-      getValueReactNode: (_, measurement) => measurement.notes,
+      getValueReactNode: (_, entry) => entry.notes,
     },
     {
       getHeaderReactNode: () => translations.columnName_actions,
       key: "_actions",
       width: "80px",
-      getValueReactNode: (_, measurement) => (
-        <EntryActionButtons entry={measurement} />
-      ),
+      getValueReactNode: (_, entry) => <EntryActionButtons entry={entry} />,
     },
   ];
 }
 
-function getMeasurementsTableGroups(
-  measurements: IEntry[],
+function getEntriesTableGroups(
+  entries: IEntry[],
   type: IJournalType,
 ): IEntriesTableGroup[] {
   const groupsByKey: Record<string, IEntriesTableGroup> = {};
 
-  for (const measurement of measurements) {
-    const groupKey = getGroupKey(type.type, measurement);
+  for (const entry of entries) {
+    const groupKey = getGroupKey(type.type, entry);
 
     if (!groupsByKey[groupKey]) {
       groupsByKey[groupKey] = {
@@ -192,9 +190,9 @@ function getMeasurementsTableGroups(
       };
     }
 
-    groupsByKey[groupKey].entries.push(measurement);
+    groupsByKey[groupKey].entries.push(entry);
 
-    const total = groupsByKey[groupKey].totalValue + type.getValue(measurement);
+    const total = groupsByKey[groupKey].totalValue + type.getValue(entry);
 
     groupsByKey[groupKey].totalValue = total;
     groupsByKey[groupKey].totalString = type.formatTotalValue
@@ -205,11 +203,11 @@ function getMeasurementsTableGroups(
   return Object.values(groupsByKey);
 }
 
-function getGroupKey(metricType: JournalType, measurement: IEntry) {
+function getGroupKey(journalType: JournalType, entry: IEntry) {
   const relevantDate =
-    metricType === JournalType.Timer
-      ? (measurement as ITimerEntry).startDate
-      : measurement.dateTime;
+    journalType === JournalType.Timer
+      ? (entry as ITimerEntry).startDate
+      : entry.dateTime;
 
   return format(new Date(relevantDate), "u-LL-dd");
 }

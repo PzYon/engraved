@@ -3,17 +3,17 @@ import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 
 export const useDeleteMeasurementMutation = (
-  metricId: string,
-  measurementId: string,
+  journalId: string,
+  entryId: string,
 ) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: queryKeysFactory.deleteMeasurement(metricId, measurementId),
+    mutationKey: queryKeysFactory.deleteMeasurement(journalId, entryId),
 
-    mutationFn: () => ServerApi.deleteEntry(measurementId),
+    mutationFn: () => ServerApi.deleteEntry(entryId),
 
     onSuccess: async () =>
-      await queryClient.invalidateQueries(queryKeysFactory.journal(metricId)),
+      await queryClient.invalidateQueries(queryKeysFactory.journal(journalId)),
   });
 };

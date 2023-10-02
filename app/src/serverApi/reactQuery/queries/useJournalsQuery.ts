@@ -6,20 +6,20 @@ import { JournalType } from "../../JournalType";
 
 export const useJournalsQuery = (
   searchText?: string,
-  metricTypes?: JournalType[],
+  journalTypes?: JournalType[],
 ) => {
   const queryClient = useQueryClient();
 
   const { data } = useQuery<IJournal[]>({
-    queryKey: queryKeysFactory.journals(searchText, metricTypes),
+    queryKey: queryKeysFactory.journals(searchText, journalTypes),
 
-    queryFn: () => ServerApi.getJournals(searchText, metricTypes),
+    queryFn: () => ServerApi.getJournals(searchText, journalTypes),
 
-    onSuccess: (loadedMetrics) => {
-      for (const metric of loadedMetrics) {
+    onSuccess: (loadedJournals) => {
+      for (const loadedJournal of loadedJournals) {
         queryClient.setQueryData(
-          queryKeysFactory.journals(metric.id, metricTypes),
-          () => metric,
+          queryKeysFactory.journals(loadedJournal.id, journalTypes),
+          () => loadedJournal,
         );
       }
     },

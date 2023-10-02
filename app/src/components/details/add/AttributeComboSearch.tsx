@@ -12,9 +12,9 @@ let timer: any;
 let lastLoadedSearchText = "";
 
 export const AttributeComboSearch: React.FC<{
-  metric: IJournal;
+  journal: IJournal;
   onChange: (attributesValues: IJournalAttributeValues) => void;
-}> = ({ metric, onChange }) => {
+}> = ({ journal, onChange }) => {
   const [options, setOptions] = useState<IAttributeSearchResult[]>([]);
 
   return (
@@ -41,7 +41,7 @@ export const AttributeComboSearch: React.FC<{
         return (
           <MenuItem {...props} key={JSON.stringify(searchResult)}>
             <AttributeValues
-              attributes={metric.attributes}
+              attributes={journal.attributes}
               attributeValues={searchResult.values}
               preventOnClick={true}
             />
@@ -83,7 +83,9 @@ export const AttributeComboSearch: React.FC<{
 
     timer = setTimeout(() => {
       lastLoadedSearchText = searchText;
-      ServerApi.searchJournalAttributes(metric.id, searchText).then(setOptions);
+      ServerApi.searchJournalAttributes(journal.id, searchText).then(
+        setOptions,
+      );
     }, 300);
   }
 };

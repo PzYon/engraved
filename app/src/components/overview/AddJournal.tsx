@@ -34,7 +34,7 @@ export const AddJournal: React.FC = () => {
             value={name}
             onChange={(event) => setName(event.target.value)}
             required={true}
-            label={translations.label_metricName}
+            label={translations.label_journalName}
             margin={"normal"}
           />
           <JournalTypeSelector
@@ -45,7 +45,7 @@ export const AddJournal: React.FC = () => {
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             multiline={true}
-            label={translations.label_metricDescription}
+            label={translations.label_journalDescription}
             margin={"normal"}
           />
         </FormControl>

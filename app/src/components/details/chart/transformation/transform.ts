@@ -6,31 +6,31 @@ import { ITransformedEntry } from "./ITransformedEntry";
 import { JournalTypeFactory } from "../../../../journalTypes/JournalTypeFactory";
 
 export function transform(
-  measurements: IEntry[],
-  metric: IJournal,
+  entries: IEntry[],
+  journal: IJournal,
   groupBy: GroupByTime,
 ): ITransformedEntry[] {
   if (
-    JournalTypeFactory.create(metric.type).isGroupable &&
+    JournalTypeFactory.create(journal.type).isGroupable &&
     groupBy !== GroupByTime.None
   ) {
-    return consolidate(measurements, groupBy).map((m) => {
+    return consolidate(entries, groupBy).map((m) => {
       const month = m.groupKey.month - 1;
       const day = m.groupKey.day || 1;
 
       return {
         x: new Date(m.groupKey.year, month, day),
         y: m.value,
-        measurements: m.entries,
+        entries: m.entries,
       };
     });
   }
 
-  return measurements.map((m) => {
+  return entries.map((m) => {
     return {
       x: new Date(m.dateTime),
       y: getValue(m),
-      measurements: [m],
+      entries: [m],
     };
   });
 }

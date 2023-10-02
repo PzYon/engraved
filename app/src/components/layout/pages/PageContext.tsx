@@ -26,7 +26,7 @@ export interface IPageContext {
   searchText: string;
   setSearchText: (searchText: string) => void;
   journalTypes: JournalType[];
-  setJournalTypes: (metricTypes: JournalType[]) => void;
+  setJournalTypes: (journalTypes: JournalType[]) => void;
   tabs: IPageTab[];
   setTabs: (tabs: IPageTab[]) => void;
 }

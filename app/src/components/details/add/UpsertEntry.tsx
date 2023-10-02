@@ -24,7 +24,7 @@ import { UpsertTimerEntry } from "./UpsertTimerEntry";
 import { IUpsertTimerEntryCommand } from "../../../serverApi/commands/IUpsertTimerEntryCommand";
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
 import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";
-import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
+import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 
@@ -59,9 +59,9 @@ export const UpsertEntry: React.FC<{
 
   const [showFullTimerForm, setShowFullTimerForm] = useState(false);
 
-  const editMetricMutation = useEditJournalMutation(journal.id);
+  const editJournalMutation = useEditJournalMutation(journal.id);
 
-  const upsertMeasurementMutation = useUpsertMeasurementMutation(
+  const upsertEntryMutation = useUpsertEntryMutation(
     journal.id,
     journal.type,
     entry?.id,
@@ -127,7 +127,7 @@ export const UpsertEntry: React.FC<{
       {hasAttributes(journal) ? (
         <FormElementContainer>
           <AttributeComboSearch
-            metric={journal}
+            journal={journal}
             onChange={(values) => {
               resetSelectors();
               setAttributeValues(
@@ -171,7 +171,7 @@ export const UpsertEntry: React.FC<{
           onClick={async () => {
             await ensureNewAttributeValues();
 
-            await upsertMeasurementMutation.mutate({
+            await upsertEntryMutation.mutate({
               command: createCommand(),
             });
           }}
@@ -186,8 +186,8 @@ export const UpsertEntry: React.FC<{
     const command: IUpsertEntryCommand = {
       id: entry?.id,
       notes: notes,
-      metricAttributeValues: attributeValues,
-      metricId: journal.id,
+      journalAttributeValues: attributeValues,
+      journalId: journal.id,
       dateTime: new Date(date),
     };
 
@@ -219,7 +219,7 @@ export const UpsertEntry: React.FC<{
     }
 
     if (hasNewValues) {
-      await editMetricMutation.mutateAsync({ metric: journal });
+      await editJournalMutation.mutateAsync({ journal: journal });
     }
   }
 

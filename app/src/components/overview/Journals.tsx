@@ -37,12 +37,12 @@ export const Journals: React.FC = () => {
 
   return (
     <>
-      {journals.map((metric, i) => (
+      {journals.map((journal, i) => (
         <JournalListItem
-          key={metric.id + keyToken}
-          journal={metric}
+          key={journal.id + keyToken}
+          journal={journal}
           addWrapper={(wrapper) => {
-            collection.add(metric.id, wrapper);
+            collection.add(journal.id, wrapper);
           }}
           onClick={() => collection.setFocus(i)}
           index={i}

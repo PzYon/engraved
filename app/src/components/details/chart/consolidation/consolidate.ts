@@ -44,7 +44,7 @@ export function getValue(m: IEntry) {
   // this is only called when counter and there the value
   // is always one.
   // i guess that's correct, however this should also be
-  // possible for other metric types i suppose?
+  // possible for other journal types i suppose?
 
   const timerMeasurement = m as ITimerEntry;
   if (timerMeasurement.startDate) {

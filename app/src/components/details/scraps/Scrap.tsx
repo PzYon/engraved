@@ -10,7 +10,7 @@ import { useAppContext } from "../../../AppContext";
 import { Button, styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
-import { useUpsertMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useUpsertMeasurementMutation";
+import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { JournalType } from "../../../serverApi/JournalType";
 import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
@@ -49,7 +49,7 @@ export const Scrap: React.FC<{
 
   const domElementRef = useRef<HTMLDivElement>();
 
-  const upsertMeasurementMutation = useUpsertMeasurementMutation(
+  const upsertMeasurementMutation = useUpsertEntryMutation(
     currentScrap.parentId,
     JournalType.Scraps,
     currentScrap.id,
@@ -194,8 +194,8 @@ export const Scrap: React.FC<{
         scrapType: currentScrap.scrapType,
         notes: notes,
         title: title,
-        metricAttributeValues: {},
-        metricId: currentScrap.parentId,
+        journalAttributeValues: {},
+        journalId: currentScrap.parentId,
         dateTime: new Date(),
       } as IUpsertScrapsEntryCommand,
     });

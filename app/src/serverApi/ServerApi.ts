@@ -131,7 +131,7 @@ export class ServerApi {
   }
 
   static async editMetric(
-    metricId: string,
+    journalId: string,
     name: string,
     description: string,
     notes: string,
@@ -140,7 +140,7 @@ export class ServerApi {
     uiSettings: IJournalUiSettings | string,
   ): Promise<ICommandResult> {
     const payload: IEditJournalCommand = {
-      journalId: metricId,
+      journalId: journalId,
       name: name,
       description: description,
       notes: notes,
@@ -161,7 +161,7 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/journals/${journalId}/`, "DELETE");
   }
 
-  static async modifyMetricPermissions(
+  static async modifyJournalPermissions(
     journalId: string,
     permissions: IUpdatePermissions,
   ): Promise<unknown> {

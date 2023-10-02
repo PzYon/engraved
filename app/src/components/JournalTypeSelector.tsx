@@ -40,25 +40,25 @@ export const JournalTypeSelector: React.FC<{
         <MenuItem value={JournalType.Scraps}>
           <JournalTypeMenuItem
             journalType={JournalType.Scraps}
-            label={translations.metricType_scraps}
+            label={translations.journalType_scraps}
           />
         </MenuItem>
         <MenuItem value={JournalType.Counter}>
           <JournalTypeMenuItem
             journalType={JournalType.Counter}
-            label={translations.metricType_counter}
+            label={translations.journalType_counter}
           />
         </MenuItem>
         <MenuItem value={JournalType.Gauge}>
           <JournalTypeMenuItem
             journalType={JournalType.Gauge}
-            label={translations.metricType_gauge}
+            label={translations.journalType_gauge}
           />
         </MenuItem>
         <MenuItem value={JournalType.Timer}>
           <JournalTypeMenuItem
             journalType={JournalType.Timer}
-            label={translations.metricType_timer}
+            label={translations.journalType_timer}
           />
         </MenuItem>
       </Select>

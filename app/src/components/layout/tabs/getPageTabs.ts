@@ -5,15 +5,15 @@ export const getPageTabs = (
 ): IPageTab[] => {
   return [
     {
-      key: "metrics",
+      key: "journals",
       href: "/journals",
-      label: "Metrics",
+      label: "Journals",
       isSelected: selectedKey === "journals",
     },
     {
-      key: "activities",
+      key: "entries",
       href: "/activities",
-      label: "Activities",
+      label: "Entries",
       isSelected: selectedKey === "entries",
     },
   ];

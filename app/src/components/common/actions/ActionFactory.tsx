@@ -72,7 +72,7 @@ export class ActionFactory {
       hotkey: enableHotkeys ? "alt+enter" : undefined,
       key: `go-to-journal-${journalId}`,
       href: `/journals/${journalId}`,
-      label: "Go to metric",
+      label: "Go to journal",
       icon: null,
     };
   }
@@ -82,8 +82,8 @@ export class ActionFactory {
       hotkey: "alt+n",
       href: "/journals/create",
       icon: <AddOutlined fontSize="small" />,
-      label: "Add Metric",
-      key: "add_metric",
+      label: "Add journal",
+      key: "add_journal",
     };
   }
 

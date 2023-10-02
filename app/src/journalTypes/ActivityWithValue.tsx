@@ -13,7 +13,7 @@ export const ActivityWithValue: React.FC<{
   entry: IEntry;
 }> = ({ journal, entry, value }) => {
   return (
-    <Activity metric={journal} measurement={entry}>
+    <Activity journal={journal} entry={entry}>
       <Typography component={"span"}>{value}</Typography>
       <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
         {entry.notes ? ` - ${entry.notes}` : ""}

@@ -13,7 +13,7 @@ export const JournalNotes: React.FC<{
       defaultValue={journal.notes}
       onBlur={(event) => {
         editJournalMutation.mutate({
-          metric: {
+          journal: {
             ...journal,
             notes: event.target.value,
           },

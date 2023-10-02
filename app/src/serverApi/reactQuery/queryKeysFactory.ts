@@ -4,8 +4,8 @@ import { JournalType } from "../JournalType";
 const journals = "journals";
 
 export const queryKeysFactory = {
-  journals(searchText?: string, metricTypes?: JournalType[]) {
-    return [journals, "all", searchText ?? "", metricTypes?.join() ?? ""];
+  journals(searchText?: string, journalTypes?: JournalType[]) {
+    return [journals, "all", searchText ?? "", journalTypes?.join() ?? ""];
   },
 
   journal(journalId: string) {
@@ -53,16 +53,16 @@ export const queryKeysFactory = {
     return [journals, journalId, entryId];
   },
 
-  activeEntry(journalId: string, metricType: JournalType) {
-    return [journals, journalId, "entries", metricType, "get-active"];
+  activeEntry(journalId: string, journalType: JournalType) {
+    return [journals, journalId, "entries", journalType, "get-active"];
   },
 
-  activities(searchText?: string, metricTypes?: JournalType[]) {
+  activities(searchText?: string, journalTypes?: JournalType[]) {
     return [
       journals,
       "activities",
       searchText ?? "",
-      metricTypes?.join() ?? "",
+      journalTypes?.join() ?? "",
     ];
   },
 

@@ -8,7 +8,7 @@ import { useAppContext } from "../../../AppContext";
 export const useAddJournalMutation = (
   name: string,
   description: string,
-  metricType: JournalType,
+  journalType: JournalType,
   onAdded: (result: ICommandResult) => Promise<void>,
 ) => {
   const { setAppAlert } = useAppContext();
@@ -16,7 +16,7 @@ export const useAddJournalMutation = (
 
   return useMutation({
     mutationKey: queryKeysFactory.addJournal(),
-    mutationFn: () => ServerApi.addJournal(name, description, metricType),
+    mutationFn: () => ServerApi.addJournal(name, description, journalType),
     onSuccess: async (result: ICommandResult) => {
       await onAdded(result);
 

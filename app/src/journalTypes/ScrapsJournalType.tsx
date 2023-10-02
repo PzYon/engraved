@@ -20,7 +20,7 @@ export class ScrapsJournalType implements IJournalType {
 
   getActivity(journal: IJournal, entry: IEntry): React.ReactNode {
     return (
-      <Activity metric={journal} measurement={entry}>
+      <Activity journal={journal} entry={entry}>
         <Scrap
           scrap={entry as IScrapEntry}
           hideDate={true}
