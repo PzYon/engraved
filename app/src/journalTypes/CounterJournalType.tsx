@@ -5,7 +5,7 @@ import { IEntriesTableColumnDefinition } from "../components/details/entriesTabl
 import { IJournal } from "../serverApi/IJournal";
 import { IEntry } from "../serverApi/IEntry";
 import React from "react";
-import { ActivityWithValue } from "./ActivityWithValue";
+import { EntryWithValue } from "./EntryWithValue";
 
 export class CounterJournalType implements IJournalType {
   type = JournalType.Counter;
@@ -16,8 +16,8 @@ export class CounterJournalType implements IJournalType {
     return <PlusOneSharp style={{ backgroundColor: "#DFFFE3" }} />;
   }
 
-  getActivity(journal: IJournal, entry: IEntry): React.ReactNode {
-    return <ActivityWithValue value={"+1"} journal={journal} entry={entry} />;
+  getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
+    return <EntryWithValue value={"+1"} journal={journal} entry={entry} />;
   }
 
   getEntriesTableColumns(): IEntriesTableColumnDefinition[] {

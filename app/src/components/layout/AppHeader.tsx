@@ -85,7 +85,7 @@ export const AppHeader: React.FC = () => {
             <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
-            <Link to="/activities">
+            <Link to="/entries">
               <User user={user} />
             </Link>
           </ContentWrapper>

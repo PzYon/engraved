@@ -72,7 +72,7 @@ const JournalTypeMenuItem: React.FC<{
 }> = ({ journalType, label }) => {
   return (
     <MenuItemContainer>
-      <JournalTypeIcon type={journalType} style={IconStyle.Activity} />
+      <JournalTypeIcon type={journalType} style={IconStyle.Entries} />
       {label}
     </MenuItemContainer>
   );

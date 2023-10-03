@@ -13,7 +13,7 @@ export interface IJournalType {
 
   getIcon(): React.ReactNode;
 
-  getActivity(journal: IJournal, entry: IEntry): React.ReactNode;
+  getEntry(journal: IJournal, entry: IEntry): React.ReactNode;
 
   getEntriesTableColumns(): IEntriesTableColumnDefinition[];
 

@@ -12,7 +12,7 @@ export const getPageTabs = (
     },
     {
       key: "entries",
-      href: "/activities",
+      href: "/entries",
       label: "Entries",
       isSelected: selectedKey === "entries",
     },

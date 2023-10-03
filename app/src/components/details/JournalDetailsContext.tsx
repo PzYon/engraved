@@ -2,7 +2,7 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 import { IEntry } from "../../serverApi/IEntry";
 import { IJournal } from "../../serverApi/IJournal";
 import { useJournalQuery } from "../../serverApi/reactQuery/queries/useJournalQuery";
-import { useEntriesQuery } from "../../serverApi/reactQuery/queries/useEntriesQuery";
+import { useJournalEntriesQuery } from "../../serverApi/reactQuery/queries/useJournalEntriesQuery";
 
 export interface IDateConditions {
   from?: Date;
@@ -51,7 +51,7 @@ export const JournalContextProvider: React.FC<{
 
   const journal = useJournalQuery(journalId);
 
-  const entries = useEntriesQuery(
+  const entries = useJournalEntriesQuery(
     journalId,
     dateConditions,
     selectedAttributeValues,

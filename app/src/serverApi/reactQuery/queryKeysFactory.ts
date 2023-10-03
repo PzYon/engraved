@@ -28,7 +28,7 @@ export const queryKeysFactory = {
     return [journals, journalId, "threshold-values", dateConditions];
   },
 
-  entries(
+  journalEntries(
     journalId: string,
     dateConditions?: IDateConditions,
     attributeValues?: Record<string, string[]>,
@@ -57,13 +57,8 @@ export const queryKeysFactory = {
     return [journals, journalId, "entries", journalType, "get-active"];
   },
 
-  activities(searchText?: string, journalTypes?: JournalType[]) {
-    return [
-      journals,
-      "activities",
-      searchText ?? "",
-      journalTypes?.join() ?? "",
-    ];
+  entries(searchText?: string, journalTypes?: JournalType[]) {
+    return [journals, "entries", searchText ?? "", journalTypes?.join() ?? ""];
   },
 
   systemInfo() {

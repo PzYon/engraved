@@ -1,5 +1,5 @@
 ﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Queries.Entries.GetAll;
+using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Entries;
@@ -28,7 +28,7 @@ public class SearchAttributesQueryExecutor : IQueryExecutor<AttributeSearchResul
       throw new Exception("Journal not found.");
     }
 
-    var entriesQuery = new GetAllEntriesQuery { JournalId = _query.JournalId };
+    var entriesQuery = new GetAllJournalEntriesQuery { JournalId = _query.JournalId };
     IEntry[] entries = await _query.GetDispatcher().Query(entriesQuery);
 
     return _query

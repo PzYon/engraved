@@ -4,7 +4,7 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAll;
 
-public class GetAllEntriesQueryExecutor : IQueryExecutor<IEntry[]>
+public class GetAllEntriesQueryExecutor : IQueryExecutor<GetAllEntriesQueryResult>
 {
   public bool DisableCache => false;
 
@@ -15,31 +15,24 @@ public class GetAllEntriesQueryExecutor : IQueryExecutor<IEntry[]>
     _query = query;
   }
 
-  public async Task<IEntry[]> Execute(IRepository repository)
+  public async Task<GetAllEntriesQueryResult> Execute(IRepository repository)
   {
-    if (string.IsNullOrEmpty(_query.JournalId))
-    {
-      throw new InvalidQueryException<IEntry[]>(
-        _query,
-        $"{nameof(GetAllEntriesQuery.JournalId)} must be specified."
-      );
-    }
+    IJournal[] allJournals = await repository.GetAllJournals(null, null, 100);
+    string[]? allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
-    IJournal? journal = await repository.GetJournal(_query.JournalId);
-
-    if (journal == null)
-    {
-      throw new InvalidQueryException<IEntry[]>(
-        _query,
-        $"Journal with key \"{_query.JournalId}\" does not exist."
-      );
-    }
-
-    return await repository.GetAllEntries(
-      _query.JournalId,
-      _query.FromDate,
-      _query.ToDate,
-      _query.AttributeValues
+    IEntry[] allEntries = await repository.GetLastEditedEntries(
+      allJournalIds,
+      _query.SearchText,
+      _query.JournalTypes,
+      _query.Limit ?? 20
     );
+
+    string[] relevantJournalIds = allEntries.Select(e => e.ParentId).ToArray();
+
+    return new GetAllEntriesQueryResult
+    {
+      Journals = allJournals.Where(j => relevantJournalIds.Contains(j.Id)).ToArray(),
+      Entries = allEntries.ToArray()
+    };
   }
 }

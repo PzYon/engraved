@@ -5,7 +5,7 @@ import { IEntriesTableColumnDefinition } from "../components/details/entriesTabl
 import { IJournal } from "../serverApi/IJournal";
 import { IEntry } from "../serverApi/IEntry";
 import React from "react";
-import { Activity } from "./Activity";
+import { Entry } from "./Entry";
 import { Scrap } from "../components/details/scraps/Scrap";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
 
@@ -18,15 +18,15 @@ export class ScrapsJournalType implements IJournalType {
     return <DynamicFeedOutlined style={{ backgroundColor: "#DFEEFF" }} />;
   }
 
-  getActivity(journal: IJournal, entry: IEntry): React.ReactNode {
+  getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
     return (
-      <Activity journal={journal} entry={entry}>
+      <Entry journal={journal} entry={entry}>
         <Scrap
           scrap={entry as IScrapEntry}
           hideDate={true}
           withoutSection={true}
         />
-      </Activity>
+      </Entry>
     );
   }
 

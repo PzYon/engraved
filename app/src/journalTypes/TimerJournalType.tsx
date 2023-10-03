@@ -11,7 +11,7 @@ import { FormatDuration } from "../components/common/FormatDuration";
 import { IEntriesTableGroup } from "../components/details/entriesTable/IEntriesTableGroup";
 import { IJournal } from "../serverApi/IJournal";
 import React from "react";
-import { ActivityWithValue } from "./ActivityWithValue";
+import { EntryWithValue } from "./EntryWithValue";
 import { Typography } from "@mui/material";
 
 export class TimerJournalType implements IJournalType {
@@ -23,9 +23,9 @@ export class TimerJournalType implements IJournalType {
     return <TimerSharp style={{ backgroundColor: "#FFDFEC" }} />;
   }
 
-  getActivity(journal: IJournal, entry: IEntry): React.ReactNode {
+  getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
     return (
-      <ActivityWithValue
+      <EntryWithValue
         value={
           <>
             <FormatDate

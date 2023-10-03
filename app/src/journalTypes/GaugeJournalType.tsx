@@ -7,7 +7,7 @@ import { getValue } from "../components/details/chart/consolidation/consolidate"
 import { IEntriesTableGroup } from "../components/details/entriesTable/IEntriesTableGroup";
 import { IJournal } from "../serverApi/IJournal";
 import React from "react";
-import { ActivityWithValue } from "./ActivityWithValue";
+import { EntryWithValue } from "./EntryWithValue";
 import { IGaugeEntry } from "../serverApi/IGaugeEntry";
 
 export class GaugeJournalType implements IJournalType {
@@ -19,9 +19,9 @@ export class GaugeJournalType implements IJournalType {
     return <BarChartSharp style={{ backgroundColor: "#FFFFDF" }} />;
   }
 
-  getActivity(journal: IJournal, entry: IEntry): React.ReactNode {
+  getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
     return (
-      <ActivityWithValue
+      <EntryWithValue
         value={(entry as IGaugeEntry).value}
         journal={journal}
         entry={entry}

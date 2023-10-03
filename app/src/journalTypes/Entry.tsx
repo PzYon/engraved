@@ -8,7 +8,7 @@ import { JournalTypeIcon } from "../components/common/JournalTypeIcon";
 import { IconStyle } from "../components/common/Icon";
 import { Link } from "react-router-dom";
 
-export const Activity: React.FC<{
+export const Entry: React.FC<{
   journal: IJournal;
   entry: IEntry;
   children: React.ReactNode;
@@ -20,7 +20,7 @@ export const Activity: React.FC<{
           {
             key: "journal-type",
             node: (
-              <JournalTypeIcon type={journal.type} style={IconStyle.Activity} />
+              <JournalTypeIcon type={journal.type} style={IconStyle.Entries} />
             ),
             label: "",
           },

@@ -3,17 +3,17 @@ import { IJournal } from "../serverApi/IJournal";
 import { IEntry } from "../serverApi/IEntry";
 import { AttributeValues } from "../components/common/AttributeValues";
 import { styled, Typography } from "@mui/material";
-import { Activity } from "./Activity";
+import { Entry } from "./Entry";
 import { ActionGroup } from "../components/common/actions/ActionGroup";
 import { ActionFactory } from "../components/common/actions/ActionFactory";
 
-export const ActivityWithValue: React.FC<{
+export const EntryWithValue: React.FC<{
   value: React.ReactNode;
   journal: IJournal;
   entry: IEntry;
 }> = ({ journal, entry, value }) => {
   return (
-    <Activity journal={journal} entry={entry}>
+    <Entry journal={journal} entry={entry}>
       <Typography component={"span"}>{value}</Typography>
       <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
         {entry.notes ? ` - ${entry.notes}` : ""}
@@ -30,7 +30,7 @@ export const ActivityWithValue: React.FC<{
           ]}
         />
       </FooterContainer>
-    </Activity>
+    </Entry>
   );
 };
 

@@ -1,6 +1,6 @@
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Queries.Entries.GetAll;
+using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
@@ -23,7 +23,7 @@ public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?>
     {
       throw new InvalidQueryException<IEntry?>(
         _query,
-        $"{nameof(GetAllEntriesQuery.JournalId)} must be specified."
+        $"{nameof(GetAllJournalEntriesQuery.JournalId)} must be specified."
       );
     }
 

@@ -23,7 +23,7 @@ import { IThresholdValues } from "./IThresholdValues";
 import { IJournalThresholds } from "./IJournalThresholds";
 import { IJournalUiSettings } from "../components/details/edit/JournalUiSettings";
 import { LoadingHandler } from "./LoadingHandler";
-import { IGetActivitiesQueryResult } from "./IGetActivitiesQueryResult";
+import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -108,12 +108,12 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/entries/${journalId}/active`);
   }
 
-  static async getActivities(
+  static async getAllEntries(
     searchText: string,
     journalTypes: JournalType[],
-  ): Promise<IGetActivitiesQueryResult> {
+  ): Promise<IGetAllEntriesQueryResult> {
     const paramsString = this.getParamsString(searchText, journalTypes);
-    return await ServerApi.executeRequest(`/activities${paramsString}`);
+    return await ServerApi.executeRequest(`/entries${paramsString}`);
   }
 
   static async addJournal(
@@ -193,7 +193,7 @@ export class ServerApi {
     );
   }
 
-  static async getEntries(
+  static async getJournalEntries(
     journalId: string,
     attributeValues: IJournalAttributeValues,
     dateConditions: IDateConditions,

@@ -6,9 +6,9 @@ using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries.Activities.Get;
+namespace Engraved.Core.Application.Queries.Entries.GetAll;
 
-public class GetActivitiesQueryExecutorShould
+public class GetAllEntriesQueryExecutorShould
 {
   private InMemoryRepository _repo = null!;
   private FakeDateService _dateService = null!;
@@ -52,8 +52,8 @@ public class GetActivitiesQueryExecutorShould
       }
     );
 
-    var query = new GetActivitiesQuery { Limit = 2 };
-    GetActivitiesQueryResult result = (await new GetActivitiesQueryExecutor(query).Execute(_repo));
+    var query = new GetAllEntriesQuery { Limit = 2 };
+    GetAllEntriesQueryResult result = (await new GetAllEntriesQueryExecutor(query).Execute(_repo));
 
     Assert.AreEqual(2, result.Journals.Length);
     Assert.IsFalse(result.Journals.Select(m => m.Id).Contains("counter-journal-id"));

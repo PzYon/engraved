@@ -5,7 +5,7 @@ import { ServerApi } from "../../ServerApi";
 import { ApiError } from "../../ApiError";
 import { IDateConditions } from "../../../components/details/JournalDetailsContext";
 
-export const useEntriesQuery = (
+export const useJournalEntriesQuery = (
   journalId: string,
   dateConditions: IDateConditions,
   attributeValues: Record<string, string[]>,
@@ -13,7 +13,7 @@ export const useEntriesQuery = (
   const { setAppAlert } = useAppContext();
 
   const { data: entries } = useQuery({
-    queryKey: queryKeysFactory.entries(
+    queryKey: queryKeysFactory.journalEntries(
       journalId,
       dateConditions,
       attributeValues,
@@ -21,7 +21,11 @@ export const useEntriesQuery = (
 
     queryFn: () =>
       dateConditions
-        ? ServerApi.getEntries(journalId, attributeValues, dateConditions)
+        ? ServerApi.getJournalEntries(
+            journalId,
+            attributeValues,
+            dateConditions,
+          )
         : Promise.resolve([]),
 
     onError: (e: ApiError) => {

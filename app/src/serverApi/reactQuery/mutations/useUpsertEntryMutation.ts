@@ -41,7 +41,7 @@ export const useUpsertEntryMutation = (
 
       await queryClient.invalidateQueries(queryKeysFactory.journal(journalId));
       await queryClient.invalidateQueries(queryKeysFactory.journals());
-      await queryClient.invalidateQueries(queryKeysFactory.activities());
+      await queryClient.invalidateQueries(queryKeysFactory.entries());
     },
 
     onError: (error: unknown) => {
@@ -55,7 +55,7 @@ export const useUpsertEntryMutation = (
 
   function updateExistingEntryInCache(command: IUpsertEntryCommand) {
     queryClient.setQueryData(
-      queryKeysFactory.entries(journalId),
+      queryKeysFactory.journalEntries(journalId),
       (entries: IEntry[]) => {
         if (!entries) {
           return entries;
