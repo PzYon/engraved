@@ -4,7 +4,7 @@ public class TestMongoRepositorySettings : IMongoRepositorySettings
 {
   public string MongoDbConnectionString => "mongodb://localhost:27017";
   public string DatabaseName => "metrix_unit_test";
-  public string MetricsCollectionName => "metrics";
-  public string MeasurementsCollectionName => "measurements";
+  public string JournalsCollectionName => "journals";
+  public string EntriesCollectionName => "entries";
   public string UsersCollectionName => "users";
 }

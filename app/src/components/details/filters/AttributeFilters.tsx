@@ -6,22 +6,22 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
-import { useMetricContext } from "../MetricDetailsContext";
+import { useJournalContext } from "../JournalDetailsContext";
 
 const noElementsValue = "-";
 
 export const AttributeFilters: React.FC = () => {
-  const { selectedAttributeValues, setSelectedAttributeValues, metric } =
-    useMetricContext();
+  const { selectedAttributeValues, setSelectedAttributeValues, journal } =
+    useJournalContext();
 
-  if (!Object.keys(metric.attributes || {}).length) {
+  if (!Object.keys(journal.attributes || {}).length) {
     return null;
   }
 
   return (
     <>
-      {Object.keys(metric.attributes).map((attributeKey) => {
-        const attribute = metric.attributes[attributeKey];
+      {Object.keys(journal.attributes).map((attributeKey) => {
+        const attribute = journal.attributes[attributeKey];
 
         const selectedValues = selectedAttributeValues?.[attributeKey];
         const keys: string[] = selectedValues?.length
@@ -30,12 +30,12 @@ export const AttributeFilters: React.FC = () => {
 
         return (
           <FormControl key={attributeKey} margin="none" sx={{ flexGrow: 1 }}>
-            <InputLabel id={`metric-attribute-${attributeKey}-label`}>
+            <InputLabel id={`journal-attribute-${attributeKey}-label`}>
               {attribute.name}
             </InputLabel>
             <Select
-              id={`metric-attribute-${attributeKey}`}
-              labelId={`metric-attribute-${attributeKey}-label`}
+              id={`journal-attribute-${attributeKey}`}
+              labelId={`journal-attribute-${attributeKey}-label`}
               label={attribute.name}
               multiple
               value={keys}

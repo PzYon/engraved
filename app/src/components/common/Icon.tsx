@@ -4,7 +4,7 @@ import { styled } from "@mui/material";
 export enum IconStyle {
   Overview,
   PageTitle,
-  Activity,
+  Entries,
 }
 
 export const Icon: React.FC<{
@@ -14,8 +14,8 @@ export const Icon: React.FC<{
   const Host =
     style === IconStyle.Overview
       ? OverviewHost
-      : style === IconStyle.Activity
-      ? ActivityHost
+      : style === IconStyle.Entries
+      ? EntryHost
       : PageTitleHost;
 
   return (
@@ -53,7 +53,7 @@ const OverviewHost = styled("span")`
   }
 `;
 
-const ActivityHost = styled("span")`
+const EntryHost = styled("span")`
   svg {
     border-radius: 100%;
     border: 1px solid ${(p) => p.theme.palette.primary.main};

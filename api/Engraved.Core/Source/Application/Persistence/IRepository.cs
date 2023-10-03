@@ -1,5 +1,5 @@
-using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 
@@ -15,35 +15,35 @@ public interface IRepository
 
   Task<IUser[]> GetAllUsers();
 
-  Task<IMetric[]> GetAllMetrics(string? searchText = null, MetricType[]? metricTypes = null, int? limit = null);
+  Task<IJournal[]> GetAllJournals(string? searchText = null, JournalType[]? journalTypes = null, int? limit = null);
 
-  Task<IMetric?> GetMetric(string metricId);
+  Task<IJournal?> GetJournal(string journalId);
 
-  Task<UpsertResult> UpsertMetric(IMetric metric);
+  Task<UpsertResult> UpsertJournal(IJournal journal);
 
-  Task DeleteMetric(string metricId);
+  Task DeleteJournal(string journalId);
 
-  Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions);
+  Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions);
 
-  Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
+  Task<IEntry[]> GetAllEntries(
+    string journalId,
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
   );
 
-  Task<IMeasurement[]> GetLastEditedMeasurements(
-    string[]? metricIds,
+  Task<IEntry[]> GetLastEditedEntries(
+    string[]? journalIds,
     string? searchText,
-    MetricType[]? metricTypes,
+    JournalType[]? journalTypes,
     int limit
   );
 
-  Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement;
+  Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;
 
-  Task DeleteMeasurement(string measurementId);
+  Task DeleteEntry(string entryId);
 
-  Task<IMeasurement?> GetMeasurement(string measurementId);
+  Task<IEntry?> GetEntry(string entryId);
 
   Task WakeMeUp();
 }

@@ -12,5 +12,5 @@ public interface IUser
 
   DateTime? LastLoginDate { get; set; }
 
-  List<string> FavoriteMetricIds { get; set; }
+  List<string> FavoriteJournalIds { get; set; }
 }

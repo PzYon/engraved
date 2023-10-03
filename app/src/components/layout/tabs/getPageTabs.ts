@@ -1,20 +1,20 @@
 import { IPageTab } from "./IPageTab";
 
 export const getPageTabs = (
-  selectedKey: "metrics" | "activities",
+  selectedKey: "journals" | "entries",
 ): IPageTab[] => {
   return [
     {
-      key: "metrics",
-      href: "/metrics",
-      label: "Metrics",
-      isSelected: selectedKey === "metrics",
+      key: "journals",
+      href: "/journals",
+      label: "Journals",
+      isSelected: selectedKey === "journals",
     },
     {
-      key: "activities",
-      href: "/activities",
-      label: "Activities",
-      isSelected: selectedKey === "activities",
+      key: "entries",
+      href: "/entries",
+      label: "Entries",
+      isSelected: selectedKey === "entries",
     },
   ];
 };

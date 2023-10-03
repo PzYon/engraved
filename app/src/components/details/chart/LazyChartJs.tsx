@@ -23,7 +23,7 @@ import annotationPlugin from "chartjs-plugin-annotation";
 import { createChart } from "./createChart";
 import { IChartProps } from "./IChartProps";
 import { useTheme } from "@mui/material/styles";
-import { useMetricContext } from "../MetricDetailsContext";
+import { useJournalContext } from "../JournalDetailsContext";
 
 ChartJS.register(
   ArcElement,
@@ -44,8 +44,8 @@ ChartJS.register(
 );
 
 const LazyChartJs: React.FC<IChartProps> = ({
-  measurements,
-  metric,
+  entries,
+  journal,
   groupByTime,
   groupByAttribute,
   chartType,
@@ -57,14 +57,14 @@ const LazyChartJs: React.FC<IChartProps> = ({
     ChartJS.defaults.font.size = typography.htmlFontSize;
   }, []);
 
-  const { toggleAttributeValue } = useMetricContext();
+  const { toggleAttributeValue } = useJournalContext();
 
   const chart = useMemo(
     () =>
-      measurements
+      entries
         ? createChart(
-            measurements,
-            metric,
+            entries,
+            journal,
             groupByTime,
             groupByAttribute,
             toggleAttributeValue,
@@ -72,7 +72,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
             palette.primary.main,
           )
         : null,
-    [measurements, groupByTime, groupByAttribute, chartType],
+    [entries, groupByTime, groupByAttribute, chartType],
   );
 
   return chart ? <Chart key={chartType} {...chart} /> : null;

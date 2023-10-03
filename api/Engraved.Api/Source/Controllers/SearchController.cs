@@ -20,13 +20,13 @@ public class SearchController : ControllerBase
     _searchIndex = searchIndex;
   }
 
-  [Route("metric_attributes/{metricId}")]
+  [Route("journal_attributes/{journalId}")]
   [HttpGet]
-  public async Task<AttributeSearchResult[]> SearchMetricAttributes(string metricId, string searchText)
+  public async Task<AttributeSearchResult[]> SearchJournalAttributes(string journalId, string searchText)
   {
     var searchAttributesQuery = new SearchAttributesQuery
     {
-      MetricId = metricId,
+      JournalId = journalId,
       SearchText = searchText
     };
 

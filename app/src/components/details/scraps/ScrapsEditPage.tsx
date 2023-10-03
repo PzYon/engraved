@@ -1,32 +1,32 @@
 import React, { useState } from "react";
-import { useMetricContext } from "../MetricDetailsContext";
+import { useJournalContext } from "../JournalDetailsContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
-import { MetricPageTitle } from "../MetricPageTitle";
+import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { EditCommonProperties } from "../edit/EditCommonProperties";
-import { useEditMetricMutation } from "../../../serverApi/reactQuery/mutations/useEditMetricMutation";
+import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { EditPageFooterButtons } from "../../common/EditPageFooterButtons";
 
 export const ScrapsEditPage: React.FC = () => {
   const navigate = useNavigate();
-  const { metric } = useMetricContext();
+  const { journal } = useJournalContext();
 
-  const [name, setName] = useState(metric.name);
-  const [description, setDescription] = useState(metric.description);
+  const [name, setName] = useState(journal.name);
+  const [description, setDescription] = useState(journal.description);
 
-  const editMetricMutation = useEditMetricMutation(metric.id);
+  const editJournalMutation = useEditJournalMutation(journal.id);
 
   const disableSave =
-    name === metric.name && description === metric.description;
+    name === journal.name && description === journal.description;
 
   const navigateToViewPage = () => navigate("./..");
 
   return (
     <Page
-      title={<MetricPageTitle metric={metric} />}
+      title={<JournalPageTitle journal={journal} />}
       subTitle="Edit"
-      documentTitle={`Edit ${metric.name}`}
+      documentTitle={`Edit ${journal.name}`}
       actions={[
         ...getCommonEditModeActions(navigateToViewPage, save, disableSave),
       ]}
@@ -46,8 +46,8 @@ export const ScrapsEditPage: React.FC = () => {
   );
 
   async function save() {
-    await editMetricMutation.mutateAsync({
-      metric: { ...metric, name, description },
+    await editJournalMutation.mutateAsync({
+      journal: { ...journal, name, description },
       onSuccess: navigateToViewPage,
     });
   }

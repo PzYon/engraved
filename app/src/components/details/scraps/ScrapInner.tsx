@@ -1,14 +1,11 @@
 import React, { CSSProperties, useState } from "react";
-import {
-  IScrapMeasurement,
-  ScrapType,
-} from "../../../serverApi/IScrapMeasurement";
+import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { ScrapListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
 
 export const ScrapInner: React.FC<{
-  scrap: IScrapMeasurement;
+  scrap: IScrapEntry;
   isEditMode: boolean;
   setIsEditMode: (value: boolean) => void;
   title: string;

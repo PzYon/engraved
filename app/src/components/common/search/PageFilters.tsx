@@ -1,6 +1,6 @@
 import React from "react";
 import { FiltersColumn, FiltersRow } from "../../details/filters/FiltersRow";
-import { PageMetricTypesSelector } from "./PageMetricTypesSelector";
+import { PageJournalTypesSelector } from "./PageJournalTypesSelector";
 import { DeviceWidth, useDeviceWidth } from "../useDeviceWidth";
 import { PageSearchBox } from "./PageSearchBox";
 import { PageSection } from "../../layout/pages/PageSection";
@@ -14,7 +14,7 @@ export const PageFilters: React.FC = () => {
     <PageSection>
       <Row style={{ marginBottom: 0 }}>
         <PageSearchBox />
-        <PageMetricTypesSelector />
+        <PageJournalTypesSelector />
       </Row>
     </PageSection>
   );

@@ -1,10 +1,10 @@
-import { IMeasurement } from "./IMeasurement";
-import { IMetric } from "./IMetric";
-import { MetricType } from "./MetricType";
-import { IMetricAttributes } from "./IMetricAttributes";
-import { IAddMetricCommand } from "./commands/IAddMetricCommand";
-import { IUpsertMeasurementCommand } from "./commands/IUpsertMeasurementCommand";
-import { IEditMetricCommand } from "./commands/IEditMetricCommand";
+import { IEntry } from "./IEntry";
+import { IJournal } from "./IJournal";
+import { JournalType } from "./JournalType";
+import { IJournalAttributes } from "./IJournalAttributes";
+import { IAddJournalCommand } from "./commands/IAddJournalCommand";
+import { IUpsertEntryCommand } from "./commands/IUpsertEntryCommand";
+import { IEditJournalCommand } from "./commands/IEditJournalCommand";
 import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
@@ -14,16 +14,16 @@ import { AuthStorage } from "./authentication/AuthStorage";
 import { ApiError } from "./ApiError";
 import { ISystemInfo } from "./ISystemInfo";
 import { IUpdatePermissions } from "./IUpdatePermissions";
-import { IMetricAttributeValues } from "./IMetricAttributeValues";
+import { IJournalAttributeValues } from "./IJournalAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
-import { IDateConditions } from "../components/details/MetricDetailsContext";
+import { IDateConditions } from "../components/details/JournalDetailsContext";
 import { toDateOnlyIsoString } from "../util/utils";
 import { IAttributeSearchResult } from "./IAttributeSearchResult";
 import { IThresholdValues } from "./IThresholdValues";
-import { IMetricThresholds } from "./IMetricThresholds";
-import { IMetricUiSettings } from "../components/details/edit/MetricUiSettings";
+import { IJournalThresholds } from "./IJournalThresholds";
+import { IJournalUiSettings } from "../components/details/edit/JournalUiSettings";
 import { LoadingHandler } from "./LoadingHandler";
-import { IGetActivitiesQueryResult } from "./IGetActivitiesQueryResult";
+import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
 
@@ -92,55 +92,55 @@ export class ServerApi {
     return authResult;
   }
 
-  static async getMetrics(
+  static async getJournals(
     searchText?: string,
-    metricTypes?: MetricType[],
-  ): Promise<IMetric[]> {
-    const paramsString = this.getParamsString(searchText, metricTypes);
-    return await ServerApi.executeRequest(`/metrics${paramsString}`);
+    journalTypes?: JournalType[],
+  ): Promise<IJournal[]> {
+    const paramsString = this.getParamsString(searchText, journalTypes);
+    return await ServerApi.executeRequest(`/journals${paramsString}`);
   }
 
-  static async getMetric(metricId: string): Promise<IMetric> {
-    return await ServerApi.executeRequest(`/metrics/${metricId}`);
+  static async getJournal(journalId: string): Promise<IJournal> {
+    return await ServerApi.executeRequest(`/journals/${journalId}`);
   }
 
-  static async getActiveMeasurement(metricId: string): Promise<IMeasurement> {
-    return await ServerApi.executeRequest(`/measurements/${metricId}/active`);
+  static async getActiveEntry(journalId: string): Promise<IEntry> {
+    return await ServerApi.executeRequest(`/entries/${journalId}/active`);
   }
 
-  static async getActivities(
+  static async getAllEntries(
     searchText: string,
-    metricTypes: MetricType[],
-  ): Promise<IGetActivitiesQueryResult> {
-    const paramsString = this.getParamsString(searchText, metricTypes);
-    return await ServerApi.executeRequest(`/activities${paramsString}`);
+    journalTypes: JournalType[],
+  ): Promise<IGetAllEntriesQueryResult> {
+    const paramsString = this.getParamsString(searchText, journalTypes);
+    return await ServerApi.executeRequest(`/entries${paramsString}`);
   }
 
-  static async addMetric(
+  static async addJournal(
     name: string,
     description: string,
-    type: MetricType,
+    type: JournalType,
   ): Promise<ICommandResult> {
-    const payload: IAddMetricCommand = {
+    const payload: IAddJournalCommand = {
       name: name,
       description: description,
       type: type,
     };
 
-    return await ServerApi.executeRequest("/metrics", "POST", payload);
+    return await ServerApi.executeRequest("/journals", "POST", payload);
   }
 
-  static async editMetric(
-    metricId: string,
+  static async editJournal(
+    journalId: string,
     name: string,
     description: string,
     notes: string,
-    attributes: IMetricAttributes,
-    thresholds: IMetricThresholds,
-    uiSettings: IMetricUiSettings | string,
+    attributes: IJournalAttributes,
+    thresholds: IJournalThresholds,
+    uiSettings: IJournalUiSettings | string,
   ): Promise<ICommandResult> {
-    const payload: IEditMetricCommand = {
-      metricId: metricId,
+    const payload: IEditJournalCommand = {
+      journalId: journalId,
       name: name,
       description: description,
       notes: notes,
@@ -154,26 +154,26 @@ export class ServerApi {
       },
     };
 
-    return await ServerApi.executeRequest("/metrics/", "PUT", payload);
+    return await ServerApi.executeRequest("/journals/", "PUT", payload);
   }
 
-  static async deleteMetric(metricId: string): Promise<unknown> {
-    return await ServerApi.executeRequest(`/metrics/${metricId}/`, "DELETE");
+  static async deleteJournal(journalId: string): Promise<unknown> {
+    return await ServerApi.executeRequest(`/journals/${journalId}/`, "DELETE");
   }
 
-  static async modifyMetricPermissions(
-    metricId: string,
+  static async modifyJournalPermissions(
+    journalId: string,
     permissions: IUpdatePermissions,
   ): Promise<unknown> {
     return await ServerApi.executeRequest(
-      `/metrics/${metricId}/permissions`,
+      `/journals/${journalId}/permissions`,
       "PUT",
       permissions,
     );
   }
 
   static async getThresholdValues(
-    metricId: string,
+    journalId: string,
     dateConditions: IDateConditions,
   ): Promise<IThresholdValues> {
     const urlParams: string[] = [];
@@ -189,15 +189,15 @@ export class ServerApi {
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";
 
     return await ServerApi.executeRequest(
-      `/metrics/${metricId}/threshold_values${params}`,
+      `/journals/${journalId}/threshold_values${params}`,
     );
   }
 
-  static async getMeasurements(
-    metricId: string,
-    attributeValues: IMetricAttributeValues,
+  static async getJournalEntries(
+    journalId: string,
+    attributeValues: IJournalAttributeValues,
     dateConditions: IDateConditions,
-  ): Promise<IMeasurement[]> {
+  ): Promise<IEntry[]> {
     const attributeValuesString = stringifyAttributeValues(attributeValues);
 
     const urlParams: string[] = [];
@@ -216,50 +216,42 @@ export class ServerApi {
 
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";
 
-    return await ServerApi.executeRequest(`/measurements/${metricId}${params}`);
+    return await ServerApi.executeRequest(`/entries/${journalId}${params}`);
   }
 
-  static async upsertMeasurement(
-    command: IUpsertMeasurementCommand,
+  static async upsertEntry(
+    command: IUpsertEntryCommand,
     urlSegment: string,
   ): Promise<ICommandResult> {
     return await ServerApi.executeRequest(
-      `/measurements/${urlSegment}`,
+      `/entries/${urlSegment}`,
       "POST",
       command,
     );
   }
 
-  static async deleteMeasurement(measurementId: string): Promise<void> {
+  static async deleteEntry(entryId: string): Promise<void> {
     return await ServerApi.executeRequest(
-      `/measurements/${measurementId}`,
+      `/entries/${entryId}`,
       "DELETE",
       null,
     );
   }
 
-  static async moveMeasurement(measurementId: string, targetMetricId: string) {
+  static async moveEntry(entryId: string, targetJournalId: string) {
     return await ServerApi.executeRequest(
-      `/measurements/${measurementId}/move/${targetMetricId}`,
+      `/entries/${entryId}/move/${targetJournalId}`,
       "PUT",
       null,
     );
   }
 
-  static async searchMetricAttributes(
-    metricId: string,
+  static async searchJournalAttributes(
+    journalId: string,
     searchText: string,
   ): Promise<IAttributeSearchResult[]> {
     return await ServerApi.executeRequest(
-      `/search/metric_attributes/${metricId}?searchText=${searchText}`,
-      "GET",
-      null,
-    );
-  }
-
-  static async searchMeasurements(searchText: string): Promise<IMeasurement[]> {
-    return await ServerApi.executeRequest(
-      `/search/measurements?searchText=${searchText}`,
+      `/search/journal_attributes/${journalId}?searchText=${searchText}`,
       "GET",
       null,
     );
@@ -331,7 +323,7 @@ export class ServerApi {
 
   private static getParamsString(
     searchText: string,
-    metricTypes: MetricType[],
+    journalTypes: JournalType[],
   ) {
     const params: string[] = [];
 
@@ -339,8 +331,8 @@ export class ServerApi {
       params.push(`searchText=${searchText}`);
     }
 
-    if (metricTypes?.length) {
-      params.push(`metricTypes=${metricTypes.join(",")}`);
+    if (journalTypes?.length) {
+      params.push(`journalTypes=${journalTypes.join(",")}`);
     }
 
     return params.length ? `?${params.join("&")}` : "";

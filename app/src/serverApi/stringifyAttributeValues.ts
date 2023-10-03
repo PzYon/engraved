@@ -1,7 +1,7 @@
-import { IMetricAttributeValues } from "./IMetricAttributeValues";
+import { IJournalAttributeValues } from "./IJournalAttributeValues";
 
 export function stringifyAttributeValues(
-  attributeValues: IMetricAttributeValues,
+  attributeValues: IJournalAttributeValues,
 ): string {
   return Object.keys(attributeValues)
     .map((attributeKey) => {

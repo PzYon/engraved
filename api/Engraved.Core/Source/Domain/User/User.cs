@@ -12,5 +12,5 @@ public class User : IUser
 
   public DateTime? LastLoginDate { get; set; }
 
-  public List<string> FavoriteMetricIds { get; set; } = new();
+  public List<string> FavoriteJournalIds { get; set; } = new();
 }

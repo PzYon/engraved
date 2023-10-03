@@ -12,7 +12,5 @@ public class CommandResult
     AffectedUserIds = affectedUserIds;
   }
 
-  public CommandResult()
-  {
-  }
+  public CommandResult() { }
 }

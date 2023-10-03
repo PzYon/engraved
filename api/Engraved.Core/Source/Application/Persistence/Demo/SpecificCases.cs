@@ -1,13 +1,13 @@
-﻿using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Persistence.Demo;
 
 public class SpecificCase
 {
-  public IMetric Metric { get; set; } = null!;
+  public IJournal Journal { get; set; } = null!;
 
-  public List<IMeasurement> Measurements { get; } = new();
+  public List<IEntry> Entries { get; } = new();
 }
 
 public static class SpecificCases
@@ -16,17 +16,17 @@ public static class SpecificCases
   {
     return new SpecificCase
     {
-      Metric = new CounterMetric
+      Journal = new CounterJournal
       {
         Name = "Date Edge Case"
       },
-      Measurements =
+      Entries =
       {
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = new DateTime(2022, 3, 31, 21, 23, 0, DateTimeKind.Utc)
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = new DateTime(2022, 4, 1, 2, 1, 0, DateTimeKind.Utc)
         }
@@ -42,15 +42,15 @@ public static class SpecificCases
 
     return new SpecificCase
     {
-      Metric = new CounterMetric
+      Journal = new CounterJournal
       {
         Name = "Migraine Medicine",
         Description = "How many migraine medicines have been taken.",
-        Attributes = new Dictionary<string, MetricAttribute>
+        Attributes = new Dictionary<string, JournalAttribute>
         {
           {
             "medicine",
-            new MetricAttribute
+            new JournalAttribute
             {
               Name = "Medicine Type",
               Values =
@@ -63,52 +63,52 @@ public static class SpecificCases
           }
         }
       },
-      Measurements =
+      Entries =
       {
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-30),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-28),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-10),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-5),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { eletriptanKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-3),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { imigranKey } } }
         },
-        new CounterMeasurement
+        new CounterEntry
         {
           DateTime = DateTime.UtcNow.AddDays(-3),
-          MetricAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
+          JournalAttributeValues = new Dictionary<string, string[]> { { "medicine", new[] { irfenKey } } }
         }
       }
     };

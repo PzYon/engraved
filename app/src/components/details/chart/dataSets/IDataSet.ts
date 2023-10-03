@@ -1,6 +1,6 @@
-import { ITransformedMeasurement } from "../transformation/ITransformedMeasurement";
+import { ITransformedEntry } from "../transformation/ITransformedEntry";
 
 export interface IDataSet {
   label: string;
-  data: ITransformedMeasurement[];
+  data: ITransformedEntry[];
 }

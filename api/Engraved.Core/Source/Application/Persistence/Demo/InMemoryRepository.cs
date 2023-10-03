@@ -1,5 +1,5 @@
-﻿using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 
@@ -9,9 +9,9 @@ public class InMemoryRepository : IRepository
 {
   public List<IUser> Users { get; } = new();
 
-  public List<IMeasurement> Measurements { get; } = new();
+  public List<IEntry> Entries { get; } = new();
 
-  public List<IMetric> Metrics { get; } = new();
+  public List<IJournal> Journals { get; } = new();
 
   public Task<IUser?> GetUser(string name)
   {
@@ -45,133 +45,132 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(Users.Select(u => u.Copy()).ToArray());
   }
 
-  public Task<IMetric[]> GetAllMetrics(string? searchText = null, MetricType[]? metricTypes = null, int? limit = null)
+  public Task<IJournal[]> GetAllJournals(
+    string? searchText = null,
+    JournalType[]? journalTypes = null,
+    int? limit = null
+  )
   {
     // note: conditions are currently ignored, as they are not (yet?) needed for these in memory tests.
-    return Task.FromResult(Metrics.ToArray());
+    return Task.FromResult(Journals.ToArray());
   }
 
-  public Task<IMetric[]> GetAllMetrics(string? searchText, int? limit)
+  public Task<IJournal?> GetJournal(string journalId)
   {
-    return Task.FromResult(Metrics.Select(m => m.Copy()).Take(limit ?? 20).ToArray());
+    return Task.FromResult(Journals.FirstOrDefault(m => m.Id == journalId).Copy());
   }
 
-  public Task<IMetric?> GetMetric(string metricId)
-  {
-    return Task.FromResult(Metrics.FirstOrDefault(m => m.Id == metricId).Copy());
-  }
-
-  public Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
+  public Task<IEntry[]> GetAllEntries(
+    string journalId,
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
   )
   {
     return Task.FromResult(
-      Measurements.Where(m => m.MetricId == metricId)
+      Entries.Where(m => m.ParentId == journalId)
         .Select(m => m.Copy())
         .ToArray()
     );
   }
 
-  public Task<IMeasurement[]> GetLastEditedMeasurements(
-    string[]? metricIds,
+  public Task<IEntry[]> GetLastEditedEntries(
+    string[]? journalIds,
     string? searchText,
-    MetricType[]? metricTypes,
+    JournalType[]? journalTypes,
     int limit
   )
   {
     return Task.FromResult(
-      Measurements.OrderByDescending(m => m.DateTime)
-        .Where(m => (metricIds ?? Enumerable.Empty<string>()).Contains(m.MetricId))
+      Entries.OrderByDescending(m => m.DateTime)
+        .Where(m => (journalIds ?? Enumerable.Empty<string>()).Contains(m.ParentId))
         .Take(limit)
         .ToArray()
     );
   }
 
-  public Task<UpsertResult> UpsertMetric(IMetric metric)
+  public Task<UpsertResult> UpsertJournal(IJournal journal)
   {
-    if (string.IsNullOrEmpty(metric.Id))
+    if (string.IsNullOrEmpty(journal.Id))
     {
-      metric.Id = GenerateId();
+      journal.Id = GenerateId();
     }
     else
     {
-      RemoveMetric(metric);
+      RemoveJournal(journal);
     }
 
-    Metrics.Add(metric.Copy());
+    Journals.Add(journal.Copy());
 
-    return Task.FromResult(new UpsertResult { EntityId = metric.Id });
+    return Task.FromResult(new UpsertResult { EntityId = journal.Id });
   }
 
-  public async Task DeleteMetric(string metricId)
+  public async Task DeleteJournal(string journalId)
   {
-    if (string.IsNullOrEmpty(metricId))
+    if (string.IsNullOrEmpty(journalId))
     {
       return;
     }
 
-    IMetric? metric = await GetMetric(metricId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
       return;
     }
 
-    Metrics.Remove(metric);
+    Journals.Remove(journal);
   }
 
-  public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
+  public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
   {
-    IMetric? metric = await GetMetric(metricId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
       return;
     }
 
     var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUser);
-    await permissionsEnsurer.EnsurePermissions(metric, permissions);
+    await permissionsEnsurer.EnsurePermissions(journal, permissions);
 
-    await UpsertMetric(metric);
+    await UpsertJournal(journal);
   }
 
-  public async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
-    where TMeasurement : IMeasurement
+  public async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
+    where TEntry : IEntry
   {
-    if (string.IsNullOrEmpty(measurement.Id))
+    if (string.IsNullOrEmpty(entry.Id))
     {
-      measurement.Id = GenerateId();
+      entry.Id = GenerateId();
     }
     else
     {
-      await DeleteMeasurement(measurement.Id);
+      await DeleteEntry(entry.Id);
     }
 
-    Measurements.Add(measurement.Copy());
+    Entries.Add(entry.Copy());
 
-    return new UpsertResult { EntityId = measurement.Id };
+    return new UpsertResult { EntityId = entry.Id };
   }
 
-  public async Task DeleteMeasurement(string measurementId)
+  public async Task DeleteEntry(string entryId)
   {
-    if (string.IsNullOrEmpty(measurementId))
+    if (string.IsNullOrEmpty(entryId))
     {
       return;
     }
 
-    IMeasurement? measurement = await GetMeasurement(measurementId);
-    if (measurement == null)
+    IEntry? entry = await GetEntry(entryId);
+    if (entry == null)
     {
       return;
     }
 
-    Measurements.Remove(measurement);
+    Entries.Remove(entry);
   }
 
-  public Task<IMeasurement?> GetMeasurement(string measurementId)
+  public Task<IEntry?> GetEntry(string entryId)
   {
-    return Task.FromResult(Measurements.FirstOrDefault(m => m.Id == measurementId));
+    return Task.FromResult(Entries.FirstOrDefault(m => m.Id == entryId));
   }
 
   public Task WakeMeUp()
@@ -179,25 +178,20 @@ public class InMemoryRepository : IRepository
     return Task.CompletedTask;
   }
 
-  public Task<IMeasurement[]> SearchMeasurements(string searchText)
+  private void RemoveJournal<TJournal>(TJournal journal) where TJournal : IJournal
   {
-    throw new NotImplementedException();
-  }
-
-  private void RemoveMetric<TMetric>(TMetric metric) where TMetric : IMetric
-  {
-    if (string.IsNullOrEmpty(metric.Id))
+    if (string.IsNullOrEmpty(journal.Id))
     {
       return;
     }
 
-    IMetric? firstOrDefault = Metrics.FirstOrDefault(m => m.Id == metric.Id);
+    IJournal? firstOrDefault = Journals.FirstOrDefault(j => j.Id == journal.Id);
     if (firstOrDefault == null)
     {
       return;
     }
 
-    Metrics.Remove(firstOrDefault);
+    Journals.Remove(firstOrDefault);
   }
 
   private void RemoveUser(IUser user)
@@ -216,7 +210,7 @@ public class InMemoryRepository : IRepository
     Users.Remove(firstOrDefault);
   }
 
-  private string GenerateId()
+  private static string GenerateId()
   {
     return Guid.NewGuid().ToString("N");
   }

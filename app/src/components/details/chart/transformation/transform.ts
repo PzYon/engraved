@@ -1,36 +1,36 @@
-import { IMeasurement } from "../../../../serverApi/IMeasurement";
-import { IMetric } from "../../../../serverApi/IMetric";
+import { IEntry } from "../../../../serverApi/IEntry";
+import { IJournal } from "../../../../serverApi/IJournal";
 import { consolidate, getValue } from "../consolidation/consolidate";
 import { GroupByTime } from "../consolidation/GroupByTime";
-import { ITransformedMeasurement } from "./ITransformedMeasurement";
-import { MetricTypeFactory } from "../../../../metricTypes/MetricTypeFactory";
+import { ITransformedEntry } from "./ITransformedEntry";
+import { JournalTypeFactory } from "../../../../journalTypes/JournalTypeFactory";
 
 export function transform(
-  measurements: IMeasurement[],
-  metric: IMetric,
+  entries: IEntry[],
+  journal: IJournal,
   groupBy: GroupByTime,
-): ITransformedMeasurement[] {
+): ITransformedEntry[] {
   if (
-    MetricTypeFactory.create(metric.type).isGroupable &&
+    JournalTypeFactory.create(journal.type).isGroupable &&
     groupBy !== GroupByTime.None
   ) {
-    return consolidate(measurements, groupBy).map((m) => {
+    return consolidate(entries, groupBy).map((m) => {
       const month = m.groupKey.month - 1;
       const day = m.groupKey.day || 1;
 
       return {
         x: new Date(m.groupKey.year, month, day),
         y: m.value,
-        measurements: m.measurements,
+        entries: m.entries,
       };
     });
   }
 
-  return measurements.map((m) => {
+  return entries.map((m) => {
     return {
       x: new Date(m.dateTime),
       y: getValue(m),
-      measurements: [m],
+      entries: [m],
     };
   });
 }

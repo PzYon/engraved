@@ -1,5 +1,5 @@
-﻿using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+﻿using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 
@@ -41,97 +41,101 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
       .ToArray();
   }
 
-  public async Task<IMetric[]> GetAllMetrics(string? searchText, MetricType[]? metricTypes = null, int? limit = null)
+  public async Task<IJournal[]> GetAllJournals(
+    string? searchText,
+    JournalType[]? journalTypes = null,
+    int? limit = null
+  )
   {
-    IMetric[] allMetrics = await _repository.GetAllMetrics(searchText, metricTypes, limit);
-    return allMetrics
-      .Where(m => m.UserId == CurrentUser.Value.Id)
+    IJournal[] allJournals = await _repository.GetAllJournals(searchText, journalTypes, limit);
+    return allJournals
+      .Where(j => j.UserId == CurrentUser.Value.Id)
       .ToArray();
   }
 
-  public async Task<IMetric?> GetMetric(string metricId)
+  public async Task<IJournal?> GetJournal(string journalId)
   {
-    IMetric? metric = await _repository.GetMetric(metricId);
-    return metric?.UserId == CurrentUser.Value.Id ? metric : null;
+    IJournal? journal = await _repository.GetJournal(journalId);
+    return journal?.UserId == CurrentUser.Value.Id ? journal : null;
   }
 
-  public async Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
+  public async Task<IEntry[]> GetAllEntries(
+    string journalId,
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
   )
   {
-    return (await _repository.GetAllMeasurements(metricId, fromDate, toDate, attributeValues))
+    return (await _repository.GetAllEntries(journalId, fromDate, toDate, attributeValues))
       .Where(m => m.UserId == CurrentUser.Value.Id)
       .ToArray();
   }
 
-  public Task<IMeasurement[]> GetLastEditedMeasurements(
-    string[]? metricIds,
+  public Task<IEntry[]> GetLastEditedEntries(
+    string[]? journalIds,
     string? searchText,
-    MetricType[]? metricTypes,
+    JournalType[]? journalTypes,
     int limit
   )
   {
-    return _repository.GetLastEditedMeasurements(metricIds, searchText, metricTypes, limit);
+    return _repository.GetLastEditedEntries(journalIds, searchText, journalTypes, limit);
   }
 
-  public Task<UpsertResult> UpsertMetric(IMetric metric)
+  public Task<UpsertResult> UpsertJournal(IJournal journal)
   {
-    metric.UserId = CurrentUser.Value.Id;
-    return _repository.UpsertMetric(metric);
+    journal.UserId = CurrentUser.Value.Id;
+    return _repository.UpsertJournal(journal);
   }
 
-  public async Task DeleteMetric(string metricId)
+  public async Task DeleteJournal(string journalId)
   {
-    // get metric only returns if metric belongs to current user
-    IMetric? metric = await GetMetric(metricId);
+    // get journal only returns if journal belongs to current user
+    IJournal? journal = await GetJournal(journalId);
 
-    if (metric == null)
+    if (journal == null)
     {
       return;
     }
 
-    await _repository.DeleteMetric(metricId);
+    await _repository.DeleteJournal(journalId);
   }
 
-  public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
+  public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
   {
-    IMetric? metric = await GetMetric(metricId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
       throw new Exception("Does not exist or no access");
     }
 
-    await _repository.ModifyMetricPermissions(metricId, permissions);
+    await _repository.ModifyJournalPermissions(journalId, permissions);
   }
 
-  public Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement) where TMeasurement : IMeasurement
+  public Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry
   {
-    measurement.UserId = CurrentUser.Value.Id;
-    return _repository.UpsertMeasurement(measurement);
+    entry.UserId = CurrentUser.Value.Id;
+    return _repository.UpsertEntry(entry);
   }
 
-  public async Task DeleteMeasurement(string measurementId)
+  public async Task DeleteEntry(string entryId)
   {
-    // get measurement only returns if measurement belongs to current user
-    IMeasurement? measurement = await GetMeasurement(measurementId);
+    // get entry only returns if entry belongs to current user
+    IEntry? entry = await GetEntry(entryId);
 
-    if (measurement == null)
+    if (entry == null)
     {
       return;
     }
 
-    await _repository.DeleteMeasurement(measurementId);
+    await _repository.DeleteEntry(entryId);
   }
 
-  public async Task<IMeasurement?> GetMeasurement(string measurementId)
+  public async Task<IEntry?> GetEntry(string entryId)
   {
-    IMeasurement? measurement = await _repository.GetMeasurement(measurementId);
+    IEntry? entry = await _repository.GetEntry(entryId);
 
-    return measurement != null && measurement.UserId == CurrentUser.Value.Id
-      ? measurement
+    return entry != null && entry.UserId == CurrentUser.Value.Id
+      ? entry
       : null;
   }
 

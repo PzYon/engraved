@@ -1,5 +1,5 @@
 import { DateRange } from "./DateFilters";
-import { IDateConditions } from "../MetricDetailsContext";
+import { IDateConditions } from "../JournalDetailsContext";
 import {
   addDays,
   differenceInDays,

@@ -7,7 +7,7 @@ using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using NUnit.Framework;
 
@@ -97,12 +97,12 @@ public class LoginHandlerShould
     Assert.AreEqual(imageUrl, user.ImageUrl);
     Assert.IsNotNull(user.Id);
     Assert.AreEqual(_dateService.UtcNow, user.LastLoginDate);
-    Assert.AreEqual(1, user.FavoriteMetricIds.Count);
+    Assert.AreEqual(1, user.FavoriteJournalIds.Count);
 
-    string quickNotesId = user.FavoriteMetricIds.First();
-    IMetric? metric = await _testRepository.GetMetric(quickNotesId);
-    Assert.IsNotNull(metric);
-    Assert.AreEqual(metric!.Id, quickNotesId);
+    string quickNotesId = user.FavoriteJournalIds.First();
+    IJournal? journal = await _testRepository.GetJournal(quickNotesId);
+    Assert.IsNotNull(journal);
+    Assert.AreEqual(journal!.Id, quickNotesId);
   }
 
   [Test]

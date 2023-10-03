@@ -2,13 +2,13 @@
 using System.Security.Authentication;
 using System.Text.RegularExpressions;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo.DocumentTypes;
-using Engraved.Persistence.Mongo.DocumentTypes.Measurements;
-using Engraved.Persistence.Mongo.DocumentTypes.Metrics;
+using Engraved.Persistence.Mongo.DocumentTypes.Entries;
+using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -19,8 +19,8 @@ namespace Engraved.Persistence.Mongo;
 public class MongoRepository : IRepository
 {
   // protected so they can be accessed from TestRepository
-  protected readonly IMongoCollection<MeasurementDocument> MeasurementsCollection;
-  protected readonly IMongoCollection<MetricDocument> MetricsCollection;
+  protected readonly IMongoCollection<EntryDocument> EntriesCollection;
+  protected readonly IMongoCollection<JournalDocument> JournalsCollection;
   protected readonly IMongoCollection<UserDocument> UsersCollection;
 
   private const string RandomDocId = "63f949da880b5bf2518be721";
@@ -30,14 +30,14 @@ public class MongoRepository : IRepository
     // below stuff is required for polymorphic document types to work. it would
     // somehow be nicer if this handled by every document-class itself, but that
     // doesn't work for whatever reasons.
-    BsonClassMap.RegisterClassMap<CounterMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<TimerMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<GaugeMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<ScrapsMeasurementDocument>();
-    BsonClassMap.RegisterClassMap<CounterMetricDocument>();
-    BsonClassMap.RegisterClassMap<TimerMetricDocument>();
-    BsonClassMap.RegisterClassMap<GaugeMetricDocument>();
-    BsonClassMap.RegisterClassMap<ScrapsMetricDocument>();
+    BsonClassMap.RegisterClassMap<CounterEntryDocument>();
+    BsonClassMap.RegisterClassMap<TimerEntryDocument>();
+    BsonClassMap.RegisterClassMap<GaugeEntryDocument>();
+    BsonClassMap.RegisterClassMap<ScrapsEntryDocument>();
+    BsonClassMap.RegisterClassMap<CounterJournalDocument>();
+    BsonClassMap.RegisterClassMap<TimerJournalDocument>();
+    BsonClassMap.RegisterClassMap<GaugeJournalDocument>();
+    BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
   }
 
   public MongoRepository(IMongoRepositorySettings settings)
@@ -45,8 +45,8 @@ public class MongoRepository : IRepository
     IMongoClient client = CreateMongoClient(settings);
     IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
 
-    MetricsCollection = db.GetCollection<MetricDocument>(settings.MetricsCollectionName);
-    MeasurementsCollection = db.GetCollection<MeasurementDocument>(settings.MeasurementsCollectionName);
+    JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
+    EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);
     UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
   }
 
@@ -92,114 +92,114 @@ public class MongoRepository : IRepository
     return users.Select(UserDocumentMapper.FromDocument).ToArray();
   }
 
-  public async Task<IMetric[]> GetAllMetrics(
+  public async Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    MetricType[]? metricTypes = null,
+    JournalType[]? journalTypes = null,
     int? limit = null
   )
   {
-    List<FilterDefinition<MetricDocument>> filters = GetFreeTextFilters<MetricDocument>(
+    List<FilterDefinition<JournalDocument>> filters = GetFreeTextFilters<JournalDocument>(
       searchText,
       d => d.Name!,
       d => d.Description!
     );
 
-    filters.Add(GetAllMetricDocumentsFilter<MetricDocument>(PermissionKind.Read));
+    filters.Add(GetAllJournalDocumentsFilter<JournalDocument>(PermissionKind.Read));
 
-    if (metricTypes is { Length: > 0 })
+    if (journalTypes is { Length: > 0 })
     {
       filters.Add(
-        Builders<MetricDocument>.Filter.Or(
-          metricTypes.Select(t => Builders<MetricDocument>.Filter.Where(GetIsMetricTypeExpression(t)))
+        Builders<JournalDocument>.Filter.Or(
+          journalTypes.Select(t => Builders<JournalDocument>.Filter.Where(GetIsJournalTypeExpression(t)))
         )
       );
     }
 
-    List<MetricDocument> metrics = await MetricsCollection
-      .Find(Builders<MetricDocument>.Filter.And(filters))
-      .Sort(Builders<MetricDocument>.Sort.Descending(d => d.EditedOn))
+    List<JournalDocument> journals = await JournalsCollection
+      .Find(Builders<JournalDocument>.Filter.And(filters))
+      .Sort(Builders<JournalDocument>.Sort.Descending(d => d.EditedOn))
       .Limit(limit)
       .ToListAsync();
 
-    return metrics.Select(MetricDocumentMapper.FromDocument<IMetric>).ToArray();
+    return journals.Select(JournalDocumentMapper.FromDocument<IJournal>).ToArray();
   }
 
   // there must be a better solution than this, but it works for the moment... i believe
-  // Builders<MetricDocument>.Filter.Where(t => t.Type == metricType) does not work because
-  // MetricDocument.Type is an ABSTRACT property.
-  private static Expression<Func<MetricDocument, bool>> GetIsMetricTypeExpression(MetricType metricType)
+  // Builders<JournalDocument>.Filter.Where(t => t.Type == journalType) does not work because
+  // JournalDocument.Type is an ABSTRACT property.
+  private static Expression<Func<JournalDocument, bool>> GetIsJournalTypeExpression(JournalType journalType)
   {
-    switch (metricType)
+    switch (journalType)
     {
-      case MetricType.Counter:
-        return d => d is CounterMetricDocument;
-      case MetricType.Gauge:
-        return d => d is GaugeMetricDocument;
-      case MetricType.Timer:
-        return d => d is TimerMetricDocument;
-      case MetricType.Scraps:
-        return d => d is ScrapsMetricDocument;
+      case JournalType.Counter:
+        return d => d is CounterJournalDocument;
+      case JournalType.Gauge:
+        return d => d is GaugeJournalDocument;
+      case JournalType.Timer:
+        return d => d is TimerJournalDocument;
+      case JournalType.Scraps:
+        return d => d is ScrapsJournalDocument;
       default:
         throw new ArgumentOutOfRangeException(
-          nameof(metricType),
-          metricType,
-          $"{nameof(GetIsMetricTypeExpression)} not defined for {metricType}."
+          nameof(journalType),
+          journalType,
+          $"{nameof(GetIsJournalTypeExpression)} not defined for {journalType}."
         );
     }
   }
 
-  private static Expression<Func<MeasurementDocument, bool>> GetIsMeasurementTypeExpression(MetricType metricType)
+  private static Expression<Func<EntryDocument, bool>> GetIsEntryTypeExpression(JournalType journalType)
   {
-    switch (metricType)
+    switch (journalType)
     {
-      case MetricType.Counter:
-        return d => d is CounterMeasurementDocument;
-      case MetricType.Gauge:
-        return d => d is GaugeMeasurementDocument;
-      case MetricType.Timer:
-        return d => d is TimerMeasurementDocument;
-      case MetricType.Scraps:
-        return d => d is ScrapsMeasurementDocument;
+      case JournalType.Counter:
+        return d => d is CounterEntryDocument;
+      case JournalType.Gauge:
+        return d => d is GaugeEntryDocument;
+      case JournalType.Timer:
+        return d => d is TimerEntryDocument;
+      case JournalType.Scraps:
+        return d => d is ScrapsEntryDocument;
       default:
         throw new ArgumentOutOfRangeException(
-          nameof(metricType),
-          metricType,
-          $"{nameof(GetIsMeasurementTypeExpression)} not defined for {metricType}."
+          nameof(journalType),
+          journalType,
+          $"{nameof(GetIsEntryTypeExpression)} not defined for {journalType}."
         );
     }
   }
 
-  public async Task<IMetric?> GetMetric(string metricId)
+  public async Task<IJournal?> GetJournal(string journalId)
   {
-    return await GetMetric(metricId, PermissionKind.Read);
+    return await GetJournal(journalId, PermissionKind.Read);
   }
 
-  public async Task<IMeasurement[]> GetAllMeasurements(
-    string metricId,
+  public async Task<IEntry[]> GetAllEntries(
+    string journalId,
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
   )
   {
-    IMetric? metric = await GetMetric(metricId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
-      return Array.Empty<IMeasurement>();
+      return Array.Empty<IEntry>();
     }
 
-    var filters = new List<FilterDefinition<MeasurementDocument>>
+    var filters = new List<FilterDefinition<EntryDocument>>
     {
-      Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId)
+      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
     };
 
     if (fromDate.HasValue)
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => d.DateTime >= fromDate.Value));
+      filters.Add(Builders<EntryDocument>.Filter.Where(d => d.DateTime >= fromDate.Value));
     }
 
     if (toDate.HasValue)
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => d.DateTime < toDate.Value.AddDays(1)));
+      filters.Add(Builders<EntryDocument>.Filter.Where(d => d.DateTime < toDate.Value.AddDays(1)));
     }
 
     if (attributeValues != null)
@@ -208,10 +208,10 @@ public class MongoRepository : IRepository
         attributeValues
           .Select(
             attributeValue =>
-              Builders<MeasurementDocument>.Filter.Or(
+              Builders<EntryDocument>.Filter.Or(
                 attributeValue.Value.Select(
-                  s => Builders<MeasurementDocument>.Filter.Where(
-                    d => d.MetricAttributeValues[attributeValue.Key].Contains(s)
+                  s => Builders<EntryDocument>.Filter.Where(
+                    d => d.JournalAttributeValues[attributeValue.Key].Contains(s)
                   )
                 )
               )
@@ -219,132 +219,132 @@ public class MongoRepository : IRepository
       );
     }
 
-    List<MeasurementDocument> measurements = await MeasurementsCollection
-      .Find(Builders<MeasurementDocument>.Filter.And(filters))
-      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.DateTime))
+    List<EntryDocument> entries = await EntriesCollection
+      .Find(Builders<EntryDocument>.Filter.And(filters))
+      .Sort(Builders<EntryDocument>.Sort.Descending(d => d.DateTime))
       .ToListAsync();
 
-    return measurements
-      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
+    return entries
+      .Select(EntryDocumentMapper.FromDocument<IEntry>)
       .ToArray();
   }
 
   // attention: there's no security here for the moment. might not be required as
-  // you explicitly need to specify the metric IDs.
-  public async Task<IMeasurement[]> GetLastEditedMeasurements(
-    string[]? metricIds,
+  // you explicitly need to specify the journal IDs.
+  public async Task<IEntry[]> GetLastEditedEntries(
+    string[]? journalIds,
     string? searchText,
-    MetricType[]? metricTypes,
+    JournalType[]? journalTypes,
     int limit
   )
   {
-    List<FilterDefinition<MeasurementDocument>> filters = GetFreeTextFilters<MeasurementDocument>(
+    List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsMeasurementDocument)d).Title!
+      d => ((ScrapsEntryDocument) d).Title!
     );
 
-    if (metricIds is { Length: > 0 })
+    if (journalIds is { Length: > 0 })
     {
-      filters.Add(Builders<MeasurementDocument>.Filter.Where(d => metricIds.Contains(d.MetricId)));
+      filters.Add(Builders<EntryDocument>.Filter.Where(d => journalIds.Contains(d.ParentId)));
     }
 
-    if (metricTypes is { Length: > 0 })
+    if (journalTypes is { Length: > 0 })
     {
       filters.Add(
-        Builders<MeasurementDocument>.Filter.Or(
-          metricTypes.Select(t => Builders<MeasurementDocument>.Filter.Where(GetIsMeasurementTypeExpression(t)))
+        Builders<EntryDocument>.Filter.Or(
+          journalTypes.Select(t => Builders<EntryDocument>.Filter.Where(GetIsEntryTypeExpression(t)))
         )
       );
     }
 
-    List<MeasurementDocument> measurements = await MeasurementsCollection
-      .Find(Builders<MeasurementDocument>.Filter.And(filters))
-      .Sort(Builders<MeasurementDocument>.Sort.Descending(d => d.EditedOn))
+    List<EntryDocument> entries = await EntriesCollection
+      .Find(Builders<EntryDocument>.Filter.And(filters))
+      .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
       .Limit(limit)
       .ToListAsync();
 
-    return measurements
-      .Select(MeasurementDocumentMapper.FromDocument<IMeasurement>)
+    return entries
+      .Select(EntryDocumentMapper.FromDocument<IEntry>)
       .ToArray();
   }
 
-  public virtual async Task<UpsertResult> UpsertMetric(IMetric metric)
+  public virtual async Task<UpsertResult> UpsertJournal(IJournal journal)
   {
-    MetricDocument document = MetricDocumentMapper.ToDocument(metric);
+    JournalDocument document = JournalDocumentMapper.ToDocument(journal);
 
-    ReplaceOneResult? replaceOneResult = await MetricsCollection.ReplaceOneAsync(
-      MongoUtil.GetDocumentByIdFilter<MetricDocument>(metric.Id),
+    ReplaceOneResult? replaceOneResult = await JournalsCollection.ReplaceOneAsync(
+      MongoUtil.GetDocumentByIdFilter<JournalDocument>(journal.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
-    return CreateUpsertResult(metric.Id, replaceOneResult);
+    return CreateUpsertResult(journal.Id, replaceOneResult);
   }
 
-  public virtual async Task DeleteMetric(string metricId)
+  public virtual async Task DeleteJournal(string journalId)
   {
-    IMetric? metric = await GetMetric(metricId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
       return;
     }
 
-    await MeasurementsCollection.DeleteManyAsync(
-      Builders<MeasurementDocument>.Filter.Where(d => d.MetricId == metricId)
+    await EntriesCollection.DeleteManyAsync(
+      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
     );
 
-    await MetricsCollection.DeleteOneAsync(
-      MongoUtil.GetDocumentByIdFilter<MetricDocument>(metricId)
+    await JournalsCollection.DeleteOneAsync(
+      MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId)
     );
   }
 
-  public async Task ModifyMetricPermissions(string metricId, Dictionary<string, PermissionKind> permissions)
+  public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
   {
-    IMetric? metric = await GetMetric(metricId);
-    if (metric == null)
+    IJournal? journal = await GetJournal(journalId);
+    if (journal == null)
     {
       // should we throw here?
       return;
     }
 
     var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUserInternal);
-    await permissionsEnsurer.EnsurePermissions(metric, permissions);
+    await permissionsEnsurer.EnsurePermissions(journal, permissions);
 
-    await UpsertMetric(metric);
+    await UpsertJournal(journal);
   }
 
-  public virtual async Task<UpsertResult> UpsertMeasurement<TMeasurement>(TMeasurement measurement)
-    where TMeasurement : IMeasurement
+  public virtual async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
+    where TEntry : IEntry
   {
-    MeasurementDocument document = MeasurementDocumentMapper.ToDocument(measurement);
+    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
 
-    ReplaceOneResult? replaceOneResult = await MeasurementsCollection.ReplaceOneAsync(
-      MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurement.Id),
+    ReplaceOneResult? replaceOneResult = await EntriesCollection.ReplaceOneAsync(
+      MongoUtil.GetDocumentByIdFilter<EntryDocument>(entry.Id),
       document,
       new ReplaceOptions { IsUpsert = true }
     );
 
-    return CreateUpsertResult(measurement.Id, replaceOneResult);
+    return CreateUpsertResult(entry.Id, replaceOneResult);
   }
 
-  public async Task DeleteMeasurement(string measurementId)
+  public async Task DeleteEntry(string entryId)
   {
-    await MeasurementsCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId));
+    await EntriesCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId));
   }
 
-  public async Task<IMeasurement?> GetMeasurement(string measurementId)
+  public async Task<IEntry?> GetEntry(string entryId)
   {
-    if (string.IsNullOrEmpty(measurementId))
+    if (string.IsNullOrEmpty(entryId))
     {
-      throw new ArgumentNullException(nameof(measurementId), "Id must be specified.");
+      throw new ArgumentNullException(nameof(entryId), "Id must be specified.");
     }
 
-    MeasurementDocument? document = await MeasurementsCollection
-      .Find(MongoUtil.GetDocumentByIdFilter<MeasurementDocument>(measurementId))
+    EntryDocument? document = await EntriesCollection
+      .Find(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId))
       .FirstOrDefaultAsync();
 
-    return MeasurementDocumentMapper.FromDocument<IMeasurement>(document);
+    return EntryDocumentMapper.FromDocument<IEntry>(document);
   }
 
   public async Task WakeMeUp()
@@ -371,30 +371,30 @@ public class MongoRepository : IRepository
     return CreateUpsertResult(user.Id, replaceOneResult);
   }
 
-  protected async Task<IMetric?> GetMetric(string metricId, PermissionKind permissionKind)
+  protected async Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind)
   {
-    if (string.IsNullOrEmpty(metricId))
+    if (string.IsNullOrEmpty(journalId))
     {
-      throw new ArgumentNullException(nameof(metricId), "Id must be specified.");
+      throw new ArgumentNullException(nameof(journalId), "Id must be specified.");
     }
 
-    MetricDocument? document = await MetricsCollection
-      .Find(GetMetricDocumentByIdFilter<MetricDocument>(metricId, permissionKind))
+    JournalDocument? document = await JournalsCollection
+      .Find(GetJournalDocumentByIdFilter<JournalDocument>(journalId, permissionKind))
       .FirstOrDefaultAsync();
 
-    return MetricDocumentMapper.FromDocument<IMetric>(document);
+    return JournalDocumentMapper.FromDocument<IJournal>(document);
   }
 
-  private FilterDefinition<TDocument> GetMetricDocumentByIdFilter<TDocument>(string metricId, PermissionKind kind)
+  private FilterDefinition<TDocument> GetJournalDocumentByIdFilter<TDocument>(string journalId, PermissionKind kind)
     where TDocument : IDocument
   {
     return Builders<TDocument>.Filter.And(
-      GetAllMetricDocumentsFilter<TDocument>(kind),
-      MongoUtil.GetDocumentByIdFilter<TDocument>(metricId)
+      GetAllJournalDocumentsFilter<TDocument>(kind),
+      MongoUtil.GetDocumentByIdFilter<TDocument>(journalId)
     );
   }
 
-  protected virtual FilterDefinition<TDocument> GetAllMetricDocumentsFilter<TDocument>(PermissionKind kind)
+  protected virtual FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
     where TDocument : IDocument
   {
     return MongoUtil.GetAllDocumentsFilter<TDocument>();

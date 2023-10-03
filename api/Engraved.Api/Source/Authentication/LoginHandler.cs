@@ -5,7 +5,7 @@ using Engraved.Api.Authentication.Google;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -57,7 +57,7 @@ public class LoginHandler : ILoginHandler
     user.ImageUrl = parsedToken.ImageUrl;
     user.LastLoginDate = _dateService.UtcNow;
 
-    if (user.FavoriteMetricIds.Count == 0)
+    if (user.FavoriteJournalIds.Count == 0)
     {
       await EnsureQuickScraps(user);
     }
@@ -109,15 +109,15 @@ public class LoginHandler : ILoginHandler
 
   private async Task EnsureQuickScraps(IUser user)
   {
-    IMetric metric = new ScrapsMetric
+    IJournal journal = new ScrapsJournal
     {
       Name = "Quick Scraps",
       EditedOn = _dateService.UtcNow,
       UserId = user.Id
     };
 
-    UpsertResult result = await _repository.UpsertMetric(metric);
+    UpsertResult result = await _repository.UpsertJournal(journal);
 
-    user.FavoriteMetricIds.Add(result.EntityId);
+    user.FavoriteJournalIds.Add(result.EntityId);
   }
 }

@@ -1,6 +1,6 @@
 import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
 import React, { useEffect, useState } from "react";
-import { IMetric } from "../../../serverApi/IMetric";
+import { IJournal } from "../../../serverApi/IJournal";
 import { styled, TextField } from "@mui/material";
 import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 
@@ -12,11 +12,11 @@ export interface IThresholdDefinition {
 }
 
 export const ThresholdRow: React.FC<{
-  metric: IMetric;
+  journal: IJournal;
   definition: IThresholdDefinition;
   onChange: (definition: IThresholdDefinition) => void;
   styles: React.CSSProperties;
-}> = ({ metric, definition, onChange, styles }) => {
+}> = ({ journal, definition, onChange, styles }) => {
   const [attributeKey, setAttributeKey] = useState(
     definition?.attributeKey ?? "",
   );
@@ -36,14 +36,14 @@ export const ThresholdRow: React.FC<{
   return (
     <Host sx={styles}>
       <GroupByAttributeSelector
-        attributes={metric.attributes}
+        attributes={journal.attributes}
         onChange={setAttributeKey}
         selectedAttributeKey={attributeKey}
         label={"Attribute"}
       />
       {attributeKey ? (
         <AttributeValueSelector
-          attribute={metric.attributes[attributeKey]}
+          attribute={journal.attributes[attributeKey]}
           selectedValue={attributeValueKeys[0]}
           onChange={(attributesValues) => {
             setAttributeValueKeys(attributesValues);

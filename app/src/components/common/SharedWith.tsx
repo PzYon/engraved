@@ -1,12 +1,12 @@
-import { IMetric } from "../../serverApi/IMetric";
+import { IJournal } from "../../serverApi/IJournal";
 import React from "react";
 import { Avatar, AvatarGroup } from "@mui/material";
 
-export const SharedWith: React.FC<{ metric: IMetric }> = ({ metric }) => {
+export const SharedWith: React.FC<{ journal: IJournal }> = ({ journal }) => {
   return (
     <AvatarGroup max={4} sx={{ display: "inline-flex" }}>
-      {Object.keys(metric.permissions).map((i) => {
-        const user = metric.permissions[i].user;
+      {Object.keys(journal.permissions).map((i) => {
+        const user = journal.permissions[i].user;
         const title = user.displayName || user.name || i;
         return (
           <Avatar

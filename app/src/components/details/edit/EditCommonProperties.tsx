@@ -15,7 +15,7 @@ export const EditCommonProperties: React.FC<{
         <TextField
           value={name}
           onChange={(event) => setName(event.target.value)}
-          label={translations.label_metricName}
+          label={translations.label_journalName}
           margin={"normal"}
         />
         <TextField

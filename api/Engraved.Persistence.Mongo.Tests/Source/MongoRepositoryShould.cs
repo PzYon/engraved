@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.Measurements;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -12,7 +12,7 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 // consider using Commands and Queries here to improve data consistency and 
 // have a more end-to-end view, e.g. something like this:
-// await new AddCounterMeasurementCommand().CreateExecutor().Execute(_repository, null);
+// await new AddCounterEntryCommand().CreateExecutor().Execute(_repository, null);
 
 public class MongoRepositoryShould
 {
@@ -25,64 +25,64 @@ public class MongoRepositoryShould
   }
 
   [Test]
-  public async Task GetAllMetrics_Empty()
+  public async Task GetAllJournals_Empty()
   {
-    IMetric[] allMetrics = await _repository.GetAllMetrics();
+    IJournal[] allJournals = await _repository.GetAllJournals();
 
-    Assert.AreEqual(allMetrics.Length, 0);
+    Assert.AreEqual(allJournals.Length, 0);
   }
 
   [Test]
-  public async Task CreateOneMetric_Then_GetMetric()
+  public async Task CreateOneJournal_Then_GetJournal()
   {
-    UpsertResult result = await _repository.UpsertMetric(new CounterMetric());
+    UpsertResult result = await _repository.UpsertJournal(new CounterJournal());
 
-    IMetric? metric = await _repository.GetMetric(result.EntityId);
+    IJournal? journal = await _repository.GetJournal(result.EntityId);
 
-    Assert.IsNotNull(metric);
+    Assert.IsNotNull(journal);
   }
 
   [Test]
-  public async Task CreateMetrics_Then_GetAllMetrics()
+  public async Task CreateJournals_Then_GetAllJournals()
   {
-    await _repository.UpsertMetric(new CounterMetric());
-    await _repository.UpsertMetric(new CounterMetric());
+    await _repository.UpsertJournal(new CounterJournal());
+    await _repository.UpsertJournal(new CounterJournal());
 
-    IMetric[] allMetrics = await _repository.GetAllMetrics();
+    IJournal[] allJournals = await _repository.GetAllJournals();
 
-    Assert.AreEqual(allMetrics.Length, 2);
+    Assert.AreEqual(allJournals.Length, 2);
   }
 
   [Test]
-  public async Task CreateMetric_Then_Update()
+  public async Task CreateJournal_Then_Update()
   {
-    var counterMetric = new CounterMetric { Name = "First" };
-    UpsertResult result = await _repository.UpsertMetric(counterMetric);
+    var counterJournal = new CounterJournal { Name = "First" };
+    UpsertResult result = await _repository.UpsertJournal(counterJournal);
 
-    counterMetric = (CounterMetric?) await _repository.GetMetric(result.EntityId);
+    counterJournal = (CounterJournal?) await _repository.GetJournal(result.EntityId);
 
-    Assert.IsNotNull(counterMetric);
+    Assert.IsNotNull(counterJournal);
 
-    counterMetric!.Name = "Second";
-    await _repository.UpsertMetric(counterMetric);
+    counterJournal!.Name = "Second";
+    await _repository.UpsertJournal(counterJournal);
 
-    IMetric? updateMetric = await _repository.GetMetric(result.EntityId);
-    Assert.IsNotNull(updateMetric);
-    Assert.AreEqual(counterMetric.Id, updateMetric!.Id);
-    Assert.AreEqual(counterMetric.Name, updateMetric.Name);
+    IJournal? updateJournal = await _repository.GetJournal(result.EntityId);
+    Assert.IsNotNull(updateJournal);
+    Assert.AreEqual(counterJournal.Id, updateJournal!.Id);
+    Assert.AreEqual(counterJournal.Name, updateJournal.Name);
   }
 
   [Test]
-  public async Task CreateMetric_WithAttributes()
+  public async Task CreateJournal_WithAttributes()
   {
-    var counterMetric = new CounterMetric
+    var counterJournal = new CounterJournal
     {
       Name = "First",
-      Attributes = new Dictionary<string, MetricAttribute>
+      Attributes = new Dictionary<string, JournalAttribute>
       {
         {
           "flags",
-          new MetricAttribute
+          new JournalAttribute
           {
             Name = "Random Values",
             Values = { { "fl@g", "fl@g_value" } }
@@ -91,31 +91,31 @@ public class MongoRepositoryShould
       }
     };
 
-    UpsertResult result = await _repository.UpsertMetric(counterMetric);
+    UpsertResult result = await _repository.UpsertJournal(counterJournal);
 
-    IMetric? metric = await _repository.GetMetric(result.EntityId);
-    Assert.IsNotNull(metric);
-    Assert.IsNotNull(metric!.Attributes);
+    IJournal? journal = await _repository.GetJournal(result.EntityId);
+    Assert.IsNotNull(journal);
+    Assert.IsNotNull(journal!.Attributes);
 
-    Assert.Contains("flags", metric.Attributes.Keys);
-    MetricAttribute attribute = metric.Attributes["flags"];
+    Assert.Contains("flags", journal.Attributes.Keys);
+    JournalAttribute attribute = journal.Attributes["flags"];
     Assert.Contains("fl@g", attribute.Values.Keys);
     Assert.AreEqual("fl@g_value", attribute.Values["fl@g"]);
   }
 
   [Test]
-  public async Task CreateMeasurements_Then_GetAll()
+  public async Task CreateEntries_Then_GetAll()
   {
-    var metric = new GaugeMetric { Name = "N@me" };
-    UpsertResult result = await _repository.UpsertMetric(metric);
+    var journal = new GaugeJournal { Name = "N@me" };
+    UpsertResult result = await _repository.UpsertJournal(journal);
 
-    await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = result.EntityId, Value = 123 });
-    await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = "wrongId", Value = 456 });
-    await _repository.UpsertMeasurement(new GaugeMeasurement { MetricId = result.EntityId, Value = 789 });
+    await _repository.UpsertEntry(new GaugeEntry { ParentId = result.EntityId, Value = 123 });
+    await _repository.UpsertEntry(new GaugeEntry { ParentId = "wrongId", Value = 456 });
+    await _repository.UpsertEntry(new GaugeEntry { ParentId = result.EntityId, Value = 789 });
 
-    IMeasurement[] allMeasurements = await _repository.GetAllMeasurements(result.EntityId, null, null, null);
+    IEntry[] allEntries = await _repository.GetAllEntries(result.EntityId, null, null, null);
 
-    Assert.AreEqual(2, allMeasurements.Length);
+    Assert.AreEqual(2, allEntries.Length);
   }
 
   [Test]
@@ -133,16 +133,16 @@ public class MongoRepositoryShould
   {
     string value = JsonConvert.SerializeObject(new Dictionary<string, object> { { "simpleSetting", true } });
 
-    var metric = new GaugeMetric
+    var journal = new GaugeJournal
     {
       Name = "N@me",
       CustomProps = new Dictionary<string, string> { { "uiSettings", value } }
     };
 
-    UpsertResult result = await _repository.UpsertMetric(metric);
-    IMetric reloadedMetric = (await _repository.GetMetric(result.EntityId))!;
+    UpsertResult result = await _repository.UpsertJournal(journal);
+    IJournal reloadedJournal = (await _repository.GetJournal(result.EntityId))!;
 
-    Assert.IsTrue(reloadedMetric.CustomProps.ContainsKey("uiSettings"));
-    Assert.AreEqual(reloadedMetric.CustomProps["uiSettings"], value);
+    Assert.IsTrue(reloadedJournal.CustomProps.ContainsKey("uiSettings"));
+    Assert.AreEqual(reloadedJournal.CustomProps["uiSettings"], value);
   }
 }

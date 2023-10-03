@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Engraved.Core.Application.Search;
-using Engraved.Core.Domain.Metrics;
+using Engraved.Core.Domain.Journals;
 using NUnit.Framework;
 
 namespace Engraved.Search.Lucene;
@@ -13,7 +13,7 @@ public class LuceneSearchIndexShould
   {
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "red",
-      new Dictionary<string, MetricAttribute>(),
+      new Dictionary<string, JournalAttribute>(),
       GetSimpleValues().ToArray()
     );
 
@@ -26,7 +26,7 @@ public class LuceneSearchIndexShould
   {
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "red beta",
-      new Dictionary<string, MetricAttribute>(),
+      new Dictionary<string, JournalAttribute>(),
       GetSimpleValues().ToArray()
     );
 
@@ -39,7 +39,7 @@ public class LuceneSearchIndexShould
   {
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "red beta",
-      new Dictionary<string, MetricAttribute>(),
+      new Dictionary<string, JournalAttribute>(),
       GetSimpleValues().Union(GetSimpleValues()).Union(GetSimpleValues()).ToArray()
     );
 
@@ -52,7 +52,7 @@ public class LuceneSearchIndexShould
   {
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "occurs",
-      new Dictionary<string, MetricAttribute>(),
+      new Dictionary<string, JournalAttribute>(),
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Once" } } },
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Three Times" } } },
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Twice" } } },
@@ -70,13 +70,13 @@ public class LuceneSearchIndexShould
   }
 
   [Test]
-  public void ConsiderMetricAttributeValuesIfAvailable()
+  public void ConsiderJournalAttributeValuesIfAvailable()
   {
-    Dictionary<string, MetricAttribute> metricAttributes = new()
+    Dictionary<string, JournalAttribute> journalAttributes = new()
     {
       {
         "fruit",
-        new MetricAttribute
+        new JournalAttribute
         {
           Name = "Fruit",
           Values = new Dictionary<string, string>
@@ -90,7 +90,7 @@ public class LuceneSearchIndexShould
 
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "banana",
-      metricAttributes,
+      journalAttributes,
       new Dictionary<string, string[]>
       {
         { "fruit", new[] { "yellow" } }
@@ -111,7 +111,7 @@ public class LuceneSearchIndexShould
   {
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "ten play",
-      new Dictionary<string, MetricAttribute>(),
+      new Dictionary<string, JournalAttribute>(),
       new Dictionary<string, string[]> { { "attr1", new[] { "tennis player" } } },
       new Dictionary<string, string[]> { { "attr1", new[] { "tennisplayer" } } },
       new Dictionary<string, string[]> { { "attr1", new[] { "gu gu" } } },
@@ -127,7 +127,7 @@ public class LuceneSearchIndexShould
   {
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "ten play",
-      new Dictionary<string, MetricAttribute>(),
+      new Dictionary<string, JournalAttribute>(),
       new Dictionary<string, string[]>
       {
         { "attr1", new[] { "tennis" } },
@@ -151,7 +151,7 @@ public class LuceneSearchIndexShould
   {
     AttributeSearchResult[] results = new LuceneSearchIndex().Search(
       "tAb TEst",
-      new Dictionary<string, MetricAttribute>(),
+      new Dictionary<string, JournalAttribute>(),
       new Dictionary<string, string[]>
       {
         { "attr1", new[] { "Table" } },

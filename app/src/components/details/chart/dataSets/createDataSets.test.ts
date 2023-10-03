@@ -1,7 +1,7 @@
 import { GroupByTime } from "../consolidation/GroupByTime";
-import { IMeasurement } from "../../../../serverApi/IMeasurement";
-import { IMetric } from "../../../../serverApi/IMetric";
-import { MetricType } from "../../../../serverApi/MetricType";
+import { IEntry } from "../../../../serverApi/IEntry";
+import { IJournal } from "../../../../serverApi/IJournal";
+import { JournalType } from "../../../../serverApi/JournalType";
 import { createDataSets } from "./createDataSets";
 
 // https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
@@ -9,22 +9,22 @@ jest.mock("../../../../env/envSettings.ts", () => ({}));
 
 describe("createDataSets", () => {
   it("should group by nothing", () => {
-    const metric: IMetric = createMetric();
-    const measurements: IMeasurement[] = createMeasurements();
+    const journal: IJournal = createJournal();
+    const entries: IEntry[] = createEntries();
 
-    const dataSets = createDataSets(measurements, metric, GroupByTime.None, "");
+    const dataSets = createDataSets(entries, journal, GroupByTime.None, "");
 
     expect(dataSets.length).toBe(1);
     expect(dataSets[0].data.length).toBe(4);
   });
 
   it("should group by attribute key", () => {
-    const metric: IMetric = createMetric();
-    const measurements: IMeasurement[] = createMeasurements();
+    const journal: IJournal = createJournal();
+    const entries: IEntry[] = createEntries();
 
     const dataSets = createDataSets(
-      measurements,
-      metric,
+      entries,
+      journal,
       GroupByTime.None,
       "colors",
     );
@@ -42,7 +42,7 @@ describe("createDataSets", () => {
   });
 });
 
-function createMetric() {
+function createJournal() {
   return {
     attributes: {
       colors: {
@@ -54,34 +54,34 @@ function createMetric() {
         },
       },
     },
-    type: MetricType.Counter,
+    type: JournalType.Counter,
     name: "Name",
   };
 }
 
-function createMeasurements() {
+function createEntries() {
   // we use exactly the same date for everything, in order to be
   // sure that time-grouping doesn't interfere here.
   const dateTime = new Date().toString();
 
   return [
     {
-      metricAttributeValues: { colors: ["red"] },
+      journalAttributeValues: { colors: ["red"] },
       value: 1,
       dateTime: dateTime,
     },
     {
-      metricAttributeValues: { colors: ["green"] },
+      journalAttributeValues: { colors: ["green"] },
       value: 1,
       dateTime: dateTime,
     },
     {
-      metricAttributeValues: { colors: ["green"] },
+      journalAttributeValues: { colors: ["green"] },
       value: 1,
       dateTime: dateTime,
     },
     {
-      metricAttributeValues: {},
+      journalAttributeValues: {},
       value: 1,
       dateTime: dateTime,
     },

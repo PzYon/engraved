@@ -1,19 +1,19 @@
-import { IMetricAttributeValues } from "../../serverApi/IMetricAttributeValues";
+import { IJournalAttributeValues } from "../../serverApi/IJournalAttributeValues";
 import React from "react";
-import { IMetricAttributes } from "../../serverApi/IMetricAttributes";
+import { IJournalAttributes } from "../../serverApi/IJournalAttributes";
 import { Chip, lighten } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { getCoefficient } from "../../util/utils";
-import { useMetricContext } from "../details/MetricDetailsContext";
+import { useJournalContext } from "../details/JournalDetailsContext";
 
 export const AttributeValues: React.FC<{
-  attributes: IMetricAttributes;
-  attributeValues: IMetricAttributeValues;
+  attributes: IJournalAttributes;
+  attributeValues: IJournalAttributeValues;
   preventOnClick?: boolean;
 }> = ({ attributes, attributeValues, preventOnClick }) => {
   const { palette } = useTheme();
 
-  const { toggleAttributeValue } = useMetricContext();
+  const { toggleAttributeValue } = useJournalContext();
 
   const colorByAttributeKey = getColorsByKey(attributes, palette.primary.main);
 
@@ -56,7 +56,7 @@ export const AttributeValues: React.FC<{
   );
 };
 
-function getColorsByKey(attributes: IMetricAttributes, baseColor: string) {
+function getColorsByKey(attributes: IJournalAttributes, baseColor: string) {
   const attributeKeys = Object.keys(attributes).sort();
   return attributeKeys.reduce(
     (

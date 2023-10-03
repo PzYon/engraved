@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { MetricType } from "../../../serverApi/MetricType";
-import { useMetricsQuery } from "../../../serverApi/reactQuery/queries/useMetricsQuery";
+import { JournalType } from "../../../serverApi/JournalType";
+import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
 import { Page } from "../../layout/pages/Page";
 import {
   Button,
@@ -11,15 +11,15 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useMoveMeasurementMutation } from "../../../serverApi/reactQuery/mutations/useMoveMeasurementMutation";
+import { useMoveEntryMutation } from "../../../serverApi/reactQuery/mutations/useMoveEntryMutation";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { usePageContext } from "../../layout/pages/PageContext";
 import { PageSection } from "../../layout/pages/PageSection";
 import { PageFormButtonContainer } from "../../common/FormButtonContainer";
 import { Scrap } from "./Scrap";
-import { useMetricContext } from "../MetricDetailsContext";
-import { IScrapMeasurement } from "../../../serverApi/IScrapMeasurement";
+import { useJournalContext } from "../JournalDetailsContext";
+import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { SearchBox } from "../../common/search/SearchBox";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { FiltersColumn, FiltersRow } from "../filters/FiltersRow";
@@ -27,21 +27,21 @@ import { FiltersColumn, FiltersRow } from "../filters/FiltersRow";
 export const ScrapsMovePage: React.FC = () => {
   const { setSubTitle } = usePageContext();
 
-  const { measurements } = useMetricContext();
+  const { entries } = useJournalContext();
 
-  const [targetMetricId, setTargetMetricId] = useState<string>(undefined);
+  const [targetJournalId, setTargetJournalId] = useState<string>(undefined);
   const [searchText, setSearchText] = useState("");
 
   const navigate = useNavigate();
 
-  const { measurementId, metricId } = useParams();
-  const mutation = useMoveMeasurementMutation(measurementId, metricId, () =>
-    navigate(`/metrics/${targetMetricId}`),
+  const { entryId, journalId } = useParams();
+  const mutation = useMoveEntryMutation(entryId, journalId, () =>
+    navigate(`/journals/${targetJournalId}`),
   );
 
   useEffect(() => setSubTitle("Move scrap to..."), []);
 
-  const metrics = useMetricsQuery(searchText, [MetricType.Scraps]);
+  const journals = useJournalsQuery(searchText, [JournalType.Scraps]);
 
   const deviceWidth = useDeviceWidth();
   const Row = deviceWidth === DeviceWidth.Small ? FiltersColumn : FiltersRow;
@@ -52,18 +52,18 @@ export const ScrapsMovePage: React.FC = () => {
         <Row>
           <SearchBox searchText={searchText} setSearchText={setSearchText} />
         </Row>
-        {metrics?.length ? (
+        {journals?.length ? (
           <List dense={true}>
-            {metrics
-              .filter((m) => m.id !== metricId)
+            {journals
+              .filter((m) => m.id !== journalId)
               .map((m) => {
-                const isChecked = targetMetricId === m.id;
+                const isChecked = targetJournalId === m.id;
                 return (
                   <ListItem key={m.id} sx={{ padding: 0 }}>
                     <ListItemButton
                       role={undefined}
                       onClick={() => {
-                        setTargetMetricId(isChecked ? undefined : m.id);
+                        setTargetJournalId(isChecked ? undefined : m.id);
                       }}
                       dense
                     >
@@ -84,13 +84,13 @@ export const ScrapsMovePage: React.FC = () => {
         ) : null}
       </PageSection>
 
-      {targetMetricId ? (
+      {targetJournalId ? (
         <PageSection>
           <PageFormButtonContainer style={{ paddingTop: 0 }}>
             <Button
               variant="contained"
               onClick={() => {
-                mutation.mutate({ targetMetricId: targetMetricId });
+                mutation.mutate({ targetJournalId: targetJournalId });
               }}
             >
               Move
@@ -100,9 +100,7 @@ export const ScrapsMovePage: React.FC = () => {
       ) : null}
 
       <Scrap
-        scrap={
-          measurements.find((m) => m.id === measurementId) as IScrapMeasurement
-        }
+        scrap={entries.find((m) => m.id === entryId) as IScrapEntry}
         hideActions={true}
       />
     </Page>

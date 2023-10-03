@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { MetricType } from "../../../serverApi/MetricType";
+import { JournalType } from "../../../serverApi/JournalType";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
 
@@ -25,8 +25,8 @@ export interface IPageContext {
   setShowFilters: (value: boolean) => void;
   searchText: string;
   setSearchText: (searchText: string) => void;
-  metricTypes: MetricType[];
-  setMetricTypes: (metricTypes: MetricType[]) => void;
+  journalTypes: JournalType[];
+  setJournalTypes: (journalTypes: JournalType[]) => void;
   tabs: IPageTab[];
   setTabs: (tabs: IPageTab[]) => void;
 }
@@ -46,8 +46,8 @@ const PageContext = createContext<IPageContext>({
   setShowFilters: null,
   searchText: null,
   setSearchText: null,
-  metricTypes: null,
-  setMetricTypes: null,
+  journalTypes: null,
+  setJournalTypes: null,
   tabs: null,
   setTabs: null,
 });
@@ -66,7 +66,7 @@ export const PageContextProvider: React.FC<{
   const [enableFilters, setEnableFilters] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
-  const [metricTypes, setMetricTypes] = useState<MetricType[]>([]);
+  const [journalTypes, setJournalTypes] = useState<JournalType[]>([]);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
 
   useEffect(() => {
@@ -91,8 +91,8 @@ export const PageContextProvider: React.FC<{
       setShowFilters,
       searchText,
       setSearchText,
-      metricTypes,
-      setMetricTypes,
+      journalTypes,
+      setJournalTypes,
       tabs,
       setTabs,
     };
@@ -102,7 +102,7 @@ export const PageContextProvider: React.FC<{
     documentTitle,
     pageActions,
     searchText,
-    metricTypes,
+    journalTypes,
     enableFilters,
     showFilters,
   ]);

@@ -11,8 +11,9 @@ public class MongoRepositorySettings : IMongoRepositorySettings
 
   public string MongoDbConnectionString { get; }
 
+  // attention: renaming stuff in an azure cosmos db is literally not possible!!
   public string DatabaseName => "metrix_test";
-  public string MetricsCollectionName => "metrics";
-  public string MeasurementsCollectionName => "measurements";
+  public string JournalsCollectionName => "metrics";
+  public string EntriesCollectionName => "measurements";
   public string UsersCollectionName => "users";
 }

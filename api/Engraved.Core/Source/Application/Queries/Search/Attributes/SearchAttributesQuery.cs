@@ -4,7 +4,7 @@ namespace Engraved.Core.Application.Queries.Search.Attributes;
 
 public class SearchAttributesQuery : IQuery<AttributeSearchResult[]>
 {
-  public string MetricId { get; set; } = null!;
+  public string JournalId { get; set; } = null!;
 
   public string SearchText { get; set; } = null!;
 

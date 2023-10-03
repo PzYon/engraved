@@ -1,30 +1,25 @@
-import { IMeasurement } from "../../../../serverApi/IMeasurement";
+import { IEntry } from "../../../../serverApi/IEntry";
 import { ConsolidationKey } from "./ConsolidationKey";
 import { GroupByTime } from "./GroupByTime";
-import { IConsolidatedMeasurements } from "./IConsolidatedMeasurements";
-import {
-  IGaugeMeasurement,
-  ITimerMeasurement,
-} from "../../../../serverApi/ITimerMeasurement";
+import { IConsolidatedEntries } from "./IConsolidatedEntries";
+import { ITimerEntry } from "../../../../serverApi/ITimerEntry";
 import { differenceInMinutes } from "date-fns";
+import { IGaugeEntry } from "../../../../serverApi/IGaugeEntry";
 
 export function consolidate(
-  measurements: IMeasurement[],
+  entries: IEntry[],
   groupByTime: GroupByTime,
-): IConsolidatedMeasurements[] {
-  const valuesByGroupKey = measurements.reduce(
-    (
-      previousValue: Record<string, IMeasurement[]>,
-      measurement: IMeasurement,
-    ) => {
-      const key = ConsolidationKey.build(measurement.dateTime, groupByTime);
+): IConsolidatedEntries[] {
+  const valuesByGroupKey = entries.reduce(
+    (previousValue: Record<string, IEntry[]>, entry: IEntry) => {
+      const key = ConsolidationKey.build(entry.dateTime, groupByTime);
       const keyAsString = key.serialize();
 
       if (!previousValue[keyAsString]) {
         previousValue[keyAsString] = [];
       }
 
-      previousValue[keyAsString].push(measurement);
+      previousValue[keyAsString].push(entry);
 
       return previousValue;
     },
@@ -32,40 +27,40 @@ export function consolidate(
   );
 
   return Object.keys(valuesByGroupKey).map((keyAsString) => {
-    const measurements = valuesByGroupKey[keyAsString];
+    const entries = valuesByGroupKey[keyAsString];
 
     return {
-      value: measurements
+      value: entries
         .map(getValue)
         .reduce((total, current) => total + current, 0),
       groupKey: ConsolidationKey.deserialize(keyAsString),
-      measurements: measurements,
+      entries: entries,
     };
   });
 }
 
-export function getValue(m: IMeasurement) {
-  // at the moment we use the number of measurements as
+export function getValue(m: IEntry) {
+  // at the moment we use the number of entries as
   // this is only called when counter and there the value
   // is always one.
   // i guess that's correct, however this should also be
-  // possible for other metric types i suppose?
+  // possible for other journal types i suppose?
 
-  const timerMeasurement = m as ITimerMeasurement;
-  if (timerMeasurement.startDate) {
-    return getTimerMeasurementValue(timerMeasurement);
+  const timerEntry = m as ITimerEntry;
+  if (timerEntry.startDate) {
+    return getTimerEntryValue(timerEntry);
   }
 
-  return (m as IGaugeMeasurement).value ?? 1;
+  return (m as IGaugeEntry).value ?? 1;
 }
 
-export function getTimerMeasurementValue(timerMeasurement: ITimerMeasurement) {
-  if (!timerMeasurement.startDate) {
+export function getTimerEntryValue(timerEntry: ITimerEntry) {
+  if (!timerEntry.startDate) {
     return 0;
   }
 
   return differenceInMinutes(
-    timerMeasurement.endDate ? new Date(timerMeasurement.endDate) : new Date(),
-    new Date(timerMeasurement.startDate),
+    timerEntry.endDate ? new Date(timerEntry.endDate) : new Date(),
+    new Date(timerEntry.startDate),
   );
 }

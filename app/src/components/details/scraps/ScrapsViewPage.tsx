@@ -5,30 +5,23 @@ import {
   FormatAlignLeftOutlined,
   SelfImprovementOutlined,
 } from "@mui/icons-material";
-import { useMetricContext } from "../MetricDetailsContext";
-import { MetricPageTitle } from "../MetricPageTitle";
+import { useJournalContext } from "../JournalDetailsContext";
+import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonActions } from "../../overview/getCommonActions";
 import { Page } from "../../layout/pages/Page";
-import {
-  IScrapMeasurement,
-  ScrapType,
-} from "../../../serverApi/IScrapMeasurement";
+import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { Route, Routes } from "react-router-dom";
-import { DeleteMeasurementLauncher } from "../edit/DeleteMeasurementLauncher";
-import { ScrapsMetricType } from "../../../metricTypes/ScrapsMetricType";
+import { DeleteEntryLauncher } from "../edit/DeleteEntryLauncher";
+import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 import { IAction } from "../../common/actions/IAction";
 
 export const ScrapsViewPage: React.FC = () => {
-  const {
-    metric,
-    measurements: scraps,
-    setDateConditions,
-  } = useMetricContext();
+  const { journal, entries: scraps, setDateConditions } = useJournalContext();
 
-  const [newScrap, setNewScrap] = useState<IScrapMeasurement>(null);
+  const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
 
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
@@ -60,25 +53,25 @@ export const ScrapsViewPage: React.FC = () => {
     collection.moveFocusDown();
   });
 
-  if (!scraps || !metric) {
+  if (!scraps || !journal) {
     return;
   }
 
   return (
     <Page
-      title={<MetricPageTitle metric={metric} />}
-      documentTitle={metric.name}
+      title={<JournalPageTitle journal={journal} />}
+      documentTitle={journal.name}
       actions={[
         getAddNewAction("markdown"),
         getAddNewAction("list"),
         null,
-        ...getCommonActions(metric, false),
+        ...getCommonActions(journal, false),
       ]}
     >
       {newScrap ? <Scrap key="new" scrap={newScrap} /> : null}
 
       {scraps.length
-        ? (scraps as IScrapMeasurement[]).map((scrap, i) => (
+        ? (scraps as IScrapEntry[]).map((scrap, i) => (
             <Scrap
               key={scrap.id + keyToken}
               onClick={() => collection.setFocus(i)}
@@ -101,8 +94,8 @@ export const ScrapsViewPage: React.FC = () => {
 
       <Routes>
         <Route
-          path="/measurements/:measurementId/delete"
-          element={<DeleteMeasurementLauncher metric={metric} />}
+          path="/entries/:entryId/delete"
+          element={<DeleteEntryLauncher journal={journal} />}
         />
       </Routes>
     </Page>
@@ -118,8 +111,8 @@ export const ScrapsViewPage: React.FC = () => {
       icon: isMarkdown ? <MarkdownScrapIcon /> : <ListScrapIcon />,
       onClick: () => {
         setNewScrap(
-          ScrapsMetricType.createBlank(
-            metric.id,
+          ScrapsJournalType.createBlank(
+            journal.id,
             isMarkdown ? ScrapType.Markdown : ScrapType.List,
           ),
         );
