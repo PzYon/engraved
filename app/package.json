@@ -32,7 +32,7 @@
     "react-hotkeys-hook": "4.4.1",
     "react-router-dom": "6.16.0",
     "typescript": "5.2.2",
-    "vite": "4.4.9"
+    "vite": "4.4.10"
   },
   "scripts": {
     "start": "vite",
