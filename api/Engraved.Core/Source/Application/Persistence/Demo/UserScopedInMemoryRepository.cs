@@ -41,7 +41,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
       .ToArray();
   }
 
-  public async Task<IJournal[]> GetAllJournals(string? searchText, JournalType[]? journalTypes = null, int? limit = null)
+  public async Task<IJournal[]> GetAllJournals(
+    string? searchText,
+    JournalType[]? journalTypes = null,
+    int? limit = null
+  )
   {
     IJournal[] allJournals = await _repository.GetAllJournals(searchText, journalTypes, limit);
     return allJournals

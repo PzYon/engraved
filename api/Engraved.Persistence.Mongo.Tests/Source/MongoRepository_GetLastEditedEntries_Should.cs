@@ -80,7 +80,7 @@ public class MongoRepository_GetLastEditedEntries_Should
 
     IEntry[] results = await _repository.GetLastEditedEntries(new[] { result.EntityId }, "heiri", null, 10);
     Assert.AreEqual(1, results.Length);
-    Assert.AreEqual(((ScrapsEntry)results[0]).Title, "Heiri");
+    Assert.AreEqual(((ScrapsEntry) results[0]).Title, "Heiri");
   }
 
   [Test]

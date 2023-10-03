@@ -51,6 +51,6 @@ public static class EntryDocumentMapper
   {
     return document == null
       ? null!
-      : (TEntry)Mapper.Map(document, document.GetType(), typeof(TEntry));
+      : (TEntry) Mapper.Map(document, document.GetType(), typeof(TEntry));
   }
 }

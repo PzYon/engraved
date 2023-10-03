@@ -27,10 +27,10 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   public AttributeSearchResult[] Search(
-      string searchText,
-      Dictionary<string, JournalAttribute> attributes,
-      params Dictionary<string, string[]>[] attributeValues
-    )
+    string searchText,
+    Dictionary<string, JournalAttribute> attributes,
+    params Dictionary<string, string[]>[] attributeValues
+  )
   {
     Dictionary<string, Dictionary<string, string[]>>
       documentsInIndex = AddDocumentsToIndex(attributes, attributeValues);
@@ -85,9 +85,9 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private Dictionary<string, Dictionary<string, string[]>> AddDocumentsToIndex(
-      Dictionary<string, JournalAttribute> journalAttributes,
-      IEnumerable<Dictionary<string, string[]>> journalAttributeValues
-    )
+    Dictionary<string, JournalAttribute> journalAttributes,
+    IEnumerable<Dictionary<string, string[]>> journalAttributeValues
+  )
   {
     Dictionary<string, Document> docsByUniqueString = new();
     Dictionary<string, Dictionary<string, string[]>> valuesByUniqueString = new();
@@ -131,9 +131,9 @@ public class LuceneSearchIndex : ISearchIndex
   }
 
   private static Document CreateDocument(
-      Dictionary<string, JournalAttribute> journalAttributes,
-      Dictionary<string, string[]> attributeValues
-    )
+    Dictionary<string, JournalAttribute> journalAttributes,
+    Dictionary<string, string[]> attributeValues
+  )
   {
     var document = new Document();
 

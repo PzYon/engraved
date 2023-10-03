@@ -26,7 +26,7 @@ public class ActivitiesController : ControllerBase
       SearchText = searchText,
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
     };
-    
+
     GetActivitiesQueryResult result = await _dispatcher.Query(query);
     return GetActivitiesQueryApiResult.FromResult(result);
   }

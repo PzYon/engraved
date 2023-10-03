@@ -42,7 +42,7 @@ public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?>
       return null;
     }
 
-    var timerJournal = (TimerJournal)journal;
+    var timerJournal = (TimerJournal) journal;
     return await UpsertTimerEntryCommandExecutor.GetActiveEntry(repository, timerJournal);
   }
 }

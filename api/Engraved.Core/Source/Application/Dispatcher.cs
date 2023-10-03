@@ -68,9 +68,9 @@ public class Dispatcher
   }
 
   private static async Task<TExecutionResult> Execute<TExecutionResult>(
-      Func<Task<TExecutionResult>> action,
-      string labelPrefix
-    )
+    Func<Task<TExecutionResult>> action,
+    string labelPrefix
+  )
   {
     var watch = Stopwatch.StartNew();
 

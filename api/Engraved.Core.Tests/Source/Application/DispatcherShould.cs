@@ -101,7 +101,7 @@ public class DispatcherShould
     Dispatcher dispatcher1 = CreateDispatcher("user_one");
     Guid resultFirstExecution = await dispatcher1.Query(query);
     await dispatcher1.Command(new FakeCommand { AffectedUsers = new List<string> { "user_zero", "user_one" } });
-    
+
     Guid resultSecondExecution = await dispatcher1.Query(query);
     Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
 
@@ -192,7 +192,11 @@ public class FakeUserScopedRepository : IUserScopedRepository
     throw new NotImplementedException();
   }
 
-  public Task<IJournal[]> GetAllJournals(string? searchText = null, JournalType[]? journalTypes = null, int? limit = null)
+  public Task<IJournal[]> GetAllJournals(
+    string? searchText = null,
+    JournalType[]? journalTypes = null,
+    int? limit = null
+  )
   {
     throw new NotImplementedException();
   }

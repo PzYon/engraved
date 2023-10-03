@@ -8,7 +8,7 @@ public class UpsertScrapsEntryCommand : BaseUpsertEntryCommand
   public string Title { get; set; } = null!;
 
   public ScrapType ScrapType { get; set; } = ScrapType.Markdown;
-  
+
   public override JournalType GetSupportedJournalType()
   {
     return JournalType.Scraps;

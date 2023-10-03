@@ -236,7 +236,7 @@ public class DemoDataRepositorySeeder
 
   private static JournalType GetRandomJournalType()
   {
-    return (JournalType)Random.Shared.Next(0, Enum.GetNames(typeof(JournalType)).Length);
+    return (JournalType) Random.Shared.Next(0, Enum.GetNames(typeof(JournalType)).Length);
   }
 
   private static Dictionary<string, T> CreateRandomDict<T>(string keyPrefix, Func<int, T> createValue)

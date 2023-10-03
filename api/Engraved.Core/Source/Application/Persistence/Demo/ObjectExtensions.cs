@@ -50,7 +50,7 @@ public static class ObjectExtensions
       Type arrayType = typeToReflect.GetElementType()!;
       if (IsPrimitive(arrayType) == false)
       {
-        var clonedArray = (Array)cloneObject;
+        var clonedArray = (Array) cloneObject;
         clonedArray.ForEach(
           (array, indices) => array.SetValue(InternalCopy(clonedArray.GetValue(indices), visited), indices)
         );
@@ -114,7 +114,7 @@ public static class ObjectExtensions
 
   public static T Copy<T>(this T original)
   {
-    return (T)Copy((object)original!)!;
+    return (T) Copy((object) original!)!;
   }
 }
 
