@@ -13,6 +13,7 @@ export const Titles: React.FC<{
         color: "primary.main",
         display: "flex",
         alignItems: "center",
+        width: "100%",
       }}
     >
       {getBody()}
