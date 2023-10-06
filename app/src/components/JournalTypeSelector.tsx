@@ -5,12 +5,10 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  styled,
 } from "@mui/material";
 import { JournalType } from "../serverApi/JournalType";
 import { translations } from "../i18n/translations";
-import { JournalTypeIcon } from "./common/JournalTypeIcon";
-import { IconStyle } from "./common/Icon";
+import { JournalTypeMenuItem } from "./JournalTypeMenuItem";
 
 export const JournalTypeSelector: React.FC<{
   journalType: JournalType | JournalType[];
@@ -65,24 +63,3 @@ export const JournalTypeSelector: React.FC<{
     </FormControl>
   );
 };
-
-const JournalTypeMenuItem: React.FC<{
-  journalType: JournalType;
-  label: string;
-}> = ({ journalType, label }) => {
-  return (
-    <MenuItemContainer>
-      <JournalTypeIcon type={journalType} style={IconStyle.Entries} />
-      {label}
-    </MenuItemContainer>
-  );
-};
-
-const MenuItemContainer = styled("div")`
-  display: inline-flex;
-  align-items: center;
-
-  .ngrvd-icon {
-    margin-right: ${(p) => p.theme.spacing(1)};
-  }
-`;

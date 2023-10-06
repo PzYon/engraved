@@ -7,7 +7,7 @@ import { JournalType } from "../../JournalType";
 export const useJournalsQuery = (
   searchText?: string,
   journalTypes?: JournalType[],
-) => {
+): IJournal[] => {
   const queryClient = useQueryClient();
 
   const { data } = useQuery<IJournal[]>({
@@ -25,5 +25,5 @@ export const useJournalsQuery = (
     },
   });
 
-  return data;
+  return data ?? [];
 };

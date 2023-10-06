@@ -4,17 +4,25 @@ import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { ListScrapIcon, MarkdownScrapIcon } from "../scraps/ScrapsViewPage";
 import { Scrap } from "../scraps/Scrap";
+import { JournalSelector } from "../../common/JournalSelector";
 
 export const AddQuickScrapDialog: React.FC<{
   onSuccess?: () => void;
-  journalId: string;
-}> = ({ onSuccess, journalId }) => {
+  quickScrapJournalId: string;
+}> = ({ onSuccess, quickScrapJournalId }) => {
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
+
+  const [journalId, setJournalId] = useState("");
 
   const scrap = ScrapsJournalType.createBlank(journalId, type);
 
   return (
     <>
+      <JournalSelector
+        label={"Add to journal"}
+        onChange={(journal) => setJournalId(journal.id)}
+        selectedJournalId={quickScrapJournalId}
+      />
       <ScrapTypeSelector>
         <ToggleButtonGroup
           value={type}
@@ -53,6 +61,7 @@ export const AddQuickScrapDialog: React.FC<{
 };
 
 const ScrapTypeSelector = styled("div")`
+  padding-top: ${(p) => p.theme.spacing(2)};
   display: flex;
   justify-content: start;
 `;
