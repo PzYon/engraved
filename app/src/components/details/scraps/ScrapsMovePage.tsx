@@ -18,7 +18,7 @@ export const ScrapsMovePage: React.FC = () => {
 
   const { setSubTitle } = usePageContext();
 
-  const { entries } = useJournalContext();
+  const { entries, journal } = useJournalContext();
   const entry = entries.find((m) => m.id === entryId) as IScrapEntry;
 
   const [targetJournalId, setTargetJournalId] = useState<string>(undefined);
@@ -34,7 +34,7 @@ export const ScrapsMovePage: React.FC = () => {
   }
 
   return (
-    <Page subTitle="Move scrap to..." actions={[]}>
+    <Page title={journal.name} subTitle="Move scrap to..." actions={[]}>
       <PageSection>
         <JournalSelector
           label={"Move to journal"}

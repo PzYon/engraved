@@ -37,5 +37,5 @@ export const useJournalEntriesQuery = (
     },
   });
 
-  return entries;
+  return entries ?? [];
 };
