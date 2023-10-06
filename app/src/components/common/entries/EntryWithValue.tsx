@@ -1,11 +1,11 @@
 import React from "react";
-import { IJournal } from "../serverApi/IJournal";
-import { IEntry } from "../serverApi/IEntry";
-import { AttributeValues } from "../components/common/AttributeValues";
+import { IJournal } from "../../../serverApi/IJournal";
+import { IEntry } from "../../../serverApi/IEntry";
+import { AttributeValues } from "../AttributeValues";
 import { styled, Typography } from "@mui/material";
 import { Entry } from "./Entry";
-import { ActionGroup } from "../components/common/actions/ActionGroup";
-import { ActionFactory } from "../components/common/actions/ActionFactory";
+import { ActionGroup } from "../actions/ActionGroup";
+import { ActionFactory } from "../actions/ActionFactory";
 
 export const EntryWithValue: React.FC<{
   value: React.ReactNode;

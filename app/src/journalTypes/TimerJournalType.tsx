@@ -11,7 +11,7 @@ import { FormatDuration } from "../components/common/FormatDuration";
 import { IEntriesTableGroup } from "../components/details/entriesTable/IEntriesTableGroup";
 import { IJournal } from "../serverApi/IJournal";
 import React from "react";
-import { EntryWithValue } from "./EntryWithValue";
+import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { Typography } from "@mui/material";
 
 export class TimerJournalType implements IJournalType {
