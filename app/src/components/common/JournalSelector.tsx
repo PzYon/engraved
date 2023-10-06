@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalType } from "../../serverApi/JournalType";
@@ -18,9 +18,18 @@ export const JournalSelector: React.FC<{
     [journals],
   );
 
+  useEffect(
+    () => onChange(initiallySelectedJournal),
+    [initiallySelectedJournal],
+  );
+
+  if (!journals?.length) {
+    return null;
+  }
+
   return (
     <Autocomplete
-      value={initiallySelectedJournal}
+      defaultValue={initiallySelectedJournal}
       options={journals}
       onChange={async (_, selectedOption) => {
         onChange(selectedOption);
