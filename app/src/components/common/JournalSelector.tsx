@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalType } from "../../serverApi/JournalType";
@@ -13,9 +13,14 @@ export const JournalSelector: React.FC<{
 }> = ({ onChange, label, selectedJournalId }) => {
   const journals = useJournalsQuery("", [JournalType.Scraps]);
 
+  const initiallySelectedJournal = useMemo(
+    () => journals.find((j) => j.id === selectedJournalId) ?? journals[0],
+    [journals],
+  );
+
   return (
     <Autocomplete
-      value={journals.filter((j) => j.id === selectedJournalId)[0]}
+      value={initiallySelectedJournal}
       options={journals}
       onChange={async (_, selectedOption) => {
         onChange(selectedOption);
