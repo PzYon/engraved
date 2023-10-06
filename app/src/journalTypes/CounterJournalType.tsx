@@ -5,7 +5,7 @@ import { IEntriesTableColumnDefinition } from "../components/details/entriesTabl
 import { IJournal } from "../serverApi/IJournal";
 import { IEntry } from "../serverApi/IEntry";
 import React from "react";
-import { EntryWithValue } from "./EntryWithValue";
+import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 
 export class CounterJournalType implements IJournalType {
   type = JournalType.Counter;

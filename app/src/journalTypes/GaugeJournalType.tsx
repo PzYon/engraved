@@ -7,7 +7,7 @@ import { getValue } from "../components/details/chart/consolidation/consolidate"
 import { IEntriesTableGroup } from "../components/details/entriesTable/IEntriesTableGroup";
 import { IJournal } from "../serverApi/IJournal";
 import React from "react";
-import { EntryWithValue } from "./EntryWithValue";
+import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { IGaugeEntry } from "../serverApi/IGaugeEntry";
 
 export class GaugeJournalType implements IJournalType {

@@ -1,11 +1,11 @@
 import React from "react";
-import { IEntry } from "../serverApi/IEntry";
-import { IJournal } from "../serverApi/IJournal";
-import { FormatDate } from "../components/common/FormatDate";
+import { IEntry } from "../../../serverApi/IEntry";
+import { IJournal } from "../../../serverApi/IJournal";
+import { FormatDate } from "../FormatDate";
 import { styled } from "@mui/material";
-import { Properties } from "../components/common/Properties";
-import { JournalTypeIcon } from "../components/common/JournalTypeIcon";
-import { IconStyle } from "../components/common/Icon";
+import { Properties } from "../Properties";
+import { JournalTypeIcon } from "../JournalTypeIcon";
+import { IconStyle } from "../Icon";
 import { Link } from "react-router-dom";
 
 export const Entry: React.FC<{

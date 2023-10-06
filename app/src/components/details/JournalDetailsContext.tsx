@@ -47,7 +47,7 @@ export const JournalContextProvider: React.FC<{
     [key: string]: string[];
   }>({});
 
-  const [dateConditions, setDateConditions] = useState<IDateConditions>(null);
+  const [dateConditions, setDateConditions] = useState<IDateConditions>({});
 
   const journal = useJournalQuery(journalId);
 
