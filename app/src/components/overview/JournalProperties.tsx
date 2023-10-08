@@ -4,6 +4,7 @@ import { FormatDate } from "../common/FormatDate";
 import { SharedWith } from "../common/SharedWith";
 import { Properties } from "../common/Properties";
 import { styled } from "@mui/material";
+import { Favorite } from "./Favorite";
 
 export const JournalProperties: React.FC<{ journal: IJournal }> = ({
   journal,
@@ -11,6 +12,11 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
   <Host>
     <Properties
       properties={[
+        {
+          key: "starred",
+          node: <Favorite journalId={journal.id} />,
+          label: null,
+        },
         {
           key: "edited-on-date",
           node: <FormatDate value={journal.editedOn} />,
@@ -21,6 +27,12 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
           node: <SharedWith journal={journal} />,
           hideWhen: () => !Object.keys(journal.permissions).length,
           label: "Shared with",
+        },
+        {
+          key: "description",
+          node: <>{journal.description}</>,
+          hideWhen: () => !journal.description,
+          label: "Description",
         },
       ]}
     />

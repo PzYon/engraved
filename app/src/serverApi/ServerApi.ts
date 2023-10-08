@@ -25,7 +25,7 @@ import { IJournalUiSettings } from "../components/details/edit/JournalUiSettings
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 
-type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
+type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
 export class ServerApi {
   private static _jwtToken: string;
@@ -34,10 +34,16 @@ export class ServerApi {
 
   static loadingHandler: LoadingHandler = new LoadingHandler();
 
-  private static googlePrompt: () => Promise<{ isSuccess: boolean }>;
+  private static googlePrompt: () => Promise<{
+    isSuccess: boolean;
+  }>;
   private static onAuthenticated: () => void;
 
-  static setGooglePrompt(googlePrompt: () => Promise<{ isSuccess: boolean }>) {
+  static setGooglePrompt(
+    googlePrompt: () => Promise<{
+      isSuccess: boolean;
+    }>,
+  ) {
     ServerApi.googlePrompt = googlePrompt;
   }
 
@@ -90,6 +96,20 @@ export class ServerApi {
     ServerApi.onAuthenticated = null;
 
     return authResult;
+  }
+
+  static async addJournalToFavorites(journalId: string): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/user/favorites/${journalId}`,
+      "PATCH",
+    );
+  }
+
+  static async removeJournalFromFavorites(journalId: string): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/user/favorites/${journalId}`,
+      "DELETE",
+    );
   }
 
   static async getJournals(
@@ -259,6 +279,10 @@ export class ServerApi {
 
   static async getSystemInfo(): Promise<ISystemInfo> {
     return await ServerApi.executeRequest(`/system_info`, "GET", null);
+  }
+
+  static async getCurrentUser(): Promise<IUser> {
+    return await ServerApi.executeRequest(`/user`, "GET", null);
   }
 
   static async executeRequest<T = void>(
