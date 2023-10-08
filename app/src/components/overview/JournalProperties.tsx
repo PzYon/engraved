@@ -4,7 +4,7 @@ import { FormatDate } from "../common/FormatDate";
 import { SharedWith } from "../common/SharedWith";
 import { Properties } from "../common/Properties";
 import { styled } from "@mui/material";
-import { Starred } from "./Starred";
+import { Favorite } from "./Favorite";
 
 export const JournalProperties: React.FC<{ journal: IJournal }> = ({
   journal,
@@ -14,7 +14,7 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
       properties={[
         {
           key: "starred",
-          node: <Starred journalId={journal.id} />,
+          node: <Favorite journalId={journal.id} />,
           label: null,
         },
         {

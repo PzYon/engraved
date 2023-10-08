@@ -6,12 +6,14 @@ export interface IAppContext {
   appAlert: IAppAlert;
   setAppAlert: (appAlert: IAppAlert) => void;
   user: IUser;
+  setUser: (user: IUser) => void;
 }
 
 const AppContext = createContext<IAppContext>({
   appAlert: null,
   setAppAlert: null,
   user: null,
+  setUser: null,
 });
 
 export const useAppContext = () => {
@@ -21,14 +23,16 @@ export const useAppContext = () => {
 export const AppContextProvider: React.FC<{
   children: React.ReactNode;
   user: IUser;
-}> = ({ children, user }) => {
+}> = ({ children, user: initialUser }) => {
   const [appAlert, setAppAlert] = useState<IAppAlert>(undefined);
+  const [user, setUser] = useState(initialUser);
 
   const contextValue = useMemo(() => {
     return {
       appAlert,
       setAppAlert,
       user,
+      setUser,
     };
   }, [appAlert, user]);
 

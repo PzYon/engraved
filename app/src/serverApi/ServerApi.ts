@@ -34,10 +34,16 @@ export class ServerApi {
 
   static loadingHandler: LoadingHandler = new LoadingHandler();
 
-  private static googlePrompt: () => Promise<{ isSuccess: boolean }>;
+  private static googlePrompt: () => Promise<{
+    isSuccess: boolean;
+  }>;
   private static onAuthenticated: () => void;
 
-  static setGooglePrompt(googlePrompt: () => Promise<{ isSuccess: boolean }>) {
+  static setGooglePrompt(
+    googlePrompt: () => Promise<{
+      isSuccess: boolean;
+    }>,
+  ) {
     ServerApi.googlePrompt = googlePrompt;
   }
 
@@ -99,7 +105,7 @@ export class ServerApi {
     );
   }
 
-  static async removeJournalToFavorites(journalId: string): Promise<void> {
+  static async removeJournalFromFavorites(journalId: string): Promise<void> {
     return await ServerApi.executeRequest(
       `/user/favorites/${journalId}`,
       "DELETE",
@@ -273,6 +279,10 @@ export class ServerApi {
 
   static async getSystemInfo(): Promise<ISystemInfo> {
     return await ServerApi.executeRequest(`/system_info`, "GET", null);
+  }
+
+  static async getCurrentUser(): Promise<IUser> {
+    return await ServerApi.executeRequest(`/user`, "GET", null);
   }
 
   static async executeRequest<T = void>(

@@ -19,12 +19,12 @@ public class RemoveJournalFromFavoritesCommandExecutor : ICommandExecutor
       throw new InvalidCommandException(_command, $"\"{nameof(_command.JournalId)}\" must be specified");
     }
 
-    if (string.IsNullOrEmpty(_command.UserId))
+    if (string.IsNullOrEmpty(_command.UserName))
     {
-      throw new InvalidCommandException(_command, $"\"{nameof(_command.UserId)}\" must be specified");
+      throw new InvalidCommandException(_command, $"\"{nameof(_command.UserName)}\" must be specified");
     }
 
-    IUser? user = await repository.GetUser(_command.UserId);
+    IUser? user = await repository.GetUser(_command.UserName);
 
     if (user == null || !user.FavoriteJournalIds.Contains(_command.JournalId))
     {

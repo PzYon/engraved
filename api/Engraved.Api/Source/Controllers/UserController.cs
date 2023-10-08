@@ -36,7 +36,7 @@ public class UserController : Controller
     var command = new AddJournalToFavoritesCommand
     {
       JournalId = journalId,
-      UserId = currentUser.Id
+      UserName = currentUser.Name
     };
 
     await _dispatcher.Command(command);
@@ -50,7 +50,7 @@ public class UserController : Controller
     var command = new RemoveJournalFromFavoritesCommand
     {
       JournalId = journalId,
-      UserId = currentUser.Id
+      UserName = currentUser.Name
     };
 
     await _dispatcher.Command(command);

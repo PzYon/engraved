@@ -5,7 +5,7 @@ import { Star, StarOutline } from "@mui/icons-material";
 import { useAddJournalToFavoritesMutation } from "../../serverApi/reactQuery/mutations/useAddJournalToFavoritesMutation";
 import { useRemoveJournalFromFavoritesMutation } from "../../serverApi/reactQuery/mutations/useRemoveJournalFromFavoritesMutation";
 
-export const Starred: React.FC<{ journalId: string }> = ({ journalId }) => {
+export const Favorite: React.FC<{ journalId: string }> = ({ journalId }) => {
   const { user } = useAppContext();
 
   const addMutation = useAddJournalToFavoritesMutation(journalId);
