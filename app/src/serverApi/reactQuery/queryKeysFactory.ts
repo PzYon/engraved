@@ -68,4 +68,8 @@ export const queryKeysFactory = {
   appVersion() {
     return ["app-version"];
   },
+
+  modifyUser() {
+    return ["user"];
+  },
 };

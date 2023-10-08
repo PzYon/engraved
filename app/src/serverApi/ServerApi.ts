@@ -25,7 +25,7 @@ import { IJournalUiSettings } from "../components/details/edit/JournalUiSettings
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 
-type HttpMethod = "GET" | "PUT" | "POST" | "DELETE";
+type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
 export class ServerApi {
   private static _jwtToken: string;
@@ -90,6 +90,20 @@ export class ServerApi {
     ServerApi.onAuthenticated = null;
 
     return authResult;
+  }
+
+  static async addJournalToFavorites(journalId: string): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/user/favorites/${journalId}`,
+      "PATCH",
+    );
+  }
+
+  static async removeJournalToFavorites(journalId: string): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/user/favorites/${journalId}`,
+      "DELETE",
+    );
   }
 
   static async getJournals(

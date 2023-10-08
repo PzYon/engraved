@@ -52,7 +52,6 @@ export const JournalListItem: React.FC<{
                 {journal.name}
               </Typography>
             </ActionLink>
-            <Typography>{journal.description}</Typography>
             <JournalProperties journal={journal} />
             {deviceWidth === DeviceWidth.Small ? (
               <Box sx={{ display: "flex", mt: 2 }}>
