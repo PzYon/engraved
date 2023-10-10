@@ -6,6 +6,7 @@ using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Filters;
 using Engraved.Api.Settings;
+using Engraved.Api.Temp;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
@@ -17,6 +18,7 @@ using Engraved.Search.Lucene;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Dispatcher = Engraved.Core.Application.Dispatcher;
 
 // <HackZone>
 var isSeeded = false;
@@ -133,6 +135,10 @@ builder.Services.AddAuthentication(
       };
     }
   );
+
+
+builder.Services.AddTransient<Engraved.Api.Temp.Dispatcher>();
+builder.Services.AddTransient<FooQueryExecutor>();
 
 WebApplication app = builder.Build();
 
