@@ -18,10 +18,11 @@ export const JournalSelector: React.FC<{
     [journals],
   );
 
-  useEffect(
-    () => onChange(initiallySelectedJournal),
-    [initiallySelectedJournal],
-  );
+  useEffect(() => {
+    if (initiallySelectedJournal) {
+      onChange(initiallySelectedJournal);
+    }
+  }, [initiallySelectedJournal]);
 
   if (!journals?.length) {
     return null;

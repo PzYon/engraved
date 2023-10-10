@@ -13,7 +13,7 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
     <Properties
       properties={[
         {
-          key: "starred",
+          key: "favorite",
           node: <Favorite journalId={journal.id} />,
           label: null,
         },
