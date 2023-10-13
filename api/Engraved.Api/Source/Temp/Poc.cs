@@ -1,22 +1,16 @@
 ﻿namespace Engraved.Api.Temp;
 
-public interface IQuery<TResult>
-{
-  Type GetExecutorType();
-}
+public interface IQuery { }
 
-public interface IQueryExecutor<TQuery, TResult>
-  where TQuery : IQuery<TResult>
+public interface IQueryExecutor<TResult, TQuery>
+  where TQuery : IQuery
 {
   Task<TResult> Execute(TQuery query);
 }
 
-public class FooQuery : IQuery<string[]>
-{
-  public Type GetExecutorType() => typeof(FooQueryExecutor);
-}
+public class FooQuery : IQuery { }
 
-public class FooQueryExecutor : IQueryExecutor<FooQuery, string[]>
+public class FooQueryExecutor : IQueryExecutor<string[], FooQuery>
 {
   public Task<string[]> Execute(FooQuery query)
   {
@@ -35,8 +29,7 @@ public class Controller
 
   public async Task<string[]> DoSomething(FooQuery query)
   {
-    string[] strings = await _dispatcher.Query(query);
-    return strings;
+    return await _dispatcher.Query<string[], FooQuery>(query);
   }
 }
 
@@ -49,15 +42,11 @@ public class Dispatcher
     _serviceProvider = serviceProvider;
   }
 
-  public async Task<TResult> Query<TResult>(IQuery<TResult> query)
+  public async Task<TResult> Query<TResult, TQuery>(TQuery query) where TQuery : IQuery
   {
-    object? service = _serviceProvider.GetService(query.GetExecutorType());
-    if (service is not IQueryExecutor<IQuery<TResult>, TResult> queryExecutor)
-    {
-      throw new Exception($"Executor for query {query.GetType()} not registered.");
-    }
-
-    return await queryExecutor.Execute(query);
+    var foo = _serviceProvider.GetService<IQueryExecutor<TResult, TQuery>>();
+    
+    return await foo.Execute(query);
   }
 }
 

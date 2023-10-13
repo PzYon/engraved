@@ -136,9 +136,8 @@ builder.Services.AddAuthentication(
     }
   );
 
-
 builder.Services.AddTransient<Engraved.Api.Temp.Dispatcher>();
-builder.Services.AddTransient<FooQueryExecutor>();
+builder.Services.AddTransient<IQueryExecutor<string[], FooQuery>, FooQueryExecutor>();
 
 WebApplication app = builder.Build();
 

@@ -12,17 +12,17 @@ public class RootController : Controller
 {
   private readonly Dispatcher _dispatcher;
 
-  public RootController(Engraved.Api.Temp.Dispatcher dispatcher)
+  public RootController(Dispatcher dispatcher)
   {
     _dispatcher = dispatcher;
   }
-  
+
   [HttpGet]
   public async void Get()
   {
     // required to serve keep alive requests from azure
 
-   string[] result = await _dispatcher.Query(new FooQuery());
-   var x = "";
+    string[] result = await _dispatcher.Query<string[], FooQuery>(new FooQuery());
+    var x = "";
   }
 }
