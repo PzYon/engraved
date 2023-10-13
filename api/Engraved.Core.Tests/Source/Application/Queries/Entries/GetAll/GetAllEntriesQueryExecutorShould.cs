@@ -53,7 +53,7 @@ public class GetAllEntriesQueryExecutorShould
     );
 
     var query = new GetAllEntriesQuery { Limit = 2 };
-    GetAllEntriesQueryResult result = (await new GetAllEntriesQueryExecutor(query).Execute(_repo));
+    GetAllEntriesQueryResult result = (await new GetAllEntriesQueryExecutor(_repo).Execute(query));
 
     Assert.AreEqual(2, result.Journals.Length);
     Assert.IsFalse(result.Journals.Select(m => m.Id).Contains("counter-journal-id"));

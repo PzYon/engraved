@@ -9,31 +9,33 @@ namespace Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 // - consider a specific time period for threshold (must be configured and
 //   used in calculations)
 
-public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>>
+public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>,
+  GetThresholdValuesQuery>
 {
+  private readonly IRepository _repository;
   public bool DisableCache => false;
 
-  private readonly GetThresholdValuesQuery _query;
-
-  public GetThresholdValuesQueryExecutor(GetThresholdValuesQuery query)
+  public GetThresholdValuesQueryExecutor(IRepository repository)
   {
-    _query = query;
+    _repository = repository;
   }
 
-  public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> Execute(IRepository repository)
+  public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> Execute(GetThresholdValuesQuery query)
   {
-    var journalQuery = new GetJournalQueryExecutor(new GetJournalQuery { JournalId = _query.JournalId });
-    IJournal? journal = await journalQuery.Execute(repository);
+    var journalQuery = new GetJournalQuery { JournalId = query.JournalId };
+    var journalQueryExecutor = new GetJournalQueryExecutor(_repository);
+    
+    IJournal? journal = await journalQueryExecutor.Execute(journalQuery);
 
     if (journal == null || journal.Thresholds.Count == 0)
     {
       return new Dictionary<string, IDictionary<string, ThresholdResult>>();
     }
 
-    IEntry[] entries = await repository.GetAllEntries(
-      _query.JournalId!,
-      _query.FromDate,
-      _query.ToDate,
+    IEntry[] entries = await _repository.GetAllEntries(
+      query.JournalId!,
+      query.FromDate,
+      query.ToDate,
       null
     );
 

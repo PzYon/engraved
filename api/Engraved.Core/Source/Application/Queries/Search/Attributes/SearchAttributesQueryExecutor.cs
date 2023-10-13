@@ -1,5 +1,4 @@
-﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Queries.Entries.GetAllJournal;
+﻿using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Entries;
@@ -7,36 +6,36 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Search.Attributes;
 
-public class SearchAttributesQueryExecutor : IQueryExecutor<AttributeSearchResult[]>
+public class SearchAttributesQueryExecutor : IQueryExecutor<SearchAttributesResult[], SearchAttributesQuery>
 {
-  private readonly SearchAttributesQuery _query;
+  private readonly Dispatcher _dispatcher;
+  private readonly ISearchIndex _searchIndex;
 
   public bool DisableCache => true;
 
-  public SearchAttributesQueryExecutor(SearchAttributesQuery query)
+  public SearchAttributesQueryExecutor(Dispatcher dispatcher, ISearchIndex searchIndex)
   {
-    _query = query;
+    _dispatcher = dispatcher;
+    _searchIndex = searchIndex;
   }
 
-  public async Task<AttributeSearchResult[]> Execute(IRepository repository)
+  public async Task<SearchAttributesResult[]> Execute(SearchAttributesQuery query)
   {
-    var journalQuery = new GetJournalQuery { JournalId = _query.JournalId };
-    IJournal? journal = await _query.GetDispatcher().Query(journalQuery);
+    var journalQuery = new GetJournalQuery { JournalId = query.JournalId };
+    IJournal? journal = await _dispatcher.Query<IJournal?, GetJournalQuery>(journalQuery);
 
     if (journal == null)
     {
       throw new Exception("Journal not found.");
     }
 
-    var entriesQuery = new GetAllJournalEntriesQuery { JournalId = _query.JournalId };
-    IEntry[] entries = await _query.GetDispatcher().Query(entriesQuery);
+    var entriesQuery = new GetAllJournalEntriesQuery { JournalId = query.JournalId };
+    IEntry[] entries = await _dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(entriesQuery);
 
-    return _query
-      .GetSearchIndex()
-      .Search(
-        _query.SearchText,
-        journal.Attributes,
-        entries.Select(s => s.JournalAttributeValues).ToArray()
-      );
+    return _searchIndex.Search(
+      query.SearchText,
+      journal.Attributes,
+      entries.Select(s => s.JournalAttributeValues).ToArray()
+    );
   }
 }

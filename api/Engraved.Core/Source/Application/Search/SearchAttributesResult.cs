@@ -1,6 +1,6 @@
 ﻿namespace Engraved.Core.Application.Search;
 
-public class AttributeSearchResult
+public class SearchAttributesResult
 {
   public Dictionary<string, string[]> Values { get; set; } = new();
 

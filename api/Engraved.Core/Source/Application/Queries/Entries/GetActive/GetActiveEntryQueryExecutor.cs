@@ -6,34 +6,34 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetActive;
 
-public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?>
+public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?, GetActiveEntryQuery>
 {
+  private readonly IRepository _repository;
+
   public bool DisableCache => false;
 
-  private readonly GetActiveEntryQuery _query;
-
-  public GetActiveEntryQueryExecutor(GetActiveEntryQuery query)
+  public GetActiveEntryQueryExecutor(IRepository repository)
   {
-    _query = query;
+    _repository = repository;
   }
 
-  public async Task<IEntry?> Execute(IRepository repository)
+  public async Task<IEntry?> Execute(GetActiveEntryQuery query)
   {
-    if (string.IsNullOrEmpty(_query.JournalId))
+    if (string.IsNullOrEmpty(query.JournalId))
     {
-      throw new InvalidQueryException<IEntry?>(
-        _query,
+      throw new InvalidQueryException(
+        query,
         $"{nameof(GetAllJournalEntriesQuery.JournalId)} must be specified."
       );
     }
 
-    IJournal? journal = await repository.GetJournal(_query.JournalId);
+    IJournal? journal = await _repository.GetJournal(query.JournalId);
 
     if (journal == null)
     {
-      throw new InvalidQueryException<IEntry?>(
-        _query,
-        $"Journal with key \"{_query.JournalId}\" does not exist."
+      throw new InvalidQueryException(
+        query,
+        $"Journal with key \"{query.JournalId}\" does not exist."
       );
     }
 
@@ -43,6 +43,6 @@ public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?>
     }
 
     var timerJournal = (TimerJournal) journal;
-    return await UpsertTimerEntryCommandExecutor.GetActiveEntry(repository, timerJournal);
+    return await UpsertTimerEntryCommandExecutor.GetActiveEntry(_repository, timerJournal);
   }
 }

@@ -3,21 +3,21 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Journals.GetAll;
 
-public class GetAllJournalsQueryExecutor : IQueryExecutor<IJournal[]>
+public class GetAllJournalsQueryExecutor : IQueryExecutor<IJournal[], GetAllJournalsQuery>
 {
-  private readonly GetAllJournalsQuery _query;
+  private readonly IRepository _repository;
 
-  public GetAllJournalsQueryExecutor(GetAllJournalsQuery query)
+  public GetAllJournalsQueryExecutor(IRepository repository)
   {
-    _query = query;
+    _repository = repository;
   }
 
   public bool DisableCache => false;
 
-  public async Task<IJournal[]> Execute(IRepository repository)
+  public async Task<IJournal[]> Execute(GetAllJournalsQuery query)
   {
-    IJournal[] allJournals = await repository.GetAllJournals(_query.SearchText, _query.JournalTypes, _query.Limit);
+    IJournal[] allJournals = await _repository.GetAllJournals(query.SearchText, query.JournalTypes, query.Limit);
 
-    return await JournalQueryUtil.EnsurePermissionUsers(repository, allJournals);
+    return await JournalQueryUtil.EnsurePermissionUsers(_repository, allJournals);
   }
 }

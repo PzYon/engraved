@@ -22,7 +22,7 @@ public class SearchController : ControllerBase
 
   [Route("journal_attributes/{journalId}")]
   [HttpGet]
-  public async Task<AttributeSearchResult[]> SearchJournalAttributes(string journalId, string searchText)
+  public async Task<SearchAttributesResult[]> SearchJournalAttributes(string journalId, string searchText)
   {
     var searchAttributesQuery = new SearchAttributesQuery
     {
@@ -36,6 +36,6 @@ public class SearchController : ControllerBase
     searchAttributesQuery.SetSearchIndex(_searchIndex);
     searchAttributesQuery.SetDispatcher(_dispatcher);
 
-    return await _dispatcher.Query(searchAttributesQuery);
+    return await _dispatcher.Query<SearchAttributesResult[], SearchAttributesQuery>(searchAttributesQuery);
   }
 }

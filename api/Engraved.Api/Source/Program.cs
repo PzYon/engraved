@@ -6,12 +6,20 @@ using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Filters;
 using Engraved.Api.Settings;
-using Engraved.Api.Temp;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries;
+using Engraved.Core.Application.Queries.Entries.GetActive;
+using Engraved.Core.Application.Queries.Entries.GetAll;
+using Engraved.Core.Application.Queries.Entries.GetAllJournal;
+using Engraved.Core.Application.Queries.Journals.Get;
+using Engraved.Core.Application.Queries.Journals.GetAll;
+using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
+using Engraved.Core.Application.Queries.Search.Attributes;
 using Engraved.Core.Application.Search;
+using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo;
 using Engraved.Search.Lucene;
@@ -136,8 +144,17 @@ builder.Services.AddAuthentication(
     }
   );
 
-builder.Services.AddTransient<Engraved.Api.Temp.Dispatcher>();
-builder.Services.AddTransient<IQueryExecutor<string[], FooQuery>, FooQueryExecutor>();
+builder.Services.AddTransient<IQueryExecutor<IEntry?, GetActiveEntryQuery>, GetActiveEntryQueryExecutor>();
+builder.Services
+  .AddTransient<IQueryExecutor<GetAllEntriesQueryResult, GetAllEntriesQuery>, GetAllEntriesQueryExecutor>();
+builder.Services.AddTransient<IQueryExecutor<IEntry[], GetAllJournalEntriesQuery>, GetAllJournalEntriesQueryExecutor>();
+builder.Services.AddTransient<IQueryExecutor<IJournal[], GetAllJournalsQuery>, GetAllJournalsQueryExecutor>();
+builder.Services.AddTransient<IQueryExecutor<IJournal?, GetJournalQuery>, GetJournalQueryExecutor>();
+builder.Services
+  .AddTransient<IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>, GetThresholdValuesQuery>,
+    GetThresholdValuesQueryExecutor>();
+builder.Services
+  .AddTransient<IQueryExecutor<SearchAttributesResult[], SearchAttributesQuery>, SearchAttributesQueryExecutor>();
 
 WebApplication app = builder.Build();
 

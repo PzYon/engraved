@@ -11,7 +11,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchSingleTerm()
   {
-    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
+    SearchAttributesResult[] results = new LuceneSearchIndex().Search(
       "red",
       new Dictionary<string, JournalAttribute>(),
       GetSimpleValues().ToArray()
@@ -24,7 +24,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchMultipleTerms()
   {
-    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
+    SearchAttributesResult[] results = new LuceneSearchIndex().Search(
       "red beta",
       new Dictionary<string, JournalAttribute>(),
       GetSimpleValues().ToArray()
@@ -37,7 +37,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void ReturnOnlyDistinctResults()
   {
-    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
+    SearchAttributesResult[] results = new LuceneSearchIndex().Search(
       "red beta",
       new Dictionary<string, JournalAttribute>(),
       GetSimpleValues().Union(GetSimpleValues()).Union(GetSimpleValues()).ToArray()
@@ -50,7 +50,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void ReturnOnlyDistinctResultsWeightedBasedOnOccurrence()
   {
-    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
+    SearchAttributesResult[] results = new LuceneSearchIndex().Search(
       "occurs",
       new Dictionary<string, JournalAttribute>(),
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Once" } } },
@@ -88,7 +88,7 @@ public class LuceneSearchIndexShould
       }
     };
 
-    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
+    SearchAttributesResult[] results = new LuceneSearchIndex().Search(
       "banana",
       journalAttributes,
       new Dictionary<string, string[]>
@@ -109,7 +109,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchWordsFromOneAttribute()
   {
-    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
+    SearchAttributesResult[] results = new LuceneSearchIndex().Search(
       "ten play",
       new Dictionary<string, JournalAttribute>(),
       new Dictionary<string, string[]> { { "attr1", new[] { "tennis player" } } },
@@ -125,7 +125,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void MatchWordsFromMultipleAttributes()
   {
-    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
+    SearchAttributesResult[] results = new LuceneSearchIndex().Search(
       "ten play",
       new Dictionary<string, JournalAttribute>(),
       new Dictionary<string, string[]>
@@ -149,7 +149,7 @@ public class LuceneSearchIndexShould
   [Test]
   public void IgnoreCasing()
   {
-    AttributeSearchResult[] results = new LuceneSearchIndex().Search(
+    SearchAttributesResult[] results = new LuceneSearchIndex().Search(
       "tAb TEst",
       new Dictionary<string, JournalAttribute>(),
       new Dictionary<string, string[]>

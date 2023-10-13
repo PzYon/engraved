@@ -1,6 +1,5 @@
 ﻿namespace Engraved.Core.Application.Queries;
 
-public interface IQuery<TResult>
+public interface IQuery
 {
-  IQueryExecutor<TResult> CreateExecutor();
 }
