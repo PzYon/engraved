@@ -52,7 +52,7 @@ public class EntriesController : ControllerBase
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
     };
 
-    var result = await _dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(query);
+    GetAllEntriesQueryResult result = await _dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(query);
     return GetAllEntriesQueryApiResult.FromResult(result);
   }
 

@@ -12,7 +12,7 @@ public class EditJournalPermissionsCommandExecutor : ICommandExecutor<EditJourna
     _repository = repository;
   }
 
-  public async Task<CommandResult> Execute( EditJournalPermissionsCommand command)
+  public async Task<CommandResult> Execute(EditJournalPermissionsCommand command)
   {
     if (string.IsNullOrEmpty(command.JournalId))
     {

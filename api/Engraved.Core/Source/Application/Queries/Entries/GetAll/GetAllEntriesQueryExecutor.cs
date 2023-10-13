@@ -7,8 +7,8 @@ namespace Engraved.Core.Application.Queries.Entries.GetAll;
 public class GetAllEntriesQueryExecutor : IQueryExecutor<GetAllEntriesQueryResult, GetAllEntriesQuery>
 {
   private readonly IRepository _repository;
-  public bool DisableCache => false;
 
+  public bool DisableCache => false;
 
   public GetAllEntriesQueryExecutor(IRepository repository)
   {

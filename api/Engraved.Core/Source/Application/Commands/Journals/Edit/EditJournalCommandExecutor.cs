@@ -15,7 +15,7 @@ public class EditJournalCommandExecutor : ICommandExecutor<EditJournalCommand>
     _dateService = dateService;
   }
 
-  public async Task<CommandResult> Execute( EditJournalCommand command)
+  public async Task<CommandResult> Execute(EditJournalCommand command)
   {
     if (string.IsNullOrEmpty(command.JournalId))
     {

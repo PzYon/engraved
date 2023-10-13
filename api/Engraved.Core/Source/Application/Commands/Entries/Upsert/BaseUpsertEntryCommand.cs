@@ -13,6 +13,6 @@ public abstract class BaseUpsertEntryCommand : ICommand
   public DateTime? DateTime { get; set; }
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
-  
+
   public abstract JournalType GetSupportedJournalType();
 }

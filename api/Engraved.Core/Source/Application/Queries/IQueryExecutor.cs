@@ -6,4 +6,3 @@ public interface IQueryExecutor<TResult, TQuery> where TQuery : IQuery
 
   Task<TResult> Execute(TQuery query);
 }
-

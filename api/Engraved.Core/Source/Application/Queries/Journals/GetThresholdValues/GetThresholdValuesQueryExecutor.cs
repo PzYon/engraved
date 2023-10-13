@@ -24,7 +24,7 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
   {
     var journalQuery = new GetJournalQuery { JournalId = query.JournalId };
     var journalQueryExecutor = new GetJournalQueryExecutor(_repository);
-    
+
     IJournal? journal = await journalQueryExecutor.Execute(journalQuery);
 
     if (journal == null || journal.Thresholds.Count == 0)
