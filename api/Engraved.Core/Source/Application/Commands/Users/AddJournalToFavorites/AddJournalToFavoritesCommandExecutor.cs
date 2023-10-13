@@ -5,13 +5,11 @@ namespace Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 
 public class AddJournalToFavoritesCommandExecutor : ICommandExecutor<AddJournalToFavoritesCommand>
 {
-  private readonly IRepository _repository;
-  private readonly IDateService _dateService;
+  private readonly IUserScopedRepository _repository;
 
-  public AddJournalToFavoritesCommandExecutor( IRepository repository, IDateService dateService)
+  public AddJournalToFavoritesCommandExecutor(IUserScopedRepository repository)
   {
     _repository = repository;
-    _dateService = dateService;
   }
 
   public async Task<CommandResult> Execute(AddJournalToFavoritesCommand command)
@@ -21,14 +19,9 @@ public class AddJournalToFavoritesCommandExecutor : ICommandExecutor<AddJournalT
       throw new InvalidCommandException(command, $"\"{nameof(command.JournalId)}\" must be specified");
     }
 
-    if (string.IsNullOrEmpty(command.UserName))
-    {
-      throw new InvalidCommandException(command, $"\"{nameof(command.UserName)}\" must be specified");
-    }
+    IUser user = _repository.CurrentUser.Value;
 
-    IUser? user = await _repository.GetUser(command.UserName);
-
-    if (user == null || user.FavoriteJournalIds.Contains(command.JournalId))
+    if (user.FavoriteJournalIds.Contains(command.JournalId))
     {
       return new CommandResult();
     }

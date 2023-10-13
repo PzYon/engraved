@@ -118,6 +118,24 @@ public class DispatcherShould
   }
 }
 
+public class TestServiceProvider : IServiceProvider
+{
+  public object? GetService(Type serviceType)
+  {
+    if (serviceType == typeof(IQueryExecutor<Guid, FakeQuery>))
+    {
+      return new FakeQueryExecutor();
+    }
+    
+    if (serviceType == typeof(ICommandExecutor<FakeCommand>))
+    {
+      return new FakeCommandExecutor();
+    }
+
+    throw new Exception("");
+  }
+}
+
 public class FakeCommand : ICommand
 {
   public List<string> AffectedUsers { get; set; } = new();

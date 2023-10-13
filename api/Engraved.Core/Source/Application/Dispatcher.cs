@@ -34,6 +34,10 @@ public class Dispatcher
   private async Task<TResult> ExecuteQuery<TResult, TQuery>(TQuery query) where TQuery : IQuery
   {
     var queryExecutor = _serviceProvider.GetService<IQueryExecutor<TResult, TQuery>>();
+    if (queryExecutor == null)
+    {
+      throw new Exception($"No query executor registered for query of type {query.GetType()}");
+    }
 
     if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult? cachedResult))
     {
@@ -56,9 +60,13 @@ public class Dispatcher
 
   private async Task<CommandResult> ExecuteCommand<TCommand>(TCommand command) where TCommand : ICommand
   {
-    var service = _serviceProvider.GetService<ICommandExecutor<TCommand>>();
+    var commandExecutor = _serviceProvider.GetService<ICommandExecutor<TCommand>>();
+    if (commandExecutor == null)
+    {
+      throw new Exception($"No command executor registered for query of type {command.GetType()}");
+    }
 
-    CommandResult commandResult =  await service.Execute(command);
+    CommandResult commandResult = await commandExecutor.Execute(command);
 
     InvalidateCache(commandResult);
 

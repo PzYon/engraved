@@ -5,9 +5,9 @@ namespace Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 
 public class RemoveJournalFromFavoritesCommandExecutor : ICommandExecutor<RemoveJournalFromFavoritesCommand>
 {
-  private readonly IRepository _repository;
+  private readonly IUserScopedRepository _repository;
 
-  public RemoveJournalFromFavoritesCommandExecutor(IRepository repository)
+  public RemoveJournalFromFavoritesCommandExecutor(IUserScopedRepository repository)
   {
     _repository = repository;
   }
@@ -19,14 +19,9 @@ public class RemoveJournalFromFavoritesCommandExecutor : ICommandExecutor<Remove
       throw new InvalidCommandException(command, $"\"{nameof(command.JournalId)}\" must be specified");
     }
 
-    if (string.IsNullOrEmpty(command.UserName))
-    {
-      throw new InvalidCommandException(command, $"\"{nameof(command.UserName)}\" must be specified");
-    }
+    IUser user = _repository.CurrentUser.Value;
 
-    IUser? user = await _repository.GetUser(command.UserName);
-
-    if (user == null || !user.FavoriteJournalIds.Contains(command.JournalId))
+    if (!user.FavoriteJournalIds.Contains(command.JournalId))
     {
       return new CommandResult();
     }

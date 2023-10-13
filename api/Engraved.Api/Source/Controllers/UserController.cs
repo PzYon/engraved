@@ -32,11 +32,9 @@ public class UserController : Controller
   [Route("favorites/{journalId}")]
   public async Task AddJournalToFavorites(string journalId)
   {
-    IUser currentUser = GetCurrentUser();
     var command = new AddJournalToFavoritesCommand
     {
       JournalId = journalId,
-      UserName = currentUser.Name
     };
 
     await _dispatcher.Command(command);
@@ -46,11 +44,9 @@ public class UserController : Controller
   [Route("favorites/{journalId}")]
   public async Task RemoveJournalFromFavorites(string journalId)
   {
-    IUser currentUser = GetCurrentUser();
     var command = new RemoveJournalFromFavoritesCommand
     {
       JournalId = journalId,
-      UserName = currentUser.Name
     };
 
     await _dispatcher.Command(command);
