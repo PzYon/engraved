@@ -63,7 +63,7 @@ public class Dispatcher
     var commandExecutor = _serviceProvider.GetService<ICommandExecutor<TCommand>>();
     if (commandExecutor == null)
     {
-      throw new Exception($"No command executor registered for query of type {command.GetType()}");
+      throw new Exception($"No command executor registered for command of type {command.GetType()}");
     }
 
     CommandResult commandResult = await commandExecutor.Execute(command);

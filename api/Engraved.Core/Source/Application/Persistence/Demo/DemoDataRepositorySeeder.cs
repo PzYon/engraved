@@ -228,9 +228,15 @@ public class DemoDataRepositorySeeder
         ? new FakeDateService(entry.DateTime.Value)
         : dateService;
 
-//      _dispatcher.Query<>()
-//      
-//      await command.CreateExecutor().Execute(_repository, entryDateService);
+      switch (command)
+      {
+        case UpsertCounterEntryCommand upsertCounterEntryCommand:
+          await new UpsertCounterEntryCommandExecutor(_repository, entryDateService).Execute(upsertCounterEntryCommand);
+          break;
+        case UpsertGaugeEntryCommand upsertGaugeEntryCommand:
+          await new UpsertGaugeEntryCommandExecutor(_repository, entryDateService).Execute(upsertGaugeEntryCommand);
+          break;
+      }
     }
   }
 
