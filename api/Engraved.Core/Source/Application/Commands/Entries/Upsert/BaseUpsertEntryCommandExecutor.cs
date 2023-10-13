@@ -5,47 +5,49 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert;
 
-public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal> : ICommandExecutor
+public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal> : ICommandExecutor<TCommand>
   where TCommand : BaseUpsertEntryCommand
   where TEntry : class, IEntry, new()
   where TJournal : class, IJournal
 {
-  protected BaseUpsertEntryCommandExecutor(TCommand command)
+  protected readonly IRepository _repository;
+  protected readonly IDateService _dateService;
+
+  protected BaseUpsertEntryCommandExecutor(IRepository repository, IDateService dateService)
   {
-    Command = command;
+    _repository = repository;
+    _dateService = dateService;
   }
 
-  protected TCommand Command { get; }
-
-  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(TCommand command)
   {
-    var journal = await JournalCommandUtil.LoadAndValidateJournal<TJournal>(repository, Command, Command.JournalId);
+    var journal = await JournalCommandUtil.LoadAndValidateJournal<TJournal>(_repository, command, command.JournalId);
 
-    await ValidateCommand(journal);
+    await ValidateCommand(command, journal);
 
-    UpsertResult result = await UpsertEntry(repository, dateService, journal);
+    UpsertResult result = await UpsertEntry(command, journal);
 
-    await UpdateJournal(repository, dateService, journal);
+    await UpdateJournal(_repository, _dateService, journal);
 
     return new CommandResult(result.EntityId, journal.Permissions.GetUserIdsWithAccess());
   }
 
-  private async Task ValidateCommand(TJournal journal)
+  private async Task ValidateCommand(TCommand command, TJournal journal)
   {
-    EnsureCompatibleJournalType(journal);
+    EnsureCompatibleJournalType(command, journal);
 
-    ValidateJournalAttributes(journal);
-    await PerformTypeSpecificValidation();
+    ValidateJournalAttributes(command, journal);
+    await PerformTypeSpecificValidation(command);
   }
 
-  private async Task<UpsertResult> UpsertEntry(IRepository repository, IDateService dateService, TJournal journal)
+  private async Task<UpsertResult> UpsertEntry(TCommand command, TJournal journal)
   {
-    TEntry entry = await GetOrCreateNewEntry(repository, journal);
+    TEntry entry = await GetOrCreateNewEntry(command, journal);
 
-    SetCommonValues(dateService, entry);
-    SetTypeSpecificValues(dateService, entry);
+    SetCommonValues(command, entry);
+    SetTypeSpecificValues(command, entry);
 
-    UpsertResult result = await repository.UpsertEntry(entry);
+    UpsertResult result = await _repository.UpsertEntry(entry);
     return result;
   }
 
@@ -55,47 +57,48 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     await repository.UpsertJournal(journal);
   }
 
-  private void SetCommonValues(IDateService dateService, TEntry entry)
+  private void SetCommonValues(TCommand command, TEntry entry)
   {
-    entry.ParentId = Command.JournalId;
-    entry.Notes = Command.Notes;
-    entry.JournalAttributeValues = Command.JournalAttributeValues;
-    entry.DateTime = Command.DateTime ?? dateService.UtcNow;
-    entry.EditedOn = dateService.UtcNow;
+    entry.ParentId = command.JournalId;
+    entry.Notes = command.Notes;
+    entry.JournalAttributeValues = command.JournalAttributeValues;
+    entry.DateTime = command.DateTime ?? _dateService.UtcNow;
+    entry.EditedOn = _dateService.UtcNow;
   }
 
-  protected abstract void SetTypeSpecificValues(IDateService dateService, TEntry entry);
+  protected abstract void SetTypeSpecificValues(TCommand command, TEntry entry);
 
-  protected virtual Task PerformTypeSpecificValidation()
+  protected virtual Task PerformTypeSpecificValidation(TCommand baseUpsertEntryCommand)
   {
     return Task.CompletedTask;
   }
 
-  protected virtual Task<TEntry?> LoadEntryToUpdate(IRepository repository, TJournal journal)
+  protected virtual Task<TEntry?> LoadEntryToUpdate(TCommand command, TJournal journal)
   {
     return Task.FromResult<TEntry?>(null);
   }
 
-  private void EnsureCompatibleJournalType(IJournal journal)
+  private void EnsureCompatibleJournalType(TCommand command, IJournal journal)
   {
-    if (journal.Type != Command.GetSupportedJournalType())
+    if (journal.Type != command.GetSupportedJournalType())
     {
       throw CreateInvalidCommandException(
-        $"Command with journal type \"{Command.GetSupportedJournalType()}\" is not compatible with journal of type \"{journal.Type}\"."
+        command,
+        $"Command with journal type \"{command.GetSupportedJournalType()}\" is not compatible with journal of type \"{journal.Type}\"."
       );
     }
   }
 
-  private void ValidateJournalAttributes(IJournal journal)
+  private void ValidateJournalAttributes(TCommand command, IJournal journal)
   {
-    if (Command.JournalAttributeValues.Keys.Count == 0)
+    if (command.JournalAttributeValues.Keys.Count == 0)
     {
       return;
     }
 
     var errors = new List<string>();
 
-    foreach (KeyValuePair<string, string[]> kvp in Command.JournalAttributeValues)
+    foreach (KeyValuePair<string, string[]> kvp in command.JournalAttributeValues)
     {
       string attributeKey = kvp.Key;
       string[] attributeValues = kvp.Value;
@@ -116,29 +119,29 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
 
     if (errors.Any())
     {
-      throw new InvalidCommandException(Command, "Invalid attributes: " + string.Join(", ", errors));
+      throw new InvalidCommandException(command, "Invalid attributes: " + string.Join(", ", errors));
     }
   }
 
-  private async Task<TEntry> GetOrCreateNewEntry(IRepository repository, TJournal journal)
+  private async Task<TEntry> GetOrCreateNewEntry(TCommand command, TJournal journal)
   {
-    return await LoadEntryById(repository)
-           ?? await LoadEntryToUpdate(repository, journal)
+    return await LoadEntryById(command)
+           ?? await LoadEntryToUpdate(command, journal)
            ?? new TEntry();
   }
 
-  private async Task<TEntry?> LoadEntryById(IRepository repository)
+  private async Task<TEntry?> LoadEntryById(TCommand command)
   {
-    if (!string.IsNullOrEmpty(Command.Id))
+    if (!string.IsNullOrEmpty(command.Id))
     {
-      return (TEntry) (await repository.GetEntry(Command.Id))!;
+      return (TEntry) (await _repository.GetEntry(command.Id))!;
     }
 
     return null;
   }
 
-  protected InvalidCommandException CreateInvalidCommandException(string message)
+  protected InvalidCommandException CreateInvalidCommandException(TCommand command, string message)
   {
-    return new InvalidCommandException(Command, message);
+    return new InvalidCommandException(command, message);
   }
 }

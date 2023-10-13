@@ -8,9 +8,4 @@ public class UpsertCounterEntryCommand : BaseUpsertEntryCommand
   {
     return JournalType.Counter;
   }
-
-  public override ICommandExecutor CreateExecutor()
-  {
-    return new UpsertCounterEntryCommandExecutor(this);
-  }
 }

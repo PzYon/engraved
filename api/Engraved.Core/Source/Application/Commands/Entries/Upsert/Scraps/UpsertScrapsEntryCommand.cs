@@ -13,9 +13,4 @@ public class UpsertScrapsEntryCommand : BaseUpsertEntryCommand
   {
     return JournalType.Scraps;
   }
-
-  public override ICommandExecutor CreateExecutor()
-  {
-    return new UpsertScrapsEntryCommandExecutor(this);
-  }
 }

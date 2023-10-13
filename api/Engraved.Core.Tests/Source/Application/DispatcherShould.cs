@@ -121,25 +121,13 @@ public class DispatcherShould
 public class FakeCommand : ICommand
 {
   public List<string> AffectedUsers { get; set; } = new();
-
-  public ICommandExecutor CreateExecutor()
-  {
-    return new FakeCommandExecutor(AffectedUsers);
-  }
 }
 
-public class FakeCommandExecutor : ICommandExecutor
+public class FakeCommandExecutor : ICommandExecutor<FakeCommand>
 {
-  private readonly List<string> _affectedUsers;
-
-  public FakeCommandExecutor(List<string> affectedUsers)
+  public Task<CommandResult> Execute(FakeCommand command)
   {
-    _affectedUsers = affectedUsers;
-  }
-
-  public Task<CommandResult> Execute(IRepository repository, IDateService dateService)
-  {
-    return Task.FromResult(new CommandResult("123", _affectedUsers.ToArray()));
+    return Task.FromResult(new CommandResult("123", command.AffectedUsers.ToArray()));
   }
 }
 

@@ -33,7 +33,7 @@ public class Dispatcher
 
   private async Task<TResult> ExecuteQuery<TResult, TQuery>(TQuery query) where TQuery : IQuery
   {
-    IQueryExecutor<TResult, TQuery> queryExecutor = _serviceProvider.GetService<IQueryExecutor<TResult, TQuery>>();
+    var queryExecutor = _serviceProvider.GetService<IQueryExecutor<TResult, TQuery>>();
 
     if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult? cachedResult))
     {
@@ -46,7 +46,7 @@ public class Dispatcher
     return result;
   }
 
-  public async Task<CommandResult> Command(ICommand command)
+  public async Task<CommandResult> Command<TCommand>(TCommand command) where TCommand : ICommand
   {
     return await Execute(
       () => ExecuteCommand(command),
@@ -54,9 +54,11 @@ public class Dispatcher
     );
   }
 
-  private async Task<CommandResult> ExecuteCommand(ICommand command)
+  private async Task<CommandResult> ExecuteCommand<TCommand>(TCommand command) where TCommand : ICommand
   {
-    CommandResult commandResult = await command.CreateExecutor().Execute(_repository, (DateService) null );
+    var service = _serviceProvider.GetService<ICommandExecutor<TCommand>>();
+
+    CommandResult commandResult =  await service.Execute(command);
 
     InvalidateCache(commandResult);
 

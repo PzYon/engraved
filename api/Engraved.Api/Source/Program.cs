@@ -7,6 +7,19 @@ using Engraved.Api.Authentication.Google;
 using Engraved.Api.Filters;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Entries.Delete;
+using Engraved.Core.Application.Commands.Entries.Move;
+using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
+using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
+using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
+using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
+using Engraved.Core.Application.Commands.Journals.Add;
+using Engraved.Core.Application.Commands.Journals.Delete;
+using Engraved.Core.Application.Commands.Journals.Edit;
+using Engraved.Core.Application.Commands.Journals.EditPermissions;
+using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
+using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries;
@@ -26,7 +39,6 @@ using Engraved.Search.Lucene;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Dispatcher = Engraved.Core.Application.Dispatcher;
 
 // <HackZone>
 var isSeeded = false;
@@ -144,6 +156,7 @@ builder.Services.AddAuthentication(
     }
   );
 
+// QUERIES
 builder.Services.AddTransient<IQueryExecutor<IEntry?, GetActiveEntryQuery>, GetActiveEntryQueryExecutor>();
 builder.Services
   .AddTransient<IQueryExecutor<GetAllEntriesQueryResult, GetAllEntriesQuery>, GetAllEntriesQueryExecutor>();
@@ -155,6 +168,21 @@ builder.Services
     GetThresholdValuesQueryExecutor>();
 builder.Services
   .AddTransient<IQueryExecutor<SearchAttributesResult[], SearchAttributesQuery>, SearchAttributesQueryExecutor>();
+
+// COMMANDS
+builder.Services.AddTransient<ICommandExecutor<AddJournalCommand>, AddJournalCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<AddJournalToFavoritesCommand>, AddJournalToFavoritesCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<UpsertCounterEntryCommand>, UpsertCounterEntryCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<UpsertGaugeEntryCommand>, UpsertGaugeEntryCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<UpsertScrapsEntryCommand>, UpsertScrapsEntryCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<UpsertTimerEntryCommand>, UpsertTimerEntryCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<DeleteEntryCommand>, DeleteEntryCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<DeleteJournalCommand>, DeleteJournalCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<EditJournalCommand>, EditJournalCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<EditJournalPermissionsCommand>, EditJournalPermissionsCommandExecutor>();
+builder.Services.AddTransient<ICommandExecutor<MoveEntryCommand>, MoveEntryCommandExecutor>();
+builder.Services
+  .AddTransient<ICommandExecutor<RemoveJournalFromFavoritesCommand>, RemoveJournalFromFavoritesCommandExecutor>();
 
 WebApplication app = builder.Build();
 

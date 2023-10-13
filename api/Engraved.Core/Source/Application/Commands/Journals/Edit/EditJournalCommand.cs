@@ -17,9 +17,4 @@ public class EditJournalCommand : ICommand
   public Dictionary<string, Dictionary<string, double>> Thresholds { get; set; } = new();
 
   public Dictionary<string, string> CustomProps { get; set; } = new();
-
-  public ICommandExecutor CreateExecutor()
-  {
-    return new EditJournalCommandExecutor(this);
-  }
 }

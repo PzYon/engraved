@@ -4,50 +4,52 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Move;
 
-public class MoveEntryCommandExecutor : ICommandExecutor
+public class MoveEntryCommandExecutor : ICommandExecutor<MoveEntryCommand>
 {
-  private readonly MoveEntryCommand _command;
+  private readonly IRepository _repository;
+  private readonly IDateService _dateService;
 
-  public MoveEntryCommandExecutor(MoveEntryCommand command)
+  public MoveEntryCommandExecutor(IRepository repository, IDateService dateService)
   {
-    _command = command;
+    _repository = repository;
+    _dateService = dateService;
   }
 
-  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(MoveEntryCommand command)
   {
     // can user access target journal?
-    IJournal? targetJournal = await repository.GetJournal(_command.TargetJournalId);
+    IJournal? targetJournal = await _repository.GetJournal(command.TargetJournalId);
     if (targetJournal == null)
     {
       return new CommandResult();
     }
 
     // can user access entry?
-    IEntry? entry = await repository.GetEntry(_command.EntryId);
+    IEntry? entry = await _repository.GetEntry(command.EntryId);
     if (entry == null)
     {
       return new CommandResult();
     }
 
     // update source journal EditedOn
-    IJournal sourceJournal = (await repository.GetJournal(entry.ParentId))!;
-    sourceJournal.EditedOn = dateService.UtcNow;
-    await repository.UpsertJournal(sourceJournal);
+    IJournal sourceJournal = (await _repository.GetJournal(entry.ParentId))!;
+    sourceJournal.EditedOn = _dateService.UtcNow;
+    await _repository.UpsertJournal(sourceJournal);
 
     // update target journal EditedOn
-    targetJournal.EditedOn = dateService.UtcNow;
-    await repository.UpsertJournal(targetJournal);
+    targetJournal.EditedOn = _dateService.UtcNow;
+    await _repository.UpsertJournal(targetJournal);
 
     // update entry
-    entry.EditedOn = dateService.UtcNow;
-    entry.DateTime = dateService.UtcNow;
+    entry.EditedOn = _dateService.UtcNow;
+    entry.DateTime = _dateService.UtcNow;
     entry.ParentId = targetJournal.Id!;
-    await repository.UpsertEntry(entry);
+    await _repository.UpsertEntry(entry);
 
-    string[] affectedUserIds = await GetAffectedUserIds(repository, entry, targetJournal);
+    string[] affectedUserIds = await GetAffectedUserIds(_repository, entry, targetJournal);
 
     return new CommandResult(
-      _command.EntryId,
+      command.EntryId,
       affectedUserIds
     );
   }

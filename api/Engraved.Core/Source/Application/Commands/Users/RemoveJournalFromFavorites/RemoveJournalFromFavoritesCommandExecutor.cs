@@ -3,37 +3,37 @@ using Engraved.Core.Domain.User;
 
 namespace Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 
-public class RemoveJournalFromFavoritesCommandExecutor : ICommandExecutor
+public class RemoveJournalFromFavoritesCommandExecutor : ICommandExecutor<RemoveJournalFromFavoritesCommand>
 {
-  private readonly RemoveJournalFromFavoritesCommand _command;
+  private readonly IRepository _repository;
 
-  public RemoveJournalFromFavoritesCommandExecutor(RemoveJournalFromFavoritesCommand command)
+  public RemoveJournalFromFavoritesCommandExecutor(IRepository repository)
   {
-    _command = command;
+    _repository = repository;
   }
 
-  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(RemoveJournalFromFavoritesCommand command)
   {
-    if (string.IsNullOrEmpty(_command.JournalId))
+    if (string.IsNullOrEmpty(command.JournalId))
     {
-      throw new InvalidCommandException(_command, $"\"{nameof(_command.JournalId)}\" must be specified");
+      throw new InvalidCommandException(command, $"\"{nameof(command.JournalId)}\" must be specified");
     }
 
-    if (string.IsNullOrEmpty(_command.UserName))
+    if (string.IsNullOrEmpty(command.UserName))
     {
-      throw new InvalidCommandException(_command, $"\"{nameof(_command.UserName)}\" must be specified");
+      throw new InvalidCommandException(command, $"\"{nameof(command.UserName)}\" must be specified");
     }
 
-    IUser? user = await repository.GetUser(_command.UserName);
+    IUser? user = await _repository.GetUser(command.UserName);
 
-    if (user == null || !user.FavoriteJournalIds.Contains(_command.JournalId))
+    if (user == null || !user.FavoriteJournalIds.Contains(command.JournalId))
     {
       return new CommandResult();
     }
 
-    user.FavoriteJournalIds.Remove(_command.JournalId);
+    user.FavoriteJournalIds.Remove(command.JournalId);
 
-    UpsertResult upsertResult = await repository.UpsertUser(user);
+    UpsertResult upsertResult = await _repository.UpsertUser(user);
     return new CommandResult(upsertResult.EntityId, Array.Empty<string>());
   }
 }

@@ -37,7 +37,7 @@ public class UpsertTimerEntryCommandExecutorShould
     };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(command).Execute(_testRepository, _fakeDateService);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     Assert.IsNotNull(result.EntityId);
     Assert.AreEqual(1, _testRepository.Entries.Count);
@@ -55,7 +55,7 @@ public class UpsertTimerEntryCommandExecutorShould
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(command).Execute(_testRepository, _fakeDateService);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     Assert.IsNotNull(result.EntityId);
     Assert.AreEqual(1, _testRepository.Entries.Count);
@@ -82,7 +82,7 @@ public class UpsertTimerEntryCommandExecutorShould
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(command).Execute(_testRepository, _fakeDateService);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     Assert.IsNotNull(result.EntityId);
     Assert.AreEqual(1, _testRepository.Entries.Count);
@@ -121,7 +121,7 @@ public class UpsertTimerEntryCommandExecutorShould
     };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(command).Execute(_testRepository, _fakeDateService);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     Assert.IsNotNull(result.EntityId);
     Assert.AreEqual(1, _testRepository.Entries.Count);

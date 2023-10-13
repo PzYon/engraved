@@ -1,4 +1,5 @@
-﻿using Engraved.Core.Domain.Entries;
+﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
@@ -9,20 +10,21 @@ public class UpsertGaugeEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
   GaugeJournal
 >
 {
-  public UpsertGaugeEntryCommandExecutor(UpsertGaugeEntryCommand command) : base(command) { }
+  public UpsertGaugeEntryCommandExecutor(IRepository repository, IDateService dateService)
+    : base(repository, dateService) { }
 
-  protected override Task PerformTypeSpecificValidation()
+  protected override Task PerformTypeSpecificValidation(UpsertGaugeEntryCommand command)
   {
-    if (Command.Value == null)
+    if (command.Value == null)
     {
-      throw CreateInvalidCommandException($"\"{nameof(UpsertGaugeEntryCommand.Value)}\" must be specified");
+      throw CreateInvalidCommandException(command, $"\"{nameof(UpsertGaugeEntryCommand.Value)}\" must be specified");
     }
 
     return Task.CompletedTask;
   }
 
-  protected override void SetTypeSpecificValues(IDateService dateService, GaugeEntry entry)
+  protected override void SetTypeSpecificValues(UpsertGaugeEntryCommand command, GaugeEntry entry)
   {
-    entry.Value = Command.Value!.Value;
+    entry.Value = command.Value!.Value;
   }
 }

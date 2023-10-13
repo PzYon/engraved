@@ -10,39 +10,42 @@ public class UpsertTimerEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
   TimerJournal
 >
 {
-  public UpsertTimerEntryCommandExecutor(UpsertTimerEntryCommand command) : base(command) { }
+  public UpsertTimerEntryCommandExecutor(IRepository repository, IDateService dateService) : base(
+    repository,
+    dateService
+  ) { }
 
-  protected override async Task<TimerEntry?> LoadEntryToUpdate(IRepository repository, TimerJournal journal)
+  protected override async Task<TimerEntry?> LoadEntryToUpdate(UpsertTimerEntryCommand command, TimerJournal journal)
   {
-    return await GetActiveEntry(repository, journal);
+    return await GetActiveEntry(_repository, journal);
   }
 
-  protected override void SetTypeSpecificValues(IDateService dateService, TimerEntry entry)
+  protected override void SetTypeSpecificValues(UpsertTimerEntryCommand command, TimerEntry entry)
   {
     if (string.IsNullOrEmpty(entry.Id))
     {
-      if (Command.StartDate == null)
+      if (command.StartDate == null)
       {
-        entry.StartDate = dateService.UtcNow;
-        entry.DateTime = dateService.UtcNow;
+        entry.StartDate = _dateService.UtcNow;
+        entry.DateTime = _dateService.UtcNow;
         return;
       }
 
-      entry.StartDate = Command.StartDate;
-      entry.DateTime = Command.StartDate;
-      entry.EndDate = Command.EndDate;
+      entry.StartDate = command.StartDate;
+      entry.DateTime = command.StartDate;
+      entry.EndDate = command.EndDate;
       return;
     }
 
-    if (entry.EndDate == null && Command.EndDate == null)
+    if (entry.EndDate == null && command.EndDate == null)
     {
-      entry.EndDate = dateService.UtcNow;
+      entry.EndDate = _dateService.UtcNow;
       return;
     }
 
-    entry.StartDate = Command.StartDate;
-    entry.DateTime = Command.StartDate;
-    entry.EndDate = Command.EndDate;
+    entry.StartDate = command.StartDate;
+    entry.DateTime = command.StartDate;
+    entry.EndDate = command.EndDate;
   }
 
   public static async Task<TimerEntry?> GetActiveEntry(IRepository repository, TimerJournal journal)

@@ -4,9 +4,4 @@ public class AddJournalToFavoritesCommand : ICommand
 {
   public string? JournalId { get; set; }
   public string? UserName { get; set; }
-
-  public ICommandExecutor CreateExecutor()
-  {
-    return new AddJournalToFavoritesCommandExecutor(this);
-  }
 }
