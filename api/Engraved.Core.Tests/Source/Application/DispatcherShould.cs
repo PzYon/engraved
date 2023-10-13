@@ -114,7 +114,7 @@ public class DispatcherShould
     var currentUser = new Lazy<IUser>(() => new User { Id = userName, Name = userName });
     var queryCache = new QueryCache(_memoryCache, currentUser);
 
-    return new Dispatcher(null!, new FakeUserScopedRepository(currentUser), queryCache);
+    return new Dispatcher(new TestServiceProvider(), new FakeUserScopedRepository(currentUser), queryCache);
   }
 }
 
@@ -126,7 +126,7 @@ public class TestServiceProvider : IServiceProvider
     {
       return new FakeQueryExecutor();
     }
-    
+
     if (serviceType == typeof(ICommandExecutor<FakeCommand>))
     {
       return new FakeCommandExecutor();
