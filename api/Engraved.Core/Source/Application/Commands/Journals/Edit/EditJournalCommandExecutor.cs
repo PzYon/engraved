@@ -4,43 +4,45 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Edit;
 
-public class EditJournalCommandExecutor : ICommandExecutor
+public class EditJournalCommandExecutor : ICommandExecutor<EditJournalCommand>
 {
-  private readonly EditJournalCommand _command;
+  private readonly IRepository _repository;
+  private readonly IDateService _dateService;
 
-  public EditJournalCommandExecutor(EditJournalCommand command)
+  public EditJournalCommandExecutor(IRepository repository, IDateService dateService)
   {
-    _command = command;
+    _repository = repository;
+    _dateService = dateService;
   }
 
-  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(EditJournalCommand command)
   {
-    if (string.IsNullOrEmpty(_command.JournalId))
+    if (string.IsNullOrEmpty(command.JournalId))
     {
-      throw new InvalidCommandException(_command, $"{nameof(EditJournalCommand.JournalId)} must be specified.");
+      throw new InvalidCommandException(command, $"{nameof(EditJournalCommand.JournalId)} must be specified.");
     }
 
-    if (string.IsNullOrEmpty(_command.Name))
+    if (string.IsNullOrEmpty(command.Name))
     {
-      throw new InvalidCommandException(_command, $"{nameof(EditJournalCommand.Name)} must be specified.");
+      throw new InvalidCommandException(command, $"{nameof(EditJournalCommand.Name)} must be specified.");
     }
 
-    IJournal? journal = await repository.GetJournal(_command.JournalId);
+    IJournal? journal = await _repository.GetJournal(command.JournalId);
 
     if (journal == null)
     {
-      throw new InvalidCommandException(_command, $"Journal with key \"{_command.JournalId}\" does not exist.");
+      throw new InvalidCommandException(command, $"Journal with key \"{command.JournalId}\" does not exist.");
     }
 
-    journal.Attributes = NormalizeKeys(_command.Attributes);
-    journal.Name = _command.Name;
-    journal.Description = _command.Description;
-    journal.Notes = _command.Notes;
-    journal.Thresholds = _command.Thresholds;
-    journal.CustomProps = _command.CustomProps;
-    journal.EditedOn = dateService.UtcNow;
+    journal.Attributes = NormalizeKeys(command.Attributes);
+    journal.Name = command.Name;
+    journal.Description = command.Description;
+    journal.Notes = command.Notes;
+    journal.Thresholds = command.Thresholds;
+    journal.CustomProps = command.CustomProps;
+    journal.EditedOn = _dateService.UtcNow;
 
-    UpsertResult result = await repository.UpsertJournal(journal);
+    UpsertResult result = await _repository.UpsertJournal(journal);
 
     return new CommandResult(result.EntityId, journal.Permissions.GetUserIdsWithAccess());
   }

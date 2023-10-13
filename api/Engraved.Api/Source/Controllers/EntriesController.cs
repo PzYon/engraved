@@ -38,11 +38,11 @@ public class EntriesController : ControllerBase
       AttributeValues = AttributeValueParser.Parse(attributeValues)
     };
 
-    IEntry[] entries = await _dispatcher.Query(query);
+    IEntry[] entries = await _dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
 
     return entries.EnsurePolymorphismWhenSerializing();
   }
-  
+
   [HttpGet]
   public async Task<GetAllEntriesQueryApiResult> GetAll(string? searchText, string? journalTypes)
   {
@@ -52,7 +52,7 @@ public class EntriesController : ControllerBase
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
     };
 
-    GetAllEntriesQueryResult result = await _dispatcher.Query(query);
+    GetAllEntriesQueryResult result = await _dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(query);
     return GetAllEntriesQueryApiResult.FromResult(result);
   }
 
@@ -60,7 +60,7 @@ public class EntriesController : ControllerBase
   [Route("{journalId}/active")]
   public async Task<IEntry?> GetActive(string journalId)
   {
-    return await _dispatcher.Query(new GetActiveEntryQuery { JournalId = journalId });
+    return await _dispatcher.Query<IEntry?, GetActiveEntryQuery>(new GetActiveEntryQuery { JournalId = journalId });
   }
 
   [HttpPost]

@@ -1,10 +1,8 @@
-using Engraved.Core.Application.Persistence;
-
 namespace Engraved.Core.Application.Queries;
 
-public interface IQueryExecutor<TResult>
+public interface IQueryExecutor<TResult, TQuery> where TQuery : IQuery
 {
   bool DisableCache { get; }
 
-  Task<TResult> Execute(IRepository repository);
+  Task<TResult> Execute(TQuery query);
 }

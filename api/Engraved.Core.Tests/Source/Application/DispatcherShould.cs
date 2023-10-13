@@ -29,7 +29,7 @@ public class DispatcherShould
     var query = new FakeQuery();
 
     Dispatcher d = CreateDispatcher("xyz");
-    Guid guid = await d.Query(query);
+    Guid guid = await d.Query<Guid, FakeQuery>(query);
 
     Assert.IsTrue(guid != Guid.Empty);
   }
@@ -41,8 +41,8 @@ public class DispatcherShould
 
     Dispatcher d = CreateDispatcher("xyz");
 
-    Guid resultFirstExecution = await d.Query(query);
-    Guid resultSecondExecution = await d.Query(query);
+    Guid resultFirstExecution = await d.Query<Guid, FakeQuery>(query);
+    Guid resultSecondExecution = await d.Query<Guid, FakeQuery>(query);
 
     Assert.AreEqual(resultFirstExecution, resultSecondExecution);
   }
@@ -52,8 +52,8 @@ public class DispatcherShould
   {
     Dispatcher d = CreateDispatcher("xyz");
 
-    Guid resultFirstExecution = await d.Query(new FakeQuery { DummyValue = "123" });
-    Guid resultSecondExecution = await d.Query(new FakeQuery { DummyValue = "456" });
+    Guid resultFirstExecution = await d.Query<Guid, FakeQuery>(new FakeQuery { DummyValue = "123" });
+    Guid resultSecondExecution = await d.Query<Guid, FakeQuery>(new FakeQuery { DummyValue = "456" });
 
     Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
   }
@@ -64,10 +64,10 @@ public class DispatcherShould
     var query = new FakeQuery { DummyValue = "123" };
 
     Dispatcher dispatcherUser1 = CreateDispatcher("user_one");
-    Guid resultUser1 = await dispatcherUser1.Query(query);
+    Guid resultUser1 = await dispatcherUser1.Query<Guid, FakeQuery>(query);
 
     Dispatcher dispatcherUser2 = CreateDispatcher("user_two");
-    Guid resultUser2 = await dispatcherUser2.Query(query);
+    Guid resultUser2 = await dispatcherUser2.Query<Guid, FakeQuery>(query);
 
     Assert.AreNotEqual(resultUser1, resultUser2);
   }
@@ -78,15 +78,15 @@ public class DispatcherShould
     var query = new FakeQuery();
 
     Dispatcher dispatcher0 = CreateDispatcher("user_zero");
-    Guid firstResultOtherUser = await dispatcher0.Query(query);
+    Guid firstResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
 
     Dispatcher dispatcher1 = CreateDispatcher("user_one");
-    Guid resultFirstExecution = await dispatcher1.Query(query);
+    Guid resultFirstExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
     await dispatcher1.Command(new FakeCommand());
-    Guid resultSecondExecution = await dispatcher1.Query(query);
+    Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
     Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
 
-    Guid secondResultOtherUser = await dispatcher0.Query(query);
+    Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
     Assert.AreEqual(firstResultOtherUser, secondResultOtherUser);
   }
 
@@ -96,16 +96,16 @@ public class DispatcherShould
     var query = new FakeQuery();
 
     Dispatcher dispatcher0 = CreateDispatcher("user_zero");
-    Guid firstResultOtherUser = await dispatcher0.Query(query);
+    Guid firstResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
 
     Dispatcher dispatcher1 = CreateDispatcher("user_one");
-    Guid resultFirstExecution = await dispatcher1.Query(query);
+    Guid resultFirstExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
     await dispatcher1.Command(new FakeCommand { AffectedUsers = new List<string> { "user_zero", "user_one" } });
 
-    Guid resultSecondExecution = await dispatcher1.Query(query);
+    Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
     Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
 
-    Guid secondResultOtherUser = await dispatcher0.Query(query);
+    Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
     Assert.AreNotEqual(firstResultOtherUser, secondResultOtherUser);
   }
 
@@ -114,50 +114,51 @@ public class DispatcherShould
     var currentUser = new Lazy<IUser>(() => new User { Id = userName, Name = userName });
     var queryCache = new QueryCache(_memoryCache, currentUser);
 
-    return new Dispatcher(new FakeUserScopedRepository(currentUser), null!, queryCache);
+    return new Dispatcher(new TestServiceProvider(), new FakeUserScopedRepository(currentUser), queryCache);
+  }
+}
+
+public class TestServiceProvider : IServiceProvider
+{
+  public object? GetService(Type serviceType)
+  {
+    if (serviceType == typeof(IQueryExecutor<Guid, FakeQuery>))
+    {
+      return new FakeQueryExecutor();
+    }
+
+    if (serviceType == typeof(ICommandExecutor<FakeCommand>))
+    {
+      return new FakeCommandExecutor();
+    }
+
+    throw new Exception("");
   }
 }
 
 public class FakeCommand : ICommand
 {
   public List<string> AffectedUsers { get; set; } = new();
-
-  public ICommandExecutor CreateExecutor()
-  {
-    return new FakeCommandExecutor(AffectedUsers);
-  }
 }
 
-public class FakeCommandExecutor : ICommandExecutor
+public class FakeCommandExecutor : ICommandExecutor<FakeCommand>
 {
-  private readonly List<string> _affectedUsers;
-
-  public FakeCommandExecutor(List<string> affectedUsers)
+  public Task<CommandResult> Execute(FakeCommand command)
   {
-    _affectedUsers = affectedUsers;
-  }
-
-  public Task<CommandResult> Execute(IRepository repository, IDateService dateService)
-  {
-    return Task.FromResult(new CommandResult("123", _affectedUsers.ToArray()));
+    return Task.FromResult(new CommandResult("123", command.AffectedUsers.ToArray()));
   }
 }
 
-public class FakeQuery : IQuery<Guid>
+public class FakeQuery : IQuery
 {
   public string? DummyValue { get; set; }
-
-  public IQueryExecutor<Guid> CreateExecutor()
-  {
-    return new FakeQueryExecutor();
-  }
 }
 
-public class FakeQueryExecutor : IQueryExecutor<Guid>
+public class FakeQueryExecutor : IQueryExecutor<Guid, FakeQuery>
 {
   public bool DisableCache => false;
 
-  public Task<Guid> Execute(IRepository repository)
+  public Task<Guid> Execute(FakeQuery query)
   {
     return Task.FromResult(Guid.NewGuid());
   }

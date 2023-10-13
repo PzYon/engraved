@@ -4,42 +4,42 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAllJournal;
 
-public class GetAllJournalEntriesQueryExecutor : IQueryExecutor<IEntry[]>
+public class GetAllJournalEntriesQueryExecutor : IQueryExecutor<IEntry[], GetAllJournalEntriesQuery>
 {
+  private readonly IRepository _repository;
+
   public bool DisableCache => false;
 
-  private readonly GetAllJournalEntriesQuery _query;
-
-  public GetAllJournalEntriesQueryExecutor(GetAllJournalEntriesQuery query)
+  public GetAllJournalEntriesQueryExecutor(IRepository repository)
   {
-    _query = query;
+    _repository = repository;
   }
 
-  public async Task<IEntry[]> Execute(IRepository repository)
+  public async Task<IEntry[]> Execute(GetAllJournalEntriesQuery query)
   {
-    if (string.IsNullOrEmpty(_query.JournalId))
+    if (string.IsNullOrEmpty(query.JournalId))
     {
-      throw new InvalidQueryException<IEntry[]>(
-        _query,
+      throw new InvalidQueryException(
+        query,
         $"{nameof(GetAllJournalEntriesQuery.JournalId)} must be specified."
       );
     }
 
-    IJournal? journal = await repository.GetJournal(_query.JournalId);
+    IJournal? journal = await _repository.GetJournal(query.JournalId);
 
     if (journal == null)
     {
-      throw new InvalidQueryException<IEntry[]>(
-        _query,
-        $"Journal with key \"{_query.JournalId}\" does not exist."
+      throw new InvalidQueryException(
+        query,
+        $"Journal with key \"{query.JournalId}\" does not exist."
       );
     }
 
-    return await repository.GetAllEntries(
-      _query.JournalId,
-      _query.FromDate,
-      _query.ToDate,
-      _query.AttributeValues
+    return await _repository.GetAllEntries(
+      query.JournalId,
+      query.FromDate,
+      query.ToDate,
+      query.AttributeValues
     );
   }
 }

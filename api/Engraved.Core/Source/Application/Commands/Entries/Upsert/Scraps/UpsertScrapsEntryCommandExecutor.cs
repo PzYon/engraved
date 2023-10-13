@@ -1,4 +1,5 @@
-﻿using Engraved.Core.Domain.Entries;
+﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
@@ -9,21 +10,24 @@ public class UpsertScrapsEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
   ScrapsJournal
 >
 {
-  public UpsertScrapsEntryCommandExecutor(UpsertScrapsEntryCommand command) : base(command) { }
+  public UpsertScrapsEntryCommandExecutor(IRepository repository, IDateService dateService) : base(
+    repository,
+    dateService
+  ) { }
 
-  protected override Task PerformTypeSpecificValidation()
+  protected override Task PerformTypeSpecificValidation(UpsertScrapsEntryCommand command)
   {
-    if (string.IsNullOrWhiteSpace(Command.Notes))
+    if (string.IsNullOrWhiteSpace(command.Notes))
     {
-      throw CreateInvalidCommandException($"\"{nameof(UpsertScrapsEntryCommand.Notes)}\" must be specified");
+      throw CreateInvalidCommandException(command, $"\"{nameof(UpsertScrapsEntryCommand.Notes)}\" must be specified");
     }
 
     return Task.CompletedTask;
   }
 
-  protected override void SetTypeSpecificValues(IDateService dateService, ScrapsEntry entry)
+  protected override void SetTypeSpecificValues(UpsertScrapsEntryCommand command, ScrapsEntry entry)
   {
-    entry.Title = Command.Title;
-    entry.ScrapType = Command.ScrapType;
+    entry.Title = command.Title;
+    entry.ScrapType = command.ScrapType;
   }
 }

@@ -3,16 +3,18 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Add;
 
-public class AddJournalCommandExecutor : ICommandExecutor
+public class AddJournalCommandExecutor : ICommandExecutor<AddJournalCommand>
 {
-  private readonly AddJournalCommand _command;
+  private readonly IRepository _repository;
+  private readonly IDateService _dateService;
 
-  public AddJournalCommandExecutor(AddJournalCommand command)
+  public AddJournalCommandExecutor(IRepository repository, IDateService dateService)
   {
-    _command = command;
+    _repository = repository;
+    _dateService = dateService;
   }
 
-  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(AddJournalCommand command)
   {
     // todo:
     // - validate key is not null
@@ -20,16 +22,16 @@ public class AddJournalCommandExecutor : ICommandExecutor
     // - validate name is not null (done below -> add test)
     // - consider adding a created (and last modified?) date
 
-    if (string.IsNullOrEmpty(_command.Name))
+    if (string.IsNullOrEmpty(command.Name))
     {
-      throw new InvalidCommandException(_command, $"\"{nameof(_command.Name)}\" must be specified");
+      throw new InvalidCommandException(command, $"\"{nameof(command.Name)}\" must be specified");
     }
 
-    IJournal journal = CreateJournal(_command.Type);
-    journal.Description = _command.Description;
-    journal.Name = _command.Name;
-    journal.EditedOn = dateService.UtcNow;
-    UpsertResult result = await repository.UpsertJournal(journal);
+    IJournal journal = CreateJournal(command.Type);
+    journal.Description = command.Description;
+    journal.Name = command.Name;
+    journal.EditedOn = _dateService.UtcNow;
+    UpsertResult result = await _repository.UpsertJournal(journal);
 
     return new CommandResult(result.EntityId, Array.Empty<string>());
   }

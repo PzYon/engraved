@@ -4,7 +4,7 @@ namespace Engraved.Core.Application.Search;
 
 public interface ISearchIndex
 {
-  AttributeSearchResult[] Search(
+  SearchAttributesResult[] Search(
     string searchText,
     Dictionary<string, JournalAttribute> attributes,
     params Dictionary<string, string[]>[] attributeValues

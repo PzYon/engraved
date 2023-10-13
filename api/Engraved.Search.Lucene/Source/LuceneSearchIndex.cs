@@ -26,7 +26,7 @@ public class LuceneSearchIndex : ISearchIndex
     tempIndex.Search(CreateQuery(Array.Empty<Dictionary<string, string[]>>(), string.Empty));
   }
 
-  public AttributeSearchResult[] Search(
+  public SearchAttributesResult[] Search(
     string searchText,
     Dictionary<string, JournalAttribute> attributes,
     params Dictionary<string, string[]>[] attributeValues
@@ -40,7 +40,7 @@ public class LuceneSearchIndex : ISearchIndex
 
     return searchResults
       .Select(
-        r => new AttributeSearchResult
+        r => new SearchAttributesResult
         {
           Score = r.Score,
           OccurrenceCount = r.Occurrence,

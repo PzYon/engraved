@@ -1,8 +1,6 @@
-using Engraved.Core.Domain.Entries;
-
 namespace Engraved.Core.Application.Queries.Entries.GetAllJournal;
 
-public class GetAllJournalEntriesQuery : IQuery<IEntry[]>
+public class GetAllJournalEntriesQuery : IQuery
 {
   public string? JournalId { get; set; }
 
@@ -11,9 +9,4 @@ public class GetAllJournalEntriesQuery : IQuery<IEntry[]>
   public DateTime? ToDate { get; set; }
 
   public IDictionary<string, string[]> AttributeValues { get; set; } = new Dictionary<string, string[]>();
-
-  IQueryExecutor<IEntry[]> IQuery<IEntry[]>.CreateExecutor()
-  {
-    return new GetAllJournalEntriesQueryExecutor(this);
-  }
 }

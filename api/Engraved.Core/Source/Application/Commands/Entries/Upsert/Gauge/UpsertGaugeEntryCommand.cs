@@ -10,9 +10,4 @@ public class UpsertGaugeEntryCommand : BaseUpsertEntryCommand
   {
     return JournalType.Gauge;
   }
-
-  public override ICommandExecutor CreateExecutor()
-  {
-    return new UpsertGaugeEntryCommandExecutor(this);
-  }
 }

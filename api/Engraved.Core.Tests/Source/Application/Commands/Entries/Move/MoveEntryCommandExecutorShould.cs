@@ -42,12 +42,15 @@ public class MoveEntryCommandExecutorShould
 
     // when
     await new MoveEntryCommandExecutor(
+      _repo,
+      _dateService
+    ).Execute(
       new MoveEntryCommand
       {
         EntryId = "entry-id",
         TargetJournalId = "target-journal-id"
       }
-    ).Execute(_repo, _dateService);
+    );
 
     // then
     targetEntries = await _repo.GetAllEntries("target-journal-id", null, null, null);

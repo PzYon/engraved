@@ -2,46 +2,55 @@
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Engraved.Core.Application;
 
 public class Dispatcher
 {
+  private readonly IServiceProvider _serviceProvider;
   private readonly IUserScopedRepository _repository;
-  private readonly IDateService _dateService;
   private readonly QueryCache _queryCache;
 
-  public Dispatcher(IUserScopedRepository repository, IDateService dateService, QueryCache queryCache)
+  public Dispatcher(
+    IServiceProvider serviceProvider,
+    IUserScopedRepository repository,
+    QueryCache queryCache
+  )
   {
+    _serviceProvider = serviceProvider;
     _repository = repository;
-    _dateService = dateService;
     _queryCache = queryCache;
   }
 
-  public async Task<TResult> Query<TResult>(IQuery<TResult> query)
+  public async Task<TResult> Query<TResult, TQuery>(TQuery query) where TQuery : IQuery
   {
     return await Execute(
-      () => ExecuteQuery(query),
+      () => ExecuteQuery<TResult, TQuery>(query),
       $"Query {query.GetType().Name}"
     );
   }
 
-  private async Task<TResult> ExecuteQuery<TResult>(IQuery<TResult> query)
+  private async Task<TResult> ExecuteQuery<TResult, TQuery>(TQuery query) where TQuery : IQuery
   {
-    IQueryExecutor<TResult> queryExecutor = query.CreateExecutor();
+    var queryExecutor = _serviceProvider.GetService<IQueryExecutor<TResult, TQuery>>();
+    if (queryExecutor == null)
+    {
+      throw new Exception($"No query executor registered for query of type {query.GetType()}");
+    }
 
     if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult? cachedResult))
     {
       return cachedResult!;
     }
 
-    TResult result = await queryExecutor.Execute(_repository);
+    TResult result = await queryExecutor.Execute(query);
     _queryCache.Set(queryExecutor, query, result);
 
     return result;
   }
 
-  public async Task<CommandResult> Command(ICommand command)
+  public async Task<CommandResult> Command<TCommand>(TCommand command) where TCommand : ICommand
   {
     return await Execute(
       () => ExecuteCommand(command),
@@ -49,9 +58,15 @@ public class Dispatcher
     );
   }
 
-  private async Task<CommandResult> ExecuteCommand(ICommand command)
+  private async Task<CommandResult> ExecuteCommand<TCommand>(TCommand command) where TCommand : ICommand
   {
-    CommandResult commandResult = await command.CreateExecutor().Execute(_repository, _dateService);
+    var commandExecutor = _serviceProvider.GetService<ICommandExecutor<TCommand>>();
+    if (commandExecutor == null)
+    {
+      throw new Exception($"No command executor registered for command of type {command.GetType()}");
+    }
+
+    CommandResult commandResult = await commandExecutor.Execute(command);
 
     InvalidateCache(commandResult);
 

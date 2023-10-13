@@ -8,11 +8,6 @@ public class UpsertTimerEntryCommand : BaseUpsertEntryCommand
 
   public DateTime? EndDate { get; set; }
 
-  public override ICommandExecutor CreateExecutor()
-  {
-    return new UpsertTimerEntryCommandExecutor(this);
-  }
-
   public override JournalType GetSupportedJournalType()
   {
     return JournalType.Timer;

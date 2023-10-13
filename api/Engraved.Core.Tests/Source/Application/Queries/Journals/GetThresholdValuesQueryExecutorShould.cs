@@ -51,14 +51,15 @@ public class GetThresholdValuesQueryExecutorShould
     AddEntry(4, "green");
     AddEntry(3, "blue");
 
-    IDictionary<string, IDictionary<string, ThresholdResult>> results = await new GetThresholdValuesQuery
-      {
-        FromDate = DateTime.UtcNow.AddHours(-1),
-        ToDate = DateTime.UtcNow.AddHours(1),
-        JournalId = JournalId
-      }
-      .CreateExecutor()
-      .Execute(_testRepository);
+    var query = new GetThresholdValuesQuery
+    {
+      FromDate = DateTime.UtcNow.AddHours(-1),
+      ToDate = DateTime.UtcNow.AddHours(1),
+      JournalId = JournalId
+    };
+
+    IDictionary<string, IDictionary<string, ThresholdResult>> results =
+      await new GetThresholdValuesQueryExecutor(_testRepository).Execute(query);
 
     Assert.NotNull(results);
 

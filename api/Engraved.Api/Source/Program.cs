@@ -134,6 +134,9 @@ builder.Services.AddAuthentication(
     }
   );
 
+ExecutorRegistration.RegisterCommands(builder.Services);
+ExecutorRegistration.RegisterQueries(builder.Services);
+
 WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())

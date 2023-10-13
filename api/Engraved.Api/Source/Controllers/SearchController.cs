@@ -12,17 +12,15 @@ namespace Engraved.Api.Controllers;
 public class SearchController : ControllerBase
 {
   private readonly Dispatcher _dispatcher;
-  private readonly ISearchIndex _searchIndex;
 
-  public SearchController(Dispatcher dispatcher, ISearchIndex searchIndex)
+  public SearchController(Dispatcher dispatcher)
   {
     _dispatcher = dispatcher;
-    _searchIndex = searchIndex;
   }
 
   [Route("journal_attributes/{journalId}")]
   [HttpGet]
-  public async Task<AttributeSearchResult[]> SearchJournalAttributes(string journalId, string searchText)
+  public async Task<SearchAttributesResult[]> SearchJournalAttributes(string journalId, string searchText)
   {
     var searchAttributesQuery = new SearchAttributesQuery
     {
@@ -30,12 +28,6 @@ public class SearchController : ControllerBase
       SearchText = searchText
     };
 
-    // it's not good that we inject dependencies here like this,
-    // but for the moment it's the easiest. i guess the best solution
-    // would be to have the actions be created by the framework's DI.
-    searchAttributesQuery.SetSearchIndex(_searchIndex);
-    searchAttributesQuery.SetDispatcher(_dispatcher);
-
-    return await _dispatcher.Query(searchAttributesQuery);
+    return await _dispatcher.Query<SearchAttributesResult[], SearchAttributesQuery>(searchAttributesQuery);
   }
 }

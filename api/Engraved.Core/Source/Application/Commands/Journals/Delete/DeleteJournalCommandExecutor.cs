@@ -3,25 +3,25 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Delete;
 
-public class DeleteJournalCommandExecutor : ICommandExecutor
+public class DeleteJournalCommandExecutor : ICommandExecutor<DeleteJournalCommand>
 {
-  private readonly DeleteJournalCommand _command;
+  private readonly IRepository _repository;
 
-  public DeleteJournalCommandExecutor(DeleteJournalCommand command)
+  public DeleteJournalCommandExecutor(IRepository repository)
   {
-    _command = command;
+    _repository = repository;
   }
 
-  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(DeleteJournalCommand command)
   {
-    IJournal? journal = await repository.GetJournal(_command.JournalId);
+    IJournal? journal = await _repository.GetJournal(command.JournalId);
     if (journal == null)
     {
       return new CommandResult();
     }
 
-    await repository.DeleteJournal(_command.JournalId);
+    await _repository.DeleteJournal(command.JournalId);
 
-    return new CommandResult(_command.JournalId, journal.Permissions.GetUserIdsWithAccess());
+    return new CommandResult(command.JournalId, journal.Permissions.GetUserIdsWithAccess());
   }
 }

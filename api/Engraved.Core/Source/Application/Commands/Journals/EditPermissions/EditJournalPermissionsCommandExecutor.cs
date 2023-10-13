@@ -3,30 +3,30 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.EditPermissions;
 
-public class EditJournalPermissionsCommandExecutor : ICommandExecutor
+public class EditJournalPermissionsCommandExecutor : ICommandExecutor<EditJournalPermissionsCommand>
 {
-  private readonly EditJournalPermissionsCommand _command;
+  private readonly IRepository _repository;
 
-  public EditJournalPermissionsCommandExecutor(EditJournalPermissionsCommand command)
+  public EditJournalPermissionsCommandExecutor(IRepository repository)
   {
-    _command = command;
+    _repository = repository;
   }
 
-  public async Task<CommandResult> Execute(IRepository repository, IDateService dateService)
+  public async Task<CommandResult> Execute(EditJournalPermissionsCommand command)
   {
-    if (string.IsNullOrEmpty(_command.JournalId))
+    if (string.IsNullOrEmpty(command.JournalId))
     {
-      throw new InvalidCommandException(_command, $"{nameof(EditJournalPermissionsCommand.JournalId)} is required");
+      throw new InvalidCommandException(command, $"{nameof(EditJournalPermissionsCommand.JournalId)} is required");
     }
 
-    IJournal journalBefore = (await repository.GetJournal(_command.JournalId))!;
+    IJournal journalBefore = (await _repository.GetJournal(command.JournalId))!;
 
-    if (_command.Permissions?.Count > 0)
+    if (command.Permissions?.Count > 0)
     {
-      await repository.ModifyJournalPermissions(_command.JournalId, _command.Permissions);
+      await _repository.ModifyJournalPermissions(command.JournalId, command.Permissions);
     }
 
-    IJournal journalAfter = (await repository.GetJournal(_command.JournalId))!;
+    IJournal journalAfter = (await _repository.GetJournal(command.JournalId))!;
 
     // users are affected that have permissions before or after
     string[] userIdsWithAccess = journalBefore.Permissions.GetUserIdsWithAccess()
@@ -34,6 +34,6 @@ public class EditJournalPermissionsCommandExecutor : ICommandExecutor
       .Distinct()
       .ToArray();
 
-    return new CommandResult(_command.JournalId, userIdsWithAccess);
+    return new CommandResult(command.JournalId, userIdsWithAccess);
   }
 }

@@ -14,7 +14,5 @@ public abstract class BaseUpsertEntryCommand : ICommand
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 
-  public abstract ICommandExecutor CreateExecutor();
-
   public abstract JournalType GetSupportedJournalType();
 }

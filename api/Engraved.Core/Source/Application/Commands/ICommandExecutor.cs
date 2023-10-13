@@ -1,8 +1,6 @@
-using Engraved.Core.Application.Persistence;
-
 namespace Engraved.Core.Application.Commands;
 
-public interface ICommandExecutor
+public interface ICommandExecutor<TCommand> where TCommand : ICommand
 {
-  Task<CommandResult> Execute(IRepository repository, IDateService dateService);
+  Task<CommandResult> Execute(TCommand command);
 }

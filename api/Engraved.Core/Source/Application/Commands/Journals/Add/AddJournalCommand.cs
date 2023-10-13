@@ -9,9 +9,4 @@ public class AddJournalCommand : ICommand
   public string? Description { get; set; }
 
   public JournalType Type { get; set; }
-
-  public ICommandExecutor CreateExecutor()
-  {
-    return new AddJournalCommandExecutor(this);
-  }
 }

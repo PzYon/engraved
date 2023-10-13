@@ -35,7 +35,7 @@ public class JournalsController : ControllerBase
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
     };
 
-    IJournal[] journals = await _dispatcher.Query(query);
+    IJournal[] journals = await _dispatcher.Query<IJournal[], GetAllJournalsQuery>(query);
     return journals.EnsurePolymorphismWhenSerializing();
   }
 
@@ -43,7 +43,7 @@ public class JournalsController : ControllerBase
   [HttpGet]
   public async Task<IJournal?> Get(string journalId)
   {
-    return await _dispatcher.Query(new GetJournalQuery { JournalId = journalId });
+    return await _dispatcher.Query<IJournal?, GetJournalQuery>(new GetJournalQuery { JournalId = journalId });
   }
 
   [HttpPost]
@@ -89,7 +89,9 @@ public class JournalsController : ControllerBase
       ToDate = toDate
     };
 
-    return await _dispatcher.Query(query);
+    return await _dispatcher.Query<IDictionary<string, IDictionary<string, ThresholdResult>>, GetThresholdValuesQuery>(
+      query
+    );
   }
 
   [HttpDelete]

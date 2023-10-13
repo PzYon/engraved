@@ -20,7 +20,8 @@ public class QueryCache
   private Dictionary<string, HashSet<string>> QueryKeysByUser
     => _memoryCache.GetOrCreate(KeysByUserId, _ => new Dictionary<string, HashSet<string>>())!;
 
-  public void Set<TValue>(IQueryExecutor<TValue> queryExecutor, IQuery<TValue> query, TValue value)
+  public void Set<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, TValue value)
+    where TQuery : IQuery
   {
     string key = GetKey(queryExecutor);
 
@@ -36,7 +37,8 @@ public class QueryCache
     );
   }
 
-  public bool TryGetValue<TValue>(IQueryExecutor<TValue> queryExecutor, IQuery<TValue> query, out TValue? value)
+  public bool TryGetValue<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, out TValue? value)
+    where TQuery : IQuery
   {
     if (!_memoryCache.TryGetValue(GetKey(queryExecutor), out CacheItem<TValue>? cacheItem))
     {
@@ -75,12 +77,13 @@ public class QueryCache
     }
   }
 
-  private string GetKey<TValue>(IQueryExecutor<TValue> queryExecutor)
+  private string GetKey<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor)
+    where TQuery : IQuery
   {
     return _currentUser.Value.Id + "_" + queryExecutor.GetType().FullName!;
   }
 
-  private static string GetConfigToken<TValue>(IQuery<TValue> query)
+  private static string GetConfigToken(IQuery query)
   {
     return JsonConvert.SerializeObject(query);
   }

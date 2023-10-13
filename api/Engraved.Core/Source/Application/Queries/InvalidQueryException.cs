@@ -1,7 +1,7 @@
 ﻿namespace Engraved.Core.Application.Queries;
 
-public class InvalidQueryException<T> : Exception
+public class InvalidQueryException : Exception
 {
-  public InvalidQueryException(IQuery<T> query, string message)
+  public InvalidQueryException(IQuery query, string message)
     : base(query.GetType().Name + ": " + message) { }
 }

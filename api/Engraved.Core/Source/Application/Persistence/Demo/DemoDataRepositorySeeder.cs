@@ -32,14 +32,14 @@ public class DemoDataRepositorySeeder
     {
       var dateService = new SelfIncrementingDateService();
 
-      CommandResult result = await new AddJournalCommand
+      CommandResult result = await new AddJournalCommandExecutor(_repository, dateService).Execute(
+        new AddJournalCommand
         {
           Description = LoremIpsum(0, 12, 1, 3),
           Name = LoremIpsum(1, 3, 1, 1),
           Type = GetRandomJournalType()
         }
-        .CreateExecutor()
-        .Execute(_repository, dateService);
+      );
 
       IJournal journal = (await _repository.GetJournal(result.EntityId))!;
       await AddAttributes(journal, dateService);
@@ -67,7 +67,7 @@ public class DemoDataRepositorySeeder
       )
     };
 
-    await new EditJournalCommandExecutor(command).Execute(_repository, dateService);
+    await new EditJournalCommandExecutor(_repository, dateService).Execute(command);
   }
 
   private async Task AddEntries(IJournal journal, IDateService dateService)
@@ -102,7 +102,7 @@ public class DemoDataRepositorySeeder
 
       EnsureAttributeValues(journal, command);
 
-      await new UpsertCounterEntryCommandExecutor(command).Execute(_repository, dateService);
+      await new UpsertCounterEntryCommandExecutor(_repository, dateService).Execute(command);
     }
   }
 
@@ -118,7 +118,7 @@ public class DemoDataRepositorySeeder
 
       EnsureAttributeValues(journal, command);
 
-      await new UpsertGaugeEntryCommandExecutor(command).Execute(_repository, dateService);
+      await new UpsertGaugeEntryCommandExecutor(_repository, dateService).Execute(command);
     }
   }
 
@@ -157,15 +157,13 @@ public class DemoDataRepositorySeeder
 
       EnsureAttributeValues(journal, command);
 
-      await command
-        .CreateExecutor()
-        .Execute(_repository, dateService);
+      await new UpsertTimerEntryCommandExecutor(_repository, dateService).Execute(command);
 
       dateService.SetNext(remainingSteps);
 
-      await new UpsertTimerEntryCommand { JournalId = journal.Id! }
-        .CreateExecutor()
-        .Execute(_repository, dateService);
+      await new UpsertTimerEntryCommandExecutor(_repository, dateService).Execute(
+        new UpsertTimerEntryCommand { JournalId = journal.Id! }
+      );
     }
   }
 
@@ -180,28 +178,28 @@ public class DemoDataRepositorySeeder
     var dateService = new SelfIncrementingDateService();
     IJournal journal = specificCase.Journal;
 
-    CommandResult result = await new AddJournalCommand
+    CommandResult result = await new AddJournalCommandExecutor(_repository, dateService).Execute(
+      new AddJournalCommand
       {
         Description = journal.Description,
         Name = journal.Name,
         Type = journal.Type
       }
-      .CreateExecutor()
-      .Execute(_repository, dateService);
+    );
 
     string journalId = result.EntityId;
 
     if (journal.Attributes.Any())
     {
-      await new EditJournalCommand
+      await new EditJournalCommandExecutor(_repository, dateService).Execute(
+        new EditJournalCommand
         {
           JournalId = journalId,
           Attributes = journal.Attributes,
           Description = journal.Description,
           Name = journal.Name
         }
-        .CreateExecutor()
-        .Execute(_repository, dateService);
+      );
     }
 
     foreach (IEntry entry in specificCase.Entries)
@@ -230,7 +228,15 @@ public class DemoDataRepositorySeeder
         ? new FakeDateService(entry.DateTime.Value)
         : dateService;
 
-      await command.CreateExecutor().Execute(_repository, entryDateService);
+      switch (command)
+      {
+        case UpsertCounterEntryCommand upsertCounterEntryCommand:
+          await new UpsertCounterEntryCommandExecutor(_repository, entryDateService).Execute(upsertCounterEntryCommand);
+          break;
+        case UpsertGaugeEntryCommand upsertGaugeEntryCommand:
+          await new UpsertGaugeEntryCommandExecutor(_repository, entryDateService).Execute(upsertGaugeEntryCommand);
+          break;
+      }
     }
   }
 
@@ -279,7 +285,7 @@ public class DemoDataRepositorySeeder
       {
         if (w > 0)
         {
-          result.Append(" ");
+          result.Append(' ');
         }
 
         result.Append(words[Random.Shared.Next(words.Length)]);
