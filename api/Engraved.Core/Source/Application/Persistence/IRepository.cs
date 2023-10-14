@@ -15,7 +15,12 @@ public interface IRepository
 
   Task<IUser[]> GetAllUsers();
 
-  Task<IJournal[]> GetAllJournals(string? searchText = null, JournalType[]? journalTypes = null, int? limit = null);
+  Task<IJournal[]> GetAllJournals(
+    string? searchText = null,
+    JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
+    int? limit = null
+  );
 
   Task<IJournal?> GetJournal(string journalId);
 
