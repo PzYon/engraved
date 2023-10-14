@@ -4,8 +4,18 @@ import { JournalType } from "../JournalType";
 const journals = "journals";
 
 export const queryKeysFactory = {
-  journals(searchText?: string, journalTypes?: JournalType[]) {
-    return [journals, "all", searchText ?? "", journalTypes?.join() ?? ""];
+  journals(
+    searchText?: string,
+    journalTypes?: JournalType[],
+    favoritesOnly?: boolean,
+  ) {
+    return [
+      journals,
+      "all",
+      searchText ?? "",
+      journalTypes?.join() ?? "",
+      favoritesOnly ?? false,
+    ];
   },
 
   journal(journalId: string) {

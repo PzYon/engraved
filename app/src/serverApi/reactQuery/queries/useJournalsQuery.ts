@@ -7,13 +7,19 @@ import { JournalType } from "../../JournalType";
 export const useJournalsQuery = (
   searchText?: string,
   journalTypes?: JournalType[],
+  favoritesOnly?: boolean,
 ): IJournal[] => {
   const queryClient = useQueryClient();
 
   const { data } = useQuery<IJournal[]>({
-    queryKey: queryKeysFactory.journals(searchText, journalTypes),
+    queryKey: queryKeysFactory.journals(
+      searchText,
+      journalTypes,
+      favoritesOnly,
+    ),
 
-    queryFn: () => ServerApi.getJournals(searchText, journalTypes),
+    queryFn: () =>
+      ServerApi.getJournals(searchText, journalTypes, favoritesOnly),
 
     onSuccess: (loadedJournals) => {
       for (const loadedJournal of loadedJournals) {

@@ -6,9 +6,11 @@ import { JournalListItem } from "./JournalListItem";
 import { useHotkeys } from "react-hotkeys-hook";
 import { JournalWrapperCollection } from "./JournalWrapperCollection";
 
-export const Journals: React.FC = () => {
+export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
+  favoritesOnly,
+}) => {
   const { searchText, journalTypes } = usePageContext();
-  const journals = useJournalsQuery(searchText, journalTypes);
+  const journals = useJournalsQuery(searchText, journalTypes, favoritesOnly);
 
   const [focusIndex, setFocusIndex] = useState(-1);
 
