@@ -196,6 +196,7 @@ public class FakeUserScopedRepository : IUserScopedRepository
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
     JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
     int? limit = null
   )
   {

@@ -44,10 +44,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   public async Task<IJournal[]> GetAllJournals(
     string? searchText,
     JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
     int? limit = null
   )
   {
-    IJournal[] allJournals = await _repository.GetAllJournals(searchText, journalTypes, limit);
+    IJournal[] allJournals = await _repository.GetAllJournals(searchText, journalTypes, journalIds, limit);
     return allJournals
       .Where(j => j.UserId == CurrentUser.Value.Id)
       .ToArray();

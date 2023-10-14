@@ -95,6 +95,7 @@ public class MongoRepository : IRepository
   public async Task<IJournal[]> GetAllJournals(
     string? searchText = null,
     JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
     int? limit = null
   )
   {
@@ -111,6 +112,17 @@ public class MongoRepository : IRepository
       filters.Add(
         Builders<JournalDocument>.Filter.Or(
           journalTypes.Select(t => Builders<JournalDocument>.Filter.Where(GetIsJournalTypeExpression(t)))
+        )
+      );
+    }
+
+    if (journalIds is { Length: > 0 })
+    {
+      filters.Add(
+        Builders<JournalDocument>.Filter.Or(
+          journalIds.Select(
+            i => GetJournalDocumentByIdFilter<JournalDocument>(i, PermissionKind.Read)
+          )
         )
       );
     }

@@ -27,12 +27,13 @@ public class JournalsController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<object[]> GetAll(string? searchText, string? journalTypes)
+  public async Task<object[]> GetAll(string? searchText, string? journalTypes, bool? favoritesOnly)
   {
     var query = new GetAllJournalsQuery
     {
       SearchText = searchText,
-      JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
+      JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes),
+      FavoritesOnly = favoritesOnly
     };
 
     IJournal[] journals = await _dispatcher.Query<IJournal[], GetAllJournalsQuery>(query);

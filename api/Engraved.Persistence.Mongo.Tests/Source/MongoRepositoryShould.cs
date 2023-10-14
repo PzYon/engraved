@@ -25,14 +25,6 @@ public class MongoRepositoryShould
   }
 
   [Test]
-  public async Task GetAllJournals_Empty()
-  {
-    IJournal[] allJournals = await _repository.GetAllJournals();
-
-    Assert.AreEqual(allJournals.Length, 0);
-  }
-
-  [Test]
   public async Task CreateOneJournal_Then_GetJournal()
   {
     UpsertResult result = await _repository.UpsertJournal(new CounterJournal());
@@ -40,17 +32,6 @@ public class MongoRepositoryShould
     IJournal? journal = await _repository.GetJournal(result.EntityId);
 
     Assert.IsNotNull(journal);
-  }
-
-  [Test]
-  public async Task CreateJournals_Then_GetAllJournals()
-  {
-    await _repository.UpsertJournal(new CounterJournal());
-    await _repository.UpsertJournal(new CounterJournal());
-
-    IJournal[] allJournals = await _repository.GetAllJournals();
-
-    Assert.AreEqual(allJournals.Length, 2);
   }
 
   [Test]

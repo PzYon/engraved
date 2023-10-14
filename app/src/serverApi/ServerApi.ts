@@ -115,8 +115,13 @@ export class ServerApi {
   static async getJournals(
     searchText?: string,
     journalTypes?: JournalType[],
+    favoritesOnly?: boolean,
   ): Promise<IJournal[]> {
-    const paramsString = this.getParamsString(searchText, journalTypes);
+    const paramsString = this.getParamsString(
+      searchText,
+      journalTypes,
+      favoritesOnly,
+    );
     return await ServerApi.executeRequest(`/journals${paramsString}`);
   }
 
@@ -348,6 +353,7 @@ export class ServerApi {
   private static getParamsString(
     searchText: string,
     journalTypes: JournalType[],
+    favoritesOnly?: boolean,
   ) {
     const params: string[] = [];
 
@@ -357,6 +363,10 @@ export class ServerApi {
 
     if (journalTypes?.length) {
       params.push(`journalTypes=${journalTypes.join(",")}`);
+    }
+
+    if (favoritesOnly) {
+      params.push(`favoritesOnly=true`);
     }
 
     return params.length ? `?${params.join("&")}` : "";

@@ -17,7 +17,7 @@ public class GetAllEntriesQueryExecutor : IQueryExecutor<GetAllEntriesQueryResul
 
   public async Task<GetAllEntriesQueryResult> Execute(GetAllEntriesQuery query)
   {
-    IJournal[] allJournals = await _repository.GetAllJournals(null, null, 100);
+    IJournal[] allJournals = await _repository.GetAllJournals(null, null, null, 100);
     string[]? allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
     IEntry[] allEntries = await _repository.GetLastEditedEntries(
