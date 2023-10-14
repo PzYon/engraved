@@ -26,8 +26,8 @@ export const JournalsPage: React.FC = () => {
       actions={[
         {
           icon: <StarOutline fontSize="small" />,
-          label: "Unlike",
-          key: "unlike",
+          label: "Show favorites only",
+          key: "favorites-only",
           onClick: () => setFavoritesOnly(!favoritesOnly),
           isNotActive: !favoritesOnly,
         },
