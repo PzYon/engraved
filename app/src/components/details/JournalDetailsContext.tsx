@@ -67,7 +67,14 @@ export const JournalContextProvider: React.FC<{
       setDateConditions,
       dateConditions,
     };
-  }, [entries, journal, selectedAttributeValues, dateConditions]);
+  }, [
+    entries,
+    journal,
+    toggleAttributeValue,
+    selectedAttributeValues,
+    setSelectedAttributeValuesInternal,
+    dateConditions,
+  ]);
 
   return (
     <JournalContext.Provider value={contextValue}>

@@ -28,7 +28,7 @@ export const JournalListItem: React.FC<{
     }
 
     addWrapper(new JournalItemWrapper(domElementRef, journal));
-  }, [journal]);
+  }, [addWrapper, journal]);
 
   return (
     <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>

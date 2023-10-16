@@ -31,7 +31,7 @@ export const ThresholdRow: React.FC<{
       attributeValueKeys,
       threshold: Number(threshold),
     });
-  }, [attributeKey, attributeValueKeys, threshold]);
+  }, [onChange, attributeKey, attributeValueKeys, threshold]);
 
   return (
     <Host sx={styles}>

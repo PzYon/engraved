@@ -1,6 +1,6 @@
 import { FormElementContainer } from "../../common/FormUtils";
 import { DateSelector } from "../../common/DateSelector";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Typography } from "@mui/material";
 import { FormatDuration } from "../../common/FormatDuration";
 
@@ -10,14 +10,19 @@ export const UpsertTimerEntry: React.FC<{
   endDate: string;
   setEndDate: (endDate: Date) => void;
 }> = ({ setStartDate, startDate, setEndDate, endDate }) => {
-  const start = startDate ? new Date(startDate) : undefined;
-  const end = endDate ? new Date(endDate) : undefined;
+  const start = useMemo(() => {
+    return startDate ? new Date(startDate) : undefined;
+  }, [startDate]);
+
+  const end = useMemo(() => {
+    return endDate ? new Date(endDate) : undefined;
+  }, [endDate]);
 
   useEffect(() => {
     if (start && !end) {
       setEndDate(new Date());
     }
-  }, []);
+  }, [end, setEndDate, start]);
 
   return (
     <>

@@ -21,7 +21,7 @@ export const EditJournalPermissionsLauncher: React.FC<{
         navigate(`/journals/${journal.id}`);
       },
     });
-  }, []);
+  }, [journal, navigate, renderDialog]);
 
   return null;
 };

@@ -15,14 +15,14 @@ export const JournalSelector: React.FC<{
 
   const initiallySelectedJournal = useMemo(
     () => journals.find((j) => j.id === selectedJournalId) ?? journals[0],
-    [journals],
+    [journals, selectedJournalId],
   );
 
   useEffect(() => {
     if (initiallySelectedJournal) {
       onChange(initiallySelectedJournal);
     }
-  }, [initiallySelectedJournal]);
+  }, [initiallySelectedJournal, onChange]);
 
   if (!journals?.length) {
     return null;

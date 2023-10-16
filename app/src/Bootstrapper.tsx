@@ -40,7 +40,7 @@ export const Bootstrapper: React.FC = () => {
         }
       })
       .finally(() => setIsNotVisible(false));
-  }, [ref.current]);
+  }, []);
 
   if (user) {
     return <App user={user} />;

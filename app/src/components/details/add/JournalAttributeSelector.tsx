@@ -39,7 +39,7 @@ export const JournalAttributeSelector: React.FC<{
       options.filter((o) => {
         return selectedAttributeValues[attributeKey]?.indexOf(o.key) > -1;
       })[0],
-    [],
+    [attributeKey, options, selectedAttributeValues],
   );
 
   return (

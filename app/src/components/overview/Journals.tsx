@@ -16,7 +16,7 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
 
   const collection = useMemo(
     () => new JournalWrapperCollection(focusIndex, setFocusIndex),
-    [journals],
+    [focusIndex],
   );
 
   useHotkeys("alt+up", () => {

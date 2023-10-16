@@ -55,7 +55,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
   useEffect(() => {
     ChartJS.defaults.font.family = typography.fontFamily;
     ChartJS.defaults.font.size = typography.htmlFontSize;
-  }, []);
+  }, [typography.fontFamily, typography.htmlFontSize]);
 
   const { toggleAttributeValue } = useJournalContext();
 
@@ -72,7 +72,15 @@ const LazyChartJs: React.FC<IChartProps> = ({
             palette.primary.main,
           )
         : null,
-    [entries, groupByTime, groupByAttribute, chartType],
+    [
+      entries,
+      journal,
+      groupByTime,
+      groupByAttribute,
+      toggleAttributeValue,
+      chartType,
+      palette.primary.main,
+    ],
   );
 
   return chart ? <Chart key={chartType} {...chart} /> : null;

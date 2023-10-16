@@ -26,7 +26,7 @@ export const ScrapList: React.FC<{
     if (isEditMode) {
       listItemsCollection.giveFocus(0);
     }
-  }, [isEditMode]);
+  }, [isEditMode, listItemsCollection]);
 
   return (
     <Host
