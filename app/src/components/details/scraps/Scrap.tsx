@@ -78,6 +78,7 @@ export const Scrap: React.FC<{
         upsertScrap,
       ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDirty, isEditMode, currentScrap.editedOn]);
 
   useEffect(() => {
@@ -134,6 +135,7 @@ export const Scrap: React.FC<{
       hideDurationSec: 2,
       title: "Scrap has changed...",
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentScrap]);
 
   const Container = withoutSection ? SimpleDiv : PageSection;

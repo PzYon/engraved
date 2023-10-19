@@ -41,6 +41,7 @@ export const ScrapsViewPage: React.FC = () => {
 
   const collection = useMemo(
     () => new ScrapWrapperCollection(focusIndex, setFocusIndex),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [focusIndex, scraps],
   );
 
