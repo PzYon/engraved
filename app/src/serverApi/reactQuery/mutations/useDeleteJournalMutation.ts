@@ -1,30 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { useAppContext } from "../../../AppContext";
 
 export const useDeleteJournalMutation = (journalId: string) => {
-  const { setAppAlert } = useAppContext();
-
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationKey: queryKeysFactory.deleteJournal(journalId),
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    mutationFn: async (_: { onSuccess: () => Promise<void> }) =>
-      await ServerApi.deleteJournal(journalId),
-
-    onSuccess: async (_, variables) => {
+    mutationFn: async (variables: { onSuccess: () => Promise<void> }) => {
+      await ServerApi.deleteJournal(journalId);
       await variables.onSuccess();
-
-      setAppAlert({
-        title: `Successfully deleted journal.`,
-        type: "success",
-      });
-
-      await queryClient.invalidateQueries(queryKeysFactory.journal(journalId));
-      await queryClient.invalidateQueries(queryKeysFactory.journals());
     },
   });
 };
