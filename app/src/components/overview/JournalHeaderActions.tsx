@@ -13,7 +13,7 @@ export const JournalHeaderActions: React.FC<{
 
   const actions = useMemo<IAction[]>(
     () => getCommonActions(journal, enableHotkeys, renderDialog),
-    [journal, enableHotkeys],
+    [renderDialog, journal, enableHotkeys],
   );
 
   return <ActionGroup actions={actions} />;

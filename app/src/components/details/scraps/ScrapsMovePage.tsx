@@ -27,7 +27,7 @@ export const ScrapsMovePage: React.FC = () => {
     navigate(`/journals/${targetJournalId}`),
   );
 
-  useEffect(() => setSubTitle("Move scrap to..."), []);
+  useEffect(() => setSubTitle("Move scrap to..."), [setSubTitle]);
 
   if (!entry) {
     return null;

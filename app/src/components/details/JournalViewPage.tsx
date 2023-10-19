@@ -70,7 +70,7 @@ export const JournalViewPage: React.FC = () => {
         ? getDefaultDateConditions()
         : createDateConditions(uiSettings.dateRange, new Date()),
     );
-  }, [uiSettings?.dateRange]);
+  }, [setDateConditions, uiSettings.dateRange]);
 
   useEffect(() => {
     setTitleActions([
@@ -97,6 +97,7 @@ export const JournalViewPage: React.FC = () => {
     showChart,
     showThresholds,
     showGroupTotals,
+    renderDialog,
   ]);
 
   return (

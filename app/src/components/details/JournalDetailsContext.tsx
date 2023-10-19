@@ -61,9 +61,34 @@ export const JournalContextProvider: React.FC<{
     return {
       entries,
       journal,
-      toggleAttributeValue,
+      toggleAttributeValue: (
+        attributeKey: string,
+        attributeValueKey: string,
+      ) => {
+        const selectedValues = { ...selectedAttributeValues };
+
+        if (!selectedValues[attributeKey]) {
+          selectedValues[attributeKey] = [];
+        }
+
+        const index = selectedValues[attributeKey].indexOf(attributeValueKey);
+        if (index > -1) {
+          selectedValues[attributeKey].splice(index);
+        } else {
+          selectedValues[attributeKey].push(attributeValueKey);
+        }
+
+        setSelectedAttributeValues(selectedValues);
+      },
       selectedAttributeValues,
-      setSelectedAttributeValues: setSelectedAttributeValuesInternal,
+      setSelectedAttributeValues: (
+        attributeKey: string,
+        attributeValueKeys: string[],
+      ) => {
+        const selectedValues = { ...selectedAttributeValues };
+        selectedValues[attributeKey] = attributeValueKeys;
+        setSelectedAttributeValues(selectedValues);
+      },
       setDateConditions,
       dateConditions,
     };
@@ -74,33 +99,4 @@ export const JournalContextProvider: React.FC<{
       {children}
     </JournalContext.Provider>
   );
-
-  function setSelectedAttributeValuesInternal(
-    attributeKey: string,
-    attributeValueKeys: string[],
-  ) {
-    const selectedValues = { ...selectedAttributeValues };
-    selectedValues[attributeKey] = attributeValueKeys;
-    setSelectedAttributeValues(selectedValues);
-  }
-
-  function toggleAttributeValue(
-    attributeKey: string,
-    attributeValueKey: string,
-  ) {
-    const selectedValues = { ...selectedAttributeValues };
-
-    if (!selectedValues[attributeKey]) {
-      selectedValues[attributeKey] = [];
-    }
-
-    const index = selectedValues[attributeKey].indexOf(attributeValueKey);
-    if (index > -1) {
-      selectedValues[attributeKey].splice(index);
-    } else {
-      selectedValues[attributeKey].push(attributeValueKey);
-    }
-
-    setSelectedAttributeValues(selectedValues);
-  }
 };

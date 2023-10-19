@@ -101,10 +101,11 @@ export const PageContextProvider: React.FC<{
     subTitle,
     documentTitle,
     pageActions,
-    searchText,
-    journalTypes,
     enableFilters,
     showFilters,
+    searchText,
+    journalTypes,
+    tabs,
   ]);
 
   return (

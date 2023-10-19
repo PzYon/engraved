@@ -44,7 +44,7 @@ export const EntriesTable: React.FC<{
       ...type.getEntriesTableColumns(),
       ...getColumnsAfter(journal),
     ].filter((c) => c.doHide?.(journal) !== true);
-  }, [journal, collapseAll]);
+  }, [journal, collapseAll, type]);
 
   const [tableGroups, setTableGroups] = useState<IEntriesTableGroup[]>([]);
 
@@ -55,7 +55,11 @@ export const EntriesTable: React.FC<{
       type.type === JournalType.Timer ? setInterval(updateGroups, 10000) : null;
 
     return () => clearInterval(interval);
-  }, [journal, entries]);
+
+    function updateGroups() {
+      setTableGroups(getEntriesTableGroups(entries, type));
+    }
+  }, [journal, entries, type]);
 
   return (
     <Table>
@@ -97,10 +101,6 @@ export const EntriesTable: React.FC<{
       ) : null}
     </Table>
   );
-
-  function updateGroups() {
-    setTableGroups(getEntriesTableGroups(entries, type));
-  }
 };
 
 function getColumnsBefore(

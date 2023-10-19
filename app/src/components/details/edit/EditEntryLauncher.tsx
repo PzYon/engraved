@@ -37,11 +37,11 @@ export const EditEntryLauncher: React.FC<{
         goToJournal();
       },
     });
-  }, [entries]);
+
+    function goToJournal() {
+      navigate(`/journals/${journal.id}`);
+    }
+  }, [entries, entryId, journal, navigate, renderDialog]);
 
   return null;
-
-  function goToJournal() {
-    navigate(`/journals/${journal.id}`);
-  }
 };

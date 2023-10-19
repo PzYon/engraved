@@ -39,7 +39,7 @@ export const Page: React.FC<{
     }
 
     setPageActions(actions);
-  }, [actions]);
+  }, [setPageActions, actions]);
 
   useEffect(() => {
     if (tabs === undefined) {
@@ -47,7 +47,7 @@ export const Page: React.FC<{
     }
 
     setTabs(tabs);
-  }, [tabs]);
+  }, [setTabs, tabs]);
 
   useEffect(() => {
     if (title === undefined) {
@@ -55,13 +55,19 @@ export const Page: React.FC<{
     }
 
     setTitle(title);
-  }, [title]);
+  }, [setTitle, title]);
 
-  useEffect(() => setSubTitle(subTitle), [subTitle]);
+  useEffect(() => setSubTitle(subTitle), [subTitle, setSubTitle]);
 
-  useEffect(() => setDocumentTitle(documentTitle), [documentTitle]);
+  useEffect(
+    () => setDocumentTitle(documentTitle),
+    [documentTitle, setDocumentTitle],
+  );
 
-  useEffect(() => setEnableFilters(enableFilters), [enableFilters]);
+  useEffect(
+    () => setEnableFilters(enableFilters),
+    [enableFilters, setEnableFilters],
+  );
 
   useEffect(() => {
     return () => {
@@ -71,7 +77,13 @@ export const Page: React.FC<{
       setJournalTypes([]);
       setTabs([]);
     };
-  }, []);
+  }, [
+    setEnableFilters,
+    setJournalTypes,
+    setSearchText,
+    setShowFilters,
+    setTabs,
+  ]);
 
   return <FadeInContainer>{children}</FadeInContainer>;
 };
