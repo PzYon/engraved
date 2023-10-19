@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material";
 import { ActionGroup } from "../../../common/actions/ActionGroup";
 import { ListItemWrapper } from "./ListItemWrapper";
-import { useItemsHook } from "./UseItemsHook";
+import { useItemsHook } from "./useItemsHook";
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
