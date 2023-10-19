@@ -33,7 +33,7 @@ export const ScrapListItem: React.FC<{
   const [label, setLabel] = useState(listItem.label);
   const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
 
-  useEffect(() => listItemWrapper.setRef(ref), []);
+  useEffect(() => listItemWrapper.setRef(ref), [listItemWrapper]);
 
   return (
     <ListItem>

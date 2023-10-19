@@ -42,17 +42,24 @@ export const DeleteEntryLauncher: React.FC<{
         navigate(`/journals/${journal.id}`);
       },
     });
-  }, []);
+
+    function deleteEntry(closeDialog: () => void) {
+      deleteEntryMutation.mutate();
+
+      if (onDeleted) {
+        onDeleted();
+      }
+
+      closeDialog();
+    }
+  }, [
+    deleteEntryMutation,
+    journal.id,
+    journal.type,
+    navigate,
+    onDeleted,
+    renderDialog,
+  ]);
 
   return null;
-
-  function deleteEntry(closeDialog: () => void) {
-    deleteEntryMutation.mutate();
-
-    if (onDeleted) {
-      onDeleted();
-    }
-
-    closeDialog();
-  }
 };

@@ -16,6 +16,7 @@ export const useItemsHook = (
       parseItems().map((i) => new ListItemWrapper(i)),
       onChangeWrapper,
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedOn]);
 
   function parseItems(): ISCrapListItem[] {

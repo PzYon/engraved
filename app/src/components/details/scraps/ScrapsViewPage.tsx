@@ -26,7 +26,7 @@ export const ScrapsViewPage: React.FC = () => {
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
     setDateConditions({});
-  }, []);
+  }, [setDateConditions]);
 
   useEffect(() => {
     setNewScrap(null);
@@ -34,13 +34,14 @@ export const ScrapsViewPage: React.FC = () => {
 
   const keyToken = useMemo(() => {
     return Math.random();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scraps]);
 
   const [focusIndex, setFocusIndex] = useState(-1);
 
   const collection = useMemo(
     () => new ScrapWrapperCollection(focusIndex, setFocusIndex),
-    [scraps],
+    [focusIndex, scraps],
   );
 
   // alt+s (save) is handled by code mirror resp. list

@@ -57,6 +57,7 @@ export const Scrap: React.FC<{
 
   const initialScrap = useMemo(() => {
     return currentScrap;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isDirty = useMemo(

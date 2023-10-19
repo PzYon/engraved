@@ -55,7 +55,11 @@ export const EntriesTable: React.FC<{
       type.type === JournalType.Timer ? setInterval(updateGroups, 10000) : null;
 
     return () => clearInterval(interval);
-  }, [journal, entries, updateGroups, type.type]);
+
+    function updateGroups() {
+      setTableGroups(getEntriesTableGroups(entries, type));
+    }
+  }, [journal, entries, type]);
 
   return (
     <Table>
@@ -97,10 +101,6 @@ export const EntriesTable: React.FC<{
       ) : null}
     </Table>
   );
-
-  function updateGroups() {
-    setTableGroups(getEntriesTableGroups(entries, type));
-  }
 };
 
 function getColumnsBefore(

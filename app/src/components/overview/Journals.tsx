@@ -27,7 +27,11 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
     collection.moveFocusDown();
   });
 
-  const keyToken = useMemo(() => Math.random(), [journals]);
+  const keyToken = useMemo(
+    () => Math.random(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [journals],
+  );
 
   if (!journals) {
     return null;
