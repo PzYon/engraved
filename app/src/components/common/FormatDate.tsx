@@ -64,10 +64,21 @@ export const formatDate = (
 };
 
 export const FormatDate: React.FC<{
-  value: Date | string | number;
+  value: Date | string | number | null | undefined;
   dateFormat?: DateFormat;
   fallbackValue?: React.ReactNode;
 }> = ({ value, dateFormat, fallbackValue }) => {
+  return !value ? (
+    <>{fallbackValue}</>
+  ) : (
+    <FormatDateInternal value={value} dateFormat={dateFormat} />
+  );
+};
+
+export const FormatDateInternal: React.FC<{
+  value: Date | string | number;
+  dateFormat?: DateFormat;
+}> = ({ value, dateFormat }) => {
   const calculateValues = useCallback(() => {
     return {
       title: formatDate(
@@ -78,7 +89,7 @@ export const FormatDate: React.FC<{
       ),
       label: formatDate(value, dateFormat),
     };
-  }, [value, dateFormat]);
+  }, [dateFormat, value]);
 
   const [values, setValues] = useState<{ title: string; label: string }>(
     calculateValues(),
@@ -97,10 +108,6 @@ export const FormatDate: React.FC<{
     );
     return () => clearInterval(interval);
   }, [value, dateFormat, calculateValues]);
-
-  if (!value) {
-    return <>{fallbackValue}</>;
-  }
 
   return <span title={values.title}>{values.label}</span>;
 };
