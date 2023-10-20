@@ -32,7 +32,22 @@ jobs:
         uses: josStorer/get-current-time@v2
         id: current-time
 
-      - name: Install, lint and build
+      - name: NPM Install
+        working-directory: app
+        run: |
+          npm install
+
+      - name: Check types
+        working-directory: app
+        run: |
+          npm run types:check
+
+      - name: Lint
+        working-directory: app
+        run: |
+          npm run lint
+
+      - name: Build
         working-directory: app
         env:
           VITE_COMMIT_HASH: ${{github.sha}}
@@ -40,8 +55,6 @@ jobs:
           VITE_MERGE_DATE_TIME: ${{steps.current-time.outputs.time}}
           VITE_APP_INSIGHTS_CONNECTING_STRING: ${{secrets.APP_INSIGHTS_CONNECTING_STRING}}
         run: |
-          npm install
-          npm run lint
           npm run build
 
       - name: Run tests
