@@ -29,7 +29,9 @@ export const useEditJournalMutation = (journalId: string) => {
     },
 
     onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries(queryKeysFactory.journal(journalId));
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.journal(journalId),
+      });
       variables.onSuccess?.();
     },
 

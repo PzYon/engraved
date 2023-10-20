@@ -14,7 +14,9 @@ export const useRemoveJournalFromFavoritesMutation = (journalId: string) => {
     mutationFn: () => ServerApi.removeJournalFromFavorites(journalId),
 
     onSuccess: async () => {
-      await queryClient.invalidateQueries(queryKeysFactory.modifyUser());
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.modifyUser(),
+      });
       const updatedUser = await ServerApi.getCurrentUser();
       setUser(updatedUser);
     },
