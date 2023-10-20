@@ -34,7 +34,7 @@ export const useJournalsQuery = (
         () => loadedJournal,
       );
     }
-  }, [journals]);
+  }, [isSuccess, journalTypes, journals, queryClient]);
 
   return journals;
 };

@@ -63,12 +63,14 @@ export const DeleteJournalLauncher: React.FC<{
       },
     });
   }, [
+    setAppAlert,
     deleteJournalMutation,
     journal.id,
     journal.name,
     navigate,
     onDeleted,
     renderDialog,
+    queryClient,
   ]);
 
   return null;
