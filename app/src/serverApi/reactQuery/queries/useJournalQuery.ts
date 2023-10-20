@@ -26,7 +26,7 @@ export const useJournalQuery = (journalId: string) => {
       (journals: IJournal[]) =>
         journals.map((j) => (j.id === journal.id ? journal : j)),
     );
-  }, [isSuccess, journal]);
+  }, [queryClient, isSuccess, journal]);
 
   return journal;
 };

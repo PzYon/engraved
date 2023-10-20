@@ -41,7 +41,7 @@ export const useJournalEntriesQuery = (
         type: "error",
       });
     }
-  }, [isError, error]);
+  }, [isError, error, setAppAlert]);
 
   return entries ?? [];
 };
