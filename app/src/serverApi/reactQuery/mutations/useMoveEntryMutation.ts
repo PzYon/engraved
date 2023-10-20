@@ -25,11 +25,13 @@ export const useMoveEntryMutation = (
         type: "success",
       });
 
-      await queryClient.invalidateQueries(
-        queryKeysFactory.journal(variables.targetJournalId),
-      );
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.journal(variables.targetJournalId),
+      });
 
-      await queryClient.invalidateQueries(queryKeysFactory.journal(journalId));
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.journal(journalId),
+      });
 
       onSaved?.();
     },
@@ -43,9 +45,9 @@ export const useMoveEntryMutation = (
     },
 
     onSettled: async () => {
-      await queryClient.invalidateQueries(
-        queryKeysFactory.journals(undefined, undefined),
-      );
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.journals(undefined, undefined),
+      });
     },
   });
 };

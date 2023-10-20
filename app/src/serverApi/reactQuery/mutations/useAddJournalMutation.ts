@@ -20,7 +20,9 @@ export const useAddJournalMutation = (
     onSuccess: async (result: ICommandResult) => {
       await onAdded(result);
 
-      await queryClient.invalidateQueries(queryKeysFactory.journals());
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.journals(),
+      });
 
       setAppAlert({
         title: `Added journal ${name}`,
