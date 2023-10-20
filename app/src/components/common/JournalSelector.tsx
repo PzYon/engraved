@@ -13,10 +13,11 @@ export const JournalSelector: React.FC<{
 }> = ({ onChange, label, selectedJournalId }) => {
   const journals = useJournalsQuery("", [JournalType.Scraps]);
 
-  const initiallySelectedJournal = useMemo(
-    () => journals.find((j) => j.id === selectedJournalId) ?? journals[0],
-    [journals, selectedJournalId],
-  );
+  const initiallySelectedJournal = useMemo(() => {
+    return !journals
+      ? null
+      : journals.find((j) => j.id === selectedJournalId) ?? journals[0];
+  }, [journals, selectedJournalId]);
 
   useEffect(() => {
     if (initiallySelectedJournal) {
