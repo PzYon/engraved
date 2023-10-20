@@ -55,7 +55,7 @@ export const ScrapsViewPage: React.FC = () => {
     collection.moveFocusDown();
   });
 
-  if (!scraps || !journal) {
+  if (!journal) {
     return;
   }
 
