@@ -2,8 +2,8 @@ import { useAppContext } from "../../../AppContext";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { ApiError } from "../../ApiError";
 import { IDateConditions } from "../../../components/details/JournalDetailsContext";
+import { useEffect } from "react";
 
 export const useJournalEntriesQuery = (
   journalId: string,
@@ -12,7 +12,11 @@ export const useJournalEntriesQuery = (
 ) => {
   const { setAppAlert } = useAppContext();
 
-  const { data: entries } = useQuery({
+  const {
+    data: entries,
+    isError,
+    error,
+  } = useQuery({
     queryKey: queryKeysFactory.journalEntries(
       journalId,
       dateConditions,
@@ -27,15 +31,17 @@ export const useJournalEntriesQuery = (
             dateConditions,
           )
         : Promise.resolve([]),
+  });
 
-    onError: (e: ApiError) => {
+  useEffect(() => {
+    if (isError) {
       setAppAlert({
         title: "Error loading entries",
-        message: e.message,
+        message: error.message,
         type: "error",
       });
-    },
-  });
+    }
+  }, [isError, error]);
 
   return entries ?? [];
 };
