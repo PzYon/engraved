@@ -36,9 +36,9 @@
   },
   "scripts": {
     "start": "vite",
-    "types:check": "tsc --noEmit",
     "build": "vite build",
     "test": "jest",
+    "types:check": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\""

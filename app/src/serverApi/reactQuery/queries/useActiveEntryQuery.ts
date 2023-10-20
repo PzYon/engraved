@@ -6,7 +6,7 @@ import { IJournal } from "../../IJournal";
 
 export const useActiveEntryQuery = (journal: IJournal) => {
   const { data: entry } = useQuery({
-    cacheTime: 0,
+    gcTime: 0,
 
     queryKey: queryKeysFactory.activeEntry(journal.id, journal.type),
 
