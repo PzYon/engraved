@@ -7,11 +7,11 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: true,
       refetchOnReconnect: false,
-      useErrorBoundary: true,
+      throwOnError: true,
       staleTime: 0,
     },
     mutations: {
-      useErrorBoundary: true,
+      throwOnError: true,
     },
   },
 });
