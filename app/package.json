@@ -36,6 +36,7 @@
   },
   "scripts": {
     "start": "vite",
+    "types:check": "tsc --noEmit",
     "build": "vite build",
     "test": "jest",
     "lint": "eslint .",
