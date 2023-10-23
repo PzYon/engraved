@@ -1,9 +1,14 @@
-name: Playwright Tests
+name: E2E Tests
 on:
   push:
     paths:
       - "*"
-    
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Force deployment"
+        required: false
+        default: "false"
 jobs:
   test:
     timeout-minutes: 60
