@@ -7,7 +7,7 @@
     "ci:start-server": "dotnet run --project ../api/Engraved.Api/",
     "ci:start-client": "cd ../app && npm run start",
     "ci:execute-tests": "npx playwright test",
-    "ci:run": "concurrently --successCondition last --names \"Watch,Server\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run ci:start-server\" \"npm run ci:start-client\" \"npm run ci:execute-tests\""
+    "ci:run": "concurrently --success last --names \"api,app,tests\" -c \"bgYellow.bold,bgBlue.bold,bgMagenta.bold\" \"npm run ci:start-server\" \"npm run ci:start-client\" \"npm run ci:execute-tests\""
   },
   "keywords": [],
   "author": "",
