@@ -1,0 +1,23 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "ci:start-server": "dotnet run --project ../api/Engraved.Api/",
+    "ci:start-client": "cd ../app && npm run start",
+    "ci:execute-tests": "npx playwright test",
+    "ci:run": "concurrently --names \"Watch,Server\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run ci:start-server\" \"npm run ci:start-client\" \"npm run ci:execute-tests\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "1.39.0",
+    "@types/node": "20.8.7"
+  },
+  "dependencies": {
+    "concurrently": "8.2.2",
+    "prettier": "^3.0.3"
+  }
+}
