@@ -26,7 +26,11 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
 
-    - name: Install dependencies
+    - name: Install dependencies (./app) 
+      run: npm ci
+      working-directory: ./app  
+
+    - name: Install dependencies (./tests) 
       run: npm ci
       working-directory: ./tests
       
