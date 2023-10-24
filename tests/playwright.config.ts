@@ -36,6 +36,7 @@ export default defineConfig({
       name: "Google Chrome",
       use: {
         channel: "chrome",
+        ignoreHTTPSErrors: true,
       },
     },
     {
