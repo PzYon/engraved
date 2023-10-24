@@ -38,9 +38,9 @@ jobs:
       run: npm run ci:run
       working-directory: ./tests
 
-    - uses: actions/upload-artifact@v3
-      if: always()
+    - name: Upload playwright report
+      uses: actions/upload-artifact@v3
       with:
-        name: playwright-report
-        path: playwright-report/
+        name: ./index.html
+        path: ./tests/playwright-report/
         retention-days: 30
