@@ -33,7 +33,11 @@ jobs:
     - name: Install dependencies (./tests) 
       run: npm ci
       working-directory: ./tests
-          
+
+    - name: Trust dotnet dev certs
+      run: dotnet dev-certs https --trust
+      working-directory: ./tests
+
     - name: Boot servers and run tests
       run: npm run ci:run
       working-directory: ./tests
