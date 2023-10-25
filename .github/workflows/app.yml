@@ -35,7 +35,7 @@ jobs:
       - name: NPM Install
         working-directory: app
         run: |
-          npm install
+          npm ci
 
       - name: Check types
         working-directory: app
