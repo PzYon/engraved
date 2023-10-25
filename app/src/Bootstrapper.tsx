@@ -19,6 +19,10 @@ export const Bootstrapper: React.FC = () => {
   const [isNotVisible, setIsNotVisible] = useState(true);
 
   useEffect(() => {
+    ServerApi.authenticateForTests("");
+  }, []);
+
+  useEffect(() => {
     if (!ref.current) {
       return;
     }

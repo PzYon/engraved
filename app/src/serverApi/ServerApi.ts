@@ -81,6 +81,26 @@ export class ServerApi {
     return await ServerApi.executeRequest<IUser>("/user");
   }
 
+  static async authenticateForTests(jwtToken: string): Promise<IAuthResult> {
+    const authResult: IAuthResult = {
+      jwtToken: jwtToken,
+      user: {
+        name: "Franz",
+        displayName: "Franzl",
+        id: "123",
+      },
+    };
+
+    new AuthStorage().setAuthResult(authResult);
+
+    ServerApi._jwtToken = jwtToken;
+
+    ServerApi.onAuthenticated?.();
+    ServerApi.onAuthenticated = null;
+
+    return authResult;
+  }
+
   static async authenticate(token: string): Promise<IAuthResult> {
     const authResult: IAuthResult = await ServerApi.executeRequest(
       "/auth/google",
