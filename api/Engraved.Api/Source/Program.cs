@@ -1,10 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using Engraved.Api.Authentication;
+using Engraved.Api.Authentication.Basic;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Filters;
 using Engraved.Api.Settings;
@@ -18,14 +17,18 @@ using Engraved.Persistence.Mongo;
 using Engraved.Search.Lucene;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 // <HackZone>
 var isSeeded = false;
 // </HackZone>
+
+bool isIntegrationTests = Environment.GetCommandLineArgs().Length > 0
+                          && Environment.GetCommandLineArgs()[1]
+                          == "integration-tests";
+
+Console.WriteLine(Environment.GetCommandLineArgs()[1]);
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -139,46 +142,49 @@ builder.Services.AddTransient<Dispatcher>();
 builder.Services.AddTransient<ISearchIndex, LuceneSearchIndex>();
 LuceneSearchIndex.WakeUp();
 
-builder.Services.AddAuthentication("BasicAuthentication")
-  .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
-
-/*
-builder.Services.AddAuthentication(
-    options =>
-    {
-      options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-      options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    }
-  )
-  .AddJwtBearer(
-    options =>
-    {
-      options.RequireHttpsMetadata = false;
-      options.SaveToken = true;
-      options.TokenValidationParameters = new TokenValidationParameters
+if (isIntegrationTests)
+{
+  builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+}
+else
+{
+  builder.Services.AddAuthentication(
+      options =>
       {
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ValidateIssuerSigningKey = true,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-      };
-      options.Events = new JwtBearerEvents
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      }
+    )
+    .AddJwtBearer(
+      options =>
       {
-        OnTokenValidated = context =>
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-          var jwtToken = (JwtSecurityToken) context.SecurityToken;
-          Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
-          context.HttpContext.RequestServices
-            .GetRequiredService<ICurrentUserService>()
-            .SetUserName(nameClaim.Value);
-          return Task.CompletedTask;
-        }
-      };
-    }
-  );
-*/
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
+          ValidateAudience = false,
+          ValidateIssuer = false,
+          ValidateIssuerSigningKey = true,
+          ValidateLifetime = true,
+          ClockSkew = TimeSpan.Zero
+        };
+        options.Events = new JwtBearerEvents
+        {
+          OnTokenValidated = context =>
+          {
+            var jwtToken = (JwtSecurityToken) context.SecurityToken;
+            Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
+            context.HttpContext.RequestServices
+              .GetRequiredService<ICurrentUserService>()
+              .SetUserName(nameClaim.Value);
+            return Task.CompletedTask;
+          }
+        };
+      }
+    );
+}
 
 ExecutorRegistration.RegisterCommands(builder.Services);
 ExecutorRegistration.RegisterQueries(builder.Services);
@@ -242,49 +248,4 @@ string GetJwtSecret(IConfigurationSection configurationSection)
   }
 
   return jwtSecret;
-}
-
-public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
-{
-  private readonly ICurrentUserService _currentUserService;
-
-  public BasicAuthenticationHandler(
-    IOptionsMonitor<AuthenticationSchemeOptions> options,
-    ILoggerFactory logger,
-    UrlEncoder encoder,
-    ISystemClock clock,
-    ICurrentUserService currentUserService
-  )
-    : base(options, logger, encoder, clock)
-  {
-    _currentUserService = currentUserService;
-  }
-
-  protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
-  {
-    if (!Request.Headers.TryGetValue("Authorization", out StringValues value))
-    {
-      return AuthenticateResult.Fail("Missing Authorization Header");
-    }
-
-    AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(value);
-    if (string.IsNullOrEmpty(authHeader.Parameter))
-    {
-      throw new Exception("Username must be specified.");
-    }
-
-    _currentUserService.SetUserName(authHeader.Parameter);
-
-    var claims = new[]
-    {
-      new Claim(ClaimTypes.NameIdentifier, authHeader.Parameter),
-      new Claim(ClaimTypes.Name, authHeader.Parameter)
-    };
-
-    var identity = new ClaimsIdentity(claims, Scheme.Name);
-    var principal = new ClaimsPrincipal(identity);
-    var ticket = new AuthenticationTicket(principal, Scheme.Name);
-
-    return AuthenticateResult.Success(ticket);
-  }
 }
