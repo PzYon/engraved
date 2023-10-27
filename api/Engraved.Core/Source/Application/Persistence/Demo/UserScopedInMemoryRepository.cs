@@ -7,16 +7,35 @@ namespace Engraved.Core.Application.Persistence.Demo;
 
 public class UserScopedInMemoryRepository : IUserScopedRepository
 {
-  private readonly IRepository _repository;
+  private readonly InMemoryRepository _repository;
   private readonly ICurrentUserService _currentUserService;
+
+  public List<IUser> Users => _repository.Users;
+
+  public List<IJournal> Journals => _repository.Journals;
+
+  public List<IEntry> Entries => _repository.Entries;
 
   public Lazy<IUser> CurrentUser { get; }
 
-  public UserScopedInMemoryRepository(IRepository repository, ICurrentUserService currentUserService)
+  public UserScopedInMemoryRepository(InMemoryRepository repository, ICurrentUserService currentUserService)
   {
     _repository = repository;
     _currentUserService = currentUserService;
     CurrentUser = new Lazy<IUser>(LoadUser);
+  }
+
+  public static UserScopedInMemoryRepository CreateForTests(ICurrentUserService userService)
+  {
+    var inMemoryRepository = new InMemoryRepository();
+    inMemoryRepository.UpsertUser(
+      new User
+      {
+        Name = userService.GetUserName(),
+        DisplayName = "Hans Peter Peter Hans"
+      }
+    );
+    return new UserScopedInMemoryRepository(inMemoryRepository, userService);
   }
 
   public Task<IUser?> GetUser(string name)

@@ -82,22 +82,14 @@ export class ServerApi {
   }
 
   static async authenticateForTests(jwtToken: string): Promise<IAuthResult> {
-    const authResult: IAuthResult = {
-      jwtToken: jwtToken,
-      user: {
-        name: "Franz",
-        displayName: "Franzl",
-        id: "123",
-      },
-    };
-
-    new AuthStorage().setAuthResult(authResult);
-
     ServerApi._jwtToken = jwtToken;
 
-    ServerApi.onAuthenticated?.();
-    ServerApi.onAuthenticated = null;
+    const authResult = await ServerApi.executeRequest<IAuthResult>(
+      "/auth/tests",
+      "POST",
+    );
 
+    this.handleAuthenticated(authResult);
     return authResult;
   }
 
@@ -108,14 +100,17 @@ export class ServerApi {
       { token: token },
     );
 
+    this.handleAuthenticated(authResult);
+    return authResult;
+  }
+
+  private static handleAuthenticated(authResult: IAuthResult) {
     new AuthStorage().setAuthResult(authResult);
 
     ServerApi._jwtToken = authResult.jwtToken;
 
     ServerApi.onAuthenticated?.();
     ServerApi.onAuthenticated = null;
-
-    return authResult;
   }
 
   static async addJournalToFavorites(journalId: string): Promise<void> {

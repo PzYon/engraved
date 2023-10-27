@@ -1,6 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Google;
@@ -14,7 +16,9 @@ using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo;
 using Engraved.Search.Lucene;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -78,14 +82,44 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
-builder.Services.AddSingleton(_ => UseInMemoryRepo() ? GetInMemoryRepo() : GetMongoDbRepo());
-builder.Services.AddTransient(
+builder.Services.AddSingleton(
+  provider =>
+  {
+    if (!UseInMemoryRepo())
+    {
+      return GetMongoDbRepo();
+    }
+
+    var userService = provider.GetService<ICurrentUserService>()!;
+
+    var inMemoryRepository = new InMemoryRepository();
+    IUserScopedRepository repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
+    SeedRepo(repo);
+    
+    return inMemoryRepository;
+  }
+);
+builder.Services.AddTransient<IUserScopedRepository>(
   provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
-    return UseInMemoryRepo()
-      ? GetInMemoryUserScopedRepo(provider.GetService<IRepository>()!, userService)
-      : GetMongoDbUserScopedRepo(builder, userService);
+
+    if (UseInMemoryRepo())
+    {
+      var repo = new UserScopedInMemoryRepository(provider.GetService<InMemoryRepository>(), userService);
+
+      if (!isSeeded)
+      {
+        SeedRepo(repo);
+        isSeeded = true;
+      }
+
+      return repo;
+    }
+    else
+    {
+      return new UserScopedMongoRepository(CreateRepositorySettings(builder), userService);
+    }
   }
 );
 builder.Services.AddTransient<Lazy<IUser>>(
@@ -98,6 +132,10 @@ builder.Services.AddTransient<Dispatcher>();
 builder.Services.AddTransient<ISearchIndex, LuceneSearchIndex>();
 LuceneSearchIndex.WakeUp();
 
+builder.Services.AddAuthentication("BasicAuthentication")
+  .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+/*
 builder.Services.AddAuthentication(
     options =>
     {
@@ -133,6 +171,7 @@ builder.Services.AddAuthentication(
       };
     }
   );
+*/
 
 ExecutorRegistration.RegisterCommands(builder.Services);
 ExecutorRegistration.RegisterQueries(builder.Services);
@@ -162,40 +201,12 @@ bool UseInMemoryRepo()
   return false;
 }
 
-IUserScopedRepository GetMongoDbUserScopedRepo(
-  WebApplicationBuilder webApplicationBuilder,
-  ICurrentUserService userService
-)
-{
-  return new UserScopedMongoRepository(CreateRepositorySettings(webApplicationBuilder), userService);
-}
-
-IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository, ICurrentUserService userService)
-{
-  var repo = new UserScopedInMemoryRepository(repository, userService);
-
-  if (!isSeeded)
-  {
-    SeedRepo(repo);
-    isSeeded = true;
-  }
-
-  return repo;
-}
-
-IRepository GetInMemoryRepo()
-{
-  IRepository repo = new InMemoryRepository();
-  SeedRepo(repo);
-  return repo;
-}
-
 IRepository GetMongoDbRepo()
 {
   return new MongoRepository(CreateRepositorySettings(builder));
 }
 
-void SeedRepo(IRepository repo)
+void SeedRepo(IUserScopedRepository repo)
 {
   Task seed = new DemoDataRepositorySeeder(repo).Seed();
   if (!seed.IsCompleted)
@@ -224,4 +235,53 @@ string GetJwtSecret(IConfigurationSection configurationSection)
   }
 
   return jwtSecret;
+}
+
+public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+{
+  private readonly ICurrentUserService _currentUserService;
+
+  public BasicAuthenticationHandler(
+    IOptionsMonitor<AuthenticationSchemeOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder,
+    ISystemClock clock,
+    ICurrentUserService currentUserService
+  )
+    : base(options, logger, encoder, clock)
+  {
+    _currentUserService = currentUserService;
+  }
+
+  protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+  {
+    if (!Request.Headers.ContainsKey("Authorization"))
+    {
+      return AuthenticateResult.Fail("Missing Authorization Header");
+    }
+
+    try
+    {
+      AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+      byte[] credentialBytes = Convert.FromBase64String(authHeader.Parameter);
+      string username = Encoding.UTF8.GetString(credentialBytes);
+
+      _currentUserService.SetUserName("heiri");
+
+      var claims = new[]
+      {
+        new Claim(ClaimTypes.NameIdentifier, username),
+        new Claim(ClaimTypes.Name, username)
+      };
+
+      var identity = new ClaimsIdentity(claims, Scheme.Name);
+      var principal = new ClaimsPrincipal(identity);
+      var ticket = new AuthenticationTicket(principal, Scheme.Name);
+      return AuthenticateResult.Success(ticket);
+    }
+    catch
+    {
+      return AuthenticateResult.Fail("Invalid Authorization Header");
+    }
+  }
 }

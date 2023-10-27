@@ -21,4 +21,10 @@ public class AuthController : Controller
   {
     return await _loginHandler.Login(payload.Token);
   }
+
+  [HttpPost("tests")]
+  public async Task<AuthResult> LoginForTests()
+  {
+    return await _loginHandler.LoginForTests();
+  }
 }

@@ -19,10 +19,14 @@ export const Bootstrapper: React.FC = () => {
   const [isNotVisible, setIsNotVisible] = useState(true);
 
   useEffect(() => {
-    ServerApi.authenticateForTests("");
-  }, []);
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has("test_user")) {
+      ServerApi.authenticateForTests(btoa(searchParams.get("test_user")))
+        .then((r) => setUser(r.user))
+        .finally(() => setIsNotVisible(false));
+      return;
+    }
 
-  useEffect(() => {
     if (!ref.current) {
       return;
     }
