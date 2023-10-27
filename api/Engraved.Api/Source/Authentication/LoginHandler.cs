@@ -79,7 +79,7 @@ public class LoginHandler : ILoginHandler
   public async Task<AuthResult> LoginForTests()
   {
     IUser user = await EnsureUser("heiri", "Heiri");
-    
+
     return new AuthResult
     {
       User = user,

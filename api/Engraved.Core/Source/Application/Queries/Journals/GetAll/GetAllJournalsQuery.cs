@@ -9,6 +9,6 @@ public class GetAllJournalsQuery : IQuery
   public string? SearchText { get; set; }
 
   public JournalType[]? JournalTypes { get; set; }
-  
+
   public bool? FavoritesOnly { get; set; }
 }

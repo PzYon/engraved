@@ -13,7 +13,7 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
   GetThresholdValuesQuery>
 {
   private readonly IRepository _repository;
-  
+
   public bool DisableCache => false;
 
   public GetThresholdValuesQueryExecutor(IRepository repository)
