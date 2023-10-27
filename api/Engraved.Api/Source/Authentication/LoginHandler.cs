@@ -57,7 +57,7 @@ public class LoginHandler : ILoginHandler
     };
   }
 
-  private async Task<IUser> EnsureUser(string userName, string displayName = "", string imageUrl = "")
+  private async Task<IUser> EnsureUser(string userName, string? displayName, string? imageUrl)
   {
     IUser user = await _repository.GetUser(userName)
                  ?? new User { Name = userName };
@@ -78,7 +78,7 @@ public class LoginHandler : ILoginHandler
 
   public async Task<AuthResult> LoginForTests()
   {
-    IUser user = await EnsureUser("heiri", "Heiri");
+    IUser user = await EnsureUser("heiri", "Heiri", null);
 
     return new AuthResult
     {

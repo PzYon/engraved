@@ -4,11 +4,7 @@ on:
     paths:
       - "*"
   workflow_dispatch:
-    inputs:
-      deploy:
-        description: "Force deployment"
-        required: false
-        default: "false"
+
 jobs:
   test:
     timeout-minutes: 60
@@ -25,26 +21,20 @@ jobs:
 
     - name: Start MongoDB
       run: |
+        Set-Service mongodb -StartupType Automatic
         Start-Service -Name mongodb
-    
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
 
-    - name: Install dependencies (./app) 
+    - name: Install dependencies (./app)
       run: npm ci
-      working-directory: ./app  
+      working-directory: ./app
 
-    - name: Install dependencies (./tests) 
+    - name: Install dependencies (./tests)
       run: npm ci
       working-directory: ./tests
 
     - name: Boot servers and run tests
       run: npm run ci:run
       working-directory: ./tests
-
-    - name: Upload playwright report
-      uses: actions/upload-artifact@v3
-      with:
-        name: index.html
-        path: ./tests/playwright-report/
-        retention-days: 30

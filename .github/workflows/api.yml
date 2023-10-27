@@ -32,6 +32,7 @@ jobs:
 
       - name: Start MongoDB (for tests)
         run: |
+          Set-Service mongodb -StartupType Automatic
           Start-Service -Name mongodb
 
       - name: Run tests
