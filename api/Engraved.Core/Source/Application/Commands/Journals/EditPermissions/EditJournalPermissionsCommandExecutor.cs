@@ -7,7 +7,7 @@ public class EditJournalPermissionsCommandExecutor : ICommandExecutor<EditJourna
 {
   private readonly IRepository _repository;
 
-  public EditJournalPermissionsCommandExecutor(IRepository repository)
+  public EditJournalPermissionsCommandExecutor(IRealRepository repository)
   {
     _repository = repository;
   }

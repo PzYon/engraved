@@ -12,7 +12,7 @@ public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?, GetActiveEntr
 
   public bool DisableCache => false;
 
-  public GetActiveEntryQueryExecutor(IRepository repository)
+  public GetActiveEntryQueryExecutor(IRealRepository repository)
   {
     _repository = repository;
   }

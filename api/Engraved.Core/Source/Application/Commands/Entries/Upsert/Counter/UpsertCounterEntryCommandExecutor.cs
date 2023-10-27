@@ -10,7 +10,7 @@ public class UpsertCounterEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
   CounterJournal
 >
 {
-  public UpsertCounterEntryCommandExecutor(IRepository repository, IDateService dateService)
+  public UpsertCounterEntryCommandExecutor(IRealRepository repository, IDateService dateService)
     : base(repository, dateService) { }
 
   protected override void SetTypeSpecificValues(UpsertCounterEntryCommand command, CounterEntry entry) { }

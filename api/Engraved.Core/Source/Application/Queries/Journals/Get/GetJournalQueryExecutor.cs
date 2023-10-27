@@ -9,7 +9,7 @@ public class GetJournalQueryExecutor : IQueryExecutor<IJournal?, GetJournalQuery
 
   public bool DisableCache => false;
 
-  public GetJournalQueryExecutor(IRepository repository)
+  public GetJournalQueryExecutor(IRealRepository repository)
   {
     _repository = repository;
   }

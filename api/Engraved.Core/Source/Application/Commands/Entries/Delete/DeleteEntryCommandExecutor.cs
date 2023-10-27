@@ -9,7 +9,7 @@ public class DeleteEntryCommandExecutor : ICommandExecutor<DeleteEntryCommand>
   private readonly IRepository _repository;
   private readonly IDateService _dateService;
 
-  public DeleteEntryCommandExecutor(IRepository repository, IDateService dateService)
+  public DeleteEntryCommandExecutor(IRealRepository repository, IDateService dateService)
   {
     _repository = repository;
     _dateService = dateService;

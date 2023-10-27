@@ -10,7 +10,7 @@ public class GetAllJournalEntriesQueryExecutor : IQueryExecutor<IEntry[], GetAll
 
   public bool DisableCache => false;
 
-  public GetAllJournalEntriesQueryExecutor(IRepository repository)
+  public GetAllJournalEntriesQueryExecutor(IRealRepository repository)
   {
     _repository = repository;
   }

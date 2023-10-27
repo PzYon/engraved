@@ -13,7 +13,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   protected readonly IRepository _repository;
   protected readonly IDateService _dateService;
 
-  protected BaseUpsertEntryCommandExecutor(IRepository repository, IDateService dateService)
+  protected BaseUpsertEntryCommandExecutor(IRealRepository repository, IDateService dateService)
   {
     _repository = repository;
     _dateService = dateService;

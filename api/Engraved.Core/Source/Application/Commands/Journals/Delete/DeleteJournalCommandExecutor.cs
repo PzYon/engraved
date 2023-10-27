@@ -7,7 +7,7 @@ public class DeleteJournalCommandExecutor : ICommandExecutor<DeleteJournalComman
 {
   private readonly IRepository _repository;
 
-  public DeleteJournalCommandExecutor(IRepository repository)
+  public DeleteJournalCommandExecutor(IRealRepository repository)
   {
     _repository = repository;
   }

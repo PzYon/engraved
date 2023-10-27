@@ -9,7 +9,7 @@ public class EditJournalCommandExecutor : ICommandExecutor<EditJournalCommand>
   private readonly IRepository _repository;
   private readonly IDateService _dateService;
 
-  public EditJournalCommandExecutor(IRepository repository, IDateService dateService)
+  public EditJournalCommandExecutor(IRealRepository repository, IDateService dateService)
   {
     _repository = repository;
     _dateService = dateService;

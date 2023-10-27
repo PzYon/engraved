@@ -8,7 +8,7 @@ public class GetAllJournalsQueryExecutor : IQueryExecutor<IJournal[], GetAllJour
   private readonly IRepository _repository;
   private readonly IUserScopedRepository _userScopedRepository;
 
-  public GetAllJournalsQueryExecutor(IRepository repository, IUserScopedRepository userScopedRepository)
+  public GetAllJournalsQueryExecutor(IRealRepository repository, IUserScopedRepository userScopedRepository)
   {
     _repository = repository;
     _userScopedRepository = userScopedRepository;

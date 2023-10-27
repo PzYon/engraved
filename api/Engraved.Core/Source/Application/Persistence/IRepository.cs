@@ -5,6 +5,10 @@ using Engraved.Core.Domain.User;
 
 namespace Engraved.Core.Application.Persistence;
 
+public interface IRealRepository : IRepository
+{
+}
+
 public interface IRepository
 {
   Task<IUser?> GetUser(string name);

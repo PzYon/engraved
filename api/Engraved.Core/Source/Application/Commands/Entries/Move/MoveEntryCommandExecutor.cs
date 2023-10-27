@@ -9,7 +9,7 @@ public class MoveEntryCommandExecutor : ICommandExecutor<MoveEntryCommand>
   private readonly IRepository _repository;
   private readonly IDateService _dateService;
 
-  public MoveEntryCommandExecutor(IRepository repository, IDateService dateService)
+  public MoveEntryCommandExecutor(IRealRepository repository, IDateService dateService)
   {
     _repository = repository;
     _dateService = dateService;

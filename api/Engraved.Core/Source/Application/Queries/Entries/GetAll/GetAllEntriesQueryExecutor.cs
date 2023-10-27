@@ -10,7 +10,7 @@ public class GetAllEntriesQueryExecutor : IQueryExecutor<GetAllEntriesQueryResul
 
   public bool DisableCache => false;
 
-  public GetAllEntriesQueryExecutor(IRepository repository)
+  public GetAllEntriesQueryExecutor(IRealRepository repository)
   {
     _repository = repository;
   }

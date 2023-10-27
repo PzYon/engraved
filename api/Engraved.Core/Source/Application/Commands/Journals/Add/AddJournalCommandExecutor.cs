@@ -8,7 +8,7 @@ public class AddJournalCommandExecutor : ICommandExecutor<AddJournalCommand>
   private readonly IRepository _repository;
   private readonly IDateService _dateService;
 
-  public AddJournalCommandExecutor(IRepository repository, IDateService dateService)
+  public AddJournalCommandExecutor(IRealRepository repository, IDateService dateService)
   {
     _repository = repository;
     _dateService = dateService;

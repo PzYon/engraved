@@ -19,6 +19,7 @@ using Engraved.Search.Lucene;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -95,7 +96,7 @@ builder.Services.AddSingleton(
     var inMemoryRepository = new InMemoryRepository();
     IUserScopedRepository repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
     SeedRepo(repo);
-    
+
     return inMemoryRepository;
   }
 );
@@ -122,9 +123,15 @@ builder.Services.AddTransient<IUserScopedRepository>(
     }
   }
 );
+
 builder.Services.AddTransient<Lazy<IUser>>(
   provider => provider.GetService<IUserScopedRepository>()!.CurrentUser
 );
+
+builder.Services.AddTransient<IRealRepository>(
+  provider => provider.GetService<IUserScopedRepository>()
+);
+
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
@@ -255,33 +262,29 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
 
   protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
   {
-    if (!Request.Headers.ContainsKey("Authorization"))
+    if (!Request.Headers.TryGetValue("Authorization", out StringValues value))
     {
       return AuthenticateResult.Fail("Missing Authorization Header");
     }
 
-    try
+    AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(value);
+    if (string.IsNullOrEmpty(authHeader.Parameter))
     {
-      AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-      byte[] credentialBytes = Convert.FromBase64String(authHeader.Parameter);
-      string username = Encoding.UTF8.GetString(credentialBytes);
-
-      _currentUserService.SetUserName("heiri");
-
-      var claims = new[]
-      {
-        new Claim(ClaimTypes.NameIdentifier, username),
-        new Claim(ClaimTypes.Name, username)
-      };
-
-      var identity = new ClaimsIdentity(claims, Scheme.Name);
-      var principal = new ClaimsPrincipal(identity);
-      var ticket = new AuthenticationTicket(principal, Scheme.Name);
-      return AuthenticateResult.Success(ticket);
+      throw new Exception("Username must be specified.");
     }
-    catch
+
+    _currentUserService.SetUserName(authHeader.Parameter);
+
+    var claims = new[]
     {
-      return AuthenticateResult.Fail("Invalid Authorization Header");
-    }
+      new Claim(ClaimTypes.NameIdentifier, authHeader.Parameter),
+      new Claim(ClaimTypes.Name, authHeader.Parameter)
+    };
+
+    var identity = new ClaimsIdentity(claims, Scheme.Name);
+    var principal = new ClaimsPrincipal(identity);
+    var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+    return AuthenticateResult.Success(ticket);
   }
 }

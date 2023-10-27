@@ -10,7 +10,7 @@ public class UpsertTimerEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
   TimerJournal
 >
 {
-  public UpsertTimerEntryCommandExecutor(IRepository repository, IDateService dateService) : base(
+  public UpsertTimerEntryCommandExecutor(IRealRepository repository, IDateService dateService) : base(
     repository,
     dateService
   ) { }

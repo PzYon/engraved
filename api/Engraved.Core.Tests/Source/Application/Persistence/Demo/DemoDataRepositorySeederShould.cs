@@ -8,7 +8,7 @@ public class DemoDataRepositorySeederShould
   [Test]
   public async Task ShouldFeed()
   {
-    IRepository repository = new InMemoryRepository();
+    IRealRepository repository = new InMemoryRepository();
 
     var seeder = new DemoDataRepositorySeeder(repository);
 
