@@ -24,20 +24,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     _currentUserService = currentUserService;
     CurrentUser = new Lazy<IUser>(LoadUser);
   }
-
-  public static UserScopedInMemoryRepository CreateForTests(ICurrentUserService userService)
-  {
-    var inMemoryRepository = new InMemoryRepository();
-    inMemoryRepository.UpsertUser(
-      new User
-      {
-        Name = userService.GetUserName(),
-        DisplayName = "Hans Peter Peter Hans"
-      }
-    );
-    return new UserScopedInMemoryRepository(inMemoryRepository, userService);
-  }
-
+  
   public Task<IUser?> GetUser(string name)
   {
     return _repository.GetUser(name);

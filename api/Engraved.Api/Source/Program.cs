@@ -28,7 +28,10 @@ bool isIntegrationTests = Environment.GetCommandLineArgs().Length > 0
                           && Environment.GetCommandLineArgs()[1]
                           == "integration-tests";
 
-Console.WriteLine(Environment.GetCommandLineArgs()[1]);
+if (isIntegrationTests)
+{
+  Console.WriteLine("Running for integration tests.");
+}
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -110,7 +113,13 @@ builder.Services.AddTransient<IUserScopedRepository>(
 
     if (UseInMemoryRepo())
     {
-      var repo = new UserScopedInMemoryRepository(provider.GetService<InMemoryRepository>(), userService);
+      var inMemoryRepository = provider.GetService<InMemoryRepository>();
+      if (inMemoryRepository == null)
+      {
+        throw new Exception($"Cannot resolve {nameof(InMemoryRepository)}.");
+      }
+
+      var repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
 
       if (!isSeeded)
       {
@@ -132,7 +141,7 @@ builder.Services.AddTransient<Lazy<IUser>>(
 );
 
 builder.Services.AddTransient<IRepository>(
-  provider => provider.GetService<IUserScopedRepository>()
+  provider => provider.GetService<IUserScopedRepository>()!
 );
 
 builder.Services.AddMemoryCache();

@@ -24,7 +24,12 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
     _currentUserService = currentUserService;
   }
 
-  protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+  protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+  {
+    return Task.FromResult(HandleAuthenticate());
+  }
+
+  private AuthenticateResult HandleAuthenticate()
   {
     if (!Request.Headers.TryGetValue("Authorization", out StringValues value))
     {
