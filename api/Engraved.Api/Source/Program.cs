@@ -24,9 +24,7 @@ using Microsoft.OpenApi.Models;
 var isSeeded = false;
 // </HackZone>
 
-bool isIntegrationTests = Environment.GetCommandLineArgs().Length > 0
-                          && Environment.GetCommandLineArgs()[1]
-                          == "integration-tests";
+bool isIntegrationTests = Environment.GetCommandLineArgs().Any(a => a == "integration-tests");
 
 if (isIntegrationTests)
 {
