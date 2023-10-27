@@ -10,7 +10,7 @@ public class DemoDataRepositorySeederShould
   [Test]
   public async Task ShouldFeed()
   {
-    IRealRepository repository = await Util.CreateMongoRepository();
+    IRepository repository = await Util.CreateMongoRepository();
 
     var seeder = new DemoDataRepositorySeeder(repository);
 

@@ -16,7 +16,7 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-public class MongoRepository : IRepository
+public class MongoRepository : IBaseRepository
 {
   // protected so they can be accessed from TestRepository
   protected readonly IMongoCollection<EntryDocument> EntriesCollection;

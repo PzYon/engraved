@@ -5,7 +5,7 @@ using Engraved.Core.Domain.User;
 
 namespace Engraved.Core.Application.Persistence.Demo;
 
-public class InMemoryRepository : IRealRepository
+public class InMemoryRepository : IRepository
 {
   public List<IUser> Users { get; } = new();
 

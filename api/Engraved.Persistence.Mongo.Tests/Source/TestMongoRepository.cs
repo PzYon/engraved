@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class TestMongoRepository : MongoRepository, IRealRepository
+public class TestMongoRepository : MongoRepository, IRepository
 {
   public IMongoCollection<JournalDocument> Journals => JournalsCollection;
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;

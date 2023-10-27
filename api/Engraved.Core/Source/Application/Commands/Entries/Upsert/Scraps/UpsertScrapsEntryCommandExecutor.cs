@@ -10,7 +10,7 @@ public class UpsertScrapsEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
   ScrapsJournal
 >
 {
-  public UpsertScrapsEntryCommandExecutor(IRealRepository repository, IDateService dateService) : base(
+  public UpsertScrapsEntryCommandExecutor(IRepository repository, IDateService dateService) : base(
     repository,
     dateService
   ) { }

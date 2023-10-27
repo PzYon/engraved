@@ -5,9 +5,9 @@ namespace Engraved.Core.Application.Commands.Journals.Delete;
 
 public class DeleteJournalCommandExecutor : ICommandExecutor<DeleteJournalCommand>
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
 
-  public DeleteJournalCommandExecutor(IRealRepository repository)
+  public DeleteJournalCommandExecutor(IRepository repository)
   {
     _repository = repository;
   }

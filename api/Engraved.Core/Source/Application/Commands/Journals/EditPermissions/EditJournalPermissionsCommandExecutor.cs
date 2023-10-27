@@ -5,9 +5,9 @@ namespace Engraved.Core.Application.Commands.Journals.EditPermissions;
 
 public class EditJournalPermissionsCommandExecutor : ICommandExecutor<EditJournalPermissionsCommand>
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
 
-  public EditJournalPermissionsCommandExecutor(IRealRepository repository)
+  public EditJournalPermissionsCommandExecutor(IRepository repository)
   {
     _repository = repository;
   }

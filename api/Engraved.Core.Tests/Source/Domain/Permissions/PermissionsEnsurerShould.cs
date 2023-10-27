@@ -8,7 +8,7 @@ namespace Engraved.Core.Domain.Permissions;
 
 public class PermissionsEnsurerShould
 {
-  private IRepository _repository = null!;
+  private IBaseRepository _repository = null!;
   private PermissionsEnsurer _permissionsEnsurer = null!;
 
   [SetUp]

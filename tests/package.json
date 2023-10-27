@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "ci:start-server": "dotnet run --project ../api/Engraved.Api/",
+    "ci:start-server": "dotnet run --project ../api/Engraved.Api/ -- integration-tests",
     "ci:start-client": "cd ../app && npm run start",
     "ci:execute-tests": "npx playwright test --project=\"Google Chrome\"",
     "ci:execute-tests:ui": "npx playwright test --project=\"Google Chrome\" --ui",

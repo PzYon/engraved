@@ -10,7 +10,7 @@ public class UpsertGaugeEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
   GaugeJournal
 >
 {
-  public UpsertGaugeEntryCommandExecutor(IRealRepository repository, IDateService dateService)
+  public UpsertGaugeEntryCommandExecutor(IRepository repository, IDateService dateService)
     : base(repository, dateService) { }
 
   protected override Task PerformTypeSpecificValidation(UpsertGaugeEntryCommand command)

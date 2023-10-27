@@ -2,7 +2,7 @@
 
 namespace Engraved.Core.Application.Persistence;
 
-public interface IUserScopedRepository : IRealRepository
+public interface IUserScopedRepository : IRepository
 {
   Lazy<IUser> CurrentUser { get; }
 }

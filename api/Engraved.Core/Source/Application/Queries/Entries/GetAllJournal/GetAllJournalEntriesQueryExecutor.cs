@@ -6,11 +6,11 @@ namespace Engraved.Core.Application.Queries.Entries.GetAllJournal;
 
 public class GetAllJournalEntriesQueryExecutor : IQueryExecutor<IEntry[], GetAllJournalEntriesQuery>
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
 
   public bool DisableCache => false;
 
-  public GetAllJournalEntriesQueryExecutor(IRealRepository repository)
+  public GetAllJournalEntriesQueryExecutor(IRepository repository)
   {
     _repository = repository;
   }

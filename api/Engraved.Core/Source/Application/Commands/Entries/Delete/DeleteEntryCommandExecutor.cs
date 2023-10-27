@@ -6,10 +6,10 @@ namespace Engraved.Core.Application.Commands.Entries.Delete;
 
 public class DeleteEntryCommandExecutor : ICommandExecutor<DeleteEntryCommand>
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
   private readonly IDateService _dateService;
 
-  public DeleteEntryCommandExecutor(IRealRepository repository, IDateService dateService)
+  public DeleteEntryCommandExecutor(IRepository repository, IDateService dateService)
   {
     _repository = repository;
     _dateService = dateService;

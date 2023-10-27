@@ -10,10 +10,10 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   where TEntry : class, IEntry, new()
   where TJournal : class, IJournal
 {
-  protected readonly IRepository _repository;
+  protected readonly IBaseRepository _repository;
   protected readonly IDateService _dateService;
 
-  protected BaseUpsertEntryCommandExecutor(IRealRepository repository, IDateService dateService)
+  protected BaseUpsertEntryCommandExecutor(IRepository repository, IDateService dateService)
   {
     _repository = repository;
     _dateService = dateService;
@@ -51,7 +51,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     return result;
   }
 
-  private static async Task UpdateJournal(IRepository repository, IDateService dateService, TJournal journal)
+  private static async Task UpdateJournal(IBaseRepository repository, IDateService dateService, TJournal journal)
   {
     journal.EditedOn = dateService.UtcNow;
     await repository.UpsertJournal(journal);

@@ -13,9 +13,9 @@ namespace Engraved.Core.Application.Persistence.Demo;
 
 public class DemoDataRepositorySeeder
 {
-  private readonly IRealRepository _repository;
+  private readonly IRepository _repository;
 
-  public DemoDataRepositorySeeder(IRealRepository repository)
+  public DemoDataRepositorySeeder(IRepository repository)
   {
     _repository = repository;
   }

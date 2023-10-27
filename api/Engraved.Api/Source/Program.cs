@@ -131,7 +131,7 @@ builder.Services.AddTransient<Lazy<IUser>>(
   provider => provider.GetService<IUserScopedRepository>()!.CurrentUser
 );
 
-builder.Services.AddTransient<IRealRepository>(
+builder.Services.AddTransient<IRepository>(
   provider => provider.GetService<IUserScopedRepository>()
 );
 
@@ -214,7 +214,7 @@ bool UseInMemoryRepo()
   return false;
 }
 
-IRepository GetMongoDbRepo()
+IBaseRepository GetMongoDbRepo()
 {
   return new MongoRepository(CreateRepositorySettings(builder));
 }
