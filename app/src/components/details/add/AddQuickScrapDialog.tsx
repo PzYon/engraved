@@ -12,7 +12,7 @@ export const AddQuickScrapDialog: React.FC<{
 }> = ({ onSuccess, quickScrapJournalId }) => {
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
 
-  const [journalId, setJournalId] = useState("");
+  const [journalId, setJournalId] = useState(quickScrapJournalId ?? "");
 
   const scrap = ScrapsJournalType.createBlank(journalId, type);
 
@@ -21,7 +21,7 @@ export const AddQuickScrapDialog: React.FC<{
       <JournalSelector
         label={"Add to journal"}
         onChange={(journal) => setJournalId(journal.id)}
-        selectedJournalId={quickScrapJournalId}
+        selectedJournalId={journalId}
       />
       <ScrapTypeSelector>
         <ToggleButtonGroup
