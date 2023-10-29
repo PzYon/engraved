@@ -53,6 +53,13 @@ jobs:
           name: api
           path: ${{env.DOTNET_ROOT}}\Engraved.Api
 
+  e2e-tests:
+    name: "E2E Tests"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/workflows/e2e-tests
+
   deploy-windows:
     name: Deploy API (Windows)
     runs-on: windows-latest
