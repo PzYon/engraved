@@ -57,8 +57,8 @@ jobs:
     name: "E2E Tests"
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/workflows/e2e-tests
+      - name: Run tests
+        uses: ./.github/workflows/e2e-tests.yml
 
   deploy-windows:
     name: Deploy API (Windows)
