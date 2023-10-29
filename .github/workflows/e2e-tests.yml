@@ -35,5 +35,5 @@ jobs:
       working-directory: ./tests
 
     - name: Boot servers and run tests
-      run: npm run ci:run
+      run: npm run e2e:run
       working-directory: ./tests

@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "ci:start-server": "dotnet run --project ../api/Engraved.Api/ -- integration-tests",
-    "ci:start-client": "cd ../app && npm run start",
-    "ci:execute-tests": "npx playwright test --project=\"Google Chrome\"",
-    "ci:execute-tests:ui": "npx playwright test --project=\"Google Chrome\" --ui",
-    "ci:run": "concurrently --kill-others --success first --names \"api,app,tests\" -c \"bgYellow.bold,bgBlue.bold,bgGreen.bold\" \"npm run ci:start-server\" \"npm run ci:start-client\" \"wait-on http-get://localhost:5072/ && npm run ci:execute-tests\""
+    "e2e:start-api": "dotnet run --project ../api/Engraved.Api/ -- integration-tests",
+    "e2e:start-app": "cd ../app && npm run start",
+    "e2e:execute-tests": "npx playwright test --project=\"Google Chrome\"",
+    "e2e:execute-tests:ui": "npx playwright test --project=\"Google Chrome\" --ui",
+    "e2e:run": "concurrently --kill-others --success first --names \"api,app,tests\" -c \"bgYellow.bold,bgBlue.bold,bgGreen.bold\" \"npm run e2e:start-api\" \"npm run e2e:start-app\" \"wait-on http-get://localhost:5072/ && npm run e2e:execute-tests\""
   },
   "keywords": [],
   "author": "",

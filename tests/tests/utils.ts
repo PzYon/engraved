@@ -1,11 +1,11 @@
-import { Page } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 
 export async function addNewJournal(
   page: Page,
   name: string,
   typeLabel: "Value" | "Scraps",
 ) {
-  await page.getByLabel("Add journal").nth(2).click();
+  await page.getByRole("link", { name: "Add journal" }).click();
 
   await page.getByLabel("Name").fill(name);
 
@@ -18,4 +18,6 @@ export async function addNewJournal(
   await page.getByLabel("Description").fill("This is my description");
 
   await page.getByRole("button", { name: "Create" }).click();
+
+  await expect(page.getByRole("heading", { name: name })).toBeVisible();
 }
