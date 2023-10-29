@@ -76,14 +76,19 @@ public class LoginHandler : ILoginHandler
     return user;
   }
 
-  public async Task<AuthResult> LoginForTests()
+  public async Task<AuthResult> LoginForTests(string? userName)
   {
-    IUser user = await EnsureUser("heiri", "Heiri", null);
+    if (string.IsNullOrEmpty(userName))
+    {
+      throw new Exception($"{nameof(userName)} is null, maybe you are not running test mode?");
+    }
+    
+    IUser user = await EnsureUser(userName, userName, null);
 
     return new AuthResult
     {
       User = user,
-      JwtToken = "heiri"
+      JwtToken = userName
     };
   }
 

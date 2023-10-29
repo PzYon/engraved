@@ -85,7 +85,7 @@ export class ServerApi {
     ServerApi._jwtToken = jwtToken;
 
     const authResult = await ServerApi.executeRequest<IAuthResult>(
-      "/auth/tests",
+      "/auth/e2e",
       "POST",
     );
 

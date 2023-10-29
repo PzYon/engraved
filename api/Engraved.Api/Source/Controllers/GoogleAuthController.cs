@@ -5,26 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace Engraved.Api.Controllers;
 
 [ApiController]
-[Route("api/auth")]
+[Route("api/auth/google")]
 [AllowAnonymous]
-public class AuthController : Controller
+public class GoogleAuthController : Controller
 {
   private readonly ILoginHandler _loginHandler;
 
-  public AuthController(ILoginHandler loginHandler)
+  public GoogleAuthController(ILoginHandler loginHandler)
   {
     _loginHandler = loginHandler;
   }
 
-  [HttpPost("google")]
+  [HttpPost]
   public async Task<AuthResult> GoogleLogin(LoginPayload payload)
   {
     return await _loginHandler.Login(payload.Token);
-  }
-
-  [HttpPost("tests")]
-  public async Task<AuthResult> LoginForTests()
-  {
-    return await _loginHandler.LoginForTests();
   }
 }

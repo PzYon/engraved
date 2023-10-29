@@ -109,28 +109,26 @@ builder.Services.AddTransient<IUserScopedRepository>(
   {
     var userService = provider.GetService<ICurrentUserService>()!;
 
-    if (UseInMemoryRepo())
-    {
-      var inMemoryRepository = provider.GetService<InMemoryRepository>();
-      if (inMemoryRepository == null)
-      {
-        throw new Exception($"Cannot resolve {nameof(InMemoryRepository)}.");
-      }
-
-      var repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
-
-      if (!isSeeded)
-      {
-        SeedRepo(repo);
-        isSeeded = true;
-      }
-
-      return repo;
-    }
-    else
+    if (!UseInMemoryRepo())
     {
       return new UserScopedMongoRepository(CreateRepositorySettings(builder), userService);
     }
+
+    var inMemoryRepository = provider.GetService<InMemoryRepository>();
+    if (inMemoryRepository == null)
+    {
+      throw new Exception($"Cannot resolve {nameof(InMemoryRepository)}.");
+    }
+
+    var repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
+
+    if (!isSeeded)
+    {
+      SeedRepo(repo);
+      isSeeded = true;
+    }
+
+    return repo;
   }
 );
 
