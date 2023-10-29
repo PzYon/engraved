@@ -1,6 +1,5 @@
 name: E2E Tests
 on:
-  push:
   workflow_dispatch:
   workflow_call:
 
