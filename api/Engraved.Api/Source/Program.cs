@@ -24,11 +24,11 @@ using Microsoft.OpenApi.Models;
 var isSeeded = false;
 // </HackZone>
 
-bool isIntegrationTests = Environment.GetCommandLineArgs().Any(a => a == "integration-tests");
+bool isE2eTests = Environment.GetCommandLineArgs().Any(a => a == "e2e-tests");
 
-if (isIntegrationTests)
+if (isE2eTests)
 {
-  Console.WriteLine("Running for integration tests.");
+  Console.WriteLine("Running for e2e tests.");
 }
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -147,7 +147,7 @@ builder.Services.AddTransient<Dispatcher>();
 builder.Services.AddTransient<ISearchIndex, LuceneSearchIndex>();
 LuceneSearchIndex.WakeUp();
 
-if (isIntegrationTests)
+if (isE2eTests)
 {
   builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
