@@ -5,6 +5,7 @@ on:
     paths:
       - "api/**"
       - ".github/workflows/api.yml"
+      - ".github/workflows/e2e-tests.yml"
   workflow_dispatch:
     inputs:
       deploy:
