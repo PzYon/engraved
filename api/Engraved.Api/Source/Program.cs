@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Engraved.Api.Authentication;
+using Engraved.Api.Authentication.Basic;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Filters;
 using Engraved.Api.Settings;
@@ -14,6 +15,7 @@ using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo;
 using Engraved.Search.Lucene;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -21,6 +23,13 @@ using Microsoft.OpenApi.Models;
 // <HackZone>
 var isSeeded = false;
 // </HackZone>
+
+bool isE2eTests = Environment.GetCommandLineArgs().Any(a => a == "e2e-tests");
+
+if (isE2eTests)
+{
+  Console.WriteLine("Running for e2e tests.");
+}
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -78,19 +87,59 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
-builder.Services.AddSingleton(_ => UseInMemoryRepo() ? GetInMemoryRepo() : GetMongoDbRepo());
-builder.Services.AddTransient(
+builder.Services.AddSingleton(
+  provider =>
+  {
+    if (!UseInMemoryRepo())
+    {
+      return GetMongoDbRepo();
+    }
+
+    var userService = provider.GetService<ICurrentUserService>()!;
+
+    var inMemoryRepository = new InMemoryRepository();
+    IUserScopedRepository repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
+    SeedRepo(repo);
+
+    return inMemoryRepository;
+  }
+);
+builder.Services.AddTransient<IUserScopedRepository>(
   provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
-    return UseInMemoryRepo()
-      ? GetInMemoryUserScopedRepo(provider.GetService<IRepository>()!, userService)
-      : GetMongoDbUserScopedRepo(builder, userService);
+
+    if (!UseInMemoryRepo())
+    {
+      return new UserScopedMongoRepository(CreateRepositorySettings(builder), userService);
+    }
+
+    var inMemoryRepository = provider.GetService<InMemoryRepository>();
+    if (inMemoryRepository == null)
+    {
+      throw new Exception($"Cannot resolve {nameof(InMemoryRepository)}.");
+    }
+
+    var repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
+
+    if (!isSeeded)
+    {
+      SeedRepo(repo);
+      isSeeded = true;
+    }
+
+    return repo;
   }
 );
+
 builder.Services.AddTransient<Lazy<IUser>>(
   provider => provider.GetService<IUserScopedRepository>()!.CurrentUser
 );
+
+builder.Services.AddTransient<IRepository>(
+  provider => provider.GetService<IUserScopedRepository>()!
+);
+
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
@@ -98,41 +147,49 @@ builder.Services.AddTransient<Dispatcher>();
 builder.Services.AddTransient<ISearchIndex, LuceneSearchIndex>();
 LuceneSearchIndex.WakeUp();
 
-builder.Services.AddAuthentication(
-    options =>
-    {
-      options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-      options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    }
-  )
-  .AddJwtBearer(
-    options =>
-    {
-      options.RequireHttpsMetadata = false;
-      options.SaveToken = true;
-      options.TokenValidationParameters = new TokenValidationParameters
+if (isE2eTests)
+{
+  builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+}
+else
+{
+  builder.Services.AddAuthentication(
+      options =>
       {
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ValidateIssuerSigningKey = true,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-      };
-      options.Events = new JwtBearerEvents
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      }
+    )
+    .AddJwtBearer(
+      options =>
       {
-        OnTokenValidated = context =>
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-          var jwtToken = (JwtSecurityToken) context.SecurityToken;
-          Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
-          context.HttpContext.RequestServices
-            .GetRequiredService<ICurrentUserService>()
-            .SetUserName(nameClaim.Value);
-          return Task.CompletedTask;
-        }
-      };
-    }
-  );
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
+          ValidateAudience = false,
+          ValidateIssuer = false,
+          ValidateIssuerSigningKey = true,
+          ValidateLifetime = true,
+          ClockSkew = TimeSpan.Zero
+        };
+        options.Events = new JwtBearerEvents
+        {
+          OnTokenValidated = context =>
+          {
+            var jwtToken = (JwtSecurityToken) context.SecurityToken;
+            Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
+            context.HttpContext.RequestServices
+              .GetRequiredService<ICurrentUserService>()
+              .SetUserName(nameClaim.Value);
+            return Task.CompletedTask;
+          }
+        };
+      }
+    );
+}
 
 ExecutorRegistration.RegisterCommands(builder.Services);
 ExecutorRegistration.RegisterQueries(builder.Services);
@@ -162,40 +219,12 @@ bool UseInMemoryRepo()
   return false;
 }
 
-IUserScopedRepository GetMongoDbUserScopedRepo(
-  WebApplicationBuilder webApplicationBuilder,
-  ICurrentUserService userService
-)
-{
-  return new UserScopedMongoRepository(CreateRepositorySettings(webApplicationBuilder), userService);
-}
-
-IUserScopedRepository GetInMemoryUserScopedRepo(IRepository repository, ICurrentUserService userService)
-{
-  var repo = new UserScopedInMemoryRepository(repository, userService);
-
-  if (!isSeeded)
-  {
-    SeedRepo(repo);
-    isSeeded = true;
-  }
-
-  return repo;
-}
-
-IRepository GetInMemoryRepo()
-{
-  IRepository repo = new InMemoryRepository();
-  SeedRepo(repo);
-  return repo;
-}
-
-IRepository GetMongoDbRepo()
+IBaseRepository GetMongoDbRepo()
 {
   return new MongoRepository(CreateRepositorySettings(builder));
 }
 
-void SeedRepo(IRepository repo)
+void SeedRepo(IUserScopedRepository repo)
 {
   Task seed = new DemoDataRepositorySeeder(repo).Seed();
   if (!seed.IsCompleted)

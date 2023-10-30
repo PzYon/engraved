@@ -48,7 +48,7 @@ public class UpsertTimerEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
     entry.EndDate = command.EndDate;
   }
 
-  public static async Task<TimerEntry?> GetActiveEntry(IRepository repository, TimerJournal journal)
+  public static async Task<TimerEntry?> GetActiveEntry(IBaseRepository repository, TimerJournal journal)
   {
     // we get all entries here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)

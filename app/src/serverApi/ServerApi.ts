@@ -81,6 +81,18 @@ export class ServerApi {
     return await ServerApi.executeRequest<IUser>("/user");
   }
 
+  static async authenticateForTests(jwtToken: string): Promise<IAuthResult> {
+    ServerApi._jwtToken = jwtToken;
+
+    const authResult = await ServerApi.executeRequest<IAuthResult>(
+      "/auth/e2e",
+      "POST",
+    );
+
+    this.handleAuthenticated(authResult);
+    return authResult;
+  }
+
   static async authenticate(token: string): Promise<IAuthResult> {
     const authResult: IAuthResult = await ServerApi.executeRequest(
       "/auth/google",
@@ -88,14 +100,17 @@ export class ServerApi {
       { token: token },
     );
 
+    this.handleAuthenticated(authResult);
+    return authResult;
+  }
+
+  private static handleAuthenticated(authResult: IAuthResult) {
     new AuthStorage().setAuthResult(authResult);
 
     ServerApi._jwtToken = authResult.jwtToken;
 
     ServerApi.onAuthenticated?.();
     ServerApi.onAuthenticated = null;
-
-    return authResult;
   }
 
   static async addJournalToFavorites(journalId: string): Promise<void> {

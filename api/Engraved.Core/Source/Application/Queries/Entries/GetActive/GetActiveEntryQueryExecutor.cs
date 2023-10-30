@@ -8,7 +8,7 @@ namespace Engraved.Core.Application.Queries.Entries.GetActive;
 
 public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?, GetActiveEntryQuery>
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
 
   public bool DisableCache => false;
 

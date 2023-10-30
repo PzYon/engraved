@@ -6,7 +6,7 @@ namespace Engraved.Core.Application.Commands.Entries.Move;
 
 public class MoveEntryCommandExecutor : ICommandExecutor<MoveEntryCommand>
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
   private readonly IDateService _dateService;
 
   public MoveEntryCommandExecutor(IRepository repository, IDateService dateService)
@@ -55,7 +55,7 @@ public class MoveEntryCommandExecutor : ICommandExecutor<MoveEntryCommand>
   }
 
   private static async Task<string[]> GetAffectedUserIds(
-    IRepository repository,
+    IBaseRepository repository,
     IEntry entry,
     IJournal targetJournal
   )

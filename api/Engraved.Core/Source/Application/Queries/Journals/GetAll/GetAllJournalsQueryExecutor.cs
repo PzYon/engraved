@@ -5,7 +5,7 @@ namespace Engraved.Core.Application.Queries.Journals.GetAll;
 
 public class GetAllJournalsQueryExecutor : IQueryExecutor<IJournal[], GetAllJournalsQuery>
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
   private readonly IUserScopedRepository _userScopedRepository;
 
   public GetAllJournalsQueryExecutor(IRepository repository, IUserScopedRepository userScopedRepository)

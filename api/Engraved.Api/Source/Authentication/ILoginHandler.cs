@@ -3,4 +3,6 @@
 public interface ILoginHandler
 {
   Task<AuthResult> Login(string? idToken);
+
+  Task<AuthResult> LoginForTests(string? userName);
 }

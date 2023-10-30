@@ -9,9 +9,9 @@ namespace Engraved.Api.Controllers;
 [AllowAnonymous]
 public class WakeMeUpController : Controller
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
 
-  public WakeMeUpController(IRepository repository)
+  public WakeMeUpController(IBaseRepository repository)
   {
     _repository = repository;
   }

@@ -5,6 +5,7 @@ on:
     paths:
       - "app/**"
       - ".github/workflows/app.yml"
+      - ".github/workflows/e2e-tests.yml"
   workflow_dispatch:
     inputs:
       deploy:
@@ -35,7 +36,7 @@ jobs:
       - name: NPM Install
         working-directory: app
         run: |
-          npm install
+          npm ci
 
       - name: Check types
         working-directory: app
@@ -68,10 +69,14 @@ jobs:
           name: app
           path: app/dist
 
+  e2e-tests:
+    name: "E2E Tests"
+    uses: ./.github/workflows/e2e-tests.yml
+
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, e2e-tests]
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
 
     steps:

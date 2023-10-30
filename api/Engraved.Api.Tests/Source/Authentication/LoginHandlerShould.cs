@@ -17,7 +17,7 @@ public class LoginHandlerShould
 {
   private IDateService _dateService = null!;
   private LoginHandler _loginHandler = null!;
-  private IRepository _testRepository = null!;
+  private IBaseRepository _testRepository = null!;
 
   private readonly AuthenticationConfig _authenticationConfig = new()
   {

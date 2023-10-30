@@ -7,7 +7,7 @@ namespace Engraved.Core.Application.Commands.Journals;
 public static class JournalCommandUtil
 {
   public static async Task<TJournal> LoadAndValidateJournal<TJournal>(
-    IRepository repository,
+    IBaseRepository repository,
     ICommand command,
     string journalId
   )

@@ -4,7 +4,7 @@ import { StorageUtil } from "../../util/StorageUtil";
 export class AuthStorage {
   private static key = "engraved::auth";
 
-  private storageUtil = new StorageUtil(sessionStorage);
+  private storageUtil = new StorageUtil(localStorage);
 
   hasResult(): boolean {
     return !!this.getAuthResult();

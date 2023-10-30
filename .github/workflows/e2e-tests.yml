@@ -1,0 +1,39 @@
+name: E2E Tests
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: "8.x.x"
+
+    - name: Start MongoDB
+      run: |
+        Set-Service mongodb -StartupType Automatic
+        Start-Service -Name mongodb
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+
+    - name: Install dependencies (./app)
+      run: npm ci
+      working-directory: ./app
+
+    - name: Install dependencies (./tests)
+      run: npm ci
+      working-directory: ./tests
+
+    - name: Boot servers and run tests
+      run: npm run e2e:run
+      working-directory: ./tests

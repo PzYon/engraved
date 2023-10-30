@@ -16,19 +16,19 @@ public class LoginHandler : ILoginHandler
 {
   private readonly AuthenticationConfig _authenticationConfig;
   private readonly IDateService _dateService;
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
   private readonly IGoogleTokenValidator _tokenValidator;
 
   public LoginHandler(
     IGoogleTokenValidator tokenValidator,
-    IRepository repository,
+    IBaseRepository repository,
     IOptions<AuthenticationConfig> configuration,
     IDateService dateService
   ) : this(tokenValidator, repository, configuration.Value, dateService) { }
 
   public LoginHandler(
     IGoogleTokenValidator tokenValidator,
-    IRepository repository,
+    IBaseRepository repository,
     AuthenticationConfig configuration,
     IDateService dateService
   )
@@ -48,13 +48,22 @@ public class LoginHandler : ILoginHandler
 
     ParsedToken parsedToken = await _tokenValidator.ParseAndValidate(idToken);
 
-    string userName = parsedToken.UserName;
+    IUser user = await EnsureUser(parsedToken.UserName, parsedToken.UserDisplayName, parsedToken.ImageUrl);
 
+    return new AuthResult
+    {
+      JwtToken = ToJwtToken(parsedToken.UserName),
+      User = user
+    };
+  }
+
+  private async Task<IUser> EnsureUser(string userName, string? displayName, string? imageUrl)
+  {
     IUser user = await _repository.GetUser(userName)
                  ?? new User { Name = userName };
 
-    user.DisplayName = parsedToken.UserDisplayName;
-    user.ImageUrl = parsedToken.ImageUrl;
+    user.DisplayName = displayName;
+    user.ImageUrl = imageUrl;
     user.LastLoginDate = _dateService.UtcNow;
 
     if (user.FavoriteJournalIds.Count == 0)
@@ -64,11 +73,22 @@ public class LoginHandler : ILoginHandler
 
     UpsertResult result = await _repository.UpsertUser(user);
     user.Id = result.EntityId;
+    return user;
+  }
+
+  public async Task<AuthResult> LoginForTests(string? userName)
+  {
+    if (string.IsNullOrEmpty(userName))
+    {
+      throw new Exception($"{nameof(userName)} is null, maybe you are not running test mode?");
+    }
+    
+    IUser user = await EnsureUser(userName, userName, null);
 
     return new AuthResult
     {
-      JwtToken = ToJwtToken(userName),
-      User = user
+      User = user,
+      JwtToken = userName
     };
   }
 

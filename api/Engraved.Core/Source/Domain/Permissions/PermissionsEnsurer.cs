@@ -5,11 +5,11 @@ namespace Engraved.Core.Domain.Permissions;
 
 public class PermissionsEnsurer
 {
-  private readonly IRepository _repo;
+  private readonly IBaseRepository _repo;
   private readonly Func<IUser, Task<UpsertResult>> _upsertUser;
 
   public PermissionsEnsurer(
-    IRepository repo,
+    IBaseRepository repo,
     Func<IUser, Task<UpsertResult>> upsertUser
   )
   {

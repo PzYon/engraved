@@ -5,6 +5,7 @@ on:
     paths:
       - "api/**"
       - ".github/workflows/api.yml"
+      - ".github/workflows/e2e-tests.yml"
   workflow_dispatch:
     inputs:
       deploy:
@@ -53,10 +54,14 @@ jobs:
           name: api
           path: ${{env.DOTNET_ROOT}}\Engraved.Api
 
+  e2e-tests:
+    name: "E2E Tests"
+    uses: ./.github/workflows/e2e-tests.yml
+
   deploy-windows:
     name: Deploy API (Windows)
     runs-on: windows-latest
-    needs: build
+    needs: [build, e2e-tests]
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
 
     environment:
@@ -81,7 +86,7 @@ jobs:
   deploy-linux:
     name: Deploy API (Linux)
     runs-on: windows-latest
-    needs: build
+    needs: [build, e2e-tests]
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
 
     environment:

@@ -6,7 +6,7 @@ namespace Engraved.Core.Application.Commands.Journals.Edit;
 
 public class EditJournalCommandExecutor : ICommandExecutor<EditJournalCommand>
 {
-  private readonly IRepository _repository;
+  private readonly IBaseRepository _repository;
   private readonly IDateService _dateService;
 
   public EditJournalCommandExecutor(IRepository repository, IDateService dateService)

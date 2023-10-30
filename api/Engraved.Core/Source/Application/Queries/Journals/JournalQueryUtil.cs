@@ -7,7 +7,7 @@ namespace Engraved.Core.Application.Queries.Journals;
 
 public static class JournalQueryUtil
 {
-  public static async Task<IJournal[]> EnsurePermissionUsers(IRepository repository, params IJournal[] journals)
+  public static async Task<IJournal[]> EnsurePermissionUsers(IBaseRepository repository, params IJournal[] journals)
   {
     List<string> userIds = journals
       .SelectMany(m => m.Permissions.Keys)
