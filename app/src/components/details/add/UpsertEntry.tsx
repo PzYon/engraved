@@ -88,9 +88,7 @@ export const UpsertEntry: React.FC<{
           control={
             <Switch
               onChange={(_, checked) => {
-                if (checked) {
-                  setStartDate(new Date().toString());
-                } else {
+                if (!checked) {
                   setStartDate(undefined);
                   setEndDate(undefined);
                 }
@@ -171,7 +169,7 @@ export const UpsertEntry: React.FC<{
           onClick={async () => {
             await ensureNewAttributeValues();
 
-            await upsertEntryMutation.mutate({
+            upsertEntryMutation.mutate({
               command: createCommand(),
             });
           }}
