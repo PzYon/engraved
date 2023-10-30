@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "e2e:start-api": "dotnet run --project ../api/Engraved.Api/ -- integration-tests",
+    "e2e:start-api": "dotnet run --project ../api/Engraved.Api/ -- e2e-tests",
     "e2e:start-app": "cd ../app && npm run start",
     "e2e:execute-tests": "npx playwright test --project=\"Google Chrome\"",
     "e2e:execute-tests:ui": "npx playwright test --project=\"Google Chrome\" --ui",
