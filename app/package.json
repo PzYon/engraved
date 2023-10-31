@@ -30,7 +30,7 @@
     "react-chartjs-2": "5.2.0",
     "react-dom": "18.2.0",
     "react-hotkeys-hook": "4.4.1",
-    "react-router-dom": "6.17.0",
+    "react-router-dom": "6.18.0",
     "typescript": "5.2.2",
     "vite": "4.5.0"
   },
