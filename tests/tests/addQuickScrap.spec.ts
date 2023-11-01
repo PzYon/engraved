@@ -1,12 +1,18 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { constants } from "./constants";
+import { addNewJournal, navigateToHome } from "./utils";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
-test("adds new journal, updates journal", async ({ page }) => {
+test("adds new quick scrap", async ({ page }) => {
+  await addNewJournal(page, "My Manual Quick Scraps", "Scraps");
+  await navigateToHome(page);
+
   await page.getByLabel("Add Quick Scrap").click();
+
+  await page.getByLabel("Add to journal");
 
   await page.getByPlaceholder("Title").click();
   await page.getByPlaceholder("Title").fill("Quick Scrap Title");
@@ -15,10 +21,14 @@ test("adds new journal, updates journal", async ({ page }) => {
 
   await page.getByLabel("Save").click();
 
-  await page.getByText("Added entry").isVisible();
+  await expect(page.getByText("Added entry")).toBeVisible();
 
   await page.getByRole("tab", { name: "Entries" }).click();
 
-  await page.getByText("Quick Scrap Title").isVisible();
-  await page.getByText("This is my content...").isVisible();
+  await expect(
+    page.getByTestId("entries-list-item-0").getByText("Quick Scrap Title"),
+  ).toBeVisible();
+  await expect(
+    page.getByTestId("entries-list-item-0").getByText("This is my content..."),
+  ).toBeVisible();
 });

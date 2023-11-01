@@ -20,8 +20,10 @@ export const Entries: React.FC = () => {
 
   return (
     <>
-      {queryResult.entries.map((e) => (
-        <PageSection key={e.id}>{renderEntry(e)}</PageSection>
+      {queryResult.entries.map((entry, i) => (
+        <PageSection key={entry.id} testId={`entries-list-item-${i}`}>
+          {renderEntry(entry)}
+        </PageSection>
       ))}
     </>
   );

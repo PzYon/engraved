@@ -7,7 +7,8 @@ export const PageSection: React.FC<{
   title?: string;
   style?: React.CSSProperties;
   overflowXScroll?: boolean;
-}> = ({ title, children, style, overflowXScroll }) => {
+  testId?: string;
+}> = ({ title, children, style, overflowXScroll, testId }) => {
   const deviceWidth = useDeviceWidth();
 
   return (
@@ -18,6 +19,7 @@ export const PageSection: React.FC<{
         padding: deviceWidth === DeviceWidth.Small ? "16px" : "24px",
         overflowX: overflowXScroll ? "auto" : "hidden",
       }}
+      data-testid={testId}
     >
       {title ? (
         <Typography sx={{ flexShrink: 0, fontWeight: "bold" }}>
