@@ -1,4 +1,11 @@
-import { Page, expect } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
+
+export async function navigateToHome(page: Page) {
+  await page.getByRole("link", { name: "engraved." }).click();
+
+  await expect(page.getByRole("tab", { name: "Entries" })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Journals" })).toBeVisible();
+}
 
 export async function addNewJournal(
   page: Page,

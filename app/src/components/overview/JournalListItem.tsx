@@ -32,7 +32,7 @@ export const JournalListItem: React.FC<{
 
   return (
     <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
-      <PageSection key={journal.id}>
+      <PageSection key={journal.id} testId={`journals-list-item-${index}`}>
         <Box sx={{ display: "flex" }}>
           <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
           <Box sx={{ flexGrow: 1, pl: 3, wordBreak: "break-all" }}>

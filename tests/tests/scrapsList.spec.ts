@@ -1,4 +1,4 @@
-import { expect, Page, test } from "@playwright/test";
+import { Page, expect, test } from "@playwright/test";
 import { addNewJournal } from "./utils";
 import { constants } from "./constants";
 
@@ -16,15 +16,30 @@ test("adds new scrap journal, adds list and adds some items to it", async ({
   await expect(page.getByText("Nothing here...")).toBeVisible();
 
   await page.getByLabel("Add list").nth(2).click();
+
   await page.getByPlaceholder("Title").click();
   await page.getByPlaceholder("Title").fill("This is my title");
 
   await addListItem(page, "My First Item");
   await addListItem(page, "My Second Item");
 
-  await page.getByLabel("Save").click();
+  await page.getByRole("button", { name: "Save" }).click();
 
   await expect(page.getByText("Added entry")).toBeVisible();
+
+  await page.getByText("My Second Item").dblclick();
+
+  await page
+    .locator("li")
+    .filter({ hasText: "My Second Item" })
+    .getByLabel("Delete")
+    .click();
+
+  await page
+    .locator("li")
+    .filter({ hasText: "My First Item" })
+    .getByRole("checkbox")
+    .check();
 });
 
 async function addListItem(page: Page, value: string) {

@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "app/**"
+      - "tests/**"
       - ".github/workflows/app.yml"
       - ".github/workflows/e2e-tests.yml"
   workflow_dispatch:
