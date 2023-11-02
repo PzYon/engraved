@@ -28,10 +28,6 @@ jobs:
         with:
           dotnet-version: "8.x.x"
 
-      - name: Build
-        run: dotnet build --configuration Release
-        working-directory: ./api
-
       - name: Start MongoDB (for tests)
         run: |
           Set-Service mongodb -StartupType Automatic
@@ -41,8 +37,7 @@ jobs:
         run: dotnet test --collect:"Code Coverage;Format=Xml;CoverageFileName=coverage.xml" --results-directory ./coverage
         working-directory: ./api
 
-      - name: Codecov
-        uses: codecov/codecov-action@v1
+        # https://garywoodfine.com/how-to-publish-code-coverage-summary-reports-github-actions/
 
       - name: Get current time
         uses: josStorer/get-current-time@v2
