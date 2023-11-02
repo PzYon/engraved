@@ -38,8 +38,11 @@ jobs:
           Start-Service -Name mongodb
 
       - name: Run tests
-        run: dotnet test
+        run: dotnet test --collect:"Code Coverage;Format=Xml;CoverageFileName=coverage.xml" --results-directory ./coverage
         working-directory: ./api
+
+      - name: Codecov
+        uses: codecov/codecov-action@v1
 
       - name: Get current time
         uses: josStorer/get-current-time@v2
