@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "@emotion/styled": "11.11.0",
-    "@microsoft/applicationinsights-web": "3.0.4",
+    "@microsoft/applicationinsights-web": "3.0.5",
     "@mui/icons-material": "5.14.16",
     "@mui/material": "5.14.16",
     "@mui/styled-engine-sc": "5.14.12",
