@@ -34,10 +34,13 @@ jobs:
           Start-Service -Name mongodb
 
       - name: Run tests
-        run: dotnet test --collect:"Code Coverage;Format=Xml;CoverageFileName=coverage.xml" --results-directory ./coverage
+        run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         working-directory: ./api
 
-        # https://garywoodfine.com/how-to-publish-code-coverage-summary-reports-github-actions/
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Get current time
         uses: josStorer/get-current-time@v2
