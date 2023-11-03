@@ -26,3 +26,4 @@ Store personal metrics and notes in an easy manor.
 ## URLs
 
 - Renovate job runs: https://app.renovatebot.com/dashboard#github/PzYon/engraved/
+- Code coverage on Codecov: https://app.codecov.io/github/PzYon/engraved
