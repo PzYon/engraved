@@ -82,7 +82,7 @@ public class LoginHandler : ILoginHandler
     {
       throw new Exception($"{nameof(userName)} is null, maybe you are not running test mode?");
     }
-    
+
     IUser user = await EnsureUser(userName, userName, null);
 
     return new AuthResult
