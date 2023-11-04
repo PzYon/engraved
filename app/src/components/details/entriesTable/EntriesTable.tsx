@@ -62,7 +62,7 @@ export const EntriesTable: React.FC<{
   }, [journal, entries, type]);
 
   return (
-    <Table>
+    <Table data-testid="entries-table">
       <TableHead>
         <TableRow>
           {columns.map((c) => (
