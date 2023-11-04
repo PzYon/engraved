@@ -8,7 +8,8 @@ import { IAction } from "./IAction";
 export const ActionGroup: React.FC<{
   actions: IAction[];
   enableFloatingActions?: boolean;
-}> = ({ actions, enableFloatingActions }) => {
+  testId?: string;
+}> = ({ actions, enableFloatingActions, testId }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
@@ -33,7 +34,7 @@ export const ActionGroup: React.FC<{
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
-      <ButtonContainer>
+      <ButtonContainer data-testid={testId}>
         <div ref={domElementRef} />
         {actions
           .filter((a) => a !== undefined)

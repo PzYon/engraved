@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { addNewJournal } from "./utils";
+import { addNewJournal, clickPageAction } from "./utils";
 import { constants } from "./constants";
 
 test.beforeEach(async ({ page }) => {
@@ -15,7 +15,7 @@ test("adds new journal, updates journal", async ({ page }) => {
   await expect(page).toHaveTitle(journalName + " | engraved.");
   await expect(page.getByText("No entries available.")).toBeVisible();
 
-  await page.getByLabel("Edit").nth(2).click();
+  await clickPageAction(page, "Edit");
 
   await page.getByLabel("Name").click();
   await page.getByLabel("Name").fill(renamedJournalName);
