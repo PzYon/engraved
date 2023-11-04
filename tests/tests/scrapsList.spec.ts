@@ -1,6 +1,6 @@
 import { Page, expect, test } from "@playwright/test";
-import { addNewJournal, clickPageAction } from "./utils";
-import { constants } from "./constants";
+import { addNewJournal, clickPageAction } from "../src/utils";
+import { constants } from "../src/constants";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
@@ -11,7 +11,7 @@ const journalName = "My First Scraps Journal";
 test("adds new scrap journal, adds list and adds some items to it", async ({
   page,
 }) => {
-  await addNewJournal(page, journalName, "Scraps");
+  await addNewJournal(page, "Scraps", journalName);
 
   await expect(page.getByText("Nothing here...")).toBeVisible();
 

@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { constants } from "./constants";
-import { addNewJournal, navigateToHome } from "./utils";
+import { constants } from "../src/constants";
+import { addNewJournal, navigateToHome } from "../src/utils";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
 test("adds new quick scrap", async ({ page }) => {
-  await addNewJournal(page, "My Manual Quick Scraps", "Scraps");
+  await addNewJournal(page, "Scraps", "My Manual Quick Scraps");
   await navigateToHome(page);
 
   await page.getByLabel("Add Quick Scrap").click();
