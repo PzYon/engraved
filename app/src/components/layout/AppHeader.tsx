@@ -100,7 +100,11 @@ export const AppHeader: React.FC = () => {
           <Titles title={title} subTitle={subTitle} />
 
           <ActionsAndTabContainer isSmall={isSmall}>
-            <ActionGroup actions={pageActions} enableFloatingActions={true} />
+            <ActionGroup
+              actions={pageActions}
+              testId="page-actions"
+              enableFloatingActions={true}
+            />
             <PageTabs tabs={tabs} />
           </ActionsAndTabContainer>
         </ContentWrapper>

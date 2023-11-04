@@ -1,5 +1,5 @@
 import { Page, expect, test } from "@playwright/test";
-import { addNewJournal } from "./utils";
+import { addNewJournal, clickPageAction } from "./utils";
 import { constants } from "./constants";
 
 test.beforeEach(async ({ page }) => {
@@ -15,7 +15,7 @@ test("adds new scrap journal, adds list and adds some items to it", async ({
 
   await expect(page.getByText("Nothing here...")).toBeVisible();
 
-  await page.getByLabel("Add list").nth(2).click();
+  await clickPageAction(page, "Add list");
 
   await page.getByPlaceholder("Title").click();
   await page.getByPlaceholder("Title").fill("This is my title");

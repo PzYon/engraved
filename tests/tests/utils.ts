@@ -28,3 +28,10 @@ export async function addNewJournal(
 
   await expect(page.getByRole("heading", { name: name })).toBeVisible();
 }
+
+export async function clickPageAction(page: Page, name: string) {
+  await page
+    .getByTestId("page-actions")
+    .getByRole("button", { name: name })
+    .click();
+}
