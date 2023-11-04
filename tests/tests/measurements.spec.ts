@@ -6,9 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
-test("adds new scrap journal, adds list and adds some items to it", async ({
-  page,
-}) => {
+test("adds new value journal, adds measurements", async ({ page }) => {
   await addNewJournal(page, "Journal with values", "Value");
   await clickPageAction(page, "Add Entry");
 
