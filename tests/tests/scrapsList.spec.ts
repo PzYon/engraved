@@ -24,7 +24,11 @@ test("adds new scrap journal, adds list and adds some items to it", async ({
 
   await scrapList.clickSave();
 
-  await page.getByText("My Second Item").dblclick();
+  await scrapList.dblClickToEdit();
+
+  // todo:
+  // - move below stuff to ScrapsJournalPage and consider scrap id
+  // - also consider scrap id for already existing code (if available) - to be more precise
 
   await page
     .locator("li")

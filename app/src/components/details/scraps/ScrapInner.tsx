@@ -43,6 +43,7 @@ export const ScrapInner: React.FC<{
           setIsEditMode(true);
         }
       }}
+      data-testid={"scrap-" + scrap.id}
     >
       <AutogrowTextField
         fieldType={"title"}

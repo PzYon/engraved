@@ -1,6 +1,8 @@
 import { expect, Page } from "@playwright/test";
 
 export class ScrapListComponent {
+  private scrapId: string;
+
   constructor(private page: Page) {}
 
   async typeTitle(title: string) {
@@ -20,8 +22,22 @@ export class ScrapListComponent {
   async clickSave(isUpdate?: boolean) {
     await this.page.getByRole("button", { name: "Save" }).click();
 
+    const appBar = await this.page.getByTestId("app-alert-bar");
+
     await expect(
-      this.page.getByText(isUpdate ? "Updated entry" : "Added entry"),
+      appBar.getByText(isUpdate ? "Updated entry" : "Added entry"),
     ).toBeVisible();
+
+    this.scrapId = await appBar.getAttribute("data-related-entity-id");
+
+    return this.scrapId;
+  }
+
+  async dblClickToEdit() {
+    if (!this.scrapId) {
+      throw new Error("Cannot double click on a non-saved entry");
+    }
+
+    await this.page.getByTestId("scrap-" + this.scrapId).dblclick();
   }
 }
