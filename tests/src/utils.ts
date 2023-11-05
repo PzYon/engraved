@@ -1,4 +1,4 @@
-import { expect, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { AddJournalPage } from "./pages/addJournalPage";
 import { JournalPage } from "./pages/journalPage";
 
@@ -16,13 +16,6 @@ export async function addNewJournal(
   await addJournalPage.typeDescription(description);
 
   return await addJournalPage.clickSave();
-}
-
-export async function navigateToHome(page: Page) {
-  await page.getByRole("link", { name: "engraved." }).click();
-
-  await expect(page.getByRole("tab", { name: "Entries" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Journals" })).toBeVisible();
 }
 
 export async function clickPageAction(page: Page, name: string) {

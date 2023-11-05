@@ -1,34 +1,25 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 import { constants } from "../src/constants";
-import { addNewJournal, navigateToHome } from "../src/utils";
+import { addNewJournal } from "../src/utils";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
 test("adds new quick scrap", async ({ page }) => {
-  await addNewJournal(page, "Scraps", "My Manual Quick Scraps");
-  await navigateToHome(page);
+  const journalPage = await addNewJournal(
+    page,
+    "Scraps",
+    "My Manual Quick Scraps",
+  );
 
-  await page.getByLabel("Add Quick Scrap").click();
+  const journalsPage = await journalPage.navigateToHome();
 
-  await page.getByLabel("Add to journal");
+  const quickScrapDialog = await journalsPage.clickAddQuickScrap();
+  await quickScrapDialog.typeName("Quick Scrap Title");
+  await quickScrapDialog.typeContent("This is my content...");
+  await quickScrapDialog.clickSave();
 
-  await page.getByPlaceholder("Title").click();
-  await page.getByPlaceholder("Title").fill("Quick Scrap Title");
-  await page.getByPlaceholder("Title").press("Tab");
-  await page.getByRole("textbox").nth(1).fill("This is my content...");
-
-  await page.getByLabel("Save").click();
-
-  await expect(page.getByText("Added entry")).toBeVisible();
-
-  await page.getByRole("tab", { name: "Entries" }).click();
-
-  await expect(
-    page.getByTestId("entries-list-item-0").getByText("Quick Scrap Title"),
-  ).toBeVisible();
-  await expect(
-    page.getByTestId("entries-list-item-0").getByText("This is my content..."),
-  ).toBeVisible();
+  const entriesPage = await journalsPage.navigateToEntries();
+  await entriesPage.expectItem(0, "Quick Scrap Title", "This is my content...");
 });
