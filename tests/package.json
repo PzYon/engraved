@@ -1,6 +1,6 @@
 {
   "name": "tests",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,16 +8,14 @@
     "e2e:start-app": "cd ../app && npm run start",
     "e2e:execute-tests": "npx playwright test --project=\"Google Chrome\"",
     "e2e:execute-tests:ui": "npx playwright test --project=\"Google Chrome\" --ui",
-    "e2e:run": "concurrently --kill-others --success first --names \"api,app,tests\" -c \"bgYellow.bold,bgBlue.bold,bgGreen.bold\" \"npm run e2e:start-api\" \"npm run e2e:start-app\" \"wait-on http-get://localhost:5072/ && npm run e2e:execute-tests\""
+    "e2e:run": "concurrently --kill-others --success first --names \"api,app,e2e-tests\" -c \"bgYellow.bold,bgBlue.bold,bgGreen.bold\" \"npm run e2e:start-api\" \"npm run e2e:start-app\" \"wait-on http-get://localhost:5072/ && npm run e2e:execute-tests\""
   },
   "keywords": [],
-  "author": "",
+  "author": "PzYon",
   "license": "ISC",
-  "devDependencies": {
-    "@playwright/test": "1.39.0",
-    "@types/node": "20.8.7"
-  },
   "dependencies": {
+    "@playwright/test": "1.39.0",
+    "@types/node": "20.8.7",
     "concurrently": "8.2.2",
     "prettier": "3.0.3",
     "wait-on": "7.0.1"
