@@ -1,5 +1,5 @@
 import { expect, Page, test } from "@playwright/test";
-import { addNewJournal } from "../src/utils";
+import { addNewJournal } from "../src/addNewJournal";
 import { constants } from "../src/constants";
 
 test.beforeEach(async ({ page }) => {

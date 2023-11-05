@@ -15,6 +15,5 @@ export async function addNewJournal(
   await addJournalPage.typeName(name);
   await addJournalPage.typeDescription(description);
 
-  // return AddJournalPage or something like that
   return await addJournalPage.clickSave();
 }
