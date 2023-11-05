@@ -1,5 +1,4 @@
 import { expect, Page } from "@playwright/test";
-import { JournalsPage } from "./journalsPage";
 
 export abstract class BasePage {
   constructor(protected page: Page) {}
@@ -8,14 +7,10 @@ export abstract class BasePage {
     await expect(this.page).toHaveTitle(exepcted + " | engraved.");
   }
 
-  async navigateToHome() {
-    await this.page.getByRole("link", { name: "engraved." }).click();
-
-    await expect(this.page.getByRole("tab", { name: "Entries" })).toBeVisible();
-    await expect(
-      this.page.getByRole("tab", { name: "Journals" }),
-    ).toBeVisible();
-
-    return new JournalsPage(this.page);
+  async clickPageAction(name: string) {
+    await this.page
+      .getByTestId("page-actions")
+      .getByRole("button", { name: name })
+      .click();
   }
 }

@@ -15,12 +15,6 @@ export async function addNewJournal(
   await addJournalPage.typeName(name);
   await addJournalPage.typeDescription(description);
 
+  // return AddJournalPage or something like that
   return await addJournalPage.clickSave();
-}
-
-export async function clickPageAction(page: Page, name: string) {
-  await page
-    .getByTestId("page-actions")
-    .getByRole("button", { name: name })
-    .click();
 }

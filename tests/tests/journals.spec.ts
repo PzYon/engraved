@@ -20,7 +20,7 @@ test("adds new journal, updates journal", async ({ page }) => {
   await journalPage.validatePageTitle(journalName);
   await journalPage.validateHasNoEntries();
 
-  const journalEditPage = await journalPage.openJournalEditPage();
+  const journalEditPage = await journalPage.navigateToEditPage();
   await journalEditPage.setName(renamedJournalName);
 
   journalPage = await journalEditPage.clickSave();
