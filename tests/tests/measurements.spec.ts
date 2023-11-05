@@ -1,38 +1,19 @@
-import { expect, Page, test } from "@playwright/test";
-import { addNewJournal, clickPageAction } from "./utils";
-import { constants } from "./constants";
+import { test } from "@playwright/test";
+import { addNewJournal } from "../src/addNewJournal";
+import { constants } from "../src/constants";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
 test("adds new value journal, adds entries", async ({ page }) => {
-  await addNewJournal(page, "Journal with values", "Value");
+  const journalPage = await addNewJournal(page, "Value", "Journal with values");
 
-  await addNewValue(page, "23");
-  await addNewValue(page, "19.5");
+  await journalPage.addValue("23");
+  await journalPage.addValue("19.5");
 
-  const rows = page
-    .getByTestId("entries-table")
-    .locator("tbody")
-    .getByRole("row");
+  await journalPage.validateNumberOfTableRows(2);
 
-  await expect(rows).toHaveCount(2);
-
-  await expect(
-    rows.getByRole("cell", { name: "23", exact: true }),
-  ).toBeVisible();
-  await expect(
-    rows.getByRole("cell", { name: "19.5", exact: true }),
-  ).toBeVisible();
+  await journalPage.expectTableCellToHaveValue("23");
+  await journalPage.expectTableCellToHaveValue("19.5");
 });
-
-async function addNewValue(page: Page, value: string) {
-  await clickPageAction(page, "Add Entry");
-
-  await page.getByLabel("Value").click();
-  await page.getByLabel("Value").fill(value);
-  await page.getByRole("button", { name: "Add" }).click();
-
-  expect(page.getByText("Added entry")).toBeVisible();
-}

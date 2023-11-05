@@ -29,14 +29,19 @@ jobs:
         node-version: 20
         cache: npm
 
-    - name: Install dependencies (./app)
+    - name: Install dependencies (app)
       run: npm ci
-      working-directory: ./app
+      working-directory: app
 
-    - name: Install dependencies (./tests)
+    - name: Install dependencies (tests)
       run: npm ci
-      working-directory: ./tests
+      working-directory: tests
+
+    - name: Lint
+      working-directory: tests
+      run: |
+        npm run lint
 
     - name: Boot servers and run tests
       run: npm run e2e:run
-      working-directory: ./tests
+      working-directory: tests
