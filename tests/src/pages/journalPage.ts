@@ -34,7 +34,7 @@ export class JournalPage extends BasePage {
     await this.page.getByLabel("Value").fill(value);
     await this.page.getByRole("button", { name: "Add" }).click();
 
-    expect(this.page.getByText("Added entry")).toBeVisible();
+    await expect(this.page.getByText("Added entry")).toBeVisible();
   }
 
   async validateHasNoEntries() {

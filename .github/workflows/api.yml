@@ -35,12 +35,12 @@ jobs:
 
       - name: Run tests
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-        working-directory: ./api
+        working-directory: api
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
-          working-directory: ./api
+          working-directory: api
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -50,7 +50,7 @@ jobs:
 
       - name: Publish
         run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}\Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
-        working-directory: ./api
+        working-directory: api
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
