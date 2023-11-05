@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
 import { constants } from "../src/constants";
-import { addNewJournal } from "../src/addNewJournal";
+import { addNewJournal } from "../src/utils/addNewJournal";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);

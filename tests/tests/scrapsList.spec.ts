@@ -1,6 +1,7 @@
-import { expect, Page, test } from "@playwright/test";
-import { addNewJournal } from "../src/addNewJournal";
+import { test } from "@playwright/test";
+import { addNewJournal } from "../src/utils/addNewJournal";
 import { constants } from "../src/constants";
+import { ScrapsJournalPage } from "../src/pmos/scrapsJournalPage";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
@@ -11,21 +12,17 @@ const journalName = "My First Scraps Journal";
 test("adds new scrap journal, adds list and adds some items to it", async ({
   page,
 }) => {
-  const journalPage = await addNewJournal(page, "Scraps", journalName);
+  await addNewJournal(page, "Scraps", journalName);
 
-  await expect(page.getByText("Nothing here...")).toBeVisible();
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
 
-  await journalPage.clickPageAction("Add list");
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+  await scrapList.addListItem("My First Item");
+  await scrapList.addListItem("My Second Item");
 
-  await page.getByPlaceholder("Title").click();
-  await page.getByPlaceholder("Title").fill("This is my title");
-
-  await addListItem(page, "My First Item");
-  await addListItem(page, "My Second Item");
-
-  await page.getByRole("button", { name: "Save" }).click();
-
-  await expect(page.getByText("Added entry")).toBeVisible();
+  await scrapList.clickSave();
 
   await page.getByText("My Second Item").dblclick();
 
@@ -40,9 +37,6 @@ test("adds new scrap journal, adds list and adds some items to it", async ({
     .filter({ hasText: "My First Item" })
     .getByRole("checkbox")
     .check();
-});
 
-async function addListItem(page: Page, value: string) {
-  await page.getByLabel("Add new").click();
-  await page.getByRole("listitem").getByRole("textbox").last().fill(value);
-}
+  await scrapList.clickSave(true);
+});
