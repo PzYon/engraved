@@ -1,6 +1,6 @@
 import { Page } from "@playwright/test";
-import { AddJournalPage } from "../pmos/addJournalPage";
-import { MetricJournalPage } from "../pmos/metricJournalPage";
+import { AddJournalPage } from "../poms/addJournalPage";
+import { MetricJournalPage } from "../poms/metricJournalPage";
 
 export async function addNewJournal(
   page: Page,
