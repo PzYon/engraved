@@ -22,7 +22,7 @@ export class ScrapListComponent {
   async clickSave(isUpdate?: boolean) {
     await this.page.getByRole("button", { name: "Save" }).click();
 
-    const appBar = await this.page.getByTestId("app-alert-bar");
+    const appBar = this.page.getByTestId("app-alert-bar");
 
     await expect(
       appBar.getByText(isUpdate ? "Updated entry" : "Added entry"),
