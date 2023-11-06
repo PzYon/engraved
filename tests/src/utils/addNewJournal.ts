@@ -4,7 +4,7 @@ import { MetricJournalPage } from "../poms/metricJournalPage";
 
 export async function addNewJournal(
   page: Page,
-  type: "Value" | "Scraps",
+  type: "Value" | "Timer" | "Scraps",
   name: string,
   description: string = "",
 ): Promise<MetricJournalPage> {

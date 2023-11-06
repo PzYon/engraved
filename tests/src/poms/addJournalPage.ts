@@ -2,7 +2,7 @@ import { BasePage } from "./basePage";
 import { MetricJournalPage } from "./metricJournalPage";
 
 export class AddJournalPage extends BasePage {
-  async selectType(typeLabel: "Value" | "Scraps") {
+  async selectType(typeLabel: "Value" | "Timer" | "Scraps") {
     if (typeLabel === "Scraps") {
       return;
     }

@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 const scrapTitle = "Quick Scrap Title";
 const scrapContent = "This is my content...";
 
-test("adds new quick scrap", async ({ page }) => {
+test("add quick scrap", async ({ page }) => {
   const journalPage = await addNewJournal(
     page,
     "Scraps",

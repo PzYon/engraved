@@ -6,10 +6,10 @@ test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
-const journalName = "My First Value Journal";
-const renamedJournalName = journalName + " (renamed)";
+test("add journal, update journal", async ({ page }) => {
+  const journalName = "My First Value Journal";
+  const renamedJournalName = journalName + " (renamed)";
 
-test("adds new journal, updates journal", async ({ page }) => {
   let journalPage = await addNewJournal(
     page,
     "Value",
@@ -27,4 +27,12 @@ test("adds new journal, updates journal", async ({ page }) => {
 
   await journalPage.validatePageTitle(renamedJournalName);
   await journalPage.validateHasNoEntries();
+});
+
+test("add journal, delete journal", async ({ page }) => {
+  const journalName = "My First Timer Journal";
+
+  const journalPage = await addNewJournal(page, "Timer", journalName);
+
+  // todo: DeleteEntryOrJournalDialog
 });

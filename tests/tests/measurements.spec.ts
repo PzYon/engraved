@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 const value1 = "23";
 const value2 = "19.5";
 
-test("adds new value journal, adds entries", async ({ page }) => {
+test("add new value journal, add some entries", async ({ page }) => {
   const journalPage = await addNewJournal(page, "Value", "Journal with values");
 
   await journalPage.addValue(value1);

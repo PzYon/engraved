@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 const firstItemText = "My First Item";
 const secondItemText = "My Second Item";
 
-test("adds new scrap journal, adds list and adds some items to it", async ({
+test("add scrap journal, add list entry and add/delete/modify", async ({
   page,
 }) => {
   await addNewJournal(page, "Scraps", "My First Scraps Journal");
@@ -36,6 +36,8 @@ test("adds new scrap journal, adds list and adds some items to it", async ({
     .getListItemByText(firstItemText)
     .getByRole("checkbox")
     .check();
+
+  // todo: edit, add again, validate
 
   await scrapList.clickSave(true);
 });
