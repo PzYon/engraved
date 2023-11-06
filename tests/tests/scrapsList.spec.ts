@@ -7,38 +7,33 @@ test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
-const journalName = "My First Scraps Journal";
+const firstItemText = "My First Item";
+const secondItemText = "My Second Item";
 
 test("adds new scrap journal, adds list and adds some items to it", async ({
   page,
 }) => {
-  await addNewJournal(page, "Scraps", journalName);
+  await addNewJournal(page, "Scraps", "My First Scraps Journal");
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.expectIsEmpty();
 
   const scrapList = await scrapsJournalPage.addList();
   await scrapList.typeTitle("This is my title");
-  await scrapList.addListItem("My First Item");
-  await scrapList.addListItem("My Second Item");
+  await scrapList.addListItem(firstItemText);
+  await scrapList.addListItem(secondItemText);
 
   await scrapList.clickSave();
 
   await scrapList.dblClickToEdit();
 
-  // todo:
-  // - move below stuff to ScrapsJournalPage and consider scrap id
-  // - also consider scrap id for already existing code (if available) - to be more precise
-
-  await page
-    .locator("li")
-    .filter({ hasText: "My Second Item" })
+  await scrapList
+    .getListItemByText(secondItemText)
     .getByLabel("Delete")
     .click();
 
-  await page
-    .locator("li")
-    .filter({ hasText: "My First Item" })
+  await scrapList
+    .getListItemByText(firstItemText)
     .getByRole("checkbox")
     .check();
 

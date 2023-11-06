@@ -33,6 +33,13 @@ export class ScrapListComponent {
     return this.scrapId;
   }
 
+  getListItemByText(value: string) {
+    return this.page
+      .getByTestId("scrap-" + this.scrapId)
+      .locator("li")
+      .filter({ hasText: value });
+  }
+
   async dblClickToEdit() {
     if (!this.scrapId) {
       throw new Error("Cannot double click on a non-saved entry");
