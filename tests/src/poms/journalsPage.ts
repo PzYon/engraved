@@ -12,4 +12,8 @@ export class JournalsPage extends BasePage {
     await this.page.getByRole("tab", { name: "Entries" }).click();
     return new EntriesPage(this.page);
   }
+
+  async expectToShowJournal(s: string) {}
+
+  async expectNotToShowJournal(s: string) {}
 }

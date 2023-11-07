@@ -34,5 +34,14 @@ test("add journal, delete journal", async ({ page }) => {
 
   const journalPage = await addNewJournal(page, "Timer", journalName);
 
-  // todo: DeleteEntryOrJournalDialog
+  const deleteDialog = await journalPage.navigateToDeleteJournalDialog();
+
+  await deleteDialog.clickFirstDeleteButton();
+  await deleteDialog.typeInConfirmationTextBox("delete");
+  await deleteDialog.clickSecondDeleteButton();
+
+  const journalsPage = await journalPage.navigateToHome();
+
+  await journalsPage.expectToShowJournal("");
+  await journalsPage.expectNotToShowJournal("");
 });

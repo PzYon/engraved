@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { JournalPage } from "./journalPage";
+import { DeleteDialog } from "./deleteDialog";
 
 export class MetricJournalPage extends JournalPage {
   get tableRows() {
@@ -17,6 +18,11 @@ export class MetricJournalPage extends JournalPage {
     await this.page.getByRole("button", { name: "Add" }).click();
 
     await expect(this.page.getByText("Added entry")).toBeVisible();
+  }
+
+  async navigateToDeleteJournalDialog() {
+    await this.clickPageAction("Delete");
+    return new DeleteDialog(this.page);
   }
 
   async validateHasNoEntries() {
