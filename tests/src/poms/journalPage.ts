@@ -4,6 +4,12 @@ import { JournalEditPage } from "./journalEditPage";
 import { expect } from "@playwright/test";
 
 export abstract class JournalPage extends BasePage {
+  async getJournalId() {
+    return await this.page
+      .getByTestId("journal")
+      .getAttribute("data-journal-id");
+  }
+
   async navigateToHome() {
     await this.page.getByRole("link", { name: "engraved." }).click();
 

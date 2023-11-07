@@ -10,9 +10,10 @@ export const useDeleteEntryMutation = (journalId: string, entryId: string) => {
 
     mutationFn: () => ServerApi.deleteEntry(entryId),
 
-    onSuccess: async () =>
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeysFactory.journal(journalId),
-      }),
+      });
+    },
   });
 };

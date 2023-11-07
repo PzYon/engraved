@@ -10,8 +10,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 
 export const DeleteEntryLauncher: React.FC<{
   journal: IJournal;
-  onDeleted?: () => void;
-}> = ({ journal, onDeleted }) => {
+}> = ({ journal }) => {
   const { renderDialog } = useDialogContext();
   const { entryId } = useParams();
 
@@ -46,20 +45,9 @@ export const DeleteEntryLauncher: React.FC<{
     function deleteEntry(closeDialog: () => void) {
       deleteEntryMutation.mutate();
 
-      if (onDeleted) {
-        onDeleted();
-      }
-
       closeDialog();
     }
-  }, [
-    deleteEntryMutation,
-    journal.id,
-    journal.type,
-    navigate,
-    onDeleted,
-    renderDialog,
-  ]);
+  }, [deleteEntryMutation, journal.id, journal.type, navigate, renderDialog]);
 
   return null;
 };

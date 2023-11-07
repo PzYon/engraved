@@ -31,8 +31,13 @@ export const JournalListItem: React.FC<{
   }, [addWrapper, journal]);
 
   return (
-    <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
-      <PageSection key={journal.id} testId={`journals-list-item-${index}`}>
+    <Wrapper
+      ref={domElementRef}
+      tabIndex={index}
+      onClick={onClick}
+      data-testid={`journals-list-item-${index}`}
+    >
+      <PageSection key={journal.id} data-testid={journal.id}>
         <Box sx={{ display: "flex" }}>
           <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
           <Box sx={{ flexGrow: 1, pl: 3, wordBreak: "break-all" }}>

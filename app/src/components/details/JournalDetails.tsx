@@ -20,7 +20,7 @@ export const JournalDetails: React.FC = () => {
   }
 
   return (
-    <>
+    <div data-testid="journal" data-journal-id={journal.id}>
       <JournalProperties journal={journal} />
 
       <Routes>
@@ -38,7 +38,7 @@ export const JournalDetails: React.FC = () => {
         )}
       </Routes>
       <SubRoutes journal={journal} />
-    </>
+    </div>
   );
 };
 

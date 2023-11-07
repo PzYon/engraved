@@ -13,7 +13,14 @@ export class JournalsPage extends BasePage {
     return new EntriesPage(this.page);
   }
 
-  async expectToShowJournal(s: string) {}
+  async expectToShowJournal(id: string) {
+    return await this.page
+      .getByTestId("page")
+      .getByTestId(id)
+      .isVisible({ timeout: 1000 });
+  }
 
-  async expectNotToShowJournal(s: string) {}
+  async expectNotToShowJournal(id: string) {
+    return !(await this.expectToShowJournal(id));
+  }
 }

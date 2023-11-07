@@ -27,12 +27,17 @@ test("add journal, update journal", async ({ page }) => {
 
   await journalPage.validatePageTitle(renamedJournalName);
   await journalPage.validateHasNoEntries();
+
+  const journalId = await journalPage.getJournalId();
+  const journalsPage = await journalPage.navigateToHome();
+  await journalsPage.expectToShowJournal(journalId);
 });
 
 test("add journal, delete journal", async ({ page }) => {
   const journalName = "My First Timer Journal";
 
   const journalPage = await addNewJournal(page, "Timer", journalName);
+  const journalId = await journalPage.getJournalId();
 
   const deleteDialog = await journalPage.navigateToDeleteJournalDialog();
 
@@ -41,7 +46,5 @@ test("add journal, delete journal", async ({ page }) => {
   await deleteDialog.clickSecondDeleteButton();
 
   const journalsPage = await journalPage.navigateToHome();
-
-  await journalsPage.expectToShowJournal("");
-  await journalsPage.expectNotToShowJournal("");
+  await journalsPage.expectNotToShowJournal(journalId);
 });
