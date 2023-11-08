@@ -1,13 +1,13 @@
 import { Page } from "@playwright/test";
-import { AddJournalPage } from "./pages/addJournalPage";
-import { JournalPage } from "./pages/journalPage";
+import { AddJournalPage } from "../poms/addJournalPage";
+import { MetricJournalPage } from "../poms/metricJournalPage";
 
 export async function addNewJournal(
   page: Page,
-  type: "Value" | "Scraps",
+  type: "Value" | "Timer" | "Scraps",
   name: string,
   description: string = "",
-): Promise<JournalPage> {
+): Promise<MetricJournalPage> {
   await page.getByRole("link", { name: "Add journal" }).click();
 
   const addJournalPage = new AddJournalPage(page);

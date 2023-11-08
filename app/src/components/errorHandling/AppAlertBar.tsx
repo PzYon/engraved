@@ -7,6 +7,7 @@ export interface IAppAlert {
   title: string;
   type: "success" | "info" | "warning" | "error";
   hideDurationSec?: number;
+  relatedEntityId?: string;
 }
 
 export const AppAlertBar: React.FC = () => {
@@ -19,6 +20,8 @@ export const AppAlertBar: React.FC = () => {
   return (
     <Snackbar
       open={true}
+      data-testid={"app-alert-bar"}
+      data-related-entity-id={appAlert.relatedEntityId}
       autoHideDuration={
         appAlert.type === "success"
           ? (appAlert.hideDurationSec ?? 4) * 1000

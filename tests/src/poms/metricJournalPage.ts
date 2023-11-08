@@ -1,30 +1,13 @@
 import { expect } from "@playwright/test";
-import { BasePage } from "./basePage";
-import { JournalEditPage } from "./journalEditPage";
-import { JournalsPage } from "./journalsPage";
+import { JournalPage } from "./journalPage";
+import { DeleteDialog } from "./deleteDialog";
 
-export class JournalPage extends BasePage {
+export class MetricJournalPage extends JournalPage {
   get tableRows() {
     return this.page
       .getByTestId("entries-table")
       .locator("tbody")
       .getByRole("row");
-  }
-
-  async navigateToHome() {
-    await this.page.getByRole("link", { name: "engraved." }).click();
-
-    await expect(this.page.getByRole("tab", { name: "Entries" })).toBeVisible();
-    await expect(
-      this.page.getByRole("tab", { name: "Journals" }),
-    ).toBeVisible();
-
-    return new JournalsPage(this.page);
-  }
-
-  async navigateToEditPage(): Promise<JournalEditPage> {
-    await this.clickPageAction("Edit");
-    return new JournalEditPage(this.page);
   }
 
   async addValue(value: string) {
@@ -35,6 +18,11 @@ export class JournalPage extends BasePage {
     await this.page.getByRole("button", { name: "Add" }).click();
 
     await expect(this.page.getByText("Added entry")).toBeVisible();
+  }
+
+  async navigateToDeleteJournalDialog() {
+    await this.clickPageAction("Delete");
+    return new DeleteDialog(this.page);
   }
 
   async validateHasNoEntries() {

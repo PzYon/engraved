@@ -1,8 +1,8 @@
 import { BasePage } from "./basePage";
-import { JournalPage } from "./journalPage";
+import { MetricJournalPage } from "./metricJournalPage";
 
 export class AddJournalPage extends BasePage {
-  async selectType(typeLabel: "Value" | "Scraps") {
+  async selectType(typeLabel: "Value" | "Timer" | "Scraps") {
     if (typeLabel === "Scraps") {
       return;
     }
@@ -22,6 +22,6 @@ export class AddJournalPage extends BasePage {
   async clickSave() {
     await this.page.getByRole("button", { name: "Create" }).click();
 
-    return new JournalPage(this.page);
+    return new MetricJournalPage(this.page);
   }
 }

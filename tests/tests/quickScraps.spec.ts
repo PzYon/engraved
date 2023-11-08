@@ -1,12 +1,15 @@
 import { test } from "@playwright/test";
 import { constants } from "../src/constants";
-import { addNewJournal } from "../src/addNewJournal";
+import { addNewJournal } from "../src/utils/addNewJournal";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
-test("adds new quick scrap", async ({ page }) => {
+const scrapTitle = "Quick Scrap Title";
+const scrapContent = "This is my content...";
+
+test("add quick scrap", async ({ page }) => {
   const journalPage = await addNewJournal(
     page,
     "Scraps",
@@ -16,10 +19,10 @@ test("adds new quick scrap", async ({ page }) => {
   const journalsPage = await journalPage.navigateToHome();
 
   const quickScrapDialog = await journalsPage.clickAddQuickScrap();
-  await quickScrapDialog.typeName("Quick Scrap Title");
-  await quickScrapDialog.typeContent("This is my content...");
+  await quickScrapDialog.typeName(scrapTitle);
+  await quickScrapDialog.typeContent(scrapContent);
   await quickScrapDialog.clickSave();
 
   const entriesPage = await journalsPage.navigateToEntries();
-  await entriesPage.expectItem(0, "Quick Scrap Title", "This is my content...");
+  await entriesPage.expectItem(0, scrapTitle, scrapContent);
 });

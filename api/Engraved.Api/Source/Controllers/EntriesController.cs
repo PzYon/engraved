@@ -1,4 +1,5 @@
 ﻿using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Delete;
 using Engraved.Core.Application.Commands.Entries.Move;
 using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
@@ -65,42 +66,42 @@ public class EntriesController : ControllerBase
 
   [HttpPost]
   [Route("counter")]
-  public async Task UpsertCounter([FromBody] UpsertCounterEntryCommand entry)
+  public async Task<CommandResult> UpsertCounter([FromBody] UpsertCounterEntryCommand entry)
   {
-    await _dispatcher.Command(entry);
+    return await _dispatcher.Command(entry);
   }
 
   [HttpPost]
   [Route("gauge")]
-  public async Task UpsertGauge([FromBody] UpsertGaugeEntryCommand entry)
+  public async Task<CommandResult> UpsertGauge([FromBody] UpsertGaugeEntryCommand entry)
   {
-    await _dispatcher.Command(entry);
+    return await _dispatcher.Command(entry);
   }
 
   [HttpPost]
   [Route("scraps")]
-  public async Task UpsertScraps([FromBody] UpsertScrapsEntryCommand entry)
+  public async Task<CommandResult> UpsertScraps([FromBody] UpsertScrapsEntryCommand entry)
   {
-    await _dispatcher.Command(entry);
+    return await _dispatcher.Command(entry);
   }
 
   [HttpPost]
   [Route("timer")]
-  public async Task StartTimer([FromBody] UpsertTimerEntryCommand entry)
+  public async Task<CommandResult> StartTimer([FromBody] UpsertTimerEntryCommand entry)
   {
-    await _dispatcher.Command(entry);
+    return await _dispatcher.Command(entry);
   }
 
   [HttpDelete]
   [Route("{entryId}")]
-  public async Task Delete(string entryId)
+  public async Task<CommandResult> Delete(string entryId)
   {
-    await _dispatcher.Command(new DeleteEntryCommand { Id = entryId });
+    return await _dispatcher.Command(new DeleteEntryCommand { Id = entryId });
   }
 
   [HttpPut]
   [Route("{entryId}/move/{targetJournalId}")]
-  public async Task MoveEntryToJournal(string entryId, string targetJournalId)
+  public async Task<CommandResult> MoveEntryToJournal(string entryId, string targetJournalId)
   {
     var command = new MoveEntryCommand
     {
@@ -108,7 +109,7 @@ public class EntriesController : ControllerBase
       TargetJournalId = targetJournalId
     };
 
-    await _dispatcher.Command(command);
+    return await _dispatcher.Command(command);
   }
 }
 

@@ -270,7 +270,7 @@ export class ServerApi {
     );
   }
 
-  static async deleteEntry(entryId: string): Promise<void> {
+  static async deleteEntry(entryId: string): Promise<ICommandResult> {
     return await ServerApi.executeRequest(
       `/entries/${entryId}`,
       "DELETE",

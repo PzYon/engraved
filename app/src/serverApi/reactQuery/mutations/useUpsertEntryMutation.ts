@@ -5,6 +5,7 @@ import { ServerApi } from "../../ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { IEntry } from "../../IEntry";
 import { JournalType } from "../../JournalType";
+import { ICommandResult } from "../../ICommandResult";
 
 export interface IVariables {
   command: IUpsertEntryCommand;
@@ -24,13 +25,17 @@ export const useUpsertEntryMutation = (
     mutationKey: queryKeysFactory.updateEntries(journalId, entryId),
 
     mutationFn: async (variables: IVariables) => {
-      await ServerApi.upsertEntry(variables.command, journalType.toLowerCase());
+      return await ServerApi.upsertEntry(
+        variables.command,
+        journalType.toLowerCase(),
+      );
     },
 
-    onSuccess: async (_: unknown, variables: IVariables) => {
+    onSuccess: async (result: ICommandResult, variables: IVariables) => {
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
         type: "success",
+        relatedEntityId: result.entityId,
       });
 
       onSaved?.();

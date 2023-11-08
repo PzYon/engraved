@@ -97,8 +97,8 @@ public class JournalsController : ControllerBase
 
   [HttpDelete]
   [Route("{journalId}")]
-  public async Task Delete(string journalId)
+  public async Task<CommandResult> Delete(string journalId)
   {
-    await _dispatcher.Command(new DeleteJournalCommand { JournalId = journalId });
+   return await _dispatcher.Command(new DeleteJournalCommand { JournalId = journalId });
   }
 }

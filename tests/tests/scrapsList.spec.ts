@@ -1,48 +1,43 @@
-import { expect, Page, test } from "@playwright/test";
-import { addNewJournal } from "../src/addNewJournal";
+import { test } from "@playwright/test";
+import { addNewJournal } from "../src/utils/addNewJournal";
 import { constants } from "../src/constants";
+import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 
 test.beforeEach(async ({ page }) => {
   await page.goto(constants.baseUrl);
 });
 
-const journalName = "My First Scraps Journal";
+const firstItemText = "My First Item";
+const secondItemText = "My Second Item";
 
-test("adds new scrap journal, adds list and adds some items to it", async ({
+test("add scrap journal, add list entry and add/delete/modify", async ({
   page,
 }) => {
-  const journalPage = await addNewJournal(page, "Scraps", journalName);
+  await addNewJournal(page, "Scraps", "My First Scraps Journal");
 
-  await expect(page.getByText("Nothing here...")).toBeVisible();
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
 
-  await journalPage.clickPageAction("Add list");
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+  await scrapList.addListItem(firstItemText);
+  await scrapList.addListItem(secondItemText);
 
-  await page.getByPlaceholder("Title").click();
-  await page.getByPlaceholder("Title").fill("This is my title");
+  await scrapList.clickSave();
 
-  await addListItem(page, "My First Item");
-  await addListItem(page, "My Second Item");
+  await scrapList.dblClickToEdit();
 
-  await page.getByRole("button", { name: "Save" }).click();
-
-  await expect(page.getByText("Added entry")).toBeVisible();
-
-  await page.getByText("My Second Item").dblclick();
-
-  await page
-    .locator("li")
-    .filter({ hasText: "My Second Item" })
+  await scrapList
+    .getListItemByText(secondItemText)
     .getByLabel("Delete")
     .click();
 
-  await page
-    .locator("li")
-    .filter({ hasText: "My First Item" })
+  await scrapList
+    .getListItemByText(firstItemText)
     .getByRole("checkbox")
     .check();
-});
 
-async function addListItem(page: Page, value: string) {
-  await page.getByLabel("Add new").click();
-  await page.getByRole("listitem").getByRole("textbox").last().fill(value);
-}
+  // todo: edit, add again, validate
+
+  await scrapList.clickSave(true);
+});
