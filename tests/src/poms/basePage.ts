@@ -13,4 +13,10 @@ export abstract class BasePage {
       .getByRole("button", { name: name })
       .click();
   }
+
+  async scrollToBottom() {
+    await this.page.evaluate(() =>
+      window.scrollTo(0, document.documentElement.scrollHeight),
+    );
+  }
 }

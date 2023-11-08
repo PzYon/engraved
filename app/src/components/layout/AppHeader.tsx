@@ -56,20 +56,23 @@ export const AppHeader: React.FC = () => {
       >
         <AppContent scope="header">
           <ContentWrapper sx={{ display: "flex", height: "64px" }}>
-            <ActionLink action={ActionFactory.goHome()} style={{ flexGrow: 1 }}>
-              <Typography
-                variant="h1"
-                sx={{
-                  fontSize: "35px",
-                  marginTop: "-10px",
-                }}
-              >
-                <Typing
-                  textToType="engraved"
-                  renderOnComplete={<PulsatingDot />}
-                />
-              </Typography>
-            </ActionLink>
+            <div style={{ flexGrow: 1 }}>
+              <ActionLink action={ActionFactory.goHome()}>
+                <Typography
+                  variant="h1"
+                  sx={{
+                    fontSize: "35px",
+                    marginTop: "-10px",
+                    display: "inline-block",
+                  }}
+                >
+                  <Typing
+                    textToType="engraved"
+                    renderOnComplete={<PulsatingDot />}
+                  />
+                </Typography>
+              </ActionLink>
+            </div>
             <VersionChecker />
             <AppInfoLauncher />
             <RefreshData />

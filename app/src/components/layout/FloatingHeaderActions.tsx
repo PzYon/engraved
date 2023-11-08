@@ -12,6 +12,7 @@ export const FloatingHeaderActions: React.FC<{
       direction="down"
       sx={{ position: "fixed", top: 16, right: 16 }}
       icon={<SpeedDialIcon />}
+      data-testid="floating-header-actions"
     >
       {actions
         .filter((a) => !!a)
