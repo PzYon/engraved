@@ -1,10 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { constants } from "../src/constants";
+import { getStartUrl } from "../src/constants";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { JournalsPage } from "../src/poms/journalsPage";
 
+let counter = 1;
+
 test.beforeEach(async ({ page }) => {
-  await page.goto(constants.baseUrl);
+  await page.goto(getStartUrl("layout", (counter++).toString()));
 });
 
 test("does not display floating actions if not necessary", async ({ page }) => {
