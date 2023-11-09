@@ -47,10 +47,7 @@ export const DialogContextProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   function closeDialog() {
-    if (dialogProps.onClose) {
-      dialogProps.onClose();
-    }
-
+    dialogProps.onClose?.();
     setDialogProps(null);
   }
 };

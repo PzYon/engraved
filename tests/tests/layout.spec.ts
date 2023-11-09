@@ -27,8 +27,8 @@ test("does display floating actions if necessary (on scroll down)", async ({
     await journalPage.navigateToHome();
   }
 
-  const journalsPage = new JournalsPage(page);
-  await journalsPage.scrollToBottom();
+  await new JournalsPage(page).scrollToBottom();
+  await page.waitForTimeout(2000);
 
   await expect(page.getByTestId("floating-header-actions")).toBeVisible();
 });
