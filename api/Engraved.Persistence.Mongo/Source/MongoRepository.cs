@@ -40,10 +40,13 @@ public class MongoRepository : IBaseRepository
     BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
   }
 
-  public MongoRepository(IMongoRepositorySettings settings)
+  public MongoRepository(IMongoRepositorySettings settings, string? dbNameOverride)
   {
     IMongoClient client = CreateMongoClient(settings);
-    IMongoDatabase? db = client.GetDatabase(settings.DatabaseName);
+    
+    string dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
+    
+    IMongoDatabase? db = client.GetDatabase(dbName);
 
     JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
     EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);

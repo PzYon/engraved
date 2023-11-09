@@ -111,7 +111,11 @@ builder.Services.AddTransient<IUserScopedRepository>(
 
     if (!UseInMemoryRepo())
     {
-      return new UserScopedMongoRepository(CreateRepositorySettings(builder), userService);
+      return new UserScopedMongoRepository(
+        CreateRepositorySettings(builder),
+        GetMongoDbNameOverride(),
+        userService
+      );
     }
 
     var inMemoryRepository = provider.GetService<InMemoryRepository>();
@@ -219,9 +223,14 @@ bool UseInMemoryRepo()
   return false;
 }
 
+string? GetMongoDbNameOverride()
+{
+  return isE2eTests ? "e2e_tests" : null;
+}
+
 IBaseRepository GetMongoDbRepo()
 {
-  return new MongoRepository(CreateRepositorySettings(builder));
+  return new MongoRepository(CreateRepositorySettings(builder), GetMongoDbNameOverride());
 }
 
 void SeedRepo(IUserScopedRepository repo)

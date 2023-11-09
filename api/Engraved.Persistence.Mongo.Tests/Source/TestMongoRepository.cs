@@ -12,5 +12,5 @@ public class TestMongoRepository : MongoRepository, IRepository
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;
   public IMongoCollection<UserDocument> Users => UsersCollection;
 
-  public TestMongoRepository(IMongoRepositorySettings settings) : base(settings) { }
+  public TestMongoRepository(IMongoRepositorySettings settings) : base(settings, null) { }
 }
