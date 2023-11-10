@@ -10,6 +10,8 @@
       <excludeFolder url="file://$MODULE_DIR$/tests/node_modules" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/app/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/playwright-report" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/test-results" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

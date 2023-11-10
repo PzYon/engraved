@@ -2,6 +2,7 @@ import { BasePage } from "./basePage";
 import { JournalsPage } from "./journalsPage";
 import { JournalEditPage } from "./journalEditPage";
 import { expect } from "@playwright/test";
+import { navigateToHome } from "../utils/navigateToHome";
 
 export abstract class JournalPage extends BasePage {
   async getJournalId() {
@@ -11,7 +12,7 @@ export abstract class JournalPage extends BasePage {
   }
 
   async navigateToHome() {
-    await this.page.getByRole("link", { name: "engraved." }).click();
+    await navigateToHome(this.page);
 
     await expect(this.page.getByRole("tab", { name: "Entries" })).toBeVisible();
     await expect(

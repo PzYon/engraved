@@ -21,6 +21,7 @@ export class AddJournalPage extends BasePage {
 
   async clickSave() {
     await this.page.getByRole("button", { name: "Create" }).click();
+    await this.page.waitForURL(/journals\/(?!create)/);
 
     return new MetricJournalPage(this.page);
   }

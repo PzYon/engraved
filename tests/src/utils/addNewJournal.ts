@@ -8,7 +8,10 @@ export async function addNewJournal(
   name: string,
   description: string = "",
 ): Promise<MetricJournalPage> {
-  await page.getByRole("link", { name: "Add journal" }).click();
+  await page
+    .getByTestId("page-actions")
+    .getByRole("link", { name: "Add journal" })
+    .click();
 
   const addJournalPage = new AddJournalPage(page);
   await addJournalPage.selectType(type);
