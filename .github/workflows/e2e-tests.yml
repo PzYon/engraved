@@ -30,12 +30,17 @@ jobs:
         cache: npm
 
     - name: Install dependencies (app)
-      run: npm ci
       working-directory: app
+      run: npm ci
 
     - name: Install dependencies (tests)
-      run: npm ci
       working-directory: tests
+      run: npm ci
+
+    - name: Check types
+      working-directory: tests
+      run: |
+        npm run types:check
 
     - name: Lint
       working-directory: tests
@@ -43,5 +48,5 @@ jobs:
         npm run lint
 
     - name: Boot servers and run tests
-      run: npm run e2e:run
       working-directory: tests
+      run: npm run e2e:run

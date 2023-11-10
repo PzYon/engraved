@@ -4,10 +4,8 @@ import { addNewJournal } from "../src/utils/addNewJournal";
 import { JournalsPage } from "../src/poms/journalsPage";
 import { navigateToHome } from "../src/utils/navigateToHome";
 
-let counter = 1;
-
 test.beforeEach(async ({ page }) => {
-  await page.goto(getStartUrl("layout", (counter++).toString()));
+  await page.goto(getStartUrl("layout"));
 });
 
 test("does not display floating actions if not necessary", async ({ page }) => {

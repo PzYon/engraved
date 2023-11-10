@@ -1,6 +1,17 @@
-const constants = {
-  baseUrl: "http://localhost:3000",
-};
+const countersPerTestName: Record<string, number> = {};
+
+function getCounter(testName: string) {
+  if (!countersPerTestName[testName]) {
+    countersPerTestName[testName] = 0;
+  }
+
+  countersPerTestName[testName]++;
+  return countersPerTestName[testName];
+}
+
+function getUserName(testName: string) {
+  return `e2e-${testName}-${getCounter(testName)}-${getDateTimeString()}`;
+}
 
 function getDateTimeString() {
   return new Date()
@@ -11,14 +22,10 @@ function getDateTimeString() {
     .replace(/:/g, "");
 }
 
-function getUserName(testName: string, counter: string) {
-  return `e2e-${testName}-${counter}-${getDateTimeString()}`;
-}
-
-export function getStartUrl(testName: string, counter: string) {
-  const userName = getUserName(testName, counter);
+export function getStartUrl(testName: string) {
+  const userName = getUserName(testName);
 
   console.log(`Using username '${userName}'`);
 
-  return `${constants.baseUrl}?test_user=${userName}`;
+  return `http://localhost:3000?test_user=${userName}`;
 }

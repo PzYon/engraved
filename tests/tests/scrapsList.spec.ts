@@ -3,10 +3,8 @@ import { addNewJournal } from "../src/utils/addNewJournal";
 import { getStartUrl } from "../src/constants";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 
-let counter = 1;
-
 test.beforeEach(async ({ page }) => {
-  await page.goto(getStartUrl("scrapsList", (counter++).toString()));
+  await page.goto(getStartUrl("scrapsList"));
 });
 
 const firstItemText = "My First Item";
