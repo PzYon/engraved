@@ -3,8 +3,8 @@ import { expect, Page } from "@playwright/test";
 export abstract class BasePage {
   constructor(protected page: Page) {}
 
-  async validatePageTitle(exepcted: string) {
-    await expect(this.page).toHaveTitle(exepcted + " | engraved.");
+  async validatePageTitle(expected: string) {
+    await expect(this.page).toHaveTitle(expected + " | engraved.");
   }
 
   async clickPageAction(name: string) {
@@ -12,5 +12,11 @@ export abstract class BasePage {
       .getByTestId("page-actions")
       .getByRole("button", { name: name })
       .click();
+  }
+
+  async scrollToBottom() {
+    await this.page.evaluate(() =>
+      window.scrollTo(0, document.documentElement.scrollHeight),
+    );
   }
 }

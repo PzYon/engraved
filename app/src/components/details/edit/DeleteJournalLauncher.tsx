@@ -62,16 +62,8 @@ export const DeleteJournalLauncher: React.FC<{
         navigate(`/journals/${journal.id}`);
       },
     });
-  }, [
-    setAppAlert,
-    deleteJournalMutation,
-    journal.id,
-    journal.name,
-    navigate,
-    onDeleted,
-    renderDialog,
-    queryClient,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return null;
 };

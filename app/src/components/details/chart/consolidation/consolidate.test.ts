@@ -89,7 +89,7 @@ describe("consolidate", () => {
     assertGroupKey(secondGroupedEntry.groupKey, 2020, 6, 10);
   });
 
-  it("should group by day (2 Entrys, same day, different month)", () => {
+  it("should group by day (2 entries, same day, different month)", () => {
     const entries: IGaugeEntry[] = [
       { value: 10, dateTime: createDate(2020, 5, 3) },
       { value: 30, dateTime: createDate(2020, 6, 3) },

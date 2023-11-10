@@ -10,7 +10,8 @@
     "e2e:execute-tests:ui": "npx playwright test --project=\"Google Chrome\" --ui",
     "e2e:run": "concurrently --kill-others --success first --names \"api,app,e2e-tests\" -c \"bgYellow.bold,bgBlue.bold,bgGreen.bold\" \"npm run e2e:start-api\" \"npm run e2e:start-app\" \"wait-on http-get://localhost:5072/ && npm run e2e:execute-tests\"",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "types:check": "tsc --noEmit"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,css,md,json}": [

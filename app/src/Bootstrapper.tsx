@@ -12,6 +12,8 @@ import { CircularProgress, styled, Typography } from "@mui/material";
 const storage = new AuthStorage();
 
 export const Bootstrapper: React.FC = () => {
+  const isInitialized = useRef(false);
+
   const [user, setUser] = useState<IUser>();
   const ref = useRef<HTMLDivElement>();
 
@@ -19,6 +21,12 @@ export const Bootstrapper: React.FC = () => {
   const [isNotVisible, setIsNotVisible] = useState(true);
 
   useEffect(() => {
+    if (isInitialized.current) {
+      return;
+    }
+
+    isInitialized.current = true;
+
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has("test_user")) {
       ServerApi.authenticateForTests(searchParams.get("test_user"))

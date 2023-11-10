@@ -12,6 +12,6 @@ public class TestUserScopedMongoRepository : UserScopedMongoRepository
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;
   public IMongoCollection<UserDocument> Users => UsersCollection;
 
-  public TestUserScopedMongoRepository(IMongoRepositorySettings settings, ICurrentUserService currentUserService) :
-    base(settings, currentUserService) { }
+  public TestUserScopedMongoRepository(IMongoRepositorySettings settings, ICurrentUserService currentUserService)
+    : base(settings, null, currentUserService) { }
 }

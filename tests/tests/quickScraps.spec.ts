@@ -1,9 +1,9 @@
 import { test } from "@playwright/test";
-import { constants } from "../src/constants";
+import { getStartUrl } from "../src/constants";
 import { addNewJournal } from "../src/utils/addNewJournal";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto(constants.baseUrl);
+  await page.goto(getStartUrl("quickScraps"));
 });
 
 const scrapTitle = "Quick Scrap Title";
