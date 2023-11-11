@@ -61,6 +61,11 @@ export const ActionIconButton: React.FC<{
         sx={{
           display: "flex",
           color: "primary.main",
+          padding: "8px",
+          borderRadius: "100%",
+          ":hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)",
+          },
           opacity: action.isNotActive ? 0.4 : 1,
           ...(action.sx || {}),
         }}
