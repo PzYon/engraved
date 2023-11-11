@@ -1,12 +1,13 @@
 import React from "react";
-import { IconButton } from "@mui/material";
+import { IconButton, styled } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
-}> = ({ action }) => {
+  noButtons?: boolean;
+}> = ({ action, noButtons }) => {
   useHotkeys(
     action.hotkey,
     (keyboardEvent) => {
@@ -24,6 +25,25 @@ export const ActionIconButton: React.FC<{
       <ActionLink action={action} style={{ display: "flex" }}>
         {getIconButton()}
       </ActionLink>
+    );
+  }
+
+  if (noButtons) {
+    return (
+      <NoButtons
+        key={action.key}
+        title={action.label}
+        color="default"
+        aria-label={action.label}
+        onClick={action.onClick}
+        sx={{
+          color: "primary.main",
+          opacity: action.isNotActive ? 0.4 : 1,
+          ...(action.sx || {}),
+        }}
+      >
+        {action.icon}
+      </NoButtons>
     );
   }
 
@@ -49,3 +69,5 @@ export const ActionIconButton: React.FC<{
     );
   }
 };
+
+const NoButtons = styled("span")``;

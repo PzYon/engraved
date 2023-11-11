@@ -19,7 +19,7 @@ export const FloatingHeaderActions: React.FC<{
         .map((action) => (
           <SpeedDialAction
             key={action.key}
-            icon={<ActionIconButton action={action} />}
+            icon={<ActionIconButton action={action} noButtons={true} />}
             tooltipTitle={action.label}
           />
         ))}
