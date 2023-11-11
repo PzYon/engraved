@@ -1,6 +1,7 @@
 import { Page } from "@playwright/test";
 import { AddJournalPage } from "../poms/addJournalPage";
 import { MetricJournalPage } from "../poms/metricJournalPage";
+import { clickPageAction } from "./clickPageAction";
 
 export async function addNewJournal(
   page: Page,
@@ -8,10 +9,7 @@ export async function addNewJournal(
   name: string,
   description: string = "",
 ): Promise<MetricJournalPage> {
-  await page
-    .getByTestId("page-actions")
-    .getByRole("link", { name: "Add journal" })
-    .click();
+  await clickPageAction(page, "Add journal");
 
   const addJournalPage = new AddJournalPage(page);
   await addJournalPage.selectType(type);

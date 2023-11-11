@@ -8,7 +8,7 @@ export const FloatingHeaderActions: React.FC<{
 }> = ({ actions }) => {
   return (
     <SpeedDial
-      ariaLabel="SpeedDial basic example"
+      ariaLabel="Floating actions"
       direction="down"
       sx={{ position: "fixed", top: 16, right: 16 }}
       icon={<SpeedDialIcon />}
@@ -19,7 +19,7 @@ export const FloatingHeaderActions: React.FC<{
         .map((action) => (
           <SpeedDialAction
             key={action.key}
-            icon={<ActionIconButton action={action} />}
+            icon={<ActionIconButton action={action} buttonsAsSpans={true} />}
             tooltipTitle={action.label}
           />
         ))}
