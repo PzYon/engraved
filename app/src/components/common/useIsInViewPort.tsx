@@ -21,7 +21,7 @@ export function useIsInViewport(ref: MutableRefObject<HTMLDivElement>) {
     observer.observe(ref.current);
 
     return () => observer.disconnect();
-  }, [ref.current, observer]);
+  }, [ref, observer]);
 
   return isIntersecting;
 }

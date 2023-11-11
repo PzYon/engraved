@@ -3,7 +3,7 @@ import { EntriesPage } from "./entriesPage";
 import { AddQuickScrapDialog } from "./addQuickScrapDialog";
 
 export class JournalsPage extends BasePage {
-  async clickAddQuickScrap() {
+  async clickAddQuickScrapAction() {
     await this.page.getByLabel("Add Quick Scrap").click();
     return new AddQuickScrapDialog(this.page);
   }

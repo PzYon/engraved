@@ -1,10 +1,10 @@
 import { test } from "@playwright/test";
 import { addNewJournal } from "../src/utils/addNewJournal";
-import { getStartUrl } from "../src/constants";
+import { login } from "../src/constants";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto(getStartUrl("scrapsList"));
+  await login(page, "scrapsList");
 });
 
 const firstItemText = "My First Item";

@@ -14,6 +14,10 @@ export abstract class BasePage {
       .click();
   }
 
+  async clickRefreshData() {
+    await this.page.getByRole("button", { name: "Refresh data" }).click();
+  }
+
   async scrollToBottom() {
     await this.page.evaluate(() =>
       window.scrollTo(0, document.documentElement.scrollHeight),

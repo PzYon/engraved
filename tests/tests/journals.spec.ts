@@ -1,9 +1,9 @@
 import { test } from "@playwright/test";
-import { getStartUrl } from "../src/constants";
+import { login } from "../src/constants";
 import { addNewJournal } from "../src/utils/addNewJournal";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto(getStartUrl("journals"));
+  await login(page, "journals");
 });
 
 test("add journal, update journal", async ({ page }) => {
