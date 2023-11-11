@@ -10,21 +10,21 @@ test("multiple users", async ({ browser }) => {
   await login(joePage, "permissions-joe");
 
   const joesJournalPage = await addNewJournal(joePage, "Value", "I'm Joe's");
-  const bobsJournalId = await joesJournalPage.getJournalId();
+  const joesJournalId = await joesJournalPage.getJournalId();
 
   const bobContext = await browser.newContext();
   const bobPage = await bobContext.newPage();
   const bobsUserName = await login(bobPage, "permissions-bob");
 
   const bobsJournalsPage = new JournalsPage(bobPage);
-  await bobsJournalsPage.expectNotToShowJournal(bobsJournalId);
+  await bobsJournalsPage.expectNotToShowJournal(joesJournalId);
 
   const joesPermissionsDialog = await joesJournalPage.clickPermissionsAction();
   await joesPermissionsDialog.addUserWithWritePermissions(bobsUserName);
   await joesPermissionsDialog.savePermissions();
 
   await bobsJournalsPage.clickRefreshData();
-  await bobsJournalsPage.expectToShowJournal(bobsJournalId);
+  await bobsJournalsPage.expectToShowJournal(joesJournalId);
 });
 
 /*

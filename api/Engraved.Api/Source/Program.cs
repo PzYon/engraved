@@ -225,7 +225,7 @@ bool UseInMemoryRepo()
 
 string? GetMongoDbNameOverride()
 {
-  return isE2eTests ? "e2e_tests" : null;
+  return isE2eTests ? "engraved_e2e_tests" : null;
 }
 
 IBaseRepository GetMongoDbRepo()
