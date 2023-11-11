@@ -8,11 +8,12 @@ export const FloatingHeaderActions: React.FC<{
 }> = ({ actions }) => {
   return (
     <SpeedDial
-      ariaLabel="SpeedDial basic example"
+      ariaLabel="Floating actions"
       direction="down"
       sx={{ position: "fixed", top: 16, right: 16 }}
       icon={<SpeedDialIcon />}
       data-testid="floating-header-actions"
+      open={true}
     >
       {actions
         .filter((a) => !!a)

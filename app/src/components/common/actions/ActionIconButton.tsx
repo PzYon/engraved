@@ -23,12 +23,34 @@ export const ActionIconButton: React.FC<{
   if (action.href) {
     return (
       <ActionLink action={action} style={{ display: "flex" }}>
-        {getIconButton()}
+        {getIconNoButton()}
       </ActionLink>
     );
   }
 
   if (noButtons) {
+    return getIconNoButton();
+  }
+
+  return (
+    <IconButton
+      key={action.key}
+      title={action.label}
+      color="default"
+      aria-label={action.label}
+      sx={{
+        color: "primary.main",
+        opacity: action.isNotActive ? 0.4 : 1,
+        ...(action.sx || {}),
+      }}
+      onClick={action.onClick}
+      disabled={action.isDisabled}
+    >
+      {action.icon}
+    </IconButton>
+  );
+
+  function getIconNoButton() {
     return (
       <NoButtons
         key={action.key}
@@ -37,6 +59,7 @@ export const ActionIconButton: React.FC<{
         aria-label={action.label}
         onClick={action.onClick}
         sx={{
+          display: "flex",
           color: "primary.main",
           opacity: action.isNotActive ? 0.4 : 1,
           ...(action.sx || {}),
@@ -44,28 +67,6 @@ export const ActionIconButton: React.FC<{
       >
         {action.icon}
       </NoButtons>
-    );
-  }
-
-  return getIconButton();
-
-  function getIconButton() {
-    return (
-      <IconButton
-        key={action.key}
-        title={action.label}
-        color="default"
-        aria-label={action.label}
-        sx={{
-          color: "primary.main",
-          opacity: action.isNotActive ? 0.4 : 1,
-          ...(action.sx || {}),
-        }}
-        onClick={action.onClick}
-        disabled={action.isDisabled}
-      >
-        {action.icon}
-      </IconButton>
     );
   }
 };
