@@ -36,18 +36,15 @@ jobs:
 
       - name: NPM Install
         working-directory: app
-        run: |
-          npm ci
+        run: npm ci
 
       - name: Check types
         working-directory: app
-        run: |
-          npm run types:check
+        run: npm run types:check
 
       - name: Lint
         working-directory: app
-        run: |
-          npm run lint
+        run: npm run lint
 
       - name: Build
         working-directory: app
@@ -56,13 +53,11 @@ jobs:
           VITE_VERSION: ${{github.run_number}}
           VITE_MERGE_DATE_TIME: ${{steps.current-time.outputs.time}}
           VITE_APP_INSIGHTS_CONNECTING_STRING: ${{secrets.APP_INSIGHTS_CONNECTING_STRING}}
-        run: |
-          npm run build
+        run: npm run build
 
       - name: Run tests
         working-directory: app
-        run: |
-          npm run test --if-present
+        run: npm run test --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

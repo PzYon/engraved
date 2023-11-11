@@ -39,13 +39,11 @@ jobs:
 
     - name: Check types
       working-directory: tests
-      run: |
-        npm run types:check
+      run: npm run types:check
 
     - name: Lint
       working-directory: tests
-      run: |
-        npm run lint
+      run: npm run lint
 
     - name: Run tests
       working-directory: tests
