@@ -13,14 +13,13 @@ export const FloatingHeaderActions: React.FC<{
       sx={{ position: "fixed", top: 16, right: 16 }}
       icon={<SpeedDialIcon />}
       data-testid="floating-header-actions"
-      open={true}
     >
       {actions
         .filter((a) => !!a)
         .map((action) => (
           <SpeedDialAction
             key={action.key}
-            icon={<ActionIconButton action={action} noButtons={true} />}
+            icon={<ActionIconButton action={action} buttonsAsSpans={true} />}
             tooltipTitle={action.label}
           />
         ))}

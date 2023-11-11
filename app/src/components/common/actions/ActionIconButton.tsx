@@ -6,8 +6,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
-  noButtons?: boolean;
-}> = ({ action, noButtons }) => {
+  buttonsAsSpans?: boolean;
+}> = ({ action, buttonsAsSpans }) => {
   useHotkeys(
     action.hotkey,
     (keyboardEvent) => {
@@ -23,57 +23,60 @@ export const ActionIconButton: React.FC<{
   if (action.href) {
     return (
       <ActionLink action={action} style={{ display: "flex" }}>
-        {getIconNoButton()}
+        {getNoButtonIcon()}
       </ActionLink>
     );
   }
 
-  if (noButtons) {
-    return getIconNoButton();
+  if (buttonsAsSpans) {
+    return getNoButtonIcon();
   }
 
   return (
     <IconButton
-      key={action.key}
-      title={action.label}
-      color="default"
-      aria-label={action.label}
-      sx={{
-        color: "primary.main",
-        opacity: action.isNotActive ? 0.4 : 1,
-        ...(action.sx || {}),
-      }}
-      onClick={action.onClick}
+      {...getCommonProps()}
+      sx={getCommonSx()}
       disabled={action.isDisabled}
     >
       {action.icon}
     </IconButton>
   );
 
-  function getIconNoButton() {
+  function getNoButtonIcon() {
     return (
-      <NoButtons
-        key={action.key}
-        title={action.label}
-        color="default"
-        aria-label={action.label}
-        onClick={action.onClick}
+      <NoButtonIcon
+        {...getCommonProps()}
         sx={{
           display: "flex",
-          color: "primary.main",
           padding: "8px",
           borderRadius: "100%",
           ":hover": {
             backgroundColor: "rgba(0, 0, 0, 0.04)",
           },
-          opacity: action.isNotActive ? 0.4 : 1,
-          ...(action.sx || {}),
+          ...getCommonSx(),
         }}
       >
         {action.icon}
-      </NoButtons>
+      </NoButtonIcon>
     );
+  }
+
+  function getCommonSx() {
+    return {
+      color: "primary.main",
+      opacity: action.isNotActive ? 0.4 : 1,
+      ...(action.sx || {}),
+    };
+  }
+
+  function getCommonProps() {
+    return {
+      key: action.key,
+      title: action.label,
+      "aria-label": action.label,
+      onClick: action.onClick,
+    };
   }
 };
 
-const NoButtons = styled("span")``;
+const NoButtonIcon = styled("span")``;
