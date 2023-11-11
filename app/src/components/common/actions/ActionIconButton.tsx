@@ -1,12 +1,13 @@
 import React from "react";
-import { IconButton } from "@mui/material";
+import { IconButton, styled } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
-}> = ({ action }) => {
+  buttonsAsSpans?: boolean;
+}> = ({ action, buttonsAsSpans }) => {
   useHotkeys(
     action.hotkey,
     (keyboardEvent) => {
@@ -22,30 +23,60 @@ export const ActionIconButton: React.FC<{
   if (action.href) {
     return (
       <ActionLink action={action} style={{ display: "flex" }}>
-        {getIconButton()}
+        {getNoButtonIcon()}
       </ActionLink>
     );
   }
 
-  return getIconButton();
+  if (buttonsAsSpans) {
+    return getNoButtonIcon();
+  }
 
-  function getIconButton() {
+  return (
+    <IconButton
+      {...getCommonProps()}
+      sx={getCommonSx()}
+      disabled={action.isDisabled}
+    >
+      {action.icon}
+    </IconButton>
+  );
+
+  function getNoButtonIcon() {
     return (
-      <IconButton
-        key={action.key}
-        title={action.label}
-        color="default"
-        aria-label={action.label}
+      <NoButtonIcon
+        {...getCommonProps()}
         sx={{
-          color: "primary.main",
-          opacity: action.isNotActive ? 0.4 : 1,
-          ...(action.sx || {}),
+          display: "flex",
+          padding: "8px",
+          borderRadius: "100%",
+          ":hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)",
+          },
+          ...getCommonSx(),
         }}
-        onClick={action.onClick}
-        disabled={action.isDisabled}
       >
         {action.icon}
-      </IconButton>
+      </NoButtonIcon>
     );
   }
+
+  function getCommonSx() {
+    return {
+      color: "primary.main",
+      opacity: action.isNotActive ? 0.4 : 1,
+      ...(action.sx || {}),
+    };
+  }
+
+  function getCommonProps() {
+    return {
+      key: action.key,
+      title: action.label,
+      "aria-label": action.label,
+      onClick: action.onClick,
+    };
+  }
 };
+
+const NoButtonIcon = styled("span")``;

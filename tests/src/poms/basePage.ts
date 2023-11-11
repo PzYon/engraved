@@ -1,4 +1,5 @@
 import { expect, Page } from "@playwright/test";
+import { clickPageAction } from "../utils/clickPageAction";
 
 export abstract class BasePage {
   constructor(protected page: Page) {}
@@ -8,10 +9,7 @@ export abstract class BasePage {
   }
 
   async clickPageAction(name: string) {
-    await this.page
-      .getByTestId("page-actions")
-      .getByRole("button", { name: name })
-      .click();
+    await clickPageAction(this.page, name);
   }
 
   async scrollToBottom() {
