@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
 import { addNewJournal } from "../src/utils/addNewJournal";
-import { login } from "../src/constants";
+import { login } from "../src/utils/login";
 
 test.beforeEach(async ({ page }) => {
   await login(page, "measurements");

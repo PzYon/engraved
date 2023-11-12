@@ -1,18 +1,11 @@
 import { Page } from "@playwright/test";
 
-const countersPerTestName: Record<string, number> = {};
-
-function getCounter(testName: string) {
-  if (!countersPerTestName[testName]) {
-    countersPerTestName[testName] = 0;
-  }
-
-  countersPerTestName[testName]++;
-  return countersPerTestName[testName];
+function getUniqueRandomId() {
+  return Math.random().toString().split(".")[1].substring(0, 5);
 }
 
 function getUserName(testName: string) {
-  return `${testName}-${getCounter(testName)}-${getDateTimeString()}@e2e.tests`;
+  return `${testName}-${getUniqueRandomId()}.${getDateTimeString()}@tests.e2e`;
 }
 
 function getDateTimeString() {
@@ -28,7 +21,7 @@ export async function login(page: Page, testName: string) {
   const userName = getUserName(testName);
   console.log(`Using username '${userName}'`);
 
-  await page.goto(`http://localhost:3000?test_user=${userName}`);
+  await page.goto(`/?test_user=${userName}`);
 
   return userName;
 }

@@ -1,5 +1,5 @@
 import { expect, Page, test } from "@playwright/test";
-import { login } from "../src/constants";
+import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { JournalsPage } from "../src/poms/journalsPage";
 import { navigateToHome } from "../src/utils/navigateToHome";

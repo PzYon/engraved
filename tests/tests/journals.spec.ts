@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { login } from "../src/constants";
+import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 
 test.beforeEach(async ({ page }) => {
