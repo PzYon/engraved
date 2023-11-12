@@ -14,20 +14,22 @@ export class JournalsPage extends BasePage {
     return new EntriesPage(this.page);
   }
 
-  async expectToShowJournal(id: string) {
+  async expectToShowJournal(journalId: string) {
     return await this.page
       .getByTestId("page")
-      .getByTestId(id)
-      .isVisible({ timeout: 1000 });
+      .getByTestId(journalId)
+      .isVisible();
   }
 
   async expectNotToShowJournal(id: string) {
     return !(await this.expectToShowJournal(id));
   }
 
-  async navigateToJournalPage(journalId: string) {
-    await this.page.getByTestId("page").getByTestId(journalId).click();
+  async navigateToJournalPage(journalName: string) {
+    await this.page.getByRole("link", { name: journalName }).click();
 
+    // this could also be a ScrapJournalPage, but for the moment
+    // a MetricJournalPage is enough.
     return new MetricJournalPage(this.page);
   }
 }

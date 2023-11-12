@@ -9,7 +9,12 @@ test("multiple users", async ({ browser }) => {
 
   await login(joePage, "permissions-joe");
 
-  const joesJournalPage = await addNewJournal(joePage, "Value", "I'm Joe's");
+  const joesJournalName = "I'm Joe's";
+  const joesJournalPage = await addNewJournal(
+    joePage,
+    "Value",
+    joesJournalName,
+  );
   const joesJournalId = await joesJournalPage.getJournalId();
 
   const bobContext = await browser.newContext();
@@ -21,14 +26,16 @@ test("multiple users", async ({ browser }) => {
 
   const joesPermissionsDialog = await joesJournalPage.clickPermissionsAction();
   await joesPermissionsDialog.addUserWithWritePermissions(bobsUserName);
-  await joesPermissionsDialog.savePermissions();
+  await joesPermissionsDialog.savePermissionsAndCloseDialog();
 
   await bobsJournalsPage.clickRefreshData();
   await bobsJournalsPage.expectToShowJournal(joesJournalId);
 
   const journalPageAsBob =
-    await bobsJournalsPage.navigateToJournalPage(joesJournalId);
+    await bobsJournalsPage.navigateToJournalPage(joesJournalName);
   await journalPageAsBob.addValue("42");
+  await journalPageAsBob.expectTableCellToHaveValue("42");
 
+  await joesJournalPage.clickRefreshData();
   await joesJournalPage.expectTableCellToHaveValue("42");
 });

@@ -10,9 +10,11 @@ export class PermissionsDialog {
     await this.page.getByLabel("Add", { exact: true }).click();
   }
 
-  async savePermissions() {
+  async savePermissionsAndCloseDialog() {
     await this.page.getByRole("button", { name: "Save" }).click();
     await this.page.getByText("Modified journal permissions").click();
+
+    await this.page.getByRole("button", { name: "Cancel" }).click();
   }
 
   private async typeEmail(value: string) {
