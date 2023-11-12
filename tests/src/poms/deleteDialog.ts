@@ -1,7 +1,10 @@
 import { expect, Page } from "@playwright/test";
 
 export class DeleteDialog {
-  constructor(private page: Page) {}
+  constructor(
+    private page: Page,
+    private type: "Journal" | "Entry",
+  ) {}
 
   async clickFirstDeleteButton() {
     await this.page.getByRole("button", { name: "Yes, delete!" }).click();
@@ -14,8 +17,15 @@ export class DeleteDialog {
 
   async clickSecondDeleteButton() {
     await this.page.getByRole("button", { name: "Yes, delete!" }).click();
+
+    if (this.type === "Journal") {
+      await this.expectDeletionMessage();
+    }
+  }
+
+  private async expectDeletionMessage() {
     await expect(
-      this.page.getByText("Successfully deleted journal."),
+      this.page.getByText(`Successfully deleted ${this.type.toLowerCase()}.`),
     ).toBeVisible();
   }
 }

@@ -1,11 +1,11 @@
 import { expect, Page, test } from "@playwright/test";
-import { getStartUrl } from "../src/constants";
+import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { JournalsPage } from "../src/poms/journalsPage";
 import { navigateToHome } from "../src/utils/navigateToHome";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto(getStartUrl("layout"));
+  await login(page, "layout");
 });
 
 test("does not display floating actions if not necessary", async ({ page }) => {

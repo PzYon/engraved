@@ -22,7 +22,7 @@ export class MetricJournalPage extends JournalPage {
 
   async navigateToDeleteJournalDialog() {
     await this.clickPageAction("Delete");
-    return new DeleteDialog(this.page);
+    return new DeleteDialog(this.page, "Journal");
   }
 
   async validateHasNoEntries() {
@@ -37,5 +37,10 @@ export class MetricJournalPage extends JournalPage {
     await expect(
       this.tableRows.getByRole("cell", { name: value, exact: true }),
     ).toBeVisible();
+  }
+
+  async navigateToDeleteEntryDialog(index: number) {
+    await this.tableRows.nth(index).getByLabel("Delete").click();
+    return new DeleteDialog(this.page, "Entry");
   }
 }

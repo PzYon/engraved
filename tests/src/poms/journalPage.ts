@@ -3,12 +3,18 @@ import { JournalsPage } from "./journalsPage";
 import { JournalEditPage } from "./journalEditPage";
 import { expect } from "@playwright/test";
 import { navigateToHome } from "../utils/navigateToHome";
+import { PermissionsDialog } from "./permissionsDialog";
 
 export abstract class JournalPage extends BasePage {
   async getJournalId() {
     return await this.page
       .getByTestId("journal")
       .getAttribute("data-journal-id");
+  }
+
+  async clickPermissionsAction() {
+    await this.clickPageAction("Permissions");
+    return new PermissionsDialog(this.page);
   }
 
   async navigateToHome() {

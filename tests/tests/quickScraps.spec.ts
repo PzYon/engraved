@@ -1,9 +1,9 @@
 import { test } from "@playwright/test";
-import { getStartUrl } from "../src/constants";
+import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto(getStartUrl("quickScraps"));
+  await login(page, "quickScraps");
 });
 
 const scrapTitle = "Quick Scrap Title";
@@ -18,11 +18,11 @@ test("add quick scrap", async ({ page }) => {
 
   const journalsPage = await journalPage.navigateToHome();
 
-  const quickScrapDialog = await journalsPage.clickAddQuickScrap();
+  const quickScrapDialog = await journalsPage.clickAddQuickScrapAction();
   await quickScrapDialog.typeName(scrapTitle);
   await quickScrapDialog.typeContent(scrapContent);
   await quickScrapDialog.clickSave();
 
-  const entriesPage = await journalsPage.navigateToEntries();
+  const entriesPage = await journalsPage.navigateToEntriesPage();
   await entriesPage.expectItem(0, scrapTitle, scrapContent);
 });
