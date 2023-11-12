@@ -25,4 +25,10 @@ test("multiple users", async ({ browser }) => {
 
   await bobsJournalsPage.clickRefreshData();
   await bobsJournalsPage.expectToShowJournal(joesJournalId);
+
+  const journalPageAsBob =
+    await bobsJournalsPage.navigateToJournalPage(joesJournalId);
+  await journalPageAsBob.addValue("42");
+
+  await joesJournalPage.expectTableCellToHaveValue("42");
 });
