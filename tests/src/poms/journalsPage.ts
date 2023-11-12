@@ -8,7 +8,7 @@ export class JournalsPage extends BasePage {
     return new AddQuickScrapDialog(this.page);
   }
 
-  async navigateToEntries() {
+  async navigateToEntriesPage() {
     await this.page.getByRole("tab", { name: "Entries" }).click();
     return new EntriesPage(this.page);
   }

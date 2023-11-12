@@ -26,17 +26,3 @@ test("multiple users", async ({ browser }) => {
   await bobsJournalsPage.clickRefreshData();
   await bobsJournalsPage.expectToShowJournal(joesJournalId);
 });
-
-/*
-  await page.getByLabel('Permissions').click();
-
-  await page.getByLabel('Mail Address').click();
-  await page.getByLabel('Mail Address').fill('XYZ@heiri.com');
-
-  await page.getByLabel('Read').click();
-  await page.getByRole('option', { name: 'Write' }).click();
-
-  await page.getByLabel('Add', { exact: true }).click();
-  await page.getByRole('button', { name: 'Save' }).click();
-  await page.getByText('Modified journal permissions').click();
- */

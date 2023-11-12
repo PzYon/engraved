@@ -23,6 +23,6 @@ test("add quick scrap", async ({ page }) => {
   await quickScrapDialog.typeContent(scrapContent);
   await quickScrapDialog.clickSave();
 
-  const entriesPage = await journalsPage.navigateToEntries();
+  const entriesPage = await journalsPage.navigateToEntriesPage();
   await entriesPage.expectItem(0, scrapTitle, scrapContent);
 });
