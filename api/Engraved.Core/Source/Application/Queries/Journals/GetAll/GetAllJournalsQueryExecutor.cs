@@ -25,7 +25,7 @@ public class GetAllJournalsQueryExecutor : IQueryExecutor<IJournal[], GetAllJour
       query.Limit
     );
 
-    return await JournalQueryUtil.EnsurePermissionUsers(_repository, allJournals);
+    return await JournalQueryUtil.EnsurePermissionUsers(_userScopedRepository, allJournals);
   }
 
   private string[]? GetJournalIds(GetAllJournalsQuery query)
