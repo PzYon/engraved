@@ -11,6 +11,8 @@ export const useEditJournalMutation = (journalId: string) => {
   return useMutation({
     mutationKey: queryKeysFactory.editJournal(journalId),
 
+    throwOnError: false,
+
     mutationFn: async (variables: {
       journal: IJournal;
       onSuccess?: () => void;
