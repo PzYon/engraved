@@ -15,8 +15,8 @@ export const Icon: React.FC<{
     style === IconStyle.Overview
       ? OverviewHost
       : style === IconStyle.Entries
-      ? EntryHost
-      : PageTitleHost;
+        ? EntryHost
+        : PageTitleHost;
 
   return (
     <Host

@@ -33,8 +33,8 @@ export const AddQuickScrapDialog: React.FC<{
               value !== null
                 ? value
                 : type === ScrapType.Markdown
-                ? ScrapType.List
-                : ScrapType.Markdown,
+                  ? ScrapType.List
+                  : ScrapType.Markdown,
             );
           }}
         >

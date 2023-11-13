@@ -93,8 +93,8 @@ export class ListItemWrapperCollection {
       return a.raw.isCompleted === b.raw.isCompleted
         ? 0
         : a.raw.isCompleted
-        ? 1
-        : -1;
+          ? 1
+          : -1;
     });
 
     this.fireOnChange();
