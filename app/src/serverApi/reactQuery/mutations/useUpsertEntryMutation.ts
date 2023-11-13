@@ -24,6 +24,8 @@ export const useUpsertEntryMutation = (
   return useMutation({
     mutationKey: queryKeysFactory.updateEntries(journalId, entryId),
 
+    throwOnError: false,
+
     mutationFn: async (variables: IVariables) => {
       return await ServerApi.upsertEntry(
         variables.command,
