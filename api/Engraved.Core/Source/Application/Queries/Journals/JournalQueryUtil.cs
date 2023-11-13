@@ -22,7 +22,7 @@ public static class JournalQueryUtil
 
     Dictionary<string, IUser> userById = users.ToDictionary(u => u.Id!, u => u);
 
-    return journals.Select(m => EnsureUsers(m, userById)).ToArray();
+    return journals.Select(j => EnsureUsers(j, userById)).ToArray();
   }
 
   private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, IUser> userById)

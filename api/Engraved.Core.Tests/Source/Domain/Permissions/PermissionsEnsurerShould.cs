@@ -83,4 +83,5 @@ public class PermissionsEnsurerShould
 public class TestPermissionHolder : IPermissionHolder
 {
   public UserPermissions Permissions { get; set; } = null!;
+  public UserRole UserRole { get; set; }
 }
