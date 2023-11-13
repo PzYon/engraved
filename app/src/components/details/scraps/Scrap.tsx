@@ -164,16 +164,16 @@ export const Scrap: React.FC<{
   );
 
   function getCancelEditingFunction() {
-    if (isEditMode && isDirty) {
-      return function () {
-        setScrapToRender(initialScrap);
-        setTitle(initialScrap.title);
-        setNotes(initialScrap.notes);
-        setIsEditMode(false);
-      };
+    if (!isEditMode) {
+      return null;
     }
 
-    return null;
+    return function () {
+      setScrapToRender(initialScrap);
+      setTitle(initialScrap.title);
+      setNotes(initialScrap.notes);
+      setIsEditMode(false);
+    };
   }
 
   function updateScrapInState() {
