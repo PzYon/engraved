@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "@playwright/test": "1.39.0",
-    "@types/node": "20.8.7",
+    "@types/node": "20.9.0",
     "eslint-plugin-playwright": "0.18.0",
     "prettier": "3.0.3"
   },
