@@ -120,7 +120,7 @@ public class DispatcherShould
 
 public class TestServiceProvider : IServiceProvider
 {
-  public object? GetService(Type serviceType)
+  public object GetService(Type serviceType)
   {
     if (serviceType == typeof(IQueryExecutor<Guid, FakeQuery>))
     {

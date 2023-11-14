@@ -17,6 +17,7 @@ using Engraved.Persistence.Mongo;
 using Engraved.Search.Lucene;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -183,7 +184,7 @@ else
         {
           OnTokenValidated = context =>
           {
-            var jwtToken = (JwtSecurityToken) context.SecurityToken;
+            var jwtToken = (JsonWebToken) context.SecurityToken;
             Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
             context.HttpContext.RequestServices
               .GetRequiredService<ICurrentUserService>()

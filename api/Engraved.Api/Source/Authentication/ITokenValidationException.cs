@@ -1,3 +1,6 @@
 ﻿namespace Engraved.Api.Authentication;
 
-public interface ITokenValidationException { }
+public interface ITokenValidationException
+{
+  // marker interface
+}

@@ -18,7 +18,7 @@ public class GetJournalQueryExecutor : IQueryExecutor<IJournal?, GetJournalQuery
   {
     if (string.IsNullOrEmpty(query.JournalId))
     {
-      throw new InvalidQueryException(query!, $"{nameof(query.JournalId)} must be specified.");
+      throw new InvalidQueryException(query, $"{nameof(query.JournalId)} must be specified.");
     }
 
     IJournal? journal = await _repository.GetJournal(query.JournalId);
