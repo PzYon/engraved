@@ -37,7 +37,11 @@ public static class JournalQueryUtil
 
     // get current user role
     journal.UserRole = GetCurrentUserRole(journal.UserId!, journal.Permissions, currentUser);
-    
+
+    // todo: consider removing/clearing "private" data like
+    // lastLoginDate and favoriteJournalids
+    // -> if this is done, then add a unit test for this!
+
     return journal;
   }
 
