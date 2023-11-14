@@ -19,7 +19,7 @@ public static class MongoUtil
 
   public static string GenerateNewIdAsString()
   {
-    return GenerateNewId().ToString();
+    return GenerateNewId().ToString()!;
   }
 
   private static ObjectId EnsureObjectId(string? id)

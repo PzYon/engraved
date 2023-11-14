@@ -8,22 +8,14 @@ using Microsoft.Extensions.Primitives;
 
 namespace Engraved.Api.Authentication.Basic;
 
-public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
-{
-  private readonly ICurrentUserService _currentUserService;
-
-  public BasicAuthenticationHandler(
+public class BasicAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,
     UrlEncoder encoder,
-    ISystemClock clock,
     ICurrentUserService currentUserService
   )
-    : base(options, logger, encoder, clock)
-  {
-    _currentUserService = currentUserService;
-  }
-
+  : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+{
   protected override Task<AuthenticateResult> HandleAuthenticateAsync()
   {
     return Task.FromResult(HandleAuthenticate());
@@ -31,18 +23,18 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
 
   private AuthenticateResult HandleAuthenticate()
   {
-    if (!Request.Headers.TryGetValue("Authorization", out StringValues value))
+    if (!Request.Headers.TryGetValue("Authorization", out StringValues value) || string.IsNullOrEmpty(value))
     {
       return AuthenticateResult.Fail("Missing Authorization Header");
     }
 
-    AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(value);
+    AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(value!);
     if (string.IsNullOrEmpty(authHeader.Parameter))
     {
       throw new Exception("Username must be specified.");
     }
 
-    _currentUserService.SetUserName(authHeader.Parameter);
+    currentUserService.SetUserName(authHeader.Parameter);
 
     var claims = new[]
     {
