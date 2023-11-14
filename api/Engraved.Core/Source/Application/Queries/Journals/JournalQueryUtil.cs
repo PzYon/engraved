@@ -12,14 +12,13 @@ public static class JournalQueryUtil
     params IJournal[] journals
   )
   {
-    List<string> userIds = journals
+    string[] distinctUserIds = journals
       .SelectMany(m => m.Permissions.Keys)
       .Union(
         journals.Where(m => !string.IsNullOrEmpty(m.UserId)).Select(m => m.UserId!)
       )
-      .ToList();
-
-    string[] distinctUserIds = userIds.Distinct().ToArray();
+      .Distinct()
+      .ToArray();
 
     IUser[] users = await repository.GetUsers(distinctUserIds);
 
@@ -30,17 +29,15 @@ public static class JournalQueryUtil
 
   private static IJournal EnsureUsers(IUser currentUser, IJournal journal, IReadOnlyDictionary<string, IUser> userById)
   {
+    // write all users on to object
     foreach ((string? key, PermissionDefinition value) in journal.Permissions)
     {
       value.User = userById[key];
     }
 
-    journal.UserRole = GetCurrentUserRole(journal.UserId, journal.Permissions, currentUser);
-
-    // todo: we might need something like this so we have all the relevant
-    // user's information on the client.
-    // journal.User = userById[journal.UserId!];
-
+    // get current user role
+    journal.UserRole = GetCurrentUserRole(journal.UserId!, journal.Permissions, currentUser);
+    
     return journal;
   }
 
@@ -51,13 +48,14 @@ public static class JournalQueryUtil
       return UserRole.Owner;
     }
 
-    if (allUserPermissions.TryGetValue(currentUser.Id, out PermissionDefinition permissionDefinition))
+    if (allUserPermissions.TryGetValue(currentUser.Id!, out PermissionDefinition? permissionDefinition))
     {
-      return permissionDefinition.Kind == PermissionKind.Read
-        ? UserRole.Reader
-        : permissionDefinition.Kind == PermissionKind.Write
-          ? UserRole.Writer
-          : UserRole.None;
+      return permissionDefinition.Kind switch
+      {
+        PermissionKind.Read => UserRole.Reader,
+        PermissionKind.Write => UserRole.Writer,
+        _ => UserRole.None
+      };
     }
 
     return UserRole.None;
