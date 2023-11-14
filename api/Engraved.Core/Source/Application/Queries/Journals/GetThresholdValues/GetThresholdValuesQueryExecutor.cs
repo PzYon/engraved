@@ -12,11 +12,11 @@ namespace Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>,
   GetThresholdValuesQuery>
 {
-  private readonly IRepository _repository;
+  private readonly IUserScopedRepository _repository;
 
   public bool DisableCache => false;
 
-  public GetThresholdValuesQueryExecutor(IRepository repository)
+  public GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
   {
     _repository = repository;
   }
@@ -24,7 +24,7 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
   public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> Execute(GetThresholdValuesQuery query)
   {
     var journalQuery = new GetJournalQuery { JournalId = query.JournalId };
-    var journalQueryExecutor = new GetJournalQueryExecutor(null /*_repository*/);
+    var journalQueryExecutor = new GetJournalQueryExecutor(_repository);
 
     IJournal? journal = await journalQueryExecutor.Execute(journalQuery);
 
