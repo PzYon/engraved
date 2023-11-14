@@ -16,7 +16,7 @@ public class PerfFilter : IActionFilter
 
   public void OnActionExecuted(ActionExecutedContext context)
   {
-    context.HttpContext.Response.Headers.Add("access-control-expose-headers", DurationHeaderName);
-    context.HttpContext.Response.Headers.Add(DurationHeaderName, _stopwatch.ElapsedMilliseconds.ToString());
+    context.HttpContext.Response.Headers.Append("access-control-expose-headers", DurationHeaderName);
+    context.HttpContext.Response.Headers.Append(DurationHeaderName, _stopwatch.ElapsedMilliseconds.ToString());
   }
 }

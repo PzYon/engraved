@@ -10,24 +10,24 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   where TEntry : class, IEntry, new()
   where TJournal : class, IJournal
 {
-  protected readonly IBaseRepository _repository;
-  protected readonly IDateService _dateService;
+  protected readonly IBaseRepository Repository;
+  protected readonly IDateService DateService;
 
   protected BaseUpsertEntryCommandExecutor(IRepository repository, IDateService dateService)
   {
-    _repository = repository;
-    _dateService = dateService;
+    Repository = repository;
+    DateService = dateService;
   }
 
   public async Task<CommandResult> Execute(TCommand command)
   {
-    var journal = await JournalCommandUtil.LoadAndValidateJournal<TJournal>(_repository, command, command.JournalId);
+    var journal = await JournalCommandUtil.LoadAndValidateJournal<TJournal>(Repository, command, command.JournalId);
 
     await ValidateCommand(command, journal);
 
     UpsertResult result = await UpsertEntry(command, journal);
 
-    await UpdateJournal(_repository, _dateService, journal);
+    await UpdateJournal(Repository, DateService, journal);
 
     return new CommandResult(result.EntityId, journal.Permissions.GetUserIdsWithAccess());
   }
@@ -47,7 +47,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     SetCommonValues(command, entry);
     SetTypeSpecificValues(command, entry);
 
-    UpsertResult result = await _repository.UpsertEntry(entry);
+    UpsertResult result = await Repository.UpsertEntry(entry);
     return result;
   }
 
@@ -62,8 +62,8 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     entry.ParentId = command.JournalId;
     entry.Notes = command.Notes;
     entry.JournalAttributeValues = command.JournalAttributeValues;
-    entry.DateTime = command.DateTime ?? _dateService.UtcNow;
-    entry.EditedOn = _dateService.UtcNow;
+    entry.DateTime = command.DateTime ?? DateService.UtcNow;
+    entry.EditedOn = DateService.UtcNow;
   }
 
   protected abstract void SetTypeSpecificValues(TCommand command, TEntry entry);
@@ -134,7 +134,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   {
     if (!string.IsNullOrEmpty(command.Id))
     {
-      return (TEntry) (await _repository.GetEntry(command.Id))!;
+      return (TEntry) (await Repository.GetEntry(command.Id))!;
     }
 
     return null;

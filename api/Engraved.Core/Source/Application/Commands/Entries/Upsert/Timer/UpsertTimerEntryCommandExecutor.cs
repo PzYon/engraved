@@ -17,7 +17,7 @@ public class UpsertTimerEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
 
   protected override async Task<TimerEntry?> LoadEntryToUpdate(UpsertTimerEntryCommand command, TimerJournal journal)
   {
-    return await GetActiveEntry(_repository, journal);
+    return await GetActiveEntry(Repository, journal);
   }
 
   protected override void SetTypeSpecificValues(UpsertTimerEntryCommand command, TimerEntry entry)
@@ -26,8 +26,8 @@ public class UpsertTimerEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
     {
       if (command.StartDate == null)
       {
-        entry.StartDate = _dateService.UtcNow;
-        entry.DateTime = _dateService.UtcNow;
+        entry.StartDate = DateService.UtcNow;
+        entry.DateTime = DateService.UtcNow;
         return;
       }
 
@@ -39,7 +39,7 @@ public class UpsertTimerEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
 
     if (entry.EndDate == null && command.EndDate == null)
     {
-      entry.EndDate = _dateService.UtcNow;
+      entry.EndDate = DateService.UtcNow;
       return;
     }
 
