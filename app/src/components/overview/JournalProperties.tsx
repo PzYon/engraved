@@ -34,6 +34,11 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
           hideWhen: () => !journal.description,
           label: "Description",
         },
+        {
+          key: "user-role",
+          label: "Your role:",
+          node: journal.userRole,
+        },
       ]}
     />
   </Host>

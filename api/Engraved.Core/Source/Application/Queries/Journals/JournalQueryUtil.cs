@@ -33,10 +33,27 @@ public static class JournalQueryUtil
     foreach ((string? key, PermissionDefinition value) in journal.Permissions)
     {
       value.User = userById[key];
+      value.UserRole = journal.UserId == key
+        ? UserRole.Owner
+        : value.Kind == PermissionKind.Write
+          ? UserRole.Writer
+          : UserRole.Reader;
+    }
+
+    string journalOwnerId = journal.UserId!;
+
+    if (!journal.Permissions.ContainsKey(journalOwnerId))
+    {
+      journal.Permissions[journalOwnerId] = new PermissionDefinition
+      {
+        User = userById[journalOwnerId],
+        UserRole = UserRole.Owner,
+        Kind = PermissionKind.Write
+      };
     }
 
     // get current user role
-    journal.UserRole = GetCurrentUserRole(journal.UserId!, journal.Permissions, currentUser);
+    journal.UserRole = GetCurrentUserRole(journalOwnerId, journal.Permissions, currentUser);
 
     // todo: consider removing/clearing "private" data like
     // lastLoginDate and favoriteJournalids
