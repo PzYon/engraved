@@ -3,7 +3,7 @@
 public enum UserRole
 {
   None,
-  Owner,
   Reader,
+  Owner,
   Writer
 }

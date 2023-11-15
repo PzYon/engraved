@@ -48,8 +48,8 @@ public class JournalQueryUtilShould
   [Test]
   public async Task SetUserRoleToReader()
   {
-    IJournal[] journals =
-    {
+    IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
+      _userScopedInMemoryRepository,
       new TimerJournal
       {
         UserId = _youUserId,
@@ -61,14 +61,31 @@ public class JournalQueryUtilShould
           }
         }
       }
-    };
-
-    IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
-      _userScopedInMemoryRepository,
-      journals
     );
 
     Assert.AreEqual(1, ensuredJournals.Length);
     Assert.AreEqual(UserRole.Reader, ensuredJournals[0].UserRole);
+  }
+  
+  [Test]
+  public async Task SetUserRoleToWriter()
+  {
+    IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
+      _userScopedInMemoryRepository,
+      new TimerJournal
+      {
+        UserId = _youUserId,
+        Permissions = new UserPermissions
+        {
+          {
+            _meUserId,
+            new PermissionDefinition { Kind = PermissionKind.Write, User = new User { Id = _meUserId } }
+          }
+        }
+      }
+    );
+
+    Assert.AreEqual(1, ensuredJournals.Length);
+    Assert.AreEqual(UserRole.Writer, ensuredJournals[0].UserRole);
   }
 }
