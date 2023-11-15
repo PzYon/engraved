@@ -3,6 +3,4 @@
 public interface IPermissionHolder
 {
   UserPermissions Permissions { get; set; }
-
-  UserRole UserRole { get; set; }
 }

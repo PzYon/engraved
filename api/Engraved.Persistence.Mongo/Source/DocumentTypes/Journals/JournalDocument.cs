@@ -6,7 +6,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 
-public abstract class JournalDocument : IUserScopedDocument, IHasPerissionsDocument
+public abstract class JournalDocument : IUserScopedDocument, IHasPermissionsDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]

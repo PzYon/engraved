@@ -1,6 +1,6 @@
 export enum UserRole {
-  None = "none",
-  Reader = "reader",
-  Writer = "writer",
-  Owner = "owner",
+  None = "None",
+  Reader = "Reader",
+  Writer = "Writer",
+  Owner = "Owner",
 }

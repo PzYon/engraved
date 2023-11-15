@@ -42,7 +42,7 @@ public class JournalQueryUtilShould
     );
 
     Assert.AreEqual(1, ensuredJournals.Length);
-    Assert.AreEqual(UserRole.Owner, ensuredJournals[0].UserRole);
+    Assert.AreEqual(UserRole.Owner, ensuredJournals[0].Permissions[_meUserId].UserRole);
   }
 
   [Test]
@@ -64,9 +64,9 @@ public class JournalQueryUtilShould
     );
 
     Assert.AreEqual(1, ensuredJournals.Length);
-    Assert.AreEqual(UserRole.Reader, ensuredJournals[0].UserRole);
+    Assert.AreEqual(UserRole.Reader, ensuredJournals[0].Permissions[_meUserId].UserRole);
   }
-  
+
   [Test]
   public async Task SetUserRoleToWriter()
   {
@@ -86,6 +86,6 @@ public class JournalQueryUtilShould
     );
 
     Assert.AreEqual(1, ensuredJournals.Length);
-    Assert.AreEqual(UserRole.Writer, ensuredJournals[0].UserRole);
+    Assert.AreEqual(UserRole.Writer, ensuredJournals[0].Permissions[_meUserId].UserRole);
   }
 }

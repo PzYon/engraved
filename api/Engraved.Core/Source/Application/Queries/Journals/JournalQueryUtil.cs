@@ -52,33 +52,10 @@ public static class JournalQueryUtil
       };
     }
 
-    // get current user role
-    journal.UserRole = GetCurrentUserRole(journalOwnerId, journal.Permissions, currentUser);
-
     // todo: consider removing/clearing "private" data like
     // lastLoginDate and favoriteJournalids
     // -> if this is done, then add a unit test for this!
 
     return journal;
-  }
-
-  private static UserRole GetCurrentUserRole(string ownerId, UserPermissions allUserPermissions, IUser currentUser)
-  {
-    if (ownerId == currentUser.Id)
-    {
-      return UserRole.Owner;
-    }
-
-    if (allUserPermissions.TryGetValue(currentUser.Id!, out PermissionDefinition? permissionDefinition))
-    {
-      return permissionDefinition.Kind switch
-      {
-        PermissionKind.Read => UserRole.Reader,
-        PermissionKind.Write => UserRole.Writer,
-        _ => UserRole.None
-      };
-    }
-
-    return UserRole.None;
   }
 }

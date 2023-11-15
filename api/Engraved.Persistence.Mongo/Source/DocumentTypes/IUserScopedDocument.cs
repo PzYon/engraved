@@ -7,7 +7,7 @@ public interface IUserScopedDocument : IDocument
   string? UserId { get; set; }
 }
 
-public interface IHasPerissionsDocument : IDocument
+public interface IHasPermissionsDocument : IDocument
 {
   UserPermissions Permissions { get; set; }
 }
