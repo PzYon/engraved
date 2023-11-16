@@ -5,8 +5,8 @@ import { Users } from "../common/Users";
 import { Properties } from "../common/Properties";
 import { styled } from "@mui/material";
 import { Favorite } from "./Favorite";
-import { getRoleForUser } from "../../serverApi/IUserPermissions";
 import { useJournalPermissions } from "./useJournalPermissions";
+import { UserRole } from "../../serverApi/UserRole";
 
 export const JournalProperties: React.FC<{ journal: IJournal }> = ({
   journal,
@@ -36,16 +36,13 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
           {
             key: "user-role",
             label: "Your are",
-            node: getRoleForUser(
-              journalPermissions.userId,
-              journal.permissions,
-            ),
+            node: journalPermissions.userRole,
           },
           {
             key: "owned-by",
             node: <Users users={[journalPermissions.owner]} />,
             label: "Owned by",
-            hideWhen: () => journalPermissions.userIsOwner,
+            hideWhen: () => journalPermissions.userRole === UserRole.Owner,
           },
           {
             key: "shared-with",
