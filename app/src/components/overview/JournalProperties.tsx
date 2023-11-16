@@ -28,6 +28,12 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
             label: "Edited",
           },
           {
+            key: "description",
+            node: <>{journal.description}</>,
+            hideWhen: () => !journal.description,
+            label: null,
+          },
+          {
             key: "user-role",
             label: "Your are",
             node: getRoleForUser(
@@ -46,12 +52,6 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
             node: <Users users={journalPermissions.allExceptOwner} />,
             hideWhen: () => !journalPermissions.allExceptOwner.length,
             label: "Shared with",
-          },
-          {
-            key: "description",
-            node: <>{journal.description}</>,
-            hideWhen: () => !journal.description,
-            label: "Description",
           },
         ]}
       />
