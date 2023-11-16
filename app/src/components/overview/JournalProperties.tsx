@@ -5,21 +5,13 @@ import { Users } from "../common/Users";
 import { Properties } from "../common/Properties";
 import { styled } from "@mui/material";
 import { Favorite } from "./Favorite";
-import {
-  getAllExceptOwner,
-  getOwner,
-  getRoleForUser,
-} from "../../serverApi/IUserPermissions";
-import { useAppContext } from "../../AppContext";
+import { getRoleForUser } from "../../serverApi/IUserPermissions";
+import { useJournalPermissions } from "./useJournalPermissions";
 
 export const JournalProperties: React.FC<{ journal: IJournal }> = ({
   journal,
 }) => {
-  const { user } = useAppContext();
-
-  const owner = getOwner(journal.permissions);
-  const allExceptOwner = getAllExceptOwner(journal.permissions);
-  const userIsOwner = owner?.id === user.id;
+  const journalPermissions = useJournalPermissions(journal.permissions);
 
   return (
     <Host>
@@ -38,18 +30,21 @@ export const JournalProperties: React.FC<{ journal: IJournal }> = ({
           {
             key: "user-role",
             label: "Your are",
-            node: getRoleForUser(user.id, journal.permissions),
+            node: getRoleForUser(
+              journalPermissions.userId,
+              journal.permissions,
+            ),
           },
           {
             key: "owned-by",
-            node: <Users users={[owner]} />,
+            node: <Users users={[journalPermissions.owner]} />,
             label: "Owned by",
-            hideWhen: () => userIsOwner,
+            hideWhen: () => journalPermissions.userIsOwner,
           },
           {
             key: "shared-with",
-            node: <Users users={allExceptOwner} />,
-            hideWhen: () => !allExceptOwner.length,
+            node: <Users users={journalPermissions.allExceptOwner} />,
+            hideWhen: () => !journalPermissions.allExceptOwner.length,
             label: "Shared with",
           },
           {
