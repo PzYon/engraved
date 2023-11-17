@@ -61,7 +61,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     // is owner, then everything is allowed.
     FilterDefinition<TDocument> currentUserFilter = GetCurrentUserFilter<TDocument>(userId);
 
-    if (typeof(TDocument).IsAssignableTo(typeof(IHasPerissionsDocument)))
+    if (typeof(TDocument).IsAssignableTo(typeof(IHasPermissionsDocument)))
     {
       return Builders<TDocument>.Filter.Or(currentUserFilter, GetHasPermissionsFilter<TDocument>(userId, kind));
     }
@@ -75,7 +75,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   )
   {
     return Builders<TDocument>.Filter.Gte(
-      string.Join(".", nameof(IHasPerissionsDocument.Permissions), userId, nameof(PermissionDefinition.Kind)),
+      string.Join(".", nameof(IHasPermissionsDocument.Permissions), userId, nameof(PermissionDefinition.Kind)),
       permissionKind
     );
   }

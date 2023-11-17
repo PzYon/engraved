@@ -5,11 +5,11 @@ namespace Engraved.Core.Application.Queries.Journals.Get;
 
 public class GetJournalQueryExecutor : IQueryExecutor<IJournal?, GetJournalQuery>
 {
-  private readonly IBaseRepository _repository;
+  private readonly IUserScopedRepository _repository;
 
   public bool DisableCache => false;
 
-  public GetJournalQueryExecutor(IRepository repository)
+  public GetJournalQueryExecutor(IUserScopedRepository repository)
   {
     _repository = repository;
   }

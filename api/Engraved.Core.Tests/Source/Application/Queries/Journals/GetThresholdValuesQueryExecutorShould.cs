@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.User;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Journals;
@@ -14,11 +16,21 @@ public class GetThresholdValuesQueryExecutorShould
   private const string JournalId = "journal-id";
 
   private InMemoryRepository _testRepository = null!;
-
+  private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
+  private string _userId = null!;
+  
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
     _testRepository = new InMemoryRepository();
+
+    UpsertResult upsertResult = await _testRepository.UpsertUser(new User { Name = "max" });
+    _userId = upsertResult.EntityId;
+
+    _userScopedInMemoryRepository = new UserScopedInMemoryRepository(
+      _testRepository,
+      new FakeCurrentUserService("max")
+    );
   }
 
   [Test]
@@ -27,6 +39,7 @@ public class GetThresholdValuesQueryExecutorShould
     _testRepository.Journals.Add(
       new GaugeJournal
       {
+        UserId = _userId,
         Id = JournalId,
         Attributes = new Dictionary<string, JournalAttribute>
         {
@@ -59,7 +72,7 @@ public class GetThresholdValuesQueryExecutorShould
     };
 
     IDictionary<string, IDictionary<string, ThresholdResult>> results =
-      await new GetThresholdValuesQueryExecutor(_testRepository).Execute(query);
+      await new GetThresholdValuesQueryExecutor(_userScopedInMemoryRepository).Execute(query);
 
     Assert.NotNull(results);
 
@@ -82,6 +95,7 @@ public class GetThresholdValuesQueryExecutorShould
     _testRepository.Entries.Add(
       new GaugeEntry
       {
+        UserId = _userId,
         ParentId = JournalId,
         DateTime = DateTime.UtcNow,
         Value = value,

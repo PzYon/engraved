@@ -27,13 +27,8 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
 );
 
 const Host = styled("div")`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
   .ngrvd-property {
-    display: flex;
-    align-items: center;
+    display: inline-block;
 
     &:not(:last-of-type)::after {
       content: "\\00B7";

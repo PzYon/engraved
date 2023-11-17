@@ -25,4 +25,6 @@ public abstract class BaseJournal : IJournal
   public Dictionary<string, string> CustomProps { get; set; } = new();
 
   public UserPermissions Permissions { get; set; } = new();
+  
+  public UserRole UserRole { get; set; }
 }
