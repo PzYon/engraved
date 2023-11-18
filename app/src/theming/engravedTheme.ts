@@ -1,5 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 
+export const paperBorderRadius = "7px";
+
 const textColor = "#444444";
 
 export const engravedTheme = createTheme({
@@ -40,7 +42,7 @@ export const engravedTheme = createTheme({
     MuiPaper: {
       defaultProps: {
         elevation: 0,
-        sx: { borderRadius: "5px" },
+        sx: { borderRadius: paperBorderRadius },
       },
     },
   },

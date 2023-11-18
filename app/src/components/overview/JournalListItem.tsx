@@ -40,7 +40,13 @@ export const JournalListItem: React.FC<{
       <PageSection key={journal.id} data-testid={journal.id}>
         <Box sx={{ display: "flex" }}>
           <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
-          <Box sx={{ flexGrow: 1, pl: 3, wordBreak: "break-all" }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              pl: deviceWidth === DeviceWidth.Small ? 2 : 3,
+              wordBreak: "break-all",
+            }}
+          >
             <ActionLink
               action={ActionFactory.goToJournal(journal.id, isFocused)}
             >

@@ -22,4 +22,6 @@ export const User: React.FC<{
 const Host = styled("div")`
   display: flex;
   align-items: center;
+  border: 2px solid ${(p) => p.theme.palette.common.white};
+  border-radius: 100%;
 `;
