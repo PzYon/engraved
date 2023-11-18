@@ -10,9 +10,10 @@ import {
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { DateRange } from "../filters/DateFilters";
 import { DateRangeSelector } from "../filters/DateRangeSelector";
 import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
+import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
+import { DateRange } from "../filters/DateRange";
 
 export interface IJournalUiSettings {
   showGroupTotals?: boolean;
@@ -95,7 +96,9 @@ export const JournalUiSettings: React.FC<{
         <GridItem>
           <GroupByTimeSelector
             sx={{ width: "100%" }}
-            groupByTime={uiSettings.groupByTime}
+            groupByTime={
+              uiSettings.groupByTime ?? journalDefaultUiSettings.groupByTime
+            }
             onChange={(groupByTime) => {
               onChange({ ...uiSettings, groupByTime });
             }}
@@ -103,7 +106,9 @@ export const JournalUiSettings: React.FC<{
         </GridItem>
         <GridItem>
           <DateRangeSelector
-            dateRange={uiSettings.dateRange}
+            dateRange={
+              uiSettings.dateRange ?? journalDefaultUiSettings.dateRange
+            }
             onChange={(dateRange) => {
               onChange({ ...uiSettings, dateRange });
             }}
@@ -126,7 +131,9 @@ export const JournalUiSettings: React.FC<{
         </GridItem>
         <GridItem>
           <ChartTypeSelector
-            chartType={uiSettings.chartType}
+            chartType={
+              uiSettings.chartType ?? journalDefaultUiSettings.chartType
+            }
             onChange={(chartType) => {
               onChange({ ...uiSettings, chartType });
             }}

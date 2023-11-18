@@ -6,7 +6,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
-import { DateRange } from "./DateFilters";
+import { DateRange } from "./DateRange";
 
 export const DateRangeSelector: React.FC<{
   dateRange: DateRange;

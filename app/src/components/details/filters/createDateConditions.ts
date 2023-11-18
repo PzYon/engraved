@@ -1,4 +1,3 @@
-import { DateRange } from "./DateFilters";
 import { IDateConditions } from "../JournalDetailsContext";
 import {
   addDays,
@@ -11,6 +10,7 @@ import {
   startOfWeek,
   startOfYear,
 } from "date-fns";
+import { DateRange } from "./DateRange";
 
 export const createDateConditions = (
   dateRange: DateRange,

@@ -1,7 +1,6 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useJournalContext } from "./JournalDetailsContext";
-import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import { LocalHotelOutlined } from "@mui/icons-material";
 import { getCommonActions } from "../overview/getCommonActions";
 import { PageSection } from "../layout/pages/PageSection";
@@ -22,6 +21,7 @@ import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholde
 import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
+import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -44,11 +44,11 @@ export const JournalViewPage: React.FC = () => {
   );
 
   const [groupByTime, setGroupByTime] = useState(
-    uiSettings?.groupByTime ?? GroupByTime.Day,
+    uiSettings?.groupByTime ?? journalDefaultUiSettings.groupByTime,
   );
   const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState<MyChartType>(
-    uiSettings.chartType ?? "bar",
+    uiSettings.chartType ?? journalDefaultUiSettings.chartType,
   );
 
   const [showNotes, setShowNotes] = useState(!!journal.notes);
