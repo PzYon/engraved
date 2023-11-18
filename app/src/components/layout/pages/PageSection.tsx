@@ -14,10 +14,10 @@ export const PageSection: React.FC<{
   return (
     <Host
       className={"details-section"}
-      style={{
+      sx={{
         ...(style ?? {}),
-        padding: deviceWidth === DeviceWidth.Small ? "16px" : "24px",
         overflowX: overflowXScroll ? "auto" : "hidden",
+        p: deviceWidth === DeviceWidth.Small ? 2 : 3,
       }}
       data-testid={testId}
     >
