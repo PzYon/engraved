@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
 import { getCommonEditModeActions } from "../../overview/getCommonActions";
 import { JournalUiSettings } from "./JournalUiSettings";
-import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { EditCommonProperties } from "./EditCommonProperties";
 import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { JournalPageTitle } from "../JournalPageTitle";
@@ -23,7 +22,7 @@ export const JournalEditPage: React.FC = () => {
   const [uiSettings, setUiSettings] = useState(
     journal.customProps?.uiSettings
       ? JSON.parse(journal.customProps.uiSettings)
-      : { groupByTime: GroupByTime.Month },
+      : {},
   );
 
   const navigate = useNavigate();

@@ -9,25 +9,19 @@ import {
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { DateRangeSelector } from "./DateRangeSelector";
-
-export enum DateRange {
-  Week,
-  Month,
-  Year,
-  All,
-  Custom,
-}
-
-const defaultDateRange = DateRange.Month;
+import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
+import { DateRange } from "./DateRange";
 
 export const getDefaultDateConditions = () => {
-  return createDateConditions(defaultDateRange, new Date());
+  return createDateConditions(journalDefaultUiSettings.dateRange, new Date());
 };
 
 export const DateFilters: React.FC = () => {
   const { dateConditions, setDateConditions } = useJournalContext();
 
-  const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
+  const [dateRange, setDateRange] = useState<DateRange>(
+    journalDefaultUiSettings.dateRange,
+  );
 
   return (
     <>
