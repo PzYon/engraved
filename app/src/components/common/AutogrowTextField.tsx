@@ -20,7 +20,7 @@ export const AutogrowTextField: React.FC<
       inputRef={props.forwardInputRef}
       variant="standard"
       multiline={true}
-      autoComplete={"new-password"}
+      autoComplete={Math.random().toString()}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
           e.preventDefault();

@@ -1,6 +1,7 @@
 import React from "react";
 import { Paper, styled, Typography } from "@mui/material";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { AppErrorBoundary } from "../../errorHandling/AppErrorBoundary";
 
 export const PageSection: React.FC<{
   children: React.ReactNode;
@@ -12,22 +13,24 @@ export const PageSection: React.FC<{
   const deviceWidth = useDeviceWidth();
 
   return (
-    <Host
-      className={"details-section"}
-      sx={{
-        ...(style ?? {}),
-        overflowX: overflowXScroll ? "auto" : "hidden",
-        p: deviceWidth === DeviceWidth.Small ? 2 : 3,
-      }}
-      data-testid={testId}
-    >
-      {title ? (
-        <Typography sx={{ flexShrink: 0, fontWeight: "bold" }}>
-          {title}
-        </Typography>
-      ) : null}
-      {children}
-    </Host>
+    <AppErrorBoundary>
+      <Host
+        className={"details-section"}
+        sx={{
+          ...(style ?? {}),
+          overflowX: overflowXScroll ? "auto" : "hidden",
+          p: deviceWidth === DeviceWidth.Small ? 2 : 3,
+        }}
+        data-testid={testId}
+      >
+        {title ? (
+          <Typography sx={{ flexShrink: 0, fontWeight: "bold" }}>
+            {title}
+          </Typography>
+        ) : null}
+        {children}
+      </Host>
+    </AppErrorBoundary>
   );
 };
 

@@ -1,11 +1,7 @@
 import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { envSettings } from "../env/envSettings";
 
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: envSettings.appInsightsConnectionString,
-  },
-});
+let appInsights: ApplicationInsights;
 
 export function setUpAppInsights() {
   if (envSettings.isDev) {
@@ -13,6 +9,12 @@ export function setUpAppInsights() {
   }
 
   console.log("Setting up app insights");
+
+  appInsights = new ApplicationInsights({
+    config: {
+      connectionString: envSettings.appInsightsConnectionString,
+    },
+  });
 
   appInsights.loadAppInsights();
   appInsights.trackPageView();
