@@ -285,12 +285,18 @@ export class ActionFactory {
   }
 
   static updateToNewVersion(): IAction {
+    const color = "#fdff00";
+
     return {
       icon: <SwitchAccessShortcutOutlined fontSize="small" />,
       onClick: () => location.reload(),
       label: "New version available - click to update.",
       key: "update-to-new-version",
-      sx: { color: "#fdff00" },
+      sx: {
+        color: color,
+        border: "2px solid " + color,
+        mr: 2,
+      },
     };
   }
 
