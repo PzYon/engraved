@@ -30,7 +30,7 @@ export const AddJournal: React.FC = () => {
       <PageSection>
         <FormControl sx={{ width: "100%" }}>
           <TextField
-            autoComplete="new-password"
+            id={Math.random().toString()}
             value={name}
             onChange={(event) => setName(event.target.value)}
             required={true}
