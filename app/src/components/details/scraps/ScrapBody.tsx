@@ -85,5 +85,5 @@ const FooterContainer = styled("div")`
 `;
 
 const ActionsContainer = styled("div")`
-  margin-top: 4px;
+  margin-top: 6px;
 `;
