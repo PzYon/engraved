@@ -7,10 +7,13 @@ export const Markdown: React.FC<{
   onClick?: MouseEventHandler;
   useBasic?: boolean;
 }> = ({ value, onClick, useBasic }) => {
-  const html = useMemo<string>(
-    () => (value ? MarkdownIt("default", { linkify: true }).render(value) : ""),
-    [value],
-  );
+  const html = useMemo<string>(() => {
+    if (!value) {
+      return "";
+    }
+
+    return MarkdownIt("default", { linkify: true, breaks: true }).render(value);
+  }, [value]);
 
   const El = useBasic ? BasicStyleContentContainer : ContentContainer;
 
