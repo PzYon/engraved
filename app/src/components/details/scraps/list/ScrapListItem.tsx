@@ -6,6 +6,7 @@ import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { ListItemWrapper } from "./ListItemWrapper";
 import { SxProps } from "@mui/system";
+import { Markdown } from "../markdown/Markdown";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
@@ -57,7 +58,9 @@ export const ScrapListItem: React.FC<{
           autoFocus={!listItem.label}
         />
       ) : (
-        <Typography sx={getSx("plain")}>{label}</Typography>
+        <Typography sx={getSx("plain")}>
+          <Markdown value={label} useBasic={true}></Markdown>
+        </Typography>
       )}
 
       <ActionIconButton

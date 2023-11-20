@@ -5,25 +5,50 @@ import { styled } from "@mui/material";
 export const Markdown: React.FC<{
   value: string;
   onClick?: MouseEventHandler;
-}> = ({ value, onClick }) => {
+  useBasic?: boolean;
+}> = ({ value, onClick, useBasic }) => {
   const html = useMemo<string>(
     () => (value ? MarkdownIt("default", { linkify: true }).render(value) : ""),
     [value],
   );
 
-  return (
-    <ContentContainer
-      onClick={onClick}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  const El = useBasic ? BasicStyleContentContainer : ContentContainer;
+
+  return <El onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
-const ContentContainer = styled("div")`
+const BaseContentContainer = styled("div")`
   overflow: auto;
-
   font-family: ${(p) => p.theme.typography.fontFamily};
+`;
 
+const BasicStyleContentContainer = styled(BaseContentContainer)`
+  p,
+  h1,
+  h2,
+  h3 h4,
+  h5,
+  h6,
+  li {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  ul {
+    margin: 0.5rem 0;
+    padding-left: 1rem;
+    list-style-type: circle;
+  }
+
+  pre > code {
+    overflow-y: auto;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+  }
+`;
+
+const ContentContainer = styled(BaseContentContainer)`
   h1,
   h2,
   h3 {
