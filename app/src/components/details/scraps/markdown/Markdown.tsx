@@ -20,19 +20,6 @@ export const Markdown: React.FC<{
 const BaseContentContainer = styled("div")`
   overflow: auto;
   font-family: ${(p) => p.theme.typography.fontFamily};
-`;
-
-const BasicStyleContentContainer = styled(BaseContentContainer)`
-  p,
-  h1,
-  h2,
-  h3 h4,
-  h5,
-  h6,
-  li {
-    margin: 0;
-    font-size: 1rem;
-  }
 
   ul {
     margin: 0.5rem 0;
@@ -45,6 +32,19 @@ const BasicStyleContentContainer = styled(BaseContentContainer)`
     display: block;
     box-sizing: border-box;
     width: 100%;
+  }
+`;
+
+const BasicStyleContentContainer = styled(BaseContentContainer)`
+  p,
+  h1,
+  h2,
+  h3 h4,
+  h5,
+  h6,
+  li {
+    margin: 0;
+    font-size: 1rem;
   }
 `;
 
@@ -74,20 +74,6 @@ const ContentContainer = styled(BaseContentContainer)`
 
   h3 {
     font-size: 1rem;
-  }
-
-  ul {
-    margin: 0.5rem 0;
-    padding-left: 1rem;
-    list-style-type: circle;
-  }
-
-  pre > code {
-    overflow-y: auto;
-    display: block;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 0.7rem;
   }
 
   img {
