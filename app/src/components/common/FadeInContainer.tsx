@@ -13,11 +13,8 @@ export const FadeInContainer: React.FC<{
     if (doPulsate) {
       setInterval(() => {
         setIsRendered(false);
-        console.log("ja");
-        setTimeout(() => {
-          setIsRendered(true);
-        }, 100);
-      }, 10000);
+        setTimeout(() => setIsRendered(true), 700);
+      }, 15000);
     }
   }, []);
 

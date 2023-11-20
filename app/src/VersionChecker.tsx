@@ -6,18 +6,6 @@ import { queryKeysFactory } from "./serverApi/reactQuery/queryKeysFactory";
 import { ActionFactory } from "./components/common/actions/ActionFactory";
 import { FadeInContainer } from "./components/common/FadeInContainer";
 
-async function isNewVersionAvailable() {
-  if (envSettings.isDev) {
-    return false;
-  }
-
-  const response = await fetch("/envSettings.js");
-  const text = await response.text();
-  const version = new RegExp(/version:"(\d+)"/gm).exec(text)[1];
-
-  return version !== envSettings.version;
-}
-
 export const VersionChecker: React.FC = () => {
   const isNewVersionAvailable = useIsNewVersionAvailableQuery();
 
@@ -43,3 +31,15 @@ const useIsNewVersionAvailableQuery = () => {
 
   return isNewDataAvailable;
 };
+
+async function isNewVersionAvailable() {
+  if (envSettings.isDev) {
+    return false;
+  }
+
+  const response = await fetch("/envSettings.js");
+  const text = await response.text();
+  const version = new RegExp(/version:"(\d+)"/gm).exec(text)[1];
+
+  return version !== envSettings.version;
+}
