@@ -4,6 +4,7 @@ import { ActionIconButton } from "./components/common/actions/ActionIconButton";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "./serverApi/reactQuery/queryKeysFactory";
 import { ActionFactory } from "./components/common/actions/ActionFactory";
+import { FadeInContainer } from "./components/common/FadeInContainer";
 
 async function isNewVersionAvailable() {
   if (envSettings.isDev) {
@@ -24,7 +25,11 @@ export const VersionChecker: React.FC = () => {
     return null;
   }
 
-  return <ActionIconButton action={ActionFactory.updateToNewVersion()} />;
+  return (
+    <FadeInContainer doPulsate={true}>
+      <ActionIconButton action={ActionFactory.updateToNewVersion()} />
+    </FadeInContainer>
+  );
 };
 
 const useIsNewVersionAvailableQuery = () => {

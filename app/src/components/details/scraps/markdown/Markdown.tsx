@@ -15,7 +15,7 @@ export const Markdown: React.FC<{
     return MarkdownIt("default", { linkify: true, breaks: true }).render(value);
   }, [value]);
 
-  const El = useBasic ? BasicStyleContentContainer : ContentContainer;
+  const El = useBasic ? BasicContentContainer : ContentContainer;
 
   return <El onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />;
 };
@@ -38,7 +38,7 @@ const BaseContentContainer = styled("div")`
   }
 `;
 
-const BasicStyleContentContainer = styled(BaseContentContainer)`
+const BasicContentContainer = styled(BaseContentContainer)`
   p,
   h1,
   h2,

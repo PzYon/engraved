@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
-import { Checkbox, styled, Typography } from "@mui/material";
+import { Checkbox, styled } from "@mui/material";
 import { ActionIconButton } from "../../../common/actions/ActionIconButton";
 import { RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
@@ -58,9 +58,9 @@ export const ScrapListItem: React.FC<{
           autoFocus={!listItem.label}
         />
       ) : (
-        <Typography sx={getSx("plain")}>
+        <ReadonlyContainer sx={getSx("plain")}>
           <Markdown value={label} useBasic={true}></Markdown>
-        </Typography>
+        </ReadonlyContainer>
       )}
 
       <ActionIconButton
@@ -79,7 +79,7 @@ export const ScrapListItem: React.FC<{
   function getSx(elementType: "plain" | "textbox") {
     const sx: SxProps = {
       flexGrow: 1,
-      marginTop: "6px",
+      marginTop: elementType === "plain" ? "8px" : "6px",
     };
 
     if (!listItem.isCompleted) {
@@ -171,3 +171,5 @@ const ListItem = styled("li")`
   display: flex;
   align-items: start;
 `;
+
+const ReadonlyContainer = styled("div")``;
