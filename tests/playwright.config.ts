@@ -44,7 +44,7 @@ export default defineConfig({
       stderr: "pipe",
       // for some reason, this api server takes a long
       // time to start on CI
-      timeout: 120 * 1000,
+      timeout: 180 * 1000,
       ignoreHTTPSErrors: true,
     },
   ],
