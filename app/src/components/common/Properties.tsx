@@ -17,7 +17,7 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
             <Property as="span">
               {p.label ? (
                 <Typography component="span" sx={{ fontWeight: "200" }}>
-                  {p.label}
+                  {p.label}{" "}
                 </Typography>
               ) : null}
 
