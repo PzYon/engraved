@@ -6,8 +6,7 @@ import { ServerApi } from "../../../serverApi/ServerApi";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IJournal } from "../../../serverApi/IJournal";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let timer: any;
+let timer: number;
 
 let lastLoadedSearchText = "";
 
@@ -75,13 +74,13 @@ export const AttributeComboSearch: React.FC<{
   );
 
   function filterOptionsAsync(searchText: string) {
-    clearTimeout(timer);
+    window.clearTimeout(timer);
 
     if (!searchText || searchText === lastLoadedSearchText) {
       return;
     }
 
-    timer = setTimeout(() => {
+    timer = window.setTimeout(() => {
       lastLoadedSearchText = searchText;
       ServerApi.searchJournalAttributes(journal.id, searchText).then(
         setOptions,

@@ -10,13 +10,20 @@ export const FadeInContainer: React.FC<{
   useEffect(() => {
     setIsRendered(true);
 
+    let interval: number;
     if (doPulsate) {
-      setInterval(() => {
+      interval = window.setInterval(() => {
         setIsRendered(false);
         setTimeout(() => setIsRendered(true), 700);
       }, 15000);
     }
-  }, []);
+
+    return () => {
+      if (interval) {
+        window.clearInterval(interval);
+      }
+    };
+  }, [doPulsate]);
 
   return (
     <ContainerSection style={{ opacity: isRendered ? 1 : 0 }}>
