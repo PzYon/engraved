@@ -13,7 +13,7 @@
     "@tanstack/react-query-devtools": "5.8.4",
     "@testing-library/jest-dom": "6.1.4",
     "@testing-library/user-event": "14.5.1",
-    "@types/jest": "29.5.8",
+    "@types/jest": "29.5.9",
     "@types/node": "20.9.2",
     "@types/react": "18.2.37",
     "@types/react-dom": "18.2.15",
@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "5.8.4",
-    "@types/jest": "29.5.8",
+    "@types/jest": "29.5.9",
     "@types/markdown-it": "13.0.6",
     "@typescript-eslint/eslint-plugin": "6.12.0",
     "@typescript-eslint/parser": "6.12.0",
