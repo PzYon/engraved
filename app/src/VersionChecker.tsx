@@ -4,18 +4,7 @@ import { ActionIconButton } from "./components/common/actions/ActionIconButton";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "./serverApi/reactQuery/queryKeysFactory";
 import { ActionFactory } from "./components/common/actions/ActionFactory";
-
-async function isNewVersionAvailable() {
-  if (envSettings.isDev) {
-    return false;
-  }
-
-  const response = await fetch("/envSettings.js");
-  const text = await response.text();
-  const version = new RegExp(/version:"(\d+)"/gm).exec(text)[1];
-
-  return version !== envSettings.version;
-}
+import { FadeInContainer } from "./components/common/FadeInContainer";
 
 export const VersionChecker: React.FC = () => {
   const isNewVersionAvailable = useIsNewVersionAvailableQuery();
@@ -24,7 +13,11 @@ export const VersionChecker: React.FC = () => {
     return null;
   }
 
-  return <ActionIconButton action={ActionFactory.updateToNewVersion()} />;
+  return (
+    <FadeInContainer doPulsate={true}>
+      <ActionIconButton action={ActionFactory.updateToNewVersion()} />
+    </FadeInContainer>
+  );
 };
 
 const useIsNewVersionAvailableQuery = () => {
@@ -38,3 +31,15 @@ const useIsNewVersionAvailableQuery = () => {
 
   return isNewDataAvailable;
 };
+
+async function isNewVersionAvailable() {
+  if (envSettings.isDev) {
+    return false;
+  }
+
+  const response = await fetch("/envSettings.js");
+  const text = await response.text();
+  const version = new RegExp(/version:"(\d+)"/gm).exec(text)[1];
+
+  return version !== envSettings.version;
+}

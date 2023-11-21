@@ -37,6 +37,7 @@ export class ServerApi {
   private static googlePrompt: () => Promise<{
     isSuccess: boolean;
   }>;
+
   private static onAuthenticated: () => void;
 
   static setGooglePrompt(

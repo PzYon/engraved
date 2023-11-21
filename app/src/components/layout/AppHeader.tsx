@@ -73,7 +73,6 @@ export const AppHeader: React.FC = () => {
                 </Typography>
               </ActionLink>
             </div>
-            <VersionChecker />
             <AppInfoLauncher />
             <RefreshData />
             <ActionIconButton
@@ -88,6 +87,7 @@ export const AppHeader: React.FC = () => {
             <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
+            <VersionChecker />
             <Link to="/entries">
               <User user={user} />
             </Link>
