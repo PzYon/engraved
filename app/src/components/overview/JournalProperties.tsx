@@ -7,14 +7,19 @@ import { styled } from "@mui/material";
 import { Favorite } from "./Favorite";
 import { useJournalPermissions } from "./useJournalPermissions";
 import { UserRole } from "../../serverApi/UserRole";
+import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 
-export const JournalProperties: React.FC<{ journal: IJournal }> = ({
-  journal,
-}) => {
+export const JournalProperties: React.FC<{
+  journal: IJournal;
+  position?: "list" | "details";
+}> = ({ journal, position }) => {
   const journalPermissions = useJournalPermissions(journal.permissions);
 
+  const paddingX =
+    useDeviceWidth() === DeviceWidth.Small && position === "details" ? 2 : 0;
+
   return (
-    <Host>
+    <Host sx={{ px: paddingX }}>
       <Properties
         properties={[
           {
