@@ -21,7 +21,7 @@ export const JournalDetails: React.FC = () => {
 
   return (
     <div data-testid="journal" data-journal-id={journal.id}>
-      <JournalProperties journal={journal} />
+      <JournalProperties journal={journal} position={"details"} />
 
       <Routes>
         {journal.type === JournalType.Scraps ? (

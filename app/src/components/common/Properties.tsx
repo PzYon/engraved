@@ -1,15 +1,12 @@
 import React from "react";
 import { IPropertyDefinition } from "./IPropertyDefinition";
 import { styled, Typography } from "@mui/material";
-import { DeviceWidth, useDeviceWidth } from "./useDeviceWidth";
 
 export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
   properties,
 }) => {
-  const deviceWidth = useDeviceWidth();
-
   return (
-    <Host sx={{ p: deviceWidth === DeviceWidth.Small ? 2 : 0 }}>
+    <Host>
       {properties
         .filter((p) => !p.hideWhen || !p.hideWhen())
         .map((p) => (
