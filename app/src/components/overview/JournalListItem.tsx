@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { IJournal } from "../../serverApi/IJournal";
-import { Box, Typography } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import { JournalHeaderActions } from "./JournalHeaderActions";
 import { JournalProperties } from "./JournalProperties";
 import { JournalTypeIcon } from "../common/JournalTypeIcon";
@@ -39,30 +39,32 @@ export const JournalListItem: React.FC<{
     >
       <PageSection key={journal.id} data-testid={journal.id}>
         <Box sx={{ display: "flex" }}>
-          <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
           <Box
             sx={{
               flexGrow: 1,
-              pl: deviceWidth === DeviceWidth.Small ? 2 : 3,
               wordBreak: "break-all",
             }}
           >
-            <ActionLink
-              action={ActionFactory.goToJournal(journal.id, isFocused)}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "lighter",
-                  display: "flex",
-                  alignItems: "center",
-                  lineHeight: 1,
-                  marginTop: "-3px",
-                }}
+            <TitleRow>
+              <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
+
+              <ActionLink
+                action={ActionFactory.goToJournal(journal.id, isFocused)}
               >
-                {journal.name}
-              </Typography>
-            </ActionLink>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: "lighter",
+                    display: "flex",
+                    alignItems: "center",
+                    lineHeight: 1,
+                    marginTop: "-3px",
+                  }}
+                >
+                  {journal.name}
+                </Typography>
+              </ActionLink>
+            </TitleRow>
             <JournalProperties journal={journal} position={"list"} />
             {deviceWidth === DeviceWidth.Small ? (
               <Box sx={{ display: "flex", mt: 2 }}>
@@ -86,3 +88,8 @@ export const JournalListItem: React.FC<{
     </Wrapper>
   );
 };
+
+const TitleRow = styled("div")`
+  display: flex;
+  padding-right: ${(p) => p.theme.spacing(1)};
+`;

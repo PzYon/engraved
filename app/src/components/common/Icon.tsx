@@ -28,7 +28,7 @@ const PageTitleHost = styled("span")`
     background-color: ${(p) => p.theme.palette.background.default} !important;
     border: 2px solid ${(p) => p.theme.palette.primary.main};
     margin-top: 5px;
-    margin-right: 10px;
+    margin-right: ${(p) => p.theme.spacing(2)};
     padding: 2px;
     height: 0.8em;
     width: 0.8em;
@@ -41,6 +41,7 @@ const OverviewHost = styled("span")`
     border: 2px solid ${(p) => p.theme.palette.primary.main};
     color: ${(p) => p.theme.palette.primary.main};
     padding: 2px;
+    margin-right: 16px;
     width: 0.8em;
     height: 0.8em;
   }
