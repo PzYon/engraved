@@ -2,6 +2,7 @@
   "name": "engraved-app",
   "version": "0.1.0",
   "author": "PzYon",
+  "type": "module",
   "dependencies": {
     "@emotion/styled": "11.11.0",
     "@microsoft/applicationinsights-web": "3.0.5",
