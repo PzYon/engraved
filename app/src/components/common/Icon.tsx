@@ -41,6 +41,7 @@ const OverviewHost = styled("span")`
     border: 2px solid ${(p) => p.theme.palette.primary.main};
     color: ${(p) => p.theme.palette.primary.main};
     padding: 2px;
+    margin-right: 16px;
     width: 0.8em;
     height: 0.8em;
   }
