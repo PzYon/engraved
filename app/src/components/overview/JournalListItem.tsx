@@ -91,4 +91,5 @@ export const JournalListItem: React.FC<{
 
 const TitleRow = styled("div")`
   display: flex;
+  padding-right: ${(p) => p.theme.spacing(1)};
 `;

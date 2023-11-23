@@ -23,6 +23,11 @@ export const JournalProperties: React.FC<{
       <Properties
         properties={[
           {
+            key: "favorite",
+            node: <Favorite journalId={journal.id} />,
+            label: null,
+          },
+          {
             key: "edited-on-date",
             node: <FormatDate value={journal.editedOn} />,
             label: "Edited",
@@ -49,11 +54,6 @@ export const JournalProperties: React.FC<{
             node: <Users users={journalPermissions.allExceptOwner} />,
             hideWhen: () => !journalPermissions.allExceptOwner.length,
             label: "Shared with",
-          },
-          {
-            key: "favorite",
-            node: <Favorite journalId={journal.id} />,
-            label: null,
           },
         ]}
       />
