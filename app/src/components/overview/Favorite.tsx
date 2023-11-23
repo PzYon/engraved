@@ -4,7 +4,7 @@ import { ActionIconButton } from "../common/actions/ActionIconButton";
 import { Star, StarOutline } from "@mui/icons-material";
 import { useAddJournalToFavoritesMutation } from "../../serverApi/reactQuery/mutations/useAddJournalToFavoritesMutation";
 import { useRemoveJournalFromFavoritesMutation } from "../../serverApi/reactQuery/mutations/useRemoveJournalFromFavoritesMutation";
-import styled from "@emotion/styled";
+import { styled } from "@mui/material";
 
 export const Favorite: React.FC<{ journalId: string }> = ({ journalId }) => {
   const { user } = useAppContext();
