@@ -23,6 +23,8 @@ import { IEntriesTableGroup } from "./IEntriesTableGroup";
 import { EntriesDateTableCell } from "./EntriesDateTableCell";
 import { EntriesTableBodyGroup } from "./EntriesTableBodyGroup";
 import { ActionFactory } from "../../common/actions/ActionFactory";
+import { NewEntriesTableRow } from "./editableTable/NewEntriesTable";
+import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -76,6 +78,7 @@ export const EntriesTable: React.FC<{
         </TableRow>
       </TableHead>
       <TableBody>
+        <NewEntriesTableRow entry={{} as IGaugeEntry} />
         {tableGroups.map((group, i) => (
           <EntriesTableBodyGroup
             key={group.label}

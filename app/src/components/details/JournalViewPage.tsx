@@ -22,6 +22,7 @@ import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
+import { NewEntriesTable } from "./entriesTable/editableTable/NewEntriesTable";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -150,6 +151,11 @@ export const JournalViewPage: React.FC = () => {
 
       {entries?.length ? (
         <PageSection overflowXScroll={true}>
+          <NewEntriesTable
+            journal={journal}
+            entries={entries}
+            showGroupTotals={showGroupTotals}
+          />
           <EntriesTable
             journal={journal}
             entries={entries}
