@@ -155,6 +155,7 @@ export const JournalViewPage: React.FC = () => {
             journal={journal}
             entries={entries}
             showGroupTotals={showGroupTotals}
+            columns={[]}
           />
           <EntriesTable
             journal={journal}

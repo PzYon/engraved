@@ -7,55 +7,75 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { IGaugeEntry } from "../../../../serverApi/IGaugeEntry";
 import { DateSelector } from "../../../common/DateSelector";
+import { IEntriesTableColumnDefinition } from "../IEntriesTableColumnDefinition";
 
 export const NewEntriesTable: React.FC<{
   journal: IJournal;
   entries: IEntry[];
   showGroupTotals: boolean;
-}> = ({ entries }) => {
+  columns: IEntriesTableColumnDefinition[];
+}> = ({ entries, columns }) => {
   return (
     <Table>
       <TableBody>
         {entries.map((e) => (
-          <NewEntriesTableRow key={e.key} entry={e as IGaugeEntry} />
+          <NewEntriesTableRow
+            key={e.id}
+            entry={e as IGaugeEntry}
+            columns={columns}
+          />
         ))}
       </TableBody>
     </Table>
   );
 };
 
-export const NewEntriesTableRow: React.FC<{ entry: IGaugeEntry }> = ({
-  entry,
-}) => {
+export const NewEntriesTableRow: React.FC<{
+  entry: IGaugeEntry;
+  columns: IEntriesTableColumnDefinition[];
+}> = ({ columns }) => {
+  const [newEntry, setNewEntry] = useState<IEntry>({} as unknown as IEntry);
+
   return (
     <TableRow>
-      <TableCell />
-      <NewEntriesTableCell
-        value={entry.dateTime}
-        type={"date"}
-        setValue={(value) => alert("dateTime changed: " + value)}
-      />
-      <NewEntriesTableCell
-        value={entry.value?.toString() ?? ""}
-        type={"number"}
-        setValue={(value) => alert("value changed: " + value)}
-      />
-      <NewEntriesTableCell
-        value={"attributes"}
-        type={"text"}
-        setValue={() => alert("todo: attributes!")}
-      />
-      <NewEntriesTableCell
-        value={entry.notes}
-        type={"text"}
-        setValue={(value) => alert("notes changed: " + value)}
-      />
-      <TableCell />
+      {columns.map((c) => (
+        <TableCell key={c.key}>
+          {c.getEditModeReactNode?.(newEntry, setNewEntry) ?? <></>}
+        </TableCell>
+      ))}
     </TableRow>
   );
+  /*
+              return (
+                <TableRow>
+                  <TableCell />
+                  <NewEntriesTableCell
+                    value={entry.dateTime}
+                    type={"date"}
+                    setValue={(value) => alert("dateTime changed: " + value)}
+                  />
+                  <NewEntriesTableCell
+                    value={entry.value?.toString() ?? ""}
+                    type={"number"}
+                    setValue={(value) => alert("value changed: " + value)}
+                  />
+                  <NewEntriesTableCell
+                    value={"attributes"}
+                    type={"text"}
+                    setValue={() => alert("attributes!")}
+                  />
+                  <NewEntriesTableCell
+                    value={entry.notes}
+                    type={"text"}
+                    setValue={(value) => alert("notes changed: " + value)}
+                  />
+                  <TableCell />
+                </TableRow>
+              );
+             */
 };
 
 export const NewEntriesTableCell: React.FC<{

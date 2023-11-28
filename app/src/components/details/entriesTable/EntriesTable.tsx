@@ -12,6 +12,7 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import { EntryActionButtons } from "./EntryActionButtons";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -25,6 +26,7 @@ import { EntriesTableBodyGroup } from "./EntriesTableBodyGroup";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { NewEntriesTableRow } from "./editableTable/NewEntriesTable";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
+import { DateSelector } from "../../common/DateSelector";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -78,7 +80,7 @@ export const EntriesTable: React.FC<{
         </TableRow>
       </TableHead>
       <TableBody>
-        <NewEntriesTableRow entry={{} as IGaugeEntry} />
+        <NewEntriesTableRow columns={columns} entry={{} as IGaugeEntry} />
         {tableGroups.map((group, i) => (
           <EntriesTableBodyGroup
             key={group.label}
@@ -143,6 +145,16 @@ function getColumnsBefore(
           <EntriesDateTableCell date={entry.dateTime} />
         ) : null,
       getGroupKey: (entry) => getGroupKey(journal.type, entry),
+      getEditModeReactNode: (entry, updateEntry) => {
+        return (
+          <DateSelector
+            setDate={(d) => {
+              updateEntry({ ...entry, dateTime: d.toString() });
+            }}
+            date={new Date(entry.dateTime)}
+          />
+        );
+      },
     },
   ];
 }
@@ -165,12 +177,39 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       getHeaderReactNode: () => translations.columnName_notes,
       key: "_notes",
       getValueReactNode: (_, entry) => entry.notes,
+      getEditModeReactNode: (entry, updateEntry) => {
+        return (
+          <TextField
+            value={entry.notes}
+            onChange={(x) => {
+              updateEntry({
+                ...entry,
+                notes: x.target.value,
+              });
+            }}
+          />
+        );
+      },
     },
     {
       getHeaderReactNode: () => translations.columnName_actions,
       key: "_actions",
       width: "80px",
       getValueReactNode: (_, entry) => <EntryActionButtons entry={entry} />,
+      getEditModeReactNode: () => {
+        return (
+          <ActionIconButton
+            action={ActionFactory.save(
+              () => {
+                alert("do save.");
+                return Promise.resolve();
+              },
+              false,
+              true,
+            )}
+          />
+        );
+      },
     },
   ];
 }

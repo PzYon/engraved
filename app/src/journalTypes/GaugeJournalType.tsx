@@ -9,6 +9,7 @@ import { IJournal } from "../serverApi/IJournal";
 import React from "react";
 import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { IGaugeEntry } from "../serverApi/IGaugeEntry";
+import { TextField } from "@mui/material";
 
 export class GaugeJournalType implements IJournalType {
   type = JournalType.Gauge;
@@ -39,6 +40,20 @@ export class GaugeJournalType implements IJournalType {
         getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) =>
           getValue(entry),
         getGroupReactNode: (group) => group.totalString,
+        getEditModeReactNode: (entry, updateEntry) => {
+          return (
+            <TextField
+              value={getValue(entry)}
+              type="number"
+              onChange={(x) => {
+                updateEntry({
+                  ...entry,
+                  value: x.target.value ? Number(x.target.value) : undefined,
+                } as IGaugeEntry);
+              }}
+            />
+          );
+        },
       },
     ];
   }

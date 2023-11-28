@@ -20,6 +20,11 @@ export interface IEntriesTableColumnDefinition {
     onClick?: () => void,
   ) => React.ReactNode;
 
+  getEditModeReactNode?: (
+    entry: IEntry,
+    updateEntry: (e: IEntry) => void,
+  ) => React.ReactNode;
+
   getRawValue?: (entry: IEntry) => number;
 
   isSummable?: boolean;
