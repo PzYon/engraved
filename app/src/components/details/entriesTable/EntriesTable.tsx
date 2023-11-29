@@ -12,7 +12,6 @@ import {
   TableFooter,
   TableHead,
   TableRow,
-  TextField,
 } from "@mui/material";
 import { EntryActionButtons } from "./EntryActionButtons";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -24,9 +23,9 @@ import { IEntriesTableGroup } from "./IEntriesTableGroup";
 import { EntriesDateTableCell } from "./EntriesDateTableCell";
 import { EntriesTableBodyGroup } from "./EntriesTableBodyGroup";
 import { ActionFactory } from "../../common/actions/ActionFactory";
-import { NewEntriesTableRow } from "./editableTable/NewEntriesTable";
-import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
-import { DateSelector } from "../../common/DateSelector";
+import { NewEntriesTableRow } from "./editableTable/NewEntriesTableRow";
+import { NewEntriesTableCell } from "./editableTable/NewEntriesTableCell";
+import { NewEntriesTableSaveAction } from "./editableTable/NewEntriesTableSaveAction";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -80,7 +79,7 @@ export const EntriesTable: React.FC<{
         </TableRow>
       </TableHead>
       <TableBody>
-        <NewEntriesTableRow columns={columns} entry={{} as IGaugeEntry} />
+        <NewEntriesTableRow columns={columns} journalId={journal.id} />
         {tableGroups.map((group, i) => (
           <EntriesTableBodyGroup
             key={group.label}
@@ -145,13 +144,13 @@ function getColumnsBefore(
           <EntriesDateTableCell date={entry.dateTime} />
         ) : null,
       getGroupKey: (entry) => getGroupKey(journal.type, entry),
-      getEditModeReactNode: (entry, updateEntry) => {
+      getEditModeReactNode: (command, updateCommand) => {
         return (
-          <DateSelector
-            setDate={(d) => {
-              updateEntry({ ...entry, dateTime: d.toString() });
-            }}
-            date={new Date(entry.dateTime)}
+          <NewEntriesTableCell
+            command={command}
+            updateCommand={updateCommand}
+            fieldType={"date"}
+            fieldName={"dateTime"}
           />
         );
       },
@@ -177,16 +176,13 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       getHeaderReactNode: () => translations.columnName_notes,
       key: "_notes",
       getValueReactNode: (_, entry) => entry.notes,
-      getEditModeReactNode: (entry, updateEntry) => {
+      getEditModeReactNode: (command, updateCommand) => {
         return (
-          <TextField
-            value={entry.notes}
-            onChange={(x) => {
-              updateEntry({
-                ...entry,
-                notes: x.target.value,
-              });
-            }}
+          <NewEntriesTableCell
+            command={command}
+            updateCommand={updateCommand}
+            fieldType={"text"}
+            fieldName={"notes"}
           />
         );
       },
@@ -196,17 +192,14 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       key: "_actions",
       width: "80px",
       getValueReactNode: (_, entry) => <EntryActionButtons entry={entry} />,
-      getEditModeReactNode: () => {
+      getEditModeReactNode: (command, updateCommand) => {
         return (
-          <ActionIconButton
-            action={ActionFactory.save(
-              () => {
-                alert("do save.");
-                return Promise.resolve();
-              },
-              false,
-              true,
-            )}
+          <NewEntriesTableSaveAction
+            command={command}
+            journalType={journal.type}
+            onAdded={() => {
+              updateCommand({ journalId: command.journalId, value: undefined });
+            }}
           />
         );
       },

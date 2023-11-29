@@ -2,6 +2,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IEntriesTableGroup } from "./IEntriesTableGroup";
+import { IUpsertGaugeEntryCommand } from "../../../serverApi/commands/IUpsertGaugeEntryCommand";
 
 export interface IEntriesTableColumnDefinition {
   key: string;
@@ -21,8 +22,8 @@ export interface IEntriesTableColumnDefinition {
   ) => React.ReactNode;
 
   getEditModeReactNode?: (
-    entry: IEntry,
-    updateEntry: (e: IEntry) => void,
+    command: IUpsertGaugeEntryCommand,
+    updateCommand: (c: IUpsertGaugeEntryCommand) => void,
   ) => React.ReactNode;
 
   getRawValue?: (entry: IEntry) => number;
