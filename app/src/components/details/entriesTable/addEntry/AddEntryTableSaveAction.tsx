@@ -5,7 +5,7 @@ import { useUpsertEntryMutation } from "../../../../serverApi/reactQuery/mutatio
 import { JournalType } from "../../../../serverApi/JournalType";
 import { IUpsertGaugeEntryCommand } from "../../../../serverApi/commands/IUpsertGaugeEntryCommand";
 
-export const NewEntriesTableSaveAction: React.FC<{
+export const AddEntryTableSaveAction: React.FC<{
   command: IUpsertGaugeEntryCommand;
   journalType: JournalType;
   onAdded: () => void;
@@ -14,10 +14,7 @@ export const NewEntriesTableSaveAction: React.FC<{
     command.journalId,
     journalType,
     "",
-    () => {
-      alert("hää jo, s'isch gange - todo: clear fields");
-      onAdded();
-    },
+    () => onAdded(),
   );
 
   return (

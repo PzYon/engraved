@@ -10,7 +10,7 @@ import React from "react";
 import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { IGaugeEntry } from "../serverApi/IGaugeEntry";
 
-import { NewEntriesTableCell } from "../components/details/entriesTable/editableTable/NewEntriesTableCell";
+import { AddEntryTableCell } from "../components/details/entriesTable/addEntry/AddEntryTableCell";
 
 export class GaugeJournalType implements IJournalType {
   type = JournalType.Gauge;
@@ -43,7 +43,8 @@ export class GaugeJournalType implements IJournalType {
         getGroupReactNode: (group) => group.totalString,
         getEditModeReactNode: (command, updateCommand) => {
           return (
-            <NewEntriesTableCell
+            <AddEntryTableCell
+              journal={undefined}
               command={command}
               updateCommand={updateCommand}
               fieldType={"number"}
