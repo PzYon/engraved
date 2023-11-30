@@ -20,7 +20,13 @@ export const EntriesTableBodyGroup: React.FC<{
         {columns.map((c) => {
           return (
             <TableCell key={c.key}>
-              {c.getGroupReactNode?.(group, () => setIsCollapsed(!isCollapsed))}
+              {group.entries.length > 1
+                ? c.getGroupReactNode?.(group, () =>
+                    setIsCollapsed(!isCollapsed),
+                  )
+                : c.getValueReactNode(group, group.entries[0], true, () =>
+                    setIsCollapsed(!isCollapsed),
+                  )}
             </TableCell>
           );
         })}
