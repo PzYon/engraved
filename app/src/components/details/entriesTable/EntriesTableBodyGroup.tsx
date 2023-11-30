@@ -3,6 +3,7 @@ import { IEntriesTableGroup } from "./IEntriesTableGroup";
 import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import { TableCell, TableRow } from "@mui/material";
 import { StyledTableRow } from "./EntriesTable";
+import { IEntry } from "../../../serverApi/IEntry";
 
 export const EntriesTableBodyGroup: React.FC<{
   group: IEntriesTableGroup;
@@ -24,9 +25,7 @@ export const EntriesTableBodyGroup: React.FC<{
                 ? c.getGroupReactNode?.(group, () =>
                     setIsCollapsed(!isCollapsed),
                   )
-                : c.getValueReactNode(group, group.entries[0], true, () =>
-                    setIsCollapsed(!isCollapsed),
-                  )}
+                : renderValueNode(c, group.entries[0], true)}
             </TableCell>
           );
         })}
@@ -40,9 +39,7 @@ export const EntriesTableBodyGroup: React.FC<{
         <StyledTableRow key={entry.id}>
           {columns.map((c) => (
             <TableCell key={c.key}>
-              {c.getValueReactNode(group, entry, i === 0, () =>
-                setIsCollapsed(!isCollapsed),
-              )}
+              {renderValueNode(c, entry, i === 0)}
             </TableCell>
           ))}
         </StyledTableRow>
@@ -58,4 +55,14 @@ export const EntriesTableBodyGroup: React.FC<{
       ) : null}
     </>
   );
+
+  function renderValueNode(
+    column: IEntriesTableColumnDefinition,
+    entry: IEntry,
+    isFirstRow: boolean,
+  ) {
+    return column.getValueReactNode(group, entry, isFirstRow, () =>
+      setIsCollapsed(!isCollapsed),
+    );
+  }
 };
