@@ -12,6 +12,7 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  styled,
 } from "@mui/material";
 import { EntryActionButtons } from "./EntryActionButtons";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -67,7 +68,7 @@ export const EntriesTable: React.FC<{
   return (
     <Table data-testid="entries-table">
       <TableHead>
-        <TableRow>
+        <StyledTableRow>
           {columns.map((c) => (
             <TableCell
               key={c.key}
@@ -76,7 +77,7 @@ export const EntriesTable: React.FC<{
               {c.getHeaderReactNode(() => setCollapseAll(!collapseAll))}
             </TableCell>
           ))}
-        </TableRow>
+        </StyledTableRow>
       </TableHead>
       <TableBody>
         <AddEntryTableRow columns={columns} journalId={journal.id} />
@@ -94,18 +95,33 @@ export const EntriesTable: React.FC<{
       </TableBody>
       {entries.length && columns.filter((c) => c.isSummable).length ? (
         <TableFooter>
-          <TableRow>
+          <StyledTableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
                 {getTotalValue(c, tableGroups, type)}
               </TableCell>
             ))}
-          </TableRow>
+          </StyledTableRow>
         </TableFooter>
       ) : null}
     </Table>
   );
 };
+
+export const StyledTableRow = styled(TableRow)`
+  th:last-of-type,
+  td:last-of-type,
+  th:first-of-type,
+  td:first-of-type {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  td,
+  th {
+    padding: ${(p) => p.theme.spacing(1.5)};
+  }
+`;
 
 function getColumnsBefore(
   journal: IJournal,

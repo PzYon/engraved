@@ -1,6 +1,6 @@
 import React from "react";
 import { DateSelector } from "../../../common/DateSelector";
-import { TextField } from "@mui/material";
+import { styled, TextField } from "@mui/material";
 import { IUpsertGaugeEntryCommand } from "../../../../serverApi/commands/IUpsertGaugeEntryCommand";
 import { IJournalAttributeValues } from "../../../../serverApi/IJournalAttributeValues";
 import { JournalAttributesSelector } from "../../add/JournalAttributesSelector";
@@ -36,13 +36,15 @@ export const AddEntryTableCell: React.FC<{
 
   if (fieldType === "attributes") {
     return (
-      <JournalAttributesSelector
-        attributes={journal.attributes}
-        selectedAttributeValues={{}}
-        onChange={(attributesValues: IJournalAttributeValues) => {
-          updateCommandWrapped(attributesValues);
-        }}
-      />
+      <JournalAttributesSelectorWrapper>
+        <JournalAttributesSelector
+          attributes={journal.attributes}
+          selectedAttributeValues={{}}
+          onChange={(attributesValues: IJournalAttributeValues) => {
+            updateCommandWrapped(attributesValues);
+          }}
+        />
+      </JournalAttributesSelectorWrapper>
     );
   }
 
@@ -57,3 +59,9 @@ export const AddEntryTableCell: React.FC<{
     />
   );
 };
+
+const JournalAttributesSelectorWrapper = styled("div")`
+  .journal-attribute-selector-wrapper:first-of-type {
+    margin-top: 0;
+  }
+`;
