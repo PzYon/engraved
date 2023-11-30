@@ -4,18 +4,23 @@ import { IEntriesTableColumnDefinition } from "../IEntriesTableColumnDefinition"
 import { IUpsertGaugeEntryCommand } from "../../../../serverApi/commands/IUpsertGaugeEntryCommand";
 import { StyledTableRow } from "../EntriesTable";
 import { DeviceWidth, useDeviceWidth } from "../../../common/useDeviceWidth";
+import { IJournal } from "../../../../serverApi/IJournal";
+import { JournalType } from "../../../../serverApi/JournalType";
 
 export const AddEntryTableRow: React.FC<{
-  journalId: string;
+  journal: IJournal;
   columns: IEntriesTableColumnDefinition[];
-}> = ({ journalId, columns }) => {
+}> = ({ journal, columns }) => {
   const [command, setCommand] = useState<IUpsertGaugeEntryCommand>({
-    journalId: journalId,
+    journalId: journal.id,
     value: undefined,
     dateTime: new Date(),
   });
 
-  if (useDeviceWidth() === DeviceWidth.Small) {
+  if (
+    useDeviceWidth() === DeviceWidth.Small ||
+    (journal.type !== JournalType.Gauge && journal.type !== JournalType.Counter)
+  ) {
     return null;
   }
 

@@ -80,7 +80,7 @@ export const EntriesTable: React.FC<{
         </StyledTableRow>
       </TableHead>
       <TableBody>
-        <AddEntryTableRow columns={columns} journalId={journal.id} />
+        <AddEntryTableRow columns={columns} journal={journal} />
         {tableGroups.map((group, i) => (
           <EntriesTableBodyGroup
             key={group.label}
