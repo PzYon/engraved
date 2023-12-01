@@ -21,9 +21,12 @@ export interface IEntriesTableColumnDefinition {
     onClick?: () => void,
   ) => React.ReactNode;
 
-  getEditModeReactNode?: (
+  getAddEntryReactNode?: (
     command: IUpsertGaugeEntryCommand,
-    updateCommand: (c: IUpsertGaugeEntryCommand, isReset?: boolean) => void,
+    updateCommand: (
+      command: IUpsertGaugeEntryCommand,
+      isReset?: boolean,
+    ) => void,
   ) => React.ReactNode;
 
   getRawValue?: (entry: IEntry) => number;

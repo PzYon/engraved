@@ -168,10 +168,9 @@ function getColumnsBefore(
           <EntriesDateTableCell date={entry.dateTime} />
         ) : null,
       getGroupKey: (entry) => getGroupKey(journal.type, entry),
-      getEditModeReactNode: (command, updateCommand) => {
+      getAddEntryReactNode: (command, updateCommand) => {
         return (
           <AddEntryTableCell
-            key={command.dateTime.toString()}
             journal={journal}
             command={command}
             updateCommand={updateCommand}
@@ -199,7 +198,7 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
           attributeValues={entry.journalAttributeValues}
         />
       ),
-      getEditModeReactNode: (command, updateCommand) => {
+      getAddEntryReactNode: (command, updateCommand) => {
         return (
           <AddEntryTableCell
             journal={journal}
@@ -215,7 +214,7 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       key: "_notes",
       getHeaderReactNode: () => translations.columnName_notes,
       getValueReactNode: (_, entry) => entry.notes,
-      getEditModeReactNode: (command, updateCommand) => {
+      getAddEntryReactNode: (command, updateCommand) => {
         return (
           <AddEntryTableCell
             journal={journal}
@@ -232,7 +231,7 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       width: "80px",
       getHeaderReactNode: () => translations.columnName_actions,
       getValueReactNode: (_, entry) => <EntryActionButtons entry={entry} />,
-      getEditModeReactNode: (command, updateCommand) => {
+      getAddEntryReactNode: (command, updateCommand) => {
         return (
           <AddEntryTableSaveAction
             command={command}
