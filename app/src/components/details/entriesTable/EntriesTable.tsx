@@ -6,13 +6,13 @@ import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import {
+  styled,
   Table,
   TableBody,
   TableCell,
   TableFooter,
   TableHead,
   TableRow,
-  styled,
 } from "@mui/material";
 import { EntryActionButtons } from "./EntryActionButtons";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -130,14 +130,14 @@ function getColumnsBefore(
 ): IEntriesTableColumnDefinition[] {
   return [
     {
+      key: "_collapse",
+      width: "40px",
       getHeaderReactNode: () =>
         collapseAll ? (
           <ActionIconButton action={ActionFactory.collapse(onHeaderClick)} />
         ) : (
           <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
         ),
-      key: "_collapse",
-      width: "40px",
       getValueReactNode: (group, _, isFirstRowOfGroup, onClick) => {
         if (!isFirstRowOfGroup || group.entries.length < 2) {
           return null;
@@ -150,8 +150,8 @@ function getColumnsBefore(
       },
     },
     {
-      getHeaderReactNode: () => translations.columnName_date,
       key: "_date",
+      getHeaderReactNode: () => translations.columnName_date,
       getGroupReactNode: (group) => (
         <EntriesDateTableCell date={new Date(group.label)} />
       ),
@@ -163,11 +163,13 @@ function getColumnsBefore(
       getEditModeReactNode: (command, updateCommand) => {
         return (
           <AddEntryTableCell
+            key={command.dateTime.toString()}
             journal={journal}
             command={command}
             updateCommand={updateCommand}
             fieldType={"date"}
             fieldName={"dateTime"}
+            hasFocus={true}
           />
         );
       },
@@ -178,8 +180,8 @@ function getColumnsBefore(
 function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
   return [
     {
-      getHeaderReactNode: () => translations.columnName_attributes,
       key: "_attributes",
+      getHeaderReactNode: () => translations.columnName_attributes,
       doHide: (journal: IJournal): boolean =>
         !Object.keys(journal.attributes ?? {}).length,
       getValueReactNode: (_, entry) => (
@@ -201,8 +203,8 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       },
     },
     {
-      getHeaderReactNode: () => translations.columnName_notes,
       key: "_notes",
+      getHeaderReactNode: () => translations.columnName_notes,
       getValueReactNode: (_, entry) => entry.notes,
       getEditModeReactNode: (command, updateCommand) => {
         return (
@@ -217,9 +219,9 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       },
     },
     {
-      getHeaderReactNode: () => translations.columnName_actions,
       key: "_actions",
       width: "80px",
+      getHeaderReactNode: () => translations.columnName_actions,
       getValueReactNode: (_, entry) => <EntryActionButtons entry={entry} />,
       getEditModeReactNode: (command, updateCommand) => {
         return (
@@ -227,7 +229,12 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
             command={command}
             journalType={journal.type}
             onAdded={() => {
-              updateCommand({ journalId: command.journalId, value: undefined });
+              updateCommand({
+                journalId: command.journalId,
+                value: undefined,
+                dateTime: new Date(),
+                journalAttributeValues: {},
+              });
             }}
           />
         );

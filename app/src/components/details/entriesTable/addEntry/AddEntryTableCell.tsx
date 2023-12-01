@@ -12,7 +12,15 @@ export const AddEntryTableCell: React.FC<{
   updateCommand: (c: IUpsertGaugeEntryCommand) => void;
   fieldName: string;
   fieldType: "text" | "number" | "date" | "attributes";
-}> = ({ journal, command, updateCommand, fieldName, fieldType = "text" }) => {
+  hasFocus?: boolean;
+}> = ({
+  journal,
+  command,
+  updateCommand,
+  fieldName,
+  fieldType = "text",
+  hasFocus,
+}) => {
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   const value = (command as any)[fieldName] ?? "";
 
@@ -26,6 +34,7 @@ export const AddEntryTableCell: React.FC<{
   if (fieldType === "date") {
     return (
       <DateSelector
+        hasFocus={hasFocus}
         date={new Date(value)}
         setDate={(d) => {
           updateCommandWrapped(d.toString());
@@ -38,6 +47,7 @@ export const AddEntryTableCell: React.FC<{
     return (
       <JournalAttributesSelectorWrapper>
         <JournalAttributesSelector
+          key={command.dateTime.toString()}
           attributes={journal.attributes}
           selectedAttributeValues={{}}
           onChange={(attributesValues: IJournalAttributeValues) => {

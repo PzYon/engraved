@@ -35,6 +35,7 @@ export class GaugeJournalType implements IJournalType {
     return [
       {
         key: "_value",
+        width: "100px",
         getHeaderReactNode: () => "Value",
         isSummable: true,
         getRawValue: (entry: IEntry) => getValue(entry),

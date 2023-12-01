@@ -16,10 +16,12 @@ export const DateSelector: React.FC<{
   label?: string;
   showTime?: boolean;
   showClear?: boolean;
-}> = ({ setDate, date, label, showTime, showClear }) => {
+  hasFocus?: boolean;
+}> = ({ setDate, date, label, showTime, showClear, hasFocus }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
       <DesktopDatePicker
+        autoFocus={hasFocus}
         label={label}
         value={date || null}
         onChange={(d) => {
