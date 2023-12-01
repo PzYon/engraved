@@ -32,7 +32,8 @@ export const EntriesTable: React.FC<{
   journal: IJournal;
   entries: IEntry[];
   showGroupTotals: boolean;
-}> = ({ journal, entries, showGroupTotals }) => {
+  showAddNewEntryRow: boolean;
+}> = ({ journal, entries, showGroupTotals, showAddNewEntryRow }) => {
   const type = useMemo(
     () => JournalTypeFactory.create(journal.type),
     [journal?.type],
@@ -80,7 +81,9 @@ export const EntriesTable: React.FC<{
         </StyledTableRow>
       </TableHead>
       <TableBody>
-        <AddEntryTableRow columns={columns} journal={journal} />
+        {showAddNewEntryRow ? (
+          <AddEntryTableRow columns={columns} journal={journal} />
+        ) : null}
         {tableGroups.map((group, i) => (
           <EntriesTableBodyGroup
             key={group.label}

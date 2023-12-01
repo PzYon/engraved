@@ -13,6 +13,7 @@ import {
   HelpOutlineOutlined,
   MessageOutlined,
   PanToolOutlined,
+  PlaylistAdd,
   Redo,
   RefreshOutlined,
   SaveOutlined,
@@ -127,6 +128,20 @@ export class ActionFactory {
       label: "Add Entry",
       icon: <AddOutlined fontSize="small" />,
       onClick: () => renderUpsertEntryDialog(journal, renderDialog),
+    };
+  }
+
+  static toggleAddNewEntryRow(
+    showAddNewEntryRow: boolean,
+    setShowAddNewEntryRow: (value: boolean) => void,
+  ): IAction {
+    return {
+      key: "show_add_entry_row",
+      hotkey: "alt+t",
+      icon: <PlaylistAdd fontSize="small" />,
+      label: "Show add new entry row",
+      onClick: () => setShowAddNewEntryRow(!showAddNewEntryRow),
+      isNotActive: !showAddNewEntryRow,
     };
   }
 

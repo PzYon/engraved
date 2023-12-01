@@ -5,7 +5,6 @@ import { IUpsertGaugeEntryCommand } from "../../../../serverApi/commands/IUpsert
 import { StyledTableRow } from "../EntriesTable";
 import { DeviceWidth, useDeviceWidth } from "../../../common/useDeviceWidth";
 import { IJournal } from "../../../../serverApi/IJournal";
-import { JournalType } from "../../../../serverApi/JournalType";
 
 export const AddEntryTableRow: React.FC<{
   journal: IJournal;
@@ -17,10 +16,7 @@ export const AddEntryTableRow: React.FC<{
     dateTime: new Date(),
   });
 
-  if (
-    useDeviceWidth() === DeviceWidth.Small ||
-    (journal.type !== JournalType.Gauge && journal.type !== JournalType.Counter)
-  ) {
+  if (useDeviceWidth() === DeviceWidth.Small) {
     return null;
   }
 

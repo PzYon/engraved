@@ -22,6 +22,7 @@ import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
+import { JournalType } from "../../serverApi/JournalType";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -53,6 +54,8 @@ export const JournalViewPage: React.FC = () => {
 
   const [showNotes, setShowNotes] = useState(!!journal.notes);
 
+  const [showAddNewEntryRow, setShowAddNewEntryRow] = useState(false);
+
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
   const [showThresholds, setShowThresholds] = useState(
@@ -74,6 +77,10 @@ export const JournalViewPage: React.FC = () => {
 
   useEffect(() => {
     setTitleActions([
+      ActionFactory.toggleAddNewEntryRow(
+        showAddNewEntryRow,
+        setShowAddNewEntryRow,
+      ),
       ActionFactory.toggleNotes(showNotes, setShowNotes),
       ActionFactory.toggleShowChart(showChart, setShowChart),
       ActionFactory.toggleFilters(showFilters, setShowFilters, false),
@@ -92,6 +99,7 @@ export const JournalViewPage: React.FC = () => {
     journal,
     dateConditions,
     selectedAttributeValues,
+    showAddNewEntryRow,
     showNotes,
     showFilters,
     showChart,
@@ -154,6 +162,11 @@ export const JournalViewPage: React.FC = () => {
             journal={journal}
             entries={entries}
             showGroupTotals={showGroupTotals}
+            showAddNewEntryRow={
+              showAddNewEntryRow &&
+              (journal.type === JournalType.Gauge ||
+                journal.type === JournalType.Counter)
+            }
           />
         </PageSection>
       ) : entries ? (
