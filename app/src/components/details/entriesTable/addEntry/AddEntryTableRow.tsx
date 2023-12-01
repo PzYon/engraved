@@ -27,7 +27,7 @@ export const AddEntryTableRow: React.FC<{
       {columns.map((c) => (
         <TableCell key={c.key} sx={{ verticalAlign: "top" }}>
           <InnerContainer>
-            {c.getEditModeReactNode?.(command, (c, isReset) => {
+            {c.getAddEntryReactNode?.(command, (c, isReset) => {
               setCommand(c);
 
               if (isReset) {
