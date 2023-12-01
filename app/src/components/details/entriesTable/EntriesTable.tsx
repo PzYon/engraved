@@ -38,7 +38,7 @@ export const EntriesTable: React.FC<{
     [journal?.type],
   );
 
-  const [collapseAll, setCollapseAll] = useState<boolean>(undefined);
+  const [collapseAll, setCollapseAll] = useState<boolean>(true);
 
   const columns = useMemo(() => {
     return [
@@ -132,7 +132,7 @@ function getColumnsBefore(
     {
       getHeaderReactNode: () =>
         collapseAll ? (
-          <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
+          <ActionIconButton action={ActionFactory.collapse(onHeaderClick)} />
         ) : (
           <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
         ),
