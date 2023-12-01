@@ -10,7 +10,7 @@ export const AddEntryTableCell: React.FC<{
   command: IUpsertGaugeEntryCommand;
   updateCommand: (c: IUpsertGaugeEntryCommand) => void;
   fieldName: string;
-  fieldType: "text" | "number" | "date" | "attributes";
+  fieldType?: "text" | "number" | "date" | "attributes";
   hasFocus?: boolean;
 }> = ({
   journal,
