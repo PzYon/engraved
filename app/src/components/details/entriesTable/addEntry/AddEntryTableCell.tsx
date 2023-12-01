@@ -2,7 +2,6 @@ import React from "react";
 import { DateSelector } from "../../../common/DateSelector";
 import { styled, TextField } from "@mui/material";
 import { IUpsertGaugeEntryCommand } from "../../../../serverApi/commands/IUpsertGaugeEntryCommand";
-import { IJournalAttributeValues } from "../../../../serverApi/IJournalAttributeValues";
 import { JournalAttributesSelector } from "../../add/JournalAttributesSelector";
 import { IJournal } from "../../../../serverApi/IJournal";
 
@@ -31,43 +30,50 @@ export const AddEntryTableCell: React.FC<{
     });
   };
 
-  if (fieldType === "date") {
-    return (
-      <DateSelector
-        hasFocus={hasFocus}
-        date={new Date(value)}
-        setDate={(d) => {
-          updateCommandWrapped(d.toString());
-        }}
-      />
-    );
-  }
-
-  if (fieldType === "attributes") {
-    return (
-      <JournalAttributesSelectorWrapper>
-        <JournalAttributesSelector
-          key={command.dateTime.toString()}
-          attributes={journal.attributes}
-          selectedAttributeValues={{}}
-          onChange={(attributesValues: IJournalAttributeValues) => {
-            updateCommandWrapped(attributesValues);
-          }}
+  switch (fieldType) {
+    case "date":
+      return (
+        <DateSelector
+          hasFocus={hasFocus}
+          date={new Date(value)}
+          setDate={updateCommandWrapped}
         />
-      </JournalAttributesSelectorWrapper>
-    );
-  }
+      );
 
-  return (
-    <TextField
-      value={value}
-      onChange={(event) => {
-        updateCommandWrapped(event.target.value);
-      }}
-      type={fieldType === "number" ? "number" : undefined}
-      sx={{ marginBottom: "0" }}
-    />
-  );
+    case "attributes":
+      return (
+        <JournalAttributesSelectorWrapper>
+          <JournalAttributesSelector
+            attributes={journal.attributes}
+            selectedAttributeValues={undefined}
+            onChange={updateCommandWrapped}
+          />
+        </JournalAttributesSelectorWrapper>
+      );
+
+    case "number":
+      return (
+        <TextField
+          value={value}
+          onChange={(event) => {
+            updateCommandWrapped(Number(event.target.value));
+          }}
+          type={"number"}
+          sx={{ marginBottom: "0" }}
+        />
+      );
+
+    default:
+      return (
+        <TextField
+          value={value}
+          onChange={(event) => {
+            updateCommandWrapped(event.target.value);
+          }}
+          sx={{ marginBottom: "0" }}
+        />
+      );
+  }
 };
 
 const JournalAttributesSelectorWrapper = styled("div")`

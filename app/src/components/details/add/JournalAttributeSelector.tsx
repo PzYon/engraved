@@ -34,19 +34,21 @@ export const JournalAttributeSelector: React.FC<{
     [attribute.values],
   );
 
-  const selectedOption = useMemo(
-    () =>
-      options.filter((o) => {
-        return selectedAttributeValues[attributeKey]?.indexOf(o.key) > -1;
-      })[0],
-    [attributeKey, options, selectedAttributeValues],
-  );
+  const selectedOption = useMemo(() => {
+    if (!selectedAttributeValues) {
+      return undefined;
+    }
+
+    return options.filter(
+      (o) => selectedAttributeValues[attributeKey]?.indexOf(o.key) > -1,
+    )[0];
+  }, [attributeKey, options, selectedAttributeValues]);
 
   return (
     <Autocomplete
       options={options}
       multiple={false}
-      defaultValue={
+      value={
         selectedOption ? (selectedOption as unknown as IOption) : undefined
       }
       getOptionLabel={(option) => getOptionLabel(option as IOption)}
@@ -57,13 +59,10 @@ export const JournalAttributeSelector: React.FC<{
       onChange={async (_, selectedOption) => {
         const option: IOption = selectedOption as unknown as IOption;
 
-        const attributesValues = { ...selectedAttributeValues };
-
-        attributesValues[attributeKey] = option
-          ? [option.addNewKey || option.key]
-          : [];
-
-        onChange(attributesValues);
+        onChange({
+          ...selectedAttributeValues,
+          [attributeKey]: option ? [option.addNewKey || option.key] : [],
+        });
       }}
       renderInput={(params) => (
         <TextField

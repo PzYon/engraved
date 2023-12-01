@@ -23,7 +23,7 @@ export interface IEntriesTableColumnDefinition {
 
   getEditModeReactNode?: (
     command: IUpsertGaugeEntryCommand,
-    updateCommand: (c: IUpsertGaugeEntryCommand) => void,
+    updateCommand: (c: IUpsertGaugeEntryCommand, isReset?: boolean) => void,
   ) => React.ReactNode;
 
   getRawValue?: (entry: IEntry) => number;
@@ -35,4 +35,8 @@ export interface IEntriesTableColumnDefinition {
   getGroupKey?: (entry: IEntry) => string;
 
   width?: string;
+
+  minWidth?: string;
+
+  maxWidth?: string;
 }

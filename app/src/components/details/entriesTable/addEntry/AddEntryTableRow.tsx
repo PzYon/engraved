@@ -16,16 +16,24 @@ export const AddEntryTableRow: React.FC<{
     dateTime: new Date(),
   });
 
+  const [key, setKey] = useState(Math.random());
+
   if (useDeviceWidth() === DeviceWidth.Small) {
     return null;
   }
 
   return (
-    <StyledTableRow>
+    <StyledTableRow key={key}>
       {columns.map((c) => (
         <TableCell key={c.key} sx={{ verticalAlign: "top" }}>
           <InnerContainer>
-            {c.getEditModeReactNode?.(command, setCommand)}
+            {c.getEditModeReactNode?.(command, (c, isReset) => {
+              setCommand(c);
+
+              if (isReset) {
+                setKey(Math.random());
+              }
+            })}
           </InnerContainer>
         </TableCell>
       ))}

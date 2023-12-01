@@ -67,13 +67,17 @@ export const EntriesTable: React.FC<{
   }, [journal, entries, type]);
 
   return (
-    <Table data-testid="entries-table">
+    <Table data-testid="entries-table" sx={{ tableLayout: "fixed" }}>
       <TableHead>
         <StyledTableRow>
           {columns.map((c) => (
             <TableCell
               key={c.key}
-              sx={c.width ? { width: c.width } : undefined}
+              sx={{
+                width: c.width,
+                minWidth: c.minWidth,
+                maxWidth: c.maxWidth,
+              }}
             >
               {c.getHeaderReactNode(() => setCollapseAll(!collapseAll))}
             </TableCell>
@@ -154,6 +158,7 @@ function getColumnsBefore(
     },
     {
       key: "_date",
+      maxWidth: "300px",
       getHeaderReactNode: () => translations.columnName_date,
       getGroupReactNode: (group) => (
         <EntriesDateTableCell date={new Date(group.label)} />
@@ -184,6 +189,7 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
   return [
     {
       key: "_attributes",
+      minWidth: "140px",
       getHeaderReactNode: () => translations.columnName_attributes,
       doHide: (journal: IJournal): boolean =>
         !Object.keys(journal.attributes ?? {}).length,
@@ -231,13 +237,16 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
           <AddEntryTableSaveAction
             command={command}
             journalType={journal.type}
-            onAdded={() => {
-              updateCommand({
-                journalId: command.journalId,
-                value: undefined,
-                dateTime: new Date(),
-                journalAttributeValues: {},
-              });
+            onAdded={(lastSelectedDate) => {
+              updateCommand(
+                {
+                  journalId: command.journalId,
+                  value: undefined,
+                  dateTime: new Date(lastSelectedDate) ?? new Date(),
+                  journalAttributeValues: {},
+                },
+                true,
+              );
             }}
           />
         );

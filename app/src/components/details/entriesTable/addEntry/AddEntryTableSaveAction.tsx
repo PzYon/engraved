@@ -9,13 +9,13 @@ import { styled } from "@mui/material";
 export const AddEntryTableSaveAction: React.FC<{
   command: IUpsertGaugeEntryCommand;
   journalType: JournalType;
-  onAdded: () => void;
+  onAdded: (lastSelectedDate: Date) => void;
 }> = ({ command, journalType, onAdded }) => {
   const upsertEntryMutation = useUpsertEntryMutation(
     command.journalId,
     journalType,
     "",
-    () => onAdded(),
+    () => onAdded(command.dateTime),
   );
 
   return (
@@ -23,7 +23,6 @@ export const AddEntryTableSaveAction: React.FC<{
       <ActionIconButton
         action={ActionFactory.save(
           async () => {
-            command.dateTime = new Date();
             await upsertEntryMutation.mutateAsync({
               command: command,
             });
@@ -38,4 +37,5 @@ export const AddEntryTableSaveAction: React.FC<{
 
 const Host = styled("div")`
   display: inline-block;
+  padding-top: 10px;
 `;
