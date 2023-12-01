@@ -39,7 +39,7 @@ export const EntriesTable: React.FC<{
     [journal?.type],
   );
 
-  const [collapseAll, setCollapseAll] = useState<boolean>(true);
+  const [collapseAll, setCollapseAll] = useState<boolean>(false);
 
   const columns = useMemo(() => {
     return [

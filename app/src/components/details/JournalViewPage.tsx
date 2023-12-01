@@ -23,9 +23,11 @@ import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
 import { JournalType } from "../../serverApi/JournalType";
+import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
+  const deviceWidth = useDeviceWidth();
 
   const {
     journal,
@@ -77,10 +79,12 @@ export const JournalViewPage: React.FC = () => {
 
   useEffect(() => {
     setTitleActions([
-      ActionFactory.toggleAddNewEntryRow(
-        showAddNewEntryRow,
-        setShowAddNewEntryRow,
-      ),
+      deviceWidth !== DeviceWidth.Small
+        ? ActionFactory.toggleAddNewEntryRow(
+            showAddNewEntryRow,
+            setShowAddNewEntryRow,
+          )
+        : undefined,
       ActionFactory.toggleNotes(showNotes, setShowNotes),
       ActionFactory.toggleShowChart(showChart, setShowChart),
       ActionFactory.toggleFilters(showFilters, setShowFilters, false),

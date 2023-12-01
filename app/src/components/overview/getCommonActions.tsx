@@ -22,8 +22,8 @@ export function getCommonActions(
   }
 
   actions.push(
-    ActionFactory.editJournal(journal.id, enableHotkeys),
     ActionFactory.editJournalPermissions(journal.id),
+    ActionFactory.editJournal(journal.id, enableHotkeys),
     ActionFactory.deleteJournal(journal.id, enableHotkeys),
   );
 
