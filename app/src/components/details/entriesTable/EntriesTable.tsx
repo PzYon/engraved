@@ -6,6 +6,7 @@ import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import {
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -23,18 +24,22 @@ import { IEntriesTableGroup } from "./IEntriesTableGroup";
 import { EntriesDateTableCell } from "./EntriesDateTableCell";
 import { EntriesTableBodyGroup } from "./EntriesTableBodyGroup";
 import { ActionFactory } from "../../common/actions/ActionFactory";
+import { AddEntryTableRow } from "./addEntry/AddEntryTableRow";
+import { AddEntryTableCell } from "./addEntry/AddEntryTableCell";
+import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
   entries: IEntry[];
   showGroupTotals: boolean;
-}> = ({ journal, entries, showGroupTotals }) => {
+  showAddNewEntryRow: boolean;
+}> = ({ journal, entries, showGroupTotals, showAddNewEntryRow }) => {
   const type = useMemo(
     () => JournalTypeFactory.create(journal.type),
     [journal?.type],
   );
 
-  const [collapseAll, setCollapseAll] = useState<boolean>(undefined);
+  const [collapseAll, setCollapseAll] = useState<boolean>(false);
 
   const columns = useMemo(() => {
     return [
@@ -62,20 +67,27 @@ export const EntriesTable: React.FC<{
   }, [journal, entries, type]);
 
   return (
-    <Table data-testid="entries-table">
+    <Table data-testid="entries-table" sx={{ tableLayout: "fixed" }}>
       <TableHead>
-        <TableRow>
+        <StyledTableRow>
           {columns.map((c) => (
             <TableCell
               key={c.key}
-              sx={c.width ? { width: c.width } : undefined}
+              sx={{
+                width: c.width,
+                minWidth: c.minWidth,
+                maxWidth: c.maxWidth,
+              }}
             >
               {c.getHeaderReactNode(() => setCollapseAll(!collapseAll))}
             </TableCell>
           ))}
-        </TableRow>
+        </StyledTableRow>
       </TableHead>
       <TableBody>
+        {showAddNewEntryRow ? (
+          <AddEntryTableRow columns={columns} journal={journal} />
+        ) : null}
         {tableGroups.map((group, i) => (
           <EntriesTableBodyGroup
             key={group.label}
@@ -90,18 +102,33 @@ export const EntriesTable: React.FC<{
       </TableBody>
       {entries.length && columns.filter((c) => c.isSummable).length ? (
         <TableFooter>
-          <TableRow>
+          <StyledTableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
                 {getTotalValue(c, tableGroups, type)}
               </TableCell>
             ))}
-          </TableRow>
+          </StyledTableRow>
         </TableFooter>
       ) : null}
     </Table>
   );
 };
+
+export const StyledTableRow = styled(TableRow)`
+  th:last-of-type,
+  td:last-of-type,
+  th:first-of-type,
+  td:first-of-type {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  td,
+  th {
+    padding: ${(p) => p.theme.spacing(1.5)};
+  }
+`;
 
 function getColumnsBefore(
   journal: IJournal,
@@ -110,14 +137,14 @@ function getColumnsBefore(
 ): IEntriesTableColumnDefinition[] {
   return [
     {
+      key: "_collapse",
+      width: "40px",
       getHeaderReactNode: () =>
         collapseAll ? (
-          <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
+          <ActionIconButton action={ActionFactory.collapse(onHeaderClick)} />
         ) : (
           <ActionIconButton action={ActionFactory.expand(onHeaderClick)} />
         ),
-      key: "_collapse",
-      width: "40px",
       getValueReactNode: (group, _, isFirstRowOfGroup, onClick) => {
         if (!isFirstRowOfGroup || group.entries.length < 2) {
           return null;
@@ -130,8 +157,9 @@ function getColumnsBefore(
       },
     },
     {
-      getHeaderReactNode: () => translations.columnName_date,
       key: "_date",
+      maxWidth: "300px",
+      getHeaderReactNode: () => translations.columnName_date,
       getGroupReactNode: (group) => (
         <EntriesDateTableCell date={new Date(group.label)} />
       ),
@@ -140,6 +168,18 @@ function getColumnsBefore(
           <EntriesDateTableCell date={entry.dateTime} />
         ) : null,
       getGroupKey: (entry) => getGroupKey(journal.type, entry),
+      getAddEntryReactNode: (command, updateCommand) => {
+        return (
+          <AddEntryTableCell
+            journal={journal}
+            command={command}
+            updateCommand={updateCommand}
+            fieldType={"date"}
+            fieldName={"dateTime"}
+            hasFocus={true}
+          />
+        );
+      },
     },
   ];
 }
@@ -147,8 +187,9 @@ function getColumnsBefore(
 function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
   return [
     {
-      getHeaderReactNode: () => translations.columnName_attributes,
       key: "_attributes",
+      minWidth: "140px",
+      getHeaderReactNode: () => translations.columnName_attributes,
       doHide: (journal: IJournal): boolean =>
         !Object.keys(journal.attributes ?? {}).length,
       getValueReactNode: (_, entry) => (
@@ -157,17 +198,58 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
           attributeValues={entry.journalAttributeValues}
         />
       ),
+      getAddEntryReactNode: (command, updateCommand) => {
+        return (
+          <AddEntryTableCell
+            journal={journal}
+            command={command}
+            updateCommand={updateCommand}
+            fieldType="attributes"
+            fieldName="journalAttributeValues"
+          />
+        );
+      },
     },
     {
-      getHeaderReactNode: () => translations.columnName_notes,
       key: "_notes",
+      getHeaderReactNode: () => translations.columnName_notes,
       getValueReactNode: (_, entry) => entry.notes,
+      getAddEntryReactNode: (command, updateCommand) => {
+        return (
+          <AddEntryTableCell
+            journal={journal}
+            command={command}
+            updateCommand={updateCommand}
+            fieldType={"text"}
+            fieldName={"notes"}
+          />
+        );
+      },
     },
     {
-      getHeaderReactNode: () => translations.columnName_actions,
       key: "_actions",
       width: "80px",
+      getHeaderReactNode: () => translations.columnName_actions,
       getValueReactNode: (_, entry) => <EntryActionButtons entry={entry} />,
+      getAddEntryReactNode: (command, updateCommand) => {
+        return (
+          <AddEntryTableSaveAction
+            command={command}
+            journalType={journal.type}
+            onAdded={(lastSelectedDate) => {
+              updateCommand(
+                {
+                  journalId: command.journalId,
+                  value: undefined,
+                  dateTime: new Date(lastSelectedDate) ?? new Date(),
+                  journalAttributeValues: {},
+                },
+                true,
+              );
+            }}
+          />
+        );
+      },
     },
   ];
 }

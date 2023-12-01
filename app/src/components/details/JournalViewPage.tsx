@@ -22,9 +22,12 @@ import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
+import { JournalType } from "../../serverApi/JournalType";
+import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
+  const deviceWidth = useDeviceWidth();
 
   const {
     journal,
@@ -53,6 +56,8 @@ export const JournalViewPage: React.FC = () => {
 
   const [showNotes, setShowNotes] = useState(!!journal.notes);
 
+  const [showAddNewEntryRow, setShowAddNewEntryRow] = useState(false);
+
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
   const [showThresholds, setShowThresholds] = useState(
@@ -74,6 +79,12 @@ export const JournalViewPage: React.FC = () => {
 
   useEffect(() => {
     setTitleActions([
+      deviceWidth !== DeviceWidth.Small
+        ? ActionFactory.toggleAddNewEntryRow(
+            showAddNewEntryRow,
+            setShowAddNewEntryRow,
+          )
+        : undefined,
       ActionFactory.toggleNotes(showNotes, setShowNotes),
       ActionFactory.toggleShowChart(showChart, setShowChart),
       ActionFactory.toggleFilters(showFilters, setShowFilters, false),
@@ -92,6 +103,7 @@ export const JournalViewPage: React.FC = () => {
     journal,
     dateConditions,
     selectedAttributeValues,
+    showAddNewEntryRow,
     showNotes,
     showFilters,
     showChart,
@@ -154,6 +166,11 @@ export const JournalViewPage: React.FC = () => {
             journal={journal}
             entries={entries}
             showGroupTotals={showGroupTotals}
+            showAddNewEntryRow={
+              showAddNewEntryRow &&
+              (journal.type === JournalType.Gauge ||
+                journal.type === JournalType.Counter)
+            }
           />
         </PageSection>
       ) : entries ? (

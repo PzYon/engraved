@@ -18,7 +18,10 @@ export const JournalAttributesSelector: React.FC<{
           const attribute: IJournalAttribute = attributes[attributeKey];
 
           return (
-            <FormElementContainer key={attributeKey}>
+            <FormElementContainer
+              className="journal-attribute-selector-wrapper"
+              key={attributeKey}
+            >
               <JournalAttributeSelector
                 attributeKey={attributeKey}
                 attribute={attribute}

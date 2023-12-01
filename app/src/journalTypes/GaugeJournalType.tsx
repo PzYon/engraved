@@ -10,6 +10,8 @@ import React from "react";
 import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { IGaugeEntry } from "../serverApi/IGaugeEntry";
 
+import { AddEntryTableCell } from "../components/details/entriesTable/addEntry/AddEntryTableCell";
+
 export class GaugeJournalType implements IJournalType {
   type = JournalType.Gauge;
 
@@ -33,12 +35,24 @@ export class GaugeJournalType implements IJournalType {
     return [
       {
         key: "_value",
+        width: "100px",
         getHeaderReactNode: () => "Value",
         isSummable: true,
         getRawValue: (entry: IEntry) => getValue(entry),
         getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) =>
           getValue(entry),
         getGroupReactNode: (group) => group.totalString,
+        getAddEntryReactNode: (command, updateCommand) => {
+          return (
+            <AddEntryTableCell
+              journal={undefined}
+              command={command}
+              updateCommand={updateCommand}
+              fieldType={"number"}
+              fieldName={"value"}
+            />
+          );
+        },
       },
     ];
   }

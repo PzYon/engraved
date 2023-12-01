@@ -2,6 +2,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IEntriesTableGroup } from "./IEntriesTableGroup";
+import { IUpsertGaugeEntryCommand } from "../../../serverApi/commands/IUpsertGaugeEntryCommand";
 
 export interface IEntriesTableColumnDefinition {
   key: string;
@@ -20,6 +21,14 @@ export interface IEntriesTableColumnDefinition {
     onClick?: () => void,
   ) => React.ReactNode;
 
+  getAddEntryReactNode?: (
+    command: IUpsertGaugeEntryCommand,
+    updateCommand: (
+      command: IUpsertGaugeEntryCommand,
+      isReset?: boolean,
+    ) => void,
+  ) => React.ReactNode;
+
   getRawValue?: (entry: IEntry) => number;
 
   isSummable?: boolean;
@@ -29,4 +38,8 @@ export interface IEntriesTableColumnDefinition {
   getGroupKey?: (entry: IEntry) => string;
 
   width?: string;
+
+  minWidth?: string;
+
+  maxWidth?: string;
 }
