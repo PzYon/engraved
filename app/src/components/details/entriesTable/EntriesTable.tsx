@@ -27,6 +27,7 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { AddEntryTableRow } from "./addEntry/AddEntryTableRow";
 import { AddEntryTableCell } from "./addEntry/AddEntryTableCell";
 import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -53,6 +54,8 @@ export const EntriesTable: React.FC<{
 
   const [tableGroups, setTableGroups] = useState<IEntriesTableGroup[]>([]);
 
+  const deviceWidth = useDeviceWidth();
+
   useEffect(() => {
     updateGroups();
 
@@ -67,7 +70,12 @@ export const EntriesTable: React.FC<{
   }, [journal, entries, type]);
 
   return (
-    <Table data-testid="entries-table" sx={{ tableLayout: "fixed" }}>
+    <Table
+      data-testid="entries-table"
+      sx={{
+        tableLayout: deviceWidth === DeviceWidth.Small ? undefined : "fixed",
+      }}
+    >
       <TableHead>
         <StyledTableRow>
           {columns.map((c) => (
