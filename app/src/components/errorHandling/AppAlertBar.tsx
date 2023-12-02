@@ -24,11 +24,11 @@ export const AppAlertBar: React.FC = () => {
       data-related-entity-id={appAlert.relatedEntityId}
       autoHideDuration={
         appAlert.type === "success"
-          ? (appAlert.hideDurationSec ?? 4) * 1000
+          ? (appAlert.hideDurationSec ?? 3) * 1000
           : null
       }
       onClose={() => setAppAlert(null)}
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
     >
       <StyledAlert
         severity={appAlert.type}
