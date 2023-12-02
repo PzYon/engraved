@@ -2,7 +2,6 @@ export class LoadingHandler {
   delayMs = 700;
 
   private _loadingCounter = 0;
-  private _interval: unknown;
   private _currentState: "first" | "last" | "other";
 
   private handlers: Record<string, (isLoading: boolean) => void> = {};
@@ -41,12 +40,12 @@ export class LoadingHandler {
 
     this.callHandlers(true);
 
-    this._interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       if (this._currentState !== "last") {
         return;
       }
 
-      clearInterval(this._interval as never);
+      window.clearInterval(interval);
       this.callHandlers(false);
     }, this.delayMs);
   }
