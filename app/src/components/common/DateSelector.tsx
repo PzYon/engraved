@@ -24,6 +24,7 @@ export const DateSelector: React.FC<{
         autoFocus={hasFocus}
         label={label}
         value={date || null}
+        showDaysOutsideCurrentMonth={true}
         onChange={(d) => {
           setDate(stripTime(d));
         }}
