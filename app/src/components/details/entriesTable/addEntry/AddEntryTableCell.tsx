@@ -21,7 +21,7 @@ export const AddEntryTableCell: React.FC<{
   hasFocus,
 }) => {
   /* eslint-disable  @typescript-eslint/no-explicit-any */
-  const value = (command as any)[fieldName] ?? "";
+  const currentValue = (command as any)[fieldName] ?? "";
 
   const updateCommandWrapped = (value: any) => {
     updateCommand({
@@ -35,7 +35,7 @@ export const AddEntryTableCell: React.FC<{
       return (
         <DateSelector
           hasFocus={hasFocus}
-          date={new Date(value)}
+          date={new Date(currentValue)}
           setDate={updateCommandWrapped}
         />
       );
@@ -46,7 +46,12 @@ export const AddEntryTableCell: React.FC<{
           <JournalAttributesSelector
             attributes={journal.attributes}
             selectedAttributeValues={undefined}
-            onChange={updateCommandWrapped}
+            onChange={(value: any) => {
+              updateCommand({
+                ...command,
+                [fieldName]: { ...currentValue, ...value },
+              });
+            }}
           />
         </JournalAttributesSelectorWrapper>
       );
@@ -54,7 +59,7 @@ export const AddEntryTableCell: React.FC<{
     case "number":
       return (
         <TextField
-          value={value}
+          value={currentValue}
           onChange={(event) => {
             updateCommandWrapped(Number(event.target.value));
           }}
@@ -66,7 +71,7 @@ export const AddEntryTableCell: React.FC<{
     default:
       return (
         <TextField
-          value={value}
+          value={currentValue}
           onChange={(event) => {
             updateCommandWrapped(event.target.value);
           }}
