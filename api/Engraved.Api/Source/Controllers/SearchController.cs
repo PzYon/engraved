@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Application;
+using Engraved.Core.Application.Queries.Search;
 using Engraved.Core.Application.Queries.Search.Attributes;
-using Engraved.Core.Application.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,15 +9,8 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/search")]
 [Authorize]
-public class SearchController : ControllerBase
+public class SearchController(Dispatcher dispatcher) : ControllerBase
 {
-  private readonly Dispatcher _dispatcher;
-
-  public SearchController(Dispatcher dispatcher)
-  {
-    _dispatcher = dispatcher;
-  }
-
   [Route("journal_attributes/{journalId}")]
   [HttpGet]
   public async Task<SearchAttributesResult[]> SearchJournalAttributes(string journalId, string searchText)
@@ -28,6 +21,6 @@ public class SearchController : ControllerBase
       SearchText = searchText
     };
 
-    return await _dispatcher.Query<SearchAttributesResult[], SearchAttributesQuery>(searchAttributesQuery);
+    return await dispatcher.Query<SearchAttributesResult[], SearchAttributesQuery>(searchAttributesQuery);
   }
 }

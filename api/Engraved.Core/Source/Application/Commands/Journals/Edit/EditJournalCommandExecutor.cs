@@ -1,19 +1,11 @@
 ﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Utils;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Edit;
 
-public class EditJournalCommandExecutor : ICommandExecutor<EditJournalCommand>
+public class EditJournalCommandExecutor(IRepository repository, IDateService dateService) : ICommandExecutor<EditJournalCommand>
 {
-  private readonly IBaseRepository _repository;
-  private readonly IDateService _dateService;
-
-  public EditJournalCommandExecutor(IRepository repository, IDateService dateService)
-  {
-    _repository = repository;
-    _dateService = dateService;
-  }
+  private readonly IBaseRepository _repository = repository;
 
   public async Task<CommandResult> Execute(EditJournalCommand command)
   {
@@ -40,7 +32,7 @@ public class EditJournalCommandExecutor : ICommandExecutor<EditJournalCommand>
     journal.Notes = command.Notes;
     journal.Thresholds = command.Thresholds;
     journal.CustomProps = command.CustomProps;
-    journal.EditedOn = _dateService.UtcNow;
+    journal.EditedOn = dateService.UtcNow;
 
     UpsertResult result = await _repository.UpsertJournal(journal);
 

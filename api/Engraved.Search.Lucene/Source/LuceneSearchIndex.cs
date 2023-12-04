@@ -1,11 +1,11 @@
 ﻿using System.Text;
+using Engraved.Core.Application.Queries.Search;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Queries;
 using Lucene.Net.Queries.Function;
 using Lucene.Net.Queries.Function.ValueSources;
 using Lucene.Net.Search;
-using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Search.Lucene;

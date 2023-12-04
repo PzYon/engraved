@@ -11,7 +11,7 @@ using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries;
-using Engraved.Core.Application.Search;
+using Engraved.Core.Application.Queries.Search;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo;
 using Engraved.Search.Lucene;

@@ -1,11 +1,11 @@
-﻿using Lucene.Net.Analysis;
+﻿using Engraved.Core.Application.Queries.Search;
+using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
-using Engraved.Core.Application.Search;
 
 namespace Engraved.Search.Lucene;
 

@@ -12,21 +12,13 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/user")]
 [Authorize]
-public class UserController : Controller
+public class UserController(IUserScopedRepository userScopedRepository, Dispatcher dispatcher)
+  : Controller
 {
-  private readonly IUserScopedRepository _userScopedRepository;
-  private readonly Dispatcher _dispatcher;
-
-  public UserController(IUserScopedRepository userScopedRepository, Dispatcher dispatcher)
-  {
-    _userScopedRepository = userScopedRepository;
-    _dispatcher = dispatcher;
-  }
-
   [HttpGet]
   public IUser GetCurrentUser()
   {
-    return _userScopedRepository.CurrentUser.Value;
+    return userScopedRepository.CurrentUser.Value;
   }
 
   [HttpPatch] // or PUT?
@@ -38,7 +30,7 @@ public class UserController : Controller
       JournalId = journalId
     };
 
-    return await _dispatcher.Command(command);
+    return await dispatcher.Command(command);
   }
 
   [HttpDelete]
@@ -50,6 +42,6 @@ public class UserController : Controller
       JournalId = journalId
     };
 
-    return await _dispatcher.Command(command);
+    return await dispatcher.Command(command);
   }
 }

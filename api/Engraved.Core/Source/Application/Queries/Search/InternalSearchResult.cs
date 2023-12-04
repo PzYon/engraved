@@ -1,4 +1,4 @@
-﻿namespace Engraved.Core.Application.Search;
+﻿namespace Engraved.Core.Application.Queries.Search;
 
 public class InternalSearchResult
 {

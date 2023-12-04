@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Domain.Journals;
 
-namespace Engraved.Core.Application.Search;
+namespace Engraved.Core.Application.Queries.Search;
 
 public interface ISearchIndex
 {

@@ -18,15 +18,8 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/entries")]
 [Authorize]
-public class EntriesController : ControllerBase
+public class EntriesController(Dispatcher dispatcher) : ControllerBase
 {
-  private readonly Dispatcher _dispatcher;
-
-  public EntriesController(Dispatcher dispatcher)
-  {
-    _dispatcher = dispatcher;
-  }
-
   [HttpGet]
   [Route("{journalId}")]
   public async Task<object[]> GetAll(string journalId, DateTime? fromDate, DateTime? toDate, string? attributeValues)
@@ -39,7 +32,7 @@ public class EntriesController : ControllerBase
       AttributeValues = AttributeValueParser.Parse(attributeValues)
     };
 
-    IEntry[] entries = await _dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
+    IEntry[] entries = await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
 
     return entries.EnsurePolymorphismWhenSerializing();
   }
@@ -53,7 +46,7 @@ public class EntriesController : ControllerBase
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
     };
 
-    GetAllEntriesQueryResult result = await _dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(query);
+    GetAllEntriesQueryResult result = await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(query);
     return GetAllEntriesQueryApiResult.FromResult(result);
   }
 
@@ -61,42 +54,42 @@ public class EntriesController : ControllerBase
   [Route("{journalId}/active")]
   public async Task<IEntry?> GetActive(string journalId)
   {
-    return await _dispatcher.Query<IEntry?, GetActiveEntryQuery>(new GetActiveEntryQuery { JournalId = journalId });
+    return await dispatcher.Query<IEntry?, GetActiveEntryQuery>(new GetActiveEntryQuery { JournalId = journalId });
   }
 
   [HttpPost]
   [Route("counter")]
   public async Task<CommandResult> UpsertCounter([FromBody] UpsertCounterEntryCommand entry)
   {
-    return await _dispatcher.Command(entry);
+    return await dispatcher.Command(entry);
   }
 
   [HttpPost]
   [Route("gauge")]
   public async Task<CommandResult> UpsertGauge([FromBody] UpsertGaugeEntryCommand entry)
   {
-    return await _dispatcher.Command(entry);
+    return await dispatcher.Command(entry);
   }
 
   [HttpPost]
   [Route("scraps")]
   public async Task<CommandResult> UpsertScraps([FromBody] UpsertScrapsEntryCommand entry)
   {
-    return await _dispatcher.Command(entry);
+    return await dispatcher.Command(entry);
   }
 
   [HttpPost]
   [Route("timer")]
   public async Task<CommandResult> StartTimer([FromBody] UpsertTimerEntryCommand entry)
   {
-    return await _dispatcher.Command(entry);
+    return await dispatcher.Command(entry);
   }
 
   [HttpDelete]
   [Route("{entryId}")]
   public async Task<CommandResult> Delete(string entryId)
   {
-    return await _dispatcher.Command(new DeleteEntryCommand { Id = entryId });
+    return await dispatcher.Command(new DeleteEntryCommand { Id = entryId });
   }
 
   [HttpPut]
@@ -109,7 +102,7 @@ public class EntriesController : ControllerBase
       TargetJournalId = targetJournalId
     };
 
-    return await _dispatcher.Command(command);
+    return await dispatcher.Command(command);
   }
 }
 
