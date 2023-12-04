@@ -17,15 +17,8 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/journals")]
 [Authorize]
-public class JournalsController : ControllerBase
+public class JournalsController(Dispatcher dispatcher) : ControllerBase
 {
-  private readonly Dispatcher _dispatcher;
-
-  public JournalsController(Dispatcher dispatcher)
-  {
-    _dispatcher = dispatcher;
-  }
-
   [HttpGet]
   public async Task<object[]> GetAll(string? searchText, string? journalTypes, bool? favoritesOnly)
   {
@@ -36,7 +29,7 @@ public class JournalsController : ControllerBase
       FavoritesOnly = favoritesOnly
     };
 
-    IJournal[] journals = await _dispatcher.Query<IJournal[], GetAllJournalsQuery>(query);
+    IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(query);
     return journals.EnsurePolymorphismWhenSerializing();
   }
 
@@ -44,19 +37,19 @@ public class JournalsController : ControllerBase
   [HttpGet]
   public async Task<IJournal?> Get(string journalId)
   {
-    return await _dispatcher.Query<IJournal?, GetJournalQuery>(new GetJournalQuery { JournalId = journalId });
+    return await dispatcher.Query<IJournal?, GetJournalQuery>(new GetJournalQuery { JournalId = journalId });
   }
 
   [HttpPost]
   public async Task<CommandResult> Add([FromBody] AddJournalCommand command)
   {
-    return await _dispatcher.Command(command);
+    return await dispatcher.Command(command);
   }
 
   [HttpPut]
   public async Task<CommandResult> Edit([FromBody] EditJournalCommand command)
   {
-    return await _dispatcher.Command(command);
+    return await dispatcher.Command(command);
   }
 
   [Route("{journalId}/permissions")]
@@ -72,7 +65,7 @@ public class JournalsController : ControllerBase
       Permissions = permissions
     };
 
-    return await _dispatcher.Command(command);
+    return await dispatcher.Command(command);
   }
 
   [Route("{journalId}/threshold_values")]
@@ -90,7 +83,7 @@ public class JournalsController : ControllerBase
       ToDate = toDate
     };
 
-    return await _dispatcher.Query<IDictionary<string, IDictionary<string, ThresholdResult>>, GetThresholdValuesQuery>(
+    return await dispatcher.Query<IDictionary<string, IDictionary<string, ThresholdResult>>, GetThresholdValuesQuery>(
       query
     );
   }
@@ -99,6 +92,6 @@ public class JournalsController : ControllerBase
   [Route("{journalId}")]
   public async Task<CommandResult> Delete(string journalId)
   {
-   return await _dispatcher.Command(new DeleteJournalCommand { JournalId = journalId });
+   return await dispatcher.Command(new DeleteJournalCommand { JournalId = journalId });
   }
 }

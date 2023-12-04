@@ -1,6 +1,5 @@
 ﻿using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Application.Queries.Journals.Get;
-using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
