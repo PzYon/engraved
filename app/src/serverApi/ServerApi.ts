@@ -24,6 +24,7 @@ import { IJournalThresholds } from "./IJournalThresholds";
 import { IJournalUiSettings } from "../components/details/edit/JournalUiSettings";
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
+import { IEntity } from "./IEntity";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -304,6 +305,12 @@ export class ServerApi {
 
   static async getCurrentUser(): Promise<IUser> {
     return await ServerApi.executeRequest(`/user`, "GET", null);
+  }
+
+  static async getSearchEntities(searchText: string): Promise<IEntity[]> {
+    return await ServerApi.executeRequest(
+      `/search/entities?searchText=${searchText ?? ""}`,
+    );
   }
 
   static async executeRequest<T = void>(

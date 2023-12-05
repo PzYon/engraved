@@ -2,7 +2,7 @@
 
 namespace Engraved.Core.Domain.Journals;
 
-public interface IJournal : IUserScoped, IPermissionHolder, IEditable
+public interface IJournal : IUserScoped, IPermissionHolder, IEntity
 {
   string? Id { get; set; }
 

@@ -1,6 +1,8 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Queries.Search;
 using Engraved.Core.Application.Queries.Search.Attributes;
+using Engraved.Core.Application.Queries.Search.Entities;
+using Engraved.Core.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,5 +24,19 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
     };
 
     return await dispatcher.Query<SearchAttributesResult[], SearchAttributesQuery>(searchAttributesQuery);
+  }
+
+  [Route("entities")]
+  [HttpGet]
+  public async Task<object[]> SearchEntities(string searchText)
+  {
+    var query = new SearchEntitiesQuery
+    {
+      SearchText = searchText,
+      Limit = 100
+    };
+
+    IEntity[] entities = await dispatcher.Query<IEntity[], SearchEntitiesQuery>(query);
+    return entities.EnsurePolymorphismWhenSerializing();
   }
 }

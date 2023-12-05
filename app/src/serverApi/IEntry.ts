@@ -1,10 +1,9 @@
 import { IJournalAttributeValues } from "./IJournalAttributeValues";
+import { IEntity } from "./IEntity";
 
-export interface IEntry {
-  id?: string;
+export interface IEntry extends IEntity {
   notes?: string;
   dateTime: string;
-  editedOn?: string;
   journalAttributeValues?: IJournalAttributeValues;
   parentId?: string;
 }

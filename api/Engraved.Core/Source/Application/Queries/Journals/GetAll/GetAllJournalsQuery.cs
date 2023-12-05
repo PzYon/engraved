@@ -2,7 +2,7 @@
 
 namespace Engraved.Core.Application.Queries.Journals.GetAll;
 
-public class GetAllJournalsQuery : IQuery
+public class GetAllJournalsQuery : IEntitiesQuery
 {
   public int? Limit { get; set; }
 

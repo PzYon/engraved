@@ -1,6 +1,6 @@
 ﻿namespace Engraved.Core.Domain.Entries;
 
-public interface IEntry : IUserScoped, IEditable
+public interface IEntry : IUserScoped, IEntity
 {
   string? Id { get; set; }
 
