@@ -5,26 +5,6 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Search.Entities;
 
-public enum EntityType
-{
-  Journal,
-  Entry
-}
-
-public class SearchResultEntity
-{
-  public IEntity Entity { get; set; }
-
-  public EntityType EntityType { get; set; }
-}
-
-public class SearchEntitiesResult
-{
-  public SearchResultEntity[] Entities { get; set; } = Array.Empty<SearchResultEntity>();
-
-  public IJournal[] Journals { get; set; } = Array.Empty<IJournal>();
-}
-
 public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
   : IQueryExecutor<SearchEntitiesResult, SearchEntitiesQuery>
 {
@@ -44,22 +24,22 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
     GetAllEntriesQueryResult entriesResult =
       await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(entriesQuery);
 
-    IEnumerable<SearchResultEntity> searchResultEntities = journals.Cast<IEntity>()
+    SearchResultEntity[] searchResultEntities = journals.Cast<IEntity>()
       .Union(entriesResult.Entries)
       .OrderByDescending(c => c.EditedOn)
       .Select(
-        e => new SearchResultEntity
+        entity => new SearchResultEntity
         {
-          EntityType = e.GetType() == typeof(IJournal) ? EntityType.Journal : EntityType.Entry,
-          Entity = e
+          EntityType = entity.GetType() == typeof(IJournal) ? EntityType.Journal : EntityType.Entry,
+          Entity = entity
         }
       )
       .ToArray();
-    
+
     return new SearchEntitiesResult
     {
-      Entities = searchResultEntities.ToArray(),
-      Journals = entriesResult.Journals
+      Entities = searchResultEntities,
+      Journals = entriesResult.Journals.Cast<object>().ToArray()
     };
   }
 }

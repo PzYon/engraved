@@ -3,6 +3,7 @@ using Engraved.Core.Application.Queries.Search;
 using Engraved.Core.Application.Queries.Search.Attributes;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Domain;
+using J2N.Collections.Generic.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +29,7 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
 
   [Route("entities")]
   [HttpGet]
-  public async Task<object[]> SearchEntities(string searchText)
+  public async Task<SearchEntitiesResultWeb> SearchEntities(string searchText)
   {
     var query = new SearchEntitiesQuery
     {
@@ -36,7 +37,34 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
       Limit = 100
     };
 
-    IEntity[] entities = await dispatcher.Query<IEntity[], SearchEntitiesQuery>(query);
-    return entities.EnsurePolymorphismWhenSerializing();
+    SearchEntitiesResult result = await dispatcher.Query<SearchEntitiesResult, SearchEntitiesQuery>(query);
+
+    return new SearchEntitiesResultWeb
+    {
+      Entities = result.Entities
+        .Select(
+          e => new SearchResultEntityWeb
+          {
+            Entity = e.Entity,
+            EntityType = e.EntityType
+          }
+        )
+        .ToArray(),
+      Journals = result.Journals.EnsurePolymorphismWhenSerializing()
+    };
   }
+}
+
+public class SearchResultEntityWeb
+{
+  public object Entity { get; set; } = null!;
+
+  public EntityType EntityType { get; set; }
+}
+
+public class SearchEntitiesResultWeb
+{
+  public SearchResultEntityWeb[] Entities { get; set; } = Array.Empty<SearchResultEntityWeb>();
+
+  public object[] Journals { get; set; } = Array.Empty<object>();
 }
