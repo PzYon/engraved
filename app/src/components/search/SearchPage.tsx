@@ -3,16 +3,9 @@ import { Page } from "../layout/pages/Page";
 import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
 import { SearchOutlined } from "@mui/icons-material";
-import { Typography } from "@mui/material";
-import { useSearchEntitiesQuery } from "../../serverApi/reactQuery/queries/useSearchEntitiesQuery";
-import { usePageContext } from "../layout/pages/PageContext";
+import { GlobalSearch } from "./GlobalSearch";
 
 export const SearchPage: React.FC = () => {
-  const { searchText } = usePageContext();
-  const entities = useSearchEntitiesQuery(searchText);
-
-  console.log("entities: " + entities);
-
   return (
     <Page
       title={
@@ -27,7 +20,7 @@ export const SearchPage: React.FC = () => {
       }
       enableFilters={true}
     >
-      <Typography>Not ready yet... Coming soon. Maybe. :)</Typography>
+      <GlobalSearch />
     </Page>
   );
 };

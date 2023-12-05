@@ -63,7 +63,7 @@ public class ExecutorRegistration
     RegisterQuery<IDictionary<string, IDictionary<string, ThresholdResult>>, GetThresholdValuesQuery,
       GetThresholdValuesQueryExecutor>(services);
     RegisterQuery<SearchAttributesResult[], SearchAttributesQuery, SearchAttributesQueryExecutor>(services);
-    RegisterQuery<IEntity[], SearchEntitiesQuery, SearchEntitiesQueryExecutor>(services);
+    RegisterQuery<SearchEntitiesResult, SearchEntitiesQuery, SearchEntitiesQueryExecutor>(services);
   }
 
   private static void RegisterQuery<TResult, TQuery, TQueryExecutor>(IServiceCollection services)
