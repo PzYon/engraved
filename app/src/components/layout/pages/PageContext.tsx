@@ -25,6 +25,8 @@ export interface IPageContext {
   setSubTitle: (subTitle: React.ReactNode) => void;
   pageActions: IAction[];
   setPageActions: (actions: IAction[]) => void;
+  hideActions: boolean;
+  setHideActions: (value: boolean) => void;
   // consider moving below props to a SearchContext
   filterMode: FilterMode;
   setFilterMode: (value: FilterMode) => void;
@@ -47,6 +49,8 @@ const PageContext = createContext<IPageContext>({
   setSubTitle: null,
   pageActions: null,
   setPageActions: null,
+  hideActions: null,
+  setHideActions: null,
   filterMode: null,
   setFilterMode: null,
   showFilters: null,
@@ -69,6 +73,7 @@ export const PageContextProvider: React.FC<{
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
+  const [hideActions, setHideActions] = useState(false);
   const [pageActions, setPageActions] = useState<IAction[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
@@ -92,6 +97,8 @@ export const PageContextProvider: React.FC<{
       setSubTitle,
       pageActions,
       setPageActions,
+      hideActions,
+      setHideActions,
       filterMode,
       setFilterMode,
       showFilters,
@@ -108,6 +115,7 @@ export const PageContextProvider: React.FC<{
     subTitle,
     documentTitle,
     pageActions,
+    hideActions,
     showFilters,
     filterMode,
     searchText,

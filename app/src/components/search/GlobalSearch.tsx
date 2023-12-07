@@ -32,17 +32,11 @@ export const GlobalSearch: React.FC = () => {
           );
         }
 
-        const journal = e.entity as IJournal;
         return (
           <JournalListItem
-            key={journal.id}
-            journal={journal}
-            addWrapper={() => {
-              //collection.add(journal.id, wrapper);
-            }}
-            onClick={() => alert("click")}
             index={i}
-            isFocused={false}
+            key={e.entity.id}
+            journal={e.entity as IJournal}
           />
         );
       })}

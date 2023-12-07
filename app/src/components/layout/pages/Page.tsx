@@ -6,6 +6,7 @@ import { IPageTab } from "../tabs/IPageTab";
 
 export const Page: React.FC<{
   actions?: IAction[];
+  hideActions?: boolean;
   title?: React.ReactNode;
   subTitle?: React.ReactNode;
   documentTitle?: string;
@@ -15,6 +16,7 @@ export const Page: React.FC<{
   showFilters?: boolean;
 }> = ({
   actions,
+  hideActions,
   title,
   subTitle,
   documentTitle,
@@ -25,6 +27,7 @@ export const Page: React.FC<{
 }) => {
   const {
     setPageActions,
+    setHideActions,
     setTitle,
     setSubTitle,
     setDocumentTitle,
@@ -42,6 +45,8 @@ export const Page: React.FC<{
 
     setPageActions(actions);
   }, [setPageActions, actions]);
+
+  useEffect(() => setHideActions(hideActions), [hideActions, setHideActions]);
 
   useEffect(() => {
     if (tabs === undefined) {

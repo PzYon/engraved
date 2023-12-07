@@ -21,6 +21,7 @@ export const SearchPage: React.FC = () => {
       }
       filterMode={FilterMode.Text}
       showFilters={true}
+      hideActions={true}
     >
       <GlobalSearch />
     </Page>
