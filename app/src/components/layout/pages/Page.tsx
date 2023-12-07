@@ -12,6 +12,7 @@ export const Page: React.FC<{
   tabs?: IPageTab[];
   children: React.ReactNode;
   filterMode?: FilterMode;
+  showFilters?: boolean;
 }> = ({
   actions,
   title,
@@ -19,7 +20,8 @@ export const Page: React.FC<{
   documentTitle,
   tabs,
   children,
-  filterMode = "none",
+  filterMode = FilterMode.None,
+  showFilters = false,
 }) => {
   const {
     setPageActions,
@@ -66,10 +68,12 @@ export const Page: React.FC<{
 
   useEffect(() => setFilterMode(filterMode), [filterMode, setFilterMode]);
 
+  useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
+
   useEffect(() => {
     return () => {
       setShowFilters(false);
-      setFilterMode("none");
+      setFilterMode(FilterMode.None);
       setSearchText(null);
       setJournalTypes([]);
       setTabs([]);

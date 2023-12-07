@@ -4,6 +4,7 @@ import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon, IconStyle } from "../common/Icon";
 import { SearchOutlined } from "@mui/icons-material";
 import { GlobalSearch } from "./GlobalSearch";
+import { FilterMode } from "../layout/pages/PageContext";
 
 export const SearchPage: React.FC = () => {
   return (
@@ -18,7 +19,8 @@ export const SearchPage: React.FC = () => {
           }
         />
       }
-      filterMode={"text"}
+      filterMode={FilterMode.Text}
+      showFilters={true}
     >
       <GlobalSearch />
     </Page>

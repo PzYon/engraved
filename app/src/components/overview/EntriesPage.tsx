@@ -6,6 +6,7 @@ import { HistoryOutlined } from "@mui/icons-material";
 import { useAppContext } from "../../AppContext";
 import { Entries } from "./Entries";
 import { getPageTabs } from "../layout/tabs/getPageTabs";
+import { FilterMode } from "../layout/pages/PageContext";
 
 export const EntriesPage: React.FC = () => {
   const { user } = useAppContext();
@@ -27,7 +28,7 @@ export const EntriesPage: React.FC = () => {
           }
         />
       }
-      filterMode={"both"}
+      filterMode={FilterMode.All}
       actions={[]}
     >
       <Entries />

@@ -4,7 +4,7 @@ import { PageJournalTypesSelector } from "./PageJournalTypesSelector";
 import { DeviceWidth, useDeviceWidth } from "../useDeviceWidth";
 import { PageSearchBox } from "./PageSearchBox";
 import { PageSection } from "../../layout/pages/PageSection";
-import { usePageContext } from "../../layout/pages/PageContext";
+import { FilterMode, usePageContext } from "../../layout/pages/PageContext";
 
 export const PageFilters: React.FC = () => {
   const deviceWidth = useDeviceWidth();
@@ -19,11 +19,9 @@ export const PageFilters: React.FC = () => {
   return (
     <PageSection>
       <Row style={{ marginBottom: 0 }}>
-        {filterMode === "both" || filterMode === "text" ? (
-          <PageSearchBox />
-        ) : null}
+        {filterMode & FilterMode.Text ? <PageSearchBox /> : null}
 
-        {filterMode === "both" || filterMode === "journal-type" ? (
+        {filterMode & FilterMode.JournalType ? (
           <PageJournalTypesSelector />
         ) : null}
       </Row>

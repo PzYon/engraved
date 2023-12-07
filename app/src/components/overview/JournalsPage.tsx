@@ -6,6 +6,7 @@ import { Icon, IconStyle } from "../common/Icon";
 import { Journals } from "./Journals";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { getPageTabs } from "../layout/tabs/getPageTabs";
+import { FilterMode } from "../layout/pages/PageContext";
 
 export const JournalsPage: React.FC = () => {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
@@ -34,7 +35,7 @@ export const JournalsPage: React.FC = () => {
         },
         ActionFactory.newJournal(),
       ]}
-      filterMode={"both"}
+      filterMode={FilterMode.All}
     >
       <Journals favoritesOnly={favoritesOnly} />
     </Page>

@@ -9,7 +9,12 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
 
-export type FilterMode = "none" | "text" | "journal-type" | "both";
+export enum FilterMode {
+  None = 0,
+  Text = 1 << 0,
+  JournalType = 1 << 1,
+  All = 1 << 2,
+}
 
 export interface IPageContext {
   documentTitle: string;
@@ -66,7 +71,7 @@ export const PageContextProvider: React.FC<{
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
   const [pageActions, setPageActions] = useState<IAction[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [filterMode, setFilterMode] = useState<FilterMode>("none");
+  const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
   const [searchText, setSearchText] = useState<string>("");
   const [journalTypes, setJournalTypes] = useState<JournalType[]>([]);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
