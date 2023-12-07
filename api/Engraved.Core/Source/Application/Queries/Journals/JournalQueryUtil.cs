@@ -14,9 +14,7 @@ public static class JournalQueryUtil
   {
     string[] distinctUserIds = journals
       .SelectMany(m => m.Permissions.Keys)
-      .Union(
-        journals.Where(m => !string.IsNullOrEmpty(m.UserId)).Select(m => m.UserId!)
-      )
+      .Union(journals.Where(m => !string.IsNullOrEmpty(m.UserId)).Select(m => m.UserId!))
       .Distinct()
       .ToArray();
 
@@ -24,10 +22,10 @@ public static class JournalQueryUtil
 
     Dictionary<string, IUser> userById = users.ToDictionary(u => u.Id!, u => u);
 
-    return journals.Select(j => EnsureUsers(repository.CurrentUser.Value, j, userById)).ToArray();
+    return journals.Select(j => EnsureUsers(j, userById)).ToArray();
   }
 
-  private static IJournal EnsureUsers(IUser currentUser, IJournal journal, IReadOnlyDictionary<string, IUser> userById)
+  private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, IUser> userById)
   {
     // write all users on to object
     foreach ((string? key, PermissionDefinition value) in journal.Permissions)
@@ -42,12 +40,15 @@ public static class JournalQueryUtil
 
     string journalOwnerId = journal.UserId!;
 
-    journal.Permissions.TryAdd(journalOwnerId, new PermissionDefinition
-    {
-      User = userById[journalOwnerId],
-      UserRole = UserRole.Owner,
-      Kind = PermissionKind.Write
-    });
+    journal.Permissions.TryAdd(
+      journalOwnerId,
+      new PermissionDefinition
+      {
+        User = userById[journalOwnerId],
+        UserRole = UserRole.Owner,
+        Kind = PermissionKind.Write
+      }
+    );
 
     // todo: consider removing/clearing "private" data like
     // lastLoginDate and favoriteJournalIds
