@@ -10,8 +10,6 @@ export const Entries: React.FC = () => {
   const { searchText, journalTypes } = usePageContext();
   const queryResult = useAllEntriesQuery(searchText, journalTypes);
 
-  console.log("jep");
-
   if (!queryResult) {
     return null;
   }
