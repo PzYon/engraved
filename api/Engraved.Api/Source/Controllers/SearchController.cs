@@ -39,17 +39,16 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
 
     return new SearchEntitiesResultWeb
     {
-      Entities = result.Entities
-        .Select(e => new SearchResultEntityWeb { Entity = e.Entity, EntityType = e.EntityType })
-        .ToArray(),
+      Entities = result.Entities.Select(e => SearchEntitiesResultWeb.X(e)).ToArray(),
       Journals = result.Journals.EnsurePolymorphismWhenSerializing()
     };
   }
 }
 
+// we need this stuff to ensure polymorphism during serialization
 public class SearchResultEntityWeb
 {
-  public object Entity { get; set; } = null!;
+  public dynamic Entity { get; set; } = null!;
 
   public EntityType EntityType { get; set; }
 }
@@ -58,5 +57,14 @@ public class SearchEntitiesResultWeb
 {
   public SearchResultEntityWeb[] Entities { get; set; } = Array.Empty<SearchResultEntityWeb>();
 
-  public object[] Journals { get; set; } = Array.Empty<object>();
+  public dynamic[] Journals { get; set; } = Array.Empty<dynamic>();
+
+  public static SearchResultEntityWeb X(SearchResultEntity e)
+  {
+    return new SearchResultEntityWeb
+    {
+      Entity = e.Entity,
+      EntityType = e.EntityType
+    };
+  }
 }

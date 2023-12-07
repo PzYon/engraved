@@ -34,7 +34,7 @@ export const JournalsPage: React.FC = () => {
         },
         ActionFactory.newJournal(),
       ]}
-      enableFilters={true}
+      filterMode={"both"}
     >
       <Journals favoritesOnly={favoritesOnly} />
     </Page>

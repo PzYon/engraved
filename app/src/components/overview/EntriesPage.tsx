@@ -27,7 +27,7 @@ export const EntriesPage: React.FC = () => {
           }
         />
       }
-      enableFilters={true}
+      filterMode={"both"}
       actions={[]}
     >
       <Entries />

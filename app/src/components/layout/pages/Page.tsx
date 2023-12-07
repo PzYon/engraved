@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { usePageContext } from "./PageContext";
+import { FilterMode, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
@@ -9,24 +9,24 @@ export const Page: React.FC<{
   title?: React.ReactNode;
   subTitle?: React.ReactNode;
   documentTitle?: string;
-  enableFilters?: boolean;
   tabs?: IPageTab[];
   children: React.ReactNode;
+  filterMode?: FilterMode;
 }> = ({
   actions,
   title,
   subTitle,
   documentTitle,
-  enableFilters,
   tabs,
   children,
+  filterMode = "none",
 }) => {
   const {
     setPageActions,
     setTitle,
     setSubTitle,
     setDocumentTitle,
-    setEnableFilters,
+    setFilterMode,
     setShowFilters,
     setJournalTypes,
     setSearchText,
@@ -64,26 +64,17 @@ export const Page: React.FC<{
     [documentTitle, setDocumentTitle],
   );
 
-  useEffect(
-    () => setEnableFilters(enableFilters),
-    [enableFilters, setEnableFilters],
-  );
+  useEffect(() => setFilterMode(filterMode), [filterMode, setFilterMode]);
 
   useEffect(() => {
     return () => {
       setShowFilters(false);
-      setEnableFilters(false);
+      setFilterMode("none");
       setSearchText(null);
       setJournalTypes([]);
       setTabs([]);
     };
-  }, [
-    setEnableFilters,
-    setJournalTypes,
-    setSearchText,
-    setShowFilters,
-    setTabs,
-  ]);
+  }, [setFilterMode, setJournalTypes, setSearchText, setShowFilters, setTabs]);
 
   return <FadeInContainer>{children}</FadeInContainer>;
 };

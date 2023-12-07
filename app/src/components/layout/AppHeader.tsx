@@ -28,7 +28,7 @@ export const AppHeader: React.FC = () => {
     title,
     subTitle,
     pageActions: pageActionsFromContext,
-    enableFilters,
+    filterMode,
     showFilters,
     setShowFilters,
     tabs,
@@ -39,7 +39,7 @@ export const AppHeader: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
 
-  const pageActions: IAction[] = enableFilters
+  const pageActions: IAction[] = filterMode
     ? [
         ActionFactory.toggleFilters(showFilters, setShowFilters, true),
         ...pageActionsFromContext,
@@ -112,7 +112,7 @@ export const AppHeader: React.FC = () => {
           </ActionsAndTabContainer>
         </ContentWrapper>
 
-        {showFilters ? <PageFilters /> : null}
+        <PageFilters />
       </AppContent>
     </Host>
   );

@@ -18,7 +18,7 @@ export const SearchPage: React.FC = () => {
           }
         />
       }
-      enableFilters={true}
+      filterMode={"text"}
     >
       <GlobalSearch />
     </Page>

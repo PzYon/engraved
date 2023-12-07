@@ -7,6 +7,7 @@ import { IEntry } from "../../serverApi/IEntry";
 import { JournalTypeFactory } from "../../journalTypes/JournalTypeFactory";
 import { JournalListItem } from "../overview/JournalListItem";
 import { IJournal } from "../../serverApi/IJournal";
+import { PageSection } from "../layout/pages/PageSection";
 
 export const GlobalSearch: React.FC = () => {
   const { searchText } = usePageContext();
@@ -24,7 +25,11 @@ export const GlobalSearch: React.FC = () => {
     <div>
       {queryResult.entities.map((e, i) => {
         if (e.entityType === "Entry") {
-          return renderEntry(e.entity as IEntry);
+          return (
+            <PageSection key={e.entity.id}>
+              {renderEntry(e.entity as IEntry)}
+            </PageSection>
+          );
         }
 
         const journal = e.entity as IJournal;
@@ -47,7 +52,6 @@ export const GlobalSearch: React.FC = () => {
   function renderEntry(entry: IEntry) {
     const journal = queryResult.journals.find((j) => j.id === entry.parentId);
 
-    debugger;
     return JournalTypeFactory.create(journal.type).getEntry(journal, entry);
   }
 };
