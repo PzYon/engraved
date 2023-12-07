@@ -2,8 +2,6 @@
 
 public interface IEntry : IUserScoped, IEntity
 {
-  string? Id { get; set; }
-
   string ParentId { get; set; }
 
   string? Notes { get; set; }

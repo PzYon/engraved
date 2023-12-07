@@ -4,8 +4,6 @@ namespace Engraved.Core.Domain.Journals;
 
 public interface IJournal : IUserScoped, IPermissionHolder, IEntity
 {
-  string? Id { get; set; }
-
   string Name { get; set; }
 
   string? Description { get; set; }

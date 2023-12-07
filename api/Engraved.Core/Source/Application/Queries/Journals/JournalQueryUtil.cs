@@ -42,18 +42,15 @@ public static class JournalQueryUtil
 
     string journalOwnerId = journal.UserId!;
 
-    if (!journal.Permissions.ContainsKey(journalOwnerId))
+    journal.Permissions.TryAdd(journalOwnerId, new PermissionDefinition
     {
-      journal.Permissions[journalOwnerId] = new PermissionDefinition
-      {
-        User = userById[journalOwnerId],
-        UserRole = UserRole.Owner,
-        Kind = PermissionKind.Write
-      };
-    }
+      User = userById[journalOwnerId],
+      UserRole = UserRole.Owner,
+      Kind = PermissionKind.Write
+    });
 
     // todo: consider removing/clearing "private" data like
-    // lastLoginDate and favoriteJournalids
+    // lastLoginDate and favoriteJournalIds
     // -> if this is done, then add a unit test for this!
 
     return journal;
