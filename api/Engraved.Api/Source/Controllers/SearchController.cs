@@ -2,8 +2,6 @@
 using Engraved.Core.Application.Queries.Search;
 using Engraved.Core.Application.Queries.Search.Attributes;
 using Engraved.Core.Application.Queries.Search.Entities;
-using Engraved.Core.Domain;
-using J2N.Collections.Generic.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +27,7 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
 
   [Route("entities")]
   [HttpGet]
-  public async Task<SearchEntitiesResultWeb> SearchEntities(string searchText)
+  public async Task<dynamic> SearchEntities(string searchText)
   {
     var query = new SearchEntitiesQuery
     {
@@ -42,13 +40,7 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
     return new SearchEntitiesResultWeb
     {
       Entities = result.Entities
-        .Select(
-          e => new SearchResultEntityWeb
-          {
-            Entity = e.Entity,
-            EntityType = e.EntityType
-          }
-        )
+        .Select(e => new SearchResultEntityWeb { Entity = e.Entity, EntityType = e.EntityType })
         .ToArray(),
       Journals = result.Journals.EnsurePolymorphismWhenSerializing()
     };

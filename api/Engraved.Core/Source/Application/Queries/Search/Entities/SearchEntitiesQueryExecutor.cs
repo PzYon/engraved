@@ -1,6 +1,5 @@
 using Engraved.Core.Application.Queries.Entries.GetAll;
 using Engraved.Core.Application.Queries.Journals.GetAll;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Search.Entities;
@@ -24,22 +23,21 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
     GetAllEntriesQueryResult entriesResult =
       await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(entriesQuery);
 
-    SearchResultEntity[] searchResultEntities = journals.Cast<IEntity>()
-      .Union(entriesResult.Entries)
-      .OrderByDescending(c => c.EditedOn)
-      .Select(
-        entity => new SearchResultEntity
-        {
-          EntityType = entity.GetType() == typeof(IJournal) ? EntityType.Journal : EntityType.Entry,
-          Entity = entity
-        }
+    SearchResultEntity[] searchResultEntities = journals.Select(
+        journal => new SearchResultEntity { EntityType = EntityType.Journal, Entity = journal }
       )
+      .Union(
+        entriesResult.Entries.Select(
+          entry => new SearchResultEntity { EntityType = EntityType.Entry, Entity = entry }
+        )
+      )
+      .OrderByDescending(r => r.Entity.EditedOn)
       .ToArray();
 
     return new SearchEntitiesResult
     {
       Entities = searchResultEntities,
-      Journals = entriesResult.Journals.Cast<object>().ToArray()
+      Journals = entriesResult.Journals
     };
   }
 }

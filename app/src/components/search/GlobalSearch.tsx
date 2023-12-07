@@ -22,8 +22,6 @@ export const GlobalSearch: React.FC = () => {
 
   return (
     <div>
-      {JSON.stringify(queryResult)}
-      <br />
       {queryResult.entities.map((e, i) => {
         if (e.entityType === "Entry") {
           return renderEntry(e.entity as IEntry);
