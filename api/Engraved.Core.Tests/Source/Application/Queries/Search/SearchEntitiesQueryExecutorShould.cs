@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
@@ -50,7 +51,11 @@ public class SearchEntitiesQueryExecutorShould
     SearchEntitiesResult result = await _searchExecutor.Execute(new SearchEntitiesQuery { SearchText = "Yes" });
 
     Assert.AreEqual(2, result.Entities.Length);
+    Assert.AreEqual(1, result.Entities.Count(e => e.EntityType == EntityType.Journal));
+    Assert.AreEqual(1, result.Entities.Count(e => e.EntityType == EntityType.Entry));
+    
     Assert.AreEqual(1, result.Journals.Length);
+    Assert.AreEqual("No", result.Journals[0].Name);
   }
 
   private async Task AddJournalToIgnoreWithOneEntryToFind()
@@ -70,7 +75,7 @@ public class SearchEntitiesQueryExecutorShould
       {
         JournalId = commandResult.EntityId,
         DateTime = _dateService.UtcNow,
-        Notes = "No"
+        Notes = "Yes"
       }
     );
   }

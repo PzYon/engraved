@@ -26,7 +26,7 @@ public class TestServiceProvider(IUserScopedRepository userScopedRepository, IRe
 
     if (serviceType == typeof(IQueryExecutor<IJournal[], GetAllJournalsQuery>))
     {
-      return new GetAllJournalsQueryExecutor(repository, userScopedRepository);
+      return new GetAllJournalsQueryExecutor(userScopedRepository);
     }
 
     if (serviceType == typeof(IQueryExecutor<GetAllEntriesQueryResult, GetAllEntriesQuery>))

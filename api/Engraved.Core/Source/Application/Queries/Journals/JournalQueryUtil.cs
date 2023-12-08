@@ -8,7 +8,7 @@ namespace Engraved.Core.Application.Queries.Journals;
 public static class JournalQueryUtil
 {
   public static async Task<IJournal[]> EnsurePermissionUsers(
-    IUserScopedRepository repository,
+    IRepository repository,
     params IJournal[] journals
   )
   {

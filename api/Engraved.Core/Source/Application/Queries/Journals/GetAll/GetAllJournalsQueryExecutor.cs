@@ -3,35 +3,27 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Journals.GetAll;
 
-public class GetAllJournalsQueryExecutor : IQueryExecutor<IJournal[], GetAllJournalsQuery>
+public class GetAllJournalsQueryExecutor(IUserScopedRepository repository)
+  : IQueryExecutor<IJournal[], GetAllJournalsQuery>
 {
-  private readonly IBaseRepository _repository;
-  private readonly IUserScopedRepository _userScopedRepository;
-
-  public GetAllJournalsQueryExecutor(IRepository repository, IUserScopedRepository userScopedRepository)
-  {
-    _repository = repository;
-    _userScopedRepository = userScopedRepository;
-  }
-
   public bool DisableCache => false;
 
   public async Task<IJournal[]> Execute(GetAllJournalsQuery query)
   {
-    IJournal[] allJournals = await _repository.GetAllJournals(
+    IJournal[] allJournals = await repository.GetAllJournals(
       query.SearchText,
       query.JournalTypes,
       GetJournalIds(query),
       query.Limit
     );
 
-    return await JournalQueryUtil.EnsurePermissionUsers(_userScopedRepository, allJournals);
+    return await JournalQueryUtil.EnsurePermissionUsers(repository, allJournals);
   }
 
   private string[]? GetJournalIds(GetAllJournalsQuery query)
   {
     return !query.FavoritesOnly.HasValue || !query.FavoritesOnly.Value
       ? null
-      : _userScopedRepository.CurrentUser.Value.FavoriteJournalIds.ToArray();
+      : repository.CurrentUser.Value.FavoriteJournalIds.ToArray();
   }
 }
