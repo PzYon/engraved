@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Engraved.Core.Application.Queries.Search;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Search.Lucene;
@@ -17,8 +18,8 @@ public class LuceneSearchIndexShould
       GetSimpleValues().ToArray()
     );
 
-    Assert.IsNotEmpty(results);
-    Assert.AreEqual(2, results.Length);
+    results.Should().NotBeEmpty();
+    results.Length.Should().Be(2);
   }
 
   [Test]
@@ -30,8 +31,8 @@ public class LuceneSearchIndexShould
       GetSimpleValues().ToArray()
     );
 
-    Assert.IsNotEmpty(results);
-    Assert.AreEqual(1, results.Length);
+    results.Should().NotBeEmpty();
+    results.Length.Should().Be(1);
   }
 
   [Test]
@@ -43,8 +44,8 @@ public class LuceneSearchIndexShould
       GetSimpleValues().Union(GetSimpleValues()).Union(GetSimpleValues()).ToArray()
     );
 
-    Assert.IsNotEmpty(results);
-    Assert.AreEqual(1, results.Length);
+    results.Should().NotBeEmpty();
+    results.Length.Should().Be(1);
   }
 
   [Test]
@@ -61,12 +62,12 @@ public class LuceneSearchIndexShould
       new Dictionary<string, string[]> { { "attr1", new[] { "Occurs Three Times" } } }
     );
 
-    Assert.IsNotEmpty(results);
-    Assert.AreEqual(3, results.Length);
+    results.Should().NotBeEmpty();
+    results.Length.Should().Be(2);
 
-    Assert.AreEqual("Occurs Three Times", results.ToArray()[0].Values["attr1"][0]);
-    Assert.AreEqual("Occurs Twice", results.ToArray()[1].Values["attr1"][0]);
-    Assert.AreEqual("Occurs Once", results.ToArray()[2].Values["attr1"][0]);
+    results.ToArray()[0].Values["attr1"][0].Should().Be("Occurs Three Times");
+    results.ToArray()[0].Values["attr1"][1].Should().Be("Occurs Twice");
+    results.ToArray()[0].Values["attr1"][2].Should().Be("Occurs Once");
   }
 
   [Test]
@@ -101,9 +102,9 @@ public class LuceneSearchIndexShould
       }
     );
 
-    Assert.IsNotEmpty(results);
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual(results.First().Values["fruit"].First(), "yellow");
+    results.Should().NotBeEmpty();
+    results.Length.Should().Be(1);
+    results.First().Values["fruit"].First().Should().Be("Yellow");
   }
 
   [Test]
@@ -118,8 +119,8 @@ public class LuceneSearchIndexShould
       new Dictionary<string, string[]> { { "attr1", new[] { "ten play" } } }
     );
 
-    Assert.IsNotEmpty(results);
-    Assert.AreEqual(2, results.Length);
+    results.Should().NotBeEmpty();
+    results.Length.Should().Be(2);
   }
 
   [Test]
@@ -142,8 +143,8 @@ public class LuceneSearchIndexShould
       }
     );
 
-    Assert.IsNotEmpty(results);
-    Assert.AreEqual(2, results.Length);
+    results.Should().NotBeEmpty();
+    results.Length.Should().Be(2);
   }
 
   [Test]
@@ -166,8 +167,8 @@ public class LuceneSearchIndexShould
       }
     );
 
-    Assert.IsNotEmpty(results);
-    Assert.AreEqual(2, results.Length);
+    results.Should().NotBeEmpty();
+    results.Length.Should().Be(2);
   }
 
   private static IEnumerable<Dictionary<string, string[]>> GetSimpleValues()

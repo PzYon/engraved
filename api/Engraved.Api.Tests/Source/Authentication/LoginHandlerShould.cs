@@ -9,6 +9,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Api.Tests.Authentication;
@@ -77,32 +78,32 @@ public class LoginHandlerShould
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 
-    Assert.IsNotEmpty(result.JwtToken);
+    result.JwtToken.Should().NotBeEmpty();
 
-    Assert.IsNotNull(result.User);
-    Assert.AreEqual(displayName, result.User!.DisplayName);
-    Assert.AreEqual(userName, result.User.Name);
-    Assert.AreEqual(imageUrl, result.User.ImageUrl);
-    Assert.IsNotNull(result.User.Id);
-    Assert.AreEqual(_dateService.UtcNow, result.User.LastLoginDate);
+    result.User.Should().NotBeNull();
+    result.User!.DisplayName.Should().Be(displayName);
+    result.User.Name.Should().Be(userName);
+    result.User.ImageUrl.Should().Be(imageUrl);
+    result.User.Id.Should().NotBeNull();
+    result.User.LastLoginDate.Should().Be(_dateService.UtcNow);
 
     IUser[] users = await _testRepository.GetAllUsers();
 
-    Assert.AreEqual(1, users.Length);
+    users.Length.Should().Be(1);
 
     IUser user = users[0];
 
-    Assert.AreEqual(displayName, user.DisplayName);
-    Assert.AreEqual(userName, user.Name);
-    Assert.AreEqual(imageUrl, user.ImageUrl);
-    Assert.IsNotNull(user.Id);
-    Assert.AreEqual(_dateService.UtcNow, user.LastLoginDate);
-    Assert.AreEqual(1, user.FavoriteJournalIds.Count);
+    user.DisplayName.Should().Be(displayName);
+    user.Name.Should().Be(userName);
+    user.ImageUrl.Should().Be(imageUrl);
+    user.Id.Should().NotBeNull();
+    user.LastLoginDate.Should().Be(_dateService.UtcNow);
+    user.FavoriteJournalIds.Count().Should().Be(1);
 
     string quickNotesId = user.FavoriteJournalIds.First();
     IJournal? journal = await _testRepository.GetJournal(quickNotesId);
-    Assert.IsNotNull(journal);
-    Assert.AreEqual(journal!.Id, quickNotesId);
+    journal.Should().NotBeNull();
+    journal!.Id.Should().Be(quickNotesId);
   }
 
   [Test]
@@ -133,23 +134,23 @@ public class LoginHandlerShould
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 
-    Assert.IsNotNull(result.User);
-    Assert.AreEqual(displayName, result.User!.DisplayName);
-    Assert.AreEqual(userName, result.User.Name);
-    Assert.AreEqual(imageUrl, result.User.ImageUrl);
-    Assert.IsNotNull(result.User.Id);
-    Assert.AreEqual(_dateService.UtcNow, result.User.LastLoginDate);
+    result.User.Should().NotBeNull();
+    result.User!.DisplayName.Should().Be(displayName);
+    result.User!.Name.Should().Be(userName);
+    result.User!.ImageUrl.Should().Be(imageUrl);
+    result.User.Id.Should().NotBeNull();
+    result.User.LastLoginDate.Should().Be(_dateService.UtcNow);
 
     IUser[] users = await _testRepository.GetAllUsers();
 
-    Assert.AreEqual(1, users.Length);
+    users.Length.Should().Be(1);
 
     IUser user = users[0];
 
-    Assert.AreEqual(displayName, user.DisplayName);
-    Assert.AreEqual(userName, user.Name);
-    Assert.AreEqual(imageUrl, user.ImageUrl);
-    Assert.IsNotNull(user.Id);
-    Assert.AreEqual(_dateService.UtcNow, user.LastLoginDate);
+    user.DisplayName.Should().Be(displayName);
+    user.Name.Should().Be(userName);
+    user.ImageUrl.Should().Be(imageUrl);
+    user.Id.Should().NotBeNull();
+    user.LastLoginDate.Should().Be(_dateService.UtcNow);
   }
 }
