@@ -43,7 +43,7 @@ public class SearchEntitiesQueryExecutorShould
   }
 
   [Test]
-  public async Task Basic()
+  public async Task FindEntriesAndJournal()
   {
     await AddJournalToFindWithTwoEntriesToIgnore();
     await AddJournalToIgnoreWithOneEntryToFind();
@@ -52,8 +52,12 @@ public class SearchEntitiesQueryExecutorShould
 
     Assert.AreEqual(2, result.Entities.Length);
     Assert.AreEqual(1, result.Entities.Count(e => e.EntityType == EntityType.Journal));
+    Assert.AreEqual(
+      1,
+      result.Entities.Where(e => e.EntityType == EntityType.Journal).Count(e => ((IJournal) e.Entity).Name == "Yes")
+    );
     Assert.AreEqual(1, result.Entities.Count(e => e.EntityType == EntityType.Entry));
-    
+
     Assert.AreEqual(1, result.Journals.Length);
     Assert.AreEqual("No", result.Journals[0].Name);
   }
