@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application;
@@ -28,8 +29,8 @@ public class FakeDateServiceShould
 
       DateTime nextNow = service.UtcNow;
 
-      Assert.IsTrue(nextNow > lastNow);
-      Assert.IsTrue(nextNow < DateTime.UtcNow);
+      nextNow.Should().BeAfter(lastNow);
+      nextNow.Should().BeBefore(DateTime.UtcNow);
 
       lastNow = nextNow;
     }

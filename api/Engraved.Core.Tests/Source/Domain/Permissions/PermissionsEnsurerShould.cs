@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Domain.Permissions;
@@ -43,7 +45,7 @@ public class PermissionsEnsurerShould
       new Dictionary<string, PermissionKind> { { "mar@foo.ch", PermissionKind.None } }
     );
 
-    Assert.AreEqual(0, holder.Permissions.Count);
+    holder.Permissions.Count.Should().Be(0);
   }
 
   [Test]
@@ -59,8 +61,8 @@ public class PermissionsEnsurerShould
       new Dictionary<string, PermissionKind> { { "mar@foo.ch", PermissionKind.Write } }
     );
 
-    Assert.AreEqual(1, holder.Permissions.Count);
-    Assert.AreEqual(PermissionKind.Write, holder.Permissions["123"].Kind);
+    holder.Permissions.Count.Should().Be(1);
+    holder.Permissions["123"].Kind.Should().Be(PermissionKind.Write);
   }
 
   [Test]
@@ -76,7 +78,7 @@ public class PermissionsEnsurerShould
       new Dictionary<string, PermissionKind> { { "bar@foo.ch", PermissionKind.Read } }
     );
 
-    Assert.AreEqual(2, holder.Permissions.Count);
+    holder.Permissions.Count.Should().Be(2);
   }
 }
 

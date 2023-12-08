@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
+using FluentAssertions.Equivalency;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert;
@@ -27,8 +30,8 @@ public class UpsertCounterEntryCommandExecutorShould
     var command = new UpsertCounterEntryCommand { JournalId = "journal_id", Notes = "foo" };
     await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
 
-    Assert.AreEqual(1, _testRepository.Entries.Count);
-    Assert.AreEqual("foo", _testRepository.Entries.First().Notes);
+    _testRepository.Entries.Count.Should().Be(1);
+    _testRepository.Entries.First().Notes.Should().Be("foo");
   }
 
   [Test]
@@ -54,10 +57,10 @@ public class UpsertCounterEntryCommandExecutorShould
     commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, dateService);
     await commandExecutor.Execute(updateCommand);
 
-    Assert.AreEqual(1, _testRepository.Entries.Count);
-    Assert.AreEqual("bar", _testRepository.Entries.First().Notes);
-    Assert.AreEqual(dateService.UtcNow, _testRepository.Entries.First().EditedOn);
-    Assert.AreEqual(42, _testRepository.Entries.OfType<GaugeEntry>().First().Value);
+    _testRepository.Entries.Count.Should().Be(1);
+    _testRepository.Entries.First().Notes.Should().Be("bar");
+    _testRepository.Entries.First().EditedOn.Should().Be(dateService.UtcNow);
+    _testRepository.Entries.OfType<GaugeEntry>().First().Value.Should().Be(42);
   }
 
   [Test]
@@ -65,12 +68,13 @@ public class UpsertCounterEntryCommandExecutorShould
   {
     var command = new UpsertCounterEntryCommand { JournalId = string.Empty };
 
-    Assert.ThrowsAsync<InvalidCommandException>(
-      async () =>
-      {
-        await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
-      }
-    );
+    async void Action()
+    {
+      await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+    }
+
+    Action action = Action;
+    action.Should().Throw<InvalidCommandException>();
   }
 
   [Test]
@@ -82,11 +86,12 @@ public class UpsertCounterEntryCommandExecutorShould
       Notes = "n0t3s"
     };
 
-    Assert.ThrowsAsync<InvalidCommandException>(
-      async () =>
-      {
-        await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
-      }
-    );
+    Action action = Action;
+    action.Should().Throw<InvalidCommandException>();
+
+    async void Action()
+    {
+      await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+    }
   }
 }
