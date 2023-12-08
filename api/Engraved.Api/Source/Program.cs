@@ -196,8 +196,8 @@ else
     );
 }
 
-ExecutorRegistration.RegisterCommands(builder.Services);
 ExecutorRegistration.RegisterQueries(builder.Services);
+ExecutorRegistration.RegisterCommands(builder.Services);
 
 WebApplication app = builder.Build();
 

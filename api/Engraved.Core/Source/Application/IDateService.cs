@@ -10,16 +10,11 @@ public class DateService : IDateService
   public DateTime UtcNow { get; } = DateTime.UtcNow;
 }
 
-public class FakeDateService : IDateService
+public class FakeDateService(DateTime initialDate) : IDateService
 {
   public FakeDateService() : this(DateTime.UtcNow) { }
 
-  public FakeDateService(DateTime initialDate)
-  {
-    UtcNow = initialDate;
-  }
-
-  public DateTime UtcNow { get; set; }
+  public DateTime UtcNow { get; set; } = initialDate;
 
   public void SetNext(int remainingSteps)
   {

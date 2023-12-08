@@ -20,7 +20,7 @@ export const Entry: React.FC<{
           {
             key: "journal-type",
             node: (
-              <JournalTypeIcon type={journal.type} style={IconStyle.Entries} />
+              <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
             ),
             label: "",
           },

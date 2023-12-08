@@ -9,6 +9,13 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
 
+export enum FilterMode {
+  None = 0,
+  Text = 1 << 0,
+  JournalType = 1 << 1,
+  All = 1 << 2,
+}
+
 export interface IPageContext {
   documentTitle: string;
   setDocumentTitle: (documentTitle: string) => void;
@@ -18,9 +25,11 @@ export interface IPageContext {
   setSubTitle: (subTitle: React.ReactNode) => void;
   pageActions: IAction[];
   setPageActions: (actions: IAction[]) => void;
+  hideActions: boolean;
+  setHideActions: (value: boolean) => void;
   // consider moving below props to a SearchContext
-  enableFilters: boolean;
-  setEnableFilters: (value: boolean) => void;
+  filterMode: FilterMode;
+  setFilterMode: (value: FilterMode) => void;
   showFilters: boolean;
   setShowFilters: (value: boolean) => void;
   searchText: string;
@@ -40,8 +49,10 @@ const PageContext = createContext<IPageContext>({
   setSubTitle: null,
   pageActions: null,
   setPageActions: null,
-  enableFilters: null,
-  setEnableFilters: null,
+  hideActions: null,
+  setHideActions: null,
+  filterMode: null,
+  setFilterMode: null,
   showFilters: null,
   setShowFilters: null,
   searchText: null,
@@ -62,9 +73,10 @@ export const PageContextProvider: React.FC<{
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
+  const [hideActions, setHideActions] = useState(false);
   const [pageActions, setPageActions] = useState<IAction[]>([]);
-  const [enableFilters, setEnableFilters] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
   const [searchText, setSearchText] = useState<string>("");
   const [journalTypes, setJournalTypes] = useState<JournalType[]>([]);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
@@ -85,8 +97,10 @@ export const PageContextProvider: React.FC<{
       setSubTitle,
       pageActions,
       setPageActions,
-      enableFilters,
-      setEnableFilters,
+      hideActions,
+      setHideActions,
+      filterMode,
+      setFilterMode,
       showFilters,
       setShowFilters,
       searchText,
@@ -101,8 +115,9 @@ export const PageContextProvider: React.FC<{
     subTitle,
     documentTitle,
     pageActions,
-    enableFilters,
+    hideActions,
     showFilters,
+    filterMode,
     searchText,
     journalTypes,
     tabs,

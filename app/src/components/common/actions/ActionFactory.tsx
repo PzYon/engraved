@@ -17,6 +17,7 @@ import {
   Redo,
   RefreshOutlined,
   SaveOutlined,
+  SearchOutlined,
   ShareOutlined,
   ShowChartOutlined,
   SwitchAccessShortcutOutlined,
@@ -350,6 +351,17 @@ export class ActionFactory {
       onClick: async () => await queryClient.invalidateQueries(),
       label: "Refresh data",
       key: "refresh",
+      sx: { color: "common.white" },
+    };
+  }
+
+  static goToGlobalSearch(): IAction {
+    return {
+      key: "search",
+      hotkey: "alt+g",
+      icon: <SearchOutlined fontSize="small" />,
+      label: "Search",
+      href: "/search",
       sx: { color: "common.white" },
     };
   }

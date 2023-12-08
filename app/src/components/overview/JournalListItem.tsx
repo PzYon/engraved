@@ -14,8 +14,8 @@ import { ActionFactory } from "../common/actions/ActionFactory";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
+  index: number;
   addWrapper?: (scrapWrapper: JournalItemWrapper) => void;
-  index?: number;
   onClick?: () => void;
   isFocused?: boolean;
 }> = ({ journal, addWrapper, index, onClick, isFocused }) => {
@@ -46,7 +46,12 @@ export const JournalListItem: React.FC<{
             }}
           >
             <TitleRow>
-              <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
+              <IconContainer>
+                <JournalTypeIcon
+                  type={journal.type}
+                  style={IconStyle.Overview}
+                />
+              </IconContainer>
 
               <ActionLink
                 action={ActionFactory.goToJournal(journal.id, isFocused)}
@@ -92,4 +97,8 @@ export const JournalListItem: React.FC<{
 const TitleRow = styled("div")`
   display: flex;
   padding-right: ${(p) => p.theme.spacing(1)};
+`;
+
+const IconContainer = styled("span")`
+  padding-right: ${(p) => p.theme.spacing(2)};
 `;

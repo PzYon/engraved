@@ -52,8 +52,21 @@ public class InMemoryRepository : IRepository
     int? limit = null
   )
   {
-    // note: conditions are currently ignored, as they are not (yet?) needed for these in memory tests.
-    return Task.FromResult(Journals.ToArray());
+    // note: conditions are currently partially ignored, as they are not (yet?) needed for these in memory tests.
+    return Task.FromResult(
+      Journals.Where(
+          j =>
+          {
+            if (!string.IsNullOrEmpty(searchText))
+            {
+              return j.Name.Contains(searchText);
+            }
+
+            return true;
+          }
+        )
+        .ToArray()
+    );
   }
 
   public Task<IJournal?> GetJournal(string journalId)
@@ -85,6 +98,17 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(
       Entries.OrderByDescending(m => m.DateTime)
         .Where(m => (journalIds ?? Enumerable.Empty<string>()).Contains(m.ParentId))
+        .Where(
+          m =>
+          {
+            if (!string.IsNullOrEmpty(searchText))
+            {
+              return !string.IsNullOrEmpty(m.Notes) && m.Notes.Contains(searchText);
+            }
+
+            return true;
+          }
+        )
         .Take(limit)
         .ToArray()
     );

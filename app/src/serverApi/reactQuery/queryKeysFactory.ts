@@ -82,4 +82,8 @@ export const queryKeysFactory = {
   modifyUser() {
     return ["user"];
   },
+
+  entities(searchText: string) {
+    return ["search", "entities", searchText];
+  },
 };

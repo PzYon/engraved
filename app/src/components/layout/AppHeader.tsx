@@ -12,7 +12,6 @@ import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
-import { SearchOutlined } from "@mui/icons-material";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
@@ -27,8 +26,9 @@ export const AppHeader: React.FC = () => {
   const {
     title,
     subTitle,
+    hideActions,
     pageActions: pageActionsFromContext,
-    enableFilters,
+    filterMode,
     showFilters,
     setShowFilters,
     tabs,
@@ -39,7 +39,7 @@ export const AppHeader: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
 
-  const pageActions: IAction[] = enableFilters
+  const pageActions: IAction[] = filterMode
     ? [
         ActionFactory.toggleFilters(showFilters, setShowFilters, true),
         ...pageActionsFromContext,
@@ -75,15 +75,7 @@ export const AppHeader: React.FC = () => {
             </div>
             <AppInfoLauncher />
             <RefreshData />
-            <ActionIconButton
-              action={{
-                key: "search",
-                icon: <SearchOutlined fontSize="small" />,
-                label: "Search",
-                href: "/search",
-                sx: { color: "common.white" },
-              }}
-            />
+            <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
             <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
@@ -103,16 +95,18 @@ export const AppHeader: React.FC = () => {
           <Titles title={title} subTitle={subTitle} />
 
           <ActionsAndTabContainer isSmall={isSmall}>
-            <ActionGroup
-              actions={pageActions}
-              testId="page-actions"
-              enableFloatingActions={true}
-            />
+            {hideActions ? null : (
+              <ActionGroup
+                actions={pageActions}
+                testId="page-actions"
+                enableFloatingActions={true}
+              />
+            )}
             <PageTabs tabs={tabs} />
           </ActionsAndTabContainer>
         </ContentWrapper>
 
-        {showFilters ? <PageFilters /> : null}
+        <PageFilters />
       </AppContent>
     </Host>
   );

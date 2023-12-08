@@ -1,32 +1,37 @@
 import React, { useEffect } from "react";
-import { usePageContext } from "./PageContext";
+import { FilterMode, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
 
 export const Page: React.FC<{
   actions?: IAction[];
+  hideActions?: boolean;
   title?: React.ReactNode;
   subTitle?: React.ReactNode;
   documentTitle?: string;
-  enableFilters?: boolean;
   tabs?: IPageTab[];
   children: React.ReactNode;
+  filterMode?: FilterMode;
+  showFilters?: boolean;
 }> = ({
   actions,
+  hideActions,
   title,
   subTitle,
   documentTitle,
-  enableFilters,
   tabs,
   children,
+  filterMode = FilterMode.None,
+  showFilters = false,
 }) => {
   const {
     setPageActions,
+    setHideActions,
     setTitle,
     setSubTitle,
     setDocumentTitle,
-    setEnableFilters,
+    setFilterMode,
     setShowFilters,
     setJournalTypes,
     setSearchText,
@@ -40,6 +45,8 @@ export const Page: React.FC<{
 
     setPageActions(actions);
   }, [setPageActions, actions]);
+
+  useEffect(() => setHideActions(hideActions), [hideActions, setHideActions]);
 
   useEffect(() => {
     if (tabs === undefined) {
@@ -64,26 +71,19 @@ export const Page: React.FC<{
     [documentTitle, setDocumentTitle],
   );
 
-  useEffect(
-    () => setEnableFilters(enableFilters),
-    [enableFilters, setEnableFilters],
-  );
+  useEffect(() => setFilterMode(filterMode), [filterMode, setFilterMode]);
+
+  useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
 
   useEffect(() => {
     return () => {
       setShowFilters(false);
-      setEnableFilters(false);
+      setFilterMode(FilterMode.None);
       setSearchText(null);
       setJournalTypes([]);
       setTabs([]);
     };
-  }, [
-    setEnableFilters,
-    setJournalTypes,
-    setSearchText,
-    setShowFilters,
-    setTabs,
-  ]);
+  }, [setFilterMode, setJournalTypes, setSearchText, setShowFilters, setTabs]);
 
   return <FadeInContainer>{children}</FadeInContainer>;
 };

@@ -2,7 +2,7 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAll;
 
-public class GetAllEntriesQuery : IQuery
+public class GetAllEntriesQuery : IEntitiesQuery
 {
   public int? Limit { get; set; }
 

@@ -10,7 +10,7 @@ export const JournalTypeMenuItem: React.FC<{
 }> = ({ journalType, label }) => {
   return (
     <MenuItemContainer>
-      <JournalTypeIcon type={journalType} style={IconStyle.Entries} />
+      <JournalTypeIcon type={journalType} style={IconStyle.Overview} />
       {label}
     </MenuItemContainer>
   );
