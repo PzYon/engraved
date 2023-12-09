@@ -82,13 +82,22 @@ export const ScrapListItem: React.FC<{
       marginTop: elementType === "plain" ? "8px" : "6px",
     };
 
+    if (elementType === "textbox") {
+      /* eslint-disable  @typescript-eslint/no-explicit-any */
+      (sx as any).textarea = {
+        lineHeight: "21px",
+      };
+    }
+
     if (!listItem.isCompleted) {
       return sx;
     }
 
     if (elementType === "textbox") {
       /* eslint-disable  @typescript-eslint/no-explicit-any */
-      (sx as any).textarea = { textDecoration: "line-through" };
+      (sx as any).textarea = {
+        textDecoration: "line-through",
+      };
     } else if (elementType === "plain") {
       sx.textDecoration = "line-through";
     }
@@ -172,4 +181,6 @@ const ListItem = styled("li")`
   align-items: start;
 `;
 
-const ReadonlyContainer = styled("div")``;
+const ReadonlyContainer = styled("div")`
+  word-break: break-word;
+`;

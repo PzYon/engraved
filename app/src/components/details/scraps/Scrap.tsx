@@ -183,11 +183,11 @@ export const Scrap: React.FC<{
   }
 
   async function upsertScrap() {
-    if (currentScrap.notes === notes && currentScrap.title === title) {
-      return;
-    }
-
-    if (!notes) {
+    if (
+      (currentScrap.notes === notes && currentScrap.title === title) ||
+      !notes
+    ) {
+      setIsEditMode(false);
       return;
     }
 
