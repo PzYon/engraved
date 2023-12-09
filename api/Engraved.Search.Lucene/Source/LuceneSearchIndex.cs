@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Engraved.Core.Application.Queries.Search;
+using Engraved.Core.Application.Queries.Search.Attributes;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Queries;

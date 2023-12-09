@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Engraved.Core.Application.Queries.Search;
+using Engraved.Core.Application.Queries.Search.Attributes;
 using Engraved.Core.Domain.Journals;
 using FluentAssertions;
 using NUnit.Framework;
