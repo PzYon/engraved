@@ -172,4 +172,6 @@ const ListItem = styled("li")`
   align-items: start;
 `;
 
-const ReadonlyContainer = styled("div")``;
+const ReadonlyContainer = styled("div")`
+  word-break: break-word;
+`;
