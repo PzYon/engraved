@@ -3,6 +3,7 @@ import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { ScrapListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
+import { Typography, styled } from "@mui/material";
 
 export const ScrapInner: React.FC<{
   scrap: IScrapEntry;
@@ -45,17 +46,22 @@ export const ScrapInner: React.FC<{
       }}
       data-testid={"scrap-" + scrap.id}
     >
-      <AutogrowTextField
-        fieldType={"title"}
-        placeholder={"Title"}
-        variant="outlined"
-        value={title}
-        disabled={!isEditMode}
-        onChange={(event) => setTitle(event.target.value)}
-        onFocus={() => setHasTitleFocus(true)}
-        onBlur={() => setHasTitleFocus(false)}
-        sx={{ width: "100%" }}
-      />
+      {isEditMode ? (
+        <AutogrowTextField
+          fieldType={"title"}
+          placeholder={"Title"}
+          variant="outlined"
+          value={title}
+          disabled={!isEditMode}
+          onChange={(event) => setTitle(event.target.value)}
+          onFocus={() => setHasTitleFocus(true)}
+          onBlur={() => setHasTitleFocus(false)}
+          sx={{ width: "100%" }}
+        />
+      ) : (
+        <ReadonlyTitleContainer>{title}</ReadonlyTitleContainer>
+      )}
+
       {scrap.scrapType === ScrapType.List ? (
         <ScrapListBody
           scrap={scrap}
@@ -91,3 +97,9 @@ export const ScrapInner: React.FC<{
     setNotes(value);
   }
 };
+
+const ReadonlyTitleContainer = styled(Typography)`
+  margin-top: 6px;
+  color: ${(p) => p.theme.palette.primary.main};
+  font-size: 20.48px;
+`;
