@@ -107,6 +107,7 @@ export const JournalViewPage: React.FC = () => {
     showNotes,
     showFilters,
     showChart,
+    deviceWidth,
     showThresholds,
     showGroupTotals,
     renderDialog,
