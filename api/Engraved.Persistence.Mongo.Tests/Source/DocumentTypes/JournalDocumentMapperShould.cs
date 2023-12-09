@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Engraved.Core.Domain.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
+using FluentAssertions;
 using MongoDB.Bson;
 using NUnit.Framework;
 
@@ -29,8 +30,8 @@ public class JournalDocumentMapperShould
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(counterJournal);
 
     var createdJournal = journalDocument as CounterJournalDocument;
-    Assert.IsNotNull(createdJournal);
-    Assert.AreEqual(JournalType.Counter, createdJournal!.Type);
+    createdJournal.Should().NotBeNull();
+    createdJournal!.Type.Should().Be(JournalType.Counter);
     AssertEqual(counterJournal, createdJournal);
   }
 
@@ -47,8 +48,8 @@ public class JournalDocumentMapperShould
 
     var journal = JournalDocumentMapper.FromDocument<IJournal>(counterJournalDocument);
 
-    Assert.IsTrue(journal is CounterJournal);
-    Assert.AreEqual(JournalType.Counter, journal.Type);
+    journal.Should().BeOfType<CounterJournal>();
+    journal.Type.Should().Be(JournalType.Counter);
     AssertEqual(counterJournalDocument, journal);
   }
 
@@ -66,8 +67,8 @@ public class JournalDocumentMapperShould
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(gaugeJournal);
 
     var createdJournal = journalDocument as GaugeJournalDocument;
-    Assert.IsNotNull(createdJournal);
-    Assert.AreEqual(JournalType.Gauge, createdJournal!.Type);
+    createdJournal.Should().NotBeNull();
+    createdJournal!.Type.Should().Be(JournalType.Gauge);
     AssertEqual(gaugeJournal, journalDocument);
   }
 
@@ -84,8 +85,8 @@ public class JournalDocumentMapperShould
 
     var journal = JournalDocumentMapper.FromDocument<IJournal>(gaugeJournalDocument);
 
-    Assert.IsTrue(journal is GaugeJournal);
-    Assert.AreEqual(JournalType.Gauge, journal.Type);
+    journal.Should().BeOfType<GaugeJournal>();
+    journal.Type.Should().Be(JournalType.Gauge);
     AssertEqual(gaugeJournalDocument, journal);
   }
 
@@ -116,16 +117,16 @@ public class JournalDocumentMapperShould
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(timerJournal);
 
     var createdJournal = journalDocument as TimerJournalDocument;
-    Assert.IsNotNull(createdJournal);
-    Assert.AreEqual(JournalType.Timer, createdJournal!.Type);
+    createdJournal.Should().NotBeNull();
+    createdJournal!.Type.Should().Be(JournalType.Timer);
     AssertEqual(timerJournal, journalDocument);
-    Assert.AreEqual(startDate, createdJournal.StartDate);
+    startDate.Should().Be(createdJournal.StartDate);
 
-    Assert.Contains("flags", journalDocument.Attributes.Keys);
+    journalDocument.Attributes.Should().ContainKey("flags");
     JournalAttribute attribute = journalDocument.Attributes["flags"];
-    Assert.AreEqual("Flags", attribute.Name);
-    Assert.Contains("fl@g", attribute.Values.Keys);
-    Assert.AreEqual("fl@g_value", attribute.Values["fl@g"]);
+    attribute.Name.Should().Be("Flags");
+    attribute.Values.Should().ContainKey("fl@g");
+    attribute.Values["fl@g"].Should().Be("fl@g_value");
   }
 
   [Test]
@@ -145,9 +146,9 @@ public class JournalDocumentMapperShould
     var journal = JournalDocumentMapper.FromDocument<IJournal>(timerJournalDocument);
 
     var timerJournal = (TimerJournal) journal;
-    Assert.IsNotNull(timerJournal);
-    Assert.AreEqual(JournalType.Timer, journal.Type);
-    Assert.AreEqual(startDate, timerJournal.StartDate);
+    timerJournal.Should().NotBeNull();
+    journal.Type.Should().Be(JournalType.Timer);
+    timerJournal.StartDate.Should().Be(startDate);
     AssertEqual(timerJournalDocument, journal);
   }
 
@@ -179,36 +180,36 @@ public class JournalDocumentMapperShould
 
     JournalDocument document = JournalDocumentMapper.ToDocument(journal);
 
-    Assert.IsNotNull(document.Attributes);
-    Assert.AreEqual(1, document.Attributes.Count);
-    Assert.IsTrue(document.Attributes.ContainsKey("values"));
+    document.Attributes.Should().NotBeNull();
+    document.Attributes.Count.Should().Be(1);
+    document.Attributes.Should().ContainKey("values");
 
     JournalAttribute attribute = document.Attributes["values"];
 
-    Assert.AreEqual(2, attribute.Values.Count);
-    Assert.IsTrue(attribute.Values.ContainsKey("foo"));
-    Assert.IsTrue(attribute.Values["foo"] == "Foo");
-    Assert.IsTrue(attribute.Values.ContainsKey("bar"));
-    Assert.IsTrue(attribute.Values["bar"] == "Bar");
+    attribute.Values.Count.Should().Be(2);
+    attribute.Values.ContainsKey("foo").Should().BeTrue();
+    attribute.Values["foo"].Should().Be("Foo");
+    attribute.Values.Should().ContainKey("bar");
+    attribute.Values["bar"].Should().Be("Bar");
   }
 
   private static void AssertEqual(IJournal expected, JournalDocument? actual)
   {
-    Assert.AreEqual(expected.Id, actual!.Id.ToString());
-    Assert.AreEqual(expected.Name, actual.Name);
-    Assert.AreEqual(expected.Type, actual.Type);
-    Assert.AreEqual(expected.Description, actual.Description);
-    Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.EditedOn, actual.EditedOn);
+    actual!.Id.ToString().Should().Be(expected.Id);
+    actual.Name.Should().Be(expected.Name);
+    actual.Type.Should().Be(expected.Type);
+    actual.Description.Should().Be(expected.Description);
+    actual.Notes.Should().Be(expected.Notes);
+    actual.EditedOn.Should().Be(expected.EditedOn);
   }
 
   private static void AssertEqual(JournalDocument expected, IJournal actual)
   {
-    Assert.AreEqual(expected.Id.ToString(), actual.Id);
-    Assert.AreEqual(expected.Name, actual.Name);
-    Assert.AreEqual(expected.Type, actual.Type);
-    Assert.AreEqual(expected.Description, actual.Description);
-    Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.EditedOn, actual.EditedOn);
+    actual!.Id.Should().Be(expected.Id.ToString());
+    actual.Name.Should().Be(expected.Name);
+    actual.Type.Should().Be(expected.Type);
+    actual.Description.Should().Be(expected.Description);
+    actual.Notes.Should().Be(expected.Notes);
+    actual.EditedOn.Should().Be(expected.EditedOn);
   }
 }

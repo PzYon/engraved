@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -29,7 +30,7 @@ public class MongoRepository_GetAllEntries_Should
   {
     IEntry[] entries = await _repository.GetAllEntries(_journalId, null, null, null);
 
-    Assert.AreEqual(0, entries.Length);
+    entries.Should().BeEmpty();
   }
 
   [Test]
@@ -40,8 +41,8 @@ public class MongoRepository_GetAllEntries_Should
 
     IEntry[] entries = await _repository.GetAllEntries(_journalId, null, DateTime.Now, null);
 
-    Assert.AreEqual(1, entries.Length);
-    Assert.AreEqual(entryId, entries.First().Id);
+    entries.Length.Should().Be(1);
+    entries.First().Id.Should().Be(entryId);
   }
 
   [Test]
@@ -52,8 +53,8 @@ public class MongoRepository_GetAllEntries_Should
 
     IEntry[] entries = await _repository.GetAllEntries(_journalId, DateTime.Now, null, null);
 
-    Assert.AreEqual(1, entries.Length);
-    Assert.AreEqual(entryId, entries.First().Id);
+    entries.Length.Should().Be(1);
+    entries.First().Id.Should().Be(entryId);
   }
 
   [Test]
@@ -69,7 +70,7 @@ public class MongoRepository_GetAllEntries_Should
       null
     );
 
-    Assert.AreEqual(0, entries.Length);
+    entries.Should().BeEmpty();
   }
 
   [Test]
@@ -85,7 +86,7 @@ public class MongoRepository_GetAllEntries_Should
       null
     );
 
-    Assert.AreEqual(2, entries.Length);
+    entries.Length.Should().Be(2);
   }
 
   [Test]
@@ -108,10 +109,10 @@ public class MongoRepository_GetAllEntries_Should
       null
     );
 
-    Assert.AreEqual(2, entries.Length);
+    entries.Length.Should().Be(2);
 
-    Assert.IsTrue(entries.Select(m => m.Id).Contains(expectedId1));
-    Assert.IsTrue(entries.Select(m => m.Id).Contains(expectedId2));
+    entries.Select(m => m.Id).Should().Contain(expectedId1);
+    entries.Select(m => m.Id).Should().Contain(expectedId2);
   }
 
   [Test]
@@ -128,7 +129,7 @@ public class MongoRepository_GetAllEntries_Should
       attributeValues
     );
 
-    Assert.AreEqual(1, entries.Length);
+    entries.Length.Should().Be(1);
   }
 
   [Test]
@@ -145,7 +146,7 @@ public class MongoRepository_GetAllEntries_Should
       new Dictionary<string, string[]> { { "attr", new[] { "abc" } } }
     );
 
-    Assert.AreEqual(0, entries.Length);
+    entries.Should().BeEmpty();
   }
 
   [Test]
@@ -166,7 +167,7 @@ public class MongoRepository_GetAllEntries_Should
       new Dictionary<string, string[]> { { "size", new[] { "XL" } } }
     );
 
-    Assert.AreEqual(1, entries.Length);
+    entries.Length.Should().Be(1);
   }
 
   [Test]
@@ -189,7 +190,7 @@ public class MongoRepository_GetAllEntries_Should
       }
     );
 
-    Assert.AreEqual(0, entries.Length);
+    entries.Should().BeEmpty();
   }
 
   [Test]
@@ -209,7 +210,7 @@ public class MongoRepository_GetAllEntries_Should
       new Dictionary<string, string[]> { { "size", new[] { "XL", "L" } } }
     );
 
-    Assert.AreEqual(1, entries.Length);
+    entries.Length.Should().Be(1);
   }
 
   private async Task<string> AddEntry(DateTime? date, Dictionary<string, string[]>? attributeValues = null)

@@ -7,6 +7,7 @@ using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
+using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
 
@@ -35,7 +36,7 @@ public class SearchEntitiesQueryExecutorShould
 
     _searchExecutor = new SearchEntitiesQueryExecutor(
       new Dispatcher(
-        new TestServiceProvider(_userScopedInMemoryRepository, _testRepository),
+        new TestServiceProvider(_userScopedInMemoryRepository),
         _userScopedInMemoryRepository,
         new QueryCache(new MemoryCache(new MemoryCacheOptions()), _userScopedInMemoryRepository.CurrentUser)
       )
@@ -50,16 +51,18 @@ public class SearchEntitiesQueryExecutorShould
 
     SearchEntitiesResult result = await _searchExecutor.Execute(new SearchEntitiesQuery { SearchText = "Yes" });
 
-    Assert.AreEqual(2, result.Entities.Length);
-    Assert.AreEqual(1, result.Entities.Count(e => e.EntityType == EntityType.Journal));
-    Assert.AreEqual(
-      1,
-      result.Entities.Where(e => e.EntityType == EntityType.Journal).Count(e => ((IJournal) e.Entity).Name == "Yes")
-    );
-    Assert.AreEqual(1, result.Entities.Count(e => e.EntityType == EntityType.Entry));
+    result.Entities.Length.Should().Be(2);
+    result.Entities.Count(e => e.EntityType == EntityType.Journal).Should().Be(1);
 
-    Assert.AreEqual(1, result.Journals.Length);
-    Assert.AreEqual("No", result.Journals[0].Name);
+    result.Entities.Where(e => e.EntityType == EntityType.Journal)
+      .Count(e => ((IJournal) e.Entity).Name == "Yes")
+      .Should()
+      .Be(1);
+
+    result.Entities.Count(e => e.EntityType == EntityType.Entry).Should().Be(1);
+
+    result.Journals.Length.Should().Be(1);
+    result.Journals[0].Name.Should().Be("No");
   }
 
   private async Task AddJournalToIgnoreWithOneEntryToFind()

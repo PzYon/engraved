@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Commands.Entries.Move;
@@ -33,12 +34,12 @@ public class MoveEntryCommandExecutorShould
       }
     );
     IEntry[] sourceEntries = await _repo.GetAllEntries("source-journal-id", null, null, null);
-    Assert.AreEqual(1, sourceEntries.Length);
+    sourceEntries.Length.Should().Be(1);
 
     // given: target
     _repo.Journals.Add(new CounterJournal { Id = "target-journal-id" });
     IEntry[] targetEntries = await _repo.GetAllEntries("target-journal-id", null, null, null);
-    Assert.AreEqual(0, targetEntries.Length);
+    targetEntries.Should().BeEmpty();
 
     // when
     await new MoveEntryCommandExecutor(
@@ -54,9 +55,9 @@ public class MoveEntryCommandExecutorShould
 
     // then
     targetEntries = await _repo.GetAllEntries("target-journal-id", null, null, null);
-    Assert.AreEqual(1, targetEntries.Length);
+    targetEntries.Length.Should().Be(1);
 
     sourceEntries = await _repo.GetAllEntries("source-journal-id", null, null, null);
-    Assert.AreEqual(0, sourceEntries.Length);
+    sourceEntries.Should().BeEmpty();
   }
 }

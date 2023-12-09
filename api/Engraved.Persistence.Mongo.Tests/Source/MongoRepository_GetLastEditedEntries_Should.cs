@@ -2,6 +2,7 @@
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -37,32 +38,32 @@ public class MongoRepository_GetLastEditedEntries_Should
   public async Task FindEntries()
   {
     IEntry[] results = await _repository.GetLastEditedEntries(new[] { _journalId }, "Beta", null, 10);
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual(2, results[0].GetValue());
+    results.Length.Should().Be(1);
+    results[0].GetValue().Should().Be(2);
   }
 
   [Test]
   public async Task FindEntries_IgnoringCase()
   {
     IEntry[] results = await _repository.GetLastEditedEntries(new[] { _journalId }, "beta", null, 10);
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual(2, results[0].GetValue());
+    results.Length.Should().Be(1);
+    results[0].GetValue().Should().Be(2);
   }
 
   [Test]
   public async Task FindEntries_MultipleWords()
   {
     IEntry[] results = await _repository.GetLastEditedEntries(new[] { _journalId }, "beta gam", null, 10);
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual(2, results[0].GetValue());
+    results.Length.Should().Be(1);
+    results[0].GetValue().Should().Be(2);
   }
 
   [Test]
   public async Task FindEntries_NonConsecutiveWords()
   {
     IEntry[] results = await _repository.GetLastEditedEntries(new[] { _journalId }, "alpha gam", null, 10);
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual(2, results[0].GetValue());
+    results.Length.Should().Be(1);
+    results[0].GetValue().Should().Be(2);
   }
 
   [Test]
@@ -79,8 +80,9 @@ public class MongoRepository_GetLastEditedEntries_Should
     );
 
     IEntry[] results = await _repository.GetLastEditedEntries(new[] { result.EntityId }, "heiri", null, 10);
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual(((ScrapsEntry) results[0]).Title, "Heiri");
+
+    results.Length.Should().Be(1);
+    ((ScrapsEntry) results[0]).Title.Should().Be("Heiri");
   }
 
   [Test]
@@ -93,7 +95,7 @@ public class MongoRepository_GetLastEditedEntries_Should
       10
     );
 
-    Assert.AreEqual(0, results.Length);
+    results.Should().BeEmpty();
   }
 
   [Test]
@@ -113,7 +115,7 @@ public class MongoRepository_GetLastEditedEntries_Should
       10
     );
 
-    Assert.AreEqual(1, results.Length);
-    Assert.IsTrue(results[0] is ScrapsEntry);
+    results.Length.Should().Be(1);
+    results[0].Should().BeOfType<ScrapsEntry>();
   }
 }

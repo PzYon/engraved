@@ -6,6 +6,7 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
+using FluentAssertions;
 using MongoDB.Driver;
 using NUnit.Framework;
 
@@ -40,8 +41,8 @@ public class UserScopedMongoRepositoryShould
 
     IUser? user = await _userScopedRepository.GetUser(CurrentUserName);
 
-    Assert.IsNotNull(user);
-    Assert.AreEqual(CurrentUserName, user!.Name);
+    user.Should().NotBeNull();
+    user!.Name.Should().Be(CurrentUserName);
   }
 
   [Test]
@@ -52,7 +53,7 @@ public class UserScopedMongoRepositoryShould
 
     IUser? user = await _userScopedRepository.GetUser(OtherUserName);
 
-    Assert.IsNotNull(user);
+    user.Should().NotBeNull();
   }
 
   [Test]
@@ -64,18 +65,18 @@ public class UserScopedMongoRepositoryShould
 
     IUser[] users = await _userScopedRepository.GetUsers(result1.EntityId, result3.EntityId);
 
-    Assert.AreEqual(2, users.Length);
+    users.Length.Should().Be(2);
   }
 
   [Test]
   public async Task UpsertUser_ShouldUpdate_CurrentUser()
   {
     IUser? current = await _repository.GetUser(CurrentUserName);
-    Assert.IsNotNull(current);
+    current!.Should().NotBeNull();
 
     UpsertResult result = await _userScopedRepository.UpsertUser(current!);
 
-    Assert.AreEqual(_userScopedRepository.CurrentUser.Value.Id, result.EntityId);
+    result.EntityId.Should().Be(_userScopedRepository.CurrentUser.Value.Id);
   }
 
   [Test]
@@ -96,8 +97,8 @@ public class UserScopedMongoRepositoryShould
     UpsertResult result = await _userScopedRepository.UpsertJournal(journal);
     IJournal? createdJournal = await _repository.GetJournal(result.EntityId);
 
-    Assert.AreEqual(result.EntityId, createdJournal!.Id);
-    Assert.AreEqual(_currentUserId, createdJournal.UserId);
+    result.EntityId.Should().Be(createdJournal!.Id);
+    _currentUserId.Should().Be(createdJournal.UserId);
   }
 
   [Test]
@@ -130,7 +131,7 @@ public class UserScopedMongoRepositoryShould
     await _userScopedRepository.UpsertEntry(entry);
     IEntry[] entries = await _repository.GetAllEntries(journalId, null, null, null);
 
-    Assert.True(entries.All(m => m.UserId == _currentUserId));
+    entries.All(m => m.UserId == _currentUserId).Should().BeTrue();
   }
 
   [Test]
@@ -167,8 +168,8 @@ public class UserScopedMongoRepositoryShould
     );
 
     IJournal? journal = await _userScopedRepository.GetJournal(currentUserResult.EntityId);
-    Assert.IsNotNull(journal);
-    Assert.AreEqual(journal!.Name, "From Current User");
+    journal.Should().NotBeNull();
+    journal!.Name.Should().Be("From Current User");
   }
 
   [Test]
@@ -191,7 +192,7 @@ public class UserScopedMongoRepositoryShould
     );
 
     IJournal? journal = await _userScopedRepository.GetJournal(otherUserResult.EntityId);
-    Assert.IsNull(journal);
+    journal.Should().BeNull();
   }
 
   [Test]
@@ -229,12 +230,10 @@ public class UserScopedMongoRepositoryShould
     }
 
     IEntry[] otherUserEntries = await _userScopedRepository.GetAllEntries(otherUserJournalId, null, null, null);
-
-    Assert.IsEmpty(otherUserEntries);
+    otherUserEntries.Should().BeEmpty();
 
     IEntry[] currentUserEntries = await _userScopedRepository.GetAllEntries(currentUserJournalId, null, null, null);
-
-    Assert.AreEqual(10, currentUserEntries.Length);
+    currentUserEntries.Length.Should().Be(10);
   }
 
   [Test]
@@ -249,12 +248,12 @@ public class UserScopedMongoRepositoryShould
     );
 
     IEntry? entry = await _repository.GetEntry(result.EntityId);
-    Assert.IsNotNull(entry);
+    entry!.Should().NotBeNull();
 
     await _userScopedRepository.DeleteEntry(result.EntityId);
 
     entry = await _repository.GetEntry(result.EntityId);
-    Assert.IsNull(entry);
+    entry.Should().BeNull();
   }
 
   [Test]
@@ -269,10 +268,10 @@ public class UserScopedMongoRepositoryShould
     );
 
     IEntry? entry = await _repository.GetEntry(result.EntityId);
-    Assert.IsNotNull(entry);
+    entry.Should().NotBeNull();
 
     await _userScopedRepository.DeleteEntry(result.EntityId);
-    Assert.IsNotNull(entry);
+    entry.Should().NotBeNull();
   }
 
   [Test]
@@ -293,20 +292,13 @@ public class UserScopedMongoRepositoryShould
       }
     );
 
-    Assert.AreEqual(1, await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty));
-    Assert.AreEqual(
-      1,
-      await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)
-    );
+    (await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty)).Should().Be(1);
+    (await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)).Should().Be(1);
 
     await _repository.DeleteJournal(journal.EntityId);
 
-    Assert.AreEqual(0, (await _repository.GetAllJournals()).Length);
-
-    Assert.AreEqual(0, await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty));
-    Assert.AreEqual(
-      0,
-      await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)
-    );
+    (await _repository.GetAllJournals()).Length.Should().Be(0);
+    (await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty)).Should().Be(0);
+    (await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)).Should().Be(0);
   }
 }

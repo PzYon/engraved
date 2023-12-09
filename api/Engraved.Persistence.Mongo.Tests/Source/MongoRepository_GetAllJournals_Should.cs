@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -30,44 +31,44 @@ public class MongoRepository_GetAllJournals_Should
   public async Task ReturnAllJournals_WithEmptyQuery()
   {
     IJournal[] results = await _repository.GetAllJournals();
-    Assert.AreEqual(3, results.Length);
+    results.Length.Should().Be(3);
   }
 
   [Test]
   public async Task ReturnLimitedJournals()
   {
     IJournal[] results = await _repository.GetAllJournals(null, null, null, 1);
-    Assert.AreEqual(1, results.Length);
+    results.Length.Should().Be(1);
   }
 
   [Test]
   public async Task Return_Matching_Name()
   {
     IJournal[] results = await _repository.GetAllJournals("gauge");
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual("Gauge", results[0].Name);
+    results.Length.Should().Be(1);
+    results[0].Name.Should().Be("Gauge");
   }
 
   [Test]
   public async Task Return_Matching_Description()
   {
     IJournal[] results = await _repository.GetAllJournals("tim3r");
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual("Timer", results[0].Name);
+    results.Length.Should().Be(1);
+    results[0].Name.Should().Be("Timer");
   }
 
   [Test]
   public async Task Return_Matching_JournalTypes()
   {
     IJournal[] results = await _repository.GetAllJournals(null, new[] { JournalType.Timer, JournalType.Gauge });
-    Assert.AreEqual(2, results.Length);
+    results.Length.Should().Be(2);
   }
 
   [Test]
   public async Task Return_Matching_JournalId()
   {
     IJournal[] results = await _repository.GetAllJournals(null, null, new[] { _gaugeJournalId }, 10);
-    Assert.AreEqual(1, results.Length);
-    Assert.AreEqual(results[0].Id, _gaugeJournalId);
+    results.Length.Should().Be(1);
+    results[0].Id.Should().Be(_gaugeJournalId);
   }
 }

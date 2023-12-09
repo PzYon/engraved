@@ -4,6 +4,7 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert;
@@ -39,14 +40,14 @@ public class UpsertTimerEntryCommandExecutorShould
     CommandResult result =
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    Assert.IsNotNull(result.EntityId);
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    result.EntityId.Should().NotBeNull();
+    _testRepository.Entries.Count.Should().Be(1);
 
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
-    Assert.IsNotNull(entry);
-    Assert.AreEqual(startDate, entry!.StartDate);
-    Assert.AreEqual(endDate, entry.EndDate);
+    entry.Should().NotBeNull();
+    entry!.StartDate.Should().Be(startDate);
+    entry.EndDate.Should().Be(endDate);
   }
 
   [Test]
@@ -57,12 +58,13 @@ public class UpsertTimerEntryCommandExecutorShould
     CommandResult result =
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    Assert.IsNotNull(result.EntityId);
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    result.EntityId.Should().NotBeNull();
+    _testRepository.Entries.Count.Should().Be(1);
+
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
-    Assert.IsNotNull(entry);
-    Assert.AreEqual(_fakeDateService.UtcNow, entry?.StartDate);
+    entry.Should().NotBeNull();
+    entry?.StartDate.Should().Be(_fakeDateService.UtcNow);
   }
 
   [Test]
@@ -77,19 +79,20 @@ public class UpsertTimerEntryCommandExecutorShould
       }
     );
 
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    _testRepository.Entries.Count.Should().Be(1);
 
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
     CommandResult result =
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    Assert.IsNotNull(result.EntityId);
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    result.EntityId.Should().NotBeNull();
+    _testRepository.Entries.Count.Should().Be(1);
+
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
-    Assert.IsNotNull(entry);
-    Assert.AreEqual(_fakeDateService.UtcNow, entry?.EndDate);
+    entry.Should().NotBeNull();
+    entry?.EndDate.Should().Be(_fakeDateService.UtcNow);
   }
 
   [Test]
@@ -107,7 +110,7 @@ public class UpsertTimerEntryCommandExecutorShould
       }
     );
 
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    _testRepository.Entries.Count.Should().Be(1);
 
     DateTime newStartDate = _fakeDateService.UtcNow.AddMinutes(-30);
     DateTime? newEndDate = null;
@@ -123,13 +126,14 @@ public class UpsertTimerEntryCommandExecutorShould
     CommandResult result =
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    Assert.IsNotNull(result.EntityId);
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    result.EntityId.Should().NotBeNull();
+    _testRepository.Entries.Count.Should().Be(1);
+
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
-    Assert.IsNotNull(entry);
-    Assert.AreEqual(newStartDate, entry?.StartDate);
-    Assert.AreEqual(newStartDate, entry?.DateTime);
-    Assert.AreEqual(newEndDate, entry?.EndDate);
+    entry.Should().NotBeNull();
+    entry?.StartDate.Should().Be(newStartDate);
+    entry?.DateTime.Should().Be(newStartDate);
+    entry?.EndDate.Should().Be(newEndDate);
   }
 }

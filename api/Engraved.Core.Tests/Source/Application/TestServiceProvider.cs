@@ -9,7 +9,7 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application;
 
-public class TestServiceProvider(IUserScopedRepository userScopedRepository, IRepository repository)
+public class TestServiceProvider(IUserScopedRepository userScopedRepository)
   : IServiceProvider
 {
   public object GetService(Type serviceType)

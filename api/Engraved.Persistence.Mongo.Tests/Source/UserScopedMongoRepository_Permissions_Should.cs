@@ -6,6 +6,7 @@ using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -38,8 +39,8 @@ public class UserScopedMongoRepository_Permissions_Should
 
     IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
 
-    Assert.AreEqual(1, allJournals.Length);
-    Assert.AreEqual("my-journal", allJournals.First().Name);
+    allJournals.Length.Should().Be(1);
+    allJournals.First().Name.Should().Be("my-journal");
   }
 
   [Test]
@@ -61,7 +62,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
 
-    Assert.AreEqual(1, allJournals.Length);
+    allJournals.Length.Should().Be(1);
   }
 
   [Test]
@@ -80,7 +81,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
 
-    Assert.AreEqual(2, allJournals.Length);
+    allJournals.Length.Should().Be(2);
   }
 
   [Test]
@@ -99,7 +100,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
 
-    Assert.AreEqual(2, allJournals.Length);
+    allJournals.Length.Should().Be(2);
   }
 
   [Test]
@@ -128,7 +129,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     IEntry[] allEntries = await _userScopedRepository.GetAllEntries(otherJournal.EntityId, null, null, null);
 
-    Assert.AreEqual(0, allEntries.Length);
+    allEntries.Should().BeEmpty();
   }
 
   [Test]
@@ -154,7 +155,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     IEntry[] allEntries = await _userScopedRepository.GetAllEntries(otherJournal.EntityId, null, null, null);
 
-    Assert.AreEqual(1, allEntries.Length);
+    allEntries.Length.Should().Be(1);
   }
 
   [Test]
@@ -335,7 +336,7 @@ public class UserScopedMongoRepository_Permissions_Should
     );
 
     IEntry entry = (await _repository.GetEntry(result.EntityId))!;
-    Assert.AreEqual(newNotesValues, entry.Notes);
+    newNotesValues.Should().Be(entry.Notes);
   }
 
   private async Task GiveMePermissions(string journalId, PermissionKind kind)

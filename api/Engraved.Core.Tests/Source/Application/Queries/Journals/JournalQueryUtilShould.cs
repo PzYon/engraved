@@ -4,6 +4,7 @@ using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Journals;
@@ -41,8 +42,8 @@ public class JournalQueryUtilShould
       new TimerJournal { UserId = _meUserId }
     );
 
-    Assert.AreEqual(1, ensuredJournals.Length);
-    Assert.AreEqual(UserRole.Owner, ensuredJournals[0].Permissions[_meUserId].UserRole);
+    ensuredJournals.Length.Should().Be(1);
+    ensuredJournals[0].Permissions[_meUserId].UserRole.Should().Be(UserRole.Owner);
   }
 
   [Test]
@@ -63,8 +64,8 @@ public class JournalQueryUtilShould
       }
     );
 
-    Assert.AreEqual(1, ensuredJournals.Length);
-    Assert.AreEqual(UserRole.Reader, ensuredJournals[0].Permissions[_meUserId].UserRole);
+    ensuredJournals.Length.Should().Be(1);
+    ensuredJournals[0].Permissions[_meUserId].UserRole.Should().Be(UserRole.Reader);
   }
 
   [Test]
@@ -85,7 +86,7 @@ public class JournalQueryUtilShould
       }
     );
 
-    Assert.AreEqual(1, ensuredJournals.Length);
-    Assert.AreEqual(UserRole.Writer, ensuredJournals[0].Permissions[_meUserId].UserRole);
+    ensuredJournals.Length.Should().Be(1);
+    ensuredJournals[0].Permissions[_meUserId].UserRole.Should().Be(UserRole.Writer);
   }
 }

@@ -8,6 +8,7 @@ using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
+using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
 
@@ -16,6 +17,12 @@ namespace Engraved.Core.Application;
 public class DispatcherShould
 {
   private IMemoryCache _memoryCache = null!;
+
+  [TearDown]
+  public void Dispose()
+  {
+    _memoryCache.Dispose();
+  }
 
   [SetUp]
   public void SetUp()
@@ -31,7 +38,7 @@ public class DispatcherShould
     Dispatcher d = CreateDispatcher("xyz");
     Guid guid = await d.Query<Guid, FakeQuery>(query);
 
-    Assert.IsTrue(guid != Guid.Empty);
+    guid.Should().NotBe(Guid.Empty);
   }
 
   [Test]
@@ -44,7 +51,7 @@ public class DispatcherShould
     Guid resultFirstExecution = await d.Query<Guid, FakeQuery>(query);
     Guid resultSecondExecution = await d.Query<Guid, FakeQuery>(query);
 
-    Assert.AreEqual(resultFirstExecution, resultSecondExecution);
+    resultFirstExecution.Should().Be(resultSecondExecution);
   }
 
   [Test]
@@ -55,7 +62,7 @@ public class DispatcherShould
     Guid resultFirstExecution = await d.Query<Guid, FakeQuery>(new FakeQuery { DummyValue = "123" });
     Guid resultSecondExecution = await d.Query<Guid, FakeQuery>(new FakeQuery { DummyValue = "456" });
 
-    Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
+    resultFirstExecution.Should().NotBe(resultSecondExecution);
   }
 
   [Test]
@@ -69,7 +76,7 @@ public class DispatcherShould
     Dispatcher dispatcherUser2 = CreateDispatcher("user_two");
     Guid resultUser2 = await dispatcherUser2.Query<Guid, FakeQuery>(query);
 
-    Assert.AreNotEqual(resultUser1, resultUser2);
+    resultUser1.Should().NotBe(resultUser2);
   }
 
   [Test]
@@ -84,10 +91,10 @@ public class DispatcherShould
     Guid resultFirstExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
     await dispatcher1.Command(new FakeCommand());
     Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
-    Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
+    resultFirstExecution.Should().NotBe(resultSecondExecution);
 
     Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
-    Assert.AreEqual(firstResultOtherUser, secondResultOtherUser);
+    firstResultOtherUser.Should().Be(secondResultOtherUser);
   }
 
   [Test]
@@ -103,10 +110,10 @@ public class DispatcherShould
     await dispatcher1.Command(new FakeCommand { AffectedUsers = new List<string> { "user_zero", "user_one" } });
 
     Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
-    Assert.AreNotEqual(resultFirstExecution, resultSecondExecution);
+    resultFirstExecution.Should().NotBe(resultSecondExecution);
 
     Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
-    Assert.AreNotEqual(firstResultOtherUser, secondResultOtherUser);
+    firstResultOtherUser.Should().NotBe(secondResultOtherUser);
   }
 
   private Dispatcher CreateDispatcher(string userName)
@@ -115,7 +122,7 @@ public class DispatcherShould
     var queryCache = new QueryCache(_memoryCache, currentUser);
 
     return new Dispatcher(
-      new TestServiceProvider(null!, null!),
+      new TestServiceProvider(null!),
       new FakeUserScopedRepository(currentUser),
       queryCache
     );

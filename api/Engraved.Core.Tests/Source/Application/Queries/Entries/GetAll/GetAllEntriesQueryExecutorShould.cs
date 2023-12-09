@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAll;
@@ -55,9 +56,9 @@ public class GetAllEntriesQueryExecutorShould
     var query = new GetAllEntriesQuery { Limit = 2 };
     GetAllEntriesQueryResult result = await new GetAllEntriesQueryExecutor(_repo).Execute(query);
 
-    Assert.AreEqual(2, result.Journals.Length);
-    Assert.IsFalse(result.Journals.Select(m => m.Id).Contains("counter-journal-id"));
-    Assert.AreEqual(2, result.Entries.Length);
-    Assert.IsFalse(result.Entries.Select(m => m.ParentId).Contains("counter-journal-id"));
+    result.Journals.Length.Should().Be(2);
+    result.Journals.Select(m => m.Id).Contains("counter-journal-id").Should().BeFalse();
+    result.Entries.Length.Should().Be(2);
+    result.Entries.Select(m => m.ParentId).Contains("counter-journal-id").Should().BeFalse();
   }
 }
