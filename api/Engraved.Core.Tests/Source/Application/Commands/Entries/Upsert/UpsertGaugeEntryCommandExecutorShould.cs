@@ -128,15 +128,13 @@ public class UpsertGaugeEntryCommandExecutorShould
     bool areEqual = d1 == d2
                     || (d1.Keys.Count == d2.Keys.Count
                         && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k])));
-    if (!areEqual)
-    {
-      Assert.Fail("JournalAttributeValues are not equal.");
-    }
+
+    areEqual.Should().BeTrue("JournalAttributeValues are not equal.");
   }
 
   private static bool AreEqual(IEnumerable<string> first, IEnumerable<string> second)
   {
-    CollectionAssert.AreEquivalent(first, second);
+    first.Should().BeSameAs(second);
     return true;
   }
 

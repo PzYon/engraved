@@ -7,6 +7,7 @@ using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Journals;
@@ -18,7 +19,7 @@ public class GetThresholdValuesQueryExecutorShould
   private InMemoryRepository _testRepository = null!;
   private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
   private string _userId = null!;
-  
+
   [SetUp]
   public async Task SetUp()
   {
@@ -74,20 +75,20 @@ public class GetThresholdValuesQueryExecutorShould
     IDictionary<string, IDictionary<string, ThresholdResult>> results =
       await new GetThresholdValuesQueryExecutor(_userScopedInMemoryRepository).Execute(query);
 
-    Assert.NotNull(results);
+    results.Should().NotBeNull();
 
     Assert.That(results.ContainsKey("colors"));
     IDictionary<string, ThresholdResult> colorsThresholds = results["colors"];
-    Assert.NotNull(colorsThresholds);
+    colorsThresholds.Should().NotBeNull();
 
-    Assert.AreEqual(2, colorsThresholds.Count);
+    colorsThresholds.Count.Should().Be(2);
     Assert.That(colorsThresholds.ContainsKey("blue"));
-    Assert.AreEqual(10, colorsThresholds["blue"].ActualValue);
-    Assert.AreEqual(6, colorsThresholds["blue"].ThresholdValue);
+    colorsThresholds["blue"].ActualValue.Should().Be(10);
+    colorsThresholds["blue"].ThresholdValue.Should().Be(6);
 
     Assert.That(colorsThresholds.ContainsKey("green"));
-    Assert.AreEqual(4, colorsThresholds["green"].ActualValue);
-    Assert.AreEqual(3, colorsThresholds["green"].ThresholdValue);
+    colorsThresholds["green"].ActualValue.Should().Be(3);
+    colorsThresholds["green"].ThresholdValue.Should().Be(4);
   }
 
   private void AddEntry(int value, string attributeValueKey)

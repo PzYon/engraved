@@ -5,6 +5,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
+using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -31,7 +32,7 @@ public class MongoRepositoryShould
 
     IJournal? journal = await _repository.GetJournal(result.EntityId);
 
-    Assert.IsNotNull(journal);
+    journal.Should().NotBeNull();
   }
 
   [Test]
@@ -42,15 +43,15 @@ public class MongoRepositoryShould
 
     counterJournal = (CounterJournal?) await _repository.GetJournal(result.EntityId);
 
-    Assert.IsNotNull(counterJournal);
+    counterJournal.Should().NotBeNull();
 
     counterJournal!.Name = "Second";
     await _repository.UpsertJournal(counterJournal);
 
     IJournal? updateJournal = await _repository.GetJournal(result.EntityId);
-    Assert.IsNotNull(updateJournal);
-    Assert.AreEqual(counterJournal.Id, updateJournal!.Id);
-    Assert.AreEqual(counterJournal.Name, updateJournal.Name);
+    updateJournal.Should().NotBeNull();
+    updateJournal!.Id.Should().Be(counterJournal.Id);
+    updateJournal.Name.Should().Be(counterJournal.Name);
   }
 
   [Test]
@@ -75,13 +76,13 @@ public class MongoRepositoryShould
     UpsertResult result = await _repository.UpsertJournal(counterJournal);
 
     IJournal? journal = await _repository.GetJournal(result.EntityId);
-    Assert.IsNotNull(journal);
-    Assert.IsNotNull(journal!.Attributes);
+    journal.Should().NotBeNull();
+    journal!.Attributes.Should().NotBeNull();
 
-    Assert.Contains("flags", journal.Attributes.Keys);
+    journal.Attributes.Should().ContainKey("flags");
     JournalAttribute attribute = journal.Attributes["flags"];
-    Assert.Contains("fl@g", attribute.Values.Keys);
-    Assert.AreEqual("fl@g_value", attribute.Values["fl@g"]);
+    attribute.Values.Should().ContainKey("fl@g");
+    attribute.Values["fl@g"].Should().Be("fl@g_value");
   }
 
   [Test]
@@ -96,7 +97,7 @@ public class MongoRepositoryShould
 
     IEntry[] allEntries = await _repository.GetAllEntries(result.EntityId, null, null, null);
 
-    Assert.AreEqual(2, allEntries.Length);
+    allEntries.Length.Should().Be(2);
   }
 
   [Test]
@@ -123,7 +124,7 @@ public class MongoRepositoryShould
     UpsertResult result = await _repository.UpsertJournal(journal);
     IJournal reloadedJournal = (await _repository.GetJournal(result.EntityId))!;
 
-    Assert.IsTrue(reloadedJournal.CustomProps.ContainsKey("uiSettings"));
-    Assert.AreEqual(reloadedJournal.CustomProps["uiSettings"], value);
+    reloadedJournal.CustomProps.Should().ContainKey("uiSettings");
+    reloadedJournal.CustomProps["uiSettings"].Should().Be(value);
   }
 }

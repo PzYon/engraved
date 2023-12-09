@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Engraved.Core.Domain.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
+using FluentAssertions;
 using MongoDB.Bson;
 using NUnit.Framework;
 
@@ -25,9 +26,9 @@ public class EntryDocumentMapperShould
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
 
-    Assert.IsNotNull(document);
+    document.Should().NotBeNull();
     AssertEqual(entry, document);
-    Assert.IsNotNull(document as CounterEntryDocument);
+    (document as CounterEntryDocument).Should().NotBeNull();
   }
 
   [Test]
@@ -62,13 +63,13 @@ public class EntryDocumentMapperShould
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
 
-    Assert.IsNotNull(document);
+    document.Should().NotBeNull();
 
     AssertEqual(entry, document);
 
     var gaugeDocument = document as GaugeEntryDocument;
-    Assert.IsNotNull(gaugeDocument);
-    Assert.AreEqual(entry.Value, gaugeDocument!.Value);
+    gaugeDocument.Should().NotBeNull();
+    gaugeDocument!.Value.Should().Be(entry.Value);
   }
 
   [Test]
@@ -104,14 +105,14 @@ public class EntryDocumentMapperShould
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
 
-    Assert.IsNotNull(document);
+    document.Should().NotBeNull();
 
     AssertEqual(entry, document);
 
     var gaugeDocument = document as TimerEntryDocument;
-    Assert.IsNotNull(gaugeDocument);
-    Assert.AreEqual(entry.StartDate, gaugeDocument!.StartDate);
-    Assert.AreEqual(entry.EndDate, gaugeDocument.EndDate);
+    gaugeDocument.Should().NotBeNull();
+    entry.StartDate.Should().Be(gaugeDocument!.StartDate);
+    entry.EndDate.Should().Be(gaugeDocument.EndDate);
   }
 
   [Test]
@@ -135,18 +136,18 @@ public class EntryDocumentMapperShould
 
   private static void AssertEqual(IEntry expected, EntryDocument actual)
   {
-    Assert.AreEqual(expected.DateTime, actual.DateTime);
-    Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.ParentId, actual.ParentId);
-    Assert.AreEqual(expected.JournalAttributeValues, actual.JournalAttributeValues);
+    actual.DateTime.Should().Be(expected.DateTime);
+    actual.Notes.Should().Be(expected.Notes);
+    actual.ParentId.Should().Be(expected.ParentId);
+    actual.JournalAttributeValues.Should().BeSameAs(expected.JournalAttributeValues);
   }
 
   private static void AssertEqual(EntryDocument expected, IEntry actual)
   {
-    Assert.AreEqual(expected.Id.ToString(), actual.Id);
-    Assert.AreEqual(expected.DateTime, actual.DateTime);
-    Assert.AreEqual(expected.Notes, actual.Notes);
-    Assert.AreEqual(expected.ParentId, actual.ParentId);
-    Assert.AreEqual(expected.JournalAttributeValues, actual.JournalAttributeValues);
+    actual.Id.Should().Be(expected.Id.ToString());
+    actual.DateTime.Should().Be(expected.DateTime);
+    actual.Notes.Should().Be(expected.Notes);
+    actual.ParentId.Should().Be(expected.ParentId);
+    actual.JournalAttributeValues.Should().BeSameAs(expected.JournalAttributeValues);
   }
 }

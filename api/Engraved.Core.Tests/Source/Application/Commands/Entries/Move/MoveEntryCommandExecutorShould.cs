@@ -39,7 +39,7 @@ public class MoveEntryCommandExecutorShould
     // given: target
     _repo.Journals.Add(new CounterJournal { Id = "target-journal-id" });
     IEntry[] targetEntries = await _repo.GetAllEntries("target-journal-id", null, null, null);
-    targetEntries.Length.Should().Be(0);
+    targetEntries.Should().BeEmpty();
 
     // when
     await new MoveEntryCommandExecutor(
@@ -58,6 +58,6 @@ public class MoveEntryCommandExecutorShould
     targetEntries.Length.Should().Be(1);
 
     sourceEntries = await _repo.GetAllEntries("source-journal-id", null, null, null);
-    sourceEntries.Length.Should().Be(0);
+    sourceEntries.Should().BeEmpty();
   }
 }
