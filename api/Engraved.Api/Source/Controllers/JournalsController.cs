@@ -92,6 +92,6 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
   [Route("{journalId}")]
   public async Task<CommandResult> Delete(string journalId)
   {
-   return await dispatcher.Command(new DeleteJournalCommand { JournalId = journalId });
+    return await dispatcher.Command(new DeleteJournalCommand { JournalId = journalId });
   }
 }

@@ -7,7 +7,6 @@ using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using FluentAssertions;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert;
 

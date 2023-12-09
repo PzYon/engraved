@@ -43,9 +43,9 @@ public class MongoRepository : IBaseRepository
   public MongoRepository(IMongoRepositorySettings settings, string? dbNameOverride)
   {
     IMongoClient client = CreateMongoClient(settings);
-    
+
     string dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
-    
+
     IMongoDatabase? db = client.GetDatabase(dbName);
 
     JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);

@@ -3,7 +3,8 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Edit;
 
-public class EditJournalCommandExecutor(IRepository repository, IDateService dateService) : ICommandExecutor<EditJournalCommand>
+public class EditJournalCommandExecutor(IRepository repository, IDateService dateService)
+  : ICommandExecutor<EditJournalCommand>
 {
   private readonly IBaseRepository _repository = repository;
 

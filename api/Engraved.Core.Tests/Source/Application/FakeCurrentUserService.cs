@@ -8,7 +8,7 @@ public class FakeCurrentUserService : ICurrentUserService
   {
     _userName = userName;
   }
-  
+
   public string? GetUserName()
   {
     return _userName;
