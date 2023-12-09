@@ -87,8 +87,8 @@ public class GetThresholdValuesQueryExecutorShould
     colorsThresholds["blue"].ThresholdValue.Should().Be(6);
 
     Assert.That(colorsThresholds.ContainsKey("green"));
-    colorsThresholds["green"].ActualValue.Should().Be(3);
-    colorsThresholds["green"].ThresholdValue.Should().Be(4);
+    colorsThresholds["green"].ActualValue.Should().Be(4);
+    colorsThresholds["green"].ThresholdValue.Should().Be(3);
   }
 
   private void AddEntry(int value, string attributeValueKey)

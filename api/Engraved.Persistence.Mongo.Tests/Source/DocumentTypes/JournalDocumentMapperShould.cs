@@ -189,7 +189,7 @@ public class JournalDocumentMapperShould
     attribute.Values.Count.Should().Be(2);
     attribute.Values.ContainsKey("foo").Should().BeTrue();
     attribute.Values["foo"].Should().Be("Foo");
-    attribute.Values.Should().ContainKey("Bar");
+    attribute.Values.Should().ContainKey("bar");
     attribute.Values["bar"].Should().Be("Bar");
   }
 

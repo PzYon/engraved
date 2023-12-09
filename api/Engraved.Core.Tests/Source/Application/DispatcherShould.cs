@@ -18,6 +18,12 @@ public class DispatcherShould
 {
   private IMemoryCache _memoryCache = null!;
 
+  [TearDown]
+  public void Dispose()
+  {
+    _memoryCache.Dispose();
+  }
+
   [SetUp]
   public void SetUp()
   {
@@ -108,7 +114,6 @@ public class DispatcherShould
 
     Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
     firstResultOtherUser.Should().NotBe(secondResultOtherUser);
-
   }
 
   private Dispatcher CreateDispatcher(string userName)

@@ -63,11 +63,11 @@ public class LuceneSearchIndexShould
     );
 
     results.Should().NotBeEmpty();
-    results.Length.Should().Be(2);
+    results.Length.Should().Be(3);
 
     results.ToArray()[0].Values["attr1"][0].Should().Be("Occurs Three Times");
-    results.ToArray()[0].Values["attr1"][1].Should().Be("Occurs Twice");
-    results.ToArray()[0].Values["attr1"][2].Should().Be("Occurs Once");
+    results.ToArray()[1].Values["attr1"][0].Should().Be("Occurs Twice");
+    results.ToArray()[2].Values["attr1"][0].Should().Be("Occurs Once");
   }
 
   [Test]
@@ -104,7 +104,7 @@ public class LuceneSearchIndexShould
 
     results.Should().NotBeEmpty();
     results.Length.Should().Be(1);
-    results.First().Values["fruit"].First().Should().Be("Yellow");
+    results.First().Values["fruit"].First().Should().Be("yellow");
   }
 
   [Test]

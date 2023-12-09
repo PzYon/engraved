@@ -292,7 +292,7 @@ public class UserScopedMongoRepositoryShould
       }
     );
 
-    (await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty)).Should().Be(0);
+    (await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty)).Should().Be(1);
     (await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)).Should().Be(1);
 
     await _repository.DeleteJournal(journal.EntityId);

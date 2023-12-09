@@ -139,7 +139,7 @@ public class EntryDocumentMapperShould
     actual.DateTime.Should().Be(expected.DateTime);
     actual.Notes.Should().Be(expected.Notes);
     actual.ParentId.Should().Be(expected.ParentId);
-    actual.JournalAttributeValues.Should().BeSameAs(expected.JournalAttributeValues);
+    actual.JournalAttributeValues.Should().BeEquivalentTo(expected.JournalAttributeValues);
   }
 
   private static void AssertEqual(EntryDocument expected, IEntry actual)
@@ -148,6 +148,6 @@ public class EntryDocumentMapperShould
     actual.DateTime.Should().Be(expected.DateTime);
     actual.Notes.Should().Be(expected.Notes);
     actual.ParentId.Should().Be(expected.ParentId);
-    actual.JournalAttributeValues.Should().BeSameAs(expected.JournalAttributeValues);
+    actual.JournalAttributeValues.Should().BeEquivalentTo(expected.JournalAttributeValues);
   }
 }

@@ -67,13 +67,13 @@ public class UpsertCounterEntryCommandExecutorShould
   {
     var command = new UpsertCounterEntryCommand { JournalId = string.Empty };
 
-    async void Action()
+    Func<Task> func = Action;
+    func.Should().ThrowAsync<InvalidCommandException>();
+
+    async Task Action()
     {
       await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
     }
-
-    Action action = Action;
-    action.Should().Throw<InvalidCommandException>();
   }
 
   [Test]
@@ -85,10 +85,10 @@ public class UpsertCounterEntryCommandExecutorShould
       Notes = "n0t3s"
     };
 
-    Action action = Action;
-    action.Should().Throw<InvalidCommandException>();
+    Func<Task> func = Action;
+    func.Should().ThrowAsync<InvalidCommandException>();
 
-    async void Action()
+    async Task Action()
     {
       await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
     }

@@ -134,7 +134,7 @@ public class UpsertGaugeEntryCommandExecutorShould
 
   private static bool AreEqual(IEnumerable<string> first, IEnumerable<string> second)
   {
-    first.Should().BeSameAs(second);
+    first.Should().BeEquivalentTo(second);
     return true;
   }
 
