@@ -70,7 +70,7 @@ export const ScrapsViewPage: React.FC = () => {
         ...getCommonActions(journal, false),
       ]}
     >
-      {newScrap ? <Scrap key="new" scrap={newScrap} /> : null}
+      {newScrap ? <Scrap key="new" scrap={newScrap} hasFocus={true} /> : null}
 
       {scraps.length
         ? (scraps as IScrapEntry[]).map((scrap, i) => (
