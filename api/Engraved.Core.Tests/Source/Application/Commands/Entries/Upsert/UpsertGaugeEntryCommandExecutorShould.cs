@@ -5,7 +5,9 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using FluentAssertions;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert;
 
@@ -36,16 +38,15 @@ public class UpsertGaugeEntryCommandExecutorShould
     CommandResult commandResult =
       await new UpsertGaugeEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
 
-    Assert.IsFalse(string.IsNullOrEmpty(commandResult.EntityId));
-
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    commandResult.EntityId.Should().NotBeEmpty();
+    _testRepository.Entries.Count.Should().Be(1);
 
     IEntry createdEntry = _testRepository.Entries.First();
-    Assert.AreEqual(command.JournalId, createdEntry.ParentId);
+    createdEntry.ParentId.Should().Be(command.JournalId);
 
     var counterEntry = createdEntry as GaugeEntry;
-    Assert.IsNotNull(counterEntry);
-    Assert.AreEqual(value, counterEntry!.Value);
+    counterEntry.Should().NotBeNull();
+    counterEntry!.Value.Should().Be(value);
   }
 
   [Test]
@@ -106,17 +107,17 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     await new UpsertGaugeEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
 
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    _testRepository.Entries.Count.Should().Be(1);
 
     IEntry createdEntry = _testRepository.Entries.First();
-    Assert.AreEqual(command.JournalId, createdEntry.ParentId);
-    Assert.AreEqual(command.Notes, createdEntry.Notes);
+    command.JournalId.Should().Be(createdEntry.ParentId);
+    command.Notes.Should().Be(createdEntry.Notes);
 
     AssertJournalAttributeValuesEqual(command.JournalAttributeValues, createdEntry.JournalAttributeValues);
 
     var gaugeEntry = createdEntry as GaugeEntry;
-    Assert.IsNotNull(gaugeEntry);
-    Assert.AreEqual(value, gaugeEntry!.Value);
+    gaugeEntry.Should().NotBeNull();
+    gaugeEntry!.Value.Should().Be(value);
   }
 
   private static void AssertJournalAttributeValuesEqual(

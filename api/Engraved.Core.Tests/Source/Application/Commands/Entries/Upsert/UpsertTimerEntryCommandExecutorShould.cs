@@ -59,12 +59,12 @@ public class UpsertTimerEntryCommandExecutorShould
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     result.EntityId.Should().NotBeNull();
+    _testRepository.Entries.Count.Should().Be(1);
 
-    Assert.AreEqual(1, _testRepository.Entries.Count);
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    Assert.AreEqual(_fakeDateService.UtcNow, entry?.StartDate);
+    entry?.StartDate.Should().Be(_fakeDateService.UtcNow);
   }
 
   [Test]
@@ -79,19 +79,20 @@ public class UpsertTimerEntryCommandExecutorShould
       }
     );
 
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    _testRepository.Entries.Count.Should().Be(1);
 
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
     CommandResult result =
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    Assert.IsNotNull(result.EntityId);
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    result.EntityId.Should().NotBeNull();
+    _testRepository.Entries.Count.Should().Be(1);
+
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
-    Assert.IsNotNull(entry);
-    Assert.AreEqual(_fakeDateService.UtcNow, entry?.EndDate);
+    entry.Should().NotBeNull();
+    entry?.EndDate.Should().Be(_fakeDateService.UtcNow);
   }
 
   [Test]
@@ -109,7 +110,7 @@ public class UpsertTimerEntryCommandExecutorShould
       }
     );
 
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    _testRepository.Entries.Count.Should().Be(1);
 
     DateTime newStartDate = _fakeDateService.UtcNow.AddMinutes(-30);
     DateTime? newEndDate = null;
@@ -125,13 +126,14 @@ public class UpsertTimerEntryCommandExecutorShould
     CommandResult result =
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    Assert.IsNotNull(result.EntityId);
-    Assert.AreEqual(1, _testRepository.Entries.Count);
+    result.EntityId.Should().NotBeNull();
+    _testRepository.Entries.Count.Should().Be(1);
+
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
-    Assert.IsNotNull(entry);
-    Assert.AreEqual(newStartDate, entry?.StartDate);
-    Assert.AreEqual(newStartDate, entry?.DateTime);
-    Assert.AreEqual(newEndDate, entry?.EndDate);
+    entry.Should().NotBeNull();
+    entry?.StartDate.Should().Be(newStartDate);
+    entry?.DateTime.Should().Be(newStartDate);
+    entry?.EndDate.Should().Be(newEndDate);
   }
 }
