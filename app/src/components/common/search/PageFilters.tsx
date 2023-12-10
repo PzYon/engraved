@@ -16,8 +16,6 @@ export const PageFilters: React.FC = () => {
     return null;
   }
 
-  console.log(filterMode);
-
   return (
     <PageSection>
       <Row style={{ marginBottom: 0 }}>
