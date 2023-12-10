@@ -13,7 +13,7 @@ export enum FilterMode {
   None = 0,
   Text = 1 << 0,
   JournalType = 1 << 1,
-  All = 1 << 2,
+  All = Text | JournalType,
 }
 
 export interface IPageContext {
