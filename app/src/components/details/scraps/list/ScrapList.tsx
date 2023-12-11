@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ScrapListItem } from "./ScrapListItem";
 import {
@@ -9,7 +9,8 @@ import {
 } from "@mui/icons-material";
 import { ActionGroup } from "../../../common/actions/ActionGroup";
 import { ListItemWrapper } from "./ListItemWrapper";
-import { useItemsHook } from "./useItemsHook";
+import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
+import { ISCrapListItem } from "./IScrapListItem";
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
@@ -21,7 +22,14 @@ export const ScrapList: React.FC<{
 }> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn, onSave }) => {
   const { palette } = useTheme();
 
-  const listItemsCollection = useItemsHook(value, onChange, editedOn);
+  const listItemsCollection = useMemo(() => {
+    const items: ISCrapListItem[] = value ? JSON.parse(value) : [];
+    return new ListItemWrapperCollection(
+      items.map((i) => new ListItemWrapper(i)),
+      onChange,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editedOn]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -55,9 +63,7 @@ export const ScrapList: React.FC<{
                 listItemsCollection.update(index, updatedItem);
 
                 if (!isEditMode) {
-                  onSave(
-                    JSON.stringify(listItemsCollection.items.map((i) => i.raw)),
-                  );
+                  onSave(listItemsCollection.getAsJson());
                 }
               }}
               onDelete={() => listItemsCollection.remove(index)}

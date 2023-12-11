@@ -4,7 +4,7 @@ import { ListItemWrapper } from "./ListItemWrapper";
 export class ListItemWrapperCollection {
   constructor(
     public items: ListItemWrapper[],
-    private onChange: (value: ISCrapListItem[]) => void,
+    private onChange: (json: string) => void,
   ) {}
 
   private get highestIndex() {
@@ -139,8 +139,12 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
+  getAsJson() {
+    return JSON.stringify(this.items.map((i) => i.raw));
+  }
+
   private fireOnChange() {
-    this.onChange(this.items.map((i) => i.raw));
+    this.onChange(this.getAsJson());
   }
 
   private getNextHigherIndex(index: number) {
