@@ -1,7 +1,8 @@
-import { test } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { login } from "../src/utils/login";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
+import { ScrapListComponent } from "../src/poms/scrapListComponent";
 
 const firstItemText = "My First Item";
 const secondItemText = "My Second Item";
@@ -56,19 +57,43 @@ test("MULTIPLE WINDOWS", async ({ browser }) => {
   await scrapListTab1.typeTitle("I is list");
   await scrapListTab1.addListItem(firstItemText);
   await scrapListTab1.addListItem(secondItemText);
-  await scrapListTab1.clickSave();
+  const scrapId = await scrapListTab1.clickSave();
 
   // second
   const pageTab2 = await context.newPage();
   await pageTab2.goto(pageTab1.url());
 
-  const scrapsJournalPageTab2 = new ScrapsJournalPage(pageTab2);
-  const scrapListTab2 = await scrapsJournalPageTab2.getListByTitle("I is list");
+  const scrapListTab2 = new ScrapListComponent(pageTab2, scrapId);
   await scrapListTab2.dblClickToEdit();
   await scrapListTab2.addListItem(thirdItemText);
   await scrapListTab2.clickSave(true);
 
-  await pageTab1.evaluate(() => {
-    document.dispatchEvent(new Event("visibilitychange"));
-  });
+  await expect(
+    await scrapListTab1.getListItemByText(thirdItemText),
+  ).toBeHidden();
+
+  await triggerFocusEvent(pageTab1);
+
+  await expect(
+    await scrapListTab1.getListItemByText(thirdItemText),
+  ).toBeVisible();
+
+  await scrapListTab1.dblClickToEdit();
+  await scrapListTab1.addListItem("Not saved item");
+
+  await scrapListTab2.dblClickToEdit();
+  await scrapListTab2.addListItem("Will be saved item");
+  await scrapListTab2.clickSave();
 });
+
+async function triggerFocusEvent(page: Page) {
+  await page.evaluate(() => {
+    document.dispatchEvent(new Event("visibilitychange"));
+    document.dispatchEvent(new Event("focus"));
+  });
+
+  await page.evaluate(() => {
+    document.dispatchEvent(new Event("visibilitychange"));
+    document.dispatchEvent(new Event("focus"));
+  });
+}

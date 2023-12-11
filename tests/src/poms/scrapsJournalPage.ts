@@ -11,9 +11,4 @@ export class ScrapsJournalPage extends JournalPage {
     await this.clickPageAction("Add list");
     return new ScrapListComponent(this.page);
   }
-
-  async getListByTitle(title: string) {
-    throw new Error("Not yet implemented stuff here: " + title);
-    return new ScrapListComponent(this.page);
-  }
 }

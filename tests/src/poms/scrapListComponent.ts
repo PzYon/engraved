@@ -3,7 +3,12 @@ import { expect, Page } from "@playwright/test";
 export class ScrapListComponent {
   private scrapId: string;
 
-  constructor(private page: Page) {}
+  constructor(
+    private page: Page,
+    scrapId?: string,
+  ) {
+    this.scrapId = scrapId;
+  }
 
   async typeTitle(title: string) {
     await this.page.getByPlaceholder("Title").click();
