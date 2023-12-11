@@ -2,19 +2,20 @@ import React from "react";
 import { ActionIconButton } from "../../../common/actions/ActionIconButton";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { useUpsertEntryMutation } from "../../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
-import { JournalType } from "../../../../serverApi/JournalType";
 import { IUpsertGaugeEntryCommand } from "../../../../serverApi/commands/IUpsertGaugeEntryCommand";
 import { styled } from "@mui/material";
+import { IJournal } from "../../../../serverApi/IJournal";
 
 export const AddEntryTableSaveAction: React.FC<{
   command: IUpsertGaugeEntryCommand;
-  journalType: JournalType;
+  journal: IJournal;
   onAdded: (lastSelectedDate: Date) => void;
-}> = ({ command, journalType, onAdded }) => {
+}> = ({ command, journal, onAdded }) => {
   const upsertEntryMutation = useUpsertEntryMutation(
-    command.journalId,
-    journalType,
-    "",
+    journal.id,
+    journal.type,
+    journal,
+    null,
     () => onAdded(command.dateTime),
   );
 

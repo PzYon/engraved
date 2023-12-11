@@ -23,7 +23,6 @@ import { hasAttributes } from "../../../util/entryUtils";
 import { UpsertTimerEntry } from "./UpsertTimerEntry";
 import { IUpsertTimerEntryCommand } from "../../../serverApi/commands/IUpsertTimerEntryCommand";
 import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
-import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
@@ -59,11 +58,10 @@ export const UpsertEntry: React.FC<{
 
   const [showFullTimerForm, setShowFullTimerForm] = useState(false);
 
-  const editJournalMutation = useEditJournalMutation(journal.id);
-
   const upsertEntryMutation = useUpsertEntryMutation(
     journal.id,
     journal.type,
+    journal,
     entry?.id,
     onSaved,
   );
@@ -167,9 +165,7 @@ export const UpsertEntry: React.FC<{
           variant="contained"
           autoFocus={true}
           onClick={async () => {
-            await ensureNewAttributeValues();
-
-            upsertEntryMutation.mutate({
+            await upsertEntryMutation.mutate({
               command: createCommand(),
             });
           }}
@@ -202,23 +198,6 @@ export const UpsertEntry: React.FC<{
         break;
     }
     return command;
-  }
-
-  async function ensureNewAttributeValues() {
-    let hasNewValues = false;
-
-    for (const keyInValues in attributeValues) {
-      for (const value of attributeValues[keyInValues]) {
-        if (!journal.attributes[keyInValues].values[value]) {
-          journal.attributes[keyInValues].values[value] = value;
-          hasNewValues = true;
-        }
-      }
-    }
-
-    if (hasNewValues) {
-      await editJournalMutation.mutateAsync({ journal: journal });
-    }
   }
 
   function resetSelectors() {

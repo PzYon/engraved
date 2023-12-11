@@ -243,7 +243,7 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
         return (
           <AddEntryTableSaveAction
             command={command}
-            journalType={journal.type}
+            journal={journal}
             onAdded={(lastSelectedDate) => {
               updateCommand(
                 {
