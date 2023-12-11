@@ -34,6 +34,7 @@ export const useUpsertEntryMutation = (
 
     mutationFn: async (variables: IUpsertEntryCommandVariables) => {
       if (
+        journal &&
         hasNewJournalAttributeValues(variables.command.journalAttributeValues)
       ) {
         await editJournalMutation.mutateAsync({ journal });
