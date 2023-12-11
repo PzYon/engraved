@@ -68,15 +68,11 @@ test("MULTIPLE WINDOWS", async ({ browser }) => {
   await scrapListTab2.addListItem(thirdItemText);
   await scrapListTab2.clickSave(true);
 
-  await expect(
-    await scrapListTab1.getListItemByText(thirdItemText),
-  ).toBeHidden();
+  await expect(scrapListTab1.getListItemByText(thirdItemText)).toBeHidden();
 
   await triggerFocusEvent(pageTab1);
 
-  await expect(
-    await scrapListTab1.getListItemByText(thirdItemText),
-  ).toBeVisible();
+  await expect(scrapListTab1.getListItemByText(thirdItemText)).toBeVisible();
 
   await scrapListTab1.dblClickToEdit();
   await scrapListTab1.addListItem("Not saved item");
