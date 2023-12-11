@@ -4,16 +4,20 @@ import { IUpsertEntryCommand } from "../../commands/IUpsertEntryCommand";
 import { ServerApi } from "../../ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { IEntry } from "../../IEntry";
-import { JournalType } from "../../JournalType";
 import { ICommandResult } from "../../ICommandResult";
+import { IJournalAttributeValues } from "../../IJournalAttributeValues";
+import { useEditJournalMutation } from "./useEditJournalMutation";
+import { JournalType } from "../../JournalType";
+import { IJournal } from "../../IJournal";
 
-export interface IVariables {
+export interface IUpsertEntryCommandVariables {
   command: IUpsertEntryCommand;
 }
 
 export const useUpsertEntryMutation = (
   journalId: string,
   journalType: JournalType,
+  journal?: IJournal,
   entryId?: string,
   onSaved?: () => void,
 ) => {
@@ -21,19 +25,30 @@ export const useUpsertEntryMutation = (
 
   const queryClient = useQueryClient();
 
+  const editJournalMutation = useEditJournalMutation(journalId);
+
   return useMutation({
     mutationKey: queryKeysFactory.updateEntries(journalId, entryId),
 
     throwOnError: false,
 
-    mutationFn: async (variables: IVariables) => {
+    mutationFn: async (variables: IUpsertEntryCommandVariables) => {
+      if (
+        hasNewJournalAttributeValues(variables.command.journalAttributeValues)
+      ) {
+        await editJournalMutation.mutateAsync({ journal });
+      }
+
       return await ServerApi.upsertEntry(
         variables.command,
         journalType.toLowerCase(),
       );
     },
 
-    onSuccess: async (result: ICommandResult, variables: IVariables) => {
+    onSuccess: async (
+      result: ICommandResult,
+      variables: IUpsertEntryCommandVariables,
+    ) => {
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
         type: "success",
@@ -89,5 +104,26 @@ export const useUpsertEntryMutation = (
       dateTime: editedOn,
       editedOn: editedOn,
     };
+  }
+
+  function hasNewJournalAttributeValues(
+    attributeValues: IJournalAttributeValues,
+  ) {
+    if (!attributeValues || journal.type === JournalType.Scraps) {
+      return false;
+    }
+
+    let hasNewValues = false;
+
+    for (const keyInValues in attributeValues) {
+      for (const value of attributeValues[keyInValues]) {
+        if (!journal.attributes[keyInValues].values[value]) {
+          journal.attributes[keyInValues].values[value] = value;
+          hasNewValues = true;
+        }
+      }
+    }
+
+    return hasNewValues;
   }
 };

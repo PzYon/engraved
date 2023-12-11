@@ -11,10 +11,10 @@ import { Button, styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
-import { JournalType } from "../../../serverApi/JournalType";
 import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
 import { Wrapper } from "../../common/wrappers/Wrapper";
+import { JournalType } from "../../../serverApi/JournalType";
 
 export const Scrap: React.FC<{
   scrap: IScrapEntry;
@@ -52,6 +52,7 @@ export const Scrap: React.FC<{
   const upsertEntryMutation = useUpsertEntryMutation(
     currentScrap.parentId,
     JournalType.Scraps,
+    null, // scrap currently do not support attributes
     currentScrap.id,
   );
 
