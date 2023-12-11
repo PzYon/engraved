@@ -12,7 +12,7 @@ export const ScrapListBody: React.FC<{
   hasTitleFocus: boolean;
   value: string;
   onChange: (value: string) => void;
-  onSave: () => Promise<void>;
+  onSave: (notesToSave?: string) => Promise<void>;
   cancelEditing: () => void;
   hasFocus?: boolean;
 }> = ({
@@ -45,6 +45,7 @@ export const ScrapListBody: React.FC<{
       value={value}
       onChange={onChange}
       editedOn={scrap.editedOn}
+      onSave={onSave}
     />
   </ScrapBody>
 );

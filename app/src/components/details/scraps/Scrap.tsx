@@ -182,10 +182,12 @@ export const Scrap: React.FC<{
     setNotes(currentScrap.notes);
   }
 
-  async function upsertScrap() {
+  async function upsertScrap(notesToOverride?: string) {
+    const notesToSave = notesToOverride ?? notes;
+
     if (
-      (currentScrap.notes === notes && currentScrap.title === title) ||
-      !notes
+      (currentScrap.notes === notesToSave && currentScrap.title === title) ||
+      !notesToSave
     ) {
       setIsEditMode(false);
       return;
@@ -195,7 +197,7 @@ export const Scrap: React.FC<{
       command: {
         id: currentScrap?.id,
         scrapType: currentScrap.scrapType,
-        notes: notes,
+        notes: notesToSave,
         title: title,
         journalAttributeValues: {},
         journalId: currentScrap.parentId,

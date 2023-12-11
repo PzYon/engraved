@@ -40,7 +40,6 @@ export const ScrapListItem: React.FC<{
     <ListItem>
       <StyledCheckbox
         checked={listItem.isCompleted}
-        disabled={!isEditMode}
         onChange={(_, checked) => {
           onChange({ label, isCompleted: checked });
         }}
