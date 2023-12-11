@@ -15,7 +15,7 @@ export const ScrapInner: React.FC<{
   setNotes: (value: string) => void;
   hideDate?: boolean;
   hideActions?: boolean;
-  upsertScrap: () => Promise<void>;
+  upsertScrap: (notesToSave?: string) => Promise<void>;
   style?: CSSProperties;
   cancelEditing: () => void;
   hasFocus?: boolean;

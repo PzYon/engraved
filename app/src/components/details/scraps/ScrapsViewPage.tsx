@@ -32,11 +32,6 @@ export const ScrapsViewPage: React.FC = () => {
     setNewScrap(null);
   }, [scraps]);
 
-  const keyToken = useMemo(() => {
-    return Math.random();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scraps]);
-
   const [focusIndex, setFocusIndex] = useState(-1);
 
   const collection = useMemo(
@@ -75,7 +70,7 @@ export const ScrapsViewPage: React.FC = () => {
       {scraps.length
         ? (scraps as IScrapEntry[]).map((scrap, i) => (
             <Scrap
-              key={scrap.id + keyToken}
+              key={scrap.id}
               onClick={() => collection.setFocus(i)}
               addScrapWrapper={(scrapWrapper) =>
                 collection.add(scrap.id, scrapWrapper)
