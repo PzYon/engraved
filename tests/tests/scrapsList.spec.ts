@@ -44,8 +44,12 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
   await scrapList.clickSave(true);
 });
 
-test("MULTIPLE WINDOWS", async ({ browser }) => {
+test("modify list items in multiple tabs, handle updates accordingly", async ({
+  browser,
+}) => {
   const context = await browser.newContext();
+
+  // tab1: create journal and add scrap
   const pageTab1 = await context.newPage();
   await login(pageTab1, "background-update-joe");
 
@@ -59,7 +63,7 @@ test("MULTIPLE WINDOWS", async ({ browser }) => {
   await scrapListTab1.addListItem(secondItemText);
   const scrapId = await scrapListTab1.clickSave();
 
-  // second
+  // tab2: go to created tab and add new item to list
   const pageTab2 = await context.newPage();
   await pageTab2.goto(pageTab1.url());
 
@@ -68,19 +72,24 @@ test("MULTIPLE WINDOWS", async ({ browser }) => {
   await scrapListTab2.addListItem(thirdItemText);
   await scrapListTab2.clickSave(true);
 
+  // tab1: new item is not visible until window has gotten focus.
+  // a note on "gotten focus": in real life this happens when to user
+  // focuses a tab, in playwright however this does not (yet?) work,
+  // because the corresponding events the react-query uses are not triggered.
   await expect(scrapListTab1.getListItemByText(thirdItemText)).toBeHidden();
-
   await triggerFocusEvent(pageTab1);
-
   await expect(scrapListTab1.getListItemByText(thirdItemText)).toBeVisible();
 
+  // tab1: add new item (without saving - i.e. still in edit mode)
   await scrapListTab1.dblClickToEdit();
   await scrapListTab1.addListItem("Not saved item");
 
+  // tab2: add new item (and save)
   await scrapListTab2.dblClickToEdit();
   await scrapListTab2.addListItem("Will be saved item");
   await scrapListTab2.clickSave(true);
 
+  // tab1: give focus and expect "would you like to update?" message
   await triggerFocusEvent(pageTab1);
 
   await expect(
@@ -95,11 +104,6 @@ test("MULTIPLE WINDOWS", async ({ browser }) => {
 });
 
 async function triggerFocusEvent(page: Page) {
-  await page.evaluate(() => {
-    window.dispatchEvent(new Event("visibilitychange"));
-    window.dispatchEvent(new Event("focus"));
-  });
-
   await page.evaluate(() => {
     window.dispatchEvent(new Event("visibilitychange"));
     window.dispatchEvent(new Event("focus"));
