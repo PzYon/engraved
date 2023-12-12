@@ -11,7 +11,7 @@ const thirdItemText = "My Third Item";
 test("add scrap journal, add list entry and add/delete/modify", async ({
   page,
 }) => {
-  await login(page, "scrapsList");
+  await login(page, "scrapsList-basic");
 
   await addNewJournal(page, "Scraps", "My First Scraps Journal");
 
@@ -37,11 +37,43 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
     .getByRole("checkbox")
     .check();
 
-  // todo:
-  // - edit, add again, validate
-  // - mark as checked in non-edit mode
-
   await scrapList.clickSave(true);
+});
+
+test("add scrap journal, add list entries mark as checked in non-edit mode", async ({
+  page,
+}) => {
+  await login(page, "scrapsList-non-edit");
+
+  await addNewJournal(page, "Scraps", "Random Scraps");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
+
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+  await scrapList.addListItem(firstItemText);
+  await scrapList.addListItem(secondItemText);
+  await scrapList.clickSave();
+
+  await scrapList
+    .getListItemByText(firstItemText)
+    .getByRole("checkbox")
+    .check();
+
+  await expect(
+    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+  ).toBeChecked();
+
+  await page.reload();
+
+  await expect(
+    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+  ).toBeChecked();
+
+  await expect(
+    scrapList.getListItemByText(secondItemText).getByRole("checkbox"),
+  ).not.toBeChecked();
 });
 
 test("modify list items in multiple tabs, handle updates accordingly", async ({
