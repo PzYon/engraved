@@ -79,17 +79,29 @@ test("MULTIPLE WINDOWS", async ({ browser }) => {
 
   await scrapListTab2.dblClickToEdit();
   await scrapListTab2.addListItem("Will be saved item");
-  await scrapListTab2.clickSave();
+  await scrapListTab2.clickSave(true);
+
+  await triggerFocusEvent(pageTab1);
+
+  await expect(
+    pageTab1.getByText("Would you like to update? Any changes will be lost"),
+  ).toBeVisible();
+
+  await pageTab1.getByRole("button", { name: "YES" }).click();
+
+  await expect(
+    scrapListTab1.getListItemByText("Will be saved item"),
+  ).toBeVisible();
 });
 
 async function triggerFocusEvent(page: Page) {
   await page.evaluate(() => {
-    document.dispatchEvent(new Event("visibilitychange"));
-    document.dispatchEvent(new Event("focus"));
+    window.dispatchEvent(new Event("visibilitychange"));
+    window.dispatchEvent(new Event("focus"));
   });
 
   await page.evaluate(() => {
-    document.dispatchEvent(new Event("visibilitychange"));
-    document.dispatchEvent(new Event("focus"));
+    window.dispatchEvent(new Event("visibilitychange"));
+    window.dispatchEvent(new Event("focus"));
   });
 }
