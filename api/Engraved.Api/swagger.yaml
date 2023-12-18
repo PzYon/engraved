@@ -1,0 +1,1061 @@
+openapi: 3.0.1
+info:
+  title: 'Engraved.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+  version: '1.0'
+paths:
+  /api/auth/e2e:
+    post:
+      tags:
+        - E2eTestsAuth
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+  '/api/entries/{journalId}':
+    get:
+      tags:
+        - Entries
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: attributeValues
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items: { }
+            application/json:
+              schema:
+                type: array
+                items: { }
+            text/json:
+              schema:
+                type: array
+                items: { }
+  /api/entries:
+    get:
+      tags:
+        - Entries
+      parameters:
+        - name: searchText
+          in: query
+          schema:
+            type: string
+        - name: journalTypes
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetAllEntriesQueryApiResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllEntriesQueryApiResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetAllEntriesQueryApiResult'
+  '/api/entries/{journalId}/active':
+    get:
+      tags:
+        - Entries
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/IEntry'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IEntry'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/IEntry'
+  /api/entries/counter:
+    post:
+      tags:
+        - Entries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertCounterEntryCommand'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpsertCounterEntryCommand'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpsertCounterEntryCommand'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  /api/entries/gauge:
+    post:
+      tags:
+        - Entries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertGaugeEntryCommand'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpsertGaugeEntryCommand'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpsertGaugeEntryCommand'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  /api/entries/scraps:
+    post:
+      tags:
+        - Entries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertScrapsEntryCommand'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpsertScrapsEntryCommand'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpsertScrapsEntryCommand'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  /api/entries/timer:
+    post:
+      tags:
+        - Entries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertTimerEntryCommand'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpsertTimerEntryCommand'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpsertTimerEntryCommand'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  '/api/entries/{entryId}':
+    delete:
+      tags:
+        - Entries
+      parameters:
+        - name: entryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  '/api/entries/{entryId}/move/{targetJournalId}':
+    put:
+      tags:
+        - Entries
+      parameters:
+        - name: entryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: targetJournalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  /api/auth/google:
+    post:
+      tags:
+        - GoogleAuth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginPayload'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/LoginPayload'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/LoginPayload'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+  /api/journals:
+    get:
+      tags:
+        - Journals
+      parameters:
+        - name: searchText
+          in: query
+          schema:
+            type: string
+        - name: journalTypes
+          in: query
+          schema:
+            type: string
+        - name: favoritesOnly
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items: { }
+            application/json:
+              schema:
+                type: array
+                items: { }
+            text/json:
+              schema:
+                type: array
+                items: { }
+    post:
+      tags:
+        - Journals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddJournalCommand'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AddJournalCommand'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AddJournalCommand'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+    put:
+      tags:
+        - Journals
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditJournalCommand'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EditJournalCommand'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EditJournalCommand'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  '/api/journals/{journalId}':
+    get:
+      tags:
+        - Journals
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/IJournal'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IJournal'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/IJournal'
+    delete:
+      tags:
+        - Journals
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  '/api/journals/{journalId}/permissions':
+    put:
+      tags:
+        - Journals
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/PermissionKind'
+          text/json:
+            schema:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/PermissionKind'
+          application/*+json:
+            schema:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/PermissionKind'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  '/api/journals/{journalId}/threshold_values':
+    get:
+      tags:
+        - Journals
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    $ref: '#/components/schemas/ThresholdResult'
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    $ref: '#/components/schemas/ThresholdResult'
+            text/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    $ref: '#/components/schemas/ThresholdResult'
+  /:
+    get:
+      tags:
+        - Root
+      responses:
+        '200':
+          description: Success
+  '/api/search/journal_attributes/{journalId}':
+    get:
+      tags:
+        - Search
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: searchText
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchAttributesResult'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchAttributesResult'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchAttributesResult'
+  /api/search/entities:
+    get:
+      tags:
+        - Search
+      parameters:
+        - name: searchText
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+  /api/system_info:
+    get:
+      tags:
+        - SystemInfo
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SystemInfo'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemInfo'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SystemInfo'
+  /api/user:
+    get:
+      tags:
+        - User
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/IUser'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IUser'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/IUser'
+  '/api/user/favorites/{journalId}':
+    patch:
+      tags:
+        - User
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+    delete:
+      tags:
+        - User
+      parameters:
+        - name: journalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+  /api/wake/me/up:
+    get:
+      tags:
+        - WakeMeUp
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    AddJournalCommand:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        type:
+          $ref: '#/components/schemas/JournalType'
+      additionalProperties: false
+    AuthResult:
+      type: object
+      properties:
+        jwtToken:
+          type: string
+          nullable: true
+        user:
+          $ref: '#/components/schemas/IUser'
+      additionalProperties: false
+    CommandResult:
+      type: object
+      properties:
+        entityId:
+          type: string
+          nullable: true
+          readOnly: true
+        affectedUserIds:
+          type: array
+          items:
+            type: string
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+    EditJournalCommand:
+      type: object
+      properties:
+        journalId:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        attributes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/JournalAttribute'
+          nullable: true
+        thresholds:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: number
+              format: double
+            nullable: true
+          nullable: true
+        customProps:
+          type: object
+          additionalProperties:
+            type: string
+            nullable: true
+          nullable: true
+      additionalProperties: false
+    GetAllEntriesQueryApiResult:
+      type: object
+      properties:
+        journals:
+          type: array
+          items: { }
+          nullable: true
+        entries:
+          type: array
+          items: { }
+          nullable: true
+      additionalProperties: false
+    IEntry:
+      type: object
+      properties:
+        parentId:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        dateTime:
+          type: string
+          format: date-time
+          nullable: true
+        journalAttributeValues:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+        userId:
+          type: string
+          nullable: true
+        id:
+          type: string
+          nullable: true
+        editedOn:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    IJournal:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        type:
+          $ref: '#/components/schemas/JournalType'
+        attributes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/JournalAttribute'
+          nullable: true
+        thresholds:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: number
+              format: double
+          nullable: true
+        customProps:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+        userId:
+          type: string
+          nullable: true
+        permissions:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PermissionDefinition'
+          nullable: true
+        id:
+          type: string
+          nullable: true
+        editedOn:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    IUser:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        lastLoginDate:
+          type: string
+          format: date-time
+          nullable: true
+        favoriteJournalIds:
+          type: array
+          items:
+            type: string
+          nullable: true
+      additionalProperties: false
+    JournalAttribute:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        values:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+      additionalProperties: false
+    JournalType:
+      enum:
+        - Counter
+        - Gauge
+        - Timer
+        - Scraps
+      type: string
+    LoginPayload:
+      type: object
+      properties:
+        token:
+          type: string
+          nullable: true
+      additionalProperties: false
+    PermissionDefinition:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/PermissionKind'
+        userRole:
+          $ref: '#/components/schemas/UserRole'
+        user:
+          $ref: '#/components/schemas/IUser'
+      additionalProperties: false
+    PermissionKind:
+      enum:
+        - None
+        - Read
+        - Write
+      type: string
+    ScrapType:
+      enum:
+        - Markdown
+        - List
+      type: string
+    SearchAttributesResult:
+      type: object
+      properties:
+        values:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+        occurrenceCount:
+          type: integer
+          format: int32
+        score:
+          type: number
+          format: double
+      additionalProperties: false
+    SystemInfo:
+      type: object
+      properties:
+        version:
+          type: string
+          nullable: true
+        mergeDateTime:
+          type: string
+          format: date-time
+        commitHash:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ThresholdResult:
+      type: object
+      properties:
+        thresholdValue:
+          type: number
+          format: double
+        actualValue:
+          type: number
+          format: double
+      additionalProperties: false
+    UpsertCounterEntryCommand:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        journalId:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        dateTime:
+          type: string
+          format: date-time
+          nullable: true
+        journalAttributeValues:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+      additionalProperties: false
+    UpsertGaugeEntryCommand:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        journalId:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        dateTime:
+          type: string
+          format: date-time
+          nullable: true
+        journalAttributeValues:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+        value:
+          type: number
+          format: double
+          nullable: true
+      additionalProperties: false
+    UpsertScrapsEntryCommand:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        journalId:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        dateTime:
+          type: string
+          format: date-time
+          nullable: true
+        journalAttributeValues:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        scrapType:
+          $ref: '#/components/schemas/ScrapType'
+      additionalProperties: false
+    UpsertTimerEntryCommand:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        journalId:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        dateTime:
+          type: string
+          format: date-time
+          nullable: true
+        journalAttributeValues:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+        startDate:
+          type: string
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    UserRole:
+      enum:
+        - None
+        - Reader
+        - Owner
+        - Writer
+      type: string
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Please enter a valid token
+      scheme: Bearer
+      bearerFormat: JWT
+security:
+  - Bearer: [ ]
