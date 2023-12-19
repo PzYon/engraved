@@ -42,7 +42,8 @@
     "types:check": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\""
+    "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
+    "generate-api-client": "npx @openapitools/openapi-generator-cli generate ../api/Engraved.Api/swagger.yaml -g javascript"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,css,md,json}": [
@@ -63,6 +64,7 @@
     ]
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.7.0",
     "@tanstack/eslint-plugin-query": "5.12.1",
     "@types/jest": "29.5.11",
     "@types/markdown-it": "13.0.7",
