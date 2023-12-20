@@ -43,7 +43,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
-    "generate-api-client": "npx @openapitools/openapi-generator-cli generate ../api/Engraved.Api/swagger.yaml -g javascript"
+    "generate-api-client": "npx @openapitools/openapi-generator-cli generate -i ../api/Engraved.Api/swagger.yaml -g typescript -o rest"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,css,md,json}": [
