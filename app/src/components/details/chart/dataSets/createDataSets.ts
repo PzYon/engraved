@@ -29,11 +29,13 @@ function entriesToDataSet(
   // todo: we use indexer here to get (only) the first item. what if there's more?
   const valueKey = entries[0]?.journalAttributeValues?.[attributeKey]?.[0];
 
+  // dataSet.data = movingAverage(dataSet.data, 9);
+
   return {
+    data,
     label: valueKey
       ? journal.attributes[attributeKey].values[valueKey]
       : journal.name,
-    data: data,
   };
 }
 

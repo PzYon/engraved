@@ -2,7 +2,13 @@ import { movingAverage } from "./movingAverage";
 import { ITransformedEntry } from "../transformation/ITransformedEntry";
 
 describe("movingAverage", () => {
-  it("should return original values if less than size", () => {
+  it("should throw error if groupSize is even", () => {
+    expect(() => movingAverage([getEntry(1), getEntry(2)], 2)).toThrow(
+      "Group size must be an odd number.",
+    );
+  });
+
+  it("should return original values if fewer than groupSize", () => {
     const results = movingAverage([getEntry(1), getEntry(2)], 3);
 
     expect(results.length).toBe(2);
@@ -10,7 +16,7 @@ describe("movingAverage", () => {
     expect(results[1].y).toBe(2);
   });
 
-  it("should calculate average with 3 entries", () => {
+  it("should calculate average with 3 entries and groupSize 3", () => {
     const results = movingAverage([getEntry(11), getEntry(20), getEntry(9)], 3);
 
     expect(results.length).toBe(3);
@@ -19,7 +25,7 @@ describe("movingAverage", () => {
     expect(results[2].y).toBe(9);
   });
 
-  it("should calculate average with 4 entries", () => {
+  it("should calculate average with 4 entries and groupSize 3", () => {
     const results = movingAverage(
       [getEntry(10), getEntry(20), getEntry(10), getEntry(20)],
       3,
@@ -32,7 +38,7 @@ describe("movingAverage", () => {
     expect(results[3].y).toBe(20);
   });
 
-  it("should calculate average with 5 entries and 5", () => {
+  it("should calculate average with 5 entries and groupSize 5", () => {
     const results = movingAverage(
       [getEntry(10), getEntry(20), getEntry(10), getEntry(20), getEntry(10)],
       5,

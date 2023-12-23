@@ -2,32 +2,38 @@ import { ITransformedEntry } from "../transformation/ITransformedEntry";
 
 export function movingAverage(
   entries: ITransformedEntry[],
-  size: number,
+  groupSize: number,
 ): ITransformedEntry[] {
-  if (entries.length < size) {
+  if (groupSize % 2 !== 1) {
+    throw new Error("Group size must be an odd number.");
+  }
+
+  if (entries.length < groupSize) {
     return entries;
   }
 
   return entries.map((e, i) => {
-    const offset = Math.floor(size / 2);
+    const offset = Math.floor(groupSize / 2);
 
-    if (i < offset) {
-      console.log("index: " + i + ": return raw");
+    if (i < offset || i >= entries.length - offset) {
       return e;
     }
 
-    if (i >= entries.length - offset) {
-      console.log("index: " + i + ": return raw");
-      return e;
-    }
-
-    const average = (entries[i - 1].y + entries[i].y + entries[i + 1].y) / 3;
-    console.log("index: " + i + ": return average");
-
-    return {
-      y: average,
-      x: e.x,
-      entries: e.entries,
-    };
+    return { ...e, y: getAverage(entries, i, groupSize) };
   });
+}
+
+function getAverage(
+  entries: ITransformedEntry[],
+  index: number,
+  groupSize: number,
+): number {
+  let sum = 0;
+  const startIndex = index - Math.floor(groupSize / 2);
+
+  for (let i = 0; i < groupSize; i++) {
+    sum += entries[startIndex + i].y;
+  }
+
+  return sum / groupSize;
 }
