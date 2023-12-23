@@ -9,7 +9,7 @@
     "@mui/icons-material": "5.15.1",
     "@mui/material": "5.15.1",
     "@mui/styled-engine-sc": "5.14.12",
-    "@mui/x-date-pickers": "6.18.5",
+    "@mui/x-date-pickers": "6.18.6",
     "@tanstack/react-query": "5.14.2",
     "@tanstack/react-query-devtools": "5.14.5",
     "@testing-library/jest-dom": "6.1.5",
