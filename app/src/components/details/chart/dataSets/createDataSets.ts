@@ -6,12 +6,12 @@ import { IDataSet } from "./IDataSet";
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
 
 export function createDataSets(
-  allEntries: IEntry[],
+  entries: IEntry[],
   journal: IJournal,
   groupByTime: GroupByTime,
   attributeKey: string,
 ) {
-  return getEntriesPerAttribute(allEntries, journal.attributes, attributeKey)
+  return getEntriesPerAttribute(entries, journal.attributes, attributeKey)
     .filter((entriesByAttribute) => entriesByAttribute.length)
     .map((entries) =>
       entriesToDataSet(entries, journal, groupByTime, attributeKey),
@@ -38,7 +38,7 @@ function entriesToDataSet(
 }
 
 function getEntriesPerAttribute(
-  allEntries: IEntry[],
+  entries: IEntry[],
   journalAttributes: IJournalAttributes,
   attributeKey: string,
 ) {
@@ -48,7 +48,7 @@ function getEntriesPerAttribute(
   ];
 
   return allValueKeys.map((valueKey) =>
-    allEntries.filter(filterByAttribute(attributeKey, valueKey)),
+    entries.filter(filterByAttribute(attributeKey, valueKey)),
   );
 }
 
