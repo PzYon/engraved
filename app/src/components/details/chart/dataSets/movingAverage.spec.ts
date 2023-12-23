@@ -31,6 +31,20 @@ describe("movingAverage", () => {
     expect(results[2].y).toBe(50 / 3);
     expect(results[3].y).toBe(20);
   });
+
+  it("should calculate average with 5 entries and 5", () => {
+    const results = movingAverage(
+      [getEntry(10), getEntry(20), getEntry(10), getEntry(20), getEntry(10)],
+      5,
+    );
+
+    expect(results.length).toBe(5);
+    expect(results[0].y).toBe(10);
+    expect(results[1].y).toBe(20);
+    expect(results[2].y).toBe(70 / 5);
+    expect(results[3].y).toBe(20);
+    expect(results[4].y).toBe(10);
+  });
 });
 
 function getEntry(value: number): ITransformedEntry {
