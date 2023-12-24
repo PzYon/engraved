@@ -6,7 +6,6 @@ import { getCommonActions } from "../overview/getCommonActions";
 import { PageSection } from "../layout/pages/PageSection";
 import { JournalNotes } from "./edit/JournalNotes";
 import { EntryFilters } from "./filters/EntryFilters";
-import { Chart } from "./chart/Chart";
 import { Thresholds } from "./thresholds/Thresholds";
 import { EntriesTable } from "./entriesTable/EntriesTable";
 import { Route, Routes } from "react-router-dom";
@@ -24,6 +23,7 @@ import { IAction } from "../common/actions/IAction";
 import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
 import { JournalType } from "../../serverApi/JournalType";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
+import { Chart } from "./chart/Chart";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -148,6 +148,7 @@ export const JournalViewPage: React.FC = () => {
               groupByTime={groupByTime}
               groupByAttribute={attributeKey}
               chartType={chartType}
+              chartUiProps={{}}
             />
           </PageSection>
         </Suspense>
