@@ -82,7 +82,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
       toggleAttributeValue,
       chartType,
       palette.primary.main,
-      chartUiProps?.rollingAverage,
+      chartUiProps,
     ],
   );
 

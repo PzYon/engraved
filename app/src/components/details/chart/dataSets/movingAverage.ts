@@ -13,12 +13,6 @@ export function movingAverage(
   }
 
   return entries.map((e, i) => {
-    const offset = Math.floor(groupSize / 2);
-
-    if (i < offset || i >= entries.length - offset) {
-      return e;
-    }
-
     return { ...e, y: getAverage(entries, i, groupSize) };
   });
 }
@@ -32,7 +26,15 @@ function getAverage(
   const startIndex = index - Math.floor(groupSize / 2);
 
   for (let i = 0; i < groupSize; i++) {
-    sum += entries[startIndex + i].y;
+    const currentIndex = startIndex + i;
+
+    if (currentIndex < 0) {
+      sum += entries[0].y;
+    } else if (currentIndex >= entries.length) {
+      sum += entries[entries.length - 1].y;
+    } else {
+      sum += entries[startIndex + i].y;
+    }
   }
 
   return sum / groupSize;
