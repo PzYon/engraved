@@ -5,13 +5,20 @@ import { Slider, styled } from "@mui/material";
 const ChartJs = React.lazy(() => import("./LazyChartJs"));
 
 export const Chart: React.FC<IChartProps> = (props: IChartProps) => {
-  const [rollingAverageGroupSize, setRollingAverageGroupSize] = useState(7);
+  const [rollingAverageGroupSize, setRollingAverageGroupSize] = useState(0);
 
   return (
     <Host>
-      <ChartJs {...props} />
+      <ChartJs
+        {...props}
+        chartUiProps={{ rollingAverage: rollingAverageGroupSize * 2 + 1 }}
+      />
       <ActionsContainer>
         <Slider
+          min={0}
+          max={15}
+          marks={true}
+          valueLabelDisplay="auto"
           sx={{ width: "50%" }}
           value={rollingAverageGroupSize}
           onChange={(x) => {

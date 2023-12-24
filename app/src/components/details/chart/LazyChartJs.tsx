@@ -49,6 +49,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
   groupByTime,
   groupByAttribute,
   chartType,
+  chartUiProps,
 }) => {
   const { typography, palette } = useTheme();
 
@@ -70,6 +71,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
             toggleAttributeValue,
             chartType as keyof ChartTypeRegistry,
             palette.primary.main,
+            chartUiProps,
           )
         : null,
     [
@@ -80,6 +82,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
       toggleAttributeValue,
       chartType,
       palette.primary.main,
+      chartUiProps?.rollingAverage,
     ],
   );
 
