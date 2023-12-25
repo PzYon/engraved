@@ -8,4 +8,9 @@ export interface IChartProps {
   groupByTime?: GroupByTime;
   groupByAttribute?: string;
   chartType?: string;
+  chartUiProps: IChartUiProps;
+}
+
+export interface IChartUiProps {
+  rollingAverage?: number;
 }

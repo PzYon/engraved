@@ -12,6 +12,7 @@ import { ITransformedEntry } from "./transformation/ITransformedEntry";
 import { JournalType } from "../../../serverApi/JournalType";
 import { format } from "date-fns";
 import { IJournalType } from "../../../journalTypes/IJournalType";
+import { IChartUiProps } from "./IChartProps";
 
 export const createChart = (
   entries: IEntry[],
@@ -24,6 +25,7 @@ export const createChart = (
   ) => void,
   type: ChartType,
   color: string,
+  chartUiProps: IChartUiProps,
 ): ChartProps => {
   switch (type) {
     case "bar":
@@ -34,6 +36,7 @@ export const createChart = (
         toggleAttributeValue,
         groupByTime,
         attributeKey,
+        chartUiProps,
       );
 
     case "line":
@@ -44,10 +47,18 @@ export const createChart = (
         toggleAttributeValue,
         groupByTime,
         attributeKey,
+        chartUiProps,
       );
 
     case "doughnut":
-      return createPieChart(entries, color, journal, groupByTime, attributeKey);
+      return createPieChart(
+        entries,
+        color,
+        journal,
+        groupByTime,
+        attributeKey,
+        chartUiProps,
+      );
 
     default:
       throw new Error(`Chart type '${type}' is not supported.`);
@@ -64,6 +75,7 @@ function createLineChart(
   ) => void,
   groupByTime: GroupByTime,
   attributeKey: string,
+  chartUiProps: IChartUiProps,
 ): ChartProps {
   // hack: for the moment we create a bar chart and then adjust
   // the relevant properties
@@ -74,6 +86,7 @@ function createLineChart(
     toggleAttributeValue,
     groupByTime,
     attributeKey,
+    chartUiProps,
   );
 
   chart.type = "line";
@@ -88,12 +101,14 @@ function createPieChart(
   journal: IJournal,
   groupByTime: GroupByTime,
   attributeKey: string,
+  chartUiProps: IChartUiProps,
 ): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
     entries,
     journal,
     groupByTime,
     attributeKey,
+    chartUiProps,
   );
 
   return {
@@ -146,12 +161,14 @@ function createBarChart(
   ) => void,
   groupByTime: GroupByTime,
   attributeKey: string,
+  chartUiProps: IChartUiProps,
 ): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
     entries,
     journal,
     groupByTime,
     attributeKey,
+    chartUiProps,
   );
 
   const decoratedDataSets = dataSets.map((dataSet, i) => {

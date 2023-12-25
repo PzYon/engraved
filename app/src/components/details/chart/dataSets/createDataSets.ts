@@ -4,17 +4,26 @@ import { GroupByTime } from "../consolidation/GroupByTime";
 import { transform } from "../transformation/transform";
 import { IDataSet } from "./IDataSet";
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
+import { IChartUiProps } from "../IChartProps";
+import { movingAverage } from "./movingAverage";
 
 export function createDataSets(
-  allEntries: IEntry[],
+  entries: IEntry[],
   journal: IJournal,
   groupByTime: GroupByTime,
   attributeKey: string,
+  chartUiProps: IChartUiProps,
 ) {
-  return getEntriesPerAttribute(allEntries, journal.attributes, attributeKey)
+  return getEntriesPerAttribute(entries, journal.attributes, attributeKey)
     .filter((entriesByAttribute) => entriesByAttribute.length)
     .map((entries) =>
-      entriesToDataSet(entries, journal, groupByTime, attributeKey),
+      entriesToDataSet(
+        entries,
+        journal,
+        groupByTime,
+        attributeKey,
+        chartUiProps,
+      ),
     );
 }
 
@@ -23,22 +32,27 @@ function entriesToDataSet(
   journal: IJournal,
   groupByTime: GroupByTime,
   attributeKey: string,
+  chartUiProps: IChartUiProps,
 ): IDataSet {
-  const data = transform(entries, journal, groupByTime);
+  let data = transform(entries, journal, groupByTime);
+
+  if (chartUiProps?.rollingAverage > 0) {
+    data = movingAverage(data, chartUiProps.rollingAverage);
+  }
 
   // todo: we use indexer here to get (only) the first item. what if there's more?
   const valueKey = entries[0]?.journalAttributeValues?.[attributeKey]?.[0];
 
   return {
+    data,
     label: valueKey
       ? journal.attributes[attributeKey].values[valueKey]
       : journal.name,
-    data: data,
   };
 }
 
 function getEntriesPerAttribute(
-  allEntries: IEntry[],
+  entries: IEntry[],
   journalAttributes: IJournalAttributes,
   attributeKey: string,
 ) {
@@ -48,7 +62,7 @@ function getEntriesPerAttribute(
   ];
 
   return allValueKeys.map((valueKey) =>
-    allEntries.filter(filterByAttribute(attributeKey, valueKey)),
+    entries.filter(filterByAttribute(attributeKey, valueKey)),
   );
 }
 
