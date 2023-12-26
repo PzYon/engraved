@@ -31,7 +31,7 @@ export interface IEntriesTableColumnDefinition {
 
   getRawValue?: (entry: IEntry) => number;
 
-  isSummable?: boolean;
+  isAggregatable?: boolean;
 
   doHide?: (journal: IJournal) => boolean;
 

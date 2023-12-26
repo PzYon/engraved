@@ -48,7 +48,7 @@ export const EntriesTableBodyGroup: React.FC<{
         <TableRow>
           {columns.map((c) => (
             <TableCell key={c.key} sx={{ opacity: 0.5 }}>
-              {c.isSummable ? group.totalString : ""}
+              {c.isAggregatable ? group.totalString : ""}
             </TableCell>
           ))}
         </TableRow>

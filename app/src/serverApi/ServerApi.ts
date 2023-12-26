@@ -21,10 +21,10 @@ import { toDateOnlyIsoString } from "../util/utils";
 import { IAttributeSearchResult } from "./IAttributeSearchResult";
 import { IThresholdValues } from "./IThresholdValues";
 import { IJournalThresholds } from "./IJournalThresholds";
-import { IJournalUiSettings } from "../components/details/edit/JournalUiSettings";
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
+import { IJournalUiSettings } from "../components/details/edit/IJournalUiSettings";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 

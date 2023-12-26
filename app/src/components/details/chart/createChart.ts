@@ -148,7 +148,7 @@ function getTooltipTitleFormat(groupByTime: GroupByTime) {
 }
 
 function getTooltipValue(type: IJournalType, value: number): string {
-  return (type.formatTotalValue?.(value) ?? value).toString();
+  return type.formatTotalValue?.(value) ?? value.toFixed(3);
 }
 
 function createBarChart(
@@ -219,7 +219,17 @@ function createBarChart(
                     ...entries
                       .map((x) => journalType.getValue(x))
                       .filter((x) => x !== 0),
-                  ) * 0.95,
+                  ) * 0.985,
+                )
+              : undefined,
+          max:
+            uiSettings?.dynamicScales === true
+              ? Math.round(
+                  Math.max(
+                    ...entries
+                      .map((x) => journalType.getValue(x))
+                      .filter((x) => x !== 0),
+                  ) * 1.015,
                 )
               : undefined,
           stacked: true,
