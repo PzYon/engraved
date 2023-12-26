@@ -194,7 +194,7 @@ export class ActionFactory {
     return {
       key: "groupTotals",
       icon: <FunctionsOutlined fontSize="small" />,
-      label: "Show group total",
+      label: "Show group aggregations",
       onClick: () => setShowGroupTotals(!showGroupTotals),
       isNotActive: !showGroupTotals,
     };

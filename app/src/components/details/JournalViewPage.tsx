@@ -13,7 +13,6 @@ import { EditEntryLauncher } from "./edit/EditEntryLauncher";
 import { DeleteEntryLauncher } from "./edit/DeleteEntryLauncher";
 import { Page } from "../layout/pages/Page";
 import { JournalPageTitle } from "./JournalPageTitle";
-import { IJournalUiSettings } from "./edit/JournalUiSettings";
 import { createDateConditions } from "./filters/createDateConditions";
 import { getDefaultDateConditions } from "./filters/DateFilters";
 import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
@@ -24,6 +23,7 @@ import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
 import { JournalType } from "../../serverApi/JournalType";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { Chart } from "./chart/Chart";
+import { IJournalUiSettings } from "./edit/IJournalUiSettings";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -172,6 +172,10 @@ export const JournalViewPage: React.FC = () => {
               showAddNewEntryRow &&
               (journal.type === JournalType.Gauge ||
                 journal.type === JournalType.Counter)
+            }
+            aggregationMode={
+              uiSettings.aggregationMode ??
+              journalDefaultUiSettings.aggregationMode
             }
           />
         </PageSection>

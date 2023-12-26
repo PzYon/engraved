@@ -74,7 +74,7 @@ export class TimerJournalType implements IJournalType {
       {
         key: "_duration",
         getHeaderReactNode: () => "Duration",
-        isSummable: true,
+        isAggregatable: true,
         getRawValue: (entry: IEntry) => this.getValue(entry),
         getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) => {
           return this.getFormatDuration(entry);

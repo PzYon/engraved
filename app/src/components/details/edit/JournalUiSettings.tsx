@@ -8,23 +8,12 @@ import {
   ShowChartOutlined,
 } from "@mui/icons-material";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
-import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { GridContainer, GridItem } from "../../common/Grid";
 import { DateRangeSelector } from "../filters/DateRangeSelector";
 import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
-import { DateRange } from "../filters/DateRange";
-
-export interface IJournalUiSettings {
-  showGroupTotals?: boolean;
-  chartType?: "line" | "bar" | "doughnut";
-  showChart?: boolean;
-  showThresholds?: boolean;
-  showFilters?: boolean;
-  groupByTime?: GroupByTime;
-  dateRange?: DateRange;
-  dynamicScales?: boolean;
-}
+import { AggregationModeSelector } from "../chart/AggregationModeSelector";
+import { IJournalUiSettings } from "./IJournalUiSettings";
 
 export const JournalUiSettings: React.FC<{
   uiSettings: IJournalUiSettings;
@@ -90,7 +79,7 @@ export const JournalUiSettings: React.FC<{
                 checkedIcon={<FunctionsOutlined />}
               />
             }
-            label="Show group totals by default"
+            label="Show group aggregations by default"
           />
         </GridItem>
         <GridItem>
@@ -136,6 +125,17 @@ export const JournalUiSettings: React.FC<{
             }
             onChange={(chartType) => {
               onChange({ ...uiSettings, chartType });
+            }}
+          />
+        </GridItem>
+        <GridItem>
+          <AggregationModeSelector
+            aggregationMode={
+              uiSettings.aggregationMode ??
+              journalDefaultUiSettings.aggregationMode
+            }
+            onChange={(aggregationMode) => {
+              onChange({ ...uiSettings, aggregationMode });
             }}
           />
         </GridItem>

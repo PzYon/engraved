@@ -14,11 +14,11 @@ export const DateRangeSelector: React.FC<{
 }> = ({ dateRange, onChange }) => {
   return (
     <FormControl margin="none" sx={{ flexGrow: 1, width: "100%" }}>
-      <InputLabel id="date-range-label">Date Range</InputLabel>
+      <InputLabel id="date-range-label">Date range</InputLabel>
       <Select
         id="date-range"
         labelId="date-range-label"
-        label="Date Range"
+        label="Date range"
         value={dateRange as unknown as string}
         onChange={(event: SelectChangeEvent) => {
           onChange(event.target.value as unknown as DateRange);

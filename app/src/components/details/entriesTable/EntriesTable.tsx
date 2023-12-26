@@ -28,13 +28,21 @@ import { AddEntryTableRow } from "./addEntry/AddEntryTableRow";
 import { AddEntryTableCell } from "./addEntry/AddEntryTableCell";
 import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { AggregationMode } from "../edit/IJournalUiSettings";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
   entries: IEntry[];
   showGroupTotals: boolean;
   showAddNewEntryRow: boolean;
-}> = ({ journal, entries, showGroupTotals, showAddNewEntryRow }) => {
+  aggregationMode: AggregationMode;
+}> = ({
+  journal,
+  entries,
+  showGroupTotals,
+  showAddNewEntryRow,
+  aggregationMode,
+}) => {
   const type = useMemo(
     () => JournalTypeFactory.create(journal.type),
     [journal?.type],
@@ -42,7 +50,7 @@ export const EntriesTable: React.FC<{
 
   const [collapseAll, setCollapseAll] = useState<boolean>(false);
 
-  const columns = useMemo(() => {
+  const columns = useMemo<IEntriesTableColumnDefinition[]>(() => {
     return [
       ...getColumnsBefore(journal, collapseAll, () =>
         setCollapseAll(!collapseAll),
@@ -108,12 +116,12 @@ export const EntriesTable: React.FC<{
           />
         ))}
       </TableBody>
-      {entries.length && columns.filter((c) => c.isSummable).length ? (
+      {entries.length && columns.filter((c) => c.isAggregatable).length ? (
         <TableFooter>
           <StyledTableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
-                {getTotalValue(c, tableGroups, type)}
+                {getTotalValue(c, tableGroups, type, aggregationMode)}
               </TableCell>
             ))}
           </StyledTableRow>
@@ -306,8 +314,9 @@ function getTotalValue(
   columnDefinition: IEntriesTableColumnDefinition,
   tableGroups: IEntriesTableGroup[],
   type: IJournalType,
+  aggregationMode: AggregationMode,
 ) {
-  if (!columnDefinition.isSummable) {
+  if (!columnDefinition.isAggregatable) {
     return null;
   }
 
@@ -315,5 +324,19 @@ function getTotalValue(
     .map((g) => g.totalValue)
     .reduce((total, current) => total + current, 0);
 
-  return type.formatTotalValue?.(totalValue) ?? totalValue;
+  if (aggregationMode === "sum") {
+    return type.formatTotalValue?.(totalValue) ?? totalValue;
+  }
+
+  if (aggregationMode === "average") {
+    const totalNumberOfEntries = tableGroups.flatMap((g) => g.entries).length;
+    if (!totalNumberOfEntries) {
+      return "";
+    }
+
+    const avg = totalValue / totalNumberOfEntries;
+    return type.formatTotalValue?.(avg) ?? avg;
+  }
+
+  throw new Error(`Aggregation mode "${aggregationMode}" is not supported.`);
 }

@@ -13,7 +13,7 @@ export const Chart: React.FC<IChartProps> = (props: IChartProps) => {
         chartUiProps={{ rollingAverage: rollingAverageGroupSize * 2 + 1 }}
       />
       <ActionsContainer>
-        <Typography fontSize="small" sx={{ pr: 1 }}>
+        <Typography fontSize="small" sx={{ pr: 2 }}>
           Moving avg.:
         </Typography>
         <Slider
