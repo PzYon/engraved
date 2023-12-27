@@ -9,6 +9,11 @@ export const ThemeAndStylesProvider: React.FC<{
   <ThemeProvider theme={engravedTheme}>
     <GlobalStyles
       styles={{
+        "::selection": {
+          backgroundColor: engravedTheme.palette.primary.light + " !important",
+          color: "white !important",
+        },
+
         html: {
           background: engravedTheme.palette.background.default,
         },

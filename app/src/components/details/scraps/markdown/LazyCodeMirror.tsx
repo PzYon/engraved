@@ -41,6 +41,9 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
           backgroundColor: theme.palette.common.white,
           padding: theme.spacing(2),
         },
+        ".cm-layer.cm-selectionLayer .cm-selectionBackground": {
+          backgroundColor: theme.palette.primary.main,
+        },
         "&.cm-editor.cm-focused": {
           outline: showOutlineWhenFocused
             ? `2px solid ${theme.palette.primary.main}`
