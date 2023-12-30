@@ -8,16 +8,18 @@ export function searchJournalAttributes(
 ): IAttributeSearchResult[] {
   const results: IAttributeSearchResult[] = [];
 
-  for (const attributeKey of Object.keys(attributes)) {
-    const attribute: IJournalAttribute = attributes[attributeKey];
+  for (const term of searchText.split(" ")) {
+    for (const attributeKey of Object.keys(attributes)) {
+      const attribute: IJournalAttribute = attributes[attributeKey];
 
-    for (const valueKey of Object.keys(attribute.values)) {
-      if (attribute.values[valueKey].toLowerCase().includes(searchText)) {
-        results.push({
-          values: { [attributeKey]: [valueKey] },
-          score: 123,
-          occurrenceCount: 123,
-        });
+      for (const valueKey of Object.keys(attribute.values)) {
+        if (attribute.values[valueKey].toLowerCase().includes(term)) {
+          results.push({
+            values: { [attributeKey]: [valueKey] },
+            score: 123,
+            occurrenceCount: 123,
+          });
+        }
       }
     }
   }
