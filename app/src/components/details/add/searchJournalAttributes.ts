@@ -14,11 +14,14 @@ export function searchJournalAttributes(
 
       for (const valueKey of Object.keys(attribute.values)) {
         if (attribute.values[valueKey].toLowerCase().includes(term)) {
-          results.push({
-            values: { [attributeKey]: [valueKey] },
-            score: 123,
-            occurrenceCount: 123,
-          });
+          if (
+            !results.find((r) => r.values[attributeKey]?.indexOf(valueKey) > -1)
+          )
+            results.push({
+              values: { [attributeKey]: [valueKey] },
+              score: undefined,
+              occurrenceCount: undefined,
+            });
         }
       }
     }

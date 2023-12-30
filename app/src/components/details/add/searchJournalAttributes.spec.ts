@@ -61,7 +61,7 @@ describe("searchJournalAttributes", () => {
     expect(searchResults[1].values.status[0]).toBe("dead");
   });
 
-  it("returns matches for two term search from one attribute", () => {
+  it("returns (distinct) matches for two term search from one attribute", () => {
     const attributes: IJournalAttributes = {
       country: {
         name: "Land",
@@ -80,10 +80,10 @@ describe("searchJournalAttributes", () => {
 
     expect(searchResults.length).toBe(3);
     expect(Object.keys(searchResults[0].values).length).toBe(1);
-    expect(searchResults[0].values.color[0]).toBe("X");
+    expect(searchResults[0].values.country[0]).toBe("ch");
     expect(Object.keys(searchResults[1].values).length).toBe(1);
-    expect(searchResults[1].values.color[0]).toBe("X");
+    expect(searchResults[1].values.country[0]).toBe("de");
     expect(Object.keys(searchResults[2].values).length).toBe(1);
-    expect(searchResults[2].values.color[0]).toBe("X");
+    expect(searchResults[2].values.country[0]).toBe("us");
   });
 });
