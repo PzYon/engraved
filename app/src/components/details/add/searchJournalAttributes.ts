@@ -12,11 +12,9 @@ export function searchJournalAttributes(
     const attribute: IJournalAttribute = attributes[attributeKey];
 
     for (const valueKey of Object.keys(attribute.values)) {
-      console.log(`${attributeKey}.${valueKey}: ${attribute.values[valueKey]}`);
-
       if (attribute.values[valueKey].toLowerCase().includes(searchText)) {
         results.push({
-          values: { [attributeKey]: [attribute.values[valueKey]] },
+          values: { [attributeKey]: [valueKey] },
           score: 123,
           occurrenceCount: 123,
         });
