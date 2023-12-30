@@ -52,8 +52,8 @@ export const AttributeComboSearch: React.FC<{
                 fontSize: "small",
                 height: "22px",
               }}
-              title={searchResult.occurrenceCount.toString() + "x"}
-              label={searchResult.occurrenceCount.toString() + "x"}
+              title={searchResult.occurrenceCount?.toString() + "x"}
+              label={searchResult.occurrenceCount?.toString() + "x"}
             />
           </MenuItem>
         );
