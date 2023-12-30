@@ -17,11 +17,7 @@ export function searchJournalAttributes(
           if (
             !results.find((r) => r.values[attributeKey]?.indexOf(valueKey) > -1)
           )
-            results.push({
-              values: { [attributeKey]: [valueKey] },
-              score: undefined,
-              occurrenceCount: undefined,
-            });
+            results.push({ values: { [attributeKey]: [valueKey] } });
         }
       }
     }
