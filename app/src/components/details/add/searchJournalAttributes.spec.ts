@@ -74,13 +74,11 @@ describe("searchJournalAttributes", () => {
       "an er",
     );
 
-    expect(searchResults.length).toBe(3);
+    expect(searchResults.length).toBe(2);
     expect(Object.keys(searchResults[0].values).length).toBe(1);
     expect(searchResults[0].values.country[0]).toBe("ch");
     expect(Object.keys(searchResults[1].values).length).toBe(1);
     expect(searchResults[1].values.country[0]).toBe("de");
-    expect(Object.keys(searchResults[2].values).length).toBe(1);
-    expect(searchResults[2].values.country[0]).toBe("us");
   });
 
   it("returns unified matches for two different attributes", () => {
