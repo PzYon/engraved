@@ -16,38 +16,25 @@ export function extractTerms(searchText: string) {
   return searchText.split(" ").filter((t) => !!t);
 }
 
-function transformMatchToResults(allMatches: AttributeSearchMatch[]) {
-  return allMatches.reduce((acc: SearchResult[], match) => {
-    const result = SearchResult.createFromMatch(match);
-    acc.push(result);
-
-    for (const subMatch of allMatches.filter(
-      (m) => m.attributeKey !== match.attributeKey,
-    )) {
-      result.addMatch(subMatch);
-    }
-
-    return acc;
-  }, []);
-}
-
 export function searchJournalAttributes(
   attributes: IJournalAttributes,
   searchText: string,
 ): IAttributeSearchResult[] {
   const searchTerms = extractTerms(searchText);
 
-  const allMatches: AttributeSearchMatch[] = getAllMatches(
+  const allMatches: AttributeSearchMatch[] = getAllBasicMatches(
     attributes,
     searchTerms,
   );
 
-  const results = transformMatchToResults(allMatches);
+  const results = allMatches.map((m) =>
+    SearchResult.createFromMatch(m, allMatches),
+  );
 
   return filterIncompleteAndDuplicates(results, attributes, searchTerms);
 }
 
-function getAllMatches(
+function getAllBasicMatches(
   attributes: IJournalAttributes,
   searchTerms: string[],
 ): AttributeSearchMatch[] {

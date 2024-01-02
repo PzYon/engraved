@@ -33,10 +33,20 @@ export class SearchResult implements IAttributeSearchResult {
     this.values[match.attributeKey] = [match.valueKey];
   }
 
-  static createFromMatch(match: AttributeSearchMatch): SearchResult {
+  static createFromMatch(
+    match: AttributeSearchMatch,
+    allMatches: AttributeSearchMatch[],
+  ): SearchResult {
     const foo = new SearchResult();
     foo.values[match.attributeKey] = [match.valueKey];
     foo.matches.push(match);
+
+    for (const subMatch of allMatches.filter(
+      (m) => m.attributeKey !== match.attributeKey,
+    )) {
+      foo.addMatch(subMatch);
+    }
+
     return foo;
   }
 
