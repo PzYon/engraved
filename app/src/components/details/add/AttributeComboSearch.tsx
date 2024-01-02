@@ -4,7 +4,7 @@ import { Autocomplete, Chip, MenuItem, TextField } from "@mui/material";
 import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResult";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IJournal } from "../../../serverApi/IJournal";
-import { searchJournalAttributes } from "./searchAttributes/searchJournalAttributes";
+import { ServerApi } from "../../../serverApi/ServerApi";
 
 let timer: number;
 
@@ -83,12 +83,12 @@ export const AttributeComboSearch: React.FC<{
     timer = window.setTimeout(() => {
       lastLoadedSearchText = searchText;
 
-      const values = searchJournalAttributes(journal.attributes, searchText);
-      setOptions(values);
+      // const values = searchJournalAttributes(journal.attributes, searchText);
+      // setOptions(values);
 
-      // ServerApi.searchJournalAttributes(journal.id, searchText).then(
-      //   setOptions,
-      // );
+      ServerApi.searchJournalAttributes(journal.id, searchText).then(
+        setOptions,
+      );
     }, 300);
   }
 };
