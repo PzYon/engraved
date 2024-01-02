@@ -1,6 +1,5 @@
 import { IAttributeSearchResult } from "../../../../serverApi/IAttributeSearchResult";
-import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
-import { AttributeSearchMatch, doesMatch } from "./searchJournalAttributes";
+import { AttributeSearchMatch } from "./searchJournalAttributes";
 
 export class SearchResult implements IAttributeSearchResult {
   readonly values: Record<string, string[]> = {};
@@ -24,29 +23,12 @@ export class SearchResult implements IAttributeSearchResult {
     return result;
   }
 
-  getHashCode(): string {
-    return Object.keys(this.values)
-      .flatMap((key) => `${key}:${this.values[key][0]}`)
-      .sort()
-      .join(";");
-  }
-
-  doesContainAllTerms(attributes: IJournalAttributes, ...terms: string[]) {
+  doesContainAllTerms(...terms: string[]) {
     for (const term of terms) {
-      let hasMatchForTerm = false;
-      for (const attributeKey of Object.keys(this.values)) {
-        for (const valueKey of this.values[attributeKey]) {
-          if (doesMatch(attributes[attributeKey].values[valueKey], term)) {
-            hasMatchForTerm = true;
-          }
-        }
-      }
-
-      if (!hasMatchForTerm) {
+      if (!this.hasMatchForTerm(term)) {
         return false;
       }
     }
-
     return true;
   }
 
@@ -57,14 +39,19 @@ export class SearchResult implements IAttributeSearchResult {
   }
 
   addMatch(match: AttributeSearchMatch) {
-    for (const matchingTerm of match.matchingTerms) {
-      if (this.hasMatchForTerm(matchingTerm)) {
-        return;
-      }
+    if (this.doesContainAllTerms(...match.matchingTerms)) {
+      return;
     }
 
     this.matches.push(match);
     this.values[match.attributeKey] = [match.valueKey];
+  }
+
+  getHashCode(): string {
+    return Object.keys(this.values)
+      .flatMap((key) => `${key}:${this.values[key][0]}`)
+      .sort()
+      .join(";");
   }
 
   private hasMatchForTerm(term: string) {

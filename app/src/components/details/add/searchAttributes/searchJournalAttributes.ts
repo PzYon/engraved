@@ -9,6 +9,10 @@ export type AttributeSearchMatch = {
 };
 
 export function doesMatch(text: string, searchTerm: string) {
+  if (!searchTerm) {
+    return false;
+  }
+
   return text.toLowerCase().includes(searchTerm.toLowerCase());
 }
 
@@ -29,7 +33,7 @@ export function searchJournalAttributes(
 
   const results = allMatches.map((m) => SearchResult.create(m, allMatches));
 
-  return filterIncompleteAndDuplicates(results, attributes, searchTerms);
+  return filterIncompleteAndDuplicates(results, searchTerms);
 }
 
 function getAllBasicMatches(
@@ -63,7 +67,6 @@ function getAllBasicMatches(
 
 function filterIncompleteAndDuplicates(
   results: SearchResult[],
-  attributes: IJournalAttributes,
   searchTerms: string[],
 ) {
   return results.reduce(
@@ -78,7 +81,7 @@ function filterIncompleteAndDuplicates(
 
       if (
         acc.hashCodes.indexOf(hashCode) === -1 &&
-        result.doesContainAllTerms(attributes, ...searchTerms)
+        result.doesContainAllTerms(...searchTerms)
       ) {
         acc.results.push(result);
         acc.hashCodes.push(hashCode);
