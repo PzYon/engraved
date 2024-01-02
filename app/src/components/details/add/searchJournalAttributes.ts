@@ -8,7 +8,7 @@ export type AttributeSearchMatch = {
   matchingTerms: string[];
 };
 
-export function searchJournalAttributesNewest(
+export function searchJournalAttributes(
   attributes: IJournalAttributes,
   searchText: string,
 ): IAttributeSearchResult[] {
@@ -36,21 +36,38 @@ export function searchJournalAttributesNewest(
     }
   }
 
-  /*
-  const results: IAttributeSearchResult[] = [];
+  const results: SearchResult[] = [];
 
   for (const match of allMatches) {
-    for (const searchTerm of searchTerms) {
-      if (match.matchingTerms.indexOf(searchTerm) > -1) {
-      }
+    const result = SearchResult.createFromMatch(match);
+    results.push(result);
 
-      const allMatchesWithoutCurrentTerm = allMatches.filter(
-        (m) => m.matchingTerms.indexOf(searchTerm) === -1,
-      );
+    for (const innerMatch of allMatches.filter(
+      (m) => m.attributeKey !== match.attributeKey,
+    )) {
+      result.addMatch(innerMatch);
     }
   }
-*/
-  return allMatches.map((m) => SearchResult.create(m.attributeKey, m.valueKey));
+
+  const finalResults: IAttributeSearchResult[] = [];
+  const finalResultHashes: string[] = [];
+
+  for (const result of results) {
+    if (!result.doesContainAllTerms(attributes, ...searchTerms)) {
+      continue;
+    }
+
+    const hashCode = result.getHashCode();
+
+    if (finalResultHashes.indexOf(hashCode) > -1) {
+      continue;
+    }
+
+    finalResults.push(result);
+    finalResultHashes.push(hashCode);
+  }
+
+  return finalResults;
 }
 
 export function searchJournalAttributesNew(
@@ -118,7 +135,7 @@ function doesMatch(text: string, searchTerm: string) {
   return text.toLowerCase().includes(searchTerm.toLowerCase());
 }
 
-export function searchJournalAttributes(
+export function searchJournalAttributesX(
   attributes: IJournalAttributes,
   searchText: string,
 ): IAttributeSearchResult[] {
@@ -157,13 +174,40 @@ export function searchJournalAttributes(
 }
 
 export class SearchResult implements IAttributeSearchResult {
-  values: Record<string, string[]>;
+  readonly values: Record<string, string[]> = {};
   occurrenceCount?: number;
   score?: number;
+  private matches: AttributeSearchMatch[] = [];
+
+  getHashCode(): string {
+    return Object.keys(this.values)
+      .flatMap((key) => `${key}:${this.values[key][0]}`)
+      .sort()
+      .join(";");
+  }
+
+  doesMatch(searchTerm: string): boolean {
+    return (
+      this.matches.filter((m) => m.matchingTerms.indexOf(searchTerm) > -1)
+        .length > 0
+    );
+  }
+
+  addMatch(match: AttributeSearchMatch) {
+    this.matches.push(match);
+    this.values[match.attributeKey] = [match.valueKey];
+  }
+
+  static createFromMatch(match: AttributeSearchMatch): SearchResult {
+    const foo = new SearchResult();
+    foo.values[match.attributeKey] = [match.valueKey];
+    foo.matches.push(match);
+    return foo;
+  }
 
   static create(attributeKey: string, valueKey: string): SearchResult {
     const foo = new SearchResult();
-    foo.values = { [attributeKey]: [valueKey] };
+    foo.values[attributeKey] = [valueKey];
     return foo;
   }
 
