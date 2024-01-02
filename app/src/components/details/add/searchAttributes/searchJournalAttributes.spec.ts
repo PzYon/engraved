@@ -1,8 +1,18 @@
-import { searchJournalAttributes } from "./searchJournalAttributes";
+import {
+  extractTerms,
+  searchJournalAttributes,
+} from "./searchJournalAttributes";
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
 import { IAttributeSearchResult } from "../../../../serverApi/IAttributeSearchResult";
 
 describe("searchJournalAttributes", () => {
+  it("sanitizes search terms", () => {
+    const terms = extractTerms("do    re    mi");
+    expect(terms[0]).toBe("do");
+    expect(terms[1]).toBe("re");
+    expect(terms[2]).toBe("mi");
+  });
+
   it("returns matches for one term search from one attribute", () => {
     const attributes: IJournalAttributes = {
       color: {

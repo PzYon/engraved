@@ -23,6 +23,12 @@ export class SearchResult implements IAttributeSearchResult {
   }
 
   addMatch(match: AttributeSearchMatch) {
+    for (const matchingTerm of match.matchingTerms) {
+      if (this.doesMatch(matchingTerm)) {
+        return;
+      }
+    }
+
     this.matches.push(match);
     this.values[match.attributeKey] = [match.valueKey];
   }

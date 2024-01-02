@@ -12,13 +12,42 @@ export function doesMatch(text: string, searchTerm: string) {
   return text.toLowerCase().includes(searchTerm.toLowerCase());
 }
 
+export function extractTerms(searchText: string) {
+  return searchText.split(" ").filter((t) => !!t);
+}
+
 export function searchJournalAttributes(
   attributes: IJournalAttributes,
   searchText: string,
 ): IAttributeSearchResult[] {
-  const allMatches: AttributeSearchMatch[] = [];
+  const searchTerms = extractTerms(searchText);
 
-  const searchTerms = searchText.split(" ");
+  const allMatches: AttributeSearchMatch[] = getAllMatches(
+    attributes,
+    searchTerms,
+  );
+
+  const results: SearchResult[] = [];
+
+  for (const match of allMatches) {
+    const result = SearchResult.createFromMatch(match);
+    results.push(result);
+
+    for (const subMatch of allMatches.filter(
+      (m) => m.attributeKey !== match.attributeKey,
+    )) {
+      result.addMatch(subMatch);
+    }
+  }
+
+  return filterIrgendoepis(results, attributes, searchTerms);
+}
+
+function getAllMatches(
+  attributes: IJournalAttributes,
+  searchTerms: string[],
+): AttributeSearchMatch[] {
+  const matches: AttributeSearchMatch[] = [];
 
   for (const attributeKey of Object.keys(attributes)) {
     for (const valueKey of Object.keys(attributes[attributeKey].values)) {
@@ -35,45 +64,29 @@ export function searchJournalAttributes(
       }
 
       if (match.matchingTerms.length) {
-        allMatches.push(match);
+        matches.push(match);
       }
     }
   }
 
-  const results: SearchResult[] = [];
+  return matches;
+}
 
-  for (const match of allMatches) {
-    const result = SearchResult.createFromMatch(match);
-    results.push(result);
-
-    for (const innerMatch of allMatches.filter(
-      (m) => m.attributeKey !== match.attributeKey,
-    )) {
-      let doesNotMatch = true;
-
-      for (const matchingTerm of innerMatch.matchingTerms) {
-        if (result.doesMatch(matchingTerm)) {
-          doesNotMatch = false;
-        }
-      }
-
-      if (doesNotMatch) {
-        result.addMatch(innerMatch);
-      }
-    }
-  }
-
+function filterIrgendoepis(
+  results: SearchResult[],
+  attributes: IJournalAttributes,
+  searchTerms: string[],
+) {
   const finalResults: IAttributeSearchResult[] = [];
   const finalResultHashes: string[] = [];
 
   for (const result of results) {
-    if (!result.doesContainAllTerms(attributes, ...searchTerms)) {
-      continue;
-    }
-
     const hashCode = result.getHashCode();
 
-    if (finalResultHashes.indexOf(hashCode) > -1) {
+    if (
+      finalResultHashes.indexOf(hashCode) > -1 ||
+      !result.doesContainAllTerms(attributes, ...searchTerms)
+    ) {
       continue;
     }
 
