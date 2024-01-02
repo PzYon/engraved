@@ -45,7 +45,17 @@ export function searchJournalAttributes(
     for (const innerMatch of allMatches.filter(
       (m) => m.attributeKey !== match.attributeKey,
     )) {
-      result.addMatch(innerMatch);
+      let doesNotMatch = true;
+
+      for (const matchingTerm of innerMatch.matchingTerms) {
+        if (result.doesMatch(matchingTerm)) {
+          doesNotMatch = false;
+        }
+      }
+
+      if (doesNotMatch) {
+        result.addMatch(innerMatch);
+      }
     }
   }
 
