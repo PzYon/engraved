@@ -2,6 +2,57 @@ import { IJournalAttributes } from "../../../serverApi/IJournalAttributes";
 import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResult";
 import { IJournalAttribute } from "../../../serverApi/IJournalAttribute";
 
+export type AttributeSearchMatch = {
+  attributeKey: string;
+  valueKey: string;
+  matchingTerms: string[];
+};
+
+export function searchJournalAttributesNewest(
+  attributes: IJournalAttributes,
+  searchText: string,
+): IAttributeSearchResult[] {
+  const allMatches: AttributeSearchMatch[] = [];
+
+  const searchTerms = searchText.split(" ");
+
+  for (const attributeKey of Object.keys(attributes)) {
+    for (const valueKey of Object.keys(attributes[attributeKey].values)) {
+      const match: AttributeSearchMatch = {
+        attributeKey: attributeKey,
+        valueKey: valueKey,
+        matchingTerms: [],
+      };
+
+      for (const searchTerm of searchTerms) {
+        if (doesMatch(attributes[attributeKey].values[valueKey], searchTerm)) {
+          match.matchingTerms.push(searchTerm);
+        }
+      }
+
+      if (match.matchingTerms.length) {
+        allMatches.push(match);
+      }
+    }
+  }
+
+  /*
+  const results: IAttributeSearchResult[] = [];
+
+  for (const match of allMatches) {
+    for (const searchTerm of searchTerms) {
+      if (match.matchingTerms.indexOf(searchTerm) > -1) {
+      }
+
+      const allMatchesWithoutCurrentTerm = allMatches.filter(
+        (m) => m.matchingTerms.indexOf(searchTerm) === -1,
+      );
+    }
+  }
+*/
+  return allMatches.map((m) => SearchResult.create(m.attributeKey, m.valueKey));
+}
+
 export function searchJournalAttributesNew(
   attributes: IJournalAttributes,
   searchText: string,
