@@ -84,12 +84,7 @@ export const AttributeComboSearch: React.FC<{
       lastLoadedSearchText = searchText;
 
       const values = searchJournalAttributes(journal.attributes, searchText);
-
       setOptions(values);
-
-      // ServerApi.searchJournalAttributes(journal.id, searchText).then(
-      //   setOptions,
-      // );
     }, 300);
   }
 };

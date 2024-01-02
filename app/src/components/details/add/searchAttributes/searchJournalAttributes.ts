@@ -16,6 +16,21 @@ export function extractTerms(searchText: string) {
   return searchText.split(" ").filter((t) => !!t);
 }
 
+function transformMatchToResults(allMatches: AttributeSearchMatch[]) {
+  return allMatches.reduce((acc: SearchResult[], match) => {
+    const result = SearchResult.createFromMatch(match);
+    acc.push(result);
+
+    for (const subMatch of allMatches.filter(
+      (m) => m.attributeKey !== match.attributeKey,
+    )) {
+      result.addMatch(subMatch);
+    }
+
+    return acc;
+  }, []);
+}
+
 export function searchJournalAttributes(
   attributes: IJournalAttributes,
   searchText: string,
@@ -27,20 +42,9 @@ export function searchJournalAttributes(
     searchTerms,
   );
 
-  const results: SearchResult[] = [];
+  const results = transformMatchToResults(allMatches);
 
-  for (const match of allMatches) {
-    const result = SearchResult.createFromMatch(match);
-    results.push(result);
-
-    for (const subMatch of allMatches.filter(
-      (m) => m.attributeKey !== match.attributeKey,
-    )) {
-      result.addMatch(subMatch);
-    }
-  }
-
-  return filterIrgendoepis(results, attributes, searchTerms);
+  return filterIncompleteAndDuplicates(results, attributes, searchTerms);
 }
 
 function getAllMatches(
@@ -72,27 +76,34 @@ function getAllMatches(
   return matches;
 }
 
-function filterIrgendoepis(
+function filterIncompleteAndDuplicates(
   results: SearchResult[],
   attributes: IJournalAttributes,
   searchTerms: string[],
 ) {
-  const finalResults: IAttributeSearchResult[] = [];
-  const finalResultHashes: string[] = [];
+  return results.reduce(
+    (
+      acc: {
+        hashCodes: string[];
+        results: SearchResult[];
+      },
+      result: SearchResult,
+    ) => {
+      const hashCode = result.getHashCode();
 
-  for (const result of results) {
-    const hashCode = result.getHashCode();
+      if (
+        acc.hashCodes.indexOf(hashCode) === -1 &&
+        result.doesContainAllTerms(attributes, ...searchTerms)
+      ) {
+        acc.results.push(result);
+        acc.hashCodes.push(hashCode);
+      }
 
-    if (
-      finalResultHashes.indexOf(hashCode) > -1 ||
-      !result.doesContainAllTerms(attributes, ...searchTerms)
-    ) {
-      continue;
-    }
-
-    finalResults.push(result);
-    finalResultHashes.push(hashCode);
-  }
-
-  return finalResults;
+      return acc;
+    },
+    {
+      results: [],
+      hashCodes: [],
+    },
+  ).results;
 }
