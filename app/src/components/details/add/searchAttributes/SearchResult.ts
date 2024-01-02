@@ -4,50 +4,31 @@ import { AttributeSearchMatch, doesMatch } from "./searchJournalAttributes";
 
 export class SearchResult implements IAttributeSearchResult {
   readonly values: Record<string, string[]> = {};
+
+  // todo: can be deleted after getting rid of server side stuff
   occurrenceCount?: number;
   score?: number;
-  private matches: AttributeSearchMatch[] = [];
+
+  private readonly matches: AttributeSearchMatch[] = [];
+
+  static create(
+    match: AttributeSearchMatch,
+    allMatches: AttributeSearchMatch[],
+  ): SearchResult {
+    const result = new SearchResult();
+    result.addMatch(match);
+    result.addMatches(
+      ...allMatches.filter((m) => m.attributeKey !== match.attributeKey),
+    );
+
+    return result;
+  }
 
   getHashCode(): string {
     return Object.keys(this.values)
       .flatMap((key) => `${key}:${this.values[key][0]}`)
       .sort()
       .join(";");
-  }
-
-  doesMatch(searchTerm: string): boolean {
-    return (
-      this.matches.filter((m) => m.matchingTerms.indexOf(searchTerm) > -1)
-        .length > 0
-    );
-  }
-
-  addMatch(match: AttributeSearchMatch) {
-    for (const matchingTerm of match.matchingTerms) {
-      if (this.doesMatch(matchingTerm)) {
-        return;
-      }
-    }
-
-    this.matches.push(match);
-    this.values[match.attributeKey] = [match.valueKey];
-  }
-
-  static createFromMatch(
-    match: AttributeSearchMatch,
-    allMatches: AttributeSearchMatch[],
-  ): SearchResult {
-    const foo = new SearchResult();
-    foo.values[match.attributeKey] = [match.valueKey];
-    foo.matches.push(match);
-
-    for (const subMatch of allMatches.filter(
-      (m) => m.attributeKey !== match.attributeKey,
-    )) {
-      foo.addMatch(subMatch);
-    }
-
-    return foo;
   }
 
   doesContainAllTerms(attributes: IJournalAttributes, ...terms: string[]) {
@@ -67,5 +48,28 @@ export class SearchResult implements IAttributeSearchResult {
     }
 
     return true;
+  }
+
+  addMatches(...matches: AttributeSearchMatch[]) {
+    for (const match of matches) {
+      this.addMatch(match);
+    }
+  }
+
+  addMatch(match: AttributeSearchMatch) {
+    for (const matchingTerm of match.matchingTerms) {
+      if (this.hasMatchForTerm(matchingTerm)) {
+        return;
+      }
+    }
+
+    this.matches.push(match);
+    this.values[match.attributeKey] = [match.valueKey];
+  }
+
+  private hasMatchForTerm(term: string) {
+    return (
+      this.matches.filter((m) => m.matchingTerms.indexOf(term) > -1).length > 0
+    );
   }
 }

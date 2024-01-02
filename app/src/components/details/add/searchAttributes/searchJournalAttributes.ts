@@ -27,9 +27,7 @@ export function searchJournalAttributes(
     searchTerms,
   );
 
-  const results = allMatches.map((m) =>
-    SearchResult.createFromMatch(m, allMatches),
-  );
+  const results = allMatches.map((m) => SearchResult.create(m, allMatches));
 
   return filterIncompleteAndDuplicates(results, attributes, searchTerms);
 }
