@@ -4,7 +4,7 @@ import { Autocomplete, Chip, MenuItem, TextField } from "@mui/material";
 import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResult";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IJournal } from "../../../serverApi/IJournal";
-import { searchJournalAttributes } from "./searchJournalAttributes";
+import { searchJournalAttributes } from "./searchAttributes/searchJournalAttributes";
 
 let timer: number;
 

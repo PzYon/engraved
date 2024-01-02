@@ -1,6 +1,6 @@
 import { searchJournalAttributes } from "./searchJournalAttributes";
-import { IJournalAttributes } from "../../../serverApi/IJournalAttributes";
-import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResult";
+import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
+import { IAttributeSearchResult } from "../../../../serverApi/IAttributeSearchResult";
 
 describe("searchJournalAttributes", () => {
   it("returns matches for one term search from one attribute", () => {
