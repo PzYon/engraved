@@ -1,4 +1,5 @@
 import {
+  doesMatch,
   extractTerms,
   searchJournalAttributes,
 } from "./searchJournalAttributes";
@@ -11,6 +12,22 @@ describe("searchJournalAttributes", () => {
     expect(terms[0]).toBe("do");
     expect(terms[1]).toBe("re");
     expect(terms[2]).toBe("mi");
+  });
+
+  it("does match ignoring case", () => {
+    expect(doesMatch("MaX", "max")).toBe(true);
+  });
+
+  it("does match substring (end)", () => {
+    expect(doesMatch("chief", "ief")).toBe(true);
+  });
+
+  it("does match substring (end)", () => {
+    expect(doesMatch("chief", "chi")).toBe(true);
+  });
+
+  it("does match whole string", () => {
+    expect(doesMatch("chief", "chief")).toBe(true);
   });
 
   it("returns matches for one term search from one attribute", () => {

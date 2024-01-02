@@ -9,15 +9,13 @@ export type AttributeSearchMatch = {
 };
 
 export function doesMatch(text: string, searchTerm: string) {
-  if (!searchTerm) {
-    return false;
-  }
-
-  return text.toLowerCase().includes(searchTerm.toLowerCase());
+  return searchTerm
+    ? text.toLowerCase().includes(searchTerm.toLowerCase())
+    : false;
 }
 
 export function extractTerms(searchText: string) {
-  return searchText.split(" ").filter((t) => !!t);
+  return (searchText ?? "").split(" ").filter((t) => !!t);
 }
 
 export function searchJournalAttributes(
