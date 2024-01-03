@@ -190,7 +190,7 @@ function createBarChart(
     type: "bar",
     options: {
       onClick: (_: ChartEvent, elements: ActiveElement[]) => {
-        if (!attributeKey) {
+        if (!attributeKey || !elements.length) {
           return;
         }
 
