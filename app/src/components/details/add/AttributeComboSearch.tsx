@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeValues";
 import { Autocomplete, Chip, MenuItem, TextField } from "@mui/material";
 import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResult";
-import { ServerApi } from "../../../serverApi/ServerApi";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IJournal } from "../../../serverApi/IJournal";
+import { ServerApi } from "../../../serverApi/ServerApi";
 
 let timer: number;
 
@@ -52,8 +52,8 @@ export const AttributeComboSearch: React.FC<{
                 fontSize: "small",
                 height: "22px",
               }}
-              title={searchResult.occurrenceCount.toString() + "x"}
-              label={searchResult.occurrenceCount.toString() + "x"}
+              title={searchResult.occurrenceCount?.toString() + "x"}
+              label={searchResult.occurrenceCount?.toString() + "x"}
             />
           </MenuItem>
         );
@@ -82,6 +82,10 @@ export const AttributeComboSearch: React.FC<{
 
     timer = window.setTimeout(() => {
       lastLoadedSearchText = searchText;
+
+      // const values = searchJournalAttributes(journal.attributes, searchText);
+      // setOptions(values);
+
       ServerApi.searchJournalAttributes(journal.id, searchText).then(
         setOptions,
       );
