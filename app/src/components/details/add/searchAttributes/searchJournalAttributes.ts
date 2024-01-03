@@ -1,12 +1,12 @@
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
 import { IAttributeSearchResult } from "../../../../serverApi/IAttributeSearchResult";
-import { SearchResult } from "./SearchResult";
+import { AttributeSearchResult } from "./AttributeSearchResult";
 
-export type AttributeSearchMatch = {
+export interface IAttributeSearchMatch {
   attributeKey: string;
   valueKey: string;
   matchingTerms: string[];
-};
+}
 
 export function doesMatch(text: string, searchTerm: string) {
   return searchTerm
@@ -24,12 +24,14 @@ export function searchJournalAttributes(
 ): IAttributeSearchResult[] {
   const searchTerms = extractTerms(searchText);
 
-  const allMatches: AttributeSearchMatch[] = getAllBasicMatches(
+  const allMatches: IAttributeSearchMatch[] = getAllBasicMatches(
     attributes,
     searchTerms,
   );
 
-  const results = allMatches.map((m) => SearchResult.create(m, allMatches));
+  const results = allMatches.map((m) =>
+    AttributeSearchResult.create(m, allMatches),
+  );
 
   return filterIncompleteAndDuplicates(results, searchTerms);
 }
@@ -37,12 +39,12 @@ export function searchJournalAttributes(
 function getAllBasicMatches(
   attributes: IJournalAttributes,
   searchTerms: string[],
-): AttributeSearchMatch[] {
-  const matches: AttributeSearchMatch[] = [];
+): IAttributeSearchMatch[] {
+  const matches: IAttributeSearchMatch[] = [];
 
   for (const attributeKey of Object.keys(attributes)) {
     for (const valueKey of Object.keys(attributes[attributeKey].values)) {
-      const match: AttributeSearchMatch = {
+      const match: IAttributeSearchMatch = {
         attributeKey: attributeKey,
         valueKey: valueKey,
         matchingTerms: [],
@@ -64,22 +66,22 @@ function getAllBasicMatches(
 }
 
 function filterIncompleteAndDuplicates(
-  results: SearchResult[],
+  results: AttributeSearchResult[],
   searchTerms: string[],
 ) {
   return results.reduce(
     (
       acc: {
         hashCodes: string[];
-        results: SearchResult[];
+        results: AttributeSearchResult[];
       },
-      result: SearchResult,
+      result: AttributeSearchResult,
     ) => {
       const hashCode = result.getHashCode();
 
       if (
         acc.hashCodes.indexOf(hashCode) === -1 &&
-        result.doesContainAllTerms(...searchTerms)
+        result.hasMatchForAllTerms(...searchTerms)
       ) {
         acc.results.push(result);
         acc.hashCodes.push(hashCode);

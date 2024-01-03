@@ -1,45 +1,38 @@
 import { IAttributeSearchResult } from "../../../../serverApi/IAttributeSearchResult";
-import { AttributeSearchMatch } from "./searchJournalAttributes";
+import { IAttributeSearchMatch } from "./searchJournalAttributes";
 
-export class SearchResult implements IAttributeSearchResult {
+export class AttributeSearchResult implements IAttributeSearchResult {
   readonly values: Record<string, string[]> = {};
 
   // todo: can be deleted after getting rid of server side stuff
   occurrenceCount?: number;
   score?: number;
 
-  private readonly matches: AttributeSearchMatch[] = [];
+  private readonly matches: IAttributeSearchMatch[] = [];
+
+  private constructor() {}
 
   static create(
-    match: AttributeSearchMatch,
-    allMatches: AttributeSearchMatch[],
-  ): SearchResult {
-    const result = new SearchResult();
-    result.addMatch(match);
-    result.addMatches(
+    match: IAttributeSearchMatch,
+    allMatches: IAttributeSearchMatch[],
+  ): AttributeSearchResult {
+    const result = new AttributeSearchResult();
+    result.ensureMatch(match);
+    result.ensureMatches(
       ...allMatches.filter((m) => m.attributeKey !== match.attributeKey),
     );
 
     return result;
   }
 
-  doesContainAllTerms(...terms: string[]) {
-    for (const term of terms) {
-      if (!this.hasMatchForTerm(term)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  addMatches(...matches: AttributeSearchMatch[]) {
+  ensureMatches(...matches: IAttributeSearchMatch[]) {
     for (const match of matches) {
-      this.addMatch(match);
+      this.ensureMatch(match);
     }
   }
 
-  addMatch(match: AttributeSearchMatch) {
-    if (this.doesContainAllTerms(...match.matchingTerms)) {
+  ensureMatch(match: IAttributeSearchMatch) {
+    if (this.hasMatchForAllTerms(...match.matchingTerms)) {
       return;
     }
 
@@ -52,6 +45,10 @@ export class SearchResult implements IAttributeSearchResult {
       .flatMap((key) => `${key}:${this.values[key][0]}`)
       .sort()
       .join(";");
+  }
+
+  hasMatchForAllTerms(...terms: string[]) {
+    return !terms.some((t) => !this.hasMatchForTerm(t));
   }
 
   private hasMatchForTerm(term: string) {
