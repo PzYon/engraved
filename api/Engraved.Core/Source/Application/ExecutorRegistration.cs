@@ -18,10 +18,7 @@ using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
-using Engraved.Core.Application.Queries.Search;
-using Engraved.Core.Application.Queries.Search.Attributes;
 using Engraved.Core.Application.Queries.Search.Entities;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,7 +59,6 @@ public class ExecutorRegistration
     RegisterQuery<IJournal?, GetJournalQuery, GetJournalQueryExecutor>(services);
     RegisterQuery<IDictionary<string, IDictionary<string, ThresholdResult>>, GetThresholdValuesQuery,
       GetThresholdValuesQueryExecutor>(services);
-    RegisterQuery<SearchAttributesResult[], SearchAttributesQuery, SearchAttributesQueryExecutor>(services);
     RegisterQuery<SearchEntitiesResult, SearchEntitiesQuery, SearchEntitiesQueryExecutor>(services);
   }
 

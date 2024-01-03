@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -11,11 +10,8 @@ using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries;
-using Engraved.Core.Application.Queries.Search;
-using Engraved.Core.Application.Queries.Search.Attributes;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo;
-using Engraved.Search.Lucene;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -149,9 +145,6 @@ builder.Services.AddTransient<IRepository>(
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
-
-builder.Services.AddTransient<ISearchIndex, LuceneSearchIndex>();
-LuceneSearchIndex.WakeUp();
 
 if (isE2eTests)
 {

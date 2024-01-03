@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeValues";
-import { Autocomplete, Chip, MenuItem, TextField } from "@mui/material";
-import { IAttributeSearchResult } from "../../../serverApi/IAttributeSearchResult";
+import { Autocomplete, MenuItem, TextField } from "@mui/material";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IJournal } from "../../../serverApi/IJournal";
-import { ServerApi } from "../../../serverApi/ServerApi";
+import {
+  IAttributeSearchResult,
+  searchJournalAttributes,
+} from "./searchAttributes/searchJournalAttributes";
 
 let timer: number;
 
@@ -44,17 +46,6 @@ export const AttributeComboSearch: React.FC<{
               attributeValues={searchResult.values}
               preventOnClick={true}
             />
-            <Chip
-              key="count"
-              sx={{
-                color: "common.black",
-                marginLeft: "5px",
-                fontSize: "small",
-                height: "22px",
-              }}
-              title={searchResult.occurrenceCount?.toString() + "x"}
-              label={searchResult.occurrenceCount?.toString() + "x"}
-            />
           </MenuItem>
         );
       }}
@@ -83,12 +74,8 @@ export const AttributeComboSearch: React.FC<{
     timer = window.setTimeout(() => {
       lastLoadedSearchText = searchText;
 
-      // const values = searchJournalAttributes(journal.attributes, searchText);
-      // setOptions(values);
-
-      ServerApi.searchJournalAttributes(journal.id, searchText).then(
-        setOptions,
-      );
+      const values = searchJournalAttributes(journal.attributes, searchText);
+      setOptions(values);
     }, 300);
   }
 };

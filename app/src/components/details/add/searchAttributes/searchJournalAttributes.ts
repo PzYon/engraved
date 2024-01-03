@@ -1,6 +1,9 @@
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
-import { IAttributeSearchResult } from "../../../../serverApi/IAttributeSearchResult";
 import { AttributeSearchResult } from "./AttributeSearchResult";
+
+export interface IAttributeSearchResult {
+  values: Record<string, string[]>;
+}
 
 export interface IAttributeSearchMatch {
   attributeKey: string;

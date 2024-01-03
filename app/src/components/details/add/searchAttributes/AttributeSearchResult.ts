@@ -1,5 +1,7 @@
-import { IAttributeSearchResult } from "../../../../serverApi/IAttributeSearchResult";
-import { IAttributeSearchMatch } from "./searchJournalAttributes";
+import {
+  IAttributeSearchMatch,
+  IAttributeSearchResult,
+} from "./searchJournalAttributes";
 
 export class AttributeSearchResult implements IAttributeSearchResult {
   readonly values: Record<string, string[]> = {};
