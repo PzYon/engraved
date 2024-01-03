@@ -18,7 +18,6 @@ import { IJournalAttributeValues } from "./IJournalAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/JournalDetailsContext";
 import { toDateOnlyIsoString } from "../util/utils";
-import { IAttributeSearchResult } from "./IAttributeSearchResult";
 import { IThresholdValues } from "./IThresholdValues";
 import { IJournalThresholds } from "./IJournalThresholds";
 import { LoadingHandler } from "./LoadingHandler";
@@ -284,17 +283,6 @@ export class ServerApi {
     return await ServerApi.executeRequest(
       `/entries/${entryId}/move/${targetJournalId}`,
       "PUT",
-      null,
-    );
-  }
-
-  static async searchJournalAttributes(
-    journalId: string,
-    searchText: string,
-  ): Promise<IAttributeSearchResult[]> {
-    return await ServerApi.executeRequest(
-      `/search/journal_attributes/${journalId}?searchText=${searchText}`,
-      "GET",
       null,
     );
   }

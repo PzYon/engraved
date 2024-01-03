@@ -1,10 +1,10 @@
 import {
   doesMatch,
   extractTerms,
+  IAttributeSearchResult,
   searchJournalAttributes,
 } from "./searchJournalAttributes";
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
-import { IAttributeSearchResult } from "../../../../serverApi/IAttributeSearchResult";
 
 describe("searchJournalAttributes", () => {
   it("sanitizes search terms", () => {

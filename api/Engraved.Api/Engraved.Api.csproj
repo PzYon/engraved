@@ -16,7 +16,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj"/>
         <ProjectReference Include="..\Engraved.Persistence.Mongo\Engraved.Persistence.Mongo.csproj"/>
-        <ProjectReference Include="..\Engraved.Search.Lucene\Engraved.Search.Lucene.csproj"/>
     </ItemGroup>
 
 </Project>
