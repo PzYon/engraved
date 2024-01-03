@@ -1,10 +1,12 @@
+import React, { useState } from "react";
 import { IChartProps } from "./IChartProps";
 import { ChartJsWrapper } from "./ChartJsWrapper";
-import { Slider, Typography, styled } from "@mui/material";
-import { useState } from "react";
+import { Slider, styled, Typography } from "@mui/material";
 
-export const Chart: React.FC<IChartProps> = (props: IChartProps) => {
+export const Chart: React.FC<IChartProps> = (props) => {
   const [rollingAverageGroupSize, setRollingAverageGroupSize] = useState(0);
+
+  const numberOfEntries = props.entries.length;
 
   return (
     <Host>
@@ -13,21 +15,25 @@ export const Chart: React.FC<IChartProps> = (props: IChartProps) => {
         chartUiProps={{ rollingAverage: rollingAverageGroupSize * 2 + 1 }}
       />
       <ActionsContainer>
-        <Typography fontSize="small" sx={{ pr: 2 }}>
-          Moving avg.:
-        </Typography>
-        <Slider
-          min={0}
-          max={15}
-          marks={true}
-          valueLabelDisplay="auto"
-          sx={{ width: "40%" }}
-          value={rollingAverageGroupSize}
-          onChange={(x) => {
-            /* eslint-disable  @typescript-eslint/no-explicit-any */
-            setRollingAverageGroupSize((x.target as any).value);
-          }}
-        />
+        {props.chartType === "line" && numberOfEntries ? (
+          <>
+            <Typography fontSize="small" sx={{ pr: 2 }}>
+              Moving avg.:
+            </Typography>
+            <Slider
+              min={0}
+              max={Math.min(15, Math.floor(numberOfEntries / 2))}
+              marks={true}
+              valueLabelDisplay="auto"
+              sx={{ width: "40%" }}
+              value={rollingAverageGroupSize}
+              onChange={(x) => {
+                /* eslint-disable  @typescript-eslint/no-explicit-any */
+                setRollingAverageGroupSize((x.target as any).value);
+              }}
+            />
+          </>
+        ) : null}
       </ActionsContainer>
     </Host>
   );
