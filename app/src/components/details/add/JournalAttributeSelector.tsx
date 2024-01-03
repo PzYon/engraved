@@ -48,9 +48,9 @@ export const JournalAttributeSelector: React.FC<{
     <Autocomplete
       options={options}
       multiple={false}
-      value={
-        selectedOption ? (selectedOption as unknown as IOption) : undefined
-      }
+      // it is important to return null instead of undefined to
+      // make sure that Autocomplete-component is controlled.
+      value={selectedOption ?? null}
       getOptionLabel={(option) => getOptionLabel(option as IOption)}
       isOptionEqualToValue={(option, value) =>
         areOptionsEqual(option as IOption, value as IOption)

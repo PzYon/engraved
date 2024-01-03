@@ -1,9 +1,11 @@
 import React from "react";
 import { DateSelector } from "../../../common/DateSelector";
-import { styled, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { IUpsertGaugeEntryCommand } from "../../../../serverApi/commands/IUpsertGaugeEntryCommand";
 import { JournalAttributesSelector } from "../../add/JournalAttributesSelector";
 import { IJournal } from "../../../../serverApi/IJournal";
+import { AttributeComboSearch } from "../../add/AttributeComboSearch";
+import { IJournalAttributeValues } from "../../../../serverApi/IJournalAttributeValues";
 
 export const AddEntryTableCell: React.FC<{
   journal: IJournal;
@@ -42,10 +44,19 @@ export const AddEntryTableCell: React.FC<{
 
     case "attributes":
       return (
-        <JournalAttributesSelectorWrapper>
+        <>
+          <AttributeComboSearch
+            journal={journal}
+            onChange={(value: IJournalAttributeValues) => {
+              updateCommand({
+                ...command,
+                [fieldName]: value,
+              });
+            }}
+          />
           <JournalAttributesSelector
             attributes={journal.attributes}
-            selectedAttributeValues={undefined}
+            selectedAttributeValues={command.journalAttributeValues ?? {}}
             onChange={(value: any) => {
               updateCommand({
                 ...command,
@@ -53,7 +64,7 @@ export const AddEntryTableCell: React.FC<{
               });
             }}
           />
-        </JournalAttributesSelectorWrapper>
+        </>
       );
 
     case "number":
@@ -80,9 +91,3 @@ export const AddEntryTableCell: React.FC<{
       );
   }
 };
-
-const JournalAttributesSelectorWrapper = styled("div")`
-  .journal-attribute-selector-wrapper:first-of-type {
-    margin-top: 0;
-  }
-`;
