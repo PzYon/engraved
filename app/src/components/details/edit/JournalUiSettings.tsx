@@ -1,5 +1,5 @@
 import React from "react";
-import { Checkbox, FormControlLabel, styled } from "@mui/material";
+import { Checkbox, FormControlLabel, styled, TextField } from "@mui/material";
 import {
   FilterAltOutlined,
   FunctionsOutlined,
@@ -136,6 +136,15 @@ export const JournalUiSettings: React.FC<{
             }
             onChange={(aggregationMode) => {
               onChange({ ...uiSettings, aggregationMode });
+            }}
+          />
+        </GridItem>
+        <GridItem>
+          <TextField
+            label="Y-Axis Unit"
+            value={uiSettings.yAxisUnit}
+            onChange={(x) => {
+              onChange({ ...uiSettings, yAxisUnit: x.target.value });
             }}
           />
         </GridItem>

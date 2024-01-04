@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material";
 import { GlobalStyles } from "@mui/styled-engine";
 import React from "react";
 import { engravedTheme } from "./engravedTheme";
