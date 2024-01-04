@@ -62,6 +62,6 @@ export class GaugeJournalType implements IJournalType {
   }
 
   getYAxisLabel(): string {
-    return "Unit [todo]";
+    return "";
   }
 }

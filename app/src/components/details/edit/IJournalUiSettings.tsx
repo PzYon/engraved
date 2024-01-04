@@ -13,4 +13,5 @@ export interface IJournalUiSettings {
   dateRange?: DateRange;
   dynamicScales?: boolean;
   aggregationMode?: AggregationMode;
+  yAxisUnit?: string;
 }

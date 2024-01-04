@@ -1,8 +1,7 @@
 import { IJournalAttributeValues } from "../../serverApi/IJournalAttributeValues";
 import React from "react";
 import { IJournalAttributes } from "../../serverApi/IJournalAttributes";
-import { Chip, lighten } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Chip, lighten, useTheme } from "@mui/material";
 import { getCoefficient } from "../../util/utils";
 import { useJournalContext } from "../details/JournalDetailsContext";
 

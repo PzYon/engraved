@@ -22,7 +22,7 @@ import "chartjs-adapter-date-fns";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { createChart } from "./createChart";
 import { IChartProps } from "./IChartProps";
-import { useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material";
 import { useJournalContext } from "../JournalDetailsContext";
 
 ChartJS.register(
