@@ -3,10 +3,12 @@ import { Bootstrapper } from "./Bootstrapper";
 import { createRoot } from "react-dom/client";
 import { ThemeAndStylesProvider } from "./theming/ThemeAndStylesProvider";
 import { ServerApi } from "./serverApi/ServerApi";
-import { setUpAppInsights } from "./util/appInsights";
+
+import("./util/appInsights").then((appInsights) => {
+  appInsights.setUpAppInsights();
+});
 
 wakeUpApi();
-setUpAppInsights();
 
 createRoot(document.getElementById("root")).render(getInitialJsx());
 
