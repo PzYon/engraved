@@ -4,7 +4,7 @@ import { envSettings } from "../env/envSettings";
 let appInsights: ApplicationInsights;
 
 export function setUpAppInsights() {
-  if (envSettings.isDev) {
+  if (!enableAppInsights()) {
     return;
   }
 
@@ -21,7 +21,7 @@ export function setUpAppInsights() {
 }
 
 export function logExceptionToAppInsights(e: Error) {
-  if (envSettings.isDev) {
+  if (!enableAppInsights()) {
     console.log("Logging to App Insights: " + e.message);
     return;
   }
@@ -31,4 +31,17 @@ export function logExceptionToAppInsights(e: Error) {
     // consider adding some custom properties like "is mobile" or something like that...
     // customProperties: {},
   });
+}
+
+function enableAppInsights() {
+  if (envSettings.isDev) {
+    return false;
+  }
+
+  if (!envSettings.appInsightsConnectionString) {
+    console.log("Missing appInsightsConnectionString from env config");
+    return false;
+  }
+
+  return true;
 }

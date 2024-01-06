@@ -38,6 +38,8 @@
     "start": "vite",
     "api:start": "dotnet run --project ../api/Engraved.Api/",
     "build": "vite build",
+    "build:e2e": "vite build -m development",
+    "build:visualize-bundle": "npx vite-bundle-visualizer",
     "test": "jest",
     "types:check": "tsc --noEmit",
     "lint": "eslint .",
@@ -77,6 +79,6 @@
     "prettier": "3.1.1",
     "ts-jest": "29.1.1",
     "ts-node": "10.9.2",
-    "vite-plugin-checker": "^0.6.2"
+    "vite-plugin-checker": "0.6.2"
   }
 }
