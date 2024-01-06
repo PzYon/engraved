@@ -80,5 +80,8 @@
     "ts-jest": "29.1.1",
     "ts-node": "10.9.2",
     "vite-plugin-checker": "0.6.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.6.1"
   }
 }
