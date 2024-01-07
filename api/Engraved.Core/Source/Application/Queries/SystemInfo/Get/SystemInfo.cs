@@ -8,9 +8,9 @@ public class SystemInfo
 
   public string CommitHash { get; set; } = null!;
 
-  public int JournalsCounter { get; set; }
+  public long JournalsCount { get; set; }
 
-  public int EntriesCount { get; set; }
+  public long EntriesCount { get; set; }
 
-  public int UsersCount { get; set; }
+  public long UsersCount { get; set; }
 }

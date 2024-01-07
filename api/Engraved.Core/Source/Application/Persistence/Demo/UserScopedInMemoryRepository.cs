@@ -151,6 +151,21 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return Task.CompletedTask;
   }
 
+  public Task<long> CountAllUsers()
+  {
+    return _repository.CountAllUsers();
+  }
+
+  public Task<long> CountAllEntries()
+  {
+    return _repository.CountAllEntries();
+  }
+
+  public Task<long> CountAllJournals()
+  {
+    return _repository.CountAllJournals();
+  }
+
   private IUser LoadUser()
   {
     string? name = _currentUserService.GetUserName();

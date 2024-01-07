@@ -51,4 +51,10 @@ public interface IBaseRepository
   Task<IEntry?> GetEntry(string entryId);
 
   Task WakeMeUp();
+
+  Task<long> CountAllUsers();
+
+  Task<long> CountAllEntries();
+
+  Task<long> CountAllJournals();
 }

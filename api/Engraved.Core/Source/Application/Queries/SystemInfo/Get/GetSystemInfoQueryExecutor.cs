@@ -22,9 +22,9 @@ public class GetSystemInfoQueryExecutor(IRepository repository)
         Version = segments[1],
         CommitHash = segments[2],
         MergeDateTime = DateTime.Parse(segments[3]),
-        JournalsCounter = 0,
-        EntriesCount = 0,
-        UsersCount = 0
+        JournalsCount = await repository.CountAllJournals(),
+        EntriesCount = await repository.CountAllEntries(),
+        UsersCount = await repository.CountAllUsers()
       };
     }
 
@@ -33,9 +33,9 @@ public class GetSystemInfoQueryExecutor(IRepository repository)
       Version = "0",
       CommitHash = "Unknown",
       MergeDateTime = DateTime.UtcNow,
-      JournalsCounter = 0,
-      EntriesCount = 0,
-      UsersCount = 0
+      JournalsCount = await repository.CountAllJournals(),
+      EntriesCount = await repository.CountAllEntries(),
+      UsersCount = await repository.CountAllUsers()
     };
   }
 

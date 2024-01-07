@@ -203,6 +203,21 @@ public class InMemoryRepository : IRepository
     return Task.CompletedTask;
   }
 
+  public Task<long> CountAllUsers()
+  {
+    return Task.FromResult(Convert.ToInt64(Users.Count));
+  }
+
+  public Task<long> CountAllEntries()
+  {
+    return Task.FromResult(Convert.ToInt64(Entries.Count));
+  }
+
+  public Task<long> CountAllJournals()
+  {
+    return Task.FromResult(Convert.ToInt64(Journals.Count));
+  }
+
   private void RemoveJournal<TJournal>(TJournal journal) where TJournal : IJournal
   {
     if (string.IsNullOrEmpty(journal.Id))
