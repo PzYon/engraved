@@ -13,7 +13,7 @@ export const AppContent: React.FC<{
       : {};
 
   return (
-    <Container maxWidth="lg" sx={sx}>
+    <Container maxWidth="lg" sx={{ ...sx, flexGrow: 1 }}>
       {children}
     </Container>
   );
