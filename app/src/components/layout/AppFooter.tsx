@@ -90,6 +90,7 @@ const Element: React.FC<{ children: React.ReactNode; sx?: SxProps }> = ({
 
   return <Typography sx={style}>{children}</Typography>;
 };
+
 const SystemInfo: React.FC<{ label: string; systemInfo: ISystemInfo }> = ({
   label,
   systemInfo,
