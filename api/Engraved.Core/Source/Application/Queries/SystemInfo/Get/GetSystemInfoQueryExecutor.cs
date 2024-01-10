@@ -15,28 +15,27 @@ public class GetSystemInfoQueryExecutor(IRepository repository)
   {
     string[] segments = GetInformationalAssemblyVersion().Split("+");
 
-    if (segments.Length == 4)
+    var systemInfo = new SystemInfo
     {
-      return new SystemInfo
-      {
-        Version = segments[1],
-        CommitHash = segments[2],
-        MergeDateTime = DateTime.Parse(segments[3]),
-        JournalsCount = await repository.CountAllJournals(),
-        EntriesCount = await repository.CountAllEntries(),
-        UsersCount = await repository.CountAllUsers()
-      };
-    }
-
-    return new SystemInfo
-    {
-      Version = "0",
-      CommitHash = "Unknown",
-      MergeDateTime = DateTime.UtcNow,
       JournalsCount = await repository.CountAllJournals(),
       EntriesCount = await repository.CountAllEntries(),
       UsersCount = await repository.CountAllUsers()
     };
+
+    if (segments.Length == 4)
+    {
+      systemInfo.Version = segments[1];
+      systemInfo.CommitHash = segments[2];
+      systemInfo.MergeDateTime = DateTime.Parse(segments[3]);
+    }
+    else
+    {
+      systemInfo.Version = "0";
+      systemInfo.CommitHash = "Unknown";
+      systemInfo.MergeDateTime = DateTime.UtcNow;
+    }
+
+    return systemInfo;
   }
 
   private static string GetInformationalAssemblyVersion()
