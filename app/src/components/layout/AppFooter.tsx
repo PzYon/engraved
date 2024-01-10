@@ -37,7 +37,7 @@ export const AppFooter: React.FC = () => {
                   href: "https://github.com/PzYon/engraved",
                   key: "view-on-github",
                   icon: <GitHub fontSize="small" />,
-                  sx: { color: "white", display: "inline", width: "40px" },
+                  sx: { color: "white", display: "inline", padding: 0 },
                 }}
               />
             </Element>
@@ -84,8 +84,9 @@ const Element: React.FC<{ children: React.ReactNode; sx?: SxProps }> = ({
   sx = {},
 }) => {
   const style: SxProps = {
-    ...sx,
+    height: 30,
     "& a": { color: "white !important" },
+    ...sx,
   };
 
   return <Typography sx={style}>{children}</Typography>;
@@ -96,18 +97,13 @@ const SystemInfo: React.FC<{ label: string; systemInfo: ISystemInfo }> = ({
   systemInfo,
 }) => {
   return (
-    <>
-      {label}{" "}
-      <a
-        href={
-          "https://github.com/PzYon/engraved/commit/" + systemInfo.commitHash
-        }
-        target="_blank"
-        rel="noreferrer"
-      >
-        v{systemInfo.version}
-      </a>{" "}
-      (released <FormatDate value={systemInfo.mergeDateTime} />)
-    </>
+    <a
+      href={"https://github.com/PzYon/engraved/commit/" + systemInfo.commitHash}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {label} v{systemInfo.version} (released{" "}
+      <FormatDate value={systemInfo.mergeDateTime} />)
+    </a>
   );
 };
