@@ -17,10 +17,10 @@ export const ActionGroup: React.FC<{
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsReady(true), 1000);
+    const timer = window.setTimeout(() => setIsReady(true), 1000);
 
     return () => {
-      clearTimeout(timer);
+      window.clearTimeout(timer);
       setIsReady(false);
     };
   }, []);

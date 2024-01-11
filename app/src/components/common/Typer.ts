@@ -12,7 +12,7 @@ export class Typer {
     private toggleCursor?: (show?: boolean) => void,
   ) {
     if (toggleCursor) {
-      this.cursorInterval = setInterval(
+      this.cursorInterval = window.setInterval(
         this.toggleCursor,
         this.blinkDurationMs,
       ) as never;
@@ -29,8 +29,8 @@ export class Typer {
 
   end(): void {
     this.toggleCursor?.(false);
-    clearTimeout(this.typeTimer as number);
-    clearInterval(this.cursorInterval as number);
+    window.clearTimeout(this.typeTimer as number);
+    window.clearInterval(this.cursorInterval as number);
   }
 
   private startTyping(index = 0): Promise<void> {
@@ -43,7 +43,7 @@ export class Typer {
     const delay =
       hasNotStarted || isDone ? this.idleBlinkDuration : Typer.getTypeInMs();
 
-    this.typeTimer = setTimeout(() => {
+    this.typeTimer = window.setTimeout(() => {
       if (isDone) {
         this.end();
         resolve();

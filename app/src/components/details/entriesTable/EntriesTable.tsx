@@ -68,9 +68,11 @@ export const EntriesTable: React.FC<{
     updateGroups();
 
     const interval =
-      type.type === JournalType.Timer ? setInterval(updateGroups, 10000) : null;
+      type.type === JournalType.Timer
+        ? window.setInterval(updateGroups, 10000)
+        : null;
 
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
 
     function updateGroups() {
       setTableGroups(getEntriesTableGroups(entries, type));

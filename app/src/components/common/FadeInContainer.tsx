@@ -1,10 +1,11 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { styled } from "@mui/material";
+import { styled, SxProps } from "@mui/material";
 
 export const FadeInContainer: React.FC<{
   children: ReactNode;
   doPulsate?: boolean;
-}> = ({ children, doPulsate }) => {
+  sx?: SxProps;
+}> = ({ children, doPulsate, sx }) => {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
@@ -14,7 +15,7 @@ export const FadeInContainer: React.FC<{
     if (doPulsate) {
       interval = window.setInterval(() => {
         setIsRendered(false);
-        setTimeout(() => setIsRendered(true), 700);
+        window.setTimeout(() => setIsRendered(true), 700);
       }, 15000);
     }
 
@@ -26,12 +27,12 @@ export const FadeInContainer: React.FC<{
   }, [doPulsate]);
 
   return (
-    <ContainerSection style={{ opacity: isRendered ? 1 : 0 }}>
+    <ContainerSection sx={{ ...(sx ?? {}), opacity: isRendered ? 1 : 0 }}>
       {children}
     </ContainerSection>
   );
 };
 
 const ContainerSection = styled("section")`
-  transition: opacity 700ms;
+  transition: opacity 1700ms;
 `;
