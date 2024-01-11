@@ -1,5 +1,4 @@
 import { styled, SxProps, Typography } from "@mui/material";
-import React from "react";
 import { AppContent } from "./AppContent";
 import { useApiSystemInfoQuery } from "../../serverApi/reactQuery/queries/useApiSystemInfoQuery";
 import { ISystemInfo } from "../../serverApi/ISystemInfo";
@@ -7,11 +6,22 @@ import { FormatDate } from "../common/FormatDate";
 import { envSettings } from "../../env/envSettings";
 import { GitHub } from "@mui/icons-material";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
+import React, { useEffect, useState } from "react";
 
 export const AppFooter: React.FC = () => {
   const apiSystemInfo = useApiSystemInfoQuery();
 
-  if (!apiSystemInfo) {
+  const [doRender, setDoRender] = useState(false);
+
+  useEffect(() => {
+    if (apiSystemInfo) {
+      setTimeout(() => {
+        setDoRender(true);
+      }, 1000);
+    }
+  }, [apiSystemInfo]);
+
+  if (!doRender) {
     return null;
   }
 
