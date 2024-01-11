@@ -4,12 +4,12 @@ import {
   LocalizationProvider,
   TimePicker,
 } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Button } from "@mui/material";
 import React from "react";
-import de from "date-fns/locale/de";
 import { addMinutes } from "date-fns";
 import { IDateSelectorProps } from "./DateSelector";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import de from "date-fns/locale/de";
 
 const LazyDateSelector: React.FC<IDateSelectorProps> = ({
   setDate,
