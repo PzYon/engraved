@@ -12,7 +12,6 @@ import { IAuthResult } from "./IAuthResult";
 import { IUser } from "./IUser";
 import { AuthStorage } from "./authentication/AuthStorage";
 import { ApiError } from "./ApiError";
-import { ISystemInfo } from "./ISystemInfo";
 import { IUpdatePermissions } from "./IUpdatePermissions";
 import { IJournalAttributeValues } from "./IJournalAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
@@ -24,6 +23,7 @@ import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IJournalUiSettings } from "../components/details/edit/IJournalUiSettings";
+import { IApiSystemInfo } from "./IApiSystemInfo";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -287,7 +287,7 @@ export class ServerApi {
     );
   }
 
-  static async getSystemInfo(): Promise<ISystemInfo> {
+  static async getSystemInfo(): Promise<IApiSystemInfo> {
     return await ServerApi.executeRequest(`/system_info`, "GET", null);
   }
 

@@ -255,4 +255,19 @@ public class FakeUserScopedRepository : IUserScopedRepository
   {
     throw new NotImplementedException();
   }
+
+  public Task<long> CountAllUsers()
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<long> CountAllEntries()
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<long> CountAllJournals()
+  {
+    throw new NotImplementedException();
+  }
 }

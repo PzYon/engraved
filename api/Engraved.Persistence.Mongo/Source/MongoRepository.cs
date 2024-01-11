@@ -367,6 +367,30 @@ public class MongoRepository : IBaseRepository
     await UsersCollection.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>(RandomDocId));
   }
 
+  public async Task<long> CountAllUsers()
+  {
+    return await UsersCollection.CountDocumentsAsync(
+      Builders<UserDocument>.Filter.Empty,
+      new CountOptions { Hint = "_id_" }
+    );
+  }
+
+  public async Task<long> CountAllEntries()
+  {
+    return await EntriesCollection.CountDocumentsAsync(
+      Builders<EntryDocument>.Filter.Empty,
+      new CountOptions { Hint = "_id_" }
+    );
+  }
+
+  public async Task<long> CountAllJournals()
+  {
+    return await JournalsCollection.CountDocumentsAsync(
+      Builders<JournalDocument>.Filter.Empty,
+      new CountOptions { Hint = "_id_" }
+    );
+  }
+
   private async Task<UpsertResult> UpsertUserInternal(IUser user)
   {
     UserDocument document = UserDocumentMapper.ToDocument(user);

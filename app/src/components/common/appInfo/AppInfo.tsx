@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAppInfoQuery } from "../../../serverApi/reactQuery/queries/useAppInfoQuery";
+import { useApiSystemInfoQuery } from "../../../serverApi/reactQuery/queries/useApiSystemInfoQuery";
 import { envSettings } from "../../../env/envSettings";
 
 export const AppInfo: React.FC = () => {
-  const systemInfo = useAppInfoQuery();
+  const systemInfo = useApiSystemInfoQuery();
   const queryClient = useQueryClient();
 
   const [serverOs, setServerOs] = useState<"win" | "lin">(
