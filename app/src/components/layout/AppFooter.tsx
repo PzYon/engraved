@@ -15,11 +15,15 @@ export const AppFooter: React.FC = () => {
   const [doRender, setDoRender] = useState(false);
 
   useEffect(() => {
+    let timer: number;
+
     if (apiSystemInfo) {
-      setTimeout(() => {
+      timer = window.setTimeout(() => {
         setDoRender(true);
       }, 1000);
     }
+
+    return () => window.clearTimeout(timer);
   }, [apiSystemInfo]);
 
   if (!doRender) {
