@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 import { ActionGroup } from "../common/actions/ActionGroup";
-import { AppInfoLauncher } from "../common/appInfo/AppInfoLauncher";
 import { User } from "../common/User";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { usePageContext } from "./pages/PageContext";
@@ -73,7 +72,6 @@ export const AppHeader: React.FC = () => {
                 </Typography>
               </ActionLink>
             </div>
-            <AppInfoLauncher />
             <RefreshData />
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
             <ActionIconButton

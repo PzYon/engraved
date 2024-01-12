@@ -1,5 +1,4 @@
 import { styled, SxProps, Typography } from "@mui/material";
-import React from "react";
 import { AppContent } from "./AppContent";
 import { useApiSystemInfoQuery } from "../../serverApi/reactQuery/queries/useApiSystemInfoQuery";
 import { ISystemInfo } from "../../serverApi/ISystemInfo";
@@ -7,16 +6,34 @@ import { FormatDate } from "../common/FormatDate";
 import { envSettings } from "../../env/envSettings";
 import { GitHub } from "@mui/icons-material";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
+import React, { useEffect, useState } from "react";
+import { FadeInContainer } from "../common/FadeInContainer";
 
 export const AppFooter: React.FC = () => {
   const apiSystemInfo = useApiSystemInfoQuery();
 
-  if (!apiSystemInfo) {
+  const [doRender, setDoRender] = useState(false);
+
+  useEffect(() => {
+    let timer: number;
+
+    if (apiSystemInfo) {
+      timer = window.setTimeout(() => {
+        setDoRender(true);
+      }, 1000);
+    }
+
+    return () => window.clearTimeout(timer);
+  }, [apiSystemInfo]);
+
+  if (!doRender) {
     return null;
   }
 
   return (
-    <Host>
+    <FadeInContainer
+      sx={{ backgroundColor: "primary.main", color: "common.white" }}
+    >
       <AppContent scope="header">
         <Container>
           <Column sx={{ textAlign: "left" }}>
@@ -57,14 +74,9 @@ export const AppFooter: React.FC = () => {
           </Column>
         </Container>
       </AppContent>
-    </Host>
+    </FadeInContainer>
   );
 };
-
-const Host = styled("div")`
-  background-color: ${(p) => p.theme.palette.primary.main};
-  color: ${(p) => p.theme.palette.common.white};
-`;
 
 const Container = styled("div")`
   width: 100%;
@@ -84,7 +96,7 @@ const Element: React.FC<{ children: React.ReactNode; sx?: SxProps }> = ({
   sx = {},
 }) => {
   const style: SxProps = {
-    height: 30,
+    minHeight: 30,
     "& a": { color: "white !important" },
     ...sx,
   };
