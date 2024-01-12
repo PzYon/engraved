@@ -16,7 +16,7 @@ export const AppHost: React.FC = () => {
           <AppRoutes />
         </AppErrorBoundary>
       </AppContent>
-      <AppFooter></AppFooter>
+      <AppFooter />
     </Host>
   );
 };

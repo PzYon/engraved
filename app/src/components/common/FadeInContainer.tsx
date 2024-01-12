@@ -9,7 +9,7 @@ export const FadeInContainer: React.FC<{
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
-    setIsRendered(true);
+    const timeout = window.setTimeout(() => setIsRendered(true), 20);
 
     let interval: number;
     if (doPulsate) {
@@ -20,9 +20,8 @@ export const FadeInContainer: React.FC<{
     }
 
     return () => {
-      if (interval) {
-        window.clearInterval(interval);
-      }
+      window.clearTimeout(timeout);
+      window.clearInterval(interval);
     };
   }, [doPulsate]);
 
@@ -34,5 +33,5 @@ export const FadeInContainer: React.FC<{
 };
 
 const ContainerSection = styled("section")`
-  transition: opacity 1700ms;
+  transition: opacity 700ms;
 `;

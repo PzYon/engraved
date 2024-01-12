@@ -92,7 +92,7 @@ const Element: React.FC<{ children: React.ReactNode; sx?: SxProps }> = ({
   sx = {},
 }) => {
   const style: SxProps = {
-    height: 30,
+    minHeight: 30,
     "& a": { color: "white !important" },
     ...sx,
   };
