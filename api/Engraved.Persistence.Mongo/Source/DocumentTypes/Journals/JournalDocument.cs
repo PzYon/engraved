@@ -6,7 +6,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 
-public abstract class JournalDocument : IUserScopedDocument, IHasPermissionsDocument
+public abstract class JournalDocument : IUserScopedDocument, IHasPermissionsDocument, IScheduledDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]
@@ -32,4 +32,6 @@ public abstract class JournalDocument : IUserScopedDocument, IHasPermissionsDocu
   public UserPermissions Permissions { get; set; } = new();
 
   public Dictionary<string, string> CustomProps { get; set; } = new();
+  
+  public ScheduleSubDocument? Schedule { get; set; }
 }
