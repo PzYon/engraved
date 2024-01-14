@@ -83,8 +83,8 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    result.Journals.Length.Should().Be(0);
-    result.Entities.Length.Should().Be(1);
+    result.Journals.Length.Should().Be(1);
+    result.Entities.Length.Should().Be(2);
   }
 
   private async Task AddEntitiesWithSchedule()

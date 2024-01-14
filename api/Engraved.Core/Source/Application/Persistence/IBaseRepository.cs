@@ -42,7 +42,8 @@ public interface IBaseRepository
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
-    int limit
+    int? limit,
+    bool scheduledOnly = false
   );
 
   Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;

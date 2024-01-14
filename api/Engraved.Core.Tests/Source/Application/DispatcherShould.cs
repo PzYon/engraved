@@ -231,7 +231,8 @@ public class FakeUserScopedRepository : IUserScopedRepository
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
-    int limit
+    int? limit,
+    bool scheduledOnly = false
   )
   {
     throw new NotImplementedException();

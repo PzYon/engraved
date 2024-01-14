@@ -83,10 +83,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
-    int limit
+    int? limit,
+    bool scheduledOnly = false
   )
   {
-    return _repository.GetLastEditedEntries(journalIds, searchText, journalTypes, limit);
+    return _repository.GetLastEditedEntries(journalIds, searchText, journalTypes, limit, scheduledOnly);
   }
 
   public Task<UpsertResult> UpsertJournal(IJournal journal)

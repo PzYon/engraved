@@ -258,7 +258,8 @@ public class MongoRepository : IBaseRepository
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
-    int limit
+    int? limit,
+    bool scheduledOnly = false
   )
   {
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
@@ -278,6 +279,13 @@ public class MongoRepository : IBaseRepository
         Builders<EntryDocument>.Filter.Or(
           journalTypes.Select(t => Builders<EntryDocument>.Filter.Where(GetIsEntryTypeExpression(t)))
         )
+      );
+    }
+
+    if (scheduledOnly)
+    {
+      filters.Add(
+        Builders<EntryDocument>.Filter.Where(d => d.Schedule != null && d.Schedule.NextOccurrence != null)
       );
     }
 

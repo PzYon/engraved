@@ -93,7 +93,8 @@ public class InMemoryRepository : IRepository
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
-    int limit
+    int? limit,
+    bool scheduledOnly = false
   )
   {
     return Task.FromResult(
@@ -110,7 +111,7 @@ public class InMemoryRepository : IRepository
             return true;
           }
         )
-        .Take(limit)
+        .Take(limit ?? 100)
         .ToArray()
     );
   }

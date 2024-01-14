@@ -24,7 +24,8 @@ public class GetAllEntriesQueryExecutor : IQueryExecutor<GetAllEntriesQueryResul
       allJournalIds,
       query.SearchText,
       query.JournalTypes,
-      query.Limit ?? 20
+      query.Limit ?? 20,
+      query.ScheduledOnly
     );
 
     string[] relevantJournalIds = allEntries.Select(e => e.ParentId).ToArray();
