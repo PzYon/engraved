@@ -9,4 +9,6 @@ public class GetAllEntriesQuery : IEntitiesQuery
   public string? SearchText { get; set; }
 
   public JournalType[]? JournalTypes { get; set; }
+  
+  public bool ScheduledOnly { get; set; }
 }

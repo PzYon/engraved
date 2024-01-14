@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain;
 using Engraved.Core.Domain.Journals;
 using FluentAssertions;
 using NUnit.Framework;
@@ -70,5 +72,23 @@ public class MongoRepository_GetAllJournals_Should
     IJournal[] results = await _repository.GetAllJournals(null, null, new[] { _gaugeJournalId }, 10);
     results.Length.Should().Be(1);
     results[0].Id.Should().Be(_gaugeJournalId);
+  }
+
+  [Test]
+  public async Task ReturnAllJournals_SchedulesOnly()
+  {
+    await _repository.UpsertJournal(
+      new GaugeJournal
+      {
+        Schedule = new Schedule
+        {
+          NextOccurrence = DateTime.Now.AddDays(3),
+        },
+        Name = "My Name"
+      }
+    );
+
+    IJournal[] results = await _repository.GetAllJournals(null, null, null, null, true);
+    results.Length.Should().Be(1);
   }
 }

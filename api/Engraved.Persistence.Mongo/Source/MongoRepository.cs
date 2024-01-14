@@ -99,7 +99,8 @@ public class MongoRepository : IBaseRepository
     string? searchText = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    bool scheduledOnly = false
   )
   {
     List<FilterDefinition<JournalDocument>> filters = GetFreeTextFilters<JournalDocument>(
@@ -127,6 +128,13 @@ public class MongoRepository : IBaseRepository
             i => GetJournalDocumentByIdFilter<JournalDocument>(i, PermissionKind.Read)
           )
         )
+      );
+    }
+
+    if (scheduledOnly)
+    {
+      filters.Add(
+        Builders<JournalDocument>.Filter.Where(d => d.Schedule != null && d.Schedule.NextOccurrence != null)
       );
     }
 

@@ -14,7 +14,8 @@ public class GetAllJournalsQueryExecutor(IUserScopedRepository repository)
       query.SearchText,
       query.JournalTypes,
       GetJournalIds(query),
-      query.Limit
+      query.Limit,
+      query.ScheduledOnly
     );
 
     return await JournalQueryUtil.EnsurePermissionUsers(repository, allJournals);

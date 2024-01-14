@@ -12,12 +12,13 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
 {
   [Route("entities")]
   [HttpGet]
-  public async Task<dynamic> SearchEntities(string searchText)
+  public async Task<dynamic> SearchEntities(string searchText, bool scheduledOnly)
   {
     var query = new SearchEntitiesQuery
     {
       SearchText = searchText,
-      Limit = 100
+      Limit = 100,
+      ScheduledOnly = scheduledOnly
     };
 
     SearchEntitiesResult result = await dispatcher.Query<SearchEntitiesResult, SearchEntitiesQuery>(query);

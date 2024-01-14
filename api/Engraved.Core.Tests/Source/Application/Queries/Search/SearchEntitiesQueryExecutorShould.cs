@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
+using Engraved.Core.Application.Commands.Journals.AddSchedule;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Domain.Journals;
@@ -63,6 +64,58 @@ public class SearchEntitiesQueryExecutorShould
 
     result.Journals.Length.Should().Be(1);
     result.Journals[0].Name.Should().Be("No");
+  }
+
+  [Test]
+  public async Task FindEntriesAndJournalWithScheduledOnly()
+  {
+    // both of these should not be found as they have no schedule
+    await AddJournalToFindWithTwoEntriesToIgnore();
+    await AddJournalToIgnoreWithOneEntryToFind();
+
+    await AddEntitiesWithSchedule();
+
+    SearchEntitiesResult result = await _searchExecutor.Execute(
+      new SearchEntitiesQuery
+      {
+        SearchText = "Schedule",
+        ScheduledOnly = true
+      }
+    );
+
+    result.Journals.Length.Should().Be(1);
+    result.Entities.Length.Should().Be(1);
+  }
+
+  private async Task AddEntitiesWithSchedule()
+  {
+    var addJournalExecutor = new AddJournalCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    CommandResult commandResult = await addJournalExecutor.Execute(
+      new AddJournalCommand
+      {
+        Name = "Journal with Schedule",
+        Type = JournalType.Scraps
+      }
+    );
+
+    var addScheduleExecutor = new AddScheduleCommandExecutor(_userScopedInMemoryRepository);
+    await addScheduleExecutor.Execute(
+      new AddScheduleCommand
+      {
+        JournalId = commandResult.EntityId,
+        NextOccurrence = _dateService.UtcNow.AddDays(10)
+      }
+    );
+
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    await addEntryExecutor.Execute(
+      new UpsertScrapsEntryCommand
+      {
+        JournalId = commandResult.EntityId,
+        DateTime = _dateService.UtcNow,
+        Notes = "Entry with Schedule"
+      }
+    );
   }
 
   private async Task AddJournalToIgnoreWithOneEntryToFind()

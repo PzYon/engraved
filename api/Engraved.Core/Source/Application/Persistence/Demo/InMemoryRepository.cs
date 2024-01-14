@@ -49,7 +49,8 @@ public class InMemoryRepository : IRepository
     string? searchText = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    bool scheduledOnly = false
   )
   {
     // note: conditions are currently partially ignored, as they are not (yet?) needed for these in memory tests.

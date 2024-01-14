@@ -16,12 +16,21 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
       return new SearchEntitiesResult();
     }
 
-    var journalsQuery = new GetAllJournalsQuery { SearchText = query.SearchText };
-    IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(journalsQuery);
+    IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(
+      new GetAllJournalsQuery
+      {
+        SearchText = query.SearchText,
+        ScheduledOnly = query.ScheduledOnly
+      }
+    );
 
-    var entriesQuery = new GetAllEntriesQuery { SearchText = query.SearchText };
-    GetAllEntriesQueryResult entriesResult =
-      await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(entriesQuery);
+    GetAllEntriesQueryResult entriesResult = await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(
+      new GetAllEntriesQuery
+      {
+        SearchText = query.SearchText,
+        ScheduledOnly = query.ScheduledOnly
+      }
+    );
 
     SearchResultEntity[] searchResultEntities = journals.Select(
         journal => new SearchResultEntity { EntityType = EntityType.Journal, Entity = journal }

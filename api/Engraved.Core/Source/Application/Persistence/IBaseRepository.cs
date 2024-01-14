@@ -19,7 +19,8 @@ public interface IBaseRepository
     string? searchText = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    bool scheduledOnly = false
   );
 
   Task<IJournal?> GetJournal(string journalId);

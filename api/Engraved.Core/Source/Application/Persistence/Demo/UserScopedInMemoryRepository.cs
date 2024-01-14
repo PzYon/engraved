@@ -51,7 +51,8 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     string? searchText,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    bool scheduledOnly = false
   )
   {
     IJournal[] allJournals = await _repository.GetAllJournals(searchText, journalTypes, journalIds, limit);
