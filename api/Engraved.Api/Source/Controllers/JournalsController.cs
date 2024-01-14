@@ -55,7 +55,7 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
 
   [HttpPost]
   [Route("{journalId}/schedule")]
-  public async Task<CommandResult> AddSchedule(string journalId, [FromBody] AddScheduleCommand command)
+  public async Task<CommandResult> AddSchedule(string journalId, [FromBody] AddScheduleToJournalCommand command)
   {
     if (journalId != command.JournalId)
     {

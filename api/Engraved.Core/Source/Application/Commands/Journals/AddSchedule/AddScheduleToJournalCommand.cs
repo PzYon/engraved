@@ -1,6 +1,6 @@
 ﻿namespace Engraved.Core.Application.Commands.Journals.AddSchedule;
 
-public class AddScheduleCommand : ICommand
+public class AddScheduleToJournalCommand : ICommand
 {
   public string? JournalId { get; set; }
   

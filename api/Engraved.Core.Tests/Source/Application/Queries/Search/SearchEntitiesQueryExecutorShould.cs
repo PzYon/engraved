@@ -83,7 +83,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    result.Journals.Length.Should().Be(1);
+    result.Journals.Length.Should().Be(0);
     result.Entities.Length.Should().Be(1);
   }
 
@@ -98,9 +98,9 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addScheduleExecutor = new AddScheduleCommandExecutor(_userScopedInMemoryRepository);
+    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(_userScopedInMemoryRepository);
     await addScheduleExecutor.Execute(
-      new AddScheduleCommand
+      new AddScheduleToJournalCommand
       {
         JournalId = commandResult.EntityId,
         NextOccurrence = _dateService.UtcNow.AddDays(10)

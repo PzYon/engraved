@@ -1,5 +1,6 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Entries.AddSchedule;
 using Engraved.Core.Application.Commands.Entries.Delete;
 using Engraved.Core.Application.Commands.Entries.Move;
 using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
@@ -83,6 +84,18 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
   public async Task<CommandResult> StartTimer([FromBody] UpsertTimerEntryCommand entry)
   {
     return await dispatcher.Command(entry);
+  }
+
+  [HttpPost]
+  [Route("{entryId}/schedule")]
+  public async Task<CommandResult> AddSchedule(string entryId, [FromBody] AddScheduleToEntryCommand command)
+  {
+    if (entryId != command.EntryId)
+    {
+      throw new InvalidCommandException(command, "EntryIds from URL and body do not match.");
+    }
+
+    return await dispatcher.Command(command);
   }
 
   [HttpDelete]
