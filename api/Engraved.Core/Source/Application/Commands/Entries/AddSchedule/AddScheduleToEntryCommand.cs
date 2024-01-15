@@ -2,7 +2,7 @@
 
 public class AddScheduleToEntryCommand : ICommand
 {
-  public string EntryId { get; set; }
+  public string? EntryId { get; set; }
   
   public DateTime? NextOccurrence { get; set; }
 }
