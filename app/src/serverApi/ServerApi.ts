@@ -227,6 +227,20 @@ export class ServerApi {
     );
   }
 
+  static async modifyEntrySchedule(
+    entryId: string,
+    date?: Date,
+  ): Promise<ICommandResult> {
+    return await ServerApi.executeRequest(
+      `/entries/${entryId}/schedule`,
+      "POST",
+      {
+        entryId: entryId,
+        nextOccurrence: date,
+      },
+    );
+  }
+
   static async getThresholdValues(
     journalId: string,
     dateConditions: IDateConditions,

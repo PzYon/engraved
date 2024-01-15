@@ -36,6 +36,12 @@ export const Entry: React.FC<{
             node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
             label: "",
           },
+          {
+            key: "scheduled",
+            node: () => <FormatDate value={entry.schedule?.nextOccurrence} />,
+            label: "Scheduled",
+            hideWhen: () => !entry.schedule?.nextOccurrence,
+          },
         ]}
       />
       <ValueContainer>{children}</ValueContainer>

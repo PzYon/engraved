@@ -62,6 +62,7 @@ export const ScrapBody: React.FC<{
       editMode
         ? ActionFactory.save(async () => await onSave(), false, enableHotkeys)
         : ActionFactory.editScrap(() => setEditMode(true), enableHotkeys),
+      ActionFactory.editEntitySchedule(scrap.parentId, scrap.id),
     ];
 
     if (cancelEditing) {

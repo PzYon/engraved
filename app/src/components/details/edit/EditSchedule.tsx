@@ -5,17 +5,20 @@ import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { Button } from "@mui/material";
 import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
 
+// todo: make this more reusable
+
 export const EditSchedule: React.FC<{
   journal: IJournal;
+  entryId?: string;
   onCancel: () => void;
-}> = ({ journal, onCancel }) => {
+}> = ({ journal, entryId, onCancel }) => {
   const [date, setDate] = useState<Date>(
     journal.schedule?.nextOccurrence
       ? new Date(journal.schedule.nextOccurrence)
       : null,
   );
 
-  const modifyScheduleMutation = useModifyScheduleMutation(journal.id);
+  const modifyScheduleMutation = useModifyScheduleMutation(journal.id, entryId);
 
   return (
     <>

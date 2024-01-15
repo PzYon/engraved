@@ -1,6 +1,6 @@
 import React from "react";
 import { IJournal } from "../../serverApi/IJournal";
-import { DateFormat, formatDate, FormatDate } from "../common/FormatDate";
+import { DateFormat, FormatDate } from "../common/FormatDate";
 import { Users } from "../common/Users";
 import { Properties } from "../common/Properties";
 import { styled } from "@mui/material";
@@ -35,12 +35,10 @@ export const JournalProperties: React.FC<{
           {
             key: "schedule",
             node: () => (
-              <>
-                {formatDate(
-                  journal.schedule?.nextOccurrence,
-                  DateFormat.relativeToNow,
-                )}
-              </>
+              <FormatDate
+                value={journal.schedule?.nextOccurrence}
+                dateFormat={DateFormat.relativeToNow}
+              />
             ),
             label: "Scheduled",
             hideWhen: () => !journal.schedule?.nextOccurrence,

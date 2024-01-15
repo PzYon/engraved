@@ -5,14 +5,20 @@ import { useAppContext } from "../../../AppContext";
 import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
 import { DateFormat, formatDate } from "../../../components/common/FormatDate";
 
-export const useModifyScheduleMutation = (journalId: string) => {
+export const useModifyScheduleMutation = (
+  journalId: string,
+  entryId: string,
+) => {
   const { setAppAlert } = useAppContext();
 
   return useMutation({
     mutationKey: queryKeysFactory.journal(journalId),
 
-    mutationFn: (variables: { date?: Date }) =>
-      ServerApi.modifyJournalSchedule(journalId, variables.date),
+    mutationFn: (variables: { date?: Date }) => {
+      return entryId
+        ? ServerApi.modifyEntrySchedule(entryId, variables.date)
+        : ServerApi.modifyJournalSchedule(journalId, variables.date);
+    },
 
     onSuccess: (_, variables) =>
       setAppAlert({

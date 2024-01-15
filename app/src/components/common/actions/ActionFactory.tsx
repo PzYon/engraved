@@ -128,6 +128,15 @@ export class ActionFactory {
     };
   }
 
+  static editEntitySchedule(journalId: string, entryId: string): IAction {
+    return {
+      key: "edit-schedule",
+      label: "Edit schedule",
+      icon: <AlarmOutlined fontSize="small" />,
+      href: `/journals/${journalId}/entries/${entryId}/schedule`,
+    };
+  }
+
   static addEntry(
     journal: IJournal,
     renderDialog: (dialogProps: IDialogProps) => void,
