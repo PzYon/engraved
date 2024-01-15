@@ -19,7 +19,7 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
               ) : null}
 
               <Typography component="span" sx={{ color: "primary.main" }}>
-                {p.node}
+                {p.node()}
               </Typography>
             </Property>
           </span>

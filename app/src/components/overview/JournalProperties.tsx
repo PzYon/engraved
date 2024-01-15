@@ -1,6 +1,6 @@
 import React from "react";
 import { IJournal } from "../../serverApi/IJournal";
-import { FormatDate } from "../common/FormatDate";
+import { DateFormat, formatDate, FormatDate } from "../common/FormatDate";
 import { Users } from "../common/Users";
 import { Properties } from "../common/Properties";
 import { styled } from "@mui/material";
@@ -24,39 +24,47 @@ export const JournalProperties: React.FC<{
         properties={[
           {
             key: "favorite",
-            node: <Favorite journalId={journal.id} />,
+            node: () => <Favorite journalId={journal.id} />,
             label: null,
           },
           {
             key: "edited-on-date",
-            node: <FormatDate value={journal.editedOn} />,
+            node: () => <FormatDate value={journal.editedOn} />,
             label: "Edited",
           },
           {
             key: "schedule",
-            node: <>schedule</>,
-            label: "Schedule",
+            node: () => (
+              <>
+                {formatDate(
+                  journal.schedule?.nextOccurrence,
+                  DateFormat.relativeToNow,
+                )}
+              </>
+            ),
+            label: "Scheduled",
+            hideWhen: () => !journal.schedule?.nextOccurrence,
           },
           {
             key: "description",
-            node: <>{journal.description}</>,
+            node: () => <>{journal.description}</>,
             hideWhen: () => !journal.description,
             label: null,
           },
           {
             key: "user-role",
             label: "Your are",
-            node: journalPermissions.userRole,
+            node: () => journalPermissions.userRole,
           },
           {
             key: "owned-by",
-            node: <Users users={[journalPermissions.owner]} />,
+            node: () => <Users users={[journalPermissions.owner]} />,
             label: "Owned by",
             hideWhen: () => journalPermissions.userRole === UserRole.Owner,
           },
           {
             key: "shared-with",
-            node: <Users users={journalPermissions.allExceptOwner} />,
+            node: () => <Users users={journalPermissions.allExceptOwner} />,
             hideWhen: () => !journalPermissions.allExceptOwner.length,
             label: "Shared with",
           },

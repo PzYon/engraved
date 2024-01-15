@@ -19,19 +19,21 @@ export const Entry: React.FC<{
         properties={[
           {
             key: "journal-type",
-            node: (
+            node: () => (
               <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
             ),
             label: "",
           },
           {
             key: "name",
-            node: <Link to={`/journals/${journal.id}`}>{journal.name}</Link>,
+            node: () => (
+              <Link to={`/journals/${journal.id}`}>{journal.name}</Link>
+            ),
             label: "Journal",
           },
           {
             key: "date",
-            node: <FormatDate value={entry.editedOn || entry.dateTime} />,
+            node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
             label: "",
           },
         ]}
