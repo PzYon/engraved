@@ -33,6 +33,11 @@ export const JournalProperties: React.FC<{
             label: "Edited",
           },
           {
+            key: "schedule",
+            node: <>schedule</>,
+            label: "Schedule",
+          },
+          {
             key: "description",
             node: <>{journal.description}</>,
             hideWhen: () => !journal.description,
