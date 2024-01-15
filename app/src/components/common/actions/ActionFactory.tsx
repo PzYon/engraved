@@ -1,5 +1,6 @@
 import {
   AddOutlined,
+  AlarmOutlined,
   BoltOutlined,
   ClearOutlined,
   Close,
@@ -115,6 +116,15 @@ export class ActionFactory {
       label: "Delete",
       icon: <DeleteOutlined fontSize="small" />,
       href: `/journals/${journalId}/delete`,
+    };
+  }
+
+  static editJournalSchedule(journalId: string): IAction {
+    return {
+      key: "delete",
+      label: "Delete",
+      icon: <AlarmOutlined fontSize="small" />,
+      href: `/journals/${journalId}/schedule`,
     };
   }
 

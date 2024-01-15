@@ -4,6 +4,7 @@ import { IUserPermissions } from "./IUserPermissions";
 import { IJournalThresholds } from "./IJournalThresholds";
 import { IJournalCustomProps } from "./IJournalCustomProps";
 import { IEntity } from "./IEntity";
+import { ISchedule } from "./ISchedule";
 
 export interface IJournal extends IEntity {
   attributes?: IJournalAttributes;
@@ -14,4 +15,5 @@ export interface IJournal extends IEntity {
   thresholds?: IJournalThresholds;
   permissions?: IUserPermissions;
   customProps?: IJournalCustomProps;
+  schedule?: ISchedule;
 }

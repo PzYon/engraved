@@ -15,11 +15,6 @@ public class AddScheduleToJournalCommandExecutor(IRepository repository) : IComm
       throw new InvalidCommandException(command, $"{nameof(AddScheduleToJournalCommand.JournalId)} is required");
     }
 
-    if (command.NextOccurrence == null)
-    {
-      throw new InvalidCommandException(command, $"{nameof(AddScheduleToJournalCommand.NextOccurrence)} cannot be null");
-    }
-
     IJournal journal = (await _repository.GetJournal(command.JournalId))!;
 
     journal.Schedule = new Schedule

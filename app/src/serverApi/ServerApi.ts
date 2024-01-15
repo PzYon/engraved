@@ -198,18 +198,32 @@ export class ServerApi {
     return await ServerApi.executeRequest("/journals/", "PUT", payload);
   }
 
-  static async deleteJournal(journalId: string): Promise<unknown> {
+  static async deleteJournal(journalId: string): Promise<ICommandResult> {
     return await ServerApi.executeRequest(`/journals/${journalId}/`, "DELETE");
   }
 
   static async modifyJournalPermissions(
     journalId: string,
     permissions: IUpdatePermissions,
-  ): Promise<unknown> {
+  ): Promise<ICommandResult> {
     return await ServerApi.executeRequest(
       `/journals/${journalId}/permissions`,
       "PUT",
       permissions,
+    );
+  }
+
+  static async modifyJournalSchedule(
+    journalId: string,
+    date?: Date,
+  ): Promise<ICommandResult> {
+    return await ServerApi.executeRequest(
+      `/journals/${journalId}/schedule`,
+      "POST",
+      {
+        journalId: journalId,
+        nextOccurrence: date,
+      },
     );
   }
 
