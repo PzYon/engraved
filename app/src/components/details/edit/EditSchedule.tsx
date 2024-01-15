@@ -33,6 +33,7 @@ export const EditSchedule: React.FC<{
           variant="contained"
           onClick={() => {
             modifyScheduleMutation.mutate({ date: date });
+            onCancel();
           }}
         >
           Save

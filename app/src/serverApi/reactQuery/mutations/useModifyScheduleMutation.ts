@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { useAppContext } from "../../../AppContext";
 import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
+import { DateFormat, formatDate } from "../../../components/common/FormatDate";
 
 export const useModifyScheduleMutation = (journalId: string) => {
   const { setAppAlert } = useAppContext();
@@ -13,15 +14,17 @@ export const useModifyScheduleMutation = (journalId: string) => {
     mutationFn: (variables: { date?: Date }) =>
       ServerApi.modifyJournalSchedule(journalId, variables.date),
 
-    onSuccess: () =>
+    onSuccess: (_, variables) =>
       setAppAlert({
-        title: `Set schedule`,
+        title: variables.date
+          ? `Set schedule to ${formatDate(variables.date, DateFormat.relativeToNow)}`
+          : "Removed schedule",
         type: "success",
       }),
 
     onError: (error: IAppAlert) =>
       setAppAlert({
-        title: "Failed to modify  schedule",
+        title: "Failed to modify schedule",
         message: error.message,
         type: "error",
       }),

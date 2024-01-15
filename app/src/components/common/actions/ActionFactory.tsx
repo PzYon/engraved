@@ -121,8 +121,8 @@ export class ActionFactory {
 
   static editJournalSchedule(journalId: string): IAction {
     return {
-      key: "delete",
-      label: "Delete",
+      key: "edit-schedule",
+      label: "Edit schedule",
       icon: <AlarmOutlined fontSize="small" />,
       href: `/journals/${journalId}/schedule`,
     };
