@@ -5,4 +5,5 @@ export interface IPropertyDefinition {
   label: string;
   key: string;
   hideWhen?: () => boolean;
+  isHighlighted?: boolean;
 }

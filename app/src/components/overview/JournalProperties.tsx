@@ -42,6 +42,7 @@ export const JournalProperties: React.FC<{
             ),
             label: "Scheduled",
             hideWhen: () => !journal.schedule?.nextOccurrence,
+            isHighlighted: true,
           },
           {
             key: "description",

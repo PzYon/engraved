@@ -1,5 +1,5 @@
 import { ServerApi } from "../../ServerApi";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { useAppContext } from "../../../AppContext";
 import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
@@ -11,6 +11,8 @@ export const useModifyScheduleMutation = (
 ) => {
   const { setAppAlert } = useAppContext();
 
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationKey: queryKeysFactory.journal(journalId),
 
@@ -20,13 +22,18 @@ export const useModifyScheduleMutation = (
         : ServerApi.modifyJournalSchedule(journalId, variables.date);
     },
 
-    onSuccess: (_, variables) =>
+    onSuccess: async (_, variables) => {
       setAppAlert({
         title: variables.date
           ? `Set schedule to ${formatDate(variables.date, DateFormat.relativeToNow)}`
           : "Removed schedule",
         type: "success",
-      }),
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.journal(journalId),
+      });
+    },
 
     onError: (error: IAppAlert) =>
       setAppAlert({

@@ -1,24 +1,20 @@
 import React, { useState } from "react";
-import { IJournal } from "../../../serverApi/IJournal";
 import { DateSelector } from "../../common/DateSelector";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { Button } from "@mui/material";
 import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
 
-// todo: make this more reusable
-
 export const EditSchedule: React.FC<{
-  journal: IJournal;
+  initialDate: string;
+  journalId: string;
   entryId?: string;
   onCancel: () => void;
-}> = ({ journal, entryId, onCancel }) => {
+}> = ({ initialDate, journalId, entryId, onCancel }) => {
   const [date, setDate] = useState<Date>(
-    journal.schedule?.nextOccurrence
-      ? new Date(journal.schedule.nextOccurrence)
-      : null,
+    initialDate ? new Date(initialDate) : null,
   );
 
-  const modifyScheduleMutation = useModifyScheduleMutation(journal.id, entryId);
+  const modifyScheduleMutation = useModifyScheduleMutation(journalId, entryId);
 
   return (
     <>

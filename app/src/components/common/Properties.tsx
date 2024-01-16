@@ -11,7 +11,10 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
         .filter((p) => !p.hideWhen || !p.hideWhen())
         .map((p) => (
           <span className="ngrvd-property" key={p.key}>
-            <Property as="span">
+            <Property
+              as="span"
+              className={p.isHighlighted ? "highlighted" : ""}
+            >
               {p.label ? (
                 <Typography component="span" sx={{ fontWeight: "200" }}>
                   {p.label}{" "}
@@ -42,4 +45,10 @@ const Host = styled("div")`
 const Property = styled(Typography)`
   word-break: break-word;
   height: 100%;
+
+  &.highlighted {
+    background-color: ${(p) => p.theme.palette.background.default};
+    border-radius: 4px;
+    padding: 5px;
+  }
 `;

@@ -41,6 +41,7 @@ export const Entry: React.FC<{
             node: () => <FormatDate value={entry.schedule?.nextOccurrence} />,
             label: "Scheduled",
             hideWhen: () => !entry.schedule?.nextOccurrence,
+            isHighlighted: true,
           },
         ]}
       />
