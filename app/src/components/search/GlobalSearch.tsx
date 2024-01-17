@@ -9,9 +9,14 @@ import { JournalListItem } from "../overview/JournalListItem";
 import { IJournal } from "../../serverApi/IJournal";
 import { PageSection } from "../layout/pages/PageSection";
 
-export const GlobalSearch: React.FC = () => {
+export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
+  isSchedule,
+}) => {
   const { searchText } = usePageContext();
-  const queryResult: ISearchEntitiesResult = useSearchEntitiesQuery(searchText);
+  const queryResult: ISearchEntitiesResult = useSearchEntitiesQuery(
+    searchText,
+    isSchedule,
+  );
 
   if (!queryResult) {
     return null;

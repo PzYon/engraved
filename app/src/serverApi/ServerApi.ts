@@ -325,10 +325,21 @@ export class ServerApi {
 
   static async getSearchEntities(
     searchText: string,
+    scheduledOnly: boolean,
   ): Promise<ISearchEntitiesResult> {
-    return await ServerApi.executeRequest(
-      `/search/entities?searchText=${searchText ?? ""}`,
-    );
+    const urlParams: string[] = [];
+
+    if (searchText) {
+      urlParams.push(`searchText=${searchText}`);
+    }
+
+    if (scheduledOnly) {
+      urlParams.push(`scheduledOnly=${scheduledOnly}`);
+    }
+
+    const params = urlParams.length ? `?${urlParams.join("&")}` : "";
+
+    return await ServerApi.executeRequest(`/search/entities${params}`);
   }
 
   static async executeRequest<T = void>(

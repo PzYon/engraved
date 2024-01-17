@@ -5,6 +5,7 @@ import { JournalPageWrapper } from "../details/JournalPageWrapper";
 import { EntriesPage } from "../overview/EntriesPage";
 import { AddJournalPage } from "../overview/AddJournalPage";
 import { SearchPage } from "../search/SearchPage";
+import { ScheduledPage } from "../scheduled/ScheduledPage";
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/journals/:journalId/*" element={<JournalPageWrapper />} />
       <Route path="/entries" element={<EntriesPage />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/scheduled" element={<ScheduledPage />} />
     </Routes>
   );
 };

@@ -11,11 +11,6 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
 
   public async Task<SearchEntitiesResult> Execute(SearchEntitiesQuery query)
   {
-    if (string.IsNullOrEmpty(query.SearchText))
-    {
-      return new SearchEntitiesResult();
-    }
-
     IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(
       new GetAllJournalsQuery
       {

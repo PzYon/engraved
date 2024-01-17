@@ -83,7 +83,7 @@ export const queryKeysFactory = {
     return ["user"];
   },
 
-  entities(searchText: string) {
-    return ["search", "entities", searchText];
+  entities(searchText: string, scheduledOnly: boolean) {
+    return ["search", "entities", searchText, scheduledOnly];
   },
 };
