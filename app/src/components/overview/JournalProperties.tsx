@@ -1,6 +1,6 @@
 import React from "react";
 import { IJournal } from "../../serverApi/IJournal";
-import { DateFormat, FormatDate } from "../common/FormatDate";
+import { FormatDate } from "../common/FormatDate";
 import { Users } from "../common/Users";
 import { Properties } from "../common/Properties";
 import { styled } from "@mui/material";
@@ -8,6 +8,7 @@ import { Favorite } from "./Favorite";
 import { useJournalPermissions } from "./useJournalPermissions";
 import { UserRole } from "../../serverApi/UserRole";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
+import { getScheduleProperty } from "../scheduled/scheduleUtils";
 
 export const JournalProperties: React.FC<{
   journal: IJournal;
@@ -32,18 +33,7 @@ export const JournalProperties: React.FC<{
             node: () => <FormatDate value={journal.editedOn} />,
             label: "Edited",
           },
-          {
-            key: "schedule",
-            node: () => (
-              <FormatDate
-                value={journal.schedule?.nextOccurrence}
-                dateFormat={DateFormat.relativeToNow}
-              />
-            ),
-            label: "Scheduled",
-            hideWhen: () => !journal.schedule?.nextOccurrence,
-            isHighlighted: true,
-          },
+          getScheduleProperty(journal.schedule?.nextOccurrence),
           {
             key: "description",
             node: () => <>{journal.description}</>,

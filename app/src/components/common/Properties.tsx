@@ -11,10 +11,7 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
         .filter((p) => !p.hideWhen || !p.hideWhen())
         .map((p) => (
           <span className="ngrvd-property" key={p.key}>
-            <Property
-              as="span"
-              className={p.isHighlighted ? "highlighted" : ""}
-            >
+            <Property as="span" className={p.highlightStyle?.() ?? ""}>
               {p.label ? (
                 <Typography component="span" sx={{ fontWeight: "200" }}>
                   {p.label}{" "}
@@ -46,8 +43,14 @@ const Property = styled(Typography)`
   word-break: break-word;
   height: 100%;
 
-  &.highlighted {
+  &.regular {
     background-color: ${(p) => p.theme.palette.background.default};
+    border-radius: 4px;
+    padding: 5px;
+  }
+
+  &.warning {
+    background-color: #fbceb1;
     border-radius: 4px;
     padding: 5px;
   }
