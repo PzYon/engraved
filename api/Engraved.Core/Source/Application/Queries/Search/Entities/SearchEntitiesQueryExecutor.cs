@@ -35,13 +35,24 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
           entry => new SearchResultEntity { EntityType = EntityType.Entry, Entity = entry }
         )
       )
-      .OrderByDescending(r => r.Entity.EditedOn)
       .ToArray();
 
     return new SearchEntitiesResult
     {
-      Entities = searchResultEntities,
+      Entities = GetSortedResults(query, searchResultEntities),
       Journals = entriesResult.Journals
     };
+  }
+
+  private static SearchResultEntity[] GetSortedResults(
+    SearchEntitiesQuery query,
+    SearchResultEntity[] searchResultEntities
+  )
+  {
+    return (
+      query.ScheduledOnly
+        ? searchResultEntities.OrderBy(e => e.Entity.Schedule?.NextOccurrence)
+        : searchResultEntities.OrderByDescending(e => e.Entity.EditedOn)
+    ).ToArray();
   }
 }
