@@ -3,6 +3,7 @@ import { DateSelector } from "../../common/DateSelector";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { Button } from "@mui/material";
 import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
+import { FunkyDate } from "./FunkyDate";
 
 export const EditSchedule: React.FC<{
   initialDate: string;
@@ -18,6 +19,7 @@ export const EditSchedule: React.FC<{
 
   return (
     <>
+      <FunkyDate sx={{ marginBottom: 2 }} onSelect={(d) => setDate(d)} />
       <DateSelector
         date={date}
         setDate={setDate}

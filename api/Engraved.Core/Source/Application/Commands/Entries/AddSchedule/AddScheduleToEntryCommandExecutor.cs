@@ -17,11 +17,6 @@ public class AddScheduleToEntryCommandExecutor(IRepository repository) : IComman
       throw new InvalidCommandException(command, $"{nameof(AddScheduleToEntryCommand.EntryId)} is required");
     }
 
-    if (command.NextOccurrence == null)
-    {
-      throw new InvalidCommandException(command, $"{nameof(AddScheduleToEntryCommand.NextOccurrence)} cannot be null");
-    }
-
     IEntry entry = (await _repository.GetEntry(command.EntryId))!;
 
     entry.Schedule = new Schedule
