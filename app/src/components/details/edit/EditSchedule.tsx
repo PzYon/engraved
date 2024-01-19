@@ -19,7 +19,12 @@ export const EditSchedule: React.FC<{
 
   return (
     <>
-      <FunkyDate sx={{ marginBottom: 2 }} onSelect={(d) => setDate(d)} />
+      <FunkyDate
+        sx={{ marginBottom: 2 }}
+        onSelect={(d) => {
+          setDate(d);
+        }}
+      />
       <DateSelector
         date={date}
         setDate={setDate}
