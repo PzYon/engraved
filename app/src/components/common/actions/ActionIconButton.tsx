@@ -72,7 +72,7 @@ export const ActionIconButton: React.FC<{
   function getCommonProps() {
     return {
       key: action.key,
-      title: action.label,
+      title: action.label + (action.hotkey ? ` (${action.hotkey})` : ""),
       "aria-label": action.label,
       onClick: action.onClick,
     };
