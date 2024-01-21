@@ -22,8 +22,8 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
     return null;
   }
 
-  if (!queryResult.entities.length && searchText) {
-    return <NoResultsFound />;
+  if (!queryResult.entities.length && (searchText || isSchedule)) {
+    return <NoResultsFound hideTryAgain={isSchedule} />;
   }
 
   return (
