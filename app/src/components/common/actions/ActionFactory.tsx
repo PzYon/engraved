@@ -119,8 +119,12 @@ export class ActionFactory {
     };
   }
 
-  static editJournalSchedule(journalId: string): IAction {
+  static editJournalSchedule(
+    journalId: string,
+    enableHotkeys: boolean,
+  ): IAction {
     return {
+      hotkey: enableHotkeys ? "alt+t" : undefined,
       key: "edit-schedule",
       label: "Edit schedule",
       icon: <AlarmOutlined fontSize="small" />,

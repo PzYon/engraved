@@ -23,7 +23,7 @@ export function getCommonActions(
 
   actions.push(
     ActionFactory.editJournalPermissions(journal.id),
-    ActionFactory.editJournalSchedule(journal.id),
+    ActionFactory.editJournalSchedule(journal.id, enableHotkeys),
     ActionFactory.editJournal(journal.id, enableHotkeys),
     ActionFactory.deleteJournal(journal.id, enableHotkeys),
   );

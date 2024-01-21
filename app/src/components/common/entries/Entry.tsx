@@ -35,7 +35,7 @@ export const Entry: React.FC<{
           {
             key: "date",
             node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
-            label: "",
+            label: "Edited",
           },
           getScheduleProperty(entry.schedule?.nextOccurrence),
         ]}
