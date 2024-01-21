@@ -13,17 +13,19 @@ export const JournalSelector: React.FC<{
 }> = ({ onChange, label, selectedJournalId }) => {
   const journals = useJournalsQuery("", [JournalType.Scraps]);
 
-  const initiallySelectedJournal = useMemo(() => {
-    return !journals
-      ? null
-      : journals.find((j) => j.id === selectedJournalId) ?? journals[0];
-  }, [journals, selectedJournalId]);
+  const selectedJournal = useMemo(
+    () =>
+      journals
+        ? journals.find((j) => j.id === selectedJournalId) ?? journals[0]
+        : null,
+    [journals, selectedJournalId],
+  );
 
   useEffect(() => {
-    if (initiallySelectedJournal) {
-      onChange(initiallySelectedJournal);
+    if (selectedJournal) {
+      onChange(selectedJournal);
     }
-  }, [initiallySelectedJournal, onChange]);
+  }, [selectedJournal, onChange]);
 
   if (!journals?.length) {
     return null;
@@ -31,7 +33,7 @@ export const JournalSelector: React.FC<{
 
   return (
     <Autocomplete
-      defaultValue={initiallySelectedJournal}
+      value={selectedJournal}
       options={journals}
       onChange={async (_, selectedOption) => {
         onChange(selectedOption);

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
@@ -23,6 +24,8 @@ public static class EntryDocumentMapper
         cfg.CreateMap<TimerEntry, TimerEntryDocument>();
         cfg.CreateMap<ScrapsEntry, ScrapsEntryDocument>();
 
+        cfg.CreateMap<Schedule, ScheduleSubDocument>();
+
         cfg.CreateMap<EntryDocument, IEntry>()
           .Include<CounterEntryDocument, CounterEntry>()
           .Include<GaugeEntryDocument, GaugeEntry>()
@@ -33,6 +36,8 @@ public static class EntryDocumentMapper
         cfg.CreateMap<GaugeEntryDocument, GaugeEntry>();
         cfg.CreateMap<TimerEntryDocument, TimerEntry>();
         cfg.CreateMap<ScrapsEntryDocument, ScrapsEntry>();
+
+        cfg.CreateMap<ScheduleSubDocument, Schedule>();
       }
     );
 

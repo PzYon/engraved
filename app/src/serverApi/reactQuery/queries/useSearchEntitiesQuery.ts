@@ -3,18 +3,14 @@ import { ServerApi } from "../../ServerApi";
 import { useQuery } from "@tanstack/react-query";
 import { ISearchEntitiesResult } from "../../ISearchEntitiesResult";
 
-export const useSearchEntitiesQuery = (searchText?: string) => {
+export const useSearchEntitiesQuery = (
+  searchText?: string,
+  scheduledOnly?: boolean,
+) => {
   const { data: result } = useQuery<ISearchEntitiesResult>({
-    queryKey: queryKeysFactory.entities(searchText),
+    queryKey: queryKeysFactory.entities(searchText, scheduledOnly),
 
-    queryFn: () => {
-      return !searchText
-        ? Promise.resolve({
-            entities: [],
-            journals: [],
-          })
-        : ServerApi.getSearchEntities(searchText);
-    },
+    queryFn: () => ServerApi.getSearchEntities(searchText, scheduledOnly),
   });
 
   return result;

@@ -1,6 +1,7 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Journals.Add;
+using Engraved.Core.Application.Commands.Journals.AddSchedule;
 using Engraved.Core.Application.Commands.Journals.Delete;
 using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
@@ -49,6 +50,18 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
   [HttpPut]
   public async Task<CommandResult> Edit([FromBody] EditJournalCommand command)
   {
+    return await dispatcher.Command(command);
+  }
+
+  [HttpPost]
+  [Route("{journalId}/schedule")]
+  public async Task<CommandResult> AddSchedule(string journalId, [FromBody] AddScheduleToJournalCommand command)
+  {
+    if (journalId != command.JournalId)
+    {
+      throw new InvalidCommandException(command, "JournalIds from URL and body do not match.");
+    }
+
     return await dispatcher.Command(command);
   }
 

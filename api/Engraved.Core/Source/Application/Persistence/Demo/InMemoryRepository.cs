@@ -49,7 +49,8 @@ public class InMemoryRepository : IRepository
     string? searchText = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    bool scheduledOnly = false
   )
   {
     // note: conditions are currently partially ignored, as they are not (yet?) needed for these in memory tests.
@@ -92,7 +93,8 @@ public class InMemoryRepository : IRepository
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
-    int limit
+    int? limit,
+    bool scheduledOnly = false
   )
   {
     return Task.FromResult(
@@ -109,7 +111,7 @@ public class InMemoryRepository : IRepository
             return true;
           }
         )
-        .Take(limit)
+        .Take(limit ?? 100)
         .ToArray()
     );
   }

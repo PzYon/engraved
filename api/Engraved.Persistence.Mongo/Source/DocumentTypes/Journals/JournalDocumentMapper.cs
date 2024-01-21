@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Engraved.Core.Domain;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
@@ -23,6 +24,8 @@ public static class JournalDocumentMapper
         cfg.CreateMap<TimerJournal, TimerJournalDocument>();
         cfg.CreateMap<ScrapsJournal, ScrapsJournalDocument>();
 
+        cfg.CreateMap<Schedule, ScheduleSubDocument>();
+
         cfg.CreateMap<JournalDocument, IJournal>()
           .Include<CounterJournalDocument, CounterJournal>()
           .Include<GaugeJournalDocument, GaugeJournal>()
@@ -33,6 +36,8 @@ public static class JournalDocumentMapper
         cfg.CreateMap<GaugeJournalDocument, GaugeJournal>();
         cfg.CreateMap<TimerJournalDocument, TimerJournal>();
         cfg.CreateMap<ScrapsJournalDocument, ScrapsJournal>();
+
+        cfg.CreateMap<ScheduleSubDocument, Schedule>();
       }
     );
 

@@ -17,9 +17,12 @@ public class UpsertScrapsEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
 
   protected override Task PerformTypeSpecificValidation(UpsertScrapsEntryCommand command)
   {
-    if (string.IsNullOrWhiteSpace(command.Notes))
+    if (string.IsNullOrWhiteSpace(command.Title) && string.IsNullOrWhiteSpace(command.Notes))
     {
-      throw CreateInvalidCommandException(command, $"\"{nameof(UpsertScrapsEntryCommand.Notes)}\" must be specified");
+      throw CreateInvalidCommandException(
+        command,
+        $"Either \"{nameof(UpsertScrapsEntryCommand.Title)}\" or \"{nameof(UpsertScrapsEntryCommand.Notes)}\" must be specified"
+      );
     }
 
     return Task.CompletedTask;

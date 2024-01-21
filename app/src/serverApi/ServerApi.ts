@@ -198,18 +198,46 @@ export class ServerApi {
     return await ServerApi.executeRequest("/journals/", "PUT", payload);
   }
 
-  static async deleteJournal(journalId: string): Promise<unknown> {
+  static async deleteJournal(journalId: string): Promise<ICommandResult> {
     return await ServerApi.executeRequest(`/journals/${journalId}/`, "DELETE");
   }
 
   static async modifyJournalPermissions(
     journalId: string,
     permissions: IUpdatePermissions,
-  ): Promise<unknown> {
+  ): Promise<ICommandResult> {
     return await ServerApi.executeRequest(
       `/journals/${journalId}/permissions`,
       "PUT",
       permissions,
+    );
+  }
+
+  static async modifyJournalSchedule(
+    journalId: string,
+    date?: Date,
+  ): Promise<ICommandResult> {
+    return await ServerApi.executeRequest(
+      `/journals/${journalId}/schedule`,
+      "POST",
+      {
+        journalId: journalId,
+        nextOccurrence: date,
+      },
+    );
+  }
+
+  static async modifyEntrySchedule(
+    entryId: string,
+    date?: Date,
+  ): Promise<ICommandResult> {
+    return await ServerApi.executeRequest(
+      `/entries/${entryId}/schedule`,
+      "POST",
+      {
+        entryId: entryId,
+        nextOccurrence: date,
+      },
     );
   }
 
@@ -297,10 +325,21 @@ export class ServerApi {
 
   static async getSearchEntities(
     searchText: string,
+    scheduledOnly: boolean,
   ): Promise<ISearchEntitiesResult> {
-    return await ServerApi.executeRequest(
-      `/search/entities?searchText=${searchText ?? ""}`,
-    );
+    const urlParams: string[] = [];
+
+    if (searchText) {
+      urlParams.push(`searchText=${searchText}`);
+    }
+
+    if (scheduledOnly) {
+      urlParams.push(`scheduledOnly=${scheduledOnly}`);
+    }
+
+    const params = urlParams.length ? `?${urlParams.join("&")}` : "";
+
+    return await ServerApi.executeRequest(`/search/entities${params}`);
   }
 
   static async executeRequest<T = void>(

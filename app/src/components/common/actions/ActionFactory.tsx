@@ -1,5 +1,6 @@
 import {
   AddOutlined,
+  AlarmOutlined,
   BoltOutlined,
   ClearOutlined,
   Close,
@@ -115,6 +116,28 @@ export class ActionFactory {
       label: "Delete",
       icon: <DeleteOutlined fontSize="small" />,
       href: `/journals/${journalId}/delete`,
+    };
+  }
+
+  static editJournalSchedule(
+    journalId: string,
+    enableHotkeys: boolean,
+  ): IAction {
+    return {
+      hotkey: enableHotkeys ? "alt+t" : undefined,
+      key: "edit-schedule",
+      label: "Edit schedule",
+      icon: <AlarmOutlined fontSize="small" />,
+      href: `/journals/${journalId}/schedule`,
+    };
+  }
+
+  static editEntitySchedule(journalId: string, entryId: string): IAction {
+    return {
+      key: "edit-schedule",
+      label: "Edit schedule",
+      icon: <AlarmOutlined fontSize="small" />,
+      href: `/journals/${journalId}/entries/${entryId}/schedule`,
     };
   }
 

@@ -1,10 +1,12 @@
 import React from "react";
-import { styled, Typography } from "@mui/material";
+import { styled } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
 import { ActionGroup } from "../../common/actions/ActionGroup";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
+import { Properties } from "../../common/Properties";
+import { getScheduleProperty } from "../../scheduled/scheduleUtils";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapEntry;
@@ -37,9 +39,18 @@ export const ScrapBody: React.FC<{
 
       <FooterContainer>
         {hideDate ? null : (
-          <Typography fontSize="small" component="span" sx={{ mr: 2 }}>
-            {scrap.dateTime ? <FormatDate value={scrap.dateTime} /> : "now"}
-          </Typography>
+          <Properties
+            properties={[
+              getScheduleProperty(scrap.schedule?.nextOccurrence),
+              {
+                key: "date",
+                node: () => (
+                  <FormatDate value={scrap.editedOn || scrap.dateTime} />
+                ),
+                label: "Edited",
+              },
+            ]}
+          />
         )}
 
         {allActions?.length ? (
@@ -62,6 +73,7 @@ export const ScrapBody: React.FC<{
       editMode
         ? ActionFactory.save(async () => await onSave(), false, enableHotkeys)
         : ActionFactory.editScrap(() => setEditMode(true), enableHotkeys),
+      ActionFactory.editEntitySchedule(scrap.parentId, scrap.id),
     ];
 
     if (cancelEditing) {
@@ -82,8 +94,9 @@ const FooterContainer = styled("div")`
   display: flex;
   justify-content: end;
   align-items: center;
+  margin-top: 6px;
 `;
 
 const ActionsContainer = styled("div")`
-  margin-top: 6px;
+  margin-left: ${(p) => p.theme.spacing(2)};
 `;

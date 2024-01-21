@@ -1,4 +1,5 @@
 ﻿using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Entries.AddSchedule;
 using Engraved.Core.Application.Commands.Entries.Delete;
 using Engraved.Core.Application.Commands.Entries.Move;
 using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
@@ -6,6 +7,7 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Commands.Journals.Add;
+using Engraved.Core.Application.Commands.Journals.AddSchedule;
 using Engraved.Core.Application.Commands.Journals.Delete;
 using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
@@ -42,6 +44,8 @@ public class ExecutorRegistration
     RegisterCommand<EditJournalPermissionsCommand, EditJournalPermissionsCommandExecutor>(services);
     RegisterCommand<MoveEntryCommand, MoveEntryCommandExecutor>(services);
     RegisterCommand<RemoveJournalFromFavoritesCommand, RemoveJournalFromFavoritesCommandExecutor>(services);
+    RegisterCommand<AddScheduleToJournalCommand, AddScheduleToJournalCommandExecutor>(services);
+    RegisterCommand<AddScheduleToEntryCommand, AddScheduleToEntryCommandExecutor>(services);
   }
 
   private static void RegisterCommand<TCommand, TCommandExecutor>(IServiceCollection services)

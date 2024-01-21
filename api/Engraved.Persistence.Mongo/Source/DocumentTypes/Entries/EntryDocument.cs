@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
 
-public abstract class EntryDocument : IUserScopedDocument
+public abstract class EntryDocument : IUserScopedDocument, IScheduledDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]
@@ -22,4 +22,6 @@ public abstract class EntryDocument : IUserScopedDocument
   public DateTime? EditedOn { get; set; }
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
+  
+  public ScheduleSubDocument? Schedule { get; set; }
 }

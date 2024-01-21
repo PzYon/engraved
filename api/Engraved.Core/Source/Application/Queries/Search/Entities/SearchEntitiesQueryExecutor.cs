@@ -11,17 +11,21 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
 
   public async Task<SearchEntitiesResult> Execute(SearchEntitiesQuery query)
   {
-    if (string.IsNullOrEmpty(query.SearchText))
-    {
-      return new SearchEntitiesResult();
-    }
+    IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(
+      new GetAllJournalsQuery
+      {
+        SearchText = query.SearchText,
+        ScheduledOnly = query.ScheduledOnly
+      }
+    );
 
-    var journalsQuery = new GetAllJournalsQuery { SearchText = query.SearchText };
-    IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(journalsQuery);
-
-    var entriesQuery = new GetAllEntriesQuery { SearchText = query.SearchText };
-    GetAllEntriesQueryResult entriesResult =
-      await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(entriesQuery);
+    GetAllEntriesQueryResult entriesResult = await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(
+      new GetAllEntriesQuery
+      {
+        SearchText = query.SearchText,
+        ScheduledOnly = query.ScheduledOnly
+      }
+    );
 
     SearchResultEntity[] searchResultEntities = journals.Select(
         journal => new SearchResultEntity { EntityType = EntityType.Journal, Entity = journal }
@@ -31,13 +35,24 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
           entry => new SearchResultEntity { EntityType = EntityType.Entry, Entity = entry }
         )
       )
-      .OrderByDescending(r => r.Entity.EditedOn)
       .ToArray();
 
     return new SearchEntitiesResult
     {
-      Entities = searchResultEntities,
+      Entities = GetSortedResults(query, searchResultEntities),
       Journals = entriesResult.Journals
     };
+  }
+
+  private static SearchResultEntity[] GetSortedResults(
+    SearchEntitiesQuery query,
+    SearchResultEntity[] searchResultEntities
+  )
+  {
+    return (
+      query.ScheduledOnly
+        ? searchResultEntities.OrderBy(e => e.Entity.Schedule?.NextOccurrence)
+        : searchResultEntities.OrderByDescending(e => e.Entity.EditedOn)
+    ).ToArray();
   }
 }

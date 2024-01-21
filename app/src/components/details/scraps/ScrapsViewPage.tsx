@@ -17,6 +17,7 @@ import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceho
 import { useHotkeys } from "react-hotkeys-hook";
 import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 import { IAction } from "../../common/actions/IAction";
+import { EditScheduleLauncher } from "../edit/EditScheduleLauncher";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -93,6 +94,10 @@ export const ScrapsViewPage: React.FC = () => {
         <Route
           path="/entries/:entryId/delete"
           element={<DeleteEntryLauncher journal={journal} />}
+        />
+        <Route
+          path="/entries/:entryId/schedule"
+          element={<EditScheduleLauncher journal={journal} />}
         />
       </Routes>
     </Page>

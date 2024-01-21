@@ -99,7 +99,8 @@ public class MongoRepository : IBaseRepository
     string? searchText = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    bool scheduledOnly = false
   )
   {
     List<FilterDefinition<JournalDocument>> filters = GetFreeTextFilters<JournalDocument>(
@@ -127,6 +128,13 @@ public class MongoRepository : IBaseRepository
             i => GetJournalDocumentByIdFilter<JournalDocument>(i, PermissionKind.Read)
           )
         )
+      );
+    }
+
+    if (scheduledOnly)
+    {
+      filters.Add(
+        Builders<JournalDocument>.Filter.Where(d => d.Schedule != null && d.Schedule.NextOccurrence != null)
       );
     }
 
@@ -250,7 +258,8 @@ public class MongoRepository : IBaseRepository
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
-    int limit
+    int? limit,
+    bool scheduledOnly = false
   )
   {
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
@@ -270,6 +279,13 @@ public class MongoRepository : IBaseRepository
         Builders<EntryDocument>.Filter.Or(
           journalTypes.Select(t => Builders<EntryDocument>.Filter.Where(GetIsEntryTypeExpression(t)))
         )
+      );
+    }
+
+    if (scheduledOnly)
+    {
+      filters.Add(
+        Builders<EntryDocument>.Filter.Where(d => d.Schedule != null && d.Schedule.NextOccurrence != null)
       );
     }
 

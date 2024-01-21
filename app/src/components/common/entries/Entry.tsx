@@ -7,6 +7,7 @@ import { Properties } from "../Properties";
 import { JournalTypeIcon } from "../JournalTypeIcon";
 import { IconStyle } from "../Icon";
 import { Link } from "react-router-dom";
+import { getScheduleProperty } from "../../scheduled/scheduleUtils";
 
 export const Entry: React.FC<{
   journal: IJournal;
@@ -19,21 +20,24 @@ export const Entry: React.FC<{
         properties={[
           {
             key: "journal-type",
-            node: (
+            node: () => (
               <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
             ),
             label: "",
           },
           {
             key: "name",
-            node: <Link to={`/journals/${journal.id}`}>{journal.name}</Link>,
+            node: () => (
+              <Link to={`/journals/${journal.id}`}>{journal.name}</Link>
+            ),
             label: "Journal",
           },
           {
             key: "date",
-            node: <FormatDate value={entry.editedOn || entry.dateTime} />,
-            label: "",
+            node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
+            label: "Edited",
           },
+          getScheduleProperty(entry.schedule?.nextOccurrence),
         ]}
       />
       <ValueContainer>{children}</ValueContainer>

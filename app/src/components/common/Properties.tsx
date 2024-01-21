@@ -11,7 +11,7 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
         .filter((p) => !p.hideWhen || !p.hideWhen())
         .map((p) => (
           <span className="ngrvd-property" key={p.key}>
-            <Property as="span">
+            <Property as="span" className={p.highlightStyle?.() ?? ""}>
               {p.label ? (
                 <Typography component="span" sx={{ fontWeight: "200" }}>
                   {p.label}{" "}
@@ -19,7 +19,7 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
               ) : null}
 
               <Typography component="span" sx={{ color: "primary.main" }}>
-                {p.node}
+                {p.node()}
               </Typography>
             </Property>
           </span>
@@ -42,4 +42,16 @@ const Host = styled("div")`
 const Property = styled(Typography)`
   word-break: break-word;
   height: 100%;
+
+  &.regular {
+    background-color: ${(p) => p.theme.palette.background.default};
+    border-radius: 4px;
+    padding: 5px;
+  }
+
+  &.warning {
+    background-color: #fbceb1;
+    border-radius: 4px;
+    padding: 5px;
+  }
 `;

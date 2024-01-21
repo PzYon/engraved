@@ -19,7 +19,8 @@ public interface IBaseRepository
     string? searchText = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    bool scheduledOnly = false
   );
 
   Task<IJournal?> GetJournal(string journalId);
@@ -41,7 +42,8 @@ public interface IBaseRepository
     string[]? journalIds,
     string? searchText,
     JournalType[]? journalTypes,
-    int limit
+    int? limit,
+    bool scheduledOnly = false
   );
 
   Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;

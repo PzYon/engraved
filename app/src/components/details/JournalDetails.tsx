@@ -11,6 +11,7 @@ import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
 import { JournalProperties } from "../overview/JournalProperties";
+import { EditScheduleLauncher } from "./edit/EditScheduleLauncher";
 
 export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
@@ -52,6 +53,10 @@ const SubRoutes: React.FC<{
       <Route
         path="/permissions"
         element={<EditJournalPermissionsLauncher journal={journal} />}
+      />
+      <Route
+        path="/schedule"
+        element={<EditScheduleLauncher journal={journal} />}
       />
       <Route
         path="/delete"
