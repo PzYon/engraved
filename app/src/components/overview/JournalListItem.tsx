@@ -4,7 +4,6 @@ import { Box, styled, Typography } from "@mui/material";
 import { JournalHeaderActions } from "./JournalHeaderActions";
 import { JournalProperties } from "./JournalProperties";
 import { JournalTypeIcon } from "../common/JournalTypeIcon";
-import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { IconStyle } from "../common/Icon";
 import { PageSection } from "../layout/pages/PageSection";
 import { JournalItemWrapper } from "./JournalItemWrapper";
@@ -19,7 +18,6 @@ export const JournalListItem: React.FC<{
   onClick?: () => void;
   isFocused?: boolean;
 }> = ({ journal, addWrapper, index, onClick, isFocused }) => {
-  const deviceWidth = useDeviceWidth();
   const domElementRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
@@ -70,24 +68,16 @@ export const JournalListItem: React.FC<{
                 </Typography>
               </ActionLink>
             </TitleRow>
-            <JournalProperties journal={journal} position={"list"} />
-            {deviceWidth === DeviceWidth.Small ? (
-              <Box sx={{ display: "flex", mt: 2 }}>
+            <div style={{ display: "flex" }}>
+              <JournalProperties journal={journal} position={"list"} />
+              <Box sx={{ display: "flex", mt: 2, flexGrow: 1 }}>
                 <JournalHeaderActions
                   journal={journal}
                   enableHotkeys={isFocused}
                 />
               </Box>
-            ) : null}
+            </div>
           </Box>
-          {deviceWidth !== DeviceWidth.Small ? (
-            <Box>
-              <JournalHeaderActions
-                journal={journal}
-                enableHotkeys={isFocused}
-              />
-            </Box>
-          ) : null}
         </Box>
       </PageSection>
     </Wrapper>
