@@ -70,10 +70,10 @@ export const ScrapBody: React.FC<{
     const allActions = [
       ...actions,
       ActionFactory.moveToAnotherScrap(scrap),
+      ActionFactory.editEntitySchedule(scrap.parentId, scrap.id),
       editMode
         ? ActionFactory.save(async () => await onSave(), false, enableHotkeys)
         : ActionFactory.editScrap(() => setEditMode(true), enableHotkeys),
-      ActionFactory.editEntitySchedule(scrap.parentId, scrap.id),
     ];
 
     if (cancelEditing) {
