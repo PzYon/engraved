@@ -68,15 +68,15 @@ export const JournalListItem: React.FC<{
                 </Typography>
               </ActionLink>
             </TitleRow>
-            <div style={{ display: "flex" }}>
-              <JournalProperties journal={journal} position={"list"} />
-              <Box sx={{ display: "flex", mt: 2, flexGrow: 1 }}>
-                <JournalHeaderActions
-                  journal={journal}
-                  enableHotkeys={isFocused}
-                />
-              </Box>
-            </div>
+            <PropertiesRow>
+              <FlexGrow>
+                <JournalProperties journal={journal} />
+              </FlexGrow>
+              <JournalHeaderActions
+                journal={journal}
+                enableHotkeys={isFocused}
+              />
+            </PropertiesRow>
           </Box>
         </Box>
       </PageSection>
@@ -86,7 +86,16 @@ export const JournalListItem: React.FC<{
 
 const TitleRow = styled("div")`
   display: flex;
-  padding-right: ${(p) => p.theme.spacing(1)};
+`;
+
+const PropertiesRow = styled("div")`
+  display: flex;
+  align-items: center;
+  padding-top: ${(p) => p.theme.spacing(2)};
+`;
+
+const FlexGrow = styled("div")`
+  flex-grow: 1;
 `;
 
 const IconContainer = styled("span")`
