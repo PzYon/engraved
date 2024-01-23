@@ -31,6 +31,7 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
 const Host = styled("div")`
   display: flex;
   height: 100%;
+  align-items: center;
 
   .ngrvd-property {
     display: inline-flex;
@@ -47,13 +48,13 @@ const Property = styled(Typography)`
   word-break: break-word;
   height: 100%;
 
-  &.regular {
+  .regular {
     background-color: ${(p) => p.theme.palette.background.default};
     border-radius: 4px;
     padding: 5px;
   }
 
-  &.warning {
+  .warning {
     background-color: #fbceb1;
     border-radius: 4px;
     padding: 5px;
