@@ -1,10 +1,9 @@
 import React from "react";
-import { FormatDate } from "../../common/FormatDate";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
-import { getScheduleProperty } from "../../scheduled/scheduleUtils";
-import { FooterStuff } from "../../common/FooterStuff";
+import { Entry } from "../../common/entries/Entry";
+import { JournalType } from "../../../serverApi/JournalType";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapEntry;
@@ -32,21 +31,15 @@ export const ScrapBody: React.FC<{
   const allActions = getActions(enableHotkeys);
 
   return (
-    <>
+    <Entry
+      journalId={scrap.parentId}
+      journalName={"TODO"}
+      journalType={JournalType.Scraps}
+      entry={scrap}
+      actions={allActions}
+    >
       {children}
-
-      <FooterStuff
-        actions={allActions}
-        properties={[
-          getScheduleProperty(scrap.schedule?.nextOccurrence),
-          {
-            key: "date",
-            node: () => <FormatDate value={scrap.editedOn || scrap.dateTime} />,
-            label: "Edited",
-          },
-        ]}
-      ></FooterStuff>
-    </>
+    </Entry>
   );
 
   function getActions(enableHotkeys: boolean) {

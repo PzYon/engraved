@@ -13,7 +13,9 @@ export const EntryWithValue: React.FC<{
 }> = ({ journal, entry, value }) => {
   return (
     <Entry
-      journal={journal}
+      journalId={journal.id}
+      journalType={journal.type}
+      journalName={journal.name}
       entry={entry}
       actions={[
         ActionFactory.editEntry(entry),

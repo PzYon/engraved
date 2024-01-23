@@ -1,48 +1,77 @@
 import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
-import { IJournal } from "../../../serverApi/IJournal";
 import { FormatDate } from "../FormatDate";
 import { JournalTypeIcon } from "../JournalTypeIcon";
 import { IconStyle } from "../Icon";
 import { Link } from "react-router-dom";
 import { getScheduleProperty } from "../../scheduled/scheduleUtils";
 import { IAction } from "../actions/IAction";
-import { FooterStuff } from "../FooterStuff";
+import { styled } from "@mui/material";
+import { JournalType } from "../../../serverApi/JournalType";
+import { Properties } from "../Properties";
+import { ActionGroup } from "../actions/ActionGroup";
 
 export const Entry: React.FC<{
-  journal: IJournal;
+  journalType: JournalType;
+  journalId: string;
+  journalName: string;
   entry: IEntry;
   children: React.ReactNode;
   actions: IAction[];
-}> = ({ journal, entry, children, actions }) => {
+}> = ({ journalType, journalId, journalName, entry, children, actions }) => {
   return (
     <>
       {children}
-      <FooterStuff
-        actions={actions}
-        properties={[
-          {
-            key: "journal-type",
-            node: () => (
-              <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
-            ),
-            label: "",
-          },
-          {
-            key: "name",
-            node: () => (
-              <Link to={`/journals/${journal.id}`}>{journal.name}</Link>
-            ),
-            label: "Journal",
-          },
-          {
-            key: "date",
-            node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
-            label: "Edited",
-          },
-          getScheduleProperty(entry.schedule?.nextOccurrence),
-        ]}
-      />
+      <FooterContainer>
+        <FlexGrow>
+          <Properties
+            properties={getEntryProperties(
+              journalType,
+              journalId,
+              journalName,
+              entry,
+            )}
+          ></Properties>
+        </FlexGrow>
+        <ActionGroup actions={actions} />
+      </FooterContainer>
     </>
   );
 };
+
+function getEntryProperties(
+  journalType: JournalType,
+  journalId: string,
+  journalName: string,
+  entry: IEntry,
+) {
+  return [
+    {
+      key: "journal-type",
+      node: () => (
+        <JournalTypeIcon type={journalType} style={IconStyle.Overview} />
+      ),
+      label: "",
+    },
+    {
+      key: "name",
+      node: () => <Link to={`/journals/${journalId}`}>{journalName}</Link>,
+      label: "Journal",
+    },
+    {
+      key: "date",
+      node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
+      label: "Edited",
+    },
+    getScheduleProperty(entry.schedule?.nextOccurrence),
+  ];
+}
+
+const FooterContainer = styled("div")`
+  display: flex;
+  flex-direction: row;
+`;
+
+const FlexGrow = styled("div")`
+  flex-grow: 1;
+`;
