@@ -11,6 +11,8 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { Properties } from "../Properties";
 import { ActionGroup } from "../actions/ActionGroup";
 
+export type EntryPropsRenderStyle = "all" | "generic" | "none";
+
 export const Entry: React.FC<{
   journalType: JournalType;
   journalId: string;
@@ -18,7 +20,16 @@ export const Entry: React.FC<{
   entry: IEntry;
   children: React.ReactNode;
   actions: IAction[];
-}> = ({ journalType, journalId, journalName, entry, children, actions }) => {
+  propsRenderStyle: EntryPropsRenderStyle;
+}> = ({
+  journalType,
+  journalId,
+  journalName,
+  entry,
+  children,
+  actions,
+  propsRenderStyle,
+}) => {
   return (
     <>
       {children}
@@ -30,6 +41,7 @@ export const Entry: React.FC<{
               journalId,
               journalName,
               entry,
+              propsRenderStyle,
             )}
           ></Properties>
         </FlexGrow>
@@ -44,6 +56,7 @@ function getEntryProperties(
   journalId: string,
   journalName: string,
   entry: IEntry,
+  propsRenderStyle: EntryPropsRenderStyle,
 ) {
   return [
     {
@@ -52,16 +65,19 @@ function getEntryProperties(
         <JournalTypeIcon type={journalType} style={IconStyle.Overview} />
       ),
       label: "",
+      hideWhen: () => propsRenderStyle !== "all",
     },
     {
-      key: "name",
+      key: "journal-name",
       node: () => <Link to={`/journals/${journalId}`}>{journalName}</Link>,
       label: "Journal",
+      hideWhen: () => propsRenderStyle !== "all",
     },
     {
       key: "date",
       node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
       label: "Edited",
+      hideWhen: () => propsRenderStyle === "none",
     },
     getScheduleProperty(entry.schedule?.nextOccurrence),
   ];

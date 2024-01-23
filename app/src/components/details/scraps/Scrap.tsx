@@ -15,10 +15,12 @@ import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
 import { Wrapper } from "../../common/wrappers/Wrapper";
 import { JournalType } from "../../../serverApi/JournalType";
+import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 
 export const Scrap: React.FC<{
   scrap: IScrapEntry;
-  hideDate?: boolean;
+  journalName: string;
+  propsRenderStyle: EntryPropsRenderStyle;
   hideActions?: boolean;
   onSuccess?: () => void;
   style?: CSSProperties;
@@ -29,7 +31,8 @@ export const Scrap: React.FC<{
   hasFocus?: boolean;
 }> = ({
   scrap: currentScrap,
-  hideDate,
+  journalName,
+  propsRenderStyle,
   hideActions,
   onSuccess,
   style,
@@ -147,13 +150,14 @@ export const Scrap: React.FC<{
         <ScrapInner
           key={isEditMode.toString()}
           scrap={scrapToRender}
+          journalName={journalName}
+          propsRenderStyle={propsRenderStyle}
           title={title}
           setTitle={setTitle}
           notes={notes}
           setNotes={setNotes}
           isEditMode={isEditMode}
           setIsEditMode={setIsEditMode}
-          hideDate={hideDate}
           hideActions={hideActions}
           upsertScrap={upsertScrap}
           style={style}

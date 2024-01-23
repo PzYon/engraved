@@ -4,31 +4,34 @@ import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { ScrapListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
 import { Typography, styled } from "@mui/material";
+import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 
 export const ScrapInner: React.FC<{
   scrap: IScrapEntry;
+  journalName: string;
   isEditMode: boolean;
   setIsEditMode: (value: boolean) => void;
   title: string;
   setTitle: (value: string) => void;
   notes: string;
   setNotes: (value: string) => void;
-  hideDate?: boolean;
   hideActions?: boolean;
+  propsRenderStyle: EntryPropsRenderStyle;
   upsertScrap: (notesToSave?: string) => Promise<void>;
   style?: CSSProperties;
   cancelEditing: () => void;
   hasFocus?: boolean;
 }> = ({
   scrap,
+  journalName,
   isEditMode,
   setIsEditMode,
   title,
   setTitle,
   notes,
   setNotes,
-  hideDate,
   hideActions,
+  propsRenderStyle,
   upsertScrap,
   style,
   cancelEditing,
@@ -65,7 +68,8 @@ export const ScrapInner: React.FC<{
       {scrap.scrapType === ScrapType.List ? (
         <ScrapListBody
           scrap={scrap}
-          hideDate={hideDate}
+          journalName={journalName}
+          propsRenderStyle={propsRenderStyle}
           hideActions={hideActions}
           editMode={isEditMode}
           setEditMode={setIsEditMode}
@@ -79,7 +83,8 @@ export const ScrapInner: React.FC<{
       ) : (
         <ScrapMarkdownBody
           scrap={scrap}
-          hideDate={hideDate}
+          journalName={journalName}
+          propsRenderStyle={propsRenderStyle}
           hideActions={hideActions}
           editMode={isEditMode}
           setEditMode={setIsEditMode}

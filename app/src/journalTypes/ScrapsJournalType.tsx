@@ -21,7 +21,8 @@ export class ScrapsJournalType implements IJournalType {
     return (
       <Scrap
         scrap={entry as IScrapEntry}
-        hideDate={true}
+        journalName={journal.name}
+        propsRenderStyle={"all"}
         withoutSection={true}
       />
     );

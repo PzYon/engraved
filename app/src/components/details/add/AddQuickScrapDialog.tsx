@@ -50,7 +50,8 @@ export const AddQuickScrapDialog: React.FC<{
       </ScrapTypeSelector>
       <Scrap
         scrap={scrap}
-        hideDate={true}
+        journalName={null}
+        propsRenderStyle={"none"}
         onSuccess={onSuccess}
         style={{ marginTop: "3px" }}
         withoutSection={true}

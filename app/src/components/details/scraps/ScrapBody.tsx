@@ -2,12 +2,11 @@ import React from "react";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
-import { Entry } from "../../common/entries/Entry";
+import { Entry, EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { JournalType } from "../../../serverApi/JournalType";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapEntry;
-  hideDate: boolean;
   hideActions: boolean;
   editMode: boolean;
   setEditMode: (value: boolean) => void;
@@ -16,9 +15,10 @@ export const ScrapBody: React.FC<{
   onSave: () => Promise<void>;
   cancelEditing: () => void;
   enableHotkeys?: boolean;
+  journalName: string;
+  propsRenderStyle: EntryPropsRenderStyle;
 }> = ({
   scrap,
-  // hideDate,
   hideActions,
   editMode,
   setEditMode,
@@ -27,16 +27,19 @@ export const ScrapBody: React.FC<{
   onSave,
   cancelEditing,
   enableHotkeys,
+  journalName,
+  propsRenderStyle,
 }) => {
   const allActions = getActions(enableHotkeys);
 
   return (
     <Entry
       journalId={scrap.parentId}
-      journalName={"TODO"}
+      journalName={journalName}
       journalType={JournalType.Scraps}
       entry={scrap}
       actions={allActions}
+      propsRenderStyle={propsRenderStyle}
     >
       {children}
     </Entry>

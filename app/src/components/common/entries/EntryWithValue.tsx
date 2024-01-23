@@ -21,6 +21,7 @@ export const EntryWithValue: React.FC<{
         ActionFactory.editEntry(entry),
         ActionFactory.deleteEntry(entry),
       ]}
+      propsRenderStyle={"all"}
     >
       <Typography component={"span"}>{value}</Typography>
       <Typography component={"span"} sx={{ fontWeight: "lighter" }}>

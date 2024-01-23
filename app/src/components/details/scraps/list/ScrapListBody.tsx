@@ -2,10 +2,10 @@ import React from "react";
 import { IScrapEntry } from "../../../../serverApi/IScrapEntry";
 import { ScrapBody } from "../ScrapBody";
 import { ScrapList } from "./ScrapList";
+import { EntryPropsRenderStyle } from "../../../common/entries/Entry";
 
 export const ScrapListBody: React.FC<{
   scrap: IScrapEntry;
-  hideDate: boolean;
   hideActions?: boolean;
   editMode: boolean;
   setEditMode: (value: boolean) => void;
@@ -15,9 +15,11 @@ export const ScrapListBody: React.FC<{
   onSave: (notesToSave?: string) => Promise<void>;
   cancelEditing: () => void;
   hasFocus?: boolean;
+  propsRenderStyle: EntryPropsRenderStyle;
+  journalName: string;
 }> = ({
   scrap,
-  hideDate,
+  journalName,
   hideActions,
   editMode,
   setEditMode,
@@ -27,12 +29,14 @@ export const ScrapListBody: React.FC<{
   onSave,
   cancelEditing,
   hasFocus,
+  propsRenderStyle,
 }) => (
   <ScrapBody
     scrap={scrap}
+    journalName={journalName}
     editMode={editMode}
     setEditMode={setEditMode}
-    hideDate={hideDate}
+    propsRenderStyle={propsRenderStyle}
     hideActions={hideActions}
     actions={[]}
     onSave={onSave}
