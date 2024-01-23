@@ -29,6 +29,9 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
 };
 
 const Host = styled("div")`
+  display: flex;
+  height: 100%;
+
   .ngrvd-property {
     display: inline-flex;
 
