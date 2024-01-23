@@ -10,8 +10,8 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
       {properties
         .filter((p) => !p.hideWhen || !p.hideWhen())
         .map((p) => (
-          <span className="ngrvd-property" key={p.key}>
-            <Property as="span" className={p.highlightStyle?.() ?? ""}>
+          <Property as="span" key={p.key} className="ngrvd-property">
+            <span className={p.highlightStyle?.() ?? ""}>
               {p.label ? (
                 <Typography component="span" sx={{ fontWeight: "200" }}>
                   {p.label}{" "}
@@ -21,8 +21,8 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
               <Typography component="span" sx={{ color: "primary.main" }}>
                 {p.node()}
               </Typography>
-            </Property>
-          </span>
+            </span>
+          </Property>
         ))}
     </Host>
   );
@@ -30,7 +30,7 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
 
 const Host = styled("div")`
   .ngrvd-property {
-    display: inline-block;
+    display: inline-flex;
 
     &:not(:last-of-type)::after {
       content: "\\00B7";
