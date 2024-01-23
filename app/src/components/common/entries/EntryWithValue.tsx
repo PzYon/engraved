@@ -2,9 +2,8 @@ import React from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IEntry } from "../../../serverApi/IEntry";
 import { AttributeValues } from "../AttributeValues";
-import { styled, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Entry } from "./Entry";
-import { ActionGroup } from "../actions/ActionGroup";
 import { ActionFactory } from "../actions/ActionFactory";
 
 export const EntryWithValue: React.FC<{
@@ -13,7 +12,14 @@ export const EntryWithValue: React.FC<{
   entry: IEntry;
 }> = ({ journal, entry, value }) => {
   return (
-    <Entry journal={journal} entry={entry}>
+    <Entry
+      journal={journal}
+      entry={entry}
+      actions={[
+        ActionFactory.editEntry(entry),
+        ActionFactory.deleteEntry(entry),
+      ]}
+    >
       <Typography component={"span"}>{value}</Typography>
       <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
         {entry.notes ? ` - ${entry.notes}` : ""}
@@ -22,20 +28,6 @@ export const EntryWithValue: React.FC<{
         attributes={journal.attributes}
         attributeValues={entry.journalAttributeValues}
       />
-      <FooterContainer>
-        <ActionGroup
-          actions={[
-            ActionFactory.editEntry(entry),
-            ActionFactory.deleteEntry(entry),
-          ]}
-        />
-      </FooterContainer>
     </Entry>
   );
 };
-
-const FooterContainer = styled("div")`
-  display: flex;
-  justify-content: end;
-  align-items: center;
-`;

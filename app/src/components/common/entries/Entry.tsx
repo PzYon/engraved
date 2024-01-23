@@ -2,21 +2,24 @@ import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IJournal } from "../../../serverApi/IJournal";
 import { FormatDate } from "../FormatDate";
-import { styled } from "@mui/material";
-import { Properties } from "../Properties";
 import { JournalTypeIcon } from "../JournalTypeIcon";
 import { IconStyle } from "../Icon";
 import { Link } from "react-router-dom";
 import { getScheduleProperty } from "../../scheduled/scheduleUtils";
+import { IAction } from "../actions/IAction";
+import { FooterStuff } from "../FooterStuff";
 
 export const Entry: React.FC<{
   journal: IJournal;
   entry: IEntry;
   children: React.ReactNode;
-}> = ({ journal, entry, children }) => {
+  actions: IAction[];
+}> = ({ journal, entry, children, actions }) => {
   return (
     <>
-      <Properties
+      {children}
+      <FooterStuff
+        actions={actions}
         properties={[
           {
             key: "journal-type",
@@ -40,13 +43,6 @@ export const Entry: React.FC<{
           getScheduleProperty(entry.schedule?.nextOccurrence),
         ]}
       />
-      <ValueContainer>{children}</ValueContainer>
     </>
   );
 };
-
-const ValueContainer = styled("div")`
-  border-top: 1px solid ${(p) => p.theme.palette.background.default};
-  padding-top: ${(p) => p.theme.spacing(2)};
-  margin-top: ${(p) => p.theme.spacing(2)};
-`;

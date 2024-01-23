@@ -1,12 +1,10 @@
 import React from "react";
-import { styled } from "@mui/material";
 import { FormatDate } from "../../common/FormatDate";
-import { ActionGroup } from "../../common/actions/ActionGroup";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
-import { Properties } from "../../common/Properties";
 import { getScheduleProperty } from "../../scheduled/scheduleUtils";
+import { FooterStuff } from "../../common/FooterStuff";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapEntry;
@@ -21,7 +19,7 @@ export const ScrapBody: React.FC<{
   enableHotkeys?: boolean;
 }> = ({
   scrap,
-  hideDate,
+  // hideDate,
   hideActions,
   editMode,
   setEditMode,
@@ -37,28 +35,17 @@ export const ScrapBody: React.FC<{
     <>
       {children}
 
-      <FooterContainer>
-        {hideDate ? null : (
-          <Properties
-            properties={[
-              getScheduleProperty(scrap.schedule?.nextOccurrence),
-              {
-                key: "date",
-                node: () => (
-                  <FormatDate value={scrap.editedOn || scrap.dateTime} />
-                ),
-                label: "Edited",
-              },
-            ]}
-          />
-        )}
-
-        {allActions?.length ? (
-          <ActionsContainer>
-            <ActionGroup actions={allActions} />
-          </ActionsContainer>
-        ) : null}
-      </FooterContainer>
+      <FooterStuff
+        actions={allActions}
+        properties={[
+          getScheduleProperty(scrap.schedule?.nextOccurrence),
+          {
+            key: "date",
+            node: () => <FormatDate value={scrap.editedOn || scrap.dateTime} />,
+            label: "Edited",
+          },
+        ]}
+      ></FooterStuff>
     </>
   );
 
@@ -89,14 +76,3 @@ export const ScrapBody: React.FC<{
     return allActions;
   }
 };
-
-const FooterContainer = styled("div")`
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  margin-top: 6px;
-`;
-
-const ActionsContainer = styled("div")`
-  margin-left: ${(p) => p.theme.spacing(2)};
-`;
