@@ -91,7 +91,9 @@ const TitleRow = styled("div")`
 const PropertiesRow = styled("div")`
   display: flex;
   align-items: center;
+  margin-top: ${(p) => p.theme.spacing(2)};
   padding-top: ${(p) => p.theme.spacing(2)};
+  border-top: 1px solid #d4e3eb;
 `;
 
 const FlexGrow = styled("div")`

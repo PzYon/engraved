@@ -37,6 +37,5 @@ const OverviewHost = styled("span")`
     padding: ${(p) => p.theme.spacing(0.5)};
     width: 0.6em;
     height: 0.6em;
-    margin-top: 9px;
   }
 `;

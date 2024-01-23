@@ -70,6 +70,9 @@ function getEntryProperties(
 const FooterContainer = styled("div")`
   display: flex;
   flex-direction: row;
+  border-top: 1px solid #d4e3eb;
+  margin-top: ${(p) => p.theme.spacing(1)};
+  padding-top: ${(p) => p.theme.spacing(2)};
 `;
 
 const FlexGrow = styled("div")`
