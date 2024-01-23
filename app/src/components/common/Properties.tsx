@@ -34,6 +34,7 @@ const Host = styled("div")`
 
   .ngrvd-property {
     display: inline-flex;
+    align-items: center;
 
     &:not(:last-of-type)::after {
       content: "\\00B7";
