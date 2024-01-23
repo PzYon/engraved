@@ -110,9 +110,7 @@ export const AppHeader: React.FC = () => {
   );
 };
 
-const Host = styled("div")`
-  margin-bottom: ${(p) => p.theme.spacing(2)};
-`;
+const Host = styled("div")``;
 
 const ContentWrapper = styled("div")`
   display: flex;

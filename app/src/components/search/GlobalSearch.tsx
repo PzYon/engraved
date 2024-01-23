@@ -27,7 +27,7 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
   }
 
   return (
-    <div>
+    <>
       {queryResult.entities.map((e, i) => {
         if (e.entityType === "Entry") {
           return (
@@ -45,7 +45,7 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
           />
         );
       })}
-    </div>
+    </>
   );
 
   function renderEntry(entry: IEntry) {
