@@ -22,7 +22,6 @@ export const engravedTheme = createTheme({
   },
   typography: {
     fontFamily: "Karla",
-    htmlFontSize: 15,
     body2: {
       color: textColor,
     },

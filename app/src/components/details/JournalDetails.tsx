@@ -12,6 +12,7 @@ import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
 import { JournalProperties } from "../overview/JournalProperties";
 import { EditScheduleLauncher } from "./edit/EditScheduleLauncher";
+import { styled } from "@mui/material";
 
 export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
@@ -21,7 +22,7 @@ export const JournalDetails: React.FC = () => {
   }
 
   return (
-    <div data-testid="journal" data-journal-id={journal.id}>
+    <Host data-testid="journal" data-journal-id={journal.id}>
       <JournalProperties journal={journal} />
 
       <Routes>
@@ -39,7 +40,7 @@ export const JournalDetails: React.FC = () => {
         )}
       </Routes>
       <SubRoutes journal={journal} />
-    </div>
+    </Host>
   );
 };
 
@@ -70,3 +71,7 @@ const SubRoutes: React.FC<{
     </Routes>
   );
 };
+
+const Host = styled("div")`
+  padding-top: ${(p) => p.theme.spacing(2)};
+`;

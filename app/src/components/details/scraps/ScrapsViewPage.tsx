@@ -85,7 +85,7 @@ export const ScrapsViewPage: React.FC = () => {
                 collection.add(scrap.id, scrapWrapper)
               }
               journalName={journal.name}
-              propsRenderStyle={"all"}
+              propsRenderStyle={"generic"}
               scrap={scrap}
               index={i}
               hasFocus={i === focusIndex}
