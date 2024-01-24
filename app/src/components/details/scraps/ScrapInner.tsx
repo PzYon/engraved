@@ -3,7 +3,7 @@ import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { ScrapListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
-import { Typography, styled } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 
 export const ScrapInner: React.FC<{
@@ -104,6 +104,7 @@ export const ScrapInner: React.FC<{
 };
 
 const ReadonlyTitleContainer = styled(Typography)`
-  margin-top: 6px;
   color: ${(p) => p.theme.palette.primary.main};
+  font-size: 2rem;
+  font-weight: 200;
 `;

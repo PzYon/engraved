@@ -35,6 +35,7 @@ export const engravedTheme = createTheme({
     },
     h5: {
       fontSize: "2rem",
+      fontWeight: 200,
     },
   },
   components: {

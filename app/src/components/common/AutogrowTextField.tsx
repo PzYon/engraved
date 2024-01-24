@@ -67,6 +67,8 @@ const StyledTitleTextField = styled(StyledTextField)`
       -webkit-text-fill-color: ${(p) =>
         p.theme.palette.primary.main} !important;
       color: ${(p) => p.theme.palette.primary.main} !important;
+      font-size: 2rem;
+      font-weight: 200;
     }
   }
 `;
