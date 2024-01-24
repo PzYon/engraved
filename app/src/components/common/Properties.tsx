@@ -32,6 +32,7 @@ const Host = styled("div")`
   display: flex;
   height: 100%;
   align-items: center;
+  flex-wrap: wrap;
 
   .ngrvd-property {
     display: inline-flex;
@@ -49,14 +50,14 @@ const Property = styled(Typography)`
   height: 100%;
 
   .regular {
-    background-color: ${(p) => p.theme.palette.background.default};
+    background-color: lightgreen;
     border-radius: 4px;
-    padding: 5px;
+    padding: 0 5px;
   }
 
   .warning {
     background-color: #fbceb1;
     border-radius: 4px;
-    padding: 5px;
+    padding: 0 5px;
   }
 `;
