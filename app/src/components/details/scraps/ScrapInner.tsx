@@ -106,5 +106,4 @@ export const ScrapInner: React.FC<{
 const ReadonlyTitleContainer = styled(Typography)`
   margin-top: 6px;
   color: ${(p) => p.theme.palette.primary.main};
-  font-size: 20.48px;
 `;

@@ -39,8 +39,6 @@ export const Titles: React.FC<{
 };
 
 const SubTitle = styled("span")`
-  font-size: smaller;
-
   &::before {
     content: "\\00B7";
     margin: 0 0.6rem;
