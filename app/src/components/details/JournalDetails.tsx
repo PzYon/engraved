@@ -10,12 +10,14 @@ import { IJournal } from "../../serverApi/IJournal";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
-import { JournalProperties } from "../overview/JournalProperties";
 import { EditScheduleLauncher } from "./edit/EditScheduleLauncher";
 import { styled } from "@mui/material";
+import { Properties } from "../common/Properties";
+import { useJournalProperties } from "../overview/JournalProperties";
 
 export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
+  const journalProperties = useJournalProperties(journal);
 
   if (!journal) {
     return null;
@@ -23,7 +25,7 @@ export const JournalDetails: React.FC = () => {
 
   return (
     <Host data-testid="journal" data-journal-id={journal.id}>
-      <JournalProperties journal={journal} />
+      <Properties properties={journalProperties} />
 
       <Routes>
         {journal.type === JournalType.Scraps ? (

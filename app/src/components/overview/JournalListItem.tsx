@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { Box, styled, Typography } from "@mui/material";
-import { JournalHeaderActions } from "./JournalHeaderActions";
-import { JournalProperties } from "./JournalProperties";
+import { useJournalProperties } from "./JournalProperties";
 import { JournalTypeIcon } from "../common/JournalTypeIcon";
 import { IconStyle } from "../common/Icon";
 import { PageSection } from "../layout/pages/PageSection";
@@ -10,6 +9,9 @@ import { JournalItemWrapper } from "./JournalItemWrapper";
 import { Wrapper } from "../common/wrappers/Wrapper";
 import { ActionLink } from "../common/actions/ActionLink";
 import { ActionFactory } from "../common/actions/ActionFactory";
+import { getCommonActions } from "./getCommonActions";
+import { useDialogContext } from "../layout/dialogs/DialogContext";
+import { ListItemFooterRow } from "./ListItemFooterRow";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -19,6 +21,10 @@ export const JournalListItem: React.FC<{
   isFocused?: boolean;
 }> = ({ journal, addWrapper, index, onClick, isFocused }) => {
   const domElementRef = useRef<HTMLDivElement>();
+
+  const { renderDialog } = useDialogContext();
+
+  const journalProperties = useJournalProperties(journal);
 
   useEffect(() => {
     if (!addWrapper) {
@@ -68,15 +74,10 @@ export const JournalListItem: React.FC<{
                 </Typography>
               </ActionLink>
             </TitleRow>
-            <PropertiesRow>
-              <FlexGrow>
-                <JournalProperties journal={journal} />
-              </FlexGrow>
-              <JournalHeaderActions
-                journal={journal}
-                enableHotkeys={isFocused}
-              />
-            </PropertiesRow>
+            <ListItemFooterRow
+              properties={journalProperties}
+              actions={getCommonActions(journal, isFocused, renderDialog)}
+            />
           </Box>
         </Box>
       </PageSection>
@@ -86,19 +87,6 @@ export const JournalListItem: React.FC<{
 
 const TitleRow = styled("div")`
   display: flex;
-`;
-
-const PropertiesRow = styled("div")`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-top: ${(p) => p.theme.spacing(2)};
-  padding-top: ${(p) => p.theme.spacing(2)};
-  border-top: 1px solid ${(p) => p.theme.palette.background.default};
-`;
-
-const FlexGrow = styled("div")`
-  flex-grow: 1;
 `;
 
 const IconContainer = styled("span")`

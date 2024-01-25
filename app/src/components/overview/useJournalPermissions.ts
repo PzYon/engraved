@@ -7,16 +7,22 @@ import { IUser } from "../../serverApi/IUser";
 export const useJournalPermissions = (permissions: IUserPermissions) => {
   const { user } = useAppContext();
 
-  return useMemo(() => {
-    const owner = getOwner(permissions);
-    return {
-      owner: owner,
-      allExceptOwner: getAllExceptOwner(permissions),
-      userId: user.id,
-      userRole: getRoleForUser(user.id, permissions),
-    };
-  }, [user, permissions]);
+  return useMemo(() => getPermission(permissions, user), [user, permissions]);
 };
+
+function getPermission(permissions: IUserPermissions, user: IUser) {
+  if (!permissions) {
+    return null;
+  }
+
+  const owner = getOwner(permissions);
+  return {
+    owner: owner,
+    allExceptOwner: getAllExceptOwner(permissions),
+    userId: user.id,
+    userRole: getRoleForUser(user.id, permissions),
+  };
+}
 
 function getRoleForUser(
   userId: string,
