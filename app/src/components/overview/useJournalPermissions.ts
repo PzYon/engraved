@@ -15,9 +15,8 @@ function getPermission(permissions: IUserPermissions, user: IUser) {
     return null;
   }
 
-  const owner = getOwner(permissions);
   return {
-    owner: owner,
+    owner: getOwner(permissions),
     allExceptOwner: getAllExceptOwner(permissions),
     userId: user.id,
     userRole: getRoleForUser(user.id, permissions),

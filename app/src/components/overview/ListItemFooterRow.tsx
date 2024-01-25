@@ -14,7 +14,9 @@ export const ListItemFooterRow: React.FC<{
       <FlexGrow>
         <Properties properties={properties} />
       </FlexGrow>
-      <ActionGroup actions={actions} />
+      <ActionContainer>
+        <ActionGroup actions={actions} />
+      </ActionContainer>
     </PropertiesRow>
   );
 };
@@ -23,6 +25,7 @@ const PropertiesRow = styled("div")`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: end;
   margin-top: ${(p) => p.theme.spacing(2)};
   padding-top: ${(p) => p.theme.spacing(2)};
   border-top: 1px solid ${(p) => p.theme.palette.background.default};
@@ -30,4 +33,8 @@ const PropertiesRow = styled("div")`
 
 const FlexGrow = styled("div")`
   flex-grow: 1;
+`;
+
+const ActionContainer = styled("div")`
+  margin-left: ${(p) => p.theme.spacing(2)};
 `;
