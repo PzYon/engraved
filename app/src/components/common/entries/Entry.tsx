@@ -1,52 +1,78 @@
 import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
-import { IJournal } from "../../../serverApi/IJournal";
 import { FormatDate } from "../FormatDate";
-import { styled } from "@mui/material";
-import { Properties } from "../Properties";
 import { JournalTypeIcon } from "../JournalTypeIcon";
 import { IconStyle } from "../Icon";
 import { Link } from "react-router-dom";
 import { getScheduleProperty } from "../../scheduled/scheduleUtils";
+import { IAction } from "../actions/IAction";
+import { JournalType } from "../../../serverApi/JournalType";
+import { ListItemFooterRow } from "../../overview/ListItemFooterRow";
+
+export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
 export const Entry: React.FC<{
-  journal: IJournal;
+  journalType: JournalType;
+  journalId: string;
+  journalName: string;
   entry: IEntry;
   children: React.ReactNode;
-}> = ({ journal, entry, children }) => {
+  actions: IAction[];
+  propsRenderStyle: EntryPropsRenderStyle;
+}> = ({
+  journalType,
+  journalId,
+  journalName,
+  entry,
+  children,
+  actions,
+  propsRenderStyle,
+}) => {
   return (
     <>
-      <Properties
-        properties={[
-          {
-            key: "journal-type",
-            node: () => (
-              <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
-            ),
-            label: "",
-          },
-          {
-            key: "name",
-            node: () => (
-              <Link to={`/journals/${journal.id}`}>{journal.name}</Link>
-            ),
-            label: "Journal",
-          },
-          {
-            key: "date",
-            node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
-            label: "Edited",
-          },
-          getScheduleProperty(entry.schedule?.nextOccurrence),
-        ]}
+      {children}
+      <ListItemFooterRow
+        properties={getEntryProperties(
+          journalType,
+          journalId,
+          journalName,
+          entry,
+          propsRenderStyle,
+        )}
+        actions={actions}
       />
-      <ValueContainer>{children}</ValueContainer>
     </>
   );
 };
 
-const ValueContainer = styled("div")`
-  border-top: 1px solid ${(p) => p.theme.palette.background.default};
-  padding-top: ${(p) => p.theme.spacing(2)};
-  margin-top: ${(p) => p.theme.spacing(2)};
-`;
+function getEntryProperties(
+  journalType: JournalType,
+  journalId: string,
+  journalName: string,
+  entry: IEntry,
+  propsRenderStyle: EntryPropsRenderStyle,
+) {
+  return [
+    {
+      key: "journal-type",
+      node: () => (
+        <JournalTypeIcon type={journalType} style={IconStyle.Overview} />
+      ),
+      label: "",
+      hideWhen: () => propsRenderStyle !== "all",
+    },
+    {
+      key: "journal-name",
+      node: () => <Link to={`/journals/${journalId}`}>{journalName}</Link>,
+      label: "Journal",
+      hideWhen: () => propsRenderStyle !== "all",
+    },
+    {
+      key: "date",
+      node: () => <FormatDate value={entry.editedOn || entry.dateTime} />,
+      label: "Edited",
+      hideWhen: () => propsRenderStyle === "none",
+    },
+    getScheduleProperty(entry.schedule?.nextOccurrence),
+  ];
+}

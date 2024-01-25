@@ -22,12 +22,12 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
     return null;
   }
 
-  if (!queryResult.entities.length && searchText) {
-    return <NoResultsFound />;
+  if (!queryResult.entities.length && (searchText || isSchedule)) {
+    return <NoResultsFound hideTryAgain={isSchedule} />;
   }
 
   return (
-    <div>
+    <>
       {queryResult.entities.map((e, i) => {
         if (e.entityType === "Entry") {
           return (
@@ -45,7 +45,7 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
           />
         );
       })}
-    </div>
+    </>
   );
 
   function renderEntry(entry: IEntry) {

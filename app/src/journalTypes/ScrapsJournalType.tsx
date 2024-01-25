@@ -5,7 +5,6 @@ import { IEntriesTableColumnDefinition } from "../components/details/entriesTabl
 import { IJournal } from "../serverApi/IJournal";
 import { IEntry } from "../serverApi/IEntry";
 import React from "react";
-import { Entry } from "../components/common/entries/Entry";
 import { Scrap } from "../components/details/scraps/Scrap";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
 
@@ -20,13 +19,12 @@ export class ScrapsJournalType implements IJournalType {
 
   getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
     return (
-      <Entry journal={journal} entry={entry}>
-        <Scrap
-          scrap={entry as IScrapEntry}
-          hideDate={true}
-          withoutSection={true}
-        />
-      </Entry>
+      <Scrap
+        scrap={entry as IScrapEntry}
+        journalName={journal.name}
+        propsRenderStyle={"all"}
+        withoutSection={true}
+      />
     );
   }
 

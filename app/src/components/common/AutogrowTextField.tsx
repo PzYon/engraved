@@ -52,7 +52,6 @@ const StyledTextField = styled(TextField)`
       -webkit-text-fill-color: ${(p) =>
         p.theme.palette.text.primary} !important;
       color: ${(p) => p.theme.palette.text.primary} !important;
-      font-size: 16px;
     }
   }
 `;
@@ -68,7 +67,8 @@ const StyledTitleTextField = styled(StyledTextField)`
       -webkit-text-fill-color: ${(p) =>
         p.theme.palette.primary.main} !important;
       color: ${(p) => p.theme.palette.primary.main} !important;
-      font-size: larger;
+      font-size: 2rem;
+      font-weight: 200;
     }
   }
 `;

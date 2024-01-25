@@ -1,16 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { Box, styled, Typography } from "@mui/material";
-import { JournalHeaderActions } from "./JournalHeaderActions";
-import { JournalProperties } from "./JournalProperties";
+import { useJournalProperties } from "./JournalProperties";
 import { JournalTypeIcon } from "../common/JournalTypeIcon";
-import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { IconStyle } from "../common/Icon";
 import { PageSection } from "../layout/pages/PageSection";
 import { JournalItemWrapper } from "./JournalItemWrapper";
 import { Wrapper } from "../common/wrappers/Wrapper";
 import { ActionLink } from "../common/actions/ActionLink";
 import { ActionFactory } from "../common/actions/ActionFactory";
+import { getCommonActions } from "./getCommonActions";
+import { useDialogContext } from "../layout/dialogs/DialogContext";
+import { ListItemFooterRow } from "./ListItemFooterRow";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -19,8 +20,11 @@ export const JournalListItem: React.FC<{
   onClick?: () => void;
   isFocused?: boolean;
 }> = ({ journal, addWrapper, index, onClick, isFocused }) => {
-  const deviceWidth = useDeviceWidth();
   const domElementRef = useRef<HTMLDivElement>();
+
+  const { renderDialog } = useDialogContext();
+
+  const journalProperties = useJournalProperties(journal);
 
   useEffect(() => {
     if (!addWrapper) {
@@ -70,24 +74,11 @@ export const JournalListItem: React.FC<{
                 </Typography>
               </ActionLink>
             </TitleRow>
-            <JournalProperties journal={journal} position={"list"} />
-            {deviceWidth === DeviceWidth.Small ? (
-              <Box sx={{ display: "flex", mt: 2 }}>
-                <JournalHeaderActions
-                  journal={journal}
-                  enableHotkeys={isFocused}
-                />
-              </Box>
-            ) : null}
+            <ListItemFooterRow
+              properties={journalProperties}
+              actions={getCommonActions(journal, isFocused, renderDialog)}
+            />
           </Box>
-          {deviceWidth !== DeviceWidth.Small ? (
-            <Box>
-              <JournalHeaderActions
-                journal={journal}
-                enableHotkeys={isFocused}
-              />
-            </Box>
-          ) : null}
         </Box>
       </PageSection>
     </Wrapper>
@@ -96,7 +87,6 @@ export const JournalListItem: React.FC<{
 
 const TitleRow = styled("div")`
   display: flex;
-  padding-right: ${(p) => p.theme.spacing(1)};
 `;
 
 const IconContainer = styled("span")`

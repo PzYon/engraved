@@ -10,8 +10,8 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
       {properties
         .filter((p) => !p.hideWhen || !p.hideWhen())
         .map((p) => (
-          <span className="ngrvd-property" key={p.key}>
-            <Property as="span" className={p.highlightStyle?.() ?? ""}>
+          <Property as="span" key={p.key} className="ngrvd-property">
+            <span className={p.highlightStyle?.() ?? ""}>
               {p.label ? (
                 <Typography component="span" sx={{ fontWeight: "200" }}>
                   {p.label}{" "}
@@ -21,16 +21,22 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
               <Typography component="span" sx={{ color: "primary.main" }}>
                 {p.node()}
               </Typography>
-            </Property>
-          </span>
+            </span>
+          </Property>
         ))}
     </Host>
   );
 };
 
 const Host = styled("div")`
+  display: flex;
+  height: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+
   .ngrvd-property {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
 
     &:not(:last-of-type)::after {
       content: "\\00B7";
@@ -43,15 +49,15 @@ const Property = styled(Typography)`
   word-break: break-word;
   height: 100%;
 
-  &.regular {
-    background-color: ${(p) => p.theme.palette.background.default};
+  .regular {
+    background-color: lightgreen;
     border-radius: 4px;
-    padding: 5px;
+    padding: 0 5px;
   }
 
-  &.warning {
+  .warning {
     background-color: #fbceb1;
     border-radius: 4px;
-    padding: 5px;
+    padding: 0 5px;
   }
 `;

@@ -53,7 +53,12 @@ export const ScrapsMovePage: React.FC = () => {
         </PageFormButtonContainer>
       </PageSection>
 
-      <Scrap scrap={entry} hideActions={true} />
+      <Scrap
+        scrap={entry}
+        hideActions={true}
+        journalName={journal.name}
+        propsRenderStyle={"all"}
+      />
     </Page>
   );
 };

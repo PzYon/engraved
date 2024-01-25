@@ -36,7 +36,6 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
       }}
       theme={EditorView.theme({
         "&": {
-          fontSize: theme.typography.fontSize * 1.1 + "px",
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.common.white,
           padding: theme.spacing(2),

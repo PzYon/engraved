@@ -66,7 +66,15 @@ export const ScrapsViewPage: React.FC = () => {
         ...getCommonActions(journal, false),
       ]}
     >
-      {newScrap ? <Scrap key="new" scrap={newScrap} hasFocus={true} /> : null}
+      {newScrap ? (
+        <Scrap
+          key="new"
+          scrap={newScrap}
+          hasFocus={true}
+          journalName={null}
+          propsRenderStyle={"none"}
+        />
+      ) : null}
 
       {scraps.length
         ? (scraps as IScrapEntry[]).map((scrap, i) => (
@@ -76,6 +84,8 @@ export const ScrapsViewPage: React.FC = () => {
               addScrapWrapper={(scrapWrapper) =>
                 collection.add(scrap.id, scrapWrapper)
               }
+              journalName={journal.name}
+              propsRenderStyle={"generic"}
               scrap={scrap}
               index={i}
               hasFocus={i === focusIndex}
