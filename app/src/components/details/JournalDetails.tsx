@@ -13,11 +13,13 @@ import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
 import { EditScheduleLauncher } from "./edit/EditScheduleLauncher";
 import { styled } from "@mui/material";
 import { Properties } from "../common/Properties";
-import { useJournalProperties } from "../overview/JournalProperties";
+import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
+import { useJournalProperties } from "../overview/useJournalProperties";
 
 export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
   const journalProperties = useJournalProperties(journal);
+  const deviceWidth = useDeviceWidth();
 
   if (!journal) {
     return null;
@@ -25,7 +27,11 @@ export const JournalDetails: React.FC = () => {
 
   return (
     <Host data-testid="journal" data-journal-id={journal.id}>
-      <Properties properties={journalProperties} />
+      <PropertiesContainer
+        sx={deviceWidth === DeviceWidth.Small ? { pl: 2, pr: 2 } : {}}
+      >
+        <Properties properties={journalProperties} />
+      </PropertiesContainer>
 
       <Routes>
         {journal.type === JournalType.Scraps ? (
@@ -77,3 +83,5 @@ const SubRoutes: React.FC<{
 const Host = styled("div")`
   padding-top: ${(p) => p.theme.spacing(2)};
 `;
+
+const PropertiesContainer = styled("div")``;

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { Box, styled, Typography } from "@mui/material";
-import { useJournalProperties } from "./JournalProperties";
+import { useJournalProperties } from "./useJournalProperties";
 import { JournalTypeIcon } from "../common/JournalTypeIcon";
 import { IconStyle } from "../common/Icon";
 import { PageSection } from "../layout/pages/PageSection";
