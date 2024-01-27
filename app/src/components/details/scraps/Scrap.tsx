@@ -173,7 +173,7 @@ export const Scrap: React.FC<{
       return null;
     }
 
-    return function () {
+    return () => {
       setScrapToRender(initialScrap);
       setTitle(initialScrap.title);
       setNotes(initialScrap.notes);

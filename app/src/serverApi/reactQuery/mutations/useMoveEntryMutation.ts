@@ -38,7 +38,7 @@ export const useMoveEntryMutation = (
 
     onError: (error) => {
       setAppAlert({
-        title: "Failed to upsert entryId",
+        title: "Failed to move entry",
         message: error.toString(),
         type: "error",
       });

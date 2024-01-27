@@ -13,7 +13,10 @@ export class AddQuickScrapDialog {
   }
 
   async clickSave() {
-    await this.page.getByLabel("Save").click();
+    await this.page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Add" })
+      .click();
     await expect(this.page.getByText("Added entry")).toBeVisible();
   }
 }

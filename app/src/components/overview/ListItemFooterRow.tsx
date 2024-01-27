@@ -27,14 +27,16 @@ const PropertiesRow = styled("div")`
   align-items: center;
   justify-content: end;
   margin-top: ${(p) => p.theme.spacing(2)};
-  padding-top: ${(p) => p.theme.spacing(2)};
+  padding-top: ${(p) => p.theme.spacing(1)};
   border-top: 1px solid ${(p) => p.theme.palette.background.default};
 `;
 
 const FlexGrow = styled("div")`
+  margin-top: ${(p) => p.theme.spacing(1)};
   flex-grow: 1;
 `;
 
 const ActionContainer = styled("div")`
+  margin-top: ${(p) => p.theme.spacing(1)};
   margin-left: ${(p) => p.theme.spacing(2)};
 `;
