@@ -9,6 +9,7 @@ import { Scheduled } from "./Scheduled";
 export const ScheduledPage: React.FC = () => {
   return (
     <Page
+      pageType="overview"
       title={
         <PageTitle
           title={"Scheduled"}

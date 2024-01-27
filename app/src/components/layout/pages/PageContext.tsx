@@ -16,6 +16,13 @@ export enum FilterMode {
   All = Text | JournalType,
 }
 
+export type PageType =
+  | "journal"
+  | "overview"
+  | "search"
+  | "add-journal"
+  | "move-scrap";
+
 export interface IPageContext {
   documentTitle: string;
   setDocumentTitle: (documentTitle: string) => void;
@@ -38,6 +45,8 @@ export interface IPageContext {
   setJournalTypes: (journalTypes: JournalType[]) => void;
   tabs: IPageTab[];
   setTabs: (tabs: IPageTab[]) => void;
+  pageType: PageType;
+  setPageType: (pageType: PageType) => void;
 }
 
 const PageContext = createContext<IPageContext>({
@@ -61,6 +70,8 @@ const PageContext = createContext<IPageContext>({
   setJournalTypes: null,
   tabs: null,
   setTabs: null,
+  pageType: null,
+  setPageType: null,
 });
 
 export const usePageContext = () => {
@@ -80,6 +91,7 @@ export const PageContextProvider: React.FC<{
   const [searchText, setSearchText] = useState<string>("");
   const [journalTypes, setJournalTypes] = useState<JournalType[]>([]);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
+  const [pageType, setPageType] = useState<PageType>(undefined);
 
   useEffect(() => {
     document.title = documentTitle
@@ -109,6 +121,8 @@ export const PageContextProvider: React.FC<{
       setJournalTypes,
       tabs,
       setTabs,
+      pageType,
+      setPageType,
     };
   }, [
     title,
@@ -121,6 +135,7 @@ export const PageContextProvider: React.FC<{
     searchText,
     journalTypes,
     tabs,
+    pageType,
   ]);
 
   return (
