@@ -89,7 +89,7 @@ export const useUpsertEntryMutation = (
 
     onError: (error: unknown) => {
       setAppAlert({
-        title: "Failed to upsert entryId",
+        title: "Failed to upsert entry",
         message: error.toString(),
         type: "error",
       });

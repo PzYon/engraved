@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 
 export const EditPageFooterButtons: React.FC<{
   onSave: () => void;
-  disableSave: boolean;
+  disableSave?: boolean;
   onCancel: () => void;
 }> = ({ onSave, disableSave, onCancel }) => {
   return (
