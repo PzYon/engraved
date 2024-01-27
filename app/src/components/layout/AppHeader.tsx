@@ -126,5 +126,5 @@ const ActionsAndTabContainer = styled("div")<{ isSmall: boolean }>`
   display: flex;
   justify-content: end;
   margin-top: ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
-  flex-direction: ${(p) => (p.isSmall ? "column-reverse" : "row")};
+  flex-wrap: wrap;
 `;

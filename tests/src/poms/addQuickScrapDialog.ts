@@ -13,7 +13,7 @@ export class AddQuickScrapDialog {
   }
 
   async clickSave() {
-    await this.page.getByLabel("Save").click();
+    await this.page.getByLabel("Add").click();
     await expect(this.page.getByText("Added entry")).toBeVisible();
   }
 }
