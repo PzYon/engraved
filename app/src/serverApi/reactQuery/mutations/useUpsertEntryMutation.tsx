@@ -145,4 +145,5 @@ export const useUpsertEntryMutation = (
 
 const StyledLink = styled(Link)`
   color: ${(p) => p.theme.palette.common.white} !important;
+  text-decoration: underline;
 `;
