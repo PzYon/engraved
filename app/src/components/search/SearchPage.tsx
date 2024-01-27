@@ -9,6 +9,7 @@ import { FilterMode } from "../layout/pages/PageContext";
 export const SearchPage: React.FC = () => {
   return (
     <Page
+      pageType="search"
       title={
         <PageTitle
           title={"Search"}

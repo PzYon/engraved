@@ -57,6 +57,7 @@ export const ScrapsViewPage: React.FC = () => {
 
   return (
     <Page
+      pageType="journal"
       title={<JournalPageTitle journal={journal} />}
       documentTitle={journal.name}
       actions={[

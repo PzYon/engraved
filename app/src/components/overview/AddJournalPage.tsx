@@ -8,6 +8,7 @@ import { Page } from "../layout/pages/Page";
 export const AddJournalPage: React.FC = () => {
   return (
     <Page
+      pageType="add-journal"
       title={
         <PageTitle
           title={"Add Journal"}

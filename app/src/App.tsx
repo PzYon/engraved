@@ -11,11 +11,11 @@ export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <AppContextProvider user={user}>
     <ReactQueryProviderWrapper>
       <BrowserRouter>
-        <DialogContextProvider>
-          <PageContextProvider>
+        <PageContextProvider>
+          <DialogContextProvider>
             <AppHost />
-          </PageContextProvider>
-        </DialogContextProvider>
+          </DialogContextProvider>
+        </PageContextProvider>
       </BrowserRouter>
     </ReactQueryProviderWrapper>
   </AppContextProvider>

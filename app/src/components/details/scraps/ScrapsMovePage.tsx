@@ -34,7 +34,12 @@ export const ScrapsMovePage: React.FC = () => {
   }
 
   return (
-    <Page title={journal.name} subTitle="Move scrap to..." actions={[]}>
+    <Page
+      pageType="move-scrap"
+      title={journal.name}
+      subTitle="Move scrap to..."
+      actions={[]}
+    >
       <PageSection>
         <JournalSelector
           label={"Move to journal"}
