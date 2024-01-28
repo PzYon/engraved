@@ -5,5 +5,5 @@ export interface IPropertyDefinition {
   label: string;
   key: string;
   hideWhen?: () => boolean;
-  highlightStyle?: () => "regular" | "warning";
+  highlightStyle?: () => "red" | "yellow" | "green";
 }
