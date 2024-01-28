@@ -42,6 +42,7 @@ export const DeleteButtons: React.FC<{
             really sure, please type &quot;delete&quot; to confirm.
           </Typography>
           <TextField
+            id={Math.random().toString()}
             autoFocus={true}
             onChange={(event) => {
               setIsSecondYes(

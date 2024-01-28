@@ -49,13 +49,19 @@ const Property = styled(Typography)`
   word-break: break-word;
   height: 100%;
 
-  .regular {
+  .green {
     background-color: lightgreen;
     border-radius: 4px;
     padding: 0 5px;
   }
 
-  .warning {
+  .yellow {
+    background-color: #ffff8f;
+    border-radius: 4px;
+    padding: 0 5px;
+  }
+
+  .red {
     background-color: #fbceb1;
     border-radius: 4px;
     padding: 0 5px;
