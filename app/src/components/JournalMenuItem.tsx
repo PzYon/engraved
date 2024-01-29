@@ -4,7 +4,7 @@ import { JournalTypeIcon } from "./common/JournalTypeIcon";
 import { IconStyle } from "./common/Icon";
 import { styled } from "@mui/material";
 
-export const JournalTypeMenuItem: React.FC<{
+export const JournalMenuItem: React.FC<{
   journalType: JournalType;
   label: string;
 }> = ({ journalType, label }) => {

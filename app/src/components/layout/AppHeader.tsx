@@ -19,6 +19,7 @@ import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { ActionLink } from "../common/actions/ActionLink";
 import { PageTabs } from "./tabs/PageTabs";
+import { FavoritesFlyout } from "../FavoritesFlyout";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -74,6 +75,7 @@ export const AppHeader: React.FC = () => {
             </div>
             <RefreshData />
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
+            <FavoritesFlyout />
             <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
