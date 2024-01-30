@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/PzYon/engraved#readme",
   "devDependencies": {
-    "husky": "9.0.6",
+    "husky": "9.0.7",
     "lint-staged": "15.2.0"
   }
 }
