@@ -3,8 +3,7 @@ import { IJournal } from "../../serverApi/IJournal";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalType } from "../../serverApi/JournalType";
 import { Autocomplete, MenuItem, TextField } from "@mui/material";
-
-import { JournalTypeMenuItem } from "../JournalTypeMenuItem";
+import { JournalMenuItem } from "../JournalMenuItem";
 
 export const JournalSelector: React.FC<{
   onChange: (journal: IJournal) => void;
@@ -48,7 +47,7 @@ export const JournalSelector: React.FC<{
       getOptionLabel={(option) => option.name}
       renderOption={(props, option) => (
         <MenuItem {...props} key={option.id}>
-          <JournalTypeMenuItem journalType={option.type} label={option.name} />
+          <JournalMenuItem journalType={option.type} label={option.name} />
         </MenuItem>
       )}
       filterOptions={(currenOptions, state) => {

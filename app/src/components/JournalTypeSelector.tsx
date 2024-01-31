@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { JournalType } from "../serverApi/JournalType";
 import { translations } from "../i18n/translations";
-import { JournalTypeMenuItem } from "./JournalTypeMenuItem";
+import { JournalMenuItem } from "./JournalMenuItem";
 
 export const JournalTypeSelector: React.FC<{
   journalType: JournalType | JournalType[];
@@ -36,25 +36,25 @@ export const JournalTypeSelector: React.FC<{
         sx={{ ".MuiSelect-select": { display: "flex" } }}
       >
         <MenuItem value={JournalType.Scraps}>
-          <JournalTypeMenuItem
+          <JournalMenuItem
             journalType={JournalType.Scraps}
             label={translations.journalType_scraps}
           />
         </MenuItem>
         <MenuItem value={JournalType.Counter}>
-          <JournalTypeMenuItem
+          <JournalMenuItem
             journalType={JournalType.Counter}
             label={translations.journalType_counter}
           />
         </MenuItem>
         <MenuItem value={JournalType.Gauge}>
-          <JournalTypeMenuItem
+          <JournalMenuItem
             journalType={JournalType.Gauge}
             label={translations.journalType_gauge}
           />
         </MenuItem>
         <MenuItem value={JournalType.Timer}>
-          <JournalTypeMenuItem
+          <JournalMenuItem
             journalType={JournalType.Timer}
             label={translations.journalType_timer}
           />
