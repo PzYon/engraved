@@ -49,18 +49,28 @@ const FavoritesList: React.FC<{
 
   return (
     <Menu anchorEl={anchorElement} open={true} onClose={close}>
-      {journals.map((journal) => {
-        return (
-          <MenuItem key={journal.id}>
-            <Link to={`/journals/${journal.id}`} onClick={close}>
-              <JournalMenuItem
-                journalType={journal.type}
-                label={journal.name}
-              />
-            </Link>
-          </MenuItem>
-        );
-      })}
+      {journals
+        .sort((a, b) => {
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        })
+        .map((journal) => {
+          return (
+            <MenuItem key={journal.id}>
+              <Link to={`/journals/${journal.id}`} onClick={close}>
+                <JournalMenuItem
+                  journalType={journal.type}
+                  label={journal.name}
+                />
+              </Link>
+            </MenuItem>
+          );
+        })}
     </Menu>
   );
 };
