@@ -1,10 +1,7 @@
 import { IJournal } from "../../serverApi/IJournal";
 import { IDialogProps } from "../layout/dialogs/DialogContext";
-import { JournalType } from "../../serverApi/JournalType";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
-
-export const editActionKey = "edit";
 
 export function getCommonActions(
   journal: IJournal,
@@ -15,20 +12,13 @@ export function getCommonActions(
     return [];
   }
 
-  const actions = [];
-
-  if (journal.type !== JournalType.Scraps) {
-    actions.push(ActionFactory.addEntry(journal, renderDialog, enableHotkeys));
-  }
-
-  actions.push(
+  return [
+    ActionFactory.addEntry(journal, renderDialog, enableHotkeys),
     ActionFactory.editJournalPermissions(journal.id),
     ActionFactory.editJournalSchedule(journal.id, enableHotkeys),
     ActionFactory.editJournal(journal.id, enableHotkeys),
     ActionFactory.deleteJournal(journal.id, enableHotkeys),
-  );
-
-  return actions;
+  ];
 }
 
 export function getCommonEditModeActions(
