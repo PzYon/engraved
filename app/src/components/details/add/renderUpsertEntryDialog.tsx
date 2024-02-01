@@ -16,7 +16,7 @@ export const renderUpsertEntryDialog = (
   }
 
   renderDialog({
-    title: "Add Entry",
+    title: `Add entry to '${journal.name}'`,
     render: (closeDialog) => (
       <UpsertEntryWrapper
         journal={journal}

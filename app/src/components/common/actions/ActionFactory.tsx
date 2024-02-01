@@ -23,7 +23,6 @@ import {
   ShowChartOutlined,
   SwitchAccessShortcutOutlined,
 } from "@mui/icons-material";
-import { editActionKey } from "../../overview/getCommonActions";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { renderUpsertEntryDialog } from "../../details/add/renderUpsertEntryDialog";
@@ -93,7 +92,7 @@ export class ActionFactory {
   static editJournal(journalId: string, enableHotkey: boolean): IAction {
     return {
       hotkey: enableHotkey ? "alt+e" : undefined,
-      key: editActionKey,
+      key: "edit",
       label: "Edit",
       icon: <EditOutlined fontSize="small" />,
       href: `/journals/${journalId}/edit`,
