@@ -5,6 +5,8 @@ import { useJournalsQuery } from "../serverApi/reactQuery/queries/useJournalsQue
 import { Link } from "react-router-dom";
 import { ActionIconButton } from "./common/actions/ActionIconButton";
 import { JournalMenuItem } from "./JournalMenuItem";
+import { ActionFactory } from "./common/actions/ActionFactory";
+import { useDialogContext } from "./layout/dialogs/DialogContext";
 
 export const FavoritesFlyout: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +44,7 @@ const FavoritesList: React.FC<{
   anchorElement: Element;
 }> = ({ close, anchorElement }) => {
   const journals = useJournalsQuery(null, [], true);
+  const { renderDialog } = useDialogContext();
 
   if (!journals?.length) {
     return null;
@@ -61,13 +64,20 @@ const FavoritesList: React.FC<{
         })
         .map((journal) => {
           return (
-            <MenuItem key={journal.id}>
-              <Link to={`/journals/${journal.id}`} onClick={close}>
+            <MenuItem key={journal.id} sx={{ display: "flex" }}>
+              <Link
+                to={`/journals/${journal.id}`}
+                onClick={close}
+                style={{ flexGrow: 1, paddingRight: 10 }}
+              >
                 <JournalMenuItem
                   journalType={journal.type}
                   label={journal.name}
                 />
               </Link>
+              <ActionIconButton
+                action={ActionFactory.addEntry(journal, renderDialog, false)}
+              />
             </MenuItem>
           );
         })}
