@@ -80,7 +80,7 @@
     "prettier": "3.2.4",
     "ts-jest": "29.1.2",
     "ts-node": "10.9.2",
-    "vite-plugin-checker": "0.6.3"
+    "vite-plugin-checker": "0.6.4"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.9.6"
