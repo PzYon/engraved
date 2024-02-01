@@ -54,13 +54,10 @@ const FavoritesList: React.FC<{
     <Menu anchorEl={anchorElement} open={true} onClose={close}>
       {journals
         .sort((a, b) => {
-          if (a.name < b.name) {
-            return -1;
-          }
-          if (a.name > b.name) {
-            return 1;
-          }
-          return 0;
+          const firstName = a.name?.toLowerCase();
+          const secondName = b.name?.toLowerCase();
+
+          return firstName < secondName ? -1 : firstName > secondName ? 1 : 0;
         })
         .map((journal) => {
           return (
