@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
-import { ActionIconButton } from "../../../common/actions/ActionIconButton";
 import {
   FormatIndentDecrease,
   FormatIndentIncrease,
@@ -11,6 +10,7 @@ import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { ListItemWrapper } from "./ListItemWrapper";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
+import { ActionGroup } from "../../../common/actions/ActionGroup";
 
 export const ScrapListItem: React.FC<{
   isEditMode: boolean;
@@ -75,36 +75,33 @@ export const ScrapListItem: React.FC<{
           <Markdown value={label} useBasic={true}></Markdown>
         </ReadonlyContainer>
       )}
-
-      <ActionIconButton
-        action={{
-          sx: !isEditMode ? { visibility: "hidden" } : null,
-          isDisabled: !isEditMode,
-          key: "remove",
-          label: "Delete",
-          icon: <RemoveCircleOutline fontSize="small" />,
-          onClick: () => onDelete(),
-        }}
-      />
-      <ActionIconButton
-        action={{
-          sx: !isEditMode ? { visibility: "hidden" } : null,
-          isDisabled: !isEditMode,
-          key: "right",
-          label: "Move right",
-          icon: <FormatIndentIncrease fontSize="small" />,
-          onClick: () => moveItemRight(),
-        }}
-      />
-      <ActionIconButton
-        action={{
-          sx: !isEditMode ? { visibility: "hidden" } : null,
-          isDisabled: !isEditMode,
-          key: "left",
-          label: "Move left",
-          icon: <FormatIndentDecrease fontSize="small" />,
-          onClick: () => moveItemLeft(),
-        }}
+      <ActionGroup
+        actions={[
+          {
+            sx: !isEditMode ? { visibility: "hidden" } : null,
+            isDisabled: !isEditMode,
+            key: "remove",
+            label: "Delete",
+            icon: <RemoveCircleOutline fontSize="small" />,
+            onClick: () => onDelete(),
+          },
+          {
+            sx: !isEditMode ? { visibility: "hidden" } : null,
+            isDisabled: !isEditMode,
+            key: "right",
+            label: "Move right",
+            icon: <FormatIndentIncrease fontSize="small" />,
+            onClick: () => moveItemRight(),
+          },
+          {
+            sx: !isEditMode ? { visibility: "hidden" } : null,
+            isDisabled: !isEditMode,
+            key: "left",
+            label: "Move left",
+            icon: <FormatIndentDecrease fontSize="small" />,
+            onClick: () => moveItemLeft(),
+          },
+        ]}
       />
     </ListItem>
   );
