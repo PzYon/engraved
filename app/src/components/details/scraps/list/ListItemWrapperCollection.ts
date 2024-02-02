@@ -16,12 +16,12 @@ export class ListItemWrapperCollection {
   }
 
   addItem(index: number) {
-    if (index > -1 && !this.items[index].raw.label) {
+    if (index > 0 && !this.items[index - 1].raw.label) {
       return;
     }
 
     this.add(
-      index + 1,
+      index,
       new ListItemWrapper({
         label: "",
         isCompleted: false,

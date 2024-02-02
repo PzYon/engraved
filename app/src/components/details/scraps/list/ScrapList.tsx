@@ -67,7 +67,7 @@ export const ScrapList: React.FC<{
                 }
               }}
               onDelete={() => listItemsCollection.removeItem(index)}
-              onEnter={() => listItemsCollection.addItem(index)}
+              onEnter={() => listItemsCollection.addItem(index + 1)}
             />
           ))
         )}
@@ -81,9 +81,7 @@ export const ScrapList: React.FC<{
                 label: "Add new",
                 icon: <AddOutlined fontSize="small" />,
                 onClick: () =>
-                  listItemsCollection.addItem(
-                    listItemsCollection.items.length - 1,
-                  ),
+                  listItemsCollection.addItem(listItemsCollection.items.length),
               },
               {
                 key: "move-checked-to-bottom",

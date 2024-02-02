@@ -21,6 +21,6 @@ export class ListItemWrapper {
   }
 
   giveFocus() {
-    this.ref.current.focus();
+    this.ref?.current.focus();
   }
 }
