@@ -75,34 +75,33 @@ export const ScrapListItem: React.FC<{
           <Markdown value={label} useBasic={true}></Markdown>
         </ReadonlyContainer>
       )}
-      <ActionGroup
-        actions={[
-          {
-            sx: !isEditMode ? { visibility: "hidden" } : null,
-            isDisabled: !isEditMode,
-            key: "remove",
-            label: "Delete",
-            icon: <RemoveCircleOutline fontSize="small" />,
-            onClick: () => onDelete(),
-          },
-          {
-            sx: !isEditMode ? { visibility: "hidden" } : null,
-            isDisabled: !isEditMode,
-            key: "right",
-            label: "Move right",
-            icon: <FormatIndentIncrease fontSize="small" />,
-            onClick: () => moveItemRight(),
-          },
-          {
-            sx: !isEditMode ? { visibility: "hidden" } : null,
-            isDisabled: !isEditMode,
-            key: "left",
-            label: "Move left",
-            icon: <FormatIndentDecrease fontSize="small" />,
-            onClick: () => moveItemLeft(),
-          },
-        ]}
-      />
+      {isEditMode ? (
+        <ActionGroup
+          actions={[
+            {
+              sx: !isEditMode ? { visibility: "hidden" } : null,
+              key: "remove",
+              label: "Delete",
+              icon: <RemoveCircleOutline fontSize="small" />,
+              onClick: () => onDelete(),
+            },
+            {
+              sx: !isEditMode ? { visibility: "hidden" } : null,
+              key: "right",
+              label: "Move right",
+              icon: <FormatIndentIncrease fontSize="small" />,
+              onClick: () => moveItemRight(),
+            },
+            {
+              sx: !isEditMode ? { visibility: "hidden" } : null,
+              key: "left",
+              label: "Move left",
+              icon: <FormatIndentDecrease fontSize="small" />,
+              onClick: () => moveItemLeft(),
+            },
+          ]}
+        />
+      ) : null}
     </ListItem>
   );
 

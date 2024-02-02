@@ -2,16 +2,35 @@ import { ISCrapListItem } from "./IScrapListItem";
 import { ListItemWrapper } from "./ListItemWrapper";
 
 export class ListItemWrapperCollection {
-  constructor(
-    public items: ListItemWrapper[],
-    private onChange: (json: string) => void,
-  ) {}
+  items: ListItemWrapper[];
 
   private get highestIndex() {
     return this.items.length - 1;
   }
 
-  remove(index: number) {
+  constructor(
+    rawItems: ISCrapListItem[],
+    private onChange: (rawItems: ISCrapListItem[]) => void,
+  ) {
+    this.items = rawItems.map((i) => new ListItemWrapper(i));
+  }
+
+  addItem(index: number) {
+    if (index > -1 && !this.items[index].raw.label) {
+      return;
+    }
+
+    this.add(
+      index + 1,
+      new ListItemWrapper({
+        label: "",
+        isCompleted: false,
+        depth: 0,
+      }),
+    );
+  }
+
+  removeItem(index: number) {
     if (this.items.length <= 1) {
       // we do not want to delete the last item
       return;
@@ -24,12 +43,7 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
-  add(index: number, ...listItems: ListItemWrapper[]) {
-    this.items.splice(index, 0, ...listItems);
-    this.fireOnChange();
-  }
-
-  update(index: number, updatedItem: ISCrapListItem) {
+  updateItem(index: number, updatedItem: ISCrapListItem) {
     if (!this.items[index]) {
       // we cannot update an item, that does not exist anymore.
       // hack: we simply return here. the better solution would be to prevent
@@ -106,12 +120,6 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
-  private getItemDepth(index: number) {
-    // we need to access the depth-value like this because old items
-    // might not have the depth value set
-    return this.items[index].raw.depth ?? 0;
-  }
-
   moveCheckedToBottom() {
     this.items = this.items.sort((a, b) => {
       return a.raw.isCompleted === b.raw.isCompleted
@@ -122,21 +130,6 @@ export class ListItemWrapperCollection {
     });
 
     this.fireOnChange();
-  }
-
-  addNewLine(index: number) {
-    if (!this.items[index].raw.label) {
-      return;
-    }
-
-    this.add(
-      index + 1,
-      new ListItemWrapper({
-        label: "",
-        isCompleted: false,
-        depth: 0,
-      }),
-    );
   }
 
   toggleChecked() {
@@ -164,12 +157,19 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
-  getAsJson() {
-    return JSON.stringify(this.items.map((i) => i.raw));
+  private add(index: number, ...listItems: ListItemWrapper[]) {
+    this.items.splice(index, 0, ...listItems);
+    this.fireOnChange();
   }
 
   private fireOnChange() {
-    this.onChange(this.getAsJson());
+    this.onChange(this.items.map((i) => i.raw));
+  }
+
+  private getItemDepth(index: number) {
+    // we need to access the depth-value like this because old items
+    // might not have the depth value set
+    return this.items[index].raw.depth ?? 0;
   }
 
   private getNextHigherIndex(index: number) {
