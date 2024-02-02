@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
 import { ActionIconButton } from "../../../common/actions/ActionIconButton";
-import { RemoveCircleOutline } from "@mui/icons-material";
+import {
+  ArrowForward,
+  KeyboardBackspace,
+  RemoveCircleOutline,
+} from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { ListItemWrapper } from "./ListItemWrapper";
 import { SxProps } from "@mui/system";
@@ -18,6 +22,8 @@ export const ScrapListItem: React.FC<{
   moveFocusUp: () => void;
   moveItemUp: () => void;
   moveItemDown: () => void;
+  moveItemLeft: () => void;
+  moveItemRight: () => void;
 }> = ({
   isEditMode,
   listItemWrapper,
@@ -28,6 +34,8 @@ export const ScrapListItem: React.FC<{
   moveFocusUp,
   moveItemUp,
   moveItemDown,
+  moveItemLeft,
+  moveItemRight,
 }) => {
   const listItem = listItemWrapper.raw;
 
@@ -37,11 +45,11 @@ export const ScrapListItem: React.FC<{
   useEffect(() => listItemWrapper.setRef(ref), [listItemWrapper]);
 
   return (
-    <ListItem>
+    <ListItem sx={{ paddingLeft: ((listItem.depth ?? 0) + 1) * 16 + "px" }}>
       <StyledCheckbox
         checked={listItem.isCompleted}
         onChange={(_, checked) => {
-          onChange({ label, isCompleted: checked });
+          onChange({ label, isCompleted: checked, depth: listItem.depth });
         }}
       />
       {isEditMode ? (
@@ -52,7 +60,13 @@ export const ScrapListItem: React.FC<{
           onChange={(event) => setLabel(event.target.value)}
           onKeyUp={keyUp}
           onKeyDown={keyDown}
-          onBlur={() => onChange({ label, isCompleted: listItem.isCompleted })}
+          onBlur={() =>
+            onChange({
+              label,
+              isCompleted: listItem.isCompleted,
+              depth: listItem.depth,
+            })
+          }
           sx={getSx("textbox")}
           autoFocus={!listItem.label}
         />
@@ -70,6 +84,26 @@ export const ScrapListItem: React.FC<{
           label: "Delete",
           icon: <RemoveCircleOutline fontSize="small" />,
           onClick: () => onDelete(),
+        }}
+      />
+      <ActionIconButton
+        action={{
+          sx: !isEditMode ? { visibility: "hidden" } : null,
+          isDisabled: !isEditMode,
+          key: "left",
+          label: "Move left",
+          icon: <KeyboardBackspace fontSize="small" />,
+          onClick: () => moveItemLeft(),
+        }}
+      />
+      <ActionIconButton
+        action={{
+          sx: !isEditMode ? { visibility: "hidden" } : null,
+          isDisabled: !isEditMode,
+          key: "right",
+          label: "Move right",
+          icon: <ArrowForward fontSize="small" />,
+          onClick: () => moveItemRight(),
         }}
       />
     </ListItem>
@@ -124,6 +158,20 @@ export const ScrapListItem: React.FC<{
         break;
       }
 
+      case "ArrowRight": {
+        if (e.altKey && e.ctrlKey) {
+          moveItemRight();
+        }
+        break;
+      }
+
+      case "ArrowLeft": {
+        if (e.altKey && e.ctrlKey) {
+          moveItemLeft();
+        }
+        break;
+      }
+
       case "Enter": {
         e.preventDefault();
         break;
@@ -154,13 +202,21 @@ export const ScrapListItem: React.FC<{
 
       case " ": {
         if (e.ctrlKey) {
-          onChange({ label, isCompleted: !listItem.isCompleted });
+          onChange({
+            label,
+            isCompleted: !listItem.isCompleted,
+            depth: listItem.depth,
+          });
         }
         break;
       }
 
       default: {
-        onChange({ label, isCompleted: listItem.isCompleted });
+        onChange({
+          label,
+          isCompleted: listItem.isCompleted,
+          depth: listItem.depth,
+        });
         break;
       }
     }

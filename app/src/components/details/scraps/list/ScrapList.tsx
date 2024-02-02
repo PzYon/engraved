@@ -59,6 +59,8 @@ export const ScrapList: React.FC<{
               moveFocusDown={() => listItemsCollection.moveFocusDown(index)}
               moveItemUp={() => listItemsCollection.moveItemUp(index)}
               moveItemDown={() => listItemsCollection.moveItemDown(index)}
+              moveItemLeft={() => listItemsCollection.moveItemLeft(index)}
+              moveItemRight={() => listItemsCollection.moveItemRight(index)}
               onChange={(updatedItem) => {
                 listItemsCollection.update(index, updatedItem);
 
@@ -113,6 +115,7 @@ export const ScrapList: React.FC<{
       new ListItemWrapper({
         label: "",
         isCompleted: false,
+        depth: 0,
       }),
     );
   }

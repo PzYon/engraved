@@ -88,6 +88,30 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
+  moveItemLeft(index: number): void {
+    if (this.getItemDepth(index) === 0) {
+      return;
+    }
+
+    this.items[index].raw.depth = this.getItemDepth(index) - 1;
+    this.fireOnChange();
+  }
+
+  moveItemRight(index: number): void {
+    if (this.getItemDepth(index) > this.getItemDepth(index - 1)) {
+      return;
+    }
+
+    this.items[index].raw.depth = this.getItemDepth(index) + 1;
+    this.fireOnChange();
+  }
+
+  private getItemDepth(index: number) {
+    // we need to access the depth-value like this because old items
+    // might not have the depth value set
+    return this.items[index].raw.depth ?? 0;
+  }
+
   moveCheckedToBottom() {
     this.items = this.items.sort((a, b) => {
       return a.raw.isCompleted === b.raw.isCompleted
@@ -110,6 +134,7 @@ export class ListItemWrapperCollection {
       new ListItemWrapper({
         label: "",
         isCompleted: false,
+        depth: 0,
       }),
     );
   }
