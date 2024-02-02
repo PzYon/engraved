@@ -3,8 +3,8 @@ import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
 import { ActionIconButton } from "../../../common/actions/ActionIconButton";
 import {
-  ArrowForward,
-  KeyboardBackspace,
+  FormatIndentDecrease,
+  FormatIndentIncrease,
   RemoveCircleOutline,
 } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
@@ -45,7 +45,7 @@ export const ScrapListItem: React.FC<{
   useEffect(() => listItemWrapper.setRef(ref), [listItemWrapper]);
 
   return (
-    <ListItem sx={{ paddingLeft: ((listItem.depth ?? 0) + 1) * 16 + "px" }}>
+    <ListItem sx={{ paddingLeft: (listItem.depth ?? 0) * 16 + "px" }}>
       <StyledCheckbox
         checked={listItem.isCompleted}
         onChange={(_, checked) => {
@@ -90,20 +90,20 @@ export const ScrapListItem: React.FC<{
         action={{
           sx: !isEditMode ? { visibility: "hidden" } : null,
           isDisabled: !isEditMode,
-          key: "left",
-          label: "Move left",
-          icon: <KeyboardBackspace fontSize="small" />,
-          onClick: () => moveItemLeft(),
+          key: "right",
+          label: "Move right",
+          icon: <FormatIndentIncrease fontSize="small" />,
+          onClick: () => moveItemRight(),
         }}
       />
       <ActionIconButton
         action={{
           sx: !isEditMode ? { visibility: "hidden" } : null,
           isDisabled: !isEditMode,
-          key: "right",
-          label: "Move right",
-          icon: <ArrowForward fontSize="small" />,
-          onClick: () => moveItemRight(),
+          key: "left",
+          label: "Move left",
+          icon: <FormatIndentDecrease fontSize="small" />,
+          onClick: () => moveItemLeft(),
         }}
       />
     </ListItem>
