@@ -144,13 +144,17 @@ export class ActionFactory {
     journal: IJournal,
     renderDialog: (dialogProps: IDialogProps) => void,
     enableHotkey: boolean,
+    additionalOnClick?: () => void,
   ): IAction {
     return {
       hotkey: enableHotkey ? "alt+a" : undefined,
       key: "add_entry",
       label: "Add Entry",
       icon: <AddOutlined fontSize="small" />,
-      onClick: () => renderUpsertEntryDialog(journal, renderDialog),
+      onClick: () => {
+        additionalOnClick?.();
+        renderUpsertEntryDialog(journal, renderDialog);
+      },
     };
   }
 

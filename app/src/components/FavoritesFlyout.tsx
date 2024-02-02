@@ -73,7 +73,12 @@ const FavoritesList: React.FC<{
                 />
               </Link>
               <ActionIconButton
-                action={ActionFactory.addEntry(journal, renderDialog, false)}
+                action={ActionFactory.addEntry(
+                  journal,
+                  renderDialog,
+                  false,
+                  close,
+                )}
               />
             </MenuItem>
           );
