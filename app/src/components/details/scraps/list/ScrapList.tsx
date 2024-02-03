@@ -93,13 +93,13 @@ export const ScrapList: React.FC<{
                 key: "toggle-checked",
                 label: "Toggle checked",
                 icon: <SyncAltOutlined fontSize="small" />,
-                onClick: () => listItemsCollection.toggleChecked(),
+                onClick: () => listItemsCollection.toggleAllChecked(),
               },
               {
                 key: "delete-checked",
                 label: "Delete checked",
                 icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => listItemsCollection.deleteChecked(),
+                onClick: () => listItemsCollection.deleteAllChecked(),
               },
             ]}
           />

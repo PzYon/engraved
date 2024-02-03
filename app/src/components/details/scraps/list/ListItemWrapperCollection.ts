@@ -76,13 +76,14 @@ export class ListItemWrapperCollection {
     if (lowerIndex > index) {
       const item = this.items.splice(0, 1);
       this.add(this.highestIndex + 1, item[0]);
-    } else {
-      const upperItem = this.items[index];
-      const lowerItem = this.items[lowerIndex];
-
-      this.items[lowerIndex] = upperItem;
-      this.items[index] = lowerItem;
+      return;
     }
+
+    const upperItem = this.items[index];
+    const lowerItem = this.items[lowerIndex];
+
+    this.items[lowerIndex] = upperItem;
+    this.items[index] = lowerItem;
 
     this.fireOnChange();
   }
@@ -93,13 +94,14 @@ export class ListItemWrapperCollection {
     if (higherIndex < index) {
       const item = this.items.splice(this.highestIndex, 1);
       this.add(0, item[0]);
-    } else {
-      const lowerItem = this.items[index];
-      const upperItem = this.items[higherIndex];
-
-      this.items[higherIndex] = lowerItem;
-      this.items[index] = upperItem;
+      return;
     }
+
+    const lowerItem = this.items[index];
+    const upperItem = this.items[higherIndex];
+
+    this.items[higherIndex] = lowerItem;
+    this.items[index] = upperItem;
 
     this.fireOnChange();
   }
@@ -134,7 +136,7 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
-  toggleChecked() {
+  toggleAllChecked() {
     const isMajorityCompleted =
       this.items.filter((i) => i.raw.isCompleted).length >
       this.items.length / 2;
@@ -153,7 +155,7 @@ export class ListItemWrapperCollection {
     this.fireOnChange();
   }
 
-  deleteChecked() {
+  deleteAllChecked() {
     this.items = this.items.filter((i) => !i.raw.isCompleted);
 
     this.fireOnChange();
