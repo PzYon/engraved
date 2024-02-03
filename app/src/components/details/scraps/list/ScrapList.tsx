@@ -24,7 +24,7 @@ export const ScrapList: React.FC<{
   const listItemsCollection = useMemo(() => {
     const items: ISCrapListItem[] = value ? JSON.parse(value) : [];
     return new ListItemWrapperCollection(items, (rawItems) =>
-      onChange(JSON.stringify(rawItems)),
+      onChange(getItemsAsJson(rawItems)),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedOn]);
@@ -63,7 +63,9 @@ export const ScrapList: React.FC<{
                 listItemsCollection.updateItem(index, updatedItem);
 
                 if (!isEditMode) {
-                  onSave(JSON.stringify(listItemsCollection.items));
+                  onSave(
+                    getItemsAsJson(listItemsCollection.items.map((i) => i.raw)),
+                  );
                 }
               }}
               onDelete={() => listItemsCollection.removeItem(index)}
@@ -108,6 +110,10 @@ export const ScrapList: React.FC<{
     </Host>
   );
 };
+
+function getItemsAsJson(rawItems: ISCrapListItem[]) {
+  return JSON.stringify(rawItems);
+}
 
 const Host = styled("div")`
   border-radius: 4px;
