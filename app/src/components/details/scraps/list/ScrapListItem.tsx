@@ -9,7 +9,7 @@ import {
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
-import { ActionGroup } from "../../../common/actions/ActionGroup";
+import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
 
 export const ScrapListItem: React.FC<{
@@ -54,7 +54,8 @@ export const ScrapListItem: React.FC<{
             sx={{ ...getSx("textbox"), pr: 1 }}
             autoFocus={!listItem.label}
           />
-          <ActionGroup
+          <ActionIconButtonGroup
+            backgroundColor={"none"}
             actions={[
               {
                 sx: !isEditMode ? { visibility: "hidden" } : null,

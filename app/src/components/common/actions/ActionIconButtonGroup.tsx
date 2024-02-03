@@ -2,15 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { ActionIconButton } from "./ActionIconButton";
 import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
 import { useIsInViewport } from "../useIsInViewPort";
-import { styled } from "@mui/material";
+import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 
-export const ActionGroup: React.FC<{
+export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
   enableFloatingActions?: boolean;
   testId?: string;
-}> = ({ actions, enableFloatingActions, testId }) => {
+  backgroundColor?: string;
+}> = ({ actions, enableFloatingActions, testId, backgroundColor }) => {
   const domElementRef = useRef<HTMLDivElement>();
+
+  const { palette } = useTheme();
 
   const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
 
@@ -34,7 +37,10 @@ export const ActionGroup: React.FC<{
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
-      <ButtonContainer data-testid={testId}>
+      <ButtonContainer
+        data-testid={testId}
+        sx={{ backgroundColor: backgroundColor ?? palette.background.default }}
+      >
         <div ref={domElementRef} />
         {actions
           .filter((a) => a !== undefined)
@@ -54,7 +60,6 @@ const ButtonContainer = styled("div")`
   display: flex;
   justify-content: end;
   align-items: center;
-  background-color: ${(p) => p.theme.palette.background.default};
   border-radius: 20px;
 
   .MuiButtonBase-root:first-of-type {

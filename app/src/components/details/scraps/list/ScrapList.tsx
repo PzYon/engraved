@@ -7,7 +7,7 @@ import {
   RemoveCircleOutline,
   SyncAltOutlined,
 } from "@mui/icons-material";
-import { ActionGroup } from "../../../common/actions/ActionGroup";
+import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
 import { ISCrapListItem } from "./IScrapListItem";
 
@@ -68,7 +68,7 @@ export const ScrapList: React.FC<{
       </List>
       {isEditMode ? (
         <ActionsContainer>
-          <ActionGroup
+          <ActionIconButtonGroup
             actions={[
               {
                 key: "add",

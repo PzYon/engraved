@@ -2,7 +2,7 @@ import React from "react";
 import { IPropertyDefinition } from "../common/IPropertyDefinition";
 import { IAction } from "../common/actions/IAction";
 import { Properties } from "../common/Properties";
-import { ActionGroup } from "../common/actions/ActionGroup";
+import { ActionIconButtonGroup } from "../common/actions/ActionIconButtonGroup";
 import { styled } from "@mui/material";
 
 export const ListItemFooterRow: React.FC<{
@@ -15,7 +15,7 @@ export const ListItemFooterRow: React.FC<{
         <Properties properties={properties} />
       </FlexGrow>
       <ActionContainer>
-        <ActionGroup actions={actions} />
+        <ActionIconButtonGroup actions={actions} />
       </ActionContainer>
     </PropertiesRow>
   );
