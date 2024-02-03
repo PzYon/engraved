@@ -20,12 +20,14 @@ export class ListItemWrapperCollection {
       return;
     }
 
+    const depth = index === 0 ? 0 : this.items[index - 1].raw.depth;
+
     this.add(
       index,
       new ListItemWrapper({
         label: "",
         isCompleted: false,
-        depth: 0,
+        depth: depth,
       }),
     );
   }

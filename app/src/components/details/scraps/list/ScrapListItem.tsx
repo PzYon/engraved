@@ -53,55 +53,55 @@ export const ScrapListItem: React.FC<{
         }}
       />
       {isEditMode ? (
-        <AutogrowTextField
-          forwardInputRef={ref}
-          fieldType="content"
-          value={label}
-          onChange={(event) => setLabel(event.target.value)}
-          onKeyUp={keyUp}
-          onKeyDown={keyDown}
-          onBlur={() =>
-            onChange({
-              label,
-              isCompleted: listItem.isCompleted,
-              depth: listItem.depth,
-            })
-          }
-          sx={getSx("textbox")}
-          autoFocus={!listItem.label}
-        />
+        <>
+          <AutogrowTextField
+            forwardInputRef={ref}
+            fieldType="content"
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+            onKeyUp={keyUp}
+            onKeyDown={keyDown}
+            onBlur={() =>
+              onChange({
+                label,
+                isCompleted: listItem.isCompleted,
+                depth: listItem.depth,
+              })
+            }
+            sx={{ ...getSx("textbox"), pr: 1 }}
+            autoFocus={!listItem.label}
+          />
+          <ActionGroup
+            actions={[
+              {
+                sx: !isEditMode ? { visibility: "hidden" } : null,
+                key: "remove",
+                label: "Delete",
+                icon: <RemoveCircleOutline fontSize="small" />,
+                onClick: () => onDelete(),
+              },
+              {
+                sx: !isEditMode ? { visibility: "hidden" } : null,
+                key: "left",
+                label: "Move left",
+                icon: <FormatIndentDecrease fontSize="small" />,
+                onClick: () => moveItemLeft(),
+              },
+              {
+                sx: !isEditMode ? { visibility: "hidden" } : null,
+                key: "right",
+                label: "Move right",
+                icon: <FormatIndentIncrease fontSize="small" />,
+                onClick: () => moveItemRight(),
+              },
+            ]}
+          />
+        </>
       ) : (
         <ReadonlyContainer sx={getSx("plain")}>
           <Markdown value={label} useBasic={true}></Markdown>
         </ReadonlyContainer>
       )}
-      {isEditMode ? (
-        <ActionGroup
-          actions={[
-            {
-              sx: !isEditMode ? { visibility: "hidden" } : null,
-              key: "remove",
-              label: "Delete",
-              icon: <RemoveCircleOutline fontSize="small" />,
-              onClick: () => onDelete(),
-            },
-            {
-              sx: !isEditMode ? { visibility: "hidden" } : null,
-              key: "right",
-              label: "Move right",
-              icon: <FormatIndentIncrease fontSize="small" />,
-              onClick: () => moveItemRight(),
-            },
-            {
-              sx: !isEditMode ? { visibility: "hidden" } : null,
-              key: "left",
-              label: "Move left",
-              icon: <FormatIndentDecrease fontSize="small" />,
-              onClick: () => moveItemLeft(),
-            },
-          ]}
-        />
-      ) : null}
     </ListItem>
   );
 

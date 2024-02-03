@@ -23,6 +23,18 @@ describe("ListItemWrapperCollection", () => {
         },
       ).addItem(1);
     });
+
+    it("should consider depth of parent", () => {
+      new ListItemWrapperCollection(
+        [createRandomItem(), createRandomItem("x", 1)],
+        (updatedItems) => {
+          expect(updatedItems.length).toBe(3);
+          expect(updatedItems[0].depth).toBe(0);
+          expect(updatedItems[1].depth).toBe(1);
+          expect(updatedItems[2].depth).toBe(1);
+        },
+      ).addItem(2);
+    });
   });
 
   describe("removeItem", () => {
@@ -95,7 +107,7 @@ describe("ListItemWrapperCollection", () => {
       ).moveItemRight(1);
     });
 
-    it("...right: not move item right to depth >=+1", () => {
+    it("...right: not move item right to depth >=+1 of parent", () => {
       new ListItemWrapperCollection(
         [createRandomItem("a"), createRandomItem("b", 1)],
         (updatedItems) => {
