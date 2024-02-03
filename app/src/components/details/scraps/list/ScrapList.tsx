@@ -50,9 +50,11 @@ export const ScrapList: React.FC<{
         ) : (
           listItemsCollection.items.map((item, index) => (
             <ScrapListItem
-              key={item.reactKey}
+              index={index}
+              key={listItemsCollection.getReactKey(index)}
+              listItemsCollection={listItemsCollection}
               isEditMode={isEditMode}
-              listItemWrapper={item}
+              listItem={item}
               moveFocusUp={() => listItemsCollection.moveFocusUp(index)}
               moveFocusDown={() => listItemsCollection.moveFocusDown(index)}
               moveItemUp={() => listItemsCollection.moveItemUp(index)}
@@ -63,9 +65,7 @@ export const ScrapList: React.FC<{
                 listItemsCollection.updateItem(index, updatedItem);
 
                 if (!isEditMode) {
-                  onSave(
-                    getItemsAsJson(listItemsCollection.items.map((i) => i.raw)),
-                  );
+                  onSave(getItemsAsJson(listItemsCollection.items));
                 }
               }}
               onDelete={() => listItemsCollection.removeItem(index)}

@@ -2,25 +2,33 @@ import { ISCrapListItem } from "./IScrapListItem";
 import { ListItemWrapper } from "./ListItemWrapper";
 
 export class ListItemWrapperCollection {
-  items: ListItemWrapper[];
+  private wrappedItems: ListItemWrapper[];
+
+  get items(): ISCrapListItem[] {
+    return this.wrappedItems.map((i) => i.raw);
+  }
 
   private get highestIndex() {
-    return this.items.length - 1;
+    return this.wrappedItems.length - 1;
   }
 
   constructor(
     rawItems: ISCrapListItem[],
     private onChange: (rawItems: ISCrapListItem[]) => void,
   ) {
-    this.items = rawItems.map((i) => new ListItemWrapper(i));
+    this.wrappedItems = rawItems.map((i) => new ListItemWrapper(i));
+  }
+
+  setRef(index: number, ref: React.MutableRefObject<HTMLInputElement>): void {
+    this.wrappedItems[index].setRef(ref);
   }
 
   addItem(index: number) {
-    if (index > 0 && !this.items[index - 1].raw.label) {
+    if (index > 0 && !this.wrappedItems[index - 1].raw.label) {
       return;
     }
 
-    const depth = index === 0 ? 0 : this.items[index - 1].raw.depth;
+    const depth = index === 0 ? 0 : this.wrappedItems[index - 1].raw.depth;
 
     this.add(
       index,
@@ -33,20 +41,20 @@ export class ListItemWrapperCollection {
   }
 
   removeItem(index: number) {
-    if (this.items.length <= 1) {
+    if (this.wrappedItems.length <= 1) {
       // we do not want to delete the last item
       return;
     }
 
-    this.items = this.items.filter((_, i) => i !== index);
+    this.wrappedItems = this.wrappedItems.filter((_, i) => i !== index);
 
-    this.items[Math.min(index, this.highestIndex)].giveFocus();
+    this.wrappedItems[Math.min(index, this.highestIndex)].giveFocus();
 
     this.fireOnChange();
   }
 
   updateItem(index: number, updatedItem: ISCrapListItem) {
-    if (!this.items[index]) {
+    if (!this.wrappedItems[index]) {
       // we cannot update an item, that does not exist anymore.
       // hack: we simply return here. the better solution would be to prevent
       // update being called on an item that does not exist anymore, but this
@@ -54,12 +62,12 @@ export class ListItemWrapperCollection {
       return;
     }
 
-    this.items[index].raw = updatedItem;
+    this.wrappedItems[index].raw = updatedItem;
     this.fireOnChange();
   }
 
   giveFocus(index: number) {
-    this.items[index]?.giveFocus();
+    this.wrappedItems[index]?.giveFocus();
   }
 
   moveFocusUp(index: number) {
@@ -74,16 +82,16 @@ export class ListItemWrapperCollection {
     const lowerIndex = this.getNextLowerIndex(index);
 
     if (lowerIndex > index) {
-      const item = this.items.splice(0, 1);
+      const item = this.wrappedItems.splice(0, 1);
       this.add(this.highestIndex + 1, item[0]);
       return;
     }
 
-    const upperItem = this.items[index];
-    const lowerItem = this.items[lowerIndex];
+    const upperItem = this.wrappedItems[index];
+    const lowerItem = this.wrappedItems[lowerIndex];
 
-    this.items[lowerIndex] = upperItem;
-    this.items[index] = lowerItem;
+    this.wrappedItems[lowerIndex] = upperItem;
+    this.wrappedItems[index] = lowerItem;
 
     this.fireOnChange();
   }
@@ -92,16 +100,16 @@ export class ListItemWrapperCollection {
     const higherIndex = this.getNextHigherIndex(index);
 
     if (higherIndex < index) {
-      const item = this.items.splice(this.highestIndex, 1);
+      const item = this.wrappedItems.splice(this.highestIndex, 1);
       this.add(0, item[0]);
       return;
     }
 
-    const lowerItem = this.items[index];
-    const upperItem = this.items[higherIndex];
+    const lowerItem = this.wrappedItems[index];
+    const upperItem = this.wrappedItems[higherIndex];
 
-    this.items[higherIndex] = lowerItem;
-    this.items[index] = upperItem;
+    this.wrappedItems[higherIndex] = lowerItem;
+    this.wrappedItems[index] = upperItem;
 
     this.fireOnChange();
   }
@@ -111,7 +119,7 @@ export class ListItemWrapperCollection {
       return;
     }
 
-    this.items[index].raw.depth = this.getItemDepth(index) - 1;
+    this.wrappedItems[index].raw.depth = this.getItemDepth(index) - 1;
     this.fireOnChange();
   }
 
@@ -120,12 +128,12 @@ export class ListItemWrapperCollection {
       return;
     }
 
-    this.items[index].raw.depth = this.getItemDepth(index) + 1;
+    this.wrappedItems[index].raw.depth = this.getItemDepth(index) + 1;
     this.fireOnChange();
   }
 
   moveCheckedToBottom() {
-    this.items = this.items.sort((a, b) => {
+    this.wrappedItems = this.wrappedItems.sort((a, b) => {
       return a.raw.isCompleted === b.raw.isCompleted
         ? 0
         : a.raw.isCompleted
@@ -138,14 +146,14 @@ export class ListItemWrapperCollection {
 
   toggleAllChecked() {
     const isMajorityCompleted =
-      this.items.filter((i) => i.raw.isCompleted).length >
-      this.items.length / 2;
+      this.wrappedItems.filter((i) => i.raw.isCompleted).length >
+      this.wrappedItems.length / 2;
 
     const areAllSameState =
-      this.items.filter((i) => i.raw.isCompleted === isMajorityCompleted)
-        .length === this.items.length;
+      this.wrappedItems.filter((i) => i.raw.isCompleted === isMajorityCompleted)
+        .length === this.wrappedItems.length;
 
-    this.items = this.items.map((i) => {
+    this.wrappedItems = this.wrappedItems.map((i) => {
       i.raw.isCompleted = areAllSameState
         ? !isMajorityCompleted
         : isMajorityCompleted;
@@ -156,24 +164,28 @@ export class ListItemWrapperCollection {
   }
 
   deleteAllChecked() {
-    this.items = this.items.filter((i) => !i.raw.isCompleted);
+    this.wrappedItems = this.wrappedItems.filter((i) => !i.raw.isCompleted);
 
     this.fireOnChange();
   }
 
+  getReactKey(index: number): string {
+    return this.wrappedItems[index].reactKey;
+  }
+
   private add(index: number, ...listItems: ListItemWrapper[]) {
-    this.items.splice(index, 0, ...listItems);
+    this.wrappedItems.splice(index, 0, ...listItems);
     this.fireOnChange();
   }
 
   private fireOnChange() {
-    this.onChange(this.items.map((i) => i.raw));
+    this.onChange(this.items);
   }
 
   private getItemDepth(index: number) {
     // we need to access the depth-value like this because old items
     // might not have the depth value set
-    return this.items[index].raw.depth ?? 0;
+    return this.wrappedItems[index].raw.depth ?? 0;
   }
 
   private getNextHigherIndex(index: number) {

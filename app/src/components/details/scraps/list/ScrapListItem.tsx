@@ -7,14 +7,16 @@ import {
   RemoveCircleOutline,
 } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
-import { ListItemWrapper } from "./ListItemWrapper";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
 import { ActionGroup } from "../../../common/actions/ActionGroup";
+import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
 
 export const ScrapListItem: React.FC<{
+  listItemsCollection: ListItemWrapperCollection;
+  index: number;
   isEditMode: boolean;
-  listItemWrapper: ListItemWrapper;
+  listItem: ISCrapListItem;
   onChange: (listItem: ISCrapListItem) => void;
   onEnter: () => void;
   onDelete: () => void;
@@ -25,8 +27,10 @@ export const ScrapListItem: React.FC<{
   moveItemLeft: () => void;
   moveItemRight: () => void;
 }> = ({
+  listItemsCollection,
+  index,
   isEditMode,
-  listItemWrapper,
+  listItem,
   onChange,
   onEnter,
   onDelete,
@@ -37,12 +41,13 @@ export const ScrapListItem: React.FC<{
   moveItemLeft,
   moveItemRight,
 }) => {
-  const listItem = listItemWrapper.raw;
-
   const [label, setLabel] = useState(listItem.label);
   const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
 
-  useEffect(() => listItemWrapper.setRef(ref), [listItemWrapper]);
+  useEffect(
+    () => listItemsCollection.setRef(index, ref),
+    [listItemsCollection, index, listItem],
+  );
 
   return (
     <ListItem sx={{ paddingLeft: (listItem.depth ?? 0) * 16 + "px" }}>
