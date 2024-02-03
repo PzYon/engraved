@@ -24,11 +24,13 @@ export class ListItemCollection {
   }
 
   addItem(index: number) {
-    if (index > 0 && !this.wrappedItems[index].raw.label) {
+    const isFirst = index <= 0;
+
+    if (!isFirst && !this.wrappedItems[index].raw.label) {
       return;
     }
 
-    const depth = index === 0 ? 0 : this.wrappedItems[index].raw.depth;
+    const depth = isFirst ? 0 : this.getItemDepth(index);
 
     this.add(
       index + 1,
@@ -82,8 +84,8 @@ export class ListItemCollection {
     const lowerIndex = this.getNextLowerIndex(index);
 
     if (lowerIndex > index) {
-      const item = this.wrappedItems.splice(0, 1);
-      this.add(this.highestIndex + 1, item[0]);
+      const item = this.wrappedItems.splice(0, 1)[0];
+      this.add(this.highestIndex + 1, item);
       return;
     }
 
@@ -100,8 +102,8 @@ export class ListItemCollection {
     const higherIndex = this.getNextHigherIndex(index);
 
     if (higherIndex < index) {
-      const item = this.wrappedItems.splice(this.highestIndex, 1);
-      this.add(0, item[0]);
+      const item = this.wrappedItems.splice(this.highestIndex, 1)[0];
+      this.add(0, item);
       return;
     }
 
