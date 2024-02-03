@@ -24,7 +24,7 @@ export class ListItemCollection {
   }
 
   addItem(index: number) {
-    if (index > 0 && !this.wrappedItems[index - 1].raw.label) {
+    if (index > 0 && !this.wrappedItems[index].raw.label) {
       return;
     }
 
