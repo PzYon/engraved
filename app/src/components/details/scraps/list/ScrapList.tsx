@@ -7,9 +7,8 @@ import {
   RemoveCircleOutline,
   SyncAltOutlined,
 } from "@mui/icons-material";
-import { ActionGroup } from "../../../common/actions/ActionGroup";
-import { ListItemWrapper } from "./ListItemWrapper";
-import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
+import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
+import { ListItemCollection } from "./ListItemCollection";
 import { ISCrapListItem } from "./IScrapListItem";
 
 export const ScrapList: React.FC<{
@@ -24,9 +23,8 @@ export const ScrapList: React.FC<{
 
   const listItemsCollection = useMemo(() => {
     const items: ISCrapListItem[] = value ? JSON.parse(value) : [];
-    return new ListItemWrapperCollection(
-      items.map((i) => new ListItemWrapper(i)),
-      onChange,
+    return new ListItemCollection(items, (rawItems) =>
+      onChange(getItemsAsJson(rawItems)),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedOn]);
@@ -52,35 +50,34 @@ export const ScrapList: React.FC<{
         ) : (
           listItemsCollection.items.map((item, index) => (
             <ScrapListItem
-              key={item.reactKey}
+              key={listItemsCollection.getReactKey(index)}
+              listItemsCollection={listItemsCollection}
+              index={index}
+              listItem={item}
               isEditMode={isEditMode}
-              listItemWrapper={item}
-              moveFocusUp={() => listItemsCollection.moveFocusUp(index)}
-              moveFocusDown={() => listItemsCollection.moveFocusDown(index)}
-              moveItemUp={() => listItemsCollection.moveItemUp(index)}
-              moveItemDown={() => listItemsCollection.moveItemDown(index)}
               onChange={(updatedItem) => {
-                listItemsCollection.update(index, updatedItem);
+                listItemsCollection.updateItem(index, updatedItem);
 
                 if (!isEditMode) {
-                  onSave(listItemsCollection.getAsJson());
+                  onSave(getItemsAsJson(listItemsCollection.items));
                 }
               }}
-              onDelete={() => listItemsCollection.remove(index)}
-              onEnter={() => listItemsCollection.addNewLine(index)}
             />
           ))
         )}
       </List>
       {isEditMode ? (
         <ActionsContainer>
-          <ActionGroup
+          <ActionIconButtonGroup
             actions={[
               {
                 key: "add",
                 label: "Add new",
                 icon: <AddOutlined fontSize="small" />,
-                onClick: addNew,
+                onClick: () =>
+                  listItemsCollection.addItem(
+                    listItemsCollection.items.length - 1,
+                  ),
               },
               {
                 key: "move-checked-to-bottom",
@@ -92,13 +89,13 @@ export const ScrapList: React.FC<{
                 key: "toggle-checked",
                 label: "Toggle checked",
                 icon: <SyncAltOutlined fontSize="small" />,
-                onClick: () => listItemsCollection.toggleChecked(),
+                onClick: () => listItemsCollection.toggleAllChecked(),
               },
               {
                 key: "delete-checked",
                 label: "Delete checked",
                 icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => listItemsCollection.deleteChecked(),
+                onClick: () => listItemsCollection.deleteAllChecked(),
               },
             ]}
           />
@@ -106,17 +103,11 @@ export const ScrapList: React.FC<{
       ) : null}
     </Host>
   );
-
-  function addNew() {
-    listItemsCollection.add(
-      listItemsCollection.items.length,
-      new ListItemWrapper({
-        label: "",
-        isCompleted: false,
-      }),
-    );
-  }
 };
+
+function getItemsAsJson(rawItems: ISCrapListItem[]) {
+  return JSON.stringify(rawItems);
+}
 
 const Host = styled("div")`
   border-radius: 4px;

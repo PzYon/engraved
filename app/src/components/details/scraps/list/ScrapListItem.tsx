@@ -1,77 +1,91 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
-import { ActionIconButton } from "../../../common/actions/ActionIconButton";
-import { RemoveCircleOutline } from "@mui/icons-material";
+import {
+  FormatIndentDecrease,
+  FormatIndentIncrease,
+  RemoveCircleOutline,
+} from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
-import { ListItemWrapper } from "./ListItemWrapper";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
+import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
+import { ListItemCollection } from "./ListItemCollection";
 
 export const ScrapListItem: React.FC<{
+  listItemsCollection: ListItemCollection;
+  index: number;
+  listItem: ISCrapListItem;
   isEditMode: boolean;
-  listItemWrapper: ListItemWrapper;
   onChange: (listItem: ISCrapListItem) => void;
-  onEnter: () => void;
-  onDelete: () => void;
-  moveFocusDown: () => void;
-  moveFocusUp: () => void;
-  moveItemUp: () => void;
-  moveItemDown: () => void;
-}> = ({
-  isEditMode,
-  listItemWrapper,
-  onChange,
-  onEnter,
-  onDelete,
-  moveFocusDown,
-  moveFocusUp,
-  moveItemUp,
-  moveItemDown,
-}) => {
-  const listItem = listItemWrapper.raw;
-
+}> = ({ listItemsCollection, index, isEditMode, listItem, onChange }) => {
   const [label, setLabel] = useState(listItem.label);
   const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
 
-  useEffect(() => listItemWrapper.setRef(ref), [listItemWrapper]);
+  useEffect(
+    () => listItemsCollection.setRef(index, ref),
+    [listItemsCollection, index],
+  );
 
   return (
-    <ListItem>
+    <ListItem sx={{ paddingLeft: (listItem.depth ?? 0) * 16 + "px" }}>
       <StyledCheckbox
         checked={listItem.isCompleted}
         onChange={(_, checked) => {
-          onChange({ label, isCompleted: checked });
+          onChange({ label, isCompleted: checked, depth: listItem.depth });
         }}
       />
       {isEditMode ? (
-        <AutogrowTextField
-          forwardInputRef={ref}
-          fieldType="content"
-          value={label}
-          onChange={(event) => setLabel(event.target.value)}
-          onKeyUp={keyUp}
-          onKeyDown={keyDown}
-          onBlur={() => onChange({ label, isCompleted: listItem.isCompleted })}
-          sx={getSx("textbox")}
-          autoFocus={!listItem.label}
-        />
+        <>
+          <AutogrowTextField
+            forwardInputRef={ref}
+            fieldType="content"
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+            onKeyUp={keyUp}
+            onKeyDown={keyDown}
+            onBlur={() =>
+              onChange({
+                label,
+                isCompleted: listItem.isCompleted,
+                depth: listItem.depth,
+              })
+            }
+            sx={{ ...getSx("textbox"), pr: 1 }}
+            autoFocus={!listItem.label}
+          />
+          <ActionIconButtonGroup
+            backgroundColor={"none"}
+            actions={[
+              {
+                sx: !isEditMode ? { visibility: "hidden" } : null,
+                key: "remove",
+                label: "Delete",
+                icon: <RemoveCircleOutline fontSize="small" />,
+                onClick: () => listItemsCollection.removeItem(index),
+              },
+              {
+                sx: !isEditMode ? { visibility: "hidden" } : null,
+                key: "left",
+                label: "Move left",
+                icon: <FormatIndentDecrease fontSize="small" />,
+                onClick: () => listItemsCollection.moveItemLeft(index),
+              },
+              {
+                sx: !isEditMode ? { visibility: "hidden" } : null,
+                key: "right",
+                label: "Move right",
+                icon: <FormatIndentIncrease fontSize="small" />,
+                onClick: () => listItemsCollection.moveItemRight(index),
+              },
+            ]}
+          />
+        </>
       ) : (
         <ReadonlyContainer sx={getSx("plain")}>
           <Markdown value={label} useBasic={true}></Markdown>
         </ReadonlyContainer>
       )}
-
-      <ActionIconButton
-        action={{
-          sx: !isEditMode ? { visibility: "hidden" } : null,
-          isDisabled: !isEditMode,
-          key: "remove",
-          label: "Delete",
-          icon: <RemoveCircleOutline fontSize="small" />,
-          onClick: () => onDelete(),
-        }}
-      />
     </ListItem>
   );
 
@@ -108,18 +122,32 @@ export const ScrapListItem: React.FC<{
     switch (e.key) {
       case "ArrowUp": {
         if (e.altKey && e.ctrlKey) {
-          moveItemUp();
+          listItemsCollection.moveItemUp(index);
         } else {
-          moveFocusUp();
+          listItemsCollection.moveFocusUp(index);
         }
         break;
       }
 
       case "ArrowDown": {
         if (e.altKey && e.ctrlKey) {
-          moveItemDown();
+          listItemsCollection.moveItemDown(index);
         } else {
-          moveFocusDown();
+          listItemsCollection.moveFocusDown(index);
+        }
+        break;
+      }
+
+      case "ArrowRight": {
+        if (e.altKey && e.ctrlKey) {
+          listItemsCollection.moveItemRight(index);
+        }
+        break;
+      }
+
+      case "ArrowLeft": {
+        if (e.altKey && e.ctrlKey) {
+          listItemsCollection.moveItemLeft(index);
         }
         break;
       }
@@ -136,7 +164,7 @@ export const ScrapListItem: React.FC<{
         }
 
         if (e.altKey && e.ctrlKey) {
-          onDelete();
+          listItemsCollection.removeItem(index);
         }
 
         break;
@@ -147,20 +175,28 @@ export const ScrapListItem: React.FC<{
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
       case "Enter": {
-        onEnter();
+        listItemsCollection.addItem(index);
         e.preventDefault();
         break;
       }
 
       case " ": {
         if (e.ctrlKey) {
-          onChange({ label, isCompleted: !listItem.isCompleted });
+          onChange({
+            label,
+            isCompleted: !listItem.isCompleted,
+            depth: listItem.depth,
+          });
         }
         break;
       }
 
       default: {
-        onChange({ label, isCompleted: listItem.isCompleted });
+        onChange({
+          label,
+          isCompleted: listItem.isCompleted,
+          depth: listItem.depth,
+        });
         break;
       }
     }
