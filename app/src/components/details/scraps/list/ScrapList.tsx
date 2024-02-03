@@ -8,7 +8,7 @@ import {
   SyncAltOutlined,
 } from "@mui/icons-material";
 import { ActionGroup } from "../../../common/actions/ActionGroup";
-import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
+import { ListItemCollection } from "./ListItemCollection";
 import { ISCrapListItem } from "./IScrapListItem";
 
 export const ScrapList: React.FC<{
@@ -23,7 +23,7 @@ export const ScrapList: React.FC<{
 
   const listItemsCollection = useMemo(() => {
     const items: ISCrapListItem[] = value ? JSON.parse(value) : [];
-    return new ListItemWrapperCollection(items, (rawItems) =>
+    return new ListItemCollection(items, (rawItems) =>
       onChange(getItemsAsJson(rawItems)),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,17 +50,11 @@ export const ScrapList: React.FC<{
         ) : (
           listItemsCollection.items.map((item, index) => (
             <ScrapListItem
-              index={index}
               key={listItemsCollection.getReactKey(index)}
               listItemsCollection={listItemsCollection}
-              isEditMode={isEditMode}
+              index={index}
               listItem={item}
-              moveFocusUp={() => listItemsCollection.moveFocusUp(index)}
-              moveFocusDown={() => listItemsCollection.moveFocusDown(index)}
-              moveItemUp={() => listItemsCollection.moveItemUp(index)}
-              moveItemDown={() => listItemsCollection.moveItemDown(index)}
-              moveItemLeft={() => listItemsCollection.moveItemLeft(index)}
-              moveItemRight={() => listItemsCollection.moveItemRight(index)}
+              isEditMode={isEditMode}
               onChange={(updatedItem) => {
                 listItemsCollection.updateItem(index, updatedItem);
 
@@ -68,8 +62,6 @@ export const ScrapList: React.FC<{
                   onSave(getItemsAsJson(listItemsCollection.items));
                 }
               }}
-              onDelete={() => listItemsCollection.removeItem(index)}
-              onEnter={() => listItemsCollection.addItem(index + 1)}
             />
           ))
         )}

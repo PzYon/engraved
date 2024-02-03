@@ -10,43 +10,21 @@ import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
 import { ActionGroup } from "../../../common/actions/ActionGroup";
-import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
+import { ListItemCollection } from "./ListItemCollection";
 
 export const ScrapListItem: React.FC<{
-  listItemsCollection: ListItemWrapperCollection;
+  listItemsCollection: ListItemCollection;
   index: number;
-  isEditMode: boolean;
   listItem: ISCrapListItem;
+  isEditMode: boolean;
   onChange: (listItem: ISCrapListItem) => void;
-  onEnter: () => void;
-  onDelete: () => void;
-  moveFocusDown: () => void;
-  moveFocusUp: () => void;
-  moveItemUp: () => void;
-  moveItemDown: () => void;
-  moveItemLeft: () => void;
-  moveItemRight: () => void;
-}> = ({
-  listItemsCollection,
-  index,
-  isEditMode,
-  listItem,
-  onChange,
-  onEnter,
-  onDelete,
-  moveFocusDown,
-  moveFocusUp,
-  moveItemUp,
-  moveItemDown,
-  moveItemLeft,
-  moveItemRight,
-}) => {
+}> = ({ listItemsCollection, index, isEditMode, listItem, onChange }) => {
   const [label, setLabel] = useState(listItem.label);
   const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
 
   useEffect(
     () => listItemsCollection.setRef(index, ref),
-    [listItemsCollection, index, listItem],
+    [listItemsCollection, index],
   );
 
   return (
@@ -83,21 +61,21 @@ export const ScrapListItem: React.FC<{
                 key: "remove",
                 label: "Delete",
                 icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => onDelete(),
+                onClick: () => listItemsCollection.removeItem(index),
               },
               {
                 sx: !isEditMode ? { visibility: "hidden" } : null,
                 key: "left",
                 label: "Move left",
                 icon: <FormatIndentDecrease fontSize="small" />,
-                onClick: () => moveItemLeft(),
+                onClick: () => listItemsCollection.moveItemLeft(index),
               },
               {
                 sx: !isEditMode ? { visibility: "hidden" } : null,
                 key: "right",
                 label: "Move right",
                 icon: <FormatIndentIncrease fontSize="small" />,
-                onClick: () => moveItemRight(),
+                onClick: () => listItemsCollection.moveItemRight(index),
               },
             ]}
           />
@@ -143,32 +121,32 @@ export const ScrapListItem: React.FC<{
     switch (e.key) {
       case "ArrowUp": {
         if (e.altKey && e.ctrlKey) {
-          moveItemUp();
+          listItemsCollection.moveItemUp(index);
         } else {
-          moveFocusUp();
+          listItemsCollection.moveFocusUp(index);
         }
         break;
       }
 
       case "ArrowDown": {
         if (e.altKey && e.ctrlKey) {
-          moveItemDown();
+          listItemsCollection.moveItemDown(index);
         } else {
-          moveFocusDown();
+          listItemsCollection.moveFocusDown(index);
         }
         break;
       }
 
       case "ArrowRight": {
         if (e.altKey && e.ctrlKey) {
-          moveItemRight();
+          listItemsCollection.moveItemRight(index);
         }
         break;
       }
 
       case "ArrowLeft": {
         if (e.altKey && e.ctrlKey) {
-          moveItemLeft();
+          listItemsCollection.moveItemLeft(index);
         }
         break;
       }
@@ -185,7 +163,7 @@ export const ScrapListItem: React.FC<{
         }
 
         if (e.altKey && e.ctrlKey) {
-          onDelete();
+          listItemsCollection.removeItem(index);
         }
 
         break;
@@ -196,7 +174,7 @@ export const ScrapListItem: React.FC<{
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
       case "Enter": {
-        onEnter();
+        listItemsCollection.addItem(index);
         e.preventDefault();
         break;
       }

@@ -1,31 +1,31 @@
-import { ListItemWrapperCollection } from "./ListItemWrapperCollection";
+import { ListItemCollection } from "./ListItemCollection";
 
-describe("ListItemWrapperCollection", () => {
+describe("ListItemCollection", () => {
   describe("addItem", () => {
     it("should add first item", () => {
-      new ListItemWrapperCollection([], (updatedItems) => {
+      new ListItemCollection([], (updatedItems) => {
         expect(updatedItems.length).toBe(1);
       }).addItem(0);
     });
 
     it("should add second item at end", () => {
-      new ListItemWrapperCollection([createRandomItem()], (updatedItems) => {
+      new ListItemCollection([createRandomItem()], (updatedItems) => {
         expect(updatedItems.length).toBe(2);
-      }).addItem(1);
+      }).addItem(0);
     });
 
     it("should add item in the middle", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem(), createRandomItem(), createRandomItem()],
         (updatedItems) => {
           expect(updatedItems.length).toBe(4);
-          expect(updatedItems[1].label).toBe("");
+          expect(updatedItems[2].label).toBe("");
         },
       ).addItem(1);
     });
 
     it("should consider depth of parent", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem(), createRandomItem("x", 1)],
         (updatedItems) => {
           expect(updatedItems.length).toBe(3);
@@ -33,13 +33,13 @@ describe("ListItemWrapperCollection", () => {
           expect(updatedItems[1].depth).toBe(1);
           expect(updatedItems[2].depth).toBe(1);
         },
-      ).addItem(2);
+      ).addItem(1);
     });
   });
 
   describe("removeItem", () => {
     it("should remove item", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b")],
         (updatedItems) => {
           expect(updatedItems.length).toBe(1);
@@ -51,7 +51,7 @@ describe("ListItemWrapperCollection", () => {
 
   describe("moveItem...", () => {
     it("...down: move item down", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b")],
         (updatedItems) => {
           expect(updatedItems.length).toBe(2);
@@ -62,7 +62,7 @@ describe("ListItemWrapperCollection", () => {
     });
 
     it("...down: move last item to top", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b")],
         (updatedItems) => {
           expect(updatedItems.length).toBe(2);
@@ -73,7 +73,7 @@ describe("ListItemWrapperCollection", () => {
     });
 
     it("...up: move item up", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b")],
         (updatedItems) => {
           expect(updatedItems.length).toBe(2);
@@ -84,7 +84,7 @@ describe("ListItemWrapperCollection", () => {
     });
 
     it("...up: move first item to bottom", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b")],
         (updatedItems) => {
           expect(updatedItems.length).toBe(2);
@@ -95,7 +95,7 @@ describe("ListItemWrapperCollection", () => {
     });
 
     it("...right: move item right", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b")],
         (updatedItems) => {
           expect(updatedItems.length).toBe(2);
@@ -108,7 +108,7 @@ describe("ListItemWrapperCollection", () => {
     });
 
     it("...right: not move item right to depth >=+1 of parent", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b", 1)],
         (updatedItems) => {
           expect(updatedItems.length).toBe(2);
@@ -121,7 +121,7 @@ describe("ListItemWrapperCollection", () => {
     });
 
     it("...left: move item left", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b", 1)],
         (updatedItems) => {
           expect(updatedItems.length).toBe(2);
@@ -134,7 +134,7 @@ describe("ListItemWrapperCollection", () => {
     });
 
     it("...left: not move item left to depth <0", () => {
-      new ListItemWrapperCollection(
+      new ListItemCollection(
         [createRandomItem("a"), createRandomItem("b")],
         (updatedItems) => {
           expect(updatedItems.length).toBe(2);

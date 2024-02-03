@@ -1,7 +1,7 @@
 import { ISCrapListItem } from "./IScrapListItem";
 import { ListItemWrapper } from "./ListItemWrapper";
 
-export class ListItemWrapperCollection {
+export class ListItemCollection {
   private wrappedItems: ListItemWrapper[];
 
   get items(): ISCrapListItem[] {
@@ -28,10 +28,10 @@ export class ListItemWrapperCollection {
       return;
     }
 
-    const depth = index === 0 ? 0 : this.wrappedItems[index - 1].raw.depth;
+    const depth = index === 0 ? 0 : this.wrappedItems[index].raw.depth;
 
     this.add(
-      index,
+      index + 1,
       new ListItemWrapper({
         label: "",
         isCompleted: false,
