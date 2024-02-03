@@ -40,7 +40,7 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
   await scrapList.clickSave(true);
 });
 
-test("add scrap journal, add list entries mark as checked in non-edit mode", async ({
+test("add scrap journal, add list entries and mark as checked in non-edit mode", async ({
   page,
 }) => {
   await login(page, "scrapsList-non-edit");

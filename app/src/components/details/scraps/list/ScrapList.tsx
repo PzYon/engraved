@@ -75,7 +75,9 @@ export const ScrapList: React.FC<{
                 label: "Add new",
                 icon: <AddOutlined fontSize="small" />,
                 onClick: () =>
-                  listItemsCollection.addItem(listItemsCollection.items.length),
+                  listItemsCollection.addItem(
+                    listItemsCollection.items.length - 1,
+                  ),
               },
               {
                 key: "move-checked-to-bottom",
