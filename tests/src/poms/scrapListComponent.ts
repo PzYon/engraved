@@ -45,6 +45,12 @@ export class ScrapListComponent {
       .filter({ hasText: value });
   }
 
+  getListItem(index: number, depth: number) {
+    return this.page
+      .getByTestId("scrap-" + this.scrapId)
+      .getByTestId(`item-${index}:${depth}`);
+  }
+
   async dblClickToEdit() {
     if (!this.scrapId) {
       throw new Error("Cannot double click on a non-saved entry");

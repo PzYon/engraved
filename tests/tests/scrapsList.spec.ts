@@ -135,6 +135,74 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
   ).toBeVisible();
 });
 
+test("perform common scrap list operations using shortcuts", async ({
+  page,
+}) => {
+  await login(page, "scrapsList-short-cuts");
+
+  await addNewJournal(page, "Scraps", "Scraps with shortcuts");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
+
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("My Scraps");
+  await scrapList.addListItem("First");
+  await scrapList.clickSave(false);
+
+  await scrapList.dblClickToEdit();
+
+  await page.keyboard.press("Enter");
+  await page.keyboard.type("Second");
+  await page.keyboard.press("Enter");
+  await page.keyboard.type("Third");
+
+  await expect(
+    scrapList.getListItem(0, 0).filter({ hasText: "First" }),
+  ).toBeVisible();
+  await expect(
+    scrapList.getListItem(1, 0).filter({ hasText: "Second" }),
+  ).toBeVisible();
+  await expect(
+    scrapList.getListItem(2, 0).filter({ hasText: "Third" }),
+  ).toBeVisible();
+
+  await page.keyboard.press("Control+Alt+Backspace");
+
+  await expect(
+    scrapList.getListItem(2, 0).filter({ hasText: "Third" }),
+  ).toBeHidden();
+
+  await page.keyboard.press("Control+Alt+ArrowRight");
+
+  await expect(
+    scrapList.getListItem(1, 1).filter({ hasText: "Second" }),
+  ).toBeVisible();
+
+  await page.keyboard.press("Enter");
+  await page.keyboard.type("Second too");
+
+  await expect(
+    scrapList.getListItem(2, 1).filter({ hasText: "Second too" }),
+  ).toBeVisible();
+
+  await page.keyboard.press("Control+Alt+ArrowUp");
+
+  await expect(
+    scrapList.getListItem(1, 1).filter({ hasText: "Second too" }),
+  ).toBeVisible();
+
+  await page.keyboard.press("ArrowUp");
+  await page.keyboard.press("Control+Space");
+
+  await expect(
+    scrapList
+      .getListItem(0, 0)
+      .filter({ hasText: "First" })
+      .getByRole("checkbox"),
+  ).toBeChecked();
+});
+
 async function triggerFocusEvent(page: Page) {
   await page.evaluate(() => {
     window.dispatchEvent(new Event("visibilitychange"));
