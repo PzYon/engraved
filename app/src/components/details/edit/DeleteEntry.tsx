@@ -12,8 +12,6 @@ export const DeleteEntry: React.FC<{
 }> = ({ journal, entryId, closeDialog }) => {
   const deleteEntryMutation = useDeleteEntryMutation(journal.id, entryId);
 
-  debugger;
-
   return (
     <>
       <Typography>
