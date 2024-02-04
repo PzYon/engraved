@@ -28,7 +28,10 @@ export const ScrapListItem: React.FC<{
   );
 
   return (
-    <ListItem sx={{ paddingLeft: (listItem.depth ?? 0) * 16 + "px" }}>
+    <ListItem
+      sx={{ paddingLeft: (listItem.depth ?? 0) * 16 + "px" }}
+      data-testid={`item-${index}:${listItem.depth}`}
+    >
       <StyledCheckbox
         checked={listItem.isCompleted}
         onChange={(_, checked) => {
