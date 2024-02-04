@@ -3,16 +3,16 @@ import { useDeleteEntryMutation } from "../../../serverApi/reactQuery/mutations/
 import { DeleteButtons } from "../../common/DeleteButtons";
 import { JournalType } from "../../../serverApi/JournalType";
 import React from "react";
-import { useParams } from "react-router";
 import { Typography } from "@mui/material";
 
 export const DeleteEntry: React.FC<{
   journal: IJournal;
+  entryId: string;
   closeDialog: () => void;
-}> = ({ journal, closeDialog }) => {
-  const { entryId } = useParams();
-
+}> = ({ journal, entryId, closeDialog }) => {
   const deleteEntryMutation = useDeleteEntryMutation(journal.id, entryId);
+
+  debugger;
 
   return (
     <>
