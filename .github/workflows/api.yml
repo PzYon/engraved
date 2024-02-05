@@ -28,11 +28,6 @@ jobs:
         with:
           dotnet-version: "8.x.x"
 
-      - name: Start MongoDB (for tests)
-        run: |
-          Set-Service mongodb -StartupType Automatic
-          Start-Service -Name mongodb
-
       - name: Run tests
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         working-directory: api
