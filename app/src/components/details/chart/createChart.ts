@@ -13,7 +13,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { format } from "date-fns";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 import { IChartUiProps } from "./IChartProps";
-import { IJournalUiSettings } from "../edit/IJournalUiSettings";
+import { getUiSettings } from "../../../util/journalUtils";
 
 export const createChart = (
   entries: IEntry[],
@@ -183,9 +183,7 @@ function createBarChart(
 
   const journalType = JournalTypeFactory.create(journal.type);
 
-  const uiSettings: IJournalUiSettings = journal.customProps?.uiSettings
-    ? JSON.parse(journal.customProps.uiSettings)
-    : {};
+  const uiSettings = getUiSettings(journal);
 
   return {
     type: "bar",

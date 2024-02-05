@@ -7,7 +7,10 @@ import { IUpsertGaugeEntryCommand } from "../../../serverApi/commands/IUpsertGau
 export interface IEntriesTableColumnDefinition {
   key: string;
 
-  getHeaderReactNode: (onClick: () => void) => React.ReactNode;
+  getHeaderReactNode: (
+    onClick?: () => void,
+    journal?: IJournal,
+  ) => React.ReactNode;
 
   getValueReactNode: (
     group: IEntriesTableGroup,
