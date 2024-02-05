@@ -17,7 +17,7 @@ on:
 jobs:
   build:
     name: Build API
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
@@ -64,7 +64,7 @@ jobs:
 
   deploy-windows:
     name: Deploy API (Windows)
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [build, e2e-tests]
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
 
@@ -89,7 +89,7 @@ jobs:
 
   deploy-linux:
     name: Deploy API (Linux)
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [build, e2e-tests]
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
 

@@ -6,7 +6,7 @@ on:
 jobs:
   test:
     name: Run Tests
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
 
