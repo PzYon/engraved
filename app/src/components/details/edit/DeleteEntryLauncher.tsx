@@ -29,7 +29,7 @@ export const DeleteEntryLauncher: React.FC<{
         navigate(`/journals/${journal.id}`);
       },
     });
-  }, [journal.id, journal.type, navigate, renderDialog]);
+  }, [journal, entryId, navigate, renderDialog]);
 
   return null;
 };
