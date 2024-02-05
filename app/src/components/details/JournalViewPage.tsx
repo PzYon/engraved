@@ -41,7 +41,7 @@ export const JournalViewPage: React.FC = () => {
 
   const uiSettings = useMemo<IJournalUiSettings>(
     () => getUiSettings(journal),
-    [journal?.customProps?.uiSettings],
+    [journal],
   );
 
   const [groupByTime, setGroupByTime] = useState(
