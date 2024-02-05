@@ -39,6 +39,7 @@ export const JournalAttributeSelector: React.FC<{
       options.filter(
         (o) => selectedAttributeValues?.[attributeKey]?.indexOf(o.key) > -1,
       )[0],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
