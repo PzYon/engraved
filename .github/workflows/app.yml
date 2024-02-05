@@ -71,7 +71,7 @@ jobs:
 
   deploy:
     name: Deploy App
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [build, e2e-tests]
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
 

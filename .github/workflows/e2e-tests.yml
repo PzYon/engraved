@@ -6,45 +6,43 @@ on:
 jobs:
   test:
     name: Run Tests
-    runs-on: windows-latest
+    runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
 
-    - name: Checkout repo
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Set up .NET Core
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: "8.x.x"
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x.x"
 
-    - name: Start MongoDB
-      run: |
-        Set-Service mongodb -StartupType Automatic
-        Start-Service -Name mongodb
+      - name: Start MongoDB (for tests)
+        run: sudo systemctl start mongod
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: npm
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
 
-    - name: Install dependencies (app)
-      working-directory: app
-      run: npm ci
+      - name: Install dependencies (app)
+        working-directory: app
+        run: npm ci
 
-    - name: Install dependencies (tests)
-      working-directory: tests
-      run: npm ci
+      - name: Install dependencies (tests)
+        working-directory: tests
+        run: npm ci
 
-    - name: Check types
-      working-directory: tests
-      run: npm run types:check
+      - name: Check types
+        working-directory: tests
+        run: npm run types:check
 
-    - name: Lint
-      working-directory: tests
-      run: npm run lint
+      - name: Lint
+        working-directory: tests
+        run: npm run lint
 
-    - name: Run tests
-      working-directory: tests
-      run: npm run e2e:run-tests
+      - name: Run tests
+        working-directory: tests
+        run: npm run e2e:run-tests

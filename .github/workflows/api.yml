@@ -17,7 +17,7 @@ on:
 jobs:
   build:
     name: Build API
-    runs-on: windows-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout repo
@@ -29,9 +29,7 @@ jobs:
           dotnet-version: "8.x.x"
 
       - name: Start MongoDB (for tests)
-        run: |
-          Set-Service mongodb -StartupType Automatic
-          Start-Service -Name mongodb
+        run: sudo systemctl start mongod
 
       - name: Run tests
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
@@ -49,14 +47,14 @@ jobs:
         id: current-time
 
       - name: Publish
-        run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}\Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
+        run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
         working-directory: api
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: ${{env.DOTNET_ROOT}}\Engraved.Api
+          path: ${{env.DOTNET_ROOT}}/Engraved.Api
 
   e2e-tests:
     name: "E2E Tests"
@@ -64,7 +62,7 @@ jobs:
 
   deploy-windows:
     name: Deploy API (Windows)
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [build, e2e-tests]
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
 
@@ -89,7 +87,7 @@ jobs:
 
   deploy-linux:
     name: Deploy API (Linux)
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [build, e2e-tests]
     if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
 
