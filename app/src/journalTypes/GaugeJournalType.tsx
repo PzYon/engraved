@@ -11,6 +11,7 @@ import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { IGaugeEntry } from "../serverApi/IGaugeEntry";
 
 import { AddEntryTableCell } from "../components/details/entriesTable/addEntry/AddEntryTableCell";
+import { getValueHeaderLabel } from "../util/journalUtils";
 
 export class GaugeJournalType implements IJournalType {
   type = JournalType.Gauge;
@@ -36,7 +37,8 @@ export class GaugeJournalType implements IJournalType {
       {
         key: "_value",
         width: "100px",
-        getHeaderReactNode: () => "Value",
+        getHeaderReactNode: (_, journal: IJournal) =>
+          getValueHeaderLabel(journal),
         isAggregatable: true,
         getRawValue: (entry: IEntry) => getValue(entry),
         getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) =>

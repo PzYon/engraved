@@ -26,6 +26,7 @@ import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
+import { getValueHeaderLabel } from "../../../util/journalUtils";
 
 const storage = new LastSelectedDateStorage();
 
@@ -103,7 +104,7 @@ export const UpsertEntry: React.FC<{
           value={value}
           type="number"
           onChange={(event) => setValue(event.target.value)}
-          label={"Value"}
+          label={getValueHeaderLabel(journal)}
           margin={"normal"}
           sx={{
             marginBottom: "0",

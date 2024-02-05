@@ -11,6 +11,7 @@ import { EditCommonProperties } from "./EditCommonProperties";
 import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { EditPageFooterButtons } from "../../common/EditPageFooterButtons";
+import { getUiSettings } from "../../../util/journalUtils";
 
 export const JournalEditPage: React.FC = () => {
   const { journal } = useJournalContext();
@@ -19,11 +20,7 @@ export const JournalEditPage: React.FC = () => {
   const [description, setDescription] = useState(journal.description);
   const [attributes, setAttributes] = useState(journal.attributes);
   const [thresholds, setThresholds] = useState(journal.thresholds ?? {});
-  const [uiSettings, setUiSettings] = useState(
-    journal.customProps?.uiSettings
-      ? JSON.parse(journal.customProps.uiSettings)
-      : {},
-  );
+  const [uiSettings, setUiSettings] = useState(getUiSettings(journal));
 
   const navigate = useNavigate();
 
@@ -40,7 +37,7 @@ export const JournalEditPage: React.FC = () => {
         attributes,
         thresholds,
         customProps: {
-          uiSettings,
+          uiSettings: JSON.stringify(uiSettings),
         },
       },
       onSuccess: navigateToViewPage,

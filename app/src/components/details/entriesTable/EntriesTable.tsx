@@ -97,7 +97,10 @@ export const EntriesTable: React.FC<{
                 maxWidth: c.maxWidth,
               }}
             >
-              {c.getHeaderReactNode(() => setCollapseAll(!collapseAll))}
+              {c.getHeaderReactNode(
+                () => setCollapseAll(!collapseAll),
+                journal,
+              )}
             </TableCell>
           ))}
         </StyledTableRow>

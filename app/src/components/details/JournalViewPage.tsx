@@ -24,6 +24,7 @@ import { JournalType } from "../../serverApi/JournalType";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { Chart } from "./chart/Chart";
 import { IJournalUiSettings } from "./edit/IJournalUiSettings";
+import { getUiSettings } from "../../util/journalUtils";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -39,10 +40,7 @@ export const JournalViewPage: React.FC = () => {
   } = useJournalContext();
 
   const uiSettings = useMemo<IJournalUiSettings>(
-    () =>
-      journal.customProps?.uiSettings
-        ? JSON.parse(journal.customProps.uiSettings)
-        : {},
+    () => getUiSettings(journal),
     [journal?.customProps?.uiSettings],
   );
 
