@@ -9,5 +9,5 @@ export function getUiSettings(journal: IJournal): IJournalUiSettings {
 
 export function getValueHeaderLabel(journal: IJournal): string {
   const unit = getUiSettings(journal)?.yAxisUnit;
-  return unit ? `Value (${unit})` : "Value";
+  return unit || "Value";
 }
