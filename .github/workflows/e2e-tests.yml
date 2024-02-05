@@ -10,36 +10,39 @@ jobs:
     timeout-minutes: 60
     steps:
 
-    - name: Checkout repo
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Set up .NET Core
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: "8.x.x"
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x.x"
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: npm
+      - name: Start MongoDB (for tests)
+        run: sudo systemctl start mongod
 
-    - name: Install dependencies (app)
-      working-directory: app
-      run: npm ci
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
 
-    - name: Install dependencies (tests)
-      working-directory: tests
-      run: npm ci
+      - name: Install dependencies (app)
+        working-directory: app
+        run: npm ci
 
-    - name: Check types
-      working-directory: tests
-      run: npm run types:check
+      - name: Install dependencies (tests)
+        working-directory: tests
+        run: npm ci
 
-    - name: Lint
-      working-directory: tests
-      run: npm run lint
+      - name: Check types
+        working-directory: tests
+        run: npm run types:check
 
-    - name: Run tests
-      working-directory: tests
-      run: npm run e2e:run-tests
+      - name: Lint
+        working-directory: tests
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: tests
+        run: npm run e2e:run-tests
