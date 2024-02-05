@@ -34,23 +34,21 @@ export const JournalAttributeSelector: React.FC<{
     [attribute.values],
   );
 
-  const selectedOption = useMemo(() => {
-    if (!selectedAttributeValues) {
-      return undefined;
-    }
-
-    return options.filter(
-      (o) => selectedAttributeValues[attributeKey]?.indexOf(o.key) > -1,
-    )[0];
-  }, [attributeKey, options, selectedAttributeValues]);
+  const selectedOption = useMemo(
+    () =>
+      options.filter(
+        (o) => selectedAttributeValues?.[attributeKey]?.indexOf(o.key) > -1,
+      )[0],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   return (
     <Autocomplete
+      freeSolo
       options={options}
       multiple={false}
-      // it is important to return null instead of undefined to
-      // make sure that Autocomplete-component is controlled.
-      value={selectedOption ?? null}
+      defaultValue={selectedOption}
       getOptionLabel={(option) => getOptionLabel(option as IOption)}
       isOptionEqualToValue={(option, value) =>
         areOptionsEqual(option as IOption, value as IOption)
