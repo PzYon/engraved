@@ -47,14 +47,14 @@ jobs:
         id: current-time
 
       - name: Publish
-        run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}\Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
+        run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
         working-directory: api
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: ${{env.DOTNET_ROOT}}\Engraved.Api
+          path: ${{env.DOTNET_ROOT}}/Engraved.Api
 
   e2e-tests:
     name: "E2E Tests"
