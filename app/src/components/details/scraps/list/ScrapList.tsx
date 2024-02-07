@@ -14,14 +14,12 @@ import {
   closestCenter,
   DndContext,
   DragOverEvent,
-  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
@@ -49,12 +47,7 @@ export const ScrapList: React.FC<{
     }
   }, [isEditMode, listItemsCollection]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
+  const sensors = useSensors(useSensor(PointerSensor));
 
   return (
     <Host
