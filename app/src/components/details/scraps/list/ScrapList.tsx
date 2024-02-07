@@ -18,10 +18,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, rectSwappingStrategy } from "@dnd-kit/sortable";
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
@@ -72,7 +69,7 @@ export const ScrapList: React.FC<{
                 ...item,
                 id: listItemsCollection.getReactKey(index),
               }))}
-              strategy={verticalListSortingStrategy}
+              strategy={rectSwappingStrategy}
             >
               {listItemsCollection.items.map((item, index) => (
                 <ScrapListItem
