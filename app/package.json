@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "@emotion/styled": "11.11.0",
-    "@microsoft/applicationinsights-web": "3.0.7",
+    "@microsoft/applicationinsights-web": "3.0.8",
     "@mui/icons-material": "5.15.8",
     "@mui/material": "5.15.7",
     "@mui/styled-engine-sc": "5.14.12",
