@@ -34,89 +34,86 @@ export const ScrapListItem: React.FC<{
   );
 
   return (
-    <div
-      style={{
+    <ListItem
+      sx={{
+        paddingLeft: (listItem.depth ?? 0) * 16 + "px",
         transform: CSS.Transform.toString(transform),
         transition,
       }}
+      data-testid={`item-${index}:${listItem.depth}`}
     >
-      <ListItem
-        sx={{ paddingLeft: (listItem.depth ?? 0) * 16 + "px" }}
-        data-testid={`item-${index}:${listItem.depth}`}
-      >
-        <StyledCheckbox
-          checked={listItem.isCompleted}
-          onChange={(_, checked) => {
-            onChange({ label, isCompleted: checked, depth: listItem.depth });
-          }}
-        />
-        {isEditMode ? (
-          <>
-            <AutogrowTextField
-              forwardInputRef={ref}
-              fieldType="content"
-              value={label}
-              onChange={(event) => setLabel(event.target.value)}
-              onKeyUp={keyUp}
-              onKeyDown={keyDown}
-              onBlur={() =>
-                onChange({
-                  label,
-                  isCompleted: listItem.isCompleted,
-                  depth: listItem.depth,
-                })
-              }
-              sx={{ ...getSx("textbox"), pr: 1 }}
-              autoFocus={!listItem.label}
-            />
-            <ActionIconButtonGroup
-              backgroundColor={"none"}
-              actions={[
-                {
-                  key: "remove",
-                  label: "Delete",
-                  icon: <RemoveCircleOutline fontSize="small" />,
-                  onClick: () => listItemsCollection.removeItem(index),
-                },
-                {
-                  key: "left",
-                  label: "Move left",
-                  icon: <FormatIndentDecrease fontSize="small" />,
-                  onClick: () => listItemsCollection.moveItemLeft(index),
-                },
-                {
-                  key: "right",
-                  label: "Move right",
-                  icon: <FormatIndentIncrease fontSize="small" />,
-                  onClick: () => listItemsCollection.moveItemRight(index),
-                },
-                {
-                  key: "drag",
-                  label: "Drag to move",
-                  icon: (
-                    <span
-                      ref={setNodeRef}
-                      style={{ height: "20px" }}
-                      {...attributes}
-                      {...listeners}
-                    >
-                      <DragIndicator
-                        fontSize="small"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </span>
-                  ),
-                },
-              ]}
-            />
-          </>
-        ) : (
-          <ReadonlyContainer sx={getSx("plain")}>
-            <Markdown value={label} useBasic={true}></Markdown>
-          </ReadonlyContainer>
-        )}
-      </ListItem>
-    </div>
+      <StyledCheckbox
+        checked={listItem.isCompleted}
+        onChange={(_, checked) => {
+          onChange({ label, isCompleted: checked, depth: listItem.depth });
+        }}
+      />
+      {isEditMode ? (
+        <>
+          <AutogrowTextField
+            forwardInputRef={ref}
+            fieldType="content"
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+            onKeyUp={keyUp}
+            onKeyDown={keyDown}
+            onBlur={() =>
+              onChange({
+                label,
+                isCompleted: listItem.isCompleted,
+                depth: listItem.depth,
+              })
+            }
+            sx={{ ...getSx("textbox"), pr: 1 }}
+            autoFocus={!listItem.label}
+          />
+          <ActionIconButtonGroup
+            backgroundColor={"none"}
+            actions={[
+              {
+                key: "remove",
+                label: "Delete",
+                icon: <RemoveCircleOutline fontSize="small" />,
+                onClick: () => listItemsCollection.removeItem(index),
+              },
+              {
+                key: "left",
+                label: "Move left",
+                icon: <FormatIndentDecrease fontSize="small" />,
+                onClick: () => listItemsCollection.moveItemLeft(index),
+              },
+              {
+                key: "right",
+                label: "Move right",
+                icon: <FormatIndentIncrease fontSize="small" />,
+                onClick: () => listItemsCollection.moveItemRight(index),
+              },
+              {
+                key: "drag",
+                label: "Drag to move",
+                icon: (
+                  <span
+                    ref={setNodeRef}
+                    style={{ height: "20px" }}
+                    {...attributes}
+                    {...listeners}
+                  >
+                    <DragIndicator
+                      fontSize="small"
+                      style={{ cursor: "pointer" }}
+                    />
+                  </span>
+                ),
+              },
+            ]}
+          />
+        </>
+      ) : (
+        <ReadonlyContainer sx={getSx("plain")}>
+          <Markdown value={label} useBasic={true}></Markdown>
+        </ReadonlyContainer>
+      )}
+    </ListItem>
   );
 
   function getSx(elementType: "plain" | "textbox") {
