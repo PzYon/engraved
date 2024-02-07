@@ -1,12 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
-import {
-  DragIndicator,
-  FormatIndentDecrease,
-  FormatIndentIncrease,
-  RemoveCircleOutline,
-} from "@mui/icons-material";
+import { DragIndicator, RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
@@ -42,6 +37,16 @@ export const ScrapListItem: React.FC<{
       }}
       data-testid={`item-${index}:${listItem.depth}`}
     >
+      {isEditMode ? (
+        <span
+          ref={setNodeRef}
+          style={{ height: "20px" }}
+          {...attributes}
+          {...listeners}
+        >
+          <DragIndicator fontSize="small" style={{ cursor: "pointer" }} />
+        </span>
+      ) : null}
       <StyledCheckbox
         checked={listItem.isCompleted}
         onChange={(_, checked) => {
@@ -75,35 +80,6 @@ export const ScrapListItem: React.FC<{
                 label: "Delete",
                 icon: <RemoveCircleOutline fontSize="small" />,
                 onClick: () => listItemsCollection.removeItem(index),
-              },
-              {
-                key: "left",
-                label: "Move left",
-                icon: <FormatIndentDecrease fontSize="small" />,
-                onClick: () => listItemsCollection.moveItemLeft(index),
-              },
-              {
-                key: "right",
-                label: "Move right",
-                icon: <FormatIndentIncrease fontSize="small" />,
-                onClick: () => listItemsCollection.moveItemRight(index),
-              },
-              {
-                key: "drag",
-                label: "Drag to move",
-                icon: (
-                  <span
-                    ref={setNodeRef}
-                    style={{ height: "20px" }}
-                    {...attributes}
-                    {...listeners}
-                  >
-                    <DragIndicator
-                      fontSize="small"
-                      style={{ cursor: "pointer" }}
-                    />
-                  </span>
-                ),
               },
             ]}
           />
@@ -240,7 +216,7 @@ const StyledCheckbox = styled(Checkbox)`
 
 const ListItem = styled("li")`
   display: flex;
-  align-items: start;
+  align-items: center;
 `;
 
 const ReadonlyContainer = styled("div")`

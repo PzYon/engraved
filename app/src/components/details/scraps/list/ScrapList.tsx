@@ -133,21 +133,30 @@ export const ScrapList: React.FC<{
   );
 
   function handleDragEnd(event: DragOverEvent) {
-    const { active, over } = event;
+    const { active, over, delta } = event;
 
-    if (active.id === over.id) {
+    const currentIndex = listItemsCollection.items.findIndex(
+      (_, index) => listItemsCollection.getReactKey(index) === active.id,
+    );
+
+    if (active.id !== over.id) {
+      const newIndex = listItemsCollection.items.findIndex(
+        (_, index) => listItemsCollection.getReactKey(index) === over.id,
+      );
+
+      listItemsCollection.moveItemVertically(currentIndex, newIndex);
       return;
     }
 
-    const oldIndex = listItemsCollection.items.findIndex(
-      (i, index) => listItemsCollection.getReactKey(index) === active.id,
-    );
+    if (delta.x > 20) {
+      listItemsCollection.moveItemRight(currentIndex);
+      return;
+    }
 
-    const newIndex = listItemsCollection.items.findIndex(
-      (i, index) => listItemsCollection.getReactKey(index) === over.id,
-    );
-
-    listItemsCollection.moveItemVertically(oldIndex, newIndex);
+    if (delta.x < 20) {
+      listItemsCollection.moveItemLeft(currentIndex);
+      return;
+    }
   }
 };
 
