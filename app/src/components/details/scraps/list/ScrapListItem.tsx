@@ -12,80 +12,8 @@ import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
-import {
-  horizontalListSortingStrategy,
-  SortableContext,
-  useSortable,
-} from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  closestCenter,
-  DndContext,
-  DragOverEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-function NewComponent(props: {
-  ref: any;
-  transform: any;
-  transition: any;
-  attributes: any;
-  listeners: any;
-}) {
-  const sensors = useSensors(useSensor(PointerSensor));
-
-  return (
-    <DndContext
-      onDragEnd={handleDragEnd}
-      collisionDetection={closestCenter}
-      sensors={sensors}
-    >
-      <SortableContext
-        items={["1", "2", "3"]}
-        strategy={horizontalListSortingStrategy}
-      >
-        <span>left</span>
-        <span
-          ref={props.ref}
-          style={{
-            height: "20px",
-            transform: CSS.Transform.toString(props.transform),
-            transition: props.transition,
-          }}
-          {...props.attributes}
-          {...props.listeners}
-        >
-          <DragIndicator fontSize="small" style={{ cursor: "pointer" }} />
-        </span>
-        <span>right</span>
-      </SortableContext>
-    </DndContext>
-  );
-
-  function handleDragEnd(event: DragOverEvent) {
-    debugger;
-    const { active, over } = event;
-
-    if (active.id === over.id) {
-      return;
-    }
-
-    /*
-    const oldIndex = listItemsCollection.items.findIndex(
-      (i, index) => listItemsCollection.getReactKey(index) === active.id,
-    );
-
-    const newIndex = listItemsCollection.items.findIndex(
-      (i, index) => listItemsCollection.getReactKey(index) === over.id,
-    );
-
-    listItemsCollection.moveItemVertically(oldIndex, newIndex);
-    */
-  }
-}
 
 export const ScrapListItem: React.FC<{
   listItemsCollection: ListItemCollection;
@@ -109,17 +37,11 @@ export const ScrapListItem: React.FC<{
     <ListItem
       sx={{
         paddingLeft: (listItem.depth ?? 0) * 16 + "px",
+        transform: CSS.Transform.toString(transform),
+        transition,
       }}
       data-testid={`item-${index}:${listItem.depth}`}
     >
-      <NewComponent
-        ref={setNodeRef}
-        transform={transform}
-        transition={transition}
-        attributes={attributes}
-        listeners={listeners}
-      />
-
       <StyledCheckbox
         checked={listItem.isCompleted}
         onChange={(_, checked) => {
@@ -165,6 +87,23 @@ export const ScrapListItem: React.FC<{
                 label: "Move right",
                 icon: <FormatIndentIncrease fontSize="small" />,
                 onClick: () => listItemsCollection.moveItemRight(index),
+              },
+              {
+                key: "drag",
+                label: "Drag to move",
+                icon: (
+                  <span
+                    ref={setNodeRef}
+                    style={{ height: "20px" }}
+                    {...attributes}
+                    {...listeners}
+                  >
+                    <DragIndicator
+                      fontSize="small"
+                      style={{ cursor: "pointer" }}
+                    />
+                  </span>
+                ),
               },
             ]}
           />
