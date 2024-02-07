@@ -48,7 +48,7 @@ public static class EntryDocumentMapper
 
   public static EntryDocument ToDocument(IEntry journal)
   {
-    return Mapper.Map<EntryDocument>(journal);
+    return Mapper.Map<EntryDocument>(journal)!;
   }
 
   public static TEntry FromDocument<TEntry>(EntryDocument? document)
@@ -56,6 +56,6 @@ public static class EntryDocumentMapper
   {
     return document == null
       ? null!
-      : (TEntry) Mapper.Map(document, document.GetType(), typeof(TEntry));
+      : (TEntry) Mapper.Map(document, document.GetType(), typeof(TEntry))!;
   }
 }
