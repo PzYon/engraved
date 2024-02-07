@@ -13,11 +13,11 @@ import { ISCrapListItem } from "./IScrapListItem";
 import {
   closestCenter,
   DndContext,
+  DragOverEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragOverEvent,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -142,15 +142,19 @@ export const ScrapList: React.FC<{
   function handleDragEnd(event: DragOverEvent) {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
-      debugger;
-      /*setItems((items) => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
-
-        return arrayMove(items, oldIndex, newIndex);
-      });*/
+    if (active.id === over.id) {
+      return;
     }
+
+    const oldIndex = listItemsCollection.items.findIndex(
+      (i, index) => listItemsCollection.getReactKey(index) === active.id,
+    );
+
+    const newIndex = listItemsCollection.items.findIndex(
+      (i, index) => listItemsCollection.getReactKey(index) === over.id,
+    );
+
+    listItemsCollection.moveItemVertically(oldIndex, newIndex);
   }
 };
 

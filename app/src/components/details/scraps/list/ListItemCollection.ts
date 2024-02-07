@@ -84,8 +84,7 @@ export class ListItemCollection {
     const lowerIndex = this.getNextLowerIndex(index);
 
     if (lowerIndex > index) {
-      const item = this.wrappedItems.splice(0, 1)[0];
-      this.add(this.highestIndex + 1, item);
+      this.moveItemVertically(0, this.highestIndex + 1);
       return;
     }
 
@@ -102,8 +101,7 @@ export class ListItemCollection {
     const higherIndex = this.getNextHigherIndex(index);
 
     if (higherIndex < index) {
-      const item = this.wrappedItems.splice(this.highestIndex, 1)[0];
-      this.add(0, item);
+      this.moveItemVertically(this.highestIndex, 0);
       return;
     }
 
@@ -114,6 +112,11 @@ export class ListItemCollection {
     this.wrappedItems[index] = upperItem;
 
     this.fireOnChange();
+  }
+
+  moveItemVertically(oldIndex: number, newIndex: number) {
+    const item = this.wrappedItems.splice(oldIndex, 1)[0];
+    this.add(newIndex, item);
   }
 
   moveItemLeft(index: number): void {
