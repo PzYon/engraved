@@ -92,52 +92,59 @@ export class ListItemCollection {
     const lowerIndex = this.getNextLowerIndex(index);
 
     if (lowerIndex > index) {
-      this.moveItemVertically(0, this.highestIndex + 1);
-      return;
+      this.moveItem(0, { index: this.highestIndex + 1 });
+    } else {
+      this.moveItem(index, { index: lowerIndex });
     }
-
-    const upperItem = this.wrappedItems[index];
-    const lowerItem = this.wrappedItems[lowerIndex];
-
-    this.wrappedItems[lowerIndex] = upperItem;
-    this.wrappedItems[index] = lowerItem;
-
-    this.fireOnChange();
   }
 
   moveItemDown(index: number) {
     const higherIndex = this.getNextHigherIndex(index);
 
     if (higherIndex < index) {
-      this.moveItemVertically(this.highestIndex, 0);
-      return;
+      this.moveItem(this.highestIndex, { index: 0 });
+    } else {
+      this.moveItem(index, { index: higherIndex });
     }
-
-    const lowerItem = this.wrappedItems[index];
-    const upperItem = this.wrappedItems[higherIndex];
-
-    this.wrappedItems[higherIndex] = lowerItem;
-    this.wrappedItems[index] = upperItem;
-
-    this.fireOnChange();
-  }
-
-  moveItemVertically(index: number, newIndex: number) {
-    const item = this.wrappedItems.splice(index, 1)[0];
-    this.add(newIndex, item);
   }
 
   moveItemLeft(index: number): void {
-    this.moveItemToDepth(index, this.getItemDepth(index) - 1);
+    this.moveItem(index, { depth: this.getItemDepth(index) - 1 });
   }
 
   moveItemRight(index: number): void {
-    this.moveItemToDepth(index, this.getItemDepth(index) + 1);
+    this.moveItem(index, { depth: this.getItemDepth(index) + 1 });
   }
 
-  moveItem(index: number, newIndex: number, newDepth: number) {
-    this.moveItemVertically(index, newIndex);
-    this.moveItemToDepth(newIndex, newDepth);
+  moveItem(index: number, target: { index?: number; depth?: number }) {
+    let didChange = false;
+
+    if (target.index !== undefined && target.index !== index) {
+      const item = this.wrappedItems.splice(index, 1)[0];
+      this.wrappedItems.splice(target.index, 0, item);
+      didChange = true;
+    }
+
+    const xxxIndex = target.index ?? index;
+
+    if (target.depth !== undefined) {
+      const targetDepth =
+        xxxIndex === 0 || target.depth < 0
+          ? 0
+          : Math.min(
+              target.depth,
+              this.wrappedItems[xxxIndex - 1].raw.depth + 1,
+            );
+
+      if (targetDepth !== this.wrappedItems[xxxIndex].raw.depth) {
+        this.wrappedItems[xxxIndex].raw.depth = targetDepth;
+        didChange = true;
+      }
+    }
+
+    if (didChange) {
+      this.fireOnChange();
+    }
   }
 
   moveCheckedToBottom() {
@@ -179,21 +186,6 @@ export class ListItemCollection {
 
   private add(index: number, ...listItems: ListItemWrapper[]) {
     this.wrappedItems.splice(index, 0, ...listItems);
-    this.fireOnChange();
-  }
-
-  private moveItemToDepth(index: number, newDepth: number) {
-    const targetDepth =
-      index === 0 || newDepth < 0
-        ? 0
-        : Math.min(newDepth, this.wrappedItems[index - 1].raw.depth + 1);
-
-    if (targetDepth === this.wrappedItems[index].raw.depth) {
-      return;
-    }
-
-    this.wrappedItems[index].raw.depth = targetDepth;
-
     this.fireOnChange();
   }
 
