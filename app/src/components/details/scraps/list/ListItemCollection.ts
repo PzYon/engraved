@@ -178,6 +178,10 @@ export class ListItemCollection {
     return this.wrappedItems[index].reactKey;
   }
 
+  getItemIndex(key: string): number {
+    return this.wrappedItems.findIndex((i) => i.reactKey === key);
+  }
+
   private add(index: number, ...listItems: ListItemWrapper[]) {
     this.wrappedItems.splice(index, 0, ...listItems);
     this.fireOnChange();

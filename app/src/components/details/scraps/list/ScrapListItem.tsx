@@ -31,7 +31,7 @@ export const ScrapListItem: React.FC<{
   return (
     <ListItem
       sx={{
-        paddingLeft: (listItem.depth ?? 0) * 16 + "px",
+        paddingLeft: (listItem.depth ?? 0) * 20 + "px",
         transform: CSS.Transform.toString(transform),
         transition,
       }}

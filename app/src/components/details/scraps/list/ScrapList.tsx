@@ -136,16 +136,12 @@ export const ScrapList: React.FC<{
   function handleDragEnd(event: DragOverEvent) {
     const { active, over, delta } = event;
 
-    const currentIndex = listItemsCollection.items.findIndex(
-      (_, index) => listItemsCollection.getReactKey(index) === active.id,
-    );
+    const currentIndex = listItemsCollection.getItemIndex(active.id as string);
 
     let newIndex = currentIndex;
 
     if (active.id !== over.id) {
-      newIndex = listItemsCollection.items.findIndex(
-        (_, index) => listItemsCollection.getReactKey(index) === over.id,
-      );
+      newIndex = listItemsCollection.getItemIndex(over.id as string);
 
       listItemsCollection.moveItemVertically(currentIndex, newIndex);
     }
