@@ -6,7 +6,7 @@ export class ListItemWrapper {
 
   private ref: React.MutableRefObject<HTMLInputElement>;
 
-  readonly reactKey = "react-key-" + Math.random().toString();
+  readonly reactKey = "react-key-" + Math.random().toString().split(".")[1];
 
   get raw(): ISCrapListItem {
     return this.item;
