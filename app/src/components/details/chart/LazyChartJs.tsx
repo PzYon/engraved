@@ -50,6 +50,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
   groupByAttribute,
   chartType,
   chartUiProps,
+  onEntriesCalculated,
 }) => {
   const { typography, palette } = useTheme();
 
@@ -85,6 +86,10 @@ const LazyChartJs: React.FC<IChartProps> = ({
       chartUiProps,
     ],
   );
+
+  useEffect(() => {
+    onEntriesCalculated?.(chart.data.datasets[0].data.length);
+  }, [chart]);
 
   return chart ? <Chart key={chartType} {...chart} /> : null;
 };

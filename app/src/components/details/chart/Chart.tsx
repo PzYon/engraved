@@ -6,12 +6,13 @@ import { Slider, styled, Typography } from "@mui/material";
 export const Chart: React.FC<IChartProps> = (props) => {
   const [rollingAverageGroupSize, setRollingAverageGroupSize] = useState(0);
 
-  const numberOfEntries = props.entries.length;
+  const [numberOfEntries, setNumberOfEntries] = useState(props.entries.length);
 
   return (
     <Host>
       <ChartJsWrapper
         {...props}
+        onEntriesCalculated={setNumberOfEntries}
         chartUiProps={{ rollingAverage: rollingAverageGroupSize * 2 + 1 }}
       />
       <ActionsContainer>
