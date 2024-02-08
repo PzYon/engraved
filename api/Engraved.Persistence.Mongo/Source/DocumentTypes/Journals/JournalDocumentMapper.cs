@@ -48,13 +48,13 @@ public static class JournalDocumentMapper
 
   public static JournalDocument ToDocument(IJournal journal)
   {
-    return Mapper.Map<JournalDocument>(journal);
+    return Mapper.Map<JournalDocument>(journal)!;
   }
 
   public static TJournal FromDocument<TJournal>(JournalDocument? document) where TJournal : class, IJournal
   {
     return document == null
       ? null!
-      : (TJournal) Mapper.Map(document, document.GetType(), typeof(TJournal));
+      : (TJournal) Mapper.Map(document, document.GetType(), typeof(TJournal))!;
   }
 }

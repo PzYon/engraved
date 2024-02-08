@@ -1,16 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
-import {
-  FormatIndentDecrease,
-  FormatIndentIncrease,
-  RemoveCircleOutline,
-} from "@mui/icons-material";
+import { DragIndicator, RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export const ScrapListItem: React.FC<{
   listItemsCollection: ListItemCollection;
@@ -22,6 +20,9 @@ export const ScrapListItem: React.FC<{
   const [label, setLabel] = useState(listItem.label);
   const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
 
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: listItemsCollection.getReactKey(index) });
+
   useEffect(
     () => listItemsCollection.setRef(index, ref),
     [listItemsCollection, index],
@@ -29,9 +30,23 @@ export const ScrapListItem: React.FC<{
 
   return (
     <ListItem
-      sx={{ paddingLeft: (listItem.depth ?? 0) * 16 + "px" }}
+      sx={{
+        paddingLeft: (listItem.depth ?? 0) * 20 + "px",
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
       data-testid={`item-${index}:${listItem.depth}`}
     >
+      {isEditMode ? (
+        <span
+          ref={setNodeRef}
+          style={{ height: "20px", touchAction: "none" }}
+          {...attributes}
+          {...listeners}
+        >
+          <DragIndicator fontSize="small" style={{ cursor: "pointer" }} />
+        </span>
+      ) : null}
       <StyledCheckbox
         checked={listItem.isCompleted}
         onChange={(_, checked) => {
@@ -61,25 +76,10 @@ export const ScrapListItem: React.FC<{
             backgroundColor={"none"}
             actions={[
               {
-                sx: !isEditMode ? { visibility: "hidden" } : null,
                 key: "remove",
                 label: "Delete",
                 icon: <RemoveCircleOutline fontSize="small" />,
                 onClick: () => listItemsCollection.removeItem(index),
-              },
-              {
-                sx: !isEditMode ? { visibility: "hidden" } : null,
-                key: "left",
-                label: "Move left",
-                icon: <FormatIndentDecrease fontSize="small" />,
-                onClick: () => listItemsCollection.moveItemLeft(index),
-              },
-              {
-                sx: !isEditMode ? { visibility: "hidden" } : null,
-                key: "right",
-                label: "Move right",
-                icon: <FormatIndentIncrease fontSize="small" />,
-                onClick: () => listItemsCollection.moveItemRight(index),
               },
             ]}
           />
@@ -93,29 +93,19 @@ export const ScrapListItem: React.FC<{
   );
 
   function getSx(elementType: "plain" | "textbox") {
-    const sx: SxProps = {
-      flexGrow: 1,
-      marginTop: elementType === "plain" ? "8px" : "6px",
-    };
-
-    if (elementType === "textbox") {
-      /* eslint-disable  @typescript-eslint/no-explicit-any */
-      (sx as any).textarea = {
-        lineHeight: "21px",
-      };
-    }
+    const sx: SxProps & { textarea?: SxProps } = { flexGrow: 1 };
 
     if (!listItem.isCompleted) {
       return sx;
     }
 
-    if (elementType === "textbox") {
-      /* eslint-disable  @typescript-eslint/no-explicit-any */
-      (sx as any).textarea = {
-        textDecoration: "line-through",
-      };
-    } else if (elementType === "plain") {
-      sx.textDecoration = "line-through";
+    switch (elementType) {
+      case "textbox":
+        sx.textarea = { textDecoration: "line-through" };
+        break;
+      case "plain":
+        sx.textDecoration = "line-through";
+        break;
     }
 
     return sx;
@@ -216,7 +206,7 @@ const StyledCheckbox = styled(Checkbox)`
 
 const ListItem = styled("li")`
   display: flex;
-  align-items: start;
+  align-items: center;
 `;
 
 const ReadonlyContainer = styled("div")`

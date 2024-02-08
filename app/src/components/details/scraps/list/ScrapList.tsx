@@ -10,6 +10,19 @@ import {
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
 import { ISCrapListItem } from "./IScrapListItem";
+import {
+  closestCenter,
+  DndContext,
+  DragOverEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 export const ScrapList: React.FC<{
   isEditMode: boolean;
@@ -21,7 +34,7 @@ export const ScrapList: React.FC<{
 }> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn, onSave }) => {
   const { palette } = useTheme();
 
-  const listItemsCollection = useMemo(() => {
+  const listItemCollection = useMemo(() => {
     const items: ISCrapListItem[] = value ? JSON.parse(value) : [];
     return new ListItemCollection(items, (rawItems) =>
       onChange(getItemsAsJson(rawItems)),
@@ -31,9 +44,11 @@ export const ScrapList: React.FC<{
 
   useEffect(() => {
     if (isEditMode) {
-      listItemsCollection.giveFocus(0);
+      listItemCollection.giveFocus(0);
     }
-  }, [isEditMode, listItemsCollection]);
+  }, [isEditMode, listItemCollection]);
+
+  const sensors = useSensors(useSensor(TouchSensor), useSensor(PointerSensor));
 
   return (
     <Host
@@ -45,25 +60,39 @@ export const ScrapList: React.FC<{
       }
     >
       <List>
-        {!isEditMode && !listItemsCollection.items?.length ? (
+        {!isEditMode && !listItemCollection.items?.length ? (
           <Typography sx={{ opacity: 0.4 }}>No items yet.</Typography>
         ) : (
-          listItemsCollection.items.map((item, index) => (
-            <ScrapListItem
-              key={listItemsCollection.getReactKey(index)}
-              listItemsCollection={listItemsCollection}
-              index={index}
-              listItem={item}
-              isEditMode={isEditMode}
-              onChange={(updatedItem) => {
-                listItemsCollection.updateItem(index, updatedItem);
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={listItemCollection.items.map((item, index) => ({
+                ...item,
+                id: listItemCollection.getReactKey(index),
+              }))}
+              strategy={verticalListSortingStrategy}
+            >
+              {listItemCollection.items.map((item, index) => (
+                <ScrapListItem
+                  key={listItemCollection.getReactKey(index)}
+                  listItemsCollection={listItemCollection}
+                  index={index}
+                  listItem={item}
+                  isEditMode={isEditMode}
+                  onChange={(updatedItem) => {
+                    listItemCollection.updateItem(index, updatedItem);
 
-                if (!isEditMode) {
-                  onSave(getItemsAsJson(listItemsCollection.items));
-                }
-              }}
-            />
-          ))
+                    if (!isEditMode) {
+                      onSave(getItemsAsJson(listItemCollection.items));
+                    }
+                  }}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
         )}
       </List>
       {isEditMode ? (
@@ -75,27 +104,27 @@ export const ScrapList: React.FC<{
                 label: "Add new",
                 icon: <AddOutlined fontSize="small" />,
                 onClick: () =>
-                  listItemsCollection.addItem(
-                    listItemsCollection.items.length - 1,
+                  listItemCollection.addItem(
+                    listItemCollection.items.length - 1,
                   ),
               },
               {
                 key: "move-checked-to-bottom",
                 label: "Move checked to bottom",
                 icon: <MoveDownOutlined fontSize="small" />,
-                onClick: () => listItemsCollection.moveCheckedToBottom(),
+                onClick: () => listItemCollection.moveCheckedToBottom(),
               },
               {
                 key: "toggle-checked",
                 label: "Toggle checked",
                 icon: <SyncAltOutlined fontSize="small" />,
-                onClick: () => listItemsCollection.toggleAllChecked(),
+                onClick: () => listItemCollection.toggleAllChecked(),
               },
               {
                 key: "delete-checked",
                 label: "Delete checked",
                 icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => listItemsCollection.deleteAllChecked(),
+                onClick: () => listItemCollection.deleteAllChecked(),
               },
             ]}
           />
@@ -103,6 +132,29 @@ export const ScrapList: React.FC<{
       ) : null}
     </Host>
   );
+
+  function handleDragEnd(event: DragOverEvent) {
+    const { active, over, delta } = event;
+
+    const currentIndex = listItemCollection.getItemIndex(active.id as string);
+
+    const newIndex =
+      active.id === over.id
+        ? undefined
+        : listItemCollection.getItemIndex(over.id as string);
+
+    let newDepth = listItemCollection.items[currentIndex].depth;
+
+    if (Math.abs(delta.x) > 20) {
+      const depthDelta = Math.floor(Math.abs(delta.x) / 20);
+      newDepth = delta.x < 0 ? newDepth - depthDelta : newDepth + depthDelta;
+    }
+
+    listItemCollection.moveItem(currentIndex, {
+      index: newIndex,
+      depth: newDepth,
+    });
+  }
 };
 
 function getItemsAsJson(rawItems: ISCrapListItem[]) {

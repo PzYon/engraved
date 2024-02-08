@@ -1,3 +1,4 @@
+import React from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ListItemWrapper } from "./ListItemWrapper";
 
@@ -21,6 +22,14 @@ export class ListItemCollection {
 
   setRef(index: number, ref: React.MutableRefObject<HTMLInputElement>): void {
     this.wrappedItems[index].setRef(ref);
+  }
+
+  getReactKey(index: number): string {
+    return this.wrappedItems[index].reactKey;
+  }
+
+  getItemIndex(key: string): number {
+    return this.wrappedItems.findIndex((i) => i.reactKey === key);
   }
 
   addItem(index: number) {
@@ -84,54 +93,55 @@ export class ListItemCollection {
     const lowerIndex = this.getNextLowerIndex(index);
 
     if (lowerIndex > index) {
-      const item = this.wrappedItems.splice(0, 1)[0];
-      this.add(this.highestIndex + 1, item);
-      return;
+      this.moveItem(0, { index: this.highestIndex + 1 });
+    } else {
+      this.moveItem(index, { index: lowerIndex });
     }
-
-    const upperItem = this.wrappedItems[index];
-    const lowerItem = this.wrappedItems[lowerIndex];
-
-    this.wrappedItems[lowerIndex] = upperItem;
-    this.wrappedItems[index] = lowerItem;
-
-    this.fireOnChange();
   }
 
   moveItemDown(index: number) {
     const higherIndex = this.getNextHigherIndex(index);
 
     if (higherIndex < index) {
-      const item = this.wrappedItems.splice(this.highestIndex, 1)[0];
-      this.add(0, item);
-      return;
+      this.moveItem(this.highestIndex, { index: 0 });
+    } else {
+      this.moveItem(index, { index: higherIndex });
     }
-
-    const lowerItem = this.wrappedItems[index];
-    const upperItem = this.wrappedItems[higherIndex];
-
-    this.wrappedItems[higherIndex] = lowerItem;
-    this.wrappedItems[index] = upperItem;
-
-    this.fireOnChange();
   }
 
   moveItemLeft(index: number): void {
-    if (this.getItemDepth(index) === 0) {
-      return;
-    }
-
-    this.wrappedItems[index].raw.depth = this.getItemDepth(index) - 1;
-    this.fireOnChange();
+    this.moveItem(index, { depth: this.getItemDepth(index) - 1 });
   }
 
   moveItemRight(index: number): void {
-    if (this.getItemDepth(index) > this.getItemDepth(index - 1)) {
-      return;
+    this.moveItem(index, { depth: this.getItemDepth(index) + 1 });
+  }
+
+  moveItem(index: number, target: { index?: number; depth?: number }) {
+    let didChange = false;
+    const currentIndex = target.index ?? index;
+
+    if (currentIndex !== index) {
+      const item = this.wrappedItems.splice(index, 1)[0];
+      this.wrappedItems.splice(target.index, 0, item);
+      didChange = true;
     }
 
-    this.wrappedItems[index].raw.depth = this.getItemDepth(index) + 1;
-    this.fireOnChange();
+    if (target.depth !== undefined) {
+      const targetDepth =
+        currentIndex === 0 || target.depth < 0
+          ? 0
+          : Math.min(target.depth, this.getItemDepth(currentIndex - 1) + 1);
+
+      if (targetDepth !== this.getItemDepth(currentIndex)) {
+        this.wrappedItems[currentIndex].raw.depth = targetDepth;
+        didChange = true;
+      }
+    }
+
+    if (didChange) {
+      this.fireOnChange();
+    }
   }
 
   moveCheckedToBottom() {
@@ -171,10 +181,6 @@ export class ListItemCollection {
     this.fireOnChange();
   }
 
-  getReactKey(index: number): string {
-    return this.wrappedItems[index].reactKey;
-  }
-
   private add(index: number, ...listItems: ListItemWrapper[]) {
     this.wrappedItems.splice(index, 0, ...listItems);
     this.fireOnChange();
@@ -187,7 +193,7 @@ export class ListItemCollection {
   private getItemDepth(index: number) {
     // we need to access the depth-value like this because old items
     // might not have the depth value set
-    return this.wrappedItems[index].raw.depth ?? 0;
+    return this.wrappedItems[index]?.raw.depth ?? 0;
   }
 
   private getNextHigherIndex(index: number) {

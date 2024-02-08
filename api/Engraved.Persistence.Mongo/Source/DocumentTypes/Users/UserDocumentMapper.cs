@@ -16,7 +16,7 @@ public static class UserDocumentMapper
         cfg.CreateMap<User, UserDocument>();
         cfg.CreateMap<UserDocument, IUser>()
           .ConstructUsing(
-            (document, context) => context.Mapper.Map<UserDocument, User>(document)
+            (document, context) => context.Mapper.Map<UserDocument, User>(document)!
           );
         cfg.CreateMap<UserDocument, User>();
       }
@@ -29,11 +29,11 @@ public static class UserDocumentMapper
 
   public static UserDocument ToDocument(IUser user)
   {
-    return Mapper.Map<UserDocument>(user);
+    return Mapper.Map<UserDocument>(user)!;
   }
 
   public static IUser FromDocument(UserDocument document)
   {
-    return Mapper.Map<IUser>(document);
+    return Mapper.Map<IUser>(document)!;
   }
 }
