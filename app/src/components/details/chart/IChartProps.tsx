@@ -9,6 +9,7 @@ export interface IChartProps {
   groupByAttribute?: string;
   chartType?: string;
   chartUiProps: IChartUiProps;
+  onEntriesCalculated?: (numberOfEntries: number) => void;
 }
 
 export interface IChartUiProps {
