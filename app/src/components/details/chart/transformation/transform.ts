@@ -4,6 +4,7 @@ import { consolidate, getValue } from "../consolidation/consolidate";
 import { GroupByTime } from "../consolidation/GroupByTime";
 import { ITransformedEntry } from "./ITransformedEntry";
 import { JournalTypeFactory } from "../../../../journalTypes/JournalTypeFactory";
+import { getUiSettings } from "../../../../util/journalUtils";
 
 export function transform(
   entries: IEntry[],
@@ -20,7 +21,10 @@ export function transform(
 
       return {
         x: new Date(m.groupKey.year, month, day),
-        y: m.value,
+        y:
+          getUiSettings(journal).aggregationMode === "average"
+            ? m.value / m.entries.length
+            : m.value,
         entries: m.entries,
       };
     });
