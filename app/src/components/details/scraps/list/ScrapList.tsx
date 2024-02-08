@@ -140,7 +140,7 @@ export const ScrapList: React.FC<{
 
     const newIndex =
       active.id === over.id
-        ? currentIndex
+        ? undefined
         : listItemCollection.getItemIndex(over.id as string);
 
     let newDepth = listItemCollection.items[currentIndex].depth;
@@ -150,7 +150,10 @@ export const ScrapList: React.FC<{
       newDepth = delta.x < 0 ? newDepth - depthDelta : newDepth + depthDelta;
     }
 
-    listItemCollection.moveItem(currentIndex, newIndex, newDepth);
+    listItemCollection.moveItem(currentIndex, {
+      index: newIndex,
+      depth: newDepth,
+    });
   }
 };
 
