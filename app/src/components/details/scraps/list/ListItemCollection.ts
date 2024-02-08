@@ -23,6 +23,14 @@ export class ListItemCollection {
     this.wrappedItems[index].setRef(ref);
   }
 
+  getReactKey(index: number): string {
+    return this.wrappedItems[index].reactKey;
+  }
+
+  getItemIndex(key: string): number {
+    return this.wrappedItems.findIndex((i) => i.reactKey === key);
+  }
+
   addItem(index: number) {
     const isFirst = index <= 0;
 
@@ -119,41 +127,17 @@ export class ListItemCollection {
     this.add(newIndex, item);
   }
 
-  moveItem(index: number, newIndex: number, newDepth: number) {
-    this.moveItemVertically(index, newIndex);
-
-    this.wrappedItems[newIndex].raw.depth = this.ensureValidDepth(
-      newIndex,
-      newDepth,
-    );
-  }
-
-  private ensureValidDepth(index: number, newDepth: number) {
-    return index === 0
-      ? 0
-      : Math.min(newDepth, this.wrappedItems[index - 1].raw.depth + 1);
-  }
-
   moveItemLeft(index: number): void {
-    const currentDepth = this.getItemDepth(index);
-
-    if (currentDepth === 0) {
-      return;
-    }
-
-    this.wrappedItems[index].raw.depth = currentDepth - 1;
-    this.fireOnChange();
+    this.moveItemToDepth(index, this.getItemDepth(index) - 1);
   }
 
   moveItemRight(index: number): void {
-    const currentDepth = this.getItemDepth(index);
+    this.moveItemToDepth(index, this.getItemDepth(index) + 1);
+  }
 
-    if (currentDepth > this.getItemDepth(index - 1)) {
-      return;
-    }
-
-    this.wrappedItems[index].raw.depth = currentDepth + 1;
-    this.fireOnChange();
+  moveItem(index: number, newIndex: number, newDepth: number) {
+    this.moveItemVertically(index, newIndex);
+    this.moveItemToDepth(newIndex, newDepth);
   }
 
   moveCheckedToBottom() {
@@ -193,16 +177,23 @@ export class ListItemCollection {
     this.fireOnChange();
   }
 
-  getReactKey(index: number): string {
-    return this.wrappedItems[index].reactKey;
-  }
-
-  getItemIndex(key: string): number {
-    return this.wrappedItems.findIndex((i) => i.reactKey === key);
-  }
-
   private add(index: number, ...listItems: ListItemWrapper[]) {
     this.wrappedItems.splice(index, 0, ...listItems);
+    this.fireOnChange();
+  }
+
+  private moveItemToDepth(index: number, newDepth: number) {
+    const targetDepth =
+      index === 0 || newDepth < 0
+        ? 0
+        : Math.min(newDepth, this.wrappedItems[index - 1].raw.depth + 1);
+
+    if (targetDepth === this.wrappedItems[index].raw.depth) {
+      return;
+    }
+
+    this.wrappedItems[index].raw.depth = targetDepth;
+
     this.fireOnChange();
   }
 
