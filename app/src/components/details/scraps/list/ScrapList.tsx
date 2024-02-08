@@ -15,6 +15,7 @@ import {
   DndContext,
   DragOverEvent,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -47,7 +48,7 @@ export const ScrapList: React.FC<{
     }
   }, [isEditMode, listItemsCollection]);
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(useSensor(TouchSensor), useSensor(PointerSensor));
 
   return (
     <Host

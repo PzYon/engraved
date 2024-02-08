@@ -40,7 +40,7 @@ export const ScrapListItem: React.FC<{
       {isEditMode ? (
         <span
           ref={setNodeRef}
-          style={{ height: "20px" }}
+          style={{ height: "20px", touchAction: "none" }}
           {...attributes}
           {...listeners}
         >
@@ -93,29 +93,19 @@ export const ScrapListItem: React.FC<{
   );
 
   function getSx(elementType: "plain" | "textbox") {
-    const sx: SxProps = {
-      flexGrow: 1,
-      marginTop: elementType === "plain" ? "8px" : "6px",
-    };
-
-    if (elementType === "textbox") {
-      /* eslint-disable  @typescript-eslint/no-explicit-any */
-      (sx as any).textarea = {
-        lineHeight: "21px",
-      };
-    }
+    const sx: SxProps & { textarea?: SxProps } = { flexGrow: 1 };
 
     if (!listItem.isCompleted) {
       return sx;
     }
 
-    if (elementType === "textbox") {
-      /* eslint-disable  @typescript-eslint/no-explicit-any */
-      (sx as any).textarea = {
-        textDecoration: "line-through",
-      };
-    } else if (elementType === "plain") {
-      sx.textDecoration = "line-through";
+    switch (elementType) {
+      case "textbox":
+        sx.textarea = { textDecoration: "line-through" };
+        break;
+      case "plain":
+        sx.textDecoration = "line-through";
+        break;
     }
 
     return sx;
