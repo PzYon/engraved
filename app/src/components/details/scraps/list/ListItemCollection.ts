@@ -114,31 +114,45 @@ export class ListItemCollection {
     this.fireOnChange();
   }
 
-  moveItemVertically(oldIndex: number, newIndex: number) {
-    const item = this.wrappedItems.splice(oldIndex, 1)[0];
+  moveItemVertically(index: number, newIndex: number) {
+    const item = this.wrappedItems.splice(index, 1)[0];
     this.add(newIndex, item);
   }
 
+  moveItem(index: number, newIndex: number, newDepth: number) {
+    this.moveItemVertically(index, newIndex);
+
+    this.wrappedItems[newIndex].raw.depth = this.ensureValidDepth(
+      newIndex,
+      newDepth,
+    );
+  }
+
+  private ensureValidDepth(index: number, newDepth: number) {
+    return index === 0
+      ? 0
+      : Math.min(newDepth, this.wrappedItems[index - 1].raw.depth + 1);
+  }
+
   moveItemLeft(index: number): void {
-    if (this.getItemDepth(index) === 0) {
+    const currentDepth = this.getItemDepth(index);
+
+    if (currentDepth === 0) {
       return;
     }
 
-    this.wrappedItems[index].raw.depth = this.getItemDepth(index) - 1;
+    this.wrappedItems[index].raw.depth = currentDepth - 1;
     this.fireOnChange();
   }
 
   moveItemRight(index: number): void {
-    if (this.getItemDepth(index) > this.getItemDepth(index - 1)) {
+    const currentDepth = this.getItemDepth(index);
+
+    if (currentDepth > this.getItemDepth(index - 1)) {
       return;
     }
 
-    this.wrappedItems[index].raw.depth = this.getItemDepth(index) + 1;
-    this.fireOnChange();
-  }
-
-  moveItemToDepth(index: number, depth: number) {
-    this.wrappedItems[index].raw.depth = depth;
+    this.wrappedItems[index].raw.depth = currentDepth + 1;
     this.fireOnChange();
   }
 
