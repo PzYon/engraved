@@ -137,6 +137,11 @@ export class ListItemCollection {
     this.fireOnChange();
   }
 
+  moveItemToDepth(index: number, depth: number) {
+    this.wrappedItems[index].raw.depth = depth;
+    this.fireOnChange();
+  }
+
   moveCheckedToBottom() {
     this.wrappedItems = this.wrappedItems.sort((a, b) => {
       return a.raw.isCompleted === b.raw.isCompleted

@@ -146,14 +146,14 @@ export const ScrapList: React.FC<{
       listItemsCollection.moveItemVertically(currentIndex, newIndex);
     }
 
-    if (delta.x > 20) {
-      listItemsCollection.moveItemRight(newIndex);
-      return;
-    }
+    if (Math.abs(delta.x) > 20) {
+      const currentDepth = listItemsCollection.items[currentIndex].depth;
 
-    if (delta.x < 20) {
-      listItemsCollection.moveItemLeft(newIndex);
-      return;
+      const depthDelta = Math.floor(Math.abs(delta.x) / 20);
+      listItemsCollection.moveItemToDepth(
+        newIndex,
+        delta.x < 0 ? currentDepth - depthDelta : currentDepth + depthDelta,
+      );
     }
   }
 };
