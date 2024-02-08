@@ -12,13 +12,20 @@ export function getCommonActions(
     return [];
   }
 
-  return [
-    ActionFactory.addEntry(journal, renderDialog, enableHotkeys),
+  const actions: IAction[] = [];
+
+  if (renderDialog) {
+    actions.push(ActionFactory.addEntry(journal, renderDialog, enableHotkeys));
+  }
+
+  actions.push(
     ActionFactory.editJournalPermissions(journal.id),
     ActionFactory.editJournalSchedule(journal.id, enableHotkeys),
     ActionFactory.editJournal(journal.id, enableHotkeys),
     ActionFactory.deleteJournal(journal.id, enableHotkeys),
-  ];
+  );
+
+  return actions;
 }
 
 export function getCommonEditModeActions(
