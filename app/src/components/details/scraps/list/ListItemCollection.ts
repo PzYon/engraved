@@ -190,7 +190,7 @@ export class ListItemCollection {
   private getItemDepth(index: number) {
     // we need to access the depth-value like this because old items
     // might not have the depth value set
-    return this.wrappedItems[index].raw.depth ?? 0;
+    return this.wrappedItems[index]?.raw.depth ?? 0;
   }
 
   private getNextHigherIndex(index: number) {

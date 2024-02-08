@@ -140,22 +140,23 @@ export const ScrapList: React.FC<{
       (_, index) => listItemsCollection.getReactKey(index) === active.id,
     );
 
+    let newIndex = currentIndex;
+
     if (active.id !== over.id) {
-      const newIndex = listItemsCollection.items.findIndex(
+      newIndex = listItemsCollection.items.findIndex(
         (_, index) => listItemsCollection.getReactKey(index) === over.id,
       );
 
       listItemsCollection.moveItemVertically(currentIndex, newIndex);
-      return;
     }
 
     if (delta.x > 20) {
-      listItemsCollection.moveItemRight(currentIndex);
+      listItemsCollection.moveItemRight(newIndex);
       return;
     }
 
     if (delta.x < 20) {
-      listItemsCollection.moveItemLeft(currentIndex);
+      listItemsCollection.moveItemLeft(newIndex);
       return;
     }
   }
