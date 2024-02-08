@@ -1,3 +1,4 @@
+import React from "react";
 import { ISCrapListItem } from "./IScrapListItem";
 import { ListItemWrapper } from "./ListItemWrapper";
 
@@ -118,26 +119,22 @@ export class ListItemCollection {
 
   moveItem(index: number, target: { index?: number; depth?: number }) {
     let didChange = false;
+    const currentIndex = target.index ?? index;
 
-    if (target.index !== undefined && target.index !== index) {
+    if (currentIndex !== index) {
       const item = this.wrappedItems.splice(index, 1)[0];
       this.wrappedItems.splice(target.index, 0, item);
       didChange = true;
     }
 
-    const xxxIndex = target.index ?? index;
-
     if (target.depth !== undefined) {
       const targetDepth =
-        xxxIndex === 0 || target.depth < 0
+        currentIndex === 0 || target.depth < 0
           ? 0
-          : Math.min(
-              target.depth,
-              this.wrappedItems[xxxIndex - 1].raw.depth + 1,
-            );
+          : Math.min(target.depth, this.getItemDepth(currentIndex - 1) + 1);
 
-      if (targetDepth !== this.wrappedItems[xxxIndex].raw.depth) {
-        this.wrappedItems[xxxIndex].raw.depth = targetDepth;
+      if (targetDepth !== this.getItemDepth(currentIndex)) {
+        this.wrappedItems[currentIndex].raw.depth = targetDepth;
         didChange = true;
       }
     }
