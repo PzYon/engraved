@@ -89,7 +89,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
 
   useEffect(() => {
     onEntriesCalculated?.(chart.data.datasets[0].data.length);
-  }, [chart]);
+  }, [chart, onEntriesCalculated]);
 
   return chart ? <Chart key={chartType} {...chart} /> : null;
 };

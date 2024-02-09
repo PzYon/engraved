@@ -194,8 +194,9 @@ export const Scrap: React.FC<{
       return;
     }
 
+    setIsEditMode(false);
+
     if (currentScrap.notes === notesToSave && currentScrap.title === title) {
-      setIsEditMode(false);
       return;
     }
 
@@ -212,7 +213,6 @@ export const Scrap: React.FC<{
     });
 
     onSuccess?.();
-    setIsEditMode(false);
   }
 };
 
