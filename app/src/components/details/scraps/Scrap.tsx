@@ -88,8 +88,7 @@ export const Scrap: React.FC<{
   useEffect(() => {
     if (
       !currentScrap.editedOn ||
-      currentScrap.editedOn === scrapToRender.editedOn /*||
-      (currentScrap.notes === notes && currentScrap.title === title)*/
+      currentScrap.editedOn === scrapToRender.editedOn
     ) {
       return;
     }
