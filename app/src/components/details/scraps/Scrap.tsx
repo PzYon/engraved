@@ -88,8 +88,7 @@ export const Scrap: React.FC<{
   useEffect(() => {
     if (
       !currentScrap.editedOn ||
-      currentScrap.editedOn === scrapToRender.editedOn ||
-      (currentScrap.notes === notes && currentScrap.title === title)
+      currentScrap.editedOn === scrapToRender.editedOn
     ) {
       return;
     }
@@ -194,8 +193,9 @@ export const Scrap: React.FC<{
       return;
     }
 
+    setIsEditMode(false);
+
     if (currentScrap.notes === notesToSave && currentScrap.title === title) {
-      setIsEditMode(false);
       return;
     }
 
@@ -212,7 +212,6 @@ export const Scrap: React.FC<{
     });
 
     onSuccess?.();
-    setIsEditMode(false);
   }
 };
 
