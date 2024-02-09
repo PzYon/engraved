@@ -40,7 +40,7 @@ export const ScrapListItem: React.FC<{
       {isEditMode ? (
         <span
           ref={setNodeRef}
-          style={{ height: "20px", touchAction: "none" }}
+          style={{ height: "20px", padding: "7px", touchAction: "none" }}
           {...attributes}
           {...listeners}
         >
@@ -69,7 +69,7 @@ export const ScrapListItem: React.FC<{
                 depth: listItem.depth,
               })
             }
-            sx={{ ...getSx("textbox"), pr: 1 }}
+            sx={{ ...getSx("textbox"), pr: 1, pt: "5px" }}
             autoFocus={!listItem.label}
           />
           <ActionIconButtonGroup
@@ -85,7 +85,7 @@ export const ScrapListItem: React.FC<{
           />
         </>
       ) : (
-        <ReadonlyContainer sx={getSx("plain")}>
+        <ReadonlyContainer sx={{ ...getSx("plain"), pt: "7px" }}>
           <Markdown value={label} useBasic={true}></Markdown>
         </ReadonlyContainer>
       )}
@@ -199,14 +199,14 @@ export const ScrapListItem: React.FC<{
 const StyledCheckbox = styled(Checkbox)`
   padding: 5px 5px 5px 0;
 
-  &.MuiCheckbox-root.Mui-disabled.MuiCheckbox-colorPrimary {
+  &.MuiCheckbox-colorPrimary {
     color: ${(p) => p.theme.palette.primary.main} !important;
   }
 `;
 
 const ListItem = styled("li")`
   display: flex;
-  align-items: center;
+  align-items: start;
 `;
 
 const ReadonlyContainer = styled("div")`
