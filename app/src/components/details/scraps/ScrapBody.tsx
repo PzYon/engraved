@@ -4,6 +4,7 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
 import { Entry, EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { JournalType } from "../../../serverApi/JournalType";
+import { useDialogContext } from "../../layout/dialogs/DialogContext";
 
 export const ScrapBody: React.FC<{
   scrap: IScrapEntry;
@@ -30,7 +31,8 @@ export const ScrapBody: React.FC<{
   journalName,
   propsRenderStyle,
 }) => {
-  const allActions = getActions(enableHotkeys);
+  const { renderDialog } = useDialogContext();
+  const allActions = getActions();
 
   return (
     <Entry
@@ -45,7 +47,7 @@ export const ScrapBody: React.FC<{
     </Entry>
   );
 
-  function getActions(enableHotkeys: boolean) {
+  function getActions() {
     if (hideActions) {
       return [];
     }
@@ -61,7 +63,7 @@ export const ScrapBody: React.FC<{
 
     if (cancelEditing) {
       allActions.push(
-        ActionFactory.cancelEditing(cancelEditing, enableHotkeys),
+        ActionFactory.cancelEditing(cancelEditing, enableHotkeys, renderDialog),
       );
     }
 

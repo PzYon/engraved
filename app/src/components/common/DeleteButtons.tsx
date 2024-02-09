@@ -6,7 +6,7 @@ export const DeleteButtons: React.FC<{
   onDelete: () => void;
   onCancel: () => void;
   entityType: "journal" | "entry";
-  requiresConfirmation: boolean;
+  requiresConfirmation?: boolean;
 }> = ({ onDelete, onCancel, entityType, requiresConfirmation }) => {
   const [isFirstYes, setIsFirstYes] = useState(false);
   const [isSecondYes, setIsSecondYes] = useState(false);
