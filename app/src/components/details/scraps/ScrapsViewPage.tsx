@@ -80,7 +80,7 @@ export const ScrapsViewPage: React.FC = () => {
       {scraps.length
         ? (scraps as IScrapEntry[]).map((scrap, i) => (
             <Scrap
-              key={scrap.id + "_" + scrap.editedOn}
+              key={scrap.id}
               onClick={() => collection.setFocus(i)}
               addScrapWrapper={(scrapWrapper) =>
                 collection.add(scrap.id, scrapWrapper)
