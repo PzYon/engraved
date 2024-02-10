@@ -33,6 +33,8 @@ import { IUser } from "../../../serverApi/IUser";
 import { renderAddScrapDialog } from "../../details/add/renderAddScrapDialog";
 import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
+import { Button, Typography } from "@mui/material";
+import { DialogFormButtonContainer } from "../FormButtonContainer";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -265,13 +267,45 @@ export class ActionFactory {
     };
   }
 
-  static cancelEditing(onCancel: () => void, enableHotkey: boolean): IAction {
+  static cancelEditing(
+    onCancel: () => void,
+    enableHotkey: boolean,
+    renderDialog: (dialogProps: IDialogProps) => void,
+  ): IAction {
     return {
       hotkey: enableHotkey ? "alt+x" : undefined,
       key: "cancel-edit",
       label: "Stop editing and reset",
       icon: <ClearOutlined fontSize="small" />,
-      onClick: () => onCancel(),
+      onClick: () =>
+        renderDialog({
+          title: "Are you sure?",
+          render: (closeDialog) => {
+            return (
+              <>
+                <Typography>
+                  Do you really want to cancel editing without saving? All
+                  changes will be lost.
+                </Typography>
+
+                <DialogFormButtonContainer>
+                  <Button variant={"contained"} onClick={closeDialog}>
+                    Not yet.
+                  </Button>
+                  <Button
+                    variant={"outlined"}
+                    onClick={() => {
+                      onCancel();
+                      closeDialog();
+                    }}
+                  >
+                    Yeah, I&apos;m done.
+                  </Button>
+                </DialogFormButtonContainer>
+              </>
+            );
+          },
+        }),
     };
   }
 
