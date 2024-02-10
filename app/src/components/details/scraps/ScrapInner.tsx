@@ -1,43 +1,20 @@
 import React, { CSSProperties, useState } from "react";
-import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
+import { ScrapType } from "../../../serverApi/IScrapEntry";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { ScrapListBody } from "./list/ScrapListBody";
 import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
 import { styled, Typography } from "@mui/material";
-import { EntryPropsRenderStyle } from "../../common/entries/Entry";
+import { useScrapContext } from "./ScrapContext";
 
 export const ScrapInner: React.FC<{
-  scrap: IScrapEntry;
-  journalName: string;
-  isEditMode: boolean;
-  setIsEditMode: (value: boolean) => void;
-  title: string;
-  setTitle: (value: string) => void;
-  notes: string;
-  setNotes: (value: string) => void;
   hideActions?: boolean;
-  propsRenderStyle: EntryPropsRenderStyle;
-  upsertScrap: (notesToSave?: string) => Promise<void>;
   style?: CSSProperties;
-  cancelEditing: () => void;
   hasFocus?: boolean;
-}> = ({
-  scrap,
-  journalName,
-  isEditMode,
-  setIsEditMode,
-  title,
-  setTitle,
-  notes,
-  setNotes,
-  hideActions,
-  propsRenderStyle,
-  upsertScrap,
-  style,
-  cancelEditing,
-  hasFocus,
-}) => {
+}> = ({ hideActions, style, hasFocus }) => {
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
+
+  const { isEditMode, setIsEditMode, title, setTitle, scrapToRender } =
+    useScrapContext();
 
   return (
     <div
@@ -47,7 +24,7 @@ export const ScrapInner: React.FC<{
           setIsEditMode(true);
         }
       }}
-      data-testid={"scrap-" + scrap.id}
+      data-testid={"scrap-" + scrapToRender.id}
     >
       {isEditMode ? (
         <AutogrowTextField
@@ -65,42 +42,17 @@ export const ScrapInner: React.FC<{
         <ReadonlyTitleContainer>{title}</ReadonlyTitleContainer>
       )}
 
-      {scrap.scrapType === ScrapType.List ? (
+      {scrapToRender.scrapType === ScrapType.List ? (
         <ScrapListBody
-          scrap={scrap}
-          journalName={journalName}
-          propsRenderStyle={propsRenderStyle}
           hideActions={hideActions}
-          editMode={isEditMode}
-          setEditMode={setIsEditMode}
           hasTitleFocus={hasTitleFocus}
-          value={notes}
-          onChange={onChange}
-          onSave={upsertScrap}
-          cancelEditing={cancelEditing}
           hasFocus={hasFocus}
         />
       ) : (
-        <ScrapMarkdownBody
-          scrap={scrap}
-          journalName={journalName}
-          propsRenderStyle={propsRenderStyle}
-          hideActions={hideActions}
-          editMode={isEditMode}
-          setEditMode={setIsEditMode}
-          value={notes}
-          onChange={onChange}
-          onSave={upsertScrap}
-          cancelEditing={cancelEditing}
-          hasFocus={hasFocus}
-        />
+        <ScrapMarkdownBody hideActions={hideActions} hasFocus={hasFocus} />
       )}
     </div>
   );
-
-  function onChange(value: string) {
-    setNotes(value);
-  }
 };
 
 const ReadonlyTitleContainer = styled(Typography)`

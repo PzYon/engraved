@@ -1,31 +1,29 @@
 import React, { useState } from "react";
 import { ScrapType } from "../../../serverApi/IScrapEntry";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
-import { Button, styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { ListScrapIcon, MarkdownScrapIcon } from "../scraps/ScrapsViewPage";
 import { JournalSelector } from "../../common/JournalSelector";
-import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
-import { JournalType } from "../../../serverApi/JournalType";
-import { ScrapInner } from "../scraps/ScrapInner";
-import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
-import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
+import { Scrap } from "../scraps/Scrap";
 
 export const AddQuickScrapDialog: React.FC<{
   onSuccess?: () => void;
   quickScrapJournalId: string;
-}> = ({ onSuccess, quickScrapJournalId }) => {
+}> = ({ quickScrapJournalId }) => {
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
-  const [notes, setNotes] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
+  // const [notes, setNotes] = useState<string>("");
+  // const [title, setTitle] = useState<string>("");
 
   const [journalId, setJournalId] = useState(quickScrapJournalId ?? "");
 
   const scrap = ScrapsJournalType.createBlank(journalId, type);
 
+  /*
   const upsertEntryMutation = useUpsertEntryMutation(
     journalId,
     JournalType.Scraps,
   );
+   */
 
   return (
     <>
@@ -60,44 +58,37 @@ export const AddQuickScrapDialog: React.FC<{
         </ToggleButtonGroup>
       </ScrapTypeSelector>
       <ScrapContainer>
-        <ScrapInner
+        <Scrap
           key={type}
           scrap={scrap}
-          isEditMode={true}
           journalName={null}
           propsRenderStyle={"none"}
           hideActions={true}
-          title={title}
-          setTitle={setTitle}
-          notes={notes}
-          setNotes={setNotes}
-          upsertScrap={() => Promise.resolve()}
-          setIsEditMode={() => {}}
-          cancelEditing={() => {}}
+          withoutSection={true}
         />
       </ScrapContainer>
-      <DialogFormButtonContainer>
-        <Button
-          variant={"contained"}
-          disabled={!notes && !title}
-          onClick={async () => {
-            await upsertEntryMutation.mutateAsync({
-              command: {
-                scrapType: type,
-                notes: notes,
-                title: title,
-                journalAttributeValues: {},
-                journalId: journalId,
-                dateTime: new Date(),
-              } as IUpsertScrapsEntryCommand,
-            });
+      {/*<DialogFormButtonContainer>*/}
+      {/*  <Button*/}
+      {/*    variant={"contained"}*/}
+      {/*    disabled={!notes && !title}*/}
+      {/*    onClick={async () => {*/}
+      {/*      await upsertEntryMutation.mutateAsync({*/}
+      {/*        command: {*/}
+      {/*          scrapType: type,*/}
+      {/*          notes: notes,*/}
+      {/*          title: title,*/}
+      {/*          journalAttributeValues: {},*/}
+      {/*          journalId: journalId,*/}
+      {/*          dateTime: new Date(),*/}
+      {/*        } as IUpsertScrapsEntryCommand,*/}
+      {/*      });*/}
 
-            onSuccess?.();
-          }}
-        >
-          Add
-        </Button>
-      </DialogFormButtonContainer>
+      {/*      onSuccess?.();*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    Add*/}
+      {/*  </Button>*/}
+      {/*</DialogFormButtonContainer>*/}
     </>
   );
 };

@@ -23,24 +23,23 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useScrapContext } from "../ScrapContext";
 
 export const ScrapList: React.FC<{
-  isEditMode: boolean;
-  value: string;
   hasTitleFocus: boolean;
-  onChange: (json: string) => void;
-  editedOn: string;
-  onSave?: (notesToSave?: string) => void;
-}> = ({ isEditMode, value, hasTitleFocus, onChange, editedOn, onSave }) => {
+}> = ({ hasTitleFocus }) => {
   const { palette } = useTheme();
 
+  const { notes, setNotes, isEditMode, upsertScrap, scrapToRender } =
+    useScrapContext();
+
   const listItemCollection = useMemo(() => {
-    const items: ISCrapListItem[] = value ? JSON.parse(value) : [];
+    const items: ISCrapListItem[] = notes ? JSON.parse(notes) : [];
     return new ListItemCollection(items, (rawItems) =>
-      onChange(getItemsAsJson(rawItems)),
+      setNotes(getItemsAsJson(rawItems)),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editedOn]);
+  }, [scrapToRender.editedOn]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -86,7 +85,7 @@ export const ScrapList: React.FC<{
                     listItemCollection.updateItem(index, updatedItem);
 
                     if (!isEditMode) {
-                      onSave(getItemsAsJson(listItemCollection.items));
+                      upsertScrap(getItemsAsJson(listItemCollection.items));
                     }
                   }}
                 />

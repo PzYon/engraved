@@ -270,6 +270,7 @@ export class ActionFactory {
   static cancelEditing(
     onCancel: () => void,
     enableHotkey: boolean,
+    isDirty: boolean,
     renderDialog: (dialogProps: IDialogProps) => void,
   ): IAction {
     return {
@@ -277,7 +278,11 @@ export class ActionFactory {
       key: "cancel-edit",
       label: "Stop editing and reset",
       icon: <ClearOutlined fontSize="small" />,
-      onClick: () =>
+      onClick: () => {
+        if (!isDirty) {
+          onCancel();
+        }
+
         renderDialog({
           title: "Are you sure?",
           render: (closeDialog) => {
@@ -305,7 +310,8 @@ export class ActionFactory {
               </>
             );
           },
-        }),
+        });
+      },
     };
   }
 

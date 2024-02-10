@@ -1,47 +1,39 @@
 import React from "react";
-import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
-import { Entry, EntryPropsRenderStyle } from "../../common/entries/Entry";
+import { Entry } from "../../common/entries/Entry";
 import { JournalType } from "../../../serverApi/JournalType";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
+import { useScrapContext } from "./ScrapContext";
 
 export const ScrapBody: React.FC<{
-  scrap: IScrapEntry;
   hideActions: boolean;
-  editMode: boolean;
-  setEditMode: (value: boolean) => void;
   children: React.ReactNode;
   actions: IAction[];
-  onSave: () => Promise<void>;
-  cancelEditing: () => void;
   enableHotkeys?: boolean;
-  journalName: string;
-  propsRenderStyle: EntryPropsRenderStyle;
-}> = ({
-  scrap,
-  hideActions,
-  editMode,
-  setEditMode,
-  children,
-  actions,
-  onSave,
-  cancelEditing,
-  enableHotkeys,
-  journalName,
-  propsRenderStyle,
-}) => {
+}> = ({ hideActions, children, actions, enableHotkeys }) => {
   const { renderDialog } = useDialogContext();
+  const {
+    isEditMode,
+    setIsEditMode,
+    isDirty,
+    getCancelEditingFunction,
+    upsertScrap,
+    scrapToRender,
+    propsRenderStyle,
+    journalName,
+  } = useScrapContext();
+
   const allActions = getActions();
 
   return (
     <Entry
-      journalId={scrap.parentId}
-      journalName={journalName}
+      journalId={scrapToRender.parentId}
       journalType={JournalType.Scraps}
-      entry={scrap}
+      entry={scrapToRender}
       actions={allActions}
       propsRenderStyle={propsRenderStyle}
+      journalName={journalName}
     >
       {children}
     </Entry>
@@ -54,21 +46,35 @@ export const ScrapBody: React.FC<{
 
     const allActions = [
       ...actions,
-      ActionFactory.moveToAnotherScrap(scrap),
-      ActionFactory.editEntitySchedule(scrap.parentId, scrap.id),
-      editMode
-        ? ActionFactory.save(async () => await onSave(), false, enableHotkeys)
-        : ActionFactory.editScrap(() => setEditMode(true), enableHotkeys),
+      ActionFactory.moveToAnotherScrap(scrapToRender),
+      ActionFactory.editEntitySchedule(
+        scrapToRender.parentId,
+        scrapToRender.id,
+      ),
+      isEditMode
+        ? ActionFactory.save(
+            async () => await upsertScrap(),
+            false,
+            enableHotkeys,
+          )
+        : ActionFactory.editScrap(() => setIsEditMode(true), enableHotkeys),
     ];
+
+    const cancelEditing = getCancelEditingFunction();
 
     if (cancelEditing) {
       allActions.push(
-        ActionFactory.cancelEditing(cancelEditing, enableHotkeys, renderDialog),
+        ActionFactory.cancelEditing(
+          cancelEditing,
+          enableHotkeys,
+          isDirty,
+          renderDialog,
+        ),
       );
     }
 
-    if (scrap.id) {
-      allActions.push(ActionFactory.deleteEntry(scrap));
+    if (scrapToRender.id) {
+      allActions.push(ActionFactory.deleteEntry(scrapToRender));
     }
 
     return allActions;
