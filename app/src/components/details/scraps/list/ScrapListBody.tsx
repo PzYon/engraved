@@ -1,12 +1,16 @@
 import React from "react";
 import { ScrapBody } from "../ScrapBody";
 import { ScrapList } from "./ScrapList";
+import { useScrapContext } from "../ScrapContext";
 
 export const ScrapListBody: React.FC<{
   hasTitleFocus: boolean;
-  hasFocus?: boolean;
-}> = ({ hasTitleFocus, hasFocus }) => (
-  <ScrapBody actions={[]} enableHotkeys={hasFocus || hasTitleFocus}>
-    <ScrapList hasTitleFocus={hasTitleFocus} />
-  </ScrapBody>
-);
+}> = ({ hasTitleFocus }) => {
+  const { hasFocus } = useScrapContext();
+
+  return (
+    <ScrapBody actions={[]} enableHotkeys={hasFocus || hasTitleFocus}>
+      <ScrapList hasTitleFocus={hasTitleFocus} />
+    </ScrapBody>
+  );
+};

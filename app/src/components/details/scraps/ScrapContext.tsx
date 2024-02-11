@@ -32,6 +32,7 @@ export interface IScrapContext {
   actionsRenderStyle?: ActionsRenderStyle;
   journalName: string;
   onSuccess?: () => void;
+  hasFocus: boolean;
 }
 
 const ScrapContext = createContext<IScrapContext>({
@@ -49,6 +50,7 @@ const ScrapContext = createContext<IScrapContext>({
   actionsRenderStyle: null,
   journalName: null,
   onSuccess: null,
+  hasFocus: null,
 });
 
 export const useScrapContext = () => {
@@ -64,6 +66,7 @@ export const ScrapContextProvider: React.FC<{
   actionsRenderStyle?: ActionsRenderStyle;
   journalName: string;
   onSuccess?: () => void;
+  hasFocus: boolean;
 }> = ({
   children,
   currentScrap,
@@ -73,6 +76,7 @@ export const ScrapContextProvider: React.FC<{
   actionsRenderStyle,
   journalName,
   onSuccess,
+  hasFocus,
 }) => {
   const { setAppAlert } = useAppContext();
 
@@ -204,6 +208,7 @@ export const ScrapContextProvider: React.FC<{
         actionsRenderStyle,
         journalName,
         onSuccess,
+        hasFocus,
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -217,6 +222,7 @@ export const ScrapContextProvider: React.FC<{
       propsRenderStyle,
       actionsRenderStyle,
       journalName,
+      hasFocus,
     ],
   );
 

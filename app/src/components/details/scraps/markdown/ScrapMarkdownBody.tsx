@@ -6,15 +6,19 @@ import { preloadLazyCodeMirror } from "./MarkdownEditor";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { useScrapContext } from "../ScrapContext";
 
-export const ScrapMarkdownBody: React.FC<{
-  hasFocus?: boolean;
-}> = ({ hasFocus }) => {
+export const ScrapMarkdownBody: React.FC = () => {
   useEffect(() => preloadLazyCodeMirror(), []);
 
   const { setAppAlert } = useAppContext();
 
-  const { notes, setNotes, isEditMode, getCancelEditingFunction, upsertScrap } =
-    useScrapContext();
+  const {
+    notes,
+    setNotes,
+    isEditMode,
+    getCancelEditingFunction,
+    upsertScrap,
+    hasFocus,
+  } = useScrapContext();
 
   return (
     <ScrapBody

@@ -49,11 +49,11 @@ export const Scrap: React.FC<{
           actionsRenderStyle={actionsRenderStyle}
           journalName={journalName}
           onSuccess={onSuccess}
+          hasFocus={hasFocus}
         >
           <ScrapInner
             //key={isEditMode.toString()}
             style={style}
-            hasFocus={hasFocus}
           />
         </ScrapContextProvider>
       </Container>

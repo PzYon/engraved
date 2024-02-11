@@ -8,8 +8,7 @@ import { useScrapContext } from "./ScrapContext";
 
 export const ScrapInner: React.FC<{
   style?: CSSProperties;
-  hasFocus?: boolean;
-}> = ({ style, hasFocus }) => {
+}> = ({ style }) => {
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   const { isEditMode, setIsEditMode, title, setTitle, scrapToRender } =
@@ -42,9 +41,9 @@ export const ScrapInner: React.FC<{
       )}
 
       {scrapToRender.scrapType === ScrapType.List ? (
-        <ScrapListBody hasTitleFocus={hasTitleFocus} hasFocus={hasFocus} />
+        <ScrapListBody hasTitleFocus={hasTitleFocus} />
       ) : (
-        <ScrapMarkdownBody hasFocus={hasFocus} />
+        <ScrapMarkdownBody />
       )}
     </div>
   );
