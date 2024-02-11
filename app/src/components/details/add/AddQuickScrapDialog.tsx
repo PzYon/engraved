@@ -7,23 +7,14 @@ import { JournalSelector } from "../../common/JournalSelector";
 import { Scrap } from "../scraps/Scrap";
 
 export const AddQuickScrapDialog: React.FC<{
-  onSuccess?: () => void;
   quickScrapJournalId: string;
-}> = ({ quickScrapJournalId }) => {
+  onSuccess?: () => void;
+}> = ({ quickScrapJournalId, onSuccess }) => {
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
-  // const [notes, setNotes] = useState<string>("");
-  // const [title, setTitle] = useState<string>("");
 
   const [journalId, setJournalId] = useState(quickScrapJournalId ?? "");
 
   const scrap = ScrapsJournalType.createBlank(journalId, type);
-
-  /*
-  const upsertEntryMutation = useUpsertEntryMutation(
-    journalId,
-    JournalType.Scraps,
-  );
-   */
 
   return (
     <>
@@ -65,30 +56,9 @@ export const AddQuickScrapDialog: React.FC<{
           propsRenderStyle={"none"}
           actionsRenderStyle={"save-only"}
           withoutSection={true}
+          onSuccess={onSuccess}
         />
       </ScrapContainer>
-      {/*<DialogFormButtonContainer>*/}
-      {/*  <Button*/}
-      {/*    variant={"contained"}*/}
-      {/*    disabled={!notes && !title}*/}
-      {/*    onClick={async () => {*/}
-      {/*      await upsertEntryMutation.mutateAsync({*/}
-      {/*        command: {*/}
-      {/*          scrapType: type,*/}
-      {/*          notes: notes,*/}
-      {/*          title: title,*/}
-      {/*          journalAttributeValues: {},*/}
-      {/*          journalId: journalId,*/}
-      {/*          dateTime: new Date(),*/}
-      {/*        } as IUpsertScrapsEntryCommand,*/}
-      {/*      });*/}
-
-      {/*      onSuccess?.();*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    Add*/}
-      {/*  </Button>*/}
-      {/*</DialogFormButtonContainer>*/}
     </>
   );
 };

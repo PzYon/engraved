@@ -19,6 +19,7 @@ export const Scrap: React.FC<{
   withoutSection?: boolean;
   onClick?: () => void;
   hasFocus?: boolean;
+  onSuccess?: () => void;
 }> = ({
   scrap: currentScrap,
   journalName,
@@ -30,6 +31,7 @@ export const Scrap: React.FC<{
   withoutSection,
   onClick,
   hasFocus,
+  onSuccess,
 }) => {
   const domElementRef: MutableRefObject<HTMLDivElement> =
     useRef<HTMLDivElement>(null);
@@ -46,6 +48,7 @@ export const Scrap: React.FC<{
           propsRenderStyle={propsRenderStyle}
           actionsRenderStyle={actionsRenderStyle}
           journalName={journalName}
+          onSuccess={onSuccess}
         >
           <ScrapInner
             //key={isEditMode.toString()}

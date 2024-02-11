@@ -31,6 +31,7 @@ export interface IScrapContext {
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
   journalName: string;
+  onSuccess?: () => void;
 }
 
 const ScrapContext = createContext<IScrapContext>({
@@ -47,6 +48,7 @@ const ScrapContext = createContext<IScrapContext>({
   propsRenderStyle: null,
   actionsRenderStyle: null,
   journalName: null,
+  onSuccess: null,
 });
 
 export const useScrapContext = () => {
@@ -61,6 +63,7 @@ export const ScrapContextProvider: React.FC<{
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
   journalName: string;
+  onSuccess?: () => void;
 }> = ({
   children,
   currentScrap,
@@ -69,6 +72,7 @@ export const ScrapContextProvider: React.FC<{
   propsRenderStyle,
   actionsRenderStyle,
   journalName,
+  onSuccess,
 }) => {
   const { setAppAlert } = useAppContext();
 
@@ -199,6 +203,7 @@ export const ScrapContextProvider: React.FC<{
         propsRenderStyle,
         actionsRenderStyle,
         journalName,
+        onSuccess,
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -239,6 +244,8 @@ export const ScrapContextProvider: React.FC<{
         dateTime: new Date(),
       } as IUpsertScrapsEntryCommand,
     });
+
+    onSuccess?.();
   }
 
   return (
