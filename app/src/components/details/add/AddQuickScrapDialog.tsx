@@ -63,7 +63,7 @@ export const AddQuickScrapDialog: React.FC<{
           scrap={scrap}
           journalName={null}
           propsRenderStyle={"none"}
-          hideActions={true}
+          actionsRenderStyle={"save-only"}
           withoutSection={true}
         />
       </ScrapContainer>

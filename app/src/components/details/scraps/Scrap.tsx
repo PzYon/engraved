@@ -6,13 +6,13 @@ import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
 import { Wrapper } from "../../common/wrappers/Wrapper";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
-import { ScrapContextProvider } from "./ScrapContext";
+import { ActionsRenderStyle, ScrapContextProvider } from "./ScrapContext";
 
 export const Scrap: React.FC<{
   scrap: IScrapEntry;
   journalName: string;
   propsRenderStyle: EntryPropsRenderStyle;
-  hideActions?: boolean;
+  actionsRenderStyle?: ActionsRenderStyle;
   style?: CSSProperties;
   addScrapWrapper?: (scrapWrapper: ScrapItemWrapper) => void;
   index?: number;
@@ -23,7 +23,7 @@ export const Scrap: React.FC<{
   scrap: currentScrap,
   journalName,
   propsRenderStyle,
-  hideActions,
+  actionsRenderStyle,
   style,
   addScrapWrapper,
   index,
@@ -44,11 +44,11 @@ export const Scrap: React.FC<{
           addScrapWrapper={addScrapWrapper}
           domElementRef={domElementRef}
           propsRenderStyle={propsRenderStyle}
+          actionsRenderStyle={actionsRenderStyle}
           journalName={journalName}
         >
           <ScrapInner
             //key={isEditMode.toString()}
-            hideActions={hideActions}
             style={style}
             hasFocus={hasFocus}
           />

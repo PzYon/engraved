@@ -7,10 +7,9 @@ import { styled, Typography } from "@mui/material";
 import { useScrapContext } from "./ScrapContext";
 
 export const ScrapInner: React.FC<{
-  hideActions?: boolean;
   style?: CSSProperties;
   hasFocus?: boolean;
-}> = ({ hideActions, style, hasFocus }) => {
+}> = ({ style, hasFocus }) => {
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   const { isEditMode, setIsEditMode, title, setTitle, scrapToRender } =
@@ -43,13 +42,9 @@ export const ScrapInner: React.FC<{
       )}
 
       {scrapToRender.scrapType === ScrapType.List ? (
-        <ScrapListBody
-          hideActions={hideActions}
-          hasTitleFocus={hasTitleFocus}
-          hasFocus={hasFocus}
-        />
+        <ScrapListBody hasTitleFocus={hasTitleFocus} hasFocus={hasFocus} />
       ) : (
-        <ScrapMarkdownBody hideActions={hideActions} hasFocus={hasFocus} />
+        <ScrapMarkdownBody hasFocus={hasFocus} />
       )}
     </div>
   );

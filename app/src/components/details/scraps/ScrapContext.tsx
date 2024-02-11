@@ -15,6 +15,8 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 
+export type ActionsRenderStyle = "save-only" | "none" | "all";
+
 export interface IScrapContext {
   title: string;
   setTitle: (title: string) => void;
@@ -27,6 +29,7 @@ export interface IScrapContext {
   upsertScrap: (notesToOverride?: string) => Promise<void>;
   scrapToRender: IScrapEntry;
   propsRenderStyle: EntryPropsRenderStyle;
+  actionsRenderStyle?: ActionsRenderStyle;
   journalName: string;
 }
 
@@ -42,6 +45,7 @@ const ScrapContext = createContext<IScrapContext>({
   upsertScrap: null,
   scrapToRender: null,
   propsRenderStyle: null,
+  actionsRenderStyle: null,
   journalName: null,
 });
 
@@ -55,6 +59,7 @@ export const ScrapContextProvider: React.FC<{
   addScrapWrapper?: (scrapWrapper: ScrapItemWrapper) => void;
   domElementRef: MutableRefObject<HTMLDivElement>;
   propsRenderStyle: EntryPropsRenderStyle;
+  actionsRenderStyle?: ActionsRenderStyle;
   journalName: string;
 }> = ({
   children,
@@ -62,6 +67,7 @@ export const ScrapContextProvider: React.FC<{
   addScrapWrapper,
   domElementRef,
   propsRenderStyle,
+  actionsRenderStyle,
   journalName,
 }) => {
   const { setAppAlert } = useAppContext();
@@ -191,6 +197,7 @@ export const ScrapContextProvider: React.FC<{
         upsertScrap,
         scrapToRender,
         propsRenderStyle,
+        actionsRenderStyle,
         journalName,
       };
     },
@@ -203,6 +210,7 @@ export const ScrapContextProvider: React.FC<{
       isDirty,
       scrapToRender,
       propsRenderStyle,
+      actionsRenderStyle,
       journalName,
     ],
   );

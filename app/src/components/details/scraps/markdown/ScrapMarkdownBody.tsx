@@ -7,9 +7,8 @@ import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { useScrapContext } from "../ScrapContext";
 
 export const ScrapMarkdownBody: React.FC<{
-  hideActions?: boolean;
   hasFocus?: boolean;
-}> = ({ hideActions, hasFocus }) => {
+}> = ({ hasFocus }) => {
   useEffect(() => preloadLazyCodeMirror(), []);
 
   const { setAppAlert } = useAppContext();
@@ -19,7 +18,6 @@ export const ScrapMarkdownBody: React.FC<{
 
   return (
     <ScrapBody
-      hideActions={hideActions}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
       enableHotkeys={hasFocus}
     >
@@ -28,7 +26,7 @@ export const ScrapMarkdownBody: React.FC<{
           "Alt-s": upsertScrap,
           "Alt-x": getCancelEditingFunction(),
         }}
-        onChange={(value) => setNotes(value)}
+        onChange={setNotes}
         isEditMode={isEditMode}
         value={notes}
       />

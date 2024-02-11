@@ -60,8 +60,8 @@ export const ScrapsMovePage: React.FC = () => {
 
       <Scrap
         scrap={entry}
-        hideActions={true}
         journalName={journal.name}
+        actionsRenderStyle={"none"}
         propsRenderStyle={"all"}
       />
     </Page>
