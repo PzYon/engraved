@@ -49,9 +49,7 @@ export const Scrap: React.FC<{
           onSuccess={onSuccess}
           hasFocus={hasFocus}
         >
-          <ScrapInner
-          //key={isEditMode.toString()}
-          />
+          <ScrapInner />
         </ScrapContextProvider>
       </Container>
     </Wrapper>
