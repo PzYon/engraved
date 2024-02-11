@@ -1,33 +1,54 @@
-import { KeyMappings, MarkdownEditor } from "./MarkdownEditor";
+import { MarkdownEditor, preloadLazyCodeMirror } from "./MarkdownEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
-import React from "react";
+import React, { useEffect } from "react";
 import { styled } from "@mui/material";
+import { ActionFactory } from "../../../common/actions/ActionFactory";
+import { ScrapBody } from "../ScrapBody";
+import { useAppContext } from "../../../../AppContext";
+import { useScrapContext } from "../ScrapContext";
 
-export const ScrapMarkdown: React.FC<{
-  isEditMode: boolean;
-  value: string;
-  onChange: (value: string) => void;
-  keyMappings?: KeyMappings;
-}> = ({ isEditMode, value, onChange, keyMappings }) => {
-  if (isEditMode) {
+export const ScrapMarkdown: React.FC = () => {
+  useEffect(() => preloadLazyCodeMirror(), []);
+
+  const { setAppAlert } = useAppContext();
+
+  const { notes, setNotes, isEditMode, getCancelEditingFunction, upsertScrap } =
+    useScrapContext();
+
+  return (
+    <ScrapBody
+      actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
+    >
+      {getSomething()}
+    </ScrapBody>
+  );
+
+  function getSomething() {
+    if (isEditMode) {
+      return (
+        <EditorContainer>
+          <MarkdownEditor
+            showOutlineWhenFocused={true}
+            value={notes ?? ""}
+            onChange={setNotes}
+            keyMappings={{
+              "Alt-s": upsertScrap,
+              "Alt-x": getCancelEditingFunction(),
+            }}
+          />
+        </EditorContainer>
+      );
+    }
+
     return (
-      <EditorContainer>
-        <MarkdownEditor
-          showOutlineWhenFocused={true}
-          value={value ?? ""}
-          onChange={onChange}
-          keyMappings={keyMappings}
-        />
-      </EditorContainer>
+      <FadeInContainer>
+        <Markdown value={notes} />
+      </FadeInContainer>
     );
   }
 
-  return (
-    <FadeInContainer>
-      <Markdown value={value} />
-    </FadeInContainer>
-  );
+  return getSomething();
 };
 
 const EditorContainer = styled("div")`

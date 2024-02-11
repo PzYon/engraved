@@ -1,10 +1,10 @@
 import React from "react";
 import { ScrapType } from "../../../serverApi/IScrapEntry";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
-import { ScrapListBody } from "./list/ScrapListBody";
-import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
 import { styled, Typography } from "@mui/material";
 import { useScrapContext } from "./ScrapContext";
+import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
+import { ScrapList } from "./list/ScrapList";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -42,9 +42,9 @@ export const ScrapInner: React.FC = () => {
       )}
 
       {scrapToRender.scrapType === ScrapType.List ? (
-        <ScrapListBody />
+        <ScrapList />
       ) : (
-        <ScrapMarkdownBody />
+        <ScrapMarkdown />
       )}
     </div>
   );

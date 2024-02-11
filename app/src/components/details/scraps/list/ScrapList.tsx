@@ -24,6 +24,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useScrapContext } from "../ScrapContext";
+import { ScrapBody } from "../ScrapBody";
 
 export const ScrapList: React.FC = () => {
   const { palette } = useTheme();
@@ -54,86 +55,88 @@ export const ScrapList: React.FC = () => {
   const sensors = useSensors(useSensor(TouchSensor), useSensor(PointerSensor));
 
   return (
-    <Host
-      key={isEditMode.toString()}
-      style={
-        isEditMode && !hasTitleFocus
-          ? { outline: "2px solid " + palette.primary.main }
-          : {}
-      }
-    >
-      <List>
-        {!isEditMode && !listItemCollection.items?.length ? (
-          <Typography sx={{ opacity: 0.4 }}>No items yet.</Typography>
-        ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={listItemCollection.items.map((item, index) => ({
-                ...item,
-                id: listItemCollection.getReactKey(index),
-              }))}
-              strategy={verticalListSortingStrategy}
+    <ScrapBody actions={[]}>
+      <BodyHost
+        key={isEditMode.toString()}
+        style={
+          isEditMode && !hasTitleFocus
+            ? { outline: "2px solid " + palette.primary.main }
+            : {}
+        }
+      >
+        <List>
+          {!isEditMode && !listItemCollection.items?.length ? (
+            <Typography sx={{ opacity: 0.4 }}>No items yet.</Typography>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
             >
-              {listItemCollection.items.map((item, index) => (
-                <ScrapListItem
-                  key={listItemCollection.getReactKey(index)}
-                  listItemsCollection={listItemCollection}
-                  index={index}
-                  listItem={item}
-                  isEditMode={isEditMode}
-                  onChange={(updatedItem) => {
-                    listItemCollection.updateItem(index, updatedItem);
+              <SortableContext
+                items={listItemCollection.items.map((item, index) => ({
+                  ...item,
+                  id: listItemCollection.getReactKey(index),
+                }))}
+                strategy={verticalListSortingStrategy}
+              >
+                {listItemCollection.items.map((item, index) => (
+                  <ScrapListItem
+                    key={listItemCollection.getReactKey(index)}
+                    listItemsCollection={listItemCollection}
+                    index={index}
+                    listItem={item}
+                    isEditMode={isEditMode}
+                    onChange={(updatedItem) => {
+                      listItemCollection.updateItem(index, updatedItem);
 
-                    if (!isEditMode) {
-                      upsertScrap(getItemsAsJson(listItemCollection.items));
-                    }
-                  }}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
-        )}
-      </List>
-      {isEditMode ? (
-        <ActionsContainer>
-          <ActionIconButtonGroup
-            actions={[
-              {
-                key: "add",
-                label: "Add new",
-                icon: <AddOutlined fontSize="small" />,
-                onClick: () =>
-                  listItemCollection.addItem(
-                    listItemCollection.items.length - 1,
-                  ),
-              },
-              {
-                key: "move-checked-to-bottom",
-                label: "Move checked to bottom",
-                icon: <MoveDownOutlined fontSize="small" />,
-                onClick: () => listItemCollection.moveCheckedToBottom(),
-              },
-              {
-                key: "toggle-checked",
-                label: "Toggle checked",
-                icon: <SyncAltOutlined fontSize="small" />,
-                onClick: () => listItemCollection.toggleAllChecked(),
-              },
-              {
-                key: "delete-checked",
-                label: "Delete checked",
-                icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => listItemCollection.deleteAllChecked(),
-              },
-            ]}
-          />
-        </ActionsContainer>
-      ) : null}
-    </Host>
+                      if (!isEditMode) {
+                        upsertScrap(getItemsAsJson(listItemCollection.items));
+                      }
+                    }}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          )}
+        </List>
+        {isEditMode ? (
+          <ActionsContainer>
+            <ActionIconButtonGroup
+              actions={[
+                {
+                  key: "add",
+                  label: "Add new",
+                  icon: <AddOutlined fontSize="small" />,
+                  onClick: () =>
+                    listItemCollection.addItem(
+                      listItemCollection.items.length - 1,
+                    ),
+                },
+                {
+                  key: "move-checked-to-bottom",
+                  label: "Move checked to bottom",
+                  icon: <MoveDownOutlined fontSize="small" />,
+                  onClick: () => listItemCollection.moveCheckedToBottom(),
+                },
+                {
+                  key: "toggle-checked",
+                  label: "Toggle checked",
+                  icon: <SyncAltOutlined fontSize="small" />,
+                  onClick: () => listItemCollection.toggleAllChecked(),
+                },
+                {
+                  key: "delete-checked",
+                  label: "Delete checked",
+                  icon: <RemoveCircleOutline fontSize="small" />,
+                  onClick: () => listItemCollection.deleteAllChecked(),
+                },
+              ]}
+            />
+          </ActionsContainer>
+        ) : null}
+      </BodyHost>
+    </ScrapBody>
   );
 
   function handleDragEnd(event: DragOverEvent) {
@@ -164,7 +167,7 @@ function getItemsAsJson(rawItems: ISCrapListItem[]) {
   return JSON.stringify(rawItems);
 }
 
-const Host = styled("div")`
+const BodyHost = styled("div")`
   border-radius: 4px;
 `;
 
