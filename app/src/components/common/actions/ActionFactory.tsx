@@ -281,6 +281,7 @@ export class ActionFactory {
       onClick: () => {
         if (!isDirty) {
           onCancel();
+          return;
         }
 
         renderDialog({

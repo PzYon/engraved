@@ -47,8 +47,6 @@ export const ScrapMarkdown: React.FC = () => {
       </FadeInContainer>
     );
   }
-
-  return getSomething();
 };
 
 const EditorContainer = styled("div")`
