@@ -11,19 +11,12 @@ export const ScrapMarkdownBody: React.FC = () => {
 
   const { setAppAlert } = useAppContext();
 
-  const {
-    notes,
-    setNotes,
-    isEditMode,
-    getCancelEditingFunction,
-    upsertScrap,
-    hasFocus,
-  } = useScrapContext();
+  const { notes, setNotes, isEditMode, getCancelEditingFunction, upsertScrap } =
+    useScrapContext();
 
   return (
     <ScrapBody
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
-      enableHotkeys={hasFocus}
     >
       <ScrapMarkdown
         keyMappings={{

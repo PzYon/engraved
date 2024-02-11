@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from "react";
+import React from "react";
 import { ScrapType } from "../../../serverApi/IScrapEntry";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { ScrapListBody } from "./list/ScrapListBody";
@@ -6,17 +6,18 @@ import { ScrapMarkdownBody } from "./markdown/ScrapMarkdownBody";
 import { styled, Typography } from "@mui/material";
 import { useScrapContext } from "./ScrapContext";
 
-export const ScrapInner: React.FC<{
-  style?: CSSProperties;
-}> = ({ style }) => {
-  const [hasTitleFocus, setHasTitleFocus] = useState(false);
-
-  const { isEditMode, setIsEditMode, title, setTitle, scrapToRender } =
-    useScrapContext();
+export const ScrapInner: React.FC = () => {
+  const {
+    isEditMode,
+    setIsEditMode,
+    title,
+    setTitle,
+    scrapToRender,
+    setHasTitleFocus,
+  } = useScrapContext();
 
   return (
     <div
-      style={style}
       onClick={(e) => {
         if (e.detail === 2) {
           setIsEditMode(true);
@@ -41,7 +42,7 @@ export const ScrapInner: React.FC<{
       )}
 
       {scrapToRender.scrapType === ScrapType.List ? (
-        <ScrapListBody hasTitleFocus={hasTitleFocus} />
+        <ScrapListBody />
       ) : (
         <ScrapMarkdownBody />
       )}

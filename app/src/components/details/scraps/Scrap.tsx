@@ -1,4 +1,4 @@
-import React, { CSSProperties, MutableRefObject, useRef } from "react";
+import React, { MutableRefObject, useRef } from "react";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
@@ -13,7 +13,6 @@ export const Scrap: React.FC<{
   journalName: string;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
-  style?: CSSProperties;
   addScrapWrapper?: (scrapWrapper: ScrapItemWrapper) => void;
   index?: number;
   withoutSection?: boolean;
@@ -25,7 +24,6 @@ export const Scrap: React.FC<{
   journalName,
   propsRenderStyle,
   actionsRenderStyle,
-  style,
   addScrapWrapper,
   index,
   withoutSection,
@@ -52,8 +50,7 @@ export const Scrap: React.FC<{
           hasFocus={hasFocus}
         >
           <ScrapInner
-            //key={isEditMode.toString()}
-            style={style}
+          //key={isEditMode.toString()}
           />
         </ScrapContextProvider>
       </Container>

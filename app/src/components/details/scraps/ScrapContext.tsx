@@ -33,6 +33,8 @@ export interface IScrapContext {
   journalName: string;
   onSuccess?: () => void;
   hasFocus: boolean;
+  hasTitleFocus: boolean;
+  setHasTitleFocus: (value: boolean) => void;
 }
 
 const ScrapContext = createContext<IScrapContext>({
@@ -51,6 +53,8 @@ const ScrapContext = createContext<IScrapContext>({
   journalName: null,
   onSuccess: null,
   hasFocus: null,
+  hasTitleFocus: null,
+  setHasTitleFocus: null,
 });
 
 export const useScrapContext = () => {
@@ -84,6 +88,7 @@ export const ScrapContextProvider: React.FC<{
   const [title, setTitle] = useState<string>(currentScrap.title);
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
+  const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   const initialScrap = useMemo(() => {
     return currentScrap;
@@ -209,6 +214,8 @@ export const ScrapContextProvider: React.FC<{
         journalName,
         onSuccess,
         hasFocus,
+        hasTitleFocus,
+        setHasTitleFocus,
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,6 +230,7 @@ export const ScrapContextProvider: React.FC<{
       actionsRenderStyle,
       journalName,
       hasFocus,
+      hasTitleFocus,
     ],
   );
 

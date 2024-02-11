@@ -25,13 +25,17 @@ import {
 } from "@dnd-kit/sortable";
 import { useScrapContext } from "../ScrapContext";
 
-export const ScrapList: React.FC<{
-  hasTitleFocus: boolean;
-}> = ({ hasTitleFocus }) => {
+export const ScrapList: React.FC = () => {
   const { palette } = useTheme();
 
-  const { notes, setNotes, isEditMode, upsertScrap, scrapToRender } =
-    useScrapContext();
+  const {
+    notes,
+    setNotes,
+    isEditMode,
+    upsertScrap,
+    scrapToRender,
+    hasTitleFocus,
+  } = useScrapContext();
 
   const listItemCollection = useMemo(() => {
     const items: ISCrapListItem[] = notes ? JSON.parse(notes) : [];

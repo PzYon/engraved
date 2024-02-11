@@ -9,8 +9,7 @@ import { useScrapContext } from "./ScrapContext";
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
-  enableHotkeys?: boolean;
-}> = ({ children, actions, enableHotkeys }) => {
+}> = ({ children, actions }) => {
   const { renderDialog } = useDialogContext();
   const {
     isEditMode,
@@ -22,6 +21,7 @@ export const ScrapBody: React.FC<{
     propsRenderStyle,
     actionsRenderStyle,
     journalName,
+    hasFocus: enableHotkeys,
   } = useScrapContext();
 
   return (
