@@ -33,7 +33,7 @@ export const AddEntryTableCell: React.FC<{
   };
 
   switch (fieldType) {
-    case "date":
+    case "date": {
       return (
         <DateSelector
           hasFocus={hasFocus}
@@ -41,8 +41,10 @@ export const AddEntryTableCell: React.FC<{
           setDate={updateCommandWrapped}
         />
       );
+    }
 
-    case "attributes":
+    case "attributes": {
+      const journalAttributeValues = command.journalAttributeValues ?? {};
       return (
         <>
           <AttributeComboSearch
@@ -55,8 +57,9 @@ export const AddEntryTableCell: React.FC<{
             }}
           />
           <JournalAttributesSelector
+            key={JSON.stringify(journalAttributeValues)}
             attributes={journal.attributes}
-            selectedAttributeValues={command.journalAttributeValues ?? {}}
+            selectedAttributeValues={journalAttributeValues}
             onChange={(value: any) => {
               updateCommand({
                 ...command,
@@ -66,8 +69,9 @@ export const AddEntryTableCell: React.FC<{
           />
         </>
       );
+    }
 
-    case "number":
+    case "number": {
       return (
         <TextField
           value={currentValue}
@@ -78,8 +82,9 @@ export const AddEntryTableCell: React.FC<{
           sx={{ marginBottom: "0" }}
         />
       );
+    }
 
-    default:
+    default: {
       return (
         <TextField
           value={currentValue}
@@ -89,5 +94,6 @@ export const AddEntryTableCell: React.FC<{
           sx={{ marginBottom: "0" }}
         />
       );
+    }
   }
 };
