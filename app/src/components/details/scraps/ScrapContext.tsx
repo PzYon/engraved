@@ -63,14 +63,14 @@ export const useScrapContext = () => {
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
-  currentScrap: IScrapEntry;
-  addScrapWrapper?: (scrapWrapper: ScrapItemWrapper) => void;
   domElementRef: MutableRefObject<HTMLDivElement>;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
   journalName: string;
-  onSuccess?: () => void;
   hasFocus: boolean;
+  currentScrap: IScrapEntry;
+  onSuccess?: () => void;
+  addScrapWrapper?: (scrapWrapper: ScrapItemWrapper) => void;
 }> = ({
   children,
   currentScrap,
@@ -90,10 +90,8 @@ export const ScrapContextProvider: React.FC<{
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
-  const initialScrap = useMemo(() => {
-    return currentScrap;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const initialScrap = useMemo(() => currentScrap, []);
 
   const isDirty = useMemo(
     () => initialScrap.notes !== notes || initialScrap.title !== title,
@@ -108,11 +106,7 @@ export const ScrapContextProvider: React.FC<{
   );
 
   useEffect(() => {
-    if (!addScrapWrapper) {
-      return;
-    }
-
-    addScrapWrapper(
+    addScrapWrapper?.(
       new ScrapItemWrapper(
         domElementRef,
         currentScrap,
