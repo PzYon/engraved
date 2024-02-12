@@ -51,11 +51,7 @@ export const ScrapBody: React.FC<{
       : ActionFactory.editScrap(() => setIsEditMode(true), enableHotkeys);
 
     if (actionsRenderStyle === "save-only") {
-      if (saveAction) {
-        return [saveAction];
-      } else {
-        return [];
-      }
+      return saveAction ? [saveAction] : [];
     }
 
     const allActions = [
