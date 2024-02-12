@@ -15,7 +15,7 @@ export class AddQuickScrapDialog {
   async clickSave() {
     await this.page
       .getByRole("dialog")
-      .getByRole("button", { name: "Add" })
+      .getByRole("button", { name: "Save" })
       .click();
     await expect(this.page.getByText("Added entry")).toBeVisible();
   }

@@ -23,6 +23,13 @@ export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
 
   const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
+  const [focusIndex, setFocusIndex] = useState(-1);
+
+  const collection = useMemo(
+    () => new ScrapWrapperCollection(focusIndex, setFocusIndex),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [scraps],
+  );
 
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
@@ -32,14 +39,6 @@ export const ScrapsViewPage: React.FC = () => {
   useEffect(() => {
     setNewScrap(null);
   }, [scraps]);
-
-  const [focusIndex, setFocusIndex] = useState(-1);
-
-  const collection = useMemo(
-    () => new ScrapWrapperCollection(focusIndex, setFocusIndex),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [scraps],
-  );
 
   // alt+s (save) is handled by code mirror resp. list
 
