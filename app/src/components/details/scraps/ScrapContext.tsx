@@ -241,6 +241,8 @@ export const ScrapContextProvider: React.FC<{
       return;
     }
 
+    onSuccess?.();
+
     await upsertEntryMutation.mutateAsync({
       command: {
         id: currentScrap?.id,
@@ -252,8 +254,6 @@ export const ScrapContextProvider: React.FC<{
         dateTime: new Date(),
       } as IUpsertScrapsEntryCommand,
     });
-
-    onSuccess?.();
   }
 
   return (
