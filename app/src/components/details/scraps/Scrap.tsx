@@ -13,7 +13,7 @@ export const Scrap: React.FC<{
   journalName: string;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
-  addScrapWrapper?: (scrapWrapper: ScrapItemWrapper) => void;
+  addWrapperItem?: (item: ScrapItemWrapper) => void;
   index?: number;
   withoutSection?: boolean;
   onClick?: () => void;
@@ -24,7 +24,7 @@ export const Scrap: React.FC<{
   journalName,
   propsRenderStyle,
   actionsRenderStyle,
-  addScrapWrapper,
+  addWrapperItem,
   index,
   withoutSection,
   onClick,
@@ -41,7 +41,7 @@ export const Scrap: React.FC<{
       <Container>
         <ScrapContextProvider
           currentScrap={currentScrap}
-          addScrapWrapper={addScrapWrapper}
+          addScrapWrapper={addWrapperItem}
           domElementRef={domElementRef}
           propsRenderStyle={propsRenderStyle}
           actionsRenderStyle={actionsRenderStyle}

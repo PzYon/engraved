@@ -16,10 +16,10 @@ import { ListItemFooterRow } from "./ListItemFooterRow";
 export const JournalListItem: React.FC<{
   journal: IJournal;
   index: number;
-  addWrapper?: (scrapWrapper: JournalItemWrapper) => void;
+  addWrapperItem?: (item: JournalItemWrapper) => void;
   onClick?: () => void;
   isFocused?: boolean;
-}> = ({ journal, addWrapper, index, onClick, isFocused }) => {
+}> = ({ journal, addWrapperItem, index, onClick, isFocused }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const { renderDialog } = useDialogContext();
@@ -27,12 +27,8 @@ export const JournalListItem: React.FC<{
   const journalProperties = useJournalProperties(journal);
 
   useEffect(() => {
-    if (!addWrapper) {
-      return;
-    }
-
-    addWrapper(new JournalItemWrapper(domElementRef, journal));
-  }, [addWrapper, journal]);
+    addWrapperItem?.(new JournalItemWrapper(domElementRef, journal));
+  }, [addWrapperItem, journal]);
 
   return (
     <Wrapper

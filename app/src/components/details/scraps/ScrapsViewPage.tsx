@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Scrap } from "./Scrap";
 import {
   CheckBoxOutlined,
@@ -14,20 +14,19 @@ import { Route, Routes } from "react-router-dom";
 import { DeleteEntryLauncher } from "../edit/DeleteEntryLauncher";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
-import { useHotkeys } from "react-hotkeys-hook";
-import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 import { IAction } from "../../common/actions/IAction";
 import { EditScheduleLauncher } from "../edit/EditScheduleLauncher";
+import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
+import { useCollection } from "../../common/wrappers/useCollection";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
 
   const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
-  const [focusIndex, setFocusIndex] = useState(-1);
 
-  const collection = useMemo(
-    () => new ScrapWrapperCollection(focusIndex, setFocusIndex),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const { collection, keyToken, focusIndex, addItem } = useCollection(
+    (focusIndex, setFocusIndex) =>
+      new ScrapWrapperCollection(focusIndex, setFocusIndex),
     [scraps],
   );
 
@@ -41,14 +40,6 @@ export const ScrapsViewPage: React.FC = () => {
   }, [scraps]);
 
   // alt+s (save) is handled by code mirror resp. list
-
-  useHotkeys("alt+up", () => {
-    collection.moveFocusUp();
-  });
-
-  useHotkeys("alt+down", () => {
-    collection.moveFocusDown();
-  });
 
   if (!journal) {
     return;
@@ -79,15 +70,13 @@ export const ScrapsViewPage: React.FC = () => {
       {scraps.length
         ? (scraps as IScrapEntry[]).map((scrap, i) => (
             <Scrap
-              key={scrap.id}
+              index={i}
+              key={scrap.id + keyToken}
+              addWrapperItem={addItem}
               onClick={() => collection.setFocus(i)}
-              addScrapWrapper={(scrapWrapper) =>
-                collection.add(scrap.id, scrapWrapper)
-              }
               journalName={journal.name}
               propsRenderStyle={"generic"}
               scrap={scrap}
-              index={i}
               hasFocus={i === focusIndex}
             />
           ))
