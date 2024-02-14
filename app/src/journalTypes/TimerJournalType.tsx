@@ -2,7 +2,7 @@ import { JournalType } from "../serverApi/JournalType";
 import { TimerSharp } from "@mui/icons-material";
 import { IJournalType } from "./IJournalType";
 import { ITimerEntry } from "../serverApi/ITimerEntry";
-import { DateFormat, FormatDate } from "../components/common/FormatDate";
+import { DateFormat } from "../components/common/dateTypes";
 import { IEntry } from "../serverApi/IEntry";
 import { differenceInSeconds } from "date-fns";
 import { IEntriesTableColumnDefinition } from "../components/details/entriesTable/IEntriesTableColumnDefinition";
@@ -13,6 +13,7 @@ import { IJournal } from "../serverApi/IJournal";
 import React from "react";
 import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { Typography } from "@mui/material";
+import { FormatDate } from "../components/common/FormatDate";
 
 export class TimerJournalType implements IJournalType {
   type = JournalType.Timer;

@@ -3,7 +3,6 @@ import { IJournal } from "../../serverApi/IJournal";
 import { Box, styled, Typography } from "@mui/material";
 import { useJournalProperties } from "./useJournalProperties";
 import { JournalTypeIcon } from "../common/JournalTypeIcon";
-import { IconStyle } from "../common/Icon";
 import { PageSection } from "../layout/pages/PageSection";
 import { JournalItemWrapper } from "./JournalItemWrapper";
 import { Wrapper } from "../common/wrappers/Wrapper";
@@ -12,6 +11,7 @@ import { ActionFactory } from "../common/actions/ActionFactory";
 import { getCommonActions } from "./getCommonActions";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { ListItemFooterRow } from "./ListItemFooterRow";
+import { IconStyle } from "../common/IconStyle";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;

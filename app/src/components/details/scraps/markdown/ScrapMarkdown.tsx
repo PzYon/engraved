@@ -1,7 +1,7 @@
-import { MarkdownEditor, preloadLazyCodeMirror } from "./MarkdownEditor";
+import { MarkdownEditor } from "./MarkdownEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
-import React, { useEffect } from "react";
+import React from "react";
 import { styled } from "@mui/material";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
@@ -9,8 +9,6 @@ import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
 
 export const ScrapMarkdown: React.FC = () => {
-  useEffect(() => preloadLazyCodeMirror(), []);
-
   const { setAppAlert } = useAppContext();
 
   const { notes, setNotes, isEditMode, getCancelEditingFunction, upsertScrap } =

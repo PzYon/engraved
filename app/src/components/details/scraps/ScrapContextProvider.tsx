@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  MutableRefObject,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { MutableRefObject, useEffect, useMemo, useState } from "react";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { Button } from "@mui/material";
@@ -14,52 +7,11 @@ import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/
 import { JournalType } from "../../../serverApi/JournalType";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
-
-export type ActionsRenderStyle = "save-only" | "none" | "all";
-
-export interface IScrapContext {
-  title: string;
-  setTitle: (title: string) => void;
-  notes: string;
-  setNotes: (notes: string) => void;
-  isEditMode: boolean;
-  setIsEditMode: (isEditMode: boolean) => void;
-  isDirty: boolean;
-  getCancelEditingFunction: () => () => void;
-  upsertScrap: (notesToOverride?: string) => Promise<void>;
-  scrapToRender: IScrapEntry;
-  propsRenderStyle: EntryPropsRenderStyle;
-  actionsRenderStyle?: ActionsRenderStyle;
-  journalName: string;
-  onSuccess?: () => void;
-  hasFocus: boolean;
-  hasTitleFocus: boolean;
-  setHasTitleFocus: (value: boolean) => void;
-}
-
-const ScrapContext = createContext<IScrapContext>({
-  title: null,
-  setTitle: null,
-  notes: null,
-  setNotes: null,
-  isEditMode: null,
-  setIsEditMode: null,
-  isDirty: null,
-  getCancelEditingFunction: null,
-  upsertScrap: null,
-  scrapToRender: null,
-  propsRenderStyle: null,
-  actionsRenderStyle: null,
-  journalName: null,
-  onSuccess: null,
-  hasFocus: null,
-  hasTitleFocus: null,
-  setHasTitleFocus: null,
-});
-
-export const useScrapContext = () => {
-  return useContext(ScrapContext);
-};
+import {
+  ActionsRenderStyle,
+  IScrapContext,
+  ScrapContext,
+} from "./ScrapContext";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;

@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router";
-import { JournalContextProvider } from "./JournalDetailsContext";
 import { JournalDetails } from "./JournalDetails";
+import { JournalContextProvider } from "./JournalContextProvider";
 
 export const JournalPageWrapper: React.FC = () => {
   const { journalId } = useParams();

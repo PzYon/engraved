@@ -5,7 +5,7 @@ import {
   FormatAlignLeftOutlined,
   SelfImprovementOutlined,
 } from "@mui/icons-material";
-import { useJournalContext } from "../JournalDetailsContext";
+import { useJournalContext } from "../JournalContext";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonActions } from "../../overview/getCommonActions";
 import { Page } from "../../layout/pages/Page";

@@ -2,7 +2,7 @@ import { useAppContext } from "../../../AppContext";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { IDateConditions } from "../../../components/details/JournalDetailsContext";
+import { IDateConditions } from "../../../components/details/JournalContext";
 import { useEffect } from "react";
 
 export const useJournalEntriesQuery = (

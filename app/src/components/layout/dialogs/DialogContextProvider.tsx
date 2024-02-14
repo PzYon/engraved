@@ -1,25 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
-import { DialogWrapper } from "./DialogWrapper";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
-
-export interface IDialogProps {
-  render: (closeDialog: () => void) => React.ReactNode;
-  title: string;
-  isFullScreen?: boolean;
-  onClose?: () => void;
-}
-
-export interface IDialogContext {
-  renderDialog(dialogProps: IDialogProps): void;
-}
-
-const DialogContext = createContext<IDialogContext>({
-  renderDialog: null,
-});
-
-export const useDialogContext = () => {
-  return useContext(DialogContext);
-};
+import { DialogWrapper } from "./DialogWrapper";
+import { DialogContext, IDialogProps } from "./DialogContext";
+import React, { useState } from "react";
 
 export const DialogContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

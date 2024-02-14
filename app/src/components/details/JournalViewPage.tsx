@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { useJournalContext } from "./JournalDetailsContext";
+import { useJournalContext } from "./JournalContext";
 import { LocalHotelOutlined } from "@mui/icons-material";
 import { getCommonActions } from "../overview/getCommonActions";
 import { PageSection } from "../layout/pages/PageSection";
@@ -14,7 +14,6 @@ import { DeleteEntryLauncher } from "./edit/DeleteEntryLauncher";
 import { Page } from "../layout/pages/Page";
 import { JournalPageTitle } from "./JournalPageTitle";
 import { createDateConditions } from "./filters/createDateConditions";
-import { getDefaultDateConditions } from "./filters/DateFilters";
 import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
 import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
@@ -25,6 +24,7 @@ import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { Chart } from "./chart/Chart";
 import { IJournalUiSettings } from "./edit/IJournalUiSettings";
 import { getUiSettings } from "../../util/journalUtils";
+import { getDefaultDateConditions } from "./filters/getDefaultDateConditions";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();

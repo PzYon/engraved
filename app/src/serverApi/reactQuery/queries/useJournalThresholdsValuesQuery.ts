@@ -1,4 +1,4 @@
-import { useJournalContext } from "../../../components/details/JournalDetailsContext";
+import { useJournalContext } from "../../../components/details/JournalContext";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";

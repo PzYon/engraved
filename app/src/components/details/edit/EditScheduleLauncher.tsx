@@ -3,7 +3,7 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect } from "react";
 import { EditSchedule } from "./EditSchedule";
-import { useJournalContext } from "../JournalDetailsContext";
+import { useJournalContext } from "../JournalContext";
 
 export const EditScheduleLauncher: React.FC<{
   journal: IJournal;

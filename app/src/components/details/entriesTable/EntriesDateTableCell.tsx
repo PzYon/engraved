@@ -1,6 +1,7 @@
 import React from "react";
-import { DateFormat, FormatDate } from "../../common/FormatDate";
+import { DateFormat } from "../../common/dateTypes";
 import { Typography } from "@mui/material";
+import { FormatDate } from "../../common/FormatDate";
 
 export const EntriesDateTableCell: React.FC<{ date: Date | string }> = ({
   date,

@@ -1,7 +1,8 @@
 import React from "react";
 import { JournalType } from "../../serverApi/JournalType";
 import { JournalTypeFactory } from "../../journalTypes/JournalTypeFactory";
-import { Icon, IconStyle } from "./Icon";
+import { Icon } from "./Icon";
+import { IconStyle } from "./IconStyle";
 
 export const JournalTypeIcon: React.FC<{
   type: JournalType;

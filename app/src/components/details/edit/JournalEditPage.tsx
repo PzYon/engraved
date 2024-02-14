@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { JournalAttributesEditor } from "./JournalAttributesEditor";
 import { EditThresholds } from "../thresholds/EditThresholds";
 import { PageSection } from "../../layout/pages/PageSection";
-import { useJournalContext } from "../JournalDetailsContext";
+import { useJournalContext } from "../JournalContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
 import { getCommonEditModeActions } from "../../overview/getCommonActions";
