@@ -1,13 +1,13 @@
 import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
-import { FormatDate } from "../FormatDate";
 import { JournalTypeIcon } from "../JournalTypeIcon";
-import { IconStyle } from "../Icon";
 import { Link } from "react-router-dom";
 import { getScheduleProperty } from "../../scheduled/scheduleUtils";
 import { IAction } from "../actions/IAction";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ListItemFooterRow } from "../../overview/ListItemFooterRow";
+import { IconStyle } from "../IconStyle";
+import { FormatDate } from "../FormatDate";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 

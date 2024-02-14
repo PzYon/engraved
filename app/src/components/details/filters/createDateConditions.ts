@@ -1,4 +1,4 @@
-import { IDateConditions } from "../JournalDetailsContext";
+import { IDateConditions } from "../JournalContext";
 import {
   addDays,
   differenceInDays,

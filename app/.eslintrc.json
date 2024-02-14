@@ -24,6 +24,7 @@
   "plugins": [
     "react",
     "react-hooks",
+    "react-refresh",
     "prettier",
     "@typescript-eslint",
     "@tanstack/eslint-plugin-query"
@@ -31,6 +32,7 @@
   "rules": {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
+    "react-refresh/only-export-components": "warn",
     "prettier/prettier": [
       "error",
       {

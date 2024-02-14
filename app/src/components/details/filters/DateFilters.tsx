@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DateSelector } from "../../common/DateSelector";
-import { useJournalContext } from "../JournalDetailsContext";
+import { useJournalContext } from "../JournalContext";
 import { styled } from "@mui/material";
 import {
   createDateConditions,
@@ -11,10 +11,6 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { DateRangeSelector } from "./DateRangeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { DateRange } from "./DateRange";
-
-export const getDefaultDateConditions = () => {
-  return createDateConditions(journalDefaultUiSettings.dateRange, new Date());
-};
 
 export const DateFilters: React.FC = () => {
   const { dateConditions, setDateConditions } = useJournalContext();

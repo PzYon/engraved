@@ -1,11 +1,11 @@
 import { IJournal } from "../../serverApi/IJournal";
-import { FormatDate } from "../common/FormatDate";
 import { Users } from "../common/Users";
 import { Favorite } from "./Favorite";
 import { useJournalPermissions } from "./useJournalPermissions";
 import { UserRole } from "../../serverApi/UserRole";
 import { getScheduleProperty } from "../scheduled/scheduleUtils";
 import { IPropertyDefinition } from "../common/IPropertyDefinition";
+import { FormatDate } from "../common/FormatDate";
 
 export const useJournalProperties = (
   journal: IJournal,

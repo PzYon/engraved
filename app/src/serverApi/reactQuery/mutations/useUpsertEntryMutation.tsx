@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { usePageContext } from "../../../components/layout/pages/PageContext";
 import { styled } from "@mui/material";
 
-export interface IUpsertEntryCommandVariables {
+interface IUpsertEntryCommandVariables {
   command: IUpsertEntryCommand;
 }
 

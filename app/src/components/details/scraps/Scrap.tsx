@@ -6,7 +6,8 @@ import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
 import { Wrapper } from "../../common/wrappers/Wrapper";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
-import { ActionsRenderStyle, ScrapContextProvider } from "./ScrapContext";
+import { ActionsRenderStyle } from "./ScrapContext";
+import { ScrapContextProvider } from "./ScrapContextProvider";
 
 export const Scrap: React.FC<{
   scrap: IScrapEntry;

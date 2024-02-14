@@ -1,6 +1,7 @@
 import { IPropertyDefinition } from "../common/IPropertyDefinition";
-import { DateFormat, FormatDate } from "../common/FormatDate";
+import { DateFormat } from "../common/dateTypes";
 import { isBefore, isSameDay } from "date-fns";
+import { FormatDate } from "../common/FormatDate";
 
 export function getScheduleProperty(
   nextOccurrence?: string,

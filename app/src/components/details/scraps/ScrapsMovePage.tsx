@@ -8,7 +8,7 @@ import { usePageContext } from "../../layout/pages/PageContext";
 import { PageSection } from "../../layout/pages/PageSection";
 import { PageFormButtonContainer } from "../../common/FormButtonContainer";
 import { Scrap } from "./Scrap";
-import { useJournalContext } from "../JournalDetailsContext";
+import { useJournalContext } from "../JournalContext";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { JournalSelector } from "../../common/JournalSelector";
 

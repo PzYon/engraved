@@ -1,5 +1,5 @@
 import React from "react";
-import { useJournalContext } from "./JournalDetailsContext";
+import { useJournalContext } from "./JournalContext";
 import { JournalType } from "../../serverApi/JournalType";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { EditJournalPermissionsLauncher } from "./edit/EditJournalPermissionsLauncher";

@@ -15,7 +15,7 @@ import { ApiError } from "./ApiError";
 import { IUpdatePermissions } from "./IUpdatePermissions";
 import { IJournalAttributeValues } from "./IJournalAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
-import { IDateConditions } from "../components/details/JournalDetailsContext";
+import { IDateConditions } from "../components/details/JournalContext";
 import { toDateOnlyIsoString } from "../util/utils";
 import { IThresholdValues } from "./IThresholdValues";
 import { IJournalThresholds } from "./IJournalThresholds";

@@ -1,43 +1,7 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
-import { IEntry } from "../../serverApi/IEntry";
-import { IJournal } from "../../serverApi/IJournal";
 import { useJournalQuery } from "../../serverApi/reactQuery/queries/useJournalQuery";
 import { useJournalEntriesQuery } from "../../serverApi/reactQuery/queries/useJournalEntriesQuery";
-
-export interface IDateConditions {
-  from?: Date;
-  to?: Date;
-}
-
-export interface IJournalContext {
-  journal: IJournal;
-  entries: IEntry[];
-  toggleAttributeValue: (
-    attributeKey: string,
-    attributeValueKey: string,
-  ) => void;
-  setSelectedAttributeValues: (
-    attributeKey: string,
-    attributeValueKeys: string[],
-  ) => void;
-  selectedAttributeValues: Record<string, string[]>;
-  setDateConditions: (conditions: IDateConditions) => void;
-  dateConditions: IDateConditions;
-}
-
-const JournalContext = createContext<IJournalContext>({
-  journal: null,
-  entries: [],
-  toggleAttributeValue: null,
-  setSelectedAttributeValues: null,
-  selectedAttributeValues: {},
-  setDateConditions: null,
-  dateConditions: {},
-});
-
-export const useJournalContext = () => {
-  return useContext(JournalContext);
-};
+import { IDateConditions, JournalContext } from "./JournalContext";
+import React, { useState, useMemo } from "react";
 
 export const JournalContextProvider: React.FC<{
   children: React.ReactNode;

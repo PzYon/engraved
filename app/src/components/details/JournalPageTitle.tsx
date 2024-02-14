@@ -1,8 +1,8 @@
 import React from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { PageTitle } from "../layout/pages/PageTitle";
-import { IconStyle } from "../common/Icon";
 import { JournalTypeIcon } from "../common/JournalTypeIcon";
+import { IconStyle } from "../common/IconStyle";
 
 export const JournalPageTitle: React.FC<{ journal: IJournal }> = ({
   journal,

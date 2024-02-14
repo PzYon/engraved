@@ -1,10 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material";
-
-export enum IconStyle {
-  PageTitle,
-  Overview,
-}
+import { IconStyle } from "./IconStyle";
 
 export const Icon: React.FC<{
   children: React.ReactNode;

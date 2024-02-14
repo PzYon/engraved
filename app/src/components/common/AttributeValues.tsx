@@ -3,7 +3,7 @@ import React from "react";
 import { IJournalAttributes } from "../../serverApi/IJournalAttributes";
 import { Chip, lighten, useTheme } from "@mui/material";
 import { getCoefficient } from "../../util/utils";
-import { useJournalContext } from "../details/JournalDetailsContext";
+import { useJournalContext } from "../details/JournalContext";
 
 export const AttributeValues: React.FC<{
   attributes: IJournalAttributes;

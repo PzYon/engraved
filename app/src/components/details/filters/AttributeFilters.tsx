@@ -6,7 +6,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
-import { useJournalContext } from "../JournalDetailsContext";
+import { useJournalContext } from "../JournalContext";
 
 const noElementsValue = "-";
 

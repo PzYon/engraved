@@ -13,15 +13,6 @@ export interface ICodeMirrorProps {
   keyMappings?: KeyMappings;
 }
 
-let isPreloaded = false;
-
-export const preloadLazyCodeMirror = () => {
-  if (isPreloaded) {
-    return;
-  }
-  import("./LazyCodeMirror").then(() => (isPreloaded = true));
-};
-
 const LazyCodeMirror = React.lazy(() => import("./LazyCodeMirror"));
 
 export const MarkdownEditor: React.FC<ICodeMirrorProps> = (props) => {

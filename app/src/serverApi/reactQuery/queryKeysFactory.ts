@@ -1,4 +1,4 @@
-import { IDateConditions } from "../../components/details/JournalDetailsContext";
+import { IDateConditions } from "../../components/details/JournalContext";
 import { JournalType } from "../JournalType";
 
 const journals = "journals";

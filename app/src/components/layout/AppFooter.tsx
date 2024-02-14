@@ -2,12 +2,12 @@ import { styled, SxProps, Typography } from "@mui/material";
 import { AppContent } from "./AppContent";
 import { useApiSystemInfoQuery } from "../../serverApi/reactQuery/queries/useApiSystemInfoQuery";
 import { ISystemInfo } from "../../serverApi/ISystemInfo";
-import { FormatDate } from "../common/FormatDate";
 import { envSettings } from "../../env/envSettings";
 import { GitHub } from "@mui/icons-material";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
 import React, { useEffect, useState } from "react";
 import { FadeInContainer } from "../common/FadeInContainer";
+import { FormatDate } from "../common/FormatDate";
 
 export const AppFooter: React.FC = () => {
   const apiSystemInfo = useApiSystemInfoQuery();

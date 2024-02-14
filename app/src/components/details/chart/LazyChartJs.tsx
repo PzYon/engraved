@@ -23,7 +23,7 @@ import annotationPlugin from "chartjs-plugin-annotation";
 import { createChart } from "./createChart";
 import { IChartProps } from "./IChartProps";
 import { useTheme } from "@mui/material";
-import { useJournalContext } from "../JournalDetailsContext";
+import { useJournalContext } from "../JournalContext";
 
 ChartJS.register(
   ArcElement,
