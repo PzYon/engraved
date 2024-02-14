@@ -107,12 +107,7 @@ export const ScrapContextProvider: React.FC<{
 
   useEffect(() => {
     addScrapWrapper?.(
-      new ScrapItemWrapper(
-        domElementRef,
-        currentScrap,
-        () => setIsEditMode(!isEditMode),
-        upsertScrap,
-      ),
+      new ScrapItemWrapper(domElementRef, currentScrap, upsertScrap),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addScrapWrapper, isDirty, isEditMode, currentScrap]);
