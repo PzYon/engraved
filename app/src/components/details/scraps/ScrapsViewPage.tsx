@@ -27,6 +27,7 @@ export const ScrapsViewPage: React.FC = () => {
   const { collection, focusIndex, addItem } = useCollection(
     (focusIndex, setFocusIndex) =>
       new ScrapWrapperCollection(focusIndex, setFocusIndex),
+    [scraps],
   );
 
   useEffect(() => {

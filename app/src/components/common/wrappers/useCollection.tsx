@@ -11,10 +11,11 @@ export function useCollection<
     focusIndex: number,
     setFocusIndex: (value: number) => void,
   ) => TCollection,
+  deps: unknown[],
 ) {
   const [focusIndex, setFocusIndex] = useState(-1);
 
-  const collection = useMemo(() => create(focusIndex, setFocusIndex), []);
+  const collection = useMemo(() => create(focusIndex, setFocusIndex), deps);
 
   useHotkeys("alt+up", () => {
     collection.moveFocusUp();
@@ -23,8 +24,6 @@ export function useCollection<
   useHotkeys("alt+down", () => {
     collection.moveFocusDown();
   });
-
-  console.log("collection ", collection.getItemCount());
 
   return {
     collection,

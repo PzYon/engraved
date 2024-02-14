@@ -15,6 +15,7 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
   const { collection, addItem } = useCollection(
     (focusIndex, setFocusIndex) =>
       new JournalWrapperCollection(focusIndex, setFocusIndex),
+    [journals],
   );
 
   if (!journals) {

@@ -115,7 +115,7 @@ export const ScrapContextProvider: React.FC<{
       ),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDirty, isEditMode, currentScrap]);
+  }, [addScrapWrapper, isDirty, isEditMode, currentScrap]);
 
   useEffect(() => {
     if (
