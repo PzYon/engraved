@@ -15,6 +15,7 @@ export function useCollection<
 ) {
   const [focusIndex, setFocusIndex] = useState(-1);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const collection = useMemo(() => create(focusIndex, setFocusIndex), deps);
 
   useHotkeys("alt+up", () => {
