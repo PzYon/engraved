@@ -3,18 +3,26 @@ import React, { useMemo } from "react";
 import { styled } from "@mui/material";
 import { IMarkdownProps } from "./Markdown";
 
+const md = MarkdownIt("default", { linkify: true, breaks: true });
+
+// https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
+const defaultRender =
+  md.renderer.rules.link_open ||
+  function (tokens, idx, options, _, self) {
+    return self.renderToken(tokens, idx, options);
+  };
+
+md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+  tokens[idx].attrSet("target", "_blank");
+  return defaultRender(tokens, idx, options, env, self);
+};
+
 const LazyMarkdown: React.FC<IMarkdownProps> = ({
   value,
   onClick,
   useBasic,
 }) => {
-  const html = useMemo<string>(() => {
-    if (!value) {
-      return "";
-    }
-
-    return MarkdownIt("default", { linkify: true, breaks: true }).render(value);
-  }, [value]);
+  const html = useMemo<string>(() => (value ? md.render(value) : ""), [value]);
 
   const El = useBasic ? BasicContentContainer : ContentContainer;
 
