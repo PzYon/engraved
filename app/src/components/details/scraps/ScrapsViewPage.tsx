@@ -24,10 +24,9 @@ export const ScrapsViewPage: React.FC = () => {
 
   const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
 
-  const { collection, keyToken, focusIndex, addItem } = useCollection(
+  const { collection, focusIndex, addItem } = useCollection(
     (focusIndex, setFocusIndex) =>
       new ScrapWrapperCollection(focusIndex, setFocusIndex),
-    [scraps],
   );
 
   useEffect(() => {
@@ -71,7 +70,7 @@ export const ScrapsViewPage: React.FC = () => {
         ? (scraps as IScrapEntry[]).map((scrap, i) => (
             <Scrap
               index={i}
-              key={scrap.id + keyToken}
+              key={scrap.id}
               addWrapperItem={addItem}
               onClick={() => collection.setFocus(i)}
               journalName={journal.name}

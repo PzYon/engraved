@@ -11,17 +11,10 @@ export function useCollection<
     focusIndex: number,
     setFocusIndex: (value: number) => void,
   ) => TCollection,
-  deps: unknown[],
 ) {
   const [focusIndex, setFocusIndex] = useState(-1);
 
   const collection = useMemo(() => create(focusIndex, setFocusIndex), []);
-
-  const keyToken = useMemo(
-    () => Math.random(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    deps,
-  );
 
   useHotkeys("alt+up", () => {
     collection.moveFocusUp();
@@ -35,7 +28,6 @@ export function useCollection<
 
   return {
     collection,
-    keyToken,
     focusIndex,
     addItem: (wrapper: TItem) => collection.add(wrapper),
   };

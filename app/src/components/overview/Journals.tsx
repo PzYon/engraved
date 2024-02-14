@@ -12,10 +12,9 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
   const { searchText, journalTypes } = usePageContext();
   const journals = useJournalsQuery(searchText, journalTypes, favoritesOnly);
 
-  const { collection, keyToken, addItem } = useCollection(
+  const { collection, addItem } = useCollection(
     (focusIndex, setFocusIndex) =>
       new JournalWrapperCollection(focusIndex, setFocusIndex),
-    [journals],
   );
 
   if (!journals) {
@@ -31,7 +30,7 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
       {journals.map((journal, i) => (
         <JournalListItem
           index={i}
-          key={journal.id + keyToken}
+          key={journal.id}
           addWrapperItem={addItem}
           onClick={() => collection.setFocus(i)}
           journal={journal}
