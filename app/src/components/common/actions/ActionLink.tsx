@@ -24,7 +24,11 @@ export const ActionLink: React.FC<{
   }
 
   return (
-    <Link to={action.href} style={style}>
+    <Link
+      to={action.href}
+      style={style}
+      target={action.href?.startsWith("/") ? "_self" : "_blank"}
+    >
       {children ?? action.icon}
     </Link>
   );
