@@ -25,9 +25,28 @@ import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IJournalUiSettings } from "../components/details/edit/IJournalUiSettings";
 import { IApiSystemInfo } from "./IApiSystemInfo";
 
+export class LoginHandler {
+  private loginInProcess: Promise<unknown>;
+
+  async doAndTry<T>(
+    login: () => Promise<void>,
+    callServer: () => Promise<T>,
+  ): Promise<T> {
+    if (!this.loginInProcess) {
+      this.loginInProcess = login();
+    }
+
+    await this.loginInProcess;
+
+    return await callServer();
+  }
+}
+
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
 export class ServerApi {
+  private static _loginHandler = new LoginHandler();
+
   private static _jwtToken: string;
 
   static serverOs: "lin" | "win" = "lin";
@@ -365,13 +384,10 @@ export class ServerApi {
       }
 
       if (response.status === 401 && !isRetry) {
-        try {
-          ServerApi.loadingHandler.oneMore();
-          await ServerApi.tryToLoginAgain();
-          return await ServerApi.executeRequest(url, method, payload, true);
-        } finally {
-          ServerApi.loadingHandler.oneLess();
-        }
+        return this._loginHandler.doAndTry(
+          () => ServerApi.tryToLoginAgain(),
+          () => ServerApi.executeRequest(url, method, payload, true),
+        );
       }
 
       throw new ApiError(response.status, json as IApiError);
