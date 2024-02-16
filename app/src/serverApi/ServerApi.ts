@@ -28,17 +28,29 @@ import { IApiSystemInfo } from "./IApiSystemInfo";
 export class LoginHandler {
   private loginInProcess: Promise<unknown>;
 
+  private callServerFns: {
+    fn: () => Promise<unknown>;
+    callback: (result: unknown) => void;
+  }[] = [];
+
   async doAndTry<T>(
     login: () => Promise<void>,
     callServer: () => Promise<T>,
   ): Promise<T> {
     if (!this.loginInProcess) {
-      this.loginInProcess = login();
+      this.loginInProcess = login().then(() => {
+        for (const callServerFn of this.callServerFns) {
+          callServerFn.fn().then((result) => callServerFn.callback(result));
+        }
+      });
     }
 
-    await this.loginInProcess;
-
-    return await callServer();
+    return new Promise((resolve) => {
+      this.callServerFns.push({
+        fn: callServer,
+        callback: () => resolve,
+      });
+    });
   }
 }
 
