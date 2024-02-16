@@ -24,66 +24,14 @@ import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IJournalUiSettings } from "../components/details/edit/IJournalUiSettings";
 import { IApiSystemInfo } from "./IApiSystemInfo";
-
-export class LoginHandler {
-  private loginInProcess = false;
-
-  private callServerFns: {
-    fn: () => Promise<unknown>;
-    callback: (result: unknown) => void;
-    callbackError: (error: unknown) => void;
-  }[] = [];
-
-  async doAndTry<T>(
-    login: () => Promise<void>,
-    callServer: () => Promise<T>,
-  ): Promise<T> {
-    if (this.loginInProcess) {
-      return new Promise<T>((resolve, reject) => {
-        this.callServerFns.push({
-          fn: callServer,
-          callback: (value: unknown) => resolve(value as T),
-          callbackError: (e) => reject(e),
-        });
-      });
-    }
-
-    this.loginInProcess = true;
-
-    return login()
-      .then(async () => {
-        for (const callServerFn of this.callServerFns) {
-          try {
-            console.log("LOGIN: Calling serverFn during login");
-            const result = await callServerFn.fn();
-
-            callServerFn.callback(result);
-          } catch (e) {
-            callServerFn.callbackError(e);
-          }
-        }
-
-        return await callServer();
-      })
-      .catch((e) => {
-        console.log("ERROR: Error on login serverFn");
-
-        return new Promise<T>((_, reject) => {
-          reject(e);
-          return null as T;
-        });
-      })
-      .finally(() => {
-        this.loginInProcess = false;
-        this.callServerFns = [];
-      });
-  }
-}
+import { LoginHandler } from "./LoginHandler";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
 export class ServerApi {
-  private static _loginHandler = new LoginHandler();
+  private static _loginHandler = new LoginHandler(() =>
+    ServerApi.tryToLoginAgain(),
+  );
 
   private static _jwtToken: string;
 
@@ -422,9 +370,8 @@ export class ServerApi {
       }
 
       if (response.status === 401 && !isRetry) {
-        return this._loginHandler.doAndTry(
-          () => ServerApi.tryToLoginAgain(),
-          () => ServerApi.executeRequest(url, method, payload, true),
+        return this._loginHandler.loginAndRetry(() =>
+          ServerApi.executeRequest(url, method, payload, true),
         );
       }
 

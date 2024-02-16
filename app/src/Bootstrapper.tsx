@@ -51,7 +51,6 @@ export const Bootstrapper: React.FC = () => {
         registerGooglePrompt(onSignedIn, ref.current, true);
       })
       .catch((e: ApiError) => {
-        debugger;
         if (e.status === 401) {
           registerGooglePrompt(onSignedIn, ref.current);
         }
