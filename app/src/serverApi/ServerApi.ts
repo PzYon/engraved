@@ -54,7 +54,7 @@ export class LoginHandler {
       .then(async () => {
         for (const callServerFn of this.callServerFns) {
           try {
-            console.log("calling serverFn");
+            console.log("LOGIN: Calling serverFn during login");
             const result = await callServerFn.fn();
 
             callServerFn.callback(result);
@@ -66,9 +66,8 @@ export class LoginHandler {
         return await callServer();
       })
       .catch((e) => {
-        console.log("error on login serverFn");
+        console.log("ERROR: Error on login serverFn");
 
-        debugger;
         return new Promise<T>((_, reject) => {
           reject(e);
           return null as T;
