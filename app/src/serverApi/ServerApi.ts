@@ -26,31 +26,58 @@ import { IJournalUiSettings } from "../components/details/edit/IJournalUiSetting
 import { IApiSystemInfo } from "./IApiSystemInfo";
 
 export class LoginHandler {
-  private loginInProcess: Promise<unknown>;
+  private loginInProcess = false;
 
   private callServerFns: {
     fn: () => Promise<unknown>;
     callback: (result: unknown) => void;
+    callbackError: (error: unknown) => void;
   }[] = [];
 
   async doAndTry<T>(
     login: () => Promise<void>,
     callServer: () => Promise<T>,
   ): Promise<T> {
-    if (!this.loginInProcess) {
-      this.loginInProcess = login().then(() => {
-        for (const callServerFn of this.callServerFns) {
-          callServerFn.fn().then((result) => callServerFn.callback(result));
-        }
+    if (this.loginInProcess) {
+      return new Promise<T>((resolve, reject) => {
+        this.callServerFns.push({
+          fn: callServer,
+          callback: (value: unknown) => resolve(value as T),
+          callbackError: (e) => reject(e),
+        });
       });
     }
 
-    return new Promise((resolve) => {
-      this.callServerFns.push({
-        fn: callServer,
-        callback: () => resolve,
+    this.loginInProcess = true;
+
+    return login()
+      .then(async () => {
+        for (const callServerFn of this.callServerFns) {
+          try {
+            console.log("calling serverFn");
+            const result = await callServerFn.fn();
+
+            callServerFn.callback(result);
+          } catch (e) {
+            callServerFn.callbackError(e);
+          }
+        }
+
+        return await callServer();
+      })
+      .catch((e) => {
+        console.log("error on login serverFn");
+
+        debugger;
+        return new Promise<T>((_, reject) => {
+          reject(e);
+          return null as T;
+        });
+      })
+      .finally(() => {
+        this.loginInProcess = false;
+        this.callServerFns = [];
       });
-    });
   }
 }
 
