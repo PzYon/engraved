@@ -21,6 +21,8 @@ export class LoginHandler {
 
     return this.login()
       .then(async () => {
+        const result = await callServer();
+
         for (const callServerFn of this.callServerFns) {
           try {
             console.log("LOGIN: Calling serverFn during login");
@@ -32,7 +34,7 @@ export class LoginHandler {
           }
         }
 
-        return await callServer();
+        return result;
       })
       .catch((e) => {
         console.log("ERROR: Error on login serverFn");
