@@ -19,12 +19,13 @@ export function registerGooglePrompt(
         client_id: envSettings.auth.google.clientId,
         callback: signInWithJwt,
         auto_select: true,
+        use_fedcm_for_prompt: true,
       });
 
       const googlePrompt = function (): Promise<{ isSuccess: boolean }> {
         return new Promise((resolve) => {
           google.accounts.id.prompt((n: GoogleNotification) => {
-            resolve({ isSuccess: !n.isNotDisplayed() && !n.isSkippedMoment() });
+            resolve({ isSuccess: n.getMomentType() === "display" });
           });
         });
       };

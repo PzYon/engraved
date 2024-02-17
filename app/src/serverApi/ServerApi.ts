@@ -24,10 +24,15 @@ import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IJournalUiSettings } from "../components/details/edit/IJournalUiSettings";
 import { IApiSystemInfo } from "./IApiSystemInfo";
+import { LoginHandler } from "./LoginHandler";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
 export class ServerApi {
+  private static _loginHandler = new LoginHandler(() =>
+    ServerApi.tryToLoginAgain(),
+  );
+
   private static _jwtToken: string;
 
   static serverOs: "lin" | "win" = "lin";
@@ -365,13 +370,9 @@ export class ServerApi {
       }
 
       if (response.status === 401 && !isRetry) {
-        try {
-          ServerApi.loadingHandler.oneMore();
-          await ServerApi.tryToLoginAgain();
-          return await ServerApi.executeRequest(url, method, payload, true);
-        } finally {
-          ServerApi.loadingHandler.oneLess();
-        }
+        return this._loginHandler.loginAndRetry(() =>
+          ServerApi.executeRequest(url, method, payload, true),
+        );
       }
 
       throw new ApiError(response.status, json as IApiError);

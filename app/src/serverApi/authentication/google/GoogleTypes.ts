@@ -9,8 +9,7 @@ export type GoogleInitializeInput = {
 };
 
 export type GoogleNotification = {
-  isNotDisplayed: () => boolean;
-  isSkippedMoment: () => boolean;
+  getMomentType: () => string;
 };
 
 export type Google = {
