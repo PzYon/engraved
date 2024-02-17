@@ -3,7 +3,6 @@ import { LoginHandler } from "./LoginHandler";
 function getPromise<T>(delayMs: number, returnValue: T) {
   return new Promise<T>((resolve) => {
     setTimeout(() => {
-      console.log("resolving: " + returnValue);
       resolve(returnValue);
     }, delayMs);
   });
