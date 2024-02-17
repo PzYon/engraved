@@ -9,18 +9,15 @@ function getPromise<T>(delayMs: number, returnValue: T) {
 }
 
 describe("LoginHandler", () => {
-  describe("addItem", () => {
-    test("xxx", (done) => {
+  describe("loginAndRetry", () => {
+    it("should execute all methods once logged in", (done) => {
       let loginCount = 0;
-
-      const login = () => {
-        loginCount++;
-        return getPromise(1000, undefined);
-      };
-
       const results: string[] = [];
 
-      const loginHandler = new LoginHandler(login);
+      const loginHandler = new LoginHandler(() => {
+        loginCount++;
+        return getPromise(1000, undefined);
+      });
 
       loginHandler.loginAndRetry(() =>
         getPromise(100, "first").then((x) => results.push(x)),
@@ -44,6 +41,37 @@ describe("LoginHandler", () => {
 
         done();
       }, 2000);
+    });
+
+    it("should clear 'functions to call' after login", (done) => {
+      let loginCount = 0;
+      const results: string[] = [];
+
+      const loginHandler = new LoginHandler(() => {
+        loginCount++;
+        return getPromise(500, undefined);
+      });
+
+      loginHandler.loginAndRetry(() =>
+        getPromise(100, "first").then((x) => results.push(x)),
+      );
+
+      setTimeout(() => {
+        expect(loginCount).toBe(1);
+        expect(results.length).toBe(1);
+        expect(results[0]).toBe("first");
+
+        loginHandler.loginAndRetry(() =>
+          getPromise(100, "second").then((x) => results.push(x)),
+        );
+
+        setTimeout(() => {
+          expect(loginCount).toBe(2);
+          expect(results.length).toBe(2);
+          expect(results[1]).toBe("second");
+          done();
+        }, 1000);
+      }, 1000);
     });
   });
 });
