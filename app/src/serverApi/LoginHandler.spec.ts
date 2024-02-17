@@ -16,7 +16,6 @@ describe("LoginHandler", () => {
 
       const login = () => {
         loginCount++;
-        // todo: make sure this is only called once!
         return getPromise(1000, undefined);
       };
 
