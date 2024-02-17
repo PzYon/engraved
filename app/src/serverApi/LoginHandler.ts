@@ -25,9 +25,7 @@ export class LoginHandler {
 
         for (const callServerFn of this.callServerFns) {
           try {
-            console.log("LOGIN: Calling serverFn during login");
             const result = await callServerFn.fn();
-
             callServerFn.callback(result);
           } catch (e) {
             callServerFn.callbackError(e as Error);
@@ -35,14 +33,6 @@ export class LoginHandler {
         }
 
         return result;
-      })
-      .catch((e) => {
-        console.log("ERROR: Error on login serverFn");
-
-        return new Promise<T>((_, reject) => {
-          reject(e);
-          //return null as T;
-        });
       })
       .finally(() => {
         this.loginInProcess = false;

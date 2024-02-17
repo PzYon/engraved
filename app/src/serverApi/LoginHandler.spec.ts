@@ -12,7 +12,10 @@ function getPromise<T>(delayMs: number, returnValue: T) {
 describe("LoginHandler", () => {
   describe("addItem", () => {
     test("xxx", (done) => {
+      let loginCount = 0;
+
       const login = () => {
+        loginCount++;
         // todo: make sure this is only called once!
         return getPromise(1000, undefined);
       };
@@ -34,7 +37,8 @@ describe("LoginHandler", () => {
       );
 
       setTimeout(() => {
-        console.log(JSON.stringify(results));
+        expect(loginCount).toBe(1);
+
         expect(results.length).toBe(3);
         expect(results[0]).toBe("first");
         expect(results[1]).toBe("second");
