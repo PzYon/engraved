@@ -20,6 +20,7 @@ export const EntriesPage: React.FC = () => {
     <Page
       pageType="overview"
       tabs={getPageTabs("entries")}
+      documentTitle={"Entries"}
       title={
         <PageTitle
           title={"Entries"}
