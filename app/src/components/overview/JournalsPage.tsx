@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StarOutline, VisibilityOutlined } from "@mui/icons-material";
+import { StarOutline, MenuBook } from "@mui/icons-material";
 import { Page } from "../layout/pages/Page";
 import { PageTitle } from "../layout/pages/PageTitle";
 import { Icon } from "../common/Icon";
@@ -17,12 +17,13 @@ export const JournalsPage: React.FC = () => {
       pageType="overview"
       data-testid={"page"}
       tabs={getPageTabs("journals")}
+      documentTitle={"Journals"}
       title={
         <PageTitle
-          title={"Overview"}
+          title={"Journals"}
           icon={
             <Icon style={IconStyle.PageTitle}>
-              <VisibilityOutlined />
+              <MenuBook />
             </Icon>
           }
         />
