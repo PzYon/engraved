@@ -24,7 +24,7 @@ export const JournalSelector: React.FC<{
     if (selectedJournal) {
       onChange(selectedJournal);
     }
-  }, [selectedJournal, onChange]);
+  }, [selectedJournal]);
 
   if (!journals?.length) {
     return null;
