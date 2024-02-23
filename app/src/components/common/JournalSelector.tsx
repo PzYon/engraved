@@ -24,6 +24,7 @@ export const JournalSelector: React.FC<{
     if (selectedJournal) {
       onChange(selectedJournal);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedJournal]);
 
   if (!journals?.length) {

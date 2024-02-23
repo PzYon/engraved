@@ -39,7 +39,7 @@ export const PageContextProvider: React.FC<{
     }
 
     setSearchParams(params);
-  }, [journalTypes, searchText]);
+  }, [journalTypes, searchText, setSearchParams]);
 
   useEffect(() => {
     if (!paramSearchText) {
