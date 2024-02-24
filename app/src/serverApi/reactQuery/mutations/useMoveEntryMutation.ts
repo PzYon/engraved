@@ -25,6 +25,8 @@ export const useMoveEntryMutation = (
         type: "success",
       });
 
+      onSaved?.();
+
       await queryClient.invalidateQueries({
         queryKey: queryKeysFactory.journal(variables.targetJournalId),
       });
@@ -32,8 +34,6 @@ export const useMoveEntryMutation = (
       await queryClient.invalidateQueries({
         queryKey: queryKeysFactory.journal(journalId),
       });
-
-      onSaved?.();
     },
 
     onError: (error) => {

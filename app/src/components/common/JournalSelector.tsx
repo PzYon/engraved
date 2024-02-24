@@ -7,14 +7,15 @@ import { JournalMenuItem } from "../JournalMenuItem";
 
 export const JournalSelector: React.FC<{
   onChange: (journal: IJournal) => void;
+  filterJournals: (journals: IJournal[]) => IJournal[];
   label?: string;
   selectedJournalId?: string;
-}> = ({ onChange, label, selectedJournalId }) => {
+}> = ({ onChange, filterJournals, label, selectedJournalId }) => {
   const journals = useJournalsQuery("", [JournalType.Scraps]);
 
   const selectedJournal = useMemo(
     () =>
-      journals
+      journals && selectedJournalId
         ? journals.find((j) => j.id === selectedJournalId) ?? journals[0]
         : null,
     [journals, selectedJournalId],
@@ -34,7 +35,7 @@ export const JournalSelector: React.FC<{
   return (
     <Autocomplete
       value={selectedJournal}
-      options={journals}
+      options={filterJournals(journals)}
       onChange={async (_, selectedOption) => {
         onChange(selectedOption);
       }}
