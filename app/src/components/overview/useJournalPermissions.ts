@@ -7,10 +7,16 @@ import { IUser } from "../../serverApi/IUser";
 export const useJournalPermissions = (permissions: IUserPermissions) => {
   const { user } = useAppContext();
 
-  return useMemo(() => getPermission(permissions, user), [user, permissions]);
+  return useMemo(
+    () => getPermissionsForUser(permissions, user),
+    [user, permissions],
+  );
 };
 
-function getPermission(permissions: IUserPermissions, user: IUser) {
+export function getPermissionsForUser(
+  permissions: IUserPermissions,
+  user: IUser,
+) {
   if (!permissions) {
     return null;
   }

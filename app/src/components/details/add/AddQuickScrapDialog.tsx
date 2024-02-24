@@ -5,11 +5,16 @@ import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { ListScrapIcon, MarkdownScrapIcon } from "../scraps/ScrapsViewPage";
 import { JournalSelector } from "../../common/JournalSelector";
 import { Scrap } from "../scraps/Scrap";
+import { UserRole } from "../../../serverApi/UserRole";
+import { useAppContext } from "../../../AppContext";
+import { getPermissionsForUser } from "../../overview/useJournalPermissions";
 
 export const AddQuickScrapDialog: React.FC<{
   quickScrapJournalId: string;
   onSuccess?: () => void;
 }> = ({ quickScrapJournalId, onSuccess }) => {
+  const { user } = useAppContext();
+
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
 
   const [journalId, setJournalId] = useState(quickScrapJournalId ?? "");
@@ -20,6 +25,15 @@ export const AddQuickScrapDialog: React.FC<{
     <>
       <JournalSelector
         label={"Add to journal"}
+        filterJournals={(journals) =>
+          journals.filter((j) => {
+            const permissions = getPermissionsForUser(j.permissions, user);
+            return (
+              permissions.userRole === UserRole.Owner ||
+              permissions.userRole === UserRole.Writer
+            );
+          })
+        }
         onChange={(journal) => setJournalId(journal.id)}
         selectedJournalId={journalId}
       />
