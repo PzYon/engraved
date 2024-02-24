@@ -17,18 +17,14 @@ import { DateSelector } from "../../common/DateSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IEntry } from "../../../serverApi/IEntry";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
-import { stripTime } from "../../../util/utils";
 import { AttributeComboSearch } from "./AttributeComboSearch";
 import { hasAttributes } from "../../../util/entryUtils";
 import { UpsertTimerEntry } from "./UpsertTimerEntry";
 import { IUpsertTimerEntryCommand } from "../../../serverApi/commands/IUpsertTimerEntryCommand";
-import { LastSelectedDateStorage } from "./LastSelectedDateStorage";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { getValueHeaderLabel } from "../../../util/journalUtils";
-
-const storage = new LastSelectedDateStorage();
 
 export const UpsertEntry: React.FC<{
   journal: IJournal;
@@ -48,9 +44,7 @@ export const UpsertEntry: React.FC<{
   );
 
   const [date, setDate] = useState<Date>(
-    entry?.dateTime
-      ? new Date(entry.dateTime)
-      : stripTime(storage.getLastSelectedDate()),
+    entry?.dateTime ? new Date(entry.dateTime) : new Date(),
   );
 
   const [startDate, setStartDate] = useState((entry as ITimerEntry)?.startDate);
@@ -71,13 +65,7 @@ export const UpsertEntry: React.FC<{
     <FormControl>
       {journal.type !== JournalType.Timer ? (
         <FormElementContainer>
-          <DateSelector
-            setDate={(d) => {
-              setDate(d);
-              storage.setLastSelectedDate(d);
-            }}
-            date={date}
-          />
+          <DateSelector setDate={setDate} date={date} />
         </FormElementContainer>
       ) : null}
 
