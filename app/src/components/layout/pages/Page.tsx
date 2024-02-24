@@ -3,6 +3,7 @@ import { FilterMode, PageType, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
+import { useSearchParams } from "react-router-dom";
 
 export const Page: React.FC<{
   children: React.ReactNode;
@@ -86,6 +87,8 @@ export const Page: React.FC<{
 
   useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
 
+  const [, setSearchParams] = useSearchParams();
+
   useEffect(() => {
     return () => {
       setShowFilters(false);
@@ -94,7 +97,10 @@ export const Page: React.FC<{
       setJournalTypes([]);
       setTabs([]);
       setPageType(undefined);
+
+      setSearchParams({});
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     setFilterMode,
     setJournalTypes,
