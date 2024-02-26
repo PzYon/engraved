@@ -6,8 +6,8 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class TestUserScopedMongoRepository(MongoDatabaseClient client, ICurrentUserService currentUserService)
-  : UserScopedMongoRepository(client, currentUserService)
+public class TestUserScopedMongoRepository(MongoDatabaseClient mongoDatabaseClient, ICurrentUserService currentUserService)
+  : UserScopedMongoRepository(mongoDatabaseClient, currentUserService)
 {
   public IMongoCollection<JournalDocument> Journals => JournalsCollection;
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;

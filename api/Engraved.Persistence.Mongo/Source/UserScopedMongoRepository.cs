@@ -17,10 +17,10 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   public Lazy<IUser> CurrentUser { get; }
 
   public UserScopedMongoRepository(
-    MongoDatabaseClient client,
+    MongoDatabaseClient mongoDatabaseClient,
     ICurrentUserService currentUserService
   )
-    : base(client)
+    : base(mongoDatabaseClient)
   {
     _currentUserService = currentUserService;
     CurrentUser = new Lazy<IUser>(LoadUser);

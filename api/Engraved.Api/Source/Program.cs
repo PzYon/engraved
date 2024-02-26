@@ -106,8 +106,8 @@ builder.Services.AddTransient(
   {
     if (!UseInMemoryRepo())
     {
-      var client = provider.GetService<MongoDatabaseClient>()!;
-      return GetMongoDbRepo(client);
+      var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
+      return GetMongoDbRepo(mongoDbClient);
     }
 
     var userService = provider.GetService<ICurrentUserService>()!;
