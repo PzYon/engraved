@@ -3,21 +3,25 @@ using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Engraved.Core.Application;
 
 public class Dispatcher
 {
+  private readonly ILogger _logger;
   private readonly IServiceProvider _serviceProvider;
   private readonly IUserScopedRepository _repository;
   private readonly QueryCache _queryCache;
 
   public Dispatcher(
+    ILogger<Dispatcher> logger,
     IServiceProvider serviceProvider,
     IUserScopedRepository repository,
     QueryCache queryCache
   )
   {
+    _logger = logger;
     _serviceProvider = serviceProvider;
     _repository = repository;
     _queryCache = queryCache;
@@ -82,7 +86,7 @@ public class Dispatcher
     _queryCache.Invalidate(affectedUserIds);
   }
 
-  private static async Task<TExecutionResult> Execute<TExecutionResult>(
+  private async Task<TExecutionResult> Execute<TExecutionResult>(
     Func<Task<TExecutionResult>> action,
     string labelPrefix
   )
@@ -91,7 +95,7 @@ public class Dispatcher
 
     TExecutionResult result = await action();
 
-    Console.WriteLine($"{labelPrefix} executed in {watch.ElapsedMilliseconds}ms");
+    _logger.LogInformation($"{labelPrefix} executed in {watch.ElapsedMilliseconds}ms");
 
     return result;
   }

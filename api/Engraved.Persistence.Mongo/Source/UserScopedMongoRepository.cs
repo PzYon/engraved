@@ -5,6 +5,7 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo.DocumentTypes;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
@@ -16,11 +17,12 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   public Lazy<IUser> CurrentUser { get; }
 
   public UserScopedMongoRepository(
+    ILogger logger,
     IMongoRepositorySettings settings,
     string? dbNameOverride,
     ICurrentUserService currentUserService
   )
-    : base(settings, dbNameOverride)
+    : base(logger, settings, dbNameOverride)
   {
     _currentUserService = currentUserService;
     CurrentUser = new Lazy<IUser>(LoadUser);

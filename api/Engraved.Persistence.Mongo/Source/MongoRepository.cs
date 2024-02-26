@@ -10,14 +10,18 @@ using Engraved.Persistence.Mongo.DocumentTypes;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Events;
 
 namespace Engraved.Persistence.Mongo;
 
 public class MongoRepository : IBaseRepository
 {
+  private readonly ILogger _logger;
+
   // protected so they can be accessed from TestRepository
   protected readonly IMongoCollection<EntryDocument> EntriesCollection;
   protected readonly IMongoCollection<JournalDocument> JournalsCollection;
@@ -40,8 +44,10 @@ public class MongoRepository : IBaseRepository
     BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
   }
 
-  public MongoRepository(IMongoRepositorySettings settings, string? dbNameOverride)
+  public MongoRepository(ILogger logger, IMongoRepositorySettings settings, string? dbNameOverride)
   {
+    _logger = logger;
+
     IMongoClient client = CreateMongoClient(settings);
 
     string dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
@@ -494,11 +500,22 @@ public class MongoRepository : IBaseRepository
       .ToList();
   }
 
-  private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
+  private IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
   {
     MongoClientSettings? clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
     clientSettings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
 
+    clientSettings.ClusterConfigurator = clusterBuilder =>
+    {
+      clusterBuilder.Subscribe<CommandSucceededEvent>(e => LogDuration(e.Duration, e.CommandName));
+      clusterBuilder.Subscribe<CommandFailedEvent>(e => LogDuration(e.Duration, e.CommandName));
+    };
+
     return new MongoClient(clientSettings);
+  }
+
+  private void LogDuration(TimeSpan duration, string commandName)
+  {
+    _logger.LogInformation($"[MongoDb] - {commandName}-duration: {duration.TotalMilliseconds}ms");
   }
 }

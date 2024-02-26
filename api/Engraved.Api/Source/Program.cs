@@ -80,6 +80,10 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddHttpContextAccessor();
 
 IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
+
+// https://learn.microsoft.com/en-us/dotnet/core/extensions/logging?tabs=command-line
+// builder.Logging.AddOpenTelemetry(logging => logging.AddOtlpExporter());
+
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
@@ -90,7 +94,8 @@ builder.Services.AddSingleton(
   {
     if (!UseInMemoryRepo())
     {
-      return GetMongoDbRepo();
+      var logger = provider.GetService<ILogger<MongoRepository>>()!;
+      return GetMongoDbRepo(logger);
     }
 
     var userService = provider.GetService<ICurrentUserService>()!;
@@ -106,10 +111,12 @@ builder.Services.AddTransient<IUserScopedRepository>(
   provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
+    var logger = provider.GetService<ILogger<UserScopedMongoRepository>>()!;
 
     if (!UseInMemoryRepo())
     {
       return new UserScopedMongoRepository(
+        logger,
         CreateRepositorySettings(builder),
         GetMongoDbNameOverride(),
         userService
@@ -223,9 +230,9 @@ string? GetMongoDbNameOverride()
   return isE2eTests ? "engraved_e2e_tests" : null;
 }
 
-IBaseRepository GetMongoDbRepo()
+IBaseRepository GetMongoDbRepo(ILogger logger)
 {
-  return new MongoRepository(CreateRepositorySettings(builder), GetMongoDbNameOverride());
+  return new MongoRepository(logger, CreateRepositorySettings(builder), GetMongoDbNameOverride());
 }
 
 void SeedRepo(IUserScopedRepository repo)
