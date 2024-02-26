@@ -17,7 +17,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   public Lazy<IUser> CurrentUser { get; }
 
   public UserScopedMongoRepository(
-    ILogger logger,
+    ILogger? logger,
     IMongoRepositorySettings settings,
     string? dbNameOverride,
     ICurrentUserService currentUserService

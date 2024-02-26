@@ -9,13 +9,13 @@ namespace Engraved.Core.Application;
 
 public class Dispatcher
 {
-  private readonly ILogger _logger;
+  private readonly ILogger? _logger;
   private readonly IServiceProvider _serviceProvider;
   private readonly IUserScopedRepository _repository;
   private readonly QueryCache _queryCache;
 
   public Dispatcher(
-    ILogger<Dispatcher> logger,
+    ILogger<Dispatcher>? logger,
     IServiceProvider serviceProvider,
     IUserScopedRepository repository,
     QueryCache queryCache
@@ -95,7 +95,7 @@ public class Dispatcher
 
     TExecutionResult result = await action();
 
-    _logger.LogInformation($"{labelPrefix} executed in {watch.ElapsedMilliseconds}ms");
+    _logger?.LogInformation($"{labelPrefix} executed in {watch.ElapsedMilliseconds}ms");
 
     return result;
   }

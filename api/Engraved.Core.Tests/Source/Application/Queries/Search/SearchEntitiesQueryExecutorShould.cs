@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
@@ -11,28 +10,9 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Search;
-
-public class TestLogger : ILogger<Dispatcher>
-{
-  public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-  {
-    throw new NotImplementedException();
-  }
-
-  public bool IsEnabled(LogLevel logLevel)
-  {
-    throw new NotImplementedException();
-  }
-
-  public IDisposable? BeginScope<TState>(TState state) where TState : notnull
-  {
-    throw new NotImplementedException();
-  }
-}
 
 public class SearchEntitiesQueryExecutorShould
 {
@@ -57,7 +37,7 @@ public class SearchEntitiesQueryExecutorShould
 
     _searchExecutor = new SearchEntitiesQueryExecutor(
       new Dispatcher(
-        new TestLogger(),
+        null,
         new TestServiceProvider(_userScopedInMemoryRepository),
         _userScopedInMemoryRepository,
         new QueryCache(new MemoryCache(new MemoryCacheOptions()), _userScopedInMemoryRepository.CurrentUser)
