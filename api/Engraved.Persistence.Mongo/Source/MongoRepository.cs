@@ -20,7 +20,7 @@ namespace Engraved.Persistence.Mongo;
 
 public class MongoRepository : IBaseRepository
 {
-  private readonly ILogger _logger;
+  private readonly ILogger? _logger;
 
   // protected so they can be accessed from TestRepository
   protected readonly IMongoCollection<EntryDocument> EntriesCollection;
@@ -44,7 +44,7 @@ public class MongoRepository : IBaseRepository
     BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
   }
 
-  public MongoRepository(ILogger logger, IMongoRepositorySettings settings, string? dbNameOverride)
+  public MongoRepository(ILogger? logger, IMongoRepositorySettings settings, string? dbNameOverride)
   {
     _logger = logger;
 
@@ -516,6 +516,6 @@ public class MongoRepository : IBaseRepository
 
   private void LogDuration(TimeSpan duration, string commandName)
   {
-    _logger.LogInformation($"[MongoDb] - {commandName}-duration: {duration.TotalMilliseconds}ms");
+    _logger?.LogInformation($"[MongoDb] - {commandName}-duration: {duration.TotalMilliseconds}ms");
   }
 }
