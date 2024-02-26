@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Basic;
 using Engraved.Api.Authentication.Google;
@@ -83,6 +84,10 @@ IConfigurationSection authConfigSection = builder.Configuration.GetSection("Auth
 
 // https://learn.microsoft.com/en-us/dotnet/core/extensions/logging?tabs=command-line
 // builder.Logging.AddOpenTelemetry(logging => logging.AddOtlpExporter());
+if (!builder.Environment.IsDevelopment())
+{
+  builder.Services.AddOpenTelemetry().UseAzureMonitor();
+}
 
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
 builder.Services.AddTransient<IDateService, DateService>();
