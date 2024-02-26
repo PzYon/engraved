@@ -124,7 +124,7 @@ public class LoginHandler : ILoginHandler
 
   private static Claim[] GetClaims(string userId)
   {
-    return new[] { new Claim(ClaimTypes.NameIdentifier, userId) };
+    return [new Claim(ClaimTypes.NameIdentifier, userId)];
   }
 
   private async Task EnsureQuickScraps(IUser user)

@@ -122,6 +122,7 @@ public class DispatcherShould
     var queryCache = new QueryCache(_memoryCache, currentUser);
 
     return new Dispatcher(
+      null,
       new TestServiceProvider(null!),
       new FakeUserScopedRepository(currentUser),
       queryCache

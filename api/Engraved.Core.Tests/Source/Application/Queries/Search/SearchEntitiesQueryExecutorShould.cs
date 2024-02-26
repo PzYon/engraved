@@ -37,6 +37,7 @@ public class SearchEntitiesQueryExecutorShould
 
     _searchExecutor = new SearchEntitiesQueryExecutor(
       new Dispatcher(
+        null,
         new TestServiceProvider(_userScopedInMemoryRepository),
         _userScopedInMemoryRepository,
         new QueryCache(new MemoryCache(new MemoryCacheOptions()), _userScopedInMemoryRepository.CurrentUser)
