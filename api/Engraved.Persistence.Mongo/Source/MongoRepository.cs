@@ -18,18 +18,30 @@ using MongoDB.Driver.Core.Events;
 
 namespace Engraved.Persistence.Mongo;
 
-public class MongoRepository : IBaseRepository
+public class MongoDatabaseClient
 {
   private readonly ILogger? _logger;
 
-  // protected so they can be accessed from TestRepository
-  protected readonly IMongoCollection<EntryDocument> EntriesCollection;
-  protected readonly IMongoCollection<JournalDocument> JournalsCollection;
-  protected readonly IMongoCollection<UserDocument> UsersCollection;
+  public readonly IMongoCollection<EntryDocument> EntriesCollection;
+  public readonly IMongoCollection<JournalDocument> JournalsCollection;
+  public readonly IMongoCollection<UserDocument> UsersCollection;
 
-  private const string RandomDocId = "63f949da880b5bf2518be721";
+  public MongoDatabaseClient(ILogger? logger, IMongoRepositorySettings settings, string? dbNameOverride)
+  {
+    _logger = logger;
 
-  static MongoRepository()
+    IMongoClient client = CreateMongoClient(settings);
+
+    string dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
+
+    IMongoDatabase? db = client.GetDatabase(dbName);
+
+    JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
+    EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);
+    UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
+  }
+
+  static MongoDatabaseClient()
   {
     // below stuff is required for polymorphic document types to work. it would
     // somehow be nicer if this handled by every document-class itself, but that
@@ -44,19 +56,40 @@ public class MongoRepository : IBaseRepository
     BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
   }
 
-  public MongoRepository(ILogger? logger, IMongoRepositorySettings settings, string? dbNameOverride)
+  private IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
   {
-    _logger = logger;
+    MongoClientSettings? clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
+    clientSettings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
 
-    IMongoClient client = CreateMongoClient(settings);
+    clientSettings.ClusterConfigurator = clusterBuilder =>
+    {
+      clusterBuilder.Subscribe<CommandSucceededEvent>(e => LogDuration(e.Duration, e.CommandName));
+      clusterBuilder.Subscribe<CommandFailedEvent>(e => LogDuration(e.Duration, e.CommandName));
+    };
 
-    string dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
+    return new MongoClient(clientSettings);
+  }
 
-    IMongoDatabase? db = client.GetDatabase(dbName);
+  private void LogDuration(TimeSpan duration, string commandName)
+  {
+    _logger?.LogInformation($"[MongoDb] - {commandName}-duration: {duration.TotalMilliseconds}ms");
+  }
+}
 
-    JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
-    EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);
-    UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
+public class MongoRepository : IBaseRepository
+{
+  private readonly MongoDatabaseClient _client;
+
+  // protected so they can be accessed from TestRepository
+  protected IMongoCollection<EntryDocument> EntriesCollection => _client.EntriesCollection;
+  protected IMongoCollection<JournalDocument> JournalsCollection => _client.JournalsCollection;
+  protected IMongoCollection<UserDocument> UsersCollection => _client.UsersCollection;
+
+  private const string RandomDocId = "63f949da880b5bf2518be721";
+
+  public MongoRepository(MongoDatabaseClient client)
+  {
+    _client = client;
   }
 
   public virtual async Task<IUser?> GetUser(string? name)
@@ -498,24 +531,5 @@ public class MongoRepository : IBaseRepository
         }
       )
       .ToList();
-  }
-
-  private IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
-  {
-    MongoClientSettings? clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
-    clientSettings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
-
-    clientSettings.ClusterConfigurator = clusterBuilder =>
-    {
-      clusterBuilder.Subscribe<CommandSucceededEvent>(e => LogDuration(e.Duration, e.CommandName));
-      clusterBuilder.Subscribe<CommandFailedEvent>(e => LogDuration(e.Duration, e.CommandName));
-    };
-
-    return new MongoClient(clientSettings);
-  }
-
-  private void LogDuration(TimeSpan duration, string commandName)
-  {
-    _logger?.LogInformation($"[MongoDb] - {commandName}-duration: {duration.TotalMilliseconds}ms");
   }
 }

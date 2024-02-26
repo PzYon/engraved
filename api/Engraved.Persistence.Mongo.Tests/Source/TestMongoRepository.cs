@@ -6,11 +6,9 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class TestMongoRepository : MongoRepository, IRepository
+public class TestMongoRepository(MongoDatabaseClient client) : MongoRepository(client), IRepository
 {
   public IMongoCollection<JournalDocument> Journals => JournalsCollection;
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;
   public IMongoCollection<UserDocument> Users => UsersCollection;
-
-  public TestMongoRepository(IMongoRepositorySettings settings) : base(null, settings, null) { }
 }

@@ -5,13 +5,14 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public static class Util
 {
-  private static TestMongoRepositorySettings Settings => new();
+  private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings();
+  private static MongoDatabaseClient Client => new(null, new TestMongoRepositorySettings(), null);
 
   public static async Task<TestMongoRepository> CreateMongoRepository()
   {
     await DropDatabase();
 
-    return new TestMongoRepository(Settings);
+    return new TestMongoRepository(Client);
   }
 
   public static async Task<TestUserScopedMongoRepository> CreateUserScopedMongoRepository(
@@ -27,7 +28,7 @@ public static class Util
     var userService = new MockCurrentUserService();
     userService.SetUserName(userName);
 
-    return new TestUserScopedMongoRepository(Settings, userService);
+    return new TestUserScopedMongoRepository(Client, userService);
   }
 
   private static async Task DropDatabase()

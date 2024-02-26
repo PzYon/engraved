@@ -97,10 +97,17 @@ builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddSingleton(
   provider =>
   {
+    var logger = provider.GetService<ILogger<MongoRepository>>()!;
+    return new MongoDatabaseClient(logger, CreateRepositorySettings(builder), GetMongoDbNameOverride());
+  }
+);
+builder.Services.AddTransient(
+  provider =>
+  {
     if (!UseInMemoryRepo())
     {
-      var logger = provider.GetService<ILogger<MongoRepository>>()!;
-      return GetMongoDbRepo(logger);
+      var client = provider.GetService<MongoDatabaseClient>()!;
+      return GetMongoDbRepo(client);
     }
 
     var userService = provider.GetService<ICurrentUserService>()!;
@@ -116,16 +123,11 @@ builder.Services.AddTransient<IUserScopedRepository>(
   provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
-    var logger = provider.GetService<ILogger<UserScopedMongoRepository>>()!;
 
     if (!UseInMemoryRepo())
     {
-      return new UserScopedMongoRepository(
-        logger,
-        CreateRepositorySettings(builder),
-        GetMongoDbNameOverride(),
-        userService
-      );
+      var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
+      return new UserScopedMongoRepository(mongoDbClient, userService);
     }
 
     var inMemoryRepository = provider.GetService<InMemoryRepository>();
@@ -235,9 +237,9 @@ string? GetMongoDbNameOverride()
   return isE2eTests ? "engraved_e2e_tests" : null;
 }
 
-IBaseRepository GetMongoDbRepo(ILogger logger)
+IBaseRepository GetMongoDbRepo(MongoDatabaseClient mongoDatabaseClient)
 {
-  return new MongoRepository(logger, CreateRepositorySettings(builder), GetMongoDbNameOverride());
+  return new MongoRepository(mongoDatabaseClient);
 }
 
 void SeedRepo(IUserScopedRepository repo)
