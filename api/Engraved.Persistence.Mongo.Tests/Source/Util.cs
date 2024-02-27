@@ -17,6 +17,7 @@ public static class Util
 
   public static async Task<TestUserScopedMongoRepository> CreateUserScopedMongoRepository(
     string userName,
+    string userId,
     bool doNotDropDatabase
   )
   {
@@ -25,7 +26,7 @@ public static class Util
       await DropDatabase();
     }
 
-    var userService = new MockCurrentUserService();
+    var userService = new MockCurrentUserService(userId);
     userService.SetUserName(userName);
 
     return new TestUserScopedMongoRepository(Client, userService);

@@ -10,6 +10,7 @@ using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
 
 namespace Engraved.Api.Tests.Authentication;
@@ -19,6 +20,7 @@ public class LoginHandlerShould
   private IDateService _dateService = null!;
   private LoginHandler _loginHandler = null!;
   private IBaseRepository _testRepository = null!;
+  private UserLoader _userLoader = null!;
 
   private readonly AuthenticationConfig _authenticationConfig = new()
   {
@@ -32,6 +34,8 @@ public class LoginHandlerShould
   public void SetUp()
   {
     _testRepository = new InMemoryRepository();
+    
+    _userLoader = new UserLoader(_testRepository, new MemoryCache(new MemoryCacheOptions()));
 
     _dateService = new FakeDateService();
 
@@ -39,7 +43,8 @@ public class LoginHandlerShould
       new GoogleTokenValidator(_authenticationConfig),
       _testRepository,
       _authenticationConfig,
-      _dateService
+      _dateService,
+      _userLoader
     );
   }
 
@@ -73,7 +78,8 @@ public class LoginHandlerShould
       new FakeGoogleTokenValidator(imageUrl, userName, displayName),
       _testRepository,
       _authenticationConfig,
-      _dateService
+      _dateService,
+      _userLoader
     );
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
@@ -129,7 +135,8 @@ public class LoginHandlerShould
       new FakeGoogleTokenValidator(imageUrl, userName, displayName),
       _testRepository,
       _authenticationConfig,
-      _dateService
+      _dateService,
+      _userLoader
     );
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");

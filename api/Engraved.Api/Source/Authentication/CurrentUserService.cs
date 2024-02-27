@@ -1,34 +1,43 @@
 ﻿using Engraved.Core.Application;
+using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.User;
 
 namespace Engraved.Api.Authentication;
 
-public class CurrentUserService : ICurrentUserService
+public class CurrentUserService(IHttpContextAccessor httpContextAccessor, UserLoader userLoader)
+  : ICurrentUserService
 {
   private const string Key = "AuthenticatedUserId";
-  private readonly IHttpContextAccessor _httpContextAccessor;
-
-  public CurrentUserService(IHttpContextAccessor httpContextAccessor)
-  {
-    _httpContextAccessor = httpContextAccessor;
-  }
 
   public string? GetUserName()
   {
-    if (_httpContextAccessor.HttpContext == null)
+    if (httpContextAccessor.HttpContext == null)
     {
       throw new Exception("HttpContext is not set");
     }
 
-    return _httpContextAccessor.HttpContext.Items[Key] as string;
+    return httpContextAccessor.HttpContext.Items[Key] as string;
   }
 
   public void SetUserName(string userName)
   {
-    if (_httpContextAccessor.HttpContext == null)
+    if (httpContextAccessor.HttpContext == null)
     {
       throw new Exception("HttpContext is not set");
     }
 
-    _httpContextAccessor.HttpContext.Items[Key] = userName;
+    httpContextAccessor.HttpContext.Items[Key] = userName;
+  }
+
+  public async Task<IUser> LoadUser()
+  {
+    string? name = GetUserName();
+    
+    if (string.IsNullOrEmpty(name))
+    {
+      throw new NotAllowedOperationException($"Username is not available");
+    }
+    
+    return await userLoader.GetUser(name);
   }
 }
