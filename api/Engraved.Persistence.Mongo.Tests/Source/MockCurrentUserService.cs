@@ -1,18 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Engraved.Core.Application;
+using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.User;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class MockCurrentUserService : ICurrentUserService
+public class MockCurrentUserService(string userId) : ICurrentUserService
 {
-  private readonly string _userId;
   private string? _userName;
-
-  public MockCurrentUserService(string userId)
-  {
-    _userId = userId;
-  }
 
   public string? GetUserName()
   {
@@ -26,6 +21,11 @@ public class MockCurrentUserService : ICurrentUserService
 
   public Task<IUser> LoadUser()
   {
-    return Task.FromResult(new User { Name = _userName, Id = _userId } as IUser);
+    if (string.IsNullOrEmpty(_userName))
+    {
+      throw new NotAllowedOperationException($"Username is not available");
+    }
+
+    return Task.FromResult(new User { Name = _userName, Id = userId } as IUser);
   }
 }
