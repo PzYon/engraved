@@ -83,7 +83,6 @@ builder.Services.AddHttpContextAccessor();
 IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
 
 // https://learn.microsoft.com/en-us/dotnet/core/extensions/logging?tabs=command-line
-// builder.Logging.AddOpenTelemetry(logging => logging.AddOtlpExporter());
 if (!builder.Environment.IsDevelopment())
 {
   builder.Services.AddOpenTelemetry().UseAzureMonitor();
@@ -94,6 +93,11 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
+
+// it is recommended to only have one instance of the MongoClient:
+// https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
+// we did nt have this at first and it actually had a bad influence
+// on performance.
 builder.Services.AddSingleton(
   provider =>
   {
@@ -101,13 +105,14 @@ builder.Services.AddSingleton(
     return new MongoDatabaseClient(logger, CreateRepositorySettings(builder), GetMongoDbNameOverride());
   }
 );
-builder.Services.AddTransient(
+
+builder.Services.AddTransient<IBaseRepository>(
   provider =>
   {
     if (!UseInMemoryRepo())
     {
       var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
-      return GetMongoDbRepo(mongoDbClient);
+      return new MongoRepository(mongoDbClient);
     }
 
     var userService = provider.GetService<ICurrentUserService>()!;
@@ -119,6 +124,7 @@ builder.Services.AddTransient(
     return inMemoryRepository;
   }
 );
+
 builder.Services.AddTransient<IUserScopedRepository>(
   provider =>
   {
@@ -235,11 +241,6 @@ bool UseInMemoryRepo()
 string? GetMongoDbNameOverride()
 {
   return isE2eTests ? "engraved_e2e_tests" : null;
-}
-
-IBaseRepository GetMongoDbRepo(MongoDatabaseClient mongoDatabaseClient)
-{
-  return new MongoRepository(mongoDatabaseClient);
 }
 
 void SeedRepo(IUserScopedRepository repo)
