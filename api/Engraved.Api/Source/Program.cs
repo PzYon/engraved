@@ -210,6 +210,8 @@ else
     );
 }
 
+builder.Services.AddResponseCompression(options => { options.EnableForHttps = true; });
+
 ExecutorRegistration.RegisterQueries(builder.Services);
 ExecutorRegistration.RegisterCommands(builder.Services);
 
@@ -227,6 +229,8 @@ app.UseCors(policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyMethod().All
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseResponseCompression();
 
 app.MapControllers();
 
