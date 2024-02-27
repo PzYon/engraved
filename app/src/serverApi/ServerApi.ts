@@ -386,8 +386,9 @@ export class ServerApi {
     method: HttpMethod,
     payload: unknown,
   ) {
-    const headers: Record<string, string> = {
+    const headers: HeadersInit = {
       "Content-Type": "application/json",
+      "Accept-Encoding": "gzip, deflate, br",
     };
 
     if (ServerApi._jwtToken) {
