@@ -6,12 +6,10 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class TestUserScopedMongoRepository : UserScopedMongoRepository
+public class TestUserScopedMongoRepository(MongoDatabaseClient mongoDatabaseClient, ICurrentUserService currentUserService)
+  : UserScopedMongoRepository(mongoDatabaseClient, currentUserService)
 {
   public IMongoCollection<JournalDocument> Journals => JournalsCollection;
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;
   public IMongoCollection<UserDocument> Users => UsersCollection;
-
-  public TestUserScopedMongoRepository(IMongoRepositorySettings settings, ICurrentUserService currentUserService)
-    : base(null, settings, null, currentUserService) { }
 }
