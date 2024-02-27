@@ -4,21 +4,12 @@ using Newtonsoft.Json;
 
 namespace Engraved.Core.Application.Queries;
 
-public class QueryCache
+public class QueryCache(IMemoryCache memoryCache, Lazy<IUser> currentUser)
 {
   private const string KeysByUserId = "___keysByUserId";
 
-  private readonly IMemoryCache _memoryCache;
-  private readonly Lazy<IUser> _currentUser;
-
-  public QueryCache(IMemoryCache memoryCache, Lazy<IUser> currentUser)
-  {
-    _memoryCache = memoryCache;
-    _currentUser = currentUser;
-  }
-
   private Dictionary<string, HashSet<string>> QueryKeysByUser
-    => _memoryCache.GetOrCreate(KeysByUserId, _ => new Dictionary<string, HashSet<string>>())!;
+    => memoryCache.GetOrCreate(KeysByUserId, _ => new Dictionary<string, HashSet<string>>())!;
 
   public void Set<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, TValue value)
     where TQuery : IQuery
@@ -27,7 +18,7 @@ public class QueryCache
 
     RememberQueryKeyForUser(key);
 
-    _memoryCache.Set(
+    memoryCache.Set(
       key,
       new CacheItem<TValue>
       {
@@ -40,7 +31,7 @@ public class QueryCache
   public bool TryGetValue<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, out TValue? value)
     where TQuery : IQuery
   {
-    if (!_memoryCache.TryGetValue(GetKey(queryExecutor), out CacheItem<TValue>? cacheItem))
+    if (!memoryCache.TryGetValue(GetKey(queryExecutor), out CacheItem<TValue>? cacheItem))
     {
       value = default;
       return false;
@@ -73,14 +64,14 @@ public class QueryCache
 
     foreach (string key in keys)
     {
-      _memoryCache.Remove(key);
+      memoryCache.Remove(key);
     }
   }
 
   private string GetKey<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor)
     where TQuery : IQuery
   {
-    return _currentUser.Value.Id + "_" + queryExecutor.GetType().FullName!;
+    return currentUser.Value.Id + "_" + queryExecutor.GetType().FullName!;
   }
 
   private static string GetConfigToken(IQuery query)
@@ -101,7 +92,7 @@ public class QueryCache
 
   private string GetUserId()
   {
-    string? userId = _currentUser.Value.Id;
+    string? userId = currentUser.Value.Id;
     if (string.IsNullOrEmpty(userId))
     {
       throw new Exception("User ID is not available.");

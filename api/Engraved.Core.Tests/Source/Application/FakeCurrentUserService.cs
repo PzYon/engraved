@@ -1,4 +1,7 @@
-﻿namespace Engraved.Core.Application;
+﻿using System.Threading.Tasks;
+using Engraved.Core.Domain.User;
+
+namespace Engraved.Core.Application;
 
 public class FakeCurrentUserService : ICurrentUserService
 {
@@ -17,5 +20,10 @@ public class FakeCurrentUserService : ICurrentUserService
   public void SetUserName(string userName)
   {
     _userName = userName;
+  }
+
+  public Task<IUser> LoadUser()
+  {
+    return Task.FromResult(new User { Name = _userName } as IUser);
   }
 }
