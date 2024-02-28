@@ -87,15 +87,8 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
   private IUser LoadUser()
   {
-    string? name = _currentUserService.GetUserName();
-    EnsureUserIsSet(name);
-
-    IUser? result = base.GetUser(name).Result;
-    if (result == null)
-    {
-      throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
-    }
-
+    IUser result = _currentUserService.LoadUser().Result;
+    EnsureUserIsSet(result.Name);
     return result;
   }
 

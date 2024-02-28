@@ -93,6 +93,7 @@ builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
+builder.Services.AddSingleton<UserLoader>();
 
 // it is recommended to only have one instance of the MongoClient:
 // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use

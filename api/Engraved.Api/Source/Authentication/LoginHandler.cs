@@ -16,6 +16,7 @@ public class LoginHandler : ILoginHandler
 {
   private readonly AuthenticationConfig _authenticationConfig;
   private readonly IDateService _dateService;
+  private readonly UserLoader _userLoader;
   private readonly IBaseRepository _repository;
   private readonly IGoogleTokenValidator _tokenValidator;
 
@@ -23,20 +24,23 @@ public class LoginHandler : ILoginHandler
     IGoogleTokenValidator tokenValidator,
     IBaseRepository repository,
     IOptions<AuthenticationConfig> configuration,
-    IDateService dateService
-  ) : this(tokenValidator, repository, configuration.Value, dateService) { }
+    IDateService dateService,
+    UserLoader userLoader
+  ) : this(tokenValidator, repository, configuration.Value, dateService, userLoader) { }
 
   public LoginHandler(
     IGoogleTokenValidator tokenValidator,
     IBaseRepository repository,
     AuthenticationConfig configuration,
-    IDateService dateService
+    IDateService dateService,
+    UserLoader userLoader
   )
   {
     _tokenValidator = tokenValidator;
     _repository = repository;
     _authenticationConfig = configuration;
     _dateService = dateService;
+    _userLoader = userLoader;
   }
 
   public async Task<AuthResult> Login(string? idToken)
@@ -50,6 +54,8 @@ public class LoginHandler : ILoginHandler
 
     IUser user = await EnsureUser(parsedToken.UserName, parsedToken.UserDisplayName, parsedToken.ImageUrl);
 
+    _userLoader.SetUser(user);
+    
     return new AuthResult
     {
       JwtToken = ToJwtToken(parsedToken.UserName),

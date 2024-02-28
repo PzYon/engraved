@@ -30,7 +30,7 @@ public class UserScopedMongoRepositoryShould
     _currentUserId = (await _repository.UpsertUser(new User { Name = CurrentUserName })).EntityId;
     _otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
 
-    _userScopedRepository = await Util.CreateUserScopedMongoRepository(CurrentUserName, true);
+    _userScopedRepository = await Util.CreateUserScopedMongoRepository(CurrentUserName, _currentUserId, true);
   }
 
   [Test]

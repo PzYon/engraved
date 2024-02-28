@@ -25,10 +25,9 @@ public class UserScopedMongoRepository_Permissions_Should
   public async Task Setup()
   {
     _repository = await Util.CreateMongoRepository();
-    await _repository.UpsertUser(new User { Name = CurrentUserName });
+    UpsertResult upsertResult = await _repository.UpsertUser(new User { Name = CurrentUserName });
     _otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
-
-    _userScopedRepository = await Util.CreateUserScopedMongoRepository(CurrentUserName, true);
+    _userScopedRepository = await Util.CreateUserScopedMongoRepository(CurrentUserName, upsertResult.EntityId, true);
   }
 
   [Test]
