@@ -10,7 +10,6 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
