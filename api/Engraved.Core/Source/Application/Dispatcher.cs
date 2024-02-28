@@ -31,56 +31,52 @@ public class Dispatcher
   {
     return await Execute(
       () => ExecuteQuery<TResult, TQuery>(query),
-      $"Query {query.GetType().Name}"
+      $"Query {query.GetType().Name}",
+      query
     );
   }
 
   private async Task<TResult> ExecuteQuery<TResult, TQuery>(TQuery query) where TQuery : IQuery
   {
-    using (_logger!.BeginScope(new Dictionary<string, object> { ["Query"] = query }))
+    var queryExecutor = _serviceProvider.GetService<IQueryExecutor<TResult, TQuery>>();
+    if (queryExecutor == null)
     {
-      var queryExecutor = _serviceProvider.GetService<IQueryExecutor<TResult, TQuery>>();
-      if (queryExecutor == null)
-      {
-        throw new Exception($"No query executor registered for query of type {query.GetType()}");
-      }
-
-      if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult? cachedResult))
-      {
-        return cachedResult!;
-      }
-
-      TResult result = await queryExecutor.Execute(query);
-      _queryCache.Set(queryExecutor, query, result);
-
-      return result;
+      throw new Exception($"No query executor registered for query of type {query.GetType()}");
     }
+
+    if (!queryExecutor.DisableCache && _queryCache.TryGetValue(queryExecutor, query, out TResult? cachedResult))
+    {
+      return cachedResult!;
+    }
+
+    TResult result = await queryExecutor.Execute(query);
+    _queryCache.Set(queryExecutor, query, result);
+
+    return result;
   }
 
   public async Task<CommandResult> Command<TCommand>(TCommand command) where TCommand : ICommand
   {
     return await Execute(
       () => ExecuteCommand(command),
-      $"Command {command.GetType().Name}"
+      $"Command {command.GetType().Name}",
+      command
     );
   }
 
   private async Task<CommandResult> ExecuteCommand<TCommand>(TCommand command) where TCommand : ICommand
   {
-    using (_logger!.BeginScope(new Dictionary<string, object> { ["Command"] = command }))
+    var commandExecutor = _serviceProvider.GetService<ICommandExecutor<TCommand>>();
+    if (commandExecutor == null)
     {
-      var commandExecutor = _serviceProvider.GetService<ICommandExecutor<TCommand>>();
-      if (commandExecutor == null)
-      {
-        throw new Exception($"No command executor registered for command of type {command.GetType()}");
-      }
-
-      CommandResult commandResult = await commandExecutor.Execute(command);
-
-      InvalidateCache(commandResult);
-
-      return commandResult;
+      throw new Exception($"No command executor registered for command of type {command.GetType()}");
     }
+
+    CommandResult commandResult = await commandExecutor.Execute(command);
+
+    InvalidateCache(commandResult);
+
+    return commandResult;
   }
 
   private void InvalidateCache(CommandResult commandResult)
@@ -94,17 +90,21 @@ public class Dispatcher
 
   private async Task<TExecutionResult> Execute<TExecutionResult>(
     Func<Task<TExecutionResult>> action,
-    string labelPrefix
+    string labelPrefix,
+    object payload
   )
   {
-    _logger?.LogInformation($"{labelPrefix}: Start");
+    using (_logger!.BeginScope(new Dictionary<string, object> { ["Payload"] = payload }))
+    {
+      _logger?.LogInformation($"{labelPrefix}: Start");
 
-    var watch = Stopwatch.StartNew();
+      var watch = Stopwatch.StartNew();
 
-    TExecutionResult result = await action();
+      TExecutionResult result = await action();
 
-    _logger?.LogInformation($"{labelPrefix}: Executed in {watch.ElapsedMilliseconds}ms");
+      _logger?.LogInformation($"{labelPrefix}: Executed in {watch.ElapsedMilliseconds}ms");
 
-    return result;
+      return result;
+    }
   }
 }
