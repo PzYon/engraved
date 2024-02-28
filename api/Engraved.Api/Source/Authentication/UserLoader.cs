@@ -19,18 +19,13 @@ public class UserLoader(IBaseRepository repository, IMemoryCache cache)
 
     IUser? user = await repository.GetUser(name);
 
-    if (user == null)
-    {
-      throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
-    }
-
-    UsersByName.Add(name, user);
+    UsersByName[name] = user ?? throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
 
     return user;
   }
 
   public void SetUser(IUser user)
   {
-    UsersByName.Add(user.Name, user);
+    UsersByName[user.Name] = user;
   }
 }
