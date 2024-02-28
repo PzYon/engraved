@@ -10,6 +10,7 @@ using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application;
@@ -122,7 +123,7 @@ public class DispatcherShould
     var queryCache = new QueryCache(_memoryCache, currentUser);
 
     return new Dispatcher(
-      null,
+      NullLogger<Dispatcher>.Instance,
       new TestServiceProvider(null!),
       new FakeUserScopedRepository(currentUser),
       queryCache
