@@ -10,6 +10,8 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Search;
@@ -34,10 +36,10 @@ public class SearchEntitiesQueryExecutorShould
     );
 
     _dateService = new FakeDateService();
-
+    
     _searchExecutor = new SearchEntitiesQueryExecutor(
       new Dispatcher(
-        null,
+        NullLogger<Dispatcher>.Instance,
         new TestServiceProvider(_userScopedInMemoryRepository),
         _userScopedInMemoryRepository,
         new QueryCache(new MemoryCache(new MemoryCacheOptions()), _userScopedInMemoryRepository.CurrentUser)
