@@ -4,6 +4,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Engraved.Core.Application;
 
@@ -94,7 +95,7 @@ public class Dispatcher
     object payload
   )
   {
-    using (_logger!.BeginScope(new Dictionary<string, object> { ["Payload"] = payload }))
+    using (_logger!.BeginScope(new Dictionary<string, object> { ["Payload"] = JsonConvert.SerializeObject(payload) }))
     {
       _logger?.LogInformation($"{labelPrefix}: Start");
 
