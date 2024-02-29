@@ -36,7 +36,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
     if (!memoryCache.TryGetValue(key, out CacheItem<TValue>? cacheItem))
     {
-      logger.LogInformation($"{key}: Cache miss (not existing)");
+      logger.LogInformation($"{key}: Cache miss (not available)");
       value = default;
       return false;
     }
