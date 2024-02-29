@@ -35,13 +35,17 @@ public class SearchEntitiesQueryExecutorShould
     );
 
     _dateService = new FakeDateService();
-    
+
     _searchExecutor = new SearchEntitiesQueryExecutor(
       new Dispatcher(
         NullLogger<Dispatcher>.Instance,
         new TestServiceProvider(_userScopedInMemoryRepository),
         _userScopedInMemoryRepository,
-        new QueryCache(new MemoryCache(new MemoryCacheOptions()), _userScopedInMemoryRepository.CurrentUser)
+        new QueryCache(
+          NullLogger<QueryCache>.Instance,
+          new MemoryCache(new MemoryCacheOptions()),
+          _userScopedInMemoryRepository.CurrentUser
+        )
       )
     );
   }
