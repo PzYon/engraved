@@ -35,7 +35,7 @@ export default defineConfig({
       command: "npm run e2e:start-app",
       url: cdnBaseUrl,
       reuseExistingServer: !isCi,
-      stdout: "ignore",
+      stdout: "pipe",
       stderr: "pipe",
       // when building the app for production, it can take
       // a longer time than when running in dev mode
@@ -45,7 +45,7 @@ export default defineConfig({
       command: "npm run e2e:start-api",
       url: apiBaseUrl,
       reuseExistingServer: !isCi,
-      stdout: "ignore",
+      stdout: "pipe",
       stderr: "pipe",
       // for some reason, this api server takes a long
       // time to start on CI

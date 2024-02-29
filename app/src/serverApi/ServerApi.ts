@@ -386,6 +386,16 @@ export class ServerApi {
     method: HttpMethod,
     payload: unknown,
   ) {
+    const requestConfig: RequestInit = {
+      method: method,
+      body: payload ? JSON.stringify(payload) : null,
+      headers: this.getHeaders(),
+    };
+
+    return await fetch(new Request(this.getBaseUrl() + url), requestConfig);
+  }
+
+  private static getHeaders() {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       "Accept-Encoding": "gzip, deflate, br",
@@ -394,14 +404,7 @@ export class ServerApi {
     if (ServerApi._jwtToken) {
       headers["Authorization"] = "Bearer " + ServerApi._jwtToken;
     }
-
-    const requestConfig: RequestInit = {
-      method: method,
-      body: payload ? JSON.stringify(payload) : null,
-      headers: headers,
-    };
-
-    return await fetch(new Request(this.getBaseUrl() + url), requestConfig);
+    return headers;
   }
 
   private static getParamsString(
