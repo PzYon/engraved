@@ -80,7 +80,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   private string GetKey<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor)
     where TQuery : IQuery
   {
-    return currentUser.Value.Id + "_" + queryExecutor.GetType().FullName!;
+    return queryExecutor.GetType().Name + "_" + currentUser.Value.Id;
   }
 
   private static string GetConfigToken(IQuery query)
