@@ -120,7 +120,7 @@ public class DispatcherShould
   private Dispatcher CreateDispatcher(string userName)
   {
     var currentUser = new Lazy<IUser>(() => new User { Id = userName, Name = userName });
-    var queryCache = new QueryCache(_memoryCache, currentUser);
+    var queryCache = new QueryCache(NullLogger<QueryCache>.Instance, _memoryCache, currentUser);
 
     return new Dispatcher(
       NullLogger<Dispatcher>.Instance,
