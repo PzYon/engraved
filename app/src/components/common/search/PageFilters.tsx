@@ -16,6 +16,7 @@ export const PageFilters: React.FC = () => {
       setSearchText("");
       setJournalTypes([]);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const Row = deviceWidth === DeviceWidth.Small ? FiltersColumn : FiltersRow;
