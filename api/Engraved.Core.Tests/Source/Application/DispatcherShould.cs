@@ -159,14 +159,9 @@ public class FakeQueryExecutor : IQueryExecutor<Guid, FakeQuery>
   }
 }
 
-public class FakeUserScopedRepository : IUserScopedRepository
+public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepository
 {
-  public Lazy<IUser> CurrentUser { get; }
-
-  public FakeUserScopedRepository(Lazy<IUser> currentUser)
-  {
-    CurrentUser = currentUser;
-  }
+  public Lazy<IUser> CurrentUser => currentUser;
 
   public Task<IUser?> GetUser(string name)
   {

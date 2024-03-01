@@ -12,9 +12,9 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public class MongoRepository_GetAllEntries_Should
 {
-  private MongoRepository _repository = null!;
-  private string _journalId = null!;
   private readonly string _userId = MongoUtil.GenerateNewIdAsString();
+  private string _journalId = null!;
+  private MongoRepository _repository = null!;
 
   [SetUp]
   public async Task Setup()

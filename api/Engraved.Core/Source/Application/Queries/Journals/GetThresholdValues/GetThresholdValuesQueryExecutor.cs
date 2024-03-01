@@ -9,22 +9,16 @@ namespace Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 // - consider a specific time period for threshold (must be configured and
 //   used in calculations)
 
-public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>,
-  GetThresholdValuesQuery>
+public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
+  : IQueryExecutor<IDictionary<string, IDictionary<string, ThresholdResult>>,
+    GetThresholdValuesQuery>
 {
-  private readonly IUserScopedRepository _repository;
-
   public bool DisableCache => false;
-
-  public GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
-  {
-    _repository = repository;
-  }
 
   public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> Execute(GetThresholdValuesQuery query)
   {
     var journalQuery = new GetJournalQuery { JournalId = query.JournalId };
-    var journalQueryExecutor = new GetJournalQueryExecutor(_repository);
+    var journalQueryExecutor = new GetJournalQueryExecutor(repository);
 
     IJournal? journal = await journalQueryExecutor.Execute(journalQuery);
 
@@ -33,7 +27,7 @@ public class GetThresholdValuesQueryExecutor : IQueryExecutor<IDictionary<string
       return new Dictionary<string, IDictionary<string, ThresholdResult>>();
     }
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await repository.GetAllEntries(
       query.JournalId!,
       query.FromDate,
       query.ToDate,

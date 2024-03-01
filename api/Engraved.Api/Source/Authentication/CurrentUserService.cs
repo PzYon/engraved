@@ -32,12 +32,12 @@ public class CurrentUserService(IHttpContextAccessor httpContextAccessor, UserLo
   public async Task<IUser> LoadUser()
   {
     string? name = GetUserName();
-    
+
     if (string.IsNullOrEmpty(name))
     {
-      throw new NotAllowedOperationException($"Username is not available");
+      throw new NotAllowedOperationException("Username is not available");
     }
-    
+
     return await userLoader.GetUser(name);
   }
 }

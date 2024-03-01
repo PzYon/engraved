@@ -5,7 +5,6 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo.DocumentTypes;
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
@@ -126,7 +125,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   {
     if (string.IsNullOrEmpty(nameOrId))
     {
-      throw new NotAllowedOperationException($"Current user is not available.");
+      throw new NotAllowedOperationException("Current user is not available.");
     }
   }
 }

@@ -11,8 +11,8 @@ namespace Engraved.Core.Application.Queries.Entries.GetAll;
 
 public class GetAllEntriesQueryExecutorShould
 {
-  private InMemoryRepository _repo = null!;
   private FakeDateService _dateService = null!;
+  private InMemoryRepository _repo = null!;
 
   [SetUp]
   public void SetUp()

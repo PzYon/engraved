@@ -9,9 +9,8 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public class MongoRepository_GetLastEditedEntries_Should
 {
-  private MongoRepository _repository = null!;
-
   private string _journalId = null!;
+  private MongoRepository _repository = null!;
 
   [SetUp]
   public async Task Setup()

@@ -91,7 +91,7 @@ public class Dispatcher(
              {
                ["ActionKind"] = payload is IQuery ? "query" : "command",
                ["PayloadType"] = name,
-               ["Payload"] = JsonConvert.SerializeObject(payload),
+               ["Payload"] = JsonConvert.SerializeObject(payload)
              }
            ))
     {

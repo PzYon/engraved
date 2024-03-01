@@ -23,7 +23,7 @@ public class MockCurrentUserService(string userId) : ICurrentUserService
   {
     if (string.IsNullOrEmpty(_userName))
     {
-      throw new NotAllowedOperationException($"Username is not available");
+      throw new NotAllowedOperationException("Username is not available");
     }
 
     return Task.FromResult(new User { Name = _userName, Id = userId } as IUser);

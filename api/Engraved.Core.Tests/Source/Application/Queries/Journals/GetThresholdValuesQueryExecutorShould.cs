@@ -17,8 +17,8 @@ public class GetThresholdValuesQueryExecutorShould
   private const string JournalId = "journal-id";
 
   private InMemoryRepository _testRepository = null!;
-  private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
   private string _userId = null!;
+  private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
 
   [SetUp]
   public async Task SetUp()

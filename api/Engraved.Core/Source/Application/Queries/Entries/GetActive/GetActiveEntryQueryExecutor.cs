@@ -6,16 +6,9 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetActive;
 
-public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?, GetActiveEntryQuery>
+public class GetActiveEntryQueryExecutor(IRepository repository) : IQueryExecutor<IEntry?, GetActiveEntryQuery>
 {
-  private readonly IBaseRepository _repository;
-
   public bool DisableCache => false;
-
-  public GetActiveEntryQueryExecutor(IRepository repository)
-  {
-    _repository = repository;
-  }
 
   public async Task<IEntry?> Execute(GetActiveEntryQuery query)
   {
@@ -27,7 +20,7 @@ public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?, GetActiveEntr
       );
     }
 
-    IJournal? journal = await _repository.GetJournal(query.JournalId);
+    IJournal? journal = await repository.GetJournal(query.JournalId);
 
     if (journal == null)
     {
@@ -42,7 +35,6 @@ public class GetActiveEntryQueryExecutor : IQueryExecutor<IEntry?, GetActiveEntr
       return null;
     }
 
-    var timerJournal = (TimerJournal) journal;
-    return await UpsertTimerEntryCommandExecutor.GetActiveEntry(_repository, timerJournal);
+    return await UpsertTimerEntryCommandExecutor.GetActiveEntry(repository, (TimerJournal) journal);
   }
 }

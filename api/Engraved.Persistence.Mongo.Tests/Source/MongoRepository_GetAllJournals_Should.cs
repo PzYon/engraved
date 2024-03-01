@@ -10,8 +10,8 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public class MongoRepository_GetAllJournals_Should
 {
-  private MongoRepository _repository = null!;
   private string _gaugeJournalId = null!;
+  private MongoRepository _repository = null!;
 
   [SetUp]
   public async Task Setup()
@@ -82,7 +82,7 @@ public class MongoRepository_GetAllJournals_Should
       {
         Schedule = new Schedule
         {
-          NextOccurrence = DateTime.Now.AddDays(3),
+          NextOccurrence = DateTime.Now.AddDays(3)
         },
         Name = "My Name"
       }

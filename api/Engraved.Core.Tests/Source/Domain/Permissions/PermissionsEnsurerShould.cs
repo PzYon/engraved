@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
@@ -10,8 +9,8 @@ namespace Engraved.Core.Domain.Permissions;
 
 public class PermissionsEnsurerShould
 {
-  private IBaseRepository _repository = null!;
   private PermissionsEnsurer _permissionsEnsurer = null!;
+  private IBaseRepository _repository = null!;
 
   [SetUp]
   public void SetUp()
@@ -84,6 +83,6 @@ public class PermissionsEnsurerShould
 
 public class TestPermissionHolder : IPermissionHolder
 {
-  public UserPermissions Permissions { get; set; } = null!;
   public UserRole UserRole { get; set; }
+  public UserPermissions Permissions { get; set; } = null!;
 }

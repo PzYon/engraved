@@ -186,7 +186,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   {
     if (string.IsNullOrEmpty(name))
     {
-      throw new NotAllowedOperationException($"Current user is not available.");
+      throw new NotAllowedOperationException("Current user is not available.");
     }
   }
 }

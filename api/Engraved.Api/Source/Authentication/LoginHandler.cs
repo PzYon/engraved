@@ -16,9 +16,9 @@ public class LoginHandler : ILoginHandler
 {
   private readonly AuthenticationConfig _authenticationConfig;
   private readonly IDateService _dateService;
-  private readonly UserLoader _userLoader;
   private readonly IBaseRepository _repository;
   private readonly IGoogleTokenValidator _tokenValidator;
+  private readonly UserLoader _userLoader;
 
   public LoginHandler(
     IGoogleTokenValidator tokenValidator,
@@ -55,11 +55,27 @@ public class LoginHandler : ILoginHandler
     IUser user = await EnsureUser(parsedToken.UserName, parsedToken.UserDisplayName, parsedToken.ImageUrl);
 
     _userLoader.SetUser(user);
-    
+
     return new AuthResult
     {
       JwtToken = ToJwtToken(parsedToken.UserName),
       User = user
+    };
+  }
+
+  public async Task<AuthResult> LoginForTests(string? userName)
+  {
+    if (string.IsNullOrEmpty(userName))
+    {
+      throw new Exception($"{nameof(userName)} is null, maybe you are not running test mode?");
+    }
+
+    IUser user = await EnsureUser(userName, userName, null);
+
+    return new AuthResult
+    {
+      User = user,
+      JwtToken = userName
     };
   }
 
@@ -80,22 +96,6 @@ public class LoginHandler : ILoginHandler
     UpsertResult result = await _repository.UpsertUser(user);
     user.Id = result.EntityId;
     return user;
-  }
-
-  public async Task<AuthResult> LoginForTests(string? userName)
-  {
-    if (string.IsNullOrEmpty(userName))
-    {
-      throw new Exception($"{nameof(userName)} is null, maybe you are not running test mode?");
-    }
-
-    IUser user = await EnsureUser(userName, userName, null);
-
-    return new AuthResult
-    {
-      User = user,
-      JwtToken = userName
-    };
   }
 
   private string ToJwtToken(string userId)
