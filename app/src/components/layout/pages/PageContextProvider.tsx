@@ -1,16 +1,17 @@
 import { IAction } from "../../common/actions/IAction";
-import { JournalType } from "../../../serverApi/JournalType";
 import { IPageTab } from "../tabs/IPageTab";
 import { FilterMode, PageContext, PageType } from "./PageContext";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { JournalType } from "../../../serverApi/JournalType";
 
 export const PageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const paramSearchText = searchParams?.get("q") ?? "";
-  const paramJournalTypes = searchParams?.get("journalTypes") ?? "";
+  const paramJournalTypes = searchParams?.get("journalTypes");
 
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
@@ -19,51 +20,50 @@ export const PageContextProvider: React.FC<{
   const [pageActions, setPageActions] = useState<IAction[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
-  const [searchText, setSearchText] = useState<string>(paramSearchText);
-  const [journalTypes, setJournalTypes] = useState<JournalType[]>([]);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
   const [pageType, setPageType] = useState<PageType>(undefined);
 
-  useEffect(() => {
+  function getJournalTypes(): JournalType[] {
+    return (
+      (paramJournalTypes?.split(",").filter((j) => j) as JournalType[]) ?? []
+    );
+  }
+
+  function setUrlParams(overrides?: {
+    searchText?: string;
+    journalTypes?: JournalType[];
+  }) {
     const params: {
       q?: string;
       journalTypes?: string;
     } = {};
 
-    if (searchText) {
-      params["q"] = searchText;
+    if (overrides?.searchText ?? paramSearchText) {
+      params["q"] = overrides?.searchText ?? paramSearchText;
     }
+
+    const journalTypes = overrides?.journalTypes ?? getJournalTypes();
 
     if (journalTypes.length) {
       params["journalTypes"] = journalTypes.join(",");
     }
 
     setSearchParams(params);
-  }, [journalTypes, searchText, setSearchParams]);
+  }
 
   useEffect(() => {
-    if (!paramSearchText) {
-      return;
-    }
-    setSearchText(paramSearchText);
-  }, [paramSearchText]);
-
-  useEffect(() => {
-    if (!paramJournalTypes) {
-      return;
-    }
-    setJournalTypes(paramJournalTypes.split(",") as JournalType[]);
-  }, [paramJournalTypes]);
+    setUrlParams();
+  }, [paramSearchText, paramJournalTypes, setSearchParams]);
 
   useEffect(() => {
     document.title = [
       documentTitle,
-      searchText ? `Search '${searchText}'` : null,
+      paramSearchText ? `Search '${paramSearchText}'` : null,
       "engraved.",
     ]
       .filter((v) => v)
       .join(" | ");
-  }, [documentTitle, searchText]);
+  }, [documentTitle, paramSearchText]);
 
   const contextValue = useMemo(() => {
     return {
@@ -81,10 +81,14 @@ export const PageContextProvider: React.FC<{
       setFilterMode,
       showFilters,
       setShowFilters,
-      searchText,
-      setSearchText,
-      journalTypes,
-      setJournalTypes,
+      searchText: paramSearchText,
+      setSearchText: (value: string) =>
+        setUrlParams({
+          searchText: value,
+        }),
+      journalTypes: getJournalTypes(),
+      setJournalTypes: (value: JournalType[]) =>
+        setUrlParams({ journalTypes: value }),
       tabs,
       setTabs,
       pageType,
@@ -98,8 +102,8 @@ export const PageContextProvider: React.FC<{
     hideActions,
     showFilters,
     filterMode,
-    searchText,
-    journalTypes,
+    paramSearchText,
+    paramJournalTypes,
     tabs,
     pageType,
   ]);
