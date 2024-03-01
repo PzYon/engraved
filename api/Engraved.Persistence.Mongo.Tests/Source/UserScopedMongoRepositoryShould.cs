@@ -14,14 +14,13 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public class UserScopedMongoRepositoryShould
 {
-  private TestMongoRepository _repository = null!;
-  private TestUserScopedMongoRepository _userScopedRepository = null!;
-
   private const string CurrentUserName = "me";
   private string _currentUserId = null!;
-
   private const string OtherUserName = "other";
   private string _otherUserId = null!;
+
+  private TestMongoRepository _repository = null!;
+  private TestUserScopedMongoRepository _userScopedRepository = null!;
 
   [SetUp]
   public async Task Setup()

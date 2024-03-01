@@ -17,11 +17,6 @@ namespace Engraved.Api.Tests.Authentication;
 
 public class LoginHandlerShould
 {
-  private IDateService _dateService = null!;
-  private LoginHandler _loginHandler = null!;
-  private IBaseRepository _testRepository = null!;
-  private UserLoader _userLoader = null!;
-
   private readonly AuthenticationConfig _authenticationConfig = new()
   {
     JwtSecret = "cfadd57e-990a-4e95-9141-aa2493417126",
@@ -30,11 +25,16 @@ public class LoginHandlerShould
     GoogleClientId = "791638561996-u8a0gf3af7b33qtk178djpek4054ir4d.apps.googleusercontent.com"
   };
 
+  private IDateService _dateService = null!;
+  private LoginHandler _loginHandler = null!;
+  private IBaseRepository _testRepository = null!;
+  private UserLoader _userLoader = null!;
+
   [SetUp]
   public void SetUp()
   {
     _testRepository = new InMemoryRepository();
-    
+
     _userLoader = new UserLoader(_testRepository, new MemoryCache(new MemoryCacheOptions()));
 
     _dateService = new FakeDateService();

@@ -155,8 +155,8 @@ public static class ArrayExtensions
 
 internal class ArrayTraverse
 {
-  public int[] Position;
   private readonly int[] _maxLengths;
+  public int[] Position;
 
   public ArrayTraverse(Array array)
   {

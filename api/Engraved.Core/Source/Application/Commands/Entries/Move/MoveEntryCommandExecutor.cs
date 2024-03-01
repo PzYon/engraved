@@ -4,49 +4,41 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Move;
 
-public class MoveEntryCommandExecutor : ICommandExecutor<MoveEntryCommand>
+public class MoveEntryCommandExecutor(IRepository repository, IDateService dateService)
+  : ICommandExecutor<MoveEntryCommand>
 {
-  private readonly IBaseRepository _repository;
-  private readonly IDateService _dateService;
-
-  public MoveEntryCommandExecutor(IRepository repository, IDateService dateService)
-  {
-    _repository = repository;
-    _dateService = dateService;
-  }
-
   public async Task<CommandResult> Execute(MoveEntryCommand command)
   {
     // can user access target journal?
-    IJournal? targetJournal = await _repository.GetJournal(command.TargetJournalId);
+    IJournal? targetJournal = await repository.GetJournal(command.TargetJournalId);
     if (targetJournal == null)
     {
       return new CommandResult();
     }
 
     // can user access entry?
-    IEntry? entry = await _repository.GetEntry(command.EntryId);
+    IEntry? entry = await repository.GetEntry(command.EntryId);
     if (entry == null)
     {
       return new CommandResult();
     }
 
     // update source journal EditedOn
-    IJournal sourceJournal = (await _repository.GetJournal(entry.ParentId))!;
-    sourceJournal.EditedOn = _dateService.UtcNow;
-    await _repository.UpsertJournal(sourceJournal);
+    IJournal sourceJournal = (await repository.GetJournal(entry.ParentId))!;
+    sourceJournal.EditedOn = dateService.UtcNow;
+    await repository.UpsertJournal(sourceJournal);
 
     // update target journal EditedOn
-    targetJournal.EditedOn = _dateService.UtcNow;
-    await _repository.UpsertJournal(targetJournal);
+    targetJournal.EditedOn = dateService.UtcNow;
+    await repository.UpsertJournal(targetJournal);
 
     // update entry
-    entry.EditedOn = _dateService.UtcNow;
-    entry.DateTime = _dateService.UtcNow;
+    entry.EditedOn = dateService.UtcNow;
+    entry.DateTime = dateService.UtcNow;
     entry.ParentId = targetJournal.Id!;
-    await _repository.UpsertEntry(entry);
+    await repository.UpsertEntry(entry);
 
-    string[] affectedUserIds = await GetAffectedUserIds(_repository, entry, targetJournal);
+    string[] affectedUserIds = await GetAffectedUserIds(repository, entry, targetJournal);
 
     return new CommandResult(
       command.EntryId,

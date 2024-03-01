@@ -1,5 +1,5 @@
-﻿using Google.Apis.Auth;
-using Engraved.Api.Settings;
+﻿using Engraved.Api.Settings;
+using Google.Apis.Auth;
 using Microsoft.Extensions.Options;
 
 namespace Engraved.Api.Authentication.Google;

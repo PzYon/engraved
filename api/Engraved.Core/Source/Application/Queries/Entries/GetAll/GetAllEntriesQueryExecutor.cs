@@ -4,23 +4,17 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAll;
 
-public class GetAllEntriesQueryExecutor : IQueryExecutor<GetAllEntriesQueryResult, GetAllEntriesQuery>
+public class GetAllEntriesQueryExecutor(IRepository repository)
+  : IQueryExecutor<GetAllEntriesQueryResult, GetAllEntriesQuery>
 {
-  private readonly IBaseRepository _repository;
-
   public bool DisableCache => false;
-
-  public GetAllEntriesQueryExecutor(IRepository repository)
-  {
-    _repository = repository;
-  }
 
   public async Task<GetAllEntriesQueryResult> Execute(GetAllEntriesQuery query)
   {
-    IJournal[] allJournals = await _repository.GetAllJournals(null, null, null, 100);
+    IJournal[] allJournals = await repository.GetAllJournals(null, null, null, 100);
     string[] allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
-    IEntry[] allEntries = await _repository.GetLastEditedEntries(
+    IEntry[] allEntries = await repository.GetLastEditedEntries(
       allJournalIds,
       query.SearchText,
       query.JournalTypes,

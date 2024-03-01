@@ -14,21 +14,14 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-public class MongoRepository : IBaseRepository
+public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRepository
 {
-  private readonly MongoDatabaseClient _mongoDatabaseClient;
-
-  // protected so they can be accessed from TestRepository
-  protected IMongoCollection<EntryDocument> EntriesCollection => _mongoDatabaseClient.EntriesCollection;
-  protected IMongoCollection<JournalDocument> JournalsCollection => _mongoDatabaseClient.JournalsCollection;
-  protected IMongoCollection<UserDocument> UsersCollection => _mongoDatabaseClient.UsersCollection;
-
   private const string RandomDocId = "63f949da880b5bf2518be721";
 
-  public MongoRepository(MongoDatabaseClient mongoDatabaseClient)
-  {
-    _mongoDatabaseClient = mongoDatabaseClient;
-  }
+  // protected so they can be accessed from TestRepository
+  protected IMongoCollection<EntryDocument> EntriesCollection => mongoDatabaseClient.EntriesCollection;
+  protected IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
+  protected IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
 
   public virtual async Task<IUser?> GetUser(string? name)
   {
@@ -122,51 +115,6 @@ public class MongoRepository : IBaseRepository
       .ToListAsync();
 
     return journals.Select(JournalDocumentMapper.FromDocument<IJournal>).ToArray();
-  }
-
-  // there must be a better solution than this, but it works for the moment... i believe
-  // Builders<JournalDocument>.Filter.Where(t => t.Type == journalType) does not work because
-  // JournalDocument.Type is an ABSTRACT property.
-  private static Expression<Func<JournalDocument, bool>> GetIsJournalTypeExpression(JournalType journalType)
-  {
-    switch (journalType)
-    {
-      case JournalType.Counter:
-        return d => d is CounterJournalDocument;
-      case JournalType.Gauge:
-        return d => d is GaugeJournalDocument;
-      case JournalType.Timer:
-        return d => d is TimerJournalDocument;
-      case JournalType.Scraps:
-        return d => d is ScrapsJournalDocument;
-      default:
-        throw new ArgumentOutOfRangeException(
-          nameof(journalType),
-          journalType,
-          $"{nameof(GetIsJournalTypeExpression)} not defined for {journalType}."
-        );
-    }
-  }
-
-  private static Expression<Func<EntryDocument, bool>> GetIsEntryTypeExpression(JournalType journalType)
-  {
-    switch (journalType)
-    {
-      case JournalType.Counter:
-        return d => d is CounterEntryDocument;
-      case JournalType.Gauge:
-        return d => d is GaugeEntryDocument;
-      case JournalType.Timer:
-        return d => d is TimerEntryDocument;
-      case JournalType.Scraps:
-        return d => d is ScrapsEntryDocument;
-      default:
-        throw new ArgumentOutOfRangeException(
-          nameof(journalType),
-          journalType,
-          $"{nameof(GetIsEntryTypeExpression)} not defined for {journalType}."
-        );
-    }
   }
 
   public async Task<IJournal?> GetJournal(string journalId)
@@ -382,6 +330,46 @@ public class MongoRepository : IBaseRepository
       Builders<JournalDocument>.Filter.Empty,
       new CountOptions { Hint = "_id_" }
     );
+  }
+
+  // there must be a better solution than this, but it works for the moment... i believe
+  // Builders<JournalDocument>.Filter.Where(t => t.Type == journalType) does not work because
+  // JournalDocument.Type is an ABSTRACT property.
+  private static Expression<Func<JournalDocument, bool>> GetIsJournalTypeExpression(JournalType journalType)
+  {
+    return journalType switch
+    {
+      JournalType.Counter => d => d is CounterJournalDocument,
+      JournalType.Gauge => d => d is GaugeJournalDocument,
+      JournalType.Timer => d => d is TimerJournalDocument,
+      JournalType.Scraps => d => d is ScrapsJournalDocument,
+      _ => throw new ArgumentOutOfRangeException(
+        nameof(journalType),
+        journalType,
+        $"{nameof(GetIsJournalTypeExpression)} not defined for {journalType}."
+      )
+    };
+  }
+
+  private static Expression<Func<EntryDocument, bool>> GetIsEntryTypeExpression(JournalType journalType)
+  {
+    switch (journalType)
+    {
+      case JournalType.Counter:
+        return d => d is CounterEntryDocument;
+      case JournalType.Gauge:
+        return d => d is GaugeEntryDocument;
+      case JournalType.Timer:
+        return d => d is TimerEntryDocument;
+      case JournalType.Scraps:
+        return d => d is ScrapsEntryDocument;
+      default:
+        throw new ArgumentOutOfRangeException(
+          nameof(journalType),
+          journalType,
+          $"{nameof(GetIsEntryTypeExpression)} not defined for {journalType}."
+        );
+    }
   }
 
   private async Task<UpsertResult> UpsertUserInternal(IUser user)

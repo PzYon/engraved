@@ -5,19 +5,16 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert;
 
-public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal> : ICommandExecutor<TCommand>
+public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>(
+  IRepository repository,
+  IDateService dateService
+) : ICommandExecutor<TCommand>
   where TCommand : BaseUpsertEntryCommand
   where TEntry : class, IEntry, new()
   where TJournal : class, IJournal
 {
-  protected readonly IBaseRepository Repository;
-  protected readonly IDateService DateService;
-
-  protected BaseUpsertEntryCommandExecutor(IRepository repository, IDateService dateService)
-  {
-    Repository = repository;
-    DateService = dateService;
-  }
+  protected readonly IDateService DateService = dateService;
+  protected readonly IBaseRepository Repository = repository;
 
   public async Task<CommandResult> Execute(TCommand command)
   {

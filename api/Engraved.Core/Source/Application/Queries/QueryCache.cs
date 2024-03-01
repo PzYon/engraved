@@ -25,7 +25,8 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       {
         Value = value,
         ConfigToken = GetConfigToken(query)
-      }
+      },
+      new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
     );
   }
 

@@ -11,10 +11,9 @@ namespace Engraved.Core.Application.Queries.Journals;
 
 public class JournalQueryUtilShould
 {
+  private string _meUserId = null!;
   private InMemoryRepository _testRepository = null!;
   private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
-
-  private string _meUserId = null!;
   private string _youUserId = null!;
 
   [SetUp]

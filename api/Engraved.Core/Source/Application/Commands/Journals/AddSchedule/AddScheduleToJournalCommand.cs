@@ -3,6 +3,6 @@
 public class AddScheduleToJournalCommand : ICommand
 {
   public string? JournalId { get; set; }
-  
+
   public DateTime? NextOccurrence { get; set; }
 }

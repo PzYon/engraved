@@ -11,9 +11,9 @@ namespace Engraved.Core.Application.Commands.Entries.Upsert;
 
 public class UpsertTimerEntryCommandExecutorShould
 {
+  private const string JournalId = "626dab25f1a93c5c724d820a";
   private FakeDateService _fakeDateService = null!;
   private InMemoryRepository _testRepository = null!;
-  private const string JournalId = "626dab25f1a93c5c724d820a";
 
   [SetUp]
   public void SetUp()

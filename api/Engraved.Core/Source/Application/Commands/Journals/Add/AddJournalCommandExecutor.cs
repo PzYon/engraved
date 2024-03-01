@@ -3,17 +3,9 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Add;
 
-public class AddJournalCommandExecutor : ICommandExecutor<AddJournalCommand>
+public class AddJournalCommandExecutor(IRepository repository, IDateService dateService)
+  : ICommandExecutor<AddJournalCommand>
 {
-  private readonly IBaseRepository _repository;
-  private readonly IDateService _dateService;
-
-  public AddJournalCommandExecutor(IRepository repository, IDateService dateService)
-  {
-    _repository = repository;
-    _dateService = dateService;
-  }
-
   public async Task<CommandResult> Execute(AddJournalCommand command)
   {
     // todo:
@@ -30,8 +22,8 @@ public class AddJournalCommandExecutor : ICommandExecutor<AddJournalCommand>
     IJournal journal = CreateJournal(command.Type);
     journal.Description = command.Description;
     journal.Name = command.Name;
-    journal.EditedOn = _dateService.UtcNow;
-    UpsertResult result = await _repository.UpsertJournal(journal);
+    journal.EditedOn = dateService.UtcNow;
+    UpsertResult result = await repository.UpsertJournal(journal);
 
     return new CommandResult(result.EntityId, Array.Empty<string>());
   }

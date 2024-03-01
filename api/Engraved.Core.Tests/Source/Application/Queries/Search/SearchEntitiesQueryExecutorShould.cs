@@ -17,10 +17,10 @@ namespace Engraved.Core.Application.Queries.Search;
 
 public class SearchEntitiesQueryExecutorShould
 {
-  private InMemoryRepository _testRepository = null!;
   private FakeDateService _dateService = null!;
-  private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
   private SearchEntitiesQueryExecutor _searchExecutor = null!;
+  private InMemoryRepository _testRepository = null!;
+  private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
 
   [SetUp]
   public async Task SetUp()

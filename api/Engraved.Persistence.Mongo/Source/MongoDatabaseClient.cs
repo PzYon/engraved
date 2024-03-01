@@ -16,21 +16,6 @@ public class MongoDatabaseClient
   public readonly IMongoCollection<JournalDocument> JournalsCollection;
   public readonly IMongoCollection<UserDocument> UsersCollection;
 
-  public MongoDatabaseClient(ILogger? logger, IMongoRepositorySettings settings, string? dbNameOverride)
-  {
-    _logger = logger;
-
-    IMongoClient client = CreateMongoClient(settings);
-
-    string dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
-
-    IMongoDatabase? db = client.GetDatabase(dbName);
-    
-    JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
-    EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);
-    UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
-  }
-
   static MongoDatabaseClient()
   {
     // below stuff is required for polymorphic document types to work. it would
@@ -44,6 +29,21 @@ public class MongoDatabaseClient
     BsonClassMap.RegisterClassMap<TimerJournalDocument>();
     BsonClassMap.RegisterClassMap<GaugeJournalDocument>();
     BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
+  }
+
+  public MongoDatabaseClient(ILogger? logger, IMongoRepositorySettings settings, string? dbNameOverride)
+  {
+    _logger = logger;
+
+    IMongoClient client = CreateMongoClient(settings);
+
+    string dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
+
+    IMongoDatabase? db = client.GetDatabase(dbName);
+
+    JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
+    EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);
+    UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
   }
 
   private IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
@@ -64,5 +64,4 @@ public class MongoDatabaseClient
 
     return new MongoClient(clientSettings);
   }
-
 }

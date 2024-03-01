@@ -10,8 +10,8 @@ namespace Engraved.Core.Application.Commands.Entries.Move;
 
 public class MoveEntryCommandExecutorShould
 {
-  private InMemoryRepository _repo = null!;
   private FakeDateService _dateService = null!;
+  private InMemoryRepository _repo = null!;
 
   [SetUp]
   public void SetUp()
