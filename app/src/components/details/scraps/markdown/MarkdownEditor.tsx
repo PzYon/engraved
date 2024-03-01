@@ -1,5 +1,6 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Theme, useTheme } from "@mui/material";
+import { LazyLoadSuspender } from "../../../common/lazyLoadComponent";
 
 export type KeyMappings = Record<string, () => void>;
 
@@ -19,12 +20,12 @@ export const MarkdownEditor: React.FC<ICodeMirrorProps> = (props) => {
   const theme = useTheme();
 
   return (
-    <Suspense fallback={<div />}>
+    <LazyLoadSuspender>
       <LazyCodeMirror
         {...props}
         value={props.value ?? ""}
         theme={props.theme ?? theme}
       />
-    </Suspense>
+    </LazyLoadSuspender>
   );
 };

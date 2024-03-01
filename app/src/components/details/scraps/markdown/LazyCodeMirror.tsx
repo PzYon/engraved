@@ -63,6 +63,8 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
   );
 };
 
+throw new Error("Kaputt!");
+
 function getKeymap(keyMappings: KeyMappings) {
   const newKeymap = [...defaultKeymap];
 

@@ -1,4 +1,5 @@
-import React, { Suspense } from "react";
+import React from "react";
+import { LazyLoadSuspender } from "./lazyLoadComponent";
 
 export interface IDateSelectorProps {
   setDate: (date: Date) => void;
@@ -13,8 +14,8 @@ const LazyDateSelector = React.lazy(() => import("./LazyDateSelector"));
 
 export const DateSelector: React.FC<IDateSelectorProps> = (props) => {
   return (
-    <Suspense fallback={<div />}>
+    <LazyLoadSuspender>
       <LazyDateSelector {...props}></LazyDateSelector>
-    </Suspense>
+    </LazyLoadSuspender>
   );
 };
