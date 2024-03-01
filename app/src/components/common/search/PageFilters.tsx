@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FiltersColumn, FiltersRow } from "../../details/filters/FiltersRow";
 import { PageJournalTypesSelector } from "./PageJournalTypesSelector";
 import { DeviceWidth, useDeviceWidth } from "../useDeviceWidth";
@@ -8,7 +8,15 @@ import { FilterMode, usePageContext } from "../../layout/pages/PageContext";
 
 export const PageFilters: React.FC = () => {
   const deviceWidth = useDeviceWidth();
-  const { showFilters, filterMode } = usePageContext();
+  const { showFilters, filterMode, setSearchText, setJournalTypes } =
+    usePageContext();
+
+  useEffect(() => {
+    return () => {
+      setSearchText("");
+      setJournalTypes([]);
+    };
+  }, []);
 
   const Row = deviceWidth === DeviceWidth.Small ? FiltersColumn : FiltersRow;
 
