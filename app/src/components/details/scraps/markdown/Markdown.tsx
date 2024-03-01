@@ -1,4 +1,5 @@
-import React, { MouseEventHandler, Suspense } from "react";
+import React, { MouseEventHandler } from "react";
+import { LazyLoadSuspender } from "../../../common/lazyLoadComponent";
 
 export interface IMarkdownProps {
   value: string;
@@ -14,8 +15,8 @@ export const Markdown: React.FC<IMarkdownProps> = ({
   useBasic,
 }) => {
   return (
-    <Suspense fallback={<div />}>
+    <LazyLoadSuspender>
       <LazyMarkdown value={value} onClick={onClick} useBasic={useBasic} />
-    </Suspense>
+    </LazyLoadSuspender>
   );
 };
