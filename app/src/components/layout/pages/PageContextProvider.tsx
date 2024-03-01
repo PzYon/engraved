@@ -9,7 +9,6 @@ export const PageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const paramSearchText = searchParams?.get("q") ?? "";
   const paramJournalTypes = searchParams?.get("journalTypes");
 
@@ -22,34 +21,6 @@ export const PageContextProvider: React.FC<{
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
   const [pageType, setPageType] = useState<PageType>(undefined);
-
-  function getJournalTypes(): JournalType[] {
-    return (
-      (paramJournalTypes?.split(",").filter((j) => j) as JournalType[]) ?? []
-    );
-  }
-
-  function setUrlParams(overrides?: {
-    searchText?: string;
-    journalTypes?: JournalType[];
-  }) {
-    const params: {
-      q?: string;
-      journalTypes?: string;
-    } = {};
-
-    if (overrides?.searchText ?? paramSearchText) {
-      params["q"] = overrides?.searchText ?? paramSearchText;
-    }
-
-    const journalTypes = overrides?.journalTypes ?? getJournalTypes();
-
-    if (journalTypes.length) {
-      params["journalTypes"] = journalTypes.join(",");
-    }
-
-    setSearchParams(params);
-  }
 
   useEffect(() => {
     setUrlParams();
@@ -111,4 +82,32 @@ export const PageContextProvider: React.FC<{
   return (
     <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>
   );
+
+  function setUrlParams(overrides?: {
+    searchText?: string;
+    journalTypes?: JournalType[];
+  }) {
+    const params: {
+      q?: string;
+      journalTypes?: string;
+    } = {};
+
+    const searchText = overrides?.searchText ?? paramSearchText;
+    if (searchText) {
+      params["q"] = searchText;
+    }
+
+    const journalTypes = overrides?.journalTypes ?? getJournalTypes();
+    if (journalTypes.length) {
+      params["journalTypes"] = journalTypes.join(",");
+    }
+
+    setSearchParams(params);
+  }
+
+  function getJournalTypes(): JournalType[] {
+    return (
+      (paramJournalTypes?.split(",").filter((j) => j) as JournalType[]) ?? []
+    );
+  }
 };
