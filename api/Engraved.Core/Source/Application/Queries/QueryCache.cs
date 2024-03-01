@@ -1,10 +1,11 @@
 ﻿using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Engraved.Core.Application.Queries;
 
-public class QueryCache(IMemoryCache memoryCache, Lazy<IUser> currentUser)
+public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, Lazy<IUser> currentUser)
 {
   private const string KeysByUserId = "___keysByUserId";
 
@@ -31,18 +32,24 @@ public class QueryCache(IMemoryCache memoryCache, Lazy<IUser> currentUser)
   public bool TryGetValue<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, out TValue? value)
     where TQuery : IQuery
   {
-    if (!memoryCache.TryGetValue(GetKey(queryExecutor), out CacheItem<TValue>? cacheItem))
+    string key = GetKey(queryExecutor);
+
+    if (!memoryCache.TryGetValue(key, out CacheItem<TValue>? cacheItem))
     {
+      logger.LogInformation($"{key}: Cache miss (not available)");
       value = default;
       return false;
     }
 
-    if (cacheItem!.ConfigToken != GetConfigToken(query))
+    string configToken = GetConfigToken(query);
+    if (cacheItem!.ConfigToken != configToken)
     {
+      logger.LogInformation($"{key}: Cache miss (different token): {configToken}");
       value = default!;
       return false;
     }
 
+    logger.LogInformation($"{key}: Cache hit");
     value = cacheItem.Value;
     return true;
   }
@@ -57,10 +64,12 @@ public class QueryCache(IMemoryCache memoryCache, Lazy<IUser> currentUser)
 
   private void ClearForUser(string userName)
   {
-    if (!QueryKeysByUser.TryGetValue(userName, out HashSet<string>? keys))
+    if (!QueryKeysByUser.TryGetValue(userName, out HashSet<string>? keys) || !keys.Any())
     {
       return;
     }
+
+    logger.LogInformation($"Invalidating cache for user {userName}, {keys.Count} items affected");
 
     foreach (string key in keys)
     {
@@ -71,7 +80,7 @@ public class QueryCache(IMemoryCache memoryCache, Lazy<IUser> currentUser)
   private string GetKey<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor)
     where TQuery : IQuery
   {
-    return currentUser.Value.Id + "_" + queryExecutor.GetType().FullName!;
+    return queryExecutor.GetType().Name + "_" + currentUser.Value.Id;
   }
 
   private static string GetConfigToken(IQuery query)
