@@ -97,7 +97,6 @@ export const Page: React.FC<{
       setJournalTypes([]);
       setTabs([]);
       setPageType(undefined);
-
       setSearchParams({});
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
