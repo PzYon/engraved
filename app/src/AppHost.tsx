@@ -7,10 +7,32 @@ import { AppFooter } from "./components/layout/AppFooter";
 import { styled } from "@mui/material";
 
 export const AppHost: React.FC = () => {
+  function registerNotifications() {
+    Notification.requestPermission().then((result) => {
+      if (result === "granted") {
+        randomNotification();
+      }
+    });
+  }
+
+  function randomNotification() {
+    const options = {
+      body: "Sali M@x!",
+    };
+    new Notification("Hallo Vater!", options);
+    setTimeout(randomNotification, 15000);
+  }
+
   return (
     <Host>
       <AppHeader />
       <AppAlertBar />
+      <div
+        style={{ backgroundColor: "deeppink" }}
+        onClick={() => registerNotifications()}
+      >
+        Register notifications
+      </div>
       <AppContent scope="body">
         <AppErrorBoundary>
           <AppRoutes />
