@@ -6,21 +6,31 @@ import { AppRoutes } from "./components/layout/AppRoutes";
 import { AppFooter } from "./components/layout/AppFooter";
 import { styled } from "@mui/material";
 
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/sw.js")
+    .then(() => {
+      alert("Service Worker registered");
+    })
+    .catch((error) => {
+      alert("Error registering the Service Worker: " + error.title);
+    });
+}
+
 export const AppHost: React.FC = () => {
   function registerNotifications() {
     Notification.requestPermission().then((result) => {
       if (result === "granted") {
         randomNotification();
+      } else {
+        alert(result);
       }
     });
   }
 
   function randomNotification() {
-    const options = {
-      body: "Sali M@x!",
-    };
-    new Notification("Hallo Vater!", options);
-    setTimeout(randomNotification, 15000);
+    const options = { body: "Hallo Vater" };
+    new Notification("Moin.", options);
   }
 
   return (
