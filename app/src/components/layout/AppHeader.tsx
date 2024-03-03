@@ -80,7 +80,7 @@ export const AppHeader: React.FC = () => {
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
             <VersionChecker />
-            <Link to="/entries">
+            <Link to="/settings">
               <User user={user} />
             </Link>
           </ContentWrapper>

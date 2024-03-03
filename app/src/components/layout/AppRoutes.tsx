@@ -6,6 +6,7 @@ import { EntriesPage } from "../overview/EntriesPage";
 import { AddJournalPage } from "../overview/AddJournalPage";
 import { SearchPage } from "../search/SearchPage";
 import { ScheduledPage } from "../scheduled/ScheduledPage";
+import { PwaSettingsPage } from "../../pwa/PwaSettingsPage";
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/entries" element={<EntriesPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/scheduled" element={<ScheduledPage />} />
+      <Route path="/settings" element={<PwaSettingsPage />} />
     </Routes>
   );
 };

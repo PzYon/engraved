@@ -15,7 +15,8 @@ export type PageType =
   | "overview"
   | "search"
   | "add-journal"
-  | "move-scrap";
+  | "move-scrap"
+  | "settings";
 
 export interface IPageContext {
   documentTitle: string;
