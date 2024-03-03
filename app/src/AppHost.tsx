@@ -43,12 +43,13 @@ export const AppHost: React.FC = () => {
     <Host>
       <AppHeader />
       <AppAlertBar />
-      <div
+      <button
+        type="button"
         style={{ backgroundColor: "deeppink" }}
         onClick={() => registerNotifications()}
       >
         Register notifications
-      </div>
+      </button>
       <AppContent scope="body">
         <AppErrorBoundary>
           <AppRoutes />
