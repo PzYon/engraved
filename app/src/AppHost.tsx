@@ -29,8 +29,14 @@ export const AppHost: React.FC = () => {
   }
 
   function randomNotification() {
-    const options = { body: "Hallo Vater" };
-    new Notification("Moin.", options);
+    setTimeout(() => {
+      const options: NotificationOptions = {
+        body: "Hallo Vater",
+        silent: false,
+        vibrate: 3,
+      };
+      new Notification("Moin.", options);
+    }, 5000);
   }
 
   return (
