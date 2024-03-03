@@ -19,13 +19,17 @@ if ("serviceWorker" in navigator) {
 
 export const AppHost: React.FC = () => {
   function registerNotifications() {
-    Notification.requestPermission().then((result) => {
-      if (result === "granted") {
-        randomNotification();
-      } else {
+    Notification.requestPermission()
+      .then((result) => {
         alert(result);
-      }
-    });
+
+        if (result === "granted") {
+          randomNotification();
+        }
+      })
+      .catch((e) => {
+        alert("error registering perm: " + e.message);
+      });
   }
 
   function randomNotification() {
