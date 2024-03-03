@@ -12,6 +12,12 @@ export const PwaSettingsPage: React.FC = () => {
           onClick={() => {
             EngravedServiceWorker.instance.showNotification("Hello", {
               body: "I am test.",
+              actions: [
+                {
+                  title: "Ok",
+                  action: "ok",
+                },
+              ],
             });
           }}
         >

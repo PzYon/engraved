@@ -1,9 +1,7 @@
 export class EngravedServiceWorker {
-  private constructor() {}
-
-  private static _instance: EngravedServiceWorker;
   private _registration: ServiceWorkerRegistration;
 
+  private static _instance: EngravedServiceWorker;
   static get instance(): EngravedServiceWorker {
     if (!this._instance) {
       this._instance = new EngravedServiceWorker();
@@ -11,6 +9,8 @@ export class EngravedServiceWorker {
 
     return this._instance;
   }
+
+  private constructor() {}
 
   showNotification(title: string, options: NotificationOptions) {
     return this._registration.showNotification(title, options);
@@ -38,8 +38,13 @@ export class EngravedServiceWorker {
   }
 
   private registerNotifications() {
+    // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification
     Notification.requestPermission().catch((e) => {
       alert("SW: Error registering notification permissions: " + e.message);
+    });
+
+    addEventListener("notificationclick", () => {
+      alert("Notification action clicked.");
     });
   }
 }
