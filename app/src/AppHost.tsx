@@ -6,10 +6,13 @@ import { AppRoutes } from "./components/layout/AppRoutes";
 import { AppFooter } from "./components/layout/AppFooter";
 import { styled } from "@mui/material";
 
+let sw: ServiceWorkerRegistration = null;
+
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/sw.js")
-    .then(() => {
+    .then((value: ServiceWorkerRegistration) => {
+      sw = value;
       alert("Service Worker registered");
     })
     .catch((error) => {
@@ -34,12 +37,14 @@ export const AppHost: React.FC = () => {
 
   function randomNotification() {
     setTimeout(() => {
-      const options: NotificationOptions = {
+      /*      const options: NotificationOptions = {
         body: "Hallo Vater",
         silent: false,
         vibrate: 3,
-      };
-      new Notification("Moin.", options);
+      };*/
+      sw.showNotification("Hoi Karl!");
+
+      //new Notification("Moin.", options);
     }, 5000);
   }
 
