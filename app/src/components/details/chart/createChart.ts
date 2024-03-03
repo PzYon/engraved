@@ -300,7 +300,7 @@ function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
   }
 }
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 function average(ctx: any) {
   const values = ctx.chart.data.datasets[0]?.data;
 

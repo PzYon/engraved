@@ -29,7 +29,7 @@ export const Chart: React.FC<IChartProps> = (props) => {
               sx={{ width: "40%" }}
               value={rollingAverageGroupSize}
               onChange={(x) => {
-                /* eslint-disable  @typescript-eslint/no-explicit-any */
+                /* eslint-disable @typescript-eslint/no-explicit-any */
                 setRollingAverageGroupSize((x.target as any).value);
               }}
             />
