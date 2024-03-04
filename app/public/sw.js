@@ -1,13 +1,17 @@
 self.addEventListener("install", () => {
-  console.log("Service worker installed");
+  log("Service worker installed");
 });
 
 self.addEventListener("activate", () => {
-  console.log("Service worker activated");
+  log("Service worker activated");
+});
+
+self.addEventListener("notificationclick", (e) => {
+  log("Clicked " + e.action);
 });
 
 self.addEventListener("periodicsync", (event) => {
-  console.log("[sw]: periodic sync: " + event.tag);
+  log("Periodic sync: " + event.tag);
 
   if (event.tag === "get-scheduled") {
     // todo: get scheduled from API and check if we should notify?!
@@ -20,5 +24,9 @@ self.addEventListener("periodicsync", (event) => {
 });
 
 self.addEventListener("message", (event) => {
-  console.log(`[sw]: Message received: ${event.data}`);
+  log(`Message received: ${event.data}`);
 });
+
+function log(message) {
+  console.log("[sw]: " + message);
+}

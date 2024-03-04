@@ -46,10 +46,6 @@ export class EngravedServiceWorker {
     Notification.requestPermission().catch((e) => {
       alert("SW: Error registering notification permissions: " + e.message);
     });
-
-    addEventListener("notificationclick", () => {
-      alert("[main]: Notification action clicked.");
-    });
   }
 
   private registerPeriodicSync() {
