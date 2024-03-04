@@ -14,24 +14,22 @@ self.addEventListener("periodicsync", (e) => {
   log("Periodic sync: " + e.tag);
 
   if (e.tag === "get-scheduled") {
-    // todo: get scheduled from API and check if we should notify?!
-    e.waitUntil(sendGetScheduledToMain(self.registration));
-
-    // self.registration.showNotification("Got scheduled via background sync", {
-    //  body: "Wicked!",
-    // })
+    e.waitUntil(sendGetScheduledToMain(self.clients));
   }
 });
 
 self.addEventListener("message", (event) => {
-  log(`Message received: ${event.data}`);
+  log("Message received", event.data);
 });
 
-function log(message) {
-  console.log("[sw]: " + message);
+async function sendGetScheduledToMain(clients) {
+  const allClients = await clients.matchAll();
+  const client = await clients.get(allClients[0].id);
+  client.postMessage("get-scheduled");
+
+  return Promise.resolve();
 }
 
-function sendGetScheduledToMain(r) {
-  r.active.postMessage("get-scheduled");
-  return Promise.resolve();
+function log(message, ...params) {
+  console.log("[sw]: " + message, ...params);
 }

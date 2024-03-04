@@ -1,3 +1,5 @@
+import { ServerApi } from "../serverApi/ServerApi";
+
 export class EngravedServiceWorker {
   private _registration: ServiceWorkerRegistration;
 
@@ -18,6 +20,10 @@ export class EngravedServiceWorker {
 
   setup() {
     this.registerServiceWorker();
+  }
+
+  sendMessage(message: unknown) {
+    this._registration.active.postMessage(message);
   }
 
   private registerServiceWorker() {
@@ -56,35 +62,15 @@ export class EngravedServiceWorker {
   }
 
   private registerMessageListener() {
-    const messageChannel = new MessageChannel();
+    navigator.serviceWorker.addEventListener("message", async (event) => {
+      console.log(
+        `[main]: Received message from service worker: "${event.data}"`,
+      );
 
-    // https://felixgerschau.com/how-to-communicate-with-service-workers/
-
-    navigator.serviceWorker.controller.postMessage(
-      {
-        value: "foo",
-      },
-      [messageChannel.port2],
-    );
-
-    messageChannel.port1.onmessage = (event) => {
-      console.log(event.data);
-    };
-
-    /*
-    this._registration.addEventListener("message", (event) => {
-      console.log(`[main]: Message received: ${event}`);
-
-      if ((event as any).data) {
-        if ((event as any).data === "get-scheduled") {
-          debugger;
-        }
+      if (event.data === "get-scheduled") {
+        const scheduledEntities = await ServerApi.getSearchEntities("", true);
+        this.sendMessage(scheduledEntities);
       }
     });
-     */
-  }
-
-  sendMessage(test: string) {
-    this._registration.active.postMessage(test);
   }
 }
