@@ -56,9 +56,32 @@ export class EngravedServiceWorker {
   }
 
   private registerMessageListener() {
+    const messageChannel = new MessageChannel();
+
+    // https://felixgerschau.com/how-to-communicate-with-service-workers/
+
+    navigator.serviceWorker.controller.postMessage(
+      {
+        value: "foo",
+      },
+      [messageChannel.port2],
+    );
+
+    messageChannel.port1.onmessage = (event) => {
+      console.log(event.data);
+    };
+
+    /*
     this._registration.addEventListener("message", (event) => {
       console.log(`[main]: Message received: ${event}`);
+
+      if ((event as any).data) {
+        if ((event as any).data === "get-scheduled") {
+          debugger;
+        }
+      }
     });
+     */
   }
 
   sendMessage(test: string) {

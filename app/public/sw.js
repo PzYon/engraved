@@ -10,16 +10,16 @@ self.addEventListener("notificationclick", (e) => {
   log("Clicked " + e.action);
 });
 
-self.addEventListener("periodicsync", (event) => {
-  log("Periodic sync: " + event.tag);
+self.addEventListener("periodicsync", (e) => {
+  log("Periodic sync: " + e.tag);
 
-  if (event.tag === "get-scheduled") {
+  if (e.tag === "get-scheduled") {
     // todo: get scheduled from API and check if we should notify?!
-    event.waitUntil(
-      self.registration.showNotification("Got scheduled via background sync", {
-        body: "Wicked!",
-      }),
-    );
+    e.waitUntil(sendGetScheduledToMain(self.registration));
+
+    // self.registration.showNotification("Got scheduled via background sync", {
+    //  body: "Wicked!",
+    // })
   }
 });
 
@@ -29,4 +29,9 @@ self.addEventListener("message", (event) => {
 
 function log(message) {
   console.log("[sw]: " + message);
+}
+
+function sendGetScheduledToMain(r) {
+  r.active.postMessage("get-scheduled");
+  return Promise.resolve();
 }
