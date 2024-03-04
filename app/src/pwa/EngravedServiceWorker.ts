@@ -32,9 +32,12 @@ export class EngravedServiceWorker {
 
         this.registerNotifications();
         this.registerPeriodicSync();
+        this.registerMessageListener();
       })
       .catch((error) => {
-        console.log("SW: Error registering the Service Worker: " + error.title);
+        console.log(
+          "[main]: Error registering the Service Worker: " + error.title,
+        );
       });
   }
 
@@ -45,7 +48,7 @@ export class EngravedServiceWorker {
     });
 
     addEventListener("notificationclick", () => {
-      alert("Notification action clicked.");
+      alert("[main]: Notification action clicked.");
     });
   }
 
@@ -54,5 +57,15 @@ export class EngravedServiceWorker {
     (this._registration as any).periodicSync.register("get-scheduled", {
       minInterval: 60 * 1000,
     });
+  }
+
+  private registerMessageListener() {
+    this._registration.addEventListener("message", (event) => {
+      console.log(`[main]: Message received: ${event}`);
+    });
+  }
+
+  sendMessage(test: string) {
+    this._registration.active.postMessage(test);
   }
 }

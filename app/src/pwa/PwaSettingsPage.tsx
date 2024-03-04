@@ -7,22 +7,36 @@ export const PwaSettingsPage: React.FC = () => {
   return (
     <Page pageType="settings" title="PWA Settings" documentTitle="PWA Settings">
       <PageSection>
-        <Button
-          variant={"outlined"}
-          onClick={() => {
-            EngravedServiceWorker.instance.showNotification("Hello", {
-              body: "I am test.",
-              actions: [
-                {
-                  title: "Ok",
-                  action: "ok",
-                },
-              ],
-            });
-          }}
-        >
-          Send a test notification
-        </Button>
+        <p>
+          <Button
+            variant={"outlined"}
+            onClick={() => {
+              EngravedServiceWorker.instance.showNotification("Hello", {
+                body: "I am test.",
+                actions: [
+                  {
+                    title: "Ok",
+                    action: "ok",
+                  },
+                ],
+              });
+            }}
+          >
+            Show test notification
+          </Button>
+        </p>
+        <p>
+          <Button
+            variant={"outlined"}
+            onClick={() => {
+              EngravedServiceWorker.instance.sendMessage(
+                "Send a message from app to sw...",
+              );
+            }}
+          >
+            Send message to service worker
+          </Button>
+        </p>
       </PageSection>
     </Page>
   );

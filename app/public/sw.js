@@ -7,7 +7,7 @@ self.addEventListener("activate", () => {
 });
 
 self.addEventListener("periodicsync", (event) => {
-  console.log("SW: periodic sync: " + event.tag);
+  console.log("[sw]: periodic sync: " + event.tag);
 
   if (event.tag === "get-scheduled") {
     // todo: get scheduled from API and check if we should notify?!
@@ -17,4 +17,8 @@ self.addEventListener("periodicsync", (event) => {
       }),
     );
   }
+});
+
+self.addEventListener("message", (event) => {
+  console.log(`[sw]: Message received: ${event.data}`);
 });
