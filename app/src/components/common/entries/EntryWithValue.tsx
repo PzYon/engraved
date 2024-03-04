@@ -5,6 +5,7 @@ import { AttributeValues } from "../AttributeValues";
 import { Typography } from "@mui/material";
 import { Entry } from "./Entry";
 import { ActionFactory } from "../actions/ActionFactory";
+import { getUiSettings } from "../../../util/journalUtils";
 
 export const EntryWithValue: React.FC<{
   value: React.ReactNode;
@@ -23,7 +24,7 @@ export const EntryWithValue: React.FC<{
       ]}
       propsRenderStyle={"all"}
     >
-      <Typography component={"span"}>{value}</Typography>
+      <Typography component={"span"}>{getValue()} </Typography>
       <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
         {entry.notes ? ` - ${entry.notes}` : ""}
       </Typography>
@@ -33,4 +34,17 @@ export const EntryWithValue: React.FC<{
       />
     </Entry>
   );
+
+  function getValue() {
+    const unit = getUiSettings(journal)?.yAxisUnit;
+    if (unit) {
+      return (
+        <>
+          {value} {unit}
+        </>
+      );
+    }
+
+    return value;
+  }
 };
