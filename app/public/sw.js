@@ -13,6 +13,7 @@ self.addEventListener("notificationclick", (e) => {
 
 self.addEventListener("periodicsync", (e) => {
   log("Periodic sync: " + e.tag);
+  self.registration.showNotification(`The PWA is still alive: ${i++}`);
 
   //  if (e.tag === "get-scheduled") {
   //    e.waitUntil(sendGetScheduledToMain(self.clients));
@@ -20,7 +21,7 @@ self.addEventListener("periodicsync", (e) => {
 });
 
 self.addEventListener("message", (event) => {
-  log("Message received", event.data);
+  log("Message received:", event.data);
 
   if (event.data === "ping") {
     self.registration.showNotification("Pong!", {
@@ -41,15 +42,15 @@ function log(message, ...params) {
   console.log("[sw]: " + message, ...params);
 }
 
-const tenMinutes = 10 * 60 * 1000;
-
 let i = 1;
 
+/*
 function scheduleNotificationIn10min() {
   setTimeout(() => {
-    self.registration.showNotification(`Your PWA is still alive: ${i++}`);
+    self.registration.showNotification(`My PWA is still alive: ${i++}`);
     scheduleNotificationIn10min();
-  }, tenMinutes);
+  }, 20 * 1000);
 }
 
 scheduleNotificationIn10min();
+*/
