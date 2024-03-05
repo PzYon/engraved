@@ -42,6 +42,12 @@ function log(message, ...params) {
 
 const tenMinutes = 10 * 60 * 1000;
 
-setInterval(() => {
-  self.registration.showNotification("Your PWA is still alive.");
-}, tenMinutes);
+let i = 1;
+
+function scheduleNotificationIn10min() {
+  setTimeout(() => {
+    self.registration.showNotification("Your PWA is still alive: " + ++i);
+  }, tenMinutes);
+}
+
+scheduleNotificationIn10min();
