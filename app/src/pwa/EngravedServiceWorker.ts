@@ -73,4 +73,8 @@ export class EngravedServiceWorker {
       }
     });
   }
+
+  ping() {
+    this.sendMessage("ping");
+  }
 }

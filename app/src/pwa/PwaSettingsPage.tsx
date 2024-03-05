@@ -37,6 +37,16 @@ export const PwaSettingsPage: React.FC = () => {
             Send message to service worker
           </Button>
         </p>
+        <p>
+          <Button
+            variant={"outlined"}
+            onClick={() => {
+              EngravedServiceWorker.instance.ping();
+            }}
+          >
+            Ping!?
+          </Button>
+        </p>
       </PageSection>
     </Page>
   );
