@@ -33,3 +33,9 @@ async function sendGetScheduledToMain(clients) {
 function log(message, ...params) {
   console.log("[sw]: " + message, ...params);
 }
+
+const tenMinutes = 10 * 60 * 1000;
+
+setInterval(() => {
+  self.registration.showNotification("Your PWA is still alive.");
+}, tenMinutes);
