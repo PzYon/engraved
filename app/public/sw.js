@@ -1,5 +1,6 @@
 self.addEventListener("install", () => {
   log("Service worker installed");
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", () => {
@@ -46,7 +47,8 @@ let i = 1;
 
 function scheduleNotificationIn10min() {
   setTimeout(() => {
-    self.registration.showNotification("Your PWA is still alive: " + ++i);
+    self.registration.showNotification(`Your PWA is still alive: ${i++}`);
+    scheduleNotificationIn10min();
   }, tenMinutes);
 }
 
