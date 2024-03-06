@@ -40,16 +40,14 @@ self.addEventListener("periodicsync", (e) => {
 
 let setTimeoutCounter = 1;
 
-function scheduleNotificationIn10min() {
-  setTimeout(() => {
+self.engravedIntervalTimer = setInterval(
+  () => {
     self.registration.showNotification(
-      `The PWA is still alive (setTimeout): ${setTimeoutCounter++}`,
+      `The PWA is still alive (setInterval): ${setTimeoutCounter++}`,
     );
-    scheduleNotificationIn10min();
-  }, 20 * 1000);
-}
-
-scheduleNotificationIn10min();
+  },
+  2 * 60 * 1000,
+);
 
 function log(message, ...params) {
   console.log("[sw]: " + message, ...params);
