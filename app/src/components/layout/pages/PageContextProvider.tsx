@@ -24,6 +24,7 @@ export const PageContextProvider: React.FC<{
 
   useEffect(() => {
     setUrlParams();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramSearchText, paramJournalTypes, setSearchParams]);
 
   useEffect(() => {
@@ -65,6 +66,7 @@ export const PageContextProvider: React.FC<{
       pageType,
       setPageType,
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     title,
     subTitle,

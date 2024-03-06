@@ -22,7 +22,7 @@ export const AddEntryTableCell: React.FC<{
   fieldType = "text",
   hasFocus,
 }) => {
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const currentValue = (command as any)[fieldName] ?? "";
 
   const updateCommandWrapped = (value: any) => {
