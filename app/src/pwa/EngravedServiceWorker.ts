@@ -61,7 +61,7 @@ export class EngravedServiceWorker {
   private registerPeriodicSync() {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     (this._registration as any).periodicSync.register("get-scheduled", {
-      minInterval: 10 * 1000,
+      minInterval: 5 * 60 * 1000,
     });
   }
 

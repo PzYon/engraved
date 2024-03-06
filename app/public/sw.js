@@ -11,15 +11,6 @@ self.addEventListener("notificationclick", (e) => {
   log("Clicked " + e.action);
 });
 
-self.addEventListener("periodicsync", (e) => {
-  log("Periodic sync: " + e.tag);
-  self.registration.showNotification(`The PWA is still alive: ${i++}`);
-
-  //  if (e.tag === "get-scheduled") {
-  //    e.waitUntil(sendGetScheduledToMain(self.clients));
-  //  }
-});
-
 self.addEventListener("message", (event) => {
   log("Message received:", event.data);
 
@@ -30,6 +21,15 @@ self.addEventListener("message", (event) => {
   }
 });
 
+let periodicSyncCounter = 1;
+
+self.addEventListener("periodicsync", (e) => {
+  log("Periodic sync: " + e.tag);
+  self.registration.showNotification(
+    `The PWA is still alive (periodicSync): ${periodicSyncCounter++}`,
+  );
+});
+
 // async function sendGetScheduledToMain(clients) {
 // const allClients = await clients.matchAll();
 // const client = await clients.get(allClients[0].id);
@@ -38,19 +38,19 @@ self.addEventListener("message", (event) => {
 //  return Promise.resolve();
 // }
 
-function log(message, ...params) {
-  console.log("[sw]: " + message, ...params);
-}
+let setTimeoutCounter = 1;
 
-let i = 1;
-
-/*
 function scheduleNotificationIn10min() {
   setTimeout(() => {
-    self.registration.showNotification(`My PWA is still alive: ${i++}`);
+    self.registration.showNotification(
+      `The PWA is still alive (setTimeout): ${setTimeoutCounter++}`,
+    );
     scheduleNotificationIn10min();
   }, 20 * 1000);
 }
 
 scheduleNotificationIn10min();
-*/
+
+function log(message, ...params) {
+  console.log("[sw]: " + message, ...params);
+}
