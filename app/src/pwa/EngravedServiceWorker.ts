@@ -1,5 +1,3 @@
-import { ServerApi } from "../serverApi/ServerApi";
-
 export class EngravedServiceWorker {
   private _registration: ServiceWorkerRegistration;
 
@@ -41,7 +39,6 @@ export class EngravedServiceWorker {
         this._registration = registration;
 
         this.registerNotifications();
-        this.registerPeriodicSync();
         this.registerMessageListener();
       })
       .catch((error) => {
@@ -58,23 +55,15 @@ export class EngravedServiceWorker {
     });
   }
 
-  private registerPeriodicSync() {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (this._registration as any).periodicSync.register("get-scheduled", {
-      minInterval: 5 * 60 * 1000,
-    });
-  }
-
   private registerMessageListener() {
     navigator.serviceWorker.addEventListener("message", async (event) => {
       console.log(
         `[main]: Received message from service worker: "${event.data}"`,
       );
 
-      if (event.data === "get-scheduled") {
-        const scheduledEntities = await ServerApi.getSearchEntities("", true);
-        this.sendMessage(scheduledEntities);
-      }
+      this._registration.showNotification("Message from service worker", {
+        body: event.data,
+      });
     });
   }
 }
