@@ -17,9 +17,9 @@ export const PwaSettingsPage: React.FC = () => {
                   {
                     title: "Ok",
                     action: "ok",
-                  },
+                  } as NotificationAction,
                 ],
-              });
+              } as NotificationOptions);
             }}
           >
             Show test notification
