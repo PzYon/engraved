@@ -69,7 +69,7 @@ export const ScrapListItem: React.FC<{
                 depth: listItem.depth,
               })
             }
-            sx={{ ...getSx("textbox"), pr: 1, pt: "5px" }}
+            sx={{ ...getSx("textbox"), pr: 1, pt: "5px !important" }}
             autoFocus={!listItem.label}
           />
           <ActionIconButtonGroup

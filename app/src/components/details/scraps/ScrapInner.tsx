@@ -54,4 +54,5 @@ const ReadonlyTitleContainer = styled(Typography)`
   color: ${(p) => p.theme.palette.primary.main};
   font-size: 2rem;
   font-weight: 200;
+  line-height: 1;
 `;
