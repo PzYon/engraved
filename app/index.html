@@ -19,6 +19,20 @@
             href="https://fonts.googleapis.com/css2?family=Pacifico&family=Karla:wght@200;400&display=swap"
     />
 
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(function(OneSignal) {
+            OneSignal.init({
+                appId: "dc1847f6-a390-408e-9d6d-7b9868a78a11",
+                // safari_web_id: "web.onesignal.auto.64063cbd-bb2e-4678-8d54-7a11e3cbaa94",
+                notifyButton: {
+                    enable: true,
+                },
+            });
+        });
+    </script>
+
     <title>engraved.</title>
 </head>
 <body>

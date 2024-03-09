@@ -3,13 +3,12 @@ import { Bootstrapper } from "./Bootstrapper";
 import { createRoot } from "react-dom/client";
 import { ThemeAndStylesProvider } from "./theming/ThemeAndStylesProvider";
 import { ServerApi } from "./serverApi/ServerApi";
-import { EngravedServiceWorker } from "./pwa/EngravedServiceWorker";
 
 import("./util/appInsights").then((appInsights) => {
   appInsights.setUpAppInsights();
 });
 
-EngravedServiceWorker.instance.setup();
+// EngravedServiceWorker.instance.setup();
 
 wakeUpApi();
 
