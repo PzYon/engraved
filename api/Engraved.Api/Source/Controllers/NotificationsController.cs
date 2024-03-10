@@ -1,5 +1,7 @@
 ﻿using Engraved.Api.Notifications;
 using Engraved.Core.Application;
+using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -20,11 +22,32 @@ public class NotificationsController(
 )
   : ControllerBase
 {
-  [HttpGet]
-  [Route("send")]
-  public CreateNotificationSuccessResponse SendNotification()
+  [HttpPost]
+  [Route("send_test")]
+  public async Task<CreateNotificationSuccessResponse> SendNotification()
   {
-    return SendNotificationToUser(currentUserService.GetUserName()!);
+    var user = await currentUserService.LoadUser();
+
+    return SendNotificationToUser(user.GlobalUniqueId);
+  }
+
+  private CreateNotificationSuccessResponse SendNotificationToUser(Guid? uniqueUserId)
+  {
+    if (!uniqueUserId.HasValue)
+    {
+      throw new NotAllowedOperationException(
+        $"Cannot send OneSignal message, as ${nameof(IUser.GlobalUniqueId)} is not set."
+      );
+    }
+    
+    var notification = new Notification(
+      appId: notificationsConfig.Value.AppId,
+      targetChannel: Notification.TargetChannelEnum.Push,
+      includeExternalUserIds: [uniqueUserId.ToString()],
+      contents: new StringMap(en: "Test from engraved OneSignal.")
+    );
+
+    return GetApiInstance().CreateNotification(notification);
   }
 
   private DefaultApi GetApiInstance()
@@ -36,31 +59,5 @@ public class NotificationsController(
         AccessToken = notificationsConfig.Value.AppSecret
       }
     );
-  }
-
-  private CreateNotificationSuccessResponse SendNotificationToUser(string userName)
-  {
-    DefaultApi apiInstance = GetApiInstance();
-
-    var notification = new Notification(
-      appId: notificationsConfig.Value.AppId,
-      targetChannel: Notification.TargetChannelEnum.Push,
-      includeExternalUserIds: ["8c19c1e5-a319-4705-8cc0-b9ef627d1f70"],
-      contents: new StringMap(en: "Sali Walter")
-    );
-
-    try
-    {
-      // Create notification
-      return apiInstance.CreateNotification(notification);
-    }
-    catch (ApiException e)
-    {
-      logger.LogInformation("Exception when calling DefaultApi.CreateNotification: " + e.Message);
-      logger.LogInformation("Status Code: " + e.ErrorCode);
-      logger.LogInformation(e.StackTrace);
-
-      throw e;
-    }
   }
 }
