@@ -33,7 +33,7 @@
         });
 
         // https://documentation.onesignal.com/docs/web-sdk#log-in-a-user-set-an-external-id
-        OneSignalDeferred.push(function() {
+        OneSignalDeferred.push(function(OneSignal) {
             OneSignal.login("markus.doggweiler@gmail.com");
         });
     </script>
