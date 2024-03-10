@@ -87,6 +87,7 @@ public class LoginHandler : ILoginHandler
     user.DisplayName = displayName;
     user.ImageUrl = imageUrl;
     user.LastLoginDate = _dateService.UtcNow;
+    user.GlobalUniqueId ??= Guid.NewGuid();
 
     if (user.FavoriteJournalIds.Count == 0)
     {

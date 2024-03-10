@@ -105,6 +105,7 @@ public class LoginHandlerShould
     user.Id.Should().NotBeNull();
     user.LastLoginDate.Should().Be(_dateService.UtcNow);
     user.FavoriteJournalIds.Count().Should().Be(1);
+    user.GlobalUniqueId.Should().NotBeNull();
 
     string quickNotesId = user.FavoriteJournalIds.First();
     IJournal? journal = await _testRepository.GetJournal(quickNotesId);
@@ -119,7 +120,8 @@ public class LoginHandlerShould
     var displayName = "Hans Peter";
     var imageUrl = "https://im.age.url";
     var userName = "ha-pe";
-
+    var globalUniqueId = Guid.NewGuid();
+    
     await _testRepository.UpsertUser(
       new User
       {
@@ -127,7 +129,8 @@ public class LoginHandlerShould
         Name = userName,
         DisplayName = displayName,
         ImageUrl = imageUrl,
-        LastLoginDate = DateTime.UtcNow.AddMinutes(-12345)
+        LastLoginDate = DateTime.UtcNow.AddMinutes(-12345),
+        GlobalUniqueId = globalUniqueId
       }
     );
 
@@ -145,7 +148,8 @@ public class LoginHandlerShould
     result.User!.DisplayName.Should().Be(displayName);
     result.User!.Name.Should().Be(userName);
     result.User!.ImageUrl.Should().Be(imageUrl);
-    result.User.Id.Should().NotBeNull();
+    result.User.Id.Should().Be(userId);
+    result.User.GlobalUniqueId.Should().Be(globalUniqueId);
     result.User.LastLoginDate.Should().Be(_dateService.UtcNow);
 
     IUser[] users = await _testRepository.GetAllUsers();
