@@ -31,6 +31,11 @@
                 },
             });
         });
+
+        // https://documentation.onesignal.com/docs/web-sdk#log-in-a-user-set-an-external-id
+        OneSignalDeferred.push(function() {
+            OneSignal.login("markus.doggweiler@gmail.com");
+        });
     </script>
 
     <title>engraved.</title>
