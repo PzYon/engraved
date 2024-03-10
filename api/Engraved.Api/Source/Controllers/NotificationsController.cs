@@ -24,25 +24,20 @@ public class NotificationsController(ICurrentUserService currentUserService, ILo
 
   [HttpGet]
   [Route("send")]
-  public void SendNotification()
+  public CreateNotificationSuccessResponse SendNotification()
   {
-    SendNotificationToUser(currentUserService.GetUserName()!);
+    return SendNotificationToUser(currentUserService.GetUserName()!);
   }
 
   private User CreateOneSignalUser(string userName)
   {
-    var appConfig = new Configuration
-    {
-      BasePath = "https://onesignal.com/api/v1",
-      AccessToken = "N2NjZjA5YTMtNjkzOC00ZGJjLTkxNGYtZDg5MDEyNmI3OTE4"
-    };
+    DefaultApi apiInstance = GetApiInstance();
 
-    var apiInstance = new DefaultApi(appConfig);
-    var appId = "dc1847f6-a390-408e-9d6d-7b9868a78a11";
+    var appId = "94153697-bc1b-49de-b187-80e4e6832920";
+    
     var user = new User(new PropertiesObject(), new Dictionary<string, object>(), new List<SubscriptionObject>());
     user.Identity.Add("userName", userName);
     user.Identity.Add("external_id", userName);
-    
 
     try
     {
@@ -67,37 +62,47 @@ public class NotificationsController(ICurrentUserService currentUserService, ILo
     }
   }
 
-  private void SendNotificationToUser(string userName)
+  private static DefaultApi GetApiInstance()
   {
-    var appConfig = new Configuration
-    {
-      BasePath = "https://onesignal.com/api/v1",
-      AccessToken = "N2NjZjA5YTMtNjkzOC00ZGJjLTkxNGYtZDg5MDEyNmI3OTE4"
-    };
+    var apiInstance = new DefaultApi(
+      new Configuration
+      {
+        BasePath = "https://onesignal.com/api/v1",
+        AccessToken = "YzQ2MzIzMzgtNmJhNS00Y2FjLTk2Y2MtMDZiYWFmYjIwYTg2"
+      }
+    );
+    return apiInstance;
+  }
 
-    var apiInstance = new DefaultApi(appConfig);
-    var appId = "dc1847f6-a390-408e-9d6d-7b9868a78a11";
+  private CreateNotificationSuccessResponse SendNotificationToUser(string userName)
+  {
+    DefaultApi apiInstance = GetApiInstance();
+
+    var appId = "94153697-bc1b-49de-b187-80e4e6832920";
 
     var notification = new Notification(
       appId: appId,
       includeAliases: new PlayerNotificationTargetIncludeAliases
       {
-        AliasLabel = [userName]
+        AliasLabel = ["user_name"],
       },
-      externalId: userName
+      targetChannel: Notification.TargetChannelEnum.Push,
+      includeExternalUserIds: ["8c19c1e5-a319-4705-8cc0-b9ef627d1f70"],
+      contents: new StringMap(en: "Sali Walter")
     );
 
     try
     {
       // Create notification
-      CreateNotificationSuccessResponse result = apiInstance.CreateNotification(notification);
-      Debug.WriteLine(result);
+      return apiInstance.CreateNotification(notification);
     }
     catch (ApiException e)
     {
-      Debug.Print("Exception when calling DefaultApi.CreateNotification: " + e.Message);
-      Debug.Print("Status Code: " + e.ErrorCode);
-      Debug.Print(e.StackTrace);
+      logger.LogInformation("Exception when calling DefaultApi.CreateNotification: " + e.Message);
+      logger.LogInformation("Status Code: " + e.ErrorCode);
+      logger.LogInformation(e.StackTrace);
+
+      throw e;
     }
   }
 }

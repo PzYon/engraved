@@ -8,6 +8,23 @@ import { registerGooglePrompt } from "./serverApi/authentication/google/register
 import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
+import OneSignal from "react-onesignal";
+
+// https://documentation.onesignal.com/docs/react-js-setup
+// https://documentation.onesignal.com/docs/local-testing
+OneSignal.init({
+  appId: "94153697-bc1b-49de-b187-80e4e6832920",
+  allowLocalhostAsSecureOrigin: true,
+}).then(() => {
+  OneSignal.login("8c19c1e5-a319-4705-8cc0-b9ef627d1f70")
+    .then(() => {
+      OneSignal.User.addAlias("user_name", "markus.doggweiler@gmail.com");
+      debugger;
+    })
+    .catch(() => {
+      debugger;
+    });
+});
 
 const storage = new AuthStorage();
 
