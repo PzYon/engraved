@@ -36,14 +36,14 @@ public class NotificationsController(
         $"\"{nameof(NotificationsConfig.AppId)}\" is not set, please do so in your environment settings."
       );
     }
-    
+
     if (string.IsNullOrEmpty(notificationsConfig.Value.AppSecret))
     {
       throw new ArgumentException(
         $"\"{nameof(NotificationsConfig.AppSecret)}\" is not set, please do so in your environment settings."
       );
     }
-    
+
     if (!uniqueUserId.HasValue)
     {
       throw new NotAllowedOperationException(
@@ -55,7 +55,8 @@ public class NotificationsController(
       appId: notificationsConfig.Value.AppId,
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [uniqueUserId.ToString()],
-      contents: new StringMap(en: "Test from engraved OneSignal.")
+      contents: new StringMap(en: "Test from engraved OneSignal."),
+      webButtons: [new Button(id: "yes", text: "Y3s"), new Button(id: "no", text: "N0")]
     );
 
     return GetApiInstance().CreateNotification(notification);
