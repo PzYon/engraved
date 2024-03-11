@@ -5,7 +5,6 @@ using Engraved.Core.Domain.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using OneSignalApi.Api;
 using OneSignalApi.Client;
 using OneSignalApi.Model;
@@ -17,7 +16,6 @@ namespace Engraved.Api.Controllers;
 [Authorize]
 public class NotificationsController(
   ICurrentUserService currentUserService,
-  ILogger<NotificationsController> logger,
   IOptions<NotificationsConfig> notificationsConfig
 )
   : ControllerBase
@@ -26,20 +24,33 @@ public class NotificationsController(
   [Route("send_test")]
   public async Task<CreateNotificationSuccessResponse> SendNotification()
   {
-    var user = await currentUserService.LoadUser();
-
+    IUser user = await currentUserService.LoadUser();
     return SendNotificationToUser(user.GlobalUniqueId);
   }
 
   private CreateNotificationSuccessResponse SendNotificationToUser(Guid? uniqueUserId)
   {
-    if (!uniqueUserId.HasValue)
+    if (string.IsNullOrEmpty(notificationsConfig.Value.AppId))
     {
-      throw new NotAllowedOperationException(
-        $"Cannot send OneSignal message, as ${nameof(IUser.GlobalUniqueId)} is not set."
+      throw new ArgumentException(
+        $"\"{nameof(NotificationsConfig.AppId)}\" is not set, please do so in your environment settings."
       );
     }
     
+    if (string.IsNullOrEmpty(notificationsConfig.Value.AppSecret))
+    {
+      throw new ArgumentException(
+        $"\"{nameof(NotificationsConfig.AppSecret)}\" is not set, please do so in your environment settings."
+      );
+    }
+    
+    if (!uniqueUserId.HasValue)
+    {
+      throw new NotAllowedOperationException(
+        $"Cannot send OneSignal message, as ${nameof(IUser.GlobalUniqueId)} is not available."
+      );
+    }
+
     var notification = new Notification(
       appId: notificationsConfig.Value.AppId,
       targetChannel: Notification.TargetChannelEnum.Push,
