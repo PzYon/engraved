@@ -15,8 +15,14 @@ export const useOneSignal = (userId: string) => {
     OneSignal.init({
       appId: envSettings.notifications.appId,
       allowLocalhostAsSecureOrigin: envSettings.isDev,
+      notificationClickHandlerAction: "focus",
+      notificationClickHandlerMatch: "origin",
     }).then(() => {
       OneSignal.login(userId);
+
+      OneSignal.Notifications.addEventListener("click", (e) => {
+        alert(`Notification button "${e.result.actionId}" was clicked.`);
+      });
     });
   }, []);
 };

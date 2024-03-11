@@ -1,4 +1,5 @@
-﻿using Engraved.Api.Notifications;
+﻿using System.Runtime.Serialization;
+using Engraved.Api.Notifications;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.User;
@@ -56,7 +57,12 @@ public class NotificationsController(
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [uniqueUserId.ToString()],
       contents: new StringMap(en: "Test from engraved OneSignal."),
-      webButtons: [new Button(id: "yes", text: "Y3s"), new Button(id: "no", text: "N0")]
+      webButtons:
+      [
+        // new ButtonWithUrl(id: "yes", text: "Yes", url: "http://localhost:3000?_osp=do_not_open"),
+        new ButtonWithUrl(id: "yes", text: "Yes", url: "http://localhost:3000/settings"),
+        new Button(id: "no", text: "N0")
+      ]
     );
 
     return GetApiInstance().CreateNotification(notification);
@@ -71,5 +77,19 @@ public class NotificationsController(
         AccessToken = notificationsConfig.Value.AppSecret
       }
     );
+  }
+}
+
+public class ButtonWithUrl : Button
+{
+  [DataMember(Name = "url", IsRequired = true, EmitDefaultValue = false)]
+  public string Url { get; set; }
+
+  public ButtonWithUrl(string id = null, string text = null, string icon = null, string url = null)
+  {
+    this.Id = id;
+    this.Text = text;
+    this.Icon = icon;
+    this.Url = url;
   }
 }
