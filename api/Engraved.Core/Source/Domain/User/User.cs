@@ -4,6 +4,8 @@ public class User : IUser
 {
   public string? Id { get; set; }
 
+  public Guid? GlobalUniqueId { get; set; }
+
   public string Name { get; set; } = null!;
 
   public string? DisplayName { get; set; }

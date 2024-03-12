@@ -347,6 +347,14 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/search/entities${params}`);
   }
 
+  static async sendTestNotification(): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/notifications/send_test`,
+      "POST",
+      null,
+    );
+  }
+
   static async executeRequest<T = void>(
     url: string,
     method: HttpMethod = "GET",

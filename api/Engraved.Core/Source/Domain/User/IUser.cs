@@ -4,6 +4,8 @@ public interface IUser
 {
   string? Id { get; set; }
 
+  Guid? GlobalUniqueId { get; set; }
+  
   string Name { get; set; }
 
   string? DisplayName { get; set; }

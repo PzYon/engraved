@@ -6,6 +6,7 @@ using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Basic;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Filters;
+using Engraved.Api.Notifications;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
@@ -81,6 +82,7 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddHttpContextAccessor();
 
 IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
+IConfigurationSection notificationsConfigSection = builder.Configuration.GetSection("Notifications");
 
 // https://learn.microsoft.com/en-us/dotnet/core/extensions/logging?tabs=command-line
 if (!builder.Environment.IsDevelopment())
@@ -89,6 +91,7 @@ if (!builder.Environment.IsDevelopment())
 }
 
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
+builder.Services.Configure<NotificationsConfig>(notificationsConfigSection);
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
@@ -260,12 +263,12 @@ void SeedRepo(IUserScopedRepository repo)
 MongoRepositorySettings CreateRepositorySettings(WebApplicationBuilder webApplicationBuilder)
 {
   string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("engraved_db");
-  if (string.IsNullOrEmpty(connectionString))
+  if (string.IsNullOrEmpty(connectionString) && !isE2eTests)
   {
     throw new Exception("App Service Config: No connection string available.");
   }
 
-  return new MongoRepositorySettings(connectionString);
+  return new MongoRepositorySettings(connectionString ?? "mongodb://localhost:27017");
 }
 
 string GetJwtSecret(IConfigurationSection configurationSection)
