@@ -83,13 +83,11 @@ public class NotificationsController(
 public class ButtonWithUrl : Button
 {
   [DataMember(Name = "url", IsRequired = true, EmitDefaultValue = false)]
-  public string Url { get; set; }
+  public string? Url { get; set; }
 
-  public ButtonWithUrl(string id = null, string text = null, string icon = null, string url = null)
+  public ButtonWithUrl(string? id = null, string? text = null, string? icon = null, string? url = null)
+    : base(id, text, icon)
   {
-    this.Id = id;
-    this.Text = text;
-    this.Icon = icon;
-    this.Url = url;
+    Url = url;
   }
 }

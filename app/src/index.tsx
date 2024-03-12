@@ -8,8 +8,6 @@ import("./util/appInsights").then((appInsights) => {
   appInsights.setUpAppInsights();
 });
 
-// EngravedServiceWorker.instance.setup();
-
 wakeUpApi();
 
 createRoot(document.getElementById("root")).render(getInitialJsx());
