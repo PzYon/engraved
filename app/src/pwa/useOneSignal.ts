@@ -21,7 +21,7 @@ export const useOneSignal = (userId: string) => {
       OneSignal.login(userId);
 
       OneSignal.Notifications.addEventListener("click", (e) => {
-        alert(`Notification button "${e.result.actionId}" was clicked.`);
+        alert(`Notification button "${e.result?.actionId}" was clicked.`);
       });
     });
   }, []);
