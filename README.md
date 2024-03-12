@@ -11,7 +11,7 @@ Store personal metrics and notes in an easy manor.
 
 ### Backend
 
-- C#, .net core 7
+- C#, .net core 8
 - Web API
 - MongoDB
 - NUnit
