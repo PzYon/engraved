@@ -1,12 +1,12 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Queries.Search.Entities;
+using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Api.Jobs;
 
-public class ScheduleJob(ILogger<ScheduleJob> logger, IRepository repository, IDateService dateService)
+public class ScheduleJob(ILogger<ScheduleJob> logger, IBaseRepository repository, IDateService dateService)
   : BackgroundService
 {
   private readonly TimeSpan _period = TimeSpan.FromSeconds(30);
@@ -30,15 +30,7 @@ public class ScheduleJob(ILogger<ScheduleJob> logger, IRepository repository, ID
           true
         );
 
-        foreach (IEntry entry in entries)
-        {
-          if (entry.Schedule?.NextOccurrence < dateService.UtcNow)
-          {
-            Log(
-              $"Would send notification for entry with ID {entry.Id}, scheduled at {entry.Schedule.NextOccurrence}"
-            );
-          }
-        }
+        ProcessEntities(entries.OfType<IEntity>().ToArray());
 
         IJournal[] journals = await repository.GetAllJournals(
           null,
@@ -48,17 +40,22 @@ public class ScheduleJob(ILogger<ScheduleJob> logger, IRepository repository, ID
           true
         );
 
-        foreach (IJournal journal in journals)
-        {
-          if (journal.Schedule?.NextOccurrence < dateService.UtcNow)
-          {
-            Log(
-              $"Would send notification for journal with ID {journal.Id}, scheduled at {journal.Schedule.NextOccurrence}"
-            );
-          }
-        }
+        ProcessEntities(journals.OfType<IEntity>().ToArray());
 
         Log("End");
+      }
+    }
+  }
+
+  private void ProcessEntities(IEntity[] entities)
+  {
+    foreach (IEntity entity in entities)
+    {
+      if (entity.Schedule?.NextOccurrence < dateService.UtcNow)
+      {
+        Log(
+          $"Would send notification for {entity.GetType().Name} with ID {entity.Id}, scheduled at {entity.Schedule.NextOccurrence}"
+        );
       }
     }
   }
