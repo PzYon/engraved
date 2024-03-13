@@ -1,7 +1,7 @@
 import { envSettings } from "../env/envSettings";
 import OneSignal from "react-onesignal";
 
-export const setUpOnSignal = (oneSignalUserId: string) => {
+export const setUpOneSignal = (oneSignalUserId: string) => {
   OneSignal.init({
     appId: envSettings.notifications.appId,
     allowLocalhostAsSecureOrigin: envSettings.isDev,
@@ -20,4 +20,12 @@ export const setUpOnSignal = (oneSignalUserId: string) => {
       alert(`Notification button "${e.result?.actionId}" was clicked.`);
     });
   });
+};
+
+export const optInPushNotifications = () => {
+  if (OneSignal.User.PushSubscription.optedIn) {
+    return;
+  }
+
+  OneSignal.User.PushSubscription.optIn();
 };

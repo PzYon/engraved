@@ -2,7 +2,7 @@ import { Page } from "../components/layout/pages/Page";
 import { PageSection } from "../components/layout/pages/PageSection";
 import { Button } from "@mui/material";
 import { ServerApi } from "../serverApi/ServerApi";
-import { setUpOnSignal } from "./setUpOnSignal";
+import { optInPushNotifications, setUpOneSignal } from "./oneSignal";
 import { useAppContext } from "../AppContext";
 
 export const PwaSettingsPage: React.FC = () => {
@@ -15,10 +15,21 @@ export const PwaSettingsPage: React.FC = () => {
           <Button
             variant={"outlined"}
             onClick={() => {
-              setUpOnSignal(user.globalUniqueId);
+              setUpOneSignal(user.globalUniqueId);
             }}
           >
-            Enable notifications
+            Setup OneSignal
+          </Button>
+        </p>
+
+        <p>
+          <Button
+            variant={"outlined"}
+            onClick={() => {
+              optInPushNotifications();
+            }}
+          >
+            Enable push notifications
           </Button>
         </p>
 
