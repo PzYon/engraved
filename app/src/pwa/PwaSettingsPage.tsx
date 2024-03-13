@@ -2,7 +2,7 @@ import { Page } from "../components/layout/pages/Page";
 import { PageSection } from "../components/layout/pages/PageSection";
 import { Button } from "@mui/material";
 import { ServerApi } from "../serverApi/ServerApi";
-import { setUpOnSignal } from "./useOneSignal";
+import { setUpOnSignal } from "./setUpOnSignal";
 import { useAppContext } from "../AppContext";
 
 export const PwaSettingsPage: React.FC = () => {
