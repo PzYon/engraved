@@ -1,5 +1,3 @@
-const env = import.meta.env;
-
 export const envSettings = {
   auth: {
     google: {
@@ -8,13 +6,14 @@ export const envSettings = {
     },
   },
   notifications: {
-    appId: env.VITE_NOTIFICATIONS_APP_ID,
+    appId: import.meta.env.VITE_NOTIFICATIONS_APP_ID,
   },
-  apiBaseUrlWindows: env.VITE_API_BASE_URL,
-  apiBaseUrlLinux: env.VITE_API_BASE_URL_LINUX,
-  commitHash: env.VITE_COMMIT_HASH,
-  version: env.VITE_VERSION,
-  mergeDateTime: env.VITE_MERGE_DATE_TIME,
-  isDev: env.DEV,
-  appInsightsConnectionString: env.VITE_APP_INSIGHTS_CONNECTING_STRING,
+  apiBaseUrlWindows: import.meta.env.VITE_API_BASE_URL,
+  apiBaseUrlLinux: import.meta.env.VITE_API_BASE_URL_LINUX,
+  commitHash: import.meta.env.VITE_COMMIT_HASH,
+  version: import.meta.env.VITE_VERSION,
+  mergeDateTime: import.meta.env.VITE_MERGE_DATE_TIME,
+  isDev: import.meta.env.DEV,
+  appInsightsConnectionString: import.meta.env
+    .VITE_APP_INSIGHTS_CONNECTING_STRING,
 };
