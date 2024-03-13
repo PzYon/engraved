@@ -17,10 +17,10 @@ public interface IBaseRepository
 
   Task<IJournal[]> GetAllJournals(
     string? searchText = null,
+    bool scheduledOnly = false,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null,
-    bool scheduledOnly = false
+    int? limit = null
   );
 
   Task<IJournal?> GetJournal(string journalId);
@@ -39,11 +39,11 @@ public interface IBaseRepository
   );
 
   Task<IEntry[]> GetLastEditedEntries(
-    string[]? journalIds,
-    string? searchText,
-    JournalType[]? journalTypes,
-    int? limit,
-    bool scheduledOnly = false
+    string? searchText = null,
+    bool scheduledOnly = false,
+    JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
+    int? limit = null
   );
 
   Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;

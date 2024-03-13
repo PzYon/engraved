@@ -36,7 +36,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task FindEntries()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries(new[] { _journalId }, "Beta", null, 10);
+    IEntry[] results = await _repository.GetLastEditedEntries("Beta", false, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -44,7 +44,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task FindEntries_IgnoringCase()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries(new[] { _journalId }, "beta", null, 10);
+    IEntry[] results = await _repository.GetLastEditedEntries("beta", false, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -52,7 +52,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task FindEntries_MultipleWords()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries(new[] { _journalId }, "beta gam", null, 10);
+    IEntry[] results = await _repository.GetLastEditedEntries("beta gam", false, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -60,7 +60,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task FindEntries_NonConsecutiveWords()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries(new[] { _journalId }, "alpha gam", null, 10);
+    IEntry[] results = await _repository.GetLastEditedEntries("alpha gam", false, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -78,7 +78,7 @@ public class MongoRepository_GetLastEditedEntries_Should
       new ScrapsEntry { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Franz" }
     );
 
-    IEntry[] results = await _repository.GetLastEditedEntries(new[] { result.EntityId }, "heiri", null, 10);
+    IEntry[] results = await _repository.GetLastEditedEntries("heiri", false, null, [result.EntityId], 10);
 
     results.Length.Should().Be(1);
     ((ScrapsEntry) results[0]).Title.Should().Be("Heiri");
@@ -89,8 +89,9 @@ public class MongoRepository_GetLastEditedEntries_Should
   {
     IEntry[] results = await _repository.GetLastEditedEntries(
       null,
+      false,
+      [JournalType.Counter],
       null,
-      new[] { JournalType.Counter },
       10
     );
 
@@ -109,8 +110,9 @@ public class MongoRepository_GetLastEditedEntries_Should
 
     IEntry[] results = await _repository.GetLastEditedEntries(
       null,
+      false,
+      [JournalType.Scraps],
       null,
-      new[] { JournalType.Scraps },
       10
     );
 

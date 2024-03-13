@@ -12,10 +12,10 @@ public class GetAllJournalsQueryExecutor(IUserScopedRepository repository)
   {
     IJournal[] allJournals = await repository.GetAllJournals(
       query.SearchText,
+      query.ScheduledOnly,
       query.JournalTypes,
       GetJournalIds(query),
-      query.Limit,
-      query.ScheduledOnly
+      query.Limit
     );
 
     return await JournalQueryUtil.EnsurePermissionUsers(repository, allJournals);
