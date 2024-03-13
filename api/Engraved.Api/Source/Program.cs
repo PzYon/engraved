@@ -6,6 +6,7 @@ using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Basic;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Filters;
+using Engraved.Api.Jobs;
 using Engraved.Api.Notifications;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
@@ -97,6 +98,7 @@ builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddSingleton<UserLoader>();
+builder.Services.AddHostedService<ScheduleJob>();
 
 // it is recommended to only have one instance of the MongoClient:
 // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
