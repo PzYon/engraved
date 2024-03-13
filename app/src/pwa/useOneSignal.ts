@@ -12,7 +12,13 @@ export const setUpOnSignal = (oneSignalUserId: string) => {
     notificationClickHandlerAction: "focus",
     notificationClickHandlerMatch: "origin",
   }).then(() => {
-    OneSignal.login(oneSignalUserId);
+    OneSignal.login(oneSignalUserId)
+      .then((r) => {
+        console.log("OneSignal login result:", r);
+      })
+      .catch((e) => {
+        console.error("OneSignal login error:", e);
+      });
 
     OneSignal.Notifications.addEventListener("click", (e) => {
       alert(`Notification button "${e.result?.actionId}" was clicked.`);
