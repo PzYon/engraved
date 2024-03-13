@@ -11,15 +11,15 @@ public class GetAllEntriesQueryExecutor(IRepository repository)
 
   public async Task<GetAllEntriesQueryResult> Execute(GetAllEntriesQuery query)
   {
-    IJournal[] allJournals = await repository.GetAllJournals(null, null, null, 100);
+    IJournal[] allJournals = await repository.GetAllJournals(null, false, null, null, 100);
     string[] allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
     IEntry[] allEntries = await repository.GetLastEditedEntries(
-      allJournalIds,
       query.SearchText,
+      query.ScheduledOnly,
       query.JournalTypes,
-      query.Limit ?? 20,
-      query.ScheduledOnly
+      allJournalIds,
+      query.Limit ?? 20
     );
 
     string[] relevantJournalIds = allEntries.Select(e => e.ParentId).ToArray();

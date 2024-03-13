@@ -67,10 +67,10 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   public async Task<IJournal[]> GetAllJournals(
     string? searchText = null,
+    bool scheduledOnly = false,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null,
-    bool scheduledOnly = false
+    int? limit = null
   )
   {
     List<FilterDefinition<JournalDocument>> filters = GetFreeTextFilters<JournalDocument>(
@@ -180,11 +180,11 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   // attention: there's no security here for the moment. might not be required as
   // you explicitly need to specify the journal IDs.
   public async Task<IEntry[]> GetLastEditedEntries(
-    string[]? journalIds,
     string? searchText,
-    JournalType[]? journalTypes,
-    int? limit,
-    bool scheduledOnly = false
+    bool scheduledOnly = false,
+    JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
+    int? limit = null
   )
   {
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(

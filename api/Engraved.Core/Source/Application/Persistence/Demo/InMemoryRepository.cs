@@ -47,10 +47,10 @@ public class InMemoryRepository : IRepository
 
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
+    bool scheduledOnly = false,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null,
-    bool scheduledOnly = false
+    int? limit = null
   )
   {
     // note: conditions are currently partially ignored, as they are not (yet?) needed for these in memory tests.
@@ -90,11 +90,11 @@ public class InMemoryRepository : IRepository
   }
 
   public Task<IEntry[]> GetLastEditedEntries(
-    string[]? journalIds,
     string? searchText,
-    JournalType[]? journalTypes,
-    int? limit,
-    bool scheduledOnly = false
+    bool scheduledOnly = false,
+    JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
+    int? limit = null
   )
   {
     return Task.FromResult(

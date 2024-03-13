@@ -39,7 +39,7 @@ public class MongoRepository_GetAllJournals_Should
   [Test]
   public async Task ReturnLimitedJournals()
   {
-    IJournal[] results = await _repository.GetAllJournals(null, null, null, 1);
+    IJournal[] results = await _repository.GetAllJournals(null, false, null, null, 1);
     results.Length.Should().Be(1);
   }
 
@@ -62,14 +62,14 @@ public class MongoRepository_GetAllJournals_Should
   [Test]
   public async Task Return_Matching_JournalTypes()
   {
-    IJournal[] results = await _repository.GetAllJournals(null, new[] { JournalType.Timer, JournalType.Gauge });
+    IJournal[] results = await _repository.GetAllJournals(null, false, [JournalType.Timer, JournalType.Gauge]);
     results.Length.Should().Be(2);
   }
 
   [Test]
   public async Task Return_Matching_JournalId()
   {
-    IJournal[] results = await _repository.GetAllJournals(null, null, new[] { _gaugeJournalId }, 10);
+    IJournal[] results = await _repository.GetAllJournals(null, false, null, new[] { _gaugeJournalId }, 10);
     results.Length.Should().Be(1);
     results[0].Id.Should().Be(_gaugeJournalId);
   }
@@ -88,7 +88,7 @@ public class MongoRepository_GetAllJournals_Should
       }
     );
 
-    IJournal[] results = await _repository.GetAllJournals(null, null, null, null, true);
+    IJournal[] results = await _repository.GetAllJournals(null, true, null, null, null);
     results.Length.Should().Be(1);
   }
 }
