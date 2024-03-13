@@ -1,9 +1,5 @@
-import { useEffect } from "react";
 import { envSettings } from "../env/envSettings";
 import OneSignal from "react-onesignal";
-import { useAppContext } from "../AppContext";
-
-let isInitialized = false;
 
 export const setUpOnSignal = (oneSignalUserId: string) => {
   OneSignal.init({
@@ -13,8 +9,8 @@ export const setUpOnSignal = (oneSignalUserId: string) => {
     notificationClickHandlerMatch: "origin",
   }).then(() => {
     OneSignal.login(oneSignalUserId)
-      .then((r) => {
-        console.log("OneSignal login result:", r);
+      .then(() => {
+        console.log("OneSignal login successful.");
       })
       .catch((e) => {
         console.error("OneSignal login error:", e);
@@ -24,17 +20,4 @@ export const setUpOnSignal = (oneSignalUserId: string) => {
       alert(`Notification button "${e.result?.actionId}" was clicked.`);
     });
   });
-};
-
-export const useOneSignal = () => {
-  const { user } = useAppContext();
-
-  useEffect(() => {
-    if (isInitialized || !user?.id) {
-      return;
-    }
-
-    isInitialized = true;
-    setUpOnSignal(user.globalUniqueId);
-  }, [user]);
 };
