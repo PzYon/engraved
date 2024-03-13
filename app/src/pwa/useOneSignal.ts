@@ -1,28 +1,34 @@
 import { useEffect } from "react";
 import { envSettings } from "../env/envSettings";
 import OneSignal from "react-onesignal";
+import { useAppContext } from "../AppContext";
 
 let isInitialized = false;
 
-export const useOneSignal = (userId: string) => {
+export const setUpOnSignal = (oneSignalUserId: string) => {
+  OneSignal.init({
+    appId: envSettings.notifications.appId,
+    allowLocalhostAsSecureOrigin: envSettings.isDev,
+    notificationClickHandlerAction: "focus",
+    notificationClickHandlerMatch: "origin",
+  }).then(() => {
+    OneSignal.login(oneSignalUserId);
+
+    OneSignal.Notifications.addEventListener("click", (e) => {
+      alert(`Notification button "${e.result?.actionId}" was clicked.`);
+    });
+  });
+};
+
+export const useOneSignal = () => {
+  const { user } = useAppContext();
+
   useEffect(() => {
-    if (isInitialized) {
+    if (isInitialized || !user?.id) {
       return;
     }
 
     isInitialized = true;
-
-    OneSignal.init({
-      appId: envSettings.notifications.appId,
-      allowLocalhostAsSecureOrigin: envSettings.isDev,
-      notificationClickHandlerAction: "focus",
-      notificationClickHandlerMatch: "origin",
-    }).then(() => {
-      OneSignal.login(userId);
-
-      OneSignal.Notifications.addEventListener("click", (e) => {
-        alert(`Notification button "${e.result?.actionId}" was clicked.`);
-      });
-    });
-  }, []);
+    setUpOnSignal(user.globalUniqueId);
+  }, [user]);
 };
