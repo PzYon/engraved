@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Notifications;
@@ -8,61 +7,101 @@ using Microsoft.Extensions.Logging;
 
 namespace Engraved.Core.Application.Jobs;
 
+// todo:
+// - send notification (even consider adding a new project for OneSignal)
+// - mark IScheduled.NotificationSent = true
+// - test:
+//   - permissions
+
 public class NotificationJob(
   ILogger<NotificationJob> logger,
   IBaseRepository repository,
-  INotificationService notificationService,
-  IDateService dateService
+  INotificationService notificationService
 )
 {
   public async Task Execute()
   {
     try
     {
-      Log($"Starting {nameof(NotificationJob)}");
+      logger.LogInformation($"Starting {nameof(NotificationJob)}");
 
       var watch = Stopwatch.StartNew();
 
       IEntry[] entries = await repository.GetLastEditedEntries(null, true);
-      ProcessEntities(entries.OfType<IEntity>().ToArray());
+      await ProcessEntries(entries);
 
       IJournal[] journals = await repository.GetAllJournals(null, true);
-      ProcessEntities(journals.OfType<IEntity>().ToArray());
+      await ProcessJournals(journals);
 
-      Log($"Ending {nameof(NotificationJob)} after {watch.ElapsedMilliseconds}ms");
+      logger.LogInformation(
+        "Ending {JobName} after {ElapsedMs}ms",
+        nameof(NotificationJob),
+        watch.ElapsedMilliseconds
+      );
     }
     catch (Exception ex)
     {
-      logger.LogError($"Error while processing job: ${ex.Message}", ex);
+      logger.LogError(ex, "Error while processing job: ${ExMessage}", ex.Message);
     }
   }
 
-  private void ProcessEntities(IEntity[] entities)
+  private async Task ProcessJournals(IJournal[] journals)
   {
-    foreach (IEntity entity in entities.Where(e => e.Schedule?.NextOccurrence < dateService.UtcNow))
+    foreach (IJournal journal in journals)
     {
-      Log(
-        $"Would send notification for {entity.GetType().Name} with ID {entity.Id}, scheduled at {entity.Schedule?.NextOccurrence}"
-      );
+      try
+      {
+        logger.LogInformation(
+          "Would send notification for {Name} with ID {JournalId}, scheduled at {ScheduleNextOccurrence}",
+          journal.GetType().Name,
+          journal.Id,
+          journal.Schedule?.NextOccurrence
+        );
 
-      notificationService.SendNotification(
-        new Notification
-        {
-          Buttons = [],
-          Message = "Test message"
-        }
-      );
-
-      // todo:
-      // - send notification (even consider adding a new project for OneSignal)
-      // - mark IScheduled.NotificationSent = true
-      // - test:
-      //   - permissions
+        await notificationService.SendNotification(
+          new ClientNotification
+          {
+            UserId = "not-available-yet",
+            Buttons = [],
+            Message = journal.Name
+          },
+          true
+        );
+      }
+      catch (Exception ex)
+      {
+        logger.LogError(ex, "Failed to process journal with ID {Id}", journal.Id);
+      }
     }
   }
 
-  private void Log(string message)
+  private async Task ProcessEntries(IEntry[] entries)
   {
-    logger.LogInformation("[Background-Job]: " + message);
+    foreach (IEntry entry in entries)
+    {
+      try
+      {
+        logger.LogInformation(
+          "Would send notification for {Name} with ID {EntryId}, scheduled at {ScheduleNextOccurrence}",
+          entry.GetType().Name,
+          entry.Id,
+          entry.Schedule?.NextOccurrence
+        );
+
+        await notificationService.SendNotification(
+          new ClientNotification
+          {
+            UserId = "not-available-yet",
+            Buttons = [],
+            Message = (entry as ScrapsEntry)?.Title ?? "???"
+          },
+          true
+        );
+      }
+      catch (Exception ex)
+      {
+        logger.LogError(ex, "Failed to process entry with ID {Id}", entry.Id);
+      }
+    }
   }
 }

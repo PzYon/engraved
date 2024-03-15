@@ -8,7 +8,7 @@ namespace Engraved.Core.Application.Jobs;
 
 public class TestNotificationService : INotificationService
 {
-  public Task SendNotification(Notification notification)
+  public Task SendNotification(ClientNotification notification, bool doNotSend)
   {
     throw new System.NotImplementedException();
   }
@@ -20,14 +20,12 @@ public class NotificationJobShould
   public async Task Initial()
   {
     var repository = new InMemoryRepository();
-    var dateService = new FakeDateService();
     var notificationService = new TestNotificationService();
 
     var job = new NotificationJob(
       NullLogger<NotificationJob>.Instance,
       repository,
-      notificationService,
-      dateService
+      notificationService
     );
 
     await job.Execute();

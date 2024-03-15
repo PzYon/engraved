@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.Persistence.Mongo.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.Api.Tests", "Engraved.Api.Tests\Engraved.Api.Tests.csproj", "{333D8FF4-F604-4D52-99EE-D312EF720A89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.Notifications.OneSignal", "Engraved.Notifications.OneSignal\Engraved.Notifications.OneSignal.csproj", "{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{333D8FF4-F604-4D52-99EE-D312EF720A89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
