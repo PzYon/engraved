@@ -2,6 +2,6 @@
 
 public class Notification
 {
-  public string Message { get; set; }
-  public List<NotificationButton> Buttons { get; set; }
+  public string? Message { get; set; }
+  public List<NotificationButton> Buttons { get; set; } = new();
 }
