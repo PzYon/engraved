@@ -80,14 +80,9 @@ public class NotificationsController(
   }
 }
 
-public class ButtonWithUrl : Button
+public class ButtonWithUrl(string? id = null, string? text = null, string? icon = null, string? url = null)
+  : Button(id, text, icon)
 {
   [DataMember(Name = "url", IsRequired = true, EmitDefaultValue = false)]
-  public string? Url { get; set; }
-
-  public ButtonWithUrl(string? id = null, string? text = null, string? icon = null, string? url = null)
-    : base(id, text, icon)
-  {
-    Url = url;
-  }
+  public string? Url { get; set; } = url;
 }

@@ -1,33 +1,25 @@
 ﻿using System.Diagnostics;
-using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Notifications;
+using Microsoft.Extensions.Logging;
 
-namespace Engraved.Api.Jobs;
+namespace Engraved.Core.Application.Jobs;
 
-public class ScheduleJob(ILogger<ScheduleJob> logger, IBaseRepository repository, IDateService dateService)
-  : BackgroundService
+public class NotificationJob(
+  ILogger<NotificationJob> logger,
+  IBaseRepository repository,
+  INotificationService notificationService,
+  IDateService dateService
+)
 {
-  private readonly TimeSpan _period = TimeSpan.FromMinutes(2);
-
-  protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-  {
-    using (var timer = new PeriodicTimer(_period))
-    {
-      while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
-      {
-        await Execute();
-      }
-    }
-  }
-
-  private async Task Execute()
+  public async Task Execute()
   {
     try
     {
-      Log($"Starting {nameof(ScheduleJob)}");
+      Log($"Starting {nameof(NotificationJob)}");
 
       var watch = Stopwatch.StartNew();
 
@@ -37,7 +29,7 @@ public class ScheduleJob(ILogger<ScheduleJob> logger, IBaseRepository repository
       IJournal[] journals = await repository.GetAllJournals(null, true);
       ProcessEntities(journals.OfType<IEntity>().ToArray());
 
-      Log($"Ending {nameof(ScheduleJob)} after {watch.ElapsedMilliseconds}ms");
+      Log($"Ending {nameof(NotificationJob)} after {watch.ElapsedMilliseconds}ms");
     }
     catch (Exception ex)
     {
@@ -51,6 +43,14 @@ public class ScheduleJob(ILogger<ScheduleJob> logger, IBaseRepository repository
     {
       Log(
         $"Would send notification for {entity.GetType().Name} with ID {entity.Id}, scheduled at {entity.Schedule?.NextOccurrence}"
+      );
+
+      notificationService.SendNotification(
+        new Notification
+        {
+          Buttons = [],
+          Message = "Test message"
+        }
       );
 
       // todo:
