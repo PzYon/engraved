@@ -104,7 +104,9 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     if (scheduledOnly)
     {
       filters.Add(
-        Builders<JournalDocument>.Filter.Where(d => d.Schedule != null && d.Schedule.NextOccurrence != null)
+        Builders<JournalDocument>.Filter.Where(
+          d => d.Schedules.ContainsKey("max") && d.Schedules["max"].NextOccurrence != null
+        )
       );
     }
 
@@ -209,6 +211,12 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
     if (scheduledOnly)
     {
+      filters.Add(
+        Builders<EntryDocument>.Filter.Where(
+          d => d.Schedules.ContainsKey("max") && d.Schedules["max"].NextOccurrence != null
+        )
+      );
+
       filters.Add(
         Builders<EntryDocument>.Filter.Where(d => d.Schedule != null && d.Schedule.NextOccurrence != null)
       );

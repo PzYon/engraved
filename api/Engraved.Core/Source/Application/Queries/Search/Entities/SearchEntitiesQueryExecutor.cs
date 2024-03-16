@@ -1,10 +1,11 @@
 using Engraved.Core.Application.Queries.Entries.GetAll;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.User;
 
 namespace Engraved.Core.Application.Queries.Search.Entities;
 
-public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
+public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserService currentUserService)
   : IQueryExecutor<SearchEntitiesResult, SearchEntitiesQuery>
 {
   public bool DisableCache => false;
@@ -39,20 +40,24 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher)
 
     return new SearchEntitiesResult
     {
-      Entities = GetSortedResults(query, searchResultEntities),
+      Entities = await GetSortedResults(query, searchResultEntities),
       Journals = entriesResult.Journals
     };
   }
 
-  private static SearchResultEntity[] GetSortedResults(
+  private async Task<SearchResultEntity[]> GetSortedResults(
     SearchEntitiesQuery query,
     SearchResultEntity[] searchResultEntities
   )
   {
-    return (
-      query.ScheduledOnly
-        ? searchResultEntities.OrderBy(e => e.Entity.Schedule?.NextOccurrence)
-        : searchResultEntities.OrderByDescending(e => e.Entity.EditedOn)
-    ).ToArray();
+    if (!query.ScheduledOnly)
+    {
+      return searchResultEntities.OrderByDescending(e => e.Entity.EditedOn).ToArray();
+    }
+
+    // todo: not clear how this should be done.. maybe sort on client?
+    // IUser user = await currentUserService.LoadUser();
+    // return searchResultEntities.OrderBy(e => e.Entity.Schedules.ContainsKey(user.Id) && e.Entity.Schedules[user.Id!]?.NextOccurrence).ToArray();
+    return searchResultEntities.OrderByDescending(e => e.Entity.EditedOn).ToArray();
   }
 }

@@ -19,4 +19,6 @@ public abstract class BaseEntry : IEntry
   public abstract double GetValue();
 
   public Schedule? Schedule { get; set; }
+
+  public Dictionary<string, Schedule> Schedules { get; set; } = new();
 }

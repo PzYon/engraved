@@ -23,5 +23,8 @@ public abstract class EntryDocument : IUserScopedDocument, IScheduledDocument
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 
+  [Obsolete]
   public ScheduleSubDocument? Schedule { get; set; }
+  
+  public Dictionary<string, ScheduleSubDocument> Schedules { get; set; } = new();
 }
