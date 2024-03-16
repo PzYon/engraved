@@ -4,20 +4,13 @@ using Microsoft.Extensions.Options;
 
 namespace Engraved.Api.Authentication.Google;
 
-public class GoogleTokenValidator : IGoogleTokenValidator
+public class GoogleTokenValidator(AuthenticationConfig configuration) : IGoogleTokenValidator
 {
-  private readonly AuthenticationConfig _authenticationConfig;
-
   public GoogleTokenValidator(IOptions<AuthenticationConfig> configuration) : this(configuration.Value) { }
-
-  public GoogleTokenValidator(AuthenticationConfig configuration)
-  {
-    _authenticationConfig = configuration;
-  }
 
   public async Task<ParsedToken> ParseAndValidate(string idToken)
   {
-    if (string.IsNullOrEmpty(_authenticationConfig.GoogleClientId))
+    if (string.IsNullOrEmpty(configuration.GoogleClientId))
     {
       throw new ArgumentException(
         $"\"{nameof(AuthenticationConfig.GoogleClientId)}\" is not set, please do so in your environment settings."
@@ -28,7 +21,7 @@ public class GoogleTokenValidator : IGoogleTokenValidator
     {
       var validationSettings = new GoogleJsonWebSignature.ValidationSettings
       {
-        Audience = new[] { _authenticationConfig.GoogleClientId }
+        Audience = new[] { configuration.GoogleClientId }
       };
 
       GoogleJsonWebSignature.Payload? payload = await GoogleJsonWebSignature.ValidateAsync(idToken, validationSettings);

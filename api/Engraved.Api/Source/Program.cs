@@ -7,7 +7,6 @@ using Engraved.Api.Authentication.Basic;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Filters;
 using Engraved.Api.Jobs;
-using Engraved.Api.Notifications;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Jobs;
@@ -16,6 +15,7 @@ using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Domain.Notifications;
 using Engraved.Core.Domain.User;
+using Engraved.Notifications.OneSignal;
 using Engraved.Persistence.Mongo;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -94,13 +94,17 @@ if (!builder.Environment.IsDevelopment())
 }
 
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
-builder.Services.Configure<NotificationsConfig>(notificationsConfigSection);
+builder.Services.Configure<OneSignalConfig>(notificationsConfigSection);
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddSingleton<UserLoader>();
-builder.Services.AddHostedService<ScheduledNotificationJob>();
+
+if (!builder.Environment.IsDevelopment())
+{
+  builder.Services.AddHostedService<ScheduledNotificationJob>();
+}
 
 // it is recommended to only have one instance of the MongoClient:
 // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
@@ -174,7 +178,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
 builder.Services.AddTransient<NotificationJob>();
-builder.Services.AddTransient<INotificationService, NotificationService>();
+builder.Services.AddTransient<INotificationService, OneSignalNotificationService>();
 
 if (isE2eTests)
 {
