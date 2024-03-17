@@ -25,6 +25,7 @@ public class NotificationJobShould
     var job = new NotificationJob(
       NullLogger<NotificationJob>.Instance,
       repository,
+      new FakeDateService(),
       notificationService
     );
 
