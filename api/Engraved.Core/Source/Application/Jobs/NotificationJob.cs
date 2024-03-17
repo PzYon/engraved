@@ -9,12 +9,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Engraved.Core.Application.Jobs;
 
-// todo:
-// - send notification (even consider adding a new project for OneSignal)
-// - mark IScheduled.NotificationSent = true
-// - test:
-//   - permissions
-
 public class NotificationJob(
   ILogger<NotificationJob> logger,
   IBaseRepository repository,
@@ -22,19 +16,19 @@ public class NotificationJob(
   INotificationService notificationService
 )
 {
-  public async Task Execute()
+  public async Task Execute(bool isDryRun)
   {
     try
     {
-      logger.LogInformation($"Starting {nameof(NotificationJob)}");
+      logger.LogInformation($"Starting {nameof(NotificationJob)} [Dry Run: {isDryRun}]");
 
       var watch = Stopwatch.StartNew();
 
       IEntry[] entries = await repository.GetLastEditedEntries(null, "ALL");
-      await ProcessEntries(entries);
+      await ProcessEntries(entries, isDryRun);
 
       IJournal[] journals = await repository.GetAllJournals(null, "ALL");
-      await ProcessJournals(journals);
+      await ProcessJournals(journals, isDryRun);
 
       logger.LogInformation(
         "Ending {JobName} after {ElapsedMs}ms",
@@ -48,7 +42,7 @@ public class NotificationJob(
     }
   }
 
-  private async Task ProcessJournals(IJournal[] journals)
+  private async Task ProcessJournals(IJournal[] journals, bool isDryRun)
   {
     foreach (IJournal journal in journals)
     {
@@ -72,15 +66,18 @@ public class NotificationJob(
             throw new Exception($"User {userName} can not be loaded");
           }
 
-          await notificationService.SendNotification(
-            new ClientNotification
-            {
-              UserId = user.GlobalUniqueId.ToString(),
-              Buttons = [],
-              Message = journal.Name
-            },
-            true
-          );
+          if (!isDryRun)
+          {
+            await notificationService.SendNotification(
+              new ClientNotification
+              {
+                UserId = user.GlobalUniqueId.ToString(),
+                Buttons = [],
+                Message = journal.Name
+              },
+              true
+            );
+          }
         }
         catch (Exception ex)
         {
@@ -90,7 +87,7 @@ public class NotificationJob(
     }
   }
 
-  private async Task ProcessEntries(IEntry[] entries)
+  private async Task ProcessEntries(IEntry[] entries, bool isDryRun)
   {
     foreach (IEntry entry in entries)
     {
@@ -114,15 +111,18 @@ public class NotificationJob(
             throw new Exception($"User {userName} can not be loaded");
           }
 
-          await notificationService.SendNotification(
-            new ClientNotification
-            {
-              UserId = user.GlobalUniqueId.ToString(),
-              Buttons = [],
-              Message = (entry as ScrapsEntry)?.Title ?? "???"
-            },
-            true
-          );
+          if (!isDryRun)
+          {
+            await notificationService.SendNotification(
+              new ClientNotification
+              {
+                UserId = user.GlobalUniqueId.ToString(),
+                Buttons = [],
+                Message = (entry as ScrapsEntry)?.Title ?? "???"
+              },
+              true
+            );
+          }
         }
         catch (Exception ex)
         {

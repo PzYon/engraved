@@ -85,7 +85,9 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddHttpContextAccessor();
 
 IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
-IConfigurationSection notificationsConfigSection = builder.Configuration.GetSection("Notifications");
+IConfigurationSection notificationsSection = builder.Configuration.GetSection("Notifications");
+IConfigurationSection oneSignalConfigSection = notificationsSection.GetSection("OneSignal");
+IConfigurationSection notificationsJobConfig = notificationsSection.GetSection("Job");
 
 // https://learn.microsoft.com/en-us/dotnet/core/extensions/logging?tabs=command-line
 if (!builder.Environment.IsDevelopment())
@@ -94,17 +96,14 @@ if (!builder.Environment.IsDevelopment())
 }
 
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
-builder.Services.Configure<OneSignalConfig>(notificationsConfigSection);
+builder.Services.Configure<OneSignalConfig>(oneSignalConfigSection);
+builder.Services.Configure<NotificationsJobConfig>(notificationsJobConfig);
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddSingleton<UserLoader>();
-
-if (!builder.Environment.IsDevelopment())
-{
-  builder.Services.AddHostedService<ScheduledNotificationJob>();
-}
+builder.Services.AddHostedService<ScheduledNotificationJob>();
 
 // it is recommended to only have one instance of the MongoClient:
 // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
