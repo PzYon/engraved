@@ -4,7 +4,7 @@ namespace Engraved.Api.Jobs;
 
 public class ScheduledNotificationJob(NotificationJob notificationJob) : BackgroundService
 {
-  private readonly TimeSpan _period = TimeSpan.FromMinutes(0.5);
+  private readonly TimeSpan _period = TimeSpan.FromMinutes(2);
 
   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
