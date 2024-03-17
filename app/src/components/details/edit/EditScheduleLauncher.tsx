@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect } from "react";
 import { EditSchedule } from "./EditSchedule";
 import { useJournalContext } from "../JournalContext";
+import { useAppContext } from "../../../AppContext";
 
 export const EditScheduleLauncher: React.FC<{
   journal: IJournal;
@@ -11,6 +12,7 @@ export const EditScheduleLauncher: React.FC<{
   const { renderDialog } = useDialogContext();
   const { entryId } = useParams();
   const { entries } = useJournalContext();
+  const { user } = useAppContext();
 
   const navigate = useNavigate();
 
@@ -21,7 +23,7 @@ export const EditScheduleLauncher: React.FC<{
         <EditSchedule
           initialDate={
             (entryId ? entries.filter((i) => i.id === entryId)[0] : journal)
-              ?.schedule?.nextOccurrence
+              ?.schedules?.[user.name]?.nextOccurrence
           }
           journalId={journal.id}
           entryId={entryId}

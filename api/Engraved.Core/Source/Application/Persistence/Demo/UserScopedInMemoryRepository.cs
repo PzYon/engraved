@@ -49,7 +49,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public async Task<IJournal[]> GetAllJournals(
     string? searchText,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null
@@ -57,12 +57,12 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   {
     IJournal[] allJournals = await _repository.GetAllJournals(
       searchText,
-      scheduledOnly,
+      scheduledOnlyForUserId,
       journalTypes,
       journalIds,
       limit
     );
-    
+
     return allJournals
       .Where(j => j.UserId == CurrentUser.Value.Id)
       .ToArray();
@@ -88,13 +88,13 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public Task<IEntry[]> GetLastEditedEntries(
     string? searchText,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null
   )
   {
-    return _repository.GetLastEditedEntries(searchText, scheduledOnly, journalTypes, journalIds, limit);
+    return _repository.GetLastEditedEntries(searchText, scheduledOnlyForUserId, journalTypes, journalIds, limit);
   }
 
   public Task<UpsertResult> UpsertJournal(IJournal journal)

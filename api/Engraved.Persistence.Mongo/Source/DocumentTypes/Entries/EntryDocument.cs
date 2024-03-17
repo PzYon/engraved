@@ -22,9 +22,6 @@ public abstract class EntryDocument : IUserScopedDocument, IScheduledDocument
   public DateTime? EditedOn { get; set; }
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
-
-  [Obsolete]
-  public ScheduleSubDocument? Schedule { get; set; }
   
   public Dictionary<string, ScheduleSubDocument> Schedules { get; set; } = new();
 }

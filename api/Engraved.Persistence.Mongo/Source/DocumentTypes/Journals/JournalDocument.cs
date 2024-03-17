@@ -32,9 +32,6 @@ public abstract class JournalDocument : IUserScopedDocument, IHasPermissionsDocu
   public UserPermissions Permissions { get; set; } = new();
 
   public Dictionary<string, string> CustomProps { get; set; } = new();
-  
-  [Obsolete]
-  public ScheduleSubDocument? Schedule { get; set; }
-  
+
   public Dictionary<string, ScheduleSubDocument> Schedules { get; set; } = new();
 }

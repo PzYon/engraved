@@ -8,6 +8,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { ListItemFooterRow } from "../../overview/ListItemFooterRow";
 import { IconStyle } from "../IconStyle";
 import { FormatDate } from "../FormatDate";
+import { useAppContext } from "../../../AppContext";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -28,6 +29,8 @@ export const Entry: React.FC<{
   actions,
   propsRenderStyle,
 }) => {
+  const { user } = useAppContext();
+
   return (
     <>
       {children}
@@ -38,6 +41,7 @@ export const Entry: React.FC<{
           journalName,
           entry,
           propsRenderStyle,
+          user.name,
         )}
         actions={actions}
       />
@@ -51,6 +55,7 @@ function getEntryProperties(
   journalName: string,
   entry: IEntry,
   propsRenderStyle: EntryPropsRenderStyle,
+  userName: string,
 ) {
   return [
     {
@@ -73,6 +78,6 @@ function getEntryProperties(
       label: "Edited",
       hideWhen: () => propsRenderStyle === "none",
     },
-    getScheduleProperty(entry.schedule?.nextOccurrence),
+    getScheduleProperty(entry.schedules?.[userName]?.nextOccurrence),
   ];
 }
