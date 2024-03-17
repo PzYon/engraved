@@ -2,5 +2,5 @@
 
 public interface IScheduled
 {
-  Schedule? Schedule { get; set; }
+  Dictionary<string, Schedule> Schedules { get; set; }
 }

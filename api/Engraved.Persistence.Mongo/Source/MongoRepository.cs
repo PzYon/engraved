@@ -67,7 +67,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   public async Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null
@@ -101,11 +101,23 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    if (scheduledOnly)
+    if (!string.IsNullOrEmpty(scheduledOnlyForUserId))
     {
-      filters.Add(
-        Builders<JournalDocument>.Filter.Where(d => d.Schedule != null && d.Schedule.NextOccurrence != null)
-      );
+      if (scheduledOnlyForUserId == "ALL")
+      {
+        filters.Add(
+          Builders<JournalDocument>.Filter.Where(d => d.Schedules.Count > 0)
+        );
+      }
+      else
+      {
+        filters.Add(
+          Builders<JournalDocument>.Filter.Where(
+            d => d.Schedules.ContainsKey(scheduledOnlyForUserId!)
+                 && d.Schedules[scheduledOnlyForUserId!].NextOccurrence != null
+          )
+        );
+      }
     }
 
     List<JournalDocument> journals = await JournalsCollection
@@ -181,7 +193,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   // you explicitly need to specify the journal IDs.
   public async Task<IEntry[]> GetLastEditedEntries(
     string? searchText,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null
@@ -207,11 +219,23 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    if (scheduledOnly)
+    if (!string.IsNullOrEmpty(scheduledOnlyForUserId))
     {
-      filters.Add(
-        Builders<EntryDocument>.Filter.Where(d => d.Schedule != null && d.Schedule.NextOccurrence != null)
-      );
+      if (scheduledOnlyForUserId == "ALL")
+      {
+        filters.Add(
+          Builders<EntryDocument>.Filter.Where(d => d.Schedules.Count > 0)
+        );
+      }
+      else
+      {
+        filters.Add(
+          Builders<EntryDocument>.Filter.Where(
+            d => d.Schedules.ContainsKey(scheduledOnlyForUserId)
+                 && d.Schedules[scheduledOnlyForUserId].NextOccurrence != null
+          )
+        );
+      }
     }
 
     List<EntryDocument> entries = await EntriesCollection

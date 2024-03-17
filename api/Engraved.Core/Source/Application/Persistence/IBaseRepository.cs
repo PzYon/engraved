@@ -17,7 +17,7 @@ public interface IBaseRepository
 
   Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null
@@ -40,7 +40,7 @@ public interface IBaseRepository
 
   Task<IEntry[]> GetLastEditedEntries(
     string? searchText = null,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null

@@ -6,11 +6,13 @@ import { UserRole } from "../../serverApi/UserRole";
 import { getScheduleProperty } from "../scheduled/scheduleUtils";
 import { IPropertyDefinition } from "../common/IPropertyDefinition";
 import { FormatDate } from "../common/FormatDate";
+import { useAppContext } from "../../AppContext";
 
 export const useJournalProperties = (
   journal: IJournal,
 ): IPropertyDefinition[] => {
   const journalPermissions = useJournalPermissions(journal?.permissions);
+  const { user } = useAppContext();
 
   if (!journal) {
     return [];
@@ -27,7 +29,7 @@ export const useJournalProperties = (
       node: () => <FormatDate value={journal.editedOn} />,
       label: "Edited",
     },
-    getScheduleProperty(journal.schedule?.nextOccurrence),
+    getScheduleProperty(journal.schedules?.[user.name]?.nextOccurrence),
     {
       key: "description",
       node: () => <>{journal.description}</>,

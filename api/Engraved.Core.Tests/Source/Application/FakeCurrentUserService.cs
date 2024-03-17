@@ -3,27 +3,20 @@ using Engraved.Core.Domain.User;
 
 namespace Engraved.Core.Application;
 
-public class FakeCurrentUserService : ICurrentUserService
+public class FakeCurrentUserService(string name) : ICurrentUserService
 {
-  private string _userName;
-
-  public FakeCurrentUserService(string userName)
-  {
-    _userName = userName;
-  }
-
   public string? GetUserName()
   {
-    return _userName;
+    return name;
   }
 
   public void SetUserName(string userName)
   {
-    _userName = userName;
+    name = userName;
   }
 
   public Task<IUser> LoadUser()
   {
-    return Task.FromResult(new User { Name = _userName } as IUser);
+    return Task.FromResult(new User { Name = name } as IUser);
   }
 }

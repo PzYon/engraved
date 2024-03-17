@@ -47,7 +47,7 @@ public class InMemoryRepository : IRepository
 
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null
@@ -55,17 +55,7 @@ public class InMemoryRepository : IRepository
   {
     // note: conditions are currently partially ignored, as they are not (yet?) needed for these in memory tests.
     return Task.FromResult(
-      Journals.Where(
-          j =>
-          {
-            if (!string.IsNullOrEmpty(searchText))
-            {
-              return j.Name.Contains(searchText);
-            }
-
-            return true;
-          }
-        )
+      Journals.Where(j => string.IsNullOrEmpty(searchText) || j.Name.Contains(searchText))
         .ToArray()
     );
   }
@@ -91,7 +81,7 @@ public class InMemoryRepository : IRepository
 
   public Task<IEntry[]> GetLastEditedEntries(
     string? searchText,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null

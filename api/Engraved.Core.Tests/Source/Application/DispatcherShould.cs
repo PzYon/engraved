@@ -185,7 +185,7 @@ public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepo
 
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null
@@ -226,7 +226,7 @@ public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepo
 
   public Task<IEntry[]> GetLastEditedEntries(
     string? searchText,
-    bool scheduledOnly = false,
+    string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null

@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Notifications;
+using Engraved.Core.Domain.User;
 using Microsoft.Extensions.Logging;
 
 namespace Engraved.Core.Application.Jobs;
@@ -16,6 +18,7 @@ namespace Engraved.Core.Application.Jobs;
 public class NotificationJob(
   ILogger<NotificationJob> logger,
   IBaseRepository repository,
+  IDateService dateService,
   INotificationService notificationService
 )
 {
@@ -27,10 +30,10 @@ public class NotificationJob(
 
       var watch = Stopwatch.StartNew();
 
-      IEntry[] entries = await repository.GetLastEditedEntries(null, true);
+      IEntry[] entries = await repository.GetLastEditedEntries(null, "ALL");
       await ProcessEntries(entries);
 
-      IJournal[] journals = await repository.GetAllJournals(null, true);
+      IJournal[] journals = await repository.GetAllJournals(null, "ALL");
       await ProcessJournals(journals);
 
       logger.LogInformation(
@@ -49,28 +52,40 @@ public class NotificationJob(
   {
     foreach (IJournal journal in journals)
     {
-      try
+      foreach ((string? userName, Schedule? schedule) in journal.Schedules.Where(
+                 s => s.Value.NextOccurrence < dateService.UtcNow
+               ))
       {
-        logger.LogInformation(
-          "Would send notification for {Name} with ID {JournalId}, scheduled at {ScheduleNextOccurrence}",
-          journal.GetType().Name,
-          journal.Id,
-          journal.Schedule?.NextOccurrence
-        );
+        try
+        {
+          logger.LogInformation(
+            "Would send notification for {Name} with ID {JournalId} to {User}, scheduled at {ScheduleNextOccurrence}",
+            journal.GetType().Name,
+            journal.Id,
+            userName,
+            schedule.NextOccurrence
+          );
 
-        await notificationService.SendNotification(
-          new ClientNotification
+          IUser? user = await repository.GetUser(userName);
+          if (user == null)
           {
-            UserId = "not-available-yet",
-            Buttons = [],
-            Message = journal.Name
-          },
-          true
-        );
-      }
-      catch (Exception ex)
-      {
-        logger.LogError(ex, "Failed to process journal with ID {Id}", journal.Id);
+            throw new Exception($"User {userName} can not be loaded");
+          }
+
+          await notificationService.SendNotification(
+            new ClientNotification
+            {
+              UserId = user.GlobalUniqueId.ToString(),
+              Buttons = [],
+              Message = journal.Name
+            },
+            true
+          );
+        }
+        catch (Exception ex)
+        {
+          logger.LogError(ex, "Failed to process journal with ID {Id}", journal.Id);
+        }
       }
     }
   }
@@ -79,28 +94,40 @@ public class NotificationJob(
   {
     foreach (IEntry entry in entries)
     {
-      try
+      foreach ((string? userName, Schedule? schedule) in entry.Schedules.Where(
+                 s => s.Value.NextOccurrence < dateService.UtcNow
+               ))
       {
-        logger.LogInformation(
-          "Would send notification for {Name} with ID {EntryId}, scheduled at {ScheduleNextOccurrence}",
-          entry.GetType().Name,
-          entry.Id,
-          entry.Schedule?.NextOccurrence
-        );
+        try
+        {
+          logger.LogInformation(
+            "Would send notification for {Name} with ID {JournalId} to {User}, scheduled at {ScheduleNextOccurrence}",
+            entry.GetType().Name,
+            entry.Id,
+            userName,
+            schedule.NextOccurrence
+          );
 
-        await notificationService.SendNotification(
-          new ClientNotification
+          IUser? user = await repository.GetUser(userName);
+          if (user == null)
           {
-            UserId = "not-available-yet",
-            Buttons = [],
-            Message = (entry as ScrapsEntry)?.Title ?? "???"
-          },
-          true
-        );
-      }
-      catch (Exception ex)
-      {
-        logger.LogError(ex, "Failed to process entry with ID {Id}", entry.Id);
+            throw new Exception($"User {userName} can not be loaded");
+          }
+
+          await notificationService.SendNotification(
+            new ClientNotification
+            {
+              UserId = user.GlobalUniqueId.ToString(),
+              Buttons = [],
+              Message = (entry as ScrapsEntry)?.Title ?? "???"
+            },
+            true
+          );
+        }
+        catch (Exception ex)
+        {
+          logger.LogError(ex, "Failed to process entry with ID {Id}", entry.Id);
+        }
       }
     }
   }

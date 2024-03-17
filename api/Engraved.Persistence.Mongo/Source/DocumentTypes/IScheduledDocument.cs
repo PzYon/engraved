@@ -2,5 +2,5 @@
 
 public interface IScheduledDocument
 {
-  ScheduleSubDocument? Schedule { get; set; }
+  Dictionary<string, ScheduleSubDocument> Schedules { get; set; }
 }

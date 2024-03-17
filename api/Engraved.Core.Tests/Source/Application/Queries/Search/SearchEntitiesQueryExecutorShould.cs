@@ -29,9 +29,11 @@ public class SearchEntitiesQueryExecutorShould
 
     await _testRepository.UpsertUser(new User { Name = "max" });
 
+    var fakeCurrentUserService = new FakeCurrentUserService("max");
+
     _userScopedInMemoryRepository = new UserScopedInMemoryRepository(
       _testRepository,
-      new FakeCurrentUserService("max")
+      fakeCurrentUserService
     );
 
     _dateService = new FakeDateService();
@@ -46,7 +48,8 @@ public class SearchEntitiesQueryExecutorShould
           new MemoryCache(new MemoryCacheOptions()),
           _userScopedInMemoryRepository.CurrentUser
         )
-      )
+      ),
+      fakeCurrentUserService
     );
   }
 
