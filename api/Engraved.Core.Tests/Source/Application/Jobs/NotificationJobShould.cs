@@ -29,6 +29,6 @@ public class NotificationJobShould
       notificationService
     );
 
-    await job.Execute();
+    await job.Execute(true);
   }
 }
