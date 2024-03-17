@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.Api.Tests", "Engra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.Notifications.OneSignal", "Engraved.Notifications.OneSignal\Engraved.Notifications.OneSignal.csproj", "{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emgraved.Tests", "Emgraved.Tests\Emgraved.Tests.csproj", "{32237CFC-2C88-46D7-A514-5382BB2E9F08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57B0EF05-868C-401D-A103-5F2E7EC9D3E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32237CFC-2C88-46D7-A514-5382BB2E9F08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32237CFC-2C88-46D7-A514-5382BB2E9F08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32237CFC-2C88-46D7-A514-5382BB2E9F08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32237CFC-2C88-46D7-A514-5382BB2E9F08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
