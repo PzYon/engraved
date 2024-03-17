@@ -106,7 +106,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       if (scheduledOnlyForUserId == "ALL")
       {
         filters.Add(
-          Builders<JournalDocument>.Filter.Where(d => d.Schedules.Count > 0)
+          Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
         );
       }
       else
@@ -224,7 +224,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       if (scheduledOnlyForUserId == "ALL")
       {
         filters.Add(
-          Builders<EntryDocument>.Filter.Where(d => d.Schedules.Count > 0)
+          Builders<EntryDocument>.Filter.Exists(d => d.Schedules)
         );
       }
       else
