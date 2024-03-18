@@ -1,11 +1,11 @@
 ﻿using Engraved.Core.Domain.Notifications;
 
-namespace Emgraved.Tests;
+namespace Engraved.Tests.Tests.Job;
 
 public class TestNotificationService : INotificationService
 {
   public Task SendNotification(ClientNotification notification, bool doNotSend)
   {
-    throw new NotImplementedException();
+    return Task.CompletedTask;
   }
 }

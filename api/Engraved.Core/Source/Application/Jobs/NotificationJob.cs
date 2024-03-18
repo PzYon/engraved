@@ -16,8 +16,10 @@ public class NotificationJob(
   INotificationService notificationService
 )
 {
-  public async Task Execute(bool isDryRun)
+  public async Task<NotificationJobResult> Execute(bool isDryRun)
   {
+    var result = new NotificationJobResult();
+
     try
     {
       logger.LogInformation($"Starting {nameof(NotificationJob)} [Dry Run: {isDryRun}]");
@@ -25,10 +27,10 @@ public class NotificationJob(
       var watch = Stopwatch.StartNew();
 
       IEntry[] entries = await repository.GetLastEditedEntries(null, "ALL");
-      await ProcessEntries(entries, isDryRun);
+      result.ProcessedEntryIds = await ProcessEntries(entries, isDryRun);
 
       IJournal[] journals = await repository.GetAllJournals(null, "ALL");
-      await ProcessJournals(journals, isDryRun);
+      result.ProcessedJournalIds = await ProcessJournals(journals, isDryRun);
 
       logger.LogInformation(
         "Ending {JobName} after {ElapsedMs}ms",
@@ -40,10 +42,14 @@ public class NotificationJob(
     {
       logger.LogError(ex, "Error while processing job: ${ExMessage}", ex.Message);
     }
+
+    return result;
   }
 
-  private async Task ProcessJournals(IJournal[] journals, bool isDryRun)
+  private async Task<HashSet<string>> ProcessJournals(IJournal[] journals, bool isDryRun)
   {
+    var sentIds = new HashSet<string>();
+
     foreach (IJournal journal in journals)
     {
       foreach ((string? userName, Schedule? schedule) in journal.Schedules.Where(
@@ -78,6 +84,8 @@ public class NotificationJob(
               true
             );
           }
+
+          sentIds.Add(journal.Id!);
         }
         catch (Exception ex)
         {
@@ -85,10 +93,14 @@ public class NotificationJob(
         }
       }
     }
+
+    return sentIds;
   }
 
-  private async Task ProcessEntries(IEntry[] entries, bool isDryRun)
+  private async Task<HashSet<String>> ProcessEntries(IEntry[] entries, bool isDryRun)
   {
+    var sentIds = new HashSet<string>();
+
     foreach (IEntry entry in entries)
     {
       foreach ((string? userName, Schedule? schedule) in entry.Schedules.Where(
@@ -123,6 +135,8 @@ public class NotificationJob(
               true
             );
           }
+
+          sentIds.Add(entry.Id!);
         }
         catch (Exception ex)
         {
@@ -130,5 +144,7 @@ public class NotificationJob(
         }
       }
     }
+
+    return sentIds;
   }
 }

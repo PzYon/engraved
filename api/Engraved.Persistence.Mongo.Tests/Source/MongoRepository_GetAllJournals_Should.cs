@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain;
@@ -79,16 +80,10 @@ public class MongoRepository_GetAllJournals_Should
   {
     var gaugeJournal = new GaugeJournal
     {
-      Schedule = new Schedule
+      Schedules = new Dictionary<string, Schedule>
       {
-        NextOccurrence = DateTime.Now.AddDays(3)
-      },
-      Name = "My Name"
-    };
-
-    gaugeJournal.Schedules["max"] = new Schedule
-    {
-      NextOccurrence = DateTime.Now.AddDays(3)
+        { "max", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
+      }
     };
 
     await _repository.UpsertJournal(gaugeJournal);
