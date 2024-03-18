@@ -81,6 +81,9 @@ public class NotificationJob(
               },
               true
             );
+
+            journal.Schedules[userName].DidNotify = true;
+            await repository.UpsertJournal(journal);
           }
 
           result.AddJournal(userName, journal.Id!);
@@ -128,6 +131,9 @@ public class NotificationJob(
               },
               true
             );
+            
+            entry.Schedules[userName].DidNotify = true;
+            await repository.UpsertEntry(entry);
           }
 
           result.AddEntry(userName, entry.Id!);

@@ -69,6 +69,12 @@ public class NotificationJobShould
     result.NotifiedJournalIdsByUser.Should().HaveCount(1);
     result.NotifiedJournalIdsByUser.Should().ContainKey(UserName1);
     result.NotifiedJournalIdsByUser[UserName1].Should().Contain(journalId);
+
+    IJournal journal = (await _repo.GetJournal(journalId))!;
+
+    journal.Schedules.Should().HaveCount(1);
+    journal.Schedules[UserName1].NextOccurrence.Should().NotBeNull();
+    journal.Schedules[UserName1].DidNotify.Should().Be(true);
   }
 
   [Test]
