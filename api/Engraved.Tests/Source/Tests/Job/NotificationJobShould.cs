@@ -53,7 +53,7 @@ public class NotificationJobShould
   [Test]
   public async Task NotProcess_Journal_WithNoNextOccurrence()
   {
-    string journalId = await _testContext.AddJournal();
+    await _testContext.AddJournal();
 
     NotificationJobResult result = await _job.Execute(false);
 
