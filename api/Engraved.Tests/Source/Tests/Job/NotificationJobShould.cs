@@ -1,6 +1,7 @@
 using Engraved.Core.Application;
-using Engraved.Core.Application.Commands.Journals.AddSchedule;
 using Engraved.Core.Application.Jobs;
+using Engraved.Core.Domain;
+using Engraved.Core.Domain.Journals;
 using Engraved.Persistence.Mongo.Tests;
 using Engraved.Tests.Utils;
 using FluentAssertions;
@@ -90,9 +91,9 @@ public class NotificationJobShould
   {
     string journalId1 = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
 
-    await new AddScheduleToJournalCommandExecutor(_testContext1.UserScopedRepo).Execute(
-      new AddScheduleToJournalCommand { JournalId = journalId1, NextOccurrence = _dateService.UtcNow.AddDays(23) }
-    );
+    IJournal journal = (await _repo.GetJournal(journalId1))!;
+    journal.Schedules[UserName2] = new Schedule { NextOccurrence = _dateService.UtcNow.AddDays(23) };
+    await _repo.UpsertJournal(journal);
 
     NotificationJobResult result = await _job.Execute(false);
 
