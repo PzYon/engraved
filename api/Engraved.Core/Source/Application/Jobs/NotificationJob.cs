@@ -51,7 +51,7 @@ public class NotificationJob(
     foreach (IEntity entity in entities)
     {
       foreach ((string? userName, Schedule? schedule) in entity.Schedules.Where(
-                 s => s.Value.NextOccurrence < dateService.UtcNow
+                 s => !s.Value.DidNotify && s.Value.NextOccurrence < dateService.UtcNow
                ))
       {
         try

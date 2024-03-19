@@ -109,8 +109,18 @@ public class NotificationJobShould
   }
 
   [Test]
-  public async Task NotProcess_Journal_With_DidNotify_SetToTrue()
+  public async Task Process_OneJournal_WithPassedNextOccurrence_OnlyOnce()
   {
-    Assert.Fail("not implemented yet");
+    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+
+    NotificationJobResult firstResult = await _job.Execute(false);
+
+    firstResult.NotifiedJournalIdsByUser.Should().HaveCount(1);
+    firstResult.NotifiedJournalIdsByUser.Should().ContainKey(UserName1);
+    firstResult.NotifiedJournalIdsByUser[UserName1].Should().Contain(journalId);
+
+    NotificationJobResult secondResult = await _job.Execute(false);
+    secondResult.NotifiedJournalIdsByUser.Should().BeEmpty();
+    secondResult.NotifiedEntryIdsByUser.Should().BeEmpty();
   }
 }
