@@ -1,6 +1,7 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.User;
 using Engraved.Persistence.Mongo.Tests;
@@ -17,7 +18,11 @@ public class EngravedTestContext
 
   private EngravedTestContext() { }
 
-  public static async Task<EngravedTestContext> CreateForUser(TestMongoRepository mongoRepository, FakeDateService dateService, string userName)
+  public static async Task<EngravedTestContext> CreateForUser(
+    TestMongoRepository mongoRepository,
+    FakeDateService dateService,
+    string userName
+  )
   {
     var ctx = new EngravedTestContext();
     ctx.DateService = dateService;
@@ -27,7 +32,6 @@ public class EngravedTestContext
 
     return ctx;
   }
-
 
   public async Task<string> AddJournal(string name = "Test Journal", DateTime? nextOccurrence = null)
   {
@@ -41,9 +45,21 @@ public class EngravedTestContext
     {
       journal.Schedules[UserName] = new Schedule { NextOccurrence = nextOccurrence };
     }
-    
-    UpsertResult upsertJournal = await UserScopedRepo.UpsertJournal(journal);
-    
-    return upsertJournal.EntityId;
+
+    UpsertResult result = await UserScopedRepo.UpsertJournal(journal);
+    return result.EntityId;
+  }
+
+  public async Task<string> AddEntry(string journalId, DateTime? nextOccurrence = null)
+  {
+    var entry = new CounterEntry { ParentId = journalId };
+
+    if (nextOccurrence != null)
+    {
+      entry.Schedules[UserName] = new Schedule { NextOccurrence = nextOccurrence };
+    }
+
+    UpsertResult result = await UserScopedRepo.UpsertEntry(entry);
+    return result.EntityId;
   }
 }

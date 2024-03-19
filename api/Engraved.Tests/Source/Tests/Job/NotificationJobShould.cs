@@ -123,4 +123,26 @@ public class NotificationJobShould
     secondResult.NotifiedJournalIdsByUser.Should().BeEmpty();
     secondResult.NotifiedEntryIdsByUser.Should().BeEmpty();
   }
+  
+  [Test]
+  public async Task Process_OneEntryAndOneJournal_WithPassedNextOccurrence_OnlyOnce()
+  {
+    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    string entryId = await _testContext1.AddEntry(journalId, _dateService.UtcNow.AddMinutes(-5));
+    
+    NotificationJobResult firstResult = await _job.Execute(false);
+
+    firstResult.NotifiedJournalIdsByUser.Should().HaveCount(1);
+    firstResult.NotifiedJournalIdsByUser.Should().ContainKey(UserName1);
+    firstResult.NotifiedJournalIdsByUser[UserName1].Should().Contain(journalId);
+
+    firstResult.NotifiedEntryIdsByUser.Should().HaveCount(1);
+    firstResult.NotifiedEntryIdsByUser.Should().ContainKey(UserName1);
+    firstResult.NotifiedEntryIdsByUser[UserName1].Should().Contain(entryId);
+
+    
+    NotificationJobResult secondResult = await _job.Execute(false);
+    secondResult.NotifiedJournalIdsByUser.Should().BeEmpty();
+    secondResult.NotifiedEntryIdsByUser.Should().BeEmpty();
+  }
 }
