@@ -221,6 +221,7 @@ export class ServerApi {
   static async modifyJournalSchedule(
     journalId: string,
     date?: Date,
+    onClickUrl?: string,
   ): Promise<ICommandResult> {
     return await ServerApi.executeRequest(
       `/journals/${journalId}/schedule`,
@@ -228,6 +229,7 @@ export class ServerApi {
       {
         journalId: journalId,
         nextOccurrence: date,
+        onClickUrl,
       },
     );
   }
@@ -235,6 +237,7 @@ export class ServerApi {
   static async modifyEntrySchedule(
     entryId: string,
     date?: Date,
+    onClickUrl?: string,
   ): Promise<ICommandResult> {
     return await ServerApi.executeRequest(
       `/entries/${entryId}/schedule`,
@@ -242,6 +245,7 @@ export class ServerApi {
       {
         entryId: entryId,
         nextOccurrence: date,
+        onClickUrl,
       },
     );
   }

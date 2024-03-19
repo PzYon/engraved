@@ -38,6 +38,7 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [clientNotification.UserId],
       contents: new StringMap(en: clientNotification.Message),
+      url: clientNotification.OnClickUrl,
       webButtons: clientNotification.Buttons
         .Select(
           b => new ButtonWithUrl

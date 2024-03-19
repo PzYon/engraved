@@ -38,7 +38,10 @@ export const EditSchedule: React.FC<{
         <Button
           variant="contained"
           onClick={() => {
-            modifyScheduleMutation.mutate({ date: date });
+            modifyScheduleMutation.mutate({
+              date: date,
+              onClickUrl: location.origin + "/journals/" + journalId,
+            });
             onCancel();
           }}
         >

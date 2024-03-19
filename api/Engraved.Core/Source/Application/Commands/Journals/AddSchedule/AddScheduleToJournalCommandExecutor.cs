@@ -18,7 +18,8 @@ public class AddScheduleToJournalCommandExecutor(IUserScopedRepository repositor
 
     journal.Schedules[repository.CurrentUser.Value.Name!] = new Schedule
     {
-      NextOccurrence = command.NextOccurrence
+      NextOccurrence = command.NextOccurrence,
+      OnClickUrl = command.OnClickUrl
     };
 
     await repository.UpsertJournal(journal);

@@ -4,5 +4,6 @@ public class ClientNotification
 {
   public string? UserId { get; set; }
   public string? Message { get; set; }
-  public List<NotificationButton> Buttons { get; set; } = new();
+  public string? OnClickUrl { get; set; }
+  public List<NotificationButton> Buttons { get; set; } = [];
 }

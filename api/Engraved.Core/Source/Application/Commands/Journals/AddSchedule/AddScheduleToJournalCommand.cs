@@ -5,4 +5,6 @@ public class AddScheduleToJournalCommand : ICommand
   public string? JournalId { get; set; }
 
   public DateTime? NextOccurrence { get; set; }
+  
+  public string? OnClickUrl { get; set; }
 }

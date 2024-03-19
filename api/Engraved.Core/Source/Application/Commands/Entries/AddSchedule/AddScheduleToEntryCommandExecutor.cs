@@ -19,7 +19,8 @@ public class AddScheduleToEntryCommandExecutor(IUserScopedRepository repository)
 
     entry.Schedules[repository.CurrentUser.Value.Name!] = new Schedule
     {
-      NextOccurrence = command.NextOccurrence
+      NextOccurrence = command.NextOccurrence,
+      OnClickUrl = command.OnClickUrl
     };
 
     await repository.UpsertEntry(entry);

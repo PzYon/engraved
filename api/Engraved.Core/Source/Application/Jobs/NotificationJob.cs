@@ -18,6 +18,10 @@ public class NotificationJob(
 {
   public async Task<NotificationJobResult> Execute(bool isDryRun)
   {
+    // as the date service is created and inject once at the start of the
+    // job, we need to make sure, that we always use the current date.
+    dateService.UpdateDate();
+
     var result = new NotificationJobResult();
 
     try
@@ -76,8 +80,9 @@ public class NotificationJob(
               new ClientNotification
               {
                 UserId = user.GlobalUniqueId.ToString(),
-                Buttons = [],
-                Message = (entity as IJournal)?.Name ?? (entity as ScrapsEntry)?.Title ?? "???"
+                Message = (entity as IJournal)?.Name ?? (entity as ScrapsEntry)?.Title ?? "???",
+                OnClickUrl = schedule.OnClickUrl,
+                Buttons = []
               },
               false
             );
@@ -93,7 +98,7 @@ public class NotificationJob(
             }
           }
 
-          if (entity is IJournal )
+          if (entity is IJournal)
           {
             result.AddJournal(userName, entity.Id!);
           }
