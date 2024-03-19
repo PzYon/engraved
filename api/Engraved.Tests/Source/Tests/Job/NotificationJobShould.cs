@@ -107,4 +107,10 @@ public class NotificationJobShould
     result.NotifiedJournalIdsByUser.Should().ContainKey(UserName1);
     result.NotifiedJournalIdsByUser[UserName1].Should().Contain(journalId1);
   }
+
+  [Test]
+  public async Task NotProcess_Journal_With_DidNotify_SetToTrue()
+  {
+    Assert.Fail("not implemented yet");
+  }
 }
