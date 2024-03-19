@@ -79,7 +79,7 @@ public class NotificationJob(
                 Buttons = [],
                 Message = (entity as IJournal)?.Name ?? (entity as ScrapsEntry)?.Title ?? "???"
               },
-              true
+              false
             );
 
             entity.Schedules[userName].DidNotify = true;
