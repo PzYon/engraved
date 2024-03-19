@@ -5,4 +5,6 @@ public class AddScheduleToEntryCommand : ICommand
   public string? EntryId { get; set; }
 
   public DateTime? NextOccurrence { get; set; }
+  
+  public string? OnClickUrl { get; set; }
 }

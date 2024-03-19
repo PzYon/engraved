@@ -16,10 +16,18 @@ export const useModifyScheduleMutation = (
   return useMutation({
     mutationKey: queryKeysFactory.journal(journalId),
 
-    mutationFn: (variables: { date?: Date }) => {
+    mutationFn: (variables: { date?: Date; onClickUrl?: string }) => {
       return entryId
-        ? ServerApi.modifyEntrySchedule(entryId, variables.date)
-        : ServerApi.modifyJournalSchedule(journalId, variables.date);
+        ? ServerApi.modifyEntrySchedule(
+            entryId,
+            variables.date,
+            variables.onClickUrl,
+          )
+        : ServerApi.modifyJournalSchedule(
+            journalId,
+            variables.date,
+            variables.onClickUrl,
+          );
     },
 
     onSuccess: async (_, variables) => {
