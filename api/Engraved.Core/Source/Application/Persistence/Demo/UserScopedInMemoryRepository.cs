@@ -25,9 +25,9 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     CurrentUser = new Lazy<IUser>(LoadUser);
   }
 
-  public Task<IUser?> GetUser(string name)
+  public Task<IUser?> GetUser(string nameOrId)
   {
-    return _repository.GetUser(name);
+    return _repository.GetUser(nameOrId);
   }
 
   public Task<UpsertResult> UpsertUser(IUser user)

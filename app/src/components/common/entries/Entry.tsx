@@ -41,7 +41,7 @@ export const Entry: React.FC<{
           journalName,
           entry,
           propsRenderStyle,
-          user.name,
+          user.id,
         )}
         actions={actions}
       />
@@ -55,7 +55,7 @@ function getEntryProperties(
   journalName: string,
   entry: IEntry,
   propsRenderStyle: EntryPropsRenderStyle,
-  userName: string,
+  userId: string,
 ) {
   return [
     {
@@ -78,6 +78,6 @@ function getEntryProperties(
       label: "Edited",
       hideWhen: () => propsRenderStyle === "none",
     },
-    getScheduleProperty(entry.schedules?.[userName]?.nextOccurrence),
+    getScheduleProperty(entry.schedules?.[userId]?.nextOccurrence),
   ];
 }

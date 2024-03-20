@@ -54,24 +54,24 @@ public class NotificationJob(
   {
     foreach (IEntity entity in entities)
     {
-      foreach ((string? userName, Schedule? schedule) in entity.Schedules.Where(
+      foreach ((string? userId, Schedule? schedule) in entity.Schedules.Where(
                  s => !s.Value.DidNotify && s.Value.NextOccurrence < dateService.UtcNow
                ))
       {
         try
         {
           logger.LogInformation(
-            "Would send notification for {Name} with ID {JournalId} to {User}, scheduled at {ScheduleNextOccurrence}",
+            "Notification for {Name} with ID {JournalId} to {User}, scheduled at {ScheduleNextOccurrence}",
             entity.GetType().Name,
             entity.Id,
-            userName,
+            userId,
             schedule.NextOccurrence
           );
 
-          IUser? user = await repository.GetUser(userName);
+          IUser? user = await repository.GetUser(userId);
           if (user == null)
           {
-            throw new Exception($"User {userName} can not be loaded");
+            throw new Exception($"User \"{userId}\" can not be loaded");
           }
 
           if (!isDryRun)
@@ -87,7 +87,7 @@ public class NotificationJob(
               false
             );
 
-            entity.Schedules[userName].DidNotify = true;
+            entity.Schedules[userId].DidNotify = true;
             if (entity is IJournal journal)
             {
               await repository.UpsertJournal(journal);
@@ -100,11 +100,11 @@ public class NotificationJob(
 
           if (entity is IJournal)
           {
-            result.AddJournal(userName, entity.Id!);
+            result.AddJournal(userId, entity.Id!);
           }
           else if (entity is IEntry)
           {
-            result.AddEntry(userName, entity.Id!);
+            result.AddEntry(userId, entity.Id!);
           }
         }
         catch (Exception ex)

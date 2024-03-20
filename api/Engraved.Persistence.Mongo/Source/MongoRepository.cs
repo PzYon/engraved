@@ -23,15 +23,19 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   protected IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
   protected IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
 
-  public virtual async Task<IUser?> GetUser(string? name)
+  public virtual async Task<IUser?> GetUser(string? nameOrId)
   {
-    if (string.IsNullOrEmpty(name))
+    if (string.IsNullOrEmpty(nameOrId))
     {
-      throw new ArgumentNullException(nameof(name), "Username must be specified.");
+      throw new ArgumentNullException(nameof(nameOrId), "Username or ID must be specified.");
     }
 
+    FilterDefinition<UserDocument> filterDefinition = ObjectId.TryParse(nameOrId, out ObjectId id)
+      ? Builders<UserDocument>.Filter.Where(d => d.Id == id)
+      : Builders<UserDocument>.Filter.Where(d => d.Name == nameOrId);
+
     UserDocument? document = await UsersCollection
-      .Find(Builders<UserDocument>.Filter.Where(d => d.Name == name))
+      .Find(filterDefinition)
       .FirstOrDefaultAsync();
 
     return UserDocumentMapper.FromDocument(document);
@@ -113,8 +117,8 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       {
         filters.Add(
           Builders<JournalDocument>.Filter.Where(
-            d => d.Schedules.ContainsKey(scheduledOnlyForUserId!)
-                 && d.Schedules[scheduledOnlyForUserId!].NextOccurrence != null
+            d => d.Schedules.ContainsKey(scheduledOnlyForUserId)
+                 && d.Schedules[scheduledOnlyForUserId].NextOccurrence != null
           )
         );
       }

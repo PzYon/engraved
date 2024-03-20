@@ -13,9 +13,9 @@ public class InMemoryRepository : IRepository
 
   public List<IJournal> Journals { get; } = new();
 
-  public Task<IUser?> GetUser(string name)
+  public Task<IUser?> GetUser(string nameOrId)
   {
-    return Task.FromResult(Users.FirstOrDefault(u => u.Name == name));
+    return Task.FromResult(Users.FirstOrDefault(u => u.Name == nameOrId));
   }
 
   public Task<UpsertResult> UpsertUser(IUser user)

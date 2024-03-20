@@ -7,7 +7,7 @@ namespace Engraved.Core.Application.Persistence;
 
 public interface IBaseRepository
 {
-  Task<IUser?> GetUser(string name);
+  Task<IUser?> GetUser(string nameOrId);
 
   Task<UpsertResult> UpsertUser(IUser user);
 
