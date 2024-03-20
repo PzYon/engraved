@@ -55,9 +55,11 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
       return searchResultEntities.OrderByDescending(e => e.Entity.EditedOn).ToArray();
     }
 
-    // todo: not clear how this should be done.. maybe sort on client?
-    // IUser user = await currentUserService.LoadUser();
-    // return searchResultEntities.OrderBy(e => e.Entity.Schedules.ContainsKey(user.Id) && e.Entity.Schedules[user.Id!]?.NextOccurrence).ToArray();
-    return searchResultEntities.OrderByDescending(e => e.Entity.EditedOn).ToArray();
+    IUser user = await currentUserService.LoadUser();
+    return searchResultEntities
+      .OrderBy(
+        e => e.Entity.Schedules.ContainsKey(user.Id ?? "") ? e.Entity.Schedules[user.Id ?? ""].NextOccurrence : null
+      )
+      .ToArray();
   }
 }

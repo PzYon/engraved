@@ -78,15 +78,25 @@ public class MongoRepository_GetAllJournals_Should
   [Test]
   public async Task ReturnAllJournals_SchedulesOnly()
   {
-    var gaugeJournal = new GaugeJournal
-    {
-      Schedules = new Dictionary<string, Schedule>
+    await _repository.UpsertJournal(
+      new GaugeJournal
       {
-        { "max", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
+        Schedules = new Dictionary<string, Schedule>
+        {
+          { "max", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
+        }
       }
-    };
+    );
 
-    await _repository.UpsertJournal(gaugeJournal);
+    await _repository.UpsertJournal(
+      new GaugeJournal
+      {
+        Schedules = new Dictionary<string, Schedule>
+        {
+          { "franz", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
+        }
+      }
+    );
 
     IJournal[] results = await _repository.GetAllJournals(null, "max");
     results.Length.Should().Be(1);

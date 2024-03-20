@@ -163,7 +163,7 @@ public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepo
 {
   public Lazy<IUser> CurrentUser => currentUser;
 
-  public Task<IUser?> GetUser(string name)
+  public Task<IUser?> GetUser(string nameOrId)
   {
     throw new NotImplementedException();
   }

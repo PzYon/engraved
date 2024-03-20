@@ -16,7 +16,7 @@ public class AddScheduleToJournalCommandExecutor(IUserScopedRepository repositor
 
     IJournal journal = (await repository.GetJournal(command.JournalId))!;
 
-    journal.Schedules[repository.CurrentUser.Value.Name!] = new Schedule
+    journal.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
     {
       NextOccurrence = command.NextOccurrence,
       OnClickUrl = command.OnClickUrl

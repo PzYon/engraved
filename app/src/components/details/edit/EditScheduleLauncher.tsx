@@ -23,7 +23,7 @@ export const EditScheduleLauncher: React.FC<{
         <EditSchedule
           initialDate={
             (entryId ? entries.filter((i) => i.id === entryId)[0] : journal)
-              ?.schedules?.[user.name]?.nextOccurrence
+              ?.schedules?.[user.id]?.nextOccurrence
           }
           journalId={journal.id}
           entryId={entryId}
