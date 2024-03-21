@@ -29,7 +29,8 @@ public class NotificationsController(
       new ClientNotification
       {
         UserId = uniqueUserId?.ToString(),
-        Message = "Test from engraved OneSignal.",
+        Title = "Test message (Title)",
+        Message = "Sent from engraved OneSignal (Message)."
       },
       false
     );
