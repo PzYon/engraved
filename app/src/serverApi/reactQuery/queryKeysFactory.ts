@@ -4,6 +4,11 @@ import { JournalType } from "../JournalType";
 const journals = "journals";
 
 export const queryKeysFactory = {
+  prefixes: {
+    journals: () => [journals],
+    entities: () => ["search", "entities"],
+  },
+
   journals(
     searchText?: string,
     journalTypes?: JournalType[],
@@ -71,6 +76,10 @@ export const queryKeysFactory = {
     return [journals, "entries", searchText ?? "", journalTypes?.join() ?? ""];
   },
 
+  entities(searchText?: string, scheduledOnly: boolean = false) {
+    return ["search", "entities", searchText ?? "", scheduledOnly];
+  },
+
   systemInfo() {
     return ["system-info"];
   },
@@ -81,9 +90,5 @@ export const queryKeysFactory = {
 
   modifyUser() {
     return ["user"];
-  },
-
-  entities(searchText: string, scheduledOnly: boolean) {
-    return ["search", "entities", searchText, scheduledOnly];
   },
 };

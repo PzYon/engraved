@@ -39,7 +39,13 @@ export const useModifyScheduleMutation = (
       });
 
       await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journal(journalId),
+        queryKey: queryKeysFactory.prefixes.journals(),
+        exact: false,
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.prefixes.entities(),
+        exact: false,
       });
     },
 
