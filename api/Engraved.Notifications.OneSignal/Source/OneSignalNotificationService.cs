@@ -33,12 +33,18 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       );
     }
 
+    // valid resources:
+    // https://github.com/OneSignal/onesignal-dotnet-api/blob/main/docs/Notification.md
+    // https://documentation.onesignal.com/docs/push-notification-guide
+
     var notification = new Notification(
       appId: config.Value.AppId,
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [clientNotification.UserId],
+      headings: new StringMap(en: clientNotification.Title),
       contents: new StringMap(en: clientNotification.Message),
       url: clientNotification.OnClickUrl,
+      chromeWebBadge: "/icons/icon_windows.png",
       webButtons: clientNotification.Buttons
         .Select(
           b => new ButtonWithUrl

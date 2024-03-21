@@ -80,7 +80,8 @@ public class NotificationJob(
               new ClientNotification
               {
                 UserId = user.GlobalUniqueId.ToString(),
-                Message = (entity as IJournal)?.Name ?? (entity as ScrapsEntry)?.Title ?? "???",
+                Title = GetNotificationTitle(entity),
+                Message = await GetNotificationMessage(entity),
                 OnClickUrl = schedule.OnClickUrl,
                 Buttons = []
               },
@@ -113,5 +114,26 @@ public class NotificationJob(
         }
       }
     }
+  }
+
+  private static string? GetNotificationTitle(IEntity entity)
+  {
+    return entity switch
+    {
+      IJournal journal => journal.Name,
+      ScrapsEntry scrapsEntry => scrapsEntry.Title,
+      _ => string.Empty
+    };
+  }
+
+  private async Task<string> GetNotificationMessage(IEntity entity)
+  {
+    if (entity is ScrapsEntry scrapsEntry)
+    {
+      IJournal? journal = await repository.GetJournal(scrapsEntry.ParentId);
+      return $"In \"{journal.Name}\"";
+    }
+
+    return string.Empty;
   }
 }
