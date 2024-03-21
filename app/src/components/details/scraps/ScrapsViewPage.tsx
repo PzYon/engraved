@@ -18,9 +18,11 @@ import { IAction } from "../../common/actions/IAction";
 import { EditScheduleLauncher } from "../edit/EditScheduleLauncher";
 import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 import { useCollection } from "../../common/wrappers/useCollection";
+import { useAppContext } from "../../../AppContext";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
+  const { user } = useAppContext();
 
   const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
 
@@ -71,7 +73,7 @@ export const ScrapsViewPage: React.FC = () => {
         ? (scraps as IScrapEntry[]).map((scrap, i) => (
             <Scrap
               index={i}
-              key={scrap.id}
+              key={scrap.id + scrap.schedules[user.id]?.nextOccurrence}
               addWrapperItem={addItem}
               onClick={() => collection.setFocus(i)}
               journalName={journal.name}
