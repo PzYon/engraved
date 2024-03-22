@@ -13,8 +13,7 @@ export const EditSchedule: React.FC<{
   journalId: string;
   entryId?: string;
   onCancel: () => void;
-  onScheduleSelected: (schedule: IScheduleDefinition) => void;
-}> = ({ initialDate, journalId, entryId, onCancel, onScheduleSelected }) => {
+}> = ({ initialDate, journalId, entryId, onCancel }) => {
   const [date, setDate] = useState<Date>(
     initialDate ? new Date(initialDate) : null,
   );
@@ -47,11 +46,7 @@ export const EditSchedule: React.FC<{
               onClickUrl: location.origin + "/journals/" + journalId,
             };
 
-            if (!entryId) {
-              onScheduleSelected({});
-            } else {
-              modifyScheduleMutation.mutate(scheduleDefinition);
-            }
+            modifyScheduleMutation.mutate(scheduleDefinition);
 
             onCancel();
           }}
