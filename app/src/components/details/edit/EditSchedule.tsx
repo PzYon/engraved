@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { DateSelector } from "../../common/DateSelector";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { Button } from "@mui/material";
-import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
+import {
+  IScheduleDefinition,
+  useModifyScheduleMutation,
+} from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
 import { FunkyDate } from "./FunkyDate";
 
 export const EditSchedule: React.FC<{
@@ -38,10 +41,13 @@ export const EditSchedule: React.FC<{
         <Button
           variant="contained"
           onClick={() => {
-            modifyScheduleMutation.mutate({
+            const scheduleDefinition: IScheduleDefinition = {
               date: date,
               onClickUrl: location.origin + "/journals/" + journalId,
-            });
+            };
+
+            modifyScheduleMutation.mutate(scheduleDefinition);
+
             onCancel();
           }}
         >

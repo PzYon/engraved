@@ -76,7 +76,20 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
   [Route("scraps")]
   public async Task<CommandResult> UpsertScraps([FromBody] UpsertScrapsEntryCommand entry)
   {
-    return await dispatcher.Command(entry);
+    CommandResult result = await dispatcher.Command(entry);
+
+    if (entry.Schedule != null)
+    {
+      await dispatcher.Command(
+        new AddScheduleToEntryCommand
+        {
+          EntryId = result.EntityId,
+          NextOccurrence = entry.Schedule.NextOccurrence
+        }
+      );
+    }
+
+    return result;
   }
 
   [HttpPost]
@@ -130,8 +143,8 @@ public class GetAllEntriesQueryApiResult
   {
     return new GetAllEntriesQueryApiResult
     {
-      Entries = result.Entries,
-      Journals = result.Journals
+      Entries = result.Entries.OfType<object>().ToArray(),
+      Journals = result.Journals.OfType<object>().ToArray()
     };
   }
 }

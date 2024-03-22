@@ -34,7 +34,7 @@ export const EditScheduleLauncher: React.FC<{
         navigate(`/journals/${journal.id}`);
       },
     });
-  }, [journal, entryId, entries, navigate, renderDialog]);
+  }, [journal, entryId, entries, navigate, renderDialog, user.id]);
 
   return null;
 };

@@ -5,6 +5,11 @@ import { useAppContext } from "../../../AppContext";
 import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
 import { DateFormat, dateTypes } from "../../../components/common/dateTypes";
 
+export interface IScheduleDefinition {
+  date?: Date;
+  onClickUrl?: string;
+}
+
 export const useModifyScheduleMutation = (
   journalId: string,
   entryId: string,
@@ -16,7 +21,7 @@ export const useModifyScheduleMutation = (
   return useMutation({
     mutationKey: queryKeysFactory.journal(journalId),
 
-    mutationFn: (variables: { date?: Date; onClickUrl?: string }) => {
+    mutationFn: (variables: IScheduleDefinition) => {
       return entryId
         ? ServerApi.modifyEntrySchedule(
             entryId,
