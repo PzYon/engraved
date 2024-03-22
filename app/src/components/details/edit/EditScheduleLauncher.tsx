@@ -28,13 +28,17 @@ export const EditScheduleLauncher: React.FC<{
           journalId={journal.id}
           entryId={entryId}
           onCancel={closeDialog}
+          onScheduleSelected={(schedule) => {
+            debugger;
+            console.log(schedule);
+          }}
         />
       ),
       onClose: () => {
         navigate(`/journals/${journal.id}`);
       },
     });
-  }, [journal, entryId, entries, navigate, renderDialog]);
+  }, [journal, entryId, entries, navigate, renderDialog, user.id]);
 
   return null;
 };
