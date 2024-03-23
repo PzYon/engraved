@@ -21,7 +21,7 @@
     "@types/react": "18.2.69",
     "@types/react-dom": "18.2.22",
     "@uiw/codemirror-extensions-langs": "4.21.25",
-    "@uiw/react-codemirror": "4.21.24",
+    "@uiw/react-codemirror": "4.21.25",
     "@vitejs/plugin-react": "4.2.1",
     "chart.js": "4.4.2",
     "chartjs-adapter-date-fns": "3.0.0",
