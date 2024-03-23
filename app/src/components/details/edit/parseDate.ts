@@ -6,12 +6,12 @@ export interface IParsedDate {
 }
 
 export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
-  const parsed = chrono.parse(value, referenceDate);
+  const parsed = chrono.parse(value, referenceDate, { forwardDate: true });
 
   if (parsed[0].date) {
     return {
       date: parsed[0].date(),
-      text: value.substring(0, parsed[0].index).trim(),
+      text: value.replace(parsed[0].text, "").trim(),
     };
   }
 
