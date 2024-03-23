@@ -1,6 +1,6 @@
 import {
   AddOutlined,
-  AlarmOutlined,
+  EditNotificationsOutlined,
   BoltOutlined,
   ClearOutlined,
   Close,
@@ -128,7 +128,7 @@ export class ActionFactory {
       hotkey: enableHotkeys ? "alt+t" : undefined,
       key: "edit-schedule",
       label: "Edit schedule",
-      icon: <AlarmOutlined fontSize="small" />,
+      icon: <EditNotificationsOutlined fontSize="small" />,
       href: `/journals/${journalId}/schedule`,
     };
   }
@@ -137,7 +137,7 @@ export class ActionFactory {
     return {
       key: "edit-schedule",
       label: "Edit schedule",
-      icon: <AlarmOutlined fontSize="small" />,
+      icon: <EditNotificationsOutlined fontSize="small" />,
       href: `/journals/${journalId}/entries/${entryId}/schedule`,
     };
   }
