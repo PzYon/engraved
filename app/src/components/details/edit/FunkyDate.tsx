@@ -1,6 +1,6 @@
 import { styled, SxProps, TextField } from "@mui/material";
 import React, { useMemo } from "react";
-import * as chrono from "chrono-node";
+import { parseDate } from "./parseDate";
 
 export const FunkyDate: React.FC<{
   onSelect: (date: Date) => void;
@@ -16,10 +16,10 @@ export const FunkyDate: React.FC<{
         id={id}
         onChange={(e) => {
           const value = e.target.value;
-          const date = chrono.parseDate(value);
+          const parsed = parseDate(value);
 
-          if (date) {
-            onSelect(date);
+          if (parsed.date) {
+            onSelect(parsed.date);
           }
         }}
       />
