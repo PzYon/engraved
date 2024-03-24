@@ -1,4 +1,5 @@
-import { FunkyDate } from "../edit/FunkyDate";
+import { DateParser } from "../edit/DateParser";
+import React from "react";
 
 // todo:
 // - some print selection from FunkyDate -> user should easily see, what's going on
@@ -10,7 +11,15 @@ export const AddNewNotificationDialog: React.FC<{
 }> = () => {
   return (
     <div>
-      <FunkyDate onSelect={(x) => console.log(x)} sx={{}} />
+      <DateParser
+        onSelect={(x) => {
+          console.log(x);
+        }}
+        onChange={(x) => {
+          console.log(x);
+        }}
+        sx={{}}
+      />
     </div>
   );
 };
