@@ -5,7 +5,7 @@ export const renderAddNewNotificationDialog = (
   renderDialog: (dialogProps: IDialogProps) => void,
 ): void => {
   renderDialog({
-    title: "Add new notification",
+    title: "Add Quick Notification",
     render: (closeDialog) => (
       <AddNewNotificationDialog onSuccess={closeDialog} />
     ),

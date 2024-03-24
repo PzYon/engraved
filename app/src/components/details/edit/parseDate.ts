@@ -2,7 +2,7 @@ import * as chrono from "chrono-node";
 
 export interface IParsedDate {
   date?: Date;
-  text: string;
+  text?: string;
 }
 
 export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
