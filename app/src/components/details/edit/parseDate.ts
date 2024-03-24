@@ -14,14 +14,12 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
     forwardDate: true,
   });
 
-  if (parsed[0].date) {
+  if (parsed[0]?.date) {
     return {
       date: parsed[0].date(),
       text: preparedValue.replace(parsed[0].text, "").replace("  ", " ").trim(),
     };
   }
 
-  return {
-    text: preparedValue,
-  };
+  return { text: value };
 };
