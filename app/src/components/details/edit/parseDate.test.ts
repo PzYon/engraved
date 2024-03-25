@@ -3,6 +3,32 @@ import { parseDate } from "./parseDate";
 // https://github.com/wanasit/chrono
 
 describe("parseDate", () => {
+  describe("special cases", () => {
+    it("returns string", () => {
+      const result = parseDate("no date here", referenceDate);
+      expect(result.date).toBeUndefined();
+      expect(result.text).toBe("no date here");
+    });
+
+    it("returns on null", () => {
+      const result = parseDate(null, referenceDate);
+      expect(result.date).toBeUndefined();
+      expect(result.text).toBeUndefined();
+    });
+
+    it("returns on undefined", () => {
+      const result = parseDate(undefined, referenceDate);
+      expect(result.date).toBeUndefined();
+      expect(result.text).toBeUndefined();
+    });
+
+    it("returns on empty", () => {
+      const result = parseDate("", referenceDate);
+      expect(result.date).toBeUndefined();
+      expect(result.text).toBeUndefined();
+    });
+  });
+
   describe("position of date-string", () => {
     it("should parse text with date at end (with next)", () => {
       expectMonday10("shut up next monday 10:00");

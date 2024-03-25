@@ -32,7 +32,7 @@ export const dateTypes = (
     case DateFormat.dateOnly:
       return format(date, "PPPP");
     case DateFormat.full:
-      return format(date, "PPPPpppp");
+      return format(date, "PPPP, HH:mm");
     case DateFormat.numerical:
       return format(date, "Pp");
     case DateFormat.ticks:

@@ -236,15 +236,15 @@ export class ServerApi {
 
   static async modifyEntrySchedule(
     entryId: string,
-    date?: Date,
+    nextOccurrence?: Date,
     onClickUrl?: string,
   ): Promise<ICommandResult> {
     return await ServerApi.executeRequest(
       `/entries/${entryId}/schedule`,
       "POST",
       {
-        entryId: entryId,
-        nextOccurrence: date,
+        entryId,
+        nextOccurrence,
         onClickUrl,
       },
     );

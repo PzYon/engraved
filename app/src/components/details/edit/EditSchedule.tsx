@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { DateSelector } from "../../common/DateSelector";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { Button } from "@mui/material";
 import {
   IScheduleDefinition,
   useModifyScheduleMutation,
 } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
-import { FunkyDate } from "./FunkyDate";
+import { ParseableDate } from "./ParseableDate";
+import { DateSelector } from "../../common/DateSelector";
 
 export const EditSchedule: React.FC<{
   initialDate: string;
@@ -22,11 +22,14 @@ export const EditSchedule: React.FC<{
 
   return (
     <>
-      <FunkyDate
+      <ParseableDate
         sx={{ marginBottom: 2 }}
-        onSelect={(d) => {
-          setDate(d);
+        onChange={(d) => {
+          if (d.date) {
+            setDate(d.date);
+          }
         }}
+        onSelect={save}
       />
       <DateSelector
         date={date}
@@ -38,22 +41,21 @@ export const EditSchedule: React.FC<{
         <Button variant="outlined" onClick={onCancel}>
           Cancel
         </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            const scheduleDefinition: IScheduleDefinition = {
-              date: date,
-              onClickUrl: location.origin + "/journals/" + journalId,
-            };
-
-            modifyScheduleMutation.mutate(scheduleDefinition);
-
-            onCancel();
-          }}
-        >
+        <Button variant="contained" onClick={save}>
           Save
         </Button>
       </DialogFormButtonContainer>
     </>
   );
+
+  function save() {
+    const scheduleDefinition: IScheduleDefinition = {
+      nextOccurrence: date,
+      onClickUrl: location.origin + "/journals/" + journalId,
+    };
+
+    modifyScheduleMutation.mutate(scheduleDefinition);
+
+    onCancel();
+  }
 };

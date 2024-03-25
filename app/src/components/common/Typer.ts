@@ -2,14 +2,14 @@ export class Typer {
   private typeTimer: unknown;
   private readonly cursorInterval: unknown;
 
-  private readonly typoProbability: number = 0.05;
   private readonly blinkDurationMs = 500;
   private readonly idleBlinkDuration = this.blinkDurationMs;
 
   constructor(
-    private textToType: string,
-    private printText: (text: string) => void,
-    private toggleCursor?: (show?: boolean) => void,
+    private readonly textToType: string,
+    private readonly printText: (text: string) => void,
+    private readonly toggleCursor?: (show?: boolean) => void,
+    private readonly typoProbability: number = 0.05,
   ) {
     if (toggleCursor) {
       this.cursorInterval = window.setInterval(

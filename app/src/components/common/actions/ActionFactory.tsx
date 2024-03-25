@@ -1,11 +1,11 @@
 import {
   AddOutlined,
-  EditNotificationsOutlined,
   BoltOutlined,
   ClearOutlined,
   Close,
   ContentCopyOutlined,
   DeleteOutlined,
+  EditNotificationsOutlined,
   EditOutlined,
   ExpandLess,
   ExpandMore,
@@ -13,6 +13,7 @@ import {
   FunctionsOutlined,
   HelpOutlineOutlined,
   MessageOutlined,
+  NotificationAddOutlined,
   PanToolOutlined,
   PlaylistAdd,
   Redo,
@@ -35,6 +36,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
+import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -344,13 +346,26 @@ export class ActionFactory {
       key: "add-quick-scrap",
       icon: <BoltOutlined fontSize="small" />,
       label: "Add Quick Scrap",
-      sx: { color: "common.white", mr: 1 },
+      sx: { color: "common.white" },
       onClick: () =>
         renderAddScrapDialog(
           user.favoriteJournalIds[0],
           renderDialog,
           "Add Quick Scrap",
         ),
+    };
+  }
+
+  static addNewNotification(
+    renderDialog?: (dialogProps: IDialogProps) => void,
+  ): IAction {
+    return {
+      hotkey: "alt+n+q",
+      key: "add-notification",
+      icon: <NotificationAddOutlined fontSize="small" />,
+      label: "Add notification",
+      sx: { color: "common.white", mr: 1 },
+      onClick: () => renderAddNewNotificationDialog(renderDialog),
     };
   }
 

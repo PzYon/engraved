@@ -67,7 +67,8 @@ export const AppHeader: React.FC = () => {
                   }}
                 >
                   <Typing
-                    textToType="engraved"
+                    textToType={isSmall ? "e" : "engraved"}
+                    noTypos={isSmall}
                     renderOnComplete={<PulsatingDot />}
                   />
                 </Typography>
@@ -78,6 +79,9 @@ export const AppHeader: React.FC = () => {
             <FavoritesFlyout />
             <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
+            />
+            <ActionIconButton
+              action={ActionFactory.addNewNotification(renderDialog)}
             />
             <VersionChecker />
             <Link to="/settings">
