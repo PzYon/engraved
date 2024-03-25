@@ -50,7 +50,7 @@ export const EditSchedule: React.FC<{
 
   function save() {
     const scheduleDefinition: IScheduleDefinition = {
-      date: date,
+      nextOccurrence: date,
       onClickUrl: location.origin + "/journals/" + journalId,
     };
 

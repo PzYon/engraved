@@ -6,7 +6,7 @@ import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
 import { DateFormat, dateTypes } from "../../../components/common/dateTypes";
 
 export interface IScheduleDefinition {
-  date?: Date;
+  nextOccurrence?: Date;
   onClickUrl?: string;
 }
 
@@ -25,20 +25,20 @@ export const useModifyScheduleMutation = (
       return entryId
         ? ServerApi.modifyEntrySchedule(
             entryId,
-            variables.date,
+            variables.nextOccurrence,
             variables.onClickUrl,
           )
         : ServerApi.modifyJournalSchedule(
             journalId,
-            variables.date,
+            variables.nextOccurrence,
             variables.onClickUrl,
           );
     },
 
     onSuccess: async (_, variables) => {
       setAppAlert({
-        title: variables.date
-          ? `Set schedule to ${dateTypes(variables.date, DateFormat.relativeToNow)}`
+        title: variables.nextOccurrence
+          ? `Set schedule to ${dateTypes(variables.nextOccurrence, DateFormat.relativeToNow)}`
           : "Removed schedule",
         type: "success",
       });
