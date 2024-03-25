@@ -6,6 +6,10 @@ export interface IParsedDate {
 }
 
 export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
+  if (!value) {
+    return {};
+  }
+
   const preparedValue = value
     .replace(/(\d\d)(\d\d)/, "$1:$2")
     .replace("tom", "tomorrow");

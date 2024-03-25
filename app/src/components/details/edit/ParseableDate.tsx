@@ -4,7 +4,7 @@ import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
 
-export const DateParser: React.FC<{
+export const ParseableDate: React.FC<{
   onChange: (parsedDate: IParsedDate) => void;
   onSelect: (parsedDate: IParsedDate) => void;
   sx: SxProps;
@@ -41,7 +41,7 @@ export const DateParser: React.FC<{
       />
       <OutputContainer>
         <Typography>
-          <TextContainer>{parsed.text}</TextContainer>
+          {parsed.text ? <TextContainer>{parsed.text}</TextContainer> : null}
           {parsed.date ? (
             <DateContainer>
               <FormatDate value={parsed.date} dateFormat={DateFormat.full} />

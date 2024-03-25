@@ -1,4 +1,4 @@
-import { DateParser } from "../edit/DateParser";
+import { ParseableDate } from "../edit/ParseableDate";
 import React, { useState } from "react";
 import { JournalSelector } from "../../common/JournalSelector";
 import { getPermissionsForUser } from "../../overview/useJournalPermissions";
@@ -21,6 +21,7 @@ export const AddNewNotificationDialog: React.FC<{
     <Host>
       <JournalSelector
         label={"Add to journal"}
+        selectedJournalId={journalId}
         filterJournals={(journals) =>
           journals.filter((j) => {
             const permissions = getPermissionsForUser(j.permissions, user);
@@ -32,11 +33,10 @@ export const AddNewNotificationDialog: React.FC<{
         }
         onChange={(journal) => setJournalId(journal.id)}
       />
-      <DateParser
+      <ParseableDate
         sx={{ pt: 2 }}
         onSelect={(x) => {
           console.log(x);
-          console.log(journalId);
         }}
         onChange={(x) => {
           console.log(x);

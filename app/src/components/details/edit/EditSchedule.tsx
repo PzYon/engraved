@@ -5,7 +5,7 @@ import {
   IScheduleDefinition,
   useModifyScheduleMutation,
 } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
-import { DateParser } from "./DateParser";
+import { ParseableDate } from "./ParseableDate";
 import { DateSelector } from "../../common/DateSelector";
 
 export const EditSchedule: React.FC<{
@@ -22,7 +22,7 @@ export const EditSchedule: React.FC<{
 
   return (
     <>
-      <DateParser
+      <ParseableDate
         sx={{ marginBottom: 2 }}
         onChange={(d) => {
           if (d.date) {
