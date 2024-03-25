@@ -360,7 +360,7 @@ export class ActionFactory {
     renderDialog?: (dialogProps: IDialogProps) => void,
   ): IAction {
     return {
-      hotkey: "alt+n",
+      hotkey: "alt+n+q",
       key: "add-notification",
       icon: <NotificationAddOutlined fontSize="small" />,
       label: "Add notification",
