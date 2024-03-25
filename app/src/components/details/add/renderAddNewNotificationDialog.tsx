@@ -1,5 +1,5 @@
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
-import { AddNewNotificationDialog } from "./addNewNotificationDialog";
+import { AddNewNotificationDialog } from "./AddNewNotificationDialog";
 
 export const renderAddNewNotificationDialog = (
   renderDialog: (dialogProps: IDialogProps) => void,

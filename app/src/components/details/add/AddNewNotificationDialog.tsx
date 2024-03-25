@@ -9,8 +9,8 @@ import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/
 import { JournalType } from "../../../serverApi/JournalType";
 import { IParsedDate } from "../edit/parseDate";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
-import { ActionIconButton } from "../../common/actions/ActionIconButton"; // todo:
 import { SaveOutlined } from "@mui/icons-material";
+import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 
 // todo:
 // - some print selection from FunkyDate -> user should easily see, what's going on
@@ -48,16 +48,22 @@ export const AddNewNotificationDialog: React.FC<{
         }
         onChange={(journal) => setJournalId(journal.id)}
       />
+
       <ParseableDate sx={{ pt: 2 }} onChange={setParsed} onSelect={save} />
-      <ActionIconButton
-        action={{
-          key: "add",
-          onClick: save,
-          label: "Save",
-          isDisabled: !parsed.date,
-          icon: <SaveOutlined fontSize="small" />,
-        }}
-      />
+
+      <ActionsContainer>
+        <ActionIconButtonGroup
+          actions={[
+            {
+              key: "add",
+              onClick: save,
+              label: "Save",
+              isDisabled: !parsed.date,
+              icon: <SaveOutlined fontSize="small" />,
+            },
+          ]}
+        />
+      </ActionsContainer>
     </Host>
   );
 
@@ -75,3 +81,12 @@ export const AddNewNotificationDialog: React.FC<{
 };
 
 const Host = styled("div")``;
+
+const ActionsContainer = styled("div")`
+  padding-top: ${(p) => p.theme.spacing(2)};
+  margin-top: ${(p) => p.theme.spacing(2)};
+  border-top: 1px solid ${(p) => p.theme.palette.background.default};
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+`;
