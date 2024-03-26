@@ -70,18 +70,36 @@ export const ScrapsViewPage: React.FC = () => {
       ) : null}
 
       {scraps.length
-        ? (scraps as IScrapEntry[]).map((scrap, i) => (
-            <Scrap
-              index={i}
-              key={scrap.id + scrap.schedules[user.id]?.nextOccurrence}
-              addWrapperItem={addItem}
-              onClick={() => collection.setFocus(i)}
-              journalName={journal.name}
-              propsRenderStyle={"generic"}
-              scrap={scrap}
-              hasFocus={i === focusIndex}
-            />
-          ))
+        ? (scraps as IScrapEntry[])
+            .sort((a, b) => {
+              if (
+                a.schedules[user.id]?.nextOccurrence >
+                b.schedules[user.id]?.nextOccurrence
+              ) {
+                return -1;
+              }
+
+              if (
+                a.schedules[user.id]?.nextOccurrence <
+                b.schedules[user.id]?.nextOccurrence
+              ) {
+                return 1;
+              }
+
+              return 0;
+            })
+            .map((scrap, i) => (
+              <Scrap
+                index={i}
+                key={scrap.id + scrap.schedules[user.id]?.nextOccurrence}
+                addWrapperItem={addItem}
+                onClick={() => collection.setFocus(i)}
+                journalName={journal.name}
+                propsRenderStyle={"generic"}
+                scrap={scrap}
+                hasFocus={i === focusIndex}
+              />
+            ))
         : null}
 
       {!scraps.length && !newScrap ? (

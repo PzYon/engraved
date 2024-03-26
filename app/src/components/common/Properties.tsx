@@ -51,19 +51,19 @@ const Property = styled(Typography)`
 
   .green {
     background-color: lightgreen;
-    border-radius: 4px;
-    padding: 0 5px;
+    border-radius: 45px;
+    padding: 0px 8px;
   }
 
   .yellow {
     background-color: #ffff8f;
-    border-radius: 4px;
-    padding: 0 5px;
+    border-radius: 45px;
+    padding: 0px 8px;
   }
 
   .red {
     background-color: #fbceb1;
-    border-radius: 4px;
-    padding: 0 5px;
+    border-radius: 45px;
+    padding: 0px 8px;
   }
 `;

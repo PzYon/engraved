@@ -16,11 +16,10 @@ export const ParseableDate: React.FC<{
   return (
     <Host sx={sx}>
       <TextField
-        placeholder={"When is the next schedule?"}
+        placeholder={"What and when?"}
         autoFocus={true}
         id={id}
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-          console.log(e.key);
           if (e.key !== "Enter") {
             return;
           }
