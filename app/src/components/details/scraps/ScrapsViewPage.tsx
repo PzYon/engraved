@@ -19,6 +19,8 @@ import { EditScheduleLauncher } from "../edit/EditScheduleLauncher";
 import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 import { useCollection } from "../../common/wrappers/useCollection";
 import { useAppContext } from "../../../AppContext";
+import { compareAsc } from "date-fns";
+import { IEntity } from "../../../serverApi/IEntity";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -70,18 +72,20 @@ export const ScrapsViewPage: React.FC = () => {
       ) : null}
 
       {scraps.length
-        ? (scraps as IScrapEntry[]).map((scrap, i) => (
-            <Scrap
-              index={i}
-              key={scrap.id + scrap.schedules[user.id]?.nextOccurrence}
-              addWrapperItem={addItem}
-              onClick={() => collection.setFocus(i)}
-              journalName={journal.name}
-              propsRenderStyle={"generic"}
-              scrap={scrap}
-              hasFocus={i === focusIndex}
-            />
-          ))
+        ? (scraps as IScrapEntry[])
+            .sort(getCompareFn(user.id))
+            .map((scrap, i) => (
+              <Scrap
+                index={i}
+                key={scrap.id + scrap.schedules[user.id]?.nextOccurrence}
+                addWrapperItem={addItem}
+                onClick={() => collection.setFocus(i)}
+                journalName={journal.name}
+                propsRenderStyle={"generic"}
+                scrap={scrap}
+                hasFocus={i === focusIndex}
+              />
+            ))
         : null}
 
       {!scraps.length && !newScrap ? (
@@ -131,3 +135,24 @@ export const MarkdownScrapIcon = () => {
 export const ListScrapIcon = () => {
   return <CheckBoxOutlined fontSize="small" />;
 };
+
+function getCompareFn(userId: string) {
+  return (a: IEntity, b: IEntity) => {
+    const nextOccurrenceA = a.schedules[userId]?.nextOccurrence;
+    const nextOccurrenceB = b.schedules[userId]?.nextOccurrence;
+
+    if (nextOccurrenceA && nextOccurrenceB) {
+      return compareAsc(new Date(nextOccurrenceA), new Date(nextOccurrenceB));
+    }
+
+    if (nextOccurrenceA) {
+      return -1;
+    }
+
+    if (nextOccurrenceB) {
+      return 1;
+    }
+
+    return 0;
+  };
+}
