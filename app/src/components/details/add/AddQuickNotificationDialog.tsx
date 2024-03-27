@@ -1,5 +1,5 @@
 import { ParseableDate } from "../edit/ParseableDate";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { JournalSelector } from "../../common/JournalSelector";
 import { getPermissionsForUser } from "../../overview/useJournalPermissions";
 import { UserRole } from "../../../serverApi/UserRole";
@@ -11,27 +11,13 @@ import { IParsedDate } from "../edit/parseDate";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { SaveOutlined } from "@mui/icons-material";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
-import { StorageUtil } from "../../../util/StorageUtil";
+import { QuickNotificationStorage } from "./QuickNotificationStorage";
 
-class QuickNotificationStorage {
-  private static key = "engraved::quick-notification-journal-id";
-
-  private storageUtil = new StorageUtil(localStorage);
-
-  getJournalId(): string {
-    return this.storageUtil.getValue(QuickNotificationStorage.key);
-  }
-
-  setJournalId(journalId: string): void {
-    this.storageUtil.setValue(QuickNotificationStorage.key, journalId);
-  }
-}
-
-const storage = new QuickNotificationStorage();
-
-export const AddNewNotificationDialog: React.FC<{
+export const AddQuickNotificationDialog: React.FC<{
   onSuccess?: () => void;
 }> = ({ onSuccess }) => {
+  const storage = useMemo(() => new QuickNotificationStorage(), []);
+
   const { user } = useAppContext();
   const [journalId, setJournalId] = useState(storage.getJournalId() ?? "");
   const [parsed, setParsed] = useState<IParsedDate>({});
