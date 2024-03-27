@@ -10,18 +10,30 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { IParsedDate } from "../edit/parseDate";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { SaveOutlined } from "@mui/icons-material";
-import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup"; // todo:
+import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
+import { StorageUtil } from "../../../util/StorageUtil";
 
-// todo:
-// - some print selection from FunkyDate -> user should easily see, what's going on
-// - journal selector
-// - what type do we select? md vs list.
+class QuickNotificationStorage {
+  private static key = "engraved::quick-notification-journal-id";
+
+  private storageUtil = new StorageUtil(localStorage);
+
+  getJournalId(): string {
+    return this.storageUtil.getValue(QuickNotificationStorage.key);
+  }
+
+  setJournalId(journalId: string): void {
+    this.storageUtil.setValue(QuickNotificationStorage.key, journalId);
+  }
+}
+
+const storage = new QuickNotificationStorage();
 
 export const AddNewNotificationDialog: React.FC<{
   onSuccess?: () => void;
 }> = ({ onSuccess }) => {
   const { user } = useAppContext();
-  const [journalId, setJournalId] = useState("");
+  const [journalId, setJournalId] = useState(storage.getJournalId() ?? "");
   const [parsed, setParsed] = useState<IParsedDate>({});
 
   const upsertEntryMutation = useUpsertEntryMutation(
@@ -58,7 +70,7 @@ export const AddNewNotificationDialog: React.FC<{
               key: "add",
               onClick: save,
               label: "Save",
-              isDisabled: !parsed.date || !journalId,
+              isDisabled: !isFormValid(),
               icon: <SaveOutlined fontSize="small" />,
             },
           ]}
@@ -68,9 +80,11 @@ export const AddNewNotificationDialog: React.FC<{
   );
 
   function save() {
-    if (!parsed.date || !journalId) {
+    if (!isFormValid()) {
       return;
     }
+
+    storage.setJournalId(journalId);
 
     upsertEntryMutation.mutate({
       command: {
@@ -81,6 +95,10 @@ export const AddNewNotificationDialog: React.FC<{
         },
       } as IUpsertScrapsEntryCommand,
     });
+  }
+
+  function isFormValid() {
+    return !!parsed.date && !!parsed.text && !!journalId;
   }
 };
 

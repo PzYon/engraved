@@ -28,6 +28,7 @@ export const EditSchedule: React.FC<{
         label="Show full form"
         control={
           <Switch
+            checked={showFullForm}
             onChange={(_, checked) => {
               setShowFullForm(checked);
             }}
