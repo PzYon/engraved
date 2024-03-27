@@ -131,9 +131,13 @@ public class NotificationJob(
     if (entity is ScrapsEntry scrapsEntry)
     {
       IJournal? journal = await repository.GetJournal(scrapsEntry.ParentId);
-      return $"Reminder for entry in \"{journal.Name}\"";
+
+      if (journal != null)
+      {
+        return $"Reminder in \"{journal.Name}\"";
+      }
     }
 
-    return "Reminder for journal";
+    return "Reminder";
   }
 }

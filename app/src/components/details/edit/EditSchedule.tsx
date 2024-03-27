@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
-import { Button } from "@mui/material";
+import { Button, FormControlLabel, Switch } from "@mui/material";
 import {
   IScheduleDefinition,
   useModifyScheduleMutation,
@@ -18,12 +18,26 @@ export const EditSchedule: React.FC<{
     initialDate ? new Date(initialDate) : null,
   );
 
+  const [showFullForm, setShowFullForm] = useState(!!date);
+
   const modifyScheduleMutation = useModifyScheduleMutation(journalId, entryId);
 
   return (
     <>
+      <FormControlLabel
+        label="Show full form"
+        control={
+          <Switch
+            checked={showFullForm}
+            onChange={(_, checked) => {
+              setShowFullForm(checked);
+            }}
+          />
+        }
+      />
       <ParseableDate
         sx={{ marginBottom: 2 }}
+        parseDateOnly={true}
         onChange={(d) => {
           if (d.date) {
             setDate(d.date);
@@ -31,12 +45,16 @@ export const EditSchedule: React.FC<{
         }}
         onSelect={save}
       />
-      <DateSelector
-        date={date}
-        setDate={setDate}
-        showTime={true}
-        showClear={true}
-      />
+
+      {showFullForm ? (
+        <DateSelector
+          date={date}
+          setDate={setDate}
+          showTime={true}
+          showClear={true}
+        />
+      ) : null}
+
       <DialogFormButtonContainer>
         <Button variant="outlined" onClick={onCancel}>
           Cancel

@@ -8,7 +8,8 @@ export const ParseableDate: React.FC<{
   onChange: (parsedDate: IParsedDate) => void;
   onSelect: (parsedDate: IParsedDate) => void;
   sx: SxProps;
-}> = ({ onChange, onSelect, sx }) => {
+  parseDateOnly?: boolean;
+}> = ({ onChange, onSelect, sx, parseDateOnly }) => {
   const id = useMemo(() => Math.random().toString(), []);
 
   const [parsed, setParsed] = useState<IParsedDate>({});
@@ -16,7 +17,7 @@ export const ParseableDate: React.FC<{
   return (
     <Host sx={sx}>
       <TextField
-        placeholder={"What and when?"}
+        placeholder={parseDateOnly ? "When?" : "What and when?"}
         autoFocus={true}
         id={id}
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -30,6 +31,10 @@ export const ParseableDate: React.FC<{
             return;
           }
 
+          if (parseDateOnly) {
+            delete parsed.text;
+          }
+
           onSelect(parsed);
         }}
         onChange={(e) => {
@@ -40,7 +45,9 @@ export const ParseableDate: React.FC<{
       />
       <OutputContainer>
         <Typography>
-          {parsed.text ? <TextContainer>{parsed.text}</TextContainer> : null}
+          {!parseDateOnly && parsed.text ? (
+            <TextContainer>{parsed.text}</TextContainer>
+          ) : null}
           {parsed.date ? (
             <DateContainer>
               <FormatDate value={parsed.date} dateFormat={DateFormat.full} />
