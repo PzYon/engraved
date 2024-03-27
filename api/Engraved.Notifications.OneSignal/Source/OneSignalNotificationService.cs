@@ -55,7 +55,9 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
           }
         )
         .OfType<Button>()
-        .ToList()
+        .ToList(),
+      // the following property is required to show multiple notifications at the same time.
+      webPushTopic: Guid.NewGuid().ToString()
     );
 
     if (doNotSend)
