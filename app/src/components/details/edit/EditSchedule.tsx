@@ -18,7 +18,7 @@ export const EditSchedule: React.FC<{
     initialDate ? new Date(initialDate) : null,
   );
 
-  const [showFullForm, setShowFullForm] = useState(false);
+  const [showFullForm, setShowFullForm] = useState(!!date);
 
   const modifyScheduleMutation = useModifyScheduleMutation(journalId, entryId);
 

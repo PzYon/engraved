@@ -10,7 +10,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { IParsedDate } from "../edit/parseDate";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { SaveOutlined } from "@mui/icons-material";
-import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
+import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup"; // todo:
 
 // todo:
 // - some print selection from FunkyDate -> user should easily see, what's going on
@@ -58,7 +58,7 @@ export const AddNewNotificationDialog: React.FC<{
               key: "add",
               onClick: save,
               label: "Save",
-              isDisabled: !parsed.date,
+              isDisabled: !parsed.date || !journalId,
               icon: <SaveOutlined fontSize="small" />,
             },
           ]}
@@ -68,6 +68,10 @@ export const AddNewNotificationDialog: React.FC<{
   );
 
   function save() {
+    if (!parsed.date || !journalId) {
+      return;
+    }
+
     upsertEntryMutation.mutate({
       command: {
         title: parsed.text,
