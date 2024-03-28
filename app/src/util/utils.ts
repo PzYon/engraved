@@ -24,8 +24,8 @@ export function toDateOnlyIsoString(date: Date): string {
   return date.toISOString().split("T")[0];
 }
 
-export function getTimeIncludingSeconds(date: Date): string {
-  return format(date, "kk:mm:ss");
+export function formatDateOnly(date: Date): string {
+  return format(date, "dd.MM.yyyy");
 }
 
 export function isValidEmail(address: string): boolean {
