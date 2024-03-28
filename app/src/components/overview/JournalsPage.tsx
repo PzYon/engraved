@@ -14,7 +14,6 @@ export const JournalsPage: React.FC = () => {
 
   return (
     <Page
-      pageType="overview"
       data-testid={"page"}
       tabs={getPageTabs("journals")}
       documentTitle={"Journals"}

@@ -10,7 +10,6 @@ import { IconStyle } from "../common/IconStyle";
 export const ScheduledPage: React.FC = () => {
   return (
     <Page
-      pageType="overview"
       title={
         <PageTitle
           title={"Scheduled"}

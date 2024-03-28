@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FilterMode, PageType, usePageContext } from "./PageContext";
+import { FilterMode, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
@@ -7,7 +7,6 @@ import { useSearchParams } from "react-router-dom";
 
 export const Page: React.FC<{
   children: React.ReactNode;
-  pageType: PageType;
   actions?: IAction[];
   hideActions?: boolean;
   title?: React.ReactNode;
@@ -26,7 +25,6 @@ export const Page: React.FC<{
   children,
   filterMode = FilterMode.None,
   showFilters = false,
-  pageType = "overview",
 }) => {
   const {
     setPageActions,
@@ -39,7 +37,6 @@ export const Page: React.FC<{
     setJournalTypes,
     setSearchText,
     setTabs,
-    setPageType,
   } = usePageContext();
 
   useEffect(() => {
@@ -59,14 +56,6 @@ export const Page: React.FC<{
 
     setTabs(tabs);
   }, [setTabs, tabs]);
-
-  useEffect(() => {
-    if (pageType === undefined) {
-      return;
-    }
-
-    setPageType(pageType);
-  }, [setPageType, pageType]);
 
   useEffect(() => {
     if (title === undefined) {
@@ -96,7 +85,6 @@ export const Page: React.FC<{
       setSearchText(null);
       setJournalTypes([]);
       setTabs([]);
-      setPageType(undefined);
       setSearchParams({});
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

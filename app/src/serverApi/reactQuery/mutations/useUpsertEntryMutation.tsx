@@ -9,8 +9,7 @@ import { IJournalAttributeValues } from "../../IJournalAttributeValues";
 import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
-import { Link } from "react-router-dom";
-import { usePageContext } from "../../../components/layout/pages/PageContext";
+import { Link, useLocation } from "react-router-dom";
 import { styled } from "@mui/material";
 
 interface IUpsertEntryCommandVariables {
@@ -26,9 +25,9 @@ export const useUpsertEntryMutation = (
 ) => {
   const { setAppAlert } = useAppContext();
 
-  const { pageType } = usePageContext();
-
   const queryClient = useQueryClient();
+
+  const { pathname } = useLocation();
 
   const editJournalMutation = useEditJournalMutation(journalId);
 
@@ -57,15 +56,16 @@ export const useUpsertEntryMutation = (
     ) => {
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
-        message:
-          pageType !== "journal" ? (
-            <>
-              <StyledLink to={`/journals/${variables.command.journalId}`}>
-                Go to
-              </StyledLink>{" "}
-              journal
-            </>
-          ) : null,
+        message: !pathname.startsWith(
+          `/journals/${variables.command.journalId}`,
+        ) ? (
+          <>
+            <StyledLink to={`/journals/${variables.command.journalId}`}>
+              Go to
+            </StyledLink>{" "}
+            journal
+          </>
+        ) : null,
         type: "success",
         relatedEntityId: result.entityId,
       });

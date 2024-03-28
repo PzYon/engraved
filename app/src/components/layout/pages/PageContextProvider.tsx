@@ -1,6 +1,6 @@
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
-import { FilterMode, PageContext, PageType } from "./PageContext";
+import { FilterMode, PageContext } from "./PageContext";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -20,7 +20,6 @@ export const PageContextProvider: React.FC<{
   const [showFilters, setShowFilters] = useState(false);
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
-  const [pageType, setPageType] = useState<PageType>(undefined);
 
   useEffect(() => {
     setUrlParams();
@@ -63,8 +62,6 @@ export const PageContextProvider: React.FC<{
         setUrlParams({ journalTypes: value }),
       tabs,
       setTabs,
-      pageType,
-      setPageType,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -78,7 +75,6 @@ export const PageContextProvider: React.FC<{
     paramSearchText,
     paramJournalTypes,
     tabs,
-    pageType,
   ]);
 
   return (

@@ -10,14 +10,6 @@ export enum FilterMode {
   All = Text | JournalType,
 }
 
-export type PageType =
-  | "journal"
-  | "overview"
-  | "search"
-  | "add-journal"
-  | "move-scrap"
-  | "settings";
-
 export interface IPageContext {
   documentTitle: string;
   setDocumentTitle: (documentTitle: string) => void;
@@ -40,8 +32,6 @@ export interface IPageContext {
   setJournalTypes: (journalTypes: JournalType[]) => void;
   tabs: IPageTab[];
   setTabs: (tabs: IPageTab[]) => void;
-  pageType: PageType;
-  setPageType: (pageType: PageType) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -65,8 +55,6 @@ export const PageContext = createContext<IPageContext>({
   setJournalTypes: null,
   tabs: null,
   setTabs: null,
-  pageType: null,
-  setPageType: null,
 });
 
 export const usePageContext = () => {
