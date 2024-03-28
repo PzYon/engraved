@@ -135,7 +135,7 @@ export class ActionFactory {
     };
   }
 
-  static editEntitySchedule(journalId: string, entryId: string): IAction {
+  static editEntrySchedule(journalId: string, entryId: string): IAction {
     return {
       key: "edit-schedule",
       label: "Edit schedule",

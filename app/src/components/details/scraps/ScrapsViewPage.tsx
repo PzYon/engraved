@@ -21,6 +21,7 @@ import { useCollection } from "../../common/wrappers/useCollection";
 import { useAppContext } from "../../../AppContext";
 import { compareAsc } from "date-fns";
 import { IEntity } from "../../../serverApi/IEntity";
+import { OnNotificationLauncher } from "../OnNotificationLauncher";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -102,6 +103,10 @@ export const ScrapsViewPage: React.FC = () => {
         <Route
           path="/entries/:entryId/schedule"
           element={<EditScheduleLauncher journal={journal} />}
+        />
+        <Route
+          path="/entries/:entryId/notification"
+          element={<OnNotificationLauncher journal={journal} />}
         />
       </Routes>
     </Page>

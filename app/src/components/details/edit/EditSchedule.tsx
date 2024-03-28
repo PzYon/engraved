@@ -69,7 +69,9 @@ export const EditSchedule: React.FC<{
   function save() {
     const scheduleDefinition: IScheduleDefinition = {
       nextOccurrence: date,
-      onClickUrl: location.origin + "/journals/" + journalId,
+      onClickUrl: entryId
+        ? `${location.origin}/journals/${journalId}/entries/${entryId}/notification`
+        : `${location.origin}/journals/${journalId}/notification`,
     };
 
     modifyScheduleMutation.mutate(scheduleDefinition);

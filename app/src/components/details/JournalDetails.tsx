@@ -15,6 +15,7 @@ import { styled } from "@mui/material";
 import { Properties } from "../common/Properties";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { useJournalProperties } from "../overview/useJournalProperties";
+import { OnNotificationLauncher } from "./OnNotificationLauncher";
 
 export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
@@ -67,6 +68,10 @@ const SubRoutes: React.FC<{
         path="/schedule"
         element={<EditScheduleLauncher journal={journal} />}
       />
+      <Route
+        path="/notification"
+        element={<OnNotificationLauncher journal={journal} />}
+      ></Route>
       <Route
         path="/delete"
         element={
