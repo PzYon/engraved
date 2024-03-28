@@ -57,10 +57,7 @@ export const ScrapBody: React.FC<{
     const allActions = [
       ...actions,
       ActionFactory.moveToAnotherScrap(scrapToRender),
-      ActionFactory.editEntitySchedule(
-        scrapToRender.parentId,
-        scrapToRender.id,
-      ),
+      ActionFactory.editEntrySchedule(scrapToRender.parentId, scrapToRender.id),
       saveAction,
     ];
 

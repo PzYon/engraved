@@ -18,7 +18,6 @@ const SlideUp = React.forwardRef(function Transition(
 ) {
   return (
     <Slide direction="up" ref={ref} {...props}>
-      {/* eslint-disable-next-line react/prop-types */}
       {props.children as never}
     </Slide>
   );
@@ -33,7 +32,6 @@ export const DialogWrapper: React.FC<{
   const deviceWidth = useDeviceWidth();
 
   const RootBodyElement =
-    // eslint-disable-next-line react/prop-types
     props.fullScreen || deviceWidth === DeviceWidth.Small
       ? AppContent
       : DialogHost;
