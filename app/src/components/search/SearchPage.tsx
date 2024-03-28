@@ -10,7 +10,6 @@ import { IconStyle } from "../common/IconStyle";
 export const SearchPage: React.FC = () => {
   return (
     <Page
-      pageType="search"
       title={
         <PageTitle
           title={"Search"}

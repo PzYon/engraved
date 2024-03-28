@@ -44,7 +44,6 @@ export const JournalEditPage: React.FC = () => {
     });
   return (
     <Page
-      pageType="journal"
       title={<JournalPageTitle journal={journal} />}
       subTitle="Edit"
       documentTitle={`Edit ${journal.name}`}

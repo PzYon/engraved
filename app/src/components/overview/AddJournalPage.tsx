@@ -9,7 +9,6 @@ import { IconStyle } from "../common/IconStyle";
 export const AddJournalPage: React.FC = () => {
   return (
     <Page
-      pageType="add-journal"
       title={
         <PageTitle
           title={"Add Journal"}

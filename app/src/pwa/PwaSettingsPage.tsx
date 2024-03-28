@@ -9,7 +9,7 @@ export const PwaSettingsPage: React.FC = () => {
   const { user } = useAppContext();
 
   return (
-    <Page pageType="settings" title="PWA Settings" documentTitle="PWA Settings">
+    <Page title="PWA Settings" documentTitle="PWA Settings">
       <PageSection title="Notifications">
         <p>
           <Button
