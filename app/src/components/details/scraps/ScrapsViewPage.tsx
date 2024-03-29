@@ -4,7 +4,6 @@ import {
   CheckBoxOutlined,
   FormatAlignLeftOutlined,
   SelfImprovementOutlined,
-  Toc,
 } from "@mui/icons-material";
 import { useJournalContext } from "../JournalContext";
 import { JournalPageTitle } from "../JournalPageTitle";
@@ -24,6 +23,7 @@ import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { IAction } from "../../common/actions/IAction";
 import { IEntity } from "../../../serverApi/IEntity";
 import { compareAsc } from "date-fns";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -61,12 +61,7 @@ export const ScrapsViewPage: React.FC = () => {
         getAddNewAction("markdown"),
         getAddNewAction("list"),
         null,
-        {
-          key: "toc",
-          label: "Table of contents",
-          icon: <Toc fontSize="small" />,
-          onClick: () => setShowToc(!showToc),
-        },
+        ActionFactory.getToc(() => setShowToc(!showToc)),
         ...getCommonActions(journal, false),
       ]}
     >
