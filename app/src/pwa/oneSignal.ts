@@ -6,7 +6,7 @@ export const setUpOneSignal = (oneSignalUserId: string) => {
     appId: envSettings.notifications.appId,
     allowLocalhostAsSecureOrigin: envSettings.isDev,
     notificationClickHandlerAction: "focus",
-    notificationClickHandlerMatch: "origin",
+    notificationClickHandlerMatch: "exact",
   }).then(() => {
     OneSignal.login(oneSignalUserId)
       .then(() => {
