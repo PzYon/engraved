@@ -38,7 +38,12 @@ export const Scrap: React.FC<{
   const Container = withoutSection ? SimpleDiv : PageSection;
 
   return (
-    <Wrapper ref={domElementRef} tabIndex={index} onClick={onClick}>
+    <Wrapper
+      ref={domElementRef}
+      id={currentScrap.id}
+      tabIndex={index}
+      onClick={onClick}
+    >
       <Container>
         <ScrapContextProvider
           currentScrap={currentScrap}

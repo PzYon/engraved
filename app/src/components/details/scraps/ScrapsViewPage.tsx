@@ -4,6 +4,7 @@ import {
   CheckBoxOutlined,
   FormatAlignLeftOutlined,
   SelfImprovementOutlined,
+  Toc,
 } from "@mui/icons-material";
 import { useJournalContext } from "../JournalContext";
 import { JournalPageTitle } from "../JournalPageTitle";
@@ -12,22 +13,24 @@ import { Page } from "../../layout/pages/Page";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { Route, Routes } from "react-router-dom";
 import { DeleteEntryLauncher } from "../edit/DeleteEntryLauncher";
-import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
-import { IAction } from "../../common/actions/IAction";
 import { EditScheduleLauncher } from "../edit/EditScheduleLauncher";
 import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
 import { useCollection } from "../../common/wrappers/useCollection";
 import { useAppContext } from "../../../AppContext";
-import { compareAsc } from "date-fns";
-import { IEntity } from "../../../serverApi/IEntity";
 import { OnNotificationLauncher } from "../OnNotificationLauncher";
+import { ScrapToc } from "./ScrapToc";
+import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
+import { IAction } from "../../common/actions/IAction";
+import { IEntity } from "../../../serverApi/IEntity";
+import { compareAsc } from "date-fns";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
   const { user } = useAppContext();
 
   const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
+  const [showToc, setShowToc] = useState(false);
 
   const { collection, focusIndex, addItem } = useCollection(
     (focusIndex, setFocusIndex) =>
@@ -58,9 +61,17 @@ export const ScrapsViewPage: React.FC = () => {
         getAddNewAction("markdown"),
         getAddNewAction("list"),
         null,
+        {
+          key: "toc",
+          label: "Table of contents",
+          icon: <Toc fontSize="small" />,
+          onClick: () => setShowToc(!showToc),
+        },
         ...getCommonActions(journal, false),
       ]}
     >
+      {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
+
       {newScrap ? (
         <Scrap
           key="new"
