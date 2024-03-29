@@ -1,11 +1,11 @@
 import {
   AddOutlined,
-  EditNotificationsOutlined,
   BoltOutlined,
   ClearOutlined,
   Close,
   ContentCopyOutlined,
   DeleteOutlined,
+  EditNotificationsOutlined,
   EditOutlined,
   ExpandLess,
   ExpandMore,
@@ -13,6 +13,7 @@ import {
   FunctionsOutlined,
   HelpOutlineOutlined,
   MessageOutlined,
+  NotificationAddOutlined,
   PanToolOutlined,
   PlaylistAdd,
   Redo,
@@ -22,7 +23,7 @@ import {
   ShareOutlined,
   ShowChartOutlined,
   SwitchAccessShortcutOutlined,
-  NotificationAddOutlined,
+  Toc,
 } from "@mui/icons-material";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
@@ -159,6 +160,16 @@ export class ActionFactory {
         additionalOnClick?.();
         renderUpsertEntryDialog(journal, renderDialog);
       },
+    };
+  }
+
+  static getToc(onClick: () => void): IAction {
+    return {
+      key: "toc",
+      hotkey: "alt+i",
+      label: "Table of contents",
+      icon: <Toc fontSize="small" />,
+      onClick: onClick,
     };
   }
 
