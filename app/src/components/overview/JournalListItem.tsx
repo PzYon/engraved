@@ -1,11 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { Box, styled, Typography } from "@mui/material";
 import { useJournalProperties } from "./useJournalProperties";
 import { JournalTypeIcon } from "../common/JournalTypeIcon";
 import { PageSection } from "../layout/pages/PageSection";
-import { JournalItemWrapper } from "./JournalItemWrapper";
-import { Wrapper } from "../common/wrappers/Wrapper";
 import { ActionLink } from "../common/actions/ActionLink";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { getCommonActions } from "./getCommonActions";
@@ -15,28 +13,16 @@ import { IconStyle } from "../common/IconStyle";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
-  index: number;
-  addWrapperItem?: (item: JournalItemWrapper) => void;
-  onClick?: () => void;
   isFocused?: boolean;
-}> = ({ journal, addWrapperItem, index, onClick, isFocused }) => {
+}> = ({ journal, isFocused }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const { renderDialog } = useDialogContext();
 
   const journalProperties = useJournalProperties(journal);
 
-  useEffect(() => {
-    addWrapperItem?.(new JournalItemWrapper(domElementRef, journal));
-  }, [addWrapperItem, journal]);
-
   return (
-    <Wrapper
-      ref={domElementRef}
-      tabIndex={index}
-      onClick={onClick}
-      data-testid={`journals-list-item-${index}`}
-    >
+    <div ref={domElementRef} data-testid={`journals-list-item-TODO-WAS-INDEX`}>
       <PageSection key={journal.id} data-testid={journal.id}>
         <Box sx={{ display: "flex" }}>
           <Box
@@ -77,7 +63,7 @@ export const JournalListItem: React.FC<{
           </Box>
         </Box>
       </PageSection>
-    </Wrapper>
+    </div>
   );
 };
 

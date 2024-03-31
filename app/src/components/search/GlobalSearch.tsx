@@ -28,7 +28,7 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
 
   return (
     <>
-      {queryResult.entities.map((e, i) => {
+      {queryResult.entities.map((e) => {
         if (e.entityType === "Entry") {
           return (
             <PageSection key={e.entity.id}>
@@ -38,11 +38,7 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
         }
 
         return (
-          <JournalListItem
-            index={i}
-            key={e.entity.id}
-            journal={e.entity as IJournal}
-          />
+          <JournalListItem key={e.entity.id} journal={e.entity as IJournal} />
         );
       })}
     </>

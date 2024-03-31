@@ -3,20 +3,14 @@ import { usePageContext } from "../layout/pages/PageContext";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { NoResultsFound } from "../common/search/NoResultsFound";
 import { JournalListItem } from "./JournalListItem";
-import { JournalWrapperCollection } from "./JournalWrapperCollection";
-import { useCollection } from "../common/wrappers/useCollection";
+import { IJournal } from "../../serverApi/IJournal";
+import { NavigatableList } from "./navigatableList/NavigatableList";
 
 export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
   favoritesOnly,
 }) => {
   const { searchText, journalTypes } = usePageContext();
   const journals = useJournalsQuery(searchText, journalTypes, favoritesOnly);
-
-  const { collection, addItem } = useCollection(
-    (focusIndex, setFocusIndex) =>
-      new JournalWrapperCollection(focusIndex, setFocusIndex),
-    [journals],
-  );
 
   if (!journals) {
     return null;
@@ -27,17 +21,17 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
   }
 
   return (
-    <>
-      {journals.map((journal, i) => (
-        <JournalListItem
-          index={i}
-          key={journal.id}
-          addWrapperItem={addItem}
-          onClick={() => collection.setFocus(i)}
-          journal={journal}
-          isFocused={i === collection.currentIndex}
-        />
-      ))}
-    </>
+    <NavigatableList
+      items={journals}
+      renderItem={(journal, index, isFocused) => {
+        return (
+          <JournalListItem
+            key={journal.id}
+            journal={journal as IJournal}
+            isFocused={isFocused}
+          />
+        );
+      }}
+    />
   );
 };

@@ -4,7 +4,6 @@ import { styled } from "@mui/material";
 import { ScrapInner } from "./ScrapInner";
 import { PageSection } from "../../layout/pages/PageSection";
 import { ScrapItemWrapper } from "./ScrapItemWrapper";
-import { Wrapper } from "../../common/wrappers/Wrapper";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { ActionsRenderStyle } from "./ScrapContext";
 import { ScrapContextProvider } from "./ScrapContextProvider";
@@ -38,7 +37,7 @@ export const Scrap: React.FC<{
   const Container = withoutSection ? SimpleDiv : PageSection;
 
   return (
-    <Wrapper
+    <div
       ref={domElementRef}
       id={currentScrap.id}
       tabIndex={index}
@@ -58,7 +57,7 @@ export const Scrap: React.FC<{
           <ScrapInner />
         </ScrapContextProvider>
       </Container>
-    </Wrapper>
+    </div>
   );
 };
 
