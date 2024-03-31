@@ -84,7 +84,8 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
         new AddScheduleToEntryCommand
         {
           EntryId = result.EntityId,
-          NextOccurrence = entry.Schedule.NextOccurrence
+          NextOccurrence = entry.Schedule.NextOccurrence,
+          OnClickUrl = entry.Schedule.OnClickUrl
         }
       );
     }
