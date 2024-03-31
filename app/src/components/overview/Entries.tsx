@@ -5,6 +5,7 @@ import { IEntry } from "../../serverApi/IEntry";
 import { PageSection } from "../layout/pages/PageSection";
 import { usePageContext } from "../layout/pages/PageContext";
 import { NoResultsFound } from "../common/search/NoResultsFound";
+import { NavigatableList } from "./navigatableList/NavigatableList";
 
 export const Entries: React.FC = () => {
   const { searchText, journalTypes } = usePageContext();
@@ -20,11 +21,16 @@ export const Entries: React.FC = () => {
 
   return (
     <>
-      {queryResult.entries.map((entry, i) => (
-        <PageSection key={entry.id} testId={`entries-list-item-${i}`}>
-          {renderEntry(entry)}
-        </PageSection>
-      ))}
+      <NavigatableList
+        items={queryResult.entries}
+        renderItem={(item, index) => {
+          return (
+            <PageSection key={item.id} testId={`entries-list-item-${index}`}>
+              {renderEntry(item as IEntry)}
+            </PageSection>
+          );
+        }}
+      ></NavigatableList>
     </>
   );
 

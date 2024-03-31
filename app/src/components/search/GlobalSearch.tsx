@@ -8,6 +8,7 @@ import { JournalTypeFactory } from "../../journalTypes/JournalTypeFactory";
 import { JournalListItem } from "../overview/JournalListItem";
 import { IJournal } from "../../serverApi/IJournal";
 import { PageSection } from "../layout/pages/PageSection";
+import { NavigatableList } from "../overview/navigatableList/NavigatableList";
 
 export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
   isSchedule,
@@ -28,19 +29,22 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
 
   return (
     <>
-      {queryResult.entities.map((e) => {
-        if (e.entityType === "Entry") {
-          return (
-            <PageSection key={e.entity.id}>
-              {renderEntry(e.entity as IEntry)}
-            </PageSection>
-          );
-        }
+      <NavigatableList
+        items={queryResult.entities.map((e) => e.entity)}
+        renderItem={(item) => {
+          // this is a temporary hack! should be something like:
+          // if (item.entityType === "Entry") {
+          if (!(item as IJournal).type) {
+            return (
+              <PageSection key={item.id}>
+                {renderEntry(item as IEntry)}
+              </PageSection>
+            );
+          }
 
-        return (
-          <JournalListItem key={e.entity.id} journal={e.entity as IJournal} />
-        );
-      })}
+          return <JournalListItem key={item.id} journal={item as IJournal} />;
+        }}
+      ></NavigatableList>
     </>
   );
 
