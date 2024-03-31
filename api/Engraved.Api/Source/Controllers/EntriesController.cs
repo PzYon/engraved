@@ -78,17 +78,17 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
   {
     CommandResult result = await dispatcher.Command(entry);
 
-    if (entry.Schedule != null)
+    if (entry.Schedule == null)
     {
-      await dispatcher.Command(
-        new AddScheduleToEntryCommand
-        {
-          EntryId = result.EntityId,
-          NextOccurrence = entry.Schedule.NextOccurrence,
-          OnClickUrl = entry.Schedule.OnClickUrl
-        }
-      );
+      return result;
     }
+
+    entry.Schedule.EntryId = result.EntityId;
+    entry.Schedule.OnClickUrl = string.IsNullOrEmpty(entry.Schedule.OnClickUrl)
+      ? null
+      : string.Format(entry.Schedule.OnClickUrl, result.EntityId);
+    
+    await dispatcher.Command(entry.Schedule);
 
     return result;
   }
