@@ -18,8 +18,8 @@ export const DeleteEntry: React.FC<{
     <>
       <Typography>
         Are you sure you want to delete this{" "}
-        <b>{isScrapJournal ? "scrap" : "entry"}</b>? You will not be able to
-        recover it.
+        <b>{isScrapJournal ? "scrap" : "entry"}</b> from journal{" "}
+        <b>&quot;{journal.name}&quot;</b>? You will not be able to recover it.
       </Typography>
       <DeleteButtons
         entityType={"entry"}

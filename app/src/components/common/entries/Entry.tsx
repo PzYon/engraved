@@ -2,7 +2,7 @@ import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeIcon } from "../JournalTypeIcon";
 import { Link } from "react-router-dom";
-import { getScheduleProperty } from "../../scheduled/scheduleUtils";
+import { getScheduleProperty } from "../../overview/scheduled/scheduleUtils";
 import { IAction } from "../actions/IAction";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ListItemFooterRow } from "../../overview/ListItemFooterRow";

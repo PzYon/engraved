@@ -7,7 +7,7 @@ import { JournalSelector } from "../../common/JournalSelector";
 import { Scrap } from "../scraps/Scrap";
 import { UserRole } from "../../../serverApi/UserRole";
 import { useAppContext } from "../../../AppContext";
-import { getPermissionsForUser } from "../../overview/useJournalPermissions";
+import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
 
 export const AddQuickScrapDialog: React.FC<{
   quickScrapJournalId: string;

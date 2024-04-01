@@ -1,10 +1,10 @@
 import React from "react";
-import { useAllEntriesQuery } from "../../serverApi/reactQuery/queries/useAllEntriesQuery";
-import { IEntry } from "../../serverApi/IEntry";
-import { usePageContext } from "../layout/pages/PageContext";
-import { NoResultsFound } from "../common/search/NoResultsFound";
-import { NavigatableList } from "./navigatableList/NavigatableList";
-import { EntryListItem } from "../search/EntryListItem";
+import { useAllEntriesQuery } from "../../../serverApi/reactQuery/queries/useAllEntriesQuery";
+import { IEntry } from "../../../serverApi/IEntry";
+import { usePageContext } from "../../layout/pages/PageContext";
+import { NoResultsFound } from "../../common/search/NoResultsFound";
+import { NavigatableList } from "../navigatableList/NavigatableList";
+import { EntryListItem } from "./EntryListItem";
 
 export const Entries: React.FC = () => {
   const { searchText, journalTypes } = usePageContext();

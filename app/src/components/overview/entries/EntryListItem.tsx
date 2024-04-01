@@ -1,8 +1,8 @@
 import React from "react";
-import { IEntry } from "../../serverApi/IEntry";
-import { IJournal } from "../../serverApi/IJournal";
-import { PageSection } from "../layout/pages/PageSection";
-import { JournalTypeFactory } from "../../journalTypes/JournalTypeFactory";
+import { IEntry } from "../../../serverApi/IEntry";
+import { IJournal } from "../../../serverApi/IJournal";
+import { PageSection } from "../../layout/pages/PageSection";
+import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 
 export const EntryListItem: React.FC<{
   item: IEntry;

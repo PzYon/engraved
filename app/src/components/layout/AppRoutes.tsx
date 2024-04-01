@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { JournalsPage } from "../overview/JournalsPage";
+import { JournalsPage } from "../overview/journals/JournalsPage";
 import { JournalPageWrapper } from "../details/JournalPageWrapper";
-import { EntriesPage } from "../overview/EntriesPage";
+import { EntriesPage } from "../overview/entries/EntriesPage";
 import { AddJournalPage } from "../overview/AddJournalPage";
-import { SearchPage } from "../search/SearchPage";
-import { ScheduledPage } from "../scheduled/ScheduledPage";
+import { SearchPage } from "../overview/search/SearchPage";
+import { ScheduledPage } from "../overview/scheduled/ScheduledPage";
 import { PwaSettingsPage } from "../../pwa/PwaSettingsPage";
 
 export const AppRoutes: React.FC = () => {

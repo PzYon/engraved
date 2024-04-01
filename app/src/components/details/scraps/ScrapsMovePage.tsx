@@ -12,7 +12,7 @@ import { useJournalContext } from "../JournalContext";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { JournalSelector } from "../../common/JournalSelector";
 import { UserRole } from "../../../serverApi/UserRole";
-import { getPermissionsForUser } from "../../overview/useJournalPermissions";
+import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
 import { useAppContext } from "../../../AppContext";
 
 export const ScrapsMovePage: React.FC = () => {

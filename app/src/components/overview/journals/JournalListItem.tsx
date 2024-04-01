@@ -1,15 +1,15 @@
 import React, { useRef } from "react";
-import { IJournal } from "../../serverApi/IJournal";
+import { IJournal } from "../../../serverApi/IJournal";
 import { Box, styled, Typography } from "@mui/material";
 import { useJournalProperties } from "./useJournalProperties";
-import { JournalTypeIcon } from "../common/JournalTypeIcon";
-import { PageSection } from "../layout/pages/PageSection";
-import { ActionLink } from "../common/actions/ActionLink";
-import { ActionFactory } from "../common/actions/ActionFactory";
-import { getCommonActions } from "./getCommonActions";
-import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { ListItemFooterRow } from "./ListItemFooterRow";
-import { IconStyle } from "../common/IconStyle";
+import { JournalTypeIcon } from "../../common/JournalTypeIcon";
+import { PageSection } from "../../layout/pages/PageSection";
+import { ActionLink } from "../../common/actions/ActionLink";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { getCommonActions } from "../getCommonActions";
+import { useDialogContext } from "../../layout/dialogs/DialogContext";
+import { ListItemFooterRow } from "../ListItemFooterRow";
+import { IconStyle } from "../../common/IconStyle";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;

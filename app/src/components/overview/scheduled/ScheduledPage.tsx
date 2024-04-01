@@ -1,11 +1,11 @@
-import { Page } from "../layout/pages/Page";
-import { PageTitle } from "../layout/pages/PageTitle";
-import { Icon } from "../common/Icon";
-import { getPageTabs } from "../layout/tabs/getPageTabs";
-import { FilterMode } from "../layout/pages/PageContext";
+import { Page } from "../../layout/pages/Page";
+import { PageTitle } from "../../layout/pages/PageTitle";
+import { Icon } from "../../common/Icon";
+import { getPageTabs } from "../../layout/tabs/getPageTabs";
+import { FilterMode } from "../../layout/pages/PageContext";
 import { AlarmOutlined } from "@mui/icons-material";
 import { Scheduled } from "./Scheduled";
-import { IconStyle } from "../common/IconStyle";
+import { IconStyle } from "../../common/IconStyle";
 
 export const ScheduledPage: React.FC = () => {
   return (
