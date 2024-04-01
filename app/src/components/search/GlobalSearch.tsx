@@ -31,26 +31,36 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
     <>
       <NavigatableList
         items={queryResult.entities.map((e) => e.entity)}
-        renderItem={(item) => {
+        renderItem={(item, _, hasFocus) => {
           // this is a temporary hack! should be something like:
           // if (item.entityType === "Entry") {
           if (!(item as IJournal).type) {
             return (
               <PageSection key={item.id}>
-                {renderEntry(item as IEntry)}
+                {renderEntry(item as IEntry, hasFocus)}
               </PageSection>
             );
           }
 
-          return <JournalListItem key={item.id} journal={item as IJournal} />;
+          return (
+            <JournalListItem
+              hasFocus={hasFocus}
+              key={item.id}
+              journal={item as IJournal}
+            />
+          );
         }}
       ></NavigatableList>
     </>
   );
 
-  function renderEntry(entry: IEntry) {
+  function renderEntry(entry: IEntry, hasFocus: boolean) {
     const journal = queryResult.journals.find((j) => j.id === entry.parentId);
 
-    return JournalTypeFactory.create(journal.type).getEntry(journal, entry);
+    return JournalTypeFactory.create(journal.type).getEntry(
+      journal,
+      entry,
+      hasFocus,
+    );
   }
 };
