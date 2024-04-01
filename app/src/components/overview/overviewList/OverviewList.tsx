@@ -1,9 +1,10 @@
+import React from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { useCollection } from "./wrappers/useCollection";
-import { NavigatableListItem } from "./NavigatableListItem";
+import { OverviewListItem } from "./OverviewListItem";
 import { WrapperCollection } from "./wrappers/WrapperCollection";
 
-export const NavigatableList: React.FC<{
+export const OverviewList: React.FC<{
   items: IEntity[];
   renderItem: (
     item: IEntity,
@@ -20,7 +21,7 @@ export const NavigatableList: React.FC<{
   return (
     <>
       {items.map((item, index) => (
-        <NavigatableListItem
+        <OverviewListItem
           index={index}
           key={item.id}
           onClick={() => collection.setFocus(index)}
@@ -28,7 +29,7 @@ export const NavigatableList: React.FC<{
           item={item}
         >
           {renderItem(item, index, index === collection.currentIndex)}
-        </NavigatableListItem>
+        </OverviewListItem>
       ))}
     </>
   );

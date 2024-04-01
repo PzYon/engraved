@@ -4,7 +4,7 @@ import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJourn
 import { NoResultsFound } from "../../common/search/NoResultsFound";
 import { JournalListItem } from "./JournalListItem";
 import { IJournal } from "../../../serverApi/IJournal";
-import { NavigatableList } from "../navigatableList/NavigatableList";
+import { OverviewList } from "../overviewList/OverviewList";
 
 export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
   favoritesOnly,
@@ -21,7 +21,7 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
   }
 
   return (
-    <NavigatableList
+    <OverviewList
       items={journals}
       renderItem={(journal, index, hasFocus) => {
         return (

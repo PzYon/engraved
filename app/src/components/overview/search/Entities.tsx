@@ -6,7 +6,7 @@ import { NoResultsFound } from "../../common/search/NoResultsFound";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalListItem } from "../journals/JournalListItem";
 import { IJournal } from "../../../serverApi/IJournal";
-import { NavigatableList } from "../navigatableList/NavigatableList";
+import { OverviewList } from "../overviewList/OverviewList";
 import { EntryListItem } from "../entries/EntryListItem";
 
 export const Entities: React.FC<{ isSchedule?: boolean }> = ({
@@ -28,7 +28,7 @@ export const Entities: React.FC<{ isSchedule?: boolean }> = ({
 
   return (
     <>
-      <NavigatableList
+      <OverviewList
         items={queryResult.entities.map((e) => e.entity)}
         renderItem={(item, index, hasFocus) => {
           // this is a temporary hack! should be something like:
@@ -54,7 +54,7 @@ export const Entities: React.FC<{ isSchedule?: boolean }> = ({
             />
           );
         }}
-      ></NavigatableList>
+      ></OverviewList>
     </>
   );
 };

@@ -22,7 +22,7 @@ import { IAction } from "../../common/actions/IAction";
 import { IEntity } from "../../../serverApi/IEntity";
 import { compareAsc } from "date-fns";
 import { ActionFactory } from "../../common/actions/ActionFactory";
-import { NavigatableList } from "../../overview/navigatableList/NavigatableList";
+import { OverviewList } from "../../overview/overviewList/OverviewList";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -71,7 +71,7 @@ export const ScrapsViewPage: React.FC = () => {
       ) : null}
 
       {scraps.length ? (
-        <NavigatableList
+        <OverviewList
           items={scraps.sort(getCompareFn(user.id))}
           renderItem={(item, _, hasFocus) => {
             return (
@@ -84,7 +84,7 @@ export const ScrapsViewPage: React.FC = () => {
               />
             );
           }}
-        ></NavigatableList>
+        ></OverviewList>
       ) : null}
 
       {!scraps.length && !newScrap ? (

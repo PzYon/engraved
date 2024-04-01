@@ -3,7 +3,7 @@ import { useAllEntriesQuery } from "../../../serverApi/reactQuery/queries/useAll
 import { IEntry } from "../../../serverApi/IEntry";
 import { usePageContext } from "../../layout/pages/PageContext";
 import { NoResultsFound } from "../../common/search/NoResultsFound";
-import { NavigatableList } from "../navigatableList/NavigatableList";
+import { OverviewList } from "../overviewList/OverviewList";
 import { EntryListItem } from "./EntryListItem";
 
 export const Entries: React.FC = () => {
@@ -19,13 +19,13 @@ export const Entries: React.FC = () => {
   }
 
   return (
-    <NavigatableList
+    <OverviewList
       items={queryResult.entries}
       renderItem={(item, index, hasFocus) => {
         return (
           <EntryListItem
             key={item.id}
-            item={item as IEntry}
+            entry={item as IEntry}
             journals={queryResult.journals}
             index={index}
             hasFocus={hasFocus}

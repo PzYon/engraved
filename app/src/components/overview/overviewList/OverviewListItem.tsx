@@ -5,7 +5,7 @@ import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
 import { WrapperCollectionItem } from "./wrappers/WrapperCollectionItem";
 
-export const NavigatableListItem: React.FC<{
+export const OverviewListItem: React.FC<{
   children: React.ReactNode;
   onClick: () => void;
   addWrapperItem: (wrapper: WrapperCollectionItem) => void;
