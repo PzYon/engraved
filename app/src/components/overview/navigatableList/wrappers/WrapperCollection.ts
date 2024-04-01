@@ -1,10 +1,6 @@
 import { WrapperCollectionItem } from "./WrapperCollectionItem";
 
 export class WrapperCollection {
-  getItemCount() {
-    return this.wrappers.length;
-  }
-
   private wrappers: WrapperCollectionItem[] = [];
 
   get currentIndex() {

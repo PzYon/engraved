@@ -1,7 +1,7 @@
+import React, { useEffect, useRef } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
-import { useEffect, useRef } from "react";
 import { styled } from "@mui/material";
 import { WrapperCollectionItem } from "./wrappers/WrapperCollectionItem";
 
