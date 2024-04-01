@@ -1,16 +1,13 @@
 import { useHotkeys } from "react-hotkeys-hook";
-import { BaseWrapperCollection } from "./BaseWrapperCollection";
+import { WrapperCollection } from "./WrapperCollection";
 import { useMemo, useState } from "react";
-import { BaseItemWrapper } from "./BaseItemWrapper";
+import { WrapperCollectionItem } from "./WrapperCollectionItem";
 
-export function useCollection<
-  TCollection extends BaseWrapperCollection<TItem>,
-  TItem extends BaseItemWrapper<{ id?: string }>,
->(
+export function useCollection(
   create: (
     focusIndex: number,
     setFocusIndex: (value: number) => void,
-  ) => TCollection,
+  ) => WrapperCollection,
   deps: unknown[],
 ) {
   const [focusIndex, setFocusIndex] = useState(-1);
@@ -29,6 +26,6 @@ export function useCollection<
   return {
     collection,
     focusIndex,
-    addItem: (wrapper: TItem) => collection.add(wrapper),
+    addItem: (wrapper: WrapperCollectionItem) => collection.add(wrapper),
   };
 }

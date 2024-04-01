@@ -1,19 +1,21 @@
 import { IEntity } from "../../../serverApi/IEntity";
-import { JournalItemWrapper } from "../JournalItemWrapper";
 import { IJournal } from "../../../serverApi/IJournal";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { useEffect, useRef } from "react";
 import { styled } from "@mui/material";
+import { WrapperCollectionItem } from "./wrappers/WrapperCollectionItem";
 
 export const NavigatableListItem: React.FC<{
   children: React.ReactNode;
   onClick: () => void;
-  addWrapperItem: (wrapper: JournalItemWrapper) => void;
+  addWrapperItem: (wrapper: WrapperCollectionItem) => void;
   item: IEntity;
   index: number;
 }> = ({ children, onClick, addWrapperItem, item, index }) => {
   useEffect(() => {
-    addWrapperItem?.(new JournalItemWrapper(domElementRef, item as IJournal));
+    addWrapperItem?.(
+      new WrapperCollectionItem(domElementRef, item as IJournal),
+    );
   }, [addWrapperItem, item]);
 
   const domElementRef = useRef<HTMLDivElement>();

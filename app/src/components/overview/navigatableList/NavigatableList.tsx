@@ -1,7 +1,7 @@
 import { IEntity } from "../../../serverApi/IEntity";
-import { useCollection } from "../../common/wrappers/useCollection";
-import { JournalWrapperCollection } from "../JournalWrapperCollection";
+import { useCollection } from "./wrappers/useCollection";
 import { NavigatableListItem } from "./NavigatableListItem";
+import { WrapperCollection } from "./wrappers/WrapperCollection";
 
 export const NavigatableList: React.FC<{
   items: IEntity[];
@@ -13,7 +13,7 @@ export const NavigatableList: React.FC<{
 }> = ({ items, renderItem }) => {
   const { collection, addItem } = useCollection(
     (focusIndex, setFocusIndex) =>
-      new JournalWrapperCollection(focusIndex, setFocusIndex),
+      new WrapperCollection(focusIndex, setFocusIndex),
     [items],
   );
 
