@@ -1,42 +1,29 @@
-import React, { useEffect, useRef } from "react";
-import { IJournal } from "../../serverApi/IJournal";
+import React, { useRef } from "react";
+import { IJournal } from "../../../serverApi/IJournal";
 import { Box, styled, Typography } from "@mui/material";
 import { useJournalProperties } from "./useJournalProperties";
-import { JournalTypeIcon } from "../common/JournalTypeIcon";
-import { PageSection } from "../layout/pages/PageSection";
-import { JournalItemWrapper } from "./JournalItemWrapper";
-import { Wrapper } from "../common/wrappers/Wrapper";
-import { ActionLink } from "../common/actions/ActionLink";
-import { ActionFactory } from "../common/actions/ActionFactory";
-import { getCommonActions } from "./getCommonActions";
-import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { ListItemFooterRow } from "./ListItemFooterRow";
-import { IconStyle } from "../common/IconStyle";
+import { JournalTypeIcon } from "../../common/JournalTypeIcon";
+import { PageSection } from "../../layout/pages/PageSection";
+import { ActionLink } from "../../common/actions/ActionLink";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { getCommonActions } from "../getCommonActions";
+import { useDialogContext } from "../../layout/dialogs/DialogContext";
+import { ListItemFooterRow } from "../ListItemFooterRow";
+import { IconStyle } from "../../common/IconStyle";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
   index: number;
-  addWrapperItem?: (item: JournalItemWrapper) => void;
-  onClick?: () => void;
-  isFocused?: boolean;
-}> = ({ journal, addWrapperItem, index, onClick, isFocused }) => {
+  hasFocus?: boolean;
+}> = ({ journal, index, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const { renderDialog } = useDialogContext();
 
   const journalProperties = useJournalProperties(journal);
 
-  useEffect(() => {
-    addWrapperItem?.(new JournalItemWrapper(domElementRef, journal));
-  }, [addWrapperItem, journal]);
-
   return (
-    <Wrapper
-      ref={domElementRef}
-      tabIndex={index}
-      onClick={onClick}
-      data-testid={`journals-list-item-${index}`}
-    >
+    <div ref={domElementRef} data-testid={`journals-list-item-${index}`}>
       <PageSection key={journal.id} data-testid={journal.id}>
         <Box sx={{ display: "flex" }}>
           <Box
@@ -54,7 +41,7 @@ export const JournalListItem: React.FC<{
               </IconContainer>
 
               <ActionLink
-                action={ActionFactory.goToJournal(journal.id, isFocused)}
+                action={ActionFactory.goToJournal(journal.id, hasFocus)}
               >
                 <Typography
                   variant="h5"
@@ -72,12 +59,12 @@ export const JournalListItem: React.FC<{
             </TitleRow>
             <ListItemFooterRow
               properties={journalProperties}
-              actions={getCommonActions(journal, isFocused, renderDialog)}
+              actions={getCommonActions(journal, hasFocus, renderDialog)}
             />
           </Box>
         </Box>
       </PageSection>
-    </Wrapper>
+    </div>
   );
 };
 

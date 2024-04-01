@@ -1,17 +1,13 @@
-import { BaseItemWrapper } from "./BaseItemWrapper";
+import { WrapperCollectionItem } from "./WrapperCollectionItem";
 
-export class BaseWrapperCollection<T extends BaseItemWrapper<{ id?: string }>> {
-  getItemCount() {
-    return this.wrappers.length;
-  }
-
-  private wrappers: T[] = [];
+export class WrapperCollection {
+  private wrappers: WrapperCollectionItem[] = [];
 
   get currentIndex() {
     return this.index;
   }
 
-  get current(): T {
+  get current(): WrapperCollectionItem {
     return this.wrappers[this.index];
   }
 
@@ -48,7 +44,7 @@ export class BaseWrapperCollection<T extends BaseItemWrapper<{ id?: string }>> {
     this.setFocus(this.getNextLowerIndex(this.index));
   }
 
-  add(wrapper: T) {
+  add(wrapper: WrapperCollectionItem) {
     const existingIndex = this.wrappers.findIndex(
       (w) => w.internalObj.id === wrapper.internalObj.id,
     );

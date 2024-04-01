@@ -14,7 +14,7 @@ import { EditScheduleLauncher } from "./edit/EditScheduleLauncher";
 import { styled } from "@mui/material";
 import { Properties } from "../common/Properties";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
-import { useJournalProperties } from "../overview/useJournalProperties";
+import { useJournalProperties } from "../overview/journals/useJournalProperties";
 import { OnNotificationLauncher } from "./OnNotificationLauncher";
 
 export const JournalDetails: React.FC = () => {

@@ -1,11 +1,10 @@
-import React, { MutableRefObject, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { Button } from "@mui/material";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { JournalType } from "../../../serverApi/JournalType";
-import { ScrapItemWrapper } from "./ScrapItemWrapper";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import {
   ActionsRenderStyle,
@@ -15,19 +14,15 @@ import {
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
-  domElementRef: MutableRefObject<HTMLDivElement>;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
   journalName: string;
   hasFocus: boolean;
   currentScrap: IScrapEntry;
   onSuccess?: () => void;
-  addScrapWrapper?: (scrapWrapper: ScrapItemWrapper) => void;
 }> = ({
   children,
   currentScrap,
-  addScrapWrapper,
-  domElementRef,
   propsRenderStyle,
   actionsRenderStyle,
   journalName,
@@ -56,13 +51,6 @@ export const ScrapContextProvider: React.FC<{
     null, // scrap currently do not support attributes
     currentScrap.id,
   );
-
-  useEffect(() => {
-    addScrapWrapper?.(
-      new ScrapItemWrapper(domElementRef, currentScrap, upsertScrap),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addScrapWrapper, isDirty, isEditMode, currentScrap]);
 
   useEffect(() => {
     if (

@@ -14,8 +14,6 @@ import { Route, Routes } from "react-router-dom";
 import { DeleteEntryLauncher } from "../edit/DeleteEntryLauncher";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { EditScheduleLauncher } from "../edit/EditScheduleLauncher";
-import { ScrapWrapperCollection } from "./ScrapWrapperCollection";
-import { useCollection } from "../../common/wrappers/useCollection";
 import { useAppContext } from "../../../AppContext";
 import { OnNotificationLauncher } from "../OnNotificationLauncher";
 import { ScrapToc } from "./ScrapToc";
@@ -24,6 +22,7 @@ import { IAction } from "../../common/actions/IAction";
 import { IEntity } from "../../../serverApi/IEntity";
 import { compareAsc } from "date-fns";
 import { ActionFactory } from "../../common/actions/ActionFactory";
+import { OverviewList } from "../../overview/overviewList/OverviewList";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -31,12 +30,6 @@ export const ScrapsViewPage: React.FC = () => {
 
   const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
   const [showToc, setShowToc] = useState(false);
-
-  const { collection, focusIndex, addItem } = useCollection(
-    (focusIndex, setFocusIndex) =>
-      new ScrapWrapperCollection(focusIndex, setFocusIndex),
-    [scraps],
-  );
 
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
@@ -77,22 +70,22 @@ export const ScrapsViewPage: React.FC = () => {
         />
       ) : null}
 
-      {scraps.length
-        ? (scraps as IScrapEntry[])
-            .sort(getCompareFn(user.id))
-            .map((scrap, i) => (
+      {scraps.length ? (
+        <OverviewList
+          items={scraps.sort(getCompareFn(user.id))}
+          renderItem={(item, _, hasFocus) => {
+            return (
               <Scrap
-                index={i}
-                key={scrap.id + scrap.schedules[user.id]?.nextOccurrence}
-                addWrapperItem={addItem}
-                onClick={() => collection.setFocus(i)}
+                key={item.id + item.schedules[user.id]?.nextOccurrence}
                 journalName={journal.name}
                 propsRenderStyle={"generic"}
-                scrap={scrap}
-                hasFocus={i === focusIndex}
+                scrap={item as IScrapEntry}
+                hasFocus={hasFocus}
               />
-            ))
-        : null}
+            );
+          }}
+        ></OverviewList>
+      ) : null}
 
       {!scraps.length && !newScrap ? (
         <GenericEmptyPlaceholder

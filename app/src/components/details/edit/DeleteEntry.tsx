@@ -12,15 +12,18 @@ export const DeleteEntry: React.FC<{
 }> = ({ journal, entryId, closeDialog }) => {
   const deleteEntryMutation = useDeleteEntryMutation(journal.id, entryId);
 
+  const isScrapJournal = journal.type === JournalType.Scraps;
+
   return (
     <>
       <Typography>
-        Are you sure you want to delete this <b>scrap</b>? You will not be able
-        to recover it.
+        Are you sure you want to delete this{" "}
+        <b>{isScrapJournal ? "scrap" : "entry"}</b> from journal{" "}
+        <b>&quot;{journal.name}&quot;</b>? You will not be able to recover it.
       </Typography>
       <DeleteButtons
         entityType={"entry"}
-        requiresConfirmation={journal.type === JournalType.Scraps}
+        requiresConfirmation={isScrapJournal}
         onDelete={() => deleteEntry(closeDialog)}
         onCancel={closeDialog}
       />

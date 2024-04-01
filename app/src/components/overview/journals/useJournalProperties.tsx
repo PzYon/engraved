@@ -1,12 +1,12 @@
-import { IJournal } from "../../serverApi/IJournal";
-import { Users } from "../common/Users";
-import { Favorite } from "./Favorite";
+import { IJournal } from "../../../serverApi/IJournal";
+import { Users } from "../../common/Users";
+import { Favorite } from "../Favorite";
 import { useJournalPermissions } from "./useJournalPermissions";
-import { UserRole } from "../../serverApi/UserRole";
+import { UserRole } from "../../../serverApi/UserRole";
 import { getScheduleProperty } from "../scheduled/scheduleUtils";
-import { IPropertyDefinition } from "../common/IPropertyDefinition";
-import { FormatDate } from "../common/FormatDate";
-import { useAppContext } from "../../AppContext";
+import { IPropertyDefinition } from "../../common/IPropertyDefinition";
+import { FormatDate } from "../../common/FormatDate";
+import { useAppContext } from "../../../AppContext";
 
 export const useJournalProperties = (
   journal: IJournal,

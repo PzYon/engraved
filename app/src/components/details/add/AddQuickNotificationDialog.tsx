@@ -1,7 +1,7 @@
 import { ParseableDate } from "../edit/ParseableDate";
 import React, { useMemo, useState } from "react";
 import { JournalSelector } from "../../common/JournalSelector";
-import { getPermissionsForUser } from "../../overview/useJournalPermissions";
+import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
 import { UserRole } from "../../../serverApi/UserRole";
 import { useAppContext } from "../../../AppContext";
 import { styled } from "@mui/material";

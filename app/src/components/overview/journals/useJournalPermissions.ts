@@ -1,8 +1,8 @@
-import { IUserPermissions } from "../../serverApi/IUserPermissions";
-import { useAppContext } from "../../AppContext";
+import { IUserPermissions } from "../../../serverApi/IUserPermissions";
+import { useAppContext } from "../../../AppContext";
 import { useMemo } from "react";
-import { UserRole } from "../../serverApi/UserRole";
-import { IUser } from "../../serverApi/IUser";
+import { UserRole } from "../../../serverApi/UserRole";
+import { IUser } from "../../../serverApi/IUser";
 
 export const useJournalPermissions = (permissions: IUserPermissions) => {
   const { user } = useAppContext();
