@@ -5,14 +5,14 @@ import { PageSection } from "../../layout/pages/PageSection";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 
 export const EntryListItem: React.FC<{
-  item: IEntry;
+  entry: IEntry;
   journals: IJournal[];
   hasFocus?: boolean;
   index?: number;
-}> = ({ item, journals, hasFocus, index }) => {
+}> = ({ entry, journals, hasFocus, index }) => {
   return (
     <PageSection testId={`entries-list-item-${index}`}>
-      {renderEntry(item as IEntry, hasFocus)}
+      {renderEntry(entry, hasFocus)}
     </PageSection>
   );
 

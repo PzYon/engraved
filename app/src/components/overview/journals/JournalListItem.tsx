@@ -13,8 +13,9 @@ import { IconStyle } from "../../common/IconStyle";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
+  index: number;
   hasFocus?: boolean;
-}> = ({ journal, hasFocus }) => {
+}> = ({ journal, index, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const { renderDialog } = useDialogContext();
@@ -22,7 +23,7 @@ export const JournalListItem: React.FC<{
   const journalProperties = useJournalProperties(journal);
 
   return (
-    <div ref={domElementRef} data-testid={`journals-list-item-TODO-WAS-INDEX`}>
+    <div ref={domElementRef} data-testid={`journals-list-item-${index}`}>
       <PageSection key={journal.id} data-testid={journal.id}>
         <Box sx={{ display: "flex" }}>
           <Box

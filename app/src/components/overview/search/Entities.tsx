@@ -37,18 +37,19 @@ export const Entities: React.FC<{ isSchedule?: boolean }> = ({
             return (
               <EntryListItem
                 key={item.id}
-                item={item as IEntry}
-                journals={queryResult.journals}
                 index={index}
                 hasFocus={hasFocus}
+                entry={item as IEntry}
+                journals={queryResult.journals}
               />
             );
           }
 
           return (
             <JournalListItem
-              hasFocus={hasFocus}
               key={item.id}
+              index={index}
+              hasFocus={hasFocus}
               journal={item as IJournal}
             />
           );

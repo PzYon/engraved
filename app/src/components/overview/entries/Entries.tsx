@@ -19,21 +19,19 @@ export const Entries: React.FC = () => {
   }
 
   return (
-    <>
-      <NavigatableList
-        items={queryResult.entries}
-        renderItem={(item, index, hasFocus) => {
-          return (
-            <EntryListItem
-              key={item.id}
-              item={item as IEntry}
-              journals={queryResult.journals}
-              index={index}
-              hasFocus={hasFocus}
-            />
-          );
-        }}
-      ></NavigatableList>
-    </>
+    <NavigatableList
+      items={queryResult.entries}
+      renderItem={(item, index, hasFocus) => {
+        return (
+          <EntryListItem
+            key={item.id}
+            item={item as IEntry}
+            journals={queryResult.journals}
+            index={index}
+            hasFocus={hasFocus}
+          />
+        );
+      }}
+    />
   );
 };
