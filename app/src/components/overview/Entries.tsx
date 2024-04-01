@@ -1,11 +1,10 @@
 import React from "react";
 import { useAllEntriesQuery } from "../../serverApi/reactQuery/queries/useAllEntriesQuery";
-import { JournalTypeFactory } from "../../journalTypes/JournalTypeFactory";
 import { IEntry } from "../../serverApi/IEntry";
-import { PageSection } from "../layout/pages/PageSection";
 import { usePageContext } from "../layout/pages/PageContext";
 import { NoResultsFound } from "../common/search/NoResultsFound";
 import { NavigatableList } from "./navigatableList/NavigatableList";
+import { EntryListItem } from "../search/EntryListItem";
 
 export const Entries: React.FC = () => {
   const { searchText, journalTypes } = usePageContext();
@@ -25,22 +24,16 @@ export const Entries: React.FC = () => {
         items={queryResult.entries}
         renderItem={(item, index, hasFocus) => {
           return (
-            <PageSection key={item.id} testId={`entries-list-item-${index}`}>
-              {renderEntry(item as IEntry, hasFocus)}
-            </PageSection>
+            <EntryListItem
+              key={item.id}
+              item={item as IEntry}
+              journals={queryResult.journals}
+              index={index}
+              hasFocus={hasFocus}
+            />
           );
         }}
       ></NavigatableList>
     </>
   );
-
-  function renderEntry(entry: IEntry, hasFocus: boolean) {
-    const journal = queryResult.journals.find((j) => j.id === entry.parentId);
-
-    return JournalTypeFactory.create(journal.type).getEntry(
-      journal,
-      entry,
-      hasFocus,
-    );
-  }
 };

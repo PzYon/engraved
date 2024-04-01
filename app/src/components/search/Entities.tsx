@@ -4,13 +4,12 @@ import { useSearchEntitiesQuery } from "../../serverApi/reactQuery/queries/useSe
 import { ISearchEntitiesResult } from "../../serverApi/ISearchEntitiesResult";
 import { NoResultsFound } from "../common/search/NoResultsFound";
 import { IEntry } from "../../serverApi/IEntry";
-import { JournalTypeFactory } from "../../journalTypes/JournalTypeFactory";
 import { JournalListItem } from "../overview/JournalListItem";
 import { IJournal } from "../../serverApi/IJournal";
-import { PageSection } from "../layout/pages/PageSection";
 import { NavigatableList } from "../overview/navigatableList/NavigatableList";
+import { EntryListItem } from "./EntryListItem";
 
-export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
+export const Entities: React.FC<{ isSchedule?: boolean }> = ({
   isSchedule,
 }) => {
   const { searchText } = usePageContext();
@@ -31,14 +30,18 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
     <>
       <NavigatableList
         items={queryResult.entities.map((e) => e.entity)}
-        renderItem={(item, _, hasFocus) => {
+        renderItem={(item, index, hasFocus) => {
           // this is a temporary hack! should be something like:
           // if (item.entityType === "Entry") {
           if (!(item as IJournal).type) {
             return (
-              <PageSection key={item.id}>
-                {renderEntry(item as IEntry, hasFocus)}
-              </PageSection>
+              <EntryListItem
+                key={item.id}
+                item={item as IEntry}
+                journals={queryResult.journals}
+                index={index}
+                hasFocus={hasFocus}
+              />
             );
           }
 
@@ -53,14 +56,4 @@ export const GlobalSearch: React.FC<{ isSchedule?: boolean }> = ({
       ></NavigatableList>
     </>
   );
-
-  function renderEntry(entry: IEntry, hasFocus: boolean) {
-    const journal = queryResult.journals.find((j) => j.id === entry.parentId);
-
-    return JournalTypeFactory.create(journal.type).getEntry(
-      journal,
-      entry,
-      hasFocus,
-    );
-  }
 };

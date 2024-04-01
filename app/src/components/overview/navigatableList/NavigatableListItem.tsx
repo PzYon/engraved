@@ -12,13 +12,11 @@ export const NavigatableListItem: React.FC<{
   item: IEntity;
   index: number;
 }> = ({ children, onClick, addWrapperItem, item, index }) => {
-  useEffect(() => {
-    addWrapperItem?.(
-      new WrapperCollectionItem(domElementRef, item as IJournal),
-    );
-  }, [addWrapperItem, item]);
-
   const domElementRef = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    addWrapperItem(new WrapperCollectionItem(domElementRef, item as IJournal));
+  }, [addWrapperItem, item]);
 
   return (
     <Host ref={domElementRef} onClick={onClick} tabIndex={index}>

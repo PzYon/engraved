@@ -19,19 +19,17 @@ export const NavigatableList: React.FC<{
 
   return (
     <>
-      {items.map((item, index) => {
-        return (
-          <NavigatableListItem
-            index={index}
-            key={item.id}
-            onClick={() => collection.setFocus(index)}
-            addWrapperItem={addItem}
-            item={item}
-          >
-            {renderItem(item, index, index === collection.currentIndex)}
-          </NavigatableListItem>
-        );
-      })}
+      {items.map((item, index) => (
+        <NavigatableListItem
+          index={index}
+          key={item.id}
+          onClick={() => collection.setFocus(index)}
+          addWrapperItem={addItem}
+          item={item}
+        >
+          {renderItem(item, index, index === collection.currentIndex)}
+        </NavigatableListItem>
+      ))}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
-import { GlobalSearch } from "../search/GlobalSearch";
+import { Entities } from "../search/Entities";
 
 export const Scheduled: React.FC = () => {
-  return <GlobalSearch isSchedule={true}></GlobalSearch>;
+  return <Entities isSchedule={true}></Entities>;
 };
