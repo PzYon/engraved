@@ -22,9 +22,14 @@ export class GaugeJournalType implements IJournalType {
     return <BarChartSharp style={{ backgroundColor: "#FFFFDF" }} />;
   }
 
-  getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
+  getEntry(
+    journal: IJournal,
+    entry: IEntry,
+    hasFocus?: boolean,
+  ): React.ReactNode {
     return (
       <EntryWithValue
+        hasFocus={hasFocus}
         value={(entry as IGaugeEntry).value}
         journal={journal}
         entry={entry}

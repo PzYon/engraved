@@ -12,7 +12,8 @@ export const EntryWithValue: React.FC<{
   value: React.ReactNode;
   journal: IJournal;
   entry: IEntry;
-}> = ({ journal, entry, value }) => {
+  hasFocus?: boolean;
+}> = ({ journal, entry, value, hasFocus }) => {
   return (
     <Entry
       journalId={journal.id}
@@ -20,8 +21,8 @@ export const EntryWithValue: React.FC<{
       journalName={journal.name}
       entry={entry}
       actions={[
-        ActionFactory.editEntry(entry),
-        ActionFactory.deleteEntry(entry),
+        ActionFactory.editEntry(entry, hasFocus),
+        ActionFactory.deleteEntry(entry, hasFocus),
       ]}
       propsRenderStyle={"all"}
     >

@@ -8,7 +8,7 @@ export const NavigatableList: React.FC<{
   renderItem: (
     item: IEntity,
     index: number,
-    isFocused: boolean,
+    hasFocus: boolean,
   ) => React.ReactNode;
 }> = ({ items, renderItem }) => {
   const { collection, addItem } = useCollection(

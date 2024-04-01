@@ -260,9 +260,9 @@ export class ActionFactory {
     };
   }
 
-  static deleteEntry(entry: IEntry): IAction {
+  static deleteEntry(entry: IEntry, enableHotkey?: boolean): IAction {
     return {
-      hotkey: "alt+d",
+      hotkey: enableHotkey ? "alt+d" : undefined,
       key: "delete",
       label: "Delete",
       icon: <DeleteOutlined fontSize="small" />,
@@ -270,9 +270,9 @@ export class ActionFactory {
     };
   }
 
-  static editEntry(entry: IEntry): IAction {
+  static editEntry(entry: IEntry, enableHotkey?: boolean): IAction {
     return {
-      hotkey: "alt+e",
+      hotkey: enableHotkey ? "alt+e" : undefined,
       key: "edit",
       label: "Edit",
       icon: <EditOutlined fontSize="small" />,

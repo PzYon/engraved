@@ -17,9 +17,14 @@ export class ScrapsJournalType implements IJournalType {
     return <DynamicFeedOutlined style={{ backgroundColor: "#DFEEFF" }} />;
   }
 
-  getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
+  getEntry(
+    journal: IJournal,
+    entry: IEntry,
+    hasFocus?: boolean,
+  ): React.ReactNode {
     return (
       <Scrap
+        hasFocus={hasFocus}
         scrap={entry as IScrapEntry}
         journalName={journal.name}
         propsRenderStyle={"all"}

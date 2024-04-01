@@ -23,12 +23,12 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
   return (
     <NavigatableList
       items={journals}
-      renderItem={(journal, index, isFocused) => {
+      renderItem={(journal, _, hasFocus) => {
         return (
           <JournalListItem
             key={journal.id}
             journal={journal as IJournal}
-            isFocused={isFocused}
+            hasFocus={hasFocus}
           />
         );
       }}

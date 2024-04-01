@@ -73,14 +73,14 @@ export const ScrapsViewPage: React.FC = () => {
       {scraps.length ? (
         <NavigatableList
           items={scraps.sort(getCompareFn(user.id))}
-          renderItem={(item, index, isFocused) => {
+          renderItem={(item, _, hasFocus) => {
             return (
               <Scrap
                 key={item.id + item.schedules[user.id]?.nextOccurrence}
                 journalName={journal.name}
                 propsRenderStyle={"generic"}
                 scrap={item as IScrapEntry}
-                hasFocus={isFocused}
+                hasFocus={hasFocus}
               />
             );
           }}

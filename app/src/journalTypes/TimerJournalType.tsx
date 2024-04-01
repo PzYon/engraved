@@ -24,9 +24,14 @@ export class TimerJournalType implements IJournalType {
     return <TimerSharp style={{ backgroundColor: "#FFDFEC" }} />;
   }
 
-  getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
+  getEntry(
+    journal: IJournal,
+    entry: IEntry,
+    hasFocus?: boolean,
+  ): React.ReactNode {
     return (
       <EntryWithValue
+        hasFocus={hasFocus}
         value={
           <>
             <FormatDate

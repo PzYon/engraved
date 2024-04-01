@@ -16,8 +16,19 @@ export class CounterJournalType implements IJournalType {
     return <PlusOneSharp style={{ backgroundColor: "#DFFFE3" }} />;
   }
 
-  getEntry(journal: IJournal, entry: IEntry): React.ReactNode {
-    return <EntryWithValue value={"+1"} journal={journal} entry={entry} />;
+  getEntry(
+    journal: IJournal,
+    entry: IEntry,
+    hasFocus?: boolean,
+  ): React.ReactNode {
+    return (
+      <EntryWithValue
+        value={"+1"}
+        hasFocus={hasFocus}
+        journal={journal}
+        entry={entry}
+      />
+    );
   }
 
   getEntriesTableColumns(): IEntriesTableColumnDefinition[] {

@@ -13,8 +13,8 @@ import { IconStyle } from "../common/IconStyle";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
-  isFocused?: boolean;
-}> = ({ journal, isFocused }) => {
+  hasFocus?: boolean;
+}> = ({ journal, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const { renderDialog } = useDialogContext();
@@ -40,7 +40,7 @@ export const JournalListItem: React.FC<{
               </IconContainer>
 
               <ActionLink
-                action={ActionFactory.goToJournal(journal.id, isFocused)}
+                action={ActionFactory.goToJournal(journal.id, hasFocus)}
               >
                 <Typography
                   variant="h5"
@@ -58,7 +58,7 @@ export const JournalListItem: React.FC<{
             </TitleRow>
             <ListItemFooterRow
               properties={journalProperties}
-              actions={getCommonActions(journal, isFocused, renderDialog)}
+              actions={getCommonActions(journal, hasFocus, renderDialog)}
             />
           </Box>
         </Box>

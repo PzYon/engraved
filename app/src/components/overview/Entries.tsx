@@ -23,10 +23,10 @@ export const Entries: React.FC = () => {
     <>
       <NavigatableList
         items={queryResult.entries}
-        renderItem={(item, index) => {
+        renderItem={(item, index, hasFocus) => {
           return (
             <PageSection key={item.id} testId={`entries-list-item-${index}`}>
-              {renderEntry(item as IEntry)}
+              {renderEntry(item as IEntry, hasFocus)}
             </PageSection>
           );
         }}
@@ -34,9 +34,13 @@ export const Entries: React.FC = () => {
     </>
   );
 
-  function renderEntry(entry: IEntry) {
+  function renderEntry(entry: IEntry, hasFocus: boolean) {
     const journal = queryResult.journals.find((j) => j.id === entry.parentId);
 
-    return JournalTypeFactory.create(journal.type).getEntry(journal, entry);
+    return JournalTypeFactory.create(journal.type).getEntry(
+      journal,
+      entry,
+      hasFocus,
+    );
   }
 };
