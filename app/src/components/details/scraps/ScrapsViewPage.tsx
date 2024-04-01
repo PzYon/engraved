@@ -29,7 +29,7 @@ export const ScrapsViewPage: React.FC = () => {
   const { user } = useAppContext();
 
   const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
-  const [showToc, setShowToc] = useState(false);
+  const [showToc, setShowToc] = useState(true);
 
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
