@@ -25,14 +25,8 @@ export const OnNotificationLauncher: React.FC<{ journal: IJournal }> = ({
 
     renderDialog({
       title: `Notification: ${entry ? (entry as IScrapEntry).title : journal.name}`,
-      render: (closeDialog) => {
-        return (
-          <OnNotification
-            journal={journal}
-            entry={entry}
-            onCancel={closeDialog}
-          />
-        );
+      render: () => {
+        return <OnNotification journal={journal} entry={entry} />;
       },
       onClose: () => {
         navigate(`/journals/${journal.id}`);
