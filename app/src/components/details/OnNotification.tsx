@@ -10,7 +10,6 @@ import { IScrapEntry } from "../../serverApi/IScrapEntry";
 export const OnNotification: React.FC<{
   journal: IJournal;
   entry?: IEntry;
-  onCancel: () => void;
 }> = ({ journal, entry }) => {
   if (entry) {
     return (
