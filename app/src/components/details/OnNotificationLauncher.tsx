@@ -19,6 +19,10 @@ export const OnNotificationLauncher: React.FC<{ journal: IJournal }> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (entryId && !entry) {
+      return;
+    }
+
     renderDialog({
       title: `Notification: ${entry ? (entry as IScrapEntry).title : journal.name}`,
       render: (closeDialog) => {
