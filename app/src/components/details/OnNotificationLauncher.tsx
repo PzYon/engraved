@@ -33,7 +33,7 @@ export const OnNotificationLauncher: React.FC<{ journal: IJournal }> = ({
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [entry, entryId, journal]);
 
   return null;
 };
