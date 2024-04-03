@@ -6,10 +6,10 @@ import { WrapperCollectionItem } from "./WrapperCollectionItem";
 export function useCollection(deps: unknown[]) {
   const [focusIndex, setFocusIndex] = useState(-1);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const collection = useMemo(
     () => new WrapperCollection(focusIndex, setFocusIndex),
-    deps,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [...deps],
   );
 
   useHotkeys("alt+up", () => {
