@@ -2,7 +2,6 @@ import React from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { useCollection } from "./wrappers/useCollection";
 import { OverviewListItem } from "./OverviewListItem";
-import { WrapperCollection } from "./wrappers/WrapperCollection";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
@@ -12,11 +11,7 @@ export const OverviewList: React.FC<{
     hasFocus: boolean,
   ) => React.ReactNode;
 }> = ({ items, renderItem }) => {
-  const { collection, addItem } = useCollection(
-    (focusIndex, setFocusIndex) =>
-      new WrapperCollection(focusIndex, setFocusIndex),
-    [items],
-  );
+  const { collection, addItem } = useCollection([items]);
 
   return (
     <>
