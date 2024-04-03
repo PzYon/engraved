@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MenuBook, StarOutline } from "@mui/icons-material";
+import { ListAlt, StarOutline } from "@mui/icons-material";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
 import { Icon } from "../../common/Icon";
@@ -22,7 +22,7 @@ export const JournalsPage: React.FC = () => {
           title={"Journals"}
           icon={
             <Icon style={IconStyle.PageTitle}>
-              <MenuBook />
+              <ListAlt />
             </Icon>
           }
         />

@@ -21,9 +21,15 @@ export const PageTabs: React.FC<{
           component={Link}
           to={tab.href}
           sx={{
+            minHeight: "auto",
             "&.MuiButtonBase-root.MuiTab-root": {
               color: engravedTheme.palette.primary.main + " !important",
             },
+            ".MuiTab-iconWrapper": {
+              marginBottom: "0 !important",
+            },
+            display: "flex",
+            flexDirection: "row",
           }}
         />
       ))}
