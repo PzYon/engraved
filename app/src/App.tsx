@@ -7,13 +7,17 @@ import { PageContextProvider } from "./components/layout/pages/PageContextProvid
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContextProvider";
 import { AppContextProvider } from "./AppContextProvider";
 
+import { DisplayModeContextProvider } from "./components/overview/overviewList/DisplayModeContextProvider";
+
 export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <AppContextProvider user={user}>
     <ReactQueryProviderWrapper>
       <BrowserRouter>
         <PageContextProvider>
           <DialogContextProvider>
-            <AppHost />
+            <DisplayModeContextProvider>
+              <AppHost />
+            </DisplayModeContextProvider>
           </DialogContextProvider>
         </PageContextProvider>
       </BrowserRouter>

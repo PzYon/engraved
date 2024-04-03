@@ -11,6 +11,7 @@ export const ScrapBody: React.FC<{
   actions: IAction[];
 }> = ({ children, actions }) => {
   const { renderDialog } = useDialogContext();
+
   const {
     isEditMode,
     setIsEditMode,
@@ -21,11 +22,12 @@ export const ScrapBody: React.FC<{
     propsRenderStyle,
     actionsRenderStyle,
     journalName,
-    hasFocus: enableHotkeys,
+    hasFocus,
   } = useScrapContext();
 
   return (
     <Entry
+      hasFocus={hasFocus}
       journalId={scrapToRender.parentId}
       journalType={JournalType.Scraps}
       entry={scrapToRender}
@@ -43,12 +45,8 @@ export const ScrapBody: React.FC<{
     }
 
     const saveAction = isEditMode
-      ? ActionFactory.save(
-          async () => await upsertScrap(),
-          false,
-          enableHotkeys,
-        )
-      : ActionFactory.editScrap(() => setIsEditMode(true), enableHotkeys);
+      ? ActionFactory.save(async () => await upsertScrap(), false, hasFocus)
+      : ActionFactory.editScrap(() => setIsEditMode(true), hasFocus);
 
     if (actionsRenderStyle === "save-only") {
       return saveAction ? [saveAction] : [];
@@ -67,7 +65,7 @@ export const ScrapBody: React.FC<{
       allActions.push(
         ActionFactory.cancelEditing(
           cancelEditing,
-          enableHotkeys,
+          hasFocus,
           isDirty,
           renderDialog,
         ),

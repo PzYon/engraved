@@ -20,6 +20,7 @@ export const Entry: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
   propsRenderStyle: EntryPropsRenderStyle;
+  hasFocus: boolean;
 }> = ({
   journalType,
   journalId,
@@ -28,6 +29,7 @@ export const Entry: React.FC<{
   children,
   actions,
   propsRenderStyle,
+  hasFocus,
 }) => {
   const { user } = useAppContext();
 
@@ -35,6 +37,7 @@ export const Entry: React.FC<{
     <>
       {children}
       <ListItemFooterRow
+        hasFocus={hasFocus}
         properties={getEntryProperties(
           journalType,
           journalId,
