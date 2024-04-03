@@ -11,7 +11,7 @@ export const OverviewList: React.FC<{
     hasFocus: boolean,
   ) => React.ReactNode;
 }> = ({ items, renderItem }) => {
-  const { collection, addItem } = useCollection();
+  const { collection, addItem } = useCollection([items]);
 
   return (
     <>
