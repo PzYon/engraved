@@ -23,16 +23,14 @@ export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
   return (
     <OverviewList
       items={journals}
-      renderItem={(journal, index, hasFocus) => {
-        return (
-          <JournalListItem
-            key={journal.id}
-            index={index}
-            journal={journal as IJournal}
-            hasFocus={hasFocus}
-          />
-        );
-      }}
+      renderItem={(journal, index, hasFocus) => (
+        <JournalListItem
+          key={journal.id}
+          index={index}
+          journal={journal as IJournal}
+          hasFocus={hasFocus}
+        />
+      )}
     />
   );
 };
