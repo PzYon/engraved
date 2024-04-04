@@ -136,4 +136,45 @@ public class UpsertTimerEntryCommandExecutorShould
     entry?.DateTime.Should().Be(newStartDate);
     entry?.EndDate.Should().Be(newEndDate);
   }
+
+  [Test]
+  public async Task UpdateExistingEntry_ChangeExistingStartDateWhenNoEndDate()
+  {
+    var entryId = Guid.NewGuid().ToString("N");
+
+    _testRepository.Entries.Add(
+      new TimerEntry
+      {
+        Id = entryId,
+        ParentId = JournalId,
+        StartDate = _fakeDateService.UtcNow.AddMinutes(-50),
+        EndDate = null
+      }
+    );
+
+    _testRepository.Entries.Count.Should().Be(1);
+
+    DateTime newStartDate = _fakeDateService.UtcNow.AddMinutes(-30);
+
+    var command = new UpsertTimerEntryCommand
+    {
+      Id = entryId,
+      JournalId = JournalId,
+      StartDate = newStartDate,
+      EndDate = null
+    };
+
+    CommandResult result =
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
+
+    result.EntityId.Should().NotBeNull();
+    _testRepository.Entries.Count.Should().Be(1);
+
+    var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
+
+    entry.Should().NotBeNull();
+    entry?.StartDate.Should().Be(newStartDate);
+    entry?.DateTime.Should().Be(newStartDate);
+    entry?.EndDate.Should().Be(null);
+  }
 }
