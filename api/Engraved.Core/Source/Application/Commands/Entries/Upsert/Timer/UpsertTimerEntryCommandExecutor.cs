@@ -4,17 +4,16 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 
-public class UpsertTimerEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
-  UpsertTimerEntryCommand,
-  TimerEntry,
-  TimerJournal
->
-{
-  public UpsertTimerEntryCommandExecutor(IRepository repository, IDateService dateService) : base(
+public class UpsertTimerEntryCommandExecutor(IRepository repository, IDateService dateService)
+  : BaseUpsertEntryCommandExecutor<
+    UpsertTimerEntryCommand,
+    TimerEntry,
+    TimerJournal
+  >(
     repository,
     dateService
-  ) { }
-
+  )
+{
   protected override async Task<TimerEntry?> LoadEntryToUpdate(UpsertTimerEntryCommand command, TimerJournal journal)
   {
     return await GetActiveEntry(Repository, journal);
@@ -33,6 +32,14 @@ public class UpsertTimerEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
 
       entry.StartDate = command.StartDate;
       entry.DateTime = command.StartDate;
+      entry.EndDate = command.EndDate;
+      return;
+    }
+
+    if (entry.StartDate != null && command.StartDate != null && entry.StartDate != command.StartDate)
+    {
+      entry.DateTime = command.StartDate;
+      entry.StartDate = command.StartDate;
       entry.EndDate = command.EndDate;
       return;
     }

@@ -182,8 +182,12 @@ export const UpsertEntry: React.FC<{
         break;
 
       case JournalType.Timer:
-        (command as IUpsertTimerEntryCommand).startDate = new Date(startDate);
-        (command as IUpsertTimerEntryCommand).endDate = new Date(endDate);
+        (command as IUpsertTimerEntryCommand).startDate = startDate
+          ? new Date(startDate)
+          : null;
+        (command as IUpsertTimerEntryCommand).endDate = endDate
+          ? new Date(endDate)
+          : null;
         break;
     }
     return command;

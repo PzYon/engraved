@@ -22,6 +22,11 @@ export const UpsertTimerEntry: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    console.log("start: ", start);
+    console.log("end: ", end);
+  }, [start, end]);
+
   return (
     <>
       <FormElementContainer>
