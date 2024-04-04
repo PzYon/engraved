@@ -1,3 +1,4 @@
+import React from "react";
 import { AppHeader } from "./components/layout/AppHeader";
 import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { AppContent } from "./components/layout/AppContent";

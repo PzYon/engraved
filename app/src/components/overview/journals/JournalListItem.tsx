@@ -58,6 +58,7 @@ export const JournalListItem: React.FC<{
               </ActionLink>
             </TitleRow>
             <ListItemFooterRow
+              hasFocus={hasFocus}
               properties={journalProperties}
               actions={getCommonActions(journal, hasFocus, renderDialog)}
             />

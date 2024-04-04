@@ -10,6 +10,7 @@ import {
   ExpandLess,
   ExpandMore,
   FilterAltOutlined,
+  FormatLineSpacingOutlined,
   FunctionsOutlined,
   HelpOutlineOutlined,
   MessageOutlined,
@@ -455,6 +456,20 @@ export class ActionFactory {
       icon: <SearchOutlined fontSize="small" />,
       label: "Search",
       href: "/search",
+      sx: { color: "common.white" },
+    };
+  }
+
+  static toggleDisplayMode(
+    isCompact: boolean,
+    setIsCompact: (value: boolean) => void,
+  ): IAction {
+    return {
+      key: "toggle-display-mode",
+      hotkey: "alt+c",
+      icon: <FormatLineSpacingOutlined fontSize="small" />,
+      label: "Toggle display mode",
+      onClick: () => setIsCompact(!isCompact),
       sx: { color: "common.white" },
     };
   }

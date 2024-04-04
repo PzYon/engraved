@@ -20,6 +20,7 @@ import { IAction } from "../common/actions/IAction";
 import { ActionLink } from "../common/actions/ActionLink";
 import { PageTabs } from "./tabs/PageTabs";
 import { FavoritesFlyout } from "../FavoritesFlyout";
+import { useDisplayModeContext } from "../overview/overviewList/DisplayModeContext";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -35,6 +36,8 @@ export const AppHeader: React.FC = () => {
   } = usePageContext();
   const { palette } = useTheme();
   const { renderDialog } = useDialogContext();
+
+  const { isCompact, setIsCompact } = useDisplayModeContext();
 
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
@@ -75,6 +78,9 @@ export const AppHeader: React.FC = () => {
               </ActionLink>
             </div>
             <RefreshData />
+            <ActionIconButton
+              action={ActionFactory.toggleDisplayMode(isCompact, setIsCompact)}
+            />
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
             <FavoritesFlyout />
             <ActionIconButton

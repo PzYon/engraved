@@ -5,6 +5,7 @@ import { styled, Typography } from "@mui/material";
 import { useScrapContext } from "./ScrapContext";
 import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 import { ScrapList } from "./list/ScrapList";
+import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -14,7 +15,10 @@ export const ScrapInner: React.FC = () => {
     setTitle,
     scrapToRender,
     setHasTitleFocus,
+    hasFocus,
   } = useScrapContext();
+
+  const { isCompact } = useDisplayModeContext();
 
   return (
     <div
@@ -41,7 +45,8 @@ export const ScrapInner: React.FC = () => {
         <ReadonlyTitleContainer>{title}</ReadonlyTitleContainer>
       )}
 
-      {scrapToRender.scrapType === ScrapType.List ? (
+      {isCompact && !hasFocus ? null : scrapToRender.scrapType ===
+        ScrapType.List ? (
         <ScrapList />
       ) : (
         <ScrapMarkdown />

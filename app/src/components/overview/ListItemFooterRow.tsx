@@ -4,11 +4,19 @@ import { IAction } from "../common/actions/IAction";
 import { Properties } from "../common/Properties";
 import { ActionIconButtonGroup } from "../common/actions/ActionIconButtonGroup";
 import { styled } from "@mui/material";
+import { useDisplayModeContext } from "./overviewList/DisplayModeContext";
 
 export const ListItemFooterRow: React.FC<{
   properties: IPropertyDefinition[];
   actions: IAction[];
-}> = ({ properties, actions }) => {
+  hasFocus: boolean;
+}> = ({ properties, actions, hasFocus }) => {
+  const { isCompact } = useDisplayModeContext();
+
+  if (isCompact && !hasFocus) {
+    return null;
+  }
+
   return (
     <PropertiesRow>
       <FlexGrow>
