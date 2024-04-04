@@ -136,7 +136,7 @@ public class UpsertTimerEntryCommandExecutorShould
     entry?.DateTime.Should().Be(newStartDate);
     entry?.EndDate.Should().Be(newEndDate);
   }
-  
+
   [Test]
   public async Task UpdateExistingEntry_ChangeExistingStartDateWhenNoEndDate()
   {
@@ -177,5 +177,4 @@ public class UpsertTimerEntryCommandExecutorShould
     entry?.DateTime.Should().Be(newStartDate);
     entry?.EndDate.Should().Be(null);
   }
-
 }
