@@ -21,38 +21,40 @@ public class UpsertTimerEntryCommandExecutor(IRepository repository, IDateServic
 
   protected override void SetTypeSpecificValues(UpsertTimerEntryCommand command, TimerEntry entry)
   {
-    if (string.IsNullOrEmpty(entry.Id))
+    if (IsNewWithBlankCommand(command, entry))
     {
-      if (command.StartDate == null)
-      {
-        entry.StartDate = DateService.UtcNow;
-        entry.DateTime = DateService.UtcNow;
-        return;
-      }
-
-      entry.StartDate = command.StartDate;
-      entry.DateTime = command.StartDate;
-      entry.EndDate = command.EndDate;
+      entry.StartDate = DateService.UtcNow;
+      entry.DateTime = DateService.UtcNow;
       return;
     }
 
-    if (entry.StartDate != null && command.StartDate != null && entry.StartDate != command.StartDate)
-    {
-      entry.DateTime = command.StartDate;
-      entry.StartDate = command.StartDate;
-      entry.EndDate = command.EndDate;
-      return;
-    }
-
-    if (entry.EndDate == null && command.EndDate == null)
+    if (IsAutoSetOfEndDate(command, entry))
     {
       entry.EndDate = DateService.UtcNow;
       return;
     }
 
-    entry.StartDate = command.StartDate;
+    if (command.StartDate == null)
+    {
+      throw new InvalidCommandException(command, $"Cannot set {nameof(command.StartDate)} to null.");
+    }
+
     entry.DateTime = command.StartDate;
+    entry.StartDate = command.StartDate;
     entry.EndDate = command.EndDate;
+  }
+
+  private static bool IsNewWithBlankCommand(UpsertTimerEntryCommand command, TimerEntry entry)
+  {
+    return string.IsNullOrEmpty(entry.Id) && command.StartDate == null;
+  }
+
+  private static bool IsAutoSetOfEndDate(UpsertTimerEntryCommand command, TimerEntry entry)
+  {
+    return !string.IsNullOrEmpty(entry.Id)
+           && (entry.StartDate == command.StartDate || command.StartDate == null)
+           && entry.EndDate == null
+           && command.EndDate == null;
   }
 
   public static async Task<TimerEntry?> GetActiveEntry(IBaseRepository repository, TimerJournal journal)
