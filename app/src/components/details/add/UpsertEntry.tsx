@@ -175,20 +175,19 @@ export const UpsertEntry: React.FC<{
     };
 
     switch (journal.type) {
-      case JournalType.Gauge:
+      case JournalType.Gauge: {
         (command as IUpsertGaugeEntryCommand).value = !isNaN(value as never)
           ? Number(value)
           : undefined;
         break;
+      }
 
-      case JournalType.Timer:
-        (command as IUpsertTimerEntryCommand).startDate = startDate
-          ? new Date(startDate)
-          : null;
-        (command as IUpsertTimerEntryCommand).endDate = endDate
-          ? new Date(endDate)
-          : null;
+      case JournalType.Timer: {
+        const timerCommand = command as IUpsertTimerEntryCommand;
+        timerCommand.startDate = startDate ? new Date(startDate) : null;
+        timerCommand.endDate = endDate ? new Date(endDate) : null;
         break;
+      }
     }
     return command;
   }
