@@ -6,12 +6,14 @@ import { useScrapContext } from "./ScrapContext";
 import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 import { ScrapList } from "./list/ScrapList";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
+import { ISCrapListItem } from "./list/IScrapListItem";
 
 export const ScrapInner: React.FC = () => {
   const {
     isEditMode,
     setIsEditMode,
     title,
+    notes,
     setTitle,
     scrapToRender,
     setHasTitleFocus,
@@ -42,7 +44,11 @@ export const ScrapInner: React.FC = () => {
           sx={{ width: "100%" }}
         />
       ) : (
-        <ReadonlyTitleContainer>{title}</ReadonlyTitleContainer>
+        <ReadonlyTitleContainer>
+          {!isCompact || hasFocus || title
+            ? title
+            : getText()?.substring(0, 25) + " (...)"}
+        </ReadonlyTitleContainer>
       )}
 
       {isCompact && !hasFocus ? null : scrapToRender.scrapType ===
@@ -53,6 +59,19 @@ export const ScrapInner: React.FC = () => {
       )}
     </div>
   );
+
+  function getText() {
+    switch (scrapToRender.scrapType) {
+      case ScrapType.Markdown:
+        return notes;
+
+      case ScrapType.List:
+        return (JSON.parse(notes) as ISCrapListItem[])[0].label;
+
+      default:
+        throw new Error(`Unknown scrap type ${scrapToRender.scrapType}`);
+    }
+  }
 };
 
 const ReadonlyTitleContainer = styled(Typography)`
