@@ -14,7 +14,7 @@ export function getScheduleProperty(
         dateFormat={DateFormat.relativeToNow}
       />
     ),
-    label: "Scheduled",
+    label: "Scheduled ",
     hideWhen: () => !nextOccurrence,
     highlightStyle: () => {
       if (!isBefore(new Date(), nextOccurrence)) {

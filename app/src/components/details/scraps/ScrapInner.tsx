@@ -7,6 +7,7 @@ import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 import { ScrapList } from "./list/ScrapList";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import { ISCrapListItem } from "./list/IScrapListItem";
+import { ReadonlyTitleRow } from "../../overview/ReadonlyTitleRow";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -45,9 +46,15 @@ export const ScrapInner: React.FC = () => {
         />
       ) : (
         <ReadonlyTitleContainer>
-          {!isCompact || hasFocus || title
-            ? title
-            : getText()?.substring(0, 25) + " (...)"}
+          <ReadonlyTitleRow
+            hasFocus={hasFocus}
+            title={
+              !isCompact || hasFocus || title
+                ? title
+                : getText()?.substring(0, 25) + " (...)"
+            }
+            schedules={scrapToRender.schedules}
+          />
         </ReadonlyTitleContainer>
       )}
 

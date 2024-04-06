@@ -52,18 +52,24 @@ const Property = styled(Typography)`
   .green {
     background-color: lightgreen;
     border-radius: 45px;
-    padding: 0px 8px;
+    padding: 0 8px;
+    display: flex;
+    gap: 5px;
   }
 
   .yellow {
     background-color: #ffff8f;
     border-radius: 45px;
-    padding: 0px 8px;
+    padding: 0 8px;
+    display: flex;
+    gap: 5px;
   }
 
   .red {
     background-color: #fbceb1;
     border-radius: 45px;
-    padding: 0px 8px;
+    padding: 0 8px;
+    display: flex;
+    gap: 5px;
   }
 `;
