@@ -55,6 +55,7 @@ const Property = styled(Typography)`
     padding: 0 8px;
     display: flex;
     gap: 5px;
+    white-space: nowrap;
   }
 
   .yellow {
@@ -63,6 +64,7 @@ const Property = styled(Typography)`
     padding: 0 8px;
     display: flex;
     gap: 5px;
+    white-space: nowrap;
   }
 
   .red {
@@ -71,5 +73,6 @@ const Property = styled(Typography)`
     padding: 0 8px;
     display: flex;
     gap: 5px;
+    white-space: nowrap;
   }
 `;
