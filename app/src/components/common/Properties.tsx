@@ -5,25 +5,29 @@ import { styled, Typography } from "@mui/material";
 export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
   properties,
 }) => {
+  const visibleProps = properties.filter((p) => !p.hideWhen || !p.hideWhen());
+
+  if (!visibleProps.length) {
+    return null;
+  }
+
   return (
     <Host>
-      {properties
-        .filter((p) => !p.hideWhen || !p.hideWhen())
-        .map((p) => (
-          <Property as="span" key={p.key} className="ngrvd-property">
-            <span className={p.highlightStyle?.() ?? ""}>
-              {p.label ? (
-                <Typography component="span" sx={{ fontWeight: "200" }}>
-                  {p.label}{" "}
-                </Typography>
-              ) : null}
-
-              <Typography component="span" sx={{ color: "primary.main" }}>
-                {p.node()}
+      {visibleProps.map((p) => (
+        <Property as="span" key={p.key} className="ngrvd-property">
+          <span className={p.highlightStyle?.() ?? ""}>
+            {p.label ? (
+              <Typography component="span" sx={{ fontWeight: "200" }}>
+                {p.label}{" "}
               </Typography>
-            </span>
-          </Property>
-        ))}
+            ) : null}
+
+            <Typography component="span" sx={{ color: "primary.main" }}>
+              {p.node()}
+            </Typography>
+          </span>
+        </Property>
+      ))}
     </Host>
   );
 };
@@ -52,18 +56,27 @@ const Property = styled(Typography)`
   .green {
     background-color: lightgreen;
     border-radius: 45px;
-    padding: 0px 8px;
+    padding: 0 8px;
+    display: flex;
+    gap: 5px;
+    white-space: nowrap;
   }
 
   .yellow {
     background-color: #ffff8f;
     border-radius: 45px;
-    padding: 0px 8px;
+    padding: 0 8px;
+    display: flex;
+    gap: 5px;
+    white-space: nowrap;
   }
 
   .red {
     background-color: #fbceb1;
     border-radius: 45px;
-    padding: 0px 8px;
+    padding: 0 8px;
+    display: flex;
+    gap: 5px;
+    white-space: nowrap;
   }
 `;

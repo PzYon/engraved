@@ -11,6 +11,8 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { ListItemFooterRow } from "../ListItemFooterRow";
 import { IconStyle } from "../../common/IconStyle";
 
+import { ReadonlyTitleRow } from "../ReadonlyTitleRow";
+
 export const JournalListItem: React.FC<{
   journal: IJournal;
   index: number;
@@ -42,6 +44,7 @@ export const JournalListItem: React.FC<{
 
               <ActionLink
                 action={ActionFactory.goToJournal(journal.id, hasFocus)}
+                style={{ flexGrow: 1 }}
               >
                 <Typography
                   variant="h5"
@@ -53,7 +56,11 @@ export const JournalListItem: React.FC<{
                     marginTop: "-3px",
                   }}
                 >
-                  {journal.name}
+                  <ReadonlyTitleRow
+                    hasFocus={hasFocus}
+                    title={journal.name}
+                    schedules={journal.schedules}
+                  />
                 </Typography>
               </ActionLink>
             </TitleRow>
