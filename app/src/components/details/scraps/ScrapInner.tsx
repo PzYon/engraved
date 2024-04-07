@@ -51,7 +51,7 @@ export const ScrapInner: React.FC = () => {
             title={
               !isCompact || hasFocus || title
                 ? title
-                : getText()?.substring(0, 25) + " (...)"
+                : getText()?.substring(0, 20) + " (...)"
             }
             schedules={scrapToRender.schedules}
           />
