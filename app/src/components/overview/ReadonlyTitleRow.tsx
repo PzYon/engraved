@@ -12,8 +12,6 @@ export const ReadonlyTitleRow: React.FC<{
   const { user } = useAppContext();
   const { isCompact } = useDisplayModeContext();
 
-  console.log("has focus: ", hasFocus);
-
   return (
     <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
       <span style={{ flexGrow: 1 }}>{title}</span>
