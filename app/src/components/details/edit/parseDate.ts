@@ -8,6 +8,18 @@ export interface IParsedDate {
 
 type DayOfWeek = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
+const allDaysOfWeek: DayOfWeek[] = [
+  "mon",
+  "tue",
+  "wed",
+  "thu",
+  "fri",
+  "sat",
+  "sun",
+];
+
+const every = "every";
+
 export interface IParsedRecurrence {
   days: DayOfWeek[];
   time: string;
@@ -40,13 +52,38 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
       .trim(),
   };
 
-  const match: RegExpMatchArray = preparedValue.match(/every (.*?) /);
-  if (match?.[1]) {
+  const indexOfEvery = preparedValue.indexOf(every);
+
+  if (indexOfEvery > -1) {
+    const days = parseDaysOfWeek(
+      preparedValue.substring(indexOfEvery + every.length),
+    );
+
     result.recurrence = {
       time: "15:00",
-      days: match[1].split(",").map((e) => e.trim()) as DayOfWeek[],
+      days: days,
     };
   }
 
   return result;
+};
+
+const parseDaysOfWeek = (input: string): DayOfWeek[] => {
+  const trimmedInput = removeLeadingChars(input, [",", " ", "and"]);
+
+  const day = allDaysOfWeek.find((d) => trimmedInput.startsWith(d));
+  if (!day) {
+    return [];
+  }
+
+  return [day, ...parseDaysOfWeek(trimmedInput.substring(day.length))];
+};
+
+const removeLeadingChars = (input: string, chars: string[]): string => {
+  const char = chars.find((c) => input.startsWith(c));
+  if (!char) {
+    return input;
+  }
+
+  return removeLeadingChars(input.replace(char, ""), chars);
 };

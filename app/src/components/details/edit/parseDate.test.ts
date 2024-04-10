@@ -82,11 +82,12 @@ describe("parseDate", () => {
     });
 
     it("should return sat, mon", () => {
-      const result = parseDate("every sat, mon 15:00", referenceDate);
+      const result = parseDate("every sat, mon and tue 15:00", referenceDate);
 
-      expect(result.recurrence.days.length).toBe(2);
+      expect(result.recurrence.days.length).toBe(3);
       expect(result.recurrence.days).toContain("sat");
       expect(result.recurrence.days).toContain("mon");
+      expect(result.recurrence.days).toContain("tue");
       expect(result.recurrence.time).toBe("15:00");
 
       // todo: what about nextOccurrence?
