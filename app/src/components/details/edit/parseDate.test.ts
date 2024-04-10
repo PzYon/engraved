@@ -69,6 +69,29 @@ describe("parseDate", () => {
       );
     });
   });
+
+  describe("recurrence", () => {
+    it("should return sat", () => {
+      const result = parseDate("every sat 15:00", referenceDate);
+
+      expect(result.recurrence.days.length).toBe(1);
+      expect(result.recurrence.days).toContain("sat");
+      expect(result.recurrence.time).toBe("15:00");
+
+      // todo: what about nextOccurrence?
+    });
+
+    it("should return sat, mon", () => {
+      const result = parseDate("every sat, mon 15:00", referenceDate);
+
+      expect(result.recurrence.days.length).toBe(2);
+      expect(result.recurrence.days).toContain("sat");
+      expect(result.recurrence.days).toContain("mon");
+      expect(result.recurrence.time).toBe("15:00");
+
+      // todo: what about nextOccurrence?
+    });
+  });
 });
 
 const referenceDate = new Date(2017, 3, 20, 0, 0, 0, 0); // thursday
