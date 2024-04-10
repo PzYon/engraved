@@ -13,6 +13,7 @@ export const ParseableDate: React.FC<{
   const id = useMemo(() => Math.random().toString(), []);
 
   const [parsed, setParsed] = useState<IParsedDate>({});
+  const [parseError, setParseError] = useState("");
 
   return (
     <Host sx={sx}>
@@ -38,12 +39,22 @@ export const ParseableDate: React.FC<{
           onSelect(parsed);
         }}
         onChange={(e) => {
-          const parsed = parseDate(e.target.value);
-          setParsed(parsed);
-          onChange(parsed);
+          try {
+            const parsed = parseDate(e.target.value);
+            setParsed(parsed);
+            setParseError("");
+            onChange(parsed);
+          } catch (e) {
+            setParseError((e as Error).message);
+          }
         }}
       />
       <OutputContainer>
+        {parseError ? (
+          <Typography sx={{ color: "error.main", pb: 1 }}>
+            {parseError}
+          </Typography>
+        ) : null}
         <Typography>
           {!parseDateOnly && parsed.text ? (
             <TextContainer>{parsed.text}</TextContainer>

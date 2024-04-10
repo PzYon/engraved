@@ -1,4 +1,4 @@
-﻿using DayOfWeek = Engraved.Core.Domain.Schedule.DayOfWeek;
+﻿using DayOfWeek = Engraved.Core.Domain.Schedules.DayOfWeek;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes;
 

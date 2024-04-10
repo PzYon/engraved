@@ -4,8 +4,8 @@ using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Notifications;
-using Engraved.Core.Domain.Schedule;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Schedules;
+using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Logging;
 
 namespace Engraved.Core.Application.Jobs;

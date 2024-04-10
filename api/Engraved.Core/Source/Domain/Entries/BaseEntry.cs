@@ -1,4 +1,6 @@
-﻿namespace Engraved.Core.Domain.Entries;
+﻿using Engraved.Core.Domain.Schedules;
+
+namespace Engraved.Core.Domain.Entries;
 
 public abstract class BaseEntry : IEntry
 {
@@ -16,7 +18,7 @@ public abstract class BaseEntry : IEntry
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 
-  public Dictionary<string, Schedule.Schedule> Schedules { get; set; } = new();
+  public Dictionary<string, Schedule> Schedules { get; set; } = new();
 
   public abstract double GetValue();
 }

@@ -7,7 +7,7 @@ using Engraved.Core.Application.Commands.Journals.AddSchedule;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;

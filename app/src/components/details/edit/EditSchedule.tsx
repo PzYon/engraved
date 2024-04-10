@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { Button, FormControlLabel, Switch } from "@mui/material";
-import {
-  IScheduleDefinition,
-  useModifyScheduleMutation,
-} from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
+import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
 import { ParseableDate } from "./ParseableDate";
 import { DateSelector } from "../../common/DateSelector";
+import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
 
 export const EditSchedule: React.FC<{
   initialDate: string;
@@ -39,6 +37,8 @@ export const EditSchedule: React.FC<{
         sx={{ marginBottom: 2 }}
         parseDateOnly={true}
         onChange={(d) => {
+          // todo: recurrence is missing here
+
           if (d.date) {
             setDate(d.date);
           }

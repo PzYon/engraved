@@ -1,7 +1,7 @@
 using Engraved.Core.Application.Queries.Entries.GetAll;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Queries.Search.Entities;
 

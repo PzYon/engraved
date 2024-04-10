@@ -1,7 +1,7 @@
 ﻿using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Schedule;
+using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Core.Application.Commands.Journals.AddSchedule;
 

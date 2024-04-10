@@ -1,7 +1,7 @@
 using Engraved.Core.Application;
 using Engraved.Core.Application.Jobs;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Schedule;
+using Engraved.Core.Domain.Schedules;
 using Engraved.Persistence.Mongo.Tests;
 using Engraved.Tests.Utils;
 using FluentAssertions;

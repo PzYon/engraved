@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Domain.Schedule;
+﻿using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Core.Domain;
 

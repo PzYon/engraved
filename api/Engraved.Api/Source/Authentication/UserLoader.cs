@@ -1,5 +1,5 @@
 ﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Engraved.Api.Authentication;

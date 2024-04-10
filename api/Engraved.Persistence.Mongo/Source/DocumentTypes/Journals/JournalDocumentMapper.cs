@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Schedule;
+using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 

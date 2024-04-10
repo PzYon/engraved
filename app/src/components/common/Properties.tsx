@@ -32,7 +32,7 @@ export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
   );
 };
 
-const Host = styled("div")`
+const Host = styled("span")`
   display: flex;
   height: 100%;
   align-items: center;

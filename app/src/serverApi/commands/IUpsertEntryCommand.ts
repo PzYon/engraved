@@ -1,5 +1,6 @@
 import { IJournalAttributeValues } from "../IJournalAttributeValues";
-import { IScheduleDefinition } from "../reactQuery/mutations/useModifyScheduleMutation";
+
+import { IScheduleDefinition } from "../IScheduleDefinition";
 
 export interface IUpsertEntryCommand {
   id?: string;

@@ -2,7 +2,7 @@
 using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Schedule;
+using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Core.Application.Commands.Entries.AddSchedule;
 

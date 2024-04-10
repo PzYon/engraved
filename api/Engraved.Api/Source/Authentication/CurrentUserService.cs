@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Api.Authentication;
 

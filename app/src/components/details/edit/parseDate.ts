@@ -7,24 +7,32 @@ export interface IParsedDate {
   text?: string;
 }
 
-type DayOfWeek = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
-
-const allDaysOfWeek: DayOfWeek[] = [
-  "mon",
-  "tue",
-  "wed",
-  "thu",
-  "fri",
-  "sat",
-  "sun",
-];
-
-const every = "every";
-
 export interface IParsedRecurrence {
   days: DayOfWeek[];
   time: string;
 }
+
+export enum DayOfWeek {
+  Mon = "Mon",
+  Tue = "Tue",
+  Wed = "Wed",
+  Thu = "Thu",
+  Fri = "Fri",
+  Sat = "Sat",
+  Sun = "Sun",
+}
+
+const allDaysOfWeek: DayOfWeek[] = [
+  DayOfWeek.Mon,
+  DayOfWeek.Tue,
+  DayOfWeek.Wed,
+  DayOfWeek.Thu,
+  DayOfWeek.Fri,
+  DayOfWeek.Sat,
+  DayOfWeek.Sun,
+];
+
+const every = "every";
 
 export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
   if (!value) {
@@ -66,6 +74,11 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
       preparedValue.substring(indexOfEvery + every.length),
     );
 
+    // todo: time here must be utc!!
+    // problem: what if time is actually on a different day, e.g.:
+    // every sat at 01 (AM) is actually every fri at 23
+    // -> if this is a problem.. then what about zeitumstellung and co.?
+
     result.recurrence = {
       time: format(result.date, "HH:mm"),
       days: days,
@@ -78,7 +91,10 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
 const parseDaysOfWeek = (input: string): DayOfWeek[] => {
   const trimmedInput = removeLeadingChars(input, [",", " ", "and"]);
 
-  const day = allDaysOfWeek.find((d) => trimmedInput.startsWith(d));
+  const day = allDaysOfWeek.find((d) =>
+    trimmedInput.toLowerCase().startsWith(d.toLowerCase()),
+  );
+
   if (!day) {
     return [];
   }

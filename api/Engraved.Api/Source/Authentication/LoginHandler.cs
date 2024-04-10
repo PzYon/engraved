@@ -6,7 +6,7 @@ using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 

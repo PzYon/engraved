@@ -8,7 +8,7 @@ using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;

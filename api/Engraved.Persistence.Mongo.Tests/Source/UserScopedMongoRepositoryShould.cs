@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using FluentAssertions;

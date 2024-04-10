@@ -13,7 +13,7 @@ export const ReadonlyTitleRow: React.FC<{
   const { isCompact } = useDisplayModeContext();
 
   return (
-    <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+    <span style={{ display: "flex", alignItems: "center", width: "100%" }}>
       <span style={{ flexGrow: 1 }}>{title}</span>
       {!hasFocus && isCompact ? (
         <Properties
@@ -22,6 +22,6 @@ export const ReadonlyTitleRow: React.FC<{
           ]}
         />
       ) : null}
-    </div>
+    </span>
   );
 };

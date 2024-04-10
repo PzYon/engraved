@@ -4,15 +4,7 @@ import { queryKeysFactory } from "../queryKeysFactory";
 import { useAppContext } from "../../../AppContext";
 import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
 import { DateFormat, dateTypes } from "../../../components/common/dateTypes";
-
-export interface IScheduleDefinition {
-  nextOccurrence?: Date;
-  recurrence?: {
-    days: string[];
-    time: string;
-  };
-  onClickUrl?: string;
-}
+import { IScheduleDefinition } from "../../IScheduleDefinition";
 
 export const useModifyScheduleMutation = (
   journalId: string,

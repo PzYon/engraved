@@ -3,7 +3,7 @@ using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

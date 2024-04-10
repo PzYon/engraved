@@ -1,7 +1,7 @@
 ﻿using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Queries.Journals;
 

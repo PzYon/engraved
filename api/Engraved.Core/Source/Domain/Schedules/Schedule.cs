@@ -1,4 +1,4 @@
-﻿namespace Engraved.Core.Domain.Schedule;
+﻿namespace Engraved.Core.Domain.Schedules;
 
 public class Schedule
 {

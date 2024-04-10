@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Users;
 

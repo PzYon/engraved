@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Schedule;
+using Engraved.Core.Domain.Schedules;
 using FluentAssertions;
 using NUnit.Framework;
 

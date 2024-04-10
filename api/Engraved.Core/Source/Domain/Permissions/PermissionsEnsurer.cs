@@ -1,5 +1,5 @@
 ﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Domain.Permissions;
 
@@ -44,7 +44,7 @@ public class PermissionsEnsurer
       return user.Id!;
     }
 
-    UpsertResult result = await _upsertUser(new User.User { Name = userName });
+    UpsertResult result = await _upsertUser(new User { Name = userName });
 
     return result.EntityId;
   }

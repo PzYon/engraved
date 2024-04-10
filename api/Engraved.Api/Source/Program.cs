@@ -14,7 +14,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Domain.Notifications;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using Engraved.Notifications.OneSignal;
 using Engraved.Persistence.Mongo;
 using Microsoft.AspNetCore.Authentication;

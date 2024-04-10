@@ -25,6 +25,10 @@ import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IJournalUiSettings } from "../components/details/edit/IJournalUiSettings";
 import { IApiSystemInfo } from "./IApiSystemInfo";
 import { LoginHandler } from "./LoginHandler";
+import {
+  IAddScheduleToEntryCommand,
+  IAddScheduleToJournalCommand,
+} from "./commands/IAddScheduleCommand";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -220,17 +224,19 @@ export class ServerApi {
 
   static async modifyJournalSchedule(
     journalId: string,
-    date?: Date,
+    nextOccurrence?: Date,
     onClickUrl?: string,
   ): Promise<ICommandResult> {
+    const cmd: IAddScheduleToJournalCommand = {
+      journalId,
+      nextOccurrence,
+      onClickUrl,
+    };
+
     return await ServerApi.executeRequest(
       `/journals/${journalId}/schedule`,
       "POST",
-      {
-        journalId: journalId,
-        nextOccurrence: date,
-        onClickUrl,
-      },
+      cmd,
     );
   }
 
@@ -239,14 +245,16 @@ export class ServerApi {
     nextOccurrence?: Date,
     onClickUrl?: string,
   ): Promise<ICommandResult> {
+    const cmd: IAddScheduleToEntryCommand = {
+      entryId,
+      nextOccurrence,
+      onClickUrl,
+    };
+
     return await ServerApi.executeRequest(
       `/entries/${entryId}/schedule`,
       "POST",
-      {
-        entryId,
-        nextOccurrence,
-        onClickUrl,
-      },
+      cmd,
     );
   }
 
