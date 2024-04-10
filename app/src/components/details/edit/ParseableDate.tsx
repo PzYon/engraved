@@ -57,6 +57,9 @@ export const ParseableDate: React.FC<{
                 dateFormat={DateFormat.relativeToNow}
               />
               {")"}
+              {parsed.recurrence ? (
+                <> - repeats {parsed.recurrence.days.join()}</>
+              ) : null}
             </DateContainer>
           ) : null}
         </Typography>

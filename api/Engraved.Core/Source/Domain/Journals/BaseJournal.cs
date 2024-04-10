@@ -28,5 +28,5 @@ public abstract class BaseJournal : IJournal
 
   public UserRole UserRole { get; set; }
   
-  public Dictionary<string, Schedule> Schedules { get; set; } = new();
+  public Dictionary<string, Schedule.Schedule> Schedules { get; set; } = new();
 }

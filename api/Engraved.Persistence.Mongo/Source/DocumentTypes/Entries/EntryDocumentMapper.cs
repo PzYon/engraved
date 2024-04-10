@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Schedule;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
 
@@ -24,6 +24,7 @@ public static class EntryDocumentMapper
         cfg.CreateMap<TimerEntry, TimerEntryDocument>();
         cfg.CreateMap<ScrapsEntry, ScrapsEntryDocument>();
 
+        cfg.CreateMap<Recurrence, RecurrenceSubDocument>();
         cfg.CreateMap<Schedule, ScheduleSubDocument>();
 
         cfg.CreateMap<EntryDocument, IEntry>()
@@ -37,6 +38,7 @@ public static class EntryDocumentMapper
         cfg.CreateMap<TimerEntryDocument, TimerEntry>();
         cfg.CreateMap<ScrapsEntryDocument, ScrapsEntry>();
 
+        cfg.CreateMap<RecurrenceSubDocument, Recurrence>();
         cfg.CreateMap<ScheduleSubDocument, Schedule>();
       }
     );
@@ -56,6 +58,6 @@ public static class EntryDocumentMapper
   {
     return document == null
       ? null!
-      : (TEntry) Mapper.Map(document, document.GetType(), typeof(TEntry))!;
+      : (TEntry)Mapper.Map(document, document.GetType(), typeof(TEntry))!;
   }
 }

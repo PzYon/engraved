@@ -1,4 +1,5 @@
 import * as chrono from "chrono-node";
+import { format } from "date-fns";
 
 export interface IParsedDate {
   recurrence?: IParsedRecurrence;
@@ -38,6 +39,12 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
     forwardDate: true,
   });
 
+  if (parsed.length > 1) {
+    throw new Error(
+      `"${value}" is not a valid string, parses to too many segments (${parsed.length})."`,
+    );
+  }
+
   const parsedElement = parsed[0];
 
   if (!parsedElement?.date) {
@@ -60,7 +67,7 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
     );
 
     result.recurrence = {
-      time: "15:00",
+      time: format(result.date, "HH:mm"),
       days: days,
     };
   }

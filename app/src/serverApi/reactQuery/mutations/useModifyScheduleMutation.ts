@@ -7,6 +7,10 @@ import { DateFormat, dateTypes } from "../../../components/common/dateTypes";
 
 export interface IScheduleDefinition {
   nextOccurrence?: Date;
+  recurrence?: {
+    days: string[];
+    time: string;
+  };
   onClickUrl?: string;
 }
 

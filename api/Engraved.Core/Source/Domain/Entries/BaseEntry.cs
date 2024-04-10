@@ -16,7 +16,7 @@ public abstract class BaseEntry : IEntry
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 
-  public Dictionary<string, Schedule> Schedules { get; set; } = new();
+  public Dictionary<string, Schedule.Schedule> Schedules { get; set; } = new();
 
   public abstract double GetValue();
 }

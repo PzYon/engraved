@@ -2,6 +2,7 @@
 using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Schedule;
 
 namespace Engraved.Core.Application.Commands.Entries.AddSchedule;
 
@@ -20,7 +21,8 @@ public class AddScheduleToEntryCommandExecutor(IUserScopedRepository repository)
     entry.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
     {
       NextOccurrence = command.NextOccurrence,
-      OnClickUrl = command.OnClickUrl
+      OnClickUrl = command.OnClickUrl,
+      Recurrence = command.Recurrence
     };
 
     await repository.UpsertEntry(entry);
