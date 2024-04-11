@@ -27,34 +27,32 @@ export const NotificationDone: React.FC<{
   ];
 
   return (
-    <div>
-      <DialogFormButtonContainer>
-        <Button
-          variant={"contained"}
-          onClick={() => {
-            modifyScheduleMutation.mutate({
-              nextOccurrence: schedule.recurrence
-                ? parseDate(schedule.recurrence.dateString).date
-                : null,
-            });
-            onSuccess();
-          }}
-        >
-          Mark {entry ? "entry" : "journal"} as done
-        </Button>
-        <Button
-          variant={"contained"}
-          onClick={() => {
-            navigate(
-              entry
-                ? `/journals/${entry.parentId}/entries/${entry.id}/delete`
-                : `/journals/${entry.parentId}/delete`,
-            );
-          }}
-        >
-          Delete {entry ? "entry" : "journal"}
-        </Button>
-      </DialogFormButtonContainer>
-    </div>
+    <DialogFormButtonContainer>
+      <Button
+        variant={"contained"}
+        onClick={() => {
+          modifyScheduleMutation.mutate({
+            nextOccurrence: schedule.recurrence
+              ? parseDate(schedule.recurrence.dateString).date
+              : null,
+          });
+          onSuccess();
+        }}
+      >
+        Mark {entry ? "entry" : "journal"} as done
+      </Button>
+      <Button
+        variant={"contained"}
+        onClick={() => {
+          navigate(
+            entry
+              ? `/journals/${entry.parentId}/entries/${entry.id}/delete`
+              : `/journals/${entry.parentId}/delete`,
+          );
+        }}
+      >
+        Delete {entry ? "entry" : "journal"}
+      </Button>
+    </DialogFormButtonContainer>
   );
 };

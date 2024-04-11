@@ -1,6 +1,5 @@
 import {
   AddOutlined,
-  BoltOutlined,
   ClearOutlined,
   Close,
   ContentCopyOutlined,
@@ -18,6 +17,7 @@ import {
   NotificationAddOutlined,
   PanToolOutlined,
   PlaylistAdd,
+  PlaylistAddOutlined,
   Redo,
   RefreshOutlined,
   SaveOutlined,
@@ -357,7 +357,7 @@ export class ActionFactory {
     return {
       hotkey: "alt+q",
       key: "add-quick-scrap",
-      icon: <BoltOutlined fontSize="small" />,
+      icon: <PlaylistAddOutlined fontSize="small" />,
       label: "Add Quick Scrap",
       sx: { color: "common.white" },
       onClick: () =>
