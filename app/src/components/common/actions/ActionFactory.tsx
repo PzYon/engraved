@@ -5,6 +5,7 @@ import {
   Close,
   ContentCopyOutlined,
   DeleteOutlined,
+  DoneOutlined,
   EditNotificationsOutlined,
   EditOutlined,
   ExpandLess,
@@ -471,6 +472,15 @@ export class ActionFactory {
       label: "Toggle display mode",
       onClick: () => setIsCompact(!isCompact),
       sx: { color: "common.white" },
+    };
+  }
+
+  static markScheduleAsDone(entry: IEntry): IAction {
+    return {
+      key: "mark-schedule-as-done",
+      icon: <DoneOutlined fontSize="small" />,
+      label: "Mark schedule as done",
+      href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
     };
   }
 }

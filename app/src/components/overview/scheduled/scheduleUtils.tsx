@@ -20,7 +20,10 @@ export function getScheduleProperty(schedule?: ISchedule): IPropertyDefinition {
           dateFormat={DateFormat.relativeToNow}
         />
         {schedule.recurrence?.dateString ? (
-          <span title={schedule.recurrence.dateString}>
+          <span
+            title={schedule.recurrence.dateString}
+            style={{ display: "flex" }}
+          >
             <ReplayOutlined sx={{ ml: 1, fontSize: 14 }} />
           </span>
         ) : null}

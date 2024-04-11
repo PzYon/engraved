@@ -23,6 +23,7 @@ import { IEntity } from "../../../serverApi/IEntity";
 import { compareAsc } from "date-fns";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
+import { NotificationDoneLauncher } from "../NotificationDoneLauncher";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -104,6 +105,10 @@ export const ScrapsViewPage: React.FC = () => {
         <Route
           path="/entries/:entryId/notification"
           element={<OnNotificationLauncher journal={journal} />}
+        />
+        <Route
+          path="/entries/:entryId/notification-done"
+          element={<NotificationDoneLauncher journal={journal} />}
         />
       </Routes>
     </Page>

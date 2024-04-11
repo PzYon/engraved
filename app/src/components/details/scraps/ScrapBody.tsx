@@ -5,12 +5,14 @@ import { Entry } from "../../common/entries/Entry";
 import { JournalType } from "../../../serverApi/JournalType";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useScrapContext } from "./ScrapContext";
+import { useAppContext } from "../../../AppContext";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
 }> = ({ children, actions }) => {
   const { renderDialog } = useDialogContext();
+  const { user } = useAppContext();
 
   const {
     isEditMode,
@@ -74,6 +76,10 @@ export const ScrapBody: React.FC<{
 
     if (scrapToRender.id) {
       allActions.push(ActionFactory.deleteEntry(scrapToRender));
+    }
+
+    if (scrapToRender.schedules?.[user.id]?.nextOccurrence) {
+      allActions.push(ActionFactory.markScheduleAsDone(scrapToRender));
     }
 
     return allActions;
