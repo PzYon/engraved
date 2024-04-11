@@ -81,6 +81,6 @@ function getEntryProperties(
       label: "Edited",
       hideWhen: () => propsRenderStyle === "none",
     },
-    getScheduleProperty(entry.schedules?.[userId]?.nextOccurrence),
+    getScheduleProperty(entry.schedules?.[userId]),
   ];
 }

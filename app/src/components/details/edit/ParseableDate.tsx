@@ -69,7 +69,7 @@ export const ParseableDate: React.FC<{
               />
               {")"}
               {parsed.recurrence ? (
-                <> - repeats {parsed.recurrence.days.join()}</>
+                <> - repeats {parsed.recurrence.dateString}</>
               ) : null}
             </DateContainer>
           ) : null}

@@ -16,11 +16,7 @@ export const ReadonlyTitleRow: React.FC<{
     <span style={{ display: "flex", alignItems: "center", width: "100%" }}>
       <span style={{ flexGrow: 1 }}>{title}</span>
       {!hasFocus && isCompact ? (
-        <Properties
-          properties={[
-            getScheduleProperty(schedules?.[user.id]?.nextOccurrence),
-          ]}
-        />
+        <Properties properties={[getScheduleProperty(schedules?.[user.id])]} />
       ) : null}
     </span>
   );

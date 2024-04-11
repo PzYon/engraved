@@ -1,5 +1,4 @@
 ﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
@@ -11,7 +10,7 @@ public class AddScheduleToEntryCommandExecutor(IUserScopedRepository repository)
 {
   public async Task<CommandResult> Execute(AddScheduleToEntryCommand command)
   {
-    if (string.IsNullOrEmpty(command.EntryId))
+      if (string.IsNullOrEmpty(command.EntryId))
     {
       throw new InvalidCommandException(command, $"{nameof(AddScheduleToEntryCommand.EntryId)} is required");
     }

@@ -2,7 +2,5 @@
 
 public class Recurrence
 {
-  public DayOfWeek[] Days { get; set; } = [];
-
-  public string Time { get; set; } = null!;
+  public string DateString { get; set; } = null!;
 }

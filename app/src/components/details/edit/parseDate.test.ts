@@ -71,29 +71,27 @@ describe("parseDate", () => {
   });
 
   describe("recurrence", () => {
-    it("should return sat", () => {
-      const result = parseDate("every sat 15:01", referenceDate);
+    it("Every without at", () => {
+      const result = parseDate("Stuff every sat 15:01", referenceDate);
 
-      expect(result.recurrence.days.length).toBe(1);
-      expect(result.recurrence.days).toContain("sat");
-      expect(result.recurrence.time).toBe("15:01");
+      expect(result.recurrence.dateString).toBe("sat 15:01");
+      expect(result.text).toBe("Stuff");
 
       expect(result.date.toJSON()).toBe(
         new Date(2017, 3, 22, 15, 1, 0, 0).toJSON(),
       );
     });
 
-    // it("should return sat, mon", () => {
-    //   const result = parseDate("every sat, mon and tue 23:00", referenceDate);
-    //
-    //   expect(result.recurrence.days.length).toBe(3);
-    //   expect(result.recurrence.days).toContain("sat");
-    //   expect(result.recurrence.days).toContain("mon");
-    //   expect(result.recurrence.days).toContain("tue");
-    //   expect(result.recurrence.time).toBe("23:00");
-    //
-    //   // todo: what about nextOccurrence?
-    // });
+    it("Every with at", () => {
+      const result = parseDate("every sun at 13:30 Do stuff", referenceDate);
+
+      expect(result.recurrence.dateString).toBe("sun at 13:30");
+      expect(result.text).toBe("Do stuff");
+
+      expect(result.date.toJSON()).toBe(
+        new Date(2017, 3, 23, 13, 30, 0, 0).toJSON(),
+      );
+    });
   });
 });
 
