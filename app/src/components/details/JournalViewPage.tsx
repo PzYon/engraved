@@ -25,10 +25,12 @@ import { Chart } from "./chart/Chart";
 import { IJournalUiSettings } from "./edit/IJournalUiSettings";
 import { getUiSettings } from "../../util/journalUtils";
 import { getDefaultDateConditions } from "./filters/getDefaultDateConditions";
+import { useAppContext } from "../../AppContext";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
   const deviceWidth = useDeviceWidth();
+  const { user } = useAppContext();
 
   const {
     journal,
@@ -91,7 +93,7 @@ export const JournalViewPage: React.FC = () => {
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonActions(journal, true, renderDialog),
+      ...getCommonActions(journal, true, user, renderDialog),
     ]);
 
     return () => {

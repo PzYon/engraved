@@ -12,6 +12,7 @@ import { ListItemFooterRow } from "../ListItemFooterRow";
 import { IconStyle } from "../../common/IconStyle";
 
 import { ReadonlyTitleRow } from "../ReadonlyTitleRow";
+import { useAppContext } from "../../../AppContext";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -21,6 +22,7 @@ export const JournalListItem: React.FC<{
   const domElementRef = useRef<HTMLDivElement>();
 
   const { renderDialog } = useDialogContext();
+  const { user } = useAppContext();
 
   const journalProperties = useJournalProperties(journal);
 
@@ -67,7 +69,7 @@ export const JournalListItem: React.FC<{
             <ListItemFooterRow
               hasFocus={hasFocus}
               properties={journalProperties}
-              actions={getCommonActions(journal, hasFocus, renderDialog)}
+              actions={getCommonActions(journal, hasFocus, user, renderDialog)}
             />
           </Box>
         </Box>

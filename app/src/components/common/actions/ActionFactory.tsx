@@ -475,12 +475,21 @@ export class ActionFactory {
     };
   }
 
-  static markScheduleAsDone(entry: IEntry): IAction {
+  static markEntryScheduleAsDone(entry: IEntry): IAction {
     return {
       key: "mark-schedule-as-done",
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark schedule as done",
       href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
+    };
+  }
+
+  static markJournalScheduleAsDone(journal: IJournal): IAction {
+    return {
+      key: "mark-schedule-as-done",
+      icon: <DoneOutlined fontSize="small" />,
+      label: "Mark schedule as done",
+      href: `/journals/${journal.id}/notification-done`,
     };
   }
 }

@@ -2,10 +2,12 @@ import { IJournal } from "../../serverApi/IJournal";
 import { IDialogProps } from "../layout/dialogs/DialogContext";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
+import { IUser } from "../../serverApi/IUser";
 
 export function getCommonActions(
   journal: IJournal,
   enableHotkeys: boolean,
+  user: IUser,
   renderDialog?: (dialogProps: IDialogProps) => void,
 ): IAction[] {
   if (!journal) {
@@ -24,6 +26,10 @@ export function getCommonActions(
     ActionFactory.editJournal(journal.id, enableHotkeys),
     ActionFactory.deleteJournal(journal.id, enableHotkeys),
   );
+
+  if (journal.schedules?.[user.id]?.nextOccurrence) {
+    actions.push(ActionFactory.markJournalScheduleAsDone(journal));
+  }
 
   return actions;
 }

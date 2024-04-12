@@ -1,6 +1,6 @@
 import { IJournal } from "../../serverApi/IJournal";
 import { IEntry } from "../../serverApi/IEntry";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../common/FormButtonContainer";
 import { useModifyScheduleMutation } from "../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
 import { useAppContext } from "../../AppContext";
@@ -27,32 +27,37 @@ export const NotificationDone: React.FC<{
   ];
 
   return (
-    <DialogFormButtonContainer>
-      <Button
-        variant={"contained"}
-        onClick={() => {
-          modifyScheduleMutation.mutate({
-            nextOccurrence: schedule.recurrence
-              ? parseDate(schedule.recurrence.dateString).date
-              : null,
-          });
-          onSuccess();
-        }}
-      >
-        Mark {entry ? "entry" : "journal"} as done
-      </Button>
-      <Button
-        variant={"contained"}
-        onClick={() => {
-          navigate(
-            entry
-              ? `/journals/${entry.parentId}/entries/${entry.id}/delete`
-              : `/journals/${entry.parentId}/delete`,
-          );
-        }}
-      >
-        Delete {entry ? "entry" : "journal"}
-      </Button>
-    </DialogFormButtonContainer>
+    <>
+      {schedule?.recurrence?.dateString ? (
+        <Typography>Will reoccur {schedule?.recurrence?.dateString}</Typography>
+      ) : null}
+      <DialogFormButtonContainer>
+        <Button
+          variant={"contained"}
+          onClick={() => {
+            modifyScheduleMutation.mutate({
+              nextOccurrence: schedule.recurrence
+                ? parseDate(schedule.recurrence.dateString).date
+                : null,
+            });
+            onSuccess();
+          }}
+        >
+          Mark {entry ? "entry" : "journal"} as done
+        </Button>
+        <Button
+          variant={schedule?.recurrence ? "outlined" : "contained"}
+          onClick={() => {
+            navigate(
+              entry
+                ? `/journals/${entry.parentId}/entries/${entry.id}/delete`
+                : `/journals/${entry.parentId}/delete`,
+            );
+          }}
+        >
+          Delete {entry ? "entry" : "journal"}
+        </Button>
+      </DialogFormButtonContainer>
+    </>
   );
 };

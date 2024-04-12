@@ -56,7 +56,7 @@ export const ScrapsViewPage: React.FC = () => {
         getAddNewAction("list"),
         null,
         ActionFactory.getToc(() => setShowToc(!showToc)),
-        ...getCommonActions(journal, false),
+        ...getCommonActions(journal, false, user),
       ]}
     >
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}

@@ -79,7 +79,7 @@ export const ScrapBody: React.FC<{
     }
 
     if (scrapToRender.schedules?.[user.id]?.nextOccurrence) {
-      allActions.push(ActionFactory.markScheduleAsDone(scrapToRender));
+      allActions.push(ActionFactory.markEntryScheduleAsDone(scrapToRender));
     }
 
     return allActions;
