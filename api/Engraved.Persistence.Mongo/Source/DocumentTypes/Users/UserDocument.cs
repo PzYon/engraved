@@ -12,7 +12,7 @@ public class UserDocument : IDocument
   public ObjectId Id { get; set; }
 
   public Guid? GlobalUniqueId { get; set; }
-  
+
   public string? Name { get; set; }
 
   public string? DisplayName { get; set; }

@@ -28,6 +28,6 @@ public abstract class BaseJournal : IJournal
   public UserPermissions Permissions { get; set; } = new();
 
   public UserRole UserRole { get; set; }
-  
+
   public Dictionary<string, Schedule> Schedules { get; set; } = new();
 }

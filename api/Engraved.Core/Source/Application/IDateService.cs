@@ -22,7 +22,7 @@ public class FakeDateService(DateTime initialDate) : IDateService
   public FakeDateService() : this(DateTime.UtcNow) { }
 
   public DateTime UtcNow { get; set; } = initialDate;
-  
+
   public void UpdateDate()
   {
     UtcNow = DateTime.UtcNow;
@@ -58,7 +58,5 @@ public class SelfIncrementingDateService : IDateService
     }
   }
 
-  public void UpdateDate()
-  {
-  }
+  public void UpdateDate() { }
 }

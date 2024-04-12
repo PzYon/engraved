@@ -65,7 +65,7 @@ public class SearchEntitiesQueryExecutorShould
     result.Entities.Count(e => e.EntityType == EntityType.Journal).Should().Be(1);
 
     result.Entities.Where(e => e.EntityType == EntityType.Journal)
-      .Count(e => ((IJournal) e.Entity).Name == "Yes")
+      .Count(e => ((IJournal)e.Entity).Name == "Yes")
       .Should()
       .Be(1);
 

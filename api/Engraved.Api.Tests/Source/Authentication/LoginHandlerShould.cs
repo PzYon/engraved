@@ -121,7 +121,7 @@ public class LoginHandlerShould
     var imageUrl = "https://im.age.url";
     var userName = "ha-pe";
     var globalUniqueId = Guid.NewGuid();
-    
+
     await _testRepository.UpsertUser(
       new User
       {

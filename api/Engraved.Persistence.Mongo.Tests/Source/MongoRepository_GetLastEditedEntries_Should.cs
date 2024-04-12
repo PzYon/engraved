@@ -81,7 +81,7 @@ public class MongoRepository_GetLastEditedEntries_Should
     IEntry[] results = await _repository.GetLastEditedEntries("heiri", null, null, [result.EntityId], 10);
 
     results.Length.Should().Be(1);
-    ((ScrapsEntry) results[0]).Title.Should().Be("Heiri");
+    ((ScrapsEntry)results[0]).Title.Should().Be("Heiri");
   }
 
   [Test]

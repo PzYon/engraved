@@ -41,7 +41,7 @@ public class MongoRepositoryShould
     var counterJournal = new CounterJournal { Name = "First" };
     UpsertResult result = await _repository.UpsertJournal(counterJournal);
 
-    counterJournal = (CounterJournal?) await _repository.GetJournal(result.EntityId);
+    counterJournal = (CounterJournal?)await _repository.GetJournal(result.EntityId);
 
     counterJournal.Should().NotBeNull();
 
