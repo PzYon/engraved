@@ -1,4 +1,6 @@
-﻿namespace Engraved.Core.Domain;
+﻿using Engraved.Core.Domain.Schedules;
+
+namespace Engraved.Core.Domain;
 
 public interface IEntity : IEditable, IScheduled
 {

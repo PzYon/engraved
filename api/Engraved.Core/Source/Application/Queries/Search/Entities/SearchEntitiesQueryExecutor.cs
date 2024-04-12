@@ -1,7 +1,7 @@
 using Engraved.Core.Application.Queries.Entries.GetAll;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Queries.Search.Entities;
 
@@ -12,7 +12,7 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
 
   public async Task<SearchEntitiesResult> Execute(SearchEntitiesQuery query)
   {
-    IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(
+    var journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(
       new GetAllJournalsQuery
       {
         SearchText = query.SearchText,
@@ -28,7 +28,7 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
       }
     );
 
-    SearchResultEntity[] searchResultEntities = journals.Select(
+    var searchResultEntities = journals.Select(
         journal => new SearchResultEntity { EntityType = EntityType.Journal, Entity = journal }
       )
       .Union(
@@ -58,7 +58,9 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
     IUser user = await currentUserService.LoadUser();
     return searchResultEntities
       .OrderBy(
-        e => e.Entity.Schedules.ContainsKey(user.Id ?? "") ? e.Entity.Schedules[user.Id ?? ""].NextOccurrence : null
+        e => e.Entity.Schedules.ContainsKey(user.Id ?? "")
+          ? e.Entity.Schedules[user.Id ?? ""].NextOccurrence
+          : null
       )
       .ToArray();
   }

@@ -1,10 +1,10 @@
 import {
   AddOutlined,
-  BoltOutlined,
   ClearOutlined,
   Close,
   ContentCopyOutlined,
   DeleteOutlined,
+  DoneOutlined,
   EditNotificationsOutlined,
   EditOutlined,
   ExpandLess,
@@ -17,6 +17,7 @@ import {
   NotificationAddOutlined,
   PanToolOutlined,
   PlaylistAdd,
+  PlaylistAddOutlined,
   Redo,
   RefreshOutlined,
   SaveOutlined,
@@ -356,7 +357,7 @@ export class ActionFactory {
     return {
       hotkey: "alt+q",
       key: "add-quick-scrap",
-      icon: <BoltOutlined fontSize="small" />,
+      icon: <PlaylistAddOutlined fontSize="small" />,
       label: "Add Quick Scrap",
       sx: { color: "common.white" },
       onClick: () =>
@@ -471,6 +472,24 @@ export class ActionFactory {
       label: "Toggle display mode",
       onClick: () => setIsCompact(!isCompact),
       sx: { color: "common.white" },
+    };
+  }
+
+  static markEntryScheduleAsDone(entry: IEntry): IAction {
+    return {
+      key: "mark-schedule-as-done",
+      icon: <DoneOutlined fontSize="small" />,
+      label: "Mark schedule as done",
+      href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
+    };
+  }
+
+  static markJournalScheduleAsDone(journal: IJournal): IAction {
+    return {
+      key: "mark-schedule-as-done",
+      icon: <DoneOutlined fontSize="small" />,
+      label: "Mark schedule as done",
+      href: `/journals/${journal.id}/notification-done`,
     };
   }
 }

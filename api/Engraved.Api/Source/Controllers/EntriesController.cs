@@ -60,44 +60,44 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
 
   [HttpPost]
   [Route("counter")]
-  public async Task<CommandResult> UpsertCounter([FromBody] UpsertCounterEntryCommand entry)
+  public async Task<CommandResult> UpsertCounter([FromBody] UpsertCounterEntryCommand command)
   {
-    return await dispatcher.Command(entry);
+    return await dispatcher.Command(command);
   }
 
   [HttpPost]
   [Route("gauge")]
-  public async Task<CommandResult> UpsertGauge([FromBody] UpsertGaugeEntryCommand entry)
+  public async Task<CommandResult> UpsertGauge([FromBody] UpsertGaugeEntryCommand command)
   {
-    return await dispatcher.Command(entry);
+    return await dispatcher.Command(command);
   }
 
   [HttpPost]
   [Route("scraps")]
-  public async Task<CommandResult> UpsertScraps([FromBody] UpsertScrapsEntryCommand entry)
+  public async Task<CommandResult> UpsertScraps([FromBody] UpsertScrapsEntryCommand command)
   {
-    CommandResult result = await dispatcher.Command(entry);
+    CommandResult result = await dispatcher.Command(command);
 
-    if (entry.Schedule == null)
+    if (command.Schedule == null)
     {
       return result;
     }
 
-    entry.Schedule.EntryId = result.EntityId;
-    entry.Schedule.OnClickUrl = string.IsNullOrEmpty(entry.Schedule.OnClickUrl)
+    command.Schedule.EntryId = result.EntityId;
+    command.Schedule.OnClickUrl = string.IsNullOrEmpty(command.Schedule.OnClickUrl)
       ? null
-      : string.Format(entry.Schedule.OnClickUrl, result.EntityId);
-    
-    await dispatcher.Command(entry.Schedule);
+      : string.Format(command.Schedule.OnClickUrl, result.EntityId);
+
+    await dispatcher.Command(command.Schedule);
 
     return result;
   }
 
   [HttpPost]
   [Route("timer")]
-  public async Task<CommandResult> StartTimer([FromBody] UpsertTimerEntryCommand entry)
+  public async Task<CommandResult> StartTimer([FromBody] UpsertTimerEntryCommand command)
   {
-    return await dispatcher.Command(entry);
+    return await dispatcher.Command(command);
   }
 
   [HttpPost]

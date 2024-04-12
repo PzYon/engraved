@@ -16,6 +16,7 @@ import { Properties } from "../common/Properties";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { useJournalProperties } from "../overview/journals/useJournalProperties";
 import { OnNotificationLauncher } from "./OnNotificationLauncher";
+import { NotificationDoneLauncher } from "./NotificationDoneLauncher";
 
 export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
@@ -71,7 +72,11 @@ const SubRoutes: React.FC<{
       <Route
         path="/notification"
         element={<OnNotificationLauncher journal={journal} />}
-      ></Route>
+      />
+      <Route
+        path="/notification-done"
+        element={<NotificationDoneLauncher journal={journal} />}
+      />
       <Route
         path="/delete"
         element={

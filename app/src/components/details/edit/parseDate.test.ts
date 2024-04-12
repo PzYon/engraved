@@ -69,6 +69,30 @@ describe("parseDate", () => {
       );
     });
   });
+
+  describe("recurrence", () => {
+    it("Every without at", () => {
+      const result = parseDate("Stuff every sat 15:01", referenceDate);
+
+      expect(result.recurrence.dateString).toBe("sat 15:01");
+      expect(result.text).toBe("Stuff");
+
+      expect(result.date.toJSON()).toBe(
+        new Date(2017, 3, 22, 15, 1, 0, 0).toJSON(),
+      );
+    });
+
+    it("Every with at", () => {
+      const result = parseDate("every sun at 13:30 Do stuff", referenceDate);
+
+      expect(result.recurrence.dateString).toBe("sun at 13:30");
+      expect(result.text).toBe("Do stuff");
+
+      expect(result.date.toJSON()).toBe(
+        new Date(2017, 3, 23, 13, 30, 0, 0).toJSON(),
+      );
+    });
+  });
 });
 
 const referenceDate = new Date(2017, 3, 20, 0, 0, 0, 0); // thursday

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -19,7 +20,7 @@ public class PermissionsEnsurerShould
     {
       Users =
       {
-        new User.User
+        new User
         {
           Id = "123",
           Name = "mar@foo.ch",

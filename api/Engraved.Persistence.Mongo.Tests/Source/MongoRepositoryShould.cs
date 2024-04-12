@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;

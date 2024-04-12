@@ -1,4 +1,5 @@
 ﻿using Engraved.Core.Domain.Permissions;
+using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Core.Domain.Journals;
 

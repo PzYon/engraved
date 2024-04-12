@@ -78,6 +78,7 @@ export const AddQuickNotificationDialog: React.FC<{
         journalId: journalId,
         schedule: {
           nextOccurrence: parsed.date,
+          recurrence: parsed.recurrence,
           // {0} will be replaced on server with actual entry ID
           onClickUrl: `${location.origin}/journals/${journalId}/entries/{0}/notification`,
         },

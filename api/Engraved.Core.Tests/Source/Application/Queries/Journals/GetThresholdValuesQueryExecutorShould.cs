@@ -6,7 +6,7 @@ using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using NUnit.Framework;
 

@@ -1,4 +1,4 @@
-﻿namespace Engraved.Core.Domain.User;
+﻿namespace Engraved.Core.Domain.Users;
 
 public class User : IUser
 {

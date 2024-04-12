@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Engraved.Core.Domain.User;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application;
 

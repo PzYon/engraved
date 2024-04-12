@@ -1,4 +1,4 @@
-﻿namespace Engraved.Core.Domain;
+﻿namespace Engraved.Core.Domain.Schedules;
 
 public interface IScheduled
 {

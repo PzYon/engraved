@@ -1,4 +1,6 @@
-﻿namespace Engraved.Core.Domain.Entries;
+﻿using Engraved.Core.Domain.Schedules;
+
+namespace Engraved.Core.Domain.Entries;
 
 public abstract class BaseEntry : IEntry
 {
