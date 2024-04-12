@@ -7,6 +7,8 @@ import { useAppContext } from "../../AppContext";
 import { ISchedule } from "../../serverApi/ISchedule";
 import { parseDate } from "./edit/parseDate";
 import { useNavigate } from "react-router-dom";
+import { Properties } from "../common/Properties";
+import { getScheduleProperty } from "../overview/scheduled/scheduleUtils";
 
 export const NotificationDone: React.FC<{
   journal: IJournal;
@@ -28,6 +30,7 @@ export const NotificationDone: React.FC<{
 
   return (
     <>
+      <Properties properties={[getScheduleProperty(schedule)]} />
       {schedule?.recurrence?.dateString ? (
         <Typography>Will reoccur {schedule?.recurrence?.dateString}</Typography>
       ) : null}

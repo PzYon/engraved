@@ -1,6 +1,6 @@
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 import { DateFormat } from "../../common/dateTypes";
-import { isBefore, isSameDay } from "date-fns";
+import { addDays, isAfter, isSameDay } from "date-fns";
 import { FormatDate } from "../../common/FormatDate";
 import { ISchedule } from "../../../serverApi/ISchedule";
 import { ReplayOutlined } from "@mui/icons-material";
@@ -32,15 +32,21 @@ export function getScheduleProperty(schedule?: ISchedule): IPropertyDefinition {
     label: "Scheduled",
     hideWhen: () => !schedule?.nextOccurrence,
     highlightStyle: () => {
-      if (!isBefore(new Date(), schedule.nextOccurrence)) {
+      const now = new Date();
+
+      if (isAfter(now, schedule.nextOccurrence)) {
         return "red";
       }
 
-      if (isSameDay(new Date(), schedule.nextOccurrence)) {
+      if (isSameDay(now, schedule.nextOccurrence)) {
         return "yellow";
       }
 
-      return "green";
+      if (isAfter(addDays(now, 2), schedule.nextOccurrence)) {
+        return "green";
+      }
+
+      return "transparent";
     },
   };
 }

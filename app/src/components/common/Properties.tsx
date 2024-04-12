@@ -79,4 +79,13 @@ const Property = styled(Typography)`
     gap: 5px;
     white-space: nowrap;
   }
+
+  .transparent {
+    border: 1px solid ${(p) => p.theme.palette.primary.main};
+    border-radius: 45px;
+    padding: 0 8px;
+    display: flex;
+    gap: 5px;
+    white-space: nowrap;
+  }
 `;
