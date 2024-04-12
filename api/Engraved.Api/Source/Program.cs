@@ -211,7 +211,7 @@ else
         {
           OnTokenValidated = context =>
           {
-            var jwtToken = (JsonWebToken) context.SecurityToken;
+            var jwtToken = (JsonWebToken)context.SecurityToken;
             Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
             context.HttpContext.RequestServices
               .GetRequiredService<ICurrentUserService>()

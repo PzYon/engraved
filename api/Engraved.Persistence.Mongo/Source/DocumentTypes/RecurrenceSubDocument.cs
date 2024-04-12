@@ -1,5 +1,4 @@
-﻿
-namespace Engraved.Persistence.Mongo.DocumentTypes;
+﻿namespace Engraved.Persistence.Mongo.DocumentTypes;
 
 public class RecurrenceSubDocument
 {

@@ -206,7 +206,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsEntryDocument) d).Title!
+      d => ((ScrapsEntryDocument)d).Title!
     );
 
     if (journalIds is { Length: > 0 })

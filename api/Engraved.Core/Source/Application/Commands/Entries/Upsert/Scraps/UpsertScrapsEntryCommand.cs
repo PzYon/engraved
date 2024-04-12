@@ -11,7 +11,7 @@ public class UpsertScrapsEntryCommand : BaseUpsertEntryCommand
   public ScrapType ScrapType { get; set; } = ScrapType.Markdown;
 
   public AddScheduleToEntryCommand? Schedule { get; set; }
-  
+
   public override JournalType GetSupportedJournalType()
   {
     return JournalType.Scraps;

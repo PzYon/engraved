@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj" />
+        <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="OneSignalApi" Version="2.0.2" />
+        <PackageReference Include="OneSignalApi" Version="2.0.2"/>
     </ItemGroup>
 
 </Project>

@@ -145,7 +145,7 @@ public class JournalDocumentMapperShould
 
     var journal = JournalDocumentMapper.FromDocument<IJournal>(timerJournalDocument);
 
-    var timerJournal = (TimerJournal) journal;
+    var timerJournal = (TimerJournal)journal;
     timerJournal.Should().NotBeNull();
     journal.Type.Should().Be(JournalType.Timer);
     timerJournal.StartDate.Should().Be(startDate);

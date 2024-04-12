@@ -57,6 +57,6 @@ public static class JournalDocumentMapper
   {
     return document == null
       ? null!
-      : (TJournal) Mapper.Map(document, document.GetType(), typeof(TJournal))!;
+      : (TJournal)Mapper.Map(document, document.GetType(), typeof(TJournal))!;
   }
 }

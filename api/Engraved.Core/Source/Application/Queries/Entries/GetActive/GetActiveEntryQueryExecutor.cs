@@ -35,6 +35,6 @@ public class GetActiveEntryQueryExecutor(IRepository repository) : IQueryExecuto
       return null;
     }
 
-    return await UpsertTimerEntryCommandExecutor.GetActiveEntry(repository, (TimerJournal) journal);
+    return await UpsertTimerEntryCommandExecutor.GetActiveEntry(repository, (TimerJournal)journal);
   }
 }

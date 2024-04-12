@@ -26,9 +26,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj" />
-      <ProjectReference Include="..\Engraved.Persistence.Mongo.Tests\Engraved.Persistence.Mongo.Tests.csproj" />
-      <ProjectReference Include="..\Engraved.Persistence.Mongo\Engraved.Persistence.Mongo.csproj" />
+        <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj"/>
+        <ProjectReference Include="..\Engraved.Persistence.Mongo.Tests\Engraved.Persistence.Mongo.Tests.csproj"/>
+        <ProjectReference Include="..\Engraved.Persistence.Mongo\Engraved.Persistence.Mongo.csproj"/>
     </ItemGroup>
 
 </Project>

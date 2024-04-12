@@ -131,7 +131,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   {
     if (!string.IsNullOrEmpty(command.Id))
     {
-      return (TEntry) (await Repository.GetEntry(command.Id))!;
+      return (TEntry)(await Repository.GetEntry(command.Id))!;
     }
 
     return null;
