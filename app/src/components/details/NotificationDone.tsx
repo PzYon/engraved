@@ -45,18 +45,20 @@ export const NotificationDone: React.FC<{
         >
           Mark {entry ? "entry" : "journal"} as done
         </Button>
-        <Button
-          variant={schedule?.recurrence ? "outlined" : "contained"}
-          onClick={() => {
-            navigate(
-              entry
-                ? `/journals/${entry.parentId}/entries/${entry.id}/delete`
-                : `/journals/${entry.parentId}/delete`,
-            );
-          }}
-        >
-          Delete {entry ? "entry" : "journal"}
-        </Button>
+        {entry ? (
+          <Button
+            variant={schedule?.recurrence ? "outlined" : "contained"}
+            onClick={() => {
+              navigate(
+                entry
+                  ? `/journals/${entry.parentId}/entries/${entry.id}/delete`
+                  : `/journals/${entry.parentId}/delete`,
+              );
+            }}
+          >
+            Delete {entry ? "entry" : "journal"}
+          </Button>
+        ) : null}
       </DialogFormButtonContainer>
     </>
   );
