@@ -111,6 +111,7 @@ export const JournalViewPage: React.FC = () => {
     showThresholds,
     showGroupTotals,
     renderDialog,
+    user,
   ]);
 
   return (
