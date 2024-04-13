@@ -76,7 +76,7 @@ const DialogHost = styled("div")`
 `;
 
 const StyledDialogContent = styled(DialogContent)`
-  padding: 0 ${(p) => p.theme.spacing(3)} ${(p) => p.theme.spacing(3)}
+  padding: 5px ${(p) => p.theme.spacing(3)} ${(p) => p.theme.spacing(3)}
     ${(p) => p.theme.spacing(3)};
 
   .MuiFormControl-root {

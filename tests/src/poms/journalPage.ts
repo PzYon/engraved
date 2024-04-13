@@ -24,6 +24,9 @@ export abstract class JournalPage extends BasePage {
     await expect(
       this.page.getByRole("tab", { name: "Journals" }),
     ).toBeVisible();
+    await expect(
+      this.page.getByRole("tab", { name: "Scheduled" }),
+    ).toBeVisible();
 
     return new JournalsPage(this.page);
   }

@@ -2,6 +2,7 @@ import { BasePage } from "./basePage";
 import { EntriesPage } from "./entriesPage";
 import { AddQuickScrapDialog } from "./addQuickScrapDialog";
 import { MetricJournalPage } from "./metricJournalPage";
+import { ScheduledPage } from "./scheduledPage";
 
 export class JournalsPage extends BasePage {
   async clickAddQuickScrapAction() {
@@ -12,6 +13,11 @@ export class JournalsPage extends BasePage {
   async navigateToEntriesPage() {
     await this.page.getByRole("tab", { name: "Entries" }).click();
     return new EntriesPage(this.page);
+  }
+
+  async navigateToScheduledPage() {
+    await this.page.getByRole("tab", { name: "Scheduled" }).click();
+    return new ScheduledPage(this.page);
   }
 
   async expectToShowJournal(journalId: string) {
