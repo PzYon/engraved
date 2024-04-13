@@ -7,7 +7,7 @@ import { ReplayOutlined } from "@mui/icons-material";
 import { addDays, isAfter, isSameDay } from "date-fns";
 
 export function getScheduleForUser(entity: IEntity, userId: string): ISchedule {
-  return entity.schedules[userId] ?? {};
+  return entity.schedules?.[userId] ?? {};
 }
 
 export function getScheduleProperty(
