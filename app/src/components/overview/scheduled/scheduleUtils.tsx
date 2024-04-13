@@ -1,11 +1,26 @@
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
-import { DateFormat } from "../../common/dateTypes";
-import { addDays, isAfter, isSameDay } from "date-fns";
-import { FormatDate } from "../../common/FormatDate";
 import { ISchedule } from "../../../serverApi/ISchedule";
+import { IEntity } from "../../../serverApi/IEntity";
+import { FormatDate } from "../../common/FormatDate";
+import { DateFormat } from "../../common/dateTypes";
 import { ReplayOutlined } from "@mui/icons-material";
+import { addDays, isAfter, isSameDay } from "date-fns";
 
-export function getScheduleProperty(schedule?: ISchedule): IPropertyDefinition {
+export function getScheduleForUser(entity: IEntity, userId: string): ISchedule {
+  return entity.schedules?.[userId] ?? {};
+}
+
+export function getScheduleProperty(
+  entity: IEntity,
+  userId: string,
+): IPropertyDefinition {
+  const schedule = getScheduleForUser(entity, userId);
+  return getSchedulePropertyFromSchedule(schedule);
+}
+
+export function getSchedulePropertyFromSchedule(
+  schedule: ISchedule,
+): IPropertyDefinition {
   return {
     key: "schedule",
     node: () => (

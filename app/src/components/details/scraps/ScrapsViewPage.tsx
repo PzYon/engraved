@@ -24,6 +24,7 @@ import { compareAsc } from "date-fns";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
 import { NotificationDoneLauncher } from "../NotificationDoneLauncher";
+import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -76,7 +77,7 @@ export const ScrapsViewPage: React.FC = () => {
           items={scraps.sort(getCompareFn(user.id))}
           renderItem={(item, _, hasFocus) => (
             <Scrap
-              key={item.id + item.schedules[user.id]?.nextOccurrence}
+              key={item.id + getScheduleForUser(item, user.id).nextOccurrence}
               journalName={journal.name}
               propsRenderStyle={"generic"}
               scrap={item as IScrapEntry}
@@ -144,8 +145,8 @@ export const ListScrapIcon = () => {
 
 function getCompareFn(userId: string) {
   return (a: IEntity, b: IEntity) => {
-    const nextOccurrenceA = a.schedules[userId]?.nextOccurrence;
-    const nextOccurrenceB = b.schedules[userId]?.nextOccurrence;
+    const nextOccurrenceA = getScheduleForUser(a, userId).nextOccurrence;
+    const nextOccurrenceB = getScheduleForUser(b, userId).nextOccurrence;
 
     if (nextOccurrenceA && nextOccurrenceB) {
       return compareAsc(new Date(nextOccurrenceA), new Date(nextOccurrenceB));

@@ -6,6 +6,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useScrapContext } from "./ScrapContext";
 import { useAppContext } from "../../../AppContext";
+import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
@@ -78,7 +79,7 @@ export const ScrapBody: React.FC<{
       allActions.push(ActionFactory.deleteEntry(scrapToRender));
     }
 
-    if (scrapToRender.schedules?.[user.id]?.nextOccurrence) {
+    if (getScheduleForUser(scrapToRender, user.id).nextOccurrence) {
       allActions.push(ActionFactory.markEntryScheduleAsDone(scrapToRender));
     }
 

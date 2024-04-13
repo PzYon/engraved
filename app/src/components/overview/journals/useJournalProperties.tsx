@@ -29,7 +29,7 @@ export const useJournalProperties = (
       node: () => <FormatDate value={journal.editedOn} />,
       label: "Edited",
     },
-    getScheduleProperty(journal.schedules?.[user.id]),
+    getScheduleProperty(journal, user.id),
     {
       key: "description",
       node: () => <>{journal.description}</>,

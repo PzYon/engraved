@@ -5,6 +5,8 @@ import React, { useEffect } from "react";
 import { EditSchedule } from "./EditSchedule";
 import { useJournalContext } from "../JournalContext";
 import { useAppContext } from "../../../AppContext";
+import { IEntity } from "../../../serverApi/IEntity";
+import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 
 export const EditScheduleLauncher: React.FC<{
   journal: IJournal;
@@ -21,10 +23,7 @@ export const EditScheduleLauncher: React.FC<{
       title: "Schedule for " + (entryId ? "entry" : "journal"),
       render: (closeDialog) => (
         <EditSchedule
-          initialDate={
-            (entryId ? entries.filter((i) => i.id === entryId)[0] : journal)
-              ?.schedules?.[user.id]?.nextOccurrence
-          }
+          initialDate={getNextOccurrence()}
           journalId={journal.id}
           entryId={entryId}
           onCancel={closeDialog}
@@ -34,6 +33,14 @@ export const EditScheduleLauncher: React.FC<{
         navigate(`/journals/${journal.id}`);
       },
     });
+
+    function getNextOccurrence() {
+      const entity: IEntity = entryId
+        ? entries.filter((i) => i.id === entryId)[0]
+        : journal;
+
+      return getScheduleForUser(entity, user.id).nextOccurrence;
+    }
   }, [journal, entryId, entries, navigate, renderDialog, user.id]);
 
   return null;
