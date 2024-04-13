@@ -1,5 +1,6 @@
 import { expect, Page } from "@playwright/test";
 import { clickPageAction } from "../utils/clickPageAction";
+import { AddQuickNotificationDialog } from "./addQuickNotificationDialog";
 
 export abstract class BasePage {
   constructor(protected page: Page) {}
@@ -14,6 +15,12 @@ export abstract class BasePage {
 
   async clickRefreshData() {
     await this.page.getByRole("button", { name: "Refresh data" }).click();
+  }
+
+  async clickAddQuickNotification() {
+    await this.page.getByRole("button", { name: "Add notification" }).click();
+
+    return new AddQuickNotificationDialog(this.page);
   }
 
   async scrollToBottom() {

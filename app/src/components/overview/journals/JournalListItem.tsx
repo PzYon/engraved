@@ -59,9 +59,9 @@ export const JournalListItem: React.FC<{
                   }}
                 >
                   <ReadonlyTitleRow
-                    hasFocus={hasFocus}
+                    entity={journal}
                     title={journal.name}
-                    schedules={journal.schedules}
+                    hasFocus={hasFocus}
                   />
                 </Typography>
               </ActionLink>

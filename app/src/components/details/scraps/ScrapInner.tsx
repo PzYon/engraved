@@ -47,13 +47,13 @@ export const ScrapInner: React.FC = () => {
       ) : (
         <ReadonlyTitleContainer>
           <ReadonlyTitleRow
+            entity={scrapToRender}
             hasFocus={hasFocus}
             title={
               !isCompact || hasFocus || title
                 ? title
                 : getText()?.substring(0, 20) + " (...)"
             }
-            schedules={scrapToRender.schedules}
           />
         </ReadonlyTitleContainer>
       )}
