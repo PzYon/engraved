@@ -3,6 +3,7 @@ import { IDialogProps } from "../layout/dialogs/DialogContext";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { IUser } from "../../serverApi/IUser";
+import { getScheduleForUser } from "./scheduled/scheduleUtils";
 
 export function getCommonActions(
   journal: IJournal,
@@ -27,7 +28,7 @@ export function getCommonActions(
     ActionFactory.deleteJournal(journal.id, enableHotkeys),
   );
 
-  if (journal.schedules?.[user.id]?.nextOccurrence) {
+  if (getScheduleForUser(journal, user.id).nextOccurrence) {
     actions.push(ActionFactory.markJournalScheduleAsDone(journal));
   }
 
