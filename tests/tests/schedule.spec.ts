@@ -22,6 +22,14 @@ test("add new value journal, add some entries, delete entry", async ({
 
   await scheduledPage.expectToShowEntity(entityId);
 
+  const entity = scheduledPage.getEntityElement(entityId);
+
+  await entity.isVisible();
+
+  const markAsDoneBtn = entity.getByRole("link", { name: "Mark as done" });
+  // await expect(markAsDoneBtn).toBeVisible();
+  await markAsDoneBtn.click();
+
   // todo (maybe continue here or in a new test)
   // - mark as done
   // - delete (via mark as done)

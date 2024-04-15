@@ -1,8 +1,6 @@
-import { Page } from "@playwright/test";
+import { BasePage } from "./basePage";
 
-export class ScheduledPage {
-  constructor(private page: Page) {}
-
+export class ScheduledPage extends BasePage {
   async expectToShowEntity(entityId: string) {
     return await this.page
       .getByTestId("page")

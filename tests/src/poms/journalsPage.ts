@@ -21,10 +21,8 @@ export class JournalsPage extends BasePage {
   }
 
   async expectToShowJournal(journalId: string) {
-    return await this.page
-      .getByTestId("page")
-      .getByTestId(journalId)
-      .isVisible();
+    const entity = this.getEntityElement(journalId);
+    return await entity.isVisible();
   }
 
   async expectNotToShowJournal(id: string) {

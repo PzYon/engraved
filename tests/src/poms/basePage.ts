@@ -5,6 +5,10 @@ import { AddQuickNotificationDialog } from "./addQuickNotificationDialog";
 export abstract class BasePage {
   constructor(protected page: Page) {}
 
+  getEntityElement(entityId: string) {
+    return this.page.getByTestId("page").getByTestId(entityId);
+  }
+
   async validatePageTitle(expected: string) {
     await expect(this.page).toHaveTitle(expected + " | engraved.");
   }
