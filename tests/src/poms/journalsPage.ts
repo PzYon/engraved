@@ -3,6 +3,7 @@ import { EntriesPage } from "./entriesPage";
 import { AddQuickScrapDialog } from "./addQuickScrapDialog";
 import { MetricJournalPage } from "./metricJournalPage";
 import { ScheduledPage } from "./scheduledPage";
+import { expect } from "@playwright/test";
 
 export class JournalsPage extends BasePage {
   async clickAddQuickScrapAction() {
@@ -22,11 +23,12 @@ export class JournalsPage extends BasePage {
 
   async expectToShowJournal(journalId: string) {
     const entity = this.getEntityElement(journalId);
-    return await entity.isVisible();
+    await expect(entity).toBeVisible();
   }
 
-  async expectNotToShowJournal(id: string) {
-    return !(await this.expectToShowJournal(id));
+  async expectNotToShowJournal(journalId: string) {
+    const entity = this.getEntityElement(journalId);
+    await expect(entity).toBeHidden();
   }
 
   async navigateToJournalPage(journalName: string) {

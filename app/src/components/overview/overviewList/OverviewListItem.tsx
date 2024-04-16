@@ -19,7 +19,13 @@ export const OverviewListItem: React.FC<{
   }, [addWrapperItem, item]);
 
   return (
-    <Host ref={domElementRef} onClick={onClick} tabIndex={index} id={item.id}>
+    <Host
+      ref={domElementRef}
+      onClick={onClick}
+      tabIndex={index}
+      id={item.id}
+      data-testId={item.id}
+    >
       {children}
     </Host>
   );
