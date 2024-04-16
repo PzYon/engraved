@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { BasePage } from "./basePage";
+import { OverviewPage } from "./overviewPage";
 
-export class EntriesPage extends BasePage {
+export class EntriesPage extends OverviewPage {
   async expectItem(index: number, title: string, content: string) {
     await expect(
       this.page.getByTestId("entries-list-item-" + index).getByText(title),

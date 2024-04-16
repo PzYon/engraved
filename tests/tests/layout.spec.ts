@@ -2,7 +2,7 @@ import { expect, Page, test } from "@playwright/test";
 import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { JournalsPage } from "../src/poms/journalsPage";
-import { navigateToHome } from "../src/utils/navigateToHome";
+import { navigateToHome } from "../src/utils/navigateTo";
 
 test.beforeEach(async ({ page }) => {
   await login(page, "layout");
@@ -18,13 +18,9 @@ test("does display floating actions if necessary (on scroll down)", async ({
 }) => {
   // add some journals so we can scroll
   for (let i = 0; i < 5; i++) {
-    const journalPage = await addNewJournal(
-      page,
-      "Value",
-      "Use some space " + i,
-    );
+    await addNewJournal(page, "Value", "Use some space " + i);
 
-    await journalPage.navigateToHome();
+    await navigateToHome(page);
   }
 
   await waitUntilPageReady(page);

@@ -2,6 +2,7 @@ import { test } from "@playwright/test";
 import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { JournalsPage } from "../src/poms/journalsPage";
+import { navigateToJournalPage } from "../src/utils/navigateTo";
 
 test("multiple users", async ({ browser }) => {
   const joeContext = await browser.newContext();
@@ -22,17 +23,19 @@ test("multiple users", async ({ browser }) => {
   const bobsUserName = await login(bobPage, "permissions-bob");
 
   const bobsJournalsPage = new JournalsPage(bobPage);
-  await bobsJournalsPage.expectNotToShowJournal(joesJournalId);
+  await bobsJournalsPage.expectNotToShowEntity(joesJournalId);
 
   const joesPermissionsDialog = await joesJournalPage.clickPermissionsAction();
   await joesPermissionsDialog.addUserWithWritePermissions(bobsUserName);
   await joesPermissionsDialog.savePermissionsAndCloseDialog();
 
   await bobsJournalsPage.clickRefreshData();
-  await bobsJournalsPage.expectToShowJournal(joesJournalId);
+  await bobsJournalsPage.expectToShowEntity(joesJournalId);
 
-  const journalPageAsBob =
-    await bobsJournalsPage.navigateToJournalPage(joesJournalName);
+  const journalPageAsBob = await navigateToJournalPage(
+    joePage,
+    joesJournalName,
+  );
   await journalPageAsBob.addValue("42");
   await journalPageAsBob.expectTableCellToHaveValue("42");
 

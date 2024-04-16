@@ -1,12 +1,17 @@
 import { expect, test } from "@playwright/test";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { login } from "../src/utils/login";
+import {
+  navigateToEntriesPage,
+  navigateToHome,
+  navigateToScheduledPage,
+} from "../src/utils/navigateTo";
 
 test.beforeEach(async ({ page }) => {
   await login(page, "schedule");
 });
 
-test("SCHEDULE", async ({ page }) => {
+test("add schedule to entry and mark as done", async ({ page }) => {
   const journalPage = await addNewJournal(page, "Scraps", "My Journal");
 
   const quickNotificationDialog = await journalPage.clickAddQuickNotification();
@@ -15,25 +20,21 @@ test("SCHEDULE", async ({ page }) => {
   await quickNotificationDialog.type("Do Stuff tom at 17:30");
   const entityId = await quickNotificationDialog.clickSave();
 
-  const journalsPage = await journalPage.navigateToHome();
-  const scheduledPage = await journalsPage.navigateToScheduledPage();
-
-  //await scheduledPage.expectToShowEntity(entityId);
+  await navigateToHome(page);
+  let scheduledPage = await navigateToScheduledPage(page);
 
   const entity = scheduledPage.getEntityElement(entityId);
-
   await expect(entity).toBeVisible();
 
-  const markAsDoneBtn = entity.getByRole("link", { name: "Mark as done" });
-  // await expect(markAsDoneBtn).toBeVisible();
-  await markAsDoneBtn.click();
+  await entity.getByRole("link", { name: "Mark as done" }).click();
 
-  await page.waitForTimeout(5000);
+  await page.getByRole("button", { name: "Mark entry as done" }).click();
 
-  // todo (maybe continue here or in a new test)
-  // - mark as done
-  // - delete (via mark as done)
-  // - validate "scheduled"-label (maybe color?)
-  // - also add a journal with schedule
-  // - validate sorting in "Scheduled" view
+  await navigateToHome(page);
+  scheduledPage = await navigateToScheduledPage(page);
+
+  await scheduledPage.expectNotToShowEntity(entityId);
+
+  const entriesPage = await navigateToEntriesPage(page);
+  await entriesPage.expectToShowEntity(entityId);
 });

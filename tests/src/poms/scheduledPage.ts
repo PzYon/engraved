@@ -1,8 +1,3 @@
-import { expect } from "@playwright/test";
-import { BasePage } from "./basePage";
+import { OverviewPage } from "./overviewPage";
 
-export class ScheduledPage extends BasePage {
-  async expectToShowEntity(entityId: string) {
-    return await expect(this.page.getByTestId(entityId)).toBeVisible();
-  }
-}
+export class ScheduledPage extends OverviewPage {}
