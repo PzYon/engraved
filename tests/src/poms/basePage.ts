@@ -6,7 +6,7 @@ export abstract class BasePage {
   constructor(protected page: Page) {}
 
   getEntityElement(entityId: string) {
-    return this.page.getByTestId("page").getByTestId(entityId);
+    return this.page.getByTestId(entityId);
   }
 
   async validatePageTitle(expected: string) {

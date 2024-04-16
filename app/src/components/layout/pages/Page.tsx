@@ -90,5 +90,5 @@ export const Page: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <FadeInContainer data-testid={"page"}>{children}</FadeInContainer>;
+  return <FadeInContainer>{children}</FadeInContainer>;
 };
