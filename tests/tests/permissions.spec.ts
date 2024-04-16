@@ -33,7 +33,7 @@ test("multiple users", async ({ browser }) => {
   await bobsJournalsPage.expectToShowEntity(joesJournalId);
 
   const journalPageAsBob = await navigateToJournalPage(
-    joePage,
+    bobPage,
     joesJournalName,
   );
   await journalPageAsBob.addValue("42");
