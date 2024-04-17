@@ -58,7 +58,11 @@ export const ScrapBody: React.FC<{
     const allActions = [
       ...actions,
       ActionFactory.moveToAnotherScrap(scrapToRender),
-      ActionFactory.editEntrySchedule(scrapToRender.parentId, scrapToRender.id),
+      ActionFactory.editEntrySchedule(
+        scrapToRender.parentId,
+        scrapToRender.id,
+        hasFocus,
+      ),
       saveAction,
     ];
 
@@ -76,11 +80,13 @@ export const ScrapBody: React.FC<{
     }
 
     if (scrapToRender.id) {
-      allActions.push(ActionFactory.deleteEntry(scrapToRender));
+      allActions.push(ActionFactory.deleteEntry(scrapToRender, hasFocus));
     }
 
     if (getScheduleForUser(scrapToRender, user.id).nextOccurrence) {
-      allActions.push(ActionFactory.markEntryScheduleAsDone(scrapToRender));
+      allActions.push(
+        ActionFactory.markEntryScheduleAsDone(scrapToRender, hasFocus),
+      );
     }
 
     return allActions;

@@ -12,7 +12,6 @@ import {
   FilterAltOutlined,
   FormatLineSpacingOutlined,
   FunctionsOutlined,
-  HelpOutlineOutlined,
   MessageOutlined,
   NotificationAddOutlined,
   PanToolOutlined,
@@ -138,9 +137,14 @@ export class ActionFactory {
     };
   }
 
-  static editEntrySchedule(journalId: string, entryId: string): IAction {
+  static editEntrySchedule(
+    journalId: string,
+    entryId: string,
+    enableHotkeys: boolean,
+  ): IAction {
     return {
       key: "edit-schedule",
+      hotkey: enableHotkeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
       href: `/journals/${journalId}/entries/${entryId}/schedule`,
@@ -429,16 +433,6 @@ export class ActionFactory {
     };
   }
 
-  static appInfo(showInfo: () => void): IAction {
-    return {
-      icon: <HelpOutlineOutlined fontSize="small" />,
-      onClick: () => showInfo(),
-      label: "Show App Info",
-      key: "app_info",
-      sx: { color: "common.white" },
-    };
-  }
-
   static refreshData(queryClient: QueryClient): IAction {
     return {
       hotkey: "alt+r",
@@ -475,18 +469,26 @@ export class ActionFactory {
     };
   }
 
-  static markEntryScheduleAsDone(entry: IEntry): IAction {
+  static markEntryScheduleAsDone(
+    entry: IEntry,
+    enableHotkey: boolean,
+  ): IAction {
     return {
       key: "mark-as-done",
+      hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
       href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
     };
   }
 
-  static markJournalScheduleAsDone(journal: IJournal): IAction {
+  static markJournalScheduleAsDone(
+    journal: IJournal,
+    enableHotkey: boolean,
+  ): IAction {
     return {
       key: "mark-as-done",
+      hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
       href: `/journals/${journal.id}/notification-done`,
