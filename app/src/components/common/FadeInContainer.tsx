@@ -5,7 +5,8 @@ export const FadeInContainer: React.FC<{
   children: ReactNode;
   doPulsate?: boolean;
   sx?: SxProps;
-}> = ({ children, doPulsate, sx }) => {
+  testId?: string;
+}> = ({ children, doPulsate, sx, testId }) => {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
@@ -26,7 +27,10 @@ export const FadeInContainer: React.FC<{
   }, [doPulsate]);
 
   return (
-    <ContainerSection sx={{ ...(sx ?? {}), opacity: isRendered ? 1 : 0 }}>
+    <ContainerSection
+      data-testId={testId}
+      sx={{ ...(sx ?? {}), opacity: isRendered ? 1 : 0 }}
+    >
       {children}
     </ContainerSection>
   );

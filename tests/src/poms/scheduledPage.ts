@@ -1,12 +1,3 @@
-import { Page } from "@playwright/test";
+import { OverviewPage } from "./overviewPage";
 
-export class ScheduledPage {
-  constructor(private page: Page) {}
-
-  async expectToShowEntity(entityId: string) {
-    return await this.page
-      .getByTestId("page")
-      .getByTestId(entityId)
-      .isVisible();
-  }
-}
+export class ScheduledPage extends OverviewPage {}

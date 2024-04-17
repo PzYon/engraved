@@ -1,6 +1,8 @@
 import { test } from "@playwright/test";
 import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
+import { navigateToHome } from "../src/utils/navigateTo";
+import { JournalsPage } from "../src/poms/journalsPage";
 
 test.beforeEach(async ({ page }) => {
   await login(page, "journals");
@@ -17,7 +19,7 @@ test("add journal, update journal", async ({ page }) => {
     "This is my description...",
   );
 
-  await journalPage.validatePageTitle(journalName);
+  await journalPage.expectPageTitle(journalName);
   await journalPage.validateHasNoEntries();
 
   const journalEditPage = await journalPage.navigateToEditPage();
@@ -25,12 +27,14 @@ test("add journal, update journal", async ({ page }) => {
 
   journalPage = await journalEditPage.clickSave();
 
-  await journalPage.validatePageTitle(renamedJournalName);
+  await journalPage.expectPageTitle(renamedJournalName);
   await journalPage.validateHasNoEntries();
 
   const journalId = await journalPage.getJournalId();
-  const journalsPage = await journalPage.navigateToHome();
-  await journalsPage.expectToShowJournal(journalId);
+
+  await navigateToHome(page);
+  const journalsPage = new JournalsPage(page);
+  await journalsPage.expectToShowEntity(journalId);
 });
 
 test("add journal, delete journal", async ({ page }) => {
@@ -45,6 +49,7 @@ test("add journal, delete journal", async ({ page }) => {
   await deleteDialog.typeInConfirmationTextBox("delete");
   await deleteDialog.clickSecondDeleteButton();
 
-  const journalsPage = await journalPage.navigateToHome();
-  await journalsPage.expectNotToShowJournal(journalId);
+  await navigateToHome(page);
+  const journalsPage = new JournalsPage(page);
+  await journalsPage.expectNotToShowEntity(journalId);
 });

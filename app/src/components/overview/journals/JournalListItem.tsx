@@ -28,7 +28,7 @@ export const JournalListItem: React.FC<{
 
   return (
     <div ref={domElementRef} data-testid={`journals-list-item-${index}`}>
-      <PageSection key={journal.id} data-testid={journal.id}>
+      <PageSection key={journal.id}>
         <Box sx={{ display: "flex" }}>
           <Box
             sx={{
