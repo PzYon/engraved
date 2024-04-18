@@ -28,7 +28,7 @@ export const FadeInContainer: React.FC<{
 
   return (
     <ContainerSection
-      data-testId={testId}
+      data-testid={testId}
       sx={{ ...(sx ?? {}), opacity: isRendered ? 1 : 0 }}
     >
       {children}

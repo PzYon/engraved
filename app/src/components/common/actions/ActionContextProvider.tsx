@@ -7,7 +7,7 @@ export const ActionContextProvider: React.FC<{
 }> = ({ children }) => {
   const [allRegisteredActions, setAllRegisteredActions] = useState<
     Map<string, IAction>
-  >(new Map());
+  >(() => new Map());
 
   const contextValue = useMemo<IActionContext>(() => {
     return {
