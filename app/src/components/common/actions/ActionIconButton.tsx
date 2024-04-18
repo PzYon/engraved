@@ -1,24 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IconButton, styled } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
-import { useHotkeys } from "react-hotkeys-hook";
+import { useActionContext } from "./ActionContext";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
   buttonsAsSpans?: boolean;
 }> = ({ action, buttonsAsSpans }) => {
-  useHotkeys(
-    action.hotkey,
-    (keyboardEvent) => {
-      keyboardEvent.preventDefault();
-      action.onClick();
-    },
-    {
-      enabled: !!action.hotkey && !action.href,
-      enableOnFormTags: ["textarea", "input"],
-    },
-  );
+  const actionContext = useActionContext();
+
+  useEffect(() => {
+    actionContext.addAction(action);
+    return () => actionContext.removeAction(action);
+  }, [action]);
 
   if (action.href) {
     return (

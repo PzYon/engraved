@@ -24,7 +24,7 @@ export const OverviewListItem: React.FC<{
       onClick={onClick}
       tabIndex={index}
       id={item.id}
-      data-testId={item.id}
+      data-testid={item.id}
     >
       {children}
     </Host>
