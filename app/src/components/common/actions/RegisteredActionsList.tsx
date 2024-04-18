@@ -1,17 +1,23 @@
+import { Chip, Typography } from "@mui/material";
 import { useActionContext } from "./ActionContext";
 
 export const RegisteredActionsList: React.FC = () => {
   const actionContext = useActionContext();
 
   return (
-    <ul>
-      {actionContext.getAllRegisteredActions().map((a) => {
-        return (
-          <li key={a.key}>
-            {a.label} (hotkey: {a.hotkey})
-          </li>
-        );
-      })}
-    </ul>
+    <div>
+      {actionContext.getAllRegisteredActions().map((a) => (
+        <Typography
+          fontSize={"small"}
+          key={a.key}
+          sx={{ height: "30px", display: "flex", alignItems: "center" }}
+        >
+          {a.label}{" "}
+          {a.hotkey ? (
+            <Chip label={a.hotkey} sx={{ ml: 1, height: "25px" }}></Chip>
+          ) : null}
+        </Typography>
+      ))}
+    </div>
   );
 };

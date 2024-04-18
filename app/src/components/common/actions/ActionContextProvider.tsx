@@ -14,16 +14,13 @@ export const ActionContextProvider: React.FC<{
       addAction: (action: IAction) => {
         allRegisteredActions.set(action.key, action);
         setAllRegisteredActions(allRegisteredActions);
-        console.log(allRegisteredActions);
       },
       removeAction: (action: IAction) => {
         allRegisteredActions.delete(action.key);
         setAllRegisteredActions(allRegisteredActions);
-        console.log(allRegisteredActions);
       },
-      getAllRegisteredActions: () => {
-        return Array.from(allRegisteredActions, ([, action]) => action);
-      },
+      getAllRegisteredActions: () =>
+        Array.from(allRegisteredActions, ([, action]) => action),
     };
   }, [allRegisteredActions]);
 
