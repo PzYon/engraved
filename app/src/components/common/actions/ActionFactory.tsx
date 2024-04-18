@@ -40,6 +40,7 @@ import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
+import { RegisteredActionsList } from "./RegisteredActionsList";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -506,9 +507,7 @@ export class ActionFactory {
       onClick: () => {
         renderDialog({
           title: "Help",
-          render: () => {
-            return <div>Sali H3lp!</div>;
-          },
+          render: () => <RegisteredActionsList />,
         });
       },
     };

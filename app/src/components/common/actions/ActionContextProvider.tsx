@@ -21,6 +21,9 @@ export const ActionContextProvider: React.FC<{
         setAllRegisteredActions(allRegisteredActions);
         console.log(allRegisteredActions);
       },
+      getAllRegisteredActions: () => {
+        return Array.from(allRegisteredActions, ([, action]) => action);
+      },
     };
   }, [allRegisteredActions]);
 
