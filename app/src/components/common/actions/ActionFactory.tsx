@@ -12,6 +12,7 @@ import {
   FilterAltOutlined,
   FormatLineSpacingOutlined,
   FunctionsOutlined,
+  Help,
   MessageOutlined,
   NotificationAddOutlined,
   PanToolOutlined,
@@ -492,6 +493,24 @@ export class ActionFactory {
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
       href: `/journals/${journal.id}/notification-done`,
+    };
+  }
+
+  static showHelp(renderDialog: (dialogProps: IDialogProps) => void): IAction {
+    return {
+      key: "show-help",
+      hotkey: "alt+h",
+      icon: <Help fontSize="small" />,
+      label: "Show help",
+      sx: { color: "common.white" },
+      onClick: () => {
+        renderDialog({
+          title: "Help",
+          render: () => {
+            return <div>Sali H3lp!</div>;
+          },
+        });
+      },
     };
   }
 }

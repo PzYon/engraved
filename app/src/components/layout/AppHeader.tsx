@@ -78,6 +78,7 @@ export const AppHeader: React.FC = () => {
               </ActionLink>
             </div>
             <RefreshData />
+            <ActionIconButton action={ActionFactory.showHelp(renderDialog)} />
             <ActionIconButton
               action={ActionFactory.toggleDisplayMode(isCompact, setIsCompact)}
             />
