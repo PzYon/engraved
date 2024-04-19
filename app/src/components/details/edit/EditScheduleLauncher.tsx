@@ -39,6 +39,10 @@ export const EditScheduleLauncher: React.FC<{
         ? entries.filter((i) => i.id === entryId)[0]
         : journal;
 
+      if (!entity) {
+        return null;
+      }
+
       return getScheduleForUser(entity, user.id).nextOccurrence;
     }
   }, [journal, entryId, entries, navigate, renderDialog, user.id]);
