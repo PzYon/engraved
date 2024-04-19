@@ -8,19 +8,22 @@ import { DialogContextProvider } from "./components/layout/dialogs/DialogContext
 import { AppContextProvider } from "./AppContextProvider";
 
 import { DisplayModeContextProvider } from "./components/overview/overviewList/DisplayModeContextProvider";
+import { ActionContextProvider } from "./components/common/actions/ActionContextProvider";
 
 export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <AppContextProvider user={user}>
-    <ReactQueryProviderWrapper>
-      <BrowserRouter>
-        <PageContextProvider>
-          <DialogContextProvider>
-            <DisplayModeContextProvider>
-              <AppHost />
-            </DisplayModeContextProvider>
-          </DialogContextProvider>
-        </PageContextProvider>
-      </BrowserRouter>
-    </ReactQueryProviderWrapper>
+    <ActionContextProvider>
+      <ReactQueryProviderWrapper>
+        <BrowserRouter>
+          <PageContextProvider>
+            <DialogContextProvider>
+              <DisplayModeContextProvider>
+                <AppHost />
+              </DisplayModeContextProvider>
+            </DialogContextProvider>
+          </PageContextProvider>
+        </BrowserRouter>
+      </ReactQueryProviderWrapper>
+    </ActionContextProvider>
   </AppContextProvider>
 );

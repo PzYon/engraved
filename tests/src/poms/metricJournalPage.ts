@@ -11,7 +11,7 @@ export class MetricJournalPage extends JournalPage {
   }
 
   async addValue(value: string) {
-    await this.clickPageAction("Add Entry");
+    await this.clickPageAction("Add entry");
 
     await this.page.getByLabel("Value", { exact: true }).click();
     await this.page.getByLabel("Value", { exact: true }).fill(value);
@@ -21,7 +21,7 @@ export class MetricJournalPage extends JournalPage {
   }
 
   async navigateToDeleteJournalDialog() {
-    await this.clickPageAction("Delete");
+    await this.clickPageAction("Delete journal");
     return new DeleteDialog(this.page, "Journal");
   }
 
@@ -40,7 +40,7 @@ export class MetricJournalPage extends JournalPage {
   }
 
   async navigateToDeleteEntryDialog(index: number) {
-    await this.tableRows.nth(index).getByLabel("Delete").click();
+    await this.tableRows.nth(index).getByLabel("Delete entry").click();
     return new DeleteDialog(this.page, "Entry");
   }
 }

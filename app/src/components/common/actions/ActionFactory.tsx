@@ -12,6 +12,7 @@ import {
   FilterAltOutlined,
   FormatLineSpacingOutlined,
   FunctionsOutlined,
+  Help,
   MessageOutlined,
   NotificationAddOutlined,
   PanToolOutlined,
@@ -39,6 +40,7 @@ import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
+import { RegisteredActionsList } from "./RegisteredActionsList";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -99,7 +101,7 @@ export class ActionFactory {
     return {
       hotkey: enableHotkey ? "alt+e" : undefined,
       key: "edit",
-      label: "Edit",
+      label: "Edit journal",
       icon: <EditOutlined fontSize="small" />,
       href: `/journals/${journalId}/edit`,
     };
@@ -118,7 +120,7 @@ export class ActionFactory {
     return {
       hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "delete",
-      label: "Delete",
+      label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
       href: `/journals/${journalId}/delete`,
     };
@@ -160,7 +162,7 @@ export class ActionFactory {
     return {
       hotkey: enableHotkey ? "alt+a" : undefined,
       key: "add_entry",
-      label: "Add Entry",
+      label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
       onClick: () => {
         additionalOnClick?.();
@@ -251,7 +253,7 @@ export class ActionFactory {
     return {
       hotkey: enableHotkey ? "alt+e" : undefined,
       key: "edit",
-      label: "Edit",
+      label: "Edit scrap",
       icon: <EditOutlined fontSize="small" />,
       onClick: onEdit,
     };
@@ -270,7 +272,7 @@ export class ActionFactory {
     return {
       hotkey: enableHotkey ? "alt+d" : undefined,
       key: "delete",
-      label: "Delete",
+      label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
       href: `/journals/${entry.parentId}/entries/${entry.id}/delete`,
     };
@@ -280,7 +282,7 @@ export class ActionFactory {
     return {
       hotkey: enableHotkey ? "alt+e" : undefined,
       key: "edit",
-      label: "Edit",
+      label: "Edit entry",
       icon: <EditOutlined fontSize="small" />,
       href: `/journals/${entry.parentId}/entries/${entry.id}/edit`,
     };
@@ -341,7 +343,7 @@ export class ActionFactory {
   ): IAction {
     return {
       key: "copy",
-      label: "Copy",
+      label: "Copy content",
       icon: <ContentCopyOutlined fontSize="small" />,
       onClick: async () => {
         await navigator.clipboard.writeText(value);
@@ -449,7 +451,7 @@ export class ActionFactory {
       key: "search",
       hotkey: "alt+g",
       icon: <SearchOutlined fontSize="small" />,
-      label: "Search",
+      label: "Search anything",
       href: "/search",
       sx: { color: "common.white" },
     };
@@ -492,6 +494,22 @@ export class ActionFactory {
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
       href: `/journals/${journal.id}/notification-done`,
+    };
+  }
+
+  static showHelp(renderDialog: (dialogProps: IDialogProps) => void): IAction {
+    return {
+      key: "show-help",
+      hotkey: "alt+h",
+      icon: <Help fontSize="small" />,
+      label: "Show help",
+      sx: { color: "common.white" },
+      onClick: () => {
+        renderDialog({
+          title: "Help",
+          render: () => <RegisteredActionsList />,
+        });
+      },
     };
   }
 }
