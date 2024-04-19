@@ -1,7 +1,7 @@
 import { IRecurrence } from "./IRecurrence";
 
 export interface IScheduleDefinition {
-  nextOccurrence?: Date;
+  nextOccurrence: Date;
   recurrence?: IRecurrence;
-  onClickUrl?: string;
+  onClickUrl: string;
 }

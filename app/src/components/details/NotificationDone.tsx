@@ -9,6 +9,7 @@ import { parseDate } from "./edit/parseDate";
 import { useNavigate } from "react-router-dom";
 import { Properties } from "../common/Properties";
 import { getSchedulePropertyFromSchedule } from "../overview/scheduled/scheduleUtils";
+import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
 
 export const NotificationDone: React.FC<{
   journal: IJournal;
@@ -38,11 +39,18 @@ export const NotificationDone: React.FC<{
         <Button
           variant={"contained"}
           onClick={() => {
-            modifyScheduleMutation.mutate({
+            const scheduleDefinition: IScheduleDefinition = {
               nextOccurrence: schedule.recurrence
                 ? parseDate(schedule.recurrence.dateString).date
                 : null,
-            });
+              recurrence: schedule.recurrence,
+              onClickUrl: entry
+                ? `${location.origin}/journals/${journal.id}/entries/{0}/notification`
+                : `${location.origin}/journals/${journal.id}/notification`,
+            };
+
+            modifyScheduleMutation.mutate(scheduleDefinition);
+
             onSuccess();
           }}
         >
