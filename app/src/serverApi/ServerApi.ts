@@ -29,6 +29,7 @@ import {
   IAddScheduleToEntryCommand,
   IAddScheduleToJournalCommand,
 } from "./commands/IAddScheduleCommand";
+import { IScheduleDefinition } from "./IScheduleDefinition";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -224,13 +225,11 @@ export class ServerApi {
 
   static async modifyJournalSchedule(
     journalId: string,
-    nextOccurrence?: Date,
-    onClickUrl?: string,
+    scheduleDefinition: IScheduleDefinition,
   ): Promise<ICommandResult> {
     const cmd: IAddScheduleToJournalCommand = {
       journalId,
-      nextOccurrence,
-      onClickUrl,
+      ...scheduleDefinition,
     };
 
     return await ServerApi.executeRequest(
@@ -242,13 +241,11 @@ export class ServerApi {
 
   static async modifyEntrySchedule(
     entryId: string,
-    nextOccurrence?: Date,
-    onClickUrl?: string,
+    scheduleDefinition: IScheduleDefinition,
   ): Promise<ICommandResult> {
     const cmd: IAddScheduleToEntryCommand = {
       entryId,
-      nextOccurrence,
-      onClickUrl,
+      ...scheduleDefinition,
     };
 
     return await ServerApi.executeRequest(

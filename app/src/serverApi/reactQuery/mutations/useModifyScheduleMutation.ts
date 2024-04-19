@@ -19,16 +19,8 @@ export const useModifyScheduleMutation = (
 
     mutationFn: (variables: IScheduleDefinition) => {
       return entryId
-        ? ServerApi.modifyEntrySchedule(
-            entryId,
-            variables.nextOccurrence,
-            variables.onClickUrl,
-          )
-        : ServerApi.modifyJournalSchedule(
-            journalId,
-            variables.nextOccurrence,
-            variables.onClickUrl,
-          );
+        ? ServerApi.modifyEntrySchedule(entryId, variables)
+        : ServerApi.modifyJournalSchedule(journalId, variables);
     },
 
     onSuccess: async (_, variables) => {
