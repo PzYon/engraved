@@ -15,7 +15,7 @@ export abstract class JournalPage extends BasePage {
   }
 
   async navigateToEditPage(): Promise<JournalEditPage> {
-    await this.clickPageAction("Edit");
+    await this.clickPageAction("Edit journal");
     return new JournalEditPage(this.page);
   }
 }
