@@ -6,12 +6,14 @@ export const RegisteredActionsList: React.FC = () => {
 
   const allRegisteredActions = actionContext.getAllRegisteredActions();
 
+  const filteredActions = allRegisteredActions.filter((a) => !!a.hotkey);
+
   return (
     <div>
       <Typography fontSize="large" sx={{ pb: 2 }}>
-        List of Shortcuts ({allRegisteredActions.length})
+        List of Shortcuts ({filteredActions.length})
       </Typography>
-      {allRegisteredActions.map((a) => (
+      {filteredActions.map((a) => (
         <Typography
           component="div"
           key={a.key}
@@ -19,7 +21,10 @@ export const RegisteredActionsList: React.FC = () => {
         >
           {a.label}{" "}
           {a.hotkey ? (
-            <Chip label={a.hotkey} sx={{ ml: 1, height: "25px" }}></Chip>
+            <Chip
+              label={a.hotkey?.replaceAll("+", " + ")}
+              sx={{ ml: 1, height: "25px", fontWeight: "bold" }}
+            />
           ) : null}
         </Typography>
       ))}
