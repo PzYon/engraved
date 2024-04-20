@@ -17,7 +17,7 @@ export const AttributeValues: React.FC<{
   const colorByAttributeKey = getColorsByKey(attributes, palette.primary.main);
 
   return (
-    <>
+    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
       {Object.entries(attributeValues)
         .sort()
         .flatMap((value) => {
@@ -33,8 +33,6 @@ export const AttributeValues: React.FC<{
                 sx={{
                   backgroundColor: colorByAttributeKey[attributeKey],
                   color: "common.white",
-                  marginLeft: "5px",
-                  marginBottom: "4px",
                   fontSize: "small",
                   height: "22px",
                 }}
@@ -51,7 +49,7 @@ export const AttributeValues: React.FC<{
             );
           });
         })}
-    </>
+    </div>
   );
 };
 
