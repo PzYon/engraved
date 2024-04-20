@@ -22,7 +22,7 @@ export function getAsDate(value: string | number | Date): Date {
   throw new Error(`'${value}' is an invalid date.`);
 }
 
-export const dateTypes = (
+export const formatDate = (
   value: string | number | Date,
   dateFormat?: DateFormat,
 ): string => {
