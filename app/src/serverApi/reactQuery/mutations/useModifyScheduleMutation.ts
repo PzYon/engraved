@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { useAppContext } from "../../../AppContext";
 import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
-import { DateFormat, dateTypes } from "../../../components/common/dateTypes";
+import { DateFormat, formatDate } from "../../../components/common/dateTypes";
 import { IScheduleDefinition } from "../../IScheduleDefinition";
 
 export const useModifyScheduleMutation = (
@@ -26,7 +26,7 @@ export const useModifyScheduleMutation = (
     onSuccess: async (_, variables) => {
       setAppAlert({
         title: variables.nextOccurrence
-          ? `Set schedule to ${dateTypes(variables.nextOccurrence, DateFormat.relativeToNow)}`
+          ? `Set schedule to ${formatDate(variables.nextOccurrence, DateFormat.relativeToNow)}`
           : "Removed schedule",
         type: "success",
       });

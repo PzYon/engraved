@@ -1,4 +1,4 @@
-import { DateFormat, dateTypes, getAsDate } from "./dateTypes";
+import { DateFormat, formatDate, getAsDate } from "./dateTypes";
 import { differenceInHours } from "date-fns";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -22,13 +22,13 @@ const FormatDateInternal: React.FC<{
 }> = ({ value, dateFormat }) => {
   const calculateValues = useCallback(() => {
     return {
-      title: dateTypes(
+      title: formatDate(
         value,
         dateFormat === DateFormat.relativeToNow || !dateFormat
           ? DateFormat.full
           : DateFormat.relativeToNow,
       ),
-      label: dateTypes(value, dateFormat),
+      label: formatDate(value, dateFormat),
     };
   }, [dateFormat, value]);
 
