@@ -38,7 +38,12 @@ export const OverviewList: React.FC<{
       {hiddenItems ? (
         <Typography
           onClick={() => setShowAll(true)}
-          sx={{ cursor: "pointer", textAlign: "center", fontWeight: 200 }}
+          sx={{
+            cursor: "pointer",
+            textAlign: "center",
+            fontWeight: 200,
+            pb: 3,
+          }}
         >
           Show {hiddenItems} hidden item(s)
         </Typography>
