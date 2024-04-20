@@ -8,10 +8,14 @@ import { JournalListItem } from "../journals/JournalListItem";
 import { IJournal } from "../../../serverApi/IJournal";
 import { OverviewList } from "../overviewList/OverviewList";
 import { EntryListItem } from "../entries/EntryListItem";
+import { getScheduleForUser } from "../scheduled/scheduleUtils";
+import { useAppContext } from "../../../AppContext";
+import { addDays, isBefore } from "date-fns";
 
 export const Entities: React.FC<{ isSchedule?: boolean }> = ({
   isSchedule,
 }) => {
+  const { user } = useAppContext();
   const { searchText } = usePageContext();
   const queryResult: ISearchEntitiesResult = useSearchEntitiesQuery(
     searchText,
@@ -30,6 +34,13 @@ export const Entities: React.FC<{ isSchedule?: boolean }> = ({
     <>
       <OverviewList
         items={queryResult.entities.map((e) => e.entity)}
+        filterItem={(i) =>
+          !isSchedule ||
+          isBefore(
+            getScheduleForUser(i, user.id).nextOccurrence,
+            addDays(new Date(), 3),
+          )
+        }
         renderItem={(item, index, hasFocus) => {
           // this is a temporary hack! should be something like:
           // if (item.entityType === "Entry") {
