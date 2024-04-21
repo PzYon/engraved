@@ -3,9 +3,9 @@ import { format, formatDistanceToNow, isToday } from "date-fns";
 export enum DateFormat {
   relativeToNow,
   relativeToNowDayPlus,
-  numerical,
-  dateOnly,
   full,
+  fullCompact,
+  dateOnly,
   ticks,
   timeOnly,
 }
@@ -28,13 +28,15 @@ export const formatDate = (
 ): string => {
   const date = getAsDate(value);
 
+  // https://date-fns.org/v3.6.0/docs/format
+
   switch (dateFormat) {
     case DateFormat.dateOnly:
       return format(date, "PPPP");
     case DateFormat.full:
       return format(date, "PPPP, HH:mm");
-    case DateFormat.numerical:
-      return format(date, "Pp");
+    case DateFormat.fullCompact:
+      return format(date, "cccccc, dd.LL.yy, HH:mm");
     case DateFormat.ticks:
       return format(date, "T");
     case DateFormat.timeOnly:
