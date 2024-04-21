@@ -9,17 +9,26 @@ export const FormatDate: React.FC<{
   dateFormat?: DateFormat;
   fallbackValue?: React.ReactNode;
 }> = ({ value, dateFormat, fallbackValue }) => {
-  return !value ? (
-    <>{fallbackValue}</>
-  ) : (
-    <FormatDateInternal value={value} dateFormat={dateFormat} />
+  const [isToggled, setIsToggled] = useState(false);
+
+  if (!value) {
+    return <>{fallbackValue}</>;
+  }
+
+  return (
+    <FormatDateInternal
+      onClick={() => setIsToggled(!isToggled)}
+      value={value}
+      dateFormat={isToggled ? DateFormat.fullCompact : dateFormat}
+    />
   );
 };
 
 const FormatDateInternal: React.FC<{
   value: Date | string | number;
   dateFormat?: DateFormat;
-}> = ({ value, dateFormat }) => {
+  onClick?: () => void;
+}> = ({ value, dateFormat, onClick }) => {
   const calculateValues = useCallback(() => {
     return {
       title: formatDate(
@@ -50,5 +59,16 @@ const FormatDateInternal: React.FC<{
     return () => window.clearInterval(interval);
   }, [value, dateFormat, calculateValues]);
 
-  return <span title={values.title}>{values.label}</span>;
+  return (
+    <span
+      style={{ cursor: "pointer" }}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      title={values.title}
+    >
+      {values.label}
+    </span>
+  );
 };
