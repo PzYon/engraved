@@ -45,7 +45,7 @@ export const NotificationDone: React.FC<{
                 : null,
               recurrence: schedule.recurrence,
               onClickUrl: entry
-                ? `${location.origin}/journals/${journal.id}/entries/{0}/notification`
+                ? `${location.origin}/journals/${journal.id}/entries/${entry.id}/notification`
                 : `${location.origin}/journals/${journal.id}/notification`,
             };
 
