@@ -5,6 +5,7 @@ import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
 import { WrapperCollectionItem } from "./wrappers/WrapperCollectionItem";
 import { PageSection } from "../../layout/pages/PageSection";
+import { useDisplayModeContext } from "./DisplayModeContext";
 
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
@@ -14,6 +15,8 @@ export const OverviewListItem: React.FC<{
   index: number;
 }> = ({ children, onClick, addWrapperItem, item, index }) => {
   const domElementRef = useRef<HTMLDivElement>();
+
+  const { isCompact } = useDisplayModeContext();
 
   useEffect(() => {
     addWrapperItem(new WrapperCollectionItem(domElementRef, item as IJournal));
@@ -27,7 +30,18 @@ export const OverviewListItem: React.FC<{
       id={item.id}
       data-testid={item.id}
     >
-      <PageSection>{children}</PageSection>
+      <PageSection
+        style={
+          isCompact
+            ? {
+                marginTop: "8px",
+                marginBottom: "8px",
+              }
+            : {}
+        }
+      >
+        {children}
+      </PageSection>
     </Host>
   );
 };
