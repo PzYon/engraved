@@ -3,7 +3,6 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { Box, styled, Typography } from "@mui/material";
 import { useJournalProperties } from "./useJournalProperties";
 import { JournalTypeIcon } from "../../common/JournalTypeIcon";
-import { PageSection } from "../../layout/pages/PageSection";
 import { ActionLink } from "../../common/actions/ActionLink";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getCommonActions } from "../getCommonActions";
@@ -28,52 +27,47 @@ export const JournalListItem: React.FC<{
 
   return (
     <div ref={domElementRef} data-testid={`journals-list-item-${index}`}>
-      <PageSection key={journal.id}>
-        <Box sx={{ display: "flex" }}>
-          <Box
-            sx={{
-              flexGrow: 1,
-              wordBreak: "break-all",
-            }}
-          >
-            <TitleRow>
-              <IconContainer>
-                <JournalTypeIcon
-                  type={journal.type}
-                  style={IconStyle.Overview}
-                />
-              </IconContainer>
+      <Box sx={{ display: "flex" }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            wordBreak: "break-all",
+          }}
+        >
+          <TitleRow>
+            <IconContainer>
+              <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
+            </IconContainer>
 
-              <ActionLink
-                action={ActionFactory.goToJournal(journal.id, hasFocus)}
-                style={{ flexGrow: 1 }}
+            <ActionLink
+              action={ActionFactory.goToJournal(journal.id, hasFocus)}
+              style={{ flexGrow: 1 }}
+            >
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: "lighter",
+                  display: "flex",
+                  alignItems: "center",
+                  lineHeight: 1,
+                  marginTop: "-3px",
+                }}
               >
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontWeight: "lighter",
-                    display: "flex",
-                    alignItems: "center",
-                    lineHeight: 1,
-                    marginTop: "-3px",
-                  }}
-                >
-                  <ReadonlyTitleRow
-                    entity={journal}
-                    title={journal.name}
-                    hasFocus={hasFocus}
-                  />
-                </Typography>
-              </ActionLink>
-            </TitleRow>
-            <ListItemFooterRow
-              hasFocus={hasFocus}
-              properties={journalProperties}
-              actions={getCommonActions(journal, hasFocus, user, renderDialog)}
-            />
-          </Box>
+                <ReadonlyTitleRow
+                  entity={journal}
+                  title={journal.name}
+                  hasFocus={hasFocus}
+                />
+              </Typography>
+            </ActionLink>
+          </TitleRow>
+          <ListItemFooterRow
+            hasFocus={hasFocus}
+            properties={journalProperties}
+            actions={getCommonActions(journal, hasFocus, user, renderDialog)}
+          />
         </Box>
-      </PageSection>
+      </Box>
     </div>
   );
 };

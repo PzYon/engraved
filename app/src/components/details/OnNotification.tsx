@@ -18,7 +18,6 @@ export const OnNotification: React.FC<{
         journalName={journal.name}
         hasFocus={true}
         propsRenderStyle={"all"}
-        withoutSection={true}
       />
     );
   }

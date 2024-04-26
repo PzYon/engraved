@@ -1,7 +1,6 @@
 import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IJournal } from "../../../serverApi/IJournal";
-import { PageSection } from "../../layout/pages/PageSection";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 
 export const EntryListItem: React.FC<{
@@ -11,9 +10,9 @@ export const EntryListItem: React.FC<{
   index?: number;
 }> = ({ entry, journals, hasFocus, index }) => {
   return (
-    <PageSection testId={`entries-list-item-${index}`}>
+    <div data-testid={`entries-list-item-${index}`}>
       {renderEntry(entry, hasFocus)}
-    </PageSection>
+    </div>
   );
 
   function renderEntry(entry: IEntry, hasFocus: boolean) {

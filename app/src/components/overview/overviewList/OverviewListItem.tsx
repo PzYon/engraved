@@ -4,6 +4,7 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
 import { WrapperCollectionItem } from "./wrappers/WrapperCollectionItem";
+import { PageSection } from "../../layout/pages/PageSection";
 
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
@@ -26,7 +27,7 @@ export const OverviewListItem: React.FC<{
       id={item.id}
       data-testid={item.id}
     >
-      {children}
+      <PageSection>{children}</PageSection>
     </Host>
   );
 };
