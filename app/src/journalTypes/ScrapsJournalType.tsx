@@ -28,7 +28,6 @@ export class ScrapsJournalType implements IJournalType {
         scrap={entry as IScrapEntry}
         journalName={journal.name}
         propsRenderStyle={"all"}
-        withoutSection={true}
       />
     );
   }
