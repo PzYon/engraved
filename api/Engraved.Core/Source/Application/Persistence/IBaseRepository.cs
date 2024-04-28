@@ -43,7 +43,8 @@ public interface IBaseRepository
     string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    string? currentUserId = null
   );
 
   Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;

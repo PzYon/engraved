@@ -200,7 +200,8 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    string? currentUserId = null
   )
   {
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
@@ -243,8 +244,16 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     }
 
     List<EntryDocument> entries = await EntriesCollection
-      .Find(Builders<EntryDocument>.Filter.And(filters))
-      .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
+      .Find(
+        filters.Count > 0
+          ? Builders<EntryDocument>.Filter.And(filters)
+          : Builders<EntryDocument>.Filter.Empty
+      )
+      .Sort(
+        Builders<EntryDocument>.Sort
+          .Descending(d => d.Schedules[currentUserId ?? ""].NextOccurrence)
+          .Descending(d => d.EditedOn)
+      )
       .Limit(limit)
       .ToListAsync();
 
@@ -467,7 +476,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   {
     if (string.IsNullOrEmpty(searchText))
     {
-      return new List<FilterDefinition<T>>();
+      return [];
     }
 
     return searchText.Split(" ")

@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Schedules;
 using FluentAssertions;
+using MongoDB.Bson;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -23,13 +26,30 @@ public class MongoRepository_GetLastEditedEntries_Should
     _journalId = result.EntityId;
 
     await _repository.UpsertEntry(
-      new GaugeEntry { ParentId = result.EntityId, Value = 1, Notes = "Lorem ipsum dolor" }
+      new GaugeEntry
+      {
+        ParentId = result.EntityId,
+        Value = 1,
+        Notes = "Lorem ipsum dolor", EditedOn = DateTime.Now.AddDays(-10)
+      }
     );
     await _repository.UpsertEntry(
-      new GaugeEntry { ParentId = result.EntityId, Value = 2, Notes = "Alpha Beta Gamma" }
+      new GaugeEntry
+      {
+        ParentId = result.EntityId,
+        Value = 2,
+        Notes = "Alpha Beta Gamma",
+        EditedOn = DateTime.Now.AddDays(-20)
+      }
     );
     await _repository.UpsertEntry(
-      new GaugeEntry { ParentId = result.EntityId, Value = 3, Notes = "Heiri Herbert Hans" }
+      new GaugeEntry
+      {
+        ParentId = result.EntityId,
+        Value = 3,
+        Notes = "Heiri Herbert Hans",
+        EditedOn = DateTime.Now.AddDays(-30)
+      }
     );
   }
 
@@ -118,5 +138,65 @@ public class MongoRepository_GetLastEditedEntries_Should
 
     results.Length.Should().Be(1);
     results[0].Should().BeOfType<ScrapsEntry>();
+  }
+
+  [Test]
+  public async Task Sort_Scheduled_Before_EditedOn()
+  {
+    var scheduledOnlyForUserId = ObjectId.GenerateNewId().ToString();
+
+    UpsertResult result = await _repository.UpsertJournal(
+      new ScrapsJournal
+      {
+        Name = "My Scrap",
+        UserId = scheduledOnlyForUserId
+      }
+    );
+
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = result.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "WithSchedule",
+        EditedOn = DateTime.Now.AddDays(-2),
+        Schedules =
+        {
+          {
+            scheduledOnlyForUserId, new Schedule
+            {
+              NextOccurrence = DateTime.Now.AddDays(-2)
+            }
+          }
+        }
+      }
+    );
+
+    // edited on "now" is newer than "now-2days", but due to
+    // schedule, "now-2days" should be sorted first.
+
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = result.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "WithoutSchedule",
+        UserId = scheduledOnlyForUserId,
+        EditedOn = DateTime.Now,
+      }
+    );
+
+    IEntry[] results = await _repository.GetLastEditedEntries(
+      null,
+      null,
+      null,
+      null,
+      10,
+      scheduledOnlyForUserId
+    );
+
+    results.Length.Should().Be(5);
+    ((ScrapsEntry)results[0]).Title.Should().Be("WithSchedule");
+    ((ScrapsEntry)results[1]).Title.Should().Be("WithoutSchedule");
   }
 }

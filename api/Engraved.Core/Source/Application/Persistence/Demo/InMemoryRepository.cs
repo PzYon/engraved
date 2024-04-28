@@ -84,7 +84,8 @@ public class InMemoryRepository : IRepository
     string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    string? currentUserId = null
   )
   {
     return Task.FromResult(
