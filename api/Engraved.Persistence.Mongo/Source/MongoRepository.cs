@@ -249,11 +249,8 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
           ? Builders<EntryDocument>.Filter.And(filters)
           : Builders<EntryDocument>.Filter.Empty
       )
-      .Sort(
-        Builders<EntryDocument>.Sort
-          .Ascending(d => d.Schedules[currentUserId ?? ""].NextOccurrence)
-          .Descending(d => d.EditedOn)
-      )
+      .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId ?? ""].NextOccurrence))
+      .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
       .Limit(limit)
       .ToListAsync();
 

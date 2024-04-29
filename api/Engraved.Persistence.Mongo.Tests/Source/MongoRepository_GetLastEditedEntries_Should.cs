@@ -143,13 +143,13 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task Sort_Scheduled_Before_EditedOn()
   {
-    var scheduledOnlyForUserId = ObjectId.GenerateNewId().ToString();
+    var currentUserId = ObjectId.GenerateNewId().ToString();
 
     UpsertResult result = await _repository.UpsertJournal(
       new ScrapsJournal
       {
         Name = "My Scrap",
-        UserId = scheduledOnlyForUserId
+        UserId = currentUserId
       }
     );
 
@@ -160,15 +160,7 @@ public class MongoRepository_GetLastEditedEntries_Should
         ScrapType = ScrapType.List,
         Title = "WithSchedule",
         EditedOn = DateTime.Now.AddDays(-2),
-        Schedules =
-        {
-          {
-            scheduledOnlyForUserId, new Schedule
-            {
-              NextOccurrence = DateTime.Now.AddDays(-2)
-            }
-          }
-        }
+        Schedules = { { currentUserId, new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) } } }
       }
     );
 
@@ -181,7 +173,7 @@ public class MongoRepository_GetLastEditedEntries_Should
         ParentId = result.EntityId,
         ScrapType = ScrapType.List,
         Title = "WithoutSchedule",
-        UserId = scheduledOnlyForUserId,
+        UserId = currentUserId,
         EditedOn = DateTime.Now,
       }
     );
@@ -191,8 +183,8 @@ public class MongoRepository_GetLastEditedEntries_Should
       null,
       null,
       null,
-      10,
-      scheduledOnlyForUserId
+      20,
+      currentUserId
     );
 
     results.Length.Should().Be(5);

@@ -42,6 +42,7 @@ export const ActionIconButton: React.FC<{
 
   return (
     <IconButton
+      key={action.key}
       {...getCommonProps()}
       sx={getCommonSx()}
       disabled={action.isDisabled}
@@ -53,6 +54,7 @@ export const ActionIconButton: React.FC<{
   function getNoButtonIcon() {
     return (
       <NoButtonIcon
+        key={action.key}
         {...getCommonProps()}
         sx={{
           display: "flex",
@@ -79,7 +81,6 @@ export const ActionIconButton: React.FC<{
 
   function getCommonProps() {
     return {
-      key: action.key,
       title: action.label + (action.hotkey ? ` (${action.hotkey})` : ""),
       "aria-label": action.label,
       onClick: action.onClick,
