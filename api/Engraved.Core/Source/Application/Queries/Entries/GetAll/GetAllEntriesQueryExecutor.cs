@@ -19,7 +19,8 @@ public class GetAllEntriesQueryExecutor(IUserScopedRepository repository)
       query.ScheduledOnly ? repository.CurrentUser.Value.Id : null,
       query.JournalTypes,
       allJournalIds,
-      query.Limit ?? 20
+      query.Limit ?? 20,
+      repository.CurrentUser.Value.Id
     );
 
     string[] relevantJournalIds = allEntries.Select(e => e.ParentId).ToArray();
