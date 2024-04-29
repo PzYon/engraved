@@ -251,7 +251,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       )
       .Sort(
         Builders<EntryDocument>.Sort
-          .Descending(d => d.Schedules[currentUserId ?? ""].NextOccurrence)
+          .Ascending(d => d.Schedules[currentUserId ?? ""].NextOccurrence)
           .Descending(d => d.EditedOn)
       )
       .Limit(limit)
