@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAll;
 
-public class GetAllEntriesQueryResult
+public class SearchEntriesQueryResult
 {
   public IJournal[] Journals { get; set; } = Array.Empty<IJournal>();
 

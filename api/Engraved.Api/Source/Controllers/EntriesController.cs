@@ -41,13 +41,13 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
   [HttpGet]
   public async Task<GetAllEntriesQueryApiResult> GetAll(string? searchText, string? journalTypes)
   {
-    var query = new GetAllEntriesQuery
+    var query = new SearchEntriesQuery
     {
       SearchText = searchText,
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
     };
 
-    GetAllEntriesQueryResult result = await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(query);
+    SearchEntriesQueryResult result = await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(query);
     return GetAllEntriesQueryApiResult.FromResult(result);
   }
 
@@ -140,7 +140,7 @@ public class GetAllEntriesQueryApiResult
   public object[] Journals { get; set; } = null!;
   public object[] Entries { get; set; } = null!;
 
-  public static GetAllEntriesQueryApiResult FromResult(GetAllEntriesQueryResult result)
+  public static GetAllEntriesQueryApiResult FromResult(SearchEntriesQueryResult result)
   {
     return new GetAllEntriesQueryApiResult
     {
