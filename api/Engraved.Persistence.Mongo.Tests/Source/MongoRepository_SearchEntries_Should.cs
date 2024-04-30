@@ -164,7 +164,7 @@ public class MongoRepository_SearchEntries_Should
         Schedules = { { currentUserId, new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) } } }
       }
     );
-    
+
     await _repository.UpsertEntry(
       new ScrapsEntry
       {
@@ -172,7 +172,10 @@ public class MongoRepository_SearchEntries_Should
         ScrapType = ScrapType.List,
         Title = "WithOtherUserSchedule",
         EditedOn = DateTime.Now.AddDays(-2),
-        Schedules = { { "ranom-user", new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) } } }
+        Schedules =
+        {
+          { ObjectId.GenerateNewId().ToString(), new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) } }
+        }
       }
     );
 
@@ -202,6 +205,6 @@ public class MongoRepository_SearchEntries_Should
     results.Length.Should().Be(6);
     ((ScrapsEntry)results[0]).Title.Should().Be("WithSchedule");
     ((ScrapsEntry)results[1]).Title.Should().Be("WithOtherUserSchedule");
-    ((ScrapsEntry)results[4]).Title.Should().Be("WithoutSchedule");
+    ((ScrapsEntry)results[5]).Title.Should().Be("WithoutSchedule");
   }
 }
