@@ -6,6 +6,7 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 using FluentAssertions;
 using MongoDB.Bson;
+using MongoDB.Driver.Linq;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -163,6 +164,17 @@ public class MongoRepository_SearchEntries_Should
         Schedules = { { currentUserId, new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) } } }
       }
     );
+    
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = result.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "WithOtherUserSchedule",
+        EditedOn = DateTime.Now.AddDays(-2),
+        Schedules = { { "ranom-user", new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) } } }
+      }
+    );
 
     // edited on "now" is newer than "now-2days", but due to
     // schedule, "now-2days" should be sorted first.
@@ -174,7 +186,7 @@ public class MongoRepository_SearchEntries_Should
         ScrapType = ScrapType.List,
         Title = "WithoutSchedule",
         UserId = currentUserId,
-        EditedOn = DateTime.Now,
+        EditedOn = DateTime.Now.AddDays(-1000),
       }
     );
 
@@ -187,8 +199,9 @@ public class MongoRepository_SearchEntries_Should
       currentUserId
     );
 
-    results.Length.Should().Be(5);
+    results.Length.Should().Be(6);
     ((ScrapsEntry)results[0]).Title.Should().Be("WithSchedule");
-    ((ScrapsEntry)results[1]).Title.Should().Be("WithoutSchedule");
+    ((ScrapsEntry)results[1]).Title.Should().Be("WithOtherUserSchedule");
+    ((ScrapsEntry)results[4]).Title.Should().Be("WithoutSchedule");
   }
 }
