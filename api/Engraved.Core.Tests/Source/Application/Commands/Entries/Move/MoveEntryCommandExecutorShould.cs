@@ -33,12 +33,12 @@ public class MoveEntryCommandExecutorShould
         DateTime = _dateService.UtcNow
       }
     );
-    IEntry[] sourceEntries = await _repo.GetAllEntries("source-journal-id", null, null, null);
+    IEntry[] sourceEntries = await _repo.GetEntriesForJournal("source-journal-id", null, null, null);
     sourceEntries.Length.Should().Be(1);
 
     // given: target
     _repo.Journals.Add(new CounterJournal { Id = "target-journal-id" });
-    IEntry[] targetEntries = await _repo.GetAllEntries("target-journal-id", null, null, null);
+    IEntry[] targetEntries = await _repo.GetEntriesForJournal("target-journal-id", null, null, null);
     targetEntries.Should().BeEmpty();
 
     // when
@@ -54,10 +54,10 @@ public class MoveEntryCommandExecutorShould
     );
 
     // then
-    targetEntries = await _repo.GetAllEntries("target-journal-id", null, null, null);
+    targetEntries = await _repo.GetEntriesForJournal("target-journal-id", null, null, null);
     targetEntries.Length.Should().Be(1);
 
-    sourceEntries = await _repo.GetAllEntries("source-journal-id", null, null, null);
+    sourceEntries = await _repo.GetEntriesForJournal("source-journal-id", null, null, null);
     sourceEntries.Should().BeEmpty();
   }
 }

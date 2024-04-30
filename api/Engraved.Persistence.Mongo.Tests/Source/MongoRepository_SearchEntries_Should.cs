@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class MongoRepository_GetLastEditedEntries_Should
+public class MongoRepository_SearchEntries_Should
 {
   private string _journalId = null!;
   private MongoRepository _repository = null!;
@@ -56,7 +56,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task FindEntries()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries("Beta", null, null, [_journalId], 10);
+    IEntry[] results = await _repository.SearchEntries("Beta", null, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -64,7 +64,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task FindEntries_IgnoringCase()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries("beta", null, null, [_journalId], 10);
+    IEntry[] results = await _repository.SearchEntries("beta", null, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -72,7 +72,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task FindEntries_MultipleWords()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries("beta gam", null, null, [_journalId], 10);
+    IEntry[] results = await _repository.SearchEntries("beta gam", null, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -80,7 +80,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task FindEntries_NonConsecutiveWords()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries("alpha gam", null, null, [_journalId], 10);
+    IEntry[] results = await _repository.SearchEntries("alpha gam", null, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -98,7 +98,7 @@ public class MongoRepository_GetLastEditedEntries_Should
       new ScrapsEntry { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Franz" }
     );
 
-    IEntry[] results = await _repository.GetLastEditedEntries("heiri", null, null, [result.EntityId], 10);
+    IEntry[] results = await _repository.SearchEntries("heiri", null, null, [result.EntityId], 10);
 
     results.Length.Should().Be(1);
     ((ScrapsEntry)results[0]).Title.Should().Be("Heiri");
@@ -107,7 +107,7 @@ public class MongoRepository_GetLastEditedEntries_Should
   [Test]
   public async Task Consider_JournalTypes_Negative()
   {
-    IEntry[] results = await _repository.GetLastEditedEntries(
+    IEntry[] results = await _repository.SearchEntries(
       null,
       null,
       [JournalType.Counter],
@@ -128,7 +128,7 @@ public class MongoRepository_GetLastEditedEntries_Should
       new ScrapsEntry { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
     );
 
-    IEntry[] results = await _repository.GetLastEditedEntries(
+    IEntry[] results = await _repository.SearchEntries(
       null,
       null,
       [JournalType.Scraps],
@@ -178,7 +178,7 @@ public class MongoRepository_GetLastEditedEntries_Should
       }
     );
 
-    IEntry[] results = await _repository.GetLastEditedEntries(
+    IEntry[] results = await _repository.SearchEntries(
       null,
       null,
       null,

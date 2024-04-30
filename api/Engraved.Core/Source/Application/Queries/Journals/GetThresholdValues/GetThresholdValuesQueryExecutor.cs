@@ -27,7 +27,7 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
       return new Dictionary<string, IDictionary<string, ThresholdResult>>();
     }
 
-    IEntry[] entries = await repository.GetAllEntries(
+    IEntry[] entries = await repository.GetEntriesForJournal(
       query.JournalId!,
       query.FromDate,
       query.ToDate,

@@ -31,14 +31,14 @@ public interface IBaseRepository
 
   Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions);
 
-  Task<IEntry[]> GetAllEntries(
+  Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
   );
 
-  Task<IEntry[]> GetLastEditedEntries(
+  Task<IEntry[]> SearchEntries(
     string? searchText = null,
     string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,

@@ -128,7 +128,7 @@ public class UserScopedMongoRepositoryShould
     IEntry entry = new TimerEntry { ParentId = journalId };
 
     await _userScopedRepository.UpsertEntry(entry);
-    IEntry[] entries = await _repository.GetAllEntries(journalId, null, null, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(journalId, null, null, null);
 
     entries.All(m => m.UserId == _currentUserId).Should().BeTrue();
   }
@@ -228,10 +228,10 @@ public class UserScopedMongoRepositoryShould
       );
     }
 
-    IEntry[] otherUserEntries = await _userScopedRepository.GetAllEntries(otherUserJournalId, null, null, null);
+    IEntry[] otherUserEntries = await _userScopedRepository.GetEntriesForJournal(otherUserJournalId, null, null, null);
     otherUserEntries.Should().BeEmpty();
 
-    IEntry[] currentUserEntries = await _userScopedRepository.GetAllEntries(currentUserJournalId, null, null, null);
+    IEntry[] currentUserEntries = await _userScopedRepository.GetEntriesForJournal(currentUserJournalId, null, null, null);
     currentUserEntries.Length.Should().Be(10);
   }
 

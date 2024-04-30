@@ -138,7 +138,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     return await GetJournal(journalId, PermissionKind.Read);
   }
 
-  public async Task<IEntry[]> GetAllEntries(
+  public async Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
@@ -195,7 +195,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   // attention: there's no security here for the moment. might not be required as
   // you explicitly need to specify the journal IDs.
-  public async Task<IEntry[]> GetLastEditedEntries(
+  public async Task<IEntry[]> SearchEntries(
     string? searchText,
     string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,

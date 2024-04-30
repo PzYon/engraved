@@ -35,7 +35,7 @@ public class GetAllJournalEntriesQueryExecutor : IQueryExecutor<IEntry[], GetAll
       );
     }
 
-    return await _repository.GetAllEntries(
+    return await _repository.GetEntriesForJournal(
       query.JournalId,
       query.FromDate,
       query.ToDate,

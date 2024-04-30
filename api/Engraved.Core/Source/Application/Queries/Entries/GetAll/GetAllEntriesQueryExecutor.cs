@@ -14,7 +14,7 @@ public class GetAllEntriesQueryExecutor(IUserScopedRepository repository)
     IJournal[] allJournals = await repository.GetAllJournals(null, null, null, null, 100);
     string[] allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
-    IEntry[] allEntries = await repository.GetLastEditedEntries(
+    IEntry[] allEntries = await repository.SearchEntries(
       query.SearchText,
       query.ScheduledOnly ? repository.CurrentUser.Value.Id : null,
       query.JournalTypes,

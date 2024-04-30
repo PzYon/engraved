@@ -74,19 +74,19 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return journal?.UserId == CurrentUser.Value.Id ? journal : null;
   }
 
-  public async Task<IEntry[]> GetAllEntries(
+  public async Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues
   )
   {
-    return (await _repository.GetAllEntries(journalId, fromDate, toDate, attributeValues))
+    return (await _repository.GetEntriesForJournal(journalId, fromDate, toDate, attributeValues))
       .Where(m => m.UserId == CurrentUser.Value.Id)
       .ToArray();
   }
 
-  public Task<IEntry[]> GetLastEditedEntries(
+  public Task<IEntry[]> SearchEntries(
     string? searchText,
     string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
@@ -95,7 +95,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     string? currentUserId = null
   )
   {
-    return _repository.GetLastEditedEntries(
+    return _repository.SearchEntries(
       searchText,
       scheduledOnlyForUserId,
       journalTypes,

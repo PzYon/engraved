@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class MongoRepository_GetAllEntries_Should
+public class MongoRepository_GetEntriesForJournal_Should
 {
   private readonly string _userId = MongoUtil.GenerateNewIdAsString();
   private string _journalId = null!;
@@ -28,7 +28,7 @@ public class MongoRepository_GetAllEntries_Should
   [Test]
   public async Task Return_Empty()
   {
-    IEntry[] entries = await _repository.GetAllEntries(_journalId, null, null, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, null, null);
 
     entries.Should().BeEmpty();
   }
@@ -39,7 +39,7 @@ public class MongoRepository_GetAllEntries_Should
     string entryId = await AddEntry(DateTime.Now.AddDays(-3));
     await AddEntry(DateTime.Now.AddDays(3));
 
-    IEntry[] entries = await _repository.GetAllEntries(_journalId, null, DateTime.Now, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, DateTime.Now, null);
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -51,7 +51,7 @@ public class MongoRepository_GetAllEntries_Should
     await AddEntry(DateTime.Now.AddDays(-1));
     string entryId = await AddEntry(DateTime.Now.AddDays(1));
 
-    IEntry[] entries = await _repository.GetAllEntries(_journalId, DateTime.Now, null, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, DateTime.Now, null, null);
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -63,7 +63,7 @@ public class MongoRepository_GetAllEntries_Should
     await AddEntry(DateTime.Now.AddDays(-10));
     await AddEntry(DateTime.Now.AddDays(10));
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       DateTime.Now.AddDays(-1),
       DateTime.Now.AddDays(1),
@@ -79,7 +79,7 @@ public class MongoRepository_GetAllEntries_Should
     await AddEntry(DateTime.Now.AddDays(-2));
     await AddEntry(DateTime.Now.AddDays(2));
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       DateTime.Now.AddDays(-5),
       DateTime.Now.AddDays(5),
@@ -102,7 +102,7 @@ public class MongoRepository_GetAllEntries_Should
     string expectedId2 = await AddEntry(lastInCurrentMonth);
     await AddEntry(firstInNextMonth);
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       new DateTime(2000, 7, 1),
       new DateTime(2000, 7, 31),
@@ -122,7 +122,7 @@ public class MongoRepository_GetAllEntries_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -139,7 +139,7 @@ public class MongoRepository_GetAllEntries_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -160,7 +160,7 @@ public class MongoRepository_GetAllEntries_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -180,7 +180,7 @@ public class MongoRepository_GetAllEntries_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -203,7 +203,7 @@ public class MongoRepository_GetAllEntries_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetAllEntries(
+    IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
