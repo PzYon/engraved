@@ -228,24 +228,30 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     {
       if (scheduledOnlyForUserId == "ALL")
       {
-        filters.Add(
-          Builders<EntryDocument>.Filter.Exists(d => d.Schedules)
-        );
+        filters.Add(Builders<EntryDocument>.Filter.Exists(d => d.Schedules));
       }
       else
       {
-        filters.Add(
-          Builders<EntryDocument>.Filter.Where(
-            d => d.Schedules.ContainsKey(scheduledOnlyForUserId)
-                 && d.Schedules[scheduledOnlyForUserId].NextOccurrence != null
-          )
-        );
+        filters.Add(GetHasScheduleForCurrentUserFilter(scheduledOnlyForUserId));
       }
     }
 
+    var entries = await LoadData(limit, currentUserId, filters);
+
+    return entries
+      .Select(EntryDocumentMapper.FromDocument<IEntry>)
+      .ToArray();
+  }
+
+  private async Task<List<EntryDocument>> LoadData(
+    int? limit,
+    string? currentUserId,
+    List<FilterDefinition<EntryDocument>> filters
+  )
+  {
     if (string.IsNullOrEmpty(currentUserId))
     {
-      List<EntryDocument> entries = await EntriesCollection
+      return await EntriesCollection
         .Find(
           filters.Count > 0
             ? Builders<EntryDocument>.Filter.And(filters)
@@ -254,48 +260,29 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
         .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
         .Limit(limit)
         .ToListAsync();
-
-      return entries
-        .Select(EntryDocumentMapper.FromDocument<IEntry>)
-        .ToArray();
     }
-    else
-    {
-      var newFilters = filters.Select(f => f).ToList();
-      newFilters.Add(
-        Builders<EntryDocument>.Filter.Where(
-          d => d.Schedules.ContainsKey(currentUserId)
-               && d.Schedules[currentUserId].NextOccurrence != null
+
+    List<EntryDocument> entries = await EntriesCollection
+      .Find(
+        Builders<EntryDocument>.Filter.And(
+          filters.Union(new[] { GetHasScheduleForCurrentUserFilter(currentUserId) })
         )
-      );
+      )
+      .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId].NextOccurrence))
+      .Limit(limit)
+      .ToListAsync();
 
-      List<EntryDocument> entriesWithSchedule = await EntriesCollection
-        .Find(Builders<EntryDocument>.Filter.And(newFilters))
-        .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId].NextOccurrence))
-        .Limit(limit)
-        .ToListAsync();
+    var foundIds = entries.Select(e => e.Id).ToArray();
 
-      // todo: filter ids of existing
-
-      var foundIds = entriesWithSchedule.Select(e => e.Id).ToArray();
-
-      var newFiltersAgain = filters.Select(f => f).ToList();
-      newFiltersAgain.Add(Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id)));
-
-      List<EntryDocument> entries = await EntriesCollection
-        .Find(
-          newFiltersAgain.Count > 0
-            ? Builders<EntryDocument>.Filter.And(newFiltersAgain)
-            : Builders<EntryDocument>.Filter.Empty
-        )
+    entries.AddRange(
+      await EntriesCollection
+        .Find(Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id)))
         .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
-        .Limit(limit - entriesWithSchedule.Count)
-        .ToListAsync();
+        .Limit(limit - entries.Count)
+        .ToListAsync()
+    );
 
-      return (entriesWithSchedule.Union(entries))
-        .Select(EntryDocumentMapper.FromDocument<IEntry>)
-        .ToArray();
-    }
+    return entries;
   }
 
   public virtual async Task<UpsertResult> UpsertJournal(IJournal journal)
@@ -503,6 +490,14 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     {
       EntityId = id
     };
+  }
+
+  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
+  {
+    return Builders<EntryDocument>.Filter.Where(
+      d => d.Schedules.ContainsKey(currentUserId)
+           && d.Schedules[currentUserId].NextOccurrence != null
+    );
   }
 
   private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
