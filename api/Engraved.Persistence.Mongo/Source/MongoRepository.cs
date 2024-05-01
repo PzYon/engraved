@@ -138,7 +138,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     return await GetJournal(journalId, PermissionKind.Read);
   }
 
-  public async Task<IEntry[]> GetAllEntries(
+  public async Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
@@ -195,18 +195,19 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   // attention: there's no security here for the moment. might not be required as
   // you explicitly need to specify the journal IDs.
-  public async Task<IEntry[]> GetLastEditedEntries(
+  public async Task<IEntry[]> SearchEntries(
     string? searchText,
     string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    string? currentUserId = null
   )
   {
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsEntryDocument)d).Title!
+      d => ((ScrapsEntryDocument) d).Title!
     );
 
     if (journalIds is { Length: > 0 })
@@ -227,30 +228,65 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     {
       if (scheduledOnlyForUserId == "ALL")
       {
-        filters.Add(
-          Builders<EntryDocument>.Filter.Exists(d => d.Schedules)
-        );
+        filters.Add(Builders<EntryDocument>.Filter.Exists(d => d.Schedules));
       }
       else
       {
-        filters.Add(
-          Builders<EntryDocument>.Filter.Where(
-            d => d.Schedules.ContainsKey(scheduledOnlyForUserId)
-                 && d.Schedules[scheduledOnlyForUserId].NextOccurrence != null
-          )
-        );
+        filters.Add(GetHasScheduleForCurrentUserFilter(scheduledOnlyForUserId));
       }
     }
 
-    List<EntryDocument> entries = await EntriesCollection
-      .Find(Builders<EntryDocument>.Filter.And(filters))
-      .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
-      .Limit(limit)
-      .ToListAsync();
+    var entries = await LoadData(limit, currentUserId, filters);
 
     return entries
       .Select(EntryDocumentMapper.FromDocument<IEntry>)
       .ToArray();
+  }
+
+  private async Task<List<EntryDocument>> LoadData(
+    int? limit,
+    string? currentUserId,
+    List<FilterDefinition<EntryDocument>> filters
+  )
+  {
+    if (string.IsNullOrEmpty(currentUserId))
+    {
+      return await EntriesCollection
+        .Find(
+          filters.Count > 0
+            ? Builders<EntryDocument>.Filter.And(filters)
+            : Builders<EntryDocument>.Filter.Empty
+        )
+        .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
+        .Limit(limit)
+        .ToListAsync();
+    }
+
+    List<EntryDocument> entries = await EntriesCollection
+      .Find(
+        Builders<EntryDocument>.Filter.And(
+          filters.Union(new[] { GetHasScheduleForCurrentUserFilter(currentUserId) })
+        )
+      )
+      .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId].NextOccurrence))
+      .Limit(limit)
+      .ToListAsync();
+
+    var foundIds = entries.Select(e => e.Id).ToArray();
+
+    entries.AddRange(
+      await EntriesCollection
+        .Find(
+          Builders<EntryDocument>.Filter.And(
+            filters.Union(new[] { Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id)) })
+          )
+        )
+        .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
+        .Limit(limit - entries.Count)
+        .ToListAsync()
+    );
+
+    return entries;
   }
 
   public virtual async Task<UpsertResult> UpsertJournal(IJournal journal)
@@ -460,6 +496,14 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     };
   }
 
+  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
+  {
+    return Builders<EntryDocument>.Filter.Where(
+      d => d.Schedules.ContainsKey(currentUserId)
+           && d.Schedules[currentUserId].NextOccurrence != null
+    );
+  }
+
   private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
     string? searchText,
     params Expression<Func<T, object>>[] fieldNameExpressions
@@ -467,7 +511,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   {
     if (string.IsNullOrEmpty(searchText))
     {
-      return new List<FilterDefinition<T>>();
+      return [];
     }
 
     return searchText.Split(" ")

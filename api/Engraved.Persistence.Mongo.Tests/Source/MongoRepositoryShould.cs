@@ -95,7 +95,7 @@ public class MongoRepositoryShould
     await _repository.UpsertEntry(new GaugeEntry { ParentId = "wrongId", Value = 456 });
     await _repository.UpsertEntry(new GaugeEntry { ParentId = result.EntityId, Value = 789 });
 
-    IEntry[] allEntries = await _repository.GetAllEntries(result.EntityId, null, null, null);
+    IEntry[] allEntries = await _repository.GetEntriesForJournal(result.EntityId, null, null, null);
 
     allEntries.Length.Should().Be(2);
   }

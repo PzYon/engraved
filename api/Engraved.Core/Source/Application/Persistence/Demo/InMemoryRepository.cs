@@ -65,7 +65,7 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(Journals.FirstOrDefault(m => m.Id == journalId).Copy());
   }
 
-  public Task<IEntry[]> GetAllEntries(
+  public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
@@ -79,12 +79,13 @@ public class InMemoryRepository : IRepository
     );
   }
 
-  public Task<IEntry[]> GetLastEditedEntries(
+  public Task<IEntry[]> SearchEntries(
     string? searchText,
     string? scheduledOnlyForUserId = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    string? currentUserId = null
   )
   {
     return Task.FromResult(

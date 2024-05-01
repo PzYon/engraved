@@ -58,7 +58,7 @@ public class ExecutorRegistration
   public static void RegisterQueries(IServiceCollection services)
   {
     RegisterQuery<IEntry?, GetActiveEntryQuery, GetActiveEntryQueryExecutor>(services);
-    RegisterQuery<GetAllEntriesQueryResult, GetAllEntriesQuery, GetAllEntriesQueryExecutor>(services);
+    RegisterQuery<SearchEntriesQueryResult, SearchEntriesQuery, SearchEntriesQueryExecutor>(services);
     RegisterQuery<IEntry[], GetAllJournalEntriesQuery, GetAllJournalEntriesQueryExecutor>(services);
     RegisterQuery<IJournal[], GetAllJournalsQuery, GetAllJournalsQueryExecutor>(services);
     RegisterQuery<IJournal?, GetJournalQuery, GetJournalQueryExecutor>(services);

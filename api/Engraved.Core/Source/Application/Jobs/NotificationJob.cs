@@ -31,7 +31,7 @@ public class NotificationJob(
 
       var watch = Stopwatch.StartNew();
 
-      IEntry[] entries = await repository.GetLastEditedEntries(null, "ALL");
+      IEntry[] entries = await repository.SearchEntries(null, "ALL");
       await ProcessEntities(entries.OfType<IEntity>().ToArray(), isDryRun, result);
 
       IJournal[] journals = await repository.GetAllJournals(null, "ALL");

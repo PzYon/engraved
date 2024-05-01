@@ -20,8 +20,8 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
       }
     );
 
-    GetAllEntriesQueryResult entriesResult = await dispatcher.Query<GetAllEntriesQueryResult, GetAllEntriesQuery>(
-      new GetAllEntriesQuery
+    SearchEntriesQueryResult entriesResult = await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(
+      new SearchEntriesQuery
       {
         SearchText = query.SearchText,
         ScheduledOnly = query.ScheduledOnly

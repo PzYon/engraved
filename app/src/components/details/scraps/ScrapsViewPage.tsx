@@ -25,6 +25,7 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
 import { NotificationDoneLauncher } from "../NotificationDoneLauncher";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
+import { PageSection } from "../../layout/pages/PageSection";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -63,13 +64,15 @@ export const ScrapsViewPage: React.FC = () => {
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
       {newScrap ? (
-        <Scrap
-          key="new"
-          scrap={newScrap}
-          hasFocus={true}
-          journalName={null}
-          propsRenderStyle={"none"}
-        />
+        <PageSection>
+          <Scrap
+            key="new"
+            scrap={newScrap}
+            hasFocus={true}
+            journalName={null}
+            propsRenderStyle={"none"}
+          />
+        </PageSection>
       ) : null}
 
       {scraps.length ? (

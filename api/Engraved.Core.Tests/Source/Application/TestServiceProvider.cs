@@ -27,9 +27,9 @@ public class TestServiceProvider(IUserScopedRepository userScopedRepository) : I
       return new GetAllJournalsQueryExecutor(userScopedRepository);
     }
 
-    if (serviceType == typeof(IQueryExecutor<GetAllEntriesQueryResult, GetAllEntriesQuery>))
+    if (serviceType == typeof(IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>))
     {
-      return new GetAllEntriesQueryExecutor(userScopedRepository);
+      return new SearchEntriesQueryExecutor(userScopedRepository);
     }
 
     throw new Exception($"Service of type {serviceType.FullName} is not available in {nameof(TestServiceProvider)}.");

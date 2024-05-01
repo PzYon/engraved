@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAll;
 
-public class GetAllEntriesQueryExecutorShould
+public class SearchEntriesQueryExecutorShould
 {
   private FakeDateService _dateService = null!;
   private UserScopedInMemoryRepository _repo = null!;
@@ -65,8 +65,8 @@ public class GetAllEntriesQueryExecutorShould
       }
     );
 
-    var queryExecutor = new GetAllEntriesQueryExecutor(_repo);
-    GetAllEntriesQueryResult result = await queryExecutor.Execute(new GetAllEntriesQuery { Limit = 2 });
+    var queryExecutor = new SearchEntriesQueryExecutor(_repo);
+    SearchEntriesQueryResult result = await queryExecutor.Execute(new SearchEntriesQuery { Limit = 2 });
 
     result.Journals.Length.Should().Be(2);
     result.Journals.Select(m => m.Id).Contains("counter-journal-id").Should().BeFalse();

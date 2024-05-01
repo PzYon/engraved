@@ -83,7 +83,7 @@ public class UserScopedMongoRepository_Permissions_Should
   }
 
   [Test]
-  public async Task GetAllJournals_Return_MyAndThy_WhenIHavePermissions()
+  public async Task GetEntriesForJournal_Return_MyAndThy_WhenIHavePermissions()
   {
     await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
@@ -102,7 +102,7 @@ public class UserScopedMongoRepository_Permissions_Should
   }
 
   [Test]
-  public async Task GetAllEntries_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
+  public async Task GetEntriesForJournal_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
   {
     await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
@@ -125,7 +125,7 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IEntry[] allEntries = await _userScopedRepository.GetAllEntries(otherJournal.EntityId, null, null, null);
+    IEntry[] allEntries = await _userScopedRepository.GetEntriesForJournal(otherJournal.EntityId, null, null, null);
 
     allEntries.Should().BeEmpty();
   }
@@ -151,7 +151,7 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IEntry[] allEntries = await _userScopedRepository.GetAllEntries(otherJournal.EntityId, null, null, null);
+    IEntry[] allEntries = await _userScopedRepository.GetEntriesForJournal(otherJournal.EntityId, null, null, null);
 
     allEntries.Length.Should().Be(1);
   }
