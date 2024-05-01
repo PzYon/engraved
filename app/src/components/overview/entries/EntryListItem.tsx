@@ -18,6 +18,10 @@ export const EntryListItem: React.FC<{
   function renderEntry(entry: IEntry, hasFocus: boolean) {
     const journal = journals.find((j) => j.id === entry.parentId);
 
+    if (!journal) {
+      return null;
+    }
+
     return JournalTypeFactory.create(journal.type).getEntry(
       journal,
       entry,

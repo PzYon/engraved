@@ -276,7 +276,11 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
     entries.AddRange(
       await EntriesCollection
-        .Find(Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id)))
+        .Find(
+          Builders<EntryDocument>.Filter.And(
+            filters.Union(new[] { Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id)) })
+          )
+        )
         .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
         .Limit(limit - entries.Count)
         .ToListAsync()
