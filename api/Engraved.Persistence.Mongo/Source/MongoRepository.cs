@@ -207,7 +207,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsEntryDocument)d).Title!
+      d => ((ScrapsEntryDocument) d).Title!
     );
 
     if (journalIds is { Length: > 0 })
@@ -243,20 +243,59 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       }
     }
 
-    List<EntryDocument> entries = await EntriesCollection
-      .Find(
-        filters.Count > 0
-          ? Builders<EntryDocument>.Filter.And(filters)
-          : Builders<EntryDocument>.Filter.Empty
-      )
-      .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId ?? ObjectId.GenerateNewId().ToString()].NextOccurrence))
-      .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
-      .Limit(limit)
-      .ToListAsync();
+    if (string.IsNullOrEmpty(currentUserId))
+    {
+      List<EntryDocument> entries = await EntriesCollection
+        .Find(
+          filters.Count > 0
+            ? Builders<EntryDocument>.Filter.And(filters)
+            : Builders<EntryDocument>.Filter.Empty
+        )
+        .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
+        .Limit(limit)
+        .ToListAsync();
 
-    return entries
-      .Select(EntryDocumentMapper.FromDocument<IEntry>)
-      .ToArray();
+      return entries
+        .Select(EntryDocumentMapper.FromDocument<IEntry>)
+        .ToArray();
+    }
+    else
+    {
+      var newFilters = filters.Select(f => f).ToList();
+      newFilters.Add(
+        Builders<EntryDocument>.Filter.Where(
+          d => d.Schedules.ContainsKey(currentUserId)
+               && d.Schedules[currentUserId].NextOccurrence != null
+        )
+      );
+
+      List<EntryDocument> entriesWithSchedule = await EntriesCollection
+        .Find(Builders<EntryDocument>.Filter.And(newFilters))
+        .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId].NextOccurrence))
+        .Limit(limit)
+        .ToListAsync();
+
+      // todo: filter ids of existing
+
+      var foundIds = entriesWithSchedule.Select(e => e.Id).ToArray();
+
+      var newFiltersAgain = filters.Select(f => f).ToList();
+      newFiltersAgain.Add(Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id)));
+
+      List<EntryDocument> entries = await EntriesCollection
+        .Find(
+          newFiltersAgain.Count > 0
+            ? Builders<EntryDocument>.Filter.And(newFiltersAgain)
+            : Builders<EntryDocument>.Filter.Empty
+        )
+        .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
+        .Limit(limit - entriesWithSchedule.Count)
+        .ToListAsync();
+
+      return (entriesWithSchedule.Union(entries))
+        .Select(EntryDocumentMapper.FromDocument<IEntry>)
+        .ToArray();
+    }
   }
 
   public virtual async Task<UpsertResult> UpsertJournal(IJournal journal)
