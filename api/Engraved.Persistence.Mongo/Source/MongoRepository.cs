@@ -236,7 +236,11 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       }
     }
 
-    var entries = await LoadData(limit, currentUserId, filters);
+    var entries = await LoadData(
+      limit,
+      string.IsNullOrEmpty(scheduledOnlyForUserId) ? null : currentUserId,
+      filters
+    );
 
     return entries
       .Select(EntryDocumentMapper.FromDocument<IEntry>)
