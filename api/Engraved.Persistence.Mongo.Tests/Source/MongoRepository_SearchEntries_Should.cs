@@ -195,7 +195,7 @@ public class MongoRepository_SearchEntries_Should
 
     IEntry[] results = await _repository.SearchEntries(
       null,
-      null,
+      ScheduleFilterMode.CurrentUser,
       null,
       null,
       20,
