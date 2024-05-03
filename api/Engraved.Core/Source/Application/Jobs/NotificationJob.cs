@@ -31,10 +31,10 @@ public class NotificationJob(
 
       var watch = Stopwatch.StartNew();
 
-      IEntry[] entries = await repository.SearchEntries(null, "ALL");
+      IEntry[] entries = await repository.SearchEntries(null, ScheduleFilterMode.Any);
       await ProcessEntities(entries.OfType<IEntity>().ToArray(), isDryRun, result);
 
-      IJournal[] journals = await repository.GetAllJournals(null, "ALL");
+      IJournal[] journals = await repository.GetAllJournals(null, ScheduleFilterMode.Any);
       await ProcessEntities(journals.OfType<IEntity>().ToArray(), isDryRun, result);
 
       logger.LogInformation(

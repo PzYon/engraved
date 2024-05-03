@@ -98,7 +98,14 @@ public class MongoRepository_GetAllJournals_Should
       }
     );
 
-    IJournal[] results = await _repository.GetAllJournals(null, "max");
+    IJournal[] results = await _repository.GetAllJournals(
+      null,
+      ScheduleFilterMode.CurrentUser,
+      null,
+      null,
+      null,
+      "max"
+    );
     results.Length.Should().Be(1);
   }
 }

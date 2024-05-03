@@ -71,10 +71,11 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   public async Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    string? scheduledOnlyForUserId = null,
+    ScheduleFilterMode? scheduleFilterMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    string? currentUserId = null
   )
   {
     List<FilterDefinition<JournalDocument>> filters = GetFreeTextFilters<JournalDocument>(
@@ -105,23 +106,25 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    if (!string.IsNullOrEmpty(scheduledOnlyForUserId))
+    if (scheduleFilterMode == ScheduleFilterMode.Any)
     {
-      if (scheduledOnlyForUserId == "ALL")
+      filters.Add(
+        Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
+      );
+    }
+    else if (scheduleFilterMode == ScheduleFilterMode.CurrentUser)
+    {
+      if (string.IsNullOrEmpty(currentUserId))
       {
-        filters.Add(
-          Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
-        );
+        throw new Exception("IIIIIIIIIIIIIIIIIIIIIINVALID!");
       }
-      else
-      {
-        filters.Add(
-          Builders<JournalDocument>.Filter.Where(
-            d => d.Schedules.ContainsKey(scheduledOnlyForUserId)
-                 && d.Schedules[scheduledOnlyForUserId].NextOccurrence != null
-          )
-        );
-      }
+
+      filters.Add(
+        Builders<JournalDocument>.Filter.Where(
+          d => d.Schedules.ContainsKey(currentUserId)
+               && d.Schedules[currentUserId].NextOccurrence != null
+        )
+      );
     }
 
     List<JournalDocument> journals = await JournalsCollection
@@ -197,7 +200,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   // you explicitly need to specify the journal IDs.
   public async Task<IEntry[]> SearchEntries(
     string? searchText,
-    string? scheduledOnlyForUserId = null,
+    ScheduleFilterMode? scheduleFilterMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
@@ -224,21 +227,30 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    if (!string.IsNullOrEmpty(scheduledOnlyForUserId))
+    if (scheduleFilterMode == ScheduleFilterMode.Any)
     {
-      if (scheduledOnlyForUserId == "ALL")
+      filters.Add(
+        Builders<EntryDocument>.Filter.Exists(d => d.Schedules)
+      );
+    }
+    else if (scheduleFilterMode == ScheduleFilterMode.CurrentUser)
+    {
+      if (string.IsNullOrEmpty(currentUserId))
       {
-        filters.Add(Builders<EntryDocument>.Filter.Exists(d => d.Schedules));
+        throw new Exception("IIIIIIIIIIIIIIIIIIIIIINVALID!");
       }
-      else
-      {
-        filters.Add(GetHasScheduleForCurrentUserFilter(scheduledOnlyForUserId));
-      }
+
+      filters.Add(
+        Builders<EntryDocument>.Filter.Where(
+          d => d.Schedules.ContainsKey(currentUserId)
+               && d.Schedules[currentUserId].NextOccurrence != null
+        )
+      );
     }
 
     var entries = await LoadData(
       limit,
-      string.IsNullOrEmpty(scheduledOnlyForUserId) ? null : currentUserId,
+      scheduleFilterMode == ScheduleFilterMode.CurrentUser ? currentUserId : null,
       filters
     );
 

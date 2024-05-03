@@ -17,10 +17,11 @@ public interface IBaseRepository
 
   Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    string? scheduledOnlyForUserId = null,
+    ScheduleFilterMode? scheduleFilterMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    string? currentUserId = null
   );
 
   Task<IJournal?> GetJournal(string journalId);
@@ -40,7 +41,7 @@ public interface IBaseRepository
 
   Task<IEntry[]> SearchEntries(
     string? searchText = null,
-    string? scheduledOnlyForUserId = null,
+    ScheduleFilterMode? scheduleFilterMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
