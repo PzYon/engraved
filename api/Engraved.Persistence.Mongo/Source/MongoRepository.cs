@@ -116,7 +116,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
-        throw new Exception("IIIIIIIIIIIIIIIIIIIIIINVALID!");
+        throw new Exception("Current user id is required");
       }
 
       filters.Add(
@@ -237,7 +237,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
-        throw new Exception("IIIIIIIIIIIIIIIIIIIIIINVALID!");
+        throw new Exception("Current user id is required");
       }
 
       filters.Add(
