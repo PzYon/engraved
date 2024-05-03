@@ -5,6 +5,7 @@ import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutatio
 import { ParseableDate } from "./ParseableDate";
 import { DateSelector } from "../../common/DateSelector";
 import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
+import { IParsedDate } from "./parseDate";
 
 export const EditSchedule: React.FC<{
   initialDate: string;
@@ -12,11 +13,11 @@ export const EditSchedule: React.FC<{
   entryId?: string;
   onCancel: () => void;
 }> = ({ initialDate, journalId, entryId, onCancel }) => {
-  const [date, setDate] = useState<Date>(
-    initialDate ? new Date(initialDate) : null,
-  );
+  const [parsed, setParsed] = useState<IParsedDate>({
+    date: initialDate ? new Date(initialDate) : null,
+  });
 
-  const [showFullForm, setShowFullForm] = useState(!!date);
+  const [showFullForm, setShowFullForm] = useState(!!parsed.date);
 
   const modifyScheduleMutation = useModifyScheduleMutation(journalId, entryId);
 
@@ -36,20 +37,14 @@ export const EditSchedule: React.FC<{
       <ParseableDate
         sx={{ marginBottom: 2 }}
         parseDateOnly={true}
-        onChange={(d) => {
-          // todo: recurrence is missing here
-
-          if (d.date) {
-            setDate(d.date);
-          }
-        }}
+        onChange={setParsed}
         onSelect={save}
       />
 
       {showFullForm ? (
         <DateSelector
-          date={date}
-          setDate={setDate}
+          date={parsed.date}
+          setDate={(d) => setParsed({ date: d })}
           showTime={true}
           showClear={true}
         />
@@ -68,7 +63,8 @@ export const EditSchedule: React.FC<{
 
   function save() {
     const scheduleDefinition: IScheduleDefinition = {
-      nextOccurrence: date,
+      nextOccurrence: parsed.date,
+      recurrence: parsed.recurrence,
       onClickUrl: entryId
         ? `${location.origin}/journals/${journalId}/entries/${entryId}/notification`
         : `${location.origin}/journals/${journalId}/notification`,
