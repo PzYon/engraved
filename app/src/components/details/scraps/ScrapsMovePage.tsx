@@ -70,12 +70,14 @@ export const ScrapsMovePage: React.FC = () => {
         </PageFormButtonContainer>
       </PageSection>
 
-      <Scrap
-        scrap={entry}
-        journalName={journal.name}
-        actionsRenderStyle={"none"}
-        propsRenderStyle={"all"}
-      />
+      <PageSection>
+        <Scrap
+          scrap={entry}
+          journalName={journal.name}
+          actionsRenderStyle={"none"}
+          propsRenderStyle={"all"}
+        />
+      </PageSection>
     </Page>
   );
 };
