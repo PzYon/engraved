@@ -47,7 +47,7 @@ public class InMemoryRepository : IRepository
 
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    ScheduleFilterMode? scheduleFilterMode = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
@@ -82,7 +82,7 @@ public class InMemoryRepository : IRepository
 
   public Task<IEntry[]> SearchEntries(
     string? searchText,
-    ScheduleFilterMode? scheduleFilterMode = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,

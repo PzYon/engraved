@@ -16,7 +16,7 @@ public class SearchEntriesQueryExecutor(IUserScopedRepository repository)
 
     IEntry[] allEntries = await repository.SearchEntries(
       query.SearchText,
-      query.ScheduledOnly ? ScheduleFilterMode.CurrentUser : ScheduleFilterMode.Ignore,
+      query.ScheduledOnly ? ScheduleMode.CurrentUserOnly : ScheduleMode.None,
       query.JournalTypes,
       allJournalIds,
       query.Limit ?? 20,

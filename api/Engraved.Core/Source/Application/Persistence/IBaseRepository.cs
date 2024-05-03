@@ -17,7 +17,7 @@ public interface IBaseRepository
 
   Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    ScheduleFilterMode? scheduleFilterMode = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
@@ -41,7 +41,7 @@ public interface IBaseRepository
 
   Task<IEntry[]> SearchEntries(
     string? searchText = null,
-    ScheduleFilterMode? scheduleFilterMode = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,

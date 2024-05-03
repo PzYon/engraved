@@ -100,7 +100,7 @@ public class MongoRepository_GetAllJournals_Should
 
     IJournal[] results = await _repository.GetAllJournals(
       null,
-      ScheduleFilterMode.CurrentUser,
+      ScheduleMode.CurrentUserOnly,
       null,
       null,
       null,

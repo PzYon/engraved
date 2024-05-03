@@ -49,7 +49,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public async Task<IJournal[]> GetAllJournals(
     string? searchText,
-    ScheduleFilterMode? scheduleFilterMode = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
@@ -58,7 +58,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   {
     IJournal[] allJournals = await _repository.GetAllJournals(
       searchText,
-      scheduleFilterMode,
+      scheduleMode,
       journalTypes,
       journalIds,
       limit,
@@ -90,7 +90,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   public Task<IEntry[]> SearchEntries(
     string? searchText,
-    ScheduleFilterMode? scheduleFilterMode = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
@@ -99,7 +99,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
   {
     return _repository.SearchEntries(
       searchText,
-      scheduleFilterMode,
+      scheduleMode,
       journalTypes,
       journalIds,
       limit,

@@ -71,7 +71,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   public async Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    ScheduleFilterMode? scheduleFilterMode = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
@@ -106,13 +106,13 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    if (scheduleFilterMode == ScheduleFilterMode.Any)
+    if (scheduleMode == ScheduleMode.AnySchedule)
     {
       filters.Add(
         Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
       );
     }
-    else if (scheduleFilterMode == ScheduleFilterMode.CurrentUser)
+    else if (scheduleMode == ScheduleMode.CurrentUserOnly)
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
@@ -200,7 +200,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   // you explicitly need to specify the journal IDs.
   public async Task<IEntry[]> SearchEntries(
     string? searchText,
-    ScheduleFilterMode? scheduleFilterMode = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
@@ -227,30 +227,26 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    if (scheduleFilterMode == ScheduleFilterMode.Any)
+    if (scheduleMode == ScheduleMode.AnySchedule)
     {
       filters.Add(
         Builders<EntryDocument>.Filter.Exists(d => d.Schedules)
       );
     }
-    else if (scheduleFilterMode == ScheduleFilterMode.CurrentUser)
+    else if (scheduleMode == ScheduleMode.CurrentUserOnly)
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
         throw new Exception("Current user id is required");
       }
 
-      filters.Add(
-        Builders<EntryDocument>.Filter.Where(
-          d => d.Schedules.ContainsKey(currentUserId)
-               && d.Schedules[currentUserId].NextOccurrence != null
-        )
-      );
+      filters.Add(GetHasScheduleForCurrentUserFilter(currentUserId));
     }
 
     var entries = await LoadData(
       limit,
-      scheduleFilterMode == ScheduleFilterMode.CurrentUser ? currentUserId : null,
+      scheduleMode,
+      currentUserId,
       filters
     );
 
@@ -261,11 +257,12 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   private async Task<List<EntryDocument>> LoadData(
     int? limit,
+    ScheduleMode? scheduleMode,
     string? currentUserId,
     List<FilterDefinition<EntryDocument>> filters
   )
   {
-    if (string.IsNullOrEmpty(currentUserId))
+    if (scheduleMode != ScheduleMode.CurrentUserFirst)
     {
       return await EntriesCollection
         .Find(
