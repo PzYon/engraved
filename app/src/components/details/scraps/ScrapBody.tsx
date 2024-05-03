@@ -58,13 +58,25 @@ export const ScrapBody: React.FC<{
     const allActions = [
       ...actions,
       ActionFactory.moveToAnotherScrap(scrapToRender),
-      ActionFactory.editEntrySchedule(
-        scrapToRender.parentId,
-        scrapToRender.id,
-        hasFocus,
-      ),
-      saveAction,
     ];
+
+    if (!isEditMode) {
+      allActions.push(
+        ActionFactory.editEntrySchedule(
+          scrapToRender.parentId,
+          scrapToRender.id,
+          hasFocus,
+        ),
+      );
+
+      if (getScheduleForUser(scrapToRender, user.id).nextOccurrence) {
+        allActions.push(
+          ActionFactory.markEntryScheduleAsDone(scrapToRender, hasFocus),
+        );
+      }
+    }
+
+    allActions.push(saveAction);
 
     const cancelEditing = getCancelEditingFunction();
 
@@ -81,12 +93,6 @@ export const ScrapBody: React.FC<{
 
     if (scrapToRender.id) {
       allActions.push(ActionFactory.deleteEntry(scrapToRender, hasFocus));
-    }
-
-    if (getScheduleForUser(scrapToRender, user.id).nextOccurrence) {
-      allActions.push(
-        ActionFactory.markEntryScheduleAsDone(scrapToRender, hasFocus),
-      );
     }
 
     return allActions;
