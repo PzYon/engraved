@@ -185,10 +185,11 @@ public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepo
 
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
-    string? scheduledOnlyForUserId = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
-    int? limit = null
+    int? limit = null,
+    string? currentUserId = null
   )
   {
     throw new NotImplementedException();
@@ -226,7 +227,7 @@ public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepo
 
   public Task<IEntry[]> SearchEntries(
     string? searchText,
-    string? scheduledOnlyForUserId = null,
+    ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
