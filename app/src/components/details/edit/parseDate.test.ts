@@ -92,6 +92,17 @@ describe("parseDate", () => {
         new Date(2017, 3, 23, 13, 30, 0, 0).toJSON(),
       );
     });
+
+    it("Every (case-insensitive)", () => {
+      const result = parseDate("EvErY sun at 13:30 Do stuff", referenceDate);
+
+      expect(result.recurrence?.dateString).toBe("sun at 13:30");
+      expect(result.text).toBe("Do stuff");
+
+      expect(result.date.toJSON()).toBe(
+        new Date(2017, 3, 23, 13, 30, 0, 0).toJSON(),
+      );
+    });
   });
 });
 

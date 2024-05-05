@@ -45,7 +45,7 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
       .trim(),
   };
 
-  const indexOfEvery = preparedValue.indexOf(every);
+  const indexOfEvery = preparedValue.toLowerCase().indexOf(every.toLowerCase());
 
   if (indexOfEvery > -1) {
     result.recurrence = {
