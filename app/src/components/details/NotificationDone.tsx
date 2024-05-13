@@ -21,7 +21,7 @@ export const NotificationDone: React.FC<{
   const navigate = useNavigate();
 
   const modifyScheduleMutation = useModifyScheduleMutation(
-    journal.id,
+    journal?.id ?? entry?.parentId,
     entry?.id,
   );
 

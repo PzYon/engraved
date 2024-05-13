@@ -1,10 +1,37 @@
 import { IJournal } from "../../serverApi/IJournal";
-import { useDialogContext } from "../layout/dialogs/DialogContext";
+import {
+  IDialogProps,
+  useDialogContext,
+} from "../layout/dialogs/DialogContext";
 import { useJournalContext } from "./JournalContext";
 import { IScrapEntry } from "../../serverApi/IScrapEntry";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
 import { NotificationDone } from "./NotificationDone";
+import { IEntry } from "../../serverApi/IEntry";
+
+export const renderNotificationDone = (
+  journal: IJournal,
+  entry: IEntry,
+  renderDialog: (dialogProps: IDialogProps) => void,
+  navigate: NavigateFunction,
+): void => {
+  // todo: load entry?
+
+  renderDialog({
+    title: `Notification: ${entry ? (entry as IScrapEntry).title : journal.name}`,
+    render: (closeDialog) => (
+      <NotificationDone
+        journal={journal}
+        entry={entry}
+        onSuccess={closeDialog}
+      />
+    ),
+    onClose: () => {
+      navigate(`/journals/${journal.id}`);
+    },
+  });
+};
 
 export const NotificationDoneLauncher: React.FC<{ journal: IJournal }> = ({
   journal,
@@ -19,23 +46,7 @@ export const NotificationDoneLauncher: React.FC<{ journal: IJournal }> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (entryId && !entry) {
-      return;
-    }
-
-    renderDialog({
-      title: `Notification: ${entry ? (entry as IScrapEntry).title : journal.name}`,
-      render: (closeDialog) => (
-        <NotificationDone
-          journal={journal}
-          entry={entry}
-          onSuccess={closeDialog}
-        />
-      ),
-      onClose: () => {
-        navigate(`/journals/${journal.id}`);
-      },
-    });
+    renderNotificationDone(journal, entry, renderDialog, navigate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry, entryId, journal]);
 

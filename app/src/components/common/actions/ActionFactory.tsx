@@ -41,6 +41,8 @@ import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 import { RegisteredActionsList } from "./RegisteredActionsList";
+import { renderNotificationDone } from "../../details/NotificationDoneLauncher";
+import { NavigateFunction } from "react-router-dom";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -473,6 +475,8 @@ export class ActionFactory {
 
   static markEntryScheduleAsDone(
     entry: IEntry,
+    renderDialog: (dialogProps: IDialogProps) => void,
+    navigate: NavigateFunction,
     enableHotkey: boolean,
   ): IAction {
     return {
@@ -480,7 +484,10 @@ export class ActionFactory {
       hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
-      href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
+      //href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
+      onClick: () => {
+        renderNotificationDone(null, entry, renderDialog, navigate);
+      },
     };
   }
 
