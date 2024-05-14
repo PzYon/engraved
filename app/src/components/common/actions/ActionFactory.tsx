@@ -140,7 +140,14 @@ export class ActionFactory {
     const additionalProps: Partial<IAction> = renderDialog
       ? {
           onClick: () =>
-            renderEditSchedule(renderDialog, userId, null, journal, null),
+            renderEditSchedule(
+              journalId,
+              renderDialog,
+              userId,
+              null,
+              journal,
+              null,
+            ),
         }
       : {
           href: `/journals/${journalId}/schedule`,
@@ -158,14 +165,33 @@ export class ActionFactory {
   static editEntrySchedule(
     journalId: string,
     entryId: string,
-    enableHotkeys: boolean,
+    renderDialog?: (dialogProps: IDialogProps) => void,
+    userId?: string,
+    journal?: IJournal,
+    enableHotkeys?: boolean,
   ): IAction {
+    const additionalProps: Partial<IAction> = renderDialog
+      ? {
+          onClick: () =>
+            renderEditSchedule(
+              journalId,
+              renderDialog,
+              userId,
+              entryId,
+              journal,
+              [],
+            ),
+        }
+      : {
+          href: `/journals/${journalId}/entries/${entryId}/schedule`,
+        };
+
     return {
       key: "edit-schedule",
       hotkey: enableHotkeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      href: `/journals/${journalId}/entries/${entryId}/schedule`,
+      ...additionalProps,
     };
   }
 

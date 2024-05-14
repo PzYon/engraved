@@ -67,6 +67,9 @@ export const ScrapBody: React.FC<{
         ActionFactory.editEntrySchedule(
           scrapToRender.parentId,
           scrapToRender.id,
+          renderDialog,
+          user.id,
+          null,
           hasFocus,
         ),
       );

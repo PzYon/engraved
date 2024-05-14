@@ -13,6 +13,7 @@ import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 import { IEntry } from "../../../serverApi/IEntry";
 
 export const renderEditSchedule = (
+  journalId: string,
   renderDialog: (dialogProps: IDialogProps) => void,
   userId: string,
   entryId: string,
@@ -25,13 +26,13 @@ export const renderEditSchedule = (
     render: (closeDialog) => (
       <EditSchedule
         initialDate={getNextOccurrence()}
-        journalId={journal.id}
+        journalId={journalId}
         entryId={entryId}
         onCancel={closeDialog}
       />
     ),
     onClose: () => {
-      navigate?.(`/journals/${journal.id}`);
+      navigate?.(`/journals/${journalId}`);
     },
   });
 
@@ -60,6 +61,7 @@ export const EditScheduleLauncher: React.FC<{
 
   useEffect(() => {
     renderEditSchedule(
+      journal.id,
       renderDialog,
       user.id,
       entryId,
