@@ -99,7 +99,14 @@ export const ScrapBody: React.FC<{
     }
 
     if (scrapToRender.id) {
-      allActions.push(ActionFactory.deleteEntry(scrapToRender, hasFocus));
+      allActions.push(
+        ActionFactory.deleteEntry(
+          scrapToRender,
+          renderDialog,
+          navigate,
+          hasFocus,
+        ),
+      );
     }
 
     return allActions;

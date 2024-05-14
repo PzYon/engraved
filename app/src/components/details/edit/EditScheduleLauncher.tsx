@@ -1,12 +1,52 @@
 import { IJournal } from "../../../serverApi/IJournal";
-import { useDialogContext } from "../../layout/dialogs/DialogContext";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  IDialogProps,
+  useDialogContext,
+} from "../../layout/dialogs/DialogContext";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect } from "react";
 import { EditSchedule } from "./EditSchedule";
 import { useJournalContext } from "../JournalContext";
 import { useAppContext } from "../../../AppContext";
 import { IEntity } from "../../../serverApi/IEntity";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
+import { IEntry } from "../../../serverApi/IEntry";
+
+export const renderEditSchedule = (
+  renderDialog: (dialogProps: IDialogProps) => void,
+  userId: string,
+  entryId: string,
+  journal: IJournal,
+  entries: IEntry[],
+  navigate?: NavigateFunction,
+) => {
+  renderDialog({
+    title: "Schedule for " + (entryId ? "entry" : "journal"),
+    render: (closeDialog) => (
+      <EditSchedule
+        initialDate={getNextOccurrence()}
+        journalId={journal.id}
+        entryId={entryId}
+        onCancel={closeDialog}
+      />
+    ),
+    onClose: () => {
+      navigate?.(`/journals/${journal.id}`);
+    },
+  });
+
+  function getNextOccurrence() {
+    const entity: IEntity = entryId
+      ? entries.filter((i) => i.id === entryId)[0]
+      : journal;
+
+    if (!entity) {
+      return null;
+    }
+
+    return getScheduleForUser(entity, userId).nextOccurrence;
+  }
+};
 
 export const EditScheduleLauncher: React.FC<{
   journal: IJournal;
@@ -19,32 +59,14 @@ export const EditScheduleLauncher: React.FC<{
   const navigate = useNavigate();
 
   useEffect(() => {
-    renderDialog({
-      title: "Schedule for " + (entryId ? "entry" : "journal"),
-      render: (closeDialog) => (
-        <EditSchedule
-          initialDate={getNextOccurrence()}
-          journalId={journal.id}
-          entryId={entryId}
-          onCancel={closeDialog}
-        />
-      ),
-      onClose: () => {
-        navigate(`/journals/${journal.id}`);
-      },
-    });
-
-    function getNextOccurrence() {
-      const entity: IEntity = entryId
-        ? entries.filter((i) => i.id === entryId)[0]
-        : journal;
-
-      if (!entity) {
-        return null;
-      }
-
-      return getScheduleForUser(entity, user.id).nextOccurrence;
-    }
+    renderEditSchedule(
+      renderDialog,
+      user.id,
+      entryId,
+      journal,
+      entries,
+      navigate,
+    );
   }, [journal, entryId, entries, navigate, renderDialog, user.id]);
 
   return null;

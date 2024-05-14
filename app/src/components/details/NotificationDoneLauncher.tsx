@@ -14,7 +14,7 @@ export const renderNotificationDone = (
   journal: IJournal,
   entry: IEntry,
   renderDialog: (dialogProps: IDialogProps) => void,
-  navigate: NavigateFunction,
+  navigate?: NavigateFunction,
 ): void => {
   // todo: load entry?
 
@@ -28,7 +28,9 @@ export const renderNotificationDone = (
       />
     ),
     onClose: () => {
-      navigate(`/journals/${journal.id}`);
+      if (journal && navigate) {
+        navigate(`/journals/${journal.id}`);
+      }
     },
   });
 };
