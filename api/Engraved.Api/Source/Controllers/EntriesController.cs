@@ -7,6 +7,7 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
+using Engraved.Core.Application.Queries.Entries.Get;
 using Engraved.Core.Application.Queries.Entries.GetActive;
 using Engraved.Core.Application.Queries.Entries.GetAll;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
@@ -22,7 +23,7 @@ namespace Engraved.Api.Controllers;
 public class EntriesController(Dispatcher dispatcher) : ControllerBase
 {
   [HttpGet]
-  [Route("{journalId}")]
+  [Route("journal/{journalId}")]
   public async Task<object[]> GetAll(string journalId, DateTime? fromDate, DateTime? toDate, string? attributeValues)
   {
     var query = new GetAllJournalEntriesQuery
@@ -50,9 +51,16 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
     SearchEntriesQueryResult result = await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(query);
     return GetAllEntriesQueryApiResult.FromResult(result);
   }
+  
+  [HttpGet]
+  [Route("{entryId}")]
+  public async Task<IEntry?> GetById(string entryId)
+  {
+    return await dispatcher.Query<IEntry, GetEntryQuery>(new GetEntryQuery { EntryId = entryId });
+  }
 
   [HttpGet]
-  [Route("{journalId}/active")]
+  [Route("journal/{journalId}/active")]
   public async Task<IEntry?> GetActive(string journalId)
   {
     return await dispatcher.Query<IEntry?, GetActiveEntryQuery>(new GetActiveEntryQuery { JournalId = journalId });
