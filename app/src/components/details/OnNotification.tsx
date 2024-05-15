@@ -7,14 +7,12 @@ import { ActionFactory } from "../common/actions/ActionFactory";
 import { Scrap } from "./scraps/Scrap";
 import { IScrapEntry } from "../../serverApi/IScrapEntry";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { useAppContext } from "../../AppContext";
 
 export const OnNotification: React.FC<{
   journal: IJournal;
   entry?: IEntry;
 }> = ({ journal, entry }) => {
   const { renderDialog } = useDialogContext();
-  const { user } = useAppContext();
 
   if (entry) {
     return (
@@ -35,7 +33,6 @@ export const OnNotification: React.FC<{
           ActionFactory.editJournalSchedule(
             journal.id,
             renderDialog,
-            user.id,
             journal,
             false,
           ),

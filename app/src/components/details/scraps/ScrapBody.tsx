@@ -68,7 +68,6 @@ export const ScrapBody: React.FC<{
           scrapToRender.parentId,
           scrapToRender.id,
           renderDialog,
-          user.id,
           null,
           hasFocus,
         ),

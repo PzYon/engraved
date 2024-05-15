@@ -26,7 +26,6 @@ export function getCommonActions(
     ActionFactory.editJournalSchedule(
       journal.id,
       renderDialog,
-      user.id,
       journal,
       enableHotkeys,
     ),

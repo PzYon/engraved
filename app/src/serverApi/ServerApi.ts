@@ -161,6 +161,10 @@ export class ServerApi {
     );
   }
 
+  static async getEntry(entryId: string): Promise<IEntry> {
+    return await ServerApi.executeRequest(`/entries/${entryId}`);
+  }
+
   static async getAllEntries(
     searchText: string,
     journalTypes: JournalType[],
