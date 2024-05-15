@@ -9,6 +9,10 @@ export const queryKeysFactory = {
     entities: () => ["search", "entities"],
   },
 
+  entry(entryId: string) {
+    return ["entry", entryId];
+  },
+
   journals(
     searchText?: string,
     journalTypes?: JournalType[],

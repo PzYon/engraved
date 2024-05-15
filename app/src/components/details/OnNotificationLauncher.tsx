@@ -1,10 +1,10 @@
 import { useDialogContext } from "../layout/dialogs/DialogContext";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { OnNotification } from "./OnNotification";
-import { useJournalContext } from "./JournalContext";
 import { IScrapEntry } from "../../serverApi/IScrapEntry";
 import { IJournal } from "../../serverApi/IJournal";
+import { useEntryQuery } from "../../serverApi/reactQuery/queries/useEntryQuery";
 
 export const OnNotificationLauncher: React.FC<{ journal: IJournal }> = ({
   journal,
@@ -12,9 +12,8 @@ export const OnNotificationLauncher: React.FC<{ journal: IJournal }> = ({
   const { renderDialog } = useDialogContext();
 
   const { entryId } = useParams();
-  const { entries } = useJournalContext();
 
-  const entry = entries.filter((e) => e.id === entryId)[0];
+  const entry = useEntryQuery(entryId);
 
   const navigate = useNavigate();
 

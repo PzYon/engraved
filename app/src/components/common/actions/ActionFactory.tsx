@@ -139,7 +139,7 @@ export class ActionFactory {
     const additionalProps: Partial<IAction> = renderDialog
       ? {
           onClick: () =>
-            renderEditSchedule(journalId, renderDialog, null, journal, null),
+            renderEditSchedule(journalId, null, journal, renderDialog, null),
         }
       : {
           href: `/journals/${journalId}/schedule`,
@@ -154,22 +154,38 @@ export class ActionFactory {
     };
   }
 
+  static editEntryScheduleViaUrl(
+    journalId: string,
+    entryId: string,
+    enableHotKeys?: boolean,
+  ) {
+    return this.editEntryScheduleInternal(
+      {
+        href: `/journals/${journalId}/entries/${entryId}/schedule`,
+      },
+      enableHotKeys,
+    );
+  }
+
   static editEntrySchedule(
     journalId: string,
     entryId: string,
-    renderDialog?: (dialogProps: IDialogProps) => void,
-    journal?: IJournal,
+    renderDialog: (dialogProps: IDialogProps) => void,
+    enableHotKeys?: boolean,
+  ) {
+    return this.editEntryScheduleInternal(
+      {
+        onClick: () =>
+          renderEditSchedule(journalId, entryId, null, renderDialog),
+      },
+      enableHotKeys,
+    );
+  }
+
+  private static editEntryScheduleInternal(
+    additionalProps: Partial<IAction>,
     enableHotkeys?: boolean,
   ): IAction {
-    const additionalProps: Partial<IAction> = renderDialog
-      ? {
-          onClick: () =>
-            renderEditSchedule(journalId, renderDialog, entryId, journal),
-        }
-      : {
-          href: `/journals/${journalId}/entries/${entryId}/schedule`,
-        };
-
     return {
       key: "edit-schedule",
       hotkey: enableHotkeys ? "alt+s" : undefined,
@@ -323,20 +339,35 @@ export class ActionFactory {
     entry: IEntry,
     renderDialog?: (dialogProps: IDialogProps) => void,
     navigate?: NavigateFunction,
-    enableHotkey?: boolean,
+    enableHotkeys?: boolean,
   ): IAction {
-    const additionalProps: Partial<IAction> =
-      renderDialog && navigate
-        ? {
-            onClick: () =>
-              renderNotificationDone(null, entry, renderDialog, navigate),
-          }
-        : {
-            href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
-          };
+    return this.markEntryScheduleAsInternal(
+      {
+        onClick: () =>
+          renderNotificationDone(null, entry, renderDialog, navigate),
+      },
+      enableHotkeys,
+    );
+  }
 
+  static markEntryScheduleAsDoneViaUrl(
+    entry: IEntry,
+    enableHotkeys?: boolean,
+  ): IAction {
+    return this.markEntryScheduleAsInternal(
+      {
+        href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
+      },
+      enableHotkeys,
+    );
+  }
+
+  static markEntryScheduleAsInternal(
+    additionalProps: Partial<IAction>,
+    enableHotkeys?: boolean,
+  ): IAction {
     return {
-      hotkey: enableHotkey ? "alt+d" : undefined,
+      hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "mark-as-done",
       label: "Mark as done",
       icon: <DoneOutlined fontSize="small" />,

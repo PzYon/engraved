@@ -8,6 +8,7 @@ import { useScrapContext } from "./ScrapContext";
 import { useAppContext } from "../../../AppContext";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 import { useNavigate } from "react-router-dom";
+import { useJournalContext } from "../JournalContext";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
@@ -29,6 +30,9 @@ export const ScrapBody: React.FC<{
     journalName,
     hasFocus,
   } = useScrapContext();
+
+  const { journal } = useJournalContext();
+  const isOnJournalPage = !!journal;
 
   return (
     <Entry
@@ -64,23 +68,33 @@ export const ScrapBody: React.FC<{
 
     if (!isEditMode) {
       allActions.push(
-        ActionFactory.editEntrySchedule(
-          scrapToRender.parentId,
-          scrapToRender.id,
-          renderDialog,
-          null,
-          hasFocus,
-        ),
+        isOnJournalPage
+          ? ActionFactory.editEntryScheduleViaUrl(
+              scrapToRender.parentId,
+              scrapToRender.id,
+              hasFocus,
+            )
+          : ActionFactory.editEntrySchedule(
+              scrapToRender.parentId,
+              scrapToRender.id,
+              renderDialog,
+              hasFocus,
+            ),
       );
 
       if (getScheduleForUser(scrapToRender, user.id).nextOccurrence) {
         allActions.push(
-          ActionFactory.markEntryScheduleAsDone(
-            scrapToRender,
-            renderDialog,
-            navigate,
-            hasFocus,
-          ),
+          isOnJournalPage
+            ? ActionFactory.markEntryScheduleAsDoneViaUrl(
+                scrapToRender,
+                hasFocus,
+              )
+            : ActionFactory.markEntryScheduleAsDone(
+                scrapToRender,
+                renderDialog,
+                navigate,
+                hasFocus,
+              ),
         );
       }
     }

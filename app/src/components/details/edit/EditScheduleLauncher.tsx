@@ -11,9 +11,9 @@ import { useAppContext } from "../../../AppContext";
 
 export const renderEditSchedule = (
   journalId: string,
-  renderDialog: (dialogProps: IDialogProps) => void,
   entryId: string,
   journal: IJournal,
+  renderDialog: (dialogProps: IDialogProps) => void,
   navigate?: NavigateFunction,
 ) => {
   renderDialog({
@@ -43,7 +43,7 @@ export const EditScheduleLauncher: React.FC<{
   const navigate = useNavigate();
 
   useEffect(() => {
-    renderEditSchedule(journal.id, renderDialog, entryId, journal, navigate);
+    renderEditSchedule(journal.id, entryId, journal, renderDialog, navigate);
   }, [journal, entryId, entries, navigate, renderDialog, user.id]);
 
   return null;
