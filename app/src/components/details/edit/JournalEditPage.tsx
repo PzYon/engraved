@@ -5,7 +5,7 @@ import { PageSection } from "../../layout/pages/PageSection";
 import { useJournalContext } from "../JournalContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
-import { getCommonEditModeActions } from "../../overview/getCommonActions";
+import { getCommonEditModeActions } from "../../overview/getCommonJournalActions";
 import { JournalUiSettings } from "./JournalUiSettings";
 import { EditCommonProperties } from "./EditCommonProperties";
 import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";

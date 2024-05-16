@@ -1,36 +1,10 @@
 import { IJournal } from "../../../serverApi/IJournal";
-import {
-  IDialogProps,
-  useDialogContext,
-} from "../../layout/dialogs/DialogContext";
-import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
+import { useDialogContext } from "../../layout/dialogs/DialogContext";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect } from "react";
-import { EditSchedule } from "./EditSchedule";
 import { useJournalContext } from "../JournalContext";
 import { useAppContext } from "../../../AppContext";
-
-export const renderEditSchedule = (
-  journalId: string,
-  entryId: string,
-  journal: IJournal,
-  renderDialog: (dialogProps: IDialogProps) => void,
-  navigate?: NavigateFunction,
-) => {
-  renderDialog({
-    title: "Schedule for " + (entryId ? "entry" : "journal"),
-    render: (closeDialog) => (
-      <EditSchedule
-        journal={journal}
-        journalId={journalId}
-        entryId={entryId}
-        onCancel={closeDialog}
-      />
-    ),
-    onClose: () => {
-      navigate?.(`/journals/${journalId}`);
-    },
-  });
-};
+import { renderEditSchedule } from "./renderEditSchedule";
 
 export const EditScheduleLauncher: React.FC<{
   journal: IJournal;

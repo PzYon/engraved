@@ -60,6 +60,8 @@ export const NotificationDone: React.FC<{
           <Button
             variant={schedule?.recurrence ? "outlined" : "contained"}
             onClick={() => {
+              // this should be something like this:
+              // renderDeleteEntry(null, entry.id, entry, renderDialog, navigate);
               navigate(
                 entry
                   ? `/journals/${entry.parentId}/entries/${entry.id}/delete`

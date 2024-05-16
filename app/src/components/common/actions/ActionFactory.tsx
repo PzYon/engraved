@@ -41,10 +41,10 @@ import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 import { RegisteredActionsList } from "./RegisteredActionsList";
-import { renderNotificationDone } from "../../details/NotificationDoneLauncher";
 import { NavigateFunction } from "react-router-dom";
-import { renderDeleteEntry } from "../../details/edit/DeleteEntryLauncher";
-import { renderEditSchedule } from "../../details/edit/EditScheduleLauncher";
+import { renderNotificationDone } from "../../details/renderNotificationDone";
+import { renderDeleteEntry } from "../../details/edit/renderDeleteEntry";
+import { renderEditSchedule } from "../../details/edit/renderEditSchedule";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -320,7 +320,7 @@ export class ActionFactory {
       renderDialog && navigate
         ? {
             onClick: () =>
-              renderDeleteEntry(null, entry.id, renderDialog, navigate),
+              renderDeleteEntry(null, entry.id, entry, renderDialog, navigate),
           }
         : {
             href: `/journals/${entry.parentId}/entries/${entry.id}/delete`,

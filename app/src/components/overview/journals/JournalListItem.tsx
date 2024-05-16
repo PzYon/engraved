@@ -5,7 +5,7 @@ import { useJournalProperties } from "./useJournalProperties";
 import { JournalTypeIcon } from "../../common/JournalTypeIcon";
 import { ActionLink } from "../../common/actions/ActionLink";
 import { ActionFactory } from "../../common/actions/ActionFactory";
-import { getCommonActions } from "../getCommonActions";
+import { getCommonJournalActions } from "../getCommonJournalActions";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { ListItemFooterRow } from "../ListItemFooterRow";
 import { IconStyle } from "../../common/IconStyle";
@@ -63,7 +63,12 @@ export const JournalListItem: React.FC<{
           <ListItemFooterRow
             hasFocus={hasFocus}
             properties={journalProperties}
-            actions={getCommonActions(journal, hasFocus, user, renderDialog)}
+            actions={getCommonJournalActions(
+              journal,
+              hasFocus,
+              user,
+              renderDialog,
+            )}
           />
         </Box>
       </Box>

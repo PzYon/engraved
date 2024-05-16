@@ -26,7 +26,19 @@ export const EditSchedule: React.FC<{
         date: d ? new Date(d) : null,
       });
     });
-  }, [journal, entryId, journalId]);
+
+    async function getNextOccurrence() {
+      const entity: IEntity = await (entryId
+        ? ServerApi.getEntry(entryId)
+        : Promise.resolve(journal));
+
+      if (!entity) {
+        return null;
+      }
+
+      return getScheduleForUser(entity, user.id).nextOccurrence;
+    }
+  }, [journal, entryId, journalId, user]);
 
   const { user } = useAppContext();
 
@@ -73,18 +85,6 @@ export const EditSchedule: React.FC<{
       </DialogFormButtonContainer>
     </>
   );
-
-  async function getNextOccurrence() {
-    const entity: IEntity = await (entryId
-      ? ServerApi.getEntry(entryId)
-      : Promise.resolve(journal));
-
-    if (!entity) {
-      return null;
-    }
-
-    return getScheduleForUser(entity, user.id).nextOccurrence;
-  }
 
   function save() {
     const scheduleDefinition: IScheduleDefinition = {

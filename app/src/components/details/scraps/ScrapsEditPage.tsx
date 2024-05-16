@@ -3,7 +3,7 @@ import { useJournalContext } from "../JournalContext";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../../layout/pages/Page";
 import { JournalPageTitle } from "../JournalPageTitle";
-import { getCommonEditModeActions } from "../../overview/getCommonActions";
+import { getCommonEditModeActions } from "../../overview/getCommonJournalActions";
 import { EditCommonProperties } from "../edit/EditCommonProperties";
 import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { EditPageFooterButtons } from "../../common/EditPageFooterButtons";

@@ -26,7 +26,6 @@ public class GetEntryQueryExecutor(IRepository repository) : IQueryExecutor<IEnt
 
     // permission check
     IJournal? journal = await repository.GetJournal(entry.ParentId);
-
     if (journal == null)
     {
       return null;

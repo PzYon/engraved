@@ -7,7 +7,7 @@ import {
 } from "@mui/icons-material";
 import { useJournalContext } from "../JournalContext";
 import { JournalPageTitle } from "../JournalPageTitle";
-import { getCommonActions } from "../../overview/getCommonActions";
+import { getCommonJournalActions } from "../../overview/getCommonJournalActions";
 import { Page } from "../../layout/pages/Page";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { Route, Routes } from "react-router-dom";
@@ -58,7 +58,7 @@ export const ScrapsViewPage: React.FC = () => {
         getAddNewAction("list"),
         null,
         ActionFactory.getToc(() => setShowToc(!showToc)),
-        ...getCommonActions(journal, false, user),
+        ...getCommonJournalActions(journal, false, user),
       ]}
     >
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}

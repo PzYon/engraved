@@ -1,35 +1,9 @@
 import React, { useEffect } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
-import {
-  IDialogProps,
-  useDialogContext,
-} from "../../layout/dialogs/DialogContext";
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import { DeleteEntry } from "./DeleteEntry";
+import { useDialogContext } from "../../layout/dialogs/DialogContext";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
-
-export const renderDeleteEntry = (
-  journal: IJournal,
-  entryId: string,
-  renderDialog: (dialogProps: IDialogProps) => void,
-  navigate: NavigateFunction,
-): void => {
-  renderDialog({
-    title: "Delete Entry",
-    render: (closeDialog) => {
-      return (
-        <DeleteEntry
-          journal={journal}
-          entryId={entryId}
-          closeDialog={closeDialog}
-        />
-      );
-    },
-    onClose: () => {
-      navigate(`/journals/${journal.id}`);
-    },
-  });
-};
+import { renderDeleteEntry } from "./renderDeleteEntry";
 
 export const DeleteEntryLauncher: React.FC<{
   journal: IJournal;
@@ -39,7 +13,7 @@ export const DeleteEntryLauncher: React.FC<{
   const navigate = useNavigate();
 
   useEffect(() => {
-    renderDeleteEntry(journal, entryId, renderDialog, navigate);
+    renderDeleteEntry(journal, entryId, null, renderDialog, navigate);
   }, [journal, entryId, navigate, renderDialog]);
 
   return null;

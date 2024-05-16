@@ -1,39 +1,9 @@
 import { IJournal } from "../../serverApi/IJournal";
-import {
-  IDialogProps,
-  useDialogContext,
-} from "../layout/dialogs/DialogContext";
+import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useJournalContext } from "./JournalContext";
-import { IScrapEntry } from "../../serverApi/IScrapEntry";
-import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect } from "react";
-import { NotificationDone } from "./NotificationDone";
-import { IEntry } from "../../serverApi/IEntry";
-
-export const renderNotificationDone = (
-  journal: IJournal,
-  entry: IEntry,
-  renderDialog: (dialogProps: IDialogProps) => void,
-  navigate?: NavigateFunction,
-): void => {
-  // todo: load entry?
-
-  renderDialog({
-    title: `Notification: ${entry ? (entry as IScrapEntry).title : journal.name}`,
-    render: (closeDialog) => (
-      <NotificationDone
-        journal={journal}
-        entry={entry}
-        onSuccess={closeDialog}
-      />
-    ),
-    onClose: () => {
-      if (journal && navigate) {
-        navigate(`/journals/${journal.id}`);
-      }
-    },
-  });
-};
+import { renderNotificationDone } from "./renderNotificationDone";
 
 export const NotificationDoneLauncher: React.FC<{ journal: IJournal }> = ({
   journal,
