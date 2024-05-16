@@ -315,12 +315,20 @@ export class ActionFactory {
     renderDialog?: (dialogProps: IDialogProps) => void,
     navigate?: NavigateFunction,
     enableHotkey?: boolean,
+    journalName?: string,
   ): IAction {
     const additionalProps: Partial<IAction> =
       renderDialog && navigate
         ? {
             onClick: () =>
-              renderDeleteEntry(null, entry.id, entry, renderDialog, navigate),
+              renderDeleteEntry(
+                null,
+                entry.id,
+                entry,
+                renderDialog,
+                navigate,
+                journalName,
+              ),
           }
         : {
             href: `/journals/${entry.parentId}/entries/${entry.id}/delete`,
@@ -389,7 +397,14 @@ export class ActionFactory {
   ): IAction {
     const additionalProps: Partial<IAction> = renderDialog
       ? {
-          onClick: () => renderNotificationDone(journal, null, renderDialog),
+          onClick: () =>
+            renderNotificationDone(
+              journal,
+              null,
+              renderDialog,
+              null,
+              journal.name,
+            ),
         }
       : {
           href: `/journals/${journal.id}/notification-done`,

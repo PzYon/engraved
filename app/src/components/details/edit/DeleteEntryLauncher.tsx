@@ -13,7 +13,14 @@ export const DeleteEntryLauncher: React.FC<{
   const navigate = useNavigate();
 
   useEffect(() => {
-    renderDeleteEntry(journal, entryId, null, renderDialog, navigate);
+    renderDeleteEntry(
+      journal,
+      entryId,
+      null,
+      renderDialog,
+      navigate,
+      journal.name,
+    );
   }, [journal, entryId, navigate, renderDialog]);
 
   return null;

@@ -27,7 +27,13 @@ export const EntryWithValue: React.FC<{
       entry={entry}
       actions={[
         ActionFactory.editEntry(entry, hasFocus),
-        ActionFactory.deleteEntry(entry, renderDialog, navigate, hasFocus),
+        ActionFactory.deleteEntry(
+          entry,
+          renderDialog,
+          navigate,
+          hasFocus,
+          journal.name,
+        ),
       ]}
       hasFocus={hasFocus}
       propsRenderStyle={"all"}
