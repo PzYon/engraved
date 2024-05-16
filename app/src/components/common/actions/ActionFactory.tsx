@@ -340,11 +340,18 @@ export class ActionFactory {
     renderDialog?: (dialogProps: IDialogProps) => void,
     navigate?: NavigateFunction,
     enableHotkeys?: boolean,
+    journalName?: string,
   ): IAction {
     return this.markEntryScheduleAsInternal(
       {
         onClick: () =>
-          renderNotificationDone(null, entry, renderDialog, navigate),
+          renderNotificationDone(
+            null,
+            entry,
+            renderDialog,
+            navigate,
+            journalName,
+          ),
       },
       enableHotkeys,
     );

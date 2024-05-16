@@ -94,6 +94,7 @@ export const ScrapBody: React.FC<{
                 renderDialog,
                 navigate,
                 hasFocus,
+                journalName,
               ),
         );
       }

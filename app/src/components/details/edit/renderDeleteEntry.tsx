@@ -10,6 +10,7 @@ export const renderDeleteEntry = (
   entry: IEntry,
   renderDialog: (dialogProps: IDialogProps) => void,
   navigate: NavigateFunction,
+  journalName?: string,
 ): void => {
   renderDialog({
     title: "Delete Entry",
@@ -20,6 +21,7 @@ export const renderDeleteEntry = (
           entryId={entryId}
           closeDialog={closeDialog}
           entry={entry}
+          journalName={journalName}
         />
       );
     },

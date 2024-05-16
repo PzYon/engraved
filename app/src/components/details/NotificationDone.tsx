@@ -10,13 +10,17 @@ import { useNavigate } from "react-router-dom";
 import { Properties } from "../common/Properties";
 import { getSchedulePropertyFromSchedule } from "../overview/scheduled/scheduleUtils";
 import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
+import { renderDeleteEntry } from "./edit/renderDeleteEntry";
+import { useDialogContext } from "../layout/dialogs/DialogContext";
 
 export const NotificationDone: React.FC<{
   journal: IJournal;
   entry?: IEntry;
   onSuccess: () => void;
-}> = ({ journal, entry, onSuccess }) => {
+  journalName?: string;
+}> = ({ journal, entry, onSuccess, journalName }) => {
   const { user } = useAppContext();
+  const { renderDialog } = useDialogContext();
 
   const navigate = useNavigate();
 
@@ -60,13 +64,18 @@ export const NotificationDone: React.FC<{
           <Button
             variant={schedule?.recurrence ? "outlined" : "contained"}
             onClick={() => {
-              // this should be something like this:
-              // renderDeleteEntry(null, entry.id, entry, renderDialog, navigate);
-              navigate(
-                entry
-                  ? `/journals/${entry.parentId}/entries/${entry.id}/delete`
-                  : `/journals/${entry.parentId}/delete`,
-              );
+              if (entry) {
+                renderDeleteEntry(
+                  journal,
+                  entry.id,
+                  entry,
+                  renderDialog,
+                  navigate,
+                  journalName,
+                );
+              } else {
+                navigate(`/journals/${entry.parentId}/delete`);
+              }
             }}
           >
             Delete {entry ? "entry" : "journal"}
