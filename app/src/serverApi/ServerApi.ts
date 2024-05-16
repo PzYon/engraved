@@ -156,7 +156,13 @@ export class ServerApi {
   }
 
   static async getActiveEntry(journalId: string): Promise<IEntry> {
-    return await ServerApi.executeRequest(`/entries/${journalId}/active`);
+    return await ServerApi.executeRequest(
+      `/entries/journal/${journalId}/active`,
+    );
+  }
+
+  static async getEntry(entryId: string): Promise<IEntry> {
+    return await ServerApi.executeRequest(`/entries/${entryId}`);
   }
 
   static async getAllEntries(
@@ -299,7 +305,9 @@ export class ServerApi {
 
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";
 
-    return await ServerApi.executeRequest(`/entries/${journalId}${params}`);
+    return await ServerApi.executeRequest(
+      `/entries/journal/${journalId}${params}`,
+    );
   }
 
   static async upsertEntry(

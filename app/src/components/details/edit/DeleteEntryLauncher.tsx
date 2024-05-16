@@ -2,33 +2,25 @@ import React, { useEffect } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useNavigate } from "react-router-dom";
-import { DeleteEntry } from "./DeleteEntry";
 import { useParams } from "react-router";
+import { renderDeleteEntry } from "./renderDeleteEntry";
 
 export const DeleteEntryLauncher: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
-  const { renderDialog } = useDialogContext();
   const { entryId } = useParams();
-
+  const { renderDialog } = useDialogContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    renderDialog({
-      title: "Delete Entry",
-      render: (closeDialog) => {
-        return (
-          <DeleteEntry
-            journal={journal}
-            entryId={entryId}
-            closeDialog={closeDialog}
-          />
-        );
-      },
-      onClose: () => {
-        navigate(`/journals/${journal.id}`);
-      },
-    });
+    renderDeleteEntry(
+      journal,
+      entryId,
+      null,
+      renderDialog,
+      navigate,
+      journal.name,
+    );
   }, [journal, entryId, navigate, renderDialog]);
 
   return null;

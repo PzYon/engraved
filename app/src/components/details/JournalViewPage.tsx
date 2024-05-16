@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useJournalContext } from "./JournalContext";
 import { LocalHotelOutlined } from "@mui/icons-material";
-import { getCommonActions } from "../overview/getCommonActions";
+import { getCommonJournalActions } from "../overview/getCommonJournalActions";
 import { PageSection } from "../layout/pages/PageSection";
 import { JournalNotes } from "./edit/JournalNotes";
 import { EntryFilters } from "./filters/EntryFilters";
@@ -93,7 +93,7 @@ export const JournalViewPage: React.FC = () => {
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonActions(journal, true, user, renderDialog),
+      ...getCommonJournalActions(journal, true, user, renderDialog),
     ]);
 
     return () => {

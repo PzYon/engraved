@@ -10,18 +10,22 @@ import { useNavigate } from "react-router-dom";
 import { Properties } from "../common/Properties";
 import { getSchedulePropertyFromSchedule } from "../overview/scheduled/scheduleUtils";
 import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
+import { renderDeleteEntry } from "./edit/renderDeleteEntry";
+import { useDialogContext } from "../layout/dialogs/DialogContext";
 
 export const NotificationDone: React.FC<{
   journal: IJournal;
   entry?: IEntry;
   onSuccess: () => void;
-}> = ({ journal, entry, onSuccess }) => {
+  journalName?: string;
+}> = ({ journal, entry, onSuccess, journalName }) => {
   const { user } = useAppContext();
+  const { renderDialog } = useDialogContext();
 
   const navigate = useNavigate();
 
   const modifyScheduleMutation = useModifyScheduleMutation(
-    journal.id,
+    journal?.id ?? entry?.parentId,
     entry?.id,
   );
 
@@ -45,7 +49,7 @@ export const NotificationDone: React.FC<{
                 : null,
               recurrence: schedule.recurrence,
               onClickUrl: entry
-                ? `${location.origin}/journals/${journal.id}/entries/${entry.id}/notification`
+                ? `${location.origin}/journals/${entry.parentId}/entries/${entry.id}/notification`
                 : `${location.origin}/journals/${journal.id}/notification`,
             };
 
@@ -60,11 +64,18 @@ export const NotificationDone: React.FC<{
           <Button
             variant={schedule?.recurrence ? "outlined" : "contained"}
             onClick={() => {
-              navigate(
-                entry
-                  ? `/journals/${entry.parentId}/entries/${entry.id}/delete`
-                  : `/journals/${entry.parentId}/delete`,
-              );
+              if (entry) {
+                renderDeleteEntry(
+                  journal,
+                  entry.id,
+                  entry,
+                  renderDialog,
+                  navigate,
+                  journalName,
+                );
+              } else {
+                navigate(`/journals/${entry.parentId}/delete`);
+              }
             }}
           >
             Delete {entry ? "entry" : "journal"}

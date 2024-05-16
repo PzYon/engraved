@@ -4,22 +4,29 @@ import { DeleteButtons } from "../../common/DeleteButtons";
 import { JournalType } from "../../../serverApi/JournalType";
 import React from "react";
 import { Typography } from "@mui/material";
+import { IEntry } from "../../../serverApi/IEntry";
 
 export const DeleteEntry: React.FC<{
   journal: IJournal;
   entryId: string;
+  entry: IEntry;
   closeDialog: () => void;
-}> = ({ journal, entryId, closeDialog }) => {
-  const deleteEntryMutation = useDeleteEntryMutation(journal.id, entryId);
+  journalName?: string;
+}> = ({ journal, entryId, entry, closeDialog, journalName }) => {
+  const deleteEntryMutation = useDeleteEntryMutation(
+    journal?.id ?? entry?.parentId,
+    entryId,
+  );
 
-  const isScrapJournal = journal.type === JournalType.Scraps;
+  const isScrapJournal = journal?.type === JournalType.Scraps;
 
   return (
     <>
       <Typography>
         Are you sure you want to delete this{" "}
         <b>{isScrapJournal ? "scrap" : "entry"}</b> from journal{" "}
-        <b>&quot;{journal.name}&quot;</b>? You will not be able to recover it.
+        <b>&quot;{journalName ?? journal?.name}&quot;</b>? You will not be able
+        to recover it.
       </Typography>
       <DeleteButtons
         entityType={"entry"}

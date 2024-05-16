@@ -14,6 +14,7 @@ using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Queries;
+using Engraved.Core.Application.Queries.Entries.Get;
 using Engraved.Core.Application.Queries.Entries.GetActive;
 using Engraved.Core.Application.Queries.Entries.GetAll;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
@@ -58,6 +59,7 @@ public class ExecutorRegistration
   public static void RegisterQueries(IServiceCollection services)
   {
     RegisterQuery<IEntry?, GetActiveEntryQuery, GetActiveEntryQueryExecutor>(services);
+    RegisterQuery<IEntry?, GetEntryQuery, GetEntryQueryExecutor>(services);
     RegisterQuery<SearchEntriesQueryResult, SearchEntriesQuery, SearchEntriesQueryExecutor>(services);
     RegisterQuery<IEntry[], GetAllJournalEntriesQuery, GetAllJournalEntriesQueryExecutor>(services);
     RegisterQuery<IJournal[], GetAllJournalsQuery, GetAllJournalsQueryExecutor>(services);

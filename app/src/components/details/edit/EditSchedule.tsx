@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { Button, FormControlLabel, Switch } from "@mui/material";
 import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
@@ -6,16 +6,41 @@ import { ParseableDate } from "./ParseableDate";
 import { DateSelector } from "../../common/DateSelector";
 import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
 import { IParsedDate } from "./parseDate";
+import { IEntity } from "../../../serverApi/IEntity";
+import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
+import { IJournal } from "../../../serverApi/IJournal";
+import { ServerApi } from "../../../serverApi/ServerApi";
+import { useAppContext } from "../../../AppContext";
 
 export const EditSchedule: React.FC<{
-  initialDate: string;
   journalId: string;
+  journal: IJournal;
   entryId?: string;
   onCancel: () => void;
-}> = ({ initialDate, journalId, entryId, onCancel }) => {
-  const [parsed, setParsed] = useState<IParsedDate>({
-    date: initialDate ? new Date(initialDate) : null,
-  });
+}> = ({ journalId, journal, entryId, onCancel }) => {
+  const [parsed, setParsed] = useState<IParsedDate>({});
+
+  const { user } = useAppContext();
+
+  useEffect(() => {
+    getNextOccurrence().then((d) => {
+      setParsed({
+        date: d ? new Date(d) : null,
+      });
+    });
+
+    async function getNextOccurrence() {
+      const entity: IEntity = await (entryId
+        ? ServerApi.getEntry(entryId)
+        : Promise.resolve(journal));
+
+      if (!entity) {
+        return null;
+      }
+
+      return getScheduleForUser(entity, user.id).nextOccurrence;
+    }
+  }, [journal, entryId, journalId, user]);
 
   const [showFullForm, setShowFullForm] = useState(!!parsed.date);
 

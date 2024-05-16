@@ -5,7 +5,7 @@ import { IAction } from "../common/actions/IAction";
 import { IUser } from "../../serverApi/IUser";
 import { getScheduleForUser } from "./scheduled/scheduleUtils";
 
-export function getCommonActions(
+export function getCommonJournalActions(
   journal: IJournal,
   enableHotkeys: boolean,
   user: IUser,
@@ -23,16 +23,27 @@ export function getCommonActions(
 
   actions.push(
     ActionFactory.editJournalPermissions(journal.id),
-    ActionFactory.editJournalSchedule(journal.id, enableHotkeys),
-    ActionFactory.editJournal(journal.id, enableHotkeys),
-    ActionFactory.deleteJournal(journal.id, enableHotkeys),
+    ActionFactory.editJournalSchedule(
+      journal.id,
+      renderDialog,
+      journal,
+      enableHotkeys,
+    ),
   );
 
   if (getScheduleForUser(journal, user.id).nextOccurrence) {
     actions.push(
-      ActionFactory.markJournalScheduleAsDone(journal, enableHotkeys),
+      ActionFactory.markJournalScheduleAsDone(
+        journal,
+        renderDialog,
+        enableHotkeys,
+      ),
     );
   }
+  actions.push(
+    ActionFactory.editJournal(journal.id, enableHotkeys),
+    ActionFactory.deleteJournal(journal.id, enableHotkeys),
+  );
 
   return actions;
 }
