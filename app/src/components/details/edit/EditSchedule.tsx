@@ -20,6 +20,8 @@ export const EditSchedule: React.FC<{
 }> = ({ journalId, journal, entryId, onCancel }) => {
   const [parsed, setParsed] = useState<IParsedDate>({});
 
+  const { user } = useAppContext();
+
   useEffect(() => {
     getNextOccurrence().then((d) => {
       setParsed({
@@ -39,8 +41,6 @@ export const EditSchedule: React.FC<{
       return getScheduleForUser(entity, user.id).nextOccurrence;
     }
   }, [journal, entryId, journalId, user]);
-
-  const { user } = useAppContext();
 
   const [showFullForm, setShowFullForm] = useState(!!parsed.date);
 
