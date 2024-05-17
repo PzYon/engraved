@@ -10,7 +10,6 @@ export const renderNotificationDone = (
   entry: IEntry,
   renderDialog: (dialogProps: IDialogProps) => void,
   navigate?: NavigateFunction,
-  journalName?: string,
 ): void => {
   renderDialog({
     title: `Notification: ${entry ? (entry as IScrapEntry).title : journal.name}`,
@@ -19,7 +18,6 @@ export const renderNotificationDone = (
         journal={journal}
         entry={entry}
         onSuccess={closeDialog}
-        journalName={journalName}
       />
     ),
     onClose: () => {

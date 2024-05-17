@@ -1,7 +1,7 @@
 import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeIcon } from "../JournalTypeIcon";
-import { Link } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import { getScheduleProperty } from "../../overview/scheduled/scheduleUtils";
 import { IAction } from "../actions/IAction";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -9,6 +9,9 @@ import { ListItemFooterRow } from "../../overview/ListItemFooterRow";
 import { IconStyle } from "../IconStyle";
 import { FormatDate } from "../FormatDate";
 import { useAppContext } from "../../../AppContext";
+import { EditSchedule } from "../../details/edit/EditSchedule";
+import { DeleteEntry } from "../../details/edit/DeleteEntry";
+import { NotificationDone } from "../../details/NotificationDone";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -48,6 +51,33 @@ export const Entry: React.FC<{
         )}
         actions={actions}
       />
+      <Routes>
+        <Route
+          path={`/${entry.id}/delete`}
+          element={<DeleteEntry entry={entry} closeDialog={() => {}} />}
+        />
+        <Route
+          path={`/${entry.id}/schedule`}
+          element={
+            <EditSchedule
+              journalId={""}
+              entryId={entry.id}
+              journal={null}
+              onCancel={() => {}}
+            />
+          }
+        />
+        <Route
+          path={`/${entry.id}/notification-done`}
+          element={
+            <NotificationDone
+              entry={entry}
+              journal={null}
+              onSuccess={() => {}}
+            />
+          }
+        />
+      </Routes>
     </>
   );
 };

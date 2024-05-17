@@ -41,9 +41,7 @@ import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 import { RegisteredActionsList } from "./RegisteredActionsList";
-import { NavigateFunction } from "react-router-dom";
 import { renderNotificationDone } from "../../details/renderNotificationDone";
-import { renderDeleteEntry } from "../../details/edit/renderDeleteEntry";
 import { renderEditSchedule } from "../../details/edit/renderEditSchedule";
 
 export class ActionFactory {
@@ -154,14 +152,10 @@ export class ActionFactory {
     };
   }
 
-  static editEntryScheduleViaUrl(
-    journalId: string,
-    entryId: string,
-    enableHotKeys?: boolean,
-  ) {
+  static editEntryScheduleViaUrl(entryId: string, enableHotKeys?: boolean) {
     return this.editEntryScheduleInternal(
       {
-        href: `/journals/${journalId}/entries/${entryId}/schedule`,
+        href: `${entryId}/schedule`,
       },
       enableHotKeys,
     );
@@ -310,59 +304,14 @@ export class ActionFactory {
     };
   }
 
-  static deleteEntry(
-    entry: IEntry,
-    renderDialog?: (dialogProps: IDialogProps) => void,
-    navigate?: NavigateFunction,
-    enableHotkey?: boolean,
-    journalName?: string,
-  ): IAction {
-    const additionalProps: Partial<IAction> =
-      renderDialog && navigate
-        ? {
-            onClick: () =>
-              renderDeleteEntry(
-                null,
-                entry.id,
-                entry,
-                renderDialog,
-                navigate,
-                journalName,
-              ),
-          }
-        : {
-            href: `/journals/${entry.parentId}/entries/${entry.id}/delete`,
-          };
-
+  static deleteEntry(entry: IEntry, enableHotkey?: boolean): IAction {
     return {
       hotkey: enableHotkey ? "alt+d" : undefined,
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
-      ...additionalProps,
+      href: `${entry.id}/delete`,
     };
-  }
-
-  static markEntryScheduleAsDone(
-    entry: IEntry,
-    renderDialog?: (dialogProps: IDialogProps) => void,
-    navigate?: NavigateFunction,
-    enableHotkeys?: boolean,
-    journalName?: string,
-  ): IAction {
-    return this.markEntryScheduleAsInternal(
-      {
-        onClick: () =>
-          renderNotificationDone(
-            null,
-            entry,
-            renderDialog,
-            navigate,
-            journalName,
-          ),
-      },
-      enableHotkeys,
-    );
   }
 
   static markEntryScheduleAsDoneViaUrl(
@@ -371,7 +320,7 @@ export class ActionFactory {
   ): IAction {
     return this.markEntryScheduleAsInternal(
       {
-        href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
+        href: `${entry.id}/notification-done`,
       },
       enableHotkeys,
     );
@@ -398,13 +347,7 @@ export class ActionFactory {
     const additionalProps: Partial<IAction> = renderDialog
       ? {
           onClick: () =>
-            renderNotificationDone(
-              journal,
-              null,
-              renderDialog,
-              null,
-              journal.name,
-            ),
+            renderNotificationDone(journal, null, renderDialog, null),
         }
       : {
           href: `/journals/${journal.id}/notification-done`,

@@ -18,13 +18,7 @@ export const NotificationDoneLauncher: React.FC<{ journal: IJournal }> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    renderNotificationDone(
-      journal,
-      entry,
-      renderDialog,
-      navigate,
-      journal.name,
-    );
+    renderNotificationDone(journal, entry, renderDialog, navigate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry, entryId, journal]);
 

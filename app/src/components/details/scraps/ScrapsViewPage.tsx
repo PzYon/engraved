@@ -11,7 +11,6 @@ import { getCommonJournalActions } from "../../overview/getCommonJournalActions"
 import { Page } from "../../layout/pages/Page";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { Route, Routes } from "react-router-dom";
-import { DeleteEntryLauncher } from "../edit/DeleteEntryLauncher";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { EditScheduleLauncher } from "../edit/EditScheduleLauncher";
 import { useAppContext } from "../../../AppContext";
@@ -98,10 +97,6 @@ export const ScrapsViewPage: React.FC = () => {
       ) : null}
 
       <Routes>
-        <Route
-          path="/entries/:entryId/delete"
-          element={<DeleteEntryLauncher journal={journal} />}
-        />
         <Route
           path="/entries/:entryId/schedule"
           element={<EditScheduleLauncher journal={journal} />}

@@ -10,7 +10,6 @@ import { Thresholds } from "./thresholds/Thresholds";
 import { EntriesTable } from "./entriesTable/EntriesTable";
 import { Route, Routes } from "react-router-dom";
 import { EditEntryLauncher } from "./edit/EditEntryLauncher";
-import { DeleteEntryLauncher } from "./edit/DeleteEntryLauncher";
 import { Page } from "../layout/pages/Page";
 import { JournalPageTitle } from "./JournalPageTitle";
 import { createDateConditions } from "./filters/createDateConditions";
@@ -191,10 +190,6 @@ export const JournalViewPage: React.FC = () => {
         <Route
           path="/entries/:entryId/edit"
           element={<EditEntryLauncher journal={journal} entries={entries} />}
-        />
-        <Route
-          path="/entries/:entryId/delete"
-          element={<DeleteEntryLauncher journal={journal} />}
         />
       </Routes>
     </Page>

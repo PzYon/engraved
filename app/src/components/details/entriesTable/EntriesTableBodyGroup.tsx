@@ -4,6 +4,8 @@ import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import { TableCell, TableRow } from "@mui/material";
 import { StyledTableRow } from "./EntriesTable";
 import { IEntry } from "../../../serverApi/IEntry";
+import { Route, Routes } from "react-router-dom";
+import { DeleteEntry } from "../edit/DeleteEntry";
 
 export const EntriesTableBodyGroup: React.FC<{
   group: IEntriesTableGroup;
@@ -36,13 +38,23 @@ export const EntriesTableBodyGroup: React.FC<{
   return (
     <>
       {group.entries.map((entry, i) => (
-        <StyledTableRow key={entry.id}>
-          {columns.map((c) => (
-            <TableCell key={c.key}>
-              {renderValueNode(c, entry, i === 0)}
-            </TableCell>
-          ))}
-        </StyledTableRow>
+        <>
+          <StyledTableRow key={entry.id}>
+            {columns.map((c) => (
+              <TableCell key={c.key}>
+                {renderValueNode(c, entry, i === 0)}
+              </TableCell>
+            ))}
+          </StyledTableRow>
+          <StyledTableRow>
+            <Routes>
+              <Route
+                path={`${entry.id}/delete`}
+                element={<DeleteEntry entry={entry} closeDialog={() => {}} />}
+              />
+            </Routes>
+          </StyledTableRow>
+        </>
       ))}
       {showGroupTotals ? (
         <TableRow>
