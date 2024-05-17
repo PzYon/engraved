@@ -12,6 +12,8 @@ import { useAppContext } from "../../../AppContext";
 import { EditSchedule } from "../../details/edit/EditSchedule";
 import { DeleteEntry } from "../../details/edit/DeleteEntry";
 import { NotificationDone } from "../../details/NotificationDone";
+import { styled } from "@mui/material";
+import { paperBorderRadius } from "../../../theming/engravedTheme";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -54,27 +56,35 @@ export const Entry: React.FC<{
       <Routes>
         <Route
           path={`/${entry.id}/delete`}
-          element={<DeleteEntry entry={entry} closeDialog={() => {}} />}
+          element={
+            <NavigationActionContainer>
+              <DeleteEntry entry={entry} closeDialog={() => {}} />
+            </NavigationActionContainer>
+          }
         />
         <Route
           path={`/${entry.id}/schedule`}
           element={
-            <EditSchedule
-              journalId={""}
-              entryId={entry.id}
-              journal={null}
-              onCancel={() => {}}
-            />
+            <NavigationActionContainer>
+              <EditSchedule
+                journalId={""}
+                entryId={entry.id}
+                journal={null}
+                onCancel={() => {}}
+              />
+            </NavigationActionContainer>
           }
         />
         <Route
           path={`/${entry.id}/notification-done`}
           element={
-            <NotificationDone
-              entry={entry}
-              journal={null}
-              onSuccess={() => {}}
-            />
+            <NavigationActionContainer>
+              <NotificationDone
+                entry={entry}
+                journal={null}
+                onSuccess={() => {}}
+              />
+            </NavigationActionContainer>
           }
         />
       </Routes>
@@ -114,3 +124,26 @@ function getEntryProperties(
     getScheduleProperty(entry, userId),
   ];
 }
+
+export const NavigationActionContainer: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+  return (
+    <Host>
+      <Inner>{children}</Inner>
+    </Host>
+  );
+};
+
+const Host = styled("div")`
+  display: flex;
+  justify-content: end;
+`;
+
+const Inner = styled("div")`
+  max-width: 500px;
+  border: 1px solid ${(p) => p.theme.palette.background.default};
+  border-radius: ${paperBorderRadius};
+  padding: 20px;
+  width: 100%;
+`;

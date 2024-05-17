@@ -46,13 +46,15 @@ export const EntriesTableBodyGroup: React.FC<{
               </TableCell>
             ))}
           </StyledTableRow>
-          <StyledTableRow>
-            <Routes>
-              <Route
-                path={`${entry.id}/delete`}
-                element={<DeleteEntry entry={entry} closeDialog={() => {}} />}
-              />
-            </Routes>
+          <StyledTableRow key="routes">
+            <TableCell colSpan={columns.length}>
+              <Routes>
+                <Route
+                  path={`${entry.id}/delete`}
+                  element={<DeleteEntry entry={entry} closeDialog={() => {}} />}
+                />
+              </Routes>
+            </TableCell>
           </StyledTableRow>
         </>
       ))}

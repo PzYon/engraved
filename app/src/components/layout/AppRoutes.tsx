@@ -15,7 +15,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/journals" element={<JournalsPage />} />
       <Route path="/" element={<JournalsPage />} />
       <Route path="/journals/:journalId/*" element={<JournalPageWrapper />} />
-      <Route path="/entries" element={<EntriesPage />} />
+      <Route path="/entries/*" element={<EntriesPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/scheduled/*" element={<ScheduledPage />} />
       <Route path="/settings" element={<PwaSettingsPage />} />

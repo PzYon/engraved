@@ -8,7 +8,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 export const ActionIconButton: React.FC<{
   action: IAction;
   buttonsAsSpans?: boolean;
-}> = ({ action, buttonsAsSpans }) => {
+  markAsAction?: boolean;
+}> = ({ action, buttonsAsSpans, markAsAction: markAsActive }) => {
   const actionContext = useActionContext();
 
   useHotkeys(
@@ -26,7 +27,7 @@ export const ActionIconButton: React.FC<{
   useEffect(() => {
     actionContext.addAction(action);
     return () => actionContext.removeAction(action);
-  }, [action]);
+  }, [action, actionContext]);
 
   if (action.href) {
     return (
@@ -73,7 +74,7 @@ export const ActionIconButton: React.FC<{
 
   function getCommonSx() {
     return {
-      color: "primary.main",
+      color: markAsActive ? "deeppink" : "primary.main",
       opacity: action.isNotActive ? 0.4 : 1,
       ...(action.sx || {}),
     };

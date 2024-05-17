@@ -44,13 +44,20 @@ export const ActionIconButtonGroup: React.FC<{
         <div ref={domElementRef} />
         {actions
           .filter((a) => a !== undefined)
-          .map((action) =>
-            action ? (
-              <ActionIconButton key={action.key} action={action} />
+          .map((action) => {
+            console.log("href", action.href);
+            console.log("loc", location.pathname);
+
+            return action ? (
+              <ActionIconButton
+                key={action.key}
+                action={action}
+                markAsAction={location.pathname.endsWith(action.href)}
+              />
             ) : (
               <SeparatorElement key={"separator"} />
-            ),
-          )}
+            );
+          })}
       </ButtonContainer>
     </>
   );
