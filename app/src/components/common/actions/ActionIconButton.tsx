@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import { IconButton, styled } from "@mui/material";
+import { IconButton, styled, Theme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { useActionContext } from "./ActionContext";
 import { useHotkeys } from "react-hotkeys-hook";
+import { SxProps } from "@mui/system";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
   buttonsAsSpans?: boolean;
-  markAsAction?: boolean;
-}> = ({ action, buttonsAsSpans, markAsAction: markAsActive }) => {
+}> = ({ action, buttonsAsSpans }) => {
   const actionContext = useActionContext();
 
   useHotkeys(
@@ -72,9 +72,9 @@ export const ActionIconButton: React.FC<{
     );
   }
 
-  function getCommonSx() {
+  function getCommonSx(): SxProps<Theme> {
     return {
-      color: markAsActive ? "deeppink" : "primary.main",
+      color: "primary.main",
       opacity: action.isNotActive ? 0.4 : 1,
       ...(action.sx || {}),
     };

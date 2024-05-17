@@ -7,8 +7,6 @@ import { useAppContext } from "../../AppContext";
 import { ISchedule } from "../../serverApi/ISchedule";
 import { parseDate } from "./edit/parseDate";
 import { useNavigate } from "react-router-dom";
-import { Properties } from "../common/Properties";
-import { getSchedulePropertyFromSchedule } from "../overview/scheduled/scheduleUtils";
 import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
 import React from "react";
 
@@ -30,13 +28,14 @@ export const NotificationDone: React.FC<{
     user.id
   ];
 
+  const isRecurring = !!schedule?.recurrence?.dateString;
+
   return (
     <>
-      <Properties properties={[getSchedulePropertyFromSchedule(schedule)]} />
-      {schedule?.recurrence?.dateString ? (
+      {isRecurring ? (
         <Typography>Will reoccur {schedule?.recurrence?.dateString}</Typography>
       ) : null}
-      <DialogFormButtonContainer>
+      <DialogFormButtonContainer sx={!isRecurring ? { paddingTop: 0 } : {}}>
         <Button
           variant={"contained"}
           onClick={() => {

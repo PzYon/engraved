@@ -142,8 +142,9 @@ const Host = styled("div")`
 
 const Inner = styled("div")`
   max-width: 500px;
-  border: 1px solid ${(p) => p.theme.palette.background.default};
+  border: 2px solid ${(p) => p.theme.palette.background.default};
   border-radius: ${paperBorderRadius};
-  padding: 20px;
+  padding: ${(p) => p.theme.spacing(2)};
+  margin-top: ${(p) => p.theme.spacing(2)};
   width: 100%;
 `;
