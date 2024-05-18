@@ -51,7 +51,7 @@ export const EntriesTableBodyGroup: React.FC<{
               <Routes>
                 <Route
                   path={`${entry.id}/delete`}
-                  element={<DeleteEntry entry={entry} closeDialog={() => {}} />}
+                  element={<DeleteEntry entry={entry} />}
                 />
               </Routes>
             </TableCell>

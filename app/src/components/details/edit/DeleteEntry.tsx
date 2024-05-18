@@ -7,8 +7,7 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 
 export const DeleteEntry: React.FC<{
   entry: IEntry;
-  closeDialog: () => void;
-}> = ({ entry, closeDialog }) => {
+}> = ({ entry }) => {
   const deleteEntryMutation = useDeleteEntryMutation(entry.parentId, entry.id);
 
   const isScrapJournal = !!(entry as IScrapEntry).scrapType;
@@ -23,15 +22,9 @@ export const DeleteEntry: React.FC<{
       <DeleteButtons
         entityType={"entry"}
         requiresConfirmation={isScrapJournal}
-        onDelete={() => deleteEntry(closeDialog)}
-        onCancel={closeDialog}
+        onDelete={() => deleteEntryMutation.mutate()}
+        onCancel={() => {}}
       />
     </>
   );
-
-  function deleteEntry(closeDialog: () => void) {
-    deleteEntryMutation.mutate();
-
-    closeDialog();
-  }
 };

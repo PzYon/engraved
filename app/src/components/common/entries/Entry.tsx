@@ -60,7 +60,7 @@ export const Entry: React.FC<{
           path={`/${entry.id}/delete`}
           element={
             <NavigationActionContainer>
-              <DeleteEntry entry={entry} closeDialog={() => {}} />
+              <DeleteEntry entry={entry} />
             </NavigationActionContainer>
           }
         />

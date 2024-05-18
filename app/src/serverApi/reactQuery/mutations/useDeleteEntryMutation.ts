@@ -14,6 +14,10 @@ export const useDeleteEntryMutation = (journalId: string, entryId: string) => {
       await queryClient.invalidateQueries({
         queryKey: queryKeysFactory.journal(journalId),
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.entities("", true),
+      });
     },
   });
 };
