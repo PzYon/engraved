@@ -7,7 +7,8 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 
 export const DeleteEntry: React.FC<{
   entry: IEntry;
-}> = ({ entry }) => {
+  onCancel: () => void;
+}> = ({ entry, onCancel }) => {
   const deleteEntryMutation = useDeleteEntryMutation(entry.parentId, entry.id);
 
   const isScrapJournal = !!(entry as IScrapEntry).scrapType;
@@ -23,7 +24,7 @@ export const DeleteEntry: React.FC<{
         entityType={"entry"}
         requiresConfirmation={isScrapJournal}
         onDelete={() => deleteEntryMutation.mutate()}
-        onCancel={() => {}}
+        onCancel={onCancel}
       />
     </>
   );

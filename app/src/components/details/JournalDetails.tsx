@@ -5,7 +5,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { EditJournalPermissionsLauncher } from "./edit/EditJournalPermissionsLauncher";
 import { JournalViewPage } from "./JournalViewPage";
 import { JournalEditPage } from "./edit/JournalEditPage";
-import { DeleteJournalLauncher } from "./edit/DeleteJournalLauncher";
+import { DeleteJournal } from "./edit/DeleteJournal";
 import { IJournal } from "../../serverApi/IJournal";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
@@ -78,9 +78,9 @@ const SubRoutes: React.FC<{
       <Route
         path="/delete"
         element={
-          <DeleteJournalLauncher
+          <DeleteJournal
             journal={journal}
-            onDeleted={() => navigate("../../")}
+            onCancel={() => navigate("../../")}
           />
         }
       />

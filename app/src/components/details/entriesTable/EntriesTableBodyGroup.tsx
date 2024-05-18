@@ -4,7 +4,7 @@ import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import { TableCell, TableRow } from "@mui/material";
 import { StyledTableRow } from "./EntriesTable";
 import { IEntry } from "../../../serverApi/IEntry";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { DeleteEntry } from "../edit/DeleteEntry";
 
 export const EntriesTableBodyGroup: React.FC<{
@@ -14,6 +14,8 @@ export const EntriesTableBodyGroup: React.FC<{
   isGroupCollapsed: boolean;
 }> = ({ group, columns, showGroupTotals, isGroupCollapsed }) => {
   const [isCollapsed, setIsCollapsed] = useState(isGroupCollapsed);
+
+  const navigate = useNavigate();
 
   useEffect(() => setIsCollapsed(isGroupCollapsed), [isGroupCollapsed]);
 
@@ -51,7 +53,12 @@ export const EntriesTableBodyGroup: React.FC<{
               <Routes>
                 <Route
                   path={`${entry.id}/delete`}
-                  element={<DeleteEntry entry={entry} />}
+                  element={
+                    <DeleteEntry
+                      entry={entry}
+                      onCancel={() => navigate("..")}
+                    />
+                  }
                 />
               </Routes>
             </TableCell>

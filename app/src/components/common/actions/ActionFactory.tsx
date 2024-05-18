@@ -124,7 +124,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `/journals/${journalId}/delete`,
+      href: `actions/${journalId}/delete`,
     };
   }
 

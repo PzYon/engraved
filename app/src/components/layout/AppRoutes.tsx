@@ -11,10 +11,11 @@ import { PwaSettingsPage } from "../../pwa/PwaSettingsPage";
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path="/journals/:journalId/*" element={<JournalPageWrapper />} />
       <Route path="/journals/create" element={<AddJournalPage />} />
       <Route path="/journals" element={<JournalsPage />} />
+      <Route path="/journals/actions/*" element={<JournalsPage />} />
       <Route path="/" element={<JournalsPage />} />
-      <Route path="/journals/:journalId/*" element={<JournalPageWrapper />} />
       <Route path="/entries/*" element={<EntriesPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/scheduled/*" element={<ScheduledPage />} />

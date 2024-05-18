@@ -1,7 +1,7 @@
 import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeIcon } from "../JournalTypeIcon";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getScheduleProperty } from "../../overview/scheduled/scheduleUtils";
 import { IAction } from "../actions/IAction";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -9,13 +9,9 @@ import { ListItemFooterRow } from "../../overview/ListItemFooterRow";
 import { IconStyle } from "../IconStyle";
 import { FormatDate } from "../FormatDate";
 import { useAppContext } from "../../../AppContext";
-import { EditSchedule } from "../../details/edit/EditSchedule";
-import { DeleteEntry } from "../../details/edit/DeleteEntry";
-import { NotificationDone } from "../../details/NotificationDone";
 import { styled } from "@mui/material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
-import { MoveScrap } from "../../details/scraps/MoveScrap";
-import { IScrapEntry } from "../../../serverApi/IScrapEntry";
+import { EntrySubRoutes } from "./EntrySubRoutes";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -55,49 +51,7 @@ export const Entry: React.FC<{
         )}
         actions={actions}
       />
-      <Routes>
-        <Route
-          path={`/${entry.id}/delete`}
-          element={
-            <NavigationActionContainer>
-              <DeleteEntry entry={entry} />
-            </NavigationActionContainer>
-          }
-        />
-        <Route
-          path={`/${entry.id}/schedule`}
-          element={
-            <NavigationActionContainer>
-              <EditSchedule
-                journalId={""}
-                entryId={entry.id}
-                journal={null}
-                onCancel={() => {}}
-              />
-            </NavigationActionContainer>
-          }
-        />
-        <Route
-          path={`/${entry.id}/notification-done`}
-          element={
-            <NavigationActionContainer>
-              <NotificationDone
-                entry={entry}
-                journal={null}
-                onSuccess={() => {}}
-              />
-            </NavigationActionContainer>
-          }
-        />
-        <Route
-          path={`/${entry.id}/move`}
-          element={
-            <NavigationActionContainer>
-              <MoveScrap entry={entry as IScrapEntry} />
-            </NavigationActionContainer>
-          }
-        />
-      </Routes>
+      <EntrySubRoutes entry={entry} />
     </>
   );
 };
