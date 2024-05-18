@@ -6,6 +6,7 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { NavigationActionContainer } from "./Entry";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
+import React from "react";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -15,7 +16,7 @@ export const EntrySubRoutes: React.FC<{
   return (
     <Routes>
       <Route
-        path={`/${entry.id}/delete`}
+        path={`/actions/${entry.id}/delete`}
         element={
           <NavigationActionContainer>
             <DeleteEntry entry={entry} onCancel={close} />
@@ -23,7 +24,7 @@ export const EntrySubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/${entry.id}/schedule`}
+        path={`/actions/${entry.id}/schedule`}
         element={
           <NavigationActionContainer>
             <EditSchedule
@@ -36,7 +37,7 @@ export const EntrySubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/${entry.id}/notification-done`}
+        path={`/actions/${entry.id}/notification-done`}
         element={
           <NavigationActionContainer>
             <NotificationDone entry={entry} journal={null} onSuccess={close} />
@@ -44,7 +45,7 @@ export const EntrySubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/${entry.id}/move`}
+        path={`/actions/${entry.id}/move`}
         element={
           <NavigationActionContainer>
             <MoveScrap entry={entry as IScrapEntry} />

@@ -5,6 +5,7 @@ import { EditSchedule } from "../../details/edit/EditSchedule";
 import { NotificationDone } from "../../details/NotificationDone";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { EditJournalPermissions } from "../../details/edit/EditJournalPermissions";
+import React from "react";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
@@ -14,7 +15,7 @@ export const JournalSubRoutes: React.FC<{
   return (
     <Routes>
       <Route
-        path={`actions/${journal.id}/delete`}
+        path={`/actions/${journal.id}/delete`}
         element={
           <NavigationActionContainer>
             <DeleteJournal journal={journal} onCancel={close} />
@@ -22,7 +23,7 @@ export const JournalSubRoutes: React.FC<{
         }
       />
       <Route
-        path={`actions/${journal.id}/schedule`}
+        path={`/actions/${journal.id}/schedule`}
         element={
           <NavigationActionContainer>
             <EditSchedule
@@ -35,7 +36,7 @@ export const JournalSubRoutes: React.FC<{
         }
       />
       <Route
-        path={`actions/${journal.id}/permissions`}
+        path={`/actions/${journal.id}/permissions`}
         element={
           <NavigationActionContainer>
             <EditJournalPermissions journal={journal} onCancel={close} />
@@ -43,7 +44,7 @@ export const JournalSubRoutes: React.FC<{
         }
       />
       <Route
-        path={`actions/${journal.id}/notification-done`}
+        path={`/actions/${journal.id}/notification-done`}
         element={
           <NavigationActionContainer>
             <NotificationDone

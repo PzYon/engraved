@@ -41,7 +41,6 @@ import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 import { RegisteredActionsList } from "./RegisteredActionsList";
-import { renderNotificationDone } from "../../details/renderNotificationDone";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -260,7 +259,7 @@ export class ActionFactory {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      href: `${scrap.id}/move`,
+      href: `actions/${scrap.id}/move`,
     };
   }
 
@@ -270,7 +269,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `${entry.id}/delete`,
+      href: `actions/${entry.id}/delete`,
     };
   }
 
@@ -278,47 +277,24 @@ export class ActionFactory {
     entry: IEntry,
     enableHotkeys?: boolean,
   ): IAction {
-    return this.markEntryScheduleAsInternal(
-      {
-        href: `${entry.id}/notification-done`,
-      },
-      enableHotkeys,
-    );
-  }
-
-  static markEntryScheduleAsInternal(
-    additionalProps: Partial<IAction>,
-    enableHotkeys?: boolean,
-  ): IAction {
     return {
       hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "mark-as-done",
       label: "Mark as done",
       icon: <DoneOutlined fontSize="small" />,
-      ...additionalProps,
+      href: `actions/${entry.id}/notification-done`,
     };
   }
-
   static markJournalScheduleAsDone(
     journal: IJournal,
-    renderDialog?: (dialogProps: IDialogProps) => void,
     enableHotkey?: boolean,
   ): IAction {
-    const additionalProps: Partial<IAction> = renderDialog
-      ? {
-          onClick: () =>
-            renderNotificationDone(journal, null, renderDialog, null),
-        }
-      : {
-          href: `/journals/${journal.id}/notification-done`,
-        };
-
     return {
       key: "mark-as-done",
       hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
-      ...additionalProps,
+      href: `actions/${journal.id}/notification-done`,
     };
   }
 

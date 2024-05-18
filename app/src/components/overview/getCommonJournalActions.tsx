@@ -28,11 +28,7 @@ export function getCommonJournalActions(
 
   if (getScheduleForUser(journal, user.id).nextOccurrence) {
     actions.push(
-      ActionFactory.markJournalScheduleAsDone(
-        journal,
-        renderDialog,
-        enableHotkeys,
-      ),
+      ActionFactory.markJournalScheduleAsDone(journal, enableHotkeys),
     );
   }
   actions.push(
