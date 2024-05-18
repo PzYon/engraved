@@ -9,7 +9,6 @@ import { DeleteJournalLauncher } from "./edit/DeleteJournalLauncher";
 import { IJournal } from "../../serverApi/IJournal";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
-import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
 import { EditScheduleLauncher } from "./edit/EditScheduleLauncher";
 import { styled } from "@mui/material";
 import { Properties } from "../common/Properties";
@@ -40,7 +39,6 @@ export const JournalDetails: React.FC = () => {
           <>
             <Route path="/edit" element={<ScrapsEditPage />} />
             <Route path="/*" element={<ScrapsViewPage />} />
-            <Route path="/entries/:entryId/move" element={<ScrapsMovePage />} />
           </>
         ) : (
           <>

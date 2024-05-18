@@ -300,7 +300,7 @@ export class ActionFactory {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      href: `/journals/${scrap.parentId}/entries/${scrap.id}/move`,
+      href: `${scrap.id}/move`,
     };
   }
 

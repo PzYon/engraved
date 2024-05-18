@@ -14,6 +14,8 @@ import { DeleteEntry } from "../../details/edit/DeleteEntry";
 import { NotificationDone } from "../../details/NotificationDone";
 import { styled } from "@mui/material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
+import { MoveScrap } from "../../details/scraps/MoveScrap";
+import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -84,6 +86,14 @@ export const Entry: React.FC<{
                 journal={null}
                 onSuccess={() => {}}
               />
+            </NavigationActionContainer>
+          }
+        />
+        <Route
+          path={`/${entry.id}/move`}
+          element={
+            <NavigationActionContainer>
+              <MoveScrap entry={entry as IScrapEntry} />
             </NavigationActionContainer>
           }
         />
