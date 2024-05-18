@@ -6,14 +6,11 @@ import { ActionIconButtonGroup } from "../common/actions/ActionIconButtonGroup";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { Scrap } from "./scraps/Scrap";
 import { IScrapEntry } from "../../serverApi/IScrapEntry";
-import { useDialogContext } from "../layout/dialogs/DialogContext";
 
 export const OnNotification: React.FC<{
   journal: IJournal;
   entry?: IEntry;
 }> = ({ journal, entry }) => {
-  const { renderDialog } = useDialogContext();
-
   if (entry) {
     return (
       <Scrap
@@ -30,12 +27,7 @@ export const OnNotification: React.FC<{
       <ActionIconButtonGroup
         actions={[
           ActionFactory.deleteJournal(journal.id, false),
-          ActionFactory.editJournalSchedule(
-            journal.id,
-            renderDialog,
-            journal,
-            false,
-          ),
+          ActionFactory.editJournalSchedule(journal.id, false),
         ]}
       />
     </ActionsContainer>

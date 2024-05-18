@@ -23,12 +23,7 @@ export function getCommonJournalActions(
 
   actions.push(
     ActionFactory.editJournalPermissions(journal.id),
-    ActionFactory.editJournalSchedule(
-      journal.id,
-      renderDialog,
-      journal,
-      enableHotkeys,
-    ),
+    ActionFactory.editJournalSchedule(journal.id, enableHotkeys),
   );
 
   if (getScheduleForUser(journal, user.id).nextOccurrence) {

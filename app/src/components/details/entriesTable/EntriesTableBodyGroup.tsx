@@ -66,7 +66,7 @@ export const EntriesTableBodyGroup: React.FC<{
         </>
       ))}
       {showGroupTotals ? (
-        <TableRow>
+        <TableRow key="totals">
           {columns.map((c) => (
             <TableCell key={c.key} sx={{ opacity: 0.5 }}>
               {c.isAggregatable ? group.totalString : ""}

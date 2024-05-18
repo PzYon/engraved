@@ -42,7 +42,6 @@ import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 import { RegisteredActionsList } from "./RegisteredActionsList";
 import { renderNotificationDone } from "../../details/renderNotificationDone";
-import { renderEditSchedule } from "../../details/edit/renderEditSchedule";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -114,7 +113,7 @@ export class ActionFactory {
       key: "permissions",
       label: "Permissions",
       icon: <ShareOutlined fontSize="small" />,
-      href: `/journals/${journalId}/permissions`,
+      href: `actions/${journalId}/permissions`,
     };
   }
 
@@ -130,65 +129,26 @@ export class ActionFactory {
 
   static editJournalSchedule(
     journalId: string,
-    renderDialog?: (dialogProps: IDialogProps) => void,
-    journal?: IJournal,
     enableHotkeys?: boolean,
   ): IAction {
-    const additionalProps: Partial<IAction> = renderDialog
-      ? {
-          onClick: () =>
-            renderEditSchedule(journalId, null, journal, renderDialog, null),
-        }
-      : {
-          href: `/journals/${journalId}/schedule`,
-        };
-
     return {
       hotkey: enableHotkeys ? "alt+t" : undefined,
       key: "edit-schedule",
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      ...additionalProps,
+      href: `actions/${journalId}/schedule`,
     };
   }
 
   static editEntryScheduleViaUrl(entryId: string, enableHotKeys?: boolean) {
-    return this.editEntryScheduleInternal(
-      {
-        href: `${entryId}/schedule`,
-      },
-      enableHotKeys,
-    );
-  }
-
-  static editEntrySchedule(
-    journalId: string,
-    entryId: string,
-    renderDialog: (dialogProps: IDialogProps) => void,
-    enableHotKeys?: boolean,
-  ) {
-    return this.editEntryScheduleInternal(
-      {
-        onClick: () =>
-          renderEditSchedule(journalId, entryId, null, renderDialog),
-      },
-      enableHotKeys,
-    );
-  }
-
-  private static editEntryScheduleInternal(
-    additionalProps: Partial<IAction>,
-    enableHotkeys?: boolean,
-  ): IAction {
     return {
       key: "edit-schedule",
-      hotkey: enableHotkeys ? "alt+s" : undefined,
+      hotkey: enableHotKeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      ...additionalProps,
+      href: `${entryId}/schedule`,
     };
   }
-
   static addEntry(
     journal: IJournal,
     renderDialog: (dialogProps: IDialogProps) => void,
