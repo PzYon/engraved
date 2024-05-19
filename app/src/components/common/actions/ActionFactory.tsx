@@ -81,7 +81,7 @@ export class ActionFactory {
     return {
       hotkey: enableHotkeys ? "alt+enter" : undefined,
       key: `go-to-journal-${journalId}`,
-      href: `/journals/${journalId}`,
+      href: `/journals/details/${journalId}`,
       label: "Go to journal",
       icon: null,
     };
@@ -112,7 +112,7 @@ export class ActionFactory {
       key: "permissions",
       label: "Permissions",
       icon: <ShareOutlined fontSize="small" />,
-      href: `actions/${journalId}/permissions`,
+      href: `actions/permissions/${journalId}`,
     };
   }
 
@@ -122,7 +122,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `actions/${journalId}/delete`,
+      href: `actions/delete/${journalId}`,
     };
   }
 
@@ -135,7 +135,7 @@ export class ActionFactory {
       key: "edit-schedule",
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      href: `actions/${journalId}/schedule`,
+      href: `actions/schedule/${journalId}`,
     };
   }
 

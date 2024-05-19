@@ -15,7 +15,7 @@ export const JournalSubRoutes: React.FC<{
   return (
     <Routes>
       <Route
-        path={`/actions/${journal.id}/delete`}
+        path={`actions/delete/${journal.id}`}
         element={
           <NavigationActionContainer>
             <DeleteJournal journal={journal} onCancel={close} />
@@ -23,7 +23,7 @@ export const JournalSubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/actions/${journal.id}/schedule`}
+        path={`actions/schedule/${journal.id}`}
         element={
           <NavigationActionContainer>
             <EditSchedule
@@ -36,7 +36,7 @@ export const JournalSubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/actions/${journal.id}/permissions`}
+        path={`actions/permissions/${journal.id}`}
         element={
           <NavigationActionContainer>
             <EditJournalPermissions journal={journal} onCancel={close} />
@@ -44,7 +44,7 @@ export const JournalSubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/actions/${journal.id}/notification-done`}
+        path={`actions/notification-done/${journal.id}`}
         element={
           <NavigationActionContainer>
             <NotificationDone
