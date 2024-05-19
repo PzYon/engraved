@@ -13,8 +13,7 @@ import React from "react";
 export const NotificationDone: React.FC<{
   journal: IJournal;
   entry?: IEntry;
-  onSuccess: () => void;
-}> = ({ journal, entry, onSuccess }) => {
+}> = ({ journal, entry }) => {
   const { user } = useAppContext();
 
   const navigate = useNavigate();
@@ -51,7 +50,7 @@ export const NotificationDone: React.FC<{
 
             modifyScheduleMutation.mutate(scheduleDefinition);
 
-            onSuccess();
+            close();
           }}
         >
           Mark {entry ? "entry" : "journal"} as done
@@ -60,7 +59,7 @@ export const NotificationDone: React.FC<{
           <Button
             variant={schedule?.recurrence ? "outlined" : "contained"}
             onClick={() => {
-              navigate(`${entry.id}/delete`);
+              navigate(`../delete`);
             }}
           >
             Delete {entry ? "entry" : "journal"}
@@ -69,4 +68,8 @@ export const NotificationDone: React.FC<{
       </DialogFormButtonContainer>
     </>
   );
+
+  function close() {
+    navigate("..");
+  }
 };

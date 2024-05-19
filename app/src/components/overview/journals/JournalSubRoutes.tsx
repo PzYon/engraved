@@ -3,22 +3,20 @@ import { NavigationActionContainer } from "../../common/entries/Entry";
 import { DeleteJournal } from "../../details/edit/DeleteJournal";
 import { EditSchedule } from "../../details/edit/EditSchedule";
 import { NotificationDone } from "../../details/NotificationDone";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { EditJournalPermissions } from "../../details/edit/EditJournalPermissions";
 import React from "react";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
-  const navigate = useNavigate();
-
   return (
     <Routes>
       <Route
         path={`actions/delete/${journal.id}`}
         element={
           <NavigationActionContainer>
-            <DeleteJournal journal={journal} onCancel={close} />
+            <DeleteJournal journal={journal} />
           </NavigationActionContainer>
         }
       />
@@ -30,7 +28,6 @@ export const JournalSubRoutes: React.FC<{
               journalId={journal.id}
               entryId={null}
               journal={journal}
-              onCancel={close}
             />
           </NavigationActionContainer>
         }
@@ -47,18 +44,10 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/notification-done/${journal.id}`}
         element={
           <NavigationActionContainer>
-            <NotificationDone
-              entry={null}
-              journal={journal}
-              onSuccess={close}
-            />
+            <NotificationDone entry={null} journal={journal} />
           </NavigationActionContainer>
         }
       />
     </Routes>
   );
-
-  function close() {
-    navigate("../");
-  }
 };

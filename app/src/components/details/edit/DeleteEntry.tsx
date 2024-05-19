@@ -4,12 +4,13 @@ import React from "react";
 import { Typography } from "@mui/material";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
+import { useNavigate } from "react-router-dom";
 
 export const DeleteEntry: React.FC<{
   entry: IEntry;
-  onCancel: () => void;
-}> = ({ entry, onCancel }) => {
+}> = ({ entry }) => {
   const deleteEntryMutation = useDeleteEntryMutation(entry.parentId, entry.id);
+  const navigate = useNavigate();
 
   const isScrapJournal = !!(entry as IScrapEntry).scrapType;
 
@@ -23,9 +24,16 @@ export const DeleteEntry: React.FC<{
       <DeleteButtons
         entityType={"entry"}
         requiresConfirmation={isScrapJournal}
-        onDelete={() => deleteEntryMutation.mutate()}
-        onCancel={onCancel}
+        onDelete={() => {
+          deleteEntryMutation.mutate();
+          close();
+        }}
+        onCancel={close}
       />
     </>
   );
+
+  function close() {
+    navigate("..");
+  }
 };

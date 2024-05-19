@@ -12,13 +12,8 @@ export const renderEditSchedule = (
 ) => {
   renderDialog({
     title: "Schedule for " + (entryId ? "entry" : "journal"),
-    render: (closeDialog) => (
-      <EditSchedule
-        journal={journal}
-        journalId={journalId}
-        entryId={entryId}
-        onCancel={closeDialog}
-      />
+    render: () => (
+      <EditSchedule journal={journal} journalId={journalId} entryId={entryId} />
     ),
     onClose: () => {
       navigate?.(`/journals/${journalId}`);

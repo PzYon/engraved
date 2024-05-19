@@ -1,7 +1,7 @@
 import React from "react";
 import { useJournalContext } from "./JournalContext";
 import { JournalType } from "../../serverApi/JournalType";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { EditJournalPermissionsLauncher } from "./edit/EditJournalPermissionsLauncher";
 import { JournalViewPage } from "./JournalViewPage";
 import { JournalEditPage } from "./edit/JournalEditPage";
@@ -55,8 +55,6 @@ export const JournalDetails: React.FC = () => {
 const SubRoutes: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
-  const navigate = useNavigate();
-
   return (
     <Routes>
       <Route
@@ -75,15 +73,7 @@ const SubRoutes: React.FC<{
         path="/notification-done"
         element={<NotificationDoneLauncher journal={journal} />}
       />
-      <Route
-        path="/delete"
-        element={
-          <DeleteJournal
-            journal={journal}
-            onCancel={() => navigate("../../")}
-          />
-        }
-      />
+      <Route path="/delete" element={<DeleteJournal journal={journal} />} />
     </Routes>
   );
 };

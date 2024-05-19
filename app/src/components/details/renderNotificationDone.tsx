@@ -13,13 +13,7 @@ export const renderNotificationDone = (
 ): void => {
   renderDialog({
     title: `Notification: ${entry ? (entry as IScrapEntry).title : journal.name}`,
-    render: (closeDialog) => (
-      <NotificationDone
-        journal={journal}
-        entry={entry}
-        onSuccess={closeDialog}
-      />
-    ),
+    render: () => <NotificationDone journal={journal} entry={entry} />,
     onClose: () => {
       if (journal && navigate) {
         navigate(`/journals/${journal.id}`);

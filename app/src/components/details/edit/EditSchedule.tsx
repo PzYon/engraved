@@ -11,16 +11,18 @@ import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 import { IJournal } from "../../../serverApi/IJournal";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
+import { useNavigate } from "react-router-dom";
 
 export const EditSchedule: React.FC<{
   journalId: string;
   journal: IJournal;
   entryId?: string;
-  onCancel: () => void;
-}> = ({ journalId, journal, entryId, onCancel }) => {
+}> = ({ journalId, journal, entryId }) => {
   const [parsed, setParsed] = useState<IParsedDate>({});
 
   const { user } = useAppContext();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getNextOccurrence().then((d) => {
@@ -76,7 +78,7 @@ export const EditSchedule: React.FC<{
       ) : null}
 
       <DialogFormButtonContainer>
-        <Button variant="outlined" onClick={onCancel}>
+        <Button variant="outlined" onClick={close}>
           Cancel
         </Button>
         <Button variant="contained" onClick={save}>
@@ -97,6 +99,10 @@ export const EditSchedule: React.FC<{
 
     modifyScheduleMutation.mutate(scheduleDefinition);
 
-    onCancel();
+    close();
+  }
+
+  function close() {
+    navigate("..");
   }
 };

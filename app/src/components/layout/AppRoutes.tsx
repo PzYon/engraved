@@ -11,7 +11,7 @@ import { AddJournalPage } from "../overview/AddJournalPage";
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route index element={<Navigate replace to="/journals" />} />
+      <Route index element={<Navigate replace to="/journals/*" />} />
       <Route path="/journals/create" element={<AddJournalPage />} />
       <Route
         path="/journals/details/:journalId/*"
