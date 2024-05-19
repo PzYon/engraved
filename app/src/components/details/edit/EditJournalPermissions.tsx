@@ -10,15 +10,16 @@ import { AddOutlined } from "@mui/icons-material";
 import { isValidEmail } from "../../../util/utils";
 import { useModifyJournalPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyJournalPermissionsMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
+import { useNavigate } from "react-router-dom";
 
 export const EditJournalPermissions: React.FC<{
   journal: IJournal;
-  onCancel: () => void;
-}> = ({ journal, onCancel }) => {
+}> = ({ journal }) => {
   const [userName, setUserName] = useState("");
   const [canAdd, setCanAdd] = useState(false);
   const [permissionKind, setPermissionKind] = useState(PermissionKind.Read);
   const [newPermissions, setNewPermissions] = useState<IUpdatePermissions>({});
+  const navigate = useNavigate();
 
   const modifyJournalPermissionsMutation = useModifyJournalPermissionsMutation(
     journal.id,
@@ -79,7 +80,7 @@ export const EditJournalPermissions: React.FC<{
       </AddNewContainer>
 
       <DialogFormButtonContainer>
-        <Button variant="outlined" onClick={onCancel}>
+        <Button variant="outlined" onClick={close}>
           Cancel
         </Button>
         <Button
@@ -104,6 +105,10 @@ export const EditJournalPermissions: React.FC<{
     const tempPermissions = { ...newPermissions };
     tempPermissions[userName] = permissionKind;
     setNewPermissions(tempPermissions);
+  }
+
+  function close() {
+    navigate("..");
   }
 };
 

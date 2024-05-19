@@ -103,7 +103,7 @@ export class ActionFactory {
       key: "edit",
       label: "Edit journal",
       icon: <EditOutlined fontSize="small" />,
-      href: `/journals/${journalId}/edit`,
+      href: `/journals/details/${journalId}/edit`,
     };
   }
 
@@ -259,7 +259,7 @@ export class ActionFactory {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      href: `actions/${scrap.id}/move`,
+      href: `actions/move/${scrap.id}`,
     };
   }
 
@@ -269,7 +269,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `actions/${entry.id}/delete`,
+      href: `actions/delete/${entry.id}`,
     };
   }
 
@@ -282,7 +282,7 @@ export class ActionFactory {
       key: "mark-as-done",
       label: "Mark as done",
       icon: <DoneOutlined fontSize="small" />,
-      href: `actions/${entry.id}/notification-done`,
+      href: `actions/notification-done/${entry.id}`,
     };
   }
   static markJournalScheduleAsDone(
@@ -294,7 +294,7 @@ export class ActionFactory {
       hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
-      href: `actions/${journal.id}/notification-done`,
+      href: `actions/notification-done/${journal.id}`,
     };
   }
 

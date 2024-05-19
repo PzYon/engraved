@@ -14,9 +14,7 @@ export const EditJournalPermissionsLauncher: React.FC<{
   useEffect(() => {
     renderDialog({
       title: "Permissions",
-      render: (closeDialog) => (
-        <EditJournalPermissions journal={journal} onCancel={closeDialog} />
-      ),
+      render: () => <EditJournalPermissions journal={journal} />,
       onClose: () => {
         navigate(`/journals/${journal.id}`);
       },

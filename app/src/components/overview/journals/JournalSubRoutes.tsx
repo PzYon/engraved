@@ -36,7 +36,7 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/permissions/${journal.id}`}
         element={
           <NavigationActionContainer>
-            <EditJournalPermissions journal={journal} onCancel={close} />
+            <EditJournalPermissions journal={journal} />
           </NavigationActionContainer>
         }
       />

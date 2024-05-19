@@ -14,7 +14,7 @@ export const EntrySubRoutes: React.FC<{
   return (
     <Routes>
       <Route
-        path={`/actions/${entry.id}/delete`}
+        path={`/actions/delete/${entry.id}`}
         element={
           <NavigationActionContainer>
             <DeleteEntry entry={entry} />
@@ -22,7 +22,7 @@ export const EntrySubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/actions/${entry.id}/schedule`}
+        path={`/actions/schedule/${entry.id}`}
         element={
           <NavigationActionContainer>
             <EditSchedule journalId={""} entryId={entry.id} journal={null} />
@@ -30,7 +30,7 @@ export const EntrySubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/actions/${entry.id}/notification-done`}
+        path={`/actions/notification-done/${entry.id}`}
         element={
           <NavigationActionContainer>
             <NotificationDone entry={entry} journal={null} />
@@ -38,7 +38,7 @@ export const EntrySubRoutes: React.FC<{
         }
       />
       <Route
-        path={`/actions/${entry.id}/move`}
+        path={`/actions/move/${entry.id}`}
         element={
           <NavigationActionContainer>
             <MoveScrap entry={entry as IScrapEntry} />
