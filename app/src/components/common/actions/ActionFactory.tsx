@@ -145,7 +145,7 @@ export class ActionFactory {
       hotkey: enableHotKeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      href: `${entryId}/schedule`,
+      href: `actions/${entryId}/schedule`,
     };
   }
   static addEntry(
