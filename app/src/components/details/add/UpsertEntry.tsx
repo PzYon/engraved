@@ -27,7 +27,7 @@ import { getValueHeaderLabel } from "../../../util/journalUtils";
 import { useNavigate } from "react-router-dom";
 
 export const UpsertEntry: React.FC<{
-  journal: IJournal;
+  journal?: IJournal;
   entry?: IEntry;
   onSaved?: () => void;
   onCancel?: () => void;
@@ -54,6 +54,13 @@ export const UpsertEntry: React.FC<{
   const [endDate, setEndDate] = useState((entry as ITimerEntry)?.endDate);
 
   const [showFullTimerForm, setShowFullTimerForm] = useState(false);
+
+  // ATTENTION: bad!?
+  //journal = journal ?? useJournalQuery(entry?.parentId);
+
+  // if (!journal) {
+  //   return null;
+  // }
 
   const upsertEntryMutation = useUpsertEntryMutation(
     journal.id,

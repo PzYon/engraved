@@ -10,11 +10,12 @@ export const useJournalQuery = (journalId: string) => {
   const { data: journal, isSuccess } = useQuery({
     queryKey: queryKeysFactory.journal(journalId),
 
-    queryFn: () => ServerApi.getJournal(journalId),
+    queryFn: () =>
+      journalId ? ServerApi.getJournal(journalId) : Promise.resolve(null),
   });
 
   useEffect(() => {
-    if (!isSuccess) {
+    if (!isSuccess || !journalId) {
       return;
     }
 
@@ -26,7 +27,7 @@ export const useJournalQuery = (journalId: string) => {
       (journals: IJournal[]) =>
         journals.map((j) => (j.id === journal.id ? journal : j)),
     );
-  }, [queryClient, isSuccess, journal]);
+  }, [queryClient, isSuccess, journal, journalId]);
 
   return journal;
 };

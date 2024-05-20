@@ -7,6 +7,7 @@ import { NavigationActionContainer } from "./Entry";
 import { Route, Routes } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
+import { UpsertEntry } from "../../details/add/UpsertEntry";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -42,6 +43,14 @@ export const EntrySubRoutes: React.FC<{
         element={
           <NavigationActionContainer>
             <MoveScrap entry={entry as IScrapEntry} />
+          </NavigationActionContainer>
+        }
+      />
+      <Route
+        path={`/actions/edit/${entry.id}`}
+        element={
+          <NavigationActionContainer>
+            <UpsertEntry journal={null} entry={entry} />
           </NavigationActionContainer>
         }
       />

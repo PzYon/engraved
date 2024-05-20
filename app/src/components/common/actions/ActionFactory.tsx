@@ -158,7 +158,7 @@ export class ActionFactory {
       hotkey: enableHotKeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      href: `actions/${entryId}/schedule`,
+      href: `actions/schedule/${entryId}`,
     };
   }
 
@@ -321,7 +321,7 @@ export class ActionFactory {
       key: "edit",
       label: "Edit entry",
       icon: <EditOutlined fontSize="small" />,
-      href: `/journals/${entry.parentId}/entries/${entry.id}/edit`,
+      href: `actions/edit/${entry.id}`,
     };
   }
 
