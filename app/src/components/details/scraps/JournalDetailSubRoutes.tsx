@@ -4,6 +4,7 @@ import { DeleteJournal } from "../edit/DeleteJournal";
 import { EditSchedule } from "../edit/EditSchedule";
 import { EditJournalPermissions } from "../edit/EditJournalPermissions";
 import { Route, Routes } from "react-router-dom";
+import { UpsertEntry } from "../add/UpsertEntry";
 
 export const JournalDetailSubRoutes: React.FC<{ journal: IJournal }> = ({
   journal,
@@ -35,6 +36,18 @@ export const JournalDetailSubRoutes: React.FC<{ journal: IJournal }> = ({
         element={
           <NavigationActionContainer>
             <EditJournalPermissions journal={journal} />
+          </NavigationActionContainer>
+        }
+      />
+      <Route
+        path={`actions/add-entry`}
+        element={
+          <NavigationActionContainer>
+            <UpsertEntry
+              journal={journal}
+              onSaved={() => {}}
+              onCancel={() => {}}
+            />
           </NavigationActionContainer>
         }
       />

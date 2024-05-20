@@ -19,7 +19,7 @@ export function getCommonJournalActions(
   const actions: IAction[] = [];
 
   if (renderDialog) {
-    actions.push(ActionFactory.addEntry(journal, renderDialog, enableHotkeys));
+    actions.push(ActionFactory.addEntry(journal, isDetails, enableHotkeys));
   }
 
   actions.push(

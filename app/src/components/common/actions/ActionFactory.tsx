@@ -164,7 +164,7 @@ export class ActionFactory {
 
   static addEntry(
     journal: IJournal,
-    renderDialog: (dialogProps: IDialogProps) => void,
+    isDetails: boolean,
     enableHotkey: boolean,
     additionalOnClick?: () => void,
   ): IAction {
@@ -173,7 +173,9 @@ export class ActionFactory {
       key: "add_entry",
       label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
-      href: `actions/add-entry/${journal.id}`,
+      href: isDetails
+        ? `/journals/details/${journal.id}/actions/add-entry`
+        : `actions/add-entry/${journal.id}`,
       onClick: () => {
         additionalOnClick?.();
       },
