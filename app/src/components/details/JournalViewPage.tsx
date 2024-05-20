@@ -25,6 +25,7 @@ import { IJournalUiSettings } from "./edit/IJournalUiSettings";
 import { getUiSettings } from "../../util/journalUtils";
 import { getDefaultDateConditions } from "./filters/getDefaultDateConditions";
 import { useAppContext } from "../../AppContext";
+import { JournalDetailSubRoutes } from "./scraps/JournalDetailSubRoutes";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -92,7 +93,7 @@ export const JournalViewPage: React.FC = () => {
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonJournalActions(journal, true, user, renderDialog),
+      ...getCommonJournalActions(journal, true, user, true, renderDialog),
     ]);
 
     return () => {
@@ -119,6 +120,8 @@ export const JournalViewPage: React.FC = () => {
       documentTitle={journal.name}
       actions={titleActions}
     >
+      <JournalDetailSubRoutes journal={journal} />
+
       {showNotes ? (
         <PageSection>
           <JournalNotes journal={journal} />

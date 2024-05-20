@@ -9,6 +9,7 @@ export function getCommonJournalActions(
   journal: IJournal,
   enableHotkeys: boolean,
   user: IUser,
+  isDetails: boolean,
   renderDialog?: (dialogProps: IDialogProps) => void,
 ): IAction[] {
   if (!journal) {
@@ -22,8 +23,8 @@ export function getCommonJournalActions(
   }
 
   actions.push(
-    ActionFactory.editJournalPermissions(journal.id),
-    ActionFactory.editJournalSchedule(journal.id, enableHotkeys),
+    ActionFactory.editJournalPermissions(journal.id, isDetails),
+    ActionFactory.editJournalSchedule(journal.id, isDetails, enableHotkeys),
   );
 
   if (getScheduleForUser(journal, user.id).nextOccurrence) {
@@ -33,7 +34,7 @@ export function getCommonJournalActions(
   }
   actions.push(
     ActionFactory.editJournal(journal.id, enableHotkeys),
-    ActionFactory.deleteJournal(journal.id, enableHotkeys),
+    ActionFactory.deleteJournal(journal.id, isDetails, enableHotkeys),
   );
 
   return actions;

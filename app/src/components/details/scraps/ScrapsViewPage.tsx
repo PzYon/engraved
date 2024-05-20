@@ -25,6 +25,7 @@ import { OverviewList } from "../../overview/overviewList/OverviewList";
 import { NotificationDoneLauncher } from "../NotificationDoneLauncher";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 import { PageSection } from "../../layout/pages/PageSection";
+import { JournalDetailSubRoutes } from "./JournalDetailSubRoutes";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -57,9 +58,11 @@ export const ScrapsViewPage: React.FC = () => {
         getAddNewAction("list"),
         null,
         ActionFactory.getToc(() => setShowToc(!showToc)),
-        ...getCommonJournalActions(journal, false, user),
+        ...getCommonJournalActions(journal, false, user, true),
       ]}
     >
+      <JournalDetailSubRoutes journal={journal} />
+
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
       {newScrap ? (

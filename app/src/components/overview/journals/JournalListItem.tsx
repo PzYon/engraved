@@ -68,6 +68,7 @@ export const JournalListItem: React.FC<{
               journal,
               hasFocus,
               user,
+              false,
               renderDialog,
             )}
           />

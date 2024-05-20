@@ -26,7 +26,7 @@ export const OnNotification: React.FC<{
     <ActionsContainer>
       <ActionIconButtonGroup
         actions={[
-          ActionFactory.deleteJournal(journal.id, false),
+          ActionFactory.deleteJournal(journal.id, true, false),
           ActionFactory.editJournalSchedule(journal.id, false),
         ]}
       />

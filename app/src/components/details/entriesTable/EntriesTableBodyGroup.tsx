@@ -20,17 +20,13 @@ export const EntriesTableBodyGroup: React.FC<{
   if (isCollapsed) {
     return (
       <StyledTableRow key={group.label}>
-        {columns.map((c) => {
-          return (
-            <TableCell key={c.key}>
-              {group.entries.length > 1
-                ? c.getGroupReactNode?.(group, () =>
-                    setIsCollapsed(!isCollapsed),
-                  )
-                : renderValueNode(c, group.entries[0], true)}
-            </TableCell>
-          );
-        })}
+        {columns.map((c) => (
+          <TableCell key={c.key}>
+            {group.entries.length > 1
+              ? c.getGroupReactNode?.(group, () => setIsCollapsed(!isCollapsed))
+              : renderValueNode(c, group.entries[0], true)}
+          </TableCell>
+        ))}
       </StyledTableRow>
     );
   }
@@ -38,7 +34,7 @@ export const EntriesTableBodyGroup: React.FC<{
   return (
     <>
       {group.entries.map((entry, i) => (
-        <>
+        <React.Fragment key={entry.id}>
           <StyledTableRow key={entry.id}>
             {columns.map((c) => (
               <TableCell key={c.key}>
@@ -56,7 +52,7 @@ export const EntriesTableBodyGroup: React.FC<{
               </Routes>
             </TableCell>
           </StyledTableRow>
-        </>
+        </React.Fragment>
       ))}
       {showGroupTotals ? (
         <TableRow key="totals">

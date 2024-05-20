@@ -106,27 +106,39 @@ export class ActionFactory {
     };
   }
 
-  static editJournalPermissions(journalId: string): IAction {
+  static editJournalPermissions(
+    journalId: string,
+    isDetails: boolean,
+  ): IAction {
     return {
       key: "permissions",
       label: "Permissions",
       icon: <ShareOutlined fontSize="small" />,
-      href: `actions/permissions/${journalId}`,
+      href: isDetails
+        ? `/journals/details/${journalId}/actions/permissions/`
+        : `actions/permissions/${journalId}`,
     };
   }
 
-  static deleteJournal(journalId: string, enableHotkeys: boolean): IAction {
+  static deleteJournal(
+    journalId: string,
+    isDetails: boolean,
+    enableHotkeys: boolean,
+  ): IAction {
     return {
       hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `actions/delete/${journalId}`,
+      href: isDetails
+        ? `/journals/details/${journalId}/actions/delete/`
+        : `actions/delete/${journalId}`,
     };
   }
 
   static editJournalSchedule(
     journalId: string,
+    isDetails: boolean,
     enableHotkeys?: boolean,
   ): IAction {
     return {
@@ -134,7 +146,9 @@ export class ActionFactory {
       key: "edit-schedule",
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      href: `actions/schedule/${journalId}`,
+      href: isDetails
+        ? `/journals/details/${journalId}/actions/schedule`
+        : `actions/schedule/${journalId}`,
     };
   }
 
