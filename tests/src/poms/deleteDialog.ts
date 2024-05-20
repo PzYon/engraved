@@ -7,7 +7,7 @@ export class DeleteDialog {
   ) {}
 
   async clickFirstDeleteButton() {
-    await this.page.getByRole("button", { name: "Yes, delete!" }).click();
+    await this.page.getByRole("link", { name: "Yes, delete!" }).click();
   }
 
   async typeInConfirmationTextBox(text: string) {
@@ -16,7 +16,7 @@ export class DeleteDialog {
   }
 
   async clickSecondDeleteButton() {
-    await this.page.getByRole("button", { name: "Yes, delete!" }).click();
+    await this.page.getByRole("link", { name: "Yes, delete!" }).click();
 
     if (this.type === "Journal") {
       await this.expectDeletionMessage();

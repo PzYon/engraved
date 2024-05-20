@@ -42,16 +42,18 @@ export const EntriesTableBodyGroup: React.FC<{
               </TableCell>
             ))}
           </StyledTableRow>
-          <StyledTableRow key="routes">
-            <TableCell colSpan={columns.length}>
-              <Routes>
-                <Route
-                  path={`${entry.id}/delete`}
-                  element={<DeleteEntry entry={entry} />}
-                />
-              </Routes>
-            </TableCell>
-          </StyledTableRow>
+          <Routes>
+            <Route
+              path={`${entry.id}/delete`}
+              element={
+                <StyledTableRow key="routes">
+                  <TableCell colSpan={columns.length}>
+                    <DeleteEntry entry={entry} />
+                  </TableCell>
+                </StyledTableRow>
+              }
+            />
+          </Routes>
         </React.Fragment>
       ))}
       {showGroupTotals ? (

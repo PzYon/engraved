@@ -14,7 +14,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { EntryActionButtons } from "./EntryActionButtons";
+import { EntryTableActionButtons } from "./EntryTableActionButtons";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
 import { format } from "date-fns";
@@ -251,7 +251,9 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       key: "_actions",
       width: "80px",
       getHeaderReactNode: () => translations.columnName_actions,
-      getValueReactNode: (_, entry) => <EntryActionButtons entry={entry} />,
+      getValueReactNode: (_, entry) => (
+        <EntryTableActionButtons entry={entry} />
+      ),
       getAddEntryReactNode: (command, updateCommand) => {
         return (
           <AddEntryTableSaveAction
