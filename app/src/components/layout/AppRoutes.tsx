@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { EntriesPage } from "../overview/entries/EntriesPage";
 import { SearchPage } from "../overview/search/SearchPage";
 import { ScheduledPage } from "../overview/scheduled/ScheduledPage";
@@ -11,7 +11,6 @@ import { AddJournalPage } from "../overview/AddJournalPage";
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route index element={<Navigate replace to="/journals/*" />} />
       <Route path="/journals/create" element={<AddJournalPage />} />
       <Route
         path="/journals/details/:journalId/*"
@@ -22,6 +21,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/search/*" element={<SearchPage />} />
       <Route path="/scheduled/*" element={<ScheduledPage />} />
       <Route path="/settings" element={<PwaSettingsPage />} />
+      <Route path="/*" element={<JournalsPage />} />
     </Routes>
   );
 };

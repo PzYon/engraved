@@ -6,7 +6,6 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { translations } from "../../../i18n/translations";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalAttributesSelector } from "./JournalAttributesSelector";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -25,6 +24,7 @@ import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { getValueHeaderLabel } from "../../../util/journalUtils";
+import { useNavigate } from "react-router-dom";
 
 export const UpsertEntry: React.FC<{
   journal: IJournal;
@@ -32,6 +32,8 @@ export const UpsertEntry: React.FC<{
   onSaved?: () => void;
   onCancel?: () => void;
 }> = ({ journal, entry, onSaved, onCancel }) => {
+  const navigate = useNavigate();
+
   const [attributeValues, setAttributeValues] =
     useState<IJournalAttributeValues>(entry?.journalAttributeValues || {}); // empty means nothing selected in the selector
 
@@ -157,9 +159,11 @@ export const UpsertEntry: React.FC<{
             await upsertEntryMutation.mutate({
               command: createCommand(),
             });
+
+            navigate("..");
           }}
         >
-          {entry?.id ? translations.edit : translations.add}
+          {entry?.id ? "Update entry" : "Add entry"}
         </Button>
       </DialogFormButtonContainer>
     </FormControl>

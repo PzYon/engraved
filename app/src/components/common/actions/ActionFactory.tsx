@@ -29,7 +29,6 @@ import {
 } from "@mui/icons-material";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
-import { renderUpsertEntryDialog } from "../../details/add/renderUpsertEntryDialog";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IAppAlert } from "../../errorHandling/AppAlertBar";
@@ -148,6 +147,7 @@ export class ActionFactory {
       href: `actions/${entryId}/schedule`,
     };
   }
+
   static addEntry(
     journal: IJournal,
     renderDialog: (dialogProps: IDialogProps) => void,
@@ -159,9 +159,9 @@ export class ActionFactory {
       key: "add_entry",
       label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
+      href: `actions/add-entry/${journal.id}`,
       onClick: () => {
         additionalOnClick?.();
-        renderUpsertEntryDialog(journal, renderDialog);
       },
     };
   }
@@ -285,6 +285,7 @@ export class ActionFactory {
       href: `actions/notification-done/${entry.id}`,
     };
   }
+
   static markJournalScheduleAsDone(
     journal: IJournal,
     enableHotkey?: boolean,

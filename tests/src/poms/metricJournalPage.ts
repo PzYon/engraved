@@ -15,7 +15,7 @@ export class MetricJournalPage extends JournalPage {
 
     await this.page.getByLabel("Value", { exact: true }).click();
     await this.page.getByLabel("Value", { exact: true }).fill(value);
-    await this.page.getByRole("button", { name: "Add" }).click();
+    await this.page.getByRole("button", { name: "Add entry" }).click();
 
     await expect(this.page.getByText("Added entry")).toBeVisible();
   }
