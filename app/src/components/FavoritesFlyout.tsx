@@ -61,7 +61,7 @@ const FavoritesList: React.FC<{
           return (
             <MenuItem key={journal.id} sx={{ display: "flex" }}>
               <Link
-                to={`/journals/${journal.id}`}
+                to={`/journals/details/${journal.id}`}
                 onClick={close}
                 style={{ flexGrow: 1, paddingRight: 10 }}
               >
@@ -71,7 +71,7 @@ const FavoritesList: React.FC<{
                 />
               </Link>
               <ActionIconButton
-                action={ActionFactory.addEntry(journal, false, false, close)}
+                action={ActionFactory.addEntry(journal, true, false, close)}
               />
             </MenuItem>
           );

@@ -7,8 +7,7 @@ import { NavigationActionContainer } from "./Entry";
 import { Route, Routes } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
-import { UpsertEntry } from "../../details/add/UpsertEntry";
-import { useJournalQuery } from "../../../serverApi/reactQuery/queries/useJournalQuery";
+import { UpsertEntryLoader } from "../../details/add/UpsertEntryLoader";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -57,14 +56,4 @@ export const EntrySubRoutes: React.FC<{
       />
     </Routes>
   );
-};
-
-const UpsertEntryLoader: React.FC<{ entry: IEntry }> = ({ entry }) => {
-  const journal = useJournalQuery(entry.parentId);
-
-  if (!journal) {
-    return null;
-  }
-
-  return <UpsertEntry journal={journal} entry={entry} />;
 };
