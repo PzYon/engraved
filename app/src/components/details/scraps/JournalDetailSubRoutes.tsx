@@ -5,6 +5,7 @@ import { EditSchedule } from "../edit/EditSchedule";
 import { EditJournalPermissions } from "../edit/EditJournalPermissions";
 import { Route, Routes } from "react-router-dom";
 import { UpsertEntry } from "../add/UpsertEntry";
+import React from "react";
 
 export const JournalDetailSubRoutes: React.FC<{ journal: IJournal }> = ({
   journal,

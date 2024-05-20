@@ -55,13 +55,6 @@ export const UpsertEntry: React.FC<{
 
   const [showFullTimerForm, setShowFullTimerForm] = useState(false);
 
-  // ATTENTION: bad!?
-  //journal = journal ?? useJournalQuery(entry?.parentId);
-
-  // if (!journal) {
-  //   return null;
-  // }
-
   const upsertEntryMutation = useUpsertEntryMutation(
     journal.id,
     journal.type,

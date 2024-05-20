@@ -6,13 +6,16 @@ import { StyledTableRow } from "./EntriesTable";
 import { IEntry } from "../../../serverApi/IEntry";
 import { Route, Routes } from "react-router-dom";
 import { DeleteEntry } from "../edit/DeleteEntry";
+import { UpsertEntry } from "../add/UpsertEntry";
+import { IJournal } from "../../../serverApi/IJournal";
 
 export const EntriesTableBodyGroup: React.FC<{
   group: IEntriesTableGroup;
   columns: IEntriesTableColumnDefinition[];
   showGroupTotals: boolean;
   isGroupCollapsed: boolean;
-}> = ({ group, columns, showGroupTotals, isGroupCollapsed }) => {
+  journal: IJournal;
+}> = ({ group, columns, showGroupTotals, isGroupCollapsed, journal }) => {
   const [isCollapsed, setIsCollapsed] = useState(isGroupCollapsed);
 
   useEffect(() => setIsCollapsed(isGroupCollapsed), [isGroupCollapsed]);
@@ -44,11 +47,21 @@ export const EntriesTableBodyGroup: React.FC<{
           </StyledTableRow>
           <Routes>
             <Route
-              path={`${entry.id}/delete`}
+              path={`actions/delete/${entry.id}`}
               element={
                 <StyledTableRow key="routes">
                   <TableCell colSpan={columns.length}>
                     <DeleteEntry entry={entry} />
+                  </TableCell>
+                </StyledTableRow>
+              }
+            />
+            <Route
+              path={`actions/edit/${entry.id}`}
+              element={
+                <StyledTableRow key="routes">
+                  <TableCell colSpan={columns.length}>
+                    <UpsertEntry journal={journal} entry={entry} />
                   </TableCell>
                 </StyledTableRow>
               }
