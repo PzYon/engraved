@@ -6,7 +6,6 @@ import { JournalTypeIcon } from "../../common/JournalTypeIcon";
 import { ActionLink } from "../../common/actions/ActionLink";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getCommonJournalActions } from "../getCommonJournalActions";
-import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { ListItemFooterRow } from "../ListItemFooterRow";
 import { IconStyle } from "../../common/IconStyle";
 import { ReadonlyTitleRow } from "../ReadonlyTitleRow";
@@ -20,7 +19,6 @@ export const JournalListItem: React.FC<{
 }> = ({ journal, index, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
-  const { renderDialog } = useDialogContext();
   const { user } = useAppContext();
 
   const journalProperties = useJournalProperties(journal);
@@ -64,13 +62,7 @@ export const JournalListItem: React.FC<{
           <ListItemFooterRow
             hasFocus={hasFocus}
             properties={journalProperties}
-            actions={getCommonJournalActions(
-              journal,
-              hasFocus,
-              user,
-              false,
-              renderDialog,
-            )}
+            actions={getCommonJournalActions(journal, hasFocus, user, false)}
           />
           <JournalSubRoutes journal={journal} />
         </Box>

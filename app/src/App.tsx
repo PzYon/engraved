@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { IUser } from "./serverApi/IUser";
 import { ReactQueryProviderWrapper } from "./serverApi/reactQuery/ReactQueryProviderWrapper";
 import { AppHost } from "./AppHost";
@@ -10,20 +10,29 @@ import { AppContextProvider } from "./AppContextProvider";
 import { DisplayModeContextProvider } from "./components/overview/overviewList/DisplayModeContextProvider";
 import { ActionContextProvider } from "./components/common/actions/ActionContextProvider";
 
-export const App: React.FC<{ user: IUser }> = ({ user }) => (
-  <AppContextProvider user={user}>
-    <ActionContextProvider>
-      <ReactQueryProviderWrapper>
-        <BrowserRouter>
-          <PageContextProvider>
-            <DialogContextProvider>
-              <DisplayModeContextProvider>
-                <AppHost />
-              </DisplayModeContextProvider>
-            </DialogContextProvider>
-          </PageContextProvider>
-        </BrowserRouter>
-      </ReactQueryProviderWrapper>
-    </ActionContextProvider>
-  </AppContextProvider>
-);
+export const App: React.FC<{ user: IUser }> = ({ user }) => {
+  const router = createBrowserRouter([
+    {
+      path: "/*",
+      element: (
+        <PageContextProvider>
+          <DialogContextProvider>
+            <DisplayModeContextProvider>
+              <AppHost />
+            </DisplayModeContextProvider>
+          </DialogContextProvider>
+        </PageContextProvider>
+      ),
+    },
+  ]);
+
+  return (
+    <AppContextProvider user={user}>
+      <ActionContextProvider>
+        <ReactQueryProviderWrapper>
+          <RouterProvider router={router} />
+        </ReactQueryProviderWrapper>
+      </ActionContextProvider>
+    </AppContextProvider>
+  );
+};

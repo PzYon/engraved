@@ -1,5 +1,4 @@
 import { IJournal } from "../../serverApi/IJournal";
-import { IDialogProps } from "../layout/dialogs/DialogContext";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { IUser } from "../../serverApi/IUser";
@@ -10,22 +9,16 @@ export function getCommonJournalActions(
   enableHotkeys: boolean,
   user: IUser,
   isDetails: boolean,
-  renderDialog?: (dialogProps: IDialogProps) => void,
 ): IAction[] {
   if (!journal) {
     return [];
   }
 
-  const actions: IAction[] = [];
-
-  if (renderDialog) {
-    actions.push(ActionFactory.addEntry(journal, isDetails, enableHotkeys));
-  }
-
-  actions.push(
+  const actions: IAction[] = [
+    ActionFactory.addEntry(journal, isDetails, enableHotkeys),
     ActionFactory.editJournalPermissions(journal.id, isDetails),
     ActionFactory.editJournalSchedule(journal.id, isDetails, enableHotkeys),
-  );
+  ];
 
   if (getScheduleForUser(journal, user.id).nextOccurrence) {
     actions.push(
