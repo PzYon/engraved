@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { ICommandResult } from "../../ICommandResult";
 import { JournalType } from "../../JournalType";
 import { useAppContext } from "../../../AppContext";
 
@@ -9,17 +8,16 @@ export const useAddJournalMutation = (
   name: string,
   description: string,
   journalType: JournalType,
-  onAdded: (result: ICommandResult) => Promise<void>,
 ) => {
   const { setAppAlert } = useAppContext();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: queryKeysFactory.addJournal(),
-    mutationFn: () => ServerApi.addJournal(name, description, journalType),
-    onSuccess: async (result: ICommandResult) => {
-      await onAdded(result);
 
+    mutationFn: () => ServerApi.addJournal(name, description, journalType),
+
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeysFactory.journals(),
       });
@@ -29,6 +27,7 @@ export const useAddJournalMutation = (
         type: "success",
       });
     },
+
     onError: (error: Error) =>
       setAppAlert({
         title: "Failed to add journal",

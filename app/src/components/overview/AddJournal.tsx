@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { translations } from "../../i18n/translations";
 import { JournalTypeSelector } from "../JournalTypeSelector";
 import { JournalType } from "../../serverApi/JournalType";
-import { useNavigate } from "react-router-dom";
-import { ICommandResult } from "../../serverApi/ICommandResult";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAddJournalMutation } from "../../serverApi/reactQuery/mutations/useAddJournalMutation";
 import { PageFormButtonContainer } from "../common/FormButtonContainer";
 import { PageSection } from "../layout/pages/PageSection";
@@ -20,10 +19,13 @@ export const AddJournal: React.FC = () => {
     name,
     description,
     journalType,
-    async (result: ICommandResult) => {
-      navigate(`/journals/details/${result.entityId}/`);
-    },
   );
+
+  if (addJournalMutation.isSuccess) {
+    return (
+      <Navigate to={`/journals/details/${addJournalMutation.data.entityId}/`} />
+    );
+  }
 
   return (
     <>
