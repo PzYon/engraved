@@ -10,23 +10,23 @@ import { AppContextProvider } from "./AppContextProvider";
 import { DisplayModeContextProvider } from "./components/overview/overviewList/DisplayModeContextProvider";
 import { ActionContextProvider } from "./components/common/actions/ActionContextProvider";
 
-export const App: React.FC<{ user: IUser }> = ({ user }) => {
-  const router = createBrowserRouter([
-    {
-      path: "/*",
-      children: [],
-      element: (
-        <PageContextProvider>
-          <DialogContextProvider>
-            <DisplayModeContextProvider>
-              <AppHost />
-            </DisplayModeContextProvider>
-          </DialogContextProvider>
-        </PageContextProvider>
-      ),
-    },
-  ]);
+const router = createBrowserRouter([
+  {
+    path: "/*",
+    children: [],
+    element: (
+      <PageContextProvider>
+        <DialogContextProvider>
+          <DisplayModeContextProvider>
+            <AppHost />
+          </DisplayModeContextProvider>
+        </DialogContextProvider>
+      </PageContextProvider>
+    ),
+  },
+]);
 
+export const App: React.FC<{ user: IUser }> = ({ user }) => {
   return (
     <AppContextProvider user={user}>
       <ActionContextProvider>
