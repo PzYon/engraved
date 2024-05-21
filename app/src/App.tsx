@@ -14,6 +14,7 @@ export const App: React.FC<{ user: IUser }> = ({ user }) => {
   const router = createBrowserRouter([
     {
       path: "/*",
+      children: [],
       element: (
         <PageContextProvider>
           <DialogContextProvider>
