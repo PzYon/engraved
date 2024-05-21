@@ -52,11 +52,7 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/add-entry/${journalId}`}
         element={
           <NavigationActionContainer shrinkWidthIfPossible={true}>
-            <UpsertEntry
-              journal={journal}
-              onSaved={() => {}}
-              onCancel={() => {}}
-            />
+            <UpsertEntry journal={journal} />
           </NavigationActionContainer>
         }
       />

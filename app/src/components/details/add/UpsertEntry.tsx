@@ -29,9 +29,7 @@ import { useNavigate } from "react-router-dom";
 export const UpsertEntry: React.FC<{
   journal?: IJournal;
   entry?: IEntry;
-  onSaved?: () => void;
-  onCancel?: () => void;
-}> = ({ journal, entry, onSaved, onCancel }) => {
+}> = ({ journal, entry }) => {
   const navigate = useNavigate();
 
   const [attributeValues, setAttributeValues] =
@@ -60,7 +58,7 @@ export const UpsertEntry: React.FC<{
     journal.type,
     journal,
     entry?.id,
-    onSaved,
+    close,
   );
 
   return (
@@ -149,7 +147,7 @@ export const UpsertEntry: React.FC<{
       />
 
       <DialogFormButtonContainer>
-        <Button variant="outlined" onClick={onCancel}>
+        <Button variant="outlined" onClick={close}>
           Cancel
         </Button>
         <Button
@@ -198,5 +196,9 @@ export const UpsertEntry: React.FC<{
 
   function resetSelectors() {
     setForceResetSelectors(Math.random().toString());
+  }
+
+  function close() {
+    navigate("..");
   }
 };
