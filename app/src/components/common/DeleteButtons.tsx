@@ -14,14 +14,11 @@ export const DeleteButtons: React.FC<{
   return (
     <>
       <DialogFormButtonContainer>
-        <Button
-          variant={!isSecondYes ? "contained" : "outlined"}
-          onClick={onCancel}
-        >
+        <Button variant={"outlined"} onClick={onCancel}>
           No
         </Button>
         <Button
-          variant={isSecondYes ? "contained" : "outlined"}
+          variant={"contained"}
           disabled={isFirstYes && !isSecondYes}
           onClick={() => {
             if (requiresConfirmation && !isSecondYes) {

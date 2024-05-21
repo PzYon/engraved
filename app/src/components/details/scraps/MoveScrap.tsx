@@ -3,12 +3,12 @@ import { Button } from "@mui/material";
 import { useMoveEntryMutation } from "../../../serverApi/reactQuery/mutations/useMoveEntryMutation";
 import { useNavigate } from "react-router-dom";
 import { usePageContext } from "../../layout/pages/PageContext";
-import { PageFormButtonContainer } from "../../common/FormButtonContainer";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { JournalSelector } from "../../common/JournalSelector";
 import { UserRole } from "../../../serverApi/UserRole";
 import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
 import { useAppContext } from "../../../AppContext";
+import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 
 export const MoveScrap: React.FC<{ entry: IScrapEntry }> = ({ entry }) => {
   const navigate = useNavigate();
@@ -47,7 +47,10 @@ export const MoveScrap: React.FC<{ entry: IScrapEntry }> = ({ entry }) => {
           })
         }
       />
-      <PageFormButtonContainer>
+      <DialogFormButtonContainer>
+        <Button variant={"outlined"} onClick={close}>
+          Cancel
+        </Button>
         <Button
           disabled={!targetJournalId}
           variant="contained"
@@ -57,7 +60,11 @@ export const MoveScrap: React.FC<{ entry: IScrapEntry }> = ({ entry }) => {
         >
           Move
         </Button>
-      </PageFormButtonContainer>
+      </DialogFormButtonContainer>
     </>
   );
+
+  function close() {
+    navigate("..");
+  }
 };

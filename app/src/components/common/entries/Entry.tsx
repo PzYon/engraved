@@ -112,7 +112,7 @@ const Host = styled("div")`
 const Inner = styled("div")`
   background-color: ${(p) => p.theme.palette.common.white};
   max-width: 500px;
-  border: 2px solid ${(p) => p.theme.palette.background.default};
+  border: 4px solid ${(p) => p.theme.palette.background.default};
   border-radius: ${paperBorderRadius};
   padding: ${(p) => p.theme.spacing(2)};
   margin-top: ${(p) => p.theme.spacing(2)};

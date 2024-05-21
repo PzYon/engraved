@@ -35,6 +35,9 @@ export const NotificationDone: React.FC<{
         <Typography>Will reoccur {schedule?.recurrence?.dateString}</Typography>
       ) : null}
       <DialogFormButtonContainer sx={!isRecurring ? { paddingTop: 0 } : {}}>
+        <Button variant={"outlined"} onClick={close}>
+          Cancel
+        </Button>
         <Button
           variant={"contained"}
           onClick={() => {
