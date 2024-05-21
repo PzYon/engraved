@@ -8,6 +8,7 @@ import { Route, Routes } from "react-router-dom";
 import { DeleteEntryAction } from "../edit/DeleteEntryAction";
 import { UpsertEntryAction } from "../add/UpsertEntryAction";
 import { IJournal } from "../../../serverApi/IJournal";
+import { NavigationActionContainer } from "../../common/entries/Entry";
 
 export const EntriesTableBodyGroup: React.FC<{
   group: IEntriesTableGroup;
@@ -51,7 +52,9 @@ export const EntriesTableBodyGroup: React.FC<{
               element={
                 <StyledTableRow key="routes">
                   <TableCell colSpan={columns.length}>
-                    <DeleteEntryAction entry={entry} />
+                    <NavigationActionContainer>
+                      <DeleteEntryAction entry={entry} />
+                    </NavigationActionContainer>
                   </TableCell>
                 </StyledTableRow>
               }
@@ -61,7 +64,9 @@ export const EntriesTableBodyGroup: React.FC<{
               element={
                 <StyledTableRow key="routes">
                   <TableCell colSpan={columns.length}>
-                    <UpsertEntryAction journal={journal} entry={entry} />
+                    <NavigationActionContainer shrinkWidthIfPossible={true}>
+                      <UpsertEntryAction journal={journal} entry={entry} />
+                    </NavigationActionContainer>
                   </TableCell>
                 </StyledTableRow>
               }

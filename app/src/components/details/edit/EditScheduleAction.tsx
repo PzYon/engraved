@@ -100,9 +100,7 @@ export const EditScheduleAction: React.FC<{
     const scheduleDefinition: IScheduleDefinition = {
       nextOccurrence: parsed.date,
       recurrence: parsed.recurrence,
-      onClickUrl: entryId
-        ? `${location.origin}/journals/${journalId}/entries/${entryId}/notification`
-        : `${location.origin}/journals/${journalId}/notification`,
+      onClickUrl: `${location.origin}/journals/details/${journalId}/actions/notification-done/${entryId || ""}`,
     };
 
     modifyScheduleMutation.mutate(scheduleDefinition);
