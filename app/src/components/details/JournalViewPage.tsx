@@ -8,8 +8,6 @@ import { JournalNotes } from "./edit/JournalNotes";
 import { EntryFilters } from "./filters/EntryFilters";
 import { Thresholds } from "./thresholds/Thresholds";
 import { EntriesTable } from "./entriesTable/EntriesTable";
-import { Route, Routes } from "react-router-dom";
-import { EditEntryLauncher } from "./edit/EditEntryLauncher";
 import { Page } from "../layout/pages/Page";
 import { JournalPageTitle } from "./JournalPageTitle";
 import { createDateConditions } from "./filters/createDateConditions";
@@ -188,13 +186,6 @@ export const JournalViewPage: React.FC = () => {
           message={"No entries available."}
         />
       ) : null}
-
-      <Routes>
-        <Route
-          path="/entries/:entryId/edit"
-          element={<EditEntryLauncher journal={journal} entries={entries} />}
-        />
-      </Routes>
     </Page>
   );
 };

@@ -20,6 +20,8 @@ export const EditSchedule: React.FC<{
 }> = ({ journalId, journal, entryId }) => {
   const [parsed, setParsed] = useState<IParsedDate>({});
 
+  const [isDirty, setIsDirty] = useState(false);
+
   const { user } = useAppContext();
 
   const navigate = useNavigate();
@@ -64,24 +66,30 @@ export const EditSchedule: React.FC<{
       <ParseableDate
         sx={{ marginBottom: 2 }}
         parseDateOnly={true}
-        onChange={setParsed}
+        onChange={(d) => {
+          setParsed(d);
+          setIsDirty(!!d.date);
+        }}
         onSelect={save}
       />
 
       {showFullForm ? (
         <DateSelector
           date={parsed.date}
-          setDate={(d) => setParsed({ date: d })}
+          setDate={(d) => {
+            setParsed({ date: d });
+            setIsDirty(true);
+          }}
           showTime={true}
           showClear={true}
         />
       ) : null}
 
-      <DialogFormButtonContainer>
+      <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
         <Button variant="outlined" onClick={close}>
           Cancel
         </Button>
-        <Button variant="contained" onClick={save}>
+        <Button variant="contained" onClick={save} disabled={!isDirty}>
           Save
         </Button>
       </DialogFormButtonContainer>

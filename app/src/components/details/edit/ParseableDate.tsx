@@ -50,32 +50,34 @@ export const ParseableDate: React.FC<{
           }
         }}
       />
-      <OutputContainer>
-        {parseError ? (
-          <Typography sx={{ color: "error.main", pb: 1 }}>
-            {parseError}
+      {parseError || parsed?.date ? (
+        <OutputContainer>
+          {parseError ? (
+            <Typography sx={{ color: "error.main", pb: 1 }}>
+              {parseError}
+            </Typography>
+          ) : null}
+          <Typography>
+            {!parseDateOnly && parsed.text ? (
+              <TextContainer>{parsed.text}</TextContainer>
+            ) : null}
+            {parsed.date ? (
+              <DateContainer>
+                <FormatDate value={parsed.date} dateFormat={DateFormat.full} />
+                {" ("}
+                <FormatDate
+                  value={parsed.date}
+                  dateFormat={DateFormat.relativeToNow}
+                />
+                {")"}
+                {parsed.recurrence ? (
+                  <> - repeats {parsed.recurrence.dateString}</>
+                ) : null}
+              </DateContainer>
+            ) : null}
           </Typography>
-        ) : null}
-        <Typography>
-          {!parseDateOnly && parsed.text ? (
-            <TextContainer>{parsed.text}</TextContainer>
-          ) : null}
-          {parsed.date ? (
-            <DateContainer>
-              <FormatDate value={parsed.date} dateFormat={DateFormat.full} />
-              {" ("}
-              <FormatDate
-                value={parsed.date}
-                dateFormat={DateFormat.relativeToNow}
-              />
-              {")"}
-              {parsed.recurrence ? (
-                <> - repeats {parsed.recurrence.dateString}</>
-              ) : null}
-            </DateContainer>
-          ) : null}
-        </Typography>
-      </OutputContainer>
+        </OutputContainer>
+      ) : null}
     </Host>
   );
 };
@@ -83,9 +85,7 @@ export const ParseableDate: React.FC<{
 const Host = styled("div")``;
 
 const OutputContainer = styled("div")`
-  :not(:empty) {
-    padding-top: ${(p) => p.theme.spacing(2)};
-  }
+  padding-top: ${(p) => p.theme.spacing(2)};
 `;
 
 const OutputElement = styled("span")`

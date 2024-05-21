@@ -50,7 +50,7 @@ export const EntrySubRoutes: React.FC<{
       <Route
         path={`/actions/edit/${entry.id}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer shrinkWidthIfPossible={true}>
             <UpsertEntryLoader entry={entry} />
           </NavigationActionContainer>
         }
