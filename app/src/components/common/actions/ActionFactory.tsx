@@ -289,7 +289,7 @@ export class ActionFactory {
     };
   }
 
-  static markEntryScheduleAsDoneViaUrl(
+  static markEntryScheduleAsDone(
     entry: IEntry,
     enableHotkeys?: boolean,
   ): IAction {
@@ -304,6 +304,7 @@ export class ActionFactory {
 
   static markJournalScheduleAsDone(
     journal: IJournal,
+    isDetails: boolean,
     enableHotkey?: boolean,
   ): IAction {
     return {
@@ -311,7 +312,9 @@ export class ActionFactory {
       hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
-      href: `actions/notification-done/${journal.id}`,
+      href: isDetails
+        ? `/journals/details/${journal.id}/actions/notification-done`
+        : `actions/notification-done/${journal.id}`,
     };
   }
 

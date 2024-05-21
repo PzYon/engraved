@@ -67,7 +67,7 @@ export const ScrapBody: React.FC<{
 
       if (getScheduleForUser(scrapToRender, user.id).nextOccurrence) {
         allActions.push(
-          ActionFactory.markEntryScheduleAsDoneViaUrl(scrapToRender, hasFocus),
+          ActionFactory.markEntryScheduleAsDone(scrapToRender, hasFocus),
         );
       }
     }
