@@ -21,6 +21,7 @@ export const ParseableDate: React.FC<{
         placeholder={parseDateOnly ? "When?" : "What and when?"}
         autoFocus={true}
         id={id}
+        sx={{ width: "100%" }}
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (e.key !== "Enter") {
             return;
@@ -82,7 +83,9 @@ export const ParseableDate: React.FC<{
 const Host = styled("div")``;
 
 const OutputContainer = styled("div")`
-  padding-top: ${(p) => p.theme.spacing(2)};
+  :not(:empty) {
+    padding-top: ${(p) => p.theme.spacing(2)};
+  }
 `;
 
 const OutputElement = styled("span")`

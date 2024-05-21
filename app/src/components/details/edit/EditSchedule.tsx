@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
-import { Button, FormControlLabel, Switch } from "@mui/material";
+import { Button, FormControlLabel, styled, Switch } from "@mui/material";
 import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
 import { ParseableDate } from "./ParseableDate";
 import { DateSelector } from "../../common/DateSelector";
@@ -49,7 +49,7 @@ export const EditSchedule: React.FC<{
   const modifyScheduleMutation = useModifyScheduleMutation(journalId, entryId);
 
   return (
-    <>
+    <Host>
       <FormControlLabel
         label="Show full form"
         control={
@@ -85,7 +85,7 @@ export const EditSchedule: React.FC<{
           Save
         </Button>
       </DialogFormButtonContainer>
-    </>
+    </Host>
   );
 
   function save() {
@@ -106,3 +106,7 @@ export const EditSchedule: React.FC<{
     navigate("..");
   }
 };
+
+const Host = styled("div")`
+  width: 100%;
+`;

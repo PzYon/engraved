@@ -25,7 +25,7 @@ import { IJournalUiSettings } from "./edit/IJournalUiSettings";
 import { getUiSettings } from "../../util/journalUtils";
 import { getDefaultDateConditions } from "./filters/getDefaultDateConditions";
 import { useAppContext } from "../../AppContext";
-import { JournalDetailSubRoutes } from "./scraps/JournalDetailSubRoutes";
+import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -120,7 +120,7 @@ export const JournalViewPage: React.FC = () => {
       documentTitle={journal.name}
       actions={titleActions}
     >
-      <JournalDetailSubRoutes journal={journal} />
+      <JournalSubRoutes journal={journal} isFromDetailView={true} />
 
       {showNotes ? (
         <PageSection>

@@ -34,7 +34,7 @@ export const EntrySubRoutes: React.FC<{
       <Route
         path={`/actions/notification-done/${entry.id}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer shrinkWidthIfPossible={true}>
             <NotificationDone entry={entry} journal={null} />
           </NavigationActionContainer>
         }

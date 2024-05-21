@@ -52,6 +52,7 @@ export const EditJournalPermissions: React.FC<{
       <AddNewContainer>
         <TextField
           label={"Mail Address"}
+          sx={{ flexGrow: 1 }}
           onChange={(event) => {
             const value = event.target.value;
             setUserName(value);

@@ -75,7 +75,9 @@ function getEntryProperties(
     },
     {
       key: "journal-name",
-      node: () => <Link to={`/journals/${journalId}`}>{journalName}</Link>,
+      node: () => (
+        <Link to={`/journals/details/${journalId}`}>{journalName}</Link>
+      ),
       label: "Journal",
       hideWhen: () => propsRenderStyle !== "all",
     },
@@ -91,10 +93,13 @@ function getEntryProperties(
 
 export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
-}> = ({ children }) => {
+  shrinkWidthIfPossible?: boolean;
+}> = ({ children, shrinkWidthIfPossible }) => {
   return (
     <Host>
-      <Inner>{children}</Inner>
+      <Inner style={{ width: shrinkWidthIfPossible ? "auto" : "100%" }}>
+        {children}
+      </Inner>
     </Host>
   );
 };
