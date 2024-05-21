@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
 import React from "react";
 
-export const NotificationDone: React.FC<{
+export const NotificationDoneAction: React.FC<{
   journal: IJournal;
   entry?: IEntry;
 }> = ({ journal, entry }) => {

@@ -1,7 +1,7 @@
 import { NavigateFunction } from "react-router-dom";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
-import { EditSchedule } from "./EditSchedule";
+import { EditScheduleAction } from "./EditScheduleAction";
 
 export const renderEditSchedule = (
   journalId: string,
@@ -13,7 +13,11 @@ export const renderEditSchedule = (
   renderDialog({
     title: "Schedule for " + (entryId ? "entry" : "journal"),
     render: () => (
-      <EditSchedule journal={journal} journalId={journalId} entryId={entryId} />
+      <EditScheduleAction
+        journal={journal}
+        journalId={journalId}
+        entryId={entryId}
+      />
     ),
     onClose: () => {
       navigate?.(`/journals/${journalId}`);

@@ -1,12 +1,12 @@
 import { IJournal } from "../../../serverApi/IJournal";
 import { NavigationActionContainer } from "../../common/entries/Entry";
 import { DeleteJournal } from "../../details/edit/DeleteJournal";
-import { NotificationDone } from "../../details/NotificationDone";
+import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { Route, Routes } from "react-router-dom";
-import { EditJournalPermissions } from "../../details/edit/EditJournalPermissions";
+import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPermissionsAction";
 import React from "react";
-import { UpsertEntry } from "../../details/add/UpsertEntry";
-import { EditSchedule } from "../../details/edit/EditSchedule";
+import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
+import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
@@ -28,7 +28,7 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/permissions/${journalId}`}
         element={
           <NavigationActionContainer>
-            <EditJournalPermissions journal={journal} />
+            <EditJournalPermissionsAction journal={journal} />
           </NavigationActionContainer>
         }
       />
@@ -36,7 +36,7 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/notification-done/${journalId}`}
         element={
           <NavigationActionContainer shrinkWidthIfPossible={true}>
-            <NotificationDone entry={null} journal={journal} />
+            <NotificationDoneAction entry={null} journal={journal} />
           </NavigationActionContainer>
         }
       />
@@ -44,7 +44,7 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/schedule/${journalId}`}
         element={
           <NavigationActionContainer>
-            <EditSchedule journalId={journalId} journal={journal} />
+            <EditScheduleAction journalId={journalId} journal={journal} />
           </NavigationActionContainer>
         }
       />
@@ -52,7 +52,7 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/add-entry/${journalId}`}
         element={
           <NavigationActionContainer shrinkWidthIfPossible={true}>
-            <UpsertEntry journal={journal} />
+            <UpsertEntryAction journal={journal} />
           </NavigationActionContainer>
         }
       />

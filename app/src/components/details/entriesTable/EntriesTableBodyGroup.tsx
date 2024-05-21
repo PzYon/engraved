@@ -5,8 +5,8 @@ import { TableCell, TableRow } from "@mui/material";
 import { StyledTableRow } from "./EntriesTable";
 import { IEntry } from "../../../serverApi/IEntry";
 import { Route, Routes } from "react-router-dom";
-import { DeleteEntry } from "../edit/DeleteEntry";
-import { UpsertEntry } from "../add/UpsertEntry";
+import { DeleteEntryAction } from "../edit/DeleteEntryAction";
+import { UpsertEntryAction } from "../add/UpsertEntryAction";
 import { IJournal } from "../../../serverApi/IJournal";
 
 export const EntriesTableBodyGroup: React.FC<{
@@ -51,7 +51,7 @@ export const EntriesTableBodyGroup: React.FC<{
               element={
                 <StyledTableRow key="routes">
                   <TableCell colSpan={columns.length}>
-                    <DeleteEntry entry={entry} />
+                    <DeleteEntryAction entry={entry} />
                   </TableCell>
                 </StyledTableRow>
               }
@@ -61,7 +61,7 @@ export const EntriesTableBodyGroup: React.FC<{
               element={
                 <StyledTableRow key="routes">
                   <TableCell colSpan={columns.length}>
-                    <UpsertEntry journal={journal} entry={entry} />
+                    <UpsertEntryAction journal={journal} entry={entry} />
                   </TableCell>
                 </StyledTableRow>
               }

@@ -13,7 +13,7 @@ import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
 
-export const EditSchedule: React.FC<{
+export const EditScheduleAction: React.FC<{
   journalId: string;
   journal: IJournal;
   entryId?: string;

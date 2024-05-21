@@ -1,13 +1,13 @@
-import { DeleteEntry } from "../../details/edit/DeleteEntry";
-import { EditSchedule } from "../../details/edit/EditSchedule";
-import { NotificationDone } from "../../details/NotificationDone";
-import { MoveScrap } from "../../details/scraps/MoveScrap";
+import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
+import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
+import { NotificationDoneAction } from "../../details/NotificationDoneAction";
+import { MoveScrapAction } from "../../details/scraps/MoveScrapAction";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { NavigationActionContainer } from "./Entry";
 import { Route, Routes } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
-import { UpsertEntryLoader } from "../../details/add/UpsertEntryLoader";
+import { UpsertEntryActionLoader } from "../../details/add/UpsertEntryActionLoader";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -18,7 +18,7 @@ export const EntrySubRoutes: React.FC<{
         path={`/actions/delete/${entry.id}`}
         element={
           <NavigationActionContainer>
-            <DeleteEntry entry={entry} />
+            <DeleteEntryAction entry={entry} />
           </NavigationActionContainer>
         }
       />
@@ -26,7 +26,11 @@ export const EntrySubRoutes: React.FC<{
         path={`/actions/schedule/${entry.id}`}
         element={
           <NavigationActionContainer>
-            <EditSchedule journalId={""} entryId={entry.id} journal={null} />
+            <EditScheduleAction
+              journalId={""}
+              entryId={entry.id}
+              journal={null}
+            />
           </NavigationActionContainer>
         }
       />
@@ -34,7 +38,7 @@ export const EntrySubRoutes: React.FC<{
         path={`/actions/notification-done/${entry.id}`}
         element={
           <NavigationActionContainer shrinkWidthIfPossible={true}>
-            <NotificationDone entry={entry} journal={null} />
+            <NotificationDoneAction entry={entry} journal={null} />
           </NavigationActionContainer>
         }
       />
@@ -42,7 +46,7 @@ export const EntrySubRoutes: React.FC<{
         path={`/actions/move/${entry.id}`}
         element={
           <NavigationActionContainer>
-            <MoveScrap entry={entry as IScrapEntry} />
+            <MoveScrapAction entry={entry as IScrapEntry} />
           </NavigationActionContainer>
         }
       />
@@ -50,7 +54,7 @@ export const EntrySubRoutes: React.FC<{
         path={`/actions/edit/${entry.id}`}
         element={
           <NavigationActionContainer shrinkWidthIfPossible={true}>
-            <UpsertEntryLoader entry={entry} />
+            <UpsertEntryActionLoader entry={entry} />
           </NavigationActionContainer>
         }
       />

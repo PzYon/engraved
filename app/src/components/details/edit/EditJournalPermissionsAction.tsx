@@ -12,7 +12,7 @@ import { useModifyJournalPermissionsMutation } from "../../../serverApi/reactQue
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { useNavigate } from "react-router-dom";
 
-export const EditJournalPermissions: React.FC<{
+export const EditJournalPermissionsAction: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
   const [userName, setUserName] = useState("");

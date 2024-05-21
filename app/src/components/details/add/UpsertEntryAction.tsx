@@ -26,7 +26,7 @@ import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { getValueHeaderLabel } from "../../../util/journalUtils";
 import { useNavigate } from "react-router-dom";
 
-export const UpsertEntry: React.FC<{
+export const UpsertEntryAction: React.FC<{
   journal?: IJournal;
   entry?: IEntry;
 }> = ({ journal, entry }) => {

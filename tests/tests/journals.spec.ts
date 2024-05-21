@@ -43,11 +43,11 @@ test("add journal, delete journal", async ({ page }) => {
   const journalPage = await addNewJournal(page, "Timer", journalName);
   const journalId = await journalPage.getJournalId();
 
-  const deleteDialog = await journalPage.navigateToDeleteJournalDialog();
+  const deleteAction = await journalPage.navigateToDeleteJournalAction();
 
-  await deleteDialog.clickFirstDeleteButton();
-  await deleteDialog.typeInConfirmationTextBox("delete");
-  await deleteDialog.clickSecondDeleteButton();
+  await deleteAction.clickFirstDeleteButton();
+  await deleteAction.typeInConfirmationTextBox("delete");
+  await deleteAction.clickSecondDeleteButton();
 
   await navigateToHome(page);
   const journalsPage = new JournalsPage(page);

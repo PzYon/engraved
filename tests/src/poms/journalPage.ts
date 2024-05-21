@@ -1,6 +1,6 @@
 import { BasePage } from "./basePage";
 import { JournalEditPage } from "./journalEditPage";
-import { PermissionsDialog } from "./permissionsDialog";
+import { PermissionsAction } from "./permissionsAction";
 
 export abstract class JournalPage extends BasePage {
   async getJournalId() {
@@ -11,7 +11,7 @@ export abstract class JournalPage extends BasePage {
 
   async clickPermissionsAction() {
     await this.clickPageAction("Permissions");
-    return new PermissionsDialog(this.page);
+    return new PermissionsAction(this.page);
   }
 
   async navigateToEditPage(): Promise<JournalEditPage> {

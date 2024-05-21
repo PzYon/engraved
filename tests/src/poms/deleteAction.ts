@@ -1,6 +1,6 @@
 import { expect, Page } from "@playwright/test";
 
-export class DeleteDialog {
+export class DeleteAction {
   constructor(
     private page: Page,
     private type: "Journal" | "Entry",

@@ -10,7 +10,9 @@ import { getPermissionsForUser } from "../../overview/journals/useJournalPermiss
 import { useAppContext } from "../../../AppContext";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 
-export const MoveScrap: React.FC<{ entry: IScrapEntry }> = ({ entry }) => {
+export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
+  entry,
+}) => {
   const navigate = useNavigate();
 
   const { setSubTitle } = usePageContext();

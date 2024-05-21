@@ -6,7 +6,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useNavigate } from "react-router-dom";
 
-export const DeleteEntry: React.FC<{
+export const DeleteEntryAction: React.FC<{
   entry: IEntry;
 }> = ({ entry }) => {
   const deleteEntryMutation = useDeleteEntryMutation(entry.parentId, entry.id);
