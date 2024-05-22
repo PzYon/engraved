@@ -1,6 +1,6 @@
 import { IJournal } from "../../../serverApi/IJournal";
 import { NavigationActionContainer } from "../../common/entries/Entry";
-import { DeleteJournal } from "../../details/edit/DeleteJournal";
+import { DeleteJournalAction } from "../../details/edit/DeleteJournalAction";
 import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { Route, Routes } from "react-router-dom";
 import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPermissionsAction";
@@ -20,7 +20,7 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/delete/${journalId}`}
         element={
           <NavigationActionContainer>
-            <DeleteJournal journal={journal} />
+            <DeleteJournalAction journal={journal} />
           </NavigationActionContainer>
         }
       />

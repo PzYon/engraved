@@ -8,7 +8,7 @@ import { useAppContext } from "../../../AppContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-export const DeleteJournal: React.FC<{
+export const DeleteJournalAction: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
   const { setAppAlert } = useAppContext();
