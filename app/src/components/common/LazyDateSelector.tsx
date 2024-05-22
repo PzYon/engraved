@@ -42,7 +42,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               value={date || null}
               onChange={setDate}
             />
-            <div>
+            <ButtonContainer>
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
@@ -66,7 +66,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
                   Clear
                 </Button>
               ) : null}
-            </div>
+            </ButtonContainer>
           </FlexElement>
         ) : null}
       </FlexContainer>
@@ -83,6 +83,11 @@ const FlexElement = styled("div")`
   flex-grow: 1;
   min-width: 100px;
   width: 100%;
+`;
+
+const ButtonContainer = styled("div")`
+  display: flex;
+  justify-content: end;
 `;
 
 export default LazyDateSelector;
