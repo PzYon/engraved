@@ -1,29 +1,98 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
 import { IUser } from "./serverApi/IUser";
+import { styled } from "@mui/material";
+import { AddJournalPage } from "./components/overview/AddJournalPage";
+import { JournalPageWrapper } from "./components/details/JournalPageWrapper";
+import { JournalsPage } from "./components/overview/journals/JournalsPage";
+import { EntriesPage } from "./components/overview/entries/EntriesPage";
+import { SearchPage } from "./components/overview/search/SearchPage";
+import { ScheduledPage } from "./components/overview/scheduled/ScheduledPage";
+import { PwaSettingsPage } from "./pwa/PwaSettingsPage";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { AppContextProvider } from "./AppContextProvider";
+import { ActionContextProvider } from "./components/common/actions/ActionContextProvider";
 import { ReactQueryProviderWrapper } from "./serverApi/reactQuery/ReactQueryProviderWrapper";
-import { AppHost } from "./AppHost";
 import { PageContextProvider } from "./components/layout/pages/PageContextProvider";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContextProvider";
-import { AppContextProvider } from "./AppContextProvider";
-
 import { DisplayModeContextProvider } from "./components/overview/overviewList/DisplayModeContextProvider";
-import { ActionContextProvider } from "./components/common/actions/ActionContextProvider";
+import { AppHeader } from "./components/layout/AppHeader";
+import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
+import { AppContent } from "./components/layout/AppContent";
+import { AppErrorBoundary } from "./components/errorHandling/AppErrorBoundary";
+import { AppFooter } from "./components/layout/AppFooter";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    Component: () => {
+      return (
+        <ActionContextProvider>
+          <ReactQueryProviderWrapper>
+            <PageContextProvider>
+              <DialogContextProvider>
+                <DisplayModeContextProvider>
+                  <Host>
+                    <AppHeader />
+                    <AppAlertBar />
+                    <AppContent scope="body">
+                      <AppErrorBoundary>
+                        <Outlet />
+                      </AppErrorBoundary>
+                    </AppContent>
+                    <AppFooter />
+                  </Host>
+                </DisplayModeContextProvider>
+              </DialogContextProvider>
+            </PageContextProvider>
+          </ReactQueryProviderWrapper>
+        </ActionContextProvider>
+      );
+    },
+    children: [
+      {
+        path: "/journals/create",
+        element: <AddJournalPage />,
+      },
+      {
+        path: "/journals/details/:journalId/*",
+        element: <JournalPageWrapper />,
+      },
+      {
+        path: "/journals/*",
+        element: <JournalsPage />,
+      },
+      {
+        path: "/entries/*",
+        element: <EntriesPage />,
+      },
+      {
+        path: "/search/*",
+        element: <SearchPage />,
+      },
+      {
+        path: "/scheduled/*",
+        element: <ScheduledPage />,
+      },
+      {
+        path: "/settings",
+        element: <PwaSettingsPage />,
+      },
+      {
+        path: "/",
+        element: <JournalsPage />,
+      },
+    ],
+  },
+]);
 
 export const App: React.FC<{ user: IUser }> = ({ user }) => (
   <AppContextProvider user={user}>
-    <ActionContextProvider>
-      <ReactQueryProviderWrapper>
-        <BrowserRouter>
-          <PageContextProvider>
-            <DialogContextProvider>
-              <DisplayModeContextProvider>
-                <AppHost />
-              </DisplayModeContextProvider>
-            </DialogContextProvider>
-          </PageContextProvider>
-        </BrowserRouter>
-      </ReactQueryProviderWrapper>
-    </ActionContextProvider>
+    <RouterProvider router={router} />
   </AppContextProvider>
 );
+
+const Host = styled("div")`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
