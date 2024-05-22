@@ -50,31 +50,31 @@ const router = createBrowserRouter([
     },
     children: [
       {
-        path: "/journals/create",
+        path: "journals/create",
         element: <AddJournalPage />,
       },
       {
-        path: "/journals/details/:journalId/*",
+        path: "journals/details/:journalId/*",
         element: <JournalPageWrapper />,
       },
       {
-        path: "/journals/*",
+        path: "journals/*",
         element: <JournalsPage />,
       },
       {
-        path: "/entries/*",
+        path: "entries/*",
         element: <EntriesPage />,
       },
       {
-        path: "/search/*",
+        path: "search/*",
         element: <SearchPage />,
       },
       {
-        path: "/scheduled/*",
+        path: "scheduled/*",
         element: <ScheduledPage />,
       },
       {
-        path: "/settings",
+        path: "settings",
         element: <PwaSettingsPage />,
       },
       {
