@@ -6,7 +6,6 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { translations } from "../../../i18n/translations";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalAttributesSelector } from "./JournalAttributesSelector";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -25,13 +24,14 @@ import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { getValueHeaderLabel } from "../../../util/journalUtils";
+import { useNavigate } from "react-router-dom";
 
-export const UpsertEntry: React.FC<{
-  journal: IJournal;
+export const UpsertEntryAction: React.FC<{
+  journal?: IJournal;
   entry?: IEntry;
-  onSaved?: () => void;
-  onCancel?: () => void;
-}> = ({ journal, entry, onSaved, onCancel }) => {
+}> = ({ journal, entry }) => {
+  const navigate = useNavigate();
+
   const [attributeValues, setAttributeValues] =
     useState<IJournalAttributeValues>(entry?.journalAttributeValues || {}); // empty means nothing selected in the selector
 
@@ -58,7 +58,7 @@ export const UpsertEntry: React.FC<{
     journal.type,
     journal,
     entry?.id,
-    onSaved,
+    close,
   );
 
   return (
@@ -147,7 +147,7 @@ export const UpsertEntry: React.FC<{
       />
 
       <DialogFormButtonContainer>
-        <Button variant="outlined" onClick={onCancel}>
+        <Button variant="outlined" onClick={close}>
           Cancel
         </Button>
         <Button
@@ -157,9 +157,11 @@ export const UpsertEntry: React.FC<{
             await upsertEntryMutation.mutate({
               command: createCommand(),
             });
+
+            navigate("..");
           }}
         >
-          {entry?.id ? translations.edit : translations.add}
+          {entry?.id ? "Update entry" : "Add entry"}
         </Button>
       </DialogFormButtonContainer>
     </FormControl>
@@ -194,5 +196,9 @@ export const UpsertEntry: React.FC<{
 
   function resetSelectors() {
     setForceResetSelectors(Math.random().toString());
+  }
+
+  function close() {
+    navigate("..");
   }
 };

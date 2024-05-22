@@ -10,12 +10,8 @@ import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonJournalActions } from "../../overview/getCommonJournalActions";
 import { Page } from "../../layout/pages/Page";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
-import { Route, Routes } from "react-router-dom";
-import { DeleteEntryLauncher } from "../edit/DeleteEntryLauncher";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
-import { EditScheduleLauncher } from "../edit/EditScheduleLauncher";
 import { useAppContext } from "../../../AppContext";
-import { OnNotificationLauncher } from "../OnNotificationLauncher";
 import { ScrapToc } from "./ScrapToc";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { IAction } from "../../common/actions/IAction";
@@ -23,9 +19,9 @@ import { IEntity } from "../../../serverApi/IEntity";
 import { compareAsc } from "date-fns";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
-import { NotificationDoneLauncher } from "../NotificationDoneLauncher";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 import { PageSection } from "../../layout/pages/PageSection";
+import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -58,9 +54,11 @@ export const ScrapsViewPage: React.FC = () => {
         getAddNewAction("list"),
         null,
         ActionFactory.getToc(() => setShowToc(!showToc)),
-        ...getCommonJournalActions(journal, false, user),
+        ...getCommonJournalActions(journal, false, user, true),
       ]}
     >
+      <JournalSubRoutes journal={journal} isFromDetailView={true} />
+
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
       {newScrap ? (
@@ -96,25 +94,6 @@ export const ScrapsViewPage: React.FC = () => {
           message={"Nothing here..."}
         />
       ) : null}
-
-      <Routes>
-        <Route
-          path="/entries/:entryId/delete"
-          element={<DeleteEntryLauncher journal={journal} />}
-        />
-        <Route
-          path="/entries/:entryId/schedule"
-          element={<EditScheduleLauncher journal={journal} />}
-        />
-        <Route
-          path="/entries/:entryId/notification"
-          element={<OnNotificationLauncher journal={journal} />}
-        />
-        <Route
-          path="/entries/:entryId/notification-done"
-          element={<NotificationDoneLauncher journal={journal} />}
-        />
-      </Routes>
     </Page>
   );
 

@@ -1,6 +1,6 @@
 import { Page } from "@playwright/test";
 
-export class PermissionsDialog {
+export class PermissionsAction {
   constructor(private page: Page) {}
 
   async addUserWithWritePermissions(email: string) {

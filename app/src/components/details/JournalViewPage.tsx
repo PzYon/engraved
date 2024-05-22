@@ -8,9 +8,6 @@ import { JournalNotes } from "./edit/JournalNotes";
 import { EntryFilters } from "./filters/EntryFilters";
 import { Thresholds } from "./thresholds/Thresholds";
 import { EntriesTable } from "./entriesTable/EntriesTable";
-import { Route, Routes } from "react-router-dom";
-import { EditEntryLauncher } from "./edit/EditEntryLauncher";
-import { DeleteEntryLauncher } from "./edit/DeleteEntryLauncher";
 import { Page } from "../layout/pages/Page";
 import { JournalPageTitle } from "./JournalPageTitle";
 import { createDateConditions } from "./filters/createDateConditions";
@@ -26,6 +23,7 @@ import { IJournalUiSettings } from "./edit/IJournalUiSettings";
 import { getUiSettings } from "../../util/journalUtils";
 import { getDefaultDateConditions } from "./filters/getDefaultDateConditions";
 import { useAppContext } from "../../AppContext";
+import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 
 export const JournalViewPage: React.FC = () => {
   const { renderDialog } = useDialogContext();
@@ -93,7 +91,7 @@ export const JournalViewPage: React.FC = () => {
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonJournalActions(journal, true, user, renderDialog),
+      ...getCommonJournalActions(journal, true, user, true, renderDialog),
     ]);
 
     return () => {
@@ -120,6 +118,8 @@ export const JournalViewPage: React.FC = () => {
       documentTitle={journal.name}
       actions={titleActions}
     >
+      <JournalSubRoutes journal={journal} isFromDetailView={true} />
+
       {showNotes ? (
         <PageSection>
           <JournalNotes journal={journal} />
@@ -186,17 +186,6 @@ export const JournalViewPage: React.FC = () => {
           message={"No entries available."}
         />
       ) : null}
-
-      <Routes>
-        <Route
-          path="/entries/:entryId/edit"
-          element={<EditEntryLauncher journal={journal} entries={entries} />}
-        />
-        <Route
-          path="/entries/:entryId/delete"
-          element={<DeleteEntryLauncher journal={journal} />}
-        />
-      </Routes>
     </Page>
   );
 };

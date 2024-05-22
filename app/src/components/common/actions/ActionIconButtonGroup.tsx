@@ -4,6 +4,7 @@ import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
 import { useIsInViewport } from "../useIsInViewPort";
 import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
+import { useLocation } from "react-router-dom";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
@@ -16,6 +17,8 @@ export const ActionIconButtonGroup: React.FC<{
   const { palette } = useTheme();
 
   const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
+
+  const loc = useLocation();
 
   const [isReady, setIsReady] = useState(false);
 
@@ -44,13 +47,31 @@ export const ActionIconButtonGroup: React.FC<{
         <div ref={domElementRef} />
         {actions
           .filter((a) => a !== undefined)
-          .map((action) =>
-            action ? (
-              <ActionIconButton key={action.key} action={action} />
-            ) : (
-              <SeparatorElement key={"separator"} />
-            ),
-          )}
+          .map((action) => {
+            if (!action) {
+              return <SeparatorElement key={"separator"} />;
+            }
+
+            const markAsAction = loc.pathname.endsWith(action.href);
+
+            return (
+              <span key={action.key}>
+                <ActionIconButton action={action} />
+                {markAsAction ? (
+                  <span
+                    style={{
+                      position: "absolute",
+                      borderLeft: "16px solid transparent",
+                      borderRight: "16px solid transparent  ",
+                      borderBottom: "16px solid #d4e3eb",
+                      height: 0,
+                      width: 0,
+                    }}
+                  />
+                ) : null}
+              </span>
+            );
+          })}
       </ButtonContainer>
     </>
   );

@@ -9,6 +9,7 @@ export function getCommonJournalActions(
   journal: IJournal,
   enableHotkeys: boolean,
   user: IUser,
+  isDetails: boolean,
   renderDialog?: (dialogProps: IDialogProps) => void,
 ): IAction[] {
   if (!journal) {
@@ -18,31 +19,26 @@ export function getCommonJournalActions(
   const actions: IAction[] = [];
 
   if (renderDialog) {
-    actions.push(ActionFactory.addEntry(journal, renderDialog, enableHotkeys));
+    actions.push(ActionFactory.addEntry(journal, isDetails, enableHotkeys));
   }
 
   actions.push(
-    ActionFactory.editJournalPermissions(journal.id),
-    ActionFactory.editJournalSchedule(
-      journal.id,
-      renderDialog,
-      journal,
-      enableHotkeys,
-    ),
+    ActionFactory.editJournalPermissions(journal.id, isDetails),
+    ActionFactory.editJournalSchedule(journal.id, isDetails, enableHotkeys),
   );
 
   if (getScheduleForUser(journal, user.id).nextOccurrence) {
     actions.push(
       ActionFactory.markJournalScheduleAsDone(
         journal,
-        renderDialog,
+        isDetails,
         enableHotkeys,
       ),
     );
   }
   actions.push(
     ActionFactory.editJournal(journal.id, enableHotkeys),
-    ActionFactory.deleteJournal(journal.id, enableHotkeys),
+    ActionFactory.deleteJournal(journal.id, isDetails, enableHotkeys),
   );
 
   return actions;

@@ -21,7 +21,7 @@ export const AddJournal: React.FC = () => {
     description,
     journalType,
     async (result: ICommandResult) => {
-      navigate(`/journals/${result.entityId}/`);
+      navigate(`/journals/details/${result.entityId}/`);
     },
   );
 

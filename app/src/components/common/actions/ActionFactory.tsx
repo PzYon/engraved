@@ -29,7 +29,6 @@ import {
 } from "@mui/icons-material";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
-import { renderUpsertEntryDialog } from "../../details/add/renderUpsertEntryDialog";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IAppAlert } from "../../errorHandling/AppAlertBar";
@@ -41,10 +40,6 @@ import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 import { RegisteredActionsList } from "./RegisteredActionsList";
-import { NavigateFunction } from "react-router-dom";
-import { renderNotificationDone } from "../../details/renderNotificationDone";
-import { renderDeleteEntry } from "../../details/edit/renderDeleteEntry";
-import { renderEditSchedule } from "../../details/edit/renderEditSchedule";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -85,7 +80,7 @@ export class ActionFactory {
     return {
       hotkey: enableHotkeys ? "alt+enter" : undefined,
       key: `go-to-journal-${journalId}`,
-      href: `/journals/${journalId}`,
+      href: `/journals/details/${journalId}`,
       label: "Go to journal",
       icon: null,
     };
@@ -107,97 +102,69 @@ export class ActionFactory {
       key: "edit",
       label: "Edit journal",
       icon: <EditOutlined fontSize="small" />,
-      href: `/journals/${journalId}/edit`,
+      href: `/journals/details/${journalId}/edit`,
     };
   }
 
-  static editJournalPermissions(journalId: string): IAction {
+  static editJournalPermissions(
+    journalId: string,
+    isDetails: boolean,
+  ): IAction {
     return {
       key: "permissions",
       label: "Permissions",
       icon: <ShareOutlined fontSize="small" />,
-      href: `/journals/${journalId}/permissions`,
+      href: isDetails
+        ? `/journals/details/${journalId}/actions/permissions/`
+        : `actions/permissions/${journalId}`,
     };
   }
 
-  static deleteJournal(journalId: string, enableHotkeys: boolean): IAction {
+  static deleteJournal(
+    journalId: string,
+    isDetails: boolean,
+    enableHotkeys: boolean,
+  ): IAction {
     return {
       hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `/journals/${journalId}/delete`,
+      href: isDetails
+        ? `/journals/details/${journalId}/actions/delete/`
+        : `actions/delete/${journalId}`,
     };
   }
 
   static editJournalSchedule(
     journalId: string,
-    renderDialog?: (dialogProps: IDialogProps) => void,
-    journal?: IJournal,
+    isDetails: boolean,
     enableHotkeys?: boolean,
   ): IAction {
-    const additionalProps: Partial<IAction> = renderDialog
-      ? {
-          onClick: () =>
-            renderEditSchedule(journalId, null, journal, renderDialog, null),
-        }
-      : {
-          href: `/journals/${journalId}/schedule`,
-        };
-
     return {
       hotkey: enableHotkeys ? "alt+t" : undefined,
       key: "edit-schedule",
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      ...additionalProps,
+      href: isDetails
+        ? `/journals/details/${journalId}/actions/schedule`
+        : `actions/schedule/${journalId}`,
     };
   }
 
-  static editEntryScheduleViaUrl(
-    journalId: string,
-    entryId: string,
-    enableHotKeys?: boolean,
-  ) {
-    return this.editEntryScheduleInternal(
-      {
-        href: `/journals/${journalId}/entries/${entryId}/schedule`,
-      },
-      enableHotKeys,
-    );
-  }
-
-  static editEntrySchedule(
-    journalId: string,
-    entryId: string,
-    renderDialog: (dialogProps: IDialogProps) => void,
-    enableHotKeys?: boolean,
-  ) {
-    return this.editEntryScheduleInternal(
-      {
-        onClick: () =>
-          renderEditSchedule(journalId, entryId, null, renderDialog),
-      },
-      enableHotKeys,
-    );
-  }
-
-  private static editEntryScheduleInternal(
-    additionalProps: Partial<IAction>,
-    enableHotkeys?: boolean,
-  ): IAction {
+  static editEntryScheduleViaUrl(entryId: string, enableHotKeys?: boolean) {
     return {
       key: "edit-schedule",
-      hotkey: enableHotkeys ? "alt+s" : undefined,
+      hotkey: enableHotKeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      ...additionalProps,
+      href: `actions/schedule/${entryId}`,
     };
   }
 
   static addEntry(
     journal: IJournal,
-    renderDialog: (dialogProps: IDialogProps) => void,
+    isDetails: boolean,
     enableHotkey: boolean,
     additionalOnClick?: () => void,
   ): IAction {
@@ -206,9 +173,11 @@ export class ActionFactory {
       key: "add_entry",
       label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
+      href: isDetails
+        ? `/journals/details/${journal.id}/actions/add-entry`
+        : `actions/add-entry/${journal.id}`,
       onClick: () => {
         additionalOnClick?.();
-        renderUpsertEntryDialog(journal, renderDialog);
       },
     };
   }
@@ -306,79 +275,22 @@ export class ActionFactory {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      href: `/journals/${scrap.parentId}/entries/${scrap.id}/move`,
+      href: `actions/move/${scrap.id}`,
     };
   }
 
-  static deleteEntry(
-    entry: IEntry,
-    renderDialog?: (dialogProps: IDialogProps) => void,
-    navigate?: NavigateFunction,
-    enableHotkey?: boolean,
-    journalName?: string,
-  ): IAction {
-    const additionalProps: Partial<IAction> =
-      renderDialog && navigate
-        ? {
-            onClick: () =>
-              renderDeleteEntry(
-                null,
-                entry.id,
-                entry,
-                renderDialog,
-                navigate,
-                journalName,
-              ),
-          }
-        : {
-            href: `/journals/${entry.parentId}/entries/${entry.id}/delete`,
-          };
-
+  static deleteEntry(entry: IEntry, enableHotkey?: boolean): IAction {
     return {
       hotkey: enableHotkey ? "alt+d" : undefined,
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
-      ...additionalProps,
+      href: `actions/delete/${entry.id}`,
     };
   }
 
   static markEntryScheduleAsDone(
     entry: IEntry,
-    renderDialog?: (dialogProps: IDialogProps) => void,
-    navigate?: NavigateFunction,
-    enableHotkeys?: boolean,
-    journalName?: string,
-  ): IAction {
-    return this.markEntryScheduleAsInternal(
-      {
-        onClick: () =>
-          renderNotificationDone(
-            null,
-            entry,
-            renderDialog,
-            navigate,
-            journalName,
-          ),
-      },
-      enableHotkeys,
-    );
-  }
-
-  static markEntryScheduleAsDoneViaUrl(
-    entry: IEntry,
-    enableHotkeys?: boolean,
-  ): IAction {
-    return this.markEntryScheduleAsInternal(
-      {
-        href: `/journals/${entry.parentId}/entries/${entry.id}/notification-done`,
-      },
-      enableHotkeys,
-    );
-  }
-
-  static markEntryScheduleAsInternal(
-    additionalProps: Partial<IAction>,
     enableHotkeys?: boolean,
   ): IAction {
     return {
@@ -386,36 +298,23 @@ export class ActionFactory {
       key: "mark-as-done",
       label: "Mark as done",
       icon: <DoneOutlined fontSize="small" />,
-      ...additionalProps,
+      href: `actions/notification-done/${entry.id}`,
     };
   }
 
   static markJournalScheduleAsDone(
     journal: IJournal,
-    renderDialog?: (dialogProps: IDialogProps) => void,
+    isDetails: boolean,
     enableHotkey?: boolean,
   ): IAction {
-    const additionalProps: Partial<IAction> = renderDialog
-      ? {
-          onClick: () =>
-            renderNotificationDone(
-              journal,
-              null,
-              renderDialog,
-              null,
-              journal.name,
-            ),
-        }
-      : {
-          href: `/journals/${journal.id}/notification-done`,
-        };
-
     return {
       key: "mark-as-done",
       hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
-      ...additionalProps,
+      href: isDetails
+        ? `/journals/details/${journal.id}/actions/notification-done`
+        : `actions/notification-done/${journal.id}`,
     };
   }
 
@@ -425,7 +324,7 @@ export class ActionFactory {
       key: "edit",
       label: "Edit entry",
       icon: <EditOutlined fontSize="small" />,
-      href: `/journals/${entry.parentId}/entries/${entry.id}/edit`,
+      href: `actions/edit/${entry.id}`,
     };
   }
 

@@ -25,9 +25,9 @@ test("multiple users", async ({ browser }) => {
   const bobsJournalsPage = new JournalsPage(bobPage);
   await bobsJournalsPage.expectNotToShowEntity(joesJournalId);
 
-  const joesPermissionsDialog = await joesJournalPage.clickPermissionsAction();
-  await joesPermissionsDialog.addUserWithWritePermissions(bobsUserName);
-  await joesPermissionsDialog.savePermissionsAndCloseDialog();
+  const joesPermissionsAction = await joesJournalPage.clickPermissionsAction();
+  await joesPermissionsAction.addUserWithWritePermissions(bobsUserName);
+  await joesPermissionsAction.savePermissionsAndCloseDialog();
 
   await bobsJournalsPage.clickRefreshData();
   await bobsJournalsPage.expectToShowEntity(joesJournalId);

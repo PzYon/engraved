@@ -7,8 +7,6 @@ import { Entry } from "./Entry";
 import { ActionFactory } from "../actions/ActionFactory";
 import { getUiSettings } from "../../../util/journalUtils";
 import { formatDateOnly } from "../../../util/utils";
-import { useNavigate } from "react-router-dom";
-import { useDialogContext } from "../../layout/dialogs/DialogContext";
 
 export const EntryWithValue: React.FC<{
   value: React.ReactNode;
@@ -16,9 +14,6 @@ export const EntryWithValue: React.FC<{
   entry: IEntry;
   hasFocus?: boolean;
 }> = ({ journal, entry, value, hasFocus }) => {
-  const navigate = useNavigate();
-  const { renderDialog } = useDialogContext();
-
   return (
     <Entry
       journalId={journal.id}
@@ -27,13 +22,7 @@ export const EntryWithValue: React.FC<{
       entry={entry}
       actions={[
         ActionFactory.editEntry(entry, hasFocus),
-        ActionFactory.deleteEntry(
-          entry,
-          renderDialog,
-          navigate,
-          hasFocus,
-          journal.name,
-        ),
+        ActionFactory.deleteEntry(entry, hasFocus),
       ]}
       hasFocus={hasFocus}
       propsRenderStyle={"all"}

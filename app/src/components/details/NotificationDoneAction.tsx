@@ -7,20 +7,14 @@ import { useAppContext } from "../../AppContext";
 import { ISchedule } from "../../serverApi/ISchedule";
 import { parseDate } from "./edit/parseDate";
 import { useNavigate } from "react-router-dom";
-import { Properties } from "../common/Properties";
-import { getSchedulePropertyFromSchedule } from "../overview/scheduled/scheduleUtils";
 import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
-import { renderDeleteEntry } from "./edit/renderDeleteEntry";
-import { useDialogContext } from "../layout/dialogs/DialogContext";
+import React from "react";
 
-export const NotificationDone: React.FC<{
+export const NotificationDoneAction: React.FC<{
   journal: IJournal;
   entry?: IEntry;
-  onSuccess: () => void;
-  journalName?: string;
-}> = ({ journal, entry, onSuccess, journalName }) => {
+}> = ({ journal, entry }) => {
   const { user } = useAppContext();
-  const { renderDialog } = useDialogContext();
 
   const navigate = useNavigate();
 
@@ -33,13 +27,17 @@ export const NotificationDone: React.FC<{
     user.id
   ];
 
+  const isRecurring = !!schedule?.recurrence?.dateString;
+
   return (
     <>
-      <Properties properties={[getSchedulePropertyFromSchedule(schedule)]} />
-      {schedule?.recurrence?.dateString ? (
+      {isRecurring ? (
         <Typography>Will reoccur {schedule?.recurrence?.dateString}</Typography>
       ) : null}
-      <DialogFormButtonContainer>
+      <DialogFormButtonContainer sx={!isRecurring ? { paddingTop: 0 } : {}}>
+        <Button variant={"outlined"} onClick={close}>
+          Cancel
+        </Button>
         <Button
           variant={"contained"}
           onClick={() => {
@@ -55,7 +53,7 @@ export const NotificationDone: React.FC<{
 
             modifyScheduleMutation.mutate(scheduleDefinition);
 
-            onSuccess();
+            close();
           }}
         >
           Mark {entry ? "entry" : "journal"} as done
@@ -64,18 +62,7 @@ export const NotificationDone: React.FC<{
           <Button
             variant={schedule?.recurrence ? "outlined" : "contained"}
             onClick={() => {
-              if (entry) {
-                renderDeleteEntry(
-                  journal,
-                  entry.id,
-                  entry,
-                  renderDialog,
-                  navigate,
-                  journalName,
-                );
-              } else {
-                navigate(`/journals/${entry.parentId}/delete`);
-              }
+              navigate(`../delete`);
             }}
           >
             Delete {entry ? "entry" : "journal"}
@@ -84,4 +71,8 @@ export const NotificationDone: React.FC<{
       </DialogFormButtonContainer>
     </>
   );
+
+  function close() {
+    navigate("..");
+  }
 };

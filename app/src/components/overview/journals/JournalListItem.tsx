@@ -11,6 +11,7 @@ import { ListItemFooterRow } from "../ListItemFooterRow";
 import { IconStyle } from "../../common/IconStyle";
 import { ReadonlyTitleRow } from "../ReadonlyTitleRow";
 import { useAppContext } from "../../../AppContext";
+import { JournalSubRoutes } from "./JournalSubRoutes";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -67,9 +68,11 @@ export const JournalListItem: React.FC<{
               journal,
               hasFocus,
               user,
+              false,
               renderDialog,
             )}
           />
+          <JournalSubRoutes journal={journal} />
         </Box>
       </Box>
     </div>

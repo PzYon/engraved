@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { JournalPage } from "./journalPage";
-import { DeleteDialog } from "./deleteDialog";
+import { DeleteAction } from "./deleteAction";
 
 export class MetricJournalPage extends JournalPage {
   get tableRows() {
@@ -15,14 +15,14 @@ export class MetricJournalPage extends JournalPage {
 
     await this.page.getByLabel("Value", { exact: true }).click();
     await this.page.getByLabel("Value", { exact: true }).fill(value);
-    await this.page.getByRole("button", { name: "Add" }).click();
+    await this.page.getByRole("button", { name: "Add entry" }).click();
 
     await expect(this.page.getByText("Added entry")).toBeVisible();
   }
 
-  async navigateToDeleteJournalDialog() {
+  async navigateToDeleteJournalAction() {
     await this.clickPageAction("Delete journal");
-    return new DeleteDialog(this.page, "Journal");
+    return new DeleteAction(this.page, "Journal");
   }
 
   async validateHasNoEntries() {
@@ -39,8 +39,8 @@ export class MetricJournalPage extends JournalPage {
     ).toBeVisible();
   }
 
-  async navigateToDeleteEntryDialog(index: number) {
+  async navigateToDeleteEntryAction(index: number) {
     await this.tableRows.nth(index).getByLabel("Delete entry").click();
-    return new DeleteDialog(this.page, "Entry");
+    return new DeleteAction(this.page, "Entry");
   }
 }

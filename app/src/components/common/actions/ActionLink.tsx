@@ -27,7 +27,7 @@ export const ActionLink: React.FC<{
     <Link
       to={action.href}
       style={style}
-      target={action.href?.startsWith("/") ? "_self" : "_blank"}
+      // target={action.href?.startsWith("/") ? "_self" : "_blank"}
       title={action.label}
     >
       {children ?? action.icon}

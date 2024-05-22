@@ -1,22 +1,15 @@
 import React from "react";
 import { useJournalContext } from "./JournalContext";
 import { JournalType } from "../../serverApi/JournalType";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { EditJournalPermissionsLauncher } from "./edit/EditJournalPermissionsLauncher";
+import { Route, Routes } from "react-router-dom";
 import { JournalViewPage } from "./JournalViewPage";
 import { JournalEditPage } from "./edit/JournalEditPage";
-import { DeleteJournalLauncher } from "./edit/DeleteJournalLauncher";
-import { IJournal } from "../../serverApi/IJournal";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
-import { ScrapsMovePage } from "./scraps/ScrapsMovePage";
-import { EditScheduleLauncher } from "./edit/EditScheduleLauncher";
 import { styled } from "@mui/material";
 import { Properties } from "../common/Properties";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { useJournalProperties } from "../overview/journals/useJournalProperties";
-import { OnNotificationLauncher } from "./OnNotificationLauncher";
-import { NotificationDoneLauncher } from "./NotificationDoneLauncher";
 
 export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
@@ -40,7 +33,6 @@ export const JournalDetails: React.FC = () => {
           <>
             <Route path="/edit" element={<ScrapsEditPage />} />
             <Route path="/*" element={<ScrapsViewPage />} />
-            <Route path="/entries/:entryId/move" element={<ScrapsMovePage />} />
           </>
         ) : (
           <>
@@ -49,44 +41,7 @@ export const JournalDetails: React.FC = () => {
           </>
         )}
       </Routes>
-      <SubRoutes journal={journal} />
     </Host>
-  );
-};
-
-const SubRoutes: React.FC<{
-  journal: IJournal;
-}> = ({ journal }) => {
-  const navigate = useNavigate();
-
-  return (
-    <Routes>
-      <Route
-        path="/permissions"
-        element={<EditJournalPermissionsLauncher journal={journal} />}
-      />
-      <Route
-        path="/schedule"
-        element={<EditScheduleLauncher journal={journal} />}
-      />
-      <Route
-        path="/notification"
-        element={<OnNotificationLauncher journal={journal} />}
-      />
-      <Route
-        path="/notification-done"
-        element={<NotificationDoneLauncher journal={journal} />}
-      />
-      <Route
-        path="/delete"
-        element={
-          <DeleteJournalLauncher
-            journal={journal}
-            onDeleted={() => navigate("../../")}
-          />
-        }
-      />
-    </Routes>
   );
 };
 

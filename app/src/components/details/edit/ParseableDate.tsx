@@ -21,6 +21,7 @@ export const ParseableDate: React.FC<{
         placeholder={parseDateOnly ? "When?" : "What and when?"}
         autoFocus={true}
         id={id}
+        sx={{ width: "100%" }}
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (e.key !== "Enter") {
             return;
@@ -49,32 +50,34 @@ export const ParseableDate: React.FC<{
           }
         }}
       />
-      <OutputContainer>
-        {parseError ? (
-          <Typography sx={{ color: "error.main", pb: 1 }}>
-            {parseError}
+      {parseError || parsed?.date ? (
+        <OutputContainer>
+          {parseError ? (
+            <Typography sx={{ color: "error.main", pb: 1 }}>
+              {parseError}
+            </Typography>
+          ) : null}
+          <Typography>
+            {!parseDateOnly && parsed.text ? (
+              <TextContainer>{parsed.text}</TextContainer>
+            ) : null}
+            {parsed.date ? (
+              <DateContainer>
+                <FormatDate value={parsed.date} dateFormat={DateFormat.full} />
+                {" ("}
+                <FormatDate
+                  value={parsed.date}
+                  dateFormat={DateFormat.relativeToNow}
+                />
+                {")"}
+                {parsed.recurrence ? (
+                  <> - repeats {parsed.recurrence.dateString}</>
+                ) : null}
+              </DateContainer>
+            ) : null}
           </Typography>
-        ) : null}
-        <Typography>
-          {!parseDateOnly && parsed.text ? (
-            <TextContainer>{parsed.text}</TextContainer>
-          ) : null}
-          {parsed.date ? (
-            <DateContainer>
-              <FormatDate value={parsed.date} dateFormat={DateFormat.full} />
-              {" ("}
-              <FormatDate
-                value={parsed.date}
-                dateFormat={DateFormat.relativeToNow}
-              />
-              {")"}
-              {parsed.recurrence ? (
-                <> - repeats {parsed.recurrence.dateString}</>
-              ) : null}
-            </DateContainer>
-          ) : null}
-        </Typography>
-      </OutputContainer>
+        </OutputContainer>
+      ) : null}
     </Host>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
-import { Button, FormControlLabel, Switch } from "@mui/material";
+import { Button, FormControlLabel, styled, Switch } from "@mui/material";
 import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
 import { ParseableDate } from "./ParseableDate";
 import { DateSelector } from "../../common/DateSelector";
@@ -11,16 +11,20 @@ import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 import { IJournal } from "../../../serverApi/IJournal";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
+import { useNavigate } from "react-router-dom";
 
-export const EditSchedule: React.FC<{
+export const EditScheduleAction: React.FC<{
   journalId: string;
   journal: IJournal;
   entryId?: string;
-  onCancel: () => void;
-}> = ({ journalId, journal, entryId, onCancel }) => {
+}> = ({ journalId, journal, entryId }) => {
   const [parsed, setParsed] = useState<IParsedDate>({});
 
+  const [isDirty, setIsDirty] = useState(false);
+
   const { user } = useAppContext();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getNextOccurrence().then((d) => {
@@ -47,7 +51,7 @@ export const EditSchedule: React.FC<{
   const modifyScheduleMutation = useModifyScheduleMutation(journalId, entryId);
 
   return (
-    <>
+    <Host>
       <FormControlLabel
         label="Show full form"
         control={
@@ -62,41 +66,53 @@ export const EditSchedule: React.FC<{
       <ParseableDate
         sx={{ marginBottom: 2 }}
         parseDateOnly={true}
-        onChange={setParsed}
+        onChange={(d) => {
+          setParsed(d);
+          setIsDirty(!!d.date);
+        }}
         onSelect={save}
       />
 
       {showFullForm ? (
         <DateSelector
           date={parsed.date}
-          setDate={(d) => setParsed({ date: d })}
+          setDate={(d) => {
+            setParsed({ date: d });
+            setIsDirty(true);
+          }}
           showTime={true}
           showClear={true}
         />
       ) : null}
 
-      <DialogFormButtonContainer>
-        <Button variant="outlined" onClick={onCancel}>
+      <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
+        <Button variant="outlined" onClick={close}>
           Cancel
         </Button>
-        <Button variant="contained" onClick={save}>
+        <Button variant="contained" onClick={save} disabled={!isDirty}>
           Save
         </Button>
       </DialogFormButtonContainer>
-    </>
+    </Host>
   );
 
   function save() {
     const scheduleDefinition: IScheduleDefinition = {
       nextOccurrence: parsed.date,
       recurrence: parsed.recurrence,
-      onClickUrl: entryId
-        ? `${location.origin}/journals/${journalId}/entries/${entryId}/notification`
-        : `${location.origin}/journals/${journalId}/notification`,
+      onClickUrl: `${location.origin}/journals/details/${journalId}/actions/notification-done/${entryId || ""}`,
     };
 
     modifyScheduleMutation.mutate(scheduleDefinition);
 
-    onCancel();
+    close();
+  }
+
+  function close() {
+    navigate("..");
   }
 };
+
+const Host = styled("div")`
+  width: 100%;
+`;

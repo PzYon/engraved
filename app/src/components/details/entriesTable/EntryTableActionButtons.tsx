@@ -4,7 +4,7 @@ import React from "react";
 import { styled } from "@mui/material";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 
-export const EntryActionButtons: React.FC<{
+export const EntryTableActionButtons: React.FC<{
   entry: IEntry;
 }> = ({ entry }) => (
   <Host>

@@ -26,7 +26,7 @@ test("add schedule to entry and mark as done", async ({ page }) => {
   const entity = scheduledPage.getEntityElement(entityId);
   await expect(entity).toBeVisible();
 
-  await entity.getByRole("button", { name: "Mark as done" }).click();
+  await entity.getByRole("link", { name: "Mark as done" }).click();
 
   await page.getByRole("button", { name: "Mark entry as done" }).click();
 

@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { IconButton, styled } from "@mui/material";
+import { IconButton, styled, Theme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { useActionContext } from "./ActionContext";
 import { useHotkeys } from "react-hotkeys-hook";
+import { SxProps } from "@mui/system";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
@@ -26,7 +27,7 @@ export const ActionIconButton: React.FC<{
   useEffect(() => {
     actionContext.addAction(action);
     return () => actionContext.removeAction(action);
-  }, [action]);
+  }, [action, actionContext]);
 
   if (action.href) {
     return (
@@ -71,7 +72,7 @@ export const ActionIconButton: React.FC<{
     );
   }
 
-  function getCommonSx() {
+  function getCommonSx(): SxProps<Theme> {
     return {
       color: "primary.main",
       opacity: action.isNotActive ? 0.4 : 1,
