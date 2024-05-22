@@ -38,6 +38,16 @@ export const NotificationDoneAction: React.FC<{
         <Button variant={"outlined"} onClick={close}>
           Cancel
         </Button>
+        {entry ? (
+          <Button
+            variant={schedule?.recurrence ? "outlined" : "contained"}
+            onClick={() => {
+              navigate(`../delete`);
+            }}
+          >
+            Delete {entry ? "entry" : "journal"}
+          </Button>
+        ) : null}
         <Button
           variant={"contained"}
           onClick={() => {
@@ -58,16 +68,6 @@ export const NotificationDoneAction: React.FC<{
         >
           Mark {entry ? "entry" : "journal"} as done
         </Button>
-        {entry ? (
-          <Button
-            variant={schedule?.recurrence ? "outlined" : "contained"}
-            onClick={() => {
-              navigate(`../delete`);
-            }}
-          >
-            Delete {entry ? "entry" : "journal"}
-          </Button>
-        ) : null}
       </DialogFormButtonContainer>
     </>
   );

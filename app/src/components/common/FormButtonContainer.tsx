@@ -2,14 +2,11 @@ import { styled } from "@mui/material";
 
 const FormButtonContainer = styled("div")`
   display: flex;
-  padding-top: ${(p) => p.theme.spacing(2)};
+  flex-wrap: wrap;
+  gap: 8px;
 
   button {
     min-width: 100px;
-
-    &:not(:last-of-type) {
-      margin-right: ${(p) => p.theme.spacing(2)};
-    }
   }
 `;
 
