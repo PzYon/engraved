@@ -3,7 +3,7 @@ import { addNewJournal } from "../src/utils/addNewJournal";
 import { login } from "../src/utils/login";
 
 test.beforeEach(async ({ page }) => {
-  await login(page, "measurements");
+  await login(page, "entries");
 });
 
 const value1 = "23";
