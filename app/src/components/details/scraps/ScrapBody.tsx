@@ -3,7 +3,6 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
 import { Entry } from "../../common/entries/Entry";
 import { JournalType } from "../../../serverApi/JournalType";
-import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useScrapContext } from "./ScrapContext";
 import { useAppContext } from "../../../AppContext";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
@@ -12,12 +11,10 @@ export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
 }> = ({ children, actions }) => {
-  const { renderDialog } = useDialogContext();
   const { user } = useAppContext();
 
   const {
     isEditMode,
-    setIsEditMode,
     isDirty,
     getCancelEditingFunction,
     upsertScrap,
@@ -48,8 +45,14 @@ export const ScrapBody: React.FC<{
     }
 
     const saveAction = isEditMode
-      ? ActionFactory.save(async () => await upsertScrap(), false, hasFocus)
-      : ActionFactory.editScrap(() => setIsEditMode(true), hasFocus);
+      ? ActionFactory.save(
+          async () => {
+            await upsertScrap();
+          },
+          false,
+          hasFocus,
+        )
+      : ActionFactory.editScrap(scrapToRender.id, hasFocus);
 
     if (actionsRenderStyle === "save-only") {
       return saveAction ? [saveAction] : [];
@@ -77,14 +80,7 @@ export const ScrapBody: React.FC<{
     const cancelEditing = getCancelEditingFunction();
 
     if (cancelEditing) {
-      allActions.push(
-        ActionFactory.cancelEditing(
-          cancelEditing,
-          hasFocus,
-          isDirty,
-          renderDialog,
-        ),
-      );
+      allActions.push(ActionFactory.cancelEditing(true, isDirty));
     }
 
     if (scrapToRender.id) {

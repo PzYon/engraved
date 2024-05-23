@@ -8,11 +8,11 @@ import { ScrapList } from "./list/ScrapList";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import { ISCrapListItem } from "./list/IScrapListItem";
 import { ReadonlyTitleRow } from "../../overview/ReadonlyTitleRow";
+import { useNavigate } from "react-router-dom";
 
 export const ScrapInner: React.FC = () => {
   const {
     isEditMode,
-    setIsEditMode,
     title,
     notes,
     setTitle,
@@ -23,11 +23,13 @@ export const ScrapInner: React.FC = () => {
 
   const { isCompact } = useDisplayModeContext();
 
+  const navigate = useNavigate();
+
   return (
     <div
       onClick={(e) => {
         if (e.detail === 2) {
-          setIsEditMode(true);
+          navigate("actions/edit/" + scrapToRender.id);
         }
       }}
       data-testid={"scrap-" + scrapToRender.id}
