@@ -4,12 +4,32 @@ import { styled } from "@mui/material";
 import { Properties } from "../common/Properties";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { useJournalProperties } from "../overview/journals/useJournalProperties";
+import { Outlet } from "react-router-dom";
 import { JournalType } from "../../serverApi/JournalType";
-import { Route, Routes } from "react-router-dom";
-import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
-import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { JournalEditPage } from "./edit/JournalEditPage";
+import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { JournalViewPage } from "./JournalViewPage";
+import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
+
+export const JournalDetailsEdit: React.FC = () => {
+  const { journal } = useJournalContext();
+
+  return journal.type === JournalType.Scraps ? (
+    <ScrapsEditPage />
+  ) : (
+    <JournalEditPage />
+  );
+};
+
+export const JournalDetailsView: React.FC = () => {
+  const { journal } = useJournalContext();
+
+  return journal.type === JournalType.Scraps ? (
+    <ScrapsViewPage />
+  ) : (
+    <JournalViewPage />
+  );
+};
 
 export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
@@ -28,19 +48,7 @@ export const JournalDetails: React.FC = () => {
         <Properties properties={journalProperties} />
       </PropertiesContainer>
 
-      <Routes>
-        {journal.type === JournalType.Scraps ? (
-          <>
-            <Route path="/edit" element={<ScrapsEditPage />} />
-            <Route path="/*" element={<ScrapsViewPage />} />
-          </>
-        ) : (
-          <>
-            <Route path="/edit" element={<JournalEditPage />} />
-            <Route path="/*" element={<JournalViewPage />} />
-          </>
-        )}
-      </Routes>
+      <Outlet />
     </Host>
   );
 };

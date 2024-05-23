@@ -20,34 +20,36 @@ import { AppAlertBar } from "./components/errorHandling/AppAlertBar";
 import { AppContent } from "./components/layout/AppContent";
 import { AppErrorBoundary } from "./components/errorHandling/AppErrorBoundary";
 import { AppFooter } from "./components/layout/AppFooter";
+import {
+  JournalDetailsEdit,
+  JournalDetailsView,
+} from "./components/details/JournalDetails";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    Component: () => {
-      return (
-        <ActionContextProvider>
-          <ReactQueryProviderWrapper>
-            <PageContextProvider>
-              <DialogContextProvider>
-                <DisplayModeContextProvider>
-                  <Host>
-                    <AppHeader />
-                    <AppAlertBar />
-                    <AppContent scope="body">
-                      <AppErrorBoundary>
-                        <Outlet />
-                      </AppErrorBoundary>
-                    </AppContent>
-                    <AppFooter />
-                  </Host>
-                </DisplayModeContextProvider>
-              </DialogContextProvider>
-            </PageContextProvider>
-          </ReactQueryProviderWrapper>
-        </ActionContextProvider>
-      );
-    },
+    path: "*",
+    Component: () => (
+      <ActionContextProvider>
+        <ReactQueryProviderWrapper>
+          <PageContextProvider>
+            <DialogContextProvider>
+              <DisplayModeContextProvider>
+                <Host>
+                  <AppHeader />
+                  <AppAlertBar />
+                  <AppContent scope="body">
+                    <AppErrorBoundary>
+                      <Outlet />
+                    </AppErrorBoundary>
+                  </AppContent>
+                  <AppFooter />
+                </Host>
+              </DisplayModeContextProvider>
+            </DialogContextProvider>
+          </PageContextProvider>
+        </ReactQueryProviderWrapper>
+      </ActionContextProvider>
+    ),
     children: [
       {
         path: "journals/create",
@@ -56,6 +58,16 @@ const router = createBrowserRouter([
       {
         path: "journals/details/:journalId/*",
         element: <JournalPageWrapper />,
+        children: [
+          {
+            path: "edit",
+            element: <JournalDetailsEdit />,
+          },
+          {
+            path: "*",
+            element: <JournalDetailsView />,
+          },
+        ],
       },
       {
         path: "journals/*",
@@ -78,8 +90,9 @@ const router = createBrowserRouter([
         element: <PwaSettingsPage />,
       },
       {
-        path: "/",
+        path: "*",
         element: <JournalsPage />,
+        index: true,
       },
     ],
   },
