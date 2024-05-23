@@ -8,7 +8,6 @@ import { Route, Routes } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
 import { UpsertEntryActionLoader } from "../../details/add/UpsertEntryActionLoader";
-import { EditScrapLauncher } from "./EditScrapLauncher";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -54,13 +53,9 @@ export const EntrySubRoutes: React.FC<{
       <Route
         path={`/actions/edit/${entry.id}`}
         element={
-          (entry as IScrapEntry).scrapType ? (
-            <EditScrapLauncher />
-          ) : (
-            <NavigationActionContainer shrinkWidthIfPossible={true}>
-              <UpsertEntryActionLoader entry={entry} />
-            </NavigationActionContainer>
-          )
+          <NavigationActionContainer shrinkWidthIfPossible={true}>
+            <UpsertEntryActionLoader entry={entry} />
+          </NavigationActionContainer>
         }
       />
     </Routes>

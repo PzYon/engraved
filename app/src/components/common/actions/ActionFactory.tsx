@@ -36,6 +36,8 @@ import { IUser } from "../../../serverApi/IUser";
 import { renderAddScrapDialog } from "../../details/add/renderAddScrapDialog";
 import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
+import { Button, Typography } from "@mui/material";
+import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 import { RegisteredActionsList } from "./RegisteredActionsList";
 
@@ -258,13 +260,13 @@ export class ActionFactory {
     };
   }
 
-  static editScrap(entryId: string, enableHotkey: boolean): IAction {
+  static editScrap(onEdit: () => void, enableHotkey: boolean): IAction {
     return {
       hotkey: enableHotkey ? "alt+e" : undefined,
       key: "edit",
       label: "Edit scrap",
       icon: <EditOutlined fontSize="small" />,
-      href: `actions/edit/${entryId}`,
+      onClick: onEdit,
     };
   }
 
@@ -326,14 +328,52 @@ export class ActionFactory {
     };
   }
 
-  static cancelEditing(enableHotkey: boolean, isDirty: boolean): IAction {
+  static cancelEditing(
+    onCancel: () => void,
+    enableHotkey: boolean,
+    isDirty: boolean,
+    renderDialog: (dialogProps: IDialogProps) => void,
+  ): IAction {
     return {
       hotkey: enableHotkey ? "alt+x" : undefined,
       key: "cancel-edit",
       label: "Stop editing and reset",
-      isDisabled: !isDirty,
       icon: <ClearOutlined fontSize="small" />,
-      href: "..",
+      onClick: () => {
+        if (!isDirty) {
+          onCancel();
+          return;
+        }
+
+        renderDialog({
+          title: "Are you sure?",
+          render: (closeDialog) => {
+            return (
+              <>
+                <Typography>
+                  Do you really want to cancel editing without saving? All
+                  changes will be lost.
+                </Typography>
+
+                <DialogFormButtonContainer>
+                  <Button variant={"contained"} onClick={closeDialog}>
+                    Not yet.
+                  </Button>
+                  <Button
+                    variant={"outlined"}
+                    onClick={() => {
+                      onCancel();
+                      closeDialog();
+                    }}
+                  >
+                    Yeah, I&apos;m done.
+                  </Button>
+                </DialogFormButtonContainer>
+              </>
+            );
+          },
+        });
+      },
     };
   }
 

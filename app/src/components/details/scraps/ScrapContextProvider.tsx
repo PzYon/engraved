@@ -11,7 +11,6 @@ import {
   IScrapContext,
   ScrapContext,
 } from "./ScrapContext";
-import { useNavigate } from "react-router-dom";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -31,7 +30,6 @@ export const ScrapContextProvider: React.FC<{
   hasFocus,
 }) => {
   const { setAppAlert } = useAppContext();
-  const navigate = useNavigate();
 
   const [notes, setNotes] = useState<string>(currentScrap.notes);
   const [title, setTitle] = useState<string>(currentScrap.title);
@@ -191,8 +189,6 @@ export const ScrapContextProvider: React.FC<{
         dateTime: new Date(),
       } as IUpsertScrapsEntryCommand,
     });
-
-    navigate(-1);
   }
 
   return (
