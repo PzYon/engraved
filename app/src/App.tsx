@@ -70,10 +70,6 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "journals/*",
-        element: <JournalsPage />,
-      },
-      {
         path: "entries/*",
         element: <EntriesPage />,
       },
@@ -92,7 +88,6 @@ const router = createBrowserRouter([
       {
         path: "*",
         element: <JournalsPage />,
-        index: true,
       },
     ],
   },
