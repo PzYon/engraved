@@ -7,7 +7,7 @@ import { NavigationActionContainer } from "./Entry";
 import { Route, Routes } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
-import { UpsertEntryActionLoader } from "../../details/add/UpsertEntryActionLoader";
+import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -53,8 +53,8 @@ export const EntrySubRoutes: React.FC<{
       <Route
         path={`/actions/edit/${entry.id}`}
         element={
-          <NavigationActionContainer shrinkWidthIfPossible={true}>
-            <UpsertEntryActionLoader entry={entry} />
+          <NavigationActionContainer>
+            <UpsertEntryAction entry={entry} />
           </NavigationActionContainer>
         }
       />

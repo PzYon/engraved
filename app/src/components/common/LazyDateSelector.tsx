@@ -24,6 +24,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
       <FlexContainer>
         <FlexElement>
           <DesktopDatePicker
+            sx={{ width: "100%" }}
             autoFocus={hasFocus}
             label={label}
             value={date || null}

@@ -18,7 +18,7 @@ export const ParseableDate: React.FC<{
   return (
     <Host sx={sx}>
       <TextField
-        placeholder={parseDateOnly ? "When?" : "What and when?"}
+        label={parseDateOnly ? "When?" : "What and when?"}
         autoFocus={true}
         id={id}
         sx={{ width: "100%" }}

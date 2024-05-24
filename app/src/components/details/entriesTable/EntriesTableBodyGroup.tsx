@@ -64,7 +64,7 @@ export const EntriesTableBodyGroup: React.FC<{
               element={
                 <StyledTableRow key="routes">
                   <TableCell colSpan={columns.length}>
-                    <NavigationActionContainer shrinkWidthIfPossible={true}>
+                    <NavigationActionContainer>
                       <UpsertEntryAction journal={journal} entry={entry} />
                     </NavigationActionContainer>
                   </TableCell>
