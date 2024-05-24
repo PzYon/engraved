@@ -26,11 +26,7 @@ export const EntrySubRoutes: React.FC<{
         path={`/actions/schedule/${entry.id}`}
         element={
           <NavigationActionContainer>
-            <EditScheduleAction
-              journalId={""}
-              entryId={entry.id}
-              journal={null}
-            />
+            <EditScheduleAction entry={entry} />
           </NavigationActionContainer>
         }
       />
