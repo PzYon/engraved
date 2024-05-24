@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
-import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useJournalContext } from "./JournalContext";
 import { LocalHotelOutlined } from "@mui/icons-material";
 import { getCommonJournalActions } from "../overview/getCommonJournalActions";
@@ -26,7 +25,6 @@ import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 
 export const JournalViewPage: React.FC = () => {
-  const { renderDialog } = useDialogContext();
   const deviceWidth = useDeviceWidth();
   const { user } = useAppContext();
 
@@ -91,7 +89,7 @@ export const JournalViewPage: React.FC = () => {
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonJournalActions(journal, true, user, true, renderDialog),
+      ...getCommonJournalActions(journal, true, user, true, true),
     ]);
 
     return () => {
@@ -108,7 +106,6 @@ export const JournalViewPage: React.FC = () => {
     deviceWidth,
     showThresholds,
     showGroupTotals,
-    renderDialog,
     user,
   ]);
 

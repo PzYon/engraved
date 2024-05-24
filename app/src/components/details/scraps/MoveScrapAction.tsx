@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { useMoveEntryMutation } from "../../../serverApi/reactQuery/mutations/useMoveEntryMutation";
 import { useNavigate } from "react-router-dom";
-import { usePageContext } from "../../layout/pages/PageContext";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { JournalSelector } from "../../common/JournalSelector";
 import { UserRole } from "../../../serverApi/UserRole";
@@ -15,7 +14,6 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
 }) => {
   const navigate = useNavigate();
 
-  const { setSubTitle } = usePageContext();
   const { user } = useAppContext();
 
   const [targetJournalId, setTargetJournalId] = useState<string>(undefined);
@@ -23,8 +21,6 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
   const mutation = useMoveEntryMutation(entry.id, entry.parentId, () => {
     navigate(`/journals/${targetJournalId}/`);
   });
-
-  useEffect(() => setSubTitle("Move scrap to..."), [setSubTitle]);
 
   if (!entry) {
     return null;

@@ -44,7 +44,7 @@ export const JournalSubRoutes: React.FC<{
         path={`actions/schedule/${journalId}`}
         element={
           <NavigationActionContainer>
-            <EditScheduleAction journalId={journal.id} journal={journal} />
+            <EditScheduleAction journal={journal} />
           </NavigationActionContainer>
         }
       />

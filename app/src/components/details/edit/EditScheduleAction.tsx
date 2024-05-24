@@ -12,12 +12,12 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
+import { IEntry } from "../../../serverApi/IEntry";
 
 export const EditScheduleAction: React.FC<{
-  journalId: string;
-  journal: IJournal;
-  entryId?: string;
-}> = ({ journalId, journal, entryId }) => {
+  journal?: IJournal;
+  entry?: IEntry;
+}> = ({ journal, entry }) => {
   const [parsed, setParsed] = useState<IParsedDate>({});
 
   const [isDirty, setIsDirty] = useState(false);
@@ -34,8 +34,8 @@ export const EditScheduleAction: React.FC<{
     });
 
     async function getNextOccurrence() {
-      const entity: IEntity = await (entryId
-        ? ServerApi.getEntry(entryId)
+      const entity: IEntity = await (entry?.id
+        ? ServerApi.getEntry(entry.id)
         : Promise.resolve(journal));
 
       if (!entity) {
@@ -44,11 +44,14 @@ export const EditScheduleAction: React.FC<{
 
       return getScheduleForUser(entity, user.id).nextOccurrence;
     }
-  }, [journal, entryId, journalId, user]);
+  }, [journal, entry, user]);
 
   const [showFullForm, setShowFullForm] = useState(!!parsed.date);
 
-  const modifyScheduleMutation = useModifyScheduleMutation(journalId, entryId);
+  const modifyScheduleMutation = useModifyScheduleMutation(
+    journal?.id,
+    entry?.id,
+  );
 
   return (
     <Host>
@@ -100,7 +103,7 @@ export const EditScheduleAction: React.FC<{
     const scheduleDefinition: IScheduleDefinition = {
       nextOccurrence: parsed.date,
       recurrence: parsed.recurrence,
-      onClickUrl: `${location.origin}/journals/details/${journalId}/actions/notification-done/${entryId || ""}`,
+      onClickUrl: `${location.origin}/journals/details/${journal?.id ?? entry?.parentId}/actions/notification-done/${entry?.id || ""}`,
     };
 
     modifyScheduleMutation.mutate(scheduleDefinition);

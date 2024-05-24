@@ -42,7 +42,7 @@ export const NotificationDoneAction: React.FC<{
           <Button
             variant={schedule?.recurrence ? "outlined" : "contained"}
             onClick={() => {
-              navigate(`../delete`);
+              navigate(`../actions/delete/${entry.id}`);
             }}
           >
             Delete {entry ? "entry" : "journal"}

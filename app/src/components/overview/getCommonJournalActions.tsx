@@ -1,5 +1,4 @@
 import { IJournal } from "../../serverApi/IJournal";
-import { IDialogProps } from "../layout/dialogs/DialogContext";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { IUser } from "../../serverApi/IUser";
@@ -10,7 +9,7 @@ export function getCommonJournalActions(
   enableHotkeys: boolean,
   user: IUser,
   isDetails: boolean,
-  renderDialog?: (dialogProps: IDialogProps) => void,
+  showAddEntry?: boolean,
 ): IAction[] {
   if (!journal) {
     return [];
@@ -18,7 +17,7 @@ export function getCommonJournalActions(
 
   const actions: IAction[] = [];
 
-  if (renderDialog) {
+  if (showAddEntry) {
     actions.push(ActionFactory.addEntry(journal, isDetails, enableHotkeys));
   }
 
