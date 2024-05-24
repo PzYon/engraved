@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   FormControl,
@@ -25,8 +25,39 @@ import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { getValueHeaderLabel } from "../../../util/journalUtils";
 import { useNavigate } from "react-router-dom";
+import { ServerApi } from "../../../serverApi/ServerApi";
 
 export const UpsertEntryAction: React.FC<{
+  journal?: IJournal;
+  entry?: IEntry;
+}> = ({ journal: initialJournal, entry: initialEntry }) => {
+  const [journal, setJournal] = useState<IJournal>();
+  const [entry, setEntry] = useState<IEntry>();
+
+  useEffect(() => {
+    Promise.all([
+      initialJournal
+        ? Promise.resolve(initialJournal)
+        : ServerApi.getJournal(initialEntry.parentId),
+      initialEntry
+        ? Promise.resolve(initialEntry)
+        : initialJournal.type && initialJournal.type !== JournalType.Timer
+          ? Promise.resolve(null)
+          : ServerApi.getActiveEntry(initialJournal.id),
+    ]).then((results) => {
+      setJournal(results[0]);
+      setEntry(results[1]);
+    });
+  }, []);
+
+  if (!journal) {
+    return null;
+  }
+
+  return <UpsertEntryActionInternal journal={journal} entry={entry} />;
+};
+
+const UpsertEntryActionInternal: React.FC<{
   journal?: IJournal;
   entry?: IEntry;
 }> = ({ journal, entry }) => {
@@ -62,7 +93,7 @@ export const UpsertEntryAction: React.FC<{
   );
 
   return (
-    <FormControl>
+    <FormControl sx={{ width: "100%" }}>
       {journal.type !== JournalType.Timer ? (
         <FormElementContainer>
           <DateSelector setDate={setDate} date={date} />
@@ -91,12 +122,11 @@ export const UpsertEntryAction: React.FC<{
         <TextField
           value={value}
           type="number"
+          autoFocus={true}
           onChange={(event) => setValue(event.target.value)}
           label={getValueHeaderLabel(journal)}
           margin={"normal"}
-          sx={{
-            marginBottom: "0",
-          }}
+          sx={{ marginBottom: "0" }}
         />
       ) : null}
 
