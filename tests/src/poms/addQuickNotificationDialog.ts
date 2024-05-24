@@ -9,7 +9,7 @@ export class AddQuickNotificationDialog {
   }
 
   async type(text: string) {
-    await this.page.getByPlaceholder("What and when?").type(text);
+    await this.page.getByLabel("What and when?").type(text);
   }
 
   async clickSave(): Promise<string> {
