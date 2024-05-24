@@ -11,7 +11,14 @@ export const ActionIconButtonGroup: React.FC<{
   enableFloatingActions?: boolean;
   testId?: string;
   backgroundColor?: string;
-}> = ({ actions, enableFloatingActions, testId, backgroundColor }) => {
+  actionRoutes?: React.ReactElement;
+}> = ({
+  actions,
+  enableFloatingActions,
+  testId,
+  backgroundColor,
+  actionRoutes,
+}) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const { palette } = useTheme();
@@ -73,6 +80,7 @@ export const ActionIconButtonGroup: React.FC<{
             );
           })}
       </ButtonContainer>
+      {actionRoutes}
     </>
   );
 };

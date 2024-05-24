@@ -10,7 +10,8 @@ export const ListItemFooterRow: React.FC<{
   properties: IPropertyDefinition[];
   actions: IAction[];
   hasFocus: boolean;
-}> = ({ properties, actions, hasFocus }) => {
+  actionRoutes?: React.ReactElement;
+}> = ({ properties, actions, hasFocus, actionRoutes }) => {
   const { isCompact } = useDisplayModeContext();
 
   if (isCompact && !hasFocus) {
@@ -23,7 +24,7 @@ export const ListItemFooterRow: React.FC<{
         <Properties properties={properties} />
       </FlexGrow>
       <ActionContainer>
-        <ActionIconButtonGroup actions={actions} />
+        <ActionIconButtonGroup actions={actions} actionRoutes={actionRoutes} />
       </ActionContainer>
     </PropertiesRow>
   );

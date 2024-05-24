@@ -64,6 +64,7 @@ export const JournalListItem: React.FC<{
           <ListItemFooterRow
             hasFocus={hasFocus}
             properties={journalProperties}
+            actionRoutes={<JournalSubRoutes journal={journal} />}
             actions={getCommonJournalActions(
               journal,
               hasFocus,
@@ -72,7 +73,6 @@ export const JournalListItem: React.FC<{
               renderDialog,
             )}
           />
-          <JournalSubRoutes journal={journal} />
         </Box>
       </Box>
     </div>

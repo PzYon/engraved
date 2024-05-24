@@ -50,8 +50,8 @@ export const Entry: React.FC<{
           user.id,
         )}
         actions={actions}
+        actionRoutes={<EntrySubRoutes entry={entry} />}
       />
-      <EntrySubRoutes entry={entry} />
     </>
   );
 };
