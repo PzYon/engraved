@@ -32,6 +32,7 @@ export class WrapperCollection {
       return;
     }
 
+    debugger;
     this.setIndex(index);
     this.current.giveFocus();
   }
