@@ -116,10 +116,11 @@ export const JournalViewPage: React.FC = () => {
     <Page
       title={<JournalPageTitle journal={journal} />}
       documentTitle={journal.name}
-      actions={titleActions}
+      actions={{
+        actions: titleActions,
+        routes: <JournalSubRoutes journal={journal} isFromDetailView={true} />,
+      }}
     >
-      <JournalSubRoutes journal={journal} isFromDetailView={true} />
-
       {showNotes ? (
         <PageSection>
           <JournalNotes journal={journal} />

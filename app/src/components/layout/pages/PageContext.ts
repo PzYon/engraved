@@ -17,8 +17,14 @@ export interface IPageContext {
   setTitle: (title: React.ReactNode) => void;
   subTitle: React.ReactNode;
   setSubTitle: (subTitle: React.ReactNode) => void;
-  pageActions: IAction[];
-  setPageActions: (actions: IAction[]) => void;
+  pageActions: {
+    actions: IAction[];
+    routes?: React.ReactElement;
+  };
+  setPageActions: (actions: {
+    actions: IAction[];
+    routes?: React.ReactElement;
+  }) => void;
   hideActions: boolean;
   setHideActions: (value: boolean) => void;
   // consider moving below props to a SearchContext

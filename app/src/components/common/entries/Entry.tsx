@@ -49,8 +49,10 @@ export const Entry: React.FC<{
           propsRenderStyle,
           user.id,
         )}
-        actions={actions}
-        actionRoutes={<EntrySubRoutes entry={entry} />}
+        actionsDefinition={{
+          actions: actions,
+          routes: <EntrySubRoutes entry={entry} />,
+        }}
       />
     </>
   );

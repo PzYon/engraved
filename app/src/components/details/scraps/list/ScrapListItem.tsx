@@ -74,14 +74,16 @@ export const ScrapListItem: React.FC<{
           />
           <ActionIconButtonGroup
             backgroundColor={"none"}
-            actions={[
-              {
-                key: "remove",
-                label: "Delete",
-                icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => listItemsCollection.removeItem(index),
-              },
-            ]}
+            actionsDefinition={{
+              actions: [
+                {
+                  key: "remove",
+                  label: "Delete",
+                  icon: <RemoveCircleOutline fontSize="small" />,
+                  onClick: () => listItemsCollection.removeItem(index),
+                },
+              ],
+            }}
           />
         </>
       ) : (

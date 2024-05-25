@@ -47,7 +47,9 @@ export const JournalEditPage: React.FC = () => {
       title={<JournalPageTitle journal={journal} />}
       subTitle="Edit"
       documentTitle={`Edit ${journal.name}`}
-      actions={getCommonEditModeActions(navigateToViewPage, save)}
+      actions={{
+        actions: getCommonEditModeActions(navigateToViewPage, save),
+      }}
     >
       <EditCommonProperties
         name={name}

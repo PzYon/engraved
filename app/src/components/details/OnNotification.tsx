@@ -3,9 +3,9 @@ import { styled } from "@mui/material";
 import { IJournal } from "../../serverApi/IJournal";
 import { IEntry } from "../../serverApi/IEntry";
 import { ActionIconButtonGroup } from "../common/actions/ActionIconButtonGroup";
-import { ActionFactory } from "../common/actions/ActionFactory";
 import { Scrap } from "./scraps/Scrap";
 import { IScrapEntry } from "../../serverApi/IScrapEntry";
+import { ActionFactory } from "../common/actions/ActionFactory";
 
 export const OnNotification: React.FC<{
   journal: IJournal;
@@ -25,10 +25,12 @@ export const OnNotification: React.FC<{
   return (
     <ActionsContainer>
       <ActionIconButtonGroup
-        actions={[
-          ActionFactory.deleteJournal(journal.id, true, false),
-          ActionFactory.editJournalSchedule(journal.id, false),
-        ]}
+        actionsDefinition={{
+          actions: [
+            ActionFactory.deleteJournal(journal.id, true, false),
+            ActionFactory.editJournalSchedule(journal.id, false),
+          ],
+        }}
       />
     </ActionsContainer>
   );

@@ -51,15 +51,17 @@ export const AddQuickNotificationDialog: React.FC<{
 
       <ActionsContainer>
         <ActionIconButtonGroup
-          actions={[
-            {
-              key: "add",
-              onClick: save,
-              label: "Save",
-              isDisabled: !isFormValid(),
-              icon: <SaveOutlined fontSize="small" />,
-            },
-          ]}
+          actionsDefinition={{
+            actions: [
+              {
+                key: "add",
+                onClick: save,
+                label: "Save",
+                isDisabled: !isFormValid(),
+                icon: <SaveOutlined fontSize="small" />,
+              },
+            ],
+          }}
         />
       </ActionsContainer>
     </Host>

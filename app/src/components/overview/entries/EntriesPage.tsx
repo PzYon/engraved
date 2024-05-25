@@ -31,7 +31,7 @@ export const EntriesPage: React.FC = () => {
         />
       }
       filterMode={FilterMode.All}
-      actions={[]}
+      actions={{ actions: [] }}
     >
       <Entries />
     </Page>

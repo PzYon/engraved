@@ -103,35 +103,37 @@ export const ScrapList: React.FC = () => {
         {isEditMode ? (
           <ActionsContainer>
             <ActionIconButtonGroup
-              actions={[
-                {
-                  key: "add",
-                  label: "Add new",
-                  icon: <AddOutlined fontSize="small" />,
-                  onClick: () =>
-                    listItemCollection.addItem(
-                      listItemCollection.items.length - 1,
-                    ),
-                },
-                {
-                  key: "move-checked-to-bottom",
-                  label: "Move checked to bottom",
-                  icon: <MoveDownOutlined fontSize="small" />,
-                  onClick: () => listItemCollection.moveCheckedToBottom(),
-                },
-                {
-                  key: "toggle-checked",
-                  label: "Toggle checked",
-                  icon: <SyncAltOutlined fontSize="small" />,
-                  onClick: () => listItemCollection.toggleAllChecked(),
-                },
-                {
-                  key: "delete-checked",
-                  label: "Delete checked",
-                  icon: <RemoveCircleOutline fontSize="small" />,
-                  onClick: () => listItemCollection.deleteAllChecked(),
-                },
-              ]}
+              actionsDefinition={{
+                actions: [
+                  {
+                    key: "add",
+                    label: "Add new",
+                    icon: <AddOutlined fontSize="small" />,
+                    onClick: () =>
+                      listItemCollection.addItem(
+                        listItemCollection.items.length - 1,
+                      ),
+                  },
+                  {
+                    key: "move-checked-to-bottom",
+                    label: "Move checked to bottom",
+                    icon: <MoveDownOutlined fontSize="small" />,
+                    onClick: () => listItemCollection.moveCheckedToBottom(),
+                  },
+                  {
+                    key: "toggle-checked",
+                    label: "Toggle checked",
+                    icon: <SyncAltOutlined fontSize="small" />,
+                    onClick: () => listItemCollection.toggleAllChecked(),
+                  },
+                  {
+                    key: "delete-checked",
+                    label: "Delete checked",
+                    icon: <RemoveCircleOutline fontSize="small" />,
+                    onClick: () => listItemCollection.deleteAllChecked(),
+                  },
+                ],
+              }}
             />
           </ActionsContainer>
         ) : null}

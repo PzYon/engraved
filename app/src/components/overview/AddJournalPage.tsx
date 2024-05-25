@@ -19,7 +19,7 @@ export const AddJournalPage: React.FC = () => {
           }
         />
       }
-      actions={[]}
+      actions={{ actions: [] }}
     >
       <AddJournal />
     </Page>

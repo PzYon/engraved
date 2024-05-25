@@ -26,16 +26,18 @@ export const JournalsPage: React.FC = () => {
           }
         />
       }
-      actions={[
-        {
-          icon: <StarOutline fontSize="small" />,
-          label: "Show favorites only",
-          key: "favorites-only",
-          onClick: () => setFavoritesOnly(!favoritesOnly),
-          isNotActive: !favoritesOnly,
-        },
-        ActionFactory.newJournal(),
-      ]}
+      actions={{
+        actions: [
+          {
+            icon: <StarOutline fontSize="small" />,
+            label: "Show favorites only",
+            key: "favorites-only",
+            onClick: () => setFavoritesOnly(!favoritesOnly),
+            isNotActive: !favoritesOnly,
+          },
+          ActionFactory.newJournal(),
+        ],
+      }}
       filterMode={FilterMode.All}
     >
       <Journals favoritesOnly={favoritesOnly} />

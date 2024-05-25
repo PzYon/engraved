@@ -49,16 +49,17 @@ export const ScrapsViewPage: React.FC = () => {
     <Page
       title={<JournalPageTitle journal={journal} />}
       documentTitle={journal.name}
-      actions={[
-        getAddNewAction("markdown"),
-        getAddNewAction("list"),
-        null,
-        ActionFactory.getToc(() => setShowToc(!showToc)),
-        ...getCommonJournalActions(journal, false, user, true),
-      ]}
+      actions={{
+        actions: [
+          getAddNewAction("markdown"),
+          getAddNewAction("list"),
+          null,
+          ActionFactory.getToc(() => setShowToc(!showToc)),
+          ...getCommonJournalActions(journal, false, user, true),
+        ],
+        routes: <JournalSubRoutes journal={journal} isFromDetailView={true} />,
+      }}
     >
-      <JournalSubRoutes journal={journal} isFromDetailView={true} />
-
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
       {newScrap ? (

@@ -45,9 +45,9 @@ export const AppHeader: React.FC = () => {
   const pageActions: IAction[] = filterMode
     ? [
         ActionFactory.toggleFilters(showFilters, setShowFilters, true),
-        ...pageActionsFromContext,
+        ...pageActionsFromContext.actions,
       ]
-    : pageActionsFromContext;
+    : pageActionsFromContext.actions;
 
   return (
     <Host>
@@ -108,7 +108,10 @@ export const AppHeader: React.FC = () => {
           <ActionsAndTabContainer isSmall={isSmall}>
             {hideActions ? null : (
               <ActionIconButtonGroup
-                actions={pageActions}
+                actionsDefinition={{
+                  actions: pageActions,
+                  routes: pageActionsFromContext.routes,
+                }}
                 testId="page-actions"
                 enableFloatingActions={true}
               />

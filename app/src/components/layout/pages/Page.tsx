@@ -7,7 +7,10 @@ import { useSearchParams } from "react-router-dom";
 
 export const Page: React.FC<{
   children: React.ReactNode;
-  actions?: IAction[];
+  actions?: {
+    actions: IAction[];
+    routes?: React.ReactElement;
+  };
   hideActions?: boolean;
   title?: React.ReactNode;
   subTitle?: React.ReactNode;

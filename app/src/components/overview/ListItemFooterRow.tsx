@@ -8,10 +8,12 @@ import { useDisplayModeContext } from "./overviewList/DisplayModeContext";
 
 export const ListItemFooterRow: React.FC<{
   properties: IPropertyDefinition[];
-  actions: IAction[];
   hasFocus: boolean;
-  actionRoutes?: React.ReactElement;
-}> = ({ properties, actions, hasFocus, actionRoutes }) => {
+  actionsDefinition: {
+    actions: IAction[];
+    routes?: React.ReactElement;
+  };
+}> = ({ properties, hasFocus, actionsDefinition }) => {
   const { isCompact } = useDisplayModeContext();
 
   if (isCompact && !hasFocus) {
@@ -24,7 +26,7 @@ export const ListItemFooterRow: React.FC<{
         <Properties properties={properties} />
       </FlexGrow>
       <ActionContainer>
-        <ActionIconButtonGroup actions={actions} actionRoutes={actionRoutes} />
+        <ActionIconButtonGroup actionsDefinition={actionsDefinition} />
       </ActionContainer>
     </PropertiesRow>
   );

@@ -7,20 +7,22 @@ import { IAction } from "./IAction";
 import { useLocation } from "react-router-dom";
 
 export const ActionIconButtonGroup: React.FC<{
-  actions: IAction[];
+  actionsDefinition: {
+    actions: IAction[];
+    routes?: React.ReactElement;
+  };
   enableFloatingActions?: boolean;
   testId?: string;
   backgroundColor?: string;
-  actionRoutes?: React.ReactElement;
 }> = ({
-  actions,
+  actionsDefinition,
   enableFloatingActions,
   testId,
   backgroundColor,
-  actionRoutes,
 }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
+  debugger;
   const { palette } = useTheme();
 
   const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
@@ -38,21 +40,21 @@ export const ActionIconButtonGroup: React.FC<{
     };
   }, []);
 
-  if (!actions?.length) {
+  if (!actionsDefinition.actions?.length) {
     return null;
   }
 
   return (
     <>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
-        <FloatingHeaderActions actions={actions} />
+        <FloatingHeaderActions actions={actionsDefinition.actions} />
       ) : null}
       <ButtonContainer
         data-testid={testId}
         sx={{ backgroundColor: backgroundColor ?? palette.background.default }}
       >
         <div ref={domElementRef} />
-        {actions
+        {actionsDefinition.actions
           .filter((a) => a !== undefined)
           .map((action) => {
             if (!action) {
@@ -80,7 +82,7 @@ export const ActionIconButtonGroup: React.FC<{
             );
           })}
       </ButtonContainer>
-      {actionRoutes}
+      <div className="actionnnnnn">{actionsDefinition.routes}</div>
     </>
   );
 };

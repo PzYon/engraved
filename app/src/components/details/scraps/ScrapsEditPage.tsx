@@ -27,9 +27,11 @@ export const ScrapsEditPage: React.FC = () => {
       title={<JournalPageTitle journal={journal} />}
       subTitle="Edit"
       documentTitle={`Edit ${journal.name}`}
-      actions={[
-        ...getCommonEditModeActions(navigateToViewPage, save, disableSave),
-      ]}
+      actions={{
+        actions: [
+          ...getCommonEditModeActions(navigateToViewPage, save, disableSave),
+        ],
+      }}
     >
       <EditCommonProperties
         name={name}
