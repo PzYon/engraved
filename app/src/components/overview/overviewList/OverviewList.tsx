@@ -25,19 +25,28 @@ export const OverviewList: React.FC<{
 
   return (
     <Host>
-      {filteredItems.map((item, index) => (
-        <OverviewListItem
-          index={index}
-          key={item.id}
-          onClick={() => collection.setFocus(index)}
-          addWrapperItem={addItem}
-          item={item}
-        >
-          {renderItem(item, index, index === collection.currentIndex, () => {
-            collection.setFocus(index);
-          })}
-        </OverviewListItem>
-      ))}
+      {filteredItems.map((item, index) => {
+        return (
+          <OverviewListItem
+            index={index}
+            key={item.id}
+            onClick={setFocus}
+            addWrapperItem={addItem}
+            item={item}
+          >
+            {renderItem(
+              item,
+              index,
+              index === collection.currentIndex,
+              setFocus,
+            )}
+          </OverviewListItem>
+        );
+
+        function setFocus() {
+          collection.setFocus(index);
+        }
+      })}
       {hiddenItems ? (
         <Typography
           onClick={() => setShowAll(true)}
