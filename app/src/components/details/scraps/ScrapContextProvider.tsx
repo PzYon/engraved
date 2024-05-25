@@ -20,6 +20,7 @@ export const ScrapContextProvider: React.FC<{
   hasFocus: boolean;
   currentScrap: IScrapEntry;
   onSuccess?: () => void;
+  giveFocus?: () => void;
 }> = ({
   children,
   currentScrap,
@@ -28,6 +29,7 @@ export const ScrapContextProvider: React.FC<{
   journalName,
   onSuccess,
   hasFocus,
+  giveFocus,
 }) => {
   const { setAppAlert } = useAppContext();
 
@@ -143,6 +145,7 @@ export const ScrapContextProvider: React.FC<{
         journalName,
         onSuccess,
         hasFocus,
+        giveFocus,
         hasTitleFocus,
         setHasTitleFocus,
       };
@@ -159,6 +162,7 @@ export const ScrapContextProvider: React.FC<{
       actionsRenderStyle,
       journalName,
       hasFocus,
+      giveFocus,
       hasTitleFocus,
     ],
   );

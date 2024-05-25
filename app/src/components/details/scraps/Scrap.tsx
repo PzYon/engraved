@@ -20,6 +20,7 @@ export const Scrap: React.FC<{
   actionsRenderStyle,
   hasFocus,
   onSuccess,
+  giveFocus,
 }) => {
   return (
     <div id={currentScrap.id}>
@@ -30,6 +31,7 @@ export const Scrap: React.FC<{
         journalName={journalName}
         onSuccess={onSuccess}
         hasFocus={hasFocus}
+        giveFocus={giveFocus}
       >
         <ScrapInner />
       </ScrapContextProvider>

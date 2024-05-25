@@ -3,8 +3,6 @@ import { IEntity } from "../../../serverApi/IEntity";
 import { useCollection } from "./wrappers/useCollection";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
-import { IEntry } from "../../../serverApi/IEntry";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
@@ -28,24 +26,17 @@ export const OverviewList: React.FC<{
   return (
     <Host>
       {filteredItems.map((item, index) => (
-        <>
-          <OverviewListItem
-            index={index}
-            key={item.id}
-            onClick={() => collection.setFocus(index)}
-            addWrapperItem={addItem}
-            item={item}
-          >
-            {renderItem(item, index, index === collection.currentIndex, () =>
-              collection.setFocus(index),
-            )}
-          </OverviewListItem>
-          <Link
-            to={`/journals/${(item as IEntry).parentId ? "details/" + (item as IEntry).parentId : item.id}/actions/notification-done/${(item as IEntry).parentId ? item.id : ""}`}
-          >
-            notification-done for above
-          </Link>
-        </>
+        <OverviewListItem
+          index={index}
+          key={item.id}
+          onClick={() => collection.setFocus(index)}
+          addWrapperItem={addItem}
+          item={item}
+        >
+          {renderItem(item, index, index === collection.currentIndex, () => {
+            collection.setFocus(index);
+          })}
+        </OverviewListItem>
       ))}
       {hiddenItems ? (
         <Typography

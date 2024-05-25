@@ -11,13 +11,14 @@ import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
-}> = ({ entry }) => {
+  giveFocus?: () => void;
+}> = ({ entry, giveFocus }) => {
   return (
     <Routes>
       <Route
         path={`/actions/delete/${entry.id}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer giveFocus={giveFocus}>
             <DeleteEntryAction entry={entry} />
           </NavigationActionContainer>
         }
@@ -25,7 +26,7 @@ export const EntrySubRoutes: React.FC<{
       <Route
         path={`/actions/schedule/${entry.id}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer giveFocus={giveFocus}>
             <EditScheduleAction entry={entry} />
           </NavigationActionContainer>
         }
@@ -33,7 +34,10 @@ export const EntrySubRoutes: React.FC<{
       <Route
         path={`/actions/notification-done/${entry.id}`}
         element={
-          <NavigationActionContainer shrinkWidthIfPossible={true}>
+          <NavigationActionContainer
+            shrinkWidthIfPossible={true}
+            giveFocus={giveFocus}
+          >
             <NotificationDoneAction entry={entry} journal={null} />
           </NavigationActionContainer>
         }
@@ -41,7 +45,7 @@ export const EntrySubRoutes: React.FC<{
       <Route
         path={`/actions/move/${entry.id}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer giveFocus={giveFocus}>
             <MoveScrapAction entry={entry as IScrapEntry} />
           </NavigationActionContainer>
         }
@@ -49,7 +53,7 @@ export const EntrySubRoutes: React.FC<{
       <Route
         path={`/actions/edit/${entry.id}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer giveFocus={giveFocus}>
             <UpsertEntryAction entry={entry} />
           </NavigationActionContainer>
         }
