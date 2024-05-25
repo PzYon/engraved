@@ -12,6 +12,7 @@ export const Scrap: React.FC<{
   actionsRenderStyle?: ActionsRenderStyle;
   hasFocus?: boolean;
   onSuccess?: () => void;
+  giveFocus?: () => void;
 }> = ({
   scrap: currentScrap,
   journalName,

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { useCollection } from "./wrappers/useCollection";
 import { OverviewListItem } from "./OverviewListItem";
-import { Typography, styled } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
@@ -10,6 +10,7 @@ export const OverviewList: React.FC<{
     item: IEntity,
     index: number,
     hasFocus: boolean,
+    giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
 }> = ({ items, renderItem, filterItem }) => {
@@ -32,7 +33,9 @@ export const OverviewList: React.FC<{
           addWrapperItem={addItem}
           item={item}
         >
-          {renderItem(item, index, index === collection.currentIndex)}
+          {renderItem(item, index, index === collection.currentIndex, () =>
+            collection.current?.giveFocus(),
+          )}
         </OverviewListItem>
       ))}
       {hiddenItems ? (

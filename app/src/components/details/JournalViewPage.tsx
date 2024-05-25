@@ -115,7 +115,11 @@ export const JournalViewPage: React.FC = () => {
       documentTitle={journal.name}
       actions={titleActions}
     >
-      <JournalSubRoutes journal={journal} isFromDetailView={true} />
+      <JournalSubRoutes
+        journal={journal}
+        isFromDetailView={true}
+        giveFocus={() => alert("JournvalViewPage")}
+      />
 
       {showNotes ? (
         <PageSection>

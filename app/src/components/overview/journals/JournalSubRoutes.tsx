@@ -4,15 +4,19 @@ import { DeleteJournalAction } from "../../details/edit/DeleteJournalAction";
 import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { Route, Routes } from "react-router-dom";
 import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPermissionsAction";
-import React from "react";
+import React, { useEffect } from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
   isFromDetailView?: boolean;
-}> = ({ journal, isFromDetailView }) => {
+  giveFocus?: () => void;
+}> = ({ journal, isFromDetailView, giveFocus }) => {
   const journalId = isFromDetailView ? "" : journal.id;
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => giveFocus?.(), []);
 
   return (
     <Routes>

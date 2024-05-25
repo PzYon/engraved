@@ -21,13 +21,14 @@ export const Entries: React.FC = () => {
   return (
     <OverviewList
       items={queryResult.entries}
-      renderItem={(item, index, hasFocus) => (
+      renderItem={(item, index, hasFocus, giveFocus) => (
         <EntryListItem
           key={item.id}
           entry={item as IEntry}
           journals={queryResult.journals}
           index={index}
           hasFocus={hasFocus}
+          giveFocus={giveFocus}
         />
       )}
     />

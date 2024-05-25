@@ -17,6 +17,7 @@ export interface IJournalType {
     journal: IJournal,
     entry: IEntry,
     hasFocus?: boolean,
+    giveFocus?: () => void,
   ): React.ReactNode;
 
   getEntriesTableColumns(): IEntriesTableColumnDefinition[];
