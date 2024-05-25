@@ -6,7 +6,8 @@ import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 export const ScrapToc: React.FC<{ entries: IScrapEntry[] }> = ({ entries }) => {
   const deviceWidth = useDeviceWidth();
 
-  if (!entries?.length) {
+  // when there is only 1 entry, we don't shhow ToC
+  if (!(entries?.length > 1)) {
     return null;
   }
 
