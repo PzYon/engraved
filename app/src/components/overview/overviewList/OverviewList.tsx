@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { useCollection } from "./wrappers/useCollection";
 import { OverviewListItem } from "./OverviewListItem";
-import { Typography, styled } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
@@ -10,6 +10,7 @@ export const OverviewList: React.FC<{
     item: IEntity,
     index: number,
     hasFocus: boolean,
+    giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
 }> = ({ items, renderItem, filterItem }) => {
@@ -24,17 +25,28 @@ export const OverviewList: React.FC<{
 
   return (
     <Host>
-      {filteredItems.map((item, index) => (
-        <OverviewListItem
-          index={index}
-          key={item.id}
-          onClick={() => collection.setFocus(index)}
-          addWrapperItem={addItem}
-          item={item}
-        >
-          {renderItem(item, index, index === collection.currentIndex)}
-        </OverviewListItem>
-      ))}
+      {filteredItems.map((item, index) => {
+        return (
+          <OverviewListItem
+            index={index}
+            key={item.id}
+            onClick={setFocus}
+            addWrapperItem={addItem}
+            item={item}
+          >
+            {renderItem(
+              item,
+              index,
+              index === collection.currentIndex,
+              setFocus,
+            )}
+          </OverviewListItem>
+        );
+
+        function setFocus() {
+          collection.setFocus(index);
+        }
+      })}
       {hiddenItems ? (
         <Typography
           onClick={() => setShowAll(true)}

@@ -26,6 +26,7 @@ export const ScrapBody: React.FC<{
     actionsRenderStyle,
     journalName,
     hasFocus,
+    giveFocus,
   } = useScrapContext();
 
   return (
@@ -37,6 +38,7 @@ export const ScrapBody: React.FC<{
       actions={getActions()}
       propsRenderStyle={propsRenderStyle}
       journalName={journalName}
+      giveFocus={giveFocus}
     >
       {children}
     </Entry>

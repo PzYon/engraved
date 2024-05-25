@@ -11,7 +11,8 @@ import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
   isFromDetailView?: boolean;
-}> = ({ journal, isFromDetailView }) => {
+  giveFocus?: () => void;
+}> = ({ journal, isFromDetailView, giveFocus }) => {
   const journalId = isFromDetailView ? "" : journal.id;
 
   return (
@@ -19,7 +20,7 @@ export const JournalSubRoutes: React.FC<{
       <Route
         path={`actions/delete/${journalId}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer giveFocus={giveFocus}>
             <DeleteJournalAction journal={journal} />
           </NavigationActionContainer>
         }
@@ -27,7 +28,7 @@ export const JournalSubRoutes: React.FC<{
       <Route
         path={`actions/permissions/${journalId}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer giveFocus={giveFocus}>
             <EditJournalPermissionsAction journal={journal} />
           </NavigationActionContainer>
         }
@@ -35,7 +36,10 @@ export const JournalSubRoutes: React.FC<{
       <Route
         path={`actions/notification-done/${journalId}`}
         element={
-          <NavigationActionContainer shrinkWidthIfPossible={true}>
+          <NavigationActionContainer
+            shrinkWidthIfPossible={true}
+            giveFocus={giveFocus}
+          >
             <NotificationDoneAction entry={null} journal={journal} />
           </NavigationActionContainer>
         }
@@ -43,7 +47,7 @@ export const JournalSubRoutes: React.FC<{
       <Route
         path={`actions/schedule/${journalId}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer giveFocus={giveFocus}>
             <EditScheduleAction journal={journal} />
           </NavigationActionContainer>
         }
@@ -51,7 +55,7 @@ export const JournalSubRoutes: React.FC<{
       <Route
         path={`actions/add-entry/${journalId}`}
         element={
-          <NavigationActionContainer>
+          <NavigationActionContainer giveFocus={giveFocus}>
             <UpsertEntryAction journal={journal} />
           </NavigationActionContainer>
         }

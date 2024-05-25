@@ -33,7 +33,7 @@ export class WrapperCollection {
     }
 
     this.setIndex(index);
-    this.current.giveFocus();
+    this.current?.giveFocus();
   }
 
   moveFocusDown() {

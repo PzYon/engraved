@@ -8,7 +8,8 @@ export const EntryListItem: React.FC<{
   journals: IJournal[];
   hasFocus?: boolean;
   index?: number;
-}> = ({ entry, journals, hasFocus, index }) => {
+  giveFocus?: () => void;
+}> = ({ entry, journals, hasFocus, index, giveFocus }) => {
   return (
     <div data-testid={`entries-list-item-${index}`}>
       {renderEntry(entry, hasFocus)}
@@ -26,6 +27,7 @@ export const EntryListItem: React.FC<{
       journal,
       entry,
       hasFocus,
+      giveFocus,
     );
   }
 };

@@ -18,11 +18,11 @@ export const ScrapMarkdown: React.FC = () => {
     <ScrapBody
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
-      {getSomething()}
+      {getContent()}
     </ScrapBody>
   );
 
-  function getSomething() {
+  function getContent() {
     if (isEditMode) {
       return (
         <EditorContainer>

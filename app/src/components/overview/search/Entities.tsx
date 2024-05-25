@@ -41,7 +41,7 @@ export const Entities: React.FC<{ isSchedule?: boolean }> = ({
             addDays(new Date(), 3),
           )
         }
-        renderItem={(item, index, hasFocus) => {
+        renderItem={(item, index, hasFocus, giveFocus) => {
           // this is a temporary hack! should be something like:
           // if (item.entityType === "Entry") {
           if (!(item as IJournal).type) {
@@ -50,6 +50,7 @@ export const Entities: React.FC<{ isSchedule?: boolean }> = ({
                 key={item.id}
                 index={index}
                 hasFocus={hasFocus}
+                giveFocus={giveFocus}
                 entry={item as IEntry}
                 journals={queryResult.journals}
               />

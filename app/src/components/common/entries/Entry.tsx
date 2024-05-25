@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeIcon } from "../JournalTypeIcon";
 import { Link } from "react-router-dom";
@@ -24,6 +24,7 @@ export const Entry: React.FC<{
   actions: IAction[];
   propsRenderStyle: EntryPropsRenderStyle;
   hasFocus: boolean;
+  giveFocus?: () => void;
 }> = ({
   journalType,
   journalId,
@@ -33,6 +34,7 @@ export const Entry: React.FC<{
   actions,
   propsRenderStyle,
   hasFocus,
+  giveFocus,
 }) => {
   const { user } = useAppContext();
 
@@ -51,7 +53,7 @@ export const Entry: React.FC<{
         )}
         actions={actions}
       />
-      <EntrySubRoutes entry={entry} />
+      <EntrySubRoutes entry={entry} giveFocus={giveFocus} />
     </>
   );
 };
@@ -94,7 +96,13 @@ function getEntryProperties(
 export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
   shrinkWidthIfPossible?: boolean;
-}> = ({ children, shrinkWidthIfPossible }) => {
+  giveFocus?: () => void;
+}> = ({ children, shrinkWidthIfPossible, giveFocus }) => {
+  useEffect(() => {
+    giveFocus?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Host>
       <Inner style={{ width: shrinkWidthIfPossible ? "auto" : "100%" }}>

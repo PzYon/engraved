@@ -76,13 +76,14 @@ export const ScrapsViewPage: React.FC = () => {
       {scraps.length ? (
         <OverviewList
           items={scraps.sort(getCompareFn(user.id))}
-          renderItem={(item, _, hasFocus) => (
+          renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap
               key={item.id + getScheduleForUser(item, user.id).nextOccurrence}
               journalName={journal.name}
               propsRenderStyle={"generic"}
               scrap={item as IScrapEntry}
               hasFocus={hasFocus}
+              giveFocus={giveFocus}
             />
           )}
         />
