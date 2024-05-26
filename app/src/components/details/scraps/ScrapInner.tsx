@@ -1,13 +1,12 @@
 import React from "react";
 import { ScrapType } from "../../../serverApi/IScrapEntry";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
-import { styled, Typography } from "@mui/material";
 import { useScrapContext } from "./ScrapContext";
 import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 import { ScrapList } from "./list/ScrapList";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import { ISCrapListItem } from "./list/IScrapListItem";
-import { ReadonlyTitleRow } from "../../overview/ReadonlyTitleRow";
+import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -45,21 +44,18 @@ export const ScrapInner: React.FC = () => {
           sx={{ width: "100%" }}
         />
       ) : (
-        <ReadonlyTitleContainer>
-          <ReadonlyTitleRow
-            entity={scrapToRender}
-            hasFocus={hasFocus}
-            title={
-              !isCompact || hasFocus || title
-                ? title
-                : getText()?.substring(0, 20) + " (...)"
-            }
-          />
-        </ReadonlyTitleContainer>
+        <ReadonlyTitle
+          entity={scrapToRender}
+          hasFocus={hasFocus}
+          title={
+            !isCompact || hasFocus || title
+              ? title
+              : getText()?.substring(0, 20) + " (...)"
+          }
+        />
       )}
 
-      {isCompact && !hasFocus ? null : scrapToRender.scrapType ===
-        ScrapType.List ? (
+      {scrapToRender.scrapType === ScrapType.List ? (
         <ScrapList />
       ) : (
         <ScrapMarkdown />
@@ -80,10 +76,3 @@ export const ScrapInner: React.FC = () => {
     }
   }
 };
-
-const ReadonlyTitleContainer = styled(Typography)`
-  color: ${(p) => p.theme.palette.primary.main};
-  font-size: 2rem;
-  font-weight: 200;
-  line-height: 1;
-`;
