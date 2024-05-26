@@ -22,5 +22,6 @@ const MenuItemContainer = styled("div")`
 
   .ngrvd-icon {
     margin-right: ${(p) => p.theme.spacing(1)};
+    padding-top: 4px;
   }
 `;
