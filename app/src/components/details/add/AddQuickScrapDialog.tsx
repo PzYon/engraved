@@ -70,6 +70,7 @@ export const AddQuickScrapDialog: React.FC<{
           propsRenderStyle={"none"}
           actionsRenderStyle={"save-only"}
           onSuccess={onSuccess}
+          hasFocus={true}
         />
       </ScrapContainer>
     </>
