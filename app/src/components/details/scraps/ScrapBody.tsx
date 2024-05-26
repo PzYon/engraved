@@ -40,7 +40,7 @@ export const ScrapBody: React.FC<{
       journalName={journalName}
       giveFocus={giveFocus}
     >
-      {children}
+      {hasFocus ? children : null}
     </Entry>
   );
 

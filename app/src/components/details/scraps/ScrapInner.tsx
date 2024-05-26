@@ -58,8 +58,7 @@ export const ScrapInner: React.FC = () => {
         </ReadonlyTitleContainer>
       )}
 
-      {isCompact && !hasFocus ? null : scrapToRender.scrapType ===
-        ScrapType.List ? (
+      {scrapToRender.scrapType === ScrapType.List ? (
         <ScrapList />
       ) : (
         <ScrapMarkdown />
