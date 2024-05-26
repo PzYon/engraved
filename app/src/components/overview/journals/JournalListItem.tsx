@@ -1,16 +1,15 @@
 import React, { useRef } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
-import { Box, styled, Typography } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { useJournalProperties } from "./useJournalProperties";
 import { JournalTypeIcon } from "../../common/JournalTypeIcon";
-import { ActionLink } from "../../common/actions/ActionLink";
-import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getCommonJournalActions } from "../getCommonJournalActions";
 import { ListItemFooterRow } from "../ListItemFooterRow";
 import { IconStyle } from "../../common/IconStyle";
-import { ReadonlyTitleRow } from "../ReadonlyTitleRow";
+import { ReadonlyTitle } from "../ReadonlyTitle";
 import { useAppContext } from "../../../AppContext";
 import { JournalSubRoutes } from "./JournalSubRoutes";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -37,28 +36,12 @@ export const JournalListItem: React.FC<{
             <IconContainer>
               <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
             </IconContainer>
-
-            <ActionLink
-              action={ActionFactory.goToJournal(journal.id, hasFocus)}
-              style={{ flexGrow: 1 }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "lighter",
-                  display: "flex",
-                  alignItems: "center",
-                  lineHeight: 1,
-                  marginTop: "-3px",
-                }}
-              >
-                <ReadonlyTitleRow
-                  entity={journal}
-                  title={journal.name}
-                  hasFocus={hasFocus}
-                />
-              </Typography>
-            </ActionLink>
+            <ReadonlyTitle
+              entity={journal}
+              title={journal.name}
+              hasFocus={hasFocus}
+              onClick={ActionFactory.goToJournal(journal.id, hasFocus)}
+            />
           </TitleRow>
           <ListItemFooterRow
             hasFocus={hasFocus}
@@ -84,4 +67,5 @@ const TitleRow = styled("div")`
 
 const IconContainer = styled("span")`
   padding-right: ${(p) => p.theme.spacing(2)};
+  padding-top: 4px;
 `;
