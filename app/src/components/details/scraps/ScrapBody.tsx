@@ -7,6 +7,7 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useScrapContext } from "./ScrapContext";
 import { useAppContext } from "../../../AppContext";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
+import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
@@ -29,6 +30,8 @@ export const ScrapBody: React.FC<{
     giveFocus,
   } = useScrapContext();
 
+  const { isCompact } = useDisplayModeContext();
+
   return (
     <Entry
       hasFocus={hasFocus}
@@ -40,7 +43,7 @@ export const ScrapBody: React.FC<{
       journalName={journalName}
       giveFocus={giveFocus}
     >
-      {hasFocus ? children : null}
+      {isCompact && !hasFocus ? null : children}
     </Entry>
   );
 
