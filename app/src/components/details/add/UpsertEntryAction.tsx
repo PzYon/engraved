@@ -48,6 +48,7 @@ export const UpsertEntryAction: React.FC<{
       setJournal(results[0]);
       setEntry(results[1]);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!journal) {
