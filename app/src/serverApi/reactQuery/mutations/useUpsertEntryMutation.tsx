@@ -85,6 +85,9 @@ export const useUpsertEntryMutation = (
       await queryClient.invalidateQueries({
         queryKey: queryKeysFactory.entries(),
       });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.entities("", true),
+      });
     },
 
     onError: (error: unknown) => {
