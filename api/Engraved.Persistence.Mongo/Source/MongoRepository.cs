@@ -278,7 +278,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     if (string.IsNullOrEmpty(currentUserId))
     {
       throw new Exception(
-        $"\"${nameof(currentUserId)}\" must be specified when using {ScheduleMode.CurrentUserFirst)}."
+        $"\"${nameof(currentUserId)}\" must be specified when using {ScheduleMode.CurrentUserFirst}."
       );
     }
 
