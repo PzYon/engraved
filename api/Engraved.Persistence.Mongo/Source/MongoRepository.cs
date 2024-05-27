@@ -275,6 +275,13 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
         .ToListAsync();
     }
 
+    if (string.IsNullOrEmpty(currentUserId))
+    {
+      throw new Exception(
+        $"\"${nameof(currentUserId)}\" must be specified when using {ScheduleMode.CurrentUserFirst)}."
+      );
+    }
+
     List<EntryDocument> entries = await EntriesCollection
       .Find(
         Builders<EntryDocument>.Filter.And(
@@ -509,7 +516,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     };
   }
 
-  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
+  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string? currentUserId)
   {
     return Builders<EntryDocument>.Filter.Where(
       d => d.Schedules.ContainsKey(currentUserId)
