@@ -516,7 +516,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     };
   }
 
-  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string? currentUserId)
+  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
   {
     return Builders<EntryDocument>.Filter.Where(
       d => d.Schedules.ContainsKey(currentUserId)
