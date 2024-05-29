@@ -3,6 +3,8 @@ import { IEntity } from "../../../serverApi/IEntity";
 import { useCollection } from "./wrappers/useCollection";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
+import { getScheduleForUser } from "../scheduled/scheduleUtils";
+import { useAppContext } from "../../../AppContext";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
@@ -14,6 +16,8 @@ export const OverviewList: React.FC<{
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
 }> = ({ items, renderItem, filterItem }) => {
+  const { user } = useAppContext();
+
   const { collection, addItem } = useCollection([items]);
   const [showAll, setShowAll] = useState(false);
 
@@ -29,7 +33,9 @@ export const OverviewList: React.FC<{
         return (
           <OverviewListItem
             index={index}
-            key={item.id}
+            key={
+              item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
+            }
             onClick={setFocus}
             addWrapperItem={addItem}
             item={item}
