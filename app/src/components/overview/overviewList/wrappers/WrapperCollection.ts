@@ -14,15 +14,17 @@ export class WrapperCollection {
   constructor(
     private index: number,
     private setFocusIndex: (value: number) => void,
+    private setItemId: (value: string) => void,
   ) {}
 
   private get highestIndex() {
     return this.wrappers.length - 1;
   }
 
-  protected setIndex(i: number) {
-    this.index = i;
-    this.setFocusIndex(i);
+  setFocusForId(itemId: string) {
+    this.setFocus(
+      this.wrappers.findIndex((i) => i.internalObj.id === itemId) ?? -1,
+    );
   }
 
   setFocus(index: number) {
@@ -64,5 +66,11 @@ export class WrapperCollection {
   private getNextLowerIndex(index: number) {
     const nextIndex = index - 1;
     return nextIndex < 0 ? this.highestIndex : nextIndex;
+  }
+
+  private setIndex(i: number) {
+    this.index = i;
+    this.setItemId(this.current?.internalObj.id);
+    this.setFocusIndex(i);
   }
 }
