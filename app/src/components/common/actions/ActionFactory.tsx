@@ -12,7 +12,6 @@ import {
   FilterAltOutlined,
   FormatLineSpacingOutlined,
   FunctionsOutlined,
-  Help,
   MessageOutlined,
   NotificationAddOutlined,
   PanToolOutlined,
@@ -39,7 +38,6 @@ import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
-import { RegisteredActionsList } from "./RegisteredActionsList";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -508,22 +506,6 @@ export class ActionFactory {
       label: "Toggle display mode",
       onClick: () => setIsCompact(!isCompact),
       sx: { color: "common.white" },
-    };
-  }
-
-  static showHelp(renderDialog: (dialogProps: IDialogProps) => void): IAction {
-    return {
-      key: "show-help",
-      hotkey: "alt+h",
-      icon: <Help fontSize="small" />,
-      label: "Show help",
-      sx: { color: "common.white" },
-      onClick: () => {
-        renderDialog({
-          title: "Help",
-          render: () => <RegisteredActionsList />,
-        });
-      },
     };
   }
 }

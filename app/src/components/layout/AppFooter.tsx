@@ -3,14 +3,17 @@ import { AppContent } from "./AppContent";
 import { useApiSystemInfoQuery } from "../../serverApi/reactQuery/queries/useApiSystemInfoQuery";
 import { ISystemInfo } from "../../serverApi/ISystemInfo";
 import { envSettings } from "../../env/envSettings";
-import { GitHub } from "@mui/icons-material";
+import { GitHub, Help } from "@mui/icons-material";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
 import React, { useEffect, useState } from "react";
 import { FadeInContainer } from "../common/FadeInContainer";
 import { FormatDate } from "../common/FormatDate";
+import { useDialogContext } from "./dialogs/DialogContext";
+import { RegisteredActionsList } from "../common/actions/RegisteredActionsList";
 
 export const AppFooter: React.FC = () => {
   const apiSystemInfo = useApiSystemInfoQuery();
+  const { renderDialog } = useDialogContext();
 
   const [doRender, setDoRender] = useState(false);
 
@@ -40,6 +43,22 @@ export const AppFooter: React.FC = () => {
             <Element>{apiSystemInfo.usersCount} users</Element>
             <Element>{apiSystemInfo.journalsCount} journals</Element>
             <Element>{apiSystemInfo.entriesCount} entries</Element>
+            <Element>
+              <ActionIconButton
+                action={{
+                  key: "show-help",
+                  icon: <Help fontSize="small" />,
+                  label: "Show help",
+                  sx: { color: "white", display: "inline", padding: 0 },
+                  onClick: () => {
+                    renderDialog({
+                      title: "Help",
+                      render: () => <RegisteredActionsList />,
+                    });
+                  },
+                }}
+              />
+            </Element>
           </Column>
           <Column sx={{ textAlign: "right" }}>
             <Element
