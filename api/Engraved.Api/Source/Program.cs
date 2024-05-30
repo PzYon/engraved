@@ -23,10 +23,6 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-// <HackZone>
-var isSeeded = false;
-// </HackZone>
-
 bool isE2eTests = Environment.GetCommandLineArgs().Any(a => a == "e2e-tests");
 
 if (isE2eTests)
@@ -126,13 +122,7 @@ builder.Services.AddTransient<IBaseRepository>(
       return new MongoRepository(mongoDbClient);
     }
 
-    var userService = provider.GetService<ICurrentUserService>()!;
-
-    var inMemoryRepository = new InMemoryRepository();
-    IUserScopedRepository repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
-    SeedRepo(repo);
-
-    return inMemoryRepository;
+    return new InMemoryRepository();
   }
 );
 
@@ -153,15 +143,7 @@ builder.Services.AddTransient<IUserScopedRepository>(
       throw new Exception($"Cannot resolve {nameof(InMemoryRepository)}.");
     }
 
-    var repo = new UserScopedInMemoryRepository(inMemoryRepository, userService);
-
-    if (!isSeeded)
-    {
-      SeedRepo(repo);
-      isSeeded = true;
-    }
-
-    return repo;
+    return new UserScopedInMemoryRepository(inMemoryRepository, userService);
   }
 );
 
@@ -258,15 +240,6 @@ bool UseInMemoryRepo()
 string? GetMongoDbNameOverride()
 {
   return isE2eTests ? "engraved_e2e_tests" : null;
-}
-
-void SeedRepo(IUserScopedRepository repo)
-{
-  Task seed = new DemoDataRepositorySeeder(repo).Seed();
-  if (!seed.IsCompleted)
-  {
-    seed.Wait();
-  }
 }
 
 MongoRepositorySettings CreateRepositorySettings(WebApplicationBuilder webApplicationBuilder)
