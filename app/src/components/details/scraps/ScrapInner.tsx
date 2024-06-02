@@ -34,7 +34,10 @@ export const ScrapInner: React.FC = () => {
     >
       {isEditMode ? (
         <ParseableDate
-          onChange={setParsedDate}
+          onChange={(x) => {
+            setParsedDate(x);
+            setTitle(x.input);
+          }}
           onSelect={setParsedDate}
           textFieldProps={{
             fieldType: "title",
@@ -42,7 +45,6 @@ export const ScrapInner: React.FC = () => {
             variant: "outlined",
             value: title,
             disabled: !isEditMode,
-            onChange: (event) => setTitle(event.target.value),
             onFocus: () => setHasTitleFocus(true),
             onBlur: () => setHasTitleFocus(false),
             sx: { width: "100%" },

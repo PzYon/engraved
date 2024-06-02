@@ -17,13 +17,12 @@ export const ParseableDate: React.FC<{
 }> = ({ onChange, onSelect, sx, parseDateOnly, textFieldProps }) => {
   const id = useMemo(() => Math.random().toString(), []);
 
-  const [parsed, setParsed] = useState<IParsedDate>({});
+  const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
   const [parseError, setParseError] = useState("");
 
   return (
     <Host sx={sx}>
       <AutogrowTextField
-        // above is different
         autoFocus={true}
         id={id}
         sx={{ width: "100%" }}
@@ -47,6 +46,7 @@ export const ParseableDate: React.FC<{
         onChange={(e) => {
           try {
             const parsed = parseDate(e.target.value);
+            console.log(parsed);
             setParsed(parsed);
             setParseError("");
             onChange(parsed);

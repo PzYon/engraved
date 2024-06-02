@@ -18,7 +18,7 @@ export const EditScheduleAction: React.FC<{
   journal?: IJournal;
   entry?: IEntry;
 }> = ({ journal, entry }) => {
-  const [parsed, setParsed] = useState<IParsedDate>({});
+  const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
 
   const [isDirty, setIsDirty] = useState(false);
 
@@ -30,6 +30,7 @@ export const EditScheduleAction: React.FC<{
     getNextOccurrence().then((d) => {
       setParsed({
         date: d ? new Date(d) : null,
+        input: parsed.input,
       });
     });
 
@@ -80,7 +81,7 @@ export const EditScheduleAction: React.FC<{
         <DateSelector
           date={parsed.date}
           setDate={(d) => {
-            setParsed({ date: d });
+            setParsed({ date: d, input: parsed.text });
             setIsDirty(true);
           }}
           showTime={true}

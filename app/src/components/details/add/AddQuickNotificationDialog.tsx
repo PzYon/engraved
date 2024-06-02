@@ -20,7 +20,7 @@ export const AddQuickNotificationDialog: React.FC<{
 
   const { user } = useAppContext();
   const [journalId, setJournalId] = useState(storage.getJournalId() ?? "");
-  const [parsed, setParsed] = useState<IParsedDate>({});
+  const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
 
   const upsertEntryMutation = useUpsertEntryMutation(
     journalId,

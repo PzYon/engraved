@@ -1,6 +1,7 @@
 import * as chrono from "chrono-node";
 
 export interface IParsedDate {
+  input: string;
   recurrence?: IParsedRecurrence;
   date?: Date;
   text?: string;
@@ -14,7 +15,7 @@ const every = "every";
 
 export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
   if (!value) {
-    return {};
+    return { input: value };
   }
 
   const preparedValue = value
@@ -34,10 +35,11 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
   const parsedElement = parsed[0];
 
   if (!parsedElement?.date) {
-    return { text: value };
+    return { text: value, input: value };
   }
 
   const result: IParsedDate = {
+    input: value,
     date: parsedElement.date(),
     text: preparedValue
       .replace(parsedElement.text, "")
