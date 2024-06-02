@@ -73,7 +73,7 @@ export function getScheduleDefinition(
   journalId: string,
   entryId: string,
 ): IScheduleDefinition {
-  return parsedDate.date
+  return parsedDate?.date
     ? {
         nextOccurrence: parsedDate.date,
         recurrence: parsedDate.recurrence,
