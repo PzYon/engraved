@@ -18,7 +18,7 @@ test("add quick scrap", async ({ page }) => {
   const journalsPage = new JournalsPage(page);
 
   const quickScrapDialog = await journalsPage.clickAddQuickScrapAction();
-  await quickScrapDialog.typeName(scrapTitle);
+  await quickScrapDialog.typeTitle(scrapTitle);
   await quickScrapDialog.typeContent(scrapContent);
   await quickScrapDialog.clickSave();
 
