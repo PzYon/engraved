@@ -7,7 +7,10 @@ import { DateSelector } from "../../common/DateSelector";
 import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
 import { IParsedDate } from "./parseDate";
 import { IEntity } from "../../../serverApi/IEntity";
-import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
+import {
+  getScheduleDefinition,
+  getScheduleForUser,
+} from "../../overview/scheduled/scheduleUtils";
 import { IJournal } from "../../../serverApi/IJournal";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
@@ -45,7 +48,7 @@ export const EditScheduleAction: React.FC<{
 
       return getScheduleForUser(entity, user.id).nextOccurrence;
     }
-  }, [journal, entry, user]);
+  }, [journal, entry, user, parsed.input]);
 
   const [showFullForm, setShowFullForm] = useState(!!parsed.date);
 
@@ -101,11 +104,11 @@ export const EditScheduleAction: React.FC<{
   );
 
   function save() {
-    const scheduleDefinition: IScheduleDefinition = {
-      nextOccurrence: parsed.date,
-      recurrence: parsed.recurrence,
-      onClickUrl: `${location.origin}/journals/details/${journal?.id ?? entry?.parentId}/actions/notification-done/${entry?.id || ""}`,
-    };
+    const scheduleDefinition: IScheduleDefinition = getScheduleDefinition(
+      parsed,
+      journal?.id ?? entry?.parentId,
+      entry?.id || "",
+    );
 
     modifyScheduleMutation.mutate(scheduleDefinition);
 

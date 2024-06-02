@@ -12,6 +12,7 @@ import {
   ScrapContext,
 } from "./ScrapContext";
 import { IParsedDate } from "../edit/parseDate";
+import { getScheduleDefinition } from "../../overview/scheduled/scheduleUtils";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -188,21 +189,18 @@ export const ScrapContextProvider: React.FC<{
 
     await upsertEntryMutation.mutateAsync({
       command: {
-        id: currentScrap?.id,
+        id: currentScrap.id,
         scrapType: currentScrap.scrapType,
         notes: notesToSave,
         title: parsedDate?.text ?? title,
         journalAttributeValues: {},
         journalId: currentScrap.parentId,
         dateTime: new Date(),
-        schedule: parsedDate
-          ? {
-              nextOccurrence: parsedDate.date,
-              recurrence: parsedDate.recurrence,
-              // {0} will be replaced on server with actual entry ID
-              onClickUrl: `${location.origin}/journals/details/${currentScrap.parentId}/actions/notification-done/{0}`,
-            }
-          : undefined,
+        schedule: getScheduleDefinition(
+          parsedDate,
+          currentScrap.parentId,
+          currentScrap?.id ?? "{0}",
+        ),
       } as IUpsertScrapsEntryCommand,
     });
   }
