@@ -11,6 +11,7 @@ import {
   IScrapContext,
   ScrapContext,
 } from "./ScrapContext";
+import { IParsedDate } from "../edit/parseDate";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -35,6 +36,7 @@ export const ScrapContextProvider: React.FC<{
 
   const [notes, setNotes] = useState<string>(currentScrap.notes);
   const [title, setTitle] = useState<string>(currentScrap.title);
+  const [parsedDate, setParsedDate] = useState<IParsedDate>(undefined);
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
@@ -123,6 +125,8 @@ export const ScrapContextProvider: React.FC<{
         setTitle,
         notes,
         setNotes,
+        parsedDate,
+        setParsedDate,
         isEditMode,
         setIsEditMode,
         isDirty,

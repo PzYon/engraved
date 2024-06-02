@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
+import { IParsedDate } from "../edit/parseDate";
 
 export type ActionsRenderStyle = "save-only" | "none" | "all";
 
@@ -9,6 +10,8 @@ export interface IScrapContext {
   setTitle: (title: string) => void;
   notes: string;
   setNotes: (notes: string) => void;
+  parsedDate: IParsedDate;
+  setParsedDate: (parsedDate: IParsedDate) => void;
   isEditMode: boolean;
   setIsEditMode: (isEditMode: boolean) => void;
   isDirty: boolean;
@@ -30,6 +33,8 @@ export const ScrapContext = createContext<IScrapContext>({
   setTitle: null,
   notes: null,
   setNotes: null,
+  parsedDate: null,
+  setParsedDate: null,
   isEditMode: null,
   setIsEditMode: null,
   isDirty: null,

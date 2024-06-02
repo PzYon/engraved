@@ -1,18 +1,19 @@
 import React from "react";
 import { ScrapType } from "../../../serverApi/IScrapEntry";
-import { AutogrowTextField } from "../../common/AutogrowTextField";
 import { useScrapContext } from "./ScrapContext";
 import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 import { ScrapList } from "./list/ScrapList";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import { ISCrapListItem } from "./list/IScrapListItem";
 import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
+import { ParseableDate } from "../edit/ParseableDate";
 
 export const ScrapInner: React.FC = () => {
   const {
     isEditMode,
     setIsEditMode,
     title,
+    setParsedDate,
     notes,
     setTitle,
     scrapToRender,
@@ -32,16 +33,20 @@ export const ScrapInner: React.FC = () => {
       data-testid={"scrap-" + scrapToRender.id}
     >
       {isEditMode ? (
-        <AutogrowTextField
-          fieldType={"title"}
-          placeholder={"Title"}
-          variant="outlined"
-          value={title}
-          disabled={!isEditMode}
-          onChange={(event) => setTitle(event.target.value)}
-          onFocus={() => setHasTitleFocus(true)}
-          onBlur={() => setHasTitleFocus(false)}
-          sx={{ width: "100%" }}
+        <ParseableDate
+          onChange={setParsedDate}
+          onSelect={setParsedDate}
+          textFieldProps={{
+            fieldType: "title",
+            placeholder: "Title",
+            variant: "outlined",
+            value: title,
+            disabled: !isEditMode,
+            onChange: (event) => setTitle(event.target.value),
+            onFocus: () => setHasTitleFocus(true),
+            onBlur: () => setHasTitleFocus(false),
+            sx: { width: "100%" },
+          }}
         />
       ) : (
         <ReadonlyTitle
