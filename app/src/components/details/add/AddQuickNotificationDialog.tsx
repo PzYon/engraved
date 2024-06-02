@@ -47,7 +47,12 @@ export const AddQuickNotificationDialog: React.FC<{
         onChange={(journal) => setJournalId(journal.id)}
       />
 
-      <ParseableDate sx={{ pt: 2 }} onChange={setParsed} onSelect={save} />
+      <ParseableDate
+        sx={{ pt: 2 }}
+        onChange={setParsed}
+        onSelect={save}
+        textFieldProps={{ title: "What and when?", fieldType: "content" }}
+      />
 
       <ActionsContainer>
         <ActionIconButtonGroup
