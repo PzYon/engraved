@@ -46,7 +46,6 @@ export const ParseableDate: React.FC<{
         onChange={(e) => {
           try {
             const parsed = parseDate(e.target.value);
-            console.log(parsed);
             setParsed(parsed);
             setParseError("");
             onChange(parsed);

@@ -191,16 +191,18 @@ export const ScrapContextProvider: React.FC<{
         id: currentScrap?.id,
         scrapType: currentScrap.scrapType,
         notes: notesToSave,
-        title: parsedDate.text,
+        title: parsedDate?.text ?? title,
         journalAttributeValues: {},
         journalId: currentScrap.parentId,
         dateTime: new Date(),
-        schedule: {
-          nextOccurrence: parsedDate.date,
-          recurrence: parsedDate.recurrence,
-          // {0} will be replaced on server with actual entry ID
-          onClickUrl: `${location.origin}/journals/details/${currentScrap.parentId}/actions/notification-done/{0}`,
-        },
+        schedule: parsedDate
+          ? {
+              nextOccurrence: parsedDate.date,
+              recurrence: parsedDate.recurrence,
+              // {0} will be replaced on server with actual entry ID
+              onClickUrl: `${location.origin}/journals/details/${currentScrap.parentId}/actions/notification-done/{0}`,
+            }
+          : undefined,
       } as IUpsertScrapsEntryCommand,
     });
   }
