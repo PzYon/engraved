@@ -86,9 +86,6 @@ export const AppHeader: React.FC = () => {
             <ActionIconButton
               action={ActionFactory.addQuickScrap(user, renderDialog)}
             />
-            <ActionIconButton
-              action={ActionFactory.addNewNotification(renderDialog)}
-            />
             <VersionChecker />
             <Link to="/settings">
               <User user={user} />

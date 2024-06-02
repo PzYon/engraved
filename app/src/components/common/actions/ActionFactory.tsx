@@ -13,7 +13,6 @@ import {
   FormatLineSpacingOutlined,
   FunctionsOutlined,
   MessageOutlined,
-  NotificationAddOutlined,
   PanToolOutlined,
   PlaylistAdd,
   PlaylistAddOutlined,
@@ -37,7 +36,6 @@ import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
-import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -403,26 +401,13 @@ export class ActionFactory {
       key: "add-quick-scrap",
       icon: <PlaylistAddOutlined fontSize="small" />,
       label: "Add Quick Scrap",
-      sx: { color: "common.white" },
+      sx: { color: "common.white", mr: 1 },
       onClick: () =>
         renderAddScrapDialog(
           user.favoriteJournalIds[0],
           renderDialog,
           "Add Quick Scrap",
         ),
-    };
-  }
-
-  static addNewNotification(
-    renderDialog?: (dialogProps: IDialogProps) => void,
-  ): IAction {
-    return {
-      hotkey: "alt+n+q",
-      key: "add-notification",
-      icon: <NotificationAddOutlined fontSize="small" />,
-      label: "Add notification",
-      sx: { color: "common.white", mr: 1 },
-      onClick: () => renderAddNewNotificationDialog(renderDialog),
     };
   }
 
