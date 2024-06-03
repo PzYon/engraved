@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ScrapInner } from "./ScrapInner";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
@@ -22,6 +22,16 @@ export const Scrap: React.FC<{
   onSuccess,
   giveFocus,
 }) => {
+  const [doRender, setDoRender] = useState(hasFocus);
+
+  useEffect(() => {
+    setTimeout(() => setDoRender(true));
+  }, []);
+
+  if (!doRender) {
+    return false;
+  }
+
   return (
     <div id={currentScrap.id}>
       <ScrapContextProvider

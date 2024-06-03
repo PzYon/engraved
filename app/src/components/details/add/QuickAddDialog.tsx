@@ -9,15 +9,15 @@ import { UserRole } from "../../../serverApi/UserRole";
 import { useAppContext } from "../../../AppContext";
 import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
 
-export const AddQuickScrapDialog: React.FC<{
-  quickScrapJournalId: string;
+export const QuickAddDialog: React.FC<{
+  scrapJournalId: string;
   onSuccess?: () => void;
-}> = ({ quickScrapJournalId, onSuccess }) => {
+}> = ({ scrapJournalId, onSuccess }) => {
   const { user } = useAppContext();
 
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
 
-  const [journalId, setJournalId] = useState(quickScrapJournalId ?? "");
+  const [journalId, setJournalId] = useState(scrapJournalId ?? "");
 
   const scrap = ScrapsJournalType.createBlank(journalId, type);
 
