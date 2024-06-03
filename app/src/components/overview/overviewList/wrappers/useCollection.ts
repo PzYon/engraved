@@ -15,7 +15,7 @@ export function useCollection(deps: unknown[]) {
 
   useEffect(() => {
     collection.setFocusForId(itemId);
-  }, [collection]);
+  }, [collection, itemId]);
 
   useHotkeys("alt+up", () => {
     collection.moveFocusUp();
