@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 const scrapTitle = "Quick Scrap Title";
 const scrapContent = "This is my content...";
 
-test("add quick scrap", async ({ page }) => {
+test("Quick add", async ({ page }) => {
   await addNewJournal(page, "Scraps", "My Manual Quick Scraps");
 
   await navigateToHome(page);

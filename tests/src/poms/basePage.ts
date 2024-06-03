@@ -14,7 +14,7 @@ export abstract class BasePage {
   }
 
   async clickAddQuickScrapAction() {
-    await this.page.getByLabel("Add Quick Scrap").click();
+    await this.page.getByLabel("Quick Add").click();
     return new AddQuickScrapDialog(this.page);
   }
 
