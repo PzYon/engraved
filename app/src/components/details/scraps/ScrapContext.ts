@@ -24,6 +24,8 @@ export interface IScrapContext {
   onSuccess?: () => void;
   hasFocus: boolean;
   giveFocus?: () => void;
+  hasTitleFocus: boolean;
+  setHasTitleFocus: (value: boolean) => void;
 }
 
 export const ScrapContext = createContext<IScrapContext>({
@@ -45,6 +47,8 @@ export const ScrapContext = createContext<IScrapContext>({
   onSuccess: null,
   hasFocus: null,
   giveFocus: null,
+  hasTitleFocus: null,
+  setHasTitleFocus: null,
 });
 
 export const useScrapContext = () => {

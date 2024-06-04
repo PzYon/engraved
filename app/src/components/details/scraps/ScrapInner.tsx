@@ -17,6 +17,7 @@ export const ScrapInner: React.FC = () => {
     notes,
     setTitle,
     scrapToRender,
+    setHasTitleFocus,
     hasFocus,
   } = useScrapContext();
 
@@ -45,6 +46,8 @@ export const ScrapInner: React.FC = () => {
             variant: "outlined",
             value: title,
             disabled: !isEditMode,
+            onFocus: () => setHasTitleFocus(true),
+            onBlur: () => setHasTitleFocus(false),
             sx: { width: "100%" },
           }}
         />
