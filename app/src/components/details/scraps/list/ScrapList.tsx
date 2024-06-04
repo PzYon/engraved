@@ -29,14 +29,8 @@ import { ScrapBody } from "../ScrapBody";
 export const ScrapList: React.FC = () => {
   const { palette } = useTheme();
 
-  const {
-    notes,
-    setNotes,
-    isEditMode,
-    upsertScrap,
-    scrapToRender,
-    hasTitleFocus,
-  } = useScrapContext();
+  const { notes, setNotes, isEditMode, upsertScrap, scrapToRender } =
+    useScrapContext();
 
   const listItemCollection = useMemo(() => {
     const items: ISCrapListItem[] = notes ? JSON.parse(notes) : [];
@@ -59,9 +53,7 @@ export const ScrapList: React.FC = () => {
       <BodyHost
         key={isEditMode.toString()}
         style={
-          isEditMode && !hasTitleFocus
-            ? { outline: "2px solid " + palette.primary.main }
-            : {}
+          isEditMode ? { outline: "2px solid " + palette.primary.main } : {}
         }
       >
         <List>

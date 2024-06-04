@@ -40,7 +40,6 @@ export const ScrapContextProvider: React.FC<{
   const [parsedDate, setParsedDate] = useState<IParsedDate>(undefined);
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
-  const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialScrap = useMemo(() => currentScrap, []);
@@ -151,8 +150,6 @@ export const ScrapContextProvider: React.FC<{
         onSuccess,
         hasFocus,
         giveFocus,
-        hasTitleFocus,
-        setHasTitleFocus,
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,7 +165,6 @@ export const ScrapContextProvider: React.FC<{
       journalName,
       hasFocus,
       giveFocus,
-      hasTitleFocus,
     ],
   );
 
