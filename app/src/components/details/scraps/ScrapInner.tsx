@@ -33,6 +33,7 @@ export const ScrapInner: React.FC = () => {
     >
       {isEditMode ? (
         <ParseableDate
+          noOutput={true}
           onChange={(x) => {
             setParsedDate(x);
             setTitle(x.input);

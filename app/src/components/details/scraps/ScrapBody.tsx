@@ -6,7 +6,10 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useScrapContext } from "./ScrapContext";
 import { useAppContext } from "../../../AppContext";
-import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
+import {
+  getScheduleForUser,
+  getSchedulePropertyFromSchedule,
+} from "../../overview/scheduled/scheduleUtils";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 
 export const ScrapBody: React.FC<{
@@ -28,6 +31,7 @@ export const ScrapBody: React.FC<{
     journalName,
     hasFocus,
     giveFocus,
+    parsedDate,
   } = useScrapContext();
 
   const { isCompact } = useDisplayModeContext();
@@ -42,6 +46,16 @@ export const ScrapBody: React.FC<{
       propsRenderStyle={propsRenderStyle}
       journalName={journalName}
       giveFocus={giveFocus}
+      propertyOverrides={
+        parsedDate?.date
+          ? [
+              getSchedulePropertyFromSchedule({
+                nextOccurrence: parsedDate.date.toString(),
+                recurrence: parsedDate.recurrence,
+              }),
+            ]
+          : []
+      }
     >
       {isCompact && !hasFocus ? null : children}
     </Entry>

@@ -14,7 +14,8 @@ export const ParseableDate: React.FC<{
     fieldType: "title" | "content";
     forwardInputRef?: React.ForwardedRef<HTMLInputElement>;
   };
-}> = ({ onChange, onSelect, sx, parseDateOnly, textFieldProps }) => {
+  noOutput?: boolean;
+}> = ({ onChange, onSelect, sx, parseDateOnly, textFieldProps, noOutput }) => {
   const id = useMemo(() => Math.random().toString(), []);
 
   const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
@@ -56,7 +57,7 @@ export const ParseableDate: React.FC<{
         {...textFieldProps}
       />
 
-      {parseError || parsed?.date ? (
+      {(parseError || parsed?.date) && !noOutput ? (
         <OutputContainer>
           {parseError ? (
             <Typography sx={{ color: "error.main", pb: 1 }}>
