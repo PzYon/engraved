@@ -7,12 +7,21 @@ import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
+import { useDialogContext } from "../../../layout/dialogs/DialogContext";
 
 export const ScrapMarkdown: React.FC = () => {
   const { setAppAlert } = useAppContext();
+  const { renderDialog } = useDialogContext();
 
-  const { notes, setNotes, isEditMode, getCancelEditingFunction, upsertScrap } =
-    useScrapContext();
+  const {
+    notes,
+    setNotes,
+    isEditMode,
+    getCancelEditingFunction,
+    upsertScrap,
+    hasFocus,
+    isDirty,
+  } = useScrapContext();
 
   return (
     <ScrapBody
@@ -24,6 +33,8 @@ export const ScrapMarkdown: React.FC = () => {
 
   function getContent() {
     if (isEditMode) {
+      const cancelEditing = getCancelEditingFunction();
+
       return (
         <EditorContainer>
           <MarkdownEditor
@@ -32,7 +43,14 @@ export const ScrapMarkdown: React.FC = () => {
             onChange={setNotes}
             keyMappings={{
               "Alt-s": upsertScrap,
-              "Alt-x": getCancelEditingFunction(),
+              "Alt-x": cancelEditing
+                ? ActionFactory.cancelEditing(
+                    cancelEditing,
+                    hasFocus,
+                    isDirty,
+                    renderDialog,
+                  ).onClick
+                : undefined,
             }}
           />
         </EditorContainer>
