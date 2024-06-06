@@ -13,6 +13,8 @@ import {
 } from "./ScrapContext";
 import { IParsedDate } from "../edit/parseDate";
 import { getScheduleDefinition } from "../../overview/scheduled/scheduleUtils";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { useDialogContext } from "../../layout/dialogs/DialogContext";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -34,6 +36,7 @@ export const ScrapContextProvider: React.FC<{
   giveFocus,
 }) => {
   const { setAppAlert } = useAppContext();
+  const { renderDialog } = useDialogContext();
 
   const [notes, setNotes] = useState<string>(currentScrap.notes);
   const [title, setTitle] = useState<string>(currentScrap.title);
@@ -131,18 +134,19 @@ export const ScrapContextProvider: React.FC<{
         isEditMode,
         setIsEditMode,
         isDirty,
-        getCancelEditingFunction: () => {
-          if (!isEditMode) {
-            return null;
-          }
-
-          return () => {
-            setScrapToRender(initialScrap);
-            setTitle(initialScrap.title);
-            setNotes(initialScrap.notes);
-            setIsEditMode(false);
-          };
-        },
+        cancelEditingAction: !isEditMode
+          ? null
+          : ActionFactory.cancelEditing(
+              () => {
+                setScrapToRender(initialScrap);
+                setTitle(initialScrap.title);
+                setNotes(initialScrap.notes);
+                setIsEditMode(false);
+              },
+              hasFocus,
+              isDirty,
+              renderDialog,
+            ),
         upsertScrap,
         scrapToRender,
         propsRenderStyle,

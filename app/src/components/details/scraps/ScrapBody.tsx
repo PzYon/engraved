@@ -3,7 +3,6 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
 import { Entry } from "../../common/entries/Entry";
 import { JournalType } from "../../../serverApi/JournalType";
-import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useScrapContext } from "./ScrapContext";
 import { useAppContext } from "../../../AppContext";
 import {
@@ -16,14 +15,12 @@ export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
 }> = ({ children, actions }) => {
-  const { renderDialog } = useDialogContext();
   const { user } = useAppContext();
 
   const {
     isEditMode,
     setIsEditMode,
-    isDirty,
-    getCancelEditingFunction,
+    cancelEditingAction,
     upsertScrap,
     scrapToRender,
     propsRenderStyle,
@@ -93,17 +90,8 @@ export const ScrapBody: React.FC<{
 
     allActions.push(saveAction);
 
-    const cancelEditing = getCancelEditingFunction();
-
-    if (cancelEditing) {
-      allActions.push(
-        ActionFactory.cancelEditing(
-          cancelEditing,
-          hasFocus,
-          isDirty,
-          renderDialog,
-        ),
-      );
+    if (cancelEditingAction) {
+      allActions.push(cancelEditingAction);
     }
 
     if (scrapToRender.id) {
