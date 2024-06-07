@@ -40,8 +40,8 @@ export const ScrapInner: React.FC = () => {
             setTitle(x.input);
           }}
           onSelect={setParsedDate}
+          isTitle={true}
           textFieldProps={{
-            fieldType: "title",
             placeholder: "Title",
             variant: "outlined",
             value: title,

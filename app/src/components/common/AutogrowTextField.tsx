@@ -3,16 +3,15 @@ import { styled, TextField, TextFieldProps } from "@mui/material";
 
 export const AutogrowTextField: React.FC<
   TextFieldProps & {
-    fieldType: "title" | "content";
+    isContent?: boolean;
     forwardInputRef?: React.ForwardedRef<HTMLInputElement>;
   }
 > = (props) => {
-  const TF =
-    props.fieldType === "title" ? StyledTitleTextField : StyledTextField;
+  const TF = props.isContent ? StyledTextField : StyledTitleTextField;
 
-  // forget fieldType and forwardInputRef
+  // forget isContent and forwardInputRef
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { fieldType: _, forwardInputRef: __, ...realProps } = props;
+  const { isContent: _, forwardInputRef: __, ...realProps } = props;
 
   return (
     <TF

@@ -1,4 +1,10 @@
-import { styled, SxProps, TextFieldProps, Typography } from "@mui/material";
+import {
+  styled,
+  SxProps,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
@@ -10,20 +16,28 @@ export const ParseableDate: React.FC<{
   onSelect: (parsedDate: IParsedDate) => void;
   sx?: SxProps;
   parseDateOnly?: boolean;
-  textFieldProps?: TextFieldProps & {
-    fieldType: "title" | "content";
-    forwardInputRef?: React.ForwardedRef<HTMLInputElement>;
-  };
+  isTitle?: boolean;
+  textFieldProps?: TextFieldProps;
   noOutput?: boolean;
-}> = ({ onChange, onSelect, sx, parseDateOnly, textFieldProps, noOutput }) => {
+}> = ({
+  onChange,
+  onSelect,
+  sx,
+  parseDateOnly,
+  textFieldProps,
+  isTitle,
+  noOutput,
+}) => {
   const id = useMemo(() => Math.random().toString(), []);
 
   const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
   const [parseError, setParseError] = useState("");
 
+  const TextFieldComponent = isTitle ? AutogrowTextField : TextField;
+
   return (
     <Host sx={sx}>
-      <AutogrowTextField
+      <TextFieldComponent
         autoFocus={true}
         id={id}
         sx={{ width: "100%" }}
