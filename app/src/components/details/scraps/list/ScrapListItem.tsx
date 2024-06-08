@@ -57,7 +57,7 @@ export const ScrapListItem: React.FC<{
         <>
           <AutogrowTextField
             forwardInputRef={ref}
-            fieldType="content"
+            isContent={true}
             value={label}
             onChange={(event) => setLabel(event.target.value)}
             onKeyUp={keyUp}

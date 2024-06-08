@@ -12,6 +12,7 @@ import { useAppContext } from "../../../AppContext";
 import { styled } from "@mui/material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { EntrySubRoutes } from "./EntrySubRoutes";
+import { IPropertyDefinition } from "../IPropertyDefinition";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -25,6 +26,7 @@ export const Entry: React.FC<{
   propsRenderStyle: EntryPropsRenderStyle;
   hasFocus: boolean;
   giveFocus?: () => void;
+  propertyOverrides?: IPropertyDefinition[];
 }> = ({
   journalType,
   journalId,
@@ -35,6 +37,7 @@ export const Entry: React.FC<{
   propsRenderStyle,
   hasFocus,
   giveFocus,
+  propertyOverrides,
 }) => {
   const { user } = useAppContext();
 
@@ -50,6 +53,7 @@ export const Entry: React.FC<{
           entry,
           propsRenderStyle,
           user.id,
+          propertyOverrides,
         )}
         actions={actions}
       />
@@ -65,6 +69,7 @@ function getEntryProperties(
   entry: IEntry,
   propsRenderStyle: EntryPropsRenderStyle,
   userId: string,
+  propertyOverrides: IPropertyDefinition[],
 ) {
   return [
     {
@@ -90,7 +95,23 @@ function getEntryProperties(
       hideWhen: () => propsRenderStyle === "none",
     },
     getScheduleProperty(entry, userId),
-  ];
+  ].reduce(
+    (
+      previousValue: IPropertyDefinition[],
+      currentValue: IPropertyDefinition,
+    ) => {
+      const overrideIndex = propertyOverrides?.findIndex(
+        (o) => o.key === currentValue.key,
+      );
+
+      previousValue.push(
+        overrideIndex > -1 ? propertyOverrides[overrideIndex] : currentValue,
+      );
+
+      return previousValue;
+    },
+    [],
+  );
 }
 
 export const NavigationActionContainer: React.FC<{

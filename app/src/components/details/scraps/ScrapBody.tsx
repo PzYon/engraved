@@ -3,24 +3,24 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
 import { Entry } from "../../common/entries/Entry";
 import { JournalType } from "../../../serverApi/JournalType";
-import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { useScrapContext } from "./ScrapContext";
 import { useAppContext } from "../../../AppContext";
-import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
+import {
+  getScheduleForUser,
+  getSchedulePropertyFromSchedule,
+} from "../../overview/scheduled/scheduleUtils";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
 }> = ({ children, actions }) => {
-  const { renderDialog } = useDialogContext();
   const { user } = useAppContext();
 
   const {
     isEditMode,
     setIsEditMode,
-    isDirty,
-    getCancelEditingFunction,
+    cancelEditingAction,
     upsertScrap,
     scrapToRender,
     propsRenderStyle,
@@ -28,6 +28,7 @@ export const ScrapBody: React.FC<{
     journalName,
     hasFocus,
     giveFocus,
+    parsedDate,
   } = useScrapContext();
 
   const { isCompact } = useDisplayModeContext();
@@ -42,6 +43,16 @@ export const ScrapBody: React.FC<{
       propsRenderStyle={propsRenderStyle}
       journalName={journalName}
       giveFocus={giveFocus}
+      propertyOverrides={
+        parsedDate?.date
+          ? [
+              getSchedulePropertyFromSchedule({
+                nextOccurrence: parsedDate.date.toString(),
+                recurrence: parsedDate.recurrence,
+              }),
+            ]
+          : []
+      }
     >
       {isCompact && !hasFocus ? null : children}
     </Entry>
@@ -79,17 +90,8 @@ export const ScrapBody: React.FC<{
 
     allActions.push(saveAction);
 
-    const cancelEditing = getCancelEditingFunction();
-
-    if (cancelEditing) {
-      allActions.push(
-        ActionFactory.cancelEditing(
-          cancelEditing,
-          hasFocus,
-          isDirty,
-          renderDialog,
-        ),
-      );
+    if (cancelEditingAction) {
+      allActions.push(cancelEditingAction);
     }
 
     if (scrapToRender.id) {

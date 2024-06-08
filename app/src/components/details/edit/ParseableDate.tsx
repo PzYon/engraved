@@ -1,24 +1,43 @@
-import { styled, SxProps, TextField, Typography } from "@mui/material";
+import {
+  styled,
+  SxProps,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
+import { AutogrowTextField } from "../../common/AutogrowTextField";
 
 export const ParseableDate: React.FC<{
   onChange: (parsedDate: IParsedDate) => void;
   onSelect: (parsedDate: IParsedDate) => void;
-  sx: SxProps;
+  sx?: SxProps;
   parseDateOnly?: boolean;
-}> = ({ onChange, onSelect, sx, parseDateOnly }) => {
+  isTitle?: boolean;
+  textFieldProps?: TextFieldProps;
+  noOutput?: boolean;
+}> = ({
+  onChange,
+  onSelect,
+  sx,
+  parseDateOnly,
+  textFieldProps,
+  isTitle,
+  noOutput,
+}) => {
   const id = useMemo(() => Math.random().toString(), []);
 
-  const [parsed, setParsed] = useState<IParsedDate>({});
+  const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
   const [parseError, setParseError] = useState("");
+
+  const TextFieldComponent = isTitle ? AutogrowTextField : TextField;
 
   return (
     <Host sx={sx}>
-      <TextField
-        label={parseDateOnly ? "When?" : "What and when?"}
+      <TextFieldComponent
         autoFocus={true}
         id={id}
         sx={{ width: "100%" }}
@@ -49,8 +68,10 @@ export const ParseableDate: React.FC<{
             setParseError((e as Error).message);
           }
         }}
+        {...textFieldProps}
       />
-      {parseError || parsed?.date ? (
+
+      {(parseError || parsed?.date) && !noOutput ? (
         <OutputContainer>
           {parseError ? (
             <Typography sx={{ color: "error.main", pb: 1 }}>

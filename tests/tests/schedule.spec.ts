@@ -14,10 +14,10 @@ test.beforeEach(async ({ page }) => {
 test("add schedule to entry and mark as done", async ({ page }) => {
   const journalPage = await addNewJournal(page, "Scraps", "My Journal");
 
-  const quickNotificationDialog = await journalPage.clickAddQuickNotification();
+  const quickNotificationDialog = await journalPage.clickAddQuickScrapAction();
 
   await quickNotificationDialog.selectJournal("My Journal");
-  await quickNotificationDialog.type("Do Stuff tom at 17:30");
+  await quickNotificationDialog.typeTitle("Do Stuff tom at 17:30");
   const entityId = await quickNotificationDialog.clickSave();
 
   await navigateToHome(page);

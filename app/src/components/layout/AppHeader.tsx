@@ -84,10 +84,7 @@ export const AppHeader: React.FC = () => {
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
             <FavoritesFlyout />
             <ActionIconButton
-              action={ActionFactory.addQuickScrap(user, renderDialog)}
-            />
-            <ActionIconButton
-              action={ActionFactory.addNewNotification(renderDialog)}
+              action={ActionFactory.quickAdd(user, renderDialog)}
             />
             <VersionChecker />
             <Link to="/settings">

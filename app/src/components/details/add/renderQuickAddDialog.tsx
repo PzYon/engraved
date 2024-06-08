@@ -1,7 +1,7 @@
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
-import { AddQuickScrapDialog } from "./AddQuickScrapDialog";
+import { QuickAddDialog } from "./QuickAddDialog";
 
-export const renderAddScrapDialog = (
+export const renderQuickAddDialog = (
   selectedJournalId: string,
   renderDialog: (dialogProps: IDialogProps) => void,
   title: string,
@@ -9,9 +9,9 @@ export const renderAddScrapDialog = (
   renderDialog({
     title: title,
     render: (closeDialog) => (
-      <AddQuickScrapDialog
+      <QuickAddDialog
         onSuccess={closeDialog}
-        quickScrapJournalId={selectedJournalId}
+        targetJournalId={selectedJournalId}
       />
     ),
   });

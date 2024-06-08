@@ -5,6 +5,8 @@ import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
 import { ReplayOutlined } from "@mui/icons-material";
 import { addDays, isAfter, isSameDay } from "date-fns";
+import { IParsedDate } from "../../details/edit/parseDate";
+import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
 
 export function getScheduleForUser(entity: IEntity, userId: string): ISchedule {
   return entity.schedules?.[userId] ?? {};
@@ -64,4 +66,19 @@ export function getSchedulePropertyFromSchedule(
       return "transparent";
     },
   };
+}
+
+export function getScheduleDefinition(
+  parsedDate: IParsedDate,
+  journalId: string,
+  entryId: string,
+): IScheduleDefinition {
+  return parsedDate?.date
+    ? {
+        nextOccurrence: parsedDate.date,
+        recurrence: parsedDate.recurrence,
+        // {0} will be replaced on server with actual entry ID
+        onClickUrl: `${location.origin}/journals/details/${journalId}/actions/notification-done/${entryId}`,
+      }
+    : undefined;
 }

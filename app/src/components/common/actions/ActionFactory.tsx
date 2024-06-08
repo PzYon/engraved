@@ -13,7 +13,6 @@ import {
   FormatLineSpacingOutlined,
   FunctionsOutlined,
   MessageOutlined,
-  NotificationAddOutlined,
   PanToolOutlined,
   PlaylistAdd,
   PlaylistAddOutlined,
@@ -32,12 +31,11 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IAppAlert } from "../../errorHandling/AppAlertBar";
 import { IUser } from "../../../serverApi/IUser";
-import { renderAddScrapDialog } from "../../details/add/renderAddScrapDialog";
+import { renderQuickAddDialog } from "../../details/add/renderQuickAddDialog";
 import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
-import { renderAddNewNotificationDialog } from "../../details/add/renderAddNewNotificationDialog";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -394,35 +392,22 @@ export class ActionFactory {
     };
   }
 
-  static addQuickScrap(
+  static quickAdd(
     user: IUser,
     renderDialog?: (dialogProps: IDialogProps) => void,
   ): IAction {
     return {
       hotkey: "alt+q",
-      key: "add-quick-scrap",
+      key: "quick-add",
       icon: <PlaylistAddOutlined fontSize="small" />,
-      label: "Add Quick Scrap",
-      sx: { color: "common.white" },
+      label: "Quick Add",
+      sx: { color: "common.white", mr: 1 },
       onClick: () =>
-        renderAddScrapDialog(
+        renderQuickAddDialog(
           user.favoriteJournalIds[0],
           renderDialog,
-          "Add Quick Scrap",
+          "Quick Add",
         ),
-    };
-  }
-
-  static addNewNotification(
-    renderDialog?: (dialogProps: IDialogProps) => void,
-  ): IAction {
-    return {
-      hotkey: "alt+n+q",
-      key: "add-notification",
-      icon: <NotificationAddOutlined fontSize="small" />,
-      label: "Add notification",
-      sx: { color: "common.white", mr: 1 },
-      onClick: () => renderAddNewNotificationDialog(renderDialog),
     };
   }
 

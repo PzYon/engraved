@@ -11,6 +11,10 @@ import {
   IScrapContext,
   ScrapContext,
 } from "./ScrapContext";
+import { IParsedDate } from "../edit/parseDate";
+import { getScheduleDefinition } from "../../overview/scheduled/scheduleUtils";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { useDialogContext } from "../../layout/dialogs/DialogContext";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -32,9 +36,11 @@ export const ScrapContextProvider: React.FC<{
   giveFocus,
 }) => {
   const { setAppAlert } = useAppContext();
+  const { renderDialog } = useDialogContext();
 
   const [notes, setNotes] = useState<string>(currentScrap.notes);
   const [title, setTitle] = useState<string>(currentScrap.title);
+  const [parsedDate, setParsedDate] = useState<IParsedDate>(undefined);
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
@@ -123,21 +129,24 @@ export const ScrapContextProvider: React.FC<{
         setTitle,
         notes,
         setNotes,
+        parsedDate,
+        setParsedDate,
         isEditMode,
         setIsEditMode,
         isDirty,
-        getCancelEditingFunction: () => {
-          if (!isEditMode) {
-            return null;
-          }
-
-          return () => {
-            setScrapToRender(initialScrap);
-            setTitle(initialScrap.title);
-            setNotes(initialScrap.notes);
-            setIsEditMode(false);
-          };
-        },
+        cancelEditingAction: !isEditMode
+          ? null
+          : ActionFactory.cancelEditing(
+              () => {
+                setScrapToRender(initialScrap);
+                setTitle(initialScrap.title);
+                setNotes(initialScrap.notes);
+                setIsEditMode(false);
+              },
+              hasFocus,
+              isDirty,
+              renderDialog,
+            ),
         upsertScrap,
         scrapToRender,
         propsRenderStyle,
@@ -184,13 +193,18 @@ export const ScrapContextProvider: React.FC<{
 
     await upsertEntryMutation.mutateAsync({
       command: {
-        id: currentScrap?.id,
+        id: currentScrap.id,
         scrapType: currentScrap.scrapType,
         notes: notesToSave,
-        title: title,
+        title: parsedDate?.text ?? title,
         journalAttributeValues: {},
         journalId: currentScrap.parentId,
         dateTime: new Date(),
+        schedule: getScheduleDefinition(
+          parsedDate,
+          currentScrap.parentId,
+          currentScrap?.id ?? "{0}",
+        ),
       } as IUpsertScrapsEntryCommand,
     });
   }

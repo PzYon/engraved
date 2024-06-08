@@ -1,6 +1,5 @@
 import { expect, Page } from "@playwright/test";
 import { clickPageAction } from "../utils/clickPageAction";
-import { AddQuickNotificationDialog } from "./addQuickNotificationDialog";
 import { AddQuickScrapDialog } from "./addQuickScrapDialog";
 
 export abstract class BasePage {
@@ -15,13 +14,8 @@ export abstract class BasePage {
   }
 
   async clickAddQuickScrapAction() {
-    await this.page.getByLabel("Add Quick Scrap").click();
+    await this.page.getByLabel("Quick Add").click();
     return new AddQuickScrapDialog(this.page);
-  }
-
-  async clickAddQuickNotification() {
-    await this.page.getByRole("button", { name: "Add notification" }).click();
-    return new AddQuickNotificationDialog(this.page);
   }
 
   async scrollToBottom() {

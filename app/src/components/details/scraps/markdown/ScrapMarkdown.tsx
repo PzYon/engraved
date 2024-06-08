@@ -11,7 +11,7 @@ import { useScrapContext } from "../ScrapContext";
 export const ScrapMarkdown: React.FC = () => {
   const { setAppAlert } = useAppContext();
 
-  const { notes, setNotes, isEditMode, getCancelEditingFunction, upsertScrap } =
+  const { notes, setNotes, isEditMode, cancelEditingAction, upsertScrap } =
     useScrapContext();
 
   return (
@@ -32,7 +32,7 @@ export const ScrapMarkdown: React.FC = () => {
             onChange={setNotes}
             keyMappings={{
               "Alt-s": upsertScrap,
-              "Alt-x": getCancelEditingFunction(),
+              "Alt-x": cancelEditingAction?.onClick,
             }}
           />
         </EditorContainer>
