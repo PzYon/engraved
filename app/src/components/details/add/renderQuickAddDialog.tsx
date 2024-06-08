@@ -11,7 +11,7 @@ export const renderQuickAddDialog = (
     render: (closeDialog) => (
       <QuickAddDialog
         onSuccess={closeDialog}
-        scrapJournalId={selectedJournalId}
+        targetJournalId={selectedJournalId}
       />
     ),
   });
