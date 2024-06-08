@@ -100,7 +100,7 @@ function getEntryProperties(
       previousValue: IPropertyDefinition[],
       currentValue: IPropertyDefinition,
     ) => {
-      const overrideIndex = propertyOverrides.findIndex(
+      const overrideIndex = propertyOverrides?.findIndex(
         (o) => o.key === currentValue.key,
       );
 
