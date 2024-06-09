@@ -1,15 +1,20 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { PageTitle } from "../layout/pages/PageTitle";
-import { JournalTypeIcon } from "../common/JournalTypeIcon";
 import { IconStyle } from "../common/IconStyle";
-import EmojiPicker, { Emoji, EmojiStyle } from "emoji-picker-react";
-import { Popover } from "@mui/material";
+import { useEditJournalMutation } from "../../serverApi/reactQuery/mutations/useEditJournalMutation";
+import { getUiSettings } from "../../util/journalUtils";
+import {
+  EmojiPickerWrapper,
+  JournalIconWrapper,
+} from "../overview/journals/Emoji";
 
 export const JournalPageTitle: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
-  const [emoji, setEmoji] = useState<string>(undefined);
+  const [, setEmoji] = useState<string>(getUiSettings(journal).emoji?.unified);
+
+  const editJournalMutation = useEditJournalMutation(journal.id);
 
   if (!journal) {
     return null;
@@ -19,63 +24,34 @@ export const JournalPageTitle: React.FC<{
     <PageTitle
       icon={
         <EmojiPickerWrapper
-          onEmojiClick={setEmoji}
+          onEmojiClick={(e) => {
+            const uiSettings = getUiSettings(journal);
+            if (!uiSettings.emoji) {
+              uiSettings.emoji = {
+                unified: e,
+              };
+            } else {
+              uiSettings.emoji.unified = e;
+            }
+
+            const updatedJournal = { ...journal };
+            journal.customProps.uiSettings = JSON.stringify(uiSettings);
+
+            editJournalMutation.mutate({
+              journal: updatedJournal,
+            });
+
+            setEmoji(e);
+          }}
           opener={
-            emoji ? (
-              <Emoji unified={emoji} size={25} emojiStyle={EmojiStyle.NATIVE} />
-            ) : (
-              <JournalTypeIcon
-                type={journal?.type}
-                style={IconStyle.PageTitle}
-              />
-            )
+            <JournalIconWrapper
+              journal={journal}
+              iconStyle={IconStyle.PageTitle}
+            />
           }
         />
       }
       title={journal?.name}
     />
-  );
-};
-
-export const EmojiPickerWrapper: React.FC<{
-  onEmojiClick: (emoji: string) => void;
-  opener: React.ReactElement;
-}> = ({ onEmojiClick, opener }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLElement>();
-
-  return (
-    <>
-      <span
-        onClick={() => setIsOpen(!isOpen)}
-        style={{ cursor: "pointer" }}
-        ref={ref}
-      >
-        {opener}
-      </span>
-      <Popover
-        open={isOpen}
-        anchorEl={ref.current}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        <EmojiPicker
-          emojiStyle={EmojiStyle.NATIVE}
-          onEmojiClick={(e) => {
-            onEmojiClick(e.unified);
-            setIsOpen(false);
-          }}
-          previewConfig={{
-            showPreview: false,
-          }}
-          skinTonesDisabled={true}
-          style={{
-            fontFamily: "Karla", // engravedTheme.typography.fontFamily,
-          }}
-        />
-      </Popover>
-    </>
   );
 };
