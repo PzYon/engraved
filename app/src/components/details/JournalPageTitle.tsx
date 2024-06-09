@@ -4,15 +4,15 @@ import { PageTitle } from "../layout/pages/PageTitle";
 import { IconStyle } from "../common/IconStyle";
 import { useEditJournalMutation } from "../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { getUiSettings } from "../../util/journalUtils";
-import {
-  EmojiPickerWrapper,
-  JournalIconWrapper,
-} from "../overview/journals/Emoji";
+import { EmojiPickerWrapper } from "../common/Emoji";
+import { JournalIconWrapper } from "../overview/journals/JournalIconWrapper";
 
 export const JournalPageTitle: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
-  const [, setEmoji] = useState<string>(getUiSettings(journal).emoji?.unified);
+  const uiSettings = getUiSettings(journal);
+
+  const [, setEmoji] = useState<string>(uiSettings.emoji?.unified);
 
   const editJournalMutation = useEditJournalMutation(journal.id);
 
@@ -25,21 +25,12 @@ export const JournalPageTitle: React.FC<{
       icon={
         <EmojiPickerWrapper
           onEmojiClick={(e) => {
-            const uiSettings = getUiSettings(journal);
-            if (!uiSettings.emoji) {
-              uiSettings.emoji = {
-                unified: e,
-              };
-            } else {
-              uiSettings.emoji.unified = e;
-            }
-
             const updatedJournal = { ...journal };
-            journal.customProps.uiSettings = JSON.stringify(uiSettings);
 
-            editJournalMutation.mutate({
-              journal: updatedJournal,
-            });
+            uiSettings.emoji = { unified: e };
+            updatedJournal.customProps.uiSettings = JSON.stringify(uiSettings);
+
+            editJournalMutation.mutate({ journal: updatedJournal });
 
             setEmoji(e);
           }}

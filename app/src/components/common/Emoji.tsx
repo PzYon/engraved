@@ -1,25 +1,8 @@
-import { IJournal } from "../../../serverApi/IJournal";
-import { IconStyle } from "../../common/IconStyle";
-import { getUiSettings } from "../../../util/journalUtils";
-import { JournalTypeIcon } from "../../common/JournalTypeIcon";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import EmojiPicker, { Emoji, EmojiStyle } from "emoji-picker-react";
 import { Popover } from "@mui/material";
 
 const emojiStyle = EmojiStyle.NATIVE;
-
-export const JournalIconWrapper: React.FC<{
-  journal: IJournal;
-  iconStyle: IconStyle;
-}> = ({ journal, iconStyle }) => {
-  const emoji = getUiSettings(journal).emoji?.unified;
-
-  return emoji ? (
-    <Emoji unified={emoji} size={25} emojiStyle={emojiStyle} />
-  ) : (
-    <JournalTypeIcon type={journal.type} style={iconStyle} />
-  );
-};
 
 export const EmojiPickerWrapper: React.FC<{
   onEmojiClick: (emoji: string) => void;
@@ -40,6 +23,7 @@ export const EmojiPickerWrapper: React.FC<{
       <Popover
         open={isOpen}
         anchorEl={ref.current}
+        onClose={() => setIsOpen(false)}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left",
@@ -62,4 +46,8 @@ export const EmojiPickerWrapper: React.FC<{
       </Popover>
     </>
   );
+};
+
+export const EmojiWrapper: React.FC<{ emoji: string }> = ({ emoji }) => {
+  return <Emoji unified={emoji} size={25} emojiStyle={emojiStyle} />;
 };

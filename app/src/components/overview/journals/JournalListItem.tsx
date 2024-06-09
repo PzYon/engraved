@@ -9,7 +9,8 @@ import { useAppContext } from "../../../AppContext";
 import { JournalSubRoutes } from "./JournalSubRoutes";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IconStyle } from "../../common/IconStyle";
-import { JournalIconWrapper } from "./Emoji";
+
+import { JournalIconWrapper } from "./JournalIconWrapper";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
