@@ -5,7 +5,7 @@ import { IconStyle } from "../common/IconStyle";
 import { useEditJournalMutation } from "../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { getUiSettings } from "../../util/journalUtils";
 import { EmojiPickerWrapper } from "../common/Emoji";
-import { JournalIconWrapper } from "../overview/journals/JournalIconWrapper";
+import { JournalIcon } from "../overview/journals/JournalIcon";
 
 export const JournalPageTitle: React.FC<{
   journal: IJournal;
@@ -34,9 +34,7 @@ export const JournalPageTitle: React.FC<{
 
             setEmoji(e);
           }}
-          opener={
-            <JournalIconWrapper journal={journal} iconStyle={IconStyle.Large} />
-          }
+          opener={<JournalIcon journal={journal} iconStyle={IconStyle.Large} />}
         />
       }
       title={journal?.name}

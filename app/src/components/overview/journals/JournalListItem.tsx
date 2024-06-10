@@ -9,8 +9,7 @@ import { useAppContext } from "../../../AppContext";
 import { JournalSubRoutes } from "./JournalSubRoutes";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IconStyle } from "../../common/IconStyle";
-
-import { JournalIconWrapper } from "./JournalIconWrapper";
+import { JournalIcon } from "./JournalIcon";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -35,10 +34,7 @@ export const JournalListItem: React.FC<{
         >
           <TitleRow>
             <IconContainer>
-              <JournalIconWrapper
-                journal={journal}
-                iconStyle={IconStyle.Small}
-              />
+              <JournalIcon journal={journal} iconStyle={IconStyle.Small} />
             </IconContainer>
             <ReadonlyTitle
               entity={journal}

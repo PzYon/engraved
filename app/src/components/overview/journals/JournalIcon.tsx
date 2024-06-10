@@ -5,7 +5,7 @@ import { getUiSettings } from "../../../util/journalUtils";
 import { JournalTypeIcon } from "../../common/JournalTypeIcon";
 import { EmojiWrapper } from "../../common/Emoji";
 
-export const JournalIconWrapper: React.FC<{
+export const JournalIcon: React.FC<{
   journal: IJournal;
   iconStyle: IconStyle;
 }> = ({ journal, iconStyle }) => {

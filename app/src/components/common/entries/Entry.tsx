@@ -12,7 +12,7 @@ import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { EntrySubRoutes } from "./EntrySubRoutes";
 import { IPropertyDefinition } from "../IPropertyDefinition";
 import { IJournal } from "../../../serverApi/IJournal";
-import { JournalIconWrapper } from "../../overview/journals/JournalIconWrapper";
+import { JournalIcon } from "../../overview/journals/JournalIcon";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -66,9 +66,7 @@ function getEntryProperties(
   return [
     {
       key: "journal-type",
-      node: () => (
-        <JournalIconWrapper journal={journal} iconStyle={IconStyle.Small} />
-      ),
+      node: () => <JournalIcon journal={journal} iconStyle={IconStyle.Small} />,
       label: "",
       hideWhen: () => propsRenderStyle !== "all",
     },

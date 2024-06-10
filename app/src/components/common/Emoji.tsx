@@ -40,9 +40,6 @@ export const EmojiPickerWrapper: React.FC<{
             showPreview: false,
           }}
           skinTonesDisabled={true}
-          style={{
-            fontFamily: "Karla", // engravedTheme.typography.fontFamily,
-          }}
         />
       </Popover>
     </>
@@ -59,7 +56,7 @@ export const EmojiWrapper: React.FC<{
     >
       <Emoji
         unified={emoji}
-        size={style === IconStyle.Large ? 23 : 20}
+        size={style === IconStyle.Large ? 24 : 20}
         emojiStyle={emojiStyle}
       />
     </span>
