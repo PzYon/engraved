@@ -69,7 +69,7 @@
     ]
   },
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "5.35.6",
+    "@tanstack/eslint-plugin-query": "5.43.1",
     "@types/jest": "29.5.12",
     "@types/markdown-it": "14.1.1",
     "@typescript-eslint/eslint-plugin": "7.12.0",
