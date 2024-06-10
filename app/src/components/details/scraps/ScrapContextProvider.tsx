@@ -15,22 +15,23 @@ import { IParsedDate } from "../edit/parseDate";
 import { getScheduleDefinition } from "../../overview/scheduled/scheduleUtils";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
+import { IJournal } from "../../../serverApi/IJournal";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
-  journalName: string;
-  hasFocus: boolean;
+  journal: IJournal;
   currentScrap: IScrapEntry;
+  hasFocus: boolean;
   onSuccess?: () => void;
   giveFocus?: () => void;
 }> = ({
   children,
   currentScrap,
+  journal,
   propsRenderStyle,
   actionsRenderStyle,
-  journalName,
   onSuccess,
   hasFocus,
   giveFocus,
@@ -125,6 +126,7 @@ export const ScrapContextProvider: React.FC<{
   const contextValue = useMemo<IScrapContext>(
     () => {
       return {
+        journal,
         title,
         setTitle,
         notes,
@@ -151,7 +153,6 @@ export const ScrapContextProvider: React.FC<{
         scrapToRender,
         propsRenderStyle,
         actionsRenderStyle,
-        journalName,
         onSuccess,
         hasFocus,
         giveFocus,
@@ -169,7 +170,7 @@ export const ScrapContextProvider: React.FC<{
       scrapToRender,
       propsRenderStyle,
       actionsRenderStyle,
-      journalName,
+      journal,
       hasFocus,
       giveFocus,
       hasTitleFocus,

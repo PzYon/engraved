@@ -12,7 +12,7 @@ export const JournalIconWrapper: React.FC<{
   const emoji = getUiSettings(journal).emoji?.unified;
 
   if (emoji) {
-    return <EmojiWrapper emoji={emoji} />;
+    return <EmojiWrapper emoji={emoji} style={iconStyle} />;
   }
 
   return <JournalTypeIcon type={journal.type} style={iconStyle} />;

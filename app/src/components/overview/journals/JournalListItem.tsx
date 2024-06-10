@@ -37,7 +37,7 @@ export const JournalListItem: React.FC<{
             <IconContainer>
               <JournalIconWrapper
                 journal={journal}
-                iconStyle={IconStyle.Overview}
+                iconStyle={IconStyle.Small}
               />
             </IconContainer>
             <ReadonlyTitle

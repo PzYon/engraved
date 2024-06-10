@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import EmojiPicker, { Emoji, EmojiStyle } from "emoji-picker-react";
 import { Popover } from "@mui/material";
+import { IconStyle } from "./IconStyle";
 
 const emojiStyle = EmojiStyle.NATIVE;
 
@@ -48,6 +49,19 @@ export const EmojiPickerWrapper: React.FC<{
   );
 };
 
-export const EmojiWrapper: React.FC<{ emoji: string }> = ({ emoji }) => {
-  return <Emoji unified={emoji} size={25} emojiStyle={emojiStyle} />;
+export const EmojiWrapper: React.FC<{
+  emoji: string;
+  style: IconStyle;
+}> = ({ emoji, style }) => {
+  return (
+    <span
+      style={style === IconStyle.Large ? { marginRight: "16px" } : undefined}
+    >
+      <Emoji
+        unified={emoji}
+        size={style === IconStyle.Large ? 23 : 20}
+        emojiStyle={emojiStyle}
+      />
+    </span>
+  );
 };

@@ -20,7 +20,7 @@ export const JournalsPage: React.FC = () => {
         <PageTitle
           title={"Journals"}
           icon={
-            <Icon style={IconStyle.PageTitle}>
+            <Icon style={IconStyle.Large}>
               <ListAlt />
             </Icon>
           }

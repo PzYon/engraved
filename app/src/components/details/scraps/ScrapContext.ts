@@ -3,6 +3,7 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { IParsedDate } from "../edit/parseDate";
 import { IAction } from "../../common/actions/IAction";
+import { IJournal } from "../../../serverApi/IJournal";
 
 export type ActionsRenderStyle = "save-only" | "none" | "all";
 
@@ -21,7 +22,7 @@ export interface IScrapContext {
   scrapToRender: IScrapEntry;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
-  journalName: string;
+  journal: IJournal;
   onSuccess?: () => void;
   hasFocus: boolean;
   giveFocus?: () => void;
@@ -44,7 +45,7 @@ export const ScrapContext = createContext<IScrapContext>({
   scrapToRender: null,
   propsRenderStyle: null,
   actionsRenderStyle: null,
-  journalName: null,
+  journal: null,
   onSuccess: null,
   hasFocus: null,
   giveFocus: null,

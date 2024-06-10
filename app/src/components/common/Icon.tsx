@@ -6,7 +6,7 @@ export const Icon: React.FC<{
   children: React.ReactNode;
   style: IconStyle;
 }> = ({ children, style }) => {
-  const Host = style === IconStyle.Overview ? OverviewHost : PageTitleHost;
+  const Host = style === IconStyle.Small ? OverviewHost : PageTitleHost;
 
   return <Host className="ngrvd-icon">{children}</Host>;
 };

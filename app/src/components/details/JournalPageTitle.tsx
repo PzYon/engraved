@@ -35,10 +35,7 @@ export const JournalPageTitle: React.FC<{
             setEmoji(e);
           }}
           opener={
-            <JournalIconWrapper
-              journal={journal}
-              iconStyle={IconStyle.PageTitle}
-            />
+            <JournalIconWrapper journal={journal} iconStyle={IconStyle.Large} />
           }
         />
       }

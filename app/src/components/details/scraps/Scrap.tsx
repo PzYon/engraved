@@ -4,10 +4,11 @@ import { ScrapInner } from "./ScrapInner";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { ActionsRenderStyle } from "./ScrapContext";
 import { ScrapContextProvider } from "./ScrapContextProvider";
+import { IJournal } from "../../../serverApi/IJournal";
 
 export const Scrap: React.FC<{
   scrap: IScrapEntry;
-  journalName: string;
+  journal: IJournal;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
   hasFocus?: boolean;
@@ -15,7 +16,7 @@ export const Scrap: React.FC<{
   giveFocus?: () => void;
 }> = ({
   scrap: currentScrap,
-  journalName,
+  journal,
   propsRenderStyle,
   actionsRenderStyle,
   hasFocus,
@@ -38,7 +39,7 @@ export const Scrap: React.FC<{
         currentScrap={currentScrap}
         propsRenderStyle={propsRenderStyle}
         actionsRenderStyle={actionsRenderStyle}
-        journalName={journalName}
+        journal={journal}
         onSuccess={onSuccess}
         hasFocus={hasFocus}
         giveFocus={giveFocus}

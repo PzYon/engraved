@@ -14,7 +14,7 @@ export const SearchPage: React.FC = () => {
         <PageTitle
           title={"Search"}
           icon={
-            <Icon style={IconStyle.PageTitle}>
+            <Icon style={IconStyle.Large}>
               <SearchOutlined />
             </Icon>
           }
