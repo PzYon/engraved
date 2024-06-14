@@ -68,6 +68,13 @@ describe("parseDate", () => {
         new Date(2017, 3, 21, 0, 0, 0, 0).toJSON(),
       );
     });
+
+    it("should allow 'Tom' for 'tomorrow'", () => {
+      const result = parseDate("Tom", referenceDate);
+      expect(result.date.toJSON()).toBe(
+        new Date(2017, 3, 21, 0, 0, 0, 0).toJSON(),
+      );
+    });
   });
 
   describe("recurrence", () => {
