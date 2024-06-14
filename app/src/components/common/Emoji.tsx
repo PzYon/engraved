@@ -16,7 +16,20 @@ export const EmojiPickerWrapper: React.FC<{
     <>
       <span
         onClick={() => setIsOpen(!isOpen)}
-        style={{ cursor: "pointer" }}
+        style={{
+          cursor: "pointer",
+          backgroundColor: "deeppink",
+          display: "block",
+          lineHeight: 0,
+          alignItems: "center",
+          alignSelf: "center",
+          justifySelf: "center",
+          letterSpacing: "normal",
+          marginRight: "16px",
+          position: "relative",
+          textAlign: "center",
+          width: "26",
+        }}
         ref={ref}
       >
         {opener}
@@ -31,15 +44,13 @@ export const EmojiPickerWrapper: React.FC<{
         }}
       >
         <EmojiPicker
+          skinTonesDisabled={true}
+          previewConfig={{ showPreview: false }}
           emojiStyle={emojiStyle}
           onEmojiClick={(e) => {
             onEmojiClick(e.unified);
             setIsOpen(false);
           }}
-          previewConfig={{
-            showPreview: false,
-          }}
-          skinTonesDisabled={true}
         />
       </Popover>
     </>
@@ -51,14 +62,10 @@ export const EmojiWrapper: React.FC<{
   style: IconStyle;
 }> = ({ emoji, style }) => {
   return (
-    <span
-      style={style === IconStyle.Large ? { marginRight: "16px" } : undefined}
-    >
-      <Emoji
-        unified={emoji}
-        size={style === IconStyle.Large ? 24 : 20}
-        emojiStyle={emojiStyle}
-      />
-    </span>
+    <Emoji
+      unified={emoji}
+      size={style === IconStyle.Large ? 26 : 20}
+      emojiStyle={emojiStyle}
+    />
   );
 };
