@@ -67,5 +67,4 @@ const TitleRow = styled("div")`
 
 const IconContainer = styled("span")`
   padding-right: ${(p) => p.theme.spacing(2)};
-  padding-top: 4px;
 `;

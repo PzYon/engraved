@@ -4,7 +4,7 @@ import { PageTitle } from "../layout/pages/PageTitle";
 import { IconStyle } from "../common/IconStyle";
 import { useEditJournalMutation } from "../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { getUiSettings } from "../../util/journalUtils";
-import { EmojiPickerWrapper } from "../common/Emoji";
+import { EmojiPickerWrapper } from "../common/EmojiPickerWrapper";
 import { JournalIcon } from "../overview/journals/JournalIcon";
 
 export const JournalPageTitle: React.FC<{
