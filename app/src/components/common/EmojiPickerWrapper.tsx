@@ -13,9 +13,9 @@ export const EmojiPickerWrapper: React.FC<{
 
   return (
     <>
-      <EmojiContainer onClick={() => setIsOpen(!isOpen)} ref={ref}>
+      <span onClick={() => setIsOpen(!isOpen)} ref={ref}>
         {opener}
-      </EmojiContainer>
+      </span>
       <Popover
         open={isOpen}
         anchorEl={ref.current}
@@ -40,18 +40,6 @@ export const EmojiPickerWrapper: React.FC<{
     </>
   );
 };
-
-const EmojiContainer = styled("span")`
-  & > span {
-    cursor: pointer;
-    display: block !important;
-    margin-right: ${(p) => p.theme.spacing(2)};
-    line-height: 22px;
-    font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI",
-      "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji",
-      "EmojiOne Color", "Android Emoji";
-  }
-`;
 
 const EmojiPickerContainer = styled("div")`
   .epr-body * {
