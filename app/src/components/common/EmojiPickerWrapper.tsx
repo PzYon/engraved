@@ -1,8 +1,7 @@
 import React, { useRef, useState } from "react";
-import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
+import EmojiPicker from "emoji-picker-react";
 import { Popover, styled } from "@mui/material";
-
-export const engravedEmojiStyle = EmojiStyle.NATIVE;
+import { engravedEmojiStyle } from "./EngravedEmojiStyle";
 
 export const EmojiPickerWrapper: React.FC<{
   onEmojiClick: (emoji: string) => void;
@@ -43,6 +42,6 @@ export const EmojiPickerWrapper: React.FC<{
 
 const EmojiPickerContainer = styled("div")`
   .epr-body * {
-    font-family: Karla;
+    font-family: ${(p) => p.theme.typography.fontFamily};
   }
 `;

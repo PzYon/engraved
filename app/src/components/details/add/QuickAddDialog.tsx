@@ -66,7 +66,6 @@ export const QuickAddDialog: React.FC<{
         <Scrap
           key={type}
           scrap={scrap}
-          journal={null}
           propsRenderStyle={"none"}
           actionsRenderStyle={"save-only"}
           onSuccess={onSuccess}

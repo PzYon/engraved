@@ -1,8 +1,8 @@
 import { Emoji } from "emoji-picker-react";
 import { IconStyle } from "./IconStyle";
-import { engravedEmojiStyle } from "./EmojiPickerWrapper";
 import { styled } from "@mui/material";
 import React from "react";
+import { engravedEmojiStyle } from "./EngravedEmojiStyle";
 
 export const EmojiWrapper: React.FC<{
   emoji: string;

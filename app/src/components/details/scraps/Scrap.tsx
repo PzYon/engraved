@@ -8,7 +8,7 @@ import { IJournal } from "../../../serverApi/IJournal";
 
 export const Scrap: React.FC<{
   scrap: IScrapEntry;
-  journal: IJournal;
+  journal?: IJournal;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
   hasFocus?: boolean;
