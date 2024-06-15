@@ -20,7 +20,7 @@ export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
 
   const preparedValue = value
     .replace(/(\d\d)(\d\d)/, "$1:$2")
-    .replace("tom", "tomorrow");
+    .replace(/tom/i, "tomorrow");
 
   const parsed = chrono.parse(preparedValue, referenceDate, {
     forwardDate: true,

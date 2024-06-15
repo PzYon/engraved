@@ -48,7 +48,9 @@ export const EditScheduleAction: React.FC<{
 
       return getScheduleForUser(entity, user.id).nextOccurrence;
     }
-  }, [journal, entry, user, parsed.input]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [showFullForm, setShowFullForm] = useState(!!parsed.date);
 

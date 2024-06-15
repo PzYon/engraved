@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.1"/>
+        <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.2.0"/>
         <PackageReference Include="Google.Apis.Auth" Version="1.68.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
