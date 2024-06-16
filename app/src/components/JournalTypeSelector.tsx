@@ -2,13 +2,12 @@ import React from "react";
 import {
   FormControl,
   InputLabel,
-  MenuItem,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
 import { JournalType } from "../serverApi/JournalType";
 import { translations } from "../i18n/translations";
-import { JournalMenuItem } from "./JournalMenuItem";
+import { JournalTypeMenuItem } from "./JournalTypeMenuItem";
 
 export const JournalTypeSelector: React.FC<{
   journalType: JournalType | JournalType[];
@@ -35,30 +34,22 @@ export const JournalTypeSelector: React.FC<{
         }}
         sx={{ ".MuiSelect-select": { display: "flex" } }}
       >
-        <MenuItem value={JournalType.Scraps}>
-          <JournalMenuItem
-            journalType={JournalType.Scraps}
-            label={translations.journalType_scraps}
-          />
-        </MenuItem>
-        <MenuItem value={JournalType.Counter}>
-          <JournalMenuItem
-            journalType={JournalType.Counter}
-            label={translations.journalType_counter}
-          />
-        </MenuItem>
-        <MenuItem value={JournalType.Gauge}>
-          <JournalMenuItem
-            journalType={JournalType.Gauge}
-            label={translations.journalType_gauge}
-          />
-        </MenuItem>
-        <MenuItem value={JournalType.Timer}>
-          <JournalMenuItem
-            journalType={JournalType.Timer}
-            label={translations.journalType_timer}
-          />
-        </MenuItem>
+        <JournalTypeMenuItem
+          journalType={JournalType.Scraps}
+          label={translations.journalType_scraps}
+        />
+        <JournalTypeMenuItem
+          journalType={JournalType.Counter}
+          label={translations.journalType_counter}
+        />
+        <JournalTypeMenuItem
+          journalType={JournalType.Gauge}
+          label={translations.journalType_gauge}
+        />
+        <JournalTypeMenuItem
+          journalType={JournalType.Timer}
+          label={translations.journalType_timer}
+        />
       </Select>
     </FormControl>
   );

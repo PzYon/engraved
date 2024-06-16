@@ -10,7 +10,7 @@ export const EmojiWrapper: React.FC<{
 }> = ({ emoji, style }) => {
   const size = style === IconStyle.Large ? 26 : 22;
   return (
-    <Host size={size}>
+    <Host size={size} className="ngrvd-icon">
       <Emoji unified={emoji} size={size} emojiStyle={engravedEmojiStyle} />
     </Host>
   );
@@ -20,6 +20,7 @@ const Host = styled("span")<{ size: number }>`
   width: ${(p) => p.size + 8}px;
   height: ${(p) => p.size + 5}px;
   display: block;
+  margin-left: -2px;
 
   & > span {
     cursor: pointer;

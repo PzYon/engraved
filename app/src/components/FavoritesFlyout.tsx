@@ -1,11 +1,12 @@
 import { Star } from "@mui/icons-material";
-import { Menu, MenuItem } from "@mui/material";
+import { Menu, MenuItem, styled } from "@mui/material";
 import React, { useRef, useState } from "react";
 import { useJournalsQuery } from "../serverApi/reactQuery/queries/useJournalsQuery";
 import { Link } from "react-router-dom";
 import { ActionIconButton } from "./common/actions/ActionIconButton";
-import { JournalMenuItem } from "./JournalMenuItem";
 import { ActionFactory } from "./common/actions/ActionFactory";
+import { JournalIcon } from "./overview/journals/JournalIcon";
+import { IconStyle } from "./common/IconStyle";
 
 export const FavoritesFlyout: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,10 +66,10 @@ const FavoritesList: React.FC<{
                 onClick={close}
                 style={{ flexGrow: 1, paddingRight: 10 }}
               >
-                <JournalMenuItem
-                  journalType={journal.type}
-                  label={journal.name}
-                />
+                <MenuItemContainer>
+                  <JournalIcon journal={journal} iconStyle={IconStyle.Small} />
+                  <span>{journal.name}</span>
+                </MenuItemContainer>
               </Link>
               <ActionIconButton
                 action={ActionFactory.addEntry(journal, true, false, close)}
@@ -79,3 +80,13 @@ const FavoritesList: React.FC<{
     </Menu>
   );
 };
+
+const MenuItemContainer = styled("div")`
+  display: inline-flex;
+  align-items: center;
+
+  .ngrvd-icon {
+    margin-right: ${(p) => p.theme.spacing(1)};
+    padding-top: 4px;
+  }
+`;

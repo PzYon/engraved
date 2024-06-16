@@ -1,18 +1,20 @@
 import React from "react";
 import { JournalType } from "../serverApi/JournalType";
-import { JournalTypeIcon } from "./common/JournalTypeIcon";
-import { styled } from "@mui/material";
+import { MenuItem, styled } from "@mui/material";
 import { IconStyle } from "./common/IconStyle";
+import { JournalTypeIcon } from "./common/JournalTypeIcon";
 
-export const JournalMenuItem: React.FC<{
+export const JournalTypeMenuItem: React.FC<{
   journalType: JournalType;
   label: string;
 }> = ({ journalType, label }) => {
   return (
-    <MenuItemContainer>
-      <JournalTypeIcon type={journalType} style={IconStyle.Small} />
-      {label}
-    </MenuItemContainer>
+    <MenuItem value={journalType}>
+      <MenuItemContainer>
+        <JournalTypeIcon type={journalType} style={IconStyle.Small} />
+        <span>{label}</span>
+      </MenuItemContainer>
+    </MenuItem>
   );
 };
 
