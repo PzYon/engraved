@@ -1,6 +1,6 @@
 import { IJournal } from "../../serverApi/IJournal";
 import { IEntry } from "../../serverApi/IEntry";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import { DialogFormButtonContainer } from "../common/FormButtonContainer";
 import { useModifyScheduleMutation } from "../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
 import { useAppContext } from "../../AppContext";
@@ -9,6 +9,7 @@ import { parseDate } from "./edit/parseDate";
 import { useNavigate } from "react-router-dom";
 import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
 import React from "react";
+import { ScheduledInfo } from "../overview/scheduled/ScheduledInfo";
 
 export const NotificationDoneAction: React.FC<{
   journal: IJournal;
@@ -30,49 +31,57 @@ export const NotificationDoneAction: React.FC<{
   const isRecurring = !!schedule?.recurrence?.dateString;
 
   return (
-    <>
-      {isRecurring ? (
-        <Typography>Will reoccur {schedule?.recurrence?.dateString}</Typography>
-      ) : null}
-      <DialogFormButtonContainer sx={!isRecurring ? { paddingTop: 0 } : {}}>
-        <Button variant={"outlined"} onClick={close}>
-          Cancel
-        </Button>
-        {entry ? (
-          <Button
-            variant={schedule?.recurrence ? "outlined" : "contained"}
-            onClick={() => {
-              navigate(`../actions/delete/${entry.id}`);
-            }}
-          >
-            Delete {entry ? "entry" : "journal"}
-          </Button>
-        ) : null}
+    <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
+      <Button variant={"outlined"} onClick={close}>
+        Cancel
+      </Button>
+      {entry ? (
         <Button
-          variant={"contained"}
+          variant={isRecurring ? "outlined" : "contained"}
           onClick={() => {
-            const scheduleDefinition: IScheduleDefinition = {
-              nextOccurrence: schedule.recurrence
-                ? parseDate(schedule.recurrence.dateString).date
-                : null,
-              recurrence: schedule.recurrence,
-              onClickUrl: entry
-                ? `${location.origin}/journals/${entry.parentId}/entries/${entry.id}/notification`
-                : `${location.origin}/journals/${journal.id}/notification`,
-            };
-
-            modifyScheduleMutation.mutate(scheduleDefinition);
-
-            close();
+            navigate(`../actions/delete/${entry.id}`);
           }}
         >
-          Mark {entry ? "entry" : "journal"} as done
+          Delete {entry ? "entry" : "journal"}
         </Button>
-      </DialogFormButtonContainer>
-    </>
+      ) : null}
+      <Button
+        variant={"contained"}
+        onClick={() => {
+          const scheduleDefinition: IScheduleDefinition = {
+            nextOccurrence: schedule.recurrence
+              ? parseDate(schedule.recurrence.dateString).date
+              : null,
+            recurrence: schedule.recurrence,
+            onClickUrl: entry
+              ? `${location.origin}/journals/${entry.parentId}/entries/${entry.id}/notification`
+              : `${location.origin}/journals/${journal.id}/notification`,
+          };
+
+          modifyScheduleMutation.mutate(scheduleDefinition);
+
+          close();
+        }}
+      >
+        {getScheduleButtonLabel()}
+      </Button>
+    </DialogFormButtonContainer>
   );
 
   function close() {
     navigate("..");
+  }
+
+  function getScheduleButtonLabel() {
+    return isRecurring ? (
+      <>
+        <ScheduledInfo schedule={schedule} />
+        <span style={{ marginLeft: "8px" }}>
+          (&quot;{schedule.recurrence.dateString}&quot;)
+        </span>
+      </>
+    ) : (
+      <>Mark {entry ? "entry" : "journal"} as done</>
+    );
   }
 };
