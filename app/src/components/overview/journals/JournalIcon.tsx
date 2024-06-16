@@ -11,9 +11,9 @@ export const JournalIcon: React.FC<{
 }> = ({ journal, iconStyle }) => {
   const emoji = getUiSettings(journal).emoji?.unified;
 
-  if (emoji) {
-    return <EmojiWrapper emoji={emoji} style={iconStyle} />;
-  }
-
-  return <JournalTypeIcon type={journal.type} style={iconStyle} />;
+  return emoji ? (
+    <EmojiWrapper emoji={emoji} style={iconStyle} />
+  ) : (
+    <JournalTypeIcon type={journal.type} style={iconStyle} />
+  );
 };
