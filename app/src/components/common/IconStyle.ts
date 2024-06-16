@@ -1,4 +1,4 @@
 export enum IconStyle {
-  PageTitle,
-  Overview,
+  Large,
+  Small,
 }

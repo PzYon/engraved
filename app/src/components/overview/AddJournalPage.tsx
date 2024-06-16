@@ -13,7 +13,7 @@ export const AddJournalPage: React.FC = () => {
         <PageTitle
           title={"Add Journal"}
           icon={
-            <Icon style={IconStyle.PageTitle}>
+            <Icon style={IconStyle.Large}>
               <AddOutlined />
             </Icon>
           }

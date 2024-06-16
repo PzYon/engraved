@@ -14,7 +14,7 @@ export const ScheduledPage: React.FC = () => {
         <PageTitle
           title={"Scheduled"}
           icon={
-            <Icon style={IconStyle.PageTitle}>
+            <Icon style={IconStyle.Large}>
               <NotificationsNone />
             </Icon>
           }

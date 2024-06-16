@@ -49,7 +49,7 @@ export const JournalSelector: React.FC<{
       getOptionLabel={(option) => option.name}
       renderOption={(props, option) => (
         <MenuItem {...props} key={option.id}>
-          <JournalMenuItem journalType={option.type} label={option.name} />
+          <JournalMenuItem journal={option} />
         </MenuItem>
       )}
       filterOptions={(currenOptions, state) => {

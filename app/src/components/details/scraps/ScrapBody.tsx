@@ -2,7 +2,6 @@ import React from "react";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
 import { Entry } from "../../common/entries/Entry";
-import { JournalType } from "../../../serverApi/JournalType";
 import { useScrapContext } from "./ScrapContext";
 import { useAppContext } from "../../../AppContext";
 import {
@@ -25,7 +24,7 @@ export const ScrapBody: React.FC<{
     scrapToRender,
     propsRenderStyle,
     actionsRenderStyle,
-    journalName,
+    journal,
     hasFocus,
     giveFocus,
     parsedDate,
@@ -36,12 +35,10 @@ export const ScrapBody: React.FC<{
   return (
     <Entry
       hasFocus={hasFocus}
-      journalId={scrapToRender.parentId}
-      journalType={JournalType.Scraps}
+      journal={journal}
       entry={scrapToRender}
       actions={getActions()}
       propsRenderStyle={propsRenderStyle}
-      journalName={journalName}
       giveFocus={giveFocus}
       propertyOverrides={
         parsedDate?.date

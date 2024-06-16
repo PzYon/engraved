@@ -14,4 +14,7 @@ export interface IJournalUiSettings {
   dynamicScales?: boolean;
   aggregationMode?: AggregationMode;
   yAxisUnit?: string;
+  emoji?: {
+    unified: string;
+  };
 }

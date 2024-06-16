@@ -28,7 +28,7 @@ export class ScrapsJournalType implements IJournalType {
         hasFocus={hasFocus}
         giveFocus={giveFocus}
         scrap={entry as IScrapEntry}
-        journalName={journal.name}
+        journal={journal}
         propsRenderStyle={"all"}
       />
     );

@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { IEntry } from "../../../serverApi/IEntry";
-import { JournalTypeIcon } from "../JournalTypeIcon";
 import { Link } from "react-router-dom";
 import { getScheduleProperty } from "../../overview/scheduled/scheduleUtils";
 import { IAction } from "../actions/IAction";
-import { JournalType } from "../../../serverApi/JournalType";
 import { ListItemFooterRow } from "../../overview/ListItemFooterRow";
 import { IconStyle } from "../IconStyle";
 import { FormatDate } from "../FormatDate";
@@ -13,13 +11,13 @@ import { styled } from "@mui/material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { EntrySubRoutes } from "./EntrySubRoutes";
 import { IPropertyDefinition } from "../IPropertyDefinition";
+import { IJournal } from "../../../serverApi/IJournal";
+import { JournalIcon } from "../../overview/journals/JournalIcon";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
 export const Entry: React.FC<{
-  journalType: JournalType;
-  journalId: string;
-  journalName: string;
+  journal: IJournal;
   entry: IEntry;
   children: React.ReactNode;
   actions: IAction[];
@@ -28,9 +26,7 @@ export const Entry: React.FC<{
   giveFocus?: () => void;
   propertyOverrides?: IPropertyDefinition[];
 }> = ({
-  journalType,
-  journalId,
-  journalName,
+  journal,
   entry,
   children,
   actions,
@@ -47,9 +43,7 @@ export const Entry: React.FC<{
       <ListItemFooterRow
         hasFocus={hasFocus}
         properties={getEntryProperties(
-          journalType,
-          journalId,
-          journalName,
+          journal,
           entry,
           propsRenderStyle,
           user.id,
@@ -63,9 +57,7 @@ export const Entry: React.FC<{
 };
 
 function getEntryProperties(
-  journalType: JournalType,
-  journalId: string,
-  journalName: string,
+  journal: IJournal,
   entry: IEntry,
   propsRenderStyle: EntryPropsRenderStyle,
   userId: string,
@@ -74,16 +66,14 @@ function getEntryProperties(
   return [
     {
       key: "journal-type",
-      node: () => (
-        <JournalTypeIcon type={journalType} style={IconStyle.Overview} />
-      ),
+      node: () => <JournalIcon journal={journal} iconStyle={IconStyle.Small} />,
       label: "",
       hideWhen: () => propsRenderStyle !== "all",
     },
     {
       key: "journal-name",
       node: () => (
-        <Link to={`/journals/details/${journalId}`}>{journalName}</Link>
+        <Link to={`/journals/details/${journal.id}`}>{journal.name}</Link>
       ),
       label: "Journal",
       hideWhen: () => propsRenderStyle !== "all",

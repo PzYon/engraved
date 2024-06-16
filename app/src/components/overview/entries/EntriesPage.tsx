@@ -24,7 +24,7 @@ export const EntriesPage: React.FC = () => {
         <PageTitle
           title={"Entries"}
           icon={
-            <Icon style={IconStyle.PageTitle}>
+            <Icon style={IconStyle.Large}>
               <List />
             </Icon>
           }

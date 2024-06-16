@@ -4,8 +4,8 @@ import React, { useRef, useState } from "react";
 import { useJournalsQuery } from "../serverApi/reactQuery/queries/useJournalsQuery";
 import { Link } from "react-router-dom";
 import { ActionIconButton } from "./common/actions/ActionIconButton";
-import { JournalMenuItem } from "./JournalMenuItem";
 import { ActionFactory } from "./common/actions/ActionFactory";
+import { JournalMenuItem } from "./JournalMenuItem";
 
 export const FavoritesFlyout: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,10 +65,7 @@ const FavoritesList: React.FC<{
                 onClick={close}
                 style={{ flexGrow: 1, paddingRight: 10 }}
               >
-                <JournalMenuItem
-                  journalType={journal.type}
-                  label={journal.name}
-                />
+                <JournalMenuItem journal={journal} />
               </Link>
               <ActionIconButton
                 action={ActionFactory.addEntry(journal, true, false, close)}

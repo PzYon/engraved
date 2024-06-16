@@ -67,7 +67,7 @@ export const ScrapsViewPage: React.FC = () => {
             key="new"
             scrap={newScrap}
             hasFocus={true}
-            journalName={null}
+            journal={null}
             propsRenderStyle={"none"}
           />
         </PageSection>
@@ -79,7 +79,7 @@ export const ScrapsViewPage: React.FC = () => {
           renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap
               key={item.id + getScheduleForUser(item, user.id).nextOccurrence}
-              journalName={journal.name}
+              journal={journal}
               propsRenderStyle={"generic"}
               scrap={item as IScrapEntry}
               hasFocus={hasFocus}

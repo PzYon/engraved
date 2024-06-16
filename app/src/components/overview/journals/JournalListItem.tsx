@@ -2,14 +2,14 @@ import React, { useRef } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { Box, styled } from "@mui/material";
 import { useJournalProperties } from "./useJournalProperties";
-import { JournalTypeIcon } from "../../common/JournalTypeIcon";
 import { getCommonJournalActions } from "../getCommonJournalActions";
 import { ListItemFooterRow } from "../ListItemFooterRow";
-import { IconStyle } from "../../common/IconStyle";
 import { ReadonlyTitle } from "../ReadonlyTitle";
 import { useAppContext } from "../../../AppContext";
 import { JournalSubRoutes } from "./JournalSubRoutes";
 import { ActionFactory } from "../../common/actions/ActionFactory";
+import { IconStyle } from "../../common/IconStyle";
+import { JournalIcon } from "./JournalIcon";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -34,7 +34,7 @@ export const JournalListItem: React.FC<{
         >
           <TitleRow>
             <IconContainer>
-              <JournalTypeIcon type={journal.type} style={IconStyle.Overview} />
+              <JournalIcon journal={journal} iconStyle={IconStyle.Small} />
             </IconContainer>
             <ReadonlyTitle
               entity={journal}
@@ -66,6 +66,6 @@ const TitleRow = styled("div")`
 `;
 
 const IconContainer = styled("span")`
+  padding-top: ${(p) => p.theme.spacing(0.5)};
   padding-right: ${(p) => p.theme.spacing(2)};
-  padding-top: 4px;
 `;
