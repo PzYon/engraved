@@ -22,7 +22,8 @@ const Host = styled("span")<{ size: number }>`
   display: block;
   margin-left: -2px;
 
-  & > span {
+  & > span,
+  & > img {
     cursor: pointer;
     display: block !important;
     line-height: ${(p) => p.size}px;
