@@ -2,6 +2,7 @@ import React from "react";
 import {
   FormControl,
   InputLabel,
+  MenuItem,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
@@ -34,22 +35,30 @@ export const JournalTypeSelector: React.FC<{
         }}
         sx={{ ".MuiSelect-select": { display: "flex" } }}
       >
-        <JournalTypeMenuItem
-          journalType={JournalType.Scraps}
-          label={translations.journalType_scraps}
-        />
-        <JournalTypeMenuItem
-          journalType={JournalType.Counter}
-          label={translations.journalType_counter}
-        />
-        <JournalTypeMenuItem
-          journalType={JournalType.Gauge}
-          label={translations.journalType_gauge}
-        />
-        <JournalTypeMenuItem
-          journalType={JournalType.Timer}
-          label={translations.journalType_timer}
-        />
+        <MenuItem value={JournalType.Scraps}>
+          <JournalTypeMenuItem
+            journalType={JournalType.Scraps}
+            label={translations.journalType_scraps}
+          />
+        </MenuItem>
+        <MenuItem value={JournalType.Counter}>
+          <JournalTypeMenuItem
+            journalType={JournalType.Counter}
+            label={translations.journalType_counter}
+          />
+        </MenuItem>
+        <MenuItem value={JournalType.Gauge}>
+          <JournalTypeMenuItem
+            journalType={JournalType.Gauge}
+            label={translations.journalType_gauge}
+          />
+        </MenuItem>
+        <MenuItem value={JournalType.Timer}>
+          <JournalTypeMenuItem
+            journalType={JournalType.Timer}
+            label={translations.journalType_timer}
+          />
+        </MenuItem>
       </Select>
     </FormControl>
   );

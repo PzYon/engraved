@@ -1,6 +1,6 @@
 import React from "react";
 import { JournalType } from "../serverApi/JournalType";
-import { MenuItem, styled } from "@mui/material";
+import { styled } from "@mui/material";
 import { IconStyle } from "./common/IconStyle";
 import { JournalTypeIcon } from "./common/JournalTypeIcon";
 
@@ -9,12 +9,10 @@ export const JournalTypeMenuItem: React.FC<{
   label: string;
 }> = ({ journalType, label }) => {
   return (
-    <MenuItem value={journalType}>
-      <MenuItemContainer>
-        <JournalTypeIcon type={journalType} style={IconStyle.Small} />
-        <span>{label}</span>
-      </MenuItemContainer>
-    </MenuItem>
+    <MenuItemContainer>
+      <JournalTypeIcon type={journalType} style={IconStyle.Small} />
+      <span>{label}</span>
+    </MenuItemContainer>
   );
 };
 
