@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
 import React from "react";
 import { ScheduledInfo } from "../overview/scheduled/ScheduledInfo";
+import { isAfter } from "date-fns";
 
 export const NotificationDoneAction: React.FC<{
   journal: IJournal;
@@ -45,26 +46,29 @@ export const NotificationDoneAction: React.FC<{
           Delete {entry ? "entry" : "journal"}
         </Button>
       ) : null}
-      <Button
-        variant={"contained"}
-        onClick={() => {
-          const scheduleDefinition: IScheduleDefinition = {
-            nextOccurrence: schedule.recurrence
-              ? parseDate(schedule.recurrence.dateString).date
-              : null,
-            recurrence: schedule.recurrence,
-            onClickUrl: entry
-              ? `${location.origin}/journals/${entry.parentId}/entries/${entry.id}/notification`
-              : `${location.origin}/journals/${journal.id}/notification`,
-          };
+      {isAfter(new Date(), schedule.nextOccurrence) ||
+      !schedule.recurrence?.dateString ? (
+        <Button
+          variant={"contained"}
+          onClick={() => {
+            const scheduleDefinition: IScheduleDefinition = {
+              nextOccurrence: schedule.recurrence
+                ? parseDate(schedule.recurrence.dateString).date
+                : null,
+              recurrence: schedule.recurrence,
+              onClickUrl: entry
+                ? `${location.origin}/journals/${entry.parentId}/entries/${entry.id}/notification`
+                : `${location.origin}/journals/${journal.id}/notification`,
+            };
 
-          modifyScheduleMutation.mutate(scheduleDefinition);
+            modifyScheduleMutation.mutate(scheduleDefinition);
 
-          close();
-        }}
-      >
-        {getScheduleButtonLabel()}
-      </Button>
+            close();
+          }}
+        >
+          {getScheduleButtonLabel()}
+        </Button>
+      ) : null}
     </DialogFormButtonContainer>
   );
 
@@ -75,10 +79,12 @@ export const NotificationDoneAction: React.FC<{
   function getScheduleButtonLabel() {
     return isRecurring ? (
       <>
-        <ScheduledInfo schedule={schedule} />
-        <span style={{ marginLeft: "8px" }}>
-          (&quot;{schedule.recurrence.dateString}&quot;)
-        </span>
+        Reschedule&nbsp;
+        <ScheduledInfo
+          schedule={schedule}
+          showNextIfPassed={true}
+          showRecurrenceInfo={true}
+        />
       </>
     ) : (
       <>Mark {entry ? "entry" : "journal"} as done</>
