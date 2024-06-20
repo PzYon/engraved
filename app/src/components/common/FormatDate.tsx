@@ -8,7 +8,8 @@ export const FormatDate: React.FC<{
   value: Date | string | number | null | undefined;
   dateFormat?: DateFormat;
   fallbackValue?: React.ReactNode;
-}> = ({ value, dateFormat, fallbackValue }) => {
+  noToggle?: boolean;
+}> = ({ value, dateFormat, fallbackValue, noToggle }) => {
   const [isToggled, setIsToggled] = useState(false);
 
   if (!value) {
@@ -17,7 +18,7 @@ export const FormatDate: React.FC<{
 
   return (
     <FormatDateInternal
-      onClick={() => setIsToggled(!isToggled)}
+      onClick={noToggle ? undefined : () => setIsToggled(!isToggled)}
       value={value}
       dateFormat={isToggled ? DateFormat.fullCompact : dateFormat}
     />
@@ -63,6 +64,10 @@ const FormatDateInternal: React.FC<{
     <span
       style={{ cursor: "pointer" }}
       onClick={(e) => {
+        if (!onClick) {
+          return;
+        }
+
         e.stopPropagation();
         onClick();
       }}

@@ -21,6 +21,7 @@ export const ScheduledInfo: React.FC<{
       <FormatDate
         value={getDateValue()}
         dateFormat={DateFormat.relativeToNow}
+        noToggle={showNextIfPassed}
       />
       {schedule.recurrence?.dateString && showRecurrenceInfo ? (
         <span style={{ marginLeft: "8px" }}>
