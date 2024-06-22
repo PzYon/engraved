@@ -34,7 +34,9 @@ export const Page: React.FC<{
     setDocumentTitle,
     setFilterMode,
     setShowFilters,
+    journalTypes,
     setJournalTypes,
+    searchText,
     setSearchText,
     setTabs,
   } = usePageContext();
@@ -76,17 +78,33 @@ export const Page: React.FC<{
 
   useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
 
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    console.log("Du magge alles kapuut!! Wäge!?");
     return () => {
-      setShowFilters(false);
-      setFilterMode(FilterMode.None);
-      setSearchText(null);
-      setJournalTypes([]);
-      setTabs([]);
-      setSearchParams({});
+      if (showFilters) {
+        setShowFilters(false);
+      }
+
+      if (filterMode !== FilterMode.None) {
+        setFilterMode(FilterMode.None);
+      }
+
+      if (searchText) {
+        setSearchText(null);
+      }
+
+      if (journalTypes?.length) {
+        setJournalTypes([]);
+      }
+
+      if (tabs?.length) {
+        setTabs([]);
+      }
+
+      if (Object.keys(searchParams ?? {}).length) {
+        setSearchParams({});
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

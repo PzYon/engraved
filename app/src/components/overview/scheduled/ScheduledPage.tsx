@@ -6,10 +6,12 @@ import { FilterMode } from "../../layout/pages/PageContext";
 import { NotificationsNone } from "@mui/icons-material";
 import { Scheduled } from "./Scheduled";
 import { IconStyle } from "../../common/IconStyle";
+import React from "react";
 
 export const ScheduledPage: React.FC = () => {
   return (
     <Page
+      documentTitle={"Scheduled"}
       title={
         <PageTitle
           title={"Scheduled"}

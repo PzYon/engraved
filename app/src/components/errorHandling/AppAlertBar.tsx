@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Alert, AlertTitle, Snackbar, styled } from "@mui/material";
 import { useAppContext } from "../../AppContext";
-import { useLocation } from "react-router-dom";
 
 export interface IAppAlert {
   message?: React.ReactNode;
@@ -13,12 +12,6 @@ export interface IAppAlert {
 
 export const AppAlertBar: React.FC = () => {
   const { appAlert, setAppAlert } = useAppContext();
-
-  const location = useLocation();
-
-  useEffect(() => {
-    console.log("Location changed: ", location);
-  }, [location]);
 
   if (!appAlert) {
     return null;

@@ -24,14 +24,7 @@ export const ActionLink: React.FC<{
   }
 
   return (
-    <Link
-      onClick={() => {
-        console.log("click navigate to: " + action.href);
-      }}
-      to={action.href}
-      style={style}
-      title={action.label}
-    >
+    <Link to={action.href} style={style} title={action.label}>
       {children ?? action.icon}
     </Link>
   );
