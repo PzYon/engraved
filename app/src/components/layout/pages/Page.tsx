@@ -79,6 +79,7 @@ export const Page: React.FC<{
   const [, setSearchParams] = useSearchParams();
 
   useEffect(() => {
+    console.log("Du magge alles kapuut!! Wäge!?");
     return () => {
       setShowFilters(false);
       setFilterMode(FilterMode.None);
