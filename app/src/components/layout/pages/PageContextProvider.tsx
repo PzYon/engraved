@@ -53,13 +53,13 @@ export const PageContextProvider: React.FC<{
       showFilters,
       setShowFilters,
       searchText: paramSearchText,
-      setSearchText: (value: string) =>
-        setUrlParams({
-          searchText: value,
-        }),
+      setSearchText: (value: string) => {
+        setUrlParams({ searchText: value });
+      },
       journalTypes: getJournalTypes(),
-      setJournalTypes: (value: JournalType[]) =>
-        setUrlParams({ journalTypes: value }),
+      setJournalTypes: (value: JournalType[]) => {
+        setUrlParams({ journalTypes: value });
+      },
       tabs,
       setTabs,
     };
@@ -98,6 +98,10 @@ export const PageContextProvider: React.FC<{
     const journalTypes = overrides?.journalTypes ?? getJournalTypes();
     if (journalTypes.length) {
       params["journalTypes"] = journalTypes.join(",");
+    }
+
+    if (new URLSearchParams(params).toString() === searchParams.toString()) {
+      return;
     }
 
     setSearchParams(params);
