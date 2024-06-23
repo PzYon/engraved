@@ -8,8 +8,8 @@ import checker from "vite-plugin-checker";
 // has been deployed.
 const envSettings = "envSettings";
 
-export default () => {
-  return defineConfig({
+export default () =>
+  defineConfig({
     server: {
       port: 3000,
     },
@@ -17,18 +17,10 @@ export default () => {
     build: {
       rollupOptions: {
         output: {
-          chunkFileNames: (chunkInfo) => {
-            return chunkInfo.name === envSettings
-              ? `[name].js`
-              : `[name].[hash].js`;
-          },
-          manualChunks: (id) => {
-            if (id.includes(envSettings)) {
-              return envSettings;
-            }
-          },
+          chunkFileNames: () => `[name].js`,
+          manualChunks: (id) =>
+            id.includes(envSettings) ? envSettings : undefined,
         },
       },
     },
   });
-};
