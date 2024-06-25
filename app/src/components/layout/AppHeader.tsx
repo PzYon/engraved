@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 import { ActionIconButtonGroup } from "../common/actions/ActionIconButtonGroup";
@@ -38,6 +38,12 @@ export const AppHeader: React.FC = () => {
   const { renderDialog } = useDialogContext();
 
   const { isCompact, setIsCompact } = useDisplayModeContext();
+
+  const loc = useLocation();
+
+  useEffect(() => {
+    console.log(`Router: Navigating to ${loc.pathname}${loc.search}`);
+  }, [loc]);
 
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
