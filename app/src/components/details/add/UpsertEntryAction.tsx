@@ -26,6 +26,9 @@ import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { getValueHeaderLabel } from "../../../util/journalUtils";
 import { useNavigate } from "react-router-dom";
 import { ServerApi } from "../../../serverApi/ServerApi";
+import { Scrap } from "../scraps/Scrap";
+import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
+import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 
 export const UpsertEntryAction: React.FC<{
   journal?: IJournal;
@@ -33,6 +36,8 @@ export const UpsertEntryAction: React.FC<{
 }> = ({ journal: initialJournal, entry: initialEntry }) => {
   const [journal, setJournal] = useState<IJournal>();
   const [entry, setEntry] = useState<IEntry>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([
@@ -55,15 +60,40 @@ export const UpsertEntryAction: React.FC<{
     return null;
   }
 
-  return <UpsertEntryActionInternal journal={journal} entry={entry} />;
+  if (journal.type === JournalType.Scraps) {
+    return (
+      <Scrap
+        scrap={
+          (entry as IScrapEntry) ??
+          ScrapsJournalType.createBlank(journal.id, ScrapType.Markdown)
+        }
+        hasFocus={true}
+        journal={journal}
+        actionsRenderStyle={"save-only"}
+        propsRenderStyle={"none"}
+        onSuccess={close}
+      />
+    );
+  }
+
+  return (
+    <UpsertEntryActionInternal
+      journal={journal}
+      entry={entry}
+      onSuccess={close}
+    />
+  );
+
+  function close() {
+    navigate("..");
+  }
 };
 
 const UpsertEntryActionInternal: React.FC<{
   journal?: IJournal;
   entry?: IEntry;
-}> = ({ journal, entry }) => {
-  const navigate = useNavigate();
-
+  onSuccess: () => void;
+}> = ({ journal, entry, onSuccess }) => {
   const [attributeValues, setAttributeValues] =
     useState<IJournalAttributeValues>(entry?.journalAttributeValues || {}); // empty means nothing selected in the selector
 
@@ -189,7 +219,7 @@ const UpsertEntryActionInternal: React.FC<{
               command: createCommand(),
             });
 
-            navigate("..");
+            onSuccess();
           }}
         >
           {entry?.id ? "Update entry" : "Add entry"}
@@ -227,9 +257,5 @@ const UpsertEntryActionInternal: React.FC<{
 
   function resetSelectors() {
     setForceResetSelectors(Math.random().toString());
-  }
-
-  function close() {
-    navigate("..");
   }
 };
