@@ -107,12 +107,12 @@ export const ScrapsViewPage: React.FC = () => {
       label: "Add " + type,
       icon: isMarkdown ? <MarkdownScrapIcon /> : <ListScrapIcon />,
       onClick: () => {
-        setNewScrap(
-          ScrapsJournalType.createBlank(
-            journal.id,
-            isMarkdown ? ScrapType.Markdown : ScrapType.List,
-          ),
+        const entry = ScrapsJournalType.createBlank(
+          journal.id,
+          isMarkdown ? ScrapType.Markdown : ScrapType.List,
         );
+
+        setNewScrap(entry);
       },
     };
   }

@@ -16,6 +16,9 @@ import { getScheduleDefinition } from "../../overview/scheduled/scheduleUtils";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { IJournal } from "../../../serverApi/IJournal";
+import { AddNewScrapStorage } from "./AddNewScrapStorage";
+
+const addNewScrapStorage = new AddNewScrapStorage();
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -45,6 +48,22 @@ export const ScrapContextProvider: React.FC<{
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
+
+  useEffect(() => {
+    if (currentScrap?.id) {
+      return;
+    }
+
+    addNewScrapStorage.setForJournal({
+      id: null,
+      scrapType: currentScrap.scrapType,
+      notes: notes,
+      title: parsedDate?.text ?? title,
+      journalAttributeValues: {},
+      parentId: currentScrap.parentId,
+      dateTime: null,
+    });
+  }, [notes, title]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialScrap = useMemo(() => currentScrap, []);
@@ -144,6 +163,10 @@ export const ScrapContextProvider: React.FC<{
                 setTitle(initialScrap.title);
                 setNotes(initialScrap.notes);
                 setIsEditMode(false);
+
+                addNewScrapStorage.clearForJournal(
+                  journal?.id ?? initialScrap.parentId,
+                );
               },
               hasFocus,
               isDirty,
@@ -208,6 +231,8 @@ export const ScrapContextProvider: React.FC<{
         ),
       } as IUpsertScrapsEntryCommand,
     });
+
+    addNewScrapStorage.clearForJournal(currentScrap.parentId);
   }
 
   return (

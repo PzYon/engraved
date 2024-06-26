@@ -1,5 +1,5 @@
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
-import { QuickAddDialog } from "./QuickAddDialog";
+import { QuickAddDialog } from "../scraps/QuickAddDialog";
 
 export const renderQuickAddDialog = (
   selectedJournalId: string,

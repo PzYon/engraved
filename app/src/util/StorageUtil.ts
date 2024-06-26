@@ -2,6 +2,11 @@ export class StorageUtil {
   constructor(private storage: Storage) {}
 
   setValue(key: string, value: unknown): void {
+    if (value === null || value === undefined) {
+      this.storage.removeItem(key);
+      return;
+    }
+
     this.storage.setItem(key, JSON.stringify(value));
   }
 

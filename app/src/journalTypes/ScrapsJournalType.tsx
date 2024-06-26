@@ -7,8 +7,11 @@ import { IEntry } from "../serverApi/IEntry";
 import React from "react";
 import { Scrap } from "../components/details/scraps/Scrap";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
+import { AddNewScrapStorage } from "../components/details/scraps/AddNewScrapStorage";
 
 export class ScrapsJournalType implements IJournalType {
+  private static readonly newScrapStorage = new AddNewScrapStorage();
+
   type = JournalType.Scraps;
 
   isGroupable = false;
@@ -49,13 +52,15 @@ export class ScrapsJournalType implements IJournalType {
   }
 
   static createBlank(journalId: string, scrapType: ScrapType): IScrapEntry {
-    return {
-      id: null,
-      parentId: journalId,
-      dateTime: null,
-      notes: "",
-      title: "",
-      scrapType: scrapType,
-    };
+    return (
+      this.newScrapStorage.getForJournal(journalId) ?? {
+        id: null,
+        parentId: journalId,
+        dateTime: null,
+        notes: "",
+        title: "",
+        scrapType: scrapType,
+      }
+    );
   }
 }
