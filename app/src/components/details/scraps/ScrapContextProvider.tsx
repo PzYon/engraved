@@ -28,6 +28,7 @@ export const ScrapContextProvider: React.FC<{
   currentScrap: IScrapEntry;
   hasFocus: boolean;
   onSuccess?: () => void;
+  onCancelEditing?: () => void;
   giveFocus?: () => void;
 }> = ({
   children,
@@ -36,6 +37,7 @@ export const ScrapContextProvider: React.FC<{
   propsRenderStyle,
   actionsRenderStyle,
   onSuccess,
+  onCancelEditing,
   hasFocus,
   giveFocus,
 }) => {
@@ -163,6 +165,8 @@ export const ScrapContextProvider: React.FC<{
                 setTitle(initialScrap.title);
                 setNotes(initialScrap.notes);
                 setIsEditMode(false);
+
+                onCancelEditing?.();
 
                 addNewScrapStorage.clearForJournal(
                   journal?.id ?? initialScrap.parentId,

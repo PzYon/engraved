@@ -69,6 +69,7 @@ export const ScrapsViewPage: React.FC = () => {
             hasFocus={true}
             journal={null}
             propsRenderStyle={"none"}
+            onCancelEditing={() => setNewScrap(null)}
           />
         </PageSection>
       ) : null}

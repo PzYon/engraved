@@ -13,6 +13,7 @@ export const Scrap: React.FC<{
   actionsRenderStyle?: ActionsRenderStyle;
   hasFocus?: boolean;
   onSuccess?: () => void;
+  onCancelEditing?: () => void;
   giveFocus?: () => void;
 }> = ({
   scrap: currentScrap,
@@ -21,6 +22,7 @@ export const Scrap: React.FC<{
   actionsRenderStyle,
   hasFocus,
   onSuccess,
+  onCancelEditing,
   giveFocus,
 }) => {
   const [doRender, setDoRender] = useState(hasFocus);
@@ -41,6 +43,7 @@ export const Scrap: React.FC<{
         actionsRenderStyle={actionsRenderStyle}
         journal={journal}
         onSuccess={onSuccess}
+        onCancelEditing={onCancelEditing}
         hasFocus={hasFocus}
         giveFocus={giveFocus}
       >
