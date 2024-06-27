@@ -4,20 +4,29 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 export class AddNewScrapStorage {
   private static key_prefix = "engraved::add-new-scrap::journalId=";
 
-  private storageUtil = new StorageUtil(localStorage);
+  private static readonly storageUtil = new StorageUtil(window.localStorage);
 
-  getForJournal(journalId: string): IScrapEntry {
-    return this.storageUtil.getValue(AddNewScrapStorage.key_prefix + journalId);
+  static getForJournal(journalId: string): IScrapEntry {
+    return AddNewScrapStorage.storageUtil.getValue(
+      AddNewScrapStorage.key_prefix + journalId,
+    );
   }
 
-  setForJournal(scrapEntry: IScrapEntry) {
+  static setForJournal(scrapEntry: IScrapEntry) {
+    if (scrapEntry?.parentId) {
+      throw new Error("Journal ID is required for cache.");
+    }
+
     this.storageUtil.setValue(
       AddNewScrapStorage.key_prefix + scrapEntry.parentId,
       scrapEntry,
     );
   }
 
-  clearForJournal(journalId: string) {
-    this.storageUtil.setValue(AddNewScrapStorage.key_prefix + journalId, null);
+  static clearForJournal(journalId: string) {
+    AddNewScrapStorage.storageUtil.setValue(
+      AddNewScrapStorage.key_prefix + journalId,
+      null,
+    );
   }
 }

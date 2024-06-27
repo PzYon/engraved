@@ -10,8 +10,6 @@ import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
 import { AddNewScrapStorage } from "../components/details/scraps/AddNewScrapStorage";
 
 export class ScrapsJournalType implements IJournalType {
-  private static readonly newScrapStorage = new AddNewScrapStorage();
-
   type = JournalType.Scraps;
 
   isGroupable = false;
@@ -53,7 +51,7 @@ export class ScrapsJournalType implements IJournalType {
 
   static createBlank(journalId: string, scrapType: ScrapType): IScrapEntry {
     return (
-      this.newScrapStorage.getForJournal(journalId) ?? {
+      AddNewScrapStorage.getForJournal(journalId) ?? {
         id: null,
         parentId: journalId,
         dateTime: null,

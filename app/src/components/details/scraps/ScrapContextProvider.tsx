@@ -18,8 +18,6 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { IJournal } from "../../../serverApi/IJournal";
 import { AddNewScrapStorage } from "./AddNewScrapStorage";
 
-const addNewScrapStorage = new AddNewScrapStorage();
-
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
   propsRenderStyle: EntryPropsRenderStyle;
@@ -56,7 +54,7 @@ export const ScrapContextProvider: React.FC<{
       return;
     }
 
-    addNewScrapStorage.setForJournal({
+    AddNewScrapStorage.setForJournal({
       id: null,
       scrapType: currentScrap.scrapType,
       notes: notes,
@@ -168,7 +166,7 @@ export const ScrapContextProvider: React.FC<{
 
                 onCancelEditing?.();
 
-                addNewScrapStorage.clearForJournal(
+                AddNewScrapStorage.clearForJournal(
                   journal?.id ?? initialScrap.parentId,
                 );
               },
@@ -236,7 +234,7 @@ export const ScrapContextProvider: React.FC<{
       } as IUpsertScrapsEntryCommand,
     });
 
-    addNewScrapStorage.clearForJournal(currentScrap.parentId);
+    AddNewScrapStorage.clearForJournal(currentScrap.parentId);
   }
 
   return (
