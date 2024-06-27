@@ -50,7 +50,7 @@ export const ScrapContextProvider: React.FC<{
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   useEffect(() => {
-    if (currentScrap?.id) {
+    if (currentScrap?.parentId) {
       return;
     }
 
@@ -63,7 +63,13 @@ export const ScrapContextProvider: React.FC<{
       parentId: currentScrap.parentId,
       dateTime: null,
     });
-  }, [notes, title]);
+  }, [
+    parsedDate?.text,
+    currentScrap.parentId,
+    currentScrap.scrapType,
+    notes,
+    title,
+  ]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialScrap = useMemo(() => currentScrap, []);
