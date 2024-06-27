@@ -28,6 +28,7 @@ export const ScrapContextProvider: React.FC<{
   onSuccess?: () => void;
   onCancelEditing?: () => void;
   giveFocus?: () => void;
+  isQuickAdd?: boolean;
 }> = ({
   children,
   currentScrap,
@@ -38,6 +39,7 @@ export const ScrapContextProvider: React.FC<{
   onCancelEditing,
   hasFocus,
   giveFocus,
+  isQuickAdd,
 }) => {
   const { setAppAlert } = useAppContext();
   const { renderDialog } = useDialogContext();
@@ -56,15 +58,18 @@ export const ScrapContextProvider: React.FC<{
 
     console.log("updating storage");
 
-    AddNewScrapStorage.setForJournal({
-      id: null,
-      scrapType: currentScrap.scrapType,
-      notes: notes,
-      title: parsedDate?.text ?? title,
-      journalAttributeValues: {},
-      parentId: currentScrap.parentId,
-      dateTime: null,
-    });
+    AddNewScrapStorage.setForJournal(
+      isQuickAdd ? "quick-add" : currentScrap.parentId,
+      {
+        id: null,
+        scrapType: currentScrap.scrapType,
+        notes: notes,
+        title: parsedDate?.text ?? title,
+        journalAttributeValues: {},
+        parentId: currentScrap.parentId,
+        dateTime: null,
+      },
+    );
   }, [
     parsedDate?.text,
     currentScrap.parentId,

@@ -6,26 +6,22 @@ export class AddNewScrapStorage {
 
   private static readonly storageUtil = new StorageUtil(window.localStorage);
 
-  static getForJournal(journalId: string): IScrapEntry {
+  static getForJournal(cacheKey: string): IScrapEntry {
     return AddNewScrapStorage.storageUtil.getValue(
-      AddNewScrapStorage.key_prefix + journalId,
+      AddNewScrapStorage.key_prefix + cacheKey,
     );
   }
 
-  static setForJournal(scrapEntry: IScrapEntry) {
-    if (!scrapEntry?.parentId) {
-      throw new Error("Journal ID is required for cache.");
-    }
-
+  static setForJournal(cacheKey: string, scrapEntry: IScrapEntry) {
     this.storageUtil.setValue(
-      AddNewScrapStorage.key_prefix + scrapEntry.parentId,
+      AddNewScrapStorage.key_prefix + cacheKey,
       scrapEntry,
     );
   }
 
-  static clearForJournal(journalId: string) {
+  static clearForJournal(cacheKey: string) {
     AddNewScrapStorage.storageUtil.setValue(
-      AddNewScrapStorage.key_prefix + journalId,
+      AddNewScrapStorage.key_prefix + cacheKey,
       null,
     );
   }

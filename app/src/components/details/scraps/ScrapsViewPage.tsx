@@ -109,6 +109,7 @@ export const ScrapsViewPage: React.FC = () => {
       icon: isMarkdown ? <MarkdownScrapIcon /> : <ListScrapIcon />,
       onClick: () => {
         const entry = ScrapsJournalType.createBlank(
+          false,
           journal.id,
           isMarkdown ? ScrapType.Markdown : ScrapType.List,
         );

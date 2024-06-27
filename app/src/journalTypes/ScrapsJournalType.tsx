@@ -49,9 +49,15 @@ export class ScrapsJournalType implements IJournalType {
     throw new Error("getYAxisLabel is currently not supported for Scraps.");
   }
 
-  static createBlank(journalId: string, scrapType: ScrapType): IScrapEntry {
+  static createBlank(
+    isQuickAdd: boolean,
+    journalId: string,
+    scrapType: ScrapType,
+  ): IScrapEntry {
     return (
-      AddNewScrapStorage.getForJournal(journalId) ?? {
+      AddNewScrapStorage.getForJournal(
+        isQuickAdd ? "quick-add" : journalId,
+      ) ?? {
         id: null,
         parentId: journalId,
         dateTime: null,

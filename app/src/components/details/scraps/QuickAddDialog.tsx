@@ -19,7 +19,7 @@ export const QuickAddDialog: React.FC<{
 
   const [journalId, setJournalId] = useState(targetJournalId ?? "");
 
-  const scrap = ScrapsJournalType.createBlank(journalId, type);
+  const scrap = ScrapsJournalType.createBlank(true, journalId, type);
 
   return (
     <>
@@ -69,6 +69,7 @@ export const QuickAddDialog: React.FC<{
           propsRenderStyle={"none"}
           actionsRenderStyle={"save-only"}
           onSuccess={onSuccess}
+          isQuickAdd={true}
         />
       </ScrapContainer>
     </>
