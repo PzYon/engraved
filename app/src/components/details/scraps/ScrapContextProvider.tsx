@@ -50,9 +50,11 @@ export const ScrapContextProvider: React.FC<{
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   useEffect(() => {
-    if (currentScrap?.parentId) {
+    if (!isEditMode || !currentScrap?.parentId) {
       return;
     }
+
+    console.log("updating storage");
 
     AddNewScrapStorage.setForJournal({
       id: null,

@@ -13,7 +13,7 @@ export class AddNewScrapStorage {
   }
 
   static setForJournal(scrapEntry: IScrapEntry) {
-    if (scrapEntry?.parentId) {
+    if (!scrapEntry?.parentId) {
       throw new Error("Journal ID is required for cache.");
     }
 
