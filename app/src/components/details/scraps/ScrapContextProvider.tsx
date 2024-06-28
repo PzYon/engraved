@@ -16,6 +16,7 @@ import { getScheduleDefinition } from "../../overview/scheduled/scheduleUtils";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { IJournal } from "../../../serverApi/IJournal";
+import { AddNewScrapStorage } from "./AddNewScrapStorage";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -25,7 +26,10 @@ export const ScrapContextProvider: React.FC<{
   currentScrap: IScrapEntry;
   hasFocus: boolean;
   onSuccess?: () => void;
+  onCancelEditing?: () => void;
   giveFocus?: () => void;
+  isQuickAdd?: boolean;
+  targetJournalId?: string;
 }> = ({
   children,
   currentScrap,
@@ -33,8 +37,11 @@ export const ScrapContextProvider: React.FC<{
   propsRenderStyle,
   actionsRenderStyle,
   onSuccess,
+  onCancelEditing,
   hasFocus,
   giveFocus,
+  isQuickAdd,
+  targetJournalId,
 }) => {
   const { setAppAlert } = useAppContext();
   const { renderDialog } = useDialogContext();
@@ -45,6 +52,32 @@ export const ScrapContextProvider: React.FC<{
   const [scrapToRender, setScrapToRender] = useState(currentScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
+
+  useEffect(() => {
+    if (!isEditMode || !currentScrap?.parentId) {
+      return;
+    }
+
+    AddNewScrapStorage.setForJournal(
+      isQuickAdd ? "quick-add" : currentScrap.parentId,
+      {
+        id: null,
+        scrapType: currentScrap.scrapType,
+        notes: notes,
+        title: parsedDate?.text ?? title,
+        journalAttributeValues: {},
+        parentId: targetJournalId ?? currentScrap.parentId,
+        dateTime: null,
+      },
+    );
+  }, [
+    parsedDate?.text,
+    targetJournalId,
+    currentScrap.parentId,
+    currentScrap.scrapType,
+    notes,
+    title,
+  ]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialScrap = useMemo(() => currentScrap, []);
@@ -144,6 +177,14 @@ export const ScrapContextProvider: React.FC<{
                 setTitle(initialScrap.title);
                 setNotes(initialScrap.notes);
                 setIsEditMode(false);
+
+                onCancelEditing?.();
+
+                AddNewScrapStorage.clearForJournal(
+                  isQuickAdd
+                    ? "quick-add"
+                    : journal?.id ?? currentScrap.parentId,
+                );
               },
               hasFocus,
               isDirty,
@@ -199,7 +240,7 @@ export const ScrapContextProvider: React.FC<{
         notes: notesToSave,
         title: parsedDate?.text ?? title,
         journalAttributeValues: {},
-        journalId: currentScrap.parentId,
+        journalId: targetJournalId ?? currentScrap.parentId,
         dateTime: new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
@@ -208,6 +249,10 @@ export const ScrapContextProvider: React.FC<{
         ),
       } as IUpsertScrapsEntryCommand,
     });
+
+    AddNewScrapStorage.clearForJournal(
+      isQuickAdd ? "quick-add" : currentScrap.parentId,
+    );
   }
 
   return (

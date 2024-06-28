@@ -65,7 +65,7 @@ export const UpsertEntryAction: React.FC<{
       <Scrap
         scrap={
           (entry as IScrapEntry) ??
-          ScrapsJournalType.createBlank(journal.id, ScrapType.Markdown)
+          ScrapsJournalType.createBlank(false, journal.id, ScrapType.Markdown)
         }
         hasFocus={true}
         journal={journal}

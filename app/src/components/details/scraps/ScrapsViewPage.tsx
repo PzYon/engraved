@@ -69,6 +69,7 @@ export const ScrapsViewPage: React.FC = () => {
             hasFocus={true}
             journal={null}
             propsRenderStyle={"none"}
+            onCancelEditing={() => setNewScrap(null)}
           />
         </PageSection>
       ) : null}
@@ -107,12 +108,13 @@ export const ScrapsViewPage: React.FC = () => {
       label: "Add " + type,
       icon: isMarkdown ? <MarkdownScrapIcon /> : <ListScrapIcon />,
       onClick: () => {
-        setNewScrap(
-          ScrapsJournalType.createBlank(
-            journal.id,
-            isMarkdown ? ScrapType.Markdown : ScrapType.List,
-          ),
+        const entry = ScrapsJournalType.createBlank(
+          false,
+          journal.id,
+          isMarkdown ? ScrapType.Markdown : ScrapType.List,
         );
+
+        setNewScrap(entry);
       },
     };
   }

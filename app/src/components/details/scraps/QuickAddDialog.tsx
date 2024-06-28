@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { ScrapType } from "../../../serverApi/IScrapEntry";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { ListScrapIcon, MarkdownScrapIcon } from "../scraps/ScrapsViewPage";
+import { ListScrapIcon, MarkdownScrapIcon } from "./ScrapsViewPage";
 import { JournalSelector } from "../../common/JournalSelector";
-import { Scrap } from "../scraps/Scrap";
+import { Scrap } from "./Scrap";
 import { UserRole } from "../../../serverApi/UserRole";
 import { useAppContext } from "../../../AppContext";
 import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
@@ -17,9 +17,9 @@ export const QuickAddDialog: React.FC<{
 
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
 
-  const [journalId, setJournalId] = useState(targetJournalId ?? "");
+  const scrap = ScrapsJournalType.createBlank(true, targetJournalId, type);
 
-  const scrap = ScrapsJournalType.createBlank(journalId, type);
+  const [journalId, setJournalId] = useState(scrap.parentId);
 
   return (
     <>
@@ -69,6 +69,8 @@ export const QuickAddDialog: React.FC<{
           propsRenderStyle={"none"}
           actionsRenderStyle={"save-only"}
           onSuccess={onSuccess}
+          isQuickAdd={true}
+          targetJournalId={journalId}
         />
       </ScrapContainer>
     </>

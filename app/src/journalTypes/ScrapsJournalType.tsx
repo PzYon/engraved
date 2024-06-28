@@ -7,6 +7,7 @@ import { IEntry } from "../serverApi/IEntry";
 import React from "react";
 import { Scrap } from "../components/details/scraps/Scrap";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
+import { AddNewScrapStorage } from "../components/details/scraps/AddNewScrapStorage";
 
 export class ScrapsJournalType implements IJournalType {
   type = JournalType.Scraps;
@@ -48,14 +49,22 @@ export class ScrapsJournalType implements IJournalType {
     throw new Error("getYAxisLabel is currently not supported for Scraps.");
   }
 
-  static createBlank(journalId: string, scrapType: ScrapType): IScrapEntry {
-    return {
-      id: null,
-      parentId: journalId,
-      dateTime: null,
-      notes: "",
-      title: "",
-      scrapType: scrapType,
-    };
+  static createBlank(
+    isQuickAdd: boolean,
+    journalId: string,
+    scrapType: ScrapType,
+  ): IScrapEntry {
+    return (
+      AddNewScrapStorage.getForJournal(
+        isQuickAdd ? "quick-add" : journalId,
+      ) ?? {
+        id: null,
+        parentId: journalId,
+        dateTime: null,
+        notes: "",
+        title: "",
+        scrapType: scrapType,
+      }
+    );
   }
 }
