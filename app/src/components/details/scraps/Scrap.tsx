@@ -16,6 +16,7 @@ export const Scrap: React.FC<{
   onCancelEditing?: () => void;
   giveFocus?: () => void;
   isQuickAdd?: boolean;
+  targetJournalId?: string;
 }> = ({
   scrap: currentScrap,
   journal,
@@ -26,6 +27,7 @@ export const Scrap: React.FC<{
   onCancelEditing,
   giveFocus,
   isQuickAdd,
+  targetJournalId,
 }) => {
   const [doRender, setDoRender] = useState(hasFocus);
 
@@ -49,6 +51,7 @@ export const Scrap: React.FC<{
         hasFocus={hasFocus}
         giveFocus={giveFocus}
         isQuickAdd={isQuickAdd}
+        targetJournalId={targetJournalId}
       >
         <ScrapInner />
       </ScrapContextProvider>

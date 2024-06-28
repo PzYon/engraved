@@ -70,6 +70,7 @@ export const QuickAddDialog: React.FC<{
           actionsRenderStyle={"save-only"}
           onSuccess={onSuccess}
           isQuickAdd={true}
+          targetJournalId={journalId}
         />
       </ScrapContainer>
     </>

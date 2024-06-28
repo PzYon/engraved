@@ -29,6 +29,7 @@ export const ScrapContextProvider: React.FC<{
   onCancelEditing?: () => void;
   giveFocus?: () => void;
   isQuickAdd?: boolean;
+  targetJournalId?: string;
 }> = ({
   children,
   currentScrap,
@@ -40,6 +41,7 @@ export const ScrapContextProvider: React.FC<{
   hasFocus,
   giveFocus,
   isQuickAdd,
+  targetJournalId,
 }) => {
   const { setAppAlert } = useAppContext();
   const { renderDialog } = useDialogContext();
@@ -64,12 +66,13 @@ export const ScrapContextProvider: React.FC<{
         notes: notes,
         title: parsedDate?.text ?? title,
         journalAttributeValues: {},
-        parentId: currentScrap.parentId,
+        parentId: targetJournalId ?? currentScrap.parentId,
         dateTime: null,
       },
     );
   }, [
     parsedDate?.text,
+    targetJournalId,
     currentScrap.parentId,
     currentScrap.scrapType,
     notes,
