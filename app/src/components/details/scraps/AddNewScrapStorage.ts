@@ -2,9 +2,10 @@ import { StorageUtil } from "../../../util/StorageUtil";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 
 export class AddNewScrapStorage {
-  private static key_prefix = "engraved::add-new-scrap::journalId=";
-
+  private static readonly key_prefix = "engraved::add-new-scrap::journalId=";
   private static readonly storageUtil = new StorageUtil(window.localStorage);
+
+  private static timer: number;
 
   static getForJournal(cacheKey: string): IScrapEntry {
     return AddNewScrapStorage.storageUtil.getValue(
@@ -13,10 +14,14 @@ export class AddNewScrapStorage {
   }
 
   static setForJournal(cacheKey: string, scrapEntry: IScrapEntry) {
-    this.storageUtil.setValue(
-      AddNewScrapStorage.key_prefix + cacheKey,
-      scrapEntry,
-    );
+    window.clearTimeout(AddNewScrapStorage.timer);
+
+    AddNewScrapStorage.timer = window.setTimeout(() => {
+      this.storageUtil.setValue(
+        AddNewScrapStorage.key_prefix + cacheKey,
+        scrapEntry,
+      );
+    }, 500);
   }
 
   static clearForJournal(cacheKey: string) {

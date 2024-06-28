@@ -56,8 +56,6 @@ export const ScrapContextProvider: React.FC<{
       return;
     }
 
-    console.log("updating storage");
-
     AddNewScrapStorage.setForJournal(
       isQuickAdd ? "quick-add" : currentScrap.parentId,
       {
@@ -180,7 +178,9 @@ export const ScrapContextProvider: React.FC<{
                 onCancelEditing?.();
 
                 AddNewScrapStorage.clearForJournal(
-                  journal?.id ?? initialScrap.parentId,
+                  isQuickAdd
+                    ? "quick-add"
+                    : journal?.id ?? currentScrap.parentId,
                 );
               },
               hasFocus,
@@ -247,7 +247,9 @@ export const ScrapContextProvider: React.FC<{
       } as IUpsertScrapsEntryCommand,
     });
 
-    AddNewScrapStorage.clearForJournal(currentScrap.parentId);
+    AddNewScrapStorage.clearForJournal(
+      isQuickAdd ? "quick-add" : currentScrap.parentId,
+    );
   }
 
   return (

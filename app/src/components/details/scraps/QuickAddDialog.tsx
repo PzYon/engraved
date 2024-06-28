@@ -17,9 +17,9 @@ export const QuickAddDialog: React.FC<{
 
   const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
 
-  const [journalId, setJournalId] = useState(targetJournalId ?? "");
+  const scrap = ScrapsJournalType.createBlank(true, targetJournalId, type);
 
-  const scrap = ScrapsJournalType.createBlank(true, journalId, type);
+  const [journalId, setJournalId] = useState(scrap.parentId);
 
   return (
     <>
