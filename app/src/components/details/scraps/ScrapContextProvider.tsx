@@ -240,7 +240,7 @@ export const ScrapContextProvider: React.FC<{
         notes: notesToSave,
         title: parsedDate?.text ?? title,
         journalAttributeValues: {},
-        journalId: currentScrap.parentId,
+        journalId: targetJournalId ?? currentScrap.parentId,
         dateTime: new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
