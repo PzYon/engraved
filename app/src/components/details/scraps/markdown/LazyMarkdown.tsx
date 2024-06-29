@@ -26,7 +26,30 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
 
   const El = useBasic ? BasicContentContainer : ContentContainer;
 
-  return <El onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />;
+  return (
+    <>
+      <El onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />
+      <ul>
+        {getRawRowValues().map((v, i) => (
+          <li key={i}>{v}</li>
+        ))}
+      </ul>
+    </>
+  );
+
+  function getRawRowValues() {
+    return md.parseInline(value, {}).flatMap((token) => {
+      return token.children
+        .filter((token) => token.type === "text")
+        .map((token) =>
+          md
+            .parse(token.content, {})
+            .filter((innerToken) => innerToken.type === "inline")
+            .map((innerToken) => innerToken.content)
+            .join(" "),
+        );
+    });
+  }
 };
 
 const BaseContentContainer = styled("div")`
