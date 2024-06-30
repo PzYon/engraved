@@ -1,9 +1,10 @@
-import MarkdownIt from "markdown-it";
 import React, { useMemo } from "react";
 import { styled } from "@mui/material";
 import { IMarkdownProps } from "./Markdown";
+import { getMarkdownInstance } from "./getMarkdownInstance";
+import { getRawRowValues } from "./getRawRowValues";
 
-const md = MarkdownIt("default", { linkify: true, breaks: true });
+const md = getMarkdownInstance();
 
 // https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 const defaultRender =
@@ -30,26 +31,12 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
     <>
       <El onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />
       <ul>
-        {getRawRowValues().map((v, i) => (
+        {getRawRowValues(value).map((v, i) => (
           <li key={i}>{v}</li>
         ))}
       </ul>
     </>
   );
-
-  function getRawRowValues() {
-    return md.parseInline(value, {}).flatMap((token) => {
-      return token.children
-        .filter((token) => token.type === "text")
-        .map((token) =>
-          md
-            .parse(token.content, {})
-            .filter((innerToken) => innerToken.type === "inline")
-            .map((innerToken) => innerToken.content)
-            .join(" "),
-        );
-    });
-  }
 };
 
 const BaseContentContainer = styled("div")`
