@@ -5,6 +5,7 @@ import {
   AddOutlined,
   MoveDownOutlined,
   RemoveCircleOutline,
+  StarHalf,
   SyncAltOutlined,
 } from "@mui/icons-material";
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
@@ -104,6 +105,14 @@ export const ScrapList: React.FC = () => {
           <ActionsContainer>
             <ActionIconButtonGroup
               actions={[
+                {
+                  onClick: () => {
+                    alert("toggle type");
+                  },
+                  key: "toggle-type",
+                  icon: <StarHalf />,
+                  label: "Toggle type",
+                },
                 {
                   key: "add",
                   label: "Add new",
