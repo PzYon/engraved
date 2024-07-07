@@ -8,12 +8,17 @@ import { EmojiWrapper } from "../../common/EmojiWrapper";
 export const JournalIcon: React.FC<{
   journal: IJournal;
   iconStyle: IconStyle;
-}> = ({ journal, iconStyle }) => {
+  isClickable?: boolean;
+}> = ({ journal, iconStyle, isClickable }) => {
   const emoji = getUiSettings(journal).emoji?.unified;
 
   return emoji ? (
-    <EmojiWrapper emoji={emoji} style={iconStyle} />
+    <EmojiWrapper emoji={emoji} style={iconStyle} isClickable={isClickable} />
   ) : (
-    <JournalTypeIcon type={journal.type} style={iconStyle} />
+    <JournalTypeIcon
+      type={journal.type}
+      style={iconStyle}
+      isClickable={isClickable}
+    />
   );
 };
