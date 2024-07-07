@@ -39,6 +39,8 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.common.white,
           padding: theme.spacing(2),
+          outline: `1px solid ${theme.palette.background.default}`,
+          borderRadius: "3px",
         },
         ".cm-layer.cm-selectionLayer .cm-selectionBackground": {
           backgroundColor: theme.palette.primary.main,

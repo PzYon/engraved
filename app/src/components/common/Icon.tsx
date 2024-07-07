@@ -5,16 +5,30 @@ import { IconStyle } from "./IconStyle";
 export const Icon: React.FC<{
   children: React.ReactNode;
   style: IconStyle;
-}> = ({ children, style }) => {
+  isClickable?: boolean;
+}> = ({ children, style, isClickable }) => {
   const Host = style === IconStyle.Small ? SmallHost : LargeHost;
 
-  return <Host className="ngrvd-icon">{children}</Host>;
+  return (
+    <Host className={`ngrvd-icon${isClickable ? " clickable" : ""}`}>
+      {children}
+    </Host>
+  );
 };
 
-const LargeHost = styled("span")`
+const BaseHost = styled("span")`
+  &.clickable {
+    cursor: pointer !important;
+  }
+
   svg {
     border-radius: 100%;
     color: ${(p) => p.theme.palette.primary.main};
+  }
+`;
+
+const LargeHost = styled(BaseHost)`
+  svg {
     background-color: ${(p) => p.theme.palette.background.default} !important;
     border: 2px solid ${(p) => p.theme.palette.primary.main};
     margin-top: 9px;
@@ -24,10 +38,8 @@ const LargeHost = styled("span")`
   }
 `;
 
-const SmallHost = styled("span")`
+const SmallHost = styled(BaseHost)`
   svg {
-    border-radius: 100%;
-    color: ${(p) => p.theme.palette.primary.main};
     border: 1px solid ${(p) => p.theme.palette.primary.main};
     padding: ${(p) => p.theme.spacing(0.5)};
     width: 0.6em;
