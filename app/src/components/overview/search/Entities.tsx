@@ -12,14 +12,17 @@ import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
 import { addDays, isBefore } from "date-fns";
 
-export const Entities: React.FC<{ isSchedule?: boolean }> = ({
-  isSchedule,
-}) => {
+export const Entities: React.FC<{
+  isSchedule?: boolean;
+  executeWithoutConditions?: boolean;
+}> = ({ isSchedule, executeWithoutConditions }) => {
   const { user } = useAppContext();
   const { searchText } = usePageContext();
+
   const queryResult: ISearchEntitiesResult = useSearchEntitiesQuery(
     searchText,
     isSchedule,
+    executeWithoutConditions,
   );
 
   if (!queryResult) {
