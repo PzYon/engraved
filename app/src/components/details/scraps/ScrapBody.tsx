@@ -9,11 +9,14 @@ import {
   getSchedulePropertyFromSchedule,
 } from "../../overview/scheduled/scheduleUtils";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
+import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
+import { styled } from "@mui/material";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
-}> = ({ children, actions }) => {
+  editModeActions: IAction[];
+}> = ({ children, actions, editModeActions }) => {
   const { user } = useAppContext();
 
   const {
@@ -33,26 +36,34 @@ export const ScrapBody: React.FC<{
   const { isCompact } = useDisplayModeContext();
 
   return (
-    <Entry
-      hasFocus={hasFocus}
-      journal={journal}
-      entry={scrapToRender}
-      actions={getActions()}
-      propsRenderStyle={propsRenderStyle}
-      giveFocus={giveFocus}
-      propertyOverrides={
-        parsedDate?.date
-          ? [
-              getSchedulePropertyFromSchedule({
-                nextOccurrence: parsedDate.date.toString(),
-                recurrence: parsedDate.recurrence,
-              }),
-            ]
-          : []
-      }
-    >
-      {isCompact && !hasFocus ? null : children}
-    </Entry>
+    <>
+      <Entry
+        hasFocus={hasFocus}
+        journal={journal}
+        entry={scrapToRender}
+        actions={getActions()}
+        propsRenderStyle={propsRenderStyle}
+        giveFocus={giveFocus}
+        propertyOverrides={
+          parsedDate?.date
+            ? [
+                getSchedulePropertyFromSchedule({
+                  nextOccurrence: parsedDate.date.toString(),
+                  recurrence: parsedDate.recurrence,
+                }),
+              ]
+            : []
+        }
+      >
+        {isCompact && !hasFocus ? null : children}
+
+        {isEditMode && editModeActions?.length ? (
+          <ActionsContainer>
+            <ActionIconButtonGroup actions={editModeActions} />
+          </ActionsContainer>
+        ) : null}
+      </Entry>
+    </>
   );
 
   function getActions() {
@@ -98,3 +109,8 @@ export const ScrapBody: React.FC<{
     return allActions;
   }
 };
+
+const ActionsContainer = styled("div")`
+  display: flex;
+  padding: 3px 0 4px 3px;
+`;

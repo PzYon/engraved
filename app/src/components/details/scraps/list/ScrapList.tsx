@@ -1,14 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ScrapListItem } from "./ScrapListItem";
-import {
-  AddOutlined,
-  MoveDownOutlined,
-  RemoveCircleOutline,
-  StarHalf,
-  SyncAltOutlined,
-} from "@mui/icons-material";
-import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
 import { ISCrapListItem } from "./IScrapListItem";
 import {
@@ -26,6 +18,14 @@ import {
 } from "@dnd-kit/sortable";
 import { useScrapContext } from "../ScrapContext";
 import { ScrapBody } from "../ScrapBody";
+import {
+  AddOutlined,
+  MoveDownOutlined,
+  RemoveCircleOutline,
+  StarHalf,
+  SyncAltOutlined,
+} from "@mui/icons-material";
+import { IAction } from "../../../common/actions/IAction";
 
 export const ScrapList: React.FC = () => {
   const { palette } = useTheme();
@@ -56,7 +56,7 @@ export const ScrapList: React.FC = () => {
   const sensors = useSensors(useSensor(TouchSensor), useSensor(PointerSensor));
 
   return (
-    <ScrapBody actions={[]}>
+    <ScrapBody actions={[]} editModeActions={getEditModeActions()}>
       <BodyHost
         key={isEditMode.toString()}
         style={
@@ -101,49 +101,6 @@ export const ScrapList: React.FC = () => {
             </DndContext>
           )}
         </List>
-        {isEditMode ? (
-          <ActionsContainer>
-            <ActionIconButtonGroup
-              actions={[
-                {
-                  onClick: () => {
-                    alert("toggle type");
-                  },
-                  key: "toggle-type",
-                  icon: <StarHalf />,
-                  label: "Toggle type",
-                },
-                {
-                  key: "add",
-                  label: "Add new",
-                  icon: <AddOutlined fontSize="small" />,
-                  onClick: () =>
-                    listItemCollection.addItem(
-                      listItemCollection.items.length - 1,
-                    ),
-                },
-                {
-                  key: "move-checked-to-bottom",
-                  label: "Move checked to bottom",
-                  icon: <MoveDownOutlined fontSize="small" />,
-                  onClick: () => listItemCollection.moveCheckedToBottom(),
-                },
-                {
-                  key: "toggle-checked",
-                  label: "Toggle checked",
-                  icon: <SyncAltOutlined fontSize="small" />,
-                  onClick: () => listItemCollection.toggleAllChecked(),
-                },
-                {
-                  key: "delete-checked",
-                  label: "Delete checked",
-                  icon: <RemoveCircleOutline fontSize="small" />,
-                  onClick: () => listItemCollection.deleteAllChecked(),
-                },
-              ]}
-            />
-          </ActionsContainer>
-        ) : null}
       </BodyHost>
     </ScrapBody>
   );
@@ -170,6 +127,44 @@ export const ScrapList: React.FC = () => {
       depth: newDepth,
     });
   }
+
+  function getEditModeActions(): IAction[] {
+    return [
+      {
+        onClick: () => {
+          alert("toggle type");
+        },
+        key: "toggle-type",
+        icon: <StarHalf />,
+        label: "Toggle type",
+      },
+      {
+        key: "add",
+        label: "Add new",
+        icon: <AddOutlined fontSize="small" />,
+        onClick: () =>
+          listItemCollection.addItem(listItemCollection.items.length - 1),
+      },
+      {
+        key: "move-checked-to-bottom",
+        label: "Move checked to bottom",
+        icon: <MoveDownOutlined fontSize="small" />,
+        onClick: () => listItemCollection.moveCheckedToBottom(),
+      },
+      {
+        key: "toggle-checked",
+        label: "Toggle checked",
+        icon: <SyncAltOutlined fontSize="small" />,
+        onClick: () => listItemCollection.toggleAllChecked(),
+      },
+      {
+        key: "delete-checked",
+        label: "Delete checked",
+        icon: <RemoveCircleOutline fontSize="small" />,
+        onClick: () => listItemCollection.deleteAllChecked(),
+      },
+    ];
+  }
 };
 
 function getItemsAsJson(rawItems: ISCrapListItem[]) {
@@ -184,9 +179,4 @@ const List = styled("ul")`
   list-style-type: none;
   margin: 0;
   padding: 0;
-`;
-
-const ActionsContainer = styled("div")`
-  display: flex;
-  padding: 3px 0 4px 3px;
 `;

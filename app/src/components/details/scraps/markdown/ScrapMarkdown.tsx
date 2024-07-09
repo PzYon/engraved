@@ -7,6 +7,7 @@ import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
+import { StarHalf } from "@mui/icons-material";
 
 export const ScrapMarkdown: React.FC = () => {
   const { setAppAlert } = useAppContext();
@@ -16,6 +17,16 @@ export const ScrapMarkdown: React.FC = () => {
 
   return (
     <ScrapBody
+      editModeActions={[
+        {
+          onClick: () => {
+            alert("toggle type");
+          },
+          key: "toggle-type",
+          icon: <StarHalf />,
+          label: "Toggle type",
+        },
+      ]}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
       {getContent()}
