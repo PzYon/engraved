@@ -80,8 +80,18 @@ export const queryKeysFactory = {
     return [journals, "entries", searchText ?? "", journalTypes?.join() ?? ""];
   },
 
-  entities(searchText?: string, scheduledOnly: boolean = false) {
-    return ["search", "entities", searchText ?? "", scheduledOnly];
+  entities(
+    searchText?: string,
+    scheduledOnly = false,
+    executeWithoutConditions = false,
+  ) {
+    return [
+      "search",
+      "entities",
+      searchText ?? "",
+      scheduledOnly,
+      executeWithoutConditions,
+    ];
   },
 
   systemInfo() {

@@ -6,11 +6,19 @@ import { ISearchEntitiesResult } from "../../ISearchEntitiesResult";
 export const useSearchEntitiesQuery = (
   searchText?: string,
   scheduledOnly?: boolean,
+  executeWithoutConditions?: boolean,
 ) => {
   const { data: result } = useQuery<ISearchEntitiesResult>({
-    queryKey: queryKeysFactory.entities(searchText, scheduledOnly),
+    queryKey: queryKeysFactory.entities(
+      searchText,
+      scheduledOnly,
+      executeWithoutConditions,
+    ),
 
-    queryFn: () => ServerApi.getSearchEntities(searchText, scheduledOnly),
+    queryFn: () =>
+      executeWithoutConditions || searchText
+        ? ServerApi.getSearchEntities(searchText, scheduledOnly)
+        : Promise.resolve({ entities: [], journals: [] }),
   });
 
   return result;

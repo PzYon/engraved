@@ -7,6 +7,9 @@ import { IconStyle } from "./IconStyle";
 export const JournalTypeIcon: React.FC<{
   type: JournalType;
   style: IconStyle;
-}> = ({ type, style }) => (
-  <Icon style={style}>{JournalTypeFactory.create(type).getIcon()}</Icon>
+  isClickable?: boolean;
+}> = ({ type, style, isClickable }) => (
+  <Icon style={style} isClickable={isClickable}>
+    {JournalTypeFactory.create(type).getIcon()}
+  </Icon>
 );
