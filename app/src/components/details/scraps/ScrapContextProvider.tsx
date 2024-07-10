@@ -199,6 +199,9 @@ export const ScrapContextProvider: React.FC<{
         giveFocus,
         hasTitleFocus,
         setHasTitleFocus,
+        changeScrapType: (genericNotes, targetType) => {
+          console.log("change to " + targetType, genericNotes);
+        },
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

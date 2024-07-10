@@ -26,6 +26,7 @@ import {
   SyncAltOutlined,
 } from "@mui/icons-material";
 import { IAction } from "../../../common/actions/IAction";
+import { ScrapType } from "../../../../serverApi/IScrapEntry";
 
 export const ScrapList: React.FC = () => {
   const { palette } = useTheme();
@@ -37,6 +38,7 @@ export const ScrapList: React.FC = () => {
     upsertScrap,
     scrapToRender,
     hasTitleFocus,
+    changeScrapType,
   } = useScrapContext();
 
   const listItemCollection = useMemo(() => {
@@ -132,7 +134,7 @@ export const ScrapList: React.FC = () => {
     return [
       {
         onClick: () => {
-          alert("toggle type");
+          changeScrapType([], ScrapType.Markdown);
         },
         key: "toggle-type",
         icon: <StarHalf />,
