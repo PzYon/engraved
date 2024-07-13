@@ -1,9 +1,9 @@
-import MarkdownIt from "markdown-it";
 import React, { useMemo } from "react";
 import { styled } from "@mui/material";
 import { IMarkdownProps } from "./Markdown";
+import { getMarkdownInstance } from "./getMarkdownInstance";
 
-const md = MarkdownIt("default", { linkify: true, breaks: true });
+const md = getMarkdownInstance();
 
 // https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 const defaultRender =

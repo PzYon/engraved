@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ISCrapListItem } from "./IScrapListItem";
+import { IScrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
 import { DragIndicator, RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
@@ -13,9 +13,9 @@ import { CSS } from "@dnd-kit/utilities";
 export const ScrapListItem: React.FC<{
   listItemsCollection: ListItemCollection;
   index: number;
-  listItem: ISCrapListItem;
+  listItem: IScrapListItem;
   isEditMode: boolean;
-  onChange: (listItem: ISCrapListItem) => void;
+  onChange: (listItem: IScrapListItem) => void;
 }> = ({ listItemsCollection, index, isEditMode, listItem, onChange }) => {
   const [label, setLabel] = useState(listItem.label);
   const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);

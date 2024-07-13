@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { IScrapEntry } from "../../../serverApi/IScrapEntry";
+import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -17,6 +17,8 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { IJournal } from "../../../serverApi/IJournal";
 import { AddNewScrapStorage } from "./AddNewScrapStorage";
+import { IScrapListItem } from "./list/IScrapListItem";
+import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -30,6 +32,7 @@ export const ScrapContextProvider: React.FC<{
   giveFocus?: () => void;
   isQuickAdd?: boolean;
   targetJournalId?: string;
+  changeTypeWithoutConfirmation?: boolean;
 }> = ({
   children,
   currentScrap,
@@ -42,6 +45,7 @@ export const ScrapContextProvider: React.FC<{
   giveFocus,
   isQuickAdd,
   targetJournalId,
+  changeTypeWithoutConfirmation,
 }) => {
   const { setAppAlert } = useAppContext();
   const { renderDialog } = useDialogContext();
@@ -156,6 +160,57 @@ export const ScrapContextProvider: React.FC<{
     setNotes(currentScrap.notes);
   }
 
+  function changeScrapTypeInternal(
+    genericNotes: string[],
+    targetType: ScrapType,
+  ) {
+    function changeType() {
+      const newNotes = convertNotesToTargetType(targetType, genericNotes);
+
+      setNotes(newNotes);
+
+      setScrapToRender({
+        ...scrapToRender,
+        notes: newNotes,
+        scrapType: targetType,
+      });
+    }
+
+    if (changeTypeWithoutConfirmation) {
+      changeType();
+      return;
+    }
+
+    renderDialog({
+      title: "Are you sure?",
+      render: (closeDialog) => {
+        return (
+          <>
+            <Typography>
+              Do you really want to change the type to {targetType}? Certain
+              formatting might be lost.
+            </Typography>
+
+            <DialogFormButtonContainer>
+              <Button variant={"contained"} onClick={closeDialog}>
+                No
+              </Button>
+              <Button
+                variant={"outlined"}
+                onClick={() => {
+                  changeType();
+                  closeDialog();
+                }}
+              >
+                Yes, convert to {targetType.toLowerCase()}
+              </Button>
+            </DialogFormButtonContainer>
+          </>
+        );
+      },
+    });
+  }
+
   const contextValue = useMemo<IScrapContext>(
     () => {
       return {
@@ -199,6 +254,7 @@ export const ScrapContextProvider: React.FC<{
         giveFocus,
         hasTitleFocus,
         setHasTitleFocus,
+        changeScrapType: changeScrapTypeInternal,
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -235,23 +291,23 @@ export const ScrapContextProvider: React.FC<{
 
     await upsertEntryMutation.mutateAsync({
       command: {
-        id: currentScrap.id,
-        scrapType: currentScrap.scrapType,
+        id: scrapToRender.id,
+        scrapType: scrapToRender.scrapType,
         notes: notesToSave,
         title: parsedDate?.text ?? title,
         journalAttributeValues: {},
-        journalId: targetJournalId ?? currentScrap.parentId,
+        journalId: targetJournalId ?? scrapToRender.parentId,
         dateTime: new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
-          currentScrap.parentId,
-          currentScrap?.id ?? "{0}",
+          scrapToRender.parentId,
+          scrapToRender?.id ?? "{0}",
         ),
       } as IUpsertScrapsEntryCommand,
     });
 
     AddNewScrapStorage.clearForJournal(
-      isQuickAdd ? "quick-add" : currentScrap.parentId,
+      isQuickAdd ? "quick-add" : scrapToRender.parentId,
     );
   }
 
@@ -261,3 +317,17 @@ export const ScrapContextProvider: React.FC<{
     </ScrapContext.Provider>
   );
 };
+
+function convertNotesToTargetType(
+  targetType: ScrapType,
+  genericNotes: string[],
+) {
+  switch (targetType) {
+    case ScrapType.List:
+      return JSON.stringify(
+        genericNotes.map((n) => ({ label: n }) as IScrapListItem),
+      );
+    case ScrapType.Markdown:
+      return genericNotes.map((n) => "- " + n).join("\n");
+  }
+}

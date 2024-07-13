@@ -17,6 +17,7 @@ export const Scrap: React.FC<{
   giveFocus?: () => void;
   isQuickAdd?: boolean;
   targetJournalId?: string;
+  changeTypeWithoutConfirmation?: boolean;
 }> = ({
   scrap: currentScrap,
   journal,
@@ -28,6 +29,7 @@ export const Scrap: React.FC<{
   giveFocus,
   isQuickAdd,
   targetJournalId,
+  changeTypeWithoutConfirmation,
 }) => {
   const [doRender, setDoRender] = useState(hasFocus);
 
@@ -52,6 +54,7 @@ export const Scrap: React.FC<{
         giveFocus={giveFocus}
         isQuickAdd={isQuickAdd}
         targetJournalId={targetJournalId}
+        changeTypeWithoutConfirmation={changeTypeWithoutConfirmation}
       >
         <ScrapInner />
       </ScrapContextProvider>

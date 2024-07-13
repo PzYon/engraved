@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { IScrapEntry } from "../../../serverApi/IScrapEntry";
+import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { IParsedDate } from "../edit/parseDate";
 import { IAction } from "../../common/actions/IAction";
@@ -28,6 +28,7 @@ export interface IScrapContext {
   giveFocus?: () => void;
   hasTitleFocus: boolean;
   setHasTitleFocus: (value: boolean) => void;
+  changeScrapType: (rows: string[], targetType: ScrapType) => void;
 }
 
 export const ScrapContext = createContext<IScrapContext>({
@@ -51,6 +52,7 @@ export const ScrapContext = createContext<IScrapContext>({
   giveFocus: null,
   hasTitleFocus: null,
   setHasTitleFocus: null,
+  changeScrapType: null,
 });
 
 export const useScrapContext = () => {

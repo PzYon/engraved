@@ -1,18 +1,18 @@
-import { ISCrapListItem } from "./IScrapListItem";
+import { IScrapListItem } from "./IScrapListItem";
 import React from "react";
 
 export class ListItemWrapper {
-  constructor(private item: ISCrapListItem) {}
+  constructor(private item: IScrapListItem) {}
 
   private ref: React.MutableRefObject<HTMLInputElement>;
 
   readonly reactKey = "react-key-" + Math.random().toString().split(".")[1];
 
-  get raw(): ISCrapListItem {
+  get raw(): IScrapListItem {
     return this.item;
   }
 
-  set raw(value: ISCrapListItem) {
+  set raw(value: IScrapListItem) {
     this.item = value;
   }
 
