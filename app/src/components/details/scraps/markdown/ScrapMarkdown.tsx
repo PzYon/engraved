@@ -7,7 +7,7 @@ import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
-import { StarHalf } from "@mui/icons-material";
+import { AutoFixHigh } from "@mui/icons-material";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { getRawRowValues } from "./getRawRowValues";
 
@@ -31,8 +31,8 @@ export const ScrapMarkdown: React.FC = () => {
             changeScrapType(getRawRowValues(notes), ScrapType.List);
           },
           key: "toggle-type",
-          icon: <StarHalf />,
-          label: "Toggle type",
+          icon: <AutoFixHigh fontSize="small" />,
+          label: "Change type to list",
         },
       ]}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}

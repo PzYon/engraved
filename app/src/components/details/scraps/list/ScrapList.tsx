@@ -20,9 +20,9 @@ import { useScrapContext } from "../ScrapContext";
 import { ScrapBody } from "../ScrapBody";
 import {
   AddOutlined,
+  AutoFixHigh,
   MoveDownOutlined,
   RemoveCircleOutline,
-  StarHalf,
   SyncAltOutlined,
 } from "@mui/icons-material";
 import { IAction } from "../../../common/actions/IAction";
@@ -142,8 +142,8 @@ export const ScrapList: React.FC = () => {
           );
         },
         key: "toggle-type",
-        icon: <StarHalf />,
-        label: "Toggle type",
+        icon: <AutoFixHigh fontSize="small" />,
+        label: "Change type to markdown",
       },
       {
         key: "add",

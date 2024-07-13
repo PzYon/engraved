@@ -157,6 +157,66 @@ export const ScrapContextProvider: React.FC<{
     setNotes(currentScrap.notes);
   }
 
+  function changeScrapTypeInternal(
+    genericNotes: string[],
+    targetType: ScrapType,
+  ) {
+    setAppAlert({
+      message: (
+        <>
+          <div>
+            Would you like to change the type? Certain formatting might be lost.
+          </div>
+          <div style={{ margin: "8px 0" }}>
+            <Button
+              sx={{
+                color: "common.white",
+                border: "1px solid white;",
+                marginRight: "10px",
+              }}
+              variant={"outlined"}
+              onClick={() => {
+                const newNotes = convertNotesToTargetType(
+                  targetType,
+                  genericNotes,
+                );
+
+                setNotes(newNotes);
+
+                setScrapToRender({
+                  ...scrapToRender,
+                  notes: newNotes,
+                  scrapType: targetType,
+                });
+
+                setAppAlert(null);
+              }}
+            >
+              YES
+            </Button>
+
+            <Button
+              sx={{
+                color: "common.white",
+                border: "1px solid white;",
+                paddingRight: "10px",
+              }}
+              variant={"outlined"}
+              onClick={() => {
+                setAppAlert(null);
+              }}
+            >
+              NO
+            </Button>
+          </div>
+        </>
+      ),
+      type: "info",
+      hideDurationSec: 2,
+      title: "Change scrap type to " + targetType,
+    });
+  }
+
   const contextValue = useMemo<IScrapContext>(
     () => {
       return {
@@ -200,21 +260,7 @@ export const ScrapContextProvider: React.FC<{
         giveFocus,
         hasTitleFocus,
         setHasTitleFocus,
-        changeScrapType: (genericNotes, targetType) => {
-          console.log("change to " + targetType, genericNotes);
-
-          const newNotes = toTargetType(targetType, genericNotes);
-
-          console.log("new notes:", newNotes);
-
-          setNotes(newNotes);
-
-          setScrapToRender({
-            ...scrapToRender,
-            notes: newNotes,
-            scrapType: targetType,
-          });
-        },
+        changeScrapType: changeScrapTypeInternal,
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -278,21 +324,16 @@ export const ScrapContextProvider: React.FC<{
   );
 };
 
-function toList(genericNotes: string[]) {
-  return JSON.stringify(
-    genericNotes.map((n) => ({ label: n }) as IScrapListItem),
-  );
-}
-
-function toMarkdown(genericNotes: string[]) {
-  return genericNotes.map((n) => "- " + n).join("\n");
-}
-
-function toTargetType(targetType: ScrapType, genericNotes: string[]) {
+function convertNotesToTargetType(
+  targetType: ScrapType,
+  genericNotes: string[],
+) {
   switch (targetType) {
     case ScrapType.List:
-      return toList(genericNotes);
+      return JSON.stringify(
+        genericNotes.map((n) => ({ label: n }) as IScrapListItem),
+      );
     case ScrapType.Markdown:
-      return toMarkdown(genericNotes);
+      return genericNotes.map((n) => "- " + n).join("\n");
   }
 }
