@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { styled } from "@mui/material";
 import { IMarkdownProps } from "./Markdown";
 import { getMarkdownInstance } from "./getMarkdownInstance";
-import { getRawRowValues } from "./getRawRowValues";
 
 const md = getMarkdownInstance();
 
@@ -27,16 +26,7 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
 
   const El = useBasic ? BasicContentContainer : ContentContainer;
 
-  return (
-    <>
-      <El onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />
-      <ul>
-        {getRawRowValues(value).map((v, i) => (
-          <li key={i}>{v}</li>
-        ))}
-      </ul>
-    </>
-  );
+  return <El onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
 const BaseContentContainer = styled("div")`

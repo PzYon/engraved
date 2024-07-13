@@ -279,14 +279,12 @@ export const ScrapContextProvider: React.FC<{
 };
 
 function toList(genericNotes: string[]) {
-  debugger;
   return JSON.stringify(
     genericNotes.map((n) => ({ label: n }) as IScrapListItem),
   );
 }
 
 function toMarkdown(genericNotes: string[]) {
-  debugger;
   return genericNotes.map((n) => "- " + n).join("\n");
 }
 

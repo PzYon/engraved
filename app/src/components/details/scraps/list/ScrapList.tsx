@@ -57,6 +57,8 @@ export const ScrapList: React.FC = () => {
 
   const sensors = useSensors(useSensor(TouchSensor), useSensor(PointerSensor));
 
+  console.log(listItemCollection.items);
+
   return (
     <ScrapBody actions={[]} editModeActions={getEditModeActions()}>
       <BodyHost
