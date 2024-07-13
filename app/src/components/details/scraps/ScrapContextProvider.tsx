@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -18,6 +18,7 @@ import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { IJournal } from "../../../serverApi/IJournal";
 import { AddNewScrapStorage } from "./AddNewScrapStorage";
 import { IScrapListItem } from "./list/IScrapListItem";
+import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -161,59 +162,45 @@ export const ScrapContextProvider: React.FC<{
     genericNotes: string[],
     targetType: ScrapType,
   ) {
-    setAppAlert({
-      message: (
-        <>
-          <div>
-            Would you like to change the type? Certain formatting might be lost.
-          </div>
-          <div style={{ margin: "8px 0" }}>
-            <Button
-              sx={{
-                color: "common.white",
-                border: "1px solid white;",
-                marginRight: "10px",
-              }}
-              variant={"outlined"}
-              onClick={() => {
-                const newNotes = convertNotesToTargetType(
-                  targetType,
-                  genericNotes,
-                );
+    renderDialog({
+      title: "Are you sure?",
+      render: (closeDialog) => {
+        return (
+          <>
+            <Typography>
+              Do you really want to change the type to {targetType}? Certain
+              formatting might be lost.
+            </Typography>
 
-                setNotes(newNotes);
+            <DialogFormButtonContainer>
+              <Button variant={"contained"} onClick={closeDialog}>
+                No
+              </Button>
+              <Button
+                variant={"outlined"}
+                onClick={() => {
+                  const newNotes = convertNotesToTargetType(
+                    targetType,
+                    genericNotes,
+                  );
 
-                setScrapToRender({
-                  ...scrapToRender,
-                  notes: newNotes,
-                  scrapType: targetType,
-                });
+                  setNotes(newNotes);
 
-                setAppAlert(null);
-              }}
-            >
-              YES
-            </Button>
+                  setScrapToRender({
+                    ...scrapToRender,
+                    notes: newNotes,
+                    scrapType: targetType,
+                  });
 
-            <Button
-              sx={{
-                color: "common.white",
-                border: "1px solid white;",
-                paddingRight: "10px",
-              }}
-              variant={"outlined"}
-              onClick={() => {
-                setAppAlert(null);
-              }}
-            >
-              NO
-            </Button>
-          </div>
-        </>
-      ),
-      type: "info",
-      hideDurationSec: 2,
-      title: "Change scrap type to " + targetType,
+                  closeDialog();
+                }}
+              >
+                Yes, convert to {targetType.toLowerCase()}
+              </Button>
+            </DialogFormButtonContainer>
+          </>
+        );
+      },
     });
   }
 
