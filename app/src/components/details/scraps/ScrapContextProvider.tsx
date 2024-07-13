@@ -238,7 +238,7 @@ export const ScrapContextProvider: React.FC<{
                 AddNewScrapStorage.clearForJournal(
                   isQuickAdd
                     ? "quick-add"
-                    : journal?.id ?? currentScrap.parentId,
+                    : (journal?.id ?? currentScrap.parentId),
                 );
               },
               hasFocus,
