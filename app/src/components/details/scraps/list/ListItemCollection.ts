@@ -1,11 +1,11 @@
 import React from "react";
-import { ISCrapListItem } from "./IScrapListItem";
+import { IScrapListItem } from "./IScrapListItem";
 import { ListItemWrapper } from "./ListItemWrapper";
 
 export class ListItemCollection {
   private wrappedItems: ListItemWrapper[];
 
-  get items(): ISCrapListItem[] {
+  get items(): IScrapListItem[] {
     return this.wrappedItems.map((i) => i.raw);
   }
 
@@ -14,8 +14,8 @@ export class ListItemCollection {
   }
 
   constructor(
-    rawItems: ISCrapListItem[],
-    private onChange: (rawItems: ISCrapListItem[]) => void,
+    rawItems: IScrapListItem[],
+    private onChange: (rawItems: IScrapListItem[]) => void,
   ) {
     this.wrappedItems = rawItems.map((i) => new ListItemWrapper(i));
   }
@@ -64,7 +64,7 @@ export class ListItemCollection {
     this.fireOnChange();
   }
 
-  updateItem(index: number, updatedItem: ISCrapListItem) {
+  updateItem(index: number, updatedItem: IScrapListItem) {
     if (!this.wrappedItems[index]) {
       // we cannot update an item, that does not exist anymore.
       // hack: we simply return here. the better solution would be to prevent

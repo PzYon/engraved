@@ -4,7 +4,7 @@ import { useScrapContext } from "./ScrapContext";
 import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 import { ScrapList } from "./list/ScrapList";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
-import { ISCrapListItem } from "./list/IScrapListItem";
+import { IScrapListItem } from "./list/IScrapListItem";
 import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { ParseableDate } from "../edit/ParseableDate";
 
@@ -77,7 +77,7 @@ export const ScrapInner: React.FC = () => {
         return notes;
 
       case ScrapType.List:
-        return (JSON.parse(notes) as ISCrapListItem[])[0].label;
+        return (JSON.parse(notes) as IScrapListItem[])[0].label;
 
       default:
         throw new Error(`Unknown scrap type ${scrapToRender.scrapType}`);

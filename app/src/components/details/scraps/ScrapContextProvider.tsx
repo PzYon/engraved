@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { IScrapEntry } from "../../../serverApi/IScrapEntry";
+import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { Button } from "@mui/material";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
@@ -17,6 +17,7 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { IJournal } from "../../../serverApi/IJournal";
 import { AddNewScrapStorage } from "./AddNewScrapStorage";
+import { IScrapListItem } from "./list/IScrapListItem";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -201,6 +202,18 @@ export const ScrapContextProvider: React.FC<{
         setHasTitleFocus,
         changeScrapType: (genericNotes, targetType) => {
           console.log("change to " + targetType, genericNotes);
+
+          const newNotes = toTargetType(targetType, genericNotes);
+
+          console.log("new notes:", newNotes);
+
+          setNotes(newNotes);
+
+          setScrapToRender({
+            ...scrapToRender,
+            notes: newNotes,
+            scrapType: targetType,
+          });
         },
       };
     },
@@ -259,8 +272,29 @@ export const ScrapContextProvider: React.FC<{
   }
 
   return (
-    <ScrapContext.Provider value={contextValue}>
+    <ScrapContext.Provider value={contextValue} key={currentScrap.scrapType}>
       {children}
     </ScrapContext.Provider>
   );
 };
+
+function toList(genericNotes: string[]) {
+  debugger;
+  return JSON.stringify(
+    genericNotes.map((n) => ({ label: n }) as IScrapListItem),
+  );
+}
+
+function toMarkdown(genericNotes: string[]) {
+  debugger;
+  return genericNotes.map((n) => "- " + n).join("\n");
+}
+
+function toTargetType(targetType: ScrapType, genericNotes: string[]) {
+  switch (targetType) {
+    case ScrapType.List:
+      return toList(genericNotes);
+    case ScrapType.Markdown:
+      return toMarkdown(genericNotes);
+  }
+}
