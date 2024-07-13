@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { ScrapType } from "../../../serverApi/IScrapEntry";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
-import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { ListScrapIcon, MarkdownScrapIcon } from "./ScrapsViewPage";
+import { styled } from "@mui/material";
 import { JournalSelector } from "../../common/JournalSelector";
 import { Scrap } from "./Scrap";
 import { UserRole } from "../../../serverApi/UserRole";
 import { useAppContext } from "../../../AppContext";
 import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
+import { ScrapType } from "../../../serverApi/IScrapEntry";
 
 export const QuickAddDialog: React.FC<{
   targetJournalId: string;
@@ -15,9 +14,11 @@ export const QuickAddDialog: React.FC<{
 }> = ({ targetJournalId, onSuccess }) => {
   const { user } = useAppContext();
 
-  const [type, setType] = useState<ScrapType>(ScrapType.Markdown);
-
-  const scrap = ScrapsJournalType.createBlank(true, targetJournalId, type);
+  const scrap = ScrapsJournalType.createBlank(
+    true,
+    targetJournalId,
+    ScrapType.Markdown,
+  );
 
   const [journalId, setJournalId] = useState(scrap.parentId);
 
@@ -37,51 +38,21 @@ export const QuickAddDialog: React.FC<{
         onChange={(journal) => setJournalId(journal.id)}
         selectedJournalId={journalId}
       />
-      <ScrapTypeSelector>
-        <ToggleButtonGroup
-          value={type}
-          exclusive
-          sx={{ width: "100%", ".MuiButtonBase-root": { width: "50%" } }}
-          onChange={(_, value) => {
-            setType(
-              value !== null
-                ? value
-                : type === ScrapType.Markdown
-                  ? ScrapType.List
-                  : ScrapType.Markdown,
-            );
-          }}
-        >
-          <ToggleButton value={ScrapType.Markdown} color="primary">
-            <MarkdownScrapIcon />
-            &nbsp;Markdown
-          </ToggleButton>
-          <ToggleButton value={ScrapType.List} color="primary">
-            <ListScrapIcon />
-            &nbsp;List
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </ScrapTypeSelector>
+
       <ScrapContainer>
         <Scrap
-          key={type}
           scrap={scrap}
           propsRenderStyle={"none"}
           actionsRenderStyle={"save-only"}
           onSuccess={onSuccess}
           isQuickAdd={true}
           targetJournalId={journalId}
+          changeTypeWithoutConfirmation={true}
         />
       </ScrapContainer>
     </>
   );
 };
-
-const ScrapTypeSelector = styled("div")`
-  padding-top: ${(p) => p.theme.spacing(2)};
-  display: flex;
-  justify-content: start;
-`;
 
 const ScrapContainer = styled("div")`
   padding-top: ${(p) => p.theme.spacing(2)};

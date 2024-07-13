@@ -32,6 +32,7 @@ export const ScrapContextProvider: React.FC<{
   giveFocus?: () => void;
   isQuickAdd?: boolean;
   targetJournalId?: string;
+  changeTypeWithoutConfirmation?: boolean;
 }> = ({
   children,
   currentScrap,
@@ -44,6 +45,7 @@ export const ScrapContextProvider: React.FC<{
   giveFocus,
   isQuickAdd,
   targetJournalId,
+  changeTypeWithoutConfirmation,
 }) => {
   const { setAppAlert } = useAppContext();
   const { renderDialog } = useDialogContext();
@@ -162,6 +164,23 @@ export const ScrapContextProvider: React.FC<{
     genericNotes: string[],
     targetType: ScrapType,
   ) {
+    function changeType() {
+      const newNotes = convertNotesToTargetType(targetType, genericNotes);
+
+      setNotes(newNotes);
+
+      setScrapToRender({
+        ...scrapToRender,
+        notes: newNotes,
+        scrapType: targetType,
+      });
+    }
+
+    if (changeTypeWithoutConfirmation) {
+      changeType();
+      return;
+    }
+
     renderDialog({
       title: "Are you sure?",
       render: (closeDialog) => {
@@ -179,19 +198,7 @@ export const ScrapContextProvider: React.FC<{
               <Button
                 variant={"outlined"}
                 onClick={() => {
-                  const newNotes = convertNotesToTargetType(
-                    targetType,
-                    genericNotes,
-                  );
-
-                  setNotes(newNotes);
-
-                  setScrapToRender({
-                    ...scrapToRender,
-                    notes: newNotes,
-                    scrapType: targetType,
-                  });
-
+                  changeType();
                   closeDialog();
                 }}
               >
@@ -284,23 +291,23 @@ export const ScrapContextProvider: React.FC<{
 
     await upsertEntryMutation.mutateAsync({
       command: {
-        id: currentScrap.id,
-        scrapType: currentScrap.scrapType,
+        id: scrapToRender.id,
+        scrapType: scrapToRender.scrapType,
         notes: notesToSave,
         title: parsedDate?.text ?? title,
         journalAttributeValues: {},
-        journalId: targetJournalId ?? currentScrap.parentId,
+        journalId: targetJournalId ?? scrapToRender.parentId,
         dateTime: new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
-          currentScrap.parentId,
-          currentScrap?.id ?? "{0}",
+          scrapToRender.parentId,
+          scrapToRender?.id ?? "{0}",
         ),
       } as IUpsertScrapsEntryCommand,
     });
 
     AddNewScrapStorage.clearForJournal(
-      isQuickAdd ? "quick-add" : currentScrap.parentId,
+      isQuickAdd ? "quick-add" : scrapToRender.parentId,
     );
   }
 
