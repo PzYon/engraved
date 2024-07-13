@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/PzYon/engraved#readme",
   "devDependencies": {
+    "eslint-plugin-react-compiler": "^0.0.0-experimental-0998c1e-20240625",
     "husky": "9.0.11",
     "lint-staged": "15.2.7"
   }

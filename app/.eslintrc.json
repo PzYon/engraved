@@ -21,6 +21,7 @@
     "sourceType": "module"
   },
   "plugins": [
+    "react-compiler",
     "react",
     "react-hooks",
     "react-refresh",
@@ -28,6 +29,7 @@
     "@tanstack/eslint-plugin-query"
   ],
   "rules": {
+    "react-compiler/react-compiler": "error",
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react-refresh/only-export-components": "warn",
