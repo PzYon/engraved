@@ -272,7 +272,7 @@ export const ScrapContextProvider: React.FC<{
   }
 
   return (
-    <ScrapContext.Provider value={contextValue} key={currentScrap.scrapType}>
+    <ScrapContext.Provider value={contextValue}>
       {children}
     </ScrapContext.Provider>
   );
