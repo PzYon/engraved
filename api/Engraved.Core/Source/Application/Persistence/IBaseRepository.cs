@@ -36,7 +36,8 @@ public interface IBaseRepository
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
+    IDictionary<string, string[]>? attributeValues,
+    string? searchText
   );
 
   Task<IEntry[]> SearchEntries(

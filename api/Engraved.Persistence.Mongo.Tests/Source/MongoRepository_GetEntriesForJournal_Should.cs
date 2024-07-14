@@ -28,7 +28,7 @@ public class MongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Return_Empty()
   {
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, null, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, null, null, null);
 
     entries.Should().BeEmpty();
   }
@@ -39,7 +39,7 @@ public class MongoRepository_GetEntriesForJournal_Should
     string entryId = await AddEntry(DateTime.Now.AddDays(-3));
     await AddEntry(DateTime.Now.AddDays(3));
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, DateTime.Now, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, DateTime.Now, null, null);
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -51,7 +51,7 @@ public class MongoRepository_GetEntriesForJournal_Should
     await AddEntry(DateTime.Now.AddDays(-1));
     string entryId = await AddEntry(DateTime.Now.AddDays(1));
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, DateTime.Now, null, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, DateTime.Now, null, null, null);
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -67,6 +67,7 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       DateTime.Now.AddDays(-1),
       DateTime.Now.AddDays(1),
+      null,
       null
     );
 
@@ -83,6 +84,7 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       DateTime.Now.AddDays(-5),
       DateTime.Now.AddDays(5),
+      null,
       null
     );
 
@@ -106,6 +108,7 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       new DateTime(2000, 7, 1),
       new DateTime(2000, 7, 31),
+      null,
       null
     );
 
@@ -126,7 +129,8 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      attributeValues
+      attributeValues,
+      null
     );
 
     entries.Length.Should().Be(1);
@@ -143,7 +147,8 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      new Dictionary<string, string[]> { { "attr", new[] { "abc" } } }
+      new Dictionary<string, string[]> { { "attr", new[] { "abc" } } },
+      null
     );
 
     entries.Should().BeEmpty();
@@ -164,7 +169,8 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      new Dictionary<string, string[]> { { "size", new[] { "XL" } } }
+      new Dictionary<string, string[]> { { "size", new[] { "XL" } } },
+      null
     );
 
     entries.Length.Should().Be(1);
@@ -187,7 +193,8 @@ public class MongoRepository_GetEntriesForJournal_Should
       new Dictionary<string, string[]>
       {
         { "size", new[] { "XL" } }, { "color", new[] { "blue" } }
-      }
+      },
+      null
     );
 
     entries.Should().BeEmpty();
@@ -207,7 +214,8 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      new Dictionary<string, string[]> { { "size", new[] { "XL", "L" } } }
+      new Dictionary<string, string[]> { { "size", ["XL", "L"] } },
+      null
     );
 
     entries.Length.Should().Be(1);

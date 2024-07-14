@@ -70,7 +70,8 @@ public class InMemoryRepository : IRepository
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
+    IDictionary<string, string[]>? attributeValues,
+    string?  searchText
   )
   {
     return Task.FromResult(

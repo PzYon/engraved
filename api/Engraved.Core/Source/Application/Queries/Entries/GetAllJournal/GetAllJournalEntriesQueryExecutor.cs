@@ -39,7 +39,8 @@ public class GetAllJournalEntriesQueryExecutor : IQueryExecutor<IEntry[], GetAll
       query.JournalId,
       query.FromDate,
       query.ToDate,
-      query.AttributeValues
+      query.AttributeValues,
+      query.SearchText
     );
   }
 }

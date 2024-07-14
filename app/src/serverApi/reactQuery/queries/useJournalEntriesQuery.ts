@@ -9,6 +9,7 @@ export const useJournalEntriesQuery = (
   journalId: string,
   dateConditions: IDateConditions,
   attributeValues: Record<string, string[]>,
+  searchText: string,
 ) => {
   const { setAppAlert } = useAppContext();
 
@@ -21,6 +22,7 @@ export const useJournalEntriesQuery = (
       journalId,
       dateConditions,
       attributeValues,
+      searchText,
     ),
 
     queryFn: () =>
@@ -29,6 +31,7 @@ export const useJournalEntriesQuery = (
             journalId,
             attributeValues,
             dateConditions,
+            searchText,
           )
         : Promise.resolve([]),
   });

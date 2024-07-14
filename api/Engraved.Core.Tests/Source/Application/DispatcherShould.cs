@@ -219,7 +219,8 @@ public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepo
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
+    IDictionary<string, string[]>? attributeValues,
+    string? searchText
   )
   {
     throw new NotImplementedException();

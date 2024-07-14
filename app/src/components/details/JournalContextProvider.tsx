@@ -1,7 +1,7 @@
 import { useJournalQuery } from "../../serverApi/reactQuery/queries/useJournalQuery";
 import { useJournalEntriesQuery } from "../../serverApi/reactQuery/queries/useJournalEntriesQuery";
 import { IDateConditions, JournalContext } from "./JournalContext";
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 export const JournalContextProvider: React.FC<{
   children: React.ReactNode;
@@ -11,6 +11,8 @@ export const JournalContextProvider: React.FC<{
     [key: string]: string[];
   }>({});
 
+  const [searchText, setSearchText] = useState<string>(undefined);
+
   const [dateConditions, setDateConditions] = useState<IDateConditions>({});
 
   const journal = useJournalQuery(journalId);
@@ -19,6 +21,7 @@ export const JournalContextProvider: React.FC<{
     journalId,
     dateConditions,
     selectedAttributeValues,
+    searchText,
   );
 
   const contextValue = useMemo(() => {
@@ -55,8 +58,10 @@ export const JournalContextProvider: React.FC<{
       },
       setDateConditions,
       dateConditions,
+      searchText,
+      setSearchText,
     };
-  }, [entries, journal, selectedAttributeValues, dateConditions]);
+  }, [entries, journal, selectedAttributeValues, dateConditions, searchText]);
 
   return (
     <JournalContext.Provider value={contextValue}>

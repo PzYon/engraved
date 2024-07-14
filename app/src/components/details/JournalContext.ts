@@ -21,6 +21,8 @@ export interface IJournalContext {
   selectedAttributeValues: Record<string, string[]>;
   setDateConditions: (conditions: IDateConditions) => void;
   dateConditions: IDateConditions;
+  setSearchText: (value: string) => void;
+  searchText: string;
 }
 
 export const JournalContext = createContext<IJournalContext>({
@@ -31,6 +33,8 @@ export const JournalContext = createContext<IJournalContext>({
   selectedAttributeValues: {},
   setDateConditions: null,
   dateConditions: {},
+  setSearchText: null,
+  searchText: null,
 });
 
 export const useJournalContext = () => {

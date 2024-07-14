@@ -145,19 +145,31 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
+    IDictionary<string, string[]>? attributeValues,
+    string? searchText
   )
   {
     IJournal? journal = await GetJournal(journalId);
     if (journal == null)
     {
-      return Array.Empty<IEntry>();
+      return [];
     }
 
     var filters = new List<FilterDefinition<EntryDocument>>
     {
       Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
     };
+
+    if (!string.IsNullOrEmpty(searchText))
+    {
+      filters.AddRange(
+        GetFreeTextFilters<EntryDocument>(
+          searchText,
+          d => d.Notes!,
+          d => ((ScrapsEntryDocument)d).Title!
+        )
+      );
+    }
 
     if (fromDate.HasValue)
     {
@@ -210,7 +222,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsEntryDocument) d).Title!
+      d => ((ScrapsEntryDocument)d).Title!
     );
 
     if (journalIds is { Length: > 0 })

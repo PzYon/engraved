@@ -80,10 +80,11 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
+    IDictionary<string, string[]>? attributeValues,
+    string? searchText
   )
   {
-    return (await _repository.GetEntriesForJournal(journalId, fromDate, toDate, attributeValues))
+    return (await _repository.GetEntriesForJournal(journalId, fromDate, toDate, attributeValues, searchText))
       .Where(m => m.UserId == CurrentUser.Value.Id)
       .ToArray();
   }

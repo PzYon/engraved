@@ -9,4 +9,6 @@ public class GetAllJournalEntriesQuery : IQuery
   public DateTime? ToDate { get; set; }
 
   public IDictionary<string, string[]> AttributeValues { get; set; } = new Dictionary<string, string[]>();
+  
+  public string? SearchText { get; set; }
 }

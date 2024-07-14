@@ -31,6 +31,7 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
       query.JournalId!,
       query.FromDate,
       query.ToDate,
+      null,
       null
     );
 

@@ -12,6 +12,7 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { AttributeFilters } from "./AttributeFilters";
 import { translations } from "../../../i18n/translations";
 import { FiltersRow } from "./FiltersRow";
+import { SearchTextFilter } from "./SearchTextFilter";
 
 export const EntryFilters: React.FC<{
   journal: IJournal;
@@ -32,6 +33,10 @@ export const EntryFilters: React.FC<{
 }) => {
   return (
     <>
+      <FiltersRow>
+        <SearchTextFilter />
+      </FiltersRow>
+
       <FiltersRow>
         <DateFilters />
       </FiltersRow>
