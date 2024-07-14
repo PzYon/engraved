@@ -51,11 +51,13 @@ export const queryKeysFactory = {
     journalId: string,
     dateConditions?: IDateConditions,
     attributeValues?: Record<string, string[]>,
+    searchText?: string,
   ) {
     return [
       journals,
       journalId,
       "entries",
+      searchText ?? "",
       { filters: { dateConditions: dateConditions, attributeValues } },
     ];
   },

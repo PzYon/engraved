@@ -28,7 +28,7 @@ public class MongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Return_Empty()
   {
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, null, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId);
 
     entries.Should().BeEmpty();
   }
@@ -39,7 +39,7 @@ public class MongoRepository_GetEntriesForJournal_Should
     string entryId = await AddEntry(DateTime.Now.AddDays(-3));
     await AddEntry(DateTime.Now.AddDays(3));
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, DateTime.Now, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, DateTime.Now);
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -51,7 +51,7 @@ public class MongoRepository_GetEntriesForJournal_Should
     await AddEntry(DateTime.Now.AddDays(-1));
     string entryId = await AddEntry(DateTime.Now.AddDays(1));
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, DateTime.Now, null, null);
+    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, DateTime.Now);
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -66,8 +66,7 @@ public class MongoRepository_GetEntriesForJournal_Should
     IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       DateTime.Now.AddDays(-1),
-      DateTime.Now.AddDays(1),
-      null
+      DateTime.Now.AddDays(1)
     );
 
     entries.Should().BeEmpty();
@@ -82,8 +81,7 @@ public class MongoRepository_GetEntriesForJournal_Should
     IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       DateTime.Now.AddDays(-5),
-      DateTime.Now.AddDays(5),
-      null
+      DateTime.Now.AddDays(5)
     );
 
     entries.Length.Should().Be(2);
@@ -105,8 +103,7 @@ public class MongoRepository_GetEntriesForJournal_Should
     IEntry[] entries = await _repository.GetEntriesForJournal(
       _journalId,
       new DateTime(2000, 7, 1),
-      new DateTime(2000, 7, 31),
-      null
+      new DateTime(2000, 7, 31)
     );
 
     entries.Length.Should().Be(2);
@@ -118,7 +115,7 @@ public class MongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_Simple_AttributeValue_Positive()
   {
-    var attributeValues = new Dictionary<string, string[]> { { "attr", new[] { "xyz" } } };
+    var attributeValues = new Dictionary<string, string[]> { { "attr", ["xyz"] } };
 
     await AddEntry(DateTime.Now, attributeValues);
 
@@ -135,7 +132,7 @@ public class MongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_Simple_AttributeValue_Negative()
   {
-    var attributeValues = new Dictionary<string, string[]> { { "attr", new[] { "xyz" } } };
+    var attributeValues = new Dictionary<string, string[]> { { "attr", ["xyz"] } };
 
     await AddEntry(DateTime.Now, attributeValues);
 
@@ -143,7 +140,7 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      new Dictionary<string, string[]> { { "attr", new[] { "abc" } } }
+      new Dictionary<string, string[]> { { "attr", ["abc"] } }
     );
 
     entries.Should().BeEmpty();
@@ -154,8 +151,8 @@ public class MongoRepository_GetEntriesForJournal_Should
   {
     var attributeValues = new Dictionary<string, string[]>
     {
-      { "color", new[] { "blue" } },
-      { "size", new[] { "XL" } }
+      { "color", ["blue"] },
+      { "size", ["XL"] }
     };
 
     await AddEntry(DateTime.Now, attributeValues);
@@ -164,7 +161,7 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      new Dictionary<string, string[]> { { "size", new[] { "XL" } } }
+      new Dictionary<string, string[]> { { "size", ["XL"] } }
     );
 
     entries.Length.Should().Be(1);
@@ -173,10 +170,7 @@ public class MongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_Multiple_AttributeValues_InQuery_Negative()
   {
-    var attributeValues = new Dictionary<string, string[]>
-    {
-      { "size", new[] { "XL" } }
-    };
+    var attributeValues = new Dictionary<string, string[]> { { "size", ["XL"] } };
 
     await AddEntry(DateTime.Now, attributeValues);
 
@@ -184,10 +178,7 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      new Dictionary<string, string[]>
-      {
-        { "size", new[] { "XL" } }, { "color", new[] { "blue" } }
-      }
+      new Dictionary<string, string[]> { { "size", ["XL"] }, { "color", ["blue"] } }
     );
 
     entries.Should().BeEmpty();
@@ -196,10 +187,7 @@ public class MongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_Multiple_AttributeValues_Or()
   {
-    var attributeValues = new Dictionary<string, string[]>
-    {
-      { "size", new[] { "XL" } }
-    };
+    var attributeValues = new Dictionary<string, string[]> { { "size", ["XL"] } };
 
     await AddEntry(DateTime.Now, attributeValues);
 
@@ -207,7 +195,7 @@ public class MongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      new Dictionary<string, string[]> { { "size", new[] { "XL", "L" } } }
+      new Dictionary<string, string[]> { { "size", ["XL", "L"] } }
     );
 
     entries.Length.Should().Be(1);

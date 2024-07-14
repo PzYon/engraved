@@ -125,7 +125,7 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IEntry[] allEntries = await _userScopedRepository.GetEntriesForJournal(otherJournal.EntityId, null, null, null);
+    IEntry[] allEntries = await _userScopedRepository.GetEntriesForJournal(otherJournal.EntityId);
 
     allEntries.Should().BeEmpty();
   }
@@ -151,7 +151,7 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IEntry[] allEntries = await _userScopedRepository.GetEntriesForJournal(otherJournal.EntityId, null, null, null);
+    IEntry[] allEntries = await _userScopedRepository.GetEntriesForJournal(otherJournal.EntityId);
 
     allEntries.Length.Should().Be(1);
   }

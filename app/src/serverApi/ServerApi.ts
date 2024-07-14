@@ -286,6 +286,7 @@ export class ServerApi {
     journalId: string,
     attributeValues: IJournalAttributeValues,
     dateConditions: IDateConditions,
+    searchText: string,
   ): Promise<IEntry[]> {
     const attributeValuesString = stringifyAttributeValues(attributeValues);
 
@@ -301,6 +302,10 @@ export class ServerApi {
 
     if (dateConditions.to) {
       urlParams.push(`toDate=${toDateOnlyIsoString(dateConditions.to)}`);
+    }
+
+    if (searchText) {
+      urlParams.push(`searchText=${searchText}`);
     }
 
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";

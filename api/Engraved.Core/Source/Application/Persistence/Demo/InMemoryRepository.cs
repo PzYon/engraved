@@ -68,9 +68,10 @@ public class InMemoryRepository : IRepository
 
   public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues
+    DateTime? fromDate = null,
+    DateTime? toDate = null,
+    IDictionary<string, string[]>? attributeValues = null,
+    string? searchText = null
   )
   {
     return Task.FromResult(
