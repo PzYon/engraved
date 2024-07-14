@@ -143,10 +143,10 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   public async Task<IEntry[]> GetEntriesForJournal(
     string journalId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues,
-    string? searchText
+    DateTime? fromDate = null,
+    DateTime? toDate = null,
+    IDictionary<string, string[]>? attributeValues = null,
+    string? searchText = null
   )
   {
     IJournal? journal = await GetJournal(journalId);

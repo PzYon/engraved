@@ -62,7 +62,7 @@ public class UpsertTimerEntryCommandExecutor(IRepository repository, IDateServic
     // we get all entries here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IDb. for the time being we will skip that.
-    IEntry[] allEntries = await repository.GetEntriesForJournal(journal.Id!, null, null, null, null);
+    IEntry[] allEntries = await repository.GetEntriesForJournal(journal.Id!);
 
     return allEntries
       .OfType<TimerEntry>()

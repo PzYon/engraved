@@ -34,10 +34,10 @@ public interface IBaseRepository
 
   Task<IEntry[]> GetEntriesForJournal(
     string journalId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues,
-    string? searchText
+    DateTime? fromDate = null,
+    DateTime? toDate = null,
+    IDictionary<string, string[]>? attributeValues = null,
+    string? searchText = null
   );
 
   Task<IEntry[]> SearchEntries(
