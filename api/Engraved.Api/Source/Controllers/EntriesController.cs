@@ -24,7 +24,13 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
 {
   [HttpGet]
   [Route("journal/{journalId}")]
-  public async Task<object[]> GetAll(string journalId, DateTime? fromDate, DateTime? toDate, string? attributeValues,string? searchText)
+  public async Task<object[]> GetAll(
+    string journalId,
+    DateTime? fromDate,
+    DateTime? toDate,
+    string? attributeValues,
+    string? searchText
+  )
   {
     var query = new GetAllJournalEntriesQuery
     {
@@ -32,7 +38,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
       FromDate = fromDate,
       ToDate = toDate,
       AttributeValues = AttributeValueParser.Parse(attributeValues),
-        SearchText=searchText
+      SearchText = searchText
     };
 
     IEntry[] entries = await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
@@ -52,7 +58,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
     SearchEntriesQueryResult result = await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(query);
     return GetAllEntriesQueryApiResult.FromResult(result);
   }
-  
+
   [HttpGet]
   [Route("{entryId}")]
   public async Task<IEntry?> GetById(string entryId)
