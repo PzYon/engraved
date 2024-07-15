@@ -15,13 +15,17 @@ export class ScrapListComponent {
     await this.page.getByPlaceholder("Title").fill(title);
   }
 
-  async addListItem(value: string) {
-    await this.page.getByLabel("Add new").click();
+  async typeListItem(value: string) {
     await this.page
       .getByRole("listitem")
       .getByRole("textbox")
       .last()
       .fill(value);
+  }
+
+  async addListItem(value: string) {
+    await this.page.getByLabel("Add new").click();
+    await this.typeListItem(value);
   }
 
   async clickSave(isUpdate?: boolean) {
