@@ -20,7 +20,7 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
 
   const scrapList = await scrapsJournalPage.addList();
   await scrapList.typeTitle("This is my title");
-  await scrapList.addListItem(firstItemText);
+  await scrapList.typeListItem(firstItemText);
   await scrapList.addListItem(secondItemText);
 
   await scrapList.clickSave();
@@ -52,7 +52,7 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
 
   const scrapList = await scrapsJournalPage.addList();
   await scrapList.typeTitle("This is my title");
-  await scrapList.addListItem(firstItemText);
+  await scrapList.typeListItem(firstItemText);
   await scrapList.addListItem(secondItemText);
   await scrapList.clickSave();
 
@@ -91,7 +91,7 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
 
   const scrapListTab1 = await scrapsJournalPageTab1.addList();
   await scrapListTab1.typeTitle("I is list");
-  await scrapListTab1.addListItem(firstItemText);
+  await scrapListTab1.typeListItem(firstItemText);
   await scrapListTab1.addListItem(secondItemText);
   const scrapId = await scrapListTab1.clickSave();
 
@@ -101,7 +101,7 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
 
   const scrapListTab2 = new ScrapListComponent(pageTab2, scrapId);
   await scrapListTab2.dblClickToEdit();
-  await scrapListTab2.addListItem(thirdItemText);
+  await scrapListTab2.typeListItem(thirdItemText);
   await scrapListTab2.clickSave(true);
 
   // tab1: new item is not visible until window has gotten focus.
@@ -147,7 +147,7 @@ test("perform common scrap list operations using shortcuts", async ({
 
   const scrapList = await scrapsJournalPage.addList();
   await scrapList.typeTitle("My Scraps");
-  await scrapList.addListItem("First");
+  await scrapList.typeListItem("First");
   await scrapList.clickSave(false);
 
   await scrapList.dblClickToEdit();

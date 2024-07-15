@@ -35,7 +35,7 @@ export const ScrapListItem: React.FC<{
         transform: CSS.Transform.toString(transform),
         transition,
       }}
-      data-testid={`item-${index}:${listItem.depth}`}
+      data-testid={`item-${index}:${listItem.depth ?? 0}`}
     >
       {isEditMode ? (
         <span
