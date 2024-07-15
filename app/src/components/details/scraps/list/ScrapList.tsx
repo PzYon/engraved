@@ -42,7 +42,7 @@ export const ScrapList: React.FC = () => {
   } = useScrapContext();
 
   const listItemCollection = useMemo(() => {
-    const items: IScrapListItem[] = notes ? JSON.parse(notes) : [];
+    const items: IScrapListItem[] = notes ? JSON.parse(notes) : [{ label: "" }];
     return new ListItemCollection(items, (rawItems) =>
       setNotes(getItemsAsJson(rawItems)),
     );
