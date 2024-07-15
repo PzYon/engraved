@@ -66,7 +66,7 @@ export const ScrapContextProvider: React.FC<{
       isQuickAdd ? "quick-add" : currentScrap.parentId,
       {
         id: null,
-        scrapType: currentScrap.scrapType,
+        scrapType: scrapToRender.scrapType,
         notes: notes,
         title: parsedDate?.text ?? title,
         journalAttributeValues: {},
@@ -238,7 +238,7 @@ export const ScrapContextProvider: React.FC<{
                 AddNewScrapStorage.clearForJournal(
                   isQuickAdd
                     ? "quick-add"
-                    : journal?.id ?? currentScrap.parentId,
+                    : (journal?.id ?? currentScrap.parentId),
                 );
               },
               hasFocus,
@@ -325,7 +325,15 @@ function convertNotesToTargetType(
   switch (targetType) {
     case ScrapType.List:
       return JSON.stringify(
-        genericNotes.map((n) => ({ label: n }) as IScrapListItem),
+        genericNotes.length
+          ? genericNotes.map((n) => ({ label: n }) as IScrapListItem)
+          : [
+              {
+                label: "",
+                depth: 0,
+                isCompleted: false,
+              } as IScrapListItem,
+            ],
       );
     case ScrapType.Markdown:
       return genericNotes.map((n) => "- " + n).join("\n");
