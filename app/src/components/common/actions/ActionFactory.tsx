@@ -281,7 +281,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
-      href: `actions/delete/${entry.id}`,
+      href: `?action-item-id=${entry.id}&action-key=delete`,
     };
   }
 

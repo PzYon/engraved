@@ -16,6 +16,11 @@ export const EntrySubRoutes: React.FC<{
   const [searchParams] = useSearchParams();
 
   const actionKey = searchParams.get("action-key");
+  const actionItemId = searchParams.get("action-item-id");
+
+  if (actionItemId === entry.id) {
+    return null;
+  }
 
   switch (actionKey) {
     case "delete":
