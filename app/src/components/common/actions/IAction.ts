@@ -8,6 +8,7 @@ export interface IAction {
   icon: React.ReactNode;
   onClick?: () => void;
   href?: string;
+  search?: string;
   sx?: SxProps<Theme>;
   isNotActive?: boolean;
   isDisabled?: boolean;

@@ -14,7 +14,10 @@ export const ActionLink: React.FC<{
     action.hotkey,
     (keyboardEvent) => {
       keyboardEvent.preventDefault();
-      navigate(action.href);
+      navigate({
+        pathname: action.href,
+        search: action.search,
+      });
     },
     { enabled: !!action.hotkey },
   );
@@ -24,7 +27,11 @@ export const ActionLink: React.FC<{
   }
 
   return (
-    <Link to={action.href} style={style} title={action.label}>
+    <Link
+      to={{ pathname: action.href, search: action.search }}
+      style={style}
+      title={action.label}
+    >
       {children ?? action.icon}
     </Link>
   );

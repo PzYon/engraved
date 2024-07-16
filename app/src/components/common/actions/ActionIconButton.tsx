@@ -29,7 +29,7 @@ export const ActionIconButton: React.FC<{
     return () => actionContext.removeAction(action);
   }, [action, actionContext]);
 
-  if (action.href) {
+  if (action.href || action.search) {
     return (
       <ActionLink action={action} style={{ display: "flex" }}>
         {getNoButtonIcon()}
