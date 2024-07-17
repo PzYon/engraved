@@ -57,8 +57,8 @@ export const NotificationDoneAction: React.FC<{
                 : null,
               recurrence: schedule.recurrence,
               onClickUrl: entry
-                ? `${location.origin}/journals/${entry.parentId}/entries/${entry.id}/notification`
-                : `${location.origin}/journals/${journal.id}/notification`,
+                ? `${location.origin}/journals/details/${entry.parentId}/entries/${entry.id}/notification`
+                : `${location.origin}/journals/details/${journal.id}/notification`,
             };
 
             modifyScheduleMutation.mutate(scheduleDefinition);
