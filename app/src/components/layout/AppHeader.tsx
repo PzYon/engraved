@@ -42,7 +42,6 @@ export const AppHeader: React.FC = () => {
   const loc = useLocation();
 
   useEffect(() => {
-    debugger;
     console.log(`Router: Navigating to ${loc.pathname}${loc.search}`);
   }, [loc]);
 

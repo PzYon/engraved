@@ -1,6 +1,6 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionLink: React.FC<{
@@ -9,6 +9,7 @@ export const ActionLink: React.FC<{
   style?: CSSProperties;
 }> = ({ action, style, children }) => {
   const navigate = useNavigate();
+  const loc = useLocation();
 
   useHotkeys(
     action.hotkey,
@@ -16,7 +17,7 @@ export const ActionLink: React.FC<{
       keyboardEvent.preventDefault();
       navigate({
         pathname: action.href,
-        search: action.search,
+        search: getSearch(),
       });
     },
     { enabled: !!action.hotkey },
@@ -28,11 +29,28 @@ export const ActionLink: React.FC<{
 
   return (
     <Link
-      to={{ pathname: action.href, search: action.search }}
+      to={{
+        pathname: action.href,
+        search: getSearch(),
+      }}
       style={style}
       title={action.label}
     >
       {children ?? action.icon}
     </Link>
   );
+
+  function getSearch() {
+    const params: string[] = [];
+
+    if (loc.search) {
+      params.push(...loc.search.replace("?", "").split("&"));
+    }
+
+    if (action.search) {
+      params.push(...action.search.replace("?", "").split("&"));
+    }
+
+    return params.length ? `?${params.join("&")}` : undefined;
+  }
 };
