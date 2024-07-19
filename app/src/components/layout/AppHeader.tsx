@@ -22,6 +22,11 @@ import { PageTabs } from "./tabs/PageTabs";
 import { FavoritesFlyout } from "../FavoritesFlyout";
 import { useDisplayModeContext } from "../overview/overviewList/DisplayModeContext";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+(window as any).navigation.addEventListener("navigate", () => {
+  debugger;
+});
+
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
   const {

@@ -1,4 +1,3 @@
-import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
 import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
 import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { MoveScrapAction } from "../../details/scraps/MoveScrapAction";
@@ -19,6 +18,7 @@ export const EntrySubRoutes: React.FC<{
   const actionItemId = searchParams.get("action-item-id");
 
   if (actionItemId !== entry.id) {
+    debugger;
     return null;
   }
 
@@ -26,11 +26,7 @@ export const EntrySubRoutes: React.FC<{
 
   switch (actionKey) {
     case "delete":
-      return (
-        <NavigationActionContainer giveFocus={giveFocus}>
-          <DeleteEntryAction entry={entry} />
-        </NavigationActionContainer>
-      );
+      return <div>HERE WE GO!</div>;
 
     case "schedule":
       return (

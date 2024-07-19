@@ -1,27 +1,13 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useHotkeys } from "react-hotkeys-hook";
+import { Link, useLocation } from "react-router-dom";
 
 export const ActionLink: React.FC<{
   action: IAction;
   children?: React.ReactElement;
   style?: CSSProperties;
 }> = ({ action, style, children }) => {
-  const navigate = useNavigate();
   const loc = useLocation();
-
-  useHotkeys(
-    action.hotkey,
-    (keyboardEvent) => {
-      keyboardEvent.preventDefault();
-      navigate({
-        pathname: action.href,
-        search: getSearch(),
-      });
-    },
-    { enabled: !!action.hotkey },
-  );
 
   if (action.isDisabled) {
     return <span style={style}>{children ?? action.icon}</span>;
