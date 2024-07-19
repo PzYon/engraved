@@ -272,7 +272,8 @@ export class ActionFactory {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      href: `actions/move/${scrap.id}`,
+      href: ``,
+      search: `?action-item-id=${scrap.id}&action-key=move`,
     };
   }
 
