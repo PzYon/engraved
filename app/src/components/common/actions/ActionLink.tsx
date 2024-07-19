@@ -26,7 +26,7 @@ export const ActionLink: React.FC<{
     </Link>
   );
 
-  function getSearch() {
+  function getSearch(): string {
     const params: string[] = [];
 
     if (loc.search) {

@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
+import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -18,7 +19,6 @@ export const EntrySubRoutes: React.FC<{
   const actionItemId = searchParams.get("action-item-id");
 
   if (actionItemId !== entry.id) {
-    debugger;
     return null;
   }
 
@@ -26,7 +26,11 @@ export const EntrySubRoutes: React.FC<{
 
   switch (actionKey) {
     case "delete":
-      return <div>HERE WE GO!</div>;
+      return (
+        <NavigationActionContainer giveFocus={giveFocus}>
+          <DeleteEntryAction entry={entry} />
+        </NavigationActionContainer>
+      );
 
     case "schedule":
       return (

@@ -52,7 +52,11 @@ export const ActionIconButtonGroup: React.FC<{
               return <SeparatorElement key={"separator"} />;
             }
 
-            const markAsAction = loc.pathname.endsWith(action.href);
+            const markAsAction = action.href
+              ? loc.pathname.endsWith(action.href)
+              : action.search
+                ? loc.search.indexOf(action.search) > -1
+                : false;
 
             return (
               <span key={action.key}>
