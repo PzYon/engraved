@@ -24,7 +24,7 @@ export const PageContextProvider: React.FC<{
   useEffect(() => {
     setUrlParams();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramSearchText, paramJournalTypes, setSearchParams]);
+  }, [paramSearchText, paramJournalTypes, searchParams, setSearchParams]);
 
   useEffect(() => {
     document.title = [
@@ -74,6 +74,7 @@ export const PageContextProvider: React.FC<{
     filterMode,
     paramSearchText,
     paramJournalTypes,
+    searchParams,
     tabs,
   ]);
 
@@ -100,11 +101,21 @@ export const PageContextProvider: React.FC<{
       params["journalTypes"] = journalTypes.join(",");
     }
 
-    if (new URLSearchParams(params).toString() === searchParams.toString()) {
+    const existingParams: Record<string, string> = {};
+    for (const [key, value] of searchParams.entries()) {
+      existingParams[key] = value;
+    }
+
+    const newSearchParams = new URLSearchParams({
+      ...existingParams,
+      ...params,
+    });
+
+    if (newSearchParams.toString() === searchParams.toString()) {
       return;
     }
 
-    setSearchParams(params);
+    setSearchParams(newSearchParams);
   }
 
   function getJournalTypes(): JournalType[] {

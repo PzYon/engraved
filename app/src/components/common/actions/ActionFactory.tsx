@@ -126,9 +126,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
-      href: isDetails
-        ? `/journals/details/${journalId}/actions/delete/`
-        : `actions/delete/${journalId}`,
+      search: `?action-item-id=${journalId}&action-key=delete`,
     };
   }
 
@@ -154,7 +152,6 @@ export class ActionFactory {
       hotkey: enableHotKeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      href: ``,
       search: `?action-item-id=${entryId}&action-key=schedule`,
     };
   }
@@ -272,7 +269,6 @@ export class ActionFactory {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      href: ``,
       search: `?action-item-id=${scrap.id}&action-key=move`,
     };
   }
@@ -283,7 +279,6 @@ export class ActionFactory {
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
-      href: ``,
       search: `?action-item-id=${entry.id}&action-key=delete`,
     };
   }

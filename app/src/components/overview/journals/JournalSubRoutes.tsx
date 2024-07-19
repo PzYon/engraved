@@ -2,7 +2,7 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { NavigationActionContainer } from "../../common/entries/Entry";
 import { DeleteJournalAction } from "../../details/edit/DeleteJournalAction";
 import { NotificationDoneAction } from "../../details/NotificationDoneAction";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useSearchParams } from "react-router-dom";
 import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPermissionsAction";
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
@@ -14,6 +14,30 @@ export const JournalSubRoutes: React.FC<{
   giveFocus?: () => void;
 }> = ({ journal, isFromDetailView, giveFocus }) => {
   const journalId = isFromDetailView ? "" : journal.id;
+
+  const [searchParams] = useSearchParams();
+
+  const actionKey = searchParams.get("action-key");
+  const actionItemId = searchParams.get("action-item-id");
+
+  if (actionItemId !== journal.id) {
+    return null;
+  }
+
+  switch (actionKey) {
+    case "delete":
+      return (
+        <NavigationActionContainer giveFocus={giveFocus}>
+          <DeleteJournalAction journal={journal} />
+        </NavigationActionContainer>
+      );
+    case "permissions":
+      return (
+        <NavigationActionContainer giveFocus={giveFocus}>
+          <EditJournalPermissionsAction journal={journal} />
+        </NavigationActionContainer>
+      );
+  }
 
   return (
     <Routes>

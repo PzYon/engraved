@@ -4,13 +4,13 @@ import React from "react";
 import { Typography } from "@mui/material";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export const DeleteEntryAction: React.FC<{
   entry: IEntry;
 }> = ({ entry }) => {
   const deleteEntryMutation = useDeleteEntryMutation(entry.parentId, entry.id);
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const isScrapJournal = !!(entry as IScrapEntry).scrapType;
 
@@ -33,7 +33,10 @@ export const DeleteEntryAction: React.FC<{
     </>
   );
 
+  // TODO: move this to a custom hook!?
   function close() {
-    navigate("..");
+    searchParams.delete("action-item-id");
+    searchParams.delete("action-key");
+    setSearchParams(searchParams);
   }
 };
