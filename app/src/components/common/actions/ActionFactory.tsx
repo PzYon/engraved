@@ -36,6 +36,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
+import { foo } from "./itemActionHook";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -102,37 +103,27 @@ export class ActionFactory {
     };
   }
 
-  static editJournalPermissions(
-    journalId: string,
-    isDetails: boolean,
-  ): IAction {
+  static editJournalPermissions(journalId: string): IAction {
     return {
       key: "permissions",
       label: "Permissions",
       icon: <ShareOutlined fontSize="small" />,
-      href: isDetails
-        ? `/journals/details/${journalId}/actions/permissions/`
-        : `actions/permissions/${journalId}`,
+      search: foo("permissions", journalId),
     };
   }
 
-  static deleteJournal(
-    journalId: string,
-    isDetails: boolean,
-    enableHotkeys: boolean,
-  ): IAction {
+  static deleteJournal(journalId: string, enableHotkeys: boolean): IAction {
     return {
       hotkey: enableHotkeys ? "alt+d" : undefined,
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
-      search: `?action-item-id=${journalId}&action-key=delete`,
+      search: foo("delete", journalId),
     };
   }
 
   static editJournalSchedule(
     journalId: string,
-    isDetails: boolean,
     enableHotkeys?: boolean,
   ): IAction {
     return {
@@ -140,25 +131,25 @@ export class ActionFactory {
       key: "edit-schedule",
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      href: isDetails
-        ? `/journals/details/${journalId}/actions/schedule`
-        : `actions/schedule/${journalId}`,
+      search: foo("schedule", journalId),
     };
   }
 
-  static editEntryScheduleViaUrl(entryId: string, enableHotKeys?: boolean) {
+  static editEntryScheduleViaUrl(
+    entryId: string,
+    enableHotKeys?: boolean,
+  ): IAction {
     return {
       key: "edit-schedule",
       hotkey: enableHotKeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      search: `?action-item-id=${entryId}&action-key=schedule`,
+      search: foo("schedule", entryId),
     };
   }
 
   static addEntry(
     journal: IJournal,
-    isDetails: boolean,
     enableHotkey: boolean,
     additionalOnClick?: () => void,
   ): IAction {
@@ -167,12 +158,8 @@ export class ActionFactory {
       key: "add_entry",
       label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
-      href: isDetails
-        ? `/journals/details/${journal.id}/actions/add-entry`
-        : `actions/add-entry/${journal.id}`,
-      onClick: () => {
-        additionalOnClick?.();
-      },
+      search: foo("add-entry", journal.id),
+      onClick: () => additionalOnClick?.(),
     };
   }
 
@@ -269,7 +256,7 @@ export class ActionFactory {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      search: `?action-item-id=${scrap.id}&action-key=move`,
+      search: foo("move", scrap.id),
     };
   }
 
@@ -279,7 +266,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
-      search: `?action-item-id=${entry.id}&action-key=delete`,
+      search: foo("delete", entry.id),
     };
   }
 
@@ -292,13 +279,12 @@ export class ActionFactory {
       key: "mark-as-done",
       label: "Mark as done",
       icon: <DoneOutlined fontSize="small" />,
-      href: `actions/notification-done/${entry.id}`,
+      search: foo("notification-done", entry.id),
     };
   }
 
   static markJournalScheduleAsDone(
     journal: IJournal,
-    isDetails: boolean,
     enableHotkey?: boolean,
   ): IAction {
     return {
@@ -306,9 +292,7 @@ export class ActionFactory {
       hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
-      href: isDetails
-        ? `/journals/details/${journal.id}/actions/notification-done`
-        : `actions/notification-done/${journal.id}`,
+      search: foo("notification-done", journal.id),
     };
   }
 

@@ -8,7 +8,7 @@ export const ActionIconButton: React.FC<{
   action: IAction;
   buttonsAsSpans?: boolean;
 }> = ({ action, buttonsAsSpans }) => {
-  if (action.href || action.search) {
+  if (action.href || Object.keys(action.search ?? {}).length) {
     return (
       <ActionLink action={action} style={{ display: "flex" }}>
         {getNoButtonIcon()}

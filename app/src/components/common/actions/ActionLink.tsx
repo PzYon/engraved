@@ -1,13 +1,14 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useCustomSearchParams } from "./itemActionHook";
 
 export const ActionLink: React.FC<{
   action: IAction;
   children?: React.ReactElement;
   style?: CSSProperties;
 }> = ({ action, style, children }) => {
-  const loc = useLocation();
+  const { appendToSearchAsUrl } = useCustomSearchParams();
 
   if (action.isDisabled) {
     return <span style={style}>{children ?? action.icon}</span>;
@@ -17,7 +18,7 @@ export const ActionLink: React.FC<{
     <Link
       to={{
         pathname: action.href,
-        search: getSearch(),
+        search: appendToSearchAsUrl(action.search),
       }}
       style={style}
       title={action.label}
@@ -25,18 +26,4 @@ export const ActionLink: React.FC<{
       {children ?? action.icon}
     </Link>
   );
-
-  function getSearch(): string {
-    const params: string[] = [];
-
-    if (loc.search) {
-      params.push(...loc.search.replace("?", "").split("&"));
-    }
-
-    if (action.search) {
-      params.push(...action.search.replace("?", "").split("&"));
-    }
-
-    return params.length ? `?${params.join("&")}` : undefined;
-  }
 };

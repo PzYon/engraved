@@ -4,15 +4,16 @@ import React from "react";
 import { Typography } from "@mui/material";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { useSearchParams } from "react-router-dom";
+import { useItemAction } from "../../common/actions/itemActionHook";
 
 export const DeleteEntryAction: React.FC<{
   entry: IEntry;
 }> = ({ entry }) => {
   const deleteEntryMutation = useDeleteEntryMutation(entry.parentId, entry.id);
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const isScrapJournal = !!(entry as IScrapEntry).scrapType;
+
+  const { closeAction } = useItemAction();
 
   return (
     <>
@@ -26,17 +27,10 @@ export const DeleteEntryAction: React.FC<{
         requiresConfirmation={isScrapJournal}
         onDelete={() => {
           deleteEntryMutation.mutate();
-          close();
+          closeAction();
         }}
-        onCancel={close}
+        onCancel={closeAction}
       />
     </>
   );
-
-  // TODO: move this to a custom hook!?
-  function close() {
-    searchParams.delete("action-item-id");
-    searchParams.delete("action-key");
-    setSearchParams(searchParams);
-  }
 };

@@ -3,28 +3,26 @@ import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { MoveScrapAction } from "../../details/scraps/MoveScrapAction";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { NavigationActionContainer } from "./Entry";
-import { useSearchParams } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
+import { useItemAction } from "../actions/itemActionHook";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
   giveFocus?: () => void;
 }> = ({ entry, giveFocus }) => {
-  const [searchParams] = useSearchParams();
+  const { getParams } = useItemAction();
+  const action = getParams();
 
-  const actionKey = searchParams.get("action-key");
-  const actionItemId = searchParams.get("action-item-id");
-
-  if (actionItemId !== entry.id) {
+  if (action.itemId !== entry.id) {
     return null;
   }
 
-  console.log(`EntrySubRoutes for ${actionItemId} ${actionKey}`);
+  console.log(`EntrySubRoutes for ${action.itemId} ${action.key}`);
 
-  switch (actionKey) {
+  switch (action.key) {
     case "delete":
       return (
         <NavigationActionContainer giveFocus={giveFocus}>

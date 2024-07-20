@@ -4,6 +4,7 @@ import { FilterMode, PageContext } from "./PageContext";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { JournalType } from "../../../serverApi/JournalType";
+import { useCustomSearchParams } from "../../common/actions/itemActionHook";
 
 export const PageContextProvider: React.FC<{
   children: React.ReactNode;
@@ -11,6 +12,8 @@ export const PageContextProvider: React.FC<{
   const [searchParams, setSearchParams] = useSearchParams();
   const paramSearchText = searchParams?.get("q") ?? "";
   const paramJournalTypes = searchParams?.get("journalTypes");
+
+  const asdf = useCustomSearchParams();
 
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
@@ -89,33 +92,12 @@ export const PageContextProvider: React.FC<{
     const params: {
       q?: string;
       journalTypes?: string;
-    } = {};
+    } = {
+      q: overrides?.searchText ?? paramSearchText,
+      journalTypes: (overrides?.journalTypes ?? getJournalTypes()).join(","),
+    };
 
-    const searchText = overrides?.searchText ?? paramSearchText;
-    if (searchText) {
-      params["q"] = searchText;
-    }
-
-    const journalTypes = overrides?.journalTypes ?? getJournalTypes();
-    if (journalTypes.length) {
-      params["journalTypes"] = journalTypes.join(",");
-    }
-
-    const existingParams: Record<string, string> = {};
-    for (const [key, value] of searchParams.entries()) {
-      existingParams[key] = value;
-    }
-
-    const newSearchParams = new URLSearchParams({
-      ...existingParams,
-      ...params,
-    });
-
-    if (newSearchParams.toString() === searchParams.toString()) {
-      return;
-    }
-
-    setSearchParams(newSearchParams);
+    asdf.append(params);
   }
 
   function getJournalTypes(): JournalType[] {
