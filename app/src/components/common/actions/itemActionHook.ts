@@ -33,15 +33,15 @@ export const useCustomSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   return {
-    get: (key: string) => searchParams.get(key),
+    getParam: (key: string) => searchParams.get(key),
 
-    appendToSearchAsUrl: (params: Record<string, string>): string => {
+    getAppendedParamsAsUrl: (params: Record<string, string>): string => {
       return !params || !Object.keys(params).length
         ? undefined
         : getNewSearchParams(params).toString();
     },
 
-    append: (params: Record<string, string>) => {
+    appendParams: (params: Record<string, string>) => {
       const newSearchParams = getNewSearchParams(params);
 
       if (newSearchParams.toString() === searchParams.toString()) {
@@ -56,14 +56,16 @@ export const useCustomSearchParams = () => {
     for (const key in params) {
       const value = params[key];
 
-      if (value === null || value === undefined) {
+      if (value === null || value === undefined || value === "") {
         searchParams.delete(key);
       } else {
         searchParams.set(key, value);
       }
     }
 
-    return searchParams;
+    // TDDO: what up!?
+    //return searchParams;
+    return new URLSearchParams({ ...searchParams });
 
     /*
     const existingParams: Record<string, string> = {};

@@ -2,18 +2,16 @@ import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
 import { FilterMode, PageContext } from "./PageContext";
 import React, { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { JournalType } from "../../../serverApi/JournalType";
 import { useCustomSearchParams } from "../../common/actions/itemActionHook";
 
 export const PageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const paramSearchText = searchParams?.get("q") ?? "";
-  const paramJournalTypes = searchParams?.get("journalTypes");
+  const { appendParams, getParam } = useCustomSearchParams();
 
-  const asdf = useCustomSearchParams();
+  const paramSearchText = getParam("q") ?? "";
+  const paramJournalTypes = getParam("journalTypes");
 
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
@@ -27,7 +25,7 @@ export const PageContextProvider: React.FC<{
   useEffect(() => {
     setUrlParams();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramSearchText, paramJournalTypes, searchParams, setSearchParams]);
+  }, [paramSearchText, paramJournalTypes]);
 
   useEffect(() => {
     document.title = [
@@ -77,7 +75,6 @@ export const PageContextProvider: React.FC<{
     filterMode,
     paramSearchText,
     paramJournalTypes,
-    searchParams,
     tabs,
   ]);
 
@@ -89,15 +86,10 @@ export const PageContextProvider: React.FC<{
     searchText?: string;
     journalTypes?: JournalType[];
   }) {
-    const params: {
-      q?: string;
-      journalTypes?: string;
-    } = {
+    appendParams({
       q: overrides?.searchText ?? paramSearchText,
       journalTypes: (overrides?.journalTypes ?? getJournalTypes()).join(","),
-    };
-
-    asdf.append(params);
+    });
   }
 
   function getJournalTypes(): JournalType[] {

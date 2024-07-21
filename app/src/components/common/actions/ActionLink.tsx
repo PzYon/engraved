@@ -8,7 +8,7 @@ export const ActionLink: React.FC<{
   children?: React.ReactElement;
   style?: CSSProperties;
 }> = ({ action, style, children }) => {
-  const { appendToSearchAsUrl } = useCustomSearchParams();
+  const { getAppendedParamsAsUrl } = useCustomSearchParams();
 
   if (action.isDisabled) {
     return <span style={style}>{children ?? action.icon}</span>;
@@ -18,7 +18,7 @@ export const ActionLink: React.FC<{
     <Link
       to={{
         pathname: action.href,
-        search: appendToSearchAsUrl(action.search),
+        search: getAppendedParamsAsUrl(action.search),
       }}
       style={style}
       title={action.label}

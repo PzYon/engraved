@@ -46,13 +46,7 @@ export const JournalListItem: React.FC<{
           <ListItemFooterRow
             hasFocus={hasFocus}
             properties={journalProperties}
-            actions={getCommonJournalActions(
-              journal,
-              hasFocus,
-              user,
-              false,
-              true,
-            )}
+            actions={getCommonJournalActions(journal, hasFocus, user, true)}
           />
           <JournalSubRoutes journal={journal} giveFocus={giveFocus} />
         </Box>
