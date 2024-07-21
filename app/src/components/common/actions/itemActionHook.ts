@@ -45,7 +45,6 @@ export const useCustomSearchParams = () => {
     },
 
     appendParams: (params: Record<string, string>) => {
-      debugger;
       const newSearchParams = getNewSearchParams(params);
 
       if (newSearchParams.toString() === searchParams.toString()) {
