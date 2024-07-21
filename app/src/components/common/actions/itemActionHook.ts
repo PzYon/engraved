@@ -45,6 +45,7 @@ export const useCustomSearchParams = () => {
     },
 
     appendParams: (params: Record<string, string>) => {
+      debugger;
       const newSearchParams = getNewSearchParams(params);
 
       if (newSearchParams.toString() === searchParams.toString()) {
@@ -56,29 +57,18 @@ export const useCustomSearchParams = () => {
   };
 
   function getNewSearchParams(params: Record<string, string>) {
+    const newSearchParams = new URLSearchParams({ ...searchParams });
+
     for (const key in params) {
       const value = params[key];
 
       if (value === null || value === undefined || value === "") {
-        searchParams.delete(key);
+        newSearchParams.delete(key);
       } else {
-        searchParams.set(key, value);
+        newSearchParams.set(key, value);
       }
     }
 
-    // TDDO: what up!?
-    return searchParams;
-    //return new URLSearchParams({ ...searchParams });
-
-    /*
-    const existingParams: Record<string, string> = {};
-    for (const [key, value] of searchParams.entries()) {
-      existingParams[key] = value;
-    }
-
-    return new URLSearchParams({
-      ...existingParams,
-      ...params,
-    });*/
+    return newSearchParams;
   }
 };
