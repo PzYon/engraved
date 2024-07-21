@@ -3,8 +3,17 @@ import { useSearchParams } from "react-router-dom";
 const key = "action-key";
 const itemId = "action-item-id";
 
+export type ActionKey =
+  | "permissions"
+  | "delete"
+  | "schedule"
+  | "add-entry"
+  | "move"
+  | "notification-done"
+  | "edit";
+
 export function getItemActionQueryParams(
-  actionKey: string,
+  actionKey: ActionKey,
   actionItemId: string,
 ) {
   return {
@@ -18,10 +27,10 @@ export const useItemAction = () => {
 
   return {
     getParams: () => {
-      return {
-        key: searchParams.get(key),
-        itemId: searchParams.get(itemId),
-      };
+      return getItemActionQueryParams(
+        searchParams.get(key) as ActionKey,
+        searchParams.get(itemId),
+      );
     },
 
     closeAction: () => {
@@ -55,8 +64,17 @@ export const useCustomSearchParams = () => {
     },
   };
 
+  function cloneSearchParams() {
+    const newestSearchParams: Record<string, string> = {};
+    searchParams.forEach((v, k) => {
+      newestSearchParams[k] = v;
+    });
+
+    return new URLSearchParams({ ...newestSearchParams });
+  }
+
   function getNewSearchParams(params: Record<string, string>) {
-    const newSearchParams = new URLSearchParams({ ...searchParams });
+    const newSearchParams = cloneSearchParams();
 
     for (const key in params) {
       const value = params[key];

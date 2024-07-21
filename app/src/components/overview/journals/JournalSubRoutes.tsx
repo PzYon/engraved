@@ -15,11 +15,11 @@ export const JournalSubRoutes: React.FC<{
 }> = ({ journal, giveFocus }) => {
   const { getParams } = useItemAction();
 
-  if (getParams().itemId !== journal.id) {
+  if (getParams()["action-item-id"] !== journal.id) {
     return null;
   }
 
-  switch (getParams().key) {
+  switch (getParams()["action-key"]) {
     case "delete":
       return (
         <NavigationActionContainer giveFocus={giveFocus}>

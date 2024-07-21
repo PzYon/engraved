@@ -5,6 +5,7 @@ import { useIsInViewport } from "../useIsInViewPort";
 import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useLocation } from "react-router-dom";
+import { useCustomSearchParams } from "./itemActionHook";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
@@ -19,6 +20,7 @@ export const ActionIconButtonGroup: React.FC<{
   const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
 
   const loc = useLocation();
+  const { getParam } = useCustomSearchParams();
 
   const [isReady, setIsReady] = useState(false);
 
@@ -33,6 +35,24 @@ export const ActionIconButtonGroup: React.FC<{
 
   if (!actions?.length) {
     return null;
+  }
+
+  function isActionActive(action: IAction) {
+    if (action.href) {
+      return loc.pathname.endsWith(action.href);
+    }
+
+    if (!action.search || !Object.keys(action.search).length) {
+      return false;
+    }
+
+    for (const key in action.search) {
+      if (action.search[key] !== getParam(key)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   return (
@@ -52,19 +72,10 @@ export const ActionIconButtonGroup: React.FC<{
               return <SeparatorElement key={"separator"} />;
             }
 
-            // todo: this needs to be improved
-            const markAsAction = action.href
-              ? loc.pathname.endsWith(action.href)
-              : action.search
-                ? loc.search.indexOf(
-                    new URLSearchParams(action.search).toString(),
-                  ) > -1
-                : false;
-
             return (
               <span key={action.key}>
                 <ActionIconButton action={action} />
-                {markAsAction ? (
+                {isActionActive(action) ? (
                   <span
                     style={{
                       position: "absolute",

@@ -17,14 +17,14 @@ export const EntrySubRoutes: React.FC<{
   const { getParams } = useItemAction();
   const action = getParams();
 
-  if (action.itemId !== entry.id) {
+  if (action["action-item-id"] !== entry.id) {
     return null;
   }
 
   return render ? render(getChild()) : getChild();
 
   function getChild() {
-    switch (action.key) {
+    switch (action["action-key"]) {
       case "delete":
         return (
           <NavigationActionContainer giveFocus={giveFocus}>
