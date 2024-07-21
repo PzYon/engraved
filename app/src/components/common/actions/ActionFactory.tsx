@@ -302,7 +302,7 @@ export class ActionFactory {
       key: "edit",
       label: "Edit entry",
       icon: <EditOutlined fontSize="small" />,
-      href: `actions/edit/${entry.id}`,
+      search: getItemActionQueryParams("edit", entry.id),
     };
   }
 

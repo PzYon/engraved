@@ -4,19 +4,14 @@ import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import { TableCell, TableRow } from "@mui/material";
 import { StyledTableRow } from "./EntriesTable";
 import { IEntry } from "../../../serverApi/IEntry";
-import { Route, Routes } from "react-router-dom";
-import { DeleteEntryAction } from "../edit/DeleteEntryAction";
-import { UpsertEntryAction } from "../add/UpsertEntryAction";
-import { IJournal } from "../../../serverApi/IJournal";
-import { NavigationActionContainer } from "../../common/entries/Entry";
+import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 
 export const EntriesTableBodyGroup: React.FC<{
   group: IEntriesTableGroup;
   columns: IEntriesTableColumnDefinition[];
   showGroupTotals: boolean;
   isGroupCollapsed: boolean;
-  journal: IJournal;
-}> = ({ group, columns, showGroupTotals, isGroupCollapsed, journal }) => {
+}> = ({ group, columns, showGroupTotals, isGroupCollapsed }) => {
   const [isCollapsed, setIsCollapsed] = useState(isGroupCollapsed);
 
   useEffect(() => setIsCollapsed(isGroupCollapsed), [isGroupCollapsed]);
@@ -46,32 +41,11 @@ export const EntriesTableBodyGroup: React.FC<{
               </TableCell>
             ))}
           </StyledTableRow>
-          <Routes>
-            <Route
-              path={`actions/delete/${entry.id}`}
-              element={
-                <StyledTableRow key="routes">
-                  <TableCell colSpan={columns.length}>
-                    <NavigationActionContainer>
-                      <DeleteEntryAction entry={entry} />
-                    </NavigationActionContainer>
-                  </TableCell>
-                </StyledTableRow>
-              }
-            />
-            <Route
-              path={`actions/edit/${entry.id}`}
-              element={
-                <StyledTableRow key="routes">
-                  <TableCell colSpan={columns.length}>
-                    <NavigationActionContainer>
-                      <UpsertEntryAction journal={journal} entry={entry} />
-                    </NavigationActionContainer>
-                  </TableCell>
-                </StyledTableRow>
-              }
-            />
-          </Routes>
+          <StyledTableRow key="routes">
+            <TableCell colSpan={columns.length}>
+              <EntrySubRoutes entry={entry} />
+            </TableCell>
+          </StyledTableRow>
         </React.Fragment>
       ))}
       {showGroupTotals ? (
