@@ -83,14 +83,14 @@ export const queryKeysFactory = {
   },
 
   entities(
-    searchText?: string,
+    searchText = "",
     scheduledOnly = false,
     executeWithoutConditions = false,
   ) {
     return [
       "search",
       "entities",
-      searchText ?? "",
+      searchText,
       scheduledOnly,
       executeWithoutConditions,
     ];

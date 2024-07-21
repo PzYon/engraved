@@ -4,15 +4,16 @@ import React from "react";
 import { Typography } from "@mui/material";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { useNavigate } from "react-router-dom";
+import { useItemAction } from "../../common/actions/itemActionHook";
 
 export const DeleteEntryAction: React.FC<{
   entry: IEntry;
 }> = ({ entry }) => {
   const deleteEntryMutation = useDeleteEntryMutation(entry.parentId, entry.id);
-  const navigate = useNavigate();
 
   const isScrapJournal = !!(entry as IScrapEntry).scrapType;
+
+  const { closeAction } = useItemAction();
 
   return (
     <>
@@ -26,14 +27,10 @@ export const DeleteEntryAction: React.FC<{
         requiresConfirmation={isScrapJournal}
         onDelete={() => {
           deleteEntryMutation.mutate();
-          close();
+          closeAction();
         }}
-        onCancel={close}
+        onCancel={closeAction}
       />
     </>
   );
-
-  function close() {
-    navigate("..");
-  }
 };

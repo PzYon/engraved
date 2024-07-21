@@ -111,7 +111,6 @@ export const EntriesTable: React.FC<{
         ) : null}
         {tableGroups.map((group, i) => (
           <EntriesTableBodyGroup
-            journal={journal}
             key={group.label}
             group={group}
             columns={columns}

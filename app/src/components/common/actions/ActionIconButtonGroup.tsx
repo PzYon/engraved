@@ -5,6 +5,7 @@ import { useIsInViewport } from "../useIsInViewPort";
 import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useLocation } from "react-router-dom";
+import { useCustomSearchParams } from "./itemActionHook";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
@@ -19,6 +20,7 @@ export const ActionIconButtonGroup: React.FC<{
   const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
 
   const loc = useLocation();
+  const { getParam } = useCustomSearchParams();
 
   const [isReady, setIsReady] = useState(false);
 
@@ -52,12 +54,10 @@ export const ActionIconButtonGroup: React.FC<{
               return <SeparatorElement key={"separator"} />;
             }
 
-            const markAsAction = loc.pathname.endsWith(action.href);
-
             return (
               <span key={action.key}>
                 <ActionIconButton action={action} />
-                {markAsAction ? (
+                {isActionActive(action) ? (
                   <span
                     style={{
                       position: "absolute",
@@ -75,6 +75,24 @@ export const ActionIconButtonGroup: React.FC<{
       </ButtonContainer>
     </>
   );
+
+  function isActionActive(action: IAction) {
+    if (action.href) {
+      return loc.pathname.endsWith(action.href);
+    }
+
+    if (!action.search || !Object.keys(action.search).length) {
+      return false;
+    }
+
+    for (const key in action.search) {
+      if (action.search[key] !== getParam(key)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 };
 
 const ButtonContainer = styled("div")`

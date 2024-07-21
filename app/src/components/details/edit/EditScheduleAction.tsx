@@ -14,8 +14,8 @@ import {
 import { IJournal } from "../../../serverApi/IJournal";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
-import { useNavigate } from "react-router-dom";
 import { IEntry } from "../../../serverApi/IEntry";
+import { useItemAction } from "../../common/actions/itemActionHook";
 
 export const EditScheduleAction: React.FC<{
   journal?: IJournal;
@@ -27,7 +27,7 @@ export const EditScheduleAction: React.FC<{
 
   const { user } = useAppContext();
 
-  const navigate = useNavigate();
+  const { closeAction } = useItemAction();
 
   useEffect(() => {
     getNextOccurrence().then((d) => {
@@ -95,7 +95,7 @@ export const EditScheduleAction: React.FC<{
       ) : null}
 
       <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
-        <Button variant="outlined" onClick={close}>
+        <Button variant="outlined" onClick={closeAction}>
           Cancel
         </Button>
         <Button variant="contained" onClick={save} disabled={!isDirty}>
@@ -114,11 +114,7 @@ export const EditScheduleAction: React.FC<{
 
     modifyScheduleMutation.mutate(scheduleDefinition);
 
-    close();
-  }
-
-  function close() {
-    navigate("..");
+    closeAction();
   }
 };
 

@@ -1,35 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { IconButton, styled, Theme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
-import { useActionContext } from "./ActionContext";
-import { useHotkeys } from "react-hotkeys-hook";
 import { SxProps } from "@mui/system";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
   buttonsAsSpans?: boolean;
 }> = ({ action, buttonsAsSpans }) => {
-  const actionContext = useActionContext();
-
-  useHotkeys(
-    action.hotkey,
-    (keyboardEvent) => {
-      keyboardEvent.preventDefault();
-      action.onClick();
-    },
-    {
-      enabled: !!action.hotkey && !action.href,
-      enableOnFormTags: ["textarea", "input"],
-    },
-  );
-
-  useEffect(() => {
-    actionContext.addAction(action);
-    return () => actionContext.removeAction(action);
-  }, [action, actionContext]);
-
-  if (action.href) {
+  if (action.href || Object.keys(action.search ?? {}).length) {
     return (
       <ActionLink action={action} style={{ display: "flex" }}>
         {getNoButtonIcon()}

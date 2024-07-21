@@ -89,7 +89,7 @@ export const JournalViewPage: React.FC = () => {
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
         : undefined,
       null, // null means separator - ugly, but it works for the moment
-      ...getCommonJournalActions(journal, true, user, true, true),
+      ...getCommonJournalActions(journal, true, user, true),
     ]);
 
     return () => {
