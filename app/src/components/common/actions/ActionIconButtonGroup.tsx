@@ -37,24 +37,6 @@ export const ActionIconButtonGroup: React.FC<{
     return null;
   }
 
-  function isActionActive(action: IAction) {
-    if (action.href) {
-      return loc.pathname.endsWith(action.href);
-    }
-
-    if (!action.search || !Object.keys(action.search).length) {
-      return false;
-    }
-
-    for (const key in action.search) {
-      if (action.search[key] !== getParam(key)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   return (
     <>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
@@ -93,6 +75,24 @@ export const ActionIconButtonGroup: React.FC<{
       </ButtonContainer>
     </>
   );
+
+  function isActionActive(action: IAction) {
+    if (action.href) {
+      return loc.pathname.endsWith(action.href);
+    }
+
+    if (!action.search || !Object.keys(action.search).length) {
+      return false;
+    }
+
+    for (const key in action.search) {
+      if (action.search[key] !== getParam(key)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 };
 
 const ButtonContainer = styled("div")`
