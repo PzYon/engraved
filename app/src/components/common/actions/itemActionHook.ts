@@ -67,8 +67,8 @@ export const useCustomSearchParams = () => {
     }
 
     // TDDO: what up!?
-    //return searchParams;
-    return new URLSearchParams({ ...searchParams });
+    return searchParams;
+    //return new URLSearchParams({ ...searchParams });
 
     /*
     const existingParams: Record<string, string> = {};
