@@ -36,7 +36,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
-import { foo } from "./itemActionHook";
+import { getItemActionQueryParams } from "./itemActionHook";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -108,7 +108,7 @@ export class ActionFactory {
       key: "permissions",
       label: "Permissions",
       icon: <ShareOutlined fontSize="small" />,
-      search: foo("permissions", journalId),
+      search: getItemActionQueryParams("permissions", journalId),
     };
   }
 
@@ -118,7 +118,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
-      search: foo("delete", journalId),
+      search: getItemActionQueryParams("delete", journalId),
     };
   }
 
@@ -131,7 +131,7 @@ export class ActionFactory {
       key: "edit-schedule",
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      search: foo("schedule", journalId),
+      search: getItemActionQueryParams("schedule", journalId),
     };
   }
 
@@ -144,7 +144,7 @@ export class ActionFactory {
       hotkey: enableHotKeys ? "alt+s" : undefined,
       label: "Edit schedule",
       icon: <EditNotificationsOutlined fontSize="small" />,
-      search: foo("schedule", entryId),
+      search: getItemActionQueryParams("schedule", entryId),
     };
   }
 
@@ -158,7 +158,7 @@ export class ActionFactory {
       key: "add_entry",
       label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
-      search: foo("add-entry", journal.id),
+      search: getItemActionQueryParams("add-entry", journal.id),
       onClick: () => additionalOnClick?.(),
     };
   }
@@ -256,7 +256,7 @@ export class ActionFactory {
       key: "move-to-other-scrap",
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
-      search: foo("move", scrap.id),
+      search: getItemActionQueryParams("move", scrap.id),
     };
   }
 
@@ -266,7 +266,7 @@ export class ActionFactory {
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
-      search: foo("delete", entry.id),
+      search: getItemActionQueryParams("delete", entry.id),
     };
   }
 
@@ -279,7 +279,7 @@ export class ActionFactory {
       key: "mark-as-done",
       label: "Mark as done",
       icon: <DoneOutlined fontSize="small" />,
-      search: foo("notification-done", entry.id),
+      search: getItemActionQueryParams("notification-done", entry.id),
     };
   }
 
@@ -292,7 +292,7 @@ export class ActionFactory {
       hotkey: enableHotkey ? "alt+d" : undefined,
       icon: <DoneOutlined fontSize="small" />,
       label: "Mark as done",
-      search: foo("notification-done", journal.id),
+      search: getItemActionQueryParams("notification-done", journal.id),
     };
   }
 

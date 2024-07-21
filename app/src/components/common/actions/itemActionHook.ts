@@ -3,7 +3,10 @@ import { useSearchParams } from "react-router-dom";
 const key = "action-key";
 const itemId = "action-item-id";
 
-export function foo(actionKey: string, actionItemId: string) {
+export function getItemActionQueryParams(
+  actionKey: string,
+  actionItemId: string,
+) {
   return {
     [key]: actionKey,
     [itemId]: actionItemId,
