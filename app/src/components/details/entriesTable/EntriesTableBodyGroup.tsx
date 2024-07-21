@@ -41,11 +41,15 @@ export const EntriesTableBodyGroup: React.FC<{
               </TableCell>
             ))}
           </StyledTableRow>
-          <StyledTableRow key="routes">
-            <TableCell colSpan={columns.length}>
-              <EntrySubRoutes entry={entry} />
-            </TableCell>
-          </StyledTableRow>
+
+          <EntrySubRoutes
+            entry={entry}
+            render={(child: React.ReactElement) => (
+              <StyledTableRow key="routes">
+                <TableCell colSpan={columns.length}>{child}</TableCell>
+              </StyledTableRow>
+            )}
+          />
         </React.Fragment>
       ))}
       {showGroupTotals ? (

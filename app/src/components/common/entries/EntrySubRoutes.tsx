@@ -11,8 +11,9 @@ import { useItemAction } from "../actions/itemActionHook";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
+  render?: (child: React.ReactElement) => React.ReactElement;
   giveFocus?: () => void;
-}> = ({ entry, giveFocus }) => {
+}> = ({ entry, render, giveFocus }) => {
   const { getParams } = useItemAction();
   const action = getParams();
 
@@ -20,48 +21,50 @@ export const EntrySubRoutes: React.FC<{
     return null;
   }
 
-  console.log(`EntrySubRoutes for ${action.itemId} ${action.key}`);
+  return render ? render(getChild()) : getChild();
 
-  switch (action.key) {
-    case "delete":
-      return (
-        <NavigationActionContainer giveFocus={giveFocus}>
-          <DeleteEntryAction entry={entry} />
-        </NavigationActionContainer>
-      );
+  function getChild() {
+    switch (action.key) {
+      case "delete":
+        return (
+          <NavigationActionContainer giveFocus={giveFocus}>
+            <DeleteEntryAction entry={entry} />
+          </NavigationActionContainer>
+        );
 
-    case "schedule":
-      return (
-        <NavigationActionContainer giveFocus={giveFocus}>
-          <EditScheduleAction entry={entry} />
-        </NavigationActionContainer>
-      );
+      case "schedule":
+        return (
+          <NavigationActionContainer giveFocus={giveFocus}>
+            <EditScheduleAction entry={entry} />
+          </NavigationActionContainer>
+        );
 
-    case "notification-done":
-      return (
-        <NavigationActionContainer
-          shrinkWidthIfPossible={true}
-          giveFocus={giveFocus}
-        >
-          <NotificationDoneAction entry={entry} journal={null} />
-        </NavigationActionContainer>
-      );
+      case "notification-done":
+        return (
+          <NavigationActionContainer
+            shrinkWidthIfPossible={true}
+            giveFocus={giveFocus}
+          >
+            <NotificationDoneAction entry={entry} journal={null} />
+          </NavigationActionContainer>
+        );
 
-    case "move":
-      return (
-        <NavigationActionContainer giveFocus={giveFocus}>
-          <MoveScrapAction entry={entry as IScrapEntry} />
-        </NavigationActionContainer>
-      );
+      case "move":
+        return (
+          <NavigationActionContainer giveFocus={giveFocus}>
+            <MoveScrapAction entry={entry as IScrapEntry} />
+          </NavigationActionContainer>
+        );
 
-    case "edit":
-      return (
-        <NavigationActionContainer giveFocus={giveFocus}>
-          <UpsertEntryAction entry={entry} />
-        </NavigationActionContainer>
-      );
+      case "edit":
+        return (
+          <NavigationActionContainer giveFocus={giveFocus}>
+            <UpsertEntryAction entry={entry} />
+          </NavigationActionContainer>
+        );
 
-    default:
-      return null;
+      default:
+        return null;
+    }
   }
 };
