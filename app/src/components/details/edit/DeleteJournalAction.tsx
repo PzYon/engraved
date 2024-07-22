@@ -6,14 +6,14 @@ import { DeleteButtons } from "../../common/DeleteButtons";
 import { queryKeysFactory } from "../../../serverApi/reactQuery/queryKeysFactory";
 import { useAppContext } from "../../../AppContext";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useItemAction } from "../../common/actions/itemActionHook";
 
 export const DeleteJournalAction: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
   const { setAppAlert } = useAppContext();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const { closeAction } = useItemAction();
 
   const deleteJournalMutation = useDeleteJournalMutation(journal.id);
 
@@ -26,11 +26,11 @@ export const DeleteJournalAction: React.FC<{
       <DeleteButtons
         entityType="journal"
         requiresConfirmation={true}
-        onCancel={close}
+        onCancel={closeAction}
         onDelete={() =>
           deleteJournalMutation.mutate({
             onSuccess: async () => {
-              close();
+              closeAction();
 
               setAppAlert({
                 title: `Successfully deleted journal.`,
@@ -49,8 +49,4 @@ export const DeleteJournalAction: React.FC<{
       />
     </>
   );
-
-  function close() {
-    navigate("..");
-  }
 };
