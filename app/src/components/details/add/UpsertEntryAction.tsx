@@ -216,6 +216,8 @@ const UpsertEntryActionInternal: React.FC<{
             });
 
             onSuccess();
+
+            closeAction();
           }}
         >
           {entry?.id ? "Update entry" : "Add entry"}
