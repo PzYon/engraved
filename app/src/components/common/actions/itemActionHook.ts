@@ -38,6 +38,12 @@ export const useItemAction = () => {
       searchParams.delete(key);
       setSearchParams(searchParams);
     },
+
+    openAction: (actionItemId: string, actionKey: ActionKey) => {
+      searchParams.set(key, actionKey);
+      searchParams.set(itemId, actionItemId);
+      setSearchParams(searchParams);
+    },
   };
 };
 

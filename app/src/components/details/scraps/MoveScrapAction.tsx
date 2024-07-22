@@ -8,11 +8,13 @@ import { UserRole } from "../../../serverApi/UserRole";
 import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
 import { useAppContext } from "../../../AppContext";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
+import { useItemAction } from "../../common/actions/itemActionHook";
 
 export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
   entry,
 }) => {
   const navigate = useNavigate();
+  const { closeAction } = useItemAction();
 
   const { user } = useAppContext();
 
@@ -46,7 +48,7 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
         }
       />
       <DialogFormButtonContainer>
-        <Button variant={"outlined"} onClick={close}>
+        <Button variant={"outlined"} onClick={closeAction}>
           Cancel
         </Button>
         <Button
@@ -61,8 +63,4 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
       </DialogFormButtonContainer>
     </>
   );
-
-  function close() {
-    navigate("..");
-  }
 };

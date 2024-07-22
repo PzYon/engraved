@@ -6,11 +6,11 @@ import { useModifyScheduleMutation } from "../../serverApi/reactQuery/mutations/
 import { useAppContext } from "../../AppContext";
 import { ISchedule } from "../../serverApi/ISchedule";
 import { parseDate } from "./edit/parseDate";
-import { useNavigate } from "react-router-dom";
 import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
 import React from "react";
 import { ScheduledInfo } from "../overview/scheduled/ScheduledInfo";
 import { isAfter } from "date-fns";
+import { useItemAction } from "../common/actions/itemActionHook";
 
 export const NotificationDoneAction: React.FC<{
   journal: IJournal;
@@ -18,7 +18,7 @@ export const NotificationDoneAction: React.FC<{
 }> = ({ journal, entry }) => {
   const { user } = useAppContext();
 
-  const navigate = useNavigate();
+  const { closeAction, openAction } = useItemAction();
 
   const modifyScheduleMutation = useModifyScheduleMutation(
     journal?.id ?? entry?.parentId,
@@ -33,15 +33,13 @@ export const NotificationDoneAction: React.FC<{
 
   return (
     <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
-      <Button variant={"outlined"} onClick={close}>
+      <Button variant={"outlined"} onClick={closeAction}>
         Cancel
       </Button>
       {entry ? (
         <Button
           variant={isRecurring ? "outlined" : "contained"}
-          onClick={() => {
-            navigate(`../actions/delete/${entry.id}`);
-          }}
+          onClick={() => openAction(entry.id, "delete")}
         >
           Delete {entry ? "entry" : "journal"}
         </Button>
@@ -63,7 +61,7 @@ export const NotificationDoneAction: React.FC<{
 
             modifyScheduleMutation.mutate(scheduleDefinition);
 
-            close();
+            closeAction();
           }}
         >
           {getScheduleButtonLabel()}
@@ -71,10 +69,6 @@ export const NotificationDoneAction: React.FC<{
       ) : null}
     </DialogFormButtonContainer>
   );
-
-  function close() {
-    navigate("..");
-  }
 
   function getScheduleButtonLabel() {
     return isRecurring ? (

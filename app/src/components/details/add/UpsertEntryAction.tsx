@@ -24,11 +24,11 @@ import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { getValueHeaderLabel } from "../../../util/journalUtils";
-import { useNavigate } from "react-router-dom";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { Scrap } from "../scraps/Scrap";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
+import { useItemAction } from "../../common/actions/itemActionHook";
 
 export const UpsertEntryAction: React.FC<{
   journal?: IJournal;
@@ -36,8 +36,6 @@ export const UpsertEntryAction: React.FC<{
 }> = ({ journal: initialJournal, entry: initialEntry }) => {
   const [journal, setJournal] = useState<IJournal>();
   const [entry, setEntry] = useState<IEntry>();
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([
@@ -83,10 +81,6 @@ export const UpsertEntryAction: React.FC<{
       onSuccess={close}
     />
   );
-
-  function close() {
-    navigate("..");
-  }
 };
 
 const UpsertEntryActionInternal: React.FC<{
@@ -114,6 +108,8 @@ const UpsertEntryActionInternal: React.FC<{
   const [endDate, setEndDate] = useState((entry as ITimerEntry)?.endDate);
 
   const [showFullTimerForm, setShowFullTimerForm] = useState(false);
+
+  const { closeAction } = useItemAction();
 
   const upsertEntryMutation = useUpsertEntryMutation(
     journal.id,
@@ -208,7 +204,7 @@ const UpsertEntryActionInternal: React.FC<{
       />
 
       <DialogFormButtonContainer>
-        <Button variant="outlined" onClick={close}>
+        <Button variant="outlined" onClick={closeAction}>
           Cancel
         </Button>
         <Button
