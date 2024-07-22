@@ -85,7 +85,12 @@ export const useCustomSearchParams = () => {
     for (const key in params) {
       const value = params[key];
 
-      if (value === null || value === undefined || value === "") {
+      if (
+        value === null ||
+        value === undefined ||
+        value === "" ||
+        value === "false"
+      ) {
         newSearchParams.delete(key);
       } else {
         newSearchParams.set(key, value);

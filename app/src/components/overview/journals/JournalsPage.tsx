@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ListAlt, StarOutline } from "@mui/icons-material";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
@@ -8,9 +8,15 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getPageTabs } from "../../layout/tabs/getPageTabs";
 import { FilterMode } from "../../layout/pages/PageContext";
 import { IconStyle } from "../../common/IconStyle";
+import { useCustomSearchParams } from "../../common/actions/itemActionHook";
+
+const favoritesOnlyParamName = "favorites-only";
 
 export const JournalsPage: React.FC = () => {
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const searchParams = useCustomSearchParams();
+
+  const favoritesOnly =
+    searchParams.getParam(favoritesOnlyParamName) === "true";
 
   return (
     <Page
@@ -30,8 +36,11 @@ export const JournalsPage: React.FC = () => {
         {
           icon: <StarOutline fontSize="small" />,
           label: "Show favorites only",
-          key: "favorites-only",
-          onClick: () => setFavoritesOnly(!favoritesOnly),
+          key: favoritesOnlyParamName,
+          onClick: () =>
+            searchParams.appendParams({
+              [favoritesOnlyParamName]: String(!favoritesOnly),
+            }),
           isNotActive: !favoritesOnly,
         },
         ActionFactory.newJournal(),
