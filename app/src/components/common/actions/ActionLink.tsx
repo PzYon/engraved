@@ -1,7 +1,8 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { Link } from "react-router-dom";
+import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useCustomSearchParams } from "./itemActionHook";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionLink: React.FC<{
   action: IAction;
@@ -9,6 +10,25 @@ export const ActionLink: React.FC<{
   style?: CSSProperties;
 }> = ({ action, style, children }) => {
   const { getAppendedParamsAsUrl } = useCustomSearchParams();
+
+  const navigate = useNavigate();
+
+  useHotkeys(
+    action.hotkey,
+    (keyboardEvent) => {
+      keyboardEvent.preventDefault();
+      navigate({
+        pathname: action.href,
+        search: createSearchParams(action.search).toString(),
+      });
+    },
+    {
+      enabled:
+        !!action.hotkey &&
+        !!(action.href || Object.keys(action.search ?? {}).length),
+      enableOnFormTags: ["textarea", "input"],
+    },
+  );
 
   if (action.isDisabled) {
     return <span style={style}>{children ?? action.icon}</span>;

@@ -1,13 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IconButton, styled, Theme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { SxProps } from "@mui/system";
+import { useActionContext } from "./ActionContext";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
   buttonsAsSpans?: boolean;
 }> = ({ action, buttonsAsSpans }) => {
+  const actionContext = useActionContext();
+
+  useHotkeys(
+    action.hotkey,
+    (keyboardEvent) => {
+      keyboardEvent.preventDefault();
+      action.onClick();
+    },
+    {
+      // we only register actions with functions here.
+      // actions with URLs are registered in ActionLink component.
+      enabled: !!action.hotkey && !!action.onClick,
+      enableOnFormTags: ["textarea", "input"],
+    },
+  );
+
+  useEffect(() => {
+    actionContext.addAction(action);
+    return () => actionContext.removeAction(action);
+  }, [action, actionContext]);
+
   if (action.href || Object.keys(action.search ?? {}).length) {
     return (
       <ActionLink action={action} style={{ display: "flex" }}>
