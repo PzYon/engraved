@@ -74,10 +74,6 @@ export const queryKeysFactory = {
     return [journals, journalId, entryId];
   },
 
-  activeEntry(journalId: string, journalType: JournalType) {
-    return [journals, journalId, "entries", journalType, "get-active"];
-  },
-
   entries(searchText?: string, journalTypes?: JournalType[]) {
     return [journals, "entries", searchText ?? "", journalTypes?.join() ?? ""];
   },

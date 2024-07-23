@@ -89,7 +89,7 @@ export class ActionFactory {
       href: "/journals/create",
       icon: <AddOutlined fontSize="small" />,
       label: "Add journal",
-      key: "add_journal",
+      key: "add-journal",
     };
   }
 
