@@ -40,6 +40,8 @@ export class ServerApi {
 
   private static _jwtToken: string;
 
+  // foo
+
   static serverOs: "lin" | "win" = "lin";
 
   static loadingHandler: LoadingHandler = new LoadingHandler();
