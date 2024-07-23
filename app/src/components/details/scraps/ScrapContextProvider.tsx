@@ -176,7 +176,7 @@ export const ScrapContextProvider: React.FC<{
       });
     }
 
-    if (changeTypeWithoutConfirmation) {
+    if (changeTypeWithoutConfirmation || !genericNotes.length) {
       changeType();
       return;
     }
