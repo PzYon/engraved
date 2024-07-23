@@ -152,12 +152,14 @@ export class ActionFactory {
     journal: IJournal,
     enableHotkey: boolean,
     additionalOnClick?: () => void,
+    navigateToJournal?: boolean,
   ): IAction {
     return {
       hotkey: enableHotkey ? "alt+a" : undefined,
       key: "add_entry",
       label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
+      href: navigateToJournal ? `/journals/details/${journal.id}` : undefined,
       search: getItemActionQueryParams("add-entry", journal.id),
       onClick: () => additionalOnClick?.(),
     };
