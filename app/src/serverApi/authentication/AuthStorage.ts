@@ -1,10 +1,10 @@
 import { IAuthResult } from "../IAuthResult";
-import { StorageUtil } from "../../util/StorageUtil";
+import { StorageWrapper } from "../../util/StorageWrapper";
 
 export class AuthStorage {
   private static key = "engraved::auth";
 
-  private storageUtil = new StorageUtil(localStorage);
+  private storageUtil = new StorageWrapper(localStorage);
 
   hasResult(): boolean {
     return !!this.getAuthResult();
