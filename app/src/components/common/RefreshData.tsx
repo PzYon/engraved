@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ActionIconButton } from "./actions/ActionIconButton";
 import { ServerApi } from "../../serverApi/ServerApi";
 import { styled } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { ActionFactory } from "./actions/ActionFactory";
-
-const keyForLoadingHandler = "refresh-data";
+import { useIsLoading } from "./PulsatingDot";
 
 export const RefreshData: React.FC = () => {
   const queryClient = useQueryClient();
 
-  const [doRotate, setDoRotate] = useState(false);
+  // const [doRotate, setDoRotate] = useState(false);
+  //
+  // useEffect(() => {
+  //   ServerApi.loadingHandler.registerHandler(keyForLoadingHandler, setDoRotate);
+  //   return () =>
+  //     ServerApi.loadingHandler.unregisterHandler(keyForLoadingHandler);
+  // }, []);
 
-  useEffect(() => {
-    ServerApi.loadingHandler.registerHandler(keyForLoadingHandler, setDoRotate);
-    return () =>
-      ServerApi.loadingHandler.unregisterHandler(keyForLoadingHandler);
-  }, []);
+  const doRotate = useIsLoading();
 
   return (
     <Host className={doRotate ? "rotate" : null}>

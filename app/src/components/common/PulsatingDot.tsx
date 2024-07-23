@@ -1,19 +1,43 @@
 import { styled } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ServerApi } from "../../serverApi/ServerApi";
+import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 
-const keyForLoadingHandler = "pulsating-dot";
+export const useIsLoading = () => {
+  const isMutating = useIsMutating() > 0;
+  const isFetching = useIsFetching() > 0;
 
-export const PulsatingDot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    ServerApi.loadingHandler.registerHandler(keyForLoadingHandler, (loading) =>
-      setIsLoading(loading),
-    );
-    return () =>
-      ServerApi.loadingHandler.unregisterHandler(keyForLoadingHandler);
-  }, []);
+    const isCurrentlyLoading = isMutating || isFetching;
+
+    if (isCurrentlyLoading !== isLoading) {
+      if (isCurrentlyLoading) {
+        setIsLoading(true);
+      } else {
+        setIsLoading(isCurrentlyLoading);
+      }
+    }
+  }, [isMutating, isFetching]);
+
+  console.log("useIsLoading:" + isLoading);
+
+  return isLoading;
+};
+
+export const PulsatingDot: React.FC = () => {
+  // const [isLoading, setIsLoading] = useState(false);
+  //
+  // useEffect(() => {
+  //   ServerApi.loadingHandler.registerHandler(keyForLoadingHandler, (loading) =>
+  //     setIsLoading(loading),
+  //   );
+  //   return () =>
+  //     ServerApi.loadingHandler.unregisterHandler(keyForLoadingHandler);
+  // }, []);
+
+  const isLoading = useIsLoading();
 
   return <Dot className={isLoading ? "is-active" : undefined}>.</Dot>;
 };
