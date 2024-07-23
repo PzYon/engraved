@@ -1,4 +1,4 @@
-export class StorageUtil {
+export class StorageWrapper {
   constructor(private storage: Storage) {}
 
   setValue(key: string, value: unknown): void {
