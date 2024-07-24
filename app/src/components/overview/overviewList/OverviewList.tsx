@@ -36,9 +36,7 @@ export const OverviewList: React.FC<{
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
-            onClick={() => {
-              setFocus();
-            }}
+            onClick={setFocus}
             addWrapperItem={addItem}
             item={item}
           >

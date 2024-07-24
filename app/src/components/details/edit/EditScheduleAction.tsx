@@ -15,7 +15,7 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { IEntry } from "../../../serverApi/IEntry";
-import { useItemAction } from "../../common/actions/itemActionHook";
+import { useItemAction } from "../../common/actions/searchParamHooks";
 
 export const EditScheduleAction: React.FC<{
   journal?: IJournal;

@@ -10,7 +10,7 @@ import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
 import React from "react";
 import { ScheduledInfo } from "../overview/scheduled/ScheduledInfo";
 import { isAfter } from "date-fns";
-import { useItemAction } from "../common/actions/itemActionHook";
+import { useItemAction } from "../common/actions/searchParamHooks";
 
 export const NotificationDoneAction: React.FC<{
   journal: IJournal;

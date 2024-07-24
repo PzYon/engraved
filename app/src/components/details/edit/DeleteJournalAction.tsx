@@ -6,7 +6,7 @@ import { DeleteButtons } from "../../common/DeleteButtons";
 import { queryKeysFactory } from "../../../serverApi/reactQuery/queryKeysFactory";
 import { useAppContext } from "../../../AppContext";
 import { useQueryClient } from "@tanstack/react-query";
-import { useItemAction } from "../../common/actions/itemActionHook";
+import { useItemAction } from "../../common/actions/searchParamHooks";
 
 export const DeleteJournalAction: React.FC<{
   journal: IJournal;

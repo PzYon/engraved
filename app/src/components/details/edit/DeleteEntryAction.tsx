@@ -4,7 +4,7 @@ import React from "react";
 import { Typography } from "@mui/material";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { useItemAction } from "../../common/actions/itemActionHook";
+import { useItemAction } from "../../common/actions/searchParamHooks";
 
 export const DeleteEntryAction: React.FC<{
   entry: IEntry;

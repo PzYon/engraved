@@ -13,7 +13,7 @@ import { EntrySubRoutes } from "./EntrySubRoutes";
 import { IPropertyDefinition } from "../IPropertyDefinition";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalIcon } from "../../overview/journals/JournalIcon";
-import { useSelectedItemId } from "../actions/itemActionHook";
+import { useSelectedItemId } from "../actions/searchParamHooks";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -44,7 +44,7 @@ export const Entry: React.FC<{
     if (isActive) {
       giveFocus?.();
     }
-  }, [isActive]);
+  }, [isActive, giveFocus]);
 
   return (
     <>

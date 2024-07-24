@@ -8,7 +8,7 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getPageTabs } from "../../layout/tabs/getPageTabs";
 import { FilterMode } from "../../layout/pages/PageContext";
 import { IconStyle } from "../../common/IconStyle";
-import { useEngravedSearchParams } from "../../common/actions/itemActionHook";
+import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
 
 const favoritesOnlyParamName = "favorites-only";
 

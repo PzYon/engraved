@@ -5,7 +5,7 @@ import { OverviewItem } from "./OverviewItem";
 import {
   knownQueryParams,
   useSelectedItemId,
-} from "../../../common/actions/itemActionHook";
+} from "../../../common/actions/searchParamHooks";
 
 export function useOverviewCollection(deps: unknown[]) {
   const [focusIndex, setFocusIndex] = useState(-1);
@@ -16,13 +16,9 @@ export function useOverviewCollection(deps: unknown[]) {
 
   const collection = useMemo(
     () =>
-      new OverviewItemCollection(focusIndex, setFocusIndex, (x) => {
-        if (
-          new URLSearchParams(location.search).get(
-            knownQueryParams.selectedItemIdParam,
-          ) !== x
-        ) {
-          setSelectedItemId(x);
+      new OverviewItemCollection(focusIndex, setFocusIndex, (id) => {
+        if (getSelectedItemIdFromUrl() !== id) {
+          setSelectedItemId(id);
         }
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,4 +43,10 @@ export function useOverviewCollection(deps: unknown[]) {
     collection,
     addItem: (wrapper: OverviewItem) => collection.add(wrapper),
   };
+
+  function getSelectedItemIdFromUrl() {
+    return new URLSearchParams(location.search).get(
+      knownQueryParams.selectedItemIdParam,
+    );
+  }
 }

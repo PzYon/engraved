@@ -11,7 +11,7 @@ import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "@mui/material";
-import { knownQueryParams } from "../../../components/common/actions/itemActionHook";
+import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 
 interface IUpsertEntryCommandVariables {
   command: IUpsertEntryCommand;

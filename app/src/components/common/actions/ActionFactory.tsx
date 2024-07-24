@@ -36,7 +36,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
-import { getItemActionQueryParams } from "./itemActionHook";
+import { getItemActionQueryParams } from "./searchParamHooks";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {

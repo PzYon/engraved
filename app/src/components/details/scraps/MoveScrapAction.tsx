@@ -8,7 +8,7 @@ import { UserRole } from "../../../serverApi/UserRole";
 import { getPermissionsForUser } from "../../overview/journals/useJournalPermissions";
 import { useAppContext } from "../../../AppContext";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
-import { useItemAction } from "../../common/actions/itemActionHook";
+import { useItemAction } from "../../common/actions/searchParamHooks";
 
 export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
   entry,

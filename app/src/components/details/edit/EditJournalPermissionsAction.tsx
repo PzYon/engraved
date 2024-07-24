@@ -10,7 +10,7 @@ import { AddOutlined } from "@mui/icons-material";
 import { isValidEmail } from "../../../util/utils";
 import { useModifyJournalPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyJournalPermissionsMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
-import { useItemAction } from "../../common/actions/itemActionHook";
+import { useItemAction } from "../../common/actions/searchParamHooks";
 
 export const EditJournalPermissionsAction: React.FC<{
   journal: IJournal;

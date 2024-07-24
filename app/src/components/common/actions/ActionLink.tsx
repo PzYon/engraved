@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
-import { useEngravedSearchParams } from "./itemActionHook";
+import { useEngravedSearchParams } from "./searchParamHooks";
 import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionLink: React.FC<{
