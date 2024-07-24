@@ -17,14 +17,13 @@ export const EntrySubRoutes: React.FC<{
   const { getParams } = useItemAction();
   const action = getParams();
 
-  if (action[knownQueryParams.actionKey] !== entry.id) {
+  if (action[knownQueryParams.selectedItemIdParam] !== entry.id) {
     return null;
   }
 
   return render ? render(getChild()) : getChild();
 
   function getChild() {
-    debugger;
     switch (action["action-key"]) {
       case "delete":
         return (
