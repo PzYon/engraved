@@ -5,7 +5,7 @@ import { useIsInViewport } from "../useIsInViewPort";
 import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useLocation } from "react-router-dom";
-import { useCustomSearchParams } from "./itemActionHook";
+import { useEngravedSearchParams } from "./itemActionHook";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
@@ -20,7 +20,7 @@ export const ActionIconButtonGroup: React.FC<{
   const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
 
   const loc = useLocation();
-  const { getParam } = useCustomSearchParams();
+  const { getSearchParam } = useEngravedSearchParams();
 
   const [isReady, setIsReady] = useState(false);
 
@@ -86,7 +86,7 @@ export const ActionIconButtonGroup: React.FC<{
     }
 
     for (const key in action.search) {
-      if (action.search[key] !== getParam(key)) {
+      if (action.search[key] !== getSearchParam(key)) {
         return false;
       }
     }

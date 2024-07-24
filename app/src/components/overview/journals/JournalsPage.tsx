@@ -8,15 +8,15 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getPageTabs } from "../../layout/tabs/getPageTabs";
 import { FilterMode } from "../../layout/pages/PageContext";
 import { IconStyle } from "../../common/IconStyle";
-import { useCustomSearchParams } from "../../common/actions/itemActionHook";
+import { useEngravedSearchParams } from "../../common/actions/itemActionHook";
 
 const favoritesOnlyParamName = "favorites-only";
 
 export const JournalsPage: React.FC = () => {
-  const searchParams = useCustomSearchParams();
+  const searchParams = useEngravedSearchParams();
 
   const favoritesOnly =
-    searchParams.getParam(favoritesOnlyParamName) === "true";
+    searchParams.getSearchParam(favoritesOnlyParamName) === "true";
 
   return (
     <Page
@@ -38,7 +38,7 @@ export const JournalsPage: React.FC = () => {
           label: "Show favorites only",
           key: favoritesOnlyParamName,
           onClick: () =>
-            searchParams.appendParams({
+            searchParams.appendSearchParams({
               [favoritesOnlyParamName]: String(!favoritesOnly),
             }),
           isNotActive: !favoritesOnly,

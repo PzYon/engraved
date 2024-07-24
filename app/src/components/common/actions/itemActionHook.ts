@@ -1,7 +1,9 @@
 import { useSearchParams } from "react-router-dom";
 
-const key = "action-key";
-const itemId = "action-item-id";
+export const knownQueryParams = {
+  selectedItemIdParam: "selected-item",
+  actionKey: "action-key",
+};
 
 export type ActionKey =
   | "permissions"
@@ -17,8 +19,8 @@ export function getItemActionQueryParams(
   actionItemId: string,
 ) {
   return {
-    [key]: actionKey,
-    [itemId]: actionItemId,
+    [knownQueryParams.actionKey]: actionKey,
+    [knownQueryParams.selectedItemIdParam]: actionItemId,
   };
 }
 
@@ -28,38 +30,55 @@ export const useItemAction = () => {
   return {
     getParams: () => {
       return getItemActionQueryParams(
-        searchParams.get(key) as ActionKey,
-        searchParams.get(itemId),
+        searchParams.get(knownQueryParams.actionKey) as ActionKey,
+        searchParams.get(knownQueryParams.selectedItemIdParam),
       );
     },
 
     closeAction: () => {
-      searchParams.delete(itemId);
-      searchParams.delete(key);
+      searchParams.delete(knownQueryParams.actionKey);
+      searchParams.delete(knownQueryParams.selectedItemIdParam);
       setSearchParams(searchParams);
     },
 
     openAction: (actionItemId: string, actionKey: ActionKey) => {
-      searchParams.set(key, actionKey);
-      searchParams.set(itemId, actionItemId);
+      searchParams.set(knownQueryParams.actionKey, actionKey);
+      searchParams.set(knownQueryParams.selectedItemIdParam, actionItemId);
       setSearchParams(searchParams);
     },
   };
 };
 
-export const useCustomSearchParams = () => {
+export const useSelectedItemId = () => {
+  return useEngravedSearchParam(knownQueryParams.selectedItemIdParam);
+};
+
+export const useEngravedSearchParam = (key: string) => {
+  const customSearchParams = useEngravedSearchParams();
+
+  return {
+    setSelectedItemId: (value: string) => {
+      customSearchParams.appendSearchParams({ [key]: value });
+    },
+    getSelectedItemId: () => {
+      return customSearchParams.getSearchParam(key);
+    },
+  };
+};
+
+export const useEngravedSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   return {
-    getParam: (key: string) => searchParams.get(key),
+    getSearchParam: (key: string) => searchParams.get(key),
 
-    getAppendedParamsAsUrl: (params: Record<string, string>): string => {
+    getAppendedSearchParams: (params: Record<string, string>): string => {
       return !params || !Object.keys(params).length
         ? undefined
         : getNewSearchParams(params).toString();
     },
 
-    appendParams: (params: Record<string, string>) => {
+    appendSearchParams: (params: Record<string, string>) => {
       const newSearchParams = getNewSearchParams(params);
 
       if (newSearchParams.toString() === searchParams.toString()) {

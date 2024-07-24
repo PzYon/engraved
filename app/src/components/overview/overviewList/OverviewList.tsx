@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
-import { useCollection } from "./wrappers/useCollection";
+import { useOverviewCollection } from "./wrappers/useOverviewCollection";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
 import { getScheduleForUser } from "../scheduled/scheduleUtils";
@@ -18,7 +18,7 @@ export const OverviewList: React.FC<{
 }> = ({ items, renderItem, filterItem }) => {
   const { user } = useAppContext();
 
-  const { collection, addItem } = useCollection([items]);
+  const { collection, addItem } = useOverviewCollection([items]);
   const [showAll, setShowAll] = useState(false);
 
   const filteredItems = items.filter(
@@ -36,7 +36,9 @@ export const OverviewList: React.FC<{
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
-            onClick={setFocus}
+            onClick={() => {
+              setFocus();
+            }}
             addWrapperItem={addItem}
             item={item}
           >

@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
-import { useCustomSearchParams } from "./itemActionHook";
+import { useEngravedSearchParams } from "./itemActionHook";
 import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionLink: React.FC<{
@@ -9,7 +9,7 @@ export const ActionLink: React.FC<{
   children?: React.ReactElement;
   style?: CSSProperties;
 }> = ({ action, style, children }) => {
-  const { getAppendedParamsAsUrl } = useCustomSearchParams();
+  const { getAppendedSearchParams } = useEngravedSearchParams();
 
   const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ export const ActionLink: React.FC<{
     <Link
       to={{
         pathname: action.href,
-        search: getAppendedParamsAsUrl(action.search),
+        search: getAppendedSearchParams(action.search),
       }}
       style={style}
       title={action.label}

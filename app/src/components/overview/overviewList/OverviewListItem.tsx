@@ -3,14 +3,14 @@ import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
-import { WrapperCollectionItem } from "./wrappers/WrapperCollectionItem";
+import { OverviewItem } from "./wrappers/OverviewItem";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useDisplayModeContext } from "./DisplayModeContext";
 
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
   onClick: () => void;
-  addWrapperItem: (wrapper: WrapperCollectionItem) => void;
+  addWrapperItem: (wrapper: OverviewItem) => void;
   item: IEntity;
   index: number;
 }> = ({ children, onClick, addWrapperItem, item, index }) => {
@@ -19,13 +19,15 @@ export const OverviewListItem: React.FC<{
   const { isCompact } = useDisplayModeContext();
 
   useEffect(() => {
-    addWrapperItem(new WrapperCollectionItem(domElementRef, item as IJournal));
+    addWrapperItem(new OverviewItem(domElementRef, item as IJournal));
   }, [addWrapperItem, item]);
 
   return (
     <Host
       ref={domElementRef}
-      onClick={onClick}
+      onClick={() => {
+        onClick();
+      }}
       tabIndex={index}
       id={item.id}
       data-testid={item.id}

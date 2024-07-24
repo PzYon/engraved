@@ -15,7 +15,7 @@ export const JournalSubRoutes: React.FC<{
 }> = ({ journal, giveFocus }) => {
   const { getParams } = useItemAction();
 
-  if (getParams()["action-item-id"] !== journal.id) {
+  if (getParams()["selected-item"] !== journal.id) {
     return null;
   }
 

@@ -7,7 +7,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
-import { useItemAction } from "../actions/itemActionHook";
+import { knownQueryParams, useItemAction } from "../actions/itemActionHook";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -17,7 +17,7 @@ export const EntrySubRoutes: React.FC<{
   const { getParams } = useItemAction();
   const action = getParams();
 
-  if (action["action-item-id"] !== entry.id) {
+  if (action[knownQueryParams.actionKey] !== entry.id) {
     return null;
   }
 
