@@ -24,6 +24,7 @@ export const EntrySubRoutes: React.FC<{
   return render ? render(getChild()) : getChild();
 
   function getChild() {
+    debugger;
     switch (action["action-key"]) {
       case "delete":
         return (

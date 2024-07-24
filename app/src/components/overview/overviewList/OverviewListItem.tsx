@@ -25,9 +25,7 @@ export const OverviewListItem: React.FC<{
   return (
     <Host
       ref={domElementRef}
-      onClick={() => {
-        onClick();
-      }}
+      onClick={onClick}
       tabIndex={index}
       id={item.id}
       data-testid={item.id}
