@@ -363,6 +363,7 @@ export class ActionFactory {
   ): IAction {
     return {
       key: "copy",
+      hotkey: "alt+c",
       label: "Copy content",
       icon: <ContentCopyOutlined fontSize="small" />,
       onClick: async () => {
