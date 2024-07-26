@@ -13,7 +13,6 @@ import {
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
-  isFromDetailView?: boolean;
   giveFocus?: () => void;
 }> = ({ journal, giveFocus }) => {
   const { getParams } = useItemAction();

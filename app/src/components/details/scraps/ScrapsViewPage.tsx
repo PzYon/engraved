@@ -57,7 +57,7 @@ export const ScrapsViewPage: React.FC = () => {
         ...getCommonJournalActions(journal, false, user, false),
       ]}
     >
-      <JournalSubRoutes journal={journal} isFromDetailView={true} />
+      <JournalSubRoutes journal={journal} />
 
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
