@@ -3,15 +3,15 @@ import { IPageTab } from "../tabs/IPageTab";
 import { FilterMode, PageContext } from "./PageContext";
 import React, { useEffect, useMemo, useState } from "react";
 import { JournalType } from "../../../serverApi/JournalType";
-import { useCustomSearchParams } from "../../common/actions/itemActionHook";
+import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
 
 export const PageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const { appendParams, getParam } = useCustomSearchParams();
+  const { appendSearchParams, getSearchParam } = useEngravedSearchParams();
 
-  const paramSearchText = getParam("q") ?? "";
-  const paramJournalTypes = getParam("journalTypes");
+  const paramSearchText = getSearchParam("q") ?? "";
+  const paramJournalTypes = getSearchParam("journalTypes");
 
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
@@ -86,7 +86,7 @@ export const PageContextProvider: React.FC<{
     searchText?: string;
     journalTypes?: JournalType[];
   }) {
-    appendParams({
+    appendSearchParams({
       q: overrides?.searchText ?? paramSearchText,
       journalTypes: (overrides?.journalTypes ?? getJournalTypes()).join(","),
     });

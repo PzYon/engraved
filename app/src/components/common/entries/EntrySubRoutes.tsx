@@ -7,7 +7,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
-import { useItemAction } from "../actions/itemActionHook";
+import { knownQueryParams, useItemAction } from "../actions/searchParamHooks";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
@@ -17,14 +17,14 @@ export const EntrySubRoutes: React.FC<{
   const { getParams } = useItemAction();
   const action = getParams();
 
-  if (action["action-item-id"] !== entry.id) {
+  if (action[knownQueryParams.selectedItemIdParam] !== entry.id) {
     return null;
   }
 
   return render ? render(getChild()) : getChild();
 
   function getChild() {
-    switch (action["action-key"]) {
+    switch (action[knownQueryParams.actionKey]) {
       case "delete":
         return (
           <NavigationActionContainer giveFocus={giveFocus}>

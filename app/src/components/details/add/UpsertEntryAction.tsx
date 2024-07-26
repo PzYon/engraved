@@ -28,7 +28,7 @@ import { ServerApi } from "../../../serverApi/ServerApi";
 import { Scrap } from "../scraps/Scrap";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
-import { useItemAction } from "../../common/actions/itemActionHook";
+import { useItemAction } from "../../common/actions/searchParamHooks";
 
 export const UpsertEntryAction: React.FC<{
   journal?: IJournal;

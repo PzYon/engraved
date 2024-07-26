@@ -11,6 +11,7 @@ import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "@mui/material";
+import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 
 interface IUpsertEntryCommandVariables {
   command: IUpsertEntryCommand;
@@ -54,12 +55,14 @@ export const useUpsertEntryMutation = (
       result: ICommandResult,
       variables: IUpsertEntryCommandVariables,
     ) => {
-      const journalUrl = `/journals/details/${variables.command.journalId}`;
+      const journalUrl = `/journals/details/${variables.command.journalId}/`;
+      const actionUrl = `${journalUrl}?${knownQueryParams.selectedItemIdParam}=${result.entityId}`;
+
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
         message: !pathname.startsWith(journalUrl) ? (
           <>
-            <StyledLink to={journalUrl}>Go to</StyledLink> journal
+            <StyledLink to={actionUrl}>View</StyledLink> in journal
           </>
         ) : null,
         type: "success",
