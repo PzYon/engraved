@@ -55,12 +55,14 @@ export const useUpsertEntryMutation = (
       result: ICommandResult,
       variables: IUpsertEntryCommandVariables,
     ) => {
-      const journalUrl = `/journals/details/${variables.command.journalId}?${knownQueryParams.selectedItemIdParam}=${result.entityId}`;
+      const journalUrl = `/journals/details/${variables.command.journalId}/`;
+      const actionUrl = `${journalUrl}?${knownQueryParams.selectedItemIdParam}=${result.entityId}`;
+
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
         message: !pathname.startsWith(journalUrl) ? (
           <>
-            <StyledLink to={journalUrl}>View</StyledLink> in journal
+            <StyledLink to={actionUrl}>View</StyledLink> in journal
           </>
         ) : null,
         type: "success",
