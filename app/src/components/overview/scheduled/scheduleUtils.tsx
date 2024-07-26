@@ -5,6 +5,7 @@ import { addDays, isAfter, isSameDay } from "date-fns";
 import { IParsedDate } from "../../details/edit/parseDate";
 import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
 import { ScheduledInfo } from "./ScheduledInfo";
+import { getItemActionQueryParams } from "../../common/actions/searchParamHooks";
 
 export function getScheduleForUser(entity: IEntity, userId: string): ISchedule {
   return entity.schedules?.[userId] ?? {};
@@ -56,7 +57,7 @@ export function getScheduleDefinition(
         nextOccurrence: parsedDate.date,
         recurrence: parsedDate.recurrence,
         // {0} will be replaced on server with actual entry ID
-        onClickUrl: `${location.origin}/journals/details/${journalId}/actions/notification-done/${entryId}`,
+        onClickUrl: `${location.origin}/journals/details/${journalId}/${new URLSearchParams(getItemActionQueryParams("notification-done", entryId)).toString()}`,
       }
     : undefined;
 }
