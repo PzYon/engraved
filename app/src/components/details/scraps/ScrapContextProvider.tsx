@@ -95,7 +95,7 @@ export const ScrapContextProvider: React.FC<{
     [initialScrap, notes, title],
   );
 
-  const s = useItemAction();
+  const itemAction = useItemAction();
 
   const upsertEntryMutation = useUpsertEntryMutation(
     currentScrap.parentId,
@@ -103,8 +103,8 @@ export const ScrapContextProvider: React.FC<{
     null, // scrap currently do not support attributes
     currentScrap.id,
     () => {
-      if (s.getParams()[knownQueryParams.actionKey] === "add-entry") {
-        s.closeAction();
+      if (itemAction.getParams()[knownQueryParams.actionKey] === "add-entry") {
+        itemAction.closeAction();
       }
     },
   );
@@ -187,10 +187,7 @@ export const ScrapContextProvider: React.FC<{
       });
     }
 
-    if (
-      changeTypeWithoutConfirmation ||
-      genericNotes.map((s) => s?.trim() ?? "").join("") === ""
-    ) {
+    if (changeTypeWithoutConfirmation || isEmpty(genericNotes)) {
       changeType();
       return;
     }
@@ -330,6 +327,10 @@ export const ScrapContextProvider: React.FC<{
       {children}
     </ScrapContext.Provider>
   );
+
+  function isEmpty(genericNotes: string[]) {
+    return genericNotes.map((s) => s?.trim() ?? "").join("") === "";
+  }
 };
 
 function convertNotesToTargetType(
