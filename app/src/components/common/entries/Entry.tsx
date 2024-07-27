@@ -116,8 +116,9 @@ function getEntryProperties(
 export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
   shrinkWidthIfPossible?: boolean;
+  growWidthIfPossible?: boolean;
   giveFocus?: () => void;
-}> = ({ children, shrinkWidthIfPossible, giveFocus }) => {
+}> = ({ children, growWidthIfPossible, shrinkWidthIfPossible, giveFocus }) => {
   useEffect(() => {
     giveFocus?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -125,7 +126,12 @@ export const NavigationActionContainer: React.FC<{
 
   return (
     <Host>
-      <Inner style={{ width: shrinkWidthIfPossible ? "auto" : "100%" }}>
+      <Inner
+        style={{
+          width: shrinkWidthIfPossible ? "auto" : "100%",
+          maxWidth: growWidthIfPossible ? "100%" : "500px",
+        }}
+      >
         {children}
       </Inner>
     </Host>
@@ -139,10 +145,8 @@ const Host = styled("div")`
 
 const Inner = styled("div")`
   background-color: ${(p) => p.theme.palette.common.white};
-  max-width: 500px;
   border: 4px solid ${(p) => p.theme.palette.background.default};
   border-radius: ${paperBorderRadius};
   padding: ${(p) => p.theme.spacing(2)};
   margin-top: ${(p) => p.theme.spacing(2)};
-  width: 100%;
 `;

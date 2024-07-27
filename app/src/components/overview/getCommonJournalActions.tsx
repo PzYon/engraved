@@ -8,22 +8,16 @@ export function getCommonJournalActions(
   journal: IJournal,
   enableHotkeys: boolean,
   user: IUser,
-  showAddEntry?: boolean,
 ): IAction[] {
   if (!journal) {
     return [];
   }
 
-  const actions: IAction[] = [];
-
-  if (showAddEntry) {
-    actions.push(ActionFactory.addEntry(journal, enableHotkeys));
-  }
-
-  actions.push(
+  const actions: IAction[] = [
+    ActionFactory.addEntry(journal, enableHotkeys),
     ActionFactory.editJournalPermissions(journal.id),
     ActionFactory.editJournalSchedule(journal.id, enableHotkeys),
-  );
+  ];
 
   if (getScheduleForUser(journal, user.id).nextOccurrence) {
     actions.push(

@@ -76,7 +76,7 @@ export const ScrapBody: React.FC<{
       : ActionFactory.editScrap(() => setIsEditMode(true), hasFocus);
 
     if (actionsRenderStyle === "save-only") {
-      return saveAction ? [saveAction] : [];
+      return saveAction ? [cancelEditingAction, saveAction] : [];
     }
 
     const allActions = [
