@@ -38,7 +38,7 @@ export const Entry: React.FC<{
 }) => {
   const { user } = useAppContext();
 
-  const isActive = useSelectedItemId().getSelectedItemId() === entry.id;
+  const isActive = useSelectedItemId().getValue() === entry.id;
 
   useEffect(() => {
     if (isActive) {

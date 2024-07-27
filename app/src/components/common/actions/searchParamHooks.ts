@@ -57,10 +57,10 @@ export const useEngravedSearchParam = (key: string) => {
   const customSearchParams = useEngravedSearchParams();
 
   return {
-    setSelectedItemId: (value: string) => {
+    setValue: (value: string) => {
       customSearchParams.appendSearchParams({ [key]: value });
     },
-    getSelectedItemId: () => {
+    getValue: () => {
       return customSearchParams.getSearchParam(key);
     },
   };
