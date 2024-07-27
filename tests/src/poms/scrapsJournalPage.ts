@@ -8,7 +8,10 @@ export class ScrapsJournalPage extends JournalPage {
   }
 
   async addList() {
-    await this.clickPageAction("Add list");
+    await this.clickPageAction("Add entry");
+
+    await this.page.getByLabel("Change type to list", { exact: true }).click();
+
     return new ScrapListComponent(this.page);
   }
 }

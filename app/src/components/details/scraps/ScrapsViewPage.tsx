@@ -27,10 +27,8 @@ export const ScrapsViewPage: React.FC = () => {
     setDateConditions({});
   }, [setDateConditions]);
 
-  // alt+s (save) is handled by code mirror resp. list
-
   if (!journal) {
-    return;
+    return null;
   }
 
   return (
