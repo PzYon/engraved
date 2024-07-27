@@ -19,6 +19,10 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { AddNewScrapStorage } from "./AddNewScrapStorage";
 import { IScrapListItem } from "./list/IScrapListItem";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
+import {
+  knownQueryParams,
+  useItemAction,
+} from "../../common/actions/searchParamHooks";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -91,11 +95,18 @@ export const ScrapContextProvider: React.FC<{
     [initialScrap, notes, title],
   );
 
+  const s = useItemAction();
+
   const upsertEntryMutation = useUpsertEntryMutation(
     currentScrap.parentId,
     JournalType.Scraps,
     null, // scrap currently do not support attributes
     currentScrap.id,
+    () => {
+      if (s.getParams()[knownQueryParams.actionKey] === "add-entry") {
+        s.closeAction();
+      }
+    },
   );
 
   useEffect(() => {
