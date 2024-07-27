@@ -14,24 +14,18 @@ import { compareAsc } from "date-fns";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
-import { PageSection } from "../../layout/pages/PageSection";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
   const { user } = useAppContext();
 
-  const [newScrap, setNewScrap] = useState<IScrapEntry>(null);
   const [showToc, setShowToc] = useState(true);
 
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
     setDateConditions({});
   }, [setDateConditions]);
-
-  useEffect(() => {
-    setNewScrap(null);
-  }, [scraps]);
 
   // alt+s (save) is handled by code mirror resp. list
 
@@ -52,19 +46,6 @@ export const ScrapsViewPage: React.FC = () => {
 
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
-      {newScrap ? (
-        <PageSection>
-          <Scrap
-            key="new"
-            scrap={newScrap}
-            hasFocus={true}
-            journal={null}
-            propsRenderStyle={"none"}
-            onCancelEditing={() => setNewScrap(null)}
-          />
-        </PageSection>
-      ) : null}
-
       {scraps.length ? (
         <OverviewList
           items={scraps.sort(getCompareFn(user.id))}
@@ -81,7 +62,7 @@ export const ScrapsViewPage: React.FC = () => {
         />
       ) : null}
 
-      {!scraps.length && !newScrap ? (
+      {!scraps.length ? (
         <GenericEmptyPlaceholder
           icon={SelfImprovementOutlined}
           message={"Nothing here..."}
