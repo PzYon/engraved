@@ -10,15 +10,15 @@ import {
 export function useOverviewCollection(deps: unknown[]) {
   const [focusIndex, setFocusIndex] = useState(-1);
 
-  const { setSelectedItemId, getSelectedItemId } = useSelectedItemId();
+  const { setValue, getValue } = useSelectedItemId();
 
-  const itemId = getSelectedItemId();
+  const itemId = getValue();
 
   const collection = useMemo(
     () =>
       new OverviewItemCollection(focusIndex, setFocusIndex, (id) => {
         if (getSelectedItemIdFromUrl() !== id) {
-          setSelectedItemId(id);
+          setValue(id);
         }
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

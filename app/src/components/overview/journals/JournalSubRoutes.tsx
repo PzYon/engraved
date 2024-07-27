@@ -55,7 +55,10 @@ export const JournalSubRoutes: React.FC<{
 
     case "add-entry":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer
+          growWidthIfPossible={true}
+          giveFocus={giveFocus}
+        >
           <UpsertEntryAction journal={journal} />
         </NavigationActionContainer>
       );

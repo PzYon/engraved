@@ -10,8 +10,8 @@ import { ScrapType } from "../../../serverApi/IScrapEntry";
 
 export const QuickAddDialog: React.FC<{
   targetJournalId: string;
-  onSuccess?: () => void;
-}> = ({ targetJournalId, onSuccess }) => {
+  closeDialog?: () => void;
+}> = ({ targetJournalId, closeDialog }) => {
   const { user } = useAppContext();
 
   const scrap = ScrapsJournalType.createBlank(
@@ -44,10 +44,11 @@ export const QuickAddDialog: React.FC<{
           scrap={scrap}
           propsRenderStyle={"none"}
           actionsRenderStyle={"save-only"}
-          onSuccess={onSuccess}
+          onSuccess={closeDialog}
           isQuickAdd={true}
           targetJournalId={journalId}
           changeTypeWithoutConfirmation={true}
+          onCancelEditing={closeDialog}
         />
       </ScrapContainer>
     </>

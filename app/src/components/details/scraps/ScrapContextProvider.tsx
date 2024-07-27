@@ -19,6 +19,10 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { AddNewScrapStorage } from "./AddNewScrapStorage";
 import { IScrapListItem } from "./list/IScrapListItem";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
+import {
+  knownQueryParams,
+  useItemAction,
+} from "../../common/actions/searchParamHooks";
 
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
@@ -91,11 +95,14 @@ export const ScrapContextProvider: React.FC<{
     [initialScrap, notes, title],
   );
 
+  const itemAction = useItemAction();
+
   const upsertEntryMutation = useUpsertEntryMutation(
     currentScrap.parentId,
     JournalType.Scraps,
     null, // scrap currently do not support attributes
     currentScrap.id,
+    closeAddEntryAction,
   );
 
   useEffect(() => {
@@ -176,7 +183,7 @@ export const ScrapContextProvider: React.FC<{
       });
     }
 
-    if (changeTypeWithoutConfirmation || !genericNotes.length) {
+    if (changeTypeWithoutConfirmation || isEmpty(genericNotes)) {
       changeType();
       return;
     }
@@ -211,6 +218,12 @@ export const ScrapContextProvider: React.FC<{
     });
   }
 
+  function closeAddEntryAction() {
+    if (itemAction.getParams()[knownQueryParams.actionKey] === "add-entry") {
+      itemAction.closeAction();
+    }
+  }
+
   const contextValue = useMemo<IScrapContext>(
     () => {
       return {
@@ -234,6 +247,8 @@ export const ScrapContextProvider: React.FC<{
                 setIsEditMode(false);
 
                 onCancelEditing?.();
+
+                closeAddEntryAction();
 
                 AddNewScrapStorage.clearForJournal(
                   isQuickAdd
@@ -316,6 +331,10 @@ export const ScrapContextProvider: React.FC<{
       {children}
     </ScrapContext.Provider>
   );
+
+  function isEmpty(genericNotes: string[]) {
+    return genericNotes.map((s) => s?.trim() ?? "").join("") === "";
+  }
 };
 
 function convertNotesToTargetType(
