@@ -102,11 +102,7 @@ export const ScrapContextProvider: React.FC<{
     JournalType.Scraps,
     null, // scrap currently do not support attributes
     currentScrap.id,
-    () => {
-      if (itemAction.getParams()[knownQueryParams.actionKey] === "add-entry") {
-        itemAction.closeAction();
-      }
-    },
+    closeAddEntryAction,
   );
 
   useEffect(() => {
@@ -222,6 +218,12 @@ export const ScrapContextProvider: React.FC<{
     });
   }
 
+  function closeAddEntryAction() {
+    if (itemAction.getParams()[knownQueryParams.actionKey] === "add-entry") {
+      itemAction.closeAction();
+    }
+  }
+
   const contextValue = useMemo<IScrapContext>(
     () => {
       return {
@@ -245,6 +247,8 @@ export const ScrapContextProvider: React.FC<{
                 setIsEditMode(false);
 
                 onCancelEditing?.();
+
+                closeAddEntryAction();
 
                 AddNewScrapStorage.clearForJournal(
                   isQuickAdd

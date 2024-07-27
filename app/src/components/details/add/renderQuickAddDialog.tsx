@@ -10,7 +10,7 @@ export const renderQuickAddDialog = (
     title: title,
     render: (closeDialog) => (
       <QuickAddDialog
-        onSuccess={closeDialog}
+        closeDialog={closeDialog}
         targetJournalId={selectedJournalId}
       />
     ),
