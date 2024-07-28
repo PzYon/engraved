@@ -1,5 +1,4 @@
 import { IJournal } from "../../../serverApi/IJournal";
-import { NavigationActionContainer } from "../../common/entries/Entry";
 import { DeleteJournalAction } from "../../details/edit/DeleteJournalAction";
 import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPermissionsAction";
@@ -10,11 +9,13 @@ import {
   knownQueryParams,
   useItemAction,
 } from "../../common/actions/searchParamHooks";
+import { NavigationActionContainer } from "../../common/entries/NavigationActionContainer";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
   giveFocus?: () => void;
-}> = ({ journal, giveFocus }) => {
+  noBorderForActions?: boolean;
+}> = ({ journal, giveFocus, noBorderForActions }) => {
   const { getParams } = useItemAction();
 
   if (getParams()[knownQueryParams.selectedItemIdParam] !== journal.id) {
@@ -24,14 +25,20 @@ export const JournalSubRoutes: React.FC<{
   switch (getParams()[knownQueryParams.actionKey]) {
     case "delete":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer
+          giveFocus={giveFocus}
+          noBorder={noBorderForActions}
+        >
           <DeleteJournalAction journal={journal} />
         </NavigationActionContainer>
       );
 
     case "permissions":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer
+          giveFocus={giveFocus}
+          noBorder={noBorderForActions}
+        >
           <EditJournalPermissionsAction journal={journal} />
         </NavigationActionContainer>
       );
@@ -41,6 +48,7 @@ export const JournalSubRoutes: React.FC<{
         <NavigationActionContainer
           shrinkWidthIfPossible={true}
           giveFocus={giveFocus}
+          noBorder={noBorderForActions}
         >
           <NotificationDoneAction entry={null} journal={journal} />
         </NavigationActionContainer>
@@ -48,7 +56,10 @@ export const JournalSubRoutes: React.FC<{
 
     case "schedule":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer
+          giveFocus={giveFocus}
+          noBorder={noBorderForActions}
+        >
           <EditScheduleAction journal={journal} />
         </NavigationActionContainer>
       );
@@ -58,6 +69,7 @@ export const JournalSubRoutes: React.FC<{
         <NavigationActionContainer
           growWidthIfPossible={true}
           giveFocus={giveFocus}
+          noBorder={noBorderForActions}
         >
           <UpsertEntryAction journal={journal} />
         </NavigationActionContainer>

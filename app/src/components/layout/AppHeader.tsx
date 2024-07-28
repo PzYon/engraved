@@ -29,6 +29,7 @@ export const AppHeader: React.FC = () => {
     subTitle,
     hideActions,
     pageActions: pageActionsFromContext,
+    pageActionRoutes,
     filterMode,
     showFilters,
     setShowFilters,
@@ -113,12 +114,13 @@ export const AppHeader: React.FC = () => {
                 actions={pageActions}
                 testId="page-actions"
                 enableFloatingActions={true}
+                activeHighlightColor={"white"}
               />
             )}
             <PageTabs tabs={tabs} />
           </ActionsAndTabContainer>
         </ContentWrapper>
-
+        {pageActionRoutes}
         <PageFilters />
       </AppContent>
     </Host>

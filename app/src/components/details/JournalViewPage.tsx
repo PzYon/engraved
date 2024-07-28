@@ -115,7 +115,7 @@ export const JournalViewPage: React.FC = () => {
       documentTitle={journal.name}
       actions={titleActions}
     >
-      <JournalSubRoutes journal={journal} />
+      <JournalSubRoutes journal={journal} noBorderForActions={true} />
 
       {showNotes ? (
         <PageSection>
