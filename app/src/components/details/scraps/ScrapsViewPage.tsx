@@ -59,14 +59,12 @@ export const ScrapsViewPage: React.FC = () => {
             />
           )}
         />
-      ) : null}
-
-      {!scraps.length ? (
+      ) : (
         <GenericEmptyPlaceholder
           icon={SelfImprovementOutlined}
           message={"Nothing here..."}
         />
-      ) : null}
+      )}
     </Page>
   );
 };
