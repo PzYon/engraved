@@ -24,6 +24,7 @@ import { useDisplayModeContext } from "../overview/overviewList/DisplayModeConte
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
+
   const {
     title,
     subTitle,
@@ -35,7 +36,9 @@ export const AppHeader: React.FC = () => {
     setShowFilters,
     tabs,
   } = usePageContext();
+
   const { palette } = useTheme();
+
   const { renderDialog } = useDialogContext();
 
   const { isCompact, setIsCompact } = useDisplayModeContext();

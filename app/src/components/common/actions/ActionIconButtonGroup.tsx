@@ -71,7 +71,8 @@ export const ActionIconButtonGroup: React.FC<{
                       borderLeft: "16px solid transparent",
                       borderRight: "16px solid transparent  ",
                       borderBottom:
-                        "16px solid " + (activeHighlightColor ?? "#d4e3eb"),
+                        "16px solid " +
+                        (activeHighlightColor ?? palette.background.default),
                       height: 0,
                       width: 0,
                     }}

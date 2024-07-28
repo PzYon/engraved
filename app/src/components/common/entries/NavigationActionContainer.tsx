@@ -27,6 +27,7 @@ export const NavigationActionContainer: React.FC<{
           width: shrinkWidthIfPossible ? "auto" : "100%",
           maxWidth: growWidthIfPossible ? "100%" : "500px",
           border: noBorder ? 0 : undefined,
+          marginTop: noBorder ? "12px" : "16px",
         }}
       >
         {children}
@@ -45,5 +46,4 @@ const Inner = styled("div")`
   border: 4px solid ${(p) => p.theme.palette.background.default};
   border-radius: ${paperBorderRadius};
   padding: ${(p) => p.theme.spacing(2)};
-  margin-top: ${(p) => p.theme.spacing(2)};
 `;
