@@ -477,7 +477,7 @@ export class ServerApi {
     const status = response.status;
 
     console.info(
-      `-- ${method} ${url} (${ServerApi.serverOs}) [${status}]: Server ${server} + Network ${network} = Total ${total} `,
+      `ServerApi: ${method} ${url} (${ServerApi.serverOs}) [${status}]: Server ${server} + Network ${network} = Total ${total} `,
     );
   }
 }

@@ -15,6 +15,7 @@ export const Page: React.FC<{
   tabs?: IPageTab[];
   filterMode?: FilterMode;
   showFilters?: boolean;
+  pageActionRoutes?: React.ReactElement;
 }> = ({
   actions,
   hideActions,
@@ -25,9 +26,11 @@ export const Page: React.FC<{
   children,
   filterMode = FilterMode.None,
   showFilters = false,
+  pageActionRoutes,
 }) => {
   const {
     setPageActions,
+    setPageActionRoutes,
     setHideActions,
     setTitle,
     setSubTitle,
@@ -48,6 +51,14 @@ export const Page: React.FC<{
 
     setPageActions(actions);
   }, [setPageActions, actions]);
+
+  useEffect(() => {
+    if (pageActionRoutes === undefined) {
+      return;
+    }
+
+    setPageActionRoutes(pageActionRoutes);
+  }, [setPageActionRoutes, pageActionRoutes]);
 
   useEffect(() => setHideActions(hideActions), [hideActions, setHideActions]);
 

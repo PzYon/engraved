@@ -24,17 +24,21 @@ import { useDisplayModeContext } from "../overview/overviewList/DisplayModeConte
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
+
   const {
     title,
     subTitle,
     hideActions,
     pageActions: pageActionsFromContext,
+    pageActionRoutes,
     filterMode,
     showFilters,
     setShowFilters,
     tabs,
   } = usePageContext();
+
   const { palette } = useTheme();
+
   const { renderDialog } = useDialogContext();
 
   const { isCompact, setIsCompact } = useDisplayModeContext();
@@ -113,12 +117,13 @@ export const AppHeader: React.FC = () => {
                 actions={pageActions}
                 testId="page-actions"
                 enableFloatingActions={true}
+                activeHighlightColor={"white"}
               />
             )}
             <PageTabs tabs={tabs} />
           </ActionsAndTabContainer>
         </ContentWrapper>
-
+        {pageActionRoutes}
         <PageFilters />
       </AppContent>
     </Host>

@@ -18,6 +18,8 @@ export const PageContextProvider: React.FC<{
   const [documentTitle, setDocumentTitle] = useState<string>(undefined);
   const [hideActions, setHideActions] = useState(false);
   const [pageActions, setPageActions] = useState<IAction[]>([]);
+  const [pageActionRoutes, setPageActionRoutes] =
+    useState<React.ReactElement>(undefined);
   const [showFilters, setShowFilters] = useState(false);
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
@@ -47,6 +49,8 @@ export const PageContextProvider: React.FC<{
       setSubTitle,
       pageActions,
       setPageActions,
+      pageActionRoutes,
+      setPageActionRoutes,
       hideActions,
       setHideActions,
       filterMode,
@@ -70,6 +74,7 @@ export const PageContextProvider: React.FC<{
     subTitle,
     documentTitle,
     pageActions,
+    pageActionRoutes,
     hideActions,
     showFilters,
     filterMode,
