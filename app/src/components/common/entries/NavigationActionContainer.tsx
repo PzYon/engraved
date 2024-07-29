@@ -35,8 +35,8 @@ const Host = styled("div")`
 const Inner = styled("div")`
   position: relative;
   z-index: 2;
-  border-radius: ${paperBorderRadius};
   margin-top: ${(p) => p.theme.spacing(2)};
+  border-radius: ${paperBorderRadius};
 
   &:before {
     content: "";
