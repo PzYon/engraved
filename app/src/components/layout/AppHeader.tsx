@@ -117,7 +117,6 @@ export const AppHeader: React.FC = () => {
                 actions={pageActions}
                 testId="page-actions"
                 enableFloatingActions={true}
-                activeHighlightColor={"white"}
               />
             )}
             <PageTabs tabs={tabs} />

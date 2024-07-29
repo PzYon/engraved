@@ -12,14 +12,7 @@ export const ActionIconButtonGroup: React.FC<{
   enableFloatingActions?: boolean;
   testId?: string;
   backgroundColor?: string;
-  activeHighlightColor?: string;
-}> = ({
-  actions,
-  enableFloatingActions,
-  testId,
-  backgroundColor,
-  activeHighlightColor,
-}) => {
+}> = ({ actions, enableFloatingActions, testId, backgroundColor }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const { palette } = useTheme();
@@ -70,9 +63,7 @@ export const ActionIconButtonGroup: React.FC<{
                       position: "absolute",
                       borderLeft: "16px solid transparent",
                       borderRight: "16px solid transparent  ",
-                      borderBottom:
-                        "16px solid " +
-                        (activeHighlightColor ?? palette.background.default),
+                      borderBottom: "16px solid " + palette.primary.main,
                       height: 0,
                       width: 0,
                     }}

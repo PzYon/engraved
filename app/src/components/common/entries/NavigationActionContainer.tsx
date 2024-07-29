@@ -7,14 +7,7 @@ export const NavigationActionContainer: React.FC<{
   shrinkWidthIfPossible?: boolean;
   growWidthIfPossible?: boolean;
   giveFocus?: () => void;
-  noBorder?: boolean;
-}> = ({
-  children,
-  growWidthIfPossible,
-  shrinkWidthIfPossible,
-  giveFocus,
-  noBorder,
-}) => {
+}> = ({ children, growWidthIfPossible, shrinkWidthIfPossible, giveFocus }) => {
   useEffect(() => {
     giveFocus?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -26,11 +19,10 @@ export const NavigationActionContainer: React.FC<{
         style={{
           width: shrinkWidthIfPossible ? "auto" : "100%",
           maxWidth: growWidthIfPossible ? "100%" : "500px",
-          border: noBorder ? 0 : undefined,
-          marginTop: noBorder ? "12px" : "16px",
+          marginTop: "16px",
         }}
       >
-        {children}
+        <InnerInner>{children}</InnerInner>
       </Inner>
     </Host>
   );
@@ -42,8 +34,30 @@ const Host = styled("div")`
 `;
 
 const Inner = styled("div")`
-  background-color: ${(p) => p.theme.palette.common.white};
-  border: 4px solid ${(p) => p.theme.palette.background.default};
+  position: relative;
+  z-index: 2;
   border-radius: ${paperBorderRadius};
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    margin: -4px;
+    border-radius: ${paperBorderRadius};
+    background: linear-gradient(
+      146deg,
+      ${(p) => p.theme.palette.text.primary} 0%,
+      ${(p) => p.theme.palette.primary.main} 100%
+    );
+  }
+`;
+
+const InnerInner = styled("div")`
   padding: ${(p) => p.theme.spacing(2)};
+  background-color: ${(p) => p.theme.palette.common.white};
+  border-radius: ${paperBorderRadius};
 `;

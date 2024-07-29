@@ -14,8 +14,7 @@ import { NavigationActionContainer } from "../../common/entries/NavigationAction
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
   giveFocus?: () => void;
-  noBorderForActions?: boolean;
-}> = ({ journal, giveFocus, noBorderForActions }) => {
+}> = ({ journal, giveFocus }) => {
   const { getParams } = useItemAction();
 
   if (getParams()[knownQueryParams.selectedItemIdParam] !== journal.id) {
@@ -25,20 +24,14 @@ export const JournalSubRoutes: React.FC<{
   switch (getParams()[knownQueryParams.actionKey]) {
     case "delete":
       return (
-        <NavigationActionContainer
-          giveFocus={giveFocus}
-          noBorder={noBorderForActions}
-        >
+        <NavigationActionContainer giveFocus={giveFocus}>
           <DeleteJournalAction journal={journal} />
         </NavigationActionContainer>
       );
 
     case "permissions":
       return (
-        <NavigationActionContainer
-          giveFocus={giveFocus}
-          noBorder={noBorderForActions}
-        >
+        <NavigationActionContainer giveFocus={giveFocus}>
           <EditJournalPermissionsAction journal={journal} />
         </NavigationActionContainer>
       );
@@ -48,7 +41,6 @@ export const JournalSubRoutes: React.FC<{
         <NavigationActionContainer
           shrinkWidthIfPossible={true}
           giveFocus={giveFocus}
-          noBorder={noBorderForActions}
         >
           <NotificationDoneAction entry={null} journal={journal} />
         </NavigationActionContainer>
@@ -56,10 +48,7 @@ export const JournalSubRoutes: React.FC<{
 
     case "schedule":
       return (
-        <NavigationActionContainer
-          giveFocus={giveFocus}
-          noBorder={noBorderForActions}
-        >
+        <NavigationActionContainer giveFocus={giveFocus}>
           <EditScheduleAction journal={journal} />
         </NavigationActionContainer>
       );
@@ -69,7 +58,6 @@ export const JournalSubRoutes: React.FC<{
         <NavigationActionContainer
           growWidthIfPossible={true}
           giveFocus={giveFocus}
-          noBorder={noBorderForActions}
         >
           <UpsertEntryAction journal={journal} />
         </NavigationActionContainer>
