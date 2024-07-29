@@ -49,9 +49,9 @@ const Inner = styled("div")`
     margin: -4px;
     border-radius: ${paperBorderRadius};
     background: linear-gradient(
-      146deg,
+      140deg,
       ${(p) => p.theme.palette.text.primary} 0%,
-      ${(p) => p.theme.palette.primary.main} 100%
+      ${(p) => p.theme.palette.primary.main} 80%
     );
   }
 `;
