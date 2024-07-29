@@ -19,7 +19,6 @@ export const NavigationActionContainer: React.FC<{
         style={{
           width: shrinkWidthIfPossible ? "auto" : "100%",
           maxWidth: growWidthIfPossible ? "100%" : "500px",
-          marginTop: "16px",
         }}
       >
         <InnerInner>{children}</InnerInner>
@@ -37,6 +36,7 @@ const Inner = styled("div")`
   position: relative;
   z-index: 2;
   border-radius: ${paperBorderRadius};
+  margin-top: ${(p) => p.theme.spacing(2)};
 
   &:before {
     content: "";
