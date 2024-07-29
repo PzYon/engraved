@@ -17,7 +17,7 @@ export function useOverviewCollection(deps: unknown[]) {
   const collection = useMemo(
     () =>
       new OverviewItemCollection(focusIndex, setFocusIndex, (id) => {
-        if (getSelectedItemIdFromUrl() !== id) {
+        if (id && getSelectedItemIdFromUrl() !== id) {
           setValue(id);
         }
       }),
