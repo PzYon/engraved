@@ -63,7 +63,7 @@ export const AppHeader: React.FC = () => {
     <Host>
       <Box
         sx={{
-          background: `linear-gradient(146deg, ${palette.text.primary} 0%, ${palette.primary.main} 100%)`,
+          background: `linear-gradient(140deg, ${palette.text.primary} 0%, ${palette.primary.main} 80%)`,
           mb: 2,
         }}
       >
@@ -117,7 +117,6 @@ export const AppHeader: React.FC = () => {
                 actions={pageActions}
                 testId="page-actions"
                 enableFloatingActions={true}
-                activeHighlightColor={"white"}
               />
             )}
             <PageTabs tabs={tabs} />
