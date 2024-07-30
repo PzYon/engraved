@@ -10,6 +10,7 @@ import { FadeInContainer } from "../common/FadeInContainer";
 import { FormatDate } from "../common/FormatDate";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { RegisteredActionsList } from "../common/actions/RegisteredActionsList";
+import { ActionLink } from "../common/actions/ActionLink";
 
 export const AppFooter: React.FC = () => {
   const apiSystemInfo = useApiSystemInfoQuery();
@@ -67,7 +68,7 @@ export const AppFooter: React.FC = () => {
                 justifyContent: "end",
               }}
             >
-              <ActionIconButton
+              <ActionLink
                 action={{
                   label: "View on Github",
                   href: "https://github.com/PzYon/engraved",

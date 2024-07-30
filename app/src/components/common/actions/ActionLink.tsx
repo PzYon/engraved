@@ -13,6 +13,8 @@ export const ActionLink: React.FC<{
 
   const navigate = useNavigate();
 
+  const isAbsoluteUrl = action.href?.startsWith("http");
+
   useHotkeys(
     action.hotkey,
     (keyboardEvent) => {
@@ -24,6 +26,7 @@ export const ActionLink: React.FC<{
     },
     {
       enabled:
+        !isAbsoluteUrl &&
         !!action.hotkey &&
         !!(action.href || Object.keys(action.search ?? {}).length),
       enableOnFormTags: ["textarea", "input"],
@@ -31,7 +34,23 @@ export const ActionLink: React.FC<{
   );
 
   if (action.isDisabled) {
-    return <span style={style}>{children ?? action.icon}</span>;
+    return <span style={style}>{getChildren()}</span>;
+  }
+
+  if (isAbsoluteUrl) {
+    return (
+      <a
+        href={new URL(
+          new URLSearchParams(action.search).toString(),
+          action.href,
+        ).toString()}
+        style={style}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {getChildren()}
+      </a>
+    );
   }
 
   return (
@@ -43,7 +62,11 @@ export const ActionLink: React.FC<{
       style={style}
       title={action.label}
     >
-      {children ?? action.icon}
+      {getChildren()}
     </Link>
   );
+
+  function getChildren() {
+    return children ?? action.icon;
+  }
 };

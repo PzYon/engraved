@@ -35,14 +35,6 @@ export const ActionIconButton: React.FC<{
   }, [action, actionContext]);
 
   if (action.href || Object.keys(action.search ?? {}).length) {
-    if (action.href?.startsWith("http")) {
-      return (
-        <a href={action.href} target="_blank" rel="noopener noreferrer">
-          {getNoButtonIcon()}
-        </a>
-      );
-    }
-
     return (
       <ActionLink action={action} style={{ display: "flex" }}>
         {getNoButtonIcon()}
