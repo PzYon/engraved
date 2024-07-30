@@ -57,20 +57,9 @@ export const ActionIconButtonGroup: React.FC<{
             const isActive = isActionActive(action);
 
             return (
-              <span key={action.key}>
+              <span key={action.key} style={{ position: "relative" }}>
                 <ActionIconButton action={action} isActive={isActive} />
-                {isActive ? (
-                  <span
-                    style={{
-                      position: "absolute",
-                      borderLeft: "16px solid transparent",
-                      borderRight: "16px solid transparent  ",
-                      borderBottom: "16px solid " + palette.primary.main,
-                      height: 0,
-                      width: 0,
-                    }}
-                  />
-                ) : null}
+                {isActive ? <Triangle /> : null}
               </span>
             );
           })}
@@ -114,3 +103,20 @@ export const SeparatorElement = styled("div")`
   background-color: ${(p) => p.theme.palette.primary.main};
   margin: 0 ${(p) => p.theme.spacing(2)};
 `;
+
+const Triangle = () => {
+  const { palette } = useTheme();
+
+  return (
+    <span
+      style={{
+        position: "absolute",
+        borderLeft: "16px solid transparent",
+        borderRight: "16px solid transparent  ",
+        borderBottom: "16px solid " + palette.primary.main,
+        height: 0,
+        width: 0,
+      }}
+    />
+  );
+};
