@@ -6,6 +6,7 @@ import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useLocation } from "react-router-dom";
 import { useEngravedSearchParams } from "./searchParamHooks";
+import { Triangle } from "../Triangle";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
@@ -54,21 +55,12 @@ export const ActionIconButtonGroup: React.FC<{
               return <SeparatorElement key={"separator"} />;
             }
 
+            const isActive = isActionActive(action);
+
             return (
-              <span key={action.key}>
-                <ActionIconButton action={action} />
-                {isActionActive(action) ? (
-                  <span
-                    style={{
-                      position: "absolute",
-                      borderLeft: "16px solid transparent",
-                      borderRight: "16px solid transparent  ",
-                      borderBottom: "16px solid " + palette.primary.main,
-                      height: 0,
-                      width: 0,
-                    }}
-                  />
-                ) : null}
+              <span key={action.key} style={{ position: "relative" }}>
+                <ActionIconButton action={action} isActive={isActive} />
+                {isActive ? <Triangle /> : null}
               </span>
             );
           })}

@@ -45,4 +45,6 @@ export interface IEntriesTableColumnDefinition {
   minWidth?: string;
 
   maxWidth?: string;
+
+  className?: string;
 }

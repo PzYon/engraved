@@ -2,6 +2,8 @@ import { createTheme } from "@mui/material";
 
 export const paperBorderRadius = "7px";
 
+export const actionBorderWidth = "4px";
+
 const textColor = "#444444";
 
 export const engravedTheme = createTheme({

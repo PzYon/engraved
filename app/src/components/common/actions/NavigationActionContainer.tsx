@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { styled } from "@mui/material";
-import { paperBorderRadius } from "../../../theming/engravedTheme";
+import {
+  actionBorderWidth,
+  paperBorderRadius,
+} from "../../../theming/engravedTheme";
 
 export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
@@ -16,6 +19,7 @@ export const NavigationActionContainer: React.FC<{
   return (
     <Host>
       <Inner
+        className="action-container"
         style={{
           width: shrinkWidthIfPossible ? "auto" : "100%",
           maxWidth: growWidthIfPossible ? "100%" : "500px",
@@ -35,25 +39,14 @@ const Host = styled("div")`
 const Inner = styled("div")`
   position: relative;
   z-index: 2;
-  margin-top: ${(p) => p.theme.spacing(2)};
+  margin-top: calc(${(p) => p.theme.spacing(2)} - ${actionBorderWidth});
+  padding: ${actionBorderWidth};
   border-radius: ${paperBorderRadius};
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    margin: -4px;
-    border-radius: ${paperBorderRadius};
-    background: linear-gradient(
-      140deg,
-      ${(p) => p.theme.palette.text.primary} 0%,
-      ${(p) => p.theme.palette.primary.main} 80%
-    );
-  }
+  background: linear-gradient(
+    50deg,
+    ${(p) => p.theme.palette.text.primary} 0%,
+    ${(p) => p.theme.palette.primary.main} 80%
+  );
 `;
 
 const InnerInner = styled("div")`

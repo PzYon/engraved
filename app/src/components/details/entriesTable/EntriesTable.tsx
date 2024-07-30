@@ -14,7 +14,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { EntryTableActionButtons } from "./EntryTableActionButtons";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
 import { format } from "date-fns";
@@ -29,6 +28,7 @@ import { AddEntryTableCell } from "./addEntry/AddEntryTableCell";
 import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
+import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -80,14 +80,14 @@ export const EntriesTable: React.FC<{
   }, [journal, entries, type]);
 
   return (
-    <Table
+    <StyledTable
       data-testid="entries-table"
       sx={{
         tableLayout: deviceWidth === DeviceWidth.Small ? undefined : "fixed",
       }}
     >
       <TableHead>
-        <StyledTableRow>
+        <TableRow>
           {columns.map((c) => (
             <TableCell
               key={c.key}
@@ -96,6 +96,7 @@ export const EntriesTable: React.FC<{
                 minWidth: c.minWidth,
                 maxWidth: c.maxWidth,
               }}
+              className={c.className}
             >
               {c.getHeaderReactNode(
                 () => setCollapseAll(!collapseAll),
@@ -103,7 +104,7 @@ export const EntriesTable: React.FC<{
               )}
             </TableCell>
           ))}
-        </StyledTableRow>
+        </TableRow>
       </TableHead>
       <TableBody>
         {showAddNewEntryRow ? (
@@ -123,20 +124,38 @@ export const EntriesTable: React.FC<{
       </TableBody>
       {entries.length && columns.filter((c) => c.isAggregatable).length ? (
         <TableFooter>
-          <StyledTableRow>
+          <TableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
                 {getTotalValue(c, tableGroups, type, aggregationMode)}
               </TableCell>
             ))}
-          </StyledTableRow>
+          </TableRow>
         </TableFooter>
       ) : null}
-    </Table>
+    </StyledTable>
   );
 };
 
-export const StyledTableRow = styled(TableRow)`
+export const StyledTable = styled(Table)`
+  th {
+    border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
+  }
+
+  td {
+    border-top: 1px solid ${(p) => p.theme.palette.background.default};
+    border-bottom: 0;
+
+    &.action-cell {
+      vertical-align: bottom;
+    }
+  }
+
+  td,
+  th {
+    padding: ${(p) => p.theme.spacing(1.5)};
+  }
+
   th:last-of-type,
   td:last-of-type,
   th:first-of-type,
@@ -145,9 +164,15 @@ export const StyledTableRow = styled(TableRow)`
     padding-right: 0;
   }
 
-  td,
-  th {
-    padding: ${(p) => p.theme.spacing(1.5)};
+  tr.action-row {
+    td {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .action-container {
+      margin-top: 0;
+    }
   }
 `;
 
@@ -250,9 +275,15 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
     {
       key: "_actions",
       width: "80px",
+      className: "action-cell",
       getHeaderReactNode: () => translations.columnName_actions,
       getValueReactNode: (_, entry) => (
-        <EntryTableActionButtons entry={entry} />
+        <ActionIconButtonGroup
+          actions={[
+            ActionFactory.editEntry(entry),
+            ActionFactory.deleteEntry(entry),
+          ]}
+        />
       ),
       getAddEntryReactNode: (command, updateCommand) => {
         return (

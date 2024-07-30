@@ -1,8 +1,7 @@
-import { styled, TableCell } from "@mui/material";
+import { styled, TableCell, TableRow } from "@mui/material";
 import React, { useState } from "react";
 import { IEntriesTableColumnDefinition } from "../IEntriesTableColumnDefinition";
 import { IUpsertGaugeEntryCommand } from "../../../../serverApi/commands/IUpsertGaugeEntryCommand";
-import { StyledTableRow } from "../EntriesTable";
 import { DeviceWidth, useDeviceWidth } from "../../../common/useDeviceWidth";
 import { IJournal } from "../../../../serverApi/IJournal";
 
@@ -23,7 +22,7 @@ export const AddEntryTableRow: React.FC<{
   }
 
   return (
-    <StyledTableRow key={key}>
+    <TableRow key={key}>
       {columns.map((c) => (
         <TableCell key={c.key} sx={{ verticalAlign: "top" }}>
           <InnerContainer>
@@ -37,7 +36,7 @@ export const AddEntryTableRow: React.FC<{
           </InnerContainer>
         </TableCell>
       ))}
-    </StyledTableRow>
+    </TableRow>
   );
 };
 

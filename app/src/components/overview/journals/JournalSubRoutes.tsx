@@ -9,7 +9,8 @@ import {
   knownQueryParams,
   useItemAction,
 } from "../../common/actions/searchParamHooks";
-import { NavigationActionContainer } from "../../common/entries/NavigationActionContainer";
+import { NavigationActionContainer } from "../../common/actions/NavigationActionContainer";
+import { JournalType } from "../../../serverApi/JournalType";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
@@ -56,7 +57,7 @@ export const JournalSubRoutes: React.FC<{
     case "add-entry":
       return (
         <NavigationActionContainer
-          growWidthIfPossible={true}
+          growWidthIfPossible={journal.type === JournalType.Scraps}
           giveFocus={giveFocus}
         >
           <UpsertEntryAction journal={journal} />
