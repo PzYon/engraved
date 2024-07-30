@@ -49,7 +49,7 @@ const Inner = styled("div")`
     margin: -4px;
     border-radius: ${paperBorderRadius};
     background: linear-gradient(
-      140deg,
+      50deg,
       ${(p) => p.theme.palette.text.primary} 0%,
       ${(p) => p.theme.palette.primary.main} 80%
     );

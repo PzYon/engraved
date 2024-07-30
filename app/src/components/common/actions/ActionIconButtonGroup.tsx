@@ -54,10 +54,12 @@ export const ActionIconButtonGroup: React.FC<{
               return <SeparatorElement key={"separator"} />;
             }
 
+            const isActive = isActionActive(action);
+
             return (
               <span key={action.key}>
-                <ActionIconButton action={action} />
-                {isActionActive(action) ? (
+                <ActionIconButton action={action} isActive={isActive} />
+                {isActive ? (
                   <span
                     style={{
                       position: "absolute",

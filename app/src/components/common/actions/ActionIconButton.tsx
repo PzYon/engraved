@@ -1,16 +1,20 @@
 import React, { useEffect } from "react";
-import { IconButton, styled, Theme } from "@mui/material";
+import { IconButton, styled, Theme, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { SxProps } from "@mui/system";
 import { useActionContext } from "./ActionContext";
 import { useHotkeys } from "react-hotkeys-hook";
 
+const activeBorderWidth = "4px";
+
 export const ActionIconButton: React.FC<{
   action: IAction;
   buttonsAsSpans?: boolean;
-}> = ({ action, buttonsAsSpans }) => {
+  isActive?: boolean;
+}> = ({ action, buttonsAsSpans, isActive }) => {
   const actionContext = useActionContext();
+  const { palette } = useTheme();
 
   useHotkeys(
     action.hotkey,
@@ -47,7 +51,7 @@ export const ActionIconButton: React.FC<{
     <IconButton
       key={action.key}
       {...getCommonProps()}
-      sx={getCommonSx()}
+      sx={{ ...getCommonSx(), padding: activeBorderWidth }}
       disabled={action.isDisabled}
     >
       {action.icon}
@@ -61,7 +65,7 @@ export const ActionIconButton: React.FC<{
         {...getCommonProps()}
         sx={{
           display: "flex",
-          padding: "8px",
+          padding: activeBorderWidth,
           borderRadius: "100%",
           ":hover": {
             backgroundColor: "rgba(0, 0, 0, 0.04)",
@@ -79,6 +83,7 @@ export const ActionIconButton: React.FC<{
       color: "primary.main",
       opacity: action.isNotActive ? 0.4 : 1,
       ...(action.sx || {}),
+      border: `${activeBorderWidth} solid ${isActive ? palette.primary.main : "transparent"}`,
     };
   }
 
