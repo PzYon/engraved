@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { styled } from "@mui/material";
-import { paperBorderRadius } from "../../../theming/engravedTheme";
+import {
+  actionBorderWidth,
+  paperBorderRadius,
+} from "../../../theming/engravedTheme";
 
 export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
@@ -46,7 +49,7 @@ const Inner = styled("div")`
     bottom: 0;
     left: 0;
     z-index: -1;
-    margin: -4px;
+    margin: -${actionBorderWidth};
     border-radius: ${paperBorderRadius};
     background: linear-gradient(
       50deg,

@@ -6,6 +6,7 @@ import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useLocation } from "react-router-dom";
 import { useEngravedSearchParams } from "./searchParamHooks";
+import { Triangle } from "../Triangle";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
@@ -103,20 +104,3 @@ export const SeparatorElement = styled("div")`
   background-color: ${(p) => p.theme.palette.primary.main};
   margin: 0 ${(p) => p.theme.spacing(2)};
 `;
-
-const Triangle = () => {
-  const { palette } = useTheme();
-
-  return (
-    <span
-      style={{
-        position: "absolute",
-        borderLeft: "16px solid transparent",
-        borderRight: "16px solid transparent  ",
-        borderBottom: "16px solid " + palette.primary.main,
-        height: 0,
-        width: 0,
-      }}
-    />
-  );
-};

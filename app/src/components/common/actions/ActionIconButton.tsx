@@ -5,8 +5,7 @@ import { ActionLink } from "./ActionLink";
 import { SxProps } from "@mui/system";
 import { useActionContext } from "./ActionContext";
 import { useHotkeys } from "react-hotkeys-hook";
-
-const activeBorderWidth = "4px";
+import { actionBorderWidth } from "../../../theming/engravedTheme";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
@@ -51,7 +50,7 @@ export const ActionIconButton: React.FC<{
     <IconButton
       key={action.key}
       {...getCommonProps()}
-      sx={{ ...getCommonSx(), padding: activeBorderWidth }}
+      sx={{ ...getCommonSx(), padding: actionBorderWidth }}
       disabled={action.isDisabled}
     >
       {action.icon}
@@ -65,7 +64,7 @@ export const ActionIconButton: React.FC<{
         {...getCommonProps()}
         sx={{
           display: "flex",
-          padding: activeBorderWidth,
+          padding: actionBorderWidth,
           borderRadius: "100%",
           ":hover": {
             backgroundColor: "rgba(0, 0, 0, 0.04)",
@@ -83,7 +82,7 @@ export const ActionIconButton: React.FC<{
       color: "primary.main",
       opacity: action.isNotActive ? 0.4 : 1,
       ...(action.sx || {}),
-      border: `${activeBorderWidth} solid ${isActive ? palette.primary.main : "transparent"}`,
+      border: `${actionBorderWidth} solid ${isActive ? palette.primary.main : "transparent"}`,
     };
   }
 
