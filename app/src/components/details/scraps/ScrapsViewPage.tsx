@@ -36,7 +36,8 @@ export const ScrapsViewPage: React.FC = () => {
       title={<JournalPageTitle journal={journal} />}
       documentTitle={journal.name}
       actions={[
-        ActionFactory.getToc(() => setShowToc(!showToc)),
+        ActionFactory.getToc(() => setShowToc(!showToc), !showToc),
+        null,
         ...getCommonJournalActions(journal, false, user),
       ]}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}

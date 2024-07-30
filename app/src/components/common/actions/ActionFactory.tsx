@@ -165,12 +165,13 @@ export class ActionFactory {
     };
   }
 
-  static getToc(onClick: () => void): IAction {
+  static getToc(onClick: () => void, isNotActive: boolean): IAction {
     return {
       key: "toc",
       hotkey: "alt+i",
       label: "Table of contents",
       icon: <Toc fontSize="small" />,
+      isNotActive: isNotActive,
       onClick: onClick,
     };
   }
