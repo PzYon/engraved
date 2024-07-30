@@ -9,7 +9,7 @@ import {
   knownQueryParams,
   useItemAction,
 } from "../../common/actions/searchParamHooks";
-import { NavigationActionContainer } from "../../common/entries/NavigationActionContainer";
+import { NavigationActionContainer } from "../../common/actions/NavigationActionContainer";
 import { JournalType } from "../../../serverApi/JournalType";
 
 export const JournalSubRoutes: React.FC<{

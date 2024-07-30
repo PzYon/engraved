@@ -7,7 +7,7 @@ import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
 import { knownQueryParams, useItemAction } from "../actions/searchParamHooks";
-import { NavigationActionContainer } from "./NavigationActionContainer";
+import { NavigationActionContainer } from "../actions/NavigationActionContainer";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
