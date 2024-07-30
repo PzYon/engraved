@@ -12,22 +12,24 @@ const TriangleHost = styled("span")``;
 
 const TriangleElement = styled("span")`
   position: absolute;
-  border-left: 16px solid transparent;
-  border-right: 16px solid transparent;
-  border-bottom: 16px solid ${(p) => p.theme.palette.primary.main};
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 22px solid ${(p) => p.theme.palette.primary.main};
   height: 0;
   width: 0;
+  left: 8px;
+  bottom: -18px;
 
   &:after {
     content: "";
     width: 0;
     height: 0;
-    border-left: 16px solid transparent;
-    border-right: 16px solid transparent;
-    border-bottom: 16px solid ${(p) => p.theme.palette.common.white};
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 22px solid ${(p) => p.theme.palette.common.white};
     position: absolute;
-    left: -16px;
-    top: 5px;
+    left: -11px;
+    top: 9px;
     z-index: 3;
   }
 `;

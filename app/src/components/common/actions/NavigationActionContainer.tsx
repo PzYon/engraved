@@ -38,25 +38,14 @@ const Host = styled("div")`
 const Inner = styled("div")`
   position: relative;
   z-index: 2;
-  margin-top: ${(p) => p.theme.spacing(2)};
+  margin-top: calc(${(p) => p.theme.spacing(2)} - ${actionBorderWidth});
+  padding: ${actionBorderWidth};
   border-radius: ${paperBorderRadius};
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    margin: -${actionBorderWidth};
-    border-radius: ${paperBorderRadius};
-    background: linear-gradient(
-      50deg,
-      ${(p) => p.theme.palette.text.primary} 0%,
-      ${(p) => p.theme.palette.primary.main} 80%
-    );
-  }
+  background: linear-gradient(
+    50deg,
+    ${(p) => p.theme.palette.text.primary} 0%,
+    ${(p) => p.theme.palette.primary.main} 80%
+  );
 `;
 
 const InnerInner = styled("div")`
