@@ -19,6 +19,7 @@ export const NavigationActionContainer: React.FC<{
   return (
     <Host>
       <Inner
+        className="action-container"
         style={{
           width: shrinkWidthIfPossible ? "auto" : "100%",
           maxWidth: growWidthIfPossible ? "100%" : "500px",

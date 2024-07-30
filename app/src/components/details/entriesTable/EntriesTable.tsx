@@ -14,7 +14,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { EntryTableActionButtons } from "./EntryTableActionButtons";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
 import { format } from "date-fns";
@@ -29,6 +28,7 @@ import { AddEntryTableCell } from "./addEntry/AddEntryTableCell";
 import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
+import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -80,7 +80,7 @@ export const EntriesTable: React.FC<{
   }, [journal, entries, type]);
 
   return (
-    <Table
+    <StyledTable
       data-testid="entries-table"
       sx={{
         tableLayout: deviceWidth === DeviceWidth.Small ? undefined : "fixed",
@@ -132,9 +132,31 @@ export const EntriesTable: React.FC<{
           </StyledTableRow>
         </TableFooter>
       ) : null}
-    </Table>
+    </StyledTable>
   );
 };
+
+export const StyledTable = styled(Table)`
+  th {
+    border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
+  }
+
+  td {
+    border-top: 1px solid ${(p) => p.theme.palette.background.default};
+    border-bottom: 0;
+  }
+
+  tr.action-row {
+    td {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .action-container {
+      margin-top: 0;
+    }
+  }
+`;
 
 export const StyledTableRow = styled(TableRow)`
   th:last-of-type,
@@ -252,7 +274,12 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       width: "80px",
       getHeaderReactNode: () => translations.columnName_actions,
       getValueReactNode: (_, entry) => (
-        <EntryTableActionButtons entry={entry} />
+        <ActionIconButtonGroup
+          actions={[
+            ActionFactory.editEntry(entry),
+            ActionFactory.deleteEntry(entry),
+          ]}
+        />
       ),
       getAddEntryReactNode: (command, updateCommand) => {
         return (
