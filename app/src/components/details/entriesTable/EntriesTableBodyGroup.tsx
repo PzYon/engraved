@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { IEntriesTableGroup } from "./IEntriesTableGroup";
 import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import { TableCell, TableRow } from "@mui/material";
-import { StyledTableRow } from "./EntriesTable";
 import { IEntry } from "../../../serverApi/IEntry";
 import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 
@@ -18,15 +17,15 @@ export const EntriesTableBodyGroup: React.FC<{
 
   if (isCollapsed) {
     return (
-      <StyledTableRow key={group.label}>
+      <TableRow key={group.label}>
         {columns.map((c) => (
-          <TableCell key={c.key}>
+          <TableCell key={c.key} className={c.className}>
             {group.entries.length > 1
               ? c.getGroupReactNode?.(group, () => setIsCollapsed(!isCollapsed))
               : renderValueNode(c, group.entries[0], true)}
           </TableCell>
         ))}
-      </StyledTableRow>
+      </TableRow>
     );
   }
 
@@ -34,20 +33,20 @@ export const EntriesTableBodyGroup: React.FC<{
     <>
       {group.entries.map((entry, i) => (
         <React.Fragment key={entry.id}>
-          <StyledTableRow key={entry.id}>
+          <TableRow key={entry.id}>
             {columns.map((c) => (
-              <TableCell key={c.key}>
+              <TableCell key={c.key} className={c.className}>
                 {renderValueNode(c, entry, i === 0)}
               </TableCell>
             ))}
-          </StyledTableRow>
+          </TableRow>
 
           <EntrySubRoutes
             entry={entry}
             render={(child: React.ReactElement) => (
-              <StyledTableRow key="routes" className="action-row">
+              <TableRow key="routes" className="action-row">
                 <TableCell colSpan={columns.length}>{child}</TableCell>
-              </StyledTableRow>
+              </TableRow>
             )}
           />
         </React.Fragment>
@@ -55,7 +54,11 @@ export const EntriesTableBodyGroup: React.FC<{
       {showGroupTotals ? (
         <TableRow key="totals">
           {columns.map((c) => (
-            <TableCell key={c.key} sx={{ opacity: 0.5 }}>
+            <TableCell
+              key={c.key}
+              sx={{ opacity: 0.5 }}
+              className={c.className}
+            >
               {c.isAggregatable ? group.totalString : ""}
             </TableCell>
           ))}

@@ -87,7 +87,7 @@ export const EntriesTable: React.FC<{
       }}
     >
       <TableHead>
-        <StyledTableRow>
+        <TableRow>
           {columns.map((c) => (
             <TableCell
               key={c.key}
@@ -96,6 +96,7 @@ export const EntriesTable: React.FC<{
                 minWidth: c.minWidth,
                 maxWidth: c.maxWidth,
               }}
+              className={c.className}
             >
               {c.getHeaderReactNode(
                 () => setCollapseAll(!collapseAll),
@@ -103,7 +104,7 @@ export const EntriesTable: React.FC<{
               )}
             </TableCell>
           ))}
-        </StyledTableRow>
+        </TableRow>
       </TableHead>
       <TableBody>
         {showAddNewEntryRow ? (
@@ -123,13 +124,13 @@ export const EntriesTable: React.FC<{
       </TableBody>
       {entries.length && columns.filter((c) => c.isAggregatable).length ? (
         <TableFooter>
-          <StyledTableRow>
+          <TableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
                 {getTotalValue(c, tableGroups, type, aggregationMode)}
               </TableCell>
             ))}
-          </StyledTableRow>
+          </TableRow>
         </TableFooter>
       ) : null}
     </StyledTable>
@@ -144,6 +145,23 @@ export const StyledTable = styled(Table)`
   td {
     border-top: 1px solid ${(p) => p.theme.palette.background.default};
     border-bottom: 0;
+
+    &.action-cell {
+      vertical-align: bottom;
+    }
+  }
+
+  td,
+  th {
+    padding: ${(p) => p.theme.spacing(1.5)};
+  }
+
+  th:last-of-type,
+  td:last-of-type,
+  th:first-of-type,
+  td:first-of-type {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   tr.action-row {
@@ -155,21 +173,6 @@ export const StyledTable = styled(Table)`
     .action-container {
       margin-top: 0;
     }
-  }
-`;
-
-export const StyledTableRow = styled(TableRow)`
-  th:last-of-type,
-  td:last-of-type,
-  th:first-of-type,
-  td:first-of-type {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  td,
-  th {
-    padding: ${(p) => p.theme.spacing(1.5)};
   }
 `;
 
@@ -272,6 +275,7 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
     {
       key: "_actions",
       width: "80px",
+      className: "action-cell",
       getHeaderReactNode: () => translations.columnName_actions,
       getValueReactNode: (_, entry) => (
         <ActionIconButtonGroup
