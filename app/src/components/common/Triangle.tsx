@@ -12,8 +12,8 @@ const TriangleHost = styled("span")``;
 
 const TriangleElement = styled("span")`
   position: absolute;
-  border-left: 11px solid transparent;
-  border-right: 11px solid transparent;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
   border-bottom: 22px solid ${(p) => p.theme.palette.primary.main};
   height: 0;
   width: 0;
@@ -24,12 +24,12 @@ const TriangleElement = styled("span")`
     content: "";
     width: 0;
     height: 0;
-    border-left: 11px solid transparent;
-    border-right: 11px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
     border-bottom: 22px solid ${(p) => p.theme.palette.common.white};
     position: absolute;
-    left: -11px;
-    top: 9px;
+    left: -10px;
+    top: 10px;
     z-index: 3;
   }
 `;
