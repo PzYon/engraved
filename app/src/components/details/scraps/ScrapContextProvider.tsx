@@ -296,7 +296,9 @@ export const ScrapContextProvider: React.FC<{
       return;
     }
 
-    setIsEditMode(false);
+    if (scrapToRender.id) {
+      setIsEditMode(false);
+    }
 
     if (currentScrap.notes === notesToSave && currentScrap.title === title) {
       return;
