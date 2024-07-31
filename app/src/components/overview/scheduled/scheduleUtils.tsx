@@ -57,7 +57,7 @@ export function getScheduleDefinition(
         nextOccurrence: parsedDate.date,
         recurrence: parsedDate.recurrence,
         // {0} will be replaced on server with actual entry ID
-        onClickUrl: `${location.origin}/journals/details/${journalId}/${new URLSearchParams(getItemActionQueryParams("notification-done", entryId)).toString()}`,
+        onClickUrl: `${location.origin}/journals/details/${journalId}/?${new URLSearchParams(getItemActionQueryParams("notification-done", entryId)).toString()}`,
       }
     : undefined;
 }
