@@ -14,8 +14,6 @@ export const EditThresholds: React.FC<{
     IThresholdDefinition[]
   >(createDefinitions(journal.thresholds));
 
-  journal.thresholds;
-
   return (
     <>
       {thresholdDefinitions.map((oldDefinition, i) => {

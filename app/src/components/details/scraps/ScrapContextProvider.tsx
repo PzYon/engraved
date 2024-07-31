@@ -83,6 +83,9 @@ export const ScrapContextProvider: React.FC<{
     targetJournalId,
     currentScrap.parentId,
     currentScrap.scrapType,
+    isEditMode,
+    isQuickAdd,
+    scrapToRender.scrapType,
     notes,
     title,
   ]);
