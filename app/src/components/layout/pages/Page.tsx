@@ -116,6 +116,10 @@ export const Page: React.FC<{
       if (Object.keys(searchParams ?? {}).length) {
         setSearchParams({});
       }
+
+      if (pageActionRoutes) {
+        setPageActionRoutes(null);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
