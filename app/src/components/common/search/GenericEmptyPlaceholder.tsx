@@ -20,6 +20,6 @@ const Host = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 30vh;
+  margin-top: 15vh;
   opacity: 0.4;
 `;

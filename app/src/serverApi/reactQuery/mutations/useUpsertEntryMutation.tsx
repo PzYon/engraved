@@ -9,9 +9,9 @@ import { IJournalAttributeValues } from "../../IJournalAttributeValues";
 import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
-import { useTheme } from "@mui/material";
+import { StyledLink } from "./StyledLink";
 
 interface IUpsertEntryCommandVariables {
   command: IUpsertEntryCommand;
@@ -31,8 +31,6 @@ export const useUpsertEntryMutation = (
   const { pathname } = useLocation();
 
   const editJournalMutation = useEditJournalMutation(journalId);
-
-  const { palette } = useTheme();
 
   return useMutation({
     mutationKey: queryKeysFactory.updateEntries(journalId, entryId),
@@ -64,16 +62,7 @@ export const useUpsertEntryMutation = (
         title: `${entryId ? "Updated" : "Added"} entry`,
         message: !pathname.startsWith(journalUrl) ? (
           <>
-            <Link
-              to={actionUrl}
-              style={{
-                textDecoration: "underline",
-                color: palette.common.white + " !important",
-              }}
-            >
-              View
-            </Link>{" "}
-            in journal
+            <StyledLink to={actionUrl}>View</StyledLink> in journal
           </>
         ) : null,
         type: "success",
