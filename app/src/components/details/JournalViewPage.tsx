@@ -123,17 +123,15 @@ export const JournalViewPage: React.FC = () => {
       ) : null}
 
       {showFilters ? (
-        <PageSection>
-          <EntryFilters
-            journal={journal}
-            groupByTime={groupByTime}
-            setGroupByTime={setGroupByTime}
-            attributeKey={attributeKey}
-            setAttributeKey={setAttributeKey}
-            chartType={chartType}
-            setChartType={setChartType}
-          />
-        </PageSection>
+        <EntryFilters
+          journal={journal}
+          groupByTime={groupByTime}
+          setGroupByTime={setGroupByTime}
+          attributeKey={attributeKey}
+          setAttributeKey={setAttributeKey}
+          chartType={chartType}
+          setChartType={setChartType}
+        />
       ) : null}
 
       {showChart && entries ? (
@@ -176,12 +174,12 @@ export const JournalViewPage: React.FC = () => {
             }
           />
         </PageSection>
-      ) : entries ? (
+      ) : (
         <GenericEmptyPlaceholder
           icon={LocalHotelOutlined}
           message={"No entries available."}
         />
-      ) : null}
+      )}
     </Page>
   );
 };

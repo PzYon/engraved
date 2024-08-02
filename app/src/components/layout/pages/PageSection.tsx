@@ -24,7 +24,7 @@ export const PageSection: React.FC<{
         data-testid={testId}
       >
         {title ? (
-          <Typography sx={{ flexShrink: 0, fontWeight: "bold" }}>
+          <Typography sx={{ flexShrink: 0, fontWeight: "bold", pb: 1 }}>
             {title}
           </Typography>
         ) : null}
