@@ -11,8 +11,9 @@ import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { IJournal } from "../../../serverApi/IJournal";
 import { AttributeFilters } from "./AttributeFilters";
 import { translations } from "../../../i18n/translations";
-import { FiltersRow } from "./FiltersRow";
 import { SearchTextFilter } from "./SearchTextFilter";
+import { PageSection } from "../../layout/pages/PageSection";
+import { FiltersRow } from "./FiltersRow";
 
 export const EntryFilters: React.FC<{
   journal: IJournal;
@@ -33,37 +34,45 @@ export const EntryFilters: React.FC<{
 }) => {
   return (
     <>
-      <FiltersRow>
-        <SearchTextFilter />
-      </FiltersRow>
+      <PageSection title="Freetext search">
+        <FiltersRow>
+          <SearchTextFilter />
+        </FiltersRow>
+      </PageSection>
 
-      <FiltersRow>
-        <DateFilters />
-      </FiltersRow>
+      <PageSection title="Date filters">
+        <FiltersRow>
+          <DateFilters />
+        </FiltersRow>
+      </PageSection>
 
       {!Object.keys(journal.attributes || {}).length ? null : (
-        <FiltersRow>
-          <AttributeFilters />
-        </FiltersRow>
+        <PageSection title="Attribute filters">
+          <FiltersRow>
+            <AttributeFilters />
+          </FiltersRow>
+        </PageSection>
       )}
 
-      <FiltersRow>
-        {JournalTypeFactory.create(journal.type).isGroupable ? (
-          <GroupByTimeSelector
-            groupByTime={groupByTime}
-            onChange={setGroupByTime}
-          />
-        ) : null}
-        {Object.keys(journal.attributes).length > 0 ? (
-          <GroupByAttributeSelector
-            attributes={journal.attributes}
-            selectedAttributeKey={attributeKey}
-            onChange={setAttributeKey}
-            label={translations.label_groupBy_attribute}
-          />
-        ) : null}
-        <ChartTypeSelector chartType={chartType} onChange={setChartType} />
-      </FiltersRow>
+      <PageSection title="Grouping">
+        <FiltersRow>
+          {JournalTypeFactory.create(journal.type).isGroupable ? (
+            <GroupByTimeSelector
+              groupByTime={groupByTime}
+              onChange={setGroupByTime}
+            />
+          ) : null}
+          {Object.keys(journal.attributes).length > 0 ? (
+            <GroupByAttributeSelector
+              attributes={journal.attributes}
+              selectedAttributeKey={attributeKey}
+              onChange={setAttributeKey}
+              label={translations.label_groupBy_attribute}
+            />
+          ) : null}
+          <ChartTypeSelector chartType={chartType} onChange={setChartType} />
+        </FiltersRow>
+      </PageSection>
     </>
   );
 };
