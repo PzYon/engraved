@@ -131,6 +131,9 @@ export const JournalViewPage: React.FC = () => {
           setAttributeKey={setAttributeKey}
           chartType={chartType}
           setChartType={setChartType}
+          dateFilter={
+            uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter
+          }
         />
       ) : null}
 

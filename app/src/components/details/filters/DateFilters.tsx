@@ -8,20 +8,20 @@ import {
 } from "./createDateConditions";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { DateRange } from "./DateRange";
 import { FiltersRow } from "./FiltersRow";
 import { DateFilterConfigSelector } from "./DateFilterConfigSelector";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { DateFilterConfig } from "../edit/IJournalUiSettings";
 
 export type DateType = "relative" | "range";
 
-export const DateFilters: React.FC = () => {
+export const DateFilters: React.FC<{ config: DateFilterConfig }> = ({
+  config,
+}) => {
   const { dateConditions, setDateConditions } = useJournalContext();
 
-  const [dateFilterConfig, setDateFilterConfig] = useState(
-    journalDefaultUiSettings.dateFilter,
-  );
+  const [dateFilterConfig, setDateFilterConfig] = useState(config);
 
   const deviceWidth = useDeviceWidth();
 

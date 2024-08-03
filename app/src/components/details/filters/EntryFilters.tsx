@@ -14,6 +14,7 @@ import { translations } from "../../../i18n/translations";
 import { SearchTextFilter } from "./SearchTextFilter";
 import { PageSection } from "../../layout/pages/PageSection";
 import { FiltersRow } from "./FiltersRow";
+import { DateFilterConfig } from "../edit/IJournalUiSettings";
 
 export const EntryFilters: React.FC<{
   journal: IJournal;
@@ -23,6 +24,7 @@ export const EntryFilters: React.FC<{
   setAttributeKey: (k: string) => void;
   chartType: MyChartType;
   setChartType: (t: MyChartType) => void;
+  dateFilter: DateFilterConfig;
 }> = ({
   journal,
   groupByTime,
@@ -31,6 +33,7 @@ export const EntryFilters: React.FC<{
   setAttributeKey,
   chartType,
   setChartType,
+  dateFilter,
 }) => {
   return (
     <>
@@ -42,7 +45,7 @@ export const EntryFilters: React.FC<{
 
       <PageSection title="Date filters">
         <FiltersRow>
-          <DateFilters />
+          <DateFilters config={dateFilter} />
         </FiltersRow>
       </PageSection>
 
