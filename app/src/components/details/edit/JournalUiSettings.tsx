@@ -9,7 +9,6 @@ import {
 } from "@mui/icons-material";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { DateRangeSelector } from "../filters/DateRangeSelector";
 import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { AggregationModeSelector } from "../chart/AggregationModeSelector";
@@ -37,6 +36,7 @@ export const JournalUiSettings: React.FC<{
             label="Show chart by default"
           />
         </GridItem>
+
         <GridItem>
           <FormControlLabel
             control={
@@ -52,6 +52,7 @@ export const JournalUiSettings: React.FC<{
             label="Show thresholds by default"
           />
         </GridItem>
+
         <GridItem>
           <FormControlLabel
             control={
@@ -67,6 +68,7 @@ export const JournalUiSettings: React.FC<{
             label="Show filters by default"
           />
         </GridItem>
+
         <GridItem>
           <FormControlLabel
             control={
@@ -82,27 +84,7 @@ export const JournalUiSettings: React.FC<{
             label="Show group aggregations by default"
           />
         </GridItem>
-        <GridItem>
-          <GroupByTimeSelector
-            sx={{ width: "100%" }}
-            groupByTime={
-              uiSettings.groupByTime ?? journalDefaultUiSettings.groupByTime
-            }
-            onChange={(groupByTime) => {
-              onChange({ ...uiSettings, groupByTime });
-            }}
-          />
-        </GridItem>
-        <GridItem>
-          <DateRangeSelector
-            dateRange={
-              uiSettings.dateRange ?? journalDefaultUiSettings.dateRange
-            }
-            onChange={(dateRange) => {
-              onChange({ ...uiSettings, dateRange });
-            }}
-          />
-        </GridItem>
+
         <GridItem>
           <FormControlLabel
             control={
@@ -116,6 +98,44 @@ export const JournalUiSettings: React.FC<{
               />
             }
             label="Dynamic scales"
+          />
+        </GridItem>
+
+        <GridItem>
+          <TextField
+            label="Y-Axis Unit"
+            value={uiSettings.yAxisUnit}
+            onChange={(x) => {
+              onChange({ ...uiSettings, yAxisUnit: x.target.value });
+            }}
+          />
+        </GridItem>
+
+        <GridItem>Date type picker</GridItem>
+
+        <GridItem>
+          {/*<DateRangeSelector*/}
+          {/*  dateRange={*/}
+          {/*    uiSettings.dateFilter. ?? journalDefaultUiSettings.dateFilter*/}
+          {/*  }*/}
+          {/*  onChange={(dateRange) => {*/}
+          {/*    onChange({...uiSettings, dateRange});*/}
+          {/*  }}*/}
+          {/*/>*/}
+          date range OR relative
+        </GridItem>
+
+        <GridItem />
+
+        <GridItem>
+          <GroupByTimeSelector
+            sx={{ width: "100%" }}
+            groupByTime={
+              uiSettings.groupByTime ?? journalDefaultUiSettings.groupByTime
+            }
+            onChange={(groupByTime) => {
+              onChange({ ...uiSettings, groupByTime });
+            }}
           />
         </GridItem>
         <GridItem>
@@ -136,15 +156,6 @@ export const JournalUiSettings: React.FC<{
             }
             onChange={(aggregationMode) => {
               onChange({ ...uiSettings, aggregationMode });
-            }}
-          />
-        </GridItem>
-        <GridItem>
-          <TextField
-            label="Y-Axis Unit"
-            value={uiSettings.yAxisUnit}
-            onChange={(x) => {
-              onChange({ ...uiSettings, yAxisUnit: x.target.value });
             }}
           />
         </GridItem>

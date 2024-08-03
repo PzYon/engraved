@@ -9,14 +9,23 @@ import {
   startOfMonth,
   startOfWeek,
   startOfYear,
+  sub,
 } from "date-fns";
 import { DateRange } from "./DateRange";
+import { DateFilterConfig } from "../edit/IJournalUiSettings";
 
 export const createDateConditions = (
-  dateRange: DateRange,
+  dateFilterConfig: DateFilterConfig,
   date: Date,
 ): IDateConditions => {
-  switch (dateRange) {
+  if (dateFilterConfig.dateType === "relative") {
+    return {
+      from: sub(date, { days: dateFilterConfig.value as number }),
+      to: date,
+    };
+  }
+
+  switch (dateFilterConfig.value as DateRange) {
     case DateRange.Week:
       return {
         from: startOfWeek(date),
@@ -54,7 +63,13 @@ export function createNextDateConditions(
         offset * (direction === "previous" ? -1 : 1),
       );
 
-      return createDateConditions(DateRange.Month, newDate);
+      return createDateConditions(
+        {
+          dateType: "range",
+          value: DateRange.Month,
+        },
+        newDate,
+      );
     }
 
     case DateRange.Year: {
