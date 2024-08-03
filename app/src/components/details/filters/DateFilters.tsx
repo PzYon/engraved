@@ -1,26 +1,18 @@
 import React, { useState } from "react";
 import { DateSelector } from "../../common/DateSelector";
 import { useJournalContext } from "../JournalContext";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  styled,
-  TextField,
-} from "@mui/material";
+import { styled } from "@mui/material";
 import {
   createDateConditions,
   createNextDateConditions,
 } from "./createDateConditions";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { DateRangeSelector } from "./DateRangeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { DateRange } from "./DateRange";
-import { sub } from "date-fns";
 import { FiltersRow } from "./FiltersRow";
+import { DateFilterConfigSelector } from "./DateFilterConfigSelector";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 
 export type DateType = "relative" | "range";
 
@@ -35,59 +27,28 @@ export const DateFilters: React.FC = () => {
     journalDefaultUiSettings.dateFilter,
   );
 
+  const deviceWidth = useDeviceWidth();
+
   return (
-    <>
+    <Host
+      sx={{
+        flexDirection: deviceWidth === DeviceWidth.Small ? "column" : "row",
+      }}
+    >
       <FiltersRow>
-        <FormControl margin={"normal"} sx={{ mt: 0 }}>
-          <InputLabel id="date-type-label">Date filter type</InputLabel>
-          <Select
-            id="date-type"
-            labelId="date-type-label"
-            label="Date filter type"
-            value={dateFilterConfig.dateType as unknown as string}
-            onChange={(event: SelectChangeEvent) => {
-              const type = event.target.value as unknown as DateType;
+        <DateFilterConfigSelector
+          dateFilterConfig={dateFilterConfig}
+          setDateFilterConfig={(c) => {
+            setDateFilterConfig(c);
 
-              setDateFilterConfig({
-                dateType: type,
-                value: type === "range" ? DateRange.All : 90,
-              });
-            }}
-            sx={{ ".MuiSelect-select": { display: "flex" } }}
-          >
-            <MenuItem value="relative">Relative to now</MenuItem>
-            <MenuItem value="range">Range</MenuItem>
-          </Select>
-        </FormControl>
+            const relevantDate =
+              c.dateType === "relative" && c.value !== dateFilterConfig.value
+                ? new Date()
+                : (dateConditions.from ?? new Date());
 
-        <RangeContainer>
-          {dateFilterConfig.dateType === "range" ? (
-            <DateRangeSelector
-              dateRange={dateFilterConfig.value}
-              onChange={onRangeChange}
-            />
-          ) : (
-            <TextField
-              label="Last n days"
-              type="number"
-              onBlur={(x) => {
-                const days = Number(x.target.value);
-
-                setDateFilterConfig({
-                  dateType: "relative",
-                  value: days,
-                });
-
-                const now = new Date();
-
-                setDateConditions({
-                  from: sub(now, { days: days }),
-                  to: now,
-                });
-              }}
-            />
-          )}
-        </RangeContainer>
+            setDateConditions(createDateConditions(c, relevantDate));
+          }}
+        />
       </FiltersRow>
 
       <FiltersRow>
@@ -150,39 +111,20 @@ export const DateFilters: React.FC = () => {
           />
         </PickerContainer>
       </FiltersRow>
-    </>
+    </Host>
   );
-
-  function onRangeChange(range: DateRange): void {
-    setDateFilterConfig({
-      dateType: "range",
-      value: range,
-    });
-
-    const conditions = createDateConditions(
-      { dateType: "range", value: range },
-      dateConditions.from ?? new Date(),
-    );
-
-    if (!conditions) {
-      return;
-    }
-
-    setDateConditions(conditions);
-  }
 };
 
-const RangeContainer = styled("div")`
-  display: flex;
-`;
+const Host = styled("div")``;
 
 const StepperContainer = styled("div")`
-  flex-shrink: 1;
+  flex-shrink: 1 !important;
+  flex-grow: initial !important;
   display: flex;
   justify-content: center;
   height: 56px;
 `;
 
 const PickerContainer = styled("div")`
-  flex-shrink: 2;
+  flex-grow: 2;
 `;

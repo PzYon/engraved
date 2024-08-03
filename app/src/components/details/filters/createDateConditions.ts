@@ -55,7 +55,6 @@ export function createNextDateConditions(
   currentConditions: IDateConditions,
 ): IDateConditions {
   if (dateFilterConfig.dateType === "relative") {
-    debugger;
     return {
       from: sub(currentConditions.from, {
         days: dateFilterConfig.value as number,
