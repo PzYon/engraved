@@ -67,10 +67,17 @@ export const DateFilters: React.FC = () => {
               label="Last n days"
               type="number"
               onBlur={(x) => {
+                const days = Number(x.target.value);
+
+                setDateFilterConfig({
+                  dateType: "relative",
+                  value: days,
+                });
+
                 const now = new Date();
 
                 setDateConditions({
-                  from: sub(now, { days: Number(x.target.value) }),
+                  from: sub(now, { days: days }),
                   to: now,
                 });
               }}
@@ -87,7 +94,7 @@ export const DateFilters: React.FC = () => {
                 setDateConditions(
                   createNextDateConditions(
                     "previous",
-                    dateFilterConfig.value,
+                    dateFilterConfig,
                     dateConditions,
                   ),
                 ),
@@ -102,7 +109,7 @@ export const DateFilters: React.FC = () => {
                 setDateConditions(
                   createNextDateConditions(
                     "next",
-                    dateFilterConfig.value,
+                    dateFilterConfig,
                     dateConditions,
                   ),
                 ),

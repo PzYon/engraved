@@ -51,10 +51,20 @@ export const createDateConditions = (
 
 export function createNextDateConditions(
   direction: "previous" | "next",
-  dateRange: DateRange,
+  dateFilterConfig: DateFilterConfig,
   currentConditions: IDateConditions,
 ): IDateConditions {
-  switch (dateRange) {
+  if (dateFilterConfig.dateType === "relative") {
+    debugger;
+    return {
+      from: sub(currentConditions.from, {
+        days: dateFilterConfig.value as number,
+      }),
+      to: currentConditions.from,
+    };
+  }
+
+  switch (dateFilterConfig.value) {
     case DateRange.Month: {
       const offset = getDaysInMonth(currentConditions.from.getFullYear());
 
