@@ -87,7 +87,14 @@ export const DateFilters: React.FC = () => {
       </FiltersRow>
 
       <FiltersRow>
-        <div style={{ flexShrink: 1 }}>
+        <div
+          style={{
+            flexShrink: 1,
+            display: "flex",
+            justifyContent: "center",
+            height: "56px",
+          }}
+        >
           <ActionIconButton
             action={{
               onClick: () =>
@@ -119,28 +126,32 @@ export const DateFilters: React.FC = () => {
             }}
           />
         </div>
-        <DateSelector
-          label="From"
-          date={dateConditions?.from}
-          setDate={(d) => {
-            setDateConditions({ ...dateConditions, from: d });
-            setDateFilterConfig({
-              dateType: "range",
-              value: DateRange.Custom,
-            });
-          }}
-        />
-        <DateSelector
-          label="To"
-          date={dateConditions?.to}
-          setDate={(d) => {
-            setDateConditions({ ...dateConditions, to: d });
-            setDateFilterConfig({
-              dateType: "range",
-              value: DateRange.Custom,
-            });
-          }}
-        />
+        <div style={{ flexGrow: 2 }}>
+          <DateSelector
+            label="From"
+            date={dateConditions?.from}
+            setDate={(d) => {
+              setDateConditions({ ...dateConditions, from: d });
+              setDateFilterConfig({
+                dateType: "range",
+                value: DateRange.Custom,
+              });
+            }}
+          />
+        </div>
+        <div style={{ flexGrow: 2 }}>
+          <DateSelector
+            label="To"
+            date={dateConditions?.to}
+            setDate={(d) => {
+              setDateConditions({ ...dateConditions, to: d });
+              setDateFilterConfig({
+                dateType: "range",
+                value: DateRange.Custom,
+              });
+            }}
+          />
+        </div>
       </FiltersRow>
     </>
   );
