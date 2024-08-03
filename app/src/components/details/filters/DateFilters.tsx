@@ -16,10 +16,6 @@ import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 
 export type DateType = "relative" | "range";
 
-// todo:
-// - naming (is "relative" and "range" good?)
-// - "last n days" must grow
-
 export const DateFilters: React.FC = () => {
   const { dateConditions, setDateConditions } = useJournalContext();
 
@@ -35,18 +31,19 @@ export const DateFilters: React.FC = () => {
         flexDirection: deviceWidth === DeviceWidth.Small ? "column" : "row",
       }}
     >
-      <FiltersRow>
+      <FiltersRow
+        sx={{ flexGrow: 1, mb: deviceWidth === DeviceWidth.Small ? 2 : 0 }}
+      >
         <DateFilterConfigSelector
           dateFilterConfig={dateFilterConfig}
           setDateFilterConfig={(c) => {
-            setDateFilterConfig(c);
-
             const relevantDate =
               c.dateType === "relative" && c.value !== dateFilterConfig.value
                 ? new Date()
                 : (dateConditions.from ?? new Date());
 
             setDateConditions(createDateConditions(c, relevantDate));
+            setDateFilterConfig(c);
           }}
         />
       </FiltersRow>
@@ -123,6 +120,7 @@ const StepperContainer = styled("div")`
   display: flex;
   justify-content: center;
   height: 56px;
+  margin-right: 0 !important;
 `;
 
 const PickerContainer = styled("div")`

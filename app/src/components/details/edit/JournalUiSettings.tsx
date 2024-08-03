@@ -13,6 +13,7 @@ import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { AggregationModeSelector } from "../chart/AggregationModeSelector";
 import { IJournalUiSettings } from "./IJournalUiSettings";
+import { DateFilterConfigSelector } from "../filters/DateFilterConfigSelector";
 
 export const JournalUiSettings: React.FC<{
   uiSettings: IJournalUiSettings;
@@ -111,20 +112,18 @@ export const JournalUiSettings: React.FC<{
           />
         </GridItem>
 
-        <GridItem>Date type picker</GridItem>
-
         <GridItem>
-          {/*<DateRangeSelector*/}
-          {/*  dateRange={*/}
-          {/*    uiSettings.dateFilter. ?? journalDefaultUiSettings.dateFilter*/}
-          {/*  }*/}
-          {/*  onChange={(dateRange) => {*/}
-          {/*    onChange({...uiSettings, dateRange});*/}
-          {/*  }}*/}
-          {/*/>*/}
-          date range OR relative
+          <DateFilterConfigSelector
+            dateFilterConfig={
+              uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter
+            }
+            setDateFilterConfig={(config) => {
+              onChange({ ...uiSettings, dateFilter: config });
+            }}
+          />
         </GridItem>
 
+        <GridItem />
         <GridItem />
 
         <GridItem>
