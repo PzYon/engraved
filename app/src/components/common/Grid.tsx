@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid } from "@mui/material";
 
-export const GridItem: React.FC<{ children: React.ReactNode }> = ({
+export const GridItem: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   return (

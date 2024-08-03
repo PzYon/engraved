@@ -67,11 +67,11 @@ export const JournalViewPage: React.FC = () => {
 
   useEffect(() => {
     setDateConditions(
-      !uiSettings?.dateRange
+      !uiSettings?.dateFilter
         ? getDefaultDateConditions()
-        : createDateConditions(uiSettings.dateRange, new Date()),
+        : createDateConditions(uiSettings.dateFilter, new Date()),
     );
-  }, [setDateConditions, uiSettings.dateRange]);
+  }, [setDateConditions, uiSettings.dateFilter]);
 
   useEffect(() => {
     setTitleActions([
@@ -131,6 +131,9 @@ export const JournalViewPage: React.FC = () => {
           setAttributeKey={setAttributeKey}
           chartType={chartType}
           setChartType={setChartType}
+          dateFilter={
+            uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter
+          }
         />
       ) : null}
 

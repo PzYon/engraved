@@ -472,7 +472,7 @@ export class ActionFactory {
   ): IAction {
     return {
       key: "toggle-display-mode",
-      hotkey: "alt+c",
+      hotkey: "alt+v",
       icon: <FormatLineSpacingOutlined fontSize="small" />,
       label: "Toggle display mode",
       onClick: () => setIsCompact(!isCompact),

@@ -8,79 +8,121 @@ import {
 } from "./createDateConditions";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { DateRangeSelector } from "./DateRangeSelector";
-import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { DateRange } from "./DateRange";
+import { FiltersRow } from "./FiltersRow";
+import { DateFilterConfigSelector } from "./DateFilterConfigSelector";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { DateFilterConfig } from "../edit/IJournalUiSettings";
 
-export const DateFilters: React.FC = () => {
+export type DateType = "relative" | "range";
+
+export const DateFilters: React.FC<{ config: DateFilterConfig }> = ({
+  config,
+}) => {
   const { dateConditions, setDateConditions } = useJournalContext();
 
-  const [dateRange, setDateRange] = useState<DateRange>(
-    journalDefaultUiSettings.dateRange,
-  );
+  const [dateFilterConfig, setDateFilterConfig] = useState(config);
+
+  const deviceWidth = useDeviceWidth();
 
   return (
-    <>
-      <RangeContainer>
-        <DateRangeSelector dateRange={dateRange} onChange={onChange} />
-        <ActionIconButton
-          action={{
-            onClick: () =>
-              setDateConditions(
-                createNextDateConditions("previous", dateRange, dateConditions),
-              ),
-            icon: <ChevronLeft fontSize="small" />,
-            label: "Previous",
-            key: "go_left",
+    <Host
+      sx={{
+        flexDirection: deviceWidth === DeviceWidth.Small ? "column" : "row",
+      }}
+    >
+      <FiltersRow
+        sx={{ flexGrow: 1, mb: deviceWidth === DeviceWidth.Small ? 2 : 0 }}
+      >
+        <DateFilterConfigSelector
+          dateFilterConfig={dateFilterConfig}
+          setDateFilterConfig={(c) => {
+            const relevantDate =
+              c.dateType === "relative" && c.value !== dateFilterConfig.value
+                ? new Date()
+                : (dateConditions.from ?? new Date());
+
+            setDateConditions(createDateConditions(c, relevantDate));
+            setDateFilterConfig(c);
           }}
         />
-        <ActionIconButton
-          action={{
-            onClick: () =>
-              setDateConditions(
-                createNextDateConditions("next", dateRange, dateConditions),
-              ),
-            icon: <ChevronRight fontSize="small" />,
-            label: "Previous",
-            key: "go_left",
-          }}
-        />
-      </RangeContainer>
-      <DateSelector
-        label="From"
-        date={dateConditions?.from}
-        setDate={(d) => {
-          setDateConditions({ ...dateConditions, from: d });
-          setDateRange(DateRange.Custom);
-        }}
-      />
-      <DateSelector
-        label="To"
-        date={dateConditions?.to}
-        setDate={(d) => {
-          setDateConditions({ ...dateConditions, to: d });
-          setDateRange(DateRange.Custom);
-        }}
-      />
-    </>
+      </FiltersRow>
+
+      <FiltersRow>
+        <StepperContainer>
+          <ActionIconButton
+            action={{
+              onClick: () =>
+                setDateConditions(
+                  createNextDateConditions(
+                    "previous",
+                    dateFilterConfig,
+                    dateConditions,
+                  ),
+                ),
+              icon: <ChevronLeft fontSize="small" />,
+              label: "Previous",
+              key: "go_left",
+            }}
+          />
+          <ActionIconButton
+            action={{
+              onClick: () =>
+                setDateConditions(
+                  createNextDateConditions(
+                    "next",
+                    dateFilterConfig,
+                    dateConditions,
+                  ),
+                ),
+              icon: <ChevronRight fontSize="small" />,
+              label: "Next",
+              key: "go_left",
+            }}
+          />
+        </StepperContainer>
+        <PickerContainer>
+          <DateSelector
+            label="From"
+            date={dateConditions?.from}
+            setDate={(d) => {
+              setDateConditions({ ...dateConditions, from: d });
+              setDateFilterConfig({
+                dateType: "range",
+                value: DateRange.Custom,
+              });
+            }}
+          />
+        </PickerContainer>
+        <PickerContainer>
+          <DateSelector
+            label="To"
+            date={dateConditions?.to}
+            setDate={(d) => {
+              setDateConditions({ ...dateConditions, to: d });
+              setDateFilterConfig({
+                dateType: "range",
+                value: DateRange.Custom,
+              });
+            }}
+          />
+        </PickerContainer>
+      </FiltersRow>
+    </Host>
   );
-
-  function onChange(range: DateRange): void {
-    setDateRange(range);
-
-    const conditions = createDateConditions(
-      range,
-      dateConditions.from ?? new Date(),
-    );
-
-    if (!conditions) {
-      return;
-    }
-
-    setDateConditions(conditions);
-  }
 };
 
-const RangeContainer = styled("div")`
+const Host = styled("div")``;
+
+const StepperContainer = styled("div")`
+  flex-shrink: 1 !important;
+  flex-grow: initial !important;
   display: flex;
+  justify-content: center;
+  height: 56px;
+  margin-right: 0 !important;
+`;
+
+const PickerContainer = styled("div")`
+  flex-grow: 2;
 `;

@@ -5,6 +5,9 @@ import { IJournalUiSettings } from "./edit/IJournalUiSettings";
 export const journalDefaultUiSettings: IJournalUiSettings = {
   groupByTime: GroupByTime.Day,
   chartType: "line",
-  dateRange: DateRange.Month,
+  dateFilter: {
+    dateType: "range",
+    value: DateRange.All,
+  },
   aggregationMode: "sum",
 };

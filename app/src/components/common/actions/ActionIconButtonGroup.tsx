@@ -4,7 +4,6 @@ import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
 import { useIsInViewport } from "../useIsInViewPort";
 import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
-import { useLocation } from "react-router-dom";
 import { useEngravedSearchParams } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
 
@@ -20,7 +19,6 @@ export const ActionIconButtonGroup: React.FC<{
 
   const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
 
-  const loc = useLocation();
   const { getSearchParam } = useEngravedSearchParams();
 
   const [isReady, setIsReady] = useState(false);
@@ -69,8 +67,10 @@ export const ActionIconButtonGroup: React.FC<{
   );
 
   function isActionActive(action: IAction) {
+    // actions that have a URL (i.e. point to a different page) are ignored
+    // for the moment, because they might not even have a "action panel"
     if (action.href) {
-      return loc.pathname.endsWith(action.href);
+      return false;
     }
 
     if (!action.search || !Object.keys(action.search).length) {

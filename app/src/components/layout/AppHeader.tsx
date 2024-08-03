@@ -123,6 +123,9 @@ export const AppHeader: React.FC = () => {
           </ActionsAndTabContainer>
         </ContentWrapper>
         {pageActionRoutes}
+      </AppContent>
+
+      <AppContent scope="body">
         <PageFilters />
       </AppContent>
     </Host>
