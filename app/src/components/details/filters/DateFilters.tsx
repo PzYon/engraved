@@ -24,6 +24,10 @@ import { FiltersRow } from "./FiltersRow";
 
 export type DateType = "relative" | "range";
 
+// todo:
+// - naming (is "relative" and "range" good?)
+// - "last n days" must grow
+
 export const DateFilters: React.FC = () => {
   const { dateConditions, setDateConditions } = useJournalContext();
 
