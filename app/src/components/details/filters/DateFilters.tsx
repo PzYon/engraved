@@ -87,14 +87,7 @@ export const DateFilters: React.FC = () => {
       </FiltersRow>
 
       <FiltersRow>
-        <div
-          style={{
-            flexShrink: 1,
-            display: "flex",
-            justifyContent: "center",
-            height: "56px",
-          }}
-        >
+        <StepperContainer>
           <ActionIconButton
             action={{
               onClick: () =>
@@ -121,12 +114,12 @@ export const DateFilters: React.FC = () => {
                   ),
                 ),
               icon: <ChevronRight fontSize="small" />,
-              label: "Previous",
+              label: "Next",
               key: "go_left",
             }}
           />
-        </div>
-        <div style={{ flexGrow: 2 }}>
+        </StepperContainer>
+        <PickerContainer>
           <DateSelector
             label="From"
             date={dateConditions?.from}
@@ -138,8 +131,8 @@ export const DateFilters: React.FC = () => {
               });
             }}
           />
-        </div>
-        <div style={{ flexGrow: 2 }}>
+        </PickerContainer>
+        <PickerContainer>
           <DateSelector
             label="To"
             date={dateConditions?.to}
@@ -151,7 +144,7 @@ export const DateFilters: React.FC = () => {
               });
             }}
           />
-        </div>
+        </PickerContainer>
       </FiltersRow>
     </>
   );
@@ -177,4 +170,15 @@ export const DateFilters: React.FC = () => {
 
 const RangeContainer = styled("div")`
   display: flex;
+`;
+
+const StepperContainer = styled("div")`
+  flex-shrink: 1;
+  display: flex;
+  justify-content: center;
+  height: 56px;
+`;
+
+const PickerContainer = styled("div")`
+  flex-shrink: 2;
 `;
