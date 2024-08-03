@@ -56,45 +56,13 @@ export const DateFilters: React.FC = () => {
           </Select>
         </FormControl>
 
-        {dateFilterConfig.dateType === "range" ? (
-          <RangeContainer>
+        <RangeContainer>
+          {dateFilterConfig.dateType === "range" ? (
             <DateRangeSelector
               dateRange={dateFilterConfig.value}
               onChange={onRangeChange}
             />
-            <ActionIconButton
-              action={{
-                onClick: () =>
-                  setDateConditions(
-                    createNextDateConditions(
-                      "previous",
-                      dateFilterConfig.value,
-                      dateConditions,
-                    ),
-                  ),
-                icon: <ChevronLeft fontSize="small" />,
-                label: "Previous",
-                key: "go_left",
-              }}
-            />
-            <ActionIconButton
-              action={{
-                onClick: () =>
-                  setDateConditions(
-                    createNextDateConditions(
-                      "next",
-                      dateFilterConfig.value,
-                      dateConditions,
-                    ),
-                  ),
-                icon: <ChevronRight fontSize="small" />,
-                label: "Previous",
-                key: "go_left",
-              }}
-            />
-          </RangeContainer>
-        ) : (
-          <RangeContainer>
+          ) : (
             <TextField
               label="Last n days"
               type="number"
@@ -107,11 +75,43 @@ export const DateFilters: React.FC = () => {
                 });
               }}
             />
-          </RangeContainer>
-        )}
+          )}
+        </RangeContainer>
       </FiltersRow>
 
       <FiltersRow>
+        <div style={{ flexShrink: 1 }}>
+          <ActionIconButton
+            action={{
+              onClick: () =>
+                setDateConditions(
+                  createNextDateConditions(
+                    "previous",
+                    dateFilterConfig.value,
+                    dateConditions,
+                  ),
+                ),
+              icon: <ChevronLeft fontSize="small" />,
+              label: "Previous",
+              key: "go_left",
+            }}
+          />
+          <ActionIconButton
+            action={{
+              onClick: () =>
+                setDateConditions(
+                  createNextDateConditions(
+                    "next",
+                    dateFilterConfig.value,
+                    dateConditions,
+                  ),
+                ),
+              icon: <ChevronRight fontSize="small" />,
+              label: "Previous",
+              key: "go_left",
+            }}
+          />
+        </div>
         <DateSelector
           label="From"
           date={dateConditions?.from}
