@@ -47,6 +47,13 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
+                onClick={() => setDate(new Date())}
+              >
+                now
+              </Button>
+              <Button
+                variant="text"
+                sx={{ fontSize: "small" }}
                 onClick={() => setDate(addMinutes(date, -5))}
               >
                 -5min
