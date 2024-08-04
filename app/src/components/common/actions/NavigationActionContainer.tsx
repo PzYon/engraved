@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { styled } from "@mui/material";
 import {
   actionBorderWidth,
@@ -11,13 +11,23 @@ export const NavigationActionContainer: React.FC<{
   growWidthIfPossible?: boolean;
   giveFocus?: () => void;
 }> = ({ children, growWidthIfPossible, shrinkWidthIfPossible, giveFocus }) => {
+  const domElement: React.MutableRefObject<HTMLDivElement> =
+    useRef<HTMLDivElement>();
+
   useEffect(() => {
     giveFocus?.();
+
+    setTimeout(() => {
+      domElement.current?.scrollIntoView({
+        block: "nearest",
+        inline: "nearest",
+      });
+    }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <Host>
+    <Host ref={domElement}>
       <Inner
         className="action-container"
         style={{
