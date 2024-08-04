@@ -45,7 +45,18 @@ export const EntriesTableBodyGroup: React.FC<{
             entry={entry}
             render={(child: React.ReactElement) => (
               <TableRow key="routes" className="action-row">
-                <TableCell colSpan={columns.length}>{child}</TableCell>
+                <TableCell colSpan={columns.length}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "end",
+                    }}
+                  >
+                    <div style={{ maxWidth: "calc(100vw - 32px)" }}>
+                      {child}
+                    </div>
+                  </div>
+                </TableCell>
               </TableRow>
             )}
           />
