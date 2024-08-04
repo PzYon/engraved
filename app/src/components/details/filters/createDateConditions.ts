@@ -9,7 +9,7 @@ import {
   startOfMonth,
   startOfWeek,
   startOfYear,
-  sub,
+  subDays,
 } from "date-fns";
 import { DateRange } from "./DateRange";
 import { DateFilterConfig } from "../edit/IJournalUiSettings";
@@ -20,7 +20,7 @@ export const createDateConditions = (
 ): IDateConditions => {
   if (dateFilterConfig.dateType === "relative") {
     return {
-      from: sub(date, { days: dateFilterConfig.value as number }),
+      from: subDays(date, dateFilterConfig.value as number),
       to: date,
     };
   }
@@ -56,10 +56,14 @@ export function createNextDateConditions(
 ): IDateConditions {
   if (dateFilterConfig.dateType === "relative") {
     return {
-      from: sub(currentConditions.from, {
-        days: dateFilterConfig.value as number,
-      }),
-      to: currentConditions.from,
+      from:
+        direction === "previous"
+          ? subDays(currentConditions.from, dateFilterConfig.value as number)
+          : currentConditions.to,
+      to:
+        direction === "previous"
+          ? currentConditions.from
+          : addDays(currentConditions.to, dateFilterConfig.value as number),
     };
   }
 
