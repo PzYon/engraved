@@ -1,4 +1,4 @@
-import { GoogleInitializeResponse, GoogleNotification } from "./GoogleTypes";
+import { GoogleInitializeResponse } from "./GoogleTypes";
 import { envSettings } from "../../../env/envSettings";
 import { ServerApi } from "../../ServerApi";
 
@@ -21,14 +21,6 @@ export function registerGooglePrompt(
         auto_select: true,
         use_fedcm_for_prompt: true,
       });
-
-      const googlePrompt = function (): Promise<{ isSuccess: boolean }> {
-        return new Promise((resolve) => {
-          google.accounts.id.prompt((n: GoogleNotification) => {
-            resolve({ isSuccess: n.getMomentType() === "display" });
-          });
-        });
-      };
 
       ServerApi.setGooglePrompt(googlePrompt);
 
@@ -78,4 +70,8 @@ function unloadGoogleScript() {
 
 function getGoogleScriptTag() {
   return document.querySelector(`script[src="${scriptUrl}"]`);
+}
+
+function googlePrompt(): Promise<{ isSuccess: boolean }> {
+  return new Promise(() => google.accounts.id.prompt());
 }
