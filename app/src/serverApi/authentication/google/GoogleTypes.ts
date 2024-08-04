@@ -8,10 +8,6 @@ export type GoogleInitializeInput = {
   callback: (response: GoogleInitializeResponse) => void;
 };
 
-export type GoogleNotification = {
-  getMomentType: () => string;
-};
-
 export type Google = {
   accounts: {
     id: {
@@ -20,7 +16,7 @@ export type Google = {
         domElement: HTMLElement,
         params: { theme: string; size: string; shape: string; type: string },
       ) => void;
-      prompt: (notification: GoogleNotification) => void;
+      prompt: () => void;
     };
   };
 };
