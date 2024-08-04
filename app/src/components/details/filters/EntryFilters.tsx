@@ -15,6 +15,12 @@ import { SearchTextFilter } from "./SearchTextFilter";
 import { PageSection } from "../../layout/pages/PageSection";
 import { FiltersRow } from "./FiltersRow";
 import { DateFilterConfig } from "../edit/IJournalUiSettings";
+import {
+  CalendarMonth,
+  Group,
+  SearchOutlined,
+  Style,
+} from "@mui/icons-material";
 
 export const EntryFilters: React.FC<{
   journal: IJournal;
@@ -37,27 +43,27 @@ export const EntryFilters: React.FC<{
 }) => {
   return (
     <>
-      <PageSection title="Freetext search">
+      <PageSection title="Freetext search" icon={<SearchOutlined />}>
         <FiltersRow>
           <SearchTextFilter />
         </FiltersRow>
       </PageSection>
 
-      <PageSection title="Date filters">
+      <PageSection title="Date filters" icon={<CalendarMonth />}>
         <FiltersRow>
           <DateFilters config={dateFilter} />
         </FiltersRow>
       </PageSection>
 
       {!Object.keys(journal.attributes || {}).length ? null : (
-        <PageSection title="Attribute filters">
+        <PageSection title="Attribute filters" icon={<Style />}>
           <FiltersRow>
             <AttributeFilters />
           </FiltersRow>
         </PageSection>
       )}
 
-      <PageSection title="Grouping">
+      <PageSection title="Grouping" icon={<Group />}>
         <FiltersRow>
           {JournalTypeFactory.create(journal.type).isGroupable ? (
             <GroupByTimeSelector

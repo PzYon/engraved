@@ -5,11 +5,12 @@ import { AppErrorBoundary } from "../../errorHandling/AppErrorBoundary";
 
 export const PageSection: React.FC<{
   children: React.ReactNode;
+  icon?: React.ReactNode;
   title?: string;
   style?: React.CSSProperties;
   overflowXScroll?: boolean;
   testId?: string;
-}> = ({ title, children, style, overflowXScroll, testId }) => {
+}> = ({ title, icon, children, style, overflowXScroll, testId }) => {
   const deviceWidth = useDeviceWidth();
 
   return (
@@ -24,7 +25,16 @@ export const PageSection: React.FC<{
         data-testid={testId}
       >
         {title ? (
-          <Typography sx={{ flexShrink: 0, fontWeight: "bold", pb: 1 }}>
+          <Typography
+            sx={{
+              flexShrink: 0,
+              fontWeight: "bold",
+              pb: 1,
+              display: "flex",
+              color: "background.default",
+            }}
+          >
+            {icon ? <span style={{ paddingRight: "8px" }}>{icon}</span> : null}
             {title}
           </Typography>
         ) : null}
