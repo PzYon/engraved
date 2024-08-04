@@ -22,12 +22,6 @@ export function registerGooglePrompt(
         use_fedcm_for_prompt: true,
       });
 
-      const googlePrompt = function (): Promise<{ isSuccess: boolean }> {
-        return new Promise(() => {
-          google.accounts.id.prompt();
-        });
-      };
-
       ServerApi.setGooglePrompt(googlePrompt);
 
       if (doNotPrompt) {
@@ -76,4 +70,8 @@ function unloadGoogleScript() {
 
 function getGoogleScriptTag() {
   return document.querySelector(`script[src="${scriptUrl}"]`);
+}
+
+function googlePrompt(): Promise<{ isSuccess: boolean }> {
+  return new Promise(() => google.accounts.id.prompt());
 }
