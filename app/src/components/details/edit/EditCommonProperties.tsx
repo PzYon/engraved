@@ -2,6 +2,7 @@ import { FormControl, TextField } from "@mui/material";
 import { translations } from "../../../i18n/translations";
 import { PageSection } from "../../layout/pages/PageSection";
 import React from "react";
+import { MoreOutlined } from "@mui/icons-material";
 
 export const EditCommonProperties: React.FC<{
   name: string;
@@ -10,7 +11,7 @@ export const EditCommonProperties: React.FC<{
   setDescription: (description: string) => void;
 }> = ({ name, setName, description, setDescription }) => {
   return (
-    <PageSection title={"Properties"}>
+    <PageSection title={"Properties"} icon={<MoreOutlined />}>
       <FormControl sx={{ width: "100%" }}>
         <TextField
           value={name}

@@ -12,6 +12,7 @@ import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/
 import { JournalPageTitle } from "../JournalPageTitle";
 import { EditPageFooterButtons } from "../../common/EditPageFooterButtons";
 import { getUiSettings } from "../../../util/journalUtils";
+import { PanToolOutlined, Preview, Style } from "@mui/icons-material";
 
 export const JournalEditPage: React.FC = () => {
   const { journal } = useJournalContext();
@@ -56,18 +57,18 @@ export const JournalEditPage: React.FC = () => {
         setDescription={setDescription}
       />
 
-      <PageSection title={"Attributes"}>
+      <PageSection title={"Attributes"} icon={<Style />}>
         <JournalAttributesEditor
           attributes={attributes}
           setAttributes={setAttributes}
         />
       </PageSection>
 
-      <PageSection title={"Thresholds"}>
+      <PageSection title={"Thresholds"} icon={<PanToolOutlined />}>
         <EditThresholds journal={journal} onChange={setThresholds} />
       </PageSection>
 
-      <PageSection title={"UI Settings"}>
+      <PageSection title={"UI Settings"} icon={<Preview />}>
         <JournalUiSettings uiSettings={uiSettings} onChange={setUiSettings} />
       </PageSection>
 
