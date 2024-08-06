@@ -99,10 +99,12 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
     }
 
     command.Schedule.EntryId = result.EntityId;
-    command.Schedule.OnClickUrl = string.IsNullOrEmpty(command.Schedule.OnClickUrl)
-      ? null
-      : string.Format(command.Schedule.OnClickUrl, result.EntityId);
-
+    
+    if (!string.IsNullOrEmpty(command.Schedule.OnClickUrl))
+    {
+      command.Schedule.OnClickUrl = command.Schedule.OnClickUrl.Replace("{0}", result.EntityId);
+    }
+    
     await dispatcher.Command(command.Schedule);
 
     return result;
