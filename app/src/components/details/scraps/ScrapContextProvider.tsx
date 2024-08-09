@@ -321,7 +321,7 @@ export const ScrapContextProvider: React.FC<{
         schedule: getScheduleDefinition(
           parsedDate,
           scrapToRender.parentId,
-          scrapToRender?.id ?? "{0}",
+          scrapToRender?.id ?? "new-entry-id",
         ),
       } as IUpsertScrapsEntryCommand,
     });

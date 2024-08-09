@@ -4,17 +4,16 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 
-public class UpsertScrapsEntryCommandExecutor : BaseUpsertEntryCommandExecutor<
-  UpsertScrapsEntryCommand,
-  ScrapsEntry,
-  ScrapsJournal
->
-{
-  public UpsertScrapsEntryCommandExecutor(IRepository repository, IDateService dateService) : base(
+public class UpsertScrapsEntryCommandExecutor(IRepository repository, IDateService dateService)
+  : BaseUpsertEntryCommandExecutor<
+    UpsertScrapsEntryCommand,
+    ScrapsEntry,
+    ScrapsJournal
+  >(
     repository,
     dateService
-  ) { }
-
+  )
+{
   protected override Task PerformTypeSpecificValidation(UpsertScrapsEntryCommand command)
   {
     if (string.IsNullOrWhiteSpace(command.Title) && string.IsNullOrWhiteSpace(command.Notes))
