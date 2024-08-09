@@ -20,7 +20,7 @@ public class AddScheduleToEntryCommandExecutor(IUserScopedRepository repository)
     entry.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
     {
       NextOccurrence = command.NextOccurrence,
-      OnClickUrl = command.OnClickUrl?.Replace("{0}", entry.Id),
+      OnClickUrl = command.OnClickUrl?.Replace("new-entry-id", entry.Id),
       Recurrence = command.Recurrence
     };
 
