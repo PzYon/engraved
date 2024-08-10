@@ -18,7 +18,7 @@ export const ScrapBody: React.FC<{
   actions: IAction[];
   editModeActions: IAction[];
   properties?: IPropertyDefinition[];
-}> = ({ children, actions, editModeActions, properties }) => {
+}> = ({ children, actions, editModeActions, properties = [] }) => {
   const { user } = useAppContext();
 
   const {
