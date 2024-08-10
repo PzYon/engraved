@@ -70,7 +70,7 @@ function getEntryProperties(
   userId: string,
   propertyOverrides: IPropertyDefinition[],
 ) {
-  return [
+  const props = [
     {
       key: "journal-type",
       node: () => <JournalIcon journal={journal} iconStyle={IconStyle.Small} />,
@@ -109,4 +109,13 @@ function getEntryProperties(
     },
     [],
   );
+
+  // add props from overrides that don't exist in initial set
+  for (const prop of propertyOverrides ?? []) {
+    if (!props.find((p) => p.key === prop.key)) {
+      props.push(prop);
+    }
+  }
+
+  return props;
 }
