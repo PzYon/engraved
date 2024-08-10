@@ -11,12 +11,14 @@ import {
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { styled } from "@mui/material";
+import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
   editModeActions: IAction[];
-}> = ({ children, actions, editModeActions }) => {
+  properties?: IPropertyDefinition[];
+}> = ({ children, actions, editModeActions, properties }) => {
   const { user } = useAppContext();
 
   const {
@@ -51,8 +53,9 @@ export const ScrapBody: React.FC<{
                   nextOccurrence: parsedDate.date.toString(),
                   recurrence: parsedDate.recurrence,
                 }),
+                ...properties,
               ]
-            : []
+            : properties
         }
       >
         {isCompact && !hasFocus ? null : children}

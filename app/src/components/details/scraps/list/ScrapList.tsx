@@ -61,7 +61,22 @@ export const ScrapList: React.FC = () => {
   const sensors = useSensors(useSensor(TouchSensor), useSensor(PointerSensor));
 
   return (
-    <ScrapBody actions={[]} editModeActions={getEditModeActions()}>
+    <ScrapBody
+      actions={[]}
+      editModeActions={getEditModeActions()}
+      properties={[
+        {
+          key: "completed",
+          label: "Completed",
+          node: () => (
+            <span>
+              {listItemCollection.items.filter((i) => i.isCompleted).length}/
+              {listItemCollection.items.length}
+            </span>
+          ),
+        },
+      ]}
+    >
       <BodyHost
         key={isEditMode.toString()}
         style={
