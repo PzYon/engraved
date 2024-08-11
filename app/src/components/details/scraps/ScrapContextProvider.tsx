@@ -90,9 +90,6 @@ export const ScrapContextProvider: React.FC<{
     title,
   ]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  //const initialScrap = useMemo(() => currentScrap, []);
-
   const isDirty = initialScrap.notes !== notes || initialScrap.title !== title;
 
   const itemAction = useItemAction();
