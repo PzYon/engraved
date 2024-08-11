@@ -31,13 +31,14 @@ export const useModifyScheduleMutation = (
         type: "success",
       });
 
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.prefixes.journals(),
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.prefixes.entities(),
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.prefixes.journals(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.prefixes.entities(),
+        }),
+      ]);
     },
 
     onError: (error: IAppAlert) =>

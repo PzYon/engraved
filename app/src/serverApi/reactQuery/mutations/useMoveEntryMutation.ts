@@ -25,17 +25,17 @@ export const useMoveEntryMutation = (
         type: "success",
       });
 
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journal(variables.targetJournalId),
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journal(journalId),
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journals(),
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.journal(variables.targetJournalId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.journal(journalId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.journals(),
+        }),
+      ]);
 
       onSaved?.();
     },
