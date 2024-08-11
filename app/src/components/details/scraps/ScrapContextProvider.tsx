@@ -91,12 +91,9 @@ export const ScrapContextProvider: React.FC<{
   ]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const initialScrap = useMemo(() => currentScrap, []);
+  //const initialScrap = useMemo(() => currentScrap, []);
 
-  const isDirty = useMemo(
-    () => initialScrap.notes !== notes || initialScrap.title !== title,
-    [initialScrap, notes, title],
-  );
+  const isDirty = currentScrap.notes !== notes || currentScrap.title !== title;
 
   const itemAction = useItemAction();
 
@@ -244,9 +241,9 @@ export const ScrapContextProvider: React.FC<{
           ? null
           : ActionFactory.cancelEditing(
               () => {
-                setScrapToRender(initialScrap);
-                setTitle(initialScrap.title);
-                setNotes(initialScrap.notes);
+                setScrapToRender(currentScrap);
+                setTitle(currentScrap.title);
+                setNotes(currentScrap.notes);
                 setIsEditMode(false);
 
                 onCancelEditing?.();
@@ -277,7 +274,7 @@ export const ScrapContextProvider: React.FC<{
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      initialScrap,
+      currentScrap,
       title,
       notes,
       isEditMode,
@@ -303,7 +300,8 @@ export const ScrapContextProvider: React.FC<{
       setIsEditMode(false);
     }
 
-    if (currentScrap.notes === notesToSave && currentScrap.title === title) {
+    if (!isDirty) {
+      //if (currentScrap.notes === notesToSave && currentScrap.title === title) {
       console.log("exiting because seems to be unchanged");
       return;
     }

@@ -238,5 +238,5 @@ async function testThatEveryUpdateLeadsToNewInitialState(
 
   await expect(
     scrapList.getListItemByText(secondItemText).getByRole("checkbox"),
-  ).not.toBeChecked();
+  ).toBeChecked();
 }
