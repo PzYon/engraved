@@ -19,7 +19,7 @@ export const Scrap: React.FC<{
   targetJournalId?: string;
   changeTypeWithoutConfirmation?: boolean;
 }> = ({
-  scrap: currentScrap,
+  scrap,
   journal,
   propsRenderStyle,
   actionsRenderStyle,
@@ -42,9 +42,9 @@ export const Scrap: React.FC<{
   }
 
   return (
-    <div id={currentScrap.id}>
+    <div id={scrap.id}>
       <ScrapContextProvider
-        currentScrap={currentScrap}
+        initialScrap={scrap}
         propsRenderStyle={propsRenderStyle}
         actionsRenderStyle={actionsRenderStyle}
         journal={journal}

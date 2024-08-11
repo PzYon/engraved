@@ -29,7 +29,7 @@ export const ScrapContextProvider: React.FC<{
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
   journal: IJournal;
-  currentScrap: IScrapEntry;
+  initialScrap: IScrapEntry;
   hasFocus: boolean;
   onSuccess?: () => void;
   onCancelEditing?: () => void;
@@ -39,7 +39,7 @@ export const ScrapContextProvider: React.FC<{
   changeTypeWithoutConfirmation?: boolean;
 }> = ({
   children,
-  currentScrap,
+  initialScrap,
   journal,
   propsRenderStyle,
   actionsRenderStyle,
@@ -54,35 +54,35 @@ export const ScrapContextProvider: React.FC<{
   const { setAppAlert } = useAppContext();
   const { renderDialog } = useDialogContext();
 
-  const [notes, setNotes] = useState<string>(currentScrap.notes);
-  const [title, setTitle] = useState<string>(currentScrap.title);
+  const [notes, setNotes] = useState<string>(initialScrap.notes);
+  const [title, setTitle] = useState<string>(initialScrap.title);
   const [parsedDate, setParsedDate] = useState<IParsedDate>(undefined);
-  const [scrapToRender, setScrapToRender] = useState(currentScrap);
+  const [scrapToRender, setScrapToRender] = useState(initialScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   useEffect(() => {
-    if (!isEditMode || !currentScrap?.parentId) {
+    if (!isEditMode || !initialScrap?.parentId) {
       return;
     }
 
     AddNewScrapStorage.setForJournal(
-      isQuickAdd ? "quick-add" : currentScrap.parentId,
+      isQuickAdd ? "quick-add" : initialScrap.parentId,
       {
         id: null,
         scrapType: scrapToRender.scrapType,
         notes: notes,
         title: parsedDate?.text ?? title,
         journalAttributeValues: {},
-        parentId: targetJournalId ?? currentScrap.parentId,
+        parentId: targetJournalId ?? initialScrap.parentId,
         dateTime: null,
       },
     );
   }, [
     parsedDate?.text,
     targetJournalId,
-    currentScrap.parentId,
-    currentScrap.scrapType,
+    initialScrap.parentId,
+    initialScrap.scrapType,
     isEditMode,
     isQuickAdd,
     scrapToRender.scrapType,
@@ -93,22 +93,22 @@ export const ScrapContextProvider: React.FC<{
   // eslint-disable-next-line react-hooks/exhaustive-deps
   //const initialScrap = useMemo(() => currentScrap, []);
 
-  const isDirty = currentScrap.notes !== notes || currentScrap.title !== title;
+  const isDirty = initialScrap.notes !== notes || initialScrap.title !== title;
 
   const itemAction = useItemAction();
 
   const upsertEntryMutation = useUpsertEntryMutation(
-    currentScrap.parentId,
+    initialScrap.parentId,
     JournalType.Scraps,
     null, // scrap currently do not support attributes
-    currentScrap.id,
+    initialScrap.id,
     closeAddEntryAction,
   );
 
   useEffect(() => {
     if (
-      !currentScrap.editedOn ||
-      currentScrap.editedOn === scrapToRender.editedOn
+      !initialScrap.editedOn ||
+      initialScrap.editedOn === scrapToRender.editedOn
     ) {
       return;
     }
@@ -159,12 +159,12 @@ export const ScrapContextProvider: React.FC<{
       title: "Scrap has changed...",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentScrap]);
+  }, [initialScrap]);
 
   function updateScrapInState() {
-    setScrapToRender(currentScrap);
-    setTitle(currentScrap.title);
-    setNotes(currentScrap.notes);
+    setScrapToRender(initialScrap);
+    setTitle(initialScrap.title);
+    setNotes(initialScrap.notes);
   }
 
   function changeScrapTypeInternal(
@@ -241,9 +241,9 @@ export const ScrapContextProvider: React.FC<{
           ? null
           : ActionFactory.cancelEditing(
               () => {
-                setScrapToRender(currentScrap);
-                setTitle(currentScrap.title);
-                setNotes(currentScrap.notes);
+                setScrapToRender(initialScrap);
+                setTitle(initialScrap.title);
+                setNotes(initialScrap.notes);
                 setIsEditMode(false);
 
                 onCancelEditing?.();
@@ -253,7 +253,7 @@ export const ScrapContextProvider: React.FC<{
                 AddNewScrapStorage.clearForJournal(
                   isQuickAdd
                     ? "quick-add"
-                    : (journal?.id ?? currentScrap.parentId),
+                    : (journal?.id ?? initialScrap.parentId),
                 );
               },
               hasFocus,
@@ -274,7 +274,7 @@ export const ScrapContextProvider: React.FC<{
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      currentScrap,
+      initialScrap,
       title,
       notes,
       isEditMode,
@@ -300,9 +300,11 @@ export const ScrapContextProvider: React.FC<{
       setIsEditMode(false);
     }
 
-    if (!isDirty) {
-      //if (currentScrap.notes === notesToSave && currentScrap.title === title) {
-      console.log("exiting because seems to be unchanged");
+    if (
+      !isDirty &&
+      initialScrap.notes === notesToSave &&
+      initialScrap.title === title
+    ) {
       return;
     }
 
