@@ -79,13 +79,10 @@ export const useUpsertEntryMutation = (
         queryKey: queryKeysFactory.journal(journalId),
       });
       await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journals(),
+        queryKey: queryKeysFactory.prefixes.journals(),
       });
       await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.entries(),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.entities(),
+        queryKey: queryKeysFactory.prefixes.entities(),
       });
     },
 
