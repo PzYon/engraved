@@ -304,6 +304,7 @@ export const ScrapContextProvider: React.FC<{
     }
 
     if (currentScrap.notes === notesToSave && currentScrap.title === title) {
+      console.log("exiting because seems to be unchanged");
       return;
     }
 
