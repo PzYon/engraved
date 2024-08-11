@@ -110,7 +110,7 @@ export const ScrapContextProvider: React.FC<{
     }
 
     if (!isEditMode) {
-      updateScrapInState();
+      resetToInitialScrap();
       return;
     }
 
@@ -127,7 +127,7 @@ export const ScrapContextProvider: React.FC<{
               }}
               variant={"outlined"}
               onClick={() => {
-                updateScrapInState();
+                resetToInitialScrap();
                 setAppAlert(null);
               }}
             >
@@ -157,7 +157,7 @@ export const ScrapContextProvider: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialScrap]);
 
-  function updateScrapInState() {
+  function resetToInitialScrap() {
     setScrapToRender(initialScrap);
   }
 
@@ -221,13 +221,9 @@ export const ScrapContextProvider: React.FC<{
       return {
         journal,
         title: scrapToRender.title,
-        setTitle: (t) => {
-          setScrapToRender({ ...scrapToRender, title: t });
-        },
+        setTitle: (t) => setScrapToRender({ ...scrapToRender, title: t }),
         notes: scrapToRender.notes,
-        setNotes: (n) => {
-          setScrapToRender({ ...scrapToRender, notes: n });
-        },
+        setNotes: (n) => setScrapToRender({ ...scrapToRender, notes: n }),
         parsedDate,
         setParsedDate,
         isEditMode,
@@ -237,7 +233,7 @@ export const ScrapContextProvider: React.FC<{
           ? null
           : ActionFactory.cancelEditing(
               () => {
-                setScrapToRender(initialScrap);
+                resetToInitialScrap();
 
                 setIsEditMode(false);
 
@@ -270,7 +266,6 @@ export const ScrapContextProvider: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       initialScrap,
-
       isEditMode,
       isDirty,
       scrapToRender,
