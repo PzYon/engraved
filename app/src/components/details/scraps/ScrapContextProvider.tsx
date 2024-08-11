@@ -52,13 +52,12 @@ export const ScrapContextProvider: React.FC<{
   changeTypeWithoutConfirmation,
 }) => {
   const { setAppAlert } = useAppContext();
-  const { renderDialog } = useDialogContext();
 
-  const [notes, setNotes] = useState<string>(initialScrap.notes);
-  const [title, setTitle] = useState<string>(initialScrap.title);
-  const [parsedDate, setParsedDate] = useState<IParsedDate>(undefined);
+  const { renderDialog } = useDialogContext();
   const [scrapToRender, setScrapToRender] = useState(initialScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
+
+  const [parsedDate, setParsedDate] = useState<IParsedDate>(undefined);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   useEffect(() => {
@@ -71,8 +70,8 @@ export const ScrapContextProvider: React.FC<{
       {
         id: null,
         scrapType: scrapToRender.scrapType,
-        notes: notes,
-        title: parsedDate?.text ?? title,
+        notes: scrapToRender.notes,
+        title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
         parentId: targetJournalId ?? initialScrap.parentId,
         dateTime: null,
@@ -85,12 +84,12 @@ export const ScrapContextProvider: React.FC<{
     initialScrap.scrapType,
     isEditMode,
     isQuickAdd,
-    scrapToRender.scrapType,
-    notes,
-    title,
+    scrapToRender,
   ]);
 
-  const isDirty = initialScrap.notes !== notes || initialScrap.title !== title;
+  const isDirty =
+    initialScrap.notes !== scrapToRender.notes ||
+    initialScrap.title !== scrapToRender.title;
 
   const itemAction = useItemAction();
 
@@ -160,8 +159,6 @@ export const ScrapContextProvider: React.FC<{
 
   function updateScrapInState() {
     setScrapToRender(initialScrap);
-    setTitle(initialScrap.title);
-    setNotes(initialScrap.notes);
   }
 
   function changeScrapTypeInternal(
@@ -170,8 +167,6 @@ export const ScrapContextProvider: React.FC<{
   ) {
     function changeType() {
       const newNotes = convertNotesToTargetType(targetType, genericNotes);
-
-      setNotes(newNotes);
 
       setScrapToRender({
         ...scrapToRender,
@@ -225,10 +220,14 @@ export const ScrapContextProvider: React.FC<{
     () => {
       return {
         journal,
-        title,
-        setTitle,
-        notes,
-        setNotes,
+        title: scrapToRender.title,
+        setTitle: (t) => {
+          setScrapToRender({ ...scrapToRender, title: t });
+        },
+        notes: scrapToRender.notes,
+        setNotes: (n) => {
+          setScrapToRender({ ...scrapToRender, notes: n });
+        },
         parsedDate,
         setParsedDate,
         isEditMode,
@@ -239,8 +238,7 @@ export const ScrapContextProvider: React.FC<{
           : ActionFactory.cancelEditing(
               () => {
                 setScrapToRender(initialScrap);
-                setTitle(initialScrap.title);
-                setNotes(initialScrap.notes);
+
                 setIsEditMode(false);
 
                 onCancelEditing?.();
@@ -272,8 +270,7 @@ export const ScrapContextProvider: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       initialScrap,
-      title,
-      notes,
+
       isEditMode,
       isDirty,
       scrapToRender,
@@ -287,9 +284,9 @@ export const ScrapContextProvider: React.FC<{
   );
 
   async function upsertScrap(notesToOverride?: string) {
-    const notesToSave = notesToOverride ?? notes;
+    const notesToSave = notesToOverride ?? scrapToRender.notes;
 
-    if (!notesToSave && !title) {
+    if (!notesToSave && !scrapToRender.title) {
       return;
     }
 
@@ -300,7 +297,7 @@ export const ScrapContextProvider: React.FC<{
     if (
       !isDirty &&
       initialScrap.notes === notesToSave &&
-      initialScrap.title === title
+      initialScrap.title === scrapToRender.title
     ) {
       return;
     }
@@ -312,7 +309,7 @@ export const ScrapContextProvider: React.FC<{
         id: scrapToRender.id,
         scrapType: scrapToRender.scrapType,
         notes: notesToSave,
-        title: parsedDate?.text ?? title,
+        title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
         journalId: targetJournalId ?? scrapToRender.parentId,
         dateTime: new Date(),
