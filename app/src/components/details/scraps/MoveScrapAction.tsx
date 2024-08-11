@@ -21,7 +21,7 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
   const [targetJournalId, setTargetJournalId] = useState<string>(undefined);
 
   const mutation = useMoveEntryMutation(entry.id, entry.parentId, () => {
-    navigate(`/journals/${targetJournalId}/`);
+    navigate(`/journals/details/${targetJournalId}/`);
   });
 
   if (!entry) {

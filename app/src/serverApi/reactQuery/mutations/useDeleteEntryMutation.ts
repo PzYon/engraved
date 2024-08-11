@@ -11,18 +11,17 @@ export const useDeleteEntryMutation = (journalId: string, entryId: string) => {
     mutationFn: () => ServerApi.deleteEntry(entryId),
 
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journal(journalId),
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.prefixes.entities(),
-        exact: false,
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.entries(),
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.journal(journalId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.prefixes.entities(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.entries(),
+        }),
+      ]);
     },
   });
 };

@@ -74,6 +74,8 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
   await expect(
     scrapList.getListItemByText(secondItemText).getByRole("checkbox"),
   ).not.toBeChecked();
+
+  await testThatEveryUpdateLeadsToNewInitialState(page, scrapList);
 });
 
 test("modify list items in multiple tabs, handle updates accordingly", async ({
@@ -208,4 +210,33 @@ async function triggerFocusEvent(page: Page) {
     window.dispatchEvent(new Event("visibilitychange"));
     window.dispatchEvent(new Event("focus"));
   });
+}
+
+async function testThatEveryUpdateLeadsToNewInitialState(
+  page: Page,
+  scrapList: ScrapListComponent,
+) {
+  await expect(
+    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+  ).toBeChecked();
+
+  await scrapList
+    .getListItemByText(firstItemText)
+    .getByRole("checkbox")
+    .uncheck();
+
+  await expect(
+    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+  ).not.toBeChecked();
+
+  await scrapList
+    .getListItemByText(firstItemText)
+    .getByRole("checkbox")
+    .check();
+
+  await page.reload();
+
+  await expect(
+    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+  ).toBeChecked();
 }

@@ -25,15 +25,19 @@ export const useMoveEntryMutation = (
         type: "success",
       });
 
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.journal(variables.targetJournalId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.journal(journalId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeysFactory.journals(),
+        }),
+      ]);
+
       onSaved?.();
-
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journal(variables.targetJournalId),
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journal(journalId),
-      });
     },
 
     onError: (error) => {
@@ -41,12 +45,6 @@ export const useMoveEntryMutation = (
         title: "Failed to move entry",
         message: error.toString(),
         type: "error",
-      });
-    },
-
-    onSettled: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.journals(undefined, undefined),
       });
     },
   });
