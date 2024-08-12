@@ -21,8 +21,9 @@ export const NavigationActionContainer: React.FC<{
       domElement.current?.scrollIntoView({
         block: "nearest",
         inline: "nearest",
+        behavior: "smooth",
       });
-    }, 0);
+    }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
