@@ -21,10 +21,12 @@ export class AddNewScrapStorage {
         AddNewScrapStorage.key_prefix + cacheKey,
         scrapEntry,
       );
-    }, 500);
+    }, 1000);
   }
 
   static clearForJournal(cacheKey: string) {
+    window.clearTimeout(AddNewScrapStorage.timer);
+
     AddNewScrapStorage.storageUtil.setValue(
       AddNewScrapStorage.key_prefix + cacheKey,
       null,
