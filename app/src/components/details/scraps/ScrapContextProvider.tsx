@@ -24,6 +24,8 @@ import {
   useItemAction,
 } from "../../common/actions/searchParamHooks";
 
+const quickAddStorageKey = "quick-add";
+
 export const ScrapContextProvider: React.FC<{
   children: React.ReactNode;
   propsRenderStyle: EntryPropsRenderStyle;
@@ -66,13 +68,13 @@ export const ScrapContextProvider: React.FC<{
     }
 
     AddNewScrapStorage.setForJournal(
-      isQuickAdd ? "quick-add" : initialScrap.parentId,
+      isQuickAdd ? quickAddStorageKey : initialScrap.parentId,
       {
         id: null,
         scrapType: scrapToRender.scrapType,
         notes: scrapToRender.notes,
         title: parsedDate?.text ?? scrapToRender.title,
-        journalAttributeValues: {},
+        journalAttributeValues: null,
         parentId: targetJournalId ?? initialScrap.parentId,
         dateTime: null,
       },
@@ -84,7 +86,9 @@ export const ScrapContextProvider: React.FC<{
     initialScrap.scrapType,
     isEditMode,
     isQuickAdd,
-    scrapToRender,
+    scrapToRender.notes,
+    scrapToRender.title,
+    scrapToRender.scrapType,
   ]);
 
   const isDirty =
@@ -243,7 +247,7 @@ export const ScrapContextProvider: React.FC<{
 
                 AddNewScrapStorage.clearForJournal(
                   isQuickAdd
-                    ? "quick-add"
+                    ? quickAddStorageKey
                     : (journal?.id ?? initialScrap.parentId),
                 );
               },
@@ -317,7 +321,7 @@ export const ScrapContextProvider: React.FC<{
     });
 
     AddNewScrapStorage.clearForJournal(
-      isQuickAdd ? "quick-add" : scrapToRender.parentId,
+      isQuickAdd ? quickAddStorageKey : scrapToRender.parentId,
     );
   }
 
