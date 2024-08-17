@@ -4,10 +4,17 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { styled, TextField } from "@mui/material";
 import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 
+export enum ThresholdScope {
+  Day = "Day",
+  Month = "Month",
+  Overall = "Overall",
+}
+
 export interface IThresholdDefinition {
   attributeKey: string;
   attributeValueKeys: string[];
   threshold: number;
+  scope: ThresholdScope;
   key?: string;
 }
 
@@ -30,6 +37,8 @@ export const ThresholdRow: React.FC<{
       attributeKey,
       attributeValueKeys,
       threshold: Number(threshold),
+      // todo(md): impl.
+      scope: ThresholdScope.Day,
     });
   }, [onChange, attributeKey, attributeValueKeys, threshold]);
 

@@ -86,7 +86,8 @@ function createDefinitions(
     return Object.keys(thresholds[attributeKey]).map((x) => {
       return {
         attributeKey: attributeKey,
-        threshold: thresholds[attributeKey][x],
+        threshold: thresholds[attributeKey][x].value,
+        scope: thresholds[attributeKey][x].scope,
         attributeValueKeys: [x],
       };
     });
@@ -103,8 +104,10 @@ function createThresholds(
       thresholds[definition.attributeKey] = {};
     }
 
-    thresholds[definition.attributeKey][definition.attributeValueKeys[0]] =
-      definition.threshold;
+    thresholds[definition.attributeKey][definition.attributeValueKeys[0]] = {
+      value: definition.threshold,
+      scope: definition.scope,
+    };
   }
 
   return thresholds;
@@ -115,6 +118,7 @@ function createNewDefinition(): IThresholdDefinition {
     attributeKey: undefined,
     attributeValueKeys: [],
     threshold: undefined,
+    scope: undefined,
     key: Math.random().toString(),
   };
 }
