@@ -26,6 +26,11 @@ export interface IThresholdDefinition {
   key?: string;
 }
 
+// todo:
+// - consider improving types
+// - make sure that every combination can only be defined once in the GUI
+// - fix serverside calculation - nothing has been done there yet
+
 export const ThresholdRow: React.FC<{
   journal: IJournal;
   definition: IThresholdDefinition;
@@ -33,7 +38,7 @@ export const ThresholdRow: React.FC<{
   styles: React.CSSProperties;
 }> = ({ journal, definition, onChange, styles }) => {
   const [attributeKey, setAttributeKey] = useState(
-    definition?.attributeKey ?? "",
+    definition?.attributeKey || "-",
   );
   const [attributeValueKeys, setAttributeValueKeys] = useState<string[]>(
     definition?.attributeValueKeys ?? [],
@@ -69,14 +74,10 @@ export const ThresholdRow: React.FC<{
           }}
         />
       ) : null}
-      <TextField
-        label={"Threshold Value"}
-        type="number"
-        defaultValue={threshold}
-        onBlur={(event) => setThreshold(event.target.value)}
-      />
-
-      <FormControl margin={"normal"} sx={{ backgroundColor: "common.white" }}>
+      <FormControl
+        margin={"normal"}
+        sx={{ backgroundColor: "common.white", mt: 1 }}
+      >
         <InputLabel id="threshold-scope-label">Scope</InputLabel>
         <Select
           id="threshold-scope"
@@ -93,6 +94,12 @@ export const ThresholdRow: React.FC<{
           <MenuItem value={ThresholdScope.Overall}>Overall</MenuItem>
         </Select>
       </FormControl>
+      <TextField
+        label={"Threshold Value"}
+        type="number"
+        defaultValue={threshold}
+        onBlur={(event) => setThreshold(event.target.value)}
+      />
     </Host>
   );
 };
@@ -101,6 +108,7 @@ const Host = styled("div")`
   padding: ${(p) => p.theme.spacing(1)} 0;
 
   display: flex;
+  align-items: center;
 
   & > div:not(:last-of-type) {
     margin-right: ${(p) => p.theme.spacing(1)};

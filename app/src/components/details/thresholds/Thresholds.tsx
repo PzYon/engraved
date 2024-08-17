@@ -26,9 +26,9 @@ export const Thresholds: React.FC<{
         return Object.keys(attributeThresholds).map((valueKey) => {
           const threshold = attributeThresholds[valueKey];
           const attributeName =
-            journal.attributes[attributeKey].name ?? attributeKey;
+            journal.attributes[attributeKey]?.name ?? attributeKey;
           const valueName =
-            journal.attributes[attributeKey].values[valueKey] ?? valueKey;
+            journal.attributes[attributeKey]?.values[valueKey] ?? valueKey;
 
           const currentSelectedValue =
             selectedAttributeValues[attributeKey]?.[0];
