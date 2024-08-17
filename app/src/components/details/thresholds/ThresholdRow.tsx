@@ -50,14 +50,12 @@ export const ThresholdRow: React.FC<{
           }}
         />
       ) : null}
-      {Object.keys(attributeValueKeys).length ? (
-        <TextField
-          label={"Threshold Value"}
-          type="number"
-          defaultValue={threshold}
-          onBlur={(event) => setThreshold(event.target.value)}
-        />
-      ) : null}
+      <TextField
+        label={"Threshold Value"}
+        type="number"
+        defaultValue={threshold}
+        onBlur={(event) => setThreshold(event.target.value)}
+      />
     </Host>
   );
 };

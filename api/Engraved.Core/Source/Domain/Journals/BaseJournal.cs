@@ -19,7 +19,7 @@ public abstract class BaseJournal : IJournal
 
   public Dictionary<string, JournalAttribute> Attributes { get; set; } = new();
 
-  public Dictionary<string, Dictionary<string, double>> Thresholds { get; set; } = new();
+  public Dictionary<string, Dictionary<string, ThresholdDefinition>> Thresholds { get; set; } = new();
 
   public DateTime? EditedOn { get; set; }
 

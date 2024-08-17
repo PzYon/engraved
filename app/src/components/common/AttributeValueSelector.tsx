@@ -13,6 +13,10 @@ export const AttributeValueSelector: React.FC<{
   selectedValue: string;
   onChange: (attributesValues: string[]) => void;
 }> = ({ attribute, selectedValue, onChange }) => {
+  if (!attribute) {
+    return null;
+  }
+
   return (
     <FormControl>
       <InputLabel id="attribute-values-label">Value</InputLabel>

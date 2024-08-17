@@ -30,9 +30,7 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
     IEntry[] entries = await repository.GetEntriesForJournal(
       query.JournalId!,
       query.FromDate,
-      query.ToDate,
-      null,
-      null
+      query.ToDate
     );
 
     return CalculateThresholds(journal, entries);
@@ -45,11 +43,11 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
   {
     Dictionary<string, IDictionary<string, ThresholdResult>> results = new();
 
-    foreach ((string? attributeKey, Dictionary<string, double>? thresholds) in journal.Thresholds)
+    foreach ((string? attributeKey, Dictionary<string, ThresholdDefinition>? thresholds) in journal.Thresholds)
     {
       Dictionary<string, ThresholdResult> attributeResults = new();
 
-      foreach ((string? attributeValueKey, double thresholdValue) in thresholds)
+      foreach ((string? attributeValueKey, ThresholdDefinition definition) in thresholds)
       {
         double total = entries
           .Where(
@@ -63,7 +61,7 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
           new ThresholdResult
           {
             ActualValue = total,
-            ThresholdValue = thresholdValue
+            ThresholdDefinition = definition
           }
         );
       }

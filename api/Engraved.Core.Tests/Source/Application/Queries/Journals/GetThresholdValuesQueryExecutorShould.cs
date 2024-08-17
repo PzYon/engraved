@@ -53,9 +53,16 @@ public class GetThresholdValuesQueryExecutorShould
             }
           }
         },
-        Thresholds = new Dictionary<string, Dictionary<string, double>>
+        Thresholds = new Dictionary<string, Dictionary<string, ThresholdDefinition>>
         {
-          { "colors", new Dictionary<string, double> { { "green", 3 }, { "blue", 6 } } }
+          {
+            "colors",
+            new Dictionary<string, ThresholdDefinition>
+            {
+              { "green", new ThresholdDefinition { Value = 3 } },
+              { "blue", new ThresholdDefinition { Value = 6 } }
+            }
+          }
         }
       }
     );
@@ -84,11 +91,11 @@ public class GetThresholdValuesQueryExecutorShould
     colorsThresholds.Count.Should().Be(2);
     Assert.That(colorsThresholds.ContainsKey("blue"));
     colorsThresholds["blue"].ActualValue.Should().Be(10);
-    colorsThresholds["blue"].ThresholdValue.Should().Be(6);
+    colorsThresholds["blue"].ThresholdDefinition.Value.Should().Be(6);
 
     Assert.That(colorsThresholds.ContainsKey("green"));
     colorsThresholds["green"].ActualValue.Should().Be(4);
-    colorsThresholds["green"].ThresholdValue.Should().Be(3);
+    colorsThresholds["green"].ThresholdDefinition.Value.Should().Be(3);
   }
 
   private void AddEntry(int value, string attributeValueKey)
@@ -100,10 +107,7 @@ public class GetThresholdValuesQueryExecutorShould
         ParentId = JournalId,
         DateTime = DateTime.UtcNow,
         Value = value,
-        JournalAttributeValues = new Dictionary<string, string[]>
-        {
-          { "colors", new[] { attributeValueKey } }
-        }
+        JournalAttributeValues = new Dictionary<string, string[]> { { "colors", [attributeValueKey] } }
       }
     );
   }
