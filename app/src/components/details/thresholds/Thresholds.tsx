@@ -57,15 +57,18 @@ export const Thresholds: React.FC<{
                 <Typography>
                   <ActualValue
                     isBelow={
-                      threshold.actualValue - threshold.thresholdValue < 0
+                      threshold.actualValue -
+                        threshold.thresholdDefinition.value <
+                      0
                     }
                   >
                     {Math.round(
-                      threshold.thresholdValue - threshold.actualValue,
+                      threshold.thresholdDefinition.value -
+                        threshold.actualValue,
                     )}
                   </ActualValue>{" "}
                   {threshold.actualValue}
-                  <Lighter> / {threshold.thresholdValue}</Lighter>
+                  <Lighter> / {threshold.thresholdDefinition.value}</Lighter>
                 </Typography>
               </Card>
             </GridItem>

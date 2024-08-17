@@ -1,7 +1,15 @@
 import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
 import React, { useEffect, useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
-import { styled, TextField } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  styled,
+  TextField,
+} from "@mui/material";
 import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 
 export enum ThresholdScope {
@@ -31,13 +39,15 @@ export const ThresholdRow: React.FC<{
     definition?.attributeValueKeys ?? [],
   );
   const [threshold, setThreshold] = useState(definition?.threshold ?? "");
+  const [thresholdScope, setThresholdScope] = useState(
+    definition?.scope ?? ThresholdScope.Month,
+  );
 
   useEffect(() => {
     onChange({
       attributeKey,
       attributeValueKeys,
       threshold: Number(threshold),
-      // todo(md): impl.
       scope: ThresholdScope.Day,
     });
   }, [onChange, attributeKey, attributeValueKeys, threshold]);
@@ -65,6 +75,24 @@ export const ThresholdRow: React.FC<{
         defaultValue={threshold}
         onBlur={(event) => setThreshold(event.target.value)}
       />
+
+      <FormControl margin={"normal"} sx={{ backgroundColor: "common.white" }}>
+        <InputLabel id="threshold-scope-label">Scope</InputLabel>
+        <Select
+          id="threshold-scope"
+          labelId="threshold-scope-label"
+          label="Scope"
+          value={thresholdScope as unknown as string}
+          onChange={(event: SelectChangeEvent) => {
+            setThresholdScope(event.target.value as unknown as ThresholdScope);
+          }}
+          sx={{ ".MuiSelect-select": { display: "flex" } }}
+        >
+          <MenuItem value={ThresholdScope.Day}>Day</MenuItem>
+          <MenuItem value={ThresholdScope.Month}>Month</MenuItem>
+          <MenuItem value={ThresholdScope.Overall}>Overall</MenuItem>
+        </Select>
+      </FormControl>
     </Host>
   );
 };
