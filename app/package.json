@@ -87,6 +87,6 @@
     "vite-plugin-checker": "0.7.2"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.20.0"
+    "@rollup/rollup-linux-x64-gnu": "4.21.0"
   }
 }
