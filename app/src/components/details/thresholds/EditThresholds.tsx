@@ -31,10 +31,12 @@ export const EditThresholds: React.FC<{
               definition={oldDefinition}
               journal={journal}
               onChange={(definition) => {
-                const isCurrentIncomplete = isIncomplete(definition);
-                if (isCurrentIncomplete) {
+                if (isIncomplete(definition)) {
                   return;
                 }
+
+                debugger;
+                console.log(definition);
 
                 const newDefinitions = [...thresholdDefinitions];
                 newDefinitions[i] = definition;
@@ -104,7 +106,9 @@ function createThresholds(
       thresholds[definition.attributeKey] = {};
     }
 
-    thresholds[definition.attributeKey][definition.attributeValueKeys[0]] = {
+    thresholds[definition.attributeKey][
+      definition.attributeValueKeys[0] ?? "-"
+    ] = {
       value: definition.threshold,
       scope: definition.scope,
     };
@@ -124,11 +128,7 @@ function createNewDefinition(): IThresholdDefinition {
 }
 
 function isIncomplete(definition: IThresholdDefinition) {
-  return (
-    !definition.attributeKey ||
-    !definition.attributeValueKeys?.length ||
-    !(definition.threshold > 0)
-  );
+  return !(definition.threshold > 0) || !definition.scope;
 }
 
 const RowContainer = styled("div")`

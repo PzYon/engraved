@@ -1,5 +1,5 @@
 import { GroupByAttributeSelector } from "../chart/grouping/GroupByAttributeSelector";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import {
   FormControl,
@@ -48,20 +48,19 @@ export const ThresholdRow: React.FC<{
     definition?.scope ?? ThresholdScope.Month,
   );
 
-  useEffect(() => {
-    onChange({
-      attributeKey,
-      attributeValueKeys,
-      threshold: Number(threshold),
-      scope: ThresholdScope.Day,
-    });
-  }, [onChange, attributeKey, attributeValueKeys, threshold]);
-
   return (
     <Host sx={styles}>
       <GroupByAttributeSelector
         attributes={journal.attributes}
-        onChange={setAttributeKey}
+        onChange={(k) => {
+          setAttributeKey(k);
+          onChangeWrapper(
+            k,
+            attributeValueKeys,
+            Number(threshold),
+            thresholdScope,
+          );
+        }}
         selectedAttributeKey={attributeKey}
         label={"Attribute"}
       />
@@ -71,6 +70,12 @@ export const ThresholdRow: React.FC<{
           selectedValue={attributeValueKeys[0]}
           onChange={(attributesValues) => {
             setAttributeValueKeys(attributesValues);
+            onChangeWrapper(
+              attributeKey,
+              attributesValues,
+              Number(threshold),
+              thresholdScope,
+            );
           }}
         />
       ) : null}
@@ -85,7 +90,14 @@ export const ThresholdRow: React.FC<{
           label="Scope"
           value={thresholdScope as unknown as string}
           onChange={(event: SelectChangeEvent) => {
-            setThresholdScope(event.target.value as unknown as ThresholdScope);
+            const scope = event.target.value as unknown as ThresholdScope;
+            setThresholdScope(scope);
+            onChangeWrapper(
+              attributeKey,
+              attributeValueKeys,
+              Number(threshold),
+              scope,
+            );
           }}
           sx={{ ".MuiSelect-select": { display: "flex" } }}
         >
@@ -98,10 +110,33 @@ export const ThresholdRow: React.FC<{
         label={"Threshold Value"}
         type="number"
         defaultValue={threshold}
-        onBlur={(event) => setThreshold(event.target.value)}
+        onBlur={(event) => {
+          const newThreshold = event.target.value;
+          setThreshold(newThreshold);
+          onChangeWrapper(
+            attributeKey,
+            attributeValueKeys,
+            Number(newThreshold),
+            thresholdScope,
+          );
+        }}
       />
     </Host>
   );
+
+  function onChangeWrapper(
+    key: string,
+    valueKeys: string[],
+    threshold: number,
+    scope: ThresholdScope,
+  ) {
+    onChange({
+      attributeKey: key ?? "-",
+      attributeValueKeys: valueKeys || [],
+      scope,
+      threshold,
+    });
+  }
 };
 
 const Host = styled("div")`

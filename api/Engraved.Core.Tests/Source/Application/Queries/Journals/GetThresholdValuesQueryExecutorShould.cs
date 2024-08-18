@@ -35,7 +35,7 @@ public class GetThresholdValuesQueryExecutorShould
   }
 
   [Test]
-  public async Task DoSomething()
+  public async Task CountThresholds()
   {
     _testRepository.Journals.Add(
       new GaugeJournal
@@ -62,6 +62,10 @@ public class GetThresholdValuesQueryExecutorShould
               { "green", new ThresholdDefinition { Value = 3 } },
               { "blue", new ThresholdDefinition { Value = 6 } }
             }
+          },
+          {
+            "-",
+            new Dictionary<string, ThresholdDefinition> { { "-", new ThresholdDefinition { Value = 5 } } }
           }
         }
       }
@@ -84,16 +88,25 @@ public class GetThresholdValuesQueryExecutorShould
 
     results.Should().NotBeNull();
 
-    Assert.That(results.ContainsKey("colors"));
+    results.Should().ContainKey("colors");
+
+    IDictionary<string, ThresholdResult> globalThresholds = results["-"];
+    globalThresholds.Should().NotBeNull();
+    globalThresholds.Count.Should().Be(1);
+
+    globalThresholds.Should().ContainKey("-");
+    globalThresholds["-"].ActualValue.Should().Be(14);
+    globalThresholds["-"].ThresholdDefinition.Value.Should().Be(5);
+
     IDictionary<string, ThresholdResult> colorsThresholds = results["colors"];
     colorsThresholds.Should().NotBeNull();
-
     colorsThresholds.Count.Should().Be(2);
-    Assert.That(colorsThresholds.ContainsKey("blue"));
+
+    colorsThresholds.Should().ContainKey("blue");
     colorsThresholds["blue"].ActualValue.Should().Be(10);
     colorsThresholds["blue"].ThresholdDefinition.Value.Should().Be(6);
 
-    Assert.That(colorsThresholds.ContainsKey("green"));
+    colorsThresholds.Should().ContainKey("green");
     colorsThresholds["green"].ActualValue.Should().Be(4);
     colorsThresholds["green"].ThresholdDefinition.Value.Should().Be(3);
   }

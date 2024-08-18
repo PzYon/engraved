@@ -51,8 +51,16 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
       {
         double total = entries
           .Where(
-            m => m.JournalAttributeValues.TryGetValue(attributeKey, out string[]? valueKeys)
-                 && valueKeys.Contains(attributeValueKey)
+            m =>
+            {
+              if (attributeKey == "-")
+              {
+                return true;
+              }
+              
+              return m.JournalAttributeValues.TryGetValue(attributeKey, out string[]? valueKeys)
+                     && valueKeys.Contains(attributeValueKey);
+            }
           )
           .Sum(m => m.GetValue());
 
