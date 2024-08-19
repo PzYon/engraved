@@ -26,9 +26,9 @@ export const Thresholds: React.FC<{
         return Object.keys(attributeThresholds).map((valueKey) => {
           const threshold = attributeThresholds[valueKey];
           const attributeName =
-            journal.attributes[attributeKey].name ?? attributeKey;
+            journal.attributes[attributeKey]?.name ?? attributeKey;
           const valueName =
-            journal.attributes[attributeKey].values[valueKey] ?? valueKey;
+            journal.attributes[attributeKey]?.values[valueKey] ?? valueKey;
 
           const currentSelectedValue =
             selectedAttributeValues[attributeKey]?.[0];
@@ -52,20 +52,30 @@ export const Thresholds: React.FC<{
                 }}
               >
                 <Typography>
-                  {valueName} <Lighter>({attributeName})</Lighter>
+                  {attributeName === "-" ? (
+                    <>All</>
+                  ) : (
+                    <>
+                      {valueName} <Lighter>({attributeName})</Lighter>
+                    </>
+                  )}{" "}
+                  [{threshold.thresholdDefinition.scope}]
                 </Typography>
                 <Typography>
                   <ActualValue
                     isBelow={
-                      threshold.actualValue - threshold.thresholdValue < 0
+                      threshold.actualValue -
+                        threshold.thresholdDefinition.value <
+                      0
                     }
                   >
                     {Math.round(
-                      threshold.thresholdValue - threshold.actualValue,
+                      threshold.thresholdDefinition.value -
+                        threshold.actualValue,
                     )}
                   </ActualValue>{" "}
                   {threshold.actualValue}
-                  <Lighter> / {threshold.thresholdValue}</Lighter>
+                  <Lighter> / {threshold.thresholdDefinition.value}</Lighter>
                 </Typography>
               </Card>
             </GridItem>

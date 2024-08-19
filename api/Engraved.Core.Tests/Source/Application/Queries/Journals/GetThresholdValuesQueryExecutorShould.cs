@@ -35,7 +35,7 @@ public class GetThresholdValuesQueryExecutorShould
   }
 
   [Test]
-  public async Task DoSomething()
+  public async Task CountThresholds()
   {
     _testRepository.Journals.Add(
       new GaugeJournal
@@ -53,9 +53,20 @@ public class GetThresholdValuesQueryExecutorShould
             }
           }
         },
-        Thresholds = new Dictionary<string, Dictionary<string, double>>
+        Thresholds = new Dictionary<string, Dictionary<string, ThresholdDefinition>>
         {
-          { "colors", new Dictionary<string, double> { { "green", 3 }, { "blue", 6 } } }
+          {
+            "colors",
+            new Dictionary<string, ThresholdDefinition>
+            {
+              { "green", new ThresholdDefinition { Value = 3 } },
+              { "blue", new ThresholdDefinition { Value = 6 } }
+            }
+          },
+          {
+            "-",
+            new Dictionary<string, ThresholdDefinition> { { "-", new ThresholdDefinition { Value = 5 } } }
+          }
         }
       }
     );
@@ -77,18 +88,27 @@ public class GetThresholdValuesQueryExecutorShould
 
     results.Should().NotBeNull();
 
-    Assert.That(results.ContainsKey("colors"));
+    results.Should().ContainKey("colors");
+
+    IDictionary<string, ThresholdResult> globalThresholds = results["-"];
+    globalThresholds.Should().NotBeNull();
+    globalThresholds.Count.Should().Be(1);
+
+    globalThresholds.Should().ContainKey("-");
+    globalThresholds["-"].ActualValue.Should().Be(14);
+    globalThresholds["-"].ThresholdDefinition.Value.Should().Be(5);
+
     IDictionary<string, ThresholdResult> colorsThresholds = results["colors"];
     colorsThresholds.Should().NotBeNull();
-
     colorsThresholds.Count.Should().Be(2);
-    Assert.That(colorsThresholds.ContainsKey("blue"));
-    colorsThresholds["blue"].ActualValue.Should().Be(10);
-    colorsThresholds["blue"].ThresholdValue.Should().Be(6);
 
-    Assert.That(colorsThresholds.ContainsKey("green"));
+    colorsThresholds.Should().ContainKey("blue");
+    colorsThresholds["blue"].ActualValue.Should().Be(10);
+    colorsThresholds["blue"].ThresholdDefinition.Value.Should().Be(6);
+
+    colorsThresholds.Should().ContainKey("green");
     colorsThresholds["green"].ActualValue.Should().Be(4);
-    colorsThresholds["green"].ThresholdValue.Should().Be(3);
+    colorsThresholds["green"].ThresholdDefinition.Value.Should().Be(3);
   }
 
   private void AddEntry(int value, string attributeValueKey)
@@ -100,10 +120,7 @@ public class GetThresholdValuesQueryExecutorShould
         ParentId = JournalId,
         DateTime = DateTime.UtcNow,
         Value = value,
-        JournalAttributeValues = new Dictionary<string, string[]>
-        {
-          { "colors", new[] { attributeValueKey } }
-        }
+        JournalAttributeValues = new Dictionary<string, string[]> { { "colors", [attributeValueKey] } }
       }
     );
   }

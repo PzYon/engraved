@@ -26,6 +26,7 @@ public static class JournalDocumentMapper
 
         cfg.CreateMap<Recurrence, RecurrenceSubDocument>();
         cfg.CreateMap<Schedule, ScheduleSubDocument>();
+        cfg.CreateMap<ThresholdDefinition, ThresholdDefinitionDocument>();
 
         cfg.CreateMap<JournalDocument, IJournal>()
           .Include<CounterJournalDocument, CounterJournal>()
@@ -40,6 +41,7 @@ public static class JournalDocumentMapper
 
         cfg.CreateMap<RecurrenceSubDocument, Recurrence>();
         cfg.CreateMap<ScheduleSubDocument, Schedule>();
+        cfg.CreateMap<ThresholdDefinitionDocument, ThresholdDefinition>();
       }
     );
 
@@ -57,6 +59,6 @@ public static class JournalDocumentMapper
   {
     return document == null
       ? null!
-      : (TJournal)Mapper.Map(document, document.GetType(), typeof(TJournal))!;
+      : (TJournal) Mapper.Map(document, document.GetType(), typeof(TJournal))!;
   }
 }

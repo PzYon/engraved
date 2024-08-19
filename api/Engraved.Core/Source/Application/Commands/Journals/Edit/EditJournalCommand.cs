@@ -14,7 +14,7 @@ public class EditJournalCommand : ICommand
 
   public Dictionary<string, JournalAttribute> Attributes { get; set; } = new();
 
-  public Dictionary<string, Dictionary<string, double>> Thresholds { get; set; } = new();
+  public Dictionary<string, Dictionary<string, ThresholdDefinition>> Thresholds { get; set; } = new();
 
   public Dictionary<string, string> CustomProps { get; set; } = new();
 }

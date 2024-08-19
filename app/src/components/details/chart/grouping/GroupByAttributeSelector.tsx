@@ -25,7 +25,9 @@ export const GroupByAttributeSelector: React.FC<{
         onChange(event.target.value as unknown as string);
       }}
     >
-      <MenuItem value={"-"}>-</MenuItem>
+      <MenuItem value={"-"} key={"-"}>
+        -
+      </MenuItem>
       {Object.keys(attributes).map((key) => {
         return (
           <MenuItem value={key} key={key}>

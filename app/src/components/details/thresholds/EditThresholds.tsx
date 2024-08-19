@@ -31,10 +31,12 @@ export const EditThresholds: React.FC<{
               definition={oldDefinition}
               journal={journal}
               onChange={(definition) => {
-                const isCurrentIncomplete = isIncomplete(definition);
-                if (isCurrentIncomplete) {
+                if (isIncomplete(definition)) {
                   return;
                 }
+
+                debugger;
+                console.log(definition);
 
                 const newDefinitions = [...thresholdDefinitions];
                 newDefinitions[i] = definition;
@@ -86,7 +88,8 @@ function createDefinitions(
     return Object.keys(thresholds[attributeKey]).map((x) => {
       return {
         attributeKey: attributeKey,
-        threshold: thresholds[attributeKey][x],
+        threshold: thresholds[attributeKey][x].value,
+        scope: thresholds[attributeKey][x].scope,
         attributeValueKeys: [x],
       };
     });
@@ -103,8 +106,12 @@ function createThresholds(
       thresholds[definition.attributeKey] = {};
     }
 
-    thresholds[definition.attributeKey][definition.attributeValueKeys[0]] =
-      definition.threshold;
+    thresholds[definition.attributeKey][
+      definition.attributeValueKeys[0] ?? "-"
+    ] = {
+      value: definition.threshold,
+      scope: definition.scope,
+    };
   }
 
   return thresholds;
@@ -115,16 +122,13 @@ function createNewDefinition(): IThresholdDefinition {
     attributeKey: undefined,
     attributeValueKeys: [],
     threshold: undefined,
+    scope: undefined,
     key: Math.random().toString(),
   };
 }
 
 function isIncomplete(definition: IThresholdDefinition) {
-  return (
-    !definition.attributeKey ||
-    !definition.attributeValueKeys?.length ||
-    !(definition.threshold > 0)
-  );
+  return !(definition.threshold > 0) || !definition.scope;
 }
 
 const RowContainer = styled("div")`
