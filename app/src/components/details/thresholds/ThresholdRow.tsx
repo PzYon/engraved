@@ -11,12 +11,7 @@ import {
   TextField,
 } from "@mui/material";
 import { AttributeValueSelector } from "../../common/AttributeValueSelector";
-
-export enum ThresholdScope {
-  Day = "Day",
-  Month = "Month",
-  Overall = "Overall",
-}
+import { ThresholdScope } from "./ThresholdScope";
 
 export interface IThresholdDefinition {
   attributeKey: string;
