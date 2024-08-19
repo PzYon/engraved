@@ -45,7 +45,7 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
 
     foreach ((string? attributeKey, Dictionary<string, ThresholdDefinition>? thresholds) in journal.Thresholds)
     {
-      Dictionary<string, ThresholdResult> attributeResults = new();
+      Dictionary<string, ThresholdResult> definitionResults = new();
 
       foreach ((string? attributeValueKey, ThresholdDefinition definition) in thresholds)
       {
@@ -64,7 +64,7 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
           )
           .Sum(m => m.GetValue());
 
-        attributeResults.Add(
+        definitionResults.Add(
           attributeValueKey,
           new ThresholdResult
           {
@@ -74,9 +74,9 @@ public class GetThresholdValuesQueryExecutor(IUserScopedRepository repository)
         );
       }
 
-      if (attributeResults.Count > 0)
+      if (definitionResults.Count > 0)
       {
-        results.Add(attributeKey, attributeResults);
+        results.Add(attributeKey, definitionResults);
       }
     }
 

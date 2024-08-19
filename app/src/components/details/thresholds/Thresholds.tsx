@@ -52,7 +52,14 @@ export const Thresholds: React.FC<{
                 }}
               >
                 <Typography>
-                  {valueName} <Lighter>({attributeName})</Lighter>
+                  {attributeName === "-" ? (
+                    <>All</>
+                  ) : (
+                    <>
+                      {valueName} <Lighter>({attributeName})</Lighter>
+                    </>
+                  )}{" "}
+                  [{threshold.thresholdDefinition.scope}]
                 </Typography>
                 <Typography>
                   <ActualValue
