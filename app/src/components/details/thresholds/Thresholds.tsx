@@ -2,17 +2,31 @@ import { IJournal } from "../../../serverApi/IJournal";
 import React from "react";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { useJournalThresholdsValuesQuery } from "../../../serverApi/reactQuery/queries/useJournalThresholdsValuesQuery";
+import { useThresholdValues } from "../../../serverApi/reactQuery/queries/useJournalThresholdsValuesQuery";
+import { IEntry } from "../../../serverApi/IEntry";
 
 export const Thresholds: React.FC<{
   journal: IJournal;
+  entries: IEntry[];
   selectedAttributeValues: Record<string, string[]>;
   setSelectedAttributeValues: (
     attributeKey: string,
     attributeValueKeys: string[],
   ) => void;
-}> = ({ journal, selectedAttributeValues, setSelectedAttributeValues }) => {
-  const thresholdValues = useJournalThresholdsValuesQuery(journal.id);
+}> = ({
+  journal,
+  entries,
+  selectedAttributeValues,
+  setSelectedAttributeValues,
+}) => {
+  const thresholdValues = useThresholdValues(
+    journal.type,
+    journal.thresholds,
+    entries,
+  );
+
+  // todo: delete everything server side starting from here
+  // const thresholdValues = useJournalThresholdsValuesQuery(journal.id);
 
   if (!thresholdValues) {
     return null;

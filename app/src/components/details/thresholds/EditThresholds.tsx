@@ -1,4 +1,4 @@
-import { IThresholdDefinition, ThresholdRow } from "./ThresholdRow";
+import { IThreshold, ThresholdRow } from "./ThresholdRow";
 import React, { useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IJournalThresholds } from "../../../serverApi/IJournalThresholds";
@@ -11,7 +11,7 @@ export const EditThresholds: React.FC<{
   onChange: (thresholds: IJournalThresholds) => void;
 }> = ({ journal, onChange }) => {
   const [thresholdDefinitions, setThresholdDefinitions] = useState<
-    IThresholdDefinition[]
+    IThreshold[]
   >(createDefinitions(journal.thresholds));
 
   return (
@@ -81,9 +81,7 @@ export const EditThresholds: React.FC<{
   );
 };
 
-function createDefinitions(
-  thresholds: IJournalThresholds,
-): IThresholdDefinition[] {
+function createDefinitions(thresholds: IJournalThresholds): IThreshold[] {
   return Object.keys(thresholds).flatMap((attributeKey) => {
     return Object.keys(thresholds[attributeKey]).map((x) => {
       return {
@@ -97,7 +95,7 @@ function createDefinitions(
 }
 
 function createThresholds(
-  thresholdDefinitions: IThresholdDefinition[],
+  thresholdDefinitions: IThreshold[],
 ): IJournalThresholds {
   const thresholds: IJournalThresholds = {};
 
@@ -117,7 +115,7 @@ function createThresholds(
   return thresholds;
 }
 
-function createNewDefinition(): IThresholdDefinition {
+function createNewDefinition(): IThreshold {
   return {
     attributeKey: undefined,
     attributeValueKeys: [],
@@ -127,7 +125,7 @@ function createNewDefinition(): IThresholdDefinition {
   };
 }
 
-function isIncomplete(definition: IThresholdDefinition) {
+function isIncomplete(definition: IThreshold) {
   return !(definition.threshold > 0) || !definition.scope;
 }
 

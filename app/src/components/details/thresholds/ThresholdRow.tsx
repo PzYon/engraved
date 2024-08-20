@@ -13,7 +13,7 @@ import {
 import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 import { ThresholdScope } from "./ThresholdScope";
 
-export interface IThresholdDefinition {
+export interface IThreshold {
   attributeKey: string;
   attributeValueKeys: string[];
   threshold: number;
@@ -28,8 +28,8 @@ export interface IThresholdDefinition {
 
 export const ThresholdRow: React.FC<{
   journal: IJournal;
-  definition: IThresholdDefinition;
-  onChange: (definition: IThresholdDefinition) => void;
+  definition: IThreshold;
+  onChange: (definition: IThreshold) => void;
   styles: React.CSSProperties;
 }> = ({ journal, definition, onChange, styles }) => {
   const [attributeKey, setAttributeKey] = useState(
