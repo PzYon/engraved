@@ -23,7 +23,7 @@
     "@uiw/codemirror-extensions-langs": "4.23.0",
     "@uiw/react-codemirror": "4.23.0",
     "@vitejs/plugin-react": "4.3.1",
-    "chart.js": "4.4.3",
+    "chart.js": "4.4.4",
     "chartjs-adapter-date-fns": "3.0.0",
     "chartjs-plugin-annotation": "3.0.1",
     "chrono-node": "2.7.6",
