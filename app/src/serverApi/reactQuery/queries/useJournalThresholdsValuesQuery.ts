@@ -5,57 +5,15 @@ import { ServerApi } from "../../ServerApi";
 import { IThresholdValues } from "../../IThresholdValues";
 import { IEntry } from "../../IEntry";
 import { IJournalThresholds } from "../../IJournalThresholds";
-import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { JournalType } from "../../JournalType";
+import { calculateThresholds } from "../../../components/details/thresholds/calculateThresholds";
 
 export const useThresholdValues = (
   journalType: JournalType,
   thresholds: IJournalThresholds,
   entries: IEntry[],
 ): IThresholdValues => {
-  const thresholdValues: IThresholdValues = {};
-
-  const type = JournalTypeFactory.create(journalType);
-
-  for (const attributeKey of Object.keys(thresholds)) {
-    const attributeValueKeys = Object.keys(thresholds[attributeKey]);
-
-    for (const attributeValueKey of attributeValueKeys) {
-      const definition = thresholds[attributeKey][attributeValueKey];
-
-      if (attributeKey === "-") {
-        thresholdValues["-"] = {
-          "-": {
-            thresholdDefinition: definition,
-            actualValue: entries.reduce(
-              (previousValue, currentValue) =>
-                previousValue + type.getValue(currentValue),
-              0,
-            ),
-          },
-        };
-      } else {
-        thresholdValues[attributeKey] = {
-          "-": {
-            thresholdDefinition: definition,
-            actualValue: entries
-              .filter((e) =>
-                e.journalAttributeValues[attributeKey]?.includes(
-                  attributeValueKey,
-                ),
-              )
-              .reduce(
-                (previousValue, currentValue) =>
-                  previousValue + type.getValue(currentValue),
-                0,
-              ),
-          },
-        };
-      }
-    }
-  }
-
-  return thresholdValues;
+  return calculateThresholds(journalType, thresholds, entries);
 };
 
 export const useJournalThresholdsValuesQuery = (
