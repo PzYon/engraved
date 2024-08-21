@@ -7,7 +7,6 @@ using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Queries.Journals.GetAll;
-using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Microsoft.AspNetCore.Authorization;

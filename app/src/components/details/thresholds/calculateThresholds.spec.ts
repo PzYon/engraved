@@ -1,10 +1,10 @@
-// https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { calculateThresholds } from "./calculateThresholds";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ThresholdScope } from "./ThresholdScope";
 import { NewThresholdValue } from "./IThresholdValues";
 
+// https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
 jest.mock("../../../env/envSettings.ts", () => ({
   isDev: true,
 }));

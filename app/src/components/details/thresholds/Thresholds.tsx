@@ -25,9 +25,6 @@ export const Thresholds: React.FC<{
     entries,
   );
 
-  // todo: delete everything server side starting from here
-  // const thresholdValues = useJournalThresholdsValuesQuery(journal.id);
-
   if (!thresholdValues) {
     return null;
   }
