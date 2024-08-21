@@ -2,7 +2,7 @@ import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { calculateThresholds } from "./calculateThresholds";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ThresholdScope } from "./ThresholdScope";
-import { NewThresholdValue } from "./IThresholdValues";
+import { ThresholdValue } from "./IThresholdValues";
 
 // https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
 jest.mock("../../../env/envSettings.ts", () => ({
@@ -28,10 +28,12 @@ describe("calculateThresholds", () => {
     );
 
     expect(Object.keys(values).length).toBe(1);
-    expect(values["-"]["-"].currentValue).toBe(30);
-    expect(values["-"]["-"].thresholdValue).toBe(20);
-    expect(values["-"]["-"].remainingValue).toBe(-10);
-    expect(values["-"]["-"].isReached).toBe(true);
+
+    const overallValues = values["-"]["-"];
+    expect(overallValues.currentValue).toBe(30);
+    expect(overallValues.thresholdValue).toBe(20);
+    expect(overallValues.remainingValue).toBe(-10);
+    expect(overallValues.isReached).toBe(true);
   });
 
   it("should calculate per attribute", () => {
@@ -67,7 +69,7 @@ describe("calculateThresholds", () => {
     );
 
     expect(Object.keys(values).length).toBe(1);
-    const colorValues: { [p: string]: NewThresholdValue } = values["color"];
+    const colorValues: { [p: string]: ThresholdValue } = values["color"];
     expect(Object.keys(colorValues).length).toBe(2);
 
     expect(colorValues["green"].thresholdValue).toBe(10);

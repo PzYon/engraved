@@ -1,7 +1,7 @@
 import { JournalType } from "../../../serverApi/JournalType";
 import { IJournalThresholds } from "../../../serverApi/IJournalThresholds";
 import { IEntry } from "../../../serverApi/IEntry";
-import { IThresholdValues, NewThresholdValue } from "./IThresholdValues";
+import { IThresholdValues, ThresholdValue } from "./IThresholdValues";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 
@@ -34,7 +34,7 @@ function getIThresholdValue(
   attributeValueKey: string,
   type: IJournalType,
   entries: IEntry[],
-): NewThresholdValue {
+): ThresholdValue {
   const actualValue =
     attributeKey === "-"
       ? getSum(type, entries)
@@ -47,7 +47,7 @@ function getIThresholdValue(
           ),
         );
 
-  return new NewThresholdValue(
+  return new ThresholdValue(
     thresholds[attributeKey][attributeValueKey],
     actualValue,
   );

@@ -3,11 +3,11 @@ import { IThresholdDefinition } from "../../../serverApi/IJournalThresholds";
 
 export interface IThresholdValues {
   [attributeKey: string]: {
-    [valueKey: string]: NewThresholdValue;
+    [valueKey: string]: ThresholdValue;
   };
 }
 
-export class NewThresholdValue {
+export class ThresholdValue {
   get thresholdValue(): number {
     return this.definition.value;
   }
