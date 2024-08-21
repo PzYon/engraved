@@ -1,5 +1,5 @@
 import { JournalType } from "../../../serverApi/JournalType";
-import { IJournalThresholds } from "../../../serverApi/IJournalThresholds";
+import { IJournalThresholdDefinitions } from "../../../serverApi/IJournalThresholdDefinitions";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IThresholdValues, ThresholdValue } from "./IThresholdValues";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
@@ -7,7 +7,7 @@ import { IJournalType } from "../../../journalTypes/IJournalType";
 
 export const calculateThresholds = (
   journalType: JournalType,
-  thresholds: IJournalThresholds,
+  thresholds: IJournalThresholdDefinitions,
   entries: IEntry[],
 ): IThresholdValues => {
   const thresholdValues: IThresholdValues = {};
@@ -29,7 +29,7 @@ export const calculateThresholds = (
 };
 
 function getIThresholdValue(
-  thresholds: IJournalThresholds,
+  thresholds: IJournalThresholdDefinitions,
   attributeKey: string,
   attributeValueKey: string,
   type: IJournalType,

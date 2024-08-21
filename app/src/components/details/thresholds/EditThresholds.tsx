@@ -1,68 +1,68 @@
-import { IThreshold, ThresholdRow } from "./ThresholdRow";
+import {
+  IAttributeValueThresholdDefinition,
+  ThresholdRow,
+} from "./ThresholdRow";
 import React, { useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
-import { IJournalThresholds } from "../../../serverApi/IJournalThresholds";
+import { IJournalThresholdDefinitions } from "../../../serverApi/IJournalThresholdDefinitions";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { styled } from "@mui/material";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
 export const EditThresholds: React.FC<{
   journal: IJournal;
-  onChange: (thresholds: IJournalThresholds) => void;
+  onChange: (thresholds: IJournalThresholdDefinitions) => void;
 }> = ({ journal, onChange }) => {
   const [thresholdDefinitions, setThresholdDefinitions] = useState<
-    IThreshold[]
+    IAttributeValueThresholdDefinition[]
   >(createDefinitions(journal.thresholds));
 
   return (
     <>
-      {thresholdDefinitions.map((oldDefinition, i) => {
-        return (
-          <RowContainer
-            key={
-              oldDefinition.key ??
-              oldDefinition.attributeKey +
-                "-" +
-                oldDefinition.attributeValueKeys.join()
-            }
-          >
-            <ThresholdRow
-              styles={{ flexGrow: 1 }}
-              definition={oldDefinition}
-              journal={journal}
-              onChange={(definition) => {
-                if (isIncomplete(definition)) {
-                  return;
-                }
+      {thresholdDefinitions.map((oldDefinition, i) => (
+        <RowContainer
+          key={
+            oldDefinition.key ??
+            oldDefinition.attributeKey +
+              "-" +
+              oldDefinition.attributeValueKeys.join()
+          }
+        >
+          <ThresholdRow
+            styles={{ flexGrow: 1 }}
+            definition={oldDefinition}
+            journal={journal}
+            onChange={(definition) => {
+              if (!isComplete(definition)) {
+                return;
+              }
 
-                debugger;
-                console.log(definition);
+              console.log(definition);
 
+              const newDefinitions = [...thresholdDefinitions];
+              newDefinitions[i] = definition;
+
+              setThresholdDefinitions(newDefinitions);
+              onChange(createThresholds(newDefinitions));
+            }}
+          />
+
+          <ActionIconButton
+            action={{
+              key: "remove",
+              label: "Remove",
+              icon: <RemoveCircleOutline fontSize="small" />,
+              onClick: () => {
                 const newDefinitions = [...thresholdDefinitions];
-                newDefinitions[i] = definition;
+                newDefinitions.splice(i, 1);
 
                 setThresholdDefinitions(newDefinitions);
                 onChange(createThresholds(newDefinitions));
-              }}
-            />
-
-            <ActionIconButton
-              action={{
-                key: "remove",
-                label: "Remove",
-                icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => {
-                  const newDefinitions = [...thresholdDefinitions];
-                  newDefinitions.splice(i, 1);
-
-                  setThresholdDefinitions(newDefinitions);
-                  onChange(createThresholds(newDefinitions));
-                },
-              }}
-            />
-          </RowContainer>
-        );
-      })}
+              },
+            }}
+          />
+        </RowContainer>
+      ))}
 
       <ActionIconButton
         action={{
@@ -81,7 +81,9 @@ export const EditThresholds: React.FC<{
   );
 };
 
-function createDefinitions(thresholds: IJournalThresholds): IThreshold[] {
+function createDefinitions(
+  thresholds: IJournalThresholdDefinitions,
+): IAttributeValueThresholdDefinition[] {
   return Object.keys(thresholds).flatMap((attributeKey) => {
     return Object.keys(thresholds[attributeKey]).map((x) => {
       return {
@@ -95,9 +97,9 @@ function createDefinitions(thresholds: IJournalThresholds): IThreshold[] {
 }
 
 function createThresholds(
-  thresholdDefinitions: IThreshold[],
-): IJournalThresholds {
-  const thresholds: IJournalThresholds = {};
+  thresholdDefinitions: IAttributeValueThresholdDefinition[],
+): IJournalThresholdDefinitions {
+  const thresholds: IJournalThresholdDefinitions = {};
 
   for (const definition of thresholdDefinitions) {
     if (!thresholds[definition.attributeKey]) {
@@ -115,7 +117,7 @@ function createThresholds(
   return thresholds;
 }
 
-function createNewDefinition(): IThreshold {
+function createNewDefinition(): IAttributeValueThresholdDefinition {
   return {
     attributeKey: undefined,
     attributeValueKeys: [],
@@ -125,8 +127,27 @@ function createNewDefinition(): IThreshold {
   };
 }
 
-function isIncomplete(definition: IThreshold) {
-  return !(definition.threshold > 0) || !definition.scope;
+function isComplete(definition: IAttributeValueThresholdDefinition) {
+  if (!definition.threshold || !definition.scope) {
+    return false;
+  }
+
+  if (
+    (!definition.attributeKey || definition.attributeKey === "-") &&
+    !definition.attributeValueKeys.length
+  ) {
+    return true;
+  }
+
+  if (
+    definition.attributeKey &&
+    definition.attributeKey !== "-" &&
+    definition.attributeValueKeys.length
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 const RowContainer = styled("div")`

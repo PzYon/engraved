@@ -17,7 +17,7 @@ import { IJournalAttributeValues } from "./IJournalAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/JournalContext";
 import { toDateOnlyIsoString } from "../util/utils";
-import { IJournalThresholds } from "./IJournalThresholds";
+import { IJournalThresholdDefinitions } from "./IJournalThresholdDefinitions";
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
@@ -192,7 +192,7 @@ export class ServerApi {
     description: string,
     notes: string,
     attributes: IJournalAttributes,
-    thresholds: IJournalThresholds,
+    thresholds: IJournalThresholdDefinitions,
     uiSettings: IJournalUiSettings | string,
   ): Promise<ICommandResult> {
     const payload: IEditJournalCommand = {

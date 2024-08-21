@@ -5,7 +5,7 @@ export interface IThresholdDefinition {
   value: number;
 }
 
-export interface IJournalThresholds {
+export interface IJournalThresholdDefinitions {
   [attributeKey: string]: {
     [attributeValueKey: string]: IThresholdDefinition;
   };
