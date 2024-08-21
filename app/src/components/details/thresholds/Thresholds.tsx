@@ -73,23 +73,14 @@ export const Thresholds: React.FC<{
                       {valueName} <Lighter>({attributeName})</Lighter>
                     </>
                   )}{" "}
-                  [{threshold.thresholdDefinition.scope}]
+                  [{threshold.scope}]
                 </Typography>
                 <Typography>
-                  <ActualValue
-                    isBelow={
-                      threshold.actualValue -
-                        threshold.thresholdDefinition.value <
-                      0
-                    }
-                  >
-                    {Math.round(
-                      threshold.thresholdDefinition.value -
-                        threshold.actualValue,
-                    )}
+                  <ActualValue isBelow={!threshold.isReached}>
+                    {Math.round(threshold.remainingValue)}
                   </ActualValue>{" "}
-                  {threshold.actualValue}
-                  <Lighter> / {threshold.thresholdDefinition.value}</Lighter>
+                  {threshold.currentValue}
+                  <Lighter> / {threshold.thresholdValue}</Lighter>
                 </Typography>
               </Card>
             </GridItem>
