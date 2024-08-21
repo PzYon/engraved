@@ -37,8 +37,6 @@ export const EditThresholds: React.FC<{
                 return;
               }
 
-              console.log(definition);
-
               const newDefinitions = [...thresholdDefinitions];
               newDefinitions[i] = definition;
 

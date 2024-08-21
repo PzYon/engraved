@@ -3,6 +3,7 @@ import { calculateThresholds } from "./calculateThresholds";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ThresholdScope } from "./ThresholdScope";
 import { ThresholdValue } from "./IThresholdValues";
+import { subDays } from "date-fns";
 
 // https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
 jest.mock("../../../env/envSettings.ts", () => ({
@@ -83,19 +84,20 @@ describe("calculateThresholds", () => {
     expect(colorValues["yellow"].remainingValue).toBe(-3);
   });
 
-  /*
   it("should calculate overall and consider scope", () => {
+    const fromDate = subDays(new Date(), 1);
+
     const values = calculateThresholds(
       JournalType.Gauge,
       { "-": { "-": { value: 20, scope: ThresholdScope.Day } } },
       [
-        { value: 10, dateTime: subDays(new Date(), 1).toJSON() } as IGaugeEntry,
+        { value: 10, dateTime: fromDate.toJSON() } as IGaugeEntry,
         { value: 20, dateTime: subDays(new Date(), 2).toJSON() } as IGaugeEntry,
       ],
+      { from: fromDate, to: new Date() },
     );
 
     expect(Object.keys(values).length).toBe(1);
-    expect(values["-"]["-"].actualValue).toBe(40);
+    expect(values["-"]["-"].currentValue).toBe(40);
   });
-   */
 });

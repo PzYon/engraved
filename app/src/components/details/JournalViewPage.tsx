@@ -156,6 +156,7 @@ export const JournalViewPage: React.FC = () => {
         <Thresholds
           entries={entries}
           journal={journal}
+          dateConditions={dateConditions}
           setSelectedAttributeValues={setSelectedAttributeValues}
           selectedAttributeValues={selectedAttributeValues}
         />

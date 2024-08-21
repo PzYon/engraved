@@ -4,10 +4,12 @@ import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
 import { IEntry } from "../../../serverApi/IEntry";
 import { calculateThresholds } from "./calculateThresholds";
+import { IDateConditions } from "../JournalContext";
 
 export const Thresholds: React.FC<{
   journal: IJournal;
   entries: IEntry[];
+  dateConditions: IDateConditions;
   selectedAttributeValues: Record<string, string[]>;
   setSelectedAttributeValues: (
     attributeKey: string,
@@ -16,6 +18,7 @@ export const Thresholds: React.FC<{
 }> = ({
   journal,
   entries,
+  dateConditions,
   selectedAttributeValues,
   setSelectedAttributeValues,
 }) => {
@@ -23,6 +26,7 @@ export const Thresholds: React.FC<{
     journal.type,
     journal.thresholds,
     entries,
+    dateConditions,
   );
 
   if (!thresholdValues) {

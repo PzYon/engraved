@@ -4,11 +4,13 @@ import { IEntry } from "../../../serverApi/IEntry";
 import { IThresholdValues, ThresholdValue } from "./IThresholdValues";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournalType } from "../../../journalTypes/IJournalType";
+import { IDateConditions } from "../JournalContext";
 
 export const calculateThresholds = (
   journalType: JournalType,
   thresholds: IJournalThresholdDefinitions,
   entries: IEntry[],
+  dateConditions?: IDateConditions,
 ): IThresholdValues => {
   const thresholdValues: IThresholdValues = {};
 
@@ -21,6 +23,7 @@ export const calculateThresholds = (
         attributeValueKey,
         JournalTypeFactory.create(journalType),
         entries,
+        dateConditions,
       );
     }
   }
@@ -34,6 +37,8 @@ function getIThresholdValue(
   attributeValueKey: string,
   type: IJournalType,
   entries: IEntry[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  dateConditions?: IDateConditions,
 ): ThresholdValue {
   const actualValue =
     attributeKey === "-"
