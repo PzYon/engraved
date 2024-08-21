@@ -2,8 +2,8 @@ import { IJournal } from "../../../serverApi/IJournal";
 import React from "react";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { useThresholdValues } from "../../../serverApi/reactQuery/queries/useJournalThresholdsValuesQuery";
 import { IEntry } from "../../../serverApi/IEntry";
+import { calculateThresholds } from "./calculateThresholds";
 
 export const Thresholds: React.FC<{
   journal: IJournal;
@@ -19,7 +19,7 @@ export const Thresholds: React.FC<{
   selectedAttributeValues,
   setSelectedAttributeValues,
 }) => {
-  const thresholdValues = useThresholdValues(
+  const thresholdValues = calculateThresholds(
     journal.type,
     journal.thresholds,
     entries,

@@ -81,26 +81,6 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
     return await dispatcher.Command(command);
   }
 
-  [Route("{journalId}/threshold_values")]
-  [HttpGet]
-  public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> GetThresholdValues(
-    string journalId,
-    DateTime? fromDate,
-    DateTime? toDate
-  )
-  {
-    var query = new GetThresholdValuesQuery
-    {
-      JournalId = journalId,
-      FromDate = fromDate,
-      ToDate = toDate
-    };
-
-    return await dispatcher.Query<IDictionary<string, IDictionary<string, ThresholdResult>>, GetThresholdValuesQuery>(
-      query
-    );
-  }
-
   [HttpDelete]
   [Route("{journalId}")]
   public async Task<CommandResult> Delete(string journalId)

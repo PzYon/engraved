@@ -17,7 +17,6 @@ import { IJournalAttributeValues } from "./IJournalAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/JournalContext";
 import { toDateOnlyIsoString } from "../util/utils";
-import { IThresholdValues } from "./IThresholdValues";
 import { IJournalThresholds } from "./IJournalThresholds";
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
@@ -258,27 +257,6 @@ export class ServerApi {
       `/entries/${entryId}/schedule`,
       "POST",
       cmd,
-    );
-  }
-
-  static async getThresholdValues(
-    journalId: string,
-    dateConditions: IDateConditions,
-  ): Promise<IThresholdValues> {
-    const urlParams: string[] = [];
-
-    if (dateConditions?.from) {
-      urlParams.push(`fromDate=${toDateOnlyIsoString(dateConditions.from)}`);
-    }
-
-    if (dateConditions?.to) {
-      urlParams.push(`toDate=${toDateOnlyIsoString(dateConditions.to)}`);
-    }
-
-    const params = urlParams.length ? `?${urlParams.join("&")}` : "";
-
-    return await ServerApi.executeRequest(
-      `/journals/${journalId}/threshold_values${params}`,
     );
   }
 

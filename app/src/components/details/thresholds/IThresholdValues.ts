@@ -1,5 +1,5 @@
-import { ThresholdScope } from "../components/details/thresholds/ThresholdScope";
-import { IThresholdDefinition } from "./IJournalThresholds";
+import { ThresholdScope } from "./ThresholdScope";
+import { IThresholdDefinition } from "../../../serverApi/IJournalThresholds";
 
 export interface IThresholdValues {
   [attributeKey: string]: {

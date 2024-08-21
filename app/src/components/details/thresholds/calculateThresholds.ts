@@ -1,10 +1,7 @@
 import { JournalType } from "../../../serverApi/JournalType";
 import { IJournalThresholds } from "../../../serverApi/IJournalThresholds";
 import { IEntry } from "../../../serverApi/IEntry";
-import {
-  IThresholdValues,
-  NewThresholdValue,
-} from "../../../serverApi/IThresholdValues";
+import { IThresholdValues, NewThresholdValue } from "./IThresholdValues";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 

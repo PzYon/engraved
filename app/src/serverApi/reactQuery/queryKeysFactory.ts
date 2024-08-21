@@ -43,10 +43,6 @@ export const queryKeysFactory = {
     return [journals, journalId, "delete"];
   },
 
-  journalThresholdValues(journalId: string, dateConditions: IDateConditions) {
-    return [journals, journalId, "threshold-values", dateConditions];
-  },
-
   journalEntries(
     journalId: string,
     dateConditions?: IDateConditions,

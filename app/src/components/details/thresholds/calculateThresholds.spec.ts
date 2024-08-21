@@ -3,7 +3,7 @@ import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { calculateThresholds } from "./calculateThresholds";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ThresholdScope } from "./ThresholdScope";
-import { NewThresholdValue } from "../../../serverApi/IThresholdValues";
+import { NewThresholdValue } from "./IThresholdValues";
 
 jest.mock("../../../env/envSettings.ts", () => ({
   isDev: true,
