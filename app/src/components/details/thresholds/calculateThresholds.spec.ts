@@ -33,7 +33,7 @@ describe("calculateThresholds", () => {
     const overallValues = values["-"]["-"];
     expect(overallValues.currentValue).toBe(30);
     expect(overallValues.thresholdValue).toBe(20);
-    expect(overallValues.remainingValue).toBe(-10);
+    expect(overallValues.remainingValueForDuration).toBe(-10);
     expect(overallValues.isReached).toBe(true);
   });
 
@@ -76,12 +76,12 @@ describe("calculateThresholds", () => {
     expect(colorValues["green"].thresholdValue).toBe(10);
     expect(colorValues["green"].currentValue).toBe(4);
     expect(colorValues["green"].isReached).toBe(false);
-    expect(colorValues["green"].remainingValue).toBe(6);
+    expect(colorValues["green"].remainingValueForDuration).toBe(6);
 
     expect(colorValues["yellow"].thresholdValue).toBe(5);
     expect(colorValues["yellow"].currentValue).toBe(8);
     expect(colorValues["yellow"].isReached).toBe(true);
-    expect(colorValues["yellow"].remainingValue).toBe(-3);
+    expect(colorValues["yellow"].remainingValueForDuration).toBe(-3);
   });
 
   it("should calculate overall and consider scope", () => {

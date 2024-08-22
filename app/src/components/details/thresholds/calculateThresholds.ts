@@ -37,7 +37,6 @@ function getIThresholdValue(
   attributeValueKey: string,
   type: IJournalType,
   entries: IEntry[],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   dateConditions?: IDateConditions,
 ): ThresholdValue {
   const actualValue =
@@ -52,9 +51,13 @@ function getIThresholdValue(
           ),
         );
 
+  const thresholdDefinition = thresholds[attributeKey][attributeValueKey];
+
   return new ThresholdValue(
-    thresholds[attributeKey][attributeValueKey],
+    thresholdDefinition,
     actualValue,
+    dateConditions.from,
+    dateConditions.to,
   );
 }
 

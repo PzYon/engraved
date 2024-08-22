@@ -74,14 +74,14 @@ export const Thresholds: React.FC<{
                       {valueName} <Lighter>({attributeName})</Lighter>
                     </>
                   )}{" "}
-                  [{threshold.scope}]
+                  [{threshold.thresholdValue} per {threshold.scope}]
                 </Typography>
                 <Typography>
                   <ActualValue isBelow={!threshold.isReached}>
-                    {Math.round(threshold.remainingValue)}
+                    {Math.round(threshold.remainingValueForDuration)}
                   </ActualValue>{" "}
                   {threshold.currentValue}
-                  <Lighter> / {threshold.thresholdValue}</Lighter>
+                  <Lighter> / {threshold.thresholdForDuration}</Lighter>
                 </Typography>
               </Card>
             </GridItem>
