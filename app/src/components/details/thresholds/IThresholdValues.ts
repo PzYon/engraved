@@ -14,7 +14,19 @@ export class ThresholdValue {
   }
 
   get thresholdForDuration(): number {
-    return differenceInDays(this.to, this.from) * this.dailyThreshold;
+    if (
+      this.scope === ThresholdScope.Overall ||
+      this.scope === ThresholdScope.Day
+    ) {
+      return this.thresholdValue;
+    }
+
+    if (!this.to || !this.from) {
+      return this.thresholdValue;
+    }
+
+    const durationInDays = differenceInDays(this.to, this.from);
+    return durationInDays * (this.thresholdValue / 30);
   }
 
   get remainingValueForDuration(): number {
@@ -27,17 +39,6 @@ export class ThresholdValue {
 
   get scope(): ThresholdScope {
     return this.definition.scope;
-  }
-
-  get dailyThreshold(): number {
-    switch (this.definition.scope) {
-      case ThresholdScope.Day:
-        return this.definition.value;
-      case ThresholdScope.Month:
-        return this.definition.value / 30;
-      case ThresholdScope.Overall:
-        throw new Error("No whuat!?!??");
-    }
   }
 
   constructor(

@@ -1,5 +1,5 @@
 import { IJournal } from "../../../serverApi/IJournal";
-import React from "react";
+import React, { useMemo } from "react";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
 import { IEntry } from "../../../serverApi/IEntry";
@@ -22,12 +22,18 @@ export const Thresholds: React.FC<{
   selectedAttributeValues,
   setSelectedAttributeValues,
 }) => {
-  const thresholdValues = calculateThresholds(
-    journal.type,
-    journal.thresholds,
-    entries,
-    dateConditions,
-  );
+  const thresholdValues = useMemo(() => {
+    const values = calculateThresholds(
+      journal.type,
+      journal.thresholds,
+      entries,
+      dateConditions,
+    );
+
+    console.log(values);
+
+    return values;
+  }, [journal.type, journal.thresholds, entries, dateConditions]);
 
   if (!thresholdValues) {
     return null;
@@ -71,17 +77,21 @@ export const Thresholds: React.FC<{
                     <>All</>
                   ) : (
                     <>
-                      {valueName} <Lighter>({attributeName})</Lighter>
+                      <Lighter>{attributeName}</Lighter> {valueName}{" "}
+                      <Lighter>
+                        ({threshold.thresholdValue} / {threshold.scope})
+                      </Lighter>
                     </>
-                  )}{" "}
-                  [{threshold.thresholdValue} per {threshold.scope}]
+                  )}
+                  <Typography>
+                    <Lighter> </Lighter>
+                  </Typography>
                 </Typography>
                 <Typography>
                   <ActualValue isBelow={!threshold.isReached}>
-                    {Math.round(threshold.remainingValueForDuration)}
+                    {Math.abs(Math.round(threshold.remainingValueForDuration))}
                   </ActualValue>{" "}
-                  {threshold.currentValue}
-                  <Lighter> / {threshold.thresholdForDuration}</Lighter>
+                  {threshold.currentValue} of {threshold.thresholdForDuration}
                 </Typography>
               </Card>
             </GridItem>

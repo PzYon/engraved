@@ -10,6 +10,10 @@ jest.mock("../../../env/envSettings.ts", () => ({
   isDev: true,
 }));
 
+// missing tests:
+// - when from/to is null
+// - different scopes
+
 describe("calculateThresholds", () => {
   it("should do nothing with empty thresholds", () => {
     const values = calculateThresholds(JournalType.Gauge, {}, []);
