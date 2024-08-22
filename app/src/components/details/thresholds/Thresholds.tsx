@@ -77,9 +77,10 @@ export const Thresholds: React.FC<{
                     <>All</>
                   ) : (
                     <>
-                      <Lighter>{attributeName}</Lighter> {valueName}{" "}
+                      {valueName}{" "}
                       <Lighter>
-                        ({threshold.thresholdValue} / {threshold.scope})
+                        ({attributeName} | {threshold.thresholdValue} per{" "}
+                        {threshold.scope})
                       </Lighter>
                     </>
                   )}

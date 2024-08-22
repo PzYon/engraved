@@ -89,7 +89,7 @@ describe("calculateThresholds", () => {
   });
 
   it("should calculate overall and consider scope", () => {
-    const fromDate = subDays(new Date(), 1);
+    const fromDate = subDays(new Date(), 5);
 
     const values = calculateThresholds(
       JournalType.Gauge,
@@ -102,6 +102,7 @@ describe("calculateThresholds", () => {
     );
 
     expect(Object.keys(values).length).toBe(1);
-    expect(values["-"]["-"].currentValue).toBe(40);
+    expect(values["-"]["-"].currentValue).toBe(30);
+    expect(values["-"]["-"].isReached).toBe(false);
   });
 });
