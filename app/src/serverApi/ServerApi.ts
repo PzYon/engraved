@@ -17,8 +17,7 @@ import { IJournalAttributeValues } from "./IJournalAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/JournalContext";
 import { toDateOnlyIsoString } from "../util/utils";
-import { IThresholdValues } from "./IThresholdValues";
-import { IJournalThresholds } from "./IJournalThresholds";
+import { IJournalThresholdDefinitions } from "./IJournalThresholdDefinitions";
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
@@ -193,7 +192,7 @@ export class ServerApi {
     description: string,
     notes: string,
     attributes: IJournalAttributes,
-    thresholds: IJournalThresholds,
+    thresholds: IJournalThresholdDefinitions,
     uiSettings: IJournalUiSettings | string,
   ): Promise<ICommandResult> {
     const payload: IEditJournalCommand = {
@@ -258,27 +257,6 @@ export class ServerApi {
       `/entries/${entryId}/schedule`,
       "POST",
       cmd,
-    );
-  }
-
-  static async getThresholdValues(
-    journalId: string,
-    dateConditions: IDateConditions,
-  ): Promise<IThresholdValues> {
-    const urlParams: string[] = [];
-
-    if (dateConditions?.from) {
-      urlParams.push(`fromDate=${toDateOnlyIsoString(dateConditions.from)}`);
-    }
-
-    if (dateConditions?.to) {
-      urlParams.push(`toDate=${toDateOnlyIsoString(dateConditions.to)}`);
-    }
-
-    const params = urlParams.length ? `?${urlParams.join("&")}` : "";
-
-    return await ServerApi.executeRequest(
-      `/journals/${journalId}/threshold_values${params}`,
     );
   }
 

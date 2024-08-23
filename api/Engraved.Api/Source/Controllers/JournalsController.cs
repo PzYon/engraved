@@ -7,7 +7,6 @@ using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Queries.Journals.GetAll;
-using Engraved.Core.Application.Queries.Journals.GetThresholdValues;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Microsoft.AspNetCore.Authorization;
@@ -79,26 +78,6 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
     };
 
     return await dispatcher.Command(command);
-  }
-
-  [Route("{journalId}/threshold_values")]
-  [HttpGet]
-  public async Task<IDictionary<string, IDictionary<string, ThresholdResult>>> GetThresholdValues(
-    string journalId,
-    DateTime? fromDate,
-    DateTime? toDate
-  )
-  {
-    var query = new GetThresholdValuesQuery
-    {
-      JournalId = journalId,
-      FromDate = fromDate,
-      ToDate = toDate
-    };
-
-    return await dispatcher.Query<IDictionary<string, IDictionary<string, ThresholdResult>>, GetThresholdValuesQuery>(
-      query
-    );
   }
 
   [HttpDelete]

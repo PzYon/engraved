@@ -1,18 +1,39 @@
 import { IJournal } from "../../../serverApi/IJournal";
-import React from "react";
+import React, { useMemo } from "react";
 import { Card, styled, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { useJournalThresholdsValuesQuery } from "../../../serverApi/reactQuery/queries/useJournalThresholdsValuesQuery";
+import { IEntry } from "../../../serverApi/IEntry";
+import { calculateThresholds } from "./calculateThresholds";
+import { IDateConditions } from "../JournalContext";
 
 export const Thresholds: React.FC<{
   journal: IJournal;
+  entries: IEntry[];
+  dateConditions: IDateConditions;
   selectedAttributeValues: Record<string, string[]>;
   setSelectedAttributeValues: (
     attributeKey: string,
     attributeValueKeys: string[],
   ) => void;
-}> = ({ journal, selectedAttributeValues, setSelectedAttributeValues }) => {
-  const thresholdValues = useJournalThresholdsValuesQuery(journal.id);
+}> = ({
+  journal,
+  entries,
+  dateConditions,
+  selectedAttributeValues,
+  setSelectedAttributeValues,
+}) => {
+  const thresholdValues = useMemo(() => {
+    const values = calculateThresholds(
+      journal.type,
+      journal.thresholds,
+      entries,
+      dateConditions,
+    );
+
+    console.log(values);
+
+    return values;
+  }, [journal.type, journal.thresholds, entries, dateConditions]);
 
   if (!thresholdValues) {
     return null;
@@ -23,13 +44,13 @@ export const Thresholds: React.FC<{
       {Object.keys(thresholdValues).flatMap((attributeKey) => {
         const attributeThresholds = thresholdValues[attributeKey];
 
+        const attributeName =
+          journal.attributes[attributeKey]?.name ?? attributeKey;
+
         return Object.keys(attributeThresholds).map((valueKey) => {
           const threshold = attributeThresholds[valueKey];
-          const attributeName =
-            journal.attributes[attributeKey]?.name ?? attributeKey;
           const valueName =
             journal.attributes[attributeKey]?.values[valueKey] ?? valueKey;
-
           const currentSelectedValue =
             selectedAttributeValues[attributeKey]?.[0];
 
@@ -38,13 +59,17 @@ export const Thresholds: React.FC<{
               <Card
                 sx={{
                   p: 2,
-                  cursor: "pointer",
+                  cursor: attributeKey === "-" ? "cursor" : "pointer",
                   opacity:
                     !currentSelectedValue || currentSelectedValue === valueKey
                       ? 1
                       : 0.5,
                 }}
                 onClick={() => {
+                  if (attributeKey === "-") {
+                    return;
+                  }
+
                   setSelectedAttributeValues(
                     attributeKey,
                     currentSelectedValue === valueKey ? [] : [valueKey],
@@ -56,26 +81,21 @@ export const Thresholds: React.FC<{
                     <>All</>
                   ) : (
                     <>
-                      {valueName} <Lighter>({attributeName})</Lighter>
+                      {valueName} <Lighter> ({attributeName})</Lighter>
                     </>
-                  )}{" "}
-                  [{threshold.thresholdDefinition.scope}]
+                  )}
+                  <Lighter
+                    title={"Duration in days: " + threshold.durationInDays}
+                  >
+                    {" | "}
+                    {threshold.thresholdValue} per {threshold.scope}
+                  </Lighter>
                 </Typography>
                 <Typography>
-                  <ActualValue
-                    isBelow={
-                      threshold.actualValue -
-                        threshold.thresholdDefinition.value <
-                      0
-                    }
-                  >
-                    {Math.round(
-                      threshold.thresholdDefinition.value -
-                        threshold.actualValue,
-                    )}
+                  <ActualValue isBelow={!threshold.isReached}>
+                    {Math.abs(Math.round(threshold.remainingValueForDuration))}
                   </ActualValue>{" "}
-                  {threshold.actualValue}
-                  <Lighter> / {threshold.thresholdDefinition.value}</Lighter>
+                  {threshold.currentValue} of {threshold.thresholdForDuration}
                 </Typography>
               </Card>
             </GridItem>

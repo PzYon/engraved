@@ -1,5 +1,5 @@
 import { IJournalAttributes } from "../IJournalAttributes";
-import { IJournalThresholds } from "../IJournalThresholds";
+import { IJournalThresholdDefinitions } from "../IJournalThresholdDefinitions";
 import { IJournalCustomProps } from "../IJournalCustomProps";
 
 export interface IEditJournalCommand {
@@ -8,6 +8,6 @@ export interface IEditJournalCommand {
   description: string;
   notes: string;
   attributes: IJournalAttributes;
-  thresholds: IJournalThresholds;
+  thresholds: IJournalThresholdDefinitions;
   customProps: IJournalCustomProps;
 }

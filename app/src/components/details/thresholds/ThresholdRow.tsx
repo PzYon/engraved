@@ -13,7 +13,7 @@ import {
 import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 import { ThresholdScope } from "./ThresholdScope";
 
-export interface IThresholdDefinition {
+export interface IAttributeValueThresholdDefinition {
   attributeKey: string;
   attributeValueKeys: string[];
   threshold: number;
@@ -24,12 +24,11 @@ export interface IThresholdDefinition {
 // todo:
 // - consider improving types
 // - make sure that every combination can only be defined once in the GUI
-// - fix serverside calculation - nothing has been done there yet
 
 export const ThresholdRow: React.FC<{
   journal: IJournal;
-  definition: IThresholdDefinition;
-  onChange: (definition: IThresholdDefinition) => void;
+  definition: IAttributeValueThresholdDefinition;
+  onChange: (definition: IAttributeValueThresholdDefinition) => void;
   styles: React.CSSProperties;
 }> = ({ journal, definition, onChange, styles }) => {
   const [attributeKey, setAttributeKey] = useState(

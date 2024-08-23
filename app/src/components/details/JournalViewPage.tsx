@@ -154,7 +154,9 @@ export const JournalViewPage: React.FC = () => {
 
       {showThresholds && Object.keys(journal.thresholds).length ? (
         <Thresholds
+          entries={entries}
           journal={journal}
+          dateConditions={dateConditions}
           setSelectedAttributeValues={setSelectedAttributeValues}
           selectedAttributeValues={selectedAttributeValues}
         />
