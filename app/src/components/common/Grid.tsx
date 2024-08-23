@@ -15,7 +15,12 @@ export const GridContainer: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
+    <Grid
+      container
+      sx={{ mt: 2 }}
+      spacing={2}
+      columns={{ xs: 4, sm: 8, md: 12 }}
+    >
       {children}
     </Grid>
   );
