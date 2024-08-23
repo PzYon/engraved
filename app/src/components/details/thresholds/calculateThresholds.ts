@@ -56,8 +56,8 @@ function getIThresholdValue(
   return new ThresholdValue(
     thresholdDefinition,
     actualValue,
-    dateConditions.from,
-    dateConditions.to,
+    dateConditions?.from,
+    dateConditions?.to,
   );
 }
 

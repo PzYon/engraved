@@ -88,21 +88,37 @@ describe("calculateThresholds", () => {
     expect(colorValues["yellow"].remainingValueForDuration).toBe(-3);
   });
 
-  it("should calculate overall and consider scope", () => {
-    const fromDate = subDays(new Date(), 5);
+  it("should calculate overall and consider scope (Day)", () => {
+    extracted(20, ThresholdScope.Day, false);
+  });
 
-    const values = calculateThresholds(
-      JournalType.Gauge,
-      { "-": { "-": { value: 20, scope: ThresholdScope.Day } } },
-      [
-        { value: 10, dateTime: fromDate.toJSON() } as IGaugeEntry,
-        { value: 20, dateTime: subDays(new Date(), 2).toJSON() } as IGaugeEntry,
-      ],
-      { from: fromDate, to: new Date() },
-    );
+  it("should calculate overall and consider scope (Month)", () => {
+    extracted(20, ThresholdScope.Month, true);
+  });
 
-    expect(Object.keys(values).length).toBe(1);
-    expect(values["-"]["-"].currentValue).toBe(30);
-    expect(values["-"]["-"].isReached).toBe(false);
+  it("should calculate overall and consider scope (Overall)", () => {
+    extracted(20, ThresholdScope.Overall, true);
   });
 });
+
+function extracted(
+  thresholdValue: number,
+  thresholdScope: ThresholdScope,
+  expectedIsReach: boolean,
+) {
+  const fromDate = subDays(new Date(), 5);
+
+  const values = calculateThresholds(
+    JournalType.Gauge,
+    { "-": { "-": { value: thresholdValue, scope: thresholdScope } } },
+    [
+      { value: 10, dateTime: fromDate.toJSON() } as IGaugeEntry,
+      { value: 20, dateTime: subDays(new Date(), 2).toJSON() } as IGaugeEntry,
+    ],
+    { from: fromDate, to: new Date() },
+  );
+
+  expect(Object.keys(values).length).toBe(1);
+  expect(values["-"]["-"].currentValue).toBe(30);
+  expect(values["-"]["-"].isReached).toBe(expectedIsReach);
+}
