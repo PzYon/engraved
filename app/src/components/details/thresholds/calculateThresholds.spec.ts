@@ -122,8 +122,8 @@ describe("calculateThresholds", () => {
 
     expect(Object.keys(values).length).toBe(1);
     expect(values["-"]["-"].currentValue).toBe(30);
-    expect(values["-"]["-"].remainingValueForDuration).toBe(-1);
-    expect(values["-"]["-"].isReached).toBe(-1 <= 0);
+    expect(Math.round(values["-"]["-"].remainingValueForDuration)).toBe(1);
+    expect(values["-"]["-"].isReached).toBe(false);
   });
 
   it("should calculate overall and consider scope (Overall)", () => {

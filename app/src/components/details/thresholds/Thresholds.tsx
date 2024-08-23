@@ -44,13 +44,13 @@ export const Thresholds: React.FC<{
       {Object.keys(thresholdValues).flatMap((attributeKey) => {
         const attributeThresholds = thresholdValues[attributeKey];
 
+        const attributeName =
+          journal.attributes[attributeKey]?.name ?? attributeKey;
+
         return Object.keys(attributeThresholds).map((valueKey) => {
           const threshold = attributeThresholds[valueKey];
-          const attributeName =
-            journal.attributes[attributeKey]?.name ?? attributeKey;
           const valueName =
             journal.attributes[attributeKey]?.values[valueKey] ?? valueKey;
-
           const currentSelectedValue =
             selectedAttributeValues[attributeKey]?.[0];
 
@@ -59,13 +59,17 @@ export const Thresholds: React.FC<{
               <Card
                 sx={{
                   p: 2,
-                  cursor: "pointer",
+                  cursor: attributeKey === "-" ? "cursor" : "pointer",
                   opacity:
                     !currentSelectedValue || currentSelectedValue === valueKey
                       ? 1
                       : 0.5,
                 }}
                 onClick={() => {
+                  if (attributeKey === "-") {
+                    return;
+                  }
+
                   setSelectedAttributeValues(
                     attributeKey,
                     currentSelectedValue === valueKey ? [] : [valueKey],
@@ -80,23 +84,18 @@ export const Thresholds: React.FC<{
                       {valueName} <Lighter> ({attributeName})</Lighter>
                     </>
                   )}
-                  <Lighter>
+                  <Lighter
+                    title={"Duration in days: " + threshold.durationInDays}
+                  >
                     {" | "}
                     {threshold.thresholdValue} per {threshold.scope}
                   </Lighter>
-                  <Typography>
-                    <Lighter> </Lighter>
-                  </Typography>
                 </Typography>
                 <Typography>
                   <ActualValue isBelow={!threshold.isReached}>
                     {Math.abs(Math.round(threshold.remainingValueForDuration))}
                   </ActualValue>{" "}
                   {threshold.currentValue} of {threshold.thresholdForDuration}
-                </Typography>
-                <Typography>
-                  <Lighter>{" Duration in days "}</Lighter>
-                  {threshold.durationInDays}
                 </Typography>
               </Card>
             </GridItem>

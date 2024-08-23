@@ -29,7 +29,10 @@ export class ThresholdValue {
     }
 
     if (this.scope === ThresholdScope.Month) {
-      return (this.thresholdValue / 30) * this.durationInDays;
+      return (
+        (Math.round((this.thresholdValue / 30) * 1000) / 1000) *
+        this.durationInDays
+      );
     }
 
     return this.thresholdValue * this.durationInDays;
