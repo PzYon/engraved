@@ -77,14 +77,13 @@ export const Thresholds: React.FC<{
                     <>All</>
                   ) : (
                     <>
-                      {valueName}{" "}
-                      <Lighter>
-                        {" "}
-                        ({attributeName}) | {threshold.thresholdValue} per{" "}
-                        {threshold.scope}
-                      </Lighter>
+                      {valueName} <Lighter> ({attributeName})</Lighter>
                     </>
                   )}
+                  <Lighter>
+                    {" | "}
+                    {threshold.thresholdValue} per {threshold.scope}
+                  </Lighter>
                   <Typography>
                     <Lighter> </Lighter>
                   </Typography>
@@ -94,6 +93,10 @@ export const Thresholds: React.FC<{
                     {Math.abs(Math.round(threshold.remainingValueForDuration))}
                   </ActualValue>{" "}
                   {threshold.currentValue} of {threshold.thresholdForDuration}
+                </Typography>
+                <Typography>
+                  <Lighter>{" Duration in days "}</Lighter>
+                  {threshold.durationInDays}
                 </Typography>
               </Card>
             </GridItem>

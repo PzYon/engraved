@@ -132,16 +132,14 @@ function isComplete(definition: IAttributeValueThresholdDefinition) {
 
   if (
     (!definition.attributeKey || definition.attributeKey === "-") &&
-    !definition.attributeValueKeys.length
+    (!definition.attributeValueKeys.length ||
+      (definition.attributeValueKeys.length === 1 &&
+        definition.attributeValueKeys[0] === "-"))
   ) {
     return true;
   }
 
-  if (
-    definition.attributeKey &&
-    definition.attributeKey !== "-" &&
-    definition.attributeValueKeys.length
-  ) {
+  if (definition.attributeKey && definition.attributeKey !== "-") {
     return true;
   }
 

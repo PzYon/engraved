@@ -13,16 +13,26 @@ export class ThresholdValue {
     return this.definition.value;
   }
 
+  get durationInDays(): number {
+    const diff = differenceInDays(this.to, this.from);
+
+    if (this.scope === ThresholdScope.Month && diff < 30) {
+      return 30;
+    }
+
+    return diff;
+  }
+
   get thresholdForDuration(): number {
-    if (
-      this.scope === ThresholdScope.Overall ||
-      this.scope === ThresholdScope.Day
-    ) {
+    if (this.scope === ThresholdScope.Overall) {
       return this.thresholdValue;
     }
 
-    const durationInDays = differenceInDays(this.to, this.from);
-    return durationInDays * (this.thresholdValue / 30);
+    if (this.scope === ThresholdScope.Month) {
+      return (this.thresholdValue / 30) * this.durationInDays;
+    }
+
+    return this.thresholdValue * this.durationInDays;
   }
 
   get remainingValueForDuration(): number {
