@@ -21,10 +21,6 @@ export class ThresholdValue {
       return this.thresholdValue;
     }
 
-    if (!this.to || !this.from) {
-      return this.thresholdValue;
-    }
-
     const durationInDays = differenceInDays(this.to, this.from);
     return durationInDays * (this.thresholdValue / 30);
   }

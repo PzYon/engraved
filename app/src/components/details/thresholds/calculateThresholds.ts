@@ -56,11 +56,19 @@ function getIThresholdValue(
   return new ThresholdValue(
     thresholdDefinition,
     actualValue,
-    dateConditions?.from,
-    dateConditions?.to,
+    dateConditions?.from ?? getOldestEntryDate(entries),
+    dateConditions?.to ?? getNewestEntryDate(entries),
   );
 }
 
 function getSum(type: IJournalType, entries: IEntry[]) {
   return entries.reduce((total, entry) => total + type.getValue(entry), 0);
+}
+
+function getOldestEntryDate(entries: IEntry[]) {
+  return new Date(entries.map((e) => e.dateTime).sort()[0]);
+}
+
+function getNewestEntryDate(entries: IEntry[]) {
+  return new Date(entries.map((e) => e.dateTime).sort()[entries.length - 1]);
 }

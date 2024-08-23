@@ -89,22 +89,22 @@ describe("calculateThresholds", () => {
   });
 
   it("should calculate overall and consider scope (Day)", () => {
-    extracted(20, ThresholdScope.Day, false);
+    extracted(20, ThresholdScope.Day, 5 * 20 - 30);
   });
 
   it("should calculate overall and consider scope (Month)", () => {
-    extracted(20, ThresholdScope.Month, true);
+    extracted(31, ThresholdScope.Month, -1);
   });
 
   it("should calculate overall and consider scope (Overall)", () => {
-    extracted(20, ThresholdScope.Overall, true);
+    extracted(20, ThresholdScope.Overall, -10);
   });
 });
 
 function extracted(
   thresholdValue: number,
   thresholdScope: ThresholdScope,
-  expectedIsReach: boolean,
+  expectedRemainingValueForDuration: number,
 ) {
   const fromDate = subDays(new Date(), 5);
 
@@ -113,12 +113,18 @@ function extracted(
     { "-": { "-": { value: thresholdValue, scope: thresholdScope } } },
     [
       { value: 10, dateTime: fromDate.toJSON() } as IGaugeEntry,
-      { value: 20, dateTime: subDays(new Date(), 2).toJSON() } as IGaugeEntry,
+      { value: 5, dateTime: subDays(new Date(), 1).toJSON() } as IGaugeEntry,
+      { value: 15, dateTime: subDays(new Date(), 2).toJSON() } as IGaugeEntry,
     ],
     { from: fromDate, to: new Date() },
   );
 
   expect(Object.keys(values).length).toBe(1);
   expect(values["-"]["-"].currentValue).toBe(30);
-  expect(values["-"]["-"].isReached).toBe(expectedIsReach);
+  expect(values["-"]["-"].remainingValueForDuration).toBe(
+    expectedRemainingValueForDuration,
+  );
+  expect(values["-"]["-"].isReached).toBe(
+    expectedRemainingValueForDuration <= 0,
+  );
 }
