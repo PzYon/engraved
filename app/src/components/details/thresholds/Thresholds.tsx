@@ -30,8 +30,6 @@ export const Thresholds: React.FC<{
       dateConditions,
     );
 
-    console.log(values);
-
     return values;
   }, [journal.type, journal.thresholds, entries, dateConditions]);
 
