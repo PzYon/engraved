@@ -10,7 +10,10 @@ import { IScheduleDefinition } from "../../serverApi/IScheduleDefinition";
 import React from "react";
 import { ScheduledInfo } from "../overview/scheduled/ScheduledInfo";
 import { isAfter } from "date-fns";
-import { useItemAction } from "../common/actions/searchParamHooks";
+import {
+  getItemActionQueryParams,
+  useItemAction,
+} from "../common/actions/searchParamHooks";
 
 export const NotificationDoneAction: React.FC<{
   journal: IJournal;
@@ -55,8 +58,8 @@ export const NotificationDoneAction: React.FC<{
                 : null,
               recurrence: schedule.recurrence,
               onClickUrl: entry
-                ? `${location.origin}/journals/details/${entry.parentId}/entries/${entry.id}/notification`
-                : `${location.origin}/journals/details/${journal.id}/notification`,
+                ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("notification-done", entry.id)).toString()}`
+                : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("notification-done", journal.id)).toString()}`,
             };
 
             modifyScheduleMutation.mutate(scheduleDefinition);
