@@ -15,7 +15,9 @@ export class OverviewItemCollection {
     private index: number,
     private setFocusIndex: (value: number) => void,
     private setItemId: (value: string) => void,
-  ) {}
+  ) {
+    console.log("creating OverviewItemCollection");
+  }
 
   private get highestIndex() {
     return this.wrappers.length - 1;
