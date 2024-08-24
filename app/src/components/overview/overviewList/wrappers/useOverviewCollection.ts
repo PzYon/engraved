@@ -1,6 +1,6 @@
 import { useHotkeys } from "react-hotkeys-hook";
 import { OverviewItemCollection } from "./OverviewItemCollection";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { OverviewItem } from "./OverviewItem";
 import {
   knownQueryParams,
@@ -12,17 +12,16 @@ export function useOverviewCollection() {
 
   const { setValue, getValue } = useSelectedItemId();
 
-  const collection = new OverviewItemCollection(
-    focusIndex,
-    setFocusIndex,
-    (id) => {
+  const itemId = getValue();
+
+  const collection = useMemo(() => {
+    console.log("item id", itemId);
+    return new OverviewItemCollection(focusIndex, setFocusIndex, (id) => {
       if (id && getSelectedItemIdFromUrl() !== id) {
         setValue(id);
       }
-    },
-  );
-
-  const itemId = getValue();
+    });
+  }, [itemId]);
 
   useEffect(() => {
     if (itemId) {

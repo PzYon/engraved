@@ -34,42 +34,40 @@ export const Entities: React.FC<{
   }
 
   return (
-    <>
-      <OverviewList
-        items={queryResult.entities.map((e) => e.entity)}
-        filterItem={(i) =>
-          !isSchedule ||
-          isBefore(
-            getScheduleForUser(i, user.id).nextOccurrence,
-            addDays(new Date(), 3),
-          )
-        }
-        renderItem={(item, index, hasFocus, giveFocus) => {
-          // this is a temporary hack! should be something like:
-          // if (item.entityType === "Entry") {
-          if (!(item as IJournal).type) {
-            return (
-              <EntryListItem
-                key={item.id}
-                index={index}
-                hasFocus={hasFocus}
-                giveFocus={giveFocus}
-                entry={item as IEntry}
-                journals={queryResult.journals}
-              />
-            );
-          }
-
+    <OverviewList
+      items={queryResult.entities.map((e) => e.entity)}
+      filterItem={(i) =>
+        !isSchedule ||
+        isBefore(
+          getScheduleForUser(i, user.id).nextOccurrence,
+          addDays(new Date(), 3),
+        )
+      }
+      renderItem={(item, index, hasFocus, giveFocus) => {
+        // this is a temporary hack! should be something like:
+        // if (item.entityType === "Entry") {
+        if (!(item as IJournal).type) {
           return (
-            <JournalListItem
+            <EntryListItem
               key={item.id}
               index={index}
               hasFocus={hasFocus}
-              journal={item as IJournal}
+              giveFocus={giveFocus}
+              entry={item as IEntry}
+              journals={queryResult.journals}
             />
           );
-        }}
-      ></OverviewList>
-    </>
+        }
+
+        return (
+          <JournalListItem
+            key={item.id}
+            index={index}
+            hasFocus={hasFocus}
+            journal={item as IJournal}
+          />
+        );
+      }}
+    />
   );
 };
