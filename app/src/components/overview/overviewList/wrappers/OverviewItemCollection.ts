@@ -13,8 +13,7 @@ export class OverviewItemCollection {
 
   constructor(
     private index: number,
-    private setFocusIndex: (value: number) => void,
-    private setItemId: (value: string) => void,
+    private onIndexChange: (itemId: string, index: number) => void,
   ) {
     console.log("creating OverviewItemCollection");
   }
@@ -36,7 +35,9 @@ export class OverviewItemCollection {
       return;
     }
 
-    this.setIndex(index);
+    this.index = index;
+
+    this.onIndexChange(this.current?.internalObj.id, index);
     this.current?.giveFocus();
   }
 
@@ -68,11 +69,5 @@ export class OverviewItemCollection {
   private getNextLowerIndex(index: number) {
     const nextIndex = index - 1;
     return nextIndex < 0 ? this.highestIndex : nextIndex;
-  }
-
-  private setIndex(i: number) {
-    this.index = i;
-    this.setItemId(this.current?.internalObj.id);
-    this.setFocusIndex(i);
   }
 }
