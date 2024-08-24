@@ -3,24 +3,14 @@ import { OverviewItem } from "./OverviewItem";
 export class OverviewItemCollection {
   private wrappers: OverviewItem[] = [];
 
-  get currentIndex() {
-    return this.index;
-  }
-
-  get current(): OverviewItem {
-    return this.wrappers[this.index];
-  }
-
-  constructor(
-    private index: number,
-    private onIndexChange: (itemId: string, index: number) => void,
-  ) {
-    console.log("creating OverviewItemCollection");
-  }
-
   private get highestIndex() {
     return this.wrappers.length - 1;
   }
+
+  constructor(
+    public currentIndex: number,
+    private onIndexChange: (itemId: string, index: number) => void,
+  ) {}
 
   setFocusForId(itemId: string) {
     this.setFocus(
@@ -29,24 +19,26 @@ export class OverviewItemCollection {
   }
 
   setFocus(index: number) {
-    if (this.index === index) {
+    if (this.currentIndex === index) {
       // if item already has focus (or is the last one that had focus),
       // then do nothing in order to prevent cursors from moving around.
       return;
     }
 
-    this.index = index;
+    this.currentIndex = index;
 
-    this.onIndexChange(this.current?.internalObj.id, index);
-    this.current?.giveFocus();
+    const current = this.wrappers[this.currentIndex];
+    current?.giveFocus();
+
+    this.onIndexChange(current?.internalObj.id, index);
   }
 
   moveFocusDown() {
-    this.setFocus(this.getNextHigherIndex(this.index));
+    this.setFocus(this.getNextHigherIndex(this.currentIndex));
   }
 
   moveFocusUp() {
-    this.setFocus(this.getNextLowerIndex(this.index));
+    this.setFocus(this.getNextLowerIndex(this.currentIndex));
   }
 
   add(wrapper: OverviewItem) {
