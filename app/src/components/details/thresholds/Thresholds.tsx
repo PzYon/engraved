@@ -5,6 +5,7 @@ import { GridContainer, GridItem } from "../../common/Grid";
 import { IEntry } from "../../../serverApi/IEntry";
 import { calculateThresholds } from "./calculateThresholds";
 import { IDateConditions } from "../JournalContext";
+import { ThresholdScope } from "./ThresholdScope";
 
 export const Thresholds: React.FC<{
   journal: IJournal;
@@ -73,7 +74,7 @@ export const Thresholds: React.FC<{
                 }}
               >
                 <Typography>
-                  {attributeName === "-" ? (
+                  {attributeKey === "-" ? (
                     <>All</>
                   ) : (
                     <>
@@ -84,7 +85,14 @@ export const Thresholds: React.FC<{
                     title={"Duration in days: " + threshold.durationInDays}
                   >
                     {" | "}
-                    {threshold.thresholdValue} per {threshold.scope}
+                    {threshold.scope === ThresholdScope.All ? (
+                      <>total</>
+                    ) : (
+                      <>
+                        {threshold.thresholdValue} per{" "}
+                        {threshold.scope?.toLowerCase()}
+                      </>
+                    )}
                   </Lighter>
                 </Typography>
                 <Typography>

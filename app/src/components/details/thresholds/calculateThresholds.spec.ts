@@ -21,7 +21,7 @@ describe("calculateThresholds", () => {
     expect(Object.keys(values).length).toBe(0);
   });
 
-  it("should calculate overall", () => {
+  it("should calculate all", () => {
     const values = calculateThresholds(
       JournalType.Gauge,
       { "-": { "-": { value: 20, scope: ThresholdScope.All } } },
