@@ -24,7 +24,7 @@ describe("calculateThresholds", () => {
   it("should calculate overall", () => {
     const values = calculateThresholds(
       JournalType.Gauge,
-      { "-": { "-": { value: 20, scope: ThresholdScope.Overall } } },
+      { "-": { "-": { value: 20, scope: ThresholdScope.All } } },
       [{ value: 10 } as IGaugeEntry, { value: 20 } as IGaugeEntry],
     );
 
@@ -42,8 +42,8 @@ describe("calculateThresholds", () => {
       JournalType.Gauge,
       {
         color: {
-          yellow: { value: 5, scope: ThresholdScope.Overall },
-          green: { value: 10, scope: ThresholdScope.Overall },
+          yellow: { value: 5, scope: ThresholdScope.All },
+          green: { value: 10, scope: ThresholdScope.All },
         },
       },
       [
@@ -132,7 +132,7 @@ describe("calculateThresholds", () => {
 
     const values = calculateThresholds(
       JournalType.Gauge,
-      { "-": { "-": { value: 20, scope: ThresholdScope.Overall } } },
+      { "-": { "-": { value: 20, scope: ThresholdScope.All } } },
       [
         { value: 10, dateTime: fromDate.toJSON() } as IGaugeEntry,
         { value: 5, dateTime: subDays(now, 1).toJSON() } as IGaugeEntry,

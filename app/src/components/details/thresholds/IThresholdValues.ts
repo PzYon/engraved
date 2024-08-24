@@ -24,7 +24,7 @@ export class ThresholdValue {
   }
 
   get thresholdForDuration(): number {
-    if (this.scope === ThresholdScope.Overall) {
+    if (this.scope === ThresholdScope.All) {
       return this.thresholdValue;
     }
 
