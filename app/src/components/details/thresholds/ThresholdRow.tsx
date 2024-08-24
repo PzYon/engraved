@@ -97,7 +97,7 @@ export const ThresholdRow: React.FC<{
         >
           <MenuItem value={ThresholdScope.Day}>Day</MenuItem>
           <MenuItem value={ThresholdScope.Month}>Month</MenuItem>
-          <MenuItem value={ThresholdScope.Overall}>Overall</MenuItem>
+          <MenuItem value={ThresholdScope.All}>Overall</MenuItem>
         </Select>
       </FormControl>
       <TextField
