@@ -46,25 +46,25 @@ export const Entities: React.FC<{
       renderItem={(item, index, hasFocus, giveFocus) => {
         // this is a temporary hack! should be something like:
         // if (item.entityType === "Entry") {
-        if (!(item as IJournal).type) {
+        if ((item as IJournal).type) {
           return (
-            <EntryListItem
+            <JournalListItem
               key={item.id}
               index={index}
               hasFocus={hasFocus}
-              giveFocus={giveFocus}
-              entry={item as IEntry}
-              journals={queryResult.journals}
+              journal={item as IJournal}
             />
           );
         }
 
         return (
-          <JournalListItem
+          <EntryListItem
             key={item.id}
             index={index}
             hasFocus={hasFocus}
-            journal={item as IJournal}
+            giveFocus={giveFocus}
+            entry={item as IEntry}
+            journals={queryResult.journals}
           />
         );
       }}
