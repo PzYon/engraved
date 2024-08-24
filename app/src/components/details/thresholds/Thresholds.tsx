@@ -23,14 +23,12 @@ export const Thresholds: React.FC<{
   setSelectedAttributeValues,
 }) => {
   const thresholdValues = useMemo(() => {
-    const values = calculateThresholds(
+    return calculateThresholds(
       journal.type,
       journal.thresholds,
       entries,
       dateConditions,
     );
-
-    return values;
   }, [journal.type, journal.thresholds, entries, dateConditions]);
 
   if (!thresholdValues) {

@@ -1,29 +1,23 @@
 import { useHotkeys } from "react-hotkeys-hook";
 import { OverviewItemCollection } from "./OverviewItemCollection";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { OverviewItem } from "./OverviewItem";
 import {
   knownQueryParams,
   useSelectedItemId,
 } from "../../../common/actions/searchParamHooks";
 
-export function useOverviewCollection(deps: unknown[]) {
+export function useOverviewCollection() {
   const [focusIndex, setFocusIndex] = useState(-1);
 
   const { setValue, getValue } = useSelectedItemId();
 
-  const itemId = getValue();
+  const collection = new OverviewItemCollection(focusIndex, onIndexChange);
 
-  const collection = useMemo(
-    () =>
-      new OverviewItemCollection(focusIndex, setFocusIndex, (id) => {
-        if (id && getSelectedItemIdFromUrl() !== id) {
-          setValue(id);
-        }
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [...deps],
-  );
+  useHotkeys("alt+up", () => collection.moveFocusUp());
+  useHotkeys("alt+down", () => collection.moveFocusDown());
+
+  const itemId = getValue();
 
   useEffect(() => {
     if (itemId) {
@@ -31,18 +25,17 @@ export function useOverviewCollection(deps: unknown[]) {
     }
   }, [collection, itemId]);
 
-  useHotkeys("alt+up", () => {
-    collection.moveFocusUp();
-  });
-
-  useHotkeys("alt+down", () => {
-    collection.moveFocusDown();
-  });
-
   return {
     collection,
     addItem: (wrapper: OverviewItem) => collection.add(wrapper),
   };
+
+  function onIndexChange(itemId: string, index: number) {
+    setFocusIndex(index);
+    if (itemId && getSelectedItemIdFromUrl() !== itemId) {
+      setValue(itemId);
+    }
+  }
 
   function getSelectedItemIdFromUrl() {
     return new URLSearchParams(location.search).get(

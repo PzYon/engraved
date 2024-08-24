@@ -18,7 +18,7 @@ export const OverviewList: React.FC<{
 }> = ({ items, renderItem, filterItem }) => {
   const { user } = useAppContext();
 
-  const { collection, addItem } = useOverviewCollection([items]);
+  const { collection, addItem } = useOverviewCollection();
   const [showAll, setShowAll] = useState(false);
 
   const filteredItems = items.filter(
