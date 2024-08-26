@@ -16,7 +16,7 @@
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.2.0"/>
         <PackageReference Include="Google.Apis.Auth" Version="1.68.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.2"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3"/>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2"/>
     </ItemGroup>
 
