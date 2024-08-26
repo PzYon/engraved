@@ -10,9 +10,7 @@ export class OverviewItemCollection {
   constructor(
     public currentIndex: number,
     private onIndexChange: (itemId: string, index: number) => void,
-  ) {
-    console.log("ja");
-  }
+  ) {}
 
   setFocusForId(itemId: string) {
     this.setFocus(
