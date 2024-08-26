@@ -23,6 +23,7 @@ import { getUiSettings } from "../../util/journalUtils";
 import { getDefaultDateConditions } from "./filters/getDefaultDateConditions";
 import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
+import { EntriesAgenda } from "./entriesTable/EntriesAgenda";
 
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
@@ -163,22 +164,27 @@ export const JournalViewPage: React.FC = () => {
       ) : null}
 
       {entries?.length ? (
-        <PageSection overflowXScroll={true}>
-          <EntriesTable
-            journal={journal}
-            entries={entries}
-            showGroupTotals={showGroupTotals}
-            showAddNewEntryRow={
-              showAddNewEntryRow &&
-              (journal.type === JournalType.Gauge ||
-                journal.type === JournalType.Counter)
-            }
-            aggregationMode={
-              uiSettings.aggregationMode ??
-              journalDefaultUiSettings.aggregationMode
-            }
-          />
-        </PageSection>
+        <>
+          <PageSection>
+            <EntriesAgenda journal={journal} entries={entries}></EntriesAgenda>
+          </PageSection>
+          <PageSection overflowXScroll={true}>
+            <EntriesTable
+              journal={journal}
+              entries={entries}
+              showGroupTotals={showGroupTotals}
+              showAddNewEntryRow={
+                showAddNewEntryRow &&
+                (journal.type === JournalType.Gauge ||
+                  journal.type === JournalType.Counter)
+              }
+              aggregationMode={
+                uiSettings.aggregationMode ??
+                journalDefaultUiSettings.aggregationMode
+              }
+            />
+          </PageSection>
+        </>
       ) : (
         <GenericEmptyPlaceholder
           icon={LocalHotelOutlined}
