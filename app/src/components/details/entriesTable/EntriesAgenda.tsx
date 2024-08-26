@@ -15,7 +15,7 @@ export const EntriesAgenda: React.FC<{
   }
 
   return (
-    <div>
+    <div style={{ marginTop: "16px" }}>
       {entries
         .sort((a, b) => {
           /* eslint-disable @typescript-eslint/no-explicit-any */
