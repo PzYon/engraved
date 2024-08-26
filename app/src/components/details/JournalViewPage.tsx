@@ -166,7 +166,7 @@ export const JournalViewPage: React.FC = () => {
       {entries?.length ? (
         <>
           <EntriesAgenda journal={journal} entries={entries}></EntriesAgenda>
-          <PageSection overflowXScroll={true}>
+          <PageSection overflowXScroll={true} title="Entries">
             <EntriesTable
               journal={journal}
               entries={entries}

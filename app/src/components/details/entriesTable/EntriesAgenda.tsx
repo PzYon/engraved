@@ -2,7 +2,9 @@ import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournal } from "../../../serverApi/IJournal";
-import { styled } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
+import { formatDistance } from "date-fns";
+import { HistoryToggleOff } from "@mui/icons-material";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
@@ -24,23 +26,34 @@ export const EntriesAgenda: React.FC<{
         .map((entry, index) => {
           return (
             <>
-              <ItemContainer key={entry.id}>
+              <Paper key={entry.id} sx={{ p: 2 }}>
                 {JournalTypeFactory.create(journal.type).getEntry(
                   journal,
                   entry,
                   false,
                   () => {},
                 )}
-              </ItemContainer>
-              {index < entries.length - 1 ? <div>date goes here!</div> : null}
+              </Paper>
+              {index < entries.length - 1 ? (
+                <Typography
+                  sx={{
+                    pt: 1,
+                    pb: 1,
+                    pl: 1,
+                    ml: 3,
+                    display: "flex",
+                    alignItems: "center",
+                    borderLeft: "3px solid white",
+                    color: "primary.main",
+                  }}
+                >
+                  <HistoryToggleOff fontSize="small" sx={{ mr: 1 }} />
+                  {formatDistance(entries[index + 1].dateTime, entry.dateTime)}
+                </Typography>
+              ) : null}
             </>
           );
         })}
     </div>
   );
 };
-
-const ItemContainer = styled("div")`
-  background-color: ${(p) => p.theme.palette.common.white};
-  padding: ${(p) => p.theme.spacing(2)};
-`;
