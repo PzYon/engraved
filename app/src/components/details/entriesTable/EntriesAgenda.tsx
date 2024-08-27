@@ -5,6 +5,7 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { Paper, Typography } from "@mui/material";
 import { formatDistance } from "date-fns";
 import { HistoryToggleOff } from "@mui/icons-material";
+import { paperBorderRadius } from "../../../theming/engravedTheme";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
@@ -15,7 +16,7 @@ export const EntriesAgenda: React.FC<{
   }
 
   return (
-    <div style={{ marginTop: "16px" }}>
+    <div style={{ marginTop: "24px", marginBottom: "24px" }}>
       {entries
         .sort((a, b) => {
           /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -26,7 +27,10 @@ export const EntriesAgenda: React.FC<{
         .map((entry, index) => {
           return (
             <>
-              <Paper key={entry.id} sx={{ p: 2 }}>
+              <Paper
+                key={entry.id}
+                sx={{ p: 2, borderRadius: paperBorderRadius }}
+              >
                 {JournalTypeFactory.create(journal.type).getEntry(
                   journal,
                   entry,

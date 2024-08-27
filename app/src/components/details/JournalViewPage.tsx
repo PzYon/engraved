@@ -57,6 +57,8 @@ export const JournalViewPage: React.FC = () => {
 
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
+  const [showAgenda, setShowAgenda] = useState(!!uiSettings?.showAgenda);
+
   const [showThresholds, setShowThresholds] = useState(
     !!uiSettings?.showThresholds,
   );
@@ -76,6 +78,7 @@ export const JournalViewPage: React.FC = () => {
 
   useEffect(() => {
     setTitleActions([
+      ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
       deviceWidth !== DeviceWidth.Small
         ? ActionFactory.toggleAddNewEntryRow(
             showAddNewEntryRow,
@@ -104,6 +107,7 @@ export const JournalViewPage: React.FC = () => {
     showNotes,
     showFilters,
     showChart,
+    showAgenda,
     deviceWidth,
     showThresholds,
     showGroupTotals,
@@ -165,23 +169,26 @@ export const JournalViewPage: React.FC = () => {
 
       {entries?.length ? (
         <>
-          <EntriesAgenda journal={journal} entries={entries}></EntriesAgenda>
-          <PageSection overflowXScroll={true} title="Entries">
-            <EntriesTable
-              journal={journal}
-              entries={entries}
-              showGroupTotals={showGroupTotals}
-              showAddNewEntryRow={
-                showAddNewEntryRow &&
-                (journal.type === JournalType.Gauge ||
-                  journal.type === JournalType.Counter)
-              }
-              aggregationMode={
-                uiSettings.aggregationMode ??
-                journalDefaultUiSettings.aggregationMode
-              }
-            />
-          </PageSection>
+          {showAgenda ? (
+            <EntriesAgenda journal={journal} entries={entries}></EntriesAgenda>
+          ) : (
+            <PageSection overflowXScroll={true} title="Entries">
+              <EntriesTable
+                journal={journal}
+                entries={entries}
+                showGroupTotals={showGroupTotals}
+                showAddNewEntryRow={
+                  showAddNewEntryRow &&
+                  (journal.type === JournalType.Gauge ||
+                    journal.type === JournalType.Counter)
+                }
+                aggregationMode={
+                  uiSettings.aggregationMode ??
+                  journalDefaultUiSettings.aggregationMode
+                }
+              />
+            </PageSection>
+          )}
         </>
       ) : (
         <GenericEmptyPlaceholder

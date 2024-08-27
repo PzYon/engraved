@@ -12,6 +12,7 @@ import {
   FilterAltOutlined,
   FormatLineSpacingOutlined,
   FunctionsOutlined,
+  HistoryToggleOff,
   MessageOutlined,
   PanToolOutlined,
   PlaylistAdd,
@@ -200,6 +201,19 @@ export class ActionFactory {
       label: "Show notes",
       onClick: () => setShowNotes(!showNotes),
       isNotActive: !showNotes,
+    };
+  }
+
+  static toggleAgendaView(
+    showAgenda: boolean,
+    setShowAgenda: (value: boolean) => void,
+  ): IAction {
+    return {
+      key: "agenda",
+      icon: <HistoryToggleOff fontSize="small" />,
+      label: "Agenda view",
+      onClick: () => setShowAgenda(!showAgenda),
+      isNotActive: !showAgenda,
     };
   }
 
