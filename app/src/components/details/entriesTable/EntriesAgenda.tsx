@@ -2,7 +2,7 @@ import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournal } from "../../../serverApi/IJournal";
-import { Paper, Typography } from "@mui/material";
+import { Chip, Paper, Typography } from "@mui/material";
 import { formatDistance } from "date-fns";
 import { HistoryToggleOff } from "@mui/icons-material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
@@ -14,6 +14,8 @@ export const EntriesAgenda: React.FC<{
   if (!journal) {
     return null;
   }
+
+  const journalType = JournalTypeFactory.create(journal.type);
 
   return (
     <div style={{ marginTop: "24px", marginBottom: "24px" }}>
@@ -31,12 +33,10 @@ export const EntriesAgenda: React.FC<{
                 key={entry.id}
                 sx={{ p: 2, borderRadius: paperBorderRadius }}
               >
-                {JournalTypeFactory.create(journal.type).getEntry(
-                  journal,
-                  entry,
-                  false,
-                  () => {},
-                )}
+                <Typography>
+                  {entry.dateTime}:{" "}
+                  <Chip title={journalType.getValue(entry).toString()}></Chip>
+                </Typography>
               </Paper>
               {index < entries.length - 1 ? (
                 <Typography
