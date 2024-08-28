@@ -23,7 +23,7 @@ import { getUiSettings } from "../../util/journalUtils";
 import { getDefaultDateConditions } from "./filters/getDefaultDateConditions";
 import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
-import { EntriesAgenda } from "./entriesTable/EntriesAgenda";
+import { EntriesAgenda } from "./entriesAgenda/EntriesAgenda";
 
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
