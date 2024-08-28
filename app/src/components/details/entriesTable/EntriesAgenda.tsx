@@ -6,6 +6,7 @@ import { Chip, Paper, Typography } from "@mui/material";
 import { formatDistance } from "date-fns";
 import { HistoryToggleOff } from "@mui/icons-material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
+import { FormatDate } from "../../common/FormatDate";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
@@ -34,8 +35,17 @@ export const EntriesAgenda: React.FC<{
                 sx={{ p: 2, borderRadius: paperBorderRadius }}
               >
                 <Typography>
-                  {entry.dateTime}:{" "}
-                  <Chip title={journalType.getValue(entry).toString()}></Chip>
+                  <Chip
+                    label={journalType.getValue(entry).toString()}
+                    sx={{
+                      backgroundColor: "primary.main",
+                      color: "common.white",
+                      fontSize: "small",
+                      height: "22px",
+                      mr: 2,
+                    }}
+                  ></Chip>
+                  <FormatDate value={entry.dateTime} />
                 </Typography>
               </Paper>
               {index < entries.length - 1 ? (
@@ -45,6 +55,7 @@ export const EntriesAgenda: React.FC<{
                     pb: 1,
                     pl: 1,
                     ml: 3,
+                    fontSize: "smaller",
                     display: "flex",
                     alignItems: "center",
                     borderLeft: "3px solid white",
