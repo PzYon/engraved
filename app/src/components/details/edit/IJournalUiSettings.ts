@@ -15,6 +15,7 @@ export interface IJournalUiSettings {
   showChart?: boolean;
   showThresholds?: boolean;
   showFilters?: boolean;
+  showAgenda?: boolean;
   groupByTime?: GroupByTime;
   dateFilter?: DateFilterConfig;
   dynamicScales?: boolean;

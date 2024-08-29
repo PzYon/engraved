@@ -3,6 +3,7 @@ import { Checkbox, FormControlLabel, styled, TextField } from "@mui/material";
 import {
   FilterAltOutlined,
   FunctionsOutlined,
+  HistoryToggleOff,
   PanToolOutlined,
   QueryStatsOutlined,
   ShowChartOutlined,
@@ -26,15 +27,15 @@ export const JournalUiSettings: React.FC<{
           <FormControlLabel
             control={
               <Checkbox
-                checked={uiSettings.showChart}
+                checked={uiSettings.showAgenda}
                 onChange={(_, checked) =>
-                  onChange({ ...uiSettings, showChart: checked })
+                  onChange({ ...uiSettings, showAgenda: checked })
                 }
-                icon={<ShowChartOutlined sx={{ opacity: 0.5 }} />}
-                checkedIcon={<ShowChartOutlined />}
+                icon={<HistoryToggleOff sx={{ opacity: 0.5 }} />}
+                checkedIcon={<HistoryToggleOff />}
               />
             }
-            label="Show chart by default"
+            label="Show agenda view by default"
           />
         </GridItem>
 
@@ -83,6 +84,25 @@ export const JournalUiSettings: React.FC<{
               />
             }
             label="Show group aggregations by default"
+          />
+        </GridItem>
+
+        <GridItem />
+        <GridItem />
+
+        <GridItem>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={uiSettings.showChart}
+                onChange={(_, checked) =>
+                  onChange({ ...uiSettings, showChart: checked })
+                }
+                icon={<ShowChartOutlined sx={{ opacity: 0.5 }} />}
+                checkedIcon={<ShowChartOutlined />}
+              />
+            }
+            label="Show chart by default"
           />
         </GridItem>
 

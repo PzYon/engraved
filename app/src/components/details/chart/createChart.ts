@@ -193,7 +193,7 @@ function createBarChart(
           return;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         const raw = (elements[0].element as unknown as any).$context
           .raw as ITransformedEntry;
 
@@ -235,7 +235,7 @@ function createBarChart(
           ticks: {
             callback: (value) => {
               return journalType.getValueLabel
-                ? journalType.formatTotalValue?.(value as number) ?? value
+                ? (journalType.formatTotalValue?.(value as number) ?? value)
                 : value;
             },
             precision: journalType.type === JournalType.Counter ? 0 : undefined,
