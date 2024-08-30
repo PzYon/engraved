@@ -24,8 +24,6 @@ export interface IJournalType {
 
   getYAxisLabel(journal: IJournal): string;
 
-  getValueLabel?(value: number): string;
-
   getValue(entry: IEntry): number;
 
   formatTotalValue?(totalValue: number): string;

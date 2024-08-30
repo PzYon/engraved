@@ -7,6 +7,10 @@ import { HistoryToggleOff } from "@mui/icons-material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { FormatDate } from "../../common/FormatDate";
 import { getSortedEntries } from "./getSortedEntries";
+import { JournalType } from "../../../serverApi/JournalType";
+import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
+import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
@@ -24,18 +28,35 @@ export const EntriesAgenda: React.FC<{
       {sortedEntries.entries.map((entry, index) => (
         <>
           <Paper key={entry.id} sx={{ p: 2, borderRadius: paperBorderRadius }}>
-            <Typography>
-              <Chip
-                label={journalType.getValue(entry).toString()}
-                sx={{
-                  backgroundColor: "primary.main",
-                  color: "common.white",
-                  fontSize: "small",
-                  height: "22px",
-                  mr: 2,
-                }}
-              ></Chip>
-              <FormatDate value={entry.dateTime} />
+            <Typography sx={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex" }}>
+                {journal.type === JournalType.Counter ? null : (
+                  <Chip
+                    label={journalType.getValue(entry).toString()}
+                    sx={{
+                      backgroundColor: "primary.main",
+                      color: "common.white",
+                      fontSize: "small",
+                      height: "22px",
+                      mr: 2,
+                    }}
+                  ></Chip>
+                )}
+
+                <FormatDate value={entry.dateTime} />
+
+                <div style={{ flexGrow: 1 }} />
+
+                <ActionIconButtonGroup
+                  actions={[
+                    ActionFactory.editEntry(entry),
+                    ActionFactory.deleteEntry(entry),
+                  ]}
+                />
+              </div>
+              <div>
+                <EntrySubRoutes entry={entry} />
+              </div>
             </Typography>
           </Paper>
           {sortedEntries.gaps[index] ? (

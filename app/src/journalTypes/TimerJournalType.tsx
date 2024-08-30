@@ -94,10 +94,6 @@ export class TimerJournalType implements IJournalType {
     return "Hours";
   }
 
-  getValueLabel(value: number): string {
-    return Math.round((value as number) / 60).toString();
-  }
-
   getValue(entry: IEntry): number {
     const m = entry as ITimerEntry;
 
