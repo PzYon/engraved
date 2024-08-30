@@ -233,11 +233,8 @@ function createBarChart(
               : undefined,
           stacked: true,
           ticks: {
-            callback: (value) => {
-              return journalType.getValueLabel
-                ? (journalType.formatTotalValue?.(value as number) ?? value)
-                : value;
-            },
+            callback: (value) =>
+              journalType.formatTotalValue?.(value as number) ?? value,
             precision: journalType.type === JournalType.Counter ? 0 : 5,
           },
           title: {

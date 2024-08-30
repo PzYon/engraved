@@ -7,6 +7,11 @@ import { HistoryToggleOff } from "@mui/icons-material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { FormatDate } from "../../common/FormatDate";
 import { getSortedEntries } from "./getSortedEntries";
+import { JournalType } from "../../../serverApi/JournalType";
+import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
+import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { getDurationAsHhMmSsFromSeconds } from "../../../util/getDurationAsHhMmSs";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
@@ -20,23 +25,44 @@ export const EntriesAgenda: React.FC<{
   const journalType = JournalTypeFactory.create(journal.type);
 
   return (
-    <div style={{ marginTop: "24px", marginBottom: "24px" }}>
+    <Paper sx={{ mt: 3, mb: 3, backgroundColor: "transparent" }}>
       {sortedEntries.entries.map((entry, index) => (
         <>
           <Paper key={entry.id} sx={{ p: 2, borderRadius: paperBorderRadius }}>
-            <Typography>
-              <Chip
-                label={journalType.getValue(entry).toString()}
-                sx={{
-                  backgroundColor: "primary.main",
-                  color: "common.white",
-                  fontSize: "small",
-                  height: "22px",
-                  mr: 2,
-                }}
-              ></Chip>
-              <FormatDate value={entry.dateTime} />
-            </Typography>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {journal.type === JournalType.Counter ? null : (
+                  <Chip
+                    label={getValueLabel(entry)}
+                    sx={{
+                      backgroundColor: "primary.main",
+                      color: "common.white",
+                      fontSize: "small",
+                      height: "22px",
+                      mr: 2,
+                    }}
+                  ></Chip>
+                )}
+
+                <Typography style={{ flexGrow: 1 }}>
+                  <FormatDate value={entry.dateTime} />
+                  {entry.notes ? (
+                    <span>
+                      <span style={{ padding: "0 8px" }}>&#183;</span>
+                      {entry.notes}
+                    </span>
+                  ) : null}
+                </Typography>
+
+                <ActionIconButtonGroup
+                  actions={[
+                    ActionFactory.editEntry(entry),
+                    ActionFactory.deleteEntry(entry),
+                  ]}
+                />
+              </div>
+              <EntrySubRoutes entry={entry} />
+            </div>
           </Paper>
           {sortedEntries.gaps[index] ? (
             <Typography
@@ -58,6 +84,14 @@ export const EntriesAgenda: React.FC<{
           ) : null}
         </>
       ))}
-    </div>
+    </Paper>
   );
+
+  function getValueLabel(entry: IEntry) {
+    if (journal.type === JournalType.Timer) {
+      return getDurationAsHhMmSsFromSeconds(journalType.getValue(entry));
+    }
+
+    return journalType.getValue(entry).toString();
+  }
 };
