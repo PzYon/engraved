@@ -49,7 +49,10 @@ export const ScrapListItem: React.FC<{
       ) : null}
       <StyledCheckbox
         checked={listItem.isCompleted ?? false}
-        onChange={(_, checked) => {
+        onChange={(
+          _: React.ChangeEvent<HTMLInputElement>,
+          checked: boolean,
+        ) => {
           onChange({ label, isCompleted: checked, depth: listItem.depth });
         }}
       />

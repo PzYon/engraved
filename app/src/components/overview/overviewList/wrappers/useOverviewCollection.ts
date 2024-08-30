@@ -1,6 +1,6 @@
 import { useHotkeys } from "react-hotkeys-hook";
 import { OverviewItemCollection } from "./OverviewItemCollection";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { OverviewItem } from "./OverviewItem";
 import {
   knownQueryParams,
@@ -12,7 +12,10 @@ export function useOverviewCollection() {
 
   const { setValue, getValue } = useSelectedItemId();
 
-  const collection = new OverviewItemCollection(focusIndex, onIndexChange);
+  const collection = useMemo(
+    () => new OverviewItemCollection(focusIndex, onIndexChange),
+    [focusIndex, onIndexChange],
+  );
 
   useHotkeys("alt+up", () => collection.moveFocusUp());
   useHotkeys("alt+down", () => collection.moveFocusDown());
