@@ -25,7 +25,7 @@ export const EntriesAgenda: React.FC<{
   const journalType = JournalTypeFactory.create(journal.type);
 
   return (
-    <div style={{ marginTop: "24px", marginBottom: "24px" }}>
+    <Paper sx={{ mt: 3, mb: 3, backgroundColor: "transparent" }}>
       {sortedEntries.entries.map((entry, index) => (
         <>
           <Paper key={entry.id} sx={{ p: 2, borderRadius: paperBorderRadius }}>
@@ -84,7 +84,7 @@ export const EntriesAgenda: React.FC<{
           ) : null}
         </>
       ))}
-    </div>
+    </Paper>
   );
 
   function getValueLabel(entry: IEntry) {
