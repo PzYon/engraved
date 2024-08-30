@@ -238,7 +238,7 @@ function createBarChart(
                 ? (journalType.formatTotalValue?.(value as number) ?? value)
                 : value;
             },
-            precision: journalType.type === JournalType.Counter ? 0 : undefined,
+            precision: journalType.type === JournalType.Counter ? 0 : 5,
           },
           title: {
             display: true,
