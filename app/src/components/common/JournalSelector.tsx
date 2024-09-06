@@ -16,7 +16,7 @@ export const JournalSelector: React.FC<{
   const selectedJournal = useMemo(
     () =>
       journals && selectedJournalId
-        ? journals.find((j) => j.id === selectedJournalId) ?? journals[0]
+        ? (journals.find((j) => j.id === selectedJournalId) ?? journals[0])
         : null,
     [journals, selectedJournalId],
   );
@@ -34,6 +34,7 @@ export const JournalSelector: React.FC<{
 
   return (
     <Autocomplete
+      autoFocus={true}
       value={selectedJournal}
       options={filterJournals(journals)}
       onChange={async (_, selectedOption) => {
