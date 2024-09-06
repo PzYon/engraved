@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   FormControl,
@@ -111,6 +111,12 @@ const UpsertEntryActionInternal: React.FC<{
 
   const { closeAction } = useItemAction();
 
+  const valueInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setTimeout(() => valueInputRef.current.focus());
+  }, []);
+
   const upsertEntryMutation = useUpsertEntryMutation(
     journal.id,
     journal.type,
@@ -149,7 +155,7 @@ const UpsertEntryActionInternal: React.FC<{
         <TextField
           value={value}
           type="number"
-          autoFocus={true}
+          inputRef={valueInputRef}
           onChange={(event) => setValue(event.target.value)}
           label={getValueHeaderLabel(journal)}
           margin={"normal"}
