@@ -7,5 +7,6 @@
       "automerge": true
     }
   ],
-  "platformAutomerge": true
+  "platformAutomerge": true,
+  "automergeType": "branch"
 }
