@@ -11,9 +11,9 @@
         "pin",
         "digest"
       ],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "branch"
     }
   ],
-  "platformAutomerge": true,
-  "automergeType": "branch"
+  "platformAutomerge": true
 }
