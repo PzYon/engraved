@@ -1,6 +1,6 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "ignorePaths": [],
   "packageRules": [
@@ -11,14 +11,9 @@
         "pin",
         "digest"
       ],
-      "git": {
-        "pushToBranch": {
-          "enabled": true,
-          "createPullRequest": false,
-          "pushToMain": true,
-          "pushWhenGreen": true
-        }
-      }
+      "automerge": true
     }
-  ]
+  ],
+  "platformAutomerge": true,
+  "automergeType": "branch"
 }
