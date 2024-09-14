@@ -5,4 +5,5 @@ export interface IUser {
   displayName?: string;
   imageUrl?: string;
   favoriteJournalIds?: string[];
+  tags?: Record<string, string[]>;
 }
