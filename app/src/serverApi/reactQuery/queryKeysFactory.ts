@@ -17,6 +17,7 @@ export const queryKeysFactory = {
     searchText?: string,
     journalTypes?: JournalType[],
     favoritesOnly?: boolean,
+    journalIds?: string[],
   ) {
     return [
       journals,
@@ -24,6 +25,7 @@ export const queryKeysFactory = {
       searchText ?? "",
       journalTypes?.join() ?? "",
       favoritesOnly ?? false,
+      journalIds?.join() ?? "",
     ];
   },
 

@@ -24,8 +24,12 @@ public class GetAllJournalsQueryExecutor(IUserScopedRepository repository)
 
   private string[]? GetJournalIds(GetAllJournalsQuery query)
   {
-    return !query.FavoritesOnly.HasValue || !query.FavoritesOnly.Value
-      ? null
+    string[] journalIds = !query.FavoritesOnly.HasValue || !query.FavoritesOnly.Value
+      ? []
       : repository.CurrentUser.Value.FavoriteJournalIds.ToArray();
+
+    return query.JournalIds.Any()
+      ? journalIds.Where(i => query.JournalIds.Contains(i)).ToArray()
+      : journalIds;
   }
 }
