@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useAppContext } from "../../../AppContext";
 
 export const ListOfTags: React.FC = () => {
@@ -12,7 +13,9 @@ export const ListOfTags: React.FC = () => {
   return (
     <ul>
       {tagNames.map((t) => (
-        <li key={t}>{t}</li>
+        <li key={t}>
+          <Link to={`/tags/${t}`}>{t}</Link>
+        </li>
       ))}
     </ul>
   );

@@ -25,6 +25,7 @@ import {
   JournalDetailsView,
 } from "./components/details/JournalDetails";
 import { TagsPage } from "./components/overview/tags/TagsPage";
+import { TagPage } from "./components/overview/tags/TagPage";
 
 const router = createBrowserRouter([
   {
@@ -83,8 +84,13 @@ const router = createBrowserRouter([
         element: <ScheduledPage />,
       },
       {
-        path: "tags/*",
+        path: "tags/",
         element: <TagsPage />,
+      },
+
+      {
+        path: "tags/:tagName",
+        element: <TagPage />,
       },
       {
         path: "settings",
