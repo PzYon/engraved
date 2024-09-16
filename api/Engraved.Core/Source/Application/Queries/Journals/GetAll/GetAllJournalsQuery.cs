@@ -14,5 +14,5 @@ public class GetAllJournalsQuery : IEntitiesQuery
 
   public bool ScheduledOnly { get; set; }
 
-  public string[] JournalIds { get; set; } = [];
+  public string[]? JournalIds { get; set; } = [];
 }

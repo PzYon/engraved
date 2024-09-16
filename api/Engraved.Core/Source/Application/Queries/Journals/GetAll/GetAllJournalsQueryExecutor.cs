@@ -28,7 +28,7 @@ public class GetAllJournalsQueryExecutor(IUserScopedRepository repository)
       ? []
       : repository.CurrentUser.Value.FavoriteJournalIds.ToArray();
 
-    return query.JournalIds.Any()
+    return query.JournalIds != null && query.JournalIds.Any()
       ? journalIds.Where(i => query.JournalIds.Contains(i)).ToArray()
       : journalIds;
   }

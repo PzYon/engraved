@@ -18,6 +18,10 @@ export const useJournalProperties = (
     return [];
   }
 
+  const tagNames = Object.keys(user.tags).filter(
+    (t) => user.tags[t].indexOf(journal.id) > -1,
+  );
+
   return [
     {
       key: "favorite",
@@ -52,6 +56,14 @@ export const useJournalProperties = (
       node: () => <Users users={journalPermissions.allExceptOwner} />,
       hideWhen: () => !journalPermissions.allExceptOwner.length,
       label: "Shared with",
+    },
+    {
+      key: "tags",
+      label: "Tags",
+      hideWhen: () => !tagNames.length,
+      node: () => {
+        return tagNames.join();
+      },
     },
   ];
 };
