@@ -11,9 +11,11 @@
         "pin",
         "digest"
       ],
+      "enabled": true,
       "automerge": true,
-      "dependencyDashboardApproval": false
+      "automergeType": "branch",
+      "platformAutomerge": true
+      "dependencyDashboardApproval": false,
     }
-  ],
-  "platformAutomerge": true
+  ]
 }
