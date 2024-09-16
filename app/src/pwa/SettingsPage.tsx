@@ -2,15 +2,20 @@ import { Page } from "../components/layout/pages/Page";
 import { PageSection } from "../components/layout/pages/PageSection";
 import { Button } from "@mui/material";
 import { ServerApi } from "../serverApi/ServerApi";
-import { optInPushNotifications, setUpOneSignal } from "./oneSignal";
+import { optInPushNotifications, setUpOneSignal } from "../util/oneSignal";
 import { useAppContext } from "../AppContext";
+import React from "react";
+import { ManageTags } from "./ManageTags";
 
-export const PwaSettingsPage: React.FC = () => {
+export const SettingsPage: React.FC = () => {
   const { user } = useAppContext();
 
   return (
-    <Page title="PWA Settings" documentTitle="PWA Settings">
-      <PageSection title="Notifications">
+    <Page title="Settings" documentTitle="Settings">
+      <PageSection title="Tags">
+        <ManageTags />
+      </PageSection>
+      <PageSection title="PWA Notifications">
         <p>
           <Button
             variant={"outlined"}
