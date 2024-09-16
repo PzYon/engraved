@@ -11,7 +11,8 @@
         "pin",
         "digest"
       ],
-      "automerge": true
+      "automerge": true,
+      "dependencyDashboardApproval": false
     }
   ],
   "platformAutomerge": true
