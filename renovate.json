@@ -14,8 +14,8 @@
       "enabled": true,
       "automerge": true,
       "automergeType": "branch",
-      "platformAutomerge": true
-      "dependencyDashboardApproval": false,
+      "platformAutomerge": true,
+      "dependencyDashboardApproval": false
     }
   ]
 }
