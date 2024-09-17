@@ -10,11 +10,6 @@ import { useAppContext } from "../../../AppContext";
 import { Journals } from "../journals/Journals";
 
 export const TagPage: React.FC = () => {
-  // todo:
-  // - load journals
-  // - render journal icon
-  // - maybe add possibility to add another journal to this tag?
-
   const { tagName } = useParams();
   const { user } = useAppContext();
 
@@ -22,7 +17,7 @@ export const TagPage: React.FC = () => {
     <Page
       title={
         <PageTitle
-          title={"Tag"}
+          title={tagName}
           icon={
             <Icon style={IconStyle.Large}>
               <Style />
@@ -34,7 +29,6 @@ export const TagPage: React.FC = () => {
       showFilters={false}
       hideActions={true}
     >
-      <div>Tag name: {tagName}</div>
       <Journals tagNames={user.tags[tagName]} />
     </Page>
   );
