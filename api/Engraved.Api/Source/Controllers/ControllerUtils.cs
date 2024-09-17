@@ -6,18 +6,17 @@ public static class ControllerUtils
 {
   public static JournalType[] ParseJournalTypes(string? journalTypes)
   {
-    if (string.IsNullOrEmpty(journalTypes))
-    {
-      return [];
-    }
-
-    return journalTypes.Split(",")
+    return ParseMultiValueStringParam(journalTypes)
       .Select(Enum.Parse<JournalType>)
       .ToArray();
   }
-  
-  public static string[]? ParseMultiValueStringParam(string? journalTypes)
+
+  public static string[] ParseMultiValueStringParam(string? parameterString)
   {
-    return string.IsNullOrEmpty(journalTypes) ? [] : journalTypes.Split(",").ToArray();
+    return string.IsNullOrEmpty(parameterString)
+      ? []
+      : parameterString.Split(",")
+        .Select(t => t.Trim())
+        .ToArray();
   }
 }
