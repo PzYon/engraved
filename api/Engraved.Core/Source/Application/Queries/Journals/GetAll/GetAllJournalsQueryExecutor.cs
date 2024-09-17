@@ -22,14 +22,18 @@ public class GetAllJournalsQueryExecutor(IUserScopedRepository repository)
     return await JournalQueryUtil.EnsurePermissionUsers(repository, allJournals);
   }
 
-  private string[]? GetJournalIds(GetAllJournalsQuery query)
+  private string[] GetJournalIds(GetAllJournalsQuery query)
   {
-    string[] journalIds = !query.FavoritesOnly.HasValue || !query.FavoritesOnly.Value
-      ? []
-      : repository.CurrentUser.Value.FavoriteJournalIds.ToArray();
+    var isFavoritesQuery = query.FavoritesOnly.HasValue && query.FavoritesOnly.Value;
+    var queryFilterIds = query.JournalIds ?? [];
 
-    return query.JournalIds != null && query.JournalIds.Any()
-      ? journalIds.Where(i => query.JournalIds.Contains(i)).ToArray()
-      : journalIds;
+    if (!isFavoritesQuery)
+    {
+      return queryFilterIds;
+    }
+
+    return repository.CurrentUser.Value.FavoriteJournalIds
+      .Where(i => !queryFilterIds.Any() || queryFilterIds.Contains(i))
+      .ToArray();
   }
 }

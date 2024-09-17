@@ -15,4 +15,9 @@ public static class ControllerUtils
       .Select(Enum.Parse<JournalType>)
       .ToArray();
   }
+  
+  public static string[]? ParseMultiValueStringParam(string? journalTypes)
+  {
+    return string.IsNullOrEmpty(journalTypes) ? null : journalTypes.Split(",").ToArray();
+  }
 }

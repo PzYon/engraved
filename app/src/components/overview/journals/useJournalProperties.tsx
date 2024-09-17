@@ -7,6 +7,7 @@ import { getScheduleProperty } from "../scheduled/scheduleUtils";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 import { FormatDate } from "../../common/FormatDate";
 import { useAppContext } from "../../../AppContext";
+import { Link } from "react-router-dom";
 
 export const useJournalProperties = (
   journal: IJournal,
@@ -61,9 +62,15 @@ export const useJournalProperties = (
       key: "tags",
       label: "Tags",
       hideWhen: () => !tagNames.length,
-      node: () => {
-        return tagNames.join();
-      },
+      node: () => (
+        <>
+          {tagNames.map((t) => (
+            <Link key={t} to={`/tags/${t}`}>
+              {t}
+            </Link>
+          ))}
+        </>
+      ),
     },
   ];
 };
