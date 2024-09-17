@@ -4,11 +4,11 @@ namespace Engraved.Api.Controllers;
 
 public static class ControllerUtils
 {
-  public static JournalType[]? ParseJournalTypes(string? journalTypes)
+  public static JournalType[] ParseJournalTypes(string? journalTypes)
   {
     if (string.IsNullOrEmpty(journalTypes))
     {
-      return null;
+      return [];
     }
 
     return journalTypes.Split(",")
@@ -18,6 +18,6 @@ public static class ControllerUtils
   
   public static string[]? ParseMultiValueStringParam(string? journalTypes)
   {
-    return string.IsNullOrEmpty(journalTypes) ? null : journalTypes.Split(",").ToArray();
+    return string.IsNullOrEmpty(journalTypes) ? [] : journalTypes.Split(",").ToArray();
   }
 }
