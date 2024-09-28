@@ -5,7 +5,7 @@ import { ServerApi } from "../serverApi/ServerApi";
 import { optInPushNotifications, setUpOneSignal } from "../util/oneSignal";
 import { useAppContext } from "../AppContext";
 import React from "react";
-import { ManageTags } from "./ManageTags";
+import { ManageTags } from "../components/overview/tags/ManageTags";
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAppContext();

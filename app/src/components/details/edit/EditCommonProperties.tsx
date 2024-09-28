@@ -3,7 +3,7 @@ import { translations } from "../../../i18n/translations";
 import { PageSection } from "../../layout/pages/PageSection";
 import React from "react";
 import { MoreOutlined, Style } from "@mui/icons-material";
-import { ManageUserTags } from "../../../pwa/ManageUserTags";
+import { ManageUserTags } from "../../overview/tags/ManageUserTags";
 
 export const EditCommonProperties: React.FC<{
   journalId: string;

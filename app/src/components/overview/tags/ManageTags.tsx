@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { useAppContext } from "../AppContext";
 import { Button, List, ListItem, ListItemText, TextField } from "@mui/material";
-import { ActionIconButton } from "../components/common/actions/ActionIconButton";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
-import { useUpdateUserTagsMutation } from "../serverApi/reactQuery/mutations/useUpsertUserTagsMutation";
+import { useUpdateUserTagsMutation } from "../../../serverApi/reactQuery/mutations/useUpsertUserTagsMutation";
+import { useAppContext } from "../../../AppContext";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
 export const ManageTags: React.FC = () => {
   const { user } = useAppContext();
