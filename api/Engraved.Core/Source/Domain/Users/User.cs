@@ -15,4 +15,6 @@ public class User : IUser
   public DateTime? LastLoginDate { get; set; }
 
   public List<string> FavoriteJournalIds { get; set; } = new();
+  
+  public Dictionary<string, List<string>> Tags { get; set; } = new();
 }

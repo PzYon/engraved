@@ -73,7 +73,7 @@ public class Dispatcher(
   private void InvalidateCache(CommandResult commandResult)
   {
     string[] affectedUserIds = commandResult.AffectedUserIds
-      .Union(new[] { repository.CurrentUser.Value.Id! })
+      .Union([repository.CurrentUser.Value.Id!])
       .ToArray();
 
     queryCache.Invalidate(affectedUserIds);

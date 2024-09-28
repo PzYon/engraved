@@ -51,6 +51,7 @@ export const JournalEditPage: React.FC = () => {
       actions={getCommonEditModeActions(navigateToViewPage, save)}
     >
       <EditCommonProperties
+        journalId={journal.id}
         name={name}
         setName={setName}
         description={description}

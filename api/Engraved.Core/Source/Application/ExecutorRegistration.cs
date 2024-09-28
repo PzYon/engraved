@@ -13,6 +13,7 @@ using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
+using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Entries.Get;
 using Engraved.Core.Application.Queries.Entries.GetActive;
@@ -28,12 +29,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Engraved.Core.Application;
 
-public class ExecutorRegistration
+public static class ExecutorRegistration
 {
   public static void RegisterCommands(IServiceCollection services)
   {
     RegisterCommand<AddJournalCommand, AddJournalCommandExecutor>(services);
     RegisterCommand<AddJournalToFavoritesCommand, AddJournalToFavoritesCommandExecutor>(services);
+    RegisterCommand<UpdateUserTagsCommand, UpdateUserTagsCommandExecutor>(services);
     RegisterCommand<UpsertCounterEntryCommand, UpsertCounterEntryCommandExecutor>(services);
     RegisterCommand<UpsertGaugeEntryCommand, UpsertGaugeEntryCommandExecutor>(services);
     RegisterCommand<UpsertScrapsEntryCommand, UpsertScrapsEntryCommandExecutor>(services);

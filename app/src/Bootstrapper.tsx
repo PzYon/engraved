@@ -47,13 +47,7 @@ export const Bootstrapper: React.FC = () => {
 
     ServerApi.tryAuthenticate(storage.getAuthResult().jwtToken)
       .then((u) => {
-        setUser({
-          ...u,
-          tags: {
-            Kusi: ["664d89f5c22ad1781b94e926"],
-            Heinz: ["664d89f5c22ad1781b94e926"],
-          },
-        });
+        setUser(u);
 
         registerGooglePrompt(onSignedIn, ref.current, true);
       })

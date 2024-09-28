@@ -331,6 +331,12 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/user`, "GET", null);
   }
 
+  static async updateUserTags(tagNames: string[]): Promise<void> {
+    return await ServerApi.executeRequest("/user/tags", "PATCH", {
+      tagNames: tagNames,
+    });
+  }
+
   static async getSearchEntities(
     searchText: string,
     scheduledOnly: boolean,

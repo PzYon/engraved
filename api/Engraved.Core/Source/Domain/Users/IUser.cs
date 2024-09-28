@@ -15,4 +15,6 @@ public interface IUser
   DateTime? LastLoginDate { get; set; }
 
   List<string> FavoriteJournalIds { get; set; }
+
+  public Dictionary<string, List<string>> Tags { get; set; }
 }

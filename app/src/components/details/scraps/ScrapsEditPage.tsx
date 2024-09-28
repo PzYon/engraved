@@ -32,6 +32,7 @@ export const ScrapsEditPage: React.FC = () => {
       ]}
     >
       <EditCommonProperties
+        journalId={journal.id}
         name={name}
         setName={setName}
         description={description}

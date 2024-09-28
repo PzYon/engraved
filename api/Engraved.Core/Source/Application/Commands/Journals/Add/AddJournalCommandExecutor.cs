@@ -25,7 +25,7 @@ public class AddJournalCommandExecutor(IRepository repository, IDateService date
     journal.EditedOn = dateService.UtcNow;
     UpsertResult result = await repository.UpsertJournal(journal);
 
-    return new CommandResult(result.EntityId, Array.Empty<string>());
+    return new CommandResult(result.EntityId, []);
   }
 
   private static IJournal CreateJournal(JournalType type)

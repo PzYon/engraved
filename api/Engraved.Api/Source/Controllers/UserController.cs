@@ -2,6 +2,7 @@
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
+using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,14 @@ public class UserController(IUserScopedRepository userScopedRepository, Dispatch
     return userScopedRepository.CurrentUser.Value;
   }
 
-  [HttpPatch] // or PUT?
+  [HttpPatch]
+  [Route("tags")]
+  public async Task<CommandResult> UpdateTags(UpdateUserTagsCommand command)
+  {
+    return await dispatcher.Command(command);
+  }
+
+  [HttpPatch]
   [Route("favorites/{journalId}")]
   public async Task<CommandResult> AddJournalToFavorites(string journalId)
   {
