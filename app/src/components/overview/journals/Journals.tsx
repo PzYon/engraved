@@ -8,14 +8,14 @@ import { OverviewList } from "../overviewList/OverviewList";
 
 export const Journals: React.FC<{
   favoritesOnly?: boolean;
-  tagNames?: string[];
-}> = ({ favoritesOnly, tagNames }) => {
+  journalIds?: string[];
+}> = ({ favoritesOnly, journalIds }) => {
   const { searchText, journalTypes } = usePageContext();
   const journals = useJournalsQuery(
     searchText,
     journalTypes,
     favoritesOnly,
-    tagNames,
+    journalIds,
   );
 
   if (!journals) {

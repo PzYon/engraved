@@ -21,7 +21,7 @@ export const ReadonlyTitle: React.FC<{
     <ReadonlyTitleContainer>
       <span style={{ display: "flex", alignItems: "center", width: "100%" }}>
         {getTitle()}
-        {!hasFocus && isCompact ? (
+        {!hasFocus && isCompact && entity ? (
           <Properties properties={[getScheduleProperty(entity, user.id)]} />
         ) : null}
       </span>

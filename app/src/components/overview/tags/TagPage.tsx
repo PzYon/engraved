@@ -13,6 +13,8 @@ export const TagPage: React.FC = () => {
   const { tagName } = useParams();
   const { user } = useAppContext();
 
+  const journalIds = user.tags[tagName];
+
   return (
     <Page
       title={
@@ -29,7 +31,7 @@ export const TagPage: React.FC = () => {
       showFilters={false}
       hideActions={true}
     >
-      <Journals tagNames={user.tags[tagName]} />
+      {journalIds?.length ? <Journals journalIds={journalIds} /> : null}
     </Page>
   );
 };

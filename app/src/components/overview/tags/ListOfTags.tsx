@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAppContext } from "../../../AppContext";
+import React from "react";
+import { GridContainer, GridItem } from "../../common/Grid";
+import { Paper, Typography } from "@mui/material";
+import { ReadonlyTitle } from "../ReadonlyTitle";
 
 export const ListOfTags: React.FC = () => {
   const { user } = useAppContext();
@@ -11,12 +15,24 @@ export const ListOfTags: React.FC = () => {
   }
 
   return (
-    <ul>
+    <GridContainer>
       {tagNames.map((t) => (
-        <li key={t}>
-          <Link to={`/tags/${t}`}>{t}</Link>
-        </li>
+        <GridItem key={t}>
+          <Paper sx={{ p: 3 }}>
+            <ReadonlyTitle
+              hasFocus={false}
+              entity={null}
+              title={<Link to={`/tags/${t}`}>{t}</Link>}
+            ></ReadonlyTitle>
+            <Typography sx={{ pt: 1 }}>{getJournalCountLabel(t)}</Typography>
+          </Paper>
+        </GridItem>
       ))}
-    </ul>
+    </GridContainer>
   );
+
+  function getJournalCountLabel(tagName: string) {
+    const count = user.tags[tagName].length;
+    return `${count} journal${count === 1 ? "" : "s"}`;
+  }
 };
