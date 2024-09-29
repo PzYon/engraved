@@ -1,10 +1,12 @@
-﻿using Engraved.Core.Application;
+﻿using Amazon.Runtime.Internal;
+using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Journals.Add;
 using Engraved.Core.Application.Commands.Journals.AddSchedule;
 using Engraved.Core.Application.Commands.Journals.Delete;
 using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
+using Engraved.Core.Application.Commands.Journals.UpdateTags;
 using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
@@ -86,5 +88,14 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
   public async Task<CommandResult> Delete(string journalId)
   {
     return await dispatcher.Command(new DeleteJournalCommand { JournalId = journalId });
+  }
+
+  [HttpPatch]
+  [Route("{journalId}/tags")]
+  public async Task<CommandResult> UpdateUserTags(string journalId, UpdateJournalUserTagsCommand command)
+  {
+    command.JournalId = journalId;
+    
+    return await dispatcher.Command(command);
   }
 }

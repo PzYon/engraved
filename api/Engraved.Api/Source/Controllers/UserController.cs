@@ -1,5 +1,6 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Journals.UpdateTags;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
@@ -24,7 +25,7 @@ public class UserController(IUserScopedRepository userScopedRepository, Dispatch
 
   [HttpPatch]
   [Route("tags")]
-  public async Task<CommandResult> UpdateTags(UpdateUserTagsCommand command)
+  public async Task<CommandResult> UpdateTags(UpdateJournalUserTagsCommand command)
   {
     return await dispatcher.Command(command);
   }
