@@ -3,7 +3,7 @@ import { translations } from "../../../i18n/translations";
 import { PageSection } from "../../layout/pages/PageSection";
 import React from "react";
 import { MoreOutlined, Style } from "@mui/icons-material";
-import { ManageUserTags } from "../../overview/tags/ManageUserTags";
+import { ManageJournalUserTags } from "../../overview/tags/ManageJournalUserTags";
 
 export const EditCommonProperties: React.FC<{
   journalId: string;
@@ -33,7 +33,7 @@ export const EditCommonProperties: React.FC<{
       </PageSection>
 
       <PageSection title={"Tags"} icon={<Style />}>
-        <ManageUserTags journalId={journalId} />
+        <ManageJournalUserTags journalId={journalId} />
       </PageSection>
     </>
   );
