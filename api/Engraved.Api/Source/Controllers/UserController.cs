@@ -25,7 +25,7 @@ public class UserController(IUserScopedRepository userScopedRepository, Dispatch
 
   [HttpPatch]
   [Route("tags")]
-  public async Task<CommandResult> UpdateTags(UpdateJournalUserTagsCommand command)
+  public async Task<CommandResult> UpdateTags(UpdateUserTagsCommand command)
   {
     return await dispatcher.Command(command);
   }

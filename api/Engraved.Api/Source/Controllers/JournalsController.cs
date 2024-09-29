@@ -94,8 +94,6 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
   [Route("{journalId}/tags")]
   public async Task<CommandResult> UpdateUserTags(string journalId, UpdateJournalUserTagsCommand command)
   {
-    command.JournalId = journalId;
-    
     return await dispatcher.Command(command);
   }
 }
