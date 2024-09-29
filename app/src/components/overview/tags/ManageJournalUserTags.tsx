@@ -9,9 +9,10 @@ import {
 import { useAppContext } from "../../../AppContext";
 import React, { useState } from "react";
 
-export const ManageJournalUserTags: React.FC<{ journalId: string }> = ({
-  journalId,
-}) => {
+export const ManageJournalUserTags: React.FC<{
+  journalId: string;
+  onChangedTags: (tagNames: string[]) => void;
+}> = ({ journalId, onChangedTags }) => {
   const { user } = useAppContext();
   const allTagNames = Object.keys(user.tags);
 
@@ -25,6 +26,7 @@ export const ManageJournalUserTags: React.FC<{ journalId: string }> = ({
         return (
           <ListItem key={tag} disablePadding>
             <ListItemButton
+              dense
               role={undefined}
               onClick={() => {
                 const index = selectedTagNames.indexOf(tag);
@@ -33,9 +35,11 @@ export const ManageJournalUserTags: React.FC<{ journalId: string }> = ({
                 } else {
                   selectedTagNames.splice(index, 1);
                 }
-                setSelectedTagNames([...selectedTagNames]);
+
+                const changedTagNames = [...selectedTagNames];
+                setSelectedTagNames(changedTagNames);
+                onChangedTags(changedTagNames);
               }}
-              dense
             >
               <ListItemIcon>
                 <Checkbox

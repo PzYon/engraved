@@ -337,6 +337,20 @@ export class ServerApi {
     });
   }
 
+  static async updateJournalUserTags(
+    journalId: string,
+    tagNames: string[],
+  ): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/journals/${journalId}/tags`,
+      "PATCH",
+      {
+        journalId: journalId,
+        tagNames: tagNames,
+      },
+    );
+  }
+
   static async getSearchEntities(
     searchText: string,
     scheduledOnly: boolean,

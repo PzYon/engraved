@@ -11,7 +11,15 @@ export const EditCommonProperties: React.FC<{
   setName: (name: string) => void;
   description: string;
   setDescription: (description: string) => void;
-}> = ({ journalId, name, setName, description, setDescription }) => {
+  onChangedTags: (tagNames: string[]) => void;
+}> = ({
+  journalId,
+  name,
+  setName,
+  description,
+  setDescription,
+  onChangedTags,
+}) => {
   return (
     <>
       <PageSection title={"Properties"} icon={<MoreOutlined />}>
@@ -33,7 +41,10 @@ export const EditCommonProperties: React.FC<{
       </PageSection>
 
       <PageSection title={"Tags"} icon={<Style />}>
-        <ManageJournalUserTags journalId={journalId} />
+        <ManageJournalUserTags
+          journalId={journalId}
+          onChangedTags={onChangedTags}
+        />
       </PageSection>
     </>
   );
