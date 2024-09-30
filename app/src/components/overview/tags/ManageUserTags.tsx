@@ -7,10 +7,15 @@ import {
   styled,
   TextField,
 } from "@mui/material";
-import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
+import {
+  AddCircleOutline,
+  Edit,
+  RemoveCircleOutline,
+} from "@mui/icons-material";
 import { useUpdateUserTagsMutation } from "../../../serverApi/reactQuery/mutations/useUpsertUserTagsMutation";
 import { useAppContext } from "../../../AppContext";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
+import { Link } from "react-router-dom";
 
 export const ManageUserTags: React.FC = () => {
   const { user } = useAppContext();
@@ -59,6 +64,9 @@ export interface IOption {
   label: string;
 }
 
+// todo: this is a wierd mix: EditableList ist not generic with hardcoded
+// URLs and co. either improve or remove.
+
 export const EditableList: React.FC<{
   options: IOption[];
   onAddOption: (label: string) => void;
@@ -66,23 +74,41 @@ export const EditableList: React.FC<{
 }> = ({ options, onAddOption, onDeleteOption }) => {
   const [newItem, setNewItem] = useState("");
 
+  const doesExist = options.map((o) => o.label).indexOf(newItem) > -1;
+
   return (
     <List dense>
       {options.map((o) => (
         <StyledListItem
           key={o.value}
           secondaryAction={
-            <ActionIconButton
-              action={{
-                key: "remove",
-                label: "Remove",
-                icon: <RemoveCircleOutline fontSize="small" />,
-                onClick: () => onDeleteOption(o.value),
-              }}
-            />
+            <>
+              <ActionIconButton
+                action={{
+                  key: "edit",
+                  label: "Edit",
+                  icon: <Edit fontSize="small" />,
+                  onClick: () => alert("Sorry, ain't implemented yet."),
+                }}
+              />
+              <ActionIconButton
+                action={{
+                  key: "remove",
+                  label: "Remove",
+                  icon: <RemoveCircleOutline fontSize="small" />,
+                  onClick: () => onDeleteOption(o.value),
+                }}
+              />
+            </>
           }
         >
-          <ListItemText primary={o.label} />
+          <ListItemText
+            primary={
+              <Link target="_blank" to={`/tags/${o.value}`}>
+                {o.label}
+              </Link>
+            }
+          />
         </StyledListItem>
       ))}
       <StyledListItem
@@ -90,6 +116,7 @@ export const EditableList: React.FC<{
           newItem ? (
             <ActionIconButton
               action={{
+                isDisabled: doesExist,
                 key: "add",
                 label: "Add",
                 icon: <AddCircleOutline fontSize="small" />,
@@ -115,7 +142,7 @@ export const EditableList: React.FC<{
   );
 
   function addNewItem() {
-    if (!newItem) {
+    if (!newItem || doesExist) {
       return;
     }
 
