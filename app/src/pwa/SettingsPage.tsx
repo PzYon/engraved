@@ -5,7 +5,7 @@ import { ServerApi } from "../serverApi/ServerApi";
 import { optInPushNotifications, setUpOneSignal } from "../util/oneSignal";
 import { useAppContext } from "../AppContext";
 import React from "react";
-import { ManageTags } from "../components/overview/tags/ManageTags";
+import { ManageUserTags } from "../components/overview/tags/ManageUserTags";
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAppContext();
@@ -13,7 +13,7 @@ export const SettingsPage: React.FC = () => {
   return (
     <Page title="Settings" documentTitle="Settings">
       <PageSection title="Tags">
-        <ManageTags />
+        <ManageUserTags />
       </PageSection>
       <PageSection title="PWA Notifications">
         <p>

@@ -20,7 +20,9 @@ export const ScrapsEditPage: React.FC = () => {
   const editJournalMutation = useEditJournalMutation(journal.id);
 
   const disableSave =
-    name === journal.name && description === journal.description;
+    name === journal.name &&
+    description === journal.description &&
+    !changedTagNames;
 
   const navigateToViewPage = () => navigate("./..");
 

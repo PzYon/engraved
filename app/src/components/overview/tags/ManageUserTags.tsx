@@ -1,11 +1,18 @@
 import React, { useMemo, useState } from "react";
-import { Button, List, ListItem, ListItemText, TextField } from "@mui/material";
+import {
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  styled,
+  TextField,
+} from "@mui/material";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { useUpdateUserTagsMutation } from "../../../serverApi/reactQuery/mutations/useUpsertUserTagsMutation";
 import { useAppContext } from "../../../AppContext";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
-export const ManageTags: React.FC = () => {
+export const ManageUserTags: React.FC = () => {
   const { user } = useAppContext();
 
   const initialTagNames = useMemo(() => {
@@ -62,7 +69,7 @@ export const EditableList: React.FC<{
   return (
     <List dense>
       {options.map((o) => (
-        <ListItem
+        <StyledListItem
           key={o.value}
           secondaryAction={
             <ActionIconButton
@@ -76,9 +83,9 @@ export const EditableList: React.FC<{
           }
         >
           <ListItemText primary={o.label} />
-        </ListItem>
+        </StyledListItem>
       ))}
-      <ListItem
+      <StyledListItem
         secondaryAction={
           newItem ? (
             <ActionIconButton
@@ -86,16 +93,14 @@ export const EditableList: React.FC<{
                 key: "add",
                 label: "Add",
                 icon: <AddCircleOutline fontSize="small" />,
-                onClick: () => {
-                  onAddOption(newItem);
-                  setNewItem("");
-                },
+                onClick: addNewItem,
               }}
             />
           ) : null
         }
       >
         <TextField
+          autoFocus={true}
           key={JSON.stringify(options)}
           value={newItem}
           style={{ width: "100%" }}
@@ -103,8 +108,22 @@ export const EditableList: React.FC<{
           onChange={(event) => {
             setNewItem(event.target.value);
           }}
+          onBlur={addNewItem}
         />
-      </ListItem>
+      </StyledListItem>
     </List>
   );
+
+  function addNewItem() {
+    if (!newItem) {
+      return;
+    }
+
+    onAddOption(newItem);
+    setNewItem("");
+  }
 };
+
+const StyledListItem = styled(ListItem)`
+  padding-left: 0;
+`;
