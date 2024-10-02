@@ -27,7 +27,6 @@ export const ManageJournalUserTags: React.FC<{
           <ListItem key={tag} disablePadding>
             <ListItemButton
               dense
-              role={undefined}
               onClick={() => {
                 const index = selectedTagNames.indexOf(tag);
                 if (index === -1) {
@@ -41,12 +40,13 @@ export const ManageJournalUserTags: React.FC<{
                 onChangedTags(changedTagNames);
               }}
             >
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: 0 }}>
                 <Checkbox
                   edge="start"
                   checked={selectedTagNames.includes(tag)}
                   tabIndex={-1}
                   disableRipple
+                  sx={{ p: 0, pr: 1 }}
                 />
               </ListItemIcon>
               <ListItemText primary={tag} />
