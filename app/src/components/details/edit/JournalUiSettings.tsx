@@ -124,6 +124,7 @@ export const JournalUiSettings: React.FC<{
 
         <GridItem>
           <TextField
+            id={Math.random().toString()}
             label="Y-Axis Unit"
             sx={{ width: "100%" }}
             value={uiSettings.yAxisUnit}
