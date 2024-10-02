@@ -4,7 +4,7 @@ public class CommandResult
 {
   public string EntityId { get; } = null!;
 
-  public string[] AffectedUserIds { get; } = Array.Empty<string>();
+  public string[] AffectedUserIds { get; } = [];
 
   public CommandResult(string entityId, string[] affectedUserIds)
   {

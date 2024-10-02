@@ -7,7 +7,7 @@ import { JournalsPage } from "./components/overview/journals/JournalsPage";
 import { EntriesPage } from "./components/overview/entries/EntriesPage";
 import { SearchPage } from "./components/overview/search/SearchPage";
 import { ScheduledPage } from "./components/overview/scheduled/ScheduledPage";
-import { PwaSettingsPage } from "./pwa/PwaSettingsPage";
+import { SettingsPage } from "./pwa/SettingsPage";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { AppContextProvider } from "./AppContextProvider";
 import { ActionContextProvider } from "./components/common/actions/ActionContextProvider";
@@ -24,6 +24,8 @@ import {
   JournalDetailsEdit,
   JournalDetailsView,
 } from "./components/details/JournalDetails";
+import { TagsPage } from "./components/overview/tags/TagsPage";
+import { TagPage } from "./components/overview/tags/TagPage";
 
 const router = createBrowserRouter([
   {
@@ -82,8 +84,17 @@ const router = createBrowserRouter([
         element: <ScheduledPage />,
       },
       {
+        path: "tags/",
+        element: <TagsPage />,
+      },
+
+      {
+        path: "tags/:tagName",
+        element: <TagPage />,
+      },
+      {
         path: "settings",
-        element: <PwaSettingsPage />,
+        element: <SettingsPage />,
       },
       {
         path: "*",

@@ -7,6 +7,8 @@ import { getScheduleProperty } from "../scheduled/scheduleUtils";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 import { FormatDate } from "../../common/FormatDate";
 import { useAppContext } from "../../../AppContext";
+import { Link } from "react-router-dom";
+import { styled } from "@mui/material";
 
 export const useJournalProperties = (
   journal: IJournal,
@@ -17,6 +19,10 @@ export const useJournalProperties = (
   if (!journal) {
     return [];
   }
+
+  const tagNames = Object.keys(user.tags).filter(
+    (t) => user.tags[t].indexOf(journal.id) > -1,
+  );
 
   return [
     {
@@ -53,5 +59,28 @@ export const useJournalProperties = (
       hideWhen: () => !journalPermissions.allExceptOwner.length,
       label: "Shared with",
     },
+    {
+      key: "tags",
+      label: "Tags",
+      hideWhen: () => !tagNames.length,
+      node: () => (
+        <TagContainer>
+          {tagNames.map((t) => (
+            <Link key={t} to={`/tags/${t}`}>
+              {t}
+            </Link>
+          ))}
+        </TagContainer>
+      ),
+    },
   ];
 };
+
+const TagContainer = styled("div")`
+  display: inline-flex;
+
+  a:not(:last-of-type)::after {
+    content: ",";
+    margin-right: 5px;
+  }
+`;

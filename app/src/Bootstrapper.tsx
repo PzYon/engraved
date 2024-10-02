@@ -48,6 +48,7 @@ export const Bootstrapper: React.FC = () => {
     ServerApi.tryAuthenticate(storage.getAuthResult().jwtToken)
       .then((u) => {
         setUser(u);
+
         registerGooglePrompt(onSignedIn, ref.current, true);
       })
       .catch((e: ApiError) => {

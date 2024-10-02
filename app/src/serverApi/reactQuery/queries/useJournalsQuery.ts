@@ -9,6 +9,7 @@ export const useJournalsQuery = (
   searchText?: string,
   journalTypes?: JournalType[],
   favoritesOnly?: boolean,
+  journalIds?: string[],
 ): IJournal[] => {
   const queryClient = useQueryClient();
 
@@ -17,10 +18,16 @@ export const useJournalsQuery = (
       searchText,
       journalTypes,
       favoritesOnly,
+      journalIds,
     ),
 
     queryFn: () =>
-      ServerApi.getJournals(searchText, journalTypes, favoritesOnly),
+      ServerApi.getJournals(
+        searchText,
+        journalTypes,
+        favoritesOnly,
+        journalIds,
+      ),
   });
 
   useEffect(() => {

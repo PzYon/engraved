@@ -22,6 +22,7 @@ export const JournalEditPage: React.FC = () => {
   const [attributes, setAttributes] = useState(journal.attributes);
   const [thresholds, setThresholds] = useState(journal.thresholds ?? {});
   const [uiSettings, setUiSettings] = useState(getUiSettings(journal));
+  const [changedTagNames, setChangedTagNames] = useState<string[]>(undefined);
 
   const navigate = useNavigate();
 
@@ -41,6 +42,7 @@ export const JournalEditPage: React.FC = () => {
           uiSettings: JSON.stringify(uiSettings),
         },
       },
+      changedTagNames: changedTagNames,
       onSuccess: navigateToViewPage,
     });
   return (
@@ -51,10 +53,12 @@ export const JournalEditPage: React.FC = () => {
       actions={getCommonEditModeActions(navigateToViewPage, save)}
     >
       <EditCommonProperties
+        journalId={journal.id}
         name={name}
         setName={setName}
         description={description}
         setDescription={setDescription}
+        onChangedTags={setChangedTagNames}
       />
 
       <PageSection title={"Attributes"} icon={<Style />}>

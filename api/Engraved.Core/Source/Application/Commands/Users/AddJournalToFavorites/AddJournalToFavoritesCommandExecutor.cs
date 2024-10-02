@@ -3,15 +3,9 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 
-public class AddJournalToFavoritesCommandExecutor : ICommandExecutor<AddJournalToFavoritesCommand>
+public class AddJournalToFavoritesCommandExecutor(IUserScopedRepository repository)
+  : ICommandExecutor<AddJournalToFavoritesCommand>
 {
-  private readonly IUserScopedRepository _repository;
-
-  public AddJournalToFavoritesCommandExecutor(IUserScopedRepository repository)
-  {
-    _repository = repository;
-  }
-
   public async Task<CommandResult> Execute(AddJournalToFavoritesCommand command)
   {
     if (string.IsNullOrEmpty(command.JournalId))
@@ -19,7 +13,7 @@ public class AddJournalToFavoritesCommandExecutor : ICommandExecutor<AddJournalT
       throw new InvalidCommandException(command, $"\"{nameof(command.JournalId)}\" must be specified");
     }
 
-    IUser user = _repository.CurrentUser.Value;
+    IUser user = repository.CurrentUser.Value;
 
     if (user.FavoriteJournalIds.Contains(command.JournalId))
     {
@@ -28,7 +22,7 @@ public class AddJournalToFavoritesCommandExecutor : ICommandExecutor<AddJournalT
 
     user.FavoriteJournalIds.Add(command.JournalId);
 
-    UpsertResult upsertResult = await _repository.UpsertUser(user);
-    return new CommandResult(upsertResult.EntityId, Array.Empty<string>());
+    UpsertResult upsertResult = await repository.UpsertUser(user);
+    return new CommandResult(upsertResult.EntityId, []);
   }
 }

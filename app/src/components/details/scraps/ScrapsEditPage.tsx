@@ -15,10 +15,14 @@ export const ScrapsEditPage: React.FC = () => {
   const [name, setName] = useState(journal.name);
   const [description, setDescription] = useState(journal.description);
 
+  const [changedTagNames, setChangedTagNames] = useState<string[]>(undefined);
+
   const editJournalMutation = useEditJournalMutation(journal.id);
 
   const disableSave =
-    name === journal.name && description === journal.description;
+    name === journal.name &&
+    description === journal.description &&
+    !changedTagNames;
 
   const navigateToViewPage = () => navigate("./..");
 
@@ -32,10 +36,12 @@ export const ScrapsEditPage: React.FC = () => {
       ]}
     >
       <EditCommonProperties
+        journalId={journal.id}
         name={name}
         setName={setName}
         description={description}
         setDescription={setDescription}
+        onChangedTags={setChangedTagNames}
       />
       <EditPageFooterButtons
         onSave={save}
@@ -48,6 +54,7 @@ export const ScrapsEditPage: React.FC = () => {
   async function save() {
     await editJournalMutation.mutateAsync({
       journal: { ...journal, name, description },
+      changedTagNames: changedTagNames,
       onSuccess: navigateToViewPage,
     });
   }

@@ -6,11 +6,17 @@ import { JournalListItem } from "./JournalListItem";
 import { IJournal } from "../../../serverApi/IJournal";
 import { OverviewList } from "../overviewList/OverviewList";
 
-export const Journals: React.FC<{ favoritesOnly?: boolean }> = ({
-  favoritesOnly,
-}) => {
+export const Journals: React.FC<{
+  favoritesOnly?: boolean;
+  journalIds?: string[];
+}> = ({ favoritesOnly, journalIds }) => {
   const { searchText, journalTypes } = usePageContext();
-  const journals = useJournalsQuery(searchText, journalTypes, favoritesOnly);
+  const journals = useJournalsQuery(
+    searchText,
+    journalTypes,
+    favoritesOnly,
+    journalIds,
+  );
 
   if (!journals) {
     return null;

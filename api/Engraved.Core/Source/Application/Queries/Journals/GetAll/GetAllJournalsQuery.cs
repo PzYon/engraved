@@ -13,4 +13,6 @@ public class GetAllJournalsQuery : IEntitiesQuery
   public bool? FavoritesOnly { get; set; }
 
   public bool ScheduledOnly { get; set; }
+
+  public string[]? JournalIds { get; set; } = [];
 }

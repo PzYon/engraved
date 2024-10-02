@@ -141,12 +141,15 @@ export class ServerApi {
     searchText?: string,
     journalTypes?: JournalType[],
     favoritesOnly?: boolean,
+    journalIds?: string[],
   ): Promise<IJournal[]> {
     const paramsString = this.getParamsString(
       searchText,
       journalTypes,
       favoritesOnly,
+      journalIds,
     );
+
     return await ServerApi.executeRequest(`/journals${paramsString}`);
   }
 
@@ -328,6 +331,26 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/user`, "GET", null);
   }
 
+  static async updateUserTags(tagNames: string[]): Promise<void> {
+    return await ServerApi.executeRequest("/user/tags", "PATCH", {
+      tagNames: tagNames,
+    });
+  }
+
+  static async updateJournalUserTags(
+    journalId: string,
+    tagNames: string[],
+  ): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/journals/${journalId}/tags`,
+      "PATCH",
+      {
+        journalId: journalId,
+        tagNames: tagNames,
+      },
+    );
+  }
+
   static async getSearchEntities(
     searchText: string,
     scheduledOnly: boolean,
@@ -419,6 +442,7 @@ export class ServerApi {
     searchText: string,
     journalTypes: JournalType[],
     favoritesOnly?: boolean,
+    journalIds?: string[],
   ) {
     const params: string[] = [];
 
@@ -432,6 +456,10 @@ export class ServerApi {
 
     if (favoritesOnly) {
       params.push(`favoritesOnly=true`);
+    }
+
+    if (journalIds) {
+      params.push(`journalIds=${journalIds.join(",")}`);
     }
 
     return params.length ? `?${params.join("&")}` : "";
