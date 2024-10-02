@@ -46,7 +46,7 @@ export const ManageJournalUserTags: React.FC<{
                   checked={selectedTagNames.includes(tag)}
                   tabIndex={-1}
                   disableRipple
-                  sx={{ p: 0, pr: 1 }}
+                  sx={{ p: 1, pl: 0 }}
                 />
               </ListItemIcon>
               <ListItemText primary={tag} />

@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import React from "react";
 import { useAppContext } from "../../../AppContext";
 import { Journals } from "../journals/Journals";
+import { NoResultsFound } from "../../common/search/NoResultsFound";
 
 export const TagPage: React.FC = () => {
   const { tagName } = useParams();
@@ -31,7 +32,11 @@ export const TagPage: React.FC = () => {
       showFilters={false}
       hideActions={true}
     >
-      {journalIds?.length ? <Journals journalIds={journalIds} /> : null}
+      {journalIds?.length ? (
+        <Journals journalIds={journalIds} />
+      ) : (
+        <NoResultsFound hideTryAgain={true} />
+      )}
     </Page>
   );
 };
