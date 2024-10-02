@@ -31,6 +31,11 @@ export const ManageUserTags: React.FC = () => {
           tagNames.splice(index, 1);
           setTagNames([...tagNames]);
         }}
+        onEditOption={(key, label) => {
+          const index = tagNames.indexOf(key);
+          tagNames[index] = label;
+          setTagNames([...tagNames]);
+        }}
         renderOption={(option) => (
           <Link target="_blank" to={`/tags/${option.value}`}>
             {option.label}
@@ -38,11 +43,7 @@ export const ManageUserTags: React.FC = () => {
         )}
       />
       {JSON.stringify(tagNames) === JSON.stringify(initialTagNames) ? null : (
-        <Button
-          onClick={() => {
-            updateTagsMutation.mutate({ tagNames });
-          }}
-        >
+        <Button onClick={() => updateTagsMutation.mutate({ tagNames })}>
           Save
         </Button>
       )}

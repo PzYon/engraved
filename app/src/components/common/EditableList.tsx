@@ -16,9 +16,11 @@ export const EditableList: React.FC<{
   options: IOption[];
   onAddOption: (label: string) => void;
   onDeleteOption: (key: string) => void;
+  onEditOption: (key: string, value: string) => void;
   renderOption: (option: IOption) => React.ReactNode;
-}> = ({ options, onAddOption, onDeleteOption, renderOption }) => {
+}> = ({ options, onAddOption, onDeleteOption, onEditOption, renderOption }) => {
   const [newItem, setNewItem] = useState("");
+  const [editItemKey, setEditItemKey] = useState<string>(undefined);
 
   const doesExist = options.map((o) => o.label).indexOf(newItem) > -1;
 
@@ -34,7 +36,7 @@ export const EditableList: React.FC<{
                   key: "edit",
                   label: "Edit",
                   icon: <Edit fontSize="small" />,
-                  onClick: () => alert("Sorry, ain't implemented yet."),
+                  onClick: () => setEditItemKey(o.value),
                 }}
               />
               <ActionIconButton
@@ -48,7 +50,19 @@ export const EditableList: React.FC<{
             </>
           }
         >
-          <ListItemText primary={renderOption(o)} />
+          {editItemKey === o.value ? (
+            <TextField
+              autoFocus={true}
+              defaultValue={o.label}
+              style={{ width: "100%" }}
+              size="small"
+              onBlur={(e) => {
+                onEditOption(o.value, e.target.value);
+              }}
+            />
+          ) : (
+            <ListItemText primary={renderOption(o)} />
+          )}
         </StyledListItem>
       ))}
       <StyledListItem
