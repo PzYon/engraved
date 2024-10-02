@@ -120,6 +120,10 @@ export const Page: React.FC<{
       if (pageActionRoutes) {
         setPageActionRoutes(null);
       }
+
+      if (actions?.length) {
+        setPageActions([]);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

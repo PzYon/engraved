@@ -2,9 +2,9 @@ import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
 import { Icon } from "../../common/Icon";
 import { IconStyle } from "../../common/IconStyle";
-import { FilterMode } from "../../layout/pages/PageContext";
-import { Style } from "@mui/icons-material";
+import { AddOutlined, Style } from "@mui/icons-material";
 import { ListOfTags } from "./ListOfTags";
+import React from "react";
 
 export const TagsPage: React.FC = () => {
   return (
@@ -19,9 +19,16 @@ export const TagsPage: React.FC = () => {
           }
         />
       }
-      filterMode={FilterMode.Text}
       showFilters={false}
-      hideActions={true}
+      actions={[
+        {
+          hotkey: "alt+n",
+          href: "/settings",
+          icon: <AddOutlined fontSize="small" />,
+          label: "Add tag",
+          key: "add-tag",
+        },
+      ]}
     >
       <ListOfTags />
     </Page>
