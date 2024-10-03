@@ -24,17 +24,19 @@ export const ManageUserTags: React.FC = () => {
           label: t,
         }))}
         onAddOption={(label) => {
-          setTagNames([...tagNames, label]);
+          const newTagNames = [...tagNames];
+          newTagNames.push(label);
+          setTagNames(newTagNames);
         }}
         onDeleteOption={(key) => {
-          const index = tagNames.indexOf(key);
-          tagNames.splice(index, 1);
-          setTagNames([...tagNames]);
+          const newTagNames = [...tagNames];
+          newTagNames.splice(tagNames.indexOf(key), 1);
+          setTagNames(newTagNames);
         }}
         onEditOption={(key, label) => {
-          const index = tagNames.indexOf(key);
-          tagNames[index] = label;
-          setTagNames([...tagNames]);
+          const newTagNames = [...tagNames];
+          newTagNames[tagNames.indexOf(key)] = label;
+          setTagNames(newTagNames);
         }}
         renderOption={(option) => (
           <Link target="_blank" to={`/tags/${option.value}`}>

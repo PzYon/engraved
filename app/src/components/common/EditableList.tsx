@@ -52,6 +52,7 @@ export const EditableList: React.FC<{
         >
           {editItemKey === o.value ? (
             <TextField
+              id={Math.random().toString()}
               autoFocus={true}
               defaultValue={o.label}
               style={{ width: "100%" }}
@@ -81,6 +82,7 @@ export const EditableList: React.FC<{
         }
       >
         <TextField
+          id={Math.random().toString()}
           autoFocus={true}
           key={JSON.stringify(options)}
           value={newItem}
