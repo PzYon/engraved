@@ -4,5 +4,5 @@ public class UpdateJournalUserTagsCommand : ICommand
 {
   public string JournalId { get; set; }
   
-  public string[] TagNames { get; set; } = [];
+  public List< string> TagIds { get; set; } = [];
 }

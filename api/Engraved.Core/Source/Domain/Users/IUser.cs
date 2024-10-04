@@ -16,5 +16,5 @@ public interface IUser
 
   List<string> FavoriteJournalIds { get; set; }
 
-  public Dictionary<string, List<string>> Tags { get; set; }
+  public List<UserTag> Tags { get; set; }
 }

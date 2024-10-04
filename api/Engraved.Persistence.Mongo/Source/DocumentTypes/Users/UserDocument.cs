@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Engraved.Core.Domain.Users;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 
@@ -21,7 +22,7 @@ public class UserDocument : IDocument
 
   public DateTime? LastLoginDate { get; set; }
 
-  public List<string> FavoriteJournalIds { get; set; } = new();
+  public List<string> FavoriteJournalIds { get; set; } = [];
 
-  public Dictionary<string, List<string>> Tags { get; set; } = new();
+  public List<UserTag> Tags { get; set; } = [];
 }
