@@ -11,7 +11,7 @@ export const EditCommonProperties: React.FC<{
   setName: (name: string) => void;
   description: string;
   setDescription: (description: string) => void;
-  onChangedTags: (tagNames: string[]) => void;
+  onChangedTags: (tagIds: string[]) => void;
 }> = ({
   journalId,
   name,

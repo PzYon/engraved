@@ -10,7 +10,7 @@ export const useUpdateUserTagsMutation = () => {
   return useMutation({
     mutationKey: queryKeysFactory.modifyUser(),
 
-    mutationFn: (variables: { tagNames: string[] }) =>
+    mutationFn: (variables: { tagNames: Record<string, string> }) =>
       ServerApi.updateUserTags(variables.tagNames),
 
     onSuccess: async () => {

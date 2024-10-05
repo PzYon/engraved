@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 
 export interface IOption {
-  value: string;
+  key: string;
   label: string;
 }
 
@@ -28,7 +28,7 @@ export const EditableList: React.FC<{
     <List dense>
       {options.map((o) => (
         <StyledListItem
-          key={o.value}
+          key={o.key}
           secondaryAction={
             <>
               <ActionIconButton
@@ -36,7 +36,7 @@ export const EditableList: React.FC<{
                   key: "edit",
                   label: "Edit",
                   icon: <Edit fontSize="small" />,
-                  onClick: () => setEditItemKey(o.value),
+                  onClick: () => setEditItemKey(o.key),
                 }}
               />
               <ActionIconButton
@@ -44,13 +44,13 @@ export const EditableList: React.FC<{
                   key: "remove",
                   label: "Remove",
                   icon: <RemoveCircleOutline fontSize="small" />,
-                  onClick: () => onDeleteOption(o.value),
+                  onClick: () => onDeleteOption(o.key),
                 }}
               />
             </>
           }
         >
-          {editItemKey === o.value ? (
+          {editItemKey === o.key ? (
             <TextField
               id={Math.random().toString()}
               autoFocus={true}
@@ -58,7 +58,7 @@ export const EditableList: React.FC<{
               style={{ width: "100%" }}
               size="small"
               onBlur={(e) => {
-                onEditOption(o.value, e.target.value);
+                onEditOption(o.key, e.target.value);
               }}
             />
           ) : (

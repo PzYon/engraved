@@ -11,16 +11,16 @@ import { Journals } from "../journals/Journals";
 import { NoResultsFound } from "../../common/search/NoResultsFound";
 
 export const TagPage: React.FC = () => {
-  const { tagName } = useParams();
+  const { tagId } = useParams();
   const { user } = useAppContext();
 
-  const journalIds = user.tags[tagName];
+  const journalIds = user.tags.find((t) => t.id === tagId)?.journalIds ?? [];
 
   return (
     <Page
       title={
         <PageTitle
-          title={tagName}
+          title={user.tags.find((t) => t.id === tagId)?.label}
           icon={
             <Icon style={IconStyle.Large}>
               <Style />
