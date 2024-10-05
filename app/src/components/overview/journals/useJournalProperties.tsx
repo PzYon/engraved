@@ -20,9 +20,7 @@ export const useJournalProperties = (
     return [];
   }
 
-  const tagNames = Object.keys(user.tags).filter(
-    (t) => user.tags[t].indexOf(journal.id) > -1,
-  );
+  const tags = user.tags.filter((t) => t.journalIds.indexOf(journal.id) > -1);
 
   return [
     {
@@ -62,12 +60,12 @@ export const useJournalProperties = (
     {
       key: "tags",
       label: "Tags",
-      hideWhen: () => !tagNames.length,
+      hideWhen: () => !tags.length,
       node: () => (
         <TagContainer>
-          {tagNames.map((t) => (
-            <Link key={t} to={`/tags/${t}`}>
-              {t}
+          {tags.map((tag) => (
+            <Link key={tag.id} to={`/tags/${tag.id}`}>
+              {tag.label}
             </Link>
           ))}
         </TagContainer>

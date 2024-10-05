@@ -4,25 +4,24 @@ import React from "react";
 import { GridContainer, GridItem } from "../../common/Grid";
 import { Paper, Typography } from "@mui/material";
 import { ReadonlyTitle } from "../ReadonlyTitle";
+import { IUserTag } from "../../../serverApi/IUserTag";
 
 export const ListOfTags: React.FC = () => {
   const { user } = useAppContext();
 
-  const tagNames = Object.keys(user.tags ?? {});
-
-  if (!tagNames.length) {
+  if (!user.tags.length) {
     return <div>no tags.</div>;
   }
 
   return (
     <GridContainer>
-      {tagNames.map((t) => (
-        <GridItem key={t}>
+      {user.tags.map((t) => (
+        <GridItem key={t.id}>
           <Paper sx={{ p: 3 }}>
             <ReadonlyTitle
               hasFocus={false}
               entity={null}
-              title={<Link to={`/tags/${t}`}>{t}</Link>}
+              title={<Link to={`/tags/${t.id}`}>{t.label}</Link>}
             ></ReadonlyTitle>
             <Typography sx={{ pt: 1 }}>{getJournalCountLabel(t)}</Typography>
           </Paper>
@@ -31,8 +30,8 @@ export const ListOfTags: React.FC = () => {
     </GridContainer>
   );
 
-  function getJournalCountLabel(tagName: string) {
-    const count = user.tags[tagName].length;
+  function getJournalCountLabel(tag: IUserTag) {
+    const count = tag.journalIds?.length ?? 0;
     return `${count} journal${count === 1 ? "" : "s"}`;
   }
 };

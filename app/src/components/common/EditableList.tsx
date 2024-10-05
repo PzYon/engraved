@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 
 export interface IOption {
-  value: string;
+  key: string;
   label: string;
 }
 
@@ -16,9 +16,11 @@ export const EditableList: React.FC<{
   options: IOption[];
   onAddOption: (label: string) => void;
   onDeleteOption: (key: string) => void;
+  onEditOption: (key: string, value: string) => void;
   renderOption: (option: IOption) => React.ReactNode;
-}> = ({ options, onAddOption, onDeleteOption, renderOption }) => {
+}> = ({ options, onAddOption, onDeleteOption, onEditOption, renderOption }) => {
   const [newItem, setNewItem] = useState("");
+  const [editItemKey, setEditItemKey] = useState<string>(undefined);
 
   const doesExist = options.map((o) => o.label).indexOf(newItem) > -1;
 
@@ -26,7 +28,7 @@ export const EditableList: React.FC<{
     <List dense>
       {options.map((o) => (
         <StyledListItem
-          key={o.value}
+          key={o.key}
           secondaryAction={
             <>
               <ActionIconButton
@@ -34,7 +36,7 @@ export const EditableList: React.FC<{
                   key: "edit",
                   label: "Edit",
                   icon: <Edit fontSize="small" />,
-                  onClick: () => alert("Sorry, ain't implemented yet."),
+                  onClick: () => setEditItemKey(o.key),
                 }}
               />
               <ActionIconButton
@@ -42,13 +44,26 @@ export const EditableList: React.FC<{
                   key: "remove",
                   label: "Remove",
                   icon: <RemoveCircleOutline fontSize="small" />,
-                  onClick: () => onDeleteOption(o.value),
+                  onClick: () => onDeleteOption(o.key),
                 }}
               />
             </>
           }
         >
-          <ListItemText primary={renderOption(o)} />
+          {editItemKey === o.key ? (
+            <TextField
+              id={Math.random().toString()}
+              autoFocus={true}
+              defaultValue={o.label}
+              style={{ width: "100%" }}
+              size="small"
+              onBlur={(e) => {
+                onEditOption(o.key, e.target.value);
+              }}
+            />
+          ) : (
+            <ListItemText primary={renderOption(o)} />
+          )}
         </StyledListItem>
       ))}
       <StyledListItem
@@ -67,6 +82,7 @@ export const EditableList: React.FC<{
         }
       >
         <TextField
+          id={Math.random().toString()}
           autoFocus={true}
           key={JSON.stringify(options)}
           value={newItem}

@@ -15,23 +15,23 @@ public class UpdateJournalUserTagsCommandExecutor(IUserScopedRepository reposito
 
     IUser user = repository.CurrentUser.Value;
 
-    foreach (var kvp in user.Tags)
+    foreach (UserTag tag in user.Tags)
     {
-      if (command.TagNames.Contains(kvp.Key))
+      if (command.TagIds.Contains(tag.Id))
       {
-        if (!kvp.Value.Contains(command.JournalId))
+        if (!tag.JournalIds.Contains(command.JournalId))
         {
-          kvp.Value.Add(command.JournalId);
+          tag.JournalIds.Add(command.JournalId);
         }
       }
       else
       {
-        kvp.Value.Remove(command.JournalId);
+        tag.JournalIds.Remove(command.JournalId);
       }
     }
 
     await repository.UpsertUser(user);
-    
+
     return new CommandResult(user.Id!, []);
   }
 }

@@ -10,14 +10,28 @@ public class UpdateUserTagsCommandExecutor(IUserScopedRepository repository)
   {
     IUser user = repository.CurrentUser.Value;
 
-    foreach (var tagName in command.TagNames.Where(t => !user.Tags.ContainsKey(t)))
+    foreach (var tagName in command.TagNames)
     {
-      user.Tags.Add(tagName, []);
-    }
+      UserTag? existingTag = user.Tags.FirstOrDefault(t => t.Id == tagName.Key);
+      if (existingTag != null)
+      {
+        existingTag.Label = tagName.Value;
+        continue;
+      }
 
-    foreach (var tagKey in user.Tags.Keys.Where(t => !command.TagNames.Contains(t)))
+      user.Tags.Add(
+        new UserTag
+        {
+          Id = tagName.Key,
+          Label = tagName.Value,
+        }
+      );
+    }
+    
+    // all tags that were defined, but aren't anymore
+    foreach (UserTag userTag in user.Tags.Where(tag => !command.TagNames.ContainsKey(tag.Id)).ToList())
     {
-      user.Tags.Remove(tagKey);
+      user.Tags.Remove(userTag);
     }
 
     UpsertResult upsertResult = await repository.UpsertUser(user);

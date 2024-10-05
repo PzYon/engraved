@@ -15,17 +15,14 @@ export const useEditJournalMutation = (journalId: string) => {
 
     mutationFn: async (variables: {
       journal: IJournal;
-      changedTagNames?: string[];
+      tagIds?: string[];
       onSuccess?: () => void;
     }) => {
       const journal = variables.journal;
 
       await Promise.all([
-        variables.changedTagNames
-          ? ServerApi.updateJournalUserTags(
-              journalId,
-              variables.changedTagNames,
-            )
+        variables.tagIds
+          ? ServerApi.updateJournalUserTags(journalId, variables.tagIds)
           : Promise.resolve(),
         ServerApi.editJournal(
           journalId,
@@ -45,7 +42,7 @@ export const useEditJournalMutation = (journalId: string) => {
           queryKey: queryKeysFactory.journal(journalId),
         }),
 
-        reloadUser(variables.changedTagNames),
+        reloadUser(variables.tagIds),
       ]);
 
       variables.onSuccess?.();

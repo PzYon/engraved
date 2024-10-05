@@ -1,3 +1,5 @@
+import { IUserTag } from "./IUserTag";
+
 export interface IUser {
   id?: string;
   globalUniqueId?: string;
@@ -5,5 +7,5 @@ export interface IUser {
   displayName?: string;
   imageUrl?: string;
   favoriteJournalIds?: string[];
-  tags?: Record<string, string[]>;
+  tags?: IUserTag[];
 }

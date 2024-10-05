@@ -22,7 +22,7 @@ export const JournalEditPage: React.FC = () => {
   const [attributes, setAttributes] = useState(journal.attributes);
   const [thresholds, setThresholds] = useState(journal.thresholds ?? {});
   const [uiSettings, setUiSettings] = useState(getUiSettings(journal));
-  const [changedTagNames, setChangedTagNames] = useState<string[]>(undefined);
+  const [tagIds, setTagIds] = useState<string[]>(undefined);
 
   const navigate = useNavigate();
 
@@ -42,7 +42,7 @@ export const JournalEditPage: React.FC = () => {
           uiSettings: JSON.stringify(uiSettings),
         },
       },
-      changedTagNames: changedTagNames,
+      tagIds: tagIds,
       onSuccess: navigateToViewPage,
     });
   return (
@@ -58,7 +58,7 @@ export const JournalEditPage: React.FC = () => {
         setName={setName}
         description={description}
         setDescription={setDescription}
-        onChangedTags={setChangedTagNames}
+        onChangedTags={setTagIds}
       />
 
       <PageSection title={"Attributes"} icon={<Style />}>

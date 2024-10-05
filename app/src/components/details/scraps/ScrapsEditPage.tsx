@@ -54,7 +54,7 @@ export const ScrapsEditPage: React.FC = () => {
   async function save() {
     await editJournalMutation.mutateAsync({
       journal: { ...journal, name, description },
-      changedTagNames: changedTagNames,
+      tagIds: changedTagNames,
       onSuccess: navigateToViewPage,
     });
   }

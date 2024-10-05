@@ -331,7 +331,7 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/user`, "GET", null);
   }
 
-  static async updateUserTags(tagNames: string[]): Promise<void> {
+  static async updateUserTags(tagNames: Record<string, string>): Promise<void> {
     return await ServerApi.executeRequest("/user/tags", "PATCH", {
       tagNames: tagNames,
     });
@@ -339,14 +339,14 @@ export class ServerApi {
 
   static async updateJournalUserTags(
     journalId: string,
-    tagNames: string[],
+    tagIds: string[],
   ): Promise<void> {
     return await ServerApi.executeRequest(
       `/journals/${journalId}/tags`,
       "PATCH",
       {
         journalId: journalId,
-        tagNames: tagNames,
+        tagIds: tagIds,
       },
     );
   }

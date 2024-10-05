@@ -11,45 +11,46 @@ import React, { useState } from "react";
 
 export const ManageJournalUserTags: React.FC<{
   journalId: string;
-  onChangedTags: (tagNames: string[]) => void;
+  onChangedTags: (tagIds: string[]) => void;
 }> = ({ journalId, onChangedTags }) => {
   const { user } = useAppContext();
-  const allTagNames = Object.keys(user.tags);
 
-  const [selectedTagNames, setSelectedTagNames] = useState<string[]>(() =>
-    allTagNames.filter((tag) => user.tags[tag].includes(journalId)),
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>(() =>
+    user.tags
+      .filter((tag) => tag.journalIds.includes(journalId))
+      .map((t) => t.id),
   );
 
   return (
     <List sx={{ width: "100%" }}>
-      {allTagNames.map((tag) => {
+      {user.tags.map((tag) => {
         return (
-          <ListItem key={tag} disablePadding>
+          <ListItem key={tag.id} disablePadding>
             <ListItemButton
               dense
               onClick={() => {
-                const index = selectedTagNames.indexOf(tag);
+                const index = selectedTagIds.indexOf(tag.id);
                 if (index === -1) {
-                  selectedTagNames.push(tag);
+                  selectedTagIds.push(tag.id);
                 } else {
-                  selectedTagNames.splice(index, 1);
+                  selectedTagIds.splice(index, 1);
                 }
 
-                const changedTagNames = [...selectedTagNames];
-                setSelectedTagNames(changedTagNames);
-                onChangedTags(changedTagNames);
+                const changedTagIds = [...selectedTagIds];
+                setSelectedTagIds(changedTagIds);
+                onChangedTags(changedTagIds);
               }}
             >
               <ListItemIcon sx={{ minWidth: 0 }}>
                 <Checkbox
                   edge="start"
-                  checked={selectedTagNames.includes(tag)}
+                  checked={selectedTagIds.includes(tag.id)}
                   tabIndex={-1}
                   disableRipple
                   sx={{ p: 1, pl: 0 }}
                 />
               </ListItemIcon>
-              <ListItemText primary={tag} />
+              <ListItemText primary={tag.label} />
             </ListItemButton>
           </ListItem>
         );
