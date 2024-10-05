@@ -22,6 +22,16 @@ public class UpdateUserTagsCommandExecutor(IUserScopedRepository repository)
       );
     }
 
+    // update existing tag
+    foreach (var tagName in command.TagNames.Where(tagName => user.Tags.Any(tag => tag.Id == tagName.Key)))
+    {
+      UserTag? existingTag = user.Tags.FirstOrDefault(t => t.Id == tagName.Key);
+      if (existingTag != null)
+      {
+        existingTag.Label = tagName.Value;
+      }
+    }
+
     // all tags that where defined, but aren't anymore
     foreach (UserTag userTag in user.Tags.Where(tag => !command.TagNames.ContainsKey(tag.Id)).ToList())
     {
