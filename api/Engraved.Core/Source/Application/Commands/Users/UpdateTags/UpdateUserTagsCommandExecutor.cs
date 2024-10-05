@@ -10,9 +10,15 @@ public class UpdateUserTagsCommandExecutor(IUserScopedRepository repository)
   {
     IUser user = repository.CurrentUser.Value;
 
-    // all tags that are not yet defined
-    foreach (var tagName in command.TagNames.Where(tagName => user.Tags.All(tag => tag.Id != tagName.Key)))
+    foreach (var tagName in command.TagNames)
     {
+      UserTag? existingTag = user.Tags.FirstOrDefault(t => t.Id == tagName.Key);
+      if (existingTag != null)
+      {
+        existingTag.Label = tagName.Value;
+        continue;
+      }
+
       user.Tags.Add(
         new UserTag
         {
@@ -21,18 +27,8 @@ public class UpdateUserTagsCommandExecutor(IUserScopedRepository repository)
         }
       );
     }
-
-    // update existing tag
-    foreach (var tagName in command.TagNames.Where(tagName => user.Tags.Any(tag => tag.Id == tagName.Key)))
-    {
-      UserTag? existingTag = user.Tags.FirstOrDefault(t => t.Id == tagName.Key);
-      if (existingTag != null)
-      {
-        existingTag.Label = tagName.Value;
-      }
-    }
-
-    // all tags that where defined, but aren't anymore
+    
+    // all tags that were defined, but aren't anymore
     foreach (UserTag userTag in user.Tags.Where(tag => !command.TagNames.ContainsKey(tag.Id)).ToList())
     {
       user.Tags.Remove(userTag);
