@@ -5,12 +5,13 @@ import { GridContainer, GridItem } from "../../common/Grid";
 import { Paper, Typography } from "@mui/material";
 import { ReadonlyTitle } from "../ReadonlyTitle";
 import { IUserTag } from "../../../serverApi/IUserTag";
+import { NoResultsFound } from "../../common/search/NoResultsFound";
 
 export const ListOfTags: React.FC = () => {
   const { user } = useAppContext();
 
   if (!user.tags.length) {
-    return <div>no tags.</div>;
+    return <NoResultsFound hideTryAgain={true} />;
   }
 
   return (
