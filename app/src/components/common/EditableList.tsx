@@ -59,6 +59,7 @@ export const EditableList: React.FC<{
               size="small"
               onBlur={(e) => {
                 onEditOption(o.key, e.target.value);
+                setEditItemKey(undefined);
               }}
             />
           ) : (
