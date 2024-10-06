@@ -21,6 +21,7 @@ import { ActionLink } from "../common/actions/ActionLink";
 import { PageTabs } from "./tabs/PageTabs";
 import { FavoritesFlyout } from "../FavoritesFlyout";
 import { useDisplayModeContext } from "../overview/overviewList/DisplayModeContext";
+import { AppMenuLauncher } from "./AppMenuLauncher";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -69,6 +70,7 @@ export const AppHeader: React.FC = () => {
       >
         <AppContent scope="header">
           <ContentWrapper sx={{ display: "flex", height: "64px" }}>
+            <AppMenuLauncher />
             <div style={{ flexGrow: 1 }}>
               <ActionLink action={ActionFactory.goHome()}>
                 <Typography
