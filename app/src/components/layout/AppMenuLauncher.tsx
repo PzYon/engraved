@@ -8,7 +8,11 @@ export const AppMenuLauncher: React.FC = () => {
 
   return (
     <>
-      <StyledDrawer open={isMenuOpen} onClose={() => setIsMenuOpen(false)}>
+      <StyledDrawer
+        open={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        sx={{ p: 2 }}
+      >
         <AppMenu close={() => setIsMenuOpen(false)} />
       </StyledDrawer>
       <StyledMenuIcon
