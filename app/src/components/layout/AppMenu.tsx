@@ -6,6 +6,7 @@ import {
   Style,
 } from "@mui/icons-material";
 import {
+  Collapse,
   List,
   ListItem,
   ListItemButton,
@@ -13,10 +14,16 @@ import {
   ListItemText,
   styled,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 
 export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
+  const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
+
+  const journals =
+    useJournalsQuery(null, [], true, undefined, areFavoritesExpanded) ?? [];
+
   return (
     <MenuContainer>
       <List>
@@ -24,45 +31,92 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
           targetUrl="/tags"
           label="Tags"
           icon={<Style sx={{ color: "primary.main" }} />}
-          close={close}
+          onClick={close}
         />
         <AppMenuItem
           targetUrl="/journals"
           label="Journals"
           icon={<ListAlt sx={{ color: "primary.main" }} />}
-          close={close}
+          onClick={close}
         />
         <AppMenuItem
           targetUrl="/entries"
           label="Entries"
           icon={<ListIcon sx={{ color: "primary.main" }} />}
-          close={close}
+          onClick={close}
         />
         <AppMenuItem
           targetUrl="/scheduled"
           label="Scheduled"
           icon={<NotificationsNone sx={{ color: "primary.main" }} />}
-          close={close}
+          onClick={close}
         />
         <AppMenuItem
           targetUrl="/search"
           label="Search"
           icon={<SearchOutlined sx={{ color: "primary.main" }} />}
-          close={close}
+          onClick={close}
         />
+        <AppMenuItem
+          targetUrl=""
+          label="Favorites"
+          icon={<SearchOutlined sx={{ color: "primary.main" }} />}
+          onClick={() => setAreFavoritesExpanded(!areFavoritesExpanded)}
+        />
+        <Collapse in={areFavoritesExpanded} timeout="auto" unmountOnExit>
+          <List disablePadding>
+            {journals
+              .sort((a, b) => {
+                const firstName = a.name?.toLowerCase();
+                const secondName = b.name?.toLowerCase();
+
+                return firstName < secondName
+                  ? -1
+                  : firstName > secondName
+                    ? 1
+                    : 0;
+              })
+              .map((journal) => {
+                return (
+                  <AppMenuItem
+                    key={journal.id}
+                    targetUrl={`/journals/details/${journal.id}`}
+                    label={journal.name}
+                    icon={null}
+                    onClick={close}
+                  />
+                );
+              })}
+          </List>
+        </Collapse>
       </List>
     </MenuContainer>
   );
 };
 
+/*
+ <MenuItem key={journal.id} sx={{ display: "flex" }}>
+                    <Link
+                      to={`/journals/details/${journal.id}`}
+                      onClick={close}
+                      style={{ flexGrow: 1, paddingRight: 10 }}
+                    >
+                      <JournalMenuItem journal={journal} />
+                    </Link>
+                    <ActionIconButton
+                      action={ActionFactory.addEntry(journal, false, close, true)}
+                    />
+                  </MenuItem>
+ */
+
 const AppMenuItem: React.FC<{
   targetUrl: string;
   label: string;
   icon: React.ReactNode;
-  close: () => void;
-}> = ({ targetUrl, label, icon, close }) => {
+  onClick: () => void;
+}> = ({ targetUrl, label, icon, onClick }) => {
   return (
-    <ListItem onClick={close}>
+    <ListItem onClick={onClick}>
       <ListItemButton>
         <StyledLink to={targetUrl}>
           <ListItemIcon>{icon}</ListItemIcon>
