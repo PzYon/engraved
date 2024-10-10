@@ -1,8 +1,11 @@
 import {
+  ExpandLess,
+  ExpandMore,
   List as ListIcon,
   ListAlt,
   NotificationsNone,
   SearchOutlined,
+  Star,
   Style,
 } from "@mui/icons-material";
 import {
@@ -17,6 +20,8 @@ import {
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
+import { JournalIcon } from "../overview/journals/JournalIcon";
+import { IconStyle } from "../common/IconStyle";
 
 export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
@@ -60,11 +65,12 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
         <AppMenuItem
           targetUrl=""
           label="Favorites"
-          icon={<SearchOutlined sx={{ color: "primary.main" }} />}
+          icon={<Star sx={{ color: "primary.main" }} />}
           onClick={() => setAreFavoritesExpanded(!areFavoritesExpanded)}
+          suffix={areFavoritesExpanded ? <ExpandLess /> : <ExpandMore />}
         />
         <Collapse in={areFavoritesExpanded} timeout="auto" unmountOnExit>
-          <List disablePadding>
+          <List disablePadding dense>
             {journals
               .sort((a, b) => {
                 const firstName = a.name?.toLowerCase();
@@ -82,7 +88,12 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
                     key={journal.id}
                     targetUrl={`/journals/details/${journal.id}`}
                     label={journal.name}
-                    icon={null}
+                    icon={
+                      <JournalIcon
+                        journal={journal}
+                        iconStyle={IconStyle.Small}
+                      />
+                    }
                     onClick={close}
                   />
                 );
@@ -114,7 +125,8 @@ const AppMenuItem: React.FC<{
   label: string;
   icon: React.ReactNode;
   onClick: () => void;
-}> = ({ targetUrl, label, icon, onClick }) => {
+  suffix?: React.ReactNode;
+}> = ({ targetUrl, label, icon, onClick, suffix }) => {
   return (
     <ListItem onClick={onClick}>
       <ListItemButton>
@@ -122,6 +134,7 @@ const AppMenuItem: React.FC<{
           <ListItemIcon>{icon}</ListItemIcon>
           <ListItemText>{label}</ListItemText>
         </StyledLink>
+        {suffix}
       </ListItemButton>
     </ListItem>
   );
