@@ -14,7 +14,7 @@ export const AppMenuLauncher: React.FC = () => {
       <StyledDrawer
         open={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
-        sx={{ p: 2 }}
+        sx={{ p: 0 }}
       >
         <AppMenu close={() => setIsMenuOpen(false)} />
       </StyledDrawer>

@@ -67,7 +67,13 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
           label="Favorites"
           icon={<Star sx={{ color: "primary.main" }} />}
           onClick={() => setAreFavoritesExpanded(!areFavoritesExpanded)}
-          suffix={areFavoritesExpanded ? <ExpandLess /> : <ExpandMore />}
+          suffix={
+            areFavoritesExpanded ? (
+              <ExpandLess sx={{ color: "primary.main" }} />
+            ) : (
+              <ExpandMore sx={{ color: "primary.main" }} />
+            )
+          }
         />
         <Collapse in={areFavoritesExpanded} timeout="auto" unmountOnExit>
           <List disablePadding dense>
@@ -105,21 +111,6 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   );
 };
 
-/*
- <MenuItem key={journal.id} sx={{ display: "flex" }}>
-                    <Link
-                      to={`/journals/details/${journal.id}`}
-                      onClick={close}
-                      style={{ flexGrow: 1, paddingRight: 10 }}
-                    >
-                      <JournalMenuItem journal={journal} />
-                    </Link>
-                    <ActionIconButton
-                      action={ActionFactory.addEntry(journal, false, close, true)}
-                    />
-                  </MenuItem>
- */
-
 const AppMenuItem: React.FC<{
   targetUrl: string;
   label: string;
@@ -129,21 +120,62 @@ const AppMenuItem: React.FC<{
 }> = ({ targetUrl, label, icon, onClick, suffix }) => {
   return (
     <ListItem onClick={onClick}>
-      <ListItemButton>
-        <StyledLink to={targetUrl}>
-          <ListItemIcon>{icon}</ListItemIcon>
-          <ListItemText>{label}</ListItemText>
-        </StyledLink>
+      <ListItemButton sx={{ display: "flex" }}>
+        <LinkOrSpan targetUrl={targetUrl}>
+          <ListItemIcon sx={{ minWidth: "40px" }}>{icon}</ListItemIcon>
+          <ListItemText
+            sx={{
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {label}
+          </ListItemText>
+        </LinkOrSpan>
         {suffix}
       </ListItemButton>
     </ListItem>
   );
 };
 
+export const LinkOrSpan: React.FC<{
+  targetUrl: string;
+  children: React.ReactNode;
+}> = ({ targetUrl, children }) => {
+  if (!targetUrl) {
+    return <StyledSpan>{children}</StyledSpan>;
+  }
+
+  return (
+    <StyledLink to={targetUrl} sx={{ flexGrow: 1, alignItems: "center" }}>
+      {children}
+    </StyledLink>
+  );
+};
+
 const MenuContainer = styled("div")`
-  padding: 16px 32px 16px 16px;
+  min-width: 280px;
+  padding: 0;
+
+  li {
+    padding: 0;
+  }
+
+  ul {
+    ul {
+      padding: 16px;
+    }
+  }
 `;
 
 const StyledLink = styled(Link)`
   display: flex;
+`;
+
+const StyledSpan = styled("span")`
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  color: ${(p) => p.theme.palette.primary.main};
 `;
