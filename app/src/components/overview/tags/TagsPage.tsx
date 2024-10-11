@@ -5,6 +5,7 @@ import { IconStyle } from "../../common/IconStyle";
 import { AddOutlined, Style } from "@mui/icons-material";
 import { ListOfTags } from "./ListOfTags";
 import React from "react";
+import { getPageTabs } from "../../layout/tabs/getPageTabs";
 
 export const TagsPage: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ export const TagsPage: React.FC = () => {
           }
         />
       }
+      tabs={getPageTabs("tags")}
       showFilters={false}
       actions={[
         {

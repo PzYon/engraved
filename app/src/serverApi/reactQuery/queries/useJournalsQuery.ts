@@ -10,10 +10,13 @@ export const useJournalsQuery = (
   journalTypes?: JournalType[],
   favoritesOnly?: boolean,
   journalIds?: string[],
+  enabled = true,
 ): IJournal[] => {
   const queryClient = useQueryClient();
 
   const { data: journals, isSuccess } = useQuery<IJournal[]>({
+    enabled: enabled,
+
     queryKey: queryKeysFactory.journals(
       searchText,
       journalTypes,
