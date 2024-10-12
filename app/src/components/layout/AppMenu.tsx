@@ -33,12 +33,7 @@ export const useRecentlyViewJournals = () => {
   );
 
   const journals =
-    useJournalsQuery(
-      undefined,
-      undefined,
-      false,
-      journalIds.length ? undefined : journalIds,
-    ) ?? [];
+    useJournalsQuery(undefined, undefined, false, journalIds) ?? [];
 
   return {
     journals,
@@ -53,7 +48,7 @@ export const useRecentlyViewJournals = () => {
       }
 
       setJournalIds([...journalIds]);
-      storage.setValue(storageKey, JSON.stringify(journalIds));
+      storage.setValue(storageKey, journalIds);
     },
   };
 };
