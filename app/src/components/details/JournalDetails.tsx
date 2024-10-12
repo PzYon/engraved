@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useJournalContext } from "./JournalContext";
 import { styled } from "@mui/material";
 import { Properties } from "../common/Properties";
@@ -10,9 +10,16 @@ import { JournalEditPage } from "./edit/JournalEditPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { JournalViewPage } from "./JournalViewPage";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
+import { useRecentlyViewJournals } from "../layout/AppMenu";
 
 export const JournalDetailsEdit: React.FC = () => {
   const { journal } = useJournalContext();
+
+  const { addViewed } = useRecentlyViewJournals();
+
+  useEffect(() => {
+    addViewed(journal.id);
+  }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (
     <ScrapsEditPage />
@@ -23,6 +30,12 @@ export const JournalDetailsEdit: React.FC = () => {
 
 export const JournalDetailsView: React.FC = () => {
   const { journal } = useJournalContext();
+
+  const { addViewed } = useRecentlyViewJournals();
+
+  useEffect(() => {
+    addViewed(journal.id);
+  }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (
     <ScrapsViewPage />

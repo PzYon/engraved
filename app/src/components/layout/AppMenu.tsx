@@ -22,12 +22,51 @@ import { Link } from "react-router-dom";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalIcon } from "../overview/journals/JournalIcon";
 import { IconStyle } from "../common/IconStyle";
+import { StorageWrapper } from "../../util/StorageWrapper";
+
+const storage = new StorageWrapper(window.localStorage);
+const storageKey = "engraved::recently-view-journals";
+
+export const useRecentlyViewJournals = () => {
+  const [journalIds, setJournalIds] = useState<string[]>(
+    () => storage.getValue<string[]>(storageKey) ?? [],
+  );
+
+  const journals =
+    useJournalsQuery(
+      undefined,
+      undefined,
+      false,
+      journalIds.length ? undefined : journalIds,
+    ) ?? [];
+
+  return {
+    journals,
+
+    addViewed: (id: string) => {
+      const index = journalIds.indexOf(id);
+      if (index === -1) {
+        journalIds.push(id);
+      } else {
+        journalIds.splice(index, 1);
+        journalIds.unshift(id);
+      }
+
+      setJournalIds([...journalIds]);
+      storage.setValue(storageKey, JSON.stringify(journalIds));
+    },
+  };
+};
 
 export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
 
-  const journals =
+  const favoriteJournals =
     useJournalsQuery(null, [], true, undefined, areFavoritesExpanded) ?? [];
+
+  const { journals } = useRecentlyViewJournals();
+
+  console.log(journals);
 
   return (
     <MenuContainer>
@@ -77,7 +116,7 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
         />
         <Collapse in={areFavoritesExpanded} timeout="auto" unmountOnExit>
           <List disablePadding dense>
-            {journals
+            {favoriteJournals
               .sort((a, b) => {
                 const firstName = a.name?.toLowerCase();
                 const secondName = b.name?.toLowerCase();
