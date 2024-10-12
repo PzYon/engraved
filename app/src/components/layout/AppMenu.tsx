@@ -1,6 +1,7 @@
 import {
   ExpandLess,
   ExpandMore,
+  History,
   List as ListIcon,
   ListAlt,
   NotificationsNone,
@@ -40,12 +41,11 @@ export const useRecentlyViewJournals = () => {
 
     addViewed: (id: string) => {
       const index = journalIds.indexOf(id);
-      if (index === -1) {
-        journalIds.push(id);
-      } else {
+      if (index > -1) {
         journalIds.splice(index, 1);
-        journalIds.unshift(id);
       }
+
+      journalIds.unshift(id);
 
       setJournalIds([...journalIds]);
       storage.setValue(storageKey, journalIds);
@@ -59,9 +59,9 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const favoriteJournals =
     useJournalsQuery(null, [], true, undefined, areFavoritesExpanded) ?? [];
 
-  const { journals } = useRecentlyViewJournals();
+  const [areRecentlyViewExpanded, setAreRecentlyViewExpanded] = useState(false);
 
-  console.log(journals);
+  const { journals: recentlyViewJournals } = useRecentlyViewJournals();
 
   return (
     <MenuContainer>
@@ -97,7 +97,6 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
           onClick={close}
         />
         <AppMenuItem
-          targetUrl=""
           label="Favorites"
           icon={<Star sx={{ color: "primary.main" }} />}
           onClick={() => setAreFavoritesExpanded(!areFavoritesExpanded)}
@@ -140,13 +139,45 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
               })}
           </List>
         </Collapse>
+        <AppMenuItem
+          label="Recently viewed journals"
+          icon={<History sx={{ color: "primary.main" }} />}
+          onClick={() => setAreRecentlyViewExpanded(!areRecentlyViewExpanded)}
+          suffix={
+            areRecentlyViewExpanded ? (
+              <ExpandLess sx={{ color: "primary.main" }} />
+            ) : (
+              <ExpandMore sx={{ color: "primary.main" }} />
+            )
+          }
+        />
+        <Collapse in={areRecentlyViewExpanded} timeout="auto" unmountOnExit>
+          <List disablePadding dense>
+            {recentlyViewJournals.map((journal) => {
+              return (
+                <AppMenuItem
+                  key={journal.id}
+                  targetUrl={`/journals/details/${journal.id}`}
+                  label={journal.name}
+                  icon={
+                    <JournalIcon
+                      journal={journal}
+                      iconStyle={IconStyle.Small}
+                    />
+                  }
+                  onClick={close}
+                />
+              );
+            })}
+          </List>
+        </Collapse>
       </List>
     </MenuContainer>
   );
 };
 
 const AppMenuItem: React.FC<{
-  targetUrl: string;
+  targetUrl?: string;
   label: string;
   icon: React.ReactNode;
   onClick: () => void;
