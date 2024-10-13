@@ -20,38 +20,10 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
-import { JournalIcon } from "../overview/journals/JournalIcon";
-import { IconStyle } from "../common/IconStyle";
-import { StorageWrapper } from "../../util/StorageWrapper";
-
-const storage = new StorageWrapper(window.localStorage);
-const storageKey = "engraved::recently-view-journals";
-
-export const useRecentlyViewJournals = () => {
-  const [journalIds, setJournalIds] = useState<string[]>(
-    () => storage.getValue<string[]>(storageKey) ?? [],
-  );
-
-  const journals =
-    useJournalsQuery(undefined, undefined, false, journalIds) ?? [];
-
-  return {
-    journals,
-
-    addViewed: (id: string) => {
-      const index = journalIds.indexOf(id);
-      if (index > -1) {
-        journalIds.splice(index, 1);
-      }
-
-      journalIds.unshift(id);
-
-      setJournalIds([...journalIds]);
-      storage.setValue(storageKey, journalIds);
-    },
-  };
-};
+import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
+import { JournalIcon } from "../../overview/journals/JournalIcon";
+import { IconStyle } from "../../common/IconStyle";
+import { useRecentlyViewedJournals } from "./useRecentlyViewedJournals";
 
 export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
@@ -61,7 +33,7 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
 
   const [areRecentlyViewExpanded, setAreRecentlyViewExpanded] = useState(false);
 
-  const { journals: recentlyViewJournals } = useRecentlyViewJournals();
+  const { journals: recentlyViewedJournals } = useRecentlyViewedJournals();
 
   return (
     <MenuContainer>
@@ -140,7 +112,7 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
           </List>
         </Collapse>
         <AppMenuItem
-          label="Recently viewed journals"
+          label="Recently viewed"
           icon={<History sx={{ color: "primary.main" }} />}
           onClick={() => setAreRecentlyViewExpanded(!areRecentlyViewExpanded)}
           suffix={
@@ -153,7 +125,7 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
         />
         <Collapse in={areRecentlyViewExpanded} timeout="auto" unmountOnExit>
           <List disablePadding dense>
-            {recentlyViewJournals.map((journal) => {
+            {recentlyViewedJournals.map((journal) => {
               return (
                 <AppMenuItem
                   key={journal.id}
@@ -187,12 +159,15 @@ const AppMenuItem: React.FC<{
     <ListItem onClick={onClick}>
       <ListItemButton sx={{ display: "flex" }}>
         <LinkOrSpan targetUrl={targetUrl}>
-          <ListItemIcon sx={{ minWidth: "40px" }}>{icon}</ListItemIcon>
+          <ListItemIcon sx={{ minWidth: "40px", color: "initial" }}>
+            {icon}
+          </ListItemIcon>
           <ListItemText
             sx={{
               overflow: "hidden",
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
+              pr: 2,
             }}
           >
             {label}
@@ -229,7 +204,9 @@ const MenuContainer = styled("div")`
 
   ul {
     ul {
-      padding: 16px;
+      li > div {
+        padding: 8px 4px 4px 24px;
+      }
     }
   }
 `;
