@@ -21,7 +21,7 @@ import { ActionLink } from "../common/actions/ActionLink";
 import { PageTabs } from "./tabs/PageTabs";
 import { FavoritesFlyout } from "../FavoritesFlyout";
 import { useDisplayModeContext } from "../overview/overviewList/DisplayModeContext";
-import { AppMenuLauncher } from "./AppMenuLauncher";
+import { AppMenuLauncher } from "./menu/AppMenuLauncher";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
