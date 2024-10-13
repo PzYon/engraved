@@ -16,11 +16,11 @@ import { useRecentlyViewedJournals } from "../layout/menu/useRecentlyViewedJourn
 export const JournalDetailsEdit: React.FC = () => {
   const { journal } = useJournalContext();
 
-  const { addViewed } = useRecentlyViewedJournals();
+  const { addView } = useRecentlyViewedJournals();
 
   useEffect(() => {
-    addViewed(journal.id);
-  }, [journal.id]);
+    addView(journal.id);
+  }, [journal.id, addView]);
 
   return journal.type === JournalType.Scraps ? (
     <ScrapsEditPage />
@@ -32,11 +32,11 @@ export const JournalDetailsEdit: React.FC = () => {
 export const JournalDetailsView: React.FC = () => {
   const { journal } = useJournalContext();
 
-  const { addViewed } = useRecentlyViewedJournals();
+  const { addView } = useRecentlyViewedJournals();
 
   useEffect(() => {
-    addViewed(journal.id);
-  }, [journal.id]);
+    addView(journal.id);
+  }, [journal.id, addView]);
 
   return journal.type === JournalType.Scraps ? (
     <ScrapsViewPage />

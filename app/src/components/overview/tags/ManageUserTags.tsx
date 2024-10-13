@@ -10,6 +10,7 @@ export const ManageUserTags: React.FC = () => {
 
   const initialTags = useMemo(() => {
     return Object.keys(user.tags ?? []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [tags, setTags] = useState(user.tags ?? []);

@@ -33,7 +33,7 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
 
   const [areRecentlyViewExpanded, setAreRecentlyViewExpanded] = useState(false);
 
-  const { journals: recentlyViewedJournals } = useRecentlyViewedJournals();
+  const { viewedJournals } = useRecentlyViewedJournals();
 
   return (
     <MenuContainer>
@@ -125,7 +125,7 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
         />
         <Collapse in={areRecentlyViewExpanded} timeout="auto" unmountOnExit>
           <List disablePadding dense>
-            {recentlyViewedJournals.map((journal) => {
+            {viewedJournals.map((journal) => {
               return (
                 <AppMenuItem
                   key={journal.id}
