@@ -20,7 +20,8 @@ export const JournalDetailsEdit: React.FC = () => {
 
   useEffect(() => {
     addView(journal.id);
-  }, [journal.id, addView]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (
     <ScrapsEditPage />
@@ -36,7 +37,8 @@ export const JournalDetailsView: React.FC = () => {
 
   useEffect(() => {
     addView(journal.id);
-  }, [journal.id, addView]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (
     <ScrapsViewPage />
