@@ -31,7 +31,7 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const favoriteJournals =
     useJournalsQuery(null, [], true, undefined, areFavoritesExpanded) ?? [];
 
-  const [areRecentlyViewExpanded, setAreRecentlyViewExpanded] = useState(false);
+  const [areRecentlyViewExpanded, setAreRecentlyViewExpanded] = useState(true);
 
   const { viewedJournals } = useRecentlyViewedJournals();
 
