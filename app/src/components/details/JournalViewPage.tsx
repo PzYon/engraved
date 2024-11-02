@@ -20,7 +20,6 @@ import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { Chart } from "./chart/Chart";
 import { IJournalUiSettings } from "./edit/IJournalUiSettings";
 import { getUiSettings } from "../../util/journalUtils";
-import { getDefaultDateConditions } from "./filters/getDefaultDateConditions";
 import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 import { EntriesAgenda } from "./entriesAgenda/EntriesAgenda";
@@ -68,13 +67,14 @@ export const JournalViewPage: React.FC = () => {
 
   const [titleActions, setTitleActions] = useState<IAction[]>([]);
 
+  const dateFilter =
+    uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter;
+
+  const dateFilterHash = JSON.stringify(dateFilter);
+
   useEffect(() => {
-    setDateConditions(
-      !uiSettings?.dateFilter
-        ? getDefaultDateConditions()
-        : createDateConditions(uiSettings.dateFilter, new Date()),
-    );
-  }, [setDateConditions, uiSettings.dateFilter]);
+    setDateConditions(createDateConditions(dateFilter, new Date()));
+  }, [setDateConditions, dateFilterHash]);
 
   useEffect(() => {
     setTitleActions([
@@ -136,9 +136,7 @@ export const JournalViewPage: React.FC = () => {
           setAttributeKey={setAttributeKey}
           chartType={chartType}
           setChartType={setChartType}
-          dateFilter={
-            uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter
-          }
+          dateFilter={dateFilter}
         />
       ) : null}
 
