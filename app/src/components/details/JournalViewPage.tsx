@@ -70,9 +70,11 @@ export const JournalViewPage: React.FC = () => {
   const dateFilter =
     uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter;
 
+  const dateFilterHash = JSON.stringify(dateFilter);
+
   useEffect(() => {
     setDateConditions(createDateConditions(dateFilter, new Date()));
-  }, [setDateConditions, JSON.stringify(uiSettings.dateFilter)]);
+  }, [setDateConditions, dateFilterHash]);
 
   useEffect(() => {
     setTitleActions([
