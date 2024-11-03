@@ -28,6 +28,7 @@ export const TagPage: React.FC = () => {
           }
         />
       }
+      actions={[]}
       filterMode={FilterMode.Text}
       showFilters={false}
       hideActions={true}

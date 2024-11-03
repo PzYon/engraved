@@ -22,6 +22,7 @@ export const ScheduledPage: React.FC = () => {
           }
         />
       }
+      actions={[]}
       tabs={getPageTabs("scheduled")}
       filterMode={FilterMode.Text}
       hideActions={true}

@@ -11,7 +11,7 @@ export const SettingsPage: React.FC = () => {
   const { user } = useAppContext();
 
   return (
-    <Page title="Settings" documentTitle="Settings">
+    <Page title="Settings" documentTitle="Settings" actions={[]}>
       <PageSection title="Tags">
         <ManageUserTags />
       </PageSection>

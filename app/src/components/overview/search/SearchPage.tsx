@@ -20,6 +20,7 @@ export const SearchPage: React.FC = () => {
           }
         />
       }
+      actions={[]}
       filterMode={FilterMode.Text}
       showFilters={true}
       hideActions={true}
