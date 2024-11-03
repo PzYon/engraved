@@ -45,6 +45,7 @@ export const Page: React.FC<{
   } = usePageContext();
 
   useEffect(() => {
+    debugger;
     if (actions === undefined) {
       return;
     }
