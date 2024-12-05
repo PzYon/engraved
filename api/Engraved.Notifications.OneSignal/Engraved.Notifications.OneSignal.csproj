@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="OneSignalApi" Version="2.0.2"/>
+        <PackageReference Include="OneSignalApi" Version="2.1.0"/>
     </ItemGroup>
 
 </Project>
