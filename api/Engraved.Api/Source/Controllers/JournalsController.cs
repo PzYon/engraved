@@ -1,5 +1,4 @@
-﻿using Amazon.Runtime.Internal;
-using Engraved.Core.Application;
+﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Journals.Add;
 using Engraved.Core.Application.Commands.Journals.AddSchedule;
