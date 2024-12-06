@@ -166,7 +166,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
         GetFreeTextFilters<EntryDocument>(
           searchText,
           d => d.Notes!,
-          d => ((ScrapsEntryDocument)d).Title!
+          d => ((ScrapsEntryDocument) d).Title!
         )
       );
     }
@@ -222,7 +222,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
       searchText,
       d => d.Notes!,
-      d => ((ScrapsEntryDocument)d).Title!
+      d => ((ScrapsEntryDocument) d).Title!
     );
 
     if (journalIds is { Length: > 0 })
@@ -435,10 +435,10 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   {
     return journalType switch
     {
-      JournalType.Counter => d => d is CounterJournalDocument,
-      JournalType.Gauge => d => d is GaugeJournalDocument,
-      JournalType.Timer => d => d is TimerJournalDocument,
-      JournalType.Scraps => d => d is ScrapsJournalDocument,
+      JournalType.Counter => d => d.GetType() == typeof(CounterJournalDocument),
+      JournalType.Gauge => d => d.GetType() == typeof(GaugeJournalDocument),
+      JournalType.Timer => d => d.GetType() == typeof(TimerJournalDocument),
+      JournalType.Scraps => d => d.GetType() == typeof(ScrapsJournalDocument),
       _ => throw new ArgumentOutOfRangeException(
         nameof(journalType),
         journalType,
@@ -452,13 +452,13 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     switch (journalType)
     {
       case JournalType.Counter:
-        return d => d is CounterEntryDocument;
+        return d => d.GetType() == typeof(CounterEntryDocument);
       case JournalType.Gauge:
-        return d => d is GaugeEntryDocument;
+        return d => d.GetType() == typeof(GaugeEntryDocument);
       case JournalType.Timer:
-        return d => d is TimerEntryDocument;
+        return d => d.GetType() == typeof(TimerEntryDocument);
       case JournalType.Scraps:
-        return d => d is ScrapsEntryDocument;
+        return d => d.GetType() == typeof(ScrapsEntryDocument);
       default:
         throw new ArgumentOutOfRangeException(
           nameof(journalType),
