@@ -3,7 +3,9 @@ using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
@@ -29,6 +31,8 @@ public class MongoDatabaseClient
     BsonClassMap.RegisterClassMap<TimerJournalDocument>();
     BsonClassMap.RegisterClassMap<GaugeJournalDocument>();
     BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
+
+    BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
   }
 
   public MongoDatabaseClient(ILogger? logger, IMongoRepositorySettings settings, string? dbNameOverride)
@@ -37,7 +41,7 @@ public class MongoDatabaseClient
 
     IMongoClient client = CreateMongoClient(settings);
 
-    string dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
+    var dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
 
     IMongoDatabase? db = client.GetDatabase(dbName);
 
