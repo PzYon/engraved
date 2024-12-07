@@ -74,6 +74,7 @@ export const JournalViewPage: React.FC = () => {
 
   useEffect(() => {
     setDateConditions(createDateConditions(dateFilter, new Date()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setDateConditions, dateFilterHash]);
 
   useEffect(() => {
