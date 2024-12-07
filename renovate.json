@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
+  "ignorePaths": [],
   "packageRules": [
     {
       "matchUpdateTypes": [
