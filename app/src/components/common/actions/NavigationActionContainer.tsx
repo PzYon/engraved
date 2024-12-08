@@ -12,7 +12,7 @@ export const NavigationActionContainer: React.FC<{
   giveFocus?: () => void;
 }> = ({ children, growWidthIfPossible, shrinkWidthIfPossible, giveFocus }) => {
   const domElement: React.MutableRefObject<HTMLDivElement> =
-    useRef<HTMLDivElement>();
+    useRef<HTMLDivElement>(undefined);
 
   useEffect(() => {
     giveFocus?.();

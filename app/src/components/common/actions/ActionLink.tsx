@@ -6,7 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 export const ActionLink: React.FC<{
   action: IAction;
-  children?: React.ReactElement;
+  children?: React.ReactElement<unknown>;
   style?: CSSProperties;
 }> = ({ action, style, children }) => {
   const { getAppendedSearchParams } = useEngravedSearchParams();

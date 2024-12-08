@@ -11,7 +11,7 @@ import { NavigationActionContainer } from "../actions/NavigationActionContainer"
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
-  render?: (child: React.ReactElement) => React.ReactElement;
+  render?: (child: React.ReactElement<unknown>) => React.ReactElement<unknown>;
   giveFocus?: () => void;
 }> = ({ entry, render, giveFocus }) => {
   const { getParams } = useItemAction();

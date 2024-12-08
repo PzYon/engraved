@@ -5,10 +5,10 @@ import { engravedEmojiStyle } from "./EngravedEmojiStyle";
 
 export const EmojiPickerWrapper: React.FC<{
   onEmojiClick: (emoji: string) => void;
-  opener: React.ReactElement;
+  opener: React.ReactElement<unknown>;
 }> = ({ onEmojiClick, opener }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLElement>();
+  const ref = useRef<HTMLElement>(undefined);
 
   return (
     <>
