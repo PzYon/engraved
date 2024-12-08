@@ -15,7 +15,7 @@ export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
 
   const [user, setUser] = useState<IUser>();
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(undefined);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isNotVisible, setIsNotVisible] = useState(true);
