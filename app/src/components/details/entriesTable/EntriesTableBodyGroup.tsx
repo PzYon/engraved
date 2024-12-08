@@ -43,7 +43,7 @@ export const EntriesTableBodyGroup: React.FC<{
 
           <EntrySubRoutes
             entry={entry}
-            render={(child: React.ReactElement) => (
+            render={(child: React.ReactElement<unknown>) => (
               <TableRow key="routes" className="action-row">
                 <TableCell colSpan={columns.length}>
                   <div

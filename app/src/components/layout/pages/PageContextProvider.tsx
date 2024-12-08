@@ -19,7 +19,7 @@ export const PageContextProvider: React.FC<{
   const [hideActions, setHideActions] = useState(false);
   const [pageActions, setPageActions] = useState<IAction[]>([]);
   const [pageActionRoutes, setPageActionRoutes] =
-    useState<React.ReactElement>(undefined);
+    useState<React.ReactElement<unknown>>(undefined);
   const [showFilters, setShowFilters] = useState(false);
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
   const [tabs, setTabs] = useState<IPageTab[]>([]);

@@ -15,7 +15,7 @@ export const Page: React.FC<{
   tabs?: IPageTab[];
   filterMode?: FilterMode;
   showFilters?: boolean;
-  pageActionRoutes?: React.ReactElement;
+  pageActionRoutes?: React.ReactElement<unknown>;
 }> = ({
   actions,
   hideActions,
