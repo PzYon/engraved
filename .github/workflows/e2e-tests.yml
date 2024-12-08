@@ -16,7 +16,7 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.x.x"
+          dotnet-version: "9.x.x"
 
       - name: Start MongoDB (for tests)
         run: sudo systemctl start mongod
