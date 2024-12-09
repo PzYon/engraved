@@ -307,8 +307,7 @@ export const ScrapContextProvider: React.FC<{
         notes: notesToSave,
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
-        // todo: below must be wrong!!!!
-        journalId: scrapToRender.parentId,
+        journalId: initialScrap.parentId,
         dateTime: new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
