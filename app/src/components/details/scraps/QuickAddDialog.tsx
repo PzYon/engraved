@@ -14,13 +14,15 @@ export const QuickAddDialog: React.FC<{
 }> = ({ targetJournalId, closeDialog }) => {
   const { user } = useAppContext();
 
+  const [journalId, setJournalId] = useState(targetJournalId);
+
   const scrap = ScrapsJournalType.createBlank(
     true,
-    targetJournalId,
+    journalId,
     ScrapType.Markdown,
   );
 
-  const [journalId, setJournalId] = useState(scrap.parentId);
+  console.log("SCRAP", scrap.parentId);
 
   return (
     <>
@@ -35,7 +37,10 @@ export const QuickAddDialog: React.FC<{
             );
           })
         }
-        onChange={(journal) => setJournalId(journal.id)}
+        onChange={(journal) => {
+          console.log("setting journal id", journal.id);
+          setJournalId(journal.id);
+        }}
         selectedJournalId={journalId}
       />
 
@@ -46,7 +51,6 @@ export const QuickAddDialog: React.FC<{
           actionsRenderStyle={"save-only"}
           onSuccess={closeDialog}
           isQuickAdd={true}
-          targetJournalId={journalId}
           changeTypeWithoutConfirmation={true}
           onCancelEditing={closeDialog}
         />

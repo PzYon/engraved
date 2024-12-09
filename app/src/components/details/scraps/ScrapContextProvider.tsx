@@ -37,7 +37,6 @@ export const ScrapContextProvider: React.FC<{
   onCancelEditing?: () => void;
   giveFocus?: () => void;
   isQuickAdd?: boolean;
-  targetJournalId?: string;
   changeTypeWithoutConfirmation?: boolean;
 }> = ({
   children,
@@ -50,7 +49,6 @@ export const ScrapContextProvider: React.FC<{
   hasFocus,
   giveFocus,
   isQuickAdd,
-  targetJournalId,
   changeTypeWithoutConfirmation,
 }) => {
   const { setAppAlert } = useAppContext();
@@ -75,13 +73,12 @@ export const ScrapContextProvider: React.FC<{
         notes: scrapToRender.notes,
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: null,
-        parentId: targetJournalId ?? initialScrap.parentId,
+        parentId: scrapToRender.parentId,
         dateTime: null,
       },
     );
   }, [
     parsedDate?.text,
-    targetJournalId,
     initialScrap.parentId,
     initialScrap.scrapType,
     isEditMode,
@@ -98,10 +95,10 @@ export const ScrapContextProvider: React.FC<{
   const itemAction = useItemAction();
 
   const upsertEntryMutation = useUpsertEntryMutation(
-    initialScrap.parentId,
+    scrapToRender.parentId,
     JournalType.Scraps,
     null, // scrap currently do not support attributes
-    initialScrap.id,
+    scrapToRender.id,
     closeAddEntryAction,
   );
 
@@ -310,7 +307,8 @@ export const ScrapContextProvider: React.FC<{
         notes: notesToSave,
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
-        journalId: targetJournalId ?? scrapToRender.parentId,
+        // todo: below must be wrong!!!!
+        journalId: scrapToRender.parentId,
         dateTime: new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
