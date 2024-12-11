@@ -73,7 +73,7 @@ export const ScrapContextProvider: React.FC<{
         notes: scrapToRender.notes,
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: null,
-        parentId: scrapToRender.parentId,
+        parentId: initialScrap.parentId,
         dateTime: null,
       },
     );
