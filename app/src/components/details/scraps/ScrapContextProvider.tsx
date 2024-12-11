@@ -52,8 +52,8 @@ export const ScrapContextProvider: React.FC<{
   changeTypeWithoutConfirmation,
 }) => {
   const { setAppAlert } = useAppContext();
-
   const { renderDialog } = useDialogContext();
+
   const [scrapToRender, setScrapToRender] = useState(initialScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
@@ -300,6 +300,7 @@ export const ScrapContextProvider: React.FC<{
 
     onSuccess?.();
 
+    const journalId = initialScrap.parentId;
     await upsertEntryMutation.mutateAsync({
       command: {
         id: scrapToRender.id,
@@ -307,11 +308,11 @@ export const ScrapContextProvider: React.FC<{
         notes: notesToSave,
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
-        journalId: initialScrap.parentId,
+        journalId: journalId,
         dateTime: new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
-          scrapToRender.parentId,
+          journalId,
           scrapToRender?.id ?? "new-entry-id",
         ),
       } as IUpsertScrapsEntryCommand,

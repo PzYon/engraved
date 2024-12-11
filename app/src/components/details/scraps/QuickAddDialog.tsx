@@ -22,8 +22,6 @@ export const QuickAddDialog: React.FC<{
     ScrapType.Markdown,
   );
 
-  console.log("SCRAP", scrap.parentId);
-
   return (
     <>
       <JournalSelector
