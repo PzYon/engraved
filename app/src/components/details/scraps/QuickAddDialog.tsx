@@ -14,13 +14,13 @@ export const QuickAddDialog: React.FC<{
 }> = ({ targetJournalId, closeDialog }) => {
   const { user } = useAppContext();
 
+  const [journalId, setJournalId] = useState(targetJournalId);
+
   const scrap = ScrapsJournalType.createBlank(
     true,
-    targetJournalId,
+    journalId,
     ScrapType.Markdown,
   );
-
-  const [journalId, setJournalId] = useState(scrap.parentId);
 
   return (
     <>
@@ -46,7 +46,6 @@ export const QuickAddDialog: React.FC<{
           actionsRenderStyle={"save-only"}
           onSuccess={closeDialog}
           isQuickAdd={true}
-          targetJournalId={journalId}
           changeTypeWithoutConfirmation={true}
           onCancelEditing={closeDialog}
         />

@@ -37,7 +37,6 @@ export const ScrapContextProvider: React.FC<{
   onCancelEditing?: () => void;
   giveFocus?: () => void;
   isQuickAdd?: boolean;
-  targetJournalId?: string;
   changeTypeWithoutConfirmation?: boolean;
 }> = ({
   children,
@@ -50,12 +49,11 @@ export const ScrapContextProvider: React.FC<{
   hasFocus,
   giveFocus,
   isQuickAdd,
-  targetJournalId,
   changeTypeWithoutConfirmation,
 }) => {
   const { setAppAlert } = useAppContext();
-
   const { renderDialog } = useDialogContext();
+
   const [scrapToRender, setScrapToRender] = useState(initialScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
@@ -75,13 +73,12 @@ export const ScrapContextProvider: React.FC<{
         notes: scrapToRender.notes,
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: null,
-        parentId: targetJournalId ?? initialScrap.parentId,
+        parentId: initialScrap.parentId,
         dateTime: null,
       },
     );
   }, [
     parsedDate?.text,
-    targetJournalId,
     initialScrap.parentId,
     initialScrap.scrapType,
     isEditMode,
@@ -95,10 +92,12 @@ export const ScrapContextProvider: React.FC<{
     initialScrap.notes !== scrapToRender.notes ||
     initialScrap.title !== scrapToRender.title;
 
+  const journalId = initialScrap.parentId;
+
   const itemAction = useItemAction();
 
   const upsertEntryMutation = useUpsertEntryMutation(
-    initialScrap.parentId,
+    journalId,
     JournalType.Scraps,
     null, // scrap currently do not support attributes
     initialScrap.id,
@@ -310,11 +309,11 @@ export const ScrapContextProvider: React.FC<{
         notes: notesToSave,
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
-        journalId: targetJournalId ?? scrapToRender.parentId,
+        journalId: journalId,
         dateTime: new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
-          scrapToRender.parentId,
+          journalId,
           scrapToRender?.id ?? "new-entry-id",
         ),
       } as IUpsertScrapsEntryCommand,
