@@ -92,13 +92,15 @@ export const ScrapContextProvider: React.FC<{
     initialScrap.notes !== scrapToRender.notes ||
     initialScrap.title !== scrapToRender.title;
 
+  const journalId = initialScrap.parentId;
+
   const itemAction = useItemAction();
 
   const upsertEntryMutation = useUpsertEntryMutation(
-    scrapToRender.parentId,
+    journalId,
     JournalType.Scraps,
     null, // scrap currently do not support attributes
-    scrapToRender.id,
+    initialScrap.id,
     closeAddEntryAction,
   );
 
@@ -300,7 +302,6 @@ export const ScrapContextProvider: React.FC<{
 
     onSuccess?.();
 
-    const journalId = initialScrap.parentId;
     await upsertEntryMutation.mutateAsync({
       command: {
         id: scrapToRender.id,
