@@ -38,8 +38,6 @@ export const JournalSelector: React.FC<{
       value={selectedJournal}
       options={filterJournals(journals)}
       onChange={async (_, selectedOption) => {
-        console.log("selectediption", selectedOption);
-
         onChange(selectedOption);
       }}
       renderInput={(params) => (

@@ -45,7 +45,6 @@ export const useUpsertEntryMutation = (
         await editJournalMutation.mutateAsync({ journal });
       }
 
-      console.log("Will mutate with journal id ", variables.command);
       return await ServerApi.upsertEntry(
         variables.command,
         journalType.toLowerCase(),

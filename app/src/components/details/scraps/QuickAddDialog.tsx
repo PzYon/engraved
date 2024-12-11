@@ -36,7 +36,6 @@ export const QuickAddDialog: React.FC<{
           })
         }
         onChange={(journal) => {
-          console.log("setting journal id", journal.id);
           setJournalId(journal.id);
         }}
         selectedJournalId={journalId}
