@@ -1,5 +1,4 @@
-import { TextField } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useSearchEntitiesQuery } from "../../../serverApi/reactQuery/queries/useSearchEntitiesQuery";
 import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
@@ -7,7 +6,8 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { PageSection } from "../../layout/pages/PageSection";
 import { OverviewList } from "../overviewList/OverviewList";
 import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
-import { useHotkeys } from "react-hotkeys-hook";
+import { GoToTextField } from "./GoToTextField";
+import { GoToItemRow } from "./GoToItemRow";
 
 export const GoTo: React.FC = () => {
   const [searchText, setSearchText] = useState("");
@@ -18,15 +18,13 @@ export const GoTo: React.FC = () => {
     <PageSection>
       <OverviewList
         items={result?.entities?.map((entity) => entity.entity) ?? []}
-        renderBeforeList={(collection: OverviewItemCollection) => {
-          return (
-            <SearchField
-              collection={collection}
-              value={searchText}
-              onChange={setSearchText}
-            />
-          );
-        }}
+        renderBeforeList={(collection: OverviewItemCollection) => (
+          <GoToTextField
+            collection={collection}
+            value={searchText}
+            onChange={setSearchText}
+          />
+        )}
         renderItem={(entity) => <div>{renderItem(entity)}</div>}
       />
     </PageSection>
@@ -36,43 +34,19 @@ export const GoTo: React.FC = () => {
     // this is a temporary hack! should be something like:
     // if (item.entityType === "Entry") {
     if ((entity as IJournal).type) {
-      return (entity as IJournal).name;
+      return (
+        <GoToItemRow
+          url={`/journals/${entity.id}`}
+          title={(entity as IJournal).name}
+        />
+      );
     }
 
-    return (entity as IScrapEntry).title || `Entry: ${entity.id}`;
+    return (
+      <GoToItemRow
+        url={`/journals/details/${(entity as IScrapEntry).parentId}?selected-item=${entity.id}`}
+        title={(entity as IScrapEntry).title ?? entity.id}
+      />
+    );
   }
-};
-
-const SearchField: React.FC<{
-  collection: OverviewItemCollection;
-  value: string;
-  onChange: (text: string) => void;
-}> = ({ collection, value, onChange }) => {
-  const textFieldRef = useRef<HTMLInputElement>(undefined);
-
-  const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
-
-  useHotkeys("alt+down", () => collection.setFocus(0), {
-    enabled: textFieldHasFocus,
-    enableOnFormTags: ["input"],
-  });
-
-  useEffect(() => {
-    const unregister = collection.setOnType(() => textFieldRef.current.focus());
-    return unregister();
-  }, []);
-
-  return (
-    <TextField
-      inputRef={textFieldRef}
-      value={value}
-      onFocus={() => setTextFieldHasFocus(true)}
-      onBlur={() => setTextFieldHasFocus(false)}
-      id={Math.random().toString()}
-      onChange={(e) => {
-        onChange(e.target.value);
-      }}
-      style={{ width: "100%" }}
-    />
-  );
 };
