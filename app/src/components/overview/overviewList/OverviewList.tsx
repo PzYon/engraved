@@ -5,9 +5,11 @@ import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
 import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
+import { OverviewItemCollection } from "./wrappers/OverviewItemCollection";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
+  renderBeforeList?: (collection: OverviewItemCollection) => React.ReactNode;
   renderItem: (
     item: IEntity,
     index: number,
@@ -15,7 +17,7 @@ export const OverviewList: React.FC<{
     giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
-}> = ({ items, renderItem, filterItem }) => {
+}> = ({ items, renderBeforeList, renderItem, filterItem }) => {
   const { user } = useAppContext();
 
   const { collection, addItem } = useOverviewCollection();
@@ -29,6 +31,7 @@ export const OverviewList: React.FC<{
 
   return (
     <Host>
+      {renderBeforeList?.(collection)}
       {filteredItems.map((item, index) => {
         return (
           <OverviewListItem
