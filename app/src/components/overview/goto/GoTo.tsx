@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchEntitiesQuery } from "../../../serverApi/reactQuery/queries/useSearchEntitiesQuery";
 import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
@@ -11,10 +11,6 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 export const GoTo: React.FC = () => {
   const [searchText, setSearchText] = useState("");
-
-  useHotkeys("alt+up", () => {
-    console.log("alt+up");
-  });
 
   const result = useSearchEntitiesQuery(searchText);
 
@@ -54,15 +50,24 @@ const SearchField: React.FC<{
 }> = ({ collection, value, onChange }) => {
   const textFieldRef = useRef<HTMLInputElement>(undefined);
 
-  useHotkeys("alt+down", () => {
-    console.log("alt+down");
-    collection.setFocus(0);
+  const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
+
+  useHotkeys("alt+down", () => collection.setFocus(0), {
+    enabled: textFieldHasFocus,
+    enableOnFormTags: ["input"],
   });
+
+  useEffect(() => {
+    const unregister = collection.setOnType(() => textFieldRef.current.focus());
+    return unregister();
+  }, []);
 
   return (
     <TextField
       inputRef={textFieldRef}
       value={value}
+      onFocus={() => setTextFieldHasFocus(true)}
+      onBlur={() => setTextFieldHasFocus(false)}
       id={Math.random().toString()}
       onChange={(e) => {
         onChange(e.target.value);
