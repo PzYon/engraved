@@ -29,16 +29,12 @@ export class OverviewItemCollection {
   };
 
   setFocusForId(itemId: string) {
-    console.log("setting focus for item " + itemId);
-
     this.setFocus(
       this.wrappers.findIndex((i) => i.internalObj.id === itemId) ?? -1,
     );
   }
 
   setFocus(index: number) {
-    console.log("setting focus to " + index);
-
     if (this.currentIndex === index) {
       // if item already has focus (or is the last one that had focus),
       // then do nothing in order to prevent cursors from moving around.
