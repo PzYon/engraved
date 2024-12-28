@@ -18,9 +18,10 @@ export const GoToTextField: React.FC<{
   });
 
   useEffect(() => {
-    const unregister = collection.setOnType(() => textFieldRef.current.focus());
-    return unregister();
+    return collection.setOnType(() => textFieldRef.current.focus());
   }, []);
+
+  console.log("CURRENT INDEX: ", collection.currentIndex);
 
   return (
     <TextField
@@ -29,9 +30,7 @@ export const GoToTextField: React.FC<{
       onFocus={() => setTextFieldHasFocus(true)}
       onBlur={() => setTextFieldHasFocus(false)}
       id={Math.random().toString()}
-      onChange={(e) => {
-        onChange(e.target.value);
-      }}
+      onChange={(e) => onChange(e.target.value)}
       style={{ width: "100%" }}
     />
   );

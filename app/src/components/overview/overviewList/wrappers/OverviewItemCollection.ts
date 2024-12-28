@@ -9,7 +9,7 @@ export class OverviewItemCollection {
   }
 
   constructor(
-    public currentIndex: number,
+    public currentIndex: number = 1,
     private onIndexChange: (itemId: string, index: number) => void,
   ) {}
 
@@ -21,19 +21,24 @@ export class OverviewItemCollection {
     return () => document.removeEventListener("keydown", this.onTypeInternal);
   }
 
-  private onTypeInternal(e: KeyboardEvent) {
+  private onTypeInternal = (e: KeyboardEvent) => {
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && !e.altKey) {
+      this.setFocus(-1);
       this.onType?.();
     }
-  }
+  };
 
   setFocusForId(itemId: string) {
+    console.log("setting focus for item " + itemId);
+
     this.setFocus(
       this.wrappers.findIndex((i) => i.internalObj.id === itemId) ?? -1,
     );
   }
 
   setFocus(index: number) {
+    console.log("setting focus to " + index);
+
     if (this.currentIndex === index) {
       // if item already has focus (or is the last one that had focus),
       // then do nothing in order to prevent cursors from moving around.
