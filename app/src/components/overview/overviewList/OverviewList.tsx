@@ -17,10 +17,11 @@ export const OverviewList: React.FC<{
     giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
-}> = ({ items, renderBeforeList, renderItem, filterItem }) => {
+  doNotUseUrl?: boolean;
+}> = ({ items, renderBeforeList, renderItem, filterItem, doNotUseUrl }) => {
   const { user } = useAppContext();
 
-  const { collection, addItem } = useOverviewCollection();
+  const { collection, addItem } = useOverviewCollection(doNotUseUrl);
   const [showAll, setShowAll] = useState(false);
 
   const filteredItems = items.filter(

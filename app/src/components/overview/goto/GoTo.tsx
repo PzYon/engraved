@@ -26,6 +26,7 @@ export const GoTo: React.FC = () => {
           />
         )}
         renderItem={(entity) => <div>{renderItem(entity)}</div>}
+        doNotUseUrl={true}
       />
     </PageSection>
   );

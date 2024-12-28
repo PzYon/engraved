@@ -7,7 +7,7 @@ import {
   useSelectedItemId,
 } from "../../../common/actions/searchParamHooks";
 
-export function useOverviewCollection() {
+export function useOverviewCollection(doNotUseUrl: boolean) {
   const [focusIndex, setFocusIndex] = useState(-1);
 
   const { setValue, getValue } = useSelectedItemId();
@@ -35,7 +35,7 @@ export function useOverviewCollection() {
 
   function onIndexChange(itemId: string, index: number) {
     setFocusIndex(index);
-    if (itemId && getSelectedItemIdFromUrl() !== itemId) {
+    if (!doNotUseUrl && itemId && getSelectedItemIdFromUrl() !== itemId) {
       setValue(itemId);
     }
   }
