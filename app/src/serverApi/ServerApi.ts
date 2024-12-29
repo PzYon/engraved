@@ -351,15 +351,20 @@ export class ServerApi {
     );
   }
 
-  static async getSearchEntities(
+  static async searchEntities(
     searchText: string,
     scheduledOnly: boolean,
     onlyEntriesOfTypes: JournalType[],
+    onlyConsiderTitle: boolean,
   ): Promise<ISearchEntitiesResult> {
     const urlParams: string[] = [];
 
     if (searchText) {
       urlParams.push(`searchText=${searchText}`);
+    }
+
+    if (onlyConsiderTitle) {
+      urlParams.push(`onlyConsiderTitle=${onlyConsiderTitle}`);
     }
 
     if (scheduledOnly) {

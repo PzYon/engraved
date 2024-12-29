@@ -2,5 +2,5 @@
 
 public class UpdateUserTagsCommand : ICommand
 {
-  public Dictionary<string, string> TagNames { get; set; }
+  public Dictionary<string, string> TagNames { get; set; } = [];
 }

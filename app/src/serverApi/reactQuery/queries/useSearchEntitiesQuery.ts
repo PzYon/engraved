@@ -9,6 +9,7 @@ export const useSearchEntitiesQuery = (
   scheduledOnly?: boolean,
   onlyEntriesOfTypes?: JournalType[],
   executeWithoutConditions?: boolean,
+  onlyConsiderTitle?: boolean,
 ) => {
   const { data: result } = useQuery<ISearchEntitiesResult>({
     queryKey: queryKeysFactory.entities(
@@ -16,14 +17,16 @@ export const useSearchEntitiesQuery = (
       scheduledOnly,
       onlyEntriesOfTypes,
       executeWithoutConditions,
+      onlyConsiderTitle,
     ),
 
     queryFn: () =>
       executeWithoutConditions || searchText
-        ? ServerApi.getSearchEntities(
+        ? ServerApi.searchEntities(
             searchText,
             scheduledOnly,
             onlyEntriesOfTypes,
+            onlyConsiderTitle,
           )
         : Promise.resolve({ entities: [], journals: [] }),
   });

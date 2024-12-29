@@ -13,9 +13,13 @@ import { JournalType } from "../../../serverApi/JournalType";
 export const GoTo: React.FC = () => {
   const [searchText, setSearchText] = useState("");
 
-  const result = useSearchEntitiesQuery(searchText, false, [
-    JournalType.Scraps,
-  ]);
+  const result = useSearchEntitiesQuery(
+    searchText,
+    false,
+    [JournalType.Scraps],
+    false,
+    true,
+  );
 
   return (
     <PageSection>

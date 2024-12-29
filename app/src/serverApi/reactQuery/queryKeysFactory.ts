@@ -81,6 +81,7 @@ export const queryKeysFactory = {
     scheduledOnly = false,
     onlyEntriesOfTypes: JournalType[] = [],
     executeWithoutConditions = false,
+    onlyConsiderTitle = false,
   ) {
     return [
       "search",
@@ -89,6 +90,7 @@ export const queryKeysFactory = {
       scheduledOnly,
       onlyEntriesOfTypes?.join(","),
       executeWithoutConditions,
+      onlyConsiderTitle,
     ];
   },
 
