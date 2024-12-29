@@ -32,9 +32,9 @@ export const GoTo: React.FC = () => {
             onChange={setSearchText}
           />
         )}
-        renderItem={(entity: IEntity, _: number, hasFocus: boolean) => (
-          <div>{renderItem(entity, hasFocus)}</div>
-        )}
+        renderItem={(entity: IEntity, _: number, hasFocus: boolean) =>
+          renderItem(entity, hasFocus)
+        }
         doNotUseUrl={true}
       />
     </PageSection>
