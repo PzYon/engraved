@@ -38,7 +38,7 @@ export const GoTo: React.FC = () => {
       return (
         <GoToItemRow
           url={`/journals/${entity.id}`}
-          title={(entity as IJournal).name}
+          title={`Journal ${entity.id}: ${(entity as IJournal).name}`}
         />
       );
     }
@@ -46,7 +46,7 @@ export const GoTo: React.FC = () => {
     return (
       <GoToItemRow
         url={`/journals/details/${(entity as IScrapEntry).parentId}?selected-item=${entity.id}`}
-        title={(entity as IScrapEntry).title || entity.id}
+        title={`Entry ${entity.id}: ${(entity as IScrapEntry).title || entity.id}`}
       />
     );
   }

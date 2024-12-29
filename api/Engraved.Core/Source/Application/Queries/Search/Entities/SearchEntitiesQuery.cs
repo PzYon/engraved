@@ -9,7 +9,6 @@ public class SearchEntitiesQuery : IEntitiesQuery
   public string? SearchText { get; set; }
 
   public bool ScheduledOnly { get; set; }
-  
-  // todo: extend with types here!
+
   public JournalType[] OnlyEntriesOfTypes { get; set; } = [];
 }
