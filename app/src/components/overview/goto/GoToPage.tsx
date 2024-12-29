@@ -2,7 +2,7 @@ import React from "react";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
 import { Icon } from "../../common/Icon";
-import { AssistantDirection } from "@mui/icons-material";
+import { Shortcut } from "@mui/icons-material";
 import { IconStyle } from "../../common/IconStyle";
 import { GoTo } from "./GoTo";
 
@@ -14,7 +14,7 @@ export const GoToPage: React.FC = () => {
           title={"Go To"}
           icon={
             <Icon style={IconStyle.Large}>
-              <AssistantDirection />
+              <Shortcut />
             </Icon>
           }
         />

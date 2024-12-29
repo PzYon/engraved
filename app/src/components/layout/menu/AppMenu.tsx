@@ -6,6 +6,7 @@ import {
   ListAlt,
   NotificationsNone,
   SearchOutlined,
+  Shortcut,
   Star,
   Style,
 } from "@mui/icons-material";
@@ -38,6 +39,12 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   return (
     <MenuContainer>
       <List>
+        <AppMenuItem
+          targetUrl="/go-to"
+          label="Go to"
+          icon={<Shortcut sx={{ color: "primary.main" }} />}
+          onClick={close}
+        />
         <AppMenuItem
           targetUrl="/tags"
           label="Tags"
