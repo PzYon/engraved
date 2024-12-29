@@ -19,7 +19,7 @@ export const GoToTextField: React.FC<{
 
   useEffect(() => {
     return collection.setOnType(() => textFieldRef.current.focus());
-  }, []);
+  }, [collection]);
 
   return (
     <TextField
