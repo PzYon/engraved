@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -14,7 +14,9 @@ export const GoToItemRow: React.FC<{ title: string; url: string }> = ({
 
   return (
     <Host>
-      <Link to={url}>{title}</Link>
+      <Typography>
+        <Link to={url}>{title}</Link>
+      </Typography>
     </Host>
   );
 };

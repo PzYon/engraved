@@ -21,8 +21,6 @@ export const GoToTextField: React.FC<{
     return collection.setOnType(() => textFieldRef.current.focus());
   }, []);
 
-  console.log("CURRENT INDEX: ", collection.currentIndex);
-
   return (
     <TextField
       inputRef={textFieldRef}

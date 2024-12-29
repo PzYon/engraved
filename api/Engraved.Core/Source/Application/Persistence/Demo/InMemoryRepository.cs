@@ -104,6 +104,11 @@ public class InMemoryRepository : IRepository
             return true;
           }
         )
+        .Where(
+          m => journalTypes == null
+               || journalTypes.Length == 0
+               || journalTypes.Contains(Journals.First(j => j.Id == m.ParentId).Type)
+        )
         .Take(limit ?? 100)
         .ToArray()
     );
