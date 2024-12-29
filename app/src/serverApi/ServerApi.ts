@@ -354,6 +354,7 @@ export class ServerApi {
   static async getSearchEntities(
     searchText: string,
     scheduledOnly: boolean,
+    onlyEntriesOfTypes: JournalType[],
   ): Promise<ISearchEntitiesResult> {
     const urlParams: string[] = [];
 
@@ -363,6 +364,10 @@ export class ServerApi {
 
     if (scheduledOnly) {
       urlParams.push(`scheduledOnly=${scheduledOnly}`);
+    }
+
+    if (onlyEntriesOfTypes) {
+      urlParams.push(`onlyEntriesOfTypes=${onlyEntriesOfTypes.join(",")}`);
     }
 
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";

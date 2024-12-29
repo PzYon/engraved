@@ -8,11 +8,14 @@ import { OverviewList } from "../overviewList/OverviewList";
 import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
 import { GoToTextField } from "./GoToTextField";
 import { GoToItemRow } from "./GoToItemRow";
+import { JournalType } from "../../../serverApi/JournalType";
 
 export const GoTo: React.FC = () => {
   const [searchText, setSearchText] = useState("");
 
-  const result = useSearchEntitiesQuery(searchText);
+  const result = useSearchEntitiesQuery(searchText, false, [
+    JournalType.Scraps,
+  ]);
 
   return (
     <PageSection>
