@@ -46,7 +46,8 @@ public interface IBaseRepository
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool onlyConsiderTitle = false
   );
 
   Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;

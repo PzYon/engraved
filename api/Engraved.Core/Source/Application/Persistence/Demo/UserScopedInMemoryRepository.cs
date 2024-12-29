@@ -95,7 +95,8 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool onlyConsiderTitle = false
   )
   {
     return _repository.SearchEntries(
@@ -188,7 +189,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
 
   private IUser LoadUser()
   {
-    string? name = _currentUserService.GetUserName();
+    var name = _currentUserService.GetUserName();
     EnsureUserNameIsSet(name);
 
     IUser? result = _repository.GetUser(name!).Result;

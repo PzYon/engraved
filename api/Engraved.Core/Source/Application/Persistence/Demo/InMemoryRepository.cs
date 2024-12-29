@@ -87,7 +87,8 @@ public class InMemoryRepository : IRepository
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool onlyConsiderTitle = false
   )
   {
     return Task.FromResult(

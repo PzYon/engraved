@@ -232,7 +232,8 @@ public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepo
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool onlyConsiderTitle = false
   )
   {
     throw new NotImplementedException();

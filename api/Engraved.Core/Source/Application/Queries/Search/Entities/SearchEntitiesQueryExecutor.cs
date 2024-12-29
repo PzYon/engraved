@@ -25,7 +25,8 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
       {
         SearchText = query.SearchText,
         ScheduledOnly = query.ScheduledOnly,
-        JournalTypes = query.OnlyEntriesOfTypes
+        JournalTypes = query.OnlyEntriesOfTypes,
+        OnlyConsiderTitle = query.OnlyConsiderTitle
       }
     );
 
