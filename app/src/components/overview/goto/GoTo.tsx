@@ -32,20 +32,23 @@ export const GoTo: React.FC = () => {
             onChange={setSearchText}
           />
         )}
-        renderItem={(entity) => <div>{renderItem(entity)}</div>}
+        renderItem={(entity: IEntity, _: number, hasFocus: boolean) => (
+          <div>{renderItem(entity, hasFocus)}</div>
+        )}
         doNotUseUrl={true}
       />
     </PageSection>
   );
 
-  function renderItem(entity: IEntity) {
+  function renderItem(entity: IEntity, hasFocus: boolean) {
     // this is a temporary hack! should be something like:
     // if (item.entityType === "Entry") {
     if ((entity as IJournal).type) {
       return (
         <GoToItemRow
-          url={`/journals/${entity.id}`}
+          url={`/journals/details/${entity.id}`}
           title={`Journal ${entity.id}: ${(entity as IJournal).name}`}
+          hasFocus={hasFocus}
         />
       );
     }
@@ -54,6 +57,7 @@ export const GoTo: React.FC = () => {
       <GoToItemRow
         url={`/journals/details/${(entity as IScrapEntry).parentId}?selected-item=${entity.id}`}
         title={`Entry ${entity.id}: ${(entity as IScrapEntry).title || entity.id}`}
+        hasFocus={hasFocus}
       />
     );
   }
