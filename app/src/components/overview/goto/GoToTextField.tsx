@@ -23,6 +23,7 @@ export const GoToTextField: React.FC<{
 
   return (
     <TextField
+      autoFocus={true}
       inputRef={textFieldRef}
       value={value}
       onFocus={() => setTextFieldHasFocus(true)}

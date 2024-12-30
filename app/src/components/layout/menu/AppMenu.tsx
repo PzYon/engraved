@@ -25,6 +25,9 @@ import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJourn
 import { JournalIcon } from "../../overview/journals/JournalIcon";
 import { IconStyle } from "../../common/IconStyle";
 import { useRecentlyViewedJournals } from "./useRecentlyViewedJournals";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { IJournal } from "../../../serverApi/IJournal";
 
 export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
@@ -42,42 +45,42 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
         <AppMenuItem
           targetUrl="/go-to"
           label="Go to"
-          icon={<Shortcut sx={{ color: "primary.main" }} />}
+          iconStart={<Shortcut sx={{ color: "primary.main" }} />}
           onClick={close}
         />
         <AppMenuItem
           targetUrl="/tags"
           label="Tags"
-          icon={<Style sx={{ color: "primary.main" }} />}
+          iconStart={<Style sx={{ color: "primary.main" }} />}
           onClick={close}
         />
         <AppMenuItem
           targetUrl="/journals"
           label="Journals"
-          icon={<ListAlt sx={{ color: "primary.main" }} />}
+          iconStart={<ListAlt sx={{ color: "primary.main" }} />}
           onClick={close}
         />
         <AppMenuItem
           targetUrl="/entries"
           label="Entries"
-          icon={<ListIcon sx={{ color: "primary.main" }} />}
+          iconStart={<ListIcon sx={{ color: "primary.main" }} />}
           onClick={close}
         />
         <AppMenuItem
           targetUrl="/scheduled"
           label="Scheduled"
-          icon={<NotificationsNone sx={{ color: "primary.main" }} />}
+          iconStart={<NotificationsNone sx={{ color: "primary.main" }} />}
           onClick={close}
         />
         <AppMenuItem
           targetUrl="/search"
           label="Search"
-          icon={<SearchOutlined sx={{ color: "primary.main" }} />}
+          iconStart={<SearchOutlined sx={{ color: "primary.main" }} />}
           onClick={close}
         />
         <AppMenuItem
           label="Favorites"
-          icon={<Star sx={{ color: "primary.main" }} />}
+          iconStart={<Star sx={{ color: "primary.main" }} />}
           onClick={() => setAreFavoritesExpanded(!areFavoritesExpanded)}
           suffix={
             areFavoritesExpanded ? (
@@ -100,27 +103,18 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
                     ? 1
                     : 0;
               })
-              .map((journal) => {
-                return (
-                  <AppMenuItem
-                    key={journal.id}
-                    targetUrl={`/journals/details/${journal.id}`}
-                    label={journal.name}
-                    icon={
-                      <JournalIcon
-                        journal={journal}
-                        iconStyle={IconStyle.Small}
-                      />
-                    }
-                    onClick={close}
-                  />
-                );
-              })}
+              .map((journal) => (
+                <JournalAppMenuItem
+                  key={journal.id}
+                  journal={journal}
+                  close={close}
+                />
+              ))}
           </List>
         </Collapse>
         <AppMenuItem
           label="Recently viewed"
-          icon={<History sx={{ color: "primary.main" }} />}
+          iconStart={<History sx={{ color: "primary.main" }} />}
           onClick={() => setAreRecentlyViewExpanded(!areRecentlyViewExpanded)}
           suffix={
             areRecentlyViewExpanded ? (
@@ -132,22 +126,13 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
         />
         <Collapse in={areRecentlyViewExpanded} timeout="auto" unmountOnExit>
           <List disablePadding dense>
-            {viewedJournals.map((journal) => {
-              return (
-                <AppMenuItem
-                  key={journal.id}
-                  targetUrl={`/journals/details/${journal.id}`}
-                  label={journal.name}
-                  icon={
-                    <JournalIcon
-                      journal={journal}
-                      iconStyle={IconStyle.Small}
-                    />
-                  }
-                  onClick={close}
-                />
-              );
-            })}
+            {viewedJournals.map((journal) => (
+              <JournalAppMenuItem
+                key={journal.id}
+                journal={journal}
+                close={close}
+              />
+            ))}
           </List>
         </Collapse>
       </List>
@@ -157,17 +142,18 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
 
 const AppMenuItem: React.FC<{
   targetUrl?: string;
-  label: string;
-  icon: React.ReactNode;
+  label: React.ReactNode;
+  iconStart: React.ReactNode;
+  iconEnd?: React.ReactNode;
   onClick: () => void;
   suffix?: React.ReactNode;
-}> = ({ targetUrl, label, icon, onClick, suffix }) => {
+}> = ({ targetUrl, label, iconStart, iconEnd, onClick, suffix }) => {
   return (
     <ListItem onClick={onClick}>
       <ListItemButton sx={{ display: "flex" }}>
         <LinkOrSpan targetUrl={targetUrl}>
           <ListItemIcon sx={{ minWidth: "40px", color: "initial" }}>
-            {icon}
+            {iconStart}
           </ListItemIcon>
           <ListItemText
             sx={{
@@ -179,10 +165,39 @@ const AppMenuItem: React.FC<{
           >
             {label}
           </ListItemText>
+          {iconEnd ? (
+            <ListItemIcon sx={{ minWidth: "40px", color: "initial" }}>
+              {iconEnd}
+            </ListItemIcon>
+          ) : null}
         </LinkOrSpan>
         {suffix}
       </ListItemButton>
     </ListItem>
+  );
+};
+
+const JournalAppMenuItem: React.FC<{
+  journal: IJournal;
+  close: () => void;
+}> = ({ journal, close }) => {
+  return (
+    <AppMenuItem
+      key={journal.id}
+      targetUrl={`/journals/details/${journal.id}`}
+      label={
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ flexGrow: 1 }}>{journal.name}</div>
+        </div>
+      }
+      iconStart={<JournalIcon journal={journal} iconStyle={IconStyle.Small} />}
+      iconEnd={
+        <ActionIconButton
+          action={ActionFactory.addEntry(journal, false, close, true)}
+        />
+      }
+      onClick={close}
+    />
   );
 };
 
