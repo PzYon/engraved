@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useSearchEntitiesQuery } from "../../../serverApi/reactQuery/queries/useSearchEntitiesQuery";
 import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
@@ -9,9 +8,11 @@ import { GoToTextField } from "./GoToTextField";
 import { GoToItemRow } from "./GoToItemRow";
 import { JournalType } from "../../../serverApi/JournalType";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
+import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
 
 export const GoTo: React.FC = () => {
-  const [searchText, setSearchText] = useState("");
+  const { appendSearchParams, getSearchParam } = useEngravedSearchParams();
+  const searchText = getSearchParam("q") ?? "";
 
   const result = useSearchEntitiesQuery(
     searchText,
@@ -29,7 +30,7 @@ export const GoTo: React.FC = () => {
           <GoToTextField
             collection={collection}
             value={searchText}
-            onChange={setSearchText}
+            onChange={(value) => appendSearchParams({ q: value })}
           />
         )}
         renderItem={(entity: IEntity, _: number, hasFocus: boolean) =>
