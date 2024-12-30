@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useSearchEntitiesQuery } from "../../../serverApi/reactQuery/queries/useSearchEntitiesQuery";
 import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
-import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { PageSection } from "../../layout/pages/PageSection";
 import { OverviewList } from "../overviewList/OverviewList";
 import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
 import { GoToTextField } from "./GoToTextField";
 import { GoToItemRow } from "./GoToItemRow";
 import { JournalType } from "../../../serverApi/JournalType";
+import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 
 export const GoTo: React.FC = () => {
   const [searchText, setSearchText] = useState("");
@@ -45,20 +45,41 @@ export const GoTo: React.FC = () => {
     // if (item.entityType === "Entry") {
     if ((entity as IJournal).type) {
       return (
-        <GoToItemRow
-          url={`/journals/details/${entity.id}`}
-          title={`Journal ${entity.id}: ${(entity as IJournal).name}`}
-          hasFocus={hasFocus}
-        />
+        <JournalGoToItemRow journal={entity as IJournal} hasFocus={hasFocus} />
       );
     }
 
     return (
-      <GoToItemRow
-        url={`/journals/details/${(entity as IScrapEntry).parentId}?selected-item=${entity.id}`}
-        title={`Entry ${entity.id}: ${(entity as IScrapEntry).title || entity.id}`}
+      <ScrapEntryGoToItemRow
+        scrapEntry={entity as IScrapEntry}
         hasFocus={hasFocus}
       />
     );
   }
+};
+
+const ScrapEntryGoToItemRow: React.FC<{
+  scrapEntry: IScrapEntry;
+  hasFocus: boolean;
+}> = ({ scrapEntry, hasFocus }) => {
+  return (
+    <GoToItemRow
+      url={`/journals/details/${scrapEntry.parentId}?selected-item=${scrapEntry.id}`}
+      title={`Entry: ${scrapEntry.title || scrapEntry.id}`}
+      hasFocus={hasFocus}
+    />
+  );
+};
+
+const JournalGoToItemRow: React.FC<{
+  journal: IJournal;
+  hasFocus: boolean;
+}> = ({ journal, hasFocus }) => {
+  return (
+    <GoToItemRow
+      url={`/journals/details/${journal.id}`}
+      title={`Journal: ${journal.name}`}
+      hasFocus={hasFocus}
+    />
+  );
 };
