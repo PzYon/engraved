@@ -201,7 +201,7 @@ const JournalAppMenuItem: React.FC<{
   );
 };
 
-export const LinkOrSpan: React.FC<{
+const LinkOrSpan: React.FC<{
   targetUrl: string;
   children: React.ReactNode;
 }> = ({ targetUrl, children }) => {
@@ -227,7 +227,7 @@ const MenuContainer = styled("div")`
   ul {
     ul {
       li > div {
-        padding: 8px 4px 4px 24px;
+        padding: 8px 4px 4px 40px;
       }
     }
   }

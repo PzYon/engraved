@@ -22,6 +22,7 @@ import {
   SaveOutlined,
   SearchOutlined,
   ShareOutlined,
+  Shortcut,
   ShowChartOutlined,
   SwitchAccessShortcutOutlined,
   Toc,
@@ -389,6 +390,17 @@ export class ActionFactory {
           hideDurationSec: 1,
         });
       },
+    };
+  }
+
+  static quickNavigation(): IAction {
+    return {
+      hotkey: "alt+enter ",
+      key: "quick-navigation",
+      href: "/go-to",
+      icon: <Shortcut fontSize="small" />,
+      label: "Quick Navigation",
+      sx: { color: "common.white", mr: 1 },
     };
   }
 
