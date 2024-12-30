@@ -34,6 +34,8 @@ export const OverviewList: React.FC<{
     <Host>
       {renderBeforeList?.(collection)}
       {filteredItems.map((item, index) => {
+        const hasFocus = index === collection.currentIndex;
+
         return (
           <OverviewListItem
             index={index}
@@ -43,13 +45,9 @@ export const OverviewList: React.FC<{
             onClick={setFocus}
             addWrapperItem={addItem}
             item={item}
+            hasFocus={hasFocus}
           >
-            {renderItem(
-              item,
-              index,
-              index === collection.currentIndex,
-              setFocus,
-            )}
+            {renderItem(item, index, hasFocus, setFocus)}
           </OverviewListItem>
         );
 
