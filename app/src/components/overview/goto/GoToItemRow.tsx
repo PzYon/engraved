@@ -3,23 +3,28 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { Link, useNavigate } from "react-router-dom";
 
 export const GoToItemRow: React.FC<{
-  title: string;
+  children: React.ReactNode;
+  icon: React.ReactNode;
   url: string;
   hasFocus: boolean;
-}> = ({ title, url, hasFocus }) => {
+}> = ({ children, icon, url, hasFocus }) => {
   const navigate = useNavigate();
 
   useHotkeys("alt+enter", () => navigate(url), { enabled: hasFocus });
 
   return (
-    <Host>
-      <Typography>
-        <Link to={url}>{title}</Link>
-      </Typography>
-    </Host>
+    <Typography>
+      <Link
+        to={url}
+        style={{ display: "flex", justifyItems: "center", padding: "8px" }}
+      >
+        <IconContainer>{icon}</IconContainer>
+        {children}
+      </Link>
+    </Typography>
   );
 };
 
-const Host = styled("div")`
-  padding: 8px 16px;
+const IconContainer = styled("span")`
+  padding-right: 8px;
 `;

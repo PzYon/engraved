@@ -10,6 +10,10 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
 import { useRecentlyViewedJournals } from "../../layout/menu/useRecentlyViewedJournals";
+import { JournalIcon } from "../journals/JournalIcon";
+import { IconStyle } from "../../common/IconStyle";
+import { Icon } from "../../common/Icon";
+import { Check, Notes } from "@mui/icons-material";
 
 export const GoTo: React.FC = () => {
   const { appendSearchParams, getSearchParam } = useEngravedSearchParams();
@@ -72,10 +76,16 @@ const ScrapEntryGoToItemRow: React.FC<{
 }> = ({ scrapEntry, hasFocus }) => {
   return (
     <GoToItemRow
+      icon={
+        <Icon style={IconStyle.Small}>
+          {scrapEntry.scrapType === "List" ? <Check /> : <Notes />}
+        </Icon>
+      }
       url={`/journals/details/${scrapEntry.parentId}?selected-item=${scrapEntry.id}`}
-      title={`Entry: ${scrapEntry.title || scrapEntry.id}`}
       hasFocus={hasFocus}
-    />
+    >
+      {`Entry: ${scrapEntry.title || scrapEntry.id}`}
+    </GoToItemRow>
   );
 };
 
@@ -86,8 +96,10 @@ const JournalGoToItemRow: React.FC<{
   return (
     <GoToItemRow
       url={`/journals/details/${journal.id}`}
-      title={`Journal: ${journal.name}`}
       hasFocus={hasFocus}
-    />
+      icon={<JournalIcon journal={journal} iconStyle={IconStyle.Small} />}
+    >
+      {`Journal: ${journal.name}`}
+    </GoToItemRow>
   );
 };
