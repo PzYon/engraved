@@ -9,10 +9,13 @@ import { GoToItemRow } from "./GoToItemRow";
 import { JournalType } from "../../../serverApi/JournalType";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
+import { useRecentlyViewedJournals } from "../../layout/menu/useRecentlyViewedJournals";
 
 export const GoTo: React.FC = () => {
   const { appendSearchParams, getSearchParam } = useEngravedSearchParams();
   const searchText = getSearchParam("q") ?? "";
+
+  const { viewedJournals } = useRecentlyViewedJournals();
 
   const result = useSearchEntitiesQuery(
     searchText,
@@ -25,7 +28,11 @@ export const GoTo: React.FC = () => {
   return (
     <PageSection>
       <OverviewList
-        items={result?.entities?.map((entity) => entity.entity) ?? []}
+        items={
+          (searchText
+            ? result?.entities?.map((e) => e.entity)
+            : viewedJournals) ?? []
+        }
         renderBeforeList={(collection: OverviewItemCollection) => (
           <GoToTextField
             collection={collection}
