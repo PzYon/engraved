@@ -1,4 +1,3 @@
-import { useSearchEntitiesQuery } from "../../../serverApi/reactQuery/queries/useSearchEntitiesQuery";
 import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
 import { PageSection } from "../../layout/pages/PageSection";
@@ -6,37 +5,26 @@ import { OverviewList } from "../overviewList/OverviewList";
 import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
 import { GoToTextField } from "./GoToTextField";
 import { GoToItemRow } from "./GoToItemRow";
-import { JournalType } from "../../../serverApi/JournalType";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
-import { useRecentlyViewedJournals } from "../../layout/menu/useRecentlyViewedJournals";
 import { JournalIcon } from "../journals/JournalIcon";
 import { IconStyle } from "../../common/IconStyle";
 import { Icon } from "../../common/Icon";
 import { Check, Notes } from "@mui/icons-material";
+import { useGoToNavigationItems } from "./useGoToNavigationItems";
+import { useDebounced } from "../../common/useDebounced";
 
 export const GoTo: React.FC = () => {
   const { appendSearchParams, getSearchParam } = useEngravedSearchParams();
   const searchText = getSearchParam("q") ?? "";
 
-  const { viewedJournals } = useRecentlyViewedJournals();
-
-  const result = useSearchEntitiesQuery(
-    searchText,
-    false,
-    [JournalType.Scraps],
-    false,
-    true,
-  );
+  const debouncedSearchText = useDebounced(searchText);
+  const items = useGoToNavigationItems(debouncedSearchText);
 
   return (
     <PageSection>
       <OverviewList
-        items={
-          (searchText
-            ? result?.entities?.map((e) => e.entity)
-            : viewedJournals) ?? []
-        }
+        items={items}
         renderBeforeList={(collection: OverviewItemCollection) => (
           <GoToTextField
             collection={collection}
