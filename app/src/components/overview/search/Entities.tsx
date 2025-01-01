@@ -22,6 +22,7 @@ export const Entities: React.FC<{
   const queryResult: ISearchEntitiesResult = useSearchEntitiesQuery(
     searchText,
     isSchedule,
+    undefined,
     executeWithoutConditions,
   );
 

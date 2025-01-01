@@ -79,14 +79,18 @@ export const queryKeysFactory = {
   entities(
     searchText = "",
     scheduledOnly = false,
+    onlyEntriesOfTypes: JournalType[] = [],
     executeWithoutConditions = false,
+    onlyConsiderTitle = false,
   ) {
     return [
       "search",
       "entities",
       searchText,
       scheduledOnly,
+      onlyEntriesOfTypes?.join(","),
       executeWithoutConditions,
+      onlyConsiderTitle,
     ];
   },
 

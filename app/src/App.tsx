@@ -26,6 +26,7 @@ import {
 } from "./components/details/JournalDetails";
 import { TagsPage } from "./components/overview/tags/TagsPage";
 import { TagPage } from "./components/overview/tags/TagPage";
+import { GoToPage } from "./components/overview/goto/GoToPage";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: "search/*",
         element: <SearchPage />,
+      },
+      {
+        path: "go-to/*",
+        element: <GoToPage />,
       },
       {
         path: "scheduled/*",

@@ -11,7 +11,7 @@ public class SearchEntriesQueryExecutor(IUserScopedRepository repository)
 
   public async Task<SearchEntriesQueryResult> Execute(SearchEntriesQuery query)
   {
-    IJournal[] allJournals = await repository.GetAllJournals(null, null, null, null, 100);
+    var allJournals = await repository.GetAllJournals(null, null, null, null, 100);
     string[] allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
     IEntry[] allEntries = await repository.SearchEntries(
@@ -20,7 +20,8 @@ public class SearchEntriesQueryExecutor(IUserScopedRepository repository)
       query.JournalTypes,
       allJournalIds,
       query.Limit ?? 20,
-      repository.CurrentUser.Value.Id
+      repository.CurrentUser.Value.Id,
+      query.OnlyConsiderTitle.HasValue && query.OnlyConsiderTitle.Value
     );
 
     string[] relevantJournalIds = allEntries.Select(e => e.ParentId).ToArray();

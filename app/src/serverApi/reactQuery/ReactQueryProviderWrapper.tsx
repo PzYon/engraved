@@ -9,6 +9,7 @@ const queryClient = new QueryClient({
       refetchOnReconnect: false,
       throwOnError: true,
       staleTime: 0,
+      placeholderData: (d: unknown) => d,
     },
     mutations: {
       throwOnError: true,

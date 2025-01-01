@@ -1,4 +1,6 @@
-﻿namespace Engraved.Core.Application.Queries.Search.Entities;
+﻿using Engraved.Core.Domain.Journals;
+
+namespace Engraved.Core.Application.Queries.Search.Entities;
 
 public class SearchEntitiesQuery : IEntitiesQuery
 {
@@ -7,4 +9,8 @@ public class SearchEntitiesQuery : IEntitiesQuery
   public string? SearchText { get; set; }
 
   public bool ScheduledOnly { get; set; }
+
+  public JournalType[] OnlyEntriesOfTypes { get; set; } = [];
+
+  public bool? OnlyConsiderTitle { get; set; }
 }

@@ -5,9 +5,11 @@ import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
 import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
+import { OverviewItemCollection } from "./wrappers/OverviewItemCollection";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
+  renderBeforeList?: (collection: OverviewItemCollection) => React.ReactNode;
   renderItem: (
     item: IEntity,
     index: number,
@@ -15,10 +17,11 @@ export const OverviewList: React.FC<{
     giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
-}> = ({ items, renderItem, filterItem }) => {
+  doNotUseUrl?: boolean;
+}> = ({ items, renderBeforeList, renderItem, filterItem, doNotUseUrl }) => {
   const { user } = useAppContext();
 
-  const { collection, addItem } = useOverviewCollection();
+  const { collection, addItem } = useOverviewCollection(doNotUseUrl);
   const [showAll, setShowAll] = useState(false);
 
   const filteredItems = items.filter(
@@ -29,7 +32,10 @@ export const OverviewList: React.FC<{
 
   return (
     <Host>
+      {renderBeforeList?.(collection)}
       {filteredItems.map((item, index) => {
+        const hasFocus = index === collection.currentIndex;
+
         return (
           <OverviewListItem
             index={index}
@@ -39,13 +45,9 @@ export const OverviewList: React.FC<{
             onClick={setFocus}
             addWrapperItem={addItem}
             item={item}
+            hasFocus={hasFocus}
           >
-            {renderItem(
-              item,
-              index,
-              index === collection.currentIndex,
-              setFocus,
-            )}
+            {renderItem(item, index, hasFocus, setFocus)}
           </OverviewListItem>
         );
 

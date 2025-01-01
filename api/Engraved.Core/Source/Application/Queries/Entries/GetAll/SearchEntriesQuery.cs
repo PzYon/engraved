@@ -11,4 +11,6 @@ public class SearchEntriesQuery : IEntitiesQuery
   public JournalType[]? JournalTypes { get; set; }
 
   public bool ScheduledOnly { get; set; }
+
+  public bool? OnlyConsiderTitle { get; set; }
 }

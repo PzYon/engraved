@@ -87,7 +87,8 @@ public class InMemoryRepository : IRepository
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool onlyConsiderTitle = false
   )
   {
     return Task.FromResult(
@@ -103,6 +104,11 @@ public class InMemoryRepository : IRepository
 
             return true;
           }
+        )
+        .Where(
+          m => journalTypes == null
+               || journalTypes.Length == 0
+               || journalTypes.Contains(Journals.First(j => j.Id == m.ParentId).Type)
         )
         .Take(limit ?? 100)
         .ToArray()

@@ -19,7 +19,6 @@ import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { ActionLink } from "../common/actions/ActionLink";
 import { PageTabs } from "./tabs/PageTabs";
-import { FavoritesFlyout } from "../FavoritesFlyout";
 import { useDisplayModeContext } from "../overview/overviewList/DisplayModeContext";
 import { AppMenuLauncher } from "./menu/AppMenuLauncher";
 
@@ -94,7 +93,7 @@ export const AppHeader: React.FC = () => {
               action={ActionFactory.toggleDisplayMode(isCompact, setIsCompact)}
             />
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
-            <FavoritesFlyout />
+            <ActionIconButton action={ActionFactory.quickNavigation()} />
             <ActionIconButton
               action={ActionFactory.quickAdd(user, renderDialog)}
             />

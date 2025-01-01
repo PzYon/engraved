@@ -30,7 +30,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       throw new ArgumentNullException(nameof(nameOrId), "Username or ID must be specified.");
     }
 
-    FilterDefinition<UserDocument> filterDefinition = ObjectId.TryParse(nameOrId, out ObjectId id)
+    var filterDefinition = ObjectId.TryParse(nameOrId, out ObjectId id)
       ? Builders<UserDocument>.Filter.Where(d => d.Id == id)
       : Builders<UserDocument>.Filter.Where(d => d.Name == nameOrId);
 
@@ -53,7 +53,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       return Array.Empty<IUser>();
     }
 
-    List<UserDocument> users = await UsersCollection
+    var users = await UsersCollection
       .Find(Builders<UserDocument>.Filter.Or(userIds.Distinct().Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
       .ToListAsync();
 
@@ -62,7 +62,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   public async Task<IUser[]> GetAllUsers()
   {
-    List<UserDocument> users = await UsersCollection
+    var users = await UsersCollection
       .Find(MongoUtil.GetAllDocumentsFilter<UserDocument>())
       .ToListAsync();
 
@@ -78,7 +78,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     string? currentUserId = null
   )
   {
-    List<FilterDefinition<JournalDocument>> filters = GetFreeTextFilters<JournalDocument>(
+    var filters = GetFreeTextFilters<JournalDocument>(
       searchText,
       d => d.Name!,
       d => d.Description!
@@ -127,7 +127,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    List<JournalDocument> journals = await JournalsCollection
+    var journals = await JournalsCollection
       .Find(Builders<JournalDocument>.Filter.And(filters))
       .Sort(Builders<JournalDocument>.Sort.Descending(d => d.EditedOn))
       .Limit(limit)
@@ -198,7 +198,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    List<EntryDocument> entries = await EntriesCollection
+    var entries = await EntriesCollection
       .Find(Builders<EntryDocument>.Filter.And(filters))
       .Sort(Builders<EntryDocument>.Sort.Descending(d => d.DateTime))
       .ToListAsync();
@@ -216,13 +216,15 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool onlyConsiderTitle = false
   )
   {
-    List<FilterDefinition<EntryDocument>> filters = GetFreeTextFilters<EntryDocument>(
+    var filters = GetFreeTextFilters<EntryDocument>(
       searchText,
-      d => d.Notes!,
-      d => ((ScrapsEntryDocument) d).Title!
+      onlyConsiderTitle
+        ? [d => ((ScrapsEntryDocument) d).Title!]
+        : [d => ((ScrapsEntryDocument) d).Title!, d => d.Notes!]
     );
 
     if (journalIds is { Length: > 0 })
@@ -294,7 +296,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       );
     }
 
-    List<EntryDocument> entries = await EntriesCollection
+    var entries = await EntriesCollection
       .Find(
         Builders<EntryDocument>.Filter.And(
           filters.Union(new[] { GetHasScheduleForCurrentUserFilter(currentUserId) })
@@ -518,7 +520,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
   {
-    string id = (string.IsNullOrEmpty(entityId)
+    var id = (string.IsNullOrEmpty(entityId)
       ? replaceOneResult.UpsertedId.ToString()
       : entityId)!;
 

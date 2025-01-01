@@ -2,7 +2,7 @@
 
 public class UpdateJournalUserTagsCommand : ICommand
 {
-  public string JournalId { get; set; }
+  public string JournalId { get; set; } = null!;
 
   public List<string> TagIds { get; set; } = [];
 }

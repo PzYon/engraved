@@ -76,6 +76,49 @@ public class SearchEntitiesQueryExecutorShould
   }
 
   [Test]
+  public async Task FindEntriesOfJournalType()
+  {
+    var addJournalExecutor = new AddJournalCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    CommandResult commandResult = await addJournalExecutor.Execute(
+      new AddJournalCommand
+      {
+        Name = "Scrap Journal",
+        Type = JournalType.Scraps
+      }
+    );
+
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    await addEntryExecutor.Execute(
+      new UpsertScrapsEntryCommand
+      {
+        JournalId = commandResult.EntityId,
+        DateTime = _dateService.UtcNow,
+        Notes = "Random text"
+      }
+    );
+
+    SearchEntitiesResult result1 = await _searchExecutor.Execute(
+      new SearchEntitiesQuery
+      {
+        SearchText = "Random",
+        OnlyEntriesOfTypes = [JournalType.Scraps]
+      }
+    );
+
+    result1.Entities.Length.Should().Be(1);
+
+    SearchEntitiesResult result2 = await _searchExecutor.Execute(
+      new SearchEntitiesQuery
+      {
+        SearchText = "Random",
+        OnlyEntriesOfTypes = [JournalType.Gauge]
+      }
+    );
+
+    result2.Entities.Length.Should().Be(0);
+  }
+
+  [Test]
   public async Task FindEntriesAndJournalWithScheduledOnly()
   {
     // both of these should not be found as they have no schedule

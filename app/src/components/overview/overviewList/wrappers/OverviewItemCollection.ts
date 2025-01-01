@@ -2,15 +2,31 @@ import { OverviewItem } from "./OverviewItem";
 
 export class OverviewItemCollection {
   private wrappers: OverviewItem[] = [];
+  private onType?: () => void;
 
   private get highestIndex() {
     return this.wrappers.length - 1;
   }
 
   constructor(
-    public currentIndex: number,
+    public currentIndex: number = 1,
     private onIndexChange: (itemId: string, index: number) => void,
   ) {}
+
+  setOnType(onType: () => void): () => void {
+    this.onType = onType;
+
+    document.addEventListener("keydown", this.onTypeInternal);
+
+    return () => document.removeEventListener("keydown", this.onTypeInternal);
+  }
+
+  private onTypeInternal = (e: KeyboardEvent) => {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && !e.altKey) {
+      this.setFocus(-1);
+      this.onType?.();
+    }
+  };
 
   setFocusForId(itemId: string) {
     this.setFocus(

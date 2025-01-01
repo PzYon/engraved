@@ -13,10 +13,26 @@ export const OverviewListItem: React.FC<{
   addWrapperItem: (wrapper: OverviewItem) => void;
   item: IEntity;
   index: number;
-}> = ({ children, onClick, addWrapperItem, item, index }) => {
+  hasFocus: boolean;
+}> = ({ children, onClick, addWrapperItem, item, index, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>();
 
   const { isCompact } = useDisplayModeContext();
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (!hasFocus) {
+        return;
+      }
+
+      domElementRef.current?.scrollIntoView({
+        block: "nearest",
+        inline: "nearest",
+        behavior: "smooth",
+      });
+    }, 0);
+     
+  }, [hasFocus]);
 
   useEffect(() => {
     addWrapperItem(new OverviewItem(domElementRef, item as IJournal));

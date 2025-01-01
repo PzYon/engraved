@@ -351,9 +351,11 @@ export class ServerApi {
     );
   }
 
-  static async getSearchEntities(
+  static async searchEntities(
     searchText: string,
     scheduledOnly: boolean,
+    onlyEntriesOfTypes: JournalType[],
+    onlyConsiderTitle: boolean,
   ): Promise<ISearchEntitiesResult> {
     const urlParams: string[] = [];
 
@@ -361,8 +363,16 @@ export class ServerApi {
       urlParams.push(`searchText=${searchText}`);
     }
 
+    if (onlyConsiderTitle) {
+      urlParams.push(`onlyConsiderTitle=${onlyConsiderTitle}`);
+    }
+
     if (scheduledOnly) {
       urlParams.push(`scheduledOnly=${scheduledOnly}`);
+    }
+
+    if (onlyEntriesOfTypes) {
+      urlParams.push(`onlyEntriesOfTypes=${onlyEntriesOfTypes.join(",")}`);
     }
 
     const params = urlParams.length ? `?${urlParams.join("&")}` : "";

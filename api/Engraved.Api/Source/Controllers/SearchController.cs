@@ -12,13 +12,20 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
 {
   [Route("entities")]
   [HttpGet]
-  public async Task<dynamic> SearchEntities(string? searchText, bool? scheduledOnly)
+  public async Task<dynamic> SearchEntities(
+    string? searchText,
+    bool? onlyConsiderTitle,
+    bool? scheduledOnly,
+    string? onlyEntriesOfTypes
+  )
   {
     var query = new SearchEntitiesQuery
     {
       SearchText = searchText ?? "",
       Limit = 30,
-      ScheduledOnly = scheduledOnly.HasValue ? scheduledOnly.Value : false
+      ScheduledOnly = scheduledOnly.HasValue && scheduledOnly.Value,
+      OnlyEntriesOfTypes = ControllerUtils.ParseJournalTypes(onlyEntriesOfTypes),
+      OnlyConsiderTitle = onlyConsiderTitle
     };
 
     SearchEntitiesResult result = await dispatcher.Query<SearchEntitiesResult, SearchEntitiesQuery>(query);
