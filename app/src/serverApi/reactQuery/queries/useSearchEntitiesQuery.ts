@@ -20,8 +20,6 @@ export const useSearchEntitiesQuery = (
       onlyConsiderTitle,
     ),
 
-    placeholderData: (d) => d,
-
     queryFn: () =>
       executeWithoutConditions || searchText
         ? ServerApi.searchEntities(
