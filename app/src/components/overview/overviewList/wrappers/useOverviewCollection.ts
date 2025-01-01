@@ -21,7 +21,7 @@ export function useOverviewCollection(doNotUseUrl: boolean) {
         setValue(itemId);
       }
     }
-  }, [focusIndex]);
+  }, [focusIndex, doNotUseUrl, setValue]);
 
   useHotkeys("alt+up", () => collection.moveFocusUp());
   useHotkeys("alt+down", () => collection.moveFocusDown());
