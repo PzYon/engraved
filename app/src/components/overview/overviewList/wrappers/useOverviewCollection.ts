@@ -12,10 +12,16 @@ export function useOverviewCollection(doNotUseUrl: boolean) {
 
   const { setValue, getValue } = useSelectedItemId();
 
-  const collection = useMemo(
-    () => new OverviewItemCollection(focusIndex, onIndexChange),
-    [focusIndex, onIndexChange],
-  );
+  const collection = useMemo(() => {
+    return new OverviewItemCollection(focusIndex, onIndexChange);
+
+    function onIndexChange(itemId: string, index: number) {
+      setFocusIndex(index);
+      if (!doNotUseUrl && itemId && getSelectedItemIdFromUrl() !== itemId) {
+        setValue(itemId);
+      }
+    }
+  }, [focusIndex]);
 
   useHotkeys("alt+up", () => collection.moveFocusUp());
   useHotkeys("alt+down", () => collection.moveFocusDown());
@@ -32,13 +38,6 @@ export function useOverviewCollection(doNotUseUrl: boolean) {
     collection,
     addItem: (wrapper: OverviewItem) => collection.add(wrapper),
   };
-
-  function onIndexChange(itemId: string, index: number) {
-    setFocusIndex(index);
-    if (!doNotUseUrl && itemId && getSelectedItemIdFromUrl() !== itemId) {
-      setValue(itemId);
-    }
-  }
 
   function getSelectedItemIdFromUrl() {
     return new URLSearchParams(location.search).get(
