@@ -35,7 +35,7 @@
     "react-onesignal": "3.0.1",
     "react-router-dom": "7.1.1",
     "typescript": "5.7.2",
-    "vite": "6.0.6"
+    "vite": "6.0.7"
   },
   "scripts": {
     "start": "vite",
