@@ -26,6 +26,7 @@ export const GoToTextField: React.FC<{
       autoFocus={true}
       inputRef={textFieldRef}
       value={value}
+      label={"Go to"}
       onFocus={() => setTextFieldHasFocus(true)}
       onBlur={() => setTextFieldHasFocus(false)}
       id={Math.random().toString()}

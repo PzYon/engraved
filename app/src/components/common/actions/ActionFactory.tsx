@@ -393,13 +393,13 @@ export class ActionFactory {
     };
   }
 
-  static quickNavigation(): IAction {
+  static goTo(): IAction {
     return {
       hotkey: "alt+enter ",
-      key: "quick-navigation",
+      key: "go-to",
       href: "/go-to",
       icon: <Shortcut fontSize="small" />,
-      label: "Quick Navigation",
+      label: "Go to",
       sx: { color: "common.white", mr: 1 },
     };
   }
