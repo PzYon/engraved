@@ -19,6 +19,7 @@ export const ActionLink: React.FC<{
     action.hotkey,
     (keyboardEvent) => {
       keyboardEvent.preventDefault();
+
       navigate({
         pathname: action.href,
         search: createSearchParams(action.search).toString(),

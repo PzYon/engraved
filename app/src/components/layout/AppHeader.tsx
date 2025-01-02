@@ -93,7 +93,7 @@ export const AppHeader: React.FC = () => {
               action={ActionFactory.toggleDisplayMode(isCompact, setIsCompact)}
             />
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
-            <ActionIconButton action={ActionFactory.quickNavigation()} />
+            <ActionIconButton action={ActionFactory.goTo()} />
             <ActionIconButton
               action={ActionFactory.quickAdd(user, renderDialog)}
             />

@@ -72,7 +72,7 @@ const ScrapEntryGoToItemRow: React.FC<{
       url={`/journals/details/${scrapEntry.parentId}?selected-item=${scrapEntry.id}`}
       hasFocus={hasFocus}
     >
-      {`Entry: ${scrapEntry.title || scrapEntry.id}`}
+      {`${scrapEntry.title || scrapEntry.id}`}
     </GoToItemRow>
   );
 };
@@ -87,7 +87,7 @@ const JournalGoToItemRow: React.FC<{
       hasFocus={hasFocus}
       icon={<JournalIcon journal={journal} iconStyle={IconStyle.Small} />}
     >
-      {`Journal: ${journal.name}`}
+      {`${journal.name}`}
     </GoToItemRow>
   );
 };
