@@ -35,16 +35,16 @@ export const ScrapInner: React.FC = () => {
       {isEditMode ? (
         <ParseableDate
           noOutput={true}
-          onChange={(x) => {
-            setParsedDate(x);
-            setTitle(x.input);
+          onChange={(d) => {
+            setParsedDate(d);
+            setTitle(d.input);
           }}
           onSelect={setParsedDate}
           isTitle={true}
           textFieldProps={{
             placeholder: "Title",
             variant: "outlined",
-            value: title,
+            defaultValue: title,
             disabled: !isEditMode,
             onFocus: () => setHasTitleFocus(true),
             onBlur: () => setHasTitleFocus(false),

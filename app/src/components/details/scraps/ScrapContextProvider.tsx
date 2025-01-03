@@ -319,6 +319,8 @@ export const ScrapContextProvider: React.FC<{
       } as IUpsertScrapsEntryCommand,
     });
 
+    setIsEditMode(false);
+
     AddNewScrapStorage.clearForJournal(
       isQuickAdd ? quickAddStorageKey : scrapToRender.parentId,
     );
