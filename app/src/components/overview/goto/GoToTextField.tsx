@@ -12,10 +12,17 @@ export const GoToTextField: React.FC<{
 
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
 
-  useHotkeys("alt+down", () => collection.setFocus(0), {
-    enabled: textFieldHasFocus,
-    enableOnFormTags: ["input"],
-  });
+  useHotkeys(
+    "down",
+    (e) => {
+      e.preventDefault();
+      collection.setFocus(0);
+    },
+    {
+      enabled: textFieldHasFocus,
+      enableOnFormTags: ["input"],
+    },
+  );
 
   useEffect(() => {
     return collection.setOnType(() => textFieldRef.current.focus());
