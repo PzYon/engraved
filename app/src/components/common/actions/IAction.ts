@@ -13,4 +13,5 @@ export interface IAction {
   isNotActive?: boolean;
   isDisabled?: boolean;
   hotkey?: string;
+  hotkeyRequiredCount?: number;
 }

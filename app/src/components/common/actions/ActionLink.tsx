@@ -1,8 +1,8 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { createSearchParams, Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEngravedSearchParams } from "./searchParamHooks";
-import { useHotkeys } from "react-hotkeys-hook";
+import { useActionHotkey } from "./UseActionHotkey";
 
 export const ActionLink: React.FC<{
   action: IAction;
@@ -11,28 +11,9 @@ export const ActionLink: React.FC<{
 }> = ({ action, style, children }) => {
   const { getAppendedSearchParams } = useEngravedSearchParams();
 
-  const navigate = useNavigate();
-
   const isAbsoluteUrl = action.href?.startsWith("http");
 
-  useHotkeys(
-    action.hotkey,
-    (keyboardEvent) => {
-      keyboardEvent.preventDefault();
-
-      navigate({
-        pathname: action.href,
-        search: createSearchParams(action.search).toString(),
-      });
-    },
-    {
-      enabled:
-        !isAbsoluteUrl &&
-        !!action.hotkey &&
-        !!(action.href || Object.keys(action.search ?? {}).length),
-      enableOnFormTags: ["textarea", "input"],
-    },
-  );
+  useActionHotkey(action);
 
   if (action.isDisabled) {
     return <span style={style}>{getChildren()}</span>;

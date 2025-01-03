@@ -395,7 +395,8 @@ export class ActionFactory {
 
   static goTo(): IAction {
     return {
-      hotkey: "alt+enter ",
+      hotkey: "shift",
+      hotkeyRequiredCount: 2,
       key: "go-to",
       href: "/go-to",
       icon: <Shortcut fontSize="small" />,
