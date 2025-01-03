@@ -10,7 +10,7 @@ export const GoToItemRow: React.FC<{
 }> = ({ children, icon, url, hasFocus }) => {
   const navigate = useNavigate();
 
-  useHotkeys("alt+enter", () => navigate(url), { enabled: hasFocus });
+  useHotkeys("enter", () => navigate(url), { enabled: hasFocus });
 
   return (
     <Typography>

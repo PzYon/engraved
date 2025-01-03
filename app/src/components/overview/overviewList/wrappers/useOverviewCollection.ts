@@ -23,8 +23,15 @@ export function useOverviewCollection(doNotUseUrl: boolean) {
     }
   }, [focusIndex, doNotUseUrl, setValue]);
 
-  useHotkeys("alt+up", () => collection.moveFocusUp());
-  useHotkeys("alt+down", () => collection.moveFocusDown());
+  useHotkeys("up", (e) => {
+    e.preventDefault();
+    collection.moveFocusUp();
+  });
+
+  useHotkeys("down", (e) => {
+    e.preventDefault();
+    collection.moveFocusDown();
+  });
 
   const itemId = getValue();
 
