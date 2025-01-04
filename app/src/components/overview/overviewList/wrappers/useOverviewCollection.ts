@@ -7,7 +7,7 @@ import {
 } from "../../../common/actions/searchParamHooks";
 import { useEngravedHotkeys } from "../../../common/actions/useEngravedHotkeys";
 
-export function useOverviewCollection(doNotUseUrl: boolean) {
+export function useOverviewCollection() {
   const [focusIndex, setFocusIndex] = useState(-1);
 
   const { setValue, getValue } = useSelectedItemId();
@@ -17,11 +17,11 @@ export function useOverviewCollection(doNotUseUrl: boolean) {
 
     function onIndexChange(itemId: string, index: number) {
       setFocusIndex(index);
-      if (!doNotUseUrl && itemId && getSelectedItemIdFromUrl() !== itemId) {
-        setValue(itemId);
+      if (itemId && getSelectedItemIdFromUrl() !== itemId) {
+        setValue(null);
       }
     }
-  }, [focusIndex, doNotUseUrl, setValue]);
+  }, [focusIndex, setValue]);
 
   useEngravedHotkeys("up", () => {
     collection.moveFocusUp();

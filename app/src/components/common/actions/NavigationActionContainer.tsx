@@ -17,13 +17,15 @@ export const NavigationActionContainer: React.FC<{
   useEffect(() => {
     giveFocus?.();
 
-    setTimeout(() => {
+    const timer = window.setTimeout(() => {
       domElement.current?.scrollIntoView({
         block: "nearest",
         inline: "nearest",
         behavior: "smooth",
       });
     }, 500);
+
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

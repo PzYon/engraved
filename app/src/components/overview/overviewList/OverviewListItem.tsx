@@ -20,7 +20,7 @@ export const OverviewListItem: React.FC<{
   const { isCompact } = useDisplayModeContext();
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (!hasFocus) {
         return;
       }
@@ -31,7 +31,8 @@ export const OverviewListItem: React.FC<{
         behavior: "smooth",
       });
     }, 0);
-     
+
+    return () => clearTimeout(timer);
   }, [hasFocus]);
 
   useEffect(() => {
