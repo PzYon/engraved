@@ -43,12 +43,6 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
     <MenuContainer>
       <List>
         <AppMenuItem
-          targetUrl="/go-to"
-          label="Go to"
-          iconStart={<Shortcut sx={{ color: "primary.main" }} />}
-          onClick={close}
-        />
-        <AppMenuItem
           targetUrl="/tags"
           label="Tags"
           iconStart={<Style sx={{ color: "primary.main" }} />}
@@ -72,12 +66,20 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
           iconStart={<NotificationsNone sx={{ color: "primary.main" }} />}
           onClick={close}
         />
+        <Spacer />
+        <AppMenuItem
+          targetUrl="/go-to"
+          label="Go to"
+          iconStart={<Shortcut sx={{ color: "primary.main" }} />}
+          onClick={close}
+        />
         <AppMenuItem
           targetUrl="/search"
           label="Search"
           iconStart={<SearchOutlined sx={{ color: "primary.main" }} />}
           onClick={close}
         />
+        <Spacer />
         <AppMenuItem
           label="Favorites"
           iconStart={<Star sx={{ color: "primary.main" }} />}
@@ -242,4 +244,21 @@ const StyledSpan = styled("span")`
   flex-grow: 1;
   align-items: center;
   color: ${(p) => p.theme.palette.primary.main};
+`;
+
+const Spacer: React.FC = () => {
+  return (
+    <SpacerHost>
+      <SpacerLine />
+    </SpacerHost>
+  );
+};
+
+const SpacerHost = styled("div")`
+  padding: 15px;
+`;
+
+const SpacerLine = styled("div")`
+  height: 1px;
+  background-color: ${(p) => p.theme.palette.background.default};
 `;
