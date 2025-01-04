@@ -6,6 +6,7 @@ import { SxProps } from "@mui/system";
 import { useActionContext } from "./ActionContext";
 import { actionBorderWidth } from "../../../theming/engravedTheme";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
+import { getActionLabel } from "./actionUtils";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
@@ -90,7 +91,7 @@ export const ActionIconButton: React.FC<{
 
   function getCommonProps() {
     return {
-      title: action.label + (action.hotkey ? ` (${action.hotkey})` : ""),
+      title: getActionLabel(action),
       "aria-label": action.label,
       onClick: action.onClick,
     };
