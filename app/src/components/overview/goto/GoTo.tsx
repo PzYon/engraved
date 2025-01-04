@@ -35,7 +35,6 @@ export const GoTo: React.FC = () => {
         renderItem={(entity: IEntity, _: number, hasFocus: boolean) =>
           renderItem(entity, hasFocus)
         }
-        doNotUseUrl={true}
       />
     </PageSection>
   );
