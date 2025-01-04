@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
-import { useHotkeys } from "react-hotkeys-hook";
 import { TextField } from "@mui/material";
+import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 
 export const GoToTextField: React.FC<{
   collection: OverviewItemCollection;
@@ -12,7 +12,7 @@ export const GoToTextField: React.FC<{
 
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
 
-  useHotkeys(
+  useEngravedHotkeys(
     "down",
     (e) => {
       e.preventDefault();

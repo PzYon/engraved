@@ -1,4 +1,3 @@
-import { useHotkeys } from "react-hotkeys-hook";
 import { OverviewItemCollection } from "./OverviewItemCollection";
 import { useEffect, useMemo, useState } from "react";
 import { OverviewItem } from "./OverviewItem";
@@ -6,6 +5,7 @@ import {
   knownQueryParams,
   useSelectedItemId,
 } from "../../../common/actions/searchParamHooks";
+import { useEngravedHotkeys } from "../../../common/actions/useEngravedHotkeys";
 
 export function useOverviewCollection(doNotUseUrl: boolean) {
   const [focusIndex, setFocusIndex] = useState(-1);
@@ -23,13 +23,11 @@ export function useOverviewCollection(doNotUseUrl: boolean) {
     }
   }, [focusIndex, doNotUseUrl, setValue]);
 
-  useHotkeys("up", (e) => {
-    e.preventDefault();
+  useEngravedHotkeys("up", () => {
     collection.moveFocusUp();
   });
 
-  useHotkeys("down", (e) => {
-    e.preventDefault();
+  useEngravedHotkeys("down", () => {
     collection.moveFocusDown();
   });
 

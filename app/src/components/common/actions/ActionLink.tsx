@@ -2,7 +2,7 @@ import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useEngravedSearchParams } from "./searchParamHooks";
-import { useHotkeys } from "react-hotkeys-hook";
+import { useEngravedHotkeys } from "./useEngravedHotkeys";
 
 export const ActionLink: React.FC<{
   action: IAction;
@@ -11,15 +11,13 @@ export const ActionLink: React.FC<{
 }> = ({ action, style, children }) => {
   const { getAppendedSearchParams } = useEngravedSearchParams();
 
-  const navigate = useNavigate();
-
   const isAbsoluteUrl = action.href?.startsWith("http");
 
-  useHotkeys(
-    action.hotkey,
-    (keyboardEvent) => {
-      keyboardEvent.preventDefault();
+  const navigate = useNavigate();
 
+  useEngravedHotkeys(
+    action.hotkey,
+    () => {
       navigate({
         pathname: action.href,
         search: createSearchParams(action.search).toString(),
@@ -32,6 +30,8 @@ export const ActionLink: React.FC<{
         !!(action.href || Object.keys(action.search ?? {}).length),
       enableOnFormTags: ["textarea", "input"],
     },
+    undefined,
+    action.hotkeyRequiredCount,
   );
 
   if (action.isDisabled) {

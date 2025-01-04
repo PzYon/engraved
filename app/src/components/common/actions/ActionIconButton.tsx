@@ -4,8 +4,8 @@ import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { SxProps } from "@mui/system";
 import { useActionContext } from "./ActionContext";
-import { useHotkeys } from "react-hotkeys-hook";
 import { actionBorderWidth } from "../../../theming/engravedTheme";
+import { useEngravedHotkeys } from "./useEngravedHotkeys";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
@@ -15,7 +15,7 @@ export const ActionIconButton: React.FC<{
   const actionContext = useActionContext();
   const { palette } = useTheme();
 
-  useHotkeys(
+  useEngravedHotkeys(
     action.hotkey,
     (keyboardEvent) => {
       keyboardEvent.preventDefault();
@@ -27,6 +27,8 @@ export const ActionIconButton: React.FC<{
       enabled: !!action.hotkey && !!action.onClick,
       enableOnFormTags: ["textarea", "input"],
     },
+    undefined,
+    action.hotkeyRequiredCount,
   );
 
   useEffect(() => {
