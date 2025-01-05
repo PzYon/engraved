@@ -10,6 +10,9 @@ export const useSearchEntitiesQuery = (
   onlyEntriesOfTypes?: JournalType[],
   executeWithoutConditions?: boolean,
   onlyConsiderTitle?: boolean,
+  placeholderData?: (
+    previousData: ISearchEntitiesResult,
+  ) => ISearchEntitiesResult,
 ) => {
   const { data: result } = useQuery<ISearchEntitiesResult>({
     queryKey: queryKeysFactory.entities(
@@ -20,6 +23,8 @@ export const useSearchEntitiesQuery = (
       onlyConsiderTitle,
     ),
 
+    placeholderData: placeholderData,
+
     queryFn: () =>
       executeWithoutConditions || searchText
         ? ServerApi.searchEntities(
@@ -28,7 +33,7 @@ export const useSearchEntitiesQuery = (
             onlyEntriesOfTypes,
             onlyConsiderTitle,
           )
-        : Promise.resolve({ entities: [], journals: [] }),
+        : Promise.resolve(null),
   });
 
   return result;

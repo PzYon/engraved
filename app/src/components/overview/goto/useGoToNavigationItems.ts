@@ -1,6 +1,7 @@
 import { useRecentlyViewedJournals } from "../../layout/menu/useRecentlyViewedJournals";
 import { useSearchEntitiesQuery } from "../../../serverApi/reactQuery/queries/useSearchEntitiesQuery";
 import { JournalType } from "../../../serverApi/JournalType";
+import { ISearchEntitiesResult } from "../../../serverApi/ISearchEntitiesResult";
 
 export const useGoToNavigationItems = (searchText: string) => {
   const { viewedJournals } = useRecentlyViewedJournals();
@@ -11,9 +12,23 @@ export const useGoToNavigationItems = (searchText: string) => {
     [JournalType.Scraps],
     false,
     true,
+    (previousData: ISearchEntitiesResult): ISearchEntitiesResult =>
+      previousData ?? getFallbackValue(),
   );
 
-  return (
-    (searchText ? result?.entities?.map((e) => e.entity) : viewedJournals) ?? []
-  );
+  if (!searchText) {
+    return viewedJournals;
+  }
+
+  return (result?.entities || []).map((e) => e.entity);
+
+  function getFallbackValue(): ISearchEntitiesResult {
+    return {
+      entities: viewedJournals.map((j) => ({
+        entity: j,
+        entityType: "Journal",
+      })),
+      journals: [],
+    };
+  }
 };
