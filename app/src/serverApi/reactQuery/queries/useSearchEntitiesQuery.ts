@@ -1,6 +1,6 @@
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { ISearchEntitiesResult } from "../../ISearchEntitiesResult";
 import { JournalType } from "../../JournalType";
 
@@ -14,7 +14,7 @@ export const useSearchEntitiesQuery = (
     previousData: ISearchEntitiesResult,
   ) => ISearchEntitiesResult,
 ) => {
-  const { data: result } = useQuery<ISearchEntitiesResult>({
+  const options: UseQueryOptions<ISearchEntitiesResult> = {
     queryKey: queryKeysFactory.entities(
       searchText,
       scheduledOnly,
@@ -22,8 +22,6 @@ export const useSearchEntitiesQuery = (
       executeWithoutConditions,
       onlyConsiderTitle,
     ),
-
-    placeholderData: placeholderData,
 
     queryFn: () =>
       executeWithoutConditions || searchText
@@ -34,7 +32,15 @@ export const useSearchEntitiesQuery = (
             onlyConsiderTitle,
           )
         : Promise.resolve(null),
-  });
+  };
+
+  if (placeholderData) {
+    // we only set placeholderData if it is actually overridden
+    // in order to not reset default behavior (when setting 'undefined')
+    options.placeholderData = placeholderData;
+  }
+
+  const { data: result } = useQuery<ISearchEntitiesResult>(options);
 
   return result;
 };
