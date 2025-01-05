@@ -16,10 +16,10 @@ export const GoToItemRow: React.FC<{
     <Typography>
       <Link
         to={url}
-        style={{ display: "flex", justifyItems: "center", padding: "8px" }}
+        style={{ display: "flex", alignItems: "center", padding: "4px 8px" }}
       >
         <IconContainer>{icon}</IconContainer>
-        {children}
+        <span>{children}</span>
       </Link>
     </Typography>
   );
@@ -27,4 +27,5 @@ export const GoToItemRow: React.FC<{
 
 const IconContainer = styled("span")`
   padding-right: 8px;
+  padding-top: 4px;
 `;
