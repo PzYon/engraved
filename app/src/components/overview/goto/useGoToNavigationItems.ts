@@ -12,7 +12,8 @@ export const useGoToNavigationItems = (searchText: string) => {
     [JournalType.Scraps],
     false,
     true,
-    (previousData: unknown): unknown => previousData ?? getFallbackValue(),
+    (previousData: ISearchEntitiesResult): ISearchEntitiesResult =>
+      previousData ?? getFallbackValue(),
   );
 
   if (!searchText) {
