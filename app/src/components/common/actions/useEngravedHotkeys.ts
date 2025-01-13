@@ -5,7 +5,7 @@ import {
 } from "react-hotkeys-hook/dist/types";
 
 const pressedKeys: Record<string, { timer?: number; count: number }> = {};
-const requiredCountTimeMs = 500;
+const requiredCountTimeMs = 200;
 
 export function useEngravedHotkeys(
   keys: string,
