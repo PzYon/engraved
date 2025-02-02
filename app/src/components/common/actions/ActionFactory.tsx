@@ -32,8 +32,6 @@ import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IAppAlert } from "../../errorHandling/AppAlertBar";
-import { IUser } from "../../../serverApi/IUser";
-import { renderQuickAddDialog } from "../../details/add/renderQuickAddDialog";
 import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
@@ -405,22 +403,14 @@ export class ActionFactory {
     };
   }
 
-  static quickAdd(
-    user: IUser,
-    renderDialog?: (dialogProps: IDialogProps) => void,
-  ): IAction {
+  static quickAdd(): IAction {
     return {
       hotkey: "alt+q",
       key: "quick-add",
       icon: <PlaylistAddOutlined fontSize="small" />,
       label: "Quick Add",
       sx: { color: "common.white", mr: 1 },
-      onClick: () =>
-        renderQuickAddDialog(
-          user.favoriteJournalIds[0],
-          renderDialog,
-          "Quick Add",
-        ),
+      href: "/quick-add",
     };
   }
 

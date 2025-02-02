@@ -1,6 +1,6 @@
 import { expect, Page } from "@playwright/test";
 import { clickPageAction } from "../utils/clickPageAction";
-import { AddQuickScrapDialog } from "./addQuickScrapDialog";
+import { AddQuickScrapPage } from "./addQuickScrapPage";
 
 export abstract class BasePage {
   constructor(protected page: Page) {}
@@ -15,7 +15,7 @@ export abstract class BasePage {
 
   async clickAddQuickScrapAction() {
     await this.page.getByLabel("Quick Add").click();
-    return new AddQuickScrapDialog(this.page);
+    return new AddQuickScrapPage(this.page);
   }
 
   async scrollToBottom() {

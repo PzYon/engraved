@@ -33,6 +33,7 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
       <JournalSelector
         label={"Move to journal"}
         onChange={(journal) => setTargetJournalId(journal?.id)}
+        storageKey={"move"}
         filterJournals={(journals) =>
           journals.filter((j) => {
             if (j.id === entry.parentId) {

@@ -27,6 +27,7 @@ import {
 import { TagsPage } from "./components/overview/tags/TagsPage";
 import { TagPage } from "./components/overview/tags/TagPage";
 import { GoToPage } from "./components/overview/goto/GoToPage";
+import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
         element: <GoToPage />,
       },
       {
+        path: "quick-add/*",
+        element: <QuickAddPage />,
+      },
+      {
         path: "scheduled/*",
         element: <ScheduledPage />,
       },
@@ -92,7 +97,6 @@ const router = createBrowserRouter([
         path: "tags/",
         element: <TagsPage />,
       },
-
       {
         path: "tags/:tagId",
         element: <TagPage />,
