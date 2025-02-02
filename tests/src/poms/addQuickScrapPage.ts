@@ -1,6 +1,6 @@
 import { expect, Page } from "@playwright/test";
 
-export class AddQuickScrapDialog {
+export class AddQuickScrapPage {
   constructor(private page: Page) {}
 
   async selectJournal(name: string) {

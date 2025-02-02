@@ -60,7 +60,7 @@ export const QuickAddPage: React.FC = () => {
             })
           }
           onChange={(journal) => setJournalId(journal.id)}
-          selectedJournalId={journalId}
+          selectedJournalId={user.favoriteJournalIds[0]}
         />
 
         <ScrapContainer>
