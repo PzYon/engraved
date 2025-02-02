@@ -11,7 +11,6 @@ import { PulsatingDot } from "../common/PulsatingDot";
 import { RefreshData } from "../common/RefreshData";
 import { AppContent } from "./AppContent";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
-import { useDialogContext } from "./dialogs/DialogContext";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
 import { Titles } from "./Titles";
@@ -38,8 +37,6 @@ export const AppHeader: React.FC = () => {
   } = usePageContext();
 
   const { palette } = useTheme();
-
-  const { renderDialog } = useDialogContext();
 
   const { isCompact, setIsCompact } = useDisplayModeContext();
 
@@ -94,9 +91,7 @@ export const AppHeader: React.FC = () => {
             />
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
             <ActionIconButton action={ActionFactory.goTo()} />
-            <ActionIconButton
-              action={ActionFactory.quickAdd(user, renderDialog)}
-            />
+            <ActionIconButton action={ActionFactory.quickAdd()} />
             <VersionChecker />
             <Link to="/settings">
               <User user={user} />
