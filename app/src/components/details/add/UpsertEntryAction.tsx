@@ -17,7 +17,7 @@ import { FormElementContainer } from "../../common/FormUtils";
 import { IEntry } from "../../../serverApi/IEntry";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
 import { AttributeComboSearch } from "./AttributeComboSearch";
-import { hasAttributes } from "../../../util/entryUtils";
+import { countAttributes, hasAttributes } from "../../../util/entryUtils";
 import { UpsertTimerEntry } from "./UpsertTimerEntry";
 import { IUpsertTimerEntryCommand } from "../../../serverApi/commands/IUpsertTimerEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
@@ -172,7 +172,7 @@ const UpsertEntryActionInternal: React.FC<{
         />
       ) : null}
 
-      {hasAttributes(journal) ? (
+      {countAttributes(journal) > 1 ? (
         <FormElementContainer>
           <AttributeComboSearch
             journal={journal}

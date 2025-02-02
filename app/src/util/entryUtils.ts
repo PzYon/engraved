@@ -1,8 +1,12 @@
 import { IJournalAttributeValues } from "../serverApi/IJournalAttributeValues";
 import { IJournal } from "../serverApi/IJournal";
 
+export function countAttributes(journal: IJournal) {
+  return Object.keys(journal?.attributes || {}).length;
+}
+
 export function hasAttributes(journal: IJournal): boolean {
-  return Object.keys(journal?.attributes || {}).length > 0;
+  return countAttributes(journal) > 0;
 }
 
 export function hasValues(
