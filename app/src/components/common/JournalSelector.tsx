@@ -1,17 +1,29 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalType } from "../../serverApi/JournalType";
 import { Autocomplete, MenuItem, TextField } from "@mui/material";
 import { JournalMenuItem } from "../JournalMenuItem";
+import { StorageWrapper } from "../../util/StorageWrapper";
+import { useAppContext } from "../../AppContext";
+
+const storage = new StorageWrapper(window.localStorage);
 
 export const JournalSelector: React.FC<{
   onChange: (journal: IJournal) => void;
   filterJournals: (journals: IJournal[]) => IJournal[];
+  storageKey: string;
   label?: string;
-  selectedJournalId?: string;
-}> = ({ onChange, filterJournals, label, selectedJournalId }) => {
+}> = ({ onChange, filterJournals, label, storageKey: identifier }) => {
+  const storageKey = `engraved::last-selected-journal::${identifier}`;
+
+  const { user } = useAppContext();
+
   const journals = useJournalsQuery("", [JournalType.Scraps]);
+
+  const [selectedJournalId, setSelectedJournalId] = useState<string>(
+    () => storage.getValue<string>(storageKey) ?? user.favoriteJournalIds[0],
+  );
 
   const selectedJournal = useMemo(
     () =>
@@ -39,6 +51,8 @@ export const JournalSelector: React.FC<{
       options={filterJournals(journals)}
       onChange={async (_, selectedOption) => {
         onChange(selectedOption);
+        setSelectedJournalId(selectedOption.id);
+        storage.setValue(storageKey, selectedOption.id);
       }}
       renderInput={(params) => (
         <TextField

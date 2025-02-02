@@ -50,6 +50,7 @@ export const QuickAddPage: React.FC = () => {
       <PageSection>
         <JournalSelector
           label={"Add to journal"}
+          storageKey={"quick-add"}
           filterJournals={(journals) =>
             journals.filter((j) => {
               const permissions = getPermissionsForUser(j.permissions, user);
@@ -60,7 +61,6 @@ export const QuickAddPage: React.FC = () => {
             })
           }
           onChange={(journal) => setJournalId(journal.id)}
-          selectedJournalId={user.favoriteJournalIds[0]}
         />
 
         <ScrapContainer>
