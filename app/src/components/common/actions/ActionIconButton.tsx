@@ -28,8 +28,6 @@ export const ActionIconButton: React.FC<{
       enabled: !!action.hotkey && !!action.onClick,
       enableOnFormTags: ["textarea", "input"],
     },
-    undefined,
-    action.hotkeyRequiredCount,
   );
 
   useEffect(() => {
