@@ -15,7 +15,7 @@ export const ListItemFooterRow: React.FC<{
   const { isCompact } = useDisplayModeContext();
 
   if (isCompact && !hasFocus && !noCompactFooter) {
-    console.log(isCompact, hasFocus);
+    return null;
   }
 
   return (

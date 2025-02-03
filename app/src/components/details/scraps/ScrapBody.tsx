@@ -46,7 +46,7 @@ export const ScrapBody: React.FC<{
         actions={getActions()}
         propsRenderStyle={propsRenderStyle}
         giveFocus={giveFocus}
-        noCompactFooter={actionsRenderStyle === "save-only"}
+        noCompactFooter={!scrapToRender.id}
         propertyOverrides={
           parsedDate?.date
             ? [
