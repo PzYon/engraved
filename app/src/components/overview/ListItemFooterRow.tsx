@@ -10,11 +10,12 @@ export const ListItemFooterRow: React.FC<{
   properties: IPropertyDefinition[];
   actions: IAction[];
   hasFocus: boolean;
-}> = ({ properties, actions, hasFocus }) => {
+  noCompactFooter?: boolean;
+}> = ({ properties, actions, hasFocus, noCompactFooter }) => {
   const { isCompact } = useDisplayModeContext();
 
-  if (isCompact && !hasFocus) {
-    return null;
+  if (isCompact && !hasFocus && !noCompactFooter) {
+    console.log(isCompact, hasFocus);
   }
 
   return (

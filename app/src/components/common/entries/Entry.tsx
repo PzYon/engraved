@@ -24,6 +24,7 @@ export const Entry: React.FC<{
   hasFocus: boolean;
   giveFocus?: () => void;
   propertyOverrides?: IPropertyDefinition[];
+  noCompactFooter?: boolean;
 }> = ({
   journal,
   entry,
@@ -33,6 +34,7 @@ export const Entry: React.FC<{
   hasFocus,
   giveFocus,
   propertyOverrides,
+  noCompactFooter,
 }) => {
   const { user } = useAppContext();
 
@@ -57,6 +59,7 @@ export const Entry: React.FC<{
           propertyOverrides,
         )}
         actions={actions}
+        noCompactFooter={noCompactFooter}
       />
       <EntrySubRoutes entry={entry} giveFocus={giveFocus} />
     </>
