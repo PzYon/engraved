@@ -5,7 +5,5 @@ export function getActionLabel(action: IAction) {
 }
 
 function getTooltipLabel(action: IAction) {
-  return action.hotkeyRequiredCount
-    ? `${action.hotkeyRequiredCount}x ${action.hotkey}`
-    : action.hotkey;
+  return action.hotkey;
 }

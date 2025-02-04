@@ -14,7 +14,7 @@ export const GoToTextField: React.FC<{
 
   useEngravedHotkeys(
     "down",
-    (e) => {
+    (e: KeyboardEvent) => {
       e.preventDefault();
       collection.setFocus(0);
     },

@@ -30,8 +30,6 @@ export const ActionLink: React.FC<{
         !!(action.href || Object.keys(action.search ?? {}).length),
       enableOnFormTags: ["textarea", "input"],
     },
-    undefined,
-    action.hotkeyRequiredCount,
   );
 
   if (action.isDisabled) {
