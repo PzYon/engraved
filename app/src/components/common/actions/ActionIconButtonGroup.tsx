@@ -13,7 +13,7 @@ export const ActionIconButtonGroup: React.FC<{
   testId?: string;
   backgroundColor?: string;
 }> = ({ actions, enableFloatingActions, testId, backgroundColor }) => {
-  const domElementRef = useRef<HTMLDivElement>();
+  const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { palette } = useTheme();
 
