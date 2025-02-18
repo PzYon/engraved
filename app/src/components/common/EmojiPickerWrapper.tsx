@@ -8,7 +8,7 @@ export const EmojiPickerWrapper: React.FC<{
   opener: React.ReactElement;
 }> = ({ onEmojiClick, opener }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLElement>();
+  const ref = useRef<HTMLElement>(undefined);
 
   return (
     <>

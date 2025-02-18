@@ -17,7 +17,7 @@ export const JournalListItem: React.FC<{
   hasFocus?: boolean;
   giveFocus?: () => void;
 }> = ({ journal, index, hasFocus, giveFocus }) => {
-  const domElementRef = useRef<HTMLDivElement>();
+  const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { user } = useAppContext();
 

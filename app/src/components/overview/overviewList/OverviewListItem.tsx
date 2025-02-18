@@ -15,7 +15,7 @@ export const OverviewListItem: React.FC<{
   index: number;
   hasFocus: boolean;
 }> = ({ children, onClick, addWrapperItem, item, index, hasFocus }) => {
-  const domElementRef = useRef<HTMLDivElement>();
+  const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
 
