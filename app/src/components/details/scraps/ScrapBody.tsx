@@ -59,7 +59,7 @@ export const ScrapBody: React.FC<{
             : properties
         }
       >
-        {isCompact && !hasFocus ? null : children}
+        {isCompact && !hasFocus && !isEditMode ? null : children}
 
         {isEditMode && editModeActions?.length ? (
           <ActionsContainer>
