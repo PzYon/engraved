@@ -10,7 +10,7 @@ import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
 import { JournalIcon } from "../journals/JournalIcon";
 import { IconStyle } from "../../common/IconStyle";
 import { Icon } from "../../common/Icon";
-import { Check, Notes } from "@mui/icons-material";
+import { Check, Notes, SearchOutlined } from "@mui/icons-material";
 import { useGoToNavigationItems } from "./useGoToNavigationItems";
 import { useDebounced } from "../../common/useDebounced";
 
@@ -20,6 +20,12 @@ export const GoTo: React.FC = () => {
 
   const debouncedSearchText = useDebounced(searchText);
   const items = useGoToNavigationItems(debouncedSearchText);
+
+  if (!items.length && searchText) {
+    items.push({
+      id: "empty-list",
+    });
+  }
 
   return (
     <PageSection>
@@ -32,9 +38,21 @@ export const GoTo: React.FC = () => {
             onChange={(value) => appendSearchParams({ q: value })}
           />
         )}
-        renderItem={(entity: IEntity, _: number, hasFocus: boolean) =>
-          renderItem(entity, hasFocus)
-        }
+        renderItem={(entity: IEntity, _: number, hasFocus: boolean) => {
+          if (entity.id === "empty-list") {
+            return (
+              <GoToItemRow
+                url={"/search?q=" + searchText}
+                hasFocus={true}
+                icon={<SearchOutlined />}
+              >
+                Nothing found, would you like to search instead?
+              </GoToItemRow>
+            );
+          }
+
+          return renderItem(entity, hasFocus);
+        }}
       />
     </PageSection>
   );
