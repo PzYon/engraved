@@ -6,8 +6,15 @@ on:
 jobs:
   test:
     name: Run Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 60
+
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+
     steps:
 
       - name: Checkout repo
@@ -17,9 +24,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.x.x"
-
-      - name: Start MongoDB (for tests)
-        run: sudo systemctl start mongod
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

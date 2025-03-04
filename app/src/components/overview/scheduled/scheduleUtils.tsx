@@ -8,7 +8,7 @@ import { ScheduledInfo } from "./ScheduledInfo";
 import { getItemActionQueryParams } from "../../common/actions/searchParamHooks";
 
 export function getScheduleForUser(entity: IEntity, userId: string): ISchedule {
-  return entity.schedules?.[userId] ?? {};
+  return entity?.schedules?.[userId] ?? {};
 }
 
 export function getScheduleProperty(
