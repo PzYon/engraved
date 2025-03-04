@@ -13,9 +13,6 @@ jobs:
         image: mongo
         ports:
           - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: xxx
-          MONGO_INITDB_ROOT_PASSWORD: xxx
     steps:
 
       - name: Checkout repo
