@@ -35,9 +35,6 @@ jobs:
         with:
           dotnet-version: "9.x.x"
 
-      - name: Start MongoDB (for tests)
-        run: sudo systemctl start mongod
-
       - name: Run tests
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         working-directory: api
