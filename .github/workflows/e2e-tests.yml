@@ -26,8 +26,8 @@ jobs:
         with:
           dotnet-version: "9.x.x"
 
-      - name: Start MongoDB (for tests)
-        run: sudo systemctl start mongod
+#      - name: Start MongoDB (for tests)
+#        run: sudo systemctl start mongod
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
