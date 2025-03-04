@@ -14,6 +14,8 @@ import { Check, Notes, SearchOutlined } from "@mui/icons-material";
 import { useGoToNavigationItems } from "./useGoToNavigationItems";
 import { useDebounced } from "../../common/useDebounced";
 
+const emptyListItemId = "empty-list-item-id";
+
 export const GoTo: React.FC = () => {
   const { appendSearchParams, getSearchParam } = useEngravedSearchParams();
   const searchText = getSearchParam("q") ?? "";
@@ -23,7 +25,7 @@ export const GoTo: React.FC = () => {
 
   if (!items.length && searchText) {
     items.push({
-      id: "empty-list",
+      id: emptyListItemId,
     });
   }
 
@@ -39,11 +41,11 @@ export const GoTo: React.FC = () => {
           />
         )}
         renderItem={(entity: IEntity, _: number, hasFocus: boolean) => {
-          if (entity.id === "empty-list") {
+          if (entity.id === emptyListItemId) {
             return (
               <GoToItemRow
                 url={"/search?q=" + searchText}
-                hasFocus={true}
+                hasFocus={hasFocus}
                 icon={<SearchOutlined />}
               >
                 Nothing found, would you like to search instead?
