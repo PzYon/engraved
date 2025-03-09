@@ -22,7 +22,6 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
   await scrapList.typeTitle("This is my title");
   await scrapList.typeListItem(firstItemText);
   await scrapList.addListItem(secondItemText);
-
   await scrapList.clickSave();
 
   await scrapList.dblClickToEdit();
@@ -32,10 +31,7 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
     .getByLabel("Delete")
     .click();
 
-  await scrapList
-    .getListItemByText(firstItemText)
-    .getByRole("checkbox")
-    .check();
+  scrapList.getListItemByText(firstItemText).getByRole("checkbox").check();
 
   await scrapList.clickSave(true);
 });
@@ -56,10 +52,7 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
   await scrapList.addListItem(secondItemText);
   await scrapList.clickSave();
 
-  await scrapList
-    .getListItemByText(firstItemText)
-    .getByRole("checkbox")
-    .check();
+  scrapList.getListItemByText(firstItemText).getByRole("checkbox").check();
 
   await expect(
     scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
@@ -229,10 +222,7 @@ async function testThatEveryUpdateLeadsToNewInitialState(
     scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
   ).not.toBeChecked();
 
-  await scrapList
-    .getListItemByText(firstItemText)
-    .getByRole("checkbox")
-    .check();
+  scrapList.getListItemByText(firstItemText).getByRole("checkbox").check();
 
   await page.reload();
 
