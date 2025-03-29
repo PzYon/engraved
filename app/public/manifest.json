@@ -15,5 +15,19 @@
       "src": "icons/icon.svg",
       "sizes": "any"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Go to",
+      "url": "/go-to"
+    },
+    {
+      "name": "Quick add",
+      "url": "/quick-add"
+    },
+    {
+      "name": "Scheduled",
+      "url": "/scheduled"
+    }
   ]
 }
