@@ -44,14 +44,16 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       headings: new StringMap(en: clientNotification.Title),
       contents: new StringMap(en: clientNotification.Message),
       url: clientNotification.OnClickUrl,
-      chromeWebBadge: "/icons/icon_windows.png",
+      smallIcon: "/icons/icon-transparent-bg.svg",
+      chromeWebBadge: "/icons/icon-transparent-bg.svg",
       webButtons: clientNotification.Buttons
         .Select(
           b => new ButtonWithUrl
           {
             Id = b.Key,
             Url = b.Url,
-            Text = b.Label
+            Text = b.Label,
+            Icon = "/icons/icon-transparent-bg.svg"
           }
         )
         .OfType<Button>()
