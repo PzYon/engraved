@@ -32,7 +32,7 @@ export const GoToTextField: React.FC<{
     <TextField
       autoFocus={true}
       inputRef={textFieldRef}
-      value={value}
+      defaultValue={value}
       label={"Go to"}
       onFocus={() => setTextFieldHasFocus(true)}
       onBlur={() => setTextFieldHasFocus(false)}

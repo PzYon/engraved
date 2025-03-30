@@ -21,10 +21,10 @@ export const GoTo: React.FC = () => {
   const searchText = getSearchParam("q") ?? "";
 
   const debouncedSearchText = useDebounced(searchText);
-  const items = useGoToNavigationItems(debouncedSearchText);
+  const goto = useGoToNavigationItems(debouncedSearchText);
 
-  if (!items.length && searchText) {
-    items.push({
+  if (!goto.items.length && searchText) {
+    goto.items.push({
       id: emptyListItemId,
     });
   }
@@ -32,12 +32,14 @@ export const GoTo: React.FC = () => {
   return (
     <PageSection>
       <OverviewList
-        items={items}
+        items={goto.items}
         renderBeforeList={(collection: OverviewItemCollection) => (
           <GoToTextField
             collection={collection}
             value={searchText}
-            onChange={(value) => appendSearchParams({ q: value })}
+            onChange={(value) => {
+              appendSearchParams({ q: value });
+            }}
           />
         )}
         renderItem={(entity: IEntity, _: number, hasFocus: boolean) => {
@@ -48,7 +50,8 @@ export const GoTo: React.FC = () => {
                 hasFocus={hasFocus}
                 icon={<SearchOutlined />}
               >
-                Nothing found, would you like to search instead?
+                Nothing found, would you like to search for &quot;{searchText}
+                &quot; instead?
               </GoToItemRow>
             );
           }
@@ -70,6 +73,9 @@ export const GoTo: React.FC = () => {
 
     return (
       <ScrapEntryGoToItemRow
+        journal={goto.journalsForEntries.find(
+          (j) => j.id === (entity as IScrapEntry).parentId,
+        )}
         scrapEntry={entity as IScrapEntry}
         hasFocus={hasFocus}
       />
@@ -79,8 +85,9 @@ export const GoTo: React.FC = () => {
 
 const ScrapEntryGoToItemRow: React.FC<{
   scrapEntry: IScrapEntry;
+  journal: IJournal;
   hasFocus: boolean;
-}> = ({ scrapEntry, hasFocus }) => {
+}> = ({ scrapEntry, journal, hasFocus }) => {
   return (
     <GoToItemRow
       icon={
@@ -91,7 +98,14 @@ const ScrapEntryGoToItemRow: React.FC<{
       url={`/journals/details/${scrapEntry.parentId}?selected-item=${scrapEntry.id}`}
       hasFocus={hasFocus}
     >
-      {`${scrapEntry.title || scrapEntry.id}`}
+      <span style={{ display: "flex", alignItems: "center" }}>
+        {`${scrapEntry.title || scrapEntry.id}`}
+        <span
+          style={{ fontSize: "smaller", color: "initial", paddingLeft: "10px" }}
+        >
+          {journal.name}
+        </span>
+      </span>
     </GoToItemRow>
   );
 };
