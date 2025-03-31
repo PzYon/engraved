@@ -12,6 +12,7 @@ import { DateRangeSelector } from "./DateRangeSelector";
 import React from "react";
 import { DateType } from "./DateFilters";
 import { DateFilterConfig } from "../edit/IJournalUiSettings";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const DateFilterConfigSelector: React.FC<{
   dateFilterConfig: DateFilterConfig;
@@ -74,7 +75,7 @@ export const DateFilterConfigSelector: React.FC<{
 
 const Host = styled("div")`
   display: flex;
-  gap: ${(p) => p.theme.spacing(2)};
+  gap: ${(p: MuiTheme) => p.theme.spacing(2)};
 `;
 
 const RangeContainer = styled("div")`

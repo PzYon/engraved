@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { IconButton, styled, Theme, useTheme } from "@mui/material";
+import { IconButton, styled, SxProps, Theme, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
-import { SxProps } from "@mui/system";
 import { useActionContext } from "./ActionContext";
 import { actionBorderWidth } from "../../../theming/engravedTheme";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";

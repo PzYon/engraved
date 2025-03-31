@@ -2,6 +2,7 @@ import React from "react";
 import { Chip, styled } from "@mui/material";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const ScrapToc: React.FC<{ entries: IScrapEntry[] }> = ({ entries }) => {
   const deviceWidth = useDeviceWidth();
@@ -36,8 +37,8 @@ export const ScrapToc: React.FC<{ entries: IScrapEntry[] }> = ({ entries }) => {
 };
 
 const Host = styled("div")`
-  margin-top: ${(p) => p.theme.spacing(2)};
+  margin-top: ${(p: MuiTheme) => p.theme.spacing(2)};
   display: flex;
   flex-wrap: wrap;
-  gap: ${(p) => p.theme.spacing(1)};
+  gap: ${(p: MuiTheme) => p.theme.spacing(1)};
 `;

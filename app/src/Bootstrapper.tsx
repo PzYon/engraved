@@ -8,6 +8,7 @@ import { registerGooglePrompt } from "./serverApi/authentication/google/register
 import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
+import { MuiTheme } from "./theming/engravedTheme";
 
 const storage = new AuthStorage();
 
@@ -106,7 +107,7 @@ const Host = styled("div")<{ isNotVisible: boolean }>`
   justify-content: center;
   align-items: center;
 
-  visibility: ${(p) => (p.isNotVisible ? "hidden" : "visible")};
+  visibility: ${(p: MuiTheme) => (p.isNotVisible ? "hidden" : "visible")};
 
   // https://www.eggradients.com/gradient/marley
   background-color: #118ab2;

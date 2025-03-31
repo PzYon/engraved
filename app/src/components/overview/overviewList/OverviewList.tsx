@@ -6,6 +6,7 @@ import { styled, Typography } from "@mui/material";
 import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
 import { OverviewItemCollection } from "./wrappers/OverviewItemCollection";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
@@ -76,10 +77,10 @@ const Host = styled("div")`
   // OverviewListItem in all modes (compact and non-compact)
 
   & > div:first-of-type .page-section {
-    margin-top: ${(p) => p.theme.spacing(3)};
+    margin-top: ${(p: MuiTheme) => p.theme.spacing(3)};
   }
 
   & > div:last-of-type .page-section {
-    margin-bottom: ${(p) => p.theme.spacing(3)};
+    margin-bottom: ${(p: MuiTheme) => p.theme.spacing(3)};
   }
 `;

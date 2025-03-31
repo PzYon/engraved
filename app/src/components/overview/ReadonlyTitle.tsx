@@ -7,6 +7,7 @@ import React from "react";
 import { ActionLink } from "../common/actions/ActionLink";
 import { IAction } from "../common/actions/IAction";
 import { styled, Typography } from "@mui/material";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const ReadonlyTitle: React.FC<{
   title: React.ReactNode;
@@ -42,7 +43,7 @@ export const ReadonlyTitle: React.FC<{
 };
 
 const ReadonlyTitleContainer = styled(Typography)`
-  color: ${(p) => p.theme.palette.primary.main};
+  color: ${(p: MuiTheme) => p.theme.palette.primary.main};
   font-size: 2rem;
   font-weight: 200;
   line-height: 1;

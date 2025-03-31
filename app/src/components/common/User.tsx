@@ -1,6 +1,7 @@
 import React from "react";
 import { IUser } from "../../serverApi/IUser";
 import { Avatar, styled, Typography } from "@mui/material";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const User: React.FC<{
   user: IUser;
@@ -22,6 +23,6 @@ export const User: React.FC<{
 const Host = styled("div")`
   display: flex;
   align-items: center;
-  border: 2px solid ${(p) => p.theme.palette.common.white};
+  border: 2px solid ${(p: MuiTheme) => p.theme.palette.common.white};
   border-radius: 100%;
 `;

@@ -10,6 +10,7 @@ import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
 import { AutogrowTextField } from "../../common/AutogrowTextField";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const ParseableDate: React.FC<{
   onChange: (parsedDate: IParsedDate) => void;
@@ -106,7 +107,7 @@ export const ParseableDate: React.FC<{
 const Host = styled("div")``;
 
 const OutputContainer = styled("div")`
-  padding-top: ${(p) => p.theme.spacing(2)};
+  padding-top: ${(p: MuiTheme) => p.theme.spacing(2)};
 `;
 
 const OutputElement = styled("span")`
@@ -115,10 +116,10 @@ const OutputElement = styled("span")`
 `;
 
 const TextContainer = styled(OutputElement)`
-  padding-right: ${(p) => p.theme.spacing(1)};
+  padding-right: ${(p: MuiTheme) => p.theme.spacing(1)};
 `;
 
 const DateContainer = styled(OutputElement)`
-  background-color: ${(p) => p.theme.palette.primary.main};
-  color: ${(p) => p.theme.palette.common.white};
+  background-color: ${(p: MuiTheme) => p.theme.palette.primary.main};
+  color: ${(p: MuiTheme) => p.theme.palette.common.white};
 `;

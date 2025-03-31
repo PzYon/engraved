@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 import { ThresholdScope } from "./ThresholdScope";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export interface IAttributeValueThresholdDefinition {
   attributeKey: string;
@@ -134,13 +135,13 @@ export const ThresholdRow: React.FC<{
 };
 
 const Host = styled("div")`
-  padding: ${(p) => p.theme.spacing(1)} 0;
+  padding: ${(p: MuiTheme) => p.theme.spacing(1)} 0;
 
   display: flex;
   align-items: center;
 
   & > div:not(:last-of-type) {
-    margin-right: ${(p) => p.theme.spacing(1)};
+    margin-right: ${(p: MuiTheme) => p.theme.spacing(1)};
   }
 
   .MuiFormControl-root,

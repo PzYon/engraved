@@ -1,4 +1,6 @@
-import { createTheme } from "@mui/material";
+import { CreateMUIStyled, createTheme } from "@mui/material";
+
+export type MuiTheme = CreateMUIStyled<unknown>;
 
 export const paperBorderRadius = "7px";
 

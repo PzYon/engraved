@@ -28,6 +28,7 @@ import { useRecentlyViewedJournals } from "./useRecentlyViewedJournals";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IJournal } from "../../../serverApi/IJournal";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
@@ -243,7 +244,7 @@ const StyledSpan = styled("span")`
   display: flex;
   flex-grow: 1;
   align-items: center;
-  color: ${(p) => p.theme.palette.primary.main};
+  color: ${(p: MuiTheme) => p.theme.palette.primary.main};
 `;
 
 const Spacer: React.FC = () => {
@@ -260,5 +261,5 @@ const SpacerHost = styled("div")`
 
 const SpacerLine = styled("div")`
   height: 1px;
-  background-color: ${(p) => p.theme.palette.background.default};
+  background-color: ${(p: MuiTheme) => p.theme.palette.background.default};
 `;

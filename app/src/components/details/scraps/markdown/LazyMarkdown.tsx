@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { styled } from "@mui/material";
 import { IMarkdownProps } from "./Markdown";
 import { getMarkdownInstance } from "./getMarkdownInstance";
+import { MuiTheme } from "../../../../theming/engravedTheme";
 
 const md = getMarkdownInstance();
 
@@ -31,7 +32,7 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
 
 const BaseContentContainer = styled("div")`
   overflow: auto;
-  font-family: ${(p) => p.theme.typography.fontFamily};
+  font-family: ${(p: MuiTheme) => p.theme.typography.fontFamily};
 
   ul {
     margin: 0.5rem 0;

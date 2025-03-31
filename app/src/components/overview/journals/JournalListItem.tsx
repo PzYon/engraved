@@ -10,6 +10,7 @@ import { JournalSubRoutes } from "./JournalSubRoutes";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IconStyle } from "../../common/IconStyle";
 import { JournalIcon } from "./JournalIcon";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -60,6 +61,6 @@ const TitleRow = styled("div")`
 `;
 
 const IconContainer = styled("span")`
-  padding-top: ${(p) => p.theme.spacing(0.5)};
-  padding-right: ${(p) => p.theme.spacing(2)};
+  padding-top: ${(p: MuiTheme) => p.theme.spacing(0.5)};
+  padding-right: ${(p: MuiTheme) => p.theme.spacing(2)};
 `;

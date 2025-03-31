@@ -11,6 +11,7 @@ import { isValidEmail } from "../../../util/utils";
 import { useModifyJournalPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyJournalPermissionsMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { useItemAction } from "../../common/actions/searchParamHooks";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const EditJournalPermissionsAction: React.FC<{
   journal: IJournal;
@@ -110,12 +111,13 @@ export const EditJournalPermissionsAction: React.FC<{
 };
 
 const AddNewContainer = styled("div")`
-  margin: ${(p) => p.theme.spacing(4)} 0 ${(p) => p.theme.spacing(2)} 0;
+  margin: ${(p: MuiTheme) => p.theme.spacing(4)} 0
+    ${(p: MuiTheme) => p.theme.spacing(2)} 0;
   display: flex;
   justify-items: center;
 
   & > * {
-    margin-right: ${(p) => p.theme.spacing(2)};
+    margin-right: ${(p: MuiTheme) => p.theme.spacing(2)};
 
     &:last-of-type {
       margin-right: 0;

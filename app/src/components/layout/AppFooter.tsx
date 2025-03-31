@@ -11,6 +11,7 @@ import { FormatDate } from "../common/FormatDate";
 import { useDialogContext } from "./dialogs/DialogContext";
 import { RegisteredActionsList } from "../common/actions/RegisteredActionsList";
 import { ActionLink } from "../common/actions/ActionLink";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const AppFooter: React.FC = () => {
   const apiSystemInfo = useApiSystemInfoQuery();
@@ -102,7 +103,7 @@ const Container = styled("div")`
   width: 100%;
   display: flex;
   flex-direction: row;
-  padding: ${(p) => p.theme.spacing(2)} 0;
+  padding: ${(p: MuiTheme) => p.theme.spacing(2)} 0;
 `;
 
 const Column = styled("div")`

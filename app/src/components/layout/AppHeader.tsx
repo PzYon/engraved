@@ -20,6 +20,7 @@ import { ActionLink } from "../common/actions/ActionLink";
 import { PageTabs } from "./tabs/PageTabs";
 import { useDisplayModeContext } from "../overview/overviewList/DisplayModeContext";
 import { AppMenuLauncher } from "./menu/AppMenuLauncher";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const AppHeader: React.FC = () => {
   const { user } = useAppContext();
@@ -135,7 +136,7 @@ const ContentWrapper = styled("div")`
   align-items: center;
 
   a {
-    color: ${(p) => p.theme.palette.common.white} !important;
+    color: ${(p: MuiTheme) => p.theme.palette.common.white} !important;
   }
 `;
 
@@ -143,6 +144,6 @@ const ActionsAndTabContainer = styled("div")<{ isSmall: boolean }>`
   width: 100%;
   display: flex;
   justify-content: end;
-  margin-top: ${(p) => (p.isSmall ? p.theme.spacing(2) : 0)};
+  margin-top: ${(p: MuiTheme) => (p.isSmall ? p.theme.spacing(2) : 0)};
   flex-wrap: wrap;
 `;

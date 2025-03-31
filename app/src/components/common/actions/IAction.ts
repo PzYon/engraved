@@ -1,6 +1,5 @@
 import React from "react";
-import { SxProps } from "@mui/system";
-import { Theme } from "@mui/material";
+import { SxProps, Theme } from "@mui/material";
 
 export interface IAction {
   key: string;

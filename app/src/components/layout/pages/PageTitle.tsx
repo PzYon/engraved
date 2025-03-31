@@ -1,5 +1,6 @@
 import { styled } from "@mui/material";
 import React from "react";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
   icon,
@@ -12,5 +13,5 @@ export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
 );
 
 const IconContainer = styled("span")`
-  margin-right: ${(p) => p.theme.spacing(2)};
+  margin-right: ${(p: MuiTheme) => p.theme.spacing(2)};
 `;

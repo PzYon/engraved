@@ -10,6 +10,7 @@ import { addMinutes } from "date-fns";
 import { IDateSelectorProps } from "./DateSelector";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { de } from "date-fns/locale/de";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 const LazyDateSelector: React.FC<IDateSelectorProps> = ({
   setDate,
@@ -84,7 +85,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
 
 const FlexContainer = styled("div")`
   display: flex;
-  gap: ${(p) => p.theme.spacing(1)};
+  gap: ${(p: MuiTheme) => p.theme.spacing(1)};
 `;
 
 const FlexElement = styled("div")`

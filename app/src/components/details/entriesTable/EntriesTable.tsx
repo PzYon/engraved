@@ -29,6 +29,7 @@ import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -139,11 +140,12 @@ export const EntriesTable: React.FC<{
 
 export const StyledTable = styled(Table)`
   th {
-    border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
+    border-bottom: 1px solid
+      ${(p: MuiTheme) => p.theme.palette.background.default};
   }
 
   td {
-    border-top: 1px solid ${(p) => p.theme.palette.background.default};
+    border-top: 1px solid ${(p: MuiTheme) => p.theme.palette.background.default};
     border-bottom: 0;
 
     &.action-cell {
@@ -153,7 +155,7 @@ export const StyledTable = styled(Table)`
 
   td,
   th {
-    padding: ${(p) => p.theme.spacing(1.5)};
+    padding: ${(p: MuiTheme) => p.theme.spacing(1.5)};
   }
 
   th:last-of-type,

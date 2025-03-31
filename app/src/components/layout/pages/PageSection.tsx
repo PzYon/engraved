@@ -2,6 +2,7 @@ import React from "react";
 import { Paper, styled, Typography } from "@mui/material";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AppErrorBoundary } from "../../errorHandling/AppErrorBoundary";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const PageSection: React.FC<{
   children: React.ReactNode;
@@ -45,7 +46,7 @@ export const PageSection: React.FC<{
 };
 
 const Host = styled(Paper)`
-  margin: ${(p) => p.theme.spacing(3)} 0;
+  margin: ${(p: MuiTheme) => p.theme.spacing(3)} 0;
 
   // hack: make sure first heading does not have top margin.
   // hack because it does not matter, if the h1 is the first

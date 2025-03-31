@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IScrapListItem } from "./IScrapListItem";
-import { Checkbox, styled } from "@mui/material";
+import { Checkbox, styled, SxProps } from "@mui/material";
 import { DragIndicator, RemoveCircleOutline } from "@mui/icons-material";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
-import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { MuiTheme } from "../../../../theming/engravedTheme";
 
 export const ScrapListItem: React.FC<{
   listItemsCollection: ListItemCollection;
@@ -203,7 +203,7 @@ const StyledCheckbox = styled(Checkbox)`
   padding: 5px 5px 5px 0;
 
   &.MuiCheckbox-colorPrimary {
-    color: ${(p) => p.theme.palette.primary.main} !important;
+    color: ${(p: MuiTheme) => p.theme.palette.primary.main} !important;
   }
 `;
 

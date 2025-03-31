@@ -1,6 +1,7 @@
 import React from "react";
-import { Theme, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import { LazyLoadSuspender } from "../../../common/lazyLoadComponent";
+import { MuiTheme } from "../../../../theming/engravedTheme";
 
 export type KeyMappings = Record<string, () => void>;
 
@@ -9,7 +10,7 @@ export interface ICodeMirrorProps {
   onChange: (value: string) => void;
   onBlur?: () => void;
   onFocus?: () => void;
-  theme?: Theme;
+  theme?: MuiTheme;
   showOutlineWhenFocused?: boolean;
   keyMappings?: KeyMappings;
 }

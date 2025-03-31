@@ -12,6 +12,7 @@ import { JournalViewPage } from "./JournalViewPage";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 
 import { useRecentlyViewedJournals } from "../layout/menu/useRecentlyViewedJournals";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const JournalDetailsEdit: React.FC = () => {
   const { journal } = useJournalContext();
@@ -70,7 +71,7 @@ export const JournalDetails: React.FC = () => {
 };
 
 const Host = styled("div")`
-  padding-top: ${(p) => p.theme.spacing(2)};
+  padding-top: ${(p: MuiTheme) => p.theme.spacing(2)};
 `;
 
 const PropertiesContainer = styled("div")``;

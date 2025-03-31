@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
-import { paperBorderRadius } from "../../../theming/engravedTheme";
+import { MuiTheme, paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
 import { OverviewItem } from "./wrappers/OverviewItem";
 import { PageSection } from "../../layout/pages/PageSection";
@@ -65,7 +65,7 @@ export const OverviewListItem: React.FC<{
 
 const Host = styled("div")`
   &:focus {
-    outline: 2px solid ${(p) => p.theme.palette.primary.main};
+    outline: 2px solid ${(p: MuiTheme) => p.theme.palette.primary.main};
   }
 
   border-radius: ${paperBorderRadius};

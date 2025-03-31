@@ -11,6 +11,7 @@ import {
 import React from "react";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AppContent } from "../AppContent";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 const SlideUp = React.forwardRef(function Transition(
   props: { children: React.ReactNode },
@@ -49,7 +50,7 @@ export const DialogWrapper: React.FC<{
           <IconButton
             aria-label="close"
             onClick={onClose}
-            sx={{ color: (theme) => theme.palette.grey[500] }}
+            sx={{ color: (theme: MuiTheme) => theme.palette.grey[500] }}
           >
             <Close />
           </IconButton>
@@ -76,8 +77,9 @@ const DialogHost = styled("div")`
 `;
 
 const StyledDialogContent = styled(DialogContent)`
-  padding: 5px ${(p) => p.theme.spacing(3)} ${(p) => p.theme.spacing(3)}
-    ${(p) => p.theme.spacing(3)};
+  padding: 5px ${(p: MuiTheme) => p.theme.spacing(3)}
+    ${(p: MuiTheme) => p.theme.spacing(3)}
+    ${(p: MuiTheme) => p.theme.spacing(3)};
 
   .MuiFormControl-root {
     width: 100%;

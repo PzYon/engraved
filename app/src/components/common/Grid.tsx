@@ -1,13 +1,13 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Grid2 } from "@mui/material";
 
 export const GridItem: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <Grid item xs={2} sm={4} md={4}>
+    <Grid2 item xs={2} sm={4} md={4}>
       {children}
-    </Grid>
+    </Grid2>
   );
 };
 
@@ -15,13 +15,13 @@ export const GridContainer: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <Grid
+    <Grid2
       container
       sx={{ mt: 2 }}
       spacing={2}
       columns={{ xs: 4, sm: 8, md: 12 }}
     >
       {children}
-    </Grid>
+    </Grid2>
   );
 };

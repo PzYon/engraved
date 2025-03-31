@@ -6,6 +6,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import { calculateThresholds } from "./calculateThresholds";
 import { IDateConditions } from "../JournalContext";
 import { ThresholdScope } from "./ThresholdScope";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const Thresholds: React.FC<{
   journal: IJournal;
@@ -113,8 +114,8 @@ export const Thresholds: React.FC<{
 const ActualValue = styled("span")<{ isBelow: boolean }>`
   font-size: xx-large;
   font-weight: bold;
-  color: ${(p) => (p.isBelow ? "green" : "red")};
-  margin-right: ${(p) => p.theme.spacing(1)};
+  color: ${(p: MuiTheme) => (p.isBelow ? "green" : "red")};
+  margin-right: ${(p: MuiTheme) => p.theme.spacing(1)};
 `;
 
 const Lighter = styled("span")`

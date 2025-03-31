@@ -6,6 +6,7 @@ import { styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useEngravedSearchParams } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
@@ -101,6 +102,6 @@ const ButtonContainer = styled("div")`
 export const SeparatorElement = styled("div")`
   height: 25px;
   width: 2px;
-  background-color: ${(p) => p.theme.palette.primary.main};
-  margin: 0 ${(p) => p.theme.spacing(2)};
+  background-color: ${(p: MuiTheme) => p.theme.palette.primary.main};
+  margin: 0 ${(p: MuiTheme) => p.theme.spacing(2)};
 `;

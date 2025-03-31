@@ -14,7 +14,8 @@ import { FilterMode } from "../../layout/pages/PageContext";
 import { Page } from "../../layout/pages/Page";
 import { PlaylistAddOutlined } from "@mui/icons-material";
 import { PageSection } from "../../layout/pages/PageSection";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { MuiTheme } from "../../../theming/engravedTheme";
 
 export const QuickAddPage: React.FC = () => {
   const { user } = useAppContext();
@@ -23,10 +24,18 @@ export const QuickAddPage: React.FC = () => {
 
   const [journalId, setJournalId] = useState(undefined);
 
+  const [searchParams] = useSearchParams();
+
+  const title = searchParams.get("title");
+  const notes = searchParams.get("notes");
+  const link = searchParams.get("link");
+
   const scrap = ScrapsJournalType.createBlank(
     true,
     journalId,
     ScrapType.Markdown,
+    title,
+    [notes, link].filter((i) => !!i).join("\n"),
   );
 
   return (
@@ -80,7 +89,7 @@ export const QuickAddPage: React.FC = () => {
 };
 
 const ScrapContainer = styled("div")`
-  padding-top: ${(p) => p.theme.spacing(2)};
-  margin-top: ${(p) => p.theme.spacing(2)};
-  border-top: 1px solid ${(p) => p.theme.palette.background.default};
+  padding-top: ${(p: MuiTheme) => p.theme.spacing(2)};
+  margin-top: ${(p: MuiTheme) => p.theme.spacing(2)};
+  border-top: 1px solid ${(p: MuiTheme) => p.theme.palette.background.default};
 `;

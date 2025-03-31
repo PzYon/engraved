@@ -6,10 +6,10 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  SxProps,
   Theme,
 } from "@mui/material";
 import { translations } from "../../../../i18n/translations";
-import { SxProps } from "@mui/system";
 
 export const GroupByTimeSelector: React.FC<{
   groupByTime: GroupByTime;

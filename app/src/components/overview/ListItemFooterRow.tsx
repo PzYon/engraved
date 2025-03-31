@@ -5,6 +5,7 @@ import { Properties } from "../common/Properties";
 import { ActionIconButtonGroup } from "../common/actions/ActionIconButtonGroup";
 import { styled } from "@mui/material";
 import { useDisplayModeContext } from "./overviewList/DisplayModeContext";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const ListItemFooterRow: React.FC<{
   properties: IPropertyDefinition[];
@@ -35,17 +36,17 @@ const PropertiesRow = styled("div")`
   flex-wrap: wrap;
   align-items: center;
   justify-content: end;
-  margin-top: ${(p) => p.theme.spacing(2)};
-  padding-top: ${(p) => p.theme.spacing(1)};
-  border-top: 1px solid ${(p) => p.theme.palette.background.default};
+  margin-top: ${(p: MuiTheme) => p.theme.spacing(2)};
+  padding-top: ${(p: MuiTheme) => p.theme.spacing(1)};
+  border-top: 1px solid ${(p: MuiTheme) => p.theme.palette.background.default};
 `;
 
 const FlexGrow = styled("div")`
-  margin-top: ${(p) => p.theme.spacing(1)};
+  margin-top: ${(p: MuiTheme) => p.theme.spacing(1)};
   flex-grow: 1;
 `;
 
 const ActionContainer = styled("div")`
-  margin-top: ${(p) => p.theme.spacing(1)};
-  margin-left: ${(p) => p.theme.spacing(2)};
+  margin-top: ${(p: MuiTheme) => p.theme.spacing(1)};
+  margin-left: ${(p: MuiTheme) => p.theme.spacing(2)};
 `;

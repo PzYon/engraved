@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { styled } from "@mui/material";
 import {
   actionBorderWidth,
+  MuiTheme,
   paperBorderRadius,
 } from "../../../theming/engravedTheme";
 
@@ -51,18 +52,20 @@ const Host = styled("div")`
 const Inner = styled("div")`
   position: relative;
   z-index: 2;
-  margin-top: calc(${(p) => p.theme.spacing(2)} - ${actionBorderWidth});
+  margin-top: calc(
+    ${(p: MuiTheme) => p.theme.spacing(2)} - ${actionBorderWidth}
+  );
   padding: ${actionBorderWidth};
   border-radius: ${paperBorderRadius};
   background: linear-gradient(
     50deg,
-    ${(p) => p.theme.palette.text.primary} 0%,
-    ${(p) => p.theme.palette.primary.main} 80%
+    ${(p: MuiTheme) => p.theme.palette.text.primary} 0%,
+    ${(p: MuiTheme) => p.theme.palette.primary.main} 80%
   );
 `;
 
 const InnerInner = styled("div")`
-  padding: ${(p) => p.theme.spacing(2)};
-  background-color: ${(p) => p.theme.palette.common.white};
+  padding: ${(p: MuiTheme) => p.theme.spacing(2)};
+  background-color: ${(p: MuiTheme) => p.theme.palette.common.white};
   border-radius: ${paperBorderRadius};
 `;

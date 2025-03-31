@@ -1,6 +1,7 @@
 import { styled } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ServerApi } from "../../serverApi/ServerApi";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 const keyForLoadingHandler = "pulsating-dot";
 
@@ -19,7 +20,7 @@ export const PulsatingDot: React.FC = () => {
 };
 
 const Dot = styled("span")`
-  color: ${(p) => p.theme.palette.common.white};
+  color: ${(p: MuiTheme) => p.theme.palette.common.white};
 
   @keyframes pulse {
     0% {

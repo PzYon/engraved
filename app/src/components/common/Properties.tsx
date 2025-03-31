@@ -1,6 +1,7 @@
 import React from "react";
 import { IPropertyDefinition } from "./IPropertyDefinition";
 import { styled, Typography } from "@mui/material";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const Properties: React.FC<{ properties: IPropertyDefinition[] }> = ({
   properties,
@@ -81,7 +82,7 @@ const Property = styled(Typography)`
   }
 
   .transparent {
-    border: 1px solid ${(p) => p.theme.palette.primary.main};
+    border: 1px solid ${(p: MuiTheme) => p.theme.palette.primary.main};
     border-radius: 45px;
     padding: 0 8px;
     display: flex;

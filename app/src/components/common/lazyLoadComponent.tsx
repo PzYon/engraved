@@ -1,6 +1,7 @@
 import { SwitchAccessShortcutOutlined } from "@mui/icons-material";
 import { Dialog, styled, Typography } from "@mui/material";
 import React, { PropsWithChildren, ReactNode, Suspense, useState } from "react";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const LazyLoadSuspender: React.FC<PropsWithChildren> = ({
   children,
@@ -55,6 +56,6 @@ const Host = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: ${(p) => p.theme.spacing(3)};
+  padding: ${(p: MuiTheme) => p.theme.spacing(3)};
   cursor: pointer;
 `;

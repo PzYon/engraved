@@ -1,5 +1,6 @@
 import React from "react";
 import { styled, TextField, TextFieldProps } from "@mui/material";
+import { MuiTheme } from "../../theming/engravedTheme";
 
 export const AutogrowTextField: React.FC<
   TextFieldProps & {
@@ -48,9 +49,9 @@ const StyledTextField = styled(TextField)`
   textarea {
     &,
     &.Mui-disabled {
-      -webkit-text-fill-color: ${(p) =>
+      -webkit-text-fill-color: ${(p: MuiTheme) =>
         p.theme.palette.text.primary} !important;
-      color: ${(p) => p.theme.palette.text.primary} !important;
+      color: ${(p: MuiTheme) => p.theme.palette.text.primary} !important;
     }
   }
 `;
@@ -63,9 +64,9 @@ const StyledTitleTextField = styled(StyledTextField)`
   textarea {
     &,
     &.Mui-disabled {
-      -webkit-text-fill-color: ${(p) =>
+      -webkit-text-fill-color: ${(p: MuiTheme) =>
         p.theme.palette.primary.main} !important;
-      color: ${(p) => p.theme.palette.primary.main} !important;
+      color: ${(p: MuiTheme) => p.theme.palette.primary.main} !important;
       font-size: 2rem;
       font-weight: 200;
     }
