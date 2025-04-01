@@ -26,7 +26,7 @@ export const QuickAddPage: React.FC = () => {
   const [searchParams] = useSearchParams();
 
   const title = searchParams.get("title");
-  const notes = searchParams.get("notes");
+  const notes = searchParams.get("text");
   const link = searchParams.get("link");
 
   const scrap = ScrapsJournalType.createBlank(
