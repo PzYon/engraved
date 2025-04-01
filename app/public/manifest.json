@@ -29,5 +29,14 @@
       "name": "Scheduled",
       "url": "/scheduled"
     }
-  ]
+  ],
+  "share_target": {
+    "action": "/quick-add/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }
