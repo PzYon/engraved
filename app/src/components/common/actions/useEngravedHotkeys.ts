@@ -5,7 +5,6 @@ interface Hotkey {
   keys?: readonly string[];
   scopes?: string | readonly string[];
   description?: string;
-  hotkey: string;
 }
 
 export function useEngravedHotkeys(
