@@ -1,7 +1,7 @@
 import { FormElementContainer } from "../../common/FormUtils";
 import { DateSelector } from "../../common/DateSelector";
 import React, { useEffect } from "react";
-import { Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import { FormatDuration } from "../../common/FormatDuration";
 
 export const UpsertTimerEntry: React.FC<{
@@ -43,9 +43,20 @@ export const UpsertTimerEntry: React.FC<{
       </FormElementContainer>
       <FormElementContainer>
         <Typography fontSize="small">
-          Duration: <FormatDuration start={start} end={end} />
+          Duration
+          <Pill>
+            <FormatDuration start={start} end={end} />
+          </Pill>
         </Typography>
       </FormElementContainer>
     </>
   );
 };
+
+const Pill = styled("span")`
+  margin-left: 10px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background-color: ${(p) => p.theme.palette.primary.main};
+  color: ${(p) => p.theme.palette.common.white};
+`;
