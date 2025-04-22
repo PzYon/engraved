@@ -8,7 +8,7 @@ import { Button, styled } from "@mui/material";
 import React from "react";
 import { addMinutes } from "date-fns";
 import { IDateSelectorProps } from "./DateSelector";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { de } from "date-fns/locale/de";
 
 const LazyDateSelector: React.FC<IDateSelectorProps> = ({
