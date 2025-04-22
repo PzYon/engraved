@@ -31,12 +31,15 @@
     }
   ],
   "share_target": {
-    "action": "/quick-add/",
+    "action": "/quick-add",
     "method": "GET",
     "params": {
       "title": "title",
       "text": "text",
       "url": "url"
     }
+  },
+  "note_taking": {
+    "new_note_url": "/quick-add"
   }
 }
