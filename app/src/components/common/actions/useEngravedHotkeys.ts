@@ -1,6 +1,13 @@
 import { DependencyList } from "react";
 import { HotkeyCallback, Options, useHotkeys } from "react-hotkeys-hook";
 
+interface Hotkey {
+  keys?: readonly string[];
+  scopes?: string | readonly string[];
+  description?: string;
+  hotkey: string;
+}
+
 export function useEngravedHotkeys(
   hotkey: string,
   callback: HotkeyCallback,
@@ -9,7 +16,7 @@ export function useEngravedHotkeys(
 ) {
   useHotkeys(
     hotkey,
-    (keyboardEvent: KeyboardEvent, hotkeysEvent: unknown) => {
+    (keyboardEvent: KeyboardEvent, hotkeysEvent: Hotkey) => {
       keyboardEvent.preventDefault();
 
       callback(keyboardEvent, hotkeysEvent);
