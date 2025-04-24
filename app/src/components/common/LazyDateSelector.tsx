@@ -85,9 +85,12 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
 const FlexContainer = styled("div")`
   display: flex;
   gap: ${(p) => p.theme.spacing(1)};
+  width: 100%;
 
+  .MuiPickersSectionList-root,
   .MuiPickersTextField-root {
     max-width: 100%;
+    width: 100%;
   }
 `;
 
