@@ -10,13 +10,10 @@ export const FiltersRow = styled("div")`
     display: flex;
     flex-basis: 0;
     flex-grow: 1;
+    flex-shrink: 1;
   }
 `;
 
 export const FiltersColumn = styled(FiltersRow)`
   flex-direction: column;
-
-  & > * {
-    margin-right: 0 !important;
-  }
 `;

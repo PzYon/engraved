@@ -121,8 +121,6 @@ const Host = styled("div")`
 `;
 
 const StepperContainer = styled("div")`
-  flex-shrink: 1 !important;
-  flex-grow: initial !important;
   display: flex;
   justify-content: center;
   height: 56px;
@@ -131,7 +129,6 @@ const StepperContainer = styled("div")`
 const PickerContainer = styled("div")`
   flex-grow: 2 !important;
   flex-shrink: 2 !important;
-  width: 100% !important;
 
   .MuiPickersSectionList-root,
   .MuiPickersTextField-root {
