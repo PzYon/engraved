@@ -32,7 +32,11 @@ export const DateFilters: React.FC<{ config: DateFilterConfig }> = ({
       }}
     >
       <FiltersRow
-        sx={{ flexGrow: 1, mb: deviceWidth === DeviceWidth.Small ? 2 : 0 }}
+        sx={{
+          flexGrow: 1,
+          mb: deviceWidth === DeviceWidth.Small ? 2 : 0,
+          mr: deviceWidth === DeviceWidth.Small ? 0 : 2,
+        }}
       >
         <DateFilterConfigSelector
           dateFilterConfig={dateFilterConfig}
@@ -112,17 +116,22 @@ export const DateFilters: React.FC<{ config: DateFilterConfig }> = ({
   );
 };
 
-const Host = styled("div")``;
+const Host = styled("div")`
+  max-width: 100%;
+`;
 
 const StepperContainer = styled("div")`
-  flex-shrink: 1 !important;
-  flex-grow: initial !important;
   display: flex;
   justify-content: center;
   height: 56px;
-  margin-right: 0 !important;
 `;
 
 const PickerContainer = styled("div")`
-  flex-grow: 2;
+  flex-grow: 2 !important;
+  flex-shrink: 2 !important;
+
+  .MuiPickersSectionList-root,
+  .MuiPickersTextField-root {
+    width: 100% !important;
+  }
 `;
