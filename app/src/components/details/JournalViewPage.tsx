@@ -52,7 +52,7 @@ export const JournalViewPage: React.FC = () => {
 
   const [showNotes, setShowNotes] = useState(!!journal.notes);
 
-  const [showAddNewEntryRow, setShowAddNewEntryRow] = useState(false);
+  const [showAddNewEntryRow, setShowAddNewEntryRow] = useState(true);
 
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
