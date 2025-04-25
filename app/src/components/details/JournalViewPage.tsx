@@ -52,7 +52,9 @@ export const JournalViewPage: React.FC = () => {
 
   const [showNotes, setShowNotes] = useState(!!journal.notes);
 
-  const [showAddNewEntryRow, setShowAddNewEntryRow] = useState(true);
+  const [showAddNewEntryRow, setShowAddNewEntryRow] = useState(
+    isTypeThatCanShowAddEntryRow(),
+  );
 
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
@@ -114,6 +116,12 @@ export const JournalViewPage: React.FC = () => {
     showGroupTotals,
     user,
   ]);
+
+  function isTypeThatCanShowAddEntryRow() {
+    return (
+      journal.type === JournalType.Gauge || journal.type === JournalType.Counter
+    );
+  }
 
   return (
     <Page
@@ -177,9 +185,7 @@ export const JournalViewPage: React.FC = () => {
                 entries={entries}
                 showGroupTotals={showGroupTotals}
                 showAddNewEntryRow={
-                  showAddNewEntryRow &&
-                  (journal.type === JournalType.Gauge ||
-                    journal.type === JournalType.Counter)
+                  showAddNewEntryRow && isTypeThatCanShowAddEntryRow()
                 }
                 aggregationMode={
                   uiSettings.aggregationMode ??
