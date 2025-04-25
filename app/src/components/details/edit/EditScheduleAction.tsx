@@ -13,7 +13,6 @@ import {
   getScheduleProperty,
 } from "../../overview/scheduled/scheduleUtils";
 import { IJournal } from "../../../serverApi/IJournal";
-import { ServerApi } from "../../../serverApi/ServerApi";
 import { useAppContext } from "../../../AppContext";
 import { IEntry } from "../../../serverApi/IEntry";
 import {
@@ -22,9 +21,10 @@ import {
 } from "../../common/actions/searchParamHooks";
 import { ScheduledInfo } from "../../overview/scheduled/ScheduledInfo";
 import { ISchedule } from "../../../serverApi/ISchedule";
-import { isAfter } from "date-fns";
 import { Properties } from "../../common/Properties";
 import { EditNotificationsOutlined } from "@mui/icons-material";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
+import { isAfter } from "date-fns";
 
 export const EditScheduleAction: React.FC<{
   journal?: IJournal;
@@ -45,25 +45,16 @@ export const EditScheduleAction: React.FC<{
   const { closeAction } = useItemAction();
 
   useEffect(() => {
-    getNextOccurrence().then((d) => {
-      setParsed({
-        date: d ? new Date(d) : null,
-        input: parsed.input,
-      });
+    const entity: IEntity = entry?.id ? entry : journal;
+
+    const nextOccurrence = entity
+      ? getScheduleForUser(entity, user.id).nextOccurrence
+      : null;
+
+    setParsed({
+      date: nextOccurrence ? new Date(nextOccurrence) : null,
+      input: parsed.input,
     });
-
-    async function getNextOccurrence() {
-      const entity: IEntity = await (entry?.id
-        ? ServerApi.getEntry(entry.id)
-        : Promise.resolve(journal));
-
-      if (!entity) {
-        return null;
-      }
-
-      return getScheduleForUser(entity, user.id).nextOccurrence;
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -84,12 +75,42 @@ export const EditScheduleAction: React.FC<{
             properties={[getScheduleProperty(journal ?? entry, user.id)]}
           />
           {isEditMode ? null : (
-            <EditNotificationsOutlined
-              fontSize="small"
-              onClick={() => setIsEditMode(true)}
+            <ActionIconButton
+              action={{
+                key: "edit-mode",
+                label: "Show edit controls",
+                icon: <EditNotificationsOutlined fontSize="small" />,
+                onClick: () => setIsEditMode(true),
+              }}
             />
           )}
         </ActualScheduleContainer>
+      ) : null}
+
+      {!!schedule &&
+      (isAfter(new Date(), schedule.nextOccurrence) ||
+        !schedule.recurrence?.dateString) ? (
+        <Button
+          sx={{ width: "100%", mt: 2, mb: 2 }}
+          variant={"contained"}
+          onClick={() => {
+            const scheduleDefinition: IScheduleDefinition = {
+              nextOccurrence: schedule.recurrence
+                ? parseDate(schedule.recurrence.dateString).date
+                : null,
+              recurrence: schedule.recurrence,
+              onClickUrl: entry
+                ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
+                : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
+            };
+
+            modifyScheduleMutation.mutate(scheduleDefinition);
+
+            closeAction();
+          }}
+        >
+          {getScheduleButtonLabel()}
+        </Button>
       ) : null}
 
       {isEditMode ? (
@@ -130,32 +151,6 @@ export const EditScheduleAction: React.FC<{
       ) : null}
 
       <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
-        {!!schedule &&
-        (isAfter(new Date(), schedule.nextOccurrence) ||
-          !schedule.recurrence?.dateString) ? (
-          <Button
-            sx={{ flexGrow: 1 }}
-            variant={"contained"}
-            onClick={() => {
-              const scheduleDefinition: IScheduleDefinition = {
-                nextOccurrence: schedule.recurrence
-                  ? parseDate(schedule.recurrence.dateString).date
-                  : null,
-                recurrence: schedule.recurrence,
-                onClickUrl: entry
-                  ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
-                  : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
-              };
-
-              modifyScheduleMutation.mutate(scheduleDefinition);
-
-              closeAction();
-            }}
-          >
-            {getScheduleButtonLabel()}
-          </Button>
-        ) : null}
-
         <Button variant="outlined" onClick={closeAction}>
           Cancel
         </Button>
@@ -201,7 +196,6 @@ const Host = styled("div")`
 
 const ActualScheduleContainer = styled("div")`
   display: flex;
-  gap: 16px;
+  gap: ${(p) => p.theme.spacing(2)};
   align-items: center;
-  padding-bottom: ${(p) => p.theme.spacing(2)};
 `;
