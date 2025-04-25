@@ -11,7 +11,6 @@ export type ActionKey =
   | "schedule"
   | "add-entry"
   | "move"
-  | "notification-done"
   | "edit";
 
 export function getItemActionQueryParams(

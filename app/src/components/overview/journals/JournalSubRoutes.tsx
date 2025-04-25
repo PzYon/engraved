@@ -1,6 +1,5 @@
 import { IJournal } from "../../../serverApi/IJournal";
 import { DeleteJournalAction } from "../../details/edit/DeleteJournalAction";
-import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPermissionsAction";
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
@@ -34,16 +33,6 @@ export const JournalSubRoutes: React.FC<{
       return (
         <NavigationActionContainer giveFocus={giveFocus}>
           <EditJournalPermissionsAction journal={journal} />
-        </NavigationActionContainer>
-      );
-
-    case "notification-done":
-      return (
-        <NavigationActionContainer
-          shrinkWidthIfPossible={true}
-          giveFocus={giveFocus}
-        >
-          <NotificationDoneAction entry={null} journal={journal} />
         </NavigationActionContainer>
       );
 
