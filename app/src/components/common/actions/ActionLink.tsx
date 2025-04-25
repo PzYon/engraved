@@ -46,6 +46,7 @@ export const ActionLink: React.FC<{
         style={style}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
       >
         {getChildren()}
       </a>
@@ -58,6 +59,7 @@ export const ActionLink: React.FC<{
         pathname: action.href,
         search: getAppendedSearchParams(action.search),
       }}
+      onClick={(e) => e.stopPropagation()}
       style={style}
       title={action.label}
     >
