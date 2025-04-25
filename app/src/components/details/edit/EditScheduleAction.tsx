@@ -10,6 +10,7 @@ import { IEntity } from "../../../serverApi/IEntity";
 import {
   getScheduleDefinition,
   getScheduleForUser,
+  getScheduleProperty,
 } from "../../overview/scheduled/scheduleUtils";
 import { IJournal } from "../../../serverApi/IJournal";
 import { ServerApi } from "../../../serverApi/ServerApi";
@@ -22,6 +23,8 @@ import {
 import { ScheduledInfo } from "../../overview/scheduled/ScheduledInfo";
 import { ISchedule } from "../../../serverApi/ISchedule";
 import { isAfter } from "date-fns";
+import { Properties } from "../../common/Properties";
+import { EditNotificationsOutlined } from "@mui/icons-material";
 
 export const EditScheduleAction: React.FC<{
   journal?: IJournal;
@@ -71,70 +74,92 @@ export const EditScheduleAction: React.FC<{
 
   const [showFullForm, setShowFullForm] = useState(!!parsed.date || !!schedule);
 
+  const [isEditMode, setIsEditMode] = useState(!schedule);
+
   return (
     <Host>
-      <FormControlLabel
-        label="Show full form"
-        control={
-          <Switch
-            checked={showFullForm}
-            onChange={(_, checked) => {
-              setShowFullForm(checked);
-            }}
+      {schedule ? (
+        <ActualScheduleContainer>
+          <Properties
+            properties={[getScheduleProperty(journal ?? entry, user.id)]}
           />
-        }
-      />
-      <ParseableDate
-        sx={{ marginBottom: 2 }}
-        parseDateOnly={true}
-        onChange={(d) => {
-          setParsed(d);
-          setIsDirty(!!d.date);
-        }}
-        onSelect={save}
-      />
-
-      {showFullForm ? (
-        <DateSelector
-          date={parsed.date}
-          setDate={(d) => {
-            setParsed({ date: d, input: parsed.text });
-            setIsDirty(true);
-          }}
-          showTime={true}
-          showClear={true}
-        />
+          {isEditMode ? null : (
+            <EditNotificationsOutlined
+              fontSize="small"
+              onClick={() => setIsEditMode(true)}
+            />
+          )}
+        </ActualScheduleContainer>
       ) : null}
 
-      {!!schedule &&
-      (isAfter(new Date(), schedule.nextOccurrence) ||
-        !schedule.recurrence?.dateString) ? (
-        <Button
-          variant={"contained"}
-          onClick={() => {
-            const scheduleDefinition: IScheduleDefinition = {
-              nextOccurrence: schedule.recurrence
-                ? parseDate(schedule.recurrence.dateString).date
-                : null,
-              recurrence: schedule.recurrence,
-              onClickUrl: entry
-                ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
-                : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
-            };
+      {isEditMode ? (
+        <>
+          <FormControlLabel
+            label="Show full form"
+            control={
+              <Switch
+                checked={showFullForm}
+                onChange={(_, checked) => {
+                  setShowFullForm(checked);
+                }}
+              />
+            }
+          />
+          <ParseableDate
+            sx={{ marginBottom: 2 }}
+            parseDateOnly={true}
+            onChange={(d) => {
+              setParsed(d);
+              setIsDirty(!!d.date);
+            }}
+            onSelect={save}
+          />
 
-            modifyScheduleMutation.mutate(scheduleDefinition);
-
-            closeAction();
-          }}
-        >
-          {getScheduleButtonLabel()}
-        </Button>
+          {showFullForm ? (
+            <DateSelector
+              date={parsed.date}
+              setDate={(d) => {
+                setParsed({ date: d, input: parsed.text });
+                setIsDirty(true);
+              }}
+              showTime={true}
+              showClear={true}
+            />
+          ) : null}
+        </>
       ) : null}
 
       <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
+        {!!schedule &&
+        (isAfter(new Date(), schedule.nextOccurrence) ||
+          !schedule.recurrence?.dateString) ? (
+          <Button
+            sx={{ flexGrow: 1 }}
+            variant={"contained"}
+            onClick={() => {
+              const scheduleDefinition: IScheduleDefinition = {
+                nextOccurrence: schedule.recurrence
+                  ? parseDate(schedule.recurrence.dateString).date
+                  : null,
+                recurrence: schedule.recurrence,
+                onClickUrl: entry
+                  ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
+                  : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
+              };
+
+              modifyScheduleMutation.mutate(scheduleDefinition);
+
+              closeAction();
+            }}
+          >
+            {getScheduleButtonLabel()}
+          </Button>
+        ) : null}
+
         <Button variant="outlined" onClick={closeAction}>
           Cancel
         </Button>
+
         <Button variant="contained" onClick={save} disabled={!isDirty}>
           Save
         </Button>
@@ -172,4 +197,11 @@ export const EditScheduleAction: React.FC<{
 
 const Host = styled("div")`
   width: 100%;
+`;
+
+const ActualScheduleContainer = styled("div")`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: ${(p) => p.theme.spacing(2)};
 `;
