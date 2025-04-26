@@ -21,7 +21,9 @@ export function useOverviewCollection() {
         setValue(null);
       }
     }
-  }, [focusIndex, setValue]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusIndex]);
 
   useEngravedHotkeys("up", () => {
     collection.moveFocusUp();
