@@ -1,5 +1,4 @@
 import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
-import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { MoveScrapAction } from "../../details/scraps/MoveScrapAction";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { IEntry } from "../../../serverApi/IEntry";
@@ -36,16 +35,6 @@ export const EntrySubRoutes: React.FC<{
         return (
           <NavigationActionContainer giveFocus={giveFocus}>
             <EditScheduleAction entry={entry} />
-          </NavigationActionContainer>
-        );
-
-      case "notification-done":
-        return (
-          <NavigationActionContainer
-            shrinkWidthIfPossible={true}
-            giveFocus={giveFocus}
-          >
-            <NotificationDoneAction entry={entry} journal={null} />
           </NavigationActionContainer>
         );
 
