@@ -143,7 +143,11 @@ export const EditScheduleAction: React.FC<{
               closeAction();
             }}
           >
-            Remove schedule
+            {!isInFuture ? (
+              <>Mark {entry ? "entry" : "journal"} as done</>
+            ) : (
+              "Remove schedule"
+            )}
           </Button>
         ) : null}
       </MainButtons>
