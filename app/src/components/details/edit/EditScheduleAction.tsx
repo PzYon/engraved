@@ -92,59 +92,61 @@ export const EditScheduleAction: React.FC<{
         </ActualScheduleContainer>
       ) : null}
 
-      {isInPast ? (
-        <Button
-          sx={{ width: "100%", mt: 2, mb: 2 }}
-          variant={"contained"}
-          onClick={() => {
-            const scheduleDefinition: IScheduleDefinition = {
-              nextOccurrence: isRecurring
-                ? parseDate(schedule.recurrence.dateString).date
-                : null,
-              recurrence: schedule.recurrence,
-              onClickUrl: entry
-                ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
-                : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
-            };
+      <MainButtons>
+        {isInPast ? (
+          <Button
+            sx={{ width: "100%" }}
+            variant={"contained"}
+            onClick={() => {
+              const scheduleDefinition: IScheduleDefinition = {
+                nextOccurrence: isRecurring
+                  ? parseDate(schedule.recurrence.dateString).date
+                  : null,
+                recurrence: schedule.recurrence,
+                onClickUrl: entry
+                  ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
+                  : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
+              };
 
-            modifyScheduleMutation.mutate(scheduleDefinition);
+              modifyScheduleMutation.mutate(scheduleDefinition);
 
-            closeAction();
-          }}
-        >
-          {isRecurring ? (
-            <>
-              Reschedule&nbsp;
-              <ScheduledInfo
-                schedule={schedule}
-                showNextIfPassed={true}
-                showRecurrenceInfo={true}
-              />
-            </>
-          ) : (
-            <>Mark {entry ? "entry" : "journal"} as done</>
-          )}
-        </Button>
-      ) : null}
+              closeAction();
+            }}
+          >
+            {isRecurring ? (
+              <>
+                Reschedule&nbsp;
+                <ScheduledInfo
+                  schedule={schedule}
+                  showNextIfPassed={true}
+                  showRecurrenceInfo={true}
+                />
+              </>
+            ) : (
+              <>Mark {entry ? "entry" : "journal"} as done</>
+            )}
+          </Button>
+        ) : null}
 
-      {isInFuture || isRecurring ? (
-        <Button
-          sx={{ width: "100%", mt: 2, mb: 2 }}
-          variant={"contained"}
-          onClick={() => {
-            const scheduleDefinition: IScheduleDefinition = {
-              nextOccurrence: null,
-              onClickUrl: null,
-            };
+        {isInFuture || isRecurring ? (
+          <Button
+            sx={{ width: "100%" }}
+            variant={"contained"}
+            onClick={() => {
+              const scheduleDefinition: IScheduleDefinition = {
+                nextOccurrence: null,
+                onClickUrl: null,
+              };
 
-            modifyScheduleMutation.mutate(scheduleDefinition);
+              modifyScheduleMutation.mutate(scheduleDefinition);
 
-            closeAction();
-          }}
-        >
-          Remove schedule
-        </Button>
-      ) : null}
+              closeAction();
+            }}
+          >
+            Remove schedule
+          </Button>
+        ) : null}
+      </MainButtons>
 
       {isEditMode ? (
         <>
@@ -216,4 +218,11 @@ const ActualScheduleContainer = styled("div")`
   display: flex;
   gap: ${(p) => p.theme.spacing(2)};
   align-items: center;
+`;
+
+const MainButtons = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: ${(p) => p.theme.spacing(2)} 0;
 `;
