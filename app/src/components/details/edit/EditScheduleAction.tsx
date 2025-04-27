@@ -40,7 +40,7 @@ export const EditScheduleAction: React.FC<{
     user.id
   ];
 
-  const hasSchedule = !!schedule;
+  const hasSchedule = !!schedule?.nextOccurrence;
   const isRecurring = !!schedule?.recurrence?.dateString;
   const isInPast = hasSchedule && isAfter(new Date(), schedule.nextOccurrence);
   const isInFuture = hasSchedule && !isInPast;
@@ -148,6 +148,8 @@ export const EditScheduleAction: React.FC<{
         ) : null}
       </MainButtons>
 
+      {hasSchedule && isEditMode ? <Spacer /> : null}
+
       {isEditMode ? (
         <>
           <FormControlLabel
@@ -182,18 +184,18 @@ export const EditScheduleAction: React.FC<{
               showClear={true}
             />
           ) : null}
+
+          <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
+            <Button variant="outlined" onClick={closeAction}>
+              Cancel
+            </Button>
+
+            <Button variant="contained" onClick={save} disabled={!isDirty}>
+              Save
+            </Button>
+          </DialogFormButtonContainer>
         </>
       ) : null}
-
-      <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
-        <Button variant="outlined" onClick={closeAction}>
-          Cancel
-        </Button>
-
-        <Button variant="contained" onClick={save} disabled={!isDirty}>
-          Save
-        </Button>
-      </DialogFormButtonContainer>
     </Host>
   );
 
@@ -224,5 +226,15 @@ const MainButtons = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin: ${(p) => p.theme.spacing(2)} 0;
+  margin-top: ${(p) => p.theme.spacing(2)};
+
+  &:empty {
+    display: none;
+  }
+`;
+
+const Spacer = styled("div")`
+  margin-top: ${(p) => p.theme.spacing(3)};
+  margin-bottom: ${(p) => p.theme.spacing(2)};
+  border-top: 1px solid ${(p) => p.theme.palette.background.default};
 `;

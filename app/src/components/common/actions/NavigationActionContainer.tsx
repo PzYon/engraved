@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { styled } from "@mui/material";
+import { ClickAwayListener, styled } from "@mui/material";
 import {
   actionBorderWidth,
   paperBorderRadius,
 } from "../../../theming/engravedTheme";
+import { useItemAction } from "./searchParamHooks";
 
 export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
@@ -12,6 +13,8 @@ export const NavigationActionContainer: React.FC<{
   giveFocus?: () => void;
 }> = ({ children, growWidthIfPossible, shrinkWidthIfPossible, giveFocus }) => {
   const domElement = useRef<HTMLDivElement>(undefined);
+
+  const { closeAction } = useItemAction();
 
   useEffect(() => {
     giveFocus?.();
@@ -37,7 +40,9 @@ export const NavigationActionContainer: React.FC<{
           maxWidth: growWidthIfPossible ? "100%" : "500px",
         }}
       >
-        <InnerInner>{children}</InnerInner>
+        <ClickAwayListener onClickAway={closeAction}>
+          <InnerInner>{children}</InnerInner>
+        </ClickAwayListener>
       </Inner>
     </Host>
   );
