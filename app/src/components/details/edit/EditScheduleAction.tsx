@@ -24,7 +24,7 @@ import { ISchedule } from "../../../serverApi/ISchedule";
 import { Properties } from "../../common/Properties";
 import { EditNotificationsOutlined } from "@mui/icons-material";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
-import { isAfter, isBefore } from "date-fns";
+import { isAfter } from "date-fns";
 
 export const EditScheduleAction: React.FC<{
   journal?: IJournal;
@@ -40,7 +40,10 @@ export const EditScheduleAction: React.FC<{
     user.id
   ];
 
+  const hasSchedule = !!schedule;
   const isRecurring = !!schedule?.recurrence?.dateString;
+  const isInPast = hasSchedule && isAfter(new Date(), schedule.nextOccurrence);
+  const isInFuture = hasSchedule && !isInPast;
 
   const { closeAction } = useItemAction();
 
@@ -63,13 +66,15 @@ export const EditScheduleAction: React.FC<{
     entry?.id,
   );
 
-  const [showFullForm, setShowFullForm] = useState(!!parsed.date || !!schedule);
+  const [showFullForm, setShowFullForm] = useState(
+    !!parsed.date || hasSchedule,
+  );
 
-  const [isEditMode, setIsEditMode] = useState(!schedule);
+  const [isEditMode, setIsEditMode] = useState(!hasSchedule);
 
   return (
     <Host>
-      {schedule ? (
+      {hasSchedule ? (
         <ActualScheduleContainer>
           <Properties
             properties={[getScheduleProperty(journal ?? entry, user.id)]}
@@ -87,15 +92,13 @@ export const EditScheduleAction: React.FC<{
         </ActualScheduleContainer>
       ) : null}
 
-      {!!schedule &&
-      (isAfter(new Date(), schedule.nextOccurrence) ||
-        schedule.recurrence?.dateString) ? (
+      {isInPast ? (
         <Button
           sx={{ width: "100%", mt: 2, mb: 2 }}
           variant={"contained"}
           onClick={() => {
             const scheduleDefinition: IScheduleDefinition = {
-              nextOccurrence: schedule.recurrence
+              nextOccurrence: isRecurring
                 ? parseDate(schedule.recurrence.dateString).date
                 : null,
               recurrence: schedule.recurrence,
@@ -109,11 +112,22 @@ export const EditScheduleAction: React.FC<{
             closeAction();
           }}
         >
-          {getScheduleButtonLabel()}
+          {isRecurring ? (
+            <>
+              Reschedule&nbsp;
+              <ScheduledInfo
+                schedule={schedule}
+                showNextIfPassed={true}
+                showRecurrenceInfo={true}
+              />
+            </>
+          ) : (
+            <>Mark {entry ? "entry" : "journal"} as done</>
+          )}
         </Button>
       ) : null}
 
-      {!!schedule && isBefore(new Date(), schedule.nextOccurrence) ? (
+      {isInFuture || isRecurring ? (
         <Button
           sx={{ width: "100%", mt: 2, mb: 2 }}
           variant={"contained"}
@@ -128,7 +142,7 @@ export const EditScheduleAction: React.FC<{
             closeAction();
           }}
         >
-          Remove X schedule
+          Remove schedule
         </Button>
       ) : null}
 
@@ -191,21 +205,6 @@ export const EditScheduleAction: React.FC<{
     modifyScheduleMutation.mutate(scheduleDefinition);
 
     closeAction();
-  }
-
-  function getScheduleButtonLabel() {
-    return isRecurring ? (
-      <>
-        Reschedule&nbsp;
-        <ScheduledInfo
-          schedule={schedule}
-          showNextIfPassed={true}
-          showRecurrenceInfo={true}
-        />
-      </>
-    ) : (
-      <>Mark {entry ? "entry" : "journal"} as done</>
-    );
   }
 };
 
