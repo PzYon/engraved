@@ -40,7 +40,7 @@ export const NavigationActionContainer: React.FC<{
           maxWidth: growWidthIfPossible ? "100%" : "500px",
         }}
       >
-        <ClickAwayListener onClickAway={closeAction}>
+        <ClickAwayListener onClickAway={closeAction} mouseEvent="onMouseUp">
           <InnerInner>{children}</InnerInner>
         </ClickAwayListener>
       </Inner>
