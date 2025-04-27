@@ -24,7 +24,7 @@ import { ISchedule } from "../../../serverApi/ISchedule";
 import { Properties } from "../../common/Properties";
 import { EditNotificationsOutlined } from "@mui/icons-material";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
-import { isAfter } from "date-fns";
+import { isAfter, isBefore } from "date-fns";
 
 export const EditScheduleAction: React.FC<{
   journal?: IJournal;
@@ -89,7 +89,7 @@ export const EditScheduleAction: React.FC<{
 
       {!!schedule &&
       (isAfter(new Date(), schedule.nextOccurrence) ||
-        !schedule.recurrence?.dateString) ? (
+        schedule.recurrence?.dateString) ? (
         <Button
           sx={{ width: "100%", mt: 2, mb: 2 }}
           variant={"contained"}
@@ -110,6 +110,25 @@ export const EditScheduleAction: React.FC<{
           }}
         >
           {getScheduleButtonLabel()}
+        </Button>
+      ) : null}
+
+      {!!schedule && isBefore(new Date(), schedule.nextOccurrence) ? (
+        <Button
+          sx={{ width: "100%", mt: 2, mb: 2 }}
+          variant={"contained"}
+          onClick={() => {
+            const scheduleDefinition: IScheduleDefinition = {
+              nextOccurrence: null,
+              onClickUrl: null,
+            };
+
+            modifyScheduleMutation.mutate(scheduleDefinition);
+
+            closeAction();
+          }}
+        >
+          Remove X schedule
         </Button>
       ) : null}
 
