@@ -22,7 +22,8 @@ public class AddScheduleToJournalCommandExecutor(IUserScopedRepository repositor
       journal.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
       {
         NextOccurrence = command.NextOccurrence,
-        OnClickUrl = command.OnClickUrl
+        OnClickUrl = command.OnClickUrl,
+        Recurrence = command.Recurrence
       };
     }
     else
