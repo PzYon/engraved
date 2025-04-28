@@ -40,7 +40,10 @@ export const EditScheduleAction: React.FC<{
     user.id
   ];
 
+  const hasSchedule = !!schedule?.nextOccurrence;
   const isRecurring = !!schedule?.recurrence?.dateString;
+  const isInPast = hasSchedule && isAfter(new Date(), schedule.nextOccurrence);
+  const isInFuture = hasSchedule && !isInPast;
 
   const { closeAction } = useItemAction();
 
@@ -63,13 +66,15 @@ export const EditScheduleAction: React.FC<{
     entry?.id,
   );
 
-  const [showFullForm, setShowFullForm] = useState(!!parsed.date || !!schedule);
+  const [showFullForm, setShowFullForm] = useState(
+    !!parsed.date || hasSchedule,
+  );
 
-  const [isEditMode, setIsEditMode] = useState(!schedule);
+  const [isEditMode, setIsEditMode] = useState(!hasSchedule);
 
   return (
     <Host>
-      {schedule ? (
+      {hasSchedule ? (
         <ActualScheduleContainer>
           <Properties
             properties={[getScheduleProperty(journal ?? entry, user.id)]}
@@ -87,31 +92,69 @@ export const EditScheduleAction: React.FC<{
         </ActualScheduleContainer>
       ) : null}
 
-      {!!schedule &&
-      (isAfter(new Date(), schedule.nextOccurrence) ||
-        !schedule.recurrence?.dateString) ? (
-        <Button
-          sx={{ width: "100%", mt: 2, mb: 2 }}
-          variant={"contained"}
-          onClick={() => {
-            const scheduleDefinition: IScheduleDefinition = {
-              nextOccurrence: schedule.recurrence
-                ? parseDate(schedule.recurrence.dateString).date
-                : null,
-              recurrence: schedule.recurrence,
-              onClickUrl: entry
-                ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
-                : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
-            };
+      <MainButtons>
+        {hasSchedule && (isInPast || !isRecurring) ? (
+          <Button
+            sx={{ width: "100%" }}
+            variant={"contained"}
+            onClick={() => {
+              const scheduleDefinition: IScheduleDefinition = {
+                nextOccurrence: isRecurring
+                  ? parseDate(schedule.recurrence.dateString).date
+                  : null,
+                recurrence: schedule.recurrence,
+                onClickUrl: entry
+                  ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
+                  : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
+              };
 
-            modifyScheduleMutation.mutate(scheduleDefinition);
+              modifyScheduleMutation.mutate(scheduleDefinition);
 
-            closeAction();
-          }}
-        >
-          {getScheduleButtonLabel()}
-        </Button>
-      ) : null}
+              closeAction();
+            }}
+          >
+            {isRecurring ? (
+              <>
+                Reschedule&nbsp;
+                <ScheduledInfo
+                  schedule={schedule}
+                  showNextIfPassed={true}
+                  showRecurrenceInfo={true}
+                />
+              </>
+            ) : (
+              <>Mark {entry ? "entry" : "journal"} as done</>
+            )}
+          </Button>
+        ) : null}
+
+        {hasSchedule &&
+        (isInFuture || isRecurring) &&
+        !(isInPast || !isRecurring) ? (
+          <Button
+            sx={{ width: "100%" }}
+            variant={"contained"}
+            onClick={() => {
+              const scheduleDefinition: IScheduleDefinition = {
+                nextOccurrence: null,
+                onClickUrl: null,
+              };
+
+              modifyScheduleMutation.mutate(scheduleDefinition);
+
+              closeAction();
+            }}
+          >
+            {!isInFuture ? (
+              <>Mark {entry ? "entry" : "journal"} as done</>
+            ) : (
+              "Remove schedule"
+            )}
+          </Button>
+        ) : null}
+      </MainButtons>
+
+      {hasSchedule && isEditMode ? <Spacer /> : null}
 
       {isEditMode ? (
         <>
@@ -147,18 +190,18 @@ export const EditScheduleAction: React.FC<{
               showClear={true}
             />
           ) : null}
+
+          <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
+            <Button variant="outlined" onClick={closeAction}>
+              Cancel
+            </Button>
+
+            <Button variant="contained" onClick={save} disabled={!isDirty}>
+              Save
+            </Button>
+          </DialogFormButtonContainer>
         </>
       ) : null}
-
-      <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
-        <Button variant="outlined" onClick={closeAction}>
-          Cancel
-        </Button>
-
-        <Button variant="contained" onClick={save} disabled={!isDirty}>
-          Save
-        </Button>
-      </DialogFormButtonContainer>
     </Host>
   );
 
@@ -173,21 +216,6 @@ export const EditScheduleAction: React.FC<{
 
     closeAction();
   }
-
-  function getScheduleButtonLabel() {
-    return isRecurring ? (
-      <>
-        Reschedule&nbsp;
-        <ScheduledInfo
-          schedule={schedule}
-          showNextIfPassed={true}
-          showRecurrenceInfo={true}
-        />
-      </>
-    ) : (
-      <>Mark {entry ? "entry" : "journal"} as done</>
-    );
-  }
 };
 
 const Host = styled("div")`
@@ -198,4 +226,21 @@ const ActualScheduleContainer = styled("div")`
   display: flex;
   gap: ${(p) => p.theme.spacing(2)};
   align-items: center;
+`;
+
+const MainButtons = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: ${(p) => p.theme.spacing(2)};
+
+  &:empty {
+    display: none;
+  }
+`;
+
+const Spacer = styled("div")`
+  margin-top: ${(p) => p.theme.spacing(3)};
+  margin-bottom: ${(p) => p.theme.spacing(2)};
+  border-top: 1px solid ${(p) => p.theme.palette.background.default};
 `;

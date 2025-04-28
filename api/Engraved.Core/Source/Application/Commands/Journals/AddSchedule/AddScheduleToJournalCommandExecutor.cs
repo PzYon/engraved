@@ -17,15 +17,23 @@ public class AddScheduleToJournalCommandExecutor(IUserScopedRepository repositor
 
     IJournal journal = (await repository.GetJournal(command.JournalId))!;
 
-    journal.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
+    if (command.NextOccurrence != null)
     {
-      NextOccurrence = command.NextOccurrence,
-      OnClickUrl = command.OnClickUrl
-    };
+      journal.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
+      {
+        NextOccurrence = command.NextOccurrence,
+        OnClickUrl = command.OnClickUrl,
+        Recurrence = command.Recurrence
+      };
+    }
+    else
+    {
+      journal.Schedules.Remove(repository.CurrentUser.Value.Id!);
+    }
 
     await repository.UpsertJournal(journal);
 
-    string[] userIdsWithAccess = journal.Permissions.GetUserIdsWithAccess().ToArray();
+    var userIdsWithAccess = journal.Permissions.GetUserIdsWithAccess().ToArray();
 
     return new CommandResult(command.JournalId, userIdsWithAccess);
   }
