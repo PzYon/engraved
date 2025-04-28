@@ -93,7 +93,7 @@ export const EditScheduleAction: React.FC<{
       ) : null}
 
       <MainButtons>
-        {isInPast || !isRecurring ? (
+        {hasSchedule && (isInPast || !isRecurring) ? (
           <Button
             sx={{ width: "100%" }}
             variant={"contained"}
@@ -128,7 +128,9 @@ export const EditScheduleAction: React.FC<{
           </Button>
         ) : null}
 
-        {(isInFuture || isRecurring) && !(isInPast || !isRecurring) ? (
+        {hasSchedule &&
+        (isInFuture || isRecurring) &&
+        !(isInPast || !isRecurring) ? (
           <Button
             sx={{ width: "100%" }}
             variant={"contained"}
