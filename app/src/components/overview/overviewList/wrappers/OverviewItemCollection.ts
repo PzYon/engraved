@@ -29,15 +29,13 @@ export class OverviewItemCollection {
   };
 
   setFocusForId(itemId: string) {
-    this.setFocus(
-      this.wrappers.findIndex((i) => i.internalObj.id === itemId) ?? -1,
-    );
+    this.setFocus(this.getExistingIndex(itemId) ?? -1);
   }
 
   setFocus(index: number) {
     if (this.currentIndex === index) {
-      // if item already has focus (or is the last one that had focus),
-      // then do nothing in order to prevent cursors from moving around.
+      // if an item already has focus (or is the last one that had focus),
+      // then do nothing to prevent cursors from moving around.
       return;
     }
 
@@ -58,15 +56,17 @@ export class OverviewItemCollection {
   }
 
   add(wrapper: OverviewItem) {
-    const existingIndex = this.wrappers.findIndex(
-      (w) => w.internalObj.id === wrapper.internalObj.id,
-    );
+    const existingIndex = this.getExistingIndex(wrapper.internalObj.id);
 
     if (existingIndex > -1) {
       this.wrappers[existingIndex] = wrapper;
     } else {
       this.wrappers.push(wrapper);
     }
+  }
+
+  private getExistingIndex(itemId: string) {
+    return this.wrappers.findIndex((w) => w.internalObj.id === itemId);
   }
 
   private getNextHigherIndex(index: number) {

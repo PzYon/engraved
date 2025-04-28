@@ -16,7 +16,12 @@ export function useOverviewCollection() {
     return new OverviewItemCollection(focusIndex, onIndexChange);
 
     function onIndexChange(itemId: string, index: number) {
+      if (index === focusIndex) {
+        return;
+      }
+
       setFocusIndex(index);
+
       if (itemId && getSelectedItemIdFromUrl() !== itemId) {
         setValue(null);
       }
