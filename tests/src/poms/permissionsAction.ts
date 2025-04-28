@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 
 export class PermissionsAction {
   constructor(private page: Page) {}
@@ -12,7 +12,8 @@ export class PermissionsAction {
 
   async savePermissionsAndCloseDialog() {
     await this.page.getByRole("button", { name: "Save" }).click();
-    await this.page.getByText("Modified journal permissions").click();
+
+    await expect(this.page.getByText("Modified journal permissions")).toBeVisible();
 
     await this.page.getByRole("button", { name: "Cancel" }).click();
   }
