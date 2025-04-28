@@ -44,7 +44,7 @@ export const AppHeader: React.FC = () => {
 
   useEffect(() => {
     console.log(`Router: Navigating to ${loc.pathname}${loc.search}`);
-  }, [loc]);
+  }, [loc.key]);
 
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
