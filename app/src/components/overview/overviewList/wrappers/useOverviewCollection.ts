@@ -16,12 +16,19 @@ export function useOverviewCollection() {
     return new OverviewItemCollection(focusIndex, onIndexChange);
 
     function onIndexChange(itemId: string, index: number) {
+      if (index === focusIndex) {
+        return;
+      }
+
       setFocusIndex(index);
+
       if (itemId && getSelectedItemIdFromUrl() !== itemId) {
         setValue(null);
       }
     }
-  }, [focusIndex, setValue]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusIndex]);
 
   useEngravedHotkeys("up", () => {
     collection.moveFocusUp();

@@ -3,7 +3,7 @@ import { IEntity } from "../../../../serverApi/IEntity";
 
 export class OverviewItem {
   constructor(
-    private ref: React.MutableRefObject<HTMLDivElement>,
+    private ref: React.RefObject<HTMLDivElement>,
     public internalObj: IEntity,
   ) {}
 

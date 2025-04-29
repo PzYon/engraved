@@ -13,7 +13,9 @@ export class PermissionsAction {
   async savePermissionsAndCloseDialog() {
     await this.page.getByRole("button", { name: "Save" }).click();
 
-    await expect(this.page.getByText("Modified journal permissions")).toBeVisible();
+    await expect(
+      this.page.getByText("Modified journal permissions"),
+    ).toBeVisible();
 
     await this.page.getByRole("button", { name: "Cancel" }).click();
   }
