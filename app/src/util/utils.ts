@@ -20,10 +20,6 @@ export function stripTime(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-export function toDateOnlyIsoString(date: Date): string {
-  return date.toISOString().split("T")[0];
-}
-
 export function formatDateOnly(date: Date): string {
   return format(date, "dd.MM.yyyy");
 }
