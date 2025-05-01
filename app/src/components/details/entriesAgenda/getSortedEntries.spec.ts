@@ -11,11 +11,11 @@ const twoDaysAgo = subDays(now, 2);
 const twoAndHalfDaysAgo = subHours(now, 2.5 * 24);
 
 describe("getSortedEntries", () => {
-  it("XXX", () => {
+  it("sorts entries from new to old", () => {
     const sortedEntries = getSortedEntries([
+      { dateTime: twoAndHalfDaysAgo.toJSON() },
       { dateTime: now.toJSON() },
       { dateTime: twoDaysAgo.toJSON() },
-      { dateTime: twoAndHalfDaysAgo.toJSON() },
     ]);
 
     expect(Object.keys(sortedEntries).length).toBe(2);
