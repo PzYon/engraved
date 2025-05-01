@@ -16,7 +16,6 @@ import { IUpdatePermissions } from "./IUpdatePermissions";
 import { IJournalAttributeValues } from "./IJournalAttributeValues";
 import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/JournalContext";
-import { toDateOnlyIsoString } from "../util/utils";
 import { IJournalThresholdDefinitions } from "./IJournalThresholdDefinitions";
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
@@ -278,11 +277,11 @@ export class ServerApi {
     }
 
     if (dateConditions.from) {
-      urlParams.push(`fromDate=${toDateOnlyIsoString(dateConditions.from)}`);
+      urlParams.push(`fromDate=${dateConditions.from.toISOString()}`);
     }
 
     if (dateConditions.to) {
-      urlParams.push(`toDate=${toDateOnlyIsoString(dateConditions.to)}`);
+      urlParams.push(`toDate=${dateConditions.to.toISOString()}`);
     }
 
     if (searchText) {
