@@ -37,7 +37,7 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
 
   const [areRecentlyViewExpanded, setAreRecentlyViewExpanded] = useState(false);
 
-  const { viewedJournals } = useRecentlyViewedJournals();
+  const viewedJournals = useRecentlyViewedJournals();
 
   return (
     <MenuContainer>
