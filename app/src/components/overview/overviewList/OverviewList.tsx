@@ -35,6 +35,8 @@ export const OverviewList: React.FC<{
       {filteredItems.map((item, index) => {
         const hasFocus = index === collection.currentIndex;
 
+        // todo: consider evaluating selected item here and passing it
+
         return (
           <OverviewListItem
             index={index}
