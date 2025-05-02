@@ -15,6 +15,7 @@ export const OverviewList: React.FC<{
     index: number,
     hasFocus: boolean,
     giveFocus: () => void,
+    selectedActionKey: string,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
 }> = ({ items, renderBeforeList, renderItem, filterItem }) => {
@@ -33,7 +34,15 @@ export const OverviewList: React.FC<{
     <Host>
       {renderBeforeList?.(collection)}
       {filteredItems.map((item, index) => {
-        const hasFocus = index === collection.currentIndex;
+        const hasFocus = item.id === collection.selectedItemId;
+
+        if (hasFocus) {
+          console.log(
+            "Rendering item with focus",
+            item.id,
+            collection.selectedActionKey,
+          );
+        }
 
         return (
           <OverviewListItem
@@ -46,7 +55,13 @@ export const OverviewList: React.FC<{
             item={item}
             hasFocus={hasFocus}
           >
-            {renderItem(item, index, hasFocus, setFocus)}
+            {renderItem(
+              item,
+              index,
+              hasFocus,
+              setFocus,
+              collection.selectedActionKey,
+            )}
           </OverviewListItem>
         );
 

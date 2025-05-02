@@ -11,7 +11,6 @@ import { EntrySubRoutes } from "./EntrySubRoutes";
 import { IPropertyDefinition } from "../IPropertyDefinition";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalIcon } from "../../overview/journals/JournalIcon";
-import { useSelectedItemId } from "../actions/searchParamHooks";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -25,6 +24,7 @@ export const Entry: React.FC<{
   giveFocus?: () => void;
   propertyOverrides?: IPropertyDefinition[];
   noCompactFooter?: boolean;
+  selectedActionKey?: string;
 }> = ({
   journal,
   entry,
@@ -35,16 +35,15 @@ export const Entry: React.FC<{
   giveFocus,
   propertyOverrides,
   noCompactFooter,
+  selectedActionKey,
 }) => {
   const { user } = useAppContext();
 
-  const isActive = useSelectedItemId().getValue() === entry.id;
-
   useEffect(() => {
-    if (isActive) {
+    if (hasFocus) {
       giveFocus?.();
     }
-  }, [isActive, giveFocus]);
+  }, [hasFocus, giveFocus]);
 
   return (
     <>
@@ -61,7 +60,13 @@ export const Entry: React.FC<{
         actions={actions}
         noCompactFooter={noCompactFooter}
       />
-      <EntrySubRoutes entry={entry} giveFocus={giveFocus} />
+      {hasFocus ? (
+        <EntrySubRoutes
+          entry={entry}
+          giveFocus={giveFocus}
+          selectedActionKey={selectedActionKey}
+        />
+      ) : null}
     </>
   );
 };

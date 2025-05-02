@@ -28,6 +28,8 @@ export class TimerJournalType implements IJournalType {
     journal: IJournal,
     entry: IEntry,
     hasFocus?: boolean,
+    giveFocus?: () => void,
+    selectedActionKey?: string,
   ): React.ReactNode {
     return (
       <EntryWithValue
@@ -51,6 +53,7 @@ export class TimerJournalType implements IJournalType {
         }
         journal={journal}
         entry={entry}
+        selectedActionKey={selectedActionKey}
       />
     );
   }

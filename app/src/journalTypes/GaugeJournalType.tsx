@@ -26,6 +26,8 @@ export class GaugeJournalType implements IJournalType {
     journal: IJournal,
     entry: IEntry,
     hasFocus?: boolean,
+    giveFocus?: () => void,
+    selectedActionKey?: string,
   ): React.ReactNode {
     return (
       <EntryWithValue
@@ -33,6 +35,7 @@ export class GaugeJournalType implements IJournalType {
         value={(entry as IGaugeEntry).value}
         journal={journal}
         entry={entry}
+        selectedActionKey={selectedActionKey}
       />
     );
   }

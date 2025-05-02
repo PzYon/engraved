@@ -4,24 +4,15 @@ import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPerm
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
-import {
-  knownQueryParams,
-  useItemAction,
-} from "../../common/actions/searchParamHooks";
 import { NavigationActionContainer } from "../../common/actions/NavigationActionContainer";
 import { JournalType } from "../../../serverApi/JournalType";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
   giveFocus?: () => void;
-}> = ({ journal, giveFocus }) => {
-  const { getParams } = useItemAction();
-
-  if (getParams()[knownQueryParams.selectedItemIdParam] !== journal.id) {
-    return null;
-  }
-
-  switch (getParams()[knownQueryParams.actionKey]) {
+  selectedActionKey?: string;
+}> = ({ journal, giveFocus, selectedActionKey }) => {
+  switch (selectedActionKey) {
     case "delete":
       return (
         <NavigationActionContainer giveFocus={giveFocus}>

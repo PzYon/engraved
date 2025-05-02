@@ -13,7 +13,8 @@ export const EntryWithValue: React.FC<{
   journal: IJournal;
   entry: IEntry;
   hasFocus?: boolean;
-}> = ({ journal, entry, value, hasFocus }) => {
+  selectedActionKey?: string;
+}> = ({ journal, entry, value, hasFocus, selectedActionKey }) => {
   return (
     <Entry
       journal={journal}
@@ -24,6 +25,7 @@ export const EntryWithValue: React.FC<{
       ]}
       hasFocus={hasFocus}
       propsRenderStyle={"all"}
+      selectedActionKey={selectedActionKey}
     >
       <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
         {formatDateOnly(new Date(entry.dateTime))}

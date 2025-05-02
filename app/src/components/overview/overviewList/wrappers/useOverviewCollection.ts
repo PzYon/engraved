@@ -1,5 +1,5 @@
 import { OverviewItemCollection } from "./OverviewItemCollection";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { OverviewItem } from "./OverviewItem";
 import {
   knownQueryParams,
@@ -17,6 +17,7 @@ export function useOverviewCollection() {
 
   const collection = useMemo(() => {
     return new OverviewItemCollection(
+      focusIndex,
       getItemId(),
       getActionKey(),
       onIndexChange,
@@ -29,13 +30,15 @@ export function useOverviewCollection() {
 
       setFocusIndex(index);
 
+      // todo: do we need this!?
       if (itemId && getSelectedItemIdFromUrl() !== itemId) {
+        debugger;
         setItemId(null);
       }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusIndex, getItemId(), getActionKey()]);
+  }, []);
 
   useEngravedHotkeys("up", () => {
     collection.moveFocusUp();
@@ -46,12 +49,16 @@ export function useOverviewCollection() {
   });
 
   const itemId = getItemId();
+  if (itemId) {
+    collection.setFocusForId(itemId);
+  }
 
-  useEffect(() => {
-    if (itemId) {
-      collection.setFocusForId(itemId);
-    }
-  }, [collection, itemId]);
+  const actionKey = getActionKey();
+  if (actionKey) {
+    collection.selectedActionKey = actionKey;
+  }
+
+  console.log(collection.currentIndex);
 
   return {
     collection,

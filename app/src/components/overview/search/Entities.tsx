@@ -44,7 +44,7 @@ export const Entities: React.FC<{
           addDays(new Date(), 3),
         )
       }
-      renderItem={(item, index, hasFocus, giveFocus) => {
+      renderItem={(item, index, hasFocus, giveFocus, selectedActionKey) => {
         // this is a temporary hack! should be something like:
         // if (item.entityType === "Entry") {
         if ((item as IJournal).type) {
@@ -54,6 +54,7 @@ export const Entities: React.FC<{
               index={index}
               hasFocus={hasFocus}
               journal={item as IJournal}
+              selectedActionKey={selectedActionKey}
             />
           );
         }
