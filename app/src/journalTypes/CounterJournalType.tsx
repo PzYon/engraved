@@ -20,8 +20,6 @@ export class CounterJournalType implements IJournalType {
     journal: IJournal,
     entry: IEntry,
     hasFocus?: boolean,
-    giveFocus?: () => void,
-    itemActionKey?: string,
   ): React.ReactNode {
     return (
       <EntryWithValue
@@ -29,7 +27,6 @@ export class CounterJournalType implements IJournalType {
         hasFocus={hasFocus}
         journal={journal}
         entry={entry}
-        itemActionKey={itemActionKey}
       />
     );
   }

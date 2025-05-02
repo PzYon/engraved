@@ -6,10 +6,6 @@ import { styled, Typography } from "@mui/material";
 import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
 import { OverviewItemCollection } from "./wrappers/OverviewItemCollection";
-import {
-  knownQueryParams,
-  useItemAction,
-} from "../../common/actions/searchParamHooks";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
@@ -19,18 +15,12 @@ export const OverviewList: React.FC<{
     index: number,
     hasFocus: boolean,
     giveFocus: () => void,
-    itemActionKey?: string,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
 }> = ({ items, renderBeforeList, renderItem, filterItem }) => {
   const { user } = useAppContext();
 
   const { collection, addItem } = useOverviewCollection();
-
-  const { getParams } = useItemAction();
-
-  const itemActionKey = getParams()[knownQueryParams.actionKey];
-
   const [showAll, setShowAll] = useState(false);
 
   const filteredItems = items.filter(
@@ -58,7 +48,7 @@ export const OverviewList: React.FC<{
             item={item}
             hasFocus={hasFocus}
           >
-            {renderItem(item, index, hasFocus, setFocus, itemActionKey)}
+            {renderItem(item, index, hasFocus, setFocus)}
           </OverviewListItem>
         );
 

@@ -9,8 +9,7 @@ export const EntryListItem: React.FC<{
   hasFocus?: boolean;
   index?: number;
   giveFocus?: () => void;
-  itemActionKey?: string;
-}> = ({ entry, journals, hasFocus, index, giveFocus, itemActionKey }) => {
+}> = ({ entry, journals, hasFocus, index, giveFocus }) => {
   return (
     <div data-testid={`entries-list-item-${index}`}>
       {renderEntry(entry, hasFocus)}
@@ -29,7 +28,6 @@ export const EntryListItem: React.FC<{
       entry,
       hasFocus,
       giveFocus,
-      itemActionKey,
     );
   }
 };
