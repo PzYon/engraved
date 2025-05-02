@@ -52,6 +52,10 @@ export const useSelectedItemId = () => {
   return useEngravedSearchParam(knownQueryParams.selectedItemIdParam);
 };
 
+export const useSelectedActionKey = () => {
+  return useEngravedSearchParam(knownQueryParams.actionKey);
+};
+
 export const useEngravedSearchParam = (key: string) => {
   const customSearchParams = useEngravedSearchParams();
 

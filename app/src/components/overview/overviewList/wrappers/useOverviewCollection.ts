@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { OverviewItem } from "./OverviewItem";
 import {
   knownQueryParams,
+  useSelectedActionKey,
   useSelectedItemId,
 } from "../../../common/actions/searchParamHooks";
 import { useEngravedHotkeys } from "../../../common/actions/useEngravedHotkeys";
@@ -10,10 +11,16 @@ import { useEngravedHotkeys } from "../../../common/actions/useEngravedHotkeys";
 export function useOverviewCollection() {
   const [focusIndex, setFocusIndex] = useState(-1);
 
-  const { setValue, getValue } = useSelectedItemId();
+  const { setValue: setItemId, getValue: getItemId } = useSelectedItemId();
+
+  const { getValue: getActionKey } = useSelectedActionKey();
 
   const collection = useMemo(() => {
-    return new OverviewItemCollection(focusIndex, onIndexChange);
+    return new OverviewItemCollection(
+      getItemId(),
+      getActionKey(),
+      onIndexChange,
+    );
 
     function onIndexChange(itemId: string, index: number) {
       if (index === focusIndex) {
@@ -23,12 +30,12 @@ export function useOverviewCollection() {
       setFocusIndex(index);
 
       if (itemId && getSelectedItemIdFromUrl() !== itemId) {
-        setValue(null);
+        setItemId(null);
       }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusIndex]);
+  }, [focusIndex, getItemId(), getActionKey()]);
 
   useEngravedHotkeys("up", () => {
     collection.moveFocusUp();
@@ -38,7 +45,7 @@ export function useOverviewCollection() {
     collection.moveFocusDown();
   });
 
-  const itemId = getValue();
+  const itemId = getItemId();
 
   useEffect(() => {
     if (itemId) {

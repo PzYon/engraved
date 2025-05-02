@@ -8,10 +8,22 @@ export class OverviewItemCollection {
     return this.wrappers.length - 1;
   }
 
+  public currentIndex: number = -1;
+
   constructor(
-    public currentIndex: number = 1,
+    public selectedItemId: string = null,
+    public selectedActionKey: string = null,
     private onIndexChange: (itemId: string, index: number) => void,
-  ) {}
+  ) {
+    this.setFocusForId(selectedItemId);
+  }
+
+  /*
+    constructor(
+      public currentIndex: number = 1,
+      private onIndexChange: (itemId: string, index: number) => void,
+    ) {}
+  */
 
   setOnType(onType: () => void): () => void {
     this.onType = onType;
