@@ -48,9 +48,7 @@ export const JournalListItem: React.FC<{
             properties={journalProperties}
             actions={getCommonJournalActions(journal, hasFocus, user)}
           />
-          {hasFocus ? (
-            <JournalSubRoutes journal={journal} giveFocus={giveFocus} />
-          ) : null}
+          <JournalSubRoutes journal={journal} giveFocus={giveFocus} />
         </Box>
       </Box>
     </div>
