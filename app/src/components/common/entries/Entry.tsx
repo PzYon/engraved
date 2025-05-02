@@ -25,6 +25,7 @@ export const Entry: React.FC<{
   giveFocus?: () => void;
   propertyOverrides?: IPropertyDefinition[];
   noCompactFooter?: boolean;
+  itemActionKey?: string;
 }> = ({
   journal,
   entry,
@@ -35,6 +36,7 @@ export const Entry: React.FC<{
   giveFocus,
   propertyOverrides,
   noCompactFooter,
+  itemActionKey,
 }) => {
   const { user } = useAppContext();
 
@@ -61,7 +63,13 @@ export const Entry: React.FC<{
         actions={actions}
         noCompactFooter={noCompactFooter}
       />
-      {hasFocus ? <EntrySubRoutes entry={entry} giveFocus={giveFocus} /> : null}
+      {hasFocus ? (
+        <EntrySubRoutes
+          entry={entry}
+          giveFocus={giveFocus}
+          itemActionKey={itemActionKey}
+        />
+      ) : null}
     </>
   );
 };

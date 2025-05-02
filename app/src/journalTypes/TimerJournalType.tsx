@@ -28,10 +28,13 @@ export class TimerJournalType implements IJournalType {
     journal: IJournal,
     entry: IEntry,
     hasFocus?: boolean,
+    giveFocus?: () => void,
+    itemActionKey?: string,
   ): React.ReactNode {
     return (
       <EntryWithValue
         hasFocus={hasFocus}
+        itemActionKey={itemActionKey}
         value={
           <>
             <FormatDate

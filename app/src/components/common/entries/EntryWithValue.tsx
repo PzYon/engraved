@@ -13,7 +13,8 @@ export const EntryWithValue: React.FC<{
   journal: IJournal;
   entry: IEntry;
   hasFocus?: boolean;
-}> = ({ journal, entry, value, hasFocus }) => {
+  itemActionKey?: string;
+}> = ({ journal, entry, value, hasFocus, itemActionKey }) => {
   return (
     <Entry
       journal={journal}
@@ -23,6 +24,7 @@ export const EntryWithValue: React.FC<{
         ActionFactory.deleteEntry(entry, hasFocus),
       ]}
       hasFocus={hasFocus}
+      itemActionKey={itemActionKey}
       propsRenderStyle={"all"}
     >
       <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
