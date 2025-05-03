@@ -75,12 +75,6 @@ export const useEngravedSearchParams = () => {
   return {
     getSearchParam: (key: string) => searchParams.get(key),
 
-    getAppendedSearchParams: (params: Record<string, string>): string => {
-      return !params || !Object.keys(params).length
-        ? undefined
-        : getNewSearchParams(params).toString();
-    },
-
     appendSearchParams: (params: Record<string, string>) => {
       const newSearchParams = getNewSearchParams(params);
 
@@ -91,15 +85,6 @@ export const useEngravedSearchParams = () => {
       setSearchParams(newSearchParams);
     },
   };
-
-  function cloneSearchParams() {
-    const newestSearchParams: Record<string, string> = {};
-    searchParams.forEach((v, k) => {
-      newestSearchParams[k] = v;
-    });
-
-    return new URLSearchParams({ ...newestSearchParams });
-  }
 
   function getNewSearchParams(params: Record<string, string>) {
     const newSearchParams = cloneSearchParams();
@@ -120,5 +105,14 @@ export const useEngravedSearchParams = () => {
     }
 
     return newSearchParams;
+  }
+
+  function cloneSearchParams() {
+    const newestSearchParams: Record<string, string> = {};
+    searchParams.forEach((v, k) => {
+      newestSearchParams[k] = v;
+    });
+
+    return new URLSearchParams({ ...newestSearchParams });
   }
 };

@@ -67,6 +67,7 @@ export const OverviewList: React.FC<{
 
         function setFocus() {
           collection.setFocus(index);
+          collection.selectedActionKey = null;
         }
       })}
       {hiddenItems ? (
