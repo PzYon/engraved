@@ -4,6 +4,10 @@ import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import { TableCell, TableRow } from "@mui/material";
 import { IEntry } from "../../../serverApi/IEntry";
 import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
+import {
+  useSelectedActionKey,
+  useSelectedItemId,
+} from "../../common/actions/searchParamHooks";
 
 export const EntriesTableBodyGroup: React.FC<{
   group: IEntriesTableGroup;
@@ -12,6 +16,9 @@ export const EntriesTableBodyGroup: React.FC<{
   isGroupCollapsed: boolean;
 }> = ({ group, columns, showGroupTotals, isGroupCollapsed }) => {
   const [isCollapsed, setIsCollapsed] = useState(isGroupCollapsed);
+
+  const { getValue: getSelectedActionKey } = useSelectedActionKey();
+  const { getValue: getSelectedItemId } = useSelectedItemId();
 
   useEffect(() => setIsCollapsed(isGroupCollapsed), [isGroupCollapsed]);
 
@@ -41,25 +48,28 @@ export const EntriesTableBodyGroup: React.FC<{
             ))}
           </TableRow>
 
-          <EntrySubRoutes
-            entry={entry}
-            render={(child: React.ReactElement) => (
-              <TableRow key="routes" className="action-row">
-                <TableCell colSpan={columns.length}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "end",
-                    }}
-                  >
-                    <div style={{ maxWidth: "calc(100vw - 32px)" }}>
-                      {child}
+          {getSelectedItemId() === entry.id ? (
+            <EntrySubRoutes
+              entry={entry}
+              selectedActionKey={getSelectedActionKey()}
+              render={(child: React.ReactElement) => (
+                <TableRow key="routes" className="action-row">
+                  <TableCell colSpan={columns.length}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "end",
+                      }}
+                    >
+                      <div style={{ maxWidth: "calc(100vw - 32px)" }}>
+                        {child}
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-          />
+                  </TableCell>
+                </TableRow>
+              )}
+            />
+          ) : null}
         </React.Fragment>
       ))}
       {showGroupTotals ? (

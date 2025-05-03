@@ -12,11 +12,18 @@ import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getDurationAsHhMmSsFromSeconds } from "../../../util/getDurationAsHhMmSs";
+import {
+  useSelectedActionKey,
+  useSelectedItemId,
+} from "../../common/actions/searchParamHooks";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
   entries: IEntry[];
 }> = ({ journal, entries }) => {
+  const { getValue: getSelectedActionKey } = useSelectedActionKey();
+  const { getValue: getSelectedItemId } = useSelectedItemId();
+
   const sortedEntries = useMemo(() => getSortedEntries(entries), [entries]);
 
   if (!journal) {
@@ -61,7 +68,12 @@ export const EntriesAgenda: React.FC<{
                   ]}
                 />
               </div>
-              <EntrySubRoutes entry={entry} />
+              {getSelectedItemId() === entry.id ? (
+                <EntrySubRoutes
+                  entry={entry}
+                  selectedActionKey={getSelectedActionKey()}
+                />
+              ) : null}
             </div>
           </Paper>
           {sortedEntries.gaps[index] ? (
