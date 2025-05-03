@@ -15,10 +15,17 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
+import {
+  useSelectedActionKey,
+  useSelectedItemId,
+} from "../../common/actions/searchParamHooks";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
   const { user } = useAppContext();
+
+  const { getValue: getSelectedItemId } = useSelectedItemId();
+  const { getValue: getSelectedActionKey } = useSelectedActionKey();
 
   const [showToc, setShowToc] = useState(true);
 
@@ -40,14 +47,21 @@ export const ScrapsViewPage: React.FC = () => {
         null,
         ...getCommonJournalActions(journal, false, user),
       ]}
-      pageActionRoutes={<JournalSubRoutes journal={journal} />}
+      pageActionRoutes={
+        getSelectedItemId() === journal.id ? (
+          <JournalSubRoutes
+            selectedActionKey={getSelectedActionKey()}
+            journal={journal}
+          />
+        ) : null
+      }
     >
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
       {scraps.length ? (
         <OverviewList
           items={scraps.sort(getCompareFn(user.id))}
-          renderItem={(item, _, hasFocus, giveFocus) => (
+          renderItem={(item, _, hasFocus, giveFocus, selectedActionKey) => (
             <Scrap
               key={item.id + getScheduleForUser(item, user.id).nextOccurrence}
               journal={journal}
@@ -55,6 +69,7 @@ export const ScrapsViewPage: React.FC = () => {
               scrap={item as IScrapEntry}
               hasFocus={hasFocus}
               giveFocus={giveFocus}
+              selectedActionKey={selectedActionKey}
             />
           )}
         />

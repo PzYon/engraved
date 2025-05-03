@@ -10,7 +10,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
   giveFocus?: () => void;
-  selectedActionKey?: string;
+  selectedActionKey: string;
 }> = ({ journal, giveFocus, selectedActionKey }) => {
   console.log(
     "Rendering sub routes for journal",
