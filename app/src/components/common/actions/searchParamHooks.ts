@@ -39,12 +39,6 @@ export const useItemAction = () => {
       searchParams.delete(knownQueryParams.selectedItemId);
       setSearchParams(searchParams);
     },
-
-    openAction: (actionItemId: string, actionKey: ActionKey) => {
-      searchParams.set(knownQueryParams.actionKey, actionKey);
-      searchParams.set(knownQueryParams.selectedItemId, actionItemId);
-      setSearchParams(searchParams);
-    },
   };
 };
 
