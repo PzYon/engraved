@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { ListAlt, StarOutline } from "@mui/icons-material";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
@@ -18,6 +18,22 @@ export const JournalsPage: React.FC = () => {
   const favoritesOnly =
     searchParams.getSearchParam(favoritesOnlyParamName) === "true";
 
+  const actions = useMemo(() => {
+    return [
+      {
+        icon: <StarOutline fontSize="small" />,
+        label: "Show favorites only",
+        key: favoritesOnlyParamName,
+        onClick: () =>
+          searchParams.appendSearchParams({
+            [favoritesOnlyParamName]: String(!favoritesOnly),
+          }),
+        isNotActive: !favoritesOnly,
+      },
+      ActionFactory.newJournal(),
+    ];
+  }, [favoritesOnly]);
+
   return (
     <Page
       tabs={getPageTabs("journals")}
@@ -32,19 +48,7 @@ export const JournalsPage: React.FC = () => {
           }
         />
       }
-      actions={[
-        {
-          icon: <StarOutline fontSize="small" />,
-          label: "Show favorites only",
-          key: favoritesOnlyParamName,
-          onClick: () =>
-            searchParams.appendSearchParams({
-              [favoritesOnlyParamName]: String(!favoritesOnly),
-            }),
-          isNotActive: !favoritesOnly,
-        },
-        ActionFactory.newJournal(),
-      ]}
+      actions={actions}
       pageActionRoutes={null}
       filterMode={FilterMode.All}
     >
