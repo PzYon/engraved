@@ -32,7 +32,6 @@ export function useOverviewCollection() {
 
       // todo: do we need this!?
       if (itemId && getSelectedItemIdFromUrl() !== itemId) {
-        debugger;
         setItemId(null);
       }
     }

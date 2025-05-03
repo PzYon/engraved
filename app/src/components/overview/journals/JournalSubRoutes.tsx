@@ -12,6 +12,13 @@ export const JournalSubRoutes: React.FC<{
   giveFocus?: () => void;
   selectedActionKey?: string;
 }> = ({ journal, giveFocus, selectedActionKey }) => {
+  console.log(
+    "Rendering sub routes for journal",
+    journal.id,
+    "with key ",
+    selectedActionKey,
+  );
+
   switch (selectedActionKey) {
     case "delete":
       return (

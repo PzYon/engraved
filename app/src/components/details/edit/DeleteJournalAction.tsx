@@ -9,6 +9,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 export const DeleteJournalAction: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
+  console.log("DeleteJournalAction!!!!!!!!!!!!");
+
   const { closeAction } = useItemAction();
   const loc = useLocation();
   const navigate = useNavigate();

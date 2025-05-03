@@ -31,6 +31,8 @@ export const NavigationActionContainer: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log("NavigationActionContainer rendered");
+
   return (
     <Host ref={domElement}>
       <Inner
