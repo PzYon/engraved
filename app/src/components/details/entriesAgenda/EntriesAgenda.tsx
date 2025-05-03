@@ -12,17 +12,13 @@ import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getDurationAsHhMmSsFromSeconds } from "../../../util/getDurationAsHhMmSs";
-import {
-  useSelectedActionKey,
-  useSelectedItemId,
-} from "../../common/actions/searchParamHooks";
+import { useActionUrlParams } from "../../common/actions/searchParamHooks";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
   entries: IEntry[];
 }> = ({ journal, entries }) => {
-  const { getValue: getSelectedActionKey } = useSelectedActionKey();
-  const { getValue: getSelectedItemId } = useSelectedItemId();
+  const { actionKey, itemId } = useActionUrlParams();
 
   const sortedEntries = useMemo(() => getSortedEntries(entries), [entries]);
 
@@ -68,11 +64,8 @@ export const EntriesAgenda: React.FC<{
                   ]}
                 />
               </div>
-              {getSelectedItemId() === entry.id ? (
-                <EntrySubRoutes
-                  entry={entry}
-                  selectedActionKey={getSelectedActionKey()}
-                />
+              {itemId === entry.id ? (
+                <EntrySubRoutes entry={entry} selectedActionKey={actionKey} />
               ) : null}
             </div>
           </Paper>

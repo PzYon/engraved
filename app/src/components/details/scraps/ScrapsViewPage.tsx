@@ -15,17 +15,13 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
 import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
-import {
-  useSelectedActionKey,
-  useSelectedItemId,
-} from "../../common/actions/searchParamHooks";
+import { useActionUrlParams } from "../../common/actions/searchParamHooks";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
   const { user } = useAppContext();
 
-  const { getValue: getSelectedItemId } = useSelectedItemId();
-  const { getValue: getSelectedActionKey } = useSelectedActionKey();
+  const { actionKey, itemId } = useActionUrlParams();
 
   const [showToc, setShowToc] = useState(true);
 
@@ -48,11 +44,8 @@ export const ScrapsViewPage: React.FC = () => {
         ...getCommonJournalActions(journal, false, user),
       ]}
       pageActionRoutes={
-        getSelectedItemId() === journal.id ? (
-          <JournalSubRoutes
-            selectedActionKey={getSelectedActionKey()}
-            journal={journal}
-          />
+        itemId === journal.id ? (
+          <JournalSubRoutes selectedActionKey={actionKey} journal={journal} />
         ) : null
       }
     >

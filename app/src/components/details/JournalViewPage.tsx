@@ -23,18 +23,14 @@ import { getUiSettings } from "../../util/journalUtils";
 import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 import { EntriesAgenda } from "./entriesAgenda/EntriesAgenda";
-import {
-  useSelectedActionKey,
-  useSelectedItemId,
-} from "../common/actions/searchParamHooks";
+import { useActionUrlParams } from "../common/actions/searchParamHooks";
 
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
 
   const { user } = useAppContext();
 
-  const { getValue: getSelectedItemId } = useSelectedItemId();
-  const { getValue: getSelectedActionKey } = useSelectedActionKey();
+  const { actionKey, itemId } = useActionUrlParams();
 
   const {
     journal,
@@ -137,11 +133,8 @@ export const JournalViewPage: React.FC = () => {
       documentTitle={journal.name}
       actions={titleActions}
       pageActionRoutes={
-        getSelectedItemId() === journal.id ? (
-          <JournalSubRoutes
-            selectedActionKey={getSelectedActionKey()}
-            journal={journal}
-          />
+        itemId === journal.id ? (
+          <JournalSubRoutes selectedActionKey={actionKey} journal={journal} />
         ) : null
       }
     >

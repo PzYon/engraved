@@ -4,10 +4,7 @@ import { IEntriesTableColumnDefinition } from "./IEntriesTableColumnDefinition";
 import { TableCell, TableRow } from "@mui/material";
 import { IEntry } from "../../../serverApi/IEntry";
 import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
-import {
-  useSelectedActionKey,
-  useSelectedItemId,
-} from "../../common/actions/searchParamHooks";
+import { useActionUrlParams } from "../../common/actions/searchParamHooks";
 
 export const EntriesTableBodyGroup: React.FC<{
   group: IEntriesTableGroup;
@@ -17,8 +14,7 @@ export const EntriesTableBodyGroup: React.FC<{
 }> = ({ group, columns, showGroupTotals, isGroupCollapsed }) => {
   const [isCollapsed, setIsCollapsed] = useState(isGroupCollapsed);
 
-  const { getValue: getSelectedActionKey } = useSelectedActionKey();
-  const { getValue: getSelectedItemId } = useSelectedItemId();
+  const { actionKey, itemId } = useActionUrlParams();
 
   useEffect(() => setIsCollapsed(isGroupCollapsed), [isGroupCollapsed]);
 
@@ -48,10 +44,10 @@ export const EntriesTableBodyGroup: React.FC<{
             ))}
           </TableRow>
 
-          {getSelectedItemId() === entry.id ? (
+          {itemId === entry.id ? (
             <EntrySubRoutes
               entry={entry}
-              selectedActionKey={getSelectedActionKey()}
+              selectedActionKey={actionKey}
               render={(child: React.ReactElement) => (
                 <TableRow key="routes" className="action-row">
                   <TableCell colSpan={columns.length}>

@@ -3,23 +3,20 @@ import { useMemo, useState } from "react";
 import { OverviewItem } from "./OverviewItem";
 import {
   knownQueryParams,
-  useSelectedActionKey,
-  useSelectedItemId,
+  useActionUrlParams,
 } from "../../../common/actions/searchParamHooks";
 import { useEngravedHotkeys } from "../../../common/actions/useEngravedHotkeys";
 
 export function useOverviewCollection() {
   const [focusIndex, setFocusIndex] = useState(-1);
 
-  const { setValue: setItemId, getValue: getItemId } = useSelectedItemId();
-
-  const { getValue: getActionKey } = useSelectedActionKey();
+  const { actionKey, itemId, setItemId } = useActionUrlParams();
 
   const collection = useMemo(() => {
     return new OverviewItemCollection(
       focusIndex,
-      getItemId(),
-      getActionKey(),
+      itemId,
+      actionKey,
       onIndexChange,
     );
 
@@ -47,17 +44,13 @@ export function useOverviewCollection() {
     collection.moveFocusDown();
   });
 
-  const itemId = getItemId();
   if (itemId) {
     collection.setFocusForId(itemId);
   }
 
-  const actionKey = getActionKey();
   if (actionKey) {
     collection.selectedActionKey = actionKey;
   }
-
-  console.log(collection.currentIndex);
 
   return {
     collection,
@@ -66,7 +59,7 @@ export function useOverviewCollection() {
 
   function getSelectedItemIdFromUrl() {
     return new URLSearchParams(location.search).get(
-      knownQueryParams.selectedItemIdParam,
+      knownQueryParams.selectedItemId,
     );
   }
 }
