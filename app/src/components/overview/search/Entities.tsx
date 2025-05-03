@@ -52,8 +52,9 @@ export const Entities: React.FC<{
             <JournalListItem
               key={item.id}
               index={index}
-              hasFocus={hasFocus}
               journal={item as IJournal}
+              hasFocus={hasFocus}
+              giveFocus={giveFocus}
               selectedActionKey={selectedActionKey}
             />
           );
