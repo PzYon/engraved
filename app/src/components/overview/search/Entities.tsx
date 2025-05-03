@@ -67,6 +67,7 @@ export const Entities: React.FC<{
             giveFocus={giveFocus}
             entry={item as IEntry}
             journals={queryResult.journals}
+            selectedActionKey={selectedActionKey}
           />
         );
       }}

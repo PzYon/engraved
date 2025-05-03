@@ -33,6 +33,7 @@ export const ScrapBody: React.FC<{
     hasFocus,
     giveFocus,
     parsedDate,
+    selectedActionKey,
   } = useScrapContext();
 
   const { isCompact } = useDisplayModeContext();
@@ -41,6 +42,7 @@ export const ScrapBody: React.FC<{
     <>
       <Entry
         hasFocus={hasFocus}
+        selectedActionKey={selectedActionKey}
         journal={journal}
         entry={scrapToRender}
         actions={getActions()}

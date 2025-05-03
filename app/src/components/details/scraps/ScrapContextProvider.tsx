@@ -38,6 +38,7 @@ export const ScrapContextProvider: React.FC<{
   giveFocus?: () => void;
   isQuickAdd?: boolean;
   changeTypeWithoutConfirmation?: boolean;
+  selectedActionKey: string;
 }> = ({
   children,
   initialScrap,
@@ -50,6 +51,7 @@ export const ScrapContextProvider: React.FC<{
   giveFocus,
   isQuickAdd,
   changeTypeWithoutConfirmation,
+  selectedActionKey,
 }) => {
   const { setAppAlert } = useAppContext();
   const { renderDialog } = useDialogContext();
@@ -232,6 +234,7 @@ export const ScrapContextProvider: React.FC<{
         isEditMode,
         setIsEditMode,
         isDirty,
+        selectedActionKey,
         cancelEditingAction: !isEditMode
           ? null
           : ActionFactory.cancelEditing(

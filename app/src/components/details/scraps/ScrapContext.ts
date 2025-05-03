@@ -29,6 +29,7 @@ export interface IScrapContext {
   hasTitleFocus: boolean;
   setHasTitleFocus: (value: boolean) => void;
   changeScrapType: (rows: string[], targetType: ScrapType) => void;
+  selectedActionKey: string;
 }
 
 export const ScrapContext = createContext<IScrapContext>({
@@ -53,6 +54,7 @@ export const ScrapContext = createContext<IScrapContext>({
   hasTitleFocus: null,
   setHasTitleFocus: null,
   changeScrapType: null,
+  selectedActionKey: null,
 });
 
 export const useScrapContext = () => {

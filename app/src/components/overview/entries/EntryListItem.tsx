@@ -11,7 +11,7 @@ export const EntryListItem: React.FC<{
   giveFocus?: () => void;
   selectedItemId?: string;
   selectedActionKey?: string;
-}> = ({ entry, journals, hasFocus, index, giveFocus }) => {
+}> = ({ entry, journals, hasFocus, index, giveFocus, selectedActionKey }) => {
   return <div data-testid={`entries-list-item-${index}`}>{renderEntry()}</div>;
 
   function renderEntry() {
@@ -26,6 +26,7 @@ export const EntryListItem: React.FC<{
       entry,
       hasFocus,
       giveFocus,
+      selectedActionKey,
     );
   }
 };

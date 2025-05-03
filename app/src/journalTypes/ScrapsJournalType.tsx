@@ -23,6 +23,7 @@ export class ScrapsJournalType implements IJournalType {
     entry: IEntry,
     hasFocus?: boolean,
     giveFocus?: () => void,
+    selectedActionKey?: string,
   ): React.ReactNode {
     return (
       <Scrap
@@ -31,6 +32,7 @@ export class ScrapsJournalType implements IJournalType {
         scrap={entry as IScrapEntry}
         journal={journal}
         propsRenderStyle={"all"}
+        selectedActionKey={selectedActionKey}
       />
     );
   }
