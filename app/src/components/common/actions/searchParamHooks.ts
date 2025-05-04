@@ -71,12 +71,6 @@ export const useEngravedSearchParams = () => {
   return {
     getSearchParam: (key: string) => searchParams.get(key),
 
-    getAppendedSearchParams: (params: Record<string, string>): string => {
-      return !params || !Object.keys(params).length
-        ? undefined
-        : getNewSearchParams(params).toString();
-    },
-
     appendSearchParams: (params: Record<string, string>) => {
       const newSearchParams = getNewSearchParams(params);
 

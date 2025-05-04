@@ -1,7 +1,6 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
-import { useEngravedSearchParams } from "./searchParamHooks";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
 
 export const ActionLink: React.FC<{
@@ -9,8 +8,6 @@ export const ActionLink: React.FC<{
   children?: React.ReactElement;
   style?: CSSProperties;
 }> = ({ action, style, children }) => {
-  const { getAppendedSearchParams } = useEngravedSearchParams();
-
   const isAbsoluteUrl = action.href?.startsWith("http");
 
   const navigate = useNavigate();
@@ -39,10 +36,7 @@ export const ActionLink: React.FC<{
   if (isAbsoluteUrl) {
     return (
       <a
-        href={new URL(
-          new URLSearchParams(action.search).toString(),
-          action.href,
-        ).toString()}
+        href={new URL(getUrlSearchParams(), action.href).toString()}
         style={style}
         target="_blank"
         rel="noopener noreferrer"
@@ -57,7 +51,7 @@ export const ActionLink: React.FC<{
     <Link
       to={{
         pathname: action.href,
-        search: getAppendedSearchParams(action.search),
+        search: getUrlSearchParams(),
       }}
       onClick={(e) => e.stopPropagation()}
       style={style}
@@ -69,5 +63,9 @@ export const ActionLink: React.FC<{
 
   function getChildren() {
     return children ?? action.icon;
+  }
+
+  function getUrlSearchParams() {
+    return new URLSearchParams(action.search).toString();
   }
 };
