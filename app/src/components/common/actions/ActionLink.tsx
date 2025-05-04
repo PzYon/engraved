@@ -33,10 +33,6 @@ export const ActionLink: React.FC<{
     return <span style={style}>{getChildren()}</span>;
   }
 
-  function getUrlSearchParams() {
-    return new URLSearchParams(action.search).toString();
-  }
-
   if (isAbsoluteUrl) {
     return (
       <a
@@ -67,5 +63,9 @@ export const ActionLink: React.FC<{
 
   function getChildren() {
     return children ?? action.icon;
+  }
+
+  function getUrlSearchParams() {
+    return new URLSearchParams(action.search).toString();
   }
 };
