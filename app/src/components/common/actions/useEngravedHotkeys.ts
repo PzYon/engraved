@@ -1,18 +1,22 @@
+import { DependencyList } from "react";
 import { HotkeyCallback, useHotkeys } from "react-hotkeys-hook";
-import {
-  HotkeysEvent,
-  OptionsOrDependencyArray,
-} from "react-hotkeys-hook/dist/types";
 
 export function useEngravedHotkeys(
   hotkey: string,
   callback: HotkeyCallback,
-  options?: OptionsOrDependencyArray,
-  dependencies?: OptionsOrDependencyArray,
+  options?: unknown | DependencyList,
+  dependencies?: unknown | DependencyList,
 ) {
   useHotkeys(
     hotkey,
-    (keyboardEvent: KeyboardEvent, hotkeysEvent: HotkeysEvent) => {
+    (
+      keyboardEvent: KeyboardEvent,
+      hotkeysEvent: {
+        keys?: readonly string[];
+        scopes?: string | readonly string[];
+        description?: string;
+      },
+    ) => {
       keyboardEvent.preventDefault();
 
       callback(keyboardEvent, hotkeysEvent);
