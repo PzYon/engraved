@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "@playwright/test": "1.52.0",
-    "@types/node": "22.15.11",
+    "@types/node": "22.15.14",
     "@typescript-eslint/eslint-plugin": "8.32.0",
     "@typescript-eslint/parser": "8.32.0",
     "eslint": "9.26.0",
