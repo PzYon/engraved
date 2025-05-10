@@ -28,6 +28,7 @@ import { TagsPage } from "./components/overview/tags/TagsPage";
 import { TagPage } from "./components/overview/tags/TagPage";
 import { GoToPage } from "./components/overview/goto/GoToPage";
 import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
+import { FunkyList } from "./components/common/funkyList/FunkyList";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       </ActionContextProvider>
     ),
     children: [
+      {
+        path: "list",
+        element: <FunkyList />,
+      },
       {
         path: "journals/create",
         element: <AddJournalPage />,
