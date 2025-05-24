@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
-import { useOverviewCollection } from "./wrappers/useOverviewCollection";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
-import { getScheduleForUser } from "../scheduled/scheduleUtils";
-import { useAppContext } from "../../../AppContext";
-import { OverviewItemCollection } from "./wrappers/OverviewItemCollection";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
-  renderBeforeList?: (collection: OverviewItemCollection) => React.ReactNode;
+  renderBeforeList?: () => React.ReactNode;
   renderItem: (
     item: IEntity,
     index: number,
@@ -17,10 +13,9 @@ export const OverviewList: React.FC<{
     giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
-}> = ({ items, renderBeforeList, renderItem, filterItem }) => {
-  const { user } = useAppContext();
+}> = ({ items, renderItem, filterItem }) => {
+  // const { user } = useAppContext();
 
-  const { collection, addItem } = useOverviewCollection();
   const [showAll, setShowAll] = useState(false);
 
   const filteredItems = items.filter(
@@ -29,30 +24,28 @@ export const OverviewList: React.FC<{
 
   const hiddenItems = items.length - filteredItems.length;
 
+  const [activeItemId, setActiveItemId] = useState<string>(undefined);
+
   return (
     <Host>
-      {renderBeforeList?.(collection)}
       {filteredItems.map((item, index) => {
-        const hasFocus = index === collection.currentIndex;
-
+        const hasFocus = activeItemId === item.id;
         return (
           <OverviewListItem
-            index={index}
+            tabIndex={1000 + index}
             key={
-              item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
+              item.id + "-" //+ getScheduleForUser(item, user.id)?.nextOccurrence
             }
-            onClick={setFocus}
-            addWrapperItem={addItem}
             item={item}
             hasFocus={hasFocus}
+            onFocus={() => {
+              console.log("on focus", item.id);
+              setActiveItemId(item.id);
+            }}
           >
-            {renderItem(item, index, hasFocus, setFocus)}
+            {renderItem(item, index, hasFocus, () => alert("focus"))}
           </OverviewListItem>
         );
-
-        function setFocus() {
-          collection.setFocus(index);
-        }
       })}
       {hiddenItems ? (
         <Typography

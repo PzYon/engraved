@@ -2,7 +2,6 @@ import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
 import { PageSection } from "../../layout/pages/PageSection";
 import { OverviewList } from "../overviewList/OverviewList";
-import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
 import { GoToTextField } from "./GoToTextField";
 import { GoToItemRow } from "./GoToItemRow";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
@@ -33,9 +32,8 @@ export const GoTo: React.FC = () => {
     <PageSection>
       <OverviewList
         items={goto.items}
-        renderBeforeList={(collection: OverviewItemCollection) => (
+        renderBeforeList={() => (
           <GoToTextField
-            collection={collection}
             value={searchText}
             onChange={(value) => {
               appendSearchParams({ q: value });

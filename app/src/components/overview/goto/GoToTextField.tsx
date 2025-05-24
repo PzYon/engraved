@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
+import { useRef, useState } from "react";
 import { TextField } from "@mui/material";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 
 export const GoToTextField: React.FC<{
-  collection: OverviewItemCollection;
   value: string;
   onChange: (text: string) => void;
-}> = ({ collection, value, onChange }) => {
+}> = ({ value, onChange }) => {
   const textFieldRef = useRef<HTMLInputElement>(undefined);
 
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
@@ -16,17 +14,13 @@ export const GoToTextField: React.FC<{
     "down",
     (e: KeyboardEvent) => {
       e.preventDefault();
-      collection.setFocus(0);
+      //collection.setFocus(0);
     },
     {
       enabled: textFieldHasFocus,
       enableOnFormTags: ["input"],
     },
   );
-
-  useEffect(() => {
-    return collection.setOnType(() => textFieldRef.current.focus());
-  }, [collection]);
 
   return (
     <TextField
