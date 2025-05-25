@@ -19,7 +19,7 @@ function giveFocusToElement(id: string) {
   document.getElementById("funky-list-" + id).focus();
 }
 
-export const FunkyList: React.FC = () => {
+export const NativeList: React.FC = () => {
   const [activeItemId, setActiveItemId] = useState<string>(undefined);
 
   useEffect(() => {
@@ -28,6 +28,7 @@ export const FunkyList: React.FC = () => {
 
   return (
     <div>
+      <h2>Native List</h2>
       {items.map((item, index) => {
         const isFirst = index === 0;
         const isLast = index === items.length - 1;
