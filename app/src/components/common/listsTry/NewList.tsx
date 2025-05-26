@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled } from "@mui/material";
 import { useEngravedHotkeys } from "../actions/useEngravedHotkeys";
+import { useSearchParams } from "react-router-dom";
 
 interface IItem {
   id: string;
@@ -38,6 +39,17 @@ function getItem(
 export const NewList: React.FC = () => {
   const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
 
+  const [searchParams] = useSearchParams();
+
+  const activeItemIdFromUrl = searchParams.get("id");
+  const activeItemActionFromUrl = searchParams.get("action");
+
+  useEffect(() => {
+    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
+      setActiveItemId(activeItemIdFromUrl);
+    }
+  }, [activeItemIdFromUrl, activeItemId]);
+
   useEngravedHotkeys("up", () => {
     setActiveItemId(getItem(items, activeItemId, "up").id);
   });
@@ -56,6 +68,7 @@ export const NewList: React.FC = () => {
             key={item.id}
             item={item}
             isActive={activeItemId === item.id}
+            activeItemAction={activeItemActionFromUrl}
           />
         );
       })}
@@ -67,11 +80,12 @@ export const NewListItem: React.FC<{
   item: IItem;
   isActive: boolean;
   onClick: () => void;
-}> = ({ item, isActive, onClick }) => {
+  activeItemAction?: string;
+}> = ({ item, isActive, onClick, activeItemAction }) => {
   return (
     <ItemContainer key={item.id} isActive={isActive} onClick={onClick}>
       {item.label}
-      {isActive ? <div>Routes go here...</div> : null}
+      {isActive ? <div>Active route: {activeItemAction ?? "none"}</div> : null}
     </ItemContainer>
   );
 };
