@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { styled } from "@mui/material";
 import { useEngravedHotkeys } from "../actions/useEngravedHotkeys";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 interface IItem {
   id: string;
@@ -85,6 +85,8 @@ export const NewListItem: React.FC<{
   return (
     <ItemContainer key={item.id} isActive={isActive} onClick={onClick}>
       {item.label}
+      <Link to={"?id=" + item.id + "&action=open"}>Open</Link>
+      <Link to={"?id=" + item.id + "&action=close"}>Close</Link>
       {isActive ? <div>Active route: {activeItemAction ?? "none"}</div> : null}
     </ItemContainer>
   );
