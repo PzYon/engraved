@@ -32,12 +32,13 @@ export const GoTo: React.FC = () => {
     <PageSection>
       <OverviewList
         items={goto.items}
-        renderBeforeList={() => (
+        renderBeforeList={(selectItem) => (
           <GoToTextField
             value={searchText}
             onChange={(value) => {
               appendSearchParams({ q: value });
             }}
+            onDownKey={() => selectItem(0)}
           />
         )}
         renderItem={(entity: IEntity, _: number, hasFocus: boolean) => {

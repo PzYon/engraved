@@ -5,7 +5,8 @@ import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 export const GoToTextField: React.FC<{
   value: string;
   onChange: (text: string) => void;
-}> = ({ value, onChange }) => {
+  onDownKey: () => void;
+}> = ({ value, onChange, onDownKey }) => {
   const textFieldRef = useRef<HTMLInputElement>(undefined);
 
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
@@ -14,7 +15,8 @@ export const GoToTextField: React.FC<{
     "down",
     (e: KeyboardEvent) => {
       e.preventDefault();
-      //collection.setFocus(0);
+      console.log("Should set focus to first list item element");
+      onDownKey?.();
     },
     {
       enabled: textFieldHasFocus,
