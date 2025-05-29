@@ -10,8 +10,7 @@ export const OverviewListItem: React.FC<{
   item: IEntity;
   tabIndex: number;
   hasFocus: boolean;
-  onFocus: () => void;
-}> = ({ children, item, tabIndex, hasFocus, onFocus }) => {
+}> = ({ children, item, tabIndex, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
@@ -42,7 +41,6 @@ export const OverviewListItem: React.FC<{
       tabIndex={tabIndex}
       id={item.id}
       data-testid={item.id}
-      onFocus={onFocus}
     >
       <PageSection
         style={

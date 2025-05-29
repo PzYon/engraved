@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
@@ -35,11 +35,11 @@ export const OverviewList: React.FC<{
 
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
 
-  useEffect(() => {
-    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
-      setActiveItemId(activeItemIdFromUrl);
-    }
-  }, [activeItemIdFromUrl, activeItemId]);
+  // useEffect(() => {
+  if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
+    setActiveItemId(activeItemIdFromUrl);
+  }
+  // }, [activeItemIdFromUrl, activeItemId]);
 
   useEngravedHotkeys("up", () => {
     setActiveItemId(getItem(items, activeItemId, "up").id);
@@ -52,6 +52,7 @@ export const OverviewList: React.FC<{
   return (
     <Host>
       {renderBeforeList?.((i) => setActiveItemId(items[i].id))}
+
       {filteredItems.map((item, index) => {
         const hasFocus = activeItemId === item.id;
 
@@ -67,16 +68,14 @@ export const OverviewList: React.FC<{
             }
             item={item}
             hasFocus={hasFocus}
-            onFocus={() => {
-              console.log("on focus", item.id);
+          >
+            {renderItem(item, index, hasFocus, () => {
               if (item.id !== activeItemId) {
+                console.log("FOOO");
+
                 setActiveItemId(item.id);
               }
-            }}
-          >
-            {renderItem(item, index, hasFocus, () =>
-              console.log("focus - what was here? do we need this?"),
-            )}
+            })}
           </OverviewListItem>
         );
       })}
