@@ -54,6 +54,11 @@ export const OverviewList: React.FC<{
       {renderBeforeList?.((i) => setActiveItemId(items[i].id))}
       {filteredItems.map((item, index) => {
         const hasFocus = activeItemId === item.id;
+
+        if (hasFocus) {
+          console.log("rendering active item", activeItemId);
+        }
+
         return (
           <OverviewListItem
             tabIndex={1000 + index}
@@ -64,7 +69,9 @@ export const OverviewList: React.FC<{
             hasFocus={hasFocus}
             onFocus={() => {
               console.log("on focus", item.id);
-              setActiveItemId(item.id);
+              if (item.id !== activeItemId) {
+                setActiveItemId(item.id);
+              }
             }}
           >
             {renderItem(item, index, hasFocus, () =>
