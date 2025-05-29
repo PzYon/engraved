@@ -11,8 +11,7 @@ import { NavigationActionContainer } from "../actions/NavigationActionContainer"
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
   render?: (child: React.ReactElement) => React.ReactElement;
-  giveFocus?: () => void;
-}> = ({ entry, render, giveFocus }) => {
+}> = ({ entry, render }) => {
   const { getParams } = useItemAction();
   const action = getParams();
 
@@ -26,28 +25,28 @@ export const EntrySubRoutes: React.FC<{
     switch (action[knownQueryParams.actionKey]) {
       case "delete":
         return (
-          <NavigationActionContainer giveFocus={giveFocus}>
+          <NavigationActionContainer>
             <DeleteEntryAction entry={entry} />
           </NavigationActionContainer>
         );
 
       case "schedule":
         return (
-          <NavigationActionContainer giveFocus={giveFocus}>
+          <NavigationActionContainer>
             <EditScheduleAction entry={entry} />
           </NavigationActionContainer>
         );
 
       case "move":
         return (
-          <NavigationActionContainer giveFocus={giveFocus}>
+          <NavigationActionContainer>
             <MoveScrapAction entry={entry as IScrapEntry} />
           </NavigationActionContainer>
         );
 
       case "edit":
         return (
-          <NavigationActionContainer giveFocus={giveFocus}>
+          <NavigationActionContainer>
             <UpsertEntryAction entry={entry} />
           </NavigationActionContainer>
         );

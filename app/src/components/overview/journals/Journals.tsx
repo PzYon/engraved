@@ -29,13 +29,12 @@ export const Journals: React.FC<{
   return (
     <OverviewList
       items={journals}
-      renderItem={(journal, index, hasFocus, giveFocus) => (
+      renderItem={(journal, index, hasFocus) => (
         <JournalListItem
           key={journal.id}
           index={index}
           journal={journal as IJournal}
           hasFocus={hasFocus}
-          giveFocus={giveFocus}
         />
       )}
     />

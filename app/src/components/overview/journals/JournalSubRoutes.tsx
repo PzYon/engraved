@@ -13,8 +13,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
-  giveFocus?: () => void;
-}> = ({ journal, giveFocus }) => {
+}> = ({ journal }) => {
   const { getParams } = useItemAction();
 
   if (getParams()[knownQueryParams.selectedItemId] !== journal.id) {
@@ -24,21 +23,21 @@ export const JournalSubRoutes: React.FC<{
   switch (getParams()[knownQueryParams.actionKey]) {
     case "delete":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer>
           <DeleteJournalAction journal={journal} />
         </NavigationActionContainer>
       );
 
     case "permissions":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer>
           <EditJournalPermissionsAction journal={journal} />
         </NavigationActionContainer>
       );
 
     case "schedule":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer>
           <EditScheduleAction journal={journal} />
         </NavigationActionContainer>
       );
@@ -47,7 +46,6 @@ export const JournalSubRoutes: React.FC<{
       return (
         <NavigationActionContainer
           growWidthIfPossible={journal.type === JournalType.Scraps}
-          giveFocus={giveFocus}
         >
           <UpsertEntryAction journal={journal} />
         </NavigationActionContainer>

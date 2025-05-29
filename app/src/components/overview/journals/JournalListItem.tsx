@@ -15,8 +15,7 @@ export const JournalListItem: React.FC<{
   journal: IJournal;
   index: number;
   hasFocus?: boolean;
-  giveFocus?: () => void;
-}> = ({ journal, index, hasFocus, giveFocus }) => {
+}> = ({ journal, index, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { user } = useAppContext();
@@ -48,7 +47,7 @@ export const JournalListItem: React.FC<{
             properties={journalProperties}
             actions={getCommonJournalActions(journal, hasFocus, user)}
           />
-          <JournalSubRoutes journal={journal} giveFocus={giveFocus} />
+          <JournalSubRoutes journal={journal} />
         </Box>
       </Box>
     </div>

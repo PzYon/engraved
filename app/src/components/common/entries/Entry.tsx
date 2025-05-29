@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { Link } from "react-router-dom";
 import { getScheduleProperty } from "../../overview/scheduled/scheduleUtils";
@@ -11,7 +11,6 @@ import { EntrySubRoutes } from "./EntrySubRoutes";
 import { IPropertyDefinition } from "../IPropertyDefinition";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalIcon } from "../../overview/journals/JournalIcon";
-import { useSelectedItemId } from "../actions/searchParamHooks";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -32,19 +31,17 @@ export const Entry: React.FC<{
   actions,
   propsRenderStyle,
   hasFocus,
-  giveFocus,
   propertyOverrides,
   noCompactFooter,
 }) => {
   const { user } = useAppContext();
 
-  const isActive = useSelectedItemId().getValue() === entry.id;
-
-  useEffect(() => {
-    if (isActive) {
-      giveFocus?.();
-    }
-  }, [isActive, giveFocus]);
+  // const isActive = useSelectedItemId().getValue() === entry.id;
+  // useEffect(() => {
+  //   if (isActive) {
+  //     giveFocus?.();
+  //   }
+  // }, [isActive, giveFocus]);
 
   return (
     <>
@@ -61,7 +58,7 @@ export const Entry: React.FC<{
         actions={actions}
         noCompactFooter={noCompactFooter}
       />
-      <EntrySubRoutes entry={entry} giveFocus={giveFocus} />
+      <EntrySubRoutes entry={entry} />
     </>
   );
 };
