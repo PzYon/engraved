@@ -22,12 +22,10 @@ export class ScrapsJournalType implements IJournalType {
     journal: IJournal,
     entry: IEntry,
     hasFocus?: boolean,
-    giveFocus?: () => void,
   ): React.ReactNode {
     return (
       <Scrap
         hasFocus={hasFocus}
-        giveFocus={giveFocus}
         scrap={entry as IScrapEntry}
         journal={journal}
         propsRenderStyle={"all"}
