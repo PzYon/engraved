@@ -16,7 +16,7 @@ export const EntrySubRoutes: React.FC<{
   const { getParams } = useItemAction();
   const action = getParams();
 
-  if (action[knownQueryParams.selectedItemIdParam] !== entry.id) {
+  if (action[knownQueryParams.selectedItemId] !== entry.id) {
     return null;
   }
 

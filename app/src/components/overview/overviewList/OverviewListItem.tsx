@@ -17,6 +17,10 @@ export const OverviewListItem: React.FC<{
   const { isCompact } = useDisplayModeContext();
 
   useEffect(() => {
+    if (hasFocus) {
+      domElementRef.current?.focus();
+    }
+
     const timer = setTimeout(() => {
       if (!hasFocus) {
         return;

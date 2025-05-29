@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
+import { getScheduleForUser } from "../scheduled/scheduleUtils";
+import { useAppContext } from "../../../AppContext";
+import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { useSearchParams } from "react-router-dom";
+import { knownQueryParams } from "../../common/actions/searchParamHooks";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
-  renderBeforeList?: () => React.ReactNode;
+  renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
   renderItem: (
     item: IEntity,
     index: number,
@@ -13,8 +18,8 @@ export const OverviewList: React.FC<{
     giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
-}> = ({ items, renderItem, filterItem }) => {
-  // const { user } = useAppContext();
+}> = ({ items, renderBeforeList, renderItem, filterItem }) => {
+  const { user } = useAppContext();
 
   const [showAll, setShowAll] = useState(false);
 
@@ -24,17 +29,55 @@ export const OverviewList: React.FC<{
 
   const hiddenItems = items.length - filteredItems.length;
 
-  const [activeItemId, setActiveItemId] = useState<string>(undefined);
+  const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
+
+  const [searchParams] = useSearchParams();
+
+  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
+  // todo: conitnue here!
+  //const activeItemActionFromUrl = searchParams.get(knownQueryParams.actionKey);
+
+  useEffect(() => {
+    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
+      setActiveItemId(activeItemIdFromUrl);
+    }
+  }, [activeItemIdFromUrl, activeItemId]);
+
+  useEngravedHotkeys("up", () => {
+    setActiveItemId(getItem(items, activeItemId, "up").id);
+  });
+
+  useEngravedHotkeys("down", () => {
+    setActiveItemId(getItem(items, activeItemId, "down").id);
+  });
+
+  /*  return (
+      <div>
+        <h2>New List</h2>
+        {items.map((item) => {
+          return (
+            <NewListItem
+              onClick={() => setActiveItemId(item.id)}
+              key={item.id}
+              item={item}
+              isActive={activeItemId === item.id}
+              activeItemAction={activeItemActionFromUrl}
+            />
+          );
+        })}
+      </div>
+    );*/
 
   return (
     <Host>
+      {renderBeforeList?.((i) => setActiveItemId(items[i].id))}
       {filteredItems.map((item, index) => {
         const hasFocus = activeItemId === item.id;
         return (
           <OverviewListItem
             tabIndex={1000 + index}
             key={
-              item.id + "-" //+ getScheduleForUser(item, user.id)?.nextOccurrence
+              item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
             item={item}
             hasFocus={hasFocus}
@@ -43,7 +86,9 @@ export const OverviewList: React.FC<{
               setActiveItemId(item.id);
             }}
           >
-            {renderItem(item, index, hasFocus, () => alert("focus"))}
+            {renderItem(item, index, hasFocus, () =>
+              console.log("focus - what was here? do we need this?"),
+            )}
           </OverviewListItem>
         );
       })}
@@ -63,6 +108,19 @@ export const OverviewList: React.FC<{
     </Host>
   );
 };
+
+function getItem(
+  items: IEntity[],
+  activeItemId: string,
+  direction: "up" | "down",
+): IEntity {
+  const activeIndex = items.findIndex((item) => item.id === activeItemId);
+  if (direction === "up") {
+    return items[activeIndex > 0 ? activeIndex - 1 : items.length - 1];
+  } else {
+    return items[activeIndex < items.length - 1 ? activeIndex + 1 : 0];
+  }
+}
 
 const Host = styled("div")`
   // margin-top and -bottom needs to match with margin of

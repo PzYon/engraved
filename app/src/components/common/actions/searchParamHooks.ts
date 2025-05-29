@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
 export const knownQueryParams = {
-  selectedItemIdParam: "selected-item",
+  selectedItemId: "selected-item",
   actionKey: "action-key",
 };
 
@@ -19,7 +19,7 @@ export function getItemActionQueryParams(
 ) {
   return {
     [knownQueryParams.actionKey]: actionKey,
-    [knownQueryParams.selectedItemIdParam]: actionItemId,
+    [knownQueryParams.selectedItemId]: actionItemId,
   };
 }
 
@@ -30,26 +30,26 @@ export const useItemAction = () => {
     getParams: () => {
       return getItemActionQueryParams(
         searchParams.get(knownQueryParams.actionKey) as ActionKey,
-        searchParams.get(knownQueryParams.selectedItemIdParam),
+        searchParams.get(knownQueryParams.selectedItemId),
       );
     },
 
     closeAction: () => {
       searchParams.delete(knownQueryParams.actionKey);
-      searchParams.delete(knownQueryParams.selectedItemIdParam);
+      searchParams.delete(knownQueryParams.selectedItemId);
       setSearchParams(searchParams);
     },
 
     openAction: (actionItemId: string, actionKey: ActionKey) => {
       searchParams.set(knownQueryParams.actionKey, actionKey);
-      searchParams.set(knownQueryParams.selectedItemIdParam, actionItemId);
+      searchParams.set(knownQueryParams.selectedItemId, actionItemId);
       setSearchParams(searchParams);
     },
   };
 };
 
 export const useSelectedItemId = () => {
-  return useEngravedSearchParam(knownQueryParams.selectedItemIdParam);
+  return useEngravedSearchParam(knownQueryParams.selectedItemId);
 };
 
 export const useEngravedSearchParam = (key: string) => {
