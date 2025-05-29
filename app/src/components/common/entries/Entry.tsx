@@ -21,7 +21,6 @@ export const Entry: React.FC<{
   actions: IAction[];
   propsRenderStyle: EntryPropsRenderStyle;
   hasFocus: boolean;
-  giveFocus?: () => void;
   propertyOverrides?: IPropertyDefinition[];
   noCompactFooter?: boolean;
 }> = ({
