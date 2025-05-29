@@ -34,8 +34,6 @@ export const OverviewList: React.FC<{
   const [searchParams] = useSearchParams();
 
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
-  // todo: conitnue here!
-  //const activeItemActionFromUrl = searchParams.get(knownQueryParams.actionKey);
 
   useEffect(() => {
     if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
@@ -50,23 +48,6 @@ export const OverviewList: React.FC<{
   useEngravedHotkeys("down", () => {
     setActiveItemId(getItem(items, activeItemId, "down").id);
   });
-
-  /*  return (
-      <div>
-        <h2>New List</h2>
-        {items.map((item) => {
-          return (
-            <NewListItem
-              onClick={() => setActiveItemId(item.id)}
-              key={item.id}
-              item={item}
-              isActive={activeItemId === item.id}
-              activeItemAction={activeItemActionFromUrl}
-            />
-          );
-        })}
-      </div>
-    );*/
 
   return (
     <Host>
