@@ -5,7 +5,7 @@ import {
 } from "react-hotkeys-hook/dist/types";
 
 export function useEngravedHotkeys(
-  hotkey: string,
+  hotkey: string | string[],
   callback: HotkeyCallback,
   options?: OptionsOrDependencyArray,
   dependencies?: OptionsOrDependencyArray,
