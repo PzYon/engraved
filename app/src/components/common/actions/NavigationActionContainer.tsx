@@ -10,15 +10,12 @@ export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
   shrinkWidthIfPossible?: boolean;
   growWidthIfPossible?: boolean;
-  giveFocus?: () => void;
-}> = ({ children, growWidthIfPossible, shrinkWidthIfPossible, giveFocus }) => {
+}> = ({ children, growWidthIfPossible, shrinkWidthIfPossible }) => {
   const domElement = useRef<HTMLDivElement>(undefined);
 
   const { closeAction } = useItemAction();
 
   useEffect(() => {
-    giveFocus?.();
-
     const timer = window.setTimeout(() => {
       domElement.current?.scrollIntoView({
         block: "nearest",
@@ -28,7 +25,7 @@ export const NavigationActionContainer: React.FC<{
     }, 500);
 
     return () => window.clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   return (
