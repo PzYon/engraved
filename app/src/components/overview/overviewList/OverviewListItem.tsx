@@ -8,8 +8,9 @@ import { useDisplayModeContext } from "./DisplayModeContext";
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
   item: IEntity;
+  tabIndex: number;
   hasFocus: boolean;
-}> = ({ children, item, hasFocus }) => {
+}> = ({ children, item, tabIndex, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
@@ -35,7 +36,12 @@ export const OverviewListItem: React.FC<{
   }, [hasFocus]);
 
   return (
-    <Host ref={domElementRef} id={item.id} data-testid={item.id}>
+    <Host
+      ref={domElementRef}
+      tabIndex={tabIndex}
+      id={item.id}
+      data-testid={item.id}
+    >
       <PageSection
         style={
           isCompact

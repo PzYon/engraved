@@ -15,6 +15,7 @@ export const OverviewList: React.FC<{
     item: IEntity,
     index: number,
     hasFocus: boolean,
+    giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
 }> = ({ items, renderBeforeList, renderItem, filterItem }) => {
@@ -61,13 +62,20 @@ export const OverviewList: React.FC<{
 
         return (
           <OverviewListItem
+            tabIndex={1000 + index}
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
             item={item}
             hasFocus={hasFocus}
           >
-            {renderItem(item, index, hasFocus)}
+            {renderItem(item, index, hasFocus, () => {
+              if (item.id !== activeItemId) {
+                console.log("FOOO");
+
+                setActiveItemId(item.id);
+              }
+            })}
           </OverviewListItem>
         );
       })}
