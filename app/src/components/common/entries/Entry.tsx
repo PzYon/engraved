@@ -35,6 +35,13 @@ export const Entry: React.FC<{
 }) => {
   const { user } = useAppContext();
 
+  // const isActive = useSelectedItemId().getValue() === entry.id;
+  // useEffect(() => {
+  //   if (isActive) {
+  //     giveFocus?.();
+  //   }
+  // }, [isActive, giveFocus]);
+
   return (
     <>
       {children}
@@ -50,7 +57,7 @@ export const Entry: React.FC<{
         actions={actions}
         noCompactFooter={noCompactFooter}
       />
-      {hasFocus ? <EntrySubRoutes entry={entry} /> : null}
+      <EntrySubRoutes entry={entry} />
     </>
   );
 };

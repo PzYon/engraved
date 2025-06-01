@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
@@ -34,11 +34,11 @@ export const OverviewList: React.FC<{
 
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
 
-  useEffect(() => {
-    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
-      setActiveItemId(activeItemIdFromUrl);
-    }
-  }, [activeItemIdFromUrl, activeItemId]);
+  // useEffect(() => {
+  if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
+    setActiveItemId(activeItemIdFromUrl);
+  }
+  // }, [activeItemIdFromUrl, activeItemId]);
 
   useEngravedHotkeys("up", () => {
     setActiveItemId(getItem(items, activeItemId, "up").id);
