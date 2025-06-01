@@ -14,6 +14,7 @@ export const Scrap: React.FC<{
   hasFocus?: boolean;
   onSuccess?: () => void;
   onCancelEditing?: () => void;
+  giveFocus?: () => void;
   isQuickAdd?: boolean;
   changeTypeWithoutConfirmation?: boolean;
 }> = ({
@@ -24,6 +25,7 @@ export const Scrap: React.FC<{
   hasFocus,
   onSuccess,
   onCancelEditing,
+  giveFocus,
   isQuickAdd,
   changeTypeWithoutConfirmation,
 }) => {
@@ -47,6 +49,7 @@ export const Scrap: React.FC<{
         onSuccess={onSuccess}
         onCancelEditing={onCancelEditing}
         hasFocus={hasFocus}
+        giveFocus={giveFocus}
         isQuickAdd={isQuickAdd}
         changeTypeWithoutConfirmation={changeTypeWithoutConfirmation}
       >

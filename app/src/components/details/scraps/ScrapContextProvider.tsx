@@ -35,6 +35,7 @@ export const ScrapContextProvider: React.FC<{
   hasFocus: boolean;
   onSuccess?: () => void;
   onCancelEditing?: () => void;
+  giveFocus?: () => void;
   isQuickAdd?: boolean;
   changeTypeWithoutConfirmation?: boolean;
 }> = ({
@@ -46,6 +47,7 @@ export const ScrapContextProvider: React.FC<{
   onSuccess,
   onCancelEditing,
   hasFocus,
+  giveFocus,
   isQuickAdd,
   changeTypeWithoutConfirmation,
 }) => {
@@ -258,6 +260,7 @@ export const ScrapContextProvider: React.FC<{
         actionsRenderStyle,
         onSuccess,
         hasFocus,
+        giveFocus,
         hasTitleFocus,
         setHasTitleFocus,
         changeScrapType: changeScrapTypeInternal,
@@ -273,6 +276,7 @@ export const ScrapContextProvider: React.FC<{
       actionsRenderStyle,
       journal,
       hasFocus,
+      giveFocus,
       hasTitleFocus,
     ],
   );
