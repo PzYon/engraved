@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { RefObject, useState } from "react";
 import { TextField } from "@mui/material";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 
@@ -6,10 +6,8 @@ export const GoToTextField: React.FC<{
   value: string;
   onChange: (text: string) => void;
   onDownKey: () => void;
-  autoFocus?: boolean;
-}> = ({ value, onChange, onDownKey, autoFocus }) => {
-  const textFieldRef = useRef<HTMLInputElement>(undefined);
-
+  inputRef: RefObject<HTMLInputElement>;
+}> = ({ value, onChange, onDownKey, inputRef }) => {
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
 
   useEngravedHotkeys(
@@ -27,8 +25,7 @@ export const GoToTextField: React.FC<{
 
   return (
     <TextField
-      autoFocus={autoFocus}
-      inputRef={textFieldRef}
+      inputRef={inputRef}
       defaultValue={value}
       label={"Go to"}
       onFocus={() => setTextFieldHasFocus(true)}

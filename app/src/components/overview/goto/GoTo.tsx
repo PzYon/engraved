@@ -12,7 +12,7 @@ import { Icon } from "../../common/Icon";
 import { Check, Notes, SearchOutlined } from "@mui/icons-material";
 import { useGoToNavigationItems } from "./useGoToNavigationItems";
 import { useDebounced } from "../../common/useDebounced";
-import { useState } from "react";
+import { RefObject, useRef } from "react";
 
 const emptyListItemId = "empty-list-item-id";
 
@@ -23,7 +23,7 @@ export const GoTo: React.FC = () => {
   const debouncedSearchText = useDebounced(searchText);
   const goto = useGoToNavigationItems(debouncedSearchText);
 
-  const [autoFocus, setAutoFocus] = useState(false);
+  const inputRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   if (!goto.items.length && searchText) {
     goto.items.push({
@@ -36,8 +36,7 @@ export const GoTo: React.FC = () => {
       <OverviewList
         items={goto.items}
         onKeyDown={() => {
-          console.log("JEP!");
-          setAutoFocus(true);
+          inputRef?.current.focus();
         }}
         renderBeforeList={(selectItem) => (
           <GoToTextField
@@ -45,7 +44,7 @@ export const GoTo: React.FC = () => {
             onChange={(value) => {
               appendSearchParams({ q: value });
             }}
-            autoFocus={autoFocus}
+            inputRef={inputRef}
             onDownKey={() => selectItem(0)}
           />
         )}
