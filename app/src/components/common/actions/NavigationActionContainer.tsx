@@ -25,7 +25,6 @@ export const NavigationActionContainer: React.FC<{
     }, 500);
 
     return () => window.clearTimeout(timer);
-     
   }, []);
 
   return (
