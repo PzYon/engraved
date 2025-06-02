@@ -37,10 +37,7 @@ export const GoTo: React.FC = () => {
         items={goto.items}
         onKeyDown={(e) => {
           inputRef?.current.focus();
-
-          // todo: handle "Backspace" and "Enter" and "Delete"
-
-          appendSearchParams({ q: searchText + e.key });
+          appendSearchParams({ q: getValue(searchText, e.key) });
         }}
         renderBeforeList={(selectItem) => (
           <GoToTextField
@@ -92,6 +89,17 @@ export const GoTo: React.FC = () => {
     );
   }
 };
+
+function getValue(value: string, key: string): string {
+  if (key === "Backspace" || key === "Delete") {
+    return value.substring(0, value.length - 1);
+  } else if (key.length === 1) {
+    return value + key;
+  } else {
+    // do nothing in case we don't know what ;)
+    return value;
+  }
+}
 
 const ScrapEntryGoToItemRow: React.FC<{
   scrapEntry: IScrapEntry;

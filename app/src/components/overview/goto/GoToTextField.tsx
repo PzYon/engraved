@@ -34,8 +34,9 @@ export const GoToTextField: React.FC<{
   return (
     <TextField
       inputRef={inputRef}
-      value={localValue}
+      autoFocus={true}
       label={"Go to"}
+      value={localValue}
       onFocus={() => setTextFieldHasFocus(true)}
       onBlur={() => setTextFieldHasFocus(false)}
       id={Math.random().toString()}
