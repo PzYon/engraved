@@ -35,8 +35,9 @@ export const GoTo: React.FC = () => {
     <PageSection>
       <OverviewList
         items={goto.items}
-        onKeyDown={() => {
+        onKeyDown={(e) => {
           inputRef?.current.focus();
+          appendSearchParams({ q: searchText + e.key });
         }}
         renderBeforeList={(selectItem) => (
           <GoToTextField

@@ -18,7 +18,7 @@ export const OverviewList: React.FC<{
     giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
-  onKeyDown?: () => void;
+  onKeyDown?: (e: KeyboardEvent) => void;
 }> = ({ items, renderBeforeList, renderItem, filterItem, onKeyDown }) => {
   const { user } = useAppContext();
 
@@ -42,8 +42,8 @@ export const OverviewList: React.FC<{
   }
   // }, [activeItemIdFromUrl, activeItemId]);
 
-  useEngravedHotkeys("*", (x) => {
-    switch (x.code) {
+  useEngravedHotkeys("*", (e) => {
+    switch (e.code) {
       case "ArrowUp": {
         setActiveItemId(getItem(items, activeItemId, "up").id);
         return;
@@ -55,7 +55,7 @@ export const OverviewList: React.FC<{
       }
 
       default: {
-        onKeyDown?.();
+        onKeyDown?.(e);
       }
     }
   });
@@ -82,8 +82,6 @@ export const OverviewList: React.FC<{
           >
             {renderItem(item, index, hasFocus, () => {
               if (item.id !== activeItemId) {
-                console.log("FOOO");
-
                 setActiveItemId(item.id);
               }
             })}
