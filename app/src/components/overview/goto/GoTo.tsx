@@ -36,6 +36,10 @@ export const GoTo: React.FC = () => {
       <OverviewList
         items={goto.items}
         onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            return;
+          }
+
           inputRef?.current.focus();
           appendSearchParams({ q: getValue(searchText, e.key) });
         }}
