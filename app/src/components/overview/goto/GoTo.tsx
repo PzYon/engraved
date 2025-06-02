@@ -5,7 +5,10 @@ import { OverviewList } from "../overviewList/OverviewList";
 import { GoToTextField } from "./GoToTextField";
 import { GoToItemRow } from "./GoToItemRow";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
+import {
+  knownQueryParams,
+  useEngravedSearchParams,
+} from "../../common/actions/searchParamHooks";
 import { JournalIcon } from "../journals/JournalIcon";
 import { IconStyle } from "../../common/IconStyle";
 import { Icon } from "../../common/Icon";
@@ -117,7 +120,7 @@ const ScrapEntryGoToItemRow: React.FC<{
           {scrapEntry.scrapType === "List" ? <Check /> : <Notes />}
         </Icon>
       }
-      url={`/journals/details/${scrapEntry.parentId}?selected-item=${scrapEntry.id}`}
+      url={`/journals/details/${scrapEntry.parentId}?${knownQueryParams.selectedItemId}=${scrapEntry.id}`}
       hasFocus={hasFocus}
     >
       <span style={{ display: "flex", alignItems: "center" }}>

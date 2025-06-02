@@ -16,20 +16,12 @@ export const GoToTextField: React.FC<{
     if (localValue !== value) {
       setLocalValue(value);
     }
-  }, [value]);
+  }, [value, localValue]);
 
-  useEngravedHotkeys(
-    "down",
-    (e: KeyboardEvent) => {
-      e.preventDefault();
-      console.log("Should set focus to first list item element");
-      onDownKey?.();
-    },
-    {
-      enabled: textFieldHasFocus,
-      enableOnFormTags: ["input"],
-    },
-  );
+  useEngravedHotkeys("down", () => onDownKey?.(), {
+    enabled: textFieldHasFocus,
+    enableOnFormTags: ["input"],
+  });
 
   return (
     <TextField

@@ -42,24 +42,30 @@ export const OverviewList: React.FC<{
   }
   // }, [activeItemIdFromUrl, activeItemId]);
 
-  useEngravedHotkeys("*", (e) => {
-    switch (e.code) {
-      case "ArrowUp": {
-        setActiveItemId(getItem(items, activeItemId, "up").id);
-        return;
-      }
-
-      case "ArrowDown": {
-        setActiveItemId(getItem(items, activeItemId, "down").id);
-        return;
-      }
-
-      default: {
-        setActiveItemId(undefined);
-        onKeyDown?.(e);
-      }
-    }
+  useEngravedHotkeys("ArrowUp", () => {
+    setActiveItemId(getItem(items, activeItemId, "up").id);
   });
+
+  useEngravedHotkeys("ArrowDown", () => {
+    setActiveItemId(getItem(items, activeItemId, "down").id);
+  });
+
+  useEngravedHotkeys(
+    "*",
+    (e) => {
+      if (
+        e.code === "ArrowUp" ||
+        e.code === "ArrowDown" ||
+        e.code === "Enter"
+      ) {
+        return;
+      }
+
+      setActiveItemId(undefined);
+      onKeyDown?.(e);
+    },
+    { preventDefault: true },
+  );
 
   return (
     <Host>

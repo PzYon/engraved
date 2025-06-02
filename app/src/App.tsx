@@ -28,8 +28,6 @@ import { TagsPage } from "./components/overview/tags/TagsPage";
 import { TagPage } from "./components/overview/tags/TagPage";
 import { GoToPage } from "./components/overview/goto/GoToPage";
 import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
-import { NativeList } from "./components/common/listsTry/NativeList";
-import { NewList } from "./components/common/listsTry/NewList";
 
 const router = createBrowserRouter([
   {
@@ -57,14 +55,6 @@ const router = createBrowserRouter([
       </ActionContextProvider>
     ),
     children: [
-      {
-        path: "native-list",
-        element: <NativeList />,
-      },
-      {
-        path: "new-list",
-        element: <NewList />,
-      },
       {
         path: "journals/create",
         element: <AddJournalPage />,
