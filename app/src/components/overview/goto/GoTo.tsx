@@ -37,6 +37,9 @@ export const GoTo: React.FC = () => {
         items={goto.items}
         onKeyDown={(e) => {
           inputRef?.current.focus();
+
+          // todo: handle "Backspace" and "Enter" and "Delete"
+
           appendSearchParams({ q: searchText + e.key });
         }}
         renderBeforeList={(selectItem) => (

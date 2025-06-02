@@ -55,6 +55,7 @@ export const OverviewList: React.FC<{
       }
 
       default: {
+        setActiveItemId(undefined);
         onKeyDown?.(e);
       }
     }
