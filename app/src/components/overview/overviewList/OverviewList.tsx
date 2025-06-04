@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
@@ -42,6 +42,10 @@ export const OverviewList: React.FC<{
   }
   // }, [activeItemIdFromUrl, activeItemId]);
 
+  useEffect(() => {
+    console.log("activeItemId changed", activeItemId);
+  }, [activeItemId]);
+
   useEngravedHotkeys("ArrowUp", () => {
     setActiveItemId(getItem(items, activeItemId, "up").id);
   });
@@ -50,22 +54,20 @@ export const OverviewList: React.FC<{
     setActiveItemId(getItem(items, activeItemId, "down").id);
   });
 
-  useEngravedHotkeys(
-    "*",
-    (e) => {
-      if (
-        e.code === "ArrowUp" ||
-        e.code === "ArrowDown" ||
-        e.code === "Enter"
-      ) {
-        return;
-      }
+  useEngravedHotkeys("*", (e) => {
+    if (
+      !onKeyDown ||
+      e.code === "ArrowUp" ||
+      e.code === "ArrowDown" ||
+      e.code === "Enter"
+    ) {
+      return;
+    }
 
-      setActiveItemId(undefined);
-      onKeyDown?.(e);
-    },
-    { preventDefault: true },
-  );
+    setActiveItemId(undefined);
+    onKeyDown?.(e);
+    e.preventDefault();
+  });
 
   return (
     <Host>
