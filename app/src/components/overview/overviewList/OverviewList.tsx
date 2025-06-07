@@ -32,21 +32,30 @@ export const ListItemsProvider: React.FC<{
 }> = ({ items, children }) => {
   const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
 
-  const contextValue = {
-    activeItemId,
-    setActiveItemId,
-    moveDown: () => {
-      console.log("moveDown called");
-      return setActiveItemId(getItem("down")?.id);
-    },
-    moveUp: () => {
-      console.log("moveUp called");
-      return setActiveItemId(getItem("up")?.id);
-    },
-  };
+  useEngravedHotkeys("ArrowUp", () => moveUp());
+  useEngravedHotkeys("ArrowDown", () => moveDown());
+
+  function moveDown() {
+    debugger;
+    console.log("moveDown called");
+    return setActiveItemId(getItem("down")?.id);
+  }
+
+  function moveUp() {
+    debugger;
+    console.log("moveUp called");
+    return setActiveItemId(getItem("up")?.id);
+  }
 
   return (
-    <ListItemsContext.Provider value={contextValue}>
+    <ListItemsContext.Provider
+      value={{
+        activeItemId,
+        setActiveItemId,
+        moveDown,
+        moveUp,
+      }}
+    >
       {children}
     </ListItemsContext.Provider>
   );
