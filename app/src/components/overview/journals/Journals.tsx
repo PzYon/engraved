@@ -4,7 +4,7 @@ import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJourn
 import { NoResultsFound } from "../../common/search/NoResultsFound";
 import { JournalListItem } from "./JournalListItem";
 import { IJournal } from "../../../serverApi/IJournal";
-import { OverviewList } from "../overviewList/OverviewList";
+import { ListItemsProvider, OverviewList } from "../overviewList/OverviewList";
 
 export const Journals: React.FC<{
   favoritesOnly?: boolean;
@@ -27,16 +27,18 @@ export const Journals: React.FC<{
   }
 
   return (
-    <OverviewList
-      items={journals}
-      renderItem={(journal, index, hasFocus) => (
-        <JournalListItem
-          key={journal.id}
-          index={index}
-          journal={journal as IJournal}
-          hasFocus={hasFocus}
-        />
-      )}
-    />
+    <ListItemsProvider items={journals}>
+      <OverviewList
+        items={journals}
+        renderItem={(journal, index, hasFocus) => (
+          <JournalListItem
+            key={journal.id}
+            index={index}
+            journal={journal as IJournal}
+            hasFocus={hasFocus}
+          />
+        )}
+      />
+    </ListItemsProvider>
   );
 };

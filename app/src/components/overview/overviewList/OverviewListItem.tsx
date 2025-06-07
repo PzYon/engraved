@@ -4,6 +4,8 @@ import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useDisplayModeContext } from "./DisplayModeContext";
+import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { useListItemsContext } from "./OverviewList";
 
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
@@ -14,6 +16,11 @@ export const OverviewListItem: React.FC<{
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
+
+  const { moveUp, moveDown } = useListItemsContext();
+
+  useEngravedHotkeys("ArrowUp", () => moveUp());
+  useEngravedHotkeys("ArrowDown", () => moveDown());
 
   useEffect(() => {
     if (hasFocus) {
