@@ -30,14 +30,17 @@ export const Journals: React.FC<{
     <ListItemsProvider items={journals}>
       <OverviewList
         items={journals}
-        renderItem={(journal, index, hasFocus) => (
-          <JournalListItem
-            key={journal.id}
-            index={index}
-            journal={journal as IJournal}
-            hasFocus={hasFocus}
-          />
-        )}
+        renderItem={(journal, index, hasFocus) => {
+          console.log("rendering item at index", index);
+          return (
+            <JournalListItem
+              key={journal.id}
+              index={index}
+              journal={journal as IJournal}
+              hasFocus={hasFocus}
+            />
+          );
+        }}
       />
     </ListItemsProvider>
   );

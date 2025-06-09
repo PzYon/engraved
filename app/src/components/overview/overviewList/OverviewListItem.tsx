@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
@@ -15,7 +15,7 @@ export const OverviewListItem: React.FC<{
 
   const { isCompact } = useDisplayModeContext();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (hasFocus) {
       domElementRef.current?.focus();
     }

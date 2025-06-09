@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
@@ -15,7 +21,7 @@ export interface IListItemsContext {
   moveUp: () => void;
 }
 
-export const ListItemsContext = createContext<IListItemsContext>({
+const ListItemsContext = createContext<IListItemsContext>({
   activeItemId: undefined,
   setActiveItemId: undefined,
   moveUp: undefined,
@@ -35,27 +41,18 @@ export const ListItemsProvider: React.FC<{
   useEngravedHotkeys("ArrowUp", () => moveUp());
   useEngravedHotkeys("ArrowDown", () => moveDown());
 
-  function moveDown() {
-    debugger;
-    console.log("moveDown called");
-    return setActiveItemId(getItem("down")?.id);
-  }
-
-  function moveUp() {
-    debugger;
-    console.log("moveUp called");
-    return setActiveItemId(getItem("up")?.id);
-  }
+  const contextValue = useMemo(
+    () => ({
+      activeItemId,
+      setActiveItemId,
+      moveDown,
+      moveUp,
+    }),
+    [activeItemId, setActiveItemId, moveDown, moveUp],
+  );
 
   return (
-    <ListItemsContext.Provider
-      value={{
-        activeItemId,
-        setActiveItemId,
-        moveDown,
-        moveUp,
-      }}
-    >
+    <ListItemsContext.Provider value={contextValue}>
       {children}
     </ListItemsContext.Provider>
   );
@@ -67,6 +64,16 @@ export const ListItemsProvider: React.FC<{
     } else {
       return items[activeIndex < items.length - 1 ? activeIndex + 1 : 0];
     }
+  }
+
+  function moveDown() {
+    console.log("moveDown called");
+    return setActiveItemId(getItem("down")?.id);
+  }
+
+  function moveUp() {
+    console.log("moveUp called");
+    return setActiveItemId(getItem("up")?.id);
   }
 };
 
@@ -99,7 +106,7 @@ export const OverviewList: React.FC<{
 
   // useEffect(() => {
   if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
-    setActiveItemId(activeItemIdFromUrl);
+    //setActiveItemId(activeItemIdFromUrl);
   }
   // }, [activeItemIdFromUrl, activeItemId]);
 
@@ -135,7 +142,7 @@ export const OverviewList: React.FC<{
 
         return (
           <OverviewListItem
-            tabIndex={1000 + index}
+            tabIndex={index}
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
