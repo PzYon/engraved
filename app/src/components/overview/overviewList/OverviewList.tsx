@@ -149,11 +149,13 @@ export const OverviewList: React.FC<{
             item={item}
             hasFocus={hasFocus}
           >
-            {renderItem(item, index, hasFocus, () => {
-              if (item.id !== activeItemId) {
-                setActiveItemId(item.id);
-              }
-            })}
+            <Foo
+              item={item}
+              hasFocus={hasFocus}
+              index={index}
+              setActiveItemId={setActiveItemId}
+              renderItem={renderItem}
+            />
           </OverviewListItem>
         );
       })}
@@ -174,20 +176,25 @@ export const OverviewList: React.FC<{
   );
 };
 
-// const Foo: React.FC<{
-//   item: IEntity;
-//   index: number;
-//   hasFocus: boolean;
-//   renderItem: (
-//     item: IEntity,
-//     index: number,
-//     hasFocus: boolean,
-//     giveFocus: () => void,
-//   ) => React.ReactNode;
-//   setActiveItemId: (id: string) => void;
-// }> = ({}) => {
-//   return <div>foo</div>;
-// };
+const Foo: React.FC<{
+  item: IEntity;
+  index: number;
+  hasFocus: boolean;
+  renderItem?: (
+    item: IEntity,
+    index: number,
+    hasFocus: boolean,
+    giveFocus: () => void,
+  ) => React.ReactNode;
+  setActiveItemId: (id: string) => void;
+}> = ({ item, index, hasFocus, renderItem, setActiveItemId }) => {
+  //return <div>{item?.id ?? "foo"}</div>;
+  return renderItem(item, index, hasFocus, () => {
+    // if (item.id !== activeItemId) {
+    setActiveItemId(item.id);
+    // }
+  });
+};
 
 const Host = styled("div")`
   // margin-top and -bottom needs to match with margin of

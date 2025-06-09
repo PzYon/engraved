@@ -2,9 +2,13 @@ import React from "react";
 import { usePageContext } from "../../layout/pages/PageContext";
 import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
 import { NoResultsFound } from "../../common/search/NoResultsFound";
-import { JournalListItem } from "./JournalListItem";
-import { IJournal } from "../../../serverApi/IJournal";
 import { ListItemsProvider, OverviewList } from "../overviewList/OverviewList";
+import { IEntity } from "../../../serverApi/IEntity";
+
+function getRenderItem(journal: IEntity, index: number, hasFocus: boolean) {
+  console.log("rendering item at index", index, hasFocus);
+  return <div>max</div>;
+}
 
 export const Journals: React.FC<{
   favoritesOnly?: boolean;
@@ -28,20 +32,7 @@ export const Journals: React.FC<{
 
   return (
     <ListItemsProvider items={journals}>
-      <OverviewList
-        items={journals}
-        renderItem={(journal, index, hasFocus) => {
-          console.log("rendering item at index", index);
-          return (
-            <JournalListItem
-              key={journal.id}
-              index={index}
-              journal={journal as IJournal}
-              hasFocus={hasFocus}
-            />
-          );
-        }}
-      />
+      <OverviewList items={journals} renderItem={getRenderItem} />
     </ListItemsProvider>
   );
 };
