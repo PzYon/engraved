@@ -174,6 +174,21 @@ export const OverviewList: React.FC<{
   );
 };
 
+// const Foo: React.FC<{
+//   item: IEntity;
+//   index: number;
+//   hasFocus: boolean;
+//   renderItem: (
+//     item: IEntity,
+//     index: number,
+//     hasFocus: boolean,
+//     giveFocus: () => void,
+//   ) => React.ReactNode;
+//   setActiveItemId: (id: string) => void;
+// }> = ({}) => {
+//   return <div>foo</div>;
+// };
+
 const Host = styled("div")`
   // margin-top and -bottom needs to match with margin of
   // OverviewListItem in all modes (compact and non-compact)
