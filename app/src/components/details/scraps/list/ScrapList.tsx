@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useLayoutEffect, useMemo } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ScrapListItem } from "./ScrapListItem";
 import { ListItemCollection } from "./ListItemCollection";
@@ -52,7 +52,7 @@ export const ScrapList: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrapToRender.editedOn]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isEditMode) {
       listItemCollection.giveFocus(0);
     }

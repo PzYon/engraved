@@ -1,25 +1,25 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
-import { IJournal } from "../../../serverApi/IJournal";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
-import { OverviewItem } from "./wrappers/OverviewItem";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useDisplayModeContext } from "./DisplayModeContext";
 
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
-  onClick: () => void;
-  addWrapperItem: (wrapper: OverviewItem) => void;
   item: IEntity;
-  index: number;
+  tabIndex: number;
   hasFocus: boolean;
-}> = ({ children, onClick, addWrapperItem, item, index, hasFocus }) => {
+}> = ({ children, item, tabIndex, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (hasFocus) {
+      domElementRef.current?.focus();
+    }
+
     const timer = setTimeout(() => {
       if (!hasFocus) {
         return;
@@ -35,15 +35,10 @@ export const OverviewListItem: React.FC<{
     return () => clearTimeout(timer);
   }, [hasFocus]);
 
-  useEffect(() => {
-    addWrapperItem(new OverviewItem(domElementRef, item as IJournal));
-  }, [addWrapperItem, item]);
-
   return (
     <Host
       ref={domElementRef}
-      onClick={onClick}
-      tabIndex={index}
+      tabIndex={tabIndex}
       id={item.id}
       data-testid={item.id}
     >
