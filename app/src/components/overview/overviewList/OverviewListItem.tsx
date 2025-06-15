@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { memo, useLayoutEffect, useRef } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
@@ -10,7 +10,7 @@ export const OverviewListItem: React.FC<{
   item: IEntity;
   tabIndex: number;
   hasFocus: boolean;
-}> = ({ children, item, tabIndex, hasFocus }) => {
+}> = memo(({ children, item, tabIndex, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
@@ -56,7 +56,7 @@ export const OverviewListItem: React.FC<{
       </PageSection>
     </Host>
   );
-};
+});
 
 const Host = styled("div")`
   &:focus {

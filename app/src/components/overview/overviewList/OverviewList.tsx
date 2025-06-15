@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
@@ -13,69 +7,7 @@ import { useAppContext } from "../../../AppContext";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 import { useSearchParams } from "react-router-dom";
 import { knownQueryParams } from "../../common/actions/searchParamHooks";
-
-export interface IListItemsContext {
-  activeItemId: string;
-  setActiveItemId: (id: string) => void;
-  moveDown: () => void;
-  moveUp: () => void;
-}
-
-const ListItemsContext = createContext<IListItemsContext>({
-  activeItemId: undefined,
-  setActiveItemId: undefined,
-  moveUp: undefined,
-  moveDown: undefined,
-});
-
-export const useListItemsContext = () => {
-  return useContext(ListItemsContext);
-};
-
-export const ListItemsProvider: React.FC<{
-  items: IEntity[];
-  children: React.ReactNode;
-}> = ({ items, children }) => {
-  const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
-
-  useEngravedHotkeys("ArrowUp", () => moveUp());
-  useEngravedHotkeys("ArrowDown", () => moveDown());
-
-  const contextValue = useMemo(
-    () => ({
-      activeItemId,
-      setActiveItemId,
-      moveDown,
-      moveUp,
-    }),
-    [activeItemId, setActiveItemId, moveDown, moveUp],
-  );
-
-  return (
-    <ListItemsContext.Provider value={contextValue}>
-      {children}
-    </ListItemsContext.Provider>
-  );
-
-  function getItem(direction: "up" | "down"): IEntity {
-    const activeIndex = items.findIndex((item) => item.id === activeItemId);
-    if (direction === "up") {
-      return items[activeIndex > 0 ? activeIndex - 1 : items.length - 1];
-    } else {
-      return items[activeIndex < items.length - 1 ? activeIndex + 1 : 0];
-    }
-  }
-
-  function moveDown() {
-    console.log("moveDown called");
-    return setActiveItemId(getItem("down")?.id);
-  }
-
-  function moveUp() {
-    console.log("moveUp called");
-    return setActiveItemId(getItem("up")?.id);
-  }
-};
+import { useOverviewListContext } from "./OverviewListContext";
 
 export const OverviewList: React.FC<{
   items: IEntity[];
@@ -90,7 +22,7 @@ export const OverviewList: React.FC<{
   onKeyDown?: (e: KeyboardEvent) => void;
 }> = ({ items, renderBeforeList, renderItem, filterItem, onKeyDown }) => {
   const { user } = useAppContext();
-  const { setActiveItemId, activeItemId } = useListItemsContext();
+  const { setActiveItemId, activeItemId } = useOverviewListContext();
 
   const [showAll, setShowAll] = useState(false);
 
@@ -106,7 +38,7 @@ export const OverviewList: React.FC<{
 
   // useEffect(() => {
   if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
-    //setActiveItemId(activeItemIdFromUrl);
+    setActiveItemId(activeItemIdFromUrl);
   }
   // }, [activeItemIdFromUrl, activeItemId]);
 
@@ -149,7 +81,7 @@ export const OverviewList: React.FC<{
             item={item}
             hasFocus={hasFocus}
           >
-            <Foo
+            <RenderItem
               item={item}
               hasFocus={hasFocus}
               index={index}
@@ -176,25 +108,28 @@ export const OverviewList: React.FC<{
   );
 };
 
-const Foo: React.FC<{
-  item: IEntity;
-  index: number;
-  hasFocus: boolean;
-  renderItem?: (
-    item: IEntity,
-    index: number,
-    hasFocus: boolean,
-    giveFocus: () => void,
-  ) => React.ReactNode;
-  setActiveItemId: (id: string) => void;
-}> = ({ item, index, hasFocus, renderItem, setActiveItemId }) => {
-  //return <div>{item?.id ?? "foo"}</div>;
-  return renderItem(item, index, hasFocus, () => {
-    // if (item.id !== activeItemId) {
-    setActiveItemId(item.id);
-    // }
-  });
-};
+const RenderItem = React.memo(
+  ({
+    item,
+    index,
+    hasFocus,
+    renderItem,
+    setActiveItemId,
+  }: {
+    item: IEntity;
+    index: number;
+    hasFocus: boolean;
+    renderItem?: (
+      item: IEntity,
+      index: number,
+      hasFocus: boolean,
+      giveFocus: () => void,
+    ) => React.ReactNode;
+    setActiveItemId: (id: string) => void;
+  }) => {
+    return renderItem(item, index, hasFocus, () => setActiveItemId(item.id));
+  },
+);
 
 const Host = styled("div")`
   // margin-top and -bottom needs to match with margin of

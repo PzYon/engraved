@@ -69,6 +69,7 @@ export default [
       "react/react-in-jsx-scope": "off",
       "react-refresh/only-export-components": "warn",
       "react/prop-types": 0,
+      "react/display-name": "off",
       "no-debugger": "off",
     },
   },
