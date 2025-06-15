@@ -22,13 +22,15 @@ export const OverviewListContextProvider: React.FC<{
     [items, activeItemId],
   );
 
-  const moveDown = useCallback(() => {
-    setActiveItemId(getItem("down")?.id);
-  }, [getItem, setActiveItemId]);
+  const moveDown = useCallback(
+    () => setActiveItemId(getItem("down")?.id),
+    [getItem, setActiveItemId],
+  );
 
-  const moveUp = useCallback(() => {
-    setActiveItemId(getItem("up")?.id);
-  }, [getItem, setActiveItemId]);
+  const moveUp = useCallback(
+    () => setActiveItemId(getItem("up")?.id),
+    [getItem, setActiveItemId],
+  );
 
   useEngravedHotkeys("ArrowUp", () => moveUp());
   useEngravedHotkeys("ArrowDown", () => moveDown());
