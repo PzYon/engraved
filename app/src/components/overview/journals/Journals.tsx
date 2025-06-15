@@ -2,9 +2,11 @@ import React from "react";
 import { usePageContext } from "../../layout/pages/PageContext";
 import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
 import { NoResultsFound } from "../../common/search/NoResultsFound";
+import { OverviewList } from "../overviewList/OverviewList";
 import { JournalListItem } from "./JournalListItem";
 import { IJournal } from "../../../serverApi/IJournal";
-import { OverviewList } from "../overviewList/OverviewList";
+
+import { OverviewListContextProvider } from "../overviewList/OverviewListContextProvider";
 
 export const Journals: React.FC<{
   favoritesOnly?: boolean;
@@ -27,17 +29,21 @@ export const Journals: React.FC<{
   }
 
   return (
-    <OverviewList
-      items={journals}
-      renderItem={(journal, index, hasFocus, giveFocus) => (
-        <JournalListItem
-          key={journal.id}
-          index={index}
-          journal={journal as IJournal}
-          hasFocus={hasFocus}
-          giveFocus={giveFocus}
-        />
-      )}
-    />
+    <OverviewListContextProvider items={journals}>
+      <OverviewList
+        items={journals}
+        renderItem={(journal, index, hasFocus) => {
+          console.log("rendering item at index", index);
+          return (
+            <JournalListItem
+              key={journal.id}
+              index={index}
+              journal={journal as IJournal}
+              hasFocus={hasFocus}
+            />
+          );
+        }}
+      />
+    </OverviewListContextProvider>
   );
 };
