@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export const knownQueryParams = {
@@ -68,47 +69,63 @@ export const useEngravedSearchParam = (key: string) => {
 export const useEngravedSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  return {
-    getSearchParam: (key: string) => searchParams.get(key),
+  // Memoize getSearchParam to prevent unnecessary re-renders of consumers
+  const getSearchParam = useCallback(
+    (key: string) => searchParams.get(key),
+    [searchParams],
+  );
 
-    appendSearchParams: (params: Record<string, string>) => {
+  // Memoize appendSearchParams to prevent unnecessary re-renders of consumers
+  const appendSearchParams = useCallback(
+    (params: Record<string, string>) => {
+      const currentSearchParams = searchParams.toString();
       const newSearchParams = getNewSearchParams(params);
+      const updatedSearchParams = newSearchParams.toString();
 
-      if (newSearchParams.toString() === searchParams.toString()) {
-        return;
+      // Only update if the string representation of search params has changed
+      if (updatedSearchParams !== currentSearchParams) {
+        setSearchParams(newSearchParams);
       }
-
-      setSearchParams(newSearchParams);
     },
-  };
+    [searchParams, setSearchParams], // Depend on searchParams and setSearchParams
+  );
 
-  function cloneSearchParams() {
+  // Helper to clone current search params
+  const cloneSearchParams = useCallback(() => {
     const newestSearchParams: Record<string, string> = {};
     searchParams.forEach((v, k) => {
       newestSearchParams[k] = v;
     });
-
     return new URLSearchParams({ ...newestSearchParams });
-  }
+  }, [searchParams]);
 
-  function getNewSearchParams(params: Record<string, string>) {
-    const newSearchParams = cloneSearchParams();
+  // Helper to generate new search params based on provided updates
+  const getNewSearchParams = useCallback(
+    (params: Record<string, string>) => {
+      const newSearchParams = cloneSearchParams();
 
-    for (const key in params) {
-      const value = params[key];
+      for (const key in params) {
+        const value = params[key];
 
-      if (
-        value === null ||
-        value === undefined ||
-        value === "" ||
-        value === "false"
-      ) {
-        newSearchParams.delete(key);
-      } else {
-        newSearchParams.set(key, value);
+        if (
+          value === null ||
+          value === undefined ||
+          value === "" ||
+          value === "false" // Assuming 'false' as a string should remove the param
+        ) {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, value);
+        }
       }
-    }
 
-    return newSearchParams;
-  }
+      return newSearchParams;
+    },
+    [cloneSearchParams],
+  );
+
+  return {
+    getSearchParam,
+    appendSearchParams,
+  };
 };
