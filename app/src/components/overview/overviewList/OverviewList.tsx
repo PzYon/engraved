@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
@@ -8,8 +8,9 @@ import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 import { useSearchParams } from "react-router-dom";
 import { knownQueryParams } from "../../common/actions/searchParamHooks";
 import { useOverviewListContext } from "./OverviewListContext";
+import { OverviewListContextProvider } from "./OverviewListContextProvider";
 
-export const OverviewList: React.FC<{
+export interface IOverviewListProps {
   items: IEntity[];
   renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
   renderItem: (
@@ -20,7 +21,25 @@ export const OverviewList: React.FC<{
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
   onKeyDown?: (e: KeyboardEvent) => void;
-}> = ({ items, renderBeforeList, renderItem, filterItem, onKeyDown }) => {
+}
+
+export const OverviewList: React.FC<IOverviewListProps> = memo(
+  (props: IOverviewListProps) => {
+    return (
+      <OverviewListContextProvider items={props.items}>
+        <OverviewListInternal {...props} />
+      </OverviewListContextProvider>
+    );
+  },
+);
+
+export const OverviewListInternal: React.FC<IOverviewListProps> = ({
+  items,
+  renderBeforeList,
+  renderItem,
+  filterItem,
+  onKeyDown,
+}) => {
   const { user } = useAppContext();
   const { setActiveItemId, activeItemId } = useOverviewListContext();
 
@@ -67,10 +86,6 @@ export const OverviewList: React.FC<{
 
       {filteredItems.map((item, index) => {
         const hasFocus = activeItemId === item.id;
-
-        if (hasFocus) {
-          console.log("rendering active item", activeItemId);
-        }
 
         return (
           <OverviewListItem
@@ -127,6 +142,8 @@ const RenderItem = React.memo(
     ) => React.ReactNode;
     setActiveItemId: (id: string) => void;
   }) => {
+    console.log("renderingItem method", index, item.id);
+
     return renderItem(item, index, hasFocus, () => setActiveItemId(item.id));
   },
 );

@@ -6,8 +6,6 @@ import { OverviewList } from "../overviewList/OverviewList";
 import { JournalListItem } from "./JournalListItem";
 import { IJournal } from "../../../serverApi/IJournal";
 
-import { OverviewListContextProvider } from "../overviewList/OverviewListContextProvider";
-
 export const Journals: React.FC<{
   favoritesOnly?: boolean;
   journalIds?: string[];
@@ -29,21 +27,18 @@ export const Journals: React.FC<{
   }
 
   return (
-    <OverviewListContextProvider items={journals}>
-      <OverviewList
-        items={journals}
-        renderItem={(journal, index, hasFocus) => {
-          console.log("rendering item at index", index);
-          return (
-            <JournalListItem
-              key={journal.id}
-              index={index}
-              journal={journal as IJournal}
-              hasFocus={hasFocus}
-            />
-          );
-        }}
-      />
-    </OverviewListContextProvider>
+    <OverviewList
+      items={journals}
+      renderItem={(journal, index, hasFocus) => {
+        return (
+          <JournalListItem
+            key={journal.id}
+            index={index}
+            journal={journal as IJournal}
+            hasFocus={hasFocus}
+          />
+        );
+      }}
+    />
   );
 };
