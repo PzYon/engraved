@@ -20,7 +20,7 @@ export class ListItemCollection {
     this.wrappedItems = rawItems.map((i) => new ListItemWrapper(i));
   }
 
-  setRef(index: number, ref: React.MutableRefObject<HTMLInputElement>): void {
+  setRef(index: number, ref: React.RefObject<HTMLInputElement>): void {
     this.wrappedItems[index].setRef(ref);
   }
 
