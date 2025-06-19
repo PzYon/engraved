@@ -32,8 +32,15 @@ export const OverviewListContextProvider: React.FC<{
     [getItem, setActiveItemId],
   );
 
-  useEngravedHotkeys("ArrowUp", () => moveUp());
-  useEngravedHotkeys("ArrowDown", () => moveDown());
+  useEngravedHotkeys("ArrowUp", (e) => {
+    e.preventDefault();
+    moveUp();
+  });
+
+  useEngravedHotkeys("ArrowDown", (e) => {
+    e.preventDefault();
+    moveDown();
+  });
 
   const contextValue = useMemo(
     () => ({

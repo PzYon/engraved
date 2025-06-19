@@ -9,9 +9,8 @@ import { useOverviewListContext } from "./OverviewListContext";
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
   item: IEntity;
-  tabIndex: number;
   hasFocus: boolean;
-}> = memo(({ children, item, tabIndex, hasFocus }) => {
+}> = memo(({ children, item, hasFocus }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
@@ -41,7 +40,7 @@ export const OverviewListItem: React.FC<{
   return (
     <Host
       ref={domElementRef}
-      tabIndex={tabIndex}
+      tabIndex={0}
       id={item.id}
       data-testid={item.id}
       onClick={() => {

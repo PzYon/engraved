@@ -41,6 +41,7 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
   onKeyDown,
 }) => {
   const { user } = useAppContext();
+
   const { setActiveItemId, activeItemId } = useOverviewListContext();
 
   const [showAll, setShowAll] = useState(false);
@@ -55,11 +56,11 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
 
-  // useEffect(() => {
-  if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
-    setActiveItemId(activeItemIdFromUrl);
-  }
-  // }, [activeItemIdFromUrl, activeItemId]);
+  useEffect(() => {
+    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
+      setActiveItemId(activeItemIdFromUrl);
+    }
+  }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
 
   useEffect(() => {
     console.log("activeItemId changed", activeItemId);
@@ -89,7 +90,6 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
         return (
           <OverviewListItem
-            tabIndex={index}
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
