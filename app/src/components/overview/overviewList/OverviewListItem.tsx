@@ -4,6 +4,7 @@ import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useDisplayModeContext } from "./DisplayModeContext";
+import { useOverviewListContext } from "./OverviewListContext";
 
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
@@ -14,6 +15,8 @@ export const OverviewListItem: React.FC<{
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
+
+  const { setActiveItemId } = useOverviewListContext();
 
   useLayoutEffect(() => {
     if (hasFocus) {
@@ -41,6 +44,10 @@ export const OverviewListItem: React.FC<{
       tabIndex={tabIndex}
       id={item.id}
       data-testid={item.id}
+      onClick={() => {
+        setActiveItemId(item.id);
+        domElementRef.current?.focus();
+      }}
     >
       <PageSection
         style={

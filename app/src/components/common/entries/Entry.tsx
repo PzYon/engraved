@@ -51,7 +51,7 @@ export const Entry: React.FC<{
         actions={actions}
         noCompactFooter={noCompactFooter}
       />
-      <EntrySubRoutes entry={entry} />
+      {hasFocus ? <EntrySubRoutes entry={entry} /> : null}
     </>
   );
 };
