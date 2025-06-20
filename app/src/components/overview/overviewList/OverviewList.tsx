@@ -62,10 +62,6 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
     }
   }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
 
-  useEffect(() => {
-    console.log("activeItemId changed", activeItemId);
-  }, [activeItemId]);
-
   useEngravedHotkeys("*", (e) => {
     if (
       !onKeyDown ||
