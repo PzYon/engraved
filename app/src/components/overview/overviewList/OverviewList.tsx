@@ -142,8 +142,6 @@ const RenderItem = React.memo(
     ) => React.ReactNode;
     setActiveItemId: (id: string) => void;
   }) => {
-    console.log("renderingItem method", index, item.id);
-
     return renderItem(item, index, hasFocus, () => setActiveItemId(item.id));
   },
 );

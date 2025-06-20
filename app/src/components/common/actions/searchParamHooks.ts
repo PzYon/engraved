@@ -51,19 +51,6 @@ export const useEngravedSearchParams = () => {
     [searchParams],
   );
 
-  const appendSearchParams = useCallback(
-    (params: Record<string, string>) => {
-      const currentSearchParams = searchParams.toString();
-      const newSearchParams = getNewSearchParams(params);
-      const updatedSearchParams = newSearchParams.toString();
-
-      if (updatedSearchParams !== currentSearchParams) {
-        setSearchParams(newSearchParams);
-      }
-    },
-    [searchParams, setSearchParams],
-  );
-
   const cloneSearchParams = useCallback(() => {
     const newestSearchParams: Record<string, string> = {};
     searchParams.forEach((v, k) => {
@@ -94,6 +81,19 @@ export const useEngravedSearchParams = () => {
       return newSearchParams;
     },
     [cloneSearchParams],
+  );
+
+  const appendSearchParams = useCallback(
+    (params: Record<string, string>) => {
+      const currentSearchParams = searchParams.toString();
+      const newSearchParams = getNewSearchParams(params);
+      const updatedSearchParams = newSearchParams.toString();
+
+      if (updatedSearchParams !== currentSearchParams) {
+        setSearchParams(newSearchParams);
+      }
+    },
+    [searchParams, setSearchParams, getNewSearchParams],
   );
 
   return {
