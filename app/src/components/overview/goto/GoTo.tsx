@@ -48,7 +48,7 @@ export const GoTo: React.FC = () => {
         }}
         renderBeforeList={(selectItem) => (
           <GoToTextField
-            value={searchText}
+            initialValue={searchText}
             onChange={(value) => {
               appendSearchParams({ q: value });
             }}
