@@ -1,4 +1,4 @@
-import React, { memo, useLayoutEffect, useRef } from "react";
+import React, { memo, useEffect, useLayoutEffect, useRef } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
@@ -21,7 +21,9 @@ export const OverviewListItem: React.FC<{
     if (hasFocus) {
       domElementRef.current?.focus();
     }
+  }, [hasFocus]);
 
+  useEffect(() => {
     const timer = setTimeout(() => {
       if (!hasFocus) {
         return;
@@ -32,7 +34,7 @@ export const OverviewListItem: React.FC<{
         inline: "nearest",
         behavior: "smooth",
       });
-    }, 0);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [hasFocus]);
