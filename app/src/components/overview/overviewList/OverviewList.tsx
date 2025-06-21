@@ -52,7 +52,7 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
   const hiddenItems = items.length - filteredItems.length;
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
 
@@ -86,6 +86,12 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
         return (
           <OverviewListItem
+            onClick={() => {
+              setActiveItemId(item.id);
+
+              searchParams.delete(knownQueryParams.selectedItemId);
+              setSearchParams(searchParams);
+            }}
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
