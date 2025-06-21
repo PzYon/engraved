@@ -18,7 +18,7 @@ export const ScrapListItem: React.FC<{
   onChange: (listItem: IScrapListItem) => void;
 }> = ({ listItemsCollection, index, isEditMode, listItem, onChange }) => {
   const [label, setLabel] = useState(listItem.label);
-  const ref: React.MutableRefObject<HTMLInputElement> = useRef(null);
+  const ref: React.RefObject<HTMLInputElement> = useRef(null);
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: listItemsCollection.getReactKey(index) });

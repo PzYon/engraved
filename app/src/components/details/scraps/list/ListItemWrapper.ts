@@ -4,7 +4,7 @@ import React from "react";
 export class ListItemWrapper {
   constructor(private item: IScrapListItem) {}
 
-  private ref: React.MutableRefObject<HTMLInputElement>;
+  private ref: React.RefObject<HTMLInputElement>;
 
   readonly reactKey = "react-key-" + Math.random().toString().split(".")[1];
 
@@ -16,11 +16,11 @@ export class ListItemWrapper {
     this.item = value;
   }
 
-  setRef(ref: React.MutableRefObject<HTMLInputElement>) {
+  setRef(ref: React.RefObject<HTMLInputElement>) {
     this.ref = ref;
   }
 
   giveFocus() {
-    this.ref?.current.focus();
+    this.ref?.current?.focus();
   }
 }

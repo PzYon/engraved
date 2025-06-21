@@ -1,23 +1,25 @@
-import React, { useEffect, useRef } from "react";
+import React, { memo, useEffect, useLayoutEffect, useRef } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
-import { IJournal } from "../../../serverApi/IJournal";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
-import { OverviewItem } from "./wrappers/OverviewItem";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useDisplayModeContext } from "./DisplayModeContext";
 
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
-  onClick: () => void;
-  addWrapperItem: (wrapper: OverviewItem) => void;
   item: IEntity;
-  index: number;
   hasFocus: boolean;
-}> = ({ children, onClick, addWrapperItem, item, index, hasFocus }) => {
+  onClick: () => void;
+}> = memo(({ children, item, hasFocus, onClick }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
+
+  useLayoutEffect(() => {
+    if (hasFocus) {
+      domElementRef.current?.focus();
+    }
+  }, [hasFocus]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,22 +32,18 @@ export const OverviewListItem: React.FC<{
         inline: "nearest",
         behavior: "smooth",
       });
-    }, 0);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [hasFocus]);
 
-  useEffect(() => {
-    addWrapperItem(new OverviewItem(domElementRef, item as IJournal));
-  }, [addWrapperItem, item]);
-
   return (
     <Host
       ref={domElementRef}
-      onClick={onClick}
-      tabIndex={index}
+      tabIndex={0}
       id={item.id}
       data-testid={item.id}
+      onClick={() => onClick?.()}
     >
       <PageSection
         style={
@@ -61,7 +59,7 @@ export const OverviewListItem: React.FC<{
       </PageSection>
     </Host>
   );
-};
+});
 
 const Host = styled("div")`
   &:focus {

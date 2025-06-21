@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
-import { useOverviewCollection } from "./wrappers/useOverviewCollection";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
 import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
-import { OverviewItemCollection } from "./wrappers/OverviewItemCollection";
+import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { useSearchParams } from "react-router-dom";
+import { knownQueryParams } from "../../common/actions/searchParamHooks";
+import { useOverviewListContext } from "./OverviewListContext";
+import { OverviewListContextProvider } from "./OverviewListContextProvider";
 
-export const OverviewList: React.FC<{
+export interface IOverviewListProps {
   items: IEntity[];
-  renderBeforeList?: (collection: OverviewItemCollection) => React.ReactNode;
+  renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
   renderItem: (
     item: IEntity,
     index: number,
@@ -17,10 +20,30 @@ export const OverviewList: React.FC<{
     giveFocus: () => void,
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
-}> = ({ items, renderBeforeList, renderItem, filterItem }) => {
+  onKeyDown?: (e: KeyboardEvent) => void;
+}
+
+export const OverviewList: React.FC<IOverviewListProps> = memo(
+  (props: IOverviewListProps) => {
+    return (
+      <OverviewListContextProvider items={props.items}>
+        <OverviewListInternal {...props} />
+      </OverviewListContextProvider>
+    );
+  },
+);
+
+export const OverviewListInternal: React.FC<IOverviewListProps> = ({
+  items,
+  renderBeforeList,
+  renderItem,
+  filterItem,
+  onKeyDown,
+}) => {
   const { user } = useAppContext();
 
-  const { collection, addItem } = useOverviewCollection();
+  const { setActiveItemId, activeItemId } = useOverviewListContext();
+
   const [showAll, setShowAll] = useState(false);
 
   const filteredItems = items.filter(
@@ -29,30 +52,65 @@ export const OverviewList: React.FC<{
 
   const hiddenItems = items.length - filteredItems.length;
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
+
+  useEffect(() => {
+    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
+      setActiveItemId(activeItemIdFromUrl);
+    }
+  }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
+
+  useEngravedHotkeys("*", (e) => {
+    if (
+      !onKeyDown ||
+      e.code === "ArrowUp" ||
+      e.code === "ArrowDown" ||
+      e.code === "Enter"
+    ) {
+      return;
+    }
+
+    setActiveItemId(undefined);
+    onKeyDown?.(e);
+    e.preventDefault();
+  });
+
   return (
     <Host>
-      {renderBeforeList?.(collection)}
+      {renderBeforeList?.((i) => setActiveItemId(items[i].id))}
+
       {filteredItems.map((item, index) => {
-        const hasFocus = index === collection.currentIndex;
+        const hasFocus = activeItemId === item.id;
 
         return (
           <OverviewListItem
-            index={index}
+            onClick={() => {
+              if (hasFocus) {
+                return;
+              }
+
+              setActiveItemId(item.id);
+
+              searchParams.delete(knownQueryParams.selectedItemId);
+              setSearchParams(searchParams);
+            }}
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
-            onClick={setFocus}
-            addWrapperItem={addItem}
             item={item}
             hasFocus={hasFocus}
           >
-            {renderItem(item, index, hasFocus, setFocus)}
+            <RenderItem
+              item={item}
+              hasFocus={hasFocus}
+              index={index}
+              setActiveItemId={setActiveItemId}
+              renderItem={renderItem}
+            />
           </OverviewListItem>
         );
-
-        function setFocus() {
-          collection.setFocus(index);
-        }
       })}
       {hiddenItems ? (
         <Typography
@@ -70,6 +128,29 @@ export const OverviewList: React.FC<{
     </Host>
   );
 };
+
+const RenderItem = React.memo(
+  ({
+    item,
+    index,
+    hasFocus,
+    renderItem,
+    setActiveItemId,
+  }: {
+    item: IEntity;
+    index: number;
+    hasFocus: boolean;
+    renderItem?: (
+      item: IEntity,
+      index: number,
+      hasFocus: boolean,
+      giveFocus: () => void,
+    ) => React.ReactNode;
+    setActiveItemId: (id: string) => void;
+  }) => {
+    return renderItem(item, index, hasFocus, () => setActiveItemId(item.id));
+  },
+);
 
 const Host = styled("div")`
   // margin-top and -bottom needs to match with margin of

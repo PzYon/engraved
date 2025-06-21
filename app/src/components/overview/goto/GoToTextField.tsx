@@ -1,43 +1,35 @@
-import { useEffect, useRef, useState } from "react";
-import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
+import { RefObject, useState } from "react";
 import { TextField } from "@mui/material";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 
 export const GoToTextField: React.FC<{
-  collection: OverviewItemCollection;
-  value: string;
+  initialValue: string;
   onChange: (text: string) => void;
-}> = ({ collection, value, onChange }) => {
-  const textFieldRef = useRef<HTMLInputElement>(undefined);
-
+  onDownKey: () => void;
+  inputRef: RefObject<HTMLInputElement>;
+}> = ({ initialValue, onChange, onDownKey, inputRef }) => {
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
 
-  useEngravedHotkeys(
-    "down",
-    (e: KeyboardEvent) => {
-      e.preventDefault();
-      collection.setFocus(0);
-    },
-    {
-      enabled: textFieldHasFocus,
-      enableOnFormTags: ["input"],
-    },
-  );
+  const [localValue, setLocalValue] = useState(initialValue);
 
-  useEffect(() => {
-    return collection.setOnType(() => textFieldRef.current.focus());
-  }, [collection]);
+  useEngravedHotkeys("down", () => onDownKey?.(), {
+    enabled: textFieldHasFocus,
+    enableOnFormTags: ["input"],
+  });
 
   return (
     <TextField
+      inputRef={inputRef}
       autoFocus={true}
-      inputRef={textFieldRef}
-      defaultValue={value}
       label={"Go to"}
+      value={localValue}
       onFocus={() => setTextFieldHasFocus(true)}
       onBlur={() => setTextFieldHasFocus(false)}
       id={Math.random().toString()}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => {
+        setLocalValue(e.target.value);
+        onChange(e.target.value);
+      }}
       style={{ width: "100%" }}
     />
   );
