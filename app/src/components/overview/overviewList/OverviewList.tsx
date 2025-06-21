@@ -87,6 +87,10 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
         return (
           <OverviewListItem
             onClick={() => {
+              if (hasFocus) {
+                return;
+              }
+
               setActiveItemId(item.id);
 
               searchParams.delete(knownQueryParams.selectedItemId);
