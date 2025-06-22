@@ -10,8 +10,6 @@ export const GoToTextField: React.FC<{
 }> = ({ initialValue, onChange, onDownKey, inputRef }) => {
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
 
-  const [localValue, setLocalValue] = useState(initialValue);
-
   useEngravedHotkeys("down", () => onDownKey?.(), {
     enabled: textFieldHasFocus,
     enableOnFormTags: ["input"],
@@ -22,14 +20,11 @@ export const GoToTextField: React.FC<{
       inputRef={inputRef}
       autoFocus={true}
       label={"Go to"}
-      value={localValue}
+      defaultValue={initialValue}
       onFocus={() => setTextFieldHasFocus(true)}
       onBlur={() => setTextFieldHasFocus(false)}
       id={Math.random().toString()}
-      onChange={(e) => {
-        setLocalValue(e.target.value);
-        onChange(e.target.value);
-      }}
+      onChange={(e) => onChange(e.target.value)}
       style={{ width: "100%" }}
     />
   );
