@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 export const knownQueryParams = {
   selectedItemId: "selected-item",
   actionKey: "action-key",
+  favoritesOnly: "favorites-only",
 };
 
 export type ActionKey =

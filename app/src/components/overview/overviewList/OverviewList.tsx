@@ -47,14 +47,7 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
   const [showAll, setShowAll] = useState(false);
 
-  const filteredItems = items.filter(
-    (f) => (showAll || filterItem?.(f)) ?? true,
-  );
-
-  const hiddenItems = items.length - filteredItems.length;
-
   const [searchParams, setSearchParams] = useSearchParams();
-
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
 
   useEffect(() => {
@@ -64,28 +57,39 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
   }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
 
   useEngravedHotkeys("*", (e) => {
-    if (e.code === "ArrowUp") {
-      e.preventDefault();
-      removeItemIdFromUrl();
-      moveUp();
-      return;
-    }
+    switch (e.code) {
+      case "ArrowUp": {
+        e.preventDefault();
+        removeItemIdFromUrl();
+        moveUp();
+        break;
+      }
 
-    if (e.code === "ArrowDown") {
-      e.preventDefault();
-      removeItemIdFromUrl();
-      moveDown();
-      return;
-    }
+      case "ArrowDown": {
+        e.preventDefault();
+        removeItemIdFromUrl();
+        moveDown();
+        break;
+      }
 
-    if (!onKeyDown || e.code === "Enter") {
-      return;
-    }
+      case "Enter": {
+        if (onKeyDown) {
+          return;
+        }
 
-    setActiveItemId(undefined);
-    onKeyDown?.(e);
-    e.preventDefault();
+        // handle resume typing
+        setActiveItemId(undefined);
+        onKeyDown?.(e);
+        e.preventDefault();
+      }
+    }
   });
+
+  const filteredItems = items.filter(
+    (f) => (showAll || filterItem?.(f)) ?? true,
+  );
+
+  const hiddenItems = items.length - filteredItems.length;
 
   return (
     <Host>
