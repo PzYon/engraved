@@ -1,17 +1,12 @@
 import React, { useCallback, useMemo } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 import { OverviewListContext } from "./OverviewListContext";
-import { knownQueryParams } from "../../common/actions/searchParamHooks";
-import { useSearchParams } from "react-router-dom";
 
 export const OverviewListContextProvider: React.FC<{
   items: IEntity[];
   children: React.ReactNode;
 }> = ({ items, children }) => {
   const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
-
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const getNextItem = React.useCallback(
     (direction: "up" | "down"): IEntity => {
@@ -34,18 +29,6 @@ export const OverviewListContextProvider: React.FC<{
     setActiveItemId(getNextItem("up")?.id);
   }, [getNextItem, setActiveItemId]);
 
-  useEngravedHotkeys("ArrowUp", (e) => {
-    e.preventDefault();
-    removeItemIdFromUrl();
-    moveUp();
-  });
-
-  useEngravedHotkeys("ArrowDown", (e) => {
-    e.preventDefault();
-    removeItemIdFromUrl();
-    moveDown();
-  });
-
   const contextValue = useMemo(
     () => ({
       activeItemId,
@@ -61,13 +44,4 @@ export const OverviewListContextProvider: React.FC<{
       {children}
     </OverviewListContext.Provider>
   );
-
-  function removeItemIdFromUrl() {
-    if (!searchParams.get(knownQueryParams.selectedItemId)) {
-      return;
-    }
-
-    searchParams.delete(knownQueryParams.selectedItemId);
-    setSearchParams(searchParams);
-  }
 };

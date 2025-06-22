@@ -42,7 +42,8 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
 }) => {
   const { user } = useAppContext();
 
-  const { setActiveItemId, activeItemId } = useOverviewListContext();
+  const { setActiveItemId, activeItemId, moveUp, moveDown } =
+    useOverviewListContext();
 
   const [showAll, setShowAll] = useState(false);
 
@@ -63,12 +64,21 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
   }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
 
   useEngravedHotkeys("*", (e) => {
-    if (
-      !onKeyDown ||
-      e.code === "ArrowUp" ||
-      e.code === "ArrowDown" ||
-      e.code === "Enter"
-    ) {
+    if (e.code === "ArrowUp") {
+      e.preventDefault();
+      removeItemIdFromUrl();
+      moveUp();
+      return;
+    }
+
+    if (e.code === "ArrowDown") {
+      e.preventDefault();
+      removeItemIdFromUrl();
+      moveDown();
+      return;
+    }
+
+    if (!onKeyDown || e.code === "Enter") {
       return;
     }
 
@@ -92,9 +102,7 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
               }
 
               setActiveItemId(item.id);
-
-              searchParams.delete(knownQueryParams.selectedItemId);
-              setSearchParams(searchParams);
+              removeItemIdFromUrl();
             }}
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
@@ -127,6 +135,15 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
       ) : null}
     </Host>
   );
+
+  function removeItemIdFromUrl() {
+    if (!searchParams.get(knownQueryParams.selectedItemId)) {
+      return;
+    }
+
+    searchParams.delete(knownQueryParams.selectedItemId);
+    setSearchParams(searchParams);
+  }
 };
 
 const RenderItem = React.memo(
