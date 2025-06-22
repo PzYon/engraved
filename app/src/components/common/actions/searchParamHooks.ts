@@ -1,8 +1,10 @@
+import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export const knownQueryParams = {
-  selectedItemIdParam: "selected-item",
+  selectedItemId: "selected-item",
   actionKey: "action-key",
+  favoritesOnly: "favorites-only",
 };
 
 export type ActionKey =
@@ -19,7 +21,7 @@ export function getItemActionQueryParams(
 ) {
   return {
     [knownQueryParams.actionKey]: actionKey,
-    [knownQueryParams.selectedItemIdParam]: actionItemId,
+    [knownQueryParams.selectedItemId]: actionItemId,
   };
 }
 
@@ -30,37 +32,14 @@ export const useItemAction = () => {
     getParams: () => {
       return getItemActionQueryParams(
         searchParams.get(knownQueryParams.actionKey) as ActionKey,
-        searchParams.get(knownQueryParams.selectedItemIdParam),
+        searchParams.get(knownQueryParams.selectedItemId),
       );
     },
 
     closeAction: () => {
       searchParams.delete(knownQueryParams.actionKey);
-      searchParams.delete(knownQueryParams.selectedItemIdParam);
+      searchParams.delete(knownQueryParams.selectedItemId);
       setSearchParams(searchParams);
-    },
-
-    openAction: (actionItemId: string, actionKey: ActionKey) => {
-      searchParams.set(knownQueryParams.actionKey, actionKey);
-      searchParams.set(knownQueryParams.selectedItemIdParam, actionItemId);
-      setSearchParams(searchParams);
-    },
-  };
-};
-
-export const useSelectedItemId = () => {
-  return useEngravedSearchParam(knownQueryParams.selectedItemIdParam);
-};
-
-export const useEngravedSearchParam = (key: string) => {
-  const customSearchParams = useEngravedSearchParams();
-
-  return {
-    setValue: (value: string) => {
-      customSearchParams.appendSearchParams({ [key]: value });
-    },
-    getValue: () => {
-      return customSearchParams.getSearchParam(key);
     },
   };
 };
@@ -68,47 +47,58 @@ export const useEngravedSearchParam = (key: string) => {
 export const useEngravedSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  return {
-    getSearchParam: (key: string) => searchParams.get(key),
+  const getSearchParam = useCallback(
+    (key: string) => searchParams.get(key),
+    [searchParams],
+  );
 
-    appendSearchParams: (params: Record<string, string>) => {
-      const newSearchParams = getNewSearchParams(params);
-
-      if (newSearchParams.toString() === searchParams.toString()) {
-        return;
-      }
-
-      setSearchParams(newSearchParams);
-    },
-  };
-
-  function cloneSearchParams() {
+  const cloneSearchParams = useCallback(() => {
     const newestSearchParams: Record<string, string> = {};
     searchParams.forEach((v, k) => {
       newestSearchParams[k] = v;
     });
-
     return new URLSearchParams({ ...newestSearchParams });
-  }
+  }, [searchParams]);
 
-  function getNewSearchParams(params: Record<string, string>) {
-    const newSearchParams = cloneSearchParams();
+  const getNewSearchParams = useCallback(
+    (params: Record<string, string>) => {
+      const newSearchParams = cloneSearchParams();
 
-    for (const key in params) {
-      const value = params[key];
+      for (const key in params) {
+        const value = params[key];
 
-      if (
-        value === null ||
-        value === undefined ||
-        value === "" ||
-        value === "false"
-      ) {
-        newSearchParams.delete(key);
-      } else {
-        newSearchParams.set(key, value);
+        if (
+          value === null ||
+          value === undefined ||
+          value === "" ||
+          value === "false"
+        ) {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, value);
+        }
       }
-    }
 
-    return newSearchParams;
-  }
+      return newSearchParams;
+    },
+    [cloneSearchParams],
+  );
+
+  const appendSearchParams = useCallback(
+    (params: Record<string, string>) => {
+      const currentSearchParams = searchParams.toString();
+      const newSearchParams = getNewSearchParams(params);
+      const updatedSearchParams = newSearchParams.toString();
+
+      if (updatedSearchParams !== currentSearchParams) {
+        setSearchParams(newSearchParams);
+      }
+    },
+    [searchParams, setSearchParams, getNewSearchParams],
+  );
+
+  return {
+    getSearchParam,
+    appendSearchParams,
+  };
 };

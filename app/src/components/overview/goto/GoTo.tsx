@@ -2,17 +2,20 @@ import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
 import { PageSection } from "../../layout/pages/PageSection";
 import { OverviewList } from "../overviewList/OverviewList";
-import { OverviewItemCollection } from "../overviewList/wrappers/OverviewItemCollection";
 import { GoToTextField } from "./GoToTextField";
 import { GoToItemRow } from "./GoToItemRow";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
+import {
+  knownQueryParams,
+  useEngravedSearchParams,
+} from "../../common/actions/searchParamHooks";
 import { JournalIcon } from "../journals/JournalIcon";
 import { IconStyle } from "../../common/IconStyle";
 import { Icon } from "../../common/Icon";
 import { Check, Notes, SearchOutlined } from "@mui/icons-material";
 import { useGoToNavigationItems } from "./useGoToNavigationItems";
 import { useDebounced } from "../../common/useDebounced";
+import { RefObject, useRef } from "react";
 
 const emptyListItemId = "empty-list-item-id";
 
@@ -22,6 +25,8 @@ export const GoTo: React.FC = () => {
 
   const debouncedSearchText = useDebounced(searchText);
   const goto = useGoToNavigationItems(debouncedSearchText);
+
+  const inputRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   if (!goto.items.length && searchText) {
     goto.items.push({
@@ -33,13 +38,22 @@ export const GoTo: React.FC = () => {
     <PageSection>
       <OverviewList
         items={goto.items}
-        renderBeforeList={(collection: OverviewItemCollection) => (
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            return;
+          }
+
+          inputRef?.current.focus();
+          appendSearchParams({ q: getValue(searchText, e.key) });
+        }}
+        renderBeforeList={(selectItem) => (
           <GoToTextField
-            collection={collection}
-            value={searchText}
+            initialValue={searchText}
             onChange={(value) => {
               appendSearchParams({ q: value });
             }}
+            inputRef={inputRef}
+            onDownKey={() => selectItem(0)}
           />
         )}
         renderItem={(entity: IEntity, _: number, hasFocus: boolean) => {
@@ -83,6 +97,17 @@ export const GoTo: React.FC = () => {
   }
 };
 
+function getValue(value: string, key: string): string {
+  if (key === "Backspace" || key === "Delete") {
+    return value.substring(0, value.length - 1);
+  } else if (key.length === 1) {
+    return value + key;
+  } else {
+    // do nothing in case we don't know what ;)
+    return value;
+  }
+}
+
 const ScrapEntryGoToItemRow: React.FC<{
   scrapEntry: IScrapEntry;
   journal: IJournal;
@@ -95,7 +120,7 @@ const ScrapEntryGoToItemRow: React.FC<{
           {scrapEntry.scrapType === "List" ? <Check /> : <Notes />}
         </Icon>
       }
-      url={`/journals/details/${scrapEntry.parentId}?selected-item=${scrapEntry.id}`}
+      url={`/journals/details/${scrapEntry.parentId}?${knownQueryParams.selectedItemId}=${scrapEntry.id}`}
       hasFocus={hasFocus}
     >
       <span style={{ display: "flex", alignItems: "center" }}>

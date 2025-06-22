@@ -31,7 +31,6 @@ export const ScrapBody: React.FC<{
     actionsRenderStyle,
     journal,
     hasFocus,
-    giveFocus,
     parsedDate,
   } = useScrapContext();
 
@@ -45,7 +44,6 @@ export const ScrapBody: React.FC<{
         entry={scrapToRender}
         actions={getActions()}
         propsRenderStyle={propsRenderStyle}
-        giveFocus={giveFocus}
         noCompactFooter={!scrapToRender.id}
         propertyOverrides={
           parsedDate?.date
