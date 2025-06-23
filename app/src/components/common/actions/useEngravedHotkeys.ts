@@ -1,6 +1,22 @@
 import { DependencyList } from "react";
 import { HotkeyCallback, Options, useHotkeys } from "react-hotkeys-hook";
-import { Hotkey } from "react-hotkeys-hook/dist/types";
+
+export type Scopes = string | readonly string[];
+
+export type KeyboardModifiers = {
+  alt?: boolean;
+  ctrl?: boolean;
+  meta?: boolean;
+  shift?: boolean;
+  mod?: boolean;
+  useKey?: boolean;
+};
+export type Hotkey = KeyboardModifiers & {
+  keys?: readonly string[];
+  scopes?: Scopes;
+  description?: string;
+  isSequence?: boolean;
+};
 
 export function useEngravedHotkeys(
   hotkey: string | string[],
