@@ -1,21 +1,21 @@
 import React, { useEffect, useRef } from "react";
-import { styled } from "@mui/material";
+import { ClickAwayListener, styled } from "@mui/material";
 import {
   actionBorderWidth,
   paperBorderRadius,
 } from "../../../theming/engravedTheme";
+import { useItemAction } from "./searchParamHooks";
 
 export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
   shrinkWidthIfPossible?: boolean;
   growWidthIfPossible?: boolean;
-  giveFocus?: () => void;
-}> = ({ children, growWidthIfPossible, shrinkWidthIfPossible, giveFocus }) => {
+}> = ({ children, growWidthIfPossible, shrinkWidthIfPossible }) => {
   const domElement = useRef<HTMLDivElement>(undefined);
 
-  useEffect(() => {
-    giveFocus?.();
+  const { closeAction } = useItemAction();
 
+  useEffect(() => {
     const timer = window.setTimeout(() => {
       domElement.current?.scrollIntoView({
         block: "nearest",
@@ -25,7 +25,6 @@ export const NavigationActionContainer: React.FC<{
     }, 500);
 
     return () => window.clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -37,7 +36,9 @@ export const NavigationActionContainer: React.FC<{
           maxWidth: growWidthIfPossible ? "100%" : "500px",
         }}
       >
-        <InnerInner>{children}</InnerInner>
+        <ClickAwayListener onClickAway={closeAction} mouseEvent="onMouseUp">
+          <InnerInner>{children}</InnerInner>
+        </ClickAwayListener>
       </Inner>
     </Host>
   );

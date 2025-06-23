@@ -1,5 +1,4 @@
 import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
-import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { MoveScrapAction } from "../../details/scraps/MoveScrapAction";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { IEntry } from "../../../serverApi/IEntry";
@@ -12,12 +11,11 @@ import { NavigationActionContainer } from "../actions/NavigationActionContainer"
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
   render?: (child: React.ReactElement) => React.ReactElement;
-  giveFocus?: () => void;
-}> = ({ entry, render, giveFocus }) => {
+}> = ({ entry, render }) => {
   const { getParams } = useItemAction();
   const action = getParams();
 
-  if (action[knownQueryParams.selectedItemIdParam] !== entry.id) {
+  if (action[knownQueryParams.selectedItemId] !== entry.id) {
     return null;
   }
 
@@ -27,38 +25,28 @@ export const EntrySubRoutes: React.FC<{
     switch (action[knownQueryParams.actionKey]) {
       case "delete":
         return (
-          <NavigationActionContainer giveFocus={giveFocus}>
+          <NavigationActionContainer>
             <DeleteEntryAction entry={entry} />
           </NavigationActionContainer>
         );
 
       case "schedule":
         return (
-          <NavigationActionContainer giveFocus={giveFocus}>
+          <NavigationActionContainer>
             <EditScheduleAction entry={entry} />
-          </NavigationActionContainer>
-        );
-
-      case "notification-done":
-        return (
-          <NavigationActionContainer
-            shrinkWidthIfPossible={true}
-            giveFocus={giveFocus}
-          >
-            <NotificationDoneAction entry={entry} journal={null} />
           </NavigationActionContainer>
         );
 
       case "move":
         return (
-          <NavigationActionContainer giveFocus={giveFocus}>
+          <NavigationActionContainer>
             <MoveScrapAction entry={entry as IScrapEntry} />
           </NavigationActionContainer>
         );
 
       case "edit":
         return (
-          <NavigationActionContainer giveFocus={giveFocus}>
+          <NavigationActionContainer>
             <UpsertEntryAction entry={entry} />
           </NavigationActionContainer>
         );

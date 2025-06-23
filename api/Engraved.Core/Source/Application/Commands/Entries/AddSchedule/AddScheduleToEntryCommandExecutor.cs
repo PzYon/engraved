@@ -17,12 +17,19 @@ public class AddScheduleToEntryCommandExecutor(IUserScopedRepository repository)
 
     IEntry entry = (await repository.GetEntry(command.EntryId))!;
 
-    entry.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
+    if (command.NextOccurrence != null)
     {
-      NextOccurrence = command.NextOccurrence,
-      OnClickUrl = command.OnClickUrl?.Replace("new-entry-id", entry.Id),
-      Recurrence = command.Recurrence
-    };
+      entry.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
+      {
+        NextOccurrence = command.NextOccurrence,
+        OnClickUrl = command.OnClickUrl?.Replace("new-entry-id", entry.Id),
+        Recurrence = command.Recurrence
+      };
+    }
+    else
+    {
+      entry.Schedules.Remove(repository.CurrentUser.Value.Id!);
+    }
 
     await repository.UpsertEntry(entry);
 

@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import React from "react";
 import { useJournalContext } from "../JournalContext";
 
@@ -39,7 +33,7 @@ export const AttributeFilters: React.FC = () => {
               label={attribute.name}
               multiple
               value={keys}
-              onChange={(event: SelectChangeEvent<string[]>) => {
+              onChange={(event) => {
                 const selectedKeys = event.target.value as string[];
 
                 if (

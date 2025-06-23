@@ -41,6 +41,7 @@ export const ParseableDate: React.FC<{
         autoFocus={true}
         id={id}
         sx={{ width: "100%" }}
+        placeholder="Enter date"
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (e.key !== "Enter") {
             return;

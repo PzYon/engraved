@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { ListAlt, StarOutline } from "@mui/icons-material";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
@@ -8,19 +8,38 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getPageTabs } from "../../layout/tabs/getPageTabs";
 import { FilterMode } from "../../layout/pages/PageContext";
 import { IconStyle } from "../../common/IconStyle";
-import { useEngravedSearchParams } from "../../common/actions/searchParamHooks";
-
-const favoritesOnlyParamName = "favorites-only";
+import {
+  knownQueryParams,
+  useEngravedSearchParams,
+} from "../../common/actions/searchParamHooks";
 
 export const JournalsPage: React.FC = () => {
   const searchParams = useEngravedSearchParams();
 
   const favoritesOnly =
-    searchParams.getSearchParam(favoritesOnlyParamName) === "true";
+    searchParams.getSearchParam(knownQueryParams.favoritesOnly) === "true";
+
+  const actions = useMemo(() => {
+    return [
+      {
+        icon: <StarOutline fontSize="small" />,
+        label: "Show favorites only",
+        key: knownQueryParams.favoritesOnly,
+        onClick: () =>
+          searchParams.appendSearchParams({
+            [knownQueryParams.favoritesOnly]: String(!favoritesOnly),
+          }),
+        isNotActive: !favoritesOnly,
+      },
+      ActionFactory.newJournal(),
+    ];
+  }, [favoritesOnly, searchParams]);
+
+  const pageTabs = useMemo(() => getPageTabs("journals"), []);
 
   return (
     <Page
-      tabs={getPageTabs("journals")}
+      tabs={pageTabs}
       documentTitle={"Journals"}
       title={
         <PageTitle
@@ -32,19 +51,7 @@ export const JournalsPage: React.FC = () => {
           }
         />
       }
-      actions={[
-        {
-          icon: <StarOutline fontSize="small" />,
-          label: "Show favorites only",
-          key: favoritesOnlyParamName,
-          onClick: () =>
-            searchParams.appendSearchParams({
-              [favoritesOnlyParamName]: String(!favoritesOnly),
-            }),
-          isNotActive: !favoritesOnly,
-        },
-        ActionFactory.newJournal(),
-      ]}
+      actions={actions}
       filterMode={FilterMode.All}
     >
       <Journals favoritesOnly={favoritesOnly} />

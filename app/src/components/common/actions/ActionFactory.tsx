@@ -125,12 +125,17 @@ export class ActionFactory {
   static editJournalSchedule(
     journalId: string,
     enableHotkeys?: boolean,
+    hasSchedule?: boolean,
   ): IAction {
     return {
       hotkey: enableHotkeys ? "alt+t" : undefined,
       key: "edit-schedule",
       label: "Edit schedule",
-      icon: <EditNotificationsOutlined fontSize="small" />,
+      icon: hasSchedule ? (
+        <DoneOutlined fontSize="small" />
+      ) : (
+        <EditNotificationsOutlined fontSize="small" />
+      ),
       search: getItemActionQueryParams("schedule", journalId),
     };
   }
@@ -138,12 +143,17 @@ export class ActionFactory {
   static editEntryScheduleViaUrl(
     entryId: string,
     enableHotKeys?: boolean,
+    hasSchedule?: boolean,
   ): IAction {
     return {
       key: "edit-schedule",
       hotkey: enableHotKeys ? "alt+s" : undefined,
       label: "Edit schedule",
-      icon: <EditNotificationsOutlined fontSize="small" />,
+      icon: hasSchedule ? (
+        <DoneOutlined fontSize="small" />
+      ) : (
+        <EditNotificationsOutlined fontSize="small" />
+      ),
       search: getItemActionQueryParams("schedule", entryId),
     };
   }
@@ -283,32 +293,6 @@ export class ActionFactory {
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
       search: getItemActionQueryParams("delete", entry.id),
-    };
-  }
-
-  static markEntryScheduleAsDone(
-    entry: IEntry,
-    enableHotkeys?: boolean,
-  ): IAction {
-    return {
-      hotkey: enableHotkeys ? "alt+d" : undefined,
-      key: "mark-as-done",
-      label: "Mark as done",
-      icon: <DoneOutlined fontSize="small" />,
-      search: getItemActionQueryParams("notification-done", entry.id),
-    };
-  }
-
-  static markJournalScheduleAsDone(
-    journal: IJournal,
-    enableHotkey?: boolean,
-  ): IAction {
-    return {
-      key: "mark-as-done",
-      hotkey: enableHotkey ? "alt+d" : undefined,
-      icon: <DoneOutlined fontSize="small" />,
-      label: "Mark as done",
-      search: getItemActionQueryParams("notification-done", journal.id),
     };
   }
 

@@ -110,17 +110,10 @@ export const EditJournalPermissionsAction: React.FC<{
 };
 
 const AddNewContainer = styled("div")`
-  margin: ${(p) => p.theme.spacing(4)} 0 ${(p) => p.theme.spacing(2)} 0;
   display: flex;
   justify-items: center;
-
-  & > * {
-    margin-right: ${(p) => p.theme.spacing(2)};
-
-    &:last-of-type {
-      margin-right: 0;
-    }
-  }
+  margin: ${(p) => p.theme.spacing(4)} 0 ${(p) => p.theme.spacing(2)} 0;
+  gap: ${(p) => p.theme.spacing(2)};
 `;
 
 const NewPermissionsContainer = styled("div")`

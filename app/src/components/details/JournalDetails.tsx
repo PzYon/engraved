@@ -10,17 +10,13 @@ import { JournalEditPage } from "./edit/JournalEditPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { JournalViewPage } from "./JournalViewPage";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
-
-import { useRecentlyViewedJournals } from "../layout/menu/useRecentlyViewedJournals";
+import { addRecentlyViewedJournal } from "../layout/menu/useRecentlyViewedJournals";
 
 export const JournalDetailsEdit: React.FC = () => {
   const { journal } = useJournalContext();
 
-  const { addView } = useRecentlyViewedJournals();
-
   useEffect(() => {
-    addView(journal.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    addRecentlyViewedJournal(journal.id);
   }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (
@@ -33,11 +29,8 @@ export const JournalDetailsEdit: React.FC = () => {
 export const JournalDetailsView: React.FC = () => {
   const { journal } = useJournalContext();
 
-  const { addView } = useRecentlyViewedJournals();
-
   useEffect(() => {
-    addView(journal.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    addRecentlyViewedJournal(journal.id);
   }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (

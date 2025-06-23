@@ -1,6 +1,5 @@
 import { IJournal } from "../../../serverApi/IJournal";
 import { DeleteJournalAction } from "../../details/edit/DeleteJournalAction";
-import { NotificationDoneAction } from "../../details/NotificationDoneAction";
 import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPermissionsAction";
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
@@ -14,42 +13,31 @@ import { JournalType } from "../../../serverApi/JournalType";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
-  giveFocus?: () => void;
-}> = ({ journal, giveFocus }) => {
+}> = ({ journal }) => {
   const { getParams } = useItemAction();
 
-  if (getParams()[knownQueryParams.selectedItemIdParam] !== journal.id) {
+  if (getParams()[knownQueryParams.selectedItemId] !== journal.id) {
     return null;
   }
 
   switch (getParams()[knownQueryParams.actionKey]) {
     case "delete":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer>
           <DeleteJournalAction journal={journal} />
         </NavigationActionContainer>
       );
 
     case "permissions":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer>
           <EditJournalPermissionsAction journal={journal} />
-        </NavigationActionContainer>
-      );
-
-    case "notification-done":
-      return (
-        <NavigationActionContainer
-          shrinkWidthIfPossible={true}
-          giveFocus={giveFocus}
-        >
-          <NotificationDoneAction entry={null} journal={journal} />
         </NavigationActionContainer>
       );
 
     case "schedule":
       return (
-        <NavigationActionContainer giveFocus={giveFocus}>
+        <NavigationActionContainer>
           <EditScheduleAction journal={journal} />
         </NavigationActionContainer>
       );
@@ -58,7 +46,6 @@ export const JournalSubRoutes: React.FC<{
       return (
         <NavigationActionContainer
           growWidthIfPossible={journal.type === JournalType.Scraps}
-          giveFocus={giveFocus}
         >
           <UpsertEntryAction journal={journal} />
         </NavigationActionContainer>

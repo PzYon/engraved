@@ -73,5 +73,5 @@ function getGoogleScriptTag() {
 }
 
 function googlePrompt(): Promise<{ isSuccess: boolean }> {
-  return new Promise(() => google.accounts.id.prompt());
+  return new Promise((resolve) => google.accounts.id.prompt(resolve));
 }

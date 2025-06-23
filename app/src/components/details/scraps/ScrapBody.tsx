@@ -31,7 +31,6 @@ export const ScrapBody: React.FC<{
     actionsRenderStyle,
     journal,
     hasFocus,
-    giveFocus,
     parsedDate,
   } = useScrapContext();
 
@@ -45,7 +44,6 @@ export const ScrapBody: React.FC<{
         entry={scrapToRender}
         actions={getActions()}
         propsRenderStyle={propsRenderStyle}
-        giveFocus={giveFocus}
         noCompactFooter={!scrapToRender.id}
         propertyOverrides={
           parsedDate?.date
@@ -89,15 +87,16 @@ export const ScrapBody: React.FC<{
     ];
 
     if (!isEditMode) {
-      allActions.push(
-        ActionFactory.editEntryScheduleViaUrl(scrapToRender.id, hasFocus),
-      );
+      const hasSchedule = !!getScheduleForUser(scrapToRender, user.id)
+        ?.nextOccurrence;
 
-      if (getScheduleForUser(scrapToRender, user.id).nextOccurrence) {
-        allActions.push(
-          ActionFactory.markEntryScheduleAsDone(scrapToRender, hasFocus),
-        );
-      }
+      allActions.push(
+        ActionFactory.editEntryScheduleViaUrl(
+          scrapToRender.id,
+          hasFocus,
+          hasSchedule,
+        ),
+      );
     }
 
     allActions.push(saveAction);

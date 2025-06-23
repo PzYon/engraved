@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { FilterMode, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
@@ -16,117 +16,119 @@ export const Page: React.FC<{
   filterMode?: FilterMode;
   showFilters?: boolean;
   pageActionRoutes?: React.ReactElement;
-}> = ({
-  actions,
-  hideActions,
-  title,
-  subTitle,
-  documentTitle,
-  tabs,
-  children,
-  filterMode = FilterMode.None,
-  showFilters = false,
-  pageActionRoutes,
-}) => {
-  const {
-    setPageActions,
-    setPageActionRoutes,
-    setHideActions,
-    setTitle,
-    setSubTitle,
-    setDocumentTitle,
-    setFilterMode,
-    setShowFilters,
-    journalTypes,
-    setJournalTypes,
-    searchText,
-    setSearchText,
-    setTabs,
-  } = usePageContext();
+}> = memo(
+  ({
+    actions,
+    hideActions,
+    title,
+    subTitle,
+    documentTitle,
+    tabs,
+    children,
+    filterMode = FilterMode.None,
+    showFilters = false,
+    pageActionRoutes,
+  }) => {
+    const {
+      setPageActions,
+      setPageActionRoutes,
+      setHideActions,
+      setTitle,
+      setSubTitle,
+      setDocumentTitle,
+      setFilterMode,
+      setShowFilters,
+      journalTypes,
+      setJournalTypes,
+      searchText,
+      setSearchText,
+      setTabs,
+    } = usePageContext();
 
-  useEffect(() => {
-    if (actions === undefined) {
-      return;
-    }
-
-    setPageActions(actions);
-  }, [setPageActions, actions]);
-
-  useEffect(() => {
-    if (pageActionRoutes === undefined) {
-      return;
-    }
-
-    setPageActionRoutes(pageActionRoutes);
-  }, [setPageActionRoutes, pageActionRoutes]);
-
-  useEffect(() => setHideActions(hideActions), [hideActions, setHideActions]);
-
-  useEffect(() => {
-    if (tabs === undefined) {
-      return;
-    }
-
-    setTabs(tabs);
-  }, [setTabs, tabs]);
-
-  useEffect(() => {
-    if (title === undefined) {
-      return;
-    }
-
-    setTitle(title);
-  }, [setTitle, title]);
-
-  useEffect(() => setSubTitle(subTitle), [subTitle, setSubTitle]);
-
-  useEffect(
-    () => setDocumentTitle(documentTitle),
-    [documentTitle, setDocumentTitle],
-  );
-
-  useEffect(() => setFilterMode(filterMode), [filterMode, setFilterMode]);
-
-  useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  useEffect(() => {
-    return () => {
-      if (showFilters) {
-        setShowFilters(false);
+    useEffect(() => {
+      if (actions === undefined) {
+        return;
       }
 
-      if (filterMode !== FilterMode.None) {
-        setFilterMode(FilterMode.None);
+      setPageActions(actions);
+    }, [setPageActions, actions]);
+
+    useEffect(() => {
+      if (pageActionRoutes === undefined) {
+        return;
       }
 
-      if (searchText) {
-        setSearchText(null);
+      setPageActionRoutes(pageActionRoutes);
+    }, [setPageActionRoutes, pageActionRoutes]);
+
+    useEffect(() => setHideActions(hideActions), [hideActions, setHideActions]);
+
+    useEffect(() => {
+      if (tabs === undefined) {
+        return;
       }
 
-      if (journalTypes?.length) {
-        setJournalTypes([]);
+      setTabs(tabs);
+    }, [setTabs, tabs]);
+
+    useEffect(() => {
+      if (title === undefined) {
+        return;
       }
 
-      if (tabs?.length) {
-        setTabs([]);
-      }
+      setTitle(title);
+    }, [setTitle, title]);
 
-      if (Object.keys(searchParams ?? {}).length) {
-        setSearchParams({});
-      }
+    useEffect(() => setSubTitle(subTitle), [subTitle, setSubTitle]);
 
-      if (pageActionRoutes) {
-        setPageActionRoutes(null);
-      }
+    useEffect(
+      () => setDocumentTitle(documentTitle),
+      [documentTitle, setDocumentTitle],
+    );
 
-      if (actions?.length) {
-        setPageActions([]);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    useEffect(() => setFilterMode(filterMode), [filterMode, setFilterMode]);
 
-  return <FadeInContainer testId={"page"}>{children}</FadeInContainer>;
-};
+    useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    useEffect(() => {
+      return () => {
+        if (showFilters) {
+          setShowFilters(false);
+        }
+
+        if (filterMode !== FilterMode.None) {
+          setFilterMode(FilterMode.None);
+        }
+
+        if (searchText) {
+          setSearchText(null);
+        }
+
+        if (journalTypes?.length) {
+          setJournalTypes([]);
+        }
+
+        if (tabs?.length) {
+          setTabs([]);
+        }
+
+        if (Object.keys(searchParams ?? {}).length) {
+          setSearchParams({});
+        }
+
+        if (pageActionRoutes) {
+          setPageActionRoutes(null);
+        }
+
+        if (actions?.length) {
+          setPageActions([]);
+        }
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return <FadeInContainer testId={"page"}>{children}</FadeInContainer>;
+  },
+);

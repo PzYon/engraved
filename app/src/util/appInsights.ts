@@ -22,7 +22,7 @@ export function setUpAppInsights() {
 
 export function logExceptionToAppInsights(e: Error) {
   if (!enableAppInsights()) {
-    console.log("Logging to App Insights: " + e.message);
+    console.error("Logging to App Insights: " + e.message, e);
     return;
   }
 
