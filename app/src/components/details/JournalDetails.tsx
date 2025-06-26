@@ -17,7 +17,6 @@ export const JournalDetailsEdit: React.FC = () => {
 
   useEffect(() => {
     addRecentlyViewedJournal(journal.id);
-     
   }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (
@@ -32,7 +31,6 @@ export const JournalDetailsView: React.FC = () => {
 
   useEffect(() => {
     addRecentlyViewedJournal(journal.id);
-     
   }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (
