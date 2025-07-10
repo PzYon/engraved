@@ -22,7 +22,7 @@
   "author": "PzYon",
   "license": "ISC",
   "dependencies": {
-    "@playwright/test": "1.53.2",
+    "@playwright/test": "1.54.0",
     "@types/node": "22.16.2",
     "@typescript-eslint/eslint-plugin": "8.36.0",
     "@typescript-eslint/parser": "8.36.0",
