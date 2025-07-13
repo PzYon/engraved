@@ -1,7 +1,8 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { createSearchParams, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
+import { useEngravedSearchParams } from "./searchParamHooks";
 
 export const ActionLink: React.FC<{
   action: IAction;
@@ -12,12 +13,14 @@ export const ActionLink: React.FC<{
 
   const navigate = useNavigate();
 
+  const { getNewSearchParams } = useEngravedSearchParams();
+
   useEngravedHotkeys(
     action.hotkey,
     () => {
       navigate({
         pathname: action.href,
-        search: createSearchParams(action.search).toString(),
+        search: getNewSearchParams(action.search).toString(),
       });
     },
     {
@@ -36,7 +39,10 @@ export const ActionLink: React.FC<{
   if (isAbsoluteUrl) {
     return (
       <a
-        href={new URL(getUrlSearchParams(), action.href).toString()}
+        href={new URL(
+          getNewSearchParams(action.search).toString(),
+          action.href,
+        ).toString()}
         style={style}
         target="_blank"
         rel="noopener noreferrer"
@@ -51,7 +57,7 @@ export const ActionLink: React.FC<{
     <Link
       to={{
         pathname: action.href,
-        search: getUrlSearchParams(),
+        search: getNewSearchParams(action.search).toString(),
       }}
       onClick={(e) => e.stopPropagation()}
       style={style}
@@ -63,9 +69,5 @@ export const ActionLink: React.FC<{
 
   function getChildren() {
     return children ?? action.icon;
-  }
-
-  function getUrlSearchParams() {
-    return new URLSearchParams(action.search).toString();
   }
 };

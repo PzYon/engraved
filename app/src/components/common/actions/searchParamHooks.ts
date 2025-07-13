@@ -86,12 +86,10 @@ export const useEngravedSearchParams = () => {
 
   const appendSearchParams = useCallback(
     (params: Record<string, string>) => {
-      const currentSearchParams = searchParams.toString();
-      const newSearchParams = getNewSearchParams(params);
-      const updatedSearchParams = newSearchParams.toString();
+      const updatedSearchParams = getNewSearchParams(params);
 
-      if (updatedSearchParams !== currentSearchParams) {
-        setSearchParams(newSearchParams);
+      if (updatedSearchParams.toString() !== searchParams.toString()) {
+        setSearchParams(updatedSearchParams);
       }
     },
     [searchParams, setSearchParams, getNewSearchParams],
@@ -99,6 +97,7 @@ export const useEngravedSearchParams = () => {
 
   return {
     getSearchParam,
+    getNewSearchParams,
     appendSearchParams,
   };
 };

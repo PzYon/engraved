@@ -60,14 +60,14 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
     switch (e.code) {
       case "ArrowUp": {
         e.preventDefault();
-        removeItemIdFromUrl();
+        removeItemParamsFromUrl();
         moveUp();
         break;
       }
 
       case "ArrowDown": {
         e.preventDefault();
-        removeItemIdFromUrl();
+        removeItemParamsFromUrl();
         moveDown();
         break;
       }
@@ -106,7 +106,7 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
               }
 
               setActiveItemId(item.id);
-              removeItemIdFromUrl();
+              removeItemParamsFromUrl();
             }}
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
@@ -140,12 +140,16 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
     </Host>
   );
 
-  function removeItemIdFromUrl() {
-    if (!searchParams.get(knownQueryParams.selectedItemId)) {
+  function removeItemParamsFromUrl() {
+    if (
+      !searchParams.get(knownQueryParams.selectedItemId) &&
+      !searchParams.get(knownQueryParams.actionKey)
+    ) {
       return;
     }
 
     searchParams.delete(knownQueryParams.selectedItemId);
+    searchParams.delete(knownQueryParams.actionKey);
     setSearchParams(searchParams);
   }
 };
