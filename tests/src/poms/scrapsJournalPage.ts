@@ -14,4 +14,13 @@ export class ScrapsJournalPage extends JournalPage {
 
     return new ScrapListComponent(this.page);
   }
+
+  async addMarkdownWithTitle(title: string) {
+    await this.clickPageAction("Add entry");
+
+    await this.page.getByRole("textbox", { name: "Title" }).click();
+    await this.page.getByRole("textbox", { name: "Title" }).fill(title);
+    await this.page.getByRole("textbox", { name: "Title" }).press("Alt+s");
+    await this.page.waitForTimeout(1000);
+  }
 }
