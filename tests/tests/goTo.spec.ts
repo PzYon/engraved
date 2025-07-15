@@ -18,16 +18,12 @@ test("search in go to, use cursor down, use enter to navigate to scrap", async (
   await scrapsJournalPage.addMarkdownWithTitle("QB 2: Josh Allen");
 
   const goToPage = await scrapsJournalPage.navigateToGoToPage();
-  await goToPage.typeText("q");
   await goToPage.typeText("qb");
 
-  // wait for debounce
-  await page.waitForTimeout(1000);
+  await goToPage.expectNumberOfItems(3);
 
   await goToPage.arrowDown();
   await goToPage.selectCurrent();
-
-  await page.waitForTimeout(1000);
 
   await scrapsJournalPage.expectPageTitle("List of QBs");
 });

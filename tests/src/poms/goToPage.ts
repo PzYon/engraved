@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 
 export class GoToPage {
   constructor(private page: Page) {}
@@ -23,6 +23,10 @@ export class GoToPage {
 
   async selectCurrent() {
     await this.getFocusedElement().press("Enter");
+  }
+
+  async expectNumberOfItems(expected: number) {
+    await expect(this.page.getByRole("listitem")).toHaveCount(expected);
   }
 
   private getFocusedElement() {
