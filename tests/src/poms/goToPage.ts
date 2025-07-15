@@ -9,24 +9,28 @@ export class GoToPage {
     await this.page.getByRole("button", { name: "Create" }).click();
   }
 
+  async expectNumberOfItems(expected: number) {
+    await expect(this.page.getByRole("listitem")).toHaveCount(expected);
+  }
+
   async typeText(text: string) {
     await this.page.getByRole("textbox", { name: "Go to" }).fill(text);
   }
 
   async arrowDown() {
-    await this.getFocusedElement().press("ArrowDown");
+    await this.pressKey("ArrowDown");
   }
 
   async arrowUp() {
-    await this.getFocusedElement().press("ArrowUp");
+    await this.pressKey("ArrowUp");
   }
 
   async selectCurrent() {
-    await this.getFocusedElement().press("Enter");
+    await this.pressKey("Enter");
   }
 
-  async expectNumberOfItems(expected: number) {
-    await expect(this.page.getByRole("listitem")).toHaveCount(expected);
+  private async pressKey(key: string) {
+    await this.getFocusedElement().press(key);
   }
 
   private getFocusedElement() {

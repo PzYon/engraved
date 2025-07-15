@@ -21,6 +21,10 @@ export class ScrapsJournalPage extends JournalPage {
     await this.page.getByRole("textbox", { name: "Title" }).click();
     await this.page.getByRole("textbox", { name: "Title" }).fill(title);
     await this.page.getByRole("textbox", { name: "Title" }).press("Alt+s");
-    await this.page.waitForTimeout(1000);
+
+    const appBar = this.page.getByTestId("app-alert-bar");
+    await expect(appBar.getByText("Added entry")).toBeVisible();
+
+    await this.page.waitForTimeout(500);
   }
 }
