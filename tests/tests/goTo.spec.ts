@@ -30,10 +30,17 @@ test("search in go to, use cursor down, use enter to navigate to scrap", async (
 test("initially shows recent journals, navigates with click", async ({
   page,
 }) => {
-  await addNewJournal(page, "Scraps", "Kansas City Chiefs");
-  await addNewJournal(page, "Scraps", "Buffalo Bills");
-  await addNewJournal(page, "Scraps", "Philadelphia Eagles");
-  await addNewJournal(page, "Scraps", "Cincinnati Bengals");
+  let journalPage = await addNewJournal(page, "Scraps", "Kansas City Chiefs");
+  await journalPage.navigateToHome();
+
+  journalPage = await addNewJournal(page, "Scraps", "Buffalo Bills");
+  await journalPage.navigateToHome();
+
+  journalPage = await addNewJournal(page, "Scraps", "Philadelphia Eagles");
+  await journalPage.navigateToHome();
+
+  journalPage = await addNewJournal(page, "Scraps", "Cincinnati Bengals");
+  await journalPage.navigateToHome();
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   const goToPage = await scrapsJournalPage.navigateToGoToPage();
