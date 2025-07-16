@@ -24,7 +24,6 @@ export class ScrapsJournalPage extends JournalPage {
 
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar.getByText("Added entry")).toBeVisible();
-
-    await this.page.waitForTimeout(500);
+    await expect(appBar).not.toBeVisible({ timeout: 10000 });
   }
 }

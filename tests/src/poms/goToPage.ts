@@ -3,12 +3,6 @@ import { expect, Page } from "@playwright/test";
 export class GoToPage {
   constructor(private page: Page) {}
 
-  async addJournal(name: string) {
-    await this.page.getByRole("link", { name: "Add journal" }).click();
-    await this.page.getByRole("textbox", { name: "Name" }).fill(name);
-    await this.page.getByRole("button", { name: "Create" }).click();
-  }
-
   async expectNumberOfItems(expected: number) {
     await expect(this.page.getByRole("listitem")).toHaveCount(expected);
   }
