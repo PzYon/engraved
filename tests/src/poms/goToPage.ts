@@ -7,6 +7,11 @@ export class GoToPage {
     await expect(this.page.getByRole("listitem")).toHaveCount(expected);
   }
 
+  async expectItemText(index: number, expectedText: string) {
+    const item = this.page.getByRole("listitem").nth(index);
+    await expect(item).toHaveText(expectedText);
+  }
+
   async typeText(text: string) {
     await this.page.getByRole("textbox", { name: "Go to" }).fill(text);
   }

@@ -26,3 +26,21 @@ test("search in go to, use cursor down, use enter to navigate to scrap", async (
 
   await scrapsJournalPage.expectPageTitle("List of QBs");
 });
+
+test("initially shows recent journals, navigates with click", async ({
+  page,
+}) => {
+  await addNewJournal(page, "Scraps", "Kansas City Chiefs");
+  await addNewJournal(page, "Scraps", "Buffalo Bills");
+  await addNewJournal(page, "Scraps", "Philadelphia Eagles");
+  await addNewJournal(page, "Scraps", "Cincinnati Bengals");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  const goToPage = await scrapsJournalPage.navigateToGoToPage();
+
+  await goToPage.expectNumberOfItems(4);
+  await goToPage.expectItemText(0, "Cincinnati Bengals");
+  await goToPage.expectItemText(1, "Philadelphia Eagles");
+  await goToPage.expectItemText(2, "Buffalo Bills");
+  await goToPage.expectItemText(3, "Kansas City Chiefs");
+});
