@@ -2,7 +2,6 @@ import { expect, Page } from "@playwright/test";
 import { clickPageAction } from "../utils/clickPageAction";
 import { AddQuickScrapPage } from "./addQuickScrapPage";
 import { GoToPage } from "./goToPage";
-import { JournalsPage } from "./journalsPage";
 
 export abstract class BasePage {
   constructor(protected page: Page) {}
@@ -29,11 +28,6 @@ export abstract class BasePage {
   async navigateToGoToPage() {
     await this.page.locator("body").press("Alt+.");
     return new GoToPage(this.page);
-  }
-
-  async navigateToHome() {
-    await this.page.locator("body").press("Alt+h");
-    return new JournalsPage(this.page);
   }
 
   async expectToShowEntity(id: string) {

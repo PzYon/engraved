@@ -4,12 +4,21 @@ export class GoToPage {
   constructor(private page: Page) {}
 
   async expectNumberOfItems(expected: number) {
-    await expect(this.page.getByRole("listitem")).toHaveCount(expected);
+    await expect(this.page.getByRole("listitem")).toHaveCount(expected, {
+      timeout: 1000,
+    });
   }
 
   async expectItemText(index: number, expectedText: string) {
-    const item = this.page.getByRole("listitem").nth(index);
-    await expect(item).toHaveText(expectedText);
+    await expect(this.getItemByIndex(index)).toHaveText(expectedText);
+  }
+
+  async clickItem(index: number) {
+    await this.getItemByIndex(index).click();
+  }
+
+  private getItemByIndex(index: number) {
+    return this.page.getByRole("listitem").nth(index);
   }
 
   async typeText(text: string) {
