@@ -10,7 +10,6 @@ test.beforeEach(async ({ page }) => {
 test("search in go to, use cursor down, use enter to navigate to scrap", async ({
   page,
 }) => {
-  // todo: would expect scrap, but returns a metric hardcoded
   await addNewJournal(page, "Scraps", "List of QBs");
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
