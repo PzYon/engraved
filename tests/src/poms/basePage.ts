@@ -1,6 +1,7 @@
 import { expect, Page } from "@playwright/test";
 import { clickPageAction } from "../utils/clickPageAction";
 import { AddQuickScrapPage } from "./addQuickScrapPage";
+import { GoToPage } from "./goToPage";
 
 export abstract class BasePage {
   constructor(protected page: Page) {}
@@ -22,6 +23,11 @@ export abstract class BasePage {
     await this.page.evaluate(() =>
       window.scrollTo(0, document.documentElement.scrollHeight),
     );
+  }
+
+  async navigateToGoToPage() {
+    await this.page.locator("body").press("Alt+.");
+    return new GoToPage(this.page);
   }
 
   async expectToShowEntity(id: string) {

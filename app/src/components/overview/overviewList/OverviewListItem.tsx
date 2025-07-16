@@ -11,7 +11,7 @@ export const OverviewListItem: React.FC<{
   hasFocus: boolean;
   onClick: () => void;
 }> = memo(({ children, item, hasFocus, onClick }) => {
-  const domElementRef = useRef<HTMLDivElement>(undefined);
+  const domElementRef = useRef<HTMLLIElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
 
@@ -61,10 +61,11 @@ export const OverviewListItem: React.FC<{
   );
 });
 
-const Host = styled("div")`
+const Host = styled("li")`
+  margin: 0;
+  border-radius: ${paperBorderRadius};
+
   &:focus {
     outline: 2px solid ${(p) => p.theme.palette.primary.main};
   }
-
-  border-radius: ${paperBorderRadius};
 `;

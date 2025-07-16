@@ -177,7 +177,10 @@ const RenderItem = React.memo(
   },
 );
 
-const Host = styled("div")`
+const Host = styled("ul")`
+  list-style: none;
+  padding: 0;
+
   // margin-top and -bottom needs to match with margin of
   // OverviewListItem in all modes (compact and non-compact)
 
