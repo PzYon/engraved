@@ -12,7 +12,8 @@ export class ScrapsJournalPage extends JournalPage {
 
     // why 3 times?
     //await this.page.getByLabel("Change type to list").click();
-    await this.page.getByLabel("Change type to list").click();
+    //await this.page.getByLabel("Change type to list").click();
+    await this.page.waitForTimeout(1000);
     await this.page.getByLabel("Change type to list").click();
 
     return new ScrapListComponent(this.page);
