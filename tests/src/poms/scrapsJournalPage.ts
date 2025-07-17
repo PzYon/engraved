@@ -11,7 +11,7 @@ export class ScrapsJournalPage extends JournalPage {
     await this.clickPageAction("Add entry");
 
     // why 3 times?
-    await this.page.getByLabel("Change type to list").click();
+    //await this.page.getByLabel("Change type to list").click();
     await this.page.getByLabel("Change type to list").click();
     await this.page.getByLabel("Change type to list").click();
 
