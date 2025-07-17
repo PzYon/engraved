@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 
@@ -42,7 +43,8 @@ public static class JournalDocumentMapper
         cfg.CreateMap<RecurrenceSubDocument, Recurrence>();
         cfg.CreateMap<ScheduleSubDocument, Schedule>();
         cfg.CreateMap<ThresholdDefinitionDocument, ThresholdDefinition>();
-      }
+      },
+      NullLoggerFactory.Instance
     );
 
     // configuration.AssertConfigurationIsValid();

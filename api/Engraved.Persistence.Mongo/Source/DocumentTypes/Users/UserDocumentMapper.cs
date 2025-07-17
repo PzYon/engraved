@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Engraved.Core.Domain.Users;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Users;
 
@@ -19,7 +20,8 @@ public static class UserDocumentMapper
             (document, context) => context.Mapper.Map<UserDocument, User>(document)!
           );
         cfg.CreateMap<UserDocument, User>();
-      }
+      },
+      NullLoggerFactory.Instance
     );
 
     // configuration.AssertConfigurationIsValid();

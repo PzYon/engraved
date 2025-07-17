@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Schedules;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
 
@@ -40,7 +41,8 @@ public static class EntryDocumentMapper
 
         cfg.CreateMap<RecurrenceSubDocument, Recurrence>();
         cfg.CreateMap<ScheduleSubDocument, Schedule>();
-      }
+      },    
+      NullLoggerFactory.Instance
     );
 
     configuration.AssertConfigurationIsValid();
