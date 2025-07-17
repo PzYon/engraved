@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using Engraved.Core.Domain.Users;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Users;
 
-public static class UserDocumentMapper
+public class UserDocumentMapper
 {
-  private static readonly IMapper Mapper;
+  private readonly IMapper mapper;
 
-  static UserDocumentMapper()
+  public UserDocumentMapper(ILoggerFactory loggerFactory)
   {
     var configuration = new MapperConfiguration(
       cfg =>
@@ -16,26 +17,25 @@ public static class UserDocumentMapper
         cfg.CreateMap<IUser, UserDocument>();
         cfg.CreateMap<User, UserDocument>();
         cfg.CreateMap<UserDocument, IUser>()
-          .ConstructUsing(
-            (document, context) => context.Mapper.Map<UserDocument, User>(document)!
+          .ConstructUsing((document, context) => context.Mapper.Map<UserDocument, User>(document)!
           );
         cfg.CreateMap<UserDocument, User>();
       },
-      NullLoggerFactory.Instance
+      loggerFactory
     );
 
     // configuration.AssertConfigurationIsValid();
 
-    Mapper = configuration.CreateMapper();
+    mapper = configuration.CreateMapper();
   }
 
-  public static UserDocument ToDocument(IUser user)
+  public UserDocument ToDocument(IUser user)
   {
-    return Mapper.Map<UserDocument>(user)!;
+    return mapper.Map<UserDocument>(user)!;
   }
 
-  public static IUser FromDocument(UserDocument document)
+  public IUser FromDocument(UserDocument document)
   {
-    return Mapper.Map<IUser>(document)!;
+    return mapper.Map<IUser>(document)!;
   }
 }

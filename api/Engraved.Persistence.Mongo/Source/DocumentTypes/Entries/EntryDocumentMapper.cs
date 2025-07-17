@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Schedules;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
 
-public static class EntryDocumentMapper
+public class EntryDocumentMapper
 {
-  private static readonly IMapper Mapper;
+  private readonly IMapper mapper;
 
-  static EntryDocumentMapper()
+  public EntryDocumentMapper(ILoggerFactory loggerFactory)
   {
     var configuration = new MapperConfiguration(
       cfg =>
@@ -41,25 +42,25 @@ public static class EntryDocumentMapper
 
         cfg.CreateMap<RecurrenceSubDocument, Recurrence>();
         cfg.CreateMap<ScheduleSubDocument, Schedule>();
-      },    
-      NullLoggerFactory.Instance
+      },
+      loggerFactory
     );
 
     configuration.AssertConfigurationIsValid();
 
-    Mapper = configuration.CreateMapper();
+    mapper = configuration.CreateMapper();
   }
 
-  public static EntryDocument ToDocument(IEntry journal)
+  public EntryDocument ToDocument(IEntry journal)
   {
-    return Mapper.Map<EntryDocument>(journal)!;
+    return mapper.Map<EntryDocument>(journal)!;
   }
 
-  public static TEntry FromDocument<TEntry>(EntryDocument? document)
+  public TEntry FromDocument<TEntry>(EntryDocument? document)
     where TEntry : class, IEntry
   {
     return document == null
       ? null!
-      : (TEntry)Mapper.Map(document, document.GetType(), typeof(TEntry))!;
+      : (TEntry)mapper.Map(document, document.GetType(), typeof(TEntry))!;
   }
 }

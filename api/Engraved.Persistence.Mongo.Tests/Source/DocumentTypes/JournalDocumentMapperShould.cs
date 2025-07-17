@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Engraved.Core.Domain.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using MongoDB.Bson;
 using NUnit.Framework;
 
@@ -27,7 +28,7 @@ public class JournalDocumentMapperShould
       EditedOn = DateTime.UtcNow
     };
 
-    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(counterJournal);
+    JournalDocument journalDocument = new JournalDocumentMapper(NullLoggerFactory.Instance).ToDocument(counterJournal);
 
     var createdJournal = journalDocument as CounterJournalDocument;
     createdJournal.Should().NotBeNull();
@@ -46,7 +47,7 @@ public class JournalDocumentMapperShould
       Name = Name
     };
 
-    var journal = JournalDocumentMapper.FromDocument<IJournal>(counterJournalDocument);
+    var journal = new JournalDocumentMapper(NullLoggerFactory.Instance).FromDocument<IJournal>(counterJournalDocument);
 
     journal.Should().BeOfType<CounterJournal>();
     journal.Type.Should().Be(JournalType.Counter);
@@ -64,7 +65,7 @@ public class JournalDocumentMapperShould
       Notes = Notes
     };
 
-    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(gaugeJournal);
+    JournalDocument journalDocument = new JournalDocumentMapper(NullLoggerFactory.Instance).ToDocument(gaugeJournal);
 
     var createdJournal = journalDocument as GaugeJournalDocument;
     createdJournal.Should().NotBeNull();
@@ -83,7 +84,7 @@ public class JournalDocumentMapperShould
       Notes = Notes
     };
 
-    var journal = JournalDocumentMapper.FromDocument<IJournal>(gaugeJournalDocument);
+    var journal = new JournalDocumentMapper(NullLoggerFactory.Instance).FromDocument<IJournal>(gaugeJournalDocument);
 
     journal.Should().BeOfType<GaugeJournal>();
     journal.Type.Should().Be(JournalType.Gauge);
@@ -114,7 +115,7 @@ public class JournalDocumentMapperShould
       StartDate = startDate
     };
 
-    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(timerJournal);
+    JournalDocument journalDocument = new JournalDocumentMapper(NullLoggerFactory.Instance).ToDocument(timerJournal);
 
     var createdJournal = journalDocument as TimerJournalDocument;
     createdJournal.Should().NotBeNull();
@@ -143,7 +144,7 @@ public class JournalDocumentMapperShould
       StartDate = startDate
     };
 
-    var journal = JournalDocumentMapper.FromDocument<IJournal>(timerJournalDocument);
+    var journal = new JournalDocumentMapper(NullLoggerFactory.Instance).FromDocument<IJournal>(timerJournalDocument);
 
     var timerJournal = (TimerJournal)journal;
     timerJournal.Should().NotBeNull();
@@ -178,7 +179,7 @@ public class JournalDocumentMapperShould
       }
     };
 
-    JournalDocument document = JournalDocumentMapper.ToDocument(journal);
+    JournalDocument document = new JournalDocumentMapper(NullLoggerFactory.Instance).ToDocument(journal);
 
     document.Attributes.Should().NotBeNull();
     document.Attributes.Count.Should().Be(1);

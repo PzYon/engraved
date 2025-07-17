@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Engraved.Core.Domain.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using MongoDB.Bson;
 using NUnit.Framework;
 
@@ -24,7 +25,7 @@ public class EntryDocumentMapperShould
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
     };
 
-    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
+    EntryDocument document = new EntryDocumentMapper(NullLoggerFactory.Instance).ToDocument(entry);
 
     document.Should().NotBeNull();
     AssertEqual(entry, document);
@@ -43,7 +44,7 @@ public class EntryDocumentMapperShould
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
     };
 
-    var counterEntry = EntryDocumentMapper.FromDocument<CounterEntry>(document);
+    var counterEntry = new EntryDocumentMapper(NullLoggerFactory.Instance).FromDocument<CounterEntry>(document);
 
     AssertEqual(document, counterEntry);
   }
@@ -61,7 +62,7 @@ public class EntryDocumentMapperShould
       Value = 4.20
     };
 
-    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
+    EntryDocument document = new EntryDocumentMapper(NullLoggerFactory.Instance).ToDocument(entry);
 
     document.Should().NotBeNull();
 
@@ -85,7 +86,7 @@ public class EntryDocumentMapperShould
       Value = 4321
     };
 
-    var gaugeEntry = EntryDocumentMapper.FromDocument<GaugeEntry>(document);
+    var gaugeEntry = new EntryDocumentMapper(NullLoggerFactory.Instance).FromDocument<GaugeEntry>(document);
 
     AssertEqual(document, gaugeEntry);
   }
@@ -103,7 +104,7 @@ public class EntryDocumentMapperShould
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
 
-    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
+    EntryDocument document = new EntryDocumentMapper(NullLoggerFactory.Instance).ToDocument(entry);
 
     document.Should().NotBeNull();
 
@@ -129,7 +130,7 @@ public class EntryDocumentMapperShould
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
 
-    var timerEntry = EntryDocumentMapper.FromDocument<TimerEntry>(document);
+    var timerEntry = new EntryDocumentMapper(NullLoggerFactory.Instance).FromDocument<TimerEntry>(document);
 
     AssertEqual(document, timerEntry);
   }

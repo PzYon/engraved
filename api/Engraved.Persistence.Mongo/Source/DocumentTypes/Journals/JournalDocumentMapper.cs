@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 
-public static class JournalDocumentMapper
+public class JournalDocumentMapper
 {
-  private static readonly IMapper Mapper;
+  private readonly IMapper mapper;
 
-  static JournalDocumentMapper()
+public  JournalDocumentMapper(ILoggerFactory loggerFactory)
   {
     var configuration = new MapperConfiguration(
       cfg =>
@@ -44,23 +45,23 @@ public static class JournalDocumentMapper
         cfg.CreateMap<ScheduleSubDocument, Schedule>();
         cfg.CreateMap<ThresholdDefinitionDocument, ThresholdDefinition>();
       },
-      NullLoggerFactory.Instance
+      loggerFactory
     );
 
     // configuration.AssertConfigurationIsValid();
 
-    Mapper = configuration.CreateMapper();
+    mapper = configuration.CreateMapper();
   }
 
-  public static JournalDocument ToDocument(IJournal journal)
+  public JournalDocument ToDocument(IJournal journal)
   {
-    return Mapper.Map<JournalDocument>(journal)!;
+    return mapper.Map<JournalDocument>(journal)!;
   }
 
-  public static TJournal FromDocument<TJournal>(JournalDocument? document) where TJournal : class, IJournal
+  public TJournal FromDocument<TJournal>(JournalDocument? document) where TJournal : class, IJournal
   {
     return document == null
       ? null!
-      : (TJournal) Mapper.Map(document, document.GetType(), typeof(TJournal))!;
+      : (TJournal) mapper.Map(document, document.GetType(), typeof(TJournal))!;
   }
 }

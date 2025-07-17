@@ -2,6 +2,7 @@
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
+using Microsoft.Extensions.Logging.Abstractions;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -10,7 +11,7 @@ public class TestUserScopedMongoRepository(
   MongoDatabaseClient mongoDatabaseClient,
   ICurrentUserService currentUserService
 )
-  : UserScopedMongoRepository(mongoDatabaseClient, currentUserService)
+  : UserScopedMongoRepository(mongoDatabaseClient, currentUserService, NullLoggerFactory.Instance)
 {
   public IMongoCollection<JournalDocument> Journals => JournalsCollection;
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;
