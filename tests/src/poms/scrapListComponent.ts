@@ -20,7 +20,8 @@ export class ScrapListComponent {
       .getByRole("listitem")
       .getByRole("textbox")
       .last()
-      .fill(value, { force: true }); // todo: why do i need force here?
+      .fill(value);
+    //.fill(value, { force: true }); // todo: why do i need force here?
   }
 
   async addListItem(value: string) {

@@ -10,7 +10,10 @@ export class ScrapsJournalPage extends JournalPage {
   async addList() {
     await this.clickPageAction("Add entry");
 
-    await this.page.getByLabel("Change type to list", { exact: true }).click();
+    // why 3 times?
+    await this.page.getByLabel("Change type to list").click();
+    await this.page.getByLabel("Change type to list").click();
+    await this.page.getByLabel("Change type to list").click();
 
     return new ScrapListComponent(this.page);
   }
