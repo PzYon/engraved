@@ -32,9 +32,10 @@ if (isE2eTests)
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLogging(b => b.AddConsole());
+
 builder.Services
-  .AddControllers(
-    options =>
+  .AddControllers(options =>
     {
       options.Filters.Add<PerfFilter>();
       options.Filters.Add<HttpExceptionFilter>();
@@ -44,8 +45,7 @@ builder.Services
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-  option =>
+builder.Services.AddSwaggerGen(option =>
   {
     option.AddSecurityDefinition(
       "Bearer",
@@ -105,36 +105,35 @@ builder.Services.AddHostedService<ScheduledNotificationJob>();
 // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
 // we did nt have this at first and it actually had a bad influence
 // on performance.
-builder.Services.AddSingleton(
-  provider =>
+builder.Services.AddSingleton(provider =>
   {
     var logger = provider.GetService<ILogger<MongoRepository>>()!;
     return new MongoDatabaseClient(logger, CreateRepositorySettings(builder), GetMongoDbNameOverride());
   }
 );
 
-builder.Services.AddTransient<IBaseRepository>(
-  provider =>
+builder.Services.AddTransient<IBaseRepository>(provider =>
   {
     if (!UseInMemoryRepo())
     {
       var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
-      return new MongoRepository(mongoDbClient);
+      var loggerFactory = provider.GetService<ILoggerFactory>()!;
+      return new MongoRepository(mongoDbClient, loggerFactory);
     }
 
     return new InMemoryRepository();
   }
 );
 
-builder.Services.AddTransient<IUserScopedRepository>(
-  provider =>
+builder.Services.AddTransient<IUserScopedRepository>(provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
 
     if (!UseInMemoryRepo())
     {
       var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
-      return new UserScopedMongoRepository(mongoDbClient, userService);
+      var loggerFactory = provider.GetService<ILoggerFactory>()!;
+      return new UserScopedMongoRepository(mongoDbClient, userService, loggerFactory);
     }
 
     var inMemoryRepository = provider.GetService<InMemoryRepository>();
@@ -147,13 +146,9 @@ builder.Services.AddTransient<IUserScopedRepository>(
   }
 );
 
-builder.Services.AddTransient<Lazy<IUser>>(
-  provider => provider.GetService<IUserScopedRepository>()!.CurrentUser
-);
+builder.Services.AddTransient<Lazy<IUser>>(provider => provider.GetService<IUserScopedRepository>()!.CurrentUser);
 
-builder.Services.AddTransient<IRepository>(
-  provider => provider.GetService<IUserScopedRepository>()!
-);
+builder.Services.AddTransient<IRepository>(provider => provider.GetService<IUserScopedRepository>()!);
 
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
@@ -168,15 +163,13 @@ if (isE2eTests)
 }
 else
 {
-  builder.Services.AddAuthentication(
-      options =>
+  builder.Services.AddAuthentication(options =>
       {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
       }
     )
-    .AddJwtBearer(
-      options =>
+    .AddJwtBearer(options =>
       {
         options.RequireHttpsMetadata = false;
         options.SaveToken = true;

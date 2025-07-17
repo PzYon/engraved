@@ -9,12 +9,13 @@ using Engraved.Persistence.Mongo.DocumentTypes;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRepository
+public class MongoRepository(MongoDatabaseClient mongoDatabaseClient, ILoggerFactory loggerFactory) : IBaseRepository
 {
   private const string RandomDocId = "63f949da880b5bf2518be721";
 
@@ -23,6 +24,10 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   protected IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
   protected IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
 
+  private readonly UserDocumentMapper userDocumentMapper = new UserDocumentMapper(loggerFactory);
+  private readonly JournalDocumentMapper journalDocumentMapper = new JournalDocumentMapper(loggerFactory);
+  private readonly EntryDocumentMapper entryDocumentMapper = new EntryDocumentMapper(loggerFactory);
+  
   public virtual async Task<IUser?> GetUser(string? nameOrId)
   {
     if (string.IsNullOrEmpty(nameOrId))
@@ -38,7 +43,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(filterDefinition)
       .FirstOrDefaultAsync();
 
-    return UserDocumentMapper.FromDocument(document);
+    return userDocumentMapper.FromDocument(document);
   }
 
   public virtual async Task<UpsertResult> UpsertUser(IUser user)
@@ -57,7 +62,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(Builders<UserDocument>.Filter.Or(userIds.Distinct().Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
       .ToListAsync();
 
-    return users.Select(UserDocumentMapper.FromDocument).ToArray();
+    return users.Select(userDocumentMapper.FromDocument).ToArray();
   }
 
   public async Task<IUser[]> GetAllUsers()
@@ -66,7 +71,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(MongoUtil.GetAllDocumentsFilter<UserDocument>())
       .ToListAsync();
 
-    return users.Select(UserDocumentMapper.FromDocument).ToArray();
+    return users.Select(userDocumentMapper.FromDocument).ToArray();
   }
 
   public async Task<IJournal[]> GetAllJournals(
@@ -133,7 +138,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Limit(limit)
       .ToListAsync();
 
-    return journals.Select(JournalDocumentMapper.FromDocument<IJournal>).ToArray();
+    return journals.Select(journalDocumentMapper.FromDocument<IJournal>).ToArray();
   }
 
   public async Task<IJournal?> GetJournal(string journalId)
@@ -204,7 +209,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .ToListAsync();
 
     return entries
-      .Select(EntryDocumentMapper.FromDocument<IEntry>)
+      .Select(entryDocumentMapper.FromDocument<IEntry>)
       .ToArray();
   }
 
@@ -265,7 +270,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     );
 
     return entries
-      .Select(EntryDocumentMapper.FromDocument<IEntry>)
+      .Select(entryDocumentMapper.FromDocument<IEntry>)
       .ToArray();
   }
 
@@ -312,7 +317,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       await EntriesCollection
         .Find(
           Builders<EntryDocument>.Filter.And(
-            filters.Union(new[] { Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id)) })
+            filters.Union([Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id))])
           )
         )
         .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
@@ -325,7 +330,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   public virtual async Task<UpsertResult> UpsertJournal(IJournal journal)
   {
-    JournalDocument document = JournalDocumentMapper.ToDocument(journal);
+    JournalDocument document = journalDocumentMapper.ToDocument(journal);
 
     ReplaceOneResult? replaceOneResult = await JournalsCollection.ReplaceOneAsync(
       MongoUtil.GetDocumentByIdFilter<JournalDocument>(journal.Id),
@@ -371,7 +376,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   public virtual async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
     where TEntry : IEntry
   {
-    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
+    EntryDocument document = entryDocumentMapper.ToDocument(entry);
 
     ReplaceOneResult? replaceOneResult = await EntriesCollection.ReplaceOneAsync(
       MongoUtil.GetDocumentByIdFilter<EntryDocument>(entry.Id),
@@ -398,7 +403,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId))
       .FirstOrDefaultAsync();
 
-    return EntryDocumentMapper.FromDocument<IEntry>(document);
+    return entryDocumentMapper.FromDocument<IEntry>(document);
   }
 
   public async Task WakeMeUp()
@@ -472,7 +477,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   private async Task<UpsertResult> UpsertUserInternal(IUser user)
   {
-    UserDocument document = UserDocumentMapper.ToDocument(user);
+    UserDocument document = userDocumentMapper.ToDocument(user);
 
     IUser? existingUser = await GetUser(user.Name);
     if (existingUser != null && string.IsNullOrEmpty(user.Id))
@@ -500,7 +505,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(GetJournalDocumentByIdFilter<JournalDocument>(journalId, permissionKind))
       .FirstOrDefaultAsync();
 
-    return JournalDocumentMapper.FromDocument<IJournal>(document);
+    return journalDocumentMapper.FromDocument<IJournal>(document);
   }
 
   private FilterDefinition<TDocument> GetJournalDocumentByIdFilter<TDocument>(string journalId, PermissionKind kind)
