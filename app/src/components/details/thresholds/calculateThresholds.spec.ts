@@ -1,9 +1,9 @@
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
 import { calculateThresholds } from "./calculateThresholds";
-import { JournalType } from "../../../serverApi/JournalType";
 import { ThresholdScope } from "./ThresholdScope";
 import { ThresholdValue } from "./IThresholdValues";
 import { subDays } from "date-fns";
+import { GaugeJournalType } from "../../../journalTypes/GaugeJournalType";
 
 // https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
 jest.mock("../../../env/envSettings.ts", () => ({
@@ -12,18 +12,18 @@ jest.mock("../../../env/envSettings.ts", () => ({
 
 describe("calculateThresholds", () => {
   it("should do nothing with empty thresholds", () => {
-    const values = calculateThresholds(JournalType.Gauge, {}, []);
+    const values = calculateThresholds(new GaugeJournalType(), {}, []);
     expect(Object.keys(values).length).toBe(0);
   });
 
   it("should do nothing with null thresholds", () => {
-    const values = calculateThresholds(JournalType.Gauge, null, []);
+    const values = calculateThresholds(new GaugeJournalType(), null, []);
     expect(Object.keys(values).length).toBe(0);
   });
 
   it("should calculate all", () => {
     const values = calculateThresholds(
-      JournalType.Gauge,
+      new GaugeJournalType(),
       { "-": { "-": { value: 20, scope: ThresholdScope.All } } },
       [{ value: 10 } as IGaugeEntry, { value: 20 } as IGaugeEntry],
     );
@@ -39,7 +39,7 @@ describe("calculateThresholds", () => {
 
   it("should calculate per attribute", () => {
     const values = calculateThresholds(
-      JournalType.Gauge,
+      new GaugeJournalType(),
       {
         color: {
           yellow: { value: 5, scope: ThresholdScope.All },
@@ -89,7 +89,7 @@ describe("calculateThresholds", () => {
     const fromDate = subDays(now, 5);
 
     const values = calculateThresholds(
-      JournalType.Gauge,
+      new GaugeJournalType(),
       { "-": { "-": { value: 20, scope: ThresholdScope.Day } } },
       [
         { value: 10, dateTime: fromDate.toJSON() } as IGaugeEntry,
@@ -110,7 +110,7 @@ describe("calculateThresholds", () => {
     const fromDate = subDays(now, 5);
 
     const values = calculateThresholds(
-      JournalType.Gauge,
+      new GaugeJournalType(),
       { "-": { "-": { value: 31, scope: ThresholdScope.Month } } },
       [
         { value: 10, dateTime: fromDate.toJSON() } as IGaugeEntry,
@@ -131,7 +131,7 @@ describe("calculateThresholds", () => {
     const fromDate = subDays(now, 5);
 
     const values = calculateThresholds(
-      JournalType.Gauge,
+      new GaugeJournalType(),
       { "-": { "-": { value: 20, scope: ThresholdScope.All } } },
       [
         { value: 10, dateTime: fromDate.toJSON() } as IGaugeEntry,

@@ -1,13 +1,11 @@
-import { JournalType } from "../../../serverApi/JournalType";
 import { IJournalThresholdDefinitions } from "../../../serverApi/IJournalThresholdDefinitions";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IThresholdValues, ThresholdValue } from "./IThresholdValues";
-import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 import { IDateConditions } from "../JournalContext";
 
 export const calculateThresholds = (
-  journalType: JournalType,
+  journalType: IJournalType,
   thresholds: IJournalThresholdDefinitions,
   entries: IEntry[],
   dateConditions?: IDateConditions,
@@ -21,7 +19,7 @@ export const calculateThresholds = (
         thresholds,
         attributeKey,
         attributeValueKey,
-        JournalTypeFactory.create(journalType),
+        journalType,
         entries,
         dateConditions,
       );

@@ -6,6 +6,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import { calculateThresholds } from "./calculateThresholds";
 import { IDateConditions } from "../JournalContext";
 import { ThresholdScope } from "./ThresholdScope";
+import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 
 export const Thresholds: React.FC<{
   journal: IJournal;
@@ -25,7 +26,7 @@ export const Thresholds: React.FC<{
 }) => {
   const thresholdValues = useMemo(() => {
     return calculateThresholds(
-      journal.type,
+      JournalTypeFactory.create(journal.type),
       journal.thresholds,
       entries,
       dateConditions,
