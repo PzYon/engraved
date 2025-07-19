@@ -108,6 +108,7 @@ function createPieChart(
     entries,
     journal,
     groupByTime,
+    JournalTypeFactory.create(journal.type).isGroupable,
     attributeKey,
     chartUiProps,
   );
@@ -168,6 +169,7 @@ function createBarChart(
     entries,
     journal,
     groupByTime,
+    JournalTypeFactory.create(journal.type).isGroupable,
     attributeKey,
     chartUiProps,
   );

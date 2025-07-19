@@ -14,7 +14,14 @@ describe("createDataSets", () => {
     const journal: IJournal = createJournal();
     const entries: IEntry[] = createEntries();
 
-    const dataSets = createDataSets(entries, journal, GroupByTime.None, "", {});
+    const dataSets = createDataSets(
+      entries,
+      journal,
+      GroupByTime.None,
+      true,
+      "",
+      {},
+    );
 
     expect(dataSets.length).toBe(1);
     expect(dataSets[0].data.length).toBe(4);
@@ -28,6 +35,7 @@ describe("createDataSets", () => {
       entries,
       journal,
       GroupByTime.None,
+      true,
       "colors",
       {},
     );
