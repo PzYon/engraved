@@ -3,18 +3,15 @@ import { IJournal } from "../../../../serverApi/IJournal";
 import { consolidate, getValue } from "../consolidation/consolidate";
 import { GroupByTime } from "../consolidation/GroupByTime";
 import { ITransformedEntry } from "./ITransformedEntry";
-import { JournalTypeFactory } from "../../../../journalTypes/JournalTypeFactory";
 import { getUiSettings } from "../../../../util/journalUtils";
 
 export function transform(
   entries: IEntry[],
   journal: IJournal,
+  isGroupable: boolean,
   groupBy: GroupByTime,
 ): ITransformedEntry[] {
-  if (
-    JournalTypeFactory.create(journal.type).isGroupable &&
-    groupBy !== GroupByTime.None
-  ) {
+  if (isGroupable && groupBy !== GroupByTime.None) {
     return consolidate(entries, groupBy).map((m) => {
       const month = m.groupKey.month - 1;
       const day = m.groupKey.day || 1;

@@ -6,6 +6,7 @@ import { IDataSet } from "./IDataSet";
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
 import { IChartUiProps } from "../IChartProps";
 import { movingAverage } from "./movingAverage";
+import { JournalTypeFactory } from "../../../../journalTypes/JournalTypeFactory";
 
 export function createDataSets(
   entries: IEntry[],
@@ -34,7 +35,12 @@ function entriesToDataSet(
   attributeKey: string,
   chartUiProps: IChartUiProps,
 ): IDataSet {
-  let data = transform(entries, journal, groupByTime);
+  let data = transform(
+    entries,
+    journal,
+    JournalTypeFactory.create(journal.type).isGroupable,
+    groupByTime,
+  );
 
   if (chartUiProps?.rollingAverage > 0) {
     data = movingAverage(data, chartUiProps.rollingAverage);
