@@ -5,6 +5,7 @@ const config: Config.InitialOptions = {
   transform: {
     "^.+\\.tsx?$": "ts-jest",
   },
+  preset: "ts-jest",
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["./src/setupTests.ts"],
 };
