@@ -1,5 +1,5 @@
 import { DependencyList } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
+import { HotkeyCallback, Options, useHotkeys } from "react-hotkeys-hook";
 
 export type Scopes = string | readonly string[];
 
@@ -21,18 +21,14 @@ export type Hotkey = KeyboardModifiers & {
 
 export function useEngravedHotkeys(
   hotkey: string | string[],
-  callback: (x: unknown, y: unknown) => void,
+  callback: HotkeyCallback,
   options?: unknown | DependencyList,
   dependencies?: unknown | DependencyList,
 ) {
   useHotkeys(
     hotkey,
     (keyboardEvent: KeyboardEvent, hotkeysEvent: Hotkey) => {
-      if (
-        options &&
-        (options as unknown as Record<string, unknown>).preventDefault ===
-          undefined
-      ) {
+      if (options && (options as Options).preventDefault === undefined) {
         keyboardEvent.preventDefault();
       }
 
