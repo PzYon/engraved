@@ -12,7 +12,9 @@ import {
 import { JournalIcon } from "../journals/JournalIcon";
 import { IconStyle } from "../../common/IconStyle";
 import { Icon } from "../../common/Icon";
-import { Check, Notes, SearchOutlined } from "@mui/icons-material";
+import Check from "@mui/icons-material/Check";
+import Notes from "@mui/icons-material/Notes";
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { useGoToNavigationItems } from "./useGoToNavigationItems";
 import { useDebounced } from "../../common/useDebounced";
 import { RefObject, useRef } from "react";

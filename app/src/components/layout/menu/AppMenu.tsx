@@ -1,15 +1,13 @@
-import {
-  ExpandLess,
-  ExpandMore,
-  History,
-  List as ListIcon,
-  ListAlt,
-  NotificationsNone,
-  SearchOutlined,
-  Shortcut,
-  Star,
-  Style,
-} from "@mui/icons-material";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import History from "@mui/icons-material/History";
+import ListIcon from "@mui/icons-material/List";
+import ListAlt from "@mui/icons-material/ListAlt";
+import NotificationsNone from "@mui/icons-material/NotificationsNone";
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
+import Shortcut from "@mui/icons-material/Shortcut";
+import Star from "@mui/icons-material/Star";
+import Style from "@mui/icons-material/Style";
 import {
   Collapse,
   List,

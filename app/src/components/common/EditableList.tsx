@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { ActionIconButton } from "./actions/ActionIconButton";
 import { List, ListItem, ListItemText, styled, TextField } from "@mui/material";
-import {
-  AddCircleOutline,
-  Edit,
-  RemoveCircleOutline,
-} from "@mui/icons-material";
+import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
+import Edit from "@mui/icons-material/Edit";
+import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
 
 export interface IOption {
   key: string;

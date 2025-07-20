@@ -1,5 +1,5 @@
 import { JournalType } from "../serverApi/JournalType";
-import { TimerSharp } from "@mui/icons-material";
+import TimerSharp from "@mui/icons-material/TimerSharp";
 import { IJournalType } from "./IJournalType";
 import { ITimerEntry } from "../serverApi/ITimerEntry";
 import { DateFormat } from "../components/common/dateTypes";

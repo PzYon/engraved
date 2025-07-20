@@ -1,5 +1,5 @@
 import { JournalType } from "../serverApi/JournalType";
-import { PlusOneSharp } from "@mui/icons-material";
+import PlusOneSharp from "@mui/icons-material/PlusOneSharp";
 import { IJournalType } from "./IJournalType";
 import { IEntriesTableColumnDefinition } from "../components/details/entriesTable/IEntriesTableColumnDefinition";
 import { IJournal } from "../serverApi/IJournal";

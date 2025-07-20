@@ -3,7 +3,7 @@ import { PageTitle } from "../../layout/pages/PageTitle";
 import { Icon } from "../../common/Icon";
 import { IconStyle } from "../../common/IconStyle";
 import { FilterMode } from "../../layout/pages/PageContext";
-import { Style } from "@mui/icons-material";
+import Style from "@mui/icons-material/Style";
 import { useParams } from "react-router-dom";
 import React from "react";
 import { useAppContext } from "../../../AppContext";

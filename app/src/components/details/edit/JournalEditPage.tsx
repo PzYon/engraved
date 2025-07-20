@@ -12,7 +12,9 @@ import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/
 import { JournalPageTitle } from "../JournalPageTitle";
 import { EditPageFooterButtons } from "../../common/EditPageFooterButtons";
 import { getUiSettings } from "../../../util/journalUtils";
-import { PanToolOutlined, Preview, Style } from "@mui/icons-material";
+import PanToolOutlined from "@mui/icons-material/PanToolOutlined";
+import Preview from "@mui/icons-material/Preview";
+import Style from "@mui/icons-material/Style";
 
 export const JournalEditPage: React.FC = () => {
   const { journal } = useJournalContext();

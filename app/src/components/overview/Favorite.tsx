@@ -1,7 +1,8 @@
 import React from "react";
 import { useAppContext } from "../../AppContext";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
-import { Star, StarOutline } from "@mui/icons-material";
+import Star from "@mui/icons-material/Star";
+import StarOutline from "@mui/icons-material/StarOutline";
 import { useAddJournalToFavoritesMutation } from "../../serverApi/reactQuery/mutations/useAddJournalToFavoritesMutation";
 import { useRemoveJournalFromFavoritesMutation } from "../../serverApi/reactQuery/mutations/useRemoveJournalFromFavoritesMutation";
 import { styled } from "@mui/material";

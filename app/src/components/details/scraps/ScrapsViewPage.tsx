@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Scrap } from "./Scrap";
-import { SelfImprovementOutlined } from "@mui/icons-material";
+import SelfImprovementOutlined from "@mui/icons-material/SelfImprovementOutlined";
 import { useJournalContext } from "../JournalContext";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonJournalActions } from "../../overview/getCommonJournalActions";

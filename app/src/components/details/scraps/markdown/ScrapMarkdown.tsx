@@ -7,7 +7,7 @@ import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
-import { AutoFixHigh } from "@mui/icons-material";
+import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { getRawRowValues } from "./getRawRowValues";
 

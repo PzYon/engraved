@@ -1,4 +1,4 @@
-import { SwitchAccessShortcutOutlined } from "@mui/icons-material";
+import SwitchAccessShortcutOutlined from "@mui/icons-material/SwitchAccessShortcutOutlined";
 import { Dialog, styled, Typography } from "@mui/material";
 import React, { PropsWithChildren, ReactNode, Suspense, useState } from "react";
 

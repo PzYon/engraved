@@ -7,11 +7,9 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import {
-  ExpandLess,
-  ExpandMore,
-  RemoveCircleOutline,
-} from "@mui/icons-material";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
 import { ListItemTextField } from "./ListItemTextField";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 

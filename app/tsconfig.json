@@ -18,7 +18,8 @@
     "strictNullChecks": false,
     "paths": {
       "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
-    }
+    },
+    "types": ["vitest/globals"]
   },
   "include": ["src"]
 }

@@ -5,7 +5,8 @@ import {
 import React, { useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IJournalThresholdDefinitions } from "../../../serverApi/IJournalThresholdDefinitions";
-import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
+import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
 import { styled } from "@mui/material";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 

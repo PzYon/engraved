@@ -1,5 +1,5 @@
 import React from "react";
-import { LazyLoadSuspender } from "./lazyLoadComponent";
+import { LazyLoadSuspender } from "./LazyLoadSuspender";
 
 export interface IDateSelectorProps {
   setDate: (date: Date) => void;

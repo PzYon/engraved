@@ -1,4 +1,4 @@
-import { PsychologyAltOutlined } from "@mui/icons-material";
+import PsychologyAltOutlined from "@mui/icons-material/PsychologyAltOutlined";
 import React from "react";
 import { GenericEmptyPlaceholder } from "./GenericEmptyPlaceholder";
 
