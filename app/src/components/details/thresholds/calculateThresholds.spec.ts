@@ -6,7 +6,7 @@ import { ThresholdValue } from "./IThresholdValues";
 import { subDays } from "date-fns";
 
 // https://stackoverflow.com/questions/72128718/test-suite-failed-to-run-import-meta-env-vite
-jest.mock("../../../env/envSettings.ts", () => ({
+vi.mock("../../../env/envSettings.ts", () => ({
   isDev: true,
 }));
 
