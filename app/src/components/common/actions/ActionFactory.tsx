@@ -1,32 +1,30 @@
-import {
-  AddOutlined,
-  ClearOutlined,
-  Close,
-  ContentCopyOutlined,
-  DeleteOutlined,
-  DoneOutlined,
-  EditNotificationsOutlined,
-  EditOutlined,
-  ExpandLess,
-  ExpandMore,
-  FilterAltOutlined,
-  FormatLineSpacingOutlined,
-  FunctionsOutlined,
-  HistoryToggleOff,
-  MessageOutlined,
-  PanToolOutlined,
-  PlaylistAdd,
-  PlaylistAddOutlined,
-  Redo,
-  RefreshOutlined,
-  SaveOutlined,
-  SearchOutlined,
-  ShareOutlined,
-  Shortcut,
-  ShowChartOutlined,
-  SwitchAccessShortcutOutlined,
-  Toc,
-} from "@mui/icons-material";
+import AddOutlined from "@mui/icons-material/AddOutlined";
+import ClearOutlined from "@mui/icons-material/ClearOutlined";
+import Close from "@mui/icons-material/Close";
+import ContentCopyOutlined from "@mui/icons-material/ContentCopyOutlined";
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
+import DoneOutlined from "@mui/icons-material/DoneOutlined";
+import EditNotificationsOutlined from "@mui/icons-material/EditNotificationsOutlined";
+import EditOutlined from "@mui/icons-material/EditOutlined";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
+import FormatLineSpacingOutlined from "@mui/icons-material/FormatLineSpacingOutlined";
+import FunctionsOutlined from "@mui/icons-material/FunctionsOutlined";
+import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
+import MessageOutlined from "@mui/icons-material/MessageOutlined";
+import PanToolOutlined from "@mui/icons-material/PanToolOutlined";
+import PlaylistAdd from "@mui/icons-material/PlaylistAdd";
+import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
+import Redo from "@mui/icons-material/Redo";
+import RefreshOutlined from "@mui/icons-material/RefreshOutlined";
+import SaveOutlined from "@mui/icons-material/SaveOutlined";
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
+import ShareOutlined from "@mui/icons-material/ShareOutlined";
+import Shortcut from "@mui/icons-material/Shortcut";
+import ShowChartOutlined from "@mui/icons-material/ShowChartOutlined";
+import SwitchAccessShortcutOutlined from "@mui/icons-material/SwitchAccessShortcutOutlined";
+import Toc from "@mui/icons-material/Toc";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
