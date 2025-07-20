@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
-import { ListAlt, StarOutline } from "@mui/icons-material";
+import ListAlt from "@mui/icons-material/ListAlt";
+import StarOutline from "@mui/icons-material/StarOutline";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
 import { Icon } from "../../common/Icon";

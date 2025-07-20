@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useJournalContext } from "./JournalContext";
-import { LocalHotelOutlined } from "@mui/icons-material";
+import LocalHotelOutlined from "@mui/icons-material/LocalHotelOutlined";
 import { getCommonJournalActions } from "../overview/getCommonJournalActions";
 import { PageSection } from "../layout/pages/PageSection";
 import { JournalNotes } from "./edit/JournalNotes";

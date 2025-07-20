@@ -1,5 +1,5 @@
 import { JournalType } from "../serverApi/JournalType";
-import { DynamicFeedOutlined } from "@mui/icons-material";
+import DynamicFeedOutlined from "@mui/icons-material/DynamicFeedOutlined";
 import { IJournalType } from "./IJournalType";
 import { IEntriesTableColumnDefinition } from "../components/details/entriesTable/IEntriesTableColumnDefinition";
 import { IJournal } from "../serverApi/IJournal";

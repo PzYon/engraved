@@ -1,6 +1,6 @@
 import React from "react";
 import { Theme, useTheme } from "@mui/material";
-import { LazyLoadSuspender } from "../../../common/lazyLoadComponent";
+import { LazyLoadSuspender } from "../../../common/LazyLoadSuspender";
 
 export type KeyMappings = Record<string, () => void>;
 

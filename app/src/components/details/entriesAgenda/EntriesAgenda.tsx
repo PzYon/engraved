@@ -3,7 +3,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournal } from "../../../serverApi/IJournal";
 import { Chip, Paper, Typography } from "@mui/material";
-import { HistoryToggleOff } from "@mui/icons-material";
+import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { FormatDate } from "../../common/FormatDate";
 import { getSortedEntries } from "./getSortedEntries";

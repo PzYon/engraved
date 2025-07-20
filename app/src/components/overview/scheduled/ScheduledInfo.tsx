@@ -1,6 +1,6 @@
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
-import { ReplayOutlined } from "@mui/icons-material";
+import ReplayOutlined from "@mui/icons-material/ReplayOutlined";
 import { ISchedule } from "../../../serverApi/ISchedule";
 import React from "react";
 import { parseDate } from "../../details/edit/parseDate";

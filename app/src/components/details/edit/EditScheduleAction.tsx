@@ -22,7 +22,7 @@ import {
 import { ScheduledInfo } from "../../overview/scheduled/ScheduledInfo";
 import { ISchedule } from "../../../serverApi/ISchedule";
 import { Properties } from "../../common/Properties";
-import { EditNotificationsOutlined } from "@mui/icons-material";
+import EditNotificationsOutlined from "@mui/icons-material/EditNotificationsOutlined";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { isAfter } from "date-fns";
 
