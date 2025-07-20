@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IScrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
-import { DragIndicator, RemoveCircleOutline } from "@mui/icons-material";
+import DragIndicator from "@mui/icons-material/DragIndicator";
+import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";

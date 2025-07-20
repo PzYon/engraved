@@ -12,7 +12,7 @@ import { Icon } from "../../common/Icon";
 import { IconStyle } from "../../common/IconStyle";
 import { FilterMode } from "../../layout/pages/PageContext";
 import { Page } from "../../layout/pages/Page";
-import { PlaylistAddOutlined } from "@mui/icons-material";
+import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useNavigate, useSearchParams } from "react-router-dom";
 

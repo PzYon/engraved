@@ -6,7 +6,7 @@ import { PermissionKind } from "../../../serverApi/PermissionKind";
 import { IUpdatePermissions } from "../../../serverApi/IUpdatePermissions";
 import { UserPermission } from "./UserPermission";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
-import { AddOutlined } from "@mui/icons-material";
+import AddOutlined from "@mui/icons-material/AddOutlined";
 import { isValidEmail } from "../../../util/utils";
 import { useModifyJournalPermissionsMutation } from "../../../serverApi/reactQuery/mutations/useModifyJournalPermissionsMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";

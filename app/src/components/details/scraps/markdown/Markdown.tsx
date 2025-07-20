@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from "react";
-import { LazyLoadSuspender } from "../../../common/lazyLoadComponent";
+import { LazyLoadSuspender } from "../../../common/LazyLoadSuspender";
 
 export interface IMarkdownProps {
   value: string;

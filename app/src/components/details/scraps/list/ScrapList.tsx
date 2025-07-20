@@ -18,13 +18,11 @@ import {
 } from "@dnd-kit/sortable";
 import { useScrapContext } from "../ScrapContext";
 import { ScrapBody } from "../ScrapBody";
-import {
-  AddOutlined,
-  AutoFixHigh,
-  MoveDownOutlined,
-  RemoveCircleOutline,
-  SyncAltOutlined,
-} from "@mui/icons-material";
+import AddOutlined from "@mui/icons-material/AddOutlined";
+import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
+import MoveDownOutlined from "@mui/icons-material/MoveDownOutlined";
+import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
+import SyncAltOutlined from "@mui/icons-material/SyncAltOutlined";
 import { IAction } from "../../../common/actions/IAction";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 

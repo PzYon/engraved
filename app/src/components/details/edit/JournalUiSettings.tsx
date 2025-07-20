@@ -1,13 +1,11 @@
 import React from "react";
 import { Checkbox, FormControlLabel, styled, TextField } from "@mui/material";
-import {
-  FilterAltOutlined,
-  FunctionsOutlined,
-  HistoryToggleOff,
-  PanToolOutlined,
-  QueryStatsOutlined,
-  ShowChartOutlined,
-} from "@mui/icons-material";
+import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
+import FunctionsOutlined from "@mui/icons-material/FunctionsOutlined";
+import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
+import PanToolOutlined from "@mui/icons-material/PanToolOutlined";
+import QueryStatsOutlined from "@mui/icons-material/QueryStatsOutlined";
+import ShowChartOutlined from "@mui/icons-material/ShowChartOutlined";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GridContainer, GridItem } from "../../common/Grid";
 import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";

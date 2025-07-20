@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AppMenu } from "./AppMenu";
 import { Drawer, styled } from "@mui/material";
-import { Menu } from "@mui/icons-material";
+import Menu from "@mui/icons-material/Menu";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 
 export const AppMenuLauncher: React.FC = () => {

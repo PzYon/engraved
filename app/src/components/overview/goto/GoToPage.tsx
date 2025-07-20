@@ -2,7 +2,7 @@ import React from "react";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
 import { Icon } from "../../common/Icon";
-import { Shortcut } from "@mui/icons-material";
+import Shortcut from "@mui/icons-material/Shortcut";
 import { IconStyle } from "../../common/IconStyle";
 import { GoTo } from "./GoTo";
 

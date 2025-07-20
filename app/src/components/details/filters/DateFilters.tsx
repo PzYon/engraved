@@ -7,7 +7,8 @@ import {
   createNextDateConditions,
 } from "./createDateConditions";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import ChevronLeft from "@mui/icons-material/ChevronLeft";
+import ChevronRight from "@mui/icons-material/ChevronRight";
 import { DateRange } from "./DateRange";
 import { FiltersRow } from "./FiltersRow";
 import { DateFilterConfigSelector } from "./DateFilterConfigSelector";

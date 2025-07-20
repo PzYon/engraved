@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FormControl, IconButton, TextField } from "@mui/material";
-import { Clear, SearchOutlined } from "@mui/icons-material";
+import Clear from "@mui/icons-material/Clear";
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
 
 export const SearchBox: React.FC<{
   searchText: string;

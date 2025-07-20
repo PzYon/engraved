@@ -3,7 +3,7 @@ import { IPermissionDefinition } from "../../../serverApi/IPermissionDefinition"
 import { Chip, styled } from "@mui/material";
 import { User } from "../../common/User";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
-import { DeleteOutlined } from "@mui/icons-material";
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 
 export const UserPermission: React.FC<{
   permissionDefinition: IPermissionDefinition;
