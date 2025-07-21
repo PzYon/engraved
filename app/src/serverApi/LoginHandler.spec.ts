@@ -10,7 +10,7 @@ function getPromise<T>(delayMs: number, returnValue: T) {
 
 describe("LoginHandler", () => {
   describe("loginAndRetry", () => {
-    it.skip("should execute all methods once logged in", () => {
+    it("should execute all methods once logged in", async () => {
       let loginCount = 0;
       const results: string[] = [];
 
@@ -31,19 +31,17 @@ describe("LoginHandler", () => {
         getPromise(300, "third").then((x) => results.push(x)),
       );
 
-      setTimeout(() => {
-        expect(loginCount).toBe(1);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        expect(results.length).toBe(3);
-        expect(results[0]).toBe("first");
-        expect(results[1]).toBe("second");
-        expect(results[2]).toBe("third");
+      expect(loginCount).toBe(1);
 
-        // done();
-      }, 2000);
+      expect(results.length).toBe(3);
+      expect(results[0]).toBe("first");
+      expect(results[1]).toBe("second");
+      expect(results[2]).toBe("third");
     });
 
-    it.skip("should clear 'functions to call' after login", () => {
+    it("should clear 'functions to call' after login", async () => {
       let loginCount = 0;
       const results: string[] = [];
 
@@ -56,22 +54,21 @@ describe("LoginHandler", () => {
         getPromise(100, "first").then((x) => results.push(x)),
       );
 
-      setTimeout(() => {
-        expect(loginCount).toBe(1);
-        expect(results.length).toBe(1);
-        expect(results[0]).toBe("first");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        loginHandler.loginAndRetry(() =>
-          getPromise(100, "second").then((x) => results.push(x)),
-        );
+      expect(loginCount).toBe(1);
+      expect(results.length).toBe(1);
+      expect(results[0]).toBe("first");
 
-        setTimeout(() => {
-          expect(loginCount).toBe(2);
-          expect(results.length).toBe(2);
-          expect(results[1]).toBe("second");
-          // done();
-        }, 1000);
-      }, 1000);
+      loginHandler.loginAndRetry(() =>
+        getPromise(100, "second").then((x) => results.push(x)),
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      expect(loginCount).toBe(2);
+      expect(results.length).toBe(2);
+      expect(results[1]).toBe("second");
     });
   });
 });
