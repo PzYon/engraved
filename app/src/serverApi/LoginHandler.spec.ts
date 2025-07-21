@@ -1,13 +1,5 @@
 import { LoginHandler } from "./LoginHandler";
 
-function getPromise<T>(delayMs: number, returnValue: T) {
-  return new Promise<T>((resolve) => {
-    setTimeout(() => {
-      resolve(returnValue);
-    }, delayMs);
-  });
-}
-
 describe("LoginHandler", () => {
   describe("loginAndRetry", () => {
     it("should execute all methods once logged in", async () => {
@@ -16,22 +8,22 @@ describe("LoginHandler", () => {
 
       const loginHandler = new LoginHandler(() => {
         loginCount++;
-        return getPromise(1000, undefined);
+        return delayAndReturn(1000, undefined);
       });
 
       loginHandler.loginAndRetry(() =>
-        getPromise(100, "first").then((x) => results.push(x)),
+        delayAndReturn(100, "first").then((x) => results.push(x)),
       );
 
       loginHandler.loginAndRetry(() =>
-        getPromise(200, "second").then((x) => results.push(x)),
+        delayAndReturn(200, "second").then((x) => results.push(x)),
       );
 
       loginHandler.loginAndRetry(() =>
-        getPromise(300, "third").then((x) => results.push(x)),
+        delayAndReturn(300, "third").then((x) => results.push(x)),
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await delayAndReturn(2000);
 
       expect(loginCount).toBe(1);
 
@@ -47,24 +39,24 @@ describe("LoginHandler", () => {
 
       const loginHandler = new LoginHandler(() => {
         loginCount++;
-        return getPromise(500, undefined);
+        return delayAndReturn(500, undefined);
       });
 
       loginHandler.loginAndRetry(() =>
-        getPromise(100, "first").then((x) => results.push(x)),
+        delayAndReturn(100, "first").then((x) => results.push(x)),
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await delayAndReturn(1000);
 
       expect(loginCount).toBe(1);
       expect(results.length).toBe(1);
       expect(results[0]).toBe("first");
 
       loginHandler.loginAndRetry(() =>
-        getPromise(100, "second").then((x) => results.push(x)),
+        delayAndReturn(100, "second").then((x) => results.push(x)),
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await delayAndReturn(1000);
 
       expect(loginCount).toBe(2);
       expect(results.length).toBe(2);
@@ -72,3 +64,11 @@ describe("LoginHandler", () => {
     });
   });
 });
+
+function delayAndReturn<T>(delayMs: number, returnValue?: T) {
+  return new Promise<T>((resolve) => {
+    setTimeout(() => {
+      resolve(returnValue);
+    }, delayMs);
+  });
+}
