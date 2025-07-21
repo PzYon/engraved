@@ -12,8 +12,8 @@ export const ReadonlyTitle: React.FC<{
   title: React.ReactNode;
   hasFocus: boolean;
   entity: IEntity;
-  onClick?: IAction;
-}> = ({ title, hasFocus, entity, onClick }) => {
+  onClickAction?: IAction;
+}> = ({ title, hasFocus, entity, onClickAction }) => {
   const { user } = useAppContext();
   const { isCompact } = useDisplayModeContext();
 
@@ -29,8 +29,8 @@ export const ReadonlyTitle: React.FC<{
   );
 
   function getTitle() {
-    const inner = onClick ? (
-      <ActionLink action={onClick}>
+    const inner = onClickAction ? (
+      <ActionLink action={onClickAction}>
         <>{title}</>
       </ActionLink>
     ) : (
