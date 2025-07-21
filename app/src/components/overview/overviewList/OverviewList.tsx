@@ -72,16 +72,6 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
         break;
       }
 
-      case "Enter": {
-        if (onKeyDown) {
-          break;
-        }
-
-        setActiveItemId(undefined);
-        e.preventDefault();
-        break;
-      }
-
       default: {
         onKeyDown?.(e);
       }
