@@ -74,13 +74,16 @@ export const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
       case "Enter": {
         if (onKeyDown) {
-          return;
+          break;
         }
 
-        // handle resume typing
         setActiveItemId(undefined);
-        onKeyDown?.(e);
         e.preventDefault();
+        break;
+      }
+
+      default: {
+        onKeyDown?.(e);
       }
     }
   });
