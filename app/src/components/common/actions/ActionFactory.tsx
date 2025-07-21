@@ -373,9 +373,20 @@ export class ActionFactory {
     };
   }
 
+  static goToGlobalSearch(): IAction {
+    return {
+      key: "search",
+      hotkey: "alt+g",
+      icon: <SearchOutlined fontSize="small" />,
+      label: "Search anything",
+      href: "/search",
+      sx: { color: "common.white" },
+    };
+  }
+
   static goTo(): IAction {
     return {
-      hotkey: "alt+.",
+      hotkey: "alt+Period",
       key: "go-to",
       href: "/go-to",
       icon: <Shortcut fontSize="small" />,
@@ -449,17 +460,6 @@ export class ActionFactory {
       onClick: async () => await queryClient.invalidateQueries(),
       label: "Refresh data",
       key: "refresh",
-      sx: { color: "common.white" },
-    };
-  }
-
-  static goToGlobalSearch(): IAction {
-    return {
-      key: "search",
-      hotkey: "alt+g",
-      icon: <SearchOutlined fontSize="small" />,
-      label: "Search anything",
-      href: "/search",
       sx: { color: "common.white" },
     };
   }
