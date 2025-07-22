@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
-import { differenceInDays, format, startOfDay } from "date-fns";
+import { format } from "date-fns";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { IEntriesTableGroup } from "./IEntriesTableGroup";
@@ -30,6 +30,7 @@ import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { IDateConditions, useJournalContext } from "../JournalContext";
+import { getNumberOfDays } from "../../../util/utils";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -396,21 +397,11 @@ function getTotalValue(
   }
 
   if (aggregationMode === "average-by-time") {
-    const sortedDates = tableGroups
-      .flatMap((g) => g.entries.flatMap((e) => e.dateTime))
-      .sort();
-
-    const earliest = dateConditions.from ?? sortedDates[0];
-    const latest = dateConditions.to ?? sortedDates[sortedDates.length - 1];
-
-    if (!earliest || !latest) {
-      return "";
-    }
-
-    const diff = differenceInDays(
-      new Date(startOfDay(latest)),
-      new Date(startOfDay(earliest)),
+    const allDates = tableGroups.flatMap((g) =>
+      g.entries.flatMap((e) => e.dateTime),
     );
+
+    const diff = getNumberOfDays(allDates, dateConditions);
 
     console.log("EntriesTable: Date difference in days:", diff);
 

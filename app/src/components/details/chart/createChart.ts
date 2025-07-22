@@ -6,11 +6,15 @@ import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
 import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
-import { getCoefficient, getColorShades } from "../../../util/utils";
+import {
+  getCoefficient,
+  getColorShades,
+  getNumberOfDays,
+} from "../../../util/utils";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { ITransformedEntry } from "./transformation/ITransformedEntry";
 import { JournalType } from "../../../serverApi/JournalType";
-import { differenceInDays, format, startOfDay } from "date-fns";
+import { format } from "date-fns";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 import { IChartUiProps } from "./IChartProps";
 import { getUiSettings } from "../../../util/journalUtils";
@@ -306,27 +310,14 @@ function average(ctx: any, aggregationMode: AggregationMode): number {
     return null;
   }
 
+  const averageDivisor =
+    aggregationMode === "average-by-occurrence"
+      ? values.length
+      : getNumberOfDays(values.map((v) => v.x));
+
   return (
     values.reduce((total: number, currentEntry: ITransformedEntry) => {
       return currentEntry.y + total;
-    }, 0) / getAverageDivisor(values, aggregationMode)
-  );
-}
-
-function getAverageDivisor(
-  values: ITransformedEntry[],
-  aggregationMode: AggregationMode,
-): number {
-  if (aggregationMode === "average-by-occurrence") {
-    return values.length;
-  }
-  const sortedDates = values.map((v) => v.x).sort();
-
-  const earliest = sortedDates[0];
-  const latest = sortedDates[sortedDates.length - 1];
-
-  return differenceInDays(
-    new Date(startOfDay(latest)),
-    new Date(startOfDay(earliest)),
+    }, 0) / averageDivisor
   );
 }
