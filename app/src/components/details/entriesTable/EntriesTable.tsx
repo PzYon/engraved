@@ -368,7 +368,7 @@ function getTotalValue(
   columnDefinition: IEntriesTableColumnDefinition,
   tableGroups: IEntriesTableGroup[],
   type: IJournalType,
-  aggregationMode: string,
+  aggregationMode: AggregationMode,
   dateConditions: IDateConditions,
 ) {
   if (!columnDefinition.isAggregatable) {
@@ -383,31 +383,36 @@ function getTotalValue(
     return type.formatTotalValue?.(totalValue) ?? totalValue;
   }
 
-  if (
-    aggregationMode === "average" ||
-    aggregationMode === "average-by-occurrence"
-  ) {
-    const totalNumberOfEntries = tableGroups.flatMap((g) => g.entries).length;
-    if (!totalNumberOfEntries) {
-      return "";
+  const averageDivisor = getAverageDivisor(
+    aggregationMode,
+    tableGroups.flatMap((g) => g.entries),
+    dateConditions,
+  );
+
+  const avg = totalValue / averageDivisor;
+  return `${type.formatTotalValue?.(avg) ?? avg} (${averageDivisor} days)`;
+}
+
+function getAverageDivisor(
+  aggregationMode: AggregationMode,
+  entries: IEntry[],
+  dateConditions: IDateConditions,
+): number {
+  switch (aggregationMode) {
+    case "average":
+    case "average-by-occurrence": {
+      return entries.length;
     }
 
-    const avg = totalValue / totalNumberOfEntries;
-    return type.formatTotalValue?.(avg) ?? avg;
+    case "average-by-time": {
+      const allDates = entries.flatMap((e) => e.dateTime);
+      return getNumberOfDays(allDates, dateConditions);
+    }
+
+    default: {
+      throw new Error(
+        `Aggregation mode "${aggregationMode}" is not supported.`,
+      );
+    }
   }
-
-  if (aggregationMode === "average-by-time") {
-    const allDates = tableGroups.flatMap((g) =>
-      g.entries.flatMap((e) => e.dateTime),
-    );
-
-    const diff = getNumberOfDays(allDates, dateConditions);
-
-    console.log("EntriesTable: Date difference in days:", diff);
-
-    const avg = totalValue / diff;
-    return (type.formatTotalValue?.(avg) ?? avg) + ` (${diff} days)`;
-  }
-
-  throw new Error(`Aggregation mode "${aggregationMode}" is not supported.`);
 }
