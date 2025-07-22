@@ -82,6 +82,10 @@ export const EntriesTable: React.FC<{
 
   const { dateConditions } = useJournalContext();
 
+  if (!tableGroups.length) {
+    return null;
+  }
+
   return (
     <StyledTable
       data-testid="entries-table"
@@ -399,13 +403,19 @@ function getTotalValue(
     const earliest = dateConditions.from ?? sortedDates[0];
     const latest = dateConditions.to ?? sortedDates[sortedDates.length - 1];
 
+    if (!earliest || !latest) {
+      return "";
+    }
+
     const diff = differenceInDays(
       new Date(startOfDay(latest)),
       new Date(startOfDay(earliest)),
     );
 
+    console.log("EntriesTable: Date difference in days:", diff);
+
     const avg = totalValue / diff;
-    return type.formatTotalValue?.(avg) ?? avg;
+    return (type.formatTotalValue?.(avg) ?? avg) + ` (${diff} days)`;
   }
 
   throw new Error(`Aggregation mode "${aggregationMode}" is not supported.`);

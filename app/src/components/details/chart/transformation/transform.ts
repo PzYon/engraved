@@ -62,6 +62,8 @@ function getGroupedValue(
       new Date(startOfDay(earliest)),
     );
 
+    console.log("transform: Date difference in days:", diff);
+
     return consolidated.value / diff;
   }
 
