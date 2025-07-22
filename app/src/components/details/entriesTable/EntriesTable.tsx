@@ -29,6 +29,7 @@ import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
+import { IDateConditions, useJournalContext } from "../JournalContext";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -79,6 +80,8 @@ export const EntriesTable: React.FC<{
     }
   }, [journal, entries, type]);
 
+  const { dateConditions } = useJournalContext();
+
   return (
     <StyledTable
       data-testid="entries-table"
@@ -127,7 +130,13 @@ export const EntriesTable: React.FC<{
           <TableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
-                {getTotalValue(c, tableGroups, type, aggregationMode)}
+                {getTotalValue(
+                  c,
+                  tableGroups,
+                  type,
+                  aggregationMode,
+                  dateConditions,
+                )}
               </TableCell>
             ))}
           </TableRow>
@@ -354,7 +363,8 @@ function getTotalValue(
   columnDefinition: IEntriesTableColumnDefinition,
   tableGroups: IEntriesTableGroup[],
   type: IJournalType,
-  aggregationMode: AggregationMode,
+  aggregationMode: string,
+  dateConditions: IDateConditions,
 ) {
   if (!columnDefinition.isAggregatable) {
     return null;
@@ -385,8 +395,9 @@ function getTotalValue(
     const sortedDates = tableGroups
       .flatMap((g) => g.entries.flatMap((e) => e.dateTime))
       .sort();
-    const earliest = sortedDates[0];
-    const latest = sortedDates[sortedDates.length - 1];
+
+    const earliest = dateConditions.from ?? sortedDates[0];
+    const latest = dateConditions.to ?? sortedDates[sortedDates.length - 1];
 
     const diff = differenceInDays(
       new Date(startOfDay(latest)),
