@@ -1,6 +1,7 @@
 import { ThresholdScope } from "./ThresholdScope";
 import { IThresholdDefinition } from "../../../serverApi/IJournalThresholdDefinitions";
 import { differenceInDays } from "date-fns";
+import { round } from "../../../util/utils";
 
 export interface IThresholdValues {
   [attributeKey: string]: {
@@ -24,18 +25,14 @@ export class ThresholdValue {
   }
 
   get thresholdForDuration(): number {
-    if (this.scope === ThresholdScope.All) {
-      return this.thresholdValue;
+    switch (this.scope) {
+      case ThresholdScope.All:
+        return this.thresholdValue;
+      case ThresholdScope.Month:
+        return round(this.thresholdValue / 30) + this.durationInDays;
+      default:
+        return this.thresholdValue * this.durationInDays;
     }
-
-    if (this.scope === ThresholdScope.Month) {
-      return (
-        (Math.round((this.thresholdValue / 30) * 1000) / 1000) *
-        this.durationInDays
-      );
-    }
-
-    return this.thresholdValue * this.durationInDays;
   }
 
   get remainingValueForDuration(): number {

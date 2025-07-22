@@ -30,7 +30,7 @@ import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { IDateConditions, useJournalContext } from "../JournalContext";
-import { getNumberOfDays } from "../../../util/utils";
+import { getNumberOfDays, round } from "../../../util/utils";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -390,7 +390,7 @@ function getTotalValue(
   );
 
   const avg = totalValue / averageDivisor;
-  return `${type.formatTotalValue?.(avg) ?? avg} (${averageDivisor} days)`;
+  return `${type.formatTotalValue?.(avg) ?? round(avg)} (${averageDivisor} days)`;
 }
 
 function getAverageDivisor(

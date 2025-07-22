@@ -2,6 +2,11 @@ import { lighten } from "@mui/material";
 import { differenceInDays, format, startOfDay } from "date-fns";
 import { IDateConditions } from "../components/details/JournalContext";
 
+export function round(n: number, decimals: number = 3): number {
+  const x = Math.pow(10, decimals);
+  return Math.round(n * x) / x;
+}
+
 export function getCoefficient(
   currentIndex: number,
   instanceCount: number,
