@@ -2,7 +2,11 @@ import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { DateType } from "../filters/DateFilters";
 import { DateRange } from "../filters/DateRange";
 
-export type AggregationMode = "average" | "sum";
+export type AggregationMode =
+  | "average"
+  | "sum"
+  | "average-by-time"
+  | "average-by-occurrence";
 
 export type DateFilterConfig = {
   dateType: DateType;

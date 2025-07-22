@@ -19,10 +19,12 @@ export function transform(
       const month = m.groupKey.month - 1;
       const day = m.groupKey.day || 1;
 
+      const aggregationMode = getUiSettings(journal).aggregationMode;
       return {
         x: new Date(m.groupKey.year, month, day),
         y:
-          getUiSettings(journal).aggregationMode === "average"
+          aggregationMode === "average" ||
+          aggregationMode === "average-by-occurrence"
             ? m.value / m.entries.length
             : m.value,
         entries: m.entries,

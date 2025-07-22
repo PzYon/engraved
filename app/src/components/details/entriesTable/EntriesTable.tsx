@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
-import { format } from "date-fns";
+import { differenceInDays, format, startOfDay } from "date-fns";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { IEntriesTableGroup } from "./IEntriesTableGroup";
@@ -368,13 +368,32 @@ function getTotalValue(
     return type.formatTotalValue?.(totalValue) ?? totalValue;
   }
 
-  if (aggregationMode === "average") {
+  if (
+    aggregationMode === "average" ||
+    aggregationMode === "average-by-occurrence"
+  ) {
     const totalNumberOfEntries = tableGroups.flatMap((g) => g.entries).length;
     if (!totalNumberOfEntries) {
       return "";
     }
 
     const avg = totalValue / totalNumberOfEntries;
+    return type.formatTotalValue?.(avg) ?? avg;
+  }
+
+  if (aggregationMode === "average-by-time") {
+    const sortedDates = tableGroups
+      .flatMap((g) => g.entries.flatMap((e) => e.dateTime))
+      .sort();
+    const earliest = sortedDates[0];
+    const latest = sortedDates[sortedDates.length - 1];
+
+    const diff = differenceInDays(
+      new Date(startOfDay(latest)),
+      new Date(startOfDay(earliest)),
+    );
+
+    const avg = totalValue / diff;
     return type.formatTotalValue?.(avg) ?? avg;
   }
 

@@ -25,7 +25,10 @@ export const AggregationModeSelector: React.FC<{
         }}
       >
         <MenuItem value="sum">Sum</MenuItem>
-        <MenuItem value="average">Average</MenuItem>
+        <MenuItem value="average-by-time">Average (by time)</MenuItem>
+        <MenuItem value="average-by-occurrence">
+          Average (by occurrence)
+        </MenuItem>
       </Select>
     </FormControl>
   );
