@@ -5,8 +5,6 @@ import { GroupByTime } from "../consolidation/GroupByTime";
 import { ITransformedEntry } from "./ITransformedEntry";
 import { JournalTypeFactory } from "../../../../journalTypes/JournalTypeFactory";
 import { getUiSettings } from "../../../../util/journalUtils";
-import { IConsolidatedEntries } from "../consolidation/IConsolidatedEntries";
-import { AggregationMode } from "../../edit/IJournalUiSettings";
 
 export function transform(
   entries: IEntry[],
@@ -22,9 +20,13 @@ export function transform(
       const day = consolidated.groupKey.day || 1;
 
       const aggregationMode = getUiSettings(journal).aggregationMode;
+
       return {
         x: new Date(consolidated.groupKey.year, month, day),
-        y: getGroupedValue(aggregationMode, consolidated),
+        y:
+          aggregationMode === "sum"
+            ? consolidated.value
+            : consolidated.value / consolidated.entries.length,
         entries: consolidated.entries,
       };
     });
@@ -37,19 +39,4 @@ export function transform(
       entries: [m],
     };
   });
-}
-
-function getGroupedValue(
-  aggregationMode: AggregationMode,
-  consolidated: IConsolidatedEntries,
-) {
-  if (
-    aggregationMode === "average" ||
-    aggregationMode === "average-by-occurrence" ||
-    aggregationMode === "average-by-time"
-  ) {
-    return consolidated.value / consolidated.entries.length;
-  }
-
-  return consolidated.value;
 }
