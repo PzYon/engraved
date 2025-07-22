@@ -85,9 +85,6 @@ export const JournalUiSettings: React.FC<{
           />
         </GridItem>
 
-        <GridItem />
-        <GridItem />
-
         <GridItem>
           <FormControlLabel
             control={
@@ -103,6 +100,8 @@ export const JournalUiSettings: React.FC<{
             label="Show chart by default"
           />
         </GridItem>
+
+        <GridItem />
 
         <GridItem>
           <FormControlLabel
@@ -142,9 +141,6 @@ export const JournalUiSettings: React.FC<{
             }}
           />
         </GridItem>
-
-        <GridItem />
-        <GridItem />
 
         <GridItem>
           <GroupByTimeSelector

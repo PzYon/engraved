@@ -6,7 +6,11 @@ import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
 import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
 import { lighten } from "@mui/material";
-import { getCoefficient, getColorShades } from "../../../util/utils";
+import {
+  getCoefficient,
+  getColorShades,
+  getNumberOfDays,
+} from "../../../util/utils";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { ITransformedEntry } from "./transformation/ITransformedEntry";
 import { JournalType } from "../../../serverApi/JournalType";
@@ -14,6 +18,7 @@ import { format } from "date-fns";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 import { IChartUiProps } from "./IChartProps";
 import { getUiSettings } from "../../../util/journalUtils";
+import { AggregationMode } from "../edit/IJournalUiSettings";
 
 export const createChart = (
   entries: IEntry[],
@@ -274,7 +279,7 @@ function createBarChart(
               borderDashOffset: 0,
               borderWidth: 1,
               scaleID: "y",
-              value: (ctx) => average(ctx),
+              value: (ctx) => average(ctx, uiSettings.aggregationMode),
             },
           },
         },
@@ -298,16 +303,21 @@ function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-function average(ctx: any) {
-  const values = ctx.chart.data.datasets[0]?.data;
+function average(ctx: any, aggregationMode: AggregationMode): number {
+  const values = ctx.chart.data.datasets[0]?.data as ITransformedEntry[];
 
   if (!values) {
     return null;
   }
 
+  const averageDivisor =
+    aggregationMode === "average-by-occurrence"
+      ? values.length
+      : getNumberOfDays(values.map((v) => v.x));
+
   return (
     values.reduce((total: number, currentEntry: ITransformedEntry) => {
       return currentEntry.y + total;
-    }, 0) / values.length
+    }, 0) / averageDivisor
   );
 }

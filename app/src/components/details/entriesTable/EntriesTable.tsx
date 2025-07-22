@@ -29,6 +29,8 @@ import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
+import { IDateConditions, useJournalContext } from "../JournalContext";
+import { getNumberOfDays, round } from "../../../util/utils";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -79,6 +81,12 @@ export const EntriesTable: React.FC<{
     }
   }, [journal, entries, type]);
 
+  const { dateConditions } = useJournalContext();
+
+  if (!tableGroups.length) {
+    return null;
+  }
+
   return (
     <StyledTable
       data-testid="entries-table"
@@ -127,7 +135,13 @@ export const EntriesTable: React.FC<{
           <TableRow>
             {columns.map((c) => (
               <TableCell key={c.key}>
-                {getTotalValue(c, tableGroups, type, aggregationMode)}
+                {getTotalValue(
+                  c,
+                  tableGroups,
+                  type,
+                  aggregationMode,
+                  dateConditions,
+                )}
               </TableCell>
             ))}
           </TableRow>
@@ -355,6 +369,7 @@ function getTotalValue(
   tableGroups: IEntriesTableGroup[],
   type: IJournalType,
   aggregationMode: AggregationMode,
+  dateConditions: IDateConditions,
 ) {
   if (!columnDefinition.isAggregatable) {
     return null;
@@ -368,15 +383,36 @@ function getTotalValue(
     return type.formatTotalValue?.(totalValue) ?? totalValue;
   }
 
-  if (aggregationMode === "average") {
-    const totalNumberOfEntries = tableGroups.flatMap((g) => g.entries).length;
-    if (!totalNumberOfEntries) {
-      return "";
+  const averageDivisor = getAverageDivisor(
+    aggregationMode,
+    tableGroups.flatMap((g) => g.entries),
+    dateConditions,
+  );
+
+  const avg = totalValue / averageDivisor;
+  return `${type.formatTotalValue?.(avg) ?? round(avg)} (${averageDivisor} days)`;
+}
+
+function getAverageDivisor(
+  aggregationMode: AggregationMode,
+  entries: IEntry[],
+  dateConditions: IDateConditions,
+): number {
+  switch (aggregationMode) {
+    case "average":
+    case "average-by-occurrence": {
+      return entries.length;
     }
 
-    const avg = totalValue / totalNumberOfEntries;
-    return type.formatTotalValue?.(avg) ?? avg;
-  }
+    case "average-by-time": {
+      const allDates = entries.flatMap((e) => e.dateTime);
+      return getNumberOfDays(allDates, dateConditions);
+    }
 
-  throw new Error(`Aggregation mode "${aggregationMode}" is not supported.`);
+    default: {
+      throw new Error(
+        `Aggregation mode "${aggregationMode}" is not supported.`,
+      );
+    }
+  }
 }

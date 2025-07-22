@@ -1,5 +1,11 @@
 import { lighten } from "@mui/material";
-import { format } from "date-fns";
+import { differenceInDays, format, startOfDay } from "date-fns";
+import { IDateConditions } from "../components/details/JournalContext";
+
+export function round(n: number, decimals: number = 3): number {
+  const x = Math.pow(10, decimals);
+  return Math.round(n * x) / x;
+}
 
 export function getCoefficient(
   currentIndex: number,
@@ -30,5 +36,22 @@ export function isValidEmail(address: string): boolean {
     new RegExp(
       "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
     ),
+  );
+}
+
+export function getNumberOfDays(
+  allDates: (Date | string)[],
+  overrides: IDateConditions = {},
+) {
+  const sorted = allDates.sort();
+
+  const earliest = overrides.from ?? sorted[0];
+  const latest = overrides.to ?? sorted[sorted.length - 1];
+
+  return (
+    differenceInDays(
+      new Date(startOfDay(latest)),
+      new Date(startOfDay(earliest)),
+    ) + 1
   );
 }
