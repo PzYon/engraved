@@ -59,6 +59,9 @@ export const JournalViewPage: React.FC = () => {
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
   const [showAgenda, setShowAgenda] = useState(!!uiSettings?.showAgenda);
+  const [aggregationMode, setAggregationMode] = useState(
+    uiSettings.aggregationMode ?? journalDefaultUiSettings.aggregationMode,
+  );
 
   const [showThresholds, setShowThresholds] = useState(
     !!uiSettings?.showThresholds,
@@ -159,6 +162,7 @@ export const JournalViewPage: React.FC = () => {
               groupByAttribute={attributeKey}
               chartType={chartType}
               chartUiProps={{}}
+              aggregationMode={aggregationMode}
             />
           </PageSection>
         </Suspense>
@@ -187,10 +191,8 @@ export const JournalViewPage: React.FC = () => {
                 showAddNewEntryRow={
                   showAddNewEntryRow && isTypeThatCanShowAddEntryRow()
                 }
-                aggregationMode={
-                  uiSettings.aggregationMode ??
-                  journalDefaultUiSettings.aggregationMode
-                }
+                aggregationMode={aggregationMode}
+                setAggregationMode={setAggregationMode}
               />
             </PageSection>
           )}

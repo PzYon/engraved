@@ -32,6 +32,7 @@ export const createChart = (
   type: ChartType,
   color: string,
   chartUiProps: IChartUiProps,
+  aggregationMode: AggregationMode,
 ): ChartProps => {
   switch (type) {
     case "bar":
@@ -43,6 +44,7 @@ export const createChart = (
         groupByTime,
         attributeKey,
         chartUiProps,
+        aggregationMode,
       );
 
     case "line":
@@ -54,6 +56,7 @@ export const createChart = (
         groupByTime,
         attributeKey,
         chartUiProps,
+        aggregationMode,
       );
 
     case "doughnut":
@@ -82,6 +85,7 @@ function createLineChart(
   groupByTime: GroupByTime,
   attributeKey: string,
   chartUiProps: IChartUiProps,
+  aggregationMode: AggregationMode,
 ): ChartProps {
   // hack: for the moment we create a bar chart and then adjust
   // the relevant properties
@@ -93,6 +97,7 @@ function createLineChart(
     groupByTime,
     attributeKey,
     chartUiProps,
+    aggregationMode,
   );
 
   chart.type = "line";
@@ -168,6 +173,7 @@ function createBarChart(
   groupByTime: GroupByTime,
   attributeKey: string,
   chartUiProps: IChartUiProps,
+  aggregationMode: AggregationMode,
 ): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
     entries,
@@ -279,7 +285,7 @@ function createBarChart(
               borderDashOffset: 0,
               borderWidth: 1,
               scaleID: "y",
-              value: (ctx) => average(ctx, uiSettings.aggregationMode),
+              value: (ctx) => average(ctx, aggregationMode),
             },
           },
         },
@@ -312,7 +318,7 @@ function average(ctx: any, aggregationMode: AggregationMode): number {
 
   const averageDivisor =
     aggregationMode === "average-by-occurrence"
-      ? values.length
+      ? values.flatMap((v) => v.entries).length
       : getNumberOfDays(values.map((v) => v.x));
 
   return (

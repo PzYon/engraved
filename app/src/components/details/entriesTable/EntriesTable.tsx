@@ -29,8 +29,8 @@ import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
-import { IDateConditions, useJournalContext } from "../JournalContext";
-import { getNumberOfDays, round } from "../../../util/utils";
+import { useJournalContext } from "../JournalContext";
+import { TotalValue } from "./TotalValue";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -38,12 +38,14 @@ export const EntriesTable: React.FC<{
   showGroupTotals: boolean;
   showAddNewEntryRow: boolean;
   aggregationMode: AggregationMode;
+  setAggregationMode: (mode: AggregationMode) => void;
 }> = ({
   journal,
   entries,
   showGroupTotals,
   showAddNewEntryRow,
   aggregationMode,
+  setAggregationMode,
 }) => {
   const type = useMemo(
     () => JournalTypeFactory.create(journal.type),
@@ -130,18 +132,21 @@ export const EntriesTable: React.FC<{
           />
         ))}
       </TableBody>
-      {entries.length && columns.filter((c) => c.isAggregatable).length ? (
+      {entries.length &&
+      columns.filter((column) => column.isAggregatable).length ? (
         <TableFooter>
           <TableRow>
-            {columns.map((c) => (
-              <TableCell key={c.key}>
-                {getTotalValue(
-                  c,
-                  tableGroups,
-                  type,
-                  aggregationMode,
-                  dateConditions,
-                )}
+            {columns.map((column) => (
+              <TableCell key={column.key}>
+                {column.isAggregatable ? (
+                  <TotalValue
+                    journalType={type}
+                    tableGroups={tableGroups}
+                    aggregationMode={aggregationMode}
+                    setAggregationMode={setAggregationMode}
+                    dateConditions={dateConditions}
+                  />
+                ) : null}
               </TableCell>
             ))}
           </TableRow>
@@ -362,57 +367,4 @@ function getGroupKey(journalType: JournalType, entry: IEntry) {
       : entry.dateTime;
 
   return format(new Date(relevantDate), "u-LL-dd");
-}
-
-function getTotalValue(
-  columnDefinition: IEntriesTableColumnDefinition,
-  tableGroups: IEntriesTableGroup[],
-  type: IJournalType,
-  aggregationMode: AggregationMode,
-  dateConditions: IDateConditions,
-) {
-  if (!columnDefinition.isAggregatable) {
-    return null;
-  }
-
-  const totalValue = tableGroups
-    .map((g) => g.totalValue)
-    .reduce((total, current) => total + current, 0);
-
-  if (aggregationMode === "sum") {
-    return type.formatTotalValue?.(totalValue) ?? totalValue;
-  }
-
-  const averageDivisor = getAverageDivisor(
-    aggregationMode,
-    tableGroups.flatMap((g) => g.entries),
-    dateConditions,
-  );
-
-  const avg = totalValue / averageDivisor;
-  return `${type.formatTotalValue?.(avg) ?? round(avg)} (${averageDivisor} days)`;
-}
-
-function getAverageDivisor(
-  aggregationMode: AggregationMode,
-  entries: IEntry[],
-  dateConditions: IDateConditions,
-): number {
-  switch (aggregationMode) {
-    case "average":
-    case "average-by-occurrence": {
-      return entries.length;
-    }
-
-    case "average-by-time": {
-      const allDates = entries.flatMap((e) => e.dateTime);
-      return getNumberOfDays(allDates, dateConditions);
-    }
-
-    default: {
-      throw new Error(
-        `Aggregation mode "${aggregationMode}" is not supported.`,
-      );
-    }
-  }
 }
