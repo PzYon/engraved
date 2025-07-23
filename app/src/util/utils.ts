@@ -43,7 +43,9 @@ export function getNumberOfDays(
   allDates: (Date | string)[],
   overrides: IDateConditions = {},
 ) {
-  const sorted = allDates.sort();
+  const sorted = allDates.sort(
+    (a, b) => ensureDate(a).getTime() - ensureDate(b).getTime(),
+  );
 
   const earliest = overrides.from ?? sorted[0];
   const latest = overrides.to ?? sorted[sorted.length - 1];
@@ -54,4 +56,8 @@ export function getNumberOfDays(
       new Date(startOfDay(earliest)),
     ) + 1
   );
+}
+
+function ensureDate(d: Date | string) {
+  return typeof d === "string" ? new Date(d) : d;
 }
