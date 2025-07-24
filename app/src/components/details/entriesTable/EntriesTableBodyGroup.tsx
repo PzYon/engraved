@@ -62,7 +62,7 @@ export const EntriesTableBodyGroup: React.FC<{
           />
         </React.Fragment>
       ))}
-      {showGroupTotals ? (
+      {showGroupTotals && group.entries.length > 1 ? (
         <TableRow key="totals">
           {columns.map((c) => (
             <TableCell

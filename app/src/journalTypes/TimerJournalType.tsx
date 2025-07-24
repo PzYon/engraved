@@ -14,6 +14,7 @@ import React from "react";
 import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { Typography } from "@mui/material";
 import { FormatDate } from "../components/common/FormatDate";
+import { GroupedValue } from "../components/details/entriesTable/GroupValue";
 
 export class TimerJournalType implements IJournalType {
   type = JournalType.Timer;
@@ -84,17 +85,7 @@ export class TimerJournalType implements IJournalType {
         getRawValue: (entry: IEntry) => this.getValue(entry),
         getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) =>
           this.getFormatDuration(entry),
-        getGroupReactNode: (group) => (
-          <>
-            {group.totalString}{" "}
-            <span
-              style={{ opacity: 0.5, fontSize: "smaller" }}
-              title={`${group.entries.length} entries`}
-            >
-              {group.entries.length}x
-            </span>
-          </>
-        ),
+        getGroupReactNode: (group) => <GroupedValue group={group} />,
       },
     ];
   }

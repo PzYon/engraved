@@ -9,9 +9,9 @@ import { IJournal } from "../serverApi/IJournal";
 import React from "react";
 import { EntryWithValue } from "../components/common/entries/EntryWithValue";
 import { IGaugeEntry } from "../serverApi/IGaugeEntry";
-
 import { AddEntryTableCell } from "../components/details/entriesTable/addEntry/AddEntryTableCell";
 import { getValueHeaderLabel } from "../util/journalUtils";
+import { GroupedValue } from "../components/details/entriesTable/GroupValue";
 
 export class GaugeJournalType implements IJournalType {
   type = JournalType.Gauge;
@@ -48,17 +48,7 @@ export class GaugeJournalType implements IJournalType {
         getRawValue: (entry: IEntry) => getValue(entry),
         getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) =>
           getValue(entry),
-        getGroupReactNode: (group) => (
-          <>
-            {group.totalString}{" "}
-            <span
-              style={{ opacity: 0.5, fontSize: "smaller" }}
-              title={`${group.entries.length} entries`}
-            >
-              {group.entries.length}x
-            </span>
-          </>
-        ),
+        getGroupReactNode: (group) => <GroupedValue group={group} />,
         getAddEntryReactNode: (command, updateCommand) => {
           return (
             <AddEntryTableCell
