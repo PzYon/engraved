@@ -15,7 +15,7 @@ export const EntriesTableBodyGroup: React.FC<{
 
   useEffect(() => setIsCollapsed(isGroupCollapsed), [isGroupCollapsed]);
 
-  if (isCollapsed) {
+  if (isCollapsed && group.entries.length > 1) {
     return (
       <TableRow key={group.label}>
         {columns.map((c) => (
@@ -62,7 +62,7 @@ export const EntriesTableBodyGroup: React.FC<{
           />
         </React.Fragment>
       ))}
-      {showGroupTotals ? (
+      {showGroupTotals && group.entries.length > 1 ? (
         <TableRow key="totals">
           {columns.map((c) => (
             <TableCell

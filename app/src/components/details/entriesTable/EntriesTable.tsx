@@ -52,7 +52,7 @@ export const EntriesTable: React.FC<{
     [journal?.type],
   );
 
-  const [collapseAll, setCollapseAll] = useState<boolean>(false);
+  const [collapseAll, setCollapseAll] = useState<boolean>(true);
 
   const columns = useMemo<IEntriesTableColumnDefinition[]>(() => {
     return [
@@ -127,7 +127,7 @@ export const EntriesTable: React.FC<{
             columns={columns}
             showGroupTotals={showGroupTotals}
             isGroupCollapsed={
-              collapseAll === undefined && i !== 0 ? true : collapseAll
+              (collapseAll === undefined ? true : collapseAll) && i !== 0
             }
           />
         ))}
