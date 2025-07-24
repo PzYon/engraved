@@ -19,6 +19,7 @@ import { IJournalType } from "../../../journalTypes/IJournalType";
 import { IChartUiProps } from "./IChartProps";
 import { getUiSettings } from "../../../util/journalUtils";
 import { AggregationMode } from "../edit/IJournalUiSettings";
+import { IDateConditions } from "../JournalContext";
 
 export const createChart = (
   entries: IEntry[],
@@ -33,6 +34,7 @@ export const createChart = (
   color: string,
   chartUiProps: IChartUiProps,
   aggregationMode: AggregationMode,
+  dateConditions: IDateConditions,
 ): ChartProps => {
   switch (type) {
     case "bar":
@@ -45,6 +47,7 @@ export const createChart = (
         attributeKey,
         chartUiProps,
         aggregationMode,
+        dateConditions,
       );
 
     case "line":
@@ -57,6 +60,7 @@ export const createChart = (
         attributeKey,
         chartUiProps,
         aggregationMode,
+        dateConditions,
       );
 
     case "doughnut":
@@ -86,6 +90,7 @@ function createLineChart(
   attributeKey: string,
   chartUiProps: IChartUiProps,
   aggregationMode: AggregationMode,
+  dateConditions: IDateConditions,
 ): ChartProps {
   // hack: for the moment we create a bar chart and then adjust
   // the relevant properties
@@ -98,6 +103,7 @@ function createLineChart(
     attributeKey,
     chartUiProps,
     aggregationMode,
+    dateConditions,
   );
 
   chart.type = "line";
@@ -174,6 +180,7 @@ function createBarChart(
   attributeKey: string,
   chartUiProps: IChartUiProps,
   aggregationMode: AggregationMode,
+  dateConditions: IDateConditions,
 ): ChartProps {
   const dataSets: IDataSet[] = createDataSets(
     entries,
@@ -220,6 +227,8 @@ function createBarChart(
           stacked: true,
           type: "time",
           time: { minUnit: getTimeUnit(groupByTime) },
+          /* eslint-disable @typescript-eslint/no-explicit-any */
+          max: (dateConditions?.to ?? new Date()) as any,
         },
         y: {
           min:
