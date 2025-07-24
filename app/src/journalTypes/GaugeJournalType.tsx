@@ -51,7 +51,12 @@ export class GaugeJournalType implements IJournalType {
         getGroupReactNode: (group) => (
           <>
             {group.totalString}{" "}
-            <span style={{ opacity: 0.5 }}>{group.entries.length}x</span>
+            <span
+              style={{ opacity: 0.5, fontSize: "smaller" }}
+              title={`${group.entries.length} entries`}
+            >
+              {group.entries.length}x
+            </span>
           </>
         ),
         getAddEntryReactNode: (command, updateCommand) => {

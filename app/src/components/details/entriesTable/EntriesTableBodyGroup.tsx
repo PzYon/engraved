@@ -15,7 +15,7 @@ export const EntriesTableBodyGroup: React.FC<{
 
   useEffect(() => setIsCollapsed(isGroupCollapsed), [isGroupCollapsed]);
 
-  if (isCollapsed) {
+  if (isCollapsed && group.entries.length > 1) {
     return (
       <TableRow key={group.label}>
         {columns.map((c) => (
