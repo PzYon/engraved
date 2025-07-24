@@ -48,7 +48,12 @@ export class GaugeJournalType implements IJournalType {
         getRawValue: (entry: IEntry) => getValue(entry),
         getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) =>
           getValue(entry),
-        getGroupReactNode: (group) => group.totalString,
+        getGroupReactNode: (group) => (
+          <>
+            {group.totalString}{" "}
+            <span style={{ opacity: 0.5 }}>{group.entries.length}x</span>
+          </>
+        ),
         getAddEntryReactNode: (command, updateCommand) => {
           return (
             <AddEntryTableCell

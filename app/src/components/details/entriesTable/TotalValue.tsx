@@ -57,7 +57,7 @@ const Host = styled("div")`
 `;
 
 const Light = styled("span")`
-  opacity: 0.6;
+  opacity: 0.5;
 `;
 
 function getTotalValue(
