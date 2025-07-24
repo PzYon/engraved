@@ -52,6 +52,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
   chartUiProps,
   onEntriesCalculated,
   aggregationMode,
+  dateConditions,
 }) => {
   const { typography, palette } = useTheme();
 
@@ -75,6 +76,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
             palette.primary.main,
             chartUiProps,
             aggregationMode,
+            dateConditions,
           )
         : null,
     [
@@ -87,6 +89,7 @@ const LazyChartJs: React.FC<IChartProps> = ({
       palette.primary.main,
       chartUiProps,
       aggregationMode,
+      dateConditions,
     ],
   );
 

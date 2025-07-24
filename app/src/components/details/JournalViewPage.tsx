@@ -157,6 +157,7 @@ export const JournalViewPage: React.FC = () => {
           <PageSection>
             <Chart
               entries={entries}
+              dateConditions={dateConditions}
               journal={journal}
               groupByTime={groupByTime}
               groupByAttribute={attributeKey}
@@ -193,6 +194,7 @@ export const JournalViewPage: React.FC = () => {
                 }
                 aggregationMode={aggregationMode}
                 setAggregationMode={setAggregationMode}
+                dateConditions={dateConditions}
               />
             </PageSection>
           )}

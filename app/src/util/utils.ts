@@ -48,7 +48,7 @@ export function getNumberOfDays(
   );
 
   const earliest = overrides.from ?? sorted[0];
-  const latest = overrides.to ?? sorted[sorted.length - 1];
+  const latest = overrides.to ?? new Date();
 
   return (
     differenceInDays(

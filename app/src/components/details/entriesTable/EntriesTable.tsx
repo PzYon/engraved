@@ -29,7 +29,7 @@ import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
-import { useJournalContext } from "../JournalContext";
+import { IDateConditions } from "../JournalContext";
 import { TotalValue } from "./TotalValue";
 
 export const EntriesTable: React.FC<{
@@ -39,6 +39,7 @@ export const EntriesTable: React.FC<{
   showAddNewEntryRow: boolean;
   aggregationMode: AggregationMode;
   setAggregationMode: (mode: AggregationMode) => void;
+  dateConditions: IDateConditions;
 }> = ({
   journal,
   entries,
@@ -46,6 +47,7 @@ export const EntriesTable: React.FC<{
   showAddNewEntryRow,
   aggregationMode,
   setAggregationMode,
+  dateConditions,
 }) => {
   const type = useMemo(
     () => JournalTypeFactory.create(journal.type),
@@ -82,8 +84,6 @@ export const EntriesTable: React.FC<{
       setTableGroups(getEntriesTableGroups(entries, type));
     }
   }, [journal, entries, type]);
-
-  const { dateConditions } = useJournalContext();
 
   if (!tableGroups.length) {
     return null;
