@@ -89,6 +89,26 @@ export const EntriesTable: React.FC<{
     return null;
   }
 
+  const headerFooterRow =
+    entries.length &&
+    columns.filter((column) => column.isAggregatable).length ? (
+      <TableRow>
+        {columns.map((column) => (
+          <TableCell key={column.key}>
+            {column.isAggregatable ? (
+              <TotalValue
+                journalType={type}
+                tableGroups={tableGroups}
+                aggregationMode={aggregationMode}
+                setAggregationMode={setAggregationMode}
+                dateConditions={dateConditions}
+              />
+            ) : null}
+          </TableCell>
+        ))}
+      </TableRow>
+    ) : null;
+
   return (
     <StyledTable
       data-testid="entries-table"
@@ -117,6 +137,7 @@ export const EntriesTable: React.FC<{
         </TableRow>
       </TableHead>
       <TableBody>
+        {headerFooterRow}
         {showAddNewEntryRow ? (
           <AddEntryTableRow columns={columns} journal={journal} />
         ) : null}
@@ -132,26 +153,7 @@ export const EntriesTable: React.FC<{
           />
         ))}
       </TableBody>
-      {entries.length &&
-      columns.filter((column) => column.isAggregatable).length ? (
-        <TableFooter>
-          <TableRow>
-            {columns.map((column) => (
-              <TableCell key={column.key}>
-                {column.isAggregatable ? (
-                  <TotalValue
-                    journalType={type}
-                    tableGroups={tableGroups}
-                    aggregationMode={aggregationMode}
-                    setAggregationMode={setAggregationMode}
-                    dateConditions={dateConditions}
-                  />
-                ) : null}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableFooter>
-      ) : null}
+      <TableFooter>{headerFooterRow}</TableFooter>
     </StyledTable>
   );
 };

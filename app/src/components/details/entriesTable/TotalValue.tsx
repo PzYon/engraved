@@ -54,6 +54,7 @@ const Host = styled("div")`
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  font-size: 0.75rem;
 `;
 
 const Light = styled("span")`
@@ -104,7 +105,7 @@ function getDivisor(
       const divisor = getNumberOfDays(allDates, dateConditions);
       return {
         value: divisor,
-        label: `Average from ${divisor} days`,
+        label: `Average over ${divisor} days`,
       };
     }
 
