@@ -22,7 +22,6 @@ export interface IJournalUiSettings {
   showAgenda?: boolean;
   groupByTime?: GroupByTime;
   dateFilter?: DateFilterConfig;
-  dynamicScales?: boolean;
   aggregationMode?: AggregationMode;
   yAxisUnit?: string;
   emoji?: {

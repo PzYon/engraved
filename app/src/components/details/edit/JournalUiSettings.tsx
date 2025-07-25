@@ -4,7 +4,6 @@ import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
 import FunctionsOutlined from "@mui/icons-material/FunctionsOutlined";
 import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
 import PanToolOutlined from "@mui/icons-material/PanToolOutlined";
-import QueryStatsOutlined from "@mui/icons-material/QueryStatsOutlined";
 import ShowChartOutlined from "@mui/icons-material/ShowChartOutlined";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GridContainer, GridItem } from "../../common/Grid";
@@ -25,6 +24,22 @@ export const JournalUiSettings: React.FC<{
           <FormControlLabel
             control={
               <Checkbox
+                checked={uiSettings.showChart}
+                onChange={(_, checked) =>
+                  onChange({ ...uiSettings, showChart: checked })
+                }
+                icon={<ShowChartOutlined sx={{ opacity: 0.5 }} />}
+                checkedIcon={<ShowChartOutlined />}
+              />
+            }
+            label="Show chart by default"
+          />
+        </GridItem>
+
+        <GridItem>
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={uiSettings.showAgenda}
                 onChange={(_, checked) =>
                   onChange({ ...uiSettings, showAgenda: checked })
@@ -34,22 +49,6 @@ export const JournalUiSettings: React.FC<{
               />
             }
             label="Show agenda view by default"
-          />
-        </GridItem>
-
-        <GridItem>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={uiSettings.showThresholds}
-                onChange={(_, checked) =>
-                  onChange({ ...uiSettings, showThresholds: checked })
-                }
-                icon={<PanToolOutlined sx={{ opacity: 0.5 }} />}
-                checkedIcon={<PanToolOutlined />}
-              />
-            }
-            label="Show thresholds by default"
           />
         </GridItem>
 
@@ -89,35 +88,19 @@ export const JournalUiSettings: React.FC<{
           <FormControlLabel
             control={
               <Checkbox
-                checked={uiSettings.showChart}
+                checked={uiSettings.showThresholds}
                 onChange={(_, checked) =>
-                  onChange({ ...uiSettings, showChart: checked })
+                  onChange({ ...uiSettings, showThresholds: checked })
                 }
-                icon={<ShowChartOutlined sx={{ opacity: 0.5 }} />}
-                checkedIcon={<ShowChartOutlined />}
+                icon={<PanToolOutlined sx={{ opacity: 0.5 }} />}
+                checkedIcon={<PanToolOutlined />}
               />
             }
-            label="Show chart by default"
+            label="Show thresholds by default"
           />
         </GridItem>
 
         <GridItem />
-
-        <GridItem>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={uiSettings.dynamicScales}
-                onChange={(_, checked) =>
-                  onChange({ ...uiSettings, dynamicScales: checked })
-                }
-                icon={<QueryStatsOutlined sx={{ opacity: 0.5 }} />}
-                checkedIcon={<QueryStatsOutlined />}
-              />
-            }
-            label="Dynamic scales"
-          />
-        </GridItem>
 
         <GridItem>
           <TextField
@@ -127,6 +110,17 @@ export const JournalUiSettings: React.FC<{
             value={uiSettings.yAxisUnit}
             onChange={(x) => {
               onChange({ ...uiSettings, yAxisUnit: x.target.value });
+            }}
+          />
+        </GridItem>
+
+        <GridItem>
+          <ChartTypeSelector
+            chartType={
+              uiSettings.chartType ?? journalDefaultUiSettings.chartType
+            }
+            onChange={(chartType) => {
+              onChange({ ...uiSettings, chartType });
             }}
           />
         </GridItem>
@@ -153,16 +147,7 @@ export const JournalUiSettings: React.FC<{
             }}
           />
         </GridItem>
-        <GridItem>
-          <ChartTypeSelector
-            chartType={
-              uiSettings.chartType ?? journalDefaultUiSettings.chartType
-            }
-            onChange={(chartType) => {
-              onChange({ ...uiSettings, chartType });
-            }}
-          />
-        </GridItem>
+
         <GridItem>
           <AggregationModeSelector
             aggregationMode={
