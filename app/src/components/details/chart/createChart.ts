@@ -14,7 +14,7 @@ import {
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { ITransformedEntry } from "./transformation/ITransformedEntry";
 import { JournalType } from "../../../serverApi/JournalType";
-import { format } from "date-fns";
+import { format, startOfDay } from "date-fns";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 import { IChartUiProps } from "./IChartProps";
 import { getUiSettings } from "../../../util/journalUtils";
@@ -228,7 +228,7 @@ function createBarChart(
           type: "time",
           time: { minUnit: getTimeUnit(groupByTime) },
           /* eslint-disable @typescript-eslint/no-explicit-any */
-          max: (dateConditions?.to ?? new Date()) as any,
+          max: startOfDay(dateConditions?.to ?? new Date()) as any,
         },
         y: {
           min:
