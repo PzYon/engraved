@@ -231,26 +231,6 @@ function createBarChart(
           max: startOfDay(dateConditions?.to ?? new Date()) as any,
         },
         y: {
-          min:
-            uiSettings?.dynamicScales === true
-              ? Math.round(
-                  Math.min(
-                    ...entries
-                      .map((x) => journalType.getValue(x))
-                      .filter((x) => x !== 0),
-                  ) * 0.985,
-                )
-              : undefined,
-          max:
-            uiSettings?.dynamicScales === true
-              ? Math.round(
-                  Math.max(
-                    ...entries
-                      .map((x) => journalType.getValue(x))
-                      .filter((x) => x !== 0),
-                  ) * 1.015,
-                )
-              : undefined,
           stacked: true,
           ticks: {
             callback: (value) =>
