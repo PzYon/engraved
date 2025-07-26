@@ -20,6 +20,10 @@ export interface IJournalUiSettings {
   showThresholds?: boolean;
   showFilters?: boolean;
   showAgenda?: boolean;
+  fixedScales?: {
+    min?: number;
+    max?: number;
+  };
   groupByTime?: GroupByTime;
   dateFilter?: DateFilterConfig;
   aggregationMode?: AggregationMode;
