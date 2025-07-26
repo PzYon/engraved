@@ -10,4 +10,5 @@ export const journalDefaultUiSettings: IJournalUiSettings = {
     value: DateRange.All,
   },
   aggregationMode: "sum",
+  fixedScales: {},
 };

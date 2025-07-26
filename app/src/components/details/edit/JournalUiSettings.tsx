@@ -114,6 +114,39 @@ export const JournalUiSettings: React.FC<{
           />
         </GridItem>
 
+        <GridItem sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+          <TextField
+            id={Math.random().toString()}
+            label="Scales Y-min"
+            type="number"
+            value={uiSettings.fixedScales?.min}
+            onChange={(x) => {
+              onChange({
+                ...uiSettings,
+                fixedScales: {
+                  ...uiSettings.fixedScales,
+                  min: Number(x.target.value),
+                },
+              });
+            }}
+          />
+          <TextField
+            id={Math.random().toString()}
+            label="Scales Y-max"
+            type="number"
+            value={uiSettings.fixedScales?.max}
+            onChange={(x) => {
+              onChange({
+                ...uiSettings,
+                fixedScales: {
+                  ...uiSettings.fixedScales,
+                  max: Number(x.target.value),
+                },
+              });
+            }}
+          />
+        </GridItem>
+
         <GridItem>
           <ChartTypeSelector
             chartType={

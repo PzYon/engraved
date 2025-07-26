@@ -1,10 +1,15 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Grid, SxProps } from "@mui/material";
 
-export const GridItem: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
-  return <Grid size={{ xs: 2, sm: 4, md: 4 }}>{children}</Grid>;
+export const GridItem: React.FC<{
+  children?: React.ReactNode;
+  sx?: SxProps;
+}> = ({ children, sx }) => {
+  return (
+    <Grid size={{ xs: 2, sm: 4, md: 4 }} sx={sx}>
+      {children}
+    </Grid>
+  );
 };
 
 export const GridContainer: React.FC<{ children: React.ReactNode }> = ({

@@ -231,6 +231,8 @@ function createBarChart(
           max: startOfDay(dateConditions?.to ?? new Date()) as any,
         },
         y: {
+          min: uiSettings?.fixedScales?.min,
+          max: uiSettings?.fixedScales?.max,
           stacked: true,
           ticks: {
             callback: (value) =>
