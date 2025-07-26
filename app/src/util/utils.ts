@@ -58,6 +58,6 @@ export function getNumberOfDays(
   );
 }
 
-function ensureDate(d: Date | string) {
+export function ensureDate(d: Date | string) {
   return typeof d === "string" ? new Date(d) : d;
 }

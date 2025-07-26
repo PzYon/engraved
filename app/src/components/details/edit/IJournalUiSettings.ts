@@ -8,6 +8,8 @@ export type AggregationMode =
   | "average-by-time"
   | "average-by-occurrence";
 
+export type StreakMode = "none" | "positive" | "negative";
+
 export type DateFilterConfig = {
   dateType: DateType;
   value: DateRange | number;
@@ -30,5 +32,8 @@ export interface IJournalUiSettings {
   yAxisUnit?: string;
   emoji?: {
     unified: string;
+  };
+  streak?: {
+    mode: StreakMode;
   };
 }
