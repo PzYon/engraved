@@ -1,10 +1,15 @@
-import { IEntry } from "../../../serverApi/IEntry";
 import { StreakMode } from "../edit/IJournalUiSettings";
 import { ensureDate } from "../../../util/utils";
-import { isToday, isYesterday } from "date-fns";
+import {
+  addDays,
+  differenceInDays,
+  isSameDay,
+  isToday,
+  isYesterday,
+} from "date-fns";
 
 export function calculateStreak(
-  entries: IEntry[],
+  entries: { dateTime: string | Date }[],
   mode: StreakMode,
 ): {
   isStreak: boolean;
@@ -29,7 +34,7 @@ export function calculateStreak(
     return {
       isStreak: isNewestToday || isNewestYesterday,
       hasEntryToday: isNewestToday,
-      length: 2,
+      length: getStreakLength(entries, mode),
     };
   }
 
@@ -37,7 +42,42 @@ export function calculateStreak(
     return {
       isStreak: !isNewestToday && !isNewestYesterday,
       hasEntryToday: isNewestToday,
-      length: 2,
+      length: getStreakLength(entries, mode),
     };
+  }
+}
+
+function getStreakLength(
+  entries: { dateTime: string | Date }[],
+  mode: StreakMode,
+) {
+  switch (mode) {
+    case "none":
+      return 0;
+
+    case "negative":
+      return differenceInDays(new Date(), entries[0].dateTime) - 1;
+
+    case "positive": {
+      let lastDate = new Date();
+      let count = 0;
+
+      for (let i = 0; i < entries.length; i++) {
+        if (
+          (i === 0 && isToday(entries[0].dateTime)) ||
+          isSameDay(addDays(entries[i].dateTime, 1), lastDate)
+        ) {
+          count++;
+          lastDate = ensureDate(entries[i].dateTime);
+        } else {
+          break;
+        }
+      }
+
+      return count;
+    }
+
+    default:
+      throw new Error("This should not happen!");
   }
 }
