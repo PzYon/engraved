@@ -31,6 +31,7 @@ import { AggregationMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { IDateConditions } from "../JournalContext";
 import { TotalValue } from "./TotalValue";
+import { Streak } from "./Streak";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -95,6 +96,9 @@ export const EntriesTable: React.FC<{
       <TableRow>
         {columns.map((column) => (
           <TableCell key={column.key}>
+            {column.key === "_date" ? (
+              <Streak journal={journal} entries={entries} />
+            ) : null}
             {column.isAggregatable ? (
               <TotalValue
                 journalType={type}
