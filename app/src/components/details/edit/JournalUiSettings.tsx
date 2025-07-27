@@ -1,5 +1,15 @@
 import React from "react";
-import { Checkbox, FormControlLabel, styled, TextField } from "@mui/material";
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  styled,
+  TextField,
+} from "@mui/material";
 import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
 import FunctionsOutlined from "@mui/icons-material/FunctionsOutlined";
 import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
@@ -10,7 +20,7 @@ import { GridContainer, GridItem } from "../../common/Grid";
 import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { AggregationModeSelector } from "../chart/AggregationModeSelector";
-import { IJournalUiSettings } from "./IJournalUiSettings";
+import { IJournalUiSettings, StreakMode } from "./IJournalUiSettings";
 import { DateFilterConfigSelector } from "../filters/DateFilterConfigSelector";
 
 export const JournalUiSettings: React.FC<{
@@ -100,7 +110,29 @@ export const JournalUiSettings: React.FC<{
           />
         </GridItem>
 
-        <GridItem />
+        <GridItem>
+          <FormControl sx={{ width: "100%" }}>
+            <InputLabel id="streak-mode-label">Streak mode</InputLabel>
+            <Select
+              id="streak-mode"
+              labelId="streak-label"
+              label="Streak mode"
+              value={uiSettings.streak?.mode}
+              onChange={(event: SelectChangeEvent) => {
+                onChange({
+                  ...uiSettings,
+                  streak: {
+                    mode: event.target.value as StreakMode,
+                  },
+                });
+              }}
+            >
+              <MenuItem value="none">-</MenuItem>
+              <MenuItem value="positive">Positive</MenuItem>
+              <MenuItem value="negative">Negative</MenuItem>
+            </Select>
+          </FormControl>
+        </GridItem>
 
         <GridItem>
           <TextField

@@ -8,14 +8,16 @@ import {
   isYesterday,
 } from "date-fns";
 
-export function calculateStreak(
-  entries: { dateTime: string | Date }[],
-  mode: StreakMode,
-): {
+export interface IStreak {
   isStreak: boolean;
   length: number;
   hasEntryToday: boolean;
-} {
+}
+
+export function calculateStreak(
+  entries: { dateTime: string | Date }[],
+  mode: StreakMode,
+): IStreak {
   if (mode === "none") {
     return null;
   }
@@ -34,7 +36,7 @@ export function calculateStreak(
     return {
       isStreak: isNewestToday || isNewestYesterday,
       hasEntryToday: isNewestToday,
-      length: getStreakLength(entries, mode),
+      length: getPositiveStreakLength(entries),
     };
   }
 
@@ -42,42 +44,26 @@ export function calculateStreak(
     return {
       isStreak: !isNewestToday && !isNewestYesterday,
       hasEntryToday: isNewestToday,
-      length: getStreakLength(entries, mode),
+      length: differenceInDays(new Date(), entries[0].dateTime) - 1,
     };
   }
 }
 
-function getStreakLength(
-  entries: { dateTime: string | Date }[],
-  mode: StreakMode,
-) {
-  switch (mode) {
-    case "none":
-      return 0;
+function getPositiveStreakLength(entries: { dateTime: string | Date }[]) {
+  let lastDate = new Date();
+  let count = 0;
 
-    case "negative":
-      return differenceInDays(new Date(), entries[0].dateTime) - 1;
-
-    case "positive": {
-      let lastDate = new Date();
-      let count = 0;
-
-      for (let i = 0; i < entries.length; i++) {
-        if (
-          (i === 0 && isToday(entries[0].dateTime)) ||
-          isSameDay(addDays(entries[i].dateTime, 1), lastDate)
-        ) {
-          count++;
-          lastDate = ensureDate(entries[i].dateTime);
-        } else {
-          break;
-        }
-      }
-
-      return count;
+  for (let i = 0; i < entries.length; i++) {
+    if (
+      (i === 0 && isToday(entries[0].dateTime)) ||
+      isSameDay(addDays(entries[i].dateTime, 1), lastDate)
+    ) {
+      count++;
+      lastDate = ensureDate(entries[i].dateTime);
+    } else {
+      break;
     }
-
-    default:
-      throw new Error("This should not happen!");
   }
+
+  return count;
 }
