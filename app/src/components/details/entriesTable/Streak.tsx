@@ -3,8 +3,9 @@ import { IEntry } from "../../../serverApi/IEntry";
 import { getUiSettings } from "../../../util/journalUtils";
 import { calculateStreak } from "./calculateStreak";
 import CheckCircle from "@mui/icons-material/CheckCircle";
-import { styled } from "@mui/material";
+import Warning from "@mui/icons-material/Warning";
 import DoNotDisturb from "@mui/icons-material/DoNotDisturb";
+import { styled } from "@mui/material";
 
 export const Streak: React.FC<{ journal: IJournal; entries: IEntry[] }> = ({
   journal,
@@ -17,16 +18,19 @@ export const Streak: React.FC<{ journal: IJournal; entries: IEntry[] }> = ({
 
   const streak = calculateStreak(entries, uiSettings.streak.mode);
 
-  console.log("Streak", streak);
+  if (!streak.isStreak) {
+    return (
+      <Host type={"red"}>
+        <DoNotDisturb />
+        No streak
+      </Host>
+    );
+  }
 
   return (
-    <Host
-      type={
-        streak.isStreak ? (streak.hasEntryToday ? "green" : "yellow") : "red"
-      }
-    >
-      {streak.isStreak ? <CheckCircle /> : <DoNotDisturb />}{" "}
-      {streak.isStreak ? `${streak.length}-day streak` : "No streak"}
+    <Host type={streak.hasEntryToday ? "green" : "yellow"}>
+      {streak.hasEntryToday ? <CheckCircle /> : <Warning />}
+      {`${streak.length}-day streak`}
     </Host>
   );
 };
