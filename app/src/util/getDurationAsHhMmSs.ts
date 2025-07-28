@@ -1,9 +1,10 @@
 import { differenceInSeconds } from "date-fns";
+import { round } from "./utils";
 
 export function getDurationAsHhMmSsFromSeconds(totalSeconds: number): string {
   const hours = Math.floor(totalSeconds / (60 * 60));
   const minutes = Math.floor((totalSeconds - hours * 60 * 60) / 60);
-  const seconds = totalSeconds - hours * 60 * 60 - minutes * 60;
+  const seconds = round(totalSeconds - hours * 60 * 60 - minutes * 60, 3);
 
   return `${padZeros(hours)}:${padZeros(minutes)}:${padZeros(seconds)}`;
 }
