@@ -11,12 +11,12 @@ export const Streak: React.FC<{ journal: IJournal; entries: IEntry[] }> = ({
   journal,
   entries,
 }) => {
-  const uiSettings = getUiSettings(journal);
-  if (!uiSettings.streak?.mode || uiSettings.streak?.mode === "none") {
+  const mode = getUiSettings(journal)?.streak?.mode;
+  if (!mode || mode === "none") {
     return null;
   }
 
-  const streak = calculateStreak(entries, uiSettings.streak.mode);
+  const streak = calculateStreak(entries, mode);
 
   if (!streak.isStreak) {
     return (
@@ -27,9 +27,11 @@ export const Streak: React.FC<{ journal: IJournal; entries: IEntry[] }> = ({
     );
   }
 
+  const isWarning = mode === "positive" && !streak.hasEntryToday;
+
   return (
-    <Host type={streak.hasEntryToday ? "green" : "yellow"}>
-      {streak.hasEntryToday ? <CheckCircle /> : <Warning />}
+    <Host type={isWarning ? "yellow" : "green"}>
+      {isWarning ? <Warning /> : <CheckCircle />}
       {`${streak.length}-day streak`}
     </Host>
   );
