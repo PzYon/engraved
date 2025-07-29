@@ -10,6 +10,9 @@ export class ScrapsJournalPage extends JournalPage {
   async addList() {
     await this.clickPageAction("Add entry");
 
+    // why do we need this?
+    // await this.page.waitForTimeout(1000);
+
     await this.page.getByLabel("Change type to list").click();
 
     return new ScrapListComponent(this.page);
