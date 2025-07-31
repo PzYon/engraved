@@ -10,10 +10,13 @@ export class ScrapsJournalPage extends JournalPage {
   async addList() {
     await this.clickPageAction("Add entry");
 
-    // why do we need this?
-    // await this.page.waitForTimeout(1000);
+    // todo: consider somehow ensuring here that we are actually in list mode?
+    // e.g. by  setting a mode attribute on the component?
+    //await this.page.getByLabel("Change type to list").click();
 
-    await this.page.getByLabel("Change type to list").click();
+    await this.page
+      .getByRole("button", { name: "Change type to list" })
+      .click();
 
     return new ScrapListComponent(this.page);
   }
