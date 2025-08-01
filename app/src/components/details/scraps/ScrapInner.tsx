@@ -31,6 +31,7 @@ export const ScrapInner: React.FC = () => {
         }
       }}
       data-testid={"scrap-" + scrapToRender.id}
+      data-scrap-type={scrapToRender.scrapType}
     >
       {isEditMode ? (
         <ParseableDate

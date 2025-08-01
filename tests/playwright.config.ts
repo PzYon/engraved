@@ -32,6 +32,7 @@ export default defineConfig({
   ],
   webServer: [
     {
+      name: "App",
       command: "npm run e2e:start-app",
       url: cdnBaseUrl,
       reuseExistingServer: !isCi,
@@ -42,6 +43,7 @@ export default defineConfig({
       timeout: threeMinutes,
     },
     {
+      name: "Server",
       command: "npm run e2e:start-api",
       url: apiBaseUrl,
       reuseExistingServer: !isCi,

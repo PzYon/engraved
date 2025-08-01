@@ -14,9 +14,13 @@ export class ScrapsJournalPage extends JournalPage {
     // e.g. by  setting a mode attribute on the component?
     //await this.page.getByLabel("Change type to list").click();
 
-    await this.page
-      .getByRole("button", { name: "Change type to list" })
-      .click();
+    const newScrap = this.page.getByTestId("add-new-scrap");
+
+    if ((await newScrap.locator("[data-scrap-type='List']").count()) === 0) {
+      await await this.page
+        .getByRole("button", { name: "Change type to list" })
+        .click();
+    }
 
     return new ScrapListComponent(this.page);
   }
