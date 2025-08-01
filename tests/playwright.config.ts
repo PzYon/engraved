@@ -11,7 +11,8 @@ export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!isCi,
-  retries: isCi ? 2 : 0,
+  // we also don't want retries in CI to prevent flaky tests
+  retries: 0, // isCi ? 2 : 0,
   reporter: isCi ? [["list"], ["github"]] : [["list"], ["html"]],
   use: {
     baseURL: cdnBaseUrl,
