@@ -65,7 +65,7 @@ export const UpsertEntryAction: React.FC<{
           (entry as IScrapEntry) ??
           ScrapsJournalType.createBlank(false, journal.id, ScrapType.Markdown)
         }
-        data-testid="add-new-scrap"
+        testId="add-new-scrap"
         hasFocus={true}
         journal={journal}
         actionsRenderStyle={"save-only"}
