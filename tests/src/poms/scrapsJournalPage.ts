@@ -10,14 +10,13 @@ export class ScrapsJournalPage extends JournalPage {
   async addList() {
     await this.clickPageAction("Add entry");
 
-    // todo: consider somehow ensuring here that we are actually in list mode?
-    // e.g. by  setting a mode attribute on the component?
-    //await this.page.getByLabel("Change type to list").click();
-
-    const newScrap = this.page.getByTestId("add-new-scrap");
-
-    if ((await newScrap.locator("[data-scrap-type='List']").count()) === 0) {
-      await await this.page
+    if (
+      (await this.page
+        .getByTestId("add-new-scrap")
+        .locator("[data-scrap-type='List']")
+        .count()) === 0
+    ) {
+      await this.page
         .getByRole("button", { name: "Change type to list" })
         .click();
     }
