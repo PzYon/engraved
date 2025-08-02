@@ -19,7 +19,7 @@ export const RefreshData: React.FC = () => {
   }, []);
 
   return (
-    <Host className={doRotate ? "rotate" : null}>
+    <Host data-testid="refresh-data" className={doRotate ? "rotate" : "ready"}>
       <ActionIconButton action={ActionFactory.refreshData(queryClient)} />
     </Host>
   );

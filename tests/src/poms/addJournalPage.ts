@@ -1,3 +1,4 @@
+import { expect } from "@playwright/test";
 import { BasePage } from "./basePage";
 import { MetricJournalPage } from "./metricJournalPage";
 
@@ -22,6 +23,10 @@ export class AddJournalPage extends BasePage {
   async clickSave() {
     await this.page.getByRole("button", { name: "Create" }).click();
     await this.page.waitForURL(/journals\/(?!create)/);
+
+    // wait until the page is fully loaded
+    await expect(this.page.getByTestId("refresh-data")).toContainClass("ready");
+    await expect(this.page.getByTestId("empty-placeholder")).toBeVisible();
 
     return new MetricJournalPage(this.page);
   }
