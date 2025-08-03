@@ -17,6 +17,8 @@ export class ScrapsJournalPage extends JournalPage {
         .getByRole("button", { name: "Change type to list" })
         .click();
 
+      // wtf!? why this? because this is required for some reason to
+      // make the test work on CI (linux?
       if (await this.isMarkdown()) {
         await this.page
           .getByRole("button", { name: "Change type to list" })
