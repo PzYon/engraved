@@ -16,17 +16,13 @@ export class ScrapListComponent {
   }
 
   async typeListItem(value: string) {
-    await this.page
+    const lastItem = this.page
       .getByRole("listitem")
       .getByRole("textbox")
-      .last()
-      .waitFor({ state: "attached" }); // Wait for the textbox to appear
+      .last();
 
-    await this.page
-      .getByRole("listitem")
-      .getByRole("textbox")
-      .last()
-      .fill(value);
+    await lastItem.waitFor({ state: "visible" });
+    await lastItem.fill(value);
   }
 
   async addListItem(value: string) {
