@@ -12,11 +12,11 @@ export class ScrapsJournalPage extends JournalPage {
 
     await expect(this.page.getByTestId("add-new-scrap")).toBeVisible();
 
-    if (await this.isMarkdown()) {
-      await this.page
-        .getByRole("button", { name: "Change type to list" })
-        .click();
-    }
+    //if (await this.isMarkdown()) {
+    await this.page
+      .getByRole("button", { name: "Change type to list" })
+      .click();
+    //}
 
     await expect(this.page.getByTestId("item-0:0")).toBeVisible();
 
