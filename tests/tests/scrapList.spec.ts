@@ -20,7 +20,7 @@ test.skip("add scrap journal, add list entry and add/delete/modify", async ({
 
   const scrapList = await scrapsJournalPage.addList();
   await scrapList.typeTitle("This is my title");
-  await scrapList.typeListItem(firstItemText);
+  await scrapList.addListItem(firstItemText);
   await scrapList.addListItem(secondItemText);
 
   await scrapList.clickSave();
