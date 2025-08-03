@@ -12,22 +12,10 @@ export class ScrapsJournalPage extends JournalPage {
 
     await expect(this.page.getByTestId("add-new-scrap")).toBeVisible();
 
-    if (
-      (await this.page
-        //.getByTestId("add-new-scrap")
-        .locator("[data-scrap-type='Markdown']")
-        .count()) === 0
-    ) {
+    if (await this.isMarkdown()) {
       await this.page
         .getByRole("button", { name: "Change type to list" })
         .click();
-
-      await this.page
-        .getByLabel("Change type to list")
-        //.getByRole("button", { name: "Change type to list" })
-        .click();
-
-      await this.page.waitForTimeout(1000);
     }
 
     return new ScrapListComponent(this.page);
@@ -43,5 +31,14 @@ export class ScrapsJournalPage extends JournalPage {
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar.getByText("Added entry")).toBeVisible();
     await expect(appBar).not.toBeVisible({ timeout: 10000 });
+  }
+
+  private async isMarkdown() {
+    return (
+      (await this.page
+        .getByTestId("add-new-scrap")
+        .locator("[data-scrap-type='List']")
+        .count()) === 0
+    );
   }
 }
