@@ -18,6 +18,8 @@ export class ScrapsJournalPage extends JournalPage {
         .click();
     }
 
+    await expect(this.page.getByTestId("item-0:0")).toBeVisible();
+
     return new ScrapListComponent(this.page);
   }
 

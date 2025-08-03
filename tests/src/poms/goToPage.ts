@@ -4,9 +4,7 @@ export class GoToPage {
   constructor(private page: Page) {}
 
   async expectNumberOfItems(expected: number) {
-    await expect(this.page.getByRole("listitem")).toHaveCount(expected, {
-      timeout: 5000,
-    });
+    await expect(this.page.getByRole("listitem")).toHaveCount(expected);
   }
 
   async expectItemText(index: number, expectedText: string) {
