@@ -20,7 +20,7 @@ export class ScrapListComponent {
       .getByRole("listitem")
       .getByRole("textbox")
       .last()
-      .waitFor({ state: "visible" }); // Wait for the textbox to appear
+      .waitFor({ state: "attached" }); // Wait for the textbox to appear
 
     await this.page
       .getByRole("listitem")
