@@ -8,7 +8,7 @@ const firstItemText = "My First Item";
 const secondItemText = "My Second Item";
 const thirdItemText = "My Third Item";
 
-test.skip("add scrap journal, add list entry and add/delete/modify", async ({
+test("add scrap journal, add list entry and add/delete/modify", async ({
   page,
 }) => {
   await login(page, "scrapsList-basic");
@@ -40,7 +40,7 @@ test.skip("add scrap journal, add list entry and add/delete/modify", async ({
   await scrapList.clickSave(true);
 });
 
-test.skip("add scrap journal, add list entries and mark as checked in non-edit mode", async ({
+test("add scrap journal, add list entries and mark as checked in non-edit mode", async ({
   page,
 }) => {
   await login(page, "scrapsList-non-edit");
@@ -78,7 +78,7 @@ test.skip("add scrap journal, add list entries and mark as checked in non-edit m
   await testThatEveryUpdateLeadsToNewInitialState(page, scrapList);
 });
 
-test.skip("modify list items in multiple tabs, handle updates accordingly", async ({
+test("modify list items in multiple tabs, handle updates accordingly", async ({
   browser,
 }) => {
   const context = await browser.newContext();
