@@ -10,15 +10,20 @@ export class ScrapsJournalPage extends JournalPage {
   async addList() {
     await this.clickPageAction("Add entry");
 
+    await expect(this.page.getByTestId("add-new-scrap")).toBeVisible();
+    await this.page.waitForTimeout(1000);
+
     if (
       (await this.page
         .getByTestId("add-new-scrap")
-        .locator("[data-scrap-type='List']")
+        .locator("[data-scrap-type='Markdown']")
         .count()) === 0
     ) {
       await this.page
         .getByRole("button", { name: "Change type to list" })
         .click();
+
+      await this.page.waitForTimeout(1000);
     }
 
     return new ScrapListComponent(this.page);
