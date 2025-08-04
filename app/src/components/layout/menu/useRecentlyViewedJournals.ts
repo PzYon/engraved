@@ -7,6 +7,10 @@ const storage = new StorageWrapper(window.localStorage);
 const storageKey = "engraved::recently-view-journals";
 
 export const addRecentlyViewedJournal = (id: string) => {
+  if (!id) {
+    return;
+  }
+
   const journalIds = storage.getValue<string[]>(storageKey) ?? [];
 
   const index = journalIds.indexOf(id);

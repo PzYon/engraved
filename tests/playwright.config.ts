@@ -11,7 +11,8 @@ export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!isCi,
-  retries: isCi ? 2 : 0,
+  // we don't want retries in CI to prevent flaky tests
+  retries: 0, // isCi ? 2 : 0,
   reporter: isCi ? [["list"], ["github"]] : [["list"], ["html"]],
   use: {
     baseURL: cdnBaseUrl,
@@ -32,6 +33,7 @@ export default defineConfig({
   ],
   webServer: [
     {
+      name: "App",
       command: "npm run e2e:start-app",
       url: cdnBaseUrl,
       reuseExistingServer: !isCi,
@@ -42,10 +44,11 @@ export default defineConfig({
       timeout: threeMinutes,
     },
     {
+      name: "Server",
       command: "npm run e2e:start-api",
       url: apiBaseUrl,
       reuseExistingServer: !isCi,
-      stdout: "pipe",
+      stdout: isCi ? undefined : "pipe",
       stderr: "pipe",
       // for some reason, this api server takes a long
       // time to start on CI

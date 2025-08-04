@@ -9,7 +9,7 @@ export const GenericEmptyPlaceholder: React.FC<{
 }> = ({ icon: IconElement, message }) => {
   return (
     <PageSection>
-      <Host>
+      <Host data-testid="empty-placeholder">
         <IconElement sx={{ color: "primary.main" }} fontSize="large" />
         <Typography sx={{ color: "primary.main", mt: 2 }} fontSize="large">
           {message}

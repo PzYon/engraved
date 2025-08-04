@@ -17,6 +17,7 @@ export const Scrap: React.FC<{
   giveFocus?: () => void;
   isQuickAdd?: boolean;
   changeTypeWithoutConfirmation?: boolean;
+  testId?: string;
 }> = ({
   scrap,
   journal,
@@ -28,6 +29,7 @@ export const Scrap: React.FC<{
   giveFocus,
   isQuickAdd,
   changeTypeWithoutConfirmation,
+  testId,
 }) => {
   const [doRender, setDoRender] = useState(hasFocus);
 
@@ -40,7 +42,7 @@ export const Scrap: React.FC<{
   }
 
   return (
-    <div id={scrap.id}>
+    <div id={scrap.id} data-testid={testId}>
       <ScrapContextProvider
         initialScrap={scrap}
         propsRenderStyle={propsRenderStyle}

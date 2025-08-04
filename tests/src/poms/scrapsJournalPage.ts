@@ -10,10 +10,23 @@ export class ScrapsJournalPage extends JournalPage {
   async addList() {
     await this.clickPageAction("Add entry");
 
-    // why do we need this?
-    await this.page.waitForTimeout(1000);
+    await expect(this.page.getByTestId("add-new-scrap")).toBeVisible();
 
-    await this.page.getByLabel("Change type to list").click();
+    if (await this.isMarkdown()) {
+      await this.page
+        .getByRole("button", { name: "Change type to list" })
+        .click();
+
+      // wtf!? why this? because this is required for some reason to
+      // make the test work on CI (linux?
+      if (await this.isMarkdown()) {
+        await this.page
+          .getByRole("button", { name: "Change type to list" })
+          .click();
+      }
+    }
+
+    await expect(this.page.getByTestId("item-0:0")).toBeVisible();
 
     return new ScrapListComponent(this.page);
   }
@@ -28,5 +41,14 @@ export class ScrapsJournalPage extends JournalPage {
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar.getByText("Added entry")).toBeVisible();
     await expect(appBar).not.toBeVisible({ timeout: 10000 });
+  }
+
+  private async isMarkdown() {
+    return (
+      (await this.page
+        .getByTestId("add-new-scrap")
+        .locator("[data-scrap-type='List']")
+        .count()) === 0
+    );
   }
 }
