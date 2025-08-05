@@ -6,6 +6,7 @@ import {
   isSameDay,
   isToday,
   isYesterday,
+  startOfDay,
 } from "date-fns";
 
 export interface IStreak {
@@ -35,7 +36,11 @@ export function calculateStreak(
     : {
         isStreak: !isNewestToday && !isNewestYesterday,
         hasEntryToday: isNewestToday,
-        length: differenceInDays(new Date(), newestEntry.dateTime) - 1,
+        length:
+          differenceInDays(
+            startOfDay(new Date()),
+            startOfDay(newestEntry.dateTime),
+          ) - 1,
       };
 }
 
