@@ -11,4 +11,5 @@ export const journalDefaultUiSettings: IJournalUiSettings = {
   },
   aggregationMode: "sum",
   fixedScales: {},
+  footerRowMode: "bottom",
 };

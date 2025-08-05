@@ -20,7 +20,11 @@ import { GridContainer, GridItem } from "../../common/Grid";
 import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { AggregationModeSelector } from "../chart/AggregationModeSelector";
-import { IJournalUiSettings, StreakMode } from "./IJournalUiSettings";
+import {
+  FooterRowMode,
+  IJournalUiSettings,
+  StreakMode,
+} from "./IJournalUiSettings";
 import { DateFilterConfigSelector } from "../filters/DateFilterConfigSelector";
 
 export const JournalUiSettings: React.FC<{
@@ -130,6 +134,28 @@ export const JournalUiSettings: React.FC<{
               <MenuItem value="none">-</MenuItem>
               <MenuItem value="positive">Positive</MenuItem>
               <MenuItem value="negative">Negative</MenuItem>
+            </Select>
+          </FormControl>
+        </GridItem>
+
+        <GridItem>
+          <FormControl sx={{ width: "100%" }}>
+            <InputLabel id="footer-row-mode-label">Footer Row Mode</InputLabel>
+            <Select
+              id="footer-row"
+              labelId="footer-row-mode-label"
+              label="Footer Row Mode"
+              value={uiSettings.footerRowMode}
+              onChange={(event: SelectChangeEvent) => {
+                onChange({
+                  ...uiSettings,
+                  footerRowMode: event.target.value as FooterRowMode,
+                });
+              }}
+            >
+              <MenuItem value="bottom">Bottom</MenuItem>
+              <MenuItem value="top">Top</MenuItem>
+              <MenuItem value="both">Both</MenuItem>
             </Select>
           </FormControl>
         </GridItem>

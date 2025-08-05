@@ -10,6 +10,8 @@ export type AggregationMode =
 
 export type StreakMode = "none" | "positive" | "negative";
 
+export type FooterRowMode = "bottom" | "top" | "both";
+
 export type DateFilterConfig = {
   dateType: DateType;
   value: DateRange | number;
@@ -36,4 +38,5 @@ export interface IJournalUiSettings {
   streak?: {
     mode: StreakMode;
   };
+  footerRowMode?: FooterRowMode;
 }
