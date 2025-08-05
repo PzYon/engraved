@@ -75,6 +75,9 @@ export const JournalViewPage: React.FC = () => {
   const dateFilter =
     uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter;
 
+  const footerRowMode =
+    uiSettings.footerRowMode ?? journalDefaultUiSettings.footerRowMode;
+
   const dateFilterHash = JSON.stringify(dateFilter);
 
   useEffect(() => {
@@ -195,6 +198,7 @@ export const JournalViewPage: React.FC = () => {
                 aggregationMode={aggregationMode}
                 setAggregationMode={setAggregationMode}
                 dateConditions={dateConditions}
+                footerRowMode={footerRowMode}
               />
             </PageSection>
           )}

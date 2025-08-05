@@ -27,7 +27,7 @@ import { AddEntryTableRow } from "./addEntry/AddEntryTableRow";
 import { AddEntryTableCell } from "./addEntry/AddEntryTableCell";
 import { AddEntryTableSaveAction } from "./addEntry/AddEntryTableSaveAction";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
-import { AggregationMode } from "../edit/IJournalUiSettings";
+import { AggregationMode, FooterRowMode } from "../edit/IJournalUiSettings";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { IDateConditions } from "../JournalContext";
 import { TotalValue } from "./TotalValue";
@@ -41,6 +41,7 @@ export const EntriesTable: React.FC<{
   aggregationMode: AggregationMode;
   setAggregationMode: (mode: AggregationMode) => void;
   dateConditions: IDateConditions;
+  footerRowMode?: FooterRowMode;
 }> = ({
   journal,
   entries,
@@ -49,6 +50,7 @@ export const EntriesTable: React.FC<{
   aggregationMode,
   setAggregationMode,
   dateConditions,
+  footerRowMode,
 }) => {
   const type = useMemo(
     () => JournalTypeFactory.create(journal.type),
@@ -141,7 +143,7 @@ export const EntriesTable: React.FC<{
         </TableRow>
       </TableHead>
       <TableBody>
-        {headerFooterRow}
+        {footerRowMode !== "bottom" ? headerFooterRow : null}
         {showAddNewEntryRow ? (
           <AddEntryTableRow columns={columns} journal={journal} />
         ) : null}
@@ -157,7 +159,9 @@ export const EntriesTable: React.FC<{
           />
         ))}
       </TableBody>
-      <TableFooter>{headerFooterRow}</TableFooter>
+      {footerRowMode !== "top" ? (
+        <TableFooter>{headerFooterRow}</TableFooter>
+      ) : null}
     </StyledTable>
   );
 };
