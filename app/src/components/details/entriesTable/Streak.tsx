@@ -8,13 +8,17 @@ import DoNotDisturb from "@mui/icons-material/DoNotDisturb";
 import { Paper, styled, Typography } from "@mui/material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 
+export interface IStreakProps {
+  journal: IJournal;
+  entries: IEntry[];
+}
+
 export const Streak: React.FC<IStreakProps & { withBackground?: boolean }> = (
   props,
 ) => {
   const streak = <StreakInternal {...props} />;
 
   if (!props.withBackground) {
-    console.log("YESSSS");
     return streak;
   }
 
@@ -34,11 +38,6 @@ export const Streak: React.FC<IStreakProps & { withBackground?: boolean }> = (
     </Paper>
   );
 };
-
-export interface IStreakProps {
-  journal: IJournal;
-  entries: IEntry[];
-}
 
 export const StreakInternal: React.FC<IStreakProps> = ({
   journal,
