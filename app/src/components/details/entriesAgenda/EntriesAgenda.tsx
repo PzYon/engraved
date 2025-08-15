@@ -12,6 +12,7 @@ import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getDurationAsHhMmSsFromSeconds } from "../../../util/getDurationAsHhMmSs";
+import { Streak } from "../entriesTable/Streak";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
@@ -22,10 +23,18 @@ export const EntriesAgenda: React.FC<{
   if (!journal) {
     return null;
   }
+
   const journalType = JournalTypeFactory.create(journal.type);
 
   return (
     <Paper sx={{ mt: 3, mb: 3, backgroundColor: "transparent" }}>
+      <Streak
+        key={"streak-top"}
+        journal={journal}
+        entries={sortedEntries.entries}
+        withBackground={true}
+      />
+
       {sortedEntries.entries.map((entry, index) => (
         <>
           <Paper key={entry.id} sx={{ p: 2, borderRadius: paperBorderRadius }}>
@@ -84,6 +93,12 @@ export const EntriesAgenda: React.FC<{
           ) : null}
         </>
       ))}
+      <Streak
+        key={"streak-bottom"}
+        journal={journal}
+        entries={sortedEntries.entries}
+        withBackground={true}
+      />
     </Paper>
   );
 

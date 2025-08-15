@@ -5,9 +5,42 @@ import { calculateStreak } from "./calculateStreak";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import Warning from "@mui/icons-material/Warning";
 import DoNotDisturb from "@mui/icons-material/DoNotDisturb";
-import { styled } from "@mui/material";
+import { Paper, styled, Typography } from "@mui/material";
+import { paperBorderRadius } from "../../../theming/engravedTheme";
 
-export const Streak: React.FC<{ journal: IJournal; entries: IEntry[] }> = ({
+export const Streak: React.FC<IStreakProps & { withBackground?: boolean }> = (
+  props,
+) => {
+  const streak = <StreakInternal {...props} />;
+
+  if (!props.withBackground) {
+    console.log("YESSSS");
+    return streak;
+  }
+
+  return (
+    <Paper
+      sx={{
+        pt: 1,
+        pr: 2,
+        pb: 1,
+        pl: 2,
+        mb: 2,
+        mt: 2,
+        borderRadius: paperBorderRadius,
+      }}
+    >
+      <Typography>{streak}</Typography>
+    </Paper>
+  );
+};
+
+export interface IStreakProps {
+  journal: IJournal;
+  entries: IEntry[];
+}
+
+export const StreakInternal: React.FC<IStreakProps> = ({
   journal,
   entries,
 }) => {
