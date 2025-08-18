@@ -15,7 +15,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   public void Set<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, TValue value)
     where TQuery : IQuery
   {
-    string key = GetKey(queryExecutor);
+    var key = GetKey(queryExecutor);
 
     RememberQueryKeyForUser(key);
 
@@ -33,7 +33,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   public bool TryGetValue<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, out TValue? value)
     where TQuery : IQuery
   {
-    string key = GetKey(queryExecutor);
+    var key = GetKey(queryExecutor);
 
     if (!memoryCache.TryGetValue(key, out CacheItem<TValue>? cacheItem))
     {
@@ -42,7 +42,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       return false;
     }
 
-    string configToken = GetConfigToken(query);
+    var configToken = GetConfigToken(query);
     if (cacheItem!.ConfigToken != configToken)
     {
       logger.LogInformation($"{key}: Cache miss (different token): {configToken}");
@@ -57,7 +57,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   public void Invalidate(string[] affectedUserIds)
   {
-    foreach (string user in affectedUserIds)
+    foreach (var user in affectedUserIds)
     {
       ClearForUser(user);
     }
@@ -65,14 +65,14 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   private void ClearForUser(string userName)
   {
-    if (!QueryKeysByUser.TryGetValue(userName, out HashSet<string>? keys) || !keys.Any())
+    if (!QueryKeysByUser.TryGetValue(userName, out var keys) || !keys.Any())
     {
       return;
     }
 
     logger.LogInformation($"Invalidating cache for user {userName}, {keys.Count} items affected");
 
-    foreach (string key in keys)
+    foreach (var key in keys)
     {
       memoryCache.Remove(key);
     }
@@ -91,9 +91,9 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   private void RememberQueryKeyForUser(string queryKey)
   {
-    if (!QueryKeysByUser.TryGetValue(GetUserId(), out HashSet<string>? queryKeys))
+    if (!QueryKeysByUser.TryGetValue(GetUserId(), out var queryKeys))
     {
-      queryKeys = new HashSet<string>();
+      queryKeys = [];
       QueryKeysByUser.Add(GetUserId(), queryKeys);
     }
 
@@ -102,7 +102,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   private string GetUserId()
   {
-    string? userId = currentUser.Value.Id;
+    var userId = currentUser.Value.Id;
     if (string.IsNullOrEmpty(userId))
     {
       throw new Exception("User ID is not available.");

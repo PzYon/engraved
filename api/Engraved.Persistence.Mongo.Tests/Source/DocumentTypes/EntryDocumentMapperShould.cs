@@ -21,7 +21,7 @@ public class EntryDocumentMapperShould
       Id = Id,
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -40,7 +40,7 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
     };
 
     var counterEntry = EntryDocumentMapper.FromDocument<CounterEntry>(document);
@@ -57,7 +57,7 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
       Value = 4.20
     };
 
@@ -81,7 +81,7 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
       Value = 4321
     };
 
@@ -98,7 +98,7 @@ public class EntryDocumentMapperShould
       Id = Id,
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
       StartDate = DateTime.UtcNow.AddHours(-200),
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
@@ -124,7 +124,7 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", new[] { "bla" } } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
       StartDate = DateTime.UtcNow.AddHours(-200),
       EndDate = DateTime.UtcNow.AddHours(-100)
     };

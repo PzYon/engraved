@@ -56,7 +56,7 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     string? currentUserId = null
   )
   {
-    IJournal[] allJournals = await _repository.GetAllJournals(
+    var allJournals = await _repository.GetAllJournals(
       searchText,
       scheduleMode,
       journalTypes,
@@ -193,12 +193,8 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     EnsureUserNameIsSet(name);
 
     IUser? result = _repository.GetUser(name!).Result;
-    if (result == null)
-    {
-      throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
-    }
 
-    return result;
+    return result ?? throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
   }
 
   private static void EnsureUserNameIsSet(string? name)

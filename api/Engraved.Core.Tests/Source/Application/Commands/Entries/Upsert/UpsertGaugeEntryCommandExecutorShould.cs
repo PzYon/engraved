@@ -60,8 +60,7 @@ public class UpsertGaugeEntryCommandExecutorShould
       Value = null
     };
 
-    Assert.ThrowsAsync<InvalidCommandException>(
-      async () =>
+    Assert.ThrowsAsync<InvalidCommandException>(async () =>
       {
         await new UpsertGaugeEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
       }
@@ -99,7 +98,7 @@ public class UpsertGaugeEntryCommandExecutorShould
       JournalAttributeValues = new Dictionary<string, string[]>
       {
         {
-          "stuff", new[] { "k3y" }
+          "stuff", ["k3y"]
         }
       }
     };
@@ -124,9 +123,9 @@ public class UpsertGaugeEntryCommandExecutorShould
     Dictionary<string, string[]> d2
   )
   {
-    bool areEqual = d1 == d2
-                    || (d1.Keys.Count == d2.Keys.Count
-                        && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k])));
+    var areEqual = d1 == d2
+                   || (d1.Keys.Count == d2.Keys.Count
+                       && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k])));
 
     areEqual.Should().BeTrue("JournalAttributeValues are not equal.");
   }
@@ -148,11 +147,10 @@ public class UpsertGaugeEntryCommandExecutorShould
       JournalId = "k3y",
       Notes = "n0t3s",
       Value = 42,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "fooBar", new[] { "x" } } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "fooBar", ["x"] } }
     };
 
-    Assert.ThrowsAsync<InvalidCommandException>(
-      async () =>
+    Assert.ThrowsAsync<InvalidCommandException>(async () =>
       {
         await new UpsertGaugeEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
       }

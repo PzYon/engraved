@@ -3,28 +3,19 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Domain.Permissions;
 
-public class PermissionsEnsurer
+public class PermissionsEnsurer(
+  IBaseRepository repo,
+  Func<IUser, Task<UpsertResult>> upsertUser
+)
 {
-  private readonly IBaseRepository _repo;
-  private readonly Func<IUser, Task<UpsertResult>> _upsertUser;
-
-  public PermissionsEnsurer(
-    IBaseRepository repo,
-    Func<IUser, Task<UpsertResult>> upsertUser
-  )
-  {
-    _repo = repo;
-    _upsertUser = upsertUser;
-  }
-
   public async Task EnsurePermissions(
     IPermissionHolder permissionHolder,
     Dictionary<string, PermissionKind> permissionsToEnsure
   )
   {
-    foreach ((string? userName, PermissionKind kind) in permissionsToEnsure)
+    foreach ((var userName, PermissionKind kind) in permissionsToEnsure)
     {
-      string userId = await EnsureUserAndGetId(userName);
+      var userId = await EnsureUserAndGetId(userName);
 
       if (kind == PermissionKind.None)
       {
@@ -38,13 +29,13 @@ public class PermissionsEnsurer
 
   private async Task<string> EnsureUserAndGetId(string userName)
   {
-    IUser? user = await _repo.GetUser(userName);
+    IUser? user = await repo.GetUser(userName);
     if (user != null)
     {
       return user.Id!;
     }
 
-    UpsertResult result = await _upsertUser(new User { Name = userName });
+    UpsertResult result = await upsertUser(new User { Name = userName });
 
     return result.EntityId;
   }

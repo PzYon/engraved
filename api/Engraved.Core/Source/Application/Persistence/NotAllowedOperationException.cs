@@ -1,6 +1,3 @@
 ﻿namespace Engraved.Core.Application.Persistence;
 
-public class NotAllowedOperationException : Exception
-{
-  public NotAllowedOperationException(string message) : base(message) { }
-}
+public class NotAllowedOperationException(string message) : Exception(message);

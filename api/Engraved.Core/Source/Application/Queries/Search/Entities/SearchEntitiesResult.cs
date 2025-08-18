@@ -4,7 +4,7 @@ namespace Engraved.Core.Application.Queries.Search.Entities;
 
 public class SearchEntitiesResult
 {
-  public SearchResultEntity[] Entities { get; set; } = Array.Empty<SearchResultEntity>();
+  public SearchResultEntity[] Entities { get; set; } = [];
 
-  public IJournal[] Journals { get; set; } = Array.Empty<IJournal>();
+  public IJournal[] Journals { get; set; } = [];
 }

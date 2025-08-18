@@ -48,9 +48,9 @@ public class SearchResultEntityWeb
 
 public class SearchEntitiesResultWeb
 {
-  public SearchResultEntityWeb[] Entities { get; set; } = Array.Empty<SearchResultEntityWeb>();
+  public SearchResultEntityWeb[] Entities { get; set; } = [];
 
-  public dynamic[] Journals { get; set; } = Array.Empty<dynamic>();
+  public dynamic[] Journals { get; set; } = [];
 
   public static SearchResultEntityWeb X(SearchResultEntity e)
   {

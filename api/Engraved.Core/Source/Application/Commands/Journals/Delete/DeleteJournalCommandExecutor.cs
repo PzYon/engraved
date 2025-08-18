@@ -3,14 +3,9 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Delete;
 
-public class DeleteJournalCommandExecutor : ICommandExecutor<DeleteJournalCommand>
+public class DeleteJournalCommandExecutor(IRepository repository) : ICommandExecutor<DeleteJournalCommand>
 {
-  private readonly IBaseRepository _repository;
-
-  public DeleteJournalCommandExecutor(IRepository repository)
-  {
-    _repository = repository;
-  }
+  private readonly IBaseRepository _repository = repository;
 
   public async Task<CommandResult> Execute(DeleteJournalCommand command)
   {

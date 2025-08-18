@@ -3,14 +3,10 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.EditPermissions;
 
-public class EditJournalPermissionsCommandExecutor : ICommandExecutor<EditJournalPermissionsCommand>
+public class EditJournalPermissionsCommandExecutor(IRepository repository)
+  : ICommandExecutor<EditJournalPermissionsCommand>
 {
-  private readonly IBaseRepository _repository;
-
-  public EditJournalPermissionsCommandExecutor(IRepository repository)
-  {
-    _repository = repository;
-  }
+  private readonly IBaseRepository _repository = repository;
 
   public async Task<CommandResult> Execute(EditJournalPermissionsCommand command)
   {
@@ -29,7 +25,7 @@ public class EditJournalPermissionsCommandExecutor : ICommandExecutor<EditJourna
     IJournal journalAfter = (await _repository.GetJournal(command.JournalId))!;
 
     // users are affected that have permissions before or after
-    string[] userIdsWithAccess = journalBefore.Permissions.GetUserIdsWithAccess()
+    var userIdsWithAccess = journalBefore.Permissions.GetUserIdsWithAccess()
       .Union(journalAfter.Permissions.GetUserIdsWithAccess())
       .Distinct()
       .ToArray();
