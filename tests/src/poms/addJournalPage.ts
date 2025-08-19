@@ -22,7 +22,9 @@ export class AddJournalPage extends BasePage {
 
   async clickSave() {
     await this.page.getByRole("button", { name: "Create" }).click();
-    await this.page.waitForURL(/journals\/(?!create)/);
+
+    const appBar = this.page.getByTestId("app-alert-bar");
+    await expect(appBar.getByText("Added journal")).toBeVisible();
 
     // wait until the page is fully loaded
     await expect(this.page.getByTestId("refresh-data")).toContainClass("ready");
