@@ -1,10 +1,15 @@
 ﻿using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Notifications;
 
 namespace Engraved.Core.Application.Commands.Entries.Delete;
 
-public class DeleteEntryCommandExecutor(IRepository repository, IDateService dateService)
+public class DeleteEntryCommandExecutor(
+  IRepository repository,
+  IDateService dateService,
+  INotificationService notificationService
+)
   : ICommandExecutor<DeleteEntryCommand>
 {
   public async Task<CommandResult> Execute(DeleteEntryCommand command)
@@ -13,6 +18,11 @@ public class DeleteEntryCommandExecutor(IRepository repository, IDateService dat
     if (entry == null)
     {
       return new CommandResult();
+    }
+
+    foreach (var kvp in entry.Schedules.Where(kvp => !string.IsNullOrEmpty(kvp.Value.NotificationId)))
+    {
+      notificationService.CancelNotification(kvp.Value.NotificationId!);
     }
 
     await repository.DeleteEntry(command.Id);

@@ -62,7 +62,7 @@ public class NotificationJobShould
   [Test]
   public async Task Process_OneJournal_WithPassedNextOccurrence()
   {
-    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
 
     NotificationJobResult result = await _job.Execute(false);
 
@@ -75,6 +75,7 @@ public class NotificationJobShould
     journal.Schedules.Should().HaveCount(1);
     journal.Schedules[UserName1].NextOccurrence.Should().NotBeNull();
     journal.Schedules[UserName1].DidNotify.Should().Be(true);
+    journal.Schedules[UserName1].NotificationId.Should().NotBe(null);
   }
 
   [Test]

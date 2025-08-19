@@ -2,5 +2,7 @@
 
 public interface INotificationService
 {
-  Task SendNotification(ClientNotification notification, bool doNotSend);
+  Task<string?> SendNotification(ClientNotification notification, bool doNotSend);
+
+  void CancelNotification(string notificationId);
 }

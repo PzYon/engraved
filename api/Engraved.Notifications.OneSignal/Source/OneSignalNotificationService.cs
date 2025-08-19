@@ -10,7 +10,7 @@ namespace Engraved.Notifications.OneSignal;
 
 public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : INotificationService
 {
-  public Task SendNotification(ClientNotification clientNotification, bool doNotSend)
+  public async Task<string?> SendNotification(ClientNotification clientNotification, bool doNotSend)
   {
     if (string.IsNullOrEmpty(config.Value.AppId))
     {
@@ -41,14 +41,13 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       appId: config.Value.AppId,
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [clientNotification.UserId],
-      headings: new StringMap(en: clientNotification.Title),
-      contents: new StringMap(en: clientNotification.Message),
+      headings: new StringMap(clientNotification.Title),
+      contents: new StringMap(clientNotification.Message),
       url: clientNotification.OnClickUrl,
       smallIcon: "/icons/icon-transparent-bg.svg",
       chromeWebBadge: "/icons/icon-transparent-bg.svg",
       webButtons: clientNotification.Buttons
-        .Select(
-          b => new ButtonWithUrl
+        .Select(b => new ButtonWithUrl
           {
             Id = b.Key,
             Url = b.Url,
@@ -64,11 +63,18 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
 
     if (doNotSend)
     {
-      return Task.CompletedTask;
+      return null;
     }
 
-    GetApiInstance().CreateNotification(notification);
-    return Task.CompletedTask;
+    CreateNotificationSuccessResponse response = await GetApiInstance().CreateNotificationAsync(notification);
+
+    // is this id correct?
+    return response.Id;
+  }
+
+  public void CancelNotification(string notificationId)
+  {
+    GetApiInstance().CancelNotification(config.Value.AppId, notificationId);
   }
 
   private DefaultApi GetApiInstance()
