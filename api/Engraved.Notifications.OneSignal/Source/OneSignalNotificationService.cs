@@ -68,7 +68,6 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
 
     CreateNotificationSuccessResponse response = await GetApiInstance().CreateNotificationAsync(notification);
 
-    // is this id correct?
     return response.Id;
   }
 

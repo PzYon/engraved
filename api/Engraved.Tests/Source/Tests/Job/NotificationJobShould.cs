@@ -62,7 +62,7 @@ public class NotificationJobShould
   [Test]
   public async Task Process_OneJournal_WithPassedNextOccurrence()
   {
-    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
 
     NotificationJobResult result = await _job.Execute(false);
 
