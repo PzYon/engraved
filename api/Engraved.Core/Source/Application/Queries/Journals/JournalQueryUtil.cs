@@ -28,7 +28,7 @@ public static class JournalQueryUtil
   private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, IUser> userById)
   {
     // write all users on to object
-    foreach ((string? key, PermissionDefinition value) in journal.Permissions)
+    foreach ((string key, PermissionDefinition value) in journal.Permissions)
     {
       value.User = userById[key];
       value.UserRole = journal.UserId == key

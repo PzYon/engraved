@@ -45,12 +45,12 @@ public class MongoRepositoryShould
 
     counterJournal.Should().NotBeNull();
 
-    counterJournal!.Name = "Second";
+    counterJournal.Name = "Second";
     await _repository.UpsertJournal(counterJournal);
 
     IJournal? updateJournal = await _repository.GetJournal(result.EntityId);
     updateJournal.Should().NotBeNull();
-    updateJournal!.Id.Should().Be(counterJournal.Id);
+    updateJournal.Id.Should().Be(counterJournal.Id);
     updateJournal.Name.Should().Be(counterJournal.Name);
   }
 
@@ -77,7 +77,7 @@ public class MongoRepositoryShould
 
     IJournal? journal = await _repository.GetJournal(result.EntityId);
     journal.Should().NotBeNull();
-    journal!.Attributes.Should().NotBeNull();
+    journal.Attributes.Should().NotBeNull();
 
     journal.Attributes.Should().ContainKey("flags");
     JournalAttribute attribute = journal.Attributes["flags"];

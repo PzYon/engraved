@@ -69,7 +69,7 @@ public class EntryDocumentMapperShould
 
     var gaugeDocument = document as GaugeEntryDocument;
     gaugeDocument.Should().NotBeNull();
-    gaugeDocument!.Value.Should().Be(entry.Value);
+    gaugeDocument.Value.Should().Be(entry.Value);
   }
 
   [Test]
@@ -111,7 +111,7 @@ public class EntryDocumentMapperShould
 
     var gaugeDocument = document as TimerEntryDocument;
     gaugeDocument.Should().NotBeNull();
-    entry.StartDate.Should().Be(gaugeDocument!.StartDate);
+    entry.StartDate.Should().Be(gaugeDocument.StartDate);
     entry.EndDate.Should().Be(gaugeDocument.EndDate);
   }
 

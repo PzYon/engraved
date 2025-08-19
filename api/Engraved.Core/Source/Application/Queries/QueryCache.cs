@@ -37,7 +37,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
     if (!memoryCache.TryGetValue(key, out CacheItem<TValue>? cacheItem))
     {
-      logger.LogInformation($"{key}: Cache miss (not available)");
+      logger.LogInformation("{Key}: Cache miss (not available)", key);
       value = default;
       return false;
     }
@@ -45,12 +45,12 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     var configToken = GetConfigToken(query);
     if (cacheItem!.ConfigToken != configToken)
     {
-      logger.LogInformation($"{key}: Cache miss (different token): {configToken}");
+      logger.LogInformation("{Key}: Cache miss (different token): {ConfigToken}", key, configToken);
       value = default!;
       return false;
     }
 
-    logger.LogInformation($"{key}: Cache hit");
+    logger.LogInformation("{Key}: Cache hit", key);
     value = cacheItem.Value;
     return true;
   }
@@ -70,7 +70,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       return;
     }
 
-    logger.LogInformation($"Invalidating cache for user {userName}, {keys.Count} items affected");
+    logger.LogInformation("Invalidating cache for user {UserName}, {ValueCount} items affected", userName, keys.Count);
 
     foreach (var key in keys)
     {

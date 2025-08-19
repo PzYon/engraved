@@ -6,7 +6,7 @@ namespace Engraved.Persistence.Mongo.Tests;
 public static class Util
 {
   private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings();
-  private static MongoDatabaseClient Client => new(null, new TestMongoRepositorySettings(), null);
+  private static MongoDatabaseClient Client => new(new TestMongoRepositorySettings(), null);
 
   public static async Task<TestMongoRepository> CreateMongoRepository()
   {

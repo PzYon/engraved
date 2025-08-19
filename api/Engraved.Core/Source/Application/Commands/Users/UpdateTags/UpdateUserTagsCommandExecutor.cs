@@ -23,7 +23,7 @@ public class UpdateUserTagsCommandExecutor(IUserScopedRepository repository)
         new UserTag
         {
           Id = tagName.Key,
-          Label = tagName.Value,
+          Label = tagName.Value
         }
       );
     }

@@ -31,7 +31,7 @@ public class JournalDocumentMapperShould
 
     var createdJournal = journalDocument as CounterJournalDocument;
     createdJournal.Should().NotBeNull();
-    createdJournal!.Type.Should().Be(JournalType.Counter);
+    createdJournal.Type.Should().Be(JournalType.Counter);
     AssertEqual(counterJournal, createdJournal);
   }
 
@@ -68,7 +68,7 @@ public class JournalDocumentMapperShould
 
     var createdJournal = journalDocument as GaugeJournalDocument;
     createdJournal.Should().NotBeNull();
-    createdJournal!.Type.Should().Be(JournalType.Gauge);
+    createdJournal.Type.Should().Be(JournalType.Gauge);
     AssertEqual(gaugeJournal, journalDocument);
   }
 
@@ -118,7 +118,7 @@ public class JournalDocumentMapperShould
 
     var createdJournal = journalDocument as TimerJournalDocument;
     createdJournal.Should().NotBeNull();
-    createdJournal!.Type.Should().Be(JournalType.Timer);
+    createdJournal.Type.Should().Be(JournalType.Timer);
     AssertEqual(timerJournal, journalDocument);
     startDate.Should().Be(createdJournal.StartDate);
 
@@ -205,7 +205,7 @@ public class JournalDocumentMapperShould
 
   private static void AssertEqual(JournalDocument expected, IJournal actual)
   {
-    actual!.Id.Should().Be(expected.Id.ToString());
+    actual.Id.Should().Be(expected.Id.ToString());
     actual.Name.Should().Be(expected.Name);
     actual.Type.Should().Be(expected.Type);
     actual.Description.Should().Be(expected.Description);

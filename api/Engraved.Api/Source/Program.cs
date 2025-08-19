@@ -23,9 +23,9 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-bool isE2eTests = Environment.GetCommandLineArgs().Any(a => a == "e2e-tests");
+bool isE2ETests = Environment.GetCommandLineArgs().Any(a => a == "e2e-tests");
 
-if (isE2eTests)
+if (isE2ETests)
 {
   Console.WriteLine("Running for e2e tests.");
 }
@@ -106,11 +106,7 @@ builder.Services.AddHostedService<ScheduledNotificationJob>();
 // we did nt have this at first and it actually had a bad influence
 // on performance.
 builder.Services.AddSingleton(
-  provider =>
-  {
-    var logger = provider.GetService<ILogger<MongoRepository>>()!;
-    return new MongoDatabaseClient(logger, CreateRepositorySettings(builder), GetMongoDbNameOverride());
-  }
+  provider => new MongoDatabaseClient(CreateRepositorySettings(builder), GetMongoDbNameOverride())
 );
 
 builder.Services.AddTransient<IBaseRepository>(
@@ -161,7 +157,7 @@ builder.Services.AddTransient<Dispatcher>();
 builder.Services.AddTransient<NotificationJob>();
 builder.Services.AddTransient<INotificationService, OneSignalNotificationService>();
 
-if (isE2eTests)
+if (isE2ETests)
 {
   builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
@@ -237,15 +233,12 @@ bool UseInMemoryRepo()
   return false;
 }
 
-string? GetMongoDbNameOverride()
-{
-  return isE2eTests ? "engraved_e2e_tests" : null;
-}
+string? GetMongoDbNameOverride() => isE2ETests ? "engraved_e2e_tests" : null;
 
 MongoRepositorySettings CreateRepositorySettings(WebApplicationBuilder webApplicationBuilder)
 {
   string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("engraved_db");
-  if (string.IsNullOrEmpty(connectionString) && !isE2eTests)
+  if (string.IsNullOrEmpty(connectionString) && !isE2ETests)
   {
     throw new Exception("App Service Config: No connection string available.");
   }

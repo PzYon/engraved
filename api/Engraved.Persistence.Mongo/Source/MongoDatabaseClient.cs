@@ -12,8 +12,6 @@ namespace Engraved.Persistence.Mongo;
 
 public class MongoDatabaseClient
 {
-  private readonly ILogger? _logger;
-
   public readonly IMongoCollection<EntryDocument> EntriesCollection;
   public readonly IMongoCollection<JournalDocument> JournalsCollection;
   public readonly IMongoCollection<UserDocument> UsersCollection;
@@ -35,10 +33,8 @@ public class MongoDatabaseClient
     BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
   }
 
-  public MongoDatabaseClient(ILogger? logger, IMongoRepositorySettings settings, string? dbNameOverride)
+  public MongoDatabaseClient(IMongoRepositorySettings settings, string? dbNameOverride)
   {
-    _logger = logger;
-
     IMongoClient client = CreateMongoClient(settings);
 
     var dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
@@ -50,7 +46,7 @@ public class MongoDatabaseClient
     UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
   }
 
-  private IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
+  private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
   {
     MongoClientSettings? clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
     clientSettings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };

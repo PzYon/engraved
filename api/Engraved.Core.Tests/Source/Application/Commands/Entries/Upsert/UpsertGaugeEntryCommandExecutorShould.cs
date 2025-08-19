@@ -45,7 +45,7 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     var counterEntry = createdEntry as GaugeEntry;
     counterEntry.Should().NotBeNull();
-    counterEntry!.Value.Should().Be(value);
+    counterEntry.Value.Should().Be(value);
   }
 
   [Test]
@@ -115,7 +115,7 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     var gaugeEntry = createdEntry as GaugeEntry;
     gaugeEntry.Should().NotBeNull();
-    gaugeEntry!.Value.Should().Be(value);
+    gaugeEntry.Value.Should().Be(value);
   }
 
   private static void AssertJournalAttributeValuesEqual(
