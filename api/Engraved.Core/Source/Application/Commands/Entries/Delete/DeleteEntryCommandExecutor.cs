@@ -22,7 +22,7 @@ public class DeleteEntryCommandExecutor(
 
     foreach (var kvp in entry.Schedules.Where(kvp => !string.IsNullOrEmpty(kvp.Value.NotificationId)))
     {
-      notificationService.CancelNotification(kvp.Value.NotificationId!);
+      await notificationService.CancelNotification(kvp.Value.NotificationId!);
     }
 
     await repository.DeleteEntry(command.Id);
