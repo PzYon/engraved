@@ -77,7 +77,7 @@ public class NotificationJob(
 
           if (!isDryRun)
           {
-            string notificationId = await notificationService.SendNotification(
+            string? notificationId = await notificationService.SendNotification(
               new ClientNotification
               {
                 UserId = user.GlobalUniqueId.ToString(),
