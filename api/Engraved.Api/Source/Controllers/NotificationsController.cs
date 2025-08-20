@@ -20,18 +20,24 @@ public class NotificationsController(
   public async Task SendNotification()
   {
     IUser user = await currentUserService.LoadUser();
-    SendNotificationToUser(user.GlobalUniqueId);
+    if (user is not { GlobalUniqueId: not null })
+    {
+      throw new InvalidOperationException("User not found or user has no GlobalUniqueId.");
+    }
+
+    SendNotificationToUser(user.GlobalUniqueId.Value);
   }
 
-  private void SendNotificationToUser(Guid? uniqueUserId)
+  private void SendNotificationToUser(Guid uniqueUserId)
   {
     notificationService.SendNotification(
       new ClientNotification
       {
-        UserId = uniqueUserId?.ToString(),
+        UserId = uniqueUserId.ToString(),
         Title = "Test message (Title)",
         Message = "Sent from engraved OneSignal (Message)."
       },
+      uniqueUserId.ToString(),
       false
     );
   }

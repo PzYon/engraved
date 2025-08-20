@@ -31,10 +31,10 @@ public class NotificationJob(
 
       var watch = Stopwatch.StartNew();
 
-      IEntry[] entries = await repository.SearchEntries(null, ScheduleMode.AnySchedule);
+      var entries = await repository.SearchEntries(null, ScheduleMode.AnySchedule);
       await ProcessEntities(entries.OfType<IEntity>().ToArray(), isDryRun, result);
 
-      IJournal[] journals = await repository.GetAllJournals(null, ScheduleMode.AnySchedule);
+      var journals = await repository.GetAllJournals(null, ScheduleMode.AnySchedule);
       await ProcessEntities(journals.OfType<IEntity>().ToArray(), isDryRun, result);
 
       logger.LogInformation(
@@ -55,7 +55,7 @@ public class NotificationJob(
   {
     foreach (IEntity entity in entities)
     {
-      foreach ((string? userId, Schedule? schedule) in entity.Schedules.Where(s
+      foreach ((var userId, Schedule? schedule) in entity.Schedules.Where(s
                  => !s.Value.DidNotify && s.Value.NextOccurrence < dateService.UtcNow
                ))
       {
@@ -77,7 +77,7 @@ public class NotificationJob(
 
           if (!isDryRun)
           {
-            string? notificationId = await notificationService.SendNotification(
+            var notificationId = await notificationService.SendNotification(
               new ClientNotification
               {
                 UserId = user.GlobalUniqueId.ToString(),
@@ -86,6 +86,7 @@ public class NotificationJob(
                 OnClickUrl = schedule.OnClickUrl,
                 Buttons = []
               },
+              entity.Id!,
               false
             );
 

@@ -1,11 +1,15 @@
 ﻿using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Notifications;
 using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Core.Application.Commands.Journals.AddSchedule;
 
-public class AddScheduleToJournalCommandExecutor(IUserScopedRepository repository)
+public class AddScheduleToJournalCommandExecutor(
+  IUserScopedRepository repository,
+  INotificationService notificationService
+)
   : ICommandExecutor<AddScheduleToJournalCommand>
 {
   public async Task<CommandResult> Execute(AddScheduleToJournalCommand command)
@@ -28,6 +32,16 @@ public class AddScheduleToJournalCommandExecutor(IUserScopedRepository repositor
     }
     else
     {
+      var messageId = journal.Schedules[repository.CurrentUser.Value.Id!]?.NotificationId;
+      if (!string.IsNullOrEmpty(messageId))
+      {
+        await notificationService.CancelNotification(
+          repository.CurrentUser.Value.GlobalUniqueId.ToString()!,
+          journal.Id!,
+          false
+        );
+      }
+
       journal.Schedules.Remove(repository.CurrentUser.Value.Id!);
     }
 

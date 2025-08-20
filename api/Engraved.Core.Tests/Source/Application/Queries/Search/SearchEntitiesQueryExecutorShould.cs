@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
@@ -7,6 +8,7 @@ using Engraved.Core.Application.Commands.Journals.AddSchedule;
 using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Notifications;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
@@ -65,7 +67,7 @@ public class SearchEntitiesQueryExecutorShould
     result.Entities.Count(e => e.EntityType == EntityType.Journal).Should().Be(1);
 
     result.Entities.Where(e => e.EntityType == EntityType.Journal)
-      .Count(e => ((IJournal)e.Entity).Name == "Yes")
+      .Count(e => ((IJournal) e.Entity).Name == "Yes")
       .Should()
       .Be(1);
 
@@ -150,7 +152,10 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(_userScopedInMemoryRepository);
+    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(
+      _userScopedInMemoryRepository,
+      new TestNotificationService()
+    );
     await addScheduleExecutor.Execute(
       new AddScheduleToJournalCommand
       {
@@ -221,5 +226,18 @@ public class SearchEntitiesQueryExecutorShould
         Notes = "i am a simple text - II"
       }
     );
+  }
+}
+
+public class TestNotificationService : INotificationService
+{
+  public Task<string?> SendNotification(ClientNotification notification, string entityId, bool doNotSend)
+  {
+    return Task.FromResult<string?>(Guid.NewGuid().ToString());
+  }
+
+  public Task CancelNotification(string userId, string entityId, bool doNotSend)
+  {
+    return Task.CompletedTask;
   }
 }

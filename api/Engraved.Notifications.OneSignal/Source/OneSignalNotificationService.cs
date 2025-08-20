@@ -10,7 +10,7 @@ namespace Engraved.Notifications.OneSignal;
 
 public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : INotificationService
 {
-  public async Task<string?> SendNotification(ClientNotification clientNotification, bool doNotSend)
+  public async Task<string?> SendNotification(ClientNotification clientNotification, string entityId, bool doNotSend)
   {
     EnsureValidConfig();
 
@@ -27,6 +27,7 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
 
     var notification = new Notification(
       appId: config.Value.AppId,
+      collapseId: CalculateCollapseId(clientNotification.UserId, entityId),
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [clientNotification.UserId],
       headings: new StringMap(clientNotification.Title),
@@ -59,13 +60,13 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
     return response.Id;
   }
 
-  public async Task CancelNotification(string id, string userId, bool doNotSend)
+  public async Task CancelNotification(string userId, string entityId, bool doNotSend)
   {
     EnsureValidConfig();
 
     var notification = new Notification(
       appId: config.Value.AppId,
-      collapseId: id,
+      collapseId: CalculateCollapseId(userId, entityId),
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [userId],
       webPushTopic: Guid.NewGuid().ToString(),
@@ -95,6 +96,11 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
         $"\"{nameof(config.Value.AppSecret)}\" is not set, please do so in your environment settings."
       );
     }
+  }
+
+  private static string CalculateCollapseId(string userId, string entityId)
+  {
+    return userId + "::" + entityId;
   }
 
   private DefaultApi GetApiInstance()

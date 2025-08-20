@@ -33,12 +33,11 @@ public class AddScheduleToEntryCommandExecutor(
     else
     {
       var messageId = entry.Schedules[repository.CurrentUser.Value.Id!]?.NotificationId;
-
       if (!string.IsNullOrEmpty(messageId))
       {
         await notificationService.CancelNotification(
-          messageId,
           repository.CurrentUser.Value.GlobalUniqueId.ToString()!,
+          entry.Id!,
           false
         );
       }
