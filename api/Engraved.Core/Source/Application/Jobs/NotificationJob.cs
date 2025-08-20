@@ -55,8 +55,8 @@ public class NotificationJob(
   {
     foreach (IEntity entity in entities)
     {
-      foreach ((string? userId, Schedule? schedule) in entity.Schedules.Where(s
-                 => !s.Value.DidNotify && s.Value.NextOccurrence < dateService.UtcNow
+      foreach ((string? userId, Schedule? schedule) in entity.Schedules.Where(
+                 s => !s.Value.DidNotify && s.Value.NextOccurrence < dateService.UtcNow
                ))
       {
         try
@@ -77,7 +77,7 @@ public class NotificationJob(
 
           if (!isDryRun)
           {
-            string? notificationId = await notificationService.SendNotification(
+            await notificationService.SendNotification(
               new ClientNotification
               {
                 UserId = user.GlobalUniqueId.ToString(),
@@ -89,10 +89,7 @@ public class NotificationJob(
               false
             );
 
-            // most probably we can remove this did notify, but we still need it to check?
             entity.Schedules[userId].DidNotify = true;
-            entity.Schedules[userId].NotificationId = notificationId;
-
             if (entity is IJournal journal)
             {
               await repository.UpsertJournal(journal);
