@@ -75,7 +75,6 @@ public class NotificationJobShould
     journal.Schedules.Should().HaveCount(1);
     journal.Schedules[UserName1].NextOccurrence.Should().NotBeNull();
     journal.Schedules[UserName1].DidNotify.Should().Be(true);
-    journal.Schedules[UserName1].NotificationId.Should().NotBe(null);
   }
 
   [Test]

@@ -1,26 +1,26 @@
 ﻿using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Notifications;
 
 namespace Engraved.Core.Application.Commands.Journals.Delete;
 
-public class DeleteJournalCommandExecutor(IRepository repository, INotificationService notificationService)
-  : ICommandExecutor<DeleteJournalCommand>
+public class DeleteJournalCommandExecutor : ICommandExecutor<DeleteJournalCommand>
 {
+  private readonly IBaseRepository _repository;
+
+  public DeleteJournalCommandExecutor(IRepository repository)
+  {
+    _repository = repository;
+  }
+
   public async Task<CommandResult> Execute(DeleteJournalCommand command)
   {
-    IJournal? journal = await repository.GetJournal(command.JournalId);
+    IJournal? journal = await _repository.GetJournal(command.JournalId);
     if (journal == null)
     {
       return new CommandResult();
     }
 
-    foreach (var kvp in journal.Schedules.Where(kvp => !string.IsNullOrEmpty(kvp.Value.NotificationId)))
-    {
-      notificationService.CancelNotification(kvp.Value.NotificationId!);
-    }
-
-    await repository.DeleteJournal(command.JournalId);
+    await _repository.DeleteJournal(command.JournalId);
 
     return new CommandResult(command.JournalId, journal.Permissions.GetUserIdsWithAccess());
   }

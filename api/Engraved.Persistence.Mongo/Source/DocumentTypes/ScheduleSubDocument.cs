@@ -8,7 +8,5 @@ public class ScheduleSubDocument
 
   public bool DidNotify { get; set; }
 
-  public string? NotificationId { get; set; }
-
   public string? OnClickUrl { get; set; }
 }
