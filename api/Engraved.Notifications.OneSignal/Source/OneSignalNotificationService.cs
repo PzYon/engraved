@@ -10,7 +10,7 @@ namespace Engraved.Notifications.OneSignal;
 
 public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : INotificationService
 {
-  public Task SendNotification(ClientNotification clientNotification, bool doNotSend)
+  public async Task<string?> SendNotification(ClientNotification clientNotification, bool doNotSend)
   {
     if (string.IsNullOrEmpty(config.Value.AppId))
     {
@@ -41,14 +41,13 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       appId: config.Value.AppId,
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [clientNotification.UserId],
-      headings: new StringMap(en: clientNotification.Title),
-      contents: new StringMap(en: clientNotification.Message),
+      headings: new StringMap(clientNotification.Title),
+      contents: new StringMap(clientNotification.Message),
       url: clientNotification.OnClickUrl,
       smallIcon: "/icons/icon-transparent-bg.svg",
       chromeWebBadge: "/icons/icon-transparent-bg.svg",
       webButtons: clientNotification.Buttons
-        .Select(
-          b => new ButtonWithUrl
+        .Select(b => new ButtonWithUrl
           {
             Id = b.Key,
             Url = b.Url,
@@ -64,11 +63,25 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
 
     if (doNotSend)
     {
-      return Task.CompletedTask;
+      return null;
     }
 
-    GetApiInstance().CreateNotification(notification);
+    CreateNotificationSuccessResponse response = await GetApiInstance().CreateNotificationAsync(notification);
+
+    return response.Id;
+  }
+
+  public Task CancelNotification(string notificationId)
+  {
     return Task.CompletedTask;
+    
+    // below does not do what i expected. need to find a different approach.
+    // await GetApiInstance().CancelNotificationAsync(config.Value.AppId, notificationId);
+
+    // gemini suggests something like this:
+    // The Recommended Approach: Use an "External ID" and the "Collapse ID":
+    // External ID: When a user logs into your PWA, use the OneSignal SDK's OneSignal.login() method to associate their unique user ID from your backend system with their OneSignal subscription. This "External ID" links all of a single user's devices together under one user profile in OneSignal. This is a crucial step for managing notifications across multiple devices for a single user.
+    // Collapse ID: When you send a notification via the OneSignal API, you can include a collapse_id parameter. This is a unique identifier for a group of notifications. When a new notification with the same collapse_id is sent, it will replace the older one in the notification queue of the push notification service.
   }
 
   private DefaultApi GetApiInstance()
