@@ -25,9 +25,11 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
     // https://github.com/OneSignal/onesignal-dotnet-api/blob/main/docs/Notification.md
     // https://documentation.onesignal.com/docs/push-notification-guide
 
+    var id = CalculateCollapseId(clientNotification.UserId, entityId);
+
     var notification = new Notification(
       appId: config.Value.AppId,
-      collapseId: CalculateCollapseId(clientNotification.UserId, entityId),
+      collapseId: id,
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [clientNotification.UserId],
       headings: new StringMap(clientNotification.Title),
@@ -47,7 +49,7 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
         .OfType<Button>()
         .ToList(),
       // the following property is required to show multiple notifications at the same time.
-      webPushTopic: Guid.NewGuid().ToString()
+      webPushTopic: id
     );
 
     if (doNotSend)
@@ -60,29 +62,31 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
     return response.Id;
   }
 
-  public Task CancelNotification(string userId, string entityId, bool doNotSend)
+  public async Task CancelNotification(string userId, string entityId, bool doNotSend)
   {
     // below stuff also does not work. what i would like to do is prevent notifications
     // from being shown, if they have already been consumed on another device.
-    return  Task.CompletedTask;
-    
-    // EnsureValidConfig();
-    //
-    // var notification = new Notification(
-    //   appId: config.Value.AppId,
-    //   collapseId: CalculateCollapseId(userId, entityId),
-    //   targetChannel: Notification.TargetChannelEnum.Push,
-    //   includeExternalUserIds: [userId],
-    //   webPushTopic: Guid.NewGuid().ToString(),
-    //   contentAvailable: true
-    // );
-    //
-    // if (doNotSend)
-    // {
-    //   return;
-    // }
-    //
-    // await GetApiInstance().CreateNotificationAsync(notification);
+    // return Task.CompletedTask;
+
+    EnsureValidConfig();
+
+    var id = CalculateCollapseId(userId, entityId);
+
+    var notification = new Notification(
+      appId: config.Value.AppId,
+      collapseId: id,
+      targetChannel: Notification.TargetChannelEnum.Push,
+      includeExternalUserIds: [userId],
+      webPushTopic: id,
+      contentAvailable: true
+    );
+
+    if (doNotSend)
+    {
+      return;
+    }
+
+    await GetApiInstance().CreateNotificationAsync(notification);
   }
 
   private void EnsureValidConfig()
