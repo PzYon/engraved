@@ -32,11 +32,15 @@ public class AddScheduleToEntryCommandExecutor(
     }
     else
     {
-      string? messageId = entry.Schedules[repository.CurrentUser.Value.Id!]?.NotificationId;
+      var messageId = entry.Schedules[repository.CurrentUser.Value.Id!]?.NotificationId;
 
       if (!string.IsNullOrEmpty(messageId))
       {
-        await notificationService.CancelNotification(messageId);
+        await notificationService.CancelNotification(
+          messageId,
+          repository.CurrentUser.Value.GlobalUniqueId.ToString()!,
+          false
+        );
       }
 
       entry.Schedules.Remove(repository.CurrentUser.Value.Id!);

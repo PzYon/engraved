@@ -7,6 +7,7 @@ namespace Engraved.Core.Application.Commands.Entries.Delete;
 
 public class DeleteEntryCommandExecutor(
   IRepository repository,
+  ICurrentUserService currentUserService,
   IDateService dateService,
   INotificationService notificationService
 )
@@ -22,7 +23,8 @@ public class DeleteEntryCommandExecutor(
 
     foreach (var kvp in entry.Schedules.Where(kvp => !string.IsNullOrEmpty(kvp.Value.NotificationId)))
     {
-      await notificationService.CancelNotification(kvp.Value.NotificationId!);
+      var userId = (await currentUserService.LoadUser()).GlobalUniqueId.ToString();
+      await notificationService.CancelNotification(kvp.Value.NotificationId!, userId!, false);
     }
 
     await repository.DeleteEntry(command.Id);

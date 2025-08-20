@@ -12,19 +12,7 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
 {
   public async Task<string?> SendNotification(ClientNotification clientNotification, bool doNotSend)
   {
-    if (string.IsNullOrEmpty(config.Value.AppId))
-    {
-      throw new ArgumentException(
-        $"\"{nameof(config.Value.AppId)}\" is not set, please do so in your environment settings."
-      );
-    }
-
-    if (string.IsNullOrEmpty(config.Value.AppSecret))
-    {
-      throw new ArgumentException(
-        $"\"{nameof(config.Value.AppSecret)}\" is not set, please do so in your environment settings."
-      );
-    }
+    EnsureValidConfig();
 
     if (string.IsNullOrEmpty(clientNotification.UserId))
     {
@@ -71,17 +59,41 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
     return response.Id;
   }
 
-  public Task CancelNotification(string notificationId)
+  public async Task CancelNotification(string id, string userId, bool doNotSend)
   {
-    return Task.CompletedTask;
-    
-    // below does not do what i expected. need to find a different approach.
-    // await GetApiInstance().CancelNotificationAsync(config.Value.AppId, notificationId);
+    EnsureValidConfig();
 
-    // gemini suggests something like this:
-    // The Recommended Approach: Use an "External ID" and the "Collapse ID":
-    // External ID: When a user logs into your PWA, use the OneSignal SDK's OneSignal.login() method to associate their unique user ID from your backend system with their OneSignal subscription. This "External ID" links all of a single user's devices together under one user profile in OneSignal. This is a crucial step for managing notifications across multiple devices for a single user.
-    // Collapse ID: When you send a notification via the OneSignal API, you can include a collapse_id parameter. This is a unique identifier for a group of notifications. When a new notification with the same collapse_id is sent, it will replace the older one in the notification queue of the push notification service.
+    var notification = new Notification(
+      appId: config.Value.AppId,
+      collapseId: id,
+      targetChannel: Notification.TargetChannelEnum.Push,
+      includeExternalUserIds: [userId],
+      webPushTopic: Guid.NewGuid().ToString()
+    );
+
+    if (doNotSend)
+    {
+      return;
+    }
+
+    await GetApiInstance().CreateNotificationAsync(notification);
+  }
+
+  private void EnsureValidConfig()
+  {
+    if (string.IsNullOrEmpty(config.Value.AppId))
+    {
+      throw new ArgumentException(
+        $"\"{nameof(config.Value.AppId)}\" is not set, please do so in your environment settings."
+      );
+    }
+
+    if (string.IsNullOrEmpty(config.Value.AppSecret))
+    {
+      throw new ArgumentException(
+        $"\"{nameof(config.Value.AppSecret)}\" is not set, please do so in your environment settings."
+      );
+    }
   }
 
   private DefaultApi GetApiInstance()
