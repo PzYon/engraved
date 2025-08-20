@@ -60,25 +60,29 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
     return response.Id;
   }
 
-  public async Task CancelNotification(string userId, string entityId, bool doNotSend)
+  public Task CancelNotification(string userId, string entityId, bool doNotSend)
   {
-    EnsureValidConfig();
-
-    var notification = new Notification(
-      appId: config.Value.AppId,
-      collapseId: CalculateCollapseId(userId, entityId),
-      targetChannel: Notification.TargetChannelEnum.Push,
-      includeExternalUserIds: [userId],
-      webPushTopic: Guid.NewGuid().ToString(),
-      contentAvailable: true
-    );
-
-    if (doNotSend)
-    {
-      return;
-    }
-
-    await GetApiInstance().CreateNotificationAsync(notification);
+    // below stuff also does not work. what i would like to do is prevent notifications
+    // from being shown, if they have already been consumed on another device.
+    return  Task.CompletedTask;
+    
+    // EnsureValidConfig();
+    //
+    // var notification = new Notification(
+    //   appId: config.Value.AppId,
+    //   collapseId: CalculateCollapseId(userId, entityId),
+    //   targetChannel: Notification.TargetChannelEnum.Push,
+    //   includeExternalUserIds: [userId],
+    //   webPushTopic: Guid.NewGuid().ToString(),
+    //   contentAvailable: true
+    // );
+    //
+    // if (doNotSend)
+    // {
+    //   return;
+    // }
+    //
+    // await GetApiInstance().CreateNotificationAsync(notification);
   }
 
   private void EnsureValidConfig()
