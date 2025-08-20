@@ -17,7 +17,7 @@ public class DeleteJournalCommandExecutor(IRepository repository, INotificationS
 
     foreach (var kvp in journal.Schedules.Where(kvp => !string.IsNullOrEmpty(kvp.Value.NotificationId)))
     {
-      await notificationService.CancelNotification(kvp.Value.NotificationId!);
+      notificationService.CancelNotification(kvp.Value.NotificationId!);
     }
 
     await repository.DeleteJournal(command.JournalId);
