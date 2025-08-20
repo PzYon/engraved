@@ -1,15 +1,8 @@
-import {
-  styled,
-  SxProps,
-  TextField,
-  TextFieldProps,
-  Typography,
-} from "@mui/material";
+import { styled, SxProps, TextFieldProps, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
-import { AutogrowTextField } from "../../common/AutogrowTextField";
 
 export const ParseableDate: React.FC<{
   onChange: (parsedDate: IParsedDate) => void;
@@ -33,15 +26,18 @@ export const ParseableDate: React.FC<{
   const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
   const [parseError, setParseError] = useState("");
 
-  const TextFieldComponent = isTitle ? AutogrowTextField : TextField;
-
   return (
     <Host sx={sx}>
-      <TextFieldComponent
+      <div
+        contentEditable={true}
         autoFocus={true}
         id={id}
-        sx={{ width: "100%" }}
-        placeholder="Enter date"
+        style={{
+          width: "100%",
+          color: isTitle ? "primary.main" : "text.primary",
+          fontSize: isTitle ? "1.5em" : "1em",
+          fontFamily: "Karla",
+        }}
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (e.key !== "Enter") {
             return;
@@ -59,9 +55,14 @@ export const ParseableDate: React.FC<{
 
           onSelect(parsed);
         }}
-        onChange={(e) => {
+        onInput={(e) => {
           try {
-            const parsed = parseDate(e.target.value);
+            const currentValue = (e.target as any).innerText
+              .replace(/\.{3}/g, "👍")
+              .replace(/!{3}/g, "⚠️")
+              .replace(/\?{3}/, "❓");
+
+            const parsed = parseDate(currentValue);
             setParsed(parsed);
             setParseError("");
             onChange(parsed);
@@ -69,8 +70,9 @@ export const ParseableDate: React.FC<{
             setParseError((e as Error).message);
           }
         }}
-        {...textFieldProps}
-      />
+      >
+        {textFieldProps.value as string}
+      </div>
 
       {(parseError || parsed?.date) && !noOutput ? (
         <OutputContainer>
