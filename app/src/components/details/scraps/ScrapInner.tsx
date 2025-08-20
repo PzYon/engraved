@@ -45,7 +45,7 @@ export const ScrapInner: React.FC = () => {
           textFieldProps={{
             placeholder: "Title",
             variant: "outlined",
-            defaultValue: title,
+            value: title,
             disabled: !isEditMode,
             onFocus: () => setHasTitleFocus(true),
             onBlur: () => setHasTitleFocus(false),
