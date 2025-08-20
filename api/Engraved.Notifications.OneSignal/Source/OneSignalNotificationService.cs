@@ -68,7 +68,8 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       collapseId: id,
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [userId],
-      webPushTopic: Guid.NewGuid().ToString()
+      webPushTopic: Guid.NewGuid().ToString(),
+      contentAvailable: true
     );
 
     if (doNotSend)
