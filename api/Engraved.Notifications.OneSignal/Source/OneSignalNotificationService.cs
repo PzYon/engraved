@@ -78,7 +78,7 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       targetChannel: Notification.TargetChannelEnum.Push,
       includeExternalUserIds: [userId],
       webPushTopic: id,
-      contentAvailable: true
+      contentAvailable: false
     );
 
     if (doNotSend)
