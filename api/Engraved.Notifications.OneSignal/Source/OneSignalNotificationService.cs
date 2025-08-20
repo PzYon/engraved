@@ -106,9 +106,9 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
     }
   }
 
-  private static string CalculateCollapseId(string userId, string entityId)
+  private static string CalculateCollapseId(string globallyUniqueUserId, string entityId)
   {
-    return (userId + "::" + entityId).Replace("-", string.Empty);
+    return (globallyUniqueUserId + "::" + entityId).Replace("-", string.Empty);
   }
 
   private DefaultApi GetApiInstance()

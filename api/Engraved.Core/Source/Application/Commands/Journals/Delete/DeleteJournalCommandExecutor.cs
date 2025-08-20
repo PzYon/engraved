@@ -5,7 +5,7 @@ using Engraved.Core.Domain.Notifications;
 namespace Engraved.Core.Application.Commands.Journals.Delete;
 
 public class DeleteJournalCommandExecutor(
-  IRepository repository,
+  IUserScopedRepository repository,
   INotificationService notificationService
 )
   : ICommandExecutor<DeleteJournalCommand>
@@ -18,10 +18,11 @@ public class DeleteJournalCommandExecutor(
       return new CommandResult();
     }
 
-    foreach (var kvp in journal.Schedules.Where(kvp => !string.IsNullOrEmpty(kvp.Value.NotificationId)))
-    {
-      await notificationService.CancelNotification(kvp.Key, command.JournalId, false);
-    }
+    await notificationService.CancelNotification(
+      repository.CurrentUser.Value.GlobalUniqueId.ToString()!,
+      command.JournalId,
+      false
+    );
 
     await repository.DeleteJournal(command.JournalId);
 
