@@ -7,11 +7,11 @@ namespace Engraved.Core.Application.Persistence.Demo;
 
 public class InMemoryRepository : IRepository
 {
-  public List<IUser> Users { get; } = new();
+  public List<IUser> Users { get; } = [];
 
-  public List<IEntry> Entries { get; } = new();
+  public List<IEntry> Entries { get; } = [];
 
-  public List<IJournal> Journals { get; } = new();
+  public List<IJournal> Journals { get; } = [];
 
   public Task<IUser?> GetUser(string nameOrId)
   {
@@ -36,7 +36,7 @@ public class InMemoryRepository : IRepository
 
   public async Task<IUser[]> GetUsers(string[] userIds)
   {
-    IUser[] allUsers = await GetAllUsers();
+    var allUsers = await GetAllUsers();
     return allUsers.Where(u => userIds.Contains(u.Id)).ToArray();
   }
 
@@ -94,8 +94,7 @@ public class InMemoryRepository : IRepository
     return Task.FromResult(
       Entries.OrderByDescending(m => m.DateTime)
         .Where(m => (journalIds ?? Enumerable.Empty<string>()).Contains(m.ParentId))
-        .Where(
-          m =>
+        .Where(m =>
           {
             if (!string.IsNullOrEmpty(searchText))
             {
@@ -105,10 +104,9 @@ public class InMemoryRepository : IRepository
             return true;
           }
         )
-        .Where(
-          m => journalTypes == null
-               || journalTypes.Length == 0
-               || journalTypes.Contains(Journals.First(j => j.Id == m.ParentId).Type)
+        .Where(m => journalTypes == null
+                    || journalTypes.Length == 0
+                    || journalTypes.Contains(Journals.First(j => j.Id == m.ParentId).Type)
         )
         .Take(limit ?? 100)
         .ToArray()

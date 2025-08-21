@@ -41,7 +41,7 @@ public class Dispatcher(
 
     if (typeof(TResult).IsArray)
     {
-      logger.LogInformation($"{query.GetType().Name}: Found {(result as Array)?.Length ?? 0} results.");
+      logger.LogInformation("{Name}: Found {Length} results", query.GetType().Name, (result as Array)?.Length ?? 0);
     }
 
     return result;
@@ -95,7 +95,7 @@ public class Dispatcher(
              }
            ))
     {
-      logger.LogInformation($"{name}: Starting");
+      logger.LogInformation("{Name}: Starting", name);
 
       var watch = Stopwatch.StartNew();
       TExecutionResult result = await action();
@@ -103,7 +103,7 @@ public class Dispatcher(
 
       using (logger.BeginScope(new Dictionary<string, object> { ["Duration"] = watch.ElapsedMilliseconds }))
       {
-        logger.LogInformation($"{name}: Completed in {watch.ElapsedMilliseconds}ms");
+        logger.LogInformation("{Name}: Completed in {WatchElapsedMilliseconds}ms", name, watch.ElapsedMilliseconds);
       }
 
       return result;

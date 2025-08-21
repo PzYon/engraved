@@ -6,7 +6,6 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 using FluentAssertions;
 using MongoDB.Bson;
-using MongoDB.Driver.Linq;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;

@@ -70,9 +70,9 @@ public class LoginHandlerShould
   [Test]
   public async Task Follow_HappyPath_WithNewUser()
   {
-    var displayName = "Hans Peter";
-    var imageUrl = "https://im.age.url";
-    var userName = "ha-pe";
+    const string displayName = "Hans Peter";
+    const string imageUrl = "https://im.age.url";
+    const string userName = "ha-pe";
 
     var loginHandler = new LoginHandler(
       new FakeGoogleTokenValidator(imageUrl, userName, displayName),
@@ -110,16 +110,16 @@ public class LoginHandlerShould
     string quickNotesId = user.FavoriteJournalIds.First();
     IJournal? journal = await _testRepository.GetJournal(quickNotesId);
     journal.Should().NotBeNull();
-    journal!.Id.Should().Be(quickNotesId);
+    journal.Id.Should().Be(quickNotesId);
   }
 
   [Test]
   public async Task Follow_HappyPath_WithExistingUser()
   {
-    var userId = "haPeID";
-    var displayName = "Hans Peter";
-    var imageUrl = "https://im.age.url";
-    var userName = "ha-pe";
+    const string userId = "haPeID";
+    const string displayName = "Hans Peter";
+    const string imageUrl = "https://im.age.url";
+    const string userName = "ha-pe";
     var globalUniqueId = Guid.NewGuid();
 
     await _testRepository.UpsertUser(

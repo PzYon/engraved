@@ -4,16 +4,12 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAllJournal;
 
-public class GetAllJournalEntriesQueryExecutor : IQueryExecutor<IEntry[], GetAllJournalEntriesQuery>
+public class GetAllJournalEntriesQueryExecutor(IRepository repository)
+  : IQueryExecutor<IEntry[], GetAllJournalEntriesQuery>
 {
-  private readonly IBaseRepository _repository;
+  private readonly IBaseRepository _repository = repository;
 
   public bool DisableCache => false;
-
-  public GetAllJournalEntriesQueryExecutor(IRepository repository)
-  {
-    _repository = repository;
-  }
 
   public async Task<IEntry[]> Execute(GetAllJournalEntriesQuery query)
   {

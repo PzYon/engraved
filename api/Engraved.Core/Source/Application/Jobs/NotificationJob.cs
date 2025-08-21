@@ -27,7 +27,7 @@ public class NotificationJob(
 
     try
     {
-      logger.LogInformation($"Starting {nameof(NotificationJob)} [Dry Run: {isDryRun}]");
+      logger.LogInformation("Starting {NotificationJobName} [Dry Run: {IsDryRun}]", nameof(NotificationJob), isDryRun);
 
       var watch = Stopwatch.StartNew();
 

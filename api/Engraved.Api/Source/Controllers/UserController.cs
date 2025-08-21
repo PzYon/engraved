@@ -1,6 +1,5 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
-using Engraved.Core.Application.Commands.Journals.UpdateTags;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Commands.Users.UpdateTags;

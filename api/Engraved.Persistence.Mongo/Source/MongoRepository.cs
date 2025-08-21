@@ -50,7 +50,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   {
     if (userIds.Length == 0)
     {
-      return Array.Empty<IUser>();
+      return [];
     }
 
     var users = await UsersCollection
@@ -99,8 +99,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     {
       filters.Add(
         Builders<JournalDocument>.Filter.Or(
-          journalIds.Select(
-            i => GetJournalDocumentByIdFilter<JournalDocument>(i, PermissionKind.Read)
+          journalIds.Select(i => GetJournalDocumentByIdFilter<JournalDocument>(i, PermissionKind.Read)
           )
         )
       );
@@ -120,9 +119,8 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       }
 
       filters.Add(
-        Builders<JournalDocument>.Filter.Where(
-          d => d.Schedules.ContainsKey(currentUserId)
-               && d.Schedules[currentUserId].NextOccurrence != null
+        Builders<JournalDocument>.Filter.Where(d => d.Schedules.ContainsKey(currentUserId)
+                                                    && d.Schedules[currentUserId].NextOccurrence != null
         )
       );
     }
@@ -185,15 +183,13 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     {
       filters.AddRange(
         attributeValues
-          .Select(
-            attributeValue =>
-              Builders<EntryDocument>.Filter.Or(
-                attributeValue.Value.Select(
-                  s => Builders<EntryDocument>.Filter.Where(
-                    d => d.JournalAttributeValues[attributeValue.Key].Contains(s)
-                  )
+          .Select(attributeValue =>
+            Builders<EntryDocument>.Filter.Or(
+              attributeValue.Value.Select(s
+                => Builders<EntryDocument>.Filter.Where(d => d.JournalAttributeValues[attributeValue.Key].Contains(s)
                 )
               )
+            )
           )
       );
     }
@@ -299,7 +295,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     var entries = await EntriesCollection
       .Find(
         Builders<EntryDocument>.Filter.And(
-          filters.Union(new[] { GetHasScheduleForCurrentUserFilter(currentUserId) })
+          filters.Union([GetHasScheduleForCurrentUserFilter(currentUserId)])
         )
       )
       .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId].NextOccurrence))
@@ -312,7 +308,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       await EntriesCollection
         .Find(
           Builders<EntryDocument>.Filter.And(
-            filters.Union(new[] { Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id)) })
+            filters.Union([Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id))])
           )
         )
         .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
@@ -532,9 +528,8 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
   {
-    return Builders<EntryDocument>.Filter.Where(
-      d => d.Schedules.ContainsKey(currentUserId)
-           && d.Schedules[currentUserId].NextOccurrence != null
+    return Builders<EntryDocument>.Filter.Where(d => d.Schedules.ContainsKey(currentUserId)
+                                                     && d.Schedules[currentUserId].NextOccurrence != null
     );
   }
 
@@ -549,12 +544,10 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     }
 
     return searchText.Split(" ")
-      .Select(
-        segment =>
+      .Select(segment =>
         {
           return Builders<T>.Filter.Or(
-            fieldNameExpressions.Select(
-              exp => Builders<T>.Filter.Regex(
+            fieldNameExpressions.Select(exp => Builders<T>.Filter.Regex(
                 exp,
                 new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline))
               )

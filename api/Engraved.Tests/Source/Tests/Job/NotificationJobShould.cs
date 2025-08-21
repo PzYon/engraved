@@ -28,8 +28,8 @@ public class NotificationJobShould
     _dateService = new FakeDateService();
     _repo = await Util.CreateMongoRepository();
 
-    _testContext1 = await EngravedTestContext.CreateForUser(_repo, _dateService, UserName1);
-    _testContext2 = await EngravedTestContext.CreateForUser(_repo, _dateService, UserName2);
+    _testContext1 = await EngravedTestContext.CreateForUser(_repo, UserName1);
+    _testContext2 = await EngravedTestContext.CreateForUser(_repo, UserName2);
 
     _job = new NotificationJob(
       NullLogger<NotificationJob>.Instance,

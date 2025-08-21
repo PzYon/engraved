@@ -26,6 +26,6 @@ public class MockCurrentUserService(string userId) : ICurrentUserService
       throw new NotAllowedOperationException("Username is not available");
     }
 
-    return Task.FromResult(new User { Name = _userName, Id = userId } as IUser);
+    return Task.FromResult<IUser>(new User { Name = _userName, Id = userId });
   }
 }

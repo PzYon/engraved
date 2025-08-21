@@ -46,7 +46,7 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry!.StartDate.Should().Be(startDate);
+    entry.StartDate.Should().Be(startDate);
     entry.EndDate.Should().Be(endDate);
   }
 
@@ -64,7 +64,7 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry?.StartDate.Should().Be(_fakeDateService.UtcNow);
+    entry.StartDate.Should().Be(_fakeDateService.UtcNow);
   }
 
   [Test]
@@ -92,7 +92,7 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry?.EndDate.Should().Be(_fakeDateService.UtcNow);
+    entry.EndDate.Should().Be(_fakeDateService.UtcNow);
   }
 
   [Test]
@@ -132,9 +132,9 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry?.StartDate.Should().Be(newStartDate);
-    entry?.DateTime.Should().Be(newStartDate);
-    entry?.EndDate.Should().Be(newEndDate);
+    entry.StartDate.Should().Be(newStartDate);
+    entry.DateTime.Should().Be(newStartDate);
+    entry.EndDate.Should().Be(newEndDate);
   }
 
   [Test]

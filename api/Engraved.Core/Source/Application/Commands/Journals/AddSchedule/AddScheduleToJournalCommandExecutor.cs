@@ -1,5 +1,4 @@
 ﻿using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 

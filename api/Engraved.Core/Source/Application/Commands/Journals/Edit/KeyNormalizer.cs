@@ -3,7 +3,7 @@
 public static class KeyNormalizer
 {
   private const string InvalidCharReplacement = "_";
-  private static readonly string[] InvalidCharsForKeys = { ",", ";", "?", ":", "=" };
+  private static readonly string[] InvalidCharsForKeys = [",", ";", "?", ":", "="];
 
   public static Dictionary<string, T> Normalize<T>(Dictionary<string, T> dict)
   {

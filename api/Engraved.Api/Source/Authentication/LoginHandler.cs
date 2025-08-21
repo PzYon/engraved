@@ -12,14 +12,15 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Engraved.Api.Authentication;
 
-public class LoginHandler : ILoginHandler
+public class LoginHandler(
+  IGoogleTokenValidator tokenValidator,
+  IBaseRepository repository,
+  AuthenticationConfig configuration,
+  IDateService dateService,
+  UserLoader userLoader
+)
+  : ILoginHandler
 {
-  private readonly AuthenticationConfig _authenticationConfig;
-  private readonly IDateService _dateService;
-  private readonly IBaseRepository _repository;
-  private readonly IGoogleTokenValidator _tokenValidator;
-  private readonly UserLoader _userLoader;
-
   public LoginHandler(
     IGoogleTokenValidator tokenValidator,
     IBaseRepository repository,
@@ -28,21 +29,6 @@ public class LoginHandler : ILoginHandler
     UserLoader userLoader
   ) : this(tokenValidator, repository, configuration.Value, dateService, userLoader) { }
 
-  public LoginHandler(
-    IGoogleTokenValidator tokenValidator,
-    IBaseRepository repository,
-    AuthenticationConfig configuration,
-    IDateService dateService,
-    UserLoader userLoader
-  )
-  {
-    _tokenValidator = tokenValidator;
-    _repository = repository;
-    _authenticationConfig = configuration;
-    _dateService = dateService;
-    _userLoader = userLoader;
-  }
-
   public async Task<AuthResult> Login(string? idToken)
   {
     if (string.IsNullOrEmpty(idToken))
@@ -50,11 +36,11 @@ public class LoginHandler : ILoginHandler
       throw new ArgumentException("Token is null or empty, cannot login.");
     }
 
-    ParsedToken parsedToken = await _tokenValidator.ParseAndValidate(idToken);
+    ParsedToken parsedToken = await tokenValidator.ParseAndValidate(idToken);
 
     IUser user = await EnsureUser(parsedToken.UserName, parsedToken.UserDisplayName, parsedToken.ImageUrl);
 
-    _userLoader.SetUser(user);
+    userLoader.SetUser(user);
 
     return new AuthResult
     {
@@ -81,12 +67,12 @@ public class LoginHandler : ILoginHandler
 
   private async Task<IUser> EnsureUser(string userName, string? displayName, string? imageUrl)
   {
-    IUser user = await _repository.GetUser(userName)
+    IUser user = await repository.GetUser(userName)
                  ?? new User { Name = userName };
 
     user.DisplayName = displayName;
     user.ImageUrl = imageUrl;
-    user.LastLoginDate = _dateService.UtcNow;
+    user.LastLoginDate = dateService.UtcNow;
     user.GlobalUniqueId ??= Guid.NewGuid();
 
     if (user.FavoriteJournalIds.Count == 0)
@@ -94,7 +80,7 @@ public class LoginHandler : ILoginHandler
       await EnsureQuickScraps(user);
     }
 
-    UpsertResult result = await _repository.UpsertUser(user);
+    UpsertResult result = await repository.UpsertUser(user);
     user.Id = result.EntityId;
     return user;
   }
@@ -104,10 +90,10 @@ public class LoginHandler : ILoginHandler
     var tokenDescriptor = new SecurityTokenDescriptor
     {
       Subject = new ClaimsIdentity(GetClaims(userId)),
-      IssuedAt = _dateService.UtcNow,
-      Expires = _dateService.UtcNow.AddHours(36),
-      Issuer = _authenticationConfig.TokenIssuer,
-      Audience = _authenticationConfig.TokenAudience,
+      IssuedAt = dateService.UtcNow,
+      Expires = dateService.UtcNow.AddHours(36),
+      Issuer = configuration.TokenIssuer,
+      Audience = configuration.TokenAudience,
       SigningCredentials = GetSigningCredentials()
     };
 
@@ -118,13 +104,13 @@ public class LoginHandler : ILoginHandler
 
   private SigningCredentials GetSigningCredentials()
   {
-    if (string.IsNullOrEmpty(_authenticationConfig.JwtSecret))
+    if (string.IsNullOrEmpty(configuration.JwtSecret))
     {
       throw new Exception($"\"{nameof(AuthenticationConfig.JwtSecret)}\" must be set on the config.");
     }
 
     return new SigningCredentials(
-      new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_authenticationConfig.JwtSecret)),
+      new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.JwtSecret)),
       SecurityAlgorithms.HmacSha256Signature
     );
   }
@@ -139,11 +125,11 @@ public class LoginHandler : ILoginHandler
     IJournal journal = new ScrapsJournal
     {
       Name = "Quick Scraps",
-      EditedOn = _dateService.UtcNow,
+      EditedOn = dateService.UtcNow,
       UserId = user.Id
     };
 
-    UpsertResult result = await _repository.UpsertJournal(journal);
+    UpsertResult result = await repository.UpsertJournal(journal);
 
     user.FavoriteJournalIds.Add(result.EntityId);
   }

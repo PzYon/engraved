@@ -2,14 +2,9 @@
 
 namespace Engraved.Api.Settings;
 
-public class MongoRepositorySettings : IMongoRepositorySettings
+public class MongoRepositorySettings(string connectionString) : IMongoRepositorySettings
 {
-  public MongoRepositorySettings(string connectionString)
-  {
-    MongoDbConnectionString = connectionString;
-  }
-
-  public string MongoDbConnectionString { get; }
+  public string MongoDbConnectionString { get; } = connectionString;
 
   // attention: renaming stuff in an azure cosmos db is literally not possible!!
   public string DatabaseName => "metrix_test";

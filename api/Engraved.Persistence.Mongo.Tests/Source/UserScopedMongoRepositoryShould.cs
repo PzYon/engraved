@@ -41,7 +41,7 @@ public class UserScopedMongoRepositoryShould
     IUser? user = await _userScopedRepository.GetUser(CurrentUserName);
 
     user.Should().NotBeNull();
-    user!.Name.Should().Be(CurrentUserName);
+    user.Name.Should().Be(CurrentUserName);
   }
 
   [Test]
@@ -71,9 +71,9 @@ public class UserScopedMongoRepositoryShould
   public async Task UpsertUser_ShouldUpdate_CurrentUser()
   {
     IUser? current = await _repository.GetUser(CurrentUserName);
-    current!.Should().NotBeNull();
+    current.Should().NotBeNull();
 
-    UpsertResult result = await _userScopedRepository.UpsertUser(current!);
+    UpsertResult result = await _userScopedRepository.UpsertUser(current);
 
     result.EntityId.Should().Be(_userScopedRepository.CurrentUser.Value.Id);
   }
@@ -168,7 +168,7 @@ public class UserScopedMongoRepositoryShould
 
     IJournal? journal = await _userScopedRepository.GetJournal(currentUserResult.EntityId);
     journal.Should().NotBeNull();
-    journal!.Name.Should().Be("From Current User");
+    journal.Name.Should().Be("From Current User");
   }
 
   [Test]

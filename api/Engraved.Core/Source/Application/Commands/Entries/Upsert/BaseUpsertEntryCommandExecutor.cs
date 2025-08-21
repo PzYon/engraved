@@ -86,7 +86,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     }
   }
 
-  private void ValidateJournalAttributes(TCommand command, IJournal journal)
+  private static void ValidateJournalAttributes(TCommand command, IJournal journal)
   {
     if (command.JournalAttributeValues.Keys.Count == 0)
     {

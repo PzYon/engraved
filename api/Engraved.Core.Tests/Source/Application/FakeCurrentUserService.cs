@@ -5,18 +5,20 @@ namespace Engraved.Core.Application;
 
 public class FakeCurrentUserService(string name) : ICurrentUserService
 {
+  private string _name = name;
+
   public string? GetUserName()
   {
-    return name;
+    return _name;
   }
 
   public void SetUserName(string userName)
   {
-    name = userName;
+    _name = userName;
   }
 
   public Task<IUser> LoadUser()
   {
-    return Task.FromResult(new User { Name = name } as IUser);
+    return Task.FromResult<IUser>(new User { Name = _name });
   }
 }
