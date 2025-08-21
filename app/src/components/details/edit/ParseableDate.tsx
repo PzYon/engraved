@@ -61,7 +61,12 @@ export const ParseableDate: React.FC<{
         }}
         onChange={(e) => {
           try {
-            const parsed = parseDate(e.target.value);
+            const currentValue = e.target.value
+              .replace(/\.{3}/g, "👍")
+              .replace(/!{3}/g, "⚠️")
+              .replace(/\?{3}/, "❓");
+
+            const parsed = parseDate(currentValue);
             setParsed(parsed);
             setParseError("");
             onChange(parsed);
