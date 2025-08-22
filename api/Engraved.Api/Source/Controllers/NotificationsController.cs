@@ -32,6 +32,7 @@ public class NotificationsController(
         Title = "Test message (Title)",
         Message = "Sent from engraved OneSignal (Message)."
       },
+      Guid.NewGuid().ToString(),
       false
     );
   }

@@ -4,12 +4,7 @@ namespace Engraved.Tests.Tests.Job;
 
 public class TestNotificationService : INotificationService
 {
-  public Task CancelNotification(string notificationId)
-  {
-    return Task.CompletedTask;
-  }
-
-  public Task<string?> SendNotification(ClientNotification notification, bool doNotSend)
+  public Task<string?> SendNotification(ClientNotification notification, string entityId, bool doNotSend)
   {
     return Task.FromResult<string?>(Guid.NewGuid().ToString());
   }
