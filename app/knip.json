@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "@tanstack/eslint-plugin-query",
+    "public/OneSignalSDKWorker.js",
+    "dotnet",
+    "src/global.d.ts"
+  ]
+}
