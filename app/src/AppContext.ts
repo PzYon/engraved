@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import { IAppAlert } from "./components/errorHandling/AppAlertBar";
 import { IUser } from "./serverApi/IUser";
 
-export interface IAppContext {
+interface IAppContext {
   appAlert: IAppAlert;
   setAppAlert: (appAlert: IAppAlert) => void;
   user: IUser;

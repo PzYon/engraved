@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-export interface IOverviewListContext {
+interface IOverviewListContext {
   activeItemId: string;
   setActiveItemId: (id: string) => void;
   moveDown: () => void;

@@ -1,0 +1,3 @@
+{
+  "ignore": ["public/OneSignalSDKWorker.js", "src/global.d.ts"]
+}

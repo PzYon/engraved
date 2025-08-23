@@ -7,7 +7,7 @@ export interface IDateConditions {
   to?: Date;
 }
 
-export interface IJournalContext {
+interface IJournalContext {
   journal: IJournal;
   entries: IEntry[];
   toggleAttributeValue: (

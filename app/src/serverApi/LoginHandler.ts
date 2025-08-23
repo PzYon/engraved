@@ -1,4 +1,4 @@
-export interface ICallbackServerFunction {
+interface ICallbackServerFunction {
   fn: () => Promise<unknown>;
   callback: (result: unknown) => void;
   callbackError: (error: Error) => void;

@@ -7,7 +7,7 @@ export interface IDialogProps {
   onClose?: () => void;
 }
 
-export interface IDialogContext {
+interface IDialogContext {
   renderDialog(dialogProps: IDialogProps): void;
 }
 

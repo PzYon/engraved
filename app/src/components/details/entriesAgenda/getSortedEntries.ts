@@ -1,7 +1,7 @@
 import { IEntry } from "../../../serverApi/IEntry";
 import { formatDistance, intervalToDuration } from "date-fns";
 
-export interface ISortedEntries {
+interface ISortedEntries {
   entries: IEntry[];
   gaps: {
     valueInDays: number;

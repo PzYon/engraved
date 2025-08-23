@@ -10,7 +10,7 @@ import { knownQueryParams } from "../../common/actions/searchParamHooks";
 import { useOverviewListContext } from "./OverviewListContext";
 import { OverviewListContextProvider } from "./OverviewListContextProvider";
 
-export interface IOverviewListProps {
+interface IOverviewListProps {
   items: IEntity[];
   renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
   renderItem: (
@@ -33,7 +33,7 @@ export const OverviewList: React.FC<IOverviewListProps> = memo(
   },
 );
 
-export const OverviewListInternal: React.FC<IOverviewListProps> = ({
+const OverviewListInternal: React.FC<IOverviewListProps> = ({
   items,
   renderBeforeList,
   renderItem,

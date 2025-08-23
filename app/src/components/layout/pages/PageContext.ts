@@ -10,7 +10,7 @@ export enum FilterMode {
   All = Text | JournalType,
 }
 
-export interface IPageContext {
+interface IPageContext {
   documentTitle: string;
   setDocumentTitle: (documentTitle: string) => void;
   title: React.ReactNode;

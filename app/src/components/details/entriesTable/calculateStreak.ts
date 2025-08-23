@@ -9,7 +9,7 @@ import {
   startOfDay,
 } from "date-fns";
 
-export interface IStreak {
+interface IStreak {
   isStreak: boolean;
   length: number;
   hasEntryToday: boolean;
