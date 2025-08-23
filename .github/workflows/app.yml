@@ -34,7 +34,13 @@ jobs:
         uses: josStorer/get-current-time@v2
         id: current-time
 
-      - name: NPM Install
+      - name: NPM Install (./)
+        run: npm ci
+
+      - name: Knip
+        run: npm run knip
+
+      - name: NPM Install (app)
         working-directory: app
         run: npm ci
 
@@ -45,10 +51,6 @@ jobs:
       - name: Lint
         working-directory: app
         run: npm run lint
-
-      - name: Knip
-        working-directory: app
-        run: npm run knip
 
       - name: Build
         working-directory: app
