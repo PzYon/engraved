@@ -37,12 +37,16 @@ jobs:
       - name: NPM Install (./)
         run: npm ci
 
-      - name: Knip
-        run: npm run knip
-
-      - name: NPM Install (app)
+      - name: NPM Install (./app)
         working-directory: app
         run: npm ci
+
+      - name: NPM Install (./tests)
+        working-directory: tests
+        run: npm ci
+
+      - name: Knip
+        run: npm run knip
 
       - name: Check types
         working-directory: app
