@@ -5,7 +5,7 @@ import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
 import Edit from "@mui/icons-material/Edit";
 import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
 
-export interface IOption {
+interface IOption {
   key: string;
   label: string;
 }

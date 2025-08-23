@@ -7,7 +7,7 @@ export interface IParsedDate {
   text?: string;
 }
 
-export interface IParsedRecurrence {
+interface IParsedRecurrence {
   dateString: string;
 }
 

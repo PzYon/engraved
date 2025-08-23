@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-export interface IDisplayModeContext {
+interface IDisplayModeContext {
   isCompact: boolean;
   setIsCompact: (value: boolean) => void;
 }

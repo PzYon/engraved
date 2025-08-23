@@ -1,7 +1,7 @@
 import { DependencyList } from "react";
 import { HotkeyCallback, Options, useHotkeys } from "react-hotkeys-hook";
 
-export type KeyboardModifiers = {
+type KeyboardModifiers = {
   alt?: boolean;
   ctrl?: boolean;
   meta?: boolean;
@@ -10,7 +10,7 @@ export type KeyboardModifiers = {
   useKey?: boolean;
 };
 
-export type Hotkey = KeyboardModifiers & {
+type Hotkey = KeyboardModifiers & {
   keys?: readonly string[];
   scopes?: string | readonly string[];
   description?: string;

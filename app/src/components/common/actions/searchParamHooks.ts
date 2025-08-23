@@ -7,7 +7,7 @@ export const knownQueryParams = {
   favoritesOnly: "favorites-only",
 };
 
-export type ActionKey =
+type ActionKey =
   | "permissions"
   | "delete"
   | "schedule"

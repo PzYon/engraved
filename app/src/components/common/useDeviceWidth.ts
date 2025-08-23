@@ -5,7 +5,7 @@ export enum DeviceWidth {
   Normal,
 }
 
-export const minWidthInPx = 600;
+const minWidthInPx = 600;
 
 export const useDeviceWidth = (): DeviceWidth => {
   return useMediaQuery(`(min-width:${minWidthInPx}px)`)

@@ -3,7 +3,7 @@ export type GoogleInitializeResponse = {
   select_by: string;
 };
 
-export type GoogleInitializeInput = {
+type GoogleInitializeInput = {
   client_id: string;
   callback: (response: GoogleInitializeResponse) => void;
 };

@@ -98,7 +98,7 @@ const ButtonContainer = styled("div")`
   }
 `;
 
-export const SeparatorElement = styled("div")`
+const SeparatorElement = styled("div")`
   height: 25px;
   width: 2px;
   background-color: ${(p) => p.theme.palette.primary.main};

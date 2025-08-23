@@ -166,7 +166,7 @@ export const EntriesTable: React.FC<{
   );
 };
 
-export const StyledTable = styled(Table)`
+const StyledTable = styled(Table)`
   th {
     border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
   }

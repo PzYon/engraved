@@ -54,7 +54,7 @@ export function getValue(m: IEntry) {
   return (m as IGaugeEntry).value ?? 1;
 }
 
-export function getTimerEntryValue(timerEntry: ITimerEntry) {
+function getTimerEntryValue(timerEntry: ITimerEntry) {
   if (!timerEntry.startDate) {
     return 0;
   }
