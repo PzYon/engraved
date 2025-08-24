@@ -10,6 +10,7 @@ import { knownQueryParams } from "../../common/actions/searchParamHooks";
 import { useOverviewListContext } from "./OverviewListContext";
 import { OverviewListContextProvider } from "./OverviewListContextProvider";
 import { IJournal } from "../../../serverApi/IJournal";
+import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 
 interface IOverviewListProps {
   items: IEntity[];
@@ -41,7 +42,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
   filterItem,
   onKeyDown,
 }) => {
-  const { user } = useAppContext();
+  const { user, setAppAlert } = useAppContext();
 
   const { setActiveItemId, activeItemId, moveUp, moveDown } =
     useOverviewListContext();
@@ -58,6 +59,18 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
       setActiveItemId(activeItemIdFromUrl);
     }
   }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
+
+  useEffect(() => {
+    if (inMemorySearchText) {
+      setAppAlert({
+        title: inMemorySearchText,
+        message: "",
+        type: "success",
+      });
+    } else {
+      setAppAlert(undefined);
+    }
+  }, [inMemorySearchText]);
 
   useEngravedHotkeys("*", (e) => {
     switch (e.code) {
@@ -95,6 +108,9 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
     (f) =>
       (((showAll || filterItem?.(f)) ?? true) && !inMemorySearchText) ||
       (f as IJournal).name
+        ?.toLowerCase()
+        .indexOf(inMemorySearchText.toLowerCase()) > -1 ||
+      (f as IScrapEntry).title
         ?.toLowerCase()
         .indexOf(inMemorySearchText.toLowerCase()) > -1,
   );
