@@ -1,12 +1,63 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
-import { OverviewListContext } from "./OverviewListContext";
+import {
+  IOverviewListContext,
+  OverviewListContext,
+} from "./OverviewListContext";
+import { knownQueryParams } from "../../common/actions/searchParamHooks";
+import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { IJournal } from "../../../serverApi/IJournal";
+import { IScrapEntry } from "../../../serverApi/IScrapEntry";
+import { useAppContext } from "../../../AppContext";
+import { useSearchParams } from "react-router";
 
 export const OverviewListContextProvider: React.FC<{
   items: IEntity[];
+  filterItem?: (item: IEntity) => boolean;
+  onKeyDown?: (e: KeyboardEvent) => void;
   children: React.ReactNode;
-}> = ({ items, children }) => {
+}> = ({ items, children, filterItem, onKeyDown }) => {
+  const { setAppAlert } = useAppContext();
+
   const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
+
+  const [showAll, setShowAll] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
+
+  useEffect(() => {
+    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
+      setActiveItemId(activeItemIdFromUrl);
+    }
+  }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
+
+  const [inMemorySearchText, setInMemorySearchText] = useState("");
+
+  useEffect(() => {
+    if (inMemorySearchText) {
+      setAppAlert({
+        title: inMemorySearchText,
+        message: "",
+        type: "success",
+      });
+    } else {
+      setAppAlert(undefined);
+    }
+  }, [inMemorySearchText, setAppAlert]);
+
+  const removeItemParamsFromUrl = React.useCallback(() => {
+    if (
+      !searchParams.get(knownQueryParams.selectedItemId) &&
+      !searchParams.get(knownQueryParams.actionKey)
+    ) {
+      return;
+    }
+
+    searchParams.delete(knownQueryParams.selectedItemId);
+    searchParams.delete(knownQueryParams.actionKey);
+    setSearchParams(searchParams);
+  }, [searchParams]);
 
   const getNextItem = React.useCallback(
     (direction: "up" | "down"): IEntity => {
@@ -29,14 +80,68 @@ export const OverviewListContextProvider: React.FC<{
     setActiveItemId(getNextItem("up")?.id);
   }, [getNextItem, setActiveItemId]);
 
-  const contextValue = useMemo(
+  useEngravedHotkeys("*", (e) => {
+    switch (e.code) {
+      case "ArrowUp": {
+        e.preventDefault();
+        removeItemParamsFromUrl();
+        moveUp();
+        break;
+      }
+
+      case "ArrowDown": {
+        e.preventDefault();
+        removeItemParamsFromUrl();
+        moveDown();
+        break;
+      }
+
+      default: {
+        if (onKeyDown) {
+          onKeyDown?.(e);
+        } else {
+          if (e.key.match(/^\w$/)) {
+            setInMemorySearchText((current) => current + e.key);
+          } else if (e.key === "Backspace") {
+            setInMemorySearchText((current) =>
+              current.substring(0, current.length - 1),
+            );
+          }
+        }
+      }
+    }
+  });
+
+  const filteredItems = items.filter(
+    (f) =>
+      (((showAll || filterItem?.(f)) ?? true) && !inMemorySearchText) ||
+      (f as IJournal).name
+        ?.toLowerCase()
+        .indexOf(inMemorySearchText.toLowerCase()) > -1 ||
+      (f as IScrapEntry).title
+        ?.toLowerCase()
+        .indexOf(inMemorySearchText.toLowerCase()) > -1,
+  );
+
+  const hiddenItems = items.length - filteredItems.length;
+
+  const contextValue = useMemo<IOverviewListContext>(
     () => ({
       activeItemId,
       setActiveItemId,
-      moveDown,
-      moveUp,
+      itemsToShow: filteredItems,
+      hiddenItems,
+      removeItemParamsFromUrl,
+      setShowAll,
     }),
-    [activeItemId, setActiveItemId, moveDown, moveUp],
+    [
+      activeItemId,
+      setActiveItemId,
+      filteredItems,
+      hiddenItems,
+      removeItemParamsFromUrl,
+      setShowAll,
+    ],
   );
 
   return (
