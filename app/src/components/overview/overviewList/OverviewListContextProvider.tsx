@@ -40,6 +40,7 @@ export const OverviewListContextProvider: React.FC<{
         title: inMemorySearchText,
         message: "",
         type: "success",
+        hideDurationSec: null,
       });
     } else {
       setAppAlert(undefined);
@@ -97,16 +98,25 @@ export const OverviewListContextProvider: React.FC<{
       }
 
       default: {
+        if (e.altKey || e.ctrlKey || e.shiftKey) {
+          // todo: is this correct? what about onKeyDown?
+          return;
+        }
+
         if (onKeyDown) {
           onKeyDown?.(e);
-        } else {
-          if (e.key.match(/^\w$/)) {
-            setInMemorySearchText((current) => current + e.key);
-          } else if (e.key === "Backspace") {
-            setInMemorySearchText((current) =>
-              current.substring(0, current.length - 1),
-            );
-          }
+          return;
+        }
+
+        if (e.key.match(/^\w$/)) {
+          setInMemorySearchText((current) => current + e.key);
+          return;
+        }
+
+        if (e.key === "Backspace") {
+          setInMemorySearchText((current) =>
+            current.substring(0, current.length - 1),
+          );
         }
       }
     }
@@ -132,7 +142,10 @@ export const OverviewListContextProvider: React.FC<{
       itemsToShow: filteredItems,
       hiddenItems,
       removeItemParamsFromUrl,
-      setShowAll,
+      setShowAll: (value: boolean) => {
+        setShowAll(value);
+        setInMemorySearchText("");
+      },
     }),
     [
       activeItemId,
