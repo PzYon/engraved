@@ -9,6 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import { knownQueryParams } from "../../common/actions/searchParamHooks";
 import { useOverviewListContext } from "./OverviewListContext";
 import { OverviewListContextProvider } from "./OverviewListContextProvider";
+import { IJournal } from "../../../serverApi/IJournal";
 
 interface IOverviewListProps {
   items: IEntity[];
@@ -50,6 +51,10 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
 
+  const [inMemorySearchText, setInMemorySearchText] = useState("");
+
+  console.log("in memory search text", inMemorySearchText);
+
   useEffect(() => {
     if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
       setActiveItemId(activeItemIdFromUrl);
@@ -73,13 +78,26 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
       }
 
       default: {
-        onKeyDown?.(e);
+        if (onKeyDown) {
+          onKeyDown?.(e);
+        } else {
+          if (e.key.match(/\w/)) {
+            console.log("JOp", e.key);
+            setInMemorySearchText((current) => current + e.key);
+          } else if (e.key === "Backspace") {
+            setInMemorySearchText((current) => current.slice(0, -1));
+          }
+        }
       }
     }
   });
 
   const filteredItems = items.filter(
-    (f) => (showAll || filterItem?.(f)) ?? true,
+    (f) =>
+      (((showAll || filterItem?.(f)) ?? true) && !inMemorySearchText) ||
+      (f as IJournal).name
+        ?.toLowerCase()
+        .indexOf(inMemorySearchText.toLowerCase()) > -1,
   );
 
   const hiddenItems = items.length - filteredItems.length;
