@@ -1,16 +1,11 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
 import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
-import { useSearchParams } from "react-router-dom";
-import { knownQueryParams } from "../../common/actions/searchParamHooks";
 import { useOverviewListContext } from "./OverviewListContext";
 import { OverviewListContextProvider } from "./OverviewListContextProvider";
-import { IJournal } from "../../../serverApi/IJournal";
-import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 
 interface IOverviewListProps {
   items: IEntity[];
@@ -28,7 +23,11 @@ interface IOverviewListProps {
 export const OverviewList: React.FC<IOverviewListProps> = memo(
   (props: IOverviewListProps) => {
     return (
-      <OverviewListContextProvider items={props.items}>
+      <OverviewListContextProvider
+        items={props.items}
+        filterItem={props.filterItem}
+        onKeyDown={props.onKeyDown}
+      >
         <OverviewListInternal {...props} />
       </OverviewListContextProvider>
     );
@@ -39,89 +38,23 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
   items,
   renderBeforeList,
   renderItem,
-  filterItem,
-  onKeyDown,
 }) => {
-  const { user, setAppAlert } = useAppContext();
+  const { user } = useAppContext();
 
-  const { setActiveItemId, activeItemId, moveUp, moveDown } =
-    useOverviewListContext();
-
-  const [showAll, setShowAll] = useState(false);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
-
-  const [inMemorySearchText, setInMemorySearchText] = useState("");
-
-  useEffect(() => {
-    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
-      setActiveItemId(activeItemIdFromUrl);
-    }
-  }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
-
-  useEffect(() => {
-    if (inMemorySearchText) {
-      setAppAlert({
-        title: inMemorySearchText,
-        message: "",
-        type: "success",
-      });
-    } else {
-      setAppAlert(undefined);
-    }
-  }, [inMemorySearchText]);
-
-  useEngravedHotkeys("*", (e) => {
-    switch (e.code) {
-      case "ArrowUp": {
-        e.preventDefault();
-        removeItemParamsFromUrl();
-        moveUp();
-        break;
-      }
-
-      case "ArrowDown": {
-        e.preventDefault();
-        removeItemParamsFromUrl();
-        moveDown();
-        break;
-      }
-
-      default: {
-        if (onKeyDown) {
-          onKeyDown?.(e);
-        } else {
-          if (e.key.match(/^\w$/)) {
-            setInMemorySearchText((current) => current + e.key);
-          } else if (e.key === "Backspace") {
-            setInMemorySearchText((current) =>
-              current.substring(0, current.length - 1),
-            );
-          }
-        }
-      }
-    }
-  });
-
-  const filteredItems = items.filter(
-    (f) =>
-      (((showAll || filterItem?.(f)) ?? true) && !inMemorySearchText) ||
-      (f as IJournal).name
-        ?.toLowerCase()
-        .indexOf(inMemorySearchText.toLowerCase()) > -1 ||
-      (f as IScrapEntry).title
-        ?.toLowerCase()
-        .indexOf(inMemorySearchText.toLowerCase()) > -1,
-  );
-
-  const hiddenItems = items.length - filteredItems.length;
+  const {
+    setActiveItemId,
+    activeItemId,
+    itemsToShow,
+    hiddenItems,
+    removeItemParamsFromUrl,
+    setShowAll,
+  } = useOverviewListContext();
 
   return (
     <Host>
       {renderBeforeList?.((i) => setActiveItemId(items[i].id))}
 
-      {filteredItems.map((item, index) => {
+      {itemsToShow.map((item, index) => {
         const hasFocus = activeItemId === item.id;
 
         return (
@@ -165,19 +98,6 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
       ) : null}
     </Host>
   );
-
-  function removeItemParamsFromUrl() {
-    if (
-      !searchParams.get(knownQueryParams.selectedItemId) &&
-      !searchParams.get(knownQueryParams.actionKey)
-    ) {
-      return;
-    }
-
-    searchParams.delete(knownQueryParams.selectedItemId);
-    searchParams.delete(knownQueryParams.actionKey);
-    setSearchParams(searchParams);
-  }
 };
 
 const RenderItem = React.memo(
