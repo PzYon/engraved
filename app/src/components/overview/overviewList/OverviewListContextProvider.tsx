@@ -39,7 +39,7 @@ export const OverviewListContextProvider: React.FC<{
       setAppAlert({
         title: inMemorySearchText,
         message: "",
-        type: "success",
+        type: "info",
         hideDurationSec: null,
       });
     } else {
@@ -108,7 +108,7 @@ export const OverviewListContextProvider: React.FC<{
           return;
         }
 
-        if (e.key.match(/^\w$/)) {
+        if (e.key.match(/^\w$/) || e.key === " ") {
           setInMemorySearchText((current) => current + e.key);
           return;
         }
