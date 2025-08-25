@@ -60,7 +60,7 @@ export const OverviewListContextProvider: React.FC<{
     searchParams.delete(knownQueryParams.selectedItemId);
     searchParams.delete(knownQueryParams.actionKey);
     setSearchParams(searchParams);
-  }, [searchParams]);
+  }, [searchParams, setSearchParams]);
 
   const getNextItem = React.useCallback(
     (direction: "up" | "down"): IEntity => {

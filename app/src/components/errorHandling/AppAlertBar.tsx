@@ -23,7 +23,7 @@ export const AppAlertBar: React.FC = () => {
       data-testid={"app-alert-bar"}
       data-related-entity-id={appAlert.relatedEntityId}
       autoHideDuration={
-        appAlert.type === "success" /*&& appAlert.hideDurationSec !== null*/
+        appAlert.type === "success" && appAlert.hideDurationSec !== null
           ? (appAlert.hideDurationSec ?? 3) * 1000
           : null
       }
