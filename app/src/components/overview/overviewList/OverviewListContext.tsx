@@ -5,7 +5,7 @@ export interface IOverviewListContext {
   activeItemId: string;
   setActiveItemId: (id: string) => void;
   itemsToShow: IEntity[];
-  hiddenItems: number;
+  hiddenItemsCount: number;
   removeItemParamsFromUrl: () => void;
   setShowAll: (value: boolean) => void;
 }
@@ -14,7 +14,7 @@ export const OverviewListContext = createContext<IOverviewListContext>({
   activeItemId: undefined,
   setActiveItemId: undefined,
   itemsToShow: undefined,
-  hiddenItems: undefined,
+  hiddenItemsCount: undefined,
   removeItemParamsFromUrl: undefined,
   setShowAll: undefined,
 });

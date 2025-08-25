@@ -45,7 +45,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
     setActiveItemId,
     activeItemId,
     itemsToShow,
-    hiddenItems,
+    hiddenItemsCount,
     removeItemParamsFromUrl,
     setShowAll,
   } = useOverviewListContext();
@@ -83,7 +83,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
           </OverviewListItem>
         );
       })}
-      {hiddenItems ? (
+      {hiddenItemsCount ? (
         <Typography
           onClick={() => setShowAll(true)}
           sx={{
@@ -93,7 +93,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
             pb: 3,
           }}
         >
-          Show {hiddenItems} hidden item(s)
+          Show {hiddenItemsCount} hidden item(s)
         </Typography>
       ) : null}
     </Host>
