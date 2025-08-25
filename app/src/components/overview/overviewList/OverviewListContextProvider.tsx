@@ -32,7 +32,9 @@ export const OverviewListContextProvider: React.FC<{
     }
   }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
 
-  const [inMemorySearchText, setInMemorySearchText] = useState("");
+  // undefined is the initial value, afterward it is ""
+  const [inMemorySearchText, setInMemorySearchText] =
+    useState<string>(undefined);
 
   useEffect(() => {
     if (inMemorySearchText) {
@@ -42,8 +44,8 @@ export const OverviewListContextProvider: React.FC<{
         type: "info",
         hideDurationSec: null,
       });
-    } else {
-      // setAppAlert(undefined);
+    } else if (inMemorySearchText === "") {
+      setAppAlert(undefined);
     }
   }, [inMemorySearchText, setAppAlert]);
 
@@ -109,13 +111,15 @@ export const OverviewListContextProvider: React.FC<{
         }
 
         if (e.key.match(/^\w$/) || e.key === " ") {
-          setInMemorySearchText((current) => current + e.key);
+          setInMemorySearchText((current) => (current ?? "") + e.key);
           return;
         }
 
         if (e.key === "Backspace") {
           setInMemorySearchText((current) =>
-            current.substring(0, current.length - 1),
+            !current?.length
+              ? current
+              : current.substring(0, current.length - 1),
           );
         }
       }
