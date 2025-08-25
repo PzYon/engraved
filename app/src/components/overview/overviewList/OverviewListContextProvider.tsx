@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import {
   IOverviewListContext,
@@ -62,40 +62,19 @@ export const OverviewListContextProvider: React.FC<{
     setSearchParams(searchParams);
   }, [searchParams, setSearchParams]);
 
-  const getNextItem = React.useCallback(
-    (direction: "up" | "down"): IEntity => {
-      const activeIndex = items.findIndex((item) => item.id === activeItemId);
-      const firstIndex = 0;
-      const lastIndex = items.length - 1;
-
-      return direction === "up"
-        ? items[activeIndex > firstIndex ? activeIndex - 1 : lastIndex]
-        : items[activeIndex < lastIndex ? activeIndex + 1 : firstIndex];
-    },
-    [items, activeItemId],
-  );
-
-  const moveDown = useCallback(() => {
-    setActiveItemId(getNextItem("down")?.id);
-  }, [getNextItem, setActiveItemId]);
-
-  const moveUp = useCallback(() => {
-    setActiveItemId(getNextItem("up")?.id);
-  }, [getNextItem, setActiveItemId]);
-
   useEngravedHotkeys("*", (e) => {
     switch (e.code) {
       case "ArrowUp": {
         e.preventDefault();
         removeItemParamsFromUrl();
-        moveUp();
+        setActiveItemId(getNextItem("up")?.id);
         break;
       }
 
       case "ArrowDown": {
         e.preventDefault();
         removeItemParamsFromUrl();
-        moveDown();
+        setActiveItemId(getNextItem("down")?.id);
         break;
       }
 
@@ -112,6 +91,7 @@ export const OverviewListContextProvider: React.FC<{
 
         if (e.key.match(/^\w$/) || e.key === " ") {
           setInMemorySearchText((current) => (current ?? "") + e.key);
+          setActiveItemId(undefined);
           return;
         }
 
@@ -121,6 +101,7 @@ export const OverviewListContextProvider: React.FC<{
               ? current
               : current.substring(0, current.length - 1),
           );
+          setActiveItemId(undefined);
         }
       }
     }
@@ -137,14 +118,27 @@ export const OverviewListContextProvider: React.FC<{
         .indexOf(inMemorySearchText.toLowerCase()) > -1,
   );
 
-  const hiddenItems = items.length - filteredItems.length;
+  const getNextItem = React.useCallback(
+    (direction: "up" | "down"): IEntity => {
+      const activeIndex = filteredItems.findIndex(
+        (item) => item.id === activeItemId,
+      );
+      const firstIndex = 0;
+      const lastIndex = items.length - 1;
+
+      return direction === "up"
+        ? filteredItems[activeIndex > firstIndex ? activeIndex - 1 : lastIndex]
+        : filteredItems[activeIndex < lastIndex ? activeIndex + 1 : firstIndex];
+    },
+    [filteredItems, activeItemId, inMemorySearchText],
+  );
 
   const contextValue = useMemo<IOverviewListContext>(
     () => ({
       activeItemId,
       setActiveItemId,
       itemsToShow: filteredItems,
-      hiddenItems,
+      hiddenItemsCount: items.length - filteredItems.length,
       removeItemParamsFromUrl,
       setShowAll: (value: boolean) => {
         setShowAll(value);
@@ -155,7 +149,7 @@ export const OverviewListContextProvider: React.FC<{
       activeItemId,
       setActiveItemId,
       filteredItems,
-      hiddenItems,
+      items.length,
       removeItemParamsFromUrl,
       setShowAll,
     ],
