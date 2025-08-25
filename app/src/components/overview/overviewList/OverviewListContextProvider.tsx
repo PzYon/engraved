@@ -43,7 +43,7 @@ export const OverviewListContextProvider: React.FC<{
         hideDurationSec: null,
       });
     } else {
-      setAppAlert(undefined);
+      // setAppAlert(undefined);
     }
   }, [inMemorySearchText, setAppAlert]);
 
