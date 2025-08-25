@@ -35,7 +35,6 @@ export const OverviewList: React.FC<IOverviewListProps> = memo(
 );
 
 const OverviewListInternal: React.FC<IOverviewListProps> = ({
-  items,
   renderBeforeList,
   renderItem,
 }) => {
@@ -52,7 +51,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
   return (
     <Host>
-      {renderBeforeList?.((i) => setActiveItemId(items[i].id))}
+      {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i].id))}
 
       {itemsToShow.map((item, index) => {
         const hasFocus = activeItemId === item.id;
