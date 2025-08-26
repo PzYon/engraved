@@ -81,18 +81,17 @@ export const OverviewListContextProvider: React.FC<{
       }
 
       default: {
-        if (e.altKey || e.ctrlKey || e.shiftKey) {
-          // todo: is this correct? what about onKeyDown?
-          return;
-        }
-
         if (onKeyDown) {
           onKeyDown(e);
           return;
         }
 
-        if (e.key.match(/^\w$/) || e.key === " ") {
-          setInMemorySearchText((current) => (current ?? "") + e.key);
+        if (e.altKey || e.ctrlKey || e.shiftKey) {
+          return;
+        }
+
+        if (e.key === "Escape") {
+          setInMemorySearchText("");
           setActiveItemId(undefined);
           return;
         }
@@ -104,6 +103,12 @@ export const OverviewListContextProvider: React.FC<{
               : current.substring(0, current.length - 1),
           );
           setActiveItemId(undefined);
+        }
+
+        if (e.key.match(/^\w$/) || e.key === " ") {
+          setInMemorySearchText((current) => (current ?? "") + e.key);
+          setActiveItemId(undefined);
+          return;
         }
       }
     }
