@@ -55,9 +55,6 @@ export const OverviewListItem: React.FC<{
             : {}
         }
       >
-        <div>
-          <b>{item.id}</b>
-        </div>
         {children}
       </PageSection>
     </Host>
