@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import {
   IOverviewListContext,
@@ -49,7 +49,9 @@ export const OverviewListContextProvider: React.FC<{
     }
   }, [inMemorySearchText, setAppAlert]);
 
-  const removeItemParamsFromUrl = React.useCallback(() => {
+  useEffect(() => () => setAppAlert(undefined), []);
+
+  const removeItemParamsFromUrl = useCallback(() => {
     if (
       !searchParams.get(knownQueryParams.selectedItemId) &&
       !searchParams.get(knownQueryParams.actionKey)
@@ -107,18 +109,23 @@ export const OverviewListContextProvider: React.FC<{
     }
   });
 
-  const filteredItems = items.filter(
-    (f) =>
-      (((showAll || filterItem?.(f)) ?? true) && !inMemorySearchText) ||
-      (f as IJournal).name
-        ?.toLowerCase()
-        .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1 ||
-      (f as IScrapEntry).title
-        ?.toLowerCase()
-        .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1,
+  const filteredItems = useMemo(
+    () =>
+      items.filter((f) => {
+        if (inMemorySearchText) {
+          return (
+            ((f as IJournal).name || (f as IScrapEntry).title)
+              ?.toLowerCase()
+              .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1
+          );
+        }
+
+        return (showAll || filterItem?.(f)) ?? true;
+      }),
+    [showAll, filterItem, inMemorySearchText, items],
   );
 
-  const getNextItem = React.useCallback(
+  const getNextItem = useCallback(
     (direction: "up" | "down"): IEntity => {
       const activeIndex = filteredItems.findIndex(
         (item) => item.id === activeItemId,
