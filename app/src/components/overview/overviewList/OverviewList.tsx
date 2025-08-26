@@ -53,8 +53,6 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
   const [inMemorySearchText, setInMemorySearchText] = useState("");
 
-  console.log("in memory search text", inMemorySearchText);
-
   useEffect(() => {
     if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
       setActiveItemId(activeItemIdFromUrl);
@@ -81,11 +79,12 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
         if (onKeyDown) {
           onKeyDown?.(e);
         } else {
-          if (e.key.match(/\w/)) {
-            console.log("JOp", e.key);
+          if (e.key.match(/^\w$/)) {
             setInMemorySearchText((current) => current + e.key);
           } else if (e.key === "Backspace") {
-            setInMemorySearchText((current) => current.slice(0, -1));
+            setInMemorySearchText((current) =>
+              current.substring(0, current.length - 1),
+            );
           }
         }
       }
