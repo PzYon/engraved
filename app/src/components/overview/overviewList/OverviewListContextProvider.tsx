@@ -85,7 +85,7 @@ export const OverviewListContextProvider: React.FC<{
         }
 
         if (onKeyDown) {
-          onKeyDown?.(e);
+          onKeyDown(e);
           return;
         }
 
