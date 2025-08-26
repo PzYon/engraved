@@ -112,10 +112,10 @@ export const OverviewListContextProvider: React.FC<{
       (((showAll || filterItem?.(f)) ?? true) && !inMemorySearchText) ||
       (f as IJournal).name
         ?.toLowerCase()
-        .indexOf(inMemorySearchText.toLowerCase()) > -1 ||
+        .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1 ||
       (f as IScrapEntry).title
         ?.toLowerCase()
-        .indexOf(inMemorySearchText.toLowerCase()) > -1,
+        .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1,
   );
 
   const getNextItem = React.useCallback(
