@@ -18,12 +18,12 @@ export const useDeleteJournalMutation = (
     },
 
     onSuccess: async () => {
+      onSuccess();
+
       setAppAlert({
         title: `Successfully deleted journal.`,
         type: "success",
       });
-
-      onSuccess();
 
       await Promise.all([
         queryClient.invalidateQueries({

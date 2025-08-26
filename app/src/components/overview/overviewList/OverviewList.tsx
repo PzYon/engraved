@@ -1,12 +1,9 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import { OverviewListItem } from "./OverviewListItem";
 import { styled, Typography } from "@mui/material";
 import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
-import { useSearchParams } from "react-router-dom";
-import { knownQueryParams } from "../../common/actions/searchParamHooks";
 import { useOverviewListContext } from "./OverviewListContext";
 import { OverviewListContextProvider } from "./OverviewListContextProvider";
 
@@ -26,7 +23,11 @@ interface IOverviewListProps {
 export const OverviewList: React.FC<IOverviewListProps> = memo(
   (props: IOverviewListProps) => {
     return (
-      <OverviewListContextProvider items={props.items}>
+      <OverviewListContextProvider
+        items={props.items}
+        filterItem={props.filterItem}
+        onKeyDown={props.onKeyDown}
+      >
         <OverviewListInternal {...props} />
       </OverviewListContextProvider>
     );
@@ -34,61 +35,25 @@ export const OverviewList: React.FC<IOverviewListProps> = memo(
 );
 
 const OverviewListInternal: React.FC<IOverviewListProps> = ({
-  items,
   renderBeforeList,
   renderItem,
-  filterItem,
-  onKeyDown,
 }) => {
   const { user } = useAppContext();
 
-  const { setActiveItemId, activeItemId, moveUp, moveDown } =
-    useOverviewListContext();
-
-  const [showAll, setShowAll] = useState(false);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
-
-  useEffect(() => {
-    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
-      setActiveItemId(activeItemIdFromUrl);
-    }
-  }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
-
-  useEngravedHotkeys("*", (e) => {
-    switch (e.code) {
-      case "ArrowUp": {
-        e.preventDefault();
-        removeItemParamsFromUrl();
-        moveUp();
-        break;
-      }
-
-      case "ArrowDown": {
-        e.preventDefault();
-        removeItemParamsFromUrl();
-        moveDown();
-        break;
-      }
-
-      default: {
-        onKeyDown?.(e);
-      }
-    }
-  });
-
-  const filteredItems = items.filter(
-    (f) => (showAll || filterItem?.(f)) ?? true,
-  );
-
-  const hiddenItems = items.length - filteredItems.length;
+  const {
+    setActiveItemId,
+    activeItemId,
+    itemsToShow,
+    hiddenItemsCount,
+    removeItemParamsFromUrl,
+    setShowAll,
+  } = useOverviewListContext();
 
   return (
     <Host>
-      {renderBeforeList?.((i) => setActiveItemId(items[i].id))}
+      {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i].id))}
 
-      {filteredItems.map((item, index) => {
+      {itemsToShow.map((item, index) => {
         const hasFocus = activeItemId === item.id;
 
         return (
@@ -117,7 +82,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
           </OverviewListItem>
         );
       })}
-      {hiddenItems ? (
+      {hiddenItemsCount ? (
         <Typography
           onClick={() => setShowAll(true)}
           sx={{
@@ -127,24 +92,11 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
             pb: 3,
           }}
         >
-          Show {hiddenItems} hidden item(s)
+          Show {hiddenItemsCount} hidden item(s)
         </Typography>
       ) : null}
     </Host>
   );
-
-  function removeItemParamsFromUrl() {
-    if (
-      !searchParams.get(knownQueryParams.selectedItemId) &&
-      !searchParams.get(knownQueryParams.actionKey)
-    ) {
-      return;
-    }
-
-    searchParams.delete(knownQueryParams.selectedItemId);
-    searchParams.delete(knownQueryParams.actionKey);
-    setSearchParams(searchParams);
-  }
 };
 
 const RenderItem = React.memo(
