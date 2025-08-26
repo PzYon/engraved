@@ -137,7 +137,7 @@ export const OverviewListContextProvider: React.FC<{
         ? filteredItems[activeIndex > firstIndex ? activeIndex - 1 : lastIndex]
         : filteredItems[activeIndex < lastIndex ? activeIndex + 1 : firstIndex];
     },
-    [filteredItems, activeItemId, inMemorySearchText],
+    [filteredItems, activeItemId],
   );
 
   const contextValue = useMemo<IOverviewListContext>(
