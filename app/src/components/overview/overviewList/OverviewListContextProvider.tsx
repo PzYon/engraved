@@ -49,7 +49,7 @@ export const OverviewListContextProvider: React.FC<{
     }
   }, [inMemorySearchText, setAppAlert]);
 
-  useEffect(() => () => setAppAlert(undefined), []);
+  useEffect(() => () => setAppAlert(undefined), [setAppAlert]);
 
   const removeItemParamsFromUrl = useCallback(() => {
     if (
