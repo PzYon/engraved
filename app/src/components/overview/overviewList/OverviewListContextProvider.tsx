@@ -124,7 +124,7 @@ export const OverviewListContextProvider: React.FC<{
         (item) => item.id === activeItemId,
       );
       const firstIndex = 0;
-      const lastIndex = items.length - 1;
+      const lastIndex = filteredItems.length - 1;
 
       return direction === "up"
         ? filteredItems[activeIndex > firstIndex ? activeIndex - 1 : lastIndex]
