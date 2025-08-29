@@ -22,6 +22,7 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { isTypeThatCanShowAddEntryRow } from "../../../util/journalUtils";
+import { JournalType } from "../../../serverApi/JournalType";
 
 const emptyListItemId = "empty-list-item-id";
 
@@ -153,7 +154,7 @@ const JournalGoToItemRow: React.FC<{
       hasFocus={hasFocus}
       icon={<JournalIcon journal={journal} iconStyle={IconStyle.Small} />}
       renderAtEnd={() => {
-        return journal.type !== "Scraps" ? (
+        return journal.type !== JournalType.Scraps ? (
           <ActionIconButton
             action={
               deviceWidth === DeviceWidth.Small ||
@@ -162,7 +163,7 @@ const JournalGoToItemRow: React.FC<{
                 : ActionFactory.addEntry(journal, false, close, true)
             }
           />
-        ) : null;
+        ) : undefined;
       }}
     >
       {`${journal.name}`}
