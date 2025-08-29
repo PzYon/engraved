@@ -45,6 +45,13 @@ export const Page: React.FC<{
       setTabs,
     } = usePageContext();
 
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    useEffect(() => {
+      // clear any potential params (e.g. "q" when navigating to another page)
+      return () => setSearchParams({});
+    }, []);
+
     useEffect(() => {
       if (actions === undefined) {
         return;
@@ -89,8 +96,6 @@ export const Page: React.FC<{
     useEffect(() => setFilterMode(filterMode), [filterMode, setFilterMode]);
 
     useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
-
-    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
       return () => {
