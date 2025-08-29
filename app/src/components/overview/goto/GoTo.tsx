@@ -18,6 +18,11 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { useGoToNavigationItems } from "./useGoToNavigationItems";
 import { useDebounced } from "../../common/useDebounced";
 import { RefObject, useRef } from "react";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { isTypeThatCanShowAddEntryRow } from "../../../util/journalUtils";
+import { JournalType } from "../../../serverApi/JournalType";
 
 const emptyListItemId = "empty-list-item-id";
 
@@ -141,11 +146,25 @@ const JournalGoToItemRow: React.FC<{
   journal: IJournal;
   hasFocus: boolean;
 }> = ({ journal, hasFocus }) => {
+  const deviceWidth = useDeviceWidth();
+
   return (
     <GoToItemRow
       url={`/journals/details/${journal.id}`}
       hasFocus={hasFocus}
       icon={<JournalIcon journal={journal} iconStyle={IconStyle.Small} />}
+      renderAtEnd={() => {
+        return journal.type !== JournalType.Scraps ? (
+          <ActionIconButton
+            action={
+              deviceWidth === DeviceWidth.Small ||
+              isTypeThatCanShowAddEntryRow(journal.type)
+                ? ActionFactory.goToJournal(journal.id, false)
+                : ActionFactory.addEntry(journal, false, close, true)
+            }
+          />
+        ) : null;
+      }}
     >
       {`${journal.name}`}
     </GoToItemRow>
