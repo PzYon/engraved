@@ -20,6 +20,8 @@ import { useDebounced } from "../../common/useDebounced";
 import { RefObject, useRef } from "react";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
+import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { isTypeThatCanShowAddEntryRow } from "../../../util/journalUtils";
 
 const emptyListItemId = "empty-list-item-id";
 
@@ -143,6 +145,8 @@ const JournalGoToItemRow: React.FC<{
   journal: IJournal;
   hasFocus: boolean;
 }> = ({ journal, hasFocus }) => {
+  const deviceWidth = useDeviceWidth();
+
   return (
     <GoToItemRow
       url={`/journals/details/${journal.id}`}
@@ -151,7 +155,12 @@ const JournalGoToItemRow: React.FC<{
       renderAtEnd={() => {
         return journal.type !== "Scraps" ? (
           <ActionIconButton
-            action={ActionFactory.addEntry(journal, false, close, true)}
+            action={
+              deviceWidth === DeviceWidth.Small ||
+              isTypeThatCanShowAddEntryRow(journal.type)
+                ? ActionFactory.goToJournal(journal.id, false)
+                : ActionFactory.addEntry(journal, false, close, true)
+            }
           />
         ) : null;
       }}

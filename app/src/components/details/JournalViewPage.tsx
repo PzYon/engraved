@@ -15,11 +15,13 @@ import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
-import { JournalType } from "../../serverApi/JournalType";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { Chart } from "./chart/Chart";
 import { IJournalUiSettings } from "./edit/IJournalUiSettings";
-import { getUiSettings } from "../../util/journalUtils";
+import {
+  getUiSettings,
+  isTypeThatCanShowAddEntryRow,
+} from "../../util/journalUtils";
 import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 import { EntriesAgenda } from "./entriesAgenda/EntriesAgenda";
@@ -53,7 +55,7 @@ export const JournalViewPage: React.FC = () => {
   const [showNotes, setShowNotes] = useState(!!journal.notes);
 
   const [showAddNewEntryRow, setShowAddNewEntryRow] = useState(
-    isTypeThatCanShowAddEntryRow(),
+    isTypeThatCanShowAddEntryRow(journal.type),
   );
 
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
@@ -123,12 +125,6 @@ export const JournalViewPage: React.FC = () => {
     user,
   ]);
 
-  function isTypeThatCanShowAddEntryRow() {
-    return (
-      journal.type === JournalType.Gauge || journal.type === JournalType.Counter
-    );
-  }
-
   return (
     <Page
       title={<JournalPageTitle journal={journal} />}
@@ -193,7 +189,8 @@ export const JournalViewPage: React.FC = () => {
                 entries={entries}
                 showGroupTotals={showGroupTotals}
                 showAddNewEntryRow={
-                  showAddNewEntryRow && isTypeThatCanShowAddEntryRow()
+                  showAddNewEntryRow &&
+                  isTypeThatCanShowAddEntryRow(journal.type)
                 }
                 aggregationMode={aggregationMode}
                 setAggregationMode={setAggregationMode}
