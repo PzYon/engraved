@@ -163,7 +163,7 @@ const JournalGoToItemRow: React.FC<{
                 : ActionFactory.addEntry(journal, false, close, true)
             }
           />
-        ) : undefined;
+        ) : null;
       }}
     >
       {`${journal.name}`}
