@@ -7,7 +7,8 @@ export const GoToItemRow: React.FC<{
   icon: React.ReactNode;
   url: string;
   hasFocus: boolean;
-}> = ({ children, icon, url, hasFocus }) => {
+  renderAtEnd?: () => React.ReactNode;
+}> = ({ children, icon, url, hasFocus, renderAtEnd }) => {
   const navigate = useNavigate();
 
   useEngravedHotkeys("enter", () => navigate(url), { enabled: hasFocus });
@@ -19,13 +20,14 @@ export const GoToItemRow: React.FC<{
         style={{ display: "flex", alignItems: "center", padding: "4px 8px" }}
       >
         <IconContainer>{icon}</IconContainer>
-        <span>{children}</span>
+        <span style={{ flexGrow: 1 }}>{children}</span>
+        {renderAtEnd ? <span>{renderAtEnd()}</span> : null}
       </Link>
     </Typography>
   );
 };
 
-const IconContainer = styled("span")`
+const IconContainer = styled("div")`
   padding-right: 8px;
   padding-top: 4px;
 `;

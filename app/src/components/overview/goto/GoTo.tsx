@@ -18,6 +18,8 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { useGoToNavigationItems } from "./useGoToNavigationItems";
 import { useDebounced } from "../../common/useDebounced";
 import { RefObject, useRef } from "react";
+import { ActionFactory } from "../../common/actions/ActionFactory";
+import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
 const emptyListItemId = "empty-list-item-id";
 
@@ -146,6 +148,13 @@ const JournalGoToItemRow: React.FC<{
       url={`/journals/details/${journal.id}`}
       hasFocus={hasFocus}
       icon={<JournalIcon journal={journal} iconStyle={IconStyle.Small} />}
+      renderAtEnd={() => {
+        return journal.type !== "Scraps" ? (
+          <ActionIconButton
+            action={ActionFactory.addEntry(journal, false, close, true)}
+          />
+        ) : null;
+      }}
     >
       {`${journal.name}`}
     </GoToItemRow>
