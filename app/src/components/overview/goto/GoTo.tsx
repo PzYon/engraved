@@ -157,7 +157,7 @@ const JournalGoToItemRow: React.FC<{
         return journal.type !== JournalType.Scraps ? (
           <ActionIconButton
             action={
-              deviceWidth === DeviceWidth.Small ||
+              deviceWidth === DeviceWidth.Normal &&
               isTypeThatCanShowAddEntryRow(journal.type)
                 ? ActionFactory.goToJournal(journal.id, false)
                 : ActionFactory.addEntry(journal, false, close, true)
