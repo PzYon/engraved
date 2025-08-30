@@ -9,37 +9,38 @@ public class CleanupTagsCommandExecutor(IUserScopedRepository repository)
 {
   public async Task<CommandResult> Execute(CleanupTagsCommand command)
   {
-    if ( repository.CurrentUser.Value == null)
+    if (repository.CurrentUser.Value == null)
     {
       throw new Exception("No current user");
     }
 
     IUser currentUser = repository.CurrentUser.Value;
-    var favoriteJournalIds = currentUser.FavoriteJournalIds;
+    var journalIdsFromTags = currentUser.Tags.SelectMany(t => t.JournalIds).ToList();
 
     var result = new CleanupTagsCommandResult(currentUser.Id!, [currentUser.Id!])
     {
       DryRun = command.DryRun
     };
 
-    if (!favoriteJournalIds.Any())
+    if (!journalIdsFromTags.Any())
     {
       return result;
     }
 
-    var allJournals = await repository.GetAllJournals(journalIds: favoriteJournalIds.ToArray());
+    var allJournals = await repository.GetAllJournals(journalIds: journalIdsFromTags.ToArray());
+    var allJournalIds = allJournals.Select(x => x.Id);
 
-    var lostJournalIds = favoriteJournalIds
-      .Where(i => !allJournals.Select(x => x.Id).Contains(i))
-      .ToArray();
-
-    var remainingJournalIds = favoriteJournalIds
-      .Where(i => allJournals.Select(x => x.Id).Contains(i))
+    var lostJournalIds = journalIdsFromTags
+      .Where(i => !allJournalIds.Contains(i))
       .ToArray();
 
     if (!command.DryRun)
     {
-      currentUser.FavoriteJournalIds = remainingJournalIds.ToList();
+      foreach (UserTag tag in currentUser.Tags)
+      {
+        tag.JournalIds.RemoveAll(i => lostJournalIds.Contains(i));
+      }
+
       await repository.UpsertUser(currentUser);
     }
 
