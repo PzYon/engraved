@@ -9,7 +9,7 @@ public class CleanupTagsCommandExecutor(IUserScopedRepository repository)
 {
   public async Task<CommandResult> Execute(CleanupTagsCommand command)
   {
-    if (!repository.CurrentUser.IsValueCreated || repository.CurrentUser.Value == null)
+    if ( repository.CurrentUser.Value == null)
     {
       throw new Exception("No current user");
     }
