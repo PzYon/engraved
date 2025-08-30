@@ -9,35 +9,41 @@ public class CleanupTagsCommandExecutor(IUserScopedRepository repository)
 {
   public async Task<CommandResult> Execute(CleanupTagsCommand command)
   {
-    string userId = repository.CurrentUser.Value.Id;
-
-    if (!repository.CurrentUser.Value.FavoriteJournalIds.Any())
+    if (!repository.CurrentUser.IsValueCreated || repository.CurrentUser.Value == null)
     {
-      return new CleanupTagsCommandResult(userId, [userId])
-      {
-        DryRun = command.DryRun,
-      };
+      throw new Exception("No current user");
     }
 
-    var allJournals =
-      await repository.GetAllJournals(journalIds: repository.CurrentUser.Value.FavoriteJournalIds.ToArray());
+    IUser currentUser = repository.CurrentUser.Value;
+    var favoriteJournalIds = currentUser.FavoriteJournalIds;
 
-    var lostJournalIds = repository.CurrentUser.Value.FavoriteJournalIds
+    var result = new CleanupTagsCommandResult(currentUser.Id!, [currentUser.Id!])
+    {
+      DryRun = command.DryRun
+    };
+
+    if (!favoriteJournalIds.Any())
+    {
+      return result;
+    }
+
+    var allJournals = await repository.GetAllJournals(journalIds: favoriteJournalIds.ToArray());
+
+    var lostJournalIds = favoriteJournalIds
       .Where(i => !allJournals.Select(x => x.Id).Contains(i))
       .ToArray();
 
-    var remainingJournalIds = repository.CurrentUser.Value.FavoriteJournalIds
+    var remainingJournalIds = favoriteJournalIds
       .Where(i => allJournals.Select(x => x.Id).Contains(i))
       .ToArray();
 
-    repository.CurrentUser.Value.FavoriteJournalIds = remainingJournalIds.ToList();
-
-    await repository.UpsertUser(repository.CurrentUser.Value);
-
-    return new CleanupTagsCommandResult(userId, [userId])
+    if (!command.DryRun)
     {
-      DryRun = command.DryRun,
-      JournalIdsToRemove = lostJournalIds.ToList(),
-    };
+      currentUser.FavoriteJournalIds = remainingJournalIds.ToList();
+      await repository.UpsertUser(currentUser);
+    }
+
+    result.JournalIdsToRemove = lostJournalIds.ToList();
+    return result;
   }
 }
