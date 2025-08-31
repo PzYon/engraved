@@ -1,10 +1,22 @@
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const useCleanupTagsMutation = (isDryRun: boolean) => {
+export const useCleanupTagsMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationKey: queryKeysFactory.modifyUser(),
-    mutationFn: () => ServerApi.cleanupUserTags(isDryRun),
+
+    mutationFn: (variables: { isDryRun: boolean }) =>
+      ServerApi.cleanupUserTags(variables.isDryRun),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeysFactory.modifyUser(),
+      });
+    },
+
+    // todo: what about user in app context, should be updated!
   });
 };

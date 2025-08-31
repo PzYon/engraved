@@ -5,22 +5,32 @@ import { Button } from "@mui/material";
 export const CleanupUserTags: React.FC = () => {
   const [isDryRun, setIsDryRun] = useState(true);
 
-  const { mutate, data, isPending } = useCleanupTagsMutation(isDryRun);
+  const { mutate, data, isPending } = useCleanupTagsMutation();
 
   const nothingToClean = !data?.journalIdsToRemove?.length;
+
   return (
     <Button
+      variant={"contained"}
       disabled={isPending || (data && nothingToClean)}
       onClick={() => {
-        mutate();
+        mutate({ isDryRun });
         setIsDryRun(false);
       }}
     >
-      {isDryRun || !data
-        ? "Check for unused tags"
-        : nothingToClean
-          ? "Nothing to clean"
-          : `Cleanup ${data.journalIdsToRemove.length} unused tag(s)`}
+      {getButtonLabel()}
     </Button>
   );
+
+  function getButtonLabel() {
+    if (isDryRun || !data) {
+      return "Check for deleted (but still referenced) journals";
+    }
+
+    if (nothingToClean) {
+      return "There is nothing to clean";
+    }
+
+    return `Remove ${data.journalIdsToRemove.length} deleted journal(s)`;
+  }
 };
