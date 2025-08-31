@@ -28,6 +28,7 @@ import {
   IAddScheduleToJournalCommand,
 } from "./commands/IAddScheduleCommand";
 import { IScheduleDefinition } from "./IScheduleDefinition";
+import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -350,12 +351,12 @@ export class ServerApi {
     );
   }
 
-  // todo: types for in and out
-
-  static async cleanupUserTags(isDryRun: boolean): Promise<void> {
+  static async cleanupUserTags(
+    isDryRun: boolean,
+  ): Promise<ICleanupUserTagsCommandResult> {
     return await ServerApi.executeRequest(`/user/tags/cleanup`, "POST", {
       dryRun: isDryRun,
-    });
+    } as ICleanupUserTagsCommandResult);
   }
 
   static async searchEntities(
