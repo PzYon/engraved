@@ -13,6 +13,7 @@ using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Commands.Journals.UpdateTags;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
+using Engraved.Core.Application.Commands.Users.CleanupTags;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.Queries;
@@ -48,6 +49,7 @@ public static class ExecutorRegistration
     RegisterCommand<EditJournalPermissionsCommand, EditJournalPermissionsCommandExecutor>(services);
     RegisterCommand<MoveEntryCommand, MoveEntryCommandExecutor>(services);
     RegisterCommand<RemoveJournalFromFavoritesCommand, RemoveJournalFromFavoritesCommandExecutor>(services);
+    RegisterCommand<CleanupTagsCommand, CleanupTagsCommandExecutor>(services);
     RegisterCommand<AddScheduleToJournalCommand, AddScheduleToJournalCommandExecutor>(services);
     RegisterCommand<AddScheduleToEntryCommand, AddScheduleToEntryCommandExecutor>(services);
   }

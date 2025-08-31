@@ -350,6 +350,14 @@ export class ServerApi {
     );
   }
 
+  // todo: types for in and out
+
+  static async cleanupUserTags(isDryRun: boolean): Promise<void> {
+    return await ServerApi.executeRequest(`/user/tags/cleanup`, "POST", {
+      dryRun: isDryRun,
+    });
+  }
+
   static async searchEntities(
     searchText: string,
     scheduledOnly: boolean,
