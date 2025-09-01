@@ -6,6 +6,7 @@ import { optInPushNotifications, setUpOneSignal } from "../util/oneSignal";
 import { useAppContext } from "../AppContext";
 import React from "react";
 import { ManageUserTags } from "../components/overview/tags/ManageUserTags";
+import { CleanupUserTags } from "../components/overview/tags/CleanupUserTags";
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAppContext();
@@ -14,6 +15,9 @@ export const SettingsPage: React.FC = () => {
     <Page title="Settings" documentTitle="Settings" actions={[]}>
       <PageSection title="Tags">
         <ManageUserTags />
+      </PageSection>
+      <PageSection title="Cleanup tags">
+        <CleanupUserTags />
       </PageSection>
       <PageSection title="PWA Notifications">
         <p>

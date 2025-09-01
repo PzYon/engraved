@@ -1,6 +1,7 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
+using Engraved.Core.Application.Commands.Users.CleanupTags;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.Persistence;
@@ -28,6 +29,13 @@ public class UserController(IUserScopedRepository userScopedRepository, Dispatch
   {
     return await dispatcher.Command(command);
   }
+  
+    [HttpPost]
+    [Route("tags/cleanup")]
+    public async Task<CommandResult> UpdateTags(CleanupTagsCommand command)
+    {
+      return await dispatcher.Command(command);
+    }
 
   [HttpPatch]
   [Route("favorites/{journalId}")]
