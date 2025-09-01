@@ -14,29 +14,31 @@ export const CleanupUserTags: React.FC = () => {
   const nothingToClean = !data?.journalIdsToRemove?.length;
 
   return (
-    <Button
-      variant="outlined"
-      disabled={isPending || (data && nothingToClean) || isCompleted}
-      onClick={() => {
-        setIsCompleted(false);
+    <p>
+      <Button
+        variant="outlined"
+        disabled={isPending || (data && nothingToClean) || isCompleted}
+        onClick={() => {
+          setIsCompleted(false);
 
-        mutate(
-          { isDryRun },
-          {
-            onSuccess: async () => {
-              if (isDryRun) {
-                setIsDryRun(false);
-              } else {
-                await reloadUser();
-                setIsCompleted(true);
-              }
+          mutate(
+            { isDryRun },
+            {
+              onSuccess: async () => {
+                if (isDryRun) {
+                  setIsDryRun(false);
+                } else {
+                  await reloadUser();
+                  setIsCompleted(true);
+                }
+              },
             },
-          },
-        );
-      }}
-    >
-      {getButtonLabel()}
-    </Button>
+          );
+        }}
+      >
+        {getButtonLabel()}
+      </Button>
+    </p>
   );
 
   function getButtonLabel() {
