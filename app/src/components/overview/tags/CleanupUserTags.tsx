@@ -17,17 +17,22 @@ export const CleanupUserTags: React.FC = () => {
     <Button
       variant={"contained"}
       disabled={isPending || (data && nothingToClean) || isCompleted}
-      onClick={async () => {
+      onClick={() => {
         setIsCompleted(false);
 
-        mutate({ isDryRun });
-
-        if (isDryRun) {
-          setIsDryRun(false);
-        } else {
-          await reloadUser();
-          setIsCompleted(true);
-        }
+        mutate(
+          { isDryRun },
+          {
+            onSuccess: async () => {
+              if (isDryRun) {
+                setIsDryRun(false);
+              } else {
+                await reloadUser();
+                setIsCompleted(true);
+              }
+            },
+          },
+        );
       }}
     >
       {getButtonLabel()}
