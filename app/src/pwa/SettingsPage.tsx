@@ -22,7 +22,7 @@ export const SettingsPage: React.FC = () => {
       <PageSection title="PWA Notifications">
         <p>
           <Button
-            variant={"outlined"}
+            variant="outlined"
             onClick={() => {
               setUpOneSignal(user.globalUniqueId);
             }}
@@ -33,7 +33,7 @@ export const SettingsPage: React.FC = () => {
 
         <p>
           <Button
-            variant={"outlined"}
+            variant="outlined"
             onClick={() => {
               optInPushNotifications();
             }}
@@ -44,7 +44,7 @@ export const SettingsPage: React.FC = () => {
 
         <p>
           <Button
-            variant={"outlined"}
+            variant="outlined"
             onClick={() => {
               ServerApi.sendTestNotification();
             }}

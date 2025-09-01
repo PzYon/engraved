@@ -15,7 +15,7 @@ export const CleanupUserTags: React.FC = () => {
 
   return (
     <Button
-      variant={"contained"}
+      variant="outlined"
       disabled={isPending || (data && nothingToClean) || isCompleted}
       onClick={() => {
         setIsCompleted(false);
@@ -48,6 +48,6 @@ export const CleanupUserTags: React.FC = () => {
       return "There is nothing to clean";
     }
 
-    return `Remove ${data.journalIdsToRemove.length} deleted journal(s)`;
+    return `Remove ${data.journalIdsToRemove.length} deleted journal(s) from tags`;
   }
 };

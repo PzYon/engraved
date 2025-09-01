@@ -96,7 +96,7 @@ export const EditScheduleAction: React.FC<{
         {hasSchedule && (isInPast || !isRecurring) ? (
           <Button
             sx={{ width: "100%" }}
-            variant={"contained"}
+            variant="contained"
             onClick={() => {
               const scheduleDefinition: IScheduleDefinition = {
                 nextOccurrence: isRecurring
@@ -133,7 +133,7 @@ export const EditScheduleAction: React.FC<{
         !(isInPast || !isRecurring) ? (
           <Button
             sx={{ width: "100%" }}
-            variant={"contained"}
+            variant="contained"
             onClick={() => {
               const scheduleDefinition: IScheduleDefinition = {
                 nextOccurrence: null,

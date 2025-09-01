@@ -332,11 +332,11 @@ export class ActionFactory {
                 </Typography>
 
                 <DialogFormButtonContainer>
-                  <Button variant={"contained"} onClick={closeDialog}>
+                  <Button variant="contained" onClick={closeDialog}>
                     Not yet.
                   </Button>
                   <Button
-                    variant={"outlined"}
+                    variant="outlined"
                     onClick={() => {
                       onCancel();
                       closeDialog();

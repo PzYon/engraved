@@ -128,7 +128,7 @@ export const ScrapContextProvider: React.FC<{
                 border: "1px solid white;",
                 marginRight: "10px",
               }}
-              variant={"outlined"}
+              variant="outlined"
               onClick={() => {
                 resetToInitialScrap();
                 setAppAlert(null);
@@ -143,7 +143,7 @@ export const ScrapContextProvider: React.FC<{
                 border: "1px solid white;",
                 paddingRight: "10px",
               }}
-              variant={"outlined"}
+              variant="outlined"
               onClick={() => {
                 setAppAlert(null);
               }}
@@ -194,11 +194,11 @@ export const ScrapContextProvider: React.FC<{
             </Typography>
 
             <DialogFormButtonContainer>
-              <Button variant={"contained"} onClick={closeDialog}>
+              <Button variant="contained" onClick={closeDialog}>
                 No
               </Button>
               <Button
-                variant={"outlined"}
+                variant="outlined"
                 onClick={() => {
                   changeType();
                   closeDialog();

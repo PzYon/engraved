@@ -50,17 +50,6 @@ public class CleanupTagsCommandExecutorShould
     result.JournalIdsToRemove.Should().BeEmpty();
   }
 
-  // [Test]
-  // public void ThrowsException_When_NoCurrentUser()
-  // {
-  //   var inMemoryRepository = new InMemoryRepository();
-  //   var repo = new UserScopedInMemoryRepository(inMemoryRepository, new FakeCurrentUserService(null));
-  //   var command = new CleanupTagsCommand { DryRun = false };
-  //   var executor = new CleanupTagsCommandExecutor(repo);
-  //   Func<Task> act = async () => await executor.Execute(command);
-  //   act.Should().ThrowAsync<Exception>().WithMessage("No current user");
-  // }
-
   [Test]
   public async Task ReturnsImmediately_When_NoTagsOrNoJournalIdsInTags()
   {

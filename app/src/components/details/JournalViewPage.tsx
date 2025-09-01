@@ -203,7 +203,7 @@ export const JournalViewPage: React.FC = () => {
       ) : (
         <GenericEmptyPlaceholder
           icon={LocalHotelOutlined}
-          message={"No entries available."}
+          message="No entries available."
         />
       )}
     </Page>

@@ -70,7 +70,7 @@ export const Bootstrapper: React.FC = () => {
       ) : (
         <WelcomeContainer>
           <Typography
-            variant={"h1"}
+            variant="h1"
             sx={{
               color: "common.black",
               fontSize: "90px",
