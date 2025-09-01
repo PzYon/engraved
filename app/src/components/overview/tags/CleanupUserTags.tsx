@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useCleanupTagsMutation } from "../../../serverApi/reactQuery/mutations/useCleanupTagsMutation";
 import { Button } from "@mui/material";
+import { useAppContext } from "../../../AppContext";
 
 export const CleanupUserTags: React.FC = () => {
   const [isDryRun, setIsDryRun] = useState(true);
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  const { reloadUser } = useAppContext();
 
   const { mutate, data, isPending } = useCleanupTagsMutation();
 
@@ -12,10 +16,18 @@ export const CleanupUserTags: React.FC = () => {
   return (
     <Button
       variant={"contained"}
-      disabled={isPending || (data && nothingToClean)}
-      onClick={() => {
+      disabled={isPending || (data && nothingToClean) || isCompleted}
+      onClick={async () => {
+        setIsCompleted(false);
+
         mutate({ isDryRun });
-        setIsDryRun(false);
+
+        if (isDryRun) {
+          setIsDryRun(false);
+        } else {
+          await reloadUser();
+          setIsCompleted(true);
+        }
       }}
     >
       {getButtonLabel()}
@@ -23,7 +35,7 @@ export const CleanupUserTags: React.FC = () => {
   );
 
   function getButtonLabel() {
-    if (isDryRun || !data) {
+    if (isDryRun || !data || isCompleted) {
       return "Check for deleted (but still referenced) journals";
     }
 

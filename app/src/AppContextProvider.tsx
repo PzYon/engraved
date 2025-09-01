@@ -1,7 +1,8 @@
 import { IUser } from "./serverApi/IUser";
 import { IAppAlert } from "./components/errorHandling/AppAlertBar";
 import React, { useMemo, useState } from "react";
-import { AppContext } from "./AppContext";
+import { AppContext, IAppContext } from "./AppContext";
+import { ServerApi } from "./serverApi/ServerApi";
 
 export const AppContextProvider: React.FC<{
   children: React.ReactNode;
@@ -10,12 +11,16 @@ export const AppContextProvider: React.FC<{
   const [appAlert, setAppAlert] = useState<IAppAlert>(undefined);
   const [user, setUser] = useState(initialUser);
 
-  const contextValue = useMemo(() => {
+  const contextValue = useMemo<IAppContext>(() => {
     return {
       appAlert,
       setAppAlert,
       user,
       setUser,
+      reloadUser: async () => {
+        const reloadedUser = await ServerApi.getCurrentUser();
+        setUser(reloadedUser);
+      },
     };
   }, [appAlert, user]);
 
