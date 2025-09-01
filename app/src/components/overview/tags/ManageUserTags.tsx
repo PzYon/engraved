@@ -53,6 +53,7 @@ export const ManageUserTags: React.FC = () => {
       />
       {JSON.stringify(tags) === JSON.stringify(initialTags) ? null : (
         <Button
+          variant="outlined"
           onClick={() =>
             updateTagsMutation.mutate({
               tagNames: tags.reduce(

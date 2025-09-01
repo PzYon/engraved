@@ -49,7 +49,7 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
         }
       />
       <DialogFormButtonContainer>
-        <Button variant={"outlined"} onClick={closeAction}>
+        <Button variant="outlined" onClick={closeAction}>
           Cancel
         </Button>
         <Button
