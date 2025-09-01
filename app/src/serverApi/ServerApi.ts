@@ -29,6 +29,7 @@ import {
 } from "./commands/IAddScheduleCommand";
 import { IScheduleDefinition } from "./IScheduleDefinition";
 import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
+import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -356,7 +357,7 @@ export class ServerApi {
   ): Promise<ICleanupUserTagsCommandResult> {
     return await ServerApi.executeRequest(`/user/tags/cleanup`, "POST", {
       dryRun: isDryRun,
-    } as ICleanupUserTagsCommandResult);
+    } as ICleanupUserTagsCommand);
   }
 
   static async searchEntities(
