@@ -16,7 +16,5 @@ export const useCleanupTagsMutation = () => {
         queryKey: queryKeysFactory.modifyUser(),
       });
     },
-
-    // todo: what about user in app context, should be updated!
   });
 };
