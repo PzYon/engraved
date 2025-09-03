@@ -30,8 +30,11 @@ export const PageSection: React.FC<{
               flexShrink: 0,
               fontWeight: "bold",
               pb: 1,
+              mb: 2,
               display: "flex",
               color: "primary.main",
+              borderBottom: "1px solid",
+              borderColor: "background.default",
             }}
           >
             {icon ? <span style={{ paddingRight: "8px" }}>{icon}</span> : null}
