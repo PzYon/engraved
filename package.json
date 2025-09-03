@@ -19,7 +19,7 @@
   "devDependencies": {
     "@types/node": "24.3.0",
     "husky": "9.1.7",
-    "knip": "5.63.0",
+    "knip": "5.63.1",
     "lint-staged": "16.1.6",
     "typescript": "5.9.2"
   }
