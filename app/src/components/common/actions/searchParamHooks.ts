@@ -5,6 +5,7 @@ export const knownQueryParams = {
   selectedItemId: "selected-item",
   actionKey: "action-key",
   favoritesOnly: "favorites-only",
+  query: "q",
 };
 
 type ActionKey =
@@ -23,6 +24,21 @@ export function getItemActionQueryParams(
     [knownQueryParams.actionKey]: actionKey,
     [knownQueryParams.selectedItemId]: actionItemId,
   };
+}
+
+export function clearAllSearchParams() {
+  return Object.keys(knownQueryParams).reduce(
+    (aggregated: Record<string, string>, objectKey: string) => {
+      const queryStringKey = (knownQueryParams as Record<string, string>)[
+        objectKey
+      ];
+
+      aggregated[queryStringKey] = undefined;
+
+      return aggregated;
+    },
+    {},
+  );
 }
 
 export const useItemAction = () => {
