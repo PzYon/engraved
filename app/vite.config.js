@@ -13,7 +13,14 @@ export default () => {
     server: {
       port: 3000,
     },
-    plugins: [react(), checker({ typescript: true })],
+    plugins: [
+      react({
+        babel: {
+          plugins: ["babel-plugin-react-compiler"],
+        },
+      }),
+      checker({ typescript: true }),
+    ],
     build: {
       rollupOptions: {
         output: {
