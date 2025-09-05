@@ -51,13 +51,15 @@ export const GoTo: React.FC = () => {
           }
 
           inputRef?.current.focus();
-          appendSearchParams({ q: getValue(searchText, e.key) });
+          appendSearchParams({
+            [knownQueryParams.query]: getValue(searchText, e.key),
+          });
         }}
         renderBeforeList={(selectItem) => (
           <GoToTextField
             initialValue={searchText}
             onChange={(value) => {
-              appendSearchParams({ q: value });
+              appendSearchParams({ [knownQueryParams.query]: value });
             }}
             inputRef={inputRef}
             onDownKey={() => selectItem(0)}
@@ -67,7 +69,7 @@ export const GoTo: React.FC = () => {
           if (entity.id === emptyListItemId) {
             return (
               <GoToItemRow
-                url={"/search?q=" + searchText}
+                url={`/search?${knownQueryParams.query}=${searchText}`}
                 hasFocus={hasFocus}
                 icon={<SearchOutlined />}
               >

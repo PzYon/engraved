@@ -34,7 +34,10 @@ import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
-import { getItemActionQueryParams } from "./searchParamHooks";
+import {
+  clearAllSearchParams,
+  getItemActionQueryParams,
+} from "./searchParamHooks";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -68,6 +71,7 @@ export class ActionFactory {
       label: "Home",
       href: "/",
       icon: null,
+      search: clearAllSearchParams(),
     };
   }
 
