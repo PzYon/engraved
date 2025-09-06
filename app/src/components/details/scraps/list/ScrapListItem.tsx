@@ -157,7 +157,7 @@ export const ScrapListItem: React.FC<{
       case "Backspace": {
         const target = e.target as HTMLTextAreaElement;
 
-        if ((e.target as HTMLTextAreaElement).value === "") {
+        if (target.value === "") {
           setTimeout(() => {
             listItemsCollection.removeItem(index);
           });
