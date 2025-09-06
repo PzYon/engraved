@@ -121,7 +121,7 @@ export const ScrapListItem: React.FC<{
         if (e.altKey && e.ctrlKey) {
           listItemsCollection.moveItemUp(index);
         } else {
-          listItemsCollection.moveFocusUp(index);
+          listItemsCollection.moveFocusUp(index, "end");
         }
         break;
       }
@@ -130,7 +130,7 @@ export const ScrapListItem: React.FC<{
         if (e.altKey && e.ctrlKey) {
           listItemsCollection.moveItemDown(index);
         } else {
-          listItemsCollection.moveFocusDown(index);
+          listItemsCollection.moveFocusDown(index, "end");
         }
         break;
       }

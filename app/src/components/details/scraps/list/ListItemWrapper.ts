@@ -30,19 +30,21 @@ export class ListItemWrapper {
 
     this.ref?.current?.focus();
 
-    if (typeof cursorPosition === "string") {
-      if (cursorPosition === "beginning") {
-        this.ref?.current?.setSelectionRange(2, 2);
-      } else {
-        this.ref?.current?.setSelectionRange(
-          this.ref.current.value.length,
-          this.ref.current.value.length,
-        );
+    setTimeout(() => {
+      if (typeof cursorPosition === "string") {
+        if (cursorPosition === "beginning") {
+          this.ref?.current?.setSelectionRange(2, 2);
+        } else {
+          this.ref?.current?.setSelectionRange(
+            this.ref.current.value.length,
+            this.ref.current.value.length,
+          );
+        }
       }
-    }
 
-    if (typeof cursorPosition === "number" && cursorPosition > 0) {
-      this.ref?.current?.setSelectionRange(cursorPosition, cursorPosition);
-    }
+      if (typeof cursorPosition === "number" && cursorPosition > 0) {
+        this.ref?.current?.setSelectionRange(cursorPosition, cursorPosition);
+      }
+    });
   }
 }
