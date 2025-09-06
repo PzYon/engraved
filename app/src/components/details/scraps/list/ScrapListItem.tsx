@@ -158,7 +158,9 @@ export const ScrapListItem: React.FC<{
         const target = e.target as HTMLTextAreaElement;
 
         if ((e.target as HTMLTextAreaElement).value === "") {
-          listItemsCollection.moveFocusUp(index, "end");
+          setTimeout(() => {
+            listItemsCollection.removeItem(index);
+          });
           return;
         }
 
