@@ -1,6 +1,6 @@
 import React from "react";
 import { IScrapListItem } from "./IScrapListItem";
-import { ListItemWrapper } from "./ListItemWrapper";
+import { CursorPosition, ListItemWrapper } from "./ListItemWrapper";
 
 export class ListItemCollection {
   private wrappedItems: ListItemWrapper[];
@@ -77,16 +77,16 @@ export class ListItemCollection {
     this.fireOnChange();
   }
 
-  giveFocus(index: number) {
-    this.wrappedItems[index]?.giveFocus();
+  giveFocus(index: number, cursorPosition?: CursorPosition) {
+    this.wrappedItems[index]?.giveFocus(cursorPosition);
   }
 
-  moveFocusUp(index: number) {
-    this.giveFocus(this.getNextLowerIndex(index));
+  moveFocusUp(index: number, cursorPosition?: CursorPosition) {
+    this.giveFocus(this.getNextLowerIndex(index), cursorPosition);
   }
 
-  moveFocusDown(index: number) {
-    this.giveFocus(this.getNextHigherIndex(index));
+  moveFocusDown(index: number, cursorPosition?: CursorPosition) {
+    this.giveFocus(this.getNextHigherIndex(index), cursorPosition);
   }
 
   moveItemUp(index: number) {

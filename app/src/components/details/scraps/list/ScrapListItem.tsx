@@ -121,7 +121,7 @@ export const ScrapListItem: React.FC<{
         if (e.altKey && e.ctrlKey) {
           listItemsCollection.moveItemUp(index);
         } else {
-          listItemsCollection.moveFocusUp(index);
+          listItemsCollection.moveFocusUp(index, "end");
         }
         break;
       }
@@ -130,7 +130,7 @@ export const ScrapListItem: React.FC<{
         if (e.altKey && e.ctrlKey) {
           listItemsCollection.moveItemDown(index);
         } else {
-          listItemsCollection.moveFocusDown(index);
+          listItemsCollection.moveFocusDown(index, "end");
         }
         break;
       }
@@ -156,6 +156,14 @@ export const ScrapListItem: React.FC<{
 
       case "Backspace": {
         const target = e.target as HTMLTextAreaElement;
+
+        if (target.value === "") {
+          setTimeout(() => {
+            listItemsCollection.removeItem(index);
+          });
+          return;
+        }
+
         if (target.selectionStart !== target.selectionEnd) {
           return;
         }
