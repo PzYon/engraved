@@ -23,13 +23,29 @@ export class ListItemWrapper {
   }
 
   giveFocus(cursorPosition?: CursorPosition) {
-    console.log("giving focus", cursorPosition);
     this.ref?.current?.focus();
 
-    // if (cursorPosition > 0) {
-    //   setTimeout(() => {
-    //     this.ref?.current?.setSelectionRange(2, 2);
-    //   });
-    // }
+    if (cursorPosition === undefined) {
+      return;
+    }
+
+    if (typeof cursorPosition === "string") {
+      setTimeout(() => {
+        if (cursorPosition === "beginning") {
+          this.ref?.current?.setSelectionRange(2, 2);
+        } else {
+          this.ref?.current?.setSelectionRange(
+            this.ref.current.value.length,
+            this.ref.current.value.length,
+          );
+        }
+      });
+    }
+
+    if (typeof cursorPosition === "number" && cursorPosition > 0) {
+      setTimeout(() => {
+        this.ref?.current?.setSelectionRange(cursorPosition, cursorPosition);
+      });
+    }
   }
 }
