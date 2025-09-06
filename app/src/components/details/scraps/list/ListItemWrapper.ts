@@ -20,6 +20,7 @@ export class ListItemWrapper {
     this.ref = ref;
   }
 
+  // todo(md): consider passing cursor position here
   giveFocus() {
     this.ref?.current?.focus();
   }

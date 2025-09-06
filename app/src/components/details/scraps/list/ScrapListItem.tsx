@@ -156,6 +156,12 @@ export const ScrapListItem: React.FC<{
 
       case "Backspace": {
         const target = e.target as HTMLTextAreaElement;
+
+        if ((e.target as HTMLTextAreaElement).value === "") {
+          debugger;
+          listItemsCollection.moveFocusUp(index);
+          return;
+        }
         if (target.selectionStart !== target.selectionEnd) {
           return;
         }
