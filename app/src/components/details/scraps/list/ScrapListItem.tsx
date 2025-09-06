@@ -158,10 +158,10 @@ export const ScrapListItem: React.FC<{
         const target = e.target as HTMLTextAreaElement;
 
         if ((e.target as HTMLTextAreaElement).value === "") {
-          debugger;
-          listItemsCollection.moveFocusUp(index);
+          listItemsCollection.moveFocusUp(index, "end");
           return;
         }
+
         if (target.selectionStart !== target.selectionEnd) {
           return;
         }

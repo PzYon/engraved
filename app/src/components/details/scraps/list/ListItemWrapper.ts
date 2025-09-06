@@ -1,6 +1,8 @@
 import { IScrapListItem } from "./IScrapListItem";
 import React from "react";
 
+export type CursorPosition = number | "beginning" | "end";
+
 export class ListItemWrapper {
   constructor(private item: IScrapListItem) {}
 
@@ -20,8 +22,14 @@ export class ListItemWrapper {
     this.ref = ref;
   }
 
-  // todo(md): consider passing cursor position here
-  giveFocus() {
+  giveFocus(cursorPosition?: CursorPosition) {
+    console.log("giving focus", cursorPosition);
     this.ref?.current?.focus();
+
+    // if (cursorPosition > 0) {
+    //   setTimeout(() => {
+    //     this.ref?.current?.setSelectionRange(2, 2);
+    //   });
+    // }
   }
 }
