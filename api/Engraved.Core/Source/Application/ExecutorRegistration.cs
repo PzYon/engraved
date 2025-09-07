@@ -21,6 +21,7 @@ using Engraved.Core.Application.Queries.Entries.Get;
 using Engraved.Core.Application.Queries.Entries.GetActive;
 using Engraved.Core.Application.Queries.Entries.GetAll;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
+using Engraved.Core.Application.Queries.Export;
 using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Application.Queries.Search.Entities;
@@ -71,6 +72,7 @@ public static class ExecutorRegistration
     RegisterQuery<IJournal?, GetJournalQuery, GetJournalQueryExecutor>(services);
     RegisterQuery<SearchEntitiesResult, SearchEntitiesQuery, SearchEntitiesQueryExecutor>(services);
     RegisterQuery<SystemInfo, GetSystemInfoQuery, GetSystemInfoQueryExecutor>(services);
+    RegisterQuery<ExportedDataResult, ExportDataQuery, ExportDataQueryExecutor>(services);
   }
 
   private static void RegisterQuery<TResult, TQuery, TQueryExecutor>(IServiceCollection services)
