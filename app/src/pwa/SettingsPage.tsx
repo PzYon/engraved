@@ -7,6 +7,7 @@ import { useAppContext } from "../AppContext";
 import React from "react";
 import { ManageUserTags } from "../components/overview/tags/ManageUserTags";
 import { CleanupUserTags } from "../components/overview/tags/CleanupUserTags";
+import { ExportYourData } from "./ExportYourData";
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAppContext();
@@ -16,9 +17,11 @@ export const SettingsPage: React.FC = () => {
       <PageSection title="Tags">
         <ManageUserTags />
       </PageSection>
+
       <PageSection title="Cleanup tags">
         <CleanupUserTags />
       </PageSection>
+
       <PageSection title="PWA Notifications">
         <p>
           <Button
@@ -52,6 +55,10 @@ export const SettingsPage: React.FC = () => {
             Show test notification via OneSignal.
           </Button>
         </p>
+      </PageSection>
+
+      <PageSection title="Export your data">
+        <ExportYourData />
       </PageSection>
     </Page>
   );
