@@ -389,6 +389,10 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/search/entities${params}`);
   }
 
+  static async exportData() {
+    return await ServerApi.executeRequest(`/user/export-data`, "GET");
+  }
+
   static async sendTestNotification(): Promise<void> {
     return await ServerApi.executeRequest(
       `/notifications/send_test`,
