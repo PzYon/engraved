@@ -390,7 +390,7 @@ export class ServerApi {
   }
 
   static async exportData() {
-    return await ServerApi.executeRequest(`/export-data`, "GET");
+    return await ServerApi.executeRequest(`/user/export-data`, "GET");
   }
 
   static async sendTestNotification(): Promise<void> {

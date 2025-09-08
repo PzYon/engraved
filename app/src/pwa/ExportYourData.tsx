@@ -12,7 +12,7 @@ export const ExportYourData: React.FC = () => {
     const exportedData = await ServerApi.exportData();
 
     const url = URL.createObjectURL(
-      new Blob([JSON.stringify(exportedData)], {
+      new Blob([JSON.stringify(exportedData, null, 2)], {
         type: "application/json",
       }),
     );
