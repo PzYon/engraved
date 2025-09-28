@@ -1,6 +1,6 @@
 import React from "react";
-import { Theme, useTheme } from "@mui/material";
-import { LazyLoadSuspender } from "../../../common/LazyLoadSuspender";
+import { Theme } from "@mui/material";
+import { TextEditor } from "../../../common/TextEditor";
 
 export type KeyMappings = Record<string, () => void>;
 
@@ -14,11 +14,14 @@ export interface ICodeMirrorProps {
   keyMappings?: KeyMappings;
 }
 
-const LazyCodeMirror = React.lazy(() => import("./LazyCodeMirror"));
+// const LazyCodeMirror = React.lazy(() => import("./LazyCodeMirror"));
 
 export const MarkdownEditor: React.FC<ICodeMirrorProps> = (props) => {
-  const theme = useTheme();
+  // const theme = useTheme();
 
+  return <TextEditor initialValue={props.value} setValue={props.onChange} />;
+
+  /*
   return (
     <LazyLoadSuspender>
       <LazyCodeMirror
@@ -28,4 +31,5 @@ export const MarkdownEditor: React.FC<ICodeMirrorProps> = (props) => {
       />
     </LazyLoadSuspender>
   );
+   */
 };

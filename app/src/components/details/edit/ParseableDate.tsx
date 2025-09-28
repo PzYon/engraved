@@ -1,15 +1,9 @@
-import {
-  styled,
-  SxProps,
-  TextField,
-  TextFieldProps,
-  Typography,
-} from "@mui/material";
-import React, { useMemo, useState } from "react";
+import { styled, SxProps, TextFieldProps, Typography } from "@mui/material";
+import React, { useState } from "react";
 import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
-import { AutogrowTextField } from "../../common/AutogrowTextField";
+import { TextEditor } from "../../common/TextEditor";
 
 export const ParseableDate: React.FC<{
   onChange: (parsedDate: IParsedDate) => void;
@@ -25,24 +19,23 @@ export const ParseableDate: React.FC<{
   sx,
   parseDateOnly,
   textFieldProps,
-  isTitle,
+  //  isTitle,
   noOutput,
 }) => {
-  const id = useMemo(() => Math.random().toString(), []);
-
   const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
   const [parseError, setParseError] = useState("");
 
-  const TextFieldComponent = isTitle ? AutogrowTextField : TextField;
+  // const TextFieldComponent = isTitle ? AutogrowTextField : TextField;
 
   return (
     <Host sx={sx}>
-      <TextFieldComponent
+      <TextEditor
+        initialValue={textFieldProps.value as string}
         autoFocus={true}
-        id={id}
-        sx={{ width: "100%" }}
-        placeholder="Enter date"
-        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+        //id={id}
+        //sx={{ width: "100%" }}
+        //placeholder="Enter date"
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
           if (e.key !== "Enter") {
             return;
           }
@@ -59,9 +52,9 @@ export const ParseableDate: React.FC<{
 
           onSelect(parsed);
         }}
-        onChange={(e) => {
+        setValue={(value) => {
           try {
-            const currentValue = e.target.value
+            const currentValue = value
               .replace(/\.{3}/g, "👍")
               .replace(/!{3}/g, "⚠️")
               .replace(/\?{3}/, "❓");
@@ -74,7 +67,7 @@ export const ParseableDate: React.FC<{
             setParseError((e as Error).message);
           }
         }}
-        {...textFieldProps}
+        //{...textFieldProps}
       />
 
       {(parseError || parsed?.date) && !noOutput ? (
