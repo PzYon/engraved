@@ -10,7 +10,7 @@ export const TextEditor: React.FC<{
   const [initialValue] = useState(value);
 
   return (
-    <Host>
+    <Host className="ngrvd-text-editor">
       <EditableDiv
         autoFocus={autoFocus}
         contentEditable={true}

@@ -1,4 +1,10 @@
-import { styled, SxProps, TextFieldProps, Typography } from "@mui/material";
+import {
+  css,
+  styled,
+  SxProps,
+  TextFieldProps,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
@@ -19,7 +25,7 @@ export const ParseableDate: React.FC<{
   sx,
   parseDateOnly,
   textFieldProps,
-  //  isTitle,
+  isTitle,
   noOutput,
 }) => {
   const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
@@ -28,7 +34,7 @@ export const ParseableDate: React.FC<{
   // const TextFieldComponent = isTitle ? AutogrowTextField : TextField;
 
   return (
-    <Host sx={sx}>
+    <Host sx={sx} isTitle={isTitle}>
       <TextEditor
         initialValue={textFieldProps.value as string}
         autoFocus={true}
@@ -102,7 +108,18 @@ export const ParseableDate: React.FC<{
   );
 };
 
-const Host = styled("div")``;
+const Host = styled("div")<{ isTitle: boolean }>`
+  ${(p) =>
+    p.isTitle
+      ? css`
+          .ngrvd-text-editor {
+            font-size: 2rem;
+            color: ${p.theme.palette.primary.main};
+            font-weight: lighter;
+          }
+        `
+      : null}
+`;
 
 const OutputContainer = styled("div")`
   padding-top: ${(p) => p.theme.spacing(2)};
