@@ -60,6 +60,8 @@ export const ParseableDate: React.FC<{
         }}
         setValue={(value) => {
           try {
+            // todo: consider passing replacements to TextEditor instead
+
             const currentValue = value
               .replace(/\.{3}/g, "👍")
               .replace(/!{3}/g, "⚠️")

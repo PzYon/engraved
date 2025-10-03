@@ -10,7 +10,7 @@ export const TextEditor: React.FC<{
   const [initialValue] = useState(sanitizeForHtml(value));
 
   return (
-    <Host>
+    <Host className="ngrvd-text-editor">
       <EditableDiv
         autoFocus={autoFocus}
         contentEditable={true}
@@ -21,17 +21,12 @@ export const TextEditor: React.FC<{
           const selection = window.getSelection();
           const range = selection && selection.getRangeAt(0).cloneRange();
 
-          debugger;
-
           const html = div.innerHTML.replaceAll(/!!!/g, "🔥");
           if (html !== div.innerHTML) {
-            debugger;
             div.innerHTML = html;
-            // Restore caret position
             if (range) {
               selection?.removeAllRanges();
               selection?.addRange(range);
-              debugger;
             }
           }
 
