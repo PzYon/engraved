@@ -35,22 +35,24 @@ export const ScrapInner: React.FC = () => {
     >
       {isEditMode ? (
         <ParseableDate
+          initialValue={title}
+          placeholder="Title"
+          isTitle={true}
+          disabled={!isEditMode}
           noOutput={true}
           onChange={(d) => {
             setParsedDate(d);
             setTitle(d.input);
           }}
-          onSelect={setParsedDate}
-          isTitle={true}
-          textFieldProps={{
-            placeholder: "Title",
-            variant: "outlined",
-            value: title,
-            disabled: !isEditMode,
-            onFocus: () => setHasTitleFocus(true),
-            onBlur: () => setHasTitleFocus(false),
-            sx: { width: "100%" },
+          replaceText={(value: string) => {
+            return value
+              .replace(/\.{3}/g, "👍")
+              .replace(/!{3}/g, "⚠️")
+              .replace(/\?{3}/, "❓");
           }}
+          onSelect={setParsedDate}
+          onFocus={() => setHasTitleFocus(true)}
+          onBlur={() => setHasTitleFocus(false)}
         />
       ) : (
         <ReadonlyTitle
