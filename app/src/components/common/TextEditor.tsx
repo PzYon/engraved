@@ -7,22 +7,48 @@ export const TextEditor: React.FC<{
   autoFocus?: boolean;
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }> = ({ initialValue: value, setValue, autoFocus, onKeyDown }) => {
-  const [initialValue] = useState(value);
+  const [initialValue] = useState(sanitizeForHtml(value));
 
   return (
-    <Host className="ngrvd-text-editor">
+    <Host>
       <EditableDiv
         autoFocus={autoFocus}
         contentEditable={true}
         onKeyDown={onKeyDown}
         dangerouslySetInnerHTML={{ __html: initialValue }}
         onInput={(e) => {
-          setValue((e.target as HTMLDivElement).innerText);
+          const div = e.target as HTMLDivElement;
+          const selection = window.getSelection();
+          const range = selection && selection.getRangeAt(0).cloneRange();
+
+          debugger;
+
+          const html = div.innerHTML.replaceAll(/!!!/g, "🔥");
+          if (html !== div.innerHTML) {
+            debugger;
+            div.innerHTML = html;
+            // Restore caret position
+            if (range) {
+              selection?.removeAllRanges();
+              selection?.addRange(range);
+              debugger;
+            }
+          }
+
+          setValue(sanitizeForStorage(div.innerText));
         }}
       />
     </Host>
   );
 };
+
+function sanitizeForHtml(value: string) {
+  return value.replaceAll("\n", "<br />");
+}
+
+function sanitizeForStorage(value: string) {
+  return value.replaceAll("<br /", "\n");
+}
 
 const Host = styled("div")`
   background-color: ${(p) => p.theme.palette.common.white};
