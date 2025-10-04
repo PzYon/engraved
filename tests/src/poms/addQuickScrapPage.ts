@@ -9,8 +9,8 @@ export class AddQuickScrapPage {
   }
 
   async typeTitle(name: string) {
-    await this.page.getByPlaceholder("Title").click();
-    await this.page.getByPlaceholder("Title").fill(name);
+    await this.page.getByTestId("placeholder-Title").click();
+    await this.page.getByTestId("placeholder-Title").fill(name);
   }
 
   async typeContent(content: string) {
