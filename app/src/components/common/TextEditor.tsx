@@ -37,6 +37,7 @@ export const TextEditor: React.FC<{
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
       <EditableDiv
+        placeholder={placeholder && isEmpty ? placeholder : undefined}
         autoFocus={autoFocus}
         contentEditable={!disabled}
         onKeyDown={onKeyDown}
