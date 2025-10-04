@@ -1,15 +1,17 @@
 import { MarkdownEditor } from "./MarkdownEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
 import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
+import DisplaySettingsIcon from "@mui/icons-material/DisplaySettings";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { getRawRowValues } from "./getRawRowValues";
+import { TextEditor } from "../../../common/TextEditor";
 
 export const ScrapMarkdown: React.FC = () => {
   const { setAppAlert } = useAppContext();
@@ -23,6 +25,8 @@ export const ScrapMarkdown: React.FC = () => {
     changeScrapType,
   } = useScrapContext();
 
+  const [isEditableDiv, setIsEditableDiv] = useState(false);
+
   return (
     <ScrapBody
       editModeActions={[
@@ -33,6 +37,14 @@ export const ScrapMarkdown: React.FC = () => {
           key: "toggle-type",
           icon: <AutoFixHigh fontSize="small" />,
           label: "Change type to list",
+        },
+        {
+          onClick: () => {
+            setIsEditableDiv(!isEditableDiv);
+          },
+          key: "change-editor",
+          icon: <DisplaySettingsIcon fontSize="small" />,
+          label: "Use other editor",
         },
       ]}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
@@ -45,15 +57,19 @@ export const ScrapMarkdown: React.FC = () => {
     if (isEditMode) {
       return (
         <EditorContainer>
-          <MarkdownEditor
-            showOutlineWhenFocused={true}
-            value={notes ?? ""}
-            onChange={setNotes}
-            keyMappings={{
-              "Alt-s": upsertScrap,
-              "Alt-x": cancelEditingAction?.onClick,
-            }}
-          />
+          {isEditableDiv ? (
+            <TextEditor initialValue={notes ?? ""} setValue={setNotes} />
+          ) : (
+            <MarkdownEditor
+              showOutlineWhenFocused={true}
+              value={notes ?? ""}
+              onChange={setNotes}
+              keyMappings={{
+                "Alt-s": upsertScrap,
+                "Alt-x": cancelEditingAction?.onClick,
+              }}
+            />
+          )}
         </EditorContainer>
       );
     }
