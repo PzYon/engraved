@@ -64,7 +64,17 @@ export const ScrapMarkdown: React.FC = () => {
       return (
         <EditorContainer>
           {isEditableDiv ? (
-            <TextEditor initialValue={notes ?? ""} setValue={setNotes} />
+            <TextEditor
+              initialValue={notes ?? ""}
+              setValue={setNotes}
+              onKeyDown={(e) => {
+                if (e.altKey && e.key === "s") {
+                  upsertScrap();
+                } else if (e.altKey && e.key === "x") {
+                  cancelEditingAction?.onClick();
+                }
+              }}
+            />
           ) : (
             <MarkdownEditor
               showOutlineWhenFocused={true}
