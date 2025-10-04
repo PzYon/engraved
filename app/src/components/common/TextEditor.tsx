@@ -38,6 +38,7 @@ export const TextEditor: React.FC<{
       ) : null}
       <EditableDiv
         role="textbox"
+        aria-label={placeholder}
         data-testid={"placeholder-" + placeholder}
         autoFocus={autoFocus}
         contentEditable={!disabled}
