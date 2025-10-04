@@ -8,7 +8,8 @@ import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
 import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
-import DisplaySettingsIcon from "@mui/icons-material/DisplaySettings";
+import ToggleOnIcon from "@mui/icons-material/ToggleOn";
+import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { getRawRowValues } from "./getRawRowValues";
 import { TextEditor } from "../../../common/TextEditor";
@@ -25,7 +26,7 @@ export const ScrapMarkdown: React.FC = () => {
     changeScrapType,
   } = useScrapContext();
 
-  const [isEditableDiv, setIsEditableDiv] = useState(false);
+  const [isEditableDiv, setIsEditableDiv] = useState(true);
 
   return (
     <ScrapBody
@@ -38,14 +39,19 @@ export const ScrapMarkdown: React.FC = () => {
           icon: <AutoFixHigh fontSize="small" />,
           label: "Change type to list",
         },
-        {
-          onClick: () => {
-            setIsEditableDiv(!isEditableDiv);
-          },
-          key: "change-editor",
-          icon: <DisplaySettingsIcon fontSize="small" />,
-          label: "Use other editor",
-        },
+        isEditableDiv
+          ? {
+              onClick: () => setIsEditableDiv(false),
+              key: "change-editor",
+              icon: <ToggleOnIcon fontSize="small" />,
+              label: "Use codemirror editor",
+            }
+          : {
+              onClick: () => setIsEditableDiv(true),
+              key: "change-editor",
+              icon: <ToggleOffIcon fontSize="small" />,
+              label: "Use nice editor",
+            },
       ]}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
