@@ -37,6 +37,7 @@ export const TextEditor: React.FC<{
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
       <EditableDiv
+        aria-roledescription="textbox"
         data-testid={"placeholder-" + placeholder}
         autoFocus={autoFocus}
         contentEditable={!disabled}
