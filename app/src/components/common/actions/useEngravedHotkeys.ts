@@ -32,7 +32,7 @@ export function useEngravedHotkeys(
 
       callback(keyboardEvent, hotkeysEvent);
     },
-    options,
+    { enableOnContentEditable: true, ...options },
     dependencies,
   );
 }
