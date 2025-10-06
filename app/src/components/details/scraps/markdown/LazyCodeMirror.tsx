@@ -29,6 +29,8 @@ const LazyCodeMirror: React.FC<ICodeMirrorProps> = ({
       onBlur={onBlur}
       onFocus={onFocus}
       autoFocus={false}
+      onKeyDown={(e) => e.stopPropagation()}
+      onKeyUp={(e) => e.stopPropagation()}
       basicSetup={{
         lineNumbers: false,
         syntaxHighlighting: false,
