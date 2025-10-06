@@ -7,6 +7,7 @@ export const TextEditor: React.FC<{
   placeholder?: string;
   disabled?: boolean;
   autoFocus?: boolean;
+  onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -15,6 +16,7 @@ export const TextEditor: React.FC<{
   initialValue: value,
   setValue,
   autoFocus,
+  onKeyUp,
   onKeyDown,
   onFocus,
   onBlur,
@@ -29,8 +31,6 @@ export const TextEditor: React.FC<{
 
   const [isEmpty, setIsEmpty] = useState(!initialInnerHtml);
 
-  // todo: maybe we don't need AutoGrowTextField anymore
-
   return (
     <Host className="ngrvd-text-editor">
       {placeholder && isEmpty ? (
@@ -42,7 +42,14 @@ export const TextEditor: React.FC<{
         data-testid={"placeholder-" + placeholder}
         autoFocus={autoFocus}
         contentEditable={!disabled}
-        onKeyDown={onKeyDown}
+        onKeyUp={(e) => {
+          e.stopPropagation();
+          onKeyUp?.(e);
+        }}
+        onKeyDown={(e) => {
+          e.stopPropagation();
+          onKeyDown?.(e);
+        }}
         onFocus={onFocus}
         onBlur={onBlur}
         dangerouslySetInnerHTML={initialInnerHtml}

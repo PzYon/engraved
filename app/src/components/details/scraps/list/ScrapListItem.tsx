@@ -3,13 +3,13 @@ import { IScrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
 import DragIndicator from "@mui/icons-material/DragIndicator";
 import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
-import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { TextEditor } from "../../../common/TextEditor";
 
 export const ScrapListItem: React.FC<{
   listItemsCollection: ListItemCollection;
@@ -59,11 +59,11 @@ export const ScrapListItem: React.FC<{
       />
       {isEditMode ? (
         <>
-          <AutogrowTextField
-            forwardInputRef={ref}
-            isContent={true}
-            value={label}
-            onChange={(event) => setLabel(event.target.value)}
+          {/*sx={{ ...getSx("textbox"), pr: 1, pt: "5px !important" }}*/}
+
+          <TextEditor
+            initialValue={label}
+            setValue={(value) => setLabel(value)}
             onKeyUp={keyUp}
             onKeyDown={keyDown}
             onBlur={() =>
@@ -73,8 +73,6 @@ export const ScrapListItem: React.FC<{
                 depth: listItem.depth,
               })
             }
-            sx={{ ...getSx("textbox"), pr: 1, pt: "5px !important" }}
-            autoFocus={!listItem.label}
           />
           <ActionIconButtonGroup
             backgroundColor={"none"}
