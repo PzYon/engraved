@@ -13,6 +13,7 @@ export const TextEditor: React.FC<{
   onBlur?: () => void;
   replaceText?: (value: string) => string;
   forwardRef?: React.ForwardedRef<HTMLInputElement>;
+  css?: React.CSSProperties;
 }> = ({
   initialValue: value,
   setValue,
@@ -25,6 +26,7 @@ export const TextEditor: React.FC<{
   disabled,
   replaceText,
   forwardRef,
+  css,
 }) => {
   const initialInnerHtml = useMemo(
     () => ({ __html: sanitizeForHtml(value) }),
@@ -39,6 +41,7 @@ export const TextEditor: React.FC<{
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
       <EditableDiv
+        style={css}
         ref={forwardRef}
         role="textbox"
         aria-label={placeholder}

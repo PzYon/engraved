@@ -43,11 +43,14 @@ export class ListItemCollection {
 
     this.add(
       index + 1,
-      new ListItemWrapper({
-        label: "",
-        isCompleted: false,
-        depth: depth,
-      }),
+      new ListItemWrapper(
+        {
+          label: "",
+          isCompleted: false,
+          depth: depth,
+        },
+        true,
+      ),
     );
   }
 
