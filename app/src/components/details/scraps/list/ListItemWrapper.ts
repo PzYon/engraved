@@ -25,7 +25,8 @@ export class ListItemWrapper {
     this.ref = ref;
 
     if (this.giveFocusOnRef) {
-      this.ref.current.focus();
+      this.ref.current?.focus();
+      this.giveFocusOnRef = false;
     }
   }
 
@@ -40,12 +41,14 @@ export class ListItemWrapper {
     setTimeout(() => {
       if (typeof cursorPosition === "string") {
         if (cursorPosition === "beginning") {
-          this.ref?.current?.setSelectionRange(0, 0);
+          this.fixThisSomeHowOrMoveToTextEditor();
+          //this.ref?.current?.setSelectionRange(0, 0);
         } else {
-          this.ref?.current?.setSelectionRange(
-            this.ref.current.value.length,
-            this.ref.current.value.length,
-          );
+          this.fixThisSomeHowOrMoveToTextEditor();
+          /*this.ref?.current?.setSelectionRange(
+            this.ref.current.value?.length ?? 0,
+            this.ref.current.value?.length ?? 0,
+          );*/
         }
       }
 
@@ -53,5 +56,18 @@ export class ListItemWrapper {
         this.ref?.current?.setSelectionRange(cursorPosition, cursorPosition);
       }
     });
+  }
+
+  fixThisSomeHowOrMoveToTextEditor() {
+    const el = this.ref.current;
+    if (el?.isContentEditable) {
+      const range = document.createRange();
+      range.setStart(el, 0);
+      range.collapse(true);
+
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
   }
 }

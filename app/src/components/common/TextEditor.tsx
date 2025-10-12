@@ -30,6 +30,7 @@ export const TextEditor: React.FC<{
 }) => {
   const initialInnerHtml = useMemo(
     () => ({ __html: sanitizeForHtml(value) }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
