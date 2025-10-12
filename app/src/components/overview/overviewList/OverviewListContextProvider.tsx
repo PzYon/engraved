@@ -10,6 +10,7 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { useSearchParams } from "react-router";
+import { isTextEditor } from "../../common/isTextEditor";
 
 export const OverviewListContextProvider: React.FC<{
   items: IEntity[];
@@ -65,6 +66,10 @@ export const OverviewListContextProvider: React.FC<{
   }, [searchParams, setSearchParams]);
 
   useEngravedHotkeys("*", (e) => {
+    if (isTextEditor(e.target as HTMLElement)) {
+      return;
+    }
+
     switch (e.code) {
       case "ArrowUp": {
         e.preventDefault();

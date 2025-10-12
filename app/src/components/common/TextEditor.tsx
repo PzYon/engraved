@@ -43,11 +43,9 @@ export const TextEditor: React.FC<{
         autoFocus={autoFocus}
         contentEditable={!disabled}
         onKeyUp={(e) => {
-          e.stopPropagation();
           onKeyUp?.(e);
         }}
         onKeyDown={(e) => {
-          e.stopPropagation();
           onKeyDown?.(e);
         }}
         onFocus={onFocus}
