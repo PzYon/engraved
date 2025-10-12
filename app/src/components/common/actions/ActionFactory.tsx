@@ -149,7 +149,7 @@ export class ActionFactory {
   ): IAction {
     return {
       key: "edit-schedule",
-      hotkey: enableHotKeys ? "alt+s" : undefined,
+      hotkey: enableHotKeys ? "alt+n" : undefined,
       label: "Edit schedule",
       icon: hasSchedule ? (
         <DoneOutlined fontSize="small" />
