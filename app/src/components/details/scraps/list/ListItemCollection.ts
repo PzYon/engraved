@@ -122,23 +122,24 @@ export class ListItemCollection {
 
   moveItem(index: number, target: { index?: number; depth?: number }) {
     let didChange = false;
-    const currentIndex = target.index ?? index;
 
-    if (currentIndex !== index) {
-      const item = this.wrappedItems.splice(index, 1)[0];
-      this.wrappedItems.splice(target.index, 0, item);
-      item.giveFocus();
+    const targetIndex = target.index ?? index;
+
+    if (targetIndex !== index) {
+      const itemToMove = this.wrappedItems.splice(index, 1)[0];
+      this.wrappedItems.splice(targetIndex, 0, itemToMove);
+      itemToMove.giveFocus();
       didChange = true;
     }
 
     if (target.depth !== undefined) {
       const targetDepth =
-        currentIndex === 0 || target.depth < 0
+        targetIndex === 0 || target.depth < 0
           ? 0
-          : Math.min(target.depth, this.getItemDepth(currentIndex - 1) + 1);
+          : Math.min(target.depth, this.getItemDepth(targetIndex - 1) + 1);
 
-      if (targetDepth !== this.getItemDepth(currentIndex)) {
-        this.wrappedItems[currentIndex].raw.depth = targetDepth;
+      if (targetDepth !== this.getItemDepth(targetIndex)) {
+        this.wrappedItems[targetIndex].raw.depth = targetDepth;
         didChange = true;
       }
     }
