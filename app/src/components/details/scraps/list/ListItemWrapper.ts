@@ -4,7 +4,10 @@ import React from "react";
 export type CursorPosition = number | "beginning" | "end";
 
 export class ListItemWrapper {
-  constructor(private item: IScrapListItem) {}
+  constructor(
+    private item: IScrapListItem,
+    private giveFocusOnRef?: boolean,
+  ) {}
 
   private ref: React.RefObject<HTMLInputElement>;
 
@@ -20,6 +23,10 @@ export class ListItemWrapper {
 
   setRef(ref: React.RefObject<HTMLInputElement>) {
     this.ref = ref;
+
+    if (this.giveFocusOnRef) {
+      this.ref.current.focus();
+    }
   }
 
   giveFocus(cursorPosition?: CursorPosition) {

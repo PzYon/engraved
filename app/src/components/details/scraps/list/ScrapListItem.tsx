@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IScrapListItem } from "./IScrapListItem";
-import { Checkbox, styled } from "@mui/material";
+import { Checkbox, styled, SxProps } from "@mui/material";
 import DragIndicator from "@mui/icons-material/DragIndicator";
 import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
-import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 import { ListItemCollection } from "./ListItemCollection";
@@ -59,12 +58,11 @@ export const ScrapListItem: React.FC<{
       />
       {isEditMode ? (
         <>
-          {/*sx={{ ...getSx("textbox"), pr: 1, pt: "5px !important" }}*/}
-
           <TextEditor
+            css={getCss() as React.CSSProperties}
             forwardRef={ref}
             initialValue={label}
-            setValue={(value) => setLabel(value)}
+            setValue={setLabel}
             onKeyUp={keyUp}
             onKeyDown={keyDown}
             onBlur={() =>
@@ -88,30 +86,21 @@ export const ScrapListItem: React.FC<{
           />
         </>
       ) : (
-        <ReadonlyContainer sx={{ ...getSx("plain"), pt: "7px" }}>
+        <ReadonlyContainer sx={{ ...getCss(), pt: "7px" }}>
           <Markdown value={label} useBasic={true}></Markdown>
         </ReadonlyContainer>
       )}
     </ListItem>
   );
 
-  function getSx(elementType: "plain" | "textbox") {
-    const sx: SxProps & { textarea?: SxProps } = { flexGrow: 1 };
+  function getCss(): React.CSSProperties | SxProps {
+    const css: React.CSSProperties | SxProps = { flexGrow: 1 };
 
-    if (!listItem.isCompleted) {
-      return sx;
+    if (listItem.isCompleted) {
+      css.textDecoration = "line-through";
     }
 
-    switch (elementType) {
-      case "textbox":
-        sx.textarea = { textDecoration: "line-through" };
-        break;
-      case "plain":
-        sx.textDecoration = "line-through";
-        break;
-    }
-
-    return sx;
+    return css;
   }
 
   function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
@@ -180,7 +169,7 @@ export const ScrapListItem: React.FC<{
     switch (e.key) {
       case "Enter": {
         listItemsCollection.addItem(index);
-        setTimeout(() => listItemsCollection.moveFocusDown(index, "end"));
+        listItemsCollection.moveFocusDown(index, "end");
         e.preventDefault();
         break;
       }
