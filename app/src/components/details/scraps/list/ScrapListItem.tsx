@@ -62,6 +62,7 @@ export const ScrapListItem: React.FC<{
           {/*sx={{ ...getSx("textbox"), pr: 1, pt: "5px !important" }}*/}
 
           <TextEditor
+            forwardRef={ref}
             initialValue={label}
             setValue={(value) => setLabel(value)}
             onKeyUp={keyUp}
@@ -179,6 +180,7 @@ export const ScrapListItem: React.FC<{
     switch (e.key) {
       case "Enter": {
         listItemsCollection.addItem(index);
+        setTimeout(() => listItemsCollection.moveFocusDown(index, "end"));
         e.preventDefault();
         break;
       }
