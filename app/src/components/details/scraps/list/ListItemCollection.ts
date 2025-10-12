@@ -127,6 +127,7 @@ export class ListItemCollection {
     if (currentIndex !== index) {
       const item = this.wrappedItems.splice(index, 1)[0];
       this.wrappedItems.splice(target.index, 0, item);
+      item.giveFocus();
       didChange = true;
     }
 
