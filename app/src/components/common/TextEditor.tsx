@@ -42,13 +42,24 @@ export const TextEditor: React.FC<{
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
       <EditableDiv
-        style={css}
-        ref={forwardRef}
-        role="textbox"
-        aria-label={placeholder}
-        data-testid={"placeholder-" + placeholder}
-        autoFocus={autoFocus}
         contentEditable={!disabled}
+        ref={forwardRef}
+        style={css}
+        autoFocus={autoFocus}
+        dangerouslySetInnerHTML={initialInnerHtml}
+        onInput={(e) => {
+          const div = e.target as HTMLDivElement;
+          const html = replaceText
+            ? replaceText?.(div.innerHTML)
+            : div.innerHTML;
+
+          if (html !== div.innerHTML) {
+            div.innerHTML = html;
+          }
+          setIsEmpty(!div.innerText?.trim());
+
+          setValue(sanitizeForStorage(div.innerText));
+        }}
         onKeyUp={(e) => {
           onKeyUp?.(e);
         }}
@@ -57,21 +68,9 @@ export const TextEditor: React.FC<{
         }}
         onFocus={onFocus}
         onBlur={onBlur}
-        dangerouslySetInnerHTML={initialInnerHtml}
-        onInput={(e) => {
-          const div = e.target as HTMLDivElement;
-
-          const html = replaceText
-            ? replaceText?.(div.innerHTML)
-            : div.innerHTML;
-
-          if (html !== div.innerHTML) {
-            div.innerHTML = html;
-          }
-
-          setIsEmpty(!div.innerText?.trim());
-          setValue(sanitizeForStorage(div.innerText));
-        }}
+        role="textbox"
+        aria-label={placeholder}
+        data-testid={"placeholder-" + placeholder}
       />
     </Host>
   );

@@ -67,13 +67,13 @@ export const ScrapMarkdown: React.FC = () => {
             <TextEditor
               initialValue={notes ?? ""}
               setValue={setNotes}
-              onKeyDown={(e) => {
-                if (e.altKey && e.key === "s") {
-                  upsertScrap();
-                } else if (e.altKey && e.key === "x") {
-                  cancelEditingAction?.onClick();
-                }
-              }}
+              // onKeyDown={(e) => {
+              //   if (e.altKey && e.key === "s") {
+              //     upsertScrap();
+              //   } else if (e.altKey && e.key === "x") {
+              //     cancelEditingAction?.onClick();
+              //   }
+              // }}
             />
           ) : (
             <MarkdownEditor

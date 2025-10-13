@@ -169,7 +169,7 @@ export const ScrapListItem: React.FC<{
     switch (e.key) {
       case "Enter": {
         listItemsCollection.addItem(index);
-        listItemsCollection.moveFocusDown(index, "end");
+        //listItemsCollection.moveFocusDown(index, "end");
         e.preventDefault();
         break;
       }
