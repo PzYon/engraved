@@ -143,21 +143,25 @@ export const ScrapListItem: React.FC<{
       }
 
       case "Backspace": {
-        const target = e.target as HTMLTextAreaElement;
+        const target = e.target as HTMLDivElement;
 
-        if (target.value === "") {
-          setTimeout(() => {
-            listItemsCollection.removeItem(index);
-          });
+        if (
+          target.innerText === undefined ||
+          target.innerText === null ||
+          target.innerText?.trim() === ""
+        ) {
+          listItemsCollection.removeItem(index);
+          listItemsCollection.moveFocusUp(index, "end");
           return;
         }
 
-        if (target.selectionStart !== target.selectionEnd) {
-          return;
-        }
+        // if (target.selectionStart !== target.selectionEnd) {
+        //   return;
+        // }
 
         if (e.altKey && e.ctrlKey) {
           listItemsCollection.removeItem(index);
+          listItemsCollection.moveFocusUp(index, "end");
         }
 
         break;

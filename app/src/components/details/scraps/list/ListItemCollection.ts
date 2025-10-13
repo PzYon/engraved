@@ -55,6 +55,8 @@ export class ListItemCollection {
   }
 
   removeItem(index: number) {
+    console.log("removing item", index);
+
     if (this.wrappedItems.length <= 1) {
       // we do not want to delete the last item
       return;
@@ -62,7 +64,7 @@ export class ListItemCollection {
 
     this.wrappedItems = this.wrappedItems.filter((_, i) => i !== index);
 
-    this.wrappedItems[Math.min(index, this.highestIndex)].giveFocus();
+    this.wrappedItems[Math.min(index, this.highestIndex)].giveFocus("end");
 
     this.fireOnChange();
   }
