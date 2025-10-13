@@ -31,44 +31,15 @@ export class ListItemWrapper {
   }
 
   giveFocus(cursorPosition?: CursorPosition) {
+    this.ref?.current?.focus();
+    this.moveCursorToPosition(cursorPosition);
+  }
+
+  moveCursorToPosition(cursorPosition: CursorPosition) {
     if (cursorPosition === undefined) {
-      this.ref?.current?.focus();
       return;
     }
 
-    this.ref?.current?.focus();
-
-    // setTimeout(() => {
-    //   if (typeof cursorPosition === "string") {
-    //     if (cursorPosition === "beginning") {
-    //       this.fixThisSomeHowOrMoveToTextEditor(0);
-    //       //this.ref?.current?.setSelectionRange(0, 0);
-    //     } else {
-    //       this.fixThisSomeHowOrMoveToTextEditor(0);
-    //       /*this.ref?.current?.setSelectionRange(
-    //         this.ref.current.value?.length ?? 0,
-    //         this.ref.current.value?.length ?? 0,
-    //       );*/
-    //     }
-    //   }
-    //
-    //   if (typeof cursorPosition === "number" && cursorPosition >= 0) {
-    //     this.fixThisSomeHowOrMoveToTextEditor(cursorPosition);
-    //     // this.ref?.current?.setSelectionRange(cursorPosition, cursorPosition);
-    //   }
-    // });
-  }
-
-  fixThisSomeHowOrMoveToTextEditor(index: number) {
-    const el = this.ref.current;
-    if (el?.isContentEditable) {
-      const range = document.createRange();
-      range.setStart(el, index);
-      range.collapse(true);
-
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
+    console.log("moving cursor to", cursorPosition);
   }
 }
