@@ -38,31 +38,32 @@ export class ListItemWrapper {
 
     this.ref?.current?.focus();
 
-    setTimeout(() => {
-      if (typeof cursorPosition === "string") {
-        if (cursorPosition === "beginning") {
-          this.fixThisSomeHowOrMoveToTextEditor();
-          //this.ref?.current?.setSelectionRange(0, 0);
-        } else {
-          this.fixThisSomeHowOrMoveToTextEditor();
-          /*this.ref?.current?.setSelectionRange(
-            this.ref.current.value?.length ?? 0,
-            this.ref.current.value?.length ?? 0,
-          );*/
-        }
-      }
-
-      if (typeof cursorPosition === "number" && cursorPosition >= 0) {
-        this.ref?.current?.setSelectionRange(cursorPosition, cursorPosition);
-      }
-    });
+    // setTimeout(() => {
+    //   if (typeof cursorPosition === "string") {
+    //     if (cursorPosition === "beginning") {
+    //       this.fixThisSomeHowOrMoveToTextEditor(0);
+    //       //this.ref?.current?.setSelectionRange(0, 0);
+    //     } else {
+    //       this.fixThisSomeHowOrMoveToTextEditor(0);
+    //       /*this.ref?.current?.setSelectionRange(
+    //         this.ref.current.value?.length ?? 0,
+    //         this.ref.current.value?.length ?? 0,
+    //       );*/
+    //     }
+    //   }
+    //
+    //   if (typeof cursorPosition === "number" && cursorPosition >= 0) {
+    //     this.fixThisSomeHowOrMoveToTextEditor(cursorPosition);
+    //     // this.ref?.current?.setSelectionRange(cursorPosition, cursorPosition);
+    //   }
+    // });
   }
 
-  fixThisSomeHowOrMoveToTextEditor() {
+  fixThisSomeHowOrMoveToTextEditor(index: number) {
     const el = this.ref.current;
     if (el?.isContentEditable) {
       const range = document.createRange();
-      range.setStart(el, 0);
+      range.setStart(el, index);
       range.collapse(true);
 
       const sel = window.getSelection();
