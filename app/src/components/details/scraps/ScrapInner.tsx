@@ -46,9 +46,9 @@ export const ScrapInner: React.FC = () => {
           }}
           replaceText={(value: string) => {
             return value
-              .replace(/\.{3}/g, "👍")
-              .replace(/!{3}/g, "⚠️")
-              .replace(/\?{3}/, "❓");
+              .replace(/\.{3}/g, "<span>👍</span>")
+              .replace(/!{3}/g, "<span>⚠️</span>")
+              .replace(/\?{3}/, "<span>❓</span>");
           }}
           onSelect={setParsedDate}
           onFocus={() => setHasTitleFocus(true)}
