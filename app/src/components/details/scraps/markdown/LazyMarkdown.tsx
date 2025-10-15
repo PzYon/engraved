@@ -10,16 +10,23 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
   onClick,
   useBasic,
 }) => {
-  const html = useMemo<string>(() => (value ? md.render(value) : ""), [value]);
+  const html = useMemo<{ __html: string }>(
+    () => ({ __html: value ? md.render(value) : "" }),
+    [value],
+  );
 
   const El = useBasic ? BasicContentContainer : ContentContainer;
 
-  return <El onClick={onClick} dangerouslySetInnerHTML={{ __html: html }} />;
+  return <El onClick={onClick} dangerouslySetInnerHTML={html} />;
 };
 
 const BaseContentContainer = styled("div")`
   overflow: auto;
   font-family: ${(p) => p.theme.typography.fontFamily};
+
+  .ngrvd-emoji {
+    font-size: smaller;
+  }
 
   ul {
     margin: 0.5rem 0;

@@ -7,7 +7,7 @@ const md = markdownit({ linkify: true, breaks: true }).use(emoji, {
 });
 
 md.renderer.rules.emoji = function (token, idx) {
-  return `<span class="emoji">${token[idx].content}</span>`;
+  return `<span class="ngrvd-emoji">${token[idx].content}</span>`;
 };
 
 // https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
