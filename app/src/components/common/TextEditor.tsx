@@ -56,8 +56,8 @@ export const TextEditor: React.FC<{
           if (html !== div.innerHTML) {
             div.innerHTML = html;
           }
-          setIsEmpty(!div.innerText?.trim());
 
+          setIsEmpty(!div.innerText?.trim());
           setValue(sanitizeForStorage(div.innerText));
         }}
         onKeyUp={(e) => {
