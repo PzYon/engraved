@@ -67,13 +67,12 @@ export const ScrapMarkdown: React.FC = () => {
             <TextEditor
               initialValue={notes ?? ""}
               setValue={setNotes}
-              // onKeyDown={(e) => {
-              //   if (e.altKey && e.key === "s") {
-              //     upsertScrap();
-              //   } else if (e.altKey && e.key === "x") {
-              //     cancelEditingAction?.onClick();
-              //   }
-              // }}
+              replaceText={(value: string) => {
+                return value
+                  .replace(/\.{3}/g, "<span>👍</span>")
+                  .replace(/!{3}/g, "<span>⚠️</span>")
+                  .replace(/\?{3}/, "<span>❓</span>");
+              }}
             />
           ) : (
             <MarkdownEditor
