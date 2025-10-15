@@ -7,6 +7,7 @@ import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeCo
 import { IScrapListItem } from "./list/IScrapListItem";
 import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { ParseableDate } from "../edit/ParseableDate";
+import { Markdown } from "./markdown/Markdown";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -44,12 +45,6 @@ export const ScrapInner: React.FC = () => {
             setParsedDate(d);
             setTitle(d.input);
           }}
-          replaceText={(value: string) => {
-            return value
-              .replace(/\.{3}/g, "<span>👍</span>")
-              .replace(/!{3}/g, "<span>⚠️</span>")
-              .replace(/\?{3}/, "<span>❓</span>");
-          }}
           onSelect={setParsedDate}
           onFocus={() => setHasTitleFocus(true)}
           onBlur={() => setHasTitleFocus(false)}
@@ -59,9 +54,13 @@ export const ScrapInner: React.FC = () => {
           entity={scrapToRender}
           hasFocus={hasFocus}
           title={
-            !isCompact || hasFocus || title
-              ? title
-              : getText()?.substring(0, 20) + " (...)"
+            <Markdown
+              value={
+                !isCompact || hasFocus || title
+                  ? title
+                  : getText()?.substring(0, 20) + " (...)"
+              }
+            />
           }
         />
       )}

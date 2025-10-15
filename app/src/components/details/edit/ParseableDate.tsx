@@ -17,7 +17,6 @@ export const ParseableDate: React.FC<{
   initialValue?: string;
   placeholder?: string;
   disabled?: boolean;
-  replaceText?: (value: string) => string;
 }> = ({
   onChange,
   onSelect,
@@ -30,7 +29,6 @@ export const ParseableDate: React.FC<{
   initialValue,
   placeholder,
   disabled,
-  replaceText,
 }) => {
   const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
   const [parseError, setParseError] = useState("");
@@ -44,7 +42,6 @@ export const ParseableDate: React.FC<{
         onBlur={onBlur}
         disabled={disabled}
         placeholder={placeholder ?? "Enter date"}
-        replaceText={replaceText}
         onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
           if (e.key !== "Enter") {
             return;
