@@ -64,16 +64,7 @@ export const ScrapMarkdown: React.FC = () => {
       return (
         <EditorContainer>
           {isEditableDiv ? (
-            <TextEditor
-              initialValue={notes ?? ""}
-              setValue={setNotes}
-              replaceText={(value: string) => {
-                return value
-                  .replace(/\.{3}/g, "<span>👍</span>")
-                  .replace(/!{3}/g, "<span>⚠️</span>")
-                  .replace(/\?{3}/, "<span>❓</span>");
-              }}
-            />
+            <TextEditor initialValue={notes ?? ""} setValue={setNotes} />
           ) : (
             <MarkdownEditor
               showOutlineWhenFocused={true}

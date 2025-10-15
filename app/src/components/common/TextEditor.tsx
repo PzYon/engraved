@@ -11,7 +11,6 @@ export const TextEditor: React.FC<{
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   onFocus?: () => void;
   onBlur?: () => void;
-  replaceText?: (value: string) => string;
   forwardRef?: React.ForwardedRef<HTMLInputElement>;
   css?: React.CSSProperties;
 }> = ({
@@ -24,7 +23,6 @@ export const TextEditor: React.FC<{
   onBlur,
   placeholder,
   disabled,
-  replaceText,
   forwardRef,
   css,
 }) => {
@@ -49,13 +47,6 @@ export const TextEditor: React.FC<{
         dangerouslySetInnerHTML={initialInnerHtml}
         onInput={(e) => {
           const div = e.target as HTMLDivElement;
-          const html = replaceText
-            ? replaceText?.(div.innerHTML)
-            : div.innerHTML;
-
-          if (html !== div.innerHTML) {
-            div.innerHTML = html;
-          }
 
           setIsEmpty(!div.innerText?.trim());
           setValue(sanitizeForStorage(div.innerText));
