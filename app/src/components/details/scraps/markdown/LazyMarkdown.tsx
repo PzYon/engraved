@@ -24,6 +24,10 @@ const BaseContentContainer = styled("div")`
   overflow: auto;
   font-family: ${(p) => p.theme.typography.fontFamily};
 
+  background-color: lightgray;
+
+  margin: 20px;
+
   .ngrvd-emoji {
     font-size: smaller;
   }
