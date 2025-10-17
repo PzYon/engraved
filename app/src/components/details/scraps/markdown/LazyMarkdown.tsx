@@ -28,9 +28,20 @@ const BaseContentContainer = styled("div")`
 
   margin: 20px;
 
+  // new start
+
   .ngrvd-emoji {
-    font-size: smaller;
+    //font-size: smaller;
+    font-size: 15px;
+    margin-bottom: 3px;
   }
+
+  p {
+    display: flex;
+    align-items: center;
+  }
+
+  // new end
 
   ul {
     margin: 0.5rem 0;

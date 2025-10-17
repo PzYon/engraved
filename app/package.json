@@ -30,6 +30,7 @@
     "chrono-node": "2.9.0",
     "date-fns": "4.1.0",
     "emoji-picker-react": "^4.9.4",
+    "emoji-regex": "^10.6.0",
     "markdown-it": "14.1.0",
     "markdown-it-emoji": "3.0.0",
     "react": "19.2.0",
