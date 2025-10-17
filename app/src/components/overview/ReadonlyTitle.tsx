@@ -6,7 +6,7 @@ import { IEntity } from "../../serverApi/IEntity";
 import React from "react";
 import { ActionLink } from "../common/actions/ActionLink";
 import { IAction } from "../common/actions/IAction";
-import { styled, Typography } from "@mui/material";
+import { styled } from "@mui/material";
 
 export const ReadonlyTitle: React.FC<{
   title: React.ReactNode;
@@ -17,34 +17,31 @@ export const ReadonlyTitle: React.FC<{
   const { user } = useAppContext();
   const { isCompact } = useDisplayModeContext();
 
-  return (
-    <ReadonlyTitleContainer>
-      <span style={{ display: "flex", alignItems: "center", width: "100%" }}>
-        {getTitle()}
-        {!hasFocus && isCompact && entity ? (
-          <Properties properties={[getScheduleProperty(entity, user.id)]} />
-        ) : null}
-      </span>
-    </ReadonlyTitleContainer>
+  const inner = onClickAction ? (
+    <ActionLink action={onClickAction}>
+      <>{title}</>
+    </ActionLink>
+  ) : (
+    <>{title}</>
   );
 
-  function getTitle() {
-    const inner = onClickAction ? (
-      <ActionLink action={onClickAction}>
-        <>{title}</>
-      </ActionLink>
-    ) : (
-      <>{title}</>
-    );
-
-    return <span style={{ flexGrow: 1 }}>{inner}</span>;
-  }
+  return (
+    <ReadonlyTitleContainer>
+      <div style={{ flexGrow: 1 }}>{inner}</div>
+      {!hasFocus && isCompact && entity ? (
+        <Properties properties={[getScheduleProperty(entity, user.id)]} />
+      ) : null}
+    </ReadonlyTitleContainer>
+  );
 };
 
-const ReadonlyTitleContainer = styled(Typography)`
+const ReadonlyTitleContainer = styled("div")`
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  font-family: ${(p) => p.theme.typography.fontFamily};
   color: ${(p) => p.theme.palette.primary.main};
   font-size: 2rem;
   font-weight: 200;
   line-height: 1;
-  flex-grow: 1;
 `;
