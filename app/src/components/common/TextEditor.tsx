@@ -98,7 +98,8 @@ export const TextEditor: React.FC<{
           restoreCaretByOffset(div, caretOffset);
 
           setIsEmpty(!div.innerText?.trim());
-          setValue(sanitizeForStorage(div.innerText));
+          setValue(sanitizeForStorage(div.innerHTML));
+          // setValue(sanitizeForStorage(div.innerText));
         }}
         onKeyUp={(e) => {
           onKeyUp?.(e);
@@ -117,11 +118,27 @@ export const TextEditor: React.FC<{
 };
 
 function sanitizeForHtml(value: string) {
-  return value?.replaceAll("\n", "<br />");
+  return getMarkdownInstance().render(value);
+  //return value?.replaceAll("\n", "<br />");
 }
 
 function sanitizeForStorage(value: string) {
-  return value?.replaceAll("<br /", "\n");
+  console.log("Sanitize for storage: '" + value + "'");
+  return value
+    ?.replaceAll("<br />", "\n")
+    .replaceAll("<br>", "\n")
+    .replaceAll("<strong>", "**")
+    .replaceAll("</strong>", "**")
+    .replaceAll("<em>", "*")
+    .replaceAll("</em>", "**")
+    .replaceAll("<ul>", "")
+    .replaceAll("</ul>", "")
+    .replaceAll("<li>", "- ")
+    .replaceAll("</li>", "")
+    .replaceAll("<p></p>", "")
+    .replaceAll("<p>", "")
+    .replaceAll("</p>", "")
+    .trim();
 }
 
 const Host = styled("div")`

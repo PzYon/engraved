@@ -60,6 +60,8 @@ export const ParseableDate: React.FC<{
           onSelect(parsed);
         }}
         setValue={(value) => {
+          console.log("setting value '" + value + "'");
+
           try {
             const parsed = parseDate(value);
             setParsed(parsed);
