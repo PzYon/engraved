@@ -1,8 +1,7 @@
 import { full as emoji } from "markdown-it-emoji";
 import markdownit from "markdown-it";
-import emojiRegex from "emoji-regex";
-
-const regex = emojiRegex();
+import { renderEmoji } from "./renderEmoji";
+import { replaceEmoji } from "./replaceEmoji";
 
 const md = markdownit({ linkify: true, breaks: true }).use(emoji, {
   defs: { attention: "⚠️", question: "❓" },
@@ -14,13 +13,8 @@ md.renderer.rules.emoji = function (token, idx) {
 };
 
 md.renderer.rules.text = function (tokens, idx) {
-  const content = tokens[idx].content;
-  return content.replace(regex, renderEmoji);
+  return replaceEmoji(tokens[idx].content);
 };
-
-function renderEmoji(content: string) {
-  return `<span class="ngrvd-emoji">${content}</span>`;
-}
 
 // https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer
 const defaultRender =

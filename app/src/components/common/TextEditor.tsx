@@ -1,5 +1,6 @@
 import { styled } from "@mui/material";
 import { useMemo, useState } from "react";
+import { getMarkdownInstance } from "../details/scraps/markdown/getMarkdownInstance";
 
 export const TextEditor: React.FC<{
   initialValue?: string;
@@ -47,6 +48,54 @@ export const TextEditor: React.FC<{
         dangerouslySetInnerHTML={initialInnerHtml}
         onInput={(e) => {
           const div = e.target as HTMLDivElement;
+
+          // save caret offset (characters from start of div)
+          const selection = window.getSelection();
+          let caretOffset = 0;
+          if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const preRange = range.cloneRange();
+            preRange.selectNodeContents(div);
+            preRange.setEnd(range.endContainer, range.endOffset);
+            caretOffset = preRange.toString().length;
+          }
+
+          // update HTML
+          div.innerHTML = getMarkdownInstance().render(div.innerHTML);
+
+          // restore caret based on character offset
+          const restoreCaretByOffset = (container: Node, offset: number) => {
+            const walker = document.createTreeWalker(
+              container,
+              NodeFilter.SHOW_TEXT,
+              null,
+            );
+            let node: Node | null = null;
+            let accumulated = 0;
+            while ((node = walker.nextNode())) {
+              const len = node.textContent?.length ?? 0;
+              if (accumulated + len >= offset) {
+                const sel = window.getSelection();
+                sel?.removeAllRanges();
+                const range = document.createRange();
+                const localOffset = Math.max(0, offset - accumulated);
+                range.setStart(node, localOffset);
+                range.collapse(true);
+                sel?.addRange(range);
+                return;
+              }
+              accumulated += len;
+            }
+            // fallback: put caret at end
+            const sel = window.getSelection();
+            sel?.removeAllRanges();
+            const range = document.createRange();
+            range.selectNodeContents(container);
+            range.collapse(false);
+            sel?.addRange(range);
+          };
+
+          restoreCaretByOffset(div, caretOffset);
 
           setIsEmpty(!div.innerText?.trim());
           setValue(sanitizeForStorage(div.innerText));
