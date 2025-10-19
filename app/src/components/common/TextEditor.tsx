@@ -61,7 +61,11 @@ export const TextEditor: React.FC<{
           }
 
           // update HTML
-          div.innerHTML = getMarkdownInstance().render(div.innerHTML);
+          div.innerHTML = getMarkdownInstance()
+            .render(div.innerHTML)
+            .trim()
+            .replace(/^<p>/, "")
+            .replace(/<\/p>$/, "");
 
           // restore caret based on character offset
           const restoreCaretByOffset = (container: Node, offset: number) => {
@@ -73,6 +77,7 @@ export const TextEditor: React.FC<{
             let node: Node | null = null;
             let accumulated = 0;
             while ((node = walker.nextNode())) {
+              console.log("node", node);
               const len = node.textContent?.length ?? 0;
               if (accumulated + len >= offset) {
                 const sel = window.getSelection();
@@ -98,6 +103,7 @@ export const TextEditor: React.FC<{
           restoreCaretByOffset(div, caretOffset);
 
           setIsEmpty(!div.innerText?.trim());
+          console.log("Inner text: ", div.innerText);
           setValue(sanitizeForStorage(div.innerHTML));
           // setValue(sanitizeForStorage(div.innerText));
         }}
@@ -123,8 +129,8 @@ function sanitizeForHtml(value: string) {
 }
 
 function sanitizeForStorage(value: string) {
-  console.log("Sanitize for storage: '" + value + "'");
-  return value
+  console.log("Sanitize for storage, inner HTML is: '" + value + "'");
+  const sanitized = value
     ?.replaceAll("<br />", "\n")
     .replaceAll("<br>", "\n")
     .replaceAll("<strong>", "**")
@@ -135,10 +141,12 @@ function sanitizeForStorage(value: string) {
     .replaceAll("</ul>", "")
     .replaceAll("<li>", "- ")
     .replaceAll("</li>", "")
-    .replaceAll("<p></p>", "")
     .replaceAll("<p>", "")
     .replaceAll("</p>", "")
     .trim();
+  console.log("Sanitized for storage: '" + sanitized + "'");
+
+  return sanitized;
 }
 
 const Host = styled("div")`
