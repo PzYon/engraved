@@ -20,7 +20,7 @@
     "@types/node": "24.9.1",
     "husky": "9.1.7",
     "knip": "5.66.2",
-    "lint-staged": "16.2.5",
+    "lint-staged": "16.2.6",
     "typescript": "5.9.3"
   }
 }
