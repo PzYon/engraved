@@ -1,6 +1,3 @@
-import { MarkdownEditor } from "./MarkdownEditor";
-import { FadeInContainer } from "../../../common/FadeInContainer";
-import { Markdown } from "./Markdown";
 import React, { useState } from "react";
 import { styled } from "@mui/material";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
@@ -12,7 +9,10 @@ import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { getRawRowValues } from "./getRawRowValues";
-import { TextEditor } from "../../../common/TextEditor";
+import { TextEditorNew } from "../../../common/TextEditorNew";
+import { FadeInContainer } from "../../../common/FadeInContainer";
+import { Markdown } from "./Markdown";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 export const ScrapMarkdown: React.FC = () => {
   const { setAppAlert } = useAppContext();
@@ -60,11 +60,19 @@ export const ScrapMarkdown: React.FC = () => {
   );
 
   function getContent() {
+    // return (
+    //   <TextEditorNew
+    //     initialValue={notes ?? ""}
+    //     setValue={setNotes}
+    //     disabled={!isEditMode}
+    //   />
+    // );
+
     if (isEditMode) {
       return (
         <EditorContainer>
           {isEditableDiv ? (
-            <TextEditor initialValue={notes ?? ""} setValue={setNotes} />
+            <TextEditorNew initialValue={notes ?? ""} setValue={setNotes} />
           ) : (
             <MarkdownEditor
               showOutlineWhenFocused={true}
