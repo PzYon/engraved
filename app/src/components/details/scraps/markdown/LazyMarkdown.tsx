@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
 import { styled } from "@mui/material";
 import { IMarkdownProps } from "./Markdown";
-import { getMarkdownInstance } from "./getMarkdownInstance";
+import { getMarkedInstance } from "./getMarkedInstance";
 
-const md = getMarkdownInstance();
+// const md = getMarkdownInstance();
+const md = getMarkedInstance();
 
 const LazyMarkdown: React.FC<IMarkdownProps> = ({
   value,
@@ -11,7 +12,7 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
   useBasic,
 }) => {
   const html = useMemo<{ __html: string }>(
-    () => ({ __html: value ? md.render(value) : "" }),
+    () => ({ __html: value ? md.parse(value).toString() : "" }),
     [value],
   );
 

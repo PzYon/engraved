@@ -2,8 +2,17 @@ import { styled } from "@mui/material";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
+import Emoji, { emojis } from "@tiptap/extension-emoji";
 
 // https://tiptap.dev/docs/editor/markdown/getting-started/installation
+
+const EmojiExtension = Emoji.configure({
+  enableEmoticons: true,
+  emojis: emojis,
+  HTMLAttributes: {
+    class: "ngrvd-emoji",
+  },
+});
 
 export const TextEditorNew: React.FC<{
   initialValue?: string;
@@ -32,7 +41,7 @@ export const TextEditorNew: React.FC<{
 }) => {
   const editor = useEditor(
     {
-      extensions: [StarterKit, Markdown],
+      extensions: [StarterKit, EmojiExtension, Markdown],
       content: initialValue,
       contentType: "markdown",
       onFocus: () => onFocus?.(),
