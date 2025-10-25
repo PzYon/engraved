@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import { useMemo, useState } from "react";
-import { getMarkdownInstance } from "../details/scraps/markdown/getMarkdownInstance";
+// import { getMarkdownInstance } from "../details/scraps/markdown/getMarkdownInstance";
 
 export const TextEditor: React.FC<{
   initialValue?: string;
@@ -61,8 +61,7 @@ export const TextEditor: React.FC<{
           }
 
           // update HTML
-          div.innerHTML = getMarkdownInstance()
-            .render(div.innerHTML)
+          div.innerHTML = "" //getMarkdownInstance().render(div.innerHTML)
             .trim()
             .replace(/^<p>/, "")
             .replace(/<\/p>$/, "");
@@ -124,7 +123,8 @@ export const TextEditor: React.FC<{
 };
 
 function sanitizeForHtml(value: string) {
-  return getMarkdownInstance().render(value);
+  return value;
+  // return getMarkdownInstance().render(value);
   //return value?.replaceAll("\n", "<br />");
 }
 
