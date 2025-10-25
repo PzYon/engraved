@@ -1,6 +1,9 @@
 import { styled } from "@mui/material";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { Markdown } from "@tiptap/markdown";
+
+// https://tiptap.dev/docs/editor/markdown/getting-started/installation
 
 export const TextEditorNew: React.FC<{
   initialValue?: string;
@@ -29,12 +32,13 @@ export const TextEditorNew: React.FC<{
 }) => {
   const editor = useEditor(
     {
-      extensions: [StarterKit],
+      extensions: [StarterKit, Markdown],
       content: initialValue,
+      contentType: "markdown",
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
-        setValue(editor.getHTML());
+        setValue(editor.getMarkdown());
       },
       editable: !disabled,
       autofocus: true,
@@ -64,5 +68,9 @@ const Host = styled("div")`
 
   &:focus {
     outline: 2px solid ${(p) => p.theme.palette.primary.main};
+  }
+
+  p {
+    margin: 0;
   }
 `;

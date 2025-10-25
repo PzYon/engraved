@@ -26,8 +26,6 @@ const BaseContentContainer = styled("div")`
 
   background-color: lightgray;
 
-  margin: 20px;
-
   // new start
 
   .ngrvd-emoji {
