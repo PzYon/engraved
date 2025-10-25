@@ -1,14 +1,14 @@
-import { Token } from "markdown-it";
-import { getMarkdownInstance } from "./getMarkdownInstance";
+// import { getMarkedInstance } from "./getMarkedInstance";
 
-const md = getMarkdownInstance();
+// const md = getMarkedInstance();
 
 export function getRawRowValues(value: string): string[] {
-  return md
-    .parseInline(value, {})
-    .flatMap((token) => tokensToLines(token.children));
+  return [value];
+  //  return md.parse(value, {})
+  //    .flatMap((token) => tokensToLines(token.children));
 }
 
+/*
 function tokensToLines(tokens: Token[]) {
   const linesOfText: string[] = [];
   let currentLineTokens: string[] = [];
@@ -48,3 +48,4 @@ function tokensToLines(tokens: Token[]) {
     );
   }
 }
+*/
