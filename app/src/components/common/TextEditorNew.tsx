@@ -42,6 +42,11 @@ export const TextEditorNew: React.FC<{
 }) => {
   const editor = useEditor(
     {
+      editorProps: {
+        attributes: {
+          "data-testId": "placeholder-" + placeholder,
+        },
+      },
       extensions: [StarterKit, EmojiExtension, Markdown],
       content: initialValue,
       contentType: "markdown",
@@ -53,6 +58,7 @@ export const TextEditorNew: React.FC<{
       },
       editable: !disabled,
       autofocus: true,
+
       // onKeyDown: x => onKeyDown?.(x),
       // placeholder: placeholder,
     },
@@ -66,10 +72,7 @@ export const TextEditorNew: React.FC<{
       {placeholder && isEmpty ? (
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
-      <EditorContent
-        editor={editor}
-        data-testid={"placeholder-" + placeholder}
-      />
+      <EditorContent editor={editor} />
       {/*<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>*/}
       {/*<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>*/}
     </Host>
