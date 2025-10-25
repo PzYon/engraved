@@ -34,7 +34,7 @@ export const TextEditorNew: React.FC<{
   // onKeyDown,
   onFocus,
   onBlur,
-  // placeholder,
+  placeholder,
   disabled,
   // forwardRef,
   // css,
@@ -59,7 +59,10 @@ export const TextEditorNew: React.FC<{
 
   return (
     <Host className="ngrvd-text-editor">
-      <EditorContent editor={editor} />
+      <EditorContent
+        editor={editor}
+        data-testid={"placeholder-" + placeholder}
+      />
       {/*<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>*/}
       {/*<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>*/}
     </Host>
