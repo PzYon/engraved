@@ -62,6 +62,8 @@ export const TextEditorNew: React.FC<{
       <EditorContent
         editor={editor}
         data-testid={"placeholder-" + placeholder}
+        role="textbox"
+        aria-label={placeholder}
       />
       {/*<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>*/}
       {/*<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>*/}
