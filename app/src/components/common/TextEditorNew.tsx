@@ -3,6 +3,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
 import Emoji, { emojis } from "@tiptap/extension-emoji";
+import { useState } from "react";
 
 // https://tiptap.dev/docs/editor/markdown/getting-started/installation
 
@@ -48,6 +49,7 @@ export const TextEditorNew: React.FC<{
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
         setValue(editor.getMarkdown());
+        setIsEmpty(!editor.getText());
       },
       editable: !disabled,
       autofocus: true,
@@ -57,13 +59,16 @@ export const TextEditorNew: React.FC<{
     [disabled],
   );
 
+  const [isEmpty, setIsEmpty] = useState(!editor.getText());
+
   return (
     <Host className="ngrvd-text-editor">
+      {placeholder && isEmpty ? (
+        <PlaceholderContainer>{placeholder}</PlaceholderContainer>
+      ) : null}
       <EditorContent
         editor={editor}
         data-testid={"placeholder-" + placeholder}
-        role="textbox"
-        aria-label={placeholder}
       />
       {/*<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>*/}
       {/*<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>*/}
@@ -87,4 +92,11 @@ const Host = styled("div")`
   p {
     margin: 0;
   }
+`;
+
+const PlaceholderContainer = styled("span")`
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.6;
 `;
