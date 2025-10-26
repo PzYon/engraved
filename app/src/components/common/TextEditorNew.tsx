@@ -21,8 +21,8 @@ export const TextEditorNew: React.FC<{
   placeholder?: string;
   disabled?: boolean;
   autoFocus?: boolean;
-  onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
+  onKeyUp?: (e: KeyboardEvent) => void;
+  onKeyDown?: (e: KeyboardEvent) => void;
   onFocus?: () => void;
   onBlur?: () => void;
   forwardRef?: React.ForwardedRef<HTMLInputElement>;
@@ -31,8 +31,8 @@ export const TextEditorNew: React.FC<{
   initialValue,
   setValue,
   //autoFocus,
-  // onKeyUp,
-  // onKeyDown,
+  onKeyUp,
+  onKeyDown,
   onFocus,
   onBlur,
   placeholder,
@@ -45,6 +45,18 @@ export const TextEditorNew: React.FC<{
       editorProps: {
         attributes: {
           "data-testId": "placeholder-" + placeholder,
+        },
+        handleDOMEvents: {
+          keyup: (view, event) => {
+            onKeyUp?.(event);
+            //event.preventDefault();
+            return false; // Return false to allow the event to continue propagating
+          },
+          keydown: (view, event) => {
+            onKeyDown?.(event);
+            // event.preventDefault();
+            return false; // Return false to allow the event to continue propagating
+          },
         },
       },
       extensions: [StarterKit, EmojiExtension, Markdown],

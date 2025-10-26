@@ -42,7 +42,7 @@ export const ParseableDate: React.FC<{
         onBlur={onBlur}
         disabled={disabled}
         placeholder={placeholder ?? "Enter date"}
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+        onKeyDown={(e: KeyboardEvent) => {
           if (e.key !== "Enter") {
             return;
           }

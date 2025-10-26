@@ -8,7 +8,7 @@ import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonG
 import { ListItemCollection } from "./ListItemCollection";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { TextEditor } from "../../../common/TextEditor";
+import { TextEditorNew } from "../../../common/TextEditorNew";
 
 export const ScrapListItem: React.FC<{
   listItemsCollection: ListItemCollection;
@@ -58,7 +58,7 @@ export const ScrapListItem: React.FC<{
       />
       {isEditMode ? (
         <>
-          <TextEditor
+          <TextEditorNew
             css={getCss() as React.CSSProperties}
             forwardRef={ref}
             initialValue={label}
@@ -103,7 +103,7 @@ export const ScrapListItem: React.FC<{
     return css;
   }
 
-  function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+  function keyDown(e: KeyboardEvent) {
     switch (e.key) {
       case "ArrowUp": {
         if (e.altKey && e.ctrlKey) {
@@ -169,7 +169,7 @@ export const ScrapListItem: React.FC<{
     }
   }
 
-  function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
+  function keyUp(e: KeyboardEvent) {
     switch (e.key) {
       case "Enter": {
         listItemsCollection.addItem(index);
