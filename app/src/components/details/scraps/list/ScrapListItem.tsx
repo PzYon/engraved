@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { IScrapListItem } from "./IScrapListItem";
 import { Checkbox, styled, SxProps } from "@mui/material";
 import DragIndicator from "@mui/icons-material/DragIndicator";
@@ -18,15 +18,9 @@ export const ScrapListItem: React.FC<{
   onChange: (listItem: IScrapListItem) => void;
 }> = ({ listItemsCollection, index, isEditMode, listItem, onChange }) => {
   const [label, setLabel] = useState(listItem.label);
-  const ref: React.RefObject<HTMLInputElement> = useRef(null);
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: listItemsCollection.getReactKey(index) });
-
-  useEffect(
-    () => listItemsCollection.setRef(index, ref),
-    [listItemsCollection, index],
-  );
 
   return (
     <ListItem
@@ -60,11 +54,13 @@ export const ScrapListItem: React.FC<{
         <>
           <TextEditorNew
             css={getCss() as React.CSSProperties}
-            forwardRef={ref}
             initialValue={label}
             setValue={setLabel}
             onKeyUp={keyUp}
             onKeyDown={keyDown}
+            setGiveFocus={(giveFocus: () => void) => {
+              listItemsCollection.setGiveFocus(index, giveFocus);
+            }}
             onBlur={() =>
               onChange({
                 label,

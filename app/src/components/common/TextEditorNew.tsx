@@ -3,7 +3,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
 import Emoji, { emojis } from "@tiptap/extension-emoji";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // https://tiptap.dev/docs/editor/markdown/getting-started/installation
 
@@ -16,6 +16,7 @@ const EmojiExtension = Emoji.configure({
 });
 
 export const TextEditorNew: React.FC<{
+  setGiveFocus?: (giveFocus: () => void) => void;
   initialValue?: string;
   setValue: (value: string) => void;
   placeholder?: string;
@@ -25,20 +26,19 @@ export const TextEditorNew: React.FC<{
   onKeyDown?: (e: KeyboardEvent) => void;
   onFocus?: () => void;
   onBlur?: () => void;
-  forwardRef?: React.ForwardedRef<HTMLInputElement>;
   css?: React.CSSProperties;
 }> = ({
+  setGiveFocus,
   initialValue,
   setValue,
-  //autoFocus,
+  autoFocus,
   onKeyUp,
   onKeyDown,
   onFocus,
   onBlur,
   placeholder,
   disabled,
-  // forwardRef,
-  // css,
+  css,
 }) => {
   const editor = useEditor(
     {
@@ -48,11 +48,13 @@ export const TextEditorNew: React.FC<{
         },
         handleDOMEvents: {
           keyup: (view, event) => {
+            // debugger;
             onKeyUp?.(event);
             //event.preventDefault();
             return false; // Return false to allow the event to continue propagating
           },
           keydown: (view, event) => {
+            // debugger;
             onKeyDown?.(event);
             // event.preventDefault();
             return false; // Return false to allow the event to continue propagating
@@ -62,6 +64,7 @@ export const TextEditorNew: React.FC<{
       extensions: [StarterKit, EmojiExtension, Markdown],
       content: initialValue,
       contentType: "markdown",
+      autofocus: autoFocus ? "end" : null,
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
@@ -69,13 +72,15 @@ export const TextEditorNew: React.FC<{
         setIsEmpty(!editor.getText());
       },
       editable: !disabled,
-      autofocus: true,
-
       // onKeyDown: x => onKeyDown?.(x),
       // placeholder: placeholder,
     },
     [disabled],
   );
+
+  useEffect(() => {
+    setGiveFocus?.(() => editor.commands.focus());
+  }, [editor, setGiveFocus]);
 
   const [isEmpty, setIsEmpty] = useState(!editor.getText());
 
@@ -84,7 +89,7 @@ export const TextEditorNew: React.FC<{
       {placeholder && isEmpty ? (
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
-      <EditorContent editor={editor} />
+      <EditorContent style={css} editor={editor} />
       {/*<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>*/}
       {/*<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>*/}
     </Host>

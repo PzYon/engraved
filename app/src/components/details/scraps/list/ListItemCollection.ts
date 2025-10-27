@@ -1,4 +1,3 @@
-import React from "react";
 import { IScrapListItem } from "./IScrapListItem";
 import { CursorPosition, ListItemWrapper } from "./ListItemWrapper";
 
@@ -20,8 +19,8 @@ export class ListItemCollection {
     this.wrappedItems = rawItems.map((i) => new ListItemWrapper(i));
   }
 
-  setRef(index: number, ref: React.RefObject<HTMLInputElement>): void {
-    this.wrappedItems[index].setRef(ref);
+  setGiveFocus(index: number, giveFocus: () => void): void {
+    this.wrappedItems[index].setGiveFocus(giveFocus);
   }
 
   getReactKey(index: number): string {
@@ -35,9 +34,9 @@ export class ListItemCollection {
   addItem(index: number) {
     const isFirst = index <= 0;
 
-    if (!isFirst && !this.wrappedItems[index].raw.label) {
-      return;
-    }
+    // if (!isFirst && !this.wrappedItems[index].raw.label) {
+    //  return;
+    // }
 
     const depth = isFirst ? 0 : this.getItemDepth(index);
 

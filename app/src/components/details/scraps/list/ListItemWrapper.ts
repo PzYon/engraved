@@ -1,17 +1,16 @@
 import { IScrapListItem } from "./IScrapListItem";
-import React from "react";
 
 export type CursorPosition = number | "beginning" | "end";
 
 export class ListItemWrapper {
+  private giveFocusInternal: () => void;
+
+  readonly reactKey = "react-key-" + Math.random().toString().split(".")[1];
+
   constructor(
     private item: IScrapListItem,
     private giveFocusOnRef?: boolean,
   ) {}
-
-  private ref: React.RefObject<HTMLInputElement>;
-
-  readonly reactKey = "react-key-" + Math.random().toString().split(".")[1];
 
   get raw(): IScrapListItem {
     return this.item;
@@ -21,18 +20,19 @@ export class ListItemWrapper {
     this.item = value;
   }
 
-  setRef(ref: React.RefObject<HTMLInputElement>) {
-    this.ref = ref;
+  setGiveFocus(giveFocus: () => void) {
+    this.giveFocusInternal = giveFocus;
 
     if (this.giveFocusOnRef) {
-      this.ref.current?.focus();
+      this.giveFocus();
       this.giveFocusOnRef = false;
     }
   }
 
   giveFocus(cursorPosition?: CursorPosition) {
-    this.ref?.current?.focus();
-    this.moveCursorToPosition(cursorPosition);
+    this.giveFocusInternal();
+    console.log(cursorPosition);
+    //this.moveCursorToPosition(cursorPosition);
   }
 
   moveCursorToPosition(cursorPosition: CursorPosition) {
