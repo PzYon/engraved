@@ -68,6 +68,7 @@ export const TextEditorNew: React.FC<{
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
+        console.log("Value from editor: ", editor.getText());
         setValue(editor.getMarkdown());
         setIsEmpty(!editor.getText());
       },

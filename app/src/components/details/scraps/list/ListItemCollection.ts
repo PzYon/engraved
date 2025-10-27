@@ -20,6 +20,8 @@ export class ListItemCollection {
   }
 
   setGiveFocus(index: number, giveFocus: () => void): void {
+    console.log("WHY IS THIS CALLED SO OFTEN?");
+    console.log("calling setGiveFocus", index, this.wrappedItems[index]);
     this.wrappedItems[index].setGiveFocus(giveFocus);
   }
 
@@ -96,6 +98,8 @@ export class ListItemCollection {
   moveItemUp(index: number) {
     const lowerIndex = this.getNextLowerIndex(index);
 
+    console.log("moveItemUp", index);
+
     if (lowerIndex > index) {
       this.moveItem(0, { index: this.highestIndex + 1 });
     } else {
@@ -105,6 +109,8 @@ export class ListItemCollection {
 
   moveItemDown(index: number) {
     const higherIndex = this.getNextHigherIndex(index);
+
+    console.log("moveItemDown", index);
 
     if (higherIndex < index) {
       this.moveItem(this.highestIndex, { index: 0 });
@@ -144,6 +150,8 @@ export class ListItemCollection {
         didChange = true;
       }
     }
+
+    console.log("moveItem", index, target, "didChange", didChange);
 
     if (didChange) {
       this.fireOnChange();
