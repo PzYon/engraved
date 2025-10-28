@@ -34,7 +34,7 @@ export class ScrapsJournalPage extends JournalPage {
   async addMarkdownWithTitle(title: string) {
     await this.clickPageAction("Add entry");
 
-    await this.page.getByRole("textbox", { name: "Title" }).click();
+    await this.getTitleBox().click();
     await this.page.getByRole("textbox", { name: "Title" }).fill(title);
     await this.page.getByRole("textbox", { name: "Title" }).press("Alt+s");
 
@@ -50,5 +50,10 @@ export class ScrapsJournalPage extends JournalPage {
         .locator("[data-scrap-type='List']")
         .count()) === 0
     );
+  }
+
+  private getTitleBox() {
+    return this.page.getByTestId("placeholder-Title");
+    // return this.page.getByRole("textbox", { name: "Title" });
   }
 }
