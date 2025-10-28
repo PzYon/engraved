@@ -90,7 +90,7 @@ export const TextEditorNew: React.FC<{
       {placeholder && isEmpty ? (
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
-      <EditorContent style={css} editor={editor} />
+      <EditorContent style={css} editor={editor} role="textbox" />
       {/*<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>*/}
       {/*<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>*/}
     </Host>
