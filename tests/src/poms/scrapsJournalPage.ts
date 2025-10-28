@@ -35,8 +35,8 @@ export class ScrapsJournalPage extends JournalPage {
     await this.clickPageAction("Add entry");
 
     await this.getTitleBox().click();
-    await this.page.getByRole("textbox", { name: "Title" }).fill(title);
-    await this.page.getByRole("textbox", { name: "Title" }).press("Alt+s");
+    await this.getTitleBox().fill(title);
+    await this.getTitleBox().press("Alt+s");
 
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar.getByText("Added entry")).toBeVisible();
