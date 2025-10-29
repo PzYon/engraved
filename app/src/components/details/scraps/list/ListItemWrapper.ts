@@ -30,7 +30,7 @@ export class ListItemWrapper {
   }
 
   giveFocus(cursorPosition?: CursorPosition) {
-    this.giveFocusInternal();
+    this.giveFocusInternal?.();
     console.log(cursorPosition);
     //this.moveCursorToPosition(cursorPosition);
   }
