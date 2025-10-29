@@ -25,8 +25,6 @@ const BaseContentContainer = styled("div")`
   overflow: auto;
   font-family: ${(p) => p.theme.typography.fontFamily};
 
-  background-color: lightgray;
-
   // new start
 
   .ngrvd-emoji {
