@@ -154,7 +154,7 @@ test("perform common scrap list operations using shortcuts", async ({
 
   await scrapList.dblClickToEdit();
 
-  // this should not be necessary, as basically there cursor should already
+  // this should not be necessary, as basically the cursor should already
   // be there. at least i guess so!?
   await scrapList.getListItem(0, 0).click();
 
