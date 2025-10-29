@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
-import { TextEditorNew } from "../../common/TextEditorNew";
+import { RichTextEditor } from "../../common/RichTextEditor";
 
 export const ParseableDate: React.FC<{
   onChange: (parsedDate: IParsedDate) => void;
@@ -35,7 +35,7 @@ export const ParseableDate: React.FC<{
 
   return (
     <Host sx={sx} isTitle={isTitle}>
-      <TextEditorNew
+      <RichTextEditor
         initialValue={initialValue}
         autoFocus={true}
         onFocus={onFocus}
@@ -60,7 +60,6 @@ export const ParseableDate: React.FC<{
           onSelect(parsed);
         }}
         setValue={(value) => {
-
           try {
             const parsed = parseDate(value);
             setParsed(parsed);

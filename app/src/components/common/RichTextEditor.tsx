@@ -15,7 +15,7 @@ const EmojiExtension = Emoji.configure({
   },
 });
 
-export const TextEditorNew: React.FC<{
+export const RichTextEditor: React.FC<{
   setGiveFocus?: (giveFocus: () => void) => void;
   initialValue?: string;
   setValue: (value: string) => void;
@@ -88,8 +88,6 @@ export const TextEditorNew: React.FC<{
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
       <EditorContent style={css} editor={editor} role="textbox" />
-      {/*<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>*/}
-      {/*<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>*/}
     </Host>
   );
 };

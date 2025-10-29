@@ -7,7 +7,7 @@ import { useScrapContext } from "../ScrapContext";
 import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { getRawRowValues } from "./getRawRowValues";
-import { TextEditorNew } from "../../../common/TextEditorNew";
+import { RichTextEditor } from "../../../common/RichTextEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
 
@@ -38,7 +38,7 @@ export const ScrapMarkdown: React.FC = () => {
     if (isEditMode) {
       return (
         <EditorContainer>
-          <TextEditorNew initialValue={notes ?? ""} setValue={setNotes} />
+          <RichTextEditor initialValue={notes ?? ""} setValue={setNotes} />
         </EditorContainer>
       );
     }
