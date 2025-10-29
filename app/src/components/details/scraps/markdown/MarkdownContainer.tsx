@@ -77,12 +77,4 @@ export const MarkdownContainer = styled(BaseMarkdownContainer)`
   img {
     max-width: 100%;
   }
-
-  div > :first-of-type {
-    margin-top: 0 !important;
-  }
-
-  div > :last-child {
-    margin-bottom: 0 !important;
-  }
 `;

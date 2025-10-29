@@ -5,6 +5,7 @@ import { Markdown } from "@tiptap/markdown";
 import Emoji, { emojis } from "@tiptap/extension-emoji";
 import { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
+import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
 
 // https://tiptap.dev/docs/editor/markdown/getting-started/installation
 
@@ -76,7 +77,9 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       {placeholder && isEmpty ? (
         <PlaceholderContainer>{placeholder}</PlaceholderContainer>
       ) : null}
-      <StyledEditorContent style={css} editor={editor} role="textbox" />
+      <MarkdownContainer>
+        <StyledEditorContent style={css} editor={editor} role="textbox" />
+      </MarkdownContainer>
     </Host>
   );
 };
@@ -94,10 +97,7 @@ const Host = styled("div")`
   width: 100%;
   font-family: ${(p) => p.theme.typography.fontFamily};
   padding: 3px;
-
-  p {
-    margin: 0;
-  }
+  margin: 2px;
 `;
 
 const PlaceholderContainer = styled("span")`
