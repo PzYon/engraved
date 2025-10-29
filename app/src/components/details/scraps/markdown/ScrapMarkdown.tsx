@@ -1,5 +1,4 @@
 import React from "react";
-import { styled } from "@mui/material";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
@@ -32,29 +31,13 @@ export const ScrapMarkdown: React.FC = () => {
       ]}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
-      {getContent()}
+      {isEditMode ? (
+        <RichTextEditor initialValue={notes ?? ""} setValue={setNotes} />
+      ) : (
+        <FadeInContainer>
+          <Markdown value={notes} />
+        </FadeInContainer>
+      )}
     </ScrapBody>
   );
-
-  function getContent() {
-    if (isEditMode) {
-      return (
-        <EditorContainer>
-          <RichTextEditor initialValue={notes ?? ""} setValue={setNotes} />
-        </EditorContainer>
-      );
-    }
-
-    return (
-      <FadeInContainer>
-        <Markdown value={notes} />
-      </FadeInContainer>
-    );
-  }
 };
-
-const EditorContainer = styled("div")`
-  .cm-editor {
-    padding: 0;
-  }
-`;

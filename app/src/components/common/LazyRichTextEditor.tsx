@@ -85,8 +85,13 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
 };
 
 const StyledEditorContent = styled(EditorContent)`
-  .ProseMirror-focused {
+  .ProseMirror {
+    outline: 2px solid transparent;
     border-radius: 3px;
+    z-index: 100;
+  }
+
+  .ProseMirror-focused {
     outline: 2px solid ${(p) => p.theme.palette.primary.main};
   }
 `;
@@ -96,8 +101,6 @@ const Host = styled("div")`
   background-color: ${(p) => p.theme.palette.common.white};
   width: 100%;
   font-family: ${(p) => p.theme.typography.fontFamily};
-  padding: 3px;
-  margin: 2px;
 `;
 
 const PlaceholderContainer = styled("span")`

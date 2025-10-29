@@ -12,6 +12,14 @@ const BaseMarkdownContainer = styled("div")`
     margin-bottom: 3px;
   }
 
+  p:first-of-type {
+    margin-top: 0;
+  }
+
+  P:last-of-type {
+    margin-bottom: 0;
+  }
+
   p {
     display: flex;
     align-items: center;
