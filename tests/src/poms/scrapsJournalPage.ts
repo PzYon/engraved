@@ -54,6 +54,5 @@ export class ScrapsJournalPage extends JournalPage {
 
   private getTitleBox() {
     return this.page.getByTestId("placeholder-Title");
-    // return this.page.getByRole("textbox", { name: "Title" });
   }
 }
