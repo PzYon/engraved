@@ -68,13 +68,10 @@ export const TextEditorNew: React.FC<{
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
-        console.log("Value from editor: ", editor.getText());
         setValue(editor.getMarkdown());
         setIsEmpty(!editor.getText());
       },
       editable: !disabled,
-      // onKeyDown: x => onKeyDown?.(x),
-      // placeholder: placeholder,
     },
     [disabled],
   );

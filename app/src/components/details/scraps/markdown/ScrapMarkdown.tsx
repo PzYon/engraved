@@ -1,32 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { styled } from "@mui/material";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
 import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
-import ToggleOnIcon from "@mui/icons-material/ToggleOn";
-import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { getRawRowValues } from "./getRawRowValues";
 import { TextEditorNew } from "../../../common/TextEditorNew";
 import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
-import { MarkdownEditor } from "./MarkdownEditor";
 
 export const ScrapMarkdown: React.FC = () => {
   const { setAppAlert } = useAppContext();
 
-  const {
-    notes,
-    setNotes,
-    isEditMode,
-    cancelEditingAction,
-    upsertScrap,
-    changeScrapType,
-  } = useScrapContext();
-
-  const [isEditableDiv, setIsEditableDiv] = useState(true);
+  const { notes, setNotes, isEditMode, changeScrapType } = useScrapContext();
 
   return (
     <ScrapBody
@@ -39,19 +27,6 @@ export const ScrapMarkdown: React.FC = () => {
           icon: <AutoFixHigh fontSize="small" />,
           label: "Change type to list",
         },
-        isEditableDiv
-          ? {
-              onClick: () => setIsEditableDiv(false),
-              key: "change-editor",
-              icon: <ToggleOnIcon fontSize="small" />,
-              label: "Use codemirror editor",
-            }
-          : {
-              onClick: () => setIsEditableDiv(true),
-              key: "change-editor",
-              icon: <ToggleOffIcon fontSize="small" />,
-              label: "Use nice editor",
-            },
       ]}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
@@ -60,30 +35,10 @@ export const ScrapMarkdown: React.FC = () => {
   );
 
   function getContent() {
-    // return (
-    //   <TextEditorNew
-    //     initialValue={notes ?? ""}
-    //     setValue={setNotes}
-    //     disabled={!isEditMode}
-    //   />
-    // );
-
     if (isEditMode) {
       return (
         <EditorContainer>
-          {isEditableDiv ? (
-            <TextEditorNew initialValue={notes ?? ""} setValue={setNotes} />
-          ) : (
-            <MarkdownEditor
-              showOutlineWhenFocused={true}
-              value={notes ?? ""}
-              onChange={setNotes}
-              keyMappings={{
-                "Alt-s": upsertScrap,
-                "Alt-x": cancelEditingAction?.onClick,
-              }}
-            />
-          )}
+          <TextEditorNew initialValue={notes ?? ""} setValue={setNotes} />
         </EditorContainer>
       );
     }

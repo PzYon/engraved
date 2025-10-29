@@ -3,7 +3,6 @@ import { styled } from "@mui/material";
 import { IMarkdownProps } from "./Markdown";
 import { getMarkedInstance } from "./getMarkedInstance";
 
-// const md = getMarkdownInstance();
 const md = getMarkedInstance();
 
 const LazyMarkdown: React.FC<IMarkdownProps> = ({
