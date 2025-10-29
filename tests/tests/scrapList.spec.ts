@@ -156,7 +156,7 @@ test("perform common scrap list operations using shortcuts", async ({
 
   // this should not be necessary, as basically there cursor should already
   // be there. at least i guess so!?
-  scrapList.getListItem(0, 0).click();
+  await scrapList.getListItem(0, 0).click();
 
   await page.keyboard.press("Enter");
   await page.keyboard.type("Second");
