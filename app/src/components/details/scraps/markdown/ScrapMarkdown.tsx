@@ -6,7 +6,6 @@ import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
 import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
-import { getRawRowValues } from "./getRawRowValues";
 import { RichTextEditor } from "../../../common/RichTextEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
@@ -21,7 +20,10 @@ export const ScrapMarkdown: React.FC = () => {
       editModeActions={[
         {
           onClick: () => {
-            changeScrapType(getRawRowValues(notes), ScrapType.List);
+            changeScrapType(
+              notes.split("\n").filter((line) => !!(line ?? "").trim()),
+              ScrapType.List,
+            );
           },
           key: "toggle-type",
           icon: <AutoFixHigh fontSize="small" />,
