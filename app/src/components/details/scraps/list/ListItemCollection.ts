@@ -98,8 +98,6 @@ export class ListItemCollection {
   moveItemUp(index: number) {
     const lowerIndex = this.getNextLowerIndex(index);
 
-    console.log("moveItemUp", index);
-
     if (lowerIndex > index) {
       this.moveItem(0, { index: this.highestIndex + 1 });
     } else {
