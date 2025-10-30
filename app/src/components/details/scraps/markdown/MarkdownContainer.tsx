@@ -1,13 +1,11 @@
 import { styled } from "@mui/material";
 
 const BaseMarkdownContainer = styled("div")`
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   font-family: ${(p) => p.theme.typography.fontFamily};
 
-  // new start
-
   .ngrvd-emoji {
-    //font-size: smaller;
     font-size: 15px;
     margin-bottom: 3px;
   }
@@ -24,8 +22,6 @@ const BaseMarkdownContainer = styled("div")`
     display: flex;
     align-items: center;
   }
-
-  // new end
 
   ul {
     margin: 0.5rem 0;

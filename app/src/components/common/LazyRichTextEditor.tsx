@@ -89,6 +89,8 @@ const StyledEditorContent = styled(EditorContent)`
     outline: 2px solid transparent;
     border-radius: 3px;
     z-index: 100;
+    margin: 2px;
+    padding: 4px;
   }
 
   .ProseMirror-focused {
