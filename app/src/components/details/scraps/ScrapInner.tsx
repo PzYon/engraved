@@ -7,6 +7,7 @@ import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeCo
 import { IScrapListItem } from "./list/IScrapListItem";
 import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { ParseableDate } from "../edit/ParseableDate";
+import { Markdown } from "./markdown/Markdown";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -35,31 +36,32 @@ export const ScrapInner: React.FC = () => {
     >
       {isEditMode ? (
         <ParseableDate
+          initialValue={title}
+          placeholder="Title"
+          isTitle={true}
+          disabled={!isEditMode}
           noOutput={true}
           onChange={(d) => {
             setParsedDate(d);
             setTitle(d.input);
           }}
           onSelect={setParsedDate}
-          isTitle={true}
-          textFieldProps={{
-            placeholder: "Title",
-            variant: "outlined",
-            value: title,
-            disabled: !isEditMode,
-            onFocus: () => setHasTitleFocus(true),
-            onBlur: () => setHasTitleFocus(false),
-            sx: { width: "100%" },
-          }}
+          onFocus={() => setHasTitleFocus(true)}
+          onBlur={() => setHasTitleFocus(false)}
         />
       ) : (
         <ReadonlyTitle
           entity={scrapToRender}
           hasFocus={hasFocus}
           title={
-            !isCompact || hasFocus || title
-              ? title
-              : getText()?.substring(0, 20) + " (...)"
+            <Markdown
+              useBasic={true}
+              value={
+                !isCompact || hasFocus || title
+                  ? title
+                  : getText()?.substring(0, 20) + " (...)"
+              }
+            />
           }
         />
       )}

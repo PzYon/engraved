@@ -1,34 +1,28 @@
-import { MarkdownEditor } from "./MarkdownEditor";
-import { FadeInContainer } from "../../../common/FadeInContainer";
-import { Markdown } from "./Markdown";
 import React from "react";
-import { styled } from "@mui/material";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
 import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
-import { getRawRowValues } from "./getRawRowValues";
+import { RichTextEditor } from "../../../common/RichTextEditor";
+import { FadeInContainer } from "../../../common/FadeInContainer";
+import { Markdown } from "./Markdown";
 
 export const ScrapMarkdown: React.FC = () => {
   const { setAppAlert } = useAppContext();
 
-  const {
-    notes,
-    setNotes,
-    isEditMode,
-    cancelEditingAction,
-    upsertScrap,
-    changeScrapType,
-  } = useScrapContext();
+  const { notes, setNotes, isEditMode, changeScrapType } = useScrapContext();
 
   return (
     <ScrapBody
       editModeActions={[
         {
           onClick: () => {
-            changeScrapType(getRawRowValues(notes), ScrapType.List);
+            changeScrapType(
+              notes.split("\n").filter((line) => !!(line ?? "").trim()),
+              ScrapType.List,
+            );
           },
           key: "toggle-type",
           icon: <AutoFixHigh fontSize="small" />,
@@ -37,37 +31,13 @@ export const ScrapMarkdown: React.FC = () => {
       ]}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
-      {getContent()}
+      {isEditMode ? (
+        <RichTextEditor initialValue={notes ?? ""} setValue={setNotes} />
+      ) : (
+        <FadeInContainer>
+          <Markdown value={notes} />
+        </FadeInContainer>
+      )}
     </ScrapBody>
   );
-
-  function getContent() {
-    if (isEditMode) {
-      return (
-        <EditorContainer>
-          <MarkdownEditor
-            showOutlineWhenFocused={true}
-            value={notes ?? ""}
-            onChange={setNotes}
-            keyMappings={{
-              "Alt-s": upsertScrap,
-              "Alt-x": cancelEditingAction?.onClick,
-            }}
-          />
-        </EditorContainer>
-      );
-    }
-
-    return (
-      <FadeInContainer>
-        <Markdown value={notes} />
-      </FadeInContainer>
-    );
-  }
 };
-
-const EditorContainer = styled("div")`
-  .cm-editor {
-    padding: 0;
-  }
-`;
