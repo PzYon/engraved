@@ -23,13 +23,25 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
   useBasic,
 }) => {
   const html = useMemo<{ __html: string }>(
-    () => ({ __html: value ? md.parse(value).toString() : "" }),
+    () => ({ __html: getHtml() }),
     [value],
   );
 
   const El = useBasic ? BasicMarkdownContainer : MarkdownContainer;
 
   return <El onClick={onClick} dangerouslySetInnerHTML={html} />;
+
+  function getHtml() {
+    if (!value) {
+      return "";
+    }
+
+    if (useBasic) {
+      return md.parseInline(value).toString();
+    }
+
+    return md.parse(value).toString();
+  }
 };
 
 export default LazyMarkdown;

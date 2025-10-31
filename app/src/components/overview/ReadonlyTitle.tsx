@@ -43,5 +43,9 @@ const ReadonlyTitleContainer = styled("div")`
   color: ${(p) => p.theme.palette.primary.main};
   font-size: 2rem;
   font-weight: 200;
-  line-height: 1;
+  line-height: 1.2;
+
+  .ngrvd-emoji {
+    font-size: 25px !important;
+  }
 `;

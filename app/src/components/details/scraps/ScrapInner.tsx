@@ -55,6 +55,7 @@ export const ScrapInner: React.FC = () => {
           hasFocus={hasFocus}
           title={
             <Markdown
+              useBasic={true}
               value={
                 !isCompact || hasFocus || title
                   ? title
