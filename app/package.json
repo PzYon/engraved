@@ -16,7 +16,6 @@
     "@mui/x-date-pickers": "8.15.0",
     "@tanstack/react-query": "5.90.5",
     "@tanstack/react-query-devtools": "5.90.2",
-    "@tiptap/extension-emoji": "3.9.0",
     "@tiptap/markdown": "3.9.0",
     "@tiptap/pm": "3.9.0",
     "@tiptap/react": "3.9.0",

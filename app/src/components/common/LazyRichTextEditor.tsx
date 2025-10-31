@@ -2,18 +2,9 @@ import { styled } from "@mui/material";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
-import Emoji, { emojis } from "@tiptap/extension-emoji";
 import { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
-
-const EmojiExtension = Emoji.configure({
-  enableEmoticons: true,
-  emojis: emojis,
-  HTMLAttributes: {
-    class: "ngrvd-emoji",
-  },
-});
 
 const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   setGiveFocus,
@@ -47,7 +38,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           },
         },
       },
-      extensions: [StarterKit, EmojiExtension, Markdown],
+      extensions: [StarterKit, Markdown],
       content: initialValue,
       contentType: "markdown",
       autofocus: autoFocus ? "end" : null,
