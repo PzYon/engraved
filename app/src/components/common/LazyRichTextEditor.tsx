@@ -31,9 +31,9 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   const editor = useEditor(
     {
       editorProps: {
-        attributes: {
-          "data-testId": "placeholder-" + placeholder,
-        },
+        attributes: placeholder
+          ? { "data-testId": "placeholder-" + placeholder }
+          : undefined,
         handleDOMEvents: {
           keyup: (view, event) => {
             onKeyUp?.(event);
