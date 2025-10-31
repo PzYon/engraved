@@ -1,9 +1,21 @@
 import React, { useMemo } from "react";
 import { IMarkdownProps } from "./Markdown";
-import { getMarkedInstance } from "./getMarkedInstance";
 import { BasicMarkdownContainer, MarkdownContainer } from "./MarkdownContainer";
+import { marked } from "marked";
+import emojiRegex from "emoji-regex";
 
-const md = getMarkedInstance();
+const regex = emojiRegex();
+
+const md = marked.use({
+  hooks: {
+    postprocess: (html) => {
+      return html.replace(
+        regex,
+        (emojiChar) => `<span class="ngrvd-emoji">${emojiChar}</span>`,
+      );
+    },
+  },
+});
 
 const LazyMarkdown: React.FC<IMarkdownProps> = ({
   value,
