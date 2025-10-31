@@ -7,8 +7,6 @@ import { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
 
-// https://tiptap.dev/docs/editor/markdown/getting-started/installation
-
 const EmojiExtension = Emoji.configure({
   enableEmoticons: true,
   emojis: emojis,
@@ -38,16 +36,14 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
         },
         handleDOMEvents: {
           keyup: (view, event) => {
-            // debugger;
             onKeyUp?.(event);
-            //event.preventDefault();
-            return false; // Return false to allow the event to continue propagating
+            // return false to allow the event to continue propagating
+            return false;
           },
           keydown: (view, event) => {
-            // debugger;
             onKeyDown?.(event);
-            // event.preventDefault();
-            return false; // Return false to allow the event to continue propagating
+            // return false to allow the event to continue propagating
+            return false;
           },
         },
       },

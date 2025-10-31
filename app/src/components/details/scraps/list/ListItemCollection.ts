@@ -54,8 +54,6 @@ export class ListItemCollection {
   }
 
   removeItem(index: number) {
-    console.log("removing item", index);
-
     if (this.wrappedItems.length <= 1) {
       // we do not want to delete the last item
       return;
