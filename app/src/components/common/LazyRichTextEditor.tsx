@@ -42,7 +42,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       extensions: [StarterKit, Markdown],
       content: initialValue,
       contentType: "markdown",
-      autofocus: autoFocus ? "end" : null,
+      autofocus: autoFocus ? "end" : false,
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
@@ -93,7 +93,11 @@ const StyledEditorContent = styled(EditorContent)<{ isTitle?: boolean }>`
             margin: 0;
           }
         `
-      : ""}
+      : css`
+          .ProseMirror {
+            outline: 2px solid ${p.theme.palette.background.default};
+          }
+        `}
 
   .ProseMirror-focused {
     outline: 2px solid ${(p) => p.theme.palette.primary.main};

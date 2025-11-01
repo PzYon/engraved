@@ -13,7 +13,7 @@ const BaseMarkdownContainer = styled("div")`
   ul {
     margin: 0 0 0 3px;
     padding-left: 1rem;
-    list-style-type: disc;
+    list-style-type: circle;
   }
 
   pre > code {
