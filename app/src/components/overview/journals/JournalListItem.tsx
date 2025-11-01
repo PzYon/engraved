@@ -59,6 +59,8 @@ const TitleRow = styled("div")`
 `;
 
 const IconContainer = styled("span")`
-  padding-top: ${(p) => p.theme.spacing(0.5)};
+  padding-top: 5px;
   padding-right: ${(p) => p.theme.spacing(2)};
+  display: flex;
+  align-items: center;
 `;

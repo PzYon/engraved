@@ -20,7 +20,6 @@ export const ThemeAndStylesProvider: React.FC<{
 
         body: {
           margin: 0,
-          overflowY: "scroll",
         },
 
         a: {
