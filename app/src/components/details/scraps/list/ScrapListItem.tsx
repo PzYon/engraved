@@ -25,7 +25,7 @@ export const ScrapListItem: React.FC<{
     useSortable({ id: listItemsCollection.getReactKey(index) });
 
   useEffect(
-    () => listItemsCollection.setRef(index, ref),
+    () => listItemsCollection.setGiveFocus(index, () => ref.current.focus()),
     [listItemsCollection, index],
   );
 
@@ -125,7 +125,6 @@ export const ScrapListItem: React.FC<{
         }
         break;
       }
-
       case "ArrowDown": {
         if (e.altKey && e.ctrlKey) {
           listItemsCollection.moveItemDown(index);
@@ -134,21 +133,18 @@ export const ScrapListItem: React.FC<{
         }
         break;
       }
-
       case "ArrowRight": {
         if (e.altKey && e.ctrlKey) {
           listItemsCollection.moveItemRight(index);
         }
         break;
       }
-
       case "ArrowLeft": {
         if (e.altKey && e.ctrlKey) {
           listItemsCollection.moveItemLeft(index);
         }
         break;
       }
-
       case "Enter": {
         e.preventDefault();
         break;
@@ -157,10 +153,13 @@ export const ScrapListItem: React.FC<{
       case "Backspace": {
         const target = e.target as HTMLTextAreaElement;
 
-        if (target.value === "") {
-          setTimeout(() => {
-            listItemsCollection.removeItem(index);
-          });
+        if (
+          target.innerText === undefined ||
+          target.innerText === null ||
+          target.innerText?.trim() === ""
+        ) {
+          listItemsCollection.removeItem(index);
+          // listItemsCollection.moveFocusUp(index, "end");
           return;
         }
 
@@ -184,7 +183,6 @@ export const ScrapListItem: React.FC<{
         e.preventDefault();
         break;
       }
-
       case " ": {
         if (e.ctrlKey) {
           onChange({
@@ -195,7 +193,6 @@ export const ScrapListItem: React.FC<{
         }
         break;
       }
-
       default: {
         onChange({
           label,
@@ -207,20 +204,16 @@ export const ScrapListItem: React.FC<{
     }
   }
 };
-
 const StyledCheckbox = styled(Checkbox)`
   padding: 5px 5px 5px 0;
-
   &.MuiCheckbox-colorPrimary {
     color: ${(p) => p.theme.palette.primary.main} !important;
   }
 `;
-
 const ListItem = styled("li")`
   display: flex;
   align-items: start;
 `;
-
 const ReadonlyContainer = styled("div")`
   word-break: break-word;
 `;

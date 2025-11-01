@@ -1,14 +1,16 @@
 import { IScrapListItem } from "./IScrapListItem";
-import React from "react";
 
 export type CursorPosition = number | "beginning" | "end";
 
 export class ListItemWrapper {
-  constructor(private item: IScrapListItem) {}
-
-  private ref: React.RefObject<HTMLInputElement>;
+  private giveFocusInternal: () => void;
 
   readonly reactKey = "react-key-" + Math.random().toString().split(".")[1];
+
+  constructor(
+    private item: IScrapListItem,
+    private giveFocusOnRef?: boolean,
+  ) {}
 
   get raw(): IScrapListItem {
     return this.item;
@@ -18,33 +20,26 @@ export class ListItemWrapper {
     this.item = value;
   }
 
-  setRef(ref: React.RefObject<HTMLInputElement>) {
-    this.ref = ref;
+  setGiveFocus(giveFocus: () => void) {
+    this.giveFocusInternal = giveFocus;
+
+    if (this.giveFocusOnRef) {
+      this.giveFocus();
+      this.giveFocusOnRef = false;
+    }
   }
 
   giveFocus(cursorPosition?: CursorPosition) {
+    this.giveFocusInternal?.();
+    console.log(cursorPosition);
+    //this.moveCursorToPosition(cursorPosition);
+  }
+
+  moveCursorToPosition(cursorPosition: CursorPosition) {
     if (cursorPosition === undefined) {
-      this.ref?.current?.focus();
       return;
     }
 
-    this.ref?.current?.focus();
-
-    setTimeout(() => {
-      if (typeof cursorPosition === "string") {
-        if (cursorPosition === "beginning") {
-          this.ref?.current?.setSelectionRange(0, 0);
-        } else {
-          this.ref?.current?.setSelectionRange(
-            this.ref.current.value.length,
-            this.ref.current.value.length,
-          );
-        }
-      }
-
-      if (typeof cursorPosition === "number" && cursorPosition >= 0) {
-        this.ref?.current?.setSelectionRange(cursorPosition, cursorPosition);
-      }
-    });
+    console.log("moving cursor to", cursorPosition);
   }
 }

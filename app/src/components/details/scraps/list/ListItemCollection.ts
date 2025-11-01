@@ -1,4 +1,3 @@
-import React from "react";
 import { IScrapListItem } from "./IScrapListItem";
 import { CursorPosition, ListItemWrapper } from "./ListItemWrapper";
 
@@ -20,8 +19,8 @@ export class ListItemCollection {
     this.wrappedItems = rawItems.map((i) => new ListItemWrapper(i));
   }
 
-  setRef(index: number, ref: React.RefObject<HTMLInputElement>): void {
-    this.wrappedItems[index].setRef(ref);
+  setGiveFocus(index: number, giveFocus: () => void): void {
+    this.wrappedItems[index].setGiveFocus(giveFocus);
   }
 
   getReactKey(index: number): string {
@@ -35,19 +34,22 @@ export class ListItemCollection {
   addItem(index: number) {
     const isFirst = index <= 0;
 
-    if (!isFirst && !this.wrappedItems[index].raw.label) {
-      return;
-    }
+    // if (!isFirst && !this.wrappedItems[index].raw.label) {
+    //  return;
+    // }
 
     const depth = isFirst ? 0 : this.getItemDepth(index);
 
     this.add(
       index + 1,
-      new ListItemWrapper({
-        label: "",
-        isCompleted: false,
-        depth: depth,
-      }),
+      new ListItemWrapper(
+        {
+          label: "",
+          isCompleted: false,
+          depth: depth,
+        },
+        true,
+      ),
     );
   }
 
@@ -59,7 +61,7 @@ export class ListItemCollection {
 
     this.wrappedItems = this.wrappedItems.filter((_, i) => i !== index);
 
-    this.wrappedItems[Math.min(index, this.highestIndex)].giveFocus();
+    this.wrappedItems[Math.min(index, this.highestIndex)].giveFocus("end");
 
     this.fireOnChange();
   }
@@ -119,22 +121,24 @@ export class ListItemCollection {
 
   moveItem(index: number, target: { index?: number; depth?: number }) {
     let didChange = false;
-    const currentIndex = target.index ?? index;
 
-    if (currentIndex !== index) {
-      const item = this.wrappedItems.splice(index, 1)[0];
-      this.wrappedItems.splice(target.index, 0, item);
+    const targetIndex = target.index ?? index;
+
+    if (targetIndex !== index) {
+      const itemToMove = this.wrappedItems.splice(index, 1)[0];
+      this.wrappedItems.splice(targetIndex, 0, itemToMove);
+      itemToMove.giveFocus();
       didChange = true;
     }
 
     if (target.depth !== undefined) {
       const targetDepth =
-        currentIndex === 0 || target.depth < 0
+        targetIndex === 0 || target.depth < 0
           ? 0
-          : Math.min(target.depth, this.getItemDepth(currentIndex - 1) + 1);
+          : Math.min(target.depth, this.getItemDepth(targetIndex - 1) + 1);
 
-      if (targetDepth !== this.getItemDepth(currentIndex)) {
-        this.wrappedItems[currentIndex].raw.depth = targetDepth;
+      if (targetDepth !== this.getItemDepth(targetIndex)) {
+        this.wrappedItems[targetIndex].raw.depth = targetDepth;
         didChange = true;
       }
     }

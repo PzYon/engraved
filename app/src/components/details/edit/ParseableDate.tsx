@@ -1,45 +1,48 @@
-import {
-  styled,
-  SxProps,
-  TextField,
-  TextFieldProps,
-  Typography,
-} from "@mui/material";
+import { css, styled, SxProps, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
-import { AutogrowTextField } from "../../common/AutogrowTextField";
+import { RichTextEditor } from "../../common/RichTextEditor";
 
 export const ParseableDate: React.FC<{
   onChange: (parsedDate: IParsedDate) => void;
   onSelect: (parsedDate: IParsedDate) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   sx?: SxProps;
   parseDateOnly?: boolean;
   isTitle?: boolean;
-  textFieldProps?: TextFieldProps;
   noOutput?: boolean;
+  initialValue?: string;
+  placeholder?: string;
+  disabled?: boolean;
 }> = ({
   onChange,
   onSelect,
+  onFocus,
+  onBlur,
   sx,
   parseDateOnly,
-  textFieldProps,
   isTitle,
   noOutput,
+  initialValue,
+  placeholder,
+  disabled,
 }) => {
   const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
   const [parseError, setParseError] = useState("");
 
-  const TextFieldComponent = isTitle ? AutogrowTextField : TextField;
-
   return (
-    <Host sx={sx}>
-      <TextFieldComponent
+    <Host sx={sx} isTitle={isTitle}>
+      <RichTextEditor
+        initialValue={initialValue}
         autoFocus={true}
-        sx={{ width: "100%" }}
-        placeholder="Enter date"
-        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+        onFocus={onFocus}
+        onBlur={onBlur}
+        disabled={disabled}
+        placeholder={placeholder ?? "Enter date"}
+        onKeyDown={(e: KeyboardEvent) => {
           if (e.key !== "Enter") {
             return;
           }
@@ -56,14 +59,9 @@ export const ParseableDate: React.FC<{
 
           onSelect(parsed);
         }}
-        onChange={(e) => {
+        setValue={(value) => {
           try {
-            const currentValue = e.target.value
-              .replace(/\.{3}/g, "👍")
-              .replace(/!{3}/g, "⚠️")
-              .replace(/\?{3}/, "❓");
-
-            const parsed = parseDate(currentValue);
+            const parsed = parseDate(value);
             setParsed(parsed);
             setParseError("");
             onChange(parsed);
@@ -71,7 +69,6 @@ export const ParseableDate: React.FC<{
             setParseError((e as Error).message);
           }
         }}
-        {...textFieldProps}
       />
 
       {(parseError || parsed?.date) && !noOutput ? (
@@ -106,7 +103,20 @@ export const ParseableDate: React.FC<{
   );
 };
 
-const Host = styled("div")``;
+const Host = styled("div")<{ isTitle: boolean }>`
+  border: 2px solid transparent;
+
+  ${(p) =>
+    p.isTitle
+      ? css`
+          .ngrvd-text-editor {
+            font-size: 2rem;
+            color: ${p.theme.palette.primary.main};
+            font-weight: lighter;
+          }
+        `
+      : null}
+`;
 
 const OutputContainer = styled("div")`
   padding-top: ${(p) => p.theme.spacing(2)};

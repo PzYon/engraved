@@ -9,12 +9,12 @@ export class AddQuickScrapPage {
   }
 
   async typeTitle(name: string) {
-    await this.page.getByPlaceholder("Title").click();
-    await this.page.getByPlaceholder("Title").fill(name);
+    await this.page.getByTestId("placeholder-Title").click();
+    await this.page.getByTestId("placeholder-Title").fill(name);
   }
 
   async typeContent(content: string) {
-    await this.page.getByRole("textbox").nth(1).fill(content);
+    await this.page.locator(".tiptap").nth(1).fill(content);
   }
 
   async clickSave(): Promise<string> {
@@ -24,6 +24,6 @@ export class AddQuickScrapPage {
 
     await expect(appBar.getByText("Added entry")).toBeVisible();
 
-    return await appBar.getAttribute("data-related-entity-id");
+    return appBar.getAttribute("data-related-entity-id");
   }
 }

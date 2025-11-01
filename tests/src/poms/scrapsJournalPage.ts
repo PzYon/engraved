@@ -34,9 +34,9 @@ export class ScrapsJournalPage extends JournalPage {
   async addMarkdownWithTitle(title: string) {
     await this.clickPageAction("Add entry");
 
-    await this.page.getByRole("textbox", { name: "Title" }).click();
-    await this.page.getByRole("textbox", { name: "Title" }).fill(title);
-    await this.page.getByRole("textbox", { name: "Title" }).press("Alt+s");
+    await this.getTitleBox().click();
+    await this.getTitleBox().fill(title);
+    await this.getTitleBox().press("Alt+s");
 
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar.getByText("Added entry")).toBeVisible();
@@ -50,5 +50,9 @@ export class ScrapsJournalPage extends JournalPage {
         .locator("[data-scrap-type='List']")
         .count()) === 0
     );
+  }
+
+  private getTitleBox() {
+    return this.page.getByTestId("placeholder-Title");
   }
 }

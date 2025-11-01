@@ -11,8 +11,8 @@ export class ScrapListComponent {
   }
 
   async typeTitle(title: string) {
-    await this.page.getByPlaceholder("Title").click();
-    await this.page.getByPlaceholder("Title").fill(title);
+    await this.page.getByTestId("placeholder-Title").click();
+    await this.page.getByTestId("placeholder-Title").fill(title);
   }
 
   async typeListItem(value: string) {

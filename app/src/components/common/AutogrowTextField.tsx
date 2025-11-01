@@ -30,20 +30,16 @@ export const AutogrowTextField: React.FC<
 
 const StyledTextField = styled(TextField)`
   width: 100%;
-
   .MuiInputBase-root {
     padding: 0;
   }
-
   .MuiInput-root:before {
     border: 0 !important;
     outline: 0 !important;
   }
-
   fieldset {
     border-width: 0;
   }
-
   textarea {
     &,
     &.Mui-disabled {
@@ -58,7 +54,6 @@ const StyledTitleTextField = styled(StyledTextField)`
   .MuiInputBase-root {
     padding: 8px 0;
   }
-
   textarea {
     &,
     &.Mui-disabled {
