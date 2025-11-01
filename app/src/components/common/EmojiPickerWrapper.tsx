@@ -26,6 +26,7 @@ export const EmojiPickerWrapper: React.FC<{
           vertical: "bottom",
           horizontal: "left",
         }}
+        disableScrollLock={true}
       >
         <EmojiPickerContainer>
           <EmojiPicker

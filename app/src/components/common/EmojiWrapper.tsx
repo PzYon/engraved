@@ -35,8 +35,8 @@ const Host = styled("span")<{
   & > img {
     display: block !important;
     line-height: ${(p) => p.size}px;
-    font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI",
-      "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji",
-      "EmojiOne Color", "Android Emoji";
+    font-family:
+      "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji",
+      "Twemoji Mozilla", "Noto Color Emoji", "EmojiOne Color", "Android Emoji";
   }
 `;
