@@ -5,7 +5,7 @@ import {
   TextFieldProps,
   Typography,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { IParsedDate, parseDate } from "./parseDate";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
@@ -28,8 +28,6 @@ export const ParseableDate: React.FC<{
   isTitle,
   noOutput,
 }) => {
-  const id = useMemo(() => Math.random().toString(), []);
-
   const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
   const [parseError, setParseError] = useState("");
 
@@ -39,7 +37,6 @@ export const ParseableDate: React.FC<{
     <Host sx={sx}>
       <TextFieldComponent
         autoFocus={true}
-        id={id}
         sx={{ width: "100%" }}
         placeholder="Enter date"
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {

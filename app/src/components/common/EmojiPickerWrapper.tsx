@@ -17,7 +17,10 @@ export const EmojiPickerWrapper: React.FC<{
       </span>
       <Popover
         open={isOpen}
-        anchorEl={ref.current}
+        anchorEl={{
+          getBoundingClientRect: () => ref.current.getBoundingClientRect(),
+          nodeType: 1,
+        }}
         onClose={() => setIsOpen(false)}
         anchorOrigin={{
           vertical: "bottom",

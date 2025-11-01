@@ -47,8 +47,6 @@ const FormatDateInternal: React.FC<{
   );
 
   useEffect(() => {
-    setValues(calculateValues());
-
     if (differenceInHours(new Date(), getAsDate(value)) > 2) {
       return;
     }

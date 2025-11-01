@@ -23,7 +23,6 @@ export const GoToTextField: React.FC<{
       defaultValue={initialValue}
       onFocus={() => setTextFieldHasFocus(true)}
       onBlur={() => setTextFieldHasFocus(false)}
-      id={Math.random().toString()}
       onChange={(e) => onChange(e.target.value)}
       style={{ width: "100%" }}
     />
