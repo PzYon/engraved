@@ -1,5 +1,5 @@
 import SwitchAccessShortcutOutlined from "@mui/icons-material/SwitchAccessShortcutOutlined";
-import { Dialog, styled, Typography } from "@mui/material";
+import { CircularProgress, Dialog, styled, Typography } from "@mui/material";
 import React, { PropsWithChildren, ReactNode, Suspense, useState } from "react";
 
 export const LazyLoadSuspender: React.FC<PropsWithChildren> = ({
@@ -7,7 +7,13 @@ export const LazyLoadSuspender: React.FC<PropsWithChildren> = ({
 }) => {
   return (
     <LazyLoadErrorBoundaryClass>
-      <Suspense fallback={<div />}>{children}</Suspense>
+      <Suspense
+        fallback={
+          <CircularProgress enableTrackSlot color={"secondary"} size="20px" />
+        }
+      >
+        {children}
+      </Suspense>
     </LazyLoadErrorBoundaryClass>
   );
 };
