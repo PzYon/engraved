@@ -67,7 +67,9 @@ export const ScrapInner: React.FC = () => {
       )}
 
       {scrapToRender.scrapType === ScrapType.List ? (
-        <ScrapList />
+        <div style={{ marginTop: "2px" }}>
+          <ScrapList />
+        </div>
       ) : (
         <ScrapMarkdown />
       )}
