@@ -2,6 +2,8 @@ import { DependencyList } from "react";
 import { HotkeyCallback, Options, useHotkeys } from "react-hotkeys-hook";
 import { isRichTextEditor } from "../isRichTextEditor";
 
+export type Scopes = string | readonly string[];
+
 type KeyboardModifiers = {
   alt?: boolean;
   ctrl?: boolean;
@@ -13,9 +15,10 @@ type KeyboardModifiers = {
 
 type Hotkey = KeyboardModifiers & {
   keys?: readonly string[];
-  scopes?: string | readonly string[];
+  scopes?: Scopes;
   description?: string;
   isSequence?: boolean;
+  hotkey: string;
 };
 
 export function useEngravedHotkeys(
