@@ -1,12 +1,17 @@
 import React, { useMemo } from "react";
 import { IMarkdownProps } from "./Markdown";
 import { BasicMarkdownContainer, MarkdownContainer } from "./MarkdownContainer";
-import { marked } from "marked";
+import { marked, Tokens } from "marked";
 import emojiRegex from "emoji-regex";
 
 const regex = emojiRegex();
 
 const md = marked.use({
+  renderer: {
+    link({ href, title, text }: Tokens.Link) {
+      return `<a href="${href}" ${title ? `title="${title}"` : ""} target="_blank" rel="noopener noreferrer">${text}</a>`;
+    },
+  },
   hooks: {
     postprocess: (html) => {
       return html.replace(

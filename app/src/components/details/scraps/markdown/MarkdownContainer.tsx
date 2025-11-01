@@ -10,11 +10,6 @@ const BaseMarkdownContainer = styled("div")`
     margin-bottom: 3px;
   }
 
-  p {
-    display: flex;
-    align-items: center;
-  }
-
   ul {
     margin: 0 0 0 3px;
     padding-left: 1rem;

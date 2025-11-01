@@ -39,6 +39,7 @@ export const ParseableDate: React.FC<{
         initialValue={initialValue}
         autoFocus={true}
         onFocus={onFocus}
+        isTitle={isTitle}
         onBlur={onBlur}
         disabled={disabled}
         placeholder={placeholder ?? "Enter date"}
