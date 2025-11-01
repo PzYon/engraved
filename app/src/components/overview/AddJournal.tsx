@@ -30,7 +30,6 @@ export const AddJournal: React.FC = () => {
       <PageSection>
         <FormControl sx={{ width: "100%" }}>
           <TextField
-            id={Math.random().toString()}
             value={name}
             onChange={(event) => setName(event.target.value)}
             required={true}

@@ -18,7 +18,6 @@ export const SearchBox: React.FC<{
       <TextField
         value={currentFieldValue ?? ""}
         label="Search"
-        id={Math.random().toString()}
         autoFocus={true}
         onKeyUp={(event) => {
           if (event.key === "Enter") {

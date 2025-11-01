@@ -162,7 +162,6 @@ export const JournalUiSettings: React.FC<{
 
         <GridItem>
           <TextField
-            id={Math.random().toString()}
             label="Y-Axis Unit"
             sx={{ width: "100%" }}
             value={uiSettings.yAxisUnit}
@@ -174,7 +173,6 @@ export const JournalUiSettings: React.FC<{
 
         <GridItem sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
           <TextField
-            id={Math.random().toString()}
             label="Scales Y-min"
             type="number"
             value={uiSettings.fixedScales?.min}
@@ -189,7 +187,6 @@ export const JournalUiSettings: React.FC<{
             }}
           />
           <TextField
-            id={Math.random().toString()}
             label="Scales Y-max"
             type="number"
             value={uiSettings.fixedScales?.max}

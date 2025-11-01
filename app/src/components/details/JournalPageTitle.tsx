@@ -27,8 +27,10 @@ export const JournalPageTitle: React.FC<{
           onEmojiClick={(e) => {
             const updatedJournal = { ...journal };
 
-            uiSettings.emoji = { unified: e };
-            updatedJournal.customProps.uiSettings = JSON.stringify(uiSettings);
+            const newUiSettings = { ...uiSettings };
+            newUiSettings.emoji = { unified: e };
+            updatedJournal.customProps.uiSettings =
+              JSON.stringify(newUiSettings);
 
             editJournalMutation.mutate({ journal: updatedJournal });
 

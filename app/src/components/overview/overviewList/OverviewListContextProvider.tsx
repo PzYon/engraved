@@ -27,11 +27,9 @@ export const OverviewListContextProvider: React.FC<{
   const [searchParams, setSearchParams] = useSearchParams();
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
 
-  useEffect(() => {
-    if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
-      setActiveItemId(activeItemIdFromUrl);
-    }
-  }, [activeItemId, activeItemIdFromUrl, setActiveItemId]);
+  if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
+    setActiveItemId(activeItemIdFromUrl);
+  }
 
   // undefined is the initial value, afterward it is ""
   const [inMemorySearchText, setInMemorySearchText] =
@@ -51,6 +49,37 @@ export const OverviewListContextProvider: React.FC<{
   }, [inMemorySearchText, setAppAlert]);
 
   useEffect(() => () => setAppAlert(undefined), [setAppAlert]);
+
+  const filteredItems = useMemo(
+    () =>
+      items.filter((f) => {
+        if (inMemorySearchText) {
+          return (
+            ((f as IJournal).name || (f as IScrapEntry).title)
+              ?.toLowerCase()
+              .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1
+          );
+        }
+
+        return (showAll || filterItem?.(f)) ?? true;
+      }),
+    [showAll, filterItem, inMemorySearchText, items],
+  );
+
+  const getNextItem = useCallback(
+    (direction: "up" | "down"): IEntity => {
+      const activeIndex = filteredItems.findIndex(
+        (item) => item.id === activeItemId,
+      );
+      const firstIndex = 0;
+      const lastIndex = filteredItems.length - 1;
+
+      return direction === "up"
+        ? filteredItems[activeIndex > firstIndex ? activeIndex - 1 : lastIndex]
+        : filteredItems[activeIndex < lastIndex ? activeIndex + 1 : firstIndex];
+    },
+    [filteredItems, activeItemId],
+  );
 
   const removeItemParamsFromUrl = useCallback(() => {
     if (
@@ -118,37 +147,6 @@ export const OverviewListContextProvider: React.FC<{
       }
     }
   });
-
-  const filteredItems = useMemo(
-    () =>
-      items.filter((f) => {
-        if (inMemorySearchText) {
-          return (
-            ((f as IJournal).name || (f as IScrapEntry).title)
-              ?.toLowerCase()
-              .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1
-          );
-        }
-
-        return (showAll || filterItem?.(f)) ?? true;
-      }),
-    [showAll, filterItem, inMemorySearchText, items],
-  );
-
-  const getNextItem = useCallback(
-    (direction: "up" | "down"): IEntity => {
-      const activeIndex = filteredItems.findIndex(
-        (item) => item.id === activeItemId,
-      );
-      const firstIndex = 0;
-      const lastIndex = filteredItems.length - 1;
-
-      return direction === "up"
-        ? filteredItems[activeIndex > firstIndex ? activeIndex - 1 : lastIndex]
-        : filteredItems[activeIndex < lastIndex ? activeIndex + 1 : firstIndex];
-    },
-    [filteredItems, activeItemId],
-  );
 
   const contextValue = useMemo<IOverviewListContext>(
     () => ({

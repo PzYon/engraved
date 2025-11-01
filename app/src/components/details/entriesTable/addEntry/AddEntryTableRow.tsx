@@ -15,7 +15,7 @@ export const AddEntryTableRow: React.FC<{
     dateTime: new Date(),
   });
 
-  const [key, setKey] = useState(Math.random());
+  const [key, setKey] = useState(() => Math.random());
 
   if (useDeviceWidth() === DeviceWidth.Small) {
     return null;
