@@ -79,7 +79,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
 
 const StyledEditorContent = styled(EditorContent)<{ isTitle?: boolean }>`
   .ProseMirror {
-    outline: 2px solid transparent;
+    outline: 2px solid ${(p) => p.theme.palette.background.default};
     border-radius: 3px;
     z-index: 100;
     margin: 2px;
@@ -93,11 +93,7 @@ const StyledEditorContent = styled(EditorContent)<{ isTitle?: boolean }>`
             margin: 0;
           }
         `
-      : css`
-          .ProseMirror {
-            outline: 2px solid ${p.theme.palette.background.default};
-          }
-        `}
+      : undefined}
 
   .ProseMirror-focused {
     outline: 2px solid ${(p) => p.theme.palette.primary.main};
