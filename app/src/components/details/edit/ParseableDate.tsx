@@ -105,8 +105,6 @@ export const ParseableDate: React.FC<{
 };
 
 const Host = styled("div")<{ isTitle: boolean }>`
-  border: 2px solid transparent;
-
   ${(p) =>
     p.isTitle
       ? css`
