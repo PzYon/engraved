@@ -39,6 +39,7 @@ export const ParseableDate: React.FC<{
         initialValue={initialValue}
         autoFocus={true}
         onFocus={onFocus}
+        isTitle={isTitle}
         onBlur={onBlur}
         disabled={disabled}
         placeholder={placeholder ?? "Enter date"}
@@ -104,8 +105,6 @@ export const ParseableDate: React.FC<{
 };
 
 const Host = styled("div")<{ isTitle: boolean }>`
-  border: 2px solid transparent;
-
   ${(p) =>
     p.isTitle
       ? css`

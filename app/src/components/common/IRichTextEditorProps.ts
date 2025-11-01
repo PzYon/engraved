@@ -10,4 +10,5 @@ export interface IRichTextEditorProps {
   onFocus?: () => void;
   onBlur?: () => void;
   css?: React.CSSProperties;
+  isTitle?: boolean;
 }

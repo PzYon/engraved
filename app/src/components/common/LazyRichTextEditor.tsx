@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { css, styled } from "@mui/material";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
@@ -17,7 +17,8 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   onBlur,
   placeholder,
   disabled,
-  css,
+  css: styles,
+  isTitle,
 }) => {
   const editor = useEditor(
     {
@@ -41,7 +42,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       extensions: [StarterKit, Markdown],
       content: initialValue,
       contentType: "markdown",
-      autofocus: autoFocus ? "end" : null,
+      autofocus: autoFocus ? "end" : false,
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
@@ -67,20 +68,34 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
         </PlaceholderContainer>
       ) : null}
       <MarkdownContainer>
-        <StyledEditorContent style={css} editor={editor} role="textbox" />
+        <StyledEditorContent
+          style={styles}
+          isTitle={isTitle}
+          editor={editor}
+          role="textbox"
+        />
       </MarkdownContainer>
     </Host>
   );
 };
 
-const StyledEditorContent = styled(EditorContent)`
+const StyledEditorContent = styled(EditorContent)<{ isTitle?: boolean }>`
   .ProseMirror {
-    outline: 2px solid transparent;
+    outline: 2px solid ${(p) => p.theme.palette.background.default};
     border-radius: 3px;
     z-index: 100;
     margin: 2px;
     padding: 4px;
   }
+
+  ${(p) =>
+    p.isTitle
+      ? css`
+          p {
+            margin: 0;
+          }
+        `
+      : undefined}
 
   .ProseMirror-focused {
     outline: 2px solid ${(p) => p.theme.palette.primary.main};
