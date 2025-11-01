@@ -62,7 +62,9 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   return (
     <Host className="ngrvd-text-editor">
       {placeholder && isEmpty ? (
-        <PlaceholderContainer>{placeholder}</PlaceholderContainer>
+        <PlaceholderContainer>
+          <PlaceholderText>{placeholder}</PlaceholderText>
+        </PlaceholderContainer>
       ) : null}
       <MarkdownContainer>
         <StyledEditorContent style={css} editor={editor} role="textbox" />
@@ -97,6 +99,11 @@ const PlaceholderContainer = styled("span")`
   top: 0;
   left: 0;
   opacity: 0.6;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
+
+const PlaceholderText = styled("span")``;
 
 export default LazyRichTextEditor;
