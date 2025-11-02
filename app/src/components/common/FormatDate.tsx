@@ -21,6 +21,7 @@ export const FormatDate: React.FC<{
       onClick={noToggle ? undefined : () => setIsToggled(!isToggled)}
       value={value}
       dateFormat={isToggled ? DateFormat.fullCompact : dateFormat}
+      key={value?.toString()}
     />
   );
 };
@@ -55,11 +56,13 @@ const FormatDateInternal: React.FC<{
       () => setValues(calculateValues()),
       autoUpdateIntervalSeconds * 1000,
     );
+
     return () => window.clearInterval(interval);
-  }, [value, dateFormat, calculateValues]);
+  }, [dateFormat, value, calculateValues]);
 
   return (
     <span
+      title={values.title}
       style={{ cursor: "pointer" }}
       onClick={(e) => {
         if (!onClick) {
@@ -69,7 +72,6 @@ const FormatDateInternal: React.FC<{
         e.stopPropagation();
         onClick();
       }}
-      title={values.title}
     >
       {values.label}
     </span>

@@ -5,13 +5,13 @@
 
 # engraved.
 
-Store personal metrics and notes in an easy manor.
+Store personal measurements and notes in an easy manor. Helped me get rid of Todoist, Google Tasks and Notion.
 
 ## Technologies Used
 
 ### Backend
 
-- C#, .net core 7
+- C#, .net core 9
 - Web API
 - MongoDB
 - NUnit
@@ -21,7 +21,7 @@ Store personal metrics and notes in an easy manor.
 - TypeScript
 - React
 - Styled Components
-- Component libraries: React MUI, ChartJS, Codemirror
+- Component libraries: React MUI, ChartJS, Tiptap, etc.
 
 ## URLs
 
