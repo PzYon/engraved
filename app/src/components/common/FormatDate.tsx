@@ -21,6 +21,7 @@ export const FormatDate: React.FC<{
       onClick={noToggle ? undefined : () => setIsToggled(!isToggled)}
       value={value}
       dateFormat={isToggled ? DateFormat.fullCompact : dateFormat}
+      key={value?.toString()}
     />
   );
 };
@@ -42,17 +43,11 @@ const FormatDateInternal: React.FC<{
     };
   }, [dateFormat, value]);
 
-  // https://react.dev/learn/you-might-not-need-an-effect
-
-  console.log("calculated value", calculateValues());
-
   const [values, setValues] = useState<{ title: string; label: string }>(
     calculateValues(),
   );
 
   useEffect(() => {
-    //setValues(calculateValues());
-
     if (differenceInHours(new Date(), getAsDate(value)) > 2) {
       return;
     }
@@ -63,10 +58,11 @@ const FormatDateInternal: React.FC<{
     );
 
     return () => window.clearInterval(interval);
-  }, [value, dateFormat, calculateValues]);
+  }, [dateFormat, value, calculateValues]);
 
   return (
     <span
+      title={values.title}
       style={{ cursor: "pointer" }}
       onClick={(e) => {
         if (!onClick) {
@@ -76,7 +72,6 @@ const FormatDateInternal: React.FC<{
         e.stopPropagation();
         onClick();
       }}
-      title={values.title}
     >
       {values.label}
     </span>
