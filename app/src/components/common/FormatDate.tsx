@@ -42,11 +42,17 @@ const FormatDateInternal: React.FC<{
     };
   }, [dateFormat, value]);
 
+  // https://react.dev/learn/you-might-not-need-an-effect
+
+  console.log("calculated value", calculateValues());
+
   const [values, setValues] = useState<{ title: string; label: string }>(
     calculateValues(),
   );
 
   useEffect(() => {
+    //setValues(calculateValues());
+
     if (differenceInHours(new Date(), getAsDate(value)) > 2) {
       return;
     }
@@ -55,6 +61,7 @@ const FormatDateInternal: React.FC<{
       () => setValues(calculateValues()),
       autoUpdateIntervalSeconds * 1000,
     );
+
     return () => window.clearInterval(interval);
   }, [value, dateFormat, calculateValues]);
 
