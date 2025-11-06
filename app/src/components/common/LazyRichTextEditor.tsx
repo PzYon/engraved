@@ -117,6 +117,7 @@ const PlaceholderContainer = styled("span")`
   height: 100%;
   display: flex;
   align-items: center;
+  padding-left: ${(p) => p.theme.spacing(1)};
 `;
 
 const PlaceholderText = styled("span")``;
