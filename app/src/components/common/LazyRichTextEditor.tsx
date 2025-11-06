@@ -1,10 +1,23 @@
 import { css, styled } from "@mui/material";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { EditorContent, Extension, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
 import { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
+
+const DisableEnter = Extension.create({
+  name: "disable-enter",
+
+  addKeyboardShortcuts: () => {
+    return {
+      // Return 'true' to indicate the event was handled and
+      // prevent the default browser/editor action (new line).
+      Enter: () => true,
+      "Shift-Enter": () => true,
+    };
+  },
+});
 
 const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   setGiveFocus,
@@ -20,6 +33,12 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   css: styles,
   isTitle,
 }) => {
+  const extensions = [StarterKit, Markdown];
+
+  if (isTitle) {
+    extensions.push(DisableEnter);
+  }
+
   const editor = useEditor(
     {
       editorProps: {
@@ -39,7 +58,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           },
         },
       },
-      extensions: [StarterKit, Markdown],
+      extensions: extensions,
       content: initialValue,
       contentType: "markdown",
       autofocus: autoFocus ? "end" : false,
