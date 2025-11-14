@@ -154,12 +154,11 @@ export const ScrapListItem: React.FC<{
         const target = e.target as HTMLTextAreaElement;
 
         if (
-          target.innerText === undefined ||
-          target.innerText === null ||
-          target.innerText?.trim() === ""
+          target.value === undefined ||
+          target.value === null ||
+          target.value?.trim() === ""
         ) {
           listItemsCollection.removeItem(index);
-          // listItemsCollection.moveFocusUp(index, "end");
           return;
         }
 
