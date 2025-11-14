@@ -59,7 +59,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
         },
       },
       extensions: extensions,
-      content: initialValue ? initialValue : undefined,
+      content: initialValue === "" ? undefined : initialValue,
       contentType: "markdown",
       autofocus: autoFocus ? "end" : false,
       onFocus: () => onFocus?.(),
