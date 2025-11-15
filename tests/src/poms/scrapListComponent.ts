@@ -57,6 +57,14 @@ export class ScrapListComponent {
       .getByTestId(`item-${index}:${depth}`);
   }
 
+  getItemCount(): Promise<number> {
+    console.log("TESTID: " + this.scrapId);
+    return this.page
+      .getByTestId("scrap-" + this.scrapId)
+      .locator("li")
+      .count();
+  }
+
   async dblClickToEdit() {
     if (!this.scrapId) {
       throw new Error("Cannot double click on a non-saved entry");
