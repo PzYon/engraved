@@ -78,6 +78,27 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
   await testThatEveryUpdateLeadsToNewInitialState(page, scrapList);
 });
 
+test("Enter only adds one empty line", async ({ page }) => {
+  await login(page, "scrapsList-entry");
+
+  await addNewJournal(page, "Scraps", "Random Scraps");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
+
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+
+  await scrapList.typeListItem("First");
+  expect(await scrapList.getItemCount()).toBe(1);
+
+  await page.keyboard.press("Enter");
+  expect(await scrapList.getItemCount()).toBe(2);
+
+  await page.keyboard.press("Enter");
+  expect(await scrapList.getItemCount()).toBe(2);
+});
+
 test("Backspace on empty item removes item", async ({ page }) => {
   await login(page, "scrapsList-backspace");
 

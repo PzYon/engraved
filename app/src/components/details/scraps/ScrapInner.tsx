@@ -31,7 +31,7 @@ export const ScrapInner: React.FC = () => {
           setIsEditMode(true);
         }
       }}
-      data-testid={"scrap-" + scrapToRender.id}
+      data-testid={"scrap-" + (scrapToRender.id || "new")}
       data-scrap-type={scrapToRender.scrapType}
     >
       {isEditMode ? (

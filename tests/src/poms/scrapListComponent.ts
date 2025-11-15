@@ -5,7 +5,7 @@ export class ScrapListComponent {
 
   constructor(
     private page: Page,
-    scrapId?: string,
+    scrapId: string = "new",
   ) {
     this.scrapId = scrapId;
   }

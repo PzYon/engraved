@@ -178,7 +178,10 @@ export const ScrapListItem: React.FC<{
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
       case "Enter": {
-        listItemsCollection.addItem(index);
+        if (listItemsCollection.items[index].label) {
+          listItemsCollection.addItem(index);
+        }
+
         e.preventDefault();
         break;
       }
