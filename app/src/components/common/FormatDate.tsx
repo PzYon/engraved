@@ -21,7 +21,7 @@ export const FormatDate: React.FC<{
       onClick={noToggle ? undefined : () => setIsToggled(!isToggled)}
       value={value}
       dateFormat={isToggled ? DateFormat.fullCompact : dateFormat}
-      key={value?.toString()}
+      key={value?.toString() + "-" + isToggled}
     />
   );
 };
