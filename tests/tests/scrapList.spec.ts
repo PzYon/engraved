@@ -92,6 +92,10 @@ test("Enter only adds one empty line", async ({ page }) => {
   await scrapList.typeListItem("First");
   expect(await scrapList.getItemCount()).toBe(1);
 
+  await scrapList.clickSave(false);
+  await scrapList.dblClickToEdit();
+  await scrapList.getListItem(0, 0).click();
+
   await page.keyboard.press("Enter");
   expect(await scrapList.getItemCount()).toBe(2);
 
