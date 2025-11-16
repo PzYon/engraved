@@ -12,7 +12,7 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
 
   public async Task<SearchEntitiesResult> Execute(SearchEntitiesQuery query)
   {
-    var journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(
+    Task<IJournal[]> journalsTask = dispatcher.Query<IJournal[], GetAllJournalsQuery>(
       new GetAllJournalsQuery
       {
         SearchText = query.SearchText,
@@ -20,7 +20,7 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
       }
     );
 
-    SearchEntriesQueryResult entriesResult = await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(
+    Task<SearchEntriesQueryResult> entriesTask = dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(
       new SearchEntriesQuery
       {
         SearchText = query.SearchText,
@@ -30,12 +30,14 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
       }
     );
 
-    var searchResultEntities = journals.Select(
-        journal => new SearchResultEntity { EntityType = EntityType.Journal, Entity = journal }
-      )
+    // execute in parallel
+    await Task.WhenAll(journalsTask, entriesTask);
+
+    var searchResultEntities = journalsTask.Result
+      .Select(journal => new SearchResultEntity { EntityType = EntityType.Journal, Entity = journal })
       .Union(
-        entriesResult.Entries.Select(
-          entry => new SearchResultEntity { EntityType = EntityType.Entry, Entity = entry }
+        entriesTask.Result.Entries.Select(entry => new SearchResultEntity
+          { EntityType = EntityType.Entry, Entity = entry }
         )
       )
       .ToArray();
@@ -43,7 +45,7 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
     return new SearchEntitiesResult
     {
       Entities = await GetSortedResults(query, searchResultEntities),
-      Journals = entriesResult.Journals
+      Journals = entriesTask.Result.Journals
     };
   }
 
@@ -59,10 +61,9 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
 
     IUser user = await currentUserService.LoadUser();
     return searchResultEntities
-      .OrderBy(
-        e => e.Entity.Schedules.ContainsKey(user.Id ?? "")
-          ? e.Entity.Schedules[user.Id ?? ""].NextOccurrence
-          : null
+      .OrderBy(e => e.Entity.Schedules.ContainsKey(user.Id ?? "")
+        ? e.Entity.Schedules[user.Id ?? ""].NextOccurrence
+        : null
       )
       .ToArray();
   }
