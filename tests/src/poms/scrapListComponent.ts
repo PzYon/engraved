@@ -5,7 +5,7 @@ export class ScrapListComponent {
 
   constructor(
     private page: Page,
-    scrapId?: string,
+    scrapId: string = "new",
   ) {
     this.scrapId = scrapId;
   }
@@ -55,6 +55,13 @@ export class ScrapListComponent {
     return this.page
       .getByTestId("scrap-" + this.scrapId)
       .getByTestId(`item-${index}:${depth}`);
+  }
+
+  getItemCount(): Promise<number> {
+    return this.page
+      .getByTestId("scrap-" + this.scrapId)
+      .locator("li")
+      .count();
   }
 
   async dblClickToEdit() {

@@ -78,6 +78,65 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
   await testThatEveryUpdateLeadsToNewInitialState(page, scrapList);
 });
 
+test("Enter only adds one empty line", async ({ page }) => {
+  await login(page, "scrapsList-entry");
+
+  await addNewJournal(page, "Scraps", "Random Scraps");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
+
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+
+  await scrapList.typeListItem("First");
+  expect(await scrapList.getItemCount()).toBe(1);
+
+  await scrapList.clickSave(false);
+  await scrapList.dblClickToEdit();
+  await scrapList.getListItem(0, 0).click();
+
+  await page.keyboard.press("Enter");
+  expect(await scrapList.getItemCount()).toBe(2);
+
+  await page.keyboard.press("Enter");
+  expect(await scrapList.getItemCount()).toBe(2);
+});
+
+test("Backspace on empty item removes item", async ({ page }) => {
+  await login(page, "scrapsList-backspace");
+
+  await addNewJournal(page, "Scraps", "Random Scraps");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
+
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+  await scrapList.typeListItem("ABC");
+  await scrapList.addListItem("DEF");
+
+  await scrapList.clickSave();
+  await scrapList.dblClickToEdit();
+  await scrapList.getListItem(1, 0).click();
+
+  expect(await scrapList.getItemCount()).toBe(2);
+
+  await page.keyboard.press("Backspace");
+  await page.keyboard.press("Backspace");
+  await page.keyboard.press("Backspace");
+
+  await expect(
+    scrapList.getListItem(1, 0).filter({ hasText: "" }),
+  ).toBeVisible();
+
+  expect(await scrapList.getItemCount()).toBe(2);
+
+  await page.keyboard.press("Backspace");
+
+  expect(await scrapList.getItemCount()).toBe(1);
+});
+
 test("modify list items in multiple tabs, handle updates accordingly", async ({
   browser,
 }) => {
