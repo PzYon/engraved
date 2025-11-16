@@ -58,7 +58,6 @@ export class ScrapListComponent {
   }
 
   getItemCount(): Promise<number> {
-    console.log("TESTID: " + this.scrapId);
     return this.page
       .getByTestId("scrap-" + this.scrapId)
       .locator("li")
