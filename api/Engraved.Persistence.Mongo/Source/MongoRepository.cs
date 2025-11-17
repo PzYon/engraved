@@ -308,7 +308,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       await EntriesCollection
         .Find(
           Builders<EntryDocument>.Filter.And(
-            filters.Union([Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id))])
+            filters.Concat([Builders<EntryDocument>.Filter.Nin(d => d.Id, foundIds)])
           )
         )
         .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
