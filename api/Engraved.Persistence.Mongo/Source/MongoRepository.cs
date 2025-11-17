@@ -225,7 +225,9 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
     if (journalIds is { Length: > 0 })
     {
-      filters.Add(Builders<EntryDocument>.Filter.Where(d => journalIds.Contains(d.ParentId)));
+      filters.AddRange(Builders<EntryDocument>.Filter.Or(
+        journalIds.Select(i => Builders<EntryDocument>.Filter.Where(d => d.ParentId == i))
+      ));
     }
 
     if (journalTypes is { Length: > 0 })
