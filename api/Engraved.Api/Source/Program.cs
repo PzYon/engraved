@@ -21,9 +21,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
-bool isE2ETests = Environment.GetCommandLineArgs().Any(a => a == "e2e-tests");
+var isE2ETests = Environment.GetCommandLineArgs().Any(a => a == "e2e-tests");
 
 if (isE2ETests)
 {
@@ -33,8 +33,7 @@ if (isE2ETests)
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-  .AddControllers(
-    options =>
+  .AddControllers(options =>
     {
       options.Filters.Add<PerfFilter>();
       options.Filters.Add<HttpExceptionFilter>();
@@ -44,8 +43,7 @@ builder.Services
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-  option =>
+builder.Services.AddSwaggerGen(option =>
   {
     option.AddSecurityDefinition(
       "Bearer",
@@ -57,22 +55,6 @@ builder.Services.AddSwaggerGen(
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
         Scheme = "Bearer"
-      }
-    );
-    option.AddSecurityRequirement(
-      new OpenApiSecurityRequirement
-      {
-        {
-          new OpenApiSecurityScheme
-          {
-            Reference = new OpenApiReference
-            {
-              Type = ReferenceType.SecurityScheme,
-              Id = "Bearer"
-            }
-          },
-          []
-        }
       }
     );
   }
@@ -105,12 +87,13 @@ builder.Services.AddHostedService<ScheduledNotificationJob>();
 // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
 // we did nt have this at first and it actually had a bad influence
 // on performance.
-builder.Services.AddSingleton(
-  provider => new MongoDatabaseClient(CreateRepositorySettings(builder), GetMongoDbNameOverride())
+builder.Services.AddSingleton(provider => new MongoDatabaseClient(
+    CreateRepositorySettings(builder),
+    GetMongoDbNameOverride()
+  )
 );
 
-builder.Services.AddTransient<IBaseRepository>(
-  provider =>
+builder.Services.AddTransient<IBaseRepository>(provider =>
   {
     if (!UseInMemoryRepo())
     {
@@ -122,8 +105,7 @@ builder.Services.AddTransient<IBaseRepository>(
   }
 );
 
-builder.Services.AddTransient<IUserScopedRepository>(
-  provider =>
+builder.Services.AddTransient<IUserScopedRepository>(provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
 
@@ -143,12 +125,10 @@ builder.Services.AddTransient<IUserScopedRepository>(
   }
 );
 
-builder.Services.AddTransient<Lazy<IUser>>(
-  provider => provider.GetService<IUserScopedRepository>()!.CurrentUser
+builder.Services.AddTransient<Lazy<IUser>>(provider => provider.GetService<IUserScopedRepository>()!.CurrentUser
 );
 
-builder.Services.AddTransient<IRepository>(
-  provider => provider.GetService<IUserScopedRepository>()!
+builder.Services.AddTransient<IRepository>(provider => provider.GetService<IUserScopedRepository>()!
 );
 
 builder.Services.AddMemoryCache();
@@ -164,15 +144,13 @@ if (isE2ETests)
 }
 else
 {
-  builder.Services.AddAuthentication(
-      options =>
+  builder.Services.AddAuthentication(options =>
       {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
       }
     )
-    .AddJwtBearer(
-      options =>
+    .AddJwtBearer(options =>
       {
         options.RequireHttpsMetadata = false;
         options.SaveToken = true;
@@ -189,7 +167,7 @@ else
         {
           OnTokenValidated = context =>
           {
-            var jwtToken = (JsonWebToken)context.SecurityToken;
+            var jwtToken = (JsonWebToken) context.SecurityToken;
             Claim? nameClaim = jwtToken.Claims.First(c => c.Type == "nameid");
             context.HttpContext.RequestServices
               .GetRequiredService<ICurrentUserService>()
@@ -233,11 +211,14 @@ bool UseInMemoryRepo()
   return false;
 }
 
-string? GetMongoDbNameOverride() => isE2ETests ? "engraved_e2e_tests" : null;
+string? GetMongoDbNameOverride()
+{
+  return isE2ETests ? "engraved_e2e_tests" : null;
+}
 
 MongoRepositorySettings CreateRepositorySettings(WebApplicationBuilder webApplicationBuilder)
 {
-  string? connectionString = webApplicationBuilder.Configuration.GetConnectionString("engraved_db");
+  var connectionString = webApplicationBuilder.Configuration.GetConnectionString("engraved_db");
   if (string.IsNullOrEmpty(connectionString) && !isE2ETests)
   {
     throw new Exception("App Service Config: No connection string available.");
