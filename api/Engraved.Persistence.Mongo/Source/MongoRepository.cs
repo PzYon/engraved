@@ -182,15 +182,9 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     if (attributeValues != null)
     {
       filters.AddRange(
-        attributeValues
-          .Select(attributeValue =>
-            Builders<EntryDocument>.Filter.Or(
-              attributeValue.Value.Select(s
-                => Builders<EntryDocument>.Filter.Where(d => d.JournalAttributeValues[attributeValue.Key].Contains(s)
-                )
-              )
-            )
-          )
+        attributeValues.Select(attributeValue =>
+          Builders<EntryDocument>.Filter.In($"JournalAttributeValues.{attributeValue.Key}", attributeValue.Value)
+        )
       );
     }
 
@@ -225,7 +219,9 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
     if (journalIds is { Length: > 0 })
     {
-      filters.Add(Builders<EntryDocument>.Filter.Where(d => journalIds.Contains(d.ParentId)));
+      filters.AddRange(Builders<EntryDocument>.Filter.Or(
+        journalIds.Select(i => Builders<EntryDocument>.Filter.Where(d => d.ParentId == i))
+      ));
     }
 
     if (journalTypes is { Length: > 0 })
@@ -308,7 +304,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       await EntriesCollection
         .Find(
           Builders<EntryDocument>.Filter.And(
-            filters.Union([Builders<EntryDocument>.Filter.Where(d => !foundIds.Contains(d.Id))])
+            filters.Concat([Builders<EntryDocument>.Filter.Nin(d => d.Id, foundIds)])
           )
         )
         .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
