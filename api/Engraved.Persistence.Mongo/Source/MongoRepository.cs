@@ -182,15 +182,9 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     if (attributeValues != null)
     {
       filters.AddRange(
-        attributeValues
-          .Select(attributeValue =>
-            Builders<EntryDocument>.Filter.Or(
-              attributeValue.Value.Select(s
-                => Builders<EntryDocument>.Filter.Where(d => d.JournalAttributeValues[attributeValue.Key].Contains(s)
-                )
-              )
-            )
-          )
+        attributeValues.Select(attributeValue =>
+          Builders<EntryDocument>.Filter.In($"JournalAttributeValues.{attributeValue.Key}", attributeValue.Value)
+        )
       );
     }
 
