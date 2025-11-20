@@ -23,7 +23,7 @@
     "@types/react": "19.2.6",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
-    "@vitest/coverage-v8": "4.0.10",
+    "@vitest/coverage-v8": "4.0.12",
     "chart.js": "4.5.1",
     "chartjs-adapter-date-fns": "3.0.0",
     "chartjs-plugin-annotation": "3.1.0",
@@ -81,7 +81,7 @@
     "@types/node": "24.10.1",
     "@typescript-eslint/eslint-plugin": "8.47.0",
     "@typescript-eslint/parser": "8.47.0",
-    "@vitest/ui": "4.0.10",
+    "@vitest/ui": "4.0.12",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "eslint": "9.39.1",
     "eslint-plugin-react": "7.37.5",
@@ -93,7 +93,7 @@
     "typescript": "5.9.3",
     "vite-bundle-visualizer": "1.2.1",
     "vite-plugin-checker": "0.11.0",
-    "vitest": "4.0.10"
+    "vitest": "4.0.12"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.53.3"
