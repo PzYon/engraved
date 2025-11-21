@@ -136,6 +136,8 @@ test("Backspace on empty item removes item", async ({ page }) => {
 
   expect(await scrapList.getItemCount()).toBe(1);
 
+  // this is weird because it moves the cursor to the beginning of the list item
+  // if i do the same without saving, cursor is at the end of the list item
   await expect(scrapList.getListItem(0, 0)).toHaveText("ABC");
 });
 
