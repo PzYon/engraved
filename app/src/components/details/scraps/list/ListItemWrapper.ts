@@ -3,7 +3,7 @@ import { IScrapListItem } from "./IScrapListItem";
 export type CursorPosition = number | "beginning" | "end";
 
 export class ListItemWrapper {
-  private giveFocusInternal: () => void;
+  private giveFocusInternal: (cursorPosition: CursorPosition) => void;
 
   readonly reactKey = "react-key-" + Math.random().toString().split(".")[1];
 
@@ -20,7 +20,7 @@ export class ListItemWrapper {
     this.item = value;
   }
 
-  setGiveFocus(giveFocus: () => void) {
+  setGiveFocus(giveFocus: (cursorPosition: CursorPosition) => void) {
     this.giveFocusInternal = giveFocus;
 
     if (this.giveFocusOnRef) {
@@ -30,16 +30,6 @@ export class ListItemWrapper {
   }
 
   giveFocus(cursorPosition?: CursorPosition) {
-    this.giveFocusInternal?.();
-    console.log(cursorPosition);
-    //this.moveCursorToPosition(cursorPosition);
-  }
-
-  moveCursorToPosition(cursorPosition: CursorPosition) {
-    if (cursorPosition === undefined) {
-      return;
-    }
-
-    console.log("moving cursor to", cursorPosition);
+    this.giveFocusInternal?.(cursorPosition);
   }
 }
