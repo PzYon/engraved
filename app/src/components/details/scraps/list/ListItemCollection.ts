@@ -19,7 +19,10 @@ export class ListItemCollection {
     this.wrappedItems = rawItems.map((i) => new ListItemWrapper(i));
   }
 
-  setGiveFocus(index: number, giveFocus: () => void): void {
+  setGiveFocus(
+    index: number,
+    giveFocus: (cursorPosition: CursorPosition) => void,
+  ): void {
     this.wrappedItems[index].setGiveFocus(giveFocus);
   }
 

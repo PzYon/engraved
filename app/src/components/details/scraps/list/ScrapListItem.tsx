@@ -10,6 +10,7 @@ import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonG
 import { ListItemCollection } from "./ListItemCollection";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { CursorPosition } from "./ListItemWrapper";
 
 export const ScrapListItem: React.FC<{
   listItemsCollection: ListItemCollection;
@@ -25,8 +26,39 @@ export const ScrapListItem: React.FC<{
     useSortable({ id: listItemsCollection.getReactKey(index) });
 
   useEffect(
-    () => listItemsCollection.setGiveFocus(index, () => ref.current.focus()),
-    [listItemsCollection, index],
+    () =>
+      listItemsCollection.setGiveFocus(
+        index,
+        (cursorPosition: CursorPosition) => {
+          if (!ref?.current) {
+            return;
+          }
+
+          ref.current.focus();
+
+          if (cursorPosition === undefined) {
+            return;
+          }
+
+          setTimeout(() => {
+            if (typeof cursorPosition === "string") {
+              if (cursorPosition === "beginning") {
+                ref.current.setSelectionRange(0, 0);
+              } else {
+                ref.current.setSelectionRange(
+                  ref.current.value.length,
+                  ref.current.value.length,
+                );
+              }
+            }
+
+            if (typeof cursorPosition === "number" && cursorPosition >= 0) {
+              ref.current.setSelectionRange(cursorPosition, cursorPosition);
+            }
+          });
+        },
+      ),
+    [listItemsCollection, index, ref?.current],
   );
 
   return (
@@ -158,6 +190,7 @@ export const ScrapListItem: React.FC<{
           target.value === null ||
           target.value?.trim() === ""
         ) {
+          e.preventDefault();
           listItemsCollection.removeItem(index);
           return;
         }
