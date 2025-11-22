@@ -147,9 +147,11 @@ test("Backspace on empty item removes item", async ({ page }) => {
   await page.keyboard.press("Backspace");
   await page.keyboard.press("Backspace");
 
-  expect(await scrapList.getItemCount()).toBe(2);
+  expect(await scrapList.getItemCount()).toBe(3);
 
   await page.keyboard.press("Backspace");
+
+  expect(await scrapList.getItemCount()).toBe(2);
 
   await expect(scrapList.getListItem(0, 0)).toHaveText("AB");
   await expect(scrapList.getListItem(1, 0)).toHaveText("GHI");
