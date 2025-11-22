@@ -131,6 +131,21 @@ test("Backspace on empty item removes item", async ({ page }) => {
   await expect(
     scrapList.getListItem(2, 0).filter({ hasText: "" }),
   ).toBeVisible();
+  expect(await scrapList.getItemCount()).toBe(3);
+
+  await page.keyboard.press("Backspace");
+
+  expect(await scrapList.getItemCount()).toBe(2);
+  await expect(scrapList.getListItem(1, 0)).toHaveText("DEF");
+
+  await scrapList.addListItem("GHI");
+
+  expect(await scrapList.getItemCount()).toBe(3);
+
+  await scrapList.getListItem(1, 0).click();
+  await page.keyboard.press("Backspace");
+  await page.keyboard.press("Backspace");
+  await page.keyboard.press("Backspace");
 
   expect(await scrapList.getItemCount()).toBe(3);
 
@@ -138,9 +153,10 @@ test("Backspace on empty item removes item", async ({ page }) => {
 
   expect(await scrapList.getItemCount()).toBe(2);
 
-  // this is weird because it moves the cursor to the beginning of the list item
-  // if i do the same without saving, cursor is at the end of the list item
-  await expect(scrapList.getListItem(1, 0)).toHaveText("DEF");
+  await page.keyboard.press("Backspace");
+
+  await expect(scrapList.getListItem(0, 0)).toHaveText("AB");
+  await expect(scrapList.getListItem(1, 0)).toHaveText("GHI");
 });
 
 test("modify list items in multiple tabs, handle updates accordingly", async ({
