@@ -34,12 +34,11 @@ export const ScrapListItem: React.FC<{
             return;
           }
 
+          ref.current.focus();
+
           if (cursorPosition === undefined) {
-            ref.current.focus();
             return;
           }
-
-          ref.current.focus();
 
           setTimeout(() => {
             if (typeof cursorPosition === "string") {
