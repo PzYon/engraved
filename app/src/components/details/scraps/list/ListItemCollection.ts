@@ -64,7 +64,9 @@ export class ListItemCollection {
 
     this.wrappedItems = this.wrappedItems.filter((_, i) => i !== index);
 
-    this.wrappedItems[Math.min(index, this.highestIndex)].giveFocus("end");
+    this.wrappedItems[
+      Math.min(Math.max(0, index - 1), this.highestIndex)
+    ].giveFocus("end");
 
     this.fireOnChange();
   }

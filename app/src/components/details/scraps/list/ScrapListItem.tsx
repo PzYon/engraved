@@ -192,7 +192,6 @@ export const ScrapListItem: React.FC<{
         ) {
           e.preventDefault();
           listItemsCollection.removeItem(index);
-          listItemsCollection.moveFocusUp(index, "end");
           return;
         }
 
