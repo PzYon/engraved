@@ -8,7 +8,8 @@ export const GoToItemRow: React.FC<{
   url: string;
   hasFocus: boolean;
   renderAtEnd?: () => React.ReactNode;
-}> = ({ children, icon, url, hasFocus, renderAtEnd }) => {
+  onClick?: () => void;
+}> = ({ children, icon, url, hasFocus, renderAtEnd, onClick }) => {
   const navigate = useNavigate();
 
   useEngravedHotkeys("enter", () => navigate(url), { enabled: hasFocus });
@@ -17,6 +18,7 @@ export const GoToItemRow: React.FC<{
     <Typography>
       <Link
         to={url}
+        onClick={onClick}
         style={{ display: "flex", alignItems: "center", padding: "4px 8px" }}
       >
         <IconContainer>{icon}</IconContainer>

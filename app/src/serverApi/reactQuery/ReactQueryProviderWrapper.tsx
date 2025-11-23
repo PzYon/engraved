@@ -22,6 +22,6 @@ export const ReactQueryProviderWrapper: React.FC<{
 }> = ({ children }) => (
   <QueryClientProvider client={queryClient}>
     {children}
-    <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+    <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
   </QueryClientProvider>
 );

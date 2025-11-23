@@ -1,56 +1,61 @@
 import React, { useRef } from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import { Popover, styled } from "@mui/material";
-import { JournalGoToItemRow } from "../overview/goto/GoTo";
-import { useRecentlyViewedJournals } from "./menu/useRecentlyViewedJournals";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
 import { HistoryOutlined } from "@mui/icons-material";
+import { GoToSimple } from "../overview/goto/GoToSimple";
+import { PageSection } from "./pages/PageSection";
+import { useEngravedHotkeys } from "../common/actions/useEngravedHotkeys";
 
 export const FloatingHistoryNavigation: React.FC = () => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const [showMenu, setShowMenu] = React.useState(false);
 
-  const recentlyViewedJournals = useRecentlyViewedJournals();
+  useEngravedHotkeys("alt+b", () => setShowMenu(!showMenu));
 
   return (
     <Host>
       <div
-        ref={domElementRef}
         onClick={() => setShowMenu(!showMenu)}
-        style={{ position: "fixed", bottom: 16, right: 16 }}
+        style={{ position: "fixed", bottom: 16, left: 16 }}
       >
+        <div ref={domElementRef}></div>
         <ActionIconButton
           action={{
             sx: { backgroundColor: "primary.main", color: "common.white" },
             key: "history",
             label: "Recently viewed journals",
-            icon: <HistoryOutlined />,
+            icon: <HistoryOutlined fontSize="large" />,
           }}
         />
       </div>
 
-      {showMenu ? (
-        <Popover
-          open={true}
-          onClose={() => setShowMenu(false)}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-        >
-          <List>
-            {recentlyViewedJournals.map((journal) => {
-              return (
-                <ListItem key={journal.id}>
-                  <JournalGoToItemRow journal={journal} hasFocus={false} />
-                </ListItem>
-              );
-            })}
-          </List>
-        </Popover>
-      ) : null}
+      <Popover
+        open={showMenu}
+        onClose={() => setShowMenu(false)}
+        anchorEl={{
+          getBoundingClientRect: () =>
+            domElementRef.current.getBoundingClientRect(),
+          nodeType: 1,
+        }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <PageSection style={{ margin: "0 !important", padding: "0 8px" }}>
+          <GoToSimple
+            onClick={() => {
+              setShowMenu(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setShowMenu(false);
+              }
+            }}
+          />
+        </PageSection>
+      </Popover>
     </Host>
   );
 };
@@ -58,5 +63,4 @@ export const FloatingHistoryNavigation: React.FC = () => {
 const Host = styled("div")`
   position: sticky;
   bottom: 10px;
-  background-color: deeppink;
 `;
