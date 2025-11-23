@@ -6,7 +6,7 @@ import { IEntity } from "../../../serverApi/IEntity";
 import { IJournal } from "../../../serverApi/IJournal";
 
 export const useGoToNavigationItems = (
-  searchText: string,
+  searchText?: string,
 ): { journalsForEntries: IJournal[]; items: IEntity[] } => {
   const viewedJournals = useRecentlyViewedJournals();
 

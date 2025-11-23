@@ -144,7 +144,7 @@ const ScrapEntryGoToItemRow: React.FC<{
   );
 };
 
-const JournalGoToItemRow: React.FC<{
+export const JournalGoToItemRow: React.FC<{
   journal: IJournal;
   hasFocus: boolean;
 }> = ({ journal, hasFocus }) => {
