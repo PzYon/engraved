@@ -112,7 +112,7 @@ const ScrapEntryGoToItemRow: React.FC<{
   );
 };
 
-export const JournalGoToItemRow: React.FC<{
+const JournalGoToItemRow: React.FC<{
   journal: IJournal;
   hasFocus: boolean;
   onClick: () => void;
