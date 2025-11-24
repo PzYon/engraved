@@ -17,6 +17,8 @@ export default defineConfig({
   use: {
     baseURL: cdnBaseUrl,
     trace: "on-first-retry",
+    video: "on-first-retry",
+    screenshot: "only-on-failure",
   },
   projects: [
     {
