@@ -20,7 +20,11 @@ export const FloatingHeaderActions: React.FC<{
           <SpeedDialAction
             key={action.key}
             icon={<ActionIconButton action={action} buttonsAsSpans={true} />}
-            tooltipTitle={action.label}
+            slotProps={{
+              tooltip: {
+                title: action.label,
+              },
+            }}
           />
         ))}
     </SpeedDial>

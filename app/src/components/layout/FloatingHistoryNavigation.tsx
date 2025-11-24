@@ -17,9 +17,9 @@ export const FloatingHistoryNavigation: React.FC = () => {
     <Host>
       <div
         onClick={() => setShowMenu(!showMenu)}
-        style={{ position: "fixed", bottom: 16, left: 16 }}
+        style={{ position: "fixed", bottom: 16, right: 16 }}
       >
-        <div ref={domElementRef}></div>
+        <div ref={domElementRef} style={{ paddingBottom: "16px" }}></div>
         <ActionIconButton
           action={{
             sx: { backgroundColor: "primary.main", color: "common.white" },
@@ -42,8 +42,17 @@ export const FloatingHistoryNavigation: React.FC = () => {
           vertical: "top",
           horizontal: "right",
         }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
       >
-        <PageSection style={{ margin: "0 !important", padding: "0 8px" }}>
+        <PageSection
+          style={{
+            margin: "0 !important",
+            padding: "0 8px",
+          }}
+        >
           <GoToSimple
             onClick={() => {
               setShowMenu(false);
