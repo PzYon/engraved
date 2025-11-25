@@ -58,7 +58,7 @@ export const ScrapListItem: React.FC<{
           });
         },
       ),
-    [listItemsCollection, index, ref?.current],
+    [listItemsCollection, index],
   );
 
   return (
