@@ -34,14 +34,18 @@ export class ScrapListComponent {
     await this.page.getByRole("button", { name: "Save" }).click();
 
     const appBar = this.page.getByTestId("app-alert-bar");
-
-    await expect(
-      appBar.getByText(isUpdate ? "Updated entry" : "Added entry"),
-    ).toBeVisible();
+    await expect(appBar).toContainText(
+      isUpdate ? "Updated entry" : "Added entry",
+    );
 
     this.scrapId = await appBar.getAttribute("data-related-entity-id");
 
     return this.scrapId;
+  }
+
+  async selectItem(index: number) {
+    await this.getListItem(index, 0).click();
+    await expect(this.getListItem(index, 0).getByRole("textbox")).toBeFocused();
   }
 
   getListItemByText(value: string) {

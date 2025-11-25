@@ -94,7 +94,7 @@ test("Enter only adds one empty line", async ({ page }) => {
 
   await scrapList.clickSave(false);
   await scrapList.dblClickToEdit();
-  await scrapList.getListItem(0, 0).click();
+  await scrapList.selectItem(0);
 
   await page.keyboard.press("Enter");
   expect(await scrapList.getItemCount()).toBe(2);
@@ -118,22 +118,23 @@ test("Backspace on empty item removes item", async ({ page }) => {
 
   await scrapList.clickSave();
   await scrapList.dblClickToEdit();
-  await scrapList.getListItem(1, 0).click();
+
+  await scrapList.selectItem(1);
 
   expect(await scrapList.getItemCount()).toBe(2);
 
   await scrapList.addListItem("GHI");
 
-  await page.keyboard.press("Backspace");
-  await page.keyboard.press("Backspace");
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
+  await pressBackspace(page);
+  await pressBackspace(page);
 
   await expect(
     scrapList.getListItem(2, 0).filter({ hasText: "" }),
   ).toBeVisible();
   expect(await scrapList.getItemCount()).toBe(3);
 
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
 
   expect(await scrapList.getItemCount()).toBe(2);
   await expect(scrapList.getListItem(1, 0)).toHaveText("DEF");
@@ -142,22 +143,29 @@ test("Backspace on empty item removes item", async ({ page }) => {
 
   expect(await scrapList.getItemCount()).toBe(3);
 
-  await scrapList.getListItem(1, 0).click();
-  await page.keyboard.press("Backspace");
-  await page.keyboard.press("Backspace");
-  await page.keyboard.press("Backspace");
+  await scrapList.selectItem(1);
+
+  await pressBackspace(page);
+  await pressBackspace(page);
+  await pressBackspace(page);
 
   expect(await scrapList.getItemCount()).toBe(3);
 
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
 
   expect(await scrapList.getItemCount()).toBe(2);
 
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
 
   await expect(scrapList.getListItem(0, 0)).toHaveText("AB");
   await expect(scrapList.getListItem(1, 0)).toHaveText("GHI");
 });
+
+async function pressBackspace(page: Page) {
+  await page.waitForTimeout(20);
+  await page.keyboard.press("Backspace");
+  await page.waitForTimeout(20);
+}
 
 test("modify list items in multiple tabs, handle updates accordingly", async ({
   browser,
@@ -221,7 +229,7 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
 test("perform common scrap list operations using shortcuts", async ({
   page,
 }) => {
-  await login(page, "scrapsList-short-cuts");
+  await login(page, "scrapsList-shortcuts");
 
   await addNewJournal(page, "Scraps", "Scraps with shortcuts");
 
@@ -237,7 +245,7 @@ test("perform common scrap list operations using shortcuts", async ({
 
   // this should not be necessary, as basically the cursor should already
   // be there. at least i guess so!?
-  await scrapList.getListItem(0, 0).click();
+  await scrapList.selectItem(0);
 
   await page.keyboard.press("Enter");
   await page.keyboard.type("Second");

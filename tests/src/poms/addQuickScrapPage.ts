@@ -21,8 +21,7 @@ export class AddQuickScrapPage {
     await this.page.getByRole("button", { name: "Save" }).click();
 
     const appBar = this.page.getByTestId("app-alert-bar");
-
-    await expect(appBar.getByText("Added entry")).toBeVisible();
+    await expect(appBar).toContainText("Added entry");
 
     return appBar.getAttribute("data-related-entity-id");
   }
