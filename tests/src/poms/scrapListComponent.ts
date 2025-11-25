@@ -45,8 +45,8 @@ export class ScrapListComponent {
   }
 
   async selectItem(index: number) {
-    await this.getListItem(index, 0).getByRole("textbox").click();
-    await expect(this.getListItem(index, 0)).toBeFocused();
+    await this.getListItem(index, 0).click();
+    await expect(this.getListItem(index, 0).getByRole("textbox")).toBeFocused();
   }
 
   getListItemByText(value: string) {
