@@ -125,16 +125,16 @@ test("Backspace on empty item removes item", async ({ page }) => {
 
   await scrapList.addListItem("GHI");
 
-  await page.keyboard.press("Backspace");
-  await page.keyboard.press("Backspace");
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
+  await pressBackspace(page);
+  await pressBackspace(page);
 
   await expect(
     scrapList.getListItem(2, 0).filter({ hasText: "" }),
   ).toBeVisible();
   expect(await scrapList.getItemCount()).toBe(3);
 
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
 
   expect(await scrapList.getItemCount()).toBe(2);
   await expect(scrapList.getListItem(1, 0)).toHaveText("DEF");
@@ -145,21 +145,27 @@ test("Backspace on empty item removes item", async ({ page }) => {
 
   await scrapList.selectItem(1);
 
-  await page.keyboard.press("Backspace");
-  await page.keyboard.press("Backspace");
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
+  await pressBackspace(page);
+  await pressBackspace(page);
 
   expect(await scrapList.getItemCount()).toBe(3);
 
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
 
   expect(await scrapList.getItemCount()).toBe(2);
 
-  await page.keyboard.press("Backspace");
+  await pressBackspace(page);
 
   await expect(scrapList.getListItem(0, 0)).toHaveText("AB");
   await expect(scrapList.getListItem(1, 0)).toHaveText("GHI");
 });
+
+async function pressBackspace(page: Page) {
+  await page.waitForTimeout(50);
+  await page.keyboard.press("Backspace");
+  await page.waitForTimeout(50);
+}
 
 test("modify list items in multiple tabs, handle updates accordingly", async ({
   browser,
