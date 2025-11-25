@@ -44,6 +44,11 @@ export class ScrapListComponent {
     return this.scrapId;
   }
 
+  async selectItem(index: number) {
+    await this.getListItem(index, 0).click();
+    await expect(this.getListItem(index, 0)).toBeFocused();
+  }
+
   getListItemByText(value: string) {
     return this.page
       .getByTestId("scrap-" + this.scrapId)

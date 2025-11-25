@@ -94,7 +94,7 @@ test("Enter only adds one empty line", async ({ page }) => {
 
   await scrapList.clickSave(false);
   await scrapList.dblClickToEdit();
-  await scrapList.getListItem(0, 0).click();
+  await scrapList.selectItem(0);
 
   await page.keyboard.press("Enter");
   expect(await scrapList.getItemCount()).toBe(2);
@@ -118,7 +118,8 @@ test("Backspace on empty item removes item", async ({ page }) => {
 
   await scrapList.clickSave();
   await scrapList.dblClickToEdit();
-  await scrapList.getListItem(1, 0).click();
+
+  await scrapList.selectItem(1);
 
   expect(await scrapList.getItemCount()).toBe(2);
 
@@ -142,7 +143,8 @@ test("Backspace on empty item removes item", async ({ page }) => {
 
   expect(await scrapList.getItemCount()).toBe(3);
 
-  await scrapList.getListItem(1, 0).click();
+  await scrapList.selectItem(1);
+
   await page.keyboard.press("Backspace");
   await page.keyboard.press("Backspace");
   await page.keyboard.press("Backspace");
@@ -237,7 +239,7 @@ test("perform common scrap list operations using shortcuts", async ({
 
   // this should not be necessary, as basically the cursor should already
   // be there. at least i guess so!?
-  await scrapList.getListItem(0, 0).click();
+  await scrapList.selectItem(0);
 
   await page.keyboard.press("Enter");
   await page.keyboard.type("Second");
