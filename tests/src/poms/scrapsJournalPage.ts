@@ -39,7 +39,7 @@ export class ScrapsJournalPage extends JournalPage {
     await this.getTitleBox().press("Alt+s");
 
     const appBar = this.page.getByTestId("app-alert-bar");
-    await expect(appBar.getByText("Added entry")).toBeVisible();
+    await expect(appBar).toContainText("Added entry");
     await expect(appBar).not.toBeVisible({ timeout: 10000 });
   }
 
