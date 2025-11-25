@@ -229,7 +229,7 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
 test("perform common scrap list operations using shortcuts", async ({
   page,
 }) => {
-  await login(page, "scrapsList-short-cuts");
+  await login(page, "scrapsList-shortcuts");
 
   await addNewJournal(page, "Scraps", "Scraps with shortcuts");
 
