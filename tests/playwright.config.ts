@@ -13,7 +13,7 @@ export default defineConfig({
   forbidOnly: !!isCi,
   // we don't want retries in CI to prevent flaky tests
   retries: 0, // isCi ? 2 : 0,
-  reporter: isCi ? [["list"], ["github", "html"]] : [["list"], ["html"]],
+  reporter: isCi ? [["list"], ["github"], ["html"]] : [["list"], ["html"]],
   use: {
     baseURL: cdnBaseUrl,
     trace: "on-first-retry",
