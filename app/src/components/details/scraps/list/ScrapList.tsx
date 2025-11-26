@@ -35,7 +35,6 @@ export const ScrapList: React.FC = () => {
     isEditMode,
     upsertScrap,
     scrapToRender,
-    hasTitleFocus,
     changeScrapType,
   } = useScrapContext();
 
@@ -52,7 +51,7 @@ export const ScrapList: React.FC = () => {
 
   useEffect(() => {
     if (isEditMode) {
-      listItemCollection.giveFocus(0);
+      listItemCollection.giveFocus(listItemCollection.items.length - 1, "end");
     }
   }, [isEditMode, listItemCollection]);
 
@@ -78,9 +77,7 @@ export const ScrapList: React.FC = () => {
       <BodyHost
         key={isEditMode.toString()}
         style={
-          isEditMode && !hasTitleFocus
-            ? { outline: "2px solid " + palette.primary.main }
-            : {}
+          isEditMode ? { outline: "2px solid " + palette.primary.main } : {}
         }
       >
         <List>

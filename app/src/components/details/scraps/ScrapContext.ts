@@ -25,8 +25,6 @@ export interface IScrapContext {
   journal: IJournal;
   onSuccess?: () => void;
   hasFocus: boolean;
-  hasTitleFocus: boolean;
-  setHasTitleFocus: (value: boolean) => void;
   changeScrapType: (rows: string[], targetType: ScrapType) => void;
 }
 
@@ -48,8 +46,6 @@ export const ScrapContext = createContext<IScrapContext>({
   journal: null,
   onSuccess: null,
   hasFocus: null,
-  hasTitleFocus: null,
-  setHasTitleFocus: null,
   changeScrapType: null,
 });
 
