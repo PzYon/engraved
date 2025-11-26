@@ -18,6 +18,7 @@ export const ScrapInner: React.FC = () => {
     notes,
     setTitle,
     scrapToRender,
+    setHasTitleFocus,
     hasFocus,
   } = useScrapContext();
 
@@ -45,7 +46,8 @@ export const ScrapInner: React.FC = () => {
             setTitle(d.input);
           }}
           onSelect={setParsedDate}
-          autoFocus={!title}
+          onFocus={() => setHasTitleFocus(true)}
+          onBlur={() => setHasTitleFocus(false)}
         />
       ) : (
         <ReadonlyTitle

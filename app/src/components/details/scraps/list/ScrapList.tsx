@@ -36,6 +36,7 @@ export const ScrapList: React.FC = () => {
     upsertScrap,
     scrapToRender,
     changeScrapType,
+    hasTitleFocus,
   } = useScrapContext();
 
   const listItemCollection = useMemo(() => {
@@ -77,7 +78,9 @@ export const ScrapList: React.FC = () => {
       <BodyHost
         key={isEditMode.toString()}
         style={
-          isEditMode ? { outline: "2px solid " + palette.primary.main } : {}
+          isEditMode && !hasTitleFocus
+            ? { outline: "2px solid " + palette.primary.main }
+            : {}
         }
       >
         <List>
