@@ -47,6 +47,10 @@ jobs:
         working-directory: tests
         run: npm run lint
 
+      - name: Install playwright
+        working-directory: tests
+        run: npx playwright install --with-deps
+
       - name: Run tests
         working-directory: tests
         run: npm run e2e:run-tests
