@@ -48,8 +48,6 @@ export const OverviewListContextProvider: React.FC<{
     }
   }, [inMemorySearchText, setAppAlert]);
 
-  //useEffect(() => () => setAppAlert(undefined), [setAppAlert]);
-
   const filteredItems = useMemo(
     () =>
       items.filter((f) => {
