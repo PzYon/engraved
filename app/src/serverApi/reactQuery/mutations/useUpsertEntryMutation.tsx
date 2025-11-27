@@ -77,9 +77,6 @@ export const useUpsertEntryMutation = (
 
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: queryKeysFactory.journal(journalId),
-        }),
-        queryClient.invalidateQueries({
           queryKey: queryKeysFactory.prefixes.journals(),
         }),
         queryClient.invalidateQueries({
