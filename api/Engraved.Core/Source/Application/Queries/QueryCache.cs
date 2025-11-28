@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 
 namespace Engraved.Core.Application.Queries;
 
@@ -9,8 +10,8 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 {
   private const string KeysByUserId = "___keysByUserId";
 
-  private Dictionary<string, HashSet<string>> QueryKeysByUser
-    => memoryCache.GetOrCreate(KeysByUserId, _ => new Dictionary<string, HashSet<string>>())!;
+  private ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> QueryKeysByUser
+    => memoryCache.GetOrCreate(KeysByUserId, _ => new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>())!;
 
   public void Set<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, TValue value)
     where TQuery : IQuery
@@ -65,14 +66,14 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   private void ClearForUser(string userName)
   {
-    if (!QueryKeysByUser.TryGetValue(userName, out var keys) || !keys.Any())
+    if (!QueryKeysByUser.TryGetValue(userName, out var keys) || keys.IsEmpty)
     {
       return;
     }
 
     logger.LogInformation("Invalidating cache for user {UserName}, {ValueCount} items affected", userName, keys.Count);
 
-    foreach (var key in keys)
+    foreach (var key in keys.Keys)
     {
       memoryCache.Remove(key);
     }
@@ -91,13 +92,9 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   private void RememberQueryKeyForUser(string queryKey)
   {
-    if (!QueryKeysByUser.TryGetValue(GetUserId(), out var queryKeys))
-    {
-      queryKeys = [];
-      QueryKeysByUser.Add(GetUserId(), queryKeys);
-    }
-
-    queryKeys.Add(queryKey);
+    var userId = GetUserId();
+    var set = QueryKeysByUser.GetOrAdd(userId, _ => new ConcurrentDictionary<string, byte>());
+    set.TryAdd(queryKey, 0);
   }
 
   private string GetUserId()
