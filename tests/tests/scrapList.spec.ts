@@ -162,9 +162,9 @@ test("Backspace on empty item removes item", async ({ page }) => {
 });
 
 async function pressBackspace(page: Page) {
-  //await page.waitForTimeout(20);
+  await page.waitForTimeout(20);
   await page.keyboard.press("Backspace");
-  //await page.waitForTimeout(20);
+  await page.waitForTimeout(20);
 }
 
 test("modify list items in multiple tabs, handle updates accordingly", async ({
