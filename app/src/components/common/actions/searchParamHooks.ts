@@ -6,6 +6,7 @@ export const knownQueryParams = {
   actionKey: "action-key",
   favoritesOnly: "favorites-only",
   query: "q",
+  testUser: "test-user",
 };
 
 type ActionKey =
@@ -53,11 +54,34 @@ export const useItemAction = () => {
     },
 
     closeAction: () => {
-      searchParams.delete(knownQueryParams.actionKey);
-      searchParams.delete(knownQueryParams.selectedItemId);
-      setSearchParams(searchParams);
+      let hasChanges = false;
+
+      if (deleteIfSet(knownQueryParams.actionKey)) {
+        hasChanges = true;
+      }
+
+      if (deleteIfSet(knownQueryParams.selectedItemId)) {
+        hasChanges = true;
+      }
+
+      if (deleteIfSet(knownQueryParams.testUser)) {
+        hasChanges = true;
+      }
+
+      if (hasChanges) {
+        setSearchParams(searchParams);
+      }
     },
   };
+
+  function deleteIfSet(key: string) {
+    if (searchParams.get(key)) {
+      searchParams.delete(key);
+      return true;
+    }
+
+    return false;
+  }
 };
 
 export const useEngravedSearchParams = () => {

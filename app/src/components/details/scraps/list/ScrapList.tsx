@@ -35,8 +35,8 @@ export const ScrapList: React.FC = () => {
     isEditMode,
     upsertScrap,
     scrapToRender,
-    hasTitleFocus,
     changeScrapType,
+    hasTitleFocus,
   } = useScrapContext();
 
   const listItemCollection = useMemo(() => {
@@ -52,7 +52,7 @@ export const ScrapList: React.FC = () => {
 
   useEffect(() => {
     if (isEditMode) {
-      listItemCollection.giveFocus(0);
+      listItemCollection.giveFocus(listItemCollection.items.length - 1, "end");
     }
   }, [isEditMode, listItemCollection]);
 

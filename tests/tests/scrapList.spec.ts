@@ -192,7 +192,7 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
 
   const scrapListTab2 = new ScrapListComponent(pageTab2, scrapId);
   await scrapListTab2.dblClickToEdit();
-  await scrapListTab2.typeListItem(thirdItemText);
+  await scrapListTab2.addListItem(thirdItemText);
   await scrapListTab2.clickSave(true);
 
   // tab1: new item is not visible until window has gotten focus.
