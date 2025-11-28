@@ -55,16 +55,8 @@ jobs:
         working-directory: tests
         run: npm run e2e:run-tests
 
-      - name: Upload test-results
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: playwright-test-results
-          path: tests/test-results/**/*
-          retention-days: 5
-
       - name: Upload playwright-report
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v5
         with:
           name: playwright-report
