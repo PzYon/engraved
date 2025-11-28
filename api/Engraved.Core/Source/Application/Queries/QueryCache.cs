@@ -11,7 +11,10 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   private const string KeysByUserId = "___keysByUserId";
 
   private ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> QueryKeysByUser
-    => memoryCache.GetOrCreate(KeysByUserId, _ => new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>())!;
+    => memoryCache.GetOrCreate(
+      KeysByUserId,
+      _ => new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>()
+    )!;
 
   public void Set<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, TValue value)
     where TQuery : IQuery
@@ -92,9 +95,9 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   private void RememberQueryKeyForUser(string queryKey)
   {
-    var userId = GetUserId();
-    var set = QueryKeysByUser.GetOrAdd(userId, _ => new ConcurrentDictionary<string, byte>());
-    set.TryAdd(queryKey, 0);
+    QueryKeysByUser
+      .GetOrAdd(GetUserId(), _ => new ConcurrentDictionary<string, byte>())
+      .TryAdd(queryKey, 0);
   }
 
   private string GetUserId()

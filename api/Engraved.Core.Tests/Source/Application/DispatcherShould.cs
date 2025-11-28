@@ -108,7 +108,7 @@ public class DispatcherShould
 
     Dispatcher dispatcher1 = CreateDispatcher("user_one");
     Guid resultFirstExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
-    await dispatcher1.Command(new FakeCommand { AffectedUsers = new List<string> { "user_zero", "user_one" } });
+    await dispatcher1.Command(new FakeCommand { AffectedUsers = ["user_zero", "user_one"] });
 
     Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
     resultFirstExecution.Should().NotBe(resultSecondExecution);
