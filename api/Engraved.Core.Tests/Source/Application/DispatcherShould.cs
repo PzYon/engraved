@@ -117,10 +117,39 @@ public class DispatcherShould
     firstResultOtherUser.Should().NotBe(secondResultOtherUser);
   }
 
-  private Dispatcher CreateDispatcher(string userName)
+  [Test]
+  public async Task Parallel()
+  {
+    // we use the same queryCache instance to simulate multiple request from the
+    // same user at the same time.
+    var currentUser = new Lazy<IUser>(() => new User { Id = "user_one", Name = "user_one" });
+    var queryCache = new QueryCache(NullLogger<QueryCache>.Instance, _memoryCache, currentUser);
+
+    var parallelTaskCount = 10;
+    var actionPerTaskCount = 100;
+    
+    var tasks = new Task[parallelTaskCount];
+
+    for (var taskIndex = 0; taskIndex < parallelTaskCount; taskIndex++)
+    {
+      tasks[taskIndex] = Task.Run(async () =>
+      {
+        for (var actionIndex = 0; actionIndex < actionPerTaskCount; actionIndex++)
+        {
+          Dispatcher dispatcher = CreateDispatcher("user_one", queryCache);
+          await dispatcher.Query<Guid, FakeQuery>(new FakeQuery());
+          await dispatcher.Command(new FakeCommand { AffectedUsers = ["user_zero", "user_one"] });
+        }
+      });
+    }
+
+    await Task.WhenAll(tasks);
+  }
+
+  private Dispatcher CreateDispatcher(string userName, QueryCache? queryCache = null)
   {
     var currentUser = new Lazy<IUser>(() => new User { Id = userName, Name = userName });
-    var queryCache = new QueryCache(NullLogger<QueryCache>.Instance, _memoryCache, currentUser);
+    queryCache ??= new QueryCache(NullLogger<QueryCache>.Instance, _memoryCache, currentUser);
 
     return new Dispatcher(
       NullLogger<Dispatcher>.Instance,
@@ -133,7 +162,7 @@ public class DispatcherShould
 
 public class FakeCommand : ICommand
 {
-  public List<string> AffectedUsers { get; set; } = [];
+  public List<string> AffectedUsers { get; set; } = new List<string>();
 }
 
 public class FakeCommandExecutor : ICommandExecutor<FakeCommand>
