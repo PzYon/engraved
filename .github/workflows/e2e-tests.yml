@@ -62,3 +62,11 @@ jobs:
           name: playwright-report
           path: tests/playwright-report/**/*
           retention-days: 5
+
+      - name: Upload test-results
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-test-results
+          path: tests/test-results/**/*
+          retention-days: 5
