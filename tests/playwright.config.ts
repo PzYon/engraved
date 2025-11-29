@@ -16,7 +16,7 @@ export default defineConfig({
   reporter: isCi ? [["list"], ["html"], ["github"]] : [["list"], ["html"]],
   use: {
     baseURL: cdnBaseUrl,
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
   },
