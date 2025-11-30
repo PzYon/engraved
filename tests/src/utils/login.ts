@@ -21,7 +21,7 @@ export async function login(page: Page, testName: string) {
   const userName = getUserName(testName);
   console.log(`Using username '${userName}'`);
 
-  await page.goto(`/?test_user=${userName}`);
+  await page.goto(`/?test-user=${userName}`);
 
   return userName;
 }

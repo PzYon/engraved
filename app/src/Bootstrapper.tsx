@@ -8,6 +8,7 @@ import { registerGooglePrompt } from "./serverApi/authentication/google/register
 import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
+import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 
 const storage = new AuthStorage();
 
@@ -28,8 +29,10 @@ export const Bootstrapper: React.FC = () => {
     isInitialized.current = true;
 
     const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.has("test_user")) {
-      ServerApi.authenticateForTests(searchParams.get("test_user"))
+    if (searchParams.has(knownQueryParams.testUser)) {
+      ServerApi.authenticateForTests(
+        searchParams.get(knownQueryParams.testUser),
+      )
         .then((r) => setUser(r.user))
         .finally(() => setIsNotVisible(false));
       return;

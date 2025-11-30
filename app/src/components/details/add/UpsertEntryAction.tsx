@@ -70,25 +70,17 @@ export const UpsertEntryAction: React.FC<{
         journal={journal}
         actionsRenderStyle={"save-only"}
         propsRenderStyle={"none"}
-        onSuccess={close}
       />
     );
   }
 
-  return (
-    <UpsertEntryActionInternal
-      journal={journal}
-      entry={entry}
-      onSuccess={close}
-    />
-  );
+  return <UpsertEntryActionInternal journal={journal} entry={entry} />;
 };
 
 const UpsertEntryActionInternal: React.FC<{
   journal?: IJournal;
   entry?: IEntry;
-  onSuccess: () => void;
-}> = ({ journal, entry, onSuccess }) => {
+}> = ({ journal, entry }) => {
   const [attributeValues, setAttributeValues] =
     useState<IJournalAttributeValues>(entry?.journalAttributeValues || {}); // empty means nothing selected in the selector
 
@@ -123,7 +115,6 @@ const UpsertEntryActionInternal: React.FC<{
     journal.type,
     journal,
     entry?.id,
-    close,
   );
 
   return (
@@ -221,8 +212,6 @@ const UpsertEntryActionInternal: React.FC<{
             await upsertEntryMutation.mutate({
               command: createCommand(),
             });
-
-            onSuccess();
 
             closeAction();
           }}

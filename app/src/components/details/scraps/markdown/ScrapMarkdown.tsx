@@ -12,7 +12,8 @@ import { Markdown } from "./Markdown";
 export const ScrapMarkdown: React.FC = () => {
   const { setAppAlert } = useAppContext();
 
-  const { notes, setNotes, isEditMode, changeScrapType } = useScrapContext();
+  const { notes, title, setNotes, isEditMode, changeScrapType } =
+    useScrapContext();
 
   return (
     <ScrapBody
@@ -32,7 +33,11 @@ export const ScrapMarkdown: React.FC = () => {
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
       {isEditMode ? (
-        <RichTextEditor initialValue={notes ?? ""} setValue={setNotes} />
+        <RichTextEditor
+          initialValue={notes ?? ""}
+          setValue={setNotes}
+          autoFocus={!!title}
+        />
       ) : (
         <FadeInContainer>
           <Markdown value={notes} />
