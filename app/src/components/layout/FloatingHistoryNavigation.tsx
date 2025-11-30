@@ -7,7 +7,7 @@ import { PageSection } from "./pages/PageSection";
 import { useEngravedHotkeys } from "../common/actions/useEngravedHotkeys";
 
 export const FloatingHistoryNavigation: React.FC = () => {
-  const domElementRef = useRef<HTMLDivElement>(undefined);
+  const domElementRef = useRef<HTMLSpanElement>(undefined);
 
   const [showMenu, setShowMenu] = React.useState(false);
 
@@ -16,19 +16,25 @@ export const FloatingHistoryNavigation: React.FC = () => {
   return (
     <Host>
       <div
-        onClick={() => setShowMenu(!showMenu)}
-        style={{ position: "fixed", bottom: 16, right: 16 }}
+        style={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
-        <div
-          ref={domElementRef}
-          style={{ paddingBottom: "16px", marginRight: "16px" }}
-        />
+        <span ref={domElementRef} style={{ height: 16 }}></span>
         <ActionIconButton
           action={{
-            sx: { backgroundColor: "primary.main", color: "common.white" },
+            sx: {
+              backgroundColor: "primary.main",
+              color: "common.white",
+            },
             key: "history",
             label: "Recently viewed journals",
             icon: <HistoryOutlined fontSize="large" />,
+            onClick: () => setShowMenu(!showMenu),
           }}
         />
       </div>
@@ -39,6 +45,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
         open={true}
         style={{
           display: showMenu ? "initial" : "none",
+          margin: 0,
         }}
         anchorEl={{
           getBoundingClientRect: () =>
@@ -47,11 +54,11 @@ export const FloatingHistoryNavigation: React.FC = () => {
         }}
         anchorOrigin={{
           vertical: "top",
-          horizontal: "left",
+          horizontal: "right",
         }}
         transformOrigin={{
           vertical: "bottom",
-          horizontal: "left",
+          horizontal: "right",
         }}
       >
         <PageSection
