@@ -19,7 +19,10 @@ export const FloatingHistoryNavigation: React.FC = () => {
         onClick={() => setShowMenu(!showMenu)}
         style={{ position: "fixed", bottom: 16, right: 16 }}
       >
-        <div ref={domElementRef} style={{ paddingBottom: "16px" }} />
+        <div
+          ref={domElementRef}
+          style={{ paddingBottom: "16px", marginRight: "16px" }}
+        />
         <ActionIconButton
           action={{
             sx: { backgroundColor: "primary.main", color: "common.white" },
@@ -31,8 +34,12 @@ export const FloatingHistoryNavigation: React.FC = () => {
       </div>
 
       <Popover
-        open={showMenu}
+        disableScrollLock={true}
         onClose={() => setShowMenu(false)}
+        open={true}
+        style={{
+          display: showMenu ? "initial" : "none",
+        }}
         anchorEl={{
           getBoundingClientRect: () =>
             domElementRef.current.getBoundingClientRect(),
@@ -40,17 +47,18 @@ export const FloatingHistoryNavigation: React.FC = () => {
         }}
         anchorOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "left",
         }}
         transformOrigin={{
           vertical: "bottom",
-          horizontal: "right",
+          horizontal: "left",
         }}
       >
         <PageSection
           style={{
             margin: "0 !important",
             padding: "0 8px",
+            minWidth: "250px",
           }}
         >
           <GoToSimple
