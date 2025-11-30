@@ -55,11 +55,15 @@ jobs:
         working-directory: tests
         run: npm run e2e:run-tests
 
+      - name: Prepare artifact name suffix
+        if: failure()
+        run: echo "ARTIFACT_SUFFIX=${{ github.run_id }}-$(date -u +%Y-%m-%d-%H%M%S)" >> $GITHUB_ENV
+
       - name: Upload playwright-report
         if: failure()
         uses: actions/upload-artifact@v5
         with:
-          name: playwright-report
+          name: playwright-report-${{ env.ARTIFACT_SUFFIX }}
           path: tests/playwright-report/**/*
           retention-days: 5
 
@@ -67,6 +71,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v5
         with:
-          name: playwright-test-results
+          name: playwright-test-results-${{ env.ARTIFACT_SUFFIX }}
           path: tests/test-results/**/*
           retention-days: 5
