@@ -1,4 +1,5 @@
-﻿using Engraved.Core.Application.Persistence;
+﻿using System.Collections.Concurrent;
+using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -8,7 +9,7 @@ public class UserLoader(IBaseRepository repository, IMemoryCache cache)
 {
   private const string Users = "___users";
 
-  private Dictionary<string, IUser> UsersByName => cache.GetOrCreate(Users, _ => new Dictionary<string, IUser>())!;
+  private ConcurrentDictionary<string, IUser> UsersByName => cache.GetOrCreate(Users, _ => new ConcurrentDictionary<string, IUser>())!;
 
   public async Task<IUser> GetUser(string name)
   {
