@@ -19,7 +19,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
         onClick={() => setShowMenu(!showMenu)}
         style={{ position: "fixed", bottom: 16, right: 16 }}
       >
-        <div ref={domElementRef} style={{ paddingBottom: "16px" }}></div>
+        <div ref={domElementRef} style={{ paddingBottom: "16px" }} />
         <ActionIconButton
           action={{
             sx: { backgroundColor: "primary.main", color: "common.white" },

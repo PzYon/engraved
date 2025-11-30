@@ -34,6 +34,5 @@ export const useRecentlyViewedJournals = (): IJournal[] => {
 };
 
 function getJournalIdsFromStorage() {
-  console.log("loading from storage");
   return storage.getValue<string[]>(storageKey) ?? [];
 }
