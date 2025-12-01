@@ -28,7 +28,6 @@ import { TagsPage } from "./components/overview/tags/TagsPage";
 import { TagPage } from "./components/overview/tags/TagPage";
 import { GoToPage } from "./components/overview/goto/GoToPage";
 import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
-import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNavigation";
 
 const router = createBrowserRouter([
   {
@@ -47,7 +46,7 @@ const router = createBrowserRouter([
                       <Outlet />
                     </AppErrorBoundary>
                   </AppContent>
-                  <FloatingHistoryNavigation />
+                  {/*<FloatingHistoryNavigation />*/}
                   <AppFooter />
                 </Host>
               </DisplayModeContextProvider>
