@@ -42,7 +42,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
       <Popover
         disableScrollLock={true}
         onClose={() => setShowMenu(false)}
-        open={true}
+        open={false}
         style={{
           display: showMenu ? "initial" : "none",
           margin: 0,
