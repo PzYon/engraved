@@ -26,7 +26,15 @@ export const GoToSimple: React.FC<{
   onClick?: () => void;
   renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
   hasDataLoaded?: () => void;
-}> = ({ searchText, onKeyDown, onClick, renderBeforeList, hasDataLoaded }) => {
+  itemLimit?: number;
+}> = ({
+  searchText,
+  onKeyDown,
+  onClick,
+  renderBeforeList,
+  hasDataLoaded,
+  itemLimit = 0,
+}) => {
   const goto = useGoToNavigationItems(searchText);
 
   if (!goto.items.length && searchText) {
@@ -41,7 +49,9 @@ export const GoToSimple: React.FC<{
 
   return (
     <OverviewList
-      items={goto.items}
+      items={
+        itemLimit > 0 ? goto.items.filter((_, i) => i > itemLimit) : goto.items
+      }
       onKeyDown={onKeyDown}
       renderBeforeList={renderBeforeList}
       renderItem={(entity: IEntity, _: number, hasFocus: boolean) => {

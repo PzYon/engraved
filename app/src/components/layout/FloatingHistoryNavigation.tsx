@@ -62,6 +62,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
       >
         <PageSection style={{ margin: "0 !important" }}>
           <GoToSimple
+            itemLimit={10}
             hasDataLoaded={() => {
               popoverActions.current?.updatePosition();
             }}
