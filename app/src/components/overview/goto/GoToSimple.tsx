@@ -16,6 +16,7 @@ import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { isTypeThatCanShowAddEntryRow } from "../../../util/journalUtils";
 import { JournalType } from "../../../serverApi/JournalType";
+import { useEffect } from "react";
 
 const emptyListItemId = "empty-list-item-id";
 
@@ -24,7 +25,8 @@ export const GoToSimple: React.FC<{
   onKeyDown?: (e: KeyboardEvent) => void;
   onClick?: () => void;
   renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
-}> = ({ searchText, onKeyDown, onClick, renderBeforeList }) => {
+  hasDataLoaded?: () => void;
+}> = ({ searchText, onKeyDown, onClick, renderBeforeList, hasDataLoaded }) => {
   const goto = useGoToNavigationItems(searchText);
 
   if (!goto.items.length && searchText) {
@@ -32,6 +34,10 @@ export const GoToSimple: React.FC<{
       id: emptyListItemId,
     });
   }
+
+  useEffect(() => {
+    hasDataLoaded?.();
+  }, [goto]);
 
   return (
     <OverviewList

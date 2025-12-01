@@ -8,6 +8,7 @@ import { useEngravedHotkeys } from "../common/actions/useEngravedHotkeys";
 
 export const FloatingHistoryNavigation: React.FC = () => {
   const domElementRef = useRef<HTMLSpanElement>(undefined);
+  const popoverActions = useRef(null);
 
   const [showMenu, setShowMenu] = React.useState(false);
 
@@ -42,11 +43,9 @@ export const FloatingHistoryNavigation: React.FC = () => {
       <Popover
         disableScrollLock={true}
         onClose={() => setShowMenu(false)}
-        open={false}
-        style={{
-          display: showMenu ? "initial" : "none",
-          margin: 0,
-        }}
+        open={showMenu}
+        action={popoverActions}
+        style={{ margin: 0 }}
         anchorEl={{
           getBoundingClientRect: () =>
             domElementRef.current.getBoundingClientRect(),
@@ -63,6 +62,9 @@ export const FloatingHistoryNavigation: React.FC = () => {
       >
         <PageSection style={{ margin: "0 !important" }}>
           <GoToSimple
+            hasDataLoaded={() => {
+              popoverActions.current?.updatePosition();
+            }}
             onClick={() => {
               setShowMenu(false);
             }}
