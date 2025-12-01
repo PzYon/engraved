@@ -50,7 +50,7 @@ export const GoToSimple: React.FC<{
   return (
     <OverviewList
       items={
-        itemLimit > 0 ? goto.items.filter((_, i) => i > itemLimit) : goto.items
+        itemLimit > 0 ? goto.items.filter((_, i) => i < itemLimit) : goto.items
       }
       onKeyDown={onKeyDown}
       renderBeforeList={renderBeforeList}
