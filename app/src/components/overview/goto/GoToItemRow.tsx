@@ -8,21 +8,26 @@ export const GoToItemRow: React.FC<{
   url: string;
   hasFocus: boolean;
   renderAtEnd?: () => React.ReactNode;
-}> = ({ children, icon, url, hasFocus, renderAtEnd }) => {
+  onClick?: () => void;
+}> = ({ children, icon, url, hasFocus, renderAtEnd, onClick }) => {
   const navigate = useNavigate();
 
   useEngravedHotkeys("enter", () => navigate(url), { enabled: hasFocus });
 
   return (
-    <Typography>
+    <Typography
+      component="div"
+      style={{ display: "flex", alignItems: "center", padding: "4px 8px" }}
+    >
       <Link
         to={url}
-        style={{ display: "flex", alignItems: "center", padding: "4px 8px" }}
+        onClick={onClick}
+        style={{ display: "flex", alignItems: "center", flexGrow: 1 }}
       >
         <IconContainer>{icon}</IconContainer>
-        <span style={{ flexGrow: 1 }}>{children}</span>
-        {renderAtEnd ? <span>{renderAtEnd()}</span> : null}
+        {children}
       </Link>
+      {renderAtEnd ? <span>{renderAtEnd()}</span> : null}
     </Typography>
   );
 };
