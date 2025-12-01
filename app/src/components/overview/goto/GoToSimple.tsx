@@ -37,7 +37,7 @@ export const GoToSimple: React.FC<{
 
   useEffect(() => {
     hasDataLoaded?.();
-  }, [goto]);
+  }, [goto, hasDataLoaded]);
 
   return (
     <OverviewList
