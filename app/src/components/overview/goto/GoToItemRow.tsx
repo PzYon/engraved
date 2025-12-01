@@ -15,16 +15,19 @@ export const GoToItemRow: React.FC<{
   useEngravedHotkeys("enter", () => navigate(url), { enabled: hasFocus });
 
   return (
-    <Typography>
+    <Typography
+      component="div"
+      style={{ display: "flex", alignItems: "center", padding: "4px 8px" }}
+    >
       <Link
         to={url}
         onClick={onClick}
-        style={{ display: "flex", alignItems: "center", padding: "4px 8px" }}
+        style={{ display: "flex", alignItems: "center", flexGrow: 1 }}
       >
         <IconContainer>{icon}</IconContainer>
-        <span style={{ flexGrow: 1 }}>{children}</span>
-        {renderAtEnd ? <span>{renderAtEnd()}</span> : null}
+        {children}
       </Link>
+      {renderAtEnd ? <span>{renderAtEnd()}</span> : null}
     </Typography>
   );
 };

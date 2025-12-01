@@ -61,13 +61,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
           horizontal: "right",
         }}
       >
-        <PageSection
-          style={{
-            margin: "0 !important",
-            padding: "0 8px",
-            minWidth: "250px",
-          }}
-        >
+        <PageSection style={{ margin: "0 !important" }}>
           <GoToSimple
             onClick={() => {
               setShowMenu(false);
