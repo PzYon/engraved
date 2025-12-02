@@ -376,5 +376,5 @@ function getGroupKey(journalType: JournalType, entry: IEntry) {
       ? (entry as ITimerEntry).startDate
       : entry.dateTime;
 
-  return format(new Date(relevantDate), "u-LL-dd");
+  return relevantDate ? format(new Date(relevantDate), "u-LL-dd") : "";
 }
