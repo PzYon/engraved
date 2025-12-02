@@ -107,7 +107,7 @@ const UpsertEntryActionInternal: React.FC<{
   const valueInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setTimeout(() => valueInputRef.current.focus());
+    setTimeout(() => valueInputRef.current?.focus());
   }, []);
 
   const upsertEntryMutation = useUpsertEntryMutation(

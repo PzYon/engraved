@@ -74,7 +74,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   );
 
   useEffect(() => {
-    setGiveFocus?.(() => editor.commands.focus());
+    setGiveFocus?.(() => editor.commands?.focus());
   }, [editor, setGiveFocus]);
 
   const [isEmpty, setIsEmpty] = useState(!editor.getText());
