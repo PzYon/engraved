@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { useMoveEntryMutation } from "../../../serverApi/reactQuery/mutations/useMoveEntryMutation";
-import { useNavigate } from "react-router-dom";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { JournalSelector } from "../../common/JournalSelector";
 import { UserRole } from "../../../serverApi/UserRole";
@@ -13,16 +12,13 @@ import { useItemAction } from "../../common/actions/searchParamHooks";
 export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
   entry,
 }) => {
-  const navigate = useNavigate();
   const { closeAction } = useItemAction();
 
   const { user } = useAppContext();
 
   const [targetJournalId, setTargetJournalId] = useState<string>(undefined);
 
-  const mutation = useMoveEntryMutation(entry.id, entry.parentId, () => {
-    navigate(`/journals/details/${targetJournalId}/`);
-  });
+  const mutation = useMoveEntryMutation(entry.id, entry.parentId);
 
   if (!entry) {
     return null;
