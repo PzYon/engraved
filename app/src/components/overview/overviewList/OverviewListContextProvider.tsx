@@ -170,7 +170,6 @@ export const OverviewListContextProvider: React.FC<{
       activeItemId,
       setActiveItemId,
       filteredItems,
-      items.length,
       items,
       removeItemParamsFromUrl,
       setShowAll,
