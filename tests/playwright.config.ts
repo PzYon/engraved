@@ -42,8 +42,8 @@ export default defineConfig({
     {
       name: "android",
       use: {
-        ...pixel9Pro.device,
         browserName: "chromium",
+        ...pixel9Pro.device,
         ignoreHTTPSErrors: true,
       },
     },
