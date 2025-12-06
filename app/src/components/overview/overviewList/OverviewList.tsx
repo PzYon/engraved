@@ -56,6 +56,10 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
       {itemsToShow.map((item, index) => {
         const hasFocus = activeItemId === item.id;
 
+        if (hasFocus) {
+          console.log("has focus: ", activeItemId);
+        }
+
         return (
           <OverviewListItem
             onClick={() => {

@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 
 export interface IOverviewListContext {
+  moveFocusOneItemUp(): void;
   activeItemId: string;
   setActiveItemId: (id: string) => void;
   itemsToShow: IEntity[];
@@ -11,6 +12,7 @@ export interface IOverviewListContext {
 }
 
 export const OverviewListContext = createContext<IOverviewListContext>({
+  moveFocusOneItemUp: undefined,
   activeItemId: undefined,
   setActiveItemId: undefined,
   itemsToShow: undefined,
