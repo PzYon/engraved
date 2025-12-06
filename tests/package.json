@@ -5,8 +5,8 @@
   "scripts": {
     "e2e:start-api": "dotnet run --project ../api/Engraved.Api/ -- e2e-tests",
     "e2e:start-app": "cd ../app && npm run build:e2e && cd ../tests && npx superstatic ../app/dist --port 3000",
-    "e2e:run-tests": "npx playwright test --project=\"Google Chrome\"",
-    "e2e:run-tests:ui": "npx playwright test --project=\"Google Chrome\" --ui",
+    "e2e:run-tests": "npx playwright test --project=\"chromium\"",
+    "e2e:run-tests:ui": "npx playwright test --project=\"chromium\" --ui",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "types:check": "tsc --noEmit"
