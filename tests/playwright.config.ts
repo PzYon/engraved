@@ -27,6 +27,13 @@ export default defineConfig({
         ignoreHTTPSErrors: true,
       },
     },
+    {
+      name: "android",
+      use: {
+        ...devices["Pixel 9"],
+        ignoreHTTPSErrors: true,
+      },
+    },
   ],
   webServer: [
     {
