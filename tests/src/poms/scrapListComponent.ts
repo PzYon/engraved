@@ -49,7 +49,11 @@ export class ScrapListComponent {
     await expect(this.getListItem(index, 0).getByRole("textbox")).toBeFocused();
   }
 
-  getListItemByText(value: string) {
+  async getListItemByText(value: string) {
+    if (isAndroidTest()) {
+      await this.page.getByTestId("scrap-" + this.scrapId).click();
+    }
+
     return this.page
       .getByTestId("scrap-" + this.scrapId)
       .locator("li")
@@ -74,10 +78,14 @@ export class ScrapListComponent {
       throw new Error("Cannot double click on a non-saved entry");
     }
 
+    await this.clickToExpand();
+
+    await this.page.getByTestId("scrap-" + this.scrapId).dblclick();
+  }
+
+  async clickToExpand() {
     if (isAndroidTest()) {
       await this.page.getByTestId("scrap-" + this.scrapId).click();
     }
-
-    await this.page.getByTestId("scrap-" + this.scrapId).dblclick();
   }
 }
