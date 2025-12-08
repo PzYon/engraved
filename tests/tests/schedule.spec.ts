@@ -6,6 +6,7 @@ import {
   navigateToHome,
   navigateToScheduledPage,
 } from "../src/utils/navigateTo";
+import { isAndroidTest } from "../src/utils/mobile";
 
 test.beforeEach(async ({ page }) => {
   await login(page, "schedule");
@@ -25,6 +26,10 @@ test("add schedule to entry and mark as done", async ({ page }) => {
 
   const entity = scheduledPage.getEntityElement(entityId);
   await expect(entity).toBeVisible();
+
+  if (isAndroidTest()) {
+    await entity.click();
+  }
 
   await entity.getByRole("link", { name: "Edit schedule" }).click();
 

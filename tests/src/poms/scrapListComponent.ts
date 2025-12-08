@@ -1,4 +1,5 @@
 import { expect, Page } from "@playwright/test";
+import { isAndroidTest } from "../utils/mobile";
 
 export class ScrapListComponent {
   private scrapId: string;
@@ -71,6 +72,10 @@ export class ScrapListComponent {
   async dblClickToEdit() {
     if (!this.scrapId) {
       throw new Error("Cannot double click on a non-saved entry");
+    }
+
+    if (isAndroidTest()) {
+      await this.page.getByTestId("scrap-" + this.scrapId).click();
     }
 
     await this.page.getByTestId("scrap-" + this.scrapId).dblclick();
