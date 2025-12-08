@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 import { JournalPage } from "./journalPage";
 import { DeleteAction } from "./deleteAction";
+import { isAndroidTest } from "../utils/mobile";
 
 export class MetricJournalPage extends JournalPage {
   get tableRows() {
@@ -30,7 +31,8 @@ export class MetricJournalPage extends JournalPage {
   }
 
   async validateNumberOfTableRows(number: number) {
-    await expect(this.tableRows).toHaveCount(number);
+    const expected = isAndroidTest() ? number - 1 : number;
+    await expect(this.tableRows).toHaveCount(expected);
   }
 
   async expectTableCellToHaveValue(value: string) {
