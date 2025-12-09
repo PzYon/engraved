@@ -199,6 +199,7 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
   // because the corresponding events the react-query uses are not triggered.
   await triggerFocusEvent(pageTab1);
 
+  /* eslint-disable playwright/no-conditional-in-test */
   if (isAndroidTest()) {
     await scrapListTab1.clickToExpand();
   }

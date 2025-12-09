@@ -27,6 +27,7 @@ test("add schedule to entry and mark as done", async ({ page }) => {
   const entity = scheduledPage.getEntityElement(entityId);
   await expect(entity).toBeVisible();
 
+  /* eslint-disable playwright/no-conditional-in-test */
   if (isAndroidTest()) {
     await entity.click();
   }
