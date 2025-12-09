@@ -31,8 +31,7 @@ export class MetricJournalPage extends JournalPage {
   }
 
   async validateNumberOfTableRows(number: number) {
-    const expected = isAndroidTest() ? number - 1 : number;
-    await expect(this.tableRows).toHaveCount(expected);
+    await expect(this.tableRows).toHaveCount(this.getRowIndex(number));
   }
 
   async expectTableCellToHaveValue(value: string) {
@@ -42,7 +41,13 @@ export class MetricJournalPage extends JournalPage {
   }
 
   async navigateToDeleteEntryAction(index: number) {
-    await this.tableRows.nth(index).getByLabel("Delete entry").click();
+    await this.tableRows
+      .nth(this.getRowIndex(index))
+      .getByLabel("Delete entry")
+      .click();
     return new DeleteAction(this.page, "Entry");
+  }
+  private getRowIndex(index: number) {
+    return isAndroidTest() ? index - 1 : index;
   }
 }
