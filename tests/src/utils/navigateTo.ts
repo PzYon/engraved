@@ -2,7 +2,7 @@ import { expect, Page } from "@playwright/test";
 import { EntriesPage } from "../poms/entriesPage";
 import { ScheduledPage } from "../poms/scheduledPage";
 import { MetricJournalPage } from "../poms/metricJournalPage";
-import { isAndroidTest } from "./mobile";
+import { isAndroidTest } from "./isAndroidTest";
 
 export async function navigateToHome(page: Page) {
   await page

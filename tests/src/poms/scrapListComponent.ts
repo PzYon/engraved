@@ -1,5 +1,5 @@
 import { expect, Page } from "@playwright/test";
-import { isAndroidTest } from "../utils/mobile";
+import { isAndroidTest } from "../utils/isAndroidTest";
 
 export class ScrapListComponent {
   private scrapId: string;

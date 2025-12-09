@@ -3,7 +3,7 @@ import { addNewJournal } from "../src/utils/addNewJournal";
 import { login } from "../src/utils/login";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 import { ScrapListComponent } from "../src/poms/scrapListComponent";
-import { isAndroidTest } from "../src/utils/mobile";
+import { isAndroidTest } from "../src/utils/isAndroidTest";
 
 const firstItemText = "My First Item";
 const secondItemText = "My Second Item";

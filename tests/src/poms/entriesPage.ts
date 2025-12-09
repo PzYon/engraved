@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { OverviewPage } from "./overviewPage";
-import { isAndroidTest } from "../utils/mobile";
+import { isAndroidTest } from "../utils/isAndroidTest";
 
 export class EntriesPage extends OverviewPage {
   async expectItem(index: number, title: string, content: string) {

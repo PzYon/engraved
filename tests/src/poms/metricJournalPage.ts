@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { JournalPage } from "./journalPage";
 import { DeleteAction } from "./deleteAction";
-import { isAndroidTest } from "../utils/mobile";
+import { isAndroidTest } from "../utils/isAndroidTest";
 
 export class MetricJournalPage extends JournalPage {
   get tableRows() {

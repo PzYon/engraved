@@ -6,7 +6,7 @@ import {
   navigateToHome,
   navigateToScheduledPage,
 } from "../src/utils/navigateTo";
-import { isAndroidTest } from "../src/utils/mobile";
+import { isAndroidTest } from "../src/utils/isAndroidTest";
 
 test.beforeEach(async ({ page }) => {
   await login(page, "schedule");
