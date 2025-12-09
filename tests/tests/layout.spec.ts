@@ -17,7 +17,7 @@ test("does display floating actions if necessary (on scroll down)", async ({
   page,
 }) => {
   // add some journals so we can scroll
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     await addNewJournal(page, "Value", "Use some space " + i);
 
     await navigateToHome(page);
