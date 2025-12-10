@@ -48,29 +48,31 @@ export default defineConfig({
       },
     },
   ],
-  webServer: [
-    {
-      name: "App",
-      command: "npm run e2e:start-app",
-      url: cdnBaseUrl,
-      reuseExistingServer: !isCi,
-      stdout: "pipe",
-      stderr: "pipe",
-      // when building the app for production, it can take
-      // a longer time than when running in dev mode
-      timeout: threeMinutes,
-    },
-    {
-      name: "Server",
-      command: "npm run e2e:start-api",
-      url: apiBaseUrl,
-      reuseExistingServer: !isCi,
-      stdout: isCi ? undefined : "pipe",
-      stderr: "pipe",
-      // for some reason, this api server takes a long
-      // time to start on CI
-      timeout: threeMinutes,
-      ignoreHTTPSErrors: true,
-    },
-  ],
+  webServer: isCi
+    ? []
+    : [
+        {
+          name: "App",
+          command: "npm run e2e:start-app",
+          url: cdnBaseUrl,
+          reuseExistingServer: !isCi,
+          stdout: "pipe",
+          stderr: "pipe",
+          // when building the app for production, it can take
+          // a longer time than when running in dev mode
+          timeout: threeMinutes,
+        },
+        {
+          name: "Server",
+          command: "npm run e2e:start-api",
+          url: apiBaseUrl,
+          reuseExistingServer: !isCi,
+          stdout: isCi ? undefined : "pipe",
+          stderr: "pipe",
+          // for some reason, this api server takes a long
+          // time to start on CI
+          timeout: threeMinutes,
+          ignoreHTTPSErrors: true,
+        },
+      ],
 });
