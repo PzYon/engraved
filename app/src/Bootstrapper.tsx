@@ -12,6 +12,8 @@ import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 
 const storage = new AuthStorage();
 
+// test
+
 export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
 
