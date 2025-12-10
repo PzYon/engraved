@@ -49,7 +49,7 @@ jobs:
 
       - name: Install playwright
         working-directory: tests
-        run: npx playwright install
+        run: npx playwright install chromium
 
       - name: Run tests
         working-directory: tests

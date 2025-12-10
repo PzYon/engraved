@@ -1,5 +1,17 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const pixel9Pro = {
+  name: "Pixel 9 Pro",
+  device: {
+    viewport: { width: 412, height: 915 },
+    deviceScaleFactor: 3.5,
+    isMobile: true,
+    hasTouch: true,
+    userAgent:
+      "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+  },
+};
+
 const cdnBaseUrl = "http://localhost:3000";
 const apiBaseUrl = "http://localhost:5072";
 
@@ -21,15 +33,19 @@ export default defineConfig({
   },
   projects: [
     {
-      name: "Google Chrome",
+      name: "chromium",
       use: {
-        channel: "chrome",
+        ...devices["Desktop Chrome"],
         ignoreHTTPSErrors: true,
       },
     },
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "android",
+      use: {
+        browserName: "chromium",
+        ...pixel9Pro.device,
+        ignoreHTTPSErrors: true,
+      },
     },
   ],
   webServer: [

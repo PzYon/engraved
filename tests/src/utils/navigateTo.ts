@@ -2,9 +2,13 @@ import { expect, Page } from "@playwright/test";
 import { EntriesPage } from "../poms/entriesPage";
 import { ScheduledPage } from "../poms/scheduledPage";
 import { MetricJournalPage } from "../poms/metricJournalPage";
+import { isAndroidTest } from "./isAndroidTest";
 
 export async function navigateToHome(page: Page) {
-  await page.getByRole("link", { name: "engraved." }).click();
+  await page
+    .getByRole("link", { name: isAndroidTest() ? "e." : "engraved." })
+    .click();
+
   await page.waitForURL((url) => url.pathname === "/");
 
   await expect(page.getByRole("tab", { name: "Entries" })).toBeVisible();

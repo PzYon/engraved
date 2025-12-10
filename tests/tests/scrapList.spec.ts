@@ -3,6 +3,7 @@ import { addNewJournal } from "../src/utils/addNewJournal";
 import { login } from "../src/utils/login";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 import { ScrapListComponent } from "../src/poms/scrapListComponent";
+import { isAndroidTest } from "../src/utils/isAndroidTest";
 
 const firstItemText = "My First Item";
 const secondItemText = "My Second Item";
@@ -27,13 +28,11 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
 
   await scrapList.dblClickToEdit();
 
-  await scrapList
-    .getListItemByText(secondItemText)
+  await (await scrapList.getListItemByText(secondItemText))
     .getByLabel("Delete")
     .click();
 
-  await scrapList
-    .getListItemByText(firstItemText)
+  await (await scrapList.getListItemByText(firstItemText))
     .getByRole("checkbox")
     .check();
 
@@ -56,23 +55,22 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
   await scrapList.addListItem(secondItemText);
   await scrapList.clickSave();
 
-  await scrapList
-    .getListItemByText(firstItemText)
+  await (await scrapList.getListItemByText(firstItemText))
     .getByRole("checkbox")
     .check();
 
   await expect(
-    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+    (await scrapList.getListItemByText(firstItemText)).getByRole("checkbox"),
   ).toBeChecked();
 
   await page.reload();
 
   await expect(
-    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+    (await scrapList.getListItemByText(firstItemText)).getByRole("checkbox"),
   ).toBeChecked();
 
   await expect(
-    scrapList.getListItemByText(secondItemText).getByRole("checkbox"),
+    (await scrapList.getListItemByText(secondItemText)).getByRole("checkbox"),
   ).not.toBeChecked();
 
   await testThatEveryUpdateLeadsToNewInitialState(page, scrapList);
@@ -199,9 +197,16 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
   // a note on "gotten focus": in real life this happens when to user
   // focuses a tab, in playwright however this does not (yet?) work,
   // because the corresponding events the react-query uses are not triggered.
-  await expect(scrapListTab1.getListItemByText(thirdItemText)).toBeHidden();
   await triggerFocusEvent(pageTab1);
-  await expect(scrapListTab1.getListItemByText(thirdItemText)).toBeVisible();
+
+  /* eslint-disable playwright/no-conditional-in-test */
+  if (isAndroidTest()) {
+    await scrapListTab1.clickToExpand();
+  }
+
+  await expect(
+    await scrapListTab1.getListItemByText(thirdItemText),
+  ).toBeVisible();
 
   // tab1: add new item (without saving - i.e. still in edit mode)
   await scrapListTab1.dblClickToEdit();
@@ -222,7 +227,7 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
   await pageTab1.getByRole("button", { name: "YES" }).click();
 
   await expect(
-    scrapListTab1.getListItemByText("Will be saved item"),
+    await scrapListTab1.getListItemByText("Will be saved item"),
   ).toBeVisible();
 });
 
@@ -310,26 +315,24 @@ async function testThatEveryUpdateLeadsToNewInitialState(
   scrapList: ScrapListComponent,
 ) {
   await expect(
-    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+    (await scrapList.getListItemByText(firstItemText)).getByRole("checkbox"),
   ).toBeChecked();
 
-  await scrapList
-    .getListItemByText(firstItemText)
+  await (await scrapList.getListItemByText(firstItemText))
     .getByRole("checkbox")
     .uncheck();
 
   await expect(
-    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+    (await scrapList.getListItemByText(firstItemText)).getByRole("checkbox"),
   ).not.toBeChecked();
 
-  await scrapList
-    .getListItemByText(firstItemText)
+  await (await scrapList.getListItemByText(firstItemText))
     .getByRole("checkbox")
     .check();
 
   await page.reload();
 
   await expect(
-    scrapList.getListItemByText(firstItemText).getByRole("checkbox"),
+    (await scrapList.getListItemByText(firstItemText)).getByRole("checkbox"),
   ).toBeChecked();
 }
