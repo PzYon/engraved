@@ -1,108 +1,33 @@
-name: Api
+# This workflow is deprecated and kept for backward compatibility
+# The new CI/CD pipeline is in main.yml
+# You can delete this file if you're sure you don't need it
+
+name: API (Legacy)
 
 on:
-  push:
-    paths:
-      - "api/**"
-      - "tests/**"
-      - ".github/workflows/api.yml"
-      - ".github/workflows/e2e-tests.yml"
   workflow_dispatch:
     inputs:
       deploy:
         description: "Force deployment"
         required: false
-        default: "false"
+        type: boolean
+        default: false
 
 jobs:
-  build:
-    name: Build API
+  trigger-main:
+    name: Trigger Main Pipeline
     runs-on: ubuntu-latest
-    timeout-minutes: 60
-
-    services:
-      mongo:
-        image: mongo
-        ports:
-          - 27017:27017
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v6
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v5
+      - name: Trigger main workflow
+        uses: actions/github-script@v7
         with:
-          dotnet-version: "10.x.x"
-
-      - name: Run tests
-        run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-        working-directory: api
-
-      - name: Get current time
-        uses: josStorer/get-current-time@v2
-        id: current-time
-
-      - name: Publish
-        run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
-        working-directory: api
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: api
-          path: ${{env.DOTNET_ROOT}}/Engraved.Api
-
-  e2e-tests:
-    name: "E2E Tests"
-    uses: ./.github/workflows/e2e-tests.yml
-
-  deploy-windows:
-    name: Deploy API (Windows)
-    runs-on: ubuntu-latest
-    needs: [build, e2e-tests]
-    if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
-
-    environment:
-      name: "Production"
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v6
-        with:
-          name: api
-
-      - name: Deploy to Azure App Service (Windows)
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: "engraved"
-          slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E }}
-          package: .
-
-  deploy-linux:
-    name: Deploy API (Linux)
-    runs-on: ubuntu-latest
-    needs: [build, e2e-tests]
-    if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
-
-    environment:
-      name: "Production"
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v6
-        with:
-          name: api
-
-      - name: Deploy to Azure App Service (Linux)
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: "engraved-lnx"
-          slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E_LNX }}
-          package: .
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'main.yml',
+              ref: context.ref,
+              inputs: {
+                'force-deploy': '${{ github.event.inputs.deploy }}'
+              }
+            })

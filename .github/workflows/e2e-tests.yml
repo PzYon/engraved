@@ -16,9 +16,20 @@ jobs:
           - 27017:27017
 
     steps:
-
       - name: Checkout repo
         uses: actions/checkout@v6
+
+      - name: Download API artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: api
+          path: ./api-artifact
+
+      - name: Download App artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: app
+          path: ./app-artifact
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v5
@@ -30,10 +41,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
-
-      - name: Install dependencies (app)
-        working-directory: app
-        run: npm ci
+          cache-dependency-path: tests/package-lock.json
 
       - name: Install dependencies (tests)
         working-directory: tests
@@ -50,6 +58,22 @@ jobs:
       - name: Install playwright
         working-directory: tests
         run: npx playwright install chromium
+
+      - name: Start API server
+        run: dotnet ./api-artifact/Engraved.Api.dll &
+        env:
+          ASPNETCORE_URLS: http://localhost:5072
+
+      - name: Start App server
+        working-directory: tests
+        run: npx superstatic ../app-artifact --port 3000 &
+
+      - name: Wait for servers to start
+        run: |
+          echo "Waiting for API server..."
+          timeout 60 bash -c 'until curl -f http://localhost:5072/health || curl -f http://localhost:5072; do sleep 2; done' || true
+          echo "Waiting for App server..."
+          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done' || true
 
       - name: Run tests
         working-directory: tests
@@ -74,3 +98,4 @@ jobs:
           name: playwright-test-results-${{ env.ARTIFACT_SUFFIX }}
           path: tests/test-results/**/*
           retention-days: 5
+
