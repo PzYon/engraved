@@ -39,6 +39,7 @@ export class ServerApi {
   );
 
   private static _jwtToken: string;
+  private static _isE2eTest: boolean;
 
   static serverOs: "lin" | "win" = "lin";
 
@@ -92,7 +93,8 @@ export class ServerApi {
     return await ServerApi.executeRequest<IUser>("/user");
   }
 
-  static async authenticateForTests(jwtToken: string): Promise<IAuthResult> {
+  static async setUpForTests(jwtToken: string): Promise<IAuthResult> {
+    ServerApi._isE2eTest = true;
     ServerApi._jwtToken = jwtToken;
 
     const authResult = await ServerApi.executeRequest<IAuthResult>(
@@ -489,6 +491,10 @@ export class ServerApi {
   }
 
   private static getBaseUrl() {
+    if (ServerApi._isE2eTest) {
+      return "http://localhost:5072";
+    }
+
     return ServerApi.serverOs === "win"
       ? envSettings.apiBaseUrlWindows
       : envSettings.apiBaseUrlLinux;
