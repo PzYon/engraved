@@ -51,7 +51,7 @@ export default defineConfig({
   webServer: [
     {
       name: "App",
-      command: "npm run e2e:start-app",
+      command: isCi ? "npm run e2e:start-app:ci" : "npm run e2e:start-app",
       url: cdnBaseUrl,
       reuseExistingServer: !isCi,
       stdout: "pipe",
@@ -62,7 +62,7 @@ export default defineConfig({
     },
     {
       name: "Server",
-      command: "npm run e2e:start-api",
+      command: isCi ? "npm run e2e:start-api:ci" : "npm run e2e:start-api",
       url: apiBaseUrl,
       reuseExistingServer: !isCi,
       stdout: isCi ? undefined : "pipe",

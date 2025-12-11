@@ -1,0 +1,92 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      deploy-api:
+        required: true
+        type: boolean
+      deploy-app:
+        required: true
+        type: boolean
+  workflow_dispatch:
+    inputs:
+      deploy-api:
+        description: "Deploy API"
+        required: false
+        type: boolean
+        default: true
+      deploy-app:
+        description: "Deploy App"
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  deploy-app:
+    name: Deploy App
+    runs-on: ubuntu-latest
+    if: inputs.deploy-app == true
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v6
+        with:
+          name: app
+
+      - name: Deploy to Azure Static Web App
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          skip_app_build: true
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_JOLLY_HILL_0967E3203 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+
+  deploy-api-windows:
+    name: Deploy API (Windows)
+    runs-on: ubuntu-latest
+    if: inputs.deploy-api == true
+
+    environment:
+      name: "Production"
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v6
+        with:
+          name: api
+
+      - name: Deploy to Azure App Service (Windows)
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "engraved"
+          slot-name: "Production"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E }}
+          package: .
+
+  deploy-api-linux:
+    name: Deploy API (Linux)
+    runs-on: ubuntu-latest
+    if: inputs.deploy-api == true
+
+    environment:
+      name: "Production"
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v6
+        with:
+          name: api
+
+      - name: Deploy to Azure App Service (Linux)
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "engraved-lnx"
+          slot-name: "Production"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E_LNX }}
+          package: .

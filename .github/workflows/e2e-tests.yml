@@ -16,9 +16,20 @@ jobs:
           - 27017:27017
 
     steps:
-
       - name: Checkout repo
         uses: actions/checkout@v6
+
+      - name: Download API artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: api
+          path: ./api-artifact
+
+      - name: Download App artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: app
+          path: ./app-artifact
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v5
@@ -30,12 +41,9 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: tests/package-lock.json
 
-      - name: Install dependencies (app)
-        working-directory: app
-        run: npm ci
-
-      - name: Install dependencies (tests)
+      - name: NPM install ./tests
         working-directory: tests
         run: npm ci
 

@@ -30,9 +30,7 @@ export const Bootstrapper: React.FC = () => {
 
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has(knownQueryParams.testUser)) {
-      ServerApi.authenticateForTests(
-        searchParams.get(knownQueryParams.testUser),
-      )
+      ServerApi.setUpForTests(searchParams.get(knownQueryParams.testUser))
         .then((r) => setUser(r.user))
         .finally(() => setIsNotVisible(false));
       return;

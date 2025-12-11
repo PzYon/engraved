@@ -68,7 +68,7 @@ IConfigurationSection oneSignalConfigSection = notificationsSection.GetSection("
 IConfigurationSection notificationsJobConfig = notificationsSection.GetSection("Job");
 
 // https://learn.microsoft.com/en-us/dotnet/core/extensions/logging?tabs=command-line
-if (!builder.Environment.IsDevelopment())
+if (!builder.Environment.IsDevelopment() && !isE2ETests)
 {
   builder.Services.AddOpenTelemetry().UseAzureMonitor();
 }

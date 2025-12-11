@@ -1,0 +1,50 @@
+name: Build API
+
+on:
+  workflow_call:
+    outputs:
+      artifact-name:
+        description: "The name of the uploaded artifact"
+        value: ${{ jobs.build.outputs.artifact-name }}
+  workflow_dispatch:
+
+jobs:
+  build:
+    # name: Build API
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    outputs:
+      artifact-name: api
+
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.x.x"
+
+      - name: Run tests
+        run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+        working-directory: api
+
+      - name: Get current time
+        uses: josStorer/get-current-time@v2
+        id: current-time
+
+      - name: Publish
+        run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
+        working-directory: api
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: api
+          path: ${{env.DOTNET_ROOT}}/Engraved.Api
