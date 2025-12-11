@@ -41,7 +41,7 @@ export class ServerApi {
 
   static loadingHandler: LoadingHandler = new LoadingHandler();
 
-  static e2eStorage = new StorageWrapper(sessionStorage);
+  static e2eStorage = new StorageWrapper(localStorage);
 
   private static _jwtToken: string;
   private static _isE2eTest: boolean =
