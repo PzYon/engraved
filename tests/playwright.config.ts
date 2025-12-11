@@ -22,6 +22,7 @@ const isCi = process.env.CI;
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
+  workers: isCi ? 4 : undefined,
   forbidOnly: !!isCi,
   retries: 0,
   reporter: isCi ? [["list"], ["html"], ["github"]] : [["list"], ["html"]],
