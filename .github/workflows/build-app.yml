@@ -26,6 +26,10 @@ jobs:
           cache: npm
           cache-dependency-path: app/package-lock.json
 
+      - name: NPM install ./
+        working-directory: ./
+        run: npm ci
+
       - name: NPM install ./app
         working-directory: app
         run: npm ci
