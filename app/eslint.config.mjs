@@ -35,7 +35,6 @@ export default [
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       "@typescript-eslint": typescriptEslint,
-      //"@tanstack/query": fixupPluginRules(tanstackEslintPluginQuery),
     },
 
     languageOptions: {

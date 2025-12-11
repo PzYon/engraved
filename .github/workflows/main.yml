@@ -61,14 +61,10 @@ jobs:
 
   build-api:
     name: Build API
-    #needs: detect-changes
-    #if: needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.tests-changed == 'true'
     uses: ./.github/workflows/build-api.yml
 
   build-app:
     name: Build App
-    #needs: detect-changes
-    #if: needs.detect-changes.outputs.app-changed == 'true' || needs.detect-changes.outputs.tests-changed == 'true'
     uses: ./.github/workflows/build-app.yml
 
   e2e-tests:
