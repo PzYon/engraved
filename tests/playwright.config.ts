@@ -12,7 +12,7 @@ const pixel9Pro = {
   },
 };
 
-const cdnBaseUrl = "http://localhost:3000/index.html";
+const cdnBaseUrl = "http://localhost:3000";
 const apiBaseUrl = "http://localhost:5072";
 
 const threeMinutes = 3 * 60 * 1000;
