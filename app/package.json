@@ -74,7 +74,6 @@
     ]
   },
   "devDependencies": {
-    "@eslint/compat": "2.0.0",
     "@eslint/eslintrc": "3.3.3",
     "@eslint/js": "9.39.1",
     "@tanstack/eslint-plugin-query": "5.91.2",

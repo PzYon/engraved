@@ -15,8 +15,6 @@ const pixel9Pro = {
 const cdnBaseUrl = "http://localhost:3000";
 const apiBaseUrl = "http://localhost:5072";
 
-const threeMinutes = 3 * 60 * 1000;
-
 const isCi = process.env.CI;
 
 export default defineConfig({
@@ -56,9 +54,6 @@ export default defineConfig({
       reuseExistingServer: !isCi,
       stdout: "pipe",
       stderr: "pipe",
-      // when building the app for production, it can take
-      // a longer time than when running in dev mode
-      timeout: threeMinutes,
     },
     {
       name: "Server",
@@ -67,9 +62,6 @@ export default defineConfig({
       reuseExistingServer: !isCi,
       stdout: isCi ? undefined : "pipe",
       stderr: "pipe",
-      // for some reason, this api server takes a long
-      // time to start on CI
-      timeout: threeMinutes,
       ignoreHTTPSErrors: true,
     },
   ],
