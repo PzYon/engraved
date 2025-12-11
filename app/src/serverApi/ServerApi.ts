@@ -492,7 +492,7 @@ export class ServerApi {
 
   private static getBaseUrl() {
     if (ServerApi._isE2eTest) {
-      return "http://localhost:5072";
+      return "http://localhost:5072/api";
     }
 
     return ServerApi.serverOs === "win"
