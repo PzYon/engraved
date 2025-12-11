@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    # name: Build App
+    name: Build App
     runs-on: ubuntu-latest
     outputs:
       artifact-name: app
