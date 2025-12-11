@@ -23,7 +23,6 @@ jobs:
     outputs:
       api-changed: ${{ steps.changes.outputs.api }}
       app-changed: ${{ steps.changes.outputs.app }}
-      tests-changed: ${{ steps.changes.outputs.tests }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
@@ -43,7 +42,6 @@ jobs:
             # For workflow_dispatch, assume everything changed
             echo "api=true" >> $GITHUB_OUTPUT
             echo "app=true" >> $GITHUB_OUTPUT
-            echo "tests=true" >> $GITHUB_OUTPUT
             exit 0
           fi
           
@@ -60,41 +58,28 @@ jobs:
           else
             echo "app=false" >> $GITHUB_OUTPUT
           fi
-          
-          # Check for test changes
-          if echo "$CHANGED_FILES" | grep -qE '^tests/|^.github/workflows/(e2e-tests|main).yml'; then
-            echo "tests=true" >> $GITHUB_OUTPUT
-          else
-            echo "tests=false" >> $GITHUB_OUTPUT
-          fi
 
-  # Build jobs run in parallel
   build-api:
     name: Build API
-    needs: detect-changes
-    if: needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.tests-changed == 'true'
+    #needs: detect-changes
+    #if: needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.tests-changed == 'true'
     uses: ./.github/workflows/build-api.yml
 
   build-app:
     name: Build App
-    needs: detect-changes
-    if: needs.detect-changes.outputs.app-changed == 'true' || needs.detect-changes.outputs.tests-changed == 'true'
+    #needs: detect-changes
+    #if: needs.detect-changes.outputs.app-changed == 'true' || needs.detect-changes.outputs.tests-changed == 'true'
     uses: ./.github/workflows/build-app.yml
 
-  # E2E tests run after both builds complete
   e2e-tests:
     name: E2E Tests
-    needs: [ detect-changes, build-api, build-app ]
+    needs: [ build-api, build-app ]
     if: |
       always() &&
-      (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
-      (needs.build-app.result == 'success' || needs.build-app.result == 'skipped') &&
-      (needs.detect-changes.outputs.api-changed == 'true' || 
-       needs.detect-changes.outputs.app-changed == 'true' || 
-       needs.detect-changes.outputs.tests-changed == 'true')
+      needs.build-api.result == 'success' &&
+      needs.build-app.result == 'success'
     uses: ./.github/workflows/e2e-tests.yml
 
-  # Deploy only if on main branch or forced, and only if there were changes
   deploy:
     name: Deploy
     needs: [ detect-changes, build-api, build-app, e2e-tests ]
