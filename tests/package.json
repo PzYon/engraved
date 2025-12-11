@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "e2e:start-api": "dotnet run --project ../api/Engraved.Api/ -- e2e-tests",
+    "e2e:start-api:ci": "dotnet ./api-artifact/Engraved.Api.dll -- e2e-tests",
     "e2e:start-app": "cd ../app && npm run build:e2e && cd ../tests && npx superstatic ../app/dist --port 3000",
+    "e2e:start-app:ci": "npx superstatic ../app-artifact --port 3000",
     "e2e:run-tests": "npx playwright test",
     "e2e:run-tests:ui:chromium": "npx playwright test --project=\"chromium\" --ui",
     "e2e:run-tests:ui:android": "npx playwright test --project=\"android\" --ui",

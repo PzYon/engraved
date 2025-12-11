@@ -36,10 +36,10 @@ jobs:
         with:
           dotnet-version: "10.x.x"
 
-      - name: Start API server
-        run: dotnet ./api-artifact/Engraved.Api.dll -- e2e-tests &
-        env:
-          ASPNETCORE_URLS: http://localhost:5072
+#      - name: Start API server
+#        run: dotnet ./api-artifact/Engraved.Api.dll -- e2e-tests &
+#        env:
+#          ASPNETCORE_URLS: http://localhost:5072
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -64,16 +64,16 @@ jobs:
         working-directory: tests
         run: npx playwright install chromium
 
-      - name: Start App server
-        working-directory: tests
-        run: npx superstatic ../app-artifact --port 3000 &
-
-      - name: Wait for servers to start
-        run: |
-          echo "Waiting for API server..."
-          timeout 60 bash -c 'until curl -f http://localhost:5072/health || curl -f http://localhost:5072; do sleep 2; done' || true
-          echo "Waiting for App server..."
-          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done' || true
+#      - name: Start App server
+#        working-directory: tests
+#        run: npx superstatic ../app-artifact --port 3000 &
+#
+#      - name: Wait for servers to start
+#        run: |
+#          echo "Waiting for API server..."
+#          timeout 60 bash -c 'until curl -f http://localhost:5072/health || curl -f http://localhost:5072; do sleep 2; done' || true
+#          echo "Waiting for App server..."
+#          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done' || true
 
       - name: Run tests
         working-directory: tests
