@@ -36,6 +36,11 @@ jobs:
         with:
           dotnet-version: "10.x.x"
 
+      - name: Start API server
+        run: dotnet ./api-artifact/Engraved.Api.dll -- e2e-tests &
+        env:
+          ASPNETCORE_URLS: http://localhost:5072
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
@@ -58,11 +63,6 @@ jobs:
       - name: Install playwright
         working-directory: tests
         run: npx playwright install chromium
-
-      - name: Start API server
-        run: dotnet ./api-artifact/Engraved.Api.dll -- e2e-tests &
-        env:
-          ASPNETCORE_URLS: http://localhost:5072
 
       - name: Start App server
         working-directory: tests

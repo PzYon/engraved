@@ -26,19 +26,8 @@ jobs:
           cache: npm
           cache-dependency-path: app/package-lock.json
 
-      - name: Get current time
-        uses: josStorer/get-current-time@v2
-        id: current-time
-
-      - name: NPM install ./
-        run: npm ci
-
       - name: NPM install ./app
         working-directory: app
-        run: npm ci
-
-      - name: NPM install ./tests
-        working-directory: tests
         run: npm ci
 
       - name: Check types
@@ -52,6 +41,10 @@ jobs:
 #      - name: Knip
 #        working-directory: ./
 #        run: npm run knip
+
+      - name: Get current time
+        uses: josStorer/get-current-time@v2
+        id: current-time
 
       - name: Build
         working-directory: app
@@ -71,4 +64,3 @@ jobs:
         with:
           name: app
           path: app/dist
-
