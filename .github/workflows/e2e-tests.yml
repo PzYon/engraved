@@ -43,7 +43,7 @@ jobs:
           cache: npm
           cache-dependency-path: tests/package-lock.json
 
-      - name: Install dependencies (tests)
+      - name: NPM install ./tests
         working-directory: tests
         run: npm ci
 
@@ -98,4 +98,3 @@ jobs:
           name: playwright-test-results-${{ env.ARTIFACT_SUFFIX }}
           path: tests/test-results/**/*
           retention-days: 5
-
