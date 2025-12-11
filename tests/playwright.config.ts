@@ -65,7 +65,7 @@ export default defineConfig({
       command: isCi ? "npm run e2e:start-api:ci" : "npm run e2e:start-api",
       url: apiBaseUrl,
       reuseExistingServer: !isCi,
-      stdout: isCi ? undefined : "pipe",
+      stdout: "pipe",
       stderr: "pipe",
       // for some reason, this api server takes a long
       // time to start on CI
