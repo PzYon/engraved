@@ -4,22 +4,20 @@ on:
   workflow_call:
     inputs:
       deploy-api:
-        description: "Whether to deploy the API"
         required: true
         type: boolean
       deploy-app:
-        description: "Whether to deploy the App"
         required: true
         type: boolean
   workflow_dispatch:
     inputs:
       deploy-api:
-        description: "Deploy the API"
+        description: "Deploy API"
         required: false
         type: boolean
         default: true
       deploy-app:
-        description: "Deploy the App"
+        description: "Deploy App"
         required: false
         type: boolean
         default: true
@@ -92,4 +90,3 @@ jobs:
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E_LNX }}
           package: .
-

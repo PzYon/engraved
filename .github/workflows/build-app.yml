@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build App
+    # name: Build App
     runs-on: ubuntu-latest
     outputs:
       artifact-name: app
@@ -38,9 +38,9 @@ jobs:
         working-directory: app
         run: npm run lint
 
-#      - name: Knip
-#        working-directory: ./
-#        run: npm run knip
+      #      - name: Knip
+      #        working-directory: ./
+      #        run: npm run knip
 
       - name: Get current time
         uses: josStorer/get-current-time@v2

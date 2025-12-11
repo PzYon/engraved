@@ -2,20 +2,15 @@ name: CI/CD Pipeline
 
 on:
   push:
-    #    branches:
-    #      - main
     paths:
       - "app/**"
       - "api/**"
       - "tests/**"
       - ".github/workflows/**"
-  #  pull_request:
-  #    branches:
-  #      - main
   workflow_dispatch:
     inputs:
       force-deploy:
-        description: "Force deployment even if not on main branch"
+        description: "Force a deployment even if not on main branch"
         required: false
         type: boolean
         default: false
@@ -112,4 +107,3 @@ jobs:
     with:
       deploy-api: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
       deploy-app: ${{ needs.detect-changes.outputs.app-changed == 'true' }}
-
