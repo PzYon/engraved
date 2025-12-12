@@ -53,8 +53,6 @@ jobs:
           else
             echo "app=false" >> $GITHUB_OUTPUT
           fi
-          
-    
 
   build-api:
     name: Build API
