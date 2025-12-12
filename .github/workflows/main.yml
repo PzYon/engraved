@@ -56,7 +56,7 @@ jobs:
           
     
 
-    build-api:
+  build-api:
     name: Build API
     uses: ./.github/workflows/build-api.yml
 
