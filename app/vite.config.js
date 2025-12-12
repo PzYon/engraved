@@ -24,16 +24,13 @@ export default () => {
     build: {
       rollupOptions: {
         output: {
-          chunkFileNames: (chunkInfo) => {
-            return chunkInfo.name === envSettings
-              ? `[name].js`
-              : `[name].[hash].js`;
-          },
-          manualChunks: (id) => {
-            if (id.includes(envSettings)) {
-              return envSettings;
-            }
-          },
+          entryFileNames: "chunks/[name].[hash].js",
+          chunkFileNames: (chunkInfo) =>
+            chunkInfo.name === envSettings
+              ? `chunks/[name].js`
+              : `chunks/[name].[hash].js`,
+          manualChunks: (id) =>
+            id.includes(envSettings) ? envSettings : undefined,
         },
       },
     },

@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 import { JournalPage } from "./journalPage";
 import { DeleteAction } from "./deleteAction";
+import { isAndroidTest } from "../utils/isAndroidTest";
 
 export class MetricJournalPage extends JournalPage {
   get tableRows() {
@@ -29,18 +30,25 @@ export class MetricJournalPage extends JournalPage {
     await expect(this.page.getByText("No entries available.")).toBeVisible();
   }
 
-  async validateNumberOfTableRows(number: number) {
-    await expect(this.tableRows).toHaveCount(number);
+  async validateNumberOfTableRows(expected: number) {
+    await expect(this.tableRows).toHaveCount(this.getRowIndex(expected));
   }
 
-  async expectTableCellToHaveValue(value: string) {
+  async expectTableCellToHaveValue(expected: string) {
     await expect(
-      this.tableRows.getByRole("cell", { name: value, exact: true }),
+      this.tableRows.getByRole("cell", { name: expected, exact: true }),
     ).toBeVisible();
   }
 
   async navigateToDeleteEntryAction(index: number) {
-    await this.tableRows.nth(index).getByLabel("Delete entry").click();
+    await this.tableRows
+      .nth(this.getRowIndex(index))
+      .getByLabel("Delete entry")
+      .click();
     return new DeleteAction(this.page, "Entry");
+  }
+
+  private getRowIndex(index: number) {
+    return isAndroidTest() ? index - 1 : index;
   }
 }

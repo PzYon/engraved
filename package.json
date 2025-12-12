@@ -17,9 +17,9 @@
   },
   "homepage": "https://github.com/PzYon/engraved#readme",
   "devDependencies": {
-    "@types/node": "24.10.1",
+    "@types/node": "24.10.3",
     "husky": "9.1.7",
-    "knip": "5.71.0",
+    "knip": "5.73.3",
     "lint-staged": "16.2.7",
     "typescript": "5.9.3"
   }

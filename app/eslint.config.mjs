@@ -1,4 +1,3 @@
-import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
@@ -22,23 +21,20 @@ export default [
   {
     ignores: ["**/node_modules", "**/dist"],
   },
-  ...fixupConfigRules(
-    compat.extends(
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:react/jsx-runtime",
-      "plugin:react/recommended",
-      "plugin:react-hooks/recommended",
-      "plugin:@tanstack/eslint-plugin-query/recommended",
-    ),
+  ...compat.extends(
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
   ),
   {
     plugins: {
-      react: fixupPluginRules(react),
-      "react-hooks": fixupPluginRules(reactHooks),
+      react: react,
+      "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      "@typescript-eslint": fixupPluginRules(typescriptEslint),
-      //"@tanstack/query": fixupPluginRules(tanstackEslintPluginQuery),
+      "@typescript-eslint": typescriptEslint,
     },
 
     languageOptions: {

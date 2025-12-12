@@ -16,26 +16,36 @@ jobs:
           - 27017:27017
 
     steps:
-
       - name: Checkout repo
         uses: actions/checkout@v6
+
+      - name: Download API artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: api
+          path: ./api-artifact
+
+      - name: Download App artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: app
+          path: ./app-artifact
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "10.x.x"
+          cache: true
+          cache-dependency-path: 'api/**/*.csproj'
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: tests/package-lock.json
 
-      - name: Install dependencies (app)
-        working-directory: app
-        run: npm ci
-
-      - name: Install dependencies (tests)
+      - name: NPM install ./tests
         working-directory: tests
         run: npm ci
 
@@ -47,9 +57,15 @@ jobs:
         working-directory: tests
         run: npm run lint
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('tests/package-lock.json') }}
+
       - name: Install playwright
         working-directory: tests
-        run: npx playwright install
+        run: npx playwright install --with-deps chromium
 
       - name: Run tests
         working-directory: tests

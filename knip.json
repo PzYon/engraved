@@ -19,8 +19,7 @@
     "tests": {
       "entry": "tests/*.ts",
       "ignoreBinaries": [
-        "dotnet",
-        "superstatic"
+        "dotnet"
       ],
       "ignoreDependencies": [
         "eslint-plugin-playwright"

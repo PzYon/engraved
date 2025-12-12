@@ -30,6 +30,7 @@ import {
 import { IScheduleDefinition } from "./IScheduleDefinition";
 import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
 import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
+import { StorageWrapper } from "../util/StorageWrapper";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -38,11 +39,15 @@ export class ServerApi {
     ServerApi.tryToLoginAgain(),
   );
 
+  static loadingHandler: LoadingHandler = new LoadingHandler();
+
+  static e2eStorage = new StorageWrapper(localStorage);
+
   private static _jwtToken: string;
+  private static _isE2eTest: boolean =
+    ServerApi.e2eStorage.getValue("isE2eTest");
 
   static serverOs: "lin" | "win" = "lin";
-
-  static loadingHandler: LoadingHandler = new LoadingHandler();
 
   private static googlePrompt: () => Promise<{
     isSuccess: boolean;
@@ -92,8 +97,11 @@ export class ServerApi {
     return await ServerApi.executeRequest<IUser>("/user");
   }
 
-  static async authenticateForTests(jwtToken: string): Promise<IAuthResult> {
+  static async setUpForTests(jwtToken: string): Promise<IAuthResult> {
     ServerApi._jwtToken = jwtToken;
+
+    ServerApi._isE2eTest = true;
+    ServerApi.e2eStorage.setValue("isE2eTest", true);
 
     const authResult = await ServerApi.executeRequest<IAuthResult>(
       "/auth/e2e",
@@ -489,6 +497,10 @@ export class ServerApi {
   }
 
   private static getBaseUrl() {
+    if (ServerApi._isE2eTest) {
+      return "http://localhost:5072/api";
+    }
+
     return ServerApi.serverOs === "win"
       ? envSettings.apiBaseUrlWindows
       : envSettings.apiBaseUrlLinux;
