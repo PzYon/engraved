@@ -2,11 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    paths:
-      - "app/**"
-      - "api/**"
-      - "tests/**"
-      - ".github/workflows/**"
+   
   workflow_dispatch:
     inputs:
       force-deploy:
