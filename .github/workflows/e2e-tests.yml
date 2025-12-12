@@ -35,6 +35,8 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "10.x.x"
+          cache: true
+          cache-dependency-path: 'api/**/*.csproj'
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -55,9 +57,15 @@ jobs:
         working-directory: tests
         run: npm run lint
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('tests/package-lock.json') }}
+
       - name: Install playwright
         working-directory: tests
-        run: npx playwright install chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Run tests
         working-directory: tests
