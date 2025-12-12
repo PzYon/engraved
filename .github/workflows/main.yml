@@ -36,8 +36,6 @@ jobs:
             exit 0
           fi
           
-          fi
-          
           # If workflow files changed, consider everything changed (for deployment)
           if echo "$CHANGED_FILES" | grep -qE '^\.github/workflows/'; then
           elif [ "${{ github.event_name }}" == "pull_request" ]; then
