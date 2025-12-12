@@ -29,7 +29,6 @@ jobs:
         id: changes
         shell: bash
         run: |
-          # For push events, check changed files
           if [ "${{ github.event_name }}" == "push" ]; then
             CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || echo "")
           elif [ "${{ github.event_name }}" == "pull_request" ]; then
@@ -42,14 +41,14 @@ jobs:
           fi
           
           # Check for API changes
-          if echo "$CHANGED_FILES" | grep -qE '^api/|^.github/workflows/(build-api|main).yml'; then
+          if echo "$CHANGED_FILES" | grep -qE '^api/'; then
             echo "api=true" >> $GITHUB_OUTPUT
           else
             echo "api=false" >> $GITHUB_OUTPUT
           fi
           
           # Check for App changes
-          if echo "$CHANGED_FILES" | grep -qE '^app/|^.github/workflows/(build-app|main).yml'; then
+          if echo "$CHANGED_FILES" | grep -qE '^app/'; then
             echo "app=true" >> $GITHUB_OUTPUT
           else
             echo "app=false" >> $GITHUB_OUTPUT
