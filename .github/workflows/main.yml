@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-   
+
   workflow_dispatch:
     inputs:
       force-deploy:
@@ -29,15 +29,8 @@ jobs:
         id: changes
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            # For workflow_dispatch, assume everything changed
-            echo "api=true" >> $GITHUB_OUTPUT
-            echo "app=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          # If workflow files changed, consider everything changed (for deployment)
-          if echo "$CHANGED_FILES" | grep -qE '^\.github/workflows/'; then
+          if [ "${{ github.event_name }}" == "push" ]; then
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || echo "")
           elif [ "${{ github.event_name }}" == "pull_request" ]; then
             CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} || echo "")
           else
@@ -60,8 +53,10 @@ jobs:
           else
             echo "app=false" >> $GITHUB_OUTPUT
           fi
+          
+    
 
-  build-api:
+    build-api:
     name: Build API
     uses: ./.github/workflows/build-api.yml
 
