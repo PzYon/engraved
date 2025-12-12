@@ -30,6 +30,8 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "10.x.x"
+          cache: true
+          cache-dependency-path: 'api/**/*.csproj'
 
       - name: Run tests
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
@@ -48,3 +50,4 @@ jobs:
         with:
           name: api
           path: ${{env.DOTNET_ROOT}}/Engraved.Api
+          retention-days: 30
