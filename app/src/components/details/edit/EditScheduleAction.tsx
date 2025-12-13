@@ -114,7 +114,7 @@ export const EditScheduleAction: React.FC<{
               modifyScheduleMutation.mutate(scheduleDefinition);
 
               closeAction();
-              overviewListContext.moveFocusOneItemUp();
+              overviewListContext.keepFocusAtIndex();
             }}
           >
             {isRecurring ? (

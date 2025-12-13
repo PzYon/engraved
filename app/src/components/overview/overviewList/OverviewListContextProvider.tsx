@@ -157,11 +157,11 @@ export const OverviewListContextProvider: React.FC<{
         setShowAll(value);
         setInMemorySearchText("");
       },
-      moveFocusOneItemUp: () => {
-        const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
-        const previousItemId = items[currentItemIndex - 1].id;
+      keepFocusAtIndex: () => {
+        searchParams.delete(knownQueryParams.selectedItemId);
 
-        console.log("setting index to ", currentItemIndex - 1, previousItemId);
+        const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
+        const previousItemId = items[currentItemIndex + 1].id;
 
         setActiveItemId(previousItemId);
       },
@@ -173,6 +173,7 @@ export const OverviewListContextProvider: React.FC<{
       items,
       removeItemParamsFromUrl,
       setShowAll,
+      searchParams,
     ],
   );
 
