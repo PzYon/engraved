@@ -25,6 +25,7 @@ import { Properties } from "../../common/Properties";
 import EditNotificationsOutlined from "@mui/icons-material/EditNotificationsOutlined";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { isAfter } from "date-fns";
+import { useOverviewListContext } from "../../overview/overviewList/OverviewListContext";
 
 export const EditScheduleAction: React.FC<{
   journal?: IJournal;
@@ -72,6 +73,8 @@ export const EditScheduleAction: React.FC<{
 
   const [isEditMode, setIsEditMode] = useState(!hasSchedule);
 
+  const overviewListContext = useOverviewListContext();
+
   return (
     <Host>
       {hasSchedule ? (
@@ -111,6 +114,7 @@ export const EditScheduleAction: React.FC<{
               modifyScheduleMutation.mutate(scheduleDefinition);
 
               closeAction();
+              overviewListContext.keepFocusAtIndex();
             }}
           >
             {isRecurring ? (

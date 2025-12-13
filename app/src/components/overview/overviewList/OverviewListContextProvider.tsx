@@ -157,14 +157,23 @@ export const OverviewListContextProvider: React.FC<{
         setShowAll(value);
         setInMemorySearchText("");
       },
+      keepFocusAtIndex: () => {
+        searchParams.delete(knownQueryParams.selectedItemId);
+
+        const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
+        const previousItemId = items[currentItemIndex + 1].id;
+
+        setActiveItemId(previousItemId);
+      },
     }),
     [
       activeItemId,
       setActiveItemId,
       filteredItems,
-      items.length,
+      items,
       removeItemParamsFromUrl,
       setShowAll,
+      searchParams,
     ],
   );
 
