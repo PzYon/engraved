@@ -20,13 +20,13 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download API artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: api
           path: ./api-artifact
 
       - name: Download App artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: app
           path: ./app-artifact
@@ -75,7 +75,7 @@ jobs:
 
       - name: Upload playwright-report
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-report-${{ env.ARTIFACT_SUFFIX }}
           path: tests/playwright-report/**/*
@@ -83,7 +83,7 @@ jobs:
 
       - name: Upload test-results
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-test-results-${{ env.ARTIFACT_SUFFIX }}
           path: tests/test-results/**/*
