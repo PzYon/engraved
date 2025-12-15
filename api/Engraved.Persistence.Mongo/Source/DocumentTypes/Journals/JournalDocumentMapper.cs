@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
+using MongoDB.Bson;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 
@@ -65,6 +66,7 @@ public static class JournalDocumentMapper
   {
     return new CounterJournalDocument
     {
+      Id = new ObjectId(journal.Id),
       UserId = journal.UserId,
       Name = journal.Name,
       Description = journal.Description,
@@ -82,6 +84,7 @@ public static class JournalDocumentMapper
   {
     return new GaugeJournalDocument
     {
+      Id = new ObjectId(journal.Id),
       UserId = journal.UserId,
       Name = journal.Name,
       Description = journal.Description,
@@ -99,6 +102,7 @@ public static class JournalDocumentMapper
   {
     return new TimerJournalDocument
     {
+      Id = new ObjectId(journal.Id),
       UserId = journal.UserId,
       Name = journal.Name,
       Description = journal.Description,
@@ -182,6 +186,131 @@ public static class JournalDocumentMapper
       return null!;
     }
 
-    return (TJournal) Mapper.Map(document, document.GetType(), typeof(TJournal))!;
+    return document switch
+    {
+      CounterJournalDocument cj => MapFromCounterJournal(cj) as TJournal,
+      GaugeJournalDocument gj => MapFromGaugeJournal(gj) as TJournal,
+      TimerJournalDocument tj => MapFromTimerJournal(tj) as TJournal,
+      ScrapsJournalDocument sj => MapFromScrapsJournal(sj) as TJournal,
+      _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
+    };
+  }
+
+  private static CounterJournal MapFromCounterJournal(CounterJournalDocument document)
+  {
+    return new CounterJournal
+    {
+      Id = document.Id.ToString(),
+      UserId = document.UserId,
+      Name = document.Name!,
+      Description = document.Description,
+      Notes = document.Notes,
+      Attributes = document.Attributes,
+      Thresholds = MapThresholdsFromDocument(document.Thresholds),
+      EditedOn = document.EditedOn,
+      Permissions = document.Permissions,
+      CustomProps = document.CustomProps,
+      Schedules = MapSchedulesFromDocument(document.Schedules)
+    };
+  }
+
+  private static GaugeJournal MapFromGaugeJournal(GaugeJournalDocument document)
+  {
+    return new GaugeJournal
+    {
+      Id = document.Id.ToString(),
+      UserId = document.UserId,
+      Name = document.Name!,
+      Description = document.Description,
+      Notes = document.Notes,
+      Attributes = document.Attributes,
+      Thresholds = MapThresholdsFromDocument(document.Thresholds),
+      EditedOn = document.EditedOn,
+      Permissions = document.Permissions,
+      CustomProps = document.CustomProps,
+      Schedules = MapSchedulesFromDocument(document.Schedules)
+    };
+  }
+
+  private static TimerJournal MapFromTimerJournal(TimerJournalDocument document)
+  {
+    return new TimerJournal
+    {
+      Id = document.Id.ToString(),
+      UserId = document.UserId,
+      Name = document.Name!,
+      Description = document.Description,
+      Notes = document.Notes,
+      Attributes = document.Attributes,
+      Thresholds = MapThresholdsFromDocument(document.Thresholds),
+      EditedOn = document.EditedOn,
+      Permissions = document.Permissions,
+      CustomProps = document.CustomProps,
+      Schedules = MapSchedulesFromDocument(document.Schedules),
+      StartDate = document.StartDate
+    };
+  }
+
+  private static ScrapsJournal MapFromScrapsJournal(ScrapsJournalDocument document)
+  {
+    return new ScrapsJournal
+    {
+      Id = document.Id.ToString(),
+      UserId = document.UserId,
+      Name = document.Name!,
+      Description = document.Description,
+      Notes = document.Notes,
+      Attributes = document.Attributes,
+      Thresholds = MapThresholdsFromDocument(document.Thresholds),
+      EditedOn = document.EditedOn,
+      Permissions = document.Permissions,
+      CustomProps = document.CustomProps,
+      Schedules = MapSchedulesFromDocument(document.Schedules)
+    };
+  }
+
+  private static Dictionary<string, Dictionary<string, ThresholdDefinition>> MapThresholdsFromDocument(
+    Dictionary<string, Dictionary<string, ThresholdDefinitionDocument>> thresholds
+  )
+  {
+    var result = new Dictionary<string, Dictionary<string, ThresholdDefinition>>();
+
+    foreach (var (key, innerDict) in thresholds)
+    {
+      var innerResult = new Dictionary<string, ThresholdDefinition>();
+      foreach ((var innerKey, ThresholdDefinitionDocument threshold) in innerDict)
+      {
+        innerResult[innerKey] = new ThresholdDefinition
+        {
+          Value = threshold.Value,
+          Scope = threshold.Scope
+        };
+      }
+
+      result[key] = innerResult;
+    }
+
+    return result;
+  }
+
+  private static Dictionary<string, Schedule> MapSchedulesFromDocument(Dictionary<string, ScheduleSubDocument> schedules)
+  {
+    var result = new Dictionary<string, Schedule>();
+
+    foreach ((var key, ScheduleSubDocument schedule) in schedules)
+    {
+      result[key] = new Schedule
+      {
+        NextOccurrence = schedule.NextOccurrence,
+        Recurrence = schedule.Recurrence != null
+          ? new Recurrence { DateString = schedule.Recurrence.DateString }
+          : null,
+        DidNotify = schedule.DidNotify,
+        NotificationId = schedule.NotificationId,
+        OnClickUrl = schedule.OnClickUrl
+      };
+    }
+
+    return result;
   }
 }
