@@ -1,53 +1,10 @@
-﻿using AutoMapper;
-using Engraved.Core.Domain.Entries;
+﻿using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
 
 public static class EntryDocumentMapper
 {
-  private static readonly IMapper Mapper;
-
-  static EntryDocumentMapper()
-  {
-    var configuration = new MapperConfiguration(
-      cfg =>
-      {
-        cfg.CreateMap<IEntry, EntryDocument>()
-          .Include<CounterEntry, CounterEntryDocument>()
-          .Include<GaugeEntry, GaugeEntryDocument>()
-          .Include<TimerEntry, TimerEntryDocument>()
-          .Include<ScrapsEntry, ScrapsEntryDocument>();
-
-        cfg.CreateMap<CounterEntry, CounterEntryDocument>();
-        cfg.CreateMap<GaugeEntry, GaugeEntryDocument>();
-        cfg.CreateMap<TimerEntry, TimerEntryDocument>();
-        cfg.CreateMap<ScrapsEntry, ScrapsEntryDocument>();
-
-        cfg.CreateMap<Recurrence, RecurrenceSubDocument>();
-        cfg.CreateMap<Schedule, ScheduleSubDocument>();
-
-        cfg.CreateMap<EntryDocument, IEntry>()
-          .Include<CounterEntryDocument, CounterEntry>()
-          .Include<GaugeEntryDocument, GaugeEntry>()
-          .Include<TimerEntryDocument, TimerEntry>()
-          .Include<ScrapsEntryDocument, ScrapsEntry>();
-
-        cfg.CreateMap<CounterEntryDocument, CounterEntry>();
-        cfg.CreateMap<GaugeEntryDocument, GaugeEntry>();
-        cfg.CreateMap<TimerEntryDocument, TimerEntry>();
-        cfg.CreateMap<ScrapsEntryDocument, ScrapsEntry>();
-
-        cfg.CreateMap<RecurrenceSubDocument, Recurrence>();
-        cfg.CreateMap<ScheduleSubDocument, Schedule>();
-      }
-    );
-
-    configuration.AssertConfigurationIsValid();
-
-    Mapper = configuration.CreateMapper();
-  }
-
   public static EntryDocument ToDocument(IEntry entry)
   {
     return entry switch
@@ -124,13 +81,13 @@ public static class EntryDocumentMapper
   private static Dictionary<string, ScheduleSubDocument> MapSchedules(Dictionary<string, Schedule> schedules)
   {
     var result = new Dictionary<string, ScheduleSubDocument>();
-    
-    foreach (var (key, schedule) in schedules)
+
+    foreach ((var key, Schedule schedule) in schedules)
     {
       result[key] = new ScheduleSubDocument
       {
         NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null 
+        Recurrence = schedule.Recurrence != null
           ? new RecurrenceSubDocument { DateString = schedule.Recurrence.DateString }
           : null,
         DidNotify = schedule.DidNotify,
@@ -138,15 +95,114 @@ public static class EntryDocumentMapper
         OnClickUrl = schedule.OnClickUrl
       };
     }
-    
+
     return result;
   }
 
   public static TEntry FromDocument<TEntry>(EntryDocument? document)
     where TEntry : class, IEntry
   {
-    return document == null
-      ? null!
-      : (TEntry)Mapper.Map(document, document.GetType(), typeof(TEntry))!;
+    if (document == null)
+    {
+      return null!;
+    }
+
+    return document switch
+           {
+             CounterEntryDocument ced => MapToCounterEntry(ced) as TEntry,
+             GaugeEntryDocument ged => MapToGaugeEntry(ged) as TEntry,
+             ScrapsEntryDocument sed => MapToScrapsEntry(sed) as TEntry,
+             TimerEntryDocument ted => MapToTimerEntry(ted) as TEntry,
+             _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
+           }
+           ?? throw new InvalidCastException($"Cannot cast {document.GetType().Name} to {typeof(TEntry).Name}");
+  }
+
+  private static CounterEntry MapToCounterEntry(CounterEntryDocument document)
+  {
+    return new CounterEntry
+    {
+      Id = document.Id.ToString(),
+      UserId = document.UserId,
+      ParentId = document.ParentId,
+      Notes = document.Notes,
+      DateTime = document.DateTime,
+      EditedOn = document.EditedOn,
+      JournalAttributeValues = document.JournalAttributeValues,
+      Schedules = MapSchedulesFromDocument(document.Schedules)
+    };
+  }
+
+  private static GaugeEntry MapToGaugeEntry(GaugeEntryDocument document)
+  {
+    return new GaugeEntry
+    {
+      Id = document.Id.ToString(),
+      UserId = document.UserId,
+      ParentId = document.ParentId,
+      Notes = document.Notes,
+      DateTime = document.DateTime,
+      EditedOn = document.EditedOn,
+      JournalAttributeValues = document.JournalAttributeValues,
+      Schedules = MapSchedulesFromDocument(document.Schedules),
+      Value = document.Value
+    };
+  }
+
+  private static TimerEntry MapToTimerEntry(TimerEntryDocument document)
+  {
+    return new TimerEntry
+    {
+      Id = document.Id.ToString(),
+      UserId = document.UserId,
+      ParentId = document.ParentId,
+      Notes = document.Notes,
+      DateTime = document.DateTime,
+      EditedOn = document.EditedOn,
+      JournalAttributeValues = document.JournalAttributeValues,
+      Schedules = MapSchedulesFromDocument(document.Schedules),
+      StartDate = document.StartDate,
+      EndDate = document.EndDate
+    };
+  }
+
+  private static ScrapsEntry MapToScrapsEntry(ScrapsEntryDocument document)
+  {
+    return new ScrapsEntry
+    {
+      Id = document.Id.ToString(),
+      UserId = document.UserId,
+      ParentId = document.ParentId,
+      Notes = document.Notes,
+      DateTime = document.DateTime,
+      EditedOn = document.EditedOn,
+      JournalAttributeValues = document.JournalAttributeValues,
+      Schedules = MapSchedulesFromDocument(document.Schedules),
+      Title = document.Title ?? string.Empty,
+      ScrapType = document.ScrapType ?? ScrapType.Markdown
+    };
+  }
+
+  private static Dictionary<string, Schedule> MapSchedulesFromDocument(
+    Dictionary<string, ScheduleSubDocument> schedules
+  )
+  {
+    var result = new Dictionary<string, Schedule>();
+
+    foreach ((var key, ScheduleSubDocument schedule) in schedules)
+    {
+      result[key] = new Schedule
+      {
+        NextOccurrence = schedule.NextOccurrence,
+        Recurrence = schedule.Recurrence != null
+          ? new Recurrence { DateString = schedule.Recurrence.DateString }
+          : null,
+        DidNotify = schedule.DidNotify,
+        NotificationId = schedule.NotificationId,
+        OnClickUrl = schedule.OnClickUrl
+      };
+    }
+
+    return result;
   }
 }
