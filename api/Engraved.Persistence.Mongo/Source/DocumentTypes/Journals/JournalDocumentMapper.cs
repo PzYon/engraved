@@ -66,7 +66,7 @@ public static class JournalDocumentMapper
   {
     return new CounterJournalDocument
     {
-      Id = new ObjectId(journal.Id),
+      Id = string.IsNullOrEmpty(journal.Id) ? ObjectId.Empty : ObjectId.Parse(journal.Id),
       UserId = journal.UserId,
       Name = journal.Name,
       Description = journal.Description,
@@ -84,7 +84,7 @@ public static class JournalDocumentMapper
   {
     return new GaugeJournalDocument
     {
-      Id = new ObjectId(journal.Id),
+      Id = string.IsNullOrEmpty(journal.Id) ? ObjectId.Empty : ObjectId.Parse(journal.Id),
       UserId = journal.UserId,
       Name = journal.Name,
       Description = journal.Description,
@@ -102,7 +102,7 @@ public static class JournalDocumentMapper
   {
     return new TimerJournalDocument
     {
-      Id = new ObjectId(journal.Id),
+      Id = string.IsNullOrEmpty(journal.Id) ? ObjectId.Empty : ObjectId.Parse(journal.Id),
       UserId = journal.UserId,
       Name = journal.Name,
       Description = journal.Description,
@@ -293,7 +293,9 @@ public static class JournalDocumentMapper
     return result;
   }
 
-  private static Dictionary<string, Schedule> MapSchedulesFromDocument(Dictionary<string, ScheduleSubDocument> schedules)
+  private static Dictionary<string, Schedule> MapSchedulesFromDocument(
+    Dictionary<string, ScheduleSubDocument> schedules
+  )
   {
     var result = new Dictionary<string, Schedule>();
 
