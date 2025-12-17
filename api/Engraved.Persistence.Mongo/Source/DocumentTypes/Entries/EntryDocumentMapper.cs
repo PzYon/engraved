@@ -9,9 +9,9 @@ public static class EntryDocumentMapper
   {
     return entry switch
     {
-      CounterEntry ce => MapCommonPropertiesToDocument(ce, new CounterEntryDocument()),
+      CounterEntry ce => MapToDocument(ce, new CounterEntryDocument()),
 
-      GaugeEntry ge => MapCommonPropertiesToDocument(
+      GaugeEntry ge => MapToDocument(
         ge,
         new GaugeEntryDocument
         {
@@ -19,7 +19,7 @@ public static class EntryDocumentMapper
         }
       ),
 
-      TimerEntry te => MapCommonPropertiesToDocument(
+      TimerEntry te => MapToDocument(
         te,
         new TimerEntryDocument
         {
@@ -28,7 +28,7 @@ public static class EntryDocumentMapper
         }
       ),
 
-      ScrapsEntry se => MapCommonPropertiesToDocument(
+      ScrapsEntry se => MapToDocument(
         se,
         new ScrapsEntryDocument
         {
@@ -41,7 +41,7 @@ public static class EntryDocumentMapper
     };
   }
 
-  private static TDocument MapCommonPropertiesToDocument<TDocument>(IEntry entry, TDocument document)
+  private static TDocument MapToDocument<TDocument>(IEntry entry, TDocument document)
     where TDocument : EntryDocument
   {
     document.UserId = entry.UserId;
@@ -59,9 +59,9 @@ public static class EntryDocumentMapper
   {
     return document switch
     {
-      CounterEntryDocument ced => MapCommonPropertiesFromDocument(ced, new CounterEntry()),
+      CounterEntryDocument ced => MapFromDocument(ced, new CounterEntry()),
 
-      GaugeEntryDocument ged => MapCommonPropertiesFromDocument(
+      GaugeEntryDocument ged => MapFromDocument(
         ged,
         new GaugeEntry
         {
@@ -69,7 +69,7 @@ public static class EntryDocumentMapper
         }
       ),
 
-      ScrapsEntryDocument sed => MapCommonPropertiesFromDocument(
+      ScrapsEntryDocument sed => MapFromDocument(
         sed,
         new ScrapsEntry
         {
@@ -78,7 +78,7 @@ public static class EntryDocumentMapper
         }
       ),
 
-      TimerEntryDocument ted => MapCommonPropertiesFromDocument(
+      TimerEntryDocument ted => MapFromDocument(
         ted,
         new TimerEntry
         {
@@ -86,12 +86,12 @@ public static class EntryDocumentMapper
           EndDate = ted.EndDate
         }
       ),
-      
+
       _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
     };
   }
 
-  private static TEntry MapCommonPropertiesFromDocument<TDocument, TEntry>(TDocument document, TEntry entry)
+  private static TEntry MapFromDocument<TDocument, TEntry>(TDocument document, TEntry entry)
     where TDocument : EntryDocument
     where TEntry : IEntry
   {
@@ -103,7 +103,7 @@ public static class EntryDocumentMapper
     entry.EditedOn = document.EditedOn;
     entry.JournalAttributeValues = document.JournalAttributeValues;
     entry.Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules);
-    
+
     return entry;
   }
 }
