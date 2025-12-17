@@ -57,7 +57,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(Builders<UserDocument>.Filter.Or(userIds.Distinct().Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
       .ToListAsync();
 
-    return users.Select(UserDocumentMapper.FromDocument).ToArray();
+    return users.Select(u => UserDocumentMapper.FromDocument(u)!).ToArray();
   }
 
   public async Task<IUser[]> GetAllUsers()
@@ -66,7 +66,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(MongoUtil.GetAllDocumentsFilter<UserDocument>())
       .ToListAsync();
 
-    return users.Select(UserDocumentMapper.FromDocument).ToArray();
+    return users.Select(u => UserDocumentMapper.FromDocument(u)!).ToArray();
   }
 
   public async Task<IJournal[]> GetAllJournals(
