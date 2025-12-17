@@ -21,29 +21,39 @@ public static class JournalDocumentMapper
   private static CounterJournalDocument MapToCounterJournalDocument(CounterJournal journal)
   {
     var document = new CounterJournalDocument();
+
     MapCommonPropertiesToDocument(journal, document);
+
     return document;
   }
 
   private static GaugeJournalDocument MapToGaugeJournalDocument(GaugeJournal journal)
   {
     var document = new GaugeJournalDocument();
+
     MapCommonPropertiesToDocument(journal, document);
+
     return document;
   }
 
   private static TimerJournalDocument MapToTimerJournalDocument(TimerJournal journal)
   {
-    var document = new TimerJournalDocument();
+    var document = new TimerJournalDocument
+    {
+      StartDate = journal.StartDate
+    };
+
     MapCommonPropertiesToDocument(journal, document);
-    document.StartDate = journal.StartDate;
+
     return document;
   }
 
   private static ScrapsJournalDocument MapToScrapsJournalDocument(ScrapsJournal journal)
   {
     var document = new ScrapsJournalDocument();
+
     MapCommonPropertiesToDocument(journal, document);
+
     return document;
   }
 
@@ -86,46 +96,54 @@ public static class JournalDocumentMapper
     return result;
   }
 
-  public static TJournal? FromDocument<TJournal>(JournalDocument? document)
-    where TJournal : class, IJournal
+  public static IJournal? FromDocument(JournalDocument? document)
   {
     return document switch
     {
-      null => null,
-      CounterJournalDocument cj => MapFromCounterJournalDocument(cj) as TJournal,
-      GaugeJournalDocument gj => MapFromGaugeJournalDocument(gj) as TJournal,
-      TimerJournalDocument tj => MapFromTimerJournalDocument(tj) as TJournal,
-      ScrapsJournalDocument sj => MapFromScrapsJournalDocument(sj) as TJournal,
-      _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
+      CounterJournalDocument cj => MapFromCounterJournalDocument(cj),
+      GaugeJournalDocument gj => MapFromGaugeJournalDocument(gj),
+      TimerJournalDocument tj => MapFromTimerJournalDocument(tj),
+      ScrapsJournalDocument sj => MapFromScrapsJournalDocument(sj),
+      _ => null
     };
   }
 
   private static CounterJournal MapFromCounterJournalDocument(CounterJournalDocument document)
   {
     var journal = new CounterJournal();
+
     MapCommonPropertiesFromDocument(document, journal);
+
     return journal;
   }
 
   private static GaugeJournal MapFromGaugeJournalDocument(GaugeJournalDocument document)
   {
     var journal = new GaugeJournal();
+
     MapCommonPropertiesFromDocument(document, journal);
+
     return journal;
   }
 
   private static TimerJournal MapFromTimerJournalDocument(TimerJournalDocument document)
   {
-    var journal = new TimerJournal();
+    var journal = new TimerJournal
+    {
+      StartDate = document.StartDate
+    };
+
     MapCommonPropertiesFromDocument(document, journal);
-    journal.StartDate = document.StartDate;
+
     return journal;
   }
 
   private static ScrapsJournal MapFromScrapsJournalDocument(ScrapsJournalDocument document)
   {
     var journal = new ScrapsJournal();
+
     MapCommonPropertiesFromDocument(document, journal);
+
     return journal;
   }
 

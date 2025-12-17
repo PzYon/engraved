@@ -26,27 +26,37 @@ public static class EntryDocumentMapper
 
   private static GaugeEntryDocument MapToGaugeEntryDocument(GaugeEntry entry)
   {
-    var document = new GaugeEntryDocument();
+    var document = new GaugeEntryDocument
+    {
+      Value = entry.Value
+    };
     MapCommonPropertiesToDocument(entry, document);
-    document.Value = entry.Value;
     return document;
   }
 
   private static TimerEntryDocument MapToTimerEntryDocument(TimerEntry entry)
   {
-    var document = new TimerEntryDocument();
+    var document = new TimerEntryDocument
+    {
+      StartDate = entry.StartDate ?? default,
+      EndDate = entry.EndDate
+    };
+
     MapCommonPropertiesToDocument(entry, document);
-    document.StartDate = entry.StartDate ?? default;
-    document.EndDate = entry.EndDate;
+
     return document;
   }
 
   private static ScrapsEntryDocument MapToScrapsEntryDocument(ScrapsEntry entry)
   {
-    var document = new ScrapsEntryDocument();
+    var document = new ScrapsEntryDocument
+    {
+      Title = entry.Title,
+      ScrapType = entry.ScrapType
+    };
+
     MapCommonPropertiesToDocument(entry, document);
-    document.Title = entry.Title;
-    document.ScrapType = entry.ScrapType;
+
     return document;
   }
 
@@ -61,16 +71,14 @@ public static class EntryDocumentMapper
     document.Schedules = ScheduleMapper.MapSchedules(entry.Schedules);
   }
 
-  public static TEntry FromDocument<TEntry>(EntryDocument? document)
-    where TEntry : class, IEntry
+  public static IEntry FromDocument(EntryDocument document)
   {
     return document switch
     {
-      null => null,
-      CounterEntryDocument ced => MapFromCounterEntryDocument(ced) as TEntry,
-      GaugeEntryDocument ged => MapFromGaugeEntryDocument(ged) as TEntry,
-      ScrapsEntryDocument sed => MapFromScrapsEntryDocument(sed) as TEntry,
-      TimerEntryDocument ted => MapFromTimerEntryDocument(ted) as TEntry,
+      CounterEntryDocument ced => MapFromCounterEntryDocument(ced),
+      GaugeEntryDocument ged => MapFromGaugeEntryDocument(ged),
+      ScrapsEntryDocument sed => MapFromScrapsEntryDocument(sed),
+      TimerEntryDocument ted => MapFromTimerEntryDocument(ted),
       _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
     };
   }
@@ -78,33 +86,47 @@ public static class EntryDocumentMapper
   private static CounterEntry MapFromCounterEntryDocument(CounterEntryDocument document)
   {
     var entry = new CounterEntry();
+
     MapCommonPropertiesFromDocument(document, entry);
+
     return entry;
   }
 
   private static GaugeEntry MapFromGaugeEntryDocument(GaugeEntryDocument document)
   {
-    var entry = new GaugeEntry();
+    var entry = new GaugeEntry
+    {
+      Value = document.Value
+    };
+
     MapCommonPropertiesFromDocument(document, entry);
-    entry.Value = document.Value;
+
     return entry;
   }
 
   private static TimerEntry MapFromTimerEntryDocument(TimerEntryDocument document)
   {
-    var entry = new TimerEntry();
+    var entry = new TimerEntry
+    {
+      StartDate = document.StartDate,
+      EndDate = document.EndDate
+    };
+
     MapCommonPropertiesFromDocument(document, entry);
-    entry.StartDate = document.StartDate;
-    entry.EndDate = document.EndDate;
+
     return entry;
   }
 
   private static ScrapsEntry MapFromScrapsEntryDocument(ScrapsEntryDocument document)
   {
-    var entry = new ScrapsEntry();
+    var entry = new ScrapsEntry
+    {
+      Title = document.Title ?? string.Empty,
+      ScrapType = document.ScrapType ?? ScrapType.Markdown
+    };
+
     MapCommonPropertiesFromDocument(document, entry);
-    entry.Title = document.Title ?? string.Empty;
-    entry.ScrapType = document.ScrapType ?? ScrapType.Markdown;
+
     return entry;
   }
 

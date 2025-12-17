@@ -131,7 +131,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Limit(limit)
       .ToListAsync();
 
-    return journals.Select(JournalDocumentMapper.FromDocument<IJournal>).ToArray();
+    return journals.Select(j => JournalDocumentMapper.FromDocument(j)!).ToArray();
   }
 
   public async Task<IJournal?> GetJournal(string journalId)
@@ -194,7 +194,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .ToListAsync();
 
     return entries
-      .Select(EntryDocumentMapper.FromDocument<IEntry>)
+      .Select(EntryDocumentMapper.FromDocument)
       .ToArray();
   }
 
@@ -219,9 +219,11 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
     if (journalIds is { Length: > 0 })
     {
-      filters.AddRange(Builders<EntryDocument>.Filter.Or(
-        journalIds.Select(i => Builders<EntryDocument>.Filter.Where(d => d.ParentId == i))
-      ));
+      filters.AddRange(
+        Builders<EntryDocument>.Filter.Or(
+          journalIds.Select(i => Builders<EntryDocument>.Filter.Where(d => d.ParentId == i))
+        )
+      );
     }
 
     if (journalTypes is { Length: > 0 })
@@ -257,7 +259,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     );
 
     return entries
-      .Select(EntryDocumentMapper.FromDocument<IEntry>)
+      .Select(EntryDocumentMapper.FromDocument)
       .ToArray();
   }
 
@@ -390,7 +392,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId))
       .FirstOrDefaultAsync();
 
-    return EntryDocumentMapper.FromDocument<IEntry>(document);
+    return EntryDocumentMapper.FromDocument(document);
   }
 
   public async Task WakeMeUp()
@@ -492,7 +494,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(GetJournalDocumentByIdFilter<JournalDocument>(journalId, permissionKind))
       .FirstOrDefaultAsync();
 
-    return JournalDocumentMapper.FromDocument<IJournal>(document);
+    return JournalDocumentMapper.FromDocument(document);
   }
 
   private FilterDefinition<TDocument> GetJournalDocumentByIdFilter<TDocument>(string journalId, PermissionKind kind)
