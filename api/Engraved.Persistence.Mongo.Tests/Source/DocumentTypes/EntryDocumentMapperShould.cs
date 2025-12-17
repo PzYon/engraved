@@ -43,7 +43,7 @@ public class EntryDocumentMapperShould
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
     };
 
-    var counterEntry = EntryDocumentMapper.FromDocument<CounterEntry>(document);
+    IEntry counterEntry = EntryDocumentMapper.FromDocument(document);
 
     AssertEqual(document, counterEntry);
   }
@@ -85,7 +85,7 @@ public class EntryDocumentMapperShould
       Value = 4321
     };
 
-    var gaugeEntry = EntryDocumentMapper.FromDocument<GaugeEntry>(document);
+    IEntry gaugeEntry = EntryDocumentMapper.FromDocument(document);
 
     AssertEqual(document, gaugeEntry);
   }
@@ -129,7 +129,7 @@ public class EntryDocumentMapperShould
       EndDate = DateTime.UtcNow.AddHours(-100)
     };
 
-    var timerEntry = EntryDocumentMapper.FromDocument<TimerEntry>(document);
+    IEntry timerEntry = EntryDocumentMapper.FromDocument(document);
 
     AssertEqual(document, timerEntry);
   }

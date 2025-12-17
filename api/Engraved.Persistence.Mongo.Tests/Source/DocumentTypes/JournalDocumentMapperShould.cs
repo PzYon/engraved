@@ -46,8 +46,9 @@ public class JournalDocumentMapperShould
       Name = Name
     };
 
-    var journal = JournalDocumentMapper.FromDocument<IJournal>(counterJournalDocument);
-
+    IJournal? journal = JournalDocumentMapper.FromDocument(counterJournalDocument);
+    
+    journal.Should().NotBeNull();
     journal.Should().BeOfType<CounterJournal>();
     journal.Type.Should().Be(JournalType.Counter);
     AssertEqual(counterJournalDocument, journal);
@@ -83,8 +84,9 @@ public class JournalDocumentMapperShould
       Notes = Notes
     };
 
-    var journal = JournalDocumentMapper.FromDocument<IJournal>(gaugeJournalDocument);
+    IJournal? journal = JournalDocumentMapper.FromDocument(gaugeJournalDocument);
 
+    journal.Should().NotBeNull();
     journal.Should().BeOfType<GaugeJournal>();
     journal.Type.Should().Be(JournalType.Gauge);
     AssertEqual(gaugeJournalDocument, journal);
@@ -143,10 +145,11 @@ public class JournalDocumentMapperShould
       StartDate = startDate
     };
 
-    var journal = JournalDocumentMapper.FromDocument<IJournal>(timerJournalDocument);
+    IJournal? journal = JournalDocumentMapper.FromDocument(timerJournalDocument);
 
-    var timerJournal = (TimerJournal)journal;
-    timerJournal.Should().NotBeNull();
+    journal.Should().NotBeNull();
+
+    var timerJournal = (TimerJournal) journal;
     journal.Type.Should().Be(JournalType.Timer);
     timerJournal.StartDate.Should().Be(startDate);
     AssertEqual(timerJournalDocument, journal);
