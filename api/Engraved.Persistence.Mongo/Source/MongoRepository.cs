@@ -392,7 +392,9 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .Find(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId))
       .FirstOrDefaultAsync();
 
-    return EntryDocumentMapper.FromDocument(document);
+    return document == null
+      ? null
+      : EntryDocumentMapper.FromDocument(document);
   }
 
   public async Task WakeMeUp()
