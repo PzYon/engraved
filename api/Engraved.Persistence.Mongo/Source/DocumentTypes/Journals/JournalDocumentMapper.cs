@@ -20,74 +20,46 @@ public static class JournalDocumentMapper
 
   private static CounterJournalDocument MapToCounterJournalDocument(CounterJournal journal)
   {
-    return new CounterJournalDocument
-    {
-      Id = string.IsNullOrEmpty(journal.Id) ? ObjectId.Empty : ObjectId.Parse(journal.Id),
-      UserId = journal.UserId,
-      Name = journal.Name,
-      Description = journal.Description,
-      Notes = journal.Notes,
-      Attributes = journal.Attributes,
-      Thresholds = MapThresholds(journal.Thresholds),
-      EditedOn = journal.EditedOn,
-      Permissions = journal.Permissions,
-      CustomProps = journal.CustomProps,
-      Schedules = ScheduleMapper.MapSchedules(journal.Schedules)
-    };
+    var document = new CounterJournalDocument();
+    MapCommonPropertiesToDocument(journal, document);
+    return document;
   }
 
   private static GaugeJournalDocument MapToGaugeJournalDocument(GaugeJournal journal)
   {
-    return new GaugeJournalDocument
-    {
-      Id = string.IsNullOrEmpty(journal.Id) ? ObjectId.Empty : ObjectId.Parse(journal.Id),
-      UserId = journal.UserId,
-      Name = journal.Name,
-      Description = journal.Description,
-      Notes = journal.Notes,
-      Attributes = journal.Attributes,
-      Thresholds = MapThresholds(journal.Thresholds),
-      EditedOn = journal.EditedOn,
-      Permissions = journal.Permissions,
-      CustomProps = journal.CustomProps,
-      Schedules = ScheduleMapper.MapSchedules(journal.Schedules)
-    };
+    var document = new GaugeJournalDocument();
+    MapCommonPropertiesToDocument(journal, document);
+    return document;
   }
 
   private static TimerJournalDocument MapToTimerJournalDocument(TimerJournal journal)
   {
-    return new TimerJournalDocument
-    {
-      Id = string.IsNullOrEmpty(journal.Id) ? ObjectId.Empty : ObjectId.Parse(journal.Id),
-      UserId = journal.UserId,
-      Name = journal.Name,
-      Description = journal.Description,
-      Notes = journal.Notes,
-      Attributes = journal.Attributes,
-      Thresholds = MapThresholds(journal.Thresholds),
-      EditedOn = journal.EditedOn,
-      Permissions = journal.Permissions,
-      CustomProps = journal.CustomProps,
-      Schedules = ScheduleMapper.MapSchedules(journal.Schedules),
-      StartDate = journal.StartDate
-    };
+    var document = new TimerJournalDocument();
+    MapCommonPropertiesToDocument(journal, document);
+    document.StartDate = journal.StartDate;
+    return document;
   }
 
   private static ScrapsJournalDocument MapToScrapsJournalDocument(ScrapsJournal journal)
   {
-    return new ScrapsJournalDocument
-    {
-      UserId = journal.UserId,
-      Name = journal.Name,
-      Description = journal.Description,
-      Notes = journal.Notes,
-      Attributes = journal.Attributes,
-      Thresholds = MapThresholds(journal.Thresholds),
-      EditedOn = journal.EditedOn,
-      Permissions = journal.Permissions,
-      CustomProps = journal.CustomProps,
-      Schedules = ScheduleMapper.MapSchedules(journal.Schedules)
-    };
+    var document = new ScrapsJournalDocument();
+    MapCommonPropertiesToDocument(journal, document);
+    return document;
+  }
+
+  private static void MapCommonPropertiesToDocument(IJournal journal, JournalDocument document)
+  {
+    document.Id = string.IsNullOrEmpty(journal.Id) ? ObjectId.Empty : ObjectId.Parse(journal.Id);
+    document.UserId = journal.UserId;
+    document.Name = journal.Name;
+    document.Description = journal.Description;
+    document.Notes = journal.Notes;
+    document.Attributes = journal.Attributes;
+    document.Thresholds = MapThresholds(journal.Thresholds);
+    document.EditedOn = journal.EditedOn;
+    document.Permissions = journal.Permissions;
+    document.CustomProps = journal.CustomProps;
+    document.Schedules = ScheduleMapper.MapSchedules(journal.Schedules);
   }
 
   private static Dictionary<string, Dictionary<string, ThresholdDefinitionDocument>> MapThresholds(
@@ -114,16 +86,12 @@ public static class JournalDocumentMapper
     return result;
   }
 
-  public static TJournal FromDocument<TJournal>(JournalDocument? document)
+  public static TJournal? FromDocument<TJournal>(JournalDocument? document)
     where TJournal : class, IJournal
   {
-    if (document == null)
-    {
-      return null!;
-    }
-
     return document switch
     {
+      null => null,
       CounterJournalDocument cj => MapFromCounterJournalDocument(cj) as TJournal,
       GaugeJournalDocument gj => MapFromGaugeJournalDocument(gj) as TJournal,
       TimerJournalDocument tj => MapFromTimerJournalDocument(tj) as TJournal,
@@ -134,75 +102,46 @@ public static class JournalDocumentMapper
 
   private static CounterJournal MapFromCounterJournalDocument(CounterJournalDocument document)
   {
-    return new CounterJournal
-    {
-      Id = document.Id.ToString(),
-      UserId = document.UserId,
-      Name = document.Name!,
-      Description = document.Description,
-      Notes = document.Notes,
-      Attributes = document.Attributes,
-      Thresholds = MapThresholdsFromDocument(document.Thresholds),
-      EditedOn = document.EditedOn,
-      Permissions = document.Permissions,
-      CustomProps = document.CustomProps,
-      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules)
-    };
+    var journal = new CounterJournal();
+    MapCommonPropertiesFromDocument(document, journal);
+    return journal;
   }
 
   private static GaugeJournal MapFromGaugeJournalDocument(GaugeJournalDocument document)
   {
-    return new GaugeJournal
-    {
-      Id = document.Id.ToString(),
-      UserId = document.UserId,
-      Name = document.Name!,
-      Description = document.Description,
-      Notes = document.Notes,
-      Attributes = document.Attributes,
-      Thresholds = MapThresholdsFromDocument(document.Thresholds),
-      EditedOn = document.EditedOn,
-      Permissions = document.Permissions,
-      CustomProps = document.CustomProps,
-      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules)
-    };
+    var journal = new GaugeJournal();
+    MapCommonPropertiesFromDocument(document, journal);
+    return journal;
   }
 
   private static TimerJournal MapFromTimerJournalDocument(TimerJournalDocument document)
   {
-    return new TimerJournal
-    {
-      Id = document.Id.ToString(),
-      UserId = document.UserId,
-      Name = document.Name!,
-      Description = document.Description,
-      Notes = document.Notes,
-      Attributes = document.Attributes,
-      Thresholds = MapThresholdsFromDocument(document.Thresholds),
-      EditedOn = document.EditedOn,
-      Permissions = document.Permissions,
-      CustomProps = document.CustomProps,
-      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules),
-      StartDate = document.StartDate
-    };
+    var journal = new TimerJournal();
+    MapCommonPropertiesFromDocument(document, journal);
+    journal.StartDate = document.StartDate;
+    return journal;
   }
 
   private static ScrapsJournal MapFromScrapsJournalDocument(ScrapsJournalDocument document)
   {
-    return new ScrapsJournal
-    {
-      Id = document.Id.ToString(),
-      UserId = document.UserId,
-      Name = document.Name!,
-      Description = document.Description,
-      Notes = document.Notes,
-      Attributes = document.Attributes,
-      Thresholds = MapThresholdsFromDocument(document.Thresholds),
-      EditedOn = document.EditedOn,
-      Permissions = document.Permissions,
-      CustomProps = document.CustomProps,
-      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules)
-    };
+    var journal = new ScrapsJournal();
+    MapCommonPropertiesFromDocument(document, journal);
+    return journal;
+  }
+
+  private static void MapCommonPropertiesFromDocument(JournalDocument document, IJournal journal)
+  {
+    journal.Id = document.Id.ToString();
+    journal.UserId = document.UserId;
+    journal.Name = document.Name!;
+    journal.Description = document.Description;
+    journal.Notes = document.Notes;
+    journal.Attributes = document.Attributes;
+    journal.Thresholds = MapThresholdsFromDocument(document.Thresholds);
+    journal.EditedOn = document.EditedOn;
+    journal.Permissions = document.Permissions;
+    journal.CustomProps = document.CustomProps;
+    journal.Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules);
   }
 
   private static Dictionary<string, Dictionary<string, ThresholdDefinition>> MapThresholdsFromDocument(
