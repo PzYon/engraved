@@ -1,5 +1,5 @@
 ﻿using Engraved.Core.Domain.Entries;
-using Engraved.Core.Domain.Schedules;
+using Engraved.Persistence.Mongo.DocumentTypes.Schedules;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
 
@@ -9,15 +9,15 @@ public static class EntryDocumentMapper
   {
     return entry switch
     {
-      CounterEntry ce => MapCounterEntry(ce),
-      GaugeEntry ge => MapGaugeEntry(ge),
-      TimerEntry te => MapTimerEntry(te),
-      ScrapsEntry se => MapScrapsEntry(se),
+      CounterEntry ce => MapToCounterEntryDocument(ce),
+      GaugeEntry ge => MapToGaugeEntryDocument(ge),
+      TimerEntry te => MapToTimerEntryDocument(te),
+      ScrapsEntry se => MapToScrapsEntryDocument(se),
       _ => throw new ArgumentOutOfRangeException(nameof(entry), entry, null)
     };
   }
 
-  private static CounterEntryDocument MapCounterEntry(CounterEntry entry)
+  private static CounterEntryDocument MapToCounterEntryDocument(CounterEntry entry)
   {
     return new CounterEntryDocument
     {
@@ -27,11 +27,11 @@ public static class EntryDocumentMapper
       DateTime = entry.DateTime,
       EditedOn = entry.EditedOn,
       JournalAttributeValues = entry.JournalAttributeValues,
-      Schedules = MapSchedules(entry.Schedules)
+      Schedules = ScheduleMapper.MapSchedules(entry.Schedules)
     };
   }
 
-  private static GaugeEntryDocument MapGaugeEntry(GaugeEntry entry)
+  private static GaugeEntryDocument MapToGaugeEntryDocument(GaugeEntry entry)
   {
     return new GaugeEntryDocument
     {
@@ -41,12 +41,12 @@ public static class EntryDocumentMapper
       DateTime = entry.DateTime,
       EditedOn = entry.EditedOn,
       JournalAttributeValues = entry.JournalAttributeValues,
-      Schedules = MapSchedules(entry.Schedules),
+      Schedules = ScheduleMapper.MapSchedules(entry.Schedules),
       Value = entry.Value
     };
   }
 
-  private static TimerEntryDocument MapTimerEntry(TimerEntry entry)
+  private static TimerEntryDocument MapToTimerEntryDocument(TimerEntry entry)
   {
     return new TimerEntryDocument
     {
@@ -56,13 +56,13 @@ public static class EntryDocumentMapper
       DateTime = entry.DateTime,
       EditedOn = entry.EditedOn,
       JournalAttributeValues = entry.JournalAttributeValues,
-      Schedules = MapSchedules(entry.Schedules),
+      Schedules = ScheduleMapper.MapSchedules(entry.Schedules),
       StartDate = entry.StartDate ?? default,
       EndDate = entry.EndDate
     };
   }
 
-  private static ScrapsEntryDocument MapScrapsEntry(ScrapsEntry entry)
+  private static ScrapsEntryDocument MapToScrapsEntryDocument(ScrapsEntry entry)
   {
     return new ScrapsEntryDocument
     {
@@ -72,31 +72,10 @@ public static class EntryDocumentMapper
       DateTime = entry.DateTime,
       EditedOn = entry.EditedOn,
       JournalAttributeValues = entry.JournalAttributeValues,
-      Schedules = MapSchedules(entry.Schedules),
+      Schedules = ScheduleMapper.MapSchedules(entry.Schedules),
       Title = entry.Title,
       ScrapType = entry.ScrapType
     };
-  }
-
-  private static Dictionary<string, ScheduleSubDocument> MapSchedules(Dictionary<string, Schedule> schedules)
-  {
-    var result = new Dictionary<string, ScheduleSubDocument>();
-
-    foreach ((var key, Schedule schedule) in schedules)
-    {
-      result[key] = new ScheduleSubDocument
-      {
-        NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null
-          ? new RecurrenceSubDocument { DateString = schedule.Recurrence.DateString }
-          : null,
-        DidNotify = schedule.DidNotify,
-        NotificationId = schedule.NotificationId,
-        OnClickUrl = schedule.OnClickUrl
-      };
-    }
-
-    return result;
   }
 
   public static TEntry FromDocument<TEntry>(EntryDocument? document)
@@ -108,17 +87,16 @@ public static class EntryDocumentMapper
     }
 
     return document switch
-           {
-             CounterEntryDocument ced => MapToCounterEntry(ced) as TEntry,
-             GaugeEntryDocument ged => MapToGaugeEntry(ged) as TEntry,
-             ScrapsEntryDocument sed => MapToScrapsEntry(sed) as TEntry,
-             TimerEntryDocument ted => MapToTimerEntry(ted) as TEntry,
-             _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
-           }
-           ?? throw new InvalidCastException($"Cannot cast {document.GetType().Name} to {typeof(TEntry).Name}");
+    {
+      CounterEntryDocument ced => MapFromCounterEntryDocument(ced) as TEntry,
+      GaugeEntryDocument ged => MapFromGaugeEntryDocument(ged) as TEntry,
+      ScrapsEntryDocument sed => MapFromScrapsEntryDocument(sed) as TEntry,
+      TimerEntryDocument ted => MapFromTimerEntryDocument(ted) as TEntry,
+      _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
+    };
   }
 
-  private static CounterEntry MapToCounterEntry(CounterEntryDocument document)
+  private static CounterEntry MapFromCounterEntryDocument(CounterEntryDocument document)
   {
     return new CounterEntry
     {
@@ -129,11 +107,11 @@ public static class EntryDocumentMapper
       DateTime = document.DateTime,
       EditedOn = document.EditedOn,
       JournalAttributeValues = document.JournalAttributeValues,
-      Schedules = MapSchedulesFromDocument(document.Schedules)
+      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules)
     };
   }
 
-  private static GaugeEntry MapToGaugeEntry(GaugeEntryDocument document)
+  private static GaugeEntry MapFromGaugeEntryDocument(GaugeEntryDocument document)
   {
     return new GaugeEntry
     {
@@ -144,12 +122,12 @@ public static class EntryDocumentMapper
       DateTime = document.DateTime,
       EditedOn = document.EditedOn,
       JournalAttributeValues = document.JournalAttributeValues,
-      Schedules = MapSchedulesFromDocument(document.Schedules),
+      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules),
       Value = document.Value
     };
   }
 
-  private static TimerEntry MapToTimerEntry(TimerEntryDocument document)
+  private static TimerEntry MapFromTimerEntryDocument(TimerEntryDocument document)
   {
     return new TimerEntry
     {
@@ -160,13 +138,13 @@ public static class EntryDocumentMapper
       DateTime = document.DateTime,
       EditedOn = document.EditedOn,
       JournalAttributeValues = document.JournalAttributeValues,
-      Schedules = MapSchedulesFromDocument(document.Schedules),
+      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules),
       StartDate = document.StartDate,
       EndDate = document.EndDate
     };
   }
 
-  private static ScrapsEntry MapToScrapsEntry(ScrapsEntryDocument document)
+  private static ScrapsEntry MapFromScrapsEntryDocument(ScrapsEntryDocument document)
   {
     return new ScrapsEntry
     {
@@ -177,32 +155,9 @@ public static class EntryDocumentMapper
       DateTime = document.DateTime,
       EditedOn = document.EditedOn,
       JournalAttributeValues = document.JournalAttributeValues,
-      Schedules = MapSchedulesFromDocument(document.Schedules),
+      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules),
       Title = document.Title ?? string.Empty,
       ScrapType = document.ScrapType ?? ScrapType.Markdown
     };
-  }
-
-  private static Dictionary<string, Schedule> MapSchedulesFromDocument(
-    Dictionary<string, ScheduleSubDocument> schedules
-  )
-  {
-    var result = new Dictionary<string, Schedule>();
-
-    foreach ((var key, ScheduleSubDocument schedule) in schedules)
-    {
-      result[key] = new Schedule
-      {
-        NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null
-          ? new Recurrence { DateString = schedule.Recurrence.DateString }
-          : null,
-        DidNotify = schedule.DidNotify,
-        NotificationId = schedule.NotificationId,
-        OnClickUrl = schedule.OnClickUrl
-      };
-    }
-
-    return result;
   }
 }

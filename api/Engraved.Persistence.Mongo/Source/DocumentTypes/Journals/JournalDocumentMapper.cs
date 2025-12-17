@@ -1,5 +1,5 @@
 ﻿using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Schedules;
+using Engraved.Persistence.Mongo.DocumentTypes.Schedules;
 using MongoDB.Bson;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
@@ -10,15 +10,15 @@ public static class JournalDocumentMapper
   {
     return journal switch
     {
-      CounterJournal cj => MapCounterJournal(cj),
-      GaugeJournal gj => MapGaugeJournal(gj),
-      TimerJournal tj => MapTimerJournal(tj),
-      ScrapsJournal sj => MapScrapsJournal(sj),
+      CounterJournal cj => MapToCounterJournalDocument(cj),
+      GaugeJournal gj => MapToGaugeJournalDocument(gj),
+      TimerJournal tj => MapToTimerJournalDocument(tj),
+      ScrapsJournal sj => MapToScrapsJournalDocument(sj),
       _ => throw new ArgumentOutOfRangeException(nameof(journal), journal, null)
     };
   }
 
-  private static CounterJournalDocument MapCounterJournal(CounterJournal journal)
+  private static CounterJournalDocument MapToCounterJournalDocument(CounterJournal journal)
   {
     return new CounterJournalDocument
     {
@@ -32,11 +32,11 @@ public static class JournalDocumentMapper
       EditedOn = journal.EditedOn,
       Permissions = journal.Permissions,
       CustomProps = journal.CustomProps,
-      Schedules = MapSchedules(journal.Schedules)
+      Schedules = ScheduleMapper.MapSchedules(journal.Schedules)
     };
   }
 
-  private static GaugeJournalDocument MapGaugeJournal(GaugeJournal journal)
+  private static GaugeJournalDocument MapToGaugeJournalDocument(GaugeJournal journal)
   {
     return new GaugeJournalDocument
     {
@@ -50,11 +50,11 @@ public static class JournalDocumentMapper
       EditedOn = journal.EditedOn,
       Permissions = journal.Permissions,
       CustomProps = journal.CustomProps,
-      Schedules = MapSchedules(journal.Schedules)
+      Schedules = ScheduleMapper.MapSchedules(journal.Schedules)
     };
   }
 
-  private static TimerJournalDocument MapTimerJournal(TimerJournal journal)
+  private static TimerJournalDocument MapToTimerJournalDocument(TimerJournal journal)
   {
     return new TimerJournalDocument
     {
@@ -68,12 +68,12 @@ public static class JournalDocumentMapper
       EditedOn = journal.EditedOn,
       Permissions = journal.Permissions,
       CustomProps = journal.CustomProps,
-      Schedules = MapSchedules(journal.Schedules),
+      Schedules = ScheduleMapper.MapSchedules(journal.Schedules),
       StartDate = journal.StartDate
     };
   }
 
-  private static ScrapsJournalDocument MapScrapsJournal(ScrapsJournal journal)
+  private static ScrapsJournalDocument MapToScrapsJournalDocument(ScrapsJournal journal)
   {
     return new ScrapsJournalDocument
     {
@@ -86,7 +86,7 @@ public static class JournalDocumentMapper
       EditedOn = journal.EditedOn,
       Permissions = journal.Permissions,
       CustomProps = journal.CustomProps,
-      Schedules = MapSchedules(journal.Schedules)
+      Schedules = ScheduleMapper.MapSchedules(journal.Schedules)
     };
   }
 
@@ -114,28 +114,8 @@ public static class JournalDocumentMapper
     return result;
   }
 
-  private static Dictionary<string, ScheduleSubDocument> MapSchedules(Dictionary<string, Schedule> schedules)
-  {
-    var result = new Dictionary<string, ScheduleSubDocument>();
-
-    foreach ((var key, Schedule schedule) in schedules)
-    {
-      result[key] = new ScheduleSubDocument
-      {
-        NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null
-          ? new RecurrenceSubDocument { DateString = schedule.Recurrence.DateString }
-          : null,
-        DidNotify = schedule.DidNotify,
-        NotificationId = schedule.NotificationId,
-        OnClickUrl = schedule.OnClickUrl
-      };
-    }
-
-    return result;
-  }
-
-  public static TJournal FromDocument<TJournal>(JournalDocument? document) where TJournal : class, IJournal
+  public static TJournal FromDocument<TJournal>(JournalDocument? document)
+    where TJournal : class, IJournal
   {
     if (document == null)
     {
@@ -144,15 +124,15 @@ public static class JournalDocumentMapper
 
     return document switch
     {
-      CounterJournalDocument cj => MapFromCounterJournal(cj) as TJournal,
-      GaugeJournalDocument gj => MapFromGaugeJournal(gj) as TJournal,
-      TimerJournalDocument tj => MapFromTimerJournal(tj) as TJournal,
-      ScrapsJournalDocument sj => MapFromScrapsJournal(sj) as TJournal,
+      CounterJournalDocument cj => MapFromCounterJournalDocument(cj) as TJournal,
+      GaugeJournalDocument gj => MapFromGaugeJournalDocument(gj) as TJournal,
+      TimerJournalDocument tj => MapFromTimerJournalDocument(tj) as TJournal,
+      ScrapsJournalDocument sj => MapFromScrapsJournalDocument(sj) as TJournal,
       _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
     };
   }
 
-  private static CounterJournal MapFromCounterJournal(CounterJournalDocument document)
+  private static CounterJournal MapFromCounterJournalDocument(CounterJournalDocument document)
   {
     return new CounterJournal
     {
@@ -166,11 +146,11 @@ public static class JournalDocumentMapper
       EditedOn = document.EditedOn,
       Permissions = document.Permissions,
       CustomProps = document.CustomProps,
-      Schedules = MapSchedulesFromDocument(document.Schedules)
+      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules)
     };
   }
 
-  private static GaugeJournal MapFromGaugeJournal(GaugeJournalDocument document)
+  private static GaugeJournal MapFromGaugeJournalDocument(GaugeJournalDocument document)
   {
     return new GaugeJournal
     {
@@ -184,11 +164,11 @@ public static class JournalDocumentMapper
       EditedOn = document.EditedOn,
       Permissions = document.Permissions,
       CustomProps = document.CustomProps,
-      Schedules = MapSchedulesFromDocument(document.Schedules)
+      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules)
     };
   }
 
-  private static TimerJournal MapFromTimerJournal(TimerJournalDocument document)
+  private static TimerJournal MapFromTimerJournalDocument(TimerJournalDocument document)
   {
     return new TimerJournal
     {
@@ -202,12 +182,12 @@ public static class JournalDocumentMapper
       EditedOn = document.EditedOn,
       Permissions = document.Permissions,
       CustomProps = document.CustomProps,
-      Schedules = MapSchedulesFromDocument(document.Schedules),
+      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules),
       StartDate = document.StartDate
     };
   }
 
-  private static ScrapsJournal MapFromScrapsJournal(ScrapsJournalDocument document)
+  private static ScrapsJournal MapFromScrapsJournalDocument(ScrapsJournalDocument document)
   {
     return new ScrapsJournal
     {
@@ -221,7 +201,7 @@ public static class JournalDocumentMapper
       EditedOn = document.EditedOn,
       Permissions = document.Permissions,
       CustomProps = document.CustomProps,
-      Schedules = MapSchedulesFromDocument(document.Schedules)
+      Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules)
     };
   }
 
@@ -244,29 +224,6 @@ public static class JournalDocumentMapper
       }
 
       result[key] = innerResult;
-    }
-
-    return result;
-  }
-
-  private static Dictionary<string, Schedule> MapSchedulesFromDocument(
-    Dictionary<string, ScheduleSubDocument> schedules
-  )
-  {
-    var result = new Dictionary<string, Schedule>();
-
-    foreach ((var key, ScheduleSubDocument schedule) in schedules)
-    {
-      result[key] = new Schedule
-      {
-        NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null
-          ? new Recurrence { DateString = schedule.Recurrence.DateString }
-          : null,
-        DidNotify = schedule.DidNotify,
-        NotificationId = schedule.NotificationId,
-        OnClickUrl = schedule.OnClickUrl
-      };
     }
 
     return result;
