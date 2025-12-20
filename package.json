@@ -4,7 +4,17 @@
   "description": "",
   "scripts": {
     "prepare": "husky",
-    "knip": "knip"
+    "knip": "knip",
+    "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,scss,md,json}\"",
+    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,md,json}\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,css,md,json}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "repository": {
     "type": "git",
@@ -17,10 +27,22 @@
   },
   "homepage": "https://github.com/PzYon/engraved#readme",
   "devDependencies": {
+    "@eslint/eslintrc": "3.3.3",
+    "@eslint/js": "9.39.2",
+    "@tanstack/eslint-plugin-query": "5.91.2",
     "@types/node": "24.10.4",
+    "@typescript-eslint/eslint-plugin": "8.50.0",
+    "@typescript-eslint/parser": "8.50.0",
+    "eslint": "9.39.2",
+    "eslint-plugin-playwright": "2.4.0",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.0.1",
+    "eslint-plugin-react-refresh": "0.4.26",
+    "globals": "16.5.0",
     "husky": "9.1.7",
     "knip": "5.76.1",
     "lint-staged": "16.2.7",
+    "prettier": "^3.7.4",
     "typescript": "5.9.3"
   }
 }
