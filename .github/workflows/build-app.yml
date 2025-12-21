@@ -42,13 +42,13 @@ jobs:
         working-directory: app
         run: npm run types:check
 
-      - name: Lint
-        working-directory: app
-        run: npm run lint
-
       - name: Knip
         working-directory: ./
         run: npm run knip
+
+      - name: Lint
+        working-directory: ./
+        run: npm run lint
 
       - name: Get current time
         uses: josStorer/get-current-time@v2

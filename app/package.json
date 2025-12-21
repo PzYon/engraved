@@ -50,16 +50,7 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
-    "types:check": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,scss,md,json}\""
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,css,md,json}": [
-      "npx prettier --write",
-      "npx eslint --fix"
-    ]
+    "types:check": "tsc --noEmit"
   },
   "browserslist": {
     "production": [
@@ -74,21 +65,11 @@
     ]
   },
   "devDependencies": {
-    "@eslint/eslintrc": "3.3.3",
-    "@eslint/js": "9.39.2",
     "@tanstack/eslint-plugin-query": "5.91.2",
     "@types/node": "24.10.4",
-    "@typescript-eslint/eslint-plugin": "8.50.0",
-    "@typescript-eslint/parser": "8.50.0",
     "@vitest/ui": "4.0.16",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
-    "eslint": "9.39.2",
-    "eslint-plugin-react": "7.37.5",
-    "eslint-plugin-react-hooks": "7.0.1",
-    "eslint-plugin-react-refresh": "0.4.26",
-    "globals": "16.5.0",
     "jsdom": "27.3.0",
-    "prettier": "3.7.4",
     "typescript": "5.9.3",
     "vite-bundle-visualizer": "1.2.1",
     "vite-plugin-checker": "0.12.0",
