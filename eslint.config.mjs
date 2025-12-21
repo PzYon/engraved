@@ -18,6 +18,9 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 });
 
+const appPath = "app/**";
+const testsPath = "tests/**";
+
 export default [
   {
     ignores: [
@@ -53,10 +56,10 @@ export default [
     )
     .map((config) => ({
       ...config,
-      files: ["app/**/*.{js,jsx,ts,tsx}"],
+      files: [appPath + "/*.{js,jsx,ts,tsx}"],
     })),
   {
-    files: ["app/**/*.{js,jsx,ts,tsx}"],
+    files: [appPath + "/*.{js,jsx,ts,tsx}"],
     plugins: {
       react: react,
       "react-hooks": reactHooks,
@@ -92,10 +95,10 @@ export default [
   },
   ...compat.extends("plugin:playwright/recommended").map((config) => ({
     ...config,
-    files: ["tests/**/*.{js,ts}"],
+    files: [testsPath + "/*.{js,ts}"],
   })),
   {
-    files: ["tests/**/*.{js,ts}"],
+    files: [testsPath + "/*.{js,ts}"],
     plugins: {
       playwright: playwright,
     },
