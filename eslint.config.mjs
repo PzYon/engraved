@@ -29,7 +29,6 @@ export default [
       "**/test-results",
     ],
   },
-  // Base configuration for all files
   js.configs.recommended,
   {
     plugins: {
@@ -41,12 +40,10 @@ export default [
       sourceType: "module",
     },
   },
-  // TypeScript recommended rules for all TS files
   ...compat.extends("plugin:@typescript-eslint/recommended").map((config) => ({
     ...config,
     files: ["**/*.{ts,tsx}"],
   })),
-  // App-specific configuration (React)
   ...compat
     .extends(
       "plugin:react/jsx-runtime",
@@ -93,7 +90,6 @@ export default [
       "no-debugger": "off",
     },
   },
-  // Tests-specific configuration (Playwright)
   ...compat.extends("plugin:playwright/recommended").map((config) => ({
     ...config,
     files: ["tests/**/*.{js,ts}"],
