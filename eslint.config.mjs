@@ -43,10 +43,12 @@ export default [
       sourceType: "module",
     },
   },
+
   ...compat.extends("plugin:@typescript-eslint/recommended").map((config) => ({
     ...config,
     files: ["**/*.{ts,tsx}"],
   })),
+
   ...compat
     .extends(
       "plugin:react/jsx-runtime",
@@ -58,6 +60,7 @@ export default [
       ...config,
       files: [appPath + "/*.{js,jsx,ts,tsx}"],
     })),
+
   {
     files: [appPath + "/*.{js,jsx,ts,tsx}"],
     plugins: {
@@ -93,10 +96,12 @@ export default [
       "no-debugger": "off",
     },
   },
+
   ...compat.extends("plugin:playwright/recommended").map((config) => ({
     ...config,
     files: [testsPath + "/*.{js,ts}"],
   })),
+
   {
     files: [testsPath + "/*.{js,ts}"],
     plugins: {
