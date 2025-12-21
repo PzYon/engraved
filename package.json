@@ -5,8 +5,8 @@
   "scripts": {
     "prepare": "husky",
     "knip": "knip",
-    "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,scss,md,json}\"",
-    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,md,json}\"",
+    "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,scss,md,json,html}\"",
+    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,md,json,html}\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

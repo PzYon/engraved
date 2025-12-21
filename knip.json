@@ -1,29 +1,20 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "workspaces": {
+    ".": {
+      "ignoreDependencies": [
+        "@tanstack/eslint-plugin-query",
+        "eslint-plugin-playwright"
+      ]
+    },
     "app": {
       "entry": "src/index.tsx",
-      "ignore": [
-        "@tanstack/eslint-plugin-query",
-        "public/OneSignalSDKWorker.js",
-        "dotnet",
-        "src/global.d.ts"
-      ],
-      "ignoreBinaries": [
-        "dotnet"
-      ],
-      "ignoreDependencies": [
-        "@tanstack/eslint-plugin-query"
-      ]
+      "ignore": ["public/OneSignalSDKWorker.js", "dotnet", "src/global.d.ts"],
+      "ignoreBinaries": ["dotnet"]
     },
     "tests": {
       "entry": "tests/*.ts",
-      "ignoreBinaries": [
-        "dotnet"
-      ],
-      "ignoreDependencies": [
-        "eslint-plugin-playwright"
-      ]
+      "ignoreBinaries": ["dotnet"]
     }
   }
 }
