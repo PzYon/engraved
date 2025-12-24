@@ -1,7 +1,8 @@
 {
-  "name": "tests",
+  "name": "engraved-tests",
   "version": "0.1.0",
-  "description": "",
+  "author": "PzYon",
+  "license": "ISC",
   "scripts": {
     "e2e:start-api": "dotnet run --project ../api/Engraved.Api/ -- e2e-tests",
     "e2e:start-api:ci": "dotnet ../api-artifact/Engraved.Api.dll --urls \"http://localhost:5072\" -- e2e-tests",
@@ -12,15 +13,10 @@
     "e2e:run-tests:ui:android": "npx playwright test --project=\"android\" --ui",
     "types:check": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "PzYon",
-  "license": "ISC",
   "dependencies": {
     "@playwright/test": "1.57.0",
     "@types/node": "24.10.4",
-    "eslint-plugin-playwright": "2.4.0"
-  },
-  "devDependencies": {
+    "eslint-plugin-playwright": "2.4.0",
     "superstatic": "10.0.0"
   }
 }
