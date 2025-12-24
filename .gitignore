@@ -1,2 +1,2 @@
-node_modules
-.idea/copilot.data.migration*
+/node_modules
+.idea

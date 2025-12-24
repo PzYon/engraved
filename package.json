@@ -1,7 +1,8 @@
 {
   "name": "engraved",
   "version": "0.1.0",
-  "description": "",
+  "author": "PzYon",
+  "license": "ISC",
   "scripts": {
     "prepare": "husky",
     "knip": "knip",
@@ -20,8 +21,6 @@
     "type": "git",
     "url": "git+https://github.com/PzYon/engraved.git"
   },
-  "author": "PzYon",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/PzYon/engraved/issues"
   },
