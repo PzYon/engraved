@@ -15,8 +15,6 @@
   },
   "dependencies": {
     "@playwright/test": "1.57.0",
-    "@types/node": "24.10.4",
-    "eslint-plugin-playwright": "2.4.0",
     "superstatic": "10.0.0"
   }
 }
