@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "ESNext"],
+    "types": ["node", "@playwright/test"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
