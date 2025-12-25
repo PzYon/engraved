@@ -62,14 +62,12 @@
     ]
   },
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "5.91.2",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@types/node": "24.10.4",
     "@vitest/ui": "4.0.16",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "jsdom": "27.3.0",
-    "typescript": "5.9.3",
     "vite-bundle-visualizer": "1.2.1",
     "vite-plugin-checker": "0.12.0",
     "vitest": "4.0.16"
