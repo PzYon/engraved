@@ -7,10 +7,14 @@ export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
 }) => (
   <>
     <IconContainer>{icon}</IconContainer>
-    <span>{title}</span>
+    <TitleContainer>{title}</TitleContainer>
   </>
 );
 
 const IconContainer = styled("span")`
   margin-right: ${(p) => p.theme.spacing(2)};
+`;
+
+const TitleContainer = styled("span")`
+  font-weight: 200;
 `;
