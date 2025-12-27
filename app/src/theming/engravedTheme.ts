@@ -32,11 +32,11 @@ export const engravedTheme = createTheme({
       fontFamily: "Pacifico",
     },
     h2: {
-      fontSize: "2rem",
+      fontSize: "1.8rem",
       color: textColor,
     },
     h5: {
-      fontSize: "2rem",
+      fontSize: "1.8rem",
       fontWeight: 200,
     },
   },

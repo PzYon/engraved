@@ -111,7 +111,7 @@ const Host = styled("div")<{ isTitle: boolean }>`
     p.isTitle
       ? css`
           .ngrvd-text-editor {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: ${p.theme.palette.primary.main};
             font-weight: lighter;
           }
