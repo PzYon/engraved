@@ -63,16 +63,17 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
 
-      - name: Install playwright browsers
+      - name: Install Playwright browsers
         working-directory: tests
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install chromium
 
-      - name: Install system dependencies
+      - name: Install Playwright dependencies
+        working-directory: tests
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install-deps chromium
 
-      - name: Run tests
+      - name: Run Playwright tests
         working-directory: tests
         run: npm run e2e:run-tests
 

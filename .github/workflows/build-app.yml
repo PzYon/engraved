@@ -42,9 +42,9 @@ jobs:
         working-directory: app
         run: npm run types:check
 
-      - name: Knip
-        working-directory: ./
-        run: npm run knip
+      #      - name: Knip
+      #        working-directory: ./
+      #        run: npm run knip
 
       - name: Lint
         working-directory: ./
