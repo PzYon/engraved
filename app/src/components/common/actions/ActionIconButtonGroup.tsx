@@ -37,13 +37,15 @@ export const ActionIconButtonGroup: React.FC<{
   }
 
   return (
-    <>
+    <Host>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
       <ButtonContainer
         data-testid={testId}
-        sx={{ backgroundColor: backgroundColor ?? palette.background.default }}
+        sx={{
+          backgroundColor: backgroundColor ?? palette.background.default,
+        }}
       >
         <div ref={domElementRef} />
         {actions
@@ -63,7 +65,7 @@ export const ActionIconButtonGroup: React.FC<{
             );
           })}
       </ButtonContainer>
-    </>
+    </Host>
   );
 
   function isActionActive(action: IAction) {
@@ -87,10 +89,13 @@ export const ActionIconButtonGroup: React.FC<{
   }
 };
 
-const ButtonContainer = styled("div")`
+const Host = styled("div")`
   display: flex;
-  justify-content: end;
-  align-items: center;
+`;
+
+const ButtonContainer = styled("div")`
+  flex-shrink: 1;
+  display: flex;
   border-radius: 20px;
 
   .MuiButtonBase-root:first-of-type {
