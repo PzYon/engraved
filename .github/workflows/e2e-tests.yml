@@ -51,26 +51,9 @@ jobs:
         working-directory: tests
         run: npm run types:check
 
-      - name: Get Playwright version
-        id: playwright-version
+      - name: Install Playwright dependencies and chromium browser
         working-directory: tests
-        run: echo "version=$(npm list @playwright/test --json | jq -r '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v5
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
-
-      - name: Install Playwright browsers
-        working-directory: tests
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium
-
-      - name: Install Playwright dependencies
-        working-directory: tests
-        run: npx playwright install-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
         working-directory: tests
