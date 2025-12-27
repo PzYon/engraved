@@ -41,7 +41,7 @@ const ReadonlyTitleContainer = styled("div")`
   flex-grow: 1;
   font-family: ${(p) => p.theme.typography.fontFamily};
   color: ${(p) => p.theme.palette.primary.main};
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 200;
   line-height: 1.2;
 
