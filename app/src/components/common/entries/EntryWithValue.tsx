@@ -25,14 +25,14 @@ export const EntryWithValue: React.FC<{
       hasFocus={hasFocus}
       propsRenderStyle={"all"}
     >
-      <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
+      <Typography component={"span"} sx={{ fontWeight: 200 }}>
         {formatDateOnly(new Date(entry.dateTime))}
         {": "}
       </Typography>
 
       <Typography component={"span"}>{getValue()} </Typography>
 
-      <Typography component={"span"} sx={{ fontWeight: "lighter" }}>
+      <Typography component={"span"} sx={{ fontWeight: 200 }}>
         {entry.notes ? ` - ${entry.notes}` : ""}
       </Typography>
       <AttributeValues
