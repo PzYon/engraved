@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { IEntity } from "../../../serverApi/IEntity";
 import {
   IOverviewListContext,
@@ -26,6 +32,8 @@ export const OverviewListContextProvider: React.FC<{
 
   const [searchParams, setSearchParams] = useSearchParams();
   const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
     setActiveItemId(activeItemIdFromUrl);
@@ -94,6 +102,10 @@ export const OverviewListContextProvider: React.FC<{
 
   useEngravedHotkeys("*", (e) => {
     if (isRichTextEditor(e.target as HTMLElement)) {
+      return;
+    }
+
+    if (!containerRef.current?.contains(e.target as Node) && activeItemId) {
       return;
     }
 
@@ -179,7 +191,7 @@ export const OverviewListContextProvider: React.FC<{
 
   return (
     <OverviewListContext.Provider value={contextValue}>
-      {children}
+      <div ref={containerRef}>{children}</div>
     </OverviewListContext.Provider>
   );
 };
