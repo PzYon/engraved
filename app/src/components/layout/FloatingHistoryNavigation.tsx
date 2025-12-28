@@ -60,7 +60,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
           horizontal: "right",
         }}
       >
-        <PageSection style={{ margin: "0 !important" }}>
+        <PageSection style={{ margin: "0 !important", width: 270 }}>
           <GoToSimple
             itemLimit={10}
             hasDataLoaded={() => {
