@@ -110,6 +110,8 @@ const StyledEditorContent = styled(EditorContent)<{ isTitle?: boolean }>`
   ${(p) =>
     p.isTitle
       ? css`
+          font-weight: 200;
+
           p {
             margin: 0;
           }
