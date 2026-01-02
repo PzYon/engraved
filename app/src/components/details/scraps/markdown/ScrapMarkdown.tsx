@@ -37,6 +37,7 @@ export const ScrapMarkdown: React.FC = () => {
           initialValue={notes ?? ""}
           setValue={setNotes}
           autoFocus={!!title}
+          showFormattingOptions={true}
         />
       ) : (
         <FadeInContainer>
