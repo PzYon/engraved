@@ -47,14 +47,11 @@ export const ActionIconButtonGroup: React.FC<{
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
-      {finalAlignTo !== "none" ? (
-        <SpacerHost
-          alignTo={finalAlignTo}
-          backgroundColor={finalBackgroundColor}
-        >
-          <LeftSpacer alignTo={finalAlignTo} />
-        </SpacerHost>
-      ) : null}
+      <RadiusSpacer
+        backgroundColor={finalBackgroundColor}
+        alignTo={finalAlignTo}
+        position={"left"}
+      />
       <ButtonContainer
         alignTo={finalAlignTo}
         data-testid={testId}
@@ -78,14 +75,11 @@ export const ActionIconButtonGroup: React.FC<{
             );
           })}
       </ButtonContainer>
-      {finalAlignTo !== "none" ? (
-        <SpacerHost
-          alignTo={finalAlignTo}
-          backgroundColor={finalBackgroundColor}
-        >
-          <RightSpacer alignTo={finalAlignTo} />
-        </SpacerHost>
-      ) : null}
+      <RadiusSpacer
+        backgroundColor={finalBackgroundColor}
+        alignTo={finalAlignTo}
+        position={"right"}
+      />
     </Host>
   );
 
@@ -114,52 +108,41 @@ const Host = styled("div")`
   display: flex;
 `;
 
-const SpacerHost = styled("div")<{ backgroundColor: string; alignTo: AlignTo }>`
-  width: 20px;
-  background-color: ${(p) => p.backgroundColor};
-  position: relative;
+export const RadiusSpacer: React.FC<{
+  backgroundColor: string;
+  alignTo: AlignTo;
+  position: "left" | "right";
+}> = ({ backgroundColor, alignTo, position }) => {
+  const { palette } = useTheme();
 
-  ${(p) =>
-    p.alignTo === "bottom"
-      ? css`
-          margin-top: 2px;
-        `
-      : undefined}
-`;
+  if (alignTo === "none") {
+    return null;
+  }
 
-const LeftSpacer = styled("div")<{ alignTo: AlignTo }>`
-  width: 20px;
-  height: 100%;
-  background-color: ${(p) => p.theme.palette.common.white};
-
-  ${(p) =>
-    p.alignTo === "top"
-      ? css`
-          border-bottom-right-radius: 20px;
-        `
-      : p.alignTo === "bottom"
-        ? css`
-            border-top-right-radius: 20px;
-          `
-        : undefined}
-`;
-
-const RightSpacer = styled("div")<{ alignTo: AlignTo }>`
-  width: 20px;
-  height: 100%;
-  background-color: ${(p) => p.theme.palette.common.white};
-
-  ${(p) =>
-    p.alignTo === "top"
-      ? css`
-          border-bottom-left-radius: 20px;
-        `
-      : p.alignTo === "bottom"
-        ? css`
-            border-top-left-radius: 20px;
-          `
-        : undefined}
-`;
+  return (
+    <div
+      style={{
+        width: "20px",
+        backgroundColor: backgroundColor,
+      }}
+    >
+      <div
+        style={{
+          height: "100%",
+          backgroundColor: palette.common.white,
+          borderTopLeftRadius:
+            position === "right" && alignTo === "bottom" ? "20px" : 0,
+          borderBottomLeftRadius:
+            position === "right" && alignTo === "top" ? "20px" : 0,
+          borderTopRightRadius:
+            position === "left" && alignTo === "bottom" ? "20px" : 0,
+          borderBottomRightRadius:
+            position === "left" && alignTo === "top" ? "20px" : 0,
+        }}
+      ></div>
+    </div>
+  );
+};
 
 const ButtonContainer = styled("div")<{ alignTo: AlignTo }>`
   flex-shrink: 1;

@@ -33,12 +33,14 @@ export const ScrapMarkdown: React.FC = () => {
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
       {isEditMode ? (
-        <RichTextEditor
-          initialValue={notes ?? ""}
-          setValue={setNotes}
-          autoFocus={!!title}
-          showFormattingOptions={true}
-        />
+        <div style={{ marginTop: "10px" }}>
+          <RichTextEditor
+            initialValue={notes ?? ""}
+            setValue={setNotes}
+            autoFocus={!!title}
+            showFormattingOptions={true}
+          />
+        </div>
       ) : (
         <FadeInContainer>
           <Markdown value={notes} />
