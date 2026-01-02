@@ -32,6 +32,7 @@ import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGrou
 import { IDateConditions } from "../JournalContext";
 import { TotalValue } from "./TotalValue";
 import { Streak } from "./Streak";
+import { getUiSettings } from "../../../util/journalUtils";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -94,7 +95,8 @@ export const EntriesTable: React.FC<{
 
   const headerFooterRow =
     entries.length &&
-    columns.filter((column) => column.isAggregatable).length ? (
+    (columns.filter((column) => column.isAggregatable).length ||
+      (journal.type === JournalType.Counter && isStreakEnabled(journal))) ? (
       <TableRow>
         {columns.map((column) => (
           <TableCell key={column.key}>
@@ -165,6 +167,11 @@ export const EntriesTable: React.FC<{
     </StyledTable>
   );
 };
+
+function isStreakEnabled(journal: IJournal) {
+  const mode = getUiSettings(journal)?.streak?.mode;
+  return mode && mode !== "none";
+}
 
 const StyledTable = styled(Table)`
   th {
