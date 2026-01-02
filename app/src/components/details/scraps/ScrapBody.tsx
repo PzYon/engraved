@@ -10,7 +10,6 @@ import {
 } from "../../overview/scheduled/scheduleUtils";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
-import { styled } from "@mui/material";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 
 export const ScrapBody: React.FC<{
@@ -60,9 +59,7 @@ export const ScrapBody: React.FC<{
         {isCompact && !hasFocus && !isEditMode ? null : children}
 
         {isEditMode && editModeActions?.length ? (
-          <ActionsContainer>
-            <ActionIconButtonGroup actions={editModeActions} />
-          </ActionsContainer>
+          <ActionIconButtonGroup alignTo={"bottom"} actions={editModeActions} />
         ) : null}
       </Entry>
     </>
@@ -112,8 +109,3 @@ export const ScrapBody: React.FC<{
     return allActions;
   }
 };
-
-const ActionsContainer = styled("div")`
-  display: flex;
-  padding: 3px 0 4px 3px;
-`;

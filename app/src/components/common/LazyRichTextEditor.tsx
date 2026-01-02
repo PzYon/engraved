@@ -5,7 +5,6 @@ import { Markdown } from "@tiptap/markdown";
 import React, { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
-import { ActionIconButton } from "./actions/ActionIconButton";
 import {
   Code,
   FormatBold,
@@ -13,6 +12,7 @@ import {
   FormatListBulleted,
   FormatStrikethrough,
 } from "@mui/icons-material";
+import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
 
 const DisableEnter = Extension.create({
   name: "disable-enter",
@@ -98,45 +98,41 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       <MarkdownContainer>
         {showFormattingOptions ? (
           <div>
-            <ActionIconButton
-              action={{
-                key: "formatting-bold",
-                icon: <FormatBold fontSize="small" />,
-                label: "Bold",
-                onClick: () => editor.chain().focus().toggleBold().run(),
-              }}
-            />
-            <ActionIconButton
-              action={{
-                key: "formatting-italic",
-                icon: <FormatItalic fontSize="small" />,
-                label: "Italic",
-                onClick: () => editor.chain().focus().toggleItalic().run(),
-              }}
-            />
-            <ActionIconButton
-              action={{
-                key: "formatting-code",
-                icon: <Code fontSize="small" />,
-                label: "Code",
-                onClick: () => editor.chain().focus().toggleCode().run(),
-              }}
-            />
-            <ActionIconButton
-              action={{
-                key: "formatting-list",
-                icon: <FormatListBulleted fontSize="small" />,
-                label: "List",
-                onClick: () => editor.chain().focus().toggleBulletList().run(),
-              }}
-            />
-            <ActionIconButton
-              action={{
-                key: "strike",
-                icon: <FormatStrikethrough fontSize="small" />,
-                label: "Strike",
-                onClick: () => editor.chain().focus().toggleStrike().run(),
-              }}
+            <ActionIconButtonGroup
+              alignTo="top"
+              actions={[
+                {
+                  key: "formatting-bold",
+                  icon: <FormatBold fontSize="small" />,
+                  label: "Bold",
+                  onClick: () => editor.chain().focus().toggleBold().run(),
+                },
+                {
+                  key: "formatting-italic",
+                  icon: <FormatItalic fontSize="small" />,
+                  label: "Italic",
+                  onClick: () => editor.chain().focus().toggleItalic().run(),
+                },
+                {
+                  key: "formatting-code",
+                  icon: <Code fontSize="small" />,
+                  label: "Code",
+                  onClick: () => editor.chain().focus().toggleCode().run(),
+                },
+                {
+                  key: "formatting-list",
+                  icon: <FormatListBulleted fontSize="small" />,
+                  label: "List",
+                  onClick: () =>
+                    editor.chain().focus().toggleBulletList().run(),
+                },
+                {
+                  key: "strike",
+                  icon: <FormatStrikethrough fontSize="small" />,
+                  label: "Strike",
+                  onClick: () => editor.chain().focus().toggleStrike().run(),
+                },
+              ]}
             />
           </div>
         ) : null}
