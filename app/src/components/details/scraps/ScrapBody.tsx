@@ -59,7 +59,16 @@ export const ScrapBody: React.FC<{
         {isCompact && !hasFocus && !isEditMode ? null : children}
 
         {isEditMode && editModeActions?.length ? (
-          <ActionIconButtonGroup alignTo={"bottom"} actions={editModeActions} />
+          <div
+            style={{
+              marginTop: scrapToRender.scrapType === "List" ? "2px" : 0,
+            }}
+          >
+            <ActionIconButtonGroup
+              alignTo={"bottom"}
+              actions={editModeActions}
+            />
+          </div>
         ) : null}
       </Entry>
     </>

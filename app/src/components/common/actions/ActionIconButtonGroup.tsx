@@ -118,7 +118,7 @@ const RadiusSpacer: React.FC<{
   return (
     <div
       style={{
-        width: "20px",
+        width: "30px",
         backgroundColor: backgroundColor,
       }}
     >
