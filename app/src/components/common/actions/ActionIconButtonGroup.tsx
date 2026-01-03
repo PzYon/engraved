@@ -104,11 +104,7 @@ export const ActionIconButtonGroup: React.FC<{
   }
 };
 
-const Host = styled("div")`
-  display: flex;
-`;
-
-export const RadiusSpacer: React.FC<{
+const RadiusSpacer: React.FC<{
   backgroundColor: string;
   alignTo: AlignTo;
   position: "left" | "right";
@@ -143,6 +139,10 @@ export const RadiusSpacer: React.FC<{
     </div>
   );
 };
+
+const Host = styled("div")`
+  display: flex;
+`;
 
 const ButtonContainer = styled("div")<{ alignTo: AlignTo }>`
   flex-shrink: 1;

@@ -97,44 +97,41 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       ) : null}
       <MarkdownContainer>
         {showFormattingOptions ? (
-          <div>
-            <ActionIconButtonGroup
-              alignTo="top"
-              actions={[
-                {
-                  key: "formatting-bold",
-                  icon: <FormatBold fontSize="small" />,
-                  label: "Bold",
-                  onClick: () => editor.chain().focus().toggleBold().run(),
-                },
-                {
-                  key: "formatting-italic",
-                  icon: <FormatItalic fontSize="small" />,
-                  label: "Italic",
-                  onClick: () => editor.chain().focus().toggleItalic().run(),
-                },
-                {
-                  key: "formatting-code",
-                  icon: <Code fontSize="small" />,
-                  label: "Code",
-                  onClick: () => editor.chain().focus().toggleCode().run(),
-                },
-                {
-                  key: "formatting-list",
-                  icon: <FormatListBulleted fontSize="small" />,
-                  label: "List",
-                  onClick: () =>
-                    editor.chain().focus().toggleBulletList().run(),
-                },
-                {
-                  key: "strike",
-                  icon: <FormatStrikethrough fontSize="small" />,
-                  label: "Strike",
-                  onClick: () => editor.chain().focus().toggleStrike().run(),
-                },
-              ]}
-            />
-          </div>
+          <ActionIconButtonGroup
+            alignTo="top"
+            actions={[
+              {
+                key: "formatting-bold",
+                icon: <FormatBold fontSize="small" />,
+                label: "Bold",
+                onClick: () => editor.chain().focus().toggleBold().run(),
+              },
+              {
+                key: "formatting-italic",
+                icon: <FormatItalic fontSize="small" />,
+                label: "Italic",
+                onClick: () => editor.chain().focus().toggleItalic().run(),
+              },
+              {
+                key: "formatting-code",
+                icon: <Code fontSize="small" />,
+                label: "Code",
+                onClick: () => editor.chain().focus().toggleCode().run(),
+              },
+              {
+                key: "formatting-list",
+                icon: <FormatListBulleted fontSize="small" />,
+                label: "List",
+                onClick: () => editor.chain().focus().toggleBulletList().run(),
+              },
+              {
+                key: "strike",
+                icon: <FormatStrikethrough fontSize="small" />,
+                label: "Strike",
+                onClick: () => editor.chain().focus().toggleStrike().run(),
+              },
+            ]}
+          />
         ) : null}
         <StyledEditorContent
           style={styles}
