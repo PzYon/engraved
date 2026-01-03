@@ -80,7 +80,9 @@ export const ScrapList: React.FC = () => {
         style={
           isEditMode && !hasTitleFocus
             ? { outline: "2px solid " + palette.primary.main }
-            : {}
+            : isEditMode && hasTitleFocus
+              ? { outline: "2px solid " + palette.background.default }
+              : {}
         }
       >
         <List>
@@ -194,10 +196,8 @@ function getItemsAsJson(rawItems: IScrapListItem[]) {
 
 const BodyHost = styled("div")`
   border-radius: 4px;
-  outline: 2px solid ${(p) => p.theme.palette.background.default};
   width: calc(100% - 4px);
   margin-left: 2px;
-}
 `;
 
 const List = styled("ul")`
