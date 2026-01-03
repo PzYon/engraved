@@ -195,7 +195,7 @@ function getItemsAsJson(rawItems: IScrapListItem[]) {
 }
 
 const BodyHost = styled("div")`
-  border-radius: 4px;
+  border-radius: 5px;
   width: calc(100% - 4px);
   margin-left: 2px;
 `;

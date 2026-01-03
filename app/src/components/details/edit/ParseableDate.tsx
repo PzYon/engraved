@@ -124,7 +124,7 @@ const OutputContainer = styled("div")`
 `;
 
 const OutputElement = styled("span")`
-  border-radius: 3px;
+  border-radius: 5px;
   padding: 3px;
 `;
 
