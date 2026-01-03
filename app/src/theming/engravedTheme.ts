@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 
-export const paperBorderRadius = "7px";
+export const paperBorderRadius = "10px";
 
 export const actionBorderWidth = "4px";
 

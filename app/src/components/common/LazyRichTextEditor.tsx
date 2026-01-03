@@ -154,7 +154,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
 const StyledEditorContent = styled(EditorContent)<{ isTitle?: boolean }>`
   .ProseMirror {
     outline: 2px solid ${(p) => p.theme.palette.background.default};
-    border-radius: 3px;
+    border-radius: 5px;
     z-index: 100;
     margin: 2px;
     padding: 4px;
