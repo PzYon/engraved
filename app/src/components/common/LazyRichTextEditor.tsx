@@ -2,9 +2,17 @@ import { css, styled } from "@mui/material";
 import { EditorContent, Extension, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
+import {
+  Code,
+  FormatBold,
+  FormatItalic,
+  FormatListBulleted,
+  FormatStrikethrough,
+} from "@mui/icons-material";
+import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
 
 const DisableEnter = Extension.create({
   name: "disable-enter",
@@ -32,6 +40,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   disabled,
   css: styles,
   isTitle,
+  showFormattingOptions,
 }) => {
   const extensions = [StarterKit, Markdown];
 
@@ -87,6 +96,43 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
         </PlaceholderContainer>
       ) : null}
       <MarkdownContainer>
+        {showFormattingOptions ? (
+          <ActionIconButtonGroup
+            alignTo="top"
+            actions={[
+              {
+                key: "formatting-bold",
+                icon: <FormatBold fontSize="small" />,
+                label: "Bold",
+                onClick: () => editor.chain().focus().toggleBold().run(),
+              },
+              {
+                key: "formatting-italic",
+                icon: <FormatItalic fontSize="small" />,
+                label: "Italic",
+                onClick: () => editor.chain().focus().toggleItalic().run(),
+              },
+              {
+                key: "formatting-code",
+                icon: <Code fontSize="small" />,
+                label: "Code",
+                onClick: () => editor.chain().focus().toggleCode().run(),
+              },
+              {
+                key: "formatting-list",
+                icon: <FormatListBulleted fontSize="small" />,
+                label: "List",
+                onClick: () => editor.chain().focus().toggleBulletList().run(),
+              },
+              {
+                key: "strike",
+                icon: <FormatStrikethrough fontSize="small" />,
+                label: "Strike",
+                onClick: () => editor.chain().focus().toggleStrike().run(),
+              },
+            ]}
+          />
+        ) : null}
         <StyledEditorContent
           style={styles}
           isTitle={isTitle}

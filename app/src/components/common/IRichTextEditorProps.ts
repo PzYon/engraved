@@ -11,4 +11,5 @@ export interface IRichTextEditorProps {
   onBlur?: () => void;
   css?: React.CSSProperties;
   isTitle?: boolean;
+  showFormattingOptions?: boolean;
 }
