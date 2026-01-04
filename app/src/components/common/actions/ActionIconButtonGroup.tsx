@@ -54,9 +54,10 @@ export const ActionIconButtonGroup: React.FC<{
 
   return (
     <StickToTop
+      isDisabled={!stickToView}
       stickyRef={stickyRef}
       render={(isStuck) => (
-        <Host stickToView={stickToView} ref={stickyRef}>
+        <Host ref={stickyRef}>
           {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
             <FloatingHeaderActions actions={actions} />
           ) : null}
@@ -160,7 +161,7 @@ const RadiusSpacer: React.FC<{
   );
 };
 
-const Host = styled("div")<{ stickToView?: boolean }>`
+const Host = styled("div")`
   display: flex;
 `;
 

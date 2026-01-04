@@ -15,20 +15,13 @@ export const StickToTop: React.FC<{
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // When the sentinel is not intersecting, the sticky element is stuck
         setIsStuck(!entry.isIntersecting);
       },
       { threshold: [1] },
     );
 
-    // Create a sentinel element just above the sticky element
-    const sentinel = document.createElement("div");
-    sentinel.style.position = "absolute";
-    sentinel.style.top = "-1px";
-    sentinel.style.height = "1px";
-    sentinel.style.width = "1px";
+    const sentinel = createSentinelObject();
     stickyRef.current.prepend(sentinel);
-
     observer.observe(sentinel);
 
     return () => {
@@ -36,6 +29,10 @@ export const StickToTop: React.FC<{
       sentinel.remove();
     };
   }, [isDisabled, isStuck, setIsStuck, stickyRef]);
+
+  if (isDisabled) {
+    return render(false);
+  }
 
   return <Host stickToView={!isDisabled}>{render(isStuck)}</Host>;
 };
@@ -50,3 +47,12 @@ const Host = styled("div")<{ stickToView?: boolean }>`
         `
       : undefined}
 `;
+
+function createSentinelObject() {
+  const sentinel = document.createElement("div");
+  sentinel.style.position = "absolute";
+  sentinel.style.top = "-1px";
+  sentinel.style.height = "1px";
+  sentinel.style.width = "1px";
+  return sentinel;
+}
