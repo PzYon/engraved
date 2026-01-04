@@ -6,6 +6,7 @@ import { css, styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useEngravedSearchParams } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
+import { StickToTop } from "../StickToTop";
 
 type AlignTo = "none" | "top" | "bottom";
 
@@ -15,8 +16,17 @@ export const ActionIconButtonGroup: React.FC<{
   testId?: string;
   backgroundColor?: string;
   alignTo?: AlignTo;
-}> = ({ actions, enableFloatingActions, testId, backgroundColor, alignTo }) => {
+  stickToView?: boolean;
+}> = ({
+  actions,
+  enableFloatingActions,
+  testId,
+  backgroundColor,
+  alignTo,
+  stickToView,
+}) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
+  const stickyRef = useRef<HTMLDivElement>(undefined);
 
   const { palette } = useTheme();
 
@@ -43,44 +53,53 @@ export const ActionIconButtonGroup: React.FC<{
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
   return (
-    <Host>
-      {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
-        <FloatingHeaderActions actions={actions} />
-      ) : null}
-      <RadiusSpacer
-        backgroundColor={finalBackgroundColor}
-        alignTo={finalAlignTo}
-        position={"left"}
-      />
-      <ButtonContainer
-        alignTo={finalAlignTo}
-        data-testid={testId}
-        sx={{ backgroundColor: finalBackgroundColor }}
-      >
-        <div ref={domElementRef} />
-        {actions
-          .filter((a) => a !== undefined)
-          .map((action) => {
-            if (!action) {
-              return <SeparatorElement key={"separator"} />;
-            }
+    <StickToTop
+      isDisabled={!stickToView}
+      stickyRef={stickyRef}
+      render={(isStuck) => (
+        <Host ref={stickyRef}>
+          {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
+            <FloatingHeaderActions actions={actions} />
+          ) : null}
+          <RadiusSpacer
+            backgroundColor={finalBackgroundColor}
+            alignTo={finalAlignTo}
+            position={"left"}
+            isStuck={isStuck}
+          />
+          <ButtonContainer
+            alignTo={finalAlignTo}
+            data-testid={testId}
+            sx={{ backgroundColor: finalBackgroundColor }}
+            isStuck={isStuck}
+          >
+            <div ref={domElementRef} />
+            {actions
+              .filter((a) => a !== undefined)
+              .map((action) => {
+                if (!action) {
+                  return <SeparatorElement key={"separator"} />;
+                }
 
-            const isActive = isActionActive(action);
+                const isActive = isActionActive(action);
 
-            return (
-              <span key={action.key} style={{ position: "relative" }}>
-                <ActionIconButton action={action} isActive={isActive} />
-                {isActive ? <Triangle /> : null}
-              </span>
-            );
-          })}
-      </ButtonContainer>
-      <RadiusSpacer
-        backgroundColor={finalBackgroundColor}
-        alignTo={finalAlignTo}
-        position={"right"}
-      />
-    </Host>
+                return (
+                  <span key={action.key} style={{ position: "relative" }}>
+                    <ActionIconButton action={action} isActive={isActive} />
+                    {isActive ? <Triangle /> : null}
+                  </span>
+                );
+              })}
+          </ButtonContainer>
+          <RadiusSpacer
+            backgroundColor={finalBackgroundColor}
+            alignTo={finalAlignTo}
+            position={"right"}
+            isStuck={isStuck}
+          />
+        </Host>
+      )}
+    ></StickToTop>
   );
 
   function isActionActive(action: IAction) {
@@ -108,7 +127,8 @@ const RadiusSpacer: React.FC<{
   backgroundColor: string;
   alignTo: AlignTo;
   position: "left" | "right";
-}> = ({ backgroundColor, alignTo, position }) => {
+  isStuck: boolean;
+}> = ({ backgroundColor, alignTo, position, isStuck }) => {
   const { palette } = useTheme();
 
   if (alignTo === "none") {
@@ -118,6 +138,7 @@ const RadiusSpacer: React.FC<{
   return (
     <div
       style={{
+        visibility: isStuck ? "hidden" : "initial",
         width: "30px",
         backgroundColor: backgroundColor,
       }}
@@ -144,23 +165,31 @@ const Host = styled("div")`
   display: flex;
 `;
 
-const ButtonContainer = styled("div")<{ alignTo: AlignTo }>`
+const ButtonContainer = styled("div")<{ alignTo: AlignTo; isStuck: boolean }>`
   flex-shrink: 1;
   display: flex;
   border-radius: 20px;
+  margin-top: 5px;
 
-  ${(p) =>
-    p.alignTo === "top"
-      ? css`
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-        `
-      : p.alignTo === "bottom"
-        ? css`
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-          `
-        : undefined}
+  ${(p) => {
+    if (p.isStuck) {
+      return;
+    }
+
+    if (p.alignTo === "top") {
+      return css`
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      `;
+    }
+
+    if (p.alignTo === "bottom") {
+      return css`
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      `;
+    }
+  }}
 
   .MuiButtonBase-root:first-of-type {
     margin-left: 0;
