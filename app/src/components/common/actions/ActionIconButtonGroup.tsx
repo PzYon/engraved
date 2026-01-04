@@ -25,6 +25,7 @@ export const ActionIconButtonGroup: React.FC<{
   stickToView,
 }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
+  const stickyRef = useRef<HTMLDivElement>(undefined);
 
   const { palette } = useTheme();
 
@@ -33,6 +34,7 @@ export const ActionIconButtonGroup: React.FC<{
   const { getSearchParam } = useEngravedSearchParams();
 
   const [isReady, setIsReady] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsReady(true), 1000);
@@ -43,6 +45,37 @@ export const ActionIconButtonGroup: React.FC<{
     };
   }, []);
 
+  useStuff(!stickToView, stickyRef, setIsStuck);
+  /*
+  useEffect(() => {
+    if (!stickToView || !stickyRef.current) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When the sentinel is not intersecting, the sticky element is stuck
+        setIsStuck(!entry.isIntersecting);
+      },
+      { threshold: [1] },
+    );
+
+    // Create a sentinel element just above the sticky element
+    const sentinel = document.createElement("div");
+    sentinel.style.position = "absolute";
+    sentinel.style.top = "-1px";
+    sentinel.style.height = "1px";
+    sentinel.style.width = "1px";
+    stickyRef.current.prepend(sentinel);
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+      sentinel.remove();
+    };
+  }, [stickToView]);
+*/
   if (!actions?.length) {
     return null;
   }
@@ -51,7 +84,7 @@ export const ActionIconButtonGroup: React.FC<{
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
   return (
-    <Host stickToView={stickToView}>
+    <Host stickToView={stickToView} ref={stickyRef}>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
@@ -59,11 +92,13 @@ export const ActionIconButtonGroup: React.FC<{
         backgroundColor={finalBackgroundColor}
         alignTo={finalAlignTo}
         position={"left"}
+        isStuck={isStuck}
       />
       <ButtonContainer
         alignTo={finalAlignTo}
         data-testid={testId}
         sx={{ backgroundColor: finalBackgroundColor }}
+        isStuck={isStuck}
       >
         <div ref={domElementRef} />
         {actions
@@ -87,6 +122,7 @@ export const ActionIconButtonGroup: React.FC<{
         backgroundColor={finalBackgroundColor}
         alignTo={finalAlignTo}
         position={"right"}
+        isStuck={isStuck}
       />
     </Host>
   );
@@ -116,7 +152,8 @@ const RadiusSpacer: React.FC<{
   backgroundColor: string;
   alignTo: AlignTo;
   position: "left" | "right";
-}> = ({ backgroundColor, alignTo, position }) => {
+  isStuck: boolean;
+}> = ({ backgroundColor, alignTo, position, isStuck }) => {
   const { palette } = useTheme();
 
   if (alignTo === "none") {
@@ -126,6 +163,7 @@ const RadiusSpacer: React.FC<{
   return (
     <div
       style={{
+        visibility: isStuck ? "hidden" : "initial",
         width: "30px",
         backgroundColor: backgroundColor,
       }}
@@ -161,23 +199,31 @@ const Host = styled("div")<{ stickToView?: boolean }>`
       : undefined}
 `;
 
-const ButtonContainer = styled("div")<{ alignTo: AlignTo }>`
+const ButtonContainer = styled("div")<{ alignTo: AlignTo; isStuck: boolean }>`
   flex-shrink: 1;
   display: flex;
   border-radius: 20px;
+  margin-top: 5px;
 
-  ${(p) =>
-    p.alignTo === "top"
-      ? css`
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-        `
-      : p.alignTo === "bottom"
-        ? css`
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-          `
-        : undefined}
+  ${(p) => {
+    if (p.isStuck) {
+      return;
+    }
+
+    if (p.alignTo === "top") {
+      return css`
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      `;
+    }
+
+    if (p.alignTo === "bottom") {
+      return css`
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      `;
+    }
+  }}
 
   .MuiButtonBase-root:first-of-type {
     margin-left: 0;
@@ -190,3 +236,38 @@ const SeparatorElement = styled("div")`
   background-color: ${(p) => p.theme.palette.primary.main};
   margin: 0 ${(p) => p.theme.spacing(2)};
 `;
+
+export function useStuff(
+  isDisabled: boolean,
+  stickyRef: React.RefObject<HTMLDivElement>,
+  setIsStuck: (value: boolean) => void,
+) {
+  useEffect(() => {
+    if (isDisabled || !stickyRef.current) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When the sentinel is not intersecting, the sticky element is stuck
+        setIsStuck(!entry.isIntersecting);
+      },
+      { threshold: [1] },
+    );
+
+    // Create a sentinel element just above the sticky element
+    const sentinel = document.createElement("div");
+    sentinel.style.position = "absolute";
+    sentinel.style.top = "-1px";
+    sentinel.style.height = "1px";
+    sentinel.style.width = "1px";
+    stickyRef.current.prepend(sentinel);
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+      sentinel.remove();
+    };
+  }, [isDisabled, setIsStuck, stickyRef]);
+}
