@@ -6,6 +6,7 @@ import { css, styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useEngravedSearchParams } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
+import { StickToTop } from "../StickToTop";
 
 type AlignTo = "none" | "top" | "bottom";
 
@@ -34,7 +35,6 @@ export const ActionIconButtonGroup: React.FC<{
   const { getSearchParam } = useEngravedSearchParams();
 
   const [isReady, setIsReady] = useState(false);
-  const [isStuck, setIsStuck] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsReady(true), 1000);
@@ -45,37 +45,6 @@ export const ActionIconButtonGroup: React.FC<{
     };
   }, []);
 
-  useStuff(!stickToView, stickyRef, setIsStuck);
-  /*
-  useEffect(() => {
-    if (!stickToView || !stickyRef.current) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // When the sentinel is not intersecting, the sticky element is stuck
-        setIsStuck(!entry.isIntersecting);
-      },
-      { threshold: [1] },
-    );
-
-    // Create a sentinel element just above the sticky element
-    const sentinel = document.createElement("div");
-    sentinel.style.position = "absolute";
-    sentinel.style.top = "-1px";
-    sentinel.style.height = "1px";
-    sentinel.style.width = "1px";
-    stickyRef.current.prepend(sentinel);
-
-    observer.observe(sentinel);
-
-    return () => {
-      observer.disconnect();
-      sentinel.remove();
-    };
-  }, [stickToView]);
-*/
   if (!actions?.length) {
     return null;
   }
@@ -84,47 +53,52 @@ export const ActionIconButtonGroup: React.FC<{
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
   return (
-    <Host stickToView={stickToView} ref={stickyRef}>
-      {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
-        <FloatingHeaderActions actions={actions} />
-      ) : null}
-      <RadiusSpacer
-        backgroundColor={finalBackgroundColor}
-        alignTo={finalAlignTo}
-        position={"left"}
-        isStuck={isStuck}
-      />
-      <ButtonContainer
-        alignTo={finalAlignTo}
-        data-testid={testId}
-        sx={{ backgroundColor: finalBackgroundColor }}
-        isStuck={isStuck}
-      >
-        <div ref={domElementRef} />
-        {actions
-          .filter((a) => a !== undefined)
-          .map((action) => {
-            if (!action) {
-              return <SeparatorElement key={"separator"} />;
-            }
+    <StickToTop
+      stickyRef={stickyRef}
+      render={(isStuck) => (
+        <Host stickToView={stickToView} ref={stickyRef}>
+          {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
+            <FloatingHeaderActions actions={actions} />
+          ) : null}
+          <RadiusSpacer
+            backgroundColor={finalBackgroundColor}
+            alignTo={finalAlignTo}
+            position={"left"}
+            isStuck={isStuck}
+          />
+          <ButtonContainer
+            alignTo={finalAlignTo}
+            data-testid={testId}
+            sx={{ backgroundColor: finalBackgroundColor }}
+            isStuck={isStuck}
+          >
+            <div ref={domElementRef} />
+            {actions
+              .filter((a) => a !== undefined)
+              .map((action) => {
+                if (!action) {
+                  return <SeparatorElement key={"separator"} />;
+                }
 
-            const isActive = isActionActive(action);
+                const isActive = isActionActive(action);
 
-            return (
-              <span key={action.key} style={{ position: "relative" }}>
-                <ActionIconButton action={action} isActive={isActive} />
-                {isActive ? <Triangle /> : null}
-              </span>
-            );
-          })}
-      </ButtonContainer>
-      <RadiusSpacer
-        backgroundColor={finalBackgroundColor}
-        alignTo={finalAlignTo}
-        position={"right"}
-        isStuck={isStuck}
-      />
-    </Host>
+                return (
+                  <span key={action.key} style={{ position: "relative" }}>
+                    <ActionIconButton action={action} isActive={isActive} />
+                    {isActive ? <Triangle /> : null}
+                  </span>
+                );
+              })}
+          </ButtonContainer>
+          <RadiusSpacer
+            backgroundColor={finalBackgroundColor}
+            alignTo={finalAlignTo}
+            position={"right"}
+            isStuck={isStuck}
+          />
+        </Host>
+      )}
+    ></StickToTop>
   );
 
   function isActionActive(action: IAction) {
@@ -188,15 +162,6 @@ const RadiusSpacer: React.FC<{
 
 const Host = styled("div")<{ stickToView?: boolean }>`
   display: flex;
-
-  ${(p) =>
-    p.stickToView
-      ? css`
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-        `
-      : undefined}
 `;
 
 const ButtonContainer = styled("div")<{ alignTo: AlignTo; isStuck: boolean }>`
@@ -236,38 +201,3 @@ const SeparatorElement = styled("div")`
   background-color: ${(p) => p.theme.palette.primary.main};
   margin: 0 ${(p) => p.theme.spacing(2)};
 `;
-
-export function useStuff(
-  isDisabled: boolean,
-  stickyRef: React.RefObject<HTMLDivElement>,
-  setIsStuck: (value: boolean) => void,
-) {
-  useEffect(() => {
-    if (isDisabled || !stickyRef.current) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // When the sentinel is not intersecting, the sticky element is stuck
-        setIsStuck(!entry.isIntersecting);
-      },
-      { threshold: [1] },
-    );
-
-    // Create a sentinel element just above the sticky element
-    const sentinel = document.createElement("div");
-    sentinel.style.position = "absolute";
-    sentinel.style.top = "-1px";
-    sentinel.style.height = "1px";
-    sentinel.style.width = "1px";
-    stickyRef.current.prepend(sentinel);
-
-    observer.observe(sentinel);
-
-    return () => {
-      observer.disconnect();
-      sentinel.remove();
-    };
-  }, [isDisabled, setIsStuck, stickyRef]);
-}
