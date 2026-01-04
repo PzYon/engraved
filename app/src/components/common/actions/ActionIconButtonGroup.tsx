@@ -15,7 +15,15 @@ export const ActionIconButtonGroup: React.FC<{
   testId?: string;
   backgroundColor?: string;
   alignTo?: AlignTo;
-}> = ({ actions, enableFloatingActions, testId, backgroundColor, alignTo }) => {
+  stickToView?: boolean;
+}> = ({
+  actions,
+  enableFloatingActions,
+  testId,
+  backgroundColor,
+  alignTo,
+  stickToView,
+}) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { palette } = useTheme();
@@ -43,7 +51,7 @@ export const ActionIconButtonGroup: React.FC<{
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
   return (
-    <Host>
+    <Host stickToView={stickToView}>
       {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
         <FloatingHeaderActions actions={actions} />
       ) : null}
@@ -140,8 +148,17 @@ const RadiusSpacer: React.FC<{
   );
 };
 
-const Host = styled("div")`
+const Host = styled("div")<{ stickToView?: boolean }>`
   display: flex;
+
+  ${(p) =>
+    p.stickToView
+      ? css`
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+        `
+      : undefined}
 `;
 
 const ButtonContainer = styled("div")<{ alignTo: AlignTo }>`

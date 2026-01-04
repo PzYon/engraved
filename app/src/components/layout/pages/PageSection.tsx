@@ -19,7 +19,7 @@ export const PageSection: React.FC<{
         className="page-section"
         sx={{
           ...(style ?? {}),
-          overflowX: overflowXScroll ? "auto" : "hidden",
+          overflowX: overflowXScroll ? "auto" : undefined,
           p: deviceWidth === DeviceWidth.Small ? 2 : 3,
         }}
         data-testid={testId}
