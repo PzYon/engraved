@@ -68,6 +68,7 @@ export const ActionIconButtonGroup: React.FC<{
             isStuck={isStuck}
           />
           <ButtonContainer
+            stickToView={stickToView}
             alignTo={finalAlignTo}
             data-testid={testId}
             sx={{ backgroundColor: finalBackgroundColor }}
@@ -165,11 +166,15 @@ const Host = styled("div")`
   display: flex;
 `;
 
-const ButtonContainer = styled("div")<{ alignTo: AlignTo; isStuck: boolean }>`
+const ButtonContainer = styled("div")<{
+  alignTo: AlignTo;
+  isStuck: boolean;
+  stickToView: boolean;
+}>`
   flex-shrink: 1;
   display: flex;
   border-radius: 20px;
-  margin-top: 5px;
+  margin-top: ${(p) => (p.stickToView ? "5px" : "0")};
 
   ${(p) => {
     if (p.isStuck) {
