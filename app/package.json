@@ -64,7 +64,7 @@
   "devDependencies": {
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "@types/node": "24.10.4",
+    "@types/node": "24.10.6",
     "@vitest/ui": "4.0.16",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "jsdom": "27.4.0",
