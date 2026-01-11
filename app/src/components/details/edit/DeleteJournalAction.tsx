@@ -24,8 +24,8 @@ export const DeleteJournalAction: React.FC<{
   return (
     <>
       <Typography>
-        Are you sure you want to delete <b>&apos;{journal.name}&apos;</b>? You
-        will not be able to recover this journal and all its entries.
+        Are you sure you want to delete <b>{journal.name}</b>? You will not be
+        able to recover this journal and all its entries.
       </Typography>
       <DeleteButtons
         entityType="journal"
