@@ -31,6 +31,9 @@ export const ListItemFooterRow: React.FC<{
 };
 
 const PropertiesRow = styled("div")`
+  //  position: sticky;
+  //  bottom: 0;
+
   display: flex;
   flex-wrap: wrap;
   align-items: center;

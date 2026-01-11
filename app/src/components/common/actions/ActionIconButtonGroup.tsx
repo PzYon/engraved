@@ -6,7 +6,7 @@ import { css, styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useEngravedSearchParams } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
-import { StickToTop } from "../StickToTop";
+import { StickTo } from "../StickTo";
 
 type AlignTo = "none" | "top" | "bottom";
 
@@ -53,8 +53,9 @@ export const ActionIconButtonGroup: React.FC<{
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
   return (
-    <StickToTop
+    <StickTo
       isDisabled={!stickToView}
+      position={finalAlignTo as "top" | "bottom"}
       stickyRef={stickyRef}
       render={(isStuck) => (
         <Host ref={stickyRef}>
@@ -100,7 +101,7 @@ export const ActionIconButtonGroup: React.FC<{
           />
         </Host>
       )}
-    ></StickToTop>
+    ></StickTo>
   );
 
   function isActionActive(action: IAction) {

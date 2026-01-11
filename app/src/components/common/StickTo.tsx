@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { css, styled } from "@mui/material";
 
-export const StickToTop: React.FC<{
+export const StickTo: React.FC<{
   isDisabled?: boolean;
+  position: "top" | "bottom";
   stickyRef: React.RefObject<HTMLElement>;
   render: (isStuck: boolean) => React.ReactNode;
-}> = ({ isDisabled, stickyRef, render }) => {
+}> = ({ isDisabled, position, stickyRef, render }) => {
   const [isStuck, setIsStuck] = useState(false);
 
   useEffect(() => {
@@ -34,18 +35,36 @@ export const StickToTop: React.FC<{
     return render(false);
   }
 
-  return <Host stickToView={!isDisabled}>{render(isStuck)}</Host>;
+  return (
+    <Host stickToView={!isDisabled} position={position}>
+      {render(isStuck)}
+    </Host>
+  );
 };
 
-const Host = styled("div")<{ stickToView?: boolean }>`
-  ${(p) =>
-    p.stickToView
-      ? css`
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-        `
-      : undefined}
+const Host = styled("div")<{
+  stickToView?: boolean;
+  position: "top" | "bottom";
+}>`
+  ${(p) => {
+    if (!p.stickToView) {
+      return undefined;
+    }
+
+    if (p.position === "top") {
+      return css`
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      `;
+    }
+
+    return css`
+      position: sticky;
+      bottom: 0;
+      z-index: 1000;
+    `;
+  }}
 `;
 
 function createSentinelObject() {
