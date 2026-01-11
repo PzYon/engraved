@@ -38,6 +38,7 @@ export const ScrapBody: React.FC<{
   return (
     <>
       <Entry
+        isEditMode={isEditMode}
         hasFocus={hasFocus}
         journal={journal}
         entry={scrapToRender}
@@ -65,7 +66,7 @@ export const ScrapBody: React.FC<{
             }}
           >
             <ActionIconButtonGroup
-              alignTo={"bottom"}
+              alignToPosition={"bottom"}
               actions={editModeActions}
             />
           </div>

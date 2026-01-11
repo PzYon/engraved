@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { css, styled } from "@mui/material";
+import { Position } from "./actions/ActionIconButtonGroup";
 
 export const StickTo: React.FC<{
   isDisabled?: boolean;
-  position: "top" | "bottom";
+  position: Position;
   stickyRef: React.RefObject<HTMLElement>;
   render: (isStuck: boolean) => React.ReactNode;
 }> = ({ isDisabled, position, stickyRef, render }) => {
   const [isStuck, setIsStuck] = useState(false);
+
+  console.log("Stick to", position, "isStuck", isStuck);
 
   useEffect(() => {
     if (isDisabled || !stickyRef.current) {
@@ -44,7 +47,7 @@ export const StickTo: React.FC<{
 
 const Host = styled("div")<{
   stickToView?: boolean;
-  position: "top" | "bottom";
+  position: Position;
 }>`
   ${(p) => {
     if (!p.stickToView) {

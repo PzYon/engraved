@@ -102,7 +102,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       {showFormattingOptions ? (
         <ActionIconButtonGroup
           stickToView={true}
-          alignTo="top"
+          alignToPosition="top"
           actions={[
             {
               key: "formatting-bold",

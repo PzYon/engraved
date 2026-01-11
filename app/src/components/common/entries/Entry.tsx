@@ -24,6 +24,7 @@ export const Entry: React.FC<{
   giveFocus?: () => void;
   propertyOverrides?: IPropertyDefinition[];
   noCompactFooter?: boolean;
+  isEditMode?: boolean;
 }> = ({
   journal,
   entry,
@@ -33,6 +34,7 @@ export const Entry: React.FC<{
   hasFocus,
   propertyOverrides,
   noCompactFooter,
+  isEditMode,
 }) => {
   const { user } = useAppContext();
 
@@ -40,6 +42,7 @@ export const Entry: React.FC<{
     <>
       {children}
       <ListItemFooterRow
+        isSticky={isEditMode && journal.type === "Scraps"}
         hasFocus={hasFocus}
         properties={getEntryProperties(
           journal,

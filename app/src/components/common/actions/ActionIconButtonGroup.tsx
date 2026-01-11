@@ -8,21 +8,23 @@ import { useEngravedSearchParams } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
 import { StickTo } from "../StickTo";
 
-type AlignTo = "none" | "top" | "bottom";
+export type Position = "none" | "top" | "bottom";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
   enableFloatingActions?: boolean;
   testId?: string;
   backgroundColor?: string;
-  alignTo?: AlignTo;
+  alignToPosition?: Position;
+  stickToPosition?: Position;
   stickToView?: boolean;
 }> = ({
   actions,
   enableFloatingActions,
   testId,
   backgroundColor,
-  alignTo,
+  alignToPosition,
+  stickToPosition,
   stickToView,
 }) => {
   const domElementRef = useRef<HTMLDivElement>(undefined);
@@ -49,13 +51,13 @@ export const ActionIconButtonGroup: React.FC<{
     return null;
   }
 
-  const finalAlignTo = alignTo ?? "none";
+  const finalAlignTo = alignToPosition ?? "none";
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
   return (
     <StickTo
       isDisabled={!stickToView}
-      position={finalAlignTo as "top" | "bottom"}
+      position={stickToPosition}
       stickyRef={stickyRef}
       render={(isStuck) => (
         <Host ref={stickyRef}>
@@ -127,7 +129,7 @@ export const ActionIconButtonGroup: React.FC<{
 
 const RadiusSpacer: React.FC<{
   backgroundColor: string;
-  alignTo: AlignTo;
+  alignTo: Position;
   position: "left" | "right";
   isStuck: boolean;
 }> = ({ backgroundColor, alignTo, position, isStuck }) => {
@@ -168,7 +170,7 @@ const Host = styled("div")`
 `;
 
 const ButtonContainer = styled("div")<{
-  alignTo: AlignTo;
+  alignTo: Position;
   isStuck: boolean;
   stickToView: boolean;
 }>`
