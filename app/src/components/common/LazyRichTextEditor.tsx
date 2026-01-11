@@ -12,6 +12,7 @@ import {
   FormatListBulleted,
   FormatQuote,
   FormatStrikethrough,
+  Spellcheck,
 } from "@mui/icons-material";
 import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
 
@@ -89,6 +90,8 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
 
   const [isEmpty, setIsEmpty] = useState(!editor.getText());
 
+  const [enableSpellCheck, setEnableSpellCheck] = useState(false);
+
   return (
     <Host className="ngrvd-text-editor">
       {placeholder && isEmpty ? (
@@ -137,11 +140,19 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
               label: "List",
               onClick: () => editor.chain().focus().toggleBulletList().run(),
             },
+            {
+              key: "text-correction",
+              icon: <Spellcheck fontSize="small" />,
+              label: "Text correction",
+              onClick: () => setEnableSpellCheck(!enableSpellCheck),
+              isNotActive: !enableSpellCheck,
+            },
           ]}
         />
       ) : null}
       <MarkdownContainer>
         <StyledEditorContent
+          spellCheck={enableSpellCheck}
           style={styles}
           isTitle={isTitle}
           editor={editor}
@@ -171,7 +182,6 @@ const StyledEditorContent = styled(EditorContent)<{ isTitle?: boolean }>`
           }
         `
       : undefined}
-
   .ProseMirror-focused {
     outline: 2px solid ${(p) => p.theme.palette.primary.main};
   }
