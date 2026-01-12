@@ -55,7 +55,6 @@ const Host = styled("div")<{
 }>`
   ${(p) => {
     if (!p.stickToView) {
-      console.log("no stick!");
       return undefined;
     }
 
