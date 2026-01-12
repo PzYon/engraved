@@ -15,7 +15,7 @@ export const ListItemFooterRow: React.FC<{
   isSticky?: boolean;
 }> = ({ properties, actions, hasFocus, noCompactFooter, isSticky }) => {
   const { isCompact } = useDisplayModeContext();
-  const stickyRef = useRef<HTMLDivElement>(undefined);
+  const stickyRef = useRef<HTMLDivElement>(null);
 
   if (isCompact && !hasFocus && !noCompactFooter) {
     return null;
@@ -36,7 +36,7 @@ export const ListItemFooterRow: React.FC<{
           </ActionContainer>
         </PropertiesRow>
       )}
-    ></StickTo>
+    />
   );
 };
 
