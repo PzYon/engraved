@@ -103,7 +103,7 @@ export const ActionIconButtonGroup: React.FC<{
           />
         </Host>
       )}
-    ></StickTo>
+    />
   );
 
   function isActionActive(action: IAction) {

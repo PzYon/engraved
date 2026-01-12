@@ -10,8 +10,6 @@ export const StickTo: React.FC<{
 }> = ({ isDisabled, position, stickyRef, render }) => {
   const [isStuck, setIsStuck] = useState(false);
 
-  console.log("Stick to", position, "isStuck", isStuck);
-
   useEffect(() => {
     if (isDisabled || !stickyRef.current) {
       return;
@@ -25,7 +23,13 @@ export const StickTo: React.FC<{
     );
 
     const sentinel = createSentinelObject();
-    stickyRef.current.prepend(sentinel);
+
+    if (position === "top") {
+      stickyRef.current.prepend(sentinel);
+    } else {
+      stickyRef.current.append(sentinel);
+    }
+
     observer.observe(sentinel);
 
     return () => {
@@ -51,6 +55,7 @@ const Host = styled("div")<{
 }>`
   ${(p) => {
     if (!p.stickToView) {
+      console.log("no stick!");
       return undefined;
     }
 
