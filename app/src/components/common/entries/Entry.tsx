@@ -42,7 +42,7 @@ export const Entry: React.FC<{
     <>
       {children}
       <ListItemFooterRow
-        isSticky={isEditMode && journal.type === "Scraps"}
+        isSticky={isEditMode && journal?.type === "Scraps"}
         hasFocus={hasFocus}
         properties={getEntryProperties(
           journal,
