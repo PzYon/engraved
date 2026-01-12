@@ -27,8 +27,8 @@ export const ActionIconButtonGroup: React.FC<{
   stickToPosition,
   stickToView,
 }) => {
-  const domElementRef = useRef<HTMLDivElement>(undefined);
-  const stickyRef = useRef<HTMLDivElement>(undefined);
+  const domElementRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
 
   const { palette } = useTheme();
 

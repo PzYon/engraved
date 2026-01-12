@@ -17,7 +17,9 @@ export const StickTo: React.FC<{
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsStuck(!entry.isIntersecting);
+        setIsStuck(
+          position === "top" ? !entry.isIntersecting : entry.isIntersecting,
+        );
       },
       { threshold: [1] },
     );
