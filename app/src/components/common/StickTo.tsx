@@ -5,57 +5,48 @@ import { Position } from "./actions/ActionIconButtonGroup";
 export const StickTo: React.FC<{
   isDisabled?: boolean;
   position: Position;
-  stickyRef: React.RefObject<HTMLElement>;
   render: (isStuck: boolean) => React.ReactNode;
-}> = ({ isDisabled, position, stickyRef, render }) => {
+}> = ({ isDisabled, position, render }) => {
   const [isStuck, setIsStuck] = useState(false);
+  const sentinelRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isDisabled || !stickyRef.current) {
+    if (isDisabled || !sentinelRef.current) {
       return;
     }
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        // todo: isStuck is not always correct,
-        // causes problems in LIFR:53
-
-        const isStuckTemp =
-          position === "top" ? !entry.isIntersecting : entry.isIntersecting;
-
-        console.log("isStuckTemp", isStuckTemp);
-
-        setIsStuck(isStuckTemp);
-      },
+      ([entry]) => setIsStuck(!entry.isIntersecting),
       { threshold: [1] },
     );
 
-    const sentinel = createSentinelObject();
-
-    if (position === "top") {
-      stickyRef.current.prepend(sentinel);
-    } else {
-      stickyRef.current.append(sentinel);
-    }
-
-    observer.observe(sentinel);
+    observer.observe(sentinelRef.current);
 
     return () => {
       observer.disconnect();
-      sentinel.remove();
     };
-  }, [isDisabled, isStuck, position, setIsStuck, stickyRef]);
+  }, [isDisabled, position]);
 
   if (isDisabled) {
-    return render(false);
+    return <>{render(false)}</>;
   }
 
   return (
-    <Host stickToView={!isDisabled} position={position}>
-      {render(isStuck)}
-    </Host>
+    <>
+      {position === "top" && <Sentinel ref={sentinelRef} />}
+      <Host stickToView={!isDisabled} position={position}>
+        {render(isStuck)}
+      </Host>
+      {position === "bottom" && <Sentinel ref={sentinelRef} />}
+    </>
   );
 };
+
+const Sentinel = styled("div")`
+  height: 1px;
+  visibility: hidden;
+  pointer-events: none;
+`;
 
 const Host = styled("div")<{
   stickToView?: boolean;
@@ -81,12 +72,3 @@ const Host = styled("div")<{
     `;
   }}
 `;
-
-function createSentinelObject() {
-  const sentinel = document.createElement("div");
-  sentinel.style.position = "absolute";
-  sentinel.style.top = "-1px";
-  sentinel.style.height = "1px";
-  sentinel.style.width = "1px";
-  return sentinel;
-}

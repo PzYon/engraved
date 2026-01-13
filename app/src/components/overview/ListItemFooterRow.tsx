@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { IPropertyDefinition } from "../common/IPropertyDefinition";
 import { IAction } from "../common/actions/IAction";
 import { Properties } from "../common/Properties";
@@ -15,7 +15,6 @@ export const ListItemFooterRow: React.FC<{
   isSticky?: boolean;
 }> = ({ properties, actions, hasFocus, noCompactFooter, isSticky }) => {
   const { isCompact } = useDisplayModeContext();
-  const stickyRef = useRef<HTMLDivElement>(null);
 
   if (isCompact && !hasFocus && !noCompactFooter) {
     return null;
@@ -25,9 +24,8 @@ export const ListItemFooterRow: React.FC<{
     <StickTo
       isDisabled={!isSticky}
       position={"bottom"}
-      stickyRef={stickyRef}
       render={(isStuck) => (
-        <PropertiesRow isStuck={isStuck} ref={stickyRef}>
+        <PropertiesRow isStuck={isStuck}>
           <FlexGrow>
             <Properties properties={properties} />
           </FlexGrow>
@@ -53,7 +51,7 @@ const PropertiesRow = styled("div")<{ isStuck: boolean }>`
   ${(p) =>
     p.isStuck
       ? css`
-          padding-bottom: ${p.theme.spacing(2)};
+          padding-bottom: ${p.theme.spacing(3)};
         `
       : undefined}
 `;

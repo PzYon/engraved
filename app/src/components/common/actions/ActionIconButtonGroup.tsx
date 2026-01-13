@@ -29,7 +29,6 @@ export const ActionIconButtonGroup: React.FC<{
   stickToView,
 }) => {
   const domElementRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
 
   const { palette } = useTheme();
 
@@ -59,9 +58,8 @@ export const ActionIconButtonGroup: React.FC<{
     <StickTo
       isDisabled={!stickToView}
       position={stickToPosition}
-      stickyRef={stickyRef}
       render={(isStuck) => (
-        <Host ref={stickyRef}>
+        <Host>
           {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
             <FloatingHeaderActions actions={actions} />
           ) : null}
