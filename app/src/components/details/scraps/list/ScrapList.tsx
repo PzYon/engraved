@@ -25,6 +25,7 @@ import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
 import SyncAltOutlined from "@mui/icons-material/SyncAltOutlined";
 import { IAction } from "../../../common/actions/IAction";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
+import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 
 export const ScrapList: React.FC = () => {
   const { palette } = useTheme();
@@ -61,7 +62,6 @@ export const ScrapList: React.FC = () => {
   return (
     <ScrapBody
       actions={[]}
-      editModeActions={getEditModeActions()}
       properties={[
         {
           key: "completed",
@@ -75,6 +75,12 @@ export const ScrapList: React.FC = () => {
         },
       ]}
     >
+      <ActionIconButtonGroup
+        alignToPosition={"top"}
+        stickToView={true}
+        stickToPosition={"top"}
+        actions={getEditModeActions()}
+      />
       <BodyHost
         key={isEditMode.toString()}
         style={

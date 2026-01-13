@@ -9,15 +9,13 @@ import {
   getSchedulePropertyFromSchedule,
 } from "../../overview/scheduled/scheduleUtils";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
-import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
-  editModeActions: IAction[];
   properties?: IPropertyDefinition[];
-}> = ({ children, actions, editModeActions, properties = [] }) => {
+}> = ({ children, actions, properties = [] }) => {
   const { user } = useAppContext();
 
   const {
@@ -58,19 +56,6 @@ export const ScrapBody: React.FC<{
         }
       >
         {isCompact && !hasFocus && !isEditMode ? null : children}
-
-        {isEditMode && editModeActions?.length ? (
-          <div
-            style={{
-              marginTop: scrapToRender.scrapType === "List" ? "2px" : 0,
-            }}
-          >
-            <ActionIconButtonGroup
-              alignToPosition={"bottom"}
-              actions={editModeActions}
-            />
-          </div>
-        ) : null}
       </Entry>
     </>
   );

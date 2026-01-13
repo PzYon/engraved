@@ -16,6 +16,7 @@ export const ActionIconButtonGroup: React.FC<{
   testId?: string;
   backgroundColor?: string;
   alignToPosition?: Position;
+  // todo: do i need boolean and value? can't that be combined?
   stickToPosition?: Position;
   stickToView?: boolean;
 }> = ({

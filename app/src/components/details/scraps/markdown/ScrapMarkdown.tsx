@@ -17,19 +17,6 @@ export const ScrapMarkdown: React.FC = () => {
 
   return (
     <ScrapBody
-      editModeActions={[
-        {
-          onClick: () => {
-            changeScrapType(
-              notes.split("\n").filter((line) => !!(line ?? "").trim()),
-              ScrapType.List,
-            );
-          },
-          key: "toggle-type",
-          icon: <AutoFixHigh fontSize="small" />,
-          label: "Change type to list",
-        },
-      ]}
       actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
     >
       {isEditMode ? (
@@ -39,6 +26,19 @@ export const ScrapMarkdown: React.FC = () => {
             setValue={setNotes}
             autoFocus={!!title}
             showFormattingOptions={true}
+            editModeActions={[
+              {
+                onClick: () => {
+                  changeScrapType(
+                    notes.split("\n").filter((line) => !!(line ?? "").trim()),
+                    ScrapType.List,
+                  );
+                },
+                key: "toggle-type",
+                icon: <AutoFixHigh fontSize="small" />,
+                label: "Change type to list",
+              },
+            ]}
           />
         </div>
       ) : (
