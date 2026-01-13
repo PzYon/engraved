@@ -18,7 +18,6 @@ export const ActionIconButtonGroup: React.FC<{
   alignToPosition?: Position;
   // todo: do i need boolean and value? can't that be combined?
   stickToPosition?: Position;
-  stickToView?: boolean;
 }> = ({
   actions,
   enableFloatingActions,
@@ -26,7 +25,6 @@ export const ActionIconButtonGroup: React.FC<{
   backgroundColor,
   alignToPosition,
   stickToPosition,
-  stickToView,
 }) => {
   const domElementRef = useRef<HTMLDivElement>(null);
 
@@ -56,7 +54,7 @@ export const ActionIconButtonGroup: React.FC<{
 
   return (
     <StickTo
-      isDisabled={!stickToView}
+      isDisabled={stickToPosition === undefined || stickToPosition === "none"}
       position={stickToPosition}
       render={(isStuck) => (
         <Host>
@@ -70,7 +68,7 @@ export const ActionIconButtonGroup: React.FC<{
             isStuck={isStuck}
           />
           <ButtonContainer
-            stickToView={stickToView}
+            stickToPosition={stickToPosition}
             alignTo={finalAlignTo}
             data-testid={testId}
             sx={{ backgroundColor: finalBackgroundColor }}
@@ -171,12 +169,13 @@ const Host = styled("div")`
 const ButtonContainer = styled("div")<{
   alignTo: Position;
   isStuck: boolean;
-  stickToView: boolean;
+  stickToPosition: Position;
 }>`
   flex-shrink: 1;
   display: flex;
   border-radius: 20px;
-  margin-top: ${(p) => (p.stickToView ? "5px" : "0")};
+  margin-top: ${(p) =>
+    p.stickToPosition && p.stickToPosition !== "none" ? "5px" : "0"};
 
   ${(p) => {
     if (p.isStuck) {

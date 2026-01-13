@@ -102,9 +102,8 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       ) : null}
       {showFormattingOptions ? (
         <ActionIconButtonGroup
-          stickToView={true}
           alignToPosition="top"
-          stickToPosition={"top"}
+          stickToPosition="top"
           actions={[
             ...editModeActions,
             {

@@ -77,9 +77,8 @@ export const ScrapList: React.FC = () => {
     >
       {isEditMode ? (
         <ActionIconButtonGroup
-          alignToPosition={"top"}
-          stickToView={true}
-          stickToPosition={"top"}
+          alignToPosition="top"
+          stickToPosition="top"
           actions={getEditModeActions()}
         />
       ) : null}
