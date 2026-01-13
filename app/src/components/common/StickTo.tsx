@@ -17,9 +17,15 @@ export const StickTo: React.FC<{
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsStuck(
-          position === "top" ? !entry.isIntersecting : entry.isIntersecting,
-        );
+        // todo: isStuck is not always correct,
+        // causes problems in LIFR:53
+
+        const isStuckTemp =
+          position === "top" ? !entry.isIntersecting : entry.isIntersecting;
+
+        console.log("isStuckTemp", isStuckTemp);
+
+        setIsStuck(isStuckTemp);
       },
       { threshold: [1] },
     );
@@ -38,7 +44,7 @@ export const StickTo: React.FC<{
       observer.disconnect();
       sentinel.remove();
     };
-  }, [isDisabled, isStuck, setIsStuck, stickyRef]);
+  }, [isDisabled, isStuck, position, setIsStuck, stickyRef]);
 
   if (isDisabled) {
     return render(false);

@@ -34,30 +34,28 @@ export const ScrapBody: React.FC<{
   const { isCompact } = useDisplayModeContext();
 
   return (
-    <>
-      <Entry
-        isEditMode={isEditMode}
-        hasFocus={hasFocus}
-        journal={journal}
-        entry={scrapToRender}
-        actions={getActions()}
-        propsRenderStyle={propsRenderStyle}
-        noCompactFooter={!scrapToRender.id}
-        propertyOverrides={
-          parsedDate?.date
-            ? [
-                getSchedulePropertyFromSchedule({
-                  nextOccurrence: parsedDate.date.toString(),
-                  recurrence: parsedDate.recurrence,
-                }),
-                ...properties,
-              ]
-            : properties
-        }
-      >
-        {isCompact && !hasFocus && !isEditMode ? null : children}
-      </Entry>
-    </>
+    <Entry
+      isEditMode={isEditMode}
+      hasFocus={hasFocus}
+      journal={journal}
+      entry={scrapToRender}
+      actions={getActions()}
+      propsRenderStyle={propsRenderStyle}
+      noCompactFooter={!scrapToRender.id}
+      propertyOverrides={
+        parsedDate?.date
+          ? [
+              getSchedulePropertyFromSchedule({
+                nextOccurrence: parsedDate.date.toString(),
+                recurrence: parsedDate.recurrence,
+              }),
+              ...properties,
+            ]
+          : properties
+      }
+    >
+      {isCompact && !hasFocus && !isEditMode ? null : children}
+    </Entry>
   );
 
   function getActions() {

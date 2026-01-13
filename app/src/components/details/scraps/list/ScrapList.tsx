@@ -75,12 +75,15 @@ export const ScrapList: React.FC = () => {
         },
       ]}
     >
-      <ActionIconButtonGroup
-        alignToPosition={"top"}
-        stickToView={true}
-        stickToPosition={"top"}
-        actions={getEditModeActions()}
-      />
+      {isEditMode ? (
+        <ActionIconButtonGroup
+          alignToPosition={"top"}
+          stickToView={true}
+          stickToPosition={"top"}
+          actions={getEditModeActions()}
+        />
+      ) : null}
+
       <BodyHost
         key={isEditMode.toString()}
         style={
@@ -203,7 +206,8 @@ function getItemsAsJson(rawItems: IScrapListItem[]) {
 const BodyHost = styled("div")`
   border-radius: 5px;
   width: calc(100% - 4px);
-  margin-left: 2px;
+  margin-left: 2px; // outline = 2px
+  margin-top: 2px; // outline = 2px
 `;
 
 const List = styled("ul")`

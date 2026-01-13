@@ -59,11 +59,11 @@ const PropertiesRow = styled("div")<{ isStuck: boolean }>`
 `;
 
 const FlexGrow = styled("div")`
-  margin-top: ${(p) => p.theme.spacing(1)};
+  margin-top: ${(p) => p.theme.spacing(2)};
   flex-grow: 1;
 `;
 
 const ActionContainer = styled("div")`
-  margin-top: ${(p) => p.theme.spacing(1)};
+  margin-top: ${(p) => p.theme.spacing(2)};
   margin-left: ${(p) => p.theme.spacing(2)};
 `;
