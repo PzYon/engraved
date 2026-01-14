@@ -9,7 +9,7 @@
     "@dnd-kit/sortable": "10.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "@emotion/styled": "11.14.1",
-    "@microsoft/applicationinsights-web": "3.3.10",
+    "@microsoft/applicationinsights-web": "3.3.11",
     "@mui/icons-material": "7.3.7",
     "@mui/material": "7.3.7",
     "@mui/styled-engine": "7.3.7",
@@ -64,7 +64,7 @@
   "devDependencies": {
     "@types/react": "19.2.8",
     "@types/react-dom": "19.2.3",
-    "@types/node": "24.10.7",
+    "@types/node": "24.10.8",
     "@vitest/ui": "4.0.17",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "jsdom": "27.4.0",
