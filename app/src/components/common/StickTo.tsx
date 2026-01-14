@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { css, styled } from "@mui/material";
-import { Position } from "./actions/ActionIconButtonGroup";
+import { Position } from "./actions/Position";
 
 export const StickTo: React.FC<{
   isDisabled?: boolean;

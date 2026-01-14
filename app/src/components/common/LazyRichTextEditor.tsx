@@ -105,7 +105,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           alignToPosition="top"
           stickToPosition="top"
           actions={[
-            ...editModeActions,
+            ...(editModeActions ?? []),
             {
               key: "formatting-bold",
               icon: <FormatBold fontSize="small" />,

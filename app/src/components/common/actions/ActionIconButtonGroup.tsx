@@ -7,8 +7,7 @@ import { IAction } from "./IAction";
 import { useEngravedSearchParams } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
 import { StickTo } from "../StickTo";
-
-export type Position = "none" | "top" | "bottom";
+import { Position } from "./Position";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
@@ -16,7 +15,6 @@ export const ActionIconButtonGroup: React.FC<{
   testId?: string;
   backgroundColor?: string;
   alignToPosition?: Position;
-  // todo: do i need boolean and value? can't that be combined?
   stickToPosition?: Position;
 }> = ({
   actions,
@@ -69,7 +67,7 @@ export const ActionIconButtonGroup: React.FC<{
           />
           <ButtonContainer
             stickToPosition={stickToPosition}
-            alignTo={finalAlignTo}
+            alignToPosition={finalAlignTo}
             data-testid={testId}
             sx={{ backgroundColor: finalBackgroundColor }}
             isStuck={isStuck}
@@ -167,9 +165,9 @@ const Host = styled("div")`
 `;
 
 const ButtonContainer = styled("div")<{
-  alignTo: Position;
+  alignToPosition: Position;
+  stickToPosition?: Position;
   isStuck: boolean;
-  stickToPosition: Position;
 }>`
   flex-shrink: 1;
   display: flex;
@@ -182,14 +180,14 @@ const ButtonContainer = styled("div")<{
       return;
     }
 
-    if (p.alignTo === "top") {
+    if (p.alignToPosition === "top") {
       return css`
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
       `;
     }
 
-    if (p.alignTo === "bottom") {
+    if (p.alignToPosition === "bottom") {
       return css`
         border-top-left-radius: 0;
         border-top-right-radius: 0;
