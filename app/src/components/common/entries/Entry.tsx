@@ -11,6 +11,7 @@ import { EntrySubRoutes } from "./EntrySubRoutes";
 import { IPropertyDefinition } from "../IPropertyDefinition";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalIcon } from "../../overview/journals/JournalIcon";
+import { JournalType } from "../../../serverApi/JournalType";
 
 export type EntryPropsRenderStyle = "all" | "generic" | "none";
 
@@ -24,6 +25,7 @@ export const Entry: React.FC<{
   giveFocus?: () => void;
   propertyOverrides?: IPropertyDefinition[];
   noCompactFooter?: boolean;
+  isEditMode?: boolean;
 }> = ({
   journal,
   entry,
@@ -33,6 +35,7 @@ export const Entry: React.FC<{
   hasFocus,
   propertyOverrides,
   noCompactFooter,
+  isEditMode,
 }) => {
   const { user } = useAppContext();
 
@@ -40,6 +43,7 @@ export const Entry: React.FC<{
     <>
       {children}
       <ListItemFooterRow
+        isSticky={isEditMode && journal?.type === JournalType.Scraps}
         hasFocus={hasFocus}
         properties={getEntryProperties(
           journal,

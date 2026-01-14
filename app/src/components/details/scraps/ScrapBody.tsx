@@ -9,15 +9,13 @@ import {
   getSchedulePropertyFromSchedule,
 } from "../../overview/scheduled/scheduleUtils";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
-import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
   actions: IAction[];
-  editModeActions: IAction[];
   properties?: IPropertyDefinition[];
-}> = ({ children, actions, editModeActions, properties = [] }) => {
+}> = ({ children, actions, properties = [] }) => {
   const { user } = useAppContext();
 
   const {
@@ -36,42 +34,28 @@ export const ScrapBody: React.FC<{
   const { isCompact } = useDisplayModeContext();
 
   return (
-    <>
-      <Entry
-        hasFocus={hasFocus}
-        journal={journal}
-        entry={scrapToRender}
-        actions={getActions()}
-        propsRenderStyle={propsRenderStyle}
-        noCompactFooter={!scrapToRender.id}
-        propertyOverrides={
-          parsedDate?.date
-            ? [
-                getSchedulePropertyFromSchedule({
-                  nextOccurrence: parsedDate.date.toString(),
-                  recurrence: parsedDate.recurrence,
-                }),
-                ...properties,
-              ]
-            : properties
-        }
-      >
-        {isCompact && !hasFocus && !isEditMode ? null : children}
-
-        {isEditMode && editModeActions?.length ? (
-          <div
-            style={{
-              marginTop: scrapToRender.scrapType === "List" ? "2px" : 0,
-            }}
-          >
-            <ActionIconButtonGroup
-              alignTo={"bottom"}
-              actions={editModeActions}
-            />
-          </div>
-        ) : null}
-      </Entry>
-    </>
+    <Entry
+      isEditMode={isEditMode}
+      hasFocus={hasFocus}
+      journal={journal}
+      entry={scrapToRender}
+      actions={getActions()}
+      propsRenderStyle={propsRenderStyle}
+      noCompactFooter={!scrapToRender.id}
+      propertyOverrides={
+        parsedDate?.date
+          ? [
+              getSchedulePropertyFromSchedule({
+                nextOccurrence: parsedDate.date.toString(),
+                recurrence: parsedDate.recurrence,
+              }),
+              ...properties,
+            ]
+          : properties
+      }
+    >
+      {isCompact && !hasFocus && !isEditMode ? null : children}
+    </Entry>
   );
 
   function getActions() {

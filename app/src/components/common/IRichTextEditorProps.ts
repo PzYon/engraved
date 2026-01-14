@@ -1,3 +1,5 @@
+import { IAction } from "./actions/IAction";
+
 export interface IRichTextEditorProps {
   setGiveFocus?: (giveFocus: () => void) => void;
   initialValue?: string;
@@ -12,4 +14,5 @@ export interface IRichTextEditorProps {
   css?: React.CSSProperties;
   isTitle?: boolean;
   showFormattingOptions?: boolean;
+  editModeActions?: IAction[];
 }

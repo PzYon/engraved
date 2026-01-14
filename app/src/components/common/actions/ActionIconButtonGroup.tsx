@@ -6,27 +6,25 @@ import { css, styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { useEngravedSearchParams } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
-import { StickToTop } from "../StickToTop";
-
-type AlignTo = "none" | "top" | "bottom";
+import { StickTo } from "../StickTo";
+import { Position } from "./Position";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
   enableFloatingActions?: boolean;
   testId?: string;
   backgroundColor?: string;
-  alignTo?: AlignTo;
-  stickToView?: boolean;
+  alignToPosition?: Position;
+  stickToPosition?: Position;
 }> = ({
   actions,
   enableFloatingActions,
   testId,
   backgroundColor,
-  alignTo,
-  stickToView,
+  alignToPosition,
+  stickToPosition,
 }) => {
-  const domElementRef = useRef<HTMLDivElement>(undefined);
-  const stickyRef = useRef<HTMLDivElement>(undefined);
+  const domElementRef = useRef<HTMLDivElement>(null);
 
   const { palette } = useTheme();
 
@@ -49,15 +47,15 @@ export const ActionIconButtonGroup: React.FC<{
     return null;
   }
 
-  const finalAlignTo = alignTo ?? "none";
+  const finalAlignTo = alignToPosition ?? "none";
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
   return (
-    <StickToTop
-      isDisabled={!stickToView}
-      stickyRef={stickyRef}
+    <StickTo
+      isDisabled={stickToPosition === undefined || stickToPosition === "none"}
+      position={stickToPosition}
       render={(isStuck) => (
-        <Host ref={stickyRef}>
+        <Host>
           {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
             <FloatingHeaderActions actions={actions} />
           ) : null}
@@ -68,8 +66,8 @@ export const ActionIconButtonGroup: React.FC<{
             isStuck={isStuck}
           />
           <ButtonContainer
-            stickToView={stickToView}
-            alignTo={finalAlignTo}
+            stickToPosition={stickToPosition}
+            alignToPosition={finalAlignTo}
             data-testid={testId}
             sx={{ backgroundColor: finalBackgroundColor }}
             isStuck={isStuck}
@@ -100,7 +98,7 @@ export const ActionIconButtonGroup: React.FC<{
           />
         </Host>
       )}
-    ></StickToTop>
+    />
   );
 
   function isActionActive(action: IAction) {
@@ -126,7 +124,7 @@ export const ActionIconButtonGroup: React.FC<{
 
 const RadiusSpacer: React.FC<{
   backgroundColor: string;
-  alignTo: AlignTo;
+  alignTo: Position;
   position: "left" | "right";
   isStuck: boolean;
 }> = ({ backgroundColor, alignTo, position, isStuck }) => {
@@ -167,28 +165,29 @@ const Host = styled("div")`
 `;
 
 const ButtonContainer = styled("div")<{
-  alignTo: AlignTo;
+  alignToPosition: Position;
+  stickToPosition?: Position;
   isStuck: boolean;
-  stickToView: boolean;
 }>`
   flex-shrink: 1;
   display: flex;
   border-radius: 20px;
-  margin-top: ${(p) => (p.stickToView ? "5px" : "0")};
+  margin-top: ${(p) =>
+    p.stickToPosition && p.stickToPosition !== "none" ? "5px" : "0"};
 
   ${(p) => {
     if (p.isStuck) {
       return;
     }
 
-    if (p.alignTo === "top") {
+    if (p.alignToPosition === "top") {
       return css`
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
       `;
     }
 
-    if (p.alignTo === "bottom") {
+    if (p.alignToPosition === "bottom") {
       return css`
         border-top-left-radius: 0;
         border-top-right-radius: 0;
