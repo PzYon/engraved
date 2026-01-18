@@ -16,6 +16,14 @@ import {
 } from "@mui/icons-material";
 import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
 
+const replacements: Record<string, string> = {
+  "!!!": "⚠",
+  "???": "❓",
+  "...": "⁉",
+};
+
+const toReplace = Object.keys(replacements);
+
 const DisableEnter = Extension.create({
   name: "disable-enter",
 
@@ -77,6 +85,33 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
+        const newTextValue = editor.getText();
+        const ranges = editor.state.selection.ranges;
+
+        if (ranges[0].$from.pos === ranges[0].$to.pos) {
+          const currentPosition = ranges[0].$from.pos;
+
+          const lastThreeTypedChars = newTextValue.substring(
+            currentPosition - 4,
+            currentPosition - 1,
+          );
+
+          if (toReplace.indexOf(lastThreeTypedChars) > -1) {
+            const value =
+              newTextValue.substring(0, currentPosition - 4) +
+              replacements[lastThreeTypedChars] +
+              newTextValue.substring(currentPosition - 1);
+
+            editor.commands.setContent(value);
+            editor.commands.focus(currentPosition - 2);
+            setValue(value);
+
+            setIsEmpty(false);
+
+            return;
+          }
+        }
+
         setValue(editor.getMarkdown());
         setIsEmpty(!editor.getText());
       },

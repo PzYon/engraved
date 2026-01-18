@@ -27,6 +27,11 @@ export const ThemeAndStylesProvider: React.FC<{
           color: engravedTheme.palette.primary.main + " !important;",
           textDecoration: "none",
         },
+
+        ".ngrvd-emoji": {
+          fontFamily:
+            "Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,Noto Color Emoji, sans-serif",
+        },
       }}
     />
     {children}
