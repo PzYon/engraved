@@ -85,30 +85,34 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
-        const newTextValue = editor.getText();
         const ranges = editor.state.selection.ranges;
 
         if (ranges[0].$from.pos === ranges[0].$to.pos) {
           const currentPosition = ranges[0].$from.pos;
 
-          const lastThreeTypedChars = newTextValue.substring(
-            currentPosition - 4,
-            currentPosition - 1,
-          );
+          if (currentPosition >= 3) {
+            const textBeforeCursor = editor.state.doc.textBetween(
+              Math.max(0, currentPosition - 3),
+              currentPosition,
+              "",
+            );
 
-          if (toReplace.indexOf(lastThreeTypedChars) > -1) {
-            const value =
-              newTextValue.substring(0, currentPosition - 4) +
-              replacements[lastThreeTypedChars] +
-              newTextValue.substring(currentPosition - 1);
+            if (toReplace.includes(textBeforeCursor)) {
+              editor
+                .chain()
+                .deleteRange({
+                  from: currentPosition - 3,
+                  to: currentPosition,
+                })
+                .insertContent(replacements[textBeforeCursor])
+                .run();
 
-            editor.commands.setContent(value);
-            editor.commands.focus(currentPosition - 2);
-            setValue(value);
+              setIsEmpty(false);
 
-            setIsEmpty(false);
+              // setValue will be called on the next update cycle
 
-            return;
+              return;
+            }
           }
         }
 
