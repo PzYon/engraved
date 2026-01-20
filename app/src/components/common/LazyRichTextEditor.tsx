@@ -18,6 +18,8 @@ import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
 
 const replacements: Record<string, string> = {
   "!!!": "‼️",
+  "!?!": "⁉️",
+  "?!?": "⁉️",
   "???": "❓",
 };
 
