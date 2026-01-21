@@ -14,10 +14,12 @@ const md = marked.use({
   },
   hooks: {
     postprocess: (html) => {
-      return html.replace(
-        regex,
-        (emojiChar) => `<span class="ngrvd-emoji">${emojiChar}</span>`,
-      );
+      return html
+        .replace(
+          regex,
+          (emojiChar) => `<span class="ngrvd-emoji">${emojiChar}</span>`,
+        )
+        .replace(/(?<!\n)\n(?!\n)/g, "\n\n");
     },
   },
 });
