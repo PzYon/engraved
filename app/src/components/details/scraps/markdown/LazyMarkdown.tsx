@@ -13,13 +13,14 @@ const md = marked.use({
     },
   },
   hooks: {
+    preprocess: (markdown: string) => {
+      return markdown.replace(/(?<!\n)\n(?!\n)/g, "\n\n");
+    },
     postprocess: (html) => {
-      return html
-        .replace(
-          regex,
-          (emojiChar) => `<span class="ngrvd-emoji">${emojiChar}</span>`,
-        )
-        .replace(/(?<!\n)\n(?!\n)/g, "\n\n");
+      return html.replace(
+        regex,
+        (emojiChar) => `<span class="ngrvd-emoji">${emojiChar}</span>`,
+      );
     },
   },
 });
