@@ -2,12 +2,24 @@ import { IconStyle } from "./IconStyle";
 import { styled } from "@mui/material";
 import React from "react";
 
-// Convert unified emoji code to actual emoji character
+/**
+ * Convert unified emoji code to actual emoji character.
+ * @param unified - Unified emoji code (e.g., "1f600" for 😀, or "1f468-1f3fb-200d-2708-fe0f" for 👨🏻‍✈️)
+ * @returns The actual emoji character
+ */
 const unifiedToEmoji = (unified: string): string => {
-  return unified
-    .split("-")
-    .map((hex) => String.fromCodePoint(parseInt(hex, 16)))
-    .join("");
+  if (!unified || typeof unified !== "string") {
+    return "";
+  }
+  
+  try {
+    return unified
+      .split("-")
+      .map((hex) => String.fromCodePoint(parseInt(hex, 16)))
+      .join("");
+  } catch {
+    return "";
+  }
 };
 
 export const EngravedEmoji: React.FC<{
