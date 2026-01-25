@@ -1,10 +1,8 @@
-import { Emoji } from "emoji-picker-react";
 import { IconStyle } from "./IconStyle";
 import { styled } from "@mui/material";
 import React from "react";
-import { engravedEmojiStyle } from "./EngravedEmojiStyle";
 
-export const EmojiWrapper: React.FC<{
+export const EngravedEmoji: React.FC<{
   emoji: string;
   style: IconStyle;
   isClickable?: boolean;
@@ -16,7 +14,7 @@ export const EmojiWrapper: React.FC<{
       size={size}
       className={`ngrvd-icon${isClickable ? " clickable" : ""}`}
     >
-      <Emoji unified={emoji} size={size} emojiStyle={engravedEmojiStyle} />
+      <Emoji content={emoji} size={size} />
     </Host>
   );
 };
@@ -30,11 +28,15 @@ const Host = styled("span")<{
   display: block;
   margin-left: -2px;
   cursor: ${(p) => (p.isClickable ? "pointer" : "default")};
+`;
 
-  & > span,
-  & > img {
-    display: block !important;
-    line-height: ${(p) => p.size}px;
+const Emoji = styled("span")<{ size: number; content: string }>`
+  display: inline-block;
+  margin-top: -5px;
+
+  :before {
+    content: "\\${(p) => p.content}";
+    font-size: ${(p) => p.size}px;
     font-family:
       "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji",
       "Twemoji Mozilla", "Noto Color Emoji", "EmojiOne Color", "Android Emoji";

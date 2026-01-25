@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
-import EmojiPicker from "emoji-picker-react";
+import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 import { Popover, styled } from "@mui/material";
-import { engravedEmojiStyle } from "./EngravedEmojiStyle";
 
 export const EmojiPickerWrapper: React.FC<{
   onEmojiClick: (emoji: string) => void;
@@ -32,7 +31,7 @@ export const EmojiPickerWrapper: React.FC<{
           <EmojiPicker
             skinTonesDisabled={true}
             previewConfig={{ showPreview: false }}
-            emojiStyle={engravedEmojiStyle}
+            emojiStyle={EmojiStyle.NATIVE}
             onEmojiClick={(e) => {
               onEmojiClick(e.unified);
               setIsOpen(false);
