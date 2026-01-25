@@ -8,37 +8,43 @@ export const EngravedEmoji: React.FC<{
   isClickable?: boolean;
 }> = ({ emoji, style, isClickable }) => {
   const size = style === IconStyle.Large ? 26 : 22;
+  const emojiChar = unifiedToEmoji(emoji);
+
   return (
     <Host
       isClickable={isClickable}
       size={size}
       className={`ngrvd-icon${isClickable ? " clickable" : ""}`}
     >
-      <Emoji content={emoji} size={size} />
+      {emojiChar}
     </Host>
   );
 };
+
+function unifiedToEmoji(unified: string) {
+  if (!unified || typeof unified !== "string") {
+    return "";
+  }
+
+  try {
+    return unified
+      .split("-")
+      .map((hex) => String.fromCodePoint(parseInt(hex, 16)))
+      .join("");
+  } catch {
+    return "";
+  }
+}
 
 const Host = styled("span")<{
   size: number;
   isClickable?: boolean;
 }>`
-  width: ${(p) => p.size + 8}px;
-  height: ${(p) => p.size + 5}px;
-  display: block;
-  margin-left: -2px;
-  cursor: ${(p) => (p.isClickable ? "pointer" : "default")};
-`;
-
-const Emoji = styled("span")<{ size: number; content: string }>`
-  display: inline-block;
   margin-top: -5px;
-
-  :before {
-    content: "\\${(p) => p.content}";
-    font-size: ${(p) => p.size}px;
-    font-family:
-      "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji",
-      "Twemoji Mozilla", "Noto Color Emoji", "EmojiOne Color", "Android Emoji";
-  }
+  display: block;
+  font-size: ${(p) => p.size}px;
+  cursor: ${(p) => (p.isClickable ? "pointer" : "default")};
+  font-family:
+    "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji",
+    "Twemoji Mozilla", "Noto Color Emoji", "EmojiOne Color", "Android Emoji";
 `;
