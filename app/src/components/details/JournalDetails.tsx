@@ -34,9 +34,9 @@ export const JournalDetailsView: React.FC = () => {
   }, [journal.id]);
 
   return journal.type === JournalType.Scraps ? (
-    <ScrapsViewPage />
+    <ScrapsViewPage key={journal.id} />
   ) : (
-    <JournalViewPage />
+    <JournalViewPage key={journal.id} />
   );
 };
 
