@@ -17,10 +17,10 @@ const BaseMarkdownContainer = styled("div")`
   }
 
   pre > code {
-    overflow-y: auto;
     display: block;
     box-sizing: border-box;
     width: 100%;
+    line-height: 1;
   }
 `;
 
