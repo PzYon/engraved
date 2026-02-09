@@ -19,7 +19,7 @@ export function transform(
       const month = consolidated.groupKey.month - 1;
       const day = consolidated.groupKey.day || 1;
 
-      const aggregationMode = getUiSettings(journal).aggregationMode;
+      const aggregationMode = getUiSettings(journal).aggregationMode ?? "sum";
 
       return {
         x: new Date(consolidated.groupKey.year, month, day),
