@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
-import { IAuthResult } from "./serverApi/IAuthResult";
+import { IAuthResult, ITestAuthResult } from "./serverApi/IAuthResult";
 import { IUser } from "./serverApi/IUser";
 import { GoogleInitializeResponse } from "./serverApi/authentication/google/GoogleTypes";
 import { registerGooglePrompt } from "./serverApi/authentication/google/registerGooglePrompt";
@@ -10,11 +10,14 @@ import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 import { JournalType } from "./serverApi/JournalType";
+import { useNavigate } from "react-router-dom";
 
 const storage = new AuthStorage();
 
 export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
+
+  const navigate = useNavigate();
 
   const [user, setUser] = useState<IUser>();
   const ref = useRef<HTMLDivElement>(undefined);
@@ -36,8 +39,9 @@ export const Bootstrapper: React.FC = () => {
         searchParams.get(knownQueryParams.testJournalName),
         searchParams.get(knownQueryParams.testJournalType) as JournalType,
       )
-        .then((r: IAuthResult) => {
+        .then((r: ITestAuthResult) => {
           setUser(r.user);
+          navigate(`/journals/details/${r.journalId}`);
         })
         .finally(() => setIsNotVisible(false));
       return;

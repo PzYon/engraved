@@ -2,16 +2,14 @@ import { test } from "@playwright/test";
 import { login } from "../src/utils/login";
 import { MetricJournalPage } from "../src/poms/metricJournalPage";
 
-test.beforeEach(async ({ page }) => {
-  await login(page, "entries", "Value", "Journal with values");
-});
-
 const value1 = "23";
 const value2 = "19.5";
 
 test("add new value journal, add some entries, delete entry", async ({
   page,
 }) => {
+  await login(page, "entries", "Value", "Journal with values");
+
   const journalPage = new MetricJournalPage(page);
 
   await journalPage.addValue(value1);
