@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
-import { IAuthResult, ITestAuthResult } from "./serverApi/IAuthResult";
+import { IAuthResult } from "./serverApi/IAuthResult";
 import { IUser } from "./serverApi/IUser";
 import { GoogleInitializeResponse } from "./serverApi/authentication/google/GoogleTypes";
 import { registerGooglePrompt } from "./serverApi/authentication/google/registerGooglePrompt";
@@ -39,9 +39,9 @@ export const Bootstrapper: React.FC = () => {
         searchParams.get(knownQueryParams.testJournalName),
         searchParams.get(knownQueryParams.testJournalType) as JournalType,
       )
-        .then((r: ITestAuthResult) => {
+        .then(async (r) => {
           setUser(r.user);
-          navigate(`/journals/details/${r.journalId}`);
+          await navigate(`/journals/details/${r.journalId}`);
         })
         .finally(() => setIsNotVisible(false));
       return;

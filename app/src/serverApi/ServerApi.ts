@@ -101,14 +101,16 @@ export class ServerApi {
     jwtToken: string,
     testJournalName?: string,
     testJournalType?: JournalType,
-  ): Promise<IAuthResult> {
+  ): Promise<ITestAuthResult> {
     ServerApi._jwtToken = jwtToken;
 
     ServerApi._isE2eTest = true;
     ServerApi.e2eStorage.setValue("isE2eTest", true);
 
-    const authResult: ITestAuthResult =
-      await ServerApi.executeRequest<IAuthResult>("/auth/e2e", "POST");
+    const authResult = await ServerApi.executeRequest<ITestAuthResult>(
+      "/auth/e2e",
+      "POST",
+    );
 
     this.handleAuthenticated(authResult);
 
