@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { addNewJournal } from "../src/utils/addNewJournal";
 import { login } from "../src/utils/login";
 import {
   navigateToEntriesPage,
@@ -7,13 +6,12 @@ import {
   navigateToScheduledPage,
 } from "../src/utils/navigateTo";
 import { isAndroidTest } from "../src/utils/isAndroidTest";
-
-test.beforeEach(async ({ page }) => {
-  await login(page, "schedule");
-});
+import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 
 test("add schedule to entry and mark as done", async ({ page }) => {
-  const journalPage = await addNewJournal(page, "Scraps", "My Journal");
+  await login(page, "schedule", "Scraps", "My Journal");
+
+  const journalPage = new ScrapsJournalPage(page);
 
   const quickNotificationDialog = await journalPage.clickAddQuickScrapAction();
 

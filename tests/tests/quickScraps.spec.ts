@@ -1,18 +1,13 @@
 import { test } from "@playwright/test";
 import { login } from "../src/utils/login";
-import { addNewJournal } from "../src/utils/addNewJournal";
 import { navigateToEntriesPage, navigateToHome } from "../src/utils/navigateTo";
 import { JournalsPage } from "../src/poms/journalsPage";
-
-test.beforeEach(async ({ page }) => {
-  await login(page, "quickScraps");
-});
 
 const scrapTitle = "Quick Scrap Title";
 const scrapContent = "This is my content...";
 
 test("Quick add", async ({ page }) => {
-  await addNewJournal(page, "Scraps", "My Manual Quick Scraps");
+  await login(page, "quickScraps", "Scraps", "My Manual Quick Scraps");
 
   await navigateToHome(page);
   const journalsPage = new JournalsPage(page);

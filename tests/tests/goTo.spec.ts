@@ -3,14 +3,10 @@ import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 
-test.beforeEach(async ({ page }) => {
-  await login(page, "goto");
-});
-
 test("search in go to, use cursor down, use enter to navigate to scrap", async ({
   page,
 }) => {
-  await addNewJournal(page, "Scraps", "List of QBs");
+  await login(page, "goto", "Scraps", "List of QBs");
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.addMarkdownWithTitle("QB 1: Pat Mahomes");
@@ -30,7 +26,8 @@ test("search in go to, use cursor down, use enter to navigate to scrap", async (
 test("initially shows recent journals, navigates with click", async ({
   page,
 }) => {
-  await addNewJournal(page, "Scraps", "Kansas City Chiefs");
+  await login(page, "goto", "Scraps", "Kansas City Chiefs");
+
   await navigateToHome(page);
 
   await addNewJournal(page, "Scraps", "Buffalo Bills");

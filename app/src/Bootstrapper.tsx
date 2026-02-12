@@ -9,6 +9,7 @@ import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
+import { JournalType } from "./serverApi/JournalType";
 
 const storage = new AuthStorage();
 
@@ -30,8 +31,14 @@ export const Bootstrapper: React.FC = () => {
 
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has(knownQueryParams.testUser)) {
-      ServerApi.setUpForTests(searchParams.get(knownQueryParams.testUser))
-        .then((r) => setUser(r.user))
+      ServerApi.setUpForTests(
+        searchParams.get(knownQueryParams.testUser),
+        searchParams.get(knownQueryParams.testJournalName),
+        searchParams.get(knownQueryParams.testJournalType) as JournalType,
+      )
+        .then((r: IAuthResult) => {
+          setUser(r.user);
+        })
         .finally(() => setIsNotVisible(false));
       return;
     }

@@ -17,11 +17,18 @@ function getDateTimeString() {
     .replace(/:/g, "");
 }
 
-export async function login(page: Page, testName: string) {
+export async function login(
+  page: Page,
+  testName: string,
+  type?: "Value" | "Timer" | "Scraps",
+  name?: string,
+) {
   const userName = getUserName(testName);
   console.log(`Using username '${userName}'`);
 
-  await page.goto(`/?test-user=${userName}`);
+  await page.goto(
+    `/?test-user=${userName}&test-journal-name=${name}&test-journal-type=${type}`,
+  );
 
   return userName;
 }
