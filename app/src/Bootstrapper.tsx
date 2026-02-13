@@ -38,7 +38,10 @@ export const Bootstrapper: React.FC = () => {
       )
         .then(async (r) => {
           setUser(r.user);
-          window.location.href = `${window.location.origin}/journals/details/${r.journalId}`;
+
+          if (r.journalId) {
+            window.location.href = `${window.location.origin}/journals/details/${r.journalId}`;
+          }
         })
         .finally(() => setIsNotVisible(false));
       return;
