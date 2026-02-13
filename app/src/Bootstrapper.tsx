@@ -10,14 +10,11 @@ import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 import { JournalType } from "./serverApi/JournalType";
-import { useNavigate } from "react-router-dom";
 
 const storage = new AuthStorage();
 
 export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
-
-  const navigate = useNavigate();
 
   const [user, setUser] = useState<IUser>();
   const ref = useRef<HTMLDivElement>(undefined);
@@ -41,7 +38,7 @@ export const Bootstrapper: React.FC = () => {
       )
         .then(async (r) => {
           setUser(r.user);
-          await navigate(`/journals/details/${r.journalId}`);
+          window.location.href = `${window.location.origin}/journals/details/${r.journalId}`;
         })
         .finally(() => setIsNotVisible(false));
       return;
@@ -69,7 +66,7 @@ export const Bootstrapper: React.FC = () => {
         }
       })
       .finally(() => setIsNotVisible(false));
-  }, [navigate]);
+  }, []);
 
   if (user) {
     return <App user={user} />;
