@@ -11,9 +11,13 @@ interface Journal {
 
 export async function createJournalViaApi(
   requestContext: APIRequestContext,
+  userName: string,
   journal: Journal,
 ): Promise<string> {
   const response = await requestContext.post(`${API_BASE_URL}/api/journals`, {
+    headers: {
+      Authorization: "Bearer " + userName,
+    },
     data: {
       name: journal.name,
       description: journal.description || "",
