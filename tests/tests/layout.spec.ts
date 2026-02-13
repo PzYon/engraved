@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("does not display floating actions if not necessary", async ({ page }) => {
-  await waitUntilPageReady(page);
+  await navigateToHome(page);
   await expect(page.getByTestId("floating-header-actions")).toBeHidden();
 });
 
