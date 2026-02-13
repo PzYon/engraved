@@ -8,7 +8,7 @@ const value2 = "19.5";
 test("add new value journal, add some entries, delete entry", async ({
   page,
 }) => {
-  await login(page, "entries", "Value", "Journal with values");
+  await login(page, "entries", "Gauge", "Journal with values");
 
   const journalPage = new MetricJournalPage(page);
 

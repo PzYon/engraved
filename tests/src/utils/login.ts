@@ -20,7 +20,7 @@ function getDateTimeString() {
 export async function login(
   page: Page,
   testName: string,
-  journalType?: "Value" | "Timer" | "Scraps",
+  journalType?: "Counter" | "Gauge" | "Timer" | "Scraps",
   journalName?: string,
 ) {
   const userName = getUserName(testName);
