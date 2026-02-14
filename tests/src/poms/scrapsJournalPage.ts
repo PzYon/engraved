@@ -41,7 +41,7 @@ export class ScrapsJournalPage extends JournalPage {
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar).toContainText("Added entry");
     await appBar.getByRole("button", { name: "Close" }).click();
-    await expect(appBar).toBeHidden();
+    await expect(appBar).toBeHidden({ timeout: 2000 });
   }
 
   private async isMarkdown() {

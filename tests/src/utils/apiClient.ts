@@ -32,5 +32,5 @@ export async function createJournalViaApi(
   }
 
   const result = await response.json();
-  return result.result?.journalId || result.journalId;
+  return result.entityId;
 }
