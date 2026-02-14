@@ -23,6 +23,7 @@ test("does display floating actions if necessary (on scroll down)", async ({
       journalType: "Gauge",
     });
   }
+
   await navigateToHome(page);
   await page.reload();
 
