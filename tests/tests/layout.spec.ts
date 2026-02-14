@@ -14,9 +14,11 @@ test("does display floating actions if necessary (on scroll down)", async ({
   page,
   request,
 }) => {
+  const journalsToCreate = 15;
+
   const userName = await login(page, "layout");
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < journalsToCreate; i++) {
     await createJournalViaApi(request, userName, {
       name: `Use some space ${i}`,
       description: `Test journal ${i + 1} for testing`,
@@ -28,7 +30,7 @@ test("does display floating actions if necessary (on scroll down)", async ({
   await page.reload();
 
   const journalsPage = new JournalsPage(page);
-  await journalsPage.expectToShowNEntities(10);
+  await journalsPage.expectToShowNEntities(journalsToCreate);
 
   await journalsPage.scrollToBottom();
   await expect(page.getByTestId("floating-header-actions")).toBeVisible();
