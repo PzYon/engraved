@@ -1,35 +1,37 @@
-import { expect, Page, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { login } from "../src/utils/login";
-import { addNewJournal } from "../src/utils/addNewJournal";
 import { JournalsPage } from "../src/poms/journalsPage";
 import { navigateToHome } from "../src/utils/navigateTo";
-
-test.beforeEach(async ({ page }) => {
-  await login(page, "layout");
-});
+import { createJournalViaApi } from "../src/utils/apiClient";
 
 test("does not display floating actions if not necessary", async ({ page }) => {
-  await waitUntilPageReady(page);
+  await login(page, "layout");
+  await navigateToHome(page);
   await expect(page.getByTestId("floating-header-actions")).toBeHidden();
 });
 
 test("does display floating actions if necessary (on scroll down)", async ({
   page,
+  request,
 }) => {
-  // add some journals so we can scroll
-  for (let i = 0; i < 10; i++) {
-    await addNewJournal(page, "Value", "Use some space " + i);
+  const journalsToCreate = 15;
 
-    await navigateToHome(page);
+  const userName = await login(page, "layout");
+
+  for (let i = 0; i < journalsToCreate; i++) {
+    await createJournalViaApi(request, userName, {
+      name: `Use some space ${i}`,
+      description: `Test journal ${i + 1} for testing`,
+      journalType: "Gauge",
+    });
   }
 
-  await waitUntilPageReady(page);
+  await navigateToHome(page);
+  await page.reload();
 
-  await new JournalsPage(page).scrollToBottom();
+  const journalsPage = new JournalsPage(page);
+  await journalsPage.expectToShowNEntities(journalsToCreate);
+
+  await journalsPage.scrollToBottom();
   await expect(page.getByTestId("floating-header-actions")).toBeVisible();
 });
-
-async function waitUntilPageReady(page: Page) {
-  // wait for title to be rendered completely
-  await navigateToHome(page);
-}

@@ -12,9 +12,7 @@ const thirdItemText = "My Third Item";
 test("add scrap journal, add list entry and add/delete/modify", async ({
   page,
 }) => {
-  await login(page, "scrapsList-basic");
-
-  await addNewJournal(page, "Scraps", "My First Scraps Journal");
+  await login(page, "scrapsList-basic", "Scraps", "My First Scraps Journal");
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.expectIsEmpty();
@@ -42,9 +40,7 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
 test("add scrap journal, add list entries and mark as checked in non-edit mode", async ({
   page,
 }) => {
-  await login(page, "scrapsList-non-edit");
-
-  await addNewJournal(page, "Scraps", "Random Scraps");
+  await login(page, "scrapsList-non-edit", "Scraps", "Random Scraps");
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.expectIsEmpty();
@@ -77,9 +73,7 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
 });
 
 test("Enter only adds one empty line", async ({ page }) => {
-  await login(page, "scrapsList-entry");
-
-  await addNewJournal(page, "Scraps", "Random Scraps");
+  await login(page, "scrapsList-entry", "Scraps", "Random Scraps");
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.expectIsEmpty();
@@ -102,9 +96,7 @@ test("Enter only adds one empty line", async ({ page }) => {
 });
 
 test("Backspace on empty item removes item", async ({ page }) => {
-  await login(page, "scrapsList-backspace");
-
-  await addNewJournal(page, "Scraps", "Random Scraps");
+  await login(page, "scrapsList-backspace", "Scraps", "Random Scraps");
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.expectIsEmpty();
@@ -232,9 +224,7 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
 test("perform common scrap list operations using shortcuts", async ({
   page,
 }) => {
-  await login(page, "scrapsList-shortcuts");
-
-  await addNewJournal(page, "Scraps", "Scraps with shortcuts");
+  await login(page, "scrapsList-shortcuts", "Scraps", "Scraps with shortcuts");
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.expectIsEmpty();
