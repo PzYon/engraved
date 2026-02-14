@@ -50,7 +50,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
   } = useOverviewListContext();
 
   return (
-    <Host>
+    <Host className="overview-list">
       {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i].id))}
 
       {itemsToShow.map((item, index) => {

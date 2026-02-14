@@ -44,6 +44,7 @@ export const OverviewListItem: React.FC<{
       id={item.id}
       data-testid={item.id}
       onClick={() => onClick?.()}
+      className="overview-list-item"
     >
       <PageSection
         style={
