@@ -14,7 +14,7 @@
     "@mui/material": "7.3.8",
     "@mui/styled-engine": "7.3.8",
     "@mui/system": "7.3.8",
-    "@mui/x-date-pickers": "8.27.0",
+    "@mui/x-date-pickers": "8.27.2",
     "@tanstack/react-query": "5.90.21",
     "@tanstack/react-query-devtools": "5.91.3",
     "@tiptap/markdown": "3.20.0",
