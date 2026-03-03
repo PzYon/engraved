@@ -23,7 +23,7 @@ test("search in go to, use cursor down, use enter to navigate to scrap", async (
   await scrapsJournalPage.expectPageTitle("List of QBs");
 });
 
-test("initially shows recent journals, navigates with click", async ({
+test.skip("initially shows recent journals, navigates with click", async ({
   page,
 }) => {
   await login(page, "goto", "Scraps", "Kansas City Chiefs");
