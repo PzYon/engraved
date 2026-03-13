@@ -21,7 +21,7 @@
     "@tiptap/pm": "3.20.1",
     "@tiptap/react": "3.20.1",
     "@tiptap/starter-kit": "3.20.1",
-    "@vitejs/plugin-react": "5.1.4",
+    "@vitejs/plugin-react": "5.2.0",
     "chart.js": "4.5.1",
     "chartjs-adapter-date-fns": "3.0.0",
     "chartjs-plugin-annotation": "3.1.0",
