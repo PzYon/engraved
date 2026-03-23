@@ -164,8 +164,17 @@ function getTooltipTitleFormat(groupByTime: GroupByTime) {
   }
 }
 
-function getTooltipValue(type: IJournalType, value: number): string {
-  return type.formatTotalValue?.(value) ?? value.toFixed(3);
+function getTooltipValue(type: IJournalType, entry: ITransformedEntry): string {
+  const segments: string[] = [];
+
+  const value = entry.y;
+  segments.push(type.formatTotalValue?.(value) ?? value.toFixed(3));
+
+  if (entry.entries.length === 1 && entry.entries[0].notes) {
+    segments.push(entry.entries[0].notes);
+  }
+
+  return segments.join(", ");
 }
 
 function createBarChart(
@@ -259,7 +268,7 @@ function createBarChart(
             label: (tooltipItem): string | string[] | void => {
               return getTooltipValue(
                 journalType,
-                (tooltipItem.raw as ITransformedEntry).y,
+                tooltipItem.raw as ITransformedEntry,
               );
             },
           },
