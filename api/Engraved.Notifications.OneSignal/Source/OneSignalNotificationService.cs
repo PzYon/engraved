@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Engraved.Core.Application.Persistence;
+﻿using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Notifications;
 using Microsoft.Extensions.Options;
 using OneSignalApi.Api;
@@ -32,14 +31,14 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       webPushTopic: notificationKey,
       collapseId: notificationKey,
       targetChannel: Notification.TargetChannelEnum.Push,
-      includeExternalUserIds: [clientNotification.UserId],
-      headings: new StringMap(clientNotification.Title),
-      contents: new StringMap(clientNotification.Message),
+      includeAliases: new Dictionary<string, List<string>> { { "external_id", [clientNotification.UserId] } },
+      headings: new LanguageStringMap(clientNotification.Title),
+      contents: new LanguageStringMap(clientNotification.Message),
       url: clientNotification.OnClickUrl,
       smallIcon: "/icons/icon-transparent-bg.svg",
       chromeWebBadge: "/icons/icon-transparent-bg.svg",
       webButtons: clientNotification.Buttons
-        .Select(b => new ButtonWithUrl
+        .Select(b => new WebButton
           {
             Id = b.Key,
             Url = b.Url,
@@ -47,7 +46,6 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
             Icon = "/icons/icon-transparent-bg.svg"
           }
         )
-        .OfType<Button>()
         .ToList()
     );
 
@@ -88,11 +86,4 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       }
     );
   }
-}
-
-public class ButtonWithUrl(string? id = null, string? text = null, string? icon = null, string? url = null)
-  : Button(id, text, icon)
-{
-  [DataMember(Name = "url", IsRequired = true, EmitDefaultValue = false)]
-  public string? Url { get; set; } = url;
 }
