@@ -78,6 +78,14 @@ public static class EntryDocumentMapper
         }
       ),
 
+      LogBookEntryDocument sed => MapFromDocument(
+        sed,
+        new LogBookEntry
+        {
+          Title = sed.Title ?? string.Empty
+        }
+      ),
+
       TimerEntryDocument ted => MapFromDocument(
         ted,
         new TimerEntry

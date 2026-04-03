@@ -87,6 +87,8 @@ public static class JournalDocumentMapper
       ),
 
       ScrapsJournalDocument sj => MapFromDocument(sj, new ScrapsJournal()),
+      
+      LogBookJournalDocument lbj => MapFromDocument(lbj, new LogBookJournal()),
 
       _ => null
     };

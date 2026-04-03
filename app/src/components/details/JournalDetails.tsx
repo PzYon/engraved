@@ -11,6 +11,7 @@ import { ScrapsEditPage } from "./scraps/ScrapsEditPage";
 import { JournalViewPage } from "./JournalViewPage";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { addRecentlyViewedJournal } from "../layout/menu/useRecentlyViewedJournals";
+import { LogBookViewPage } from "./scraps/LogBookViewPage";
 
 export const JournalDetailsEdit: React.FC = () => {
   const { journal } = useJournalContext();
@@ -35,6 +36,8 @@ export const JournalDetailsView: React.FC = () => {
 
   return journal.type === JournalType.Scraps ? (
     <ScrapsViewPage key={journal.id} />
+  ) : journal.type === JournalType.LogBook ? (
+    <LogBookViewPage key={journal.id} />
   ) : (
     <JournalViewPage key={journal.id} />
   );

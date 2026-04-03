@@ -3,6 +3,7 @@ export interface ITranslations {
   journalType_gauge: string;
   journalType_counter: string;
   journalType_scraps: string;
+  journalType_logBook: string;
   groupBy_day: string;
   groupBy_month: string;
   columnName_notes: string;
