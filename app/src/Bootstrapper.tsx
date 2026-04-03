@@ -3,13 +3,13 @@ import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
 import { IAuthResult } from "./serverApi/IAuthResult";
 import { IUser } from "./serverApi/IUser";
-import { GoogleInitializeResponse } from "./serverApi/authentication/google/GoogleTypes";
 import { registerGooglePrompt } from "./serverApi/authentication/google/registerGooglePrompt";
 import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 import { JournalType } from "./serverApi/JournalType";
+import { CredentialResponse } from "google-one-tap";
 
 const storage = new AuthStorage();
 
@@ -98,7 +98,7 @@ export const Bootstrapper: React.FC = () => {
     </Host>
   );
 
-  function onSignedIn(response: GoogleInitializeResponse) {
+  function onSignedIn(response: CredentialResponse) {
     setIsLoading(true);
 
     ServerApi.authenticate(response.credential)
