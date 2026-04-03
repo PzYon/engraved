@@ -1,11 +1,11 @@
-import { GoogleInitializeResponse } from "./GoogleTypes";
-import { envSettings } from "../../../env/envSettings";
-import { ServerApi } from "../../ServerApi";
+import { envSettings } from "../../env/envSettings";
+import { ServerApi } from "../ServerApi";
+import { CredentialResponse, PromptMomentNotification } from "google-one-tap";
 
 const scriptUrl = "https://accounts.google.com/gsi/client";
 
 export function registerGooglePrompt(
-  signInWithJwt: (response: GoogleInitializeResponse) => void,
+  signInWithJwt: (response: CredentialResponse) => void,
   domElement: HTMLElement,
   doNotPrompt = false,
 ) {
@@ -28,17 +28,14 @@ export function registerGooglePrompt(
         return;
       }
 
-      googlePrompt().then((result: { isSuccess: boolean }) => {
-        if (result.isSuccess) {
-          return;
+      googlePrompt().then((result) => {
+        if (result.isNotDisplayed() || result.isSkippedMoment()) {
+          google.accounts.id.renderButton(domElement, {
+            theme: "outline",
+            size: "large",
+            shape: "pill",
+          });
         }
-
-        google.accounts.id.renderButton(domElement, {
-          theme: "outline",
-          size: "large",
-          shape: "pill",
-          type: "standard",
-        });
       });
     })
     .catch(console.error);
@@ -72,6 +69,6 @@ function getGoogleScriptTag() {
   return document.querySelector(`script[src="${scriptUrl}"]`);
 }
 
-function googlePrompt(): Promise<{ isSuccess: boolean }> {
+function googlePrompt(): Promise<PromptMomentNotification> {
   return new Promise((resolve) => google.accounts.id.prompt(resolve));
 }

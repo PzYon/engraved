@@ -31,6 +31,7 @@ import { IScheduleDefinition } from "./IScheduleDefinition";
 import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
 import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
 import { StorageWrapper } from "../util/StorageWrapper";
+import { PromptMomentNotification } from "google-one-tap";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -49,16 +50,12 @@ export class ServerApi {
 
   static serverOs: "lin" | "win" = "lin";
 
-  private static googlePrompt: () => Promise<{
-    isSuccess: boolean;
-  }>;
+  private static googlePrompt: () => Promise<PromptMomentNotification>;
 
   private static onAuthenticated: () => void;
 
   static setGooglePrompt(
-    googlePrompt: () => Promise<{
-      isSuccess: boolean;
-    }>,
+    googlePrompt: () => Promise<PromptMomentNotification>,
   ) {
     ServerApi.googlePrompt = googlePrompt;
   }

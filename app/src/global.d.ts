@@ -1,7 +1,8 @@
+// required for "import.meta.env...r "
 import "vite/client";
 
-import { Google } from "src/serverApi/authentication/google/GoogleTypes";
+import "@types/google-one-tap";
 
 declare global {
-  const google: Google;
+  const google: typeof import("google-one-tap");
 }
