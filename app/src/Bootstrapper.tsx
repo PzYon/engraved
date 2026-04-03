@@ -3,7 +3,7 @@ import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
 import { IAuthResult } from "./serverApi/IAuthResult";
 import { IUser } from "./serverApi/IUser";
-import { registerGooglePrompt } from "./serverApi/authentication/google/registerGooglePrompt";
+import { registerGooglePrompt } from "./serverApi/authentication/registerGooglePrompt";
 import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";

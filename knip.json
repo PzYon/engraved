@@ -5,8 +5,7 @@
       "ignoreDependencies": ["@tanstack/eslint-plugin-query"]
     },
     "app": {
-      "entry": "src/index.tsx",
-      "ignore": ["public/OneSignalSDKWorker.js", "dotnet", "src/global.d.ts"],
+      "ignore": ["public/OneSignalSDKWorker.js"],
       "ignoreBinaries": ["dotnet"]
     },
     "tests": {

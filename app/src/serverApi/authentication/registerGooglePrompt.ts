@@ -1,5 +1,5 @@
-import { envSettings } from "../../../env/envSettings";
-import { ServerApi } from "../../ServerApi";
+import { envSettings } from "../../env/envSettings";
+import { ServerApi } from "../ServerApi";
 import { CredentialResponse, PromptMomentNotification } from "google-one-tap";
 
 const scriptUrl = "https://accounts.google.com/gsi/client";
