@@ -15,6 +15,9 @@
     "**/*.{js,jsx,ts,tsx,css,md,json}": [
       "npx prettier --write",
       "npx eslint --fix"
+    ],
+    "**/*.{XXxml,XXcs}": [
+      "dotnet csharpier --write-stdout"
     ]
   },
   "repository": {
