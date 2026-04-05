@@ -45,7 +45,10 @@ export const JournalSubRoutes: React.FC<{
     case "add-entry":
       return (
         <NavigationActionContainer
-          growWidthIfPossible={journal.type === JournalType.Scraps}
+          growWidthIfPossible={
+            journal.type === JournalType.Scraps ||
+            journal.type === JournalType.LogBook
+          }
         >
           <UpsertEntryAction journal={journal} />
         </NavigationActionContainer>

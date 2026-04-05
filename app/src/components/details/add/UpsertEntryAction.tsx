@@ -58,7 +58,10 @@ export const UpsertEntryAction: React.FC<{
     return null;
   }
 
-  if (journal.type === JournalType.Scraps) {
+  if (
+    journal.type === JournalType.Scraps ||
+    journal.type === JournalType.LogBook
+  ) {
     return (
       <Scrap
         scrap={
