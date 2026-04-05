@@ -22,6 +22,8 @@ public static class JournalDocumentMapper
         }
       ),
 
+      LogBookJournal lbj => MapToDocument(lbj, new LogBookJournalDocument()),
+
       ScrapsJournal sj => MapToDocument(sj, new ScrapsJournalDocument()),
 
       _ => throw new ArgumentOutOfRangeException(nameof(journal), journal, null)

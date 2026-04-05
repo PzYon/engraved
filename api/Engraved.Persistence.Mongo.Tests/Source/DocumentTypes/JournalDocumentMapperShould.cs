@@ -156,6 +156,84 @@ public class JournalDocumentMapperShould
   }
 
   [Test]
+  public void LogBook_ToDocument()
+  {
+    var logBookJournal = new LogBookJournal
+    {
+      Id = Id,
+      Name = Name,
+      Description = Description,
+      Notes = Notes,
+      EditedOn = DateTime.UtcNow
+    };
+
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(logBookJournal);
+
+    var createdJournal = journalDocument as LogBookJournalDocument;
+    createdJournal.Should().NotBeNull();
+    createdJournal.Type.Should().Be(JournalType.LogBook);
+    AssertEqual(logBookJournal, createdJournal);
+  }
+
+  [Test]
+  public void LogBook_FromDocument()
+  {
+    var logBookJournalDocument = new LogBookJournalDocument
+    {
+      Id = new ObjectId(Id),
+      Description = Description,
+      Notes = Notes,
+      Name = Name
+    };
+
+    IJournal? journal = JournalDocumentMapper.FromDocument(logBookJournalDocument);
+
+    journal.Should().NotBeNull();
+    journal.Should().BeOfType<LogBookJournal>();
+    journal.Type.Should().Be(JournalType.LogBook);
+    AssertEqual(logBookJournalDocument, journal);
+  }
+
+  [Test]
+  public void Scraps_ToDocument()
+  {
+    var scrapsJournal = new ScrapsJournal
+    {
+      Id = Id,
+      Name = Name,
+      Description = Description,
+      Notes = Notes,
+      EditedOn = DateTime.UtcNow
+    };
+
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(scrapsJournal);
+
+    var createdJournal = journalDocument as ScrapsJournalDocument;
+    createdJournal.Should().NotBeNull();
+    createdJournal.Type.Should().Be(JournalType.Scraps);
+    AssertEqual(scrapsJournal, createdJournal);
+  }
+
+  [Test]
+  public void Scraps_FromDocument()
+  {
+    var scrapsJournalDocument = new ScrapsJournalDocument
+    {
+      Id = new ObjectId(Id),
+      Description = Description,
+      Notes = Notes,
+      Name = Name
+    };
+
+    IJournal? journal = JournalDocumentMapper.FromDocument(scrapsJournalDocument);
+
+    journal.Should().NotBeNull();
+    journal.Should().BeOfType<ScrapsJournal>();
+    journal.Type.Should().Be(JournalType.Scraps);
+    AssertEqual(scrapsJournalDocument, journal);
+  }
+
+  [Test]
   public void Counter_Attributes()
   {
     var journal = new CounterJournal

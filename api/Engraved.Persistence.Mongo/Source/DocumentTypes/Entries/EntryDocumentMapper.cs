@@ -37,6 +37,14 @@ public static class EntryDocumentMapper
         }
       ),
 
+      LogBookEntry le => MapToDocument(
+        le,
+        new LogBookEntryDocument
+        {
+          Title = le.Title
+        }
+      ),
+
       _ => throw new ArgumentOutOfRangeException(nameof(entry), entry, null)
     };
   }
