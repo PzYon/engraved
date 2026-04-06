@@ -4,7 +4,6 @@ import { useAppContext } from "../../../AppContext";
 import { Button, Typography } from "@mui/material";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
-import { JournalType } from "../../../serverApi/JournalType";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import {
   ActionsRenderStyle,
@@ -98,7 +97,7 @@ export const ScrapContextProvider: React.FC<{
 
   const upsertEntryMutation = useUpsertEntryMutation(
     journalId,
-    JournalType.Scraps,
+    journal.type,
     null, // scrap currently do not support attributes
     initialScrap.id,
     closeAddEntryAction,
@@ -227,6 +226,9 @@ export const ScrapContextProvider: React.FC<{
         setTitle: (t) => setScrapToRender({ ...scrapToRender, title: t }),
         notes: scrapToRender.notes,
         setNotes: (n) => setScrapToRender({ ...scrapToRender, notes: n }),
+        date: new Date(scrapToRender.dateTime),
+        setDate: (d) =>
+          setScrapToRender({ ...scrapToRender, dateTime: d.toJSON() }),
         parsedDate,
         setParsedDate,
         isEditMode,
@@ -354,6 +356,7 @@ function convertNotesToTargetType(
               } as IScrapListItem,
             ],
       );
+
     case ScrapType.Markdown:
       return genericNotes.map((n) => "- " + n).join("\n");
   }

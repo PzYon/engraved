@@ -2,5 +2,4 @@
 
 public class LogBookEntryDocument : EntryDocument
 {
-  public string? Title { get; set; }
 }

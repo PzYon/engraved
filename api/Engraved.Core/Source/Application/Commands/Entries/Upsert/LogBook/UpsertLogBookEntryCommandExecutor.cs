@@ -7,8 +7,8 @@ namespace Engraved.Core.Application.Commands.Entries.Upsert.LogBook;
 public class UpsertLogBookEntryCommandExecutor(IRepository repository, IDateService dateService)
   : BaseUpsertEntryCommandExecutor<
     UpsertLogBookEntryCommand,
-    ScrapsEntry,
-    ScrapsJournal
+    LogBookEntry,
+    LogBookJournal
   >(
     repository,
     dateService
@@ -27,8 +27,5 @@ public class UpsertLogBookEntryCommandExecutor(IRepository repository, IDateServ
     return Task.CompletedTask;
   }
 
-  protected override void SetTypeSpecificValues(UpsertLogBookEntryCommand command, ScrapsEntry entry)
-  {
-    entry.Title = command.Title;
-  }
+  protected override void SetTypeSpecificValues(UpsertLogBookEntryCommand command, LogBookEntry entry) { }
 }
