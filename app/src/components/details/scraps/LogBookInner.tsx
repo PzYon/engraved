@@ -4,6 +4,7 @@ import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { Markdown } from "./markdown/Markdown";
 import { SimpleDateSelector } from "../../common/DateSelector";
+import { format } from "date-fns";
 
 export const LogBookInner: React.FC = () => {
   const { isEditMode, setIsEditMode, date, setDate, scrapToRender, hasFocus } =
@@ -25,7 +26,12 @@ export const LogBookInner: React.FC = () => {
         <ReadonlyTitle
           entity={scrapToRender}
           hasFocus={hasFocus}
-          title={<Markdown useBasic={true} value={date.toJSON()} />}
+          title={
+            <Markdown
+              useBasic={true}
+              value={format(date, "EEEE, do MMMM yy")}
+            />
+          }
         />
       )}
 
