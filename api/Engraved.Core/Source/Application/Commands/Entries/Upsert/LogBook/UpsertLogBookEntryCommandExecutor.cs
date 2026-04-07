@@ -16,12 +16,9 @@ public class UpsertLogBookEntryCommandExecutor(IRepository repository, IDateServ
 {
   protected override Task PerformTypeSpecificValidation(UpsertLogBookEntryCommand command)
   {
-    if (string.IsNullOrWhiteSpace(command.Title) && string.IsNullOrWhiteSpace(command.Notes))
+    if (string.IsNullOrWhiteSpace(command.Notes))
     {
-      throw CreateInvalidCommandException(
-        command,
-        $"Either \"{nameof(UpsertLogBookEntryCommand.Title)}\" or \"{nameof(UpsertLogBookEntryCommand.Notes)}\" must be specified"
-      );
+      throw CreateInvalidCommandException(command, $"\"{nameof(UpsertLogBookEntryCommand.Notes)}\" must be specified");
     }
 
     return Task.CompletedTask;

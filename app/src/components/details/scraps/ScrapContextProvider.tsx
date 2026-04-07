@@ -22,6 +22,7 @@ import {
   knownQueryParams,
   useItemAction,
 } from "../../common/actions/searchParamHooks";
+import { JournalType } from "../../../serverApi/JournalType";
 
 const quickAddStorageKey = "quick-add";
 
@@ -97,8 +98,8 @@ export const ScrapContextProvider: React.FC<{
 
   const upsertEntryMutation = useUpsertEntryMutation(
     journalId,
-    journal.type,
-    null, // scrap currently do not support attributes
+    journal?.type ?? JournalType.Scraps,
+    null, // scraps currently do not support attributes
     initialScrap.id,
     closeAddEntryAction,
   );
