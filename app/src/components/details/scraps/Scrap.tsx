@@ -56,7 +56,7 @@ export const Scrap: React.FC<{
         isQuickAdd={isQuickAdd}
         changeTypeWithoutConfirmation={changeTypeWithoutConfirmation}
       >
-        {journal.type === "Scraps" ? <ScrapInner /> : <LogBookInner />}
+        {journal?.type === "LogBook" ? <LogBookInner /> : <ScrapInner />}
       </ScrapContextProvider>
     </div>
   );
