@@ -313,7 +313,7 @@ export const ScrapContextProvider: React.FC<{
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
         journalId: journalId,
-        dateTime: new Date(),
+        dateTime: scrapToRender.dateTime ?? new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
           journalId,
