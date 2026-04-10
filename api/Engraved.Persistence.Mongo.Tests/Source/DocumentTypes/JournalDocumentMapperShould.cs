@@ -14,7 +14,6 @@ public class JournalDocumentMapperShould
   private static readonly string Name = "N@me";
   private static readonly string Description = "D3scription";
   private static readonly string Notes = "N0t3s";
-  private static readonly string Template = "Templ@te";
 
   [Test]
   public void Counter_ToDocument()
@@ -165,7 +164,6 @@ public class JournalDocumentMapperShould
       Name = Name,
       Description = Description,
       Notes = Notes,
-      Template = Template,
       EditedOn = DateTime.UtcNow
     };
 
@@ -174,7 +172,6 @@ public class JournalDocumentMapperShould
     var createdJournal = journalDocument as LogBookJournalDocument;
     createdJournal.Should().NotBeNull();
     createdJournal.Type.Should().Be(JournalType.LogBook);
-    createdJournal.Template.Should().Be(logBookJournal.Template);
     AssertEqual(logBookJournal, createdJournal);
   }
 
@@ -186,8 +183,7 @@ public class JournalDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Notes = Notes,
-      Name = Name,
-      Template = Template
+      Name = Name
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(logBookJournalDocument);
@@ -195,7 +191,6 @@ public class JournalDocumentMapperShould
     journal.Should().NotBeNull();
     journal.Should().BeOfType<LogBookJournal>();
     journal.Type.Should().Be(JournalType.LogBook);
-    ((LogBookJournal) journal).Template.Should().Be(logBookJournalDocument.Template);
     AssertEqual(logBookJournalDocument, journal);
   }
 

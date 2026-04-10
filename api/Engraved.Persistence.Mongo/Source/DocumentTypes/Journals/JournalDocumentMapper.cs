@@ -22,13 +22,7 @@ public static class JournalDocumentMapper
         }
       ),
 
-      LogBookJournal lbj => MapToDocument(
-        lbj,
-        new LogBookJournalDocument
-        {
-          Template = lbj.Template
-        }
-      ),
+      LogBookJournal lbj => MapToDocument(lbj, new LogBookJournalDocument()),
 
       ScrapsJournal sj => MapToDocument(sj, new ScrapsJournalDocument()),
 
@@ -96,13 +90,7 @@ public static class JournalDocumentMapper
 
       ScrapsJournalDocument sj => MapFromDocument(sj, new ScrapsJournal()),
       
-      LogBookJournalDocument lbj => MapFromDocument(
-        lbj,
-        new LogBookJournal
-        {
-          Template = lbj.Template
-        }
-      ),
+      LogBookJournalDocument lbj => MapFromDocument(lbj, new LogBookJournal()),
 
       _ => null
     };
