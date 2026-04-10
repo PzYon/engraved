@@ -12,25 +12,23 @@ import { ILogBookJournal } from "../../../serverApi/ILogBookJournal";
 import { EditLogBookProperties } from "./EditLogBookProperties";
 
 export const ScrapsEditPage: React.FC = () => {
-  const navigate = useNavigate();
   const { journal } = useJournalContext();
 
   const [name, setName] = useState(journal.name);
   const [description, setDescription] = useState(journal.description);
-
   const [customProps, setCustomProps] = useState(journal.customProps ?? {});
-
   const [changedTagNames, setChangedTagNames] = useState<string[]>(undefined);
 
   const editJournalMutation = useEditJournalMutation(journal.id);
+
+  const navigate = useNavigate();
+  const navigateToViewPage = () => navigate("./..");
 
   const disableSave =
     name === journal.name &&
     description === journal.description &&
     JSON.stringify(journal.customProps) === JSON.stringify(customProps) &&
     !changedTagNames;
-
-  const navigateToViewPage = () => navigate("./..");
 
   return (
     <Page

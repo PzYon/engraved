@@ -7,7 +7,7 @@ import { IEntry } from "../serverApi/IEntry";
 import React from "react";
 import { Scrap } from "../components/details/scraps/Scrap";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
-import { AddNewScrapStorage } from "../components/details/scraps/AddNewScrapStorage";
+import { ILogBookJournal } from "../serverApi/ILogBookJournal";
 
 export class LogBookJournalType implements IJournalType {
   type = JournalType.LogBook;
@@ -49,34 +49,14 @@ export class LogBookJournalType implements IJournalType {
     throw new Error("getYAxisLabel is currently not supported for LogBooks.");
   }
 
-  static createBlank(
-    isQuickAdd: boolean,
-    journalId: string,
-    scrapType: ScrapType,
-    title?: string,
-    notes?: string,
-  ): IScrapEntry {
-    const scrapEntry = AddNewScrapStorage.getForJournal(
-      isQuickAdd ? "quick-add" : journalId,
-    ) ?? {
+  static createBlank(journal: ILogBookJournal): IScrapEntry {
+    return {
       id: null,
       dateTime: null,
+      parentId: journal.id,
+      notes: journal.customProps.template as string,
       title: "",
-      notes: "",
-      scrapType: scrapType,
+      scrapType: ScrapType.Markdown,
     };
-
-    // in any case we want to set the journal id
-    scrapEntry.parentId = journalId;
-
-    if (title) {
-      scrapEntry.title = title;
-    }
-
-    if (notes) {
-      scrapEntry.notes = notes;
-    }
-
-    return scrapEntry;
   }
 }
