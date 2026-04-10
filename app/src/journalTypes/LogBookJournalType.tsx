@@ -15,7 +15,7 @@ export class LogBookJournalType implements IJournalType {
   isGroupable = false;
 
   getIcon() {
-    return <CalendarMonth style={{ backgroundColor: "#f8dfff" }} />;
+    return <CalendarMonth style={{ backgroundColor: "#eeeeee" }} />;
   }
 
   getEntry(
@@ -52,7 +52,7 @@ export class LogBookJournalType implements IJournalType {
   static createBlank(journal: ILogBookJournal): IScrapEntry {
     return {
       id: null,
-      dateTime: null,
+      dateTime: new Date().toJSON(),
       parentId: journal.id,
       notes: journal.customProps.template as string,
       title: "",
