@@ -20,7 +20,6 @@ import { IJournalThresholdDefinitions } from "./IJournalThresholdDefinitions";
 import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
-import { IJournalUiSettings } from "../components/details/edit/IJournalUiSettings";
 import { IApiSystemInfo } from "./IApiSystemInfo";
 import { LoginHandler } from "./LoginHandler";
 import {
@@ -32,6 +31,7 @@ import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
 import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
 import { StorageWrapper } from "../util/StorageWrapper";
 import { PromptMomentNotification } from "google-one-tap";
+import { IJournalCustomProps } from "./IJournalCustomProps";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -217,7 +217,7 @@ export class ServerApi {
     notes: string,
     attributes: IJournalAttributes,
     thresholds: IJournalThresholdDefinitions,
-    uiSettings: IJournalUiSettings | string,
+    customProps: Record<string, unknown> & IJournalCustomProps,
   ): Promise<ICommandResult> {
     const payload: IEditJournalCommand = {
       journalId: journalId,
@@ -226,12 +226,7 @@ export class ServerApi {
       notes: notes,
       attributes: attributes,
       thresholds: thresholds,
-      customProps: {
-        uiSettings:
-          typeof uiSettings === "string"
-            ? uiSettings
-            : JSON.stringify(uiSettings),
-      },
+      customProps: customProps,
     };
 
     return await ServerApi.executeRequest("/journals/", "PUT", payload);

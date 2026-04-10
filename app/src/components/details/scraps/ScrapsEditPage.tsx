@@ -18,7 +18,7 @@ export const ScrapsEditPage: React.FC = () => {
   const [name, setName] = useState(journal.name);
   const [description, setDescription] = useState(journal.description);
 
-  const [customProps, setCustomProps] = useState({});
+  const [customProps, setCustomProps] = useState(journal.customProps ?? {});
 
   const [changedTagNames, setChangedTagNames] = useState<string[]>(undefined);
 
@@ -27,6 +27,7 @@ export const ScrapsEditPage: React.FC = () => {
   const disableSave =
     name === journal.name &&
     description === journal.description &&
+    JSON.stringify(journal.customProps) === JSON.stringify(customProps) &&
     !changedTagNames;
 
   const navigateToViewPage = () => navigate("./..");
@@ -63,9 +64,8 @@ export const ScrapsEditPage: React.FC = () => {
   );
 
   async function save() {
-    debugger;
     await editJournalMutation.mutateAsync({
-      journal: { ...journal, name, description, ...customProps },
+      journal: { ...journal, name, description, customProps },
       tagIds: changedTagNames,
       onSuccess: navigateToViewPage,
     });

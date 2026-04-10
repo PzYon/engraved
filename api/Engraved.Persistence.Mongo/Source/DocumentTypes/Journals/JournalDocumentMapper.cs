@@ -14,13 +14,7 @@ public static class JournalDocumentMapper
 
       GaugeJournal gj => MapToDocument(gj, new GaugeJournalDocument()),
 
-      TimerJournal tj => MapToDocument(
-        tj,
-        new TimerJournalDocument
-        {
-          StartDate = tj.StartDate
-        }
-      ),
+      TimerJournal tj => MapToDocument(tj, new TimerJournalDocument()),
 
       LogBookJournal lbj => MapToDocument(lbj, new LogBookJournalDocument()),
 
@@ -80,16 +74,10 @@ public static class JournalDocumentMapper
 
       GaugeJournalDocument gj => MapFromDocument(gj, new GaugeJournal()),
 
-      TimerJournalDocument tj => MapFromDocument(
-        tj,
-        new TimerJournal
-        {
-          StartDate = tj.StartDate
-        }
-      ),
+      TimerJournalDocument tj => MapFromDocument(tj, new TimerJournal()),
 
       ScrapsJournalDocument sj => MapFromDocument(sj, new ScrapsJournal()),
-      
+
       LogBookJournalDocument lbj => MapFromDocument(lbj, new LogBookJournal()),
 
       _ => null

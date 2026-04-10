@@ -31,7 +31,13 @@ export const useEditJournalMutation = (journalId: string) => {
           journal.notes,
           journal.attributes,
           journal.thresholds,
-          journal.customProps?.uiSettings,
+          journal.customProps,
+          // {
+          //   uiSettings:
+          //     typeof journal.customProps?.uiSettings === "string"
+          //       ? journal.customProps?.uiSettings
+          //       : JSON.stringify(journal.customProps?.uiSettings),
+          // },
         ),
       ]);
     },

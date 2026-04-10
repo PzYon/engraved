@@ -47,7 +47,7 @@ public class JournalDocumentMapperShould
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(counterJournalDocument);
-    
+
     journal.Should().NotBeNull();
     journal.Should().BeOfType<CounterJournal>();
     journal.Type.Should().Be(JournalType.Counter);
@@ -112,8 +112,7 @@ public class JournalDocumentMapperShould
             Values = { { "fl@g", "fl@g_value" } }
           }
         }
-      },
-      StartDate = startDate
+      }
     };
 
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(timerJournal);
@@ -122,7 +121,6 @@ public class JournalDocumentMapperShould
     createdJournal.Should().NotBeNull();
     createdJournal.Type.Should().Be(JournalType.Timer);
     AssertEqual(timerJournal, journalDocument);
-    startDate.Should().Be(createdJournal.StartDate);
 
     journalDocument.Attributes.Should().ContainKey("flags");
     JournalAttribute attribute = journalDocument.Attributes["flags"];
@@ -141,17 +139,16 @@ public class JournalDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Name = Name,
-      Notes = Notes,
-      StartDate = startDate
+      Notes = Notes
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(timerJournalDocument);
 
     journal.Should().NotBeNull();
 
-    var timerJournal = (TimerJournal) journal;
+    var timerJournal = journal as TimerJournal;
+    timerJournal.Should().NotBeNull();
     journal.Type.Should().Be(JournalType.Timer);
-    timerJournal.StartDate.Should().Be(startDate);
     AssertEqual(timerJournalDocument, journal);
   }
 
