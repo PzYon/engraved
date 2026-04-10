@@ -7,6 +7,9 @@ import { getCommonEditModeActions } from "../../overview/getCommonJournalActions
 import { EditCommonProperties } from "../edit/EditCommonProperties";
 import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { EditPageFooterButtons } from "../../common/EditPageFooterButtons";
+import { JournalType } from "../../../serverApi/JournalType";
+import { ILogBookJournal } from "../../../serverApi/ILogBookJournal";
+import { EditLogBookProperties } from "./EditLogBookProperties";
 
 export const ScrapsEditPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +17,8 @@ export const ScrapsEditPage: React.FC = () => {
 
   const [name, setName] = useState(journal.name);
   const [description, setDescription] = useState(journal.description);
+
+  const [customProps, setCustomProps] = useState({});
 
   const [changedTagNames, setChangedTagNames] = useState<string[]>(undefined);
 
@@ -43,6 +48,12 @@ export const ScrapsEditPage: React.FC = () => {
         setDescription={setDescription}
         onChangedTags={setChangedTagNames}
       />
+      {journal.type === JournalType.LogBook ? (
+        <EditLogBookProperties
+          journal={journal as ILogBookJournal}
+          setCustomProps={setCustomProps}
+        />
+      ) : null}
       <EditPageFooterButtons
         onSave={save}
         disableSave={disableSave}
@@ -52,8 +63,9 @@ export const ScrapsEditPage: React.FC = () => {
   );
 
   async function save() {
+    debugger;
     await editJournalMutation.mutateAsync({
-      journal: { ...journal, name, description },
+      journal: { ...journal, name, description, ...customProps },
       tagIds: changedTagNames,
       onSuccess: navigateToViewPage,
     });

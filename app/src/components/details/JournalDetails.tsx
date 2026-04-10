@@ -20,7 +20,8 @@ export const JournalDetailsEdit: React.FC = () => {
     addRecentlyViewedJournal(journal.id);
   }, [journal.id]);
 
-  return journal.type === JournalType.Scraps ? (
+  return journal.type === JournalType.Scraps ||
+    journal.type === JournalType.LogBook ? (
     <ScrapsEditPage />
   ) : (
     <JournalEditPage />
