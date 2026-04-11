@@ -7,19 +7,16 @@ import { CopyAllOutlined } from "@mui/icons-material";
 
 export const EditLogBookProperties: React.FC<{
   journal: ILogBookJournal;
-  setCustomProps: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
+  setCustomProps: (props: Record<string, unknown>) => void;
 }> = ({ journal, setCustomProps }) => {
   return (
     <PageSection title={"Log Entry Template"} icon={<CopyAllOutlined />}>
       <FormControl sx={{ width: "100%" }}>
         <LazyRichTextEditor
           setValue={(value) =>
-            setCustomProps((currentCustomProps) => ({
-              ...currentCustomProps,
-              template: value,
-            }))
+            setCustomProps({ ...journal.customProps, template: value })
           }
-          initialValue={(journal.customProps?.template as string) ?? ""}
+          initialValue={(journal.customProps.template as string) ?? ""}
         />
       </FormControl>
     </PageSection>
