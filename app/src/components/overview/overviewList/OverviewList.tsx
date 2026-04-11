@@ -7,7 +7,8 @@ import { useAppContext } from "../../../AppContext";
 import { useOverviewListContext } from "./OverviewListContext";
 import { OverviewListContextProvider } from "./OverviewListContextProvider";
 import { IEntry } from "../../../serverApi/IEntry";
-import { DifferenceInDays } from "../../common/DifferenceInDays";
+import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
+import { differenceInDays } from "date-fns";
 
 interface IOverviewListProps {
   items: IEntity[];
@@ -70,6 +71,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
             ) : null}
 
             <OverviewListItem
+              showDaysBetween={showDaysBetween}
               onClick={() => {
                 if (hasFocus) {
                   return;
@@ -152,3 +154,39 @@ const Host = styled("ul")`
     margin-bottom: ${(p) => p.theme.spacing(3)};
   }
 `;
+
+const DifferenceInDays: React.FC<{
+  item: IEntry;
+  lastItem: IEntry;
+}> = ({ item, lastItem }) => {
+  if (!item?.dateTime || !lastItem.dateTime) {
+    return null;
+  }
+
+  const diff = differenceInDays(lastItem.dateTime, item.dateTime);
+
+  return (
+    <Typography
+      sx={{
+        pt: 1,
+        pb: 1,
+        pl: 1,
+        ml: 3,
+        borderLeft: "3px solid white",
+      }}
+    >
+      <span
+        style={{
+          opacity: 0.4,
+          fontSize: "small",
+          display: "flex",
+          alignItems: "center",
+          color: "primary.main",
+        }}
+      >
+        <HistoryToggleOff fontSize="small" sx={{ mr: 1 }} />
+        {diff === 1 ? "1 day" : `${diff} days`}
+      </span>
+    </Typography>
+  );
+};
