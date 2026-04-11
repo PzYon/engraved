@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { IScrapListItem } from "./IScrapListItem";
 import { Checkbox, styled } from "@mui/material";
 import DragIndicator from "@mui/icons-material/DragIndicator";
-import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
+import RemoveCircleOutlined from "@mui/icons-material/RemoveCircleOutlined";
 import { AutogrowTextField } from "../../../common/AutogrowTextField";
 import { SxProps } from "@mui/system";
 import { Markdown } from "../markdown/Markdown";
@@ -114,7 +114,7 @@ export const ScrapListItem: React.FC<{
               {
                 key: "remove",
                 label: "Delete",
-                icon: <RemoveCircleOutline fontSize="small" />,
+                icon: <RemoveCircleOutlined fontSize="small" />,
                 onClick: () => listItemsCollection.removeItem(index),
               },
             ]}

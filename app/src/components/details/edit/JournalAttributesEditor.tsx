@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { JournalAttributeEditor } from "./JournalAttributeEditor";
 import { List } from "@mui/material";
 import { ListItemTextField } from "./ListItemTextField";
-import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlined from "@mui/icons-material/AddCircleOutlined";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
 export const JournalAttributesEditor: React.FC<{
@@ -44,7 +44,7 @@ export const JournalAttributesEditor: React.FC<{
           action={{
             key: "add",
             label: "Add",
-            icon: <AddCircleOutline fontSize="small" />,
+            icon: <AddCircleOutlined fontSize="small" />,
             onClick: () => setShowAddNewInput(true),
           }}
         />

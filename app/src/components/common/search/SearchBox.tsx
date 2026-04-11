@@ -28,27 +28,29 @@ export const SearchBox: React.FC<{
           setCurrentFieldValue(event.target.value);
         }}
         sx={{ width: "100%" }}
-        InputProps={{
-          endAdornment: (
-            <>
-              <IconButton
-                sx={{ visibility: currentFieldValue ? "visible" : "hidden" }}
-                onClick={() => {
-                  setSearchText("");
-                  setCurrentFieldValue("");
-                }}
-              >
-                <Clear fontSize="small" />
-              </IconButton>
-              <IconButton
-                onClick={() => {
-                  setSearchText(currentFieldValue);
-                }}
-              >
-                <SearchOutlined fontSize="small" />
-              </IconButton>
-            </>
-          ),
+        slotProps={{
+          input: {
+            endAdornment: (
+              <>
+                <IconButton
+                  sx={{ visibility: currentFieldValue ? "visible" : "hidden" }}
+                  onClick={() => {
+                    setSearchText("");
+                    setCurrentFieldValue("");
+                  }}
+                >
+                  <Clear fontSize="small" />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    setSearchText(currentFieldValue);
+                  }}
+                >
+                  <SearchOutlined fontSize="small" />
+                </IconButton>
+              </>
+            ),
+          },
         }}
       />
     </FormControl>

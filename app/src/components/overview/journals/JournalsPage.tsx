@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import ListAlt from "@mui/icons-material/ListAlt";
-import StarOutline from "@mui/icons-material/StarOutline";
+import StarOutlined from "@mui/icons-material/StarOutlined";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
 import { Icon } from "../../common/Icon";
@@ -23,7 +23,7 @@ export const JournalsPage: React.FC = () => {
   const actions = useMemo(() => {
     return [
       {
-        icon: <StarOutline fontSize="small" />,
+        icon: <StarOutlined fontSize="small" />,
         label: "Show favorites only",
         key: knownQueryParams.favoritesOnly,
         onClick: () =>

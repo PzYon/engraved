@@ -2,10 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalType } from "../../serverApi/JournalType";
-import { Autocomplete, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import { JournalMenuItem } from "../JournalMenuItem";
 import { StorageWrapper } from "../../util/StorageWrapper";
 import { useAppContext } from "../../AppContext";
+import Box from "@mui/material/Box";
 
 const storage = new StorageWrapper(window.localStorage);
 
@@ -55,17 +56,13 @@ export const JournalSelector: React.FC<{
         storage.setValue(storageKey, selectedOption.id);
       }}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          InputProps={params.InputProps}
-          label={label ?? "Journals"}
-        />
+        <TextField {...params} label={label ?? "Journals"} />
       )}
       getOptionLabel={(option) => option.name}
       renderOption={(props, option) => (
-        <MenuItem {...props} key={option.id}>
+        <Box {...props} key={option.id} component={"li"}>
           <JournalMenuItem journal={option} />
-        </MenuItem>
+        </Box>
       )}
       filterOptions={(currenOptions, state) => {
         return currenOptions.filter(

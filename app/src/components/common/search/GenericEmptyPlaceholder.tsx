@@ -11,7 +11,7 @@ export const GenericEmptyPlaceholder: React.FC<{
     <PageSection>
       <Host data-testid="empty-placeholder">
         <IconElement sx={{ color: "primary.main" }} fontSize="large" />
-        <Typography sx={{ color: "primary.main", mt: 2 }} fontSize="large">
+        <Typography sx={{ color: "primary.main", mt: 2, fontSize: "large" }}>
           {message}
         </Typography>
       </Host>

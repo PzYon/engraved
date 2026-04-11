@@ -5,8 +5,8 @@ import {
 import React, { useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IJournalThresholdDefinitions } from "../../../serverApi/IJournalThresholdDefinitions";
-import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
+import AddCircleOutlined from "@mui/icons-material/AddCircleOutlined";
+import RemoveCircleOutlined from "@mui/icons-material/RemoveCircleOutlined";
 import { styled } from "@mui/material";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
@@ -50,7 +50,7 @@ export const EditThresholds: React.FC<{
             action={{
               key: "remove",
               label: "Remove",
-              icon: <RemoveCircleOutline fontSize="small" />,
+              icon: <RemoveCircleOutlined fontSize="small" />,
               onClick: () => {
                 const newDefinitions = [...thresholdDefinitions];
                 newDefinitions.splice(i, 1);
@@ -67,7 +67,7 @@ export const EditThresholds: React.FC<{
         action={{
           key: "add",
           label: "Add",
-          icon: <AddCircleOutline fontSize="small" />,
+          icon: <AddCircleOutlined fontSize="small" />,
           onClick: () => {
             setThresholdDefinitions([
               ...thresholdDefinitions,

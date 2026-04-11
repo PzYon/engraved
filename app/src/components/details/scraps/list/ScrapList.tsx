@@ -21,7 +21,7 @@ import { ScrapBody } from "../ScrapBody";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
 import MoveDownOutlined from "@mui/icons-material/MoveDownOutlined";
-import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
+import RemoveCircleOutlined from "@mui/icons-material/RemoveCircleOutlined";
 import SyncAltOutlined from "@mui/icons-material/SyncAltOutlined";
 import { IAction } from "../../../common/actions/IAction";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
@@ -191,7 +191,7 @@ export const ScrapList: React.FC = () => {
       {
         key: "delete-checked",
         label: "Delete checked",
-        icon: <RemoveCircleOutline fontSize="small" />,
+        icon: <RemoveCircleOutlined fontSize="small" />,
         onClick: () => listItemCollection.deleteAllChecked(),
       },
     ];
