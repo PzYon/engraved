@@ -6,10 +6,14 @@ import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
 import { useOverviewListContext } from "./OverviewListContext";
 import { OverviewListContextProvider } from "./OverviewListContextProvider";
+import { IEntry } from "../../../serverApi/IEntry";
+import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
+import { differenceInDays } from "date-fns";
 
 interface IOverviewListProps {
   items: IEntity[];
   renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
+  showDaysBetween?: boolean;
   renderItem: (
     item: IEntity,
     index: number,
@@ -37,6 +41,7 @@ export const OverviewList: React.FC<IOverviewListProps> = memo(
 const OverviewListInternal: React.FC<IOverviewListProps> = ({
   renderBeforeList,
   renderItem,
+  showDaysBetween,
 }) => {
   const { user } = useAppContext();
 
@@ -57,29 +62,40 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
         const hasFocus = activeItemId === item.id;
 
         return (
-          <OverviewListItem
-            onClick={() => {
-              if (hasFocus) {
-                return;
-              }
-
-              setActiveItemId(item.id);
-              removeItemParamsFromUrl();
-            }}
+          <React.Fragment
             key={
               item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
             }
-            item={item}
-            hasFocus={hasFocus}
           >
-            <RenderItem
+            {showDaysBetween && index > 0 ? (
+              <DifferenceInDays
+                lastItem={itemsToShow[index - 1] as IEntry}
+                item={item as IEntry}
+              />
+            ) : null}
+
+            <OverviewListItem
+              showDaysBetween={showDaysBetween}
+              onClick={() => {
+                if (hasFocus) {
+                  return;
+                }
+
+                setActiveItemId(item.id);
+                removeItemParamsFromUrl();
+              }}
               item={item}
               hasFocus={hasFocus}
-              index={index}
-              setActiveItemId={setActiveItemId}
-              renderItem={renderItem}
-            />
-          </OverviewListItem>
+            >
+              <RenderItem
+                item={item}
+                hasFocus={hasFocus}
+                index={index}
+                setActiveItemId={setActiveItemId}
+                renderItem={renderItem}
+              />
+            </OverviewListItem>
+          </React.Fragment>
         );
       })}
       {hiddenItemsCount ? (
@@ -137,3 +153,38 @@ const Host = styled("ul")`
     margin-bottom: ${(p) => p.theme.spacing(3)};
   }
 `;
+
+const DifferenceInDays: React.FC<{
+  item: IEntry;
+  lastItem: IEntry;
+}> = ({ item, lastItem }) => {
+  if (!item?.dateTime || !lastItem.dateTime) {
+    return null;
+  }
+
+  const diff = differenceInDays(lastItem.dateTime, item.dateTime);
+
+  return (
+    <Typography
+      sx={{
+        pt: 1,
+        pb: 1,
+        pl: 1,
+        ml: 3,
+        borderLeft: "3px solid white",
+      }}
+    >
+      <span
+        style={{
+          opacity: 0.4,
+          fontSize: "small",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <HistoryToggleOff fontSize="small" sx={{ mr: 1 }} />
+        {diff === 1 ? "1 day" : `${diff} days`}
+      </span>
+    </Typography>
+  );
+};

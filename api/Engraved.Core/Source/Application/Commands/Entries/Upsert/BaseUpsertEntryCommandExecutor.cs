@@ -44,8 +44,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     SetCommonValues(command, entry);
     SetTypeSpecificValues(command, entry);
 
-    UpsertResult result = await Repository.UpsertEntry(entry);
-    return result;
+    return await Repository.UpsertEntry(entry);
   }
 
   private static async Task UpdateJournal(IBaseRepository repository, IDateService dateService, TJournal journal)

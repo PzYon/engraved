@@ -2,7 +2,6 @@
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
-using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -20,15 +19,17 @@ public class MongoDatabaseClient
   {
     // below stuff is required for polymorphic document types to work. it would
     // somehow be nicer if this handled by every document-class itself, but that
-    // doesn't work for whatever reasons.
+    // doesn't work for whatever reason.
     BsonClassMap.RegisterClassMap<CounterEntryDocument>();
     BsonClassMap.RegisterClassMap<TimerEntryDocument>();
     BsonClassMap.RegisterClassMap<GaugeEntryDocument>();
     BsonClassMap.RegisterClassMap<ScrapsEntryDocument>();
+    BsonClassMap.RegisterClassMap<LogBookEntryDocument>();
     BsonClassMap.RegisterClassMap<CounterJournalDocument>();
     BsonClassMap.RegisterClassMap<TimerJournalDocument>();
     BsonClassMap.RegisterClassMap<GaugeJournalDocument>();
     BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
+    BsonClassMap.RegisterClassMap<LogBookJournalDocument>();
 
     BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
   }
@@ -50,17 +51,6 @@ public class MongoDatabaseClient
   {
     MongoClientSettings? clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
     clientSettings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
-
-    // void LogDuration(TimeSpan duration, string commandName)
-    // {
-    //  _logger?.LogInformation($"[MongoDb] - {commandName}-duration: {duration.TotalMilliseconds}ms");
-    // }
-    //
-    // clientSettings.ClusterConfigurator = clusterBuilder =>
-    // {
-    //   clusterBuilder.Subscribe<CommandSucceededEvent>(e => LogDuration(e.Duration, e.CommandName));
-    //   clusterBuilder.Subscribe<CommandFailedEvent>(e => LogDuration(e.Duration, e.CommandName));
-    // };
 
     return new MongoClient(clientSettings);
   }

@@ -10,7 +10,8 @@ export const OverviewListItem: React.FC<{
   item: IEntity;
   hasFocus: boolean;
   onClick: () => void;
-}> = memo(({ children, item, hasFocus, onClick }) => {
+  showDaysBetween?: boolean;
+}> = memo(({ children, item, hasFocus, onClick, showDaysBetween }) => {
   const domElementRef = useRef<HTMLLIElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
@@ -48,12 +49,14 @@ export const OverviewListItem: React.FC<{
     >
       <PageSection
         style={
-          isCompact
-            ? {
-                marginTop: "8px",
-                marginBottom: "8px",
-              }
-            : {}
+          showDaysBetween
+            ? { margin: 0 }
+            : isCompact
+              ? {
+                  marginTop: "8px",
+                  marginBottom: "8px",
+                }
+              : {}
         }
       >
         {children}

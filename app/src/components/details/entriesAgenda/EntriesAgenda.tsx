@@ -1,25 +1,21 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournal } from "../../../serverApi/IJournal";
 import { Chip, Paper, Typography } from "@mui/material";
-import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
-import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { FormatDate } from "../../common/FormatDate";
-import { getSortedEntries } from "./getSortedEntries";
 import { JournalType } from "../../../serverApi/JournalType";
 import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getDurationAsHhMmSsFromSeconds } from "../../../util/getDurationAsHhMmSs";
 import { Streak } from "../entriesTable/Streak";
+import { OverviewList } from "../../overview/overviewList/OverviewList";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
   entries: IEntry[];
 }> = ({ journal, entries }) => {
-  const sortedEntries = useMemo(() => getSortedEntries(entries), [entries]);
-
   if (!journal) {
     return null;
   }
@@ -31,13 +27,16 @@ export const EntriesAgenda: React.FC<{
       <Streak
         key={"streak-top"}
         journal={journal}
-        entries={sortedEntries.entries}
+        entries={entries}
         withBackground={true}
       />
 
-      {sortedEntries.entries.map((entry, index) => (
-        <>
-          <Paper key={entry.id} sx={{ p: 2, borderRadius: paperBorderRadius }}>
+      <OverviewList
+        items={entries}
+        showDaysBetween={true}
+        renderItem={(entity) => {
+          const entry = entity as IEntry;
+          return (
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 {journal.type === JournalType.Counter ? null : (
@@ -72,31 +71,14 @@ export const EntriesAgenda: React.FC<{
               </div>
               <EntrySubRoutes entry={entry} />
             </div>
-          </Paper>
-          {sortedEntries.gaps[index] ? (
-            <Typography
-              sx={{
-                pt: 1,
-                pb: 1,
-                pl: 1,
-                ml: 3,
-                fontSize: "smaller",
-                display: "flex",
-                alignItems: "center",
-                borderLeft: "3px solid white",
-                color: "primary.main",
-              }}
-            >
-              <HistoryToggleOff fontSize="small" sx={{ mr: 1 }} />
-              {sortedEntries.gaps[index].label}
-            </Typography>
-          ) : null}
-        </>
-      ))}
+          );
+        }}
+      />
+
       <Streak
         key={"streak-bottom"}
         journal={journal}
-        entries={sortedEntries.entries}
+        entries={entries}
         withBackground={true}
       />
     </Paper>

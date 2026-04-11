@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Scrap } from "./Scrap";
 import SelfImprovementOutlined from "@mui/icons-material/SelfImprovementOutlined";
 import { useJournalContext } from "../JournalContext";
@@ -8,8 +8,6 @@ import { Page } from "../../layout/pages/Page";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { useAppContext } from "../../../AppContext";
-import { ScrapToc } from "./ScrapToc";
-import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
 import {
   getScheduleForUser,
@@ -17,11 +15,9 @@ import {
 } from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
 
-export const ScrapsViewPage: React.FC = () => {
+export const LogBookViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
   const { user } = useAppContext();
-
-  const [showToc, setShowToc] = useState(true);
 
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
@@ -36,17 +32,12 @@ export const ScrapsViewPage: React.FC = () => {
     <Page
       title={<JournalPageTitle journal={journal} />}
       documentTitle={journal.name}
-      actions={[
-        ActionFactory.getToc(() => setShowToc(!showToc), !showToc),
-        null,
-        ...getCommonJournalActions(journal, true, user),
-      ]}
+      actions={[null, ...getCommonJournalActions(journal, true, user)]}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
     >
-      {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
-
       {scraps.length ? (
         <OverviewList
+          showDaysBetween={true}
           items={sortEntitiesByDates(scraps, user.id)}
           renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap

@@ -41,6 +41,12 @@ export const JournalTypeSelector: React.FC<{
             label={translations.journalType_scraps}
           />
         </MenuItem>
+        <MenuItem value={JournalType.LogBook}>
+          <JournalTypeMenuItem
+            journalType={JournalType.LogBook}
+            label={translations.journalType_logBook}
+          />
+        </MenuItem>
         <MenuItem value={JournalType.Counter}>
           <JournalTypeMenuItem
             journalType={JournalType.Counter}
