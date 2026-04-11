@@ -45,7 +45,7 @@ public class UpsertLogBookEntryCommandExecutor(IRepository repository, IDateServ
       entryDate
     );
 
-    return entriesOnSameDay.Any(e => e.Id != command.Id);
+    return entriesOnSameDay.Any(e => e.DateTime?.Date == entryDate && e.Id != command.Id);
   }
 
   protected override void SetTypeSpecificValues(UpsertLogBookEntryCommand command, LogBookEntry entry) { }

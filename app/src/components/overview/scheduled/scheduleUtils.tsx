@@ -62,7 +62,10 @@ export function getScheduleDefinition(
     : undefined;
 }
 
-export function sortEntitiesByDates(entities: IEntity[], userId: string) {
+export function sortEntitiesByDates(
+  entities: IEntity[],
+  userId: string,
+): IEntity[] {
   return [...entities].sort((a: IEntity, b: IEntity) => {
     const nextOccurrenceA = getScheduleForUser(a, userId).nextOccurrence;
     const nextOccurrenceB = getScheduleForUser(b, userId).nextOccurrence;
