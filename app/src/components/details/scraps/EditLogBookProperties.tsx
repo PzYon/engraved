@@ -10,7 +10,7 @@ export const EditLogBookProperties: React.FC<{
   setCustomProps: (props: Record<string, unknown>) => void;
 }> = ({ journal, setCustomProps }) => {
   return (
-    <PageSection title={"Log Entry Template"} icon={<CopyAllOutlined />}>
+    <PageSection title={"Entry Template"} icon={<CopyAllOutlined />}>
       <FormControl sx={{ width: "100%" }}>
         <LazyRichTextEditor
           setValue={(value) =>
