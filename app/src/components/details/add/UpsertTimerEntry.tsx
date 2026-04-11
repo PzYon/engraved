@@ -42,7 +42,7 @@ export const UpsertTimerEntry: React.FC<{
         />
       </FormElementContainer>
       <FormElementContainer>
-        <Typography fontSize="small">
+        <Typography sx={{ fontSize: "small" }}>
           Duration
           <Pill>
             <FormatDuration start={start} end={end} />

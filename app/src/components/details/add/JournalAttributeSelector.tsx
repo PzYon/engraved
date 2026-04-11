@@ -62,13 +62,7 @@ export const JournalAttributeSelector: React.FC<{
           [attributeKey]: option ? [option.addNewKey || option.key] : [],
         });
       }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={attribute.name}
-          InputProps={params.InputProps}
-        />
-      )}
+      renderInput={(params) => <TextField {...params} label={attribute.name} />}
       selectOnFocus
       clearOnBlur
       handleHomeEndKeys

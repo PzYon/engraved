@@ -55,11 +55,7 @@ export const AttributeComboSearch: React.FC<{
         return currenOptions;
       }}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          label={"Search attributes"}
-          InputProps={params.InputProps}
-        />
+        <TextField {...params} label={"Search attributes"} />
       )}
     />
   );

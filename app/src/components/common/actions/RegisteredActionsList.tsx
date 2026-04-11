@@ -10,7 +10,7 @@ export const RegisteredActionsList: React.FC = () => {
 
   return (
     <div>
-      <Typography fontSize="large" sx={{ pb: 2 }}>
+      <Typography sx={{ pb: 2, fontSize: "large" }}>
         List of Shortcuts ({filteredActions.length})
       </Typography>
       {filteredActions.map((a) => (

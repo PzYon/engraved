@@ -41,7 +41,7 @@ export const DialogWrapper: React.FC<{
       {...props}
       open={true}
       onClose={onClose}
-      TransitionComponent={SlideUp as never}
+      slots={{ transition: SlideUp as never }}
     >
       <RootBodyElement>
         <Header>

@@ -18,7 +18,7 @@ export const Chart: React.FC<IChartProps> = (props) => {
       <ActionsContainer>
         {props.chartType === "line" && numberOfEntries ? (
           <>
-            <Typography fontSize="small" sx={{ pr: 2 }}>
+            <Typography sx={{ pr: 2, fontSize: "small" }}>
               Moving avg.:
             </Typography>
             <Slider

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
+import RemoveCircleOutlined from "@mui/icons-material/RemoveCircleOutlined";
 import { ListItemTextField } from "./ListItemTextField";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 
@@ -42,7 +42,7 @@ export const JournalAttributeEditor: React.FC<{
                 action={{
                   key: "remove",
                   label: "Remove",
-                  icon: <RemoveCircleOutline fontSize="small" />,
+                  icon: <RemoveCircleOutlined fontSize="small" />,
                   onClick: () => handleOnChange(key, null),
                 }}
               />

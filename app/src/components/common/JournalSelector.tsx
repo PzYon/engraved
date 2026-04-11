@@ -55,11 +55,7 @@ export const JournalSelector: React.FC<{
         storage.setValue(storageKey, selectedOption.id);
       }}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          InputProps={params.InputProps}
-          label={label ?? "Journals"}
-        />
+        <TextField {...params} label={label ?? "Journals"} />
       )}
       getOptionLabel={(option) => option.name}
       renderOption={(props, option) => (

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { ActionIconButton } from "./actions/ActionIconButton";
 import { List, ListItem, ListItemText, styled, TextField } from "@mui/material";
-import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlined from "@mui/icons-material/AddCircleOutlined";
 import Edit from "@mui/icons-material/Edit";
-import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
+import RemoveCircleOutlined from "@mui/icons-material/RemoveCircleOutlined";
 
 interface IOption {
   key: string;
@@ -41,7 +41,7 @@ export const EditableList: React.FC<{
                 action={{
                   key: "remove",
                   label: "Remove",
-                  icon: <RemoveCircleOutline fontSize="small" />,
+                  icon: <RemoveCircleOutlined fontSize="small" />,
                   onClick: () => onDeleteOption(o.key),
                 }}
               />
@@ -73,7 +73,7 @@ export const EditableList: React.FC<{
                 isDisabled: doesExist,
                 key: "add",
                 label: "Add",
-                icon: <AddCircleOutline fontSize="small" />,
+                icon: <AddCircleOutlined fontSize="small" />,
                 onClick: addNewItem,
               }}
             />
