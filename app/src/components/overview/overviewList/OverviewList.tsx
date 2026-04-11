@@ -62,7 +62,11 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
         const hasFocus = activeItemId === item.id;
 
         return (
-          <>
+          <React.Fragment
+            key={
+              item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
+            }
+          >
             {showDaysBetween && index > 0 ? (
               <DifferenceInDays
                 lastItem={itemsToShow[index - 1] as IEntry}
@@ -80,11 +84,6 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
                 setActiveItemId(item.id);
                 removeItemParamsFromUrl();
               }}
-              key={
-                item.id +
-                "-" +
-                getScheduleForUser(item, user.id)?.nextOccurrence
-              }
               item={item}
               hasFocus={hasFocus}
             >
@@ -96,7 +95,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
                 renderItem={renderItem}
               />
             </OverviewListItem>
-          </>
+          </React.Fragment>
         );
       })}
       {hiddenItemsCount ? (
@@ -181,7 +180,6 @@ const DifferenceInDays: React.FC<{
           fontSize: "small",
           display: "flex",
           alignItems: "center",
-          color: "primary.main",
         }}
       >
         <HistoryToggleOff fontSize="small" sx={{ mr: 1 }} />
