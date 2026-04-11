@@ -3,8 +3,10 @@ using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.AddSchedule;
 using Engraved.Core.Application.Commands.Entries.Delete;
 using Engraved.Core.Application.Commands.Entries.Move;
+using Engraved.Core.Application.Commands.Entries.Upsert;
 using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
+using Engraved.Core.Application.Commands.Entries.Upsert.LogBook;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Queries.Entries.Get;
@@ -41,7 +43,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
       SearchText = searchText
     };
 
-    IEntry[] entries = await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
+    var entries = await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
 
     return entries.EnsurePolymorphismWhenSerializing();
   }
@@ -91,6 +93,19 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
   [Route("scraps")]
   public async Task<CommandResult> UpsertScraps([FromBody] UpsertScrapsEntryCommand command)
   {
+    return await UpsertScrapLike(command);
+  }
+
+  [HttpPost]
+  [Route("logbook")]
+  public async Task<CommandResult> UpsertLogBook([FromBody] UpsertLogBookEntryCommand command)
+  {
+    return await UpsertScrapLike(command);
+  }
+
+  private async Task<CommandResult> UpsertScrapLike<TCommand>(TCommand command)
+    where TCommand : BaseUpsertScrapLikeEntryCommand
+  {
     CommandResult result = await dispatcher.Command(command);
 
     if (command.Schedule == null)
@@ -99,7 +114,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
     }
 
     command.Schedule.EntryId = result.EntityId;
-    
+
     await dispatcher.Command(command.Schedule);
 
     return result;

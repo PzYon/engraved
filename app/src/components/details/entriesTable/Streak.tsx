@@ -7,6 +7,7 @@ import Warning from "@mui/icons-material/Warning";
 import DoNotDisturb from "@mui/icons-material/DoNotDisturb";
 import { Paper, styled, Typography } from "@mui/material";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
+import React from "react";
 
 interface IStreakProps {
   journal: IJournal;

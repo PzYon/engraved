@@ -12,6 +12,8 @@ export interface IScrapContext {
   setTitle: (title: string) => void;
   notes: string;
   setNotes: (notes: string) => void;
+  date: Date;
+  setDate: (date: Date) => void;
   parsedDate: IParsedDate;
   setParsedDate: (parsedDate: IParsedDate) => void;
   isEditMode: boolean;
@@ -35,6 +37,8 @@ export const ScrapContext = createContext<IScrapContext>({
   setTitle: null,
   notes: null,
   setNotes: null,
+  date: null,
+  setDate: null,
   parsedDate: null,
   setParsedDate: null,
   isEditMode: null,

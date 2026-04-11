@@ -4,7 +4,6 @@ import { useAppContext } from "../../../AppContext";
 import { Button, Typography } from "@mui/material";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
-import { JournalType } from "../../../serverApi/JournalType";
 import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import {
   ActionsRenderStyle,
@@ -23,6 +22,7 @@ import {
   knownQueryParams,
   useItemAction,
 } from "../../common/actions/searchParamHooks";
+import { JournalType } from "../../../serverApi/JournalType";
 
 const quickAddStorageKey = "quick-add";
 
@@ -98,8 +98,8 @@ export const ScrapContextProvider: React.FC<{
 
   const upsertEntryMutation = useUpsertEntryMutation(
     journalId,
-    JournalType.Scraps,
-    null, // scrap currently do not support attributes
+    journal?.type ?? JournalType.Scraps,
+    null, // scraps currently do not support attributes
     initialScrap.id,
     closeAddEntryAction,
   );
@@ -227,6 +227,9 @@ export const ScrapContextProvider: React.FC<{
         setTitle: (t) => setScrapToRender({ ...scrapToRender, title: t }),
         notes: scrapToRender.notes,
         setNotes: (n) => setScrapToRender({ ...scrapToRender, notes: n }),
+        date: new Date(scrapToRender.dateTime),
+        setDate: (d) =>
+          setScrapToRender({ ...scrapToRender, dateTime: d.toJSON() }),
         parsedDate,
         setParsedDate,
         isEditMode,
@@ -310,7 +313,7 @@ export const ScrapContextProvider: React.FC<{
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
         journalId: journalId,
-        dateTime: new Date(),
+        dateTime: scrapToRender.dateTime ?? new Date(),
         schedule: getScheduleDefinition(
           parsedDate,
           journalId,
@@ -354,6 +357,7 @@ function convertNotesToTargetType(
               } as IScrapListItem,
             ],
       );
+
     case ScrapType.Markdown:
       return genericNotes.map((n) => "- " + n).join("\n");
   }

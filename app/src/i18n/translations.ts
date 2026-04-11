@@ -5,6 +5,7 @@ export const translations: ITranslations = {
   journalType_gauge: "Value",
   journalType_timer: "Timer",
   journalType_scraps: "Scraps",
+  journalType_logBook: "LogBook",
   groupBy_day: "Day",
   groupBy_month: "Month",
   columnName_date: "Date",

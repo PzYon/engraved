@@ -36,6 +36,7 @@ public class AddJournalCommandExecutor(IRepository repository, IDateService date
       JournalType.Gauge => new GaugeJournal(),
       JournalType.Timer => new TimerJournal(),
       JournalType.Scraps => new ScrapsJournal(),
+      JournalType.LogBook => new LogBookJournal(),
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
   }

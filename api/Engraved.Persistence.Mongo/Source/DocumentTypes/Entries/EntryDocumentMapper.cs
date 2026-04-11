@@ -37,6 +37,11 @@ public static class EntryDocumentMapper
         }
       ),
 
+      LogBookEntry le => MapToDocument(
+        le,
+        new LogBookEntryDocument()
+      ),
+
       _ => throw new ArgumentOutOfRangeException(nameof(entry), entry, null)
     };
   }
@@ -76,6 +81,11 @@ public static class EntryDocumentMapper
           Title = sed.Title ?? string.Empty,
           ScrapType = sed.ScrapType ?? ScrapType.Markdown
         }
+      ),
+
+      LogBookEntryDocument lbed => MapFromDocument(
+        lbed,
+        new LogBookEntry()
       ),
 
       TimerEntryDocument ted => MapFromDocument(

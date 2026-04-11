@@ -29,6 +29,7 @@ import { Scrap } from "../scraps/Scrap";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { useItemAction } from "../../common/actions/searchParamHooks";
+import { LogBookJournalType } from "../../../journalTypes/LogBookJournalType";
 
 export const UpsertEntryAction: React.FC<{
   journal?: IJournal;
@@ -58,13 +59,13 @@ export const UpsertEntryAction: React.FC<{
     return null;
   }
 
-  if (journal.type === JournalType.Scraps) {
+  if (
+    journal.type === JournalType.Scraps ||
+    journal.type === JournalType.LogBook
+  ) {
     return (
       <Scrap
-        scrap={
-          (entry as IScrapEntry) ??
-          ScrapsJournalType.createBlank(false, journal.id, ScrapType.Markdown)
-        }
+        scrap={(entry as IScrapEntry) ?? createNewEntry()}
         testId="add-new-scrap"
         hasFocus={true}
         journal={journal}
@@ -75,6 +76,12 @@ export const UpsertEntryAction: React.FC<{
   }
 
   return <UpsertEntryActionInternal journal={journal} entry={entry} />;
+
+  function createNewEntry(): IScrapEntry {
+    return journal.type === JournalType.LogBook
+      ? LogBookJournalType.createBlank(journal)
+      : ScrapsJournalType.createBlank(false, journal.id, ScrapType.Markdown);
+  }
 };
 
 const UpsertEntryActionInternal: React.FC<{

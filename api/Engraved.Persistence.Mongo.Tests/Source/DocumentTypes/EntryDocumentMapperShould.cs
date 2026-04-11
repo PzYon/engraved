@@ -134,6 +134,94 @@ public class EntryDocumentMapperShould
     AssertEqual(document, timerEntry);
   }
 
+  [Test]
+  public void Scraps_ToDocument()
+  {
+    var entry = new ScrapsEntry
+    {
+      Id = Id,
+      Notes = "n0t3",
+      ParentId = Key,
+      DateTime = DateTime.UtcNow,
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      Title = "scrap title",
+      ScrapType = ScrapType.List
+    };
+
+    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
+
+    document.Should().NotBeNull();
+    AssertEqual(entry, document);
+
+    var scrapsDocument = document as ScrapsEntryDocument;
+    scrapsDocument.Should().NotBeNull();
+    scrapsDocument!.Title.Should().Be(entry.Title);
+    scrapsDocument.ScrapType.Should().Be(entry.ScrapType);
+  }
+
+  [Test]
+  public void Scraps_FromDocument()
+  {
+    var document = new ScrapsEntryDocument
+    {
+      Id = new ObjectId(Id),
+      Notes = "n0t3",
+      ParentId = Key,
+      DateTime = DateTime.UtcNow,
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      Title = "scrap title",
+      ScrapType = ScrapType.List
+    };
+
+    IEntry entry = EntryDocumentMapper.FromDocument(document);
+
+    AssertEqual(document, entry);
+    var scrapsEntry = entry as ScrapsEntry;
+    scrapsEntry.Should().NotBeNull();
+    scrapsEntry!.Title.Should().Be(document.Title);
+    scrapsEntry.ScrapType.Should().Be(document.ScrapType);
+  }
+
+  [Test]
+  public void LogBook_ToDocument()
+  {
+    var entry = new LogBookEntry
+    {
+      Id = Id,
+      Notes = "n0t3",
+      ParentId = Key,
+      DateTime = DateTime.UtcNow,
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+    };
+
+    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
+
+    document.Should().NotBeNull();
+    AssertEqual(entry, document);
+
+    var logBookDocument = document as LogBookEntryDocument;
+    logBookDocument.Should().NotBeNull();
+  }
+
+  [Test]
+  public void LogBook_FromDocument()
+  {
+    var document = new LogBookEntryDocument
+    {
+      Id = new ObjectId(Id),
+      Notes = "n0t3",
+      ParentId = Key,
+      DateTime = DateTime.UtcNow,
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+    };
+
+    IEntry entry = EntryDocumentMapper.FromDocument(document);
+
+    AssertEqual(document, entry);
+    var logBookEntry = entry as LogBookEntry;
+    logBookEntry.Should().NotBeNull();
+  }
+
   private static void AssertEqual(IEntry expected, EntryDocument actual)
   {
     actual.DateTime.Should().Be(expected.DateTime);

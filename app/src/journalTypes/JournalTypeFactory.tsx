@@ -4,6 +4,7 @@ import { GaugeJournalType } from "./GaugeJournalType";
 import { TimerJournalType } from "./TimerJournalType";
 import { IJournalType } from "./IJournalType";
 import { ScrapsJournalType } from "./ScrapsJournalType";
+import { LogBookJournalType } from "./LogBookJournalType";
 
 export class JournalTypeFactory {
   static create(type: JournalType): IJournalType {
@@ -16,6 +17,8 @@ export class JournalTypeFactory {
         return new TimerJournalType();
       case JournalType.Scraps:
         return new ScrapsJournalType();
+      case JournalType.LogBook:
+        return new LogBookJournalType();
     }
   }
 }

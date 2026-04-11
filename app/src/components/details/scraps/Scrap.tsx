@@ -5,6 +5,8 @@ import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { ActionsRenderStyle } from "./ScrapContext";
 import { ScrapContextProvider } from "./ScrapContextProvider";
 import { IJournal } from "../../../serverApi/IJournal";
+import { LogBookInner } from "./LogBookInner";
+import { JournalType } from "../../../serverApi/JournalType";
 
 export const Scrap: React.FC<{
   scrap: IScrapEntry;
@@ -55,7 +57,11 @@ export const Scrap: React.FC<{
         isQuickAdd={isQuickAdd}
         changeTypeWithoutConfirmation={changeTypeWithoutConfirmation}
       >
-        <ScrapInner />
+        {journal?.type === JournalType.LogBook ? (
+          <LogBookInner />
+        ) : (
+          <ScrapInner />
+        )}
       </ScrapContextProvider>
     </div>
   );

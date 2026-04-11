@@ -4,6 +4,7 @@ using Engraved.Core.Application.Commands.Entries.Delete;
 using Engraved.Core.Application.Commands.Entries.Move;
 using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
+using Engraved.Core.Application.Commands.Entries.Upsert.LogBook;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Commands.Journals.Add;
@@ -43,6 +44,7 @@ public static class ExecutorRegistration
     RegisterCommand<UpsertCounterEntryCommand, UpsertCounterEntryCommandExecutor>(services);
     RegisterCommand<UpsertGaugeEntryCommand, UpsertGaugeEntryCommandExecutor>(services);
     RegisterCommand<UpsertScrapsEntryCommand, UpsertScrapsEntryCommandExecutor>(services);
+    RegisterCommand<UpsertLogBookEntryCommand, UpsertLogBookEntryCommandExecutor>(services);
     RegisterCommand<UpsertTimerEntryCommand, UpsertTimerEntryCommandExecutor>(services);
     RegisterCommand<DeleteEntryCommand, DeleteEntryCommandExecutor>(services);
     RegisterCommand<DeleteJournalCommand, DeleteJournalCommandExecutor>(services);

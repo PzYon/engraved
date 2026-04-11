@@ -47,7 +47,7 @@ public class JournalDocumentMapperShould
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(counterJournalDocument);
-    
+
     journal.Should().NotBeNull();
     journal.Should().BeOfType<CounterJournal>();
     journal.Type.Should().Be(JournalType.Counter);
@@ -112,8 +112,7 @@ public class JournalDocumentMapperShould
             Values = { { "fl@g", "fl@g_value" } }
           }
         }
-      },
-      StartDate = startDate
+      }
     };
 
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(timerJournal);
@@ -122,7 +121,6 @@ public class JournalDocumentMapperShould
     createdJournal.Should().NotBeNull();
     createdJournal.Type.Should().Be(JournalType.Timer);
     AssertEqual(timerJournal, journalDocument);
-    startDate.Should().Be(createdJournal.StartDate);
 
     journalDocument.Attributes.Should().ContainKey("flags");
     JournalAttribute attribute = journalDocument.Attributes["flags"];
@@ -141,18 +139,95 @@ public class JournalDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Name = Name,
-      Notes = Notes,
-      StartDate = startDate
+      Notes = Notes
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(timerJournalDocument);
 
     journal.Should().NotBeNull();
 
-    var timerJournal = (TimerJournal) journal;
+    var timerJournal = journal as TimerJournal;
+    timerJournal.Should().NotBeNull();
     journal.Type.Should().Be(JournalType.Timer);
-    timerJournal.StartDate.Should().Be(startDate);
     AssertEqual(timerJournalDocument, journal);
+  }
+
+  [Test]
+  public void LogBook_ToDocument()
+  {
+    var logBookJournal = new LogBookJournal
+    {
+      Id = Id,
+      Name = Name,
+      Description = Description,
+      Notes = Notes,
+      EditedOn = DateTime.UtcNow
+    };
+
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(logBookJournal);
+
+    var createdJournal = journalDocument as LogBookJournalDocument;
+    createdJournal.Should().NotBeNull();
+    createdJournal.Type.Should().Be(JournalType.LogBook);
+    AssertEqual(logBookJournal, createdJournal);
+  }
+
+  [Test]
+  public void LogBook_FromDocument()
+  {
+    var logBookJournalDocument = new LogBookJournalDocument
+    {
+      Id = new ObjectId(Id),
+      Description = Description,
+      Notes = Notes,
+      Name = Name
+    };
+
+    IJournal? journal = JournalDocumentMapper.FromDocument(logBookJournalDocument);
+
+    journal.Should().NotBeNull();
+    journal.Should().BeOfType<LogBookJournal>();
+    journal.Type.Should().Be(JournalType.LogBook);
+    AssertEqual(logBookJournalDocument, journal);
+  }
+
+  [Test]
+  public void Scraps_ToDocument()
+  {
+    var scrapsJournal = new ScrapsJournal
+    {
+      Id = Id,
+      Name = Name,
+      Description = Description,
+      Notes = Notes,
+      EditedOn = DateTime.UtcNow
+    };
+
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(scrapsJournal);
+
+    var createdJournal = journalDocument as ScrapsJournalDocument;
+    createdJournal.Should().NotBeNull();
+    createdJournal.Type.Should().Be(JournalType.Scraps);
+    AssertEqual(scrapsJournal, createdJournal);
+  }
+
+  [Test]
+  public void Scraps_FromDocument()
+  {
+    var scrapsJournalDocument = new ScrapsJournalDocument
+    {
+      Id = new ObjectId(Id),
+      Description = Description,
+      Notes = Notes,
+      Name = Name
+    };
+
+    IJournal? journal = JournalDocumentMapper.FromDocument(scrapsJournalDocument);
+
+    journal.Should().NotBeNull();
+    journal.Should().BeOfType<ScrapsJournal>();
+    journal.Type.Should().Be(JournalType.Scraps);
+    AssertEqual(scrapsJournalDocument, journal);
   }
 
   [Test]
