@@ -83,8 +83,8 @@ public static class EntryDocumentMapper
         }
       ),
 
-      LogBookEntryDocument sed => MapFromDocument(
-        sed,
+      LogBookEntryDocument lbed => MapFromDocument(
+        lbed,
         new LogBookEntry()
       ),
 
