@@ -1,7 +1,7 @@
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 import { ISchedule } from "../../../serverApi/ISchedule";
 import { IEntity } from "../../../serverApi/IEntity";
-import { addDays, isAfter, isSameDay } from "date-fns";
+import { addDays, compareAsc, isAfter, isSameDay } from "date-fns";
 import { IParsedDate } from "../../details/edit/parseDate";
 import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
 import { ScheduledInfo } from "./ScheduledInfo";
@@ -60,4 +60,25 @@ export function getScheduleDefinition(
         onClickUrl: `${location.origin}/journals/details/${journalId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entryId)).toString()}`,
       }
     : undefined;
+}
+
+export function sortEntitiesByDates(entities: IEntity[], userId: string) {
+  return [...entities].sort((a: IEntity, b: IEntity) => {
+    const nextOccurrenceA = getScheduleForUser(a, userId).nextOccurrence;
+    const nextOccurrenceB = getScheduleForUser(b, userId).nextOccurrence;
+
+    if (nextOccurrenceA && nextOccurrenceB) {
+      return compareAsc(new Date(nextOccurrenceA), new Date(nextOccurrenceB));
+    }
+
+    if (nextOccurrenceA) {
+      return -1;
+    }
+
+    if (nextOccurrenceB) {
+      return 1;
+    }
+
+    return 0;
+  });
 }

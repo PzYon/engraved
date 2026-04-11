@@ -9,11 +9,12 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { useAppContext } from "../../../AppContext";
 import { ScrapToc } from "./ScrapToc";
-import { IEntity } from "../../../serverApi/IEntity";
-import { compareAsc } from "date-fns";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
-import { getScheduleForUser } from "../../overview/scheduled/scheduleUtils";
+import {
+  getScheduleForUser,
+  sortEntitiesByDates,
+} from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
 
 export const ScrapsViewPage: React.FC = () => {
@@ -46,7 +47,7 @@ export const ScrapsViewPage: React.FC = () => {
 
       {scraps.length ? (
         <OverviewList
-          items={scraps.sort(getCompareFn(user.id))}
+          items={sortEntitiesByDates(scraps, user.id)}
           renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap
               key={item.id + getScheduleForUser(item, user.id).nextOccurrence}
@@ -67,24 +68,3 @@ export const ScrapsViewPage: React.FC = () => {
     </Page>
   );
 };
-
-function getCompareFn(userId: string) {
-  return (a: IEntity, b: IEntity) => {
-    const nextOccurrenceA = getScheduleForUser(a, userId).nextOccurrence;
-    const nextOccurrenceB = getScheduleForUser(b, userId).nextOccurrence;
-
-    if (nextOccurrenceA && nextOccurrenceB) {
-      return compareAsc(new Date(nextOccurrenceA), new Date(nextOccurrenceB));
-    }
-
-    if (nextOccurrenceA) {
-      return -1;
-    }
-
-    if (nextOccurrenceB) {
-      return 1;
-    }
-
-    return 0;
-  };
-}
