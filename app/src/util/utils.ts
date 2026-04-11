@@ -23,7 +23,9 @@ export function getColorShades(length: number, color: string): string[] {
 }
 
 export function stripTime(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  return date
+    ? new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    : undefined;
 }
 
 export function formatDateOnly(date: Date): string {
