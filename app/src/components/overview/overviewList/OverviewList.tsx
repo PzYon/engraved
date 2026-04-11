@@ -6,10 +6,13 @@ import { getScheduleForUser } from "../scheduled/scheduleUtils";
 import { useAppContext } from "../../../AppContext";
 import { useOverviewListContext } from "./OverviewListContext";
 import { OverviewListContextProvider } from "./OverviewListContextProvider";
+import { IEntry } from "../../../serverApi/IEntry";
+import { DifferenceInDays } from "../../common/DifferenceInDays";
 
 interface IOverviewListProps {
   items: IEntity[];
   renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
+  showDaysBetween?: boolean;
   renderItem: (
     item: IEntity,
     index: number,
@@ -37,6 +40,7 @@ export const OverviewList: React.FC<IOverviewListProps> = memo(
 const OverviewListInternal: React.FC<IOverviewListProps> = ({
   renderBeforeList,
   renderItem,
+  showDaysBetween,
 }) => {
   const { user } = useAppContext();
 
@@ -57,29 +61,40 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
         const hasFocus = activeItemId === item.id;
 
         return (
-          <OverviewListItem
-            onClick={() => {
-              if (hasFocus) {
-                return;
-              }
+          <>
+            {showDaysBetween && index > 0 ? (
+              <DifferenceInDays
+                lastItem={itemsToShow[index - 1] as IEntry}
+                item={item as IEntry}
+              />
+            ) : null}
 
-              setActiveItemId(item.id);
-              removeItemParamsFromUrl();
-            }}
-            key={
-              item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
-            }
-            item={item}
-            hasFocus={hasFocus}
-          >
-            <RenderItem
+            <OverviewListItem
+              onClick={() => {
+                if (hasFocus) {
+                  return;
+                }
+
+                setActiveItemId(item.id);
+                removeItemParamsFromUrl();
+              }}
+              key={
+                item.id +
+                "-" +
+                getScheduleForUser(item, user.id)?.nextOccurrence
+              }
               item={item}
               hasFocus={hasFocus}
-              index={index}
-              setActiveItemId={setActiveItemId}
-              renderItem={renderItem}
-            />
-          </OverviewListItem>
+            >
+              <RenderItem
+                item={item}
+                hasFocus={hasFocus}
+                index={index}
+                setActiveItemId={setActiveItemId}
+                renderItem={renderItem}
+              />
+            </OverviewListItem>
+          </>
         );
       })}
       {hiddenItemsCount ? (

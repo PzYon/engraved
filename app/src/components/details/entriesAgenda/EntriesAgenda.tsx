@@ -3,7 +3,6 @@ import { IEntry } from "../../../serverApi/IEntry";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
 import { IJournal } from "../../../serverApi/IJournal";
 import { Chip, Paper, Typography } from "@mui/material";
-import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
 import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { FormatDate } from "../../common/FormatDate";
 import { getSortedEntries } from "./getSortedEntries";
@@ -13,6 +12,7 @@ import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGrou
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { getDurationAsHhMmSsFromSeconds } from "../../../util/getDurationAsHhMmSs";
 import { Streak } from "../entriesTable/Streak";
+import { DateDiff } from "../../common/DifferenceInDays";
 
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
@@ -74,22 +74,7 @@ export const EntriesAgenda: React.FC<{
             </div>
           </Paper>
           {sortedEntries.gaps[index] ? (
-            <Typography
-              sx={{
-                pt: 1,
-                pb: 1,
-                pl: 1,
-                ml: 3,
-                fontSize: "smaller",
-                display: "flex",
-                alignItems: "center",
-                borderLeft: "3px solid white",
-                color: "primary.main",
-              }}
-            >
-              <HistoryToggleOff fontSize="small" sx={{ mr: 1 }} />
-              {sortedEntries.gaps[index].label}
-            </Typography>
+            <DateDiff label={sortedEntries.gaps[index].label} />
           ) : null}
         </>
       ))}

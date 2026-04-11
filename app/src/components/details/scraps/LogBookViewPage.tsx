@@ -47,6 +47,7 @@ export const LogBookViewPage: React.FC = () => {
 
       {scraps.length ? (
         <OverviewList
+          showDaysBetween={true}
           items={sortEntitiesByDates(scraps, user.id)}
           renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap
