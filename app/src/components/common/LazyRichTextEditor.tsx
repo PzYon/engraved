@@ -79,25 +79,26 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           },
         },
         handleTextInput: (view, from, to, text) => {
-          if (from >= 3) {
-            const textBefore = view.state.doc.textBetween(
-              from - 2,
-              from,
-              "",
-            );
-            const combined = textBefore + text;
-
-            if (toReplace.includes(combined)) {
-              const tr = view.state.tr.replaceWith(
-                from - 2,
-                to,
-                view.state.schema.text(replacements[combined]),
-              );
-              view.dispatch(tr);
-              return true;
-            }
+          if (from < 3) {
+            return false;
           }
-          return false;
+
+          const textBefore = view.state.doc.textBetween(from - 2, from, "");
+          const combined = textBefore + text;
+
+          if (!toReplace.includes(combined)) {
+            return false;
+          }
+
+          const tr = view.state.tr.replaceWith(
+            from - 2,
+            to,
+            view.state.schema.text(replacements[combined]),
+          );
+
+          view.dispatch(tr);
+
+          return true;
         },
       },
       extensions: extensions,
