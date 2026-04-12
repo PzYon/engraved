@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeValues";
-import { Autocomplete, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, Box, TextField } from "@mui/material";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IJournal } from "../../../serverApi/IJournal";
 import {
@@ -40,13 +40,13 @@ export const AttributeComboSearch: React.FC<{
         const searchResult = option as IAttributeSearchResult;
 
         return (
-          <MenuItem {...props} key={JSON.stringify(searchResult)}>
+          <Box {...props} key={JSON.stringify(searchResult)} component={"li"}>
             <AttributeValues
               attributes={journal.attributes}
               attributeValues={searchResult.values}
               preventOnClick={true}
             />
-          </MenuItem>
+          </Box>
         );
       }}
       filterOptions={(currenOptions, state) => {
