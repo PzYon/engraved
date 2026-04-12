@@ -39,7 +39,8 @@ async function isNewVersionAvailable() {
 
   const response = await fetch("/chunks/envSettings.js");
   const text = await response.text();
-  const version = new RegExp(/version:"(\d+)"/gm).exec(text)[1];
+  const match = /version\s*:\s*(["'`])(\d+)\1/m.exec(text);
+  const version = match?.[2];
 
   return version !== envSettings.version;
 }
