@@ -78,6 +78,7 @@ export const QuickAddPage: React.FC = () => {
             actionsRenderStyle={"save-only"}
             onSuccess={() => navigate("/entries")}
             isQuickAdd={true}
+            hasFocus={true}
             changeTypeWithoutConfirmation={true}
             onCancelEditing={() => navigate(-1)}
           />
