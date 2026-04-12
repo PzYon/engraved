@@ -78,6 +78,28 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
             return false;
           },
         },
+        handleTextInput: (view, from, to, text) => {
+          if (from < 3) {
+            return false;
+          }
+
+          const textBefore = view.state.doc.textBetween(from - 2, from, "");
+          const combined = textBefore + text;
+
+          if (!toReplace.includes(combined)) {
+            return false;
+          }
+
+          const tr = view.state.tr.replaceWith(
+            from - 2,
+            to,
+            view.state.schema.text(replacements[combined]),
+          );
+
+          view.dispatch(tr);
+
+          return true;
+        },
       },
       extensions: extensions,
       content: initialValue === "" ? undefined : initialValue,
@@ -86,37 +108,6 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
-        const ranges = editor.state.selection.ranges;
-
-        if (ranges[0].$from.pos === ranges[0].$to.pos) {
-          const currentPosition = ranges[0].$from.pos;
-
-          if (currentPosition >= 3) {
-            const textBeforeCursor = editor.state.doc.textBetween(
-              Math.max(0, currentPosition - 3),
-              currentPosition,
-              "",
-            );
-
-            if (toReplace.includes(textBeforeCursor)) {
-              editor
-                .chain()
-                .deleteRange({
-                  from: currentPosition - 3,
-                  to: currentPosition,
-                })
-                .insertContent(replacements[textBeforeCursor])
-                .run();
-
-              setIsEmpty(false);
-
-              // setValue will be called on the next update cycle
-
-              return;
-            }
-          }
-        }
-
         setValue(editor.getMarkdown());
         setIsEmpty(!editor.getText());
       },
