@@ -17,7 +17,7 @@ import { FormElementContainer } from "../../common/FormUtils";
 import { IEntry } from "../../../serverApi/IEntry";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
 import { AttributeComboSearch } from "./AttributeComboSearch";
-import { countAttributes, hasAttributes } from "../../../util/entryUtils";
+import { countAttributes, hasAttributes, getDefaultAttributeValues } from "../../../util/entryUtils";
 import { UpsertTimerEntry } from "./UpsertTimerEntry";
 import { IUpsertTimerEntryCommand } from "../../../serverApi/commands/IUpsertTimerEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
@@ -89,7 +89,10 @@ const UpsertEntryActionInternal: React.FC<{
   entry?: IEntry;
 }> = ({ journal, entry }) => {
   const [attributeValues, setAttributeValues] =
-    useState<IJournalAttributeValues>(entry?.journalAttributeValues || {}); // empty means nothing selected in the selector
+    useState<IJournalAttributeValues>(
+      entry?.journalAttributeValues ||
+        getDefaultAttributeValues(journal.attributes),
+    ); // empty means nothing selected in the selector
 
   const [notes, setNotes] = useState<string>(entry?.notes || "");
 

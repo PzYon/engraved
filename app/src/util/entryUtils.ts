@@ -1,5 +1,6 @@
 import { IJournalAttributeValues } from "../serverApi/IJournalAttributeValues";
 import { IJournal } from "../serverApi/IJournal";
+import { IJournalAttributes } from "../serverApi/IJournalAttributes";
 
 export function countAttributes(journal: IJournal) {
   return Object.keys(journal?.attributes || {}).length;
@@ -30,4 +31,22 @@ export function hasValues(
   }
 
   return true;
+}
+
+export function getDefaultAttributeValues(
+  attributes: IJournalAttributes | undefined,
+): IJournalAttributeValues {
+  if (!attributes) {
+    return {};
+  }
+
+  return Object.entries(attributes).reduce(
+    (acc: IJournalAttributeValues, [key, attribute]) => {
+      if (attribute.defaultValue) {
+        acc[key] = [attribute.defaultValue];
+      }
+      return acc;
+    },
+    {},
+  );
 }
