@@ -6,6 +6,7 @@ import { JournalAttributesSelector } from "../../add/JournalAttributesSelector";
 import { IJournal } from "../../../../serverApi/IJournal";
 import { AttributeComboSearch } from "../../add/AttributeComboSearch";
 import { IJournalAttributeValues } from "../../../../serverApi/IJournalAttributeValues";
+import { getDefaultAttributeValues } from "../../add/UpsertEntryAction";
 
 export const AddEntryTableCell: React.FC<{
   journal: IJournal;
@@ -44,7 +45,10 @@ export const AddEntryTableCell: React.FC<{
     }
 
     case "attributes": {
-      const journalAttributeValues = command.journalAttributeValues ?? {};
+      const journalAttributeValues =
+        command.journalAttributeValues ??
+        getDefaultAttributeValues(journal.attributes);
+
       return (
         <>
           <AttributeComboSearch

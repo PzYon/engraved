@@ -265,7 +265,7 @@ const UpsertEntryActionInternal: React.FC<{
   }
 };
 
-function getDefaultAttributeValues(
+export function getDefaultAttributeValues(
   attributes: IJournalAttributes | undefined,
 ): IJournalAttributeValues {
   if (!attributes) {
