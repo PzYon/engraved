@@ -73,7 +73,7 @@ export const JournalAttributeEditor: React.FC<{
   );
 
   function handleDefaultValueChange(key: string | null) {
-    onChange({ ...attribute, defaultValue: key ?? undefined });
+    onChange({ ...attribute, defaultValue: key === null ? undefined : key });
   }
 
   function handleOnChange(attributeKey: string, value: string) {
