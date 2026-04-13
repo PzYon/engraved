@@ -40,7 +40,15 @@ export const JournalAttributeEditor: React.FC<{
                   size="small"
                   checked={attribute.defaultValue === key}
                   onChange={(_, checked) =>
-                    handleDefaultValueChange(checked ? key : null)
+                    onChange({
+                      ...attribute,
+                      defaultValue:
+                        (checked ? key : null) === null
+                          ? undefined
+                          : checked
+                            ? key
+                            : null,
+                    })
                   }
                 />
               </Tooltip>
@@ -71,10 +79,6 @@ export const JournalAttributeEditor: React.FC<{
       </Collapse>
     </>
   );
-
-  function handleDefaultValueChange(key: string | null) {
-    onChange({ ...attribute, defaultValue: key === null ? undefined : key });
-  }
 
   function handleOnChange(attributeKey: string, value: string) {
     const updatedAttribute = { ...attribute };
