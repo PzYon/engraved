@@ -12,13 +12,12 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { IUpsertEntryCommand } from "../../../serverApi/commands/IUpsertEntryCommand";
 import { IUpsertGaugeEntryCommand } from "../../../serverApi/commands/IUpsertGaugeEntryCommand";
 import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeValues";
-import { IJournalAttributes } from "../../../serverApi/IJournalAttributes";
 import { DateSelector } from "../../common/DateSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IEntry } from "../../../serverApi/IEntry";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
 import { AttributeComboSearch } from "./AttributeComboSearch";
-import { countAttributes, hasAttributes } from "../../../util/entryUtils";
+import { countAttributes, hasAttributes, getDefaultAttributeValues } from "../../../util/entryUtils";
 import { UpsertTimerEntry } from "./UpsertTimerEntry";
 import { IUpsertTimerEntryCommand } from "../../../serverApi/commands/IUpsertTimerEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
@@ -264,21 +263,3 @@ const UpsertEntryActionInternal: React.FC<{
     setForceResetSelectors(Math.random().toString());
   }
 };
-
-export function getDefaultAttributeValues(
-  attributes: IJournalAttributes | undefined,
-): IJournalAttributeValues {
-  if (!attributes) {
-    return {};
-  }
-
-  return Object.entries(attributes).reduce(
-    (acc: IJournalAttributeValues, [key, attribute]) => {
-      if (attribute.defaultValue) {
-        acc[key] = [attribute.defaultValue];
-      }
-      return acc;
-    },
-    {},
-  );
-}
