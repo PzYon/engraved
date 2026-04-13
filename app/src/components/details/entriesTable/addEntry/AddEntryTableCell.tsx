@@ -6,7 +6,7 @@ import { JournalAttributesSelector } from "../../add/JournalAttributesSelector";
 import { IJournal } from "../../../../serverApi/IJournal";
 import { AttributeComboSearch } from "../../add/AttributeComboSearch";
 import { IJournalAttributeValues } from "../../../../serverApi/IJournalAttributeValues";
-import { getDefaultAttributeValues } from "../../add/UpsertEntryAction";
+import { getDefaultAttributeValues } from "../../../../util/entryUtils";
 
 export const AddEntryTableCell: React.FC<{
   journal: IJournal;
