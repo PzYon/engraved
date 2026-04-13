@@ -12,6 +12,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { IUpsertEntryCommand } from "../../../serverApi/commands/IUpsertEntryCommand";
 import { IUpsertGaugeEntryCommand } from "../../../serverApi/commands/IUpsertGaugeEntryCommand";
 import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeValues";
+import { IJournalAttributes } from "../../../serverApi/IJournalAttributes";
 import { DateSelector } from "../../common/DateSelector";
 import { FormElementContainer } from "../../common/FormUtils";
 import { IEntry } from "../../../serverApi/IEntry";
@@ -89,7 +90,10 @@ const UpsertEntryActionInternal: React.FC<{
   entry?: IEntry;
 }> = ({ journal, entry }) => {
   const [attributeValues, setAttributeValues] =
-    useState<IJournalAttributeValues>(entry?.journalAttributeValues || {}); // empty means nothing selected in the selector
+    useState<IJournalAttributeValues>(
+      entry?.journalAttributeValues ||
+        getDefaultAttributeValues(journal.attributes),
+    ); // empty means nothing selected in the selector
 
   const [notes, setNotes] = useState<string>(entry?.notes || "");
 
@@ -260,3 +264,21 @@ const UpsertEntryActionInternal: React.FC<{
     setForceResetSelectors(Math.random().toString());
   }
 };
+
+function getDefaultAttributeValues(
+  attributes: IJournalAttributes | undefined,
+): IJournalAttributeValues {
+  if (!attributes) {
+    return {};
+  }
+
+  return Object.entries(attributes).reduce(
+    (acc: IJournalAttributeValues, [key, attribute]) => {
+      if (attribute.defaultValue) {
+        acc[key] = [attribute.defaultValue];
+      }
+      return acc;
+    },
+    {},
+  );
+}

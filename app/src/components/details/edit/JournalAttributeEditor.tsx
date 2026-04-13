@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { IJournalAttribute } from "../../../serverApi/IJournalAttribute";
 import {
+  Checkbox,
   Collapse,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -33,6 +35,15 @@ export const JournalAttributeEditor: React.FC<{
         <List dense={true}>
           {Object.entries(attribute.values || {}).map(([key, value]) => (
             <ListItem key={key}>
+              <Tooltip title="Set as default value">
+                <Checkbox
+                  size="small"
+                  checked={attribute.defaultValue === key}
+                  onChange={(_, checked) =>
+                    handleDefaultValueChange(checked ? key : null)
+                  }
+                />
+              </Tooltip>
               <ListItemTextField
                 defaultValue={value}
                 isExisting={true}
@@ -61,6 +72,10 @@ export const JournalAttributeEditor: React.FC<{
     </>
   );
 
+  function handleDefaultValueChange(key: string | null) {
+    onChange({ ...attribute, defaultValue: key ?? undefined });
+  }
+
   function handleOnChange(attributeKey: string, value: string) {
     const updatedAttribute = { ...attribute };
 
@@ -68,6 +83,9 @@ export const JournalAttributeEditor: React.FC<{
       updatedAttribute.values[attributeKey] = value;
     } else {
       delete updatedAttribute.values[attributeKey];
+      if (updatedAttribute.defaultValue === attributeKey) {
+        updatedAttribute.defaultValue = undefined;
+      }
     }
 
     return onChange(updatedAttribute);
