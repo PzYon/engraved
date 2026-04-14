@@ -47,5 +47,13 @@ export const engravedTheme = createTheme({
         sx: { borderRadius: paperBorderRadius },
       },
     },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: "#2a7b9b",
+          color: "#ffffff",
+        },
+      },
+    },
   },
 });

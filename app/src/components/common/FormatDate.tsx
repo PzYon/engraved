@@ -1,6 +1,7 @@
 import { DateFormat, formatDate, getAsDate } from "./dateTypes";
 import { differenceInHours } from "date-fns";
 import React, { useCallback, useEffect, useState } from "react";
+import { Tooltip } from "@mui/material";
 
 const autoUpdateIntervalSeconds = 30;
 
@@ -61,19 +62,20 @@ const FormatDateInternal: React.FC<{
   }, [dateFormat, value, calculateValues]);
 
   return (
-    <span
-      title={values.title}
-      style={{ cursor: "pointer" }}
-      onClick={(e) => {
-        if (!onClick) {
-          return;
-        }
+    <Tooltip title={values.title}>
+      <span
+        style={{ cursor: "pointer" }}
+        onClick={(e) => {
+          if (!onClick) {
+            return;
+          }
 
-        e.stopPropagation();
-        onClick();
-      }}
-    >
-      {values.label}
-    </span>
+          e.stopPropagation();
+          onClick();
+        }}
+      >
+        {values.label}
+      </span>
+    </Tooltip>
   );
 };

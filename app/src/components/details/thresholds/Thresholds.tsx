@@ -1,6 +1,6 @@
 import { IJournal } from "../../../serverApi/IJournal";
 import React, { useMemo } from "react";
-import { Card, styled, Typography } from "@mui/material";
+import { Card, styled, Tooltip, Typography } from "@mui/material";
 import { GridContainer, GridItem } from "../../common/Grid";
 import { IEntry } from "../../../serverApi/IEntry";
 import { calculateThresholds } from "./calculateThresholds";
@@ -81,19 +81,21 @@ export const Thresholds: React.FC<{
                       {valueName} <Lighter> ({attributeName})</Lighter>
                     </>
                   )}
-                  <Lighter
+                  <Tooltip
                     title={"Duration in days: " + threshold.durationInDays}
                   >
-                    {" | "}
-                    {threshold.scope === ThresholdScope.All ? (
-                      <>total</>
-                    ) : (
-                      <>
-                        {threshold.thresholdValue} per{" "}
-                        {threshold.scope?.toLowerCase()}
-                      </>
-                    )}
-                  </Lighter>
+                    <Lighter>
+                      {" | "}
+                      {threshold.scope === ThresholdScope.All ? (
+                        <>total</>
+                      ) : (
+                        <>
+                          {threshold.thresholdValue} per{" "}
+                          {threshold.scope?.toLowerCase()}
+                        </>
+                      )}
+                    </Lighter>
+                  </Tooltip>
                 </Typography>
                 <Typography>
                   <ActualValue isBelow={!threshold.isReached}>

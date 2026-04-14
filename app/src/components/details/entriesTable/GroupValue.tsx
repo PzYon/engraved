@@ -1,4 +1,5 @@
 import { IEntriesTableGroup } from "./IEntriesTableGroup";
+import { Tooltip } from "@mui/material";
 
 export const GroupedValue: React.FC<{ group: IEntriesTableGroup }> = ({
   group,
@@ -6,12 +7,11 @@ export const GroupedValue: React.FC<{ group: IEntriesTableGroup }> = ({
   return (
     <span>
       {group.totalString}{" "}
-      <span
-        style={{ opacity: 0.5, fontSize: "smaller" }}
-        title={`${group.entries.length} entries`}
-      >
-        {group.entries.length}x
-      </span>
+      <Tooltip title={`${group.entries.length} entries`}>
+        <span style={{ opacity: 0.5, fontSize: "smaller" }}>
+          {group.entries.length}x
+        </span>
+      </Tooltip>
     </span>
   );
 };

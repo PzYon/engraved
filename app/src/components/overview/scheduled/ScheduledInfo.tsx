@@ -5,6 +5,7 @@ import { ISchedule } from "../../../serverApi/ISchedule";
 import React from "react";
 import { parseDate } from "../../details/edit/parseDate";
 import { isAfter } from "date-fns";
+import { Tooltip } from "@mui/material";
 
 export const ScheduledInfo: React.FC<{
   schedule: ISchedule;
@@ -29,12 +30,11 @@ export const ScheduledInfo: React.FC<{
         </span>
       ) : null}
       {schedule.recurrence?.dateString ? (
-        <span
-          title={schedule.recurrence.dateString}
-          style={{ display: "flex" }}
-        >
-          <ReplayOutlined sx={{ ml: 1, fontSize: 14 }} />
-        </span>
+        <Tooltip title={schedule.recurrence.dateString}>
+          <span style={{ display: "flex" }}>
+            <ReplayOutlined sx={{ ml: 1, fontSize: 14 }} />
+          </span>
+        </Tooltip>
       ) : null}
     </span>
   );
