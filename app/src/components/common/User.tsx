@@ -1,6 +1,6 @@
 import React from "react";
 import { IUser } from "../../serverApi/IUser";
-import { Avatar, styled, Typography } from "@mui/material";
+import { Avatar, styled, Tooltip, Typography } from "@mui/material";
 
 export const User: React.FC<{
   user: IUser;
@@ -11,7 +11,9 @@ export const User: React.FC<{
 
   return (
     <Host style={style}>
-      <Avatar title={`${userName} (${user.name})`} src={user.imageUrl} />
+      <Tooltip title={`${userName} (${user.name})`}>
+        <Avatar src={user.imageUrl} />
+      </Tooltip>
       {showUserName ? (
         <Typography sx={{ padding: "10px;" }}>{userName}</Typography>
       ) : null}
