@@ -5,14 +5,15 @@ export const paperBorderRadius = "10px";
 export const actionBorderWidth = "4px";
 
 const textColor = "#444444";
+const primaryColor = "#2a7b9b";
 
 export const engravedTheme = createTheme({
   palette: {
     primary: {
-      main: "#2a7b9b",
+      main: primaryColor,
     },
     secondary: {
-      main: "#2a7b9b",
+      main: primaryColor,
     },
     text: {
       primary: textColor,
@@ -50,7 +51,7 @@ export const engravedTheme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: "#2a7b9b",
+          backgroundColor: primaryColor,
           color: "#ffffff",
         },
       },
