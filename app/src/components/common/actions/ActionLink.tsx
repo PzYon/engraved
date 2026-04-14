@@ -61,13 +61,12 @@ export const ActionLink: React.FC<{
       }}
       onClick={(e) => e.stopPropagation()}
       style={style}
-      title={action.label}
     >
       {getChildren()}
     </Link>
   );
 
-  function getChildren() {
+  function getChildren(): React.ReactElement | React.ReactNode {
     return children ?? action.icon;
   }
 };

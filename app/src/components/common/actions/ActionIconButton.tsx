@@ -16,7 +16,9 @@ export const ActionIconButton: React.FC<{
   const actionContext = useActionContext();
   const { palette } = useTheme();
 
-  const commonProps = getCommonProps();
+  const { title, ...commonProps } = getCommonProps();
+
+  console.log(commonProps);
 
   useEngravedHotkeys(
     action.hotkey,
@@ -50,7 +52,7 @@ export const ActionIconButton: React.FC<{
   }
 
   return (
-    <Tooltip title={commonProps.title}>
+    <Tooltip title={title}>
       <IconButton
         key={action.key}
         {...commonProps}
@@ -64,7 +66,7 @@ export const ActionIconButton: React.FC<{
 
   function getNoButtonIcon() {
     return (
-      <Tooltip title={commonProps.title}>
+      <Tooltip title={title}>
         <NoButtonIcon
           key={action.key}
           {...commonProps}
