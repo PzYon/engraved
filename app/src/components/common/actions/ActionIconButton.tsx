@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { IconButton, styled, Theme, useTheme } from "@mui/material";
+import { IconButton, styled, Theme, Tooltip, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { SxProps } from "@mui/system";
@@ -15,6 +15,8 @@ export const ActionIconButton: React.FC<{
 }> = ({ action, buttonsAsSpans, isActive }) => {
   const actionContext = useActionContext();
   const { palette } = useTheme();
+
+  const commonProps = getCommonProps();
 
   useEngravedHotkeys(
     action.hotkey,
@@ -48,33 +50,37 @@ export const ActionIconButton: React.FC<{
   }
 
   return (
-    <IconButton
-      key={action.key}
-      {...getCommonProps()}
-      sx={{ ...getCommonSx(), padding: actionBorderWidth }}
-      disabled={action.isDisabled}
-    >
-      {action.icon}
-    </IconButton>
+    <Tooltip title={commonProps.title}>
+      <IconButton
+        key={action.key}
+        {...commonProps}
+        sx={{ ...getCommonSx(), padding: actionBorderWidth }}
+        disabled={action.isDisabled}
+      >
+        {action.icon}
+      </IconButton>
+    </Tooltip>
   );
 
   function getNoButtonIcon() {
     return (
-      <NoButtonIcon
-        key={action.key}
-        {...getCommonProps()}
-        sx={{
-          display: "flex",
-          padding: actionBorderWidth,
-          borderRadius: "100%",
-          ":hover": {
-            backgroundColor: "rgba(0, 0, 0, 0.04)",
-          },
-          ...getCommonSx(),
-        }}
-      >
-        {action.icon}
-      </NoButtonIcon>
+      <Tooltip title={commonProps.title}>
+        <NoButtonIcon
+          key={action.key}
+          {...commonProps}
+          sx={{
+            display: "flex",
+            padding: actionBorderWidth,
+            borderRadius: "100%",
+            ":hover": {
+              backgroundColor: "rgba(0, 0, 0, 0.04)",
+            },
+            ...getCommonSx(),
+          }}
+        >
+          {action.icon}
+        </NoButtonIcon>
+      </Tooltip>
     );
   }
 
