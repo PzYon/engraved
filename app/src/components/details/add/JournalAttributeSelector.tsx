@@ -8,6 +8,7 @@ import {
   FilterOptionsState,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import {
   getNextAttributeValues,
@@ -55,11 +56,11 @@ export const JournalAttributeSelector: React.FC<{
     return (
       <Stack
         direction="column"
-        spacing={0}
+        spacing={1}
         useFlexGap
         sx={{ flexWrap: "wrap" }}
       >
-        <div style={{ fontSize: "12px" }}>{attribute.name}</div>
+        <Typography sx={{ fontSize: "12px" }}>{attribute.name}</Typography>
         <Stack direction="row" spacing={1} useFlexGap>
           {options.map((option) => {
             const isSelected = selectedAttributeValue === option.key;
@@ -84,6 +85,8 @@ export const JournalAttributeSelector: React.FC<{
                     ? "primary.main"
                     : "background.default",
                   color: isSelected ? "common.white" : "primary.main",
+                  fontSize: "small",
+                  height: "22px",
                 }}
               />
             );

@@ -147,7 +147,11 @@ export const EntriesTable: React.FC<{
       <TableBody>
         {footerRowMode !== "bottom" ? headerFooterRow : null}
         {showAddNewEntryRow ? (
-          <AddEntryTableRow columns={columns} journal={journal} />
+          <AddEntryTableRow
+            key={entries.length}
+            columns={columns}
+            journal={journal}
+          />
         ) : null}
         {tableGroups.map((group, i) => (
           <EntriesTableBodyGroup
