@@ -21,7 +21,7 @@ export function isTypeThatCanShowAddEntryRow(journalType: JournalType) {
   );
 }
 
-export function countAttributes(journal: IJournal) {
+function countAttributes(journal: IJournal) {
   return Object.keys(journal?.attributes || {}).length;
 }
 
