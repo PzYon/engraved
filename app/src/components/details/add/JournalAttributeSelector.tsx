@@ -3,10 +3,16 @@ import { IJournalAttribute } from "../../../serverApi/IJournalAttribute";
 import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeValues";
 import {
   Autocomplete,
+  Chip,
   createFilterOptions,
   FilterOptionsState,
+  Stack,
   TextField,
 } from "@mui/material";
+import {
+  getNextAttributeValues,
+  shouldRenderAsPills,
+} from "./journalAttributeSelectorUtils";
 
 interface IOption {
   key: string;
@@ -42,6 +48,40 @@ export const JournalAttributeSelector: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  if (shouldRenderAsPills(options.length)) {
+    const selectedAttributeValue = getSelectedAttributeValue();
+
+    return (
+      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+        {options.map((option) => {
+          const isSelected = selectedAttributeValue === option.key;
+
+          return (
+            <Chip
+              key={option.key}
+              label={option.label}
+              onClick={() => {
+                onChange({
+                  ...selectedAttributeValues,
+                  [attributeKey]: getNextAttributeValues(
+                    selectedAttributeValues?.[attributeKey],
+                    option.key,
+                  ),
+                });
+              }}
+              sx={{
+                backgroundColor: isSelected
+                  ? "common.white"
+                  : "background.default",
+                color: isSelected ? "primary.main" : "text.primary",
+              }}
+            />
+          );
+        })}
+      </Stack>
+    );
+  }
 
   return (
     <Autocomplete
