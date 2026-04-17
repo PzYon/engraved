@@ -17,13 +17,17 @@ import { FormElementContainer } from "../../common/FormUtils";
 import { IEntry } from "../../../serverApi/IEntry";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
 import { AttributeComboSearch } from "./AttributeComboSearch";
-import { countAttributes, hasAttributes, getDefaultAttributeValues } from "../../../util/entryUtils";
+import {
+  getDefaultAttributeValues,
+  getValueHeaderLabel,
+  hasAttributes,
+  showAttributeSearch,
+} from "../../../util/journalUtils";
 import { UpsertTimerEntry } from "./UpsertTimerEntry";
 import { IUpsertTimerEntryCommand } from "../../../serverApi/commands/IUpsertTimerEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
 import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
 import { IGaugeEntry } from "../../../serverApi/IGaugeEntry";
-import { getValueHeaderLabel } from "../../../util/journalUtils";
 import { ServerApi } from "../../../serverApi/ServerApi";
 import { Scrap } from "../scraps/Scrap";
 import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
@@ -174,7 +178,7 @@ const UpsertEntryActionInternal: React.FC<{
         />
       ) : null}
 
-      {countAttributes(journal) > 1 ? (
+      {showAttributeSearch(journal) ? (
         <FormElementContainer>
           <AttributeComboSearch
             journal={journal}

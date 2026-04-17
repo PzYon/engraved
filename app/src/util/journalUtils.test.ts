@@ -1,4 +1,4 @@
-import { hasValues } from "./entryUtils";
+import { hasValues } from "./journalUtils";
 
 describe("hasValues", () => {
   it("match (0 selected values)", () => {

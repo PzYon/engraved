@@ -6,7 +6,10 @@ import { JournalAttributesSelector } from "../../add/JournalAttributesSelector";
 import { IJournal } from "../../../../serverApi/IJournal";
 import { AttributeComboSearch } from "../../add/AttributeComboSearch";
 import { IJournalAttributeValues } from "../../../../serverApi/IJournalAttributeValues";
-import { getDefaultAttributeValues } from "../../../../util/entryUtils";
+import {
+  getDefaultAttributeValues,
+  showAttributeSearch,
+} from "../../../../util/journalUtils";
 
 export const AddEntryTableCell: React.FC<{
   journal: IJournal;
@@ -49,20 +52,25 @@ export const AddEntryTableCell: React.FC<{
         command.journalAttributeValues ??
         getDefaultAttributeValues(journal.attributes);
 
+      const showSearch = showAttributeSearch(journal);
+
       return (
         <>
-          <AttributeComboSearch
-            journal={journal}
-            onChange={(value: IJournalAttributeValues) => {
-              updateCommand({
-                ...command,
-                [fieldName]: value,
-              });
-            }}
-          />
+          {showSearch ? (
+            <AttributeComboSearch
+              journal={journal}
+              onChange={(value: IJournalAttributeValues) => {
+                updateCommand({
+                  ...command,
+                  [fieldName]: value,
+                });
+              }}
+            />
+          ) : null}
           <JournalAttributesSelector
             key={JSON.stringify(journalAttributeValues)}
             attributes={journal.attributes}
+            noBorderTop={!showSearch}
             selectedAttributeValues={journalAttributeValues}
             onChange={(value: any) => {
               updateCommand({

@@ -3,10 +3,17 @@ import { IJournalAttribute } from "../../../serverApi/IJournalAttribute";
 import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeValues";
 import {
   Autocomplete,
+  Chip,
   createFilterOptions,
   FilterOptionsState,
+  Stack,
   TextField,
+  Typography,
 } from "@mui/material";
+import {
+  getNextAttributeValues,
+  shouldRenderAsPills,
+} from "./journalAttributeSelectorUtils";
 
 interface IOption {
   key: string;
@@ -42,6 +49,52 @@ export const JournalAttributeSelector: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  if (shouldRenderAsPills(options.length)) {
+    const selectedAttributeValue = getSelectedAttributeValue();
+
+    return (
+      <Stack
+        direction="column"
+        spacing={1}
+        useFlexGap
+        sx={{ flexWrap: "wrap" }}
+      >
+        <Typography sx={{ fontSize: "12px" }}>{attribute.name}</Typography>
+        <Stack direction="row" spacing={1} useFlexGap>
+          {options.map((option) => {
+            const isSelected = selectedAttributeValue === option.key;
+
+            return (
+              <Chip
+                key={option.key}
+                label={option.label}
+                variant="outlined"
+                onClick={() => {
+                  onChange({
+                    ...selectedAttributeValues,
+                    [attributeKey]: getNextAttributeValues(
+                      selectedAttributeValues?.[attributeKey],
+                      option.key,
+                    ),
+                  });
+                }}
+                sx={{
+                  border: 0,
+                  backgroundColor: isSelected
+                    ? "primary.main"
+                    : "background.default",
+                  color: isSelected ? "common.white" : "primary.main",
+                  fontSize: "small",
+                  height: "22px",
+                }}
+              />
+            );
+          })}
+        </Stack>
+      </Stack>
+    );
+  }
 
   return (
     <Autocomplete
