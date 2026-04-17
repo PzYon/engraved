@@ -53,34 +53,42 @@ export const JournalAttributeSelector: React.FC<{
     const selectedAttributeValue = getSelectedAttributeValue();
 
     return (
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
-        {options.map((option) => {
-          const isSelected = selectedAttributeValue === option.key;
+      <Stack
+        direction="column"
+        spacing={0}
+        useFlexGap
+        sx={{ flexWrap: "wrap" }}
+      >
+        <div style={{ fontSize: "12px" }}>{attribute.name}</div>
+        <Stack direction="row" spacing={1} useFlexGap>
+          {options.map((option) => {
+            const isSelected = selectedAttributeValue === option.key;
 
-          return (
-            <Chip
-              key={option.key}
-              label={option.label}
-              variant="outlined"
-              onClick={() => {
-                onChange({
-                  ...selectedAttributeValues,
-                  [attributeKey]: getNextAttributeValues(
-                    selectedAttributeValues?.[attributeKey],
-                    option.key,
-                  ),
-                });
-              }}
-              sx={{
-                backgroundColor: isSelected
-                  ? "common.white"
-                  : "background.default",
-                color: isSelected ? "primary.main" : "text.primary",
-                borderColor: isSelected ? "primary.main" : "divider",
-              }}
-            />
-          );
-        })}
+            return (
+              <Chip
+                key={option.key}
+                label={option.label}
+                variant="outlined"
+                onClick={() => {
+                  onChange({
+                    ...selectedAttributeValues,
+                    [attributeKey]: getNextAttributeValues(
+                      selectedAttributeValues?.[attributeKey],
+                      option.key,
+                    ),
+                  });
+                }}
+                sx={{
+                  border: 0,
+                  backgroundColor: isSelected
+                    ? "primary.main"
+                    : "background.default",
+                  color: isSelected ? "common.white" : "primary.main",
+                }}
+              />
+            );
+          })}
+        </Stack>
       </Stack>
     );
   }

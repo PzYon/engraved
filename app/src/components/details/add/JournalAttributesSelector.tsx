@@ -9,7 +9,8 @@ export const JournalAttributesSelector: React.FC<{
   attributes: IJournalAttributes;
   selectedAttributeValues: IJournalAttributeValues;
   onChange: (attributesValues: IJournalAttributeValues) => void;
-}> = ({ attributes, selectedAttributeValues, onChange }) => {
+  noBorderTop?: boolean;
+}> = ({ attributes, selectedAttributeValues, onChange, noBorderTop }) => {
   return (
     <>
       {Object.keys(attributes)
@@ -21,6 +22,7 @@ export const JournalAttributesSelector: React.FC<{
             <FormElementContainer
               className="journal-attribute-selector-wrapper"
               key={attributeKey}
+              noBorderTop={noBorderTop}
             >
               <JournalAttributeSelector
                 attributeKey={attributeKey}
