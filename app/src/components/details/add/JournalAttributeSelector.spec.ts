@@ -13,6 +13,7 @@ describe("JournalAttributeSelector", () => {
 
   test("should toggle selected value for pills", () => {
     expect(getNextAttributeValues(undefined, "a")).toEqual(["a"]);
+    expect(getNextAttributeValues([], "a")).toEqual(["a"]);
     expect(getNextAttributeValues(["b"], "a")).toEqual(["a"]);
     expect(getNextAttributeValues(["a"], "a")).toEqual([]);
   });

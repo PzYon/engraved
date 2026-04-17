@@ -61,6 +61,7 @@ export const JournalAttributeSelector: React.FC<{
             <Chip
               key={option.key}
               label={option.label}
+              variant="outlined"
               onClick={() => {
                 onChange({
                   ...selectedAttributeValues,
@@ -75,6 +76,7 @@ export const JournalAttributeSelector: React.FC<{
                   ? "common.white"
                   : "background.default",
                 color: isSelected ? "primary.main" : "text.primary",
+                borderColor: isSelected ? "primary.main" : "divider",
               }}
             />
           );
