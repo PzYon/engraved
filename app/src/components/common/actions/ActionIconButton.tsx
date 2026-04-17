@@ -18,8 +18,6 @@ export const ActionIconButton: React.FC<{
 
   const { title, ...commonProps } = getCommonProps();
 
-  console.log(commonProps);
-
   useEngravedHotkeys(
     action.hotkey,
     (keyboardEvent) => {

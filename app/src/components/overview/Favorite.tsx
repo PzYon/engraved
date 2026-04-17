@@ -2,10 +2,10 @@ import React from "react";
 import { useAppContext } from "../../AppContext";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
 import Star from "@mui/icons-material/Star";
-import StarOutlined from "@mui/icons-material/StarOutlined";
 import { useAddJournalToFavoritesMutation } from "../../serverApi/reactQuery/mutations/useAddJournalToFavoritesMutation";
 import { useRemoveJournalFromFavoritesMutation } from "../../serverApi/reactQuery/mutations/useRemoveJournalFromFavoritesMutation";
 import { styled } from "@mui/material";
+import StarBorder from "@mui/icons-material/StarBorder";
 
 export const Favorite: React.FC<{ journalId: string }> = ({ journalId }) => {
   const { user } = useAppContext();
@@ -32,7 +32,7 @@ export const Favorite: React.FC<{ journalId: string }> = ({ journalId }) => {
     <ButtonContainer>
       <ActionIconButton
         action={{
-          icon: <StarOutlined fontSize="small" />,
+          icon: <StarBorder fontSize="small" />,
           label: "Like",
           key: "like",
           onClick: () => addMutation.mutate(),
