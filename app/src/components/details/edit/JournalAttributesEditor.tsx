@@ -23,6 +23,11 @@ export const JournalAttributesEditor: React.FC<{
             newAttributes[key] = attribute;
             setAttributes(newAttributes);
           }}
+          onDelete={() => {
+            const newAttributes = { ...attributes };
+            delete newAttributes[key];
+            setAttributes(newAttributes);
+          }}
         />
       ))}
 

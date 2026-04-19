@@ -18,7 +18,8 @@ import { ActionIconButton } from "../../common/actions/ActionIconButton";
 export const JournalAttributeEditor: React.FC<{
   attribute: IJournalAttribute;
   onChange: (attribute: IJournalAttribute) => void;
-}> = ({ attribute, onChange }) => {
+  onDelete: () => void;
+}> = ({ attribute, onChange, onDelete }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
@@ -28,6 +29,20 @@ export const JournalAttributeEditor: React.FC<{
         sx={{ border: "1px solid lightgray", marginBottom: "16px" }}
       >
         <ListItemText primary={attribute.name} />
+        <span
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+        >
+          <ActionIconButton
+            action={{
+              key: "delete-attribute",
+              label: "Delete attribute",
+              icon: <RemoveCircleOutlined fontSize="small" />,
+              onClick: onDelete,
+            }}
+          />
+        </span>
         {isCollapsed ? <ExpandMore /> : <ExpandLess />}
       </ListItemButton>
 
