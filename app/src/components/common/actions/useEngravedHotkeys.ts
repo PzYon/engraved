@@ -49,7 +49,7 @@ export function useEngravedHotkeys(
   useHotkeys(
     hotkey,
     (keyboardEvent: KeyboardEvent, hotkeysEvent: Hotkey) => {
-      if (finalOptions.preventDefault === undefined) {
+      if (options && finalOptions.preventDefault === undefined) {
         keyboardEvent.preventDefault();
       }
 
