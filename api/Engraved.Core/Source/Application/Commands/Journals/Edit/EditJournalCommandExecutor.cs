@@ -28,10 +28,7 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
       throw new InvalidCommandException(command, $"Journal with key \"{command.JournalId}\" does not exist.");
     }
 
-    Dictionary<string, JournalAttribute> normalizedAttributes = NormalizeKeys(command.Attributes);
-    string[] removedAttributeKeys = journal.Attributes.Keys.Except(normalizedAttributes.Keys).ToArray();
-
-    await RemoveAttributesFromEntries(journal.Id!, removedAttributeKeys);
+    var normalizedAttributes = NormalizeKeys(command.Attributes);
 
     journal.Attributes = normalizedAttributes;
     journal.Name = command.Name;
@@ -40,6 +37,9 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
     journal.Thresholds = command.Thresholds;
     journal.CustomProps = command.CustomProps;
     journal.EditedOn = dateService.UtcNow;
+
+    var removedAttributeKeys = journal.Attributes.Keys.Except(normalizedAttributes.Keys).ToArray();
+    await RemoveAttributesFromEntries(journal.Id!, removedAttributeKeys);
 
     UpsertResult result = await _repository.UpsertJournal(journal);
 
@@ -53,11 +53,11 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
       return;
     }
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(journalId);
+    var entries = await _repository.GetEntriesForJournal(journalId);
     foreach (IEntry entry in entries)
     {
-      bool changed = false;
-      foreach (string removedAttributeKey in removedAttributeKeys)
+      var changed = false;
+      foreach (var removedAttributeKey in removedAttributeKeys)
       {
         changed |= entry.JournalAttributeValues.Remove(removedAttributeKey);
       }
@@ -72,9 +72,9 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
   // todo: add tests for this stuff
   private static Dictionary<string, JournalAttribute> NormalizeKeys(Dictionary<string, JournalAttribute> attributes)
   {
-    Dictionary<string, JournalAttribute> journalAttributes = KeyNormalizer.Normalize(attributes);
+    var journalAttributes = KeyNormalizer.Normalize(attributes);
 
-    foreach (KeyValuePair<string, JournalAttribute> journalAttribute in journalAttributes)
+    foreach (var journalAttribute in journalAttributes)
     {
       journalAttribute.Value.Values = KeyNormalizer.Normalize(journalAttribute.Value.Values);
     }
