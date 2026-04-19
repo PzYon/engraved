@@ -10,6 +10,11 @@ import { JournalSubRoutes } from "./JournalSubRoutes";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IconStyle } from "../../common/IconStyle";
 import { JournalIcon } from "./JournalIcon";
+import {
+  createItemScope,
+  wrapActionsForScope,
+} from "../../common/actions/scopeUtils";
+import { useScopedFocus } from "../../common/actions/useScopedFocus";
 
 export const JournalListItem: React.FC<{
   journal: IJournal;
@@ -19,6 +24,9 @@ export const JournalListItem: React.FC<{
   const domElementRef = useRef<HTMLDivElement>(undefined);
 
   const { user } = useAppContext();
+
+  const scope = createItemScope(journal);
+  useScopedFocus(scope, hasFocus);
 
   const journalProperties = useJournalProperties(journal);
 
@@ -45,7 +53,10 @@ export const JournalListItem: React.FC<{
           <ListItemFooterRow
             hasFocus={hasFocus}
             properties={journalProperties}
-            actions={getCommonJournalActions(journal, hasFocus, user)}
+            actions={wrapActionsForScope(
+              getCommonJournalActions(journal, hasFocus, user),
+              scope,
+            )}
           />
           {hasFocus ? <JournalSubRoutes journal={journal} /> : null}
         </Box>
