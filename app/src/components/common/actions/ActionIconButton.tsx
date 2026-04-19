@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { IconButton, styled, Theme, Tooltip, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { SxProps } from "@mui/system";
-import { useActionContext } from "./ActionContext";
 import { actionBorderWidth } from "../../../theming/engravedTheme";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
 import { getActionLabel } from "./actionUtils";
@@ -13,7 +12,6 @@ export const ActionIconButton: React.FC<{
   buttonsAsSpans?: boolean;
   isActive?: boolean;
 }> = ({ action, buttonsAsSpans, isActive }) => {
-  const actionContext = useActionContext();
   const { palette } = useTheme();
 
   const { title, ...commonProps } = getCommonProps();
@@ -31,11 +29,6 @@ export const ActionIconButton: React.FC<{
       enableOnFormTags: ["textarea", "input"],
     },
   );
-
-  useEffect(() => {
-    actionContext.addAction(action);
-    return () => actionContext.removeAction(action);
-  }, [action, actionContext]);
 
   if (action.href || Object.keys(action.search ?? {}).length) {
     return (

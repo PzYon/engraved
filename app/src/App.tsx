@@ -10,7 +10,6 @@ import { ScheduledPage } from "./components/overview/scheduled/ScheduledPage";
 import { SettingsPage } from "./pwa/SettingsPage";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { AppContextProvider } from "./AppContextProvider";
-import { ActionContextProvider } from "./components/common/actions/ActionContextProvider";
 import { ReactQueryProviderWrapper } from "./serverApi/reactQuery/ReactQueryProviderWrapper";
 import { PageContextProvider } from "./components/layout/pages/PageContextProvider";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContextProvider";
@@ -34,27 +33,25 @@ const router = createBrowserRouter([
   {
     path: "*",
     Component: () => (
-      <ActionContextProvider>
-        <ReactQueryProviderWrapper>
-          <PageContextProvider>
-            <DialogContextProvider>
-              <DisplayModeContextProvider>
-                <Host>
-                  <AppHeader />
-                  <AppAlertBar />
-                  <AppContent scope="body">
-                    <AppErrorBoundary>
-                      <Outlet />
-                    </AppErrorBoundary>
-                  </AppContent>
-                  <FloatingHistoryNavigation />
-                  <AppFooter />
-                </Host>
-              </DisplayModeContextProvider>
-            </DialogContextProvider>
-          </PageContextProvider>
-        </ReactQueryProviderWrapper>
-      </ActionContextProvider>
+      <ReactQueryProviderWrapper>
+        <PageContextProvider>
+          <DialogContextProvider>
+            <DisplayModeContextProvider>
+              <Host>
+                <AppHeader />
+                <AppAlertBar />
+                <AppContent scope="body">
+                  <AppErrorBoundary>
+                    <Outlet />
+                  </AppErrorBoundary>
+                </AppContent>
+                <FloatingHistoryNavigation />
+                <AppFooter />
+              </Host>
+            </DisplayModeContextProvider>
+          </DialogContextProvider>
+        </PageContextProvider>
+      </ReactQueryProviderWrapper>
     ),
     children: [
       {
