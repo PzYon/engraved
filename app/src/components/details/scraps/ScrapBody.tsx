@@ -72,8 +72,8 @@ export const ScrapBody: React.FC<{
     }
 
     const saveAction = isEditMode
-      ? ActionFactory.save(async () => await upsertScrap(), false, hasFocus)
-      : ActionFactory.editScrap(() => setIsEditMode(true), hasFocus);
+      ? ActionFactory.save(async () => await upsertScrap(), false)
+      : ActionFactory.editScrap(() => setIsEditMode(true));
 
     if (actionsRenderStyle === "save-only") {
       return saveAction ? [cancelEditingAction, saveAction] : [];
@@ -89,11 +89,7 @@ export const ScrapBody: React.FC<{
         ?.nextOccurrence;
 
       allActions.push(
-        ActionFactory.editEntryScheduleViaUrl(
-          scrapToRender.id,
-          hasFocus,
-          hasSchedule,
-        ),
+        ActionFactory.editEntryScheduleViaUrl(scrapToRender.id, hasSchedule),
       );
     }
 
@@ -104,7 +100,7 @@ export const ScrapBody: React.FC<{
     }
 
     if (scrapToRender.id) {
-      allActions.push(ActionFactory.deleteEntry(scrapToRender, hasFocus));
+      allActions.push(ActionFactory.deleteEntry(scrapToRender));
     }
 
     return allActions;

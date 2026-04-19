@@ -47,7 +47,7 @@ export const JournalListItem: React.FC<{
               entity={journal}
               title={journal.name}
               hasFocus={hasFocus}
-              onClickAction={ActionFactory.goToJournal(journal.id, hasFocus)}
+              onClickAction={ActionFactory.goToJournal(journal.id)}
             />
           </TitleRow>
           <ListItemFooterRow

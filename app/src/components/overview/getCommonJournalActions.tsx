@@ -14,18 +14,17 @@ export function getCommonJournalActions(
   }
 
   const actions: IAction[] = [
-    ActionFactory.addEntry(journal, enableHotkeys),
+    ActionFactory.addEntry(journal),
     ActionFactory.editJournalPermissions(journal.id),
     ActionFactory.editJournalSchedule(
       journal.id,
-      enableHotkeys,
       !!getScheduleForUser(journal, user.id).nextOccurrence,
     ),
   ];
 
   actions.push(
-    ActionFactory.editJournal(journal.id, enableHotkeys),
-    ActionFactory.deleteJournal(journal.id, enableHotkeys),
+    ActionFactory.editJournal(journal.id),
+    ActionFactory.deleteJournal(journal.id),
   );
 
   return actions;
@@ -38,6 +37,6 @@ export function getCommonEditModeActions(
 ): IAction[] {
   return [
     ActionFactory.cancel(onCancel),
-    ActionFactory.save(onSave, disableSave, true),
+    ActionFactory.save(onSave, disableSave),
   ];
 }

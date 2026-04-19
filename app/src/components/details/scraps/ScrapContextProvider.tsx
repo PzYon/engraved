@@ -253,7 +253,6 @@ export const ScrapContextProvider: React.FC<{
                     : (journal?.id ?? initialScrap.parentId),
                 );
               },
-              hasFocus,
               isDirty,
               renderDialog,
             ),

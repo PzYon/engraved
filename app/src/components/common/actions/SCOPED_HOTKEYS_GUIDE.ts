@@ -104,8 +104,8 @@
  *
  *   // 3. Create actions with the scope
  *   const actions = [
- *     ActionFactory.editJournal(journal.id, hasFocus, scope),
- *     ActionFactory.deleteJournal(journal.id, hasFocus, scope),
+ *     ActionFactory.editJournal(journal.id),
+ *     ActionFactory.deleteJournal(journal.id),
  *   ];
  *
  *   return (
@@ -128,11 +128,10 @@
  *
  * static editJournal(
  *   journalId: string,
- *   enableHotkey: boolean,
  *   scope?: string | string[]
  * ): IAction {
  *   return {
- *     hotkey: enableHotkey ? "alt+e" : undefined,
+ *     hotkey: "alt+e",
  *     scope: scope,  // <-- Add this
  *     key: "edit",
  *     label: "Edit journal",

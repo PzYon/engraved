@@ -98,7 +98,7 @@ export const JournalViewPage: React.FC = () => {
         : undefined,
       ActionFactory.toggleNotes(showNotes, setShowNotes),
       ActionFactory.toggleShowChart(showChart, setShowChart),
-      ActionFactory.toggleFilters(showFilters, setShowFilters, false),
+      ActionFactory.toggleFilters(showFilters, setShowFilters),
       ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
       Object.keys(journal.thresholds || {}).length
         ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)

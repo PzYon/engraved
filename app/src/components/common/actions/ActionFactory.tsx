@@ -49,13 +49,9 @@ export class ActionFactory {
     };
   }
 
-  static save(
-    onClick: () => Promise<void>,
-    isDisabled: boolean,
-    enableHotkeys: boolean,
-  ): IAction {
+  static save(onClick: () => Promise<void>, isDisabled: boolean): IAction {
     return {
-      hotkey: enableHotkeys ? "alt+s" : undefined,
+      hotkey: "alt+s",
       key: "save",
       label: "Save",
       icon: <SaveOutlined fontSize="small" />,
@@ -75,9 +71,9 @@ export class ActionFactory {
     };
   }
 
-  static goToJournal(journalId: string, enableHotkeys: boolean): IAction {
+  static goToJournal(journalId: string): IAction {
     return {
-      hotkey: enableHotkeys ? "alt+enter" : undefined,
+      hotkey: "alt+enter",
       key: `go-to-journal-${journalId}`,
       href: `/journals/details/${journalId}`,
       label: "Go to journal",
@@ -95,9 +91,9 @@ export class ActionFactory {
     };
   }
 
-  static editJournal(journalId: string, enableHotkey: boolean): IAction {
+  static editJournal(journalId: string): IAction {
     return {
-      hotkey: enableHotkey ? "alt+e" : undefined,
+      hotkey: "alt+e",
       key: "edit",
       label: "Edit journal",
       icon: <EditOutlined fontSize="small" />,
@@ -114,9 +110,9 @@ export class ActionFactory {
     };
   }
 
-  static deleteJournal(journalId: string, enableHotkeys: boolean): IAction {
+  static deleteJournal(journalId: string): IAction {
     return {
-      hotkey: enableHotkeys ? "alt+d" : undefined,
+      hotkey: "alt+d",
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
@@ -126,11 +122,10 @@ export class ActionFactory {
 
   static editJournalSchedule(
     journalId: string,
-    enableHotkeys?: boolean,
     hasSchedule?: boolean,
   ): IAction {
     return {
-      hotkey: enableHotkeys ? "alt+t" : undefined,
+      hotkey: "alt+t",
       key: "edit-schedule",
       label: "Edit schedule",
       icon: hasSchedule ? (
@@ -144,12 +139,11 @@ export class ActionFactory {
 
   static editEntryScheduleViaUrl(
     entryId: string,
-    enableHotKeys?: boolean,
     hasSchedule?: boolean,
   ): IAction {
     return {
       key: "edit-schedule",
-      hotkey: enableHotKeys ? "alt+n" : undefined,
+      hotkey: "alt+n",
       label: "Edit schedule",
       icon: hasSchedule ? (
         <DoneOutlined fontSize="small" />
@@ -162,12 +156,11 @@ export class ActionFactory {
 
   static addEntry(
     journal: IJournal,
-    enableHotkey: boolean,
     additionalOnClick?: () => void,
     navigateToJournal?: boolean,
   ): IAction {
     return {
-      hotkey: enableHotkey ? "alt+a" : undefined,
+      hotkey: "alt+a",
       key: "add_entry",
       label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
@@ -244,10 +237,9 @@ export class ActionFactory {
   static toggleFilters(
     showFilters: boolean,
     setShowFilters: (v: boolean) => void,
-    enableHotkey: boolean,
   ): IAction {
     return {
-      hotkey: enableHotkey ? "alt+f" : undefined,
+      hotkey: "alt+f",
       key: "filters",
       icon: <FilterAltOutlined fontSize="small" />,
       label: "Show filters",
@@ -269,9 +261,9 @@ export class ActionFactory {
     };
   }
 
-  static editScrap(onEdit: () => void, enableHotkey: boolean): IAction {
+  static editScrap(onEdit: () => void): IAction {
     return {
-      hotkey: enableHotkey ? "alt+e" : undefined,
+      hotkey: "alt+e",
       key: "edit",
       label: "Edit scrap",
       icon: <EditOutlined fontSize="small" />,
@@ -288,9 +280,9 @@ export class ActionFactory {
     };
   }
 
-  static deleteEntry(entry: IEntry, enableHotkey?: boolean): IAction {
+  static deleteEntry(entry: IEntry): IAction {
     return {
-      hotkey: enableHotkey ? "alt+d" : undefined,
+      hotkey: "alt+d",
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
@@ -298,9 +290,9 @@ export class ActionFactory {
     };
   }
 
-  static editEntry(entry: IEntry, enableHotkey?: boolean): IAction {
+  static editEntry(entry: IEntry): IAction {
     return {
-      hotkey: enableHotkey ? "alt+e" : undefined,
+      hotkey: "alt+e",
       key: "edit",
       label: "Edit entry",
       icon: <EditOutlined fontSize="small" />,
@@ -310,12 +302,11 @@ export class ActionFactory {
 
   static cancelEditing(
     onCancel: () => void,
-    enableHotkey: boolean,
     isDirty: boolean,
     renderDialog: (dialogProps: IDialogProps) => void,
   ): IAction {
     return {
-      hotkey: enableHotkey ? "alt+x" : undefined,
+      hotkey: "alt+x",
       key: "cancel-edit",
       label: "Stop editing and reset",
       icon: <ClearOutlined fontSize="small" />,
