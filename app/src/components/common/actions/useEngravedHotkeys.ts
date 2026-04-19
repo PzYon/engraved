@@ -1,6 +1,7 @@
 import { DependencyList } from "react";
 import { HotkeyCallback, Options, useHotkeys } from "react-hotkeys-hook";
 import { isRichTextEditor } from "../isRichTextEditor";
+import { useScopeContext } from "./useScopeContext";
 
 type Scopes = string | readonly string[];
 
@@ -27,9 +28,23 @@ export function useEngravedHotkeys(
   options?: Options | DependencyList,
   dependencies?: Options | DependencyList,
 ) {
+  const contextScope = useScopeContext().scope;
   const isOptionsObject = options && !Array.isArray(options);
   const finalOptions: Options = isOptionsObject ? (options as Options) : {};
   const finalDependencies = Array.isArray(options) ? options : dependencies;
+
+  const optionScopes = finalOptions.scopes
+    ? Array.isArray(finalOptions.scopes)
+      ? (finalOptions.scopes as string[])
+      : [finalOptions.scopes as string]
+    : [];
+
+  const effectiveScopes: string[] | undefined =
+    contextScope || optionScopes.length > 0
+      ? [...(contextScope ? [contextScope] : []), ...optionScopes]
+      : undefined;
+
+  console.log("effective scope: ", effectiveScopes);
 
   useHotkeys(
     hotkey,
@@ -44,7 +59,7 @@ export function useEngravedHotkeys(
         keyboardEvent.stopPropagation();
       }
     },
-    { enableOnContentEditable: true, ...finalOptions },
+    { enableOnContentEditable: true, ...finalOptions, scopes: effectiveScopes },
     finalDependencies,
   );
 }

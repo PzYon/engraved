@@ -4,6 +4,7 @@ import { paperBorderRadius } from "../../../theming/engravedTheme";
 import { styled } from "@mui/material";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useDisplayModeContext } from "./DisplayModeContext";
+import { useScopeContext } from "../../common/actions/useScopeContext";
 
 export const OverviewListItem: React.FC<{
   children: React.ReactNode;
@@ -15,6 +16,11 @@ export const OverviewListItem: React.FC<{
   const domElementRef = useRef<HTMLLIElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
+  const { setScope } = useScopeContext();
+
+  if (hasFocus) {
+    setScope(item.id);
+  }
 
   useLayoutEffect(() => {
     if (hasFocus) {

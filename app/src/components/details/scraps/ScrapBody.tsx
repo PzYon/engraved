@@ -10,11 +10,6 @@ import {
 } from "../../overview/scheduled/scheduleUtils";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
-import {
-  createItemScope,
-  wrapActionsForScope,
-} from "../../common/actions/scopeUtils";
-import { useScopedFocus } from "../../common/actions/useScopedFocus";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
@@ -38,16 +33,13 @@ export const ScrapBody: React.FC<{
 
   const { isCompact } = useDisplayModeContext();
 
-  const scope = createItemScope(scrapToRender);
-  useScopedFocus(scope, hasFocus);
-
   return (
     <Entry
       isEditMode={isEditMode}
       hasFocus={hasFocus}
       journal={journal}
       entry={scrapToRender}
-      actions={wrapActionsForScope(getActions(), scope)}
+      actions={getActions()}
       propsRenderStyle={propsRenderStyle}
       noCompactFooter={!scrapToRender.id}
       propertyOverrides={

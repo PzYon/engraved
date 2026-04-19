@@ -9,6 +9,7 @@ import { OverviewListContextProvider } from "./OverviewListContextProvider";
 import { IEntry } from "../../../serverApi/IEntry";
 import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
 import { differenceInDays } from "date-fns";
+import { ScopeContextProvider } from "../../common/actions/ScopeContextProvider";
 
 interface IOverviewListProps {
   items: IEntity[];
@@ -58,46 +59,51 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
     <Host className="overview-list">
       {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i].id))}
 
-      {itemsToShow.map((item, index) => {
-        const hasFocus = activeItemId === item.id;
+      <ScopeContextProvider>
+        {itemsToShow.map((item, index) => {
+          const hasFocus = activeItemId === item.id;
 
-        return (
-          <React.Fragment
-            key={
-              item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
-            }
-          >
-            {showDaysBetween && index > 0 ? (
-              <DifferenceInDays
-                lastItem={itemsToShow[index - 1] as IEntry}
-                item={item as IEntry}
-              />
-            ) : null}
-
-            <OverviewListItem
-              showDaysBetween={showDaysBetween}
-              onClick={() => {
-                if (hasFocus) {
-                  return;
-                }
-
-                setActiveItemId(item.id);
-                removeItemParamsFromUrl();
-              }}
-              item={item}
-              hasFocus={hasFocus}
+          return (
+            <React.Fragment
+              key={
+                item.id +
+                "-" +
+                getScheduleForUser(item, user.id)?.nextOccurrence
+              }
             >
-              <RenderItem
+              {showDaysBetween && index > 0 ? (
+                <DifferenceInDays
+                  lastItem={itemsToShow[index - 1] as IEntry}
+                  item={item as IEntry}
+                />
+              ) : null}
+
+              <OverviewListItem
+                showDaysBetween={showDaysBetween}
+                onClick={() => {
+                  if (hasFocus) {
+                    return;
+                  }
+
+                  setActiveItemId(item.id);
+                  removeItemParamsFromUrl();
+                }}
                 item={item}
                 hasFocus={hasFocus}
-                index={index}
-                setActiveItemId={setActiveItemId}
-                renderItem={renderItem}
-              />
-            </OverviewListItem>
-          </React.Fragment>
-        );
-      })}
+              >
+                <RenderItem
+                  item={item}
+                  hasFocus={hasFocus}
+                  index={index}
+                  setActiveItemId={setActiveItemId}
+                  renderItem={renderItem}
+                />
+              </OverviewListItem>
+            </React.Fragment>
+          );
+        })}
+      </ScopeContextProvider>
+
       {hiddenItemsCount ? (
         <Typography
           onClick={() => setShowAll(true)}
