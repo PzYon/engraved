@@ -31,7 +31,10 @@ export function useEngravedHotkeys(
   const contextScope = useScopeContext().scope;
   const isOptionsObject = options && !Array.isArray(options);
   const finalOptions: Options = isOptionsObject ? (options as Options) : {};
-  const finalDependencies = Array.isArray(options) ? options : dependencies;
+  const finalDependencies: unknown[] =
+    (Array.isArray(options)
+      ? (options as unknown[])
+      : (dependencies as unknown[])) ?? [];
 
   const optionScopes = finalOptions.scopes
     ? Array.isArray(finalOptions.scopes)
@@ -44,13 +47,31 @@ export function useEngravedHotkeys(
       ? [...(contextScope ? [contextScope] : []), ...optionScopes]
       : undefined;
 
-  console.log("effective scope: ", effectiveScopes);
+  console.log(
+    "effective scope: ",
+    effectiveScopes,
+    finalDependencies,
+    contextScope,
+    hotkey,
+  );
 
   useHotkeys(
     hotkey,
     (keyboardEvent: KeyboardEvent, hotkeysEvent: Hotkey) => {
-      if (options && finalOptions.preventDefault === undefined) {
+      if (finalOptions?.preventDefault === undefined) {
         keyboardEvent.preventDefault();
+        console.log(
+          "preventDefault: true, scope: ",
+          effectiveScopes,
+          contextScope,
+        );
+      } else {
+        debugger;
+        console.log(
+          "preventDefault: false, scope: ",
+          effectiveScopes,
+          contextScope,
+        );
       }
 
       callback(keyboardEvent, hotkeysEvent);
@@ -60,6 +81,6 @@ export function useEngravedHotkeys(
       }
     },
     { enableOnContentEditable: true, ...finalOptions, scopes: effectiveScopes },
-    finalDependencies,
+    [...finalDependencies, contextScope],
   );
 }

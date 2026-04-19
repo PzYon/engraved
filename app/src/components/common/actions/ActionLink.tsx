@@ -29,7 +29,6 @@ export const ActionLink: React.FC<{
         !!action.hotkey &&
         !!(action.href || Object.keys(action.search ?? {}).length),
       enableOnFormTags: ["textarea", "input"],
-      scopes: action.scope,
     },
   );
 

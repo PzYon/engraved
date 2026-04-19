@@ -16,9 +16,9 @@ export const OverviewListItem: React.FC<{
   const domElementRef = useRef<HTMLLIElement>(undefined);
 
   const { isCompact } = useDisplayModeContext();
-  const { setScope } = useScopeContext();
+  const { setScope, scope } = useScopeContext();
 
-  if (hasFocus) {
+  if (hasFocus && scope !== item.id) {
     setScope(item.id);
   }
 
