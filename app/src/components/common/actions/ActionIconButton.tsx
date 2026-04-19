@@ -27,6 +27,7 @@ export const ActionIconButton: React.FC<{
       // actions with URLs are registered in ActionLink component.
       enabled: !!action.hotkey && !!action.onClick,
       enableOnFormTags: ["textarea", "input"],
+      scopes: action.scope,
     },
   );
 

@@ -27,10 +27,14 @@ export function useEngravedHotkeys(
   options?: Options | DependencyList,
   dependencies?: Options | DependencyList,
 ) {
+  const isOptionsObject = options && !Array.isArray(options);
+  const finalOptions: Options = isOptionsObject ? (options as Options) : {};
+  const finalDependencies = Array.isArray(options) ? options : dependencies;
+
   useHotkeys(
     hotkey,
     (keyboardEvent: KeyboardEvent, hotkeysEvent: Hotkey) => {
-      if (options && (options as Options).preventDefault === undefined) {
+      if (finalOptions.preventDefault === undefined) {
         keyboardEvent.preventDefault();
       }
 
@@ -40,7 +44,7 @@ export function useEngravedHotkeys(
         keyboardEvent.stopPropagation();
       }
     },
-    { enableOnContentEditable: true, ...options },
-    dependencies,
+    { enableOnContentEditable: true, ...finalOptions },
+    finalDependencies,
   );
 }
