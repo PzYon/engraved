@@ -29,6 +29,9 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
     }
 
     var normalizedAttributes = NormalizeKeys(command.Attributes);
+    var removedAttributeKeys = journal.Attributes.Keys.Except(normalizedAttributes.Keys).ToArray();
+
+    await RemoveAttributesFromEntries(journal.Id!, removedAttributeKeys);
 
     journal.Attributes = normalizedAttributes;
     journal.Name = command.Name;
@@ -37,9 +40,6 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
     journal.Thresholds = command.Thresholds;
     journal.CustomProps = command.CustomProps;
     journal.EditedOn = dateService.UtcNow;
-
-    var removedAttributeKeys = journal.Attributes.Keys.Except(normalizedAttributes.Keys).ToArray();
-    await RemoveAttributesFromEntries(journal.Id!, removedAttributeKeys);
 
     UpsertResult result = await _repository.UpsertJournal(journal);
 
@@ -54,6 +54,7 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
     }
 
     var entries = await _repository.GetEntriesForJournal(journalId);
+
     foreach (IEntry entry in entries)
     {
       var changed = false;
