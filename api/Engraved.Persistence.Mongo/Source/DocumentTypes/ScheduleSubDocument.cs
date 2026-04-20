@@ -6,6 +6,8 @@ public class ScheduleSubDocument
 
   public RecurrenceSubDocument? Recurrence { get; set; }
 
+  public DateTime? NotifiedOn { get; set; }
+
   public bool DidNotify { get; set; }
 
   public string? NotificationId { get; set; }

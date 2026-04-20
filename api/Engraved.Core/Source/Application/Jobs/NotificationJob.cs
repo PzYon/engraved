@@ -56,7 +56,7 @@ public class NotificationJob(
     foreach (IEntity entity in entities)
     {
       foreach ((var userId, Schedule? schedule) in entity.Schedules.Where(s
-                 => !s.Value.DidNotify && s.Value.NextOccurrence < dateService.UtcNow
+                 => s.Value.NotifiedOn == null && !s.Value.DidNotify && s.Value.NextOccurrence < dateService.UtcNow
                ))
       {
         try
@@ -90,8 +90,7 @@ public class NotificationJob(
               false
             );
 
-            // most probably we can remove this did notify, but we still need it to check?
-            entity.Schedules[userId].DidNotify = true;
+            entity.Schedules[userId].NotifiedOn = dateService.UtcNow;
             entity.Schedules[userId].NotificationId = notificationId;
 
             switch (entity)
