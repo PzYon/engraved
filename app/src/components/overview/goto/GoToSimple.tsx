@@ -16,7 +16,7 @@ import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
 import { isTypeThatCanShowAddEntryRow } from "../../../util/journalUtils";
 import { JournalType } from "../../../serverApi/JournalType";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 const emptyListItemId = "empty-list-item-id";
 

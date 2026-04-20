@@ -4,7 +4,7 @@ export class GoToPage {
   constructor(private page: Page) {}
 
   async expectNumberOfItems(expected: number) {
-    await expect(this.page.getByRole("listitem")).toHaveCount(expected);
+    await expect(this.getListItems()).toHaveCount(expected);
   }
 
   async expectItemText(index: number, expectedText: string) {
@@ -16,7 +16,11 @@ export class GoToPage {
   }
 
   private getItemByIndex(index: number) {
-    return this.page.getByRole("listitem").nth(index);
+    return this.getListItems().nth(index);
+  }
+
+  private getListItems() {
+    return this.page.getByTestId("go-to").getByRole("listitem");
   }
 
   async typeText(text: string) {

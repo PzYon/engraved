@@ -17,7 +17,7 @@ export const GoTo: React.FC = () => {
   const inputRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   return (
-    <PageSection>
+    <PageSection testId={"go-to"}>
       <GoToSimple
         searchText={debouncedSearchText}
         onKeyDown={(e) => {
