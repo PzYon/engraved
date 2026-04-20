@@ -13,7 +13,7 @@ public class DateService : IDateService
 
   public void UpdateDate()
   {
-    UtcNow = DateTime.Now;
+    UtcNow = DateTime.UtcNow;
   }
 }
 
