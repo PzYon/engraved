@@ -38,8 +38,9 @@ jobs:
         working-directory: api
 
       - name: Get current time
-        uses: josStorer/get-current-time@v2
         id: current-time
+        shell: bash
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
 
       - name: Publish
         run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
