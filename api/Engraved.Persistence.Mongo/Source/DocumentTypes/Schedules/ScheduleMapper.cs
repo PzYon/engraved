@@ -40,7 +40,7 @@ public static class ScheduleMapper
         Recurrence = schedule.Recurrence != null
           ? new Recurrence { DateString = schedule.Recurrence.DateString }
           : null,
-        NotifiedOn = schedule.NotifiedOn ?? (schedule.DidNotify ? schedule.NextOccurrence : null),
+        NotifiedOn = schedule.NotifiedOn,
         DidNotify = schedule.DidNotify,
         NotificationId = schedule.NotificationId,
         OnClickUrl = schedule.OnClickUrl
