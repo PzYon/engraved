@@ -56,8 +56,7 @@ public class NotificationJob(
     foreach (IEntity entity in entities)
     {
       foreach ((var userId, Schedule? schedule) in entity.Schedules.Where(s
-                 // DidNotify keeps legacy persisted data backward-compatible without a migration.
-                 => s.Value.NotifiedOn == null && !s.Value.DidNotify && s.Value.NextOccurrence < dateService.UtcNow
+                 => s.Value.NotifiedOn == null && s.Value.NextOccurrence < dateService.UtcNow
                ))
       {
         try

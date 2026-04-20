@@ -79,13 +79,12 @@ public class NotificationJobShould
   }
 
   [Test]
-  public async Task NotProcess_OneJournal_WithLegacyDidNotify()
+  public async Task NotProcess_OneJournal_WithExistingNotifiedOn()
   {
     string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
 
     IJournal journal = (await _repo.GetJournal(journalId))!;
-    journal.Schedules[UserName1].DidNotify = true;
-    journal.Schedules[UserName1].NotifiedOn = null;
+    journal.Schedules[UserName1].NotifiedOn = _dateService.UtcNow.AddHours(-1);
     await _repo.UpsertJournal(journal);
 
     NotificationJobResult result = await _job.Execute(false);
