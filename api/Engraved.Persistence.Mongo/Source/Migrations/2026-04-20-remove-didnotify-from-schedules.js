@@ -1,13 +1,13 @@
 const migrateCollection = (collectionName) => {
   db.getCollection(collectionName).updateMany(
-    { schedules: { $exists: true } },
+    { Schedules: { $exists: true } },
     [
       {
         $set: {
-          schedules: {
+          Schedules: {
             $arrayToObject: {
               $map: {
-                input: { $objectToArray: { $ifNull: ["$schedules", {}] } },
+                input: { $objectToArray: { $ifNull: ["$Schedules", {}] } },
                 as: "scheduleEntry",
                 in: {
                   k: "$$scheduleEntry.k",
@@ -58,10 +58,10 @@ const migrateCollection = (collectionName) => {
       },
       {
         $set: {
-          schedules: {
+          Schedules: {
             $arrayToObject: {
               $map: {
-                input: { $objectToArray: { $ifNull: ["$schedules", {}] } },
+                input: { $objectToArray: { $ifNull: ["$Schedules", {}] } },
                 as: "scheduleEntry",
                 in: {
                   k: "$$scheduleEntry.k",
