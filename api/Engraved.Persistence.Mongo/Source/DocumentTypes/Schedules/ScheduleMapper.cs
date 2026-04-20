@@ -16,7 +16,7 @@ public static class ScheduleMapper
         Recurrence = schedule.Recurrence != null
           ? new RecurrenceSubDocument { DateString = schedule.Recurrence.DateString }
           : null,
-        DidNotify = schedule.DidNotify,
+        NotifiedOn = schedule.NotifiedOn,
         NotificationId = schedule.NotificationId,
         OnClickUrl = schedule.OnClickUrl
       };
@@ -39,7 +39,7 @@ public static class ScheduleMapper
         Recurrence = schedule.Recurrence != null
           ? new Recurrence { DateString = schedule.Recurrence.DateString }
           : null,
-        DidNotify = schedule.DidNotify,
+        NotifiedOn = schedule.NotifiedOn,
         NotificationId = schedule.NotificationId,
         OnClickUrl = schedule.OnClickUrl
       };

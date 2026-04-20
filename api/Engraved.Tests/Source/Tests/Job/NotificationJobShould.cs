@@ -74,8 +74,23 @@ public class NotificationJobShould
 
     journal.Schedules.Should().HaveCount(1);
     journal.Schedules[UserName1].NextOccurrence.Should().NotBeNull();
-    journal.Schedules[UserName1].DidNotify.Should().Be(true);
+    journal.Schedules[UserName1].NotifiedOn.Should().NotBeNull();
     journal.Schedules[UserName1].NotificationId.Should().NotBe(null);
+  }
+
+  [Test]
+  public async Task NotProcess_OneJournal_WithExistingNotifiedOn()
+  {
+    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+
+    IJournal journal = (await _repo.GetJournal(journalId))!;
+    journal.Schedules[UserName1].NotifiedOn = _dateService.UtcNow.AddHours(-1);
+    await _repo.UpsertJournal(journal);
+
+    NotificationJobResult result = await _job.Execute(false);
+
+    result.NotifiedJournalIdsByUser.Should().BeEmpty();
+    result.NotifiedEntryIdsByUser.Should().BeEmpty();
   }
 
   [Test]
