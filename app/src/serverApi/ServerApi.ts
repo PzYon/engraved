@@ -416,6 +416,10 @@ export class ServerApi {
     );
   }
 
+  static async clearBackendCache(): Promise<void> {
+    return await ServerApi.executeRequest(`/system_config/clear-cache`, "POST");
+  }
+
   static async executeRequest<T = void>(
     url: string,
     method: HttpMethod = "GET",

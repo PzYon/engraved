@@ -10,7 +10,7 @@ import { CleanupUserTags } from "../components/overview/tags/CleanupUserTags";
 import { ExportYourData } from "./ExportYourData";
 
 export const SettingsPage: React.FC = () => {
-  const { user } = useAppContext();
+  const { user, setAppAlert } = useAppContext();
 
   return (
     <Page title="Settings" documentTitle="Settings" actions={[]}>
@@ -60,6 +60,31 @@ export const SettingsPage: React.FC = () => {
       <PageSection title="Export your data">
         <ExportYourData />
       </PageSection>
+
+      <PageSection title="System">
+        <Button
+          variant="outlined"
+          onClick={clearBackendCache}
+        >
+          Clear backend cache
+        </Button>
+      </PageSection>
     </Page>
   );
+
+  async function clearBackendCache() {
+    try {
+      await ServerApi.clearBackendCache();
+      setAppAlert({
+        title: "Backend cache cleared",
+        type: "success",
+      });
+    } catch (e) {
+      setAppAlert({
+        title: "Failed to clear backend cache",
+        message: (e as Error)?.message,
+        type: "error",
+      });
+    }
+  }
 };

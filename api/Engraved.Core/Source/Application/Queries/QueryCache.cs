@@ -67,6 +67,11 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     }
   }
 
+  public void ClearCurrentUser()
+  {
+    ClearForUser(GetUserId());
+  }
+
   private void ClearForUser(string userName)
   {
     if (!QueryKeysByUser.TryGetValue(userName, out var keys) || keys.IsEmpty)
