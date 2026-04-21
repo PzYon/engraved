@@ -4,13 +4,14 @@ import { Button } from "@mui/material";
 import { ServerApi } from "../serverApi/ServerApi";
 import { optInPushNotifications, setUpOneSignal } from "../util/oneSignal";
 import { useAppContext } from "../AppContext";
-import React from "react";
+import React, { useState } from "react";
 import { ManageUserTags } from "../components/overview/tags/ManageUserTags";
 import { CleanupUserTags } from "../components/overview/tags/CleanupUserTags";
 import { ExportYourData } from "./ExportYourData";
 
 export const SettingsPage: React.FC = () => {
-  const { user } = useAppContext();
+  const { user, setAppAlert } = useAppContext();
+  const [isClearingCache, setIsClearingCache] = useState(false);
 
   return (
     <Page title="Settings" documentTitle="Settings" actions={[]}>
@@ -64,13 +65,31 @@ export const SettingsPage: React.FC = () => {
       <PageSection title="System">
         <Button
           variant="outlined"
-          onClick={() => {
-            ServerApi.clearBackendCache();
-          }}
+          disabled={isClearingCache}
+          onClick={clearBackendCache}
         >
           Clear backend cache
         </Button>
       </PageSection>
     </Page>
   );
+
+  async function clearBackendCache() {
+    try {
+      setIsClearingCache(true);
+      await ServerApi.clearBackendCache();
+      setAppAlert({
+        title: "Backend cache cleared",
+        type: "success",
+      });
+    } catch (e) {
+      setAppAlert({
+        title: "Failed to clear backend cache",
+        message: (e as Error)?.message,
+        type: "error",
+      });
+    } finally {
+      setIsClearingCache(false);
+    }
+  }
 };
