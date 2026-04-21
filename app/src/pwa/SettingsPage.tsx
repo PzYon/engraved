@@ -60,6 +60,17 @@ export const SettingsPage: React.FC = () => {
       <PageSection title="Export your data">
         <ExportYourData />
       </PageSection>
+
+      <PageSection title="System">
+        <Button
+          variant="outlined"
+          onClick={() => {
+            ServerApi.clearBackendCache();
+          }}
+        >
+          Clear backend cache
+        </Button>
+      </PageSection>
     </Page>
   );
 };
