@@ -11,9 +11,8 @@ public class SystemConfigurationController(QueryCache queryCache) : ControllerBa
 {
   [HttpPost]
   [Route("clear-cache")]
-  public IActionResult ClearCache()
+  public void ClearCache()
   {
     queryCache.ClearCurrentUser();
-    return NoContent();
   }
 }
