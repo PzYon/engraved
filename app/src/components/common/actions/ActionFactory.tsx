@@ -55,7 +55,7 @@ export class ActionFactory {
     enableHotkeys: boolean,
   ): IAction {
     return {
-      hotkey: enableHotkeys ? "alt+s" : undefined,
+      hotkey: enableHotkeys ? "Alt+S" : undefined,
       key: "save",
       label: "Save",
       icon: <SaveOutlined fontSize="small" />,
@@ -66,7 +66,7 @@ export class ActionFactory {
 
   static goHome(): IAction {
     return {
-      hotkey: "alt+h",
+      hotkey: "Alt+H",
       key: "navigate-home",
       label: "Home",
       href: "/",
@@ -77,7 +77,7 @@ export class ActionFactory {
 
   static goToJournal(journalId: string, enableHotkeys: boolean): IAction {
     return {
-      hotkey: enableHotkeys ? "alt+enter" : undefined,
+      hotkey: enableHotkeys ? "Alt+Enter" : undefined,
       key: `go-to-journal-${journalId}`,
       href: `/journals/details/${journalId}`,
       label: "Go to journal",
@@ -87,7 +87,7 @@ export class ActionFactory {
 
   static newJournal(): IAction {
     return {
-      hotkey: "alt+n",
+      hotkey: "Alt+N",
       href: "/journals/create",
       icon: <AddOutlined fontSize="small" />,
       label: "Add journal",
@@ -97,7 +97,7 @@ export class ActionFactory {
 
   static editJournal(journalId: string, enableHotkey: boolean): IAction {
     return {
-      hotkey: enableHotkey ? "alt+e" : undefined,
+      hotkey: enableHotkey ? "Alt+E" : undefined,
       key: "edit",
       label: "Edit journal",
       icon: <EditOutlined fontSize="small" />,
@@ -116,7 +116,7 @@ export class ActionFactory {
 
   static deleteJournal(journalId: string, enableHotkeys: boolean): IAction {
     return {
-      hotkey: enableHotkeys ? "alt+d" : undefined,
+      hotkey: enableHotkeys ? "Alt+D" : undefined,
       key: "delete",
       label: "Delete journal",
       icon: <DeleteOutlined fontSize="small" />,
@@ -130,7 +130,7 @@ export class ActionFactory {
     hasSchedule?: boolean,
   ): IAction {
     return {
-      hotkey: enableHotkeys ? "alt+t" : undefined,
+      hotkey: enableHotkeys ? "Alt+T" : undefined,
       key: "edit-schedule",
       label: "Edit schedule",
       icon: hasSchedule ? (
@@ -149,7 +149,7 @@ export class ActionFactory {
   ): IAction {
     return {
       key: "edit-schedule",
-      hotkey: enableHotKeys ? "alt+n" : undefined,
+      hotkey: enableHotKeys ? "Alt+N" : undefined,
       label: "Edit schedule",
       icon: hasSchedule ? (
         <DoneOutlined fontSize="small" />
@@ -167,7 +167,7 @@ export class ActionFactory {
     navigateToJournal?: boolean,
   ): IAction {
     return {
-      hotkey: enableHotkey ? "alt+a" : undefined,
+      hotkey: enableHotkey ? "Alt+A" : undefined,
       key: "add_entry",
       label: "Add entry",
       icon: <AddOutlined fontSize="small" />,
@@ -180,7 +180,7 @@ export class ActionFactory {
   static getToc(onClick: () => void, isNotActive: boolean): IAction {
     return {
       key: "toc",
-      hotkey: "alt+i",
+      hotkey: "Alt+I",
       label: "Table of contents",
       icon: <Toc fontSize="small" />,
       isNotActive: isNotActive,
@@ -194,7 +194,7 @@ export class ActionFactory {
   ): IAction {
     return {
       key: "show_add_entry_row",
-      hotkey: "alt+t",
+      hotkey: "Alt+T",
       icon: <PlaylistAdd fontSize="small" />,
       label: "Show add new entry row",
       onClick: () => setShowAddNewEntryRow(!showAddNewEntryRow),
@@ -247,7 +247,7 @@ export class ActionFactory {
     enableHotkey: boolean,
   ): IAction {
     return {
-      hotkey: enableHotkey ? "alt+f" : undefined,
+      hotkey: enableHotkey ? "Alt+F" : undefined,
       key: "filters",
       icon: <FilterAltOutlined fontSize="small" />,
       label: "Show filters",
@@ -271,7 +271,7 @@ export class ActionFactory {
 
   static editScrap(onEdit: () => void, enableHotkey: boolean): IAction {
     return {
-      hotkey: enableHotkey ? "alt+e" : undefined,
+      hotkey: enableHotkey ? "Alt+E" : undefined,
       key: "edit",
       label: "Edit scrap",
       icon: <EditOutlined fontSize="small" />,
@@ -290,7 +290,7 @@ export class ActionFactory {
 
   static deleteEntry(entry: IEntry, enableHotkey?: boolean): IAction {
     return {
-      hotkey: enableHotkey ? "alt+d" : undefined,
+      hotkey: enableHotkey ? "Alt+D" : undefined,
       key: "delete",
       label: "Delete entry",
       icon: <DeleteOutlined fontSize="small" />,
@@ -300,7 +300,7 @@ export class ActionFactory {
 
   static editEntry(entry: IEntry, enableHotkey?: boolean): IAction {
     return {
-      hotkey: enableHotkey ? "alt+e" : undefined,
+      hotkey: enableHotkey ? "Alt+E" : undefined,
       key: "edit",
       label: "Edit entry",
       icon: <EditOutlined fontSize="small" />,
@@ -315,7 +315,7 @@ export class ActionFactory {
     renderDialog: (dialogProps: IDialogProps) => void,
   ): IAction {
     return {
-      hotkey: enableHotkey ? "alt+x" : undefined,
+      hotkey: enableHotkey ? "Alt+X" : undefined,
       key: "cancel-edit",
       label: "Stop editing and reset",
       icon: <ClearOutlined fontSize="small" />,
@@ -363,7 +363,7 @@ export class ActionFactory {
   ): IAction {
     return {
       key: "copy",
-      hotkey: "alt+c",
+      hotkey: "Alt+C",
       label: "Copy content",
       icon: <ContentCopyOutlined fontSize="small" />,
       onClick: async () => {
@@ -380,7 +380,7 @@ export class ActionFactory {
   static goToGlobalSearch(): IAction {
     return {
       key: "search",
-      hotkey: "alt+g",
+      hotkey: "Alt+G",
       icon: <SearchOutlined fontSize="small" />,
       label: "Search anything",
       href: "/search",
@@ -390,7 +390,7 @@ export class ActionFactory {
 
   static goTo(): IAction {
     return {
-      hotkey: "alt+Period",
+      hotkey: "Alt+.",
       key: "go-to",
       href: "/go-to",
       icon: <Shortcut fontSize="small" />,
@@ -401,7 +401,7 @@ export class ActionFactory {
 
   static quickAdd(): IAction {
     return {
-      hotkey: "alt+q",
+      hotkey: "Alt+Q",
       key: "quick-add",
       icon: <PlaylistAddOutlined fontSize="small" />,
       label: "Quick Add",
@@ -459,7 +459,7 @@ export class ActionFactory {
 
   static refreshData(queryClient: QueryClient): IAction {
     return {
-      hotkey: "alt+r",
+      hotkey: "Alt+R",
       icon: <RefreshOutlined fontSize="small" />,
       onClick: async () => await queryClient.invalidateQueries(),
       label: "Refresh data",
@@ -474,7 +474,7 @@ export class ActionFactory {
   ): IAction {
     return {
       key: "toggle-display-mode",
-      hotkey: "alt+v",
+      hotkey: "Alt+V",
       icon: <FormatLineSpacingOutlined fontSize="small" />,
       label: "Toggle display mode",
       onClick: () => setIsCompact(!isCompact),

@@ -10,7 +10,7 @@ export const GoToTextField: React.FC<{
 }> = ({ initialValue, onChange, onDownKey, inputRef }) => {
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
 
-  useEngravedHotkeys("down", () => onDownKey?.(), {
+  useEngravedHotkeys("ArrowDown", () => onDownKey?.(), {
     enabled: textFieldHasFocus,
     enableOnFormTags: ["input"],
   });

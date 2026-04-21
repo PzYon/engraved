@@ -25,7 +25,7 @@ export const TagsPage: React.FC = () => {
       showFilters={false}
       actions={[
         {
-          hotkey: "alt+n",
+          hotkey: "Alt+N",
           href: "/settings",
           icon: <AddOutlined fontSize="small" />,
           label: "Add tag",

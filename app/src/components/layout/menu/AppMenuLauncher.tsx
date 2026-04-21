@@ -7,7 +7,7 @@ import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 export const AppMenuLauncher: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEngravedHotkeys("alt+m", () => setIsMenuOpen(true));
+  useEngravedHotkeys("Alt+M", () => setIsMenuOpen(true));
 
   return (
     <>

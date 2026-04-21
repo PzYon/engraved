@@ -12,7 +12,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
 
   const [showMenu, setShowMenu] = React.useState(false);
 
-  useEngravedHotkeys("alt+b", () => setShowMenu(!showMenu));
+  useEngravedHotkeys("Alt+B", () => setShowMenu(!showMenu));
 
   return (
     <Host>

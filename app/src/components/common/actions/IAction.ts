@@ -1,6 +1,7 @@
 import React from "react";
 import { SxProps } from "@mui/system";
 import { Theme } from "@mui/material";
+import { RegisterableHotkey } from "@tanstack/react-hotkeys";
 
 export interface IAction {
   key: string;
@@ -12,5 +13,5 @@ export interface IAction {
   sx?: SxProps<Theme>;
   isNotActive?: boolean;
   isDisabled?: boolean;
-  hotkey?: string;
+  hotkey?: RegisterableHotkey;
 }
