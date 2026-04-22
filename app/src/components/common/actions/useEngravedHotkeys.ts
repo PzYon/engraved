@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect } from "react";
 
+/*
+open points:
+- improve types for hotkey
+- do we really need to register an event receiver on every element? or could we
+  - register only one globally a somehow check "target"
+  - or register only one PER element and check "target" there
+ */
+
 export function useEngravedHotkey(
   hotkey: string,
   ref: React.RefObject<HTMLElement>,
@@ -11,10 +19,6 @@ export function useEngravedHotkey(
   const cb = useCallback(
     (e: KeyboardEvent) => {
       console.log(e);
-
-      if (hotkey === "Enter" && e.key === "Enter") {
-        debugger;
-      }
 
       if (hotkey === null) {
         callback(e);
