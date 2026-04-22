@@ -13,7 +13,7 @@ export const GoToItemRow: React.FC<{
 }> = ({ children, icon, url, hasFocus, renderAtEnd, onClick }) => {
   const navigate = useNavigate();
 
-  useEngravedHotkey("enter", null, () => navigate(url), {
+  useEngravedHotkey("Enter", null, () => navigate(url), {
     disabled: !hasFocus,
   });
 

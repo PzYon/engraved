@@ -11,17 +11,25 @@ export function useEngravedHotkey(
   const cb = useCallback(
     (e: KeyboardEvent) => {
       console.log(e);
-      debugger;
       if (hotkey === null) {
         callback(e);
         return;
       }
 
-      if (!e.altKey) {
-        return;
+      const [modifier, key] = hotkey.split("+");
+
+      if (modifier) {
+        if (
+          (modifier === "alt" && !e.altKey) ||
+          (modifier === "ctrl" && !e.ctrlKey) ||
+          (modifier === "meta" && !e.metaKey) ||
+          (modifier === "shift" && !e.shiftKey)
+        ) {
+          return;
+        }
       }
 
-      if (hotkey.split("+")[1] !== e.key) {
+      if ((modifier && key !== e.key) || modifier !== key) {
         return;
       }
 
