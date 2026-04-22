@@ -11,25 +11,29 @@ export function useEngravedHotkey(
   const cb = useCallback(
     (e: KeyboardEvent) => {
       console.log(e);
+
+      if (hotkey === "Enter" && e.key === "Enter") {
+        debugger;
+      }
+
       if (hotkey === null) {
         callback(e);
         return;
       }
 
-      const [modifier, key] = hotkey.split("+");
+      const { modifier, key } = parseHotkey(hotkey);
 
-      if (modifier) {
-        if (
-          (modifier === "alt" && !e.altKey) ||
+      if (
+        modifier &&
+        ((modifier === "alt" && !e.altKey) ||
           (modifier === "ctrl" && !e.ctrlKey) ||
           (modifier === "meta" && !e.metaKey) ||
-          (modifier === "shift" && !e.shiftKey)
-        ) {
-          return;
-        }
+          (modifier === "shift" && !e.shiftKey))
+      ) {
+        return;
       }
 
-      if ((modifier && key !== e.key) || modifier !== key) {
+      if (key !== e.key) {
         return;
       }
 
@@ -48,4 +52,15 @@ export function useEngravedHotkey(
 
     return () => current?.removeEventListener("keydown", cb as never);
   }, [cb, options?.disabled, ref]);
+}
+
+function parseHotkey(hotkey: string): { modifier?: string; key?: string } {
+  if (hotkey.indexOf("+") === -1) {
+    return {
+      key: hotkey,
+    };
+  }
+
+  const [modifier, key] = hotkey.split("+");
+  return { modifier: modifier, key: key };
 }
