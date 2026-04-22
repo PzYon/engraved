@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { AppMenu } from "./AppMenu";
 import { Drawer, styled } from "@mui/material";
 import Menu from "@mui/icons-material/Menu";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { useEngravedHotkeysNew } from "../../common/actions/useEngravedHotkeysNew";
 
 export const AppMenuLauncher: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEngravedHotkeys("Alt+M", () => setIsMenuOpen(true));
+  useEngravedHotkeysNew("Alt+M", () => setIsMenuOpen(true));
 
   return (
     <>

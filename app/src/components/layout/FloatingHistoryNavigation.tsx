@@ -4,7 +4,7 @@ import { ActionIconButton } from "../common/actions/ActionIconButton";
 import { HistoryOutlined } from "@mui/icons-material";
 import { GoToSimple } from "../overview/goto/GoToSimple";
 import { PageSection } from "./pages/PageSection";
-import { useEngravedHotkeys } from "../common/actions/useEngravedHotkeys";
+import { useEngravedHotkeysNew } from "../common/actions/useEngravedHotkeysNew";
 
 export const FloatingHistoryNavigation: React.FC = () => {
   const domElementRef = useRef<HTMLSpanElement>(undefined);
@@ -12,7 +12,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
 
   const [showMenu, setShowMenu] = React.useState(false);
 
-  useEngravedHotkeys("Alt+B", () => setShowMenu(!showMenu));
+  useEngravedHotkeysNew("Alt+B", () => setShowMenu(!showMenu));
 
   return (
     <Host>

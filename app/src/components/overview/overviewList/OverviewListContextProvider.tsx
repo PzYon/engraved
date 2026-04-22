@@ -11,19 +11,17 @@ import {
   OverviewListContext,
 } from "./OverviewListContext";
 import { knownQueryParams } from "../../common/actions/searchParamHooks";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { useSearchParams } from "react-router";
-import { isRichTextEditor } from "../../common/isRichTextEditor";
 
 export const OverviewListContextProvider: React.FC<{
   items: IEntity[];
   filterItem?: (item: IEntity) => boolean;
   onKeyDown?: (e: KeyboardEvent) => void;
   children: React.ReactNode;
-}> = ({ items, children, filterItem, onKeyDown }) => {
+}> = ({ items, children, filterItem /*onKeyDown*/ }) => {
   const { setAppAlert } = useAppContext();
 
   const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
@@ -72,6 +70,7 @@ export const OverviewListContextProvider: React.FC<{
     [showAll, filterItem, inMemorySearchText, items],
   );
 
+  /*
   const getNextItem = useCallback(
     (direction: "up" | "down"): IEntity => {
       const activeIndex = filteredItems.findIndex(
@@ -87,6 +86,8 @@ export const OverviewListContextProvider: React.FC<{
     [filteredItems, activeItemId],
   );
 
+   */
+
   const removeItemParamsFromUrl = useCallback(() => {
     if (
       !searchParams.get(knownQueryParams.selectedItemId) &&
@@ -100,7 +101,8 @@ export const OverviewListContextProvider: React.FC<{
     setSearchParams(searchParams);
   }, [searchParams, setSearchParams]);
 
-  useEngravedHotkeys("*", (e) => {
+  /*
+  useEngravedHotkeysNew("*", (e) => {
     if (isRichTextEditor(e.target as HTMLElement)) {
       return;
     }
@@ -157,6 +159,7 @@ export const OverviewListContextProvider: React.FC<{
       }
     }
   });
+*/
 
   const contextValue = useMemo<IOverviewListContext>(
     () => ({

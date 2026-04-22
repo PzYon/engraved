@@ -1,6 +1,7 @@
 import { styled, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { useEngravedHotkeysNew } from "../../common/actions/useEngravedHotkeysNew";
+import React from "react";
 
 export const GoToItemRow: React.FC<{
   children: React.ReactNode;
@@ -12,7 +13,7 @@ export const GoToItemRow: React.FC<{
 }> = ({ children, icon, url, hasFocus, renderAtEnd, onClick }) => {
   const navigate = useNavigate();
 
-  useEngravedHotkeys("Enter", () => navigate(url), { enabled: hasFocus });
+  useEngravedHotkeysNew("Enter", () => navigate(url), { enabled: hasFocus });
 
   return (
     <Typography
