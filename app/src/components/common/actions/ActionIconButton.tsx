@@ -4,7 +4,7 @@ import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { SxProps } from "@mui/system";
 import { actionBorderWidth } from "../../../theming/engravedTheme";
-import { useEngravedHotkeys } from "./useEngravedHotkeys";
+import { useEngravedHotkey } from "./useEngravedHotkeys";
 import { getActionLabel } from "./actionUtils";
 
 export const ActionIconButton: React.FC<{
@@ -16,19 +16,21 @@ export const ActionIconButton: React.FC<{
 
   const { title, ...commonProps } = getCommonProps();
 
-  useEngravedHotkeys(
-    action.hotkey,
-    (keyboardEvent) => {
-      keyboardEvent.preventDefault();
-      action.onClick();
-    },
-    {
-      // we only register actions with functions here.
-      // actions with URLs are registered in ActionLink component.
-      enabled: !!action.hotkey && !!action.onClick,
-      enableOnFormTags: ["textarea", "input"],
-    },
-  );
+  useEngravedHotkey(action.hotkey, action.hotkeyRef, action.onClick);
+
+  // useEngravedHotkeys(
+  //   action.hotkey,
+  //   (keyboardEvent) => {
+  //     keyboardEvent.preventDefault();
+  //     action.onClick();
+  //   },
+  //   {
+  //     // we only register actions with functions here.
+  //     // actions with URLs are registered in ActionLink component.
+  //     enabled: !!action.hotkey && !!action.onClick,
+  //     enableOnFormTags: ["textarea", "input"],
+  //   },
+  // );
 
   if (action.href || Object.keys(action.search ?? {}).length) {
     return (

@@ -1,46 +1,43 @@
-import { DependencyList } from "react";
-import { HotkeyCallback, Options, useHotkeys } from "react-hotkeys-hook";
-import { isRichTextEditor } from "../isRichTextEditor";
+import React, { useCallback, useEffect } from "react";
 
-type Scopes = string | readonly string[];
-
-type KeyboardModifiers = {
-  alt?: boolean;
-  ctrl?: boolean;
-  meta?: boolean;
-  shift?: boolean;
-  mod?: boolean;
-  useKey?: boolean;
-};
-
-type Hotkey = KeyboardModifiers & {
-  keys?: readonly string[];
-  scopes?: Scopes;
-  description?: string;
-  isSequence?: boolean;
-  hotkey: string;
-};
-
-export function useEngravedHotkeys(
-  hotkey: string | string[],
-  callback: HotkeyCallback,
-  options?: Options | DependencyList,
-  dependencies?: Options | DependencyList,
+export function useEngravedHotkey(
+  hotkey: string,
+  ref: React.RefObject<HTMLElement>,
+  callback: (e: KeyboardEvent) => void,
+  options?: {
+    disabled?: boolean;
+  },
 ) {
-  useHotkeys(
-    hotkey,
-    (keyboardEvent: KeyboardEvent, hotkeysEvent: Hotkey) => {
-      if (options && (options as Options).preventDefault === undefined) {
-        keyboardEvent.preventDefault();
+  const cb = useCallback(
+    (e: KeyboardEvent) => {
+      console.log(e);
+      debugger;
+      if (hotkey === null) {
+        callback(e);
+        return;
       }
 
-      callback(keyboardEvent, hotkeysEvent);
-
-      if (isRichTextEditor(keyboardEvent.target as HTMLElement)) {
-        keyboardEvent.stopPropagation();
+      if (!e.altKey) {
+        return;
       }
+
+      if (hotkey.split("+")[1] !== e.key) {
+        return;
+      }
+
+      callback(e);
     },
-    { enableOnContentEditable: true, ...options },
-    dependencies,
+    [hotkey, callback],
   );
+
+  useEffect(() => {
+    if (options?.disabled) {
+      return;
+    }
+
+    const current = ref === null ? document : ref?.current;
+    current?.addEventListener("keydown", cb as never);
+
+    return () => current?.removeEventListener("keydown", cb as never);
+  }, [cb, options?.disabled, ref]);
 }

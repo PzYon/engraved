@@ -11,7 +11,7 @@ import {
   OverviewListContext,
 } from "./OverviewListContext";
 import { knownQueryParams } from "../../common/actions/searchParamHooks";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { useEngravedHotkey } from "../../common/actions/useEngravedHotkeys";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
@@ -100,7 +100,7 @@ export const OverviewListContextProvider: React.FC<{
     setSearchParams(searchParams);
   }, [searchParams, setSearchParams]);
 
-  useEngravedHotkeys("*", (e) => {
+  useEngravedHotkey(null, containerRef, (e: KeyboardEvent) => {
     if (isRichTextEditor(e.target as HTMLElement)) {
       return;
     }

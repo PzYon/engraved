@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
 import { Link, useNavigate } from "react-router-dom";
-import { useEngravedHotkeys } from "./useEngravedHotkeys";
+import { useEngravedHotkey } from "./useEngravedHotkeys";
 import { useEngravedSearchParams } from "./searchParamHooks";
 
 export const ActionLink: React.FC<{
@@ -15,8 +15,9 @@ export const ActionLink: React.FC<{
 
   const { getNewSearchParams } = useEngravedSearchParams();
 
-  useEngravedHotkeys(
+  useEngravedHotkey(
     action.hotkey,
+    null,
     () => {
       navigate({
         pathname: action.href,
@@ -24,11 +25,12 @@ export const ActionLink: React.FC<{
       });
     },
     {
-      enabled:
+      disabled: !(
         !isAbsoluteUrl &&
         !!action.hotkey &&
-        !!(action.href || Object.keys(action.search ?? {}).length),
-      enableOnFormTags: ["textarea", "input"],
+        !!(action.href || Object.keys(action.search ?? {}).length)
+      ),
+      // enableOnFormTags: ["textarea", "input"],
     },
   );
 

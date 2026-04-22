@@ -1,6 +1,6 @@
 import { RefObject, useState } from "react";
 import { TextField } from "@mui/material";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { useEngravedHotkey } from "../../common/actions/useEngravedHotkeys";
 
 export const GoToTextField: React.FC<{
   initialValue: string;
@@ -10,9 +10,9 @@ export const GoToTextField: React.FC<{
 }> = ({ initialValue, onChange, onDownKey, inputRef }) => {
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
 
-  useEngravedHotkeys("down", () => onDownKey?.(), {
-    enabled: textFieldHasFocus,
-    enableOnFormTags: ["input"],
+  useEngravedHotkey("down", null, () => onDownKey?.(), {
+    disabled: !textFieldHasFocus,
+    //enableOnFormTags: ["input"],
   });
 
   return (
