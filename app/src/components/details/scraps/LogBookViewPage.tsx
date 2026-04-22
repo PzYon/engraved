@@ -32,7 +32,7 @@ export const LogBookViewPage: React.FC = () => {
     <Page
       title={<JournalPageTitle journal={journal} />}
       documentTitle={journal.name}
-      actions={[null, ...getCommonJournalActions(journal, true, user)]}
+      actions={[null, ...getCommonJournalActions(journal, user)]}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
     >
       {scraps.length ? (

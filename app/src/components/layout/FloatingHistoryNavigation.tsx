@@ -4,15 +4,12 @@ import { ActionIconButton } from "../common/actions/ActionIconButton";
 import { HistoryOutlined } from "@mui/icons-material";
 import { GoToSimple } from "../overview/goto/GoToSimple";
 import { PageSection } from "./pages/PageSection";
-import { useEngravedHotkeysNew } from "../common/actions/useEngravedHotkeysNew";
 
 export const FloatingHistoryNavigation: React.FC = () => {
   const domElementRef = useRef<HTMLSpanElement>(undefined);
   const popoverActions = useRef(null);
 
   const [showMenu, setShowMenu] = React.useState(false);
-
-  useEngravedHotkeysNew("Alt+B", () => setShowMenu(!showMenu));
 
   return (
     <Host>
@@ -28,6 +25,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
         <span ref={domElementRef} style={{ height: 16 }}></span>
         <ActionIconButton
           action={{
+            hotkey: "Alt+B",
             sx: {
               backgroundColor: "primary.main",
               color: "common.white",

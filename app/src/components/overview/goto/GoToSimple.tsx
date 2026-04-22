@@ -147,8 +147,8 @@ const JournalGoToItemRow: React.FC<{
             action={
               deviceWidth === DeviceWidth.Normal &&
               isTypeThatCanShowAddEntryRow(journal.type)
-                ? ActionFactory.goToJournal(journal.id, false)
-                : ActionFactory.addEntry(journal, false, () => {}, true)
+                ? ActionFactory.goToJournal(journal.id)
+                : ActionFactory.addEntry(journal, () => {}, true)
             }
           />
         ) : null;

@@ -39,13 +39,13 @@ export const JournalListItem: React.FC<{
               entity={journal}
               title={journal.name}
               hasFocus={hasFocus}
-              onClickAction={ActionFactory.goToJournal(journal.id, hasFocus)}
+              onClickAction={ActionFactory.goToJournal(journal.id)}
             />
           </TitleRow>
           <ListItemFooterRow
             hasFocus={hasFocus}
             properties={journalProperties}
-            actions={getCommonJournalActions(journal, hasFocus, user)}
+            actions={getCommonJournalActions(journal, user)}
           />
           {hasFocus ? <JournalSubRoutes journal={journal} /> : null}
         </Box>

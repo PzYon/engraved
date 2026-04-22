@@ -22,15 +22,11 @@ export const AddEntryTableSaveAction: React.FC<{
   return (
     <Host>
       <ActionIconButton
-        action={ActionFactory.save(
-          async () => {
-            await upsertEntryMutation.mutateAsync({
-              command: command,
-            });
-          },
-          false,
-          true,
-        )}
+        action={ActionFactory.save(async () => {
+          await upsertEntryMutation.mutateAsync({
+            command: command,
+          });
+        }, false)}
       />
     </Host>
   );

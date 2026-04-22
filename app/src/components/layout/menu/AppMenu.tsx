@@ -193,7 +193,7 @@ const JournalAppMenuItem: React.FC<{
       iconStart={<JournalIcon journal={journal} iconStyle={IconStyle.Small} />}
       iconEnd={
         <ActionIconButton
-          action={ActionFactory.addEntry(journal, false, close, true)}
+          action={ActionFactory.addEntry(journal, close, true)}
         />
       }
       onClick={close}
