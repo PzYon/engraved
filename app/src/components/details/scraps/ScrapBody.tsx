@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IAction } from "../../common/actions/IAction";
 import { Entry } from "../../common/entries/Entry";
@@ -33,29 +33,33 @@ export const ScrapBody: React.FC<{
 
   const { isCompact } = useDisplayModeContext();
 
+  const ref = useRef<HTMLDivElement>(undefined);
+
   return (
-    <Entry
-      isEditMode={isEditMode}
-      hasFocus={hasFocus}
-      journal={journal}
-      entry={scrapToRender}
-      actions={getActions()}
-      propsRenderStyle={propsRenderStyle}
-      noCompactFooter={!scrapToRender.id}
-      propertyOverrides={
-        parsedDate?.date
-          ? [
-              getSchedulePropertyFromSchedule({
-                nextOccurrence: parsedDate.date.toString(),
-                recurrence: parsedDate.recurrence,
-              }),
-              ...properties,
-            ]
-          : properties
-      }
-    >
-      {isCompact && !hasFocus && !isEditMode ? null : children}
-    </Entry>
+    <div ref={ref}>
+      <Entry
+        isEditMode={isEditMode}
+        hasFocus={hasFocus}
+        journal={journal}
+        entry={scrapToRender}
+        actions={wrapWith(ref, getActions())}
+        propsRenderStyle={propsRenderStyle}
+        noCompactFooter={!scrapToRender.id}
+        propertyOverrides={
+          parsedDate?.date
+            ? [
+                getSchedulePropertyFromSchedule({
+                  nextOccurrence: parsedDate.date.toString(),
+                  recurrence: parsedDate.recurrence,
+                }),
+                ...properties,
+              ]
+            : properties
+        }
+      >
+        {isCompact && !hasFocus && !isEditMode ? null : children}
+      </Entry>
+    </div>
   );
 
   function getActions() {
@@ -98,3 +102,13 @@ export const ScrapBody: React.FC<{
     return allActions;
   }
 };
+
+function wrapWith(
+  ref: React.RefObject<HTMLElement>,
+  actions: IAction[],
+): IAction[] {
+  return actions.map((a) => {
+    a.hotkeyScopeRef = ref;
+    return a;
+  });
+}

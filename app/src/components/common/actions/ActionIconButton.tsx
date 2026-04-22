@@ -27,6 +27,7 @@ export const ActionIconButton: React.FC<{
       // actions with URLs are registered in ActionLink component.
       enabled: !!action.hotkey && !!action.onClick,
       ignoreInputs: false,
+      target: action.hotkeyScopeRef?.current,
     },
   );
 

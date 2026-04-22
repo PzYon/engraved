@@ -14,10 +14,5 @@ export interface IAction {
   isNotActive?: boolean;
   isDisabled?: boolean;
   hotkey?: RegisterableHotkey;
-  hotkeyScopeRef?:
-    | React.RefObject<HTMLElement>
-    | HTMLElement
-    | Document
-    | Window
-    | null;
+  hotkeyScopeRef?: React.RefObject<HTMLElement>;
 }

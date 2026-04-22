@@ -28,30 +28,37 @@ import { TagPage } from "./components/overview/tags/TagPage";
 import { GoToPage } from "./components/overview/goto/GoToPage";
 import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
 import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNavigation";
+import { HotkeysProvider } from "@tanstack/react-hotkeys";
 
 const router = createBrowserRouter([
   {
     path: "*",
     Component: () => (
-      <ReactQueryProviderWrapper>
-        <PageContextProvider>
-          <DialogContextProvider>
-            <DisplayModeContextProvider>
-              <Host>
-                <AppHeader />
-                <AppAlertBar />
-                <AppContent scope="body">
-                  <AppErrorBoundary>
-                    <Outlet />
-                  </AppErrorBoundary>
-                </AppContent>
-                <FloatingHistoryNavigation />
-                <AppFooter />
-              </Host>
-            </DisplayModeContextProvider>
-          </DialogContextProvider>
-        </PageContextProvider>
-      </ReactQueryProviderWrapper>
+      <HotkeysProvider
+        defaultOptions={{
+          hotkey: { preventDefault: true },
+        }}
+      >
+        <ReactQueryProviderWrapper>
+          <PageContextProvider>
+            <DialogContextProvider>
+              <DisplayModeContextProvider>
+                <Host>
+                  <AppHeader />
+                  <AppAlertBar />
+                  <AppContent scope="body">
+                    <AppErrorBoundary>
+                      <Outlet />
+                    </AppErrorBoundary>
+                  </AppContent>
+                  <FloatingHistoryNavigation />
+                  <AppFooter />
+                </Host>
+              </DisplayModeContextProvider>
+            </DialogContextProvider>
+          </PageContextProvider>
+        </ReactQueryProviderWrapper>
+      </HotkeysProvider>
     ),
     children: [
       {

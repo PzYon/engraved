@@ -12,5 +12,11 @@ export function useEngravedHotkeysNew(
   callback: HotkeyCallback,
   options?: HotkeyOptions,
 ) {
-  return useHotkey(hotkey ?? fallbackHotkey, callback, options);
+  const o: HotkeyOptions = {
+    ...options,
+    stopPropagation: true,
+    preventDefault: true,
+  };
+
+  return useHotkey(hotkey ?? fallbackHotkey, callback, o);
 }
