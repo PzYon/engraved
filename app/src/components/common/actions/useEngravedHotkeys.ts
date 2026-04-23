@@ -1,81 +1,28 @@
 import React, { useCallback, useEffect } from "react";
 
-type KeyboardEventListener = (e: KeyboardEvent) => void;
-type WrappedKeyboardEventListener = (e: KeyboardEvent) => boolean;
-
-export class Manager {
-  private registrations = new Map<
-    React.RefObject<HTMLElement>,
-    {
-      callbacks: WrappedKeyboardEventListener[];
-      executor: (e: KeyboardEvent) => void;
-    }
-  >();
-
-  addListener(
-    ref: React.RefObject<HTMLElement>,
-    listener: WrappedKeyboardEventListener,
-  ) {
-    if (!this.registrations.has(ref)) {
-      this.registrations.set(ref, {
-        callbacks: [],
-        executor: (e: KeyboardEvent): boolean => {
-          console.log(e);
-
-          let handled = false;
-
-          for (const cb of this.registrations.get(ref)?.callbacks ?? []) {
-            if (cb(e)) {
-              handled = true;
-            }
-          }
-
-          if (handled) {
-            e.preventDefault();
-          }
-
-          return handled;
-        },
-      });
-
-      const elementForEvent = ref === null ? document : ref?.current;
-      elementForEvent.addEventListener(
-        "keydown",
-        this.registrations.get(ref).executor as EventListener,
-      );
-    }
-
-    this.registrations.get(ref).callbacks.push(listener);
-  }
-
-  removeListener(
-    ref: React.RefObject<HTMLElement>,
-    listener: WrappedKeyboardEventListener,
-  ) {
-    this.registrations
-      .get(ref)
-      .callbacks.splice(
-        this.registrations.get(ref).callbacks.indexOf(listener),
-        1,
-      );
-  }
-}
-
-const manager = new Manager();
+/*
+open points:
+- improve types for hotkey
+- do we really need to register an event receiver on every element? or could we
+  - register only one globally a somehow check "target"
+  - or register only one PER element and check "target" there
+ */
 
 export function useEngravedHotkey(
   hotkey: string,
   ref: React.RefObject<HTMLElement>,
-  callback: KeyboardEventListener,
+  callback: (e: KeyboardEvent) => void,
   options?: {
     disabled?: boolean;
   },
 ) {
-  const eventListener: WrappedKeyboardEventListener = useCallback(
-    (e: KeyboardEvent): boolean => {
+  const cb = useCallback(
+    (e: KeyboardEvent) => {
+      console.log(e);
+
       if (hotkey === null) {
         callback(e);
-        return true;
+        return;
       }
 
       const { modifier, key } = parseHotkey(hotkey);
@@ -87,32 +34,32 @@ export function useEngravedHotkey(
           (modifier === "meta" && !e.metaKey) ||
           (modifier === "shift" && !e.shiftKey))
       ) {
-        return false;
+        return;
       }
 
       if (key !== e.key) {
-        return false;
+        return;
       }
 
       callback(e);
-      return true;
     },
     [hotkey, callback],
   );
 
   useEffect(() => {
-    if (options?.disabled || ref === undefined) {
+    if (options?.disabled) {
       return;
     }
 
-    manager.addListener(ref, eventListener);
+    const current = ref === null ? document : ref?.current;
+    current?.addEventListener("keydown", cb as never);
 
-    return () => manager.removeListener(ref, eventListener);
-  }, [eventListener, options?.disabled, ref]);
+    return () => current?.removeEventListener("keydown", cb as never);
+  }, [cb, options?.disabled, ref]);
 }
 
 function parseHotkey(hotkey: string): { modifier?: string; key?: string } {
-  if (!hotkey || hotkey.indexOf("+") === -1) {
+  if (hotkey.indexOf("+") === -1) {
     return {
       key: hotkey,
     };
