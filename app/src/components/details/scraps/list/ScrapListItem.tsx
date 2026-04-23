@@ -11,6 +11,7 @@ import { ListItemCollection } from "./ListItemCollection";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { CursorPosition } from "./ListItemWrapper";
+import { useEngravedHotkey } from "../../../common/actions/useEngravedHotkeys";
 
 export const ScrapListItem: React.FC<{
   listItemsCollection: ListItemCollection;
@@ -21,6 +22,92 @@ export const ScrapListItem: React.FC<{
 }> = ({ listItemsCollection, index, isEditMode, listItem, onChange }) => {
   const [label, setLabel] = useState(listItem.label);
   const ref: React.RefObject<HTMLInputElement> = useRef(null);
+
+  useEngravedHotkey("ArrowUp", ref, (e) => {
+    if (e.altKey && e.ctrlKey) {
+      listItemsCollection.moveItemUp(index);
+    } else {
+      listItemsCollection.moveFocusUp(index, "end");
+    }
+  });
+
+  useEngravedHotkey("ArrowDown", ref, (e) => {
+    if (e.altKey && e.ctrlKey) {
+      listItemsCollection.moveItemDown(index);
+    } else {
+      listItemsCollection.moveFocusDown(index, "end");
+    }
+  });
+
+  useEngravedHotkey("ArrowRight", ref, (e) => {
+    if (e.altKey && e.ctrlKey) {
+      listItemsCollection.moveItemRight(index);
+    }
+  });
+
+  useEngravedHotkey("ArrowLeft", ref, (e) => {
+    if (e.altKey && e.ctrlKey) {
+      listItemsCollection.moveItemLeft(index);
+    }
+  });
+
+  useEngravedHotkey("ArrowLeft", ref, (e) => {
+    if (e.altKey && e.ctrlKey) {
+      listItemsCollection.moveItemLeft(index);
+    }
+  });
+
+  useEngravedHotkey("ArrowLeft", ref, (e) => {
+    const target = e.target as HTMLTextAreaElement;
+
+    if (
+      target.value === undefined ||
+      target.value === null ||
+      target.value?.trim() === ""
+    ) {
+      e.preventDefault();
+      listItemsCollection.removeItem(index);
+      return;
+    }
+
+    if (target.selectionStart !== target.selectionEnd) {
+      return;
+    }
+
+    if (e.altKey && e.ctrlKey) {
+      listItemsCollection.removeItem(index);
+    }
+  });
+
+  // useEngravedHotkey(null, ref, (e) => {
+  //   switch (e.key) {
+  //     case "ArrowUp": {
+  //
+  //       break;
+  //     }
+  //     case "ArrowDown": {
+  //
+  //       break;
+  //     }
+  //
+  //       break;
+  //     }
+  //     case "ArrowLeft": {
+  //
+  //       break;
+  //     }
+  //     case "Enter": {
+  //       e.preventDefault();
+  //       break;
+  //     }
+  //
+  //     case "Backspace": {
+  //
+  //
+  //       break;
+  //     }
+  //   }
+  // });
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: listItemsCollection.getReactKey(index) });
@@ -97,7 +184,6 @@ export const ScrapListItem: React.FC<{
             value={label}
             onChange={(event) => setLabel(event.target.value)}
             onKeyUp={keyUp}
-            onKeyDown={keyDown}
             onBlur={() =>
               onChange({
                 label,
@@ -147,67 +233,6 @@ export const ScrapListItem: React.FC<{
     return sx;
   }
 
-  function keyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    switch (e.key) {
-      case "ArrowUp": {
-        if (e.altKey && e.ctrlKey) {
-          listItemsCollection.moveItemUp(index);
-        } else {
-          listItemsCollection.moveFocusUp(index, "end");
-        }
-        break;
-      }
-      case "ArrowDown": {
-        if (e.altKey && e.ctrlKey) {
-          listItemsCollection.moveItemDown(index);
-        } else {
-          listItemsCollection.moveFocusDown(index, "end");
-        }
-        break;
-      }
-      case "ArrowRight": {
-        if (e.altKey && e.ctrlKey) {
-          listItemsCollection.moveItemRight(index);
-        }
-        break;
-      }
-      case "ArrowLeft": {
-        if (e.altKey && e.ctrlKey) {
-          listItemsCollection.moveItemLeft(index);
-        }
-        break;
-      }
-      case "Enter": {
-        e.preventDefault();
-        break;
-      }
-
-      case "Backspace": {
-        const target = e.target as HTMLTextAreaElement;
-
-        if (
-          target.value === undefined ||
-          target.value === null ||
-          target.value?.trim() === ""
-        ) {
-          e.preventDefault();
-          listItemsCollection.removeItem(index);
-          return;
-        }
-
-        if (target.selectionStart !== target.selectionEnd) {
-          return;
-        }
-
-        if (e.altKey && e.ctrlKey) {
-          listItemsCollection.removeItem(index);
-        }
-
-        break;
-      }
-    }
-  }
-
   function keyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     switch (e.key) {
       case "Enter": {
@@ -239,16 +264,19 @@ export const ScrapListItem: React.FC<{
     }
   }
 };
+
 const StyledCheckbox = styled(Checkbox)`
   padding: 5px 5px 5px 0;
   &.MuiCheckbox-colorPrimary {
     color: ${(p) => p.theme.palette.primary.main} !important;
   }
 `;
+
 const ListItem = styled("li")`
   display: flex;
   align-items: start;
 `;
+
 const ReadonlyContainer = styled("div")`
   word-break: break-word;
 `;
