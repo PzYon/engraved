@@ -7,49 +7,31 @@ export class Manager {
   private registrations = new Map<
     React.RefObject<HTMLElement>,
     {
-      listeners: {
-        eventListener: WrappedKeyboardEventListener;
-        hotkey: string;
-      }[];
+      callbacks: WrappedKeyboardEventListener[];
       executor: (e: KeyboardEvent) => void;
     }
   >();
 
   addListener(
     ref: React.RefObject<HTMLElement>,
-    hotkey: string,
     listener: WrappedKeyboardEventListener,
   ) {
-    if (ref && !ref.current) {
-      return false;
-    }
-
     if (!this.registrations.has(ref)) {
       this.registrations.set(ref, {
-        listeners: [],
+        callbacks: [],
         executor: (e: KeyboardEvent): boolean => {
-          const obj = this.registrations.get(ref);
-
-          console.log(e, hotkey, obj);
+          console.log(e);
 
           let handled = false;
 
-          for (const listener of obj?.listeners ?? []) {
-            if (listener.eventListener(e)) {
+          for (const cb of this.registrations.get(ref)?.callbacks ?? []) {
+            if (cb(e)) {
               handled = true;
             }
           }
 
           if (handled) {
             e.preventDefault();
-          }
-
-          if (
-            !handled &&
-            ((e.target as HTMLElement).nodeName.toLowerCase() === "input" ||
-              (e.target as HTMLElement).nodeName.toLowerCase() === "textarea")
-          ) {
-            e.stopPropagation();
           }
 
           return handled;
@@ -63,28 +45,17 @@ export class Manager {
       );
     }
 
-    this.registrations.get(ref).listeners.push({
-      eventListener: listener,
-      hotkey: hotkey,
-    });
+    this.registrations.get(ref).callbacks.push(listener);
   }
 
   removeListener(
     ref: React.RefObject<HTMLElement>,
     listener: WrappedKeyboardEventListener,
   ) {
-    const instance = this.registrations
-      .get(ref)
-      ?.listeners.find((l) => l.eventListener === listener);
-
-    if (!instance) {
-      return;
-    }
-
     this.registrations
       .get(ref)
-      .listeners.splice(
-        this.registrations.get(ref).listeners.indexOf(instance),
+      .callbacks.splice(
+        this.registrations.get(ref).callbacks.indexOf(listener),
         1,
       );
   }
@@ -134,10 +105,10 @@ export function useEngravedHotkey(
       return;
     }
 
-    manager.addListener(ref, hotkey, eventListener);
+    manager.addListener(ref, eventListener);
 
     return () => manager.removeListener(ref, eventListener);
-  }, [eventListener, options?.disabled, ref, hotkey]);
+  }, [eventListener, options?.disabled, ref]);
 }
 
 function parseHotkey(hotkey: string): { modifier?: string; key?: string } {
