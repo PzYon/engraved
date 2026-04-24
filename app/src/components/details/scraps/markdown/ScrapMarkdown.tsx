@@ -3,17 +3,17 @@ import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
-import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
-import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { RichTextEditor } from "../../../common/RichTextEditor";
 import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
+import { IAction } from "../../../common/actions/IAction";
 
-export const ScrapMarkdown: React.FC = () => {
+export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
+  editModeActions = [],
+}) => {
   const { setAppAlert } = useAppContext();
 
-  const { notes, title, setNotes, isEditMode, changeScrapType } =
-    useScrapContext();
+  const { notes, title, setNotes, isEditMode } = useScrapContext();
 
   return (
     <ScrapBody
@@ -26,19 +26,7 @@ export const ScrapMarkdown: React.FC = () => {
             setValue={setNotes}
             autoFocus={!!title}
             showFormattingOptions={true}
-            editModeActions={[
-              {
-                onClick: () => {
-                  changeScrapType(
-                    notes.split("\n").filter((line) => !!(line ?? "").trim()),
-                    ScrapType.List,
-                  );
-                },
-                key: "toggle-type",
-                icon: <AutoFixHigh fontSize="small" />,
-                label: "Change type to list",
-              },
-            ]}
+            editModeActions={[...editModeActions]}
           />
         </div>
       ) : (

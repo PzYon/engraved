@@ -8,6 +8,7 @@ import { IScrapListItem } from "./list/IScrapListItem";
 import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { ParseableDate } from "../edit/ParseableDate";
 import { Markdown } from "./markdown/Markdown";
+import { AutoFixHigh } from "@mui/icons-material";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -20,6 +21,7 @@ export const ScrapInner: React.FC = () => {
     scrapToRender,
     setHasTitleFocus,
     hasFocus,
+    changeScrapType,
   } = useScrapContext();
 
   const { isCompact } = useDisplayModeContext();
@@ -71,7 +73,21 @@ export const ScrapInner: React.FC = () => {
           <ScrapList />
         </div>
       ) : (
-        <ScrapMarkdown />
+        <ScrapMarkdown
+          editModeActions={[
+            {
+              onClick: () => {
+                changeScrapType(
+                  notes.split("\n").filter((line) => !!(line ?? "").trim()),
+                  ScrapType.List,
+                );
+              },
+              key: "toggle-type",
+              icon: <AutoFixHigh fontSize="small" />,
+              label: "Change type to list",
+            },
+          ]}
+        />
       )}
     </div>
   );
