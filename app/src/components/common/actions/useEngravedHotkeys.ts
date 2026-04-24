@@ -1,13 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 
-/*
-open points:
-- improve types for hotkey
-- do we really need to register an event receiver on every element? or could we
-  - register only one globally a somehow check "target"
-  - or register only one PER element and check "target" there
- */
-
 export function useEngravedHotkey(
   hotkey: string,
   ref: React.RefObject<HTMLElement>,
@@ -18,26 +10,36 @@ export function useEngravedHotkey(
 ) {
   const cb = useCallback(
     (e: KeyboardEvent) => {
-      console.log(e);
+      debugger;
 
+      console.log(e);
       if (hotkey === null) {
         callback(e);
         return;
       }
 
-      const { modifier, key } = parseHotkey(hotkey);
+      const [modifier, key] = (hotkey ?? "").split("+");
 
-      if (
-        modifier &&
-        ((modifier === "alt" && !e.altKey) ||
+      if (modifier) {
+        if (
+          (modifier === "alt" && !e.altKey) ||
           (modifier === "ctrl" && !e.ctrlKey) ||
           (modifier === "meta" && !e.metaKey) ||
-          (modifier === "shift" && !e.shiftKey))
-      ) {
-        return;
+          (modifier === "shift" && !e.shiftKey)
+        ) {
+          return;
+        }
       }
 
-      if (key !== e.key) {
+      if (
+        (e.target as HTMLElement).nodeName.toLowerCase() === "input" ||
+        (e.target as HTMLElement).nodeName.toLowerCase() === "textarea"
+      ) {
+        debugger;
+        e.stopPropagation();
+      }
+
+      if ((modifier && key !== e.key) || modifier !== key) {
         return;
       }
 
@@ -56,15 +58,4 @@ export function useEngravedHotkey(
 
     return () => current?.removeEventListener("keydown", cb as never);
   }, [cb, options?.disabled, ref]);
-}
-
-function parseHotkey(hotkey: string): { modifier?: string; key?: string } {
-  if (hotkey.indexOf("+") === -1) {
-    return {
-      key: hotkey,
-    };
-  }
-
-  const [modifier, key] = hotkey.split("+");
-  return { modifier: modifier, key: key };
 }
