@@ -49,6 +49,9 @@ export const engravedTheme = createTheme({
       },
     },
     MuiTooltip: {
+      defaultProps: {
+        enterDelay: 1000,
+      },
       styleOverrides: {
         tooltip: {
           backgroundColor: primaryColor,

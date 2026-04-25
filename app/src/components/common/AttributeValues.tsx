@@ -1,7 +1,7 @@
 import { IJournalAttributeValues } from "../../serverApi/IJournalAttributeValues";
 import React from "react";
 import { IJournalAttributes } from "../../serverApi/IJournalAttributes";
-import { Chip, lighten, useTheme } from "@mui/material";
+import { Chip, lighten, Tooltip, useTheme } from "@mui/material";
 import { getCoefficient } from "../../util/utils";
 import { useJournalContext } from "../details/JournalContext";
 
@@ -28,24 +28,27 @@ export const AttributeValues: React.FC<{
           return valueKeys.map((valueKey) => {
             const value = attribute.values[valueKey];
             return (
-              <Chip
+              <Tooltip
                 key={`${attributeKey}::${valueKey}`}
-                sx={{
-                  backgroundColor: colorByAttributeKey[attributeKey],
-                  color: "common.white",
-                  fontSize: "small",
-                  height: "22px",
-                }}
                 title={attribute.name + ": " + value}
-                label={value}
-                onClick={
-                  preventOnClick || !toggleAttributeValue
-                    ? null
-                    : () => {
-                        toggleAttributeValue(attributeKey, valueKey);
-                      }
-                }
-              />
+              >
+                <Chip
+                  sx={{
+                    backgroundColor: colorByAttributeKey[attributeKey],
+                    color: "common.white",
+                    fontSize: "small",
+                    height: "22px",
+                  }}
+                  label={value}
+                  onClick={
+                    preventOnClick || !toggleAttributeValue
+                      ? null
+                      : () => {
+                          toggleAttributeValue(attributeKey, valueKey);
+                        }
+                  }
+                />
+              </Tooltip>
             );
           });
         })}
