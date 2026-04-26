@@ -77,6 +77,6 @@
     "@rollup/rollup-linux-x64-gnu": "4.60.2"
   },
   "overrides": {
-    "rolldown": "1.0.0-rc.16"
+    "rolldown": "1.0.0-rc.17"
   }
 }
