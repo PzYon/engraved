@@ -37,6 +37,8 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       url: clientNotification.OnClickUrl,
       smallIcon: "/icons/icon-transparent-bg.svg",
       chromeWebBadge: "/icons/icon-transparent-bg.svg",
+      androidVisibility: 1,
+      priority: 10,
       webButtons: clientNotification.Buttons
         .Select(b => new WebButton
           {
