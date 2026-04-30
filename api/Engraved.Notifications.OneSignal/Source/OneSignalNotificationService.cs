@@ -37,8 +37,8 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       url: clientNotification.OnClickUrl,
       smallIcon: "/icons/icon-transparent-bg.svg",
       chromeWebBadge: "/icons/icon-transparent-bg.svg",
-      androidVisibility: 1,
-      priority: 10,
+      androidVisibility: 1, // 1 = Public: show full notification on lock screen
+      priority: 10, // 10 = High priority: wake device from doze mode (FCM high-priority)
       webButtons: clientNotification.Buttons
         .Select(b => new WebButton
           {
