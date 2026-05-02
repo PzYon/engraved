@@ -4,8 +4,6 @@ import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/
 import { RichTextEditor } from "../../common/RichTextEditor";
 import { Markdown } from "../scraps/markdown/Markdown";
 import { ActionFactory } from "../../common/actions/ActionFactory";
-import { ActionIconButtonGroup } from "../../common/actions/ActionIconButtonGroup";
-import EditOutlined from "@mui/icons-material/EditOutlined";
 
 export const JournalNotes: React.FC<{
   journal: IJournal;
@@ -13,21 +11,6 @@ export const JournalNotes: React.FC<{
   const editJournalMutation = useEditJournalMutation(journal.id);
   const [isEditMode, setIsEditMode] = useState(!journal.notes);
   const [notes, setNotes] = useState(journal.notes ?? "");
-
-  const save = async () => {
-    await editJournalMutation.mutateAsync({
-      journal: {
-        ...journal,
-        notes,
-      },
-    });
-    setIsEditMode(false);
-  };
-
-  const cancel = () => {
-    setNotes(journal.notes ?? "");
-    setIsEditMode(false);
-  };
 
   if (isEditMode) {
     return (
@@ -37,8 +20,23 @@ export const JournalNotes: React.FC<{
         setValue={setNotes}
         showFormattingOptions={true}
         editModeActions={[
-          ActionFactory.save(save, false, false),
-          ActionFactory.cancel(cancel),
+          ActionFactory.save(
+            async () => {
+              await editJournalMutation.mutateAsync({
+                journal: {
+                  ...journal,
+                  notes,
+                },
+              });
+              setIsEditMode(false);
+            },
+            false,
+            false,
+          ),
+          ActionFactory.cancel(() => {
+            setNotes(journal.notes ?? "");
+            setIsEditMode(false);
+          }),
           null,
         ]}
       />
@@ -46,18 +44,14 @@ export const JournalNotes: React.FC<{
   }
 
   return (
-    <>
-      <ActionIconButtonGroup
-        actions={[
-          {
-            key: "edit-notes",
-            label: "Edit notes",
-            icon: <EditOutlined fontSize="small" />,
-            onClick: () => setIsEditMode(true),
-          },
-        ]}
-      />
+    <div
+      onClick={(e) => {
+        if (e.detail === 2) {
+          setIsEditMode(true);
+        }
+      }}
+    >
       <Markdown value={notes} />
-    </>
+    </div>
   );
 };
