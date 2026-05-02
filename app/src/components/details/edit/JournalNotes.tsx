@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { useEditJournalMutation } from "../../../serverApi/reactQuery/mutations/useEditJournalMutation";
 import { RichTextEditor } from "../../common/RichTextEditor";
@@ -13,11 +13,6 @@ export const JournalNotes: React.FC<{
   const editJournalMutation = useEditJournalMutation(journal.id);
   const [isEditMode, setIsEditMode] = useState(!journal.notes);
   const [notes, setNotes] = useState(journal.notes ?? "");
-
-  useEffect(() => {
-    setNotes(journal.notes ?? "");
-    setIsEditMode(!journal.notes);
-  }, [journal.id]);
 
   const save = async () => {
     await editJournalMutation.mutateAsync({
@@ -44,6 +39,7 @@ export const JournalNotes: React.FC<{
         editModeActions={[
           ActionFactory.save(save, false, false),
           ActionFactory.cancel(cancel),
+          null,
         ]}
       />
     );
