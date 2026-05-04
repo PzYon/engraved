@@ -34,34 +34,13 @@ import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { useItemAction } from "../../common/actions/searchParamHooks";
 import { LogBookJournalType } from "../../../journalTypes/LogBookJournalType";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const UpsertEntryAction: React.FC<{
   journal?: IJournal;
   entry?: IEntry;
 }> = ({ journal: initialJournal, entry: initialEntry }) => {
-  const [journal, setJournal] = useState<IJournal>();
-  const [entry, setEntry] = useState<IEntry>();
-
-  useEffect(() => {
-    Promise.all([
-      initialJournal
-        ? Promise.resolve(initialJournal)
-        : ServerApi.getJournal(initialEntry.parentId),
-      initialEntry
-        ? Promise.resolve(initialEntry)
-        : initialJournal.type && initialJournal.type !== JournalType.Timer
-          ? Promise.resolve(null)
-          : ServerApi.getActiveEntry(initialJournal.id),
-    ]).then((results) => {
-      setJournal(results[0]);
-      setEntry(results[1]);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (!journal) {
-    return null;
-  }
+  const { journal, entry } = useUpsertEntryData(initialJournal, initialEntry);
 
   if (
     journal.type === JournalType.Scraps ||
@@ -79,7 +58,9 @@ export const UpsertEntryAction: React.FC<{
     );
   }
 
-  return <UpsertEntryActionInternal journal={journal} entry={entry} />;
+  return (
+    <UpsertEntryActionInternal journal={journal} entry={entry ?? undefined} />
+  );
 
   function createNewEntry(): IScrapEntry {
     return journal.type === JournalType.LogBook
@@ -89,7 +70,7 @@ export const UpsertEntryAction: React.FC<{
 };
 
 const UpsertEntryActionInternal: React.FC<{
-  journal?: IJournal;
+  journal: IJournal;
   entry?: IEntry;
 }> = ({ journal, entry }) => {
   const [attributeValues, setAttributeValues] =
@@ -266,4 +247,43 @@ const UpsertEntryActionInternal: React.FC<{
   function resetSelectors() {
     setForceResetSelectors(Math.random().toString());
   }
+};
+
+const useUpsertEntryData = (
+  initialJournal?: IJournal,
+  initialEntry?: IEntry,
+): { journal: IJournal; entry: IEntry | null } => {
+  type UpsertEntryDataQueryParams = {
+    initialJournal?: IJournal;
+    initialEntry?: IEntry;
+    initialEntryParentId: string | null;
+  };
+
+  const { data } = useSuspenseQuery({
+    queryKey: [
+      "upsert-entry-data",
+      {
+        initialJournal,
+        initialEntry,
+        initialEntryParentId: initialEntry?.parentId ?? null,
+      },
+    ],
+    queryFn: async ({ queryKey }) => {
+      const [, params] = queryKey as [string, UpsertEntryDataQueryParams];
+
+      const journal = params.initialJournal
+        ? params.initialJournal
+        : await ServerApi.getJournal(params.initialEntryParentId!);
+
+      const entry = params.initialEntry
+        ? params.initialEntry
+        : journal.type !== JournalType.Timer
+          ? null
+          : await ServerApi.getActiveEntry(journal.id);
+
+      return { journal, entry };
+    },
+  });
+
+  return data;
 };

@@ -1,7 +1,7 @@
 import { IJournal } from "../../../serverApi/IJournal";
 import { DeleteJournalAction } from "../../details/edit/DeleteJournalAction";
 import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPermissionsAction";
-import React from "react";
+import React, { Suspense } from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
 import {
@@ -50,7 +50,9 @@ export const JournalSubRoutes: React.FC<{
             journal.type === JournalType.LogBook
           }
         >
-          <UpsertEntryAction journal={journal} />
+          <Suspense fallback={<div>Waiting</div>}>
+            <UpsertEntryAction journal={journal} />
+          </Suspense>
         </NavigationActionContainer>
       );
 
