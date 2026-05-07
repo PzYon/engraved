@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { ActionIconButton } from "./ActionIconButton";
 import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
 import { useIsInViewport } from "../useIsInViewPort";
@@ -55,48 +55,50 @@ export const ActionIconButtonGroup: React.FC<{
       isDisabled={stickToPosition === undefined || stickToPosition === "none"}
       position={stickToPosition}
       render={(isStuck) => (
-        <Host>
-          {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
-            <FloatingHeaderActions actions={actions} />
-          ) : null}
-          <RadiusSpacer
-            backgroundColor={finalBackgroundColor}
-            alignTo={finalAlignTo}
-            position={"left"}
-            isStuck={isStuck}
-          />
-          <ButtonContainer
-            stickToPosition={stickToPosition}
-            alignToPosition={finalAlignTo}
-            data-testid={testId}
-            sx={{ backgroundColor: finalBackgroundColor }}
-            isStuck={isStuck}
-          >
-            <div ref={domElementRef} />
-            {actions
-              .filter((a) => a !== undefined)
-              .map((action) => {
-                if (!action) {
-                  return <SeparatorElement key={"separator"} />;
-                }
+        <Suspense>
+          <Host>
+            {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
+              <FloatingHeaderActions actions={actions} />
+            ) : null}
+            <RadiusSpacer
+              backgroundColor={finalBackgroundColor}
+              alignTo={finalAlignTo}
+              position={"left"}
+              isStuck={isStuck}
+            />
+            <ButtonContainer
+              stickToPosition={stickToPosition}
+              alignToPosition={finalAlignTo}
+              data-testid={testId}
+              sx={{ backgroundColor: finalBackgroundColor }}
+              isStuck={isStuck}
+            >
+              <div ref={domElementRef} />
+              {actions
+                .filter((a) => a !== undefined)
+                .map((action) => {
+                  if (!action) {
+                    return <SeparatorElement key={"separator"} />;
+                  }
 
-                const isActive = isActionActive(action);
+                  const isActive = isActionActive(action);
 
-                return (
-                  <span key={action.key} style={{ position: "relative" }}>
-                    <ActionIconButton action={action} isActive={isActive} />
-                    {isActive ? <Triangle /> : null}
-                  </span>
-                );
-              })}
-          </ButtonContainer>
-          <RadiusSpacer
-            backgroundColor={finalBackgroundColor}
-            alignTo={finalAlignTo}
-            position={"right"}
-            isStuck={isStuck}
-          />
-        </Host>
+                  return (
+                    <span key={action.key} style={{ position: "relative" }}>
+                      <ActionIconButton action={action} isActive={isActive} />
+                      {isActive ? <Triangle /> : null}
+                    </span>
+                  );
+                })}
+            </ButtonContainer>
+            <RadiusSpacer
+              backgroundColor={finalBackgroundColor}
+              alignTo={finalAlignTo}
+              position={"right"}
+              isStuck={isStuck}
+            />
+          </Host>
+        </Suspense>
       )}
     />
   );
