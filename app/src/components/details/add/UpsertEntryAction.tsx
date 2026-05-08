@@ -253,30 +253,24 @@ const useUpsertEntryData = (
   initialJournal?: IJournal,
   initialEntry?: IEntry,
 ): { journal: IJournal; entry: IEntry | null } => {
-  type UpsertEntryDataQueryParams = {
-    initialJournal?: IJournal;
-    initialEntry?: IEntry;
-    initialEntryParentId: string | null;
-  };
+  const initialJournalId = initialJournal?.id ?? null;
+  const initialEntryId = initialEntry?.id ?? null;
+  const initialEntryParentId = initialEntry?.parentId ?? null;
 
   const { data } = useSuspenseQuery({
     queryKey: [
       "upsert-entry-data",
-      {
-        initialJournal,
-        initialEntry,
-        initialEntryParentId: initialEntry?.parentId ?? null,
-      },
+      initialJournalId,
+      initialEntryId,
+      initialEntryParentId,
     ],
-    queryFn: async ({ queryKey }) => {
-      const [, params] = queryKey as [string, UpsertEntryDataQueryParams];
+    queryFn: async () => {
+      const journal = initialJournal
+        ? initialJournal
+        : await ServerApi.getJournal(initialEntryParentId!);
 
-      const journal = params.initialJournal
-        ? params.initialJournal
-        : await ServerApi.getJournal(params.initialEntryParentId!);
-
-      const entry = params.initialEntry
-        ? params.initialEntry
+      const entry = initialEntry
+        ? initialEntry
         : journal.type !== JournalType.Timer
           ? null
           : await ServerApi.getActiveEntry(journal.id);
