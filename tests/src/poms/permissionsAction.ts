@@ -26,7 +26,7 @@ export class PermissionsAction {
   }
 
   private async selectWritePermissions() {
-    await this.page.getByLabel("Read").click();
+    await this.page.getByRole("combobox", { name: "Permission" }).click();
     await this.page.getByRole("option", { name: "Write" }).click();
   }
 }
