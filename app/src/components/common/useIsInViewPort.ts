@@ -21,7 +21,7 @@ export function useIsInViewport(ref: RefObject<HTMLDivElement>) {
     observer.observe(ref.current);
 
     return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/refs
   }, [ref.current, observer]);
 
   return isIntersecting;

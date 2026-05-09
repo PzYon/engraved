@@ -13,6 +13,7 @@ export const EntriesTableBodyGroup: React.FC<{
 }> = ({ group, columns, showGroupTotals, isGroupCollapsed }) => {
   const [isCollapsed, setIsCollapsed] = useState(isGroupCollapsed);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setIsCollapsed(isGroupCollapsed), [isGroupCollapsed]);
 
   if (isCollapsed && group.entries.length > 1) {

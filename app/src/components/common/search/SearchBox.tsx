@@ -10,6 +10,7 @@ export const SearchBox: React.FC<{
   const [currentFieldValue, setCurrentFieldValue] = useState(searchText);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentFieldValue(searchText);
   }, [searchText]);
 

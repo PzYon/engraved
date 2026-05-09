@@ -55,6 +55,7 @@ export const EditScheduleAction: React.FC<{
       ? getScheduleForUser(entity, user.id).nextOccurrence
       : null;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setParsed({
       date: nextOccurrence ? new Date(nextOccurrence) : null,
       input: parsed.input,
