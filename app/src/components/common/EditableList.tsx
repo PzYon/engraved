@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import { ActionIconButton } from "./actions/ActionIconButton";
 import { List, ListItem, ListItemText, styled, TextField } from "@mui/material";
 import AddCircleOutlined from "@mui/icons-material/AddCircleOutlined";
@@ -19,6 +19,7 @@ export const EditableList: React.FC<{
 }> = ({ options, onAddOption, onDeleteOption, onEditOption, renderOption }) => {
   const [newItem, setNewItem] = useState("");
   const [editItemKey, setEditItemKey] = useState<string>(undefined);
+  const newItemId = useId();
 
   const doesExist = options.map((o) => o.label).indexOf(newItem) > -1;
 
@@ -50,7 +51,7 @@ export const EditableList: React.FC<{
         >
           {editItemKey === o.key ? (
             <TextField
-              id={Math.random().toString()}
+              id={`edit-field-${o.key}`}
               autoFocus={true}
               defaultValue={o.label}
               style={{ width: "100%" }}
@@ -81,7 +82,7 @@ export const EditableList: React.FC<{
         }
       >
         <TextField
-          id={Math.random().toString()}
+          id={newItemId}
           autoFocus={true}
           key={JSON.stringify(options)}
           value={newItem}

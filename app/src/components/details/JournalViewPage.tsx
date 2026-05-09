@@ -88,6 +88,7 @@ export const JournalViewPage: React.FC = () => {
   }, [setDateConditions, dateFilterHash]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTitleActions([
       ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
       deviceWidth !== DeviceWidth.Small

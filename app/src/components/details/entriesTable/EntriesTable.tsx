@@ -55,7 +55,7 @@ export const EntriesTable: React.FC<{
 }) => {
   const type = useMemo(
     () => JournalTypeFactory.create(journal.type),
-    [journal?.type],
+    [journal.type],
   );
 
   const [collapseAll, setCollapseAll] = useState<boolean>(true);

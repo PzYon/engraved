@@ -52,6 +52,7 @@ export const Bootstrapper: React.FC = () => {
     }
 
     if (!storage.hasResult()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsNotVisible(false);
       registerGooglePrompt(onSignedIn, ref.current);
       return;
