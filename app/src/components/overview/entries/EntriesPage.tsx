@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Page } from "../../layout/pages/Page";
 import { PageTitle } from "../../layout/pages/PageTitle";
 import { Icon } from "../../common/Icon";
@@ -8,6 +8,7 @@ import { Entries } from "./Entries";
 import { getPageTabs } from "../../layout/tabs/getPageTabs";
 import { FilterMode } from "../../layout/pages/PageContext";
 import { IconStyle } from "../../common/IconStyle";
+import { CircularProgress } from "@mui/material";
 
 export const EntriesPage: React.FC = () => {
   const { user } = useAppContext();
@@ -33,7 +34,11 @@ export const EntriesPage: React.FC = () => {
       filterMode={FilterMode.All}
       actions={[]}
     >
-      <Entries />
+      {/* Suspense is used here so that a loading indicator is shown while
+          entries load, instead of rendering nothing (blank page content). */}
+      <Suspense fallback={<CircularProgress />}>
+        <Entries />
+      </Suspense>
     </Page>
   );
 };

@@ -28,10 +28,6 @@ export const ScrapsViewPage: React.FC = () => {
     setDateConditions({});
   }, [setDateConditions]);
 
-  if (!journal) {
-    return null;
-  }
-
   return (
     <Page
       title={<JournalPageTitle journal={journal} />}
