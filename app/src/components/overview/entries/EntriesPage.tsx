@@ -36,7 +36,7 @@ export const EntriesPage: React.FC = () => {
     >
       {/* Suspense is used here so that a loading indicator is shown while
           entries load, instead of rendering nothing (blank page content). */}
-      <Suspense fallback={<CircularProgress />}>
+      <Suspense fallback={<CircularProgress aria-label="Loading entries" />}>
         <Entries />
       </Suspense>
     </Page>

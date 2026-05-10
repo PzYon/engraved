@@ -10,7 +10,7 @@ export const JournalPageWrapper: React.FC = () => {
   return (
     // Suspense is used here so that a loading indicator is shown while the
     // journal data fetches, instead of rendering nothing (blank screen).
-    <Suspense fallback={<CircularProgress />}>
+    <Suspense fallback={<CircularProgress aria-label="Loading journal" />}>
       <JournalContextProvider journalId={journalId}>
         <JournalDetails />
       </JournalContextProvider>
