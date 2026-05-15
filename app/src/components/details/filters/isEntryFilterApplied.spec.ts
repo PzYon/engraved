@@ -7,6 +7,12 @@ describe("isEntryFilterApplied", () => {
     expect(result).toBeFalsy();
   });
 
+  it("should return false when search text is empty", () => {
+    const result = isEntryFilterApplied({}, {}, "");
+
+    expect(result).toBeFalsy();
+  });
+
   it("should return true when date range is set", () => {
     const result = isEntryFilterApplied({ from: new Date() }, {}, undefined);
 
@@ -29,5 +35,17 @@ describe("isEntryFilterApplied", () => {
     );
 
     expect(result).toBeTruthy();
+  });
+
+  it("should return false when attribute filters contain empty selections", () => {
+    const result = isEntryFilterApplied(
+      {},
+      {
+        attributeA: [],
+      },
+      undefined,
+    );
+
+    expect(result).toBeFalsy();
   });
 });
