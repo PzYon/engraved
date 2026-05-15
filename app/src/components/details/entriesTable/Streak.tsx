@@ -17,7 +17,11 @@ interface IStreakProps {
 export const Streak: React.FC<IStreakProps & { withBackground?: boolean }> = (
   props,
 ) => {
-  const streak = <StreakInternal {...props} />;
+  const streak = getStreakContent(props.journal, props.entries);
+
+  if (!streak) {
+    return null;
+  }
 
   if (!props.withBackground) {
     return streak;
@@ -40,7 +44,7 @@ export const Streak: React.FC<IStreakProps & { withBackground?: boolean }> = (
   );
 };
 
-const StreakInternal: React.FC<IStreakProps> = ({ journal, entries }) => {
+function getStreakContent(journal: IJournal, entries: IEntry[]) {
   const mode = getUiSettings(journal)?.streak?.mode;
   if (!mode || mode === "none") {
     return null;
@@ -65,7 +69,7 @@ const StreakInternal: React.FC<IStreakProps> = ({ journal, entries }) => {
       {`${streak.length}-day streak`}
     </Host>
   );
-};
+}
 
 const Host = styled("span")<{ type: "red" | "yellow" | "green" }>`
   display: flex;

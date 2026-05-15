@@ -25,6 +25,7 @@ import {
 import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 import { EntriesAgenda } from "./entriesAgenda/EntriesAgenda";
+import { isEntryFilterApplied } from "./filters/isEntryFilterApplied";
 
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
@@ -37,6 +38,7 @@ export const JournalViewPage: React.FC = () => {
     selectedAttributeValues,
     dateConditions,
     setDateConditions,
+    searchText,
   } = useJournalContext();
 
   const uiSettings = useMemo<IJournalUiSettings>(
@@ -79,6 +81,12 @@ export const JournalViewPage: React.FC = () => {
 
   const footerRowMode =
     uiSettings.footerRowMode ?? journalDefaultUiSettings.footerRowMode;
+
+  const showStreak = !isEntryFilterApplied(
+    dateConditions,
+    selectedAttributeValues,
+    searchText,
+  );
 
   const dateFilterHash = JSON.stringify(dateFilter);
 
@@ -182,7 +190,11 @@ export const JournalViewPage: React.FC = () => {
       {entries?.length ? (
         <>
           {showAgenda ? (
-            <EntriesAgenda journal={journal} entries={entries}></EntriesAgenda>
+            <EntriesAgenda
+              journal={journal}
+              entries={entries}
+              showStreak={showStreak}
+            ></EntriesAgenda>
           ) : (
             <PageSection overflowXScroll={true} title="Entries">
               <EntriesTable
@@ -193,6 +205,7 @@ export const JournalViewPage: React.FC = () => {
                   showAddNewEntryRow &&
                   isTypeThatCanShowAddEntryRow(journal.type)
                 }
+                showStreak={showStreak}
                 aggregationMode={aggregationMode}
                 setAggregationMode={setAggregationMode}
                 dateConditions={dateConditions}

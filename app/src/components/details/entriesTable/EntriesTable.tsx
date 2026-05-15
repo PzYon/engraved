@@ -39,6 +39,7 @@ export const EntriesTable: React.FC<{
   entries: IEntry[];
   showGroupTotals: boolean;
   showAddNewEntryRow: boolean;
+  showStreak?: boolean;
   aggregationMode: AggregationMode;
   setAggregationMode: (mode: AggregationMode) => void;
   dateConditions: IDateConditions;
@@ -48,6 +49,7 @@ export const EntriesTable: React.FC<{
   entries,
   showGroupTotals,
   showAddNewEntryRow,
+  showStreak = true,
   aggregationMode,
   setAggregationMode,
   dateConditions,
@@ -96,11 +98,13 @@ export const EntriesTable: React.FC<{
   const headerFooterRow =
     entries.length &&
     (columns.filter((column) => column.isAggregatable).length ||
-      (journal.type === JournalType.Counter && isStreakEnabled(journal))) ? (
+      (journal.type === JournalType.Counter &&
+        showStreak &&
+        isStreakEnabled(journal))) ? (
       <TableRow>
         {columns.map((column) => (
           <TableCell key={column.key}>
-            {column.key === "_date" ? (
+            {column.key === "_date" && showStreak ? (
               <Streak journal={journal} entries={entries} />
             ) : null}
             {column.isAggregatable ? (

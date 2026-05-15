@@ -15,7 +15,8 @@ import { OverviewList } from "../../overview/overviewList/OverviewList";
 export const EntriesAgenda: React.FC<{
   journal: IJournal;
   entries: IEntry[];
-}> = ({ journal, entries }) => {
+  showStreak?: boolean;
+}> = ({ journal, entries, showStreak = true }) => {
   if (!journal) {
     return null;
   }
@@ -24,12 +25,14 @@ export const EntriesAgenda: React.FC<{
 
   return (
     <Paper sx={{ mt: 3, mb: 3, backgroundColor: "transparent" }}>
-      <Streak
-        key={"streak-top"}
-        journal={journal}
-        entries={entries}
-        withBackground={true}
-      />
+      {showStreak ? (
+        <Streak
+          key={"streak-top"}
+          journal={journal}
+          entries={entries}
+          withBackground={true}
+        />
+      ) : null}
 
       <OverviewList
         items={entries}
@@ -75,12 +78,14 @@ export const EntriesAgenda: React.FC<{
         }}
       />
 
-      <Streak
-        key={"streak-bottom"}
-        journal={journal}
-        entries={entries}
-        withBackground={true}
-      />
+      {showStreak ? (
+        <Streak
+          key={"streak-bottom"}
+          journal={journal}
+          entries={entries}
+          withBackground={true}
+        />
+      ) : null}
     </Paper>
   );
 
