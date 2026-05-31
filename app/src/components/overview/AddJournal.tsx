@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { translations } from "../../i18n/translations";
 import { JournalTypeSelector } from "../JournalTypeSelector";
 import { JournalType } from "../../serverApi/JournalType";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { ICommandResult } from "../../serverApi/ICommandResult";
 import { useAddJournalMutation } from "../../serverApi/reactQuery/mutations/useAddJournalMutation";
 import { PageFormButtonContainer } from "../common/FormButtonContainer";
@@ -21,7 +21,10 @@ export const AddJournal: React.FC = () => {
     description,
     journalType,
     async (result: ICommandResult) => {
-      navigate(`/journals/details/${result.entityId}/`);
+      await navigate({
+        to: "/journals/details/$journalId",
+        params: { journalId: result.entityId },
+      });
     },
   );
 
@@ -52,7 +55,7 @@ export const AddJournal: React.FC = () => {
 
       <PageSection>
         <PageFormButtonContainer style={{ paddingTop: 0 }}>
-          <Button variant="outlined" onClick={() => navigate("/journals")}>
+          <Button variant="outlined" onClick={() => void navigate({ to: "/" })}>
             Cancel
           </Button>
           <Button

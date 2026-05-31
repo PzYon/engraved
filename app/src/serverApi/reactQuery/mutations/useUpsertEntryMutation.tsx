@@ -9,7 +9,7 @@ import { IJournalAttributeValues } from "../../IJournalAttributeValues";
 import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
-import { useLocation } from "react-router-dom";
+import { useRouterState } from "@tanstack/react-router";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 import { StyledLink } from "./StyledLink";
 
@@ -28,7 +28,7 @@ export const useUpsertEntryMutation = (
 
   const queryClient = useQueryClient();
 
-  const { pathname } = useLocation();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const editJournalMutation = useEditJournalMutation(journalId);
 
@@ -55,14 +55,21 @@ export const useUpsertEntryMutation = (
       result: ICommandResult,
       variables: IUpsertEntryCommandVariables,
     ) => {
-      const journalUrl = `/journals/details/${variables.command.journalId}`;
-      const actionUrl = `${journalUrl}?${knownQueryParams.selectedItemId}=${result.entityId}`;
+      const journalId = variables.command.journalId;
+      const journalUrl = `/journals/details/${journalId}`;
 
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
         message: !pathname.startsWith(journalUrl) ? (
           <>
-            <StyledLink to={actionUrl}>View</StyledLink> in journal
+            <StyledLink
+              to="/journals/details/$journalId"
+              params={{ journalId }}
+              search={{ [knownQueryParams.selectedItemId]: result.entityId }}
+            >
+              View
+            </StyledLink>{" "}
+            in journal
           </>
         ) : null,
         type: "success",

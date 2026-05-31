@@ -3,7 +3,7 @@ import { JournalAttributesEditor } from "./JournalAttributesEditor";
 import { EditThresholds } from "../thresholds/EditThresholds";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useJournalContext } from "../JournalContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { Page } from "../../layout/pages/Page";
 import { getCommonEditModeActions } from "../../overview/getCommonJournalActions";
 import { JournalUiSettings } from "./JournalUiSettings";
@@ -30,7 +30,11 @@ export const JournalEditPage: React.FC = () => {
 
   const editJournalMutation = useEditJournalMutation(journal.id);
 
-  const navigateToViewPage = () => navigate("./..");
+  const navigateToViewPage = (): void =>
+    void navigate({
+      to: "/journals/details/$journalId",
+      params: { journalId: journal.id },
+    });
 
   const save = () =>
     editJournalMutation.mutateAsync({
@@ -47,6 +51,7 @@ export const JournalEditPage: React.FC = () => {
       tagIds: tagIds,
       onSuccess: navigateToViewPage,
     });
+
   return (
     <Page
       title={<JournalPageTitle journal={journal} />}

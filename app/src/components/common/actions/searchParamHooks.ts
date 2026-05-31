@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 export const knownQueryParams = {
   selectedItemId: "selected-item",
@@ -35,17 +35,21 @@ export function clearAllSearchParams() {
       const queryStringKey = (knownQueryParams as Record<string, string>)[
         objectKey
       ];
-
       aggregated[queryStringKey] = undefined;
-
       return aggregated;
     },
     {},
   );
 }
 
+function useSearchString(): string {
+  return useRouterState({ select: (s) => s.location.search });
+}
+
 export const useItemAction = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const searchString = useSearchString();
+  const searchParams = new URLSearchParams(searchString);
 
   return {
     getParams: () => {
@@ -57,58 +61,54 @@ export const useItemAction = () => {
 
     closeAction: () => {
       let hasChanges = false;
+      const newParams = new URLSearchParams(searchString);
 
-      if (deleteIfSet(knownQueryParams.actionKey)) {
+      if (newParams.get(knownQueryParams.actionKey)) {
+        newParams.delete(knownQueryParams.actionKey);
         hasChanges = true;
       }
 
-      if (deleteIfSet(knownQueryParams.selectedItemId)) {
+      if (newParams.get(knownQueryParams.selectedItemId)) {
+        newParams.delete(knownQueryParams.selectedItemId);
         hasChanges = true;
       }
 
-      if (deleteIfSet(knownQueryParams.testUser)) {
+      if (newParams.get(knownQueryParams.testUser)) {
+        newParams.delete(knownQueryParams.testUser);
         hasChanges = true;
       }
 
       if (hasChanges) {
-        setSearchParams(searchParams);
+        void navigate({
+          search: Object.fromEntries(newParams),
+          replace: true,
+        });
       }
     },
   };
-
-  function deleteIfSet(key: string) {
-    if (searchParams.get(key)) {
-      searchParams.delete(key);
-      return true;
-    }
-
-    return false;
-  }
 };
 
 export const useEngravedSearchParams = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const searchString = useSearchString();
+  const searchParams = new URLSearchParams(searchString);
 
   const getSearchParam = useCallback(
     (key: string) => searchParams.get(key),
-    [searchParams],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchString],
   );
 
-  const cloneSearchParams = useCallback(() => {
-    const newestSearchParams: Record<string, string> = {};
-    searchParams.forEach((v, k) => {
-      newestSearchParams[k] = v;
-    });
-    return new URLSearchParams({ ...newestSearchParams });
-  }, [searchParams]);
+  const cloneSearchParams = useCallback(
+    (): URLSearchParams => new URLSearchParams(searchString),
+    [searchString],
+  );
 
   const getNewSearchParams = useCallback(
-    (params: Record<string, string>) => {
+    (params: Record<string, string>): URLSearchParams => {
       const newSearchParams = cloneSearchParams();
-
       for (const key in params) {
         const value = params[key];
-
         if (
           value === null ||
           value === undefined ||
@@ -120,7 +120,6 @@ export const useEngravedSearchParams = () => {
           newSearchParams.set(key, value);
         }
       }
-
       return newSearchParams;
     },
     [cloneSearchParams],
@@ -129,12 +128,15 @@ export const useEngravedSearchParams = () => {
   const appendSearchParams = useCallback(
     (params: Record<string, string>) => {
       const updatedSearchParams = getNewSearchParams(params);
-
       if (updatedSearchParams.toString() !== searchParams.toString()) {
-        setSearchParams(updatedSearchParams);
+        void navigate({
+          search: Object.fromEntries(updatedSearchParams),
+          replace: true,
+        });
       }
     },
-    [searchParams, setSearchParams, getNewSearchParams],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchString, navigate, getNewSearchParams],
   );
 
   return {

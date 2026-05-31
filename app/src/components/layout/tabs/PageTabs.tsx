@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { Tab, Tabs } from "@mui/material";
 import { IPageTab } from "./IPageTab";
 import { engravedTheme } from "../../../theming/engravedTheme";
@@ -19,7 +19,8 @@ export const PageTabs: React.FC<{
           value={tab.key}
           label={tab.label}
           component={Link}
-          to={tab.href}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          to={tab.href as any}
           sx={{
             minHeight: "auto",
             "&.MuiButtonBase-root.MuiTab-root": {

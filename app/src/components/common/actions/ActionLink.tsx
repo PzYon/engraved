@@ -1,6 +1,6 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
 import { useEngravedSearchParams } from "./searchParamHooks";
 
@@ -18,9 +18,9 @@ export const ActionLink: React.FC<{
   useEngravedHotkeys(
     action.hotkey,
     () => {
-      navigate({
-        pathname: action.href,
-        search: getNewSearchParams(action.search).toString(),
+      void navigate({
+        to: action.href,
+        search: Object.fromEntries(getNewSearchParams(action.search)),
       });
     },
     {
@@ -55,10 +55,9 @@ export const ActionLink: React.FC<{
 
   return (
     <Link
-      to={{
-        pathname: action.href,
-        search: getNewSearchParams(action.search).toString(),
-      }}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      to={action.href as any}
+      search={Object.fromEntries(getNewSearchParams(action.search ?? {}))}
       onClick={(e) => e.stopPropagation()}
       style={style}
     >

@@ -1,6 +1,6 @@
 import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { getScheduleProperty } from "../../overview/scheduled/scheduleUtils";
 import { IAction } from "../actions/IAction";
 import { ListItemFooterRow } from "../../overview/ListItemFooterRow";
@@ -77,7 +77,12 @@ function getEntryProperties(
     {
       key: "journal-name",
       node: () => (
-        <Link to={`/journals/details/${journal.id}`}>{journal.name}</Link>
+        <Link
+          to="/journals/details/$journalId"
+          params={{ journalId: journal.id }}
+        >
+          {journal.name}
+        </Link>
       ),
       label: "Journal",
       hideWhen: () => propsRenderStyle !== "all",

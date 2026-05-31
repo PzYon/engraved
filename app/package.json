@@ -36,8 +36,7 @@
     "react-dom": "19.2.6",
     "react-hotkeys-hook": "5.3.2",
     "react-onesignal": "3.5.1",
-    "react-router": "7.15.1",
-    "react-router-dom": "7.15.1",
+    "@tanstack/react-router": "1.120.3",
     "vite": "8.0.13"
   },
   "scripts": {

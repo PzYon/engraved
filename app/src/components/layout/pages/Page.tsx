@@ -3,7 +3,7 @@ import { FilterMode, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 export const Page: React.FC<{
   children: React.ReactNode;
@@ -90,7 +90,8 @@ export const Page: React.FC<{
 
     useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const searchString = useRouterState({ select: (s) => s.location.search });
+    const navigate = useNavigate();
 
     useEffect(() => {
       return () => {
@@ -114,8 +115,8 @@ export const Page: React.FC<{
           setTabs([]);
         }
 
-        if (Object.keys(searchParams ?? {}).length) {
-          setSearchParams({});
+        if (searchString && searchString !== "?") {
+          void navigate({ search: {}, replace: true });
         }
 
         if (pageActionRoutes) {

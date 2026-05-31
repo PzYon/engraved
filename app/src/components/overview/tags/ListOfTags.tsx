@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { useAppContext } from "../../../AppContext";
 import React from "react";
 import { GridContainer, GridItem } from "../../common/Grid";
@@ -22,7 +22,11 @@ export const ListOfTags: React.FC = () => {
             <ReadonlyTitle
               hasFocus={false}
               entity={null}
-              title={<Link to={`/tags/${t.id}`}>{t.label}</Link>}
+              title={
+                <Link to="/tags/$tagId" params={{ tagId: t.id }}>
+                  {t.label}
+                </Link>
+              }
             ></ReadonlyTitle>
             <Typography sx={{ pt: 1 }}>{getJournalCountLabel(t)}</Typography>
           </Paper>

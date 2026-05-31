@@ -4,7 +4,7 @@ import { styled } from "@mui/material";
 import { Properties } from "../common/Properties";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { useJournalProperties } from "../overview/journals/useJournalProperties";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "@tanstack/react-router";
 import { JournalType } from "../../serverApi/JournalType";
 import { JournalEditPage } from "./edit/JournalEditPage";
 import { ScrapsEditPage } from "./scraps/ScrapsEditPage";

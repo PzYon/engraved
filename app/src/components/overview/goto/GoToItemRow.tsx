@@ -1,5 +1,6 @@
+import React from "react";
 import { styled, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 
 export const GoToItemRow: React.FC<{
@@ -12,7 +13,10 @@ export const GoToItemRow: React.FC<{
 }> = ({ children, icon, url, hasFocus, renderAtEnd, onClick }) => {
   const navigate = useNavigate();
 
-  useEngravedHotkeys("enter", () => navigate(url), { enabled: hasFocus });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useEngravedHotkeys("enter", () => void navigate({ to: url as any }), {
+    enabled: hasFocus,
+  });
 
   return (
     <Typography
@@ -20,7 +24,8 @@ export const GoToItemRow: React.FC<{
       style={{ display: "flex", alignItems: "center", padding: "4px 8px" }}
     >
       <Link
-        to={url}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        to={url as any}
         onClick={onClick}
         style={{ display: "flex", alignItems: "center", flexGrow: 1 }}
       >

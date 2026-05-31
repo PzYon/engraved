@@ -7,7 +7,7 @@ import { getScheduleProperty } from "../scheduled/scheduleUtils";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 import { FormatDate } from "../../common/FormatDate";
 import { useAppContext } from "../../../AppContext";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { styled } from "@mui/material";
 
 export const useJournalProperties = (
@@ -64,7 +64,7 @@ export const useJournalProperties = (
       node: () => (
         <TagContainer>
           {tags.map((tag) => (
-            <Link key={tag.id} to={`/tags/${tag.id}`}>
+            <Link key={tag.id} to="/tags/$tagId" params={{ tagId: tag.id }}>
               {tag.label}
             </Link>
           ))}

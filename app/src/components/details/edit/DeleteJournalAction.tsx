@@ -4,18 +4,18 @@ import { Typography } from "@mui/material";
 import { useDeleteJournalMutation } from "../../../serverApi/reactQuery/mutations/useDeleteJournalMutation";
 import { DeleteButtons } from "../../common/DeleteButtons";
 import { useItemAction } from "../../common/actions/searchParamHooks";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 export const DeleteJournalAction: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
   const { closeAction } = useItemAction();
-  const loc = useLocation();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
   const deleteJournalMutation = useDeleteJournalMutation(journal.id, () => {
-    if (loc.pathname.startsWith(`/journals/details/${journal.id}`)) {
-      navigate("/");
+    if (pathname.startsWith(`/journals/details/${journal.id}`)) {
+      void navigate({ to: "/" });
     } else {
       closeAction();
     }

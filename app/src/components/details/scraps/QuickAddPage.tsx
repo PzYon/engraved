@@ -14,7 +14,7 @@ import { FilterMode } from "../../layout/pages/PageContext";
 import { Page } from "../../layout/pages/Page";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import { PageSection } from "../../layout/pages/PageSection";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 export const QuickAddPage: React.FC = () => {
   const { user } = useAppContext();
@@ -23,7 +23,8 @@ export const QuickAddPage: React.FC = () => {
 
   const [journalId, setJournalId] = useState(undefined);
 
-  const [searchParams] = useSearchParams();
+  const searchString = useRouterState({ select: (s) => s.location.search });
+  const searchParams = new URLSearchParams(searchString);
 
   const title = searchParams.get("title");
   const notes = searchParams.get("text");
@@ -76,11 +77,11 @@ export const QuickAddPage: React.FC = () => {
             scrap={scrap}
             propsRenderStyle={"none"}
             actionsRenderStyle={"save-only"}
-            onSuccess={() => navigate("/entries")}
+            onSuccess={() => void navigate({ to: "/entries" })}
             isQuickAdd={true}
             hasFocus={true}
             changeTypeWithoutConfirmation={true}
-            onCancelEditing={() => navigate(-1)}
+            onCancelEditing={() => window.history.back()}
           />
         </ScrapContainer>
       </PageSection>
