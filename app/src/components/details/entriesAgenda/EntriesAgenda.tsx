@@ -16,10 +16,6 @@ export const EntriesAgenda: React.FC<{
   journal: IJournal;
   entries: IEntry[];
 }> = ({ journal, entries }) => {
-  if (!journal) {
-    return null;
-  }
-
   const journalType = JournalTypeFactory.create(journal.type);
 
   return (

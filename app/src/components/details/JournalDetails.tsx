@@ -49,10 +49,6 @@ export const JournalDetails: React.FC = () => {
   const journalProperties = useJournalProperties(journal);
   const deviceWidth = useDeviceWidth();
 
-  if (!journal) {
-    return null;
-  }
-
   return (
     <Host data-testid="journal" data-journal-id={journal.id}>
       <PropertiesContainer
