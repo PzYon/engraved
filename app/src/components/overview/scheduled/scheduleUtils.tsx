@@ -30,15 +30,18 @@ export function getSchedulePropertyFromSchedule(
     highlightStyle: () => {
       const now = new Date();
 
-      if (isAfter(now, schedule.nextOccurrence)) {
+      if (schedule.nextOccurrence && isAfter(now, schedule.nextOccurrence)) {
         return "red";
       }
 
-      if (isSameDay(now, schedule.nextOccurrence)) {
+      if (schedule.nextOccurrence && isSameDay(now, schedule.nextOccurrence)) {
         return "yellow";
       }
 
-      if (isAfter(addDays(now, 2), schedule.nextOccurrence)) {
+      if (
+        schedule.nextOccurrence &&
+        isAfter(addDays(now, 2), schedule.nextOccurrence)
+      ) {
         return "green";
       }
 
@@ -49,7 +52,7 @@ export function getSchedulePropertyFromSchedule(
 
 export function getScheduleDefinition(
   parsedDate: IParsedDate,
-  journalId: string,
+  journalId: string | undefined,
   entryId: string,
 ): IScheduleDefinition {
   return parsedDate?.date
@@ -59,7 +62,7 @@ export function getScheduleDefinition(
         // {0} will be replaced on server with actual entry ID
         onClickUrl: `${location.origin}/journals/details/${journalId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entryId)).toString()}`,
       }
-    : undefined;
+    : { nextOccurrence: null, onClickUrl: null };
 }
 
 export function sortEntitiesByDates(

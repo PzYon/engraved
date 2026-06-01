@@ -12,9 +12,9 @@ export const JournalPageTitle: React.FC<{
 }> = ({ journal }) => {
   const uiSettings = getUiSettings(journal);
 
-  const [, setEmoji] = useState<string>(uiSettings.emoji?.unified);
+  const [, setEmoji] = useState<string | undefined>(uiSettings.emoji?.unified);
 
-  const editJournalMutation = useEditJournalMutation(journal.id);
+  const editJournalMutation = useEditJournalMutation(journal.id ?? "");
 
   if (!journal) {
     return null;
@@ -29,6 +29,7 @@ export const JournalPageTitle: React.FC<{
 
             const newUiSettings = { ...uiSettings };
             newUiSettings.emoji = { unified: e };
+            if (!updatedJournal.customProps) updatedJournal.customProps = {};
             updatedJournal.customProps.uiSettings =
               JSON.stringify(newUiSettings);
 
@@ -45,7 +46,7 @@ export const JournalPageTitle: React.FC<{
           }
         />
       }
-      title={journal?.name}
+      title={journal?.name ?? ""}
     />
   );
 };

@@ -33,14 +33,16 @@ export const useUpsertEntryMutation = (
   const editJournalMutation = useEditJournalMutation(journalId);
 
   return useMutation({
-    mutationKey: queryKeysFactory.updateEntries(journalId, entryId),
+    mutationKey: queryKeysFactory.updateEntries(journalId, entryId ?? ""),
 
     throwOnError: false,
 
     mutationFn: async (variables: IUpsertEntryCommandVariables) => {
       if (
         journal &&
-        hasNewJournalAttributeValues(variables.command.journalAttributeValues)
+        hasNewJournalAttributeValues(
+          variables.command.journalAttributeValues ?? {},
+        )
       ) {
         await editJournalMutation.mutateAsync({ journal });
       }
@@ -64,14 +66,8 @@ export const useUpsertEntryMutation = (
           <>
             <StyledLink
               to="/journals/details/$journalId"
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              params={() => ({ journalId })}
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              search={() => ({
-                [knownQueryParams.selectedItemId]: result.entityId,
-              })}
+              params={{ journalId }}
+              search={{ [knownQueryParams.selectedItemId]: result.entityId }}
             >
               View
             </StyledLink>{" "}
@@ -101,7 +97,7 @@ export const useUpsertEntryMutation = (
     onError: (error: unknown) => {
       setAppAlert({
         title: "Failed to upsert entry",
-        message: error.toString(),
+        message: (error as Error)?.toString?.() ?? String(error),
         type: "error",
       });
     },
@@ -135,7 +131,7 @@ export const useUpsertEntryMutation = (
   function hasNewJournalAttributeValues(
     attributeValues: IJournalAttributeValues,
   ) {
-    if (!attributeValues || journal.type === JournalType.Scraps) {
+    if (!attributeValues || !journal || journal.type === JournalType.Scraps) {
       return false;
     }
 
@@ -143,8 +139,9 @@ export const useUpsertEntryMutation = (
 
     for (const keyInValues in attributeValues) {
       for (const value of attributeValues[keyInValues]) {
-        if (!journal.attributes[keyInValues].values[value]) {
-          journal.attributes[keyInValues].values[value] = value;
+        if (!journal.attributes?.[keyInValues]?.values[value]) {
+          if (journal.attributes?.[keyInValues])
+            journal.attributes[keyInValues].values[value] = value;
           hasNewValues = true;
         }
       }

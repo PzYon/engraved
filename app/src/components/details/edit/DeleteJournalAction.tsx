@@ -10,20 +10,21 @@ export const DeleteJournalAction: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
   const { closeAction } = useItemAction();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const pathname = useRouterState({
     select: (s): string => s.location.pathname,
-  }) as unknown as string;
+  });
   const navigate = useNavigate();
 
-  const deleteJournalMutation = useDeleteJournalMutation(journal.id, () => {
-    if (pathname.startsWith(`/journals/details/${journal.id}`)) {
-      void navigate({ to: "/" });
-    } else {
-      closeAction();
-    }
-  });
+  const deleteJournalMutation = useDeleteJournalMutation(
+    journal.id ?? "",
+    () => {
+      if (pathname.startsWith(`/journals/details/${journal.id}`)) {
+        void navigate({ to: "/" });
+      } else {
+        closeAction();
+      }
+    },
+  );
 
   return (
     <>

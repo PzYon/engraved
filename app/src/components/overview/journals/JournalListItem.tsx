@@ -16,7 +16,7 @@ export const JournalListItem: React.FC<{
   index: number;
   hasFocus?: boolean;
 }> = ({ journal, index, hasFocus }) => {
-  const domElementRef = useRef<HTMLDivElement>(undefined);
+  const domElementRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAppContext();
 
@@ -38,14 +38,17 @@ export const JournalListItem: React.FC<{
             <ReadonlyTitle
               entity={journal}
               title={journal.name}
-              hasFocus={hasFocus}
-              onClickAction={ActionFactory.goToJournal(journal.id, hasFocus)}
+              hasFocus={hasFocus ?? false}
+              onClickAction={ActionFactory.goToJournal(
+                journal.id ?? "",
+                hasFocus ?? false,
+              )}
             />
           </TitleRow>
           <ListItemFooterRow
-            hasFocus={hasFocus}
+            hasFocus={hasFocus ?? false}
             properties={journalProperties}
-            actions={getCommonJournalActions(journal, hasFocus, user)}
+            actions={getCommonJournalActions(journal, hasFocus ?? false, user)}
           />
           {hasFocus ? <JournalSubRoutes journal={journal} /> : null}
         </Box>

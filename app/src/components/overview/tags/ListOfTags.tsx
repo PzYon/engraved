@@ -10,22 +10,20 @@ import { NoResultsFound } from "../../common/search/NoResultsFound";
 export const ListOfTags: React.FC = () => {
   const { user } = useAppContext();
 
-  if (!user.tags.length) {
+  if (!user.tags?.length) {
     return <NoResultsFound hideTryAgain={true} />;
   }
 
   return (
     <GridContainer>
-      {user.tags.map((t) => (
+      {user.tags?.map((t) => (
         <GridItem key={t.id}>
           <Paper sx={{ p: 3 }}>
             <ReadonlyTitle
               hasFocus={false}
               entity={null}
               title={
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                <Link to="/tags/$tagId" params={() => ({ tagId: t.id })}>
+                <Link to="/tags/$tagId" params={{ tagId: t.id ?? "" }}>
                   {t.label}
                 </Link>
               }

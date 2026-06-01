@@ -42,8 +42,8 @@ export class GaugeJournalType implements IJournalType {
       {
         key: "_value",
         width: "100px",
-        getHeaderReactNode: (_, journal: IJournal) =>
-          getValueHeaderLabel(journal),
+        getHeaderReactNode: (_, journal?: IJournal) =>
+          getValueHeaderLabel(journal!),
         isAggregatable: true,
         getRawValue: (entry: IEntry) => getValue(entry),
         getValueReactNode: (_: IEntriesTableGroup, entry: IEntry) =>

@@ -26,7 +26,7 @@ export const Thresholds: React.FC<{
   const thresholdValues = useMemo(() => {
     return calculateThresholds(
       journal.type,
-      journal.thresholds,
+      journal.thresholds ?? {},
       entries,
       dateConditions,
     );
@@ -42,12 +42,12 @@ export const Thresholds: React.FC<{
         const attributeThresholds = thresholdValues[attributeKey];
 
         const attributeName =
-          journal.attributes[attributeKey]?.name ?? attributeKey;
+          journal.attributes?.[attributeKey]?.name ?? attributeKey;
 
         return Object.keys(attributeThresholds).map((valueKey) => {
           const threshold = attributeThresholds[valueKey];
           const valueName =
-            journal.attributes[attributeKey]?.values[valueKey] ?? valueKey;
+            journal.attributes?.[attributeKey]?.values[valueKey] ?? valueKey;
           const currentSelectedValue =
             selectedAttributeValues[attributeKey]?.[0];
 

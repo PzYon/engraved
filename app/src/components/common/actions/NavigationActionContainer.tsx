@@ -11,7 +11,7 @@ export const NavigationActionContainer: React.FC<{
   shrinkWidthIfPossible?: boolean;
   growWidthIfPossible?: boolean;
 }> = ({ children, growWidthIfPossible, shrinkWidthIfPossible }) => {
-  const domElement = useRef<HTMLDivElement>(undefined);
+  const domElement = useRef<HTMLDivElement | null>(null);
 
   const { closeAction } = useItemAction();
 

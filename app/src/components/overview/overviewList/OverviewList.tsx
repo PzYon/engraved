@@ -56,7 +56,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
   return (
     <Host className="overview-list">
-      {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i].id))}
+      {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i]?.id ?? ""))}
 
       {itemsToShow.map((item, index) => {
         const hasFocus = activeItemId === item.id;
@@ -64,7 +64,9 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
         return (
           <React.Fragment
             key={
-              item.id + "-" + getScheduleForUser(item, user.id)?.nextOccurrence
+              (item.id ?? "") +
+              "-" +
+              getScheduleForUser(item, user.id ?? "")?.nextOccurrence
             }
           >
             {showDaysBetween && index > 0 ? (
@@ -81,7 +83,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
                   return;
                 }
 
-                setActiveItemId(item.id);
+                setActiveItemId(item.id ?? "");
                 removeItemParamsFromUrl();
               }}
               item={item}
@@ -134,7 +136,9 @@ const RenderItem = React.memo(
     ) => React.ReactNode;
     setActiveItemId: (id: string) => void;
   }) => {
-    return renderItem(item, index, hasFocus, () => setActiveItemId(item.id));
+    return renderItem?.(item, index, hasFocus, () =>
+      setActiveItemId(item.id ?? ""),
+    );
   },
 );
 

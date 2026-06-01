@@ -48,7 +48,7 @@ const StreakInternal: React.FC<IStreakProps> = ({ journal, entries }) => {
 
   const streak = calculateStreak(entries, mode);
 
-  if (!streak.isStreak) {
+  if (!streak || !streak.isStreak) {
     return (
       <Host type={"red"}>
         <DoNotDisturb />

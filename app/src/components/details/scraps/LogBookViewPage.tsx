@@ -31,17 +31,20 @@ export const LogBookViewPage: React.FC = () => {
   return (
     <Page
       title={<JournalPageTitle journal={journal} />}
-      documentTitle={journal.name}
+      documentTitle={journal.name ?? ""}
       actions={getCommonJournalActions(journal, true, user)}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
     >
       {scraps.length ? (
         <OverviewList
           showDaysBetween={true}
-          items={sortEntitiesByDates(scraps, user.id)}
+          items={sortEntitiesByDates(scraps, user.id ?? "")}
           renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap
-              key={item.id + getScheduleForUser(item, user.id).nextOccurrence}
+              key={
+                (item.id ?? "") +
+                getScheduleForUser(item, user.id ?? "").nextOccurrence
+              }
               journal={journal}
               propsRenderStyle={"generic"}
               scrap={item as IScrapEntry}

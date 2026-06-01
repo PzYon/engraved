@@ -8,17 +8,20 @@ import { IDateConditions } from "../JournalContext";
 
 export const calculateThresholds = (
   journalType: JournalType,
-  thresholds: IJournalThresholdDefinitions,
+  thresholds: IJournalThresholdDefinitions | null | undefined,
   entries: IEntry[],
   dateConditions?: IDateConditions,
 ): IThresholdValues => {
   const thresholdValues: IThresholdValues = {};
 
-  for (const attributeKey of Object.keys(thresholds ?? {})) {
-    for (const attributeValueKey of Object.keys(thresholds[attributeKey])) {
+  const resolvedThresholds = thresholds ?? {};
+  for (const attributeKey of Object.keys(resolvedThresholds)) {
+    for (const attributeValueKey of Object.keys(
+      resolvedThresholds[attributeKey],
+    )) {
       thresholdValues[attributeKey] ??= {};
       thresholdValues[attributeKey][attributeValueKey] = getIThresholdValue(
-        thresholds,
+        resolvedThresholds,
         attributeKey,
         attributeValueKey,
         JournalTypeFactory.create(journalType),

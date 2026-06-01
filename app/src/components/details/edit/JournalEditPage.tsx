@@ -24,18 +24,16 @@ export const JournalEditPage: React.FC = () => {
   const [attributes, setAttributes] = useState(journal.attributes);
   const [thresholds, setThresholds] = useState(journal.thresholds ?? {});
   const [uiSettings, setUiSettings] = useState(getUiSettings(journal));
-  const [tagIds, setTagIds] = useState<string[]>(undefined);
+  const [tagIds, setTagIds] = useState<string[] | undefined>(undefined);
 
   const navigate = useNavigate();
 
-  const editJournalMutation = useEditJournalMutation(journal.id);
+  const editJournalMutation = useEditJournalMutation(journal.id ?? "");
 
   const navigateToViewPage = (): void =>
     void navigate({
       to: "/journals/details/$journalId",
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      params: () => ({ journalId: journal.id }),
+      params: { journalId: journal.id ?? "" },
     });
 
   const save = () =>
@@ -58,21 +56,21 @@ export const JournalEditPage: React.FC = () => {
     <Page
       title={<JournalPageTitle journal={journal} />}
       subTitle="Edit"
-      documentTitle={`Edit ${journal.name}`}
+      documentTitle={`Edit ${journal.name ?? ""}`}
       actions={getCommonEditModeActions(navigateToViewPage, save)}
     >
       <EditCommonProperties
-        journalId={journal.id}
-        name={name}
+        journalId={journal.id ?? ""}
+        name={name ?? ""}
         setName={setName}
-        description={description}
+        description={description ?? ""}
         setDescription={setDescription}
         onChangedTags={setTagIds}
       />
 
       <PageSection title={"Attributes"} icon={<Style />}>
         <JournalAttributesEditor
-          attributes={attributes}
+          attributes={attributes ?? {}}
           setAttributes={setAttributes}
         />
       </PageSection>

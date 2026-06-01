@@ -18,7 +18,7 @@ interface IStreak {
 export function calculateStreak(
   entries: { dateTime: string | Date }[],
   mode: StreakMode,
-): IStreak {
+): IStreak | null {
   if (mode === "none") {
     return null;
   }

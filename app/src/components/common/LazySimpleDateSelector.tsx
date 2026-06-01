@@ -23,21 +23,21 @@ const LazySimpleDateSelector: React.FC<ISimpleDateSelectorProps> = ({
         value={date || null}
         showDaysOutsideCurrentMonth={true}
         onChange={(d) => {
-          setDate(stripTime(d));
+          setDate(stripTime(d ?? undefined) ?? null);
         }}
       />
       <ButtonContainer>
         <Button
           variant="text"
           sx={{ fontSize: "small" }}
-          onClick={() => setDate(addDays(date, -1))}
+          onClick={() => setDate(addDays(date ?? new Date(), -1))}
         >
           -1day
         </Button>
         <Button
           variant="text"
           sx={{ fontSize: "small" }}
-          onClick={() => setDate(addDays(date, 1))}
+          onClick={() => setDate(addDays(date ?? new Date(), 1))}
         >
           +1day
         </Button>

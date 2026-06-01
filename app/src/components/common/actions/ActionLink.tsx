@@ -4,6 +4,21 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
 import { useEngravedSearchParams } from "./searchParamHooks";
 
+// IAction.href holds pre-computed URLs (params already embedded) and external
+// HTTPS URLs. TanStack Router's `to` type is a union of route patterns, so we
+// use typed shims instead of `any` to bridge the gap.
+type DynamicNavigate = (opts: {
+  to?: string;
+  search?: () => Record<string, string>;
+}) => void;
+const DynamicLink = Link as React.FC<{
+  to?: string;
+  search?: () => Record<string, string>;
+  onClick?: React.MouseEventHandler;
+  style?: CSSProperties;
+  children?: React.ReactNode;
+}>;
+
 export const ActionLink: React.FC<{
   action: IAction;
   children?: React.ReactElement;
@@ -18,11 +33,10 @@ export const ActionLink: React.FC<{
   useEngravedHotkeys(
     action.hotkey,
     () => {
-      void navigate({
+      void (navigate as unknown as DynamicNavigate)({
         to: action.href,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        search: () => Object.fromEntries(getNewSearchParams(action.search)),
+        search: () =>
+          Object.fromEntries(getNewSearchParams(action.search ?? {})),
       });
     },
     {
@@ -42,7 +56,7 @@ export const ActionLink: React.FC<{
     return (
       <a
         href={new URL(
-          getNewSearchParams(action.search).toString(),
+          getNewSearchParams(action.search ?? {}).toString(),
           action.href,
         ).toString()}
         style={style}
@@ -56,17 +70,14 @@ export const ActionLink: React.FC<{
   }
 
   return (
-    <Link
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      to={action.href as any}
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+    <DynamicLink
+      to={action.href}
       search={() => Object.fromEntries(getNewSearchParams(action.search ?? {}))}
       onClick={(e) => e.stopPropagation()}
       style={style}
     >
       {getChildren()}
-    </Link>
+    </DynamicLink>
   );
 
   function getChildren(): React.ReactElement | React.ReactNode {

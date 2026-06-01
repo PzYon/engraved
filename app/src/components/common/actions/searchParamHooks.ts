@@ -1,6 +1,14 @@
 import { useCallback } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 
+// TanStack Router's search-type inference requires a specific route context.
+// These utility hooks are route-agnostic, so we express the runtime contract
+// through a typed shim instead of `any`.
+type SearchOnlyNavigate = (opts: {
+  search?: () => Record<string, string>;
+  replace?: boolean;
+}) => void;
+
 export const knownQueryParams = {
   selectedItemId: "selected-item",
   actionKey: "action-key",
@@ -21,17 +29,17 @@ type ActionKey =
 
 export function getItemActionQueryParams(
   actionKey: ActionKey,
-  actionItemId: string,
-) {
+  actionItemId: string | undefined,
+): Record<string, string> {
   return {
     [knownQueryParams.actionKey]: actionKey,
-    [knownQueryParams.selectedItemId]: actionItemId,
+    [knownQueryParams.selectedItemId]: actionItemId ?? "",
   };
 }
 
 export function clearAllSearchParams() {
   return Object.keys(knownQueryParams).reduce(
-    (aggregated: Record<string, string>, objectKey: string) => {
+    (aggregated: Record<string, string | undefined>, objectKey: string) => {
       const queryStringKey = (knownQueryParams as Record<string, string>)[
         objectKey
       ];
@@ -42,10 +50,9 @@ export function clearAllSearchParams() {
   );
 }
 
- 
 function useSearchString(): string {
   // explicit return type annotation on select forces TSelected = string
-  return useRouterState({ select: (s): string => s.location.search });
+  return useRouterState({ select: (s): string => s.location.searchStr });
 }
 
 export const useItemAction = () => {
@@ -57,7 +64,7 @@ export const useItemAction = () => {
     getParams: () => {
       return getItemActionQueryParams(
         searchParams.get(knownQueryParams.actionKey) as ActionKey,
-        searchParams.get(knownQueryParams.selectedItemId),
+        searchParams.get(knownQueryParams.selectedItemId) ?? "",
       );
     },
 
@@ -81,8 +88,9 @@ export const useItemAction = () => {
       }
 
       if (hasChanges) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        void navigate({ search: () => Object.fromEntries(newParams) } as any);
+        void (navigate as unknown as SearchOnlyNavigate)({
+          search: () => Object.fromEntries(newParams),
+        });
       }
     },
   };
@@ -129,9 +137,7 @@ export const useEngravedSearchParams = () => {
     (params: Record<string, string>) => {
       const updatedSearchParams = getNewSearchParams(params);
       if (updatedSearchParams.toString() !== searchParams.toString()) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        void navigate({
+        void (navigate as unknown as SearchOnlyNavigate)({
           search: () => Object.fromEntries(updatedSearchParams),
           replace: true,
         });

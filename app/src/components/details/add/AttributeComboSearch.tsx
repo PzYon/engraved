@@ -42,7 +42,7 @@ export const AttributeComboSearch: React.FC<{
         return (
           <Box {...props} key={JSON.stringify(searchResult)} component={"li"}>
             <AttributeValues
-              attributes={journal.attributes}
+              attributes={journal.attributes ?? {}}
               attributeValues={searchResult.values}
               preventOnClick={true}
             />
@@ -70,7 +70,10 @@ export const AttributeComboSearch: React.FC<{
     timer = window.setTimeout(() => {
       lastLoadedSearchText = searchText;
 
-      const values = searchJournalAttributes(journal.attributes, searchText);
+      const values = searchJournalAttributes(
+        journal.attributes ?? {},
+        searchText,
+      );
       setOptions(values);
     }, 300);
   }

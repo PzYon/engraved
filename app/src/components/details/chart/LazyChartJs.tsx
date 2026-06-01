@@ -22,6 +22,8 @@ import "chartjs-adapter-date-fns";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { createChart } from "./createChart";
 import { IChartProps } from "./IChartProps";
+import { GroupByTime } from "./consolidation/GroupByTime";
+
 import { useTheme } from "@mui/material";
 import { useJournalContext } from "../JournalContext";
 
@@ -69,13 +71,13 @@ const LazyChartJs: React.FC<IChartProps> = ({
         ? createChart(
             entries,
             journal,
-            groupByTime,
-            groupByAttribute,
+            groupByTime ?? GroupByTime.None,
+            groupByAttribute ?? "",
             toggleAttributeValue,
             chartType as keyof ChartTypeRegistry,
             palette.primary.main,
             chartUiProps,
-            aggregationMode,
+            aggregationMode ?? "sum",
             dateConditions,
           )
         : null,

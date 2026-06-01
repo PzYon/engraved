@@ -1,7 +1,6 @@
 import React from "react";
 import { usePageContext } from "../../layout/pages/PageContext";
 import { useSearchEntitiesQuery } from "../../../serverApi/reactQuery/queries/useSearchEntitiesQuery";
-import { ISearchEntitiesResult } from "../../../serverApi/ISearchEntitiesResult";
 import { NoResultsFound } from "../../common/search/NoResultsFound";
 import { IEntry } from "../../../serverApi/IEntry";
 import { JournalListItem } from "../journals/JournalListItem";
@@ -19,7 +18,7 @@ export const Entities: React.FC<{
   const { user } = useAppContext();
   const { searchText } = usePageContext();
 
-  const queryResult: ISearchEntitiesResult = useSearchEntitiesQuery(
+  const queryResult = useSearchEntitiesQuery(
     searchText,
     isSchedule,
     undefined,
@@ -40,7 +39,7 @@ export const Entities: React.FC<{
       filterItem={(i) =>
         !isSchedule ||
         isBefore(
-          getScheduleForUser(i, user.id).nextOccurrence,
+          getScheduleForUser(i, user.id ?? "").nextOccurrence ?? new Date(),
           addDays(new Date(), 3),
         )
       }

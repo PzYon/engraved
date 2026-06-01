@@ -10,8 +10,8 @@ export const AddEntryTableRow: React.FC<{
   columns: IEntriesTableColumnDefinition[];
 }> = ({ journal, columns }) => {
   const [command, setCommand] = useState<IUpsertGaugeEntryCommand>({
-    journalId: journal.id,
-    value: undefined,
+    journalId: journal.id ?? "",
+    value: 0,
     dateTime: new Date(),
   });
 

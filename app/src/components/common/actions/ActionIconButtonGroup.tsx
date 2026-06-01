@@ -53,7 +53,7 @@ export const ActionIconButtonGroup: React.FC<{
   return (
     <StickTo
       isDisabled={stickToPosition === undefined || stickToPosition === "none"}
-      position={stickToPosition}
+      position={stickToPosition ?? "none"}
       render={(isStuck) => (
         <Suspense>
           <Host>

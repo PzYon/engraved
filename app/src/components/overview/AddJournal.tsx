@@ -23,9 +23,7 @@ export const AddJournal: React.FC = () => {
     async (result: ICommandResult) => {
       await navigate({
         to: "/journals/details/$journalId",
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        params: () => ({ journalId: result.entityId }),
+        params: { journalId: result.entityId ?? "" },
       });
     },
   );

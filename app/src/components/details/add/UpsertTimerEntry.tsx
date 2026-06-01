@@ -5,10 +5,10 @@ import { styled, Typography } from "@mui/material";
 import { FormatDuration } from "../../common/FormatDuration";
 
 export const UpsertTimerEntry: React.FC<{
-  startDate: string;
-  setStartDate: (startDate: Date) => void;
-  endDate: string;
-  setEndDate: (endDate: Date) => void;
+  startDate: string | undefined;
+  setStartDate: (startDate: Date | null) => void;
+  endDate: string | undefined;
+  setEndDate: (endDate: Date | null) => void;
 }> = ({ setStartDate, startDate, setEndDate, endDate }) => {
   const start = startDate ? new Date(startDate) : undefined;
   const end = endDate ? new Date(endDate) : undefined;
@@ -45,7 +45,10 @@ export const UpsertTimerEntry: React.FC<{
         <Typography sx={{ fontSize: "small" }}>
           Duration
           <Pill>
-            <FormatDuration start={start} end={end} />
+            <FormatDuration
+              start={start ?? new Date()}
+              end={end ?? new Date()}
+            />
           </Pill>
         </Typography>
       </FormElementContainer>

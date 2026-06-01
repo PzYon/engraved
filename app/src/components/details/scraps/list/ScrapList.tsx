@@ -139,7 +139,7 @@ export const ScrapList: React.FC = () => {
     const currentIndex = listItemCollection.getItemIndex(active.id as string);
 
     const newIndex =
-      active.id === over.id
+      !over || active.id === over.id
         ? undefined
         : listItemCollection.getItemIndex(over.id as string);
 

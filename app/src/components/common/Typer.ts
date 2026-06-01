@@ -13,7 +13,7 @@ export class Typer {
   ) {
     if (toggleCursor) {
       this.cursorInterval = window.setInterval(
-        this.toggleCursor,
+        toggleCursor,
         this.blinkDurationMs,
       ) as never;
     }

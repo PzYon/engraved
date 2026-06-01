@@ -30,7 +30,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
             value={date || null}
             showDaysOutsideCurrentMonth={true}
             onChange={(d) => {
-              setDate(stripTime(d));
+              setDate(stripTime(d ?? undefined) ?? null);
             }}
           />
         </FlexElement>
@@ -54,14 +54,14 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
-                onClick={() => setDate(addMinutes(date, -5))}
+                onClick={() => setDate(addMinutes(date ?? new Date(), -5))}
               >
                 -5min
               </Button>
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
-                onClick={() => setDate(addMinutes(date, 5))}
+                onClick={() => setDate(addMinutes(date ?? new Date(), 5))}
               >
                 +5min
               </Button>
@@ -82,14 +82,14 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
-                onClick={() => setDate(addDays(date, -1))}
+                onClick={() => setDate(addDays(date ?? new Date(), -1))}
               >
                 -1day
               </Button>
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
-                onClick={() => setDate(addDays(date, 1))}
+                onClick={() => setDate(addDays(date ?? new Date(), 1))}
               >
                 +1day
               </Button>

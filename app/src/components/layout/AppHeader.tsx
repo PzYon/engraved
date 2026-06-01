@@ -102,7 +102,9 @@ export const AppHeader: React.FC = () => {
       <AppContent>
         <ContentWrapper
           style={
-            isSmall ? { flexDirection: "column", alignItems: "start" } : null
+            isSmall
+              ? { flexDirection: "column", alignItems: "start" }
+              : undefined
           }
         >
           <Titles title={title} subTitle={subTitle} />

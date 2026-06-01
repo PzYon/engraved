@@ -17,7 +17,7 @@ export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
 
   const [user, setUser] = useState<IUser>();
-  const ref = useRef<HTMLDivElement>(undefined);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isNotVisible, setIsNotVisible] = useState(true);
@@ -32,8 +32,8 @@ export const Bootstrapper: React.FC = () => {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has(knownQueryParams.testUser)) {
       ServerApi.setUpForTests(
-        searchParams.get(knownQueryParams.testUser),
-        searchParams.get(knownQueryParams.testJournalName),
+        searchParams.get(knownQueryParams.testUser)!,
+        searchParams.get(knownQueryParams.testJournalName) ?? undefined,
         searchParams.get(knownQueryParams.testJournalType) as JournalType,
       )
         .then(async (r) => {
@@ -58,7 +58,7 @@ export const Bootstrapper: React.FC = () => {
       return;
     }
 
-    ServerApi.tryAuthenticate(storage.getAuthResult().jwtToken)
+    ServerApi.tryAuthenticate(storage.getAuthResult()!.jwtToken)
       .then((u) => {
         setUser(u);
 

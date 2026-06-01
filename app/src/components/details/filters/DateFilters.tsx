@@ -91,7 +91,7 @@ export const DateFilters: React.FC<{ config: DateFilterConfig }> = ({
             label="From"
             date={dateConditions?.from}
             setDate={(d) => {
-              setDateConditions({ ...dateConditions, from: d });
+              setDateConditions({ ...dateConditions, from: d ?? undefined });
               setDateFilterConfig({
                 dateType: "range",
                 value: DateRange.Custom,
@@ -104,7 +104,7 @@ export const DateFilters: React.FC<{ config: DateFilterConfig }> = ({
             label="To"
             date={dateConditions?.to}
             setDate={(d) => {
-              setDateConditions({ ...dateConditions, to: d });
+              setDateConditions({ ...dateConditions, to: d ?? undefined });
               setDateFilterConfig({
                 dateType: "range",
                 value: DateRange.Custom,

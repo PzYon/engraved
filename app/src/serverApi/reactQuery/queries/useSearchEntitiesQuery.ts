@@ -11,7 +11,7 @@ export const useSearchEntitiesQuery = (
   executeWithoutConditions?: boolean,
   onlyConsiderTitle?: boolean,
   placeholderData?: (
-    previousData: ISearchEntitiesResult,
+    previousData: ISearchEntitiesResult | undefined,
   ) => ISearchEntitiesResult,
 ) => {
   const options: UseQueryOptions<ISearchEntitiesResult> = {
@@ -26,12 +26,12 @@ export const useSearchEntitiesQuery = (
     queryFn: () =>
       executeWithoutConditions || searchText
         ? ServerApi.searchEntities(
-            searchText,
-            scheduledOnly,
-            onlyEntriesOfTypes,
-            onlyConsiderTitle,
+            searchText ?? "",
+            scheduledOnly ?? false,
+            onlyEntriesOfTypes ?? [],
+            onlyConsiderTitle ?? false,
           )
-        : Promise.resolve(null),
+        : Promise.resolve({} as ISearchEntitiesResult),
   };
 
   if (placeholderData) {

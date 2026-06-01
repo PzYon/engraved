@@ -14,13 +14,13 @@ export const TagPage: React.FC = () => {
   const { tagId } = useParams({ strict: false });
   const { user } = useAppContext();
 
-  const journalIds = user.tags.find((t) => t.id === tagId)?.journalIds ?? [];
+  const journalIds = user.tags?.find((t) => t.id === tagId)?.journalIds ?? [];
 
   return (
     <Page
       title={
         <PageTitle
-          title={user.tags.find((t) => t.id === tagId)?.label}
+          title={user.tags?.find((t) => t.id === tagId)?.label ?? ""}
           icon={
             <Icon style={IconStyle.Large}>
               <Style />

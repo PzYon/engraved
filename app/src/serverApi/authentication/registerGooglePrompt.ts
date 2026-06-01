@@ -6,7 +6,7 @@ const scriptUrl = "https://accounts.google.com/gsi/client";
 
 export function registerGooglePrompt(
   signInWithJwt: (response: CredentialResponse) => void,
-  domElement: HTMLElement,
+  domElement: HTMLElement | null,
   doNotPrompt = false,
 ) {
   if (!domElement) {

@@ -27,7 +27,7 @@ export const SettingsPage: React.FC = () => {
           <Button
             variant="outlined"
             onClick={() => {
-              setUpOneSignal(user.globalUniqueId);
+              setUpOneSignal(user.globalUniqueId ?? "");
             }}
           >
             Setup OneSignal
@@ -62,10 +62,7 @@ export const SettingsPage: React.FC = () => {
       </PageSection>
 
       <PageSection title="System">
-        <Button
-          variant="outlined"
-          onClick={clearBackendCache}
-        >
+        <Button variant="outlined" onClick={clearBackendCache}>
           Clear backend cache
         </Button>
       </PageSection>

@@ -4,7 +4,9 @@ import { useMemo } from "react";
 import { UserRole } from "../../../serverApi/UserRole";
 import { IUser } from "../../../serverApi/IUser";
 
-export const useJournalPermissions = (permissions: IUserPermissions) => {
+export const useJournalPermissions = (
+  permissions: IUserPermissions | undefined,
+) => {
   const { user } = useAppContext();
 
   return useMemo(
@@ -14,7 +16,7 @@ export const useJournalPermissions = (permissions: IUserPermissions) => {
 };
 
 export function getPermissionsForUser(
-  permissions: IUserPermissions,
+  permissions: IUserPermissions | undefined,
   user: IUser,
 ) {
   if (!permissions) {
@@ -25,18 +27,18 @@ export function getPermissionsForUser(
     owner: getOwner(permissions),
     allExceptOwner: getAllExceptOwner(permissions),
     userId: user.id,
-    userRole: getRoleForUser(user.id, permissions),
+    userRole: getRoleForUser(user.id ?? "", permissions),
   };
 }
 
 function getRoleForUser(
   userId: string,
   permissions: IUserPermissions,
-): UserRole {
-  return permissions[userId].userRole;
+): UserRole | undefined {
+  return permissions[userId]?.userRole;
 }
 
-function getOwner(permissions: IUserPermissions): IUser {
+function getOwner(permissions: IUserPermissions): IUser | undefined {
   return Object.values(permissions).find(
     (permissionDefinition) => permissionDefinition.userRole === UserRole.Owner,
   )?.user;

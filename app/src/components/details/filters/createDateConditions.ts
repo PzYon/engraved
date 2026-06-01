@@ -42,7 +42,7 @@ export const createDateConditions = (
       return { from: startOfYear(date), to: endOfYear(date) };
 
     case DateRange.Custom:
-      return null;
+      return {};
 
     case DateRange.All:
       return {};
@@ -58,21 +58,21 @@ export function createNextDateConditions(
     return {
       from:
         direction === "previous"
-          ? subDays(currentConditions.from, dateFilterConfig.value as number)
+          ? subDays(currentConditions.from!, dateFilterConfig.value as number)
           : currentConditions.to,
       to:
         direction === "previous"
           ? currentConditions.from
-          : addDays(currentConditions.to, dateFilterConfig.value as number),
+          : addDays(currentConditions.to!, dateFilterConfig.value as number),
     };
   }
 
   switch (dateFilterConfig.value) {
     case DateRange.Month: {
-      const offset = getDaysInMonth(currentConditions.from.getFullYear());
+      const offset = getDaysInMonth(currentConditions.from!.getFullYear());
 
       const newDate = addDays(
-        currentConditions.from,
+        currentConditions.from!,
         offset * (direction === "previous" ? -1 : 1),
       );
 
@@ -87,7 +87,7 @@ export function createNextDateConditions(
 
     case DateRange.Year: {
       const year =
-        currentConditions.from.getFullYear() +
+        currentConditions.from!.getFullYear() +
         (direction === "previous" ? -1 : 1);
 
       return {
@@ -104,13 +104,15 @@ export function createNextDateConditions(
     case DateRange.Week:
     case DateRange.Custom: {
       const diffInDays =
-        differenceInDays(currentConditions.to, currentConditions.from) *
+        differenceInDays(currentConditions.to!, currentConditions.from!) *
         (direction === "previous" ? -1 : 1);
 
       return {
-        from: addDays(currentConditions.from, diffInDays),
-        to: addDays(currentConditions.to, diffInDays),
+        from: addDays(currentConditions.from!, diffInDays),
+        to: addDays(currentConditions.to!, diffInDays),
       };
     }
   }
+
+  return {};
 }

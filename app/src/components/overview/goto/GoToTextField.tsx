@@ -6,7 +6,7 @@ export const GoToTextField: React.FC<{
   initialValue: string;
   onChange: (text: string) => void;
   onDownKey: () => void;
-  inputRef: RefObject<HTMLInputElement>;
+  inputRef: RefObject<HTMLInputElement | null>;
 }> = ({ initialValue, onChange, onDownKey, inputRef }) => {
   const [textFieldHasFocus, setTextFieldHasFocus] = useState(false);
 

@@ -7,7 +7,7 @@ export const JournalPageWrapper: React.FC = () => {
   const { journalId } = useParams({ strict: false });
 
   return (
-    <JournalContextProvider journalId={journalId}>
+    <JournalContextProvider journalId={journalId ?? ""}>
       <JournalDetails />
     </JournalContextProvider>
   );

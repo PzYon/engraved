@@ -4,7 +4,7 @@ import {
   useEngravedSearchParams,
 } from "../../common/actions/searchParamHooks";
 import { useDebounced } from "../../common/useDebounced";
-import { RefObject, useRef } from "react";
+import { useRef } from "react";
 import { GoToSimple } from "./GoToSimple";
 import { PageSection } from "../../layout/pages/PageSection";
 
@@ -14,7 +14,7 @@ export const GoTo: React.FC = () => {
 
   const debouncedSearchText = useDebounced(searchText);
 
-  const inputRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <PageSection>

@@ -31,7 +31,7 @@ export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
         </div>
       ) : (
         <FadeInContainer>
-          <Markdown value={notes} />
+          <Markdown value={notes ?? ""} />
         </FadeInContainer>
       )}
     </ScrapBody>

@@ -4,6 +4,10 @@ import { Tab, Tabs } from "@mui/material";
 import { IPageTab } from "./IPageTab";
 import { engravedTheme } from "../../../theming/engravedTheme";
 
+// MUI's `component` prop doesn't thread through TanStack Router's typed `to`
+// union, so we cast Link to a plain React element type here.
+const LinkElement = Link as React.ElementType;
+
 export const PageTabs: React.FC<{
   tabs: IPageTab[];
 }> = ({ tabs }) => {
@@ -18,9 +22,8 @@ export const PageTabs: React.FC<{
           key={tab.key}
           value={tab.key}
           label={tab.label}
-          component={Link}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          to={tab.href as any}
+          component={LinkElement}
+          to={tab.href}
           sx={{
             minHeight: "auto",
             "&.MuiButtonBase-root.MuiTab-root": {

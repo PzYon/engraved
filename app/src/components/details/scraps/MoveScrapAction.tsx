@@ -16,9 +16,11 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
 
   const { user } = useAppContext();
 
-  const [targetJournalId, setTargetJournalId] = useState<string>(undefined);
+  const [targetJournalId, setTargetJournalId] = useState<string | undefined>(
+    undefined,
+  );
 
-  const mutation = useMoveEntryMutation(entry.id, entry.parentId);
+  const mutation = useMoveEntryMutation(entry.id ?? "", entry.parentId ?? "");
 
   if (!entry) {
     return null;
@@ -28,7 +30,7 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
     <>
       <JournalSelector
         label={"Move to journal"}
-        onChange={(journal) => setTargetJournalId(journal?.id)}
+        onChange={(journal) => setTargetJournalId(journal?.id ?? "")}
         storageKey={"move"}
         filterJournals={(journals) =>
           journals.filter((j) => {
@@ -38,8 +40,8 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
 
             const permissions = getPermissionsForUser(j.permissions, user);
             return (
-              permissions.userRole === UserRole.Owner ||
-              permissions.userRole === UserRole.Writer
+              permissions?.userRole === UserRole.Owner ||
+              permissions?.userRole === UserRole.Writer
             );
           })
         }
@@ -52,7 +54,7 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
           disabled={!targetJournalId}
           variant="contained"
           onClick={() => {
-            mutation.mutate({ targetJournalId: targetJournalId });
+            mutation.mutate({ targetJournalId: targetJournalId ?? "" });
           }}
         >
           Move

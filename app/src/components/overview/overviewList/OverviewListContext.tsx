@@ -12,13 +12,13 @@ export interface IOverviewListContext {
 }
 
 export const OverviewListContext = createContext<IOverviewListContext>({
-  keepFocusAtIndex: undefined,
-  activeItemId: undefined,
-  setActiveItemId: undefined,
-  itemsToShow: undefined,
-  hiddenItemsCount: undefined,
-  removeItemParamsFromUrl: undefined,
-  setShowAll: undefined,
+  keepFocusAtIndex: null!,
+  activeItemId: null!,
+  setActiveItemId: null!,
+  itemsToShow: null!,
+  hiddenItemsCount: null!,
+  removeItemParamsFromUrl: null!,
+  setShowAll: null!,
 });
 
 export const useOverviewListContext = () => {

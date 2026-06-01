@@ -23,7 +23,10 @@ export const JournalSelector: React.FC<{
   const journals = useJournalsQuery("", [JournalType.Scraps]);
 
   const [selectedJournalId, setSelectedJournalId] = useState<string>(
-    () => storage.getValue<string>(storageKey) ?? user.favoriteJournalIds[0],
+    () =>
+      storage.getValue<string>(storageKey) ??
+      user.favoriteJournalIds?.[0] ??
+      "",
   );
 
   const selectedJournal = useMemo(
@@ -51,14 +54,15 @@ export const JournalSelector: React.FC<{
       value={selectedJournal}
       options={filterJournals(journals)}
       onChange={async (_, selectedOption) => {
+        if (!selectedOption) return;
         onChange(selectedOption);
-        setSelectedJournalId(selectedOption.id);
-        storage.setValue(storageKey, selectedOption.id);
+        setSelectedJournalId(selectedOption.id ?? "");
+        storage.setValue(storageKey, selectedOption.id ?? "");
       }}
       renderInput={(params) => (
         <TextField {...params} label={label ?? "Journals"} />
       )}
-      getOptionLabel={(option) => option.name}
+      getOptionLabel={(option) => option.name ?? ""}
       renderOption={(props, option) => (
         <Box {...props} key={option.id} component={"li"}>
           <JournalMenuItem journal={option} />
@@ -67,7 +71,9 @@ export const JournalSelector: React.FC<{
       filterOptions={(currenOptions, state) => {
         return currenOptions.filter(
           (j) =>
-            j.name?.toLowerCase().indexOf(state.inputValue?.toLowerCase()) > -1,
+            (j.name
+              ?.toLowerCase()
+              .indexOf(state.inputValue?.toLowerCase() ?? "") ?? -1) > -1,
         );
       }}
       selectOnFocus

@@ -13,9 +13,12 @@ interface IParsedRecurrence {
 
 const every = "every";
 
-export const parseDate = (value: string, referenceDate?: Date): IParsedDate => {
+export const parseDate = (
+  value: string | null | undefined,
+  referenceDate?: Date,
+): IParsedDate => {
   if (!value) {
-    return { input: value };
+    return { input: value ?? "" };
   }
 
   const preparedValue = value

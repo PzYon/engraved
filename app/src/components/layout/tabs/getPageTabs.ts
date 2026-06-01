@@ -11,7 +11,7 @@ export const getPageTabs = (
   },
   {
     key: "journals",
-    href: "/journals",
+    href: "/",
     label: "Journals",
     isSelected: selectedKey === "journals",
   },

@@ -16,6 +16,13 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
+
+// TanStack Router's search type inference requires a specific route context.
+// This provider is route-agnostic, so we express the contract through a typed shim.
+type SearchOnlyNavigate = (opts: {
+  search?: () => Record<string, string>;
+  replace?: boolean;
+}) => void;
 import { isRichTextEditor } from "../../common/isRichTextEditor";
 
 export const OverviewListContextProvider: React.FC<{
@@ -26,15 +33,15 @@ export const OverviewListContextProvider: React.FC<{
 }> = ({ items, children, filterItem, onKeyDown }) => {
   const { setAppAlert } = useAppContext();
 
-  const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
+  const [activeItemId, setActiveItemId] = React.useState<string | undefined>(
+    undefined,
+  );
   const [showAll, setShowAll] = useState(false);
 
   const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const searchString = useRouterState({
-    select: (s): string => s.location.search,
-  }) as unknown as string;
+    select: (s): string => s.location.searchStr,
+  });
   const searchParams = useMemo(
     () => new URLSearchParams(searchString),
     [searchString],
@@ -47,8 +54,9 @@ export const OverviewListContextProvider: React.FC<{
     setActiveItemId(activeItemIdFromUrl);
   }
 
-  const [inMemorySearchText, setInMemorySearchText] =
-    useState<string>(undefined);
+  const [inMemorySearchText, setInMemorySearchText] = useState<
+    string | undefined
+  >(undefined);
 
   useEffect(() => {
     if (inMemorySearchText) {
@@ -56,10 +64,10 @@ export const OverviewListContextProvider: React.FC<{
         title: inMemorySearchText,
         message: "",
         type: "info",
-        hideDurationSec: null,
+        hideDurationSec: undefined,
       });
     } else if (inMemorySearchText === "") {
-      setAppAlert(undefined);
+      setAppAlert(null);
     }
   }, [inMemorySearchText, setAppAlert]);
 
@@ -104,9 +112,7 @@ export const OverviewListContextProvider: React.FC<{
     const newParams = new URLSearchParams(searchString);
     newParams.delete(knownQueryParams.selectedItemId);
     newParams.delete(knownQueryParams.actionKey);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    void navigate({
+    void (navigate as unknown as SearchOnlyNavigate)({
       search: () => Object.fromEntries(newParams),
       replace: true,
     });
@@ -125,14 +131,14 @@ export const OverviewListContextProvider: React.FC<{
       case "ArrowUp": {
         e.preventDefault();
         removeItemParamsFromUrl();
-        setActiveItemId(getNextItem("up")?.id);
+        setActiveItemId(getNextItem("up")?.id ?? "");
         break;
       }
 
       case "ArrowDown": {
         e.preventDefault();
         removeItemParamsFromUrl();
-        setActiveItemId(getNextItem("down")?.id);
+        setActiveItemId(getNextItem("down")?.id ?? "");
         break;
       }
 
@@ -172,7 +178,7 @@ export const OverviewListContextProvider: React.FC<{
 
   const contextValue = useMemo<IOverviewListContext>(
     () => ({
-      activeItemId,
+      activeItemId: activeItemId ?? "",
       setActiveItemId,
       itemsToShow: filteredItems,
       hiddenItemsCount: items.length - filteredItems.length,
@@ -186,11 +192,9 @@ export const OverviewListContextProvider: React.FC<{
         newParams.delete(knownQueryParams.selectedItemId);
 
         const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
-        const previousItemId = items[currentItemIndex + 1].id;
+        const previousItemId = items[currentItemIndex + 1]?.id ?? "";
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        void navigate({
+        void (navigate as unknown as SearchOnlyNavigate)({
           search: () => Object.fromEntries(newParams),
           replace: true,
         });

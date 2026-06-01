@@ -49,9 +49,7 @@ export const ManageUserTags: React.FC = () => {
           <Link
             target="_blank"
             to="/tags/$tagId"
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            params={() => ({ tagId: option.key })}
+            params={{ tagId: option.key ?? "" }}
           >
             {option.label}
           </Link>

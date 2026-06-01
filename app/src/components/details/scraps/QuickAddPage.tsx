@@ -21,13 +21,11 @@ export const QuickAddPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const [journalId, setJournalId] = useState(undefined);
+  const [journalId, setJournalId] = useState<string | undefined>(undefined);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const searchString = useRouterState({
-    select: (s): string => s.location.search,
-  }) as unknown as string;
+    select: (s): string => s.location.searchStr,
+  });
   const searchParams = new URLSearchParams(searchString);
 
   const title = searchParams.get("title");
@@ -36,9 +34,9 @@ export const QuickAddPage: React.FC = () => {
 
   const scrap = ScrapsJournalType.createBlank(
     true,
-    journalId,
+    journalId ?? "",
     ScrapType.Markdown,
-    title,
+    title ?? undefined,
     [notes, link].filter((i) => !!i).join("\n"),
   );
 
@@ -68,12 +66,12 @@ export const QuickAddPage: React.FC = () => {
             journals.filter((j) => {
               const permissions = getPermissionsForUser(j.permissions, user);
               return (
-                permissions.userRole === UserRole.Owner ||
-                permissions.userRole === UserRole.Writer
+                permissions?.userRole === UserRole.Owner ||
+                permissions?.userRole === UserRole.Writer
               );
             })
           }
-          onChange={(journal) => setJournalId(journal.id)}
+          onChange={(journal) => setJournalId(journal.id ?? "")}
         />
 
         <ScrapContainer>

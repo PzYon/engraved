@@ -17,17 +17,17 @@ export const ScrapsEditPage: React.FC = () => {
   const [name, setName] = useState(journal.name);
   const [description, setDescription] = useState(journal.description);
   const [customProps, setCustomProps] = useState(journal.customProps ?? {});
-  const [changedTagNames, setChangedTagNames] = useState<string[]>(undefined);
+  const [changedTagNames, setChangedTagNames] = useState<string[] | undefined>(
+    undefined,
+  );
 
-  const editJournalMutation = useEditJournalMutation(journal.id);
+  const editJournalMutation = useEditJournalMutation(journal.id ?? "");
 
   const navigate = useNavigate();
   const navigateToViewPage = (): void =>
     void navigate({
       to: "/journals/details/$journalId",
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      params: () => ({ journalId: journal.id }),
+      params: { journalId: journal.id ?? "" },
     });
 
   const disableSave =
@@ -40,16 +40,16 @@ export const ScrapsEditPage: React.FC = () => {
     <Page
       title={<JournalPageTitle journal={journal} />}
       subTitle="Edit"
-      documentTitle={`Edit ${journal.name}`}
+      documentTitle={`Edit ${journal.name ?? ""}`}
       actions={[
         ...getCommonEditModeActions(navigateToViewPage, save, disableSave),
       ]}
     >
       <EditCommonProperties
-        journalId={journal.id}
-        name={name}
+        journalId={journal.id ?? ""}
+        name={name ?? ""}
         setName={setName}
-        description={description}
+        description={description ?? ""}
         setDescription={setDescription}
         onChangedTags={setChangedTagNames}
       />

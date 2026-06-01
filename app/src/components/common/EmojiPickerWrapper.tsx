@@ -7,7 +7,7 @@ export const EmojiPickerWrapper: React.FC<{
   opener: React.ReactElement;
 }> = ({ onEmojiClick, opener }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLElement>(undefined);
+  const ref = useRef<HTMLElement | null>(null);
 
   return (
     <>
@@ -17,7 +17,7 @@ export const EmojiPickerWrapper: React.FC<{
       <Popover
         open={isOpen}
         anchorEl={{
-          getBoundingClientRect: () => ref.current.getBoundingClientRect(),
+          getBoundingClientRect: () => ref.current!.getBoundingClientRect(),
           nodeType: 1,
         }}
         onClose={() => setIsOpen(false)}

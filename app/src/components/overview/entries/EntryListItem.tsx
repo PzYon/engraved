@@ -12,7 +12,7 @@ export const EntryListItem: React.FC<{
 }> = ({ entry, journals, hasFocus, index, giveFocus }) => {
   return (
     <div data-testid={`entries-list-item-${index}`}>
-      {renderEntry(entry, hasFocus)}
+      {renderEntry(entry, hasFocus ?? false)}
     </div>
   );
 

@@ -2,7 +2,7 @@ import { RefObject, useEffect, useMemo, useState } from "react";
 
 // credits: https://bobbyhadz.com/blog/react-check-if-element-in-viewport
 
-export function useIsInViewport(ref: RefObject<HTMLDivElement>) {
+export function useIsInViewport(ref: RefObject<HTMLDivElement | null>) {
   const [isIntersecting, setIsIntersecting] = useState(false);
 
   const observer = useMemo(

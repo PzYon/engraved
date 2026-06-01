@@ -51,10 +51,10 @@ export class LogBookJournalType implements IJournalType {
 
   static createBlank(journal: ILogBookJournal): IScrapEntry {
     return {
-      id: null,
+      id: undefined,
       dateTime: new Date().toJSON(),
       parentId: journal.id,
-      notes: journal.customProps.template as string,
+      notes: (journal.customProps?.template ?? "") as string,
       title: "",
       scrapType: ScrapType.Markdown,
     };

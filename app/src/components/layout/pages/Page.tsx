@@ -5,6 +5,13 @@ import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 
+// TanStack Router's search type inference requires a specific route context.
+// Page is route-agnostic, so we express the contract through a typed shim.
+type SearchOnlyNavigate = (opts: {
+  search?: () => Record<string, string>;
+  replace?: boolean;
+}) => void;
+
 export const Page: React.FC<{
   children: React.ReactNode;
   actions?: IAction[];
@@ -61,7 +68,10 @@ export const Page: React.FC<{
       setPageActionRoutes(pageActionRoutes);
     }, [setPageActionRoutes, pageActionRoutes]);
 
-    useEffect(() => setHideActions(hideActions), [hideActions, setHideActions]);
+    useEffect(
+      () => setHideActions(hideActions ?? false),
+      [hideActions, setHideActions],
+    );
 
     useEffect(() => {
       if (tabs === undefined) {
@@ -82,7 +92,7 @@ export const Page: React.FC<{
     useEffect(() => setSubTitle(subTitle), [subTitle, setSubTitle]);
 
     useEffect(
-      () => setDocumentTitle(documentTitle),
+      () => setDocumentTitle(documentTitle ?? ""),
       [documentTitle, setDocumentTitle],
     );
 
@@ -90,11 +100,9 @@ export const Page: React.FC<{
 
     useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const searchString = useRouterState({
-      select: (s): string => s.location.search,
-    }) as unknown as string;
+      select: (s): string => s.location.searchStr,
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -108,7 +116,7 @@ export const Page: React.FC<{
         }
 
         if (searchText) {
-          setSearchText(null);
+          setSearchText("");
         }
 
         if (journalTypes?.length) {
@@ -119,12 +127,11 @@ export const Page: React.FC<{
           setTabs([]);
         }
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         if (searchString && searchString !== "?") {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          void navigate({ search: () => ({}), replace: true });
+          void (navigate as unknown as SearchOnlyNavigate)({
+            search: () => ({}),
+            replace: true,
+          });
         }
 
         if (pageActionRoutes) {

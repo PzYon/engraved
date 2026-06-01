@@ -107,7 +107,7 @@ function createLineChart(
   );
 
   chart.type = "line";
-  chart.options.borderColor = color;
+  if (chart.options) chart.options.borderColor = color;
 
   return chart;
 }
@@ -228,7 +228,7 @@ function createBarChart(
           (m) => m.journalAttributeValues?.[attributeKey],
         );
 
-        toggleAttributeValue(attributeKey, attributeValues[0][0]);
+        toggleAttributeValue(attributeKey, attributeValues[0]?.[0] ?? "");
       },
       normalized: true,
       scales: {
@@ -262,7 +262,7 @@ function createBarChart(
             title: (tooltipItems) => {
               return format(
                 new Date((tooltipItems[0].raw as ITransformedEntry).x),
-                getTooltipTitleFormat(groupByTime),
+                getTooltipTitleFormat(groupByTime) ?? "dd.LL.yy",
               );
             },
             label: (tooltipItem): string | string[] | void => {
@@ -297,7 +297,7 @@ function createBarChart(
   };
 }
 
-function getTimeUnit(groupByTime: GroupByTime): TimeUnit {
+function getTimeUnit(groupByTime: GroupByTime): TimeUnit | undefined {
   switch (groupByTime) {
     case GroupByTime.None:
       return undefined;
@@ -313,7 +313,7 @@ function average(ctx: any, aggregationMode: AggregationMode): number {
   const values = ctx.chart.data.datasets[0]?.data as ITransformedEntry[];
 
   if (!values) {
-    return null;
+    return 0;
   }
 
   const averageDivisor =

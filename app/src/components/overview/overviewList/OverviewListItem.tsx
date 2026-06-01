@@ -12,7 +12,7 @@ export const OverviewListItem: React.FC<{
   onClick: () => void;
   showDaysBetween?: boolean;
 }> = memo(({ children, item, hasFocus, onClick, showDaysBetween }) => {
-  const domElementRef = useRef<HTMLLIElement>(undefined);
+  const domElementRef = useRef<HTMLLIElement | null>(null);
 
   const { isCompact } = useDisplayModeContext();
 

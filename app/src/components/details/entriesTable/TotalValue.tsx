@@ -25,7 +25,7 @@ export const TotalValue: React.FC<{
     <Host onClick={setNextAggregationMode}>
       <Light>{value.label}</Light>
       <span>
-        {journalType.formatTotalValue?.(value.value) ?? round(value.value)}
+        {journalType?.formatTotalValue?.(value.value) ?? round(value.value)}
       </span>
     </Host>
   );

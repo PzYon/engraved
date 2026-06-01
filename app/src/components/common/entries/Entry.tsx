@@ -49,8 +49,8 @@ export const Entry: React.FC<{
           journal,
           entry,
           propsRenderStyle,
-          user.id,
-          propertyOverrides,
+          user.id ?? "",
+          propertyOverrides ?? [],
         )}
         actions={actions}
         noCompactFooter={noCompactFooter}
@@ -79,9 +79,7 @@ function getEntryProperties(
       node: () => (
         <Link
           to="/journals/details/$journalId"
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          params={() => ({ journalId: journal.id })}
+          params={{ journalId: journal.id ?? "" }}
         >
           {journal.name}
         </Link>

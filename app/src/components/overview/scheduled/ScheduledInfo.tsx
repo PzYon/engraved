@@ -46,7 +46,10 @@ export const ScheduledInfo: React.FC<{
       schedule.nextOccurrence &&
       isAfter(new Date(), schedule.nextOccurrence)
     ) {
-      return parseDate(schedule.recurrence.dateString).date.toString();
+      return (
+        parseDate(schedule.recurrence.dateString).date?.toString() ??
+        schedule.nextOccurrence
+      );
     }
 
     return schedule.nextOccurrence;

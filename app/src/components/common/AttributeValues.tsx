@@ -42,7 +42,7 @@ export const AttributeValues: React.FC<{
                   label={value}
                   onClick={
                     preventOnClick || !toggleAttributeValue
-                      ? null
+                      ? undefined
                       : () => {
                           toggleAttributeValue(attributeKey, valueKey);
                         }
