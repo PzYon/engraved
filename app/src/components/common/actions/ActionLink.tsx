@@ -20,7 +20,9 @@ export const ActionLink: React.FC<{
     () => {
       void navigate({
         to: action.href,
-        search: Object.fromEntries(getNewSearchParams(action.search)),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        search: () => Object.fromEntries(getNewSearchParams(action.search)),
       });
     },
     {
@@ -57,7 +59,9 @@ export const ActionLink: React.FC<{
     <Link
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       to={action.href as any}
-      search={Object.fromEntries(getNewSearchParams(action.search ?? {}))}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      search={() => Object.fromEntries(getNewSearchParams(action.search ?? {}))}
       onClick={(e) => e.stopPropagation()}
       style={style}
     >

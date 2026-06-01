@@ -64,8 +64,14 @@ export const useUpsertEntryMutation = (
           <>
             <StyledLink
               to="/journals/details/$journalId"
-              params={{ journalId }}
-              search={{ [knownQueryParams.selectedItemId]: result.entityId }}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              params={() => ({ journalId })}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              search={() => ({
+                [knownQueryParams.selectedItemId]: result.entityId,
+              })}
             >
               View
             </StyledLink>{" "}

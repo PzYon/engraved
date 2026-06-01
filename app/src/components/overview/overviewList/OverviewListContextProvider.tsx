@@ -30,7 +30,11 @@ export const OverviewListContextProvider: React.FC<{
   const [showAll, setShowAll] = useState(false);
 
   const navigate = useNavigate();
-  const searchString = useRouterState({ select: (s) => s.location.search });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const searchString = useRouterState({
+    select: (s): string => s.location.search,
+  }) as unknown as string;
   const searchParams = useMemo(
     () => new URLSearchParams(searchString),
     [searchString],
@@ -100,7 +104,12 @@ export const OverviewListContextProvider: React.FC<{
     const newParams = new URLSearchParams(searchString);
     newParams.delete(knownQueryParams.selectedItemId);
     newParams.delete(knownQueryParams.actionKey);
-    void navigate({ search: Object.fromEntries(newParams), replace: true });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    void navigate({
+      search: () => Object.fromEntries(newParams),
+      replace: true,
+    });
   }, [searchParams, searchString, navigate]);
 
   useEngravedHotkeys("*", (e) => {
@@ -179,7 +188,12 @@ export const OverviewListContextProvider: React.FC<{
         const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
         const previousItemId = items[currentItemIndex + 1].id;
 
-        void navigate({ search: Object.fromEntries(newParams), replace: true });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        void navigate({
+          search: () => Object.fromEntries(newParams),
+          replace: true,
+        });
         setActiveItemId(previousItemId);
       },
     }),

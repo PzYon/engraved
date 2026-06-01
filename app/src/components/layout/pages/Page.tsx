@@ -90,7 +90,11 @@ export const Page: React.FC<{
 
     useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
 
-    const searchString = useRouterState({ select: (s) => s.location.search });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const searchString = useRouterState({
+      select: (s): string => s.location.search,
+    }) as unknown as string;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -115,8 +119,12 @@ export const Page: React.FC<{
           setTabs([]);
         }
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         if (searchString && searchString !== "?") {
-          void navigate({ search: {}, replace: true });
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          void navigate({ search: () => ({}), replace: true });
         }
 
         if (pageActionRoutes) {

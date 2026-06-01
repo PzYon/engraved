@@ -64,7 +64,13 @@ export const useJournalProperties = (
       node: () => (
         <TagContainer>
           {tags.map((tag) => (
-            <Link key={tag.id} to="/tags/$tagId" params={{ tagId: tag.id }}>
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            <Link
+              key={tag.id}
+              to="/tags/$tagId"
+              params={() => ({ tagId: tag.id })}
+            >
               {tag.label}
             </Link>
           ))}

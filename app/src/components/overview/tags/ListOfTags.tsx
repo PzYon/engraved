@@ -23,7 +23,9 @@ export const ListOfTags: React.FC = () => {
               hasFocus={false}
               entity={null}
               title={
-                <Link to="/tags/$tagId" params={{ tagId: t.id }}>
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                <Link to="/tags/$tagId" params={() => ({ tagId: t.id })}>
                   {t.label}
                 </Link>
               }

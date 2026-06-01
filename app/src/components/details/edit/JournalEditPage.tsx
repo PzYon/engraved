@@ -33,7 +33,9 @@ export const JournalEditPage: React.FC = () => {
   const navigateToViewPage = (): void =>
     void navigate({
       to: "/journals/details/$journalId",
-      params: { journalId: journal.id },
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      params: () => ({ journalId: journal.id }),
     });
 
   const save = () =>

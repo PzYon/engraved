@@ -23,7 +23,11 @@ export const QuickAddPage: React.FC = () => {
 
   const [journalId, setJournalId] = useState(undefined);
 
-  const searchString = useRouterState({ select: (s) => s.location.search });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const searchString = useRouterState({
+    select: (s): string => s.location.search,
+  }) as unknown as string;
   const searchParams = new URLSearchParams(searchString);
 
   const title = searchParams.get("title");

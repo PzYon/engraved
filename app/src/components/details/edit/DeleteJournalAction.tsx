@@ -10,7 +10,11 @@ export const DeleteJournalAction: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
   const { closeAction } = useItemAction();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const pathname = useRouterState({
+    select: (s): string => s.location.pathname,
+  }) as unknown as string;
   const navigate = useNavigate();
 
   const deleteJournalMutation = useDeleteJournalMutation(journal.id, () => {

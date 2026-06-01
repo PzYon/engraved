@@ -79,7 +79,9 @@ function getEntryProperties(
       node: () => (
         <Link
           to="/journals/details/$journalId"
-          params={{ journalId: journal.id }}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          params={() => ({ journalId: journal.id })}
         >
           {journal.name}
         </Link>

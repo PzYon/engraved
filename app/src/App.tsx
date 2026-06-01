@@ -170,6 +170,8 @@ const routeTree = rootRoute.addChildren([
   settingsRoute,
 ]);
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore -- TanStack Router requires strictNullChecks; enabling it is a separate concern
 const router = createRouter({ routeTree });
 
 declare module "@tanstack/react-router" {

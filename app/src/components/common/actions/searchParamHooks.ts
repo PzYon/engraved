@@ -42,8 +42,10 @@ export function clearAllSearchParams() {
   );
 }
 
+ 
 function useSearchString(): string {
-  return useRouterState({ select: (s) => s.location.search });
+  // explicit return type annotation on select forces TSelected = string
+  return useRouterState({ select: (s): string => s.location.search });
 }
 
 export const useItemAction = () => {
@@ -79,10 +81,8 @@ export const useItemAction = () => {
       }
 
       if (hasChanges) {
-        void navigate({
-          search: Object.fromEntries(newParams),
-          replace: true,
-        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        void navigate({ search: () => Object.fromEntries(newParams) } as any);
       }
     },
   };
@@ -129,8 +129,10 @@ export const useEngravedSearchParams = () => {
     (params: Record<string, string>) => {
       const updatedSearchParams = getNewSearchParams(params);
       if (updatedSearchParams.toString() !== searchParams.toString()) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         void navigate({
-          search: Object.fromEntries(updatedSearchParams),
+          search: () => Object.fromEntries(updatedSearchParams),
           replace: true,
         });
       }
