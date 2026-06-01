@@ -40,7 +40,7 @@ test("navigates to /search via header button", async ({ page }) => {
   await login(page, "routing-search");
   await navigateToHome(page);
 
-  await page.getByLabel("Search").click();
+  await page.getByLabel("Search anything").click();
   await page.waitForURL((url) => url.pathname === "/search");
   await expect(page).toHaveURL(/\/search/);
 });
@@ -64,13 +64,16 @@ test("navigates to journal detail page — URL contains journalId", async ({
 }) => {
   const userName = await login(page, "routing-journal-detail");
 
+  // Wait for the app to fully load (and setUpForTests to create the user in the DB)
+  // before making direct API calls that require the user to exist.
+  await navigateToHome(page);
+
   const entityId = await createJournalViaApi(request, userName, {
     name: "Router Test Journal",
     description: "",
     journalType: "Gauge",
   });
 
-  await navigateToHome(page);
   await page.reload();
 
   await page.getByRole("link", { name: "Router Test Journal" }).click();

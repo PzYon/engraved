@@ -72,10 +72,8 @@ export class ActionFactory {
       href: "/",
       icon: null,
       search: Object.fromEntries(
-        Object.entries(clearAllSearchParams()).filter(
-          ([, v]) => v !== undefined,
-        ),
-      ) as Record<string, string>,
+        Object.keys(clearAllSearchParams()).map((k) => [k, ""]),
+      ),
     };
   }
 

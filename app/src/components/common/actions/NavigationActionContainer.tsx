@@ -27,6 +27,16 @@ export const NavigationActionContainer: React.FC<{
     return () => window.clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeAction();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [closeAction]);
+
   return (
     <Host ref={domElement}>
       <Inner
