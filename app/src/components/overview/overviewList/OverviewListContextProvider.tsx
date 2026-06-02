@@ -105,7 +105,7 @@ export const OverviewListContextProvider: React.FC<{
     const newParams = new URLSearchParams(searchString);
     newParams.delete(knownQueryParams.selectedItemId);
     newParams.delete(knownQueryParams.actionKey);
-    void navigate({
+    navigate({
       to: ".",
       search: () => Object.fromEntries(newParams),
       replace: true,
@@ -188,7 +188,7 @@ export const OverviewListContextProvider: React.FC<{
         const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
         const previousItemId = items[currentItemIndex + 1]?.id ?? "";
 
-        void navigate({
+        navigate({
           to: ".",
           search: () => Object.fromEntries(newParams),
           replace: true,

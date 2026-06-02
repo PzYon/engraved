@@ -79,7 +79,7 @@ export const QuickAddPage: React.FC = () => {
             scrap={scrap}
             propsRenderStyle={"none"}
             actionsRenderStyle={"save-only"}
-            onSuccess={() => void navigate({ to: "/entries" })}
+            onSuccess={() => navigate({ to: "/entries" })}
             isQuickAdd={true}
             hasFocus={true}
             changeTypeWithoutConfirmation={true}

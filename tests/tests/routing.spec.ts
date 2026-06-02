@@ -155,14 +155,9 @@ test("cancelling delete action removes search params from URL", async ({
   // Cancel by pressing Escape
   await page.keyboard.press("Escape");
 
-  // search params should be gone (or action cancelled)
-  // wait briefly for navigation to settle
-  await page.waitForTimeout(300);
-
-  const url = new URL(page.url());
-  // action-key should no longer be 'delete' or should be absent
-  const actionKey = url.searchParams.get("action-key");
-  expect(actionKey === null || actionKey !== "delete").toBeTruthy();
+  // cancelling the action removes its search param from the URL (this assertion
+  // auto-retries until the navigation has settled)
+  await expect(page).not.toHaveURL(/action-key=delete/);
 });
 
 // ---------------------------------------------------------------------------

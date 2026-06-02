@@ -55,7 +55,7 @@ export const AddJournal: React.FC = () => {
 
       <PageSection>
         <PageFormButtonContainer style={{ paddingTop: 0 }}>
-          <Button variant="outlined" onClick={() => void navigate({ to: "/" })}>
+          <Button variant="outlined" onClick={() => navigate({ to: "/" })}>
             Cancel
           </Button>
           <Button

@@ -29,7 +29,7 @@ export const ActionLink: React.FC<{
   useEngravedHotkeys(
     action.hotkey,
     () => {
-      void navigate({ to: getHref() });
+      navigate({ to: getHref() });
     },
     {
       enabled:

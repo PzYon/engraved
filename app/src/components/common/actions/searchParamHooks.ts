@@ -79,7 +79,7 @@ export const useItemAction = () => {
       }
 
       if (hasChanges) {
-        void navigate({ to: ".", search: () => Object.fromEntries(newParams) });
+        navigate({ to: ".", search: () => Object.fromEntries(newParams) });
       }
     },
   };
@@ -121,7 +121,7 @@ export const useEngravedSearchParams = () => {
     (params: Record<string, string>) => {
       const updatedSearchParams = getNewSearchParams(params);
       if (updatedSearchParams.toString() !== searchParams.toString()) {
-        void navigate({
+        navigate({
           to: ".",
           search: () => Object.fromEntries(updatedSearchParams),
           replace: true,

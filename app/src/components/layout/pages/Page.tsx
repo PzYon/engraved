@@ -121,7 +121,7 @@ export const Page: React.FC<{
         }
 
         if (searchString && searchString !== "?") {
-          void navigate({ to: ".", search: () => ({}), replace: true });
+          navigate({ to: ".", search: () => ({}), replace: true });
         }
 
         if (pageActionRoutes) {

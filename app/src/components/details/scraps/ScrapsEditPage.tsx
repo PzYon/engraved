@@ -24,11 +24,12 @@ export const ScrapsEditPage: React.FC = () => {
   const editJournalMutation = useEditJournalMutation(journal.id ?? "");
 
   const navigate = useNavigate();
-  const navigateToViewPage = (): void =>
-    void navigate({
+  const navigateToViewPage = () => {
+    navigate({
       to: "/journals/details/$journalId",
       params: { journalId: journal.id ?? "" },
     });
+  };
 
   const disableSave =
     name === journal.name &&

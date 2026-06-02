@@ -15,7 +15,7 @@ export const GoToItemRow: React.FC<{
 
   // `url` is a fully-built URL (path + query) computed at runtime, so we pass
   // it as `to` directly rather than as a compile-time route pattern.
-  useEngravedHotkeys("enter", () => void navigate({ to: url }), {
+  useEngravedHotkeys("enter", () => navigate({ to: url }), {
     enabled: hasFocus,
   });
 
