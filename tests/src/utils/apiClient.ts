@@ -1,6 +1,6 @@
 import { APIRequestContext } from "@playwright/test";
 
-const API_BASE_URL = "https://localhost:7072";
+const API_BASE_URL = "http://localhost:5072";
 
 interface Journal {
   journalId?: string;
