@@ -5,13 +5,14 @@ import {
   paperBorderRadius,
 } from "../../../theming/engravedTheme";
 import { useItemAction } from "./searchParamHooks";
+import { useEngravedHotkeys } from "./useEngravedHotkeys";
 
 export const NavigationActionContainer: React.FC<{
   children: React.ReactNode;
   shrinkWidthIfPossible?: boolean;
   growWidthIfPossible?: boolean;
 }> = ({ children, growWidthIfPossible, shrinkWidthIfPossible }) => {
-  const domElement = useRef<HTMLDivElement | null>(null);
+  const domElement = useRef<HTMLDivElement>(null);
 
   const { closeAction } = useItemAction();
 
@@ -27,15 +28,11 @@ export const NavigationActionContainer: React.FC<{
     return () => window.clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeAction();
-      }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [closeAction]);
+  // close the action (and clear its search params) when pressing Escape, also
+  // while a form field inside the action (e.g. the delete confirmation) is focused
+  useEngravedHotkeys("escape", () => closeAction(), {
+    enableOnFormTags: true,
+  });
 
   return (
     <Host ref={domElement}>

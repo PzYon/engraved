@@ -30,7 +30,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
             value={date || null}
             showDaysOutsideCurrentMonth={true}
             onChange={(d) => {
-              setDate(stripTime(d ?? undefined) ?? null);
+              setDate(stripTime(d));
             }}
           />
         </FlexElement>

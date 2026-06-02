@@ -71,9 +71,7 @@ export class ActionFactory {
       label: "Home",
       href: "/",
       icon: null,
-      search: Object.fromEntries(
-        Object.keys(clearAllSearchParams()).map((k) => [k, ""]),
-      ),
+      search: clearAllSearchParams(),
     };
   }
 
@@ -360,7 +358,7 @@ export class ActionFactory {
   }
 
   static copyValueToClipboard(
-    value: string | undefined | null,
+    value: string | undefined,
     setAppAlert: (appAlert: IAppAlert | null) => void,
   ): IAction {
     return {

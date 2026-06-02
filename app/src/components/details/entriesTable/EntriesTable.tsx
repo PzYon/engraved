@@ -335,7 +335,7 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
               updateCommand(
                 {
                   journalId: command.journalId ?? "",
-                  value: 0,
+                  value: undefined,
                   dateTime: lastSelectedDate
                     ? new Date(lastSelectedDate)
                     : new Date(),

@@ -30,7 +30,7 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
     <>
       <JournalSelector
         label={"Move to journal"}
-        onChange={(journal) => setTargetJournalId(journal?.id ?? "")}
+        onChange={(journal) => setTargetJournalId(journal?.id)}
         storageKey={"move"}
         filterJournals={(journals) =>
           journals.filter((j) => {
@@ -54,7 +54,9 @@ export const MoveScrapAction: React.FC<{ entry: IScrapEntry }> = ({
           disabled={!targetJournalId}
           variant="contained"
           onClick={() => {
-            mutation.mutate({ targetJournalId: targetJournalId ?? "" });
+            if (targetJournalId) {
+              mutation.mutate({ targetJournalId });
+            }
           }}
         >
           Move

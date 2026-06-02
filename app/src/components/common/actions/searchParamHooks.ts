@@ -1,13 +1,5 @@
 import { useCallback } from "react";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
-
-// TanStack Router's search-type inference requires a specific route context.
-// These utility hooks are route-agnostic, so we express the runtime contract
-// through a typed shim instead of `any`.
-type SearchOnlyNavigate = (opts: {
-  search?: () => Record<string, string>;
-  replace?: boolean;
-}) => void;
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 export const knownQueryParams = {
   selectedItemId: "selected-item",
@@ -51,8 +43,7 @@ export function clearAllSearchParams() {
 }
 
 function useSearchString(): string {
-  // explicit return type annotation on select forces TSelected = string
-  return useRouterState({ select: (s): string => s.location.searchStr });
+  return useLocation({ select: (l) => l.searchStr });
 }
 
 export const useItemAction = () => {
@@ -88,9 +79,7 @@ export const useItemAction = () => {
       }
 
       if (hasChanges) {
-        void (navigate as unknown as SearchOnlyNavigate)({
-          search: () => Object.fromEntries(newParams),
-        });
+        void navigate({ to: ".", search: () => Object.fromEntries(newParams) });
       }
     },
   };
@@ -113,16 +102,11 @@ export const useEngravedSearchParams = () => {
   );
 
   const getNewSearchParams = useCallback(
-    (params: Record<string, string>): URLSearchParams => {
+    (params: Record<string, string | undefined>): URLSearchParams => {
       const newSearchParams = cloneSearchParams();
       for (const key in params) {
         const value = params[key];
-        if (
-          value === null ||
-          value === undefined ||
-          value === "" ||
-          value === "false"
-        ) {
+        if (value === undefined || value === "" || value === "false") {
           newSearchParams.delete(key);
         } else {
           newSearchParams.set(key, value);
@@ -137,7 +121,8 @@ export const useEngravedSearchParams = () => {
     (params: Record<string, string>) => {
       const updatedSearchParams = getNewSearchParams(params);
       if (updatedSearchParams.toString() !== searchParams.toString()) {
-        void (navigate as unknown as SearchOnlyNavigate)({
+        void navigate({
+          to: ".",
           search: () => Object.fromEntries(updatedSearchParams),
           replace: true,
         });

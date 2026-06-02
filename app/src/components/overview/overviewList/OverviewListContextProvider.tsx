@@ -16,13 +16,6 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-
-// TanStack Router's search type inference requires a specific route context.
-// This provider is route-agnostic, so we express the contract through a typed shim.
-type SearchOnlyNavigate = (opts: {
-  search?: () => Record<string, string>;
-  replace?: boolean;
-}) => void;
 import { isRichTextEditor } from "../../common/isRichTextEditor";
 
 export const OverviewListContextProvider: React.FC<{
@@ -112,7 +105,8 @@ export const OverviewListContextProvider: React.FC<{
     const newParams = new URLSearchParams(searchString);
     newParams.delete(knownQueryParams.selectedItemId);
     newParams.delete(knownQueryParams.actionKey);
-    void (navigate as unknown as SearchOnlyNavigate)({
+    void navigate({
+      to: ".",
       search: () => Object.fromEntries(newParams),
       replace: true,
     });
@@ -194,7 +188,8 @@ export const OverviewListContextProvider: React.FC<{
         const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
         const previousItemId = items[currentItemIndex + 1]?.id ?? "";
 
-        void (navigate as unknown as SearchOnlyNavigate)({
+        void navigate({
+          to: ".",
           search: () => Object.fromEntries(newParams),
           replace: true,
         });

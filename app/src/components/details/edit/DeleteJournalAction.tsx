@@ -19,7 +19,7 @@ export const DeleteJournalAction: React.FC<{
     journal.id ?? "",
     () => {
       if (pathname.startsWith(`/journals/details/${journal.id}`)) {
-        void navigate({ to: "/" });
+        navigate({ to: "/" });
       } else {
         closeAction();
       }

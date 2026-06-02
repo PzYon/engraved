@@ -5,13 +5,6 @@ import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 
-// TanStack Router's search type inference requires a specific route context.
-// Page is route-agnostic, so we express the contract through a typed shim.
-type SearchOnlyNavigate = (opts: {
-  search?: () => Record<string, string>;
-  replace?: boolean;
-}) => void;
-
 export const Page: React.FC<{
   children: React.ReactNode;
   actions?: IAction[];
@@ -128,10 +121,7 @@ export const Page: React.FC<{
         }
 
         if (searchString && searchString !== "?") {
-          void (navigate as unknown as SearchOnlyNavigate)({
-            search: () => ({}),
-            replace: true,
-          });
+          void navigate({ to: ".", search: () => ({}), replace: true });
         }
 
         if (pageActionRoutes) {

@@ -211,6 +211,10 @@ test("home route (/) shows journal and entries tabs", async ({ page }) => {
 test("unknown route falls back to home page", async ({ page }) => {
   await login(page, "routing-fallback");
 
+  // wait for the app to be authenticated and loaded (auth result stored) before
+  // navigating again, otherwise the second navigation can race the bootstrap
+  await expect(page.getByRole("tab", { name: "Journals" })).toBeVisible();
+
   await page.goto("/this-route-does-not-exist");
 
   // Should show the home/journals content (fallback route)

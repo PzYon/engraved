@@ -1,23 +1,8 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
 import { useEngravedSearchParams } from "./searchParamHooks";
-
-// IAction.href holds pre-computed URLs (params already embedded) and external
-// HTTPS URLs. TanStack Router's `to` type is a union of route patterns, so we
-// use typed shims instead of `any` to bridge the gap.
-type DynamicNavigate = (opts: {
-  to?: string;
-  search?: () => Record<string, string>;
-}) => void;
-const DynamicLink = Link as React.FC<{
-  to?: string;
-  search?: () => Record<string, string>;
-  onClick?: React.MouseEventHandler;
-  style?: CSSProperties;
-  children?: React.ReactNode;
-}>;
 
 export const ActionLink: React.FC<{
   action: IAction;
@@ -27,17 +12,24 @@ export const ActionLink: React.FC<{
   const isAbsoluteUrl = action.href?.startsWith("http");
 
   const navigate = useNavigate();
+  const pathname = useLocation({ select: (l) => l.pathname });
 
   const { getNewSearchParams } = useEngravedSearchParams();
+
+  // Build a fully-resolved URL (target path + merged query). Actions without an
+  // own href just update the search params of the current page. `action.href`
+  // is resolved at runtime, so we pass the complete URL string as `to` rather
+  // than a compile-time route pattern.
+  const getHref = () => {
+    const query = getNewSearchParams(action.search ?? {}).toString();
+    const path = action.href ?? pathname;
+    return query ? `${path}?${query}` : path;
+  };
 
   useEngravedHotkeys(
     action.hotkey,
     () => {
-      void (navigate as unknown as DynamicNavigate)({
-        to: action.href,
-        search: () =>
-          Object.fromEntries(getNewSearchParams(action.search ?? {})),
-      });
+      void navigate({ to: getHref() });
     },
     {
       enabled:
@@ -70,14 +62,9 @@ export const ActionLink: React.FC<{
   }
 
   return (
-    <DynamicLink
-      to={action.href}
-      search={() => Object.fromEntries(getNewSearchParams(action.search ?? {}))}
-      onClick={(e) => e.stopPropagation()}
-      style={style}
-    >
+    <Link to={getHref()} onClick={(e) => e.stopPropagation()} style={style}>
       {getChildren()}
-    </DynamicLink>
+    </Link>
   );
 
   function getChildren(): React.ReactElement | React.ReactNode {
