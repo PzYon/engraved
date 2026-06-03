@@ -66,9 +66,21 @@ export const ActionLink: React.FC<{
     );
   }
 
+  // Stop click and mouseup from bubbling: click prevents the list-row handler
+  // from firing, mouseup prevents an already-open action panel's
+  // ClickAwayListener (which listens on the document's mouseup) from closing.
+  // Without the latter, switching from one action to another would briefly
+  // navigate via root ("/") before applying the new action's params.
+  const stopEvents = (e: React.SyntheticEvent) => e.stopPropagation();
+
   if (action.href) {
     return (
-      <Link to={getHref()} onClick={(e) => e.stopPropagation()} style={style}>
+      <Link
+        to={getHref()}
+        onClick={stopEvents}
+        onMouseUp={stopEvents}
+        style={style}
+      >
         {getChildren()}
       </Link>
     );
@@ -78,7 +90,8 @@ export const ActionLink: React.FC<{
     <Link
       to="."
       search={getSearch}
-      onClick={(e) => e.stopPropagation()}
+      onClick={stopEvents}
+      onMouseUp={stopEvents}
       style={style}
     >
       {getChildren()}
