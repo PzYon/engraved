@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Engraved.Core.Application.Queries;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
@@ -30,15 +29,15 @@ public class QueryCacheShould
       new Lazy<IUser>(() => new User { Id = "user_two", Name = "user_two" })
     );
 
-    userOneCache.Set(queryExecutor, query, "cached-value-user-one", userOneCache.GetGenerationId());
-    userTwoCache.Set(queryExecutor, query, "cached-value-user-two", userTwoCache.GetGenerationId());
+    userOneCache.Set(query, "cached-value-user-one", userOneCache.GetGenerationId());
+    userTwoCache.Set(query, "cached-value-user-two", userTwoCache.GetGenerationId());
 
     userOneCache.ClearCurrentUser();
 
-    userOneCache.TryGetValue(queryExecutor, query, out var userOneResult).Should().BeFalse();
+    userOneCache.TryGetValue(query, out string? userOneResult).Should().BeFalse();
     userOneResult.Should().BeNull();
 
-    userTwoCache.TryGetValue(queryExecutor, query, out var userTwoResult).Should().BeTrue();
+    userTwoCache.TryGetValue(query, out string? userTwoResult).Should().BeTrue();
     userTwoResult.Should().Be("cached-value-user-two");
   }
 
@@ -60,9 +59,9 @@ public class QueryCacheShould
     // invalidation that happened before the query wrote its result to the cache.
     var generation = cache.GetGenerationId();
     cache.Invalidate(["user"]);
-    cache.Set(queryExecutor, query, "stale-value", generation);
+    cache.Set(query, "stale-value", generation);
 
-    cache.TryGetValue(queryExecutor, query, out var result).Should().BeFalse();
+    cache.TryGetValue(query, out string? result).Should().BeFalse();
     result.Should().BeNull();
   }
 
@@ -80,9 +79,9 @@ public class QueryCacheShould
       new Lazy<IUser>(() => new User { Id = "user", Name = "user" })
     );
 
-    cache.Set(queryExecutor, query, "fresh-value", cache.GetGenerationId());
+    cache.Set(query, "fresh-value", cache.GetGenerationId());
 
-    cache.TryGetValue(queryExecutor, query, out var result).Should().BeTrue();
+    cache.TryGetValue(query, out string? result).Should().BeTrue();
     result.Should().Be("fresh-value");
   }
 
