@@ -26,6 +26,38 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       _ => new ConcurrentDictionary<string, long>()
     )!;
 
+  // Returns the cached value for the query, or executes it and caches the
+  // result. The generation is captured *before* executing, inside this method,
+  // so callers cannot accidentally reorder the capture relative to the read or
+  // forget to pass it to Set: if a command invalidates this user's cache while
+  // the query runs, the captured generation becomes stale and the freshly
+  // computed result is simply ignored on the next read.
+  public async Task<TValue> GetOrCreate<TValue, TQuery>(
+    IQueryExecutor<TValue, TQuery> queryExecutor,
+    TQuery query,
+    Func<Task<TValue>> execute
+  )
+    where TQuery : IQuery
+  {
+    if (queryExecutor.DisableCache)
+    {
+      return await execute();
+    }
+
+    if (TryGetValue(queryExecutor, query, out TValue? cachedValue))
+    {
+      return cachedValue!;
+    }
+
+    long generationId = GetGenerationId();
+
+    TValue value = await execute();
+
+    Set(queryExecutor, query, value, generationId);
+
+    return value;
+  }
+
   public void Set<TValue, TQuery>(
     IQueryExecutor<TValue, TQuery> queryExecutor,
     TQuery query,
