@@ -9,7 +9,7 @@ namespace Engraved.Core.Application.Queries;
 public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, Lazy<IUser> currentUser)
 {
   private const string KeysByUserId = "___keysByUserId";
-  private const string GenerationsByUserId = "___generationsByUserId";
+  private const string GenerationIdsByUserId = "___generationsByUserId";
 
   private ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> QueryKeysByUser
     => memoryCache.GetOrCreate(
@@ -20,26 +20,17 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   // Monotonically increasing "generation" per user, bumped on every
   // invalidation. A cached item is only valid while its generation still
   // matches the user's current generation (see TryGetValue).
-  private ConcurrentDictionary<string, long> GenerationByUser
+  private ConcurrentDictionary<string, long> GenerationIdsByUser
     => memoryCache.GetOrCreate(
-      GenerationsByUserId,
+      GenerationIdsByUserId,
       _ => new ConcurrentDictionary<string, long>()
     )!;
-
-  // Captures the current user's cache generation. Callers must capture this
-  // *before* loading the data they intend to cache, then pass it back to Set.
-  // If an invalidation happens while the data is being loaded, the generation
-  // moves on and the now-stale result is ignored when it is later read.
-  public long CaptureGeneration()
-  {
-    return GetGeneration(GetUserId());
-  }
 
   public void Set<TValue, TQuery>(
     IQueryExecutor<TValue, TQuery> queryExecutor,
     TQuery query,
     TValue value,
-    long generation
+    long generationId
   )
     where TQuery : IQuery
   {
@@ -53,7 +44,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       {
         Value = value,
         ConfigToken = GetConfigToken(query),
-        Generation = generation
+        GenerationId = generationId
       },
       new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
     );
@@ -71,7 +62,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       return false;
     }
 
-    if (cacheItem!.Generation != GetGeneration(GetUserId()))
+    if (cacheItem!.GenerationId != GetGenerationId())
     {
       // The cache was invalidated after this item's underlying data was read,
       // so the item may be stale and must not be served.
@@ -106,12 +97,17 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     ClearForUser(GetUserId());
   }
 
+  public long GetGenerationId()
+  {
+    return GenerationIdsByUser.TryGetValue(GetUserId(), out var generation) ? generation : 0;
+  }
+
   private void ClearForUser(string userId)
   {
     // Bump the generation first: this is what makes invalidation safe against a
     // concurrent query that has already read its data but not yet written it to
     // the cache (such a write would carry the now-outdated generation).
-    long generation = GenerationByUser.AddOrUpdate(userId, 1, (_, current) => current + 1);
+    var generation = GenerationIdsByUser.AddOrUpdate(userId, 1, (_, current) => current + 1);
 
     if (!QueryKeysByUser.TryGetValue(userId, out var keys) || keys.IsEmpty)
     {
@@ -129,11 +125,6 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     {
       memoryCache.Remove(key);
     }
-  }
-
-  private long GetGeneration(string userId)
-  {
-    return GenerationByUser.TryGetValue(userId, out long generation) ? generation : 0;
   }
 
   private string GetKey<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor)
@@ -171,6 +162,6 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
     public string ConfigToken { get; set; } = null!;
 
-    public long Generation { get; set; }
+    public long GenerationId { get; set; }
   }
 }

@@ -41,10 +41,11 @@ public class Dispatcher(
     // while the query runs, the captured generation becomes stale and the
     // result below is ignored the next time the cache is read - preventing a
     // stale result from being cached across a concurrent invalidation.
-    long cacheGeneration = queryCache.CaptureGeneration();
+    var cacheGenerationId = queryCache.GetGenerationId();
 
     TResult result = await queryExecutor.Execute(query);
-    queryCache.Set(queryExecutor, query, result, cacheGeneration);
+
+    queryCache.Set(queryExecutor, query, result, cacheGenerationId);
 
     if (typeof(TResult).IsArray)
     {
@@ -79,7 +80,7 @@ public class Dispatcher(
 
   private void InvalidateCache(CommandResult commandResult)
   {
-    string[] affectedUserIds = commandResult.AffectedUserIds
+    var affectedUserIds = commandResult.AffectedUserIds
       .Union([repository.CurrentUser.Value.Id!])
       .ToArray();
 
@@ -91,7 +92,7 @@ public class Dispatcher(
     object payload
   )
   {
-    string name = payload.GetType().Name;
+    var name = payload.GetType().Name;
 
     using (logger.BeginScope(
              new Dictionary<string, object>

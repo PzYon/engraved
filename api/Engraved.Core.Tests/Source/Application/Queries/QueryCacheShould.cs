@@ -30,15 +30,15 @@ public class QueryCacheShould
       new Lazy<IUser>(() => new User { Id = "user_two", Name = "user_two" })
     );
 
-    userOneCache.Set(queryExecutor, query, "cached-value-user-one", userOneCache.CaptureGeneration());
-    userTwoCache.Set(queryExecutor, query, "cached-value-user-two", userTwoCache.CaptureGeneration());
+    userOneCache.Set(queryExecutor, query, "cached-value-user-one", userOneCache.GetGenerationId());
+    userTwoCache.Set(queryExecutor, query, "cached-value-user-two", userTwoCache.GetGenerationId());
 
     userOneCache.ClearCurrentUser();
 
-    userOneCache.TryGetValue(queryExecutor, query, out string? userOneResult).Should().BeFalse();
+    userOneCache.TryGetValue(queryExecutor, query, out var userOneResult).Should().BeFalse();
     userOneResult.Should().BeNull();
 
-    userTwoCache.TryGetValue(queryExecutor, query, out string? userTwoResult).Should().BeTrue();
+    userTwoCache.TryGetValue(queryExecutor, query, out var userTwoResult).Should().BeTrue();
     userTwoResult.Should().Be("cached-value-user-two");
   }
 
@@ -58,11 +58,11 @@ public class QueryCacheShould
 
     // Simulate a query that read its data (capturing the generation), then an
     // invalidation that happened before the query wrote its result to the cache.
-    long generation = cache.CaptureGeneration();
+    var generation = cache.GetGenerationId();
     cache.Invalidate(["user"]);
     cache.Set(queryExecutor, query, "stale-value", generation);
 
-    cache.TryGetValue(queryExecutor, query, out string? result).Should().BeFalse();
+    cache.TryGetValue(queryExecutor, query, out var result).Should().BeFalse();
     result.Should().BeNull();
   }
 
@@ -80,9 +80,9 @@ public class QueryCacheShould
       new Lazy<IUser>(() => new User { Id = "user", Name = "user" })
     );
 
-    cache.Set(queryExecutor, query, "fresh-value", cache.CaptureGeneration());
+    cache.Set(queryExecutor, query, "fresh-value", cache.GetGenerationId());
 
-    cache.TryGetValue(queryExecutor, query, out string? result).Should().BeTrue();
+    cache.TryGetValue(queryExecutor, query, out var result).Should().BeTrue();
     result.Should().Be("fresh-value");
   }
 
