@@ -1,4 +1,4 @@
-import { Page, test } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { navigateToHome } from "../src/utils/navigateTo";
@@ -82,6 +82,37 @@ test("ArrowUp wraps from the first item to the last", async ({ page }) => {
 
   await list.arrowUp();
   await list.expectFocusedItem(2);
+});
+
+// --- item actions ---
+
+test("alt+enter navigates into the focused journal", async ({ page }) => {
+  const list = await seedJournals(page);
+
+  await list.arrowDown();
+  await list.expectFocusedItem(0);
+  const journalId = await list.getFocusedItemId();
+
+  await list.goIntoFocusedItem();
+
+  await expect(page).toHaveURL(
+    new RegExp(`/journals/details/${journalId}(\\?|$)`),
+  );
+  await expect(page.getByTestId("journal")).toBeVisible();
+});
+
+test("alt+e opens the focused journal's edit page", async ({ page }) => {
+  const list = await seedJournals(page);
+
+  await list.arrowDown();
+  const journalId = await list.getFocusedItemId();
+
+  await list.editFocusedItem();
+
+  await expect(page).toHaveURL(
+    new RegExp(`/journals/details/${journalId}/edit`),
+  );
+  await expect(page.getByLabel("Name")).toBeVisible();
 });
 
 // --- type-to-filter ---

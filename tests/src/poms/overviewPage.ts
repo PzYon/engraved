@@ -51,6 +51,28 @@ export abstract class OverviewPage extends BasePage {
     await expect(this.items().nth(index)).toBeFocused();
   }
 
+  // The focused item's data-testid is the entity id it represents.
+  async getFocusedItemId(): Promise<string> {
+    const id = await this.page
+      .locator("li.overview-list-item:focus")
+      .getAttribute("data-testid");
+
+    if (!id) {
+      throw new Error("No overview list item is focused.");
+    }
+
+    return id;
+  }
+
+  // Item actions are only active while the item has focus.
+  async goIntoFocusedItem() {
+    await this.page.keyboard.press("Alt+Enter");
+  }
+
+  async editFocusedItem() {
+    await this.page.keyboard.press("Alt+e");
+  }
+
   private itemByName(name: string): Locator {
     return this.page.locator("ul.overview-list > li.overview-list-item", {
       hasText: name,
