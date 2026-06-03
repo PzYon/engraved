@@ -34,6 +34,7 @@ export const SearchBox: React.FC<{
             endAdornment: (
               <>
                 <IconButton
+                  aria-label="Clear search"
                   sx={{ visibility: currentFieldValue ? "visible" : "hidden" }}
                   onClick={() => {
                     setSearchText("");
