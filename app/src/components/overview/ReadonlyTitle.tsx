@@ -11,7 +11,7 @@ import { styled } from "@mui/material";
 export const ReadonlyTitle: React.FC<{
   title: React.ReactNode;
   hasFocus: boolean;
-  entity: IEntity;
+  entity?: IEntity | null;
   onClickAction?: IAction;
 }> = ({ title, hasFocus, entity, onClickAction }) => {
   const { user } = useAppContext();
@@ -29,7 +29,7 @@ export const ReadonlyTitle: React.FC<{
     <ReadonlyTitleContainer>
       <div style={{ flexGrow: 1 }}>{inner}</div>
       {!hasFocus && isCompact && entity ? (
-        <Properties properties={[getScheduleProperty(entity, user.id)]} />
+        <Properties properties={[getScheduleProperty(entity, user.id ?? "")]} />
       ) : null}
     </ReadonlyTitleContainer>
   );

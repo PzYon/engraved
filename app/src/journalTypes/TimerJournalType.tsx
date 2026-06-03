@@ -111,7 +111,10 @@ export class TimerJournalType implements IJournalType {
     const timerEntry = entry as ITimerEntry;
 
     return (
-      <FormatDuration start={timerEntry.startDate} end={timerEntry.endDate} />
+      <FormatDuration
+        start={timerEntry.startDate ?? new Date()}
+        end={timerEntry.endDate ?? new Date()}
+      />
     );
   }
 }

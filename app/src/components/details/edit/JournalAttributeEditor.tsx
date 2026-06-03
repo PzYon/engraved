@@ -57,12 +57,7 @@ export const JournalAttributeEditor: React.FC<{
                   onChange={(_, checked) =>
                     onChange({
                       ...attribute,
-                      defaultValue:
-                        (checked ? key : null) === null
-                          ? undefined
-                          : checked
-                            ? key
-                            : null,
+                      defaultValue: checked ? key : undefined,
                     })
                   }
                 />
@@ -77,7 +72,7 @@ export const JournalAttributeEditor: React.FC<{
                   key: "remove",
                   label: "Remove",
                   icon: <RemoveCircleOutlined fontSize="small" />,
-                  onClick: () => handleOnChange(key, null),
+                  onClick: () => handleOnChange(key, ""),
                 }}
               />
             </ListItem>

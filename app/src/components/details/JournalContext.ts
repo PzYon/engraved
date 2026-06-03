@@ -26,15 +26,15 @@ interface IJournalContext {
 }
 
 export const JournalContext = createContext<IJournalContext>({
-  journal: null,
+  journal: null!,
   entries: [],
-  toggleAttributeValue: null,
-  setSelectedAttributeValues: null,
+  toggleAttributeValue: null!,
+  setSelectedAttributeValues: null!,
   selectedAttributeValues: {},
-  setDateConditions: null,
+  setDateConditions: null!,
   dateConditions: {},
-  setSearchText: null,
-  searchText: null,
+  setSearchText: null!,
+  searchText: null!,
 });
 
 export const useJournalContext = () => {

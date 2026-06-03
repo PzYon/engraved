@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useJournalContext } from "../JournalContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { Page } from "../../layout/pages/Page";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonEditModeActions } from "../../overview/getCommonJournalActions";
@@ -17,12 +17,19 @@ export const ScrapsEditPage: React.FC = () => {
   const [name, setName] = useState(journal.name);
   const [description, setDescription] = useState(journal.description);
   const [customProps, setCustomProps] = useState(journal.customProps ?? {});
-  const [changedTagNames, setChangedTagNames] = useState<string[]>(undefined);
+  const [changedTagNames, setChangedTagNames] = useState<string[] | undefined>(
+    undefined,
+  );
 
-  const editJournalMutation = useEditJournalMutation(journal.id);
+  const editJournalMutation = useEditJournalMutation(journal.id ?? "");
 
   const navigate = useNavigate();
-  const navigateToViewPage = () => navigate("./..");
+  const navigateToViewPage = () => {
+    navigate({
+      to: "/journals/details/$journalId",
+      params: { journalId: journal.id ?? "" },
+    });
+  };
 
   const disableSave =
     name === journal.name &&
@@ -34,16 +41,16 @@ export const ScrapsEditPage: React.FC = () => {
     <Page
       title={<JournalPageTitle journal={journal} />}
       subTitle="Edit"
-      documentTitle={`Edit ${journal.name}`}
+      documentTitle={`Edit ${journal.name ?? ""}`}
       actions={[
         ...getCommonEditModeActions(navigateToViewPage, save, disableSave),
       ]}
     >
       <EditCommonProperties
-        journalId={journal.id}
-        name={name}
+        journalId={journal.id ?? ""}
+        name={name ?? ""}
         setName={setName}
-        description={description}
+        description={description ?? ""}
         setDescription={setDescription}
         onChangedTags={setChangedTagNames}
       />

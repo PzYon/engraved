@@ -15,7 +15,7 @@ import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
-import { useSearchParams } from "react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { isRichTextEditor } from "../../common/isRichTextEditor";
 
 export const OverviewListContextProvider: React.FC<{
@@ -26,22 +26,30 @@ export const OverviewListContextProvider: React.FC<{
 }> = ({ items, children, filterItem, onKeyDown }) => {
   const { setAppAlert } = useAppContext();
 
-  const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
-
+  const [activeItemId, setActiveItemId] = React.useState<string | undefined>(
+    undefined,
+  );
   const [showAll, setShowAll] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
+  const navigate = useNavigate();
+  const searchString = useRouterState({
+    select: (s): string => s.location.searchStr,
+  });
+  const searchParams = useMemo(
+    () => new URLSearchParams(searchString),
+    [searchString],
+  );
 
+  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
   const containerRef = useRef<HTMLDivElement>(null);
 
   if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
     setActiveItemId(activeItemIdFromUrl);
   }
 
-  // undefined is the initial value, afterward it is ""
-  const [inMemorySearchText, setInMemorySearchText] =
-    useState<string>(undefined);
+  const [inMemorySearchText, setInMemorySearchText] = useState<
+    string | undefined
+  >(undefined);
 
   useEffect(() => {
     if (inMemorySearchText) {
@@ -49,10 +57,10 @@ export const OverviewListContextProvider: React.FC<{
         title: inMemorySearchText,
         message: "",
         type: "info",
-        hideDurationSec: null,
+        hideDurationSec: undefined,
       });
     } else if (inMemorySearchText === "") {
-      setAppAlert(undefined);
+      setAppAlert(null);
     }
   }, [inMemorySearchText, setAppAlert]);
 
@@ -66,7 +74,6 @@ export const OverviewListContextProvider: React.FC<{
               .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1
           );
         }
-
         return (showAll || filterItem?.(f)) ?? true;
       }),
     [showAll, filterItem, inMemorySearchText, items],
@@ -95,10 +102,15 @@ export const OverviewListContextProvider: React.FC<{
       return;
     }
 
-    searchParams.delete(knownQueryParams.selectedItemId);
-    searchParams.delete(knownQueryParams.actionKey);
-    setSearchParams(searchParams);
-  }, [searchParams, setSearchParams]);
+    const newParams = new URLSearchParams(searchString);
+    newParams.delete(knownQueryParams.selectedItemId);
+    newParams.delete(knownQueryParams.actionKey);
+    navigate({
+      to: ".",
+      search: () => Object.fromEntries(newParams),
+      replace: true,
+    });
+  }, [searchParams, searchString, navigate]);
 
   useEngravedHotkeys("*", (e) => {
     if (isRichTextEditor(e.target as HTMLElement)) {
@@ -113,14 +125,14 @@ export const OverviewListContextProvider: React.FC<{
       case "ArrowUp": {
         e.preventDefault();
         removeItemParamsFromUrl();
-        setActiveItemId(getNextItem("up")?.id);
+        setActiveItemId(getNextItem("up")?.id ?? "");
         break;
       }
 
       case "ArrowDown": {
         e.preventDefault();
         removeItemParamsFromUrl();
-        setActiveItemId(getNextItem("down")?.id);
+        setActiveItemId(getNextItem("down")?.id ?? "");
         break;
       }
 
@@ -160,7 +172,7 @@ export const OverviewListContextProvider: React.FC<{
 
   const contextValue = useMemo<IOverviewListContext>(
     () => ({
-      activeItemId,
+      activeItemId: activeItemId ?? "",
       setActiveItemId,
       itemsToShow: filteredItems,
       hiddenItemsCount: items.length - filteredItems.length,
@@ -170,11 +182,17 @@ export const OverviewListContextProvider: React.FC<{
         setInMemorySearchText("");
       },
       keepFocusAtIndex: () => {
-        searchParams.delete(knownQueryParams.selectedItemId);
+        const newParams = new URLSearchParams(searchString);
+        newParams.delete(knownQueryParams.selectedItemId);
 
         const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
-        const previousItemId = items[currentItemIndex + 1].id;
+        const previousItemId = items[currentItemIndex + 1]?.id ?? "";
 
+        navigate({
+          to: ".",
+          search: () => Object.fromEntries(newParams),
+          replace: true,
+        });
         setActiveItemId(previousItemId);
       },
     }),
@@ -185,7 +203,8 @@ export const OverviewListContextProvider: React.FC<{
       items,
       removeItemParamsFromUrl,
       setShowAll,
-      searchParams,
+      searchString,
+      navigate,
     ],
   );
 

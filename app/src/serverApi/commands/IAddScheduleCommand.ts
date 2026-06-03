@@ -1,9 +1,9 @@
 import { IRecurrence } from "../IRecurrence";
 
 interface IAddScheduleCommand {
-  nextOccurrence: Date;
+  nextOccurrence: Date | null;
   recurrence?: IRecurrence;
-  onClickUrl: string;
+  onClickUrl: string | null;
 }
 
 export interface IAddScheduleToEntryCommand extends IAddScheduleCommand {

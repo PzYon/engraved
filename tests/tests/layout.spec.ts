@@ -18,6 +18,10 @@ test("does display floating actions if necessary (on scroll down)", async ({
 
   const userName = await login(page, "layout");
 
+  // wait for the app to finish loading (and the test user to be created in the
+  // DB) before creating journals through direct API calls
+  await navigateToHome(page);
+
   for (let i = 0; i < journalsToCreate; i++) {
     await createJournalViaApi(request, userName, {
       name: `Use some space ${i}`,

@@ -18,11 +18,11 @@ export const PageContextProvider: React.FC<{
 
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
-  const [documentTitle, setDocumentTitle] = useState<string>(undefined);
+  const [documentTitle, setDocumentTitle] = useState<string>("");
   const [hideActions, setHideActions] = useState(false);
   const [pageActions, setPageActions] = useState<IAction[]>([]);
   const [pageActionRoutes, setPageActionRoutes] =
-    useState<React.ReactElement>(undefined);
+    useState<React.ReactElement | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
   const [tabs, setTabs] = useState<IPageTab[]>([]);

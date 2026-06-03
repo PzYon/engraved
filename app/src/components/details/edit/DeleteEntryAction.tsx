@@ -9,7 +9,10 @@ import { useItemAction } from "../../common/actions/searchParamHooks";
 export const DeleteEntryAction: React.FC<{
   entry: IEntry;
 }> = ({ entry }) => {
-  const deleteEntryMutation = useDeleteEntryMutation(entry.parentId, entry.id);
+  const deleteEntryMutation = useDeleteEntryMutation(
+    entry.parentId ?? "",
+    entry.id ?? "",
+  );
 
   const isScrapJournal = !!(entry as IScrapEntry).scrapType;
 

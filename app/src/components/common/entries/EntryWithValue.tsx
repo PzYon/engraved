@@ -22,7 +22,7 @@ export const EntryWithValue: React.FC<{
         ActionFactory.editEntry(entry, hasFocus),
         ActionFactory.deleteEntry(entry, hasFocus),
       ]}
-      hasFocus={hasFocus}
+      hasFocus={hasFocus ?? false}
       propsRenderStyle={"all"}
     >
       <Typography component={"span"} sx={{ fontWeight: 200 }}>
@@ -35,10 +35,12 @@ export const EntryWithValue: React.FC<{
       <Typography component={"span"} sx={{ fontWeight: 200 }}>
         {entry.notes ? ` - ${entry.notes}` : ""}
       </Typography>
-      <AttributeValues
-        attributes={journal.attributes}
-        attributeValues={entry.journalAttributeValues}
-      />
+      {journal.attributes && entry.journalAttributeValues && (
+        <AttributeValues
+          attributes={journal.attributes}
+          attributeValues={entry.journalAttributeValues}
+        />
+      )}
     </Entry>
   );
 

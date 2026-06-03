@@ -10,7 +10,7 @@ import("./util/appInsights").then((appInsights) => {
 
 wakeUpApi();
 
-createRoot(document.getElementById("root")).render(getInitialJsx());
+createRoot(document.getElementById("root")!).render(getInitialJsx());
 
 function wakeUpApi() {
   const start = performance.now();

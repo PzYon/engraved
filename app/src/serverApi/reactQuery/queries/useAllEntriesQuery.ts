@@ -11,7 +11,8 @@ export const useAllEntriesQuery = (
   const { data: allEntries } = useQuery<IGetAllEntriesQueryResult>({
     queryKey: queryKeysFactory.entries(searchText, journalTypes),
 
-    queryFn: () => ServerApi.getAllEntries(searchText, journalTypes),
+    queryFn: () =>
+      ServerApi.getAllEntries(searchText ?? "", journalTypes ?? []),
   });
 
   return allEntries;

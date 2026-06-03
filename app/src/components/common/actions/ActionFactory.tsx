@@ -358,8 +358,8 @@ export class ActionFactory {
   }
 
   static copyValueToClipboard(
-    value: string,
-    setAppAlert: (appAlert: IAppAlert) => void,
+    value: string | undefined,
+    setAppAlert: (appAlert: IAppAlert | null) => void,
   ): IAction {
     return {
       key: "copy",
@@ -367,7 +367,7 @@ export class ActionFactory {
       label: "Copy content",
       icon: <ContentCopyOutlined fontSize="small" />,
       onClick: async () => {
-        await navigator.clipboard.writeText(value);
+        await navigator.clipboard.writeText(value ?? "");
         setAppAlert({
           type: "success",
           title: "Successfully copied text to clipboard.",
@@ -439,7 +439,7 @@ export class ActionFactory {
     };
   }
 
-  static expand(onClick: () => void): IAction {
+  static expand(onClick?: () => void): IAction {
     return {
       key: "expand",
       label: "Expand",
@@ -448,7 +448,7 @@ export class ActionFactory {
     };
   }
 
-  static collapse(onClick: () => void): IAction {
+  static collapse(onClick?: () => void): IAction {
     return {
       key: "collapse",
       label: "Collapse",

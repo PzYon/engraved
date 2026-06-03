@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AppMenu } from "./AppMenu";
-import { Drawer, styled } from "@mui/material";
+import { Drawer, IconButton, styled } from "@mui/material";
 import Menu from "@mui/icons-material/Menu";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 
@@ -18,20 +18,18 @@ export const AppMenuLauncher: React.FC = () => {
       >
         <AppMenu close={() => setIsMenuOpen(false)} />
       </StyledDrawer>
-      <StyledMenuIcon
-        sx={{
-          color: "white",
-          mr: 2,
-          cursor: "pointer",
-        }}
-        fontSize="large"
+      <StyledIconButton
+        aria-label="Menu"
         onClick={() => setIsMenuOpen(true)}
-      />
+        sx={{ color: "white", mr: 2, p: 0 }}
+      >
+        <Menu fontSize="large" />
+      </StyledIconButton>
     </>
   );
 };
 
-const StyledMenuIcon = styled(Menu)`
+const StyledIconButton = styled(IconButton)`
   @media screen and (min-width: 1265px) {
     position: fixed;
     top: 15px;

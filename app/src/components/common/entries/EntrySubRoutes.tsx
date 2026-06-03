@@ -19,7 +19,9 @@ export const EntrySubRoutes: React.FC<{
     return null;
   }
 
-  return render ? render(getChild()) : getChild();
+  const child = getChild();
+  if (!child) return null;
+  return render ? render(child) : child;
 
   function getChild() {
     switch (action[knownQueryParams.actionKey]) {

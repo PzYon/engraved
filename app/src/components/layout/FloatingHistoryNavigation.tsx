@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Popover, styled } from "@mui/material";
+import { Popover, PopoverActions, styled } from "@mui/material";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
 import { HistoryOutlined } from "@mui/icons-material";
 import { GoToSimple } from "../overview/goto/GoToSimple";
@@ -7,8 +7,8 @@ import { PageSection } from "./pages/PageSection";
 import { useEngravedHotkeys } from "../common/actions/useEngravedHotkeys";
 
 export const FloatingHistoryNavigation: React.FC = () => {
-  const domElementRef = useRef<HTMLSpanElement>(undefined);
-  const popoverActions = useRef(null);
+  const domElementRef = useRef<HTMLSpanElement | null>(null);
+  const popoverActions = useRef<PopoverActions>(null);
 
   const [showMenu, setShowMenu] = React.useState(false);
 
@@ -48,7 +48,7 @@ export const FloatingHistoryNavigation: React.FC = () => {
         style={{ margin: 0 }}
         anchorEl={{
           getBoundingClientRect: () =>
-            domElementRef.current.getBoundingClientRect(),
+            domElementRef.current!.getBoundingClientRect(),
           nodeType: 1,
         }}
         anchorOrigin={{

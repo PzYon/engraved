@@ -12,9 +12,9 @@ describe("calculateStreak", () => {
     const result = calculateStreak([createDateOffset(0)], "positive");
 
     expect(result).not.toBe(null);
-    expect(result.isStreak).toBeTruthy();
-    expect(result.hasEntryToday).toBeTruthy();
-    expect(result.length).toBe(1);
+    expect(result!.isStreak).toBeTruthy();
+    expect(result!.hasEntryToday).toBeTruthy();
+    expect(result!.length).toBe(1);
   });
 
   it("should return correct streak count when positive and value today", () => {
@@ -24,9 +24,9 @@ describe("calculateStreak", () => {
     );
 
     expect(result).not.toBe(null);
-    expect(result.isStreak).toBeTruthy();
-    expect(result.hasEntryToday).toBeTruthy();
-    expect(result.length).toBe(3);
+    expect(result!.isStreak).toBeTruthy();
+    expect(result!.hasEntryToday).toBeTruthy();
+    expect(result!.length).toBe(3);
   });
 
   it("should return correct streak count when positive and no value today (yet)", () => {
@@ -36,27 +36,27 @@ describe("calculateStreak", () => {
     );
 
     expect(result).not.toBe(null);
-    expect(result.isStreak).toBeTruthy();
-    expect(result.hasEntryToday).toBeFalsy();
-    expect(result.length).toBe(2);
+    expect(result!.isStreak).toBeTruthy();
+    expect(result!.hasEntryToday).toBeFalsy();
+    expect(result!.length).toBe(2);
   });
 
   it("should return isStreak when no entry today and negative", () => {
     const result = calculateStreak([createDateOffset(2)], "negative");
 
     expect(result).not.toBe(null);
-    expect(result.isStreak).toBeTruthy();
-    expect(result.hasEntryToday).toBeFalsy();
-    expect(result.length).toBe(1);
+    expect(result!.isStreak).toBeTruthy();
+    expect(result!.hasEntryToday).toBeFalsy();
+    expect(result!.length).toBe(1);
   });
 
   it("should return correct streak count when negative", () => {
     const result = calculateStreak([createDateOffset(3)], "negative");
 
     expect(result).not.toBe(null);
-    expect(result.isStreak).toBeTruthy();
-    expect(result.hasEntryToday).toBeFalsy();
-    expect(result.length).toBe(2);
+    expect(result!.isStreak).toBeTruthy();
+    expect(result!.hasEntryToday).toBeFalsy();
+    expect(result!.length).toBe(2);
   });
 });
 

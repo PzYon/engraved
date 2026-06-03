@@ -26,7 +26,7 @@ export const AppFooter: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [apiSystemInfo]);
 
-  if (!doRender) {
+  if (!doRender || !apiSystemInfo) {
     return null;
   }
 

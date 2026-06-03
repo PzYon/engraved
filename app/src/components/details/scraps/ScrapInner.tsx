@@ -78,7 +78,9 @@ export const ScrapInner: React.FC = () => {
             {
               onClick: () => {
                 changeScrapType(
-                  notes.split("\n").filter((line) => !!(line ?? "").trim()),
+                  (notes ?? "")
+                    .split("\n")
+                    .filter((line) => !!(line ?? "").trim()),
                   ScrapType.List,
                 );
               },
@@ -98,7 +100,7 @@ export const ScrapInner: React.FC = () => {
         return notes;
 
       case ScrapType.List:
-        return (JSON.parse(notes) as IScrapListItem[])[0].label;
+        return (JSON.parse(notes ?? "[]") as IScrapListItem[])[0]?.label;
 
       default:
         throw new Error(`Unknown scrap type ${scrapToRender.scrapType}`);

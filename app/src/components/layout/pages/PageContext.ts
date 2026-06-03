@@ -19,8 +19,8 @@ interface IPageContext {
   setSubTitle: (subTitle: React.ReactNode) => void;
   pageActions: IAction[];
   setPageActions: (actions: IAction[]) => void;
-  pageActionRoutes: React.ReactElement;
-  setPageActionRoutes: (el: React.ReactElement) => void;
+  pageActionRoutes: React.ReactElement | null;
+  setPageActionRoutes: (el: React.ReactElement | null) => void;
   hideActions: boolean;
   setHideActions: (value: boolean) => void;
   // consider moving below props to a SearchContext
@@ -37,28 +37,28 @@ interface IPageContext {
 }
 
 export const PageContext = createContext<IPageContext>({
-  documentTitle: null,
-  setDocumentTitle: null,
-  title: null,
-  setTitle: null,
-  subTitle: null,
-  setSubTitle: null,
-  pageActions: null,
-  setPageActions: null,
-  pageActionRoutes: null,
-  setPageActionRoutes: null,
-  hideActions: null,
-  setHideActions: null,
-  filterMode: null,
-  setFilterMode: null,
-  showFilters: null,
-  setShowFilters: null,
-  searchText: null,
-  setSearchText: null,
-  journalTypes: null,
-  setJournalTypes: null,
-  tabs: null,
-  setTabs: null,
+  documentTitle: null!,
+  setDocumentTitle: null!,
+  title: null!,
+  setTitle: null!,
+  subTitle: null!,
+  setSubTitle: null!,
+  pageActions: null!,
+  setPageActions: null!,
+  pageActionRoutes: null!,
+  setPageActionRoutes: null!,
+  hideActions: null!,
+  setHideActions: null!,
+  filterMode: null!,
+  setFilterMode: null!,
+  showFilters: null!,
+  setShowFilters: null!,
+  searchText: null!,
+  setSearchText: null!,
+  journalTypes: null!,
+  setJournalTypes: null!,
+  tabs: null!,
+  setTabs: null!,
 });
 
 export const usePageContext = () => {

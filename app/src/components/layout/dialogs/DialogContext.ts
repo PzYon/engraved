@@ -8,11 +8,11 @@ export interface IDialogProps {
 }
 
 interface IDialogContext {
-  renderDialog(dialogProps: IDialogProps): void;
+  renderDialog(dialogProps: IDialogProps | null): void;
 }
 
 export const DialogContext = createContext<IDialogContext>({
-  renderDialog: null,
+  renderDialog: null!,
 });
 
 export const useDialogContext = () => {

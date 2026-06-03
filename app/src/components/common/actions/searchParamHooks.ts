@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 export const knownQueryParams = {
   selectedItemId: "selected-item",
@@ -21,106 +21,97 @@ type ActionKey =
 
 export function getItemActionQueryParams(
   actionKey: ActionKey,
-  actionItemId: string,
-) {
+  actionItemId: string | undefined,
+): Record<string, string> {
   return {
     [knownQueryParams.actionKey]: actionKey,
-    [knownQueryParams.selectedItemId]: actionItemId,
+    [knownQueryParams.selectedItemId]: actionItemId ?? "",
   };
 }
 
 export function clearAllSearchParams() {
   return Object.keys(knownQueryParams).reduce(
-    (aggregated: Record<string, string>, objectKey: string) => {
+    (aggregated: Record<string, string | undefined>, objectKey: string) => {
       const queryStringKey = (knownQueryParams as Record<string, string>)[
         objectKey
       ];
-
       aggregated[queryStringKey] = undefined;
-
       return aggregated;
     },
     {},
   );
 }
 
+function useSearchString(): string {
+  return useLocation({ select: (l) => l.searchStr });
+}
+
 export const useItemAction = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const searchString = useSearchString();
+  const searchParams = new URLSearchParams(searchString);
 
   return {
     getParams: () => {
       return getItemActionQueryParams(
         searchParams.get(knownQueryParams.actionKey) as ActionKey,
-        searchParams.get(knownQueryParams.selectedItemId),
+        searchParams.get(knownQueryParams.selectedItemId) ?? "",
       );
     },
 
     closeAction: () => {
       let hasChanges = false;
+      const newParams = new URLSearchParams(searchString);
 
-      if (deleteIfSet(knownQueryParams.actionKey)) {
+      if (newParams.get(knownQueryParams.actionKey)) {
+        newParams.delete(knownQueryParams.actionKey);
         hasChanges = true;
       }
 
-      if (deleteIfSet(knownQueryParams.selectedItemId)) {
+      if (newParams.get(knownQueryParams.selectedItemId)) {
+        newParams.delete(knownQueryParams.selectedItemId);
         hasChanges = true;
       }
 
-      if (deleteIfSet(knownQueryParams.testUser)) {
+      if (newParams.get(knownQueryParams.testUser)) {
+        newParams.delete(knownQueryParams.testUser);
         hasChanges = true;
       }
 
       if (hasChanges) {
-        setSearchParams(searchParams);
+        navigate({ to: ".", search: () => Object.fromEntries(newParams) });
       }
     },
   };
-
-  function deleteIfSet(key: string) {
-    if (searchParams.get(key)) {
-      searchParams.delete(key);
-      return true;
-    }
-
-    return false;
-  }
 };
 
 export const useEngravedSearchParams = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const searchString = useSearchString();
+  const searchParams = new URLSearchParams(searchString);
 
   const getSearchParam = useCallback(
     (key: string) => searchParams.get(key),
-    [searchParams],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchString],
   );
 
-  const cloneSearchParams = useCallback(() => {
-    const newestSearchParams: Record<string, string> = {};
-    searchParams.forEach((v, k) => {
-      newestSearchParams[k] = v;
-    });
-    return new URLSearchParams({ ...newestSearchParams });
-  }, [searchParams]);
+  const cloneSearchParams = useCallback(
+    (): URLSearchParams => new URLSearchParams(searchString),
+    [searchString],
+  );
 
   const getNewSearchParams = useCallback(
-    (params: Record<string, string>) => {
+    (params: Record<string, string | undefined>): URLSearchParams => {
       const newSearchParams = cloneSearchParams();
-
       for (const key in params) {
         const value = params[key];
-
-        if (
-          value === null ||
-          value === undefined ||
-          value === "" ||
-          value === "false"
-        ) {
+        if (value === undefined || value === "" || value === "false") {
           newSearchParams.delete(key);
         } else {
           newSearchParams.set(key, value);
         }
       }
-
       return newSearchParams;
     },
     [cloneSearchParams],
@@ -129,12 +120,16 @@ export const useEngravedSearchParams = () => {
   const appendSearchParams = useCallback(
     (params: Record<string, string>) => {
       const updatedSearchParams = getNewSearchParams(params);
-
       if (updatedSearchParams.toString() !== searchParams.toString()) {
-        setSearchParams(updatedSearchParams);
+        navigate({
+          to: ".",
+          search: () => Object.fromEntries(updatedSearchParams),
+          replace: true,
+        });
       }
     },
-    [searchParams, setSearchParams, getNewSearchParams],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchString, navigate, getNewSearchParams],
   );
 
   return {

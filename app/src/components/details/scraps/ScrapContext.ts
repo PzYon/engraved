@@ -10,16 +10,16 @@ export type ActionsRenderStyle = "save-only" | "none" | "all";
 export interface IScrapContext {
   title: string;
   setTitle: (title: string) => void;
-  notes: string;
+  notes: string | undefined;
   setNotes: (notes: string) => void;
   date: Date;
-  setDate: (date: Date) => void;
-  parsedDate: IParsedDate;
-  setParsedDate: (parsedDate: IParsedDate) => void;
+  setDate: (date: Date | null) => void;
+  parsedDate: IParsedDate | undefined;
+  setParsedDate: (parsedDate: IParsedDate | undefined) => void;
   isEditMode: boolean;
   setIsEditMode: (isEditMode: boolean) => void;
   isDirty: boolean;
-  cancelEditingAction: IAction;
+  cancelEditingAction: IAction | null;
   upsertScrap: (notesToOverride?: string) => Promise<void>;
   scrapToRender: IScrapEntry;
   propsRenderStyle: EntryPropsRenderStyle;
@@ -33,28 +33,28 @@ export interface IScrapContext {
 }
 
 export const ScrapContext = createContext<IScrapContext>({
-  title: null,
-  setTitle: null,
-  notes: null,
-  setNotes: null,
-  date: null,
-  setDate: null,
-  parsedDate: null,
-  setParsedDate: null,
-  isEditMode: null,
-  setIsEditMode: null,
-  isDirty: null,
-  cancelEditingAction: null,
-  upsertScrap: null,
-  scrapToRender: null,
-  propsRenderStyle: null,
-  actionsRenderStyle: null,
-  journal: null,
-  onSuccess: null,
-  hasFocus: null,
-  hasTitleFocus: null,
-  setHasTitleFocus: null,
-  changeScrapType: null,
+  title: null!,
+  setTitle: null!,
+  notes: null!,
+  setNotes: null!,
+  date: null!,
+  setDate: null!,
+  parsedDate: null!,
+  setParsedDate: null!,
+  isEditMode: null!,
+  setIsEditMode: null!,
+  isDirty: null!,
+  cancelEditingAction: null!,
+  upsertScrap: null!,
+  scrapToRender: null!,
+  propsRenderStyle: null!,
+  actionsRenderStyle: null!,
+  journal: null!,
+  onSuccess: null!,
+  hasFocus: null!,
+  hasTitleFocus: null!,
+  setHasTitleFocus: null!,
+  changeScrapType: null!,
 });
 
 export const useScrapContext = () => {

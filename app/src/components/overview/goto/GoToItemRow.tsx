@@ -1,5 +1,6 @@
+import React from "react";
 import { styled, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 
 export const GoToItemRow: React.FC<{
@@ -12,7 +13,11 @@ export const GoToItemRow: React.FC<{
 }> = ({ children, icon, url, hasFocus, renderAtEnd, onClick }) => {
   const navigate = useNavigate();
 
-  useEngravedHotkeys("enter", () => navigate(url), { enabled: hasFocus });
+  // `url` is a fully-built URL (path + query) computed at runtime, so we pass
+  // it as `to` directly rather than as a compile-time route pattern.
+  useEngravedHotkeys("enter", () => navigate({ to: url }), {
+    enabled: hasFocus,
+  });
 
   return (
     <Typography

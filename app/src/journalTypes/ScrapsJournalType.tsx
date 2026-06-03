@@ -59,8 +59,8 @@ export class ScrapsJournalType implements IJournalType {
     const scrapEntry = AddNewScrapStorage.getForJournal(
       isQuickAdd ? "quick-add" : journalId,
     ) ?? {
-      id: null,
-      dateTime: null,
+      id: undefined,
+      dateTime: new Date().toJSON(),
       title: "",
       notes: "",
       scrapType: scrapType,

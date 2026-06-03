@@ -3,7 +3,6 @@ import { FilterMode, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
-import { useSearchParams } from "react-router-dom";
 
 export const Page: React.FC<{
   children: React.ReactNode;
@@ -61,7 +60,10 @@ export const Page: React.FC<{
       setPageActionRoutes(pageActionRoutes);
     }, [setPageActionRoutes, pageActionRoutes]);
 
-    useEffect(() => setHideActions(hideActions), [hideActions, setHideActions]);
+    useEffect(
+      () => setHideActions(hideActions ?? false),
+      [hideActions, setHideActions],
+    );
 
     useEffect(() => {
       if (tabs === undefined) {
@@ -82,7 +84,7 @@ export const Page: React.FC<{
     useEffect(() => setSubTitle(subTitle), [subTitle, setSubTitle]);
 
     useEffect(
-      () => setDocumentTitle(documentTitle),
+      () => setDocumentTitle(documentTitle ?? ""),
       [documentTitle, setDocumentTitle],
     );
 
@@ -90,9 +92,12 @@ export const Page: React.FC<{
 
     useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
 
-    const [searchParams, setSearchParams] = useSearchParams();
-
     useEffect(() => {
+      // reset the page-level context state when leaving the page. Note: we do
+      // NOT clear the URL search params here. Doing so on unmount is unreliable
+      // (it also runs on StrictMode re-invokes and transient remounts, where it
+      // wipes params that were just set) and is never actually needed: real
+      // navigation already replaces the URL, so there is nothing to clean up.
       return () => {
         if (showFilters) {
           setShowFilters(false);
@@ -103,7 +108,7 @@ export const Page: React.FC<{
         }
 
         if (searchText) {
-          setSearchText(null);
+          setSearchText("");
         }
 
         if (journalTypes?.length) {
@@ -112,10 +117,6 @@ export const Page: React.FC<{
 
         if (tabs?.length) {
           setTabs([]);
-        }
-
-        if (Object.keys(searchParams ?? {}).length) {
-          setSearchParams({});
         }
 
         if (pageActionRoutes) {

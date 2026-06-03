@@ -6,7 +6,7 @@ import React, { useState } from "react";
 export const DialogContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [dialogProps, setDialogProps] = useState<IDialogProps>(null);
+  const [dialogProps, setDialogProps] = useState<IDialogProps | null>(null);
 
   const deviceWidth = useDeviceWidth();
 
@@ -29,7 +29,7 @@ export const DialogContextProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   function closeDialog() {
-    dialogProps.onClose?.();
+    dialogProps?.onClose?.();
     setDialogProps(null);
   }
 };

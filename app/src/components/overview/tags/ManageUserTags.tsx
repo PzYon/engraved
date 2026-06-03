@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Button } from "@mui/material";
 import { useUpdateUserTagsMutation } from "../../../serverApi/reactQuery/mutations/useUpsertUserTagsMutation";
 import { useAppContext } from "../../../AppContext";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { EditableList } from "../../common/EditableList";
 
 export const ManageUserTags: React.FC = () => {
@@ -46,7 +46,11 @@ export const ManageUserTags: React.FC = () => {
           setTags(newTags);
         }}
         renderOption={(option) => (
-          <Link target="_blank" to={`/tags/${option.key}`}>
+          <Link
+            target="_blank"
+            to="/tags/$tagId"
+            params={{ tagId: option.key ?? "" }}
+          >
             {option.label}
           </Link>
         )}

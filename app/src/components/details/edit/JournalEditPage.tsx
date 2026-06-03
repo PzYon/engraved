@@ -3,7 +3,7 @@ import { JournalAttributesEditor } from "./JournalAttributesEditor";
 import { EditThresholds } from "../thresholds/EditThresholds";
 import { PageSection } from "../../layout/pages/PageSection";
 import { useJournalContext } from "../JournalContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { Page } from "../../layout/pages/Page";
 import { getCommonEditModeActions } from "../../overview/getCommonJournalActions";
 import { JournalUiSettings } from "./JournalUiSettings";
@@ -24,13 +24,18 @@ export const JournalEditPage: React.FC = () => {
   const [attributes, setAttributes] = useState(journal.attributes);
   const [thresholds, setThresholds] = useState(journal.thresholds ?? {});
   const [uiSettings, setUiSettings] = useState(getUiSettings(journal));
-  const [tagIds, setTagIds] = useState<string[]>(undefined);
+  const [tagIds, setTagIds] = useState<string[] | undefined>(undefined);
 
   const navigate = useNavigate();
 
-  const editJournalMutation = useEditJournalMutation(journal.id);
+  const editJournalMutation = useEditJournalMutation(journal.id ?? "");
 
-  const navigateToViewPage = () => navigate("./..");
+  const navigateToViewPage = () => {
+    navigate({
+      to: "/journals/details/$journalId",
+      params: { journalId: journal.id ?? "" },
+    });
+  };
 
   const save = () =>
     editJournalMutation.mutateAsync({
@@ -47,25 +52,26 @@ export const JournalEditPage: React.FC = () => {
       tagIds: tagIds,
       onSuccess: navigateToViewPage,
     });
+
   return (
     <Page
       title={<JournalPageTitle journal={journal} />}
       subTitle="Edit"
-      documentTitle={`Edit ${journal.name}`}
+      documentTitle={`Edit ${journal.name ?? ""}`}
       actions={getCommonEditModeActions(navigateToViewPage, save)}
     >
       <EditCommonProperties
-        journalId={journal.id}
-        name={name}
+        journalId={journal.id ?? ""}
+        name={name ?? ""}
         setName={setName}
-        description={description}
+        description={description ?? ""}
         setDescription={setDescription}
         onChangedTags={setTagIds}
       />
 
       <PageSection title={"Attributes"} icon={<Style />}>
         <JournalAttributesEditor
-          attributes={attributes}
+          attributes={attributes ?? {}}
           setAttributes={setAttributes}
         />
       </PageSection>

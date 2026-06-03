@@ -9,7 +9,7 @@ import { IJournalAttributeValues } from "../../IJournalAttributeValues";
 import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
-import { useLocation } from "react-router-dom";
+import { useRouterState } from "@tanstack/react-router";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 import { StyledLink } from "./StyledLink";
 
@@ -28,19 +28,21 @@ export const useUpsertEntryMutation = (
 
   const queryClient = useQueryClient();
 
-  const { pathname } = useLocation();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const editJournalMutation = useEditJournalMutation(journalId);
 
   return useMutation({
-    mutationKey: queryKeysFactory.updateEntries(journalId, entryId),
+    mutationKey: queryKeysFactory.updateEntries(journalId, entryId ?? ""),
 
     throwOnError: false,
 
     mutationFn: async (variables: IUpsertEntryCommandVariables) => {
       if (
         journal &&
-        hasNewJournalAttributeValues(variables.command.journalAttributeValues)
+        hasNewJournalAttributeValues(
+          variables.command.journalAttributeValues ?? {},
+        )
       ) {
         await editJournalMutation.mutateAsync({ journal });
       }
@@ -55,14 +57,21 @@ export const useUpsertEntryMutation = (
       result: ICommandResult,
       variables: IUpsertEntryCommandVariables,
     ) => {
-      const journalUrl = `/journals/details/${variables.command.journalId}`;
-      const actionUrl = `${journalUrl}?${knownQueryParams.selectedItemId}=${result.entityId}`;
+      const journalId = variables.command.journalId;
+      const journalUrl = `/journals/details/${journalId}`;
 
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
         message: !pathname.startsWith(journalUrl) ? (
           <>
-            <StyledLink to={actionUrl}>View</StyledLink> in journal
+            <StyledLink
+              to="/journals/details/$journalId"
+              params={{ journalId }}
+              search={{ [knownQueryParams.selectedItemId]: result.entityId }}
+            >
+              View
+            </StyledLink>{" "}
+            in journal
           </>
         ) : null,
         type: "success",
@@ -88,7 +97,7 @@ export const useUpsertEntryMutation = (
     onError: (error: unknown) => {
       setAppAlert({
         title: "Failed to upsert entry",
-        message: error.toString(),
+        message: (error as Error)?.toString?.() ?? String(error),
         type: "error",
       });
     },
@@ -122,7 +131,7 @@ export const useUpsertEntryMutation = (
   function hasNewJournalAttributeValues(
     attributeValues: IJournalAttributeValues,
   ) {
-    if (!attributeValues || journal.type === JournalType.Scraps) {
+    if (!attributeValues || !journal || journal.type === JournalType.Scraps) {
       return false;
     }
 
@@ -130,8 +139,9 @@ export const useUpsertEntryMutation = (
 
     for (const keyInValues in attributeValues) {
       for (const value of attributeValues[keyInValues]) {
-        if (!journal.attributes[keyInValues].values[value]) {
-          journal.attributes[keyInValues].values[value] = value;
+        if (!journal.attributes?.[keyInValues]?.values[value]) {
+          if (journal.attributes?.[keyInValues])
+            journal.attributes[keyInValues].values[value] = value;
           hasNewValues = true;
         }
       }

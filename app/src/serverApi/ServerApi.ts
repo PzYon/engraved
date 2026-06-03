@@ -46,13 +46,13 @@ export class ServerApi {
 
   private static _jwtToken: string;
   private static _isE2eTest: boolean =
-    ServerApi.e2eStorage.getValue("isE2eTest");
+    ServerApi.e2eStorage.getValue<boolean>("isE2eTest") ?? false;
 
   static serverOs: "lin" | "win" = "lin";
 
   private static googlePrompt: () => Promise<PromptMomentNotification>;
 
-  private static onAuthenticated: () => void;
+  private static onAuthenticated: (() => void) | null;
 
   static setGooglePrompt(
     googlePrompt: () => Promise<PromptMomentNotification>,
@@ -212,12 +212,12 @@ export class ServerApi {
 
   static async editJournal(
     journalId: string,
-    name: string,
-    description: string,
-    notes: string,
-    attributes: IJournalAttributes,
-    thresholds: IJournalThresholdDefinitions,
-    customProps: Record<string, unknown> & IJournalCustomProps,
+    name: string | undefined,
+    description: string | undefined,
+    notes: string | undefined,
+    attributes: IJournalAttributes | undefined,
+    thresholds: IJournalThresholdDefinitions | undefined,
+    customProps: (Record<string, unknown> & IJournalCustomProps) | undefined,
   ): Promise<ICommandResult> {
     const payload: IEditJournalCommand = {
       journalId: journalId,
@@ -248,7 +248,7 @@ export class ServerApi {
   }
 
   static async modifyJournalSchedule(
-    journalId: string,
+    journalId: string | undefined,
     scheduleDefinition: IScheduleDefinition,
   ): Promise<ICommandResult> {
     const cmd: IAddScheduleToJournalCommand = {
@@ -481,8 +481,8 @@ export class ServerApi {
   }
 
   private static getParamsString(
-    searchText: string,
-    journalTypes: JournalType[],
+    searchText: string | undefined,
+    journalTypes: JournalType[] | undefined,
     favoritesOnly?: boolean,
     journalIds?: string[],
   ) {

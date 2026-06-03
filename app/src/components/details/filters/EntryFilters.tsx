@@ -69,9 +69,9 @@ export const EntryFilters: React.FC<{
               onChange={setGroupByTime}
             />
           ) : null}
-          {Object.keys(journal.attributes).length > 0 ? (
+          {Object.keys(journal.attributes ?? {}).length > 0 ? (
             <GroupByAttributeSelector
-              attributes={journal.attributes}
+              attributes={journal.attributes ?? {}}
               selectedAttributeKey={attributeKey}
               onChange={setAttributeKey}
               label={translations.label_groupBy_attribute}

@@ -12,7 +12,7 @@ import {
 } from "../../../../util/journalUtils";
 
 export const AddEntryTableCell: React.FC<{
-  journal: IJournal;
+  journal?: IJournal;
   command: IUpsertGaugeEntryCommand;
   updateCommand: (c: IUpsertGaugeEntryCommand) => void;
   fieldName: string;
@@ -48,6 +48,7 @@ export const AddEntryTableCell: React.FC<{
     }
 
     case "attributes": {
+      if (!journal) return null;
       const journalAttributeValues =
         command.journalAttributeValues ??
         getDefaultAttributeValues(journal.attributes);
@@ -69,7 +70,7 @@ export const AddEntryTableCell: React.FC<{
           ) : null}
           <JournalAttributesSelector
             key={JSON.stringify(journalAttributeValues)}
-            attributes={journal.attributes}
+            attributes={journal.attributes ?? {}}
             noBorderTop={!showSearch}
             selectedAttributeValues={journalAttributeValues}
             onChange={(value: any) => {

@@ -57,7 +57,9 @@ export const ScrapContextProvider: React.FC<{
   const [scrapToRender, setScrapToRender] = useState(initialScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
-  const [parsedDate, setParsedDate] = useState<IParsedDate>(undefined);
+  const [parsedDate, setParsedDate] = useState<IParsedDate | undefined>(
+    undefined,
+  );
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   useEffect(() => {
@@ -66,16 +68,16 @@ export const ScrapContextProvider: React.FC<{
     }
 
     AddNewScrapStorage.setForJournal(
-      isQuickAdd ? quickAddStorageKey : initialScrap.parentId,
+      isQuickAdd ? quickAddStorageKey : (initialScrap.parentId ?? ""),
       {
-        id: null,
+        id: undefined,
         scrapType: scrapToRender.scrapType,
         notes: scrapToRender.notes,
-        title: parsedDate?.text ?? scrapToRender.title,
-        journalAttributeValues: null,
+        title: parsedDate?.text ?? scrapToRender.title ?? "",
+        journalAttributeValues: undefined,
         parentId: initialScrap.parentId,
-        dateTime: null,
-      },
+        dateTime: new Date().toISOString(),
+      } as IScrapEntry,
     );
   }, [
     parsedDate?.text,
@@ -97,9 +99,9 @@ export const ScrapContextProvider: React.FC<{
   const itemAction = useItemAction();
 
   const upsertEntryMutation = useUpsertEntryMutation(
-    journalId,
+    journalId ?? "",
     journal?.type ?? JournalType.Scraps,
-    null, // scraps currently do not support attributes
+    undefined, // scraps currently do not support attributes
     initialScrap.id,
     closeAddEntryAction,
   );
@@ -229,7 +231,10 @@ export const ScrapContextProvider: React.FC<{
         setNotes: (n) => setScrapToRender({ ...scrapToRender, notes: n }),
         date: new Date(scrapToRender.dateTime),
         setDate: (d) =>
-          setScrapToRender({ ...scrapToRender, dateTime: d.toJSON() }),
+          setScrapToRender({
+            ...scrapToRender,
+            dateTime: d ? d.toJSON() : new Date().toJSON(),
+          }),
         parsedDate,
         setParsedDate,
         isEditMode,
@@ -250,7 +255,7 @@ export const ScrapContextProvider: React.FC<{
                 AddNewScrapStorage.clearForJournal(
                   isQuickAdd
                     ? quickAddStorageKey
-                    : (journal?.id ?? initialScrap.parentId),
+                    : (journal?.id ?? initialScrap.parentId ?? ""),
                 );
               },
               hasFocus,
@@ -312,10 +317,12 @@ export const ScrapContextProvider: React.FC<{
         notes: notesToSave,
         title: parsedDate?.text ?? scrapToRender.title,
         journalAttributeValues: {},
-        journalId: journalId,
-        dateTime: scrapToRender.dateTime ?? new Date(),
+        journalId: journalId ?? "",
+        dateTime: scrapToRender.dateTime
+          ? new Date(scrapToRender.dateTime)
+          : new Date(),
         schedule: getScheduleDefinition(
-          parsedDate,
+          parsedDate ?? { input: "" },
           journalId,
           scrapToRender?.id ?? "new-entry-id",
         ),
@@ -325,7 +332,7 @@ export const ScrapContextProvider: React.FC<{
     setIsEditMode(false);
 
     AddNewScrapStorage.clearForJournal(
-      isQuickAdd ? quickAddStorageKey : scrapToRender.parentId,
+      isQuickAdd ? quickAddStorageKey : (scrapToRender.parentId ?? ""),
     );
   }
 

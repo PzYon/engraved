@@ -7,7 +7,7 @@ interface IDisplayModeContext {
 
 export const DisplayModeContext = createContext<IDisplayModeContext>({
   isCompact: false,
-  setIsCompact: null,
+  setIsCompact: null!,
 });
 
 export const useDisplayModeContext = () => {

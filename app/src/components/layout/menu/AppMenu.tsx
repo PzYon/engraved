@@ -18,7 +18,7 @@ import {
   styled,
 } from "@mui/material";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalIcon } from "../../overview/journals/JournalIcon";
 import { IconStyle } from "../../common/IconStyle";
@@ -31,7 +31,8 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
 
   const favoriteJournals =
-    useJournalsQuery(null, [], true, undefined, areFavoritesExpanded) ?? [];
+    useJournalsQuery(undefined, [], true, undefined, areFavoritesExpanded) ??
+    [];
 
   const [areRecentlyViewExpanded, setAreRecentlyViewExpanded] = useState(false);
 
@@ -94,9 +95,8 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
           <List disablePadding dense>
             {favoriteJournals
               .sort((a, b) => {
-                const firstName = a.name?.toLowerCase();
-                const secondName = b.name?.toLowerCase();
-
+                const firstName = a.name?.toLowerCase() ?? "";
+                const secondName = b.name?.toLowerCase() ?? "";
                 return firstName < secondName
                   ? -1
                   : firstName > secondName
@@ -202,7 +202,7 @@ const JournalAppMenuItem: React.FC<{
 };
 
 const LinkOrSpan: React.FC<{
-  targetUrl: string;
+  targetUrl: string | undefined;
   children: React.ReactNode;
 }> = ({ targetUrl, children }) => {
   if (!targetUrl) {

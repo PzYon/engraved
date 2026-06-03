@@ -20,7 +20,7 @@ export const ScrapListItem: React.FC<{
   onChange: (listItem: IScrapListItem) => void;
 }> = ({ listItemsCollection, index, isEditMode, listItem, onChange }) => {
   const [label, setLabel] = useState(listItem.label);
-  const ref: React.RefObject<HTMLInputElement> = useRef(null);
+  const ref = useRef<HTMLInputElement>(null);
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: listItemsCollection.getReactKey(index) });
@@ -40,20 +40,18 @@ export const ScrapListItem: React.FC<{
             return;
           }
 
+          const el = ref.current;
           setTimeout(() => {
             if (typeof cursorPosition === "string") {
               if (cursorPosition === "beginning") {
-                ref.current.setSelectionRange(0, 0);
+                el.setSelectionRange(0, 0);
               } else {
-                ref.current.setSelectionRange(
-                  ref.current.value.length,
-                  ref.current.value.length,
-                );
+                el.setSelectionRange(el.value.length, el.value.length);
               }
             }
 
             if (typeof cursorPosition === "number" && cursorPosition >= 0) {
-              ref.current.setSelectionRange(cursorPosition, cursorPosition);
+              el.setSelectionRange(cursorPosition, cursorPosition);
             }
           });
         },

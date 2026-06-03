@@ -1,6 +1,6 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
 import { useEngravedSearchParams } from "./searchParamHooks";
 
@@ -15,13 +15,26 @@ export const ActionLink: React.FC<{
 
   const { getNewSearchParams } = useEngravedSearchParams();
 
+  const getSearch = () =>
+    Object.fromEntries(getNewSearchParams(action.search ?? {}));
+
+  // Actions with an own href navigate to that (already resolved) route. Actions
+  // without a href only modify the search params of the current page, so we stay
+  // on the current route ("."). Navigating to a full path here would remount the
+  // page and wipe the freshly-set search params.
+  const getHref = () => {
+    const query = getNewSearchParams(action.search ?? {}).toString();
+    return query ? `${action.href}?${query}` : action.href!;
+  };
+
   useEngravedHotkeys(
     action.hotkey,
     () => {
-      navigate({
-        pathname: action.href,
-        search: getNewSearchParams(action.search).toString(),
-      });
+      if (action.href) {
+        navigate({ to: getHref() });
+      } else {
+        navigate({ to: ".", search: getSearch });
+      }
     },
     {
       enabled:
@@ -40,7 +53,7 @@ export const ActionLink: React.FC<{
     return (
       <a
         href={new URL(
-          getNewSearchParams(action.search).toString(),
+          getNewSearchParams(action.search ?? {}).toString(),
           action.href,
         ).toString()}
         style={style}
@@ -53,13 +66,32 @@ export const ActionLink: React.FC<{
     );
   }
 
+  // Stop click and mouseup from bubbling: click prevents the list-row handler
+  // from firing, mouseup prevents an already-open action panel's
+  // ClickAwayListener (which listens on the document's mouseup) from closing.
+  // Without the latter, switching from one action to another would briefly
+  // navigate via root ("/") before applying the new action's params.
+  const stopEvents = (e: React.SyntheticEvent) => e.stopPropagation();
+
+  if (action.href) {
+    return (
+      <Link
+        to={getHref()}
+        onClick={stopEvents}
+        onMouseUp={stopEvents}
+        style={style}
+      >
+        {getChildren()}
+      </Link>
+    );
+  }
+
   return (
     <Link
-      to={{
-        pathname: action.href,
-        search: getNewSearchParams(action.search).toString(),
-      }}
-      onClick={(e) => e.stopPropagation()}
+      to="."
+      search={getSearch}
+      onClick={stopEvents}
+      onMouseUp={stopEvents}
       style={style}
     >
       {getChildren()}

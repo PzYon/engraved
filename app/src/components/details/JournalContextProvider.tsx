@@ -11,9 +11,9 @@ export const JournalContextProvider: React.FC<{
     [key: string]: string[];
   }>({});
 
-  const [searchText, setSearchText] = useState<string>(undefined);
+  const [searchText, setSearchText] = useState<string>("");
 
-  const [dateConditions, setDateConditions] = useState<IDateConditions>(null);
+  const [dateConditions, setDateConditions] = useState<IDateConditions>({});
 
   const journal = useJournalQuery(journalId);
 
@@ -27,7 +27,7 @@ export const JournalContextProvider: React.FC<{
   const contextValue = useMemo(() => {
     return {
       entries,
-      journal,
+      journal: journal!,
       toggleAttributeValue: (
         attributeKey: string,
         attributeValueKey: string,

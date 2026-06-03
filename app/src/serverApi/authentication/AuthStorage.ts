@@ -10,8 +10,8 @@ export class AuthStorage {
     return !!this.getAuthResult();
   }
 
-  getAuthResult(): IAuthResult {
-    return this.storageUtil.getValue(AuthStorage.key);
+  getAuthResult(): IAuthResult | undefined {
+    return this.storageUtil.getValue<IAuthResult>(AuthStorage.key);
   }
 
   setAuthResult(result: IAuthResult): void {

@@ -12,11 +12,11 @@ export const AddEntryTableSaveAction: React.FC<{
   onAdded: (lastSelectedDate: Date) => void;
 }> = ({ command, journal, onAdded }) => {
   const upsertEntryMutation = useUpsertEntryMutation(
-    journal.id,
+    journal.id ?? "",
     journal.type,
     journal,
-    null,
-    () => onAdded(command.dateTime),
+    undefined,
+    () => onAdded(command.dateTime ?? new Date()),
   );
 
   return (

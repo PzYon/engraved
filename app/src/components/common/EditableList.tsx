@@ -18,7 +18,7 @@ export const EditableList: React.FC<{
   renderOption: (option: IOption) => React.ReactNode;
 }> = ({ options, onAddOption, onDeleteOption, onEditOption, renderOption }) => {
   const [newItem, setNewItem] = useState("");
-  const [editItemKey, setEditItemKey] = useState<string>(undefined);
+  const [editItemKey, setEditItemKey] = useState<string | undefined>(undefined);
   const newItemId = useId();
 
   const doesExist = options.map((o) => o.label).indexOf(newItem) > -1;

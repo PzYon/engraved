@@ -2,7 +2,7 @@ export class LoadingHandler {
   delayMs = 700;
 
   private _loadingCounter = 0;
-  private _currentState: "first" | "last" | "other";
+  private _currentState: "first" | "last" | "other" = "other";
 
   private handlers: Record<string, (isLoading: boolean) => void> = {};
 

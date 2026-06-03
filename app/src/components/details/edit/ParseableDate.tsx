@@ -32,11 +32,11 @@ export const ParseableDate: React.FC<{
   disabled,
   autoFocus,
 }) => {
-  const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
+  const [parsed, setParsed] = useState<IParsedDate>({ input: "" });
   const [parseError, setParseError] = useState("");
 
   return (
-    <Host sx={sx} isTitle={isTitle}>
+    <Host sx={sx} isTitle={isTitle ?? false}>
       <RichTextEditor
         initialValue={initialValue}
         autoFocus={autoFocus}

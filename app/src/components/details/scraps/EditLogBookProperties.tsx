@@ -14,9 +14,9 @@ export const EditLogBookProperties: React.FC<{
       <FormControl sx={{ width: "100%" }}>
         <LazyRichTextEditor
           setValue={(value) =>
-            setCustomProps({ ...journal.customProps, template: value })
+            setCustomProps({ ...(journal.customProps ?? {}), template: value })
           }
-          initialValue={(journal.customProps.template as string) ?? ""}
+          initialValue={(journal.customProps?.template as string) ?? ""}
         />
       </FormControl>
     </PageSection>

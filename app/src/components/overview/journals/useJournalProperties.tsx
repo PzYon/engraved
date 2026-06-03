@@ -7,7 +7,7 @@ import { getScheduleProperty } from "../scheduled/scheduleUtils";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
 import { FormatDate } from "../../common/FormatDate";
 import { useAppContext } from "../../../AppContext";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { styled } from "@mui/material";
 
 export const useJournalProperties = (
@@ -20,12 +20,14 @@ export const useJournalProperties = (
     return [];
   }
 
-  const tags = user.tags.filter((t) => t.journalIds.indexOf(journal.id) > -1);
+  const tags = (user.tags ?? []).filter(
+    (t) => (t.journalIds ?? []).indexOf(journal.id ?? "") > -1,
+  );
 
   return [
     {
       key: "favorite",
-      node: () => <Favorite journalId={journal.id} />,
+      node: () => <Favorite journalId={journal.id ?? ""} />,
       label: null,
     },
     {
@@ -33,30 +35,46 @@ export const useJournalProperties = (
       node: () => <FormatDate value={journal.editedOn} />,
       label: "Edited",
     },
-    getScheduleProperty(journal, user.id),
+    getScheduleProperty(journal, user.id ?? ""),
     {
       key: "description",
       node: () => <>{journal.description}</>,
       hideWhen: () => !journal.description,
       label: null,
     },
-    {
-      key: "user-role",
-      label: "Your are",
-      node: () => journalPermissions.userRole,
-    },
-    {
-      key: "owned-by",
-      node: () => <Users users={[journalPermissions.owner]} />,
-      label: "Owned by",
-      hideWhen: () => journalPermissions.userRole === UserRole.Owner,
-    },
-    {
-      key: "shared-with",
-      node: () => <Users users={journalPermissions.allExceptOwner} />,
-      hideWhen: () => !journalPermissions.allExceptOwner.length,
-      label: "Shared with",
-    },
+    ...(journalPermissions
+      ? [
+          {
+            key: "user-role",
+            label: "Your are",
+            node: () => journalPermissions.userRole,
+          },
+          {
+            key: "owned-by",
+            node: () => (
+              <Users
+                users={
+                  journalPermissions.owner ? [journalPermissions.owner] : []
+                }
+              />
+            ),
+            label: "Owned by",
+            hideWhen: () => journalPermissions.userRole === UserRole.Owner,
+          },
+          {
+            key: "shared-with",
+            node: () => (
+              <Users
+                users={(journalPermissions.allExceptOwner ?? []).filter(
+                  (u): u is NonNullable<typeof u> => u != null,
+                )}
+              />
+            ),
+            hideWhen: () => !(journalPermissions.allExceptOwner ?? []).length,
+            label: "Shared with",
+          },
+        ]
+      : []),
     {
       key: "tags",
       label: "Tags",
@@ -64,7 +82,11 @@ export const useJournalProperties = (
       node: () => (
         <TagContainer>
           {tags.map((tag) => (
-            <Link key={tag.id} to={`/tags/${tag.id}`}>
+            <Link
+              key={tag.id}
+              to="/tags/$tagId"
+              params={{ tagId: tag.id ?? "" }}
+            >
               {tag.label}
             </Link>
           ))}

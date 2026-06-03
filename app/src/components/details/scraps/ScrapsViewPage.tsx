@@ -35,10 +35,9 @@ export const ScrapsViewPage: React.FC = () => {
   return (
     <Page
       title={<JournalPageTitle journal={journal} />}
-      documentTitle={journal.name}
+      documentTitle={journal.name ?? ""}
       actions={[
         ActionFactory.getToc(() => setShowToc(!showToc), !showToc),
-        null,
         ...getCommonJournalActions(journal, true, user),
       ]}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
@@ -47,10 +46,13 @@ export const ScrapsViewPage: React.FC = () => {
 
       {scraps.length ? (
         <OverviewList
-          items={sortEntitiesByDates(scraps, user.id)}
+          items={sortEntitiesByDates(scraps, user.id ?? "")}
           renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap
-              key={item.id + getScheduleForUser(item, user.id).nextOccurrence}
+              key={
+                (item.id ?? "") +
+                getScheduleForUser(item, user.id ?? "").nextOccurrence
+              }
               journal={journal}
               propsRenderStyle={"generic"}
               scrap={item as IScrapEntry}

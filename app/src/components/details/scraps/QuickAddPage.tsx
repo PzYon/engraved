@@ -14,16 +14,19 @@ import { FilterMode } from "../../layout/pages/PageContext";
 import { Page } from "../../layout/pages/Page";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import { PageSection } from "../../layout/pages/PageSection";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 export const QuickAddPage: React.FC = () => {
   const { user } = useAppContext();
 
   const navigate = useNavigate();
 
-  const [journalId, setJournalId] = useState(undefined);
+  const [journalId, setJournalId] = useState<string | undefined>(undefined);
 
-  const [searchParams] = useSearchParams();
+  const searchString = useRouterState({
+    select: (s): string => s.location.searchStr,
+  });
+  const searchParams = new URLSearchParams(searchString);
 
   const title = searchParams.get("title");
   const notes = searchParams.get("text");
@@ -31,9 +34,9 @@ export const QuickAddPage: React.FC = () => {
 
   const scrap = ScrapsJournalType.createBlank(
     true,
-    journalId,
+    journalId ?? "",
     ScrapType.Markdown,
-    title,
+    title ?? undefined,
     [notes, link].filter((i) => !!i).join("\n"),
   );
 
@@ -63,12 +66,12 @@ export const QuickAddPage: React.FC = () => {
             journals.filter((j) => {
               const permissions = getPermissionsForUser(j.permissions, user);
               return (
-                permissions.userRole === UserRole.Owner ||
-                permissions.userRole === UserRole.Writer
+                permissions?.userRole === UserRole.Owner ||
+                permissions?.userRole === UserRole.Writer
               );
             })
           }
-          onChange={(journal) => setJournalId(journal.id)}
+          onChange={(journal) => setJournalId(journal.id ?? "")}
         />
 
         <ScrapContainer>
@@ -76,11 +79,11 @@ export const QuickAddPage: React.FC = () => {
             scrap={scrap}
             propsRenderStyle={"none"}
             actionsRenderStyle={"save-only"}
-            onSuccess={() => navigate("/entries")}
+            onSuccess={() => navigate({ to: "/entries" })}
             isQuickAdd={true}
             hasFocus={true}
             changeTypeWithoutConfirmation={true}
-            onCancelEditing={() => navigate(-1)}
+            onCancelEditing={() => window.history.back()}
           />
         </ScrapContainer>
       </PageSection>

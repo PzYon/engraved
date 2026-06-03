@@ -14,8 +14,10 @@ export const AttributeFilters: React.FC = () => {
 
   return (
     <>
-      {Object.keys(journal.attributes).map((attributeKey) => {
-        const attribute = journal.attributes[attributeKey];
+      {Object.keys(journal.attributes ?? {}).map((attributeKey) => {
+        const attribute = journal.attributes?.[attributeKey];
+
+        if (!attribute) return null;
 
         const selectedValues = selectedAttributeValues?.[attributeKey];
         const keys: string[] = selectedValues?.length

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { useAppContext } from "../../../AppContext";
 import React from "react";
 import { GridContainer, GridItem } from "../../common/Grid";
@@ -10,19 +10,23 @@ import { NoResultsFound } from "../../common/search/NoResultsFound";
 export const ListOfTags: React.FC = () => {
   const { user } = useAppContext();
 
-  if (!user.tags.length) {
+  if (!user.tags?.length) {
     return <NoResultsFound hideTryAgain={true} />;
   }
 
   return (
     <GridContainer>
-      {user.tags.map((t) => (
+      {user.tags?.map((t) => (
         <GridItem key={t.id}>
           <Paper sx={{ p: 3 }}>
             <ReadonlyTitle
               hasFocus={false}
               entity={null}
-              title={<Link to={`/tags/${t.id}`}>{t.label}</Link>}
+              title={
+                <Link to="/tags/$tagId" params={{ tagId: t.id ?? "" }}>
+                  {t.label}
+                </Link>
+              }
             ></ReadonlyTitle>
             <Typography sx={{ pt: 1 }}>{getJournalCountLabel(t)}</Typography>
           </Paper>
