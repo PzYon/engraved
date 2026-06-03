@@ -149,11 +149,10 @@ test("cancelling delete action removes search params from URL", async ({
     "Cancel Delete Journal",
   );
 
-  const deleteAction = await journalPage.navigateToDeleteJournalAction();
-  await deleteAction.clickFirstDeleteButton();
+  await journalPage.navigateToDeleteJournalAction();
 
-  // Cancel by pressing Escape
-  await page.keyboard.press("Escape");
+  // cancel the action via the "No" button
+  await page.getByRole("button", { name: "No", exact: true }).click();
 
   // cancelling the action removes its search param from the URL (this assertion
   // auto-retries until the navigation has settled)

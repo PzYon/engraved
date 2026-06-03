@@ -18,16 +18,24 @@ export const AppMenuLauncher: React.FC = () => {
       >
         <AppMenu close={() => setIsMenuOpen(false)} />
       </StyledDrawer>
-      <IconButton
+      <StyledIconButton
         aria-label="Menu"
         onClick={() => setIsMenuOpen(true)}
-        sx={{ color: "white", mr: 1, p: 0.5 }}
+        sx={{ color: "white", mr: 2, p: 0 }}
       >
         <Menu fontSize="large" />
-      </IconButton>
+      </StyledIconButton>
     </>
   );
 };
+
+const StyledIconButton = styled(IconButton)`
+  @media screen and (min-width: 1265px) {
+    position: fixed;
+    top: 15px;
+    left: 10px;
+  }
+`;
 
 const StyledDrawer = styled(Drawer)`
   .MuiPaper-root {
