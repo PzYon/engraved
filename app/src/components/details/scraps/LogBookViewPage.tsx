@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Scrap } from "./Scrap";
 import SelfImprovementOutlined from "@mui/icons-material/SelfImprovementOutlined";
 import { useJournalContext } from "../JournalContext";
@@ -19,6 +19,10 @@ export const LogBookViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
   const { user } = useAppContext();
 
+  const [activeItemId, setActiveItemId] = useState<string | undefined>(
+    undefined,
+  );
+
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
     setDateConditions({});
@@ -31,14 +35,15 @@ export const LogBookViewPage: React.FC = () => {
   return (
     <Page
       title={<JournalPageTitle journal={journal} />}
-      documentTitle={journal.name ?? ""}
-      actions={getCommonJournalActions(journal, true, user)}
+      documentTitle={journal.name}
+      actions={getCommonJournalActions(journal, !activeItemId, user)}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
     >
       {scraps.length ? (
         <OverviewList
           showDaysBetween={true}
           items={sortEntitiesByDates(scraps, user.id ?? "")}
+          onActiveItemChange={setActiveItemId}
           renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap
               key={

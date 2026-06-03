@@ -11,10 +11,7 @@ import { useAppContext } from "../../../AppContext";
 import { ScrapToc } from "./ScrapToc";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
-import {
-  getScheduleForUser,
-  sortEntitiesByDates,
-} from "../../overview/scheduled/scheduleUtils";
+import { getScheduleForUser, sortEntitiesByDates, } from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
 
 export const ScrapsViewPage: React.FC = () => {
@@ -22,6 +19,9 @@ export const ScrapsViewPage: React.FC = () => {
   const { user } = useAppContext();
 
   const [showToc, setShowToc] = useState(true);
+  const [activeItemId, setActiveItemId] = useState<string | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     // we need to set date conditions in order for data to be loaded
@@ -38,7 +38,7 @@ export const ScrapsViewPage: React.FC = () => {
       documentTitle={journal.name ?? ""}
       actions={[
         ActionFactory.getToc(() => setShowToc(!showToc), !showToc),
-        ...getCommonJournalActions(journal, true, user),
+        ...getCommonJournalActions(journal, !activeItemId, user),
       ]}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
     >
@@ -47,6 +47,7 @@ export const ScrapsViewPage: React.FC = () => {
       {scraps.length ? (
         <OverviewList
           items={sortEntitiesByDates(scraps, user.id ?? "")}
+          onActiveItemChange={setActiveItemId}
           renderItem={(item, _, hasFocus, giveFocus) => (
             <Scrap
               key={

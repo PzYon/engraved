@@ -22,8 +22,9 @@ export const OverviewListContextProvider: React.FC<{
   items: IEntity[];
   filterItem?: (item: IEntity) => boolean;
   onKeyDown?: (e: KeyboardEvent) => void;
+  onActiveItemChange?: (activeItemId: string | undefined) => void;
   children: React.ReactNode;
-}> = ({ items, children, filterItem, onKeyDown }) => {
+}> = ({ items, children, filterItem, onKeyDown, onActiveItemChange }) => {
   const { setAppAlert } = useAppContext();
 
   const [activeItemId, setActiveItemId] = React.useState<string | undefined>(
@@ -47,9 +48,13 @@ export const OverviewListContextProvider: React.FC<{
     setActiveItemId(activeItemIdFromUrl);
   }
 
-  const [inMemorySearchText, setInMemorySearchText] = useState<
-    string | undefined
-  >(undefined);
+  useEffect(() => {
+    onActiveItemChange?.(activeItemId);
+  }, [activeItemId, onActiveItemChange]);
+
+  // undefined is the initial value, afterward it is ""
+  const [inMemorySearchText, setInMemorySearchText] =
+    useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (inMemorySearchText) {
