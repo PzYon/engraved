@@ -12,6 +12,10 @@ export class SearchPage extends BasePage {
     await this.page.getByRole("button", { name: "Clear search" }).click();
   }
 
+  async expectResultVisible(title: string) {
+    await expect(this.page.getByText(title).first()).toBeVisible();
+  }
+
   async expectResultNotVisible(title: string) {
     await expect(this.page.getByText(title).first()).toBeHidden();
   }
