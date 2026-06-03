@@ -23,8 +23,7 @@ test("search in go to, use cursor down, use enter to navigate to scrap", async (
   await scrapsJournalPage.expectPageTitle("List of QBs");
 });
 
-// eslint-disable-next-line playwright/no-skipped-test
-test.skip("initially shows recent journals, navigates with click", async ({
+test("initially shows recent journals, navigates with click", async ({
   page,
 }) => {
   await login(page, "goto", "Scraps", "Kansas City Chiefs");
