@@ -22,6 +22,7 @@ interface IOverviewListProps {
   ) => React.ReactNode;
   filterItem?: (item: IEntity) => boolean;
   onKeyDown?: (e: KeyboardEvent) => void;
+  onActiveItemChange?: (activeItemId: string | undefined) => void;
 }
 
 export const OverviewList: React.FC<IOverviewListProps> = memo(
@@ -31,6 +32,7 @@ export const OverviewList: React.FC<IOverviewListProps> = memo(
         items={props.items}
         filterItem={props.filterItem}
         onKeyDown={props.onKeyDown}
+        onActiveItemChange={props.onActiveItemChange}
       >
         <OverviewListInternal {...props} />
       </OverviewListContextProvider>
