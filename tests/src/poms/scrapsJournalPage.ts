@@ -37,7 +37,7 @@ export class ScrapsJournalPage extends JournalPage {
     await this.getTitleBox().click();
     await this.getTitleBox().fill(title);
 
-    if (content) {
+    if (content !== undefined) {
       const contentEditor = this.page
         .getByTestId("add-new-scrap")
         .locator(".tiptap")
