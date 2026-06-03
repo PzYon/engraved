@@ -1,4 +1,4 @@
-import { expect, Page, test } from "@playwright/test";
+import { Page, test } from "@playwright/test";
 import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { navigateToHome } from "../src/utils/navigateTo";
@@ -10,13 +10,6 @@ import { JournalsPage } from "../src/poms/journalsPage";
 // matches all three.
 const journalNames = ["Apple", "Apricot", "Avocado"];
 
-// Run this file's tests sequentially. Each test bootstraps a fresh e2e
-// user and creates journals; doing several of these concurrently triggers a
-// server-side race where the new user's journals never show up in the list
-// query. Serial execution avoids that. The 60s timeout covers the (slower)
-// per-test UI seeding plus the reload-poll in seedJournals.
-test.describe.configure({ mode: "serial", timeout: 60_000 });
-
 async function seedJournals(page: Page): Promise<JournalsPage> {
   for (const name of journalNames) {
     await addNewJournal(page, "Value", name);
@@ -24,18 +17,7 @@ async function seedJournals(page: Page): Promise<JournalsPage> {
   }
 
   const journalsPage = new JournalsPage(page);
-
-  // Right after creating journals the list endpoint briefly returns an empty
-  // array (server-side read-after-write race). The app fetches the list once
-  // per navigation and does not auto-retry, so the empty result sticks on
-  // screen. Reload-poll re-fetches until the list is populated.
-  await expect(async () => {
-    await page.reload();
-    await expect(journalsPage.items()).toHaveCount(journalNames.length, {
-      timeout: 750,
-    });
-  }).toPass({ timeout: 20_000, intervals: [500, 1000, 1500] });
-
+  await journalsPage.expectToShowNEntities(journalNames.length);
   return journalsPage;
 }
 

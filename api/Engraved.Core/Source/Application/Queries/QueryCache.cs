@@ -6,7 +6,12 @@ using System.Collections.Concurrent;
 
 namespace Engraved.Core.Application.Queries;
 
-public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, Lazy<IUser> currentUser)
+public class QueryCache(
+  ILogger<QueryCache> logger,
+  IMemoryCache memoryCache,
+  Lazy<IUser> currentUser,
+  bool isEnabled = true
+)
 {
   private const string KeysByUserId = "___keysByUserId";
 
@@ -19,6 +24,11 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   public void Set<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, TValue value)
     where TQuery : IQuery
   {
+    if (!isEnabled)
+    {
+      return;
+    }
+
     var key = GetKey(queryExecutor);
 
     RememberQueryKeyForUser(key);
@@ -37,6 +47,12 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   public bool TryGetValue<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, out TValue? value)
     where TQuery : IQuery
   {
+    if (!isEnabled)
+    {
+      value = default;
+      return false;
+    }
+
     var key = GetKey(queryExecutor);
 
     if (!memoryCache.TryGetValue(key, out CacheItem<TValue>? cacheItem))
