@@ -25,7 +25,7 @@ export const Entities: React.FC<{
     executeWithoutConditions,
   );
 
-  if (!queryResult) {
+  if (!queryResult?.entities) {
     return null;
   }
 

@@ -1,6 +1,6 @@
 import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
 import { useEngravedSearchParams } from "./searchParamHooks";
 
@@ -12,24 +12,29 @@ export const ActionLink: React.FC<{
   const isAbsoluteUrl = action.href?.startsWith("http");
 
   const navigate = useNavigate();
-  const pathname = useLocation({ select: (l) => l.pathname });
 
   const { getNewSearchParams } = useEngravedSearchParams();
 
-  // Build a fully-resolved URL (target path + merged query). Actions without an
-  // own href just update the search params of the current page. `action.href`
-  // is resolved at runtime, so we pass the complete URL string as `to` rather
-  // than a compile-time route pattern.
+  const getSearch = () =>
+    Object.fromEntries(getNewSearchParams(action.search ?? {}));
+
+  // Actions with an own href navigate to that (already resolved) route. Actions
+  // without a href only modify the search params of the current page, so we stay
+  // on the current route ("."). Navigating to a full path here would remount the
+  // page and wipe the freshly-set search params.
   const getHref = () => {
     const query = getNewSearchParams(action.search ?? {}).toString();
-    const path = action.href ?? pathname;
-    return query ? `${path}?${query}` : path;
+    return query ? `${action.href}?${query}` : action.href!;
   };
 
   useEngravedHotkeys(
     action.hotkey,
     () => {
-      navigate({ to: getHref() });
+      if (action.href) {
+        navigate({ to: getHref() });
+      } else {
+        navigate({ to: ".", search: getSearch });
+      }
     },
     {
       enabled:
@@ -61,8 +66,21 @@ export const ActionLink: React.FC<{
     );
   }
 
+  if (action.href) {
+    return (
+      <Link to={getHref()} onClick={(e) => e.stopPropagation()} style={style}>
+        {getChildren()}
+      </Link>
+    );
+  }
+
   return (
-    <Link to={getHref()} onClick={(e) => e.stopPropagation()} style={style}>
+    <Link
+      to="."
+      search={getSearch}
+      onClick={(e) => e.stopPropagation()}
+      style={style}
+    >
       {getChildren()}
     </Link>
   );

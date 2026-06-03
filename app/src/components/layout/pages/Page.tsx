@@ -3,7 +3,6 @@ import { FilterMode, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 export const Page: React.FC<{
   children: React.ReactNode;
@@ -93,12 +92,12 @@ export const Page: React.FC<{
 
     useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
 
-    const searchString = useRouterState({
-      select: (s): string => s.location.searchStr,
-    });
-    const navigate = useNavigate();
-
     useEffect(() => {
+      // reset the page-level context state when leaving the page. Note: we do
+      // NOT clear the URL search params here. Doing so on unmount is unreliable
+      // (it also runs on StrictMode re-invokes and transient remounts, where it
+      // wipes params that were just set) and is never actually needed: real
+      // navigation already replaces the URL, so there is nothing to clean up.
       return () => {
         if (showFilters) {
           setShowFilters(false);
@@ -118,10 +117,6 @@ export const Page: React.FC<{
 
         if (tabs?.length) {
           setTabs([]);
-        }
-
-        if (searchString && searchString !== "?") {
-          navigate({ to: ".", search: () => ({}), replace: true });
         }
 
         if (pageActionRoutes) {
