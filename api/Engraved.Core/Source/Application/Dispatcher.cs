@@ -36,8 +36,15 @@ public class Dispatcher(
       return cachedResult!;
     }
 
+    // Capture the cache generation *before* executing the query (i.e. before
+    // reading from the database). If a command invalidates this user's cache
+    // while the query runs, the captured generation becomes stale and the
+    // result below is ignored the next time the cache is read - preventing a
+    // stale result from being cached across a concurrent invalidation.
+    long cacheGeneration = queryCache.CaptureGeneration();
+
     TResult result = await queryExecutor.Execute(query);
-    queryCache.Set(queryExecutor, query, result);
+    queryCache.Set(queryExecutor, query, result, cacheGeneration);
 
     if (typeof(TResult).IsArray)
     {

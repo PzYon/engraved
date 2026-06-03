@@ -18,7 +18,6 @@ using Engraved.Core.Domain.Users;
 using Engraved.Notifications.OneSignal;
 using Engraved.Persistence.Mongo;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -133,18 +132,7 @@ builder.Services.AddTransient<IRepository>(provider => provider.GetService<IUser
 );
 
 builder.Services.AddMemoryCache();
-
-// The query cache is a performance optimisation that introduces a small window
-// where a stale result can be cached right around a concurrent invalidation.
-// That nondeterminism makes e2e tests flaky (a freshly created journal can stay
-// missing from the list), so the cache is disabled when running for e2e tests.
-builder.Services.AddTransient<QueryCache>(provider => new QueryCache(
-    provider.GetRequiredService<ILogger<QueryCache>>(),
-    provider.GetRequiredService<IMemoryCache>(),
-    provider.GetRequiredService<Lazy<IUser>>(),
-    isEnabled: !isE2ETests
-  )
-);
+builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
 builder.Services.AddTransient<NotificationJob>();
 builder.Services.AddTransient<INotificationService, OneSignalNotificationService>();
