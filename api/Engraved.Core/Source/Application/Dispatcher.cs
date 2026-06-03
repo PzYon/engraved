@@ -31,7 +31,7 @@ public class Dispatcher(
       throw new Exception($"No query executor registered for query of type {query.GetType()}");
     }
 
-    TResult result = await queryCache.GetOrCreate(queryExecutor, query, () => queryExecutor.Execute(query));
+    TResult result = await queryCache.GetOrCreate(queryExecutor, query);
 
     if (typeof(TResult).IsArray)
     {

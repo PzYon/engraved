@@ -1,8 +1,8 @@
+using System.Collections.Concurrent;
 using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
 
 namespace Engraved.Core.Application.Queries;
 
@@ -34,39 +34,37 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   // computed result is simply ignored on the next read.
   public async Task<TValue> GetOrCreate<TValue, TQuery>(
     IQueryExecutor<TValue, TQuery> queryExecutor,
-    TQuery query,
-    Func<Task<TValue>> execute
+    TQuery query
   )
     where TQuery : IQuery
   {
     if (queryExecutor.DisableCache)
     {
-      return await execute();
+      return await queryExecutor.Execute(query);
     }
 
-    if (TryGetValue(queryExecutor, query, out TValue? cachedValue))
+    if (TryGetValue(query, out TValue? cachedValue))
     {
       return cachedValue!;
     }
 
-    long generationId = GetGenerationId();
+    var generationId = GetGenerationId();
 
-    TValue value = await execute();
+    TValue value = await queryExecutor.Execute(query);
 
-    Set(queryExecutor, query, value, generationId);
+    Set(query, value, generationId);
 
     return value;
   }
 
   public void Set<TValue, TQuery>(
-    IQueryExecutor<TValue, TQuery> queryExecutor,
     TQuery query,
     TValue value,
     long generationId
   )
     where TQuery : IQuery
   {
-    var key = GetKey(queryExecutor);
+    var key = GetKey(query);
 
     RememberQueryKeyForUser(key);
 
@@ -82,10 +80,10 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     );
   }
 
-  public bool TryGetValue<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, out TValue? value)
+  public bool TryGetValue<TValue, TQuery>(TQuery query, out TValue? value)
     where TQuery : IQuery
   {
-    var key = GetKey(queryExecutor);
+    var key = GetKey(query);
 
     if (!memoryCache.TryGetValue(key, out CacheItem<TValue>? cacheItem))
     {
@@ -159,10 +157,9 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     }
   }
 
-  private string GetKey<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor)
-    where TQuery : IQuery
+  private string GetKey(IQuery query)
   {
-    return queryExecutor.GetType().Name + "_" + currentUser.Value.Id;
+    return query.GetType().Name + "_" + currentUser.Value.Id;
   }
 
   private static string GetConfigToken(IQuery query)
