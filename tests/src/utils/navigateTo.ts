@@ -2,6 +2,7 @@ import { expect, Page } from "@playwright/test";
 import { EntriesPage } from "../poms/entriesPage";
 import { ScheduledPage } from "../poms/scheduledPage";
 import { MetricJournalPage } from "../poms/metricJournalPage";
+import { SearchPage } from "../poms/searchPage";
 import { isAndroidTest } from "./isAndroidTest";
 
 export async function navigateToHome(page: Page) {
@@ -32,4 +33,11 @@ export async function navigateToJournalPage(page: Page, journalName: string) {
   // this could also be a ScrapJournalPage, but for the moment
   // a MetricJournalPage is enough.
   return new MetricJournalPage(page);
+}
+
+export async function navigateToSearchPage(page: Page) {
+  await page
+    .getByRole("link", { name: "Search anything", exact: true })
+    .click();
+  return new SearchPage(page);
 }
