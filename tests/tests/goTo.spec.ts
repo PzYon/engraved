@@ -1,7 +1,6 @@
-import { test } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 import { login } from "../src/utils/login";
 import { addNewJournal } from "../src/utils/addNewJournal";
-import { navigateToHome } from "../src/utils/navigateTo";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 
 test("search in go to, use cursor down, use enter to navigate to scrap", async ({
@@ -60,3 +59,9 @@ test("initially shows recent journals, navigates with click", async ({
   await goToPage.expectItemText(2, "Philadelphia Eagles");
   await goToPage.expectItemText(3, "Kansas City Chiefs");
 });
+
+async function navigateToHome(page: Page) {
+  await page.keyboard.press("Alt+h");
+  await page.waitForURL((url) => url.pathname === "/");
+  await expect(page.getByTestId("page-actions")).toBeVisible();
+}
