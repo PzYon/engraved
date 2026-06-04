@@ -29,6 +29,8 @@ export const ScrapBody: React.FC<{
     journal,
     hasFocus,
     parsedDate,
+    isAutoSaveEnabled,
+    setIsAutoSaveEnabled,
   } = useScrapContext();
 
   const { isCompact } = useDisplayModeContext();
@@ -86,6 +88,12 @@ export const ScrapBody: React.FC<{
           hasFocus,
           hasSchedule,
         ),
+      );
+    }
+
+    if (isEditMode && scrapToRender.id) {
+      allActions.push(
+        ActionFactory.toggleAutoSave(isAutoSaveEnabled, setIsAutoSaveEnabled),
       );
     }
 

@@ -20,6 +20,8 @@ export interface IScrapContext {
   setIsEditMode: (isEditMode: boolean) => void;
   isDirty: boolean;
   hasPendingBackgroundUpdate: boolean;
+  isAutoSaveEnabled: boolean;
+  setIsAutoSaveEnabled: (value: boolean) => void;
   cancelEditingAction: IAction | null;
   upsertScrap: (
     notesToOverride?: string,
@@ -49,6 +51,8 @@ export const ScrapContext = createContext<IScrapContext>({
   setIsEditMode: null!,
   isDirty: null!,
   hasPendingBackgroundUpdate: null!,
+  isAutoSaveEnabled: null!,
+  setIsAutoSaveEnabled: null!,
   cancelEditingAction: null!,
   upsertScrap: null!,
   scrapToRender: null!,

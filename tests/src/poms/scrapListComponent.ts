@@ -32,7 +32,7 @@ export class ScrapListComponent {
   }
 
   async clickSave(isUpdate?: boolean) {
-    await this.page.getByRole("button", { name: "Save" }).click();
+    await this.page.getByRole("button", { name: "Save", exact: true }).click();
 
     return this.expectSaved(isUpdate);
   }

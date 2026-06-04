@@ -25,7 +25,9 @@ test("auto-saves markdown note changes when focus leaves the scrap", async ({
 
   // auto-save must NOT leave edit mode - the user stays in the editor until
   // they explicitly save. The "Save" action is only present while editing.
-  await expect(page.getByRole("button", { name: "Save" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Save", exact: true }),
+  ).toBeVisible();
 
   // the change is persisted: after a reload the appended text is still there.
   await page.reload();

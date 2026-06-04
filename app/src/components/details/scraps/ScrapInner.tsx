@@ -25,6 +25,7 @@ export const ScrapInner: React.FC = () => {
     isDirty,
     upsertScrap,
     hasPendingBackgroundUpdate,
+    isAutoSaveEnabled,
   } = useScrapContext();
 
   const { isCompact } = useDisplayModeContext();
@@ -47,7 +48,7 @@ export const ScrapInner: React.FC = () => {
   // edit and bypass the "scrap has changed" merge flow. Switching browser tab or
   // application does not produce a pointerdown, so those never trigger a save.
   useEffect(() => {
-    if (!isEditMode || !scrapToRender.id) {
+    if (!isEditMode || !scrapToRender.id || !isAutoSaveEnabled) {
       return;
     }
 
@@ -75,6 +76,7 @@ export const ScrapInner: React.FC = () => {
     scrapToRender.id,
     isDirty,
     hasPendingBackgroundUpdate,
+    isAutoSaveEnabled,
     upsertScrap,
   ]);
 

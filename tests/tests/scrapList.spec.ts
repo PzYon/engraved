@@ -95,12 +95,47 @@ test("auto-saves list changes when focus leaves the scrap", async ({
 
   // auto-save must NOT leave edit mode - the user stays in the editor until
   // they explicitly save. The "Save" action is only present while editing.
-  await expect(page.getByRole("button", { name: "Save" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Save", exact: true }),
+  ).toBeVisible();
 
   // the change is persisted: after a reload the new item is still there.
   await page.reload();
 
   await expect(await scrapList.getListItemByText(secondItemText)).toBeVisible();
+});
+
+test("does not auto-save when auto-save is disabled for the scrap", async ({
+  page,
+}) => {
+  await login(page, "scrapsList-autosave-off", "Scraps", "Random Scraps");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
+
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+  await scrapList.typeListItem(firstItemText);
+  await scrapList.clickSave();
+
+  await scrapList.dblClickToEdit();
+
+  // turn auto-save off for this scrap, then add an item and click outside.
+  await page.getByRole("button", { name: "Auto-save is on" }).click();
+  await page.getByLabel("Add new").click();
+  await page.keyboard.type(secondItemText);
+  await page.getByTestId("page-title").click();
+
+  // we are still editing (clicking outside did not close the editor)...
+  await expect(
+    page.getByRole("button", { name: "Save", exact: true }),
+  ).toBeVisible();
+
+  // ...and nothing was persisted: the unsaved item is gone after a reload,
+  // while the originally saved item remains.
+  await page.reload();
+  await expect(await scrapList.getListItemByText(secondItemText)).toBeHidden();
+  await expect(await scrapList.getListItemByText(firstItemText)).toBeVisible();
 });
 
 test("Enter only adds one empty line", async ({ page }) => {

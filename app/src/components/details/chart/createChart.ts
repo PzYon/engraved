@@ -4,7 +4,8 @@ import { GroupByTime } from "./consolidation/GroupByTime";
 import { createDataSets } from "./dataSets/createDataSets";
 import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
-import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
+import { ActiveElement, ChartEvent, ChartType, Element, TimeUnit } from "chart.js";
+import { PartialEventContext } from "chartjs-plugin-annotation";
 import { lighten } from "@mui/material";
 import {
   getCoefficient,
@@ -220,9 +221,9 @@ function createBarChart(
           return;
         }
 
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        const raw = (elements[0].element as unknown as any).$context
-          .raw as ITransformedEntry;
+        const raw = (
+          elements[0].element as Element & { $context: { raw: ITransformedEntry } }
+        ).$context.raw;
 
         const attributeValues = raw.entries.map(
           (m) => m.journalAttributeValues?.[attributeKey],
@@ -236,8 +237,7 @@ function createBarChart(
           stacked: true,
           type: "time",
           time: { minUnit: getTimeUnit(groupByTime) },
-          /* eslint-disable @typescript-eslint/no-explicit-any */
-          max: startOfDay(dateConditions?.to ?? new Date()) as any,
+          max: startOfDay(dateConditions?.to ?? new Date()).getTime(),
         },
         y: {
           min: uiSettings?.fixedScales?.min,
@@ -308,9 +308,13 @@ function getTimeUnit(groupByTime: GroupByTime): TimeUnit | undefined {
   }
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-function average(ctx: any, aggregationMode: AggregationMode): number {
-  const values = ctx.chart.data.datasets[0]?.data as ITransformedEntry[];
+function average(
+  ctx: PartialEventContext,
+  aggregationMode: AggregationMode,
+): number {
+  const values = ctx.chart.data.datasets[0]?.data as unknown as
+    | ITransformedEntry[]
+    | undefined;
 
   if (!values) {
     // chart.js's annotation `value` callback requires a number (undefined is

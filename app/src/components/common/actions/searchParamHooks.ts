@@ -88,11 +88,9 @@ export const useItemAction = () => {
 export const useEngravedSearchParams = () => {
   const navigate = useNavigate();
   const searchString = useSearchString();
-  const searchParams = new URLSearchParams(searchString);
 
   const getSearchParam = useCallback(
-    (key: string) => searchParams.get(key),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    (key: string) => new URLSearchParams(searchString).get(key),
     [searchString],
   );
 
@@ -120,7 +118,10 @@ export const useEngravedSearchParams = () => {
   const appendSearchParams = useCallback(
     (params: Record<string, string>) => {
       const updatedSearchParams = getNewSearchParams(params);
-      if (updatedSearchParams.toString() !== searchParams.toString()) {
+      if (
+        updatedSearchParams.toString() !==
+        new URLSearchParams(searchString).toString()
+      ) {
         navigate({
           to: ".",
           search: () => Object.fromEntries(updatedSearchParams),
@@ -128,7 +129,6 @@ export const useEngravedSearchParams = () => {
         });
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchString, navigate, getNewSearchParams],
   );
 

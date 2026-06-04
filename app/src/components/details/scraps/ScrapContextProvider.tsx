@@ -62,6 +62,9 @@ export const ScrapContextProvider: React.FC<{
   );
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
+  // Auto-save can be turned off for an individual scrap. Defaults to enabled.
+  const [isAutoSaveEnabled, setIsAutoSaveEnabled] = useState(true);
+
   useEffect(() => {
     if (!isEditMode || !initialScrap?.parentId) {
       return;
@@ -271,6 +274,8 @@ export const ScrapContextProvider: React.FC<{
         setIsEditMode,
         isDirty,
         hasPendingBackgroundUpdate,
+        isAutoSaveEnabled,
+        setIsAutoSaveEnabled,
         cancelEditingAction: !isEditMode
           ? null
           : ActionFactory.cancelEditing(
@@ -317,6 +322,8 @@ export const ScrapContextProvider: React.FC<{
       hasFocus,
       giveFocus,
       hasTitleFocus,
+      hasPendingBackgroundUpdate,
+      isAutoSaveEnabled,
     ],
   );
 
