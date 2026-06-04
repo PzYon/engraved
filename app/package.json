@@ -62,7 +62,6 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/google-one-tap": "1.2.7",
     "@types/node": "24.13.0",
