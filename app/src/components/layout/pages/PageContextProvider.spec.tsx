@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, act } from "@testing-library/react";
-import React from "react";
 import { PageContextProvider } from "./PageContextProvider";
 import { FilterMode, usePageContext } from "./PageContext";
 import { Page } from "./Page";
+import { JournalType } from "../../../serverApi/JournalType";
 
 // Mock the search params hook
 let mockSearchString = "";
@@ -104,7 +104,7 @@ describe("PageContextProvider", () => {
     );
 
     act(() => {
-      ctx!.setJournalTypes(["Scraps" as any]);
+      ctx!.setJournalTypes([JournalType.Scraps]);
     });
 
     expect(mockNavigate).toHaveBeenCalledWith(
@@ -170,7 +170,9 @@ describe("Page", () => {
           documentTitle="Doc"
           filterMode={FilterMode.All}
           showFilters={true}
-          actions={[{ key: "test", label: "Test", icon: null, onClick: () => {} }]}
+          actions={[
+            { key: "test", label: "Test", icon: null, onClick: () => {} },
+          ]}
         >
           <ContextReader onContext={(c) => (ctx = c)} />
         </Page>
@@ -192,8 +194,8 @@ describe("Page", () => {
       </PageContextProvider>,
     );
 
-    // After the page unmounts, context should reset - but since we re-render 
-    // a new provider, values will be fresh defaults anyway. 
+    // After the page unmounts, context should reset - but since we re-render
+    // a new provider, values will be fresh defaults anyway.
     // The important thing is that the unmount cleanup ran without errors.
     expect(ctx!.searchText).toBe("");
     expect(ctx!.journalTypes).toEqual([]);
