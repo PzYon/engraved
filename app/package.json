@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@types/google-one-tap": "1.2.7",
-    "@types/node": "24.12.4",
+    "@types/node": "24.13.0",
     "@types/react": "19.2.16",
     "@types/react-dom": "19.2.3",
     "@vitest/ui": "4.1.8",
