@@ -72,6 +72,37 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
   await testThatEveryUpdateLeadsToNewInitialState(page, scrapList);
 });
 
+test("auto-saves list changes when focus leaves the scrap", async ({
+  page,
+}) => {
+  await login(page, "scrapsList-autosave", "Scraps", "Random Scraps");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  await scrapsJournalPage.expectIsEmpty();
+
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+  await scrapList.typeListItem(firstItemText);
+  await scrapList.clickSave();
+
+  // edit the existing scrap and add a new item, but do NOT click save:
+  // moving focus out of the scrap should auto-save the pending change.
+  await scrapList.dblClickToEdit();
+  await page.getByLabel("Add new").click();
+  await page.keyboard.type(secondItemText);
+
+  await scrapList.blurToAutoSave(true);
+
+  // auto-save must NOT leave edit mode - the user stays in the editor until
+  // they explicitly save. The "Save" action is only present while editing.
+  await expect(page.getByRole("button", { name: "Save" })).toBeVisible();
+
+  // the change is persisted: after a reload the new item is still there.
+  await page.reload();
+
+  await expect(await scrapList.getListItemByText(secondItemText)).toBeVisible();
+});
+
 test("Enter only adds one empty line", async ({ page }) => {
   await login(page, "scrapsList-entry", "Scraps", "Random Scraps");
 

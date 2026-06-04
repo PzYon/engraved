@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { ScrapType } from "../../../serverApi/IScrapEntry";
 import { useScrapContext } from "./ScrapContext";
 import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
@@ -22,12 +22,65 @@ export const ScrapInner: React.FC = () => {
     setHasTitleFocus,
     hasFocus,
     changeScrapType,
+    isDirty,
+    upsertScrap,
+    hasPendingBackgroundUpdate,
   } = useScrapContext();
 
   const { isCompact } = useDisplayModeContext();
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-save: when the user is editing an existing scrap and then clicks/taps
+  // somewhere outside the scrap, save the pending changes so that work is not
+  // lost when one forgets to hit "save".
+  //
+  // We use a "click outside" detector (pointerdown anywhere outside the scrap)
+  // rather than a blur handler on purpose: a blur cannot reliably tell "tapped
+  // outside the scrap" apart from "tapped a non-focusable area inside the scrap"
+  // (both report a null relatedTarget), which on touch devices led to premature
+  // saves. Pointer position, on the other hand, is unambiguous.
+  //
+  // We deliberately keep this conservative: only existing (already persisted)
+  // scraps with unsaved changes are auto-saved, and never while a newer version
+  // of the scrap is pending resolution - saving then would clobber a concurrent
+  // edit and bypass the "scrap has changed" merge flow. Switching browser tab or
+  // application does not produce a pointerdown, so those never trigger a save.
+  useEffect(() => {
+    if (!isEditMode || !scrapToRender.id) {
+      return;
+    }
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Node | null;
+      if (
+        !target ||
+        containerRef.current?.contains(target) ||
+        !isDirty ||
+        hasPendingBackgroundUpdate
+      ) {
+        return;
+      }
+
+      // keep the user in edit mode - auto-save only persists, it does not close
+      // the editor. Edit mode is closed only via the explicit save/cancel action.
+      upsertScrap(undefined, true);
+    };
+
+    document.addEventListener("pointerdown", onPointerDown, true);
+    return () =>
+      document.removeEventListener("pointerdown", onPointerDown, true);
+  }, [
+    isEditMode,
+    scrapToRender.id,
+    isDirty,
+    hasPendingBackgroundUpdate,
+    upsertScrap,
+  ]);
+
   return (
     <div
+      ref={containerRef}
       onClick={(e) => {
         if (e.detail === 2) {
           setIsEditMode(true);
