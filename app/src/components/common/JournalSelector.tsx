@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalType } from "../../serverApi/JournalType";
@@ -37,11 +37,15 @@ export const JournalSelector: React.FC<{
     [journals, selectedJournalId],
   );
 
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  });
+
   useEffect(() => {
     if (selectedJournal) {
-      onChange(selectedJournal);
+      onChangeRef.current(selectedJournal);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedJournal]);
 
   if (!journals?.length) {

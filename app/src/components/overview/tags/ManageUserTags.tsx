@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { useUpdateUserTagsMutation } from "../../../serverApi/reactQuery/mutations/useUpsertUserTagsMutation";
 import { useAppContext } from "../../../AppContext";
@@ -8,10 +8,7 @@ import { EditableList } from "../../common/EditableList";
 export const ManageUserTags: React.FC = () => {
   const { user } = useAppContext();
 
-  const initialTags = useMemo(() => {
-    return Object.keys(user.tags ?? []);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [initialTags] = useState(() => user.tags ?? []);
 
   const [tags, setTags] = useState(user.tags ?? []);
 
