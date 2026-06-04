@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { FormControl, IconButton, TextField } from "@mui/material";
 import Clear from "@mui/icons-material/Clear";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
@@ -8,9 +8,9 @@ export const SearchBox: React.FC<{
   setSearchText: (searchText: string) => void;
 }> = ({ searchText, setSearchText }) => {
   const [currentFieldValue, setCurrentFieldValue] = useState(searchText);
-  const prevSearchTextRef = useRef(searchText);
-  if (prevSearchTextRef.current !== searchText) {
-    prevSearchTextRef.current = searchText;
+  const [prevSearchText, setPrevSearchText] = useState(searchText);
+  if (prevSearchText !== searchText) {
+    setPrevSearchText(searchText);
     setCurrentFieldValue(searchText);
   }
 
