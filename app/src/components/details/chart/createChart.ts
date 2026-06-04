@@ -21,6 +21,18 @@ import { getUiSettings } from "../../../util/journalUtils";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { IDateConditions } from "../JournalContext";
 
+interface ChartElementWithContext {
+  $context: { raw: ITransformedEntry };
+}
+
+interface AnnotationCallbackContext {
+  chart: {
+    data: {
+      datasets: Array<{ data: unknown[] }>;
+    };
+  };
+}
+
 export const createChart = (
   entries: IEntry[],
   journal: IJournal,
@@ -220,9 +232,8 @@ function createBarChart(
           return;
         }
 
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        const raw = (elements[0].element as unknown as any).$context
-          .raw as ITransformedEntry;
+        const raw = (elements[0].element as unknown as ChartElementWithContext)
+          .$context.raw;
 
         const attributeValues = raw.entries.map(
           (m) => m.journalAttributeValues?.[attributeKey],
@@ -236,8 +247,7 @@ function createBarChart(
           stacked: true,
           type: "time",
           time: { minUnit: getTimeUnit(groupByTime) },
-          /* eslint-disable @typescript-eslint/no-explicit-any */
-          max: startOfDay(dateConditions?.to ?? new Date()) as any,
+          max: startOfDay(dateConditions?.to ?? new Date()).getTime(),
         },
         y: {
           min: uiSettings?.fixedScales?.min,
@@ -308,9 +318,13 @@ function getTimeUnit(groupByTime: GroupByTime): TimeUnit | undefined {
   }
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-function average(ctx: any, aggregationMode: AggregationMode): number {
-  const values = ctx.chart.data.datasets[0]?.data as ITransformedEntry[];
+function average(
+  ctx: AnnotationCallbackContext,
+  aggregationMode: AggregationMode,
+): number {
+  const values = ctx.chart.data.datasets[0]?.data as
+    | ITransformedEntry[]
+    | undefined;
 
   if (!values) {
     // chart.js's annotation `value` callback requires a number (undefined is
