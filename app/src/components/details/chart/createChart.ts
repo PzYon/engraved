@@ -4,7 +4,8 @@ import { GroupByTime } from "./consolidation/GroupByTime";
 import { createDataSets } from "./dataSets/createDataSets";
 import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
-import { ActiveElement, ChartEvent, ChartType, TimeUnit } from "chart.js";
+import { ActiveElement, ChartEvent, ChartType, Element, TimeUnit } from "chart.js";
+import { PartialEventContext } from "chartjs-plugin-annotation";
 import { lighten } from "@mui/material";
 import {
   getCoefficient,
@@ -20,18 +21,6 @@ import { IChartUiProps } from "./IChartProps";
 import { getUiSettings } from "../../../util/journalUtils";
 import { AggregationMode } from "../edit/IJournalUiSettings";
 import { IDateConditions } from "../JournalContext";
-
-interface ChartElementWithContext {
-  $context: { raw: ITransformedEntry };
-}
-
-interface AnnotationCallbackContext {
-  chart: {
-    data: {
-      datasets: Array<{ data: unknown[] }>;
-    };
-  };
-}
 
 export const createChart = (
   entries: IEntry[],
@@ -232,8 +221,9 @@ function createBarChart(
           return;
         }
 
-        const raw = (elements[0].element as unknown as ChartElementWithContext)
-          .$context.raw;
+        const raw = (
+          elements[0].element as Element & { $context: { raw: ITransformedEntry } }
+        ).$context.raw;
 
         const attributeValues = raw.entries.map(
           (m) => m.journalAttributeValues?.[attributeKey],
@@ -319,10 +309,10 @@ function getTimeUnit(groupByTime: GroupByTime): TimeUnit | undefined {
 }
 
 function average(
-  ctx: AnnotationCallbackContext,
+  ctx: PartialEventContext,
   aggregationMode: AggregationMode,
 ): number {
-  const values = ctx.chart.data.datasets[0]?.data as
+  const values = ctx.chart.data.datasets[0]?.data as unknown as
     | ITransformedEntry[]
     | undefined;
 
