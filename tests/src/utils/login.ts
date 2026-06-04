@@ -30,5 +30,7 @@ export async function login(
     `/?test-user=${userName}&test-journal-name=${journalName ?? ""}&test-journal-type=${journalType ?? ""}`,
   );
 
+  await page.getByTestId("page-actions").waitFor({ state: "visible" });
+
   return userName;
 }
