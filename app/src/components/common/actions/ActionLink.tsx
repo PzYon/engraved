@@ -44,7 +44,8 @@ export const ActionLink: React.FC<{
     return (
       <a
         href={new URL(
-          new URLSearchParams(getSearch()).toString(),
+          // getSearch() never yields undefined values (mergeSearch drops them).
+          new URLSearchParams(getSearch() as Record<string, string>).toString(),
           action.href,
         ).toString()}
         style={style}

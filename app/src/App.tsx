@@ -34,6 +34,7 @@ import { TagPage } from "./components/overview/tags/TagPage";
 import { GoToPage } from "./components/overview/goto/GoToPage";
 import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
 import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNavigation";
+import { validateAppSearch } from "./components/common/actions/searchParamHooks";
 
 // Defined before RootLayout so the component reference is available
 const Host = styled("div")`
@@ -64,15 +65,12 @@ const RootLayout: React.FC = () => (
   </ReactQueryProviderWrapper>
 );
 
-// Root route — shared layout for all pages.
-// validateSearch allows arbitrary string search params throughout the app.
+// Root route — shared layout for all pages. The search schema (typed, with
+// arbitrary string params passed through) lives in searchParamHooks.
 const rootRoute = createRootRoute({
   component: RootLayout,
   notFoundComponent: () => <JournalsPage />,
-  validateSearch: (search: Record<string, unknown>): Record<string, string> =>
-    Object.fromEntries(
-      Object.entries(search).map(([k, v]) => [k, String(v ?? "")]),
-    ),
+  validateSearch: validateAppSearch,
 });
 
 const journalsRoute = createRoute({

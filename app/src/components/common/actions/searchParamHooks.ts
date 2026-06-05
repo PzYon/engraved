@@ -9,15 +9,48 @@ export const knownQueryParams = {
   testUser: "test-user",
   testJournalName: "test-journal-name",
   testJournalType: "test-journal-type",
-};
+} as const;
 
-type ActionKey =
-  | "permissions"
-  | "delete"
-  | "schedule"
-  | "add-entry"
-  | "move"
-  | "edit";
+const actionKeys = [
+  "permissions",
+  "delete",
+  "schedule",
+  "add-entry",
+  "move",
+  "edit",
+] as const;
+
+export type ActionKey = (typeof actionKeys)[number];
+
+// The app's URL search schema. Most params are plain strings, so an index
+// signature lets the generic helpers below read/write arbitrary keys (e.g. the
+// PWA share-target's title/text/link, or journalTypes) without ceremony. The
+// keys we reason about explicitly are typed on top of it: `action-key` is the
+// only one that's more than a string today.
+export interface AppSearch {
+  [key: string]: string | undefined;
+  "action-key"?: ActionKey;
+}
+
+// Root-route `validateSearch`. Keeps every incoming key (coerced to a string)
+// so no param is silently dropped, but narrows `action-key` to the known union
+// so the type isn't a lie — an unrecognized value is discarded.
+export function validateAppSearch(input: Record<string, unknown>): AppSearch {
+  const result: AppSearch = {};
+
+  for (const [key, value] of Object.entries(input)) {
+    if (value === undefined || value === null) {
+      continue;
+    }
+    result[key] = String(value);
+  }
+
+  if (result["action-key"] && !actionKeys.includes(result["action-key"])) {
+    delete result["action-key"];
+  }
+
+  return result;
+}
 
 export function getItemActionQueryParams(
   actionKey: ActionKey,
@@ -30,11 +63,8 @@ export function getItemActionQueryParams(
 }
 
 export function clearAllSearchParams() {
-  return Object.keys(knownQueryParams).reduce(
-    (aggregated: Record<string, string | undefined>, objectKey: string) => {
-      const queryStringKey = (knownQueryParams as Record<string, string>)[
-        objectKey
-      ];
+  return Object.values(knownQueryParams).reduce(
+    (aggregated: Record<string, string | undefined>, queryStringKey) => {
       aggregated[queryStringKey] = undefined;
       return aggregated;
     },
@@ -42,18 +72,13 @@ export function clearAllSearchParams() {
   );
 }
 
-// Under the root route's `validateSearch`, the entire search bag is a flat
-// string map. This is the shape the router hands us via `useSearch` and expects
-// back from a `search` updater.
-type SearchBag = Record<string, string>;
-
 // Merge `updates` into `current`, dropping keys whose value is empty/false so
 // they disappear from the URL rather than lingering as `key=` or `key=false`.
 function mergeSearch(
-  current: SearchBag,
+  current: AppSearch,
   updates: Record<string, string | undefined>,
-): SearchBag {
-  const next: SearchBag = { ...current };
+): AppSearch {
+  const next: AppSearch = { ...current };
 
   for (const key in updates) {
     const value = updates[key];
@@ -67,7 +92,7 @@ function mergeSearch(
   return next;
 }
 
-function searchEquals(a: SearchBag, b: SearchBag): boolean {
+function searchEquals(a: AppSearch, b: AppSearch): boolean {
   const aKeys = Object.keys(a);
   return (
     aKeys.length === Object.keys(b).length &&
@@ -75,8 +100,8 @@ function searchEquals(a: SearchBag, b: SearchBag): boolean {
   );
 }
 
-function useCurrentSearch(): SearchBag {
-  return useSearch({ strict: false }) as SearchBag;
+function useCurrentSearch(): AppSearch {
+  return useSearch({ strict: false }) as AppSearch;
 }
 
 export const useItemAction = () => {
@@ -84,12 +109,11 @@ export const useItemAction = () => {
   const search = useCurrentSearch();
 
   return {
-    getParams: () => {
-      return getItemActionQueryParams(
-        search[knownQueryParams.actionKey] as ActionKey,
-        search[knownQueryParams.selectedItemId] ?? "",
-      );
-    },
+    getParams: () => ({
+      [knownQueryParams.actionKey]: search[knownQueryParams.actionKey],
+      [knownQueryParams.selectedItemId]:
+        search[knownQueryParams.selectedItemId],
+    }),
 
     closeAction: () => {
       const hasChanges =
@@ -104,7 +128,7 @@ export const useItemAction = () => {
       navigate({
         to: ".",
         search: (prev) =>
-          mergeSearch(prev as SearchBag, {
+          mergeSearch(prev, {
             [knownQueryParams.actionKey]: undefined,
             [knownQueryParams.selectedItemId]: undefined,
             [knownQueryParams.testUser]: undefined,
@@ -124,7 +148,7 @@ export const useEngravedSearchParams = () => {
   );
 
   const getNewSearchParams = useCallback(
-    (params: Record<string, string | undefined>): SearchBag =>
+    (params: Record<string, string | undefined>): AppSearch =>
       mergeSearch(search, params),
     [search],
   );
