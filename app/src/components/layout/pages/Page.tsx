@@ -37,8 +37,6 @@ export const Page: React.FC<{
       setDocumentTitle,
       setFilterMode,
       setShowFilters,
-      setJournalTypes,
-      setSearchText,
       setTabs,
     } = usePageContext();
 
@@ -110,8 +108,6 @@ export const Page: React.FC<{
         if (props.filterMode !== FilterMode.None) {
           setFilterMode(FilterMode.None);
         }
-        setSearchText("");
-        setJournalTypes([]);
         if (props.tabs?.length) {
           setTabs([]);
         }
@@ -125,8 +121,6 @@ export const Page: React.FC<{
     }, [
       setShowFilters,
       setFilterMode,
-      setSearchText,
-      setJournalTypes,
       setTabs,
       setPageActionRoutes,
       setPageActions,
