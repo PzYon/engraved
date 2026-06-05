@@ -82,10 +82,12 @@ export const ScrapInner: React.FC = () => {
     upsertScrap,
   ]);
 
-  const toggleAutoSave = ActionFactory.toggleAutoSave(
-    isAutoSaveEnabled,
-    setIsAutoSaveEnabled,
-  );
+  // Auto-save only applies to already persisted scraps, so the toggle is offered
+  // for those only (a brand-new, unsaved scrap has nothing to auto-save yet).
+  const autoSaveActions = scrapToRender.id
+    ? [ActionFactory.toggleAutoSave(isAutoSaveEnabled, setIsAutoSaveEnabled)]
+    : [];
+
   return (
     <div
       ref={containerRef}
@@ -131,12 +133,12 @@ export const ScrapInner: React.FC = () => {
 
       {scrapToRender.scrapType === ScrapType.List ? (
         <div style={{ marginTop: "2px" }}>
-          <ScrapList editModeActions={[toggleAutoSave]} />
+          <ScrapList editModeActions={autoSaveActions} />
         </div>
       ) : (
         <ScrapMarkdown
           editModeActions={[
-            toggleAutoSave,
+            ...autoSaveActions,
             {
               onClick: () => {
                 changeScrapType(
