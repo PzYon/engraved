@@ -9,6 +9,7 @@ import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { ParseableDate } from "../edit/ParseableDate";
 import { Markdown } from "./markdown/Markdown";
 import { AutoFixHigh } from "@mui/icons-material";
+import { ActionFactory } from "../../common/actions/ActionFactory";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -26,6 +27,7 @@ export const ScrapInner: React.FC = () => {
     upsertScrap,
     hasPendingBackgroundUpdate,
     isAutoSaveEnabled,
+    setIsAutoSaveEnabled,
   } = useScrapContext();
 
   const { isCompact } = useDisplayModeContext();
@@ -80,6 +82,10 @@ export const ScrapInner: React.FC = () => {
     upsertScrap,
   ]);
 
+  const toggleAutoSave = ActionFactory.toggleAutoSave(
+    isAutoSaveEnabled,
+    setIsAutoSaveEnabled,
+  );
   return (
     <div
       ref={containerRef}
@@ -125,11 +131,12 @@ export const ScrapInner: React.FC = () => {
 
       {scrapToRender.scrapType === ScrapType.List ? (
         <div style={{ marginTop: "2px" }}>
-          <ScrapList />
+          <ScrapList editModeActions={[toggleAutoSave]} />
         </div>
       ) : (
         <ScrapMarkdown
           editModeActions={[
+            toggleAutoSave,
             {
               onClick: () => {
                 changeScrapType(
