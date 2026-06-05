@@ -1,4 +1,5 @@
 import AddOutlined from "@mui/icons-material/AddOutlined";
+import SaveAs from "@mui/icons-material/SaveAs";
 import ClearOutlined from "@mui/icons-material/ClearOutlined";
 import Close from "@mui/icons-material/Close";
 import ContentCopyOutlined from "@mui/icons-material/ContentCopyOutlined";
@@ -465,6 +466,19 @@ export class ActionFactory {
       label: "Refresh data",
       key: "refresh",
       sx: { color: "common.white" },
+    };
+  }
+
+  static toggleAutoSave(
+    isAutoSaveEnabled: boolean,
+    setIsAutoSaveEnabled: (value: boolean) => void,
+  ): IAction {
+    return {
+      key: "toggle-auto-save",
+      icon: <SaveAs fontSize="small" />,
+      label: isAutoSaveEnabled ? "Auto-save is on" : "Auto-save is off",
+      onClick: () => setIsAutoSaveEnabled(!isAutoSaveEnabled),
+      isNotActive: !isAutoSaveEnabled,
     };
   }
 

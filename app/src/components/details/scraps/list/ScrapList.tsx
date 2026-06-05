@@ -27,7 +27,9 @@ import { IAction } from "../../../common/actions/IAction";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
 
-export const ScrapList: React.FC = () => {
+export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
+  editModeActions,
+}) => {
   const { palette } = useTheme();
 
   const {
@@ -79,7 +81,7 @@ export const ScrapList: React.FC = () => {
         <ActionIconButtonGroup
           alignToPosition="top"
           stickToPosition="top"
-          actions={getEditModeActions()}
+          actions={[...(editModeActions ?? []), ...getEditModeActions()]}
         />
       ) : null}
 
