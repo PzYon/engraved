@@ -15,35 +15,26 @@ export const ActionLink: React.FC<{
 
   const { getNewSearchParams } = useEngravedSearchParams();
 
-  const getSearch = () =>
-    Object.fromEntries(getNewSearchParams(action.search ?? {}));
+  // The search params an internal link/navigation should end up with: the
+  // current params merged with the action's (empty/false values are dropped by
+  // getNewSearchParams). Passed to the router as a structured object rather than
+  // a hand-built query string, so `to` stays a clean route path.
+  const getSearch = () => getNewSearchParams(action.search ?? {});
 
-  // Actions with an own href navigate to that (already resolved) route. Actions
-  // without a href only modify the search params of the current page, so we stay
-  // on the current route ("."). Navigating to a full path here would remount the
-  // page and wipe the freshly-set search params.
-  const getHref = () => {
-    const query = getNewSearchParams(action.search ?? {}).toString();
-    return query ? `${action.href}?${query}` : action.href!;
-  };
+  // Actions with an own href navigate to that route; actions without one only
+  // tweak the search params, so they stay on the current route ("."). In both
+  // cases we keep `to` and `search` separate: folding the query into `to` would
+  // make the router treat it as an opaque path and remount the page, wiping the
+  // freshly-set search params.
+  const to = action.href ?? ".";
 
-  useEngravedHotkeys(
-    action.hotkey,
-    () => {
-      if (action.href) {
-        navigate({ to: getHref() });
-      } else {
-        navigate({ to: ".", search: getSearch });
-      }
-    },
-    {
-      enabled:
-        !isAbsoluteUrl &&
-        !!action.hotkey &&
-        !!(action.href || Object.keys(action.search ?? {}).length),
-      enableOnFormTags: ["textarea", "input"],
-    },
-  );
+  useEngravedHotkeys(action.hotkey, () => navigate({ to, search: getSearch }), {
+    enabled:
+      !isAbsoluteUrl &&
+      !!action.hotkey &&
+      !!(action.href || Object.keys(action.search ?? {}).length),
+    enableOnFormTags: ["textarea", "input"],
+  });
 
   if (action.isDisabled) {
     return <span style={style}>{getChildren()}</span>;
@@ -53,7 +44,7 @@ export const ActionLink: React.FC<{
     return (
       <a
         href={new URL(
-          getNewSearchParams(action.search ?? {}).toString(),
+          new URLSearchParams(getSearch()).toString(),
           action.href,
         ).toString()}
         style={style}
@@ -73,22 +64,9 @@ export const ActionLink: React.FC<{
   // navigate via root ("/") before applying the new action's params.
   const stopEvents = (e: React.SyntheticEvent) => e.stopPropagation();
 
-  if (action.href) {
-    return (
-      <Link
-        to={getHref()}
-        onClick={stopEvents}
-        onMouseUp={stopEvents}
-        style={style}
-      >
-        {getChildren()}
-      </Link>
-    );
-  }
-
   return (
     <Link
-      to="."
+      to={to}
       search={getSearch}
       onClick={stopEvents}
       onMouseUp={stopEvents}

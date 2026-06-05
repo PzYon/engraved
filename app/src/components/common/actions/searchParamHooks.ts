@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 export const knownQueryParams = {
   selectedItemId: "selected-item",
@@ -42,94 +42,101 @@ export function clearAllSearchParams() {
   );
 }
 
-function useSearchString(): string {
-  return useLocation({ select: (l) => l.searchStr });
+// Under the root route's `validateSearch`, the entire search bag is a flat
+// string map. This is the shape the router hands us via `useSearch` and expects
+// back from a `search` updater.
+type SearchBag = Record<string, string>;
+
+// Merge `updates` into `current`, dropping keys whose value is empty/false so
+// they disappear from the URL rather than lingering as `key=` or `key=false`.
+function mergeSearch(
+  current: SearchBag,
+  updates: Record<string, string | undefined>,
+): SearchBag {
+  const next: SearchBag = { ...current };
+
+  for (const key in updates) {
+    const value = updates[key];
+    if (value === undefined || value === "" || value === "false") {
+      delete next[key];
+    } else {
+      next[key] = value;
+    }
+  }
+
+  return next;
+}
+
+function searchEquals(a: SearchBag, b: SearchBag): boolean {
+  const aKeys = Object.keys(a);
+  return (
+    aKeys.length === Object.keys(b).length &&
+    aKeys.every((key) => a[key] === b[key])
+  );
+}
+
+function useCurrentSearch(): SearchBag {
+  return useSearch({ strict: false }) as SearchBag;
 }
 
 export const useItemAction = () => {
   const navigate = useNavigate();
-  const searchString = useSearchString();
-  const searchParams = new URLSearchParams(searchString);
+  const search = useCurrentSearch();
 
   return {
     getParams: () => {
       return getItemActionQueryParams(
-        searchParams.get(knownQueryParams.actionKey) as ActionKey,
-        searchParams.get(knownQueryParams.selectedItemId) ?? "",
+        search[knownQueryParams.actionKey] as ActionKey,
+        search[knownQueryParams.selectedItemId] ?? "",
       );
     },
 
     closeAction: () => {
-      let hasChanges = false;
-      const newParams = new URLSearchParams(searchString);
+      const hasChanges =
+        !!search[knownQueryParams.actionKey] ||
+        !!search[knownQueryParams.selectedItemId] ||
+        !!search[knownQueryParams.testUser];
 
-      if (newParams.get(knownQueryParams.actionKey)) {
-        newParams.delete(knownQueryParams.actionKey);
-        hasChanges = true;
+      if (!hasChanges) {
+        return;
       }
 
-      if (newParams.get(knownQueryParams.selectedItemId)) {
-        newParams.delete(knownQueryParams.selectedItemId);
-        hasChanges = true;
-      }
-
-      if (newParams.get(knownQueryParams.testUser)) {
-        newParams.delete(knownQueryParams.testUser);
-        hasChanges = true;
-      }
-
-      if (hasChanges) {
-        navigate({ to: ".", search: () => Object.fromEntries(newParams) });
-      }
+      navigate({
+        to: ".",
+        search: (prev) =>
+          mergeSearch(prev as SearchBag, {
+            [knownQueryParams.actionKey]: undefined,
+            [knownQueryParams.selectedItemId]: undefined,
+            [knownQueryParams.testUser]: undefined,
+          }),
+      });
     },
   };
 };
 
 export const useEngravedSearchParams = () => {
   const navigate = useNavigate();
-  const searchString = useSearchString();
+  const search = useCurrentSearch();
 
   const getSearchParam = useCallback(
-    (key: string) => new URLSearchParams(searchString).get(key),
-    [searchString],
-  );
-
-  const cloneSearchParams = useCallback(
-    (): URLSearchParams => new URLSearchParams(searchString),
-    [searchString],
+    (key: string) => search[key] ?? null,
+    [search],
   );
 
   const getNewSearchParams = useCallback(
-    (params: Record<string, string | undefined>): URLSearchParams => {
-      const newSearchParams = cloneSearchParams();
-      for (const key in params) {
-        const value = params[key];
-        if (value === undefined || value === "" || value === "false") {
-          newSearchParams.delete(key);
-        } else {
-          newSearchParams.set(key, value);
-        }
-      }
-      return newSearchParams;
-    },
-    [cloneSearchParams],
+    (params: Record<string, string | undefined>): SearchBag =>
+      mergeSearch(search, params),
+    [search],
   );
 
   const appendSearchParams = useCallback(
     (params: Record<string, string>) => {
-      const updatedSearchParams = getNewSearchParams(params);
-      if (
-        updatedSearchParams.toString() !==
-        new URLSearchParams(searchString).toString()
-      ) {
-        navigate({
-          to: ".",
-          search: () => Object.fromEntries(updatedSearchParams),
-          replace: true,
-        });
+      const next = mergeSearch(search, params);
+      if (!searchEquals(search, next)) {
+        navigate({ to: ".", search: () => next, replace: true });
       }
     },
-    [searchString, navigate, getNewSearchParams],
+    [search, navigate],
   );
 
   return {
