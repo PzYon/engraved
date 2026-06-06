@@ -2,7 +2,7 @@ import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
-import { useEngravedSearchParams } from "./searchParamHooks";
+import { knownQueryParams, useEngravedSearchParams } from "./searchParamHooks";
 
 export const ActionLink: React.FC<{
   action: IAction;
@@ -28,13 +28,28 @@ export const ActionLink: React.FC<{
   // freshly-set search params.
   const to = action.href ?? ".";
 
-  useEngravedHotkeys(action.hotkey, () => navigate({ to, search: getSearch }), {
-    enabled:
-      !isAbsoluteUrl &&
-      !!action.hotkey &&
-      !!(action.href || Object.keys(action.search ?? {}).length),
-    enableOnFormTags: ["textarea", "input"],
-  });
+  // Don't let the router scroll to the top for actions that only open a panel on
+  // the current view: either there's no href (we stay on "."), or the action
+  // sets an action-key (a panel on the same page, even when it carries the
+  // current page's href). Real page navigations (go to journal, home, ...) keep
+  // the default resetScroll so they land at the top. `undefined` = router
+  // default (true).
+  const resetScroll =
+    !action.href || action.search?.[knownQueryParams.actionKey]
+      ? false
+      : undefined;
+
+  useEngravedHotkeys(
+    action.hotkey,
+    () => navigate({ to, search: getSearch, resetScroll }),
+    {
+      enabled:
+        !isAbsoluteUrl &&
+        !!action.hotkey &&
+        !!(action.href || Object.keys(action.search ?? {}).length),
+      enableOnFormTags: ["textarea", "input"],
+    },
+  );
 
   if (action.isDisabled) {
     return <span style={style}>{getChildren()}</span>;
@@ -69,6 +84,7 @@ export const ActionLink: React.FC<{
     <Link
       to={to}
       search={getSearch}
+      resetScroll={resetScroll}
       onClick={stopEvents}
       onMouseUp={stopEvents}
       style={style}

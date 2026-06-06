@@ -104,6 +104,7 @@ export const OverviewListContextProvider: React.FC<{
     navigate({
       to: ".",
       replace: true,
+      resetScroll: false,
       // Functional updater: compute from the router's current search instead of
       // closing over searchString. This keeps the callback (and the memoized
       // context value below) stable across search changes, so updating these
@@ -200,6 +201,7 @@ export const OverviewListContextProvider: React.FC<{
         navigate({
           to: ".",
           replace: true,
+          resetScroll: false,
           search: (prev) => {
             const next = { ...prev };
             delete next[knownQueryParams.selectedItemId];

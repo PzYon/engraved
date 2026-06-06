@@ -127,6 +127,7 @@ export const useItemAction = () => {
 
       navigate({
         to: ".",
+        resetScroll: false,
         search: (prev) =>
           mergeSearch(prev, {
             [knownQueryParams.actionKey]: undefined,
@@ -157,7 +158,12 @@ export const useEngravedSearchParams = () => {
     (params: Record<string, string>) => {
       const next = mergeSearch(search, params);
       if (!searchEquals(search, next)) {
-        navigate({ to: ".", search: () => next, replace: true });
+        navigate({
+          to: ".",
+          search: () => next,
+          replace: true,
+          resetScroll: false,
+        });
       }
     },
     [search, navigate],
