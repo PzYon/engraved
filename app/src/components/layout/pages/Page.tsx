@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { FilterMode, usePageContext } from "./PageContext";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { IAction } from "../../common/actions/IAction";
@@ -37,98 +37,94 @@ export const Page: React.FC<{
       setDocumentTitle,
       setFilterMode,
       setShowFilters,
-      journalTypes,
-      setJournalTypes,
-      searchText,
-      setSearchText,
       setTabs,
     } = usePageContext();
 
+    // Sync all page props to context in a single effect
     useEffect(() => {
-      if (actions === undefined) {
-        return;
+      if (actions !== undefined) {
+        setPageActions(actions);
       }
-
-      setPageActions(actions);
-    }, [setPageActions, actions]);
-
-    useEffect(() => {
-      if (pageActionRoutes === undefined) {
-        return;
+      if (pageActionRoutes !== undefined) {
+        setPageActionRoutes(pageActionRoutes);
       }
-
-      setPageActionRoutes(pageActionRoutes);
-    }, [setPageActionRoutes, pageActionRoutes]);
-
-    useEffect(
-      () => setHideActions(hideActions ?? false),
-      [hideActions, setHideActions],
-    );
-
-    useEffect(() => {
-      if (tabs === undefined) {
-        return;
+      setHideActions(hideActions ?? false);
+      if (tabs !== undefined) {
+        setTabs(tabs);
       }
-
-      setTabs(tabs);
-    }, [setTabs, tabs]);
-
-    useEffect(() => {
-      if (title === undefined) {
-        return;
+      if (title !== undefined) {
+        setTitle(title);
       }
+      setSubTitle(subTitle);
+      setDocumentTitle(documentTitle ?? "");
+      setFilterMode(filterMode);
+      setShowFilters(showFilters);
+    }, [
+      actions,
+      pageActionRoutes,
+      hideActions,
+      tabs,
+      title,
+      subTitle,
+      documentTitle,
+      filterMode,
+      showFilters,
+      setPageActions,
+      setPageActionRoutes,
+      setHideActions,
+      setTabs,
+      setTitle,
+      setSubTitle,
+      setDocumentTitle,
+      setFilterMode,
+      setShowFilters,
+    ]);
 
-      setTitle(title);
-    }, [setTitle, title]);
+    // Store current prop values in a ref so cleanup can access them without
+    // needing them in the dependency array (which would re-run on every change).
+    const propsRef = useRef({
+      showFilters,
+      filterMode,
+      tabs,
+      pageActionRoutes,
+      actions,
+    });
+    propsRef.current = {
+      showFilters,
+      filterMode,
+      tabs,
+      pageActionRoutes,
+      actions,
+    };
 
-    useEffect(() => setSubTitle(subTitle), [subTitle, setSubTitle]);
-
-    useEffect(
-      () => setDocumentTitle(documentTitle ?? ""),
-      [documentTitle, setDocumentTitle],
-    );
-
-    useEffect(() => setFilterMode(filterMode), [filterMode, setFilterMode]);
-
-    useEffect(() => setShowFilters(showFilters), [showFilters, setShowFilters]);
-
+    // Reset context state when leaving the page
     useEffect(() => {
-      // reset the page-level context state when leaving the page. Note: we do
-      // NOT clear the URL search params here. Doing so on unmount is unreliable
-      // (it also runs on StrictMode re-invokes and transient remounts, where it
-      // wipes params that were just set) and is never actually needed: real
-      // navigation already replaces the URL, so there is nothing to clean up.
       return () => {
-        if (showFilters) {
+        const props = propsRef.current;
+
+        if (props.showFilters) {
           setShowFilters(false);
         }
-
-        if (filterMode !== FilterMode.None) {
+        if (props.filterMode !== FilterMode.None) {
           setFilterMode(FilterMode.None);
         }
-
-        if (searchText) {
-          setSearchText("");
-        }
-
-        if (journalTypes?.length) {
-          setJournalTypes([]);
-        }
-
-        if (tabs?.length) {
+        if (props.tabs?.length) {
           setTabs([]);
         }
-
-        if (pageActionRoutes) {
+        if (props.pageActionRoutes) {
           setPageActionRoutes(null);
         }
-
-        if (actions?.length) {
+        if (props.actions?.length) {
           setPageActions([]);
         }
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [
+      setShowFilters,
+      setFilterMode,
+      setTabs,
+      setPageActionRoutes,
+      setPageActions,
+    ]);
 
     return <FadeInContainer testId={"page"}>{children}</FadeInContainer>;
   },
