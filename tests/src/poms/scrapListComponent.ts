@@ -32,8 +32,20 @@ export class ScrapListComponent {
   }
 
   async clickSave(isUpdate?: boolean) {
-    await this.page.getByRole("button", { name: "Save" }).click();
+    await this.page.getByRole("button", { name: "Save", exact: true }).click();
 
+    return this.expectSaved(isUpdate);
+  }
+
+  // Moves focus out of the scrap (by clicking the page title), which triggers
+  // the auto-save-on-blur behaviour for an existing scrap with pending changes.
+  async blurToAutoSave(isUpdate?: boolean) {
+    await this.page.getByTestId("page-title").click();
+
+    return this.expectSaved(isUpdate);
+  }
+
+  private async expectSaved(isUpdate?: boolean) {
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar).toContainText(
       isUpdate ? "Updated entry" : "Added entry",
