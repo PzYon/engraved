@@ -4,14 +4,16 @@ import { Icon } from "../../common/Icon";
 import { IconStyle } from "../../common/IconStyle";
 import { FilterMode } from "../../layout/pages/PageContext";
 import Style from "@mui/icons-material/Style";
-import { useParams } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import React from "react";
 import { useAppContext } from "../../../AppContext";
 import { Journals } from "../journals/Journals";
 import { NoResultsFound } from "../../common/search/NoResultsFound";
 
+const routeApi = getRouteApi("/tags/$tagId");
+
 export const TagPage: React.FC = () => {
-  const { tagId } = useParams({ strict: false });
+  const { tagId } = routeApi.useParams();
   const { user } = useAppContext();
 
   const journalIds = user.tags?.find((t) => t.id === tagId)?.journalIds ?? [];

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { ClickAwayListener, styled } from "@mui/material";
 import {
   actionBorderWidth,
@@ -37,7 +37,12 @@ export const NavigationActionContainer: React.FC<{
         }}
       >
         <ClickAwayListener onClickAway={closeAction} mouseEvent="onMouseUp">
-          <InnerInner>{children}</InnerInner>
+          {/* Contain suspension (e.g. the add/edit-entry form's data query) to
+              this panel. Without a local boundary it bubbles to the route-level
+              Suspense, which would blank the whole surrounding list. */}
+          <InnerInner>
+            <Suspense fallback={null}>{children}</Suspense>
+          </InnerInner>
         </ClickAwayListener>
       </Inner>
     </Host>

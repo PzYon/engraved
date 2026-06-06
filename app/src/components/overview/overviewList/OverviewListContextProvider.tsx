@@ -53,8 +53,9 @@ export const OverviewListContextProvider: React.FC<{
   }, [activeItemId, onActiveItemChange]);
 
   // undefined is the initial value, afterward it is ""
-  const [inMemorySearchText, setInMemorySearchText] =
-    useState<string | undefined>(undefined);
+  const [inMemorySearchText, setInMemorySearchText] = useState<
+    string | undefined
+  >(undefined);
 
   useEffect(() => {
     if (inMemorySearchText) {
@@ -100,22 +101,29 @@ export const OverviewListContextProvider: React.FC<{
   );
 
   const removeItemParamsFromUrl = useCallback(() => {
-    if (
-      !searchParams.get(knownQueryParams.selectedItemId) &&
-      !searchParams.get(knownQueryParams.actionKey)
-    ) {
-      return;
-    }
-
-    const newParams = new URLSearchParams(searchString);
-    newParams.delete(knownQueryParams.selectedItemId);
-    newParams.delete(knownQueryParams.actionKey);
     navigate({
       to: ".",
-      search: () => Object.fromEntries(newParams),
       replace: true,
+      resetScroll: false,
+      // Functional updater: compute from the router's current search instead of
+      // closing over searchString. This keeps the callback (and the memoized
+      // context value below) stable across search changes, so updating these
+      // params doesn't re-render the whole list.
+      search: (prev) => {
+        if (
+          !prev[knownQueryParams.selectedItemId] &&
+          !prev[knownQueryParams.actionKey]
+        ) {
+          return prev;
+        }
+
+        const next = { ...prev };
+        delete next[knownQueryParams.selectedItemId];
+        delete next[knownQueryParams.actionKey];
+        return next;
+      },
     });
-  }, [searchParams, searchString, navigate]);
+  }, [navigate]);
 
   useEngravedHotkeys("*", (e) => {
     if (isRichTextEditor(e.target as HTMLElement)) {
@@ -187,16 +195,18 @@ export const OverviewListContextProvider: React.FC<{
         setInMemorySearchText("");
       },
       keepFocusAtIndex: () => {
-        const newParams = new URLSearchParams(searchString);
-        newParams.delete(knownQueryParams.selectedItemId);
-
         const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
         const previousItemId = items[currentItemIndex + 1]?.id ?? "";
 
         navigate({
           to: ".",
-          search: () => Object.fromEntries(newParams),
           replace: true,
+          resetScroll: false,
+          search: (prev) => {
+            const next = { ...prev };
+            delete next[knownQueryParams.selectedItemId];
+            return next;
+          },
         });
         setActiveItemId(previousItemId);
       },
@@ -208,7 +218,6 @@ export const OverviewListContextProvider: React.FC<{
       items,
       removeItemParamsFromUrl,
       setShowAll,
-      searchString,
       navigate,
     ],
   );

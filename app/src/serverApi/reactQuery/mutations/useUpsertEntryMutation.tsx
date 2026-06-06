@@ -9,7 +9,7 @@ import { IJournalAttributeValues } from "../../IJournalAttributeValues";
 import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
-import { useRouterState } from "@tanstack/react-router";
+import { useMatchRoute } from "@tanstack/react-router";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 import { StyledLink } from "./StyledLink";
 
@@ -28,7 +28,7 @@ export const useUpsertEntryMutation = (
 
   const queryClient = useQueryClient();
 
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const matchRoute = useMatchRoute();
 
   const editJournalMutation = useEditJournalMutation(journalId);
 
@@ -58,11 +58,18 @@ export const useUpsertEntryMutation = (
       variables: IUpsertEntryCommandVariables,
     ) => {
       const journalId = variables.command.journalId;
-      const journalUrl = `/journals/details/${journalId}`;
+
+      // Only offer a "View in journal" link when we're not already on that
+      // journal's details page (or one of its sub-routes).
+      const isOnJournalPage = matchRoute({
+        to: "/journals/details/$journalId",
+        params: { journalId },
+        fuzzy: true,
+      });
 
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
-        message: !pathname.startsWith(journalUrl) ? (
+        message: !isOnJournalPage ? (
           <>
             <StyledLink
               to="/journals/details/$journalId"

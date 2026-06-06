@@ -1,13 +1,15 @@
 import React from "react";
-import { useParams } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { JournalDetails } from "./JournalDetails";
 import { JournalContextProvider } from "./JournalContextProvider";
 
+const routeApi = getRouteApi("/journals/details/$journalId");
+
 export const JournalPageWrapper: React.FC = () => {
-  const { journalId } = useParams({ strict: false });
+  const { journalId } = routeApi.useParams();
 
   return (
-    <JournalContextProvider journalId={journalId ?? ""}>
+    <JournalContextProvider journalId={journalId}>
       <JournalDetails />
     </JournalContextProvider>
   );

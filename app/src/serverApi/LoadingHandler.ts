@@ -23,9 +23,19 @@ export class LoadingHandler {
   }
 
   private callHandlers(loading: boolean) {
-    for (const key in this.handlers) {
-      this.handlers[key](loading);
-    }
+    // Defer out of any in-progress React render. oneMore() is called
+    // synchronously by ServerApi.executeRequest, which can run inside a
+    // useSuspenseQuery queryFn during render (e.g. opening the add-entry form
+    // for a Timer journal). The handlers call component setState; doing that
+    // mid-render throws "Cannot update a component while rendering a different
+    // component" and escalates the navigation transition into a synchronous
+    // render, which commits the route-level Suspense fallback and blanks the
+    // page. A macrotask guarantees the updates land after the commit.
+    window.setTimeout(() => {
+      for (const key in this.handlers) {
+        this.handlers[key](loading);
+      }
+    }, 0);
   }
 
   private updateCounter(direction: "oneMore" | "oneLess") {
