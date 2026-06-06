@@ -6,17 +6,20 @@ import { Page } from "./Page";
 import { JournalType } from "../../../serverApi/JournalType";
 
 // Mock the search params hook
-let mockSearchString = "";
+let mockSearchParams: Record<string, string> = {};
 const mockNavigate = vi.fn();
 
 vi.mock("@tanstack/react-router", () => ({
-  useLocation: ({ select }: { select: (l: { searchStr: string }) => string }) =>
-    select({ searchStr: mockSearchString }),
+  useSearch: () => mockSearchParams,
   useNavigate: () => mockNavigate,
 }));
 
 function setMockSearchString(value: string) {
-  mockSearchString = value;
+  const params = new URLSearchParams(value);
+  mockSearchParams = {};
+  params.forEach((v, k) => {
+    mockSearchParams[k] = v;
+  });
 }
 
 // Helper component that reads the page context
@@ -32,7 +35,7 @@ function ContextReader({
 
 describe("PageContextProvider", () => {
   beforeEach(() => {
-    mockSearchString = "";
+    mockSearchParams = {};
     mockNavigate.mockClear();
     document.title = "";
   });
@@ -133,7 +136,7 @@ describe("PageContextProvider", () => {
 
 describe("Page", () => {
   beforeEach(() => {
-    mockSearchString = "";
+    mockSearchParams = {};
     mockNavigate.mockClear();
     document.title = "";
   });
