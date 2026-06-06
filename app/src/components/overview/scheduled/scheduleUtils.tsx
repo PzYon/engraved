@@ -65,6 +65,38 @@ export function getScheduleDefinition(
     : { nextOccurrence: null, onClickUrl: null };
 }
 
+// Resolves the schedule definition to persist when saving an entry.
+//
+// A save may only set or change a schedule, never remove one. The schedule is
+// derived from a date typed into the title: when a new date is present it is
+// applied; otherwise (auto-save, body/list edits, or a title edit without a
+// date) any existing schedule is kept untouched. Removing a schedule is done
+// exclusively through the dedicated "edit schedule" action.
+export function getScheduleDefinitionForUpsert(
+  parsedDate: IParsedDate | undefined,
+  existingSchedule: ISchedule | undefined,
+  journalId: string | undefined,
+  entryId: string,
+): IScheduleDefinition {
+  if (parsedDate?.date) {
+    return getScheduleDefinition(parsedDate, journalId, entryId);
+  }
+
+  if (existingSchedule?.nextOccurrence) {
+    return getScheduleDefinition(
+      {
+        input: "",
+        date: new Date(existingSchedule.nextOccurrence),
+        recurrence: existingSchedule.recurrence,
+      },
+      journalId,
+      entryId,
+    );
+  }
+
+  return { nextOccurrence: null, onClickUrl: null };
+}
+
 export function sortEntitiesByDates(
   entities: IEntity[],
   userId: string,
