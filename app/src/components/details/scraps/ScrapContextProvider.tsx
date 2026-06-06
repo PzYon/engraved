@@ -11,7 +11,10 @@ import {
   ScrapContext,
 } from "./ScrapContext";
 import { IParsedDate } from "../edit/parseDate";
-import { getScheduleDefinition } from "../../overview/scheduled/scheduleUtils";
+import {
+  getScheduleDefinitionForUpsert,
+  getScheduleForUser,
+} from "../../overview/scheduled/scheduleUtils";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { IJournal } from "../../../serverApi/IJournal";
@@ -51,7 +54,7 @@ export const ScrapContextProvider: React.FC<{
   isQuickAdd,
   changeTypeWithoutConfirmation,
 }) => {
-  const { setAppAlert } = useAppContext();
+  const { setAppAlert, user } = useAppContext();
   const { renderDialog } = useDialogContext();
 
   const [scrapToRender, setScrapToRender] = useState(initialScrap);
@@ -366,8 +369,11 @@ export const ScrapContextProvider: React.FC<{
         dateTime: scrapToRender.dateTime
           ? new Date(scrapToRender.dateTime)
           : new Date(),
-        schedule: getScheduleDefinition(
-          parsedDate ?? { input: "" },
+        // Preserve an existing schedule when the title (and therefore the date)
+        // was not touched - otherwise auto-save would clear it.
+        schedule: getScheduleDefinitionForUpsert(
+          parsedDate,
+          getScheduleForUser(initialScrap, user?.id ?? ""),
           journalId,
           scrapToRender?.id ?? "new-entry-id",
         ),
