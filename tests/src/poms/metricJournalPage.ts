@@ -48,6 +48,16 @@ export class MetricJournalPage extends JournalPage {
     return new DeleteAction(this.page, "Entry");
   }
 
+  async toggleChart() {
+    await this.clickPageAction("Show chart");
+  }
+
+  async expectChart() {
+    await expect(
+      this.page.getByTestId("journal-chart").locator("canvas"),
+    ).toBeVisible();
+  }
+
   private getRowIndex(index: number) {
     return isAndroidTest() ? index - 1 : index;
   }

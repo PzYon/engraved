@@ -11,7 +11,7 @@ export class JournalEditPage extends BasePage {
     // (journalPage -> journalEditPage -> metricJournalPage -> journalPage),
     // which otherwise breaks depending on which spec loads the chain first.
     const { MetricJournalPage } = await import("./metricJournalPage");
-    await this.page.getByText("Save").click();
+    await this.page.getByRole("button", { name: "Save" }).click();
     return new MetricJournalPage(this.page);
   }
 }
