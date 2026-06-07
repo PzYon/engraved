@@ -1,9 +1,9 @@
 import { IDateConditions } from "../JournalContext";
 
 export function isEntryFilterApplied(
-  dateConditions: IDateConditions,
-  selectedAttributeValues: Record<string, string[]>,
-  searchText: string,
+  dateConditions: IDateConditions | null | undefined,
+  selectedAttributeValues: Record<string, string[]> | null | undefined,
+  searchText: string | null | undefined,
 ) {
   if (dateConditions?.from || dateConditions?.to) {
     return true;
@@ -17,5 +17,7 @@ export function isEntryFilterApplied(
     return false;
   }
 
-  return Object.values(selectedAttributeValues).some((values) => values?.length);
+  return Object.values(selectedAttributeValues).some(
+    (values) => values?.length,
+  );
 }
