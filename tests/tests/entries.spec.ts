@@ -33,16 +33,10 @@ test("add new timer journal, start and stop a timer, edit entry", async ({
 
   const journalPage = new TimerJournalPage(page);
 
-  // start a new timer entry
   await journalPage.startEntry();
-
-  // stop the running timer entry (sets the end date)
   await journalPage.stopEntry();
-
   await journalPage.validateNumberOfTableRows(1);
 
-  // edit the single entry and set its end date
-  await journalPage.editEntryEndDate(0);
-
+  await journalPage.resetEndDateToNow(0);
   await journalPage.validateNumberOfTableRows(1);
 });

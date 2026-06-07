@@ -23,7 +23,7 @@ export class TimerJournalPage extends JournalPage {
     await expect(this.page.getByText("Updated entry")).toBeVisible();
   }
 
-  async editEntryEndDate(index: number) {
+  async resetEndDateToNow(index: number) {
     await this.tableRows.nth(index).getByLabel("Edit entry").click();
 
     // the end date is the second (last) date selector in the timer form
