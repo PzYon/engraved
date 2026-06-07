@@ -1,6 +1,4 @@
-import { test } from "@playwright/test";
-
 export function isAndroidTest() {
-  const projectName = test.info().project?.name;
-  return projectName?.includes("android");
+  const projectName = process.env.PLAYWRIGHT_PROJECT_NAME;
+  return projectName?.includes("android") ?? false;
 }
