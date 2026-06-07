@@ -1,6 +1,7 @@
 import { test } from "@playwright/test";
 import { login } from "../src/utils/login";
 import { MetricJournalPage } from "../src/poms/metricJournalPage";
+import { TimerJournalPage } from "../src/poms/timerJournalPage";
 
 const value1 = "23";
 const value2 = "19.5";
@@ -23,4 +24,19 @@ test("add new value journal, add some entries, delete entry", async ({
   await deleteEntryAction.clickFirstDeleteButton();
 
   await journalPage.validateNumberOfTableRows(2);
+});
+
+test("add new timer journal, start and stop a timer, edit entry", async ({
+  page,
+}) => {
+  await login(page, "entries", "Timer", "Journal with timer");
+
+  const journalPage = new TimerJournalPage(page);
+
+  await journalPage.startEntry();
+  await journalPage.stopEntry();
+  await journalPage.validateNumberOfTableRows(1);
+
+  await journalPage.resetEndDateToNow(0);
+  await journalPage.validateNumberOfTableRows(1);
 });
