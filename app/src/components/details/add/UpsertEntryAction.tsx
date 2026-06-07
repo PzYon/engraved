@@ -244,8 +244,8 @@ const UpsertEntryActionInternal: React.FC<{
 
       case JournalType.Timer: {
         const timerCommand = command as IUpsertTimerEntryCommand;
-        timerCommand.startDate = startDate ? new Date(startDate) : new Date();
-        timerCommand.endDate = endDate ? new Date(endDate) : new Date();
+        timerCommand.startDate = startDate ? new Date(startDate) : undefined;
+        timerCommand.endDate = endDate ? new Date(endDate) : undefined;
         break;
       }
     }
