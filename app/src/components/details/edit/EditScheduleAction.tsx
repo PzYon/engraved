@@ -31,33 +31,36 @@ export const EditScheduleAction: React.FC<{
   journal?: IJournal;
   entry?: IEntry;
 }> = ({ journal, entry }) => {
-  const [parsed, setParsed] = useState<IParsedDate>({ input: undefined });
+  const [parsed, setParsed] = useState<IParsedDate>({ input: "" });
 
   const [isDirty, setIsDirty] = useState(false);
 
   const { user } = useAppContext();
 
-  const schedule: ISchedule = (entry ? entry.schedules : journal.schedules)?.[
-    user.id
-  ];
+  const schedule: ISchedule | undefined = (
+    entry ? entry.schedules : journal?.schedules
+  )?.[user.id ?? ""];
 
   const hasSchedule = !!schedule?.nextOccurrence;
   const isRecurring = !!schedule?.recurrence?.dateString;
-  const isInPast = hasSchedule && isAfter(new Date(), schedule.nextOccurrence);
+  const isInPast =
+    hasSchedule && schedule?.nextOccurrence
+      ? isAfter(new Date(), schedule.nextOccurrence)
+      : false;
   const isInFuture = hasSchedule && !isInPast;
 
   const { closeAction } = useItemAction();
 
   useEffect(() => {
-    const entity: IEntity = entry?.id ? entry : journal;
+    const entity: IEntity | undefined = entry?.id ? entry : journal;
 
     const nextOccurrence = entity
-      ? getScheduleForUser(entity, user.id).nextOccurrence
+      ? getScheduleForUser(entity, user.id ?? "").nextOccurrence
       : null;
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setParsed({
-      date: nextOccurrence ? new Date(nextOccurrence) : null,
+      date: nextOccurrence ? new Date(nextOccurrence) : undefined,
       input: parsed.input,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,7 +84,11 @@ export const EditScheduleAction: React.FC<{
       {hasSchedule ? (
         <ActualScheduleContainer>
           <Properties
-            properties={[getScheduleProperty(journal ?? entry, user.id)]}
+            properties={[
+              (journal ?? entry)
+                ? getScheduleProperty((journal ?? entry)!, user.id ?? "")
+                : null,
+            ].filter((p): p is NonNullable<typeof p> => p != null)}
           />
           {isEditMode ? null : (
             <ActionIconButton
@@ -104,12 +111,13 @@ export const EditScheduleAction: React.FC<{
             onClick={() => {
               const scheduleDefinition: IScheduleDefinition = {
                 nextOccurrence: isRecurring
-                  ? parseDate(schedule.recurrence.dateString).date
+                  ? (parseDate(schedule?.recurrence?.dateString ?? "").date ??
+                    null)
                   : null,
                 recurrence: schedule.recurrence,
                 onClickUrl: entry
                   ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
-                  : `${location.origin}/journals/details/${journal.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal.id)).toString()}`,
+                  : `${location.origin}/journals/details/${journal?.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal?.id)).toString()}`,
               };
 
               modifyScheduleMutation.mutate(scheduleDefinition);
@@ -188,7 +196,7 @@ export const EditScheduleAction: React.FC<{
             <DateSelector
               date={parsed.date}
               setDate={(d) => {
-                setParsed({ date: d, input: parsed.text });
+                setParsed({ date: d ?? undefined, input: parsed.text ?? "" });
                 setIsDirty(true);
               }}
               showTime={true}

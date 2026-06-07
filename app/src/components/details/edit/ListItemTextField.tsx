@@ -23,7 +23,7 @@ export const ListItemTextField: React.FC<{
           return;
         }
 
-        onBlur(newValue);
+        onBlur?.(newValue);
 
         if (isExisting) {
           setDisabled(true);

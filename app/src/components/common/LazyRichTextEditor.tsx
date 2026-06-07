@@ -5,15 +5,13 @@ import { Markdown } from "@tiptap/markdown";
 import React, { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
-import {
-  Code,
-  FormatBold,
-  FormatItalic,
-  FormatListBulleted,
-  FormatQuote,
-  FormatStrikethrough,
-  Spellcheck,
-} from "@mui/icons-material";
+import Code from "@mui/icons-material/Code";
+import FormatBold from "@mui/icons-material/FormatBold";
+import FormatItalic from "@mui/icons-material/FormatItalic";
+import FormatListBulleted from "@mui/icons-material/FormatListBulleted";
+import FormatQuote from "@mui/icons-material/FormatQuote";
+import FormatStrikethrough from "@mui/icons-material/FormatStrikethrough";
+import Spellcheck from "@mui/icons-material/Spellcheck";
 import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
 
 const replacements: Record<string, string> = {

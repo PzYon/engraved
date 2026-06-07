@@ -30,14 +30,14 @@ const LazySimpleDateSelector: React.FC<ISimpleDateSelectorProps> = ({
         <Button
           variant="text"
           sx={{ fontSize: "small" }}
-          onClick={() => setDate(addDays(date, -1))}
+          onClick={() => setDate(addDays(date ?? new Date(), -1))}
         >
           -1day
         </Button>
         <Button
           variant="text"
           sx={{ fontSize: "small" }}
-          onClick={() => setDate(addDays(date, 1))}
+          onClick={() => setDate(addDays(date ?? new Date(), 1))}
         >
           +1day
         </Button>

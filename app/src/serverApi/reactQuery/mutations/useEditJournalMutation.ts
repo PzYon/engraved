@@ -56,7 +56,7 @@ export const useEditJournalMutation = (journalId: string) => {
       }),
   });
 
-  async function reloadUser(changedTagNames: string[]) {
+  async function reloadUser(changedTagNames: string[] | undefined) {
     if (!changedTagNames) {
       return;
     }

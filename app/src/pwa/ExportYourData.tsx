@@ -27,7 +27,7 @@ export const ExportYourData: React.FC = () => {
 
       const link = document.createElement("a");
       link.href = url;
-      link.download = `engraved-user-data-${user.displayName.replaceAll(" ", "")}-${new Date().toISOString()}.json`;
+      link.download = `engraved-user-data-${(user.displayName ?? "").replaceAll(" ", "")}-${new Date().toISOString()}.json`;
 
       document.body.appendChild(link);
       link.click();

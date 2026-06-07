@@ -81,19 +81,21 @@ export const GoToSimple: React.FC<{
         <JournalGoToItemRow
           journal={entity as IJournal}
           hasFocus={hasFocus}
-          onClick={onClick}
+          onClick={onClick ?? (() => {})}
         />
       );
     }
 
     return (
       <ScrapEntryGoToItemRow
-        journal={goto.journalsForEntries.find(
-          (j) => j.id === (entity as IScrapEntry).parentId,
-        )}
+        journal={
+          goto.journalsForEntries.find(
+            (j) => j.id === (entity as IScrapEntry).parentId,
+          )!
+        }
         scrapEntry={entity as IScrapEntry}
         hasFocus={hasFocus}
-        onClick={onClick}
+        onClick={onClick ?? (() => {})}
       />
     );
   }
@@ -147,7 +149,7 @@ const JournalGoToItemRow: React.FC<{
             action={
               deviceWidth === DeviceWidth.Normal &&
               isTypeThatCanShowAddEntryRow(journal.type)
-                ? ActionFactory.goToJournal(journal.id, false)
+                ? ActionFactory.goToJournal(journal.id ?? "", false)
                 : ActionFactory.addEntry(journal, false, () => {}, true)
             }
           />

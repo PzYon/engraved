@@ -22,10 +22,10 @@ export function getColorShades(length: number, color: string): string[] {
   return colors;
 }
 
-export function stripTime(date: Date): Date {
+export function stripTime(date?: Date | null): Date | null {
   return date
     ? new Date(date.getFullYear(), date.getMonth(), date.getDate())
-    : undefined;
+    : null;
 }
 
 export function formatDateOnly(date: Date): string {

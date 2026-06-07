@@ -7,8 +7,8 @@ import { DateFormat, formatDate } from "../../../components/common/dateTypes";
 import { IScheduleDefinition } from "../../IScheduleDefinition";
 
 export const useModifyScheduleMutation = (
-  journalId: string,
-  entryId: string,
+  journalId: string | undefined,
+  entryId: string | undefined,
 ) => {
   const { setAppAlert } = useAppContext();
 

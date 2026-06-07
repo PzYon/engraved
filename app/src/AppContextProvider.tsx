@@ -8,7 +8,7 @@ export const AppContextProvider: React.FC<{
   children: React.ReactNode;
   user: IUser;
 }> = ({ children, user: initialUser }) => {
-  const [appAlert, setAppAlert] = useState<IAppAlert>(undefined);
+  const [appAlert, setAppAlert] = useState<IAppAlert | null>(null);
   const [user, setUser] = useState(initialUser);
 
   const contextValue = useMemo<IAppContext>(() => {

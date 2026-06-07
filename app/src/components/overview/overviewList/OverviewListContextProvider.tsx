@@ -15,33 +15,47 @@ import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
-import { useSearchParams } from "react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { isRichTextEditor } from "../../common/isRichTextEditor";
 
 export const OverviewListContextProvider: React.FC<{
   items: IEntity[];
   filterItem?: (item: IEntity) => boolean;
   onKeyDown?: (e: KeyboardEvent) => void;
+  onActiveItemChange?: (activeItemId: string | undefined) => void;
   children: React.ReactNode;
-}> = ({ items, children, filterItem, onKeyDown }) => {
+}> = ({ items, children, filterItem, onKeyDown, onActiveItemChange }) => {
   const { setAppAlert } = useAppContext();
 
-  const [activeItemId, setActiveItemId] = React.useState<string>(undefined);
-
+  const [activeItemId, setActiveItemId] = React.useState<string | undefined>(
+    undefined,
+  );
   const [showAll, setShowAll] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
+  const navigate = useNavigate();
+  const searchString = useRouterState({
+    select: (s): string => s.location.searchStr,
+  });
+  const searchParams = useMemo(
+    () => new URLSearchParams(searchString),
+    [searchString],
+  );
 
+  const activeItemIdFromUrl = searchParams.get(knownQueryParams.selectedItemId);
   const containerRef = useRef<HTMLDivElement>(null);
 
   if (activeItemIdFromUrl && activeItemId !== activeItemIdFromUrl) {
     setActiveItemId(activeItemIdFromUrl);
   }
 
+  useEffect(() => {
+    onActiveItemChange?.(activeItemId);
+  }, [activeItemId, onActiveItemChange]);
+
   // undefined is the initial value, afterward it is ""
-  const [inMemorySearchText, setInMemorySearchText] =
-    useState<string>(undefined);
+  const [inMemorySearchText, setInMemorySearchText] = useState<
+    string | undefined
+  >(undefined);
 
   useEffect(() => {
     if (inMemorySearchText) {
@@ -49,10 +63,10 @@ export const OverviewListContextProvider: React.FC<{
         title: inMemorySearchText,
         message: "",
         type: "info",
-        hideDurationSec: null,
+        hideDurationSec: undefined,
       });
     } else if (inMemorySearchText === "") {
-      setAppAlert(undefined);
+      setAppAlert(null);
     }
   }, [inMemorySearchText, setAppAlert]);
 
@@ -66,7 +80,6 @@ export const OverviewListContextProvider: React.FC<{
               .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1
           );
         }
-
         return (showAll || filterItem?.(f)) ?? true;
       }),
     [showAll, filterItem, inMemorySearchText, items],
@@ -88,17 +101,29 @@ export const OverviewListContextProvider: React.FC<{
   );
 
   const removeItemParamsFromUrl = useCallback(() => {
-    if (
-      !searchParams.get(knownQueryParams.selectedItemId) &&
-      !searchParams.get(knownQueryParams.actionKey)
-    ) {
-      return;
-    }
+    navigate({
+      to: ".",
+      replace: true,
+      resetScroll: false,
+      // Functional updater: compute from the router's current search instead of
+      // closing over searchString. This keeps the callback (and the memoized
+      // context value below) stable across search changes, so updating these
+      // params doesn't re-render the whole list.
+      search: (prev) => {
+        if (
+          !prev[knownQueryParams.selectedItemId] &&
+          !prev[knownQueryParams.actionKey]
+        ) {
+          return prev;
+        }
 
-    searchParams.delete(knownQueryParams.selectedItemId);
-    searchParams.delete(knownQueryParams.actionKey);
-    setSearchParams(searchParams);
-  }, [searchParams, setSearchParams]);
+        const next = { ...prev };
+        delete next[knownQueryParams.selectedItemId];
+        delete next[knownQueryParams.actionKey];
+        return next;
+      },
+    });
+  }, [navigate]);
 
   useEngravedHotkeys("*", (e) => {
     if (isRichTextEditor(e.target as HTMLElement)) {
@@ -113,14 +138,14 @@ export const OverviewListContextProvider: React.FC<{
       case "ArrowUp": {
         e.preventDefault();
         removeItemParamsFromUrl();
-        setActiveItemId(getNextItem("up")?.id);
+        setActiveItemId(getNextItem("up")?.id ?? "");
         break;
       }
 
       case "ArrowDown": {
         e.preventDefault();
         removeItemParamsFromUrl();
-        setActiveItemId(getNextItem("down")?.id);
+        setActiveItemId(getNextItem("down")?.id ?? "");
         break;
       }
 
@@ -160,7 +185,7 @@ export const OverviewListContextProvider: React.FC<{
 
   const contextValue = useMemo<IOverviewListContext>(
     () => ({
-      activeItemId,
+      activeItemId: activeItemId ?? "",
       setActiveItemId,
       itemsToShow: filteredItems,
       hiddenItemsCount: items.length - filteredItems.length,
@@ -170,11 +195,19 @@ export const OverviewListContextProvider: React.FC<{
         setInMemorySearchText("");
       },
       keepFocusAtIndex: () => {
-        searchParams.delete(knownQueryParams.selectedItemId);
-
         const currentItemIndex = items.findIndex((i) => i.id === activeItemId);
-        const previousItemId = items[currentItemIndex + 1].id;
+        const previousItemId = items[currentItemIndex + 1]?.id ?? "";
 
+        navigate({
+          to: ".",
+          replace: true,
+          resetScroll: false,
+          search: (prev) => {
+            const next = { ...prev };
+            delete next[knownQueryParams.selectedItemId];
+            return next;
+          },
+        });
         setActiveItemId(previousItemId);
       },
     }),
@@ -185,7 +218,7 @@ export const OverviewListContextProvider: React.FC<{
       items,
       removeItemParamsFromUrl,
       setShowAll,
-      searchParams,
+      navigate,
     ],
   );
 

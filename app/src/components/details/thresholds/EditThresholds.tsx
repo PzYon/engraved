@@ -5,6 +5,7 @@ import {
 import React, { useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IJournalThresholdDefinitions } from "../../../serverApi/IJournalThresholdDefinitions";
+import { ThresholdScope } from "./ThresholdScope";
 import AddCircleOutlined from "@mui/icons-material/AddCircleOutlined";
 import RemoveCircleOutlined from "@mui/icons-material/RemoveCircleOutlined";
 import { styled } from "@mui/material";
@@ -81,14 +82,15 @@ export const EditThresholds: React.FC<{
 };
 
 function createDefinitions(
-  thresholds: IJournalThresholdDefinitions,
+  thresholds: IJournalThresholdDefinitions | undefined,
 ): IAttributeValueThresholdDefinition[] {
-  return Object.keys(thresholds).flatMap((attributeKey) => {
-    return Object.keys(thresholds[attributeKey]).map((x) => {
+  const resolvedThresholds = thresholds ?? {};
+  return Object.keys(resolvedThresholds).flatMap((attributeKey) => {
+    return Object.keys(resolvedThresholds[attributeKey]).map((x) => {
       return {
         attributeKey: attributeKey,
-        threshold: thresholds[attributeKey][x].value,
-        scope: thresholds[attributeKey][x].scope,
+        threshold: resolvedThresholds[attributeKey][x].value,
+        scope: resolvedThresholds[attributeKey][x].scope,
         attributeValueKeys: [x],
       };
     });
@@ -101,15 +103,14 @@ function createThresholds(
   const thresholds: IJournalThresholdDefinitions = {};
 
   for (const definition of thresholdDefinitions) {
-    if (!thresholds[definition.attributeKey]) {
-      thresholds[definition.attributeKey] = {};
+    const attrKey = definition.attributeKey ?? "-";
+    if (!thresholds[attrKey]) {
+      thresholds[attrKey] = {};
     }
 
-    thresholds[definition.attributeKey][
-      definition.attributeValueKeys[0] ?? "-"
-    ] = {
-      value: definition.threshold,
-      scope: definition.scope,
+    thresholds[attrKey][definition.attributeValueKeys[0] ?? "-"] = {
+      value: definition.threshold ?? 0,
+      scope: definition.scope ?? ThresholdScope.All,
     };
   }
 

@@ -7,7 +7,7 @@ export const PageTitle: React.FC<{ icon: React.ReactNode; title: string }> = ({
 }) => (
   <>
     <IconContainer>{icon}</IconContainer>
-    <TitleContainer>{title}</TitleContainer>
+    <TitleContainer data-testid="page-title">{title}</TitleContainer>
   </>
 );
 

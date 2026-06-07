@@ -65,7 +65,11 @@ export const UpsertEntryAction: React.FC<{
   function createNewEntry(): IScrapEntry {
     return journal.type === JournalType.LogBook
       ? LogBookJournalType.createBlank(journal)
-      : ScrapsJournalType.createBlank(false, journal.id, ScrapType.Markdown);
+      : ScrapsJournalType.createBlank(
+          false,
+          journal.id ?? "",
+          ScrapType.Markdown,
+        );
   }
 };
 
@@ -76,7 +80,7 @@ const UpsertEntryActionInternal: React.FC<{
   const [attributeValues, setAttributeValues] =
     useState<IJournalAttributeValues>(
       entry?.journalAttributeValues ||
-        getDefaultAttributeValues(journal.attributes),
+        getDefaultAttributeValues(journal.attributes ?? {}),
     ); // empty means nothing selected in the selector
 
   const [notes, setNotes] = useState<string>(entry?.notes || "");
@@ -91,9 +95,13 @@ const UpsertEntryActionInternal: React.FC<{
     entry?.dateTime ? new Date(entry.dateTime) : new Date(),
   );
 
-  const [startDate, setStartDate] = useState((entry as ITimerEntry)?.startDate);
+  const [startDate, setStartDate] = useState<string | undefined>(
+    (entry as ITimerEntry)?.startDate,
+  );
 
-  const [endDate, setEndDate] = useState((entry as ITimerEntry)?.endDate);
+  const [endDate, setEndDate] = useState<string | undefined>(
+    (entry as ITimerEntry)?.endDate,
+  );
 
   const [showFullTimerForm, setShowFullTimerForm] = useState(false);
 
@@ -106,7 +114,7 @@ const UpsertEntryActionInternal: React.FC<{
   }, []);
 
   const upsertEntryMutation = useUpsertEntryMutation(
-    journal.id,
+    journal.id ?? "",
     journal.type,
     journal,
     entry?.id,
@@ -116,7 +124,7 @@ const UpsertEntryActionInternal: React.FC<{
     <FormControl sx={{ width: "100%" }}>
       {journal.type !== JournalType.Timer ? (
         <FormElementContainer>
-          <DateSelector setDate={setDate} date={date} />
+          <DateSelector setDate={(d) => setDate(d ?? new Date())} date={date} />
         </FormElementContainer>
       ) : null}
 
@@ -166,7 +174,7 @@ const UpsertEntryActionInternal: React.FC<{
             onChange={(values) => {
               resetSelectors();
               setAttributeValues(
-                Object.keys(journal.attributes).reduce(
+                Object.keys(journal.attributes ?? {}).reduce(
                   (previousValue: IJournalAttributeValues, key: string) => {
                     previousValue[key] = values[key] ?? [];
                     return previousValue;
@@ -182,7 +190,7 @@ const UpsertEntryActionInternal: React.FC<{
       {hasAttributes(journal) ? (
         <JournalAttributesSelector
           key={forceResetSelectors}
-          attributes={journal.attributes}
+          attributes={journal.attributes ?? {}}
           selectedAttributeValues={attributeValues}
           onChange={setAttributeValues}
         />
@@ -222,7 +230,7 @@ const UpsertEntryActionInternal: React.FC<{
       id: entry?.id,
       notes: notes,
       journalAttributeValues: attributeValues,
-      journalId: journal.id,
+      journalId: journal.id ?? "",
       dateTime: new Date(date),
     };
 
@@ -230,14 +238,14 @@ const UpsertEntryActionInternal: React.FC<{
       case JournalType.Gauge: {
         (command as IUpsertGaugeEntryCommand).value = !isNaN(value as never)
           ? Number(value)
-          : undefined;
+          : 0;
         break;
       }
 
       case JournalType.Timer: {
         const timerCommand = command as IUpsertTimerEntryCommand;
-        timerCommand.startDate = startDate ? new Date(startDate) : null;
-        timerCommand.endDate = endDate ? new Date(endDate) : null;
+        timerCommand.startDate = startDate ? new Date(startDate) : new Date();
+        timerCommand.endDate = endDate ? new Date(endDate) : new Date();
         break;
       }
     }
@@ -279,7 +287,7 @@ const useUpsertEntryData = (
         ? params.initialEntry
         : journal.type !== JournalType.Timer
           ? null
-          : await ServerApi.getActiveEntry(journal.id);
+          : await ServerApi.getActiveEntry(journal.id ?? "");
 
       return { journal, entry };
     },

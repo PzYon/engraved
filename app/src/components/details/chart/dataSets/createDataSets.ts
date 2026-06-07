@@ -14,7 +14,7 @@ export function createDataSets(
   attributeKey: string,
   chartUiProps: IChartUiProps,
 ) {
-  return getEntriesPerAttribute(entries, journal.attributes, attributeKey)
+  return getEntriesPerAttribute(entries, journal.attributes ?? {}, attributeKey)
     .filter((entriesByAttribute) => entriesByAttribute.length)
     .map((entries) =>
       entriesToDataSet(
@@ -36,7 +36,7 @@ function entriesToDataSet(
 ): IDataSet {
   let data = transform(entries, journal, groupByTime);
 
-  if (chartUiProps?.rollingAverage > 0) {
+  if (chartUiProps?.rollingAverage && chartUiProps.rollingAverage > 0) {
     data = movingAverage(data, chartUiProps.rollingAverage);
   }
 
@@ -45,9 +45,10 @@ function entriesToDataSet(
 
   return {
     data,
-    label: valueKey
-      ? journal.attributes[attributeKey].values[valueKey]
-      : journal.name,
+    label:
+      (valueKey
+        ? journal.attributes?.[attributeKey]?.values[valueKey]
+        : journal.name) ?? "",
   };
 }
 
@@ -66,9 +67,9 @@ function getEntriesPerAttribute(
   );
 }
 
-function filterByAttribute(attributeKey: string, valueKey: string) {
+function filterByAttribute(attributeKey: string, valueKey: string | null) {
   return (m: IEntry) =>
     valueKey
-      ? m.journalAttributeValues[attributeKey]?.indexOf(valueKey) > -1
-      : !m.journalAttributeValues[attributeKey]?.length;
+      ? (m.journalAttributeValues?.[attributeKey]?.indexOf(valueKey) ?? -1) > -1
+      : !m.journalAttributeValues?.[attributeKey]?.length;
 }

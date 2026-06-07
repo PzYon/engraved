@@ -10,7 +10,7 @@ export class StorageWrapper {
     this.storage.setItem(key, JSON.stringify(value));
   }
 
-  getValue<T>(key: string): T {
+  getValue<T>(key: string): T | undefined {
     const item = this.storage.getItem(key);
     return item ? (JSON.parse(item) as T) : undefined;
   }

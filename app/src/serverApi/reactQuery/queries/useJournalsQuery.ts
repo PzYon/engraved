@@ -46,5 +46,5 @@ export const useJournalsQuery = (
     }
   }, [isSuccess, journalTypes, journals, queryClient]);
 
-  return journals;
+  return journals ?? [];
 };

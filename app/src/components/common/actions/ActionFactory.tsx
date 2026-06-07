@@ -1,4 +1,5 @@
 import AddOutlined from "@mui/icons-material/AddOutlined";
+import SaveAs from "@mui/icons-material/SaveAs";
 import ClearOutlined from "@mui/icons-material/ClearOutlined";
 import Close from "@mui/icons-material/Close";
 import ContentCopyOutlined from "@mui/icons-material/ContentCopyOutlined";
@@ -358,8 +359,8 @@ export class ActionFactory {
   }
 
   static copyValueToClipboard(
-    value: string,
-    setAppAlert: (appAlert: IAppAlert) => void,
+    value: string | undefined,
+    setAppAlert: (appAlert: IAppAlert | null) => void,
   ): IAction {
     return {
       key: "copy",
@@ -367,7 +368,7 @@ export class ActionFactory {
       label: "Copy content",
       icon: <ContentCopyOutlined fontSize="small" />,
       onClick: async () => {
-        await navigator.clipboard.writeText(value);
+        await navigator.clipboard.writeText(value ?? "");
         setAppAlert({
           type: "success",
           title: "Successfully copied text to clipboard.",
@@ -439,7 +440,7 @@ export class ActionFactory {
     };
   }
 
-  static expand(onClick: () => void): IAction {
+  static expand(onClick?: () => void): IAction {
     return {
       key: "expand",
       label: "Expand",
@@ -448,7 +449,7 @@ export class ActionFactory {
     };
   }
 
-  static collapse(onClick: () => void): IAction {
+  static collapse(onClick?: () => void): IAction {
     return {
       key: "collapse",
       label: "Collapse",
@@ -465,6 +466,19 @@ export class ActionFactory {
       label: "Refresh data",
       key: "refresh",
       sx: { color: "common.white" },
+    };
+  }
+
+  static toggleAutoSave(
+    isAutoSaveEnabled: boolean,
+    setIsAutoSaveEnabled: (value: boolean) => void,
+  ): IAction {
+    return {
+      key: "toggle-auto-save",
+      icon: <SaveAs fontSize="small" />,
+      label: isAutoSaveEnabled ? "Auto-save is on" : "Auto-save is off",
+      onClick: () => setIsAutoSaveEnabled(!isAutoSaveEnabled),
+      isNotActive: !isAutoSaveEnabled,
     };
   }
 

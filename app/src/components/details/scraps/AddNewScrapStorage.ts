@@ -7,8 +7,8 @@ export class AddNewScrapStorage {
 
   private static timer: number;
 
-  static getForJournal(cacheKey: string): IScrapEntry {
-    return AddNewScrapStorage.storageUtil.getValue(
+  static getForJournal(cacheKey: string): IScrapEntry | undefined {
+    return AddNewScrapStorage.storageUtil.getValue<IScrapEntry>(
       AddNewScrapStorage.key_prefix + cacheKey,
     );
   }

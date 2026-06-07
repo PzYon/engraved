@@ -29,7 +29,7 @@ export const UserPermission: React.FC<{
           key: "remove",
           label: "Remove",
           icon: <DeleteOutlined fontSize="small" />,
-          onClick: () => removePermissions(permissionDefinition.user.name),
+          onClick: () => removePermissions(permissionDefinition.user!.name),
         }}
       />
     </Host>

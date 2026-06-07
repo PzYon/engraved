@@ -21,10 +21,14 @@ import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { AggregationModeSelector } from "../chart/AggregationModeSelector";
 import {
+  AggregationMode,
+  DateFilterConfig,
   FooterRowMode,
   IJournalUiSettings,
   StreakMode,
 } from "./IJournalUiSettings";
+import { MyChartType } from "../chart/grouping/ChartTypeSelector";
+import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { DateFilterConfigSelector } from "../filters/DateFilterConfigSelector";
 
 export const JournalUiSettings: React.FC<{
@@ -205,7 +209,8 @@ export const JournalUiSettings: React.FC<{
         <GridItem>
           <ChartTypeSelector
             chartType={
-              uiSettings.chartType ?? journalDefaultUiSettings.chartType
+              (uiSettings.chartType ??
+                journalDefaultUiSettings.chartType) as MyChartType
             }
             onChange={(chartType) => {
               onChange({ ...uiSettings, chartType });
@@ -216,7 +221,8 @@ export const JournalUiSettings: React.FC<{
         <GridItem>
           <DateFilterConfigSelector
             dateFilterConfig={
-              uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter
+              (uiSettings.dateFilter ??
+                journalDefaultUiSettings.dateFilter) as DateFilterConfig
             }
             setDateFilterConfig={(config) => {
               onChange({ ...uiSettings, dateFilter: config });
@@ -228,7 +234,8 @@ export const JournalUiSettings: React.FC<{
           <GroupByTimeSelector
             sx={{ width: "100%" }}
             groupByTime={
-              uiSettings.groupByTime ?? journalDefaultUiSettings.groupByTime
+              (uiSettings.groupByTime ??
+                journalDefaultUiSettings.groupByTime) as GroupByTime
             }
             onChange={(groupByTime) => {
               onChange({ ...uiSettings, groupByTime });
@@ -239,8 +246,8 @@ export const JournalUiSettings: React.FC<{
         <GridItem>
           <AggregationModeSelector
             aggregationMode={
-              uiSettings.aggregationMode ??
-              journalDefaultUiSettings.aggregationMode
+              (uiSettings.aggregationMode ??
+                journalDefaultUiSettings.aggregationMode) as AggregationMode
             }
             onChange={(aggregationMode) => {
               onChange({ ...uiSettings, aggregationMode });

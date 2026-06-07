@@ -1,7 +1,7 @@
 import { IAction } from "../../common/actions/IAction";
 import { IPageTab } from "../tabs/IPageTab";
 import { FilterMode, PageContext } from "./PageContext";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { JournalType } from "../../../serverApi/JournalType";
 import {
   knownQueryParams,
@@ -18,19 +18,40 @@ export const PageContextProvider: React.FC<{
 
   const [title, setTitle] = useState<React.ReactNode>(undefined);
   const [subTitle, setSubTitle] = useState<React.ReactNode>(undefined);
-  const [documentTitle, setDocumentTitle] = useState<string>(undefined);
+  const [documentTitle, setDocumentTitle] = useState<string>("");
   const [hideActions, setHideActions] = useState(false);
   const [pageActions, setPageActions] = useState<IAction[]>([]);
   const [pageActionRoutes, setPageActionRoutes] =
-    useState<React.ReactElement>(undefined);
+    useState<React.ReactElement | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filterMode, setFilterMode] = useState<FilterMode>(FilterMode.None);
   const [tabs, setTabs] = useState<IPageTab[]>([]);
 
-  useEffect(() => {
-    setUrlParams();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramSearchText, paramJournalTypes]);
+  const journalTypes: JournalType[] = useMemo(
+    () =>
+      (paramJournalTypes?.split(",").filter((j) => j) as JournalType[]) ?? [],
+    [paramJournalTypes],
+  );
+
+  const setSearchText = useCallback(
+    (value: string) => {
+      appendSearchParams({
+        [knownQueryParams.query]: value,
+        journalTypes: paramJournalTypes ?? "",
+      });
+    },
+    [appendSearchParams, paramJournalTypes],
+  );
+
+  const setJournalTypes = useCallback(
+    (value: JournalType[]) => {
+      appendSearchParams({
+        [knownQueryParams.query]: paramSearchText,
+        journalTypes: value.join(","),
+      });
+    },
+    [appendSearchParams, paramSearchText],
+  );
 
   useEffect(() => {
     document.title = [
@@ -42,8 +63,8 @@ export const PageContextProvider: React.FC<{
       .join(" | ");
   }, [documentTitle, paramSearchText]);
 
-  const contextValue = useMemo(() => {
-    return {
+  const contextValue = useMemo(
+    () => ({
       documentTitle,
       setDocumentTitle,
       title,
@@ -61,48 +82,30 @@ export const PageContextProvider: React.FC<{
       showFilters,
       setShowFilters,
       searchText: paramSearchText,
-      setSearchText: (value: string) => {
-        setUrlParams({ searchText: value });
-      },
-      journalTypes: getJournalTypes(),
-      setJournalTypes: (value: JournalType[]) => {
-        setUrlParams({ journalTypes: value });
-      },
+      setSearchText,
+      journalTypes,
+      setJournalTypes,
       tabs,
       setTabs,
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    title,
-    subTitle,
-    documentTitle,
-    pageActions,
-    pageActionRoutes,
-    hideActions,
-    showFilters,
-    filterMode,
-    paramSearchText,
-    paramJournalTypes,
-    tabs,
-  ]);
+    }),
+    [
+      title,
+      subTitle,
+      documentTitle,
+      pageActions,
+      pageActionRoutes,
+      hideActions,
+      showFilters,
+      filterMode,
+      paramSearchText,
+      setSearchText,
+      journalTypes,
+      setJournalTypes,
+      tabs,
+    ],
+  );
 
   return (
     <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>
   );
-
-  function setUrlParams(overrides?: {
-    searchText?: string;
-    journalTypes?: JournalType[];
-  }) {
-    appendSearchParams({
-      [knownQueryParams.query]: overrides?.searchText ?? paramSearchText,
-      journalTypes: (overrides?.journalTypes ?? getJournalTypes()).join(","),
-    });
-  }
-
-  function getJournalTypes(): JournalType[] {
-    return (
-      (paramJournalTypes?.split(",").filter((j) => j) as JournalType[]) ?? []
-    );
-  }
 };

@@ -68,7 +68,7 @@ describe("LoginHandler", () => {
 function delayAndReturn<T>(delayMs: number, returnValue?: T) {
   return new Promise<T>((resolve) => {
     setTimeout(() => {
-      resolve(returnValue);
+      resolve(returnValue as T);
     }, delayMs);
   });
 }

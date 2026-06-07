@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { Button, Typography } from "@mui/material";
@@ -11,7 +11,10 @@ import {
   ScrapContext,
 } from "./ScrapContext";
 import { IParsedDate } from "../edit/parseDate";
-import { getScheduleDefinition } from "../../overview/scheduled/scheduleUtils";
+import {
+  getScheduleDefinitionForUpsert,
+  getScheduleForUser,
+} from "../../overview/scheduled/scheduleUtils";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { useDialogContext } from "../../layout/dialogs/DialogContext";
 import { IJournal } from "../../../serverApi/IJournal";
@@ -51,14 +54,19 @@ export const ScrapContextProvider: React.FC<{
   isQuickAdd,
   changeTypeWithoutConfirmation,
 }) => {
-  const { setAppAlert } = useAppContext();
+  const { setAppAlert, user } = useAppContext();
   const { renderDialog } = useDialogContext();
 
   const [scrapToRender, setScrapToRender] = useState(initialScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
-  const [parsedDate, setParsedDate] = useState<IParsedDate>(undefined);
+  const [parsedDate, setParsedDate] = useState<IParsedDate | undefined>(
+    undefined,
+  );
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
+
+  // Auto-save can be turned off for an individual scrap. Defaults to enabled.
+  const [isAutoSaveEnabled, setIsAutoSaveEnabled] = useState(true);
 
   useEffect(() => {
     if (!isEditMode || !initialScrap?.parentId) {
@@ -66,16 +74,16 @@ export const ScrapContextProvider: React.FC<{
     }
 
     AddNewScrapStorage.setForJournal(
-      isQuickAdd ? quickAddStorageKey : initialScrap.parentId,
+      isQuickAdd ? quickAddStorageKey : (initialScrap.parentId ?? ""),
       {
-        id: null,
+        id: undefined,
         scrapType: scrapToRender.scrapType,
         notes: scrapToRender.notes,
-        title: parsedDate?.text ?? scrapToRender.title,
-        journalAttributeValues: null,
+        title: parsedDate?.text ?? scrapToRender.title ?? "",
+        journalAttributeValues: undefined,
         parentId: initialScrap.parentId,
-        dateTime: null,
-      },
+        dateTime: new Date().toISOString(),
+      } as IScrapEntry,
     );
   }, [
     parsedDate?.text,
@@ -88,18 +96,32 @@ export const ScrapContextProvider: React.FC<{
     scrapToRender.scrapType,
   ]);
 
+  // Snapshot of the last content we persisted ourselves (manual or auto save).
+  // Used to recognise the echo of our own save when it comes back through the
+  // query cache, so it is not mistaken for a concurrent change from another tab.
+  const lastSavedRef = useRef<{ notes: string | undefined; title: string }>(
+    undefined,
+  );
+
   const isDirty =
     initialScrap.notes !== scrapToRender.notes ||
     initialScrap.title !== scrapToRender.title;
+
+  // True when a newer version of the scrap arrived (e.g. saved in another tab)
+  // while we are still editing an older one. The "scrap has changed" merge
+  // prompt is shown in this case, so any pending changes must not be silently
+  // auto-saved - that would clobber the concurrent edit.
+  const hasPendingBackgroundUpdate =
+    !!initialScrap.editedOn && initialScrap.editedOn !== scrapToRender.editedOn;
 
   const journalId = initialScrap.parentId;
 
   const itemAction = useItemAction();
 
   const upsertEntryMutation = useUpsertEntryMutation(
-    journalId,
+    journalId ?? "",
     journal?.type ?? JournalType.Scraps,
-    null, // scraps currently do not support attributes
+    undefined, // scraps currently do not support attributes
     initialScrap.id,
     closeAddEntryAction,
   );
@@ -109,6 +131,22 @@ export const ScrapContextProvider: React.FC<{
       !initialScrap.editedOn ||
       initialScrap.editedOn === scrapToRender.editedOn
     ) {
+      return;
+    }
+
+    // The incoming version is the echo of a save we made ourselves (its content
+    // matches what we last persisted). Adopt the new editedOn so we stay in sync,
+    // but keep the user's current edits and do not show the "changed" prompt -
+    // this is what lets auto-save keep the user in edit mode.
+    if (
+      lastSavedRef.current &&
+      initialScrap.notes === lastSavedRef.current.notes &&
+      initialScrap.title === lastSavedRef.current.title
+    ) {
+      setScrapToRender((prev) => ({
+        ...prev,
+        editedOn: initialScrap.editedOn,
+      }));
       return;
     }
 
@@ -229,12 +267,18 @@ export const ScrapContextProvider: React.FC<{
         setNotes: (n) => setScrapToRender({ ...scrapToRender, notes: n }),
         date: new Date(scrapToRender.dateTime),
         setDate: (d) =>
-          setScrapToRender({ ...scrapToRender, dateTime: d.toJSON() }),
+          setScrapToRender({
+            ...scrapToRender,
+            dateTime: d ? d.toJSON() : new Date().toJSON(),
+          }),
         parsedDate,
         setParsedDate,
         isEditMode,
         setIsEditMode,
         isDirty,
+        hasPendingBackgroundUpdate,
+        isAutoSaveEnabled,
+        setIsAutoSaveEnabled,
         cancelEditingAction: !isEditMode
           ? null
           : ActionFactory.cancelEditing(
@@ -250,7 +294,7 @@ export const ScrapContextProvider: React.FC<{
                 AddNewScrapStorage.clearForJournal(
                   isQuickAdd
                     ? quickAddStorageKey
-                    : (journal?.id ?? initialScrap.parentId),
+                    : (journal?.id ?? initialScrap.parentId ?? ""),
                 );
               },
               hasFocus,
@@ -281,17 +325,21 @@ export const ScrapContextProvider: React.FC<{
       hasFocus,
       giveFocus,
       hasTitleFocus,
+      hasPendingBackgroundUpdate,
+      isAutoSaveEnabled,
     ],
   );
 
-  async function upsertScrap(notesToOverride?: string) {
+  async function upsertScrap(notesToOverride?: string, keepEditMode?: boolean) {
     const notesToSave = notesToOverride ?? scrapToRender.notes;
 
     if (!notesToSave && !scrapToRender.title) {
       return;
     }
 
-    if (scrapToRender.id) {
+    // Auto-save (keepEditMode) persists silently and leaves the user editing;
+    // edit mode is only closed when the user explicitly saves or cancels.
+    if (scrapToRender.id && !keepEditMode) {
       setIsEditMode(false);
     }
 
@@ -303,29 +351,43 @@ export const ScrapContextProvider: React.FC<{
       return;
     }
 
-    onSuccess?.();
+    const titleToSave = parsedDate?.text ?? scrapToRender.title;
+    lastSavedRef.current = { notes: notesToSave, title: titleToSave };
+
+    if (!keepEditMode) {
+      onSuccess?.();
+    }
 
     await upsertEntryMutation.mutateAsync({
       command: {
         id: scrapToRender.id,
         scrapType: scrapToRender.scrapType,
         notes: notesToSave,
-        title: parsedDate?.text ?? scrapToRender.title,
+        title: titleToSave,
         journalAttributeValues: {},
-        journalId: journalId,
-        dateTime: scrapToRender.dateTime ?? new Date(),
-        schedule: getScheduleDefinition(
+        journalId: journalId ?? "",
+        dateTime: scrapToRender.dateTime
+          ? new Date(scrapToRender.dateTime)
+          : new Date(),
+        // Preserve an existing schedule when the title (and therefore the date)
+        // was not touched - otherwise auto-save would clear it.
+        schedule: getScheduleDefinitionForUpsert(
           parsedDate,
+          getScheduleForUser(initialScrap, user?.id ?? ""),
           journalId,
           scrapToRender?.id ?? "new-entry-id",
         ),
       } as IUpsertScrapsEntryCommand,
     });
 
+    if (keepEditMode) {
+      return;
+    }
+
     setIsEditMode(false);
 
     AddNewScrapStorage.clearForJournal(
-      isQuickAdd ? quickAddStorageKey : scrapToRender.parentId,
+      isQuickAdd ? quickAddStorageKey : (scrapToRender.parentId ?? ""),
     );
   }
 

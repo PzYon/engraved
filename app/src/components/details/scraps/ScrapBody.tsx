@@ -39,7 +39,7 @@ export const ScrapBody: React.FC<{
       hasFocus={hasFocus}
       journal={journal}
       entry={scrapToRender}
-      actions={getActions()}
+      actions={getActions().filter((a): a is IAction => a != null)}
       propsRenderStyle={propsRenderStyle}
       noCompactFooter={!scrapToRender.id}
       propertyOverrides={
@@ -77,12 +77,12 @@ export const ScrapBody: React.FC<{
     ];
 
     if (!isEditMode) {
-      const hasSchedule = !!getScheduleForUser(scrapToRender, user.id)
+      const hasSchedule = !!getScheduleForUser(scrapToRender, user.id ?? "")
         ?.nextOccurrence;
 
       allActions.push(
         ActionFactory.editEntryScheduleViaUrl(
-          scrapToRender.id,
+          scrapToRender.id ?? "",
           hasFocus,
           hasSchedule,
         ),

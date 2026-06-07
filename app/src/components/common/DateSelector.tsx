@@ -2,8 +2,8 @@ import React from "react";
 import { LazyLoadSuspender } from "./LazyLoadSuspender";
 
 export interface ISimpleDateSelectorProps {
-  setDate: (date: Date) => void;
-  date: Date;
+  setDate: (date: Date | null) => void;
+  date: Date | undefined;
   label?: string;
   hasFocus?: boolean;
 }

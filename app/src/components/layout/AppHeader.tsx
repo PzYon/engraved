@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 import { ActionIconButtonGroup } from "../common/actions/ActionIconButtonGroup";
@@ -102,7 +102,9 @@ export const AppHeader: React.FC = () => {
       <AppContent>
         <ContentWrapper
           style={
-            isSmall ? { flexDirection: "column", alignItems: "start" } : null
+            isSmall
+              ? { flexDirection: "column", alignItems: "start" }
+              : undefined
           }
         >
           <Titles title={title} subTitle={subTitle} />

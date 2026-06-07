@@ -16,7 +16,7 @@ export const useGoToNavigationItems = (
     [JournalType.Scraps],
     false,
     true,
-    (previousData: ISearchEntitiesResult): ISearchEntitiesResult =>
+    (previousData: ISearchEntitiesResult | undefined): ISearchEntitiesResult =>
       previousData ?? getFallbackValue(),
   );
 
@@ -29,7 +29,7 @@ export const useGoToNavigationItems = (
 
   return {
     items: (result?.entities ?? []).map((e) => e.entity),
-    journalsForEntries: result.journals,
+    journalsForEntries: result?.journals ?? [],
   };
 
   function getFallbackValue(): ISearchEntitiesResult {

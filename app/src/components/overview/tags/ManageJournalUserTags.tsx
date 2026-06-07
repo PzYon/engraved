@@ -16,14 +16,14 @@ export const ManageJournalUserTags: React.FC<{
   const { user } = useAppContext();
 
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(() =>
-    user.tags
-      .filter((tag) => tag.journalIds.includes(journalId))
-      .map((t) => t.id),
+    (user.tags ?? [])
+      .filter((tag) => tag.journalIds?.includes(journalId))
+      .map((t) => t.id ?? ""),
   );
 
   return (
     <List sx={{ width: "100%" }}>
-      {user.tags.map((tag) => {
+      {(user.tags ?? []).map((tag) => {
         return (
           <ListItem key={tag.id} disablePadding>
             <ListItemButton

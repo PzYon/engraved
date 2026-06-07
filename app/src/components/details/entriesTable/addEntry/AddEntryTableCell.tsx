@@ -12,7 +12,7 @@ import {
 } from "../../../../util/journalUtils";
 
 export const AddEntryTableCell: React.FC<{
-  journal: IJournal;
+  journal?: IJournal;
   command: IUpsertGaugeEntryCommand;
   updateCommand: (c: IUpsertGaugeEntryCommand) => void;
   fieldName: string;
@@ -26,14 +26,14 @@ export const AddEntryTableCell: React.FC<{
   fieldType = "text",
   hasFocus,
 }) => {
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  const currentValue = (command as any)[fieldName] ?? "";
+  const currentValue =
+    (command as unknown as Record<string, unknown>)[fieldName] ?? "";
 
-  const updateCommandWrapped = (value: any) => {
+  const updateCommandWrapped = (value: unknown) => {
     updateCommand({
       ...command,
       [fieldName]: value,
-    });
+    } as IUpsertGaugeEntryCommand);
   };
 
   switch (fieldType) {
@@ -41,13 +41,14 @@ export const AddEntryTableCell: React.FC<{
       return (
         <DateSelector
           hasFocus={hasFocus}
-          date={new Date(currentValue)}
+          date={new Date(currentValue as number | string)}
           setDate={updateCommandWrapped}
         />
       );
     }
 
     case "attributes": {
+      if (!journal) return null;
       const journalAttributeValues =
         command.journalAttributeValues ??
         getDefaultAttributeValues(journal.attributes);
@@ -69,14 +70,14 @@ export const AddEntryTableCell: React.FC<{
           ) : null}
           <JournalAttributesSelector
             key={JSON.stringify(journalAttributeValues)}
-            attributes={journal.attributes}
+            attributes={journal.attributes ?? {}}
             noBorderTop={!showSearch}
             selectedAttributeValues={journalAttributeValues}
-            onChange={(value: any) => {
+            onChange={(value: IJournalAttributeValues) => {
               updateCommand({
                 ...command,
-                [fieldName]: { ...currentValue, ...value },
-              });
+                [fieldName]: { ...(currentValue as object), ...value },
+              } as IUpsertGaugeEntryCommand);
             }}
           />
         </>

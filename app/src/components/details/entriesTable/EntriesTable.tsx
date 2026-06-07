@@ -82,7 +82,7 @@ export const EntriesTable: React.FC<{
     const interval =
       type.type === JournalType.Timer
         ? window.setInterval(updateGroups, 10000)
-        : null;
+        : undefined;
 
     return () => window.clearInterval(interval);
 
@@ -282,12 +282,13 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
       getHeaderReactNode: () => translations.columnName_attributes,
       doHide: (journal: IJournal): boolean =>
         !Object.keys(journal.attributes ?? {}).length,
-      getValueReactNode: (_, entry) => (
-        <AttributeValues
-          attributes={journal.attributes}
-          attributeValues={entry.journalAttributeValues}
-        />
-      ),
+      getValueReactNode: (_, entry) =>
+        journal.attributes && entry.journalAttributeValues ? (
+          <AttributeValues
+            attributes={journal.attributes}
+            attributeValues={entry.journalAttributeValues}
+          />
+        ) : null,
       getAddEntryReactNode: (command, updateCommand) => {
         return (
           <AddEntryTableCell
@@ -337,7 +338,7 @@ function getColumnsAfter(journal: IJournal): IEntriesTableColumnDefinition[] {
             onAdded={(lastSelectedDate) => {
               updateCommand(
                 {
-                  journalId: command.journalId,
+                  journalId: command.journalId ?? "",
                   value: undefined,
                   dateTime: lastSelectedDate
                     ? new Date(lastSelectedDate)

@@ -17,7 +17,12 @@ import { IAction } from "../common/actions/IAction";
 import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { Chart } from "./chart/Chart";
-import { IJournalUiSettings } from "./edit/IJournalUiSettings";
+import {
+  AggregationMode,
+  DateFilterConfig,
+  IJournalUiSettings,
+} from "./edit/IJournalUiSettings";
+import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import {
   getUiSettings,
   isTypeThatCanShowAddEntryRow,
@@ -46,12 +51,13 @@ export const JournalViewPage: React.FC = () => {
     [journal],
   );
 
-  const [groupByTime, setGroupByTime] = useState(
-    uiSettings?.groupByTime ?? journalDefaultUiSettings.groupByTime,
+  const [groupByTime, setGroupByTime] = useState<GroupByTime>(
+    (uiSettings?.groupByTime ??
+      journalDefaultUiSettings.groupByTime) as GroupByTime,
   );
   const [attributeKey, setAttributeKey] = useState("-");
   const [chartType, setChartType] = useState<MyChartType>(
-    uiSettings.chartType ?? journalDefaultUiSettings.chartType,
+    (uiSettings.chartType ?? journalDefaultUiSettings.chartType) as MyChartType,
   );
 
   const [showNotes, setShowNotes] = useState(!!journal.notes);
@@ -63,8 +69,9 @@ export const JournalViewPage: React.FC = () => {
   const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
   const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
   const [showAgenda, setShowAgenda] = useState(!!uiSettings?.showAgenda);
-  const [aggregationMode, setAggregationMode] = useState(
-    uiSettings.aggregationMode ?? journalDefaultUiSettings.aggregationMode,
+  const [aggregationMode, setAggregationMode] = useState<AggregationMode>(
+    (uiSettings.aggregationMode ??
+      journalDefaultUiSettings.aggregationMode) as AggregationMode,
   );
 
   const [showThresholds, setShowThresholds] = useState(
@@ -76,8 +83,8 @@ export const JournalViewPage: React.FC = () => {
 
   const [titleActions, setTitleActions] = useState<IAction[]>([]);
 
-  const dateFilter =
-    uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter;
+  const dateFilter: DateFilterConfig =
+    uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter!;
 
   const footerRowMode =
     uiSettings.footerRowMode ?? journalDefaultUiSettings.footerRowMode;
@@ -97,24 +104,25 @@ export const JournalViewPage: React.FC = () => {
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTitleActions([
-      ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
-      deviceWidth !== DeviceWidth.Small
-        ? ActionFactory.toggleAddNewEntryRow(
-            showAddNewEntryRow,
-            setShowAddNewEntryRow,
-          )
-        : undefined,
-      ActionFactory.toggleNotes(showNotes, setShowNotes),
-      ActionFactory.toggleShowChart(showChart, setShowChart),
-      ActionFactory.toggleFilters(showFilters, setShowFilters, false),
-      ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
-      Object.keys(journal.thresholds || {}).length
-        ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
-        : undefined,
-      null, // null means separator - ugly, but it works for the moment
-      ...getCommonJournalActions(journal, true, user),
-    ]);
+    setTitleActions(
+      [
+        ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
+        deviceWidth !== DeviceWidth.Small
+          ? ActionFactory.toggleAddNewEntryRow(
+              showAddNewEntryRow,
+              setShowAddNewEntryRow,
+            )
+          : undefined,
+        ActionFactory.toggleNotes(showNotes, setShowNotes),
+        ActionFactory.toggleShowChart(showChart, setShowChart),
+        ActionFactory.toggleFilters(showFilters, setShowFilters, false),
+        ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
+        Object.keys(journal.thresholds ?? {}).length
+          ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
+          : undefined,
+        ...getCommonJournalActions(journal, true, user),
+      ].filter((a): a is IAction => a != null),
+    );
 
     return () => {
       setTitleActions([]);
@@ -137,7 +145,7 @@ export const JournalViewPage: React.FC = () => {
   return (
     <Page
       title={<JournalPageTitle journal={journal} />}
-      documentTitle={journal.name}
+      documentTitle={journal.name ?? ""}
       actions={titleActions}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
     >
@@ -177,7 +185,7 @@ export const JournalViewPage: React.FC = () => {
         </Suspense>
       ) : null}
 
-      {showThresholds && Object.keys(journal.thresholds).length ? (
+      {showThresholds && Object.keys(journal.thresholds ?? {}).length ? (
         <Thresholds
           entries={entries}
           journal={journal}

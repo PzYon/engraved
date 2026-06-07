@@ -30,15 +30,18 @@ export function getSchedulePropertyFromSchedule(
     highlightStyle: () => {
       const now = new Date();
 
-      if (isAfter(now, schedule.nextOccurrence)) {
+      if (schedule.nextOccurrence && isAfter(now, schedule.nextOccurrence)) {
         return "red";
       }
 
-      if (isSameDay(now, schedule.nextOccurrence)) {
+      if (schedule.nextOccurrence && isSameDay(now, schedule.nextOccurrence)) {
         return "yellow";
       }
 
-      if (isAfter(addDays(now, 2), schedule.nextOccurrence)) {
+      if (
+        schedule.nextOccurrence &&
+        isAfter(addDays(now, 2), schedule.nextOccurrence)
+      ) {
         return "green";
       }
 
@@ -49,7 +52,7 @@ export function getSchedulePropertyFromSchedule(
 
 export function getScheduleDefinition(
   parsedDate: IParsedDate,
-  journalId: string,
+  journalId: string | undefined,
   entryId: string,
 ): IScheduleDefinition {
   return parsedDate?.date
@@ -59,7 +62,39 @@ export function getScheduleDefinition(
         // {0} will be replaced on server with actual entry ID
         onClickUrl: `${location.origin}/journals/details/${journalId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entryId)).toString()}`,
       }
-    : undefined;
+    : { nextOccurrence: null, onClickUrl: null };
+}
+
+// Resolves the schedule definition to persist when saving an entry.
+//
+// A save may only set or change a schedule, never remove one. The schedule is
+// derived from a date typed into the title: when a new date is present it is
+// applied; otherwise (auto-save, body/list edits, or a title edit without a
+// date) any existing schedule is kept untouched. Removing a schedule is done
+// exclusively through the dedicated "edit schedule" action.
+export function getScheduleDefinitionForUpsert(
+  parsedDate: IParsedDate | undefined,
+  existingSchedule: ISchedule | undefined,
+  journalId: string | undefined,
+  entryId: string,
+): IScheduleDefinition {
+  if (parsedDate?.date) {
+    return getScheduleDefinition(parsedDate, journalId, entryId);
+  }
+
+  if (existingSchedule?.nextOccurrence) {
+    return getScheduleDefinition(
+      {
+        input: "",
+        date: new Date(existingSchedule.nextOccurrence),
+        recurrence: existingSchedule.recurrence,
+      },
+      journalId,
+      entryId,
+    );
+  }
+
+  return { nextOccurrence: null, onClickUrl: null };
 }
 
 export function sortEntitiesByDates(

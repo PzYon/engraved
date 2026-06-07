@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FormControl, IconButton, TextField } from "@mui/material";
 import Clear from "@mui/icons-material/Clear";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
@@ -8,11 +8,11 @@ export const SearchBox: React.FC<{
   setSearchText: (searchText: string) => void;
 }> = ({ searchText, setSearchText }) => {
   const [currentFieldValue, setCurrentFieldValue] = useState(searchText);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+  const [prevSearchText, setPrevSearchText] = useState(searchText);
+  if (prevSearchText !== searchText) {
+    setPrevSearchText(searchText);
     setCurrentFieldValue(searchText);
-  }, [searchText]);
+  }
 
   return (
     <FormControl margin="dense">
@@ -34,6 +34,7 @@ export const SearchBox: React.FC<{
             endAdornment: (
               <>
                 <IconButton
+                  aria-label="Clear search"
                   sx={{ visibility: currentFieldValue ? "visible" : "hidden" }}
                   onClick={() => {
                     setSearchText("");

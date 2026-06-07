@@ -14,10 +14,10 @@ import { AttributeValueSelector } from "../../common/AttributeValueSelector";
 import { ThresholdScope } from "./ThresholdScope";
 
 export interface IAttributeValueThresholdDefinition {
-  attributeKey: string;
+  attributeKey?: string;
   attributeValueKeys: string[];
-  threshold: number;
-  scope: ThresholdScope;
+  threshold?: number;
+  scope?: ThresholdScope;
   key?: string;
 }
 
@@ -45,7 +45,7 @@ export const ThresholdRow: React.FC<{
   return (
     <Host sx={styles}>
       <GroupByAttributeSelector
-        attributes={journal.attributes}
+        attributes={journal.attributes ?? {}}
         onChange={(k) => {
           setAttributeKey(k);
           onChangeWrapper(
@@ -60,7 +60,9 @@ export const ThresholdRow: React.FC<{
       />
       {attributeKey ? (
         <AttributeValueSelector
-          attribute={journal.attributes[attributeKey]}
+          attribute={
+            journal.attributes?.[attributeKey ?? ""] ?? { name: "", values: {} }
+          }
           selectedValue={attributeValueKeys[0]}
           onChange={(attributesValues) => {
             setAttributeValueKeys(attributesValues);
@@ -105,7 +107,7 @@ export const ThresholdRow: React.FC<{
         type="number"
         defaultValue={threshold}
         onBlur={(event) => {
-          const newThreshold = event.target.value;
+          const newThreshold = Number(event.target.value);
           setThreshold(newThreshold);
           onChangeWrapper(
             attributeKey,

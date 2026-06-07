@@ -31,17 +31,32 @@ export class ScrapsJournalPage extends JournalPage {
     return new ScrapListComponent(this.page);
   }
 
-  async addMarkdownWithTitle(title: string) {
+  async addEntry(title: string, content?: string) {
     await this.clickPageAction("Add entry");
 
     await this.getTitleBox().click();
     await this.getTitleBox().fill(title);
-    await this.getTitleBox().press("Alt+s");
+
+    if (content !== undefined) {
+      const contentEditor = this.page
+        .getByTestId("add-new-scrap")
+        .locator(".tiptap")
+        .last();
+      await contentEditor.click();
+      await contentEditor.fill(content);
+      await contentEditor.press("Alt+s");
+    } else {
+      await this.getTitleBox().press("Alt+s");
+    }
 
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar).toContainText("Added entry");
     await appBar.getByRole("button", { name: "Close" }).click();
     await expect(appBar).toBeHidden({ timeout: 2000 });
+  }
+
+  async addMarkdownWithTitle(title: string) {
+    return this.addEntry(title);
   }
 
   private async isMarkdown() {

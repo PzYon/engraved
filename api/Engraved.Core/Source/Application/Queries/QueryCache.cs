@@ -1,14 +1,15 @@
-﻿using Engraved.Core.Domain.Users;
+using System.Collections.Concurrent;
+using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
 
 namespace Engraved.Core.Application.Queries;
 
 public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, Lazy<IUser> currentUser)
 {
   private const string KeysByUserId = "___keysByUserId";
+  private const string GenerationIdsByUserId = "___generationsByUserId";
 
   private ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> QueryKeysByUser
     => memoryCache.GetOrCreate(
@@ -16,10 +17,54 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       _ => new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>()
     )!;
 
-  public void Set<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, TValue value)
+  // Monotonically increasing "generation" per user, bumped on every
+  // invalidation. A cached item is only valid while its generation still
+  // matches the user's current generation (see TryGetValue).
+  private ConcurrentDictionary<string, long> GenerationIdsByUser
+    => memoryCache.GetOrCreate(
+      GenerationIdsByUserId,
+      _ => new ConcurrentDictionary<string, long>()
+    )!;
+
+  // Returns the cached value for the query, or executes it and caches the
+  // result. The generation is captured *before* executing, inside this method,
+  // so callers cannot accidentally reorder the capture relative to the read or
+  // forget to pass it to Set: if a command invalidates this user's cache while
+  // the query runs, the captured generation becomes stale and the freshly
+  // computed result is simply ignored on the next read.
+  public async Task<TValue> GetOrCreate<TValue, TQuery>(
+    IQueryExecutor<TValue, TQuery> queryExecutor,
+    TQuery query
+  )
     where TQuery : IQuery
   {
-    var key = GetKey(queryExecutor);
+    if (queryExecutor.DisableCache)
+    {
+      return await queryExecutor.Execute(query);
+    }
+
+    if (TryGetValue(query, out TValue? cachedValue))
+    {
+      return cachedValue!;
+    }
+
+    var generationId = GetGenerationId();
+
+    TValue value = await queryExecutor.Execute(query);
+
+    Set(query, value, generationId);
+
+    return value;
+  }
+
+  public void Set<TValue, TQuery>(
+    TQuery query,
+    TValue value,
+    long generationId
+  )
+    where TQuery : IQuery
+  {
+    var key = GetKey(query);
 
     RememberQueryKeyForUser(key);
 
@@ -28,16 +73,17 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       new CacheItem<TValue>
       {
         Value = value,
-        ConfigToken = GetConfigToken(query)
+        ConfigToken = GetConfigToken(query),
+        GenerationId = generationId
       },
       new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
     );
   }
 
-  public bool TryGetValue<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query, out TValue? value)
+  public bool TryGetValue<TValue, TQuery>(TQuery query, out TValue? value)
     where TQuery : IQuery
   {
-    var key = GetKey(queryExecutor);
+    var key = GetKey(query);
 
     if (!memoryCache.TryGetValue(key, out CacheItem<TValue>? cacheItem))
     {
@@ -46,8 +92,17 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       return false;
     }
 
+    if (cacheItem!.GenerationId != GetGenerationId())
+    {
+      // The cache was invalidated after this item's underlying data was read,
+      // so the item may be stale and must not be served.
+      logger.LogInformation("{Key}: Cache miss (stale generation)", key);
+      value = default!;
+      return false;
+    }
+
     var configToken = GetConfigToken(query);
-    if (cacheItem!.ConfigToken != configToken)
+    if (cacheItem.ConfigToken != configToken)
     {
       logger.LogInformation("{Key}: Cache miss (different token): {ConfigToken}", key, configToken);
       value = default!;
@@ -72,14 +127,29 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     ClearForUser(GetUserId());
   }
 
-  private void ClearForUser(string userName)
+  public long GetGenerationId()
   {
-    if (!QueryKeysByUser.TryGetValue(userName, out var keys) || keys.IsEmpty)
+    return GenerationIdsByUser.TryGetValue(GetUserId(), out var generation) ? generation : 0;
+  }
+
+  private void ClearForUser(string userId)
+  {
+    // Bump the generation first: this is what makes invalidation safe against a
+    // concurrent query that has already read its data but not yet written it to
+    // the cache (such a write would carry the now-outdated generation).
+    var generation = GenerationIdsByUser.AddOrUpdate(userId, 1, (_, current) => current + 1);
+
+    if (!QueryKeysByUser.TryGetValue(userId, out var keys) || keys.IsEmpty)
     {
       return;
     }
 
-    logger.LogInformation("Invalidating cache for user {UserName}, {ValueCount} items affected", userName, keys.Count);
+    logger.LogInformation(
+      "Invalidating cache for user {UserId} (generation {Generation}), {ValueCount} items affected",
+      userId,
+      generation,
+      keys.Count
+    );
 
     foreach (var key in keys.Keys)
     {
@@ -87,10 +157,9 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     }
   }
 
-  private string GetKey<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor)
-    where TQuery : IQuery
+  private string GetKey(IQuery query)
   {
-    return queryExecutor.GetType().Name + "_" + currentUser.Value.Id;
+    return query.GetType().Name + "_" + currentUser.Value.Id;
   }
 
   private static string GetConfigToken(IQuery query)
@@ -121,5 +190,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     public TResult Value { get; set; } = default!;
 
     public string ConfigToken { get; set; } = null!;
+
+    public long GenerationId { get; set; }
   }
 }

@@ -50,28 +50,28 @@ describe("parseDate", () => {
   describe("abbreviations", () => {
     it("should allow 'mon' for 'monday'", () => {
       const result = parseDate("mon 15:00", referenceDate);
-      expect(result.date.toJSON()).toBe(
+      expect(result.date!.toJSON()).toBe(
         new Date(2017, 3, 24, 15, 0, 0, 0).toJSON(),
       );
     });
 
     it("should allow '1234' for '12:34'", () => {
       const result = parseDate("1234", referenceDate);
-      expect(result.date.toJSON()).toBe(
+      expect(result.date!.toJSON()).toBe(
         new Date(2017, 3, 20, 12, 34, 0, 0).toJSON(),
       );
     });
 
     it("should allow 'tom' for 'tomorrow'", () => {
       const result = parseDate("tom", referenceDate);
-      expect(result.date.toJSON()).toBe(
+      expect(result.date!.toJSON()).toBe(
         new Date(2017, 3, 21, 0, 0, 0, 0).toJSON(),
       );
     });
 
     it("should allow 'Tom' for 'tomorrow'", () => {
       const result = parseDate("Tom", referenceDate);
-      expect(result.date.toJSON()).toBe(
+      expect(result.date!.toJSON()).toBe(
         new Date(2017, 3, 21, 0, 0, 0, 0).toJSON(),
       );
     });
@@ -81,10 +81,10 @@ describe("parseDate", () => {
     it("Every without at", () => {
       const result = parseDate("Stuff every sat 15:01", referenceDate);
 
-      expect(result.recurrence.dateString).toBe("sat 15:01");
+      expect(result.recurrence!.dateString).toBe("sat 15:01");
       expect(result.text).toBe("Stuff");
 
-      expect(result.date.toJSON()).toBe(
+      expect(result.date!.toJSON()).toBe(
         new Date(2017, 3, 22, 15, 1, 0, 0).toJSON(),
       );
     });
@@ -92,10 +92,10 @@ describe("parseDate", () => {
     it("Every with at", () => {
       const result = parseDate("every sun at 13:30 Do stuff", referenceDate);
 
-      expect(result.recurrence.dateString).toBe("sun at 13:30");
+      expect(result.recurrence!.dateString).toBe("sun at 13:30");
       expect(result.text).toBe("Do stuff");
 
-      expect(result.date.toJSON()).toBe(
+      expect(result.date!.toJSON()).toBe(
         new Date(2017, 3, 23, 13, 30, 0, 0).toJSON(),
       );
     });
@@ -106,7 +106,7 @@ describe("parseDate", () => {
       expect(result.recurrence?.dateString).toBe("sun at 13:30");
       expect(result.text).toBe("Do stuff");
 
-      expect(result.date.toJSON()).toBe(
+      expect(result.date!.toJSON()).toBe(
         new Date(2017, 3, 23, 13, 30, 0, 0).toJSON(),
       );
     });
@@ -118,7 +118,7 @@ const referenceDate = new Date(2017, 3, 20, 0, 0, 0, 0); // thursday
 function expectMonday10(value: string) {
   const result = parseDate(value, referenceDate);
   expect(result.text).toBe("shut up");
-  expect(result.date.toJSON()).toBe(
+  expect(result.date!.toJSON()).toBe(
     new Date(2017, 3, 24, 10, 0, 0, 0).toJSON(),
   );
 }

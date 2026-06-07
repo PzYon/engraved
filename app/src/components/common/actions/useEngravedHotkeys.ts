@@ -22,13 +22,13 @@ type Hotkey = KeyboardModifiers & {
 };
 
 export function useEngravedHotkeys(
-  hotkey: string | string[],
+  hotkey: string | string[] | undefined,
   callback: HotkeyCallback,
   options?: Options | DependencyList,
   dependencies?: Options | DependencyList,
 ) {
   useHotkeys(
-    hotkey,
+    hotkey ?? "",
     (keyboardEvent: KeyboardEvent, hotkeysEvent: Hotkey) => {
       if (options && (options as Options).preventDefault === undefined) {
         keyboardEvent.preventDefault();

@@ -49,10 +49,10 @@ export const Scrap: React.FC<{
         initialScrap={scrap}
         propsRenderStyle={propsRenderStyle}
         actionsRenderStyle={actionsRenderStyle}
-        journal={journal}
+        journal={journal!}
         onSuccess={onSuccess}
         onCancelEditing={onCancelEditing}
-        hasFocus={hasFocus}
+        hasFocus={hasFocus ?? false}
         giveFocus={giveFocus}
         isQuickAdd={isQuickAdd}
         changeTypeWithoutConfirmation={changeTypeWithoutConfirmation}

@@ -22,15 +22,17 @@ export const EditJournalPermissionsAction: React.FC<{
   const { closeAction } = useItemAction();
 
   const modifyJournalPermissionsMutation = useModifyJournalPermissionsMutation(
-    journal.id,
+    journal.id ?? "",
   );
 
   return (
     <>
-      {Object.keys(journal.permissions).map((k) => (
+      {Object.keys(journal.permissions ?? {}).map((k) => (
         <UserPermission
           key={k}
-          permissionDefinition={journal.permissions[k]}
+          permissionDefinition={
+            journal.permissions?.[k] ?? { kind: PermissionKind.None }
+          }
           removePermissions={(u) => setPermissions(u, PermissionKind.None)}
         />
       ))}

@@ -8,7 +8,7 @@ import { ActionFactory } from "../../common/actions/ActionFactory";
 export const JournalNotes: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
-  const editJournalMutation = useEditJournalMutation(journal.id);
+  const editJournalMutation = useEditJournalMutation(journal.id ?? "");
   const [isEditMode, setIsEditMode] = useState(!journal.notes);
   const [notes, setNotes] = useState(journal.notes ?? "");
 
@@ -37,7 +37,6 @@ export const JournalNotes: React.FC<{
             setNotes(journal.notes ?? "");
             setIsEditMode(false);
           }),
-          null,
         ]}
       />
     );

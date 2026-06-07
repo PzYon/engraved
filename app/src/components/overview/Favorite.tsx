@@ -13,7 +13,7 @@ export const Favorite: React.FC<{ journalId: string }> = ({ journalId }) => {
   const addMutation = useAddJournalToFavoritesMutation(journalId);
   const removeMutation = useRemoveJournalFromFavoritesMutation(journalId);
 
-  if (user.favoriteJournalIds.indexOf(journalId) > -1) {
+  if ((user.favoriteJournalIds ?? []).indexOf(journalId) > -1) {
     return (
       <ButtonContainer>
         <ActionIconButton

@@ -52,7 +52,7 @@ function getStreakContent(journal: IJournal, entries: IEntry[]) {
 
   const streak = calculateStreak(entries, mode);
 
-  if (!streak.isStreak) {
+  if (!streak || !streak.isStreak) {
     return (
       <Host type={"red"}>
         <DoNotDisturb />

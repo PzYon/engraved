@@ -20,7 +20,7 @@ export const ActionIconButton: React.FC<{
     action.hotkey,
     (keyboardEvent) => {
       keyboardEvent.preventDefault();
-      action.onClick();
+      action.onClick?.();
     },
     {
       // we only register actions with functions here.

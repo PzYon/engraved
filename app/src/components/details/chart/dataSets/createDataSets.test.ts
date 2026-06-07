@@ -34,13 +34,13 @@ describe("createDataSets", () => {
 
     expect(dataSets.length).toBe(3);
 
-    const rotData = dataSets.find((d) => d.label == "Rot").data;
+    const rotData = dataSets.find((d) => d.label == "Rot")!.data;
     expect(rotData.length).toBe(1);
 
-    const gruenData = dataSets.find((d) => d.label == "Gruen").data;
+    const gruenData = dataSets.find((d) => d.label == "Gruen")!.data;
     expect(gruenData.length).toBe(2);
 
-    const restData = dataSets.find((d) => d.label == "Name").data;
+    const restData = dataSets.find((d) => d.label == "Name")!.data;
     expect(restData.length).toBe(1);
   });
 });
@@ -84,7 +84,7 @@ function createEntries() {
       dateTime: dateTime,
     },
     {
-      journalAttributeValues: {},
+      journalAttributeValues: {} as Record<string, string[]>,
       value: 1,
       dateTime: dateTime,
     },

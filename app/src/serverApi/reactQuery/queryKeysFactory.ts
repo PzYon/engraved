@@ -29,8 +29,8 @@ export const queryKeysFactory = {
     ];
   },
 
-  journal(journalId: string) {
-    return [journals, journalId];
+  journal(journalId: string | undefined) {
+    return [journals, journalId ?? ""];
   },
 
   addJournal() {

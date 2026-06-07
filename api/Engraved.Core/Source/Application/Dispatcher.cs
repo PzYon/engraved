@@ -31,13 +31,7 @@ public class Dispatcher(
       throw new Exception($"No query executor registered for query of type {query.GetType()}");
     }
 
-    if (!queryExecutor.DisableCache && queryCache.TryGetValue(queryExecutor, query, out TResult? cachedResult))
-    {
-      return cachedResult!;
-    }
-
-    TResult result = await queryExecutor.Execute(query);
-    queryCache.Set(queryExecutor, query, result);
+    TResult result = await queryCache.GetOrCreate(queryExecutor, query);
 
     if (typeof(TResult).IsArray)
     {
@@ -72,7 +66,7 @@ public class Dispatcher(
 
   private void InvalidateCache(CommandResult commandResult)
   {
-    string[] affectedUserIds = commandResult.AffectedUserIds
+    var affectedUserIds = commandResult.AffectedUserIds
       .Union([repository.CurrentUser.Value.Id!])
       .ToArray();
 
@@ -84,7 +78,7 @@ public class Dispatcher(
     object payload
   )
   {
-    string name = payload.GetType().Name;
+    var name = payload.GetType().Name;
 
     using (logger.BeginScope(
              new Dictionary<string, object>

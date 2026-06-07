@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IJournal } from "../../serverApi/IJournal";
 import { useJournalsQuery } from "../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalType } from "../../serverApi/JournalType";
@@ -23,7 +23,10 @@ export const JournalSelector: React.FC<{
   const journals = useJournalsQuery("", [JournalType.Scraps]);
 
   const [selectedJournalId, setSelectedJournalId] = useState<string>(
-    () => storage.getValue<string>(storageKey) ?? user.favoriteJournalIds[0],
+    () =>
+      storage.getValue<string>(storageKey) ??
+      user.favoriteJournalIds?.[0] ??
+      "",
   );
 
   const selectedJournal = useMemo(
@@ -34,11 +37,15 @@ export const JournalSelector: React.FC<{
     [journals, selectedJournalId],
   );
 
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  });
+
   useEffect(() => {
     if (selectedJournal) {
-      onChange(selectedJournal);
+      onChangeRef.current(selectedJournal);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedJournal]);
 
   if (!journals?.length) {
@@ -51,14 +58,15 @@ export const JournalSelector: React.FC<{
       value={selectedJournal}
       options={filterJournals(journals)}
       onChange={async (_, selectedOption) => {
+        if (!selectedOption) return;
         onChange(selectedOption);
-        setSelectedJournalId(selectedOption.id);
-        storage.setValue(storageKey, selectedOption.id);
+        setSelectedJournalId(selectedOption.id ?? "");
+        storage.setValue(storageKey, selectedOption.id ?? "");
       }}
       renderInput={(params) => (
         <TextField {...params} label={label ?? "Journals"} />
       )}
-      getOptionLabel={(option) => option.name}
+      getOptionLabel={(option) => option.name ?? ""}
       renderOption={(props, option) => (
         <Box {...props} key={option.id} component={"li"}>
           <JournalMenuItem journal={option} />
@@ -67,7 +75,9 @@ export const JournalSelector: React.FC<{
       filterOptions={(currenOptions, state) => {
         return currenOptions.filter(
           (j) =>
-            j.name?.toLowerCase().indexOf(state.inputValue?.toLowerCase()) > -1,
+            (j.name
+              ?.toLowerCase()
+              .indexOf(state.inputValue?.toLowerCase() ?? "") ?? -1) > -1,
         );
       }}
       selectOnFocus
