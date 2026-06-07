@@ -9,7 +9,7 @@ export const Chart: React.FC<IChartProps> = (props) => {
   const [numberOfEntries, setNumberOfEntries] = useState(props.entries.length);
 
   return (
-    <Host>
+    <Host data-testid="journal-chart">
       <ChartJsWrapper
         {...props}
         onEntriesCalculated={setNumberOfEntries}
