@@ -131,6 +131,7 @@ builder.Services.AddTransient<Lazy<IUser>>(provider => provider.GetService<IUser
 builder.Services.AddTransient<IRepository>(provider => provider.GetService<IUserScopedRepository>()!
 );
 
+builder.Services.AddSingleton(new E2ETestMode(isE2ETests));
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
