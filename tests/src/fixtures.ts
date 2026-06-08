@@ -36,5 +36,3 @@ export const test = base.extend<EngravedFixtures>({
     await request.dispose();
   },
 });
-
-export { expect } from "@playwright/test";

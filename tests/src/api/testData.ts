@@ -2,15 +2,15 @@ import { APIRequestContext } from "@playwright/test";
 
 const API_BASE_URL = "http://localhost:5072";
 
-export type SeedJournalType = "Counter" | "Gauge" | "Timer" | "Scraps";
+type SeedJournalType = "Counter" | "Gauge" | "Timer" | "Scraps";
 
-export interface SeedEntry {
+interface SeedEntry {
   value?: number;
   title?: string;
   notes?: string;
 }
 
-export interface SeedJournal {
+interface SeedJournal {
   name: string;
   description?: string;
   type: SeedJournalType;
@@ -21,7 +21,7 @@ export interface Scenario {
   journals: SeedJournal[];
 }
 
-export interface SeededJournal {
+interface SeededJournal {
   journalId: string;
   entryIds: string[];
 }
