@@ -7,7 +7,10 @@ import { isAndroidTest } from "../src/utils/isAndroidTest";
 
 test.describe("routing", () => {
   // eslint-disable-next-line playwright/no-skipped-test
-  test.skip(isAndroidTest(), "already covered by the desktop run");
+  test.skip(
+    ({ viewport }) => isAndroidTest(viewport),
+    "already covered by the desktop run",
+  );
 
   // ---------------------------------------------------------------------------
   // Basic route navigation
