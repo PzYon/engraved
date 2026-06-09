@@ -159,28 +159,18 @@ test.describe("routing", () => {
 
   test("navigates to tag detail page — URL contains tagId", async ({
     page,
+    testData,
   }) => {
-    await navigateToHome(page);
+    const tagId = "routing-tag";
+    await testData.seed({ tags: [{ id: tagId, label: "Routing Tag" }] });
 
-    // Go to tags page first
-    await page.getByRole("button", { name: "Menu" }).click();
-    await page.getByRole("link", { name: "Tags" }).click();
-    await page.waitForURL((url) => url.pathname === "/tags");
+    // load /tags fresh so the user (with the seeded tag) is fetched
+    await page.goto("/tags");
 
-    // If there are tags, click the first one
-    const firstTag = page.locator("a[href^='/tags/']").first();
-    const tagCount = await firstTag.count();
+    await page.getByRole("link", { name: "Routing Tag" }).click();
 
-    if (tagCount > 0) {
-      await firstTag.click();
-      await page.waitForURL((url) => url.pathname.startsWith("/tags/"));
-      const url = new URL(page.url());
-      expect(url.pathname).toMatch(/^\/tags\/.+/);
-    }
-    // If no tags, just verify we're on the tags page correctly
-    else {
-      await expect(page).toHaveURL(/\/tags/);
-    }
+    await page.waitForURL((url) => url.pathname.startsWith("/tags/"));
+    expect(new URL(page.url()).pathname).toContain(tagId);
   });
 
   // ---------------------------------------------------------------------------

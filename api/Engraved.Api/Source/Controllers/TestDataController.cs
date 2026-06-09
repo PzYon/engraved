@@ -6,6 +6,7 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
+using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Domain.Journals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,6 +65,16 @@ public class TestDataController(
       seededJournals.Add(new SeededJournal { JournalId = journalId, EntryIds = entryIds.ToArray() });
     }
 
+    if (dto.Tags.Length > 0)
+    {
+      await dispatcher.Command(
+        new UpdateUserTagsCommand
+        {
+          TagNames = dto.Tags.ToDictionary(tag => tag.Id, tag => tag.Label)
+        }
+      );
+    }
+
     return new SeedResult { Journals = seededJournals.ToArray() };
   }
 
@@ -91,6 +102,15 @@ public class TestDataController(
 public class SeedTestDataDto
 {
   public SeedJournalDto[] Journals { get; set; } = [];
+
+  public SeedTagDto[] Tags { get; set; } = [];
+}
+
+public class SeedTagDto
+{
+  public string Id { get; set; } = null!;
+
+  public string Label { get; set; } = null!;
 }
 
 public class SeedJournalDto
