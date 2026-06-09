@@ -1,7 +1,6 @@
-import { expect, Page, test } from "@playwright/test";
-import { login } from "../src/utils/login";
-import { addNewJournal } from "../src/utils/addNewJournal";
-import { navigateToHome } from "../src/utils/navigateTo";
+import { expect, Page } from "@playwright/test";
+import { test } from "../src/fixtures";
+import { TestData } from "../src/api/testData";
 import { JournalsPage } from "../src/poms/journalsPage";
 
 // Three journals are seeded for every test. Navigation tests assert focus by
@@ -10,41 +9,48 @@ import { JournalsPage } from "../src/poms/journalsPage";
 // matches all three.
 const journalNames = ["Apple", "Apricot", "Avocado"];
 
-async function seedJournals(page: Page): Promise<JournalsPage> {
-  for (const name of journalNames) {
-    await addNewJournal(page, "Value", name);
-    await navigateToHome(page);
-  }
+async function seedJournals(
+  page: Page,
+  testData: TestData,
+): Promise<JournalsPage> {
+  await testData.seed({
+    journals: journalNames.map((name) => ({ name, type: "Gauge" })),
+  });
+
+  // load the home overview so the freshly seeded journals are fetched
+  await page.goto("/");
 
   const journalsPage = new JournalsPage(page);
   await journalsPage.expectToShowNEntities(journalNames.length);
   return journalsPage;
 }
 
-test.beforeEach(async ({ page }) => {
-  await login(page, "overview-list-nav");
-});
-
 // --- arrow navigation ---
 
-test("ArrowDown with no selection focuses the first item", async ({ page }) => {
-  const list = await seedJournals(page);
+test("ArrowDown with no selection focuses the first item", async ({
+  page,
+  testData,
+}) => {
+  const list = await seedJournals(page, testData);
 
   await list.arrowDown();
 
   await list.expectFocusedItem(0);
 });
 
-test("ArrowUp with no selection focuses the last item", async ({ page }) => {
-  const list = await seedJournals(page);
+test("ArrowUp with no selection focuses the last item", async ({
+  page,
+  testData,
+}) => {
+  const list = await seedJournals(page, testData);
 
   await list.arrowUp();
 
   await list.expectFocusedItem(2);
 });
 
-test("ArrowDown moves focus to the next item", async ({ page }) => {
-  const list = await seedJournals(page);
+test("ArrowDown moves focus to the next item", async ({ page, testData }) => {
+  const list = await seedJournals(page, testData);
 
   await list.arrowDown();
   await list.expectFocusedItem(0);
@@ -53,8 +59,8 @@ test("ArrowDown moves focus to the next item", async ({ page }) => {
   await list.expectFocusedItem(1);
 });
 
-test("ArrowUp moves focus to the previous item", async ({ page }) => {
-  const list = await seedJournals(page);
+test("ArrowUp moves focus to the previous item", async ({ page, testData }) => {
+  const list = await seedJournals(page, testData);
 
   await list.arrowDown();
   await list.arrowDown();
@@ -64,8 +70,11 @@ test("ArrowUp moves focus to the previous item", async ({ page }) => {
   await list.expectFocusedItem(0);
 });
 
-test("ArrowDown wraps from the last item to the first", async ({ page }) => {
-  const list = await seedJournals(page);
+test("ArrowDown wraps from the last item to the first", async ({
+  page,
+  testData,
+}) => {
+  const list = await seedJournals(page, testData);
 
   await list.arrowUp();
   await list.expectFocusedItem(2);
@@ -74,8 +83,11 @@ test("ArrowDown wraps from the last item to the first", async ({ page }) => {
   await list.expectFocusedItem(0);
 });
 
-test("ArrowUp wraps from the first item to the last", async ({ page }) => {
-  const list = await seedJournals(page);
+test("ArrowUp wraps from the first item to the last", async ({
+  page,
+  testData,
+}) => {
+  const list = await seedJournals(page, testData);
 
   await list.arrowDown();
   await list.expectFocusedItem(0);
@@ -86,8 +98,11 @@ test("ArrowUp wraps from the first item to the last", async ({ page }) => {
 
 // --- item actions ---
 
-test("alt+enter navigates into the focused journal", async ({ page }) => {
-  const list = await seedJournals(page);
+test("alt+enter navigates into the focused journal", async ({
+  page,
+  testData,
+}) => {
+  const list = await seedJournals(page, testData);
 
   await list.arrowDown();
   await list.expectFocusedItem(0);
@@ -101,8 +116,11 @@ test("alt+enter navigates into the focused journal", async ({ page }) => {
   await expect(page.getByTestId("journal")).toBeVisible();
 });
 
-test("alt+e opens the focused journal's edit page", async ({ page }) => {
-  const list = await seedJournals(page);
+test("alt+e opens the focused journal's edit page", async ({
+  page,
+  testData,
+}) => {
+  const list = await seedJournals(page, testData);
 
   await list.arrowDown();
   const journalId = await list.getFocusedItemId();
@@ -117,8 +135,11 @@ test("alt+e opens the focused journal's edit page", async ({ page }) => {
 
 // --- type-to-filter ---
 
-test("typing narrows the list to matching items", async ({ page }) => {
-  const list = await seedJournals(page);
+test("typing narrows the list to matching items", async ({
+  page,
+  testData,
+}) => {
+  const list = await seedJournals(page, testData);
 
   await list.typeToFilter("ap");
 
@@ -128,8 +149,8 @@ test("typing narrows the list to matching items", async ({ page }) => {
   await list.expectItemHidden("Avocado");
 });
 
-test("backspace widens the filtered list again", async ({ page }) => {
-  const list = await seedJournals(page);
+test("backspace widens the filtered list again", async ({ page, testData }) => {
+  const list = await seedJournals(page, testData);
 
   await list.typeToFilter("ap");
   await list.expectToShowNEntities(2);
@@ -142,8 +163,9 @@ test("backspace widens the filtered list again", async ({ page }) => {
 
 test("escape clears the filter and restores the full list", async ({
   page,
+  testData,
 }) => {
-  const list = await seedJournals(page);
+  const list = await seedJournals(page, testData);
 
   await list.typeToFilter("ap");
   await list.expectToShowNEntities(2);
