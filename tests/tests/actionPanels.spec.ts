@@ -1,7 +1,5 @@
-import { expect, Page, test } from "@playwright/test";
-import { login } from "../src/utils/login";
-import { navigateToHome } from "../src/utils/navigateTo";
-import { createJournalViaApi } from "../src/utils/apiClient";
+import { expect, Page } from "@playwright/test";
+import { test } from "../src/fixtures";
 import { isAndroidTest } from "../src/utils/isAndroidTest";
 
 // These tests verify viewport-agnostic navigation logic via the overview list
@@ -16,71 +14,77 @@ function overviewItem(page: Page, name: string) {
     .filter({ hasText: name });
 }
 
-test("switching between actions on the same item does not navigate via root", async ({
-  page,
-}) => {
+test.describe("action panels", () => {
+  // describe-level skip so android bails out before the (auto) login fixture runs
   // eslint-disable-next-line playwright/no-skipped-test
-  test.skip(isAndroidTest(), skipReason);
+  test.skip(({ viewport }) => isAndroidTest(viewport), skipReason);
 
-  await login(page, "action-switch", "Gauge", "Switch Journal");
-  await navigateToHome(page);
-  const item = overviewItem(page, "Switch Journal");
+  test("switching between actions on the same item does not navigate via root", async ({
+    page,
+    testData,
+  }) => {
+    await testData.seed({
+      journals: [{ name: "Switch Journal", type: "Gauge" }],
+    });
+    await page.goto("/");
 
-  await item.getByLabel("Edit schedule", { exact: true }).click();
-  await expect(page).toHaveURL(/action-key=schedule/);
+    const item = overviewItem(page, "Switch Journal");
 
-  // record every client-side navigation (history pushState/replaceState) that
-  // happens while switching actions. Playwright's "framenavigated" only fires on
-  // full document loads, so we hook the history API to see SPA navigations.
-  await page.evaluate(() => {
-    const w = window as unknown as { __urls: string[] };
-    w.__urls = [];
-    const record = () => w.__urls.push(location.pathname + location.search);
-    for (const name of ["pushState", "replaceState"] as const) {
-      const original = history[name].bind(history);
-      history[name] = (...args: Parameters<History["pushState"]>) => {
-        original(...args);
-        record();
-      };
-    }
+    await item.getByLabel("Edit schedule", { exact: true }).click();
+    await expect(page).toHaveURL(/action-key=schedule/);
+
+    // record every client-side navigation (history pushState/replaceState) that
+    // happens while switching actions. Playwright's "framenavigated" only fires on
+    // full document loads, so we hook the history API to see SPA navigations.
+    await page.evaluate(() => {
+      const w = window as unknown as { __urls: string[] };
+      w.__urls = [];
+      const record = () => w.__urls.push(location.pathname + location.search);
+      for (const name of ["pushState", "replaceState"] as const) {
+        const original = history[name].bind(history);
+        history[name] = (...args: Parameters<History["pushState"]>) => {
+          original(...args);
+          record();
+        };
+      }
+    });
+
+    await item.getByLabel("Permissions", { exact: true }).click();
+    await expect(page).toHaveURL(/action-key=permissions/);
+
+    // the transition must actually navigate, but go straight to the new action,
+    // never via "/" (root)
+    const urls = await page.evaluate(
+      () => (window as unknown as { __urls: string[] }).__urls,
+    );
+    expect(urls.length).toBeGreaterThan(0);
+    expect(urls).not.toContain("/");
   });
 
-  await item.getByLabel("Permissions", { exact: true }).click();
-  await expect(page).toHaveURL(/action-key=permissions/);
+  test("opening an add-entry panel on one journal then another keeps the second open", async ({
+    page,
+    testData,
+  }) => {
+    await testData.seed({
+      journals: [
+        { name: "Journal A", type: "Gauge" },
+        { name: "Journal B", type: "Gauge" },
+      ],
+    });
+    await page.goto("/");
 
-  // the transition must actually navigate, but go straight to the new action,
-  // never via "/" (root)
-  const urls = await page.evaluate(
-    () => (window as unknown as { __urls: string[] }).__urls,
-  );
-  expect(urls.length).toBeGreaterThan(0);
-  expect(urls).not.toContain("/");
-});
+    await overviewItem(page, "Journal A")
+      .getByLabel("Add entry", { exact: true })
+      .click();
+    await expect(page).toHaveURL(/selected-item=/);
 
-test("opening an add-entry panel on one journal then another keeps the second open", async ({
-  page,
-  request,
-}) => {
-  // eslint-disable-next-line playwright/no-skipped-test
-  test.skip(isAndroidTest(), skipReason);
+    const itemB = overviewItem(page, "Journal B");
+    await itemB.getByLabel("Add entry", { exact: true }).click();
 
-  const userName = await login(page, "two-journal", "Gauge", "Journal A");
-  await navigateToHome(page);
-  await createJournalViaApi(request, userName, {
-    name: "Journal B",
-    journalType: "Gauge",
+    // the second journal's panel must stay open (params not wiped)
+    await expect(page).toHaveURL(/action-key=add-entry/);
+    await expect(
+      itemB.getByRole("button", { name: "Add entry" }),
+    ).toBeVisible();
   });
-  await page.reload();
-
-  await overviewItem(page, "Journal A")
-    .getByLabel("Add entry", { exact: true })
-    .click();
-  await expect(page).toHaveURL(/selected-item=/);
-
-  const itemB = overviewItem(page, "Journal B");
-  await itemB.getByLabel("Add entry", { exact: true }).click();
-
-  // the second journal's panel must stay open (params not wiped)
-  await expect(page).toHaveURL(/action-key=add-entry/);
-  await expect(itemB.getByRole("button", { name: "Add entry" })).toBeVisible();
 });
