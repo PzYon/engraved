@@ -13,12 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Engraved.Api.Controllers;
 
-/// <summary>
-/// Endpoint to seed an entire test scenario (journals + entries) in a single
-/// call. It is a thin batching facade over the very same command handlers the
-/// real controllers use, so seeded data is identical to data created through
-/// the UI. Only active in e2e-test mode - returns 404 otherwise.
-/// </summary>
 [ApiController]
 [Route("api/test")]
 [Authorize]
@@ -37,29 +31,22 @@ public class TestDataController(
       return NotFound();
     }
 
-    // Ensure the user exists before dispatching commands - the user is not
-    // auto-created on first command (UserLoader throws for unknown users).
-    // This is the same path the app's e2e login uses.
     await loginHandler.LoginForTests(currentUserService.GetUserName());
 
     var seededJournals = new List<SeededJournal>();
 
     foreach (SeedJournalDto journalDto in dto.Journals)
     {
-      string journalId = (await dispatcher.Command(
-        new AddJournalCommand
-        {
-          Name = journalDto.Name,
-          Description = journalDto.Description,
-          Type = journalDto.Type
-        }
-      )).EntityId;
+      CommandResult createJournalResult = await CreateJournal(journalDto);
+      
+      string journalId = createJournalResult.EntityId;
 
       var entryIds = new List<string>();
+      
       foreach (SeedEntryDto entryDto in journalDto.Entries)
       {
-        CommandResult result = await DispatchEntryCommand(journalId, journalDto.Type, entryDto);
-        entryIds.Add(result.EntityId);
+        CommandResult createEntryResult = await CreateEntry(journalId, journalDto.Type, entryDto);
+        entryIds.Add(createEntryResult.EntityId);
       }
 
       seededJournals.Add(new SeededJournal { JournalId = journalId, EntryIds = entryIds.ToArray() });
@@ -78,7 +65,19 @@ public class TestDataController(
     return new SeedResult { Journals = seededJournals.ToArray() };
   }
 
-  private async Task<CommandResult> DispatchEntryCommand(string journalId, JournalType type, SeedEntryDto entry)
+  private async Task<CommandResult> CreateJournal(SeedJournalDto journalDto)
+  {
+    return await dispatcher.Command(
+      new AddJournalCommand
+      {
+        Name = journalDto.Name,
+        Description = journalDto.Description,
+        Type = journalDto.Type
+      }
+    );
+  }
+
+  private async Task<CommandResult> CreateEntry(string journalId, JournalType type, SeedEntryDto entry)
   {
     // Dispatch with the concrete command type so the right executor resolves.
     return type switch
