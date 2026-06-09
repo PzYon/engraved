@@ -1,12 +1,7 @@
-import { test } from "@playwright/test";
-import { login } from "../src/utils/login";
+import { test } from "../src/fixtures";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { navigateToHome } from "../src/utils/navigateTo";
 import { JournalsPage } from "../src/poms/journalsPage";
-
-test.beforeEach(async ({ page }) => {
-  await login(page, "journals");
-});
 
 test("add journal, update journal", async ({ page }) => {
   const journalName = "My First Value Journal";

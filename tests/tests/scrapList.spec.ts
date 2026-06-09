@@ -1,4 +1,6 @@
-import { expect, Page, test } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
+import { test } from "../src/fixtures";
+import { TestData } from "../src/api/testData";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { login } from "../src/utils/login";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
@@ -9,12 +11,23 @@ const firstItemText = "My First Item";
 const secondItemText = "My Second Item";
 const thirdItemText = "My Third Item";
 
+async function openScrapsJournal(
+  page: Page,
+  testData: TestData,
+  name = "My Scraps Journal",
+): Promise<ScrapsJournalPage> {
+  const { journals } = await testData.seed({
+    journals: [{ name, type: "Scraps" }],
+  });
+  await page.goto(`/journals/details/${journals[0].journalId}`);
+  return new ScrapsJournalPage(page);
+}
+
 test("add scrap journal, add list entry and add/delete/modify", async ({
   page,
+  testData,
 }) => {
-  await login(page, "scrapsList-basic", "Scraps", "My First Scraps Journal");
-
-  const scrapsJournalPage = new ScrapsJournalPage(page);
+  const scrapsJournalPage = await openScrapsJournal(page, testData);
   await scrapsJournalPage.expectIsEmpty();
 
   const scrapList = await scrapsJournalPage.addList();
@@ -39,10 +52,9 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
 
 test("add scrap journal, add list entries and mark as checked in non-edit mode", async ({
   page,
+  testData,
 }) => {
-  await login(page, "scrapsList-non-edit", "Scraps", "Random Scraps");
-
-  const scrapsJournalPage = new ScrapsJournalPage(page);
+  const scrapsJournalPage = await openScrapsJournal(page, testData);
   await scrapsJournalPage.expectIsEmpty();
 
   const scrapList = await scrapsJournalPage.addList();
@@ -74,10 +86,9 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
 
 test("auto-saves list changes when focus leaves the scrap", async ({
   page,
+  testData,
 }) => {
-  await login(page, "scrapsList-autosave", "Scraps", "Random Scraps");
-
-  const scrapsJournalPage = new ScrapsJournalPage(page);
+  const scrapsJournalPage = await openScrapsJournal(page, testData);
   await scrapsJournalPage.expectIsEmpty();
 
   const scrapList = await scrapsJournalPage.addList();
@@ -107,10 +118,9 @@ test("auto-saves list changes when focus leaves the scrap", async ({
 
 test("does not auto-save when auto-save is disabled for the scrap", async ({
   page,
+  testData,
 }) => {
-  await login(page, "scrapsList-autosave-off", "Scraps", "Random Scraps");
-
-  const scrapsJournalPage = new ScrapsJournalPage(page);
+  const scrapsJournalPage = await openScrapsJournal(page, testData);
   await scrapsJournalPage.expectIsEmpty();
 
   const scrapList = await scrapsJournalPage.addList();
@@ -138,10 +148,8 @@ test("does not auto-save when auto-save is disabled for the scrap", async ({
   await expect(await scrapList.getListItemByText(firstItemText)).toBeVisible();
 });
 
-test("Enter only adds one empty line", async ({ page }) => {
-  await login(page, "scrapsList-entry", "Scraps", "Random Scraps");
-
-  const scrapsJournalPage = new ScrapsJournalPage(page);
+test("Enter only adds one empty line", async ({ page, testData }) => {
+  const scrapsJournalPage = await openScrapsJournal(page, testData);
   await scrapsJournalPage.expectIsEmpty();
 
   const scrapList = await scrapsJournalPage.addList();
@@ -161,10 +169,8 @@ test("Enter only adds one empty line", async ({ page }) => {
   expect(await scrapList.getItemCount()).toBe(2);
 });
 
-test("Backspace on empty item removes item", async ({ page }) => {
-  await login(page, "scrapsList-backspace", "Scraps", "Random Scraps");
-
-  const scrapsJournalPage = new ScrapsJournalPage(page);
+test("Backspace on empty item removes item", async ({ page, testData }) => {
+  const scrapsJournalPage = await openScrapsJournal(page, testData);
   await scrapsJournalPage.expectIsEmpty();
 
   const scrapList = await scrapsJournalPage.addList();
@@ -221,6 +227,8 @@ async function pressBackspace(page: Page) {
   await page.keyboard.press("Backspace");
 }
 
+// This test drives its own browser context/pages, so it logs in those pages
+// explicitly via login() rather than relying on the single-page fixtures.
 test("modify list items in multiple tabs, handle updates accordingly", async ({
   browser,
 }) => {
@@ -289,10 +297,9 @@ test("modify list items in multiple tabs, handle updates accordingly", async ({
 
 test("perform common scrap list operations using shortcuts", async ({
   page,
+  testData,
 }) => {
-  await login(page, "scrapsList-shortcuts", "Scraps", "Scraps with shortcuts");
-
-  const scrapsJournalPage = new ScrapsJournalPage(page);
+  const scrapsJournalPage = await openScrapsJournal(page, testData);
   await scrapsJournalPage.expectIsEmpty();
 
   const scrapList = await scrapsJournalPage.addList();

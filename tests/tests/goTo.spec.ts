@@ -1,13 +1,16 @@
-import { test } from "@playwright/test";
-import { login } from "../src/utils/login";
+import { test } from "../src/fixtures";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { navigateToHome } from "../src/utils/navigateTo";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 
 test("search in go to, use cursor down, use enter to navigate to scrap", async ({
   page,
+  testData,
 }) => {
-  await login(page, "goto", "Scraps", "List of QBs");
+  const { journals } = await testData.seed({
+    journals: [{ name: "List of QBs", type: "Scraps" }],
+  });
+  await page.goto(`/journals/details/${journals[0].journalId}`);
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.addMarkdownWithTitle("QB 1: Pat Mahomes");
@@ -27,8 +30,6 @@ test("search in go to, use cursor down, use enter to navigate to scrap", async (
 test("initially shows recent journals, navigates with click", async ({
   page,
 }) => {
-  await login(page, "goto");
-
   await addNewJournal(page, "Scraps", "Kansas City Chiefs");
   await navigateToHome(page);
 

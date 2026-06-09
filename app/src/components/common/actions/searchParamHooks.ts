@@ -7,8 +7,6 @@ export const knownQueryParams = {
   favoritesOnly: "favorites-only",
   query: "q",
   testUser: "test-user",
-  testJournalName: "test-journal-name",
-  testJournalType: "test-journal-type",
 } as const;
 
 const actionKeys = [

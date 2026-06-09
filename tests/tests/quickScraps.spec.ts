@@ -1,15 +1,18 @@
-import { test } from "@playwright/test";
-import { login } from "../src/utils/login";
+import { test } from "../src/fixtures";
 import { navigateToEntriesPage, navigateToHome } from "../src/utils/navigateTo";
 import { JournalsPage } from "../src/poms/journalsPage";
 
 const scrapTitle = "Quick Scrap Title";
 const scrapContent = "This is my content...";
 
-test("Quick add", async ({ page }) => {
-  await login(page, "quickScraps", "Scraps", "My Manual Quick Scraps");
+test("Quick add", async ({ page, testData }) => {
+  await testData.seed({
+    journals: [{ name: "My Manual Quick Scraps", type: "Scraps" }],
+  });
 
   await navigateToHome(page);
+  await page.reload();
+
   const journalsPage = new JournalsPage(page);
 
   const quickScrapDialog = await journalsPage.clickAddQuickScrapAction();
