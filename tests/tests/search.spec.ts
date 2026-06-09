@@ -1,68 +1,77 @@
-import { Page, test } from "@playwright/test";
-import { login } from "../src/utils/login";
-import { addNewJournal } from "../src/utils/addNewJournal";
+import { test } from "../src/fixtures";
 import { navigateToSearchPage } from "../src/utils/navigateTo";
-import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 
-type Entry = { title: string; content?: string };
-
-async function createScrapsJournalWithEntries(
-  page: Page,
-  journalName: string,
-  entries: Entry[],
-  journalDescription?: string,
-): Promise<void> {
-  await addNewJournal(page, "Scraps", journalName, journalDescription);
-  const journalPage = new ScrapsJournalPage(page);
-  for (const entry of entries) {
-    await journalPage.addEntry(entry.title, entry.content);
-  }
-}
-
-test.beforeEach(async ({ page }) => {
-  await login(page, "search");
-});
-
-test("finds entry by title match", async ({ page }) => {
-  await createScrapsJournalWithEntries(page, "My Journal", [
-    { title: "Alpine Trek" },
-  ]);
+test("finds entry by title match", async ({ page, testData }) => {
+  await testData.seed({
+    journals: [
+      {
+        name: "My Journal",
+        type: "Scraps",
+        entries: [{ title: "Alpine Trek" }],
+      },
+    ],
+  });
 
   const searchPage = await navigateToSearchPage(page);
   await searchPage.search("Alpine");
   await searchPage.expectResultVisible("Alpine Trek");
 });
 
-test("finds entry by content match", async ({ page }) => {
-  await createScrapsJournalWithEntries(page, "My Journal", [
-    { title: "Walk notes", content: "unexplored canyon route" },
-  ]);
+test("finds entry by content match", async ({ page, testData }) => {
+  await testData.seed({
+    journals: [
+      {
+        name: "My Journal",
+        type: "Scraps",
+        entries: [{ title: "Walk notes", notes: "unexplored canyon route" }],
+      },
+    ],
+  });
 
   const searchPage = await navigateToSearchPage(page);
   await searchPage.search("canyon");
   await searchPage.expectResultVisible("Walk notes");
 });
 
-test("finds journal by name match", async ({ page }) => {
-  await addNewJournal(page, "Scraps", "Birding Log");
+test("finds journal by name match", async ({ page, testData }) => {
+  await testData.seed({
+    journals: [{ name: "Birding Log", type: "Scraps" }],
+  });
 
   const searchPage = await navigateToSearchPage(page);
   await searchPage.search("Birding");
   await searchPage.expectResultVisible("Birding Log");
 });
 
-test("finds journal by description match", async ({ page }) => {
-  await addNewJournal(page, "Scraps", "Field Journal", "wetland observations");
+test("finds journal by description match", async ({ page, testData }) => {
+  await testData.seed({
+    journals: [
+      {
+        name: "Field Journal",
+        type: "Scraps",
+        description: "wetland observations",
+      },
+    ],
+  });
 
   const searchPage = await navigateToSearchPage(page);
   await searchPage.search("wetland");
   await searchPage.expectResultVisible("Field Journal");
 });
 
-test("returns both entries and journals when both match", async ({ page }) => {
-  await createScrapsJournalWithEntries(page, "Geology Study", [
-    { title: "Geology Study notes" },
-  ]);
+test("returns both entries and journals when both match", async ({
+  page,
+  testData,
+}) => {
+  await testData.seed({
+    journals: [
+      {
+        name: "Geology Study",
+        type: "Scraps",
+        entries: [{ title: "Geology Study notes" }],
+      },
+    ],
+  });
 
   const searchPage = await navigateToSearchPage(page);
   await searchPage.search("Geology Study");
@@ -76,12 +85,23 @@ test("shows no results for non-matching search", async ({ page }) => {
   await searchPage.expectNoResults();
 });
 
-test("narrows and widens search updates results", async ({ page }) => {
-  await createScrapsJournalWithEntries(page, "Wildlife Journal", [
-    { title: "Red Fox" },
-    { title: "Red Kite" },
-    { title: "Blue Jay" },
-  ]);
+test("narrows and widens search updates results", async ({
+  page,
+  testData,
+}) => {
+  await testData.seed({
+    journals: [
+      {
+        name: "Wildlife Journal",
+        type: "Scraps",
+        entries: [
+          { title: "Red Fox" },
+          { title: "Red Kite" },
+          { title: "Blue Jay" },
+        ],
+      },
+    ],
+  });
 
   const searchPage = await navigateToSearchPage(page);
 
