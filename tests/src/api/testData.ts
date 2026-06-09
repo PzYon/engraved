@@ -22,7 +22,7 @@ interface SeedTag {
   label: string;
 }
 
-export interface Scenario {
+export interface SeedTestData {
   journals?: SeedJournal[];
   tags?: SeedTag[];
 }
@@ -36,22 +36,16 @@ export interface SeedResult {
   journals: SeededJournal[];
 }
 
-/**
- * Test-data builder. The ONLY place aware of how setup data is created on the
- * backend. Tests express a scenario in domain language; this seeds it in a
- * single call to the e2e-only `/api/test/seed` endpoint. Authentication in e2e
- * mode is just the username sent as a bearer token (no real token to manage).
- */
 export class TestData {
   constructor(
     private request: APIRequestContext,
     private userName: string,
   ) {}
 
-  async seed(scenario: Scenario): Promise<SeedResult> {
+  async seed(testData: SeedTestData): Promise<SeedResult> {
     const response = await this.request.post(`${API_BASE_URL}/api/test/seed`, {
       headers: { Authorization: "Bearer " + this.userName },
-      data: scenario,
+      data: testData,
     });
 
     if (!response.ok()) {
