@@ -1,5 +1,6 @@
-import { expect, test } from "@playwright/test";
-import { login } from "../src/utils/login";
+import { expect, Page } from "@playwright/test";
+import { test } from "../src/fixtures";
+import { TestData } from "../src/api/testData";
 import {
   navigateToEntriesPage,
   navigateToHome,
@@ -10,10 +11,19 @@ import { isAndroidTest } from "../src/utils/isAndroidTest";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 import { ScrapMarkdownComponent } from "../src/poms/scrapMarkdownComponent";
 
-test("add schedule to entry and mark as done", async ({ page }) => {
-  await login(page, "schedule", "Scraps", "My Journal");
+async function seedScrapsJournal(
+  page: Page,
+  testData: TestData,
+): Promise<ScrapsJournalPage> {
+  const { journals } = await testData.seed({
+    journals: [{ name: "My Journal", type: "Scraps" }],
+  });
+  await page.goto(`/journals/details/${journals[0].journalId}`);
+  return new ScrapsJournalPage(page);
+}
 
-  const journalPage = new ScrapsJournalPage(page);
+test("add schedule to entry and mark as done", async ({ page, testData }) => {
+  const journalPage = await seedScrapsJournal(page, testData);
 
   const quickNotificationDialog = await journalPage.clickAddQuickScrapAction();
 
@@ -45,10 +55,8 @@ test("add schedule to entry and mark as done", async ({ page }) => {
   await entriesPage.expectToShowEntity(entityId);
 });
 
-test("auto-save keeps an existing schedule", async ({ page }) => {
-  await login(page, "schedule-autosave", "Scraps", "My Journal");
-
-  const journalPage = new ScrapsJournalPage(page);
+test("auto-save keeps an existing schedule", async ({ page, testData }) => {
+  const journalPage = await seedScrapsJournal(page, testData);
 
   // create a scheduled note (the date in the title sets the schedule)
   const quickAdd = await journalPage.clickAddQuickScrapAction();
@@ -77,10 +85,11 @@ test("auto-save keeps an existing schedule", async ({ page }) => {
   await expect(scheduledPage.getEntityElement(entityId)).toBeVisible();
 });
 
-test("editing the title keeps an existing schedule", async ({ page }) => {
-  await login(page, "schedule-title-edit", "Scraps", "My Journal");
-
-  const journalPage = new ScrapsJournalPage(page);
+test("editing the title keeps an existing schedule", async ({
+  page,
+  testData,
+}) => {
+  const journalPage = await seedScrapsJournal(page, testData);
 
   const quickAdd = await journalPage.clickAddQuickScrapAction();
   await quickAdd.selectJournal("My Journal");

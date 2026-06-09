@@ -1,12 +1,16 @@
-import { expect, test } from "@playwright/test";
-import { login } from "../src/utils/login";
+import { expect } from "@playwright/test";
+import { test } from "../src/fixtures";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 import { ScrapMarkdownComponent } from "../src/poms/scrapMarkdownComponent";
 
 test("auto-saves markdown note changes when focus leaves the scrap", async ({
   page,
+  testData,
 }) => {
-  await login(page, "notes-autosave", "Scraps", "My Notes");
+  const { journals } = await testData.seed({
+    journals: [{ name: "My Notes", type: "Scraps" }],
+  });
+  await page.goto(`/journals/details/${journals[0].journalId}`);
 
   const scrapsJournalPage = new ScrapsJournalPage(page);
   await scrapsJournalPage.expectIsEmpty();
