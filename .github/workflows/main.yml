@@ -11,6 +11,12 @@ on:
         type: boolean
         default: false
 
+# Cancel superseded runs on the same branch (e.g. quick successive pushes to a
+# feature branch), but never cancel a run on main so deployments finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   # Detect which parts of the application changed
   detect-changes:
