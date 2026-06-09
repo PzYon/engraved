@@ -17,8 +17,14 @@ interface SeedJournal {
   entries?: SeedEntry[];
 }
 
+interface SeedTag {
+  id: string;
+  label: string;
+}
+
 export interface Scenario {
-  journals: SeedJournal[];
+  journals?: SeedJournal[];
+  tags?: SeedTag[];
 }
 
 interface SeededJournal {
