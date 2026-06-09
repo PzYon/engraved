@@ -1,20 +1,24 @@
-import { test } from "@playwright/test";
-import { login } from "../src/utils/login";
+import { test } from "../src/fixtures";
 import { MetricJournalPage } from "../src/poms/metricJournalPage";
 import { TimerJournalPage } from "../src/poms/timerJournalPage";
 
 const value1 = "23";
 const value2 = "19.5";
 
-test("add new value journal, add some entries, delete entry", async ({
-  page,
-}) => {
-  await login(page, "entries", "Gauge", "Journal with values");
+test("delete an entry from a value journal", async ({ page, testData }) => {
+  const { journals } = await testData.seed({
+    journals: [
+      {
+        name: "Journal with values",
+        type: "Gauge",
+        entries: [{ value: Number(value1) }, { value: Number(value2) }],
+      },
+    ],
+  });
+
+  await page.goto(`/journals/details/${journals[0].journalId}`);
 
   const journalPage = new MetricJournalPage(page);
-
-  await journalPage.addValue(value1);
-  await journalPage.addValue(value2);
 
   await journalPage.validateNumberOfTableRows(3);
   await journalPage.expectTableCellToHaveValue(value1);
@@ -26,10 +30,29 @@ test("add new value journal, add some entries, delete entry", async ({
   await journalPage.validateNumberOfTableRows(2);
 });
 
-test("add new timer journal, start and stop a timer, edit entry", async ({
+test("add a value to a value journal via the UI", async ({
   page,
+  testData,
 }) => {
-  await login(page, "entries", "Timer", "Journal with timer");
+  const { journals } = await testData.seed({
+    journals: [{ name: "Journal with values", type: "Gauge" }],
+  });
+
+  await page.goto(`/journals/details/${journals[0].journalId}`);
+
+  const journalPage = new MetricJournalPage(page);
+
+  await journalPage.addValue(value1);
+
+  await journalPage.expectTableCellToHaveValue(value1);
+});
+
+test("start and stop a timer, edit entry", async ({ page, testData }) => {
+  const { journals } = await testData.seed({
+    journals: [{ name: "Journal with timer", type: "Timer" }],
+  });
+
+  await page.goto(`/journals/details/${journals[0].journalId}`);
 
   const journalPage = new TimerJournalPage(page);
 
