@@ -8,7 +8,7 @@ import { IEditJournalCommand } from "./commands/IEditJournalCommand";
 import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
-import { IAuthResult, ITestAuthResult } from "./IAuthResult";
+import { IAuthResult } from "./IAuthResult";
 import { IUser } from "./IUser";
 import { AuthStorage } from "./authentication/AuthStorage";
 import { ApiError } from "./ApiError";
@@ -94,32 +94,18 @@ export class ServerApi {
     return await ServerApi.executeRequest<IUser>("/user");
   }
 
-  static async setUpForTests(
-    jwtToken: string,
-    testJournalName?: string,
-    testJournalType?: JournalType,
-  ): Promise<ITestAuthResult> {
+  static async setUpForTests(jwtToken: string): Promise<IAuthResult> {
     ServerApi._jwtToken = jwtToken;
 
     ServerApi._isE2eTest = true;
     ServerApi.e2eStorage.setValue("isE2eTest", true);
 
-    const authResult = await ServerApi.executeRequest<ITestAuthResult>(
+    const authResult = await ServerApi.executeRequest<IAuthResult>(
       "/auth/e2e",
       "POST",
     );
 
     this.handleAuthenticated(authResult);
-
-    if (testJournalName) {
-      const createJournalResult = await ServerApi.addJournal(
-        testJournalName,
-        "This journal is created for E2E tests and can be deleted.",
-        testJournalType || JournalType.Gauge,
-      );
-
-      authResult.journalId = createJournalResult.entityId;
-    }
 
     return authResult;
   }

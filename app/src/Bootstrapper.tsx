@@ -8,7 +8,6 @@ import { AuthStorage } from "./serverApi/authentication/AuthStorage";
 import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
-import { JournalType } from "./serverApi/JournalType";
 import { CredentialResponse } from "google-one-tap";
 
 const storage = new AuthStorage();
@@ -31,17 +30,9 @@ export const Bootstrapper: React.FC = () => {
 
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has(knownQueryParams.testUser)) {
-      ServerApi.setUpForTests(
-        searchParams.get(knownQueryParams.testUser)!,
-        searchParams.get(knownQueryParams.testJournalName) ?? undefined,
-        searchParams.get(knownQueryParams.testJournalType) as JournalType,
-      )
-        .then(async (r) => {
+      ServerApi.setUpForTests(searchParams.get(knownQueryParams.testUser)!)
+        .then((r) => {
           setUser(r.user);
-
-          if (r.journalId) {
-            window.location.href = `${window.location.origin}/journals/details/${r.journalId}`;
-          }
         })
         .finally(() => setIsNotVisible(false));
       return;
