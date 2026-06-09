@@ -1,37 +1,28 @@
-import { expect, test } from "@playwright/test";
-import { login } from "../src/utils/login";
+import { expect } from "@playwright/test";
+import { test } from "../src/fixtures";
 import { JournalsPage } from "../src/poms/journalsPage";
 import { navigateToHome } from "../src/utils/navigateTo";
-import { createJournalViaApi } from "../src/utils/apiClient";
 
 test("does not display floating actions if not necessary", async ({ page }) => {
-  await login(page, "layout");
   await navigateToHome(page);
   await expect(page.getByTestId("floating-header-actions")).toBeHidden();
 });
 
 test("does display floating actions if necessary (on scroll down)", async ({
   page,
-  request,
+  testData,
 }) => {
   const journalsToCreate = 15;
 
-  const userName = await login(page, "layout");
-
-  // wait for the app to finish loading (and the test user to be created in the
-  // DB) before creating journals through direct API calls
-  await navigateToHome(page);
-
-  for (let i = 0; i < journalsToCreate; i++) {
-    await createJournalViaApi(request, userName, {
+  await testData.seed({
+    journals: Array.from({ length: journalsToCreate }, (_, i) => ({
       name: `Use some space ${i}`,
       description: `Test journal ${i + 1} for testing`,
-      journalType: "Gauge",
-    });
-  }
+      type: "Gauge" as const,
+    })),
+  });
 
-  await navigateToHome(page);
-  await page.reload();
+  await page.goto("/");
 
   const journalsPage = new JournalsPage(page);
   await journalsPage.expectToShowNEntities(journalsToCreate);

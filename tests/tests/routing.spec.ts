@@ -1,8 +1,7 @@
-import { expect, test } from "@playwright/test";
-import { login } from "../src/utils/login";
+import { expect } from "@playwright/test";
+import { test } from "../src/fixtures";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { navigateToHome } from "../src/utils/navigateTo";
-import { createJournalViaApi } from "../src/utils/apiClient";
 import { isAndroidTest } from "../src/utils/isAndroidTest";
 
 test.describe("routing", () => {
@@ -17,7 +16,6 @@ test.describe("routing", () => {
   // ---------------------------------------------------------------------------
 
   test("navigates to /entries via tab", async ({ page }) => {
-    await login(page, "routing-entries");
     await navigateToHome(page);
 
     await page.getByRole("tab", { name: "Entries" }).click();
@@ -26,7 +24,6 @@ test.describe("routing", () => {
   });
 
   test("navigates to /scheduled via tab", async ({ page }) => {
-    await login(page, "routing-scheduled");
     await navigateToHome(page);
 
     await page.getByRole("tab", { name: "Scheduled" }).click();
@@ -35,7 +32,6 @@ test.describe("routing", () => {
   });
 
   test("navigates to /tags via menu", async ({ page }) => {
-    await login(page, "routing-tags");
     await navigateToHome(page);
 
     await page.getByRole("button", { name: "Menu" }).click();
@@ -45,7 +41,6 @@ test.describe("routing", () => {
   });
 
   test("navigates to /search via header button", async ({ page }) => {
-    await login(page, "routing-search");
     await navigateToHome(page);
 
     await page.getByLabel("Search anything").click();
@@ -54,7 +49,6 @@ test.describe("routing", () => {
   });
 
   test("navigates to /settings via user avatar", async ({ page }) => {
-    await login(page, "routing-settings");
     await navigateToHome(page);
 
     await page.locator("a[href='/settings']").click();
@@ -68,21 +62,14 @@ test.describe("routing", () => {
 
   test("navigates to journal detail page — URL contains journalId", async ({
     page,
-    request,
+    testData,
   }) => {
-    const userName = await login(page, "routing-journal-detail");
-
-    // Wait for the app to fully load (and setUpForTests to create the user in the DB)
-    // before making direct API calls that require the user to exist.
-    await navigateToHome(page);
-
-    const entityId = await createJournalViaApi(request, userName, {
-      name: "Router Test Journal",
-      description: "",
-      journalType: "Gauge",
+    const { journals } = await testData.seed({
+      journals: [{ name: "Router Test Journal", type: "Gauge" }],
     });
+    const entityId = journals[0].journalId;
 
-    await page.reload();
+    await page.goto("/");
 
     await page.getByRole("link", { name: "Router Test Journal" }).click();
 
@@ -100,8 +87,6 @@ test.describe("routing", () => {
   test("navigates to journal edit page — URL ends with /edit", async ({
     page,
   }) => {
-    await login(page, "routing-journal-edit");
-
     const journalPage = await addNewJournal(page, "Value", "Edit Route Test");
     await journalPage.navigateToEditPage();
 
@@ -112,10 +97,11 @@ test.describe("routing", () => {
   test("navigating back from edit page returns to journal detail", async ({
     page,
   }) => {
-    const journalPage = await (async () => {
-      await login(page, "routing-back-from-edit");
-      return addNewJournal(page, "Value", "Back Navigation Journal");
-    })();
+    const journalPage = await addNewJournal(
+      page,
+      "Value",
+      "Back Navigation Journal",
+    );
 
     const editPage = await journalPage.navigateToEditPage();
     await page.waitForURL((url) => url.pathname.endsWith("/edit"));
@@ -135,7 +121,6 @@ test.describe("routing", () => {
   // ---------------------------------------------------------------------------
 
   test("opening delete action adds search params to URL", async ({ page }) => {
-    await login(page, "routing-search-params");
     const journalPage = await addNewJournal(
       page,
       "Value",
@@ -152,7 +137,6 @@ test.describe("routing", () => {
   test("cancelling delete action removes search params from URL", async ({
     page,
   }) => {
-    await login(page, "routing-cancel-delete");
     const journalPage = await addNewJournal(
       page,
       "Value",
@@ -176,7 +160,6 @@ test.describe("routing", () => {
   test("navigates to tag detail page — URL contains tagId", async ({
     page,
   }) => {
-    await login(page, "routing-tag-detail");
     await navigateToHome(page);
 
     // Go to tags page first
@@ -205,7 +188,6 @@ test.describe("routing", () => {
   // ---------------------------------------------------------------------------
 
   test("home route (/) shows journal and entries tabs", async ({ page }) => {
-    await login(page, "routing-home");
     await navigateToHome(page);
 
     await expect(page).toHaveURL(/^http:\/\/[^/]+\/$/);
@@ -215,8 +197,6 @@ test.describe("routing", () => {
   });
 
   test("unknown route falls back to home page", async ({ page }) => {
-    await login(page, "routing-fallback");
-
     // wait for the app to be authenticated and loaded (auth result stored) before
     // navigating again, otherwise the second navigation can race the bootstrap
     await expect(page.getByRole("tab", { name: "Journals" })).toBeVisible();
@@ -232,7 +212,6 @@ test.describe("routing", () => {
   // ---------------------------------------------------------------------------
 
   test("quick-add page is reachable via URL", async ({ page }) => {
-    await login(page, "routing-quick-add");
     await navigateToHome(page);
 
     await page.getByLabel("Quick Add").click();
@@ -245,7 +224,6 @@ test.describe("routing", () => {
   // ---------------------------------------------------------------------------
 
   test("go-to page is reachable and navigatable", async ({ page }) => {
-    await login(page, "routing-go-to");
     await navigateToHome(page);
 
     await page.getByLabel("Go to").click();
