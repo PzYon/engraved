@@ -142,7 +142,8 @@ public class InMemoryRepository : IRepository
       return;
     }
 
-    Journals.Remove(journal);
+    // note: GetJournal returns a copy, so we must remove by id rather than by reference.
+    RemoveJournal(journal);
   }
 
   public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
