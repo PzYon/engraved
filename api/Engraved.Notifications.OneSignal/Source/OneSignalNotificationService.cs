@@ -37,8 +37,14 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       url: clientNotification.OnClickUrl,
       smallIcon: "/icons/icon-transparent-bg.svg",
       chromeWebBadge: "/icons/icon-transparent-bg.svg",
-      androidVisibility: 1, // 1 = Public: show full notification on lock screen
-      priority: 10, // 10 = High priority: wake device from doze mode (FCM high-priority)
+      // 10 = high priority. For web push (Android PWA = "ChromeWeb") this raises the
+      // delivery urgency so the device is woken from doze mode. This is the only
+      // server-side delivery lever that applies to web push.
+      // Note: "androidVisibility" was tried (PR #2772) but only affects the native
+      // Android SDK, not web push, so it is intentionally omitted here. The remaining
+      // unreliability on Android is device-side (battery optimization suspending the
+      // browser/PWA) and cannot be overridden from the payload. See issue #2822.
+      priority: 10,
       webButtons: clientNotification.Buttons
         .Select(b => new WebButton
           {
