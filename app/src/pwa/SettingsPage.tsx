@@ -1,6 +1,6 @@
 import { Page } from "../components/layout/pages/Page";
 import { PageSection } from "../components/layout/pages/PageSection";
-import { Button } from "@mui/material";
+import { Alert, AlertTitle, Button } from "@mui/material";
 import { ServerApi } from "../serverApi/ServerApi";
 import { optInPushNotifications, setUpOneSignal } from "../util/oneSignal";
 import { useAppContext } from "../AppContext";
@@ -55,6 +55,18 @@ export const SettingsPage: React.FC = () => {
             Show test notification via OneSignal.
           </Button>
         </p>
+
+        {isAndroid() ? (
+          <Alert severity="info">
+            <AlertTitle>Not receiving notifications on Android?</AlertTitle>
+            Android battery optimization can stop the browser/installed app from
+            receiving push notifications in the background, even though they are
+            sent successfully. To fix this, open your system settings and set
+            battery usage for your browser (or the installed engraved. app) to{" "}
+            <strong>Unrestricted</strong> (Settings → Apps → your browser →
+            Battery), and make sure background data is allowed.
+          </Alert>
+        ) : null}
       </PageSection>
 
       <PageSection title="Export your data">
@@ -68,6 +80,10 @@ export const SettingsPage: React.FC = () => {
       </PageSection>
     </Page>
   );
+
+  function isAndroid() {
+    return /android/i.test(navigator.userAgent);
+  }
 
   async function clearBackendCache() {
     try {
