@@ -63,3 +63,23 @@ test("start and stop a timer, edit entry", async ({ page, testData }) => {
   await journalPage.resetEndDateToNow(0);
   await journalPage.validateNumberOfTableRows(1);
 });
+
+test("show a negative duration when the start date is in the future", async ({
+  page,
+  testData,
+}) => {
+  const { journals } = await testData.seed({
+    journals: [{ name: "Journal with timer", type: "Timer" }],
+  });
+
+  await page.goto(`/journals/details/${journals[0].journalId}`);
+
+  const journalPage = new TimerJournalPage(page);
+
+  await journalPage.openAddEntryFullForm();
+  await journalPage.moveStartDateFiveMinutesIntoFuture();
+
+  // start is ~5min in the future, so the duration must be a small negative
+  // value (e.g. -00:04:59), not the timezone-offset bug that showed -01:55:00
+  await journalPage.expectDurationToMatch(/^-00:0[45]:\d\d$/);
+});
