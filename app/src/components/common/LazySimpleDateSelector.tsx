@@ -20,6 +20,7 @@ const LazySimpleDateSelector: React.FC<ISimpleDateSelectorProps> = ({
         sx={{ width: "100%" }}
         autoFocus={hasFocus}
         label={label}
+        format="EEE dd.MM.yyyy"
         value={date || null}
         showDaysOutsideCurrentMonth={true}
         onChange={(d) => {
