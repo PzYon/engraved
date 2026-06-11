@@ -1,4 +1,7 @@
-import { getDurationAsHhMmSs } from "./getDurationAsHhMmSs";
+import {
+  getDurationAsHhMmSs,
+  getDurationAsHhMmSsFromSeconds,
+} from "./getDurationAsHhMmSs";
 
 describe("getDurationAsHhMmSs", () => {
   it("should parse two digit time", () => {
@@ -44,6 +47,29 @@ describe("getDurationAsHhMmSs", () => {
         createDateFromTime(16, 17, 18),
       ),
     ).toBe("06:17:18");
+  });
+
+  it("should format a negative duration (start in the future)", () => {
+    expect(
+      getDurationAsHhMmSs(
+        createDateFromTime(10, 5, 0),
+        createDateFromTime(10, 0, 0),
+      ),
+    ).toBe("-00:05:00");
+  });
+});
+
+describe("getDurationAsHhMmSsFromSeconds", () => {
+  it("should format positive seconds", () => {
+    expect(getDurationAsHhMmSsFromSeconds(300)).toBe("00:05:00");
+  });
+
+  it("should format negative seconds without overflowing into minutes/hours", () => {
+    expect(getDurationAsHhMmSsFromSeconds(-300)).toBe("-00:05:00");
+  });
+
+  it("should format zero", () => {
+    expect(getDurationAsHhMmSsFromSeconds(0)).toBe("00:00:00");
   });
 });
 

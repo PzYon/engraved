@@ -36,4 +36,18 @@ export class TimerJournalPage extends JournalPage {
   async validateNumberOfTableRows(expected: number) {
     await expect(this.tableRows).toHaveCount(expected);
   }
+
+  async openAddEntryFullForm() {
+    await this.clickPageAction("Add entry");
+    await this.page.getByLabel("Show full form").click();
+  }
+
+  async moveStartDateFiveMinutesIntoFuture() {
+    // the start date is the first date selector in the timer form
+    await this.page.getByRole("button", { name: "+5min" }).first().click();
+  }
+
+  async expectDurationToMatch(pattern: RegExp) {
+    await expect(this.page.getByText(pattern)).toBeVisible();
+  }
 }
