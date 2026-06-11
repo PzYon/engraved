@@ -27,6 +27,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
             sx={{ width: "100%" }}
             autoFocus={hasFocus}
             label={label}
+            format="EEE dd.MM.yyyy"
             value={date || null}
             showDaysOutsideCurrentMonth={true}
             onChange={(d) => {
