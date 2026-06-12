@@ -46,6 +46,11 @@ export function formatDateOnly(date: Date): string {
   return format(date, "dd.MM.yyyy");
 }
 
+// Stable key identifying a single calendar day, used to compare/deduplicate dates.
+export function getDayKey(date: Date): string {
+  return format(date, "yyyy-MM-dd");
+}
+
 export function isValidEmail(address: string): boolean {
   // https://stackoverflow.com/a/8829363/4092115
   return !!address.match(

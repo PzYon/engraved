@@ -6,7 +6,7 @@ import { Markdown } from "./markdown/Markdown";
 import { SimpleDateSelector } from "../../common/DateSelector";
 import { format } from "date-fns";
 import { useJournalContext } from "../JournalContext";
-import { utcToDateOnly } from "../../../util/utils";
+import { getDayKey, utcToDateOnly } from "../../../util/utils";
 
 export const LogBookInner: React.FC = () => {
   const { isEditMode, setIsEditMode, date, setDate, scrapToRender, hasFocus } =
@@ -21,7 +21,7 @@ export const LogBookInner: React.FC = () => {
       if (!entry.dateTime || entry.id === scrapToRender.id) {
         continue;
       }
-      days.add(format(utcToDateOnly(new Date(entry.dateTime)), "yyyy-MM-dd"));
+      days.add(getDayKey(utcToDateOnly(new Date(entry.dateTime))));
     }
     return days;
   }, [entries, scrapToRender.id]);
@@ -40,7 +40,7 @@ export const LogBookInner: React.FC = () => {
         <SimpleDateSelector
           setDate={setDate}
           date={date}
-          shouldDisableDate={(d) => usedDays.has(format(d, "yyyy-MM-dd"))}
+          shouldDisableDate={(d) => usedDays.has(getDayKey(d))}
         />
       ) : (
         <ReadonlyTitle
