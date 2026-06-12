@@ -28,6 +28,20 @@ export function stripTime(date?: Date | null): Date | null {
     : null;
 }
 
+// Maps a user's local calendar day to its canonical UTC-midnight instant, so a date-only value
+// (e.g. a LogBook entry's day) is stored timezone-independently.
+export function dateOnlyToUtc(local: Date): Date {
+  return new Date(
+    Date.UTC(local.getFullYear(), local.getMonth(), local.getDate()),
+  );
+}
+
+// Inverse of dateOnlyToUtc: turns a stored UTC-midnight instant back into the local midnight of
+// the same calendar day, so existing local-time display/picker code shows the correct day.
+export function utcToDateOnly(utc: Date): Date {
+  return new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate());
+}
+
 export function formatDateOnly(date: Date): string {
   return format(date, "dd.MM.yyyy");
 }

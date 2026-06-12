@@ -48,5 +48,10 @@ public class UpsertLogBookEntryCommandExecutor(IRepository repository, IDateServ
     return entriesOnSameDay.Any(e => e.DateTime?.Date == entryDate && e.Id != command.Id);
   }
 
-  protected override void SetTypeSpecificValues(UpsertLogBookEntryCommand command, LogBookEntry entry) { }
+  protected override void SetTypeSpecificValues(UpsertLogBookEntryCommand command, LogBookEntry entry)
+  {
+    // LogBook entries are date-only: strip the time component so that at most one entry can exist
+    // per day, regardless of the time the client happens to send.
+    entry.DateTime = DateTime.SpecifyKind(command.DateTime!.Value.Date, DateTimeKind.Utc);
+  }
 }
