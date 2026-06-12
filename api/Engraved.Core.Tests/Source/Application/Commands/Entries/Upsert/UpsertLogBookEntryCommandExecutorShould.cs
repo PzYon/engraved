@@ -93,6 +93,24 @@ public class UpsertLogBookEntryCommandExecutorShould
   }
 
   [Test]
+  public async Task StoreDateOnly_StrippingTimeComponent()
+  {
+    var command = new UpsertLogBookEntryCommand
+    {
+      JournalId = JournalId,
+      Notes = "some notes",
+      DateTime = new DateTime(2026, 4, 9, 13, 37, 42, DateTimeKind.Utc)
+    };
+
+    await new UpsertLogBookEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
+
+    IEntry entry = _testRepository.Entries.Single();
+    entry.DateTime.Should().Be(new DateTime(2026, 4, 9, 0, 0, 0, DateTimeKind.Utc));
+    entry.DateTime!.Value.TimeOfDay.Should().Be(TimeSpan.Zero);
+    entry.DateTime!.Value.Kind.Should().Be(DateTimeKind.Utc);
+  }
+
+  [Test]
   public void Throw_WhenEntryForSameDayAlreadyExists()
   {
     var existingDate = new DateTime(2026, 4, 9, 10, 0, 0, DateTimeKind.Utc);
