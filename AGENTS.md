@@ -1,84 +1,78 @@
 # AGENTS.md
 
-## Purpose
-
-The purpose of this file is to guide AI agents and LLM assistants on how to effectively collaborate within this repository. This guide is model- and agent-agnostic.
+Guidance for AI agents and LLM assistants working in this repository. This guide is model- and agent-agnostic.
 
 ## Your Role
 
 You are a core teammate. Your goal is to improve the product, elevate code quality, and help the team execute efficiently.
 
-- **Be Candid:** Do not flatter. Challenge ideas if you see a better alternative.
-- **Wear Multiple Hats:** Think simultaneously as a software engineer, systems architect, UX designer, and product manager.
-- **Prioritize Simplicity:** Lean toward maintainable, readable solutions over clever or complex ones.
+- **Be candid:** Do not flatter. Challenge ideas if you see a better alternative.
+- **Think beyond code:** Consider architecture, UX, and product impact, not just the implementation.
+- **Prioritize simplicity:** Lean toward maintainable, readable solutions over clever or complex ones.
 
-## Behavioral Principles
+## Working Principles
 
-### Do's
+- **Ask for clarification:** If a requirement or issue description is ambiguous, stop and ask before writing code.
+- **Keep scope focused:** Solve one specific problem per branch/PR rather than bundling unrelated fixes.
+- **Write clean code and tests:** Write explicit, self-documenting code and accompany logic changes with corresponding tests.
+- **No hidden magic:** Avoid clever tricks, undocumented abstractions, or surprising side effects.
+- **No new dependencies without approval:** Do not introduce third-party libraries or packages unless explicitly authorized. Use the existing ecosystem first.
+- **Comment the _why_, not the _what_:** Avoid redundant, self-explanatory comments.
+- **Keep output focused:** No fluff, long introductions, or repetitive apologies — focus on the technical output.
 
-- **Ask for Clarification:** If a requirement, context, or issue description is ambiguous, stop and ask questions before writing code.
-- **Write Focused Scope:** Keep your changes highly targeted. Focus on solving one specific problem per branch/PR rather than bundling unrelated fixes.
-- **Write Clean Code & Tests:** Write explicit, self-documenting code and always accompany logic changes with corresponding tests.
-- **Isolate Work:** Always commit and push your changes to a new, descriptively named feature branch.
+## Repository Structure & Stack
 
-### Don't's
+This is a monorepo:
 
-- **No Hidden Magic:** Avoid overly clever tricks, undocumented abstractions, or side-effects. Code should be explicit and predictable.
-- **No Unapproved Dependencies:** Do not introduce new third-party libraries or packages unless explicitly authorized. Utilize the existing ecosystem first.
-- **No Comment Bloat:** Avoid redundant, self-explanatory comments. Comment the _why_, not the _what_.
-- **No Conversational Noise:** Minimize fluff, long introductions, or repetitive apologies. Focus on the technical output.
-
-## Technical Stack & Structure
-
-This project is a monorepo consisting of:
-
-- **.NET Backend** (`/api`): ASP.NET Core API (Targeting .NET 10).
-  - **Persistence:** MongoDB.
-  - **Authentication:** JWT with Google Auth integration.
-- **React Frontend** (`/app`): TypeScript-based React 19 application using Vite 8.
-  - **Routing:** TanStack Router.
-  - **State Management:** TanStack Query (React Query).
-  - **UI Library:** Material UI (MUI).
-  - **Editor:** Tiptap.
+- **`/api` — .NET backend:** ASP.NET Core API targeting .NET 10.
+  - Solution projects: `Engraved.Api` (web layer), `Engraved.Core` (domain logic), `Engraved.Persistence.Mongo` (MongoDB persistence), plus matching `*.Tests` projects (NUnit).
+  - Authentication: JWT with Google Auth integration.
+- **`/app` — React frontend:** TypeScript, React 19, built with Vite 8.
+  - Routing: TanStack Router. Server state: TanStack Query. UI: Material UI (MUI). Rich text editing: Tiptap. Charts: Chart.js. Unit tests: Vitest.
+- **`/tests` — end-to-end tests:** Playwright tests that run against a locally served app and API.
 
 ## Verification
 
-Always run the respective verification suites before declaring a task complete.
+Run the relevant suites before declaring a task complete.
 
-### Global (Root)
+**Root** — formatting, linting, unused-code detection (enforced by pre-commit hooks and CI):
 
-Run from the repository root:
-
-```powershell
+```sh
 npm run prettier:fix
 npm run lint:fix
+npm run knip
 ```
 
-### Backend (api)
+**Backend** — from `/api`:
 
-```powershell
-cd api
-dotnet build ./Engraved.Api/Engraved.Api.csproj
+```sh
+dotnet build
 dotnet test
 ```
 
-### Frontend (app)
+**Frontend** — from `/app`:
 
-```powershell
-cd app
+```sh
 npm run types:check
-npm run test
+npx vitest run
 npm run build
 ```
 
-## Pull Request Guidelines
+Note: `npm run test` starts Vitest in watch mode in interactive terminals; use `npx vitest run` for a single pass.
 
-When preparing a contribution, adhere to the following workflow:
+**End-to-end** — from `/tests`; requires the API and app running locally (three processes). CI runs these on every PR; run them locally only when your change affects e2e-covered behavior:
 
-- **Branching:** Create a fresh branch off `main` (e.g., `feature/short-description` or `fix/issue-name`).
-- **Implementation:** Make your changes, run the validation scripts above, and ensure all tests pass.
-- **Commit:** Commit your changes with a clear, conventional commit message and push to your remote branch.
-- **Documentation:** When drafting a Pull Request description, include:
+```sh
+npm run e2e:start-api   # terminal 1
+npm run e2e:start-app   # terminal 2
+npm run e2e:run-tests   # terminal 3
+```
+
+## Branches, Commits & Pull Requests
+
+- **Branching:** Create a fresh branch off `main` with a short, descriptive kebab-case name (e.g. `fix-timer-duration`). Use a `try/` prefix for experiments.
+- **Commits:** Write clear, imperative messages describing what changed and why, and reference related issues where applicable (e.g. `Fix negative timer duration formatting for #2826`). This repo does not use conventional-commit prefixes.
+- **PR description:** Include:
   - A concise summary of the problem solved.
   - A brief synthesis of the discussion/decisions that led to this implementation.
   - Any technical trade-offs made or lessons learned.
