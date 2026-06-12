@@ -5,13 +5,30 @@ import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { Markdown } from "./markdown/Markdown";
 import { SimpleDateSelector } from "../../common/DateSelector";
 import { format } from "date-fns";
-import { useJournalContext } from "../JournalContext";
 import { getDayKey, utcToDateOnly } from "../../../util/utils";
+import { useJournalEntriesQuery } from "../../../serverApi/reactQuery/queries/useJournalEntriesQuery";
 
 export const LogBookInner: React.FC = () => {
-  const { isEditMode, setIsEditMode, date, setDate, scrapToRender, hasFocus } =
-    useScrapContext();
-  const { entries } = useJournalContext();
+  const {
+    journal,
+    isEditMode,
+    setIsEditMode,
+    date,
+    setDate,
+    scrapToRender,
+    hasFocus,
+  } = useScrapContext();
+
+  // Fetch the journal's entries directly (rather than via JournalContext) so day-deduplication
+  // works wherever this component is rendered - the "add entry" action lives in the app header,
+  // outside the JournalContextProvider. Empty conditions reuse the cache the view page populates
+  // and ensure we always check all entries, not a filtered subset.
+  const entries = useJournalEntriesQuery(
+    journal?.id ?? scrapToRender.parentId ?? "",
+    {},
+    {},
+    "",
+  );
 
   // Days that already have an entry (other than the one currently being edited) must not be
   // selectable, so we can keep at most one entry per day.
