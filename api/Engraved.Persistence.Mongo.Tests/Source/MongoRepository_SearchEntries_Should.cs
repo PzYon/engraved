@@ -86,6 +86,37 @@ public class MongoRepository_SearchEntries_Should
   }
 
   [Test]
+  public async Task TreatRegexMetacharactersLiterally()
+  {
+    await _repository.UpsertEntry(
+      new GaugeEntry
+      {
+        ParentId = _journalId,
+        Value = 4,
+        Notes = "price (USD)",
+        EditedOn = DateTime.Now.AddDays(-5)
+      }
+    );
+
+    // "(USD)" is a valid regex (a group); when matched literally it must only
+    // find the entry that actually contains the parentheses.
+    IEntry[] results = await _repository.SearchEntries("(USD)", null, null, [_journalId], 10);
+
+    results.Length.Should().Be(1);
+    results[0].GetValue().Should().Be(4);
+  }
+
+  [Test]
+  public void DoesNotThrowOnMalformedRegexInput()
+  {
+    // An unbalanced bracket is an invalid regex. Before escaping, this threw
+    // while building the filter (and surfaced as a 500).
+    Assert.DoesNotThrowAsync(
+      async () => await _repository.SearchEntries("(unclosed", null, null, [_journalId], 10)
+    );
+  }
+
+  [Test]
   public async Task Consider_ScrapsTitle()
   {
     var journal = new ScrapsJournal { Name = "My Scrap" };
