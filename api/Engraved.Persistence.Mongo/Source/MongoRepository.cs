@@ -546,10 +546,15 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     return searchText.Split(" ")
       .Select(segment =>
         {
+          // Escape the user input so it is matched literally. Passing it to the
+          // regex engine unescaped allowed malformed patterns (exceptions) and
+          // catastrophic-backtracking patterns (ReDoS) to be injected via search.
           return Builders<T>.Filter.Or(
             fieldNameExpressions.Select(exp => Builders<T>.Filter.Regex(
                 exp,
-                new BsonRegularExpression(new Regex(segment, RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                new BsonRegularExpression(
+                  new Regex(Regex.Escape(segment), RegexOptions.IgnoreCase | RegexOptions.Multiline)
+                )
               )
             )
           );
