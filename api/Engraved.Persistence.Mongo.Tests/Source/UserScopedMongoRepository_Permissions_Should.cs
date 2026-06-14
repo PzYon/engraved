@@ -282,6 +282,58 @@ public class UserScopedMongoRepository_Permissions_Should
     await AddEntryAsMe(journalId);
   }
 
+  [Test]
+  public async Task DeleteEntry_NotPossible_WithNoPermissionsAtAll()
+  {
+    string journalId = await CreateJournalForOtherUser();
+    string entryId = await AddEntryForOtherUser(journalId);
+
+    Assert.ThrowsAsync<NotAllowedOperationException>(
+      async () => { await _userScopedRepository.DeleteEntry(entryId); }
+    );
+
+    (await _repository.GetEntry(entryId)).Should().NotBeNull();
+  }
+
+  [Test]
+  public async Task DeleteEntry_NotPossible_WithOnlyReadPermissions()
+  {
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Read);
+    string entryId = await AddEntryForOtherUser(journalId);
+
+    Assert.ThrowsAsync<NotAllowedOperationException>(
+      async () => { await _userScopedRepository.DeleteEntry(entryId); }
+    );
+
+    (await _repository.GetEntry(entryId)).Should().NotBeNull();
+  }
+
+  [Test]
+  public async Task DeleteEntry_Possible_WithWritePermissions()
+  {
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Write);
+    string entryId = await AddEntryForOtherUser(journalId);
+
+    await _userScopedRepository.DeleteEntry(entryId);
+
+    (await _repository.GetEntry(entryId)).Should().BeNull();
+  }
+
+  private async Task<string> AddEntryForOtherUser(string journalId)
+  {
+    UpsertResult result = await _repository.UpsertEntry(
+      new CounterEntry
+      {
+        ParentId = journalId,
+        UserId = _otherUserId
+      }
+    );
+
+    return result.EntityId;
+  }
+
   private async Task UpsertJournalAsMe(string journalId)
   {
     await _userScopedRepository.UpsertJournal(
