@@ -376,7 +376,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     return CreateUpsertResult(entry.Id, replaceOneResult);
   }
 
-  public async Task DeleteEntry(string entryId)
+  public virtual async Task DeleteEntry(string entryId)
   {
     await EntriesCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId));
   }
