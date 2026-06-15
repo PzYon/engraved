@@ -196,13 +196,16 @@ const UpsertEntryActionInternal: React.FC<{
         />
       ) : null}
 
-      <TextField
-        value={notes}
-        onChange={(event) => setNotes(event.target.value)}
-        multiline={true}
-        label={"Notes"}
-        margin={"normal"}
-      />
+      <FormElementContainer>
+        <TextField
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+          multiline={true}
+          label={"Notes"}
+          margin={"normal"}
+          sx={{ width: "100%" }}
+        />
+      </FormElementContainer>
 
       <DialogFormButtonContainer>
         <Button variant="outlined" onClick={closeAction}>
