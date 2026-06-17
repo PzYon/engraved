@@ -34,6 +34,24 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               setDate(stripTime(d));
             }}
           />
+          <ButtonContainer>
+            <Button
+              variant="text"
+              sx={{ fontSize: "small" }}
+              onClick={() => setDate(new Date())}
+            >
+              now
+            </Button>
+            {showClear ? (
+              <Button
+                variant="text"
+                sx={{ fontSize: "small" }}
+                onClick={() => setDate(null)}
+              >
+                Clear
+              </Button>
+            ) : null}
+          </ButtonContainer>
         </FlexElement>
         {showTime ? (
           <FlexElement>
@@ -48,13 +66,6 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
-                onClick={() => setDate(new Date())}
-              >
-                now
-              </Button>
-              <Button
-                variant="text"
-                sx={{ fontSize: "small" }}
                 onClick={() => setDate(addMinutes(date ?? new Date(), -5))}
               >
                 -5min
@@ -66,15 +77,6 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               >
                 +5min
               </Button>
-              {showClear ? (
-                <Button
-                  variant="text"
-                  sx={{ fontSize: "small" }}
-                  onClick={() => setDate(null)}
-                >
-                  Clear
-                </Button>
-              ) : null}
             </ButtonContainer>
           </FlexElement>
         ) : (
