@@ -35,14 +35,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
             }}
           />
           <ButtonContainer>
-            <Button
-              variant="text"
-              sx={{ fontSize: "small" }}
-              onClick={() => setDate(new Date())}
-            >
-              now
-            </Button>
-            {showClear ? (
+            {showClear && date ? (
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
@@ -51,6 +44,13 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
                 Clear
               </Button>
             ) : null}
+            <Button
+              variant="text"
+              sx={{ fontSize: "small" }}
+              onClick={() => setDate(new Date())}
+            >
+              now
+            </Button>
           </ButtonContainer>
         </FlexElement>
         {showTime ? (
