@@ -38,12 +38,23 @@ export const Bootstrapper: React.FC = () => {
       return;
     }
 
+    // In test mode the token is persisted, so restore the session on reloads
+    // (e.g. when a test navigates directly via page.goto) instead of going
+    // through Google, which is not available in the e2e environment.
+    if (ServerApi.isTestMode()) {
+      ServerApi.restoreTestSession()
+        .then((u) => setUser(u))
+        .finally(() => setIsNotVisible(false));
+      return;
+    }
+
     // Clean up the token that earlier versions persisted here.
     localStorage.removeItem("engraved::auth");
 
     // The token is no longer persisted, so we always (re-)authenticate via
     // Google. One Tap signs the user in silently when possible and otherwise
     // renders the sign-in button.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsNotVisible(false);
     registerGooglePrompt(onSignedIn, ref.current);
   }, []);

@@ -95,6 +95,10 @@ export class ServerApi {
 
     ServerApi._isE2eTest = true;
     ServerApi.e2eStorage.setValue("isE2eTest", true);
+    // In test mode the token IS persisted (unlike production) so the session
+    // survives full page reloads, which the e2e tests rely on when navigating
+    // to a URL directly via page.goto without the test-user query param.
+    ServerApi.e2eStorage.setValue("e2eToken", jwtToken);
 
     const authResult = await ServerApi.executeRequest<IAuthResult>(
       "/auth/e2e",
@@ -104,6 +108,16 @@ export class ServerApi {
     this.handleAuthenticated(authResult);
 
     return authResult;
+  }
+
+  static isTestMode(): boolean {
+    return ServerApi._isE2eTest;
+  }
+
+  static async restoreTestSession(): Promise<IUser> {
+    ServerApi._jwtToken = ServerApi.e2eStorage.getValue<string>("e2eToken")!;
+
+    return await ServerApi.executeRequest<IUser>("/user");
   }
 
   static async authenticate(token: string): Promise<IAuthResult> {
