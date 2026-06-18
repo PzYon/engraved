@@ -4,13 +4,9 @@ import { ServerApi } from "./serverApi/ServerApi";
 import { IAuthResult } from "./serverApi/IAuthResult";
 import { IUser } from "./serverApi/IUser";
 import { registerGooglePrompt } from "./serverApi/authentication/registerGooglePrompt";
-import { AuthStorage } from "./serverApi/authentication/AuthStorage";
-import { ApiError } from "./serverApi/ApiError";
 import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 import { CredentialResponse } from "google-one-tap";
-
-const storage = new AuthStorage();
 
 export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
@@ -42,25 +38,14 @@ export const Bootstrapper: React.FC = () => {
       return;
     }
 
-    if (!storage.hasResult()) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsNotVisible(false);
-      registerGooglePrompt(onSignedIn, ref.current);
-      return;
-    }
+    // Clean up the token that earlier versions persisted here.
+    localStorage.removeItem("engraved::auth");
 
-    ServerApi.tryAuthenticate(storage.getAuthResult()!.jwtToken)
-      .then((u) => {
-        setUser(u);
-
-        registerGooglePrompt(onSignedIn, ref.current, true);
-      })
-      .catch((e: ApiError) => {
-        if (e.status === 401) {
-          registerGooglePrompt(onSignedIn, ref.current);
-        }
-      })
-      .finally(() => setIsNotVisible(false));
+    // The token is no longer persisted, so we always (re-)authenticate via
+    // Google. One Tap signs the user in silently when possible and otherwise
+    // renders the sign-in button.
+    setIsNotVisible(false);
+    registerGooglePrompt(onSignedIn, ref.current);
   }, []);
 
   if (user) {

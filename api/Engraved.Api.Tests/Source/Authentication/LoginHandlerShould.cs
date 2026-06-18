@@ -85,6 +85,7 @@ public class LoginHandlerShould
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 
     result.JwtToken.Should().NotBeEmpty();
+    result.ExpiresAt.Should().Be(_dateService.UtcNow.AddMinutes(60));
 
     result.User.Should().NotBeNull();
     result.User!.DisplayName.Should().Be(displayName);

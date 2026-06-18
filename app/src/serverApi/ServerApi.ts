@@ -10,7 +10,7 @@ import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
 import { IAuthResult } from "./IAuthResult";
 import { IUser } from "./IUser";
-import { AuthStorage } from "./authentication/AuthStorage";
+import { getMillisecondsUntilRefresh } from "./authentication/tokenRefresh";
 import { ApiError } from "./ApiError";
 import { IUpdatePermissions } from "./IUpdatePermissions";
 import { IJournalAttributeValues } from "./IJournalAttributeValues";
@@ -54,6 +54,8 @@ export class ServerApi {
 
   private static onAuthenticated: (() => void) | null;
 
+  private static refreshTimer: ReturnType<typeof setTimeout> | undefined;
+
   static setGooglePrompt(
     googlePrompt: () => Promise<PromptMomentNotification>,
   ) {
@@ -88,12 +90,6 @@ export class ServerApi {
     return await ServerApi.executeRequest<void>("/wake/me/up");
   }
 
-  static async tryAuthenticate(token: string): Promise<IUser> {
-    ServerApi._jwtToken = token;
-
-    return await ServerApi.executeRequest<IUser>("/user");
-  }
-
   static async setUpForTests(jwtToken: string): Promise<IAuthResult> {
     ServerApi._jwtToken = jwtToken;
 
@@ -122,12 +118,32 @@ export class ServerApi {
   }
 
   private static handleAuthenticated(authResult: IAuthResult) {
-    new AuthStorage().setAuthResult(authResult);
-
+    // The token is intentionally only kept in memory (never persisted to
+    // localStorage) so it cannot be exfiltrated wholesale by malicious code.
+    // It is refreshed silently before it expires; on reload we re-authenticate
+    // via Google.
     ServerApi._jwtToken = authResult.jwtToken;
+
+    ServerApi.scheduleTokenRefresh(authResult.expiresAt);
 
     ServerApi.onAuthenticated?.();
     ServerApi.onAuthenticated = null;
+  }
+
+  private static scheduleTokenRefresh(expiresAt: string | undefined) {
+    if (ServerApi._isE2eTest || !expiresAt) {
+      return;
+    }
+
+    if (ServerApi.refreshTimer) {
+      clearTimeout(ServerApi.refreshTimer);
+    }
+
+    ServerApi.refreshTimer = setTimeout(() => {
+      // If this silent refresh fails (e.g. Google cannot re-authenticate
+      // without interaction), the reactive 401 handler remains as a fallback.
+      ServerApi.tryToLoginAgain().catch(() => {});
+    }, getMillisecondsUntilRefresh(expiresAt));
   }
 
   static async addJournalToFavorites(journalId: string): Promise<void> {

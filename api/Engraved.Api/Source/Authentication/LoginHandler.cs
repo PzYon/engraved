@@ -21,6 +21,8 @@ public class LoginHandler(
 )
   : ILoginHandler
 {
+  private const int DefaultAccessTokenLifetimeMinutes = 60;
+
   public LoginHandler(
     IGoogleTokenValidator tokenValidator,
     IBaseRepository repository,
@@ -42,9 +44,12 @@ public class LoginHandler(
 
     userLoader.SetUser(user);
 
+    DateTime expiresAt = GetExpiresAt();
+
     return new AuthResult
     {
-      JwtToken = ToJwtToken(parsedToken.UserName),
+      JwtToken = ToJwtToken(parsedToken.UserName, expiresAt),
+      ExpiresAt = expiresAt,
       User = user
     };
   }
@@ -61,8 +66,16 @@ public class LoginHandler(
     return new AuthResult
     {
       User = user,
-      JwtToken = userName
+      JwtToken = userName,
+      ExpiresAt = GetExpiresAt()
     };
+  }
+
+  private DateTime GetExpiresAt()
+  {
+    return dateService.UtcNow.AddMinutes(
+      configuration.AccessTokenLifetimeMinutes ?? DefaultAccessTokenLifetimeMinutes
+    );
   }
 
   private async Task<IUser> EnsureUser(string userName, string? displayName, string? imageUrl)
@@ -85,13 +98,13 @@ public class LoginHandler(
     return user;
   }
 
-  private string ToJwtToken(string userId)
+  private string ToJwtToken(string userId, DateTime expiresAt)
   {
     var tokenDescriptor = new SecurityTokenDescriptor
     {
       Subject = new ClaimsIdentity(GetClaims(userId)),
       IssuedAt = dateService.UtcNow,
-      Expires = dateService.UtcNow.AddHours(36),
+      Expires = expiresAt,
       Issuer = configuration.TokenIssuer,
       Audience = configuration.TokenAudience,
       SigningCredentials = GetSigningCredentials()
