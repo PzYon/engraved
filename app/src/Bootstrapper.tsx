@@ -48,11 +48,6 @@ export const Bootstrapper: React.FC = () => {
       return;
     }
 
-    // Older versions persisted the access token here. It is no longer read,
-    // but remove it so a still-valid token doesn't linger in localStorage
-    // where a malicious script could read and replay it.
-    localStorage.removeItem("engraved::auth");
-
     // The token is no longer persisted, so we always (re-)authenticate via
     // Google. One Tap signs the user in silently when possible and otherwise
     // renders the sign-in button.
