@@ -42,7 +42,7 @@ export const UpsertTimerEntry: React.FC<{
         />
       </FormElementContainer>
       <FormElementContainer>
-        <Typography>
+        <Typography component="div">
           <Stack
             direction="column"
             spacing={1}
