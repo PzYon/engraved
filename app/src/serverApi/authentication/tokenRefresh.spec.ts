@@ -20,11 +20,19 @@ describe("getMillisecondsUntilRefresh", () => {
     expect(result).toBe(5 * 1000);
   });
 
-  it("clamps to the minimum delay when expiry is within the buffer", () => {
+  it("scales the buffer down when expiry is within the buffer window", () => {
     const expiresAt = new Date(now + 30 * 1000).toISOString(); // +30s
 
     const result = getMillisecondsUntilRefresh(expiresAt, now);
 
-    expect(result).toBe(5 * 1000);
+    expect(result).toBe(15 * 1000); // half of the 30s remaining
+  });
+
+  it("scales the buffer down for a short-lived token (e.g. for manual testing)", () => {
+    const expiresAt = new Date(now + 2 * 60 * 1000).toISOString(); // +2 min
+
+    const result = getMillisecondsUntilRefresh(expiresAt, now);
+
+    expect(result).toBe(60 * 1000); // refreshes 1 min before the 2 min expiry
   });
 });

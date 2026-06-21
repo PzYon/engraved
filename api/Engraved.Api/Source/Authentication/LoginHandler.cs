@@ -21,8 +21,6 @@ public class LoginHandler(
 )
   : ILoginHandler
 {
-  private const int DefaultAccessTokenLifetimeMinutes = 60;
-
   public LoginHandler(
     IGoogleTokenValidator tokenValidator,
     IBaseRepository repository,
@@ -73,9 +71,7 @@ public class LoginHandler(
 
   private DateTime GetExpiresAt()
   {
-    return dateService.UtcNow.AddMinutes(
-      configuration.AccessTokenLifetimeMinutes ?? DefaultAccessTokenLifetimeMinutes
-    );
+    return dateService.UtcNow.AddMinutes(configuration.AccessTokenLifetimeMinutes);
   }
 
   private async Task<IUser> EnsureUser(string userName, string? displayName, string? imageUrl)
