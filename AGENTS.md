@@ -76,3 +76,4 @@ npm run e2e:run-tests   # terminal 3
   - A concise summary of the problem solved.
   - A brief synthesis of the discussion/decisions that led to this implementation.
   - Any technical trade-offs made or lessons learned.
+  - A reference to the related Github issue (if there is one).
