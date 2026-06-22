@@ -153,11 +153,23 @@ export class ServerApi {
       clearTimeout(ServerApi.refreshTimer);
     }
 
+    const now = new Date();
+    const expiry = new Date(expiresAt);
+    const delayMs = getMillisecondsUntilRefresh(expiresAt);
+
+    console.info(
+      `ServerApi: token refresh scheduled. now=${now.toISOString()}, ` +
+        `expiry=${expiry.toISOString()}, ` +
+        `expiresIn=${Math.round((expiry.getTime() - now.getTime()) / 1000)}s, ` +
+        `refreshIn=${Math.round(delayMs / 1000)}s ` +
+        `(at ${new Date(now.getTime() + delayMs).toISOString()}).`,
+    );
+
     ServerApi.refreshTimer = setTimeout(() => {
       // If this silent refresh fails (e.g. Google cannot re-authenticate
       // without interaction), the reactive 401 handler remains as a fallback.
       ServerApi.tryToLoginAgain().catch(() => {});
-    }, getMillisecondsUntilRefresh(expiresAt));
+    }, delayMs);
   }
 
   static async addJournalToFavorites(journalId: string): Promise<void> {
