@@ -21,11 +21,6 @@ public class RefreshTokenService(
     IDateService dateService
   ) : this(repository, configuration.Value, dateService) { }
 
-  /// <summary>
-  /// Issues a refresh token for the user and persists its hash on the user
-  /// document. The returned token is "{userId}.{secret}" so it can later be
-  /// validated with a single read-by-id instead of a cross-user query.
-  /// </summary>
   public async Task<string> Issue(IUser user)
   {
     var secret = AddToken(user);
@@ -33,11 +28,6 @@ public class RefreshTokenService(
     return Compose(user.Id!, secret);
   }
 
-  /// <summary>
-  /// Validates the refresh token and, if valid, rotates it: the presented token
-  /// is removed and a fresh one is issued on the same user. Returns the user and
-  /// the new token, or null if the token is malformed, unknown or expired.
-  /// </summary>
   public async Task<RotatedRefreshToken?> ValidateAndRotate(string refreshToken)
   {
     if (!TryParse(refreshToken, out var userId, out var secret))
@@ -65,7 +55,6 @@ public class RefreshTokenService(
     return new RotatedRefreshToken(user, Compose(user.Id!, newSecret));
   }
 
-  // Prunes expired tokens, appends a fresh one and returns its plaintext secret.
   private string AddToken(IUser user)
   {
     user.RefreshTokens.RemoveAll(t => t.ExpiresAt <= dateService.UtcNow);

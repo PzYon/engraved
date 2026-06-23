@@ -139,10 +139,6 @@ export class ServerApi {
   }
 
   private static handleAuthenticated(authResult: IAuthResult) {
-    // Both tokens are intentionally only kept in memory (never persisted to
-    // localStorage) so they cannot be exfiltrated wholesale by malicious code.
-    // The access token is refreshed silently via the refresh token before it
-    // expires; on reload we re-authenticate via Google.
     ServerApi._jwtToken = authResult.jwtToken;
     ServerApi._refreshToken = authResult.refreshToken;
 
