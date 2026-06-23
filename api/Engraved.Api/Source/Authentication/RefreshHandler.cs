@@ -1,13 +1,8 @@
-using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 
 namespace Engraved.Api.Authentication;
 
-public class RefreshHandler(
-  RefreshTokenService refreshTokenService,
-  IBaseRepository repository,
-  JwtTokenFactory jwtTokenFactory
-)
+public class RefreshHandler(RefreshTokenService refreshTokenService, JwtTokenFactory jwtTokenFactory)
 {
   /// <summary>
   /// Exchanges a valid refresh token for a new access token (and a rotated
@@ -27,12 +22,7 @@ public class RefreshHandler(
       return null;
     }
 
-    IUser? user = await repository.GetUser(rotated.UserId);
-    if (user == null)
-    {
-      return null;
-    }
-
+    IUser user = rotated.User;
     DateTime expiresAt = jwtTokenFactory.GetAccessTokenExpiry();
 
     return new AuthResult

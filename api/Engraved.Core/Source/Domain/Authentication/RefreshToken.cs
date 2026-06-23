@@ -1,11 +1,9 @@
 namespace Engraved.Core.Domain.Authentication;
 
+// Stored as a sub-document on the user (we are limited to 3 Mongo collections
+// on Azure Cosmos, so refresh tokens cannot live in their own collection).
 public class RefreshToken
 {
-  public string? Id { get; set; }
-
-  public string UserId { get; set; } = null!;
-
   // Only the hash of the token is stored, never the token itself, so a leaked
   // database does not expose usable refresh tokens.
   public string TokenHash { get; set; } = null!;

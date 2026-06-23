@@ -1,4 +1,6 @@
-﻿using Engraved.Core.Domain.Users;
+﻿using Engraved.Core.Domain.Authentication;
+using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Users;
 
@@ -19,6 +21,14 @@ public static class UserDocumentMapper
             Id = tag.Id,
             Label = tag.Label,
             JournalIds = tag.JournalIds
+          }
+        )
+        .ToList(),
+      RefreshTokens = user.RefreshTokens.Select(token => new RefreshTokenDocument
+          {
+            TokenHash = token.TokenHash,
+            ExpiresAt = token.ExpiresAt,
+            CreatedOn = token.CreatedOn
           }
         )
         .ToList()
@@ -46,6 +56,14 @@ public static class UserDocumentMapper
             Id = tag.Id,
             Label = tag.Label,
             JournalIds = tag.JournalIds
+          }
+        )
+        .ToList(),
+      RefreshTokens = document.RefreshTokens.Select(token => new RefreshToken
+          {
+            TokenHash = token.TokenHash,
+            ExpiresAt = token.ExpiresAt,
+            CreatedOn = token.CreatedOn
           }
         )
         .ToList()

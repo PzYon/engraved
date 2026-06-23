@@ -1,5 +1,4 @@
-﻿using Engraved.Core.Domain.Authentication;
-using Engraved.Core.Domain.Entries;
+﻿using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
@@ -13,8 +12,6 @@ public class InMemoryRepository : IRepository
   public List<IEntry> Entries { get; } = [];
 
   public List<IJournal> Journals { get; } = [];
-
-  public List<RefreshToken> RefreshTokens { get; } = [];
 
   public Task<IUser?> GetUser(string nameOrId)
   {
@@ -199,24 +196,6 @@ public class InMemoryRepository : IRepository
   public Task<IEntry?> GetEntry(string entryId)
   {
     return Task.FromResult(Entries.FirstOrDefault(m => m.Id == entryId));
-  }
-
-  public Task AddRefreshToken(RefreshToken refreshToken)
-  {
-    refreshToken.Id ??= GenerateId();
-    RefreshTokens.Add(refreshToken);
-    return Task.CompletedTask;
-  }
-
-  public Task<RefreshToken?> GetRefreshToken(string tokenHash)
-  {
-    return Task.FromResult(RefreshTokens.FirstOrDefault(t => t.TokenHash == tokenHash));
-  }
-
-  public Task DeleteRefreshToken(string tokenHash)
-  {
-    RefreshTokens.RemoveAll(t => t.TokenHash == tokenHash);
-    return Task.CompletedTask;
   }
 
   public Task WakeMeUp()

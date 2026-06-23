@@ -1,4 +1,6 @@
-﻿namespace Engraved.Core.Domain.Users;
+﻿using Engraved.Core.Domain.Authentication;
+
+namespace Engraved.Core.Domain.Users;
 
 public interface IUser
 {
@@ -17,4 +19,6 @@ public interface IUser
   List<string> FavoriteJournalIds { get; set; }
 
   public List<UserTag> Tags { get; set; }
+
+  List<RefreshToken> RefreshTokens { get; set; }
 }

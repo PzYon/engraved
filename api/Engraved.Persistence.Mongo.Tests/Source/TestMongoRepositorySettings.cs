@@ -7,5 +7,4 @@ public class TestMongoRepositorySettings : IMongoRepositorySettings
   public string JournalsCollectionName => "journals";
   public string EntriesCollectionName => "entries";
   public string UsersCollectionName => "users";
-  public string RefreshTokensCollectionName => "refresh_tokens";
 }

@@ -25,7 +25,7 @@ public class RefreshHandlerShould
   private IBaseRepository _repository = null!;
   private RefreshTokenService _refreshTokenService = null!;
   private RefreshHandler _refreshHandler = null!;
-  private string _userId = null!;
+  private IUser _user = null!;
 
   [SetUp]
   public async Task SetUp()
@@ -33,19 +33,16 @@ public class RefreshHandlerShould
     _repository = new InMemoryRepository();
     _dateService = new FakeDateService();
     _refreshTokenService = new RefreshTokenService(_repository, _config, _dateService);
-    _refreshHandler = new RefreshHandler(
-      _refreshTokenService,
-      _repository,
-      new JwtTokenFactory(_config, _dateService)
-    );
+    _refreshHandler = new RefreshHandler(_refreshTokenService, new JwtTokenFactory(_config, _dateService));
 
-    _userId = (await _repository.UpsertUser(new User { Name = "me@tests" })).EntityId;
+    _user = new User { Name = "me@tests" };
+    await _repository.UpsertUser(_user);
   }
 
   [Test]
   public async Task IssueNewAccessAndRotatedRefreshToken_WhenTokenIsValid()
   {
-    var refreshToken = await _refreshTokenService.Issue(_userId);
+    var refreshToken = await _refreshTokenService.Issue(_user);
 
     AuthResult? result = await _refreshHandler.Refresh(refreshToken);
 
@@ -54,13 +51,13 @@ public class RefreshHandlerShould
     result.ExpiresAt.Should().Be(_dateService.UtcNow.AddMinutes(15));
     result.RefreshToken.Should().NotBeNullOrEmpty();
     result.RefreshToken.Should().NotBe(refreshToken, "the refresh token must be rotated");
-    result.User!.Id.Should().Be(_userId);
+    result.User!.Id.Should().Be(_user.Id);
   }
 
   [Test]
   public async Task RejectTheOldToken_AfterRotation()
   {
-    var refreshToken = await _refreshTokenService.Issue(_userId);
+    var refreshToken = await _refreshTokenService.Issue(_user);
 
     await _refreshHandler.Refresh(refreshToken);
 
@@ -71,7 +68,7 @@ public class RefreshHandlerShould
   [Test]
   public async Task AcceptTheRotatedToken()
   {
-    var refreshToken = await _refreshTokenService.Issue(_userId);
+    var refreshToken = await _refreshTokenService.Issue(_user);
 
     AuthResult? first = await _refreshHandler.Refresh(refreshToken);
 
@@ -94,7 +91,7 @@ public class RefreshHandlerShould
   [Test]
   public async Task ReturnNull_ForExpiredToken()
   {
-    var refreshToken = await _refreshTokenService.Issue(_userId);
+    var refreshToken = await _refreshTokenService.Issue(_user);
 
     _dateService.UtcNow = _dateService.UtcNow.AddMinutes(_config.RefreshTokenLifetimeMinutes + 1);
 

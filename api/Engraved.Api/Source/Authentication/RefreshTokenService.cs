@@ -4,6 +4,7 @@ using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Authentication;
+using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Options;
 
 namespace Engraved.Api.Authentication;
@@ -20,41 +21,88 @@ public class RefreshTokenService(
     IDateService dateService
   ) : this(repository, configuration.Value, dateService) { }
 
-  public async Task<string> Issue(string userId)
+  /// <summary>
+  /// Issues a refresh token for the user and persists its hash on the user
+  /// document. The returned token is "{userId}.{secret}" so it can later be
+  /// validated with a single read-by-id instead of a cross-user query.
+  /// </summary>
+  public async Task<string> Issue(IUser user)
   {
-    var token = RandomNumberGenerator.GetHexString(64);
+    var secret = AddToken(user);
+    await repository.UpsertUser(user);
+    return Compose(user.Id!, secret);
+  }
 
-    await repository.AddRefreshToken(
+  /// <summary>
+  /// Validates the refresh token and, if valid, rotates it: the presented token
+  /// is removed and a fresh one is issued on the same user. Returns the user and
+  /// the new token, or null if the token is malformed, unknown or expired.
+  /// </summary>
+  public async Task<RotatedRefreshToken?> ValidateAndRotate(string refreshToken)
+  {
+    if (!TryParse(refreshToken, out var userId, out var secret))
+    {
+      return null;
+    }
+
+    IUser? user = await repository.GetUser(userId);
+    if (user == null)
+    {
+      return null;
+    }
+
+    var hash = Hash(secret);
+    RefreshToken? match = user.RefreshTokens.FirstOrDefault(t => t.TokenHash == hash);
+    if (match == null || match.ExpiresAt <= dateService.UtcNow)
+    {
+      return null;
+    }
+
+    user.RefreshTokens.Remove(match);
+    var newSecret = AddToken(user);
+    await repository.UpsertUser(user);
+
+    return new RotatedRefreshToken(user, Compose(user.Id!, newSecret));
+  }
+
+  // Prunes expired tokens, appends a fresh one and returns its plaintext secret.
+  private string AddToken(IUser user)
+  {
+    user.RefreshTokens.RemoveAll(t => t.ExpiresAt <= dateService.UtcNow);
+
+    var secret = RandomNumberGenerator.GetHexString(64);
+
+    user.RefreshTokens.Add(
       new RefreshToken
       {
-        UserId = userId,
-        TokenHash = Hash(token),
+        TokenHash = Hash(secret),
         CreatedOn = dateService.UtcNow,
         ExpiresAt = dateService.UtcNow.AddMinutes(configuration.RefreshTokenLifetimeMinutes)
       }
     );
 
-    return token;
+    return secret;
   }
 
-  /// <summary>
-  /// Validates the given refresh token and, if valid, rotates it: the old token
-  /// is deleted and a fresh one is issued. Returns the owning user id and the
-  /// new token, or null if the token is unknown or expired.
-  /// </summary>
-  public async Task<RotatedRefreshToken?> ValidateAndRotate(string refreshToken)
+  private static string Compose(string userId, string secret)
   {
-    RefreshToken? existing = await repository.GetRefreshToken(Hash(refreshToken));
-    if (existing == null || existing.ExpiresAt <= dateService.UtcNow)
+    return $"{userId}.{secret}";
+  }
+
+  private static bool TryParse(string token, out string userId, out string secret)
+  {
+    userId = string.Empty;
+    secret = string.Empty;
+
+    var separatorIndex = token.IndexOf('.');
+    if (separatorIndex <= 0 || separatorIndex == token.Length - 1)
     {
-      return null;
+      return false;
     }
 
-    await repository.DeleteRefreshToken(existing.TokenHash);
-
-    var newToken = await Issue(existing.UserId);
-
-    return new RotatedRefreshToken(existing.UserId, newToken);
+    userId = token[..separatorIndex];
+    secret = token[(separatorIndex + 1)..];
+    return true;
   }
 
   private static string Hash(string token)
@@ -63,4 +111,4 @@ public class RefreshTokenService(
   }
 }
 
-public record RotatedRefreshToken(string UserId, string Token);
+public record RotatedRefreshToken(IUser User, string Token);

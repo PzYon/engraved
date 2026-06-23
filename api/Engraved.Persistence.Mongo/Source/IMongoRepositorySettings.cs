@@ -7,5 +7,4 @@ public interface IMongoRepositorySettings
   string JournalsCollectionName { get; }
   string EntriesCollectionName { get; }
   string UsersCollectionName { get; }
-  string RefreshTokensCollectionName { get; }
 }

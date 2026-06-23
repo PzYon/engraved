@@ -1,4 +1,3 @@
-using Engraved.Core.Domain.Authentication;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
@@ -56,12 +55,6 @@ public interface IBaseRepository
   Task DeleteEntry(string entryId);
 
   Task<IEntry?> GetEntry(string entryId);
-
-  Task AddRefreshToken(RefreshToken refreshToken);
-
-  Task<RefreshToken?> GetRefreshToken(string tokenHash);
-
-  Task DeleteRefreshToken(string tokenHash);
 
   Task WakeMeUp();
 

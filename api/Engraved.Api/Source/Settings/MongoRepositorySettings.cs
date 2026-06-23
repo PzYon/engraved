@@ -11,5 +11,4 @@ public class MongoRepositorySettings(string connectionString) : IMongoRepository
   public string JournalsCollectionName => "metrics";
   public string EntriesCollectionName => "measurements";
   public string UsersCollectionName => "users";
-  public string RefreshTokensCollectionName => "refresh_tokens";
 }

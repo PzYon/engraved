@@ -35,7 +35,7 @@ public class LoginHandler(
     {
       JwtToken = jwtTokenFactory.CreateAccessToken(parsedToken.UserName, expiresAt),
       ExpiresAt = expiresAt,
-      RefreshToken = await refreshTokenService.Issue(user.Id!),
+      RefreshToken = await refreshTokenService.Issue(user),
       User = user
     };
   }
