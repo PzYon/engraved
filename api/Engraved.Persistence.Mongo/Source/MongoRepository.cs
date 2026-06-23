@@ -5,7 +5,9 @@ using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
+using Engraved.Core.Domain.Authentication;
 using Engraved.Persistence.Mongo.DocumentTypes;
+using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
@@ -22,6 +24,9 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
   protected IMongoCollection<EntryDocument> EntriesCollection => mongoDatabaseClient.EntriesCollection;
   protected IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
   protected IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
+
+  protected IMongoCollection<RefreshTokenDocument> RefreshTokensCollection =>
+    mongoDatabaseClient.RefreshTokensCollection;
 
   public virtual async Task<IUser?> GetUser(string? nameOrId)
   {
@@ -395,6 +400,27 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     return document == null
       ? null
       : EntryDocumentMapper.FromDocument(document);
+  }
+
+  public async Task AddRefreshToken(RefreshToken refreshToken)
+  {
+    await RefreshTokensCollection.InsertOneAsync(RefreshTokenDocumentMapper.ToDocument(refreshToken));
+  }
+
+  public async Task<RefreshToken?> GetRefreshToken(string tokenHash)
+  {
+    RefreshTokenDocument? document = await RefreshTokensCollection
+      .Find(Builders<RefreshTokenDocument>.Filter.Eq(d => d.TokenHash, tokenHash))
+      .FirstOrDefaultAsync();
+
+    return RefreshTokenDocumentMapper.FromDocument(document);
+  }
+
+  public async Task DeleteRefreshToken(string tokenHash)
+  {
+    await RefreshTokensCollection.DeleteManyAsync(
+      Builders<RefreshTokenDocument>.Filter.Eq(d => d.TokenHash, tokenHash)
+    );
   }
 
   public async Task WakeMeUp()

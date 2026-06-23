@@ -56,6 +56,13 @@ export class ServerApi {
 
   private static refreshTimer: ReturnType<typeof setTimeout> | undefined;
 
+  // The refresh token, like the access token, is only kept in memory (never
+  // persisted), so a page reload re-authenticates via Google.
+  private static _refreshToken: string | undefined;
+
+  // De-dupes concurrent refreshes (e.g. several requests 401 at once).
+  private static refreshInFlight: Promise<boolean> | null = null;
+
   static setGooglePrompt(
     googlePrompt: () => Promise<PromptMomentNotification>,
   ) {
@@ -132,16 +139,52 @@ export class ServerApi {
   }
 
   private static handleAuthenticated(authResult: IAuthResult) {
-    // The token is intentionally only kept in memory (never persisted to
-    // localStorage) so it cannot be exfiltrated wholesale by malicious code.
-    // It is refreshed silently before it expires; on reload we re-authenticate
-    // via Google.
+    // Both tokens are intentionally only kept in memory (never persisted to
+    // localStorage) so they cannot be exfiltrated wholesale by malicious code.
+    // The access token is refreshed silently via the refresh token before it
+    // expires; on reload we re-authenticate via Google.
     ServerApi._jwtToken = authResult.jwtToken;
+    ServerApi._refreshToken = authResult.refreshToken;
 
     ServerApi.scheduleTokenRefresh(authResult.expiresAt);
 
     ServerApi.onAuthenticated?.();
     ServerApi.onAuthenticated = null;
+  }
+
+  // Exchanges the in-memory refresh token for a fresh access token (and a
+  // rotated refresh token) via a silent background request - no Google, no UI.
+  // Returns false if there is no refresh token or the server rejects it, so the
+  // caller can fall back to a full Google sign-in.
+  static tryRefresh(): Promise<boolean> {
+    if (!ServerApi._refreshToken) {
+      return Promise.resolve(false);
+    }
+
+    ServerApi.refreshInFlight ??= ServerApi.doRefresh().finally(() => {
+      ServerApi.refreshInFlight = null;
+    });
+
+    return ServerApi.refreshInFlight;
+  }
+
+  private static async doRefresh(): Promise<boolean> {
+    try {
+      const authResult = await ServerApi.executeRequest<IAuthResult>(
+        "/auth/refresh",
+        "POST",
+        { refreshToken: ServerApi._refreshToken },
+        true, // don't run the 401-refresh handler for the refresh call itself
+      );
+
+      ServerApi.handleAuthenticated(authResult);
+      return true;
+    } catch {
+      // the refresh token is no longer usable; drop it so we go straight to
+      // Google next time instead of retrying a dead token.
+      ServerApi._refreshToken = undefined;
+      return false;
+    }
   }
 
   private static scheduleTokenRefresh(expiresAt: string | undefined) {
@@ -166,9 +209,14 @@ export class ServerApi {
     );
 
     ServerApi.refreshTimer = setTimeout(() => {
-      // If this silent refresh fails (e.g. Google cannot re-authenticate
-      // without interaction), the reactive 401 handler remains as a fallback.
-      ServerApi.tryToLoginAgain().catch(() => {});
+      void ServerApi.tryRefresh().then((refreshed) => {
+        // Refresh token expired/invalid (e.g. tab open longer than its
+        // lifetime): fall back to Google. The reactive 401 handler is a
+        // further safety net.
+        if (!refreshed) {
+          ServerApi.tryToLoginAgain().catch(() => {});
+        }
+      });
     }, delayMs);
   }
 
@@ -471,6 +519,12 @@ export class ServerApi {
       }
 
       if (response.status === 401 && !isRetry) {
+        // First try a silent refresh-token exchange; only if that fails fall
+        // back to a full Google sign-in.
+        if (await ServerApi.tryRefresh()) {
+          return ServerApi.executeRequest(url, method, payload, true);
+        }
+
         return this._loginHandler.loginAndRetry(() =>
           ServerApi.executeRequest(url, method, payload, true),
         );

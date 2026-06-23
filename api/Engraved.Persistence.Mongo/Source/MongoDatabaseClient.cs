@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
@@ -14,6 +15,7 @@ public class MongoDatabaseClient
   public readonly IMongoCollection<EntryDocument> EntriesCollection;
   public readonly IMongoCollection<JournalDocument> JournalsCollection;
   public readonly IMongoCollection<UserDocument> UsersCollection;
+  public readonly IMongoCollection<RefreshTokenDocument> RefreshTokensCollection;
 
   static MongoDatabaseClient()
   {
@@ -45,6 +47,7 @@ public class MongoDatabaseClient
     JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
     EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);
     UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
+    RefreshTokensCollection = db.GetCollection<RefreshTokenDocument>(settings.RefreshTokensCollectionName);
   }
 
   private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)

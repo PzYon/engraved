@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
+using Engraved.Core.Domain.Authentication;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
@@ -279,6 +280,21 @@ public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepo
   }
 
   public Task<IEntry?> GetEntry(string entryId)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task AddRefreshToken(RefreshToken refreshToken)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task<RefreshToken?> GetRefreshToken(string tokenHash)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task DeleteRefreshToken(string tokenHash)
   {
     throw new NotImplementedException();
   }

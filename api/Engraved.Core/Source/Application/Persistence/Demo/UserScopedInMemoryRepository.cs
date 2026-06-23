@@ -1,4 +1,5 @@
-﻿using Engraved.Core.Domain.Entries;
+﻿using Engraved.Core.Domain.Authentication;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
@@ -165,6 +166,21 @@ public class UserScopedInMemoryRepository : IUserScopedRepository
     return entry != null && entry.UserId == CurrentUser.Value.Id
       ? entry
       : null;
+  }
+
+  public Task AddRefreshToken(RefreshToken refreshToken)
+  {
+    return _repository.AddRefreshToken(refreshToken);
+  }
+
+  public Task<RefreshToken?> GetRefreshToken(string tokenHash)
+  {
+    return _repository.GetRefreshToken(tokenHash);
+  }
+
+  public Task DeleteRefreshToken(string tokenHash)
+  {
+    return _repository.DeleteRefreshToken(tokenHash);
   }
 
   public Task WakeMeUp()
