@@ -480,6 +480,15 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/system_config/clear-cache`, "POST");
   }
 
+  static async signOutOtherDevices(): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/auth/sign-out-other-devices`,
+      "POST",
+      { refreshToken: ServerApi._refreshToken },
+      true,
+    );
+  }
+
   static async executeRequest<T = void>(
     url: string,
     method: HttpMethod = "GET",

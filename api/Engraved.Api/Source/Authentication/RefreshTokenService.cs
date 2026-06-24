@@ -55,6 +55,34 @@ public class RefreshTokenService(
     return new RotatedRefreshToken(user, Compose(user.Id!, newSecret));
   }
 
+  // Keeps only the refresh token presented by the current device and removes all
+  // others, so every other session can no longer be refreshed. Returns false if
+  // the presented token is malformed, unknown or expired.
+  public async Task<bool> RevokeOtherTokens(string? refreshToken)
+  {
+    if (string.IsNullOrEmpty(refreshToken) || !TryParse(refreshToken, out var userId, out var secret))
+    {
+      return false;
+    }
+
+    IUser? user = await repository.GetUser(userId);
+    if (user == null)
+    {
+      return false;
+    }
+
+    var hash = Hash(secret);
+    RefreshToken? current = user.RefreshTokens.FirstOrDefault(t => t.TokenHash == hash);
+    if (current == null || current.ExpiresAt <= dateService.UtcNow)
+    {
+      return false;
+    }
+
+    user.RefreshTokens.RemoveAll(t => t.TokenHash != hash);
+    await repository.UpsertUser(user);
+    return true;
+  }
+
   private string AddToken(IUser user)
   {
     user.RefreshTokens.RemoveAll(t => t.ExpiresAt <= dateService.UtcNow);

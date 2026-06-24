@@ -97,4 +97,28 @@ public class RefreshHandlerShould
 
     (await _refreshHandler.Refresh(refreshToken)).Should().BeNull();
   }
+
+  [Test]
+  public async Task SignOutOtherDevices_KeepsOnlyTheCurrentToken()
+  {
+    var other1 = await _refreshTokenService.Issue(_user);
+    var current = await _refreshTokenService.Issue(_user);
+    var other2 = await _refreshTokenService.Issue(_user);
+
+    (await _refreshTokenService.RevokeOtherTokens(current)).Should().BeTrue();
+
+    // the current device's token still works ...
+    (await _refreshHandler.Refresh(current)).Should().NotBeNull();
+
+    // ... the other devices' tokens no longer do.
+    (await _refreshHandler.Refresh(other1)).Should().BeNull();
+    (await _refreshHandler.Refresh(other2)).Should().BeNull();
+  }
+
+  [Test]
+  public async Task SignOutOtherDevices_ReturnsFalse_ForInvalidToken()
+  {
+    (await _refreshTokenService.RevokeOtherTokens(null)).Should().BeFalse();
+    (await _refreshTokenService.RevokeOtherTokens("does-not-exist")).Should().BeFalse();
+  }
 }
