@@ -45,7 +45,7 @@ jobs:
           action: "upload"
 
   deploy-api:
-    name: Deploy API
+    name: Deploy API (${{ matrix.platform.name }})
     runs-on: ubuntu-latest
     if: inputs.deploy-api == true
 
