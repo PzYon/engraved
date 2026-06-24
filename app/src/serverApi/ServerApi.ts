@@ -482,7 +482,7 @@ export class ServerApi {
 
   static async signOutOtherDevices(): Promise<void> {
     return await ServerApi.executeRequest(
-      `/auth/sign-out-other-devices`,
+      `/auth/revoke-refresh-tokens`,
       "POST",
       { refreshToken: ServerApi._refreshToken },
       true,

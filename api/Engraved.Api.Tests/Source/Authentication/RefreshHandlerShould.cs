@@ -99,7 +99,7 @@ public class RefreshHandlerShould
   }
 
   [Test]
-  public async Task SignOutOtherDevices_KeepsOnlyTheCurrentToken()
+  public async Task RevokeOtherTokens_KeepsOnlyTheCurrentToken()
   {
     var other1 = await _refreshTokenService.Issue(_user);
     var current = await _refreshTokenService.Issue(_user);
@@ -116,7 +116,7 @@ public class RefreshHandlerShould
   }
 
   [Test]
-  public async Task SignOutOtherDevices_ReturnsFalse_ForInvalidToken()
+  public async Task RevokeOtherTokens_ReturnsFalse_ForInvalidToken()
   {
     (await _refreshTokenService.RevokeOtherTokens(null)).Should().BeFalse();
     (await _refreshTokenService.RevokeOtherTokens("does-not-exist")).Should().BeFalse();

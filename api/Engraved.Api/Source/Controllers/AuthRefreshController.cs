@@ -19,10 +19,9 @@ public class AuthRefreshController(
     return result == null ? Unauthorized() : result;
   }
 
-  [HttpPost("sign-out-other-devices")]
-  public async Task<IActionResult> SignOutOtherDevices([FromBody] RefreshPayload payload)
+  [HttpPost("revoke-refresh-tokens")]
+  public async Task RevokeRefreshTokens([FromBody] RefreshPayload payload)
   {
-    var success = await refreshTokenService.RevokeOtherTokens(payload.RefreshToken);
-    return success ? Ok() : Unauthorized();
+    await refreshTokenService.RevokeOtherTokens(payload.RefreshToken);
   }
 }
