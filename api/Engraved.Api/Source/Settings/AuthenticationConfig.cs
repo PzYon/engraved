@@ -6,4 +6,6 @@ public class AuthenticationConfig
   public string? JwtSecret { get; set; }
   public string? TokenIssuer { get; set; }
   public string? TokenAudience { get; set; }
+  public int AccessTokenLifetimeMinutes { get; set; }
+  public int RefreshTokenLifetimeMinutes { get; set; }
 }

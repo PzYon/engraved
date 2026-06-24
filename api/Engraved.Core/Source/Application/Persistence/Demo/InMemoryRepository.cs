@@ -15,7 +15,7 @@ public class InMemoryRepository : IRepository
 
   public Task<IUser?> GetUser(string nameOrId)
   {
-    return Task.FromResult(Users.FirstOrDefault(u => u.Name == nameOrId));
+    return Task.FromResult(Users.FirstOrDefault(u => u.Name == nameOrId || u.Id == nameOrId));
   }
 
   public Task<UpsertResult> UpsertUser(IUser user)

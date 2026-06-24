@@ -22,7 +22,9 @@ public class LoginHandlerShould
     JwtSecret = "cfadd57e-990a-4e95-9141-aa2493417126",
     TokenAudience = "http://au.dien.ce",
     TokenIssuer = "http://is.su.er",
-    GoogleClientId = "791638561996-u8a0gf3af7b33qtk178djpek4054ir4d.apps.googleusercontent.com"
+    GoogleClientId = "791638561996-u8a0gf3af7b33qtk178djpek4054ir4d.apps.googleusercontent.com",
+    AccessTokenLifetimeMinutes = 60,
+    RefreshTokenLifetimeMinutes = 1440
   };
 
   private IDateService _dateService = null!;
@@ -39,12 +41,18 @@ public class LoginHandlerShould
 
     _dateService = new FakeDateService();
 
-    _loginHandler = new LoginHandler(
-      new GoogleTokenValidator(_authenticationConfig),
+    _loginHandler = CreateLoginHandler(new GoogleTokenValidator(_authenticationConfig));
+  }
+
+  private LoginHandler CreateLoginHandler(IGoogleTokenValidator tokenValidator)
+  {
+    return new LoginHandler(
+      tokenValidator,
       _testRepository,
-      _authenticationConfig,
       _dateService,
-      _userLoader
+      _userLoader,
+      new JwtTokenFactory(_authenticationConfig, _dateService),
+      new RefreshTokenService(_testRepository, _authenticationConfig, _dateService)
     );
   }
 
@@ -74,17 +82,13 @@ public class LoginHandlerShould
     const string imageUrl = "https://im.age.url";
     const string userName = "ha-pe";
 
-    var loginHandler = new LoginHandler(
-      new FakeGoogleTokenValidator(imageUrl, userName, displayName),
-      _testRepository,
-      _authenticationConfig,
-      _dateService,
-      _userLoader
-    );
+    var loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 
     result.JwtToken.Should().NotBeEmpty();
+    result.ExpiresAt.Should().Be(_dateService.UtcNow.AddMinutes(60));
+    result.RefreshToken.Should().NotBeNullOrEmpty();
 
     result.User.Should().NotBeNull();
     result.User!.DisplayName.Should().Be(displayName);
@@ -134,13 +138,7 @@ public class LoginHandlerShould
       }
     );
 
-    var loginHandler = new LoginHandler(
-      new FakeGoogleTokenValidator(imageUrl, userName, displayName),
-      _testRepository,
-      _authenticationConfig,
-      _dateService,
-      _userLoader
-    );
+    var loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 

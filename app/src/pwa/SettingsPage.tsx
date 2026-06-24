@@ -73,6 +73,12 @@ export const SettingsPage: React.FC = () => {
         <ExportYourData />
       </PageSection>
 
+      <PageSection title="Devices">
+        <Button variant="outlined" onClick={signOutOtherDevices}>
+          Sign out other devices
+        </Button>
+      </PageSection>
+
       <PageSection title="System">
         <Button variant="outlined" onClick={clearBackendCache}>
           Clear backend cache
@@ -95,6 +101,22 @@ export const SettingsPage: React.FC = () => {
     } catch (e) {
       setAppAlert({
         title: "Failed to clear backend cache",
+        message: (e as Error)?.message,
+        type: "error",
+      });
+    }
+  }
+
+  async function signOutOtherDevices() {
+    try {
+      await ServerApi.signOutOtherDevices();
+      setAppAlert({
+        title: "Signed out other devices",
+        type: "success",
+      });
+    } catch (e) {
+      setAppAlert({
+        title: "Failed to sign out other devices",
         message: (e as Error)?.message,
         type: "error",
       });
