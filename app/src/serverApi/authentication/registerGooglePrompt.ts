@@ -1,6 +1,6 @@
 import { envSettings } from "../../env/envSettings";
 import { ServerApi } from "../ServerApi";
-import { CredentialResponse, PromptMomentNotification } from "google-one-tap";
+import { CredentialResponse } from "google-one-tap";
 
 const scriptUrl = "https://accounts.google.com/gsi/client";
 
@@ -28,15 +28,13 @@ export function registerGooglePrompt(
         return;
       }
 
-      googlePrompt().then((result) => {
-        if (result.isNotDisplayed() || result.isSkippedMoment()) {
-          google.accounts.id.renderButton(domElement, {
-            theme: "outline",
-            size: "large",
-            shape: "pill",
-          });
-        }
+      google.accounts.id.renderButton(domElement, {
+        theme: "outline",
+        size: "large",
+        shape: "pill",
       });
+
+      googlePrompt();
     })
     .catch(console.error);
 
@@ -69,6 +67,6 @@ function getGoogleScriptTag() {
   return document.querySelector(`script[src="${scriptUrl}"]`);
 }
 
-function googlePrompt(): Promise<PromptMomentNotification> {
-  return new Promise((resolve) => google.accounts.id.prompt(resolve));
+function googlePrompt(): void {
+  google.accounts.id.prompt();
 }

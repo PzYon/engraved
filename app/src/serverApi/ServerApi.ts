@@ -30,7 +30,6 @@ import { IScheduleDefinition } from "./IScheduleDefinition";
 import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
 import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
 import { StorageWrapper } from "../util/StorageWrapper";
-import { PromptMomentNotification } from "google-one-tap";
 import { IJournalCustomProps } from "./IJournalCustomProps";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
@@ -50,7 +49,7 @@ export class ServerApi {
 
   static serverOs: "lin" | "win" = "lin";
 
-  private static googlePrompt: () => Promise<PromptMomentNotification>;
+  private static googlePrompt: () => void;
 
   private static onAuthenticated: (() => void) | null;
 
@@ -63,18 +62,15 @@ export class ServerApi {
   // De-dupes concurrent refreshes (e.g. several requests 401 at once).
   private static refreshInFlight: Promise<boolean> | null = null;
 
-  static setGooglePrompt(
-    googlePrompt: () => Promise<PromptMomentNotification>,
-  ) {
+  static setGooglePrompt(googlePrompt: () => void) {
     ServerApi.googlePrompt = googlePrompt;
   }
 
   static async tryToLoginAgain(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (ServerApi.googlePrompt) {
-        ServerApi.googlePrompt()
-          .then(() => (ServerApi.onAuthenticated = () => resolve()))
-          .catch(reject);
+        ServerApi.onAuthenticated = () => resolve();
+        ServerApi.googlePrompt();
       } else {
         reject(
           new ApiError(401, {
