@@ -26,6 +26,7 @@ export const GoTo: React.FC = () => {
           }
 
           inputRef?.current?.focus();
+
           appendSearchParams({
             [knownQueryParams.query]: getValue(searchText, e.key),
           });
