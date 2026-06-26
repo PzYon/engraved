@@ -26,7 +26,6 @@
   },
   "homepage": "https://github.com/PzYon/engraved#readme",
   "devDependencies": {
-    "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "10.0.1",
     "@tanstack/eslint-plugin-query": "5.101.0",
     "@types/node": "24.13.2",
