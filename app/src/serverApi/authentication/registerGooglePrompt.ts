@@ -28,6 +28,10 @@ export function registerGooglePrompt(
         return;
       }
 
+      // With FedCM the prompt no longer reports display-moment status
+      // (isNotDisplayed()/isSkippedMoment() are deprecated and emit
+      // [GSI_LOGGER] warnings), so we render the button unconditionally as a
+      // fallback and let the browser decide whether to show One Tap.
       google.accounts.id.renderButton(domElement, {
         theme: "outline",
         size: "large",
