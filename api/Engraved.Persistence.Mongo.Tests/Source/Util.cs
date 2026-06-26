@@ -1,12 +1,15 @@
 ﻿using System.Threading.Tasks;
+using EphemeralMongo;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
 public static class Util
 {
-  private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings();
-  private static MongoDatabaseClient Client => new(new TestMongoRepositorySettings(), null);
+  private static readonly IMongoRunner Runner = MongoRunner.Run();
+
+  private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings(Runner.ConnectionString);
+  private static MongoDatabaseClient Client => new(Settings, null);
 
   public static async Task<TestMongoRepository> CreateMongoRepository()
   {
@@ -34,7 +37,7 @@ public static class Util
 
   private static async Task DropDatabase()
   {
-    var client = new MongoClient(Settings.MongoDbConnectionString);
+    var client = new MongoClient(Runner.ConnectionString);
     await client.DropDatabaseAsync(Settings.DatabaseName);
   }
 }
