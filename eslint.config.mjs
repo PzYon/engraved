@@ -1,24 +1,13 @@
+import js from "@eslint/js";
+import globals from "globals";
+import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 import playwright from "eslint-plugin-playwright";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
-
-const appPath = "app/**";
-const testsPath = "tests/**";
+const appFiles = ["app/**/*.{js,jsx,ts,tsx}"];
+const testFiles = ["tests/**/*.{js,ts}"];
 
 export default [
   {
@@ -31,75 +20,57 @@ export default [
       "**/test-results",
     ],
   },
+
+  // Base JavaScript rules (applies everywhere).
   js.configs.recommended,
+
+  // TypeScript: registers the @typescript-eslint plugin + parser and applies
+  // its recommended rules. This is self-contained, so no parser wiring or
+  // eslintrc compatibility shim is needed.
+  ...typescriptEslint.configs["flat/recommended"],
+
+  // App: React (hooks + fast-refresh) and TanStack Query.
   {
-    plugins: {
-      "@typescript-eslint": typescriptEslint,
-    },
-    languageOptions: {
-      parser: tsParser,
-      ecmaVersion: "latest",
-      sourceType: "module",
-    },
+    ...reactHooks.configs.flat.recommended,
+    files: appFiles,
   },
-
-  ...compat.extends("plugin:@typescript-eslint/recommended").map((config) => ({
+  ...pluginQuery.configs["flat/recommended"].map((config) => ({
     ...config,
-    files: ["**/*.{ts,tsx}"],
+    files: appFiles,
   })),
-
-  ...compat
-    .extends(
-      "plugin:react-hooks/recommended",
-      "plugin:@tanstack/eslint-plugin-query/recommended",
-    )
-    .map((config) => ({
-      ...config,
-      files: [appPath + "/*.{js,jsx,ts,tsx}"],
-    })),
-
   {
-    files: [appPath + "/*.{js,jsx,ts,tsx}"],
+    files: appFiles,
     plugins: {
-      "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
     },
-
     languageOptions: {
       globals: {
         ...globals.browser,
       },
-
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
         },
       },
     },
-
     rules: {
       "react-refresh/only-export-components": "warn",
       "no-debugger": "off",
     },
   },
 
-  ...compat.extends("plugin:playwright/recommended").map((config) => ({
-    ...config,
-    files: [testsPath + "/*.{js,ts}"],
-  })),
-
+  // Tests: Playwright end-to-end tests.
   {
-    files: [testsPath + "/*.{js,ts}"],
-    plugins: {
-      playwright: playwright,
-    },
-
+    ...playwright.configs["flat/recommended"],
+    files: testFiles,
+  },
+  {
+    files: testFiles,
     languageOptions: {
       globals: {
         ...globals.browser,
       },
     },
-
     rules: {
       "playwright/expect-expect": "off",
     },
