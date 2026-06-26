@@ -4,6 +4,7 @@ import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import pluginQuery from "@tanstack/eslint-plugin-query";
+import pluginRouter from "@tanstack/eslint-plugin-router";
 import playwright from "eslint-plugin-playwright";
 
 const appFiles = ["app/**/*.{js,jsx,ts,tsx}"];
@@ -35,6 +36,10 @@ export default [
     files: appFiles,
   },
   ...pluginQuery.configs["flat/recommended"].map((config) => ({
+    ...config,
+    files: appFiles,
+  })),
+  ...pluginRouter.configs["flat/recommended"].map((config) => ({
     ...config,
     files: appFiles,
   })),
