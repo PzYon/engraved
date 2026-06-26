@@ -67,6 +67,7 @@ jobs:
   build-app:
     name: Build App
     uses: ./.github/workflows/build-app.yml
+    secrets: inherit
 
   e2e-tests:
     name: E2E Tests
