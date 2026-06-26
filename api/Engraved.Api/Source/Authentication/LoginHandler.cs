@@ -1,34 +1,21 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Engraved.Api.Authentication.Google;
-using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Engraved.Api.Authentication;
 
 public class LoginHandler(
   IGoogleTokenValidator tokenValidator,
   IBaseRepository repository,
-  AuthenticationConfig configuration,
   IDateService dateService,
-  UserLoader userLoader
+  UserLoader userLoader,
+  JwtTokenFactory jwtTokenFactory,
+  RefreshTokenService refreshTokenService
 )
   : ILoginHandler
 {
-  public LoginHandler(
-    IGoogleTokenValidator tokenValidator,
-    IBaseRepository repository,
-    IOptions<AuthenticationConfig> configuration,
-    IDateService dateService,
-    UserLoader userLoader
-  ) : this(tokenValidator, repository, configuration.Value, dateService, userLoader) { }
-
   public async Task<AuthResult> Login(string? idToken)
   {
     if (string.IsNullOrEmpty(idToken))
@@ -42,9 +29,13 @@ public class LoginHandler(
 
     userLoader.SetUser(user);
 
+    DateTime expiresAt = jwtTokenFactory.GetAccessTokenExpiry();
+
     return new AuthResult
     {
-      JwtToken = ToJwtToken(parsedToken.UserName),
+      JwtToken = jwtTokenFactory.CreateAccessToken(parsedToken.UserName, expiresAt),
+      ExpiresAt = expiresAt,
+      RefreshToken = await refreshTokenService.Issue(user),
       User = user
     };
   }
@@ -61,7 +52,8 @@ public class LoginHandler(
     return new AuthResult
     {
       User = user,
-      JwtToken = userName
+      JwtToken = userName,
+      ExpiresAt = jwtTokenFactory.GetAccessTokenExpiry()
     };
   }
 
@@ -83,41 +75,6 @@ public class LoginHandler(
     UpsertResult result = await repository.UpsertUser(user);
     user.Id = result.EntityId;
     return user;
-  }
-
-  private string ToJwtToken(string userId)
-  {
-    var tokenDescriptor = new SecurityTokenDescriptor
-    {
-      Subject = new ClaimsIdentity(GetClaims(userId)),
-      IssuedAt = dateService.UtcNow,
-      Expires = dateService.UtcNow.AddHours(36),
-      Issuer = configuration.TokenIssuer,
-      Audience = configuration.TokenAudience,
-      SigningCredentials = GetSigningCredentials()
-    };
-
-    var tokenHandler = new JwtSecurityTokenHandler();
-    SecurityToken? securityToken = tokenHandler.CreateToken(tokenDescriptor);
-    return tokenHandler.WriteToken(securityToken);
-  }
-
-  private SigningCredentials GetSigningCredentials()
-  {
-    if (string.IsNullOrEmpty(configuration.JwtSecret))
-    {
-      throw new Exception($"\"{nameof(AuthenticationConfig.JwtSecret)}\" must be set on the config.");
-    }
-
-    return new SigningCredentials(
-      new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.JwtSecret)),
-      SecurityAlgorithms.HmacSha256Signature
-    );
-  }
-
-  private static Claim[] GetClaims(string userId)
-  {
-    return [new Claim(ClaimTypes.NameIdentifier, userId)];
   }
 
   private async Task EnsureQuickScraps(IUser user)

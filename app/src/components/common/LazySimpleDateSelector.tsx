@@ -13,6 +13,7 @@ const LazySimpleDateSelector: React.FC<ISimpleDateSelectorProps> = ({
   setDate,
   date,
   label,
+  shouldDisableDate,
 }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
@@ -20,8 +21,10 @@ const LazySimpleDateSelector: React.FC<ISimpleDateSelectorProps> = ({
         sx={{ width: "100%" }}
         autoFocus={hasFocus}
         label={label}
+        format="EEE dd.MM.yyyy"
         value={date || null}
         showDaysOutsideCurrentMonth={true}
+        shouldDisableDate={shouldDisableDate}
         onChange={(d) => {
           setDate(stripTime(d));
         }}

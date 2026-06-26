@@ -1,9 +1,8 @@
 import { DateFormat, formatDate, getAsDate } from "./dateTypes";
 import { differenceInHours } from "date-fns";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Tooltip } from "@mui/material";
-
-const autoUpdateIntervalSeconds = 30;
+import { useNow } from "./useNow";
 
 export const FormatDate: React.FC<{
   value: Date | string | number | null | undefined;
@@ -32,37 +31,23 @@ const FormatDateInternal: React.FC<{
   dateFormat?: DateFormat;
   onClick?: () => void;
 }> = ({ value, dateFormat, onClick }) => {
-  const calculateValues = useCallback(() => {
-    return {
-      title: formatDate(
-        value,
-        dateFormat === DateFormat.relativeToNow || !dateFormat
-          ? DateFormat.full
-          : DateFormat.relativeToNow,
-      ),
-      label: formatDate(value, dateFormat),
-    };
-  }, [dateFormat, value]);
+  // Relative labels only need to keep updating while the value is recent. Older
+  // values don't visibly change, so they don't subscribe to the shared ticker.
+  const isRecent = differenceInHours(new Date(), getAsDate(value)) <= 2;
 
-  const [values, setValues] = useState<{ title: string; label: string }>(
-    calculateValues(),
+  // Re-render on every shared tick (while recent) to refresh the relative label.
+  useNow(isRecent);
+
+  const title = formatDate(
+    value,
+    dateFormat === DateFormat.relativeToNow || !dateFormat
+      ? DateFormat.full
+      : DateFormat.relativeToNow,
   );
-
-  useEffect(() => {
-    if (differenceInHours(new Date(), getAsDate(value)) > 2) {
-      return;
-    }
-
-    const interval = window.setInterval(
-      () => setValues(calculateValues()),
-      autoUpdateIntervalSeconds * 1000,
-    );
-
-    return () => window.clearInterval(interval);
-  }, [dateFormat, value, calculateValues]);
+  const label = formatDate(value, dateFormat);
 
   return (
-    <Tooltip title={values.title}>
+    <Tooltip title={title}>
       <span
         style={{ cursor: "pointer" }}
         onClick={(e) => {
@@ -74,7 +59,7 @@ const FormatDateInternal: React.FC<{
           onClick();
         }}
       >
-        {values.label}
+        {label}
       </span>
     </Tooltip>
   );

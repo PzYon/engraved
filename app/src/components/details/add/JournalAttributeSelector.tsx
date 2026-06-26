@@ -60,7 +60,7 @@ export const JournalAttributeSelector: React.FC<{
         useFlexGap
         sx={{ flexWrap: "wrap" }}
       >
-        <Typography sx={{ fontSize: "12px" }}>{attribute.name}</Typography>
+        <Typography sx={{ fontSize: "small" }}>{attribute.name}</Typography>
         <Stack direction="row" spacing={1} useFlexGap>
           {options.map((option) => {
             const isSelected = selectedAttributeValue === option.key;

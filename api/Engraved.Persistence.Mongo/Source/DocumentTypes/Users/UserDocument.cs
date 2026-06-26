@@ -1,4 +1,5 @@
 ﻿using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -25,4 +26,6 @@ public class UserDocument : IDocument
   public List<string> FavoriteJournalIds { get; set; } = [];
 
   public List<UserTag> Tags { get; set; } = [];
+
+  public List<RefreshTokenDocument> RefreshTokens { get; set; } = [];
 }

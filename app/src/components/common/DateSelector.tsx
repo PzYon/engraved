@@ -6,6 +6,7 @@ export interface ISimpleDateSelectorProps {
   date: Date | undefined;
   label?: string;
   hasFocus?: boolean;
+  shouldDisableDate?: (date: Date) => boolean;
 }
 
 const LazySimpleDateSelector = React.lazy(

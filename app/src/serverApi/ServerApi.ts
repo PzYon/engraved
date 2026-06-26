@@ -10,7 +10,7 @@ import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
 import { IAuthResult } from "./IAuthResult";
 import { IUser } from "./IUser";
-import { AuthStorage } from "./authentication/AuthStorage";
+import { getMillisecondsUntilRefresh } from "./authentication/tokenRefresh";
 import { ApiError } from "./ApiError";
 import { IUpdatePermissions } from "./IUpdatePermissions";
 import { IJournalAttributeValues } from "./IJournalAttributeValues";
@@ -30,7 +30,6 @@ import { IScheduleDefinition } from "./IScheduleDefinition";
 import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
 import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
 import { StorageWrapper } from "../util/StorageWrapper";
-import { PromptMomentNotification } from "google-one-tap";
 import { IJournalCustomProps } from "./IJournalCustomProps";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
@@ -50,22 +49,28 @@ export class ServerApi {
 
   static serverOs: "lin" | "win" = "lin";
 
-  private static googlePrompt: () => Promise<PromptMomentNotification>;
+  private static googlePrompt: () => void;
 
   private static onAuthenticated: (() => void) | null;
 
-  static setGooglePrompt(
-    googlePrompt: () => Promise<PromptMomentNotification>,
-  ) {
+  private static refreshTimer: ReturnType<typeof setTimeout> | undefined;
+
+  // The refresh token, like the access token, is only kept in memory (never
+  // persisted), so a page reload re-authenticates via Google.
+  private static _refreshToken: string | undefined;
+
+  // De-dupes concurrent refreshes (e.g. several requests 401 at once).
+  private static refreshInFlight: Promise<boolean> | null = null;
+
+  static setGooglePrompt(googlePrompt: () => void) {
     ServerApi.googlePrompt = googlePrompt;
   }
 
   static async tryToLoginAgain(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (ServerApi.googlePrompt) {
-        ServerApi.googlePrompt()
-          .then(() => (ServerApi.onAuthenticated = () => resolve()))
-          .catch(reject);
+        ServerApi.onAuthenticated = () => resolve();
+        ServerApi.googlePrompt();
       } else {
         reject(
           new ApiError(401, {
@@ -88,17 +93,15 @@ export class ServerApi {
     return await ServerApi.executeRequest<void>("/wake/me/up");
   }
 
-  static async tryAuthenticate(token: string): Promise<IUser> {
-    ServerApi._jwtToken = token;
-
-    return await ServerApi.executeRequest<IUser>("/user");
-  }
-
   static async setUpForTests(jwtToken: string): Promise<IAuthResult> {
     ServerApi._jwtToken = jwtToken;
 
     ServerApi._isE2eTest = true;
     ServerApi.e2eStorage.setValue("isE2eTest", true);
+    // In test mode the token IS persisted (unlike production) so the session
+    // survives full page reloads, which the e2e tests rely on when navigating
+    // to a URL directly via page.goto without the test-user query param.
+    ServerApi.e2eStorage.setValue("e2eToken", jwtToken);
 
     const authResult = await ServerApi.executeRequest<IAuthResult>(
       "/auth/e2e",
@@ -108,6 +111,16 @@ export class ServerApi {
     this.handleAuthenticated(authResult);
 
     return authResult;
+  }
+
+  static isTestMode(): boolean {
+    return ServerApi._isE2eTest;
+  }
+
+  static async restoreTestSession(): Promise<IUser> {
+    ServerApi._jwtToken = ServerApi.e2eStorage.getValue<string>("e2eToken")!;
+
+    return await ServerApi.executeRequest<IUser>("/user");
   }
 
   static async authenticate(token: string): Promise<IAuthResult> {
@@ -122,12 +135,69 @@ export class ServerApi {
   }
 
   private static handleAuthenticated(authResult: IAuthResult) {
-    new AuthStorage().setAuthResult(authResult);
-
     ServerApi._jwtToken = authResult.jwtToken;
+    ServerApi._refreshToken = authResult.refreshToken;
+
+    ServerApi.scheduleTokenRefresh(authResult.expiresAt);
 
     ServerApi.onAuthenticated?.();
     ServerApi.onAuthenticated = null;
+  }
+
+  // Exchanges the in-memory refresh token for a fresh access token (and a
+  // rotated refresh token) via a silent background request - no Google, no UI.
+  // Returns false if there is no refresh token or the server rejects it, so the
+  // caller can fall back to a full Google sign-in.
+  static tryRefresh(): Promise<boolean> {
+    if (!ServerApi._refreshToken) {
+      return Promise.resolve(false);
+    }
+
+    ServerApi.refreshInFlight ??= ServerApi.doRefresh().finally(() => {
+      ServerApi.refreshInFlight = null;
+    });
+
+    return ServerApi.refreshInFlight;
+  }
+
+  private static async doRefresh(): Promise<boolean> {
+    try {
+      const authResult = await ServerApi.executeRequest<IAuthResult>(
+        "/auth/refresh",
+        "POST",
+        { refreshToken: ServerApi._refreshToken },
+        true, // don't run the 401-refresh handler for the refresh call itself
+      );
+
+      ServerApi.handleAuthenticated(authResult);
+      return true;
+    } catch {
+      // the refresh token is no longer usable; drop it so we go straight to
+      // Google next time instead of retrying a dead token.
+      ServerApi._refreshToken = undefined;
+      return false;
+    }
+  }
+
+  private static scheduleTokenRefresh(expiresAt: string | undefined) {
+    if (ServerApi._isE2eTest || !expiresAt) {
+      return;
+    }
+
+    if (ServerApi.refreshTimer) {
+      clearTimeout(ServerApi.refreshTimer);
+    }
+
+    ServerApi.refreshTimer = setTimeout(() => {
+      void ServerApi.tryRefresh().then((refreshed) => {
+        // Refresh token expired/invalid (e.g. tab open longer than its
+        // lifetime): fall back to Google. The reactive 401 handler is a
+        // further safety net.
+        if (!refreshed) {
+          ServerApi.tryToLoginAgain().catch(() => {});
+        }
+      });
+    }, getMillisecondsUntilRefresh(expiresAt));
   }
 
   static async addJournalToFavorites(journalId: string): Promise<void> {
@@ -406,6 +476,15 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/system_config/clear-cache`, "POST");
   }
 
+  static async signOutOtherDevices(): Promise<void> {
+    return await ServerApi.executeRequest(
+      `/auth/revoke-refresh-tokens`,
+      "POST",
+      { refreshToken: ServerApi._refreshToken },
+      true,
+    );
+  }
+
   static async executeRequest<T = void>(
     url: string,
     method: HttpMethod = "GET",
@@ -429,6 +508,12 @@ export class ServerApi {
       }
 
       if (response.status === 401 && !isRetry) {
+        // First try a silent refresh-token exchange; only if that fails fall
+        // back to a full Google sign-in.
+        if (await ServerApi.tryRefresh()) {
+          return ServerApi.executeRequest(url, method, payload, true);
+        }
+
         return this._loginHandler.loginAndRetry(() =>
           ServerApi.executeRequest(url, method, payload, true),
         );

@@ -8,6 +8,7 @@ import React from "react";
 import { Scrap } from "../components/details/scraps/Scrap";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
 import { ILogBookJournal } from "../serverApi/ILogBookJournal";
+import { dateOnlyToUtc } from "../util/utils";
 
 export class LogBookJournalType implements IJournalType {
   type = JournalType.LogBook;
@@ -52,7 +53,7 @@ export class LogBookJournalType implements IJournalType {
   static createBlank(journal: ILogBookJournal): IScrapEntry {
     return {
       id: undefined,
-      dateTime: new Date().toJSON(),
+      dateTime: dateOnlyToUtc(new Date()).toJSON(),
       parentId: journal.id,
       notes: (journal.customProps?.template ?? "") as string,
       title: "",

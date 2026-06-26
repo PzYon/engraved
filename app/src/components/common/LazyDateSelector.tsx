@@ -27,12 +27,31 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
             sx={{ width: "100%" }}
             autoFocus={hasFocus}
             label={label}
+            format="EEE dd.MM.yyyy"
             value={date || null}
             showDaysOutsideCurrentMonth={true}
             onChange={(d) => {
               setDate(stripTime(d));
             }}
           />
+          <ButtonContainer>
+            {showClear && date ? (
+              <Button
+                variant="text"
+                sx={{ fontSize: "small" }}
+                onClick={() => setDate(null)}
+              >
+                Clear
+              </Button>
+            ) : null}
+            <Button
+              variant="text"
+              sx={{ fontSize: "small" }}
+              onClick={() => setDate(new Date())}
+            >
+              now
+            </Button>
+          </ButtonContainer>
         </FlexElement>
         {showTime ? (
           <FlexElement>
@@ -47,13 +66,6 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               <Button
                 variant="text"
                 sx={{ fontSize: "small" }}
-                onClick={() => setDate(new Date())}
-              >
-                now
-              </Button>
-              <Button
-                variant="text"
-                sx={{ fontSize: "small" }}
                 onClick={() => setDate(addMinutes(date ?? new Date(), -5))}
               >
                 -5min
@@ -65,15 +77,6 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
               >
                 +5min
               </Button>
-              {showClear ? (
-                <Button
-                  variant="text"
-                  sx={{ fontSize: "small" }}
-                  onClick={() => setDate(null)}
-                >
-                  Clear
-                </Button>
-              ) : null}
             </ButtonContainer>
           </FlexElement>
         ) : (

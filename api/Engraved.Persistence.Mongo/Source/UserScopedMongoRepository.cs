@@ -1,6 +1,7 @@
 ﻿using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
@@ -49,6 +50,18 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   {
     await EnsureUserHasPermission(journalId, PermissionKind.Write);
     await base.DeleteJournal(journalId);
+  }
+
+  public override async Task DeleteEntry(string entryId)
+  {
+    IEntry? entry = await GetEntry(entryId);
+    if (entry == null)
+    {
+      return;
+    }
+
+    await EnsureUserHasPermission(entry.ParentId, PermissionKind.Write);
+    await base.DeleteEntry(entryId);
   }
 
   protected override FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)

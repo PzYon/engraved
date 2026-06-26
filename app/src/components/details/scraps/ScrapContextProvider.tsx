@@ -26,6 +26,7 @@ import {
   useItemAction,
 } from "../../common/actions/searchParamHooks";
 import { JournalType } from "../../../serverApi/JournalType";
+import { dateOnlyToUtc, utcToDateOnly } from "../../../util/utils";
 
 const quickAddStorageKey = "quick-add";
 
@@ -56,6 +57,8 @@ export const ScrapContextProvider: React.FC<{
 }) => {
   const { setAppAlert, user } = useAppContext();
   const { renderDialog } = useDialogContext();
+
+  const isLogBook = journal?.type === JournalType.LogBook;
 
   const [scrapToRender, setScrapToRender] = useState(initialScrap);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
@@ -265,11 +268,18 @@ export const ScrapContextProvider: React.FC<{
         setTitle: (t) => setScrapToRender({ ...scrapToRender, title: t }),
         notes: scrapToRender.notes,
         setNotes: (n) => setScrapToRender({ ...scrapToRender, notes: n }),
-        date: new Date(scrapToRender.dateTime),
+        // LogBook entries are date-only and stored as UTC midnight. Convert at this boundary so
+        // the rest of the (local-time) UI keeps working and the shown calendar day is stable
+        // regardless of the viewer's timezone.
+        date: isLogBook
+          ? utcToDateOnly(new Date(scrapToRender.dateTime))
+          : new Date(scrapToRender.dateTime),
         setDate: (d) =>
           setScrapToRender({
             ...scrapToRender,
-            dateTime: d ? d.toJSON() : new Date().toJSON(),
+            dateTime: d
+              ? (isLogBook ? dateOnlyToUtc(d) : d).toJSON()
+              : new Date().toJSON(),
           }),
         parsedDate,
         setParsedDate,

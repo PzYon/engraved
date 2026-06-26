@@ -27,7 +27,7 @@ jobs:
       app-changed: ${{ steps.changes.outputs.app }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -67,6 +67,7 @@ jobs:
   build-app:
     name: Build App
     uses: ./.github/workflows/build-app.yml
+    secrets: inherit
 
   e2e-tests:
     name: E2E Tests
@@ -83,7 +84,10 @@ jobs:
     if: |
       always() &&
       needs.e2e-tests.result == 'success' &&
-      (github.ref == 'refs/heads/main' || github.event.inputs.force-deploy == 'true')
+      (
+        github.event.inputs.force-deploy == 'true' ||
+        (github.ref == 'refs/heads/main' && vars.DISABLE_AUTO_DEPLOY != 'true')
+      )
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:
