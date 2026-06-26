@@ -59,6 +59,6 @@ export class Typer {
 
   private getNextIndex(index: number) {
     const isTypo = Math.random() < this.typoProbability;
-    return isTypo && index > 0 ? --index : ++index;
+    return isTypo && index > 0 ? index - 1 : index + 1;
   }
 }

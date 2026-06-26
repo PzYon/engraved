@@ -1,4 +1,3 @@
-import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import playwright from "eslint-plugin-playwright";
@@ -51,8 +50,6 @@ export default [
 
   ...compat
     .extends(
-      "plugin:react/jsx-runtime",
-      "plugin:react/recommended",
       "plugin:react-hooks/recommended",
       "plugin:@tanstack/eslint-plugin-query/recommended",
     )
@@ -64,7 +61,6 @@ export default [
   {
     files: [appPath + "/*.{js,jsx,ts,tsx}"],
     plugins: {
-      react: react,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
     },
@@ -81,18 +77,8 @@ export default [
       },
     },
 
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-
     rules: {
-      "react/jsx-uses-react": "off",
-      "react/react-in-jsx-scope": "off",
       "react-refresh/only-export-components": "warn",
-      "react/prop-types": 0,
-      "react/display-name": "off",
       "no-debugger": "off",
     },
   },
