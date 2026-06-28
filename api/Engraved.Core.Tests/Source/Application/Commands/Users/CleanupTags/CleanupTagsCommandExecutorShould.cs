@@ -12,7 +12,7 @@ public class CleanupTagsCommandExecutorShould
 {
   private TestUserScopedMongoRepository _repo = null!;
 
-  private const string UserId = "6a40b7027bf30b7c135049b4";
+  private const string UserId = TestIds.UserId;
 
   [SetUp]
   public async Task SetUp()
@@ -30,17 +30,15 @@ public class CleanupTagsCommandExecutorShould
   [Test]
   public async Task DoesNotChangeAnything_When_No_Missing_Favorites()
   {
-    await _repo.UpsertJournal(new CounterJournal { Id = "60703c3b00000000000000d1", UserId = UserId });
-    await _repo.UpsertJournal(new CounterJournal { Id = "60703c3b00000000000000d2", UserId = UserId });
+    const string journal1Id = "60703c3b00000000000000d1";
+    const string journal2Id = "60703c3b00000000000000d2";
+    await _repo.UpsertJournal(new CounterJournal { Id = journal1Id, UserId = UserId });
+    await _repo.UpsertJournal(new CounterJournal { Id = journal2Id, UserId = UserId });
 
     IUser user = (await _repo.GetUser(UserId))!;
-    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = ["60703c3b00000000000000d1"] });
-    user.Tags.Add(new UserTag { Id = "Tag2", JournalIds = ["60703c3b00000000000000d2"] });
+    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [journal1Id] });
+    user.Tags.Add(new UserTag { Id = "Tag2", JournalIds = [journal2Id] });
     await _repo.UpsertUser(user);
-
-    // must ensure permissions are granted for CleanupTags as it uses GetJournal(id, PermissionKind.Read)
-    // but in UserScopedMongoRepository, being the owner (UserId == Journal.UserId) is enough.
-    // wait, CleanupTags uses _repo.GetJournal(...) - wait, I need to check CleanupTagsCommandExecutor.
 
     var command = new CleanupTagsCommand { DryRun = false };
     var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(command);
@@ -78,10 +76,12 @@ public class CleanupTagsCommandExecutorShould
   [Test]
   public async Task RemovesMissingJournalIds_When_SomeAreMissing()
   {
-    await _repo.UpsertJournal(new CounterJournal { Id = "60703c3b00000000000000d3", UserId = UserId });
+    const string existingJournalId = "60703c3b00000000000000d3";
+    const string missingJournalId = "60703c3b00000000000000f1";
+    await _repo.UpsertJournal(new CounterJournal { Id = existingJournalId, UserId = UserId });
 
     IUser user = (await _repo.GetUser(UserId))!;
-    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = ["60703c3b00000000000000d3", "60703c3b00000000000000f1"] });
+    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [existingJournalId, missingJournalId] });
     await _repo.UpsertUser(user);
 
     var commandExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
@@ -91,27 +91,31 @@ public class CleanupTagsCommandExecutorShould
         new CleanupTagsCommand { DryRun = false }
       );
 
-    result.JournalIdsToRemove.Should().Contain("60703c3b00000000000000f1");
+    result.JournalIdsToRemove.Should().Contain(missingJournalId);
 
     var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
     await verificationRepo.WakeMeUp();
     user = (await verificationRepo.GetUser(UserId))!;
-    user.Tags[0].JournalIds.Should().NotContain("60703c3b00000000000000f1");
-    user.Tags[0].JournalIds.Should().Contain("60703c3b00000000000000d3");
+    user.Tags[0].JournalIds.Should().NotContain(missingJournalId);
+    user.Tags[0].JournalIds.Should().Contain(existingJournalId);
   }
 
   [Test]
   public async Task RemovesMissingJournalIds_FromMultipleTag_When_SomeAreMissing()
   {
-    await _repo.UpsertJournal(new CounterJournal { Id = "60703c3b00000000000000d4", UserId = UserId });
-    await _repo.UpsertJournal(new CounterJournal { Id = "60703c3b00000000000000d5", UserId = UserId });
+    const string existingJournalId1 = "60703c3b00000000000000d4";
+    const string existingJournalId2 = "60703c3b00000000000000d5";
+    const string missingJournalId1 = "60703c3b00000000000000f2";
+    const string missingJournalId2 = "60703c3b00000000000000f3";
+    await _repo.UpsertJournal(new CounterJournal { Id = existingJournalId1, UserId = UserId });
+    await _repo.UpsertJournal(new CounterJournal { Id = existingJournalId2, UserId = UserId });
 
     IUser user = (await _repo.GetUser(UserId))!;
     user.Tags.Add(
-      new UserTag { Id = "Tag1", JournalIds = ["60703c3b00000000000000d4", "60703c3b00000000000000f2"] }
+      new UserTag { Id = "Tag1", JournalIds = [existingJournalId1, missingJournalId1] }
     );
     user.Tags.Add(
-      new UserTag { Id = "Tag2", JournalIds = ["60703c3b00000000000000d5", "60703c3b00000000000000f3"] }
+      new UserTag { Id = "Tag2", JournalIds = [existingJournalId2, missingJournalId2] }
     );
     await _repo.UpsertUser(user);
 
@@ -122,27 +126,29 @@ public class CleanupTagsCommandExecutorShould
         new CleanupTagsCommand { DryRun = false }
       );
 
-    result.JournalIdsToRemove.Should().Contain("60703c3b00000000000000f2");
-    result.JournalIdsToRemove.Should().Contain("60703c3b00000000000000f3");
+    result.JournalIdsToRemove.Should().Contain(missingJournalId1);
+    result.JournalIdsToRemove.Should().Contain(missingJournalId2);
     result.JournalIdsToRemove.Should().HaveCount(2);
 
     var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
     await verificationRepo.WakeMeUp();
     user = (await verificationRepo.GetUser(UserId))!;
-    user.Tags[0].JournalIds.Should().NotContain("60703c3b00000000000000f2");
-    user.Tags[0].JournalIds.Should().NotContain("60703c3b00000000000000f3");
+    user.Tags[0].JournalIds.Should().NotContain(missingJournalId1);
+    user.Tags[0].JournalIds.Should().NotContain(missingJournalId2);
 
-    user.Tags[1].JournalIds.Should().NotContain("60703c3b00000000000000f2");
-    user.Tags[1].JournalIds.Should().NotContain("60703c3b00000000000000f3");
+    user.Tags[1].JournalIds.Should().NotContain(missingJournalId1);
+    user.Tags[1].JournalIds.Should().NotContain(missingJournalId2);
   }
 
   [Test]
   public async Task PopulatesJournalIdsToRemove_ButDoesNotRemove_When_DryRunIsTrue()
   {
-    await _repo.UpsertJournal(new CounterJournal { Id = "60703c3b00000000000000d6", UserId = UserId });
+    const string existingJournalId = "60703c3b00000000000000d6";
+    const string missingJournalId = "60703c3b00000000000000f4";
+    await _repo.UpsertJournal(new CounterJournal { Id = existingJournalId, UserId = UserId });
 
     IUser user = (await _repo.GetUser(UserId))!;
-    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = ["60703c3b00000000000000d6", "60703c3b00000000000000f4"] });
+    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [existingJournalId, missingJournalId] });
     await _repo.UpsertUser(user);
 
     var commandExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
@@ -152,12 +158,12 @@ public class CleanupTagsCommandExecutorShould
         new CleanupTagsCommand { DryRun = true }
       );
 
-    result.JournalIdsToRemove.Should().Contain("60703c3b00000000000000f4");
+    result.JournalIdsToRemove.Should().Contain(missingJournalId);
 
     var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
     await verificationRepo.WakeMeUp();
     user = (await verificationRepo.GetUser(UserId))!;
-    user.Tags[0].JournalIds.Should().Contain("60703c3b00000000000000f4");
-    user.Tags[0].JournalIds.Should().Contain("60703c3b00000000000000d6");
+    user.Tags[0].JournalIds.Should().Contain(missingJournalId);
+    user.Tags[0].JournalIds.Should().Contain(existingJournalId);
   }
 }

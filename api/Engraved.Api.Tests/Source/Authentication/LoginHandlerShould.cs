@@ -120,7 +120,7 @@ public class LoginHandlerShould
   [Test]
   public async Task Follow_HappyPath_WithExistingUser()
   {
-    const string userId = "6a40b7027bf30b7c135049b2";
+    const string userId = TestIds.ThirdUserId;
     const string displayName = "Hans Peter";
     const string imageUrl = "https://im.age.url";
     const string userName = "ha-pe";

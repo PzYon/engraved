@@ -11,7 +11,8 @@ public class AddJournalToFavoritesCommandExecutorShould
 {
   private TestUserScopedMongoRepository _repo = null!;
 
-  private const string UserId = "6a40b7027bf30b7c135049b4";
+  private const string UserId = TestIds.UserId;
+  private const string JournalId = "60703c3b00000000000000d1";
 
   [SetUp]
   public async Task SetUp()
@@ -24,31 +25,29 @@ public class AddJournalToFavoritesCommandExecutorShould
   public async Task AddJournalToFavorites()
   {
     // when
-    const string journalId = "60703c3b00000000000000d1";
     await new AddJournalToFavoritesCommandExecutor(_repo).Execute(
-      new AddJournalToFavoritesCommand { JournalId = journalId }
+      new AddJournalToFavoritesCommand { JournalId = JournalId }
     );
 
     // then
-    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().Contain(journalId);
+    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().Contain(JournalId);
   }
 
   [Test]
   public async Task NotAddDuplicate_When_AlreadyFavorite()
   {
     // given
-    const string journalId = "60703c3b00000000000000d1";
     IUser user = (await _repo.GetUser(UserId))!;
-    user.FavoriteJournalIds.Add(journalId);
+    user.FavoriteJournalIds.Add(JournalId);
     await _repo.UpsertUser(user);
 
     // when
     await new AddJournalToFavoritesCommandExecutor(_repo).Execute(
-      new AddJournalToFavoritesCommand { JournalId = journalId }
+      new AddJournalToFavoritesCommand { JournalId = JournalId }
     );
 
     // then
-    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().ContainSingle().Which.Should().Be(journalId);
+    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().ContainSingle().Which.Should().Be(JournalId);
   }
 
   [Test]

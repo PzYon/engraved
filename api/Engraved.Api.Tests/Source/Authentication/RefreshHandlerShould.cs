@@ -35,7 +35,7 @@ public class RefreshHandlerShould
     _refreshTokenService = new RefreshTokenService(_repository, _config, _dateService);
     _refreshHandler = new RefreshHandler(_refreshTokenService, new JwtTokenFactory(_config, _dateService));
 
-    _user = new User { Id = "6a40b7027bf30b7c135049b3", Name = "me@tests" };
+    _user = new User { Id = TestIds.OtherUserId, Name = "me@tests" };
     await _repository.UpsertUser(_user);
   }
 

@@ -24,7 +24,7 @@ public class SearchEntitiesQueryExecutorShould
   [SetUp]
   public async Task SetUp()
   {
-    const string userId = "6a40b7027bf30b7c135049b4";
+    const string userId = TestIds.UserId;
     _repo = await Util.CreateUserScopedMongoRepository(userId, userId, false);
     await _repo.WakeMeUp();
 

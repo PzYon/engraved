@@ -21,6 +21,11 @@ public class DeleteEntryCommandExecutorShould
     _dateService = new FakeDateService(DateTime.UtcNow.AddDays(-10));
   }
 
+  private const string JournalId = "60703c3b0000000000000001";
+  private const string OtherUserId = "60703c3b0000000000000002";
+  private const string EntryId = "60703c3b0000000000000003";
+  private const string MissingEntryId = "60703c3b0000000000000004";
+
   [Test]
   public async Task DeleteEntry_And_BumpJournalEditedOn()
   {
@@ -28,32 +33,32 @@ public class DeleteEntryCommandExecutorShould
     await _repo.UpsertJournal(
       new CounterJournal
       {
-        Id = "60703c3b0000000000000001",
-        Permissions = new UserPermissions { { "60703c3b0000000000000002", new PermissionDefinition { Kind = PermissionKind.Read } } }
+        Id = JournalId,
+        Permissions = new UserPermissions { { OtherUserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
       }
     );
     await _repo.UpsertEntry(
       new CounterEntry
       {
-        Id = "60703c3b0000000000000003",
-        ParentId = "60703c3b0000000000000001",
+        Id = EntryId,
+        ParentId = JournalId,
         DateTime = _dateService.UtcNow
       }
     );
 
     // when
     CommandResult result = await new DeleteEntryCommandExecutor(_repo, _dateService).Execute(
-      new DeleteEntryCommand { Id = "60703c3b0000000000000003" }
+      new DeleteEntryCommand { Id = EntryId }
     );
 
     // then
-    (await _repo.GetEntry("60703c3b0000000000000003")).Should().BeNull();
+    (await _repo.GetEntry(EntryId)).Should().BeNull();
 
-    IJournal journal = (await _repo.GetJournal("60703c3b0000000000000001"))!;
+    IJournal journal = (await _repo.GetJournal(JournalId))!;
     journal.EditedOn.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
 
-    result.EntityId.Should().Be("60703c3b0000000000000003");
-    result.AffectedUserIds.Should().Contain("60703c3b0000000000000002");
+    result.EntityId.Should().Be(EntryId);
+    result.AffectedUserIds.Should().Contain(OtherUserId);
   }
 
   [Test]
@@ -61,7 +66,7 @@ public class DeleteEntryCommandExecutorShould
   {
     // when
     CommandResult result = await new DeleteEntryCommandExecutor(_repo, _dateService).Execute(
-      new DeleteEntryCommand { Id = "60703c3b0000000000000004" }
+      new DeleteEntryCommand { Id = MissingEntryId }
     );
 
     // then

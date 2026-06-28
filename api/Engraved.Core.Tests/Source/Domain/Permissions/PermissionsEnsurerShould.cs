@@ -21,7 +21,7 @@ public class PermissionsEnsurerShould
     await _repository.UpsertUser(
       new User
       {
-        Id = "6a40b7027bf30b7c135049b4",
+        Id = TestIds.UserId,
         Name = "mar@foo.ch",
         DisplayName = "Mar Dog"
       }
@@ -35,7 +35,7 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "6a40b7027bf30b7c135049b4", new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(
@@ -51,7 +51,7 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "6a40b7027bf30b7c135049b4", new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(
@@ -60,7 +60,7 @@ public class PermissionsEnsurerShould
     );
 
     holder.Permissions.Count.Should().Be(1);
-    holder.Permissions["6a40b7027bf30b7c135049b4"].Kind.Should().Be(PermissionKind.Write);
+    holder.Permissions[TestIds.UserId].Kind.Should().Be(PermissionKind.Write);
   }
 
   [Test]
@@ -68,7 +68,7 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "6a40b7027bf30b7c135049b4", new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(

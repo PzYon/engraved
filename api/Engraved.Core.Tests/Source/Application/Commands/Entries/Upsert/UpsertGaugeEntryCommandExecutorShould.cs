@@ -26,11 +26,12 @@ public class UpsertGaugeEntryCommandExecutorShould
   [TestCase(123.456)]
   public async Task Set_ValueFromCommand(double value)
   {
-    await _testRepository.UpsertJournal(new GaugeJournal { Id = "60703c3b00000000000000a1" });
+    const string journalId = "60703c3b00000000000000a1";
+    await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
 
     var command = new UpsertGaugeEntryCommand
     {
-      JournalId = "60703c3b00000000000000a1",
+      JournalId = journalId,
       Value = value
     };
 
@@ -40,7 +41,7 @@ public class UpsertGaugeEntryCommandExecutorShould
     commandResult.EntityId.Should().NotBeEmpty();
     (await _testRepository.CountAllEntries()).Should().Be(1);
 
-    IEntry createdEntry = (await _testRepository.GetEntriesForJournal("60703c3b00000000000000a1")).First();
+    IEntry createdEntry = (await _testRepository.GetEntriesForJournal(journalId)).First();
     createdEntry.ParentId.Should().Be(command.JournalId);
 
     var counterEntry = createdEntry as GaugeEntry;
@@ -51,11 +52,12 @@ public class UpsertGaugeEntryCommandExecutorShould
   [Test]
   public void Throw_WhenNoValueIsSpecified()
   {
-    _testRepository.UpsertJournal(new GaugeJournal { Id = "60703c3b00000000000000a2" }).Wait();
+    const string journalId = "60703c3b00000000000000a2";
+    _testRepository.UpsertJournal(new GaugeJournal { Id = journalId }).Wait();
 
     var command = new UpsertGaugeEntryCommand
     {
-      JournalId = "60703c3b00000000000000a2",
+      JournalId = journalId,
       Notes = "n0t3s",
       Value = null
     };
@@ -70,10 +72,11 @@ public class UpsertGaugeEntryCommandExecutorShould
   [Test]
   public async Task MapAllFieldsCorrectly()
   {
+    const string journalId = "60703c3b00000000000000a3";
     await _testRepository.UpsertJournal(
       new GaugeJournal
       {
-        Id = "60703c3b00000000000000a3",
+        Id = journalId,
         Attributes =
         {
           {
@@ -92,7 +95,7 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     var command = new UpsertGaugeEntryCommand
     {
-      JournalId = "60703c3b00000000000000a3",
+      JournalId = journalId,
       Notes = "n0t3s",
       Value = value,
       JournalAttributeValues = new Dictionary<string, string[]>
@@ -107,7 +110,7 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
 
-    IEntry createdEntry = (await _testRepository.GetEntriesForJournal("60703c3b00000000000000a3")).First();
+    IEntry createdEntry = (await _testRepository.GetEntriesForJournal(journalId)).First();
     command.JournalId.Should().Be(createdEntry.ParentId);
     command.Notes.Should().Be(createdEntry.Notes);
 
@@ -140,11 +143,12 @@ public class UpsertGaugeEntryCommandExecutorShould
   [Test]
   public async Task Throw_WhenJournalAttributeKeyDoesNotExistOnJournal()
   {
-    await _testRepository.UpsertJournal(new GaugeJournal { Id = "60703c3b00000000000000a4" });
+    const string journalId = "60703c3b00000000000000a4";
+    await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
 
     var command = new UpsertGaugeEntryCommand
     {
-      JournalId = "60703c3b00000000000000a4",
+      JournalId = journalId,
       Notes = "n0t3s",
       Value = 42,
       JournalAttributeValues = new Dictionary<string, string[]> { { "fooBar", ["x"] } }

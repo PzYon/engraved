@@ -11,7 +11,8 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
 {
   private TestUserScopedMongoRepository _repo = null!;
 
-  private const string UserId = "6a40b7027bf30b7c135049b4";
+  private const string UserId = TestIds.UserId;
+  private const string JournalId = "60703c3b00000000000000d1";
 
   [SetUp]
   public async Task SetUp()
@@ -24,9 +25,8 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
   public async Task RemoveJournalFromFavorites()
   {
     // given
-    const string journalId = "60703c3b00000000000000d1";
     IUser user = (await _repo.GetUser(UserId))!;
-    user.FavoriteJournalIds.Add(journalId);
+    user.FavoriteJournalIds.Add(JournalId);
     await _repo.UpsertUser(user);
 
     var repositoryWithDifferentCache = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
@@ -34,7 +34,7 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
 
     // when
     await new RemoveJournalFromFavoritesCommandExecutor(repositoryWithDifferentCache).Execute(
-      new RemoveJournalFromFavoritesCommand { JournalId = journalId }
+      new RemoveJournalFromFavoritesCommand { JournalId = JournalId }
     );
 
     // then
@@ -42,7 +42,7 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     await secondRepoForVerification.WakeMeUp();
     IUser updatedUser = (await secondRepoForVerification.GetUser(UserId))!;
     updatedUser.Id.Should().Be(UserId);
-    updatedUser.FavoriteJournalIds.Should().NotContain(journalId);
+    updatedUser.FavoriteJournalIds.Should().NotContain(JournalId);
   }
 
   [Test]
@@ -50,14 +50,13 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
   {
     // given
     const string otherJournalId = "60703c3b00000000000000d2";
-    const string journalId = "60703c3b00000000000000d1";
     IUser user = (await _repo.GetUser(UserId))!;
     user.FavoriteJournalIds.Add(otherJournalId);
     await _repo.UpsertUser(user);
 
     // when
     await new RemoveJournalFromFavoritesCommandExecutor(_repo).Execute(
-      new RemoveJournalFromFavoritesCommand { JournalId = journalId }
+      new RemoveJournalFromFavoritesCommand { JournalId = JournalId }
     );
 
     // then

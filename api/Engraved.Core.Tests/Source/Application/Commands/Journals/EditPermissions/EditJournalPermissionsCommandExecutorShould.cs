@@ -14,6 +14,9 @@ public class EditJournalPermissionsCommandExecutorShould
 {
   private TestMongoRepository _repo = null!;
 
+  private const string OwnerId = "60703c3b00000000000000f1";
+  private const string JournalId = "60703c3b00000000000000f3";
+
   [SetUp]
   public async Task SetUp()
   {
@@ -34,18 +37,16 @@ public class EditJournalPermissionsCommandExecutorShould
   public async Task AddPermission_And_ReturnUnionOfBeforeAndAfterUsers()
   {
     // given: a journal owned by an existing user and a second user to grant access to
-    const string ownerId = "60703c3b00000000000000f1";
     const string newId = "60703c3b00000000000000f2";
-    const string journalId = "60703c3b00000000000000f3";
 
-    await _repo.UpsertUser(new User { Id = ownerId, Name = "owner@foo.ch" });
+    await _repo.UpsertUser(new User { Id = OwnerId, Name = "owner@foo.ch" });
     await _repo.UpsertUser(new User { Id = newId, Name = "new@foo.ch" });
 
     await _repo.UpsertJournal(
       new CounterJournal
       {
-        Id = journalId,
-        Permissions = new UserPermissions { { ownerId, new PermissionDefinition { Kind = PermissionKind.Write } } }
+        Id = JournalId,
+        Permissions = new UserPermissions { { OwnerId, new PermissionDefinition { Kind = PermissionKind.Write } } }
       }
     );
 
@@ -53,43 +54,40 @@ public class EditJournalPermissionsCommandExecutorShould
     CommandResult result = await new EditJournalPermissionsCommandExecutor(_repo).Execute(
       new EditJournalPermissionsCommand
       {
-        JournalId = journalId,
+        JournalId = JournalId,
         Permissions = new Dictionary<string, PermissionKind> { { "new@foo.ch", PermissionKind.Read } }
       }
     );
 
     // then
-    IJournal journal = (await _repo.GetJournal(journalId))!;
-    journal.Permissions.Should().ContainKey(ownerId);
+    IJournal journal = (await _repo.GetJournal(JournalId))!;
+    journal.Permissions.Should().ContainKey(OwnerId);
     journal.Permissions.Should().ContainKey(newId);
 
-    result.EntityId.Should().Be(journalId);
-    result.AffectedUserIds.Should().BeEquivalentTo(ownerId, newId);
+    result.EntityId.Should().Be(JournalId);
+    result.AffectedUserIds.Should().BeEquivalentTo(OwnerId, newId);
   }
 
   [Test]
   public async Task LeavePermissionsUnchanged_When_NoPermissionsProvided()
   {
     // given
-    const string ownerId = "60703c3b00000000000000f1";
-    const string journalId = "60703c3b00000000000000f3";
-
     await _repo.UpsertJournal(
       new CounterJournal
       {
-        Id = journalId,
-        Permissions = new UserPermissions { { ownerId, new PermissionDefinition { Kind = PermissionKind.Write } } }
+        Id = JournalId,
+        Permissions = new UserPermissions { { OwnerId, new PermissionDefinition { Kind = PermissionKind.Write } } }
       }
     );
 
     // when
     CommandResult result = await new EditJournalPermissionsCommandExecutor(_repo).Execute(
-      new EditJournalPermissionsCommand { JournalId = journalId }
+      new EditJournalPermissionsCommand { JournalId = JournalId }
     );
 
     // then
-    IJournal journal = (await _repo.GetJournal(journalId))!;
-    journal.Permissions.Should().ContainKey(ownerId);
-    result.AffectedUserIds.Should().BeEquivalentTo(ownerId);
+    IJournal journal = (await _repo.GetJournal(JournalId))!;
+    journal.Permissions.Should().ContainKey(OwnerId);
+    result.AffectedUserIds.Should().BeEquivalentTo(OwnerId);
   }
 }

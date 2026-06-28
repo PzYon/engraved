@@ -15,7 +15,7 @@ public class SearchEntriesQueryExecutorShould
   private FakeDateService _dateService = null!;
   private TestUserScopedMongoRepository _repo = null!;
 
-  private const string UserId = "6a40b7027bf30b7c135049b4";
+  private const string UserId = TestIds.UserId;
 
   [SetUp]
   public async Task SetUp()
