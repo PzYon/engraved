@@ -7,26 +7,8 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public static class Util
 {
-  // Storage engine used by the ephemeral mongo instance shared by the test suite.
-  //
-  //   InMemory (default): MongoDB Enterprise with the in-memory storage engine. Nothing is
-  //     written to disk, so there is no ~280 MB temp data directory per test assembly. Downloads
-  //     the Enterprise binaries once (about the same size as Community) into the local app-data
-  //     cache. Note: on Linux the Enterprise binary needs extra system libraries (libldap, sasl),
-  //     which is why CI runs with ENGRAVED_TEST_MONGO_ENGINE=ondisk (see build-api.yml).
-  //
-  //   OnDisk: MongoDB Community with the default WiredTiger engine, persisting to a temporary
-  //     data directory that is deleted on teardown. No extra system libraries required.
-  //
-  // Change the default here, or override per run with the ENGRAVED_TEST_MONGO_ENGINE environment
-  // variable ("inmemory" / "ondisk") - handy for a CI matrix without touching code.
-  private const MongoStorageEngine DefaultStorageEngine = MongoStorageEngine.InMemory;
-
-  private static readonly IMongoRunner Runner = MongoRunner.Run(BuildRunnerOptions());
-
-  private static MongoRunnerOptions BuildRunnerOptions()
-  {
-    var options = new MongoRunnerOptions
+  private static readonly IMongoRunner Runner = MongoRunner.Run(
+    new MongoRunnerOptions
     {
       Version = MongoVersion.V7,
 
@@ -34,36 +16,17 @@ public static class Util
       // spins up its own mongo instance; a fixed port makes those processes collide (and share
       // data) when the whole solution is tested at once. A free port keeps the assemblies isolated.
 
-      // the on-disk engine creates a ~280 MB data directory under the temp folder. The default
+      // each mongo instance creates a ~280 MB data directory under the temp folder. The default
       // lifetime (12h) lets orphaned directories from crashed/killed runs pile up to many GB. Keep
       // them around only briefly; a clean run disposes the runner via StopRunner() (see the
       // assembly-level MongoRunnerTeardown), which deletes the directory immediately.
       DataDirectoryLifetime = TimeSpan.FromMinutes(30)
-    };
-
-    if (ResolveStorageEngine() == MongoStorageEngine.InMemory)
-    {
-      // the in-memory storage engine is only available in the Enterprise edition.
-      options.Edition = MongoEdition.Enterprise;
-      options.AdditionalArguments = ["--storageEngine", "inMemory"];
     }
-
-    return options;
-  }
-
-  private static MongoStorageEngine ResolveStorageEngine()
-  {
-    return Environment.GetEnvironmentVariable("ENGRAVED_TEST_MONGO_ENGINE")?.Trim().ToLowerInvariant() switch
-    {
-      "inmemory" => MongoStorageEngine.InMemory,
-      "ondisk" => MongoStorageEngine.OnDisk,
-      _ => DefaultStorageEngine
-    };
-  }
+  );
 
   /// <summary>
-  /// Stops the shared mongo instance and deletes any temp data directory. Invoked once per test
-  /// assembly from an NUnit [OneTimeTearDown] so an on-disk data directory does not linger.
+  /// Stops the shared mongo instance and deletes its temp data directory. Invoked once per test
+  /// assembly from an NUnit [OneTimeTearDown] so the ~280 MB data directory does not linger.
   /// </summary>
   public static void StopRunner()
   {
@@ -102,13 +65,4 @@ public static class Util
     var client = new MongoClient(Runner.ConnectionString);
     await client.DropDatabaseAsync(Settings.DatabaseName);
   }
-}
-
-public enum MongoStorageEngine
-{
-  /// <summary>Enterprise in-memory engine - no data written to disk.</summary>
-  InMemory,
-
-  /// <summary>Community WiredTiger engine - persists to a temp data directory.</summary>
-  OnDisk
 }

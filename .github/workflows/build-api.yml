@@ -36,14 +36,9 @@ jobs:
           path: ~/.local/share/ephemeral-mongo
           key: ephemeral-mongo-${{ runner.os }}
 
-      # The default in-memory engine uses the MongoDB Enterprise binary, which on Linux needs extra
-      # system libraries (libldap etc.) that aren't on the runner. Run CI against the on-disk
-      # Community engine instead - it has no such dependency. Local dev keeps the in-memory default.
       - name: Run tests
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         working-directory: api
-        env:
-          ENGRAVED_TEST_MONGO_ENGINE: ondisk
 
       - name: Get current time
         id: current-time
