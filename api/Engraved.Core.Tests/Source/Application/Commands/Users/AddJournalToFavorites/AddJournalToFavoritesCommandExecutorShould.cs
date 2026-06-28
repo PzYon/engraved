@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -9,43 +9,46 @@ namespace Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 
 public class AddJournalToFavoritesCommandExecutorShould
 {
-  private UserScopedInMemoryRepository _repo = null!;
+  private TestUserScopedMongoRepository _repo = null!;
 
-  private const string UserId = "max";
+  private const string UserId = "6a40b7027bf30b7c135049b4";
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    var inMemoryRepository = new InMemoryRepository();
-    inMemoryRepository.Users.Add(new User { Id = UserId, Name = UserId });
-    _repo = new UserScopedInMemoryRepository(inMemoryRepository, new FakeCurrentUserService(UserId));
+    _repo = await Util.CreateUserScopedMongoRepository(UserId, UserId, false);
+    await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
   }
 
   [Test]
   public async Task AddJournalToFavorites()
   {
     // when
+    const string journalId = "60703c3b00000000000000d1";
     await new AddJournalToFavoritesCommandExecutor(_repo).Execute(
-      new AddJournalToFavoritesCommand { JournalId = "journal-id" }
+      new AddJournalToFavoritesCommand { JournalId = journalId }
     );
 
     // then
-    _repo.Users[0].FavoriteJournalIds.Should().Contain("journal-id");
+    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().Contain(journalId);
   }
 
   [Test]
   public async Task NotAddDuplicate_When_AlreadyFavorite()
   {
     // given
-    _repo.Users[0].FavoriteJournalIds.Add("journal-id");
+    const string journalId = "60703c3b00000000000000d1";
+    IUser user = (await _repo.GetUser(UserId))!;
+    user.FavoriteJournalIds.Add(journalId);
+    await _repo.UpsertUser(user);
 
     // when
     await new AddJournalToFavoritesCommandExecutor(_repo).Execute(
-      new AddJournalToFavoritesCommand { JournalId = "journal-id" }
+      new AddJournalToFavoritesCommand { JournalId = journalId }
     );
 
     // then
-    _repo.Users[0].FavoriteJournalIds.Should().ContainSingle().Which.Should().Be("journal-id");
+    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().ContainSingle().Which.Should().Be(journalId);
   }
 
   [Test]

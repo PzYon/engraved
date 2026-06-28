@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
-using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Persistence.Mongo.Tests;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using FluentAssertions;
@@ -13,34 +13,36 @@ namespace Engraved.Core.Application.Commands.Entries.Upsert;
 
 public class UpsertCounterEntryCommandExecutorShould
 {
-  private InMemoryRepository _testRepository = null!;
+  private TestMongoRepository _testRepository = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    _testRepository = new InMemoryRepository();
+    _testRepository = await Util.CreateMongoRepository();
   }
 
   [Test]
   public async Task CreateNew()
   {
-    _testRepository.Journals.Add(new CounterJournal { Id = "journal_id" });
+    const string journalId = "60703c3b000000000000000a";
+    await _testRepository.UpsertJournal(new CounterJournal { Id = journalId });
 
-    var command = new UpsertCounterEntryCommand { JournalId = "journal_id", Notes = "foo" };
+    var command = new UpsertCounterEntryCommand { JournalId = journalId, Notes = "foo" };
     await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
 
-    _testRepository.Entries.Count.Should().Be(1);
-    _testRepository.Entries.First().Notes.Should().Be("foo");
+    (await _testRepository.CountAllEntries()).Should().Be(1);
+    (await _testRepository.GetEntriesForJournal(journalId)).First().Notes.Should().Be("foo");
   }
 
   [Test]
   public async Task UpdateExisting()
   {
+    const string journalId = "60703c3b000000000000000b";
     IDateService dateService = new FakeDateService();
 
-    _testRepository.Journals.Add(new GaugeJournal { Id = "journal_id" });
+    await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
 
-    var createCommand = new UpsertGaugeEntryCommand { JournalId = "journal_id", Notes = "foo", Value = 123 };
+    var createCommand = new UpsertGaugeEntryCommand { JournalId = journalId, Notes = "foo", Value = 123 };
 
     var commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, dateService);
     CommandResult result = await commandExecutor.Execute(createCommand);
@@ -48,7 +50,7 @@ public class UpsertCounterEntryCommandExecutorShould
     var updateCommand = new UpsertGaugeEntryCommand
     {
       Id = result.EntityId,
-      JournalId = "journal_id",
+      JournalId = journalId,
       Notes = "bar",
       Value = 42
     };
@@ -56,10 +58,11 @@ public class UpsertCounterEntryCommandExecutorShould
     commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, dateService);
     await commandExecutor.Execute(updateCommand);
 
-    _testRepository.Entries.Count.Should().Be(1);
-    _testRepository.Entries.First().Notes.Should().Be("bar");
-    _testRepository.Entries.First().EditedOn.Should().Be(dateService.UtcNow);
-    _testRepository.Entries.OfType<GaugeEntry>().First().Value.Should().Be(42);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
+    var entries = await _testRepository.GetEntriesForJournal(journalId);
+    entries.First().Notes.Should().Be("bar");
+    entries.First().EditedOn.Should().BeCloseTo(dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    entries.OfType<GaugeEntry>().First().Value.Should().Be(42);
   }
 
   [Test]
@@ -81,7 +84,7 @@ public class UpsertCounterEntryCommandExecutorShould
   {
     var command = new UpsertCounterEntryCommand
     {
-      JournalId = "k3y",
+      JournalId = "60703c3b000000000000000c",
       Notes = "n0t3s"
     };
 

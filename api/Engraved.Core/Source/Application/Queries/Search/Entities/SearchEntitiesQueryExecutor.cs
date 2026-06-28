@@ -63,8 +63,9 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
     return searchResultEntities
       .OrderBy(e => e.Entity.Schedules.ContainsKey(user.Id ?? "")
         ? e.Entity.Schedules[user.Id ?? ""].NextOccurrence
-        : null
+        : e.Entity.Schedules.Values.FirstOrDefault()?.NextOccurrence
       )
+      .ThenByDescending(e => e.Entity.EditedOn)
       .ToArray();
   }
 }

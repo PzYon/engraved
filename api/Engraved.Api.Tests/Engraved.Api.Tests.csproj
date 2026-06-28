@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Engraved.Api\Engraved.Api.csproj"/>
+        <ProjectReference Include="..\Engraved.Persistence.Mongo.Tests\Engraved.Persistence.Mongo.Tests.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

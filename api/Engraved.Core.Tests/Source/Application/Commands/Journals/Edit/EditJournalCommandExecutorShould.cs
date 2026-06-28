@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -11,21 +11,27 @@ namespace Engraved.Core.Application.Commands.Journals.Edit;
 
 public class EditJournalCommandExecutorShould
 {
-  private InMemoryRepository _repo = null!;
+  private TestMongoRepository _repo = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    _repo = new InMemoryRepository();
+    _repo = await Util.CreateMongoRepository();
   }
 
   [Test]
   public async Task RemoveDeletedJournalAttributesFromAllJournalEntries()
   {
-    _repo.Journals.Add(
+    const string journalId = "60703c3b0000000000000001";
+    const string otherJournalId = "60703c3b0000000000000002";
+    const string entryId1 = "60703c3b0000000000000003";
+    const string entryId2 = "60703c3b0000000000000004";
+    const string entryId3 = "60703c3b0000000000000005";
+
+    await _repo.UpsertJournal(
       new GaugeJournal
       {
-        Id = "journal-id",
+        Id = journalId,
         Name = "journal-name",
         Attributes = new Dictionary<string, JournalAttribute>
         {
@@ -34,13 +40,13 @@ public class EditJournalCommandExecutorShould
         }
       }
     );
-    _repo.Journals.Add(new GaugeJournal { Id = "other-journal-id", Name = "other-journal" });
+    await _repo.UpsertJournal(new GaugeJournal { Id = otherJournalId, Name = "other-journal" });
 
-    _repo.Entries.Add(
+    await _repo.UpsertEntry(
       new GaugeEntry
       {
-        Id = "entry-1",
-        ParentId = "journal-id",
+        Id = entryId1,
+        ParentId = journalId,
         JournalAttributeValues = new Dictionary<string, string[]>
         {
           { "color", ["red"] },
@@ -49,19 +55,19 @@ public class EditJournalCommandExecutorShould
         }
       }
     );
-    _repo.Entries.Add(
+    await _repo.UpsertEntry(
       new GaugeEntry
       {
-        Id = "entry-2",
-        ParentId = "journal-id",
+        Id = entryId2,
+        ParentId = journalId,
         JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] } }
       }
     );
-    _repo.Entries.Add(
+    await _repo.UpsertEntry(
       new GaugeEntry
       {
-        Id = "entry-3",
-        ParentId = "other-journal-id",
+        Id = entryId3,
+        ParentId = otherJournalId,
         JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] } }
       }
     );
@@ -69,7 +75,7 @@ public class EditJournalCommandExecutorShould
     await new EditJournalCommandExecutor(_repo, new FakeDateService()).Execute(
       new EditJournalCommand
       {
-        JournalId = "journal-id",
+        JournalId = journalId,
         Name = "journal-name",
         Attributes = new Dictionary<string, JournalAttribute>
         {
@@ -78,13 +84,13 @@ public class EditJournalCommandExecutorShould
       }
     );
 
-    IEntry[] editedJournalEntries = await _repo.GetEntriesForJournal("journal-id");
+    IEntry[] editedJournalEntries = await _repo.GetEntriesForJournal(journalId);
     editedJournalEntries.Should().HaveCount(2);
     editedJournalEntries.Should().OnlyContain(entry => !entry.JournalAttributeValues.ContainsKey("color"));
     editedJournalEntries.SelectMany(entry => entry.JournalAttributeValues.Keys).Should().Contain("size");
     editedJournalEntries.SelectMany(entry => entry.JournalAttributeValues.Keys).Should().Contain("other");
 
-    IEntry? otherJournalEntry = await _repo.GetEntry("entry-3");
+    IEntry? otherJournalEntry = await _repo.GetEntry(entryId3);
     otherJournalEntry.Should().NotBeNull();
     otherJournalEntry!.JournalAttributeValues.Should().ContainKey("color");
   }
@@ -92,10 +98,13 @@ public class EditJournalCommandExecutorShould
   [Test]
   public async Task KeepAllEntryAttributes_WhenNoJournalAttributeWasDeleted()
   {
-    _repo.Journals.Add(
+    const string journalId = "60703c3b0000000000000006";
+    const string entryId = "60703c3b0000000000000007";
+
+    await _repo.UpsertJournal(
       new GaugeJournal
       {
-        Id = "journal-id",
+        Id = journalId,
         Name = "journal-name",
         Attributes = new Dictionary<string, JournalAttribute>
         {
@@ -105,11 +114,11 @@ public class EditJournalCommandExecutorShould
       }
     );
 
-    _repo.Entries.Add(
+    await _repo.UpsertEntry(
       new GaugeEntry
       {
-        Id = "entry-1",
-        ParentId = "journal-id",
+        Id = entryId,
+        ParentId = journalId,
         JournalAttributeValues = new Dictionary<string, string[]>
         {
           { "color", ["red"] },
@@ -121,7 +130,7 @@ public class EditJournalCommandExecutorShould
     await new EditJournalCommandExecutor(_repo, new FakeDateService()).Execute(
       new EditJournalCommand
       {
-        JournalId = "journal-id",
+        JournalId = journalId,
         Name = "journal-name",
         Attributes = new Dictionary<string, JournalAttribute>
         {
@@ -131,7 +140,7 @@ public class EditJournalCommandExecutorShould
       }
     );
 
-    IEntry? entry = await _repo.GetEntry("entry-1");
+    IEntry? entry = await _repo.GetEntry(entryId);
     entry.Should().NotBeNull();
     entry!.JournalAttributeValues.Should().ContainKey("color");
     entry.JournalAttributeValues.Should().ContainKey("size");

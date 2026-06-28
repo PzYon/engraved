@@ -6,7 +6,11 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public static class Util
 {
-  private static readonly IMongoRunner Runner = MongoRunner.Run();
+  private static readonly IMongoRunner Runner = MongoRunner.Run(new MongoRunnerOptions
+  {
+    MongoPort = 27017,
+    Version = MongoVersion.V7
+  });
 
   private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings(Runner.ConnectionString);
   private static MongoDatabaseClient Client => new(Settings, null);

@@ -78,11 +78,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     string? currentUserId = null
   )
   {
-    var filters = GetFreeTextFilters<JournalDocument>(
-      searchText,
-      d => d.Name!,
-      d => d.Description!
-    );
+    var filters = new List<FilterDefinition<JournalDocument>>();
 
     filters.Add(GetAllJournalDocumentsFilter<JournalDocument>(PermissionKind.Read));
 
@@ -97,12 +93,21 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
     if (journalIds is { Length: > 0 })
     {
-      filters.Add(
-        Builders<JournalDocument>.Filter.Or(
-          journalIds.Select(i => GetJournalDocumentByIdFilter<JournalDocument>(i, PermissionKind.Read)
-          )
-        )
-      );
+      var objectIds = journalIds
+        .Select(i => ObjectId.TryParse(i, out var id) ? (ObjectId?) id : null)
+        .Where(id => id.HasValue)
+        .Select(id => id!.Value)
+        .ToList();
+
+      if (objectIds.Any())
+      {
+        filters.Add(Builders<JournalDocument>.Filter.In(d => d.Id, objectIds));
+      }
+      else
+      {
+        // if IDs were provided but none were valid ObjectIds, we should return nothing
+        filters.Add(Builders<JournalDocument>.Filter.Where(d => false));
+      }
     }
 
     if (scheduleMode == ScheduleMode.AnySchedule)
@@ -111,23 +116,33 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
         Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
       );
     }
-    else if (scheduleMode == ScheduleMode.CurrentUserOnly)
+    if (scheduleMode == ScheduleMode.CurrentUserOnly)
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
         throw new Exception("Current user id is required");
       }
 
-      filters.Add(
-        Builders<JournalDocument>.Filter.Where(d => d.Schedules.ContainsKey(currentUserId)
-                                                    && d.Schedules[currentUserId].NextOccurrence != null
+      filters.Add(Builders<JournalDocument>.Filter.And(
+        Builders<JournalDocument>.Filter.Exists($"Schedules.{currentUserId}"),
+        Builders<JournalDocument>.Filter.Ne($"Schedules.{currentUserId}", BsonNull.Value)
+      ));
+    }
+
+    if (!string.IsNullOrEmpty(searchText))
+    {
+      filters.AddRange(
+        GetFreeTextFilters<JournalDocument>(
+          searchText,
+          d => d.Name!,
+          d => d.Description!
         )
       );
     }
 
     var journals = await JournalsCollection
-      .Find(Builders<JournalDocument>.Filter.And(filters))
-      .Sort(Builders<JournalDocument>.Sort.Descending(d => d.EditedOn))
+      .Find(filters.Count > 0 ? Builders<JournalDocument>.Filter.And(filters) : Builders<JournalDocument>.Filter.Empty)
+      .Sort(Builders<JournalDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.Id))
       .Limit(limit)
       .ToListAsync();
 
@@ -210,20 +225,23 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     bool onlyConsiderTitle = false
   )
   {
-    var filters = GetFreeTextFilters<EntryDocument>(
-      searchText,
-      onlyConsiderTitle
-        ? [d => ((ScrapsEntryDocument) d).Title!]
-        : [d => ((ScrapsEntryDocument) d).Title!, d => d.Notes!]
-    );
+    var filters = new List<FilterDefinition<EntryDocument>>();
+
+    if (!string.IsNullOrEmpty(searchText))
+    {
+      filters.AddRange(
+        GetFreeTextFilters<EntryDocument>(
+          searchText,
+          onlyConsiderTitle
+            ? [d => ((ScrapsEntryDocument) d).Title!]
+            : [d => ((ScrapsEntryDocument) d).Title!, d => d.Notes!]
+        )
+      );
+    }
 
     if (journalIds is { Length: > 0 })
     {
-      filters.AddRange(
-        Builders<EntryDocument>.Filter.Or(
-          journalIds.Select(i => Builders<EntryDocument>.Filter.Where(d => d.ParentId == i))
-        )
-      );
+      filters.Add(Builders<EntryDocument>.Filter.In(d => d.ParentId, journalIds));
     }
 
     if (journalTypes is { Length: > 0 })
@@ -255,19 +273,43 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       limit,
       scheduleMode,
       currentUserId,
-      filters
+      filters,
+      Builders<EntryDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.Id)
     );
 
-    return entries
+    return entries.OrderByDescending(e => e.Schedules.ContainsKey(currentUserId ?? "") && e.Schedules[currentUserId ?? ""].NextOccurrence != null)
+      .ThenByDescending(e => e.EditedOn)
+      .ThenByDescending(e => e.Id)
+      .ToArray();
+  }
+
+  private async Task<IEntry[]> LoadData(
+    int? limit,
+    ScheduleMode? scheduleMode,
+    string? currentUserId,
+    List<FilterDefinition<EntryDocument>> filters,
+    SortDefinition<EntryDocument> defaultSort
+  )
+  {
+    List<EntryDocument> documents = await LoadDocuments(
+      limit,
+      scheduleMode,
+      currentUserId,
+      filters,
+      defaultSort
+    );
+
+    return documents
       .Select(EntryDocumentMapper.FromDocument)
       .ToArray();
   }
 
-  private async Task<List<EntryDocument>> LoadData(
+  private async Task<List<EntryDocument>> LoadDocuments(
     int? limit,
     ScheduleMode? scheduleMode,
     string? currentUserId,
-    List<FilterDefinition<EntryDocument>> filters
+    List<FilterDefinition<EntryDocument>> filters,
+    SortDefinition<EntryDocument> defaultSort
   )
   {
     if (scheduleMode != ScheduleMode.CurrentUserFirst)
@@ -278,7 +320,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
             ? Builders<EntryDocument>.Filter.And(filters)
             : Builders<EntryDocument>.Filter.Empty
         )
-        .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
+        .Sort(defaultSort)
         .Limit(limit)
         .ToListAsync();
     }
@@ -309,7 +351,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
             filters.Concat([Builders<EntryDocument>.Filter.Nin(d => d.Id, foundIds)])
           )
         )
-        .Sort(Builders<EntryDocument>.Sort.Descending(d => d.EditedOn))
+        .Sort(defaultSort)
         .Limit(limit - entries.Count)
         .ToListAsync()
     );
@@ -503,8 +545,8 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     where TDocument : IDocument
   {
     return Builders<TDocument>.Filter.And(
-      GetAllJournalDocumentsFilter<TDocument>(kind),
-      MongoUtil.GetDocumentByIdFilter<TDocument>(journalId)
+      MongoUtil.GetDocumentByIdFilter<TDocument>(journalId),
+      GetAllJournalDocumentsFilter<TDocument>(kind)
     );
   }
 
@@ -528,8 +570,9 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
 
   private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
   {
-    return Builders<EntryDocument>.Filter.Where(d => d.Schedules.ContainsKey(currentUserId)
-                                                     && d.Schedules[currentUserId].NextOccurrence != null
+    return Builders<EntryDocument>.Filter.And(
+      Builders<EntryDocument>.Filter.Exists($"Schedules.{currentUserId}"),
+      Builders<EntryDocument>.Filter.Ne($"Schedules.{currentUserId}", BsonNull.Value)
     );
   }
 

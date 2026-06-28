@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -12,12 +12,12 @@ namespace Engraved.Core.Application.Commands.Entries.Delete;
 public class DeleteEntryCommandExecutorShould
 {
   private FakeDateService _dateService = null!;
-  private InMemoryRepository _repo = null!;
+  private TestMongoRepository _repo = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    _repo = new InMemoryRepository();
+    _repo = await Util.CreateMongoRepository();
     _dateService = new FakeDateService(DateTime.UtcNow.AddDays(-10));
   }
 
@@ -25,35 +25,35 @@ public class DeleteEntryCommandExecutorShould
   public async Task DeleteEntry_And_BumpJournalEditedOn()
   {
     // given
-    _repo.Journals.Add(
+    await _repo.UpsertJournal(
       new CounterJournal
       {
-        Id = "journal-id",
-        Permissions = new UserPermissions { { "user-id", new PermissionDefinition { Kind = PermissionKind.Read } } }
+        Id = "60703c3b0000000000000001",
+        Permissions = new UserPermissions { { "60703c3b0000000000000002", new PermissionDefinition { Kind = PermissionKind.Read } } }
       }
     );
-    _repo.Entries.Add(
+    await _repo.UpsertEntry(
       new CounterEntry
       {
-        Id = "entry-id",
-        ParentId = "journal-id",
+        Id = "60703c3b0000000000000003",
+        ParentId = "60703c3b0000000000000001",
         DateTime = _dateService.UtcNow
       }
     );
 
     // when
     CommandResult result = await new DeleteEntryCommandExecutor(_repo, _dateService).Execute(
-      new DeleteEntryCommand { Id = "entry-id" }
+      new DeleteEntryCommand { Id = "60703c3b0000000000000003" }
     );
 
     // then
-    (await _repo.GetEntry("entry-id")).Should().BeNull();
+    (await _repo.GetEntry("60703c3b0000000000000003")).Should().BeNull();
 
-    IJournal journal = (await _repo.GetJournal("journal-id"))!;
-    journal.EditedOn.Should().Be(_dateService.UtcNow);
+    IJournal journal = (await _repo.GetJournal("60703c3b0000000000000001"))!;
+    journal.EditedOn.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
 
-    result.EntityId.Should().Be("entry-id");
-    result.AffectedUserIds.Should().Contain("user-id");
+    result.EntityId.Should().Be("60703c3b0000000000000003");
+    result.AffectedUserIds.Should().Contain("60703c3b0000000000000002");
   }
 
   [Test]
@@ -61,7 +61,7 @@ public class DeleteEntryCommandExecutorShould
   {
     // when
     CommandResult result = await new DeleteEntryCommandExecutor(_repo, _dateService).Execute(
-      new DeleteEntryCommand { Id = "does-not-exist" }
+      new DeleteEntryCommand { Id = "60703c3b0000000000000004" }
     );
 
     // then
