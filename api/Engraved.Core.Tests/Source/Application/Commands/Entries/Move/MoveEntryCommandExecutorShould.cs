@@ -20,29 +20,29 @@ public class MoveEntryCommandExecutorShould
     _dateService = new FakeDateService(DateTime.UtcNow.AddDays(-10));
   }
 
-  private const string SourceJournalId = "60703c3b0000000000000001";
-  private const string TargetJournalId = "60703c3b0000000000000002";
-  private const string EntryId = "60703c3b0000000000000003";
-
   [Test]
   public async Task MoveEntryToOtherJournal()
   {
+    const string sourceJournalId = "60703c3b0000000000000001";
+    const string targetJournalId = "60703c3b0000000000000002";
+    const string entryId = "60703c3b0000000000000003";
+
     // given: source
-    await _repo.UpsertJournal(new CounterJournal { Id = SourceJournalId });
+    await _repo.UpsertJournal(new CounterJournal { Id = sourceJournalId });
     await _repo.UpsertEntry(
       new CounterEntry
       {
-        Id = EntryId,
-        ParentId = SourceJournalId,
+        Id = entryId,
+        ParentId = sourceJournalId,
         DateTime = _dateService.UtcNow
       }
     );
-    IEntry[] sourceEntries = await _repo.GetEntriesForJournal(SourceJournalId);
+    IEntry[] sourceEntries = await _repo.GetEntriesForJournal(sourceJournalId);
     sourceEntries.Length.Should().Be(1);
 
     // given: target
-    await _repo.UpsertJournal(new CounterJournal { Id = TargetJournalId });
-    IEntry[] targetEntries = await _repo.GetEntriesForJournal(TargetJournalId);
+    await _repo.UpsertJournal(new CounterJournal { Id = targetJournalId });
+    IEntry[] targetEntries = await _repo.GetEntriesForJournal(targetJournalId);
     targetEntries.Should().BeEmpty();
 
     // when
@@ -52,16 +52,16 @@ public class MoveEntryCommandExecutorShould
     ).Execute(
       new MoveEntryCommand
       {
-        EntryId = EntryId,
-        TargetJournalId = TargetJournalId
+        EntryId = entryId,
+        TargetJournalId = targetJournalId
       }
     );
 
     // then
-    targetEntries = await _repo.GetEntriesForJournal(TargetJournalId);
+    targetEntries = await _repo.GetEntriesForJournal(targetJournalId);
     targetEntries.Length.Should().Be(1);
 
-    sourceEntries = await _repo.GetEntriesForJournal(SourceJournalId);
+    sourceEntries = await _repo.GetEntriesForJournal(sourceJournalId);
     sourceEntries.Should().BeEmpty();
   }
 }
