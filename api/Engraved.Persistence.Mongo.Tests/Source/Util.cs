@@ -11,10 +11,12 @@ public static class Util
   //
   //   InMemory (default): MongoDB Enterprise with the in-memory storage engine. Nothing is
   //     written to disk, so there is no ~280 MB temp data directory per test assembly. Downloads
-  //     the Enterprise binaries once (a bit larger than Community) into the local app-data cache.
+  //     the Enterprise binaries once (about the same size as Community) into the local app-data
+  //     cache. Note: on Linux the Enterprise binary needs extra system libraries (libldap, sasl),
+  //     which is why CI runs with ENGRAVED_TEST_MONGO_ENGINE=ondisk (see build-api.yml).
   //
   //   OnDisk: MongoDB Community with the default WiredTiger engine, persisting to a temporary
-  //     data directory that is deleted on teardown.
+  //     data directory that is deleted on teardown. No extra system libraries required.
   //
   // Change the default here, or override per run with the ENGRAVED_TEST_MONGO_ENGINE environment
   // variable ("inmemory" / "ondisk") - handy for a CI matrix without touching code.
