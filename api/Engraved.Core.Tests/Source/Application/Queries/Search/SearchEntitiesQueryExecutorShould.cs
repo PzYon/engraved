@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Entries.AddSchedule;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
 using Engraved.Core.Application.Commands.Journals.AddSchedule;
@@ -156,12 +157,22 @@ public class SearchEntitiesQueryExecutorShould
     );
 
     var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
-    await addEntryExecutor.Execute(
+    CommandResult entryResult = await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
         JournalId = commandResult.EntityId,
         DateTime = _dateService.UtcNow,
         Notes = "Entry with Schedule"
+      }
+    );
+
+    // the entry itself is scheduled, so it shows up in a "scheduled only" search.
+    var addEntryScheduleExecutor = new AddScheduleToEntryCommandExecutor(_repo);
+    await addEntryScheduleExecutor.Execute(
+      new AddScheduleToEntryCommand
+      {
+        EntryId = entryResult.EntityId,
+        NextOccurrence = _dateService.UtcNow.AddDays(10)
       }
     );
   }

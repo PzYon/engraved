@@ -12,12 +12,13 @@ public class SearchEntriesQueryExecutor(IUserScopedRepository repository)
     var allJournals = await repository.GetAllJournals(null, null, null, null, 1000);
     var allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
-    // entries are surfaced by text/type/journal scope only. "scheduled only" filtering is
-    // applied to the journal entities (see GetAllJournalsQueryExecutor), not to entries:
-    // an entry living inside a scheduled journal stays relevant even without its own schedule.
+    // for "scheduled only" we ask the repository to return just the entries that have a schedule
+    // for the current user. Doing this in the query (rather than filtering in memory afterwards)
+    // keeps the result limit meaningful - we don't want to fetch 100 arbitrary entries and then
+    // discard the unscheduled ones.
     var allEntries = await repository.SearchEntries(
       query.SearchText,
-      ScheduleMode.None,
+      query.ScheduledOnly ? ScheduleMode.CurrentUserOnly : ScheduleMode.None,
       query.JournalTypes,
       allJournalIds,
       query.Limit ?? 100,
