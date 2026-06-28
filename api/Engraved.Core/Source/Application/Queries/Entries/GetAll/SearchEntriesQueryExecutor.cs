@@ -12,9 +12,12 @@ public class SearchEntriesQueryExecutor(IUserScopedRepository repository)
     var allJournals = await repository.GetAllJournals(null, null, null, null, 1000);
     var allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
+    // entries are surfaced by text/type/journal scope only. "scheduled only" filtering is
+    // applied to the journal entities (see GetAllJournalsQueryExecutor), not to entries:
+    // an entry living inside a scheduled journal stays relevant even without its own schedule.
     var allEntries = await repository.SearchEntries(
       query.SearchText,
-      query.ScheduledOnly ? ScheduleMode.CurrentUserOnly : ScheduleMode.None,
+      ScheduleMode.None,
       query.JournalTypes,
       allJournalIds,
       query.Limit ?? 100,
@@ -22,56 +25,13 @@ public class SearchEntriesQueryExecutor(IUserScopedRepository repository)
       query.OnlyConsiderTitle.HasValue && query.OnlyConsiderTitle.Value
     );
 
-    var entriesWithJournalToLoad = allEntries
-      .Where(e => !allJournalIds.Contains(e.ParentId))
-      .Select(e => e.ParentId)
-      .Distinct()
-      .ToArray();
-
-    if (entriesWithJournalToLoad.Any())
-    {
-      var additionalJournals = (await Task.WhenAll(entriesWithJournalToLoad.Select(repository.GetJournal)))
-        .Where(j => j != null)
-        .Select(j => j!)
-        .ToArray();
-
-      allJournals = allJournals.UnionBy(additionalJournals, j => j.Id).ToArray();
-    }
-
-    if (query.ScheduledOnly)
-    {
-      var scheduledJournalIds = allJournals
-        .Where(j => j.Schedules.Any())
-        .Select(j => j.Id)
-        .ToArray();
-
-      var entriesToReturn = allEntries
-        .Where(e => e.Schedules.Any())
-        .ToArray();
-
-      var journalIdsOfScheduledEntries = entriesToReturn
-        .Select(e => e.ParentId)
-        .Distinct()
-        .ToArray();
-
-      var allRelevantJournalIds = scheduledJournalIds.Union(journalIdsOfScheduledEntries).ToArray();
-
-      return new SearchEntriesQueryResult
-      {
-        Journals = allJournals.Where(j => allRelevantJournalIds.Contains(j.Id)).ToArray(),
-        Entries = entriesToReturn
-      };
-    }
-
-    var relevantJournalIds = allEntries.Select(e => e.ParentId).Union(allJournals.Select(j => j.Id)).ToArray();
-
-    var journalsToReturn = allJournals
-      .Where(j => relevantJournalIds.Contains(j.Id))
-      .ToArray();
+    // only the journals that own a matched entry are returned, so the client can render
+    // each entry together with its parent journal.
+    var relevantJournalIds = allEntries.Select(e => e.ParentId).ToArray();
 
     return new SearchEntriesQueryResult
     {
-      Journals = journalsToReturn,
+      Journals = allJournals.Where(j => relevantJournalIds.Contains(j.Id)).ToArray(),
       Entries = allEntries.ToArray()
     };
   }
