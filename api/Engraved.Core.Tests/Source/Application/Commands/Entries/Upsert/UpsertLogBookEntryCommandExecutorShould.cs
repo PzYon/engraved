@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands.Entries.Upsert.LogBook;
-using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Persistence.Mongo.Tests;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using FluentAssertions;
@@ -12,18 +12,18 @@ namespace Engraved.Core.Application.Commands.Entries.Upsert;
 
 public class UpsertLogBookEntryCommandExecutorShould
 {
-  private const string JournalId = "journal_id";
+  private const string JournalId = "60703c3b0000000000000000";
   private FakeDateService _fakeDateService = null!;
 
-  private InMemoryRepository _testRepository = null!;
+  private TestMongoRepository _testRepository = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    _testRepository = new InMemoryRepository();
+    _testRepository = await Util.CreateMongoRepository();
     _fakeDateService = new FakeDateService();
 
-    _testRepository.Journals.Add(new LogBookJournal { Id = JournalId });
+    await _testRepository.UpsertJournal(new LogBookJournal { Id = JournalId });
   }
 
   [Test]
@@ -40,8 +40,8 @@ public class UpsertLogBookEntryCommandExecutorShould
       await new UpsertLogBookEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     result.EntityId.Should().NotBeNull();
-    _testRepository.Entries.Count.Should().Be(1);
-    _testRepository.Entries.First().Notes.Should().Be("some notes");
+    (await _testRepository.CountAllEntries()).Should().Be(1);
+    (await _testRepository.GetEntriesForJournal(JournalId)).First().Notes.Should().Be("some notes");
   }
 
   [Test]
@@ -104,21 +104,21 @@ public class UpsertLogBookEntryCommandExecutorShould
 
     await new UpsertLogBookEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    IEntry entry = _testRepository.Entries.Single();
+    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
     entry.DateTime.Should().Be(new DateTime(2026, 4, 9, 0, 0, 0, DateTimeKind.Utc));
     entry.DateTime!.Value.TimeOfDay.Should().Be(TimeSpan.Zero);
     entry.DateTime!.Value.Kind.Should().Be(DateTimeKind.Utc);
   }
 
   [Test]
-  public void Throw_WhenEntryForSameDayAlreadyExists()
+  public async Task Throw_WhenEntryForSameDayAlreadyExists()
   {
     var existingDate = new DateTime(2026, 4, 9, 10, 0, 0, DateTimeKind.Utc);
 
-    _testRepository.Entries.Add(
+    await _testRepository.UpsertEntry(
       new LogBookEntry
       {
-        Id = Guid.NewGuid().ToString("N"),
+        Id = "60703c3b0000000000000001",
         ParentId = JournalId,
         Notes = "existing notes",
         DateTime = existingDate
@@ -135,16 +135,16 @@ public class UpsertLogBookEntryCommandExecutorShould
     var func = async ()
       => await new UpsertLogBookEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    func.Should().ThrowAsync<InvalidCommandException>();
+    await func.Should().ThrowAsync<InvalidCommandException>();
   }
 
   [Test]
   public async Task AllowUpdating_WhenEntryForSameDayAlreadyExistsWithSameId()
   {
     var existingDate = new DateTime(2026, 4, 9, 10, 0, 0, DateTimeKind.Utc);
-    var entryId = Guid.NewGuid().ToString("N");
+    var entryId = "60703c3b0000000000000002";
 
-    _testRepository.Entries.Add(
+    await _testRepository.UpsertEntry(
       new LogBookEntry
       {
         Id = entryId,
@@ -164,7 +164,7 @@ public class UpsertLogBookEntryCommandExecutorShould
 
     await new UpsertLogBookEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
-    _testRepository.Entries.Count.Should().Be(1);
-    _testRepository.Entries.First().Notes.Should().Be("updated notes");
+    (await _testRepository.CountAllEntries()).Should().Be(1);
+    (await _testRepository.GetEntriesForJournal(JournalId)).First().Notes.Should().Be("updated notes");
   }
 }

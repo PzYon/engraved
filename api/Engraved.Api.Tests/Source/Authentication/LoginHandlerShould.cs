@@ -6,7 +6,7 @@ using Engraved.Api.Authentication.Google;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Persistence.Mongo.Tests;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;
@@ -29,13 +29,13 @@ public class LoginHandlerShould
 
   private IDateService _dateService = null!;
   private LoginHandler _loginHandler = null!;
-  private IBaseRepository _testRepository = null!;
+  private TestMongoRepository _testRepository = null!;
   private UserLoader _userLoader = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    _testRepository = new InMemoryRepository();
+    _testRepository = await Util.CreateMongoRepository();
 
     _userLoader = new UserLoader(_testRepository, new MemoryCache(new MemoryCacheOptions()));
 
@@ -95,7 +95,7 @@ public class LoginHandlerShould
     result.User.Name.Should().Be(userName);
     result.User.ImageUrl.Should().Be(imageUrl);
     result.User.Id.Should().NotBeNull();
-    result.User.LastLoginDate.Should().Be(_dateService.UtcNow);
+    result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
 
     IUser[] users = await _testRepository.GetAllUsers();
 
@@ -107,7 +107,7 @@ public class LoginHandlerShould
     user.Name.Should().Be(userName);
     user.ImageUrl.Should().Be(imageUrl);
     user.Id.Should().NotBeNull();
-    user.LastLoginDate.Should().Be(_dateService.UtcNow);
+    user.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
     user.FavoriteJournalIds.Count().Should().Be(1);
     user.GlobalUniqueId.Should().NotBeNull();
 
@@ -120,23 +120,28 @@ public class LoginHandlerShould
   [Test]
   public async Task Follow_HappyPath_WithExistingUser()
   {
-    const string userId = "haPeID";
+    const string userId = TestIds.ThirdUserId;
     const string displayName = "Hans Peter";
     const string imageUrl = "https://im.age.url";
     const string userName = "ha-pe";
     var globalUniqueId = Guid.NewGuid();
 
-    await _testRepository.UpsertUser(
-      new User
-      {
-        Id = userId,
-        Name = userName,
-        DisplayName = displayName,
-        ImageUrl = imageUrl,
-        LastLoginDate = DateTime.UtcNow.AddMinutes(-12345),
-        GlobalUniqueId = globalUniqueId
-      }
-    );
+    var existingUser = new User
+    {
+      Id = userId,
+      Name = userName,
+      DisplayName = displayName,
+      ImageUrl = imageUrl,
+      LastLoginDate = DateTime.UtcNow.AddMinutes(-12345),
+      GlobalUniqueId = globalUniqueId
+    };
+
+    // must ensure the journal exists as it will be loaded as favorite
+    var journalId = "60703c3b000000000000000a";
+    existingUser.FavoriteJournalIds.Add(journalId);
+    await _testRepository.UpsertJournal(new ScrapsJournal { Id = journalId, Name = "Quick Scraps", UserId = userId });
+
+    await _testRepository.UpsertUser(existingUser);
 
     var loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
 
@@ -148,7 +153,7 @@ public class LoginHandlerShould
     result.User!.ImageUrl.Should().Be(imageUrl);
     result.User.Id.Should().Be(userId);
     result.User.GlobalUniqueId.Should().Be(globalUniqueId);
-    result.User.LastLoginDate.Should().Be(_dateService.UtcNow);
+    result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
 
     IUser[] users = await _testRepository.GetAllUsers();
 
@@ -159,7 +164,7 @@ public class LoginHandlerShould
     user.DisplayName.Should().Be(displayName);
     user.Name.Should().Be(userName);
     user.ImageUrl.Should().Be(imageUrl);
-    user.Id.Should().NotBeNull();
-    user.LastLoginDate.Should().Be(_dateService.UtcNow);
+    user.Id.Should().Be(userId);
+    user.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
   }
 }

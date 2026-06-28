@@ -8,6 +8,13 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Engraved.Api\Engraved.Api.csproj"/>
+        <ProjectReference Include="..\Engraved.Persistence.Mongo.Tests\Engraved.Persistence.Mongo.Tests.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- NUnit only discovers [SetUpFixture] in the assembly under test, so the shared mongo
+             teardown source is compiled into this assembly too. -->
+        <Compile Include="..\Engraved.Persistence.Mongo.Tests\Source\MongoRunnerTeardown.cs" Link="MongoRunnerTeardown.cs"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -13,15 +13,15 @@ namespace Engraved.Core.Application.Queries.Entries.GetAll;
 public class SearchEntriesQueryExecutorShould
 {
   private FakeDateService _dateService = null!;
-  private UserScopedInMemoryRepository _repo = null!;
+  private TestUserScopedMongoRepository _repo = null!;
 
-  private const string UserId = "max";
+  private const string UserId = TestIds.UserId;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    var inMemoryRepository = new InMemoryRepository();
-    inMemoryRepository.Users.Add(
+    _repo = await Util.CreateUserScopedMongoRepository(UserId, UserId, false);
+    await _repo.UpsertUser(
       new User
       {
         Id = UserId,
@@ -29,48 +29,53 @@ public class SearchEntriesQueryExecutorShould
       }
     );
 
-    _repo = new UserScopedInMemoryRepository(inMemoryRepository, new FakeCurrentUserService(UserId));
     _dateService = new FakeDateService(DateTime.UtcNow.AddDays(-10));
   }
 
   [Test]
   public async Task Return_NewestEntriesAndTheirJournal()
   {
-    _repo.Journals.Add(new CounterJournal { Id = "counter-journal-id", UserId = UserId });
-    _repo.Entries.Add(
+    const string journal1Id = "60703c3b0000000000000011";
+    const string journal2Id = "60703c3b0000000000000012";
+    const string journal3Id = "60703c3b0000000000000013";
+
+    await _repo.UpsertJournal(new CounterJournal { Id = journal1Id, UserId = UserId });
+    await _repo.UpsertEntry(
       new CounterEntry
       {
-        ParentId = "counter-journal-id",
+        ParentId = journal1Id,
         DateTime = _dateService.UtcNow
       }
     );
     _dateService.SetNext(2);
 
-    _repo.Journals.Add(new GaugeJournal { Id = "gauge-journal-id", UserId = UserId });
-    _repo.Entries.Add(
+    await _repo.UpsertJournal(new GaugeJournal { Id = journal2Id, UserId = UserId });
+    await _repo.UpsertEntry(
       new GaugeEntry
       {
-        ParentId = "gauge-journal-id",
+        ParentId = journal2Id,
         DateTime = _dateService.UtcNow
       }
     );
     _dateService.SetNext(1);
 
-    _repo.Journals.Add(new TimerJournal { Id = "timer-journal-id", UserId = UserId });
-    _repo.Entries.Add(
+    await _repo.UpsertJournal(new TimerJournal { Id = journal3Id, UserId = UserId });
+    await _repo.UpsertEntry(
       new TimerEntry
       {
-        ParentId = "timer-journal-id",
+        ParentId = journal3Id,
         DateTime = _dateService.UtcNow
       }
     );
 
-    var queryExecutor = new SearchEntriesQueryExecutor(_repo);
+    var queryExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
+    await queryExecutorRepo.WakeMeUp();
+
+    var queryExecutor = new SearchEntriesQueryExecutor(queryExecutorRepo);
     SearchEntriesQueryResult result = await queryExecutor.Execute(new SearchEntriesQuery { Limit = 2 });
 
     result.Journals.Length.Should().Be(2);
-    result.Journals.Select(m => m.Id).Contains("counter-journal-id").Should().BeFalse();
-    result.Entries.Length.Should().Be(2);
-    result.Entries.Select(m => m.ParentId).Contains("counter-journal-id").Should().BeFalse();
+    result.Entries.Any(m => m.ParentId == journal1Id).Should().BeFalse();
+    result.Journals.Any(m => m.Id == journal1Id).Should().BeFalse();
   }
 }

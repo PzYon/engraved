@@ -11,7 +11,6 @@ using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Jobs;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Domain.Notifications;
 using Engraved.Core.Domain.Users;
@@ -98,33 +97,16 @@ builder.Services.AddSingleton(provider => new MongoDatabaseClient(
 
 builder.Services.AddTransient<IBaseRepository>(provider =>
   {
-    if (!UseInMemoryRepo())
-    {
-      var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
-      return new MongoRepository(mongoDbClient);
-    }
-
-    return new InMemoryRepository();
+    var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
+    return new MongoRepository(mongoDbClient);
   }
 );
 
 builder.Services.AddTransient<IUserScopedRepository>(provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
-
-    if (!UseInMemoryRepo())
-    {
-      var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
-      return new UserScopedMongoRepository(mongoDbClient, userService);
-    }
-
-    var inMemoryRepository = provider.GetService<InMemoryRepository>();
-    if (inMemoryRepository == null)
-    {
-      throw new Exception($"Cannot resolve {nameof(InMemoryRepository)}.");
-    }
-
-    return new UserScopedInMemoryRepository(inMemoryRepository, userService);
+    var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
+    return new UserScopedMongoRepository(mongoDbClient, userService);
   }
 );
 
@@ -208,12 +190,6 @@ app.UseResponseCompression();
 app.MapControllers();
 
 app.Run();
-
-bool UseInMemoryRepo()
-{
-  // return builder.Environment.IsDevelopment();
-  return false;
-}
 
 string? GetMongoDbNameOverride()
 {

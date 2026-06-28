@@ -3,7 +3,7 @@ using Engraved.Api.Authentication;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Persistence.Mongo.Tests;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using NUnit.Framework;
@@ -22,7 +22,7 @@ public class RefreshHandlerShould
   };
 
   private FakeDateService _dateService = null!;
-  private IBaseRepository _repository = null!;
+  private TestMongoRepository _repository = null!;
   private RefreshTokenService _refreshTokenService = null!;
   private RefreshHandler _refreshHandler = null!;
   private IUser _user = null!;
@@ -30,12 +30,12 @@ public class RefreshHandlerShould
   [SetUp]
   public async Task SetUp()
   {
-    _repository = new InMemoryRepository();
+    _repository = await Util.CreateMongoRepository();
     _dateService = new FakeDateService();
     _refreshTokenService = new RefreshTokenService(_repository, _config, _dateService);
     _refreshHandler = new RefreshHandler(_refreshTokenService, new JwtTokenFactory(_config, _dateService));
 
-    _user = new User { Name = "me@tests" };
+    _user = new User { Id = TestIds.OtherUserId, Name = "me@tests" };
     await _repository.UpsertUser(_user);
   }
 

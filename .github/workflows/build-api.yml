@@ -16,11 +16,8 @@ jobs:
     outputs:
       artifact-name: api
 
-    services:
-      mongo:
-        image: mongo
-        ports:
-          - 27017:27017
+    # note: no mongo service container is needed. The integration tests use EphemeralMongo,
+    # which downloads and runs its own mongod on a random free port per test process.
 
     steps:
       - name: Checkout repo
@@ -32,6 +29,12 @@ jobs:
           dotnet-version: "10.x.x"
           cache: true
           cache-dependency-path: 'api/**/*.csproj'
+
+      - name: Cache EphemeralMongo binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/ephemeral-mongo
+          key: ephemeral-mongo-${{ runner.os }}
 
       - name: Run tests
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover

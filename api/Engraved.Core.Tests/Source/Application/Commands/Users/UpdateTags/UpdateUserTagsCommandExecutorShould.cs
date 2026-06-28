@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -10,16 +10,15 @@ namespace Engraved.Core.Application.Commands.Users.UpdateTags;
 
 public class UpdateUserTagsCommandExecutorShould
 {
-  private UserScopedInMemoryRepository _repo = null!;
+  private TestUserScopedMongoRepository _repo = null!;
 
-  private const string UserId = "max";
+  private const string UserId = TestIds.UserId;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    var inMemoryRepository = new InMemoryRepository();
-    inMemoryRepository.Users.Add(new User { Id = UserId, Name = UserId });
-    _repo = new UserScopedInMemoryRepository(inMemoryRepository, new FakeCurrentUserService(UserId));
+    _repo = await Util.CreateUserScopedMongoRepository(UserId, UserId, false);
+    await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
   }
 
   [Test]
@@ -31,7 +30,8 @@ public class UpdateUserTagsCommandExecutorShould
     );
 
     // then
-    UserTag tag = _repo.Users[0].Tags.Should().ContainSingle().Subject;
+    IUser user = (await _repo.GetUser(UserId))!;
+    UserTag tag = user.Tags.Should().ContainSingle().Subject;
     tag.Id.Should().Be("tag-id");
     tag.Label.Should().Be("Label");
   }
@@ -40,7 +40,9 @@ public class UpdateUserTagsCommandExecutorShould
   public async Task UpdateLabelOfExistingTag()
   {
     // given
-    _repo.Users[0].Tags.Add(new UserTag { Id = "tag-id", Label = "Old" });
+    IUser user = (await _repo.GetUser(UserId))!;
+    user.Tags.Add(new UserTag { Id = "tag-id", Label = "Old" });
+    await _repo.UpsertUser(user);
 
     // when
     await new UpdateUserTagsCommandExecutor(_repo).Execute(
@@ -48,7 +50,8 @@ public class UpdateUserTagsCommandExecutorShould
     );
 
     // then
-    UserTag tag = _repo.Users[0].Tags.Should().ContainSingle().Subject;
+    user = (await _repo.GetUser(UserId))!;
+    UserTag tag = user.Tags.Should().ContainSingle().Subject;
     tag.Id.Should().Be("tag-id");
     tag.Label.Should().Be("New");
   }
@@ -57,8 +60,10 @@ public class UpdateUserTagsCommandExecutorShould
   public async Task RemoveTagsNoLongerInCommand()
   {
     // given
-    _repo.Users[0].Tags.Add(new UserTag { Id = "keep", Label = "Keep" });
-    _repo.Users[0].Tags.Add(new UserTag { Id = "remove", Label = "Remove" });
+    IUser user = (await _repo.GetUser(UserId))!;
+    user.Tags.Add(new UserTag { Id = "keep", Label = "Keep" });
+    user.Tags.Add(new UserTag { Id = "remove", Label = "Remove" });
+    await _repo.UpsertUser(user);
 
     // when
     await new UpdateUserTagsCommandExecutor(_repo).Execute(
@@ -66,6 +71,7 @@ public class UpdateUserTagsCommandExecutorShould
     );
 
     // then
-    _repo.Users[0].Tags.Select(t => t.Id).Should().BeEquivalentTo("keep");
+    user = (await _repo.GetUser(UserId))!;
+    user.Tags.Select(t => t.Id).Should().BeEquivalentTo("keep");
   }
 }

@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -12,14 +12,14 @@ namespace Engraved.Core.Application.Queries.Journals;
 public class JournalQueryUtilShould
 {
   private string _meUserId = null!;
-  private InMemoryRepository _testRepository = null!;
-  private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
+  private TestMongoRepository _testRepository = null!;
+  private TestUserScopedMongoRepository _userScopedMongoRepository = null!;
   private string _youUserId = null!;
 
   [SetUp]
   public async Task SetUp()
   {
-    _testRepository = new InMemoryRepository();
+    _testRepository = await Util.CreateMongoRepository();
 
     UpsertResult meUpsertResult = await _testRepository.UpsertUser(new User { Name = "me" });
     _meUserId = meUpsertResult.EntityId;
@@ -27,17 +27,14 @@ public class JournalQueryUtilShould
     UpsertResult youUpsertResult = await _testRepository.UpsertUser(new User { Name = "you" });
     _youUserId = youUpsertResult.EntityId;
 
-    _userScopedInMemoryRepository = new UserScopedInMemoryRepository(
-      _testRepository,
-      new FakeCurrentUserService("me")
-    );
+    _userScopedMongoRepository = await Util.CreateUserScopedMongoRepository("me", _meUserId, true);
   }
 
   [Test]
   public async Task SetUserRoleToOwner()
   {
     IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
-      _userScopedInMemoryRepository,
+      _userScopedMongoRepository,
       new TimerJournal { UserId = _meUserId }
     );
 
@@ -49,7 +46,7 @@ public class JournalQueryUtilShould
   public async Task SetUserRoleToReader()
   {
     IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
-      _userScopedInMemoryRepository,
+      _userScopedMongoRepository,
       new TimerJournal
       {
         UserId = _youUserId,
@@ -71,7 +68,7 @@ public class JournalQueryUtilShould
   public async Task SetUserRoleToWriter()
   {
     IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
-      _userScopedInMemoryRepository,
+      _userScopedMongoRepository,
       new TimerJournal
       {
         UserId = _youUserId,

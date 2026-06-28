@@ -32,10 +32,35 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     return await base.UpsertUser(user);
   }
 
+  private bool _ignorePermissionsForJournalIdFilter;
+
   public override async Task<UpsertResult> UpsertJournal(IJournal journal)
   {
+    if (!string.IsNullOrEmpty(journal.Id))
+    {
+      IJournal? existingJournal;
+      try
+      {
+        _ignorePermissionsForJournalIdFilter = true;
+        existingJournal = await base.GetJournal(journal.Id, PermissionKind.None);
+      }
+      finally
+      {
+        _ignorePermissionsForJournalIdFilter = false;
+      }
+
+      if (existingJournal != null)
+      {
+        await EnsureUserHasPermission(journal.Id, PermissionKind.Write);
+
+        // ensure we don't accidentally change the owner if it's an update
+        journal.UserId = existingJournal.UserId;
+        return await base.UpsertJournal(journal);
+      }
+    }
+
     EnsureUserId(journal);
-    await EnsureUserHasPermission(journal.Id, PermissionKind.Write);
+
     return await base.UpsertJournal(journal);
   }
 
@@ -66,6 +91,11 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 
   protected override FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
   {
+    if (_ignorePermissionsForJournalIdFilter)
+    {
+      return MongoUtil.GetAllDocumentsFilter<TDocument>();
+    }
+
     string? userId = CurrentUser.Value.Id;
     EnsureUserIsSet(userId);
 
@@ -73,9 +103,12 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     // is owner, then everything is allowed.
     FilterDefinition<TDocument> currentUserFilter = GetCurrentUserFilter<TDocument>(userId);
 
-    return typeof(TDocument).IsAssignableTo(typeof(IHasPermissionsDocument))
-      ? Builders<TDocument>.Filter.Or(currentUserFilter, GetHasPermissionsFilter<TDocument>(userId, kind))
-      : currentUserFilter;
+    if (!typeof(TDocument).IsAssignableTo(typeof(IHasPermissionsDocument)))
+    {
+      return currentUserFilter;
+    }
+
+    return Builders<TDocument>.Filter.Or(currentUserFilter, GetHasPermissionsFilter<TDocument>(userId, kind));
   }
 
   private static FilterDefinition<TDocument> GetHasPermissionsFilter<TDocument>(
@@ -98,7 +131,9 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
   {
     IUser result = _currentUserService.LoadUser().Result;
     EnsureUserIsSet(result.Name);
-    return result;
+
+    IUser? dbUser = base.GetUser(result.Id ?? result.Name).Result;
+    return dbUser ?? result;
   }
 
   private void EnsureUserId(IUserScoped entity)
@@ -107,6 +142,8 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     {
       entity.UserId = CurrentUser.Value.Id;
     }
+
+    EnsureEntityBelongsToUser(entity.UserId);
   }
 
   private async Task EnsureUserHasPermission(string? journalId, PermissionKind kind)

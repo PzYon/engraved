@@ -1,6 +1,7 @@
 ﻿using Engraved.Core.Domain.Authentication;
 using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
 using Engraved.Core.Domain.Users;
+using MongoDB.Bson;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Users;
 
@@ -8,7 +9,7 @@ public static class UserDocumentMapper
 {
   public static UserDocument ToDocument(IUser user)
   {
-    return new UserDocument
+    var document = new UserDocument
     {
       GlobalUniqueId = user.GlobalUniqueId,
       Name = user.Name,
@@ -33,6 +34,13 @@ public static class UserDocumentMapper
         )
         .ToList()
     };
+
+    if (!string.IsNullOrEmpty(user.Id))
+    {
+      document.Id = ObjectId.Parse(user.Id);
+    }
+
+    return document;
   }
 
   public static IUser? FromDocument(UserDocument? document)

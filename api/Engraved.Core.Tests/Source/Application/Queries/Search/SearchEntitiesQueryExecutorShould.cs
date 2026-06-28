@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Entries.AddSchedule;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
 using Engraved.Core.Application.Commands.Journals.AddSchedule;
-using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Persistence.Mongo.Tests;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
@@ -19,34 +20,30 @@ public class SearchEntitiesQueryExecutorShould
 {
   private FakeDateService _dateService = null!;
   private SearchEntitiesQueryExecutor _searchExecutor = null!;
-  private InMemoryRepository _testRepository = null!;
-  private UserScopedInMemoryRepository _userScopedInMemoryRepository = null!;
+  private TestUserScopedMongoRepository _repo = null!;
 
   [SetUp]
   public async Task SetUp()
   {
-    _testRepository = new InMemoryRepository();
+    const string userId = TestIds.UserId;
+    _repo = await Util.CreateUserScopedMongoRepository(userId, userId, false);
+    await _repo.WakeMeUp();
 
-    await _testRepository.UpsertUser(new User { Name = "max" });
+    await _repo.UpsertUser(new User { Id = userId, Name = userId });
 
-    var fakeCurrentUserService = new FakeCurrentUserService("max");
-
-    _userScopedInMemoryRepository = new UserScopedInMemoryRepository(
-      _testRepository,
-      fakeCurrentUserService
-    );
+    var fakeCurrentUserService = new FakeCurrentUserService(userId);
 
     _dateService = new FakeDateService();
 
     _searchExecutor = new SearchEntitiesQueryExecutor(
       new Dispatcher(
         NullLogger<Dispatcher>.Instance,
-        new TestServiceProvider(_userScopedInMemoryRepository),
-        _userScopedInMemoryRepository,
+        new TestServiceProvider(_repo),
+        _repo,
         new QueryCache(
           NullLogger<QueryCache>.Instance,
           new MemoryCache(new MemoryCacheOptions()),
-          _userScopedInMemoryRepository.CurrentUser
+          _repo.CurrentUser
         )
       ),
       fakeCurrentUserService
@@ -78,7 +75,7 @@ public class SearchEntitiesQueryExecutorShould
   [Test]
   public async Task FindEntriesOfJournalType()
   {
-    var addJournalExecutor = new AddJournalCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
       new AddJournalCommand
       {
@@ -87,7 +84,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -141,7 +138,7 @@ public class SearchEntitiesQueryExecutorShould
 
   private async Task AddEntitiesWithSchedule()
   {
-    var addJournalExecutor = new AddJournalCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
       new AddJournalCommand
       {
@@ -150,7 +147,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(_userScopedInMemoryRepository);
+    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(_repo);
     await addScheduleExecutor.Execute(
       new AddScheduleToJournalCommand
       {
@@ -159,8 +156,8 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_userScopedInMemoryRepository, _dateService);
-    await addEntryExecutor.Execute(
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
+    CommandResult entryResult = await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
         JournalId = commandResult.EntityId,
@@ -168,11 +165,21 @@ public class SearchEntitiesQueryExecutorShould
         Notes = "Entry with Schedule"
       }
     );
+
+    // the entry itself is scheduled, so it shows up in a "scheduled only" search.
+    var addEntryScheduleExecutor = new AddScheduleToEntryCommandExecutor(_repo);
+    await addEntryScheduleExecutor.Execute(
+      new AddScheduleToEntryCommand
+      {
+        EntryId = entryResult.EntityId,
+        NextOccurrence = _dateService.UtcNow.AddDays(10)
+      }
+    );
   }
 
   private async Task AddJournalToIgnoreWithOneEntryToFind()
   {
-    var addJournalExecutor = new AddJournalCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
       new AddJournalCommand
       {
@@ -181,7 +188,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -194,7 +201,7 @@ public class SearchEntitiesQueryExecutorShould
 
   private async Task AddJournalToFindWithTwoEntriesToIgnore()
   {
-    var addJournalExecutor = new AddJournalCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
       new AddJournalCommand
       {
@@ -203,7 +210,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_userScopedInMemoryRepository, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {

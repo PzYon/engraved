@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
-using Engraved.Core.Application.Persistence.Demo;
+using Engraved.Persistence.Mongo.Tests;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using FluentAssertions;
@@ -13,15 +13,15 @@ public class UpsertTimerEntryCommandExecutorShould
 {
   private const string JournalId = "626dab25f1a93c5c724d820a";
   private FakeDateService _fakeDateService = null!;
-  private InMemoryRepository _testRepository = null!;
+  private TestMongoRepository _testRepository = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
     _fakeDateService = new FakeDateService();
-    _testRepository = new InMemoryRepository();
+    _testRepository = await Util.CreateMongoRepository();
 
-    _testRepository.Journals.Add(new TimerJournal { Id = JournalId });
+    await _testRepository.UpsertJournal(new TimerJournal { Id = JournalId });
   }
 
   [Test]
@@ -41,13 +41,13 @@ public class UpsertTimerEntryCommandExecutorShould
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     result.EntityId.Should().NotBeNull();
-    _testRepository.Entries.Count.Should().Be(1);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
 
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().Be(startDate);
-    entry.EndDate.Should().Be(endDate);
+    entry.StartDate.Should().BeCloseTo(startDate, TimeSpan.FromMilliseconds(100));
+    entry.EndDate.Should().BeCloseTo(endDate, TimeSpan.FromMilliseconds(100));
   }
 
   [Test]
@@ -59,27 +59,28 @@ public class UpsertTimerEntryCommandExecutorShould
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     result.EntityId.Should().NotBeNull();
-    _testRepository.Entries.Count.Should().Be(1);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
 
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().Be(_fakeDateService.UtcNow);
+    entry.StartDate.Should().BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
   }
 
   [Test]
   public async Task EndExistingEntry_WhenBlankCommand()
   {
-    _testRepository.Entries.Add(
+    var entryId = "60703c3b00000000000000e1";
+    await _testRepository.UpsertEntry(
       new TimerEntry
       {
-        Id = Guid.NewGuid().ToString("N"),
+        Id = entryId,
         ParentId = JournalId,
         StartDate = _fakeDateService.UtcNow.AddMinutes(-10)
       }
     );
 
-    _testRepository.Entries.Count.Should().Be(1);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
 
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
@@ -87,20 +88,20 @@ public class UpsertTimerEntryCommandExecutorShould
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     result.EntityId.Should().NotBeNull();
-    _testRepository.Entries.Count.Should().Be(1);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
 
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.EndDate.Should().Be(_fakeDateService.UtcNow);
+    entry.EndDate.Should().BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
   }
 
   [Test]
   public async Task UpdateExistingEntry_WithValuesFromCommand()
   {
-    var entryId = Guid.NewGuid().ToString("N");
+    var entryId = "60703c3b00000000000000e2";
 
-    _testRepository.Entries.Add(
+    await _testRepository.UpsertEntry(
       new TimerEntry
       {
         Id = entryId,
@@ -110,7 +111,7 @@ public class UpsertTimerEntryCommandExecutorShould
       }
     );
 
-    _testRepository.Entries.Count.Should().Be(1);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
 
     DateTime newStartDate = _fakeDateService.UtcNow.AddMinutes(-30);
     DateTime? newEndDate = null;
@@ -127,22 +128,22 @@ public class UpsertTimerEntryCommandExecutorShould
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     result.EntityId.Should().NotBeNull();
-    _testRepository.Entries.Count.Should().Be(1);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
 
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().Be(newStartDate);
-    entry.DateTime.Should().Be(newStartDate);
+    entry.StartDate.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry.DateTime.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
     entry.EndDate.Should().Be(newEndDate);
   }
 
   [Test]
   public async Task UpdateExistingEntry_ChangeExistingStartDateWhenNoEndDate()
   {
-    var entryId = Guid.NewGuid().ToString("N");
+    var entryId = "60703c3b00000000000000e3";
 
-    _testRepository.Entries.Add(
+    await _testRepository.UpsertEntry(
       new TimerEntry
       {
         Id = entryId,
@@ -152,7 +153,7 @@ public class UpsertTimerEntryCommandExecutorShould
       }
     );
 
-    _testRepository.Entries.Count.Should().Be(1);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
 
     DateTime newStartDate = _fakeDateService.UtcNow.AddMinutes(-30);
 
@@ -168,13 +169,13 @@ public class UpsertTimerEntryCommandExecutorShould
       await new UpsertTimerEntryCommandExecutor(_testRepository, _fakeDateService).Execute(command);
 
     result.EntityId.Should().NotBeNull();
-    _testRepository.Entries.Count.Should().Be(1);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
 
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry?.StartDate.Should().Be(newStartDate);
-    entry?.DateTime.Should().Be(newStartDate);
+    entry?.StartDate.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry?.DateTime.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
     entry?.EndDate.Should().Be(null);
   }
 }

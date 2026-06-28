@@ -112,6 +112,7 @@ public class UserScopedMongoRepositoryShould
           new TimerJournal
           {
             Id = result.EntityId,
+            UserId = _otherUserId,
             Notes = "Random"
           }
         );

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Engraved.Persistence.Mongo.Tests;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using NUnit.Framework;
@@ -11,23 +11,21 @@ namespace Engraved.Core.Domain.Permissions;
 public class PermissionsEnsurerShould
 {
   private PermissionsEnsurer _permissionsEnsurer = null!;
-  private IBaseRepository _repository = null!;
+  private TestMongoRepository _repository = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    _repository = new InMemoryRepository
-    {
-      Users =
+    _repository = await Util.CreateMongoRepository();
+
+    await _repository.UpsertUser(
+      new User
       {
-        new User
-        {
-          Id = "123",
-          Name = "mar@foo.ch",
-          DisplayName = "Mar Dog"
-        }
+        Id = TestIds.UserId,
+        Name = "mar@foo.ch",
+        DisplayName = "Mar Dog"
       }
-    };
+    );
 
     _permissionsEnsurer = new PermissionsEnsurer(_repository, _repository.UpsertUser);
   }
@@ -37,7 +35,7 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "123", new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(
@@ -53,7 +51,7 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "123", new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(
@@ -62,7 +60,7 @@ public class PermissionsEnsurerShould
     );
 
     holder.Permissions.Count.Should().Be(1);
-    holder.Permissions["123"].Kind.Should().Be(PermissionKind.Write);
+    holder.Permissions[TestIds.UserId].Kind.Should().Be(PermissionKind.Write);
   }
 
   [Test]
@@ -70,7 +68,7 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { "123", new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
     };
 
     await _permissionsEnsurer.EnsurePermissions(

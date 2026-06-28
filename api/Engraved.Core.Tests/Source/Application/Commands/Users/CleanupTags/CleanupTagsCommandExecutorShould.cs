@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Engraved.Core.Application.Persistence.Demo;
+﻿using System.Threading.Tasks;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -11,35 +10,35 @@ namespace Engraved.Core.Application.Commands.Users.CleanupTags;
 [TestFixture]
 public class CleanupTagsCommandExecutorShould
 {
-  private FakeDateService _dateService = null!;
-  private UserScopedInMemoryRepository _repo = null!;
+  private TestUserScopedMongoRepository _repo = null!;
 
-  private const string UserId = "max";
+  private const string UserId = TestIds.UserId;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    var inMemoryRepository = new InMemoryRepository();
-    inMemoryRepository.Users.Add(
+    _repo = await Util.CreateUserScopedMongoRepository(UserId, UserId, false);
+    await _repo.UpsertUser(
       new User
       {
         Id = UserId,
         Name = UserId
       }
     );
-
-    _repo = new UserScopedInMemoryRepository(inMemoryRepository, new FakeCurrentUserService(UserId));
-    _dateService = new FakeDateService(DateTime.UtcNow.AddDays(-10));
   }
 
   [Test]
   public async Task DoesNotChangeAnything_When_No_Missing_Favorites()
   {
-    _repo.Journals.Add(new CounterJournal { Id = "counter-journal-id", UserId = UserId });
-    _repo.Journals.Add(new CounterJournal { Id = "scrap-journal-id", UserId = UserId });
+    const string journal1Id = "60703c3b00000000000000d1";
+    const string journal2Id = "60703c3b00000000000000d2";
+    await _repo.UpsertJournal(new CounterJournal { Id = journal1Id, UserId = UserId });
+    await _repo.UpsertJournal(new CounterJournal { Id = journal2Id, UserId = UserId });
 
-    _repo.Users[0].Tags.Add(new UserTag { Id = "Tag1", JournalIds = ["counter-journal-id"] });
-    _repo.Users[0].Tags.Add(new UserTag { Id = "Tag2", JournalIds = ["scrap-journal-id"] });
+    IUser user = (await _repo.GetUser(UserId))!;
+    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [journal1Id] });
+    user.Tags.Add(new UserTag { Id = "Tag2", JournalIds = [journal2Id] });
+    await _repo.UpsertUser(user);
 
     var command = new CleanupTagsCommand { DryRun = false };
     var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(command);
@@ -64,7 +63,10 @@ public class CleanupTagsCommandExecutorShould
   [Test]
   public async Task User_With_Tags_But_No_JournalIds()
   {
-    _repo.Users[0].Tags.Add(new UserTag { Id = "Tag1", JournalIds = [] });
+    IUser user = (await _repo.GetUser(UserId))!;
+    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [] });
+    await _repo.UpsertUser(user);
+
     var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(
       new CleanupTagsCommand { DryRun = false }
     );
@@ -74,64 +76,94 @@ public class CleanupTagsCommandExecutorShould
   [Test]
   public async Task RemovesMissingJournalIds_When_SomeAreMissing()
   {
-    _repo.Journals.Add(new CounterJournal { Id = "existing-journal-id", UserId = UserId });
-    _repo.Users[0].Tags.Add(new UserTag { Id = "Tag1", JournalIds = ["existing-journal-id", "missing-journal-id"] });
+    const string existingJournalId = "60703c3b00000000000000d3";
+    const string missingJournalId = "60703c3b00000000000000f1";
+    await _repo.UpsertJournal(new CounterJournal { Id = existingJournalId, UserId = UserId });
 
+    IUser user = (await _repo.GetUser(UserId))!;
+    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [existingJournalId, missingJournalId] });
+    await _repo.UpsertUser(user);
+
+    var commandExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
+    await commandExecutorRepo.WakeMeUp();
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(
+      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
         new CleanupTagsCommand { DryRun = false }
       );
 
-    result.JournalIdsToRemove.Should().Contain("missing-journal-id");
+    result.JournalIdsToRemove.Should().Contain(missingJournalId);
 
-    _repo.Users[0].Tags[0].JournalIds.Should().NotContain("missing-journal-id");
-    _repo.Users[0].Tags[0].JournalIds.Should().Contain("existing-journal-id");
+    var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
+    await verificationRepo.WakeMeUp();
+    user = (await verificationRepo.GetUser(UserId))!;
+    user.Tags[0].JournalIds.Should().NotContain(missingJournalId);
+    user.Tags[0].JournalIds.Should().Contain(existingJournalId);
   }
 
   [Test]
   public async Task RemovesMissingJournalIds_FromMultipleTag_When_SomeAreMissing()
   {
-    _repo.Journals.Add(new CounterJournal { Id = "existing-journal-id-1", UserId = UserId });
-    _repo.Journals.Add(new CounterJournal { Id = "existing-journal-id-2", UserId = UserId });
+    const string existingJournalId1 = "60703c3b00000000000000d4";
+    const string existingJournalId2 = "60703c3b00000000000000d5";
+    const string missingJournalId1 = "60703c3b00000000000000f2";
+    const string missingJournalId2 = "60703c3b00000000000000f3";
+    await _repo.UpsertJournal(new CounterJournal { Id = existingJournalId1, UserId = UserId });
+    await _repo.UpsertJournal(new CounterJournal { Id = existingJournalId2, UserId = UserId });
 
-    _repo.Users[0]
-      .Tags.Add(
-        new UserTag { Id = "Tag1", JournalIds = ["existing-journal-id-1", "missing-journal-id-1"] }
-      );
-    _repo.Users[0]
-      .Tags.Add(
-        new UserTag { Id = "Tag2", JournalIds = ["existing-journal-id-2", "missing-journal-id-2"] }
-      );
+    IUser user = (await _repo.GetUser(UserId))!;
+    user.Tags.Add(
+      new UserTag { Id = "Tag1", JournalIds = [existingJournalId1, missingJournalId1] }
+    );
+    user.Tags.Add(
+      new UserTag { Id = "Tag2", JournalIds = [existingJournalId2, missingJournalId2] }
+    );
+    await _repo.UpsertUser(user);
 
+    var commandExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
+    await commandExecutorRepo.WakeMeUp();
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(
+      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
         new CleanupTagsCommand { DryRun = false }
       );
 
-    result.JournalIdsToRemove.Should().Contain("missing-journal-id-1");
-    result.JournalIdsToRemove.Should().Contain("missing-journal-id-2");
+    result.JournalIdsToRemove.Should().Contain(missingJournalId1);
+    result.JournalIdsToRemove.Should().Contain(missingJournalId2);
     result.JournalIdsToRemove.Should().HaveCount(2);
 
-    _repo.Users[0].Tags[0].JournalIds.Should().NotContain("missing-journal-id-1");
-    _repo.Users[0].Tags[0].JournalIds.Should().NotContain("missing-journal-id-2");
+    var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
+    await verificationRepo.WakeMeUp();
+    user = (await verificationRepo.GetUser(UserId))!;
+    user.Tags[0].JournalIds.Should().NotContain(missingJournalId1);
+    user.Tags[0].JournalIds.Should().NotContain(missingJournalId2);
 
-    _repo.Users[0].Tags[1].JournalIds.Should().NotContain("missing-journal-id-1");
-    _repo.Users[0].Tags[1].JournalIds.Should().NotContain("missing-journal-id-2");
+    user.Tags[1].JournalIds.Should().NotContain(missingJournalId1);
+    user.Tags[1].JournalIds.Should().NotContain(missingJournalId2);
   }
 
   [Test]
   public async Task PopulatesJournalIdsToRemove_ButDoesNotRemove_When_DryRunIsTrue()
   {
-    _repo.Journals.Add(new CounterJournal { Id = "existing-journal-id", UserId = UserId });
-    _repo.Users[0].Tags.Add(new UserTag { Id = "Tag1", JournalIds = ["existing-journal-id", "missing-journal-id"] });
+    const string existingJournalId = "60703c3b00000000000000d6";
+    const string missingJournalId = "60703c3b00000000000000f4";
+    await _repo.UpsertJournal(new CounterJournal { Id = existingJournalId, UserId = UserId });
 
+    IUser user = (await _repo.GetUser(UserId))!;
+    user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [existingJournalId, missingJournalId] });
+    await _repo.UpsertUser(user);
+
+    var commandExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
+    await commandExecutorRepo.WakeMeUp();
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(
+      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
         new CleanupTagsCommand { DryRun = true }
       );
 
-    result.JournalIdsToRemove.Should().Contain("missing-journal-id");
-    _repo.Users[0].Tags[0].JournalIds.Should().Contain("missing-journal-id");
-    _repo.Users[0].Tags[0].JournalIds.Should().Contain("existing-journal-id");
+    result.JournalIdsToRemove.Should().Contain(missingJournalId);
+
+    var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
+    await verificationRepo.WakeMeUp();
+    user = (await verificationRepo.GetUser(UserId))!;
+    user.Tags[0].JournalIds.Should().Contain(missingJournalId);
+    user.Tags[0].JournalIds.Should().Contain(existingJournalId);
   }
 }

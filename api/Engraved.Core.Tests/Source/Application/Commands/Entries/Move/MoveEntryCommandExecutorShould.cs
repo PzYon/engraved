@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Engraved.Core.Application.Persistence.Demo;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -11,34 +11,38 @@ namespace Engraved.Core.Application.Commands.Entries.Move;
 public class MoveEntryCommandExecutorShould
 {
   private FakeDateService _dateService = null!;
-  private InMemoryRepository _repo = null!;
+  private TestMongoRepository _repo = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    _repo = new InMemoryRepository();
+    _repo = await Util.CreateMongoRepository();
     _dateService = new FakeDateService(DateTime.UtcNow.AddDays(-10));
   }
 
   [Test]
   public async Task MoveEntryToOtherJournal()
   {
+    const string sourceJournalId = "60703c3b0000000000000001";
+    const string targetJournalId = "60703c3b0000000000000002";
+    const string entryId = "60703c3b0000000000000003";
+
     // given: source
-    _repo.Journals.Add(new CounterJournal { Id = "source-journal-id" });
-    _repo.Entries.Add(
+    await _repo.UpsertJournal(new CounterJournal { Id = sourceJournalId });
+    await _repo.UpsertEntry(
       new CounterEntry
       {
-        Id = "entry-id",
-        ParentId = "source-journal-id",
+        Id = entryId,
+        ParentId = sourceJournalId,
         DateTime = _dateService.UtcNow
       }
     );
-    IEntry[] sourceEntries = await _repo.GetEntriesForJournal("source-journal-id");
+    IEntry[] sourceEntries = await _repo.GetEntriesForJournal(sourceJournalId);
     sourceEntries.Length.Should().Be(1);
 
     // given: target
-    _repo.Journals.Add(new CounterJournal { Id = "target-journal-id" });
-    IEntry[] targetEntries = await _repo.GetEntriesForJournal("target-journal-id");
+    await _repo.UpsertJournal(new CounterJournal { Id = targetJournalId });
+    IEntry[] targetEntries = await _repo.GetEntriesForJournal(targetJournalId);
     targetEntries.Should().BeEmpty();
 
     // when
@@ -48,16 +52,16 @@ public class MoveEntryCommandExecutorShould
     ).Execute(
       new MoveEntryCommand
       {
-        EntryId = "entry-id",
-        TargetJournalId = "target-journal-id"
+        EntryId = entryId,
+        TargetJournalId = targetJournalId
       }
     );
 
     // then
-    targetEntries = await _repo.GetEntriesForJournal("target-journal-id");
+    targetEntries = await _repo.GetEntriesForJournal(targetJournalId);
     targetEntries.Length.Should().Be(1);
 
-    sourceEntries = await _repo.GetEntriesForJournal("source-journal-id");
+    sourceEntries = await _repo.GetEntriesForJournal(sourceJournalId);
     sourceEntries.Should().BeEmpty();
   }
 }
