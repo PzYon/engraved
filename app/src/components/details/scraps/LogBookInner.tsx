@@ -8,6 +8,8 @@ import { format } from "date-fns";
 import { getDayKey, utcToDateOnly } from "../../../util/utils";
 import { useJournalEntriesQuery } from "../../../serverApi/reactQuery/queries/useJournalEntriesQuery";
 
+import { TitleRow } from "./TitleRow";
+
 export const LogBookInner: React.FC = () => {
   const {
     journal,
@@ -60,16 +62,18 @@ export const LogBookInner: React.FC = () => {
           shouldDisableDate={(d) => usedDays.has(getDayKey(d))}
         />
       ) : (
-        <ReadonlyTitle
-          entity={scrapToRender}
-          hasFocus={hasFocus}
-          title={
-            <Markdown
-              useBasic={true}
-              value={format(date, "EEEE, do MMMM yy")}
-            />
-          }
-        />
+        <TitleRow>
+          <ReadonlyTitle
+            entity={scrapToRender}
+            hasFocus={hasFocus}
+            title={
+              <Markdown
+                useBasic={true}
+                value={format(date, "EEEE, do MMMM yy")}
+              />
+            }
+          />
+        </TitleRow>
       )}
 
       <ScrapMarkdown />
