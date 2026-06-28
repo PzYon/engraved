@@ -10,6 +10,7 @@ import { ParseableDate } from "../edit/ParseableDate";
 import { Markdown } from "./markdown/Markdown";
 import { AutoFixHigh } from "@mui/icons-material";
 import { ActionFactory } from "../../common/actions/ActionFactory";
+import { styled } from "@mui/material";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -115,20 +116,22 @@ export const ScrapInner: React.FC = () => {
           onBlur={() => setHasTitleFocus(false)}
         />
       ) : (
-        <ReadonlyTitle
-          entity={scrapToRender}
-          hasFocus={hasFocus}
-          title={
-            <Markdown
-              useBasic={true}
-              value={
-                !isCompact || hasFocus || title
-                  ? title
-                  : getText()?.substring(0, 20) + " (...)"
-              }
-            />
-          }
-        />
+        <TitleRow>
+          <ReadonlyTitle
+            entity={scrapToRender}
+            hasFocus={hasFocus}
+            title={
+              <Markdown
+                useBasic={true}
+                value={
+                  !isCompact || hasFocus || title
+                    ? title
+                    : getText()?.substring(0, 20) + " (...)"
+                }
+              />
+            }
+          />
+        </TitleRow>
       )}
 
       {scrapToRender.scrapType === ScrapType.List ? (
@@ -171,3 +174,9 @@ export const ScrapInner: React.FC = () => {
     }
   }
 };
+
+export const TitleRow = styled("div")`
+  border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+`;
