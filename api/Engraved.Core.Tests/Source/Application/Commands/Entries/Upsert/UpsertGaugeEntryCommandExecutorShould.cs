@@ -50,10 +50,10 @@ public class UpsertGaugeEntryCommandExecutorShould
   }
 
   [Test]
-  public void Throw_WhenNoValueIsSpecified()
+  public async Task Throw_WhenNoValueIsSpecified()
   {
     const string journalId = "60703c3b00000000000000a2";
-    _testRepository.UpsertJournal(new GaugeJournal { Id = journalId }).Wait();
+    await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
 
     var command = new UpsertGaugeEntryCommand
     {
