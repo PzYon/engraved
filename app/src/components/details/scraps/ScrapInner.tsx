@@ -10,7 +10,7 @@ import { ParseableDate } from "../edit/ParseableDate";
 import { Markdown } from "./markdown/Markdown";
 import { AutoFixHigh } from "@mui/icons-material";
 import { ActionFactory } from "../../common/actions/ActionFactory";
-import { styled } from "@mui/material";
+import { TitleRow } from "./TitleRow";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -174,9 +174,3 @@ export const ScrapInner: React.FC = () => {
     }
   }
 };
-
-export const TitleRow = styled("div")`
-  border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
-  padding-bottom: 6px;
-  margin-bottom: 4px;
-`;
