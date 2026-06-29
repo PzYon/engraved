@@ -213,8 +213,11 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
       .ToArray();
   }
 
-  // attention: there's no security here for the moment. might not be required as
-  // you explicitly need to specify the journal IDs.
+  // Unscoped primitive: this method does NOT enforce journal read-permission. It trusts the
+  // journalIds supplied by the caller. The only scoped caller, SearchEntriesQueryExecutor, first
+  // resolves the current user's accessible journals (via the scoped GetAllJournals) and passes
+  // those ids in, so read access is enforced there. Pinned by
+  // UserScopedMongoRepository_Permissions_Should.SearchEntries_IsUnscoped_TrustsCallerProvidedJournalIds.
   public async Task<IEntry[]> SearchEntries(
     string? searchText,
     ScheduleMode? scheduleMode = null,
@@ -423,6 +426,11 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRep
     await EntriesCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId));
   }
 
+  // Unscoped primitive: GetEntry does NOT enforce read-permission on the parent journal (note it is
+  // not overridden in UserScopedMongoRepository). The client-facing single-entry read enforces
+  // access in GetEntryQueryExecutor; command executors use it as a load-for-modify primitive and
+  // rely on the subsequent UpsertEntry/DeleteEntry write checks. Pinned by
+  // UserScopedMongoRepository_Permissions_Should.GetEntry_IsUnscoped_ReturnsEntry_EvenWithoutJournalPermission.
   public async Task<IEntry?> GetEntry(string entryId)
   {
     if (string.IsNullOrEmpty(entryId))
