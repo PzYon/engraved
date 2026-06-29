@@ -8,7 +8,7 @@ namespace Engraved.Api.Authentication;
 
 public class LoginHandler(
   IGoogleTokenValidator tokenValidator,
-  IBaseRepository repository,
+  ISystemRepository repository,
   IDateService dateService,
   UserLoader userLoader,
   JwtTokenFactory jwtTokenFactory,

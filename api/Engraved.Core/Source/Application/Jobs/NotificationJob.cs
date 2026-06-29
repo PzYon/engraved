@@ -12,7 +12,7 @@ namespace Engraved.Core.Application.Jobs;
 
 public class NotificationJob(
   ILogger<NotificationJob> logger,
-  IBaseRepository repository,
+  ISystemRepository repository,
   IDateService dateService,
   INotificationService notificationService
 )

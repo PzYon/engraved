@@ -10,13 +10,13 @@ using Microsoft.Extensions.Options;
 namespace Engraved.Api.Authentication;
 
 public class RefreshTokenService(
-  IBaseRepository repository,
+  ISystemRepository repository,
   AuthenticationConfig configuration,
   IDateService dateService
 )
 {
   public RefreshTokenService(
-    IBaseRepository repository,
+    ISystemRepository repository,
     IOptions<AuthenticationConfig> configuration,
     IDateService dateService
   ) : this(repository, configuration.Value, dateService) { }

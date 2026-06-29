@@ -14,7 +14,7 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IBaseRepository
+public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : ISystemRepository
 {
   private const string RandomDocId = "63f949da880b5bf2518be721";
 

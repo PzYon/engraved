@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Engraved.Api.Authentication;
 
-public class UserLoader(IBaseRepository repository, IMemoryCache cache)
+public class UserLoader(ISystemRepository repository, IMemoryCache cache)
 {
   private const string Users = "___users";
 

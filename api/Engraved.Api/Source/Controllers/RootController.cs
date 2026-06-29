@@ -5,7 +5,7 @@ namespace Engraved.Api.Controllers;
 
 [ApiController]
 [Route("")]
-public class RootController(IBaseRepository repository) : Controller
+public class RootController(ISystemRepository repository) : Controller
 {
   [HttpGet]
   public void Get()
