@@ -28,6 +28,4 @@ public interface IEntryRepository
   Task DeleteEntry(string entryId);
 
   Task<IEntry?> GetEntry(string entryId);
-
-  Task<long> CountAllEntries();
 }

@@ -11,6 +11,4 @@ public interface IUserRepository
   Task<IUser[]> GetUsers(params string[] userIds);
 
   Task<IUser[]> GetAllUsers();
-
-  Task<long> CountAllUsers();
 }
