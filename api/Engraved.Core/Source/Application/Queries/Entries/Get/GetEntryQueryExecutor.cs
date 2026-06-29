@@ -24,7 +24,9 @@ public class GetEntryQueryExecutor(IRepository repository) : IQueryExecutor<IEnt
       return null;
     }
 
-    // permission check
+    // Permission gate (not redundant): GetEntry is an unscoped primitive, so this is where read
+    // access is enforced for the single-entry endpoint. GetJournal is scoped, so it returns null
+    // when the current user cannot read the parent journal - in which case we hide the entry.
     IJournal? journal = await repository.GetJournal(entry.ParentId);
     if (journal == null)
     {

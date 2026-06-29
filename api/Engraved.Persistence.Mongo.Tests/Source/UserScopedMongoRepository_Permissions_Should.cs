@@ -321,6 +321,37 @@ public class UserScopedMongoRepository_Permissions_Should
     (await _repository.GetEntry(entryId)).Should().BeNull();
   }
 
+  [Test]
+  public async Task GetEntry_IsUnscoped_ReturnsEntry_EvenWithoutJournalPermission()
+  {
+    // GetEntry is intentionally an unscoped primitive: it does NOT enforce read permission on the
+    // parent journal. Read enforcement for the client-facing single-entry endpoint lives in
+    // GetEntryQueryExecutor (which re-checks via the scoped GetJournal), while write paths enforce
+    // at upsert/delete time. This test pins that contract so moving scoping into the repository
+    // becomes a conscious, test-breaking decision rather than an accidental behavioral change.
+    string journalId = await CreateJournalForOtherUser();
+    string entryId = await AddEntryForOtherUser(journalId);
+
+    IEntry? entry = await _userScopedRepository.GetEntry(entryId);
+
+    entry.Should().NotBeNull();
+  }
+
+  [Test]
+  public async Task SearchEntries_IsUnscoped_TrustsCallerProvidedJournalIds()
+  {
+    // SearchEntries does not enforce journal read-permission; it trusts the journalIds passed by the
+    // caller. SearchEntriesQueryExecutor is responsible for passing only the current user's
+    // accessible journals (obtained via the scoped GetAllJournals). Pinned here so the "unsecured"
+    // contract is explicit rather than accidental.
+    string journalId = await CreateJournalForOtherUser();
+    await AddEntryForOtherUser(journalId);
+
+    IEntry[] entries = await _userScopedRepository.SearchEntries(null, null, null, [journalId]);
+
+    entries.Should().HaveCount(1);
+  }
+
   private async Task<string> AddEntryForOtherUser(string journalId)
   {
     UpsertResult result = await _repository.UpsertEntry(
