@@ -4,12 +4,16 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 
-public class UpsertGaugeEntryCommandExecutor(IRepository repository, IDateService dateService)
+public class UpsertGaugeEntryCommandExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository,
+  IDateService dateService
+)
   : BaseUpsertEntryCommandExecutor<
     UpsertGaugeEntryCommand,
     GaugeEntry,
     GaugeJournal
-  >(repository, dateService)
+  >(journalRepository, entryRepository, dateService)
 {
   protected override Task PerformTypeSpecificValidation(UpsertGaugeEntryCommand command)
   {

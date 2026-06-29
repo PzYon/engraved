@@ -4,7 +4,8 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.Get;
 
-public class GetEntryQueryExecutor(IRepository repository) : IQueryExecutor<IEntry?, GetEntryQuery>
+public class GetEntryQueryExecutor(IEntryRepository entryRepository, IJournalRepository journalRepository)
+  : IQueryExecutor<IEntry?, GetEntryQuery>
 {
   public bool DisableCache => false;
 
@@ -18,14 +19,16 @@ public class GetEntryQueryExecutor(IRepository repository) : IQueryExecutor<IEnt
       );
     }
 
-    IEntry? entry = await repository.GetEntry(query.EntryId);
+    IEntry? entry = await entryRepository.GetEntry(query.EntryId);
     if (entry == null)
     {
       return null;
     }
 
-    // permission check
-    IJournal? journal = await repository.GetJournal(entry.ParentId);
+    // Permission gate (not redundant): GetEntry is an unscoped primitive, so this is where read
+    // access is enforced for the single-entry endpoint. GetJournal is scoped, so it returns null
+    // when the current user cannot read the parent journal - in which case we hide the entry.
+    IJournal? journal = await journalRepository.GetJournal(entry.ParentId);
     if (journal == null)
     {
       return null;

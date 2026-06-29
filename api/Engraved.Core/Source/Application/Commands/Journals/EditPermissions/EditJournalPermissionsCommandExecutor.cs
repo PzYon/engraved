@@ -3,10 +3,10 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.EditPermissions;
 
-public class EditJournalPermissionsCommandExecutor(IRepository repository)
+public class EditJournalPermissionsCommandExecutor(IJournalRepository repository)
   : ICommandExecutor<EditJournalPermissionsCommand>
 {
-  private readonly IBaseRepository _repository = repository;
+  private readonly IJournalRepository _repository = repository;
 
   public async Task<CommandResult> Execute(EditJournalPermissionsCommand command)
   {
