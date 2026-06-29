@@ -28,22 +28,23 @@ public class JournalAccessFilter_Matches_JournalAccessPolicy_Should
   [Test]
   public async Task Agree_AcrossOwnershipAndPermissionMatrix()
   {
-    foreach ((string description, string ownerId, PermissionKind? myGrant) in Scenarios())
+    foreach (var (description, ownerId, myPermissionKind) in Scenarios())
     {
-      string journalId = await CreateJournal(ownerId, myGrant);
+      var journalId = await CreateJournal(ownerId, myPermissionKind);
       IJournal stored = (await _repository.GetJournal(journalId))!;
 
       foreach (PermissionKind required in new[] { PermissionKind.Read, PermissionKind.Write })
       {
-        bool policyResult = JournalAccessPolicy.HasAccess(stored, MyId, required);
-        bool filterResult = await MatchesFilter(journalId, required);
+        var policyResult = JournalAccessPolicy.HasAccess(stored, MyId, required);
+        var filterResult = await MatchesFilter(journalId, required);
 
-        filterResult.Should().Be(
-          policyResult,
-          "in-memory policy and Mongo filter must agree for [{0}] requiring {1}",
-          description,
-          required
-        );
+        filterResult.Should()
+          .Be(
+            policyResult,
+            "in-memory policy and Mongo filter must agree for [{0}] requiring {1}",
+            description,
+            required
+          );
       }
     }
   }
@@ -57,12 +58,12 @@ public class JournalAccessFilter_Matches_JournalAccessPolicy_Should
     yield return ("other user's journal, Write for me", OtherId, PermissionKind.Write);
   }
 
-  private async Task<string> CreateJournal(string ownerId, PermissionKind? myGrant)
+  private async Task<string> CreateJournal(string ownerId, PermissionKind? myPermissionKind)
   {
     var journal = new CounterJournal { UserId = ownerId };
-    if (myGrant.HasValue)
+    if (myPermissionKind.HasValue)
     {
-      journal.Permissions[MyId] = new PermissionDefinition { Kind = myGrant.Value };
+      journal.Permissions[MyId] = new PermissionDefinition { Kind = myPermissionKind.Value };
     }
 
     return (await _repository.UpsertJournal(journal)).EntityId;
@@ -70,7 +71,7 @@ public class JournalAccessFilter_Matches_JournalAccessPolicy_Should
 
   private async Task<bool> MatchesFilter(string journalId, PermissionKind required)
   {
-    FilterDefinition<JournalDocument> filter = Builders<JournalDocument>.Filter.And(
+    var filter = Builders<JournalDocument>.Filter.And(
       MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId),
       JournalAccessFilter.ForUser<JournalDocument>(MyId, required)
     );
