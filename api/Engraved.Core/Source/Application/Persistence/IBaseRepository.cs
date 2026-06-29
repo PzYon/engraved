@@ -1,66 +1,10 @@
-using Engraved.Core.Domain.Entries;
-using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Permissions;
-using Engraved.Core.Domain.Users;
-
 namespace Engraved.Core.Application.Persistence;
 
+// Composes the cohesive, role-based persistence interfaces. Kept as an umbrella
+// so existing consumers (and the DI markers IRepository / IUserScopedRepository)
+// continue to see the full surface, while new code can depend on just the
+// narrow role interface(s) it actually needs.
 public interface IBaseRepository
+  : IUserRepository, IJournalRepository, IEntryRepository, IMaintenanceRepository
 {
-  Task<IUser?> GetUser(string nameOrId);
-
-  Task<UpsertResult> UpsertUser(IUser user);
-
-  Task<IUser[]> GetUsers(params string[] userIds);
-
-  Task<IUser[]> GetAllUsers();
-
-  Task<IJournal[]> GetAllJournals(
-    string? searchText = null,
-    ScheduleMode? scheduleMode = null,
-    JournalType[]? journalTypes = null,
-    string[]? journalIds = null,
-    int? limit = null,
-    string? currentUserId = null
-  );
-
-  Task<IJournal?> GetJournal(string journalId);
-
-  Task<UpsertResult> UpsertJournal(IJournal journal);
-
-  Task DeleteJournal(string journalId);
-
-  Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions);
-
-  Task<IEntry[]> GetEntriesForJournal(
-    string journalId,
-    DateTime? fromDate = null,
-    DateTime? toDate = null,
-    IDictionary<string, string[]>? attributeValues = null,
-    string? searchText = null
-  );
-
-  Task<IEntry[]> SearchEntries(
-    string? searchText = null,
-    ScheduleMode? scheduleMode = null,
-    JournalType[]? journalTypes = null,
-    string[]? journalIds = null,
-    int? limit = null,
-    string? currentUserId = null,
-    bool onlyConsiderTitle = false
-  );
-
-  Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;
-
-  Task DeleteEntry(string entryId);
-
-  Task<IEntry?> GetEntry(string entryId);
-
-  Task WakeMeUp();
-
-  Task<long> CountAllUsers();
-
-  Task<long> CountAllEntries();
-
-  Task<long> CountAllJournals();
 }
