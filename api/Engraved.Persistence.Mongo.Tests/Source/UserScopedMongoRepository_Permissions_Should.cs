@@ -283,6 +283,17 @@ public class UserScopedMongoRepository_Permissions_Should
   }
 
   [Test]
+  public void UpsertEntry_WithoutParentJournal_IsRejected_FailClosed()
+  {
+    // The write guard is fail-closed: an entry with no parent journal id has no journal to authorize
+    // against, so the write is rejected rather than silently allowed (which would create an orphan
+    // entry). Pins the intentional behavior of EnsureUserHasPermission for a missing journal id.
+    Assert.ThrowsAsync<NotAllowedOperationException>(
+      async () => { await _userScopedRepository.UpsertEntry(new CounterEntry()); }
+    );
+  }
+
+  [Test]
   public async Task DeleteEntry_NotPossible_WithNoPermissionsAtAll()
   {
     string journalId = await CreateJournalForOtherUser();
