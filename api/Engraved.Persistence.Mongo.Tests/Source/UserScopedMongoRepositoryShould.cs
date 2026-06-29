@@ -15,8 +15,8 @@ namespace Engraved.Persistence.Mongo.Tests;
 public class UserScopedMongoRepositoryShould
 {
   private const string CurrentUserName = "me";
-  private string _currentUserId = null!;
   private const string OtherUserName = "other";
+  private string _currentUserId = null!;
   private string _otherUserId = null!;
 
   private TestMongoRepository _repository = null!;
@@ -62,7 +62,7 @@ public class UserScopedMongoRepositoryShould
     await _repository.UpsertUser(new User { Name = "max" });
     UpsertResult result3 = await _repository.UpsertUser(new User { Name = "gusti" });
 
-    IUser[] users = await _userScopedRepository.GetUsers(result1.EntityId, result3.EntityId);
+    var users = await _userScopedRepository.GetUsers(result1.EntityId, result3.EntityId);
 
     users.Length.Should().Be(2);
   }
@@ -81,8 +81,7 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public void UpsertUser_ShouldThrow_WhenUpdating_OtherUser()
   {
-    Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => await _userScopedRepository.UpsertUser(
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () => await _userScopedRepository.UpsertUser(
         new User { Id = _otherUserId, Name = OtherUserName }
       )
     );
@@ -105,8 +104,7 @@ public class UserScopedMongoRepositoryShould
   {
     UpsertResult result = await _repository.UpsertJournal(new TimerJournal { UserId = _otherUserId });
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () =>
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
       {
         await _userScopedRepository.UpsertJournal(
           new TimerJournal
@@ -124,12 +122,12 @@ public class UserScopedMongoRepositoryShould
   public async Task UpsertEntry_Ensures_CurrentUser_Id()
   {
     UpsertResult upsertJournal = await _userScopedRepository.UpsertJournal(new TimerJournal());
-    string journalId = upsertJournal.EntityId;
+    var journalId = upsertJournal.EntityId;
 
     IEntry entry = new TimerEntry { ParentId = journalId };
 
     await _userScopedRepository.UpsertEntry(entry);
-    IEntry[] entries = await _repository.GetEntriesForJournal(journalId);
+    var entries = await _repository.GetEntriesForJournal(journalId);
 
     entries.All(m => m.UserId == _currentUserId).Should().BeTrue();
   }
@@ -143,8 +141,7 @@ public class UserScopedMongoRepositoryShould
       UserId = _otherUserId
     };
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await _userScopedRepository.UpsertEntry(entry); }
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await _userScopedRepository.UpsertEntry(entry); }
     );
   }
 
@@ -201,12 +198,12 @@ public class UserScopedMongoRepositoryShould
     UpsertResult currentUserJournalResult =
       await _repository.UpsertJournal(new CounterJournal { UserId = _currentUserId });
 
-    string currentUserJournalId = currentUserJournalResult.EntityId;
+    var currentUserJournalId = currentUserJournalResult.EntityId;
 
     UpsertResult otherUserJournalResult
       = await _repository.UpsertJournal(new CounterJournal { UserId = _otherUserId });
 
-    string otherUserJournalId = otherUserJournalResult.EntityId;
+    var otherUserJournalId = otherUserJournalResult.EntityId;
 
     for (var i = 0; i < 10; i++)
     {
@@ -229,22 +226,27 @@ public class UserScopedMongoRepositoryShould
       );
     }
 
-    IEntry[] otherUserEntries = await _userScopedRepository.GetEntriesForJournal(otherUserJournalId);
-    
+    var otherUserEntries = await _userScopedRepository.GetEntriesForJournal(otherUserJournalId);
+
     otherUserEntries.Should().BeEmpty();
 
-    IEntry[] currentUserEntries = await _userScopedRepository.GetEntriesForJournal(currentUserJournalId);
+    var currentUserEntries = await _userScopedRepository.GetEntriesForJournal(currentUserJournalId);
     currentUserEntries.Length.Should().Be(10);
   }
 
   [Test]
   public async Task DeleteEntry()
   {
+    var journalId = MongoUtil.GenerateNewIdAsString();
+
+    await _repository.UpsertJournal(new CounterJournal { Id = journalId, UserId = _currentUserId });
+
     UpsertResult result = await _repository.UpsertEntry(
       new CounterEntry
       {
         UserId = _currentUserId,
-        Notes = "WillBeDeleted"
+        Notes = "WillBeDeleted",
+        ParentId = journalId
       }
     );
 
@@ -260,11 +262,16 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task DeleteEntry_ShouldNotDelete_FromOtherUser()
   {
+    var journalId = MongoUtil.GenerateNewIdAsString();
+
+    await _repository.UpsertJournal(new CounterJournal { Id = journalId, UserId = _currentUserId });
+
     UpsertResult result = await _repository.UpsertEntry(
       new CounterEntry
       {
         UserId = _otherUserId,
-        Notes = "WillBeDeleted"
+        Notes = "WillBeDeleted",
+        ParentId = journalId
       }
     );
 
