@@ -5,17 +5,18 @@ import React from "react";
 export const TitleRow: React.FC<{
   children: React.ReactNode;
   hasFocus: boolean;
-}> = ({ children, hasFocus }) => {
+  hasNoContent: boolean;
+}> = ({ children, hasFocus, hasNoContent }) => {
   const { isCompact } = useDisplayModeContext();
 
-  return isCompact && !hasFocus ? (
+  return (isCompact && !hasFocus) || hasNoContent ? (
     <>{children}</>
   ) : (
-    <FullRow>{children}</FullRow>
+    <Row>{children}</Row>
   );
 };
 
-const FullRow = styled("div")`
+const Row = styled("div")`
   border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
   padding-bottom: 6px;
   margin-bottom: 4px;
