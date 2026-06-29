@@ -116,6 +116,15 @@ builder.Services.AddTransient<Lazy<IUser>>(provider => provider.GetService<IUser
 builder.Services.AddTransient<IRepository>(provider => provider.GetService<IUserScopedRepository>()!
 );
 
+// The narrow, role-based persistence interfaces resolve to the user-scoped repository (same as
+// IRepository), so executors that depend on just the role(s) they use transparently get permission
+// enforcement. The non-scoped IBaseRepository remains for the few consumers that must run without a
+// user context (auth/login, the notification job, health endpoints).
+builder.Services.AddTransient<IUserRepository>(provider => provider.GetService<IUserScopedRepository>()!);
+builder.Services.AddTransient<IJournalRepository>(provider => provider.GetService<IUserScopedRepository>()!);
+builder.Services.AddTransient<IEntryRepository>(provider => provider.GetService<IUserScopedRepository>()!);
+builder.Services.AddTransient<IMaintenanceRepository>(provider => provider.GetService<IUserScopedRepository>()!);
+
 builder.Services.AddSingleton(new E2ETestMode(isE2ETests));
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();

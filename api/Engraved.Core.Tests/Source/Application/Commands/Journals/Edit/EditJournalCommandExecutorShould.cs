@@ -72,7 +72,7 @@ public class EditJournalCommandExecutorShould
       }
     );
 
-    await new EditJournalCommandExecutor(_repo, new FakeDateService()).Execute(
+    await new EditJournalCommandExecutor(_repo, _repo, new FakeDateService()).Execute(
       new EditJournalCommand
       {
         JournalId = journalId,
@@ -127,7 +127,7 @@ public class EditJournalCommandExecutorShould
       }
     );
 
-    await new EditJournalCommandExecutor(_repo, new FakeDateService()).Execute(
+    await new EditJournalCommandExecutor(_repo, _repo, new FakeDateService()).Execute(
       new EditJournalCommand
       {
         JournalId = journalId,

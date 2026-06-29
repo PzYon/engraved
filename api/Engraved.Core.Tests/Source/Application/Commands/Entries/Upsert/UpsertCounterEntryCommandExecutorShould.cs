@@ -28,7 +28,7 @@ public class UpsertCounterEntryCommandExecutorShould
     await _testRepository.UpsertJournal(new CounterJournal { Id = journalId });
 
     var command = new UpsertCounterEntryCommand { JournalId = journalId, Notes = "foo" };
-    await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+    await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
     (await _testRepository.GetEntriesForJournal(journalId)).First().Notes.Should().Be("foo");
@@ -44,7 +44,7 @@ public class UpsertCounterEntryCommandExecutorShould
 
     var createCommand = new UpsertGaugeEntryCommand { JournalId = journalId, Notes = "foo", Value = 123 };
 
-    var commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, dateService);
+    var commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,dateService);
     CommandResult result = await commandExecutor.Execute(createCommand);
 
     var updateCommand = new UpsertGaugeEntryCommand
@@ -55,7 +55,7 @@ public class UpsertCounterEntryCommandExecutorShould
       Value = 42
     };
 
-    commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, dateService);
+    commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,dateService);
     await commandExecutor.Execute(updateCommand);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -75,7 +75,7 @@ public class UpsertCounterEntryCommandExecutorShould
 
     async Task Action()
     {
-      await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+      await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
     }
   }
 
@@ -93,7 +93,7 @@ public class UpsertCounterEntryCommandExecutorShould
 
     async Task Action()
     {
-      await new UpsertCounterEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+      await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
     }
   }
 }

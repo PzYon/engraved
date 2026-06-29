@@ -48,6 +48,7 @@ public class MoveEntryCommandExecutorShould
     // when
     await new MoveEntryCommandExecutor(
       _repo,
+      _repo,
       _dateService
     ).Execute(
       new MoveEntryCommand

@@ -3,7 +3,11 @@ using Engraved.Core.Application.Persistence;
 
 namespace Engraved.Core.Application.Queries.SystemInfo.Get;
 
-public class GetSystemInfoQueryExecutor(IRepository repository)
+public class GetSystemInfoQueryExecutor(
+  IUserRepository userRepository,
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository
+)
   : IQueryExecutor<SystemInfo, GetSystemInfoQuery>
 {
   private const string DevInformationalVersion =
@@ -17,9 +21,9 @@ public class GetSystemInfoQueryExecutor(IRepository repository)
 
     var systemInfo = new SystemInfo
     {
-      JournalsCount = await repository.CountAllJournals(),
-      EntriesCount = await repository.CountAllEntries(),
-      UsersCount = await repository.CountAllUsers()
+      JournalsCount = await journalRepository.CountAllJournals(),
+      EntriesCount = await entryRepository.CountAllEntries(),
+      UsersCount = await userRepository.CountAllUsers()
     };
 
     if (segments.Length == 4)

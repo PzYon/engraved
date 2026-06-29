@@ -4,10 +4,13 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Edit;
 
-public class EditJournalCommandExecutor(IRepository repository, IDateService dateService)
+public class EditJournalCommandExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository,
+  IDateService dateService
+)
   : ICommandExecutor<EditJournalCommand>
 {
-  private readonly IBaseRepository _repository = repository;
 
   public async Task<CommandResult> Execute(EditJournalCommand command)
   {
@@ -21,7 +24,7 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
       throw new InvalidCommandException(command, $"{nameof(EditJournalCommand.Name)} must be specified.");
     }
 
-    IJournal? journal = await _repository.GetJournal(command.JournalId);
+    IJournal? journal = await journalRepository.GetJournal(command.JournalId);
 
     if (journal == null)
     {
@@ -41,7 +44,7 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
     journal.CustomProps = command.CustomProps;
     journal.EditedOn = dateService.UtcNow;
 
-    UpsertResult result = await _repository.UpsertJournal(journal);
+    UpsertResult result = await journalRepository.UpsertJournal(journal);
 
     return new CommandResult(result.EntityId, journal.Permissions.GetUserIdsWithAccess());
   }
@@ -53,7 +56,7 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
       return;
     }
 
-    var entries = await _repository.GetEntriesForJournal(journalId);
+    var entries = await entryRepository.GetEntriesForJournal(journalId);
 
     foreach (IEntry entry in entries)
     {
@@ -65,7 +68,7 @@ public class EditJournalCommandExecutor(IRepository repository, IDateService dat
 
       if (changed)
       {
-        await _repository.UpsertEntry(entry);
+        await entryRepository.UpsertEntry(entry);
       }
     }
   }

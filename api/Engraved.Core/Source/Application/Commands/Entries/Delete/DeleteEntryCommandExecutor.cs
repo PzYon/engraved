@@ -6,25 +6,26 @@ using Engraved.Core.Domain.Notifications;
 namespace Engraved.Core.Application.Commands.Entries.Delete;
 
 public class DeleteEntryCommandExecutor(
-  IRepository repository,
+  IEntryRepository entryRepository,
+  IJournalRepository journalRepository,
   IDateService dateService
 )
   : ICommandExecutor<DeleteEntryCommand>
 {
   public async Task<CommandResult> Execute(DeleteEntryCommand command)
   {
-    IEntry? entry = await repository.GetEntry(command.Id);
+    IEntry? entry = await entryRepository.GetEntry(command.Id);
     if (entry == null)
     {
       return new CommandResult();
     }
 
-    await repository.DeleteEntry(command.Id);
+    await entryRepository.DeleteEntry(command.Id);
 
-    IJournal journal = (await repository.GetJournal(entry.ParentId))!;
+    IJournal journal = (await journalRepository.GetJournal(entry.ParentId))!;
     journal.EditedOn = dateService.UtcNow;
 
-    await repository.UpsertJournal(journal);
+    await journalRepository.UpsertJournal(journal);
 
     return new CommandResult(command.Id, journal.Permissions.GetUserIdsWithAccess());
   }

@@ -6,7 +6,8 @@ using Engraved.Core.Domain.Journals;
 namespace Engraved.Core.Application.Commands.Entries.Upsert;
 
 public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>(
-  IRepository repository,
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository,
   IDateService dateService
 ) : ICommandExecutor<TCommand>
   where TCommand : BaseUpsertEntryCommand
@@ -14,17 +15,19 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   where TJournal : class, IJournal
 {
   protected readonly IDateService DateService = dateService;
-  protected readonly IBaseRepository Repository = repository;
+  protected readonly IJournalRepository JournalRepository = journalRepository;
+  protected readonly IEntryRepository EntryRepository = entryRepository;
 
   public async Task<CommandResult> Execute(TCommand command)
   {
-    var journal = await JournalCommandUtil.LoadAndValidateJournal<TJournal>(Repository, command, command.JournalId);
+    var journal =
+      await JournalCommandUtil.LoadAndValidateJournal<TJournal>(JournalRepository, command, command.JournalId);
 
     await ValidateCommand(command, journal);
 
     UpsertResult result = await UpsertEntry(command, journal);
 
-    await UpdateJournal(Repository, DateService, journal);
+    await UpdateJournal(JournalRepository, DateService, journal);
 
     return new CommandResult(result.EntityId, journal.Permissions.GetUserIdsWithAccess());
   }
@@ -44,10 +47,10 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     SetCommonValues(command, entry);
     SetTypeSpecificValues(command, entry);
 
-    return await Repository.UpsertEntry(entry);
+    return await EntryRepository.UpsertEntry(entry);
   }
 
-  private static async Task UpdateJournal(IBaseRepository repository, IDateService dateService, TJournal journal)
+  private static async Task UpdateJournal(IJournalRepository repository, IDateService dateService, TJournal journal)
   {
     journal.EditedOn = dateService.UtcNow;
     await repository.UpsertJournal(journal);
@@ -130,7 +133,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   {
     if (!string.IsNullOrEmpty(command.Id))
     {
-      return (TEntry)(await Repository.GetEntry(command.Id))!;
+      return (TEntry)(await EntryRepository.GetEntry(command.Id))!;
     }
 
     return null;

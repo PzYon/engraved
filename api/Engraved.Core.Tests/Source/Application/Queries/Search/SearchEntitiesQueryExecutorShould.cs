@@ -84,7 +84,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -156,7 +156,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
     CommandResult entryResult = await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -188,7 +188,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -210,7 +210,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {

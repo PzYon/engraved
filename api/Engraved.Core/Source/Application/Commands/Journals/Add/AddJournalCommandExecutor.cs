@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Add;
 
-public class AddJournalCommandExecutor(IRepository repository, IDateService dateService)
+public class AddJournalCommandExecutor(IJournalRepository repository, IDateService dateService)
   : ICommandExecutor<AddJournalCommand>
 {
   public async Task<CommandResult> Execute(AddJournalCommand command)

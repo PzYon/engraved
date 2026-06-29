@@ -46,7 +46,7 @@ public class DeleteEntryCommandExecutorShould
     );
 
     // when
-    CommandResult result = await new DeleteEntryCommandExecutor(_repo, _dateService).Execute(
+    CommandResult result = await new DeleteEntryCommandExecutor(_repo, _repo, _dateService).Execute(
       new DeleteEntryCommand { Id = entryId }
     );
 
@@ -66,7 +66,7 @@ public class DeleteEntryCommandExecutorShould
     const string missingEntryId = "60703c3b0000000000000004";
 
     // when
-    CommandResult result = await new DeleteEntryCommandExecutor(_repo, _dateService).Execute(
+    CommandResult result = await new DeleteEntryCommandExecutor(_repo, _repo, _dateService).Execute(
       new DeleteEntryCommand { Id = missingEntryId }
     );
 

@@ -4,41 +4,45 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Move;
 
-public class MoveEntryCommandExecutor(IRepository repository, IDateService dateService)
+public class MoveEntryCommandExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository,
+  IDateService dateService
+)
   : ICommandExecutor<MoveEntryCommand>
 {
   public async Task<CommandResult> Execute(MoveEntryCommand command)
   {
     // can user access target journal?
-    IJournal? targetJournal = await repository.GetJournal(command.TargetJournalId);
+    IJournal? targetJournal = await journalRepository.GetJournal(command.TargetJournalId);
     if (targetJournal == null)
     {
       return new CommandResult();
     }
 
     // can user access entry?
-    IEntry? entry = await repository.GetEntry(command.EntryId);
+    IEntry? entry = await entryRepository.GetEntry(command.EntryId);
     if (entry == null)
     {
       return new CommandResult();
     }
 
     // update source journal EditedOn
-    IJournal sourceJournal = (await repository.GetJournal(entry.ParentId))!;
+    IJournal sourceJournal = (await journalRepository.GetJournal(entry.ParentId))!;
     sourceJournal.EditedOn = dateService.UtcNow;
-    await repository.UpsertJournal(sourceJournal);
+    await journalRepository.UpsertJournal(sourceJournal);
 
     // update target journal EditedOn
     targetJournal.EditedOn = dateService.UtcNow;
-    await repository.UpsertJournal(targetJournal);
+    await journalRepository.UpsertJournal(targetJournal);
 
     // update entry
     entry.EditedOn = dateService.UtcNow;
     entry.DateTime = dateService.UtcNow;
     entry.ParentId = targetJournal.Id!;
-    await repository.UpsertEntry(entry);
+    await entryRepository.UpsertEntry(entry);
 
-    string[] affectedUserIds = await GetAffectedUserIds(repository, entry, targetJournal);
+    string[] affectedUserIds = await GetAffectedUserIds(journalRepository, entry, targetJournal);
 
     return new CommandResult(
       command.EntryId,
@@ -47,7 +51,7 @@ public class MoveEntryCommandExecutor(IRepository repository, IDateService dateS
   }
 
   private static async Task<string[]> GetAffectedUserIds(
-    IBaseRepository repository,
+    IJournalRepository repository,
     IEntry entry,
     IJournal targetJournal
   )
