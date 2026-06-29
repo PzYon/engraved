@@ -36,7 +36,7 @@ public class UpsertGaugeEntryCommandExecutorShould
     };
 
     CommandResult commandResult =
-      await new UpsertGaugeEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+      await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
 
     commandResult.EntityId.Should().NotBeEmpty();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -64,7 +64,7 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     Assert.ThrowsAsync<InvalidCommandException>(async () =>
       {
-        await new UpsertGaugeEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+        await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
       }
     );
   }
@@ -106,7 +106,7 @@ public class UpsertGaugeEntryCommandExecutorShould
       }
     };
 
-    await new UpsertGaugeEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+    await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
 
@@ -156,7 +156,7 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     Assert.ThrowsAsync<InvalidCommandException>(async () =>
       {
-        await new UpsertGaugeEntryCommandExecutor(_testRepository, new FakeDateService()).Execute(command);
+        await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
       }
     );
   }

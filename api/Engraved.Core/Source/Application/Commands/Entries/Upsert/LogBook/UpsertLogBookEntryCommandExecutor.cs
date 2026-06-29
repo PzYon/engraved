@@ -4,13 +4,18 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.LogBook;
 
-public class UpsertLogBookEntryCommandExecutor(IRepository repository, IDateService dateService)
+public class UpsertLogBookEntryCommandExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository,
+  IDateService dateService
+)
   : BaseUpsertEntryCommandExecutor<
     UpsertLogBookEntryCommand,
     LogBookEntry,
     LogBookJournal
   >(
-    repository,
+    journalRepository,
+    entryRepository,
     dateService
   )
 {
@@ -39,7 +44,7 @@ public class UpsertLogBookEntryCommandExecutor(IRepository repository, IDateServ
 
   private async Task<bool> HasEntryForDay(UpsertLogBookEntryCommand command, DateTime entryDate)
   {
-    var entriesOnSameDay = await Repository.GetEntriesForJournal(
+    var entriesOnSameDay = await EntryRepository.GetEntriesForJournal(
       command.JournalId,
       entryDate,
       entryDate

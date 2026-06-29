@@ -21,6 +21,4 @@ public interface IJournalRepository
   Task DeleteJournal(string journalId);
 
   Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions);
-
-  Task<long> CountAllJournals();
 }

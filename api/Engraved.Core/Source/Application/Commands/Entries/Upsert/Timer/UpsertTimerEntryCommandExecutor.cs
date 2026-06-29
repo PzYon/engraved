@@ -4,19 +4,24 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 
-public class UpsertTimerEntryCommandExecutor(IRepository repository, IDateService dateService)
+public class UpsertTimerEntryCommandExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository,
+  IDateService dateService
+)
   : BaseUpsertEntryCommandExecutor<
     UpsertTimerEntryCommand,
     TimerEntry,
     TimerJournal
   >(
-    repository,
+    journalRepository,
+    entryRepository,
     dateService
   )
 {
   protected override async Task<TimerEntry?> LoadEntryToUpdate(UpsertTimerEntryCommand command, TimerJournal journal)
   {
-    return await GetActiveEntry(Repository, journal);
+    return await GetActiveEntry(EntryRepository, journal);
   }
 
   protected override void SetTypeSpecificValues(UpsertTimerEntryCommand command, TimerEntry entry)
@@ -57,7 +62,7 @@ public class UpsertTimerEntryCommandExecutor(IRepository repository, IDateServic
            && command.EndDate == null;
   }
 
-  public static async Task<TimerEntry?> GetActiveEntry(IBaseRepository repository, TimerJournal journal)
+  public static async Task<TimerEntry?> GetActiveEntry(IEntryRepository repository, TimerJournal journal)
   {
     // we get all entries here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)

@@ -4,13 +4,18 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 
-public class UpsertScrapsEntryCommandExecutor(IRepository repository, IDateService dateService)
+public class UpsertScrapsEntryCommandExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository,
+  IDateService dateService
+)
   : BaseUpsertEntryCommandExecutor<
     UpsertScrapsEntryCommand,
     ScrapsEntry,
     ScrapsJournal
   >(
-    repository,
+    journalRepository,
+    entryRepository,
     dateService
   )
 {

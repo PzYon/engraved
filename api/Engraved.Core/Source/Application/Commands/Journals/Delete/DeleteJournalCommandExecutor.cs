@@ -4,7 +4,7 @@ using Engraved.Core.Domain.Notifications;
 
 namespace Engraved.Core.Application.Commands.Journals.Delete;
 
-public class DeleteJournalCommandExecutor(IRepository repository)
+public class DeleteJournalCommandExecutor(IJournalRepository repository)
   : ICommandExecutor<DeleteJournalCommand>
 {
   public async Task<CommandResult> Execute(DeleteJournalCommand command)

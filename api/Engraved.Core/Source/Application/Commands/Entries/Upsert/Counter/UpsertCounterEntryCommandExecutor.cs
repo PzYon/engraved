@@ -4,12 +4,16 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 
-public class UpsertCounterEntryCommandExecutor(IRepository repository, IDateService dateService)
+public class UpsertCounterEntryCommandExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository,
+  IDateService dateService
+)
   : BaseUpsertEntryCommandExecutor<
     UpsertCounterEntryCommand,
     CounterEntry,
     CounterJournal
-  >(repository, dateService)
+  >(journalRepository, entryRepository, dateService)
 {
   protected override void SetTypeSpecificValues(UpsertCounterEntryCommand command, CounterEntry entry) { }
 }
