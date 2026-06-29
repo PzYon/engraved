@@ -62,7 +62,7 @@ export const LogBookInner: React.FC = () => {
           shouldDisableDate={(d) => usedDays.has(getDayKey(d))}
         />
       ) : (
-        <TitleRow>
+        <TitleRow hasFocus={hasFocus}>
           <ReadonlyTitle
             entity={scrapToRender}
             hasFocus={hasFocus}

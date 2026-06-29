@@ -2,12 +2,17 @@ import { styled } from "@mui/material";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import React from "react";
 
-export const TitleRow: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const TitleRow: React.FC<{
+  children: React.ReactNode;
+  hasFocus: boolean;
+}> = ({ children, hasFocus }) => {
   const { isCompact } = useDisplayModeContext();
 
-  return isCompact ? <>{children}</> : <FullRow>{children}</FullRow>;
+  return isCompact && !hasFocus ? (
+    <>{children}</>
+  ) : (
+    <FullRow>{children}</FullRow>
+  );
 };
 
 const FullRow = styled("div")`
