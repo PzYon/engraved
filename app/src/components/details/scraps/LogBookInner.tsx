@@ -19,6 +19,7 @@ export const LogBookInner: React.FC = () => {
     setDate,
     scrapToRender,
     hasFocus,
+    notes,
   } = useScrapContext();
 
   // Fetch the journal's entries directly (rather than via JournalContext) so day-deduplication
@@ -62,7 +63,7 @@ export const LogBookInner: React.FC = () => {
           shouldDisableDate={(d) => usedDays.has(getDayKey(d))}
         />
       ) : (
-        <TitleRow hasFocus={hasFocus}>
+        <TitleRow hasFocus={hasFocus} hasNoContent={!notes?.trim().length}>
           <ReadonlyTitle
             entity={scrapToRender}
             hasFocus={hasFocus}
