@@ -116,7 +116,7 @@ export const ScrapInner: React.FC = () => {
           onBlur={() => setHasTitleFocus(false)}
         />
       ) : (
-        <TitleRow hasFocus={hasFocus}>
+        <TitleRow hasFocus={hasFocus} hasNoContent={!notes?.trim().length}>
           <ReadonlyTitle
             entity={scrapToRender}
             hasFocus={hasFocus}
