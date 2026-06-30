@@ -8,7 +8,7 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application;
 
-public class TestServiceProvider(IUserScopedRepository userScopedRepository) : IServiceProvider
+public class TestServiceProvider(IUserRestrictedRepository userScopedRepository) : IServiceProvider
 {
   public object GetService(Type serviceType)
   {

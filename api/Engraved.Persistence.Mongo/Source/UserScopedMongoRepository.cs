@@ -9,7 +9,7 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
+public class UserScopedMongoRepository : MongoRepository, IUserRestrictedRepository
 {
   private readonly ICurrentUserService _currentUserService;
 

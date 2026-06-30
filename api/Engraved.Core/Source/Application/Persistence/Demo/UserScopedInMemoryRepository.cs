@@ -5,7 +5,7 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Persistence.Demo;
 
-public class UserScopedInMemoryRepository : IUserScopedRepository
+public class UserScopedInMemoryRepository : IUserRestrictedRepository
 {
   private readonly InMemoryRepository _repository;
   private readonly ICurrentUserService _currentUserService;

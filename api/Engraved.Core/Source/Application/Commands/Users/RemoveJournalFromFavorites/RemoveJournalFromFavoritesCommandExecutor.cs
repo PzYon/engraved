@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 
-public class RemoveJournalFromFavoritesCommandExecutor(IUserScopedRepository repository)
+public class RemoveJournalFromFavoritesCommandExecutor(IUserRestrictedRepository repository)
   : ICommandExecutor<RemoveJournalFromFavoritesCommand>
 {
   public async Task<CommandResult> Execute(RemoveJournalFromFavoritesCommand command)

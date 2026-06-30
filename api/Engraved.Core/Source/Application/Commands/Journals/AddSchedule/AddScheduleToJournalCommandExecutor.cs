@@ -4,7 +4,7 @@ using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Core.Application.Commands.Journals.AddSchedule;
 
-public class AddScheduleToJournalCommandExecutor(IUserScopedRepository repository)
+public class AddScheduleToJournalCommandExecutor(IUserRestrictedRepository repository)
   : ICommandExecutor<AddScheduleToJournalCommand>
 {
   public async Task<CommandResult> Execute(AddScheduleToJournalCommand command)

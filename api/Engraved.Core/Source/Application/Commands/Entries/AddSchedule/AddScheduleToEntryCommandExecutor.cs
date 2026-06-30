@@ -5,7 +5,7 @@ using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Core.Application.Commands.Entries.AddSchedule;
 
-public class AddScheduleToEntryCommandExecutor(IUserScopedRepository repository)
+public class AddScheduleToEntryCommandExecutor(IUserRestrictedRepository repository)
   : ICommandExecutor<AddScheduleToEntryCommand>
 {
   public async Task<CommandResult> Execute(AddScheduleToEntryCommand command)

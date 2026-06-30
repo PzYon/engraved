@@ -15,7 +15,7 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/user")]
 [Authorize]
-public class UserController(IUserScopedRepository userScopedRepository, Dispatcher dispatcher)
+public class UserController(IUserRestrictedRepository userScopedRepository, Dispatcher dispatcher)
   : Controller
 {
   [HttpGet]

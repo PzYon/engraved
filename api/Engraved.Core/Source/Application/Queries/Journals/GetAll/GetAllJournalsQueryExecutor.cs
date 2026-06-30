@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Journals.GetAll;
 
-public class GetAllJournalsQueryExecutor(IUserScopedRepository repository)
+public class GetAllJournalsQueryExecutor(IUserRestrictedRepository repository)
   : IQueryExecutor<IJournal[], GetAllJournalsQuery>
 {
   public bool DisableCache => false;

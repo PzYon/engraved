@@ -188,7 +188,7 @@ public class FakeQueryExecutor : IQueryExecutor<Guid, FakeQuery>
   }
 }
 
-public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepository
+public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserRestrictedRepository
 {
   public Lazy<IUser> CurrentUser => currentUser;
 

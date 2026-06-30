@@ -11,7 +11,7 @@ namespace Engraved.Core.Application;
 public class Dispatcher(
   ILogger<Dispatcher> logger,
   IServiceProvider serviceProvider,
-  IUserScopedRepository repository,
+  IUserRestrictedRepository repository,
   QueryCache queryCache
 )
 {

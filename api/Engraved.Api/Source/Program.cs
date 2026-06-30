@@ -97,8 +97,8 @@ builder.Services.AddSingleton(provider => new MongoDatabaseClient(
 
 // The explicit unrestricted seam: resolves to the raw MongoRepository (no permission/user scoping).
 // Injected only by consumers that deliberately run without a current user (the notification job,
-// auth/login, health endpoints). It is a distinct type from IRepository, so unrestricted access is
-// always a conscious, greppable choice and can never be obtained by accident.
+// auth/login, health endpoints). It is a distinct type from the scoped IUserRestrictedRepository, so
+// unrestricted access is always a conscious, greppable choice and can never be obtained by accident.
 builder.Services.AddTransient<IUnrestrictedRepository>(provider =>
   {
     var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
@@ -106,7 +106,7 @@ builder.Services.AddTransient<IUnrestrictedRepository>(provider =>
   }
 );
 
-builder.Services.AddTransient<IUserScopedRepository>(provider =>
+builder.Services.AddTransient<IUserRestrictedRepository>(provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
     var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
@@ -114,19 +114,17 @@ builder.Services.AddTransient<IUserScopedRepository>(provider =>
   }
 );
 
-builder.Services.AddTransient<Lazy<IUser>>(provider => provider.GetService<IUserScopedRepository>()!.CurrentUser
+builder.Services.AddTransient<Lazy<IUser>>(provider => provider.GetService<IUserRestrictedRepository>()!.CurrentUser
 );
 
-builder.Services.AddTransient<IRepository>(provider => provider.GetService<IUserScopedRepository>()!
-);
-
-// The narrow, role-based persistence interfaces resolve to the user-scoped repository (same as
-// IRepository), so executors that depend on just the role(s) they use transparently get permission
-// enforcement. Consumers that need unrestricted access inject IUnrestrictedRepository (above) instead.
-builder.Services.AddTransient<IUserRepository>(provider => provider.GetService<IUserScopedRepository>()!);
-builder.Services.AddTransient<IJournalRepository>(provider => provider.GetService<IUserScopedRepository>()!);
-builder.Services.AddTransient<IEntryRepository>(provider => provider.GetService<IUserScopedRepository>()!);
-builder.Services.AddTransient<IMaintenanceRepository>(provider => provider.GetService<IUserScopedRepository>()!);
+// The narrow, role-based persistence interfaces resolve to the user-restricted repository (same as
+// IUserRestrictedRepository), so executors that depend on just the role(s) they use transparently
+// get permission enforcement. Consumers that need unrestricted access inject IUnrestrictedRepository
+// (above) instead.
+builder.Services.AddTransient<IUserRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
+builder.Services.AddTransient<IJournalRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
+builder.Services.AddTransient<IEntryRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
+builder.Services.AddTransient<IMaintenanceRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
 
 builder.Services.AddSingleton(new E2ETestMode(isE2ETests));
 builder.Services.AddMemoryCache();
