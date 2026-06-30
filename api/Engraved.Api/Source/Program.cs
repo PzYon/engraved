@@ -124,7 +124,10 @@ builder.Services.AddTransient<Lazy<IUser>>(provider => provider.GetService<IUser
 builder.Services.AddTransient<IUserRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
 builder.Services.AddTransient<IJournalRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
 builder.Services.AddTransient<IEntryRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
-builder.Services.AddTransient<IMaintenanceRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
+
+// Maintenance is inherently unrestricted (keep-alive, global counts), so it resolves to the
+// unrestricted repository rather than the user-restricted one.
+builder.Services.AddTransient<IMaintenanceRepository>(provider => provider.GetService<IUnrestrictedRepository>()!);
 
 builder.Services.AddSingleton(new E2ETestMode(isE2ETests));
 builder.Services.AddMemoryCache();
