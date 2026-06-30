@@ -12,7 +12,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class UserScopedMongoRepositoryShould
+public class UserRestrictedMongoRepositoryShould
 {
   private const string CurrentUserName = "me";
   private const string OtherUserName = "other";
@@ -20,7 +20,7 @@ public class UserScopedMongoRepositoryShould
   private string _otherUserId = null!;
 
   private TestMongoRepository _repository = null!;
-  private TestUserScopedMongoRepository _userScopedRepository = null!;
+  private TestUserRestrictedMongoRepository _userRestrictedRepository = null!;
 
   [SetUp]
   public async Task Setup()
@@ -29,7 +29,7 @@ public class UserScopedMongoRepositoryShould
     _currentUserId = (await _repository.UpsertUser(new User { Name = CurrentUserName })).EntityId;
     _otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
 
-    _userScopedRepository = await Util.CreateUserScopedMongoRepository(CurrentUserName, _currentUserId, true);
+    _userRestrictedRepository = await Util.CreateUserRestrictedMongoRepository(CurrentUserName, _currentUserId, true);
   }
 
   [Test]
@@ -38,7 +38,7 @@ public class UserScopedMongoRepositoryShould
     await _repository.UpsertUser(new User { Name = "franz" });
     await _repository.UpsertUser(new User { Name = "max" });
 
-    IUser? user = await _userScopedRepository.GetUser(CurrentUserName);
+    IUser? user = await _userRestrictedRepository.GetUser(CurrentUserName);
 
     user.Should().NotBeNull();
     user.Name.Should().Be(CurrentUserName);
@@ -50,7 +50,7 @@ public class UserScopedMongoRepositoryShould
     await _repository.UpsertUser(new User { Name = "franz" });
     await _repository.UpsertUser(new User { Name = "max" });
 
-    IUser? user = await _userScopedRepository.GetUser(OtherUserName);
+    IUser? user = await _userRestrictedRepository.GetUser(OtherUserName);
 
     user.Should().NotBeNull();
   }
@@ -62,7 +62,7 @@ public class UserScopedMongoRepositoryShould
     await _repository.UpsertUser(new User { Name = "max" });
     UpsertResult result3 = await _repository.UpsertUser(new User { Name = "gusti" });
 
-    var users = await _userScopedRepository.GetUsers(result1.EntityId, result3.EntityId);
+    var users = await _userRestrictedRepository.GetUsers(result1.EntityId, result3.EntityId);
 
     users.Length.Should().Be(2);
   }
@@ -73,15 +73,15 @@ public class UserScopedMongoRepositoryShould
     IUser? current = await _repository.GetUser(CurrentUserName);
     current.Should().NotBeNull();
 
-    UpsertResult result = await _userScopedRepository.UpsertUser(current);
+    UpsertResult result = await _userRestrictedRepository.UpsertUser(current);
 
-    result.EntityId.Should().Be(_userScopedRepository.CurrentUser.Value.Id);
+    result.EntityId.Should().Be(_userRestrictedRepository.CurrentUser.Value.Id);
   }
 
   [Test]
   public void UpsertUser_ShouldThrow_WhenUpdating_OtherUser()
   {
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => await _userScopedRepository.UpsertUser(
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () => await _userRestrictedRepository.UpsertUser(
         new User { Id = _otherUserId, Name = OtherUserName }
       )
     );
@@ -92,7 +92,7 @@ public class UserScopedMongoRepositoryShould
   {
     IJournal journal = new TimerJournal();
 
-    UpsertResult result = await _userScopedRepository.UpsertJournal(journal);
+    UpsertResult result = await _userRestrictedRepository.UpsertJournal(journal);
     IJournal? createdJournal = await _repository.GetJournal(result.EntityId);
 
     result.EntityId.Should().Be(createdJournal!.Id);
@@ -106,7 +106,7 @@ public class UserScopedMongoRepositoryShould
 
     Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
       {
-        await _userScopedRepository.UpsertJournal(
+        await _userRestrictedRepository.UpsertJournal(
           new TimerJournal
           {
             Id = result.EntityId,
@@ -121,12 +121,12 @@ public class UserScopedMongoRepositoryShould
   [Test]
   public async Task UpsertEntry_Ensures_CurrentUser_Id()
   {
-    UpsertResult upsertJournal = await _userScopedRepository.UpsertJournal(new TimerJournal());
+    UpsertResult upsertJournal = await _userRestrictedRepository.UpsertJournal(new TimerJournal());
     var journalId = upsertJournal.EntityId;
 
     IEntry entry = new TimerEntry { ParentId = journalId };
 
-    await _userScopedRepository.UpsertEntry(entry);
+    await _userRestrictedRepository.UpsertEntry(entry);
     var entries = await _repository.GetEntriesForJournal(journalId);
 
     entries.All(m => m.UserId == _currentUserId).Should().BeTrue();
@@ -141,7 +141,7 @@ public class UserScopedMongoRepositoryShould
       UserId = _otherUserId
     };
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await _userScopedRepository.UpsertEntry(entry); }
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await _userRestrictedRepository.UpsertEntry(entry); }
     );
   }
 
@@ -164,7 +164,7 @@ public class UserScopedMongoRepositoryShould
       }
     );
 
-    IJournal? journal = await _userScopedRepository.GetJournal(currentUserResult.EntityId);
+    IJournal? journal = await _userRestrictedRepository.GetJournal(currentUserResult.EntityId);
     journal.Should().NotBeNull();
     journal.Name.Should().Be("From Current User");
   }
@@ -188,7 +188,7 @@ public class UserScopedMongoRepositoryShould
       }
     );
 
-    IJournal? journal = await _userScopedRepository.GetJournal(otherUserResult.EntityId);
+    IJournal? journal = await _userRestrictedRepository.GetJournal(otherUserResult.EntityId);
     journal.Should().BeNull();
   }
 
@@ -226,11 +226,11 @@ public class UserScopedMongoRepositoryShould
       );
     }
 
-    var otherUserEntries = await _userScopedRepository.GetEntriesForJournal(otherUserJournalId);
+    var otherUserEntries = await _userRestrictedRepository.GetEntriesForJournal(otherUserJournalId);
 
     otherUserEntries.Should().BeEmpty();
 
-    var currentUserEntries = await _userScopedRepository.GetEntriesForJournal(currentUserJournalId);
+    var currentUserEntries = await _userRestrictedRepository.GetEntriesForJournal(currentUserJournalId);
     currentUserEntries.Length.Should().Be(10);
   }
 
@@ -253,7 +253,7 @@ public class UserScopedMongoRepositoryShould
     IEntry? entry = await _repository.GetEntry(result.EntityId);
     entry!.Should().NotBeNull();
 
-    await _userScopedRepository.DeleteEntry(result.EntityId);
+    await _userRestrictedRepository.DeleteEntry(result.EntityId);
 
     entry = await _repository.GetEntry(result.EntityId);
     entry.Should().BeNull();
@@ -278,7 +278,7 @@ public class UserScopedMongoRepositoryShould
     IEntry? entry = await _repository.GetEntry(result.EntityId);
     entry.Should().NotBeNull();
 
-    await _userScopedRepository.DeleteEntry(result.EntityId);
+    await _userRestrictedRepository.DeleteEntry(result.EntityId);
     entry.Should().NotBeNull();
   }
 

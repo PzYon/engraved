@@ -11,14 +11,14 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class UserScopedMongoRepository_Permissions_Should
+public class UserRestrictedMongoRepository_Permissions_Should
 {
   private const string CurrentUserName = "me";
 
   private const string OtherUserName = "other";
   private string _otherUserId = null!;
   private UnrestrictedMongoRepository _repository = null!;
-  private UserRestrictedMongoRepository _userScopedRepository = null!;
+  private UserRestrictedMongoRepository _userRestrictedRepository = null!;
 
   [SetUp]
   public async Task Setup()
@@ -26,16 +26,16 @@ public class UserScopedMongoRepository_Permissions_Should
     _repository = await Util.CreateMongoRepository();
     UpsertResult upsertResult = await _repository.UpsertUser(new User { Name = CurrentUserName });
     _otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
-    _userScopedRepository = await Util.CreateUserScopedMongoRepository(CurrentUserName, upsertResult.EntityId, true);
+    _userRestrictedRepository = await Util.CreateUserRestrictedMongoRepository(CurrentUserName, upsertResult.EntityId, true);
   }
 
   [Test]
   public async Task GetAllJournals_Return_OnlyMy()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
+    await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
     await _repository.UpsertJournal(new CounterJournal { Name = "thy-journal", UserId = _otherUserId });
 
-    IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
+    IJournal[] allJournals = await _userRestrictedRepository.GetAllJournals();
 
     allJournals.Length.Should().Be(1);
     allJournals.First().Name.Should().Be("my-journal");
@@ -44,7 +44,7 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllJournals_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
+    await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
@@ -58,7 +58,7 @@ public class UserScopedMongoRepository_Permissions_Should
       new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
     );
 
-    IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
+    IJournal[] allJournals = await _userRestrictedRepository.GetAllJournals();
 
     allJournals.Length.Should().Be(1);
   }
@@ -66,7 +66,7 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllJournals_Return_MyAndThy_WhenIMoreThanEnoughHavePermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
+    await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
@@ -77,7 +77,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await GiveMePermissions(otherJournal.EntityId, PermissionKind.Write);
 
-    IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
+    IJournal[] allJournals = await _userRestrictedRepository.GetAllJournals();
 
     allJournals.Length.Should().Be(2);
   }
@@ -85,7 +85,7 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetEntriesForJournal_Return_MyAndThy_WhenIHavePermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
+    await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
@@ -96,7 +96,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     await GiveMePermissions(otherJournal.EntityId, PermissionKind.Read);
 
-    IJournal[] allJournals = await _userScopedRepository.GetAllJournals();
+    IJournal[] allJournals = await _userRestrictedRepository.GetAllJournals();
 
     allJournals.Length.Should().Be(2);
   }
@@ -104,7 +104,7 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetEntriesForJournal_Return_OnlyMy_WhenOtherOtherUserHasPermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
+    await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
@@ -125,7 +125,7 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IEntry[] allEntries = await _userScopedRepository.GetEntriesForJournal(otherJournal.EntityId);
+    IEntry[] allEntries = await _userRestrictedRepository.GetEntriesForJournal(otherJournal.EntityId);
 
     allEntries.Should().BeEmpty();
   }
@@ -133,7 +133,7 @@ public class UserScopedMongoRepository_Permissions_Should
   [Test]
   public async Task GetAllEntries_Return_MyAndThy_WhenIHavePermissions()
   {
-    await _userScopedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
+    await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
       new CounterJournal
@@ -151,7 +151,7 @@ public class UserScopedMongoRepository_Permissions_Should
       }
     );
 
-    IEntry[] allEntries = await _userScopedRepository.GetEntriesForJournal(otherJournal.EntityId);
+    IEntry[] allEntries = await _userRestrictedRepository.GetEntriesForJournal(otherJournal.EntityId);
 
     allEntries.Length.Should().Be(1);
   }
@@ -289,7 +289,7 @@ public class UserScopedMongoRepository_Permissions_Should
     // against, so the write is rejected rather than silently allowed (which would create an orphan
     // entry). Pins the intentional behavior of EnsureUserHasPermission for a missing journal id.
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await _userScopedRepository.UpsertEntry(new CounterEntry()); }
+      async () => { await _userRestrictedRepository.UpsertEntry(new CounterEntry()); }
     );
   }
 
@@ -300,7 +300,7 @@ public class UserScopedMongoRepository_Permissions_Should
     string entryId = await AddEntryForOtherUser(journalId);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await _userScopedRepository.DeleteEntry(entryId); }
+      async () => { await _userRestrictedRepository.DeleteEntry(entryId); }
     );
 
     (await _repository.GetEntry(entryId)).Should().NotBeNull();
@@ -314,7 +314,7 @@ public class UserScopedMongoRepository_Permissions_Should
     string entryId = await AddEntryForOtherUser(journalId);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await _userScopedRepository.DeleteEntry(entryId); }
+      async () => { await _userRestrictedRepository.DeleteEntry(entryId); }
     );
 
     (await _repository.GetEntry(entryId)).Should().NotBeNull();
@@ -327,7 +327,7 @@ public class UserScopedMongoRepository_Permissions_Should
     await GiveMePermissions(journalId, PermissionKind.Write);
     string entryId = await AddEntryForOtherUser(journalId);
 
-    await _userScopedRepository.DeleteEntry(entryId);
+    await _userRestrictedRepository.DeleteEntry(entryId);
 
     (await _repository.GetEntry(entryId)).Should().BeNull();
   }
@@ -343,7 +343,7 @@ public class UserScopedMongoRepository_Permissions_Should
     string journalId = await CreateJournalForOtherUser();
     string entryId = await AddEntryForOtherUser(journalId);
 
-    IEntry? entry = await _userScopedRepository.GetEntry(entryId);
+    IEntry? entry = await _userRestrictedRepository.GetEntry(entryId);
 
     entry.Should().NotBeNull();
   }
@@ -358,7 +358,7 @@ public class UserScopedMongoRepository_Permissions_Should
     string journalId = await CreateJournalForOtherUser();
     await AddEntryForOtherUser(journalId);
 
-    IEntry[] entries = await _userScopedRepository.SearchEntries(null, null, null, [journalId]);
+    IEntry[] entries = await _userRestrictedRepository.SearchEntries(null, null, null, [journalId]);
 
     entries.Should().HaveCount(1);
   }
@@ -378,7 +378,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
   private async Task UpsertJournalAsMe(string journalId)
   {
-    await _userScopedRepository.UpsertJournal(
+    await _userRestrictedRepository.UpsertJournal(
       new CounterJournal { Id = journalId }
     );
   }
@@ -397,7 +397,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
   private async Task AddEntryAsMe(string journalId)
   {
-    await _userScopedRepository.UpsertEntry(
+    await _userRestrictedRepository.UpsertEntry(
       new CounterEntry
       {
         ParentId = journalId
@@ -418,7 +418,7 @@ public class UserScopedMongoRepository_Permissions_Should
 
     const string newNotesValues = "bar";
 
-    await _userScopedRepository.UpsertEntry(
+    await _userRestrictedRepository.UpsertEntry(
       new CounterEntry
       {
         Id = result.EntityId,

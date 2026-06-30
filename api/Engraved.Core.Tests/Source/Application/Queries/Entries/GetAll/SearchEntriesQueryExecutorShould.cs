@@ -13,14 +13,14 @@ namespace Engraved.Core.Application.Queries.Entries.GetAll;
 public class SearchEntriesQueryExecutorShould
 {
   private FakeDateService _dateService = null!;
-  private TestUserScopedMongoRepository _repo = null!;
+  private TestUserRestrictedMongoRepository _repo = null!;
 
   private const string UserId = TestIds.UserId;
 
   [SetUp]
   public async Task SetUp()
   {
-    _repo = await Util.CreateUserScopedMongoRepository(UserId, UserId, false);
+    _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
     await _repo.UpsertUser(
       new User
       {
@@ -68,7 +68,7 @@ public class SearchEntriesQueryExecutorShould
       }
     );
 
-    var queryExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
+    var queryExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
 
     var queryExecutor = new SearchEntriesQueryExecutor(queryExecutorRepo);
     SearchEntriesQueryResult result = await queryExecutor.Execute(new SearchEntriesQuery { Limit = 2 });

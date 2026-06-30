@@ -13,7 +13,7 @@ public class JournalQueryUtilShould
 {
   private string _meUserId = null!;
   private TestMongoRepository _testRepository = null!;
-  private TestUserScopedMongoRepository _userScopedMongoRepository = null!;
+  private TestUserRestrictedMongoRepository _userRestrictedMongoRepository = null!;
   private string _youUserId = null!;
 
   [SetUp]
@@ -27,14 +27,14 @@ public class JournalQueryUtilShould
     UpsertResult youUpsertResult = await _testRepository.UpsertUser(new User { Name = "you" });
     _youUserId = youUpsertResult.EntityId;
 
-    _userScopedMongoRepository = await Util.CreateUserScopedMongoRepository("me", _meUserId, true);
+    _userRestrictedMongoRepository = await Util.CreateUserRestrictedMongoRepository("me", _meUserId, true);
   }
 
   [Test]
   public async Task SetUserRoleToOwner()
   {
     IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
-      _userScopedMongoRepository,
+      _userRestrictedMongoRepository,
       new TimerJournal { UserId = _meUserId }
     );
 
@@ -46,7 +46,7 @@ public class JournalQueryUtilShould
   public async Task SetUserRoleToReader()
   {
     IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
-      _userScopedMongoRepository,
+      _userRestrictedMongoRepository,
       new TimerJournal
       {
         UserId = _youUserId,
@@ -68,7 +68,7 @@ public class JournalQueryUtilShould
   public async Task SetUserRoleToWriter()
   {
     IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
-      _userScopedMongoRepository,
+      _userRestrictedMongoRepository,
       new TimerJournal
       {
         UserId = _youUserId,

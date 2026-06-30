@@ -5,7 +5,7 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Persistence.Demo;
 
-public class UserScopedInMemoryRepository : IUserRestrictedRepository
+public class UserRestrictedInMemoryRepository : IUserRestrictedRepository
 {
   private readonly InMemoryRepository _repository;
   private readonly ICurrentUserService _currentUserService;
@@ -18,7 +18,7 @@ public class UserScopedInMemoryRepository : IUserRestrictedRepository
 
   public Lazy<IUser> CurrentUser { get; }
 
-  public UserScopedInMemoryRepository(InMemoryRepository repository, ICurrentUserService currentUserService)
+  public UserRestrictedInMemoryRepository(InMemoryRepository repository, ICurrentUserService currentUserService)
   {
     _repository = repository;
     _currentUserService = currentUserService;

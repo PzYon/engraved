@@ -12,7 +12,7 @@ public class EngravedTestContext
 {
   public string UserId { get; set; } = null!;
   public string UserName { get; set; } = null!;
-  public TestUserScopedMongoRepository UserScopedRepo { get; set; } = null!;
+  public TestUserRestrictedMongoRepository UserRestrictedRepo { get; set; } = null!;
 
   private EngravedTestContext() { }
 
@@ -27,7 +27,7 @@ public class EngravedTestContext
       UserId = (await mongoRepository.UpsertUser(new User { Name = userName })).EntityId
     };
     
-    ctx.UserScopedRepo = await Util.CreateUserScopedMongoRepository(userName, ctx.UserId, true);
+    ctx.UserRestrictedRepo = await Util.CreateUserRestrictedMongoRepository(userName, ctx.UserId, true);
 
     return ctx;
   }
@@ -45,7 +45,7 @@ public class EngravedTestContext
       journal.Schedules[UserName] = new Schedule { NextOccurrence = nextOccurrence };
     }
 
-    UpsertResult result = await UserScopedRepo.UpsertJournal(journal);
+    UpsertResult result = await UserRestrictedRepo.UpsertJournal(journal);
     return result.EntityId;
   }
 
@@ -58,7 +58,7 @@ public class EngravedTestContext
       entry.Schedules[UserName] = new Schedule { NextOccurrence = nextOccurrence };
     }
 
-    UpsertResult result = await UserScopedRepo.UpsertEntry(entry);
+    UpsertResult result = await UserRestrictedRepo.UpsertEntry(entry);
     return result.EntityId;
   }
 }

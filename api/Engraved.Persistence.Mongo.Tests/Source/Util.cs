@@ -47,7 +47,7 @@ public static class Util
     return new TestMongoRepository(Client);
   }
 
-  public static async Task<TestUserScopedMongoRepository> CreateUserScopedMongoRepository(
+  public static async Task<TestUserRestrictedMongoRepository> CreateUserRestrictedMongoRepository(
     string userName,
     string userId,
     bool doNotDropDatabase
@@ -61,7 +61,7 @@ public static class Util
     var userService = new MockCurrentUserService(userId);
     userService.SetUserName(userName);
 
-    return new TestUserScopedMongoRepository(Client, userService);
+    return new TestUserRestrictedMongoRepository(Client, userService);
   }
 
   private static async Task DropDatabase()

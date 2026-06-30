@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class TestUserScopedMongoRepository(
+public class TestUserRestrictedMongoRepository(
   MongoDatabaseClient mongoDatabaseClient,
   ICurrentUserService currentUserService
 )

@@ -10,14 +10,14 @@ namespace Engraved.Core.Application.Commands.Users.UpdateTags;
 
 public class UpdateUserTagsCommandExecutorShould
 {
-  private TestUserScopedMongoRepository _repo = null!;
+  private TestUserRestrictedMongoRepository _repo = null!;
 
   private const string UserId = TestIds.UserId;
 
   [SetUp]
   public async Task SetUp()
   {
-    _repo = await Util.CreateUserScopedMongoRepository(UserId, UserId, false);
+    _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
     await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
   }
 

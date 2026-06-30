@@ -220,7 +220,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
   // journalIds supplied by the caller. The only scoped caller, SearchEntriesQueryExecutor, first
   // resolves the current user's accessible journals (via the scoped GetAllJournals) and passes
   // those ids in, so read access is enforced there. Pinned by
-  // UserScopedMongoRepository_Permissions_Should.SearchEntries_IsUnscoped_TrustsCallerProvidedJournalIds.
+  // UserRestrictedMongoRepository_Permissions_Should.SearchEntries_IsUnscoped_TrustsCallerProvidedJournalIds.
   public async Task<IEntry[]> SearchEntries(
     string? searchText,
     ScheduleMode? scheduleMode = null,
@@ -433,7 +433,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
   // not overridden in UserRestrictedMongoRepository). The client-facing single-entry read enforces
   // access in GetEntryQueryExecutor; command executors use it as a load-for-modify primitive and
   // rely on the subsequent UpsertEntry/DeleteEntry write checks. Pinned by
-  // UserScopedMongoRepository_Permissions_Should.GetEntry_IsUnscoped_ReturnsEntry_EvenWithoutJournalPermission.
+  // UserRestrictedMongoRepository_Permissions_Should.GetEntry_IsUnscoped_ReturnsEntry_EvenWithoutJournalPermission.
   public async Task<IEntry?> GetEntry(string entryId)
   {
     if (string.IsNullOrEmpty(entryId))
