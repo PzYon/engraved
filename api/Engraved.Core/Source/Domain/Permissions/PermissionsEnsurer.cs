@@ -4,7 +4,7 @@ using Engraved.Core.Domain.Users;
 namespace Engraved.Core.Domain.Permissions;
 
 public class PermissionsEnsurer(
-  IBaseRepository repo,
+  IUserRepository repo,
   Func<IUser, Task<UpsertResult>> upsertUser
 )
 {

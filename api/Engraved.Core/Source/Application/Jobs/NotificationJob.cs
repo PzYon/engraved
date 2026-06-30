@@ -12,7 +12,7 @@ namespace Engraved.Core.Application.Jobs;
 
 public class NotificationJob(
   ILogger<NotificationJob> logger,
-  ISystemRepository repository,
+  IUnrestrictedRepository unrestrictedRepository,
   IDateService dateService,
   INotificationService notificationService
 )
@@ -31,10 +31,10 @@ public class NotificationJob(
 
       var watch = Stopwatch.StartNew();
 
-      var entries = await repository.SearchEntries(null, ScheduleMode.AnySchedule);
+      var entries = await unrestrictedRepository.SearchEntries(null, ScheduleMode.AnySchedule);
       await ProcessEntities(entries.OfType<IEntity>().ToArray(), isDryRun, result);
 
-      var journals = await repository.GetAllJournals(null, ScheduleMode.AnySchedule);
+      var journals = await unrestrictedRepository.GetAllJournals(null, ScheduleMode.AnySchedule);
       await ProcessEntities(journals.OfType<IEntity>().ToArray(), isDryRun, result);
 
       logger.LogInformation(
@@ -69,7 +69,7 @@ public class NotificationJob(
             schedule.NextOccurrence
           );
 
-          IUser? user = await repository.GetUser(userId);
+          IUser? user = await unrestrictedRepository.GetUser(userId);
           if (user == null)
           {
             throw new Exception($"User \"{userId}\" can not be loaded");
@@ -96,10 +96,10 @@ public class NotificationJob(
             switch (entity)
             {
               case IJournal journal:
-                await repository.UpsertJournal(journal);
+                await unrestrictedRepository.UpsertJournal(journal);
                 break;
               case IEntry entry:
-                await repository.UpsertEntry(entry);
+                await unrestrictedRepository.UpsertEntry(entry);
                 break;
             }
           }
@@ -136,7 +136,7 @@ public class NotificationJob(
   {
     if (entity is ScrapsEntry scrapsEntry)
     {
-      IJournal? journal = await repository.GetJournal(scrapsEntry.ParentId);
+      IJournal? journal = await unrestrictedRepository.GetJournal(scrapsEntry.ParentId);
 
       if (journal != null)
       {

@@ -95,11 +95,11 @@ builder.Services.AddSingleton(provider => new MongoDatabaseClient(
   )
 );
 
-// The explicit non-user-scoped seam: resolves to the raw MongoRepository (no scoping). Injected
-// only by consumers that deliberately run without a current user (the notification job, auth/login,
-// health endpoints). It is a distinct type from IRepository, so unscoped access is always a
-// conscious, greppable choice and can never be obtained by accident.
-builder.Services.AddTransient<ISystemRepository>(provider =>
+// The explicit unrestricted seam: resolves to the raw MongoRepository (no permission/user scoping).
+// Injected only by consumers that deliberately run without a current user (the notification job,
+// auth/login, health endpoints). It is a distinct type from IRepository, so unrestricted access is
+// always a conscious, greppable choice and can never be obtained by accident.
+builder.Services.AddTransient<IUnrestrictedRepository>(provider =>
   {
     var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
     return new MongoRepository(mongoDbClient);
@@ -122,7 +122,7 @@ builder.Services.AddTransient<IRepository>(provider => provider.GetService<IUser
 
 // The narrow, role-based persistence interfaces resolve to the user-scoped repository (same as
 // IRepository), so executors that depend on just the role(s) they use transparently get permission
-// enforcement. Consumers that need unscoped access inject ISystemRepository (above) instead.
+// enforcement. Consumers that need unrestricted access inject IUnrestrictedRepository (above) instead.
 builder.Services.AddTransient<IUserRepository>(provider => provider.GetService<IUserScopedRepository>()!);
 builder.Services.AddTransient<IJournalRepository>(provider => provider.GetService<IUserScopedRepository>()!);
 builder.Services.AddTransient<IEntryRepository>(provider => provider.GetService<IUserScopedRepository>()!);

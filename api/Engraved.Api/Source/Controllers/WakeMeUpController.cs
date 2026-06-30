@@ -7,11 +7,11 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/wake/me/up")]
 [AllowAnonymous]
-public class WakeMeUpController(ISystemRepository repository) : Controller
+public class WakeMeUpController(IUnrestrictedRepository unrestrictedRepository) : Controller
 {
   [HttpGet]
   public async Task WakeMeUp()
   {
-    await repository.WakeMeUp();
+    await unrestrictedRepository.WakeMeUp();
   }
 }

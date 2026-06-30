@@ -8,7 +8,7 @@ namespace Engraved.Api.Authentication;
 
 public class LoginHandler(
   IGoogleTokenValidator tokenValidator,
-  ISystemRepository repository,
+  IUnrestrictedRepository unrestrictedRepository,
   IDateService dateService,
   UserLoader userLoader,
   JwtTokenFactory jwtTokenFactory,
@@ -59,7 +59,7 @@ public class LoginHandler(
 
   private async Task<IUser> EnsureUser(string userName, string? displayName, string? imageUrl)
   {
-    IUser user = await repository.GetUser(userName)
+    IUser user = await unrestrictedRepository.GetUser(userName)
                  ?? new User { Name = userName };
 
     user.DisplayName = displayName;
@@ -72,7 +72,7 @@ public class LoginHandler(
       await EnsureQuickScraps(user);
     }
 
-    UpsertResult result = await repository.UpsertUser(user);
+    UpsertResult result = await unrestrictedRepository.UpsertUser(user);
     user.Id = result.EntityId;
     return user;
   }
@@ -86,7 +86,7 @@ public class LoginHandler(
       UserId = user.Id
     };
 
-    UpsertResult result = await repository.UpsertJournal(journal);
+    UpsertResult result = await unrestrictedRepository.UpsertJournal(journal);
 
     user.FavoriteJournalIds.Add(result.EntityId);
   }
