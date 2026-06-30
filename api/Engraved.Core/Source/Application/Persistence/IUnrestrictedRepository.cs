@@ -2,7 +2,7 @@ namespace Engraved.Core.Application.Persistence;
 
 // The unrestricted seam: full persistence access with NO permission or user scoping applied,
 // including the inherently-unrestricted maintenance operations (keep-alive, global counts). Resolves
-// to the raw MongoRepository. Inject this only where there is deliberately no current user to scope
+// to the raw UnrestrictedMongoRepository. Inject this only where there is deliberately no current user to scope
 // to: the notification job (runs across all users), authentication/login (runs before a user context
 // exists) and health endpoints.
 //

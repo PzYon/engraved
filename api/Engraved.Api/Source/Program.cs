@@ -95,14 +95,14 @@ builder.Services.AddSingleton(provider => new MongoDatabaseClient(
   )
 );
 
-// The explicit unrestricted seam: resolves to the raw MongoRepository (no permission/user scoping).
+// The explicit unrestricted seam: resolves to the raw UnrestrictedMongoRepository (no permission/user scoping).
 // Injected only by consumers that deliberately run without a current user (the notification job,
 // auth/login, health endpoints). It is a distinct type from the scoped IUserRestrictedRepository, so
 // unrestricted access is always a conscious, greppable choice and can never be obtained by accident.
 builder.Services.AddTransient<IUnrestrictedRepository>(provider =>
   {
     var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
-    return new MongoRepository(mongoDbClient);
+    return new UnrestrictedMongoRepository(mongoDbClient);
   }
 );
 
@@ -110,7 +110,7 @@ builder.Services.AddTransient<IUserRestrictedRepository>(provider =>
   {
     var userService = provider.GetService<ICurrentUserService>()!;
     var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
-    return new UserScopedMongoRepository(mongoDbClient, userService);
+    return new UserRestrictedMongoRepository(mongoDbClient, userService);
   }
 );
 

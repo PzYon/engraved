@@ -14,7 +14,7 @@ public class MongoRepository_GetEntriesForJournal_Should
 {
   private readonly string _userId = MongoUtil.GenerateNewIdAsString();
   private string _journalId = null!;
-  private MongoRepository _repository = null!;
+  private UnrestrictedMongoRepository _repository = null!;
 
   [SetUp]
   public async Task Setup()

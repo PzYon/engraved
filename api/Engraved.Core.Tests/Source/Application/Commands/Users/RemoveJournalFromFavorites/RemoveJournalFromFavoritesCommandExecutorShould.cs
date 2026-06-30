@@ -30,7 +30,6 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     await _repo.UpsertUser(user);
 
     var repositoryWithDifferentCache = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await repositoryWithDifferentCache.WakeMeUp();
 
     // when
     await new RemoveJournalFromFavoritesCommandExecutor(repositoryWithDifferentCache).Execute(
@@ -39,7 +38,6 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
 
     // then
     var secondRepoForVerification = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await secondRepoForVerification.WakeMeUp();
     IUser updatedUser = (await secondRepoForVerification.GetUser(UserId))!;
     updatedUser.Id.Should().Be(UserId);
     updatedUser.FavoriteJournalIds.Should().NotContain(JournalId);

@@ -17,7 +17,7 @@ namespace Engraved.Persistence.Mongo.Tests;
 
 public class MongoRepositoryShould
 {
-  private MongoRepository _repository = null!;
+  private UnrestrictedMongoRepository _repository = null!;
 
   [SetUp]
   public async Task Setup()

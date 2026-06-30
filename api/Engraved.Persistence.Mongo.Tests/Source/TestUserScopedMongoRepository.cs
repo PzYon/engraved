@@ -10,7 +10,7 @@ public class TestUserScopedMongoRepository(
   MongoDatabaseClient mongoDatabaseClient,
   ICurrentUserService currentUserService
 )
-  : UserScopedMongoRepository(mongoDatabaseClient, currentUserService)
+  : UserRestrictedMongoRepository(mongoDatabaseClient, currentUserService)
 {
   public IMongoCollection<JournalDocument> Journals => JournalsCollection;
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;

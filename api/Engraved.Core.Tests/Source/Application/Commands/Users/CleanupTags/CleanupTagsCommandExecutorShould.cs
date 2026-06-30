@@ -85,7 +85,6 @@ public class CleanupTagsCommandExecutorShould
     await _repo.UpsertUser(user);
 
     var commandExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await commandExecutorRepo.WakeMeUp();
     var result =
       (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
         new CleanupTagsCommand { DryRun = false }
@@ -94,7 +93,6 @@ public class CleanupTagsCommandExecutorShould
     result.JournalIdsToRemove.Should().Contain(missingJournalId);
 
     var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await verificationRepo.WakeMeUp();
     user = (await verificationRepo.GetUser(UserId))!;
     user.Tags[0].JournalIds.Should().NotContain(missingJournalId);
     user.Tags[0].JournalIds.Should().Contain(existingJournalId);
@@ -120,7 +118,6 @@ public class CleanupTagsCommandExecutorShould
     await _repo.UpsertUser(user);
 
     var commandExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await commandExecutorRepo.WakeMeUp();
     var result =
       (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
         new CleanupTagsCommand { DryRun = false }
@@ -131,7 +128,6 @@ public class CleanupTagsCommandExecutorShould
     result.JournalIdsToRemove.Should().HaveCount(2);
 
     var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await verificationRepo.WakeMeUp();
     user = (await verificationRepo.GetUser(UserId))!;
     user.Tags[0].JournalIds.Should().NotContain(missingJournalId1);
     user.Tags[0].JournalIds.Should().NotContain(missingJournalId2);
@@ -152,7 +148,6 @@ public class CleanupTagsCommandExecutorShould
     await _repo.UpsertUser(user);
 
     var commandExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await commandExecutorRepo.WakeMeUp();
     var result =
       (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
         new CleanupTagsCommand { DryRun = true }
@@ -161,7 +156,6 @@ public class CleanupTagsCommandExecutorShould
     result.JournalIdsToRemove.Should().Contain(missingJournalId);
 
     var verificationRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await verificationRepo.WakeMeUp();
     user = (await verificationRepo.GetUser(UserId))!;
     user.Tags[0].JournalIds.Should().Contain(missingJournalId);
     user.Tags[0].JournalIds.Should().Contain(existingJournalId);

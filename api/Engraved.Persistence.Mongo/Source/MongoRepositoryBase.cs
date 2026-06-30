@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
@@ -14,11 +14,14 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IUnrestrictedRepository
+// Shared MongoDB data access for the user/journal/entry roles. Concrete repositories derive from
+// this and supply the read-shaping filter via GetAllJournalDocumentsFilter:
+//  - UnrestrictedMongoRepository:  no filter (full access) plus the maintenance operations
+//  - UserRestrictedMongoRepository: the per-user permission filter plus the write guards
+public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClient)
+  : IUserRepository, IJournalRepository, IEntryRepository
 {
-  private const string RandomDocId = "63f949da880b5bf2518be721";
-
-  // protected so they can be accessed from TestRepository
+  // protected so they can be accessed from derived repositories (and the test repositories)
   protected IMongoCollection<EntryDocument> EntriesCollection => mongoDatabaseClient.EntriesCollection;
   protected IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
   protected IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
@@ -427,7 +430,7 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IUnrestr
   }
 
   // Unscoped primitive: GetEntry does NOT enforce read-permission on the parent journal (note it is
-  // not overridden in UserScopedMongoRepository). The client-facing single-entry read enforces
+  // not overridden in UserRestrictedMongoRepository). The client-facing single-entry read enforces
   // access in GetEntryQueryExecutor; command executors use it as a load-for-modify primitive and
   // rely on the subsequent UpsertEntry/DeleteEntry write checks. Pinned by
   // UserScopedMongoRepository_Permissions_Should.GetEntry_IsUnscoped_ReturnsEntry_EvenWithoutJournalPermission.
@@ -445,35 +448,6 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IUnrestr
     return document == null
       ? null
       : EntryDocumentMapper.FromDocument(document);
-  }
-
-  public async Task WakeMeUp()
-  {
-    await UsersCollection.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>(RandomDocId));
-  }
-
-  public async Task<long> CountAllUsers()
-  {
-    return await UsersCollection.CountDocumentsAsync(
-      Builders<UserDocument>.Filter.Empty,
-      new CountOptions { Hint = "_id_" }
-    );
-  }
-
-  public async Task<long> CountAllEntries()
-  {
-    return await EntriesCollection.CountDocumentsAsync(
-      Builders<EntryDocument>.Filter.Empty,
-      new CountOptions { Hint = "_id_" }
-    );
-  }
-
-  public async Task<long> CountAllJournals()
-  {
-    return await JournalsCollection.CountDocumentsAsync(
-      Builders<JournalDocument>.Filter.Empty,
-      new CountOptions { Hint = "_id_" }
-    );
   }
 
   // there must be a better solution than this, but it works for the moment... i believe
@@ -558,11 +532,11 @@ public class MongoRepository(MongoDatabaseClient mongoDatabaseClient) : IUnrestr
     );
   }
 
-  protected virtual FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
-    where TDocument : IDocument
-  {
-    return MongoUtil.GetAllDocumentsFilter<TDocument>();
-  }
+  // Read-shaping hook: derived repositories restrict journal/entry queries to what the caller may
+  // read. UnrestrictedMongoRepository returns "everything"; UserRestrictedMongoRepository returns
+  // the per-user permission filter.
+  protected abstract FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
+    where TDocument : IDocument;
 
   private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
   {

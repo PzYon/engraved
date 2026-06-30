@@ -27,7 +27,6 @@ public class SearchEntitiesQueryExecutorShould
   {
     const string userId = TestIds.UserId;
     _repo = await Util.CreateUserScopedMongoRepository(userId, userId, false);
-    await _repo.WakeMeUp();
 
     await _repo.UpsertUser(new User { Id = userId, Name = userId });
 

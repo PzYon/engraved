@@ -72,12 +72,12 @@ public class StartupSmokeShould
     using IServiceScope scope = _factory.Services.CreateScope();
     IServiceProvider services = scope.ServiceProvider;
 
-    // unrestricted seam -> raw MongoRepository; user-restricted + narrow roles -> scoped repository
-    services.GetRequiredService<IUnrestrictedRepository>().Should().BeOfType<MongoRepository>();
-    services.GetRequiredService<IUserRestrictedRepository>().Should().BeOfType<UserScopedMongoRepository>();
-    services.GetRequiredService<IJournalRepository>().Should().BeOfType<UserScopedMongoRepository>();
+    // unrestricted seam -> raw UnrestrictedMongoRepository; user-restricted + narrow roles -> scoped repository
+    services.GetRequiredService<IUnrestrictedRepository>().Should().BeOfType<UnrestrictedMongoRepository>();
+    services.GetRequiredService<IUserRestrictedRepository>().Should().BeOfType<UserRestrictedMongoRepository>();
+    services.GetRequiredService<IJournalRepository>().Should().BeOfType<UserRestrictedMongoRepository>();
 
-    // maintenance is inherently unrestricted, so it resolves to the raw MongoRepository
-    services.GetRequiredService<IMaintenanceRepository>().Should().BeOfType<MongoRepository>();
+    // maintenance is inherently unrestricted, so it resolves to the raw UnrestrictedMongoRepository
+    services.GetRequiredService<IMaintenanceRepository>().Should().BeOfType<UnrestrictedMongoRepository>();
   }
 }

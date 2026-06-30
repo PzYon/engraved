@@ -69,7 +69,6 @@ public class SearchEntriesQueryExecutorShould
     );
 
     var queryExecutorRepo = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await queryExecutorRepo.WakeMeUp();
 
     var queryExecutor = new SearchEntriesQueryExecutor(queryExecutorRepo);
     SearchEntriesQueryResult result = await queryExecutor.Execute(new SearchEntriesQuery { Limit = 2 });

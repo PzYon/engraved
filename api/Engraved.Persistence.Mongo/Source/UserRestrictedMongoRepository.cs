@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Application;
+using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
@@ -9,13 +9,16 @@ using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-public class UserScopedMongoRepository : MongoRepository, IUserRestrictedRepository
+// Permission/owner-filtered access for the current user. Adds the read-shaping filter and the write
+// guards on top of the shared MongoRepositoryBase, and exposes the CurrentUser the scoping is based
+// on. Both mechanisms enforce one shared rule (JournalAccessPolicy / JournalAccessFilter).
+public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestrictedRepository
 {
   private readonly ICurrentUserService _currentUserService;
 
   private bool _ignorePermissionsForJournalIdFilter;
 
-  public UserScopedMongoRepository(
+  public UserRestrictedMongoRepository(
     MongoDatabaseClient mongoDatabaseClient,
     ICurrentUserService currentUserService
   )
