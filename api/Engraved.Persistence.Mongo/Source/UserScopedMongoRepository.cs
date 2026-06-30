@@ -5,7 +5,6 @@ using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
-using Engraved.Persistence.Mongo.DocumentTypes;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
@@ -14,7 +13,7 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
 {
   private readonly ICurrentUserService _currentUserService;
 
-  public Lazy<IUser> CurrentUser { get; }
+  private bool _ignorePermissionsForJournalIdFilter;
 
   public UserScopedMongoRepository(
     MongoDatabaseClient mongoDatabaseClient,
@@ -26,28 +25,19 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     CurrentUser = new Lazy<IUser>(LoadUser);
   }
 
+  public Lazy<IUser> CurrentUser { get; }
+
   public override async Task<UpsertResult> UpsertUser(IUser user)
   {
     EnsureEntityBelongsToUser(user.Id);
     return await base.UpsertUser(user);
   }
 
-  private bool _ignorePermissionsForJournalIdFilter;
-
   public override async Task<UpsertResult> UpsertJournal(IJournal journal)
   {
     if (!string.IsNullOrEmpty(journal.Id))
     {
-      IJournal? existingJournal;
-      try
-      {
-        _ignorePermissionsForJournalIdFilter = true;
-        existingJournal = await base.GetJournal(journal.Id, PermissionKind.None);
-      }
-      finally
-      {
-        _ignorePermissionsForJournalIdFilter = false;
-      }
+      IJournal? existingJournal = await LoadJournalIgnoringPermissions(journal.Id);
 
       if (existingJournal != null)
       {
@@ -89,6 +79,8 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     await base.DeleteEntry(entryId);
   }
 
+  // Read-shaping mechanism: restrict journal/entry queries to what the current user may read.
+  // The actual rule lives in JournalAccessFilter (the query form of JournalAccessPolicy).
   protected override FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
   {
     if (_ignorePermissionsForJournalIdFilter)
@@ -96,35 +88,10 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
       return MongoUtil.GetAllDocumentsFilter<TDocument>();
     }
 
-    string? userId = CurrentUser.Value.Id;
+    var userId = CurrentUser.Value.Id;
     EnsureUserIsSet(userId);
 
-    // for current user we do not care which PermissionKind is requested, as if user
-    // is owner, then everything is allowed.
-    FilterDefinition<TDocument> currentUserFilter = GetCurrentUserFilter<TDocument>(userId);
-
-    if (!typeof(TDocument).IsAssignableTo(typeof(IHasPermissionsDocument)))
-    {
-      return currentUserFilter;
-    }
-
-    return Builders<TDocument>.Filter.Or(currentUserFilter, GetHasPermissionsFilter<TDocument>(userId, kind));
-  }
-
-  private static FilterDefinition<TDocument> GetHasPermissionsFilter<TDocument>(
-    string? userId,
-    PermissionKind permissionKind
-  )
-  {
-    return Builders<TDocument>.Filter.Gte(
-      string.Join(".", nameof(IHasPermissionsDocument.Permissions), userId, nameof(PermissionDefinition.Kind)),
-      permissionKind
-    );
-  }
-
-  private static FilterDefinition<TDocument> GetCurrentUserFilter<TDocument>(string? userId)
-  {
-    return Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), userId);
+    return JournalAccessFilter.ForUser<TDocument>(userId, kind);
   }
 
   private IUser LoadUser()
@@ -146,17 +113,34 @@ public class UserScopedMongoRepository : MongoRepository, IUserScopedRepository
     EnsureEntityBelongsToUser(entity.UserId);
   }
 
+  // Write-guard mechanism: load the journal without scoping, then apply the same rule in memory via
+  // JournalAccessPolicy. Reads (above) and writes (here) therefore enforce one shared rule.
   private async Task EnsureUserHasPermission(string? journalId, PermissionKind kind)
   {
-    if (string.IsNullOrEmpty(journalId))
+    if (!string.IsNullOrEmpty(journalId))
     {
-      return;
+      IJournal? journal = await LoadJournalIgnoringPermissions(journalId);
+      if (JournalAccessPolicy.HasAccess(journal, CurrentUser.Value.Id, kind))
+      {
+        return;
+      }
     }
 
-    IJournal? journal = await GetJournal(journalId, kind);
-    if (journal == null)
+    throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
+  }
+
+  // Loads a journal bypassing the read-scoping filter, so callers can apply the permission rule
+  // themselves (the write guard) or read the owner of a journal they are about to update.
+  private async Task<IJournal?> LoadJournalIgnoringPermissions(string journalId)
+  {
+    try
     {
-      throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
+      _ignorePermissionsForJournalIdFilter = true;
+      return await GetJournal(journalId, PermissionKind.None);
+    }
+    finally
+    {
+      _ignorePermissionsForJournalIdFilter = false;
     }
   }
 
