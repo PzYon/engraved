@@ -9,10 +9,10 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class MongoRepository_GetAllJournals_Should
+public class MongoRepositoryBase_GetAllJournals_Should
 {
   private string _gaugeJournalId = null!;
-  private MongoRepository _repository = null!;
+  private UnrestrictedMongoRepository _repository = null!;
 
   [SetUp]
   public async Task Setup()

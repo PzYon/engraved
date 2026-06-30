@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Engraved.Api.Authentication;
 
-public class UserLoader(IBaseRepository repository, IMemoryCache cache)
+public class UserLoader(IUnrestrictedRepository unrestrictedRepository, IMemoryCache cache)
 {
   private const string Users = "___users";
 
@@ -18,7 +18,7 @@ public class UserLoader(IBaseRepository repository, IMemoryCache cache)
       return cachedUser;
     }
 
-    IUser? user = await repository.GetUser(name);
+    IUser? user = await unrestrictedRepository.GetUser(name);
 
     UsersByName[name] = user ?? throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
 

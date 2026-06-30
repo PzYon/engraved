@@ -15,9 +15,9 @@ namespace Engraved.Persistence.Mongo.Tests;
 // have a more end-to-end view, e.g. something like this:
 // await new AddCounterEntryCommand().CreateExecutor().Execute(_repository, null);
 
-public class MongoRepositoryShould
+public class MongoRepositoryBaseShould
 {
-  private MongoRepository _repository = null!;
+  private UnrestrictedMongoRepository _repository = null!;
 
   [SetUp]
   public async Task Setup()

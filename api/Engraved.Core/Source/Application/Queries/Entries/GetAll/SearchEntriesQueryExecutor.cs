@@ -2,7 +2,7 @@ using Engraved.Core.Application.Persistence;
 
 namespace Engraved.Core.Application.Queries.Entries.GetAll;
 
-public class SearchEntriesQueryExecutor(IUserScopedRepository repository)
+public class SearchEntriesQueryExecutor(IUserRestrictedRepository repository)
   : IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>
 {
   public bool DisableCache => false;

@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 
-public class AddJournalToFavoritesCommandExecutor(IUserScopedRepository repository)
+public class AddJournalToFavoritesCommandExecutor(IUserRestrictedRepository repository)
   : ICommandExecutor<AddJournalToFavoritesCommand>
 {
   public async Task<CommandResult> Execute(AddJournalToFavoritesCommand command)

@@ -20,14 +20,13 @@ public class SearchEntitiesQueryExecutorShould
 {
   private FakeDateService _dateService = null!;
   private SearchEntitiesQueryExecutor _searchExecutor = null!;
-  private TestUserScopedMongoRepository _repo = null!;
+  private TestUserRestrictedMongoRepository _repo = null!;
 
   [SetUp]
   public async Task SetUp()
   {
     const string userId = TestIds.UserId;
-    _repo = await Util.CreateUserScopedMongoRepository(userId, userId, false);
-    await _repo.WakeMeUp();
+    _repo = await Util.CreateUserRestrictedMongoRepository(userId, userId, false);
 
     await _repo.UpsertUser(new User { Id = userId, Name = userId });
 

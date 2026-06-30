@@ -33,6 +33,10 @@ public static class Util
     Runner.Dispose();
   }
 
+  // Exposes the ephemeral mongo connection string so other test assemblies (e.g. the Api startup
+  // smoke test) can point the real application at this instance.
+  public static string ConnectionString => Runner.ConnectionString;
+
   private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings(Runner.ConnectionString);
   private static MongoDatabaseClient Client => new(Settings, null);
 
@@ -43,7 +47,7 @@ public static class Util
     return new TestMongoRepository(Client);
   }
 
-  public static async Task<TestUserScopedMongoRepository> CreateUserScopedMongoRepository(
+  public static async Task<TestUserRestrictedMongoRepository> CreateUserRestrictedMongoRepository(
     string userName,
     string userId,
     bool doNotDropDatabase
@@ -57,7 +61,7 @@ public static class Util
     var userService = new MockCurrentUserService(userId);
     userService.SetUserName(userName);
 
-    return new TestUserScopedMongoRepository(Client, userService);
+    return new TestUserRestrictedMongoRepository(Client, userService);
   }
 
   private static async Task DropDatabase()

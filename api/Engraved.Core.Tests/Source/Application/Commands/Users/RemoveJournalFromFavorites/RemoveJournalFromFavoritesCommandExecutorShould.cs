@@ -9,7 +9,7 @@ namespace Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 
 public class RemoveJournalFromFavoritesCommandExecutorShould
 {
-  private TestUserScopedMongoRepository _repo = null!;
+  private TestUserRestrictedMongoRepository _repo = null!;
 
   private const string UserId = TestIds.UserId;
   private const string JournalId = "60703c3b00000000000000d1";
@@ -17,7 +17,7 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
   [SetUp]
   public async Task SetUp()
   {
-    _repo = await Util.CreateUserScopedMongoRepository(UserId, UserId, false);
+    _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
     await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
   }
 
@@ -29,8 +29,7 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     user.FavoriteJournalIds.Add(JournalId);
     await _repo.UpsertUser(user);
 
-    var repositoryWithDifferentCache = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await repositoryWithDifferentCache.WakeMeUp();
+    var repositoryWithDifferentCache = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
 
     // when
     await new RemoveJournalFromFavoritesCommandExecutor(repositoryWithDifferentCache).Execute(
@@ -38,8 +37,7 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     );
 
     // then
-    var secondRepoForVerification = await Util.CreateUserScopedMongoRepository(UserId, UserId, true);
-    await secondRepoForVerification.WakeMeUp();
+    var secondRepoForVerification = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     IUser updatedUser = (await secondRepoForVerification.GetUser(UserId))!;
     updatedUser.Id.Should().Be(UserId);
     updatedUser.FavoriteJournalIds.Should().NotContain(JournalId);

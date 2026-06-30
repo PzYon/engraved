@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
 
-public abstract class EntryDocument : IUserScopedDocument, IScheduledDocument
+public abstract class EntryDocument : IUserOwnedDocument, IScheduledDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]

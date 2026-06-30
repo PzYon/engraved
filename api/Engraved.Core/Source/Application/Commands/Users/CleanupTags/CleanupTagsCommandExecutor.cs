@@ -4,7 +4,7 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.CleanupTags;
 
-public class CleanupTagsCommandExecutor(IUserScopedRepository repository)
+public class CleanupTagsCommandExecutor(IUserRestrictedRepository repository)
   : ICommandExecutor<CleanupTagsCommand>
 {
   public async Task<CommandResult> Execute(CleanupTagsCommand command)

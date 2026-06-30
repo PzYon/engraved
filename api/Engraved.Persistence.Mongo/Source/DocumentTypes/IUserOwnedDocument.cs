@@ -2,7 +2,7 @@
 
 namespace Engraved.Persistence.Mongo.DocumentTypes;
 
-public interface IUserScopedDocument : IDocument
+public interface IUserOwnedDocument : IDocument
 {
   string? UserId { get; set; }
 }

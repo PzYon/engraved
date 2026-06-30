@@ -1,6 +1,6 @@
 ﻿namespace Engraved.Core.Domain.Entries;
 
-public interface IEntry : IUserScoped, IEntity
+public interface IEntry : IUserOwned, IEntity
 {
   string ParentId { get; set; }
 

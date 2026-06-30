@@ -8,7 +8,7 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application;
 
-public class TestServiceProvider(IUserScopedRepository userScopedRepository) : IServiceProvider
+public class TestServiceProvider(IUserRestrictedRepository userRestrictedRepository) : IServiceProvider
 {
   public object GetService(Type serviceType)
   {
@@ -24,12 +24,12 @@ public class TestServiceProvider(IUserScopedRepository userScopedRepository) : I
 
     if (serviceType == typeof(IQueryExecutor<IJournal[], GetAllJournalsQuery>))
     {
-      return new GetAllJournalsQueryExecutor(userScopedRepository);
+      return new GetAllJournalsQueryExecutor(userRestrictedRepository);
     }
 
     if (serviceType == typeof(IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>))
     {
-      return new SearchEntriesQueryExecutor(userScopedRepository);
+      return new SearchEntriesQueryExecutor(userRestrictedRepository);
     }
 
     throw new Exception($"Service of type {serviceType.FullName} is not available in {nameof(TestServiceProvider)}.");

@@ -15,13 +15,13 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/user")]
 [Authorize]
-public class UserController(IUserScopedRepository userScopedRepository, Dispatcher dispatcher)
+public class UserController(IUserRestrictedRepository userRestrictedRepository, Dispatcher dispatcher)
   : Controller
 {
   [HttpGet]
   public IUser GetCurrentUser()
   {
-    return userScopedRepository.CurrentUser.Value;
+    return userRestrictedRepository.CurrentUser.Value;
   }
 
   [HttpPatch]

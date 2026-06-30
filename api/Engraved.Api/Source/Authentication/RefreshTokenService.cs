@@ -10,21 +10,21 @@ using Microsoft.Extensions.Options;
 namespace Engraved.Api.Authentication;
 
 public class RefreshTokenService(
-  IBaseRepository repository,
+  IUnrestrictedRepository unrestrictedRepository,
   AuthenticationConfig configuration,
   IDateService dateService
 )
 {
   public RefreshTokenService(
-    IBaseRepository repository,
+    IUnrestrictedRepository unrestrictedRepository,
     IOptions<AuthenticationConfig> configuration,
     IDateService dateService
-  ) : this(repository, configuration.Value, dateService) { }
+  ) : this(unrestrictedRepository, configuration.Value, dateService) { }
 
   public async Task<string> Issue(IUser user)
   {
     var secret = AddToken(user);
-    await repository.UpsertUser(user);
+    await unrestrictedRepository.UpsertUser(user);
     return Compose(user.Id!, secret);
   }
 
@@ -35,7 +35,7 @@ public class RefreshTokenService(
       return null;
     }
 
-    IUser? user = await repository.GetUser(userId);
+    IUser? user = await unrestrictedRepository.GetUser(userId);
     if (user == null)
     {
       return null;
@@ -50,7 +50,7 @@ public class RefreshTokenService(
 
     user.RefreshTokens.Remove(match);
     var newSecret = AddToken(user);
-    await repository.UpsertUser(user);
+    await unrestrictedRepository.UpsertUser(user);
 
     return new RotatedRefreshToken(user, Compose(user.Id!, newSecret));
   }
@@ -62,7 +62,7 @@ public class RefreshTokenService(
       return false;
     }
 
-    IUser? user = await repository.GetUser(userId);
+    IUser? user = await unrestrictedRepository.GetUser(userId);
     if (user == null)
     {
       return false;
@@ -76,7 +76,7 @@ public class RefreshTokenService(
     }
 
     user.RefreshTokens.RemoveAll(t => t.TokenHash != hash);
-    await repository.UpsertUser(user);
+    await unrestrictedRepository.UpsertUser(user);
     return true;
   }
 

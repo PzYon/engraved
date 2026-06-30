@@ -154,7 +154,7 @@ public class DispatcherShould
     return new Dispatcher(
       NullLogger<Dispatcher>.Instance,
       new TestServiceProvider(null!),
-      new FakeUserScopedRepository(currentUser),
+      new FakeUserRestrictedRepository(currentUser),
       queryCache
     );
   }
@@ -188,7 +188,7 @@ public class FakeQueryExecutor : IQueryExecutor<Guid, FakeQuery>
   }
 }
 
-public class FakeUserScopedRepository(Lazy<IUser> currentUser) : IUserScopedRepository
+public class FakeUserRestrictedRepository(Lazy<IUser> currentUser) : IUserRestrictedRepository
 {
   public Lazy<IUser> CurrentUser => currentUser;
 

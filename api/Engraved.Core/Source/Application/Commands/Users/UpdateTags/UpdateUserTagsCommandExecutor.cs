@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.UpdateTags;
 
-public class UpdateUserTagsCommandExecutor(IUserScopedRepository repository)
+public class UpdateUserTagsCommandExecutor(IUserRestrictedRepository repository)
   : ICommandExecutor<UpdateUserTagsCommand>
 {
   public async Task<CommandResult> Execute(UpdateUserTagsCommand command)

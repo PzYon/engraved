@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using Engraved.Core.Application.Persistence.Demo;
+using System.Threading.Tasks;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
+using Engraved.Persistence.Mongo.Tests;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -9,36 +9,39 @@ namespace Engraved.Core.Application.Commands.Journals.Delete;
 
 public class DeleteJournalCommandExecutorShould
 {
-  private InMemoryRepository _repo = null!;
+  private const string JournalId = "60703c3b0000000000000001";
+  private const string UserId = "60703c3b0000000000000002";
+
+  private TestMongoRepository _repo = null!;
 
   [SetUp]
-  public void SetUp()
+  public async Task SetUp()
   {
-    _repo = new InMemoryRepository();
+    _repo = await Util.CreateMongoRepository();
   }
 
   [Test]
   public async Task DeleteJournal_And_ReturnAffectedUsers()
   {
     // given
-    _repo.Journals.Add(
+    await _repo.UpsertJournal(
       new CounterJournal
       {
-        Id = "journal-id",
-        Permissions = new UserPermissions { { "user-id", new PermissionDefinition { Kind = PermissionKind.Write } } }
+        Id = JournalId,
+        Permissions = new UserPermissions { { UserId, new PermissionDefinition { Kind = PermissionKind.Write } } }
       }
     );
 
     // when
     CommandResult result = await new DeleteJournalCommandExecutor(_repo).Execute(
-      new DeleteJournalCommand { JournalId = "journal-id" }
+      new DeleteJournalCommand { JournalId = JournalId }
     );
 
     // then
-    (await _repo.GetJournal("journal-id")).Should().BeNull();
+    (await _repo.GetJournal(JournalId)).Should().BeNull();
 
-    result.EntityId.Should().Be("journal-id");
-    result.AffectedUserIds.Should().Contain("user-id");
+    result.EntityId.Should().Be(JournalId);
+    result.AffectedUserIds.Should().Contain(UserId);
   }
 
   [Test]
@@ -46,7 +49,7 @@ public class DeleteJournalCommandExecutorShould
   {
     // when
     CommandResult result = await new DeleteJournalCommandExecutor(_repo).Execute(
-      new DeleteJournalCommand { JournalId = "does-not-exist" }
+      new DeleteJournalCommand { JournalId = "60703c3b0000000000000999" }
     );
 
     // then
