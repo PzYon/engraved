@@ -11,7 +11,7 @@ public static class JournalAccessFilter
     where TDocument : IDocument
   {
     var ownerFilter =
-      Builders<TDocument>.Filter.Eq(nameof(IUserScopedDocument.UserId), userId);
+      Builders<TDocument>.Filter.Eq(nameof(IUserOwnedDocument.UserId), userId);
 
     if (!typeof(TDocument).IsAssignableTo(typeof(IHasPermissionsDocument)))
     {

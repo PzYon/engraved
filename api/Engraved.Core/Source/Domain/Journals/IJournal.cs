@@ -15,7 +15,7 @@ public class ThresholdDefinition
   public ThresholdScope Scope {get; set;}
 }
 
-public interface IJournal : IUserScoped, IPermissionHolder, IEntity
+public interface IJournal : IUserOwned, IPermissionHolder, IEntity
 {
   string Name { get; set; }
 

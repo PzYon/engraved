@@ -106,7 +106,7 @@ public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestricte
     return dbUser ?? result;
   }
 
-  private void EnsureUserId(IUserScoped entity)
+  private void EnsureUserId(IUserOwned entity)
   {
     if (string.IsNullOrEmpty(entity.UserId))
     {

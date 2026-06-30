@@ -1,6 +1,6 @@
 ﻿namespace Engraved.Core.Domain;
 
-public interface IUserScoped
+public interface IUserOwned
 {
   string? UserId { get; set; }
 }
