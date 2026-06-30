@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class MongoRepository_SearchEntries_Should
+public class MongoRepositoryBase_SearchEntries_Should
 {
   private string _journalId = null!;
   private UnrestrictedMongoRepository _repository = null!;
