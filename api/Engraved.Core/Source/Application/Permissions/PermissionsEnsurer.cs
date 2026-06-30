@@ -1,7 +1,8 @@
 ﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
 
-namespace Engraved.Core.Domain.Permissions;
+namespace Engraved.Core.Application.Permissions;
 
 public class PermissionsEnsurer(
   IUserRepository repo,
