@@ -18,6 +18,6 @@ export const TitleRow: React.FC<{
 
 const Row = styled("div")`
   border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
-  margin-bottom: ${(p) => p.theme.spacing(1)};
+  padding-bottom: ${(p) => p.theme.spacing(1)};
   margin-bottom: ${(p) => p.theme.spacing(2)};
 `;
