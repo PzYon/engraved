@@ -18,9 +18,9 @@ public class ArchitectureShould
   private static readonly Assembly ApiAssembly = typeof(Program).Assembly;
 
   [Test]
-  public void OnlyLetSanctionedConsumersTouchTheUnrestrictedSeam()
+  public void OnlyLetAllowedConsumersTouchTheUnrestrictedSeam()
   {
-    string[] sanctionedConsumers =
+    string[] allowedConsumers =
     [
       "Program", // composition root: wires the seam up via DI
       "RootController", // health endpoint, runs before any user context
@@ -37,7 +37,7 @@ public class ArchitectureShould
       .Select(type => type.Name);
 
     actualConsumers.Should().BeSubsetOf(
-      sanctionedConsumers,
+      allowedConsumers,
       "only sanctioned consumers in Engraved.Api may depend on the unrestricted persistence seam"
     );
   }
