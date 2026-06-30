@@ -33,6 +33,10 @@ public static class Util
     Runner.Dispose();
   }
 
+  // Exposes the ephemeral mongo connection string so other test assemblies (e.g. the Api startup
+  // smoke test) can point the real application at this instance.
+  public static string ConnectionString => Runner.ConnectionString;
+
   private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings(Runner.ConnectionString);
   private static MongoDatabaseClient Client => new(Settings, null);
 

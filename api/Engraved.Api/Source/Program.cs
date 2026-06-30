@@ -230,3 +230,7 @@ string GetJwtSecret(IConfigurationSection configurationSection)
 
   return jwtSecret;
 }
+
+// Exposes the implicit entry-point class so WebApplicationFactory<Program> (the startup smoke test)
+// can reference it. Top-level statements otherwise generate an internal Program.
+public partial class Program;
