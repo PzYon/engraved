@@ -37,7 +37,7 @@ export const GoToSimple: React.FC<{
 }) => {
   const goto = useGoToNavigationItems(searchText);
 
-  if (!goto.items.length && searchText) {
+  if (!goto.isLoading && !goto.items.length && searchText) {
     goto.items.push({
       id: emptyListItemId,
     });

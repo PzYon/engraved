@@ -8,10 +8,10 @@ import { keepPreviousData } from "@tanstack/react-query";
 
 export const useGoToNavigationItems = (
   searchText?: string,
-): { journalsForEntries: IJournal[]; items: IEntity[] } => {
+): { journalsForEntries: IJournal[]; items: IEntity[]; isLoading: boolean } => {
   const viewedJournals = useRecentlyViewedJournals();
 
-  const result = useSearchEntitiesQuery(
+  const { data: result, isFetching } = useSearchEntitiesQuery(
     searchText,
     false,
     [JournalType.Scraps],
@@ -27,12 +27,14 @@ export const useGoToNavigationItems = (
     return {
       items: viewedJournals,
       journalsForEntries: [],
+      isLoading: false,
     };
   }
 
   return {
     items: (result?.entities ?? []).map((e) => e.entity),
     journalsForEntries: result?.journals ?? [],
+    isLoading: isFetching,
   };
 
   function getFallbackValue(): ISearchEntitiesResult {

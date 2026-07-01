@@ -40,7 +40,7 @@ export const useSearchEntitiesQuery = (
     placeholderData: placeholderData ?? keepPreviousData,
   };
 
-  const { data: result } = useQuery<ISearchEntitiesResult>(options);
+  const { data: result, isFetching } = useQuery<ISearchEntitiesResult>(options);
 
-  return result;
+  return { data: result, isFetching };
 };
