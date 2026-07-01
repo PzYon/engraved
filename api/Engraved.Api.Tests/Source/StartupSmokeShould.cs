@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Persistence.Mongo;
@@ -13,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using NUnit.Framework;
 
 namespace Engraved.Api.Tests;
@@ -22,6 +27,8 @@ namespace Engraved.Api.Tests;
 // and serves a request, and pins that the repository seams resolve to the intended concrete types.
 public class StartupSmokeShould
 {
+  private const string JwtSecret = "smoke-test-secret-long-enough-to-be-valid-0123456789";
+
   private WebApplicationFactory<Program> _factory = null!;
 
   [SetUp]
@@ -38,7 +45,7 @@ public class StartupSmokeShould
               new Dictionary<string, string?>
               {
                 ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-                ["Authentication:JwtSecret"] = "smoke-test-secret-long-enough-to-be-valid-0123456789"
+                ["Authentication:JwtSecret"] = JwtSecret
               }
             );
           }
@@ -79,5 +86,44 @@ public class StartupSmokeShould
 
     // maintenance is inherently unrestricted, so it resolves to the raw UnrestrictedMongoRepository
     services.GetRequiredService<IMaintenanceRepository>().Should().BeOfType<UnrestrictedMongoRepository>();
+  }
+
+  [Test]
+  public async Task Return_Unauthorized_For_ValidlySignedToken_Missing_NameIdClaim()
+  {
+    HttpClient client = _factory.CreateClient();
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CreateTokenWithoutNameIdClaim());
+
+    // any [Authorize] endpoint works - the request must never reach the controller.
+    HttpResponseMessage response = await client.GetAsync("/api/system_info");
+
+    response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+  }
+
+  [Test]
+  public async Task Include_ActionDuration_Header_On_Responses()
+  {
+    HttpClient client = _factory.CreateClient();
+
+    HttpResponseMessage response = await client.GetAsync("/");
+
+    response.Headers.Contains("server-action-duration").Should().BeTrue();
+  }
+
+  private static string CreateTokenWithoutNameIdClaim()
+  {
+    var tokenHandler = new JwtSecurityTokenHandler();
+    var tokenDescriptor = new SecurityTokenDescriptor
+    {
+      Subject = new ClaimsIdentity([new Claim(ClaimTypes.Name, "someone")]),
+      Expires = DateTime.UtcNow.AddMinutes(5),
+      SigningCredentials = new SigningCredentials(
+        new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSecret)),
+        SecurityAlgorithms.HmacSha256Signature
+      )
+    };
+
+    SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+    return tokenHandler.WriteToken(token);
   }
 }

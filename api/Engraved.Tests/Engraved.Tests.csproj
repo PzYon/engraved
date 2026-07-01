@@ -32,9 +32,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- NUnit only discovers [SetUpFixture] in the assembly under test, so the shared mongo
-             teardown source is compiled into this assembly too. -->
-        <Compile Include="..\Engraved.Persistence.Mongo.Tests\Source\MongoRunnerTeardown.cs" Link="MongoRunnerTeardown.cs"/>
+      <Compile Include="..\Engraved.Persistence.Mongo.Tests\Source\MongoRunnerTeardown.cs">
+        <Link>Source\MongoRunnerTeardown.cs</Link>
+      </Compile>
     </ItemGroup>
 
 </Project>

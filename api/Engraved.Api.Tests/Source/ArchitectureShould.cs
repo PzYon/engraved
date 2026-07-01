@@ -22,7 +22,7 @@ public class ArchitectureShould
   {
     string[] allowedConsumers =
     [
-      "Program", // composition root: wires the seam up via DI
+      "PersistenceRegistration", // composition root: wires the seam up via DI
       "RootController", // health endpoint, runs before any user context
       "WakeMeUpController", // keep-alive, runs without a user
       "UserLoader", // authentication, runs before a user context exists
