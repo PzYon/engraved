@@ -127,9 +127,11 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
         throw new Exception("Current user id is required");
       }
 
+      // "scheduled" means a schedule with a pending occurrence: a fired schedule keeps its sub-document
+      // (with NextOccurrence nulled out), so we must check NextOccurrence rather than mere existence.
       filters.Add(Builders<JournalDocument>.Filter.And(
         Builders<JournalDocument>.Filter.Exists($"Schedules.{currentUserId}"),
-        Builders<JournalDocument>.Filter.Ne($"Schedules.{currentUserId}", BsonNull.Value)
+        Builders<JournalDocument>.Filter.Ne($"Schedules.{currentUserId}.NextOccurrence", BsonNull.Value)
       ));
     }
 
@@ -276,18 +278,17 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       filters.Add(GetHasScheduleForCurrentUserFilter(currentUserId));
     }
 
-    var entries = await LoadData(
+    // Ordering is done at the DB level (see defaultSort below, and the CurrentUserFirst branch in
+    // LoadDocuments). We deliberately do NOT re-order scheduled entries to the front here: the entries
+    // tab (ScheduleMode.None) must stay sorted purely by edited date, and the scheduled tab
+    // (CurrentUserOnly) already contains only scheduled entries.
+    return await LoadData(
       limit,
       scheduleMode,
       currentUserId,
       filters,
       Builders<EntryDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.Id)
     );
-
-    return entries.OrderByDescending(e => e.Schedules.ContainsKey(currentUserId ?? "") && e.Schedules[currentUserId ?? ""].NextOccurrence != null)
-      .ThenByDescending(e => e.EditedOn)
-      .ThenByDescending(e => e.Id)
-      .ToArray();
   }
 
   private async Task<IEntry[]> LoadData(
@@ -553,9 +554,12 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
 
   private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
   {
+    // "scheduled" means the user has a schedule with a pending occurrence. A schedule sub-document is
+    // kept around after it has fired (with NextOccurrence set to null), so checking mere existence of
+    // the sub-document would wrongly surface already-fired schedules as "scheduled".
     return Builders<EntryDocument>.Filter.And(
       Builders<EntryDocument>.Filter.Exists($"Schedules.{currentUserId}"),
-      Builders<EntryDocument>.Filter.Ne($"Schedules.{currentUserId}", BsonNull.Value)
+      Builders<EntryDocument>.Filter.Ne($"Schedules.{currentUserId}.NextOccurrence", BsonNull.Value)
     );
   }
 

@@ -108,4 +108,42 @@ public class MongoRepositoryBase_GetAllJournals_Should
     );
     results.Length.Should().Be(1);
   }
+
+  [Test]
+  public async Task ReturnAllJournals_SchedulesOnly_ExcludesFiredSchedules()
+  {
+    // pending schedule for "max"
+    await _repository.UpsertJournal(
+      new GaugeJournal
+      {
+        Schedules = new Dictionary<string, Schedule>
+        {
+          { "max", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
+        }
+      }
+    );
+
+    // schedule for "max" that has already fired (sub-document kept, but no pending occurrence)
+    await _repository.UpsertJournal(
+      new GaugeJournal
+      {
+        Schedules = new Dictionary<string, Schedule>
+        {
+          { "max", new Schedule { NextOccurrence = null } }
+        }
+      }
+    );
+
+    IJournal[] results = await _repository.GetAllJournals(
+      null,
+      ScheduleMode.CurrentUserOnly,
+      null,
+      null,
+      null,
+      "max"
+    );
+
+    // only the journal with a pending occurrence counts as "scheduled"
+    results.Length.Should().Be(1);
+  }
 }

@@ -237,4 +237,94 @@ public class MongoRepositoryBase_SearchEntries_Should
     ((ScrapsEntry)results[1]).Title.Should().Be("WithOtherUserSchedule");
     ((ScrapsEntry)results[5]).Title.Should().Be("WithoutSchedule");
   }
+
+  [Test]
+  public async Task ScheduleModeNone_SortsPurelyByEditedOn_WithoutFloatingScheduled()
+  {
+    // The "entries" tab uses ScheduleMode.None and must be sorted purely by edited date descending.
+    // A scheduled entry that was edited long ago must NOT be floated to the top.
+    var currentUserId = ObjectId.GenerateNewId().ToString();
+
+    UpsertResult journal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "Tab", UserId = currentUserId }
+    );
+
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = journal.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "OldButScheduled",
+        EditedOn = DateTime.Now.AddDays(-100),
+        Schedules = { { currentUserId, new Schedule { NextOccurrence = DateTime.Now.AddDays(1) } } }
+      }
+    );
+
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = journal.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "RecentUnscheduled",
+        EditedOn = DateTime.Now.AddDays(-1)
+      }
+    );
+
+    IEntry[] results = await _repository.SearchEntries(
+      null,
+      ScheduleMode.None,
+      null,
+      [journal.EntityId],
+      20,
+      currentUserId
+    );
+
+    results.Length.Should().Be(2);
+    ((ScrapsEntry)results[0]).Title.Should().Be("RecentUnscheduled");
+    ((ScrapsEntry)results[1]).Title.Should().Be("OldButScheduled");
+  }
+
+  [Test]
+  public async Task ScheduleModeCurrentUserOnly_ExcludesEntriesWhoseScheduleHasNoPendingOccurrence()
+  {
+    // The "scheduled" tab uses ScheduleMode.CurrentUserOnly. A schedule sub-document is kept after it
+    // has fired (NextOccurrence nulled out), so such an entry must NOT be returned as "scheduled".
+    var currentUserId = ObjectId.GenerateNewId().ToString();
+
+    UpsertResult journal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "Tab", UserId = currentUserId }
+    );
+
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = journal.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "Pending",
+        Schedules = { { currentUserId, new Schedule { NextOccurrence = DateTime.Now.AddDays(1) } } }
+      }
+    );
+
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = journal.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "AlreadyFired",
+        Schedules = { { currentUserId, new Schedule { NextOccurrence = null } } }
+      }
+    );
+
+    IEntry[] results = await _repository.SearchEntries(
+      null,
+      ScheduleMode.CurrentUserOnly,
+      null,
+      [journal.EntityId],
+      20,
+      currentUserId
+    );
+
+    results.Length.Should().Be(1);
+    ((ScrapsEntry)results[0]).Title.Should().Be("Pending");
+  }
 }
