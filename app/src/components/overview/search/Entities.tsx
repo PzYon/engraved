@@ -18,7 +18,7 @@ export const Entities: React.FC<{
   const { user } = useAppContext();
   const { searchText } = usePageContext();
 
-  const queryResult = useSearchEntitiesQuery(
+  const { data: queryResult } = useSearchEntitiesQuery(
     searchText,
     isSchedule,
     undefined,
