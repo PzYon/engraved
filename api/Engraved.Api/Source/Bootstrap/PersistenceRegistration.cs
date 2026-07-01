@@ -3,8 +3,6 @@ using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Engraved.Api.Bootstrap;
 
@@ -22,18 +20,13 @@ public static class PersistenceRegistration
       )
     );
 
-    // The explicit unrestricted seam: resolves to the raw UnrestrictedMongoRepository (no permission/
-    // user scoping). Injected only by consumers that deliberately run without a current user (the
-    // notification job, auth/login, health endpoints). It is a distinct type from the scoped
-    // IUserRestrictedRepository, so
-    // unrestricted access is always a conscious, greppable choice and can never be obtained by accident.
-    services.AddTransient<IUnrestrictedRepository>(provider =>
-      {
-        var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
-        return new UnrestrictedMongoRepository(mongoDbClient);
-      }
-    );
+    RegisterUserRestrictedRepository(services);
 
+    RegisterUnrestrictedRepository(services);
+  }
+
+  private static void RegisterUserRestrictedRepository(IServiceCollection services)
+  {
     services.AddTransient<IUserRestrictedRepository>(provider =>
       {
         var userService = provider.GetService<ICurrentUserService>()!;
@@ -51,9 +44,17 @@ public static class PersistenceRegistration
     services.AddTransient<IUserRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
     services.AddTransient<IJournalRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
     services.AddTransient<IEntryRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
+  }
 
-    // Maintenance is inherently unrestricted (keep-alive, global counts), so it resolves to the
-    // unrestricted repository rather than the user-restricted one.
+  private static void RegisterUnrestrictedRepository(IServiceCollection services)
+  {
+    services.AddTransient<IUnrestrictedRepository>(provider =>
+      {
+        var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
+        return new UnrestrictedMongoRepository(mongoDbClient);
+      }
+    );
+
     services.AddTransient<IMaintenanceRepository>(provider => provider.GetService<IUnrestrictedRepository>()!);
   }
 

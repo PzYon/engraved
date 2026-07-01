@@ -12,12 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- NUnit only discovers [SetUpFixture] in the assembly under test, so the shared mongo
-             teardown source is compiled into this assembly too. -->
-        <Compile Include="..\Engraved.Persistence.Mongo.Tests\Source\MongoRunnerTeardown.cs" Link="MongoRunnerTeardown.cs"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0"/>
         <PackageReference Include="NetArchTest.Rules" Version="1.3.2"/>
         <PackageReference Include="FluentAssertions" Version="8.10.0"/>
@@ -28,6 +22,12 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\Engraved.Persistence.Mongo.Tests\Source\MongoRunnerTeardown.cs">
+        <Link>Source\MongoRunnerTeardown.cs</Link>
+      </Compile>
     </ItemGroup>
 
 </Project>
