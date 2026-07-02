@@ -1,9 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "workspaces": {
-    ".": {
-      "ignoreDependencies": ["@tanstack/eslint-plugin-query"]
-    },
     "app": {
       "ignore": ["public/OneSignalSDKWorker.js"],
       "ignoreBinaries": ["dotnet"]
