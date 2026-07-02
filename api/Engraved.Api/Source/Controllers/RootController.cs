@@ -8,10 +8,10 @@ namespace Engraved.Api.Controllers;
 public class RootController(IUnrestrictedRepository unrestrictedRepository) : Controller
 {
   [HttpGet]
-  public void Get()
+  public async Task Get()
   {
     // required to serve keep alive requests from azure. we deliberately
     // call the database in the hope to keep stuff alive.
-    unrestrictedRepository.WakeMeUp();
+    await unrestrictedRepository.WakeMeUp();
   }
 }
