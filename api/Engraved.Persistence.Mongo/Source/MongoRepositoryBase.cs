@@ -463,6 +463,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       JournalType.Gauge => d => d.GetType() == typeof(GaugeJournalDocument),
       JournalType.Timer => d => d.GetType() == typeof(TimerJournalDocument),
       JournalType.Scraps => d => d.GetType() == typeof(ScrapsJournalDocument),
+      JournalType.LogBook => d => d.GetType() == typeof(LogBookJournalDocument),
       _ => throw new ArgumentOutOfRangeException(
         nameof(journalType),
         journalType,
@@ -483,6 +484,8 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
         return d => d.GetType() == typeof(TimerEntryDocument);
       case JournalType.Scraps:
         return d => d.GetType() == typeof(ScrapsEntryDocument);
+      case JournalType.LogBook:
+        return d => d.GetType() == typeof(LogBookEntryDocument);
       default:
         throw new ArgumentOutOfRangeException(
           nameof(journalType),

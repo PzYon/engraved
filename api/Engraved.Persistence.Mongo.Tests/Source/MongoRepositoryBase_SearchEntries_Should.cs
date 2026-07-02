@@ -173,6 +173,28 @@ public class MongoRepositoryBase_SearchEntries_Should
   }
 
   [Test]
+  public async Task Consider_JournalTypes_LogBook()
+  {
+    var journal = new LogBookJournal { Name = "My LogBook" };
+    UpsertResult result = await _repository.UpsertJournal(journal);
+
+    await _repository.UpsertEntry(
+      new LogBookEntry { ParentId = result.EntityId, Notes = "log book entry" }
+    );
+
+    IEntry[] results = await _repository.SearchEntries(
+      null,
+      null,
+      [JournalType.LogBook],
+      null,
+      10
+    );
+
+    results.Length.Should().Be(1);
+    results[0].Should().BeOfType<LogBookEntry>();
+  }
+
+  [Test]
   public async Task Sort_Scheduled_Before_EditedOn()
   {
     var currentUserId = ObjectId.GenerateNewId().ToString();

@@ -69,6 +69,17 @@ public class MongoRepositoryBase_GetAllJournals_Should
   }
 
   [Test]
+  public async Task Return_Matching_JournalTypes_LogBook()
+  {
+    await _repository.UpsertJournal(new LogBookJournal { Name = "LogBook" });
+
+    IJournal[] results = await _repository.GetAllJournals(null, null, [JournalType.LogBook]);
+
+    results.Length.Should().Be(1);
+    results[0].Should().BeOfType<LogBookJournal>();
+  }
+
+  [Test]
   public async Task Return_Matching_JournalId()
   {
     IJournal[] results = await _repository.GetAllJournals(null, null, null, [_gaugeJournalId], 10);
