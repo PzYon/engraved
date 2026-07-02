@@ -42,25 +42,15 @@ public class MoveEntryCommandExecutor(
     entry.ParentId = targetJournal.Id!;
     await entryRepository.UpsertEntry(entry);
 
-    string[] affectedUserIds = await GetAffectedUserIds(journalRepository, entry, targetJournal);
+    // use the source journal loaded above: entry.ParentId already points to the target here,
+    // so re-loading via the entry would wrongly derive both sides from the target journal.
+    string[] affectedUserIds = targetJournal.Permissions.GetUserIdsWithAccess()
+      .Union(sourceJournal.Permissions.GetUserIdsWithAccess())
+      .ToArray();
 
     return new CommandResult(
       command.EntryId,
       affectedUserIds
     );
-  }
-
-  private static async Task<string[]> GetAffectedUserIds(
-    IJournalRepository repository,
-    IEntry entry,
-    IJournal targetJournal
-  )
-  {
-    IJournal sourceJournal = (await repository.GetJournal(entry.ParentId))!;
-
-    return targetJournal.Permissions.GetUserIdsWithAccess()
-      .Union(sourceJournal.Permissions.GetUserIdsWithAccess())
-      .Distinct()
-      .ToArray();
   }
 }
