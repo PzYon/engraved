@@ -2,7 +2,7 @@
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
-using Engraved.Core.Application.Queries.Entries.GetAll;
+using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
 

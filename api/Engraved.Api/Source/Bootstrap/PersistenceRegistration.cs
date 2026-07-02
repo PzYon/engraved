@@ -12,7 +12,7 @@ public static class PersistenceRegistration
   {
     // it is recommended to only have one instance of the MongoClient:
     // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
-    // we did nt have this at first and it actually had a bad influence
+    // we did not have this at first and it actually had a bad influence
     // on performance.
     services.AddSingleton(_ => new MongoDatabaseClient(
         CreateRepositorySettings(configuration, isE2ETests),
@@ -29,33 +29,33 @@ public static class PersistenceRegistration
   {
     services.AddTransient<IUserRestrictedRepository>(provider =>
       {
-        var userService = provider.GetService<ICurrentUserService>()!;
-        var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
+        var userService = provider.GetRequiredService<ICurrentUserService>();
+        var mongoDbClient = provider.GetRequiredService<MongoDatabaseClient>();
         return new UserRestrictedMongoRepository(mongoDbClient, userService);
       }
     );
 
-    services.AddTransient<Lazy<IUser>>(provider => provider.GetService<IUserRestrictedRepository>()!.CurrentUser);
+    services.AddTransient<Lazy<IUser>>(provider => provider.GetRequiredService<IUserRestrictedRepository>().CurrentUser);
 
     // The narrow, role-based persistence interfaces resolve to the user-restricted repository (same as
     // IUserRestrictedRepository), so executors that depend on just the role(s) they use transparently
     // get permission enforcement. Consumers that need unrestricted access inject IUnrestrictedRepository
     // (above) instead.
-    services.AddTransient<IUserRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
-    services.AddTransient<IJournalRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
-    services.AddTransient<IEntryRepository>(provider => provider.GetService<IUserRestrictedRepository>()!);
+    services.AddTransient<IUserRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
+    services.AddTransient<IJournalRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
+    services.AddTransient<IEntryRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
   }
 
   private static void RegisterUnrestrictedRepository(IServiceCollection services)
   {
     services.AddTransient<IUnrestrictedRepository>(provider =>
       {
-        var mongoDbClient = provider.GetService<MongoDatabaseClient>()!;
+        var mongoDbClient = provider.GetRequiredService<MongoDatabaseClient>();
         return new UnrestrictedMongoRepository(mongoDbClient);
       }
     );
 
-    services.AddTransient<IMaintenanceRepository>(provider => provider.GetService<IUnrestrictedRepository>()!);
+    services.AddTransient<IMaintenanceRepository>(provider => provider.GetRequiredService<IUnrestrictedRepository>());
   }
 
   private static string? GetMongoDbNameOverride(bool isE2ETests)

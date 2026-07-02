@@ -336,7 +336,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     if (string.IsNullOrEmpty(currentUserId))
     {
       throw new Exception(
-        $"\"${nameof(currentUserId)}\" must be specified when using {ScheduleMode.CurrentUserFirst}."
+        $"\"{nameof(currentUserId)}\" must be specified when using {ScheduleMode.CurrentUserFirst}."
       );
     }
 

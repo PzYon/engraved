@@ -92,6 +92,11 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
   [Route("{journalId}/tags")]
   public async Task<CommandResult> UpdateUserTags(string journalId, UpdateJournalUserTagsCommand command)
   {
+    if (journalId != command.JournalId)
+    {
+      throw new InvalidCommandException(command, "JournalIds from URL and body do not match.");
+    }
+
     return await dispatcher.Command(command);
   }
 }

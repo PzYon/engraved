@@ -11,7 +11,7 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Queries.Entries.Get;
 using Engraved.Core.Application.Queries.Entries.GetActive;
-using Engraved.Core.Application.Queries.Entries.GetAll;
+using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Domain.Entries;
 using Microsoft.AspNetCore.Authorization;

@@ -8,7 +8,7 @@ using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries.Entries.GetAll;
+namespace Engraved.Core.Application.Queries.Entries.Search;
 
 public class SearchEntriesQueryExecutorShould
 {

@@ -16,7 +16,7 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
     if (string.IsNullOrEmpty(clientNotification.UserId))
     {
       throw new NotAllowedOperationException(
-        $"Cannot send OneSignal message, as ${nameof(ClientNotification.UserId)} is not available."
+        $"Cannot send OneSignal message, as {nameof(ClientNotification.UserId)} is not available."
       );
     }
 

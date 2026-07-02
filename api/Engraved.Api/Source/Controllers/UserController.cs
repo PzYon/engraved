@@ -33,7 +33,7 @@ public class UserController(IUserRestrictedRepository userRestrictedRepository, 
 
   [HttpPost]
   [Route("tags/cleanup")]
-  public async Task<CommandResult> UpdateTags(CleanupTagsCommand command)
+  public async Task<CommandResult> CleanupTags(CleanupTagsCommand command)
   {
     return await dispatcher.Command(command);
   }
