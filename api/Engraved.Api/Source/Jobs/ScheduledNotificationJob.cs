@@ -1,10 +1,10 @@
-﻿using Engraved.Core.Application.Jobs;
+using Engraved.Core.Application.Jobs;
 using Microsoft.Extensions.Options;
 
 namespace Engraved.Api.Jobs;
 
 public class ScheduledNotificationJob(
-  NotificationJob notificationJob,
+  IServiceScopeFactory serviceScopeFactory,
   IOptions<NotificationsJobConfig> notificationsJobConfig
 )
   : BackgroundService
@@ -22,7 +22,14 @@ public class ScheduledNotificationJob(
       while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
       {
         bool isDryRun = notificationsJobConfig.Value.Mode == NotificationsJobMode.DryRun;
-        await notificationJob.Execute(isDryRun);
+
+        // a fresh scope per run so the job and its dependencies (repository, date service, ...)
+        // are created anew every time instead of being captured once by this singleton.
+        using (IServiceScope scope = serviceScopeFactory.CreateScope())
+        {
+          var notificationJob = scope.ServiceProvider.GetRequiredService<NotificationJob>();
+          await notificationJob.Execute(isDryRun);
+        }
       }
     }
   }
