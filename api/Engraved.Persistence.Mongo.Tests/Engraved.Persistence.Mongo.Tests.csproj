@@ -8,10 +8,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Engraved.Persistence.Mongo\Engraved.Persistence.Mongo.csproj" />
+        <ProjectReference Include="..\Engraved.TestUtils\Engraved.TestUtils.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="EphemeralMongo" Version="3.2.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
         <PackageReference Include="FluentAssertions" Version="8.10.0" />
         <PackageReference Include="NUnit" Version="4.6.1" />
@@ -21,6 +21,12 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\Engraved.TestUtils\Source\MongoRunnerTeardown.cs">
+        <Link>Source\MongoRunnerTeardown.cs</Link>
+      </Compile>
     </ItemGroup>
 
 </Project>

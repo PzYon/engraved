@@ -3,7 +3,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
-using Engraved.Persistence.Mongo.Tests;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 

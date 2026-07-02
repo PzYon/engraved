@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj"/>
-        <ProjectReference Include="..\Engraved.Persistence.Mongo.Tests\Engraved.Persistence.Mongo.Tests.csproj"/>
+        <ProjectReference Include="..\Engraved.TestUtils\Engraved.TestUtils.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\Engraved.Persistence.Mongo.Tests\Source\MongoRunnerTeardown.cs">
+      <Compile Include="..\Engraved.TestUtils\Source\MongoRunnerTeardown.cs">
         <Link>Source\MongoRunnerTeardown.cs</Link>
       </Compile>
     </ItemGroup>

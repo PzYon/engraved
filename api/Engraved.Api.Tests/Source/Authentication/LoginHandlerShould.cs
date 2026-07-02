@@ -6,7 +6,7 @@ using Engraved.Api.Authentication.Google;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
-using Engraved.Persistence.Mongo.Tests;
+using Engraved.TestUtils;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Persistence.Mongo;
-using Engraved.Persistence.Mongo.Tests;
+using Engraved.TestUtils;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

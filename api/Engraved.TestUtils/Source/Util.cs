@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Engraved.Persistence.Mongo;
 using EphemeralMongo;
 using MongoDB.Driver;
 
-namespace Engraved.Persistence.Mongo.Tests;
+namespace Engraved.TestUtils;
 
 public static class Util
 {

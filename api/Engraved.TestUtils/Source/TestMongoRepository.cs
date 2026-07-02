@@ -1,16 +1,14 @@
-﻿using Engraved.Core.Application;
+﻿using Engraved.Core.Application.Persistence;
+using Engraved.Persistence.Mongo;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Driver;
 
-namespace Engraved.Persistence.Mongo.Tests;
+namespace Engraved.TestUtils;
 
-public class TestUserRestrictedMongoRepository(
-  MongoDatabaseClient mongoDatabaseClient,
-  ICurrentUserService currentUserService
-)
-  : UserRestrictedMongoRepository(mongoDatabaseClient, currentUserService)
+public class TestMongoRepository(MongoDatabaseClient mongoDatabaseClient)
+  : UnrestrictedMongoRepository(mongoDatabaseClient)
 {
   public IMongoCollection<JournalDocument> Journals => JournalsCollection;
   public IMongoCollection<EntryDocument> Entries => EntriesCollection;

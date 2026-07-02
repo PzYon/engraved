@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Persistence.Mongo.Tests;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 

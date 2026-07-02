@@ -1,4 +1,6 @@
-﻿namespace Engraved.Persistence.Mongo.Tests;
+using Engraved.Persistence.Mongo;
+
+namespace Engraved.TestUtils;
 
 public class TestMongoRepositorySettings(string mongoDbConnectionString) : IMongoRepositorySettings
 {
