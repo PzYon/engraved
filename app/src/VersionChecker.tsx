@@ -37,7 +37,11 @@ async function isNewVersionAvailable() {
     return false;
   }
 
-  const response = await fetch("/chunks/envSettings.js");
+  // Bypass the HTTP cache so we always read the freshly deployed chunk;
+  // otherwise a cached response could hide that a new version is available.
+  const response = await fetch("/chunks/envSettings.js", {
+    cache: "no-store",
+  });
   const text = await response.text();
   const match = /version\s*:\s*(["'`])(\d+)\1/m.exec(text);
   const version = match?.[2];
