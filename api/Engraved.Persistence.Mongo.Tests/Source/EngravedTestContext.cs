@@ -1,12 +1,12 @@
-﻿using Engraved.Core.Application;
+using System;
+using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 using Engraved.Core.Domain.Users;
-using Engraved.Persistence.Mongo.Tests;
 
-namespace Engraved.Tests.Utils;
+namespace Engraved.Persistence.Mongo.Tests;
 
 public class EngravedTestContext
 {
@@ -26,7 +26,7 @@ public class EngravedTestContext
       UserName = userName,
       UserId = (await mongoRepository.UpsertUser(new User { Name = userName })).EntityId
     };
-    
+
     ctx.UserRestrictedRepo = await Util.CreateUserRestrictedMongoRepository(userName, ctx.UserId, true);
 
     return ctx;

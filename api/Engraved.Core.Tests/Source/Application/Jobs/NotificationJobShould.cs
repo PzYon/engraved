@@ -1,13 +1,12 @@
-using Engraved.Core.Application;
-using Engraved.Core.Application.Jobs;
+using System.Threading.Tasks;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 using Engraved.Persistence.Mongo.Tests;
-using Engraved.Tests.Utils;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
+using NUnit.Framework;
 
-namespace Engraved.Tests.Tests.Job;
+namespace Engraved.Core.Application.Jobs;
 
 public class NotificationJobShould
 {
