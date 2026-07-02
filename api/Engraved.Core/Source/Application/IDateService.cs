@@ -1,20 +1,13 @@
-﻿namespace Engraved.Core.Application;
+namespace Engraved.Core.Application;
 
 public interface IDateService
 {
   public DateTime UtcNow { get; }
-
-  public void UpdateDate();
 }
 
 public class DateService : IDateService
 {
-  public DateTime UtcNow { get; private set; } = DateTime.UtcNow;
-
-  public void UpdateDate()
-  {
-    UtcNow = DateTime.UtcNow;
-  }
+  public DateTime UtcNow { get; } = DateTime.UtcNow;
 }
 
 public class FakeDateService(DateTime initialDate) : IDateService
@@ -22,11 +15,6 @@ public class FakeDateService(DateTime initialDate) : IDateService
   public FakeDateService() : this(DateTime.UtcNow) { }
 
   public DateTime UtcNow { get; set; } = initialDate;
-
-  public void UpdateDate()
-  {
-    UtcNow = DateTime.UtcNow;
-  }
 
   public void SetNext(int remainingSteps)
   {
@@ -57,6 +45,4 @@ public class SelfIncrementingDateService : IDateService
       return next;
     }
   }
-
-  public void UpdateDate() { }
 }

@@ -19,10 +19,6 @@ public class NotificationJob(
 {
   public async Task<NotificationJobResult> Execute(bool isDryRun)
   {
-    // as the date service is created and inject once at the start of the
-    // job, we need to make sure, that we always use the current date.
-    dateService.UpdateDate();
-
     var result = new NotificationJobResult();
 
     try
