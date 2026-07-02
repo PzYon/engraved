@@ -39,7 +39,7 @@ public class JwtTokenFactory(AuthenticationConfig configuration, IDateService da
   {
     if (string.IsNullOrEmpty(configuration.JwtSecret))
     {
-      throw new Exception($"\"{nameof(AuthenticationConfig.JwtSecret)}\" must be set on the config.");
+      throw new InvalidOperationException($"\"{nameof(AuthenticationConfig.JwtSecret)}\" must be set on the config.");
     }
 
     return new SigningCredentials(

@@ -13,7 +13,7 @@ public class CurrentUserService(IHttpContextAccessor httpContextAccessor, UserLo
   {
     if (httpContextAccessor.HttpContext == null)
     {
-      throw new Exception("HttpContext is not set");
+      throw new InvalidOperationException("HttpContext is not set");
     }
 
     return httpContextAccessor.HttpContext.Items[Key] as string;
@@ -23,7 +23,7 @@ public class CurrentUserService(IHttpContextAccessor httpContextAccessor, UserLo
   {
     if (httpContextAccessor.HttpContext == null)
     {
-      throw new Exception("HttpContext is not set");
+      throw new InvalidOperationException("HttpContext is not set");
     }
 
     httpContextAccessor.HttpContext.Items[Key] = userName;

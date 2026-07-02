@@ -68,7 +68,7 @@ public class NotificationJob(
           IUser? user = await unrestrictedRepository.GetUser(userId);
           if (user == null)
           {
-            throw new Exception($"User \"{userId}\" can not be loaded");
+            throw new InvalidOperationException($"User \"{userId}\" can not be loaded");
           }
 
           if (!isDryRun)

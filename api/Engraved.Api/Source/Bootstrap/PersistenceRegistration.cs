@@ -68,7 +68,7 @@ public static class PersistenceRegistration
     var connectionString = configuration.GetConnectionString("engraved_db");
     if (string.IsNullOrEmpty(connectionString) && !isE2ETests)
     {
-      throw new Exception("App Service Config: No connection string available.");
+      throw new InvalidOperationException("App Service Config: No connection string available.");
     }
 
     return new MongoRepositorySettings(connectionString ?? "mongodb://localhost:27017");

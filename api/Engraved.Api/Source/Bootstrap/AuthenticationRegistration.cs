@@ -77,7 +77,7 @@ public static class AuthenticationRegistration
     var jwtSecret = configurationSection.GetValue<string>(nameof(AuthenticationConfig.JwtSecret));
     if (string.IsNullOrEmpty(jwtSecret))
     {
-      throw new Exception("App Service Config: No JWT Secret available.");
+      throw new InvalidOperationException("App Service Config: No JWT Secret available.");
     }
 
     return jwtSecret;
