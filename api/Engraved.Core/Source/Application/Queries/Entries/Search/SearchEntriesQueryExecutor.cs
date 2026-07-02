@@ -1,6 +1,6 @@
 using Engraved.Core.Application.Persistence;
 
-namespace Engraved.Core.Application.Queries.Entries.GetAll;
+namespace Engraved.Core.Application.Queries.Entries.Search;
 
 public class SearchEntriesQueryExecutor(IUserRestrictedRepository repository)
   : IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>

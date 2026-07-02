@@ -25,11 +25,7 @@ public class Dispatcher(
 
   private async Task<TResult> ExecuteQuery<TResult, TQuery>(TQuery query) where TQuery : IQuery
   {
-    var queryExecutor = serviceProvider.GetService<IQueryExecutor<TResult, TQuery>>();
-    if (queryExecutor == null)
-    {
-      throw new Exception($"No query executor registered for query of type {query.GetType()}");
-    }
+    var queryExecutor = serviceProvider.GetRequiredService<IQueryExecutor<TResult, TQuery>>();
 
     TResult result = await queryCache.GetOrCreate(queryExecutor, query);
 
@@ -51,11 +47,7 @@ public class Dispatcher(
 
   private async Task<CommandResult> ExecuteCommand<TCommand>(TCommand command) where TCommand : ICommand
   {
-    var commandExecutor = serviceProvider.GetService<ICommandExecutor<TCommand>>();
-    if (commandExecutor == null)
-    {
-      throw new Exception($"No command executor registered for command of type {command.GetType()}");
-    }
+    var commandExecutor = serviceProvider.GetRequiredService<ICommandExecutor<TCommand>>();
 
     CommandResult commandResult = await commandExecutor.Execute(command);
 

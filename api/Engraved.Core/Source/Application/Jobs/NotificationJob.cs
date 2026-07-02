@@ -41,7 +41,7 @@ public class NotificationJob(
     }
     catch (Exception ex)
     {
-      logger.LogError(ex, "Error while processing job: ${ExMessage}", ex.Message);
+      logger.LogError(ex, "Error while processing job: {ExMessage}", ex.Message);
     }
 
     return result;

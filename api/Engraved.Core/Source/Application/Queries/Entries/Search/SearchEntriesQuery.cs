@@ -1,6 +1,6 @@
 using Engraved.Core.Domain.Journals;
 
-namespace Engraved.Core.Application.Queries.Entries.GetAll;
+namespace Engraved.Core.Application.Queries.Entries.Search;
 
 public class SearchEntriesQuery : IEntitiesQuery
 {

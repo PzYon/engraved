@@ -20,7 +20,7 @@ using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Entries.Get;
 using Engraved.Core.Application.Queries.Entries.GetActive;
-using Engraved.Core.Application.Queries.Entries.GetAll;
+using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Application.Queries.Export;
 using Engraved.Core.Application.Queries.Journals.Get;
