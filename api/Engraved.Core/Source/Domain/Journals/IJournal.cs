@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Engraved.Core.Domain.Permissions;
+﻿using Engraved.Core.Domain.Permissions;
 
 namespace Engraved.Core.Domain.Journals;
 
@@ -16,15 +15,7 @@ public class ThresholdDefinition
   public ThresholdScope Scope {get; set;}
 }
 
-// The derived types are registered for System.Text.Json so that values declared as IJournal
-// (e.g. controller responses and nested properties) are serialized with all properties of
-// their runtime type - including ones not on this interface, like BaseJournal.UserRole.
-// No type discriminator is emitted, so the JSON shape is unchanged.
-[JsonDerivedType(typeof(CounterJournal))]
-[JsonDerivedType(typeof(GaugeJournal))]
-[JsonDerivedType(typeof(TimerJournal))]
-[JsonDerivedType(typeof(ScrapsJournal))]
-[JsonDerivedType(typeof(LogBookJournal))]
+// Values declared as IJournal are serialized polymorphically; see DomainPolymorphism.
 public interface IJournal : IUserOwned, IPermissionHolder, IEntity
 {
   string Name { get; set; }

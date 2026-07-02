@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Google;
@@ -9,6 +10,7 @@ using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Jobs;
 using Engraved.Core.Application.Queries;
+using Engraved.Core.Domain;
 using Engraved.Core.Domain.Notifications;
 using Engraved.Notifications.OneSignal;
 using Microsoft.OpenApi;
@@ -29,15 +31,26 @@ builder.Services
       options.Filters.Add<HttpExceptionFilter>();
     }
   )
-  .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+  .AddJsonOptions(options =>
+    {
+      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
+      // serialize values declared as IEntry/IJournal/IEntity with their full runtime type
+      options.JsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
+      {
+        Modifiers = { DomainPolymorphism.ConfigurePolymorphism }
+      };
+    }
+  );
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
   {
-    // expose the [JsonDerivedType] registrations (IEntry, IJournal, IEntity) as oneOf
-    // schemas instead of the bare interface properties
+    // expose the polymorphic domain types (IEntry, IJournal, IEntity) as oneOf schemas
+    // instead of the bare interface properties
     option.UseOneOfForPolymorphism();
+    option.SelectSubTypesUsing(DomainPolymorphism.GetDerivedTypes);
 
     option.AddSecurityDefinition(
       "Bearer",

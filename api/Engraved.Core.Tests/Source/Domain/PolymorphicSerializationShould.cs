@@ -1,6 +1,7 @@
+using System;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Engraved.Core.Application.Queries.Search.Entities;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
@@ -9,13 +10,20 @@ using NUnit.Framework;
 
 namespace Engraved.Core.Domain;
 
-// System.Text.Json serializes based on the DECLARED type, so without the [JsonDerivedType]
-// registrations on IEntry/IJournal/IEntity, values declared as these interfaces (controller
+// System.Text.Json serializes based on the DECLARED type, so without the DomainPolymorphism
+// configuration for IEntry/IJournal/IEntity, values declared as these interfaces (controller
 // responses and nested properties) would silently lose all runtime-type-specific properties.
-// These tests pin that the registrations exist and no type discriminator leaks into the JSON.
+// These tests pin that the reflection-based discovery works and no type discriminator leaks
+// into the JSON. Uses the same resolver setup as the MVC pipeline in Program.cs.
 public class PolymorphicSerializationShould
 {
-  private static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web);
+  private static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web)
+  {
+    TypeInfoResolver = new DefaultJsonTypeInfoResolver
+    {
+      Modifiers = { DomainPolymorphism.ConfigurePolymorphism }
+    }
+  };
 
   [Test]
   public void SerializeRuntimeTypeProperties_ForValueDeclaredAsIEntry()
@@ -62,6 +70,22 @@ public class PolymorphicSerializationShould
     string json = JsonSerializer.Serialize(searchResult, Options);
 
     json.Should().Contain("\"title\":\"found scrap\"");
+  }
+
+  [Test]
+  public void DiscoverAllConcreteTypes_ViaReflection()
+  {
+    Type[] entryTypes = DomainPolymorphism.GetDerivedTypes(typeof(IEntry));
+    Type[] journalTypes = DomainPolymorphism.GetDerivedTypes(typeof(IJournal));
+    Type[] entityTypes = DomainPolymorphism.GetDerivedTypes(typeof(IEntity));
+
+    entryTypes.Should().Contain(new[] { typeof(CounterEntry), typeof(GaugeEntry), typeof(TimerEntry), typeof(ScrapsEntry), typeof(LogBookEntry) });
+    journalTypes.Should()
+      .Contain(new[] { typeof(CounterJournal), typeof(GaugeJournal), typeof(TimerJournal), typeof(ScrapsJournal), typeof(LogBookJournal) });
+    entityTypes.Should().Contain(entryTypes).And.Contain(journalTypes);
+
+    // non-polymorphic types are not configured
+    DomainPolymorphism.GetDerivedTypes(typeof(string)).Should().BeEmpty();
   }
 
   [Test]
