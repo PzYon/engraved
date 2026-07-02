@@ -64,7 +64,8 @@ export function getNumberOfDays(
   allDates: (Date | string)[],
   overrides: IDateConditions = {},
 ) {
-  const sorted = allDates.sort(
+  // Copy before sorting so we don't reorder the caller's array in place.
+  const sorted = [...allDates].sort(
     (a, b) => ensureDate(a).getTime() - ensureDate(b).getTime(),
   );
 
