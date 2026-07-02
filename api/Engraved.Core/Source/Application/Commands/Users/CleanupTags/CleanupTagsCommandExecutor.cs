@@ -11,7 +11,7 @@ public class CleanupTagsCommandExecutor(IUserRestrictedRepository repository)
   {
     if (repository.CurrentUser.Value == null)
     {
-      throw new Exception("No current user");
+      throw new NotAllowedOperationException("Current user is not available.");
     }
 
     IUser currentUser = repository.CurrentUser.Value;

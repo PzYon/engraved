@@ -124,7 +124,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
-        throw new Exception("Current user id is required");
+        throw new ArgumentException("Current user id is required", nameof(currentUserId));
       }
 
       // "scheduled" means a schedule with a pending occurrence: a fired schedule keeps its sub-document
@@ -272,7 +272,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
-        throw new Exception("Current user id is required");
+        throw new ArgumentException("Current user id is required", nameof(currentUserId));
       }
 
       filters.Add(GetHasScheduleForCurrentUserFilter(currentUserId));
@@ -335,7 +335,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
 
     if (string.IsNullOrEmpty(currentUserId))
     {
-      throw new Exception(
+      throw new ArgumentException(
         $"\"{nameof(currentUserId)}\" must be specified when using {ScheduleMode.CurrentUserFirst}."
       );
     }

@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -179,7 +180,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     var userId = currentUser.Value.Id;
     if (string.IsNullOrEmpty(userId))
     {
-      throw new Exception("User ID is not available.");
+      throw new NotAllowedOperationException("User ID is not available.");
     }
 
     return userId;

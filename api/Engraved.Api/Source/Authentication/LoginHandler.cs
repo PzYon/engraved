@@ -44,7 +44,7 @@ public class LoginHandler(
   {
     if (string.IsNullOrEmpty(userName))
     {
-      throw new Exception($"{nameof(userName)} is null, maybe you are not running test mode?");
+      throw new ArgumentException($"{nameof(userName)} is null, maybe you are not running test mode?", nameof(userName));
     }
 
     IUser user = await EnsureUser(userName, userName, null);

@@ -31,7 +31,7 @@ public class BasicAuthenticationHandler(
     AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(value!);
     if (string.IsNullOrEmpty(authHeader.Parameter))
     {
-      throw new Exception("Username must be specified.");
+      return AuthenticateResult.Fail("Username must be specified.");
     }
 
     currentUserService.SetUserName(authHeader.Parameter);
