@@ -163,9 +163,7 @@ export const EntriesTable: React.FC<{
             group={group}
             columns={columns}
             showGroupTotals={showGroupTotals}
-            isGroupCollapsed={
-              (collapseAll === undefined ? true : collapseAll) && i !== 0
-            }
+            isGroupCollapsed={collapseAll && i !== 0}
           />
         ))}
       </TableBody>
