@@ -26,7 +26,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
 {
   [HttpGet]
   [Route("journal/{journalId}")]
-  public async Task<object[]> GetAll(
+  public async Task<IEntry[]> GetAll(
     string journalId,
     DateTime? fromDate,
     DateTime? toDate,
@@ -43,13 +43,11 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
       SearchText = searchText
     };
 
-    var entries = await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
-
-    return entries.EnsurePolymorphismWhenSerializing();
+    return await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
   }
 
   [HttpGet]
-  public async Task<GetAllEntriesQueryApiResult> GetAll(string? searchText, string? journalTypes)
+  public async Task<SearchEntriesQueryResult> GetAll(string? searchText, string? journalTypes)
   {
     var query = new SearchEntriesQuery
     {
@@ -57,8 +55,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
     };
 
-    SearchEntriesQueryResult result = await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(query);
-    return GetAllEntriesQueryApiResult.FromResult(result);
+    return await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(query);
   }
 
   [HttpGet]
@@ -157,22 +154,5 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
     };
 
     return await dispatcher.Command(command);
-  }
-}
-
-// we need this class in order to support polymorphism for serialization.
-// the important thing here is to use object.
-public class GetAllEntriesQueryApiResult
-{
-  public object[] Journals { get; set; } = null!;
-  public object[] Entries { get; set; } = null!;
-
-  public static GetAllEntriesQueryApiResult FromResult(SearchEntriesQueryResult result)
-  {
-    return new GetAllEntriesQueryApiResult
-    {
-      Entries = result.Entries.OfType<object>().ToArray(),
-      Journals = result.Journals.OfType<object>().ToArray()
-    };
   }
 }

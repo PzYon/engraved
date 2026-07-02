@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Application;
+using Engraved.Core.Application;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,7 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
 {
   [Route("entities")]
   [HttpGet]
-  public async Task<dynamic> SearchEntities(
+  public async Task<SearchEntitiesResult> SearchEntities(
     string? searchText,
     bool? onlyConsiderTitle,
     bool? scheduledOnly,
@@ -28,36 +28,6 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
       OnlyConsiderTitle = onlyConsiderTitle
     };
 
-    SearchEntitiesResult result = await dispatcher.Query<SearchEntitiesResult, SearchEntitiesQuery>(query);
-
-    return new SearchEntitiesResultWeb
-    {
-      Entities = result.Entities.Select(e => SearchEntitiesResultWeb.X(e)).ToArray(),
-      Journals = result.Journals.EnsurePolymorphismWhenSerializing()
-    };
-  }
-}
-
-// we need this stuff to ensure polymorphism during serialization
-public class SearchResultEntityWeb
-{
-  public dynamic Entity { get; set; } = null!;
-
-  public EntityType EntityType { get; set; }
-}
-
-public class SearchEntitiesResultWeb
-{
-  public SearchResultEntityWeb[] Entities { get; set; } = [];
-
-  public dynamic[] Journals { get; set; } = [];
-
-  public static SearchResultEntityWeb X(SearchResultEntity e)
-  {
-    return new SearchResultEntityWeb
-    {
-      Entity = e.Entity,
-      EntityType = e.EntityType
-    };
+    return await dispatcher.Query<SearchEntitiesResult, SearchEntitiesQuery>(query);
   }
 }

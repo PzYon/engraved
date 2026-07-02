@@ -35,6 +35,10 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
   {
+    // expose the [JsonDerivedType] registrations (IEntry, IJournal, IEntity) as oneOf
+    // schemas instead of the bare interface properties
+    option.UseOneOfForPolymorphism();
+
     option.AddSecurityDefinition(
       "Bearer",
       new OpenApiSecurityScheme
