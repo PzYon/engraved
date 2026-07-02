@@ -48,6 +48,9 @@ export function registerGooglePrompt(
 function loadGoogleScript(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     if (getGoogleScriptTag()) {
+      // Script already present (e.g. a second registration): resolve instead of
+      // leaving the promise - and the prompt-registration chain - pending forever.
+      resolve();
       return;
     }
 
