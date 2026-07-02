@@ -1,5 +1,6 @@
 ﻿namespace Engraved.Core.Domain.Entries;
 
+// Values declared as IEntry are serialized polymorphically; see DomainPolymorphism.
 public interface IEntry : IUserOwned, IEntity
 {
   string ParentId { get; set; }

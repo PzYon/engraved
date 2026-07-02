@@ -21,7 +21,7 @@ namespace Engraved.Api.Controllers;
 public class JournalsController(Dispatcher dispatcher) : ControllerBase
 {
   [HttpGet]
-  public async Task<object[]> GetAll(string? searchText, string? journalTypes, bool? favoritesOnly, string? journalIds)
+  public async Task<IJournal[]> GetAll(string? searchText, string? journalTypes, bool? favoritesOnly, string? journalIds)
   {
     var query = new GetAllJournalsQuery
     {
@@ -31,8 +31,7 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
       JournalIds = ControllerUtils.ParseMultiValueStringParam(journalIds)
     };
 
-    var journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(query);
-    return journals.EnsurePolymorphismWhenSerializing();
+    return await dispatcher.Query<IJournal[], GetAllJournalsQuery>(query);
   }
 
   [Route("{journalId}")]

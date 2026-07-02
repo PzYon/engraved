@@ -15,6 +15,7 @@ public class ThresholdDefinition
   public ThresholdScope Scope {get; set;}
 }
 
+// Values declared as IJournal are serialized polymorphically; see DomainPolymorphism.
 public interface IJournal : IUserOwned, IPermissionHolder, IEntity
 {
   string Name { get; set; }
