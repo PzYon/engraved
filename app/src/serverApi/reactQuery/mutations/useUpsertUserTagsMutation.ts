@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { useAppContext } from "../../../AppContext";
+import { useReloadUser } from "./useReloadUser";
 
 export const useUpdateUserTagsMutation = () => {
   const queryClient = useQueryClient();
-  const { setUser } = useAppContext();
+  const reloadUser = useReloadUser();
 
   return useMutation({
     mutationKey: queryKeysFactory.modifyUser(),
@@ -22,12 +22,4 @@ export const useUpdateUserTagsMutation = () => {
       ]);
     },
   });
-
-  async function reloadUser() {
-    await queryClient.invalidateQueries({
-      queryKey: queryKeysFactory.modifyUser(),
-    });
-    const updatedUser = await ServerApi.getCurrentUser();
-    setUser(updatedUser);
-  }
 };

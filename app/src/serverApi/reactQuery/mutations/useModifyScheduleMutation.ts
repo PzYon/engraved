@@ -2,7 +2,7 @@ import { ServerApi } from "../../ServerApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { useAppContext } from "../../../AppContext";
-import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
+import { getErrorAlert } from "./getErrorAlert";
 import { DateFormat, formatDate } from "../../../components/common/dateTypes";
 import { IScheduleDefinition } from "../../IScheduleDefinition";
 
@@ -41,11 +41,7 @@ export const useModifyScheduleMutation = (
       ]);
     },
 
-    onError: (error: IAppAlert) =>
-      setAppAlert({
-        title: "Failed to modify schedule",
-        message: error.message,
-        type: "error",
-      }),
+    onError: (error) =>
+      setAppAlert(getErrorAlert("Failed to modify schedule", error)),
   });
 };

@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { IUpdatePermissions } from "../../IUpdatePermissions";
 import { useAppContext } from "../../../AppContext";
-import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
+import { getErrorAlert } from "./getErrorAlert";
 
 export const useModifyJournalPermissionsMutation = (journalId: string) => {
   const { setAppAlert } = useAppContext();
@@ -20,11 +20,7 @@ export const useModifyJournalPermissionsMutation = (journalId: string) => {
         type: "success",
       }),
 
-    onError: (error: IAppAlert) =>
-      setAppAlert({
-        title: "Failed to modify journal permissions",
-        message: error.message,
-        type: "error",
-      }),
+    onError: (error) =>
+      setAppAlert(getErrorAlert("Failed to modify journal permissions", error)),
   });
 };

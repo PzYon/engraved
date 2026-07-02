@@ -4,6 +4,7 @@ import { useAppContext } from "../../../AppContext";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { StyledLink } from "./StyledLink";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
+import { getErrorAlert } from "./getErrorAlert";
 
 export const useMoveEntryMutation = (
   entryId: string,
@@ -52,11 +53,7 @@ export const useMoveEntryMutation = (
     },
 
     onError: (error) => {
-      setAppAlert({
-        title: "Failed to move entry",
-        message: error.toString(),
-        type: "error",
-      });
+      setAppAlert(getErrorAlert("Failed to move entry", error));
     },
   });
 };
