@@ -40,11 +40,11 @@ export const useJournalsQuery = (
 
     for (const loadedJournal of journals) {
       queryClient.setQueryData(
-        queryKeysFactory.journals(loadedJournal.id, journalTypes),
+        queryKeysFactory.journal(loadedJournal.id),
         () => loadedJournal,
       );
     }
-  }, [isSuccess, journalTypes, journals, queryClient]);
+  }, [isSuccess, journals, queryClient]);
 
   return journals ?? [];
 };
