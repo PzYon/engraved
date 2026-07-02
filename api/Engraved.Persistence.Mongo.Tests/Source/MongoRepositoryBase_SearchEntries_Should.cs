@@ -4,6 +4,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
+using Engraved.TestUtils;
 using FluentAssertions;
 using MongoDB.Bson;
 using NUnit.Framework;

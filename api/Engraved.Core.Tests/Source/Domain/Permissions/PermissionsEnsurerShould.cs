@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Engraved.Persistence.Mongo.Tests;
+using Engraved.TestUtils;
 using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;

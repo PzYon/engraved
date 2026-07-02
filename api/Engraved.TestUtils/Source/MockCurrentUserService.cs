@@ -3,7 +3,7 @@ using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 
-namespace Engraved.Persistence.Mongo.Tests;
+namespace Engraved.TestUtils;
 
 public class MockCurrentUserService(string userId) : ICurrentUserService
 {

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
-using Engraved.Persistence.Mongo.Tests;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 

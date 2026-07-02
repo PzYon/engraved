@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands.Entries.Upsert.LogBook;
-using Engraved.Persistence.Mongo.Tests;
+using Engraved.TestUtils;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using FluentAssertions;

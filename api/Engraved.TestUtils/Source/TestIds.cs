@@ -1,4 +1,4 @@
-namespace Engraved.Persistence.Mongo.Tests;
+namespace Engraved.TestUtils;
 
 /// <summary>
 /// Shared, valid 24-character hex ObjectId strings used across the test suites.

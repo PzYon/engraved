@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Engraved.Persistence.Mongo\Engraved.Persistence.Mongo.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="EphemeralMongo" Version="3.2.0"/>
+    </ItemGroup>
+
+    <!-- MongoRunnerTeardown is a [SetUpFixture] and must be compiled into each test assembly
+         (NUnit does not discover SetUpFixtures in referenced assemblies), so this project only
+         hosts the file and the test projects link it as a source file. This also keeps this
+         project free of an NUnit dependency. -->
+    <ItemGroup>
+        <Compile Remove="Source\MongoRunnerTeardown.cs"/>
+    </ItemGroup>
+
+</Project>

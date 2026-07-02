@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
