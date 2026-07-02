@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Engraved.TestUtils;
 using Engraved.Core.Application.Permissions;
@@ -45,6 +46,29 @@ public class PermissionsEnsurerShould
     );
 
     holder.Permissions.Count.Should().Be(0);
+  }
+
+  [Test]
+  public async Task ProcessRemainingUsers_After_RemovingPermissions_With_None()
+  {
+    var holder = new TestPermissionHolder
+    {
+      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
+    };
+
+    // the None entry must not abort processing of the entries after it
+    await _permissionsEnsurer.EnsurePermissions(
+      holder,
+      new Dictionary<string, PermissionKind>
+      {
+        { "mar@foo.ch", PermissionKind.None },
+        { "bar@foo.ch", PermissionKind.Write }
+      }
+    );
+
+    holder.Permissions.Count.Should().Be(1);
+    holder.Permissions.Should().NotContainKey(TestIds.UserId);
+    holder.Permissions.Single().Value.Kind.Should().Be(PermissionKind.Write);
   }
 
   [Test]

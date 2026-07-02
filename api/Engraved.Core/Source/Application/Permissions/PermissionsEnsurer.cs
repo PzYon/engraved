@@ -21,7 +21,7 @@ public class PermissionsEnsurer(
       if (kind == PermissionKind.None)
       {
         permissionHolder.Permissions.Remove(userId);
-        return;
+        continue;
       }
 
       permissionHolder.Permissions[userId] = new PermissionDefinition { Kind = kind };
