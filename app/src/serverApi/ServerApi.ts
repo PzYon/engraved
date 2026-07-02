@@ -602,6 +602,10 @@ export class ServerApi {
     response: Response,
     start: number,
   ) {
+    if (!envSettings.isDev) {
+      return;
+    }
+
     const total = Math.round(performance.now() - start);
     const server = Number(response.headers.get("server-action-duration"));
     const network = total - server;
