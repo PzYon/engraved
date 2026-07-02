@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import { JournalType } from "../../../serverApi/JournalType";
 import { ITimerEntry } from "../../../serverApi/ITimerEntry";
-import { format } from "date-fns";
 import { IJournalType } from "../../../journalTypes/IJournalType";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { IEntriesTableGroup } from "./IEntriesTableGroup";
@@ -33,6 +32,7 @@ import { IDateConditions } from "../JournalContext";
 import { TotalValue } from "./TotalValue";
 import { Streak } from "./Streak";
 import { getUiSettings } from "../../../util/journalUtils";
+import { getDayKey } from "../../../util/utils";
 
 export const EntriesTable: React.FC<{
   journal: IJournal;
@@ -392,5 +392,5 @@ function getGroupKey(journalType: JournalType, entry: IEntry) {
       ? (entry as ITimerEntry).startDate
       : entry.dateTime;
 
-  return relevantDate ? format(new Date(relevantDate), "u-LL-dd") : "";
+  return relevantDate ? getDayKey(new Date(relevantDate)) : "";
 }
