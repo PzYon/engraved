@@ -550,7 +550,6 @@ export class ServerApi {
   private static getHeaders() {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
-      "Accept-Encoding": "gzip, deflate, br",
     };
 
     if (ServerApi._jwtToken) {
