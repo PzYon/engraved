@@ -34,6 +34,14 @@ import { IJournalCustomProps } from "./IJournalCustomProps";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
+// Serializes params to a query string (incl. the leading "?"), or an empty
+// string when there are none. URLSearchParams percent-encodes keys and values,
+// so search text containing "&", "#", "+" etc. no longer corrupts the request.
+function toQueryString(params: URLSearchParams): string {
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
+
 export class ServerApi {
   private static _loginHandler = new LoginHandler(() =>
     ServerApi.tryToLoginAgain(),
@@ -343,25 +351,25 @@ export class ServerApi {
   ): Promise<IEntry[]> {
     const attributeValuesString = stringifyAttributeValues(attributeValues);
 
-    const urlParams: string[] = [];
+    const urlParams = new URLSearchParams();
 
     if (attributeValuesString) {
-      urlParams.push(`attributeValues=${attributeValuesString}`);
+      urlParams.set("attributeValues", attributeValuesString);
     }
 
     if (dateConditions.from) {
-      urlParams.push(`fromDate=${dateConditions.from.toISOString()}`);
+      urlParams.set("fromDate", dateConditions.from.toISOString());
     }
 
     if (dateConditions.to) {
-      urlParams.push(`toDate=${dateConditions.to.toISOString()}`);
+      urlParams.set("toDate", dateConditions.to.toISOString());
     }
 
     if (searchText) {
-      urlParams.push(`searchText=${searchText}`);
+      urlParams.set("searchText", searchText);
     }
 
-    const params = urlParams.length ? `?${urlParams.join("&")}` : "";
+    const params = toQueryString(urlParams);
 
     return await ServerApi.executeRequest(
       `/entries/journal/${journalId}${params}`,
@@ -437,25 +445,25 @@ export class ServerApi {
     onlyEntriesOfTypes: JournalType[],
     onlyConsiderTitle: boolean,
   ): Promise<ISearchEntitiesResult> {
-    const urlParams: string[] = [];
+    const urlParams = new URLSearchParams();
 
     if (searchText) {
-      urlParams.push(`searchText=${searchText}`);
+      urlParams.set("searchText", searchText);
     }
 
     if (onlyConsiderTitle) {
-      urlParams.push(`onlyConsiderTitle=${onlyConsiderTitle}`);
+      urlParams.set("onlyConsiderTitle", String(onlyConsiderTitle));
     }
 
     if (scheduledOnly) {
-      urlParams.push(`scheduledOnly=${scheduledOnly}`);
+      urlParams.set("scheduledOnly", String(scheduledOnly));
     }
 
-    if (onlyEntriesOfTypes) {
-      urlParams.push(`onlyEntriesOfTypes=${onlyEntriesOfTypes.join(",")}`);
+    if (onlyEntriesOfTypes?.length) {
+      urlParams.set("onlyEntriesOfTypes", onlyEntriesOfTypes.join(","));
     }
 
-    const params = urlParams.length ? `?${urlParams.join("&")}` : "";
+    const params = toQueryString(urlParams);
 
     return await ServerApi.executeRequest(`/search/entities${params}`);
   }
@@ -557,25 +565,25 @@ export class ServerApi {
     favoritesOnly?: boolean,
     journalIds?: string[],
   ) {
-    const params: string[] = [];
+    const params = new URLSearchParams();
 
     if (searchText) {
-      params.push(`searchText=${searchText}`);
+      params.set("searchText", searchText);
     }
 
     if (journalTypes?.length) {
-      params.push(`journalTypes=${journalTypes.join(",")}`);
+      params.set("journalTypes", journalTypes.join(","));
     }
 
     if (favoritesOnly) {
-      params.push(`favoritesOnly=true`);
+      params.set("favoritesOnly", "true");
     }
 
-    if (journalIds) {
-      params.push(`journalIds=${journalIds.join(",")}`);
+    if (journalIds?.length) {
+      params.set("journalIds", journalIds.join(","));
     }
 
-    return params.length ? `?${params.join("&")}` : "";
+    return toQueryString(params);
   }
 
   private static getBaseUrl() {
