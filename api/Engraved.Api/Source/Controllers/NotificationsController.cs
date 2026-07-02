@@ -20,12 +20,12 @@ public class NotificationsController(
   public async Task SendNotification()
   {
     IUser user = await currentUserService.LoadUser();
-    SendNotificationToUser(user.GlobalUniqueId);
+    await SendNotificationToUser(user.GlobalUniqueId);
   }
 
-  private void SendNotificationToUser(Guid? uniqueUserId)
+  private async Task SendNotificationToUser(Guid? uniqueUserId)
   {
-    notificationService.SendNotification(
+    await notificationService.SendNotification(
       new ClientNotification
       {
         UserId = uniqueUserId?.ToString(),
