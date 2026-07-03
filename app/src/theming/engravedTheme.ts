@@ -24,13 +24,13 @@ export const engravedTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Inter",
+    fontFamily: '"Inter Variable", "Inter", sans-serif',
     body2: {
       color: textColor,
     },
     h1: {
       fontSize: "3rem",
-      fontFamily: "Pacifico",
+      fontFamily: '"Pacifico", cursive',
     },
     h2: {
       fontSize: "1.8rem",

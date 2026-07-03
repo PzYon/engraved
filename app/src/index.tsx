@@ -1,3 +1,7 @@
+// self-hosted fonts (bundled via the build) instead of a render-blocking
+// external Google Fonts request. "Inter Variable" covers the full weight range.
+import "@fontsource-variable/inter/index.css";
+import "@fontsource/pacifico/index.css";
 import React from "react";
 import { Bootstrapper } from "./Bootstrapper";
 import { createRoot } from "react-dom/client";
