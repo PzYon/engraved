@@ -12,6 +12,7 @@ import { IJournal } from "../../IJournal";
 import { useMatchRoute } from "@tanstack/react-router";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 import { StyledLink } from "./StyledLink";
+import { getErrorAlert } from "./getErrorAlert";
 
 interface IUpsertEntryCommandVariables {
   command: IUpsertEntryCommand;
@@ -101,12 +102,8 @@ export const useUpsertEntryMutation = (
       ]);
     },
 
-    onError: (error: unknown) => {
-      setAppAlert({
-        title: "Failed to upsert entry",
-        message: (error as Error)?.toString?.() ?? String(error),
-        type: "error",
-      });
+    onError: (error) => {
+      setAppAlert(getErrorAlert("Failed to upsert entry", error));
     },
   });
 

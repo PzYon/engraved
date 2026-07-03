@@ -1,24 +1,16 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { useAppContext } from "../../../AppContext";
+import { useReloadUser } from "./useReloadUser";
 
 export const useRemoveJournalFromFavoritesMutation = (journalId: string) => {
-  const queryClient = useQueryClient();
-
-  const { setUser } = useAppContext();
+  const reloadUser = useReloadUser();
 
   return useMutation({
     mutationKey: queryKeysFactory.modifyUser(),
 
     mutationFn: () => ServerApi.removeJournalFromFavorites(journalId),
 
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: queryKeysFactory.modifyUser(),
-      });
-      const updatedUser = await ServerApi.getCurrentUser();
-      setUser(updatedUser);
-    },
+    onSuccess: () => reloadUser(),
   });
 };

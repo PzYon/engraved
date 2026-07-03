@@ -4,6 +4,7 @@ import { ServerApi } from "../../ServerApi";
 import { ICommandResult } from "../../ICommandResult";
 import { JournalType } from "../../JournalType";
 import { useAppContext } from "../../../AppContext";
+import { getErrorAlert } from "./getErrorAlert";
 
 export const useAddJournalMutation = (
   name: string,
@@ -29,11 +30,7 @@ export const useAddJournalMutation = (
         type: "success",
       });
     },
-    onError: (error: Error) =>
-      setAppAlert({
-        title: "Failed to add journal",
-        message: error.message,
-        type: "error",
-      }),
+    onError: (error) =>
+      setAppAlert(getErrorAlert("Failed to add journal", error)),
   });
 };

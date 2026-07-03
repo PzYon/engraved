@@ -3,10 +3,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
 import { IJournal } from "../../IJournal";
+import { useReloadUser } from "./useReloadUser";
+import { getErrorAlert } from "./getErrorAlert";
 
 export const useEditJournalMutation = (journalId: string) => {
-  const { setAppAlert, setUser } = useAppContext();
+  const { setAppAlert } = useAppContext();
   const queryClient = useQueryClient();
+  const reloadUser = useReloadUser();
 
   return useMutation({
     mutationKey: queryKeysFactory.editJournal(journalId),
@@ -42,29 +45,14 @@ export const useEditJournalMutation = (journalId: string) => {
           queryKey: queryKeysFactory.journal(journalId),
         }),
 
-        reloadUser(variables.tagIds),
+        // Editing tags changes user-scoped data, so refresh the current user.
+        variables.tagIds ? reloadUser() : Promise.resolve(),
       ]);
 
       variables.onSuccess?.();
     },
 
     onError: (error) =>
-      setAppAlert({
-        title: `Failed to edit journal`,
-        message: error.toString(),
-        type: "error",
-      }),
+      setAppAlert(getErrorAlert("Failed to edit journal", error)),
   });
-
-  async function reloadUser(changedTagNames: string[] | undefined) {
-    if (!changedTagNames) {
-      return;
-    }
-
-    await queryClient.invalidateQueries({
-      queryKey: queryKeysFactory.modifyUser(),
-    });
-    const updatedUser = await ServerApi.getCurrentUser();
-    setUser(updatedUser);
-  }
 };
