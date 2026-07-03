@@ -8,6 +8,8 @@ import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer"
 import Code from "@mui/icons-material/Code";
 import FormatBold from "@mui/icons-material/FormatBold";
 import FormatItalic from "@mui/icons-material/FormatItalic";
+import FormatIndentDecrease from "@mui/icons-material/FormatIndentDecrease";
+import FormatIndentIncrease from "@mui/icons-material/FormatIndentIncrease";
 import FormatListBulleted from "@mui/icons-material/FormatListBulleted";
 import FormatQuote from "@mui/icons-material/FormatQuote";
 import FormatStrikethrough from "@mui/icons-material/FormatStrikethrough";
@@ -170,6 +172,20 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
               icon: <FormatListBulleted fontSize="small" />,
               label: "List",
               onClick: () => editor.chain().focus().toggleBulletList().run(),
+            },
+            {
+              key: "formatting-indent-increase",
+              icon: <FormatIndentIncrease fontSize="small" />,
+              label: "Indent",
+              onClick: () =>
+                editor.chain().focus().sinkListItem("listItem").run(),
+            },
+            {
+              key: "formatting-indent-decrease",
+              icon: <FormatIndentDecrease fontSize="small" />,
+              label: "Unindent",
+              onClick: () =>
+                editor.chain().focus().liftListItem("listItem").run(),
             },
             {
               key: "text-correction",
