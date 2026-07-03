@@ -10,7 +10,6 @@ using Engraved.TestUtils;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;
-using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
 
 namespace Engraved.Api.Tests.Authentication;
@@ -37,11 +36,17 @@ public class LoginHandlerShould
   {
     _testRepository = await Util.CreateMongoRepository();
 
-    _userLoader = new UserLoader(_testRepository, new MemoryCache(new MemoryCacheOptions()));
+    _userLoader = new UserLoader(_testRepository);
 
     _dateService = new FakeDateService();
 
     _loginHandler = CreateLoginHandler(new GoogleTokenValidator(_authenticationConfig));
+  }
+
+  [TearDown]
+  public void TearDown()
+  {
+    _userLoader.Dispose();
   }
 
   private LoginHandler CreateLoginHandler(IGoogleTokenValidator tokenValidator)
