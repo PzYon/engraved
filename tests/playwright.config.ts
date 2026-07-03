@@ -22,9 +22,7 @@ export default defineConfig({
   fullyParallel: true,
   workers: isCi ? "100%" : 3,
   forbidOnly: !!isCi,
-  // absorb transient e2e flakiness on CI (network blips, input-timing races, runner
-  // overload under fully-parallel workers); locally a failure should surface immediately
-  retries: isCi ? 2 : 0,
+  retries: 0,
   reporter: isCi ? [["list"], ["html"], ["github"]] : [["list"], ["html"]],
   use: {
     baseURL: cdnBaseUrl,
