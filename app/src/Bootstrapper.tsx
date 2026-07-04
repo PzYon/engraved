@@ -12,7 +12,7 @@ export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
 
   const [user, setUser] = useState<IUser>();
-  const ref = useRef<HTMLDivElement | null>(null);
+  const googleRef = useRef<HTMLDivElement | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isNotVisible, setIsNotVisible] = useState(true);
@@ -34,7 +34,7 @@ export const Bootstrapper: React.FC = () => {
       return;
     }
 
-    if (!ref.current) {
+    if (!googleRef.current) {
       return;
     }
 
@@ -53,7 +53,7 @@ export const Bootstrapper: React.FC = () => {
     // renders the sign-in button.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsNotVisible(false);
-    registerGooglePrompt(onSignedIn, ref.current);
+    registerGooglePrompt(onSignedIn, googleRef.current);
   }, []);
 
   if (user) {
@@ -66,18 +66,31 @@ export const Bootstrapper: React.FC = () => {
         <CircularProgress sx={{ color: "common.white" }} />
       ) : (
         <WelcomeContainer>
-          <Typography
-            variant="h1"
-            sx={{
-              color: "common.black",
-              fontSize: "90px",
-              pb: 2,
-              mb: 4,
-            }}
-          >
-            engraved.
-          </Typography>
-          <div ref={ref} />
+          <IntroSection>
+            <IntroSpacer />
+            <Typography
+              variant="h1"
+              sx={{
+                color: "common.black",
+                fontSize: "90px",
+                pb: 2,
+                mb: 4,
+              }}
+            >
+              engraved.
+            </Typography>
+            <Typography
+              component={TaglineContainer}
+              sx={{ textAlign: "right" }}
+            >
+              <TaglineLine>Track what you want.</TaglineLine>
+              <TaglineLine offset={30}>Remember what you must.</TaglineLine>
+              <TaglineLine offset={60}>All Engraved in one place.</TaglineLine>
+            </Typography>
+          </IntroSection>
+          <GoogleButtonSection>
+            <GoogleButtonHost ref={googleRef} />
+          </GoogleButtonSection>
         </WelcomeContainer>
       )}
     </Host>
@@ -119,4 +132,34 @@ const WelcomeContainer = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
+`;
+
+const IntroSection = styled("div")`
+  display: flex;
+  flex-direction: column;
+  height: 50%;
+`;
+
+const IntroSpacer = styled("div")`
+  flex-grow: 1;
+`;
+
+const TaglineContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+`;
+
+const TaglineLine = styled("div")<{ offset?: number }>`
+  padding-right: ${(p) => (p.offset ? `${p.offset}px` : "0")};
+`;
+
+const GoogleButtonSection = styled("div")`
+  display: flex;
+  align-items: center;
+  height: 50%;
+`;
+
+const GoogleButtonHost = styled("div")`
+  display: flex;
 `;
