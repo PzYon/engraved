@@ -187,7 +187,29 @@ export class ListItemCollection {
   deleteAllChecked() {
     this.wrappedItems = this.wrappedItems.filter((i) => !i.raw.isCompleted);
 
+    this.addBlankIfEmpty();
+
     this.fireOnChange();
+  }
+
+  // A list in edit mode should never be empty: there must always be at least one
+  // (possibly blank) line to type into. Adds a blank line when the list ran empty.
+  ensureNotEmpty() {
+    if (this.addBlankIfEmpty()) {
+      this.fireOnChange();
+    }
+  }
+
+  private addBlankIfEmpty(): boolean {
+    if (this.wrappedItems.length > 0) {
+      return false;
+    }
+
+    this.wrappedItems.push(
+      new ListItemWrapper({ label: "", isCompleted: false, depth: 0 }, true),
+    );
+
+    return true;
   }
 
   private add(index: number, ...listItems: ListItemWrapper[]) {

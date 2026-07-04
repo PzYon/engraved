@@ -49,6 +49,56 @@ describe("ListItemCollection", () => {
     });
   });
 
+  describe("deleteAllChecked", () => {
+    it("should keep an empty line when all items are deleted", () => {
+      const collection = new ListItemCollection(
+        [createRandomItem("a", 0, true), createRandomItem("b", 0, true)],
+        () => {},
+      );
+
+      collection.deleteAllChecked();
+
+      expect(collection.items.length).toBe(1);
+      expect(collection.items[0].label).toBe("");
+    });
+
+    it("should not add an empty line when items remain", () => {
+      const collection = new ListItemCollection(
+        [createRandomItem("a", 0, true), createRandomItem("b")],
+        () => {},
+      );
+
+      collection.deleteAllChecked();
+
+      expect(collection.items.length).toBe(1);
+      expect(collection.items[0].label).toBe("b");
+    });
+  });
+
+  describe("ensureNotEmpty", () => {
+    it("should add an empty line to an empty collection", () => {
+      const collection = new ListItemCollection([], () => {});
+
+      collection.ensureNotEmpty();
+
+      expect(collection.items.length).toBe(1);
+      expect(collection.items[0].label).toBe("");
+    });
+
+    it("should not change a non-empty collection", () => {
+      let wasChanged = false;
+      const collection = new ListItemCollection([createRandomItem("a")], () => {
+        wasChanged = true;
+      });
+
+      collection.ensureNotEmpty();
+
+      expect(collection.items.length).toBe(1);
+      expect(collection.items[0].label).toBe("a");
+      expect(wasChanged).toBe(false);
+    });
+  });
+
   describe("moveItem...", () => {
     it("...down: move item down", () => {
       new ListItemCollection(
@@ -148,10 +198,10 @@ describe("ListItemCollection", () => {
   });
 });
 
-function createRandomItem(label = "x", depth = 0) {
+function createRandomItem(label = "x", depth = 0, isCompleted = false) {
   return {
     label: label,
-    isCompleted: false,
+    isCompleted: isCompleted,
     depth: depth,
   };
 }

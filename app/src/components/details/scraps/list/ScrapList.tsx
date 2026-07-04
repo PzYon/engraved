@@ -55,6 +55,7 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
 
   useEffect(() => {
     if (isEditMode) {
+      listItemCollection.ensureNotEmpty();
       listItemCollection.giveFocus(listItemCollection.items.length - 1, "end");
     }
   }, [isEditMode, listItemCollection]);
