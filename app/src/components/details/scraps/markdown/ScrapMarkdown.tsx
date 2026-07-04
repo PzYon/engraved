@@ -4,7 +4,6 @@ import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
 import { useScrapContext } from "../ScrapContext";
 import { RichTextEditor } from "../../../common/RichTextEditor";
-import { FadeInContainer } from "../../../common/FadeInContainer";
 import { Markdown } from "./Markdown";
 import { IAction } from "../../../common/actions/IAction";
 
@@ -30,9 +29,7 @@ export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
           />
         </div>
       ) : (
-        <FadeInContainer>
-          <Markdown value={notes ?? ""} />
-        </FadeInContainer>
+        <Markdown value={notes ?? ""} />
       )}
     </ScrapBody>
   );

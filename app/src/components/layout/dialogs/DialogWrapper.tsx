@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
+import { LazyLoadSuspender } from "../../common/LazyLoadSuspender";
 import { AppContent } from "../AppContent";
 
 const SlideUp = React.forwardRef(function Transition(
@@ -54,7 +55,9 @@ export const DialogWrapper: React.FC<{
             <Close />
           </IconButton>
         </Header>
-        <StyledDialogContent>{children}</StyledDialogContent>
+        <StyledDialogContent>
+          <LazyLoadSuspender>{children}</LazyLoadSuspender>
+        </StyledDialogContent>
       </RootBodyElement>
     </Dialog>
   );

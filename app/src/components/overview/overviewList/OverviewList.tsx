@@ -9,6 +9,8 @@ import { OverviewListContextProvider } from "./OverviewListContextProvider";
 import { IEntry } from "../../../serverApi/IEntry";
 import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
 import { differenceInDays } from "date-fns";
+import { FadeInContainer } from "../../common/FadeInContainer";
+import { LazyLoadSuspender } from "../../common/LazyLoadSuspender";
 
 interface IOverviewListProps {
   items: IEntity[];
@@ -57,65 +59,73 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
   } = useOverviewListContext();
 
   return (
-    <Host className="overview-list">
-      {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i]?.id ?? ""))}
+    <LazyLoadSuspender>
+      <FadeInContainer
+        isReady={
+          itemsToShow.length > 0 || hiddenItemsCount > 0 || !!renderBeforeList
+        }
+      >
+        <Host className="overview-list">
+          {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i]?.id ?? ""))}
 
-      {itemsToShow.map((item, index) => {
-        const hasFocus = activeItemId === item.id;
+          {itemsToShow.map((item, index) => {
+            const hasFocus = activeItemId === item.id;
 
-        return (
-          <React.Fragment
-            key={
-              (item.id ?? "") +
-              "-" +
-              getScheduleForUser(item, user.id ?? "")?.nextOccurrence
-            }
-          >
-            {showDaysBetween && index > 0 ? (
-              <DifferenceInDays
-                lastItem={itemsToShow[index - 1] as IEntry}
-                item={item as IEntry}
-              />
-            ) : null}
-
-            <OverviewListItem
-              showDaysBetween={showDaysBetween}
-              onClick={() => {
-                if (hasFocus) {
-                  return;
+            return (
+              <React.Fragment
+                key={
+                  (item.id ?? "") +
+                  "-" +
+                  getScheduleForUser(item, user.id ?? "")?.nextOccurrence
                 }
+              >
+                {showDaysBetween && index > 0 ? (
+                  <DifferenceInDays
+                    lastItem={itemsToShow[index - 1] as IEntry}
+                    item={item as IEntry}
+                  />
+                ) : null}
 
-                setActiveItemId(item.id ?? "");
-                removeItemParamsFromUrl();
+                <OverviewListItem
+                  showDaysBetween={showDaysBetween}
+                  onClick={() => {
+                    if (hasFocus) {
+                      return;
+                    }
+
+                    setActiveItemId(item.id ?? "");
+                    removeItemParamsFromUrl();
+                  }}
+                  item={item}
+                  hasFocus={hasFocus}
+                >
+                  <RenderItem
+                    item={item}
+                    hasFocus={hasFocus}
+                    index={index}
+                    setActiveItemId={setActiveItemId}
+                    renderItem={renderItem}
+                  />
+                </OverviewListItem>
+              </React.Fragment>
+            );
+          })}
+          {hiddenItemsCount ? (
+            <Typography
+              onClick={() => setShowAll(true)}
+              sx={{
+                cursor: "pointer",
+                textAlign: "center",
+                fontWeight: 200,
+                pb: 3,
               }}
-              item={item}
-              hasFocus={hasFocus}
             >
-              <RenderItem
-                item={item}
-                hasFocus={hasFocus}
-                index={index}
-                setActiveItemId={setActiveItemId}
-                renderItem={renderItem}
-              />
-            </OverviewListItem>
-          </React.Fragment>
-        );
-      })}
-      {hiddenItemsCount ? (
-        <Typography
-          onClick={() => setShowAll(true)}
-          sx={{
-            cursor: "pointer",
-            textAlign: "center",
-            fontWeight: 200,
-            pb: 3,
-          }}
-        >
-          Show {hiddenItemsCount} hidden item(s)
-        </Typography>
-      ) : null}
-    </Host>
+              Show {hiddenItemsCount} hidden item(s)
+            </Typography>
+          ) : null}
+        </Host>
+      </FadeInContainer>
+    </LazyLoadSuspender>
   );
 };
 
