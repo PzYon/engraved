@@ -169,6 +169,40 @@ test("Enter only adds one empty line", async ({ page, testData }) => {
   expect(await scrapList.getItemCount()).toBe(2);
 });
 
+test("deleting all checked items keeps one empty line, which is not persisted", async ({
+  page,
+  testData,
+}) => {
+  const scrapsJournalPage = await openScrapsJournal(page, testData);
+  await scrapsJournalPage.expectIsEmpty();
+
+  const scrapList = await scrapsJournalPage.addList();
+  await scrapList.typeTitle("This is my title");
+  await scrapList.typeListItem(firstItemText);
+  await scrapList.clickSave();
+
+  await scrapList.dblClickToEdit();
+
+  // check the only item and delete all checked items - the list must not end up
+  // empty, a single blank line has to remain so there is something to type into.
+  await (await scrapList.getListItemByText(firstItemText))
+    .getByRole("checkbox")
+    .check();
+
+  await page.getByLabel("Delete checked").click();
+
+  expect(await scrapList.getItemCount()).toBe(1);
+  await expect(await scrapList.getListItemByText(firstItemText)).toHaveCount(0);
+
+  // saving the lone blank line must not persist it: after a reload no items are
+  // shown.
+  await scrapList.clickSave(true);
+  await page.reload();
+
+  await expect(page.getByText("No items yet.")).toBeVisible();
+  expect(await scrapList.getItemCount()).toBe(0);
+});
+
 test("Backspace on empty item removes item", async ({ page, testData }) => {
   const scrapsJournalPage = await openScrapsJournal(page, testData);
   await scrapsJournalPage.expectIsEmpty();
