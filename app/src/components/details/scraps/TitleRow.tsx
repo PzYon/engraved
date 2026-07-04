@@ -6,10 +6,11 @@ export const TitleRow: React.FC<{
   children: React.ReactNode;
   hasFocus: boolean;
   hasNoContent: boolean;
-}> = ({ children, hasFocus, hasNoContent }) => {
+  hasTitle: boolean;
+}> = ({ children, hasFocus, hasNoContent, hasTitle }) => {
   const { isCompact } = useDisplayModeContext();
 
-  return (isCompact && !hasFocus) || hasNoContent ? (
+  return (isCompact && !hasFocus) || hasNoContent || !hasTitle ? (
     <>{children}</>
   ) : (
     <Row>{children}</Row>
