@@ -194,10 +194,11 @@ test("deleting all checked items keeps one empty line, which is not persisted", 
   expect(await scrapList.getItemCount()).toBe(1);
   await expect(await scrapList.getListItemByText(firstItemText)).toHaveCount(0);
 
-  // saving the lone blank line must not persist it: after a reload no items are
-  // shown.
+  // saving the lone blank line must not persist it: after a reload the list is
+  // empty (on mobile the scrap is compact, so expand it first to see the body).
   await scrapList.clickSave(true);
   await page.reload();
+  await scrapList.clickToExpand();
 
   await expect(page.getByText("No items yet.")).toBeVisible();
   expect(await scrapList.getItemCount()).toBe(0);
