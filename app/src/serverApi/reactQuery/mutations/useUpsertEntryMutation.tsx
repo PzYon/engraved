@@ -6,6 +6,7 @@ import { useAppContext } from "../../../AppContext";
 import { IEntry } from "../../IEntry";
 import { ICommandResult } from "../../ICommandResult";
 import { IJournalAttributeValues } from "../../IJournalAttributeValues";
+import { IJournalAttributes } from "../../IJournalAttributes";
 import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
@@ -39,13 +40,17 @@ export const useUpsertEntryMutation = (
     throwOnError: false,
 
     mutationFn: async (variables: IUpsertEntryCommandVariables) => {
-      if (
-        journal &&
-        hasNewJournalAttributeValues(
-          variables.command.journalAttributeValues ?? {},
-        )
-      ) {
-        await editJournalMutation.mutateAsync({ journal });
+      const journalWithNewValues = journal
+        ? getJournalWithNewAttributeValues(
+            journal,
+            variables.command.journalAttributeValues ?? {},
+          )
+        : null;
+
+      if (journalWithNewValues) {
+        await editJournalMutation.mutateAsync({
+          journal: journalWithNewValues,
+        });
       }
 
       return await ServerApi.upsertEntry(
@@ -122,35 +127,67 @@ export const useUpsertEntryMutation = (
     );
   }
 
-  function createCacheEntry(entry: IEntry, command: IUpsertEntryCommand) {
-    const editedOn = new Date().toString();
+  function createCacheEntry(
+    entry: IEntry,
+    command: IUpsertEntryCommand,
+  ): IEntry {
     return {
       ...entry,
       ...command,
-      dateTime: editedOn,
-      editedOn: editedOn,
+      // command.dateTime is a Date (or absent); IEntry.dateTime is an ISO
+      // string. Keep the date the user actually set instead of overwriting it
+      // with "now", and serialize as ISO to match what the server returns.
+      dateTime: command.dateTime
+        ? new Date(command.dateTime).toISOString()
+        : entry.dateTime,
+      editedOn: new Date().toISOString(),
     };
   }
+};
 
-  function hasNewJournalAttributeValues(
-    attributeValues: IJournalAttributeValues,
-  ) {
-    if (!attributeValues || !journal || journal.type === JournalType.Scraps) {
-      return false;
-    }
+// Returns a copy of the journal with any attribute values that are present on
+// the entry but missing from the journal definition added to it, or null when
+// there is nothing new. Pure: the (query-cached) journal passed in is never
+// mutated in place.
+function getJournalWithNewAttributeValues(
+  journal: IJournal,
+  attributeValues: IJournalAttributeValues,
+): IJournal | null {
+  if (journal.type === JournalType.Scraps) {
+    return null;
+  }
 
-    let hasNewValues = false;
+  const attributes = cloneAttributes(journal.attributes);
 
-    for (const keyInValues in attributeValues) {
-      for (const value of attributeValues[keyInValues]) {
-        if (!journal.attributes?.[keyInValues]?.values[value]) {
-          if (journal.attributes?.[keyInValues])
-            journal.attributes[keyInValues].values[value] = value;
-          hasNewValues = true;
+  let hasNewValues = false;
+
+  for (const keyInValues in attributeValues) {
+    for (const value of attributeValues[keyInValues]) {
+      if (!attributes?.[keyInValues]?.values[value]) {
+        if (attributes?.[keyInValues]) {
+          attributes[keyInValues].values[value] = value;
         }
+        hasNewValues = true;
       }
     }
-
-    return hasNewValues;
   }
-};
+
+  return hasNewValues ? { ...journal, attributes } : null;
+}
+
+function cloneAttributes(
+  attributes: IJournalAttributes | undefined,
+): IJournalAttributes | undefined {
+  if (!attributes) {
+    return attributes;
+  }
+
+  const clone: IJournalAttributes = {};
+  for (const key of Object.keys(attributes)) {
+    clone[key] = {
+      ...attributes[key],
+      values: { ...attributes[key].values },
+    };
+  }
+  return clone;
+}
