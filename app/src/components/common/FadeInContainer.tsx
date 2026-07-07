@@ -4,12 +4,17 @@ import { styled, SxProps } from "@mui/material";
 export const FadeInContainer: React.FC<{
   children: ReactNode;
   doPulsate?: boolean;
+  isReady?: boolean;
   sx?: SxProps;
   testId?: string;
-}> = ({ children, doPulsate, sx, testId }) => {
+}> = ({ children, doPulsate, isReady = true, sx, testId }) => {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
     const timeout = window.setTimeout(() => setIsRendered(true), 20);
 
     let interval: number;
@@ -24,7 +29,7 @@ export const FadeInContainer: React.FC<{
       window.clearTimeout(timeout);
       window.clearInterval(interval);
     };
-  }, [doPulsate]);
+  }, [doPulsate, isReady]);
 
   return (
     <ContainerSection

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IUser } from "./serverApi/IUser";
 import { styled } from "@mui/material";
 import { AddJournalPage } from "./components/overview/AddJournalPage";
@@ -34,6 +34,7 @@ import { TagPage } from "./components/overview/tags/TagPage";
 import { GoToPage } from "./components/overview/goto/GoToPage";
 import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
 import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNavigation";
+import { LazyLoadSuspender } from "./components/common/LazyLoadSuspender";
 import { validateAppSearch } from "./components/common/actions/searchParamHooks";
 
 // Defined before RootLayout so the component reference is available
@@ -53,7 +54,9 @@ const RootLayout: React.FC = () => (
             <AppAlertBar />
             <AppContent scope="body">
               <AppErrorBoundary>
-                <Outlet />
+                <LazyLoadSuspender>
+                  <Outlet />
+                </LazyLoadSuspender>
               </AppErrorBoundary>
             </AppContent>
             <FloatingHistoryNavigation />
@@ -176,8 +179,14 @@ declare module "@tanstack/react-router" {
   }
 }
 
-export const App: React.FC<{ user: IUser }> = ({ user }) => (
-  <AppContextProvider user={user}>
-    <RouterProvider router={router} />
-  </AppContextProvider>
-);
+export const App: React.FC<{ user: IUser }> = ({ user }) => {
+  useEffect(() => {
+    import("./components/details/scraps/markdown/LazyMarkdown");
+  }, []);
+
+  return (
+    <AppContextProvider user={user}>
+      <RouterProvider router={router} />
+    </AppContextProvider>
+  );
+};

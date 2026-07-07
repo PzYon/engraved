@@ -11,7 +11,10 @@ import { useAppContext } from "../../../AppContext";
 import { ScrapToc } from "./ScrapToc";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { OverviewList } from "../../overview/overviewList/OverviewList";
-import { getScheduleForUser, sortEntitiesByDates, } from "../../overview/scheduled/scheduleUtils";
+import {
+  getScheduleForUser,
+  sortEntitiesByDates,
+} from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
 
 export const ScrapsViewPage: React.FC = () => {

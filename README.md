@@ -4,25 +4,8 @@
 
 # engraved.
 
-Store personal measurements and notes in an easy manor. Helped me get rid of Todoist, Google Tasks and Notion.
-
-## Technologies Used
-
-### Backend
-
-- C#, .net core 9
-- Web API
-- MongoDB
-- NUnit
-
-### Frontend
-
-- TypeScript
-- React
-- Styled Components
-- Component libraries: React MUI, ChartJS, Tiptap, etc.
+Track what you want. Remember what you must. All Engraved in one place.
 
 ## URLs
 
 - Renovate job runs: https://app.renovatebot.com/dashboard#github/PzYon/engraved/
-- Code coverage on Codecov: https://app.codecov.io/github/PzYon/engraved

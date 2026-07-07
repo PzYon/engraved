@@ -16,7 +16,7 @@
     "@mui/material": "9.1.2",
     "@mui/styled-engine": "9.1.1",
     "@mui/system": "9.1.2",
-    "@mui/x-date-pickers": "9.6.0",
+    "@mui/x-date-pickers": "9.7.0",
     "@tanstack/query-async-storage-persister": "5.101.1",
     "@tanstack/react-query": "5.101.1",
     "@tanstack/react-query-devtools": "5.101.1",
@@ -41,8 +41,8 @@
     "react": "19.2.7",
     "react-chartjs-2": "5.3.1",
     "react-dom": "19.2.7",
-    "react-hotkeys-hook": "5.3.2",
-    "react-onesignal": "3.5.5",
+    "react-hotkeys-hook": "5.3.3",
+    "react-onesignal": "3.5.6",
     "vite": "8.1.0"
   },
   "scripts": {

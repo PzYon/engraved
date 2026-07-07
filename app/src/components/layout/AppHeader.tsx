@@ -86,6 +86,8 @@ export const AppHeader: React.FC = () => {
                 </Typography>
               </ActionLink>
             </div>
+            <VersionChecker />
+            <OfflineIndicator />
             <RefreshData />
             <ActionIconButton
               action={ActionFactory.toggleDisplayMode(isCompact, setIsCompact)}
@@ -93,8 +95,7 @@ export const AppHeader: React.FC = () => {
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
             <ActionIconButton action={ActionFactory.goTo()} />
             <ActionIconButton action={ActionFactory.quickAdd()} />
-            <OfflineIndicator />
-            <VersionChecker />
+
             <Link to="/settings">
               <User user={user} />
             </Link>

@@ -4,7 +4,13 @@ import { GroupByTime } from "./consolidation/GroupByTime";
 import { createDataSets } from "./dataSets/createDataSets";
 import { IDataSet } from "./dataSets/IDataSet";
 import { ChartProps } from "react-chartjs-2";
-import { ActiveElement, ChartEvent, ChartType, Element, TimeUnit } from "chart.js";
+import {
+  ActiveElement,
+  ChartEvent,
+  ChartType,
+  Element,
+  TimeUnit,
+} from "chart.js";
 import { PartialEventContext } from "chartjs-plugin-annotation";
 import { lighten } from "@mui/material";
 import {
@@ -222,7 +228,9 @@ function createBarChart(
         }
 
         const raw = (
-          elements[0].element as Element & { $context: { raw: ITransformedEntry } }
+          elements[0].element as Element & {
+            $context: { raw: ITransformedEntry };
+          }
         ).$context.raw;
 
         const attributeValues = raw.entries.map(
