@@ -11,6 +11,8 @@ import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
 import { differenceInDays } from "date-fns";
 import { FadeInContainer } from "../../common/FadeInContainer";
 import { LazyLoadSuspender } from "../../common/LazyLoadSuspender";
+import { OfflinePlaceholder } from "../../common/search/OfflinePlaceholder";
+import { useIsOffline } from "../../common/useIsOffline";
 
 interface IOverviewListProps {
   items: IEntity[];
@@ -49,6 +51,8 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
 }) => {
   const { user } = useAppContext();
 
+  const isOffline = useIsOffline();
+
   const {
     setActiveItemId,
     activeItemId,
@@ -58,15 +62,25 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
     setShowAll,
   } = useOverviewListContext();
 
+  // While offline an empty list (almost) always means the data has not been
+  // cached yet - queries are paused and will resume when back online.
+  const showOfflinePlaceholder =
+    isOffline && !itemsToShow.length && !hiddenItemsCount;
+
   return (
     <LazyLoadSuspender>
       <FadeInContainer
         isReady={
-          itemsToShow.length > 0 || hiddenItemsCount > 0 || !!renderBeforeList
+          itemsToShow.length > 0 ||
+          hiddenItemsCount > 0 ||
+          !!renderBeforeList ||
+          showOfflinePlaceholder
         }
       >
         <Host className="overview-list">
           {renderBeforeList?.((i) => setActiveItemId(itemsToShow[i]?.id ?? ""))}
+
+          {showOfflinePlaceholder ? <OfflinePlaceholder /> : null}
 
           {itemsToShow.map((item, index) => {
             const hasFocus = activeItemId === item.id;

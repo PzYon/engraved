@@ -2,6 +2,7 @@ import React from "react";
 import { usePageContext } from "../../layout/pages/PageContext";
 import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
 import { NoResultsFound } from "../../common/search/NoResultsFound";
+import { useIsOffline } from "../../common/useIsOffline";
 import { OverviewList } from "../overviewList/OverviewList";
 import { JournalListItem } from "./JournalListItem";
 import { IJournal } from "../../../serverApi/IJournal";
@@ -12,6 +13,7 @@ export const Journals: React.FC<{
   journalIds?: string[];
 }> = ({ favoritesOnly, journalIds }) => {
   const { searchText, journalTypes } = usePageContext();
+  const isOffline = useIsOffline();
 
   const journals = useJournalsQuery(
     searchText,
@@ -24,7 +26,10 @@ export const Journals: React.FC<{
     return null;
   }
 
-  if (!journals.length && searchText) {
+  // While offline an empty result means the data is not cached (queries are
+  // paused), not that nothing matches - so fall through to the OverviewList,
+  // which renders the offline placeholder.
+  if (!journals.length && searchText && !isOffline) {
     return <NoResultsFound />;
   }
 

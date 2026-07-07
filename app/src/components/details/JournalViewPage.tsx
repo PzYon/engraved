@@ -11,6 +11,8 @@ import { Page } from "../layout/pages/Page";
 import { JournalPageTitle } from "./JournalPageTitle";
 import { createDateConditions } from "./filters/createDateConditions";
 import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
+import { OfflinePlaceholder } from "../common/search/OfflinePlaceholder";
+import { useIsOffline } from "../common/useIsOffline";
 import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
@@ -35,6 +37,7 @@ import { isEntryFilterApplied } from "./filters/isEntryFilterApplied";
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const { user } = useAppContext();
+  const isOffline = useIsOffline();
 
   const {
     journal,
@@ -222,6 +225,10 @@ export const JournalViewPage: React.FC = () => {
             </PageSection>
           )}
         </>
+      ) : isOffline ? (
+        // While offline, missing entries (almost) always mean they have not
+        // been cached yet - "No entries available." would be misleading.
+        <OfflinePlaceholder />
       ) : (
         <GenericEmptyPlaceholder
           icon={LocalHotelOutlined}
