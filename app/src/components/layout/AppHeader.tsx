@@ -86,9 +86,12 @@ export const AppHeader: React.FC = () => {
                 </Typography>
               </ActionLink>
             </div>
+
             <VersionChecker />
             <OfflineIndicator />
+
             <RefreshData />
+
             <ActionIconButton
               action={ActionFactory.toggleDisplayMode(isCompact, setIsCompact)}
             />
