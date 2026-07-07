@@ -5,6 +5,7 @@ import { del, get, set } from "idb-keyval";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import { envSettings } from "../../env/envSettings";
+import { useAppContext } from "../../AppContext";
 
 // Keep cached data around long enough to be persisted and restored across
 // reloads (queries are garbage-collected after gcTime, and only live queries
@@ -41,18 +42,27 @@ const persister = createAsyncStoragePersister({
 
 export const ReactQueryProviderWrapper: React.FC<{
   children: React.ReactNode;
-}> = ({ children }) => (
-  <PersistQueryClientProvider
-    client={queryClient}
-    persistOptions={{
-      persister,
-      maxAge: oneDay,
-      // Discard the persisted cache when a new app version ships, so we never
-      // restore data shaped for an older schema.
-      buster: envSettings.version ?? "dev",
-    }}
-  >
-    {children}
-    <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
-  </PersistQueryClientProvider>
-);
+}> = ({ children }) => {
+  // Always rendered inside AppContextProvider, so the authenticated user is
+  // available here.
+  const { user } = useAppContext();
+
+  return (
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        maxAge: oneDay,
+        // Scope the persisted cache to (app version + user). When either
+        // changes, PersistQueryClientProvider discards the stored cache
+        // (removeClient) before restoring - so one user never sees another
+        // user's data restored from IndexedDB, and old-schema caches are still
+        // dropped on deploy.
+        buster: `${envSettings.version ?? "dev"}:${user?.id ?? "anon"}`,
+      }}
+    >
+      {children}
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+    </PersistQueryClientProvider>
+  );
+};
