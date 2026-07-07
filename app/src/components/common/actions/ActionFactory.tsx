@@ -39,6 +39,7 @@ import {
   clearAllSearchParams,
   getItemActionQueryParams,
 } from "./searchParamHooks";
+import { AirplanemodeActive } from "@mui/icons-material";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -434,8 +435,19 @@ export class ActionFactory {
       key: "update-to-new-version",
       sx: {
         color: color,
-        border: "2px solid " + color,
-        mr: 2,
+      },
+    };
+  }
+
+  static offlineIndicator(): IAction {
+    const color = "#fc8ff6";
+
+    return {
+      icon: <AirplanemodeActive fontSize="small" />,
+      label: "You are offline - showing last known data.",
+      key: "offline-indicator",
+      sx: {
+        color: color,
       },
     };
   }
