@@ -4,7 +4,7 @@
     "exclude": ["*.{css,scss,js,png,gif,ico,jpg,svg}"]
   },
   "globalHeaders": {
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' https://accounts.google.com https://cdn.onesignal.com; connect-src 'self' https://engraved.azurewebsites.net https://engraved-lnx.azurewebsites.net https://accounts.google.com https://*.onesignal.com https://js.monitor.azure.com https://*.in.applicationinsights.azure.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; font-src 'self'; img-src 'self' data: https:; frame-src https://accounts.google.com; worker-src 'self'; manifest-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' https://accounts.google.com https://cdn.onesignal.com https://api.onesignal.com; connect-src 'self' https://engraved.azurewebsites.net https://engraved-lnx.azurewebsites.net https://accounts.google.com https://*.onesignal.com https://js.monitor.azure.com https://*.in.applicationinsights.azure.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; font-src 'self'; img-src 'self' data: https:; frame-src https://accounts.google.com; worker-src 'self'; manifest-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload"
