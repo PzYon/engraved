@@ -32,7 +32,9 @@ public class NotificationsController(
         Title = "Test message (Title)",
         Message = "Sent from engraved OneSignal (Message)."
       },
-      Guid.NewGuid().ToString(),
+      // short constant instead of a real entity id: a GUID here would push the
+      // OneSignal collapse_id ("<entityId>::<userId>") over its 64-byte limit
+      "test",
       false
     );
   }
