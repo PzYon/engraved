@@ -27,7 +27,7 @@
   "homepage": "https://github.com/PzYon/engraved#readme",
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@tanstack/eslint-plugin-query": "5.101.1",
+    "@tanstack/eslint-plugin-query": "5.101.2",
     "@tanstack/eslint-plugin-router": "1.162.0",
     "@types/node": "24.13.2",
     "@typescript-eslint/eslint-plugin": "8.62.0",
