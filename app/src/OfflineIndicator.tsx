@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ActionIconButton } from "./components/common/actions/ActionIconButton";
 import { FadeInContainer } from "./components/common/FadeInContainer";
 import { ActionFactory } from "./components/common/actions/ActionFactory";
+import { useIsOffline } from "./components/common/useIsOffline";
 
 export const OfflineIndicator: React.FC = () => {
   const isOffline = useIsOffline();
@@ -15,23 +16,3 @@ export const OfflineIndicator: React.FC = () => {
     </FadeInContainer>
   );
 };
-
-function useIsOffline(): boolean {
-  const [isOffline, setIsOffline] = useState(
-    typeof navigator !== "undefined" ? !navigator.onLine : false,
-  );
-
-  useEffect(() => {
-    const update = () => setIsOffline(!navigator.onLine);
-
-    window.addEventListener("online", update);
-    window.addEventListener("offline", update);
-
-    return () => {
-      window.removeEventListener("online", update);
-      window.removeEventListener("offline", update);
-    };
-  }, []);
-
-  return isOffline;
-}

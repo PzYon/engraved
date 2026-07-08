@@ -12,6 +12,8 @@ import { JournalViewPage } from "./JournalViewPage";
 import { ScrapsViewPage } from "./scraps/ScrapsViewPage";
 import { addRecentlyViewedJournal } from "../layout/menu/useRecentlyViewedJournals";
 import { LogBookViewPage } from "./scraps/LogBookViewPage";
+import { OfflinePlaceholder } from "../common/search/OfflinePlaceholder";
+import { useIsOffline } from "../common/useIsOffline";
 
 export const JournalDetailsEdit: React.FC = () => {
   const { journal } = useJournalContext();
@@ -48,9 +50,12 @@ export const JournalDetails: React.FC = () => {
   const { journal } = useJournalContext();
   const journalProperties = useJournalProperties(journal);
   const deviceWidth = useDeviceWidth();
+  const isOffline = useIsOffline();
 
   if (!journal) {
-    return null;
+    // undefined means not loaded (yet) - when offline that is because the
+    // journal has not been cached and cannot be fetched until back online.
+    return isOffline ? <OfflinePlaceholder /> : null;
   }
 
   return (
