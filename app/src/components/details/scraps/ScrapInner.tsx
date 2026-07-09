@@ -8,7 +8,7 @@ import { IScrapListItem } from "./list/IScrapListItem";
 import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { ParseableDate } from "../edit/ParseableDate";
 import { Markdown } from "./markdown/Markdown";
-import { AutoFixHigh } from "@mui/icons-material";
+import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { TitleRow } from "./TitleRow";
 

@@ -39,7 +39,7 @@ import {
   clearAllSearchParams,
   getItemActionQueryParams,
 } from "./searchParamHooks";
-import { AirplanemodeActive } from "@mui/icons-material";
+import AirplanemodeActive from "@mui/icons-material/AirplanemodeActive";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {

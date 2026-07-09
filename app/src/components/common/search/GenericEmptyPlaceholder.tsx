@@ -1,10 +1,10 @@
 import React from "react";
-import { SvgIconComponent } from "@mui/icons-material";
+import type SvgIcon from "@mui/material/SvgIcon";
 import { styled, Typography } from "@mui/material";
 import { PageSection } from "../../layout/pages/PageSection";
 
 export const GenericEmptyPlaceholder: React.FC<{
-  icon: SvgIconComponent;
+  icon: typeof SvgIcon;
   message: string;
 }> = ({ icon: IconElement, message }) => {
   return (
