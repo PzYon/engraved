@@ -3,7 +3,7 @@ import { ILogBookJournal } from "../../../serverApi/ILogBookJournal";
 import { RichTextEditor } from "../../common/RichTextEditor";
 import { PageSection } from "../../layout/pages/PageSection";
 import { FormControl } from "@mui/material";
-import { CopyAllOutlined } from "@mui/icons-material";
+import CopyAllOutlined from "@mui/icons-material/CopyAllOutlined";
 
 export const EditLogBookProperties: React.FC<{
   journal: ILogBookJournal;

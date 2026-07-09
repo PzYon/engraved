@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Popover, PopoverActions, styled } from "@mui/material";
 import { ActionIconButton } from "../common/actions/ActionIconButton";
-import { HistoryOutlined } from "@mui/icons-material";
+import HistoryOutlined from "@mui/icons-material/HistoryOutlined";
 import { GoToSimple } from "../overview/goto/GoToSimple";
 import { PageSection } from "./pages/PageSection";
 import { useEngravedHotkeys } from "../common/actions/useEngravedHotkeys";
