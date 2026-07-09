@@ -79,7 +79,8 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool matchAnyWord = false
   )
   {
     var filters = new List<FilterDefinition<JournalDocument>>();
@@ -140,6 +141,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       filters.AddRange(
         GetFreeTextFilters<JournalDocument>(
           searchText,
+          matchAnyWord,
           d => d.Name!,
           d => d.Description!
         )
@@ -184,6 +186,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       filters.AddRange(
         GetFreeTextFilters<EntryDocument>(
           searchText,
+          false,
           d => d.Notes!,
           d => ((ScrapsEntryDocument) d).Title!
         )
@@ -231,7 +234,8 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     string[]? journalIds = null,
     int? limit = null,
     string? currentUserId = null,
-    bool onlyConsiderTitle = false
+    bool onlyConsiderTitle = false,
+    bool matchAnyWord = false
   )
   {
     var filters = new List<FilterDefinition<EntryDocument>>();
@@ -241,6 +245,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       filters.AddRange(
         GetFreeTextFilters<EntryDocument>(
           searchText,
+          matchAnyWord,
           onlyConsiderTitle
             ? [d => ((ScrapsEntryDocument) d).Title!]
             : [d => ((ScrapsEntryDocument) d).Title!, d => d.Notes!]
@@ -566,8 +571,14 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     );
   }
 
+  // matchAnyWord = false: every word must match somewhere (one AND-ed filter per word,
+  // substring semantics) - this is the regular search behavior.
+  // matchAnyWord = true: a single filter matching documents that contain ANY of the words,
+  // as whole words (\b-anchored) - used to collect candidates for "related items", where
+  // requiring all words would be far too strict and substring matches are mostly noise.
   private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
     string? searchText,
+    bool matchAnyWord,
     params Expression<Func<T, object>>[] fieldNameExpressions
   ) where T : IDocument
   {
@@ -576,17 +587,21 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       return [];
     }
 
-    return searchText.Split(" ")
+    List<FilterDefinition<T>> perWordFilters = searchText.Split(" ")
       .Select(segment =>
         {
           // Escape the user input so it is matched literally. Passing it to the
           // regex engine unescaped allowed malformed patterns (exceptions) and
           // catastrophic-backtracking patterns (ReDoS) to be injected via search.
+          var pattern = matchAnyWord
+            ? $@"\b{Regex.Escape(segment)}\b"
+            : Regex.Escape(segment);
+
           return Builders<T>.Filter.Or(
             fieldNameExpressions.Select(exp => Builders<T>.Filter.Regex(
                 exp,
                 new BsonRegularExpression(
-                  new Regex(Regex.Escape(segment), RegexOptions.IgnoreCase | RegexOptions.Multiline)
+                  new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline)
                 )
               )
             )
@@ -594,5 +609,9 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
         }
       )
       .ToList();
+
+    return matchAnyWord
+      ? [Builders<T>.Filter.Or(perWordFilters)]
+      : perWordFilters;
   }
 }

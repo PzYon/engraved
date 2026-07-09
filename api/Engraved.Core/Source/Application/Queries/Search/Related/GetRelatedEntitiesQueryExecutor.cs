@@ -1,0 +1,204 @@
+using System.Text.RegularExpressions;
+using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Queries.Search.Entities;
+using Engraved.Core.Domain;
+using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
+
+namespace Engraved.Core.Application.Queries.Search.Related;
+
+// Finds items "related" to a given journal or entry, purely for navigation purposes:
+// the source item's own journal (and its entries) are deliberately excluded, as they
+// are already visible on the page the user is coming from. Relatedness is based on
+// word overlap: candidates are fetched with a single match-any-word query and then
+// ranked in memory (no $text/Atlas Search available on the Cosmos DB Mongo API).
+public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repository)
+  : IQueryExecutor<SearchEntitiesResult, GetRelatedEntitiesQuery>
+{
+  private const int MaxWords = 10;
+  private const int MinWordLength = 3;
+  private const int CandidateLimit = 50;
+  private const int DefaultResultLimit = 10;
+
+  // only entries of these types have their own routes in the app, so only they
+  // are valid navigation targets. journals of ALL types are considered.
+  private static readonly JournalType[] NavigableEntryTypes = [JournalType.Scraps, JournalType.LogBook];
+
+  private static readonly HashSet<string> StopWords =
+  [
+    // english
+    "the", "and", "for", "with", "this", "that", "these", "those", "from", "are",
+    "was", "were", "has", "have", "had", "not", "you", "your", "all", "any",
+    "can", "will", "one", "how", "what", "when", "where", "why", "who", "which",
+    // german
+    "und", "der", "die", "das", "den", "dem", "des", "ein", "eine", "einen",
+    "einem", "einer", "ist", "sind", "war", "mit", "von", "für", "auf", "aus",
+    "bei", "nach", "über", "unter", "nicht", "auch", "wie", "was", "wann", "wer",
+    "oder", "aber", "als", "zum", "zur", "ich", "sie", "wir"
+  ];
+
+  public bool DisableCache => false;
+
+  public async Task<SearchEntitiesResult> Execute(GetRelatedEntitiesQuery query)
+  {
+    if (string.IsNullOrEmpty(query.EntityId))
+    {
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(GetRelatedEntitiesQuery.EntityId)} must be specified."
+      );
+    }
+
+    (string? sourceText, string? ownJournalId) = await LoadSource(query);
+    if (ownJournalId == null)
+    {
+      // source does not exist or the current user must not see it
+      return new SearchEntitiesResult();
+    }
+
+    var words = GetWords(sourceText);
+    if (words.Length == 0)
+    {
+      return new SearchEntitiesResult();
+    }
+
+    var searchText = string.Join(" ", words);
+
+    IJournal[] allJournals = await repository.GetAllJournals(null, null, null, null, 1000);
+    var otherJournalIds = allJournals
+      .Select(j => j.Id!)
+      .Where(id => id != ownJournalId)
+      .ToArray();
+
+    Task<IJournal[]> journalCandidatesTask = repository.GetAllJournals(
+      searchText,
+      null,
+      null,
+      null,
+      CandidateLimit,
+      null,
+      matchAnyWord: true
+    );
+
+    // passing otherJournalIds both scopes the (unscoped) entry search to journals the
+    // user may read AND excludes the source item's own journal (see class comment).
+    Task<IEntry[]> entryCandidatesTask = otherJournalIds.Length > 0
+      ? repository.SearchEntries(
+        searchText,
+        null,
+        NavigableEntryTypes,
+        otherJournalIds,
+        CandidateLimit,
+        null,
+        onlyConsiderTitle: false,
+        matchAnyWord: true
+      )
+      : Task.FromResult<IEntry[]>([]);
+
+    await Task.WhenAll(journalCandidatesTask, entryCandidatesTask);
+
+    SearchResultEntity[] rankedEntities = journalCandidatesTask.Result
+      .Where(j => j.Id != ownJournalId)
+      .Select(j => new
+        {
+          Entity = new SearchResultEntity { EntityType = EntityType.Journal, Entity = j },
+          Score = GetScore(words, j.Name, j.Description)
+        }
+      )
+      .Concat(
+        entryCandidatesTask.Result.Select(e => new
+          {
+            Entity = new SearchResultEntity { EntityType = EntityType.Entry, Entity = e },
+            Score = GetScore(words, (e as ScrapsEntry)?.Title, e.Notes)
+          }
+        )
+      )
+      .OrderByDescending(x => x.Score)
+      .ThenByDescending(x => x.Entity.Entity.EditedOn)
+      .Take(query.Limit ?? DefaultResultLimit)
+      .Select(x => x.Entity)
+      .ToArray();
+
+    var parentJournalIds = rankedEntities
+      .Where(e => e.EntityType == EntityType.Entry)
+      .Select(e => ((IEntry) e.Entity).ParentId)
+      .ToArray();
+
+    return new SearchEntitiesResult
+    {
+      Entities = rankedEntities,
+      Journals = allJournals.Where(j => parentJournalIds.Contains(j.Id)).ToArray()
+    };
+  }
+
+  // returns the text to derive the search words from, plus the id of the journal whose
+  // items must be excluded (the source journal itself resp. the source entry's parent).
+  // ownJournalId == null means "source not accessible".
+  private async Task<(string? SourceText, string? OwnJournalId)> LoadSource(GetRelatedEntitiesQuery query)
+  {
+    if (query.EntityType == EntityType.Journal)
+    {
+      // GetJournal is permission-scoped and returns null if the user may not read it
+      IJournal? journal = await repository.GetJournal(query.EntityId!);
+      return (journal?.Name, journal?.Id);
+    }
+
+    // GetEntry is an unscoped primitive, so read access is enforced here by loading the
+    // parent journal through the scoped GetJournal (same pattern as GetEntryQueryExecutor).
+    IEntry? entry = await repository.GetEntry(query.EntityId!);
+    if (entry == null)
+    {
+      return (null, null);
+    }
+
+    IJournal? parentJournal = await repository.GetJournal(entry.ParentId);
+    if (parentJournal == null)
+    {
+      return (null, null);
+    }
+
+    var title = (entry as ScrapsEntry)?.Title;
+    return (string.IsNullOrWhiteSpace(title) ? entry.Notes : title, entry.ParentId);
+  }
+
+  private static string[] GetWords(string? text)
+  {
+    if (string.IsNullOrWhiteSpace(text))
+    {
+      return [];
+    }
+
+    return Regex.Split(text.ToLowerInvariant(), @"[^\p{L}\p{N}]+")
+      .Where(word => word.Length >= MinWordLength && !StopWords.Contains(word))
+      .Distinct()
+      .Take(MaxWords)
+      .ToArray();
+  }
+
+  // title matches weigh more than body matches; every candidate matches at least one
+  // word (that is what the DB query selected it by), so the minimum score is 1.
+  private static int GetScore(string[] words, string? title, string? body)
+  {
+    var score = 0;
+
+    foreach (var word in words)
+    {
+      if (ContainsWord(title, word))
+      {
+        score += 3;
+      }
+      else if (ContainsWord(body, word))
+      {
+        score += 1;
+      }
+    }
+
+    return score;
+  }
+
+  private static bool ContainsWord(string? text, string word)
+  {
+    return !string.IsNullOrEmpty(text)
+           && Regex.IsMatch(text, $@"\b{Regex.Escape(word)}\b", RegexOptions.IgnoreCase);
+  }
+}

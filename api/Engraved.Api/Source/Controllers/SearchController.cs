@@ -1,5 +1,6 @@
 using Engraved.Core.Application;
 using Engraved.Core.Application.Queries.Search.Entities;
+using Engraved.Core.Application.Queries.Search.Related;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,5 +30,18 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
     };
 
     return await dispatcher.Query<SearchEntitiesResult, SearchEntitiesQuery>(query);
+  }
+
+  [Route("related")]
+  [HttpGet]
+  public async Task<SearchEntitiesResult> GetRelatedEntities(string entityId, EntityType entityType)
+  {
+    var query = new GetRelatedEntitiesQuery
+    {
+      EntityId = entityId,
+      EntityType = entityType
+    };
+
+    return await dispatcher.Query<SearchEntitiesResult, GetRelatedEntitiesQuery>(query);
   }
 }

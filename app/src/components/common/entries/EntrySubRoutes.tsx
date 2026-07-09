@@ -5,6 +5,7 @@ import { IEntry } from "../../../serverApi/IEntry";
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
+import { RelatedItemsAction } from "../../details/related/RelatedItemsAction";
 import { knownQueryParams, useItemAction } from "../actions/searchParamHooks";
 import { NavigationActionContainer } from "../actions/NavigationActionContainer";
 
@@ -50,6 +51,13 @@ export const EntrySubRoutes: React.FC<{
         return (
           <NavigationActionContainer>
             <UpsertEntryAction entry={entry} />
+          </NavigationActionContainer>
+        );
+
+      case "related":
+        return (
+          <NavigationActionContainer>
+            <RelatedItemsAction entityId={entry.id ?? ""} entityType="Entry" />
           </NavigationActionContainer>
         );
 

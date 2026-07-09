@@ -16,6 +16,7 @@ const actionKeys = [
   "add-entry",
   "move",
   "edit",
+  "related",
 ] as const;
 
 export type ActionKey = (typeof actionKeys)[number];

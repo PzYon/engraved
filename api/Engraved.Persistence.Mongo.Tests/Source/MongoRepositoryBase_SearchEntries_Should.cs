@@ -87,6 +87,44 @@ public class MongoRepositoryBase_SearchEntries_Should
   }
 
   [Test]
+  public async Task MatchAnyWord_FindsEntriesMatchingAnyOfTheWords()
+  {
+    // "alpha" and "heiri" occur in two different entries; with match-any
+    // semantics both entries are returned (regular search would return none).
+    IEntry[] results = await _repository.SearchEntries(
+      "alpha heiri",
+      null,
+      null,
+      [_journalId],
+      10,
+      null,
+      onlyConsiderTitle: false,
+      matchAnyWord: true
+    );
+
+    results.Length.Should().Be(2);
+  }
+
+  [Test]
+  public async Task MatchAnyWord_MatchesWholeWordsOnly()
+  {
+    // "gam" is a substring of "Gamma"; unlike the regular (substring) search,
+    // match-any only matches whole words.
+    IEntry[] results = await _repository.SearchEntries(
+      "gam",
+      null,
+      null,
+      [_journalId],
+      10,
+      null,
+      onlyConsiderTitle: false,
+      matchAnyWord: true
+    );
+
+    results.Should().BeEmpty();
+  }
+
+  [Test]
   public async Task TreatRegexMetacharactersLiterally()
   {
     await _repository.UpsertEntry(
