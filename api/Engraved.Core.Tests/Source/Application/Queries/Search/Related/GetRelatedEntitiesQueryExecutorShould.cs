@@ -118,6 +118,25 @@ public class GetRelatedEntitiesQueryExecutorShould
   }
 
   [Test]
+  public async Task FindItemsMatchingViaUmlautWords()
+  {
+    // words with leading/trailing umlauts break \b-based patterns on mongo's
+    // ASCII-only PCRE2 engine - pinned end-to-end here (see WholeWordRegex).
+    var sourceJournalId = await AddJournal("Sport");
+    var sourceEntryId = await AddScrap(sourceJournalId, "Übung Klettern");
+
+    var otherJournalId = await AddJournal("Fitness");
+    await AddScrap(otherJournalId, "Übung Yoga");
+
+    SearchEntitiesResult result = await _executor.Execute(
+      new GetRelatedEntitiesQuery { EntityType = EntityType.Entry, EntityId = sourceEntryId }
+    );
+
+    result.Entities.Length.Should().Be(1);
+    ((ScrapsEntry) result.Entities[0].Entity).Title.Should().Be("Übung Yoga");
+  }
+
+  [Test]
   public async Task ReturnNothing_WhenTitleConsistsOfStopWordsOnly()
   {
     var sourceJournalId = await AddJournal("Stuff");

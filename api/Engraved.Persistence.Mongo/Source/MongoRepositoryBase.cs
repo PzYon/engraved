@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
@@ -574,8 +575,8 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
   // matchAnyWord = false: every word must match somewhere (one AND-ed filter per word,
   // substring semantics) - this is the regular search behavior.
   // matchAnyWord = true: a single filter matching documents that contain ANY of the words,
-  // as whole words (\b-anchored) - used to collect candidates for "related items", where
-  // requiring all words would be far too strict and substring matches are mostly noise.
+  // as whole words (via WholeWordRegex) - used to collect candidates for "related items",
+  // where requiring all words would be far too strict and substring matches are mostly noise.
   private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
     string? searchText,
     bool matchAnyWord,
@@ -594,7 +595,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
           // regex engine unescaped allowed malformed patterns (exceptions) and
           // catastrophic-backtracking patterns (ReDoS) to be injected via search.
           var pattern = matchAnyWord
-            ? $@"\b{Regex.Escape(segment)}\b"
+            ? WholeWordRegex.BuildPattern(segment)
             : Regex.Escape(segment);
 
           return Builders<T>.Filter.Or(

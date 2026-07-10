@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries.Search.Entities;
+using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
@@ -171,19 +172,15 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
   }
 
   // title matches weigh more than body matches; every candidate matches at least one
-  // word (that is what the DB query selected it by), so the minimum score is 1.
+  // word (the DB query selected it with the same WholeWordRegex pattern), so the
+  // minimum score is 1.
   private static int GetScore(string[] words, string? title, string? body)
   {
     return words.Aggregate(
       0,
-      (score, word) => score + (ContainsWord(title, word) ? 3 : ContainsWord(body, word) ? 1 : 0)
+      (score, word) =>
+        score + (WholeWordRegex.IsMatch(title, word) ? 3 : WholeWordRegex.IsMatch(body, word) ? 1 : 0)
     );
-  }
-
-  private static bool ContainsWord(string? text, string word)
-  {
-    return !string.IsNullOrEmpty(text)
-           && Regex.IsMatch(text, $@"\b{Regex.Escape(word)}\b", RegexOptions.IgnoreCase);
   }
 
   private sealed class SourceContext(string? sourceText, string? ownJournalId)

@@ -125,6 +125,37 @@ public class MongoRepositoryBase_SearchEntries_Should
   }
 
   [Test]
+  public async Task MatchAnyWord_MatchesWordsWithLeadingOrTrailingUmlauts()
+  {
+    // mongo's PCRE2 engine treats \b as ASCII-only, so a \b-based pattern never finds
+    // a word boundary next to an umlaut. This pins that the whole-word pattern matches
+    // words like "Übung" (see WholeWordRegex).
+    await _repository.UpsertEntry(
+      new GaugeEntry
+      {
+        ParentId = _journalId,
+        Value = 5,
+        Notes = "Übung Klettern",
+        EditedOn = DateTime.Now.AddDays(-4)
+      }
+    );
+
+    IEntry[] results = await _repository.SearchEntries(
+      "übung",
+      null,
+      null,
+      [_journalId],
+      10,
+      null,
+      onlyConsiderTitle: false,
+      matchAnyWord: true
+    );
+
+    results.Length.Should().Be(1);
+    results[0].GetValue().Should().Be(5);
+  }
+
+  [Test]
   public async Task TreatRegexMetacharactersLiterally()
   {
     await _repository.UpsertEntry(
