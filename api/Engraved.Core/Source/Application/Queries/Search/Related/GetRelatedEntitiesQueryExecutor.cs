@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries.Search.Entities;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
@@ -49,14 +48,13 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
       );
     }
 
-    (string? sourceText, string? ownJournalId) = await LoadSource(query);
-    if (ownJournalId == null)
+    SourceContext source = await LoadSource(query);
+    if (source.OwnJournalId == null)
     {
-      // source does not exist or the current user must not see it
       return new SearchEntitiesResult();
     }
 
-    var words = GetWords(sourceText);
+    var words = GetRelevantWords(source.SourceText);
     if (words.Length == 0)
     {
       return new SearchEntitiesResult();
@@ -64,25 +62,26 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
 
     var searchText = string.Join(" ", words);
 
-    IJournal[] allJournals = await repository.GetAllJournals(null, null, null, null, 1000);
+    var allJournals = await repository.GetAllJournals(null, null, null, null, 1000);
+
     var otherJournalIds = allJournals
       .Select(j => j.Id!)
-      .Where(id => id != ownJournalId)
+      .Where(id => id != source.OwnJournalId)
       .ToArray();
 
-    Task<IJournal[]> journalCandidatesTask = repository.GetAllJournals(
+    var journalCandidatesTask = repository.GetAllJournals(
       searchText,
       null,
       null,
       null,
       CandidateLimit,
       null,
-      matchAnyWord: true
+      true
     );
 
     // passing otherJournalIds both scopes the (unscoped) entry search to journals the
     // user may read AND excludes the source item's own journal (see class comment).
-    Task<IEntry[]> entryCandidatesTask = otherJournalIds.Length > 0
+    var entryCandidatesTask = otherJournalIds.Length > 0
       ? repository.SearchEntries(
         searchText,
         null,
@@ -90,15 +89,15 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
         otherJournalIds,
         CandidateLimit,
         null,
-        onlyConsiderTitle: false,
-        matchAnyWord: true
+        false,
+        true
       )
       : Task.FromResult<IEntry[]>([]);
 
     await Task.WhenAll(journalCandidatesTask, entryCandidatesTask);
 
-    SearchResultEntity[] rankedEntities = journalCandidatesTask.Result
-      .Where(j => j.Id != ownJournalId)
+    var rankedEntities = journalCandidatesTask.Result
+      .Where(j => j.Id != source.OwnJournalId)
       .Select(j => new
         {
           Entity = new SearchResultEntity { EntityType = EntityType.Journal, Entity = j },
@@ -121,7 +120,7 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
 
     var parentJournalIds = rankedEntities
       .Where(e => e.EntityType == EntityType.Entry)
-      .Select(e => ((IEntry) e.Entity).ParentId)
+      .Select(e => ((IEntry)e.Entity).ParentId)
       .ToArray();
 
     return new SearchEntitiesResult
@@ -133,14 +132,14 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
 
   // returns the text to derive the search words from, plus the id of the journal whose
   // items must be excluded (the source journal itself resp. the source entry's parent).
-  // ownJournalId == null means "source not accessible".
-  private async Task<(string? SourceText, string? OwnJournalId)> LoadSource(GetRelatedEntitiesQuery query)
+  // OwnJournalId == null means "source not accessible".
+  private async Task<SourceContext> LoadSource(GetRelatedEntitiesQuery query)
   {
     if (query.EntityType == EntityType.Journal)
     {
       // GetJournal is permission-scoped and returns null if the user may not read it
       IJournal? journal = await repository.GetJournal(query.EntityId!);
-      return (journal?.Name, journal?.Id);
+      return new SourceContext(journal?.Name, journal?.Id);
     }
 
     // GetEntry is an unscoped primitive, so read access is enforced here by loading the
@@ -148,27 +147,23 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
     IEntry? entry = await repository.GetEntry(query.EntityId!);
     if (entry == null)
     {
-      return (null, null);
+      return SourceContext.Inaccessible;
     }
 
     IJournal? parentJournal = await repository.GetJournal(entry.ParentId);
     if (parentJournal == null)
     {
-      return (null, null);
+      return SourceContext.Inaccessible;
     }
 
     var title = (entry as ScrapsEntry)?.Title;
-    return (string.IsNullOrWhiteSpace(title) ? entry.Notes : title, entry.ParentId);
+    return new SourceContext(string.IsNullOrWhiteSpace(title) ? entry.Notes : title, entry.ParentId);
   }
 
-  private static string[] GetWords(string? text)
+  private static string[] GetRelevantWords(string? text)
   {
-    if (string.IsNullOrWhiteSpace(text))
-    {
-      return [];
-    }
-
-    return Regex.Split(text.ToLowerInvariant(), @"[^\p{L}\p{N}]+")
+    return Regex.Split((text ?? string.Empty).ToLowerInvariant(), @"[^\p{L}\p{N}]+")
+      .Select(word => word.Trim())
       .Where(word => word.Length >= MinWordLength && !StopWords.Contains(word))
       .Distinct()
       .Take(MaxWords)
@@ -179,26 +174,25 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
   // word (that is what the DB query selected it by), so the minimum score is 1.
   private static int GetScore(string[] words, string? title, string? body)
   {
-    var score = 0;
-
-    foreach (var word in words)
-    {
-      if (ContainsWord(title, word))
-      {
-        score += 3;
-      }
-      else if (ContainsWord(body, word))
-      {
-        score += 1;
-      }
-    }
-
-    return score;
+    return words.Aggregate(
+      0,
+      (score, word) => score + (ContainsWord(title, word) ? 3 : ContainsWord(body, word) ? 1 : 0)
+    );
   }
 
   private static bool ContainsWord(string? text, string word)
   {
     return !string.IsNullOrEmpty(text)
            && Regex.IsMatch(text, $@"\b{Regex.Escape(word)}\b", RegexOptions.IgnoreCase);
+  }
+
+  private sealed class SourceContext(string? sourceText, string? ownJournalId)
+  {
+    public static readonly SourceContext Inaccessible = new(null, null);
+
+    public string? SourceText { get; } = sourceText;
+
+    // null means the source does not exist or the current user must not see it
+    public string? OwnJournalId { get; } = ownJournalId;
   }
 }
