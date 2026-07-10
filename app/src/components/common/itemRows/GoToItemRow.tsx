@@ -1,7 +1,7 @@
 import React from "react";
 import { styled, Typography } from "@mui/material";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
+import { useEngravedHotkeys } from "../actions/useEngravedHotkeys";
 
 export const GoToItemRow: React.FC<{
   children: React.ReactNode;
