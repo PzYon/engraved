@@ -218,7 +218,8 @@ public class FakeUserRestrictedRepository(Lazy<IUser> currentUser) : IUserRestri
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool matchAnyWord = false
   )
   {
     throw new NotImplementedException();
@@ -262,7 +263,8 @@ public class FakeUserRestrictedRepository(Lazy<IUser> currentUser) : IUserRestri
     string[]? journalIds = null,
     int? limit = null,
     string? currentUserId = null,
-    bool onlyConsiderTitle = false
+    bool onlyConsiderTitle = false,
+    bool matchAnyWord = false
   )
   {
     throw new NotImplementedException();

@@ -468,6 +468,19 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/search/entities${params}`);
   }
 
+  static async getRelatedEntities(
+    entityId: string,
+    entityType: "Journal" | "Entry",
+  ): Promise<ISearchEntitiesResult> {
+    const urlParams = new URLSearchParams();
+    urlParams.set("entityId", entityId);
+    urlParams.set("entityType", entityType);
+
+    return await ServerApi.executeRequest(
+      `/search/related${toQueryString(urlParams)}`,
+    );
+  }
+
   static async exportData() {
     return await ServerApi.executeRequest(`/user/export-data`, "GET");
   }

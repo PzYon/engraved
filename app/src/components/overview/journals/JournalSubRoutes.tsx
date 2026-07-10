@@ -10,6 +10,7 @@ import {
 } from "../../common/actions/searchParamHooks";
 import { NavigationActionContainer } from "../../common/actions/NavigationActionContainer";
 import { JournalType } from "../../../serverApi/JournalType";
+import { RelatedItemsAction } from "../../details/related/RelatedItemsAction";
 
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
@@ -39,6 +40,16 @@ export const JournalSubRoutes: React.FC<{
       return (
         <NavigationActionContainer>
           <EditScheduleAction journal={journal} />
+        </NavigationActionContainer>
+      );
+
+    case "related":
+      return (
+        <NavigationActionContainer>
+          <RelatedItemsAction
+            entityId={journal.id ?? ""}
+            entityType="Journal"
+          />
         </NavigationActionContainer>
       );
 

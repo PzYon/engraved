@@ -13,6 +13,7 @@ import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
 import FormatLineSpacingOutlined from "@mui/icons-material/FormatLineSpacingOutlined";
 import FunctionsOutlined from "@mui/icons-material/FunctionsOutlined";
 import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
+import Hub from "@mui/icons-material/Hub";
 import MessageOutlined from "@mui/icons-material/MessageOutlined";
 import PanToolOutlined from "@mui/icons-material/PanToolOutlined";
 import PlaylistAdd from "@mui/icons-material/PlaylistAdd";
@@ -287,6 +288,15 @@ export class ActionFactory {
       label: "Move to another scrap",
       icon: <Redo fontSize="small" />,
       search: getItemActionQueryParams("move", scrap.id),
+    };
+  }
+
+  static showRelatedItems(itemId: string): IAction {
+    return {
+      key: "related",
+      label: "Show related items",
+      icon: <Hub fontSize="small" />,
+      search: getItemActionQueryParams("related", itemId),
     };
   }
 

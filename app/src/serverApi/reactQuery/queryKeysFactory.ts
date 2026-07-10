@@ -76,6 +76,10 @@ export const queryKeysFactory = {
     return [journals, "entries", searchText ?? "", journalTypes?.join() ?? ""];
   },
 
+  relatedEntities(entityId: string, entityType: "Journal" | "Entry") {
+    return ["search", "related", entityType, entityId];
+  },
+
   entities(
     searchText = "",
     scheduledOnly = false,

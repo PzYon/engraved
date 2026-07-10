@@ -26,6 +26,7 @@ export function getCommonJournalActions(
   actions.push(
     ActionFactory.editJournal(journal.id ?? "", enableHotkeys),
     ActionFactory.deleteJournal(journal.id ?? "", enableHotkeys),
+    ActionFactory.showRelatedItems(journal.id ?? ""),
   );
 
   return actions;

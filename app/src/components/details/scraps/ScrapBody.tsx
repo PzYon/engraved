@@ -97,6 +97,10 @@ export const ScrapBody: React.FC<{
 
     if (scrapToRender.id) {
       allActions.push(ActionFactory.deleteEntry(scrapToRender, hasFocus));
+
+      if (!isEditMode) {
+        allActions.push(ActionFactory.showRelatedItems(scrapToRender.id));
+      }
     }
 
     return allActions;

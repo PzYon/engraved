@@ -11,7 +11,8 @@ public interface IJournalRepository
     JournalType[]? journalTypes = null,
     string[]? journalIds = null,
     int? limit = null,
-    string? currentUserId = null
+    string? currentUserId = null,
+    bool matchAnyWord = false
   );
 
   Task<IJournal?> GetJournal(string journalId);
