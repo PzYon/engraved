@@ -202,6 +202,71 @@ public class MongoRepositoryBase_GetEntriesForJournal_Should
     entries.Length.Should().Be(1);
   }
 
+  [Test]
+  public async Task Sort_By_DateTime_Descending_When_No_SortOrder_Is_Specified()
+  {
+    UpsertResult scrapsJournal = await _repository.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
+
+    string olderButRecentlyEditedId = await AddScrap(
+      scrapsJournal.EntityId,
+      dateTime: DateTime.Now.AddDays(-10),
+      editedOn: DateTime.Now
+    );
+    string newerButEditedLongAgoId = await AddScrap(
+      scrapsJournal.EntityId,
+      dateTime: DateTime.Now,
+      editedOn: DateTime.Now.AddDays(-10)
+    );
+
+    IEntry[] entries = await _repository.GetEntriesForJournal(scrapsJournal.EntityId);
+
+    entries.Length.Should().Be(2);
+    entries[0].Id.Should().Be(newerButEditedLongAgoId);
+    entries[1].Id.Should().Be(olderButRecentlyEditedId);
+  }
+
+  [Test]
+  public async Task Sort_By_EditedOn_Descending_When_SortOrder_ByEditedOn_Is_Specified()
+  {
+    UpsertResult scrapsJournal = await _repository.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
+
+    string olderButRecentlyEditedId = await AddScrap(
+      scrapsJournal.EntityId,
+      dateTime: DateTime.Now.AddDays(-10),
+      editedOn: DateTime.Now
+    );
+    string newerButEditedLongAgoId = await AddScrap(
+      scrapsJournal.EntityId,
+      dateTime: DateTime.Now,
+      editedOn: DateTime.Now.AddDays(-10)
+    );
+
+    IEntry[] entries = await _repository.GetEntriesForJournal(
+      scrapsJournal.EntityId,
+      sortOrder: SortEntriesBy.EditedOn
+    );
+
+    entries.Length.Should().Be(2);
+    entries[0].Id.Should().Be(olderButRecentlyEditedId);
+    entries[1].Id.Should().Be(newerButEditedLongAgoId);
+  }
+
+  private async Task<string> AddScrap(string journalId, DateTime dateTime, DateTime editedOn)
+  {
+    var entry = new ScrapsEntry
+    {
+      ParentId = journalId,
+      ScrapType = ScrapType.Markdown,
+      Title = "Scrap",
+      DateTime = dateTime,
+      EditedOn = editedOn
+    };
+
+    UpsertResult result = await _repository.UpsertEntry(entry);
+
+    return result.EntityId;
+  }
+
   private async Task<string> AddEntry(DateTime? date, Dictionary<string, string[]>? attributeValues = null)
   {
     var entry = new CounterEntry
