@@ -11,7 +11,7 @@ public interface IEntryRepository
     DateTime? toDate = null,
     IDictionary<string, string[]>? attributeValues = null,
     string? searchText = null,
-    SortEntriesBy sortOrder = SortEntriesBy.ByDateTime
+    SortEntriesBy sortOrder = SortEntriesBy.DateTime
   );
 
   Task<IEntry[]> SearchEntries(

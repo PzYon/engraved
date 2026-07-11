@@ -169,7 +169,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     DateTime? toDate = null,
     IDictionary<string, string[]>? attributeValues = null,
     string? searchText = null,
-    SortEntriesBy sortOrder = SortEntriesBy.ByDateTime
+    SortEntriesBy sortOrder = SortEntriesBy.DateTime
   )
   {
     IJournal? journal = await GetJournal(journalId);
@@ -214,7 +214,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       );
     }
 
-    SortDefinition<EntryDocument> sort = sortOrder == SortEntriesBy.ByEditedOn
+    SortDefinition<EntryDocument> sort = sortOrder == SortEntriesBy.EditedOn
       ? Builders<EntryDocument>.Sort.Descending(d => d.EditedOn)
       : Builders<EntryDocument>.Sort.Descending(d => d.DateTime);
 

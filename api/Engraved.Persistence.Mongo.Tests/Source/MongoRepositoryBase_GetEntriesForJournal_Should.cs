@@ -243,7 +243,7 @@ public class MongoRepositoryBase_GetEntriesForJournal_Should
 
     IEntry[] entries = await _repository.GetEntriesForJournal(
       scrapsJournal.EntityId,
-      sortOrder: SortEntriesBy.ByEditedOn
+      sortOrder: SortEntriesBy.EditedOn
     );
 
     entries.Length.Should().Be(2);

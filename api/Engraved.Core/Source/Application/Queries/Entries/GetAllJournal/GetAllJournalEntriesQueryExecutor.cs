@@ -36,8 +36,8 @@ public class GetAllJournalEntriesQueryExecutor(
     // should surface first. Other journal types show a value/measurement history, where the
     // entry's own DateTime (not when it was last edited) is what matters for ordering.
     SortEntriesBy sortOrder = journal.Type == JournalType.Scraps
-      ? SortEntriesBy.ByEditedOn
-      : SortEntriesBy.ByDateTime;
+      ? SortEntriesBy.EditedOn
+      : SortEntriesBy.DateTime;
 
     return await entryRepository.GetEntriesForJournal(
       query.JournalId,
