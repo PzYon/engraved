@@ -250,7 +250,8 @@ public class FakeUserRestrictedRepository(Lazy<IUser> currentUser) : IUserRestri
     DateTime? fromDate,
     DateTime? toDate,
     IDictionary<string, string[]>? attributeValues,
-    string? searchText
+    string? searchText,
+    SortEntriesBy sortOrder
   )
   {
     throw new NotImplementedException();
