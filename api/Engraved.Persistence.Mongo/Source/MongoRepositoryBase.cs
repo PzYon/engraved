@@ -11,67 +11,47 @@ using Engraved.Persistence.Mongo.DocumentTypes;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
+using Engraved.Persistence.Mongo.Repositories;
+using Engraved.Persistence.Mongo.Scoping;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-// Shared MongoDB data access for the user/journal/entry roles. Concrete repositories derive from
-// this and supply the read-shaping filter via GetAllJournalDocumentsFilter:
-//  - UnrestrictedMongoRepository:  no filter (full access) plus the maintenance operations
-//  - UserRestrictedMongoRepository: the per-user permission filter plus the write guards
-public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClient)
+// Shared MongoDB data access for the journal/entry roles. The read scope (what the caller may see)
+// is injected via IReadScope rather than baked in by inheritance:
+//  - UnrestrictedMongoRepository:  UnrestrictedReadScope plus the maintenance operations
+//  - UserRestrictedMongoRepository: UserReadScope plus the write guards
+// The user role is delegated to MongoUserRepository - the first aggregate extracted into its own
+// class; journals and entries are next.
+public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClient, IReadScope readScope)
   : IUserRepository, IJournalRepository, IEntryRepository
 {
+  private readonly MongoUserRepository _userRepository = new(mongoDatabaseClient);
+
   // protected so they can be accessed from derived repositories (and the test repositories)
   protected IMongoCollection<EntryDocument> EntriesCollection => mongoDatabaseClient.EntriesCollection;
   protected IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
   protected IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
 
-  public virtual async Task<IUser?> GetUser(string? nameOrId)
+  public Task<IUser?> GetUser(string? nameOrId)
   {
-    if (string.IsNullOrEmpty(nameOrId))
-    {
-      throw new ArgumentNullException(nameof(nameOrId), "Username or ID must be specified.");
-    }
-
-    var filterDefinition = ObjectId.TryParse(nameOrId, out ObjectId id)
-      ? Builders<UserDocument>.Filter.Where(d => d.Id == id)
-      : Builders<UserDocument>.Filter.Where(d => d.Name == nameOrId);
-
-    UserDocument? document = await UsersCollection
-      .Find(filterDefinition)
-      .FirstOrDefaultAsync();
-
-    return UserDocumentMapper.FromDocument(document);
+    return _userRepository.GetUser(nameOrId);
   }
 
-  public virtual async Task<UpsertResult> UpsertUser(IUser user)
+  public virtual Task<UpsertResult> UpsertUser(IUser user)
   {
-    return await UpsertUserInternal(user);
+    return _userRepository.UpsertUser(user);
   }
 
-  public async Task<IUser[]> GetUsers(params string[] userIds)
+  public Task<IUser[]> GetUsers(params string[] userIds)
   {
-    if (userIds.Length == 0)
-    {
-      return [];
-    }
-
-    var users = await UsersCollection
-      .Find(Builders<UserDocument>.Filter.Or(userIds.Distinct().Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
-      .ToListAsync();
-
-    return users.Select(u => UserDocumentMapper.FromDocument(u)!).ToArray();
+    return _userRepository.GetUsers(userIds);
   }
 
-  public async Task<IUser[]> GetAllUsers()
+  public Task<IUser[]> GetAllUsers()
   {
-    var users = await UsersCollection
-      .Find(MongoUtil.GetAllDocumentsFilter<UserDocument>())
-      .ToListAsync();
-
-    return users.Select(u => UserDocumentMapper.FromDocument(u)!).ToArray();
+    return _userRepository.GetAllUsers();
   }
 
   public async Task<IJournal[]> GetAllJournals(
@@ -86,7 +66,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
   {
     var filters = new List<FilterDefinition<JournalDocument>>();
 
-    filters.Add(GetAllJournalDocumentsFilter<JournalDocument>(PermissionKind.Read));
+    filters.Add(readScope.GetFilter<JournalDocument>(PermissionKind.Read));
 
     if (journalTypes is { Length: > 0 })
     {
@@ -388,7 +368,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       new ReplaceOptions { IsUpsert = true }
     );
 
-    return CreateUpsertResult(journal.Id, replaceOneResult);
+    return MongoUtil.CreateUpsertResult(journal.Id, replaceOneResult);
   }
 
   public virtual async Task DeleteJournal(string journalId)
@@ -417,7 +397,9 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       return;
     }
 
-    var permissionsEnsurer = new PermissionsEnsurer(this, UpsertUserInternal);
+    // deliberately uses the plain user repository: granting a permission may create the receiving
+    // user's record, which the ownership guard on the public UpsertUser would (rightly) reject
+    var permissionsEnsurer = new PermissionsEnsurer(_userRepository, _userRepository.UpsertUser);
     await permissionsEnsurer.EnsurePermissions(journal, permissions);
 
     await UpsertJournal(journal);
@@ -434,7 +416,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
       new ReplaceOptions { IsUpsert = true }
     );
 
-    return CreateUpsertResult(entry.Id, replaceOneResult);
+    return MongoUtil.CreateUpsertResult(entry.Id, replaceOneResult);
   }
 
   public virtual async Task DeleteEntry(string entryId)
@@ -506,26 +488,20 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     }
   }
 
-  private async Task<UpsertResult> UpsertUserInternal(IUser user)
+  // Explicitly unscoped read: loads the journal regardless of the caller's read permissions, so the
+  // caller can apply the permission rule in memory (the write guards) or read the owner of a journal
+  // it is about to update.
+  protected Task<IJournal?> GetJournalUnscoped(string journalId)
   {
-    UserDocument document = UserDocumentMapper.ToDocument(user);
-
-    IUser? existingUser = await GetUser(user.Name);
-    if (existingUser != null && string.IsNullOrEmpty(user.Id))
-    {
-      throw new ArgumentException("ID must be specified for existing users.");
-    }
-
-    ReplaceOneResult? replaceOneResult = await UsersCollection.ReplaceOneAsync(
-      Builders<UserDocument>.Filter.Where(d => d.Name == user.Name),
-      document,
-      new ReplaceOptions { IsUpsert = true }
-    );
-
-    return CreateUpsertResult(user.Id, replaceOneResult);
+    return GetJournal(journalId, PermissionKind.None, UnrestrictedReadScope.Instance);
   }
 
-  protected async Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind)
+  private Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind)
+  {
+    return GetJournal(journalId, permissionKind, readScope);
+  }
+
+  private async Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind, IReadScope scope)
   {
     if (string.IsNullOrEmpty(journalId))
     {
@@ -533,37 +509,15 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     }
 
     JournalDocument? document = await JournalsCollection
-      .Find(GetJournalDocumentByIdFilter<JournalDocument>(journalId, permissionKind))
+      .Find(
+        Builders<JournalDocument>.Filter.And(
+          MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId),
+          scope.GetFilter<JournalDocument>(permissionKind)
+        )
+      )
       .FirstOrDefaultAsync();
 
     return JournalDocumentMapper.FromDocument(document);
-  }
-
-  private FilterDefinition<TDocument> GetJournalDocumentByIdFilter<TDocument>(string journalId, PermissionKind kind)
-    where TDocument : IDocument
-  {
-    return Builders<TDocument>.Filter.And(
-      MongoUtil.GetDocumentByIdFilter<TDocument>(journalId),
-      GetAllJournalDocumentsFilter<TDocument>(kind)
-    );
-  }
-
-  // Read-shaping hook: derived repositories restrict journal/entry queries to what the caller may
-  // read. UnrestrictedMongoRepository returns "everything"; UserRestrictedMongoRepository returns
-  // the per-user permission filter.
-  protected abstract FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
-    where TDocument : IDocument;
-
-  private static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
-  {
-    var id = (string.IsNullOrEmpty(entityId)
-      ? replaceOneResult.UpsertedId.ToString()
-      : entityId)!;
-
-    return new UpsertResult
-    {
-      EntityId = id
-    };
   }
 
   private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)

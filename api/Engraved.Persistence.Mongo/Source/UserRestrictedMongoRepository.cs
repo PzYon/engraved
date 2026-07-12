@@ -5,27 +5,28 @@ using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
-using MongoDB.Driver;
+using Engraved.Persistence.Mongo.Repositories;
+using Engraved.Persistence.Mongo.Scoping;
 
 namespace Engraved.Persistence.Mongo;
 
-// Permission/owner-filtered access for the current user. Adds the read-shaping filter and the write
-// guards on top of the shared MongoRepositoryBase, and exposes the CurrentUser the scoping is based
-// on. Both mechanisms enforce one shared rule (JournalAccessPolicy / JournalAccessFilter).
+// Permission/owner-filtered access for the current user. Reads are shaped by the injected
+// UserReadScope; writes are guarded here by loading the journal unscoped and applying the same rule
+// in memory. Both mechanisms enforce one shared rule (JournalAccessPolicy / JournalAccessFilter).
 public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestrictedRepository
 {
-  private readonly ICurrentUserService _currentUserService;
-
-  private bool _ignorePermissionsForJournalIdFilter;
-
   public UserRestrictedMongoRepository(
     MongoDatabaseClient mongoDatabaseClient,
     ICurrentUserService currentUserService
   )
-    : base(mongoDatabaseClient)
+    : this(mongoDatabaseClient, CreateCurrentUserLazy(mongoDatabaseClient, currentUserService))
   {
-    _currentUserService = currentUserService;
-    CurrentUser = new Lazy<IUser>(LoadUser);
+  }
+
+  private UserRestrictedMongoRepository(MongoDatabaseClient mongoDatabaseClient, Lazy<IUser> currentUser)
+    : base(mongoDatabaseClient, new UserReadScope(currentUser))
+  {
+    CurrentUser = currentUser;
   }
 
   public Lazy<IUser> CurrentUser { get; }
@@ -40,7 +41,7 @@ public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestricte
   {
     if (!string.IsNullOrEmpty(journal.Id))
     {
-      IJournal? existingJournal = await LoadJournalIgnoringPermissions(journal.Id);
+      IJournal? existingJournal = await GetJournalUnscoped(journal.Id);
 
       if (existingJournal != null)
       {
@@ -82,28 +83,22 @@ public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestricte
     await base.DeleteEntry(entryId);
   }
 
-  // Read-shaping mechanism: restrict journal/entry queries to what the current user may read.
-  // The actual rule lives in JournalAccessFilter (the query form of JournalAccessPolicy).
-  protected override FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
+  private static Lazy<IUser> CreateCurrentUserLazy(
+    MongoDatabaseClient mongoDatabaseClient,
+    ICurrentUserService currentUserService
+  )
   {
-    if (_ignorePermissionsForJournalIdFilter)
-    {
-      return MongoUtil.GetAllDocumentsFilter<TDocument>();
-    }
+    var userRepository = new MongoUserRepository(mongoDatabaseClient);
 
-    var userId = CurrentUser.Value.Id;
-    EnsureUserIsSet(userId);
+    return new Lazy<IUser>(() =>
+      {
+        IUser user = currentUserService.LoadUser().Result;
+        EnsureUserIsSet(user.Name);
 
-    return JournalAccessFilter.ForUser<TDocument>(userId, kind);
-  }
-
-  private IUser LoadUser()
-  {
-    IUser result = _currentUserService.LoadUser().Result;
-    EnsureUserIsSet(result.Name);
-
-    IUser? dbUser = base.GetUser(result.Id ?? result.Name).Result;
-    return dbUser ?? result;
+        IUser? dbUser = userRepository.GetUser(user.Id ?? user.Name).Result;
+        return dbUser ?? user;
+      }
+    );
   }
 
   private void EnsureUserId(IUserOwned entity)
@@ -117,12 +112,12 @@ public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestricte
   }
 
   // Write-guard mechanism: load the journal without scoping, then apply the same rule in memory via
-  // JournalAccessPolicy. Reads (above) and writes (here) therefore enforce one shared rule.
+  // JournalAccessPolicy. Reads (UserReadScope) and writes (here) therefore enforce one shared rule.
   private async Task EnsureUserHasPermission(string? journalId, PermissionKind kind)
   {
     if (!string.IsNullOrEmpty(journalId))
     {
-      IJournal? journal = await LoadJournalIgnoringPermissions(journalId);
+      IJournal? journal = await GetJournalUnscoped(journalId);
       if (JournalAccessPolicy.HasAccess(journal, CurrentUser.Value.Id, kind))
       {
         return;
@@ -130,21 +125,6 @@ public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestricte
     }
 
     throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
-  }
-
-  // Loads a journal bypassing the read-scoping filter, so callers can apply the permission rule
-  // themselves (the write guard) or read the owner of a journal they are about to update.
-  private async Task<IJournal?> LoadJournalIgnoringPermissions(string journalId)
-  {
-    try
-    {
-      _ignorePermissionsForJournalIdFilter = true;
-      return await GetJournal(journalId, PermissionKind.None);
-    }
-    finally
-    {
-      _ignorePermissionsForJournalIdFilter = false;
-    }
   }
 
   private void EnsureEntityBelongsToUser(string? entityUserId)

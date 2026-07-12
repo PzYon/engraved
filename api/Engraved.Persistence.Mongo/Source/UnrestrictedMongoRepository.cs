@@ -1,25 +1,18 @@
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain.Permissions;
-using Engraved.Persistence.Mongo.DocumentTypes;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
+using Engraved.Persistence.Mongo.Scoping;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-// Full persistence access with no permission/user scoping, plus the inherently-unrestricted
-// maintenance operations (keep-alive, global counts).
+// Full persistence access with no permission/user scoping (UnrestrictedReadScope), plus the
+// inherently-unrestricted maintenance operations (keep-alive, global counts).
 public class UnrestrictedMongoRepository(MongoDatabaseClient mongoDatabaseClient)
-  : MongoRepositoryBase(mongoDatabaseClient), IUnrestrictedRepository
+  : MongoRepositoryBase(mongoDatabaseClient, UnrestrictedReadScope.Instance), IUnrestrictedRepository
 {
   private const string RandomDocId = "63f949da880b5bf2518be721";
-
-  // no scoping: every journal/entry is visible regardless of the requested permission kind.
-  protected override FilterDefinition<TDocument> GetAllJournalDocumentsFilter<TDocument>(PermissionKind kind)
-  {
-    return MongoUtil.GetAllDocumentsFilter<TDocument>();
-  }
 
   public async Task WakeMeUp()
   {
