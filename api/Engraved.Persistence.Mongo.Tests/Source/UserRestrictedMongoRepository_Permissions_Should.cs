@@ -334,6 +334,42 @@ public class UserRestrictedMongoRepository_Permissions_Should
   }
 
   [Test]
+  public async Task ModifyJournalPermissions_NotPossible_WithNoPermissionsAtAll()
+  {
+    // Modifying permissions is a write: without it, a user could grant themselves (or others)
+    // access to a journal they can merely see - or not even that. Pinned because this guard was
+    // once lost in a refactoring without any test noticing.
+    string journalId = await CreateJournalForOtherUser();
+
+    Assert.ThrowsAsync<NotAllowedOperationException>(
+      async () => { await ModifyPermissionsAsMe(journalId); }
+    );
+  }
+
+  [Test]
+  public async Task ModifyJournalPermissions_NotPossible_WithOnlyReadPermissions()
+  {
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Read);
+
+    Assert.ThrowsAsync<NotAllowedOperationException>(
+      async () => { await ModifyPermissionsAsMe(journalId); }
+    );
+  }
+
+  [Test]
+  public async Task ModifyJournalPermissions_Possible_WithWritePermissions()
+  {
+    string journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Write);
+
+    await ModifyPermissionsAsMe(journalId);
+
+    IJournal journal = (await _repository.GetJournal(journalId))!;
+    journal.Permissions.Should().ContainKey(_otherUserId);
+  }
+
+  [Test]
   public async Task GetEntry_IsUnscoped_ReturnsEntry_EvenWithoutJournalPermission()
   {
     // GetEntry is intentionally an unscoped primitive: it does NOT enforce read permission on the
@@ -430,6 +466,14 @@ public class UserRestrictedMongoRepository_Permissions_Should
 
     IEntry entry = (await _repository.GetEntry(result.EntityId))!;
     newNotesValues.Should().Be(entry.Notes);
+  }
+
+  private async Task ModifyPermissionsAsMe(string journalId)
+  {
+    await _userRestrictedRepository.ModifyJournalPermissions(
+      journalId,
+      new Dictionary<string, PermissionKind> { { OtherUserName, PermissionKind.Read } }
+    );
   }
 
   private async Task GiveMePermissions(string journalId, PermissionKind kind)
