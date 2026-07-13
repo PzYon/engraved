@@ -1,4 +1,5 @@
-﻿using Engraved.Persistence.Mongo.DocumentTypes;
+﻿using Engraved.Core.Application.Persistence;
+using Engraved.Persistence.Mongo.DocumentTypes;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -6,6 +7,18 @@ namespace Engraved.Persistence.Mongo;
 
 public static class MongoUtil
 {
+  public static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
+  {
+    var id = (string.IsNullOrEmpty(entityId)
+      ? replaceOneResult.UpsertedId.ToString()
+      : entityId)!;
+
+    return new UpsertResult
+    {
+      EntityId = id
+    };
+  }
+
   public static FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
     where TDocument : IDocument
   {
