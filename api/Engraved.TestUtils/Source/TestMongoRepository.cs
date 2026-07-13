@@ -1,4 +1,3 @@
-﻿using Engraved.Core.Application.Persistence;
 using Engraved.Persistence.Mongo;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
@@ -7,10 +6,19 @@ using MongoDB.Driver;
 
 namespace Engraved.TestUtils;
 
-public class TestMongoRepository(MongoDatabaseClient mongoDatabaseClient)
-  : UnrestrictedMongoRepository(mongoDatabaseClient)
+// Exposes the raw collections alongside the repository so tests can arrange/assert directly in the
+// database.
+public class TestMongoRepository : UnrestrictedMongoRepository
 {
-  public IMongoCollection<JournalDocument> Journals => JournalsCollection;
-  public IMongoCollection<EntryDocument> Entries => EntriesCollection;
-  public IMongoCollection<UserDocument> Users => UsersCollection;
+  private readonly MongoDatabaseClient _mongoDatabaseClient;
+
+  public TestMongoRepository(MongoDatabaseClient mongoDatabaseClient)
+    : base(mongoDatabaseClient)
+  {
+    _mongoDatabaseClient = mongoDatabaseClient;
+  }
+
+  public IMongoCollection<JournalDocument> Journals => _mongoDatabaseClient.JournalsCollection;
+  public IMongoCollection<EntryDocument> Entries => _mongoDatabaseClient.EntriesCollection;
+  public IMongoCollection<UserDocument> Users => _mongoDatabaseClient.UsersCollection;
 }

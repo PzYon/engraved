@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class MongoRepositoryBase_GetEntriesForJournal_Should
+public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
 {
   private readonly string _userId = MongoUtil.GenerateNewIdAsString();
   private string _journalId = null!;

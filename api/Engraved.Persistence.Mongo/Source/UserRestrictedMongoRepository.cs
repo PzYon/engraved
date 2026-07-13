@@ -1,6 +1,5 @@
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
@@ -10,77 +9,146 @@ using Engraved.Persistence.Mongo.Scoping;
 
 namespace Engraved.Persistence.Mongo;
 
-// Permission/owner-filtered access for the current user. Reads are shaped by the injected
-// UserReadScope; writes are guarded here by loading the journal unscoped and applying the same rule
-// in memory. Both mechanisms enforce one shared rule (JournalAccessPolicy / JournalAccessFilter).
-public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestrictedRepository
+// Permission/owner-filtered access for the current user: composes the per-aggregate repositories
+// (reads shaped by UserReadScope) with the write-guard decorators (JournalWriteGuard applies the
+// same rule in memory). Exists as a class only because IUserRestrictedRepository is the single
+// injection seam the executors use; all behavior lives in the composed parts.
+public class UserRestrictedMongoRepository : IUserRestrictedRepository
 {
+  private readonly UserRestrictedUserRepository _userRepository;
+  private readonly UserRestrictedJournalRepository _journalRepository;
+  private readonly UserRestrictedEntryRepository _entryRepository;
+
   public UserRestrictedMongoRepository(
     MongoDatabaseClient mongoDatabaseClient,
     ICurrentUserService currentUserService
   )
-    : this(mongoDatabaseClient, CreateCurrentUserLazy(mongoDatabaseClient, currentUserService))
   {
-  }
+    CurrentUser = CreateCurrentUserLazy(mongoDatabaseClient, currentUserService);
 
-  private UserRestrictedMongoRepository(MongoDatabaseClient mongoDatabaseClient, Lazy<IUser> currentUser)
-    : base(mongoDatabaseClient, new UserReadScope(currentUser))
-  {
-    CurrentUser = currentUser;
+    var journalRepository = new MongoJournalRepository(mongoDatabaseClient, new UserReadScope(CurrentUser));
+    var writeGuard = new JournalWriteGuard(journalRepository, CurrentUser);
+
+    _userRepository = new UserRestrictedUserRepository(new MongoUserRepository(mongoDatabaseClient), writeGuard);
+    _journalRepository = new UserRestrictedJournalRepository(journalRepository, writeGuard);
+    _entryRepository = new UserRestrictedEntryRepository(
+      new MongoEntryRepository(mongoDatabaseClient, journalRepository),
+      writeGuard
+    );
   }
 
   public Lazy<IUser> CurrentUser { get; }
 
-  public override async Task<UpsertResult> UpsertUser(IUser user)
+  public Task<IUser?> GetUser(string? nameOrId)
   {
-    EnsureEntityBelongsToUser(user.Id);
-    return await base.UpsertUser(user);
+    return _userRepository.GetUser(nameOrId);
   }
 
-  public override async Task<UpsertResult> UpsertJournal(IJournal journal)
+  public Task<UpsertResult> UpsertUser(IUser user)
   {
-    if (!string.IsNullOrEmpty(journal.Id))
-    {
-      IJournal? existingJournal = await GetJournalUnscoped(journal.Id);
-
-      if (existingJournal != null)
-      {
-        await EnsureUserHasPermission(journal.Id, PermissionKind.Write);
-
-        // ensure we don't accidentally change the owner if it's an update
-        journal.UserId = existingJournal.UserId;
-        return await base.UpsertJournal(journal);
-      }
-    }
-
-    EnsureUserId(journal);
-
-    return await base.UpsertJournal(journal);
+    return _userRepository.UpsertUser(user);
   }
 
-  public override async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
+  public Task<IUser[]> GetUsers(params string[] userIds)
   {
-    EnsureUserId(entry);
-    await EnsureUserHasPermission(entry.ParentId, PermissionKind.Write);
-    return await base.UpsertEntry(entry);
+    return _userRepository.GetUsers(userIds);
   }
 
-  public override async Task DeleteJournal(string journalId)
+  public Task<IUser[]> GetAllUsers()
   {
-    await EnsureUserHasPermission(journalId, PermissionKind.Write);
-    await base.DeleteJournal(journalId);
+    return _userRepository.GetAllUsers();
   }
 
-  public override async Task DeleteEntry(string entryId)
+  public Task<IJournal[]> GetAllJournals(
+    string? searchText = null,
+    ScheduleMode? scheduleMode = null,
+    JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
+    int? limit = null,
+    string? currentUserId = null,
+    bool matchAnyWord = false
+  )
   {
-    IEntry? entry = await GetEntry(entryId);
-    if (entry == null)
-    {
-      return;
-    }
+    return _journalRepository.GetAllJournals(
+      searchText,
+      scheduleMode,
+      journalTypes,
+      journalIds,
+      limit,
+      currentUserId,
+      matchAnyWord
+    );
+  }
 
-    await EnsureUserHasPermission(entry.ParentId, PermissionKind.Write);
-    await base.DeleteEntry(entryId);
+  public Task<IJournal?> GetJournal(string journalId)
+  {
+    return _journalRepository.GetJournal(journalId);
+  }
+
+  public Task<UpsertResult> UpsertJournal(IJournal journal)
+  {
+    return _journalRepository.UpsertJournal(journal);
+  }
+
+  public Task DeleteJournal(string journalId)
+  {
+    return _journalRepository.DeleteJournal(journalId);
+  }
+
+  public Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
+  {
+    return _journalRepository.ModifyJournalPermissions(journalId, permissions);
+  }
+
+  public Task<IEntry[]> GetEntriesForJournal(
+    string journalId,
+    DateTime? fromDate = null,
+    DateTime? toDate = null,
+    IDictionary<string, string[]>? attributeValues = null,
+    string? searchText = null,
+    SortEntriesBy sortOrder = SortEntriesBy.DateTime
+  )
+  {
+    return _entryRepository.GetEntriesForJournal(journalId, fromDate, toDate, attributeValues, searchText, sortOrder);
+  }
+
+  public Task<IEntry[]> SearchEntries(
+    string? searchText,
+    ScheduleMode? scheduleMode = null,
+    JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
+    int? limit = null,
+    string? currentUserId = null,
+    bool onlyConsiderTitle = false,
+    bool matchAnyWord = false
+  )
+  {
+    return _entryRepository.SearchEntries(
+      searchText,
+      scheduleMode,
+      journalTypes,
+      journalIds,
+      limit,
+      currentUserId,
+      onlyConsiderTitle,
+      matchAnyWord
+    );
+  }
+
+  public Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
+    where TEntry : IEntry
+  {
+    return _entryRepository.UpsertEntry(entry);
+  }
+
+  public Task DeleteEntry(string entryId)
+  {
+    return _entryRepository.DeleteEntry(entryId);
+  }
+
+  public Task<IEntry?> GetEntry(string entryId)
+  {
+    return _entryRepository.GetEntry(entryId);
   }
 
   private static Lazy<IUser> CreateCurrentUserLazy(
@@ -93,53 +161,14 @@ public class UserRestrictedMongoRepository : MongoRepositoryBase, IUserRestricte
     return new Lazy<IUser>(() =>
       {
         IUser user = currentUserService.LoadUser().Result;
-        EnsureUserIsSet(user.Name);
+        if (string.IsNullOrEmpty(user.Name))
+        {
+          throw new NotAllowedOperationException("Current user is not available.");
+        }
 
         IUser? dbUser = userRepository.GetUser(user.Id ?? user.Name).Result;
         return dbUser ?? user;
       }
     );
-  }
-
-  private void EnsureUserId(IUserOwned entity)
-  {
-    if (string.IsNullOrEmpty(entity.UserId))
-    {
-      entity.UserId = CurrentUser.Value.Id;
-    }
-
-    EnsureEntityBelongsToUser(entity.UserId);
-  }
-
-  // Write-guard mechanism: load the journal without scoping, then apply the same rule in memory via
-  // JournalAccessPolicy. Reads (UserReadScope) and writes (here) therefore enforce one shared rule.
-  private async Task EnsureUserHasPermission(string? journalId, PermissionKind kind)
-  {
-    if (!string.IsNullOrEmpty(journalId))
-    {
-      IJournal? journal = await GetJournalUnscoped(journalId);
-      if (JournalAccessPolicy.HasAccess(journal, CurrentUser.Value.Id, kind))
-      {
-        return;
-      }
-    }
-
-    throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
-  }
-
-  private void EnsureEntityBelongsToUser(string? entityUserId)
-  {
-    if (entityUserId != CurrentUser.Value.Id)
-    {
-      throw new NotAllowedOperationException("Entity does not belong to current user.");
-    }
-  }
-
-  private static void EnsureUserIsSet(string? nameOrId)
-  {
-    if (string.IsNullOrEmpty(nameOrId))
-    {
-      throw new NotAllowedOperationException("Current user is not available.");
-    }
   }
 }
