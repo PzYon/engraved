@@ -284,8 +284,11 @@ public class UserRestrictedMongoRepositoryShould
   }
 
   [Test]
-  public async Task DeleteJournal_AndItsEntries()
+  public async Task DeleteJournal_DeletesOnlyTheJournalDocument()
   {
+    // deleting a journal's entries is a use-case rule owned by DeleteJournalCommandExecutor (via
+    // DeleteEntriesForJournal), NOT by the repository. Pinned so the cascade cannot silently creep
+    // back into the persistence layer.
     UpsertResult journal = await _repository.UpsertJournal(
       new CounterJournal
       {
@@ -306,8 +309,22 @@ public class UserRestrictedMongoRepositoryShould
 
     await _repository.DeleteJournal(journal.EntityId);
 
-    (await _repository.GetAllJournals()).Length.Should().Be(0);
     (await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty)).Should().Be(0);
-    (await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)).Should().Be(0);
+    (await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)).Should().Be(1);
+  }
+
+  [Test]
+  public async Task DeleteEntriesForJournal_DeletesAllEntriesOfThatJournal()
+  {
+    UpsertResult journal = await _repository.UpsertJournal(new CounterJournal { UserId = _currentUserId });
+    UpsertResult otherJournal = await _repository.UpsertJournal(new CounterJournal { UserId = _currentUserId });
+
+    await _repository.UpsertEntry(new CounterEntry { ParentId = journal.EntityId, UserId = _currentUserId });
+    await _repository.UpsertEntry(new CounterEntry { ParentId = journal.EntityId, UserId = _currentUserId });
+    await _repository.UpsertEntry(new CounterEntry { ParentId = otherJournal.EntityId, UserId = _currentUserId });
+
+    await _repository.DeleteEntriesForJournal(journal.EntityId);
+
+    (await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)).Should().Be(1);
   }
 }

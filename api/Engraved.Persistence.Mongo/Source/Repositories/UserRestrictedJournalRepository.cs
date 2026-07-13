@@ -1,6 +1,5 @@
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Permissions;
 
 namespace Engraved.Persistence.Mongo.Repositories;
 
@@ -61,11 +60,5 @@ public class UserRestrictedJournalRepository(MongoJournalRepository journalRepos
   {
     await writeGuard.EnsureUserHasWritePermission(journalId);
     await journalRepository.DeleteJournal(journalId);
-  }
-
-  public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
-  {
-    await writeGuard.EnsureUserHasWritePermission(journalId);
-    await journalRepository.ModifyJournalPermissions(journalId, permissions);
   }
 }

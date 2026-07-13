@@ -70,4 +70,10 @@ public class UserRestrictedEntryRepository(MongoEntryRepository entryRepository,
     await writeGuard.EnsureUserHasWritePermission(entry.ParentId);
     await entryRepository.DeleteEntry(entryId);
   }
+
+  public async Task DeleteEntriesForJournal(string journalId)
+  {
+    await writeGuard.EnsureUserHasWritePermission(journalId);
+    await entryRepository.DeleteEntriesForJournal(journalId);
+  }
 }

@@ -240,11 +240,6 @@ public class FakeUserRestrictedRepository(Lazy<IUser> currentUser) : IUserRestri
     throw new NotImplementedException();
   }
 
-  public Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
-  {
-    throw new NotImplementedException();
-  }
-
   public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate,
@@ -277,6 +272,11 @@ public class FakeUserRestrictedRepository(Lazy<IUser> currentUser) : IUserRestri
   }
 
   public Task DeleteEntry(string entryId)
+  {
+    throw new NotImplementedException();
+  }
+
+  public Task DeleteEntriesForJournal(string journalId)
   {
     throw new NotImplementedException();
   }

@@ -1,13 +1,15 @@
-﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Permissions;
+using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Permissions;
 
 namespace Engraved.Core.Application.Commands.Journals.EditPermissions;
 
-public class EditJournalPermissionsCommandExecutor(IJournalRepository repository)
-  : ICommandExecutor<EditJournalPermissionsCommand>
+public class EditJournalPermissionsCommandExecutor(
+  IUserRestrictedRepository repository,
+  PermissionsEnsurer permissionsEnsurer
+) : ICommandExecutor<EditJournalPermissionsCommand>
 {
-  private readonly IJournalRepository _repository = repository;
-
   public async Task<CommandResult> Execute(EditJournalPermissionsCommand command)
   {
     if (string.IsNullOrEmpty(command.JournalId))
@@ -15,18 +17,29 @@ public class EditJournalPermissionsCommandExecutor(IJournalRepository repository
       throw new InvalidCommandException(command, $"{nameof(EditJournalPermissionsCommand.JournalId)} is required");
     }
 
-    IJournal journalBefore = (await _repository.GetJournal(command.JournalId))!;
+    IJournal? journal = await repository.GetJournal(command.JournalId);
+
+    // Modifying permissions requires write access. The UpsertJournal write guard below would also
+    // reject, but checking up front keeps PermissionsEnsurer from creating user records on behalf
+    // of a caller that is not allowed to grant anything.
+    if (!JournalAccessPolicy.HasAccess(journal, repository.CurrentUser.Value.Id, PermissionKind.Write))
+    {
+      throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
+    }
+
+    string[] userIdsBefore = journal!.Permissions.GetUserIdsWithAccess();
 
     if (command.Permissions?.Count > 0)
     {
-      await _repository.ModifyJournalPermissions(command.JournalId, command.Permissions);
+      // EnsurePermissions creates records for users that receive a permission for the first time
+      // and mutates journal.Permissions in place; the upsert persists the modified journal.
+      await permissionsEnsurer.EnsurePermissions(journal, command.Permissions);
+      await repository.UpsertJournal(journal);
     }
 
-    IJournal journalAfter = (await _repository.GetJournal(command.JournalId))!;
-
     // users are affected that have permissions before or after
-    var userIdsWithAccess = journalBefore.Permissions.GetUserIdsWithAccess()
-      .Union(journalAfter.Permissions.GetUserIdsWithAccess())
+    var userIdsWithAccess = userIdsBefore
+      .Union(journal.Permissions.GetUserIdsWithAccess())
       .Distinct()
       .ToArray();
 

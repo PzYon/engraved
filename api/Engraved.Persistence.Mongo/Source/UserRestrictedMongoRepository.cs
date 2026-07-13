@@ -95,11 +95,6 @@ public class UserRestrictedMongoRepository : IUserRestrictedRepository
     return _journalRepository.DeleteJournal(journalId);
   }
 
-  public Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
-  {
-    return _journalRepository.ModifyJournalPermissions(journalId, permissions);
-  }
-
   public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate = null,
@@ -144,6 +139,11 @@ public class UserRestrictedMongoRepository : IUserRestrictedRepository
   public Task DeleteEntry(string entryId)
   {
     return _entryRepository.DeleteEntry(entryId);
+  }
+
+  public Task DeleteEntriesForJournal(string journalId)
+  {
+    return _entryRepository.DeleteEntriesForJournal(journalId);
   }
 
   public Task<IEntry?> GetEntry(string entryId)

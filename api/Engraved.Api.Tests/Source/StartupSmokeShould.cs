@@ -7,6 +7,8 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Persistence.Mongo;
 using Engraved.TestUtils;
@@ -86,6 +88,10 @@ public class StartupSmokeShould
 
     // maintenance is inherently unrestricted, so it resolves to the raw UnrestrictedMongoRepository
     services.GetRequiredService<IMaintenanceRepository>().Should().BeOfType<UnrestrictedMongoRepository>();
+
+    // the edit-permissions executor is the only one with a non-repository dependency
+    // (PermissionsEnsurer); resolve it so a broken registration fails here and not at runtime
+    services.GetRequiredService<ICommandExecutor<EditJournalPermissionsCommand>>();
   }
 
   [Test]
