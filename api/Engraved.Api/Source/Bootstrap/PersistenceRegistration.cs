@@ -1,8 +1,10 @@
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
+using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo;
+using Engraved.Persistence.Mongo.Repositories;
 
 namespace Engraved.Api.Bootstrap;
 
@@ -44,6 +46,17 @@ public static class PersistenceRegistration
     services.AddTransient<IUserRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
     services.AddTransient<IJournalRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
     services.AddTransient<IEntryRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
+
+    // PermissionsEnsurer deliberately works on the plain (unguarded) user repository: granting a
+    // permission may create the receiving user's record, which the ownership guard on the
+    // user-restricted UpsertUser would (rightly) reject. Write access to the journal itself is
+    // enforced by its consumer (EditJournalPermissionsCommandExecutor).
+    services.AddTransient<PermissionsEnsurer>(provider =>
+      {
+        var userRepository = new MongoUserRepository(provider.GetRequiredService<MongoDatabaseClient>());
+        return new PermissionsEnsurer(userRepository, userRepository.UpsertUser);
+      }
+    );
   }
 
   private static void RegisterUnrestrictedRepository(IServiceCollection services)

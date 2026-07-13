@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
@@ -54,10 +55,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
       }
     );
 
-    await _repository.ModifyJournalPermissions(
-      otherJournal.EntityId,
-      new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
-    );
+    await GivePermissions(otherJournal.EntityId, OtherUserName + "_another_one", PermissionKind.Write);
 
     IJournal[] allJournals = await _userRestrictedRepository.GetAllJournals();
 
@@ -114,10 +112,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
       }
     );
 
-    await _repository.ModifyJournalPermissions(
-      otherJournal.EntityId,
-      new Dictionary<string, PermissionKind> { { OtherUserName + "_another_one", PermissionKind.Write } }
-    );
+    await GivePermissions(otherJournal.EntityId, OtherUserName + "_another_one", PermissionKind.Write);
 
     await _repository.UpsertEntry(
       new CounterEntry
@@ -333,41 +328,9 @@ public class UserRestrictedMongoRepository_Permissions_Should
     (await _repository.GetEntry(entryId)).Should().BeNull();
   }
 
-  [Test]
-  public async Task ModifyJournalPermissions_NotPossible_WithNoPermissionsAtAll()
-  {
-    // Modifying permissions is a write: without it, a user could grant themselves (or others)
-    // access to a journal they can merely see - or not even that. Pinned because this guard was
-    // once lost in a refactoring without any test noticing.
-    string journalId = await CreateJournalForOtherUser();
-
-    Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await ModifyPermissionsAsMe(journalId); }
-    );
-  }
-
-  [Test]
-  public async Task ModifyJournalPermissions_NotPossible_WithOnlyReadPermissions()
-  {
-    string journalId = await CreateJournalForOtherUser();
-    await GiveMePermissions(journalId, PermissionKind.Read);
-
-    Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await ModifyPermissionsAsMe(journalId); }
-    );
-  }
-
-  [Test]
-  public async Task ModifyJournalPermissions_Possible_WithWritePermissions()
-  {
-    string journalId = await CreateJournalForOtherUser();
-    await GiveMePermissions(journalId, PermissionKind.Write);
-
-    await ModifyPermissionsAsMe(journalId);
-
-    IJournal journal = (await _repository.GetJournal(journalId))!;
-    journal.Permissions.Should().ContainKey(_otherUserId);
-  }
+  // Modifying journal permissions is no longer a repository operation: the use case (including its
+  // write-permission check) lives in EditJournalPermissionsCommandExecutor and is pinned by
+  // EditJournalPermissionsCommandExecutorShould.
 
   [Test]
   public async Task GetEntry_IsUnscoped_ReturnsEntry_EvenWithoutJournalPermission()
@@ -468,19 +431,23 @@ public class UserRestrictedMongoRepository_Permissions_Should
     newNotesValues.Should().Be(entry.Notes);
   }
 
-  private async Task ModifyPermissionsAsMe(string journalId)
-  {
-    await _userRestrictedRepository.ModifyJournalPermissions(
-      journalId,
-      new Dictionary<string, PermissionKind> { { OtherUserName, PermissionKind.Read } }
-    );
-  }
-
   private async Task GiveMePermissions(string journalId, PermissionKind kind)
   {
-    await _repository.ModifyJournalPermissions(
-      journalId,
-      new Dictionary<string, PermissionKind> { { CurrentUserName, kind } }
+    await GivePermissions(journalId, CurrentUserName, kind);
+  }
+
+  // grants directly through the unrestricted repository (the same steps
+  // EditJournalPermissionsCommandExecutor performs for the client-facing use case)
+  private async Task GivePermissions(string journalId, string userName, PermissionKind kind)
+  {
+    IJournal journal = (await _repository.GetJournal(journalId))!;
+
+    var permissionsEnsurer = new PermissionsEnsurer(_repository, _repository.UpsertUser);
+    await permissionsEnsurer.EnsurePermissions(
+      journal,
+      new Dictionary<string, PermissionKind> { { userName, kind } }
     );
+
+    await _repository.UpsertJournal(journal);
   }
 }

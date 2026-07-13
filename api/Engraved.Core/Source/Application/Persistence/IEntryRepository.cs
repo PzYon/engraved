@@ -29,5 +29,9 @@ public interface IEntryRepository
 
   Task DeleteEntry(string entryId);
 
+  // deletes all entries of the given journal in one operation; used by the journal-deletion use case
+  // (DeleteJournalCommandExecutor), which owns the "a journal's entries die with it" rule
+  Task DeleteEntriesForJournal(string journalId);
+
   Task<IEntry?> GetEntry(string entryId);
 }

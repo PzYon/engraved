@@ -177,6 +177,13 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     await EntriesCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId));
   }
 
+  public async Task DeleteEntriesForJournal(string journalId)
+  {
+    await EntriesCollection.DeleteManyAsync(
+      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
+    );
+  }
+
   // Unscoped primitive: GetEntry does NOT enforce read-permission on the parent journal. The
   // client-facing single-entry read enforces access in GetEntryQueryExecutor; command executors use
   // it as a load-for-modify primitive and rely on the subsequent UpsertEntry/DeleteEntry write

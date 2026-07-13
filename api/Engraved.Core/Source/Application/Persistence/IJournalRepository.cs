@@ -1,5 +1,4 @@
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Permissions;
 
 namespace Engraved.Core.Application.Persistence;
 
@@ -20,6 +19,4 @@ public interface IJournalRepository
   Task<UpsertResult> UpsertJournal(IJournal journal);
 
   Task DeleteJournal(string journalId);
-
-  Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions);
 }

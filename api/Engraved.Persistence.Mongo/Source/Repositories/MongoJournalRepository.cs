@@ -1,9 +1,7 @@
 using System.Linq.Expressions;
-using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
-using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.Scoping;
 using MongoDB.Bson;
@@ -16,10 +14,7 @@ namespace Engraved.Persistence.Mongo.Repositories;
 public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IReadScope readScope)
   : IJournalRepository
 {
-  private readonly MongoUserRepository _userRepository = new(mongoDatabaseClient);
-
   private IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
-  private IMongoCollection<EntryDocument> EntriesCollection => mongoDatabaseClient.EntriesCollection;
 
   public async Task<IJournal[]> GetAllJournals(
     string? searchText = null,
@@ -131,6 +126,8 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
     return MongoUtil.CreateUpsertResult(journal.Id, replaceOneResult);
   }
 
+  // deletes only the journal document itself - deleting its entries is a use-case rule owned by
+  // DeleteJournalCommandExecutor (via IEntryRepository.DeleteEntriesForJournal)
   public async Task DeleteJournal(string journalId)
   {
     IJournal? journal = await GetJournal(journalId);
@@ -139,32 +136,9 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
       return;
     }
 
-    // cascading use-case logic (a journal's entries die with it) - candidate to move up into
-    // DeleteJournalCommandExecutor in a follow-up
-    await EntriesCollection.DeleteManyAsync(
-      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
-    );
-
     await JournalsCollection.DeleteOneAsync(
       MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId)
     );
-  }
-
-  public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
-  {
-    IJournal? journal = await GetJournal(journalId);
-    if (journal == null)
-    {
-      // should we throw here?
-      return;
-    }
-
-    // deliberately uses the plain user repository: granting a permission may create the receiving
-    // user's record, which the ownership guard on the public UpsertUser would (rightly) reject
-    var permissionsEnsurer = new PermissionsEnsurer(_userRepository, _userRepository.UpsertUser);
-    await permissionsEnsurer.EnsurePermissions(journal, permissions);
-
-    await UpsertJournal(journal);
   }
 
   private async Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind, IReadScope scope)

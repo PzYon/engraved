@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.TestUtils;
@@ -33,7 +34,7 @@ public class DeleteJournalCommandExecutorShould
     );
 
     // when
-    CommandResult result = await new DeleteJournalCommandExecutor(_repo).Execute(
+    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo).Execute(
       new DeleteJournalCommand { JournalId = JournalId }
     );
 
@@ -45,10 +46,27 @@ public class DeleteJournalCommandExecutorShould
   }
 
   [Test]
+  public async Task DeleteJournal_And_ItsEntries()
+  {
+    // the "a journal's entries die with it" cascade is owned by this executor (the repository
+    // deletes only the journal document itself)
+    await _repo.UpsertJournal(new CounterJournal { Id = JournalId });
+    await _repo.UpsertEntry(new CounterEntry { ParentId = JournalId });
+    await _repo.UpsertEntry(new CounterEntry { ParentId = JournalId });
+
+    await new DeleteJournalCommandExecutor(_repo, _repo).Execute(
+      new DeleteJournalCommand { JournalId = JournalId }
+    );
+
+    (await _repo.GetJournal(JournalId)).Should().BeNull();
+    (await _repo.SearchEntries(null, journalIds: [JournalId])).Should().BeEmpty();
+  }
+
+  [Test]
   public async Task ReturnEmptyResult_When_JournalDoesNotExist()
   {
     // when
-    CommandResult result = await new DeleteJournalCommandExecutor(_repo).Execute(
+    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo).Execute(
       new DeleteJournalCommand { JournalId = "60703c3b0000000000000999" }
     );
 
