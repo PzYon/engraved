@@ -1,38 +1,41 @@
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence;
-using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
-using Engraved.Persistence.Mongo.DocumentTypes;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using Engraved.Persistence.Mongo.Repositories;
 using Engraved.Persistence.Mongo.Scoping;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Engraved.Persistence.Mongo;
 
-// Shared MongoDB data access for the journal/entry roles. The read scope (what the caller may see)
-// is injected via IReadScope rather than baked in by inheritance:
-//  - UnrestrictedMongoRepository:  UnrestrictedReadScope plus the maintenance operations
-//  - UserRestrictedMongoRepository: UserReadScope plus the write guards
-// The user role is delegated to MongoUserRepository - the first aggregate extracted into its own
-// class; journals and entries are next.
-public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClient, IReadScope readScope)
-  : IUserRepository, IJournalRepository, IEntryRepository
+// Delegating facade over the per-aggregate repositories (MongoUserRepository,
+// MongoJournalRepository, MongoEntryRepository), which do the actual data access shaped by the
+// injected IReadScope. Only composition and the write-guard override points (the virtual methods
+// UserRestrictedMongoRepository hooks into) live here; the plan is to dissolve this class entirely
+// once the guards become decorators.
+public abstract class MongoRepositoryBase : IUserRepository, IJournalRepository, IEntryRepository
 {
-  private readonly MongoUserRepository _userRepository = new(mongoDatabaseClient);
+  private readonly MongoDatabaseClient _mongoDatabaseClient;
+  private readonly MongoUserRepository _userRepository;
+  private readonly MongoJournalRepository _journalRepository;
+  private readonly MongoEntryRepository _entryRepository;
+
+  protected MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClient, IReadScope readScope)
+  {
+    _mongoDatabaseClient = mongoDatabaseClient;
+    _userRepository = new MongoUserRepository(mongoDatabaseClient);
+    _journalRepository = new MongoJournalRepository(mongoDatabaseClient, readScope);
+    _entryRepository = new MongoEntryRepository(mongoDatabaseClient, _journalRepository);
+  }
 
   // protected so they can be accessed from derived repositories (and the test repositories)
-  protected IMongoCollection<EntryDocument> EntriesCollection => mongoDatabaseClient.EntriesCollection;
-  protected IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
-  protected IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
+  protected IMongoCollection<EntryDocument> EntriesCollection => _mongoDatabaseClient.EntriesCollection;
+  protected IMongoCollection<JournalDocument> JournalsCollection => _mongoDatabaseClient.JournalsCollection;
+  protected IMongoCollection<UserDocument> UsersCollection => _mongoDatabaseClient.UsersCollection;
 
   public Task<IUser?> GetUser(string? nameOrId)
   {
@@ -54,7 +57,7 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     return _userRepository.GetAllUsers();
   }
 
-  public async Task<IJournal[]> GetAllJournals(
+  public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
     ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
@@ -64,86 +67,45 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     bool matchAnyWord = false
   )
   {
-    var filters = new List<FilterDefinition<JournalDocument>>();
-
-    filters.Add(readScope.GetFilter<JournalDocument>(PermissionKind.Read));
-
-    if (journalTypes is { Length: > 0 })
-    {
-      filters.Add(
-        Builders<JournalDocument>.Filter.Or(
-          journalTypes.Select(t => Builders<JournalDocument>.Filter.Where(GetIsJournalTypeExpression(t)))
-        )
-      );
-    }
-
-    if (journalIds is { Length: > 0 })
-    {
-      var objectIds = journalIds
-        .Select(i => ObjectId.TryParse(i, out var id) ? (ObjectId?) id : null)
-        .Where(id => id.HasValue)
-        .Select(id => id!.Value)
-        .ToList();
-
-      if (objectIds.Any())
-      {
-        filters.Add(Builders<JournalDocument>.Filter.In(d => d.Id, objectIds));
-      }
-      else
-      {
-        // if IDs were provided but none were valid ObjectIds, we should return nothing
-        filters.Add(Builders<JournalDocument>.Filter.Where(d => false));
-      }
-    }
-
-    if (scheduleMode == ScheduleMode.AnySchedule)
-    {
-      filters.Add(
-        Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
-      );
-    }
-    if (scheduleMode == ScheduleMode.CurrentUserOnly)
-    {
-      if (string.IsNullOrEmpty(currentUserId))
-      {
-        throw new ArgumentException("Current user id is required", nameof(currentUserId));
-      }
-
-      // "scheduled" means a schedule with a pending occurrence: a fired schedule keeps its sub-document
-      // (with NextOccurrence nulled out), so we must check NextOccurrence rather than mere existence.
-      filters.Add(Builders<JournalDocument>.Filter.And(
-        Builders<JournalDocument>.Filter.Exists($"Schedules.{currentUserId}"),
-        Builders<JournalDocument>.Filter.Ne($"Schedules.{currentUserId}.NextOccurrence", BsonNull.Value)
-      ));
-    }
-
-    if (!string.IsNullOrEmpty(searchText))
-    {
-      filters.AddRange(
-        GetFreeTextFilters<JournalDocument>(
-          searchText,
-          matchAnyWord,
-          d => d.Name!,
-          d => d.Description!
-        )
-      );
-    }
-
-    var journals = await JournalsCollection
-      .Find(filters.Count > 0 ? Builders<JournalDocument>.Filter.And(filters) : Builders<JournalDocument>.Filter.Empty)
-      .Sort(Builders<JournalDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.Id))
-      .Limit(limit)
-      .ToListAsync();
-
-    return journals.Select(j => JournalDocumentMapper.FromDocument(j)!).ToArray();
+    return _journalRepository.GetAllJournals(
+      searchText,
+      scheduleMode,
+      journalTypes,
+      journalIds,
+      limit,
+      currentUserId,
+      matchAnyWord
+    );
   }
 
-  public async Task<IJournal?> GetJournal(string journalId)
+  public Task<IJournal?> GetJournal(string journalId)
   {
-    return await GetJournal(journalId, PermissionKind.Read);
+    return _journalRepository.GetJournal(journalId);
   }
 
-  public async Task<IEntry[]> GetEntriesForJournal(
+  public virtual Task<UpsertResult> UpsertJournal(IJournal journal)
+  {
+    return _journalRepository.UpsertJournal(journal);
+  }
+
+  public virtual Task DeleteJournal(string journalId)
+  {
+    return _journalRepository.DeleteJournal(journalId);
+  }
+
+  public Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
+  {
+    return _journalRepository.ModifyJournalPermissions(journalId, permissions);
+  }
+
+  // Explicitly unscoped read: loads the journal regardless of the caller's read permissions, so the
+  // write guards can apply the permission rule in memory.
+  protected Task<IJournal?> GetJournalUnscoped(string journalId)
+  {
+    return _journalRepository.GetJournalUnscoped(journalId);
+  }
+
+  public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate = null,
     DateTime? toDate = null,
@@ -152,68 +114,10 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     SortEntriesBy sortOrder = SortEntriesBy.DateTime
   )
   {
-    IJournal? journal = await GetJournal(journalId);
-    if (journal == null)
-    {
-      return [];
-    }
-
-    var filters = new List<FilterDefinition<EntryDocument>>
-    {
-      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
-    };
-
-    if (!string.IsNullOrEmpty(searchText))
-    {
-      filters.AddRange(
-        GetFreeTextFilters<EntryDocument>(
-          searchText,
-          false,
-          d => d.Notes!,
-          d => ((ScrapsEntryDocument) d).Title!
-        )
-      );
-    }
-
-    if (fromDate.HasValue)
-    {
-      filters.Add(Builders<EntryDocument>.Filter.Where(d => d.DateTime >= fromDate.Value));
-    }
-
-    if (toDate.HasValue)
-    {
-      filters.Add(Builders<EntryDocument>.Filter.Where(d => d.DateTime < toDate.Value.AddDays(1)));
-    }
-
-    if (attributeValues != null)
-    {
-      filters.AddRange(
-        attributeValues.Select(attributeValue =>
-          Builders<EntryDocument>.Filter.In($"JournalAttributeValues.{attributeValue.Key}", attributeValue.Value)
-        )
-      );
-    }
-
-    SortDefinition<EntryDocument> sort = sortOrder == SortEntriesBy.EditedOn
-      ? Builders<EntryDocument>.Sort.Descending(d => d.EditedOn)
-      : Builders<EntryDocument>.Sort.Descending(d => d.DateTime);
-
-    var entries = await EntriesCollection
-      .Find(Builders<EntryDocument>.Filter.And(filters))
-      .Sort(sort)
-      .ToListAsync();
-
-    return entries
-      .Select(EntryDocumentMapper.FromDocument)
-      .ToArray();
+    return _entryRepository.GetEntriesForJournal(journalId, fromDate, toDate, attributeValues, searchText, sortOrder);
   }
 
-  // Unscoped primitive: this method does NOT enforce journal read-permission. It trusts the
-  // journalIds supplied by the caller. The only scoped caller, SearchEntriesQueryExecutor, first
-  // resolves the current user's accessible journals (via the scoped GetAllJournals) and passes
-  // those ids in, so read access is enforced there. Pinned by
-  // UserRestrictedMongoRepository_Permissions_Should.SearchEntries_IsUnscoped_TrustsCallerProvidedJournalIds.
-  public async Task<IEntry[]> SearchEntries(
+  public Task<IEntry[]> SearchEntries(
     string? searchText,
     ScheduleMode? scheduleMode = null,
     JournalType[]? journalTypes = null,
@@ -224,354 +128,31 @@ public abstract class MongoRepositoryBase(MongoDatabaseClient mongoDatabaseClien
     bool matchAnyWord = false
   )
   {
-    var filters = new List<FilterDefinition<EntryDocument>>();
-
-    if (!string.IsNullOrEmpty(searchText))
-    {
-      filters.AddRange(
-        GetFreeTextFilters<EntryDocument>(
-          searchText,
-          matchAnyWord,
-          onlyConsiderTitle
-            ? [d => ((ScrapsEntryDocument) d).Title!]
-            : [d => ((ScrapsEntryDocument) d).Title!, d => d.Notes!]
-        )
-      );
-    }
-
-    if (journalIds is { Length: > 0 })
-    {
-      filters.Add(Builders<EntryDocument>.Filter.In(d => d.ParentId, journalIds));
-    }
-
-    if (journalTypes is { Length: > 0 })
-    {
-      filters.Add(
-        Builders<EntryDocument>.Filter.Or(
-          journalTypes.Select(t => Builders<EntryDocument>.Filter.Where(GetIsEntryTypeExpression(t)))
-        )
-      );
-    }
-
-    if (scheduleMode == ScheduleMode.AnySchedule)
-    {
-      filters.Add(
-        Builders<EntryDocument>.Filter.Exists(d => d.Schedules)
-      );
-    }
-    else if (scheduleMode == ScheduleMode.CurrentUserOnly)
-    {
-      if (string.IsNullOrEmpty(currentUserId))
-      {
-        throw new ArgumentException("Current user id is required", nameof(currentUserId));
-      }
-
-      filters.Add(GetHasScheduleForCurrentUserFilter(currentUserId));
-    }
-
-    // Ordering is done at the DB level (see defaultSort below, and the CurrentUserFirst branch in
-    // LoadDocuments). We deliberately do NOT re-order scheduled entries to the front here: the entries
-    // tab (ScheduleMode.None) must stay sorted purely by edited date, and the scheduled tab
-    // (CurrentUserOnly) already contains only scheduled entries.
-    return await LoadData(
-      limit,
+    return _entryRepository.SearchEntries(
+      searchText,
       scheduleMode,
-      currentUserId,
-      filters,
-      Builders<EntryDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.Id)
-    );
-  }
-
-  private async Task<IEntry[]> LoadData(
-    int? limit,
-    ScheduleMode? scheduleMode,
-    string? currentUserId,
-    List<FilterDefinition<EntryDocument>> filters,
-    SortDefinition<EntryDocument> defaultSort
-  )
-  {
-    List<EntryDocument> documents = await LoadDocuments(
+      journalTypes,
+      journalIds,
       limit,
-      scheduleMode,
       currentUserId,
-      filters,
-      defaultSort
-    );
-
-    return documents
-      .Select(EntryDocumentMapper.FromDocument)
-      .ToArray();
-  }
-
-  private async Task<List<EntryDocument>> LoadDocuments(
-    int? limit,
-    ScheduleMode? scheduleMode,
-    string? currentUserId,
-    List<FilterDefinition<EntryDocument>> filters,
-    SortDefinition<EntryDocument> defaultSort
-  )
-  {
-    if (scheduleMode != ScheduleMode.CurrentUserFirst)
-    {
-      return await EntriesCollection
-        .Find(
-          filters.Count > 0
-            ? Builders<EntryDocument>.Filter.And(filters)
-            : Builders<EntryDocument>.Filter.Empty
-        )
-        .Sort(defaultSort)
-        .Limit(limit)
-        .ToListAsync();
-    }
-
-    if (string.IsNullOrEmpty(currentUserId))
-    {
-      throw new ArgumentException(
-        $"\"{nameof(currentUserId)}\" must be specified when using {ScheduleMode.CurrentUserFirst}."
-      );
-    }
-
-    var entries = await EntriesCollection
-      .Find(
-        Builders<EntryDocument>.Filter.And(
-          filters.Union([GetHasScheduleForCurrentUserFilter(currentUserId)])
-        )
-      )
-      .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId].NextOccurrence))
-      .Limit(limit)
-      .ToListAsync();
-
-    var foundIds = entries.Select(e => e.Id).ToArray();
-
-    entries.AddRange(
-      await EntriesCollection
-        .Find(
-          Builders<EntryDocument>.Filter.And(
-            filters.Concat([Builders<EntryDocument>.Filter.Nin(d => d.Id, foundIds)])
-          )
-        )
-        .Sort(defaultSort)
-        .Limit(limit - entries.Count)
-        .ToListAsync()
-    );
-
-    return entries;
-  }
-
-  public virtual async Task<UpsertResult> UpsertJournal(IJournal journal)
-  {
-    JournalDocument document = JournalDocumentMapper.ToDocument(journal);
-
-    ReplaceOneResult? replaceOneResult = await JournalsCollection.ReplaceOneAsync(
-      MongoUtil.GetDocumentByIdFilter<JournalDocument>(journal.Id),
-      document,
-      new ReplaceOptions { IsUpsert = true }
-    );
-
-    return MongoUtil.CreateUpsertResult(journal.Id, replaceOneResult);
-  }
-
-  public virtual async Task DeleteJournal(string journalId)
-  {
-    IJournal? journal = await GetJournal(journalId);
-    if (journal == null)
-    {
-      return;
-    }
-
-    await EntriesCollection.DeleteManyAsync(
-      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
-    );
-
-    await JournalsCollection.DeleteOneAsync(
-      MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId)
+      onlyConsiderTitle,
+      matchAnyWord
     );
   }
 
-  public async Task ModifyJournalPermissions(string journalId, Dictionary<string, PermissionKind> permissions)
-  {
-    IJournal? journal = await GetJournal(journalId);
-    if (journal == null)
-    {
-      // should we throw here?
-      return;
-    }
-
-    // deliberately uses the plain user repository: granting a permission may create the receiving
-    // user's record, which the ownership guard on the public UpsertUser would (rightly) reject
-    var permissionsEnsurer = new PermissionsEnsurer(_userRepository, _userRepository.UpsertUser);
-    await permissionsEnsurer.EnsurePermissions(journal, permissions);
-
-    await UpsertJournal(journal);
-  }
-
-  public virtual async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
+  public virtual Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
     where TEntry : IEntry
   {
-    EntryDocument document = EntryDocumentMapper.ToDocument(entry);
-
-    ReplaceOneResult? replaceOneResult = await EntriesCollection.ReplaceOneAsync(
-      MongoUtil.GetDocumentByIdFilter<EntryDocument>(entry.Id),
-      document,
-      new ReplaceOptions { IsUpsert = true }
-    );
-
-    return MongoUtil.CreateUpsertResult(entry.Id, replaceOneResult);
+    return _entryRepository.UpsertEntry(entry);
   }
 
-  public virtual async Task DeleteEntry(string entryId)
+  public virtual Task DeleteEntry(string entryId)
   {
-    await EntriesCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId));
+    return _entryRepository.DeleteEntry(entryId);
   }
 
-  // Unscoped primitive: GetEntry does NOT enforce read-permission on the parent journal (note it is
-  // not overridden in UserRestrictedMongoRepository). The client-facing single-entry read enforces
-  // access in GetEntryQueryExecutor; command executors use it as a load-for-modify primitive and
-  // rely on the subsequent UpsertEntry/DeleteEntry write checks. Pinned by
-  // UserRestrictedMongoRepository_Permissions_Should.GetEntry_IsUnscoped_ReturnsEntry_EvenWithoutJournalPermission.
-  public async Task<IEntry?> GetEntry(string entryId)
+  public Task<IEntry?> GetEntry(string entryId)
   {
-    if (string.IsNullOrEmpty(entryId))
-    {
-      throw new ArgumentNullException(nameof(entryId), "Id must be specified.");
-    }
-
-    EntryDocument? document = await EntriesCollection
-      .Find(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId))
-      .FirstOrDefaultAsync();
-
-    return document == null
-      ? null
-      : EntryDocumentMapper.FromDocument(document);
-  }
-
-  // there must be a better solution than this, but it works for the moment... i believe
-  // Builders<JournalDocument>.Filter.Where(t => t.Type == journalType) does not work because
-  // JournalDocument.Type is an ABSTRACT property.
-  private static Expression<Func<JournalDocument, bool>> GetIsJournalTypeExpression(JournalType journalType)
-  {
-    return journalType switch
-    {
-      JournalType.Counter => d => d.GetType() == typeof(CounterJournalDocument),
-      JournalType.Gauge => d => d.GetType() == typeof(GaugeJournalDocument),
-      JournalType.Timer => d => d.GetType() == typeof(TimerJournalDocument),
-      JournalType.Scraps => d => d.GetType() == typeof(ScrapsJournalDocument),
-      JournalType.LogBook => d => d.GetType() == typeof(LogBookJournalDocument),
-      _ => throw new ArgumentOutOfRangeException(
-        nameof(journalType),
-        journalType,
-        $"{nameof(GetIsJournalTypeExpression)} not defined for {journalType}."
-      )
-    };
-  }
-
-  private static Expression<Func<EntryDocument, bool>> GetIsEntryTypeExpression(JournalType journalType)
-  {
-    switch (journalType)
-    {
-      case JournalType.Counter:
-        return d => d.GetType() == typeof(CounterEntryDocument);
-      case JournalType.Gauge:
-        return d => d.GetType() == typeof(GaugeEntryDocument);
-      case JournalType.Timer:
-        return d => d.GetType() == typeof(TimerEntryDocument);
-      case JournalType.Scraps:
-        return d => d.GetType() == typeof(ScrapsEntryDocument);
-      case JournalType.LogBook:
-        return d => d.GetType() == typeof(LogBookEntryDocument);
-      default:
-        throw new ArgumentOutOfRangeException(
-          nameof(journalType),
-          journalType,
-          $"{nameof(GetIsEntryTypeExpression)} not defined for {journalType}."
-        );
-    }
-  }
-
-  // Explicitly unscoped read: loads the journal regardless of the caller's read permissions, so the
-  // caller can apply the permission rule in memory (the write guards) or read the owner of a journal
-  // it is about to update.
-  protected Task<IJournal?> GetJournalUnscoped(string journalId)
-  {
-    return GetJournal(journalId, PermissionKind.None, UnrestrictedReadScope.Instance);
-  }
-
-  private Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind)
-  {
-    return GetJournal(journalId, permissionKind, readScope);
-  }
-
-  private async Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind, IReadScope scope)
-  {
-    if (string.IsNullOrEmpty(journalId))
-    {
-      throw new ArgumentNullException(nameof(journalId), "Id must be specified.");
-    }
-
-    JournalDocument? document = await JournalsCollection
-      .Find(
-        Builders<JournalDocument>.Filter.And(
-          MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId),
-          scope.GetFilter<JournalDocument>(permissionKind)
-        )
-      )
-      .FirstOrDefaultAsync();
-
-    return JournalDocumentMapper.FromDocument(document);
-  }
-
-  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
-  {
-    // "scheduled" means the user has a schedule with a pending occurrence. A schedule sub-document is
-    // kept around after it has fired (with NextOccurrence set to null), so checking mere existence of
-    // the sub-document would wrongly surface already-fired schedules as "scheduled".
-    return Builders<EntryDocument>.Filter.And(
-      Builders<EntryDocument>.Filter.Exists($"Schedules.{currentUserId}"),
-      Builders<EntryDocument>.Filter.Ne($"Schedules.{currentUserId}.NextOccurrence", BsonNull.Value)
-    );
-  }
-
-  // matchAnyWord = false: every word must match somewhere (one AND-ed filter per word,
-  // substring semantics) - this is the regular search behavior.
-  // matchAnyWord = true: a single filter matching documents that contain ANY of the words,
-  // as whole words (via WholeWordRegex) - used to collect candidates for "related items",
-  // where requiring all words would be far too strict and substring matches are mostly noise.
-  private static List<FilterDefinition<T>> GetFreeTextFilters<T>(
-    string? searchText,
-    bool matchAnyWord,
-    params Expression<Func<T, object>>[] fieldNameExpressions
-  ) where T : IDocument
-  {
-    if (string.IsNullOrEmpty(searchText))
-    {
-      return [];
-    }
-
-    List<FilterDefinition<T>> perWordFilters = searchText.Split(" ")
-      .Select(segment =>
-        {
-          // Escape the user input so it is matched literally. Passing it to the
-          // regex engine unescaped allowed malformed patterns (exceptions) and
-          // catastrophic-backtracking patterns (ReDoS) to be injected via search.
-          var pattern = matchAnyWord
-            ? WholeWordRegex.BuildPattern(segment)
-            : Regex.Escape(segment);
-
-          return Builders<T>.Filter.Or(
-            fieldNameExpressions.Select(exp => Builders<T>.Filter.Regex(
-                exp,
-                new BsonRegularExpression(
-                  new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline)
-                )
-              )
-            )
-          );
-        }
-      )
-      .ToList();
-
-    return matchAnyWord
-      ? [Builders<T>.Filter.Or(perWordFilters)]
-      : perWordFilters;
+    return _entryRepository.GetEntry(entryId);
   }
 }
