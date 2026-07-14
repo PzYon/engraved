@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
-using Engraved.TestUtils;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Entries.Upsert;
+namespace Engraved.Core.Tests.Application.Commands.Entries.Upsert;
 
 public class UpsertTimerEntryCommandExecutorShould
 {

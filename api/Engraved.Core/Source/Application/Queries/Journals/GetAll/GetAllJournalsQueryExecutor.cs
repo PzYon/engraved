@@ -1,4 +1,5 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 
@@ -15,7 +16,7 @@ public class GetAllJournalsQueryExecutor(
 
   public async Task<IJournal[]> Execute(GetAllJournalsQuery query)
   {
-    IJournal[] allJournals = await journalRepository.GetAllJournals(
+    var allJournals = await journalRepository.GetAllJournals(
       query.SearchText,
       query.ScheduledOnly ? ScheduleMode.CurrentUserOnly : ScheduleMode.None,
       query.JournalTypes,

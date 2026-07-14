@@ -1,13 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries.Entries.GetAllJournal;
+namespace Engraved.Core.Tests.Application.Queries.Entries.GetAllJournal;
 
 public class GetAllJournalEntriesQueryExecutorShould
 {
@@ -24,18 +25,18 @@ public class GetAllJournalEntriesQueryExecutorShould
   {
     UpsertResult scrapsJournal = await _repo.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
 
-    string olderButRecentlyEditedId = await AddScrap(
+    var olderButRecentlyEditedId = await AddScrap(
       scrapsJournal.EntityId,
-      dateTime: DateTime.Now.AddDays(-10),
-      editedOn: DateTime.Now
+      DateTime.Now.AddDays(-10),
+      DateTime.Now
     );
-    string newerButEditedLongAgoId = await AddScrap(
+    var newerButEditedLongAgoId = await AddScrap(
       scrapsJournal.EntityId,
-      dateTime: DateTime.Now,
-      editedOn: DateTime.Now.AddDays(-10)
+      DateTime.Now,
+      DateTime.Now.AddDays(-10)
     );
 
-    IEntry[] entries = await new GetAllJournalEntriesQueryExecutor(_repo, _repo).Execute(
+    var entries = await new GetAllJournalEntriesQueryExecutor(_repo, _repo).Execute(
       new GetAllJournalEntriesQuery { JournalId = scrapsJournal.EntityId }
     );
 
@@ -49,18 +50,18 @@ public class GetAllJournalEntriesQueryExecutorShould
   {
     UpsertResult counterJournal = await _repo.UpsertJournal(new CounterJournal { Name = "My Counter" });
 
-    string olderButRecentlyEditedId = await AddCounterEntry(
+    var olderButRecentlyEditedId = await AddCounterEntry(
       counterJournal.EntityId,
-      dateTime: DateTime.Now.AddDays(-10),
-      editedOn: DateTime.Now
+      DateTime.Now.AddDays(-10),
+      DateTime.Now
     );
-    string newerButEditedLongAgoId = await AddCounterEntry(
+    var newerButEditedLongAgoId = await AddCounterEntry(
       counterJournal.EntityId,
-      dateTime: DateTime.Now,
-      editedOn: DateTime.Now.AddDays(-10)
+      DateTime.Now,
+      DateTime.Now.AddDays(-10)
     );
 
-    IEntry[] entries = await new GetAllJournalEntriesQueryExecutor(_repo, _repo).Execute(
+    var entries = await new GetAllJournalEntriesQueryExecutor(_repo, _repo).Execute(
       new GetAllJournalEntriesQuery { JournalId = counterJournal.EntityId }
     );
 

@@ -1,4 +1,4 @@
-namespace Engraved.Core.Application.Persistence;
+namespace Engraved.Core.Application.Persistence.Repositories;
 
 // The unrestricted seam: full persistence access with NO permission or user scoping applied,
 // including the inherently-unrestricted maintenance operations (keep-alive, global counts). Resolves
@@ -10,6 +10,4 @@ namespace Engraved.Core.Application.Persistence;
 // IUserRepository/IJournalRepository/IEntryRepository resolve to - so unrestricted access is always
 // a conscious choice and can never be obtained by accident.
 public interface IUnrestrictedRepository
-  : IUserRepository, IJournalRepository, IEntryRepository, IMaintenanceRepository
-{
-}
+  : IUserRepository, IJournalRepository, IEntryRepository, IMaintenanceRepository { }

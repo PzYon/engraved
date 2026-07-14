@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Application.Search;
 using Engraved.Core.Domain.Entries;

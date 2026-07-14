@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Application.Persistence;
+﻿using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
@@ -12,15 +12,15 @@ public static class JournalQueryUtil
     params IJournal[] journals
   )
   {
-    string[] distinctUserIds = journals
+    var distinctUserIds = journals
       .SelectMany(m => m.Permissions.Keys)
       .Union(journals.Where(m => !string.IsNullOrEmpty(m.UserId)).Select(m => m.UserId!))
       .Distinct()
       .ToArray();
 
-    IUser[] users = await repository.GetUsers(distinctUserIds);
+    var users = await repository.GetUsers(distinctUserIds);
 
-    Dictionary<string, IUser> userById = users.ToDictionary(u => u.Id!, u => u);
+    var userById = users.ToDictionary(u => u.Id!, u => u);
 
     return journals.Select(j => EnsureUsers(j, userById)).ToArray();
   }
@@ -28,7 +28,7 @@ public static class JournalQueryUtil
   private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, IUser> userById)
   {
     // write all users on to object
-    foreach ((string key, PermissionDefinition value) in journal.Permissions)
+    foreach ((var key, PermissionDefinition value) in journal.Permissions)
     {
       value.User = userById[key];
       value.UserRole = journal.UserId == key
@@ -38,7 +38,7 @@ public static class JournalQueryUtil
           : UserRole.Reader;
     }
 
-    string journalOwnerId = journal.UserId!;
+    var journalOwnerId = journal.UserId!;
 
     journal.Permissions.TryAdd(
       journalOwnerId,

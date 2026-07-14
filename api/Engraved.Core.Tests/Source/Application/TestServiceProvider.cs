@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Entries.Search;
@@ -6,7 +6,7 @@ using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
 using Engraved.TestUtils;
 
-namespace Engraved.Core.Application;
+namespace Engraved.Core.Tests.Application;
 
 public class TestServiceProvider(TestUserRestrictedMongoRepository repository) : IServiceProvider
 {

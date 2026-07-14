@@ -1,5 +1,6 @@
-using Engraved.Core.Application.Permissions;
+﻿using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
@@ -29,7 +30,7 @@ public class EditJournalPermissionsCommandExecutor(
       throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
     }
 
-    string[] userIdsBefore = journal!.Permissions.GetUserIdsWithAccess();
+    var userIdsBefore = journal!.Permissions.GetUserIdsWithAccess();
 
     if (command.Permissions?.Count > 0)
     {

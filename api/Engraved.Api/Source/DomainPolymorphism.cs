@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization.Metadata;
+using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
-namespace Engraved.Core.Domain;
+namespace Engraved.Api;
 
 // System.Text.Json serializes based on the DECLARED type, so values declared as IEntry,
 // IJournal or IEntity (controller responses and nested properties) would silently lose all
@@ -19,7 +20,7 @@ public static class DomainPolymorphism
   // Modifier for a DefaultJsonTypeInfoResolver; wired into the MVC JSON options in Program.cs.
   public static void ConfigurePolymorphism(JsonTypeInfo jsonTypeInfo)
   {
-    Type[] derivedTypes = GetDerivedTypes(jsonTypeInfo.Type);
+    var derivedTypes = GetDerivedTypes(jsonTypeInfo.Type);
     if (derivedTypes.Length == 0)
     {
       return;

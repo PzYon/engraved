@@ -25,21 +25,21 @@ public static class Util
     }
   );
 
-  /// <summary>
-  /// Stops the shared mongo instance and deletes its temp data directory. Invoked once per test
-  /// assembly from an NUnit [OneTimeTearDown] so the ~280 MB data directory does not linger.
-  /// </summary>
-  public static void StopRunner()
-  {
-    Runner.Dispose();
-  }
-
   // Exposes the ephemeral mongo connection string so other test assemblies (e.g. the Api startup
   // smoke test) can point the real application at this instance.
   public static string ConnectionString => Runner.ConnectionString;
 
   private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings(Runner.ConnectionString);
   private static MongoDatabaseClient Client => new(Settings, null);
+
+  /// <summary>
+  ///   Stops the shared mongo instance and deletes its temp data directory. Invoked once per test
+  ///   assembly from an NUnit [OneTimeTearDown] so the ~280 MB data directory does not linger.
+  /// </summary>
+  public static void StopRunner()
+  {
+    Runner.Dispose();
+  }
 
   public static async Task<TestMongoRepository> CreateMongoRepository()
   {

@@ -21,7 +21,7 @@ public class ScheduledNotificationJob(
     {
       while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
       {
-        bool isDryRun = notificationsJobConfig.Value.Mode == NotificationsJobMode.DryRun;
+        var isDryRun = notificationsJobConfig.Value.Mode == NotificationsJobMode.DryRun;
 
         // a fresh scope per run so the job and its dependencies (repository, date service, ...)
         // are created anew every time instead of being captured once by this singleton.

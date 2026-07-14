@@ -1,12 +1,11 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using FluentAssertions;
 using NetArchTest.Rules;
 using NUnit.Framework;
 
-namespace Engraved.Api;
+namespace Engraved.Api.Tests;
 
 // Guards the Api side of the unrestricted persistence seam. The unrestricted seam is deliberately
 // greppable so that bypassing permission scoping is always a conscious choice (see
@@ -30,15 +29,16 @@ public class ArchitectureShould
       "RefreshTokenService" // token refresh, runs before a user context exists
     ];
 
-    IEnumerable<string> actualConsumers = Types.InAssembly(ApiAssembly)
+    var actualConsumers = Types.InAssembly(ApiAssembly)
       .That()
       .HaveDependencyOn(typeof(IUnrestrictedRepository).FullName)
       .GetTypes()
       .Select(type => type.Name);
 
-    actualConsumers.Should().BeSubsetOf(
-      allowedConsumers,
-      "only sanctioned consumers in Engraved.Api may depend on the unrestricted persistence seam"
-    );
+    actualConsumers.Should()
+      .BeSubsetOf(
+        allowedConsumers,
+        "only sanctioned consumers in Engraved.Api may depend on the unrestricted persistence seam"
+      );
   }
 }

@@ -4,6 +4,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
+using Engraved.Persistence.Mongo.Repositories;
 using Engraved.TestUtils;
 using FluentAssertions;
 using MongoDB.Bson;
@@ -57,7 +58,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries()
   {
-    IEntry[] results = await _repository.SearchEntries("Beta", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries("Beta", null, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -65,7 +66,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_IgnoringCase()
   {
-    IEntry[] results = await _repository.SearchEntries("beta", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries("beta", null, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -73,7 +74,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_MultipleWords()
   {
-    IEntry[] results = await _repository.SearchEntries("beta gam", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries("beta gam", null, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -81,7 +82,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_NonConsecutiveWords()
   {
-    IEntry[] results = await _repository.SearchEntries("alpha gam", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries("alpha gam", null, null, [_journalId], 10);
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -91,15 +92,15 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // "alpha" and "heiri" occur in two different entries; with match-any
     // semantics both entries are returned (regular search would return none).
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       "alpha heiri",
       null,
       null,
       [_journalId],
       10,
       null,
-      onlyConsiderTitle: false,
-      matchAnyWord: true
+      false,
+      true
     );
 
     results.Length.Should().Be(2);
@@ -110,15 +111,15 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // "gam" is a substring of "Gamma"; unlike the regular (substring) search,
     // match-any only matches whole words.
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       "gam",
       null,
       null,
       [_journalId],
       10,
       null,
-      onlyConsiderTitle: false,
-      matchAnyWord: true
+      false,
+      true
     );
 
     results.Should().BeEmpty();
@@ -140,15 +141,15 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       }
     );
 
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       "übung",
       null,
       null,
       [_journalId],
       10,
       null,
-      onlyConsiderTitle: false,
-      matchAnyWord: true
+      false,
+      true
     );
 
     results.Length.Should().Be(1);
@@ -170,7 +171,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
 
     // "(USD)" is a valid regex (a group); when matched literally it must only
     // find the entry that actually contains the parentheses.
-    IEntry[] results = await _repository.SearchEntries("(USD)", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries("(USD)", null, null, [_journalId], 10);
 
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(4);
@@ -181,8 +182,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // An unbalanced bracket is an invalid regex. Before escaping, this threw
     // while building the filter (and surfaced as a 500).
-    Assert.DoesNotThrowAsync(
-      async () => await _repository.SearchEntries("(unclosed", null, null, [_journalId], 10)
+    Assert.DoesNotThrowAsync(async () => await _repository.SearchEntries("(unclosed", null, null, [_journalId], 10)
     );
   }
 
@@ -199,7 +199,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       new ScrapsEntry { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Franz" }
     );
 
-    IEntry[] results = await _repository.SearchEntries("heiri", null, null, [result.EntityId], 10);
+    var results = await _repository.SearchEntries("heiri", null, null, [result.EntityId], 10);
 
     results.Length.Should().Be(1);
     ((ScrapsEntry)results[0]).Title.Should().Be("Heiri");
@@ -208,7 +208,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task Consider_JournalTypes_Negative()
   {
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       null,
       null,
       [JournalType.Counter],
@@ -229,7 +229,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       new ScrapsEntry { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
     );
 
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       null,
       null,
       [JournalType.Scraps],
@@ -251,7 +251,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       new LogBookEntry { ParentId = result.EntityId, Notes = "log book entry" }
     );
 
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       null,
       null,
       [JournalType.LogBook],
@@ -311,11 +311,11 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ScrapType = ScrapType.List,
         Title = "WithoutSchedule",
         UserId = currentUserId,
-        EditedOn = DateTime.Now.AddDays(-1000),
+        EditedOn = DateTime.Now.AddDays(-1000)
       }
     );
 
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       null,
       ScheduleMode.CurrentUserFirst,
       null,
@@ -362,7 +362,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       }
     );
 
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       null,
       ScheduleMode.None,
       null,
@@ -407,7 +407,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       }
     );
 
-    IEntry[] results = await _repository.SearchEntries(
+    var results = await _repository.SearchEntries(
       null,
       ScheduleMode.CurrentUserOnly,
       null,

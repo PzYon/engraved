@@ -1,6 +1,5 @@
-using Engraved.Core.Application.Persistence;
+﻿using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Notifications;
 
 namespace Engraved.Core.Application.Commands.Journals.Delete;
 

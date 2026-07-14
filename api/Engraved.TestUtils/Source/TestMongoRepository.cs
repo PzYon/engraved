@@ -1,7 +1,8 @@
-using Engraved.Persistence.Mongo;
+﻿using Engraved.Persistence.Mongo;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
+using Engraved.Persistence.Mongo.Repositories;
 using MongoDB.Driver;
 
 namespace Engraved.TestUtils;

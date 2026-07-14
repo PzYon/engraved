@@ -11,11 +11,11 @@ public static class AttributeValueParser
       return dict;
     }
 
-    foreach (string s in attributeValues.Split(";", StringSplitOptions.RemoveEmptyEntries))
+    foreach (var s in attributeValues.Split(";", StringSplitOptions.RemoveEmptyEntries))
     {
-      string[] strings = s.Split(":");
-      string attributeKey = strings[0];
-      string[] values = strings[1].Split(",", StringSplitOptions.RemoveEmptyEntries);
+      var strings = s.Split(":");
+      var attributeKey = strings[0];
+      var values = strings[1].Split(",", StringSplitOptions.RemoveEmptyEntries);
 
       dict.Add(attributeKey, values);
     }

@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Jobs;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 using Engraved.TestUtils;
@@ -6,7 +8,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Jobs;
+namespace Engraved.Core.Tests.Application.Jobs;
 
 public class NotificationJobShould
 {
@@ -14,12 +16,12 @@ public class NotificationJobShould
   private const string UserName2 = "jill";
 
   private FakeDateService _dateService = null!;
+
+  private NotificationJob _job = null!;
   private TestMongoRepository _repo = null!;
 
   private EngravedTestContext _testContext1 = null!;
   private EngravedTestContext _testContext2 = null!;
-
-  private NotificationJob _job = null!;
 
   [SetUp]
   public async Task Setup()
@@ -61,7 +63,7 @@ public class NotificationJobShould
   [Test]
   public async Task Process_OneJournal_WithPassedNextOccurrence()
   {
-    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
 
     NotificationJobResult result = await _job.Execute(false);
 
@@ -80,7 +82,7 @@ public class NotificationJobShould
   [Test]
   public async Task NotProcess_OneJournal_WithExistingNotifiedOn()
   {
-    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
 
     IJournal journal = (await _repo.GetJournal(journalId))!;
     journal.Schedules[UserName1].NotifiedOn = _dateService.UtcNow.AddHours(-1);
@@ -95,8 +97,8 @@ public class NotificationJobShould
   [Test]
   public async Task Process_Journal_WithUpcomingNextOccurrence_MultipleUsers()
   {
-    string journalId1 = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
-    string journalId2 = await _testContext2.AddJournal(nextOccurrence: _dateService.UtcNow.AddMinutes(-2));
+    var journalId1 = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId2 = await _testContext2.AddJournal(nextOccurrence: _dateService.UtcNow.AddMinutes(-2));
 
     NotificationJobResult result = await _job.Execute(false);
 
@@ -110,7 +112,7 @@ public class NotificationJobShould
   [Test]
   public async Task NotProcess_Journal_WithUpcomingNextOccurrence_MultipleUsers()
   {
-    string journalId1 = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId1 = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
 
     IJournal journal = (await _repo.GetJournal(journalId1))!;
     journal.Schedules[UserName2] = new Schedule { NextOccurrence = _dateService.UtcNow.AddDays(23) };
@@ -126,7 +128,7 @@ public class NotificationJobShould
   [Test]
   public async Task Process_OneJournal_WithPassedNextOccurrence_OnlyOnce()
   {
-    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
 
     NotificationJobResult firstResult = await _job.Execute(false);
 
@@ -142,8 +144,8 @@ public class NotificationJobShould
   [Test]
   public async Task Process_OneEntryAndOneJournal_WithPassedNextOccurrence_OnlyOnce()
   {
-    string journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
-    string entryId = await _testContext1.AddEntry(journalId, _dateService.UtcNow.AddMinutes(-5));
+    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var entryId = await _testContext1.AddEntry(journalId, _dateService.UtcNow.AddMinutes(-5));
 
     NotificationJobResult firstResult = await _job.Execute(false);
 

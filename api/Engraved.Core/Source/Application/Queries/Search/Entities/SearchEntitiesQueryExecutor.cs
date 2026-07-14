@@ -12,7 +12,7 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
 
   public async Task<SearchEntitiesResult> Execute(SearchEntitiesQuery query)
   {
-    Task<IJournal[]> journalsTask = dispatcher.Query<IJournal[], GetAllJournalsQuery>(
+    var journalsTask = dispatcher.Query<IJournal[], GetAllJournalsQuery>(
       new GetAllJournalsQuery
       {
         SearchText = query.SearchText,
@@ -20,7 +20,7 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
       }
     );
 
-    Task<SearchEntriesQueryResult> entriesTask = dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(
+    var entriesTask = dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(
       new SearchEntriesQuery
       {
         SearchText = query.SearchText,

@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Journals.Delete;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
@@ -6,7 +8,7 @@ using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Journals.Delete;
+namespace Engraved.Core.Tests.Application.Commands.Journals.Delete;
 
 public class DeleteJournalCommandExecutorShould
 {

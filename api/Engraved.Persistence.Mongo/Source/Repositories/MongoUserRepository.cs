@@ -1,4 +1,5 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using MongoDB.Bson;

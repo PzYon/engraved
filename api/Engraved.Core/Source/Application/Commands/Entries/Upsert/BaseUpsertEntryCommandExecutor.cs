@@ -1,5 +1,6 @@
 using Engraved.Core.Application.Commands.Journals;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
@@ -15,8 +16,8 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   where TJournal : class, IJournal
 {
   protected readonly IDateService DateService = dateService;
-  protected readonly IJournalRepository JournalRepository = journalRepository;
   protected readonly IEntryRepository EntryRepository = entryRepository;
+  protected readonly IJournalRepository JournalRepository = journalRepository;
 
   public async Task<CommandResult> Execute(TCommand command)
   {
@@ -97,10 +98,10 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
 
     var errors = new List<string>();
 
-    foreach (KeyValuePair<string, string[]> kvp in command.JournalAttributeValues)
+    foreach (var kvp in command.JournalAttributeValues)
     {
-      string attributeKey = kvp.Key;
-      string[] attributeValues = kvp.Value;
+      var attributeKey = kvp.Key;
+      var attributeValues = kvp.Value;
 
       if (journal.Attributes.TryGetValue(attributeKey, out JournalAttribute? attribute))
       {

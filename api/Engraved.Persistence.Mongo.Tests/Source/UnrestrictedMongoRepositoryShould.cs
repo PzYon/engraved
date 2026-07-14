@@ -5,6 +5,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.Repositories;
 using Engraved.TestUtils;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -96,7 +97,7 @@ public class UnrestrictedMongoRepositoryShould
     await _repository.UpsertEntry(new GaugeEntry { ParentId = "wrongId", Value = 456 });
     await _repository.UpsertEntry(new GaugeEntry { ParentId = result.EntityId, Value = 789 });
 
-    IEntry[] allEntries = await _repository.GetEntriesForJournal(result.EntityId, null, null, null, null);
+    var allEntries = await _repository.GetEntriesForJournal(result.EntityId);
 
     allEntries.Length.Should().Be(2);
   }
@@ -106,15 +107,14 @@ public class UnrestrictedMongoRepositoryShould
   {
     await _repository.UpsertUser(new User { Name = "schorsch" });
 
-    Assert.ThrowsAsync<ArgumentException>(
-      async () => await _repository.UpsertUser(new User { Name = "schorsch" })
+    Assert.ThrowsAsync<ArgumentException>(async () => await _repository.UpsertUser(new User { Name = "schorsch" })
     );
   }
 
   [Test]
   public async Task Persist_UiSettings()
   {
-    string value = JsonConvert.SerializeObject(new Dictionary<string, object> { { "simpleSetting", true } });
+    var value = JsonConvert.SerializeObject(new Dictionary<string, object> { { "simpleSetting", true } });
 
     var journal = new GaugeJournal
     {

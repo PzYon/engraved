@@ -1,5 +1,5 @@
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
-using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 

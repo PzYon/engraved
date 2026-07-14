@@ -10,11 +10,10 @@ namespace Engraved.TestUtils;
 
 public class EngravedTestContext
 {
+  private EngravedTestContext() { }
   public string UserId { get; set; } = null!;
   public string UserName { get; set; } = null!;
   public TestUserRestrictedMongoRepository UserRestrictedRepo { get; set; } = null!;
-
-  private EngravedTestContext() { }
 
   public static async Task<EngravedTestContext> CreateForUser(
     TestMongoRepository mongoRepository,

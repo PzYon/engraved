@@ -7,16 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Engraved.Persistence.Mongo\Engraved.Persistence.Mongo.csproj" />
-        <ProjectReference Include="..\Engraved.TestUtils\Engraved.TestUtils.csproj" />
+        <ProjectReference Include="..\Engraved.Persistence.Mongo\Engraved.Persistence.Mongo.csproj"/>
+        <ProjectReference Include="..\Engraved.TestUtils\Engraved.TestUtils.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
-        <PackageReference Include="FluentAssertions" Version="8.10.0" />
-        <PackageReference Include="NUnit" Version="4.6.1" />
-        <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
-        <PackageReference Include="NUnit.Analyzers" Version="4.14.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0"/>
+        <PackageReference Include="FluentAssertions" Version="8.10.0"/>
+        <PackageReference Include="NUnit" Version="4.6.1"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="6.2.0"/>
+        <PackageReference Include="NUnit.Analyzers" Version="4.14.0"/>
         <PackageReference Include="coverlet.collector" Version="10.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,9 +24,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\Engraved.TestUtils\Source\MongoRunnerTeardown.cs">
-        <Link>Source\MongoRunnerTeardown.cs</Link>
-      </Compile>
+        <Compile Include="..\Engraved.TestUtils\Source\MongoRunnerTeardown.cs">
+            <Link>Source\MongoRunnerTeardown.cs</Link>
+        </Compile>
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Entries.Delete;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
@@ -7,7 +10,7 @@ using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Entries.Delete;
+namespace Engraved.Core.Tests.Application.Commands.Entries.Delete;
 
 public class DeleteEntryCommandExecutorShould
 {

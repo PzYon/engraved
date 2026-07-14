@@ -1,10 +1,10 @@
 namespace Engraved.TestUtils;
 
 /// <summary>
-/// Shared, valid 24-character hex ObjectId strings used across the test suites.
-/// EphemeralMongo (unlike the former in-memory repository) requires ids to be parseable
-/// as <see cref="MongoDB.Bson.ObjectId" />, so tests cannot use arbitrary strings like "journal_id".
-/// Keeping the recurring ids here avoids duplicating the same literal in many test files.
+///   Shared, valid 24-character hex ObjectId strings used across the test suites.
+///   EphemeralMongo (unlike the former in-memory repository) requires ids to be parseable
+///   as <see cref="MongoDB.Bson.ObjectId" />, so tests cannot use arbitrary strings like "journal_id".
+///   Keeping the recurring ids here avoids duplicating the same literal in many test files.
 /// </summary>
 public static class TestIds
 {

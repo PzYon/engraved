@@ -1,6 +1,6 @@
 using Engraved.Core.Domain.Users;
 
-namespace Engraved.Core.Application.Persistence;
+namespace Engraved.Core.Application.Persistence.Repositories;
 
 public interface IUserRepository
 {

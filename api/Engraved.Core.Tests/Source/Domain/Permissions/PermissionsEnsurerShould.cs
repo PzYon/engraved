@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Engraved.TestUtils;
 using Engraved.Core.Application.Permissions;
-using Engraved.Core.Application.Persistence;
+using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Domain.Permissions;
+namespace Engraved.Core.Tests.Domain.Permissions;
 
 public class PermissionsEnsurerShould
 {
@@ -29,7 +29,7 @@ public class PermissionsEnsurerShould
       }
     );
 
-    _permissionsEnsurer = new PermissionsEnsurer(_repository, _repository.UpsertUser);
+    _permissionsEnsurer = new PermissionsEnsurer(_repository);
   }
 
   [Test]

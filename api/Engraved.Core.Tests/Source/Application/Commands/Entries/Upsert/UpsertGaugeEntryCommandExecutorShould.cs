@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
-using Engraved.TestUtils;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Entries.Upsert;
+namespace Engraved.Core.Tests.Application.Commands.Entries.Upsert;
 
 public class UpsertGaugeEntryCommandExecutorShould
 {
@@ -36,7 +38,9 @@ public class UpsertGaugeEntryCommandExecutorShould
     };
 
     CommandResult commandResult =
-      await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
+      await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(
+        command
+      );
 
     commandResult.EntityId.Should().NotBeEmpty();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -64,7 +68,9 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     Assert.ThrowsAsync<InvalidCommandException>(async () =>
       {
-        await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
+        await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(
+          command
+        );
       }
     );
   }
@@ -106,7 +112,7 @@ public class UpsertGaugeEntryCommandExecutorShould
       }
     };
 
-    await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
+    await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(command);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
 
@@ -156,7 +162,9 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     Assert.ThrowsAsync<InvalidCommandException>(async () =>
       {
-        await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
+        await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(
+          command
+        );
       }
     );
   }

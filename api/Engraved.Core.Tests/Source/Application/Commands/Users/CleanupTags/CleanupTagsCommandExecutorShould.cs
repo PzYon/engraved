@@ -1,19 +1,16 @@
 ﻿using System.Threading.Tasks;
+using Engraved.Core.Application.Commands.Users.CleanupTags;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Users.CleanupTags;
+namespace Engraved.Core.Tests.Application.Commands.Users.CleanupTags;
 
 [TestFixture]
 public class CleanupTagsCommandExecutorShould
 {
-  private TestUserRestrictedMongoRepository _repo = null!;
-
-  private const string UserId = TestIds.UserId;
-
   [SetUp]
   public async Task SetUp()
   {
@@ -26,6 +23,10 @@ public class CleanupTagsCommandExecutorShould
       }
     );
   }
+
+  private TestUserRestrictedMongoRepository _repo = null!;
+
+  private const string UserId = TestIds.UserId;
 
   [Test]
   public async Task DoesNotChangeAnything_When_No_Missing_Favorites()
@@ -41,7 +42,8 @@ public class CleanupTagsCommandExecutorShould
     await _repo.UpsertUser(user);
 
     var command = new CleanupTagsCommand { DryRun = false };
-    var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(command);
+    var result =
+      (CleanupTagsCommandResult)await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(command);
 
     result.AffectedUserIds.Should().Contain(UserId);
     result.EntityId.Should().Be(UserId);
@@ -53,7 +55,7 @@ public class CleanupTagsCommandExecutorShould
   public async Task ReturnsImmediately_When_NoTagsOrNoJournalIdsInTags()
   {
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(
+      (CleanupTagsCommandResult)await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(
         new CleanupTagsCommand { DryRun = false }
       );
 
@@ -67,9 +69,10 @@ public class CleanupTagsCommandExecutorShould
     user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [] });
     await _repo.UpsertUser(user);
 
-    var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(
-      new CleanupTagsCommand { DryRun = false }
-    );
+    var result =
+      (CleanupTagsCommandResult)await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(
+        new CleanupTagsCommand { DryRun = false }
+      );
     result.JournalIdsToRemove.Should().BeEmpty();
   }
 
@@ -84,15 +87,21 @@ public class CleanupTagsCommandExecutorShould
     user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [existingJournalId, missingJournalId] });
     await _repo.UpsertUser(user);
 
-    var commandExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository commandExecutorRepo =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo, commandExecutorRepo, commandExecutorRepo.CurrentUser).Execute(
+      (CleanupTagsCommandResult)await new CleanupTagsCommandExecutor(
+        commandExecutorRepo,
+        commandExecutorRepo,
+        commandExecutorRepo.CurrentUser
+      ).Execute(
         new CleanupTagsCommand { DryRun = false }
       );
 
     result.JournalIdsToRemove.Should().Contain(missingJournalId);
 
-    var verificationRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository verificationRepo =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     user = (await verificationRepo.GetUser(UserId))!;
     user.Tags[0].JournalIds.Should().NotContain(missingJournalId);
     user.Tags[0].JournalIds.Should().Contain(existingJournalId);
@@ -117,9 +126,14 @@ public class CleanupTagsCommandExecutorShould
     );
     await _repo.UpsertUser(user);
 
-    var commandExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository commandExecutorRepo =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo, commandExecutorRepo, commandExecutorRepo.CurrentUser).Execute(
+      (CleanupTagsCommandResult)await new CleanupTagsCommandExecutor(
+        commandExecutorRepo,
+        commandExecutorRepo,
+        commandExecutorRepo.CurrentUser
+      ).Execute(
         new CleanupTagsCommand { DryRun = false }
       );
 
@@ -127,7 +141,8 @@ public class CleanupTagsCommandExecutorShould
     result.JournalIdsToRemove.Should().Contain(missingJournalId2);
     result.JournalIdsToRemove.Should().HaveCount(2);
 
-    var verificationRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository verificationRepo =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     user = (await verificationRepo.GetUser(UserId))!;
     user.Tags[0].JournalIds.Should().NotContain(missingJournalId1);
     user.Tags[0].JournalIds.Should().NotContain(missingJournalId2);
@@ -147,15 +162,21 @@ public class CleanupTagsCommandExecutorShould
     user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [existingJournalId, missingJournalId] });
     await _repo.UpsertUser(user);
 
-    var commandExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository commandExecutorRepo =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo, commandExecutorRepo, commandExecutorRepo.CurrentUser).Execute(
+      (CleanupTagsCommandResult)await new CleanupTagsCommandExecutor(
+        commandExecutorRepo,
+        commandExecutorRepo,
+        commandExecutorRepo.CurrentUser
+      ).Execute(
         new CleanupTagsCommand { DryRun = true }
       );
 
     result.JournalIdsToRemove.Should().Contain(missingJournalId);
 
-    var verificationRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository verificationRepo =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     user = (await verificationRepo.GetUser(UserId))!;
     user.Tags[0].JournalIds.Should().Contain(missingJournalId);
     user.Tags[0].JournalIds.Should().Contain(existingJournalId);

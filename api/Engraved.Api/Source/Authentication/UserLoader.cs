@@ -1,4 +1,5 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -16,6 +17,11 @@ public sealed class UserLoader(IUnrestrictedRepository unrestrictedRepository) :
   private static readonly TimeSpan SlidingExpiration = TimeSpan.FromMinutes(10);
 
   private readonly MemoryCache _cache = new(new MemoryCacheOptions { SizeLimit = MaxCachedUsers });
+
+  public void Dispose()
+  {
+    _cache.Dispose();
+  }
 
   public async Task<IUser> GetUser(string name)
   {
@@ -49,10 +55,5 @@ public sealed class UserLoader(IUnrestrictedRepository unrestrictedRepository) :
         SlidingExpiration = SlidingExpiration
       }
     );
-  }
-
-  public void Dispose()
-  {
-    _cache.Dispose();
   }
 }

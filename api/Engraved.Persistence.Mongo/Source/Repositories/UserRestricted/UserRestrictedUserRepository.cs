@@ -1,7 +1,9 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.Scoping;
 
-namespace Engraved.Persistence.Mongo.Repositories;
+namespace Engraved.Persistence.Mongo.Repositories.UserRestricted;
 
 // Decorator adding the ownership write guard for the current user: only the current user's own
 // record may be upserted. Reads pass through unguarded.

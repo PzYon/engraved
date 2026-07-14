@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.LogBook;
-using Engraved.TestUtils;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Entries.Upsert;
+namespace Engraved.Core.Tests.Application.Commands.Entries.Upsert;
 
 public class UpsertLogBookEntryCommandExecutorShould
 {
@@ -55,7 +57,9 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(
+        command
+      );
 
     func.Should().ThrowAsync<InvalidCommandException>();
   }
@@ -71,7 +75,9 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(
+        command
+      );
 
     func.Should().ThrowAsync<InvalidCommandException>();
   }
@@ -87,7 +93,9 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(
+        command
+      );
 
     func.Should().ThrowAsync<InvalidCommandException>();
   }
@@ -133,7 +141,9 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     var func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(
+        command
+      );
 
     await func.Should().ThrowAsync<InvalidCommandException>();
   }

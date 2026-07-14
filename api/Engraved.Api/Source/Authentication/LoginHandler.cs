@@ -1,6 +1,7 @@
 using Engraved.Api.Authentication.Google;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 
@@ -44,7 +45,10 @@ public class LoginHandler(
   {
     if (string.IsNullOrEmpty(userName))
     {
-      throw new ArgumentException($"{nameof(userName)} is null, maybe you are not running test mode?", nameof(userName));
+      throw new ArgumentException(
+        $"{nameof(userName)} is null, maybe you are not running test mode?",
+        nameof(userName)
+      );
     }
 
     IUser user = await EnsureUser(userName, userName, null);

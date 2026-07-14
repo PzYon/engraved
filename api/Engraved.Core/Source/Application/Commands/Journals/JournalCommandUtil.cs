@@ -1,5 +1,5 @@
 ﻿using Engraved.Core.Application.Commands.Entries.Upsert;
-using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals;

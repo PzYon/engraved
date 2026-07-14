@@ -2,9 +2,8 @@ using System.Threading.Tasks;
 using Engraved.Api.Authentication;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
-using Engraved.Core.Application.Persistence;
-using Engraved.TestUtils;
 using Engraved.Core.Domain.Users;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -22,9 +21,9 @@ public class RefreshHandlerShould
   };
 
   private FakeDateService _dateService = null!;
-  private TestMongoRepository _repository = null!;
-  private RefreshTokenService _refreshTokenService = null!;
   private RefreshHandler _refreshHandler = null!;
+  private RefreshTokenService _refreshTokenService = null!;
+  private TestMongoRepository _repository = null!;
   private IUser _user = null!;
 
   [SetUp]

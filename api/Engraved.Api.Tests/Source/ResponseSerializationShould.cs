@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
@@ -32,9 +33,9 @@ public class ResponseSerializationShould
 {
   private const string JwtSecret = "serialization-test-secret-long-enough-to-be-valid-0123";
   private const string UserName = "serialization@test.ch";
+  private HttpClient _client = null!;
 
   private WebApplicationFactory<Program> _factory = null!;
-  private HttpClient _client = null!;
   private string _journalId = null!;
 
   [OneTimeSetUp]
@@ -79,7 +80,7 @@ public class ResponseSerializationShould
 
     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-    string json = await response.Content.ReadAsStringAsync();
+    var json = await response.Content.ReadAsStringAsync();
     json.Should().Contain("\"value\":42.5", "GaugeEntry.Value is not on IEntry and must survive serialization");
     json.Should().NotContain("$type");
   }
@@ -91,7 +92,7 @@ public class ResponseSerializationShould
 
     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-    string json = await response.Content.ReadAsStringAsync();
+    var json = await response.Content.ReadAsStringAsync();
     json.Should().Contain("\"userRole\":", "BaseJournal.UserRole is not on IJournal and must survive serialization");
     json.Should().Contain("\"type\":\"Gauge\"");
     json.Should().NotContain("$type");

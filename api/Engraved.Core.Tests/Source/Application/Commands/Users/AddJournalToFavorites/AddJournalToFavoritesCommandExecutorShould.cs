@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Domain.Users;
 using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
+namespace Engraved.Core.Tests.Application.Commands.Users.AddJournalToFavorites;
 
 public class AddJournalToFavoritesCommandExecutorShould
 {
-  private TestUserRestrictedMongoRepository _repo = null!;
-
   private const string UserId = TestIds.UserId;
   private const string JournalId = "60703c3b00000000000000d1";
+  private TestUserRestrictedMongoRepository _repo = null!;
 
   [SetUp]
   public async Task SetUp()

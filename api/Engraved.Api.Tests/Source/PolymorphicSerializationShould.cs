@@ -1,14 +1,16 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using Engraved.Api;
 using Engraved.Core.Application.Queries.Search.Entities;
+using Engraved.Core.Domain;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Domain;
+namespace Engraved.Api.Tests;
 
 // System.Text.Json serializes based on the DECLARED type, so without the DomainPolymorphism
 // configuration for IEntry/IJournal/IEntity, values declared as these interfaces (controller
@@ -30,7 +32,7 @@ public class PolymorphicSerializationShould
   {
     IEntry entry = new GaugeEntry { Value = 42 };
 
-    string json = JsonSerializer.Serialize(entry, Options);
+    var json = JsonSerializer.Serialize(entry, Options);
 
     json.Should().Contain("\"value\":42");
   }
@@ -40,7 +42,7 @@ public class PolymorphicSerializationShould
   {
     IEntry[] entries = [new ScrapsEntry { Title = "my scrap" }];
 
-    string json = JsonSerializer.Serialize(entries, Options);
+    var json = JsonSerializer.Serialize(entries, Options);
 
     json.Should().Contain("\"title\":\"my scrap\"");
   }
@@ -50,7 +52,7 @@ public class PolymorphicSerializationShould
   {
     IJournal journal = new GaugeJournal { Name = "my journal", UserRole = UserRole.Owner };
 
-    string json = JsonSerializer.Serialize(journal, Options);
+    var json = JsonSerializer.Serialize(journal, Options);
 
     // UserRole is defined on BaseJournal but not on IJournal, so it proves
     // the runtime type (and not just the interface) is serialized.
@@ -67,7 +69,7 @@ public class PolymorphicSerializationShould
       Entity = new ScrapsEntry { Title = "found scrap" }
     };
 
-    string json = JsonSerializer.Serialize(searchResult, Options);
+    var json = JsonSerializer.Serialize(searchResult, Options);
 
     json.Should().Contain("\"title\":\"found scrap\"");
   }
@@ -75,13 +77,25 @@ public class PolymorphicSerializationShould
   [Test]
   public void DiscoverAllConcreteTypes_ViaReflection()
   {
-    Type[] entryTypes = DomainPolymorphism.GetDerivedTypes(typeof(IEntry));
-    Type[] journalTypes = DomainPolymorphism.GetDerivedTypes(typeof(IJournal));
-    Type[] entityTypes = DomainPolymorphism.GetDerivedTypes(typeof(IEntity));
+    var entryTypes = DomainPolymorphism.GetDerivedTypes(typeof(IEntry));
+    var journalTypes = DomainPolymorphism.GetDerivedTypes(typeof(IJournal));
+    var entityTypes = DomainPolymorphism.GetDerivedTypes(typeof(IEntity));
 
-    entryTypes.Should().Contain(new[] { typeof(CounterEntry), typeof(GaugeEntry), typeof(TimerEntry), typeof(ScrapsEntry), typeof(LogBookEntry) });
+    entryTypes.Should()
+      .Contain(
+        new[]
+        {
+          typeof(CounterEntry), typeof(GaugeEntry), typeof(TimerEntry), typeof(ScrapsEntry), typeof(LogBookEntry)
+        }
+      );
     journalTypes.Should()
-      .Contain(new[] { typeof(CounterJournal), typeof(GaugeJournal), typeof(TimerJournal), typeof(ScrapsJournal), typeof(LogBookJournal) });
+      .Contain(
+        new[]
+        {
+          typeof(CounterJournal), typeof(GaugeJournal), typeof(TimerJournal), typeof(ScrapsJournal),
+          typeof(LogBookJournal)
+        }
+      );
     entityTypes.Should().Contain(entryTypes).And.Contain(journalTypes);
 
     // non-polymorphic types are not configured
@@ -93,7 +107,7 @@ public class PolymorphicSerializationShould
   {
     IEntry entry = new GaugeEntry { Value = 42 };
 
-    string json = JsonSerializer.Serialize(entry, Options);
+    var json = JsonSerializer.Serialize(entry, Options);
 
     // the client relies on the existing JSON shape; the derived types are
     // deliberately registered without discriminator ids
