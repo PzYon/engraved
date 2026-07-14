@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using FluentAssertions;
 using NetArchTest.Rules;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application;
+namespace Engraved.Core.Tests.Application;
 
 // Guards the architectural boundaries Engraved.Core is supposed to hold. Engraved.Core owns the
 // persistence abstractions and the domain, but must stay free of any concrete infrastructure, keep
@@ -25,10 +25,11 @@ public class ArchitectureShould
       .HaveDependencyOn("MongoDB")
       .GetResult();
 
-    result.IsSuccessful.Should().BeTrue(
-      "Engraved.Core must not depend on MongoDB. Offending types: {0}",
-      Describe(result.FailingTypeNames)
-    );
+    result.IsSuccessful.Should()
+      .BeTrue(
+        "Engraved.Core must not depend on MongoDB. Offending types: {0}",
+        Describe(result.FailingTypeNames)
+      );
   }
 
   [Test]
@@ -39,10 +40,11 @@ public class ArchitectureShould
       .HaveDependencyOn("Engraved.Persistence.Mongo")
       .GetResult();
 
-    result.IsSuccessful.Should().BeTrue(
-      "Engraved.Core must not depend on the Mongo persistence implementation. Offending types: {0}",
-      Describe(result.FailingTypeNames)
-    );
+    result.IsSuccessful.Should()
+      .BeTrue(
+        "Engraved.Core must not depend on the Mongo persistence implementation. Offending types: {0}",
+        Describe(result.FailingTypeNames)
+      );
   }
 
   [Test]
@@ -55,10 +57,11 @@ public class ArchitectureShould
       .HaveDependencyOn("Microsoft.AspNetCore")
       .GetResult();
 
-    result.IsSuccessful.Should().BeTrue(
-      "Engraved.Core must not depend on the web framework (Microsoft.AspNetCore). Offending types: {0}",
-      Describe(result.FailingTypeNames)
-    );
+    result.IsSuccessful.Should()
+      .BeTrue(
+        "Engraved.Core must not depend on the web framework (Microsoft.AspNetCore). Offending types: {0}",
+        Describe(result.FailingTypeNames)
+      );
   }
 
   [Test]
@@ -74,10 +77,11 @@ public class ArchitectureShould
       .HaveDependencyOn("Engraved.Core.Application")
       .GetResult();
 
-    result.IsSuccessful.Should().BeTrue(
-      "Engraved.Core.Domain must not depend on Engraved.Core.Application. Offending types: {0}",
-      Describe(result.FailingTypeNames)
-    );
+    result.IsSuccessful.Should()
+      .BeTrue(
+        "Engraved.Core.Domain must not depend on Engraved.Core.Application. Offending types: {0}",
+        Describe(result.FailingTypeNames)
+      );
   }
 
   [Test]
@@ -89,16 +93,17 @@ public class ArchitectureShould
     // consumer (e.g. an executor) must fail this test and force a deliberate allowlist edit.
     string[] sanctionedConsumers = ["NotificationJob"];
 
-    IEnumerable<string> actualConsumers = Types.InAssembly(CoreAssembly)
+    var actualConsumers = Types.InAssembly(CoreAssembly)
       .That()
       .HaveDependencyOn(typeof(IUnrestrictedRepository).FullName)
       .GetTypes()
       .Select(type => type.Name);
 
-    actualConsumers.Should().BeSubsetOf(
-      sanctionedConsumers,
-      "only sanctioned consumers in Engraved.Core may depend on the unrestricted persistence seam"
-    );
+    actualConsumers.Should()
+      .BeSubsetOf(
+        sanctionedConsumers,
+        "only sanctioned consumers in Engraved.Core may depend on the unrestricted persistence seam"
+      );
   }
 
   private static string Describe(IEnumerable<string>? failingTypeNames)

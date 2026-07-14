@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
@@ -42,7 +43,7 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
     if (journalIds is { Length: > 0 })
     {
       var objectIds = journalIds
-        .Select(i => ObjectId.TryParse(i, out var id) ? (ObjectId?) id : null)
+        .Select(i => ObjectId.TryParse(i, out ObjectId id) ? (ObjectId?)id : null)
         .Where(id => id.HasValue)
         .Select(id => id!.Value)
         .ToList();
@@ -64,6 +65,7 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
         Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
       );
     }
+
     if (scheduleMode == ScheduleMode.CurrentUserOnly)
     {
       if (string.IsNullOrEmpty(currentUserId))
@@ -73,10 +75,12 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
 
       // "scheduled" means a schedule with a pending occurrence: a fired schedule keeps its sub-document
       // (with NextOccurrence nulled out), so we must check NextOccurrence rather than mere existence.
-      filters.Add(Builders<JournalDocument>.Filter.And(
-        Builders<JournalDocument>.Filter.Exists($"Schedules.{currentUserId}"),
-        Builders<JournalDocument>.Filter.Ne($"Schedules.{currentUserId}.NextOccurrence", BsonNull.Value)
-      ));
+      filters.Add(
+        Builders<JournalDocument>.Filter.And(
+          Builders<JournalDocument>.Filter.Exists($"Schedules.{currentUserId}"),
+          Builders<JournalDocument>.Filter.Ne($"Schedules.{currentUserId}.NextOccurrence", BsonNull.Value)
+        )
+      );
     }
 
     if (!string.IsNullOrEmpty(searchText))
@@ -105,14 +109,6 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
     return await GetJournal(journalId, PermissionKind.Read, readScope);
   }
 
-  // Explicitly unscoped read: loads the journal regardless of the caller's read permissions, so the
-  // caller can apply the permission rule in memory (the write guards) or read the owner of a journal
-  // it is about to update. Deliberately not part of IJournalRepository.
-  public Task<IJournal?> GetJournalUnscoped(string journalId)
-  {
-    return GetJournal(journalId, PermissionKind.None, UnrestrictedReadScope.Instance);
-  }
-
   public async Task<UpsertResult> UpsertJournal(IJournal journal)
   {
     JournalDocument document = JournalDocumentMapper.ToDocument(journal);
@@ -139,6 +135,14 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
     await JournalsCollection.DeleteOneAsync(
       MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId)
     );
+  }
+
+  // Explicitly unscoped read: loads the journal regardless of the caller's read permissions, so the
+  // caller can apply the permission rule in memory (the write guards) or read the owner of a journal
+  // it is about to update. Deliberately not part of IJournalRepository.
+  public Task<IJournal?> GetJournalUnscoped(string journalId)
+  {
+    return GetJournal(journalId, PermissionKind.None, UnrestrictedReadScope.Instance);
   }
 
   private async Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind, IReadScope scope)

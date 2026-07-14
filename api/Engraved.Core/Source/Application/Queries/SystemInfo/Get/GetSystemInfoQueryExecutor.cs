@@ -1,5 +1,5 @@
 using System.Reflection;
-using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 
 namespace Engraved.Core.Application.Queries.SystemInfo.Get;
 
@@ -13,7 +13,7 @@ public class GetSystemInfoQueryExecutor(IMaintenanceRepository maintenanceReposi
 
   public async Task<SystemInfo> Execute(GetSystemInfoQuery query)
   {
-    string[] segments = GetInformationalAssemblyVersion().Split("+");
+    var segments = GetInformationalAssemblyVersion().Split("+");
 
     var systemInfo = new SystemInfo
     {
@@ -40,7 +40,7 @@ public class GetSystemInfoQueryExecutor(IMaintenanceRepository maintenanceReposi
 
   private static string GetInformationalAssemblyVersion()
   {
-    string? informationalAssemblyVersion = (Assembly
+    var informationalAssemblyVersion = (Assembly
       .GetExecutingAssembly()
       .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute))
       .FirstOrDefault() as AssemblyInformationalVersionAttribute)?.InformationalVersion;

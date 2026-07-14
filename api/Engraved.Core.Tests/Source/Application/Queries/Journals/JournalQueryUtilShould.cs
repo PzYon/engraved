@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Queries.Journals;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries.Journals;
+namespace Engraved.Core.Tests.Application.Queries.Journals;
 
 public class JournalQueryUtilShould
 {
@@ -33,7 +34,7 @@ public class JournalQueryUtilShould
   [Test]
   public async Task SetUserRoleToOwner()
   {
-    IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
+    var ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
       _userRestrictedMongoRepository,
       new TimerJournal { UserId = _meUserId }
     );
@@ -45,7 +46,7 @@ public class JournalQueryUtilShould
   [Test]
   public async Task SetUserRoleToReader()
   {
-    IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
+    var ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
       _userRestrictedMongoRepository,
       new TimerJournal
       {
@@ -67,7 +68,7 @@ public class JournalQueryUtilShould
   [Test]
   public async Task SetUserRoleToWriter()
   {
-    IJournal[] ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
+    var ensuredJournals = await JournalQueryUtil.EnsurePermissionUsers(
       _userRestrictedMongoRepository,
       new TimerJournal
       {

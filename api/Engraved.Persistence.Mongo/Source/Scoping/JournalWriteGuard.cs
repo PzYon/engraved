@@ -3,8 +3,9 @@ using Engraved.Core.Domain;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.Repositories;
 
-namespace Engraved.Persistence.Mongo.Repositories;
+namespace Engraved.Persistence.Mongo.Scoping;
 
 // Write-guard mechanism shared by the user-restricted repository decorators: load the journal
 // without scoping, then apply the permission rule in memory via JournalAccessPolicy. Reads

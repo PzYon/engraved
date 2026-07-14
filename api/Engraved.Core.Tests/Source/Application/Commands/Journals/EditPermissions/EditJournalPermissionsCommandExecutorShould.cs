@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Journals.EditPermissions;
+namespace Engraved.Core.Tests.Application.Commands.Journals.EditPermissions;
 
 public class EditJournalPermissionsCommandExecutorShould
 {
@@ -18,11 +20,11 @@ public class EditJournalPermissionsCommandExecutorShould
   private const string CurrentUserId = "60703c3b00000000000000f1";
   private const string OtherUserName = "other@foo.ch";
   private const string JournalId = "60703c3b00000000000000f3";
+  private string _otherUserId = null!;
+  private PermissionsEnsurer _permissionsEnsurer = null!;
 
   private TestMongoRepository _repo = null!;
   private TestUserRestrictedMongoRepository _userScopedRepo = null!;
-  private PermissionsEnsurer _permissionsEnsurer = null!;
-  private string _otherUserId = null!;
 
   [SetUp]
   public async Task SetUp()
@@ -36,15 +38,16 @@ public class EditJournalPermissionsCommandExecutorShould
 
     // the ensurer works on the plain (unguarded) repository, mirroring the DI registration in
     // PersistenceRegistration: it may create records for users receiving a permission
-    _permissionsEnsurer = new PermissionsEnsurer(_repo, _repo.UpsertUser);
+    _permissionsEnsurer = new PermissionsEnsurer(_repo);
   }
 
   [Test]
   public async Task Throw_When_JournalIdIsEmpty()
   {
-    Func<Task> act = () => CreateExecutor().Execute(
-      new EditJournalPermissionsCommand { JournalId = "" }
-    );
+    Func<Task> act = () => CreateExecutor()
+      .Execute(
+        new EditJournalPermissionsCommand { JournalId = "" }
+      );
 
     await act.Should().ThrowAsync<InvalidCommandException>();
   }
@@ -65,13 +68,14 @@ public class EditJournalPermissionsCommandExecutorShould
     );
 
     // when
-    CommandResult result = await CreateExecutor().Execute(
-      new EditJournalPermissionsCommand
-      {
-        JournalId = JournalId,
-        Permissions = new Dictionary<string, PermissionKind> { { OtherUserName, PermissionKind.Read } }
-      }
-    );
+    CommandResult result = await CreateExecutor()
+      .Execute(
+        new EditJournalPermissionsCommand
+        {
+          JournalId = JournalId,
+          Permissions = new Dictionary<string, PermissionKind> { { OtherUserName, PermissionKind.Read } }
+        }
+      );
 
     // then
     IJournal journal = (await _repo.GetJournal(JournalId))!;
@@ -98,9 +102,10 @@ public class EditJournalPermissionsCommandExecutorShould
     );
 
     // when
-    CommandResult result = await CreateExecutor().Execute(
-      new EditJournalPermissionsCommand { JournalId = JournalId }
-    );
+    CommandResult result = await CreateExecutor()
+      .Execute(
+        new EditJournalPermissionsCommand { JournalId = JournalId }
+      );
 
     // then
     IJournal journal = (await _repo.GetJournal(JournalId))!;
@@ -116,8 +121,7 @@ public class EditJournalPermissionsCommandExecutorShould
     // once lost in a refactoring without any test noticing.
     await CreateJournalOwnedByOtherUser();
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await ModifyPermissionsAsCurrentUser(); }
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await ModifyPermissionsAsCurrentUser(); }
     );
 
     await AssertNoUserRecordWasCreatedForNewcomer();
@@ -129,8 +133,7 @@ public class EditJournalPermissionsCommandExecutorShould
     await CreateJournalOwnedByOtherUser();
     await GrantCurrentUserPermission(PermissionKind.Read);
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(
-      async () => { await ModifyPermissionsAsCurrentUser(); }
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await ModifyPermissionsAsCurrentUser(); }
     );
 
     await AssertNoUserRecordWasCreatedForNewcomer();
@@ -167,13 +170,14 @@ public class EditJournalPermissionsCommandExecutorShould
 
   private async Task ModifyPermissionsAsCurrentUser()
   {
-    await CreateExecutor().Execute(
-      new EditJournalPermissionsCommand
-      {
-        JournalId = JournalId,
-        Permissions = new Dictionary<string, PermissionKind> { { "newcomer@foo.ch", PermissionKind.Read } }
-      }
-    );
+    await CreateExecutor()
+      .Execute(
+        new EditJournalPermissionsCommand
+        {
+          JournalId = JournalId,
+          Permissions = new Dictionary<string, PermissionKind> { { "newcomer@foo.ch", PermissionKind.Read } }
+        }
+      );
   }
 
   private async Task GrantCurrentUserPermission(PermissionKind kind)

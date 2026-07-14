@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Application.Persistence;
+﻿using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
@@ -67,7 +67,7 @@ public class UpsertTimerEntryCommandExecutor(
     // we get all entries here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IDb. for the time being we will skip that.
-    IEntry[] allEntries = await repository.GetEntriesForJournal(journal.Id!);
+    var allEntries = await repository.GetEntriesForJournal(journal.Id!);
 
     return allEntries
       .OfType<TimerEntry>()

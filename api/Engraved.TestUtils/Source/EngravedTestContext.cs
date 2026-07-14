@@ -6,15 +6,14 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 using Engraved.Core.Domain.Users;
 
-namespace Engraved.TestUtils;
+namespace Engraved.TestUtils.Source;
 
 public class EngravedTestContext
 {
+  private EngravedTestContext() { }
   public string UserId { get; set; } = null!;
   public string UserName { get; set; } = null!;
   public TestUserRestrictedMongoRepository UserRestrictedRepo { get; set; } = null!;
-
-  private EngravedTestContext() { }
 
   public static async Task<EngravedTestContext> CreateForUser(
     TestMongoRepository mongoRepository,

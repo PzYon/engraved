@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Domain.Users;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application;
+namespace Engraved.Core.Tests.Application;
 
 public class DispatcherShould
 {
@@ -129,14 +130,15 @@ public class DispatcherShould
     for (var taskIndex = 0; taskIndex < parallelTaskCount; taskIndex++)
     {
       tasks[taskIndex] = Task.Run(async () =>
-      {
-        for (var actionIndex = 0; actionIndex < actionPerTaskCount; actionIndex++)
         {
-          Dispatcher dispatcher = CreateDispatcher("user_one", queryCache);
-          await dispatcher.Query<Guid, FakeQuery>(new FakeQuery());
-          await dispatcher.Command(new FakeCommand { AffectedUsers = ["user_zero", "user_one"] });
+          for (var actionIndex = 0; actionIndex < actionPerTaskCount; actionIndex++)
+          {
+            Dispatcher dispatcher = CreateDispatcher("user_one", queryCache);
+            await dispatcher.Query<Guid, FakeQuery>(new FakeQuery());
+            await dispatcher.Command(new FakeCommand { AffectedUsers = ["user_zero", "user_one"] });
+          }
         }
-      });
+      );
     }
 
     await Task.WhenAll(tasks);
@@ -158,7 +160,7 @@ public class DispatcherShould
 
 public class FakeCommand : ICommand
 {
-  public List<string> AffectedUsers { get; set; } = new List<string>();
+  public List<string> AffectedUsers { get; set; } = new();
 }
 
 public class FakeCommandExecutor : ICommandExecutor<FakeCommand>

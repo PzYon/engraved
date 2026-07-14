@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Queries;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries;
+namespace Engraved.Core.Tests.Application.Queries;
 
 public class QueryCacheShould
 {

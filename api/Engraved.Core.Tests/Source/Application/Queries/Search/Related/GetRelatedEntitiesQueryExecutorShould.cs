@@ -1,18 +1,21 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
+using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Search.Entities;
+using Engraved.Core.Application.Queries.Search.Related;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries.Search.Related;
+namespace Engraved.Core.Tests.Application.Queries.Search.Related;
 
 public class GetRelatedEntitiesQueryExecutorShould
 {
@@ -54,13 +57,13 @@ public class GetRelatedEntitiesQueryExecutorShould
 
     result.Entities
       .Where(e => e.EntityType == EntityType.Entry)
-      .Select(e => ((ScrapsEntry) e.Entity).Title)
+      .Select(e => ((ScrapsEntry)e.Entity).Title)
       .Should()
       .BeEquivalentTo("Best Carbonara in Town");
 
     result.Entities
       .Where(e => e.EntityType == EntityType.Journal)
-      .Select(e => ((IJournal) e.Entity).Name)
+      .Select(e => ((IJournal)e.Entity).Name)
       .Should()
       .BeEquivalentTo("Pasta Places");
 
@@ -87,13 +90,13 @@ public class GetRelatedEntitiesQueryExecutorShould
 
     result.Entities
       .Where(e => e.EntityType == EntityType.Journal)
-      .Select(e => ((IJournal) e.Entity).Name)
+      .Select(e => ((IJournal)e.Entity).Name)
       .Should()
       .BeEquivalentTo("Recipes Collection");
 
     result.Entities
       .Where(e => e.EntityType == EntityType.Entry)
-      .Select(e => ((ScrapsEntry) e.Entity).Title)
+      .Select(e => ((ScrapsEntry)e.Entity).Title)
       .Should()
       .BeEquivalentTo("Pasta Shapes");
   }
@@ -113,8 +116,8 @@ public class GetRelatedEntitiesQueryExecutorShould
     );
 
     result.Entities.Length.Should().Be(2);
-    ((ScrapsEntry) result.Entities[0].Entity).Title.Should().Be("Tokyo Itinerary");
-    ((ScrapsEntry) result.Entities[1].Entity).Title.Should().Be("Random Thoughts");
+    ((ScrapsEntry)result.Entities[0].Entity).Title.Should().Be("Tokyo Itinerary");
+    ((ScrapsEntry)result.Entities[1].Entity).Title.Should().Be("Random Thoughts");
   }
 
   [Test]
@@ -133,7 +136,7 @@ public class GetRelatedEntitiesQueryExecutorShould
     );
 
     result.Entities.Length.Should().Be(1);
-    ((ScrapsEntry) result.Entities[0].Entity).Title.Should().Be("Übung Yoga");
+    ((ScrapsEntry)result.Entities[0].Entity).Title.Should().Be("Übung Yoga");
   }
 
   [Test]
@@ -180,7 +183,7 @@ public class GetRelatedEntitiesQueryExecutorShould
     );
 
     result.Entities.Length.Should().Be(1);
-    ((ScrapsEntry) result.Entities[0].Entity).Title.Should().Be("Marathon Nutrition");
+    ((ScrapsEntry)result.Entities[0].Entity).Title.Should().Be("Marathon Nutrition");
   }
 
   [Test]
@@ -197,8 +200,8 @@ public class GetRelatedEntitiesQueryExecutorShould
   [Test]
   public void Throw_WhenEntityIdIsMissing()
   {
-    Assert.ThrowsAsync<InvalidQueryException>(
-      async () => await _executor.Execute(new GetRelatedEntitiesQuery { EntityType = EntityType.Entry })
+    Assert.ThrowsAsync<InvalidQueryException>(async ()
+      => await _executor.Execute(new GetRelatedEntitiesQuery { EntityType = EntityType.Entry })
     );
   }
 

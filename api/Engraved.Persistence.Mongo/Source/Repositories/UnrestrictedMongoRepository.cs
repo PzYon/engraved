@@ -1,16 +1,15 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
-using Engraved.Persistence.Mongo.Repositories;
 using Engraved.Persistence.Mongo.Scoping;
 using MongoDB.Driver;
 
-namespace Engraved.Persistence.Mongo;
+namespace Engraved.Persistence.Mongo.Repositories;
 
 // Full persistence access with no permission/user scoping: composes the plain per-aggregate
 // repositories (reads shaped by UnrestrictedReadScope, no write guards), plus the
@@ -28,6 +27,7 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
   public UnrestrictedMongoRepository(MongoDatabaseClient mongoDatabaseClient)
   {
     _mongoDatabaseClient = mongoDatabaseClient;
+    
     _userRepository = new MongoUserRepository(mongoDatabaseClient);
     _journalRepository = new MongoJournalRepository(mongoDatabaseClient, UnrestrictedReadScope.Instance);
     _entryRepository = new MongoEntryRepository(mongoDatabaseClient, _journalRepository);

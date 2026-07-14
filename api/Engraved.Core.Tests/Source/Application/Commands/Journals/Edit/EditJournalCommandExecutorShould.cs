@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Commands.Journals.Edit;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Journals.Edit;
+namespace Engraved.Core.Tests.Application.Commands.Journals.Edit;
 
 public class EditJournalCommandExecutorShould
 {
@@ -35,8 +37,14 @@ public class EditJournalCommandExecutorShould
         Name = "journal-name",
         Attributes = new Dictionary<string, JournalAttribute>
         {
-          { "color", new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } } },
-          { "size", new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } } }
+          {
+            "color",
+            new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } }
+          },
+          {
+            "size",
+            new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } }
+          }
         }
       }
     );
@@ -79,12 +87,15 @@ public class EditJournalCommandExecutorShould
         Name = "journal-name",
         Attributes = new Dictionary<string, JournalAttribute>
         {
-          { "size", new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } } }
+          {
+            "size",
+            new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } }
+          }
         }
       }
     );
 
-    IEntry[] editedJournalEntries = await _repo.GetEntriesForJournal(journalId);
+    var editedJournalEntries = await _repo.GetEntriesForJournal(journalId);
     editedJournalEntries.Should().HaveCount(2);
     editedJournalEntries.Should().OnlyContain(entry => !entry.JournalAttributeValues.ContainsKey("color"));
     editedJournalEntries.SelectMany(entry => entry.JournalAttributeValues.Keys).Should().Contain("size");
@@ -108,8 +119,14 @@ public class EditJournalCommandExecutorShould
         Name = "journal-name",
         Attributes = new Dictionary<string, JournalAttribute>
         {
-          { "color", new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } } },
-          { "size", new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } } }
+          {
+            "color",
+            new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } }
+          },
+          {
+            "size",
+            new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } }
+          }
         }
       }
     );
@@ -134,8 +151,14 @@ public class EditJournalCommandExecutorShould
         Name = "journal-name",
         Attributes = new Dictionary<string, JournalAttribute>
         {
-          { "color", new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } } },
-          { "size", new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } } }
+          {
+            "color",
+            new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } }
+          },
+          {
+            "size",
+            new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } }
+          }
         }
       }
     );

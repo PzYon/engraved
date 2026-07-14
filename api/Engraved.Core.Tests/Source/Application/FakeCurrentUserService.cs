@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Engraved.Core.Application;
 using Engraved.Core.Domain.Users;
 
-namespace Engraved.Core.Application;
+namespace Engraved.Core.Tests.Application;
 
 public class FakeCurrentUserService(string name) : ICurrentUserService
 {

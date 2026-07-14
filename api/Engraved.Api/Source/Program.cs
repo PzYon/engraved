@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Engraved.Api;
 using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Bootstrap;
@@ -10,7 +11,6 @@ using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Jobs;
 using Engraved.Core.Application.Queries;
-using Engraved.Core.Domain;
 using Engraved.Core.Domain.Notifications;
 using Engraved.Notifications.OneSignal;
 using Microsoft.OpenApi;
@@ -135,4 +135,7 @@ app.Run();
 
 // Exposes the implicit entry-point class so WebApplicationFactory<Program> (the startup smoke test)
 // can reference it. Top-level statements otherwise generate an internal Program.
-public partial class Program;
+namespace Engraved.Api
+{
+  public class Program;
+}

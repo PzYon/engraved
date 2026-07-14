@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Domain.Users;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Users.UpdateTags;
+namespace Engraved.Core.Tests.Application.Commands.Users.UpdateTags;
 
 public class UpdateUserTagsCommandExecutorShould
 {
-  private TestUserRestrictedMongoRepository _repo = null!;
-
   private const string UserId = TestIds.UserId;
+  private TestUserRestrictedMongoRepository _repo = null!;
 
   [SetUp]
   public async Task SetUp()

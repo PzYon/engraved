@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
-using Engraved.TestUtils;
+using Engraved.Persistence.Mongo.Repositories;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -34,21 +35,21 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   [Test]
   public async Task ReturnAllJournals_WithEmptyQuery()
   {
-    IJournal[] results = await _repository.GetAllJournals();
+    var results = await _repository.GetAllJournals();
     results.Length.Should().Be(3);
   }
 
   [Test]
   public async Task ReturnLimitedJournals()
   {
-    IJournal[] results = await _repository.GetAllJournals(null, null, null, null, 1);
+    var results = await _repository.GetAllJournals(null, null, null, null, 1);
     results.Length.Should().Be(1);
   }
 
   [Test]
   public async Task Return_Matching_Name()
   {
-    IJournal[] results = await _repository.GetAllJournals("gauge");
+    var results = await _repository.GetAllJournals("gauge");
     results.Length.Should().Be(1);
     results[0].Name.Should().Be("Gauge");
   }
@@ -56,7 +57,7 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   [Test]
   public async Task Return_Matching_Description()
   {
-    IJournal[] results = await _repository.GetAllJournals("tim3r");
+    var results = await _repository.GetAllJournals("tim3r");
     results.Length.Should().Be(1);
     results[0].Name.Should().Be("Timer");
   }
@@ -64,7 +65,7 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   [Test]
   public async Task Return_Matching_JournalTypes()
   {
-    IJournal[] results = await _repository.GetAllJournals(null, null, [JournalType.Timer, JournalType.Gauge]);
+    var results = await _repository.GetAllJournals(null, null, [JournalType.Timer, JournalType.Gauge]);
     results.Length.Should().Be(2);
   }
 
@@ -73,7 +74,7 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   {
     await _repository.UpsertJournal(new LogBookJournal { Name = "LogBook" });
 
-    IJournal[] results = await _repository.GetAllJournals(null, null, [JournalType.LogBook]);
+    var results = await _repository.GetAllJournals(null, null, [JournalType.LogBook]);
 
     results.Length.Should().Be(1);
     results[0].Should().BeOfType<LogBookJournal>();
@@ -82,7 +83,7 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   [Test]
   public async Task Return_Matching_JournalId()
   {
-    IJournal[] results = await _repository.GetAllJournals(null, null, null, [_gaugeJournalId], 10);
+    var results = await _repository.GetAllJournals(null, null, null, [_gaugeJournalId], 10);
     results.Length.Should().Be(1);
     results[0].Id.Should().Be(_gaugeJournalId);
   }
@@ -110,7 +111,7 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       }
     );
 
-    IJournal[] results = await _repository.GetAllJournals(
+    var results = await _repository.GetAllJournals(
       null,
       ScheduleMode.CurrentUserOnly,
       null,
@@ -146,7 +147,7 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       }
     );
 
-    IJournal[] results = await _repository.GetAllJournals(
+    var results = await _repository.GetAllJournals(
       null,
       ScheduleMode.CurrentUserOnly,
       null,

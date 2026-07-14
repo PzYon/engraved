@@ -6,7 +6,7 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using MongoDB.Driver;
 using NUnit.Framework;

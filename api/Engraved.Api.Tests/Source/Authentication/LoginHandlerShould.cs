@@ -5,10 +5,9 @@ using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
-using Engraved.Core.Application.Persistence;
-using Engraved.TestUtils;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -64,19 +63,18 @@ public class LoginHandlerShould
   [Test]
   public void Throw_When_TokenHasInvalidFormat()
   {
-    Assert.ThrowsAsync<GoogleTokenValidationException>(
-      async () => await _loginHandler.Login("adsf asdf R@nD0m T3xT asdf asdf")
+    Assert.ThrowsAsync<GoogleTokenValidationException>(async ()
+      => await _loginHandler.Login("adsf asdf R@nD0m T3xT asdf asdf")
     );
   }
 
   [Test]
   public void Throw_When_TokenIsNotValid()
   {
-    Assert.ThrowsAsync<GoogleTokenValidationException>(
-      async () =>
-        await _loginHandler.Login(
-          "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJteS1wcm9qZWN0IiwiZXhwIjoxNTA5NjUwODAxLCJpYXQiOjE1MDk2NTQ0MDF9.F4iKO0R0wvHkpCcQoyrYttdGxE5FLAgDhbTJQLEHIBPsbL2WkLxXB9IGbDESn9rE7oxn89PJFRtcLn7kJwvdQkQcsPxn2RQorvDAnvAi1w3k8gpxYWo2DYJlnsi7mxXDqSUCNm1UCLRCW68ssYJxYLSg7B1xGMgDADGyYPaIx1EdN4dDbh-WeDyLLa7a8iWVBXdbmy1H3fEuiAyxiZpk2ll7DcQ6ryyMrU2XadwEr9PDqbLe5SrlaJsQbFi8RIdlQJSo_DZGOoAlA5bYTDYXb-skm7qvoaH5uMtOUb0rjijYuuxhNZvZDaBerEaxgmmlO0nQgtn12KVKjmKlisG79Q"
-        )
+    Assert.ThrowsAsync<GoogleTokenValidationException>(async () =>
+      await _loginHandler.Login(
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJteS1wcm9qZWN0IiwiZXhwIjoxNTA5NjUwODAxLCJpYXQiOjE1MDk2NTQ0MDF9.F4iKO0R0wvHkpCcQoyrYttdGxE5FLAgDhbTJQLEHIBPsbL2WkLxXB9IGbDESn9rE7oxn89PJFRtcLn7kJwvdQkQcsPxn2RQorvDAnvAi1w3k8gpxYWo2DYJlnsi7mxXDqSUCNm1UCLRCW68ssYJxYLSg7B1xGMgDADGyYPaIx1EdN4dDbh-WeDyLLa7a8iWVBXdbmy1H3fEuiAyxiZpk2ll7DcQ6ryyMrU2XadwEr9PDqbLe5SrlaJsQbFi8RIdlQJSo_DZGOoAlA5bYTDYXb-skm7qvoaH5uMtOUb0rjijYuuxhNZvZDaBerEaxgmmlO0nQgtn12KVKjmKlisG79Q"
+      )
     );
   }
 
@@ -87,7 +85,7 @@ public class LoginHandlerShould
     const string imageUrl = "https://im.age.url";
     const string userName = "ha-pe";
 
-    var loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
+    LoginHandler loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 
@@ -102,7 +100,7 @@ public class LoginHandlerShould
     result.User.Id.Should().NotBeNull();
     result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
 
-    IUser[] users = await _testRepository.GetAllUsers();
+    var users = await _testRepository.GetAllUsers();
 
     users.Length.Should().Be(1);
 
@@ -116,7 +114,7 @@ public class LoginHandlerShould
     user.FavoriteJournalIds.Count().Should().Be(1);
     user.GlobalUniqueId.Should().NotBeNull();
 
-    string quickNotesId = user.FavoriteJournalIds.First();
+    var quickNotesId = user.FavoriteJournalIds.First();
     IJournal? journal = await _testRepository.GetJournal(quickNotesId);
     journal.Should().NotBeNull();
     journal.Id.Should().Be(quickNotesId);
@@ -148,7 +146,7 @@ public class LoginHandlerShould
 
     await _testRepository.UpsertUser(existingUser);
 
-    var loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
+    LoginHandler loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 
@@ -160,7 +158,7 @@ public class LoginHandlerShould
     result.User.GlobalUniqueId.Should().Be(globalUniqueId);
     result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
 
-    IUser[] users = await _testRepository.GetAllUsers();
+    var users = await _testRepository.GetAllUsers();
 
     users.Length.Should().Be(1);
 

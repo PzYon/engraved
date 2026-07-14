@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Application.Persistence;
+﻿using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
@@ -44,7 +44,7 @@ public class MoveEntryCommandExecutor(
 
     // use the source journal loaded above: entry.ParentId already points to the target here,
     // so re-loading via the entry would wrongly derive both sides from the target journal.
-    string[] affectedUserIds = targetJournal.Permissions.GetUserIdsWithAccess()
+    var affectedUserIds = targetJournal.Permissions.GetUserIdsWithAccess()
       .Union(sourceJournal.Permissions.GetUserIdsWithAccess())
       .ToArray();
 

@@ -1,26 +1,28 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.AddSchedule;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
 using Engraved.Core.Application.Commands.Journals.AddSchedule;
-using Engraved.TestUtils;
+using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries.Search;
+namespace Engraved.Core.Tests.Application.Queries.Search;
 
 public class SearchEntitiesQueryExecutorShould
 {
   private FakeDateService _dateService = null!;
-  private SearchEntitiesQueryExecutor _searchExecutor = null!;
   private TestUserRestrictedMongoRepository _repo = null!;
+  private SearchEntitiesQueryExecutor _searchExecutor = null!;
 
   [SetUp]
   public async Task SetUp()

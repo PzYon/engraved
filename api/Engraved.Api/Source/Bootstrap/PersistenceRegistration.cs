@@ -1,10 +1,11 @@
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Permissions;
-using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo;
 using Engraved.Persistence.Mongo.Repositories;
+using Engraved.Persistence.Mongo.Repositories.UserRestricted;
 using Engraved.Persistence.Mongo.Scoping;
 
 namespace Engraved.Api.Bootstrap;
@@ -68,7 +69,7 @@ public static class PersistenceRegistration
     services.AddTransient<PermissionsEnsurer>(provider =>
       {
         var userRepository = new MongoUserRepository(provider.GetRequiredService<MongoDatabaseClient>());
-        return new PermissionsEnsurer(userRepository, userRepository.UpsertUser);
+        return new PermissionsEnsurer(userRepository);
       }
     );
   }

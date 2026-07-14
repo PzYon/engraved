@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Domain.Users;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
+namespace Engraved.Core.Tests.Application.Commands.Users.RemoveJournalFromFavorites;
 
 public class RemoveJournalFromFavoritesCommandExecutorShould
 {
-  private TestUserRestrictedMongoRepository _repo = null!;
-
   private const string UserId = TestIds.UserId;
   private const string JournalId = "60703c3b00000000000000d1";
+  private TestUserRestrictedMongoRepository _repo = null!;
 
   [SetUp]
   public async Task SetUp()
@@ -29,15 +30,20 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     user.FavoriteJournalIds.Add(JournalId);
     await _repo.UpsertUser(user);
 
-    var repositoryWithDifferentCache = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository repositoryWithDifferentCache =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
 
     // when
-    await new RemoveJournalFromFavoritesCommandExecutor(repositoryWithDifferentCache, repositoryWithDifferentCache.CurrentUser).Execute(
+    await new RemoveJournalFromFavoritesCommandExecutor(
+      repositoryWithDifferentCache,
+      repositoryWithDifferentCache.CurrentUser
+    ).Execute(
       new RemoveJournalFromFavoritesCommand { JournalId = JournalId }
     );
 
     // then
-    var secondRepoForVerification = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository secondRepoForVerification =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     IUser updatedUser = (await secondRepoForVerification.GetUser(UserId))!;
     updatedUser.Id.Should().Be(UserId);
     updatedUser.FavoriteJournalIds.Should().NotContain(JournalId);

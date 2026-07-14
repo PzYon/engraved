@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Engraved.Core.Application.Commands.Journals.Edit;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Journals.Edit;
+namespace Engraved.Core.Tests.Application.Commands.Journals.Edit;
 
 public class KeyNormalizerShould
 {
@@ -13,7 +14,7 @@ public class KeyNormalizerShould
   [TestCase("=")]
   public void ReplaceInvalidChar_With_Underscore(string invalidChar)
   {
-    Dictionary<string, int> result = KeyNormalizer.Normalize(
+    var result = KeyNormalizer.Normalize(
       new Dictionary<string, int> { { $"a{invalidChar}b", 1 } }
     );
 
@@ -23,7 +24,7 @@ public class KeyNormalizerShould
   [Test]
   public void ReplaceMultipleInvalidChars_InSameKey()
   {
-    Dictionary<string, int> result = KeyNormalizer.Normalize(
+    var result = KeyNormalizer.Normalize(
       new Dictionary<string, int> { { "a,b;c=d", 42 } }
     );
 
@@ -33,7 +34,7 @@ public class KeyNormalizerShould
   [Test]
   public void LeaveCleanKeysUntouched()
   {
-    Dictionary<string, string> result = KeyNormalizer.Normalize(
+    var result = KeyNormalizer.Normalize(
       new Dictionary<string, string> { { "clean-key", "value" } }
     );
 

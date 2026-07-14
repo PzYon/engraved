@@ -1,4 +1,5 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
@@ -11,7 +12,6 @@ public class EditJournalCommandExecutor(
 )
   : ICommandExecutor<EditJournalCommand>
 {
-
   public async Task<CommandResult> Execute(EditJournalCommand command)
   {
     if (string.IsNullOrEmpty(command.JournalId))

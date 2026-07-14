@@ -1,7 +1,7 @@
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
-namespace Engraved.Core.Application.Persistence;
+namespace Engraved.Core.Application.Persistence.Repositories;
 
 public interface IEntryRepository
 {

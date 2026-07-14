@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
@@ -11,10 +12,11 @@ using Engraved.Persistence.Mongo.DocumentTypes.Entries;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
 using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using Engraved.Persistence.Mongo.Repositories;
+using Engraved.Persistence.Mongo.Repositories.UserRestricted;
 using Engraved.Persistence.Mongo.Scoping;
 using MongoDB.Driver;
 
-namespace Engraved.TestUtils;
+namespace Engraved.TestUtils.Source;
 
 // Test convenience bundle: composes the user-restricted repositories exactly like the DI wiring in
 // PersistenceRegistration (production has no composite type anymore - executors inject the role
@@ -22,10 +24,10 @@ namespace Engraved.TestUtils;
 // arrange/assert directly in the database.
 public class TestUserRestrictedMongoRepository : IUserRepository, IJournalRepository, IEntryRepository
 {
+  private readonly UserRestrictedEntryRepository _entryRepository;
+  private readonly UserRestrictedJournalRepository _journalRepository;
   private readonly MongoDatabaseClient _mongoDatabaseClient;
   private readonly UserRestrictedUserRepository _userRepository;
-  private readonly UserRestrictedJournalRepository _journalRepository;
-  private readonly UserRestrictedEntryRepository _entryRepository;
 
   public TestUserRestrictedMongoRepository(
     MongoDatabaseClient mongoDatabaseClient,
@@ -51,62 +53,6 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
   public IMongoCollection<JournalDocument> Journals => _mongoDatabaseClient.JournalsCollection;
   public IMongoCollection<EntryDocument> Entries => _mongoDatabaseClient.EntriesCollection;
   public IMongoCollection<UserDocument> Users => _mongoDatabaseClient.UsersCollection;
-
-  public Task<IUser?> GetUser(string? nameOrId)
-  {
-    return _userRepository.GetUser(nameOrId);
-  }
-
-  public Task<UpsertResult> UpsertUser(IUser user)
-  {
-    return _userRepository.UpsertUser(user);
-  }
-
-  public Task<IUser[]> GetUsers(params string[] userIds)
-  {
-    return _userRepository.GetUsers(userIds);
-  }
-
-  public Task<IUser[]> GetAllUsers()
-  {
-    return _userRepository.GetAllUsers();
-  }
-
-  public Task<IJournal[]> GetAllJournals(
-    string? searchText = null,
-    ScheduleMode? scheduleMode = null,
-    JournalType[]? journalTypes = null,
-    string[]? journalIds = null,
-    int? limit = null,
-    string? currentUserId = null,
-    bool matchAnyWord = false
-  )
-  {
-    return _journalRepository.GetAllJournals(
-      searchText,
-      scheduleMode,
-      journalTypes,
-      journalIds,
-      limit,
-      currentUserId,
-      matchAnyWord
-    );
-  }
-
-  public Task<IJournal?> GetJournal(string journalId)
-  {
-    return _journalRepository.GetJournal(journalId);
-  }
-
-  public Task<UpsertResult> UpsertJournal(IJournal journal)
-  {
-    return _journalRepository.UpsertJournal(journal);
-  }
-
-  public Task DeleteJournal(string journalId)
-  {
-    return _journalRepository.DeleteJournal(journalId);
-  }
 
   public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
@@ -162,5 +108,61 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
   public Task<IEntry?> GetEntry(string entryId)
   {
     return _entryRepository.GetEntry(entryId);
+  }
+
+  public Task<IJournal[]> GetAllJournals(
+    string? searchText = null,
+    ScheduleMode? scheduleMode = null,
+    JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
+    int? limit = null,
+    string? currentUserId = null,
+    bool matchAnyWord = false
+  )
+  {
+    return _journalRepository.GetAllJournals(
+      searchText,
+      scheduleMode,
+      journalTypes,
+      journalIds,
+      limit,
+      currentUserId,
+      matchAnyWord
+    );
+  }
+
+  public Task<IJournal?> GetJournal(string journalId)
+  {
+    return _journalRepository.GetJournal(journalId);
+  }
+
+  public Task<UpsertResult> UpsertJournal(IJournal journal)
+  {
+    return _journalRepository.UpsertJournal(journal);
+  }
+
+  public Task DeleteJournal(string journalId)
+  {
+    return _journalRepository.DeleteJournal(journalId);
+  }
+
+  public Task<IUser?> GetUser(string? nameOrId)
+  {
+    return _userRepository.GetUser(nameOrId);
+  }
+
+  public Task<UpsertResult> UpsertUser(IUser user)
+  {
+    return _userRepository.UpsertUser(user);
+  }
+
+  public Task<IUser[]> GetUsers(params string[] userIds)
+  {
+    return _userRepository.GetUsers(userIds);
+  }
+
+  public Task<IUser[]> GetAllUsers()
+  {
+    return _userRepository.GetAllUsers();
   }
 }

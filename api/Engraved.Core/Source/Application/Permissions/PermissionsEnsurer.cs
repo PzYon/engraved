@@ -1,13 +1,11 @@
 ﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Permissions;
 
-public class PermissionsEnsurer(
-  IUserRepository repo,
-  Func<IUser, Task<UpsertResult>> upsertUser
-)
+public class PermissionsEnsurer(IUserRepository repo)
 {
   public async Task EnsurePermissions(
     IPermissionHolder permissionHolder,
@@ -36,7 +34,7 @@ public class PermissionsEnsurer(
       return user.Id!;
     }
 
-    UpsertResult result = await upsertUser(new User { Name = userName });
+    UpsertResult result = await repo.UpsertUser(new User { Name = userName });
 
     return result.EntityId;
   }

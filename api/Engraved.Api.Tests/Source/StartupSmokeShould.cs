@@ -9,10 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
-using Engraved.Core.Application.Persistence;
-using Engraved.Persistence.Mongo;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Persistence.Mongo.Repositories;
-using Engraved.TestUtils;
+using Engraved.Persistence.Mongo.Repositories.UserRestricted;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -101,7 +101,8 @@ public class StartupSmokeShould
   public async Task Return_Unauthorized_For_ValidlySignedToken_Missing_NameIdClaim()
   {
     HttpClient client = _factory.CreateClient();
-    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CreateTokenWithoutNameIdClaim());
+    client.DefaultRequestHeaders.Authorization =
+      new AuthenticationHeaderValue("Bearer", CreateTokenWithoutNameIdClaim());
 
     // any [Authorize] endpoint works - the request must never reach the controller.
     HttpResponseMessage response = await client.GetAsync("/api/system_info");

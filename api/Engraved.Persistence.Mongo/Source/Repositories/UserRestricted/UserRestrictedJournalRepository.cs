@@ -1,7 +1,9 @@
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Journals;
+using Engraved.Persistence.Mongo.Scoping;
 
-namespace Engraved.Persistence.Mongo.Repositories;
+namespace Engraved.Persistence.Mongo.Repositories.UserRestricted;
 
 // Decorator adding the write guards for the current user on top of the (read-scoped) journal
 // repository. Reads pass through - they are shaped by the UserReadScope injected into the inner

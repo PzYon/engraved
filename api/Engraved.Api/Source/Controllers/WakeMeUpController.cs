@@ -1,4 +1,4 @@
-﻿using Engraved.Core.Application.Persistence;
+﻿using Engraved.Core.Application.Persistence.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

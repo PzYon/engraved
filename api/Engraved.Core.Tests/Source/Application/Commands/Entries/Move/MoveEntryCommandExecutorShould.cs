@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
+using Engraved.Core.Application.Commands.Entries.Move;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Entries.Move;
+namespace Engraved.Core.Tests.Application.Commands.Entries.Move;
 
 public class MoveEntryCommandExecutorShould
 {
@@ -38,12 +41,12 @@ public class MoveEntryCommandExecutorShould
         DateTime = _dateService.UtcNow
       }
     );
-    IEntry[] sourceEntries = await _repo.GetEntriesForJournal(sourceJournalId);
+    var sourceEntries = await _repo.GetEntriesForJournal(sourceJournalId);
     sourceEntries.Length.Should().Be(1);
 
     // given: target
     await _repo.UpsertJournal(new CounterJournal { Id = targetJournalId });
-    IEntry[] targetEntries = await _repo.GetEntriesForJournal(targetJournalId);
+    var targetEntries = await _repo.GetEntriesForJournal(targetJournalId);
     targetEntries.Should().BeEmpty();
 
     // when

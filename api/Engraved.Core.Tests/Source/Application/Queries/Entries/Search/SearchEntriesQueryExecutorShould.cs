@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
-using Engraved.TestUtils;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Queries.Entries.Search;
+namespace Engraved.Core.Tests.Application.Queries.Entries.Search;
 
 public class SearchEntriesQueryExecutorShould
 {
+  private const string UserId = TestIds.UserId;
   private FakeDateService _dateService = null!;
   private TestUserRestrictedMongoRepository _repo = null!;
-
-  private const string UserId = TestIds.UserId;
 
   [SetUp]
   public async Task SetUp()
@@ -68,7 +69,8 @@ public class SearchEntriesQueryExecutorShould
       }
     );
 
-    var queryExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository queryExecutorRepo =
+      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
 
     var queryExecutor = new SearchEntriesQueryExecutor(
       queryExecutorRepo,

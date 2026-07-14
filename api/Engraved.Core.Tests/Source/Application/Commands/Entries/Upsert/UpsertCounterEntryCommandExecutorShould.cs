@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Engraved.Core.Application;
+using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
-using Engraved.TestUtils;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application.Commands.Entries.Upsert;
+namespace Engraved.Core.Tests.Application.Commands.Entries.Upsert;
 
 public class UpsertCounterEntryCommandExecutorShould
 {
@@ -28,7 +30,9 @@ public class UpsertCounterEntryCommandExecutorShould
     await _testRepository.UpsertJournal(new CounterJournal { Id = journalId });
 
     var command = new UpsertCounterEntryCommand { JournalId = journalId, Notes = "foo" };
-    await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
+    await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(
+      command
+    );
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
     (await _testRepository.GetEntriesForJournal(journalId)).First().Notes.Should().Be("foo");
@@ -44,7 +48,7 @@ public class UpsertCounterEntryCommandExecutorShould
 
     var createCommand = new UpsertGaugeEntryCommand { JournalId = journalId, Notes = "foo", Value = 123 };
 
-    var commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,dateService);
+    var commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, dateService);
     CommandResult result = await commandExecutor.Execute(createCommand);
 
     var updateCommand = new UpsertGaugeEntryCommand
@@ -55,7 +59,7 @@ public class UpsertCounterEntryCommandExecutorShould
       Value = 42
     };
 
-    commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository,dateService);
+    commandExecutor = new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, dateService);
     await commandExecutor.Execute(updateCommand);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -70,12 +74,14 @@ public class UpsertCounterEntryCommandExecutorShould
   {
     var command = new UpsertCounterEntryCommand { JournalId = string.Empty };
 
-    Func<Task> func = Action;
+    var func = Action;
     func.Should().ThrowAsync<InvalidCommandException>();
 
     async Task Action()
     {
-      await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
+      await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(
+        command
+      );
     }
   }
 
@@ -88,12 +94,14 @@ public class UpsertCounterEntryCommandExecutorShould
       Notes = "n0t3s"
     };
 
-    Func<Task> func = Action;
+    var func = Action;
     func.Should().ThrowAsync<InvalidCommandException>();
 
     async Task Action()
     {
-      await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository,new FakeDateService()).Execute(command);
+      await new UpsertCounterEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(
+        command
+      );
     }
   }
 }

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Engraved.Core.Domain.Notifications;
 
-namespace Engraved.Core.Application.Jobs;
+namespace Engraved.Core.Tests.Application.Jobs;
 
 public class TestNotificationService : INotificationService
 {

@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
-using Engraved.TestUtils;
+using Engraved.Persistence.Mongo.Repositories;
+using Engraved.TestUtils.Source;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -29,7 +30,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Return_Empty()
   {
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId);
+    var entries = await _repository.GetEntriesForJournal(_journalId);
 
     entries.Should().BeEmpty();
   }
@@ -37,10 +38,10 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_ToDate()
   {
-    string entryId = await AddEntry(DateTime.Now.AddDays(-3));
+    var entryId = await AddEntry(DateTime.Now.AddDays(-3));
     await AddEntry(DateTime.Now.AddDays(3));
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, null, DateTime.Now);
+    var entries = await _repository.GetEntriesForJournal(_journalId, null, DateTime.Now);
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -50,9 +51,9 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   public async Task Consider_FromDate()
   {
     await AddEntry(DateTime.Now.AddDays(-1));
-    string entryId = await AddEntry(DateTime.Now.AddDays(1));
+    var entryId = await AddEntry(DateTime.Now.AddDays(1));
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(_journalId, DateTime.Now);
+    var entries = await _repository.GetEntriesForJournal(_journalId, DateTime.Now);
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -64,7 +65,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     await AddEntry(DateTime.Now.AddDays(-10));
     await AddEntry(DateTime.Now.AddDays(10));
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       _journalId,
       DateTime.Now.AddDays(-1),
       DateTime.Now.AddDays(1)
@@ -79,7 +80,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     await AddEntry(DateTime.Now.AddDays(-2));
     await AddEntry(DateTime.Now.AddDays(2));
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       _journalId,
       DateTime.Now.AddDays(-5),
       DateTime.Now.AddDays(5)
@@ -97,11 +98,11 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     var firstInNextMonth = new DateTime(2000, 8, 1, 5, 30, 0);
 
     await AddEntry(lastInLastMonth);
-    string expectedId1 = await AddEntry(firstInCurrentMonth);
-    string expectedId2 = await AddEntry(lastInCurrentMonth);
+    var expectedId1 = await AddEntry(firstInCurrentMonth);
+    var expectedId2 = await AddEntry(lastInCurrentMonth);
     await AddEntry(firstInNextMonth);
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       _journalId,
       new DateTime(2000, 7, 1),
       new DateTime(2000, 7, 31)
@@ -120,7 +121,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -137,7 +138,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -158,7 +159,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -175,7 +176,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -192,7 +193,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
 
     await AddEntry(DateTime.Now, attributeValues);
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       _journalId,
       null,
       null,
@@ -207,18 +208,18 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   {
     UpsertResult scrapsJournal = await _repository.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
 
-    string olderButRecentlyEditedId = await AddScrap(
+    var olderButRecentlyEditedId = await AddScrap(
       scrapsJournal.EntityId,
-      dateTime: DateTime.Now.AddDays(-10),
-      editedOn: DateTime.Now
+      DateTime.Now.AddDays(-10),
+      DateTime.Now
     );
-    string newerButEditedLongAgoId = await AddScrap(
+    var newerButEditedLongAgoId = await AddScrap(
       scrapsJournal.EntityId,
-      dateTime: DateTime.Now,
-      editedOn: DateTime.Now.AddDays(-10)
+      DateTime.Now,
+      DateTime.Now.AddDays(-10)
     );
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(scrapsJournal.EntityId);
+    var entries = await _repository.GetEntriesForJournal(scrapsJournal.EntityId);
 
     entries.Length.Should().Be(2);
     entries[0].Id.Should().Be(newerButEditedLongAgoId);
@@ -230,18 +231,18 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   {
     UpsertResult scrapsJournal = await _repository.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
 
-    string olderButRecentlyEditedId = await AddScrap(
+    var olderButRecentlyEditedId = await AddScrap(
       scrapsJournal.EntityId,
-      dateTime: DateTime.Now.AddDays(-10),
-      editedOn: DateTime.Now
+      DateTime.Now.AddDays(-10),
+      DateTime.Now
     );
-    string newerButEditedLongAgoId = await AddScrap(
+    var newerButEditedLongAgoId = await AddScrap(
       scrapsJournal.EntityId,
-      dateTime: DateTime.Now,
-      editedOn: DateTime.Now.AddDays(-10)
+      DateTime.Now,
+      DateTime.Now.AddDays(-10)
     );
 
-    IEntry[] entries = await _repository.GetEntriesForJournal(
+    var entries = await _repository.GetEntriesForJournal(
       scrapsJournal.EntityId,
       sortOrder: SortEntriesBy.EditedOn
     );

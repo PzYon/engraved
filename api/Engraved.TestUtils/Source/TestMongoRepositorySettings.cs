@@ -1,6 +1,6 @@
 using Engraved.Persistence.Mongo;
 
-namespace Engraved.TestUtils;
+namespace Engraved.TestUtils.Source;
 
 public class TestMongoRepositorySettings(string mongoDbConnectionString) : IMongoRepositorySettings
 {

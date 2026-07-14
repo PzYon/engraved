@@ -1,8 +1,9 @@
 ﻿using System;
+using Engraved.Core.Application;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Engraved.Core.Application;
+namespace Engraved.Core.Tests.Application;
 
 public class FakeDateServiceShould
 {

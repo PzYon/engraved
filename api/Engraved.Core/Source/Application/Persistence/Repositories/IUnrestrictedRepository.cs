@@ -1,4 +1,4 @@
-namespace Engraved.Core.Application.Persistence;
+namespace Engraved.Core.Application.Persistence.Repositories;
 
 // The unrestricted seam: full persistence access with NO permission or user scoping applied,
 // including the inherently-unrestricted maintenance operations (keep-alive, global counts). Resolves
