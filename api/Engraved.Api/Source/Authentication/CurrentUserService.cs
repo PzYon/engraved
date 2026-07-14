@@ -31,7 +31,7 @@ public class CurrentUserService(IHttpContextAccessor httpContextAccessor, UserLo
 
   public async Task<IUser> LoadUser()
   {
-    string? name = GetUserName();
+    var name = GetUserName();
 
     if (string.IsNullOrEmpty(name))
     {

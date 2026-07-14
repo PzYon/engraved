@@ -12,7 +12,7 @@ public enum ThresholdScope
 public class ThresholdDefinition
 {
   public double Value { get; set; }
-  public ThresholdScope Scope {get; set;}
+  public ThresholdScope Scope { get; set; }
 }
 
 // Values declared as IJournal are serialized polymorphically; see DomainPolymorphism.

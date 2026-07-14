@@ -74,7 +74,7 @@ public class HttpExceptionFilterShould
   private static ActionExecutedContext CreateContext(Exception? exception)
   {
     var actionContext = new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor());
-    return new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), controller: new object())
+    return new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), new object())
     {
       Exception = exception
     };

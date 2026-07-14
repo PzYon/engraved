@@ -191,7 +191,7 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -212,7 +212,7 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
     };
 
     IEntry entry = EntryDocumentMapper.FromDocument(document);

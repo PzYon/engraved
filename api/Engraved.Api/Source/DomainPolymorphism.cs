@@ -20,7 +20,7 @@ public static class DomainPolymorphism
   // Modifier for a DefaultJsonTypeInfoResolver; wired into the MVC JSON options in Program.cs.
   public static void ConfigurePolymorphism(JsonTypeInfo jsonTypeInfo)
   {
-    Type[] derivedTypes = GetDerivedTypes(jsonTypeInfo.Type);
+    var derivedTypes = GetDerivedTypes(jsonTypeInfo.Type);
     if (derivedTypes.Length == 0)
     {
       return;

@@ -1,5 +1,4 @@
-﻿
-namespace Engraved.Core.Domain.Users;
+﻿namespace Engraved.Core.Domain.Users;
 
 public interface IUser
 {

@@ -38,11 +38,11 @@ public class TestDataController(
     foreach (SeedJournalDto journalDto in dto.Journals)
     {
       CommandResult createJournalResult = await CreateJournal(journalDto);
-      
-      string journalId = createJournalResult.EntityId;
+
+      var journalId = createJournalResult.EntityId;
 
       var entryIds = new List<string>();
-      
+
       foreach (SeedEntryDto entryDto in journalDto.Entries)
       {
         CommandResult createEntryResult = await CreateEntry(journalId, journalDto.Type, entryDto);

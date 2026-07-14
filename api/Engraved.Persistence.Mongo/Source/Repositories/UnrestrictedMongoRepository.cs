@@ -27,7 +27,7 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
   public UnrestrictedMongoRepository(MongoDatabaseClient mongoDatabaseClient)
   {
     _mongoDatabaseClient = mongoDatabaseClient;
-    
+
     _userRepository = new MongoUserRepository(mongoDatabaseClient);
     _journalRepository = new MongoJournalRepository(mongoDatabaseClient, UnrestrictedReadScope.Instance);
     _entryRepository = new MongoEntryRepository(mongoDatabaseClient, _journalRepository);

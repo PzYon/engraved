@@ -19,7 +19,7 @@ public class FakeDateService(DateTime initialDate) : IDateService
   public void SetNext(int remainingSteps)
   {
     TimeSpan diffToNow = DateTime.UtcNow - UtcNow;
-    double hoursPerStep = diffToNow.TotalHours / remainingSteps;
+    var hoursPerStep = diffToNow.TotalHours / remainingSteps;
     var minutesPerStep = Convert.ToInt32(hoursPerStep * 60);
     UtcNow = UtcNow.AddMinutes(Random.Shared.Next(1, minutesPerStep));
   }

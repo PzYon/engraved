@@ -54,7 +54,7 @@ public static class AuthenticationRegistration
 
   private static Task OnTokenValidated(TokenValidatedContext context)
   {
-    var jwtToken = (JsonWebToken) context.SecurityToken;
+    var jwtToken = (JsonWebToken)context.SecurityToken;
     Claim? nameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "nameid");
     if (nameClaim == null)
     {

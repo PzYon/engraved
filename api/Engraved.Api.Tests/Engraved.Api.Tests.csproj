@@ -26,9 +26,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\Engraved.TestUtils\Source\MongoRunnerTeardown.cs">
-        <Link>Source\MongoRunnerTeardown.cs</Link>
-      </Compile>
+        <Compile Include="..\Engraved.TestUtils\Source\MongoRunnerTeardown.cs">
+            <Link>Source\MongoRunnerTeardown.cs</Link>
+        </Compile>
     </ItemGroup>
 
 </Project>
