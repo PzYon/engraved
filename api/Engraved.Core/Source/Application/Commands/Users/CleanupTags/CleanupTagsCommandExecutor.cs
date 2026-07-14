@@ -4,20 +4,24 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.CleanupTags;
 
-public class CleanupTagsCommandExecutor(IUserRestrictedRepository repository)
+public class CleanupTagsCommandExecutor(
+  IUserRepository userRepository,
+  IJournalRepository journalRepository,
+  Lazy<IUser> currentUser
+)
   : ICommandExecutor<CleanupTagsCommand>
 {
   public async Task<CommandResult> Execute(CleanupTagsCommand command)
   {
-    if (repository.CurrentUser.Value == null)
+    if (currentUser.Value == null)
     {
       throw new NotAllowedOperationException("Current user is not available.");
     }
 
-    IUser currentUser = repository.CurrentUser.Value;
-    var journalIdsFromTags = currentUser.Tags.SelectMany(t => t.JournalIds).ToList();
+    IUser user = currentUser.Value;
+    var journalIdsFromTags = user.Tags.SelectMany(t => t.JournalIds).ToList();
 
-    var result = new CleanupTagsCommandResult(currentUser.Id!, [currentUser.Id!])
+    var result = new CleanupTagsCommandResult(user.Id!, [user.Id!])
     {
       DryRun = command.DryRun
     };
@@ -27,7 +31,7 @@ public class CleanupTagsCommandExecutor(IUserRestrictedRepository repository)
       return result;
     }
 
-    var allJournals = await repository.GetAllJournals(journalIds: journalIdsFromTags.ToArray());
+    var allJournals = await journalRepository.GetAllJournals(journalIds: journalIdsFromTags.ToArray());
     var allJournalIds = allJournals.Select(x => x.Id);
 
     var lostJournalIds = journalIdsFromTags
@@ -36,12 +40,12 @@ public class CleanupTagsCommandExecutor(IUserRestrictedRepository repository)
 
     if (!command.DryRun)
     {
-      foreach (UserTag tag in currentUser.Tags)
+      foreach (UserTag tag in user.Tags)
       {
         tag.JournalIds.RemoveAll(i => lostJournalIds.Contains(i));
       }
 
-      await repository.UpsertUser(currentUser);
+      await userRepository.UpsertUser(user);
     }
 
     result.JournalIdsToRemove = lostJournalIds.ToList();

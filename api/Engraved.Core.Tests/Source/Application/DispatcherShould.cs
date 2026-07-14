@@ -1,12 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
-using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
-using Engraved.Core.Domain.Entries;
-using Engraved.Core.Domain.Journals;
-using Engraved.Core.Domain.Permissions;
 using Engraved.Core.Domain.Users;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
@@ -127,7 +123,7 @@ public class DispatcherShould
 
     var parallelTaskCount = 10;
     var actionPerTaskCount = 100;
-    
+
     var tasks = new Task[parallelTaskCount];
 
     for (var taskIndex = 0; taskIndex < parallelTaskCount; taskIndex++)
@@ -154,7 +150,7 @@ public class DispatcherShould
     return new Dispatcher(
       NullLogger<Dispatcher>.Instance,
       new TestServiceProvider(null!),
-      new FakeUserRestrictedRepository(currentUser),
+      currentUser,
       queryCache
     );
   }
@@ -185,124 +181,5 @@ public class FakeQueryExecutor : IQueryExecutor<Guid, FakeQuery>
   public Task<Guid> Execute(FakeQuery query)
   {
     return Task.FromResult(Guid.NewGuid());
-  }
-}
-
-public class FakeUserRestrictedRepository(Lazy<IUser> currentUser) : IUserRestrictedRepository
-{
-  public Lazy<IUser> CurrentUser => currentUser;
-
-  public Task<IUser?> GetUser(string nameOrId)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<UpsertResult> UpsertUser(IUser user)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<IUser[]> GetUsers(params string[] userIds)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<IUser[]> GetAllUsers()
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<IJournal[]> GetAllJournals(
-    string? searchText = null,
-    ScheduleMode? scheduleMode = null,
-    JournalType[]? journalTypes = null,
-    string[]? journalIds = null,
-    int? limit = null,
-    string? currentUserId = null,
-    bool matchAnyWord = false
-  )
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<IJournal?> GetJournal(string journalId)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<UpsertResult> UpsertJournal(IJournal journal)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task DeleteJournal(string journalId)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<IEntry[]> GetEntriesForJournal(
-    string journalId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    IDictionary<string, string[]>? attributeValues,
-    string? searchText,
-    SortEntriesBy sortOrder
-  )
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<IEntry[]> SearchEntries(
-    string? searchText,
-    ScheduleMode? scheduleMode = null,
-    JournalType[]? journalTypes = null,
-    string[]? journalIds = null,
-    int? limit = null,
-    string? currentUserId = null,
-    bool onlyConsiderTitle = false,
-    bool matchAnyWord = false
-  )
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task DeleteEntry(string entryId)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task DeleteEntriesForJournal(string journalId)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<IEntry?> GetEntry(string entryId)
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task WakeMeUp()
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<long> CountAllUsers()
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<long> CountAllEntries()
-  {
-    throw new NotImplementedException();
-  }
-
-  public Task<long> CountAllJournals()
-  {
-    throw new NotImplementedException();
   }
 }

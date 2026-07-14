@@ -10,7 +10,7 @@ using MongoDB.Driver;
 namespace Engraved.Persistence.Mongo.Repositories;
 
 // Journal data access. Reads are shaped by the injected IReadScope; the write guards live on top of
-// this (see UserRestrictedMongoRepository).
+// this (see UserRestrictedJournalRepository).
 public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IReadScope readScope)
   : IJournalRepository
 {

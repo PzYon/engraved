@@ -38,7 +38,7 @@ public class SearchEntitiesQueryExecutorShould
       new Dispatcher(
         NullLogger<Dispatcher>.Instance,
         new TestServiceProvider(_repo),
-        _repo,
+        _repo.CurrentUser,
         new QueryCache(
           NullLogger<QueryCache>.Instance,
           new MemoryCache(new MemoryCacheOptions()),
@@ -146,7 +146,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(_repo);
+    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(_repo, _repo.CurrentUser);
     await addScheduleExecutor.Execute(
       new AddScheduleToJournalCommand
       {
@@ -166,7 +166,7 @@ public class SearchEntitiesQueryExecutorShould
     );
 
     // the entry itself is scheduled, so it shows up in a "scheduled only" search.
-    var addEntryScheduleExecutor = new AddScheduleToEntryCommandExecutor(_repo);
+    var addEntryScheduleExecutor = new AddScheduleToEntryCommandExecutor(_repo, _repo, _repo.CurrentUser);
     await addEntryScheduleExecutor.Execute(
       new AddScheduleToEntryCommand
       {

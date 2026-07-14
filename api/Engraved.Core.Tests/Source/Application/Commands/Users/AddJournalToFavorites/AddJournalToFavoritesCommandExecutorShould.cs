@@ -25,7 +25,7 @@ public class AddJournalToFavoritesCommandExecutorShould
   public async Task AddJournalToFavorites()
   {
     // when
-    await new AddJournalToFavoritesCommandExecutor(_repo).Execute(
+    await new AddJournalToFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new AddJournalToFavoritesCommand { JournalId = JournalId }
     );
 
@@ -42,7 +42,7 @@ public class AddJournalToFavoritesCommandExecutorShould
     await _repo.UpsertUser(user);
 
     // when
-    await new AddJournalToFavoritesCommandExecutor(_repo).Execute(
+    await new AddJournalToFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new AddJournalToFavoritesCommand { JournalId = JournalId }
     );
 
@@ -53,7 +53,7 @@ public class AddJournalToFavoritesCommandExecutorShould
   [Test]
   public async Task Throw_When_JournalIdIsEmpty()
   {
-    Func<Task> act = () => new AddJournalToFavoritesCommandExecutor(_repo).Execute(
+    Func<Task> act = () => new AddJournalToFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new AddJournalToFavoritesCommand { JournalId = "" }
     );
 

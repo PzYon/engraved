@@ -1,11 +1,16 @@
-﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Entries.AddSchedule;
 
-public class AddScheduleToEntryCommandExecutor(IUserRestrictedRepository repository)
+public class AddScheduleToEntryCommandExecutor(
+  IEntryRepository entryRepository,
+  IJournalRepository journalRepository,
+  Lazy<IUser> currentUser
+)
   : ICommandExecutor<AddScheduleToEntryCommand>
 {
   public async Task<CommandResult> Execute(AddScheduleToEntryCommand command)
@@ -15,11 +20,11 @@ public class AddScheduleToEntryCommandExecutor(IUserRestrictedRepository reposit
       throw new InvalidCommandException(command, $"{nameof(AddScheduleToEntryCommand.EntryId)} is required");
     }
 
-    IEntry entry = (await repository.GetEntry(command.EntryId))!;
+    IEntry entry = (await entryRepository.GetEntry(command.EntryId))!;
 
     if (command.NextOccurrence != null)
     {
-      entry.Schedules[repository.CurrentUser.Value.Id!] = new Schedule
+      entry.Schedules[currentUser.Value.Id!] = new Schedule
       {
         NextOccurrence = command.NextOccurrence,
         OnClickUrl = command.OnClickUrl?.Replace("new-entry-id", entry.Id),
@@ -28,12 +33,12 @@ public class AddScheduleToEntryCommandExecutor(IUserRestrictedRepository reposit
     }
     else
     {
-      entry.Schedules.Remove(repository.CurrentUser.Value.Id!);
+      entry.Schedules.Remove(currentUser.Value.Id!);
     }
 
-    await repository.UpsertEntry(entry);
+    await entryRepository.UpsertEntry(entry);
 
-    IJournal journal = (await repository.GetJournal(entry.ParentId))!;
+    IJournal journal = (await journalRepository.GetJournal(entry.ParentId))!;
     var userIdsWithAccess = journal.Permissions.GetUserIdsWithAccess().ToArray();
 
     return new CommandResult(command.EntryId, userIdsWithAccess);

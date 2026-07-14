@@ -20,7 +20,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
   private const string OtherUserName = "other";
   private string _otherUserId = null!;
   private UnrestrictedMongoRepository _repository = null!;
-  private UserRestrictedMongoRepository _userRestrictedRepository = null!;
+  private TestUserRestrictedMongoRepository _userRestrictedRepository = null!;
 
   [SetUp]
   public async Task Setup()

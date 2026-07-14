@@ -7,8 +7,8 @@ using MongoDB.Driver;
 namespace Engraved.Persistence.Mongo.Repositories;
 
 // Plain user data access with no guards. Callers that must enforce ownership do so on top of this
-// (see UserRestrictedMongoRepository.UpsertUser); internal consumers like PermissionsEnsurer use it
-// directly because they legitimately operate on other users' records.
+// (see UserRestrictedUserRepository); internal consumers like PermissionsEnsurer use it directly
+// because they legitimately operate on other users' records.
 public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUserRepository
 {
   private IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
