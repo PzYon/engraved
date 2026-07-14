@@ -41,7 +41,7 @@ public class CleanupTagsCommandExecutorShould
     await _repo.UpsertUser(user);
 
     var command = new CleanupTagsCommand { DryRun = false };
-    var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(command);
+    var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(command);
 
     result.AffectedUserIds.Should().Contain(UserId);
     result.EntityId.Should().Be(UserId);
@@ -53,7 +53,7 @@ public class CleanupTagsCommandExecutorShould
   public async Task ReturnsImmediately_When_NoTagsOrNoJournalIdsInTags()
   {
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(
+      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(
         new CleanupTagsCommand { DryRun = false }
       );
 
@@ -67,7 +67,7 @@ public class CleanupTagsCommandExecutorShould
     user.Tags.Add(new UserTag { Id = "Tag1", JournalIds = [] });
     await _repo.UpsertUser(user);
 
-    var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo).Execute(
+    var result = (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(_repo, _repo, _repo.CurrentUser).Execute(
       new CleanupTagsCommand { DryRun = false }
     );
     result.JournalIdsToRemove.Should().BeEmpty();
@@ -86,7 +86,7 @@ public class CleanupTagsCommandExecutorShould
 
     var commandExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
+      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo, commandExecutorRepo, commandExecutorRepo.CurrentUser).Execute(
         new CleanupTagsCommand { DryRun = false }
       );
 
@@ -119,7 +119,7 @@ public class CleanupTagsCommandExecutorShould
 
     var commandExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
+      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo, commandExecutorRepo, commandExecutorRepo.CurrentUser).Execute(
         new CleanupTagsCommand { DryRun = false }
       );
 
@@ -149,7 +149,7 @@ public class CleanupTagsCommandExecutorShould
 
     var commandExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
     var result =
-      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo).Execute(
+      (CleanupTagsCommandResult) await new CleanupTagsCommandExecutor(commandExecutorRepo, commandExecutorRepo, commandExecutorRepo.CurrentUser).Execute(
         new CleanupTagsCommand { DryRun = true }
       );
 

@@ -12,7 +12,7 @@ namespace Engraved.Core.Application.Queries.Search.Related;
 // are already visible on the page the user is coming from. Relatedness is based on
 // word overlap: candidates are fetched with a single match-any-word query and then
 // ranked in memory (no $text/Atlas Search available on the Cosmos DB Mongo API).
-public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repository)
+public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepository, IEntryRepository entryRepository)
   : IQueryExecutor<SearchEntitiesResult, GetRelatedEntitiesQuery>
 {
   private const int MaxWords = 10;
@@ -63,14 +63,14 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
 
     var searchText = string.Join(" ", words);
 
-    var allJournals = await repository.GetAllJournals(null, null, null, null, 1000);
+    var allJournals = await journalRepository.GetAllJournals(null, null, null, null, 1000);
 
     var otherJournalIds = allJournals
       .Select(j => j.Id!)
       .Where(id => id != source.OwnJournalId)
       .ToArray();
 
-    var journalCandidatesTask = repository.GetAllJournals(
+    var journalCandidatesTask = journalRepository.GetAllJournals(
       searchText,
       null,
       null,
@@ -83,7 +83,7 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
     // passing otherJournalIds both scopes the (unscoped) entry search to journals the
     // user may read AND excludes the source item's own journal (see class comment).
     var entryCandidatesTask = otherJournalIds.Length > 0
-      ? repository.SearchEntries(
+      ? entryRepository.SearchEntries(
         searchText,
         null,
         NavigableEntryTypes,
@@ -139,19 +139,19 @@ public class GetRelatedEntitiesQueryExecutor(IUserRestrictedRepository repositor
     if (query.EntityType == EntityType.Journal)
     {
       // GetJournal is permission-scoped and returns null if the user may not read it
-      IJournal? journal = await repository.GetJournal(query.EntityId!);
+      IJournal? journal = await journalRepository.GetJournal(query.EntityId!);
       return new SourceContext(journal?.Name, journal?.Id);
     }
 
     // GetEntry is an unscoped primitive, so read access is enforced here by loading the
     // parent journal through the scoped GetJournal (same pattern as GetEntryQueryExecutor).
-    IEntry? entry = await repository.GetEntry(query.EntityId!);
+    IEntry? entry = await entryRepository.GetEntry(query.EntityId!);
     if (entry == null)
     {
       return SourceContext.Inaccessible;
     }
 
-    IJournal? parentJournal = await repository.GetJournal(entry.ParentId);
+    IJournal? parentJournal = await journalRepository.GetJournal(entry.ParentId);
     if (parentJournal == null)
     {
       return SourceContext.Inaccessible;

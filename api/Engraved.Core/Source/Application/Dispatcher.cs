@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Engraved.Core.Application.Commands;
-using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
+using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -11,7 +11,7 @@ namespace Engraved.Core.Application;
 public class Dispatcher(
   ILogger<Dispatcher> logger,
   IServiceProvider serviceProvider,
-  IUserRestrictedRepository repository,
+  Lazy<IUser> currentUser,
   QueryCache queryCache
 )
 {
@@ -59,7 +59,7 @@ public class Dispatcher(
   private void InvalidateCache(CommandResult commandResult)
   {
     var affectedUserIds = commandResult.AffectedUserIds
-      .Union([repository.CurrentUser.Value.Id!])
+      .Union([currentUser.Value.Id!])
       .ToArray();
 
     queryCache.Invalidate(affectedUserIds);

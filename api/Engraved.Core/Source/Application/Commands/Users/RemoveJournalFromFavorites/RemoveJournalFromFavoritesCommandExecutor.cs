@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 
-public class RemoveJournalFromFavoritesCommandExecutor(IUserRestrictedRepository repository)
+public class RemoveJournalFromFavoritesCommandExecutor(IUserRepository userRepository, Lazy<IUser> currentUser)
   : ICommandExecutor<RemoveJournalFromFavoritesCommand>
 {
   public async Task<CommandResult> Execute(RemoveJournalFromFavoritesCommand command)
@@ -13,7 +13,7 @@ public class RemoveJournalFromFavoritesCommandExecutor(IUserRestrictedRepository
       throw new InvalidCommandException(command, $"\"{nameof(command.JournalId)}\" must be specified");
     }
 
-    IUser user = repository.CurrentUser.Value;
+    IUser user = currentUser.Value;
 
     if (!user.FavoriteJournalIds.Contains(command.JournalId))
     {
@@ -22,7 +22,7 @@ public class RemoveJournalFromFavoritesCommandExecutor(IUserRestrictedRepository
 
     user.FavoriteJournalIds.Remove(command.JournalId);
 
-    UpsertResult upsertResult = await repository.UpsertUser(user);
+    UpsertResult upsertResult = await userRepository.UpsertUser(user);
     return new CommandResult(upsertResult.EntityId, []);
   }
 }

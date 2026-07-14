@@ -4,7 +4,6 @@ using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.CleanupTags;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
-using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries.Export;
 using Engraved.Core.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -15,13 +14,13 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/user")]
 [Authorize]
-public class UserController(IUserRestrictedRepository userRestrictedRepository, Dispatcher dispatcher)
+public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
   : Controller
 {
   [HttpGet]
   public IUser GetCurrentUser()
   {
-    return userRestrictedRepository.CurrentUser.Value;
+    return currentUser.Value;
   }
 
   [HttpPatch]

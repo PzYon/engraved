@@ -1,25 +1,30 @@
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Queries.Journals.GetAll;
 
-public class GetAllJournalsQueryExecutor(IUserRestrictedRepository repository)
+public class GetAllJournalsQueryExecutor(
+  IJournalRepository journalRepository,
+  IUserRepository userRepository,
+  Lazy<IUser> currentUser
+)
   : IQueryExecutor<IJournal[], GetAllJournalsQuery>
 {
   public bool DisableCache => false;
 
   public async Task<IJournal[]> Execute(GetAllJournalsQuery query)
   {
-    IJournal[] allJournals = await repository.GetAllJournals(
+    IJournal[] allJournals = await journalRepository.GetAllJournals(
       query.SearchText,
       query.ScheduledOnly ? ScheduleMode.CurrentUserOnly : ScheduleMode.None,
       query.JournalTypes,
       GetJournalIds(query),
       query.Limit,
-      repository.CurrentUser.Value.Id
+      currentUser.Value.Id
     );
 
-    return await JournalQueryUtil.EnsurePermissionUsers(repository, allJournals);
+    return await JournalQueryUtil.EnsurePermissionUsers(userRepository, allJournals);
   }
 
   private string[] GetJournalIds(GetAllJournalsQuery query)
@@ -32,7 +37,7 @@ public class GetAllJournalsQueryExecutor(IUserRestrictedRepository repository)
       return queryFilterIds;
     }
 
-    return repository.CurrentUser.Value.FavoriteJournalIds
+    return currentUser.Value.FavoriteJournalIds
       .Where(i => !queryFilterIds.Any() || queryFilterIds.Contains(i))
       .ToArray();
   }

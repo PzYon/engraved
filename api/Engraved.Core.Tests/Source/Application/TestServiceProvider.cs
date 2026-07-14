@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using Engraved.Core.Application.Commands;
-using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
+using Engraved.TestUtils;
 
 namespace Engraved.Core.Application;
 
-public class TestServiceProvider(IUserRestrictedRepository userRestrictedRepository) : IServiceProvider
+public class TestServiceProvider(TestUserRestrictedMongoRepository repository) : IServiceProvider
 {
   public object GetService(Type serviceType)
   {
@@ -24,12 +24,12 @@ public class TestServiceProvider(IUserRestrictedRepository userRestrictedReposit
 
     if (serviceType == typeof(IQueryExecutor<IJournal[], GetAllJournalsQuery>))
     {
-      return new GetAllJournalsQueryExecutor(userRestrictedRepository);
+      return new GetAllJournalsQueryExecutor(repository, repository, repository.CurrentUser);
     }
 
     if (serviceType == typeof(IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>))
     {
-      return new SearchEntriesQueryExecutor(userRestrictedRepository);
+      return new SearchEntriesQueryExecutor(repository, repository, repository.CurrentUser);
     }
 
     throw new Exception($"Service of type {serviceType.FullName} is not available in {nameof(TestServiceProvider)}.");

@@ -1,9 +1,9 @@
-﻿using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Journals.UpdateTags;
 
-public class UpdateJournalUserTagsCommandExecutor(IUserRestrictedRepository repository)
+public class UpdateJournalUserTagsCommandExecutor(IUserRepository userRepository, Lazy<IUser> currentUser)
   : ICommandExecutor<UpdateJournalUserTagsCommand>
 {
   public async Task<CommandResult> Execute(UpdateJournalUserTagsCommand command)
@@ -13,7 +13,7 @@ public class UpdateJournalUserTagsCommandExecutor(IUserRestrictedRepository repo
       throw new InvalidCommandException(command, $"\"{nameof(command.JournalId)}\" must be specified");
     }
 
-    IUser user = repository.CurrentUser.Value;
+    IUser user = currentUser.Value;
 
     foreach (UserTag tag in user.Tags)
     {
@@ -30,7 +30,7 @@ public class UpdateJournalUserTagsCommandExecutor(IUserRestrictedRepository repo
       }
     }
 
-    await repository.UpsertUser(user);
+    await userRepository.UpsertUser(user);
 
     return new CommandResult(user.Id!, []);
   }

@@ -3,12 +3,12 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.UpdateTags;
 
-public class UpdateUserTagsCommandExecutor(IUserRestrictedRepository repository)
+public class UpdateUserTagsCommandExecutor(IUserRepository userRepository, Lazy<IUser> currentUser)
   : ICommandExecutor<UpdateUserTagsCommand>
 {
   public async Task<CommandResult> Execute(UpdateUserTagsCommand command)
   {
-    IUser user = repository.CurrentUser.Value;
+    IUser user = currentUser.Value;
 
     foreach (var tagName in command.TagNames)
     {
@@ -27,14 +27,14 @@ public class UpdateUserTagsCommandExecutor(IUserRestrictedRepository repository)
         }
       );
     }
-    
+
     // all tags that were defined, but aren't anymore
     foreach (UserTag userTag in user.Tags.Where(tag => !command.TagNames.ContainsKey(tag.Id)).ToList())
     {
       user.Tags.Remove(userTag);
     }
 
-    UpsertResult upsertResult = await repository.UpsertUser(user);
+    UpsertResult upsertResult = await userRepository.UpsertUser(user);
     return new CommandResult(upsertResult.EntityId, []);
   }
 }

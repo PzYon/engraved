@@ -11,6 +11,7 @@ using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Persistence;
 using Engraved.Persistence.Mongo;
+using Engraved.Persistence.Mongo.Repositories;
 using Engraved.TestUtils;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
@@ -81,10 +82,12 @@ public class StartupSmokeShould
     using IServiceScope scope = _factory.Services.CreateScope();
     IServiceProvider services = scope.ServiceProvider;
 
-    // unrestricted seam -> raw UnrestrictedMongoRepository; user-restricted + narrow roles -> scoped repository
+    // unrestricted seam -> raw UnrestrictedMongoRepository; the narrow roles -> the user-restricted
+    // decorators (reads shaped by UserReadScope, writes guarded by JournalWriteGuard)
     services.GetRequiredService<IUnrestrictedRepository>().Should().BeOfType<UnrestrictedMongoRepository>();
-    services.GetRequiredService<IUserRestrictedRepository>().Should().BeOfType<UserRestrictedMongoRepository>();
-    services.GetRequiredService<IJournalRepository>().Should().BeOfType<UserRestrictedMongoRepository>();
+    services.GetRequiredService<IUserRepository>().Should().BeOfType<UserRestrictedUserRepository>();
+    services.GetRequiredService<IJournalRepository>().Should().BeOfType<UserRestrictedJournalRepository>();
+    services.GetRequiredService<IEntryRepository>().Should().BeOfType<UserRestrictedEntryRepository>();
 
     // maintenance is inherently unrestricted, so it resolves to the raw UnrestrictedMongoRepository
     services.GetRequiredService<IMaintenanceRepository>().Should().BeOfType<UnrestrictedMongoRepository>();

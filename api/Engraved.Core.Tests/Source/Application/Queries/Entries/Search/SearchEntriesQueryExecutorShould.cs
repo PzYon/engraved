@@ -70,7 +70,11 @@ public class SearchEntriesQueryExecutorShould
 
     var queryExecutorRepo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
 
-    var queryExecutor = new SearchEntriesQueryExecutor(queryExecutorRepo);
+    var queryExecutor = new SearchEntriesQueryExecutor(
+      queryExecutorRepo,
+      queryExecutorRepo,
+      queryExecutorRepo.CurrentUser
+    );
     SearchEntriesQueryResult result = await queryExecutor.Execute(new SearchEntriesQuery { Limit = 2 });
 
     result.Journals.Length.Should().Be(2);

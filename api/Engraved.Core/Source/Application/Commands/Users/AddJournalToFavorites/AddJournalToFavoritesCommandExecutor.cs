@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 
-public class AddJournalToFavoritesCommandExecutor(IUserRestrictedRepository repository)
+public class AddJournalToFavoritesCommandExecutor(IUserRepository userRepository, Lazy<IUser> currentUser)
   : ICommandExecutor<AddJournalToFavoritesCommand>
 {
   public async Task<CommandResult> Execute(AddJournalToFavoritesCommand command)
@@ -13,7 +13,7 @@ public class AddJournalToFavoritesCommandExecutor(IUserRestrictedRepository repo
       throw new InvalidCommandException(command, $"\"{nameof(command.JournalId)}\" must be specified");
     }
 
-    IUser user = repository.CurrentUser.Value;
+    IUser user = currentUser.Value;
 
     if (user.FavoriteJournalIds.Contains(command.JournalId))
     {
@@ -22,7 +22,7 @@ public class AddJournalToFavoritesCommandExecutor(IUserRestrictedRepository repo
 
     user.FavoriteJournalIds.Add(command.JournalId);
 
-    UpsertResult upsertResult = await repository.UpsertUser(user);
+    UpsertResult upsertResult = await userRepository.UpsertUser(user);
     return new CommandResult(upsertResult.EntityId, []);
   }
 }

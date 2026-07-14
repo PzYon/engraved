@@ -29,7 +29,7 @@ public class GetRelatedEntitiesQueryExecutorShould
     await _repo.UpsertUser(new User { Id = userId, Name = userId });
 
     _dateService = new FakeDateService();
-    _executor = new GetRelatedEntitiesQueryExecutor(_repo);
+    _executor = new GetRelatedEntitiesQueryExecutor(_repo, _repo);
   }
 
   [Test]

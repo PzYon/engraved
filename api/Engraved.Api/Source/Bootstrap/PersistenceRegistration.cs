@@ -5,6 +5,7 @@ using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo;
 using Engraved.Persistence.Mongo.Repositories;
+using Engraved.Persistence.Mongo.Scoping;
 
 namespace Engraved.Api.Bootstrap;
 
@@ -29,23 +30,36 @@ public static class PersistenceRegistration
 
   private static void RegisterUserRestrictedRepository(IServiceCollection services)
   {
-    services.AddTransient<IUserRestrictedRepository>(provider =>
-      {
-        var userService = provider.GetRequiredService<ICurrentUserService>();
-        var mongoDbClient = provider.GetRequiredService<MongoDatabaseClient>();
-        return new UserRestrictedMongoRepository(mongoDbClient, userService);
-      }
+    // Scoped so the current user is loaded from the database at most once per request: the same
+    // Lazy<IUser> instance is shared by the read scope, the write guards and every consumer
+    // (executors, Dispatcher, QueryCache, controllers).
+    services.AddScoped<Lazy<IUser>>(provider => CurrentUserLoader.CreateCurrentUserLazy(
+        provider.GetRequiredService<MongoDatabaseClient>(),
+        provider.GetRequiredService<ICurrentUserService>()
+      )
     );
 
-    services.AddTransient<Lazy<IUser>>(provider => provider.GetRequiredService<IUserRestrictedRepository>().CurrentUser);
+    // The role-based persistence interfaces resolve to the user-restricted decorators (reads shaped
+    // by UserReadScope, writes guarded by JournalWriteGuard), so executors that depend on just the
+    // role(s) they use transparently get permission enforcement. Consumers that need unrestricted
+    // access inject IUnrestrictedRepository (above) instead.
+    services.AddTransient<IUserRepository>(provider => new UserRestrictedUserRepository(
+        new MongoUserRepository(GetMongoDatabaseClient(provider)),
+        CreateWriteGuard(provider)
+      )
+    );
 
-    // The narrow, role-based persistence interfaces resolve to the user-restricted repository (same as
-    // IUserRestrictedRepository), so executors that depend on just the role(s) they use transparently
-    // get permission enforcement. Consumers that need unrestricted access inject IUnrestrictedRepository
-    // (above) instead.
-    services.AddTransient<IUserRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
-    services.AddTransient<IJournalRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
-    services.AddTransient<IEntryRepository>(provider => provider.GetRequiredService<IUserRestrictedRepository>());
+    services.AddTransient<IJournalRepository>(provider => new UserRestrictedJournalRepository(
+        CreateUserScopedJournalRepository(provider),
+        CreateWriteGuard(provider)
+      )
+    );
+
+    services.AddTransient<IEntryRepository>(provider => new UserRestrictedEntryRepository(
+        new MongoEntryRepository(GetMongoDatabaseClient(provider), CreateUserScopedJournalRepository(provider)),
+        CreateWriteGuard(provider)
+      )
+    );
 
     // PermissionsEnsurer deliberately works on the plain (unguarded) user repository: granting a
     // permission may create the receiving user's record, which the ownership guard on the
@@ -69,6 +83,27 @@ public static class PersistenceRegistration
     );
 
     services.AddTransient<IMaintenanceRepository>(provider => provider.GetRequiredService<IUnrestrictedRepository>());
+  }
+
+  private static MongoJournalRepository CreateUserScopedJournalRepository(IServiceProvider provider)
+  {
+    return new MongoJournalRepository(
+      GetMongoDatabaseClient(provider),
+      new UserReadScope(provider.GetRequiredService<Lazy<IUser>>())
+    );
+  }
+
+  private static JournalWriteGuard CreateWriteGuard(IServiceProvider provider)
+  {
+    return new JournalWriteGuard(
+      CreateUserScopedJournalRepository(provider),
+      provider.GetRequiredService<Lazy<IUser>>()
+    );
+  }
+
+  private static MongoDatabaseClient GetMongoDatabaseClient(IServiceProvider provider)
+  {
+    return provider.GetRequiredService<MongoDatabaseClient>();
   }
 
   private static string? GetMongoDbNameOverride(bool isE2ETests)

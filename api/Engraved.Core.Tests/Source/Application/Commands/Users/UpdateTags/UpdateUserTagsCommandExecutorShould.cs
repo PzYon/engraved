@@ -25,7 +25,7 @@ public class UpdateUserTagsCommandExecutorShould
   public async Task AddNewTag()
   {
     // when
-    await new UpdateUserTagsCommandExecutor(_repo).Execute(
+    await new UpdateUserTagsCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new UpdateUserTagsCommand { TagNames = new Dictionary<string, string> { { "tag-id", "Label" } } }
     );
 
@@ -45,7 +45,7 @@ public class UpdateUserTagsCommandExecutorShould
     await _repo.UpsertUser(user);
 
     // when
-    await new UpdateUserTagsCommandExecutor(_repo).Execute(
+    await new UpdateUserTagsCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new UpdateUserTagsCommand { TagNames = new Dictionary<string, string> { { "tag-id", "New" } } }
     );
 
@@ -66,7 +66,7 @@ public class UpdateUserTagsCommandExecutorShould
     await _repo.UpsertUser(user);
 
     // when
-    await new UpdateUserTagsCommandExecutor(_repo).Execute(
+    await new UpdateUserTagsCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new UpdateUserTagsCommand { TagNames = new Dictionary<string, string> { { "keep", "Keep" } } }
     );
 

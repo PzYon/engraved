@@ -151,7 +151,7 @@ public class EditJournalPermissionsCommandExecutorShould
 
   private EditJournalPermissionsCommandExecutor CreateExecutor()
   {
-    return new EditJournalPermissionsCommandExecutor(_userScopedRepo, _permissionsEnsurer);
+    return new EditJournalPermissionsCommandExecutor(_userScopedRepo, _userScopedRepo.CurrentUser, _permissionsEnsurer);
   }
 
   private async Task CreateJournalOwnedByOtherUser()

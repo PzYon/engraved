@@ -32,7 +32,7 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     var repositoryWithDifferentCache = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
 
     // when
-    await new RemoveJournalFromFavoritesCommandExecutor(repositoryWithDifferentCache).Execute(
+    await new RemoveJournalFromFavoritesCommandExecutor(repositoryWithDifferentCache, repositoryWithDifferentCache.CurrentUser).Execute(
       new RemoveJournalFromFavoritesCommand { JournalId = JournalId }
     );
 
@@ -53,7 +53,7 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     await _repo.UpsertUser(user);
 
     // when
-    await new RemoveJournalFromFavoritesCommandExecutor(_repo).Execute(
+    await new RemoveJournalFromFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new RemoveJournalFromFavoritesCommand { JournalId = JournalId }
     );
 
@@ -64,7 +64,7 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
   [Test]
   public async Task Throw_When_JournalIdIsEmpty()
   {
-    Func<Task> act = () => new RemoveJournalFromFavoritesCommandExecutor(_repo).Execute(
+    Func<Task> act = () => new RemoveJournalFromFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new RemoveJournalFromFavoritesCommand { JournalId = "" }
     );
 
