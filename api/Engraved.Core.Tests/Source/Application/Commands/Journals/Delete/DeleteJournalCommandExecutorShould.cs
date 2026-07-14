@@ -4,7 +4,7 @@ using Engraved.Core.Application.Commands.Journals.Delete;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
-using Engraved.TestUtils.Source;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 

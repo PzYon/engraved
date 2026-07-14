@@ -6,7 +6,7 @@ using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 using Engraved.Persistence.Mongo.Repositories;
-using Engraved.TestUtils.Source;
+using Engraved.TestUtils;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;

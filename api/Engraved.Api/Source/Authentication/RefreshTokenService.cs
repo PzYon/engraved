@@ -3,7 +3,6 @@ using System.Text;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence.Repositories;
-using Engraved.Core.Domain.Authentication;
 using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.Options;
 

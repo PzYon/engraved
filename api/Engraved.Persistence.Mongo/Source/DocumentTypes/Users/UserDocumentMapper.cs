@@ -1,5 +1,4 @@
-﻿using Engraved.Core.Domain.Authentication;
-using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
+﻿using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
 using Engraved.Core.Domain.Users;
 using MongoDB.Bson;
 

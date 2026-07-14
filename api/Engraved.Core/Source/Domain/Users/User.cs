@@ -1,5 +1,4 @@
-﻿using Engraved.Core.Domain.Authentication;
-
+﻿
 namespace Engraved.Core.Domain.Users;
 
 public class User : IUser

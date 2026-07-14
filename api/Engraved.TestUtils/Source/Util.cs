@@ -4,7 +4,7 @@ using Engraved.Persistence.Mongo;
 using EphemeralMongo;
 using MongoDB.Driver;
 
-namespace Engraved.TestUtils.Source;
+namespace Engraved.TestUtils;
 
 public static class Util
 {

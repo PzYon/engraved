@@ -3,7 +3,7 @@ using Engraved.Api.Authentication;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Domain.Users;
-using Engraved.TestUtils.Source;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 

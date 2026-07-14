@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
 using Engraved.Persistence.Mongo.DocumentTypes.Journals;
-using Engraved.TestUtils.Source;
+using Engraved.TestUtils;
 using FluentAssertions;
 using MongoDB.Driver;
 using NUnit.Framework;

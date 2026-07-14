@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Engraved.Api.Authentication;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Users;
-using Engraved.TestUtils.Source;
+using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
 

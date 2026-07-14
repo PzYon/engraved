@@ -12,7 +12,7 @@ using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Persistence.Mongo.Repositories;
 using Engraved.Persistence.Mongo.Repositories.UserRestricted;
-using Engraved.TestUtils.Source;
+using Engraved.TestUtils;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

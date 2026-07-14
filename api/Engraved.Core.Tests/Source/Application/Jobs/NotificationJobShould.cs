@@ -3,7 +3,7 @@ using Engraved.Core.Application;
 using Engraved.Core.Application.Jobs;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
-using Engraved.TestUtils.Source;
+using Engraved.TestUtils;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;

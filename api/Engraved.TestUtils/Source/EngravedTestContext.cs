@@ -6,7 +6,7 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 using Engraved.Core.Domain.Users;
 
-namespace Engraved.TestUtils.Source;
+namespace Engraved.TestUtils;
 
 public class EngravedTestContext
 {

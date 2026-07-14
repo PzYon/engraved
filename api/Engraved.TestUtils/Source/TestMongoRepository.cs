@@ -5,7 +5,7 @@ using Engraved.Persistence.Mongo.DocumentTypes.Users;
 using Engraved.Persistence.Mongo.Repositories;
 using MongoDB.Driver;
 
-namespace Engraved.TestUtils.Source;
+namespace Engraved.TestUtils;
 
 // Exposes the raw collections alongside the repository so tests can arrange/assert directly in the
 // database.

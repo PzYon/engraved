@@ -16,7 +16,7 @@ using Engraved.Persistence.Mongo.Repositories.UserRestricted;
 using Engraved.Persistence.Mongo.Scoping;
 using MongoDB.Driver;
 
-namespace Engraved.TestUtils.Source;
+namespace Engraved.TestUtils;
 
 // Test convenience bundle: composes the user-restricted repositories exactly like the DI wiring in
 // PersistenceRegistration (production has no composite type anymore - executors inject the role
