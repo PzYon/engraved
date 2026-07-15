@@ -6,6 +6,7 @@ import { IDataSet } from "./IDataSet";
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
 import { IChartUiProps } from "../IChartProps";
 import { movingAverage } from "./movingAverage";
+import { fillGaps } from "./fillGaps";
 
 export function createDataSets(
   entries: IEntry[],
@@ -36,8 +37,11 @@ function entriesToDataSet(
 ): IDataSet {
   let data = transform(entries, journal, groupByTime);
 
-  if (chartUiProps?.rollingAverage && chartUiProps.rollingAverage > 0) {
-    data = movingAverage(data, chartUiProps.rollingAverage);
+  if (chartUiProps?.rollingAverage && chartUiProps.rollingAverage > 1) {
+    data = movingAverage(
+      fillGaps(data, journal.type, groupByTime),
+      chartUiProps.rollingAverage,
+    );
   }
 
   // todo: we use indexer here to get (only) the first item. what if there's more?
