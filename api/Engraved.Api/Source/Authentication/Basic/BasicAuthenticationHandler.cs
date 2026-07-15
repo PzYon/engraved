@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Engraved.Core.Application;
+using Engraved.Core.Application.CurrentUser;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;

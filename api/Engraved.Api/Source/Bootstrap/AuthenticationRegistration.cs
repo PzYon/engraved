@@ -4,6 +4,7 @@ using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Basic;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
+using Engraved.Core.Application.CurrentUser;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;

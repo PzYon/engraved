@@ -7,6 +7,7 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
+using Engraved.Core.Application.CurrentUser;
 using Engraved.Core.Domain.Journals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

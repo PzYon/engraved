@@ -1,9 +1,8 @@
-using Engraved.Core.Application;
 using Engraved.Core.Application.Persistence;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Users;
-using Engraved.Persistence.Mongo.Repositories;
 
-namespace Engraved.Persistence.Mongo;
+namespace Engraved.Core.Application.CurrentUser;
 
 // Creates the Lazy<IUser> representing the current user. The lazy is shared (one instance per
 // request scope) by the UserReadScope, the JournalWriteGuard and all consumers, so the user is
@@ -12,12 +11,10 @@ namespace Engraved.Persistence.Mongo;
 public static class CurrentUserLoader
 {
   public static Lazy<IUser> CreateCurrentUserLazy(
-    MongoDatabaseClient mongoDatabaseClient,
+    IUserRepository userRepository,
     ICurrentUserService currentUserService
   )
   {
-    var userRepository = new MongoUserRepository(mongoDatabaseClient);
-
     return new Lazy<IUser>(() =>
       {
         IUser user = currentUserService.LoadUser().Result;

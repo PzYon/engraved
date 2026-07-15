@@ -1,5 +1,6 @@
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
+using Engraved.Core.Application.CurrentUser;
 using Engraved.Core.Application.Permissions;
 using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Users;
@@ -33,9 +34,11 @@ public static class PersistenceRegistration
   {
     // Scoped so the current user is loaded from the database at most once per request: the same
     // Lazy<IUser> instance is shared by the read scope, the write guards and every consumer
-    // (executors, Dispatcher, QueryCache, controllers).
+    // (executors, Dispatcher, QueryCache, controllers). Deliberately uses the plain (unguarded)
+    // user repository: the current-user lookup is what bootstraps user restriction, so it cannot
+    // go through the user-restricted IUserRepository (whose write guard depends on Lazy<IUser>).
     services.AddScoped<Lazy<IUser>>(provider => CurrentUserLoader.CreateCurrentUserLazy(
-        provider.GetRequiredService<MongoDatabaseClient>(),
+        new MongoUserRepository(GetMongoDatabaseClient(provider)),
         provider.GetRequiredService<ICurrentUserService>()
       )
     );

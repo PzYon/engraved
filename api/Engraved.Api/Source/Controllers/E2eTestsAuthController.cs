@@ -1,5 +1,6 @@
 ﻿using Engraved.Api.Authentication;
 using Engraved.Core.Application;
+using Engraved.Core.Application.CurrentUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

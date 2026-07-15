@@ -1,3 +1,4 @@
+using Engraved.Core.Application.CurrentUser;
 using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
