@@ -191,7 +191,8 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      Title = "log book title"
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -201,6 +202,7 @@ public class EntryDocumentMapperShould
 
     var logBookDocument = document as LogBookEntryDocument;
     logBookDocument.Should().NotBeNull();
+    logBookDocument!.Title.Should().Be(entry.Title);
   }
 
   [Test]
@@ -212,7 +214,8 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      Title = "log book title"
     };
 
     IEntry entry = EntryDocumentMapper.FromDocument(document);
@@ -220,6 +223,7 @@ public class EntryDocumentMapperShould
     AssertEqual(document, entry);
     var logBookEntry = entry as LogBookEntry;
     logBookEntry.Should().NotBeNull();
+    logBookEntry!.Title.Should().Be(document.Title);
   }
 
   private static void AssertEqual(IEntry expected, EntryDocument actual)

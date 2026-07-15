@@ -58,5 +58,6 @@ public class UpsertLogBookEntryCommandExecutor(
     // LogBook entries are date-only: strip the time component so that at most one entry can exist
     // per day, regardless of the time the client happens to send.
     entry.DateTime = DateTime.SpecifyKind(command.DateTime!.Value.Date, DateTimeKind.Utc);
+    entry.Title = command.Title;
   }
 }
