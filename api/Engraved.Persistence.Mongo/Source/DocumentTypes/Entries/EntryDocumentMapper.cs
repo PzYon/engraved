@@ -39,7 +39,10 @@ public static class EntryDocumentMapper
 
       LogBookEntry le => MapToDocument(
         le,
-        new LogBookEntryDocument()
+        new LogBookEntryDocument
+        {
+          Title = le.Title
+        }
       ),
 
       _ => throw new ArgumentOutOfRangeException(nameof(entry), entry, null)
@@ -85,7 +88,10 @@ public static class EntryDocumentMapper
 
       LogBookEntryDocument lbed => MapFromDocument(
         lbed,
-        new LogBookEntry()
+        new LogBookEntry
+        {
+          Title = lbed.Title
+        }
       ),
 
       TimerEntryDocument ted => MapFromDocument(

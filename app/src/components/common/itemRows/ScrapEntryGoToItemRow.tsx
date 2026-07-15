@@ -37,7 +37,7 @@ export const ScrapEntryGoToItemRow: React.FC<{
   );
 };
 
-// log book entries have no title, so we show the beginning of their notes instead
+// log book entries may have no title, in which case we show the beginning of their notes instead
 function getNotesExcerpt(notes: string | undefined): string | undefined {
   if (!notes) {
     return undefined;

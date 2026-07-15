@@ -1,8 +1,10 @@
 import React from "react";
+import { styled } from "@mui/material";
 import { useScrapContext } from "./ScrapContext";
 import { ScrapMarkdown } from "./markdown/ScrapMarkdown";
 import { ReadonlyTitle } from "../../overview/ReadonlyTitle";
 import { Markdown } from "./markdown/Markdown";
+import { RichTextEditor } from "../../common/RichTextEditor";
 import { SimpleDateSelector } from "../../common/DateSelector";
 import { format } from "date-fns";
 import { getDayKey, utcToDateOnly } from "../../../util/utils";
@@ -20,6 +22,9 @@ export const LogBookInner: React.FC = () => {
     scrapToRender,
     hasFocus,
     notes,
+    title,
+    setTitle,
+    setHasTitleFocus,
   } = useScrapContext();
 
   // Fetch the journal's entries directly (rather than via JournalContext) so day-deduplication
@@ -57,11 +62,23 @@ export const LogBookInner: React.FC = () => {
       data-scrap-type={scrapToRender.scrapType}
     >
       {isEditMode ? (
-        <SimpleDateSelector
-          setDate={setDate}
-          date={date}
-          shouldDisableDate={(d) => usedDays.has(getDayKey(d))}
-        />
+        <>
+          <TitleEditorHost>
+            <RichTextEditor
+              initialValue={title}
+              placeholder="Title"
+              isTitle={true}
+              setValue={setTitle}
+              onFocus={() => setHasTitleFocus(true)}
+              onBlur={() => setHasTitleFocus(false)}
+            />
+          </TitleEditorHost>
+          <SimpleDateSelector
+            setDate={setDate}
+            date={date}
+            shouldDisableDate={(d) => usedDays.has(getDayKey(d))}
+          />
+        </>
       ) : (
         <TitleRow
           hasFocus={hasFocus}
@@ -74,7 +91,10 @@ export const LogBookInner: React.FC = () => {
             title={
               <Markdown
                 useBasic={true}
-                value={format(date, "EEEE, do MMMM yy")}
+                value={
+                  format(date, "EEEE, do MMMM yy") +
+                  (title?.trim() ? ` - ${title.trim()}` : "")
+                }
               />
             }
           />
@@ -85,3 +105,14 @@ export const LogBookInner: React.FC = () => {
     </div>
   );
 };
+
+// Mirrors the title styling of ParseableDate, which the (scrap) title editor uses elsewhere.
+const TitleEditorHost = styled("div")`
+  margin-bottom: ${(p) => p.theme.spacing(1)};
+
+  .ngrvd-text-editor {
+    font-size: 1.8rem;
+    color: ${(p) => p.theme.palette.primary.main};
+    font-weight: lighter;
+  }
+`;

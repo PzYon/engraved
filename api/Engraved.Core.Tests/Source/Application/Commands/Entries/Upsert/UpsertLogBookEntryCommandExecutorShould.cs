@@ -47,6 +47,40 @@ public class UpsertLogBookEntryCommandExecutorShould
   }
 
   [Test]
+  public async Task StoreOptionalTitle()
+  {
+    var command = new UpsertLogBookEntryCommand
+    {
+      JournalId = JournalId,
+      Notes = "some notes",
+      Title = "some title",
+      DateTime = _fakeDateService.UtcNow
+    };
+
+    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+
+    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
+    ((LogBookEntry)entry).Title.Should().Be("some title");
+  }
+
+  [Test]
+  public async Task CreateNew_WithoutTitle()
+  {
+    var command = new UpsertLogBookEntryCommand
+    {
+      JournalId = JournalId,
+      Notes = "some notes",
+      Title = null,
+      DateTime = _fakeDateService.UtcNow
+    };
+
+    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+
+    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
+    ((LogBookEntry)entry).Title.Should().BeNull();
+  }
+
+  [Test]
   public void Throw_WhenNotesIsNull()
   {
     var command = new UpsertLogBookEntryCommand
