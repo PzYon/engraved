@@ -8,34 +8,23 @@ export function movingAverage(
     throw new Error("Group size must be an odd number.");
   }
 
-  if (entries.length < groupSize) {
+  if (groupSize <= 1) {
     return entries;
   }
 
-  return entries.map((e, i) => {
-    return { ...e, y: getAverage(entries, i, groupSize) };
-  });
-}
+  const halfWindow = (groupSize - 1) / 2;
 
-function getAverage(
-  entries: ITransformedEntry[],
-  index: number,
-  groupSize: number,
-): number {
-  let sum = 0;
-  const startIndex = index - Math.floor(groupSize / 2);
+  return entries.map((entry, index) => {
+    // towards the edges the window shrinks to the points that actually
+    // exist, so no value is ever counted more than once
+    const startIndex = Math.max(0, index - halfWindow);
+    const endIndex = Math.min(entries.length - 1, index + halfWindow);
 
-  for (let i = 0; i < groupSize; i++) {
-    const currentIndex = startIndex + i;
-
-    if (currentIndex < 0) {
-      sum += entries[0].y;
-    } else if (currentIndex >= entries.length) {
-      sum += entries[entries.length - 1].y;
-    } else {
-      sum += entries[startIndex + i].y;
+    let sum = 0;
+    for (let i = startIndex; i <= endIndex; i++) {
+      sum += entries[i].y;
     }
-  }
 
-  return sum / groupSize;
+    return { ...entry, y: sum / (endIndex - startIndex + 1) };
+  });
 }
