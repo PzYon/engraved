@@ -26,16 +26,15 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
 {
   private readonly UserRestrictedEntryRepository _entryRepository;
   private readonly UserRestrictedJournalRepository _journalRepository;
-  private readonly MongoDatabaseClient _mongoDatabaseClient;
   private readonly UserRestrictedUserRepository _userRepository;
+
+  public Lazy<IUser> CurrentUser { get; }
 
   public TestUserRestrictedMongoRepository(
     MongoDatabaseClient mongoDatabaseClient,
     ICurrentUserService currentUserService
   )
   {
-    _mongoDatabaseClient = mongoDatabaseClient;
-
     CurrentUser = CurrentUserLoader.CreateCurrentUserLazy(
       new MongoUserRepository(mongoDatabaseClient),
       currentUserService
@@ -51,8 +50,6 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
       writeGuard
     );
   }
-
-  public Lazy<IUser> CurrentUser { get; }
 
   public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
