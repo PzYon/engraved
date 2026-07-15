@@ -63,21 +63,21 @@ export const LogBookInner: React.FC = () => {
     >
       {isEditMode ? (
         <>
-          <SimpleDateSelector
-            setDate={setDate}
-            date={date}
-            shouldDisableDate={(d) => usedDays.has(getDayKey(d))}
-          />
           <TitleEditorHost>
             <RichTextEditor
               initialValue={title}
-              placeholder="Title (optional)"
+              placeholder="Title"
               isTitle={true}
               setValue={setTitle}
               onFocus={() => setHasTitleFocus(true)}
               onBlur={() => setHasTitleFocus(false)}
             />
           </TitleEditorHost>
+          <SimpleDateSelector
+            setDate={setDate}
+            date={date}
+            shouldDisableDate={(d) => usedDays.has(getDayKey(d))}
+          />
         </>
       ) : (
         <TitleRow
@@ -108,7 +108,7 @@ export const LogBookInner: React.FC = () => {
 
 // Mirrors the title styling of ParseableDate, which the (scrap) title editor uses elsewhere.
 const TitleEditorHost = styled("div")`
-  margin-top: ${(p) => p.theme.spacing(1)};
+  margin-bottom: ${(p) => p.theme.spacing(1)};
 
   .ngrvd-text-editor {
     font-size: 1.8rem;
