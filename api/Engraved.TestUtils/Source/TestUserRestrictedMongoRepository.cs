@@ -51,6 +51,68 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
     );
   }
 
+  public Lazy<IUser> CurrentUser { get; }
+
+  public IMongoCollection<JournalDocument> Journals => _mongoDatabaseClient.JournalsCollection;
+  public IMongoCollection<EntryDocument> Entries => _mongoDatabaseClient.EntriesCollection;
+  public IMongoCollection<UserDocument> Users => _mongoDatabaseClient.UsersCollection;
+
+  public Task<IUser?> GetUser(string? nameOrId)
+  {
+    return _userRepository.GetUser(nameOrId);
+  }
+
+  public Task<UpsertResult> UpsertUser(IUser user)
+  {
+    return _userRepository.UpsertUser(user);
+  }
+
+  public Task<IUser[]> GetUsers(params string[] userIds)
+  {
+    return _userRepository.GetUsers(userIds);
+  }
+
+  public Task<IUser[]> GetAllUsers()
+  {
+    return _userRepository.GetAllUsers();
+  }
+
+  public Task<IJournal[]> GetAllJournals(
+    string? searchText = null,
+    ScheduleMode? scheduleMode = null,
+    JournalType[]? journalTypes = null,
+    string[]? journalIds = null,
+    int? limit = null,
+    string? currentUserId = null,
+    bool matchAnyWord = false
+  )
+  {
+    return _journalRepository.GetAllJournals(
+      searchText,
+      scheduleMode,
+      journalTypes,
+      journalIds,
+      limit,
+      currentUserId,
+      matchAnyWord
+    );
+  }
+
+  public Task<IJournal?> GetJournal(string journalId)
+  {
+    return _journalRepository.GetJournal(journalId);
+  }
+
+  public Task<UpsertResult> UpsertJournal(IJournal journal)
+  {
+    return _journalRepository.UpsertJournal(journal);
+  }
+
+  public Task DeleteJournal(string journalId)
+  {
+    return _journalRepository.DeleteJournal(journalId);
+  }
+
   public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
     DateTime? fromDate = null,
