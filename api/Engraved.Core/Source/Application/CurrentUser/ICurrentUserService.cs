@@ -1,6 +1,6 @@
 ﻿using Engraved.Core.Domain.Users;
 
-namespace Engraved.Core.Application;
+namespace Engraved.Core.Application.CurrentUser;
 
 public interface ICurrentUserService
 {

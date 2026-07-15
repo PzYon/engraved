@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Engraved.Core.Application;
+using Engraved.Core.Application.CurrentUser;
 using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Tests.Application;

@@ -9,6 +9,7 @@ using Engraved.Api.Filters;
 using Engraved.Api.Jobs;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
+using Engraved.Core.Application.CurrentUser;
 using Engraved.Core.Application.Jobs;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Domain.Notifications;

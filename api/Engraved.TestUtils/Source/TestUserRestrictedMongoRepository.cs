@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Engraved.Core.Application;
+using Engraved.Core.Application.CurrentUser;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
@@ -26,16 +26,19 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
 {
   private readonly UserRestrictedEntryRepository _entryRepository;
   private readonly UserRestrictedJournalRepository _journalRepository;
-  private readonly MongoDatabaseClient _mongoDatabaseClient;
   private readonly UserRestrictedUserRepository _userRepository;
+
+  public Lazy<IUser> CurrentUser { get; }
 
   public TestUserRestrictedMongoRepository(
     MongoDatabaseClient mongoDatabaseClient,
     ICurrentUserService currentUserService
   )
   {
-    _mongoDatabaseClient = mongoDatabaseClient;
-    CurrentUser = CurrentUserLoader.CreateCurrentUserLazy(mongoDatabaseClient, currentUserService);
+    CurrentUser = CurrentUserLoader.CreateCurrentUserLazy(
+      new MongoUserRepository(mongoDatabaseClient),
+      currentUserService
+    );
 
     var journalRepository = new MongoJournalRepository(mongoDatabaseClient, new UserReadScope(CurrentUser));
     var writeGuard = new JournalWriteGuard(journalRepository, CurrentUser);
@@ -47,12 +50,6 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
       writeGuard
     );
   }
-
-  public Lazy<IUser> CurrentUser { get; }
-
-  public IMongoCollection<JournalDocument> Journals => _mongoDatabaseClient.JournalsCollection;
-  public IMongoCollection<EntryDocument> Entries => _mongoDatabaseClient.EntriesCollection;
-  public IMongoCollection<UserDocument> Users => _mongoDatabaseClient.UsersCollection;
 
   public Task<IEntry[]> GetEntriesForJournal(
     string journalId,

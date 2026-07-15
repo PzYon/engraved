@@ -1,4 +1,5 @@
 ﻿using Engraved.Core.Application;
+using Engraved.Core.Application.CurrentUser;
 using Engraved.Core.Domain.Notifications;
 using Engraved.Core.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
