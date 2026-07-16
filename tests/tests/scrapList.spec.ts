@@ -39,11 +39,15 @@ test("add scrap journal, add list entry and add/delete/modify", async ({
 
   await scrapList.dblClickToEdit();
 
-  await (await scrapList.getListItemByText(secondItemText))
+  await (
+    await scrapList.getListItemByText(secondItemText)
+  )
     .getByLabel("Delete")
     .click();
 
-  await (await scrapList.getListItemByText(firstItemText))
+  await (
+    await scrapList.getListItemByText(firstItemText)
+  )
     .getByRole("checkbox")
     .check();
 
@@ -63,13 +67,17 @@ test("add scrap journal, add list entries and mark as checked in non-edit mode",
   await scrapList.addListItem(secondItemText);
   await scrapList.clickSave();
 
-  await (await scrapList.getListItemByText(firstItemText))
+  await (
+    await scrapList.getListItemByText(firstItemText)
+  )
     .getByRole("checkbox")
     .check();
 
   await expect(
     (await scrapList.getListItemByText(firstItemText)).getByRole("checkbox"),
   ).toBeChecked();
+
+  await scrapList.waitForDebouncedSave(true);
 
   await page.reload();
 
@@ -185,7 +193,9 @@ test("deleting all checked items keeps one empty line, which is not persisted", 
 
   // check the only item and delete all checked items - the list must not end up
   // empty, a single blank line has to remain so there is something to type into.
-  await (await scrapList.getListItemByText(firstItemText))
+  await (
+    await scrapList.getListItemByText(firstItemText)
+  )
     .getByRole("checkbox")
     .check();
 
@@ -414,7 +424,9 @@ async function testThatEveryUpdateLeadsToNewInitialState(
     (await scrapList.getListItemByText(firstItemText)).getByRole("checkbox"),
   ).toBeChecked();
 
-  await (await scrapList.getListItemByText(firstItemText))
+  await (
+    await scrapList.getListItemByText(firstItemText)
+  )
     .getByRole("checkbox")
     .uncheck();
 
@@ -422,9 +434,13 @@ async function testThatEveryUpdateLeadsToNewInitialState(
     (await scrapList.getListItemByText(firstItemText)).getByRole("checkbox"),
   ).not.toBeChecked();
 
-  await (await scrapList.getListItemByText(firstItemText))
+  await (
+    await scrapList.getListItemByText(firstItemText)
+  )
     .getByRole("checkbox")
     .check();
+
+  await scrapList.waitForDebouncedSave(true);
 
   await page.reload();
 
