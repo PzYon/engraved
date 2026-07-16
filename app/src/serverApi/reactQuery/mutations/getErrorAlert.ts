@@ -1,4 +1,4 @@
-import { IAppAlert } from "../../../components/errorHandling/AppAlertBar";
+import { IAppAlert } from "../../../components/errorHandling/IAppAlert";
 
 // Builds the standard "something failed" alert for a mutation's onError handler,
 // normalizing how the message is extracted from an unknown thrown value

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ReactNode } from "react";
-import { IAppAlert } from "./AppAlertBar";
+
+import { IAppAlert } from "./IAppAlert";
 
 interface IAppErrorBoundaryClassProps {
   setError: (alert: IAppAlert) => void;

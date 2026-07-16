@@ -19,11 +19,7 @@ import { IAction } from "../common/actions/IAction";
 import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
 import { Chart } from "./chart/Chart";
-import {
-  AggregationMode,
-  DateFilterConfig,
-  IJournalUiSettings,
-} from "./edit/IJournalUiSettings";
+import { AggregationMode, IJournalUiSettings } from "./edit/IJournalUiSettings";
 import { GroupByTime } from "./chart/consolidation/GroupByTime";
 import {
   getUiSettings,
@@ -33,6 +29,7 @@ import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 import { EntriesAgenda } from "./entriesAgenda/EntriesAgenda";
 import { isEntryFilterApplied } from "./filters/isEntryFilterApplied";
+import { DateFilterConfig } from "./edit/DateFilterConfig";
 
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();

@@ -13,9 +13,8 @@ import { DateRange } from "./DateRange";
 import { FiltersRow } from "./FiltersRow";
 import { DateFilterConfigSelector } from "./DateFilterConfigSelector";
 import { DeviceWidth, useDeviceWidth } from "../../common/useDeviceWidth";
-import { DateFilterConfig } from "../edit/IJournalUiSettings";
 
-export type DateType = "relative" | "range";
+import { DateFilterConfig } from "../edit/DateFilterConfig";
 
 export const DateFilters: React.FC<{ config: DateFilterConfig }> = ({
   config,

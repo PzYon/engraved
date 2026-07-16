@@ -3,10 +3,8 @@ import { IJournalAttributeValues } from "../../../serverApi/IJournalAttributeVal
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { AttributeValues } from "../../common/AttributeValues";
 import { IJournal } from "../../../serverApi/IJournal";
-import {
-  IAttributeSearchResult,
-  searchJournalAttributes,
-} from "./searchAttributes/searchJournalAttributes";
+import { searchJournalAttributes } from "./searchAttributes/searchJournalAttributes";
+import { IAttributeSearchResult } from "./searchAttributes/IAttributeSearchResult";
 
 let timer: number;
 

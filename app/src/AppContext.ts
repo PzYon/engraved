@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
-import { IAppAlert } from "./components/errorHandling/AppAlertBar";
 import { IUser } from "./serverApi/IUser";
+import { IAppAlert } from "./components/errorHandling/IAppAlert";
 
 export interface IAppContext {
   appAlert: IAppAlert | null;

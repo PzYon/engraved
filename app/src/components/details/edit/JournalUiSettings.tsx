@@ -17,19 +17,21 @@ import PanToolOutlined from "@mui/icons-material/PanToolOutlined";
 import ShowChartOutlined from "@mui/icons-material/ShowChartOutlined";
 import { GroupByTimeSelector } from "../chart/grouping/GroupByTimeSelector";
 import { GridContainer, GridItem } from "../../common/Grid";
-import { ChartTypeSelector } from "../chart/grouping/ChartTypeSelector";
+import {
+  ChartTypeSelector,
+  MyChartType,
+} from "../chart/grouping/ChartTypeSelector";
 import { journalDefaultUiSettings } from "../journalDefaultUiSettings";
 import { AggregationModeSelector } from "../chart/AggregationModeSelector";
 import {
   AggregationMode,
-  DateFilterConfig,
   FooterRowMode,
   IJournalUiSettings,
   StreakMode,
 } from "./IJournalUiSettings";
-import { MyChartType } from "../chart/grouping/ChartTypeSelector";
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
 import { DateFilterConfigSelector } from "../filters/DateFilterConfigSelector";
+import { DateFilterConfig } from "./DateFilterConfig";
 
 export const JournalUiSettings: React.FC<{
   uiSettings: IJournalUiSettings;
