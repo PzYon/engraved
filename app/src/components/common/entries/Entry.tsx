@@ -12,8 +12,7 @@ import { IPropertyDefinition } from "../IPropertyDefinition";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalIcon } from "../../overview/journals/JournalIcon";
 import { JournalType } from "../../../serverApi/JournalType";
-
-export type EntryPropsRenderStyle = "all" | "generic" | "none";
+import { EntryPropsRenderStyle } from "./EntryPropsRenderStyle";
 
 export const Entry: React.FC<{
   journal: IJournal;

@@ -1,12 +1,12 @@
 import { stripTime } from "../../util/utils";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import React from "react";
-import { ISimpleDateSelectorProps } from "./DateSelector";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { de } from "date-fns/locale/de";
 import { Button } from "@mui/material";
 import { addDays } from "date-fns";
 import { styled } from "@mui/system";
+import { ISimpleDateSelectorProps } from "./ISimpleDateSelectorProps";
 
 const LazySimpleDateSelector: React.FC<ISimpleDateSelectorProps> = ({
   hasFocus,

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ScrapInner } from "./ScrapInner";
-import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { ActionsRenderStyle } from "./ScrapContext";
 import { ScrapContextProvider } from "./ScrapContextProvider";
 import { IJournal } from "../../../serverApi/IJournal";
 import { LogBookInner } from "./LogBookInner";
 import { JournalType } from "../../../serverApi/JournalType";
+import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
 
 export const Scrap: React.FC<{
   scrap: IScrapEntry;

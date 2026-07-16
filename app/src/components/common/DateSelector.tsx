@@ -1,13 +1,6 @@
 import React from "react";
 import { LazyLoadSuspender } from "./LazyLoadSuspender";
-
-export interface ISimpleDateSelectorProps {
-  setDate: (date: Date | null) => void;
-  date: Date | undefined;
-  label?: string;
-  hasFocus?: boolean;
-  shouldDisableDate?: (date: Date) => boolean;
-}
+import { ISimpleDateSelectorProps } from "./ISimpleDateSelectorProps";
 
 const LazySimpleDateSelector = React.lazy(
   () => import("./LazySimpleDateSelector"),
