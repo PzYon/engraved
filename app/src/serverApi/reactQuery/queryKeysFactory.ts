@@ -7,6 +7,12 @@ export const queryKeysFactory = {
   prefixes: {
     journals: () => [journals],
     entities: () => ["search", "entities"],
+    // matches every cached entry list of the journal, across all filter variants
+    journalEntries: (journalId: string) => [journals, journalId, "entries"],
+    // mutation-key prefixes: mutation defaults (offline outbox replay) are registered on these,
+    // so they must be prefixes of updateEntries/deleteEntry below
+    upsertEntryMutations: () => ["entry-mutations", "upsert"],
+    deleteEntryMutations: () => ["entry-mutations", "delete"],
   },
 
   entry(entryId: string) {
@@ -61,11 +67,11 @@ export const queryKeysFactory = {
   },
 
   updateEntries(journalId: string, entryId: string) {
-    return [journals, journalId, "entry", "update", entryId];
+    return [...this.prefixes.upsertEntryMutations(), journalId, entryId];
   },
 
   deleteEntry(journalId: string, entryId: string) {
-    return [journals, journalId, "entry", "delete", entryId];
+    return [...this.prefixes.deleteEntryMutations(), journalId, entryId];
   },
 
   moveEntry(entryId: string, journalId: string) {
