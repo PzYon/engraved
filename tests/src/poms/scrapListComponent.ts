@@ -45,6 +45,13 @@ export class ScrapListComponent {
     return this.expectSaved(isUpdate);
   }
 
+  // Checking an item in non-edit mode debounces the save - wait for it to
+  // complete before relying on the change being persisted (e.g. before a
+  // reload).
+  async waitForDebouncedSave(isUpdate?: boolean) {
+    return this.expectSaved(isUpdate);
+  }
+
   private async expectSaved(isUpdate?: boolean) {
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar).toContainText(
