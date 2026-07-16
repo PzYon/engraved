@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { styled, Typography, useTheme } from "@mui/material";
 import { ScrapListItem } from "./ScrapListItem";
 import { ListItemCollection } from "./ListItemCollection";
@@ -26,6 +26,10 @@ import SyncAltOutlined from "@mui/icons-material/SyncAltOutlined";
 import { IAction } from "../../../common/actions/IAction";
 import { ScrapType } from "../../../../serverApi/IScrapEntry";
 import { ActionIconButtonGroup } from "../../../common/actions/ActionIconButtonGroup";
+
+// Checking multiple items in quick succession should not fire a save request
+// per click - debounce so only the last change within this window is saved.
+const SAVE_DEBOUNCE_MS = 2000;
 
 export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
   editModeActions,
@@ -59,6 +63,10 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
       listItemCollection.giveFocus(listItemCollection.items.length - 1, "end");
     }
   }, [isEditMode, listItemCollection]);
+
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(0);
+
+  useEffect(() => () => clearTimeout(saveTimeoutRef.current), []);
 
   const sensors = useSensors(useSensor(TouchSensor), useSensor(PointerSensor));
 
@@ -123,7 +131,10 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
                       listItemCollection.updateItem(index, updatedItem);
 
                       if (!isEditMode) {
-                        upsertScrap(getItemsAsJson(listItemCollection.items));
+                        clearTimeout(saveTimeoutRef.current);
+                        saveTimeoutRef.current = setTimeout(() => {
+                          upsertScrap(getItemsAsJson(listItemCollection.items));
+                        }, SAVE_DEBOUNCE_MS);
                       }
                     }}
                   />
