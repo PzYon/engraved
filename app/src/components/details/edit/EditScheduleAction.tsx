@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { DialogFormButtonContainer } from "../../common/FormButtonContainer";
-import { Button, FormControlLabel, styled, Switch } from "@mui/material";
+import { styled } from "@mui/material";
 import { useModifyScheduleMutation } from "../../../serverApi/reactQuery/mutations/useModifyScheduleMutation";
-import { ParseableDate } from "./ParseableDate";
-import { DateSelector } from "../../common/DateSelector";
 import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
-import { IParsedDate, parseDate } from "./parseDate";
+import { IParsedDate } from "./parseDate";
 import { IEntity } from "../../../serverApi/IEntity";
 import {
   getScheduleDefinition,
@@ -15,17 +12,14 @@ import {
 import { IJournal } from "../../../serverApi/IJournal";
 import { useAppContext } from "../../../AppContext";
 import { IEntry } from "../../../serverApi/IEntry";
-import {
-  getItemActionQueryParams,
-  useItemAction,
-} from "../../common/actions/searchParamHooks";
-import { ScheduledInfo } from "../../overview/scheduled/ScheduledInfo";
 import { ISchedule } from "../../../serverApi/ISchedule";
 import { Properties } from "../../common/Properties";
 import EditNotificationsOutlined from "@mui/icons-material/EditNotificationsOutlined";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { isAfter } from "date-fns";
-import { useOverviewListContext } from "../../overview/overviewList/OverviewListContext";
+import { useItemAction } from "../../common/actions/searchParamHooks";
+import { ScheduleActions } from "./ScheduleActions";
+import { ScheduleEditForm } from "./ScheduleEditForm";
 
 export const EditScheduleAction: React.FC<{
   journal?: IJournal;
@@ -77,8 +71,6 @@ export const EditScheduleAction: React.FC<{
 
   const [isEditMode, setIsEditMode] = useState(!hasSchedule);
 
-  const overviewListContext = useOverviewListContext();
-
   return (
     <Host>
       {hasSchedule ? (
@@ -103,117 +95,30 @@ export const EditScheduleAction: React.FC<{
         </ActualScheduleContainer>
       ) : null}
 
-      <MainButtons>
-        {hasSchedule && (isInPast || !isRecurring) ? (
-          <Button
-            sx={{ width: "100%" }}
-            variant="contained"
-            onClick={() => {
-              const scheduleDefinition: IScheduleDefinition = {
-                nextOccurrence: isRecurring
-                  ? (parseDate(schedule?.recurrence?.dateString ?? "").date ??
-                    null)
-                  : null,
-                recurrence: schedule.recurrence,
-                onClickUrl: entry
-                  ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
-                  : `${location.origin}/journals/details/${journal?.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal?.id)).toString()}`,
-              };
-
-              modifyScheduleMutation.mutate(scheduleDefinition);
-
-              closeAction();
-              overviewListContext.keepFocusAtIndex();
-            }}
-          >
-            {isRecurring ? (
-              <>
-                Reschedule&nbsp;
-                <ScheduledInfo
-                  schedule={schedule}
-                  showNextIfPassed={true}
-                  showRecurrenceInfo={true}
-                />
-              </>
-            ) : (
-              <>Mark {entry ? "entry" : "journal"} as done</>
-            )}
-          </Button>
-        ) : null}
-
-        {hasSchedule &&
-        (isInFuture || isRecurring) &&
-        !(isInPast || !isRecurring) ? (
-          <Button
-            sx={{ width: "100%" }}
-            variant="contained"
-            onClick={() => {
-              const scheduleDefinition: IScheduleDefinition = {
-                nextOccurrence: null,
-                onClickUrl: null,
-              };
-
-              modifyScheduleMutation.mutate(scheduleDefinition);
-
-              closeAction();
-            }}
-          >
-            {!isInFuture ? (
-              <>Mark {entry ? "entry" : "journal"} as done</>
-            ) : (
-              "Remove schedule"
-            )}
-          </Button>
-        ) : null}
-      </MainButtons>
+      <ScheduleActions
+        hasSchedule={hasSchedule}
+        isRecurring={isRecurring}
+        isInPast={isInPast}
+        isInFuture={isInFuture}
+        schedule={schedule}
+        entry={entry}
+        journal={journal}
+        modifyScheduleMutation={modifyScheduleMutation}
+      />
 
       {hasSchedule && isEditMode ? <Spacer /> : null}
 
       {isEditMode ? (
-        <>
-          <FormControlLabel
-            label="Show full form"
-            control={
-              <Switch
-                checked={showFullForm}
-                onChange={(_, checked) => {
-                  setShowFullForm(checked);
-                }}
-              />
-            }
-          />
-          <ParseableDate
-            sx={{ marginBottom: 2 }}
-            parseDateOnly={true}
-            onChange={(d) => {
-              setParsed(d);
-              setIsDirty(!!d.date);
-            }}
-            onSelect={save}
-          />
-
-          {showFullForm ? (
-            <DateSelector
-              date={parsed.date}
-              setDate={(d) => {
-                setParsed({ date: d ?? undefined, input: parsed.text ?? "" });
-                setIsDirty(true);
-              }}
-              showTime={true}
-              showClear={true}
-            />
-          ) : null}
-
-          <DialogFormButtonContainer sx={{ paddingTop: 0 }}>
-            <Button variant="outlined" onClick={closeAction}>
-              Cancel
-            </Button>
-
-            <Button variant="contained" onClick={save} disabled={!isDirty}>
-              Save
-            </Button>
-          </DialogFormButtonContainer>
-        </>
+        <ScheduleEditForm
+          parsed={parsed}
+          isDirty={isDirty}
+          showFullForm={showFullForm}
+          setShowFullForm={setShowFullForm}
+          setParsed={setParsed}
+          setIsDirty={setIsDirty}
+          save={save}
+          closeAction={closeAction}
+        />
       ) : null}
     </Host>
   );
@@ -239,17 +144,6 @@ const ActualScheduleContainer = styled("div")`
   display: flex;
   gap: ${(p) => p.theme.spacing(2)};
   align-items: center;
-`;
-
-const MainButtons = styled("div")`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: ${(p) => p.theme.spacing(2)};
-
-  &:empty {
-    display: none;
-  }
 `;
 
 const Spacer = styled("div")`

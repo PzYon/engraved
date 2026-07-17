@@ -1,35 +1,23 @@
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import { useJournalViewState } from "./useJournalViewState";
+import React, { useEffect, useState } from "react";
 import { useJournalContext } from "./JournalContext";
-import LocalHotelOutlined from "@mui/icons-material/LocalHotelOutlined";
 import { getCommonJournalActions } from "../overview/getCommonJournalActions";
 import { PageSection } from "../layout/pages/PageSection";
 import { JournalNotes } from "./edit/JournalNotes";
-import { EntryFilters } from "./filters/EntryFilters";
-import { Thresholds } from "./thresholds/Thresholds";
-import { EntriesTable } from "./entriesTable/EntriesTable";
+import { JournalViewFilters } from "./JournalViewFilters";
+import { FooterRowMode } from "./edit/IJournalUiSettings";
+import { JournalViewEntries } from "./JournalViewEntries";
 import { Page } from "../layout/pages/Page";
 import { JournalPageTitle } from "./JournalPageTitle";
 import { createDateConditions } from "./filters/createDateConditions";
-import { GenericEmptyPlaceholder } from "../common/search/GenericEmptyPlaceholder";
-import { OfflinePlaceholder } from "../common/search/OfflinePlaceholder";
 import { useIsOffline } from "../common/useIsOffline";
-import { MyChartType } from "./chart/grouping/ChartTypeSelector";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
-import { journalDefaultUiSettings } from "./journalDefaultUiSettings";
 import { DeviceWidth, useDeviceWidth } from "../common/useDeviceWidth";
-import { Chart } from "./chart/Chart";
-import { AggregationMode, IJournalUiSettings } from "./edit/IJournalUiSettings";
-import { GroupByTime } from "./chart/consolidation/GroupByTime";
-import {
-  getUiSettings,
-  isTypeThatCanShowAddEntryRow,
-} from "../../util/journalUtils";
+import { JournalViewChart } from "./JournalViewChart";
 import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
-import { EntriesAgenda } from "./entriesAgenda/EntriesAgenda";
 import { isEntryFilterApplied } from "./filters/isEntryFilterApplied";
-import { DateFilterConfig } from "./edit/DateFilterConfig";
 
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
@@ -46,48 +34,34 @@ export const JournalViewPage: React.FC = () => {
     searchText,
   } = useJournalContext();
 
-  const uiSettings = useMemo<IJournalUiSettings>(
-    () => getUiSettings(journal),
-    [journal],
-  );
-
-  const [groupByTime, setGroupByTime] = useState<GroupByTime>(
-    (uiSettings?.groupByTime ??
-      journalDefaultUiSettings.groupByTime) as GroupByTime,
-  );
-  const [attributeKey, setAttributeKey] = useState("-");
-  const [chartType, setChartType] = useState<MyChartType>(
-    (uiSettings.chartType ?? journalDefaultUiSettings.chartType) as MyChartType,
-  );
-
-  const [showNotes, setShowNotes] = useState(!!journal.notes);
-
-  const [showAddNewEntryRow, setShowAddNewEntryRow] = useState(
-    isTypeThatCanShowAddEntryRow(journal.type),
-  );
-
-  const [showFilters, setShowFilters] = useState(!!uiSettings?.showFilters);
-  const [showChart, setShowChart] = useState(!!uiSettings?.showChart);
-  const [showAgenda, setShowAgenda] = useState(!!uiSettings?.showAgenda);
-  const [aggregationMode, setAggregationMode] = useState<AggregationMode>(
-    (uiSettings.aggregationMode ??
-      journalDefaultUiSettings.aggregationMode) as AggregationMode,
-  );
-
-  const [showThresholds, setShowThresholds] = useState(
-    !!uiSettings?.showThresholds,
-  );
-  const [showGroupTotals, setShowGroupTotals] = useState(
-    !!uiSettings?.showGroupTotals,
-  );
+  const {
+    groupByTime,
+    setGroupByTime,
+    attributeKey,
+    setAttributeKey,
+    chartType,
+    setChartType,
+    showNotes,
+    setShowNotes,
+    showAddNewEntryRow,
+    setShowAddNewEntryRow,
+    showFilters,
+    setShowFilters,
+    showChart,
+    setShowChart,
+    showAgenda,
+    setShowAgenda,
+    aggregationMode,
+    setAggregationMode,
+    showThresholds,
+    setShowThresholds,
+    showGroupTotals,
+    setShowGroupTotals,
+    dateFilter,
+    footerRowMode,
+  } = useJournalViewState();
 
   const [titleActions, setTitleActions] = useState<IAction[]>([]);
-
-  const dateFilter: DateFilterConfig =
-    uiSettings.dateFilter ?? journalDefaultUiSettings.dateFilter!;
-
-  const footerRowMode =
-    uiSettings.footerRowMode ?? journalDefaultUiSettings.footerRowMode;
 
   const showStreak = !isEntryFilterApplied(
     dateConditions,
@@ -156,7 +130,7 @@ export const JournalViewPage: React.FC = () => {
       ) : null}
 
       {showFilters ? (
-        <EntryFilters
+        <JournalViewFilters
           journal={journal}
           groupByTime={groupByTime}
           setGroupByTime={setGroupByTime}
@@ -169,69 +143,33 @@ export const JournalViewPage: React.FC = () => {
       ) : null}
 
       {showChart && entries ? (
-        <Suspense fallback={<div />}>
-          <PageSection>
-            <Chart
-              entries={entries}
-              dateConditions={dateConditions}
-              journal={journal}
-              groupByTime={groupByTime}
-              groupByAttribute={attributeKey}
-              chartType={chartType}
-              chartUiProps={{}}
-              aggregationMode={aggregationMode}
-            />
-          </PageSection>
-        </Suspense>
-      ) : null}
-
-      {showThresholds && Object.keys(journal.thresholds ?? {}).length ? (
-        <Thresholds
+        <JournalViewChart
           entries={entries}
-          journal={journal}
           dateConditions={dateConditions}
-          setSelectedAttributeValues={setSelectedAttributeValues}
-          selectedAttributeValues={selectedAttributeValues}
+          journal={journal}
+          groupByTime={groupByTime}
+          attributeKey={attributeKey}
+          chartType={chartType}
+          aggregationMode={aggregationMode}
         />
       ) : null}
 
-      {entries?.length ? (
-        <>
-          {showAgenda ? (
-            <EntriesAgenda
-              journal={journal}
-              entries={entries}
-              showStreak={showStreak}
-            ></EntriesAgenda>
-          ) : (
-            <PageSection overflowXScroll={true} title="Entries">
-              <EntriesTable
-                journal={journal}
-                entries={entries}
-                showGroupTotals={showGroupTotals}
-                showAddNewEntryRow={
-                  showAddNewEntryRow &&
-                  isTypeThatCanShowAddEntryRow(journal.type)
-                }
-                showStreak={showStreak}
-                aggregationMode={aggregationMode}
-                setAggregationMode={setAggregationMode}
-                dateConditions={dateConditions}
-                footerRowMode={footerRowMode}
-              />
-            </PageSection>
-          )}
-        </>
-      ) : isOffline ? (
-        // While offline, missing entries (almost) always mean they have not
-        // been cached yet - "No entries available." would be misleading.
-        <OfflinePlaceholder />
-      ) : (
-        <GenericEmptyPlaceholder
-          icon={LocalHotelOutlined}
-          message="No entries available."
-        />
-      )}
+      <JournalViewEntries
+        journal={journal}
+        entries={entries}
+        showThresholds={showThresholds}
+        dateConditions={dateConditions}
+        setSelectedAttributeValues={setSelectedAttributeValues}
+        selectedAttributeValues={selectedAttributeValues}
+        showAgenda={showAgenda}
+        showStreak={showStreak}
+        showGroupTotals={showGroupTotals}
+        showAddNewEntryRow={showAddNewEntryRow}
+        aggregationMode={aggregationMode}
+        setAggregationMode={setAggregationMode}
+        footerRowMode={footerRowMode as FooterRowMode}
+        isOffline={isOffline}
+      />
     </Page>
   );
 };
