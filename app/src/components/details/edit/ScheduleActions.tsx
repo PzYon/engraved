@@ -11,6 +11,8 @@ import {
 } from "../../common/actions/searchParamHooks";
 import { ScheduledInfo } from "../../overview/scheduled/ScheduledInfo";
 import { useOverviewListContext } from "../../overview/overviewList/OverviewListContext";
+import { UseMutationResult } from "@tanstack/react-query";
+import { ICommandResult } from "../../../serverApi/ICommandResult";
 
 export const ScheduleActions: React.FC<{
   hasSchedule: boolean;
@@ -20,7 +22,12 @@ export const ScheduleActions: React.FC<{
   schedule?: ISchedule;
   entry?: IEntry;
   journal?: IJournal;
-  modifyScheduleMutation: never; // Ideally this should have a specific type, but for now I'll use any as it's from hook
+  modifyScheduleMutation: UseMutationResult<
+    ICommandResult,
+    Error,
+    IScheduleDefinition,
+    unknown
+  >;
 }> = ({
   hasSchedule,
   isRecurring,
