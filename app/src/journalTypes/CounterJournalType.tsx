@@ -1,5 +1,4 @@
 import { JournalType } from "../serverApi/JournalType";
-import PlusOneSharp from "@mui/icons-material/PlusOneSharp";
 import { IJournalType } from "./IJournalType";
 import { IEntriesTableColumnDefinition } from "../components/details/entriesTable/IEntriesTableColumnDefinition";
 import { IJournal } from "../serverApi/IJournal";
@@ -11,10 +10,6 @@ export class CounterJournalType implements IJournalType {
   type = JournalType.Counter;
 
   isGroupable = true;
-
-  getIcon() {
-    return <PlusOneSharp style={{ backgroundColor: "#DFFFE3" }} />;
-  }
 
   getEntry(
     journal: IJournal,

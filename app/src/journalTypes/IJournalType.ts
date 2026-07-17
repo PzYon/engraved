@@ -11,8 +11,6 @@ export interface IJournalType {
 
   isGroupable?: boolean;
 
-  getIcon(): React.ReactNode;
-
   getEntry(
     journal: IJournal,
     entry: IEntry,
