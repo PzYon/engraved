@@ -1,6 +1,6 @@
 import React from "react";
 import { LazyLoadSuspender } from "./LazyLoadSuspender";
-import { ISimpleDateSelectorProps } from "./ISimpleDateSelectorProps";
+import { IDateSelectorProps } from "./IDateSelectorProps";
 
 const LazySimpleDateSelector = React.lazy(
   () => import("./LazySimpleDateSelector"),
@@ -13,11 +13,6 @@ export const SimpleDateSelector: React.FC<IDateSelectorProps> = (props) => {
     </LazyLoadSuspender>
   );
 };
-
-export interface IDateSelectorProps extends ISimpleDateSelectorProps {
-  showTime?: boolean;
-  showClear?: boolean;
-}
 
 const LazyDateSelector = React.lazy(() => import("./LazyDateSelector"));
 
