@@ -47,7 +47,7 @@ jobs:
         run: npm run knip
 
       - name: Fallow
-        uses: fallow-rs/fallow@v2
+        uses: fallow-rs/fallow@v3
         with:
           format: sarif
 
