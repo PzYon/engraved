@@ -46,6 +46,16 @@ jobs:
         working-directory: ./
         run: npm run knip
 
+      - name: Fallow
+        uses: fallow-rs/fallow@v2
+        with:
+          format: sarif
+
+      - name: Upload Fallow Results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: fallow-results.sarif
+
       - name: Lint
         working-directory: ./
         run: npm run lint
