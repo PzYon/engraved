@@ -1,8 +1,8 @@
 import { IUser } from "./serverApi/IUser";
-import { IAppAlert } from "./components/errorHandling/AppAlertBar";
 import React, { useMemo, useState } from "react";
 import { AppContext, IAppContext } from "./AppContext";
 import { ServerApi } from "./serverApi/ServerApi";
+import { IAppAlert } from "./components/errorHandling/IAppAlert";
 
 export const AppContextProvider: React.FC<{
   children: React.ReactNode;

@@ -12,7 +12,8 @@ import {
   subDays,
 } from "date-fns";
 import { DateRange } from "./DateRange";
-import { DateFilterConfig } from "../edit/IJournalUiSettings";
+
+import { DateFilterConfig } from "../edit/DateFilterConfig";
 
 export const createDateConditions = (
   dateFilterConfig: DateFilterConfig,

@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
-import { IMarkdownProps } from "./Markdown";
 import { BasicMarkdownContainer, MarkdownContainer } from "./MarkdownContainer";
 import { marked, Tokens } from "marked";
 import DOMPurify from "dompurify";
 import emojiRegex from "emoji-regex";
+import { IMarkdownProps } from "./IMarkdownProps";
 
 const regex = emojiRegex();
 

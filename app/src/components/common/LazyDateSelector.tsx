@@ -7,7 +7,7 @@ import {
 import { Button, styled } from "@mui/material";
 import React from "react";
 import { addDays, addMinutes } from "date-fns";
-import { IDateSelectorProps } from "./DateSelector";
+import { IDateSelectorProps } from "./IDateSelectorProps";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { de } from "date-fns/locale/de";
 

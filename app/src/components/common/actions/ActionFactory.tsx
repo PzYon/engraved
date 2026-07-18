@@ -31,7 +31,6 @@ import { IJournal } from "../../../serverApi/IJournal";
 import { IDialogProps } from "../../layout/dialogs/DialogContext";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { IEntry } from "../../../serverApi/IEntry";
-import { IAppAlert } from "../../errorHandling/AppAlertBar";
 import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
 import { Button, Typography } from "@mui/material";
@@ -41,6 +40,7 @@ import {
   getItemActionQueryParams,
 } from "./searchParamHooks";
 import AirplanemodeActive from "@mui/icons-material/AirplanemodeActive";
+import { IAppAlert } from "../../errorHandling/IAppAlert";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {

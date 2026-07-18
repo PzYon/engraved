@@ -14,11 +14,11 @@ import { translations } from "../../../i18n/translations";
 import { SearchTextFilter } from "./SearchTextFilter";
 import { PageSection } from "../../layout/pages/PageSection";
 import { FiltersRow } from "./FiltersRow";
-import { DateFilterConfig } from "../edit/IJournalUiSettings";
 import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import Group from "@mui/icons-material/Group";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import Style from "@mui/icons-material/Style";
+import { DateFilterConfig } from "../edit/DateFilterConfig";
 
 export const EntryFilters: React.FC<{
   journal: IJournal;

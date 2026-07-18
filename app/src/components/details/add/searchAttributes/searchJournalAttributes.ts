@@ -1,15 +1,7 @@
 import { IJournalAttributes } from "../../../../serverApi/IJournalAttributes";
 import { AttributeSearchResult } from "./AttributeSearchResult";
-
-export interface IAttributeSearchResult {
-  values: Record<string, string[]>;
-}
-
-export interface IAttributeSearchMatch {
-  attributeKey: string;
-  valueKey: string;
-  matchingTerms: string[];
-}
+import { IAttributeSearchResult } from "./IAttributeSearchResult";
+import { IAttributeSearchMatch } from "./IAttributeSearchMatch";
 
 export function doesMatch(text: string, searchTerm: string) {
   return searchTerm

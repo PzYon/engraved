@@ -10,8 +10,8 @@ import {
 import { DateRange } from "./DateRange";
 import { DateRangeSelector } from "./DateRangeSelector";
 import React from "react";
-import { DateType } from "./DateFilters";
-import { DateFilterConfig } from "../edit/IJournalUiSettings";
+import { DateType } from "./DateType";
+import { DateFilterConfig } from "../edit/DateFilterConfig";
 
 export const DateFilterConfigSelector: React.FC<{
   dateFilterConfig: DateFilterConfig;

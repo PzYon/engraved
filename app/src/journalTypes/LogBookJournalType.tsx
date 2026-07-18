@@ -1,5 +1,4 @@
 import { JournalType } from "../serverApi/JournalType";
-import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import { IJournalType } from "./IJournalType";
 import { IEntriesTableColumnDefinition } from "../components/details/entriesTable/IEntriesTableColumnDefinition";
 import { IJournal } from "../serverApi/IJournal";
@@ -14,10 +13,6 @@ export class LogBookJournalType implements IJournalType {
   type = JournalType.LogBook;
 
   isGroupable = false;
-
-  getIcon() {
-    return <CalendarMonth style={{ backgroundColor: "#eeeeee" }} />;
-  }
 
   getEntry(
     journal: IJournal,

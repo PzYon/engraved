@@ -1,21 +1,12 @@
 import { GroupByTime } from "../chart/consolidation/GroupByTime";
-import { DateType } from "../filters/DateFilters";
-import { DateRange } from "../filters/DateRange";
+import { DateFilterConfig } from "./DateFilterConfig";
 
 export type AggregationMode =
-  | "average"
-  | "sum"
-  | "average-by-time"
-  | "average-by-occurrence";
+  "average" | "sum" | "average-by-time" | "average-by-occurrence";
 
 export type StreakMode = "none" | "positive" | "negative";
 
 export type FooterRowMode = "bottom" | "top" | "both";
-
-export type DateFilterConfig = {
-  dateType: DateType;
-  value: DateRange | number;
-};
 
 export interface IJournalUiSettings {
   showGroupTotals?: boolean;

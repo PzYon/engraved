@@ -7,13 +7,11 @@ import { ListItemFooterRow } from "../../overview/ListItemFooterRow";
 import { IconStyle } from "../IconStyle";
 import { FormatDate } from "../FormatDate";
 import { useAppContext } from "../../../AppContext";
-import { EntrySubRoutes } from "./EntrySubRoutes";
 import { IPropertyDefinition } from "../IPropertyDefinition";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalIcon } from "../../overview/journals/JournalIcon";
 import { JournalType } from "../../../serverApi/JournalType";
-
-export type EntryPropsRenderStyle = "all" | "generic" | "none";
+import { EntryPropsRenderStyle } from "./EntryPropsRenderStyle";
 
 export const Entry: React.FC<{
   journal: IJournal;
@@ -55,7 +53,6 @@ export const Entry: React.FC<{
         actions={actions}
         noCompactFooter={noCompactFooter}
       />
-      {hasFocus ? <EntrySubRoutes entry={entry} /> : null}
     </>
   );
 };

@@ -2,6 +2,7 @@ import React from "react";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IJournal } from "../../../serverApi/IJournal";
 import { JournalTypeFactory } from "../../../journalTypes/JournalTypeFactory";
+import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 
 export const EntryListItem: React.FC<{
   entry: IEntry;
@@ -13,6 +14,7 @@ export const EntryListItem: React.FC<{
   return (
     <div data-testid={`entries-list-item-${index}`}>
       {renderEntry(entry, hasFocus ?? false)}
+      {hasFocus ? <EntrySubRoutes entry={entry} /> : null}
     </div>
   );
 
