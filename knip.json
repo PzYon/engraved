@@ -3,7 +3,8 @@
   "workspaces": {
     "app": {
       "ignore": ["public/OneSignalSDKWorker.js"],
-      "ignoreBinaries": ["dotnet"]
+      "ignoreBinaries": ["dotnet"],
+      "ignoreDependencies": ["fallow"]
     },
     "tests": {
       "entry": "tests/*.ts",
