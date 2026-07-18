@@ -16,6 +16,7 @@ import {
   sortEntitiesByDates,
 } from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
+import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 
 export const ScrapsViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -52,17 +53,21 @@ export const ScrapsViewPage: React.FC = () => {
           items={sortEntitiesByDates(scraps, user.id ?? "")}
           onActiveItemChange={setActiveItemId}
           renderItem={(item, _, hasFocus, giveFocus) => (
-            <Scrap
+            <React.Fragment
               key={
                 (item.id ?? "") +
                 getScheduleForUser(item, user.id ?? "").nextOccurrence
               }
-              journal={journal}
-              propsRenderStyle={"generic"}
-              scrap={item as IScrapEntry}
-              hasFocus={hasFocus}
-              giveFocus={giveFocus}
-            />
+            >
+              <Scrap
+                journal={journal}
+                propsRenderStyle={"generic"}
+                scrap={item as IScrapEntry}
+                hasFocus={hasFocus}
+                giveFocus={giveFocus}
+              />
+              {hasFocus ? <EntrySubRoutes entry={item as IScrapEntry} /> : null}
+            </React.Fragment>
           )}
         />
       ) : (

@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
-import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import { IParsedDate } from "../edit/parseDate";
 import { IAction } from "../../common/actions/IAction";
 import { IJournal } from "../../../serverApi/IJournal";
+import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
 
 export type ActionsRenderStyle = "save-only" | "none" | "all";
 

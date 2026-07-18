@@ -2,14 +2,6 @@ import React from "react";
 import { Alert, AlertTitle, Snackbar, styled } from "@mui/material";
 import { useAppContext } from "../../AppContext";
 
-export interface IAppAlert {
-  message?: React.ReactNode;
-  title: string;
-  type: "success" | "info" | "warning" | "error";
-  hideDurationSec?: number;
-  relatedEntityId?: string;
-}
-
 export const AppAlertBar: React.FC = () => {
   const { appAlert, setAppAlert } = useAppContext();
 

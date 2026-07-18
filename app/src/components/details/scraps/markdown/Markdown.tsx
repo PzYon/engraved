@@ -1,10 +1,5 @@
-import React, { MouseEventHandler } from "react";
-
-export interface IMarkdownProps {
-  value: string;
-  onClick?: MouseEventHandler;
-  useBasic?: boolean;
-}
+import React from "react";
+import { IMarkdownProps } from "./IMarkdownProps";
 
 const LazyMarkdown = React.lazy(() => import("./LazyMarkdown"));
 

@@ -4,7 +4,6 @@ import { useAppContext } from "../../../AppContext";
 import { Button, Typography } from "@mui/material";
 import { IUpsertScrapsEntryCommand } from "../../../serverApi/commands/IUpsertScrapsEntryCommand";
 import { useUpsertEntryMutation } from "../../../serverApi/reactQuery/mutations/useUpsertEntryMutation";
-import { EntryPropsRenderStyle } from "../../common/entries/Entry";
 import {
   ActionsRenderStyle,
   IScrapContext,
@@ -27,6 +26,7 @@ import {
 } from "../../common/actions/searchParamHooks";
 import { JournalType } from "../../../serverApi/JournalType";
 import { dateOnlyToUtc, utcToDateOnly } from "../../../util/utils";
+import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
 
 const quickAddStorageKey = "quick-add";
 

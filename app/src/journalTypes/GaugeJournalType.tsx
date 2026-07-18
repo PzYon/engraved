@@ -1,5 +1,4 @@
 import { JournalType } from "../serverApi/JournalType";
-import BarChartSharp from "@mui/icons-material/BarChartSharp";
 import { IJournalType } from "./IJournalType";
 import { IEntry } from "../serverApi/IEntry";
 import { IEntriesTableColumnDefinition } from "../components/details/entriesTable/IEntriesTableColumnDefinition";
@@ -17,10 +16,6 @@ export class GaugeJournalType implements IJournalType {
   type = JournalType.Gauge;
 
   isGroupable = true;
-
-  getIcon() {
-    return <BarChartSharp style={{ backgroundColor: "#FFFFDF" }} />;
-  }
 
   getEntry(
     journal: IJournal,
