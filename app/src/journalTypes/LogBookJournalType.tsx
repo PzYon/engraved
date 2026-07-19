@@ -1,40 +1,14 @@
 import { JournalType } from "../serverApi/JournalType";
-import { IJournalType } from "./IJournalType";
-import { IEntriesTableColumnDefinition } from "../components/details/entriesTable/IEntriesTableColumnDefinition";
-import { IJournal } from "../serverApi/IJournal";
-import { IEntry } from "../serverApi/IEntry";
-import React from "react";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
 import { ILogBookJournal } from "../serverApi/ILogBookJournal";
 import { dateOnlyToUtc } from "../util/utils";
-import { getScrapEntryNode } from "./getScrapEntryNode";
+import { BaseScrapJournalType } from "./BaseScrapJournalType";
 
-export class LogBookJournalType implements IJournalType {
+export class LogBookJournalType extends BaseScrapJournalType {
   type = JournalType.LogBook;
 
-  isGroupable = false;
-
-  getEntry(
-    journal: IJournal,
-    entry: IEntry,
-    hasFocus?: boolean,
-    giveFocus?: () => void,
-  ): React.ReactNode {
-    return getScrapEntryNode(journal, entry, hasFocus, giveFocus);
-  }
-
-  getEntriesTableColumns(): IEntriesTableColumnDefinition[] {
-    throw new Error(
-      "getEntriesTableColumns is currently not supported for LogBooks.",
-    );
-  }
-
-  getValue(): number {
-    throw new Error("getValue is currently not supported for LogBooks.");
-  }
-
-  getYAxisLabel(): string {
-    throw new Error("getYAxisLabel is currently not supported for LogBooks.");
+  constructor() {
+    super("LogBooks");
   }
 
   static createBlank(journal: ILogBookJournal): IScrapEntry {

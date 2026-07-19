@@ -1,39 +1,13 @@
 import { JournalType } from "../serverApi/JournalType";
-import { IJournalType } from "./IJournalType";
-import { IEntriesTableColumnDefinition } from "../components/details/entriesTable/IEntriesTableColumnDefinition";
-import { IJournal } from "../serverApi/IJournal";
-import { IEntry } from "../serverApi/IEntry";
-import React from "react";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
 import { AddNewScrapStorage } from "../components/details/scraps/AddNewScrapStorage";
-import { getScrapEntryNode } from "./getScrapEntryNode";
+import { BaseScrapJournalType } from "./BaseScrapJournalType";
 
-export class ScrapsJournalType implements IJournalType {
+export class ScrapsJournalType extends BaseScrapJournalType {
   type = JournalType.Scraps;
 
-  isGroupable = false;
-
-  getEntry(
-    journal: IJournal,
-    entry: IEntry,
-    hasFocus?: boolean,
-    giveFocus?: () => void,
-  ): React.ReactNode {
-    return getScrapEntryNode(journal, entry, hasFocus, giveFocus);
-  }
-
-  getEntriesTableColumns(): IEntriesTableColumnDefinition[] {
-    throw new Error(
-      "getEntriesTableColumns is currently not supported for Scraps.",
-    );
-  }
-
-  getValue(): number {
-    throw new Error("getValue is currently not supported for Scraps.");
-  }
-
-  getYAxisLabel(): string {
-    throw new Error("getYAxisLabel is currently not supported for Scraps.");
+  constructor() {
+    super("Scraps");
   }
 
   static createBlank(
