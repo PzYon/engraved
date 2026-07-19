@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Scrap } from "./Scrap";
-import SelfImprovementOutlined from "@mui/icons-material/SelfImprovementOutlined";
 import { useJournalContext } from "../JournalContext";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonJournalActions } from "../../overview/getCommonJournalActions";
 import { Page } from "../../layout/pages/Page";
+import { ScrapList } from "./ScrapList";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
 import { useAppContext } from "../../../AppContext";
-import { OverviewList } from "../../overview/overviewList/OverviewList";
-import {
-  getScheduleForUser,
-  sortEntitiesByDates,
-} from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
-import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
 
 export const LogBookViewPage: React.FC = () => {
   const { journal, entries: scraps, setDateConditions } = useJournalContext();
@@ -40,35 +32,13 @@ export const LogBookViewPage: React.FC = () => {
       actions={getCommonJournalActions(journal, !activeItemId, user)}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
     >
-      {scraps.length ? (
-        <OverviewList
-          showDaysBetween={true}
-          items={sortEntitiesByDates(scraps, user.id ?? "")}
-          onActiveItemChange={setActiveItemId}
-          renderItem={(item, _, hasFocus, giveFocus) => (
-            <React.Fragment
-              key={
-                (item.id ?? "") +
-                getScheduleForUser(item, user.id ?? "").nextOccurrence
-              }
-            >
-              <Scrap
-                journal={journal}
-                propsRenderStyle={"generic"}
-                scrap={item as IScrapEntry}
-                hasFocus={hasFocus}
-                giveFocus={giveFocus}
-              />
-              {hasFocus ? <EntrySubRoutes entry={item as IScrapEntry} /> : null}
-            </React.Fragment>
-          )}
-        />
-      ) : (
-        <GenericEmptyPlaceholder
-          icon={SelfImprovementOutlined}
-          message={"Nothing here..."}
-        />
-      )}
+      <ScrapList
+        scraps={scraps as IScrapEntry[]}
+        journal={journal}
+        user={user}
+        onActiveItemChange={setActiveItemId}
+        showDaysBetween={true}
+      />
     </Page>
   );
 };

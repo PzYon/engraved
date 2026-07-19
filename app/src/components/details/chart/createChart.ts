@@ -321,8 +321,7 @@ function average(
   aggregationMode: AggregationMode,
 ): number {
   const values = ctx.chart.data.datasets[0]?.data as unknown as
-    | ITransformedEntry[]
-    | undefined;
+    ITransformedEntry[] | undefined;
 
   if (!values) {
     // chart.js's annotation `value` callback requires a number (undefined is
