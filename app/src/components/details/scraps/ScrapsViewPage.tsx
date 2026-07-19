@@ -6,7 +6,7 @@ import { Page } from "../../layout/pages/Page";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { ScrapToc } from "./ScrapToc";
-import { ScrapList } from "./ScrapList";
+import { ListOfScraps } from "./ListOfScraps";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
 
@@ -40,7 +40,7 @@ export const ScrapsViewPage: React.FC = () => {
     >
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
-      <ScrapList
+      <ListOfScraps
         scraps={scraps as IScrapEntry[]}
         journal={journal}
         user={user}

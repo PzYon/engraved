@@ -3,7 +3,7 @@ import { useJournalContext } from "../JournalContext";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonJournalActions } from "../../overview/getCommonJournalActions";
 import { Page } from "../../layout/pages/Page";
-import { ScrapList } from "./ScrapList";
+import { ListOfScraps } from "./ListOfScraps";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
@@ -32,7 +32,7 @@ export const LogBookViewPage: React.FC = () => {
       actions={getCommonJournalActions(journal, !activeItemId, user)}
       pageActionRoutes={<JournalSubRoutes journal={journal} />}
     >
-      <ScrapList
+      <ListOfScraps
         scraps={scraps as IScrapEntry[]}
         journal={journal}
         user={user}
