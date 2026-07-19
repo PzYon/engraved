@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useJournalContext } from "../JournalContext";
+import React, { useState } from "react";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonJournalActions } from "../../overview/getCommonJournalActions";
 import { Page } from "../../layout/pages/Page";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { useAppContext } from "../../../AppContext";
 import { ScrapToc } from "./ScrapToc";
 import { ListOfScraps } from "./ListOfScraps";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
+import { useJournalViewState } from "./useJournalViewState";
 
 export const ScrapsViewPage: React.FC = () => {
-  const { journal, entries: scraps, setDateConditions } = useJournalContext();
-  const { user } = useAppContext();
+  const { journal, scraps, user, activeItemId, setActiveItemId } =
+    useJournalViewState();
 
   const [showToc, setShowToc] = useState(true);
-  const [activeItemId, setActiveItemId] = useState<string | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    // we need to set date conditions in order for data to be loaded
-    setDateConditions({});
-  }, [setDateConditions]);
 
   if (!journal) {
     return null;

@@ -4,10 +4,10 @@ import { IEntriesTableColumnDefinition } from "../components/details/entriesTabl
 import { IJournal } from "../serverApi/IJournal";
 import { IEntry } from "../serverApi/IEntry";
 import React from "react";
-import { Scrap } from "../components/details/scraps/Scrap";
 import { IScrapEntry, ScrapType } from "../serverApi/IScrapEntry";
 import { ILogBookJournal } from "../serverApi/ILogBookJournal";
 import { dateOnlyToUtc } from "../util/utils";
+import { getScrapEntryNode } from "./getScrapEntryNode";
 
 export class LogBookJournalType implements IJournalType {
   type = JournalType.LogBook;
@@ -20,15 +20,7 @@ export class LogBookJournalType implements IJournalType {
     hasFocus?: boolean,
     giveFocus?: () => void,
   ): React.ReactNode {
-    return (
-      <Scrap
-        hasFocus={hasFocus}
-        giveFocus={giveFocus}
-        scrap={entry as IScrapEntry}
-        journal={journal}
-        propsRenderStyle={"all"}
-      />
-    );
+    return getScrapEntryNode(journal, entry, hasFocus, giveFocus);
   }
 
   getEntriesTableColumns(): IEntriesTableColumnDefinition[] {

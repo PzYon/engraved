@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useJournalContext } from "../JournalContext";
+import React from "react";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonJournalActions } from "../../overview/getCommonJournalActions";
 import { Page } from "../../layout/pages/Page";
 import { ListOfScraps } from "./ListOfScraps";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { useAppContext } from "../../../AppContext";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
+import { useJournalViewState } from "./useJournalViewState";
 
 export const LogBookViewPage: React.FC = () => {
-  const { journal, entries: scraps, setDateConditions } = useJournalContext();
-  const { user } = useAppContext();
-
-  const [activeItemId, setActiveItemId] = useState<string | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    // we need to set date conditions in order for data to be loaded
-    setDateConditions({});
-  }, [setDateConditions]);
+  const { journal, scraps, user, activeItemId, setActiveItemId } =
+    useJournalViewState();
 
   if (!journal) {
     return null;
