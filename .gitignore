@@ -1,2 +1,10 @@
 /node_modules
 .idea
+
+# fallow local run artifacts (CI writes these into ephemeral runner workspaces, not here)
+/.fallow
+/.fallow-check
+/.fallow-health
+fallow-results.*
+fallow-stderr.log
+fallow-analysis-args.sh

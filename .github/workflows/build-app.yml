@@ -48,11 +48,22 @@ jobs:
         working-directory: ./
         run: npm run knip
 
-      - name: Fallow
+      - name: Fallow (dead code & duplication)
         uses: fallow-rs/fallow@v3
         with:
+          skip: health
           format: sarif
           annotations: false
+          artifacts-dir: .fallow-check
+
+      - name: Fallow (health)
+        uses: fallow-rs/fallow@v3
+        with:
+          command: health
+          baseline: .fallow-health-baseline.json
+          format: sarif
+          annotations: false
+          artifacts-dir: .fallow-health
 
       - name: Lint
         working-directory: ./
@@ -76,11 +87,19 @@ jobs:
         working-directory: app
         run: npm run test --if-present
 
-      - name: Upload Fallow Results
+      - name: Upload Fallow Results (dead code & duplication)
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: fallow-results.sarif
+          sarif_file: .fallow-check/fallow-results.sarif
+          category: fallow-check
+
+      - name: Upload Fallow Results (health)
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: .fallow-health/fallow-results.sarif
+          category: fallow-health
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v7
