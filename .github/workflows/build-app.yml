@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -48,22 +50,22 @@ jobs:
         working-directory: ./
         run: npm run knip
 
-      - name: Fallow (dead code & duplication)
-        uses: fallow-rs/fallow@v3
-        with:
-          skip: health
-          format: sarif
-          annotations: false
-          artifacts-dir: .fallow-check
+      - name: Determine fallow diff base
+        id: fallow-base
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            echo "ref=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Fallow (health)
+      - name: Fallow
         uses: fallow-rs/fallow@v3
         with:
-          command: health
-          baseline: .fallow-health-baseline.json
           format: sarif
           annotations: false
-          artifacts-dir: .fallow-health
+          changed-since: ${{ steps.fallow-base.outputs.ref }}
 
       - name: Lint
         working-directory: ./
@@ -87,19 +89,11 @@ jobs:
         working-directory: app
         run: npm run test --if-present
 
-      - name: Upload Fallow Results (dead code & duplication)
+      - name: Upload Fallow Results
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: .fallow-check/fallow-results.sarif
-          category: fallow-check
-
-      - name: Upload Fallow Results (health)
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: .fallow-health/fallow-results.sarif
-          category: fallow-health
+          sarif_file: fallow-results.sarif
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v7
