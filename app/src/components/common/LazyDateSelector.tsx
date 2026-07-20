@@ -6,10 +6,13 @@ import {
 } from "@mui/x-date-pickers";
 import { Button, styled } from "@mui/material";
 import React from "react";
-import { addDays, addMinutes } from "date-fns";
+import { addMinutes } from "date-fns";
 import { IDateSelectorProps } from "./IDateSelectorProps";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { de } from "date-fns/locale/de";
+import { ButtonContainer } from "./ButtonContainer";
+
+import { DateAdjustmentButtons } from "./DateAdjustmentButtons";
 
 const LazyDateSelector: React.FC<IDateSelectorProps> = ({
   setDate,
@@ -81,22 +84,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
           </FlexElement>
         ) : (
           <FlexElement>
-            <ButtonContainer>
-              <Button
-                variant="text"
-                sx={{ fontSize: "small" }}
-                onClick={() => setDate(addDays(date ?? new Date(), -1))}
-              >
-                -1day
-              </Button>
-              <Button
-                variant="text"
-                sx={{ fontSize: "small" }}
-                onClick={() => setDate(addDays(date ?? new Date(), 1))}
-              >
-                +1day
-              </Button>
-            </ButtonContainer>
+            <DateAdjustmentButtons date={date} setDate={setDate} />
           </FlexElement>
         )}
       </FlexContainer>
@@ -120,11 +108,6 @@ const FlexElement = styled("div")`
   flex-grow: 1;
   min-width: 100px;
   width: 100%;
-`;
-
-const ButtonContainer = styled("div")`
-  display: flex;
-  justify-content: end;
 `;
 
 export default LazyDateSelector;

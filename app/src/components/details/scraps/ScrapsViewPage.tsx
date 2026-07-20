@@ -1,36 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Scrap } from "./Scrap";
-import SelfImprovementOutlined from "@mui/icons-material/SelfImprovementOutlined";
-import { useJournalContext } from "../JournalContext";
+import React, { useState } from "react";
 import { JournalPageTitle } from "../JournalPageTitle";
 import { getCommonJournalActions } from "../../overview/getCommonJournalActions";
 import { Page } from "../../layout/pages/Page";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
-import { GenericEmptyPlaceholder } from "../../common/search/GenericEmptyPlaceholder";
-import { useAppContext } from "../../../AppContext";
 import { ScrapToc } from "./ScrapToc";
+import { ListOfScraps } from "./ListOfScraps";
 import { ActionFactory } from "../../common/actions/ActionFactory";
-import { OverviewList } from "../../overview/overviewList/OverviewList";
-import {
-  getScheduleForUser,
-  sortEntitiesByDates,
-} from "../../overview/scheduled/scheduleUtils";
 import { JournalSubRoutes } from "../../overview/journals/JournalSubRoutes";
-import { EntrySubRoutes } from "../../common/entries/EntrySubRoutes";
+import { useJournalViewState } from "./useJournalViewState";
 
 export const ScrapsViewPage: React.FC = () => {
-  const { journal, entries: scraps, setDateConditions } = useJournalContext();
-  const { user } = useAppContext();
+  const { journal, scraps, user, activeItemId, setActiveItemId } =
+    useJournalViewState();
 
   const [showToc, setShowToc] = useState(true);
-  const [activeItemId, setActiveItemId] = useState<string | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    // we need to set date conditions in order for data to be loaded
-    setDateConditions({});
-  }, [setDateConditions]);
 
   if (!journal) {
     return null;
@@ -48,34 +31,12 @@ export const ScrapsViewPage: React.FC = () => {
     >
       {showToc ? <ScrapToc entries={scraps as IScrapEntry[]} /> : null}
 
-      {scraps.length ? (
-        <OverviewList
-          items={sortEntitiesByDates(scraps, user.id ?? "")}
-          onActiveItemChange={setActiveItemId}
-          renderItem={(item, _, hasFocus, giveFocus) => (
-            <React.Fragment
-              key={
-                (item.id ?? "") +
-                getScheduleForUser(item, user.id ?? "").nextOccurrence
-              }
-            >
-              <Scrap
-                journal={journal}
-                propsRenderStyle={"generic"}
-                scrap={item as IScrapEntry}
-                hasFocus={hasFocus}
-                giveFocus={giveFocus}
-              />
-              {hasFocus ? <EntrySubRoutes entry={item as IScrapEntry} /> : null}
-            </React.Fragment>
-          )}
-        />
-      ) : (
-        <GenericEmptyPlaceholder
-          icon={SelfImprovementOutlined}
-          message={"Nothing here..."}
-        />
-      )}
+      <ListOfScraps
+        scraps={scraps as IScrapEntry[]}
+        journal={journal}
+        user={user}
+        onActiveItemChange={setActiveItemId}
+      />
     </Page>
   );
 };

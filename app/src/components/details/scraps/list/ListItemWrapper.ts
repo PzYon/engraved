@@ -4,8 +4,7 @@ export type CursorPosition = number | "beginning" | "end";
 
 export class ListItemWrapper {
   private giveFocusInternal:
-    | ((cursorPosition: CursorPosition) => void)
-    | undefined;
+    ((cursorPosition: CursorPosition) => void) | undefined;
 
   readonly reactKey = "react-key-" + Math.random().toString().split(".")[1];
 

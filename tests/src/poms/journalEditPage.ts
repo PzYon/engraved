@@ -10,6 +10,7 @@ export class JournalEditPage extends BasePage {
     // imported lazily to avoid a circular module dependency
     // (journalPage -> journalEditPage -> metricJournalPage -> journalPage),
     // which otherwise breaks depending on which spec loads the chain first.
+    // fallow-ignore-next-line circular-dependency
     const { MetricJournalPage } = await import("./metricJournalPage");
 
     await this.page.getByRole("button", { name: "Save" }).first().click();
