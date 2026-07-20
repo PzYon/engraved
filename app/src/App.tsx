@@ -36,6 +36,7 @@ import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
 import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNavigation";
 import { LazyLoadSuspender } from "./components/common/LazyLoadSuspender";
 import { validateAppSearch } from "./components/common/actions/searchParamHooks";
+import { AdminPage } from "./components/admin/AdminPage";
 
 // Defined before RootLayout so the component reference is available
 const Host = styled("div")`
@@ -154,6 +155,12 @@ const settingsRoute = createRoute({
   component: SettingsPage,
 });
 
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin",
+  component: AdminPage,
+});
+
 const routeTree = rootRoute.addChildren([
   journalsRoute,
   journalsCreateRoute,
@@ -169,6 +176,7 @@ const routeTree = rootRoute.addChildren([
   tagsRoute,
   tagRoute,
   settingsRoute,
+  adminRoute,
 ]);
 
 const router = createRouter({ routeTree });

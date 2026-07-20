@@ -10,4 +10,4 @@ namespace Engraved.Core.Application.Persistence.Repositories;
 // IUserRepository/IJournalRepository/IEntryRepository resolve to - so unrestricted access is always
 // a conscious choice and can never be obtained by accident.
 public interface IUnrestrictedRepository
-  : IUserRepository, IJournalRepository, IEntryRepository, IMaintenanceRepository { }
+  : IUserRepository, IJournalRepository, IEntryRepository, IMaintenanceRepository, IAdminRepository { }

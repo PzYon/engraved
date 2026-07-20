@@ -8,8 +8,10 @@ import React, { useEffect, useState } from "react";
 import { FadeInContainer } from "../common/FadeInContainer";
 import { FormatDate } from "../common/FormatDate";
 import { ActionLink } from "../common/actions/ActionLink";
+import { useAppContext } from "../../AppContext";
 
 export const AppFooter: React.FC = () => {
+  const { user } = useAppContext();
   const apiSystemInfo = useApiSystemInfoQuery();
 
   const [doRender, setDoRender] = useState(false);
@@ -37,9 +39,30 @@ export const AppFooter: React.FC = () => {
       <AppContent scope="header">
         <Container>
           <Column sx={{ textAlign: "left" }}>
-            <Element>{apiSystemInfo.usersCount} users</Element>
-            <Element>{apiSystemInfo.journalsCount} journals</Element>
-            <Element>{apiSystemInfo.entriesCount} entries</Element>
+            {user.isAdmin ? (
+              <ActionLink
+                action={{
+                  label: "Admin",
+                  href: "/admin",
+                  key: "go-to-admin",
+                  icon: null,
+                  sx: { color: "common.white", display: "inline" },
+                }}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <StatsContainer>
+                  <Element>{apiSystemInfo.usersCount} users</Element>
+                  <Element>{apiSystemInfo.journalsCount} journals</Element>
+                  <Element>{apiSystemInfo.entriesCount} entries</Element>
+                </StatsContainer>
+              </ActionLink>
+            ) : (
+              <>
+                <Element>{apiSystemInfo.usersCount} users</Element>
+                <Element>{apiSystemInfo.journalsCount} journals</Element>
+                <Element>{apiSystemInfo.entriesCount} entries</Element>
+              </>
+            )}
           </Column>
           <Column sx={{ textAlign: "right" }}>
             <Element
@@ -89,6 +112,11 @@ const Column = styled("div")`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+`;
+
+const StatsContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
 `;
 
 const Element: React.FC<{ children: React.ReactNode; sx?: SxProps }> = ({

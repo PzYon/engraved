@@ -2,7 +2,11 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Api.Authentication;
 
-public class RefreshHandler(RefreshTokenService refreshTokenService, JwtTokenFactory jwtTokenFactory)
+public class RefreshHandler(
+  RefreshTokenService refreshTokenService,
+  JwtTokenFactory jwtTokenFactory,
+  AdminAuthorizationService adminAuthorizationService
+)
 {
   public async Task<AuthResult?> Refresh(string? refreshToken)
   {
@@ -18,6 +22,7 @@ public class RefreshHandler(RefreshTokenService refreshTokenService, JwtTokenFac
     }
 
     IUser user = rotated.User;
+    user.IsAdmin = adminAuthorizationService.IsAdmin(user.Name);
     DateTime expiresAt = jwtTokenFactory.GetAccessTokenExpiry();
 
     return new AuthResult

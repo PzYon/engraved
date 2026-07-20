@@ -30,4 +30,12 @@ public class UserRestrictedUserRepository(MongoUserRepository userRepository, Jo
   {
     return userRepository.GetAllUsers();
   }
+
+  // Deleting a user is an admin-only operation with no ownership concept (a user cannot "own"
+  // themselves the way they own a journal), so it is never available through this restricted role -
+  // only through IUnrestrictedRepository (see DeleteUserCommandExecutor).
+  public Task DeleteUser(string userId)
+  {
+    throw new NotAllowedOperationException("Users cannot be deleted through the restricted repository.");
+  }
 }

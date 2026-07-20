@@ -9,6 +9,7 @@ using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Users;
 using Engraved.TestUtils;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 
 namespace Engraved.Api.Tests.Authentication;
@@ -56,7 +57,8 @@ public class LoginHandlerShould
       _dateService,
       _userLoader,
       new JwtTokenFactory(_authenticationConfig, _dateService),
-      new RefreshTokenService(_testRepository, _authenticationConfig, _dateService)
+      new RefreshTokenService(_testRepository, _authenticationConfig, _dateService),
+      new AdminAuthorizationService(Options.Create(new AdminConfig { Emails = "ha-pe" }))
     );
   }
 
@@ -99,6 +101,7 @@ public class LoginHandlerShould
     result.User.ImageUrl.Should().Be(imageUrl);
     result.User.Id.Should().NotBeNull();
     result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    result.User.IsAdmin.Should().BeTrue("userName is in the configured admin allowlist");
 
     var users = await _testRepository.GetAllUsers();
 
@@ -169,5 +172,17 @@ public class LoginHandlerShould
     user.ImageUrl.Should().Be(imageUrl);
     user.Id.Should().Be(userId);
     user.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+  }
+
+  [Test]
+  public async Task NotMarkUser_AsAdmin_When_NotInTheAllowlist()
+  {
+    LoginHandler loginHandler = CreateLoginHandler(
+      new FakeGoogleTokenValidator("https://im.age.url", "someone-else", "Someone Else")
+    );
+
+    AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
+
+    result.User!.IsAdmin.Should().BeFalse();
   }
 }

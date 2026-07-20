@@ -53,6 +53,11 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
     return _userRepository.GetAllUsers();
   }
 
+  public Task DeleteUser(string userId)
+  {
+    return _userRepository.DeleteUser(userId);
+  }
+
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
     ScheduleMode? scheduleMode = null,
@@ -172,5 +177,35 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
       Builders<JournalDocument>.Filter.Empty,
       new CountOptions { Hint = "_id_" }
     );
+  }
+
+  public async Task<long> CountJournalsForUser(string userId)
+  {
+    return await _mongoDatabaseClient.JournalsCollection.CountDocumentsAsync(
+      Builders<JournalDocument>.Filter.Where(d => d.UserId == userId)
+    );
+  }
+
+  public async Task<long> CountEntriesForUser(string userId)
+  {
+    var journalIds = await GetJournalIdsForUser(userId);
+    if (journalIds.Length == 0)
+    {
+      return 0;
+    }
+
+    return await _mongoDatabaseClient.EntriesCollection.CountDocumentsAsync(
+      Builders<EntryDocument>.Filter.In(d => d.ParentId, journalIds)
+    );
+  }
+
+  public async Task<string[]> GetJournalIdsForUser(string userId)
+  {
+    var ids = await _mongoDatabaseClient.JournalsCollection
+      .Find(Builders<JournalDocument>.Filter.Where(d => d.UserId == userId))
+      .Project(d => d.Id)
+      .ToListAsync();
+
+    return ids.Select(id => id.ToString()).ToArray();
   }
 }

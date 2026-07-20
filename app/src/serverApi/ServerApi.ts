@@ -21,6 +21,7 @@ import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IApiSystemInfo } from "./IApiSystemInfo";
+import { IAdminUserOverview } from "./IAdminUserOverview";
 import { LoginHandler } from "./LoginHandler";
 import {
   IAddScheduleToEntryCommand,
@@ -409,6 +410,14 @@ export class ServerApi {
 
   static async getCurrentUser(): Promise<IUser> {
     return await ServerApi.executeRequest(`/user`, "GET", null);
+  }
+
+  static async getAdminUsersOverview(): Promise<IAdminUserOverview[]> {
+    return await ServerApi.executeRequest(`/admin/users`, "GET", null);
+  }
+
+  static async deleteAdminUser(userId: string): Promise<ICommandResult> {
+    return await ServerApi.executeRequest(`/admin/users/${userId}`, "DELETE");
   }
 
   static async updateUserTags(tagNames: Record<string, string>): Promise<void> {

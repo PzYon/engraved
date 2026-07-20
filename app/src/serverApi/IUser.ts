@@ -8,4 +8,5 @@ export interface IUser {
   imageUrl?: string;
   favoriteJournalIds?: string[];
   tags?: IUserTag[];
+  isAdmin?: boolean;
 }

@@ -1,4 +1,5 @@
-﻿using Engraved.Core.Application;
+﻿using Engraved.Api.Authentication;
+using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.CleanupTags;
@@ -14,12 +15,16 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/user")]
 [Authorize]
-public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
-  : Controller
+public class UserController(
+  Lazy<IUser> currentUser,
+  Dispatcher dispatcher,
+  AdminAuthorizationService adminAuthorizationService
+) : Controller
 {
   [HttpGet]
   public IUser GetCurrentUser()
   {
+    currentUser.Value.IsAdmin = adminAuthorizationService.IsAdmin(currentUser.Value.Name);
     return currentUser.Value;
   }
 

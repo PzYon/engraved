@@ -13,7 +13,8 @@ public class LoginHandler(
   IDateService dateService,
   UserLoader userLoader,
   JwtTokenFactory jwtTokenFactory,
-  RefreshTokenService refreshTokenService
+  RefreshTokenService refreshTokenService,
+  AdminAuthorizationService adminAuthorizationService
 )
   : ILoginHandler
 {
@@ -78,6 +79,7 @@ public class LoginHandler(
 
     UpsertResult result = await unrestrictedRepository.UpsertUser(user);
     user.Id = result.EntityId;
+    user.IsAdmin = adminAuthorizationService.IsAdmin(user.Name);
     return user;
   }
 
