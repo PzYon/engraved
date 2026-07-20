@@ -57,7 +57,12 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
             echo "ref=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
           else
-            echo "ref=" >> "$GITHUB_OUTPUT"
+            # A new branch's first push has no usable "before" commit (it's the
+            # all-zero SHA), which would otherwise leave the diff base empty and
+            # make fallow scan the whole repo instead of just this branch's
+            # changes. Fall back to where this branch diverged from main.
+            git fetch origin main
+            echo "ref=$(git merge-base HEAD origin/main)" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Fallow
