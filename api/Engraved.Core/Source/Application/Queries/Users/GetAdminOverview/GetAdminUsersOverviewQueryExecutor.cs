@@ -4,22 +4,22 @@ using Engraved.Core.Domain.Users;
 namespace Engraved.Core.Application.Queries.Users.GetAdminOverview;
 
 public class GetAdminUsersOverviewQueryExecutor(IUnrestrictedRepository unrestrictedRepository)
-  : IQueryExecutor<AdminUserOverview[], GetAdminUsersOverviewQuery>
+  : IQueryExecutor<AdminUserItem[], GetAdminUsersOverviewQuery>
 {
   // admin data must always be current - a stale view could hide a just-deleted user's freed-up data
   // or omit someone who just signed up
   public bool DisableCache => true;
 
-  public async Task<AdminUserOverview[]> Execute(GetAdminUsersOverviewQuery query)
+  public async Task<AdminUserItem[]> Execute(GetAdminUsersOverviewQuery query)
   {
     IUser[] users = await unrestrictedRepository.GetAllUsers();
 
-    var overview = new List<AdminUserOverview>();
+    var items = new List<AdminUserItem>();
 
     foreach (var user in users)
     {
-      overview.Add(
-        new AdminUserOverview
+      items.Add(
+        new AdminUserItem
         {
           Id = user.Id!,
           Name = user.Name,
@@ -31,6 +31,6 @@ public class GetAdminUsersOverviewQueryExecutor(IUnrestrictedRepository unrestri
       );
     }
 
-    return overview.ToArray();
+    return items.ToArray();
   }
 }

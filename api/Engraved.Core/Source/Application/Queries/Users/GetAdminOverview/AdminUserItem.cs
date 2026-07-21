@@ -1,6 +1,6 @@
 namespace Engraved.Core.Application.Queries.Users.GetAdminOverview;
 
-public class AdminUserOverview
+public class AdminUserItem
 {
   public string Id { get; set; } = null!;
 

@@ -1,4 +1,4 @@
-export interface IAdminUserOverview {
+export interface IAdminUserItem {
   id: string;
   name: string;
   displayName?: string;

@@ -35,19 +35,19 @@ public class GetAdminUsersOverviewQueryExecutorShould
     await _repo.UpsertEntry(new CounterEntry { ParentId = OtherJournalId });
 
     // when
-    AdminUserOverview[] result = await new GetAdminUsersOverviewQueryExecutor(_repo).Execute(
+    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(_repo).Execute(
       new GetAdminUsersOverviewQuery()
     );
 
     // then
     result.Should().ContainSingle();
 
-    AdminUserOverview overview = result[0];
-    overview.Id.Should().Be(UserId);
-    overview.Name.Should().Be("someone@x.com");
-    overview.DisplayName.Should().Be("Someone");
-    overview.JournalsCount.Should().Be(2);
-    overview.EntriesCount.Should().Be(3);
+    AdminUserItem item = result[0];
+    item.Id.Should().Be(UserId);
+    item.Name.Should().Be("someone@x.com");
+    item.DisplayName.Should().Be("Someone");
+    item.JournalsCount.Should().Be(2);
+    item.EntriesCount.Should().Be(3);
   }
 
   [Test]
@@ -57,7 +57,7 @@ public class GetAdminUsersOverviewQueryExecutorShould
     await _repo.UpsertUser(new User { Id = UserId, Name = "someone@x.com" });
 
     // when
-    AdminUserOverview[] result = await new GetAdminUsersOverviewQueryExecutor(_repo).Execute(
+    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(_repo).Execute(
       new GetAdminUsersOverviewQuery()
     );
 

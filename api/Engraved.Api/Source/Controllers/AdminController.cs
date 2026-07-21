@@ -21,11 +21,11 @@ public class AdminController(
 {
   [HttpGet]
   [Route("users")]
-  public async Task<AdminUserOverview[]> GetUsers()
+  public async Task<AdminUserItem[]> GetUsers()
   {
     EnsureIsAdmin();
 
-    return await dispatcher.Query<AdminUserOverview[], GetAdminUsersOverviewQuery>(
+    return await dispatcher.Query<AdminUserItem[], GetAdminUsersOverviewQuery>(
       new GetAdminUsersOverviewQuery()
     );
   }

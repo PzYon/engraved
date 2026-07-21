@@ -21,7 +21,7 @@ import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IApiSystemInfo } from "./IApiSystemInfo";
-import { IAdminUserOverview } from "./IAdminUserOverview";
+import { IAdminUserItem } from "./IAdminUserItem";
 import { IDeleteUserConfirmationResult } from "./IDeleteUserConfirmationResult";
 import { LoginHandler } from "./LoginHandler";
 import {
@@ -413,7 +413,7 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/user`, "GET", null);
   }
 
-  static async getAdminUsersOverview(): Promise<IAdminUserOverview[]> {
+  static async getAdminUsersOverview(): Promise<IAdminUserItem[]> {
     return await ServerApi.executeRequest(`/admin/users`, "GET", null);
   }
 

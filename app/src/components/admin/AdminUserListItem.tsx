@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { styled, Typography } from "@mui/material";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
-import { IAdminUserOverview } from "../../serverApi/IAdminUserOverview";
+import { IAdminUserItem } from "../../serverApi/IAdminUserItem";
 import { IPropertyDefinition } from "../common/IPropertyDefinition";
 import { IAction } from "../common/actions/IAction";
 import { ListItemFooterRow } from "../overview/ListItemFooterRow";
@@ -12,8 +12,9 @@ import { TitleRow } from "../details/scraps/TitleRow";
 import { ReadonlyTitle } from "../overview/ReadonlyTitle";
 
 export const AdminUserListItem: React.FC<{
-  user: IAdminUserOverview;
-}> = ({ user }) => {
+  user: IAdminUserItem;
+  hasFocus: boolean;
+}> = ({ user, hasFocus }) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   const deleteUserMutation = useDeleteAdminUserMutation(user.id, user.name);
@@ -49,10 +50,10 @@ export const AdminUserListItem: React.FC<{
 
   return (
     <>
-      <TitleRow hasFocus={false} hasNoContent={true} hasTitle={true}>
+      <TitleRow hasFocus={hasFocus} hasNoContent={true} hasTitle={true}>
         <ReadonlyTitle
           entity={user}
-          hasFocus={false}
+          hasFocus={hasFocus}
           title={
             <>
               {user.displayName ? `${user.displayName} · ` : ""}
@@ -62,8 +63,7 @@ export const AdminUserListItem: React.FC<{
         />
       </TitleRow>
       <ListItemFooterRow
-        hasFocus={false}
-        noCompactFooter={true}
+        hasFocus={hasFocus}
         properties={properties}
         actions={actions}
       />

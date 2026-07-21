@@ -7,7 +7,7 @@ import { IconStyle } from "../common/IconStyle";
 import { useApiAdminUsersQuery } from "../../serverApi/reactQuery/queries/useApiAdminUsersQuery";
 import { AdminUserListItem } from "./AdminUserListItem";
 import { OverviewList } from "../overview/overviewList/OverviewList";
-import { IAdminUserOverview } from "../../serverApi/IAdminUserOverview";
+import { IAdminUserItem } from "../../serverApi/IAdminUserItem";
 
 export const AdminPage: React.FC = () => {
   const users = useApiAdminUsersQuery();
@@ -28,9 +28,13 @@ export const AdminPage: React.FC = () => {
       actions={[]}
     >
       <OverviewList
-        items={(users as IAdminUserOverview[]) ?? []}
-        renderItem={(u) => (
-          <AdminUserListItem key={u.id} user={u as IAdminUserOverview} />
+        items={(users as IAdminUserItem[]) ?? []}
+        renderItem={(u, _index, hasFocus) => (
+          <AdminUserListItem
+            key={u.id}
+            user={u as IAdminUserItem}
+            hasFocus={hasFocus}
+          />
         )}
       />
     </Page>

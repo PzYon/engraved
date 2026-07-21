@@ -80,7 +80,7 @@ public static class ExecutorRegistration
     RegisterQuery<SearchEntitiesResult, GetRelatedEntitiesQuery, GetRelatedEntitiesQueryExecutor>(services);
     RegisterQuery<SystemInfo, GetSystemInfoQuery, GetSystemInfoQueryExecutor>(services);
     RegisterQuery<ExportedDataResult, ExportDataQuery, ExportDataQueryExecutor>(services);
-    RegisterQuery<AdminUserOverview[], GetAdminUsersOverviewQuery, GetAdminUsersOverviewQueryExecutor>(services);
+    RegisterQuery<AdminUserItem[], GetAdminUsersOverviewQuery, GetAdminUsersOverviewQueryExecutor>(services);
   }
 
   private static void RegisterQuery<TResult, TQuery, TQueryExecutor>(IServiceCollection services)
