@@ -5,7 +5,6 @@ using Engraved.Core.Application;
 using Engraved.Core.Domain.Users;
 using Engraved.TestUtils;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 
 namespace Engraved.Api.Tests.Authentication;
@@ -33,13 +32,9 @@ public class RefreshHandlerShould
     _repository = await Util.CreateMongoRepository();
     _dateService = new FakeDateService();
     _refreshTokenService = new RefreshTokenService(_repository, _config, _dateService);
-    _refreshHandler = new RefreshHandler(
-      _refreshTokenService,
-      new JwtTokenFactory(_config, _dateService),
-      new AdminAuthorizationService(Options.Create(new AdminConfig { Emails = "me@tests" }))
-    );
+    _refreshHandler = new RefreshHandler(_refreshTokenService, new JwtTokenFactory(_config, _dateService));
 
-    _user = new User { Id = TestIds.OtherUserId, Name = "me@tests" };
+    _user = new User { Id = TestIds.OtherUserId, Name = "me@tests", IsAdmin = true };
     await _repository.UpsertUser(_user);
   }
 
@@ -56,7 +51,7 @@ public class RefreshHandlerShould
     result.RefreshToken.Should().NotBeNullOrEmpty();
     result.RefreshToken.Should().NotBe(refreshToken, "the refresh token must be rotated");
     result.User!.Id.Should().Be(_user.Id);
-    result.User.IsAdmin.Should().BeTrue("the user's name is in the configured admin allowlist");
+    result.User.IsAdmin.Should().BeTrue("the user's admin flag must be preserved across a token refresh");
   }
 
   [Test]

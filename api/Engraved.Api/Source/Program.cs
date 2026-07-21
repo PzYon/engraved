@@ -71,7 +71,6 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddHttpContextAccessor();
 
 IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
-IConfigurationSection adminConfigSection = builder.Configuration.GetSection("Admin");
 IConfigurationSection notificationsSection = builder.Configuration.GetSection("Notifications");
 IConfigurationSection oneSignalConfigSection = notificationsSection.GetSection("OneSignal");
 IConfigurationSection notificationsJobConfigSection = notificationsSection.GetSection("Job");
@@ -83,11 +82,9 @@ if (!builder.Environment.IsDevelopment() && !isE2ETests)
 }
 
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
-builder.Services.Configure<AdminConfig>(adminConfigSection);
 builder.Services.Configure<OneSignalConfig>(oneSignalConfigSection);
 builder.Services.Configure<NotificationsJobConfig>(notificationsJobConfigSection);
 builder.Services.AddTransient<IDateService, DateService>();
-builder.Services.AddTransient<AdminAuthorizationService>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<JwtTokenFactory>();

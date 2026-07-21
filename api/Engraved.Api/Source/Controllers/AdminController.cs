@@ -1,4 +1,3 @@
-using Engraved.Api.Authentication;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Users.Delete;
@@ -13,11 +12,7 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/admin")]
 [Authorize]
-public class AdminController(
-  Dispatcher dispatcher,
-  Lazy<IUser> currentUser,
-  AdminAuthorizationService adminAuthorizationService
-) : ControllerBase
+public class AdminController(Dispatcher dispatcher, Lazy<IUser> currentUser) : ControllerBase
 {
   [HttpGet]
   [Route("users")]
@@ -32,16 +27,21 @@ public class AdminController(
 
   [HttpDelete]
   [Route("users/{userId}")]
-  public async Task<CommandResult> DeleteUser(string userId)
+  public async Task<CommandResult> DeleteUser(string userId, [FromBody] DeleteUserCommand command)
   {
     EnsureIsAdmin();
 
-    return await dispatcher.Command(new DeleteUserCommand { UserId = userId });
+    if (userId != command.UserId)
+    {
+      throw new InvalidCommandException(command, "UserIds from URL and body do not match.");
+    }
+
+    return await dispatcher.Command(command);
   }
 
   private void EnsureIsAdmin()
   {
-    if (!adminAuthorizationService.IsAdmin(currentUser.Value.Name))
+    if (!currentUser.Value.IsAdmin)
     {
       throw new NotAllowedOperationException("You are not allowed to access admin features.");
     }

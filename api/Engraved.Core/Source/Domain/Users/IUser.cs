@@ -20,7 +20,5 @@ public interface IUser
 
   List<RefreshToken> RefreshTokens { get; set; }
 
-  // Not persisted - computed per-request from the admin email allowlist by whoever resolves the
-  // current user (see AdminAuthorizationService), and only meaningful on that response.
   bool IsAdmin { get; set; }
 }

@@ -7,8 +7,6 @@ export const DeleteButtons: React.FC<{
   onCancel: () => void;
   entityType: "journal" | "entry" | "user";
   requiresConfirmation?: boolean;
-  // What the user must type to confirm. Defaults to the literal word "delete"; pass e.g. a user's
-  // email address for flows where guessing the word "delete" is not a strong enough safety net.
   confirmationValue?: string;
 }> = ({
   onDelete,

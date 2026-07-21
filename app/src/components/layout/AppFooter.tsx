@@ -39,30 +39,18 @@ export const AppFooter: React.FC = () => {
       <AppContent scope="header">
         <Container>
           <Column sx={{ textAlign: "left" }}>
-            {user.isAdmin ? (
-              <ActionLink
-                action={{
-                  label: "Admin",
-                  href: "/admin",
-                  key: "go-to-admin",
-                  icon: null,
-                  sx: { color: "common.white", display: "inline" },
-                }}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <StatsContainer>
-                  <Element>{apiSystemInfo.usersCount} users</Element>
-                  <Element>{apiSystemInfo.journalsCount} journals</Element>
-                  <Element>{apiSystemInfo.entriesCount} entries</Element>
-                </StatsContainer>
-              </ActionLink>
-            ) : (
-              <>
-                <Element>{apiSystemInfo.usersCount} users</Element>
-                <Element>{apiSystemInfo.journalsCount} journals</Element>
-                <Element>{apiSystemInfo.entriesCount} entries</Element>
-              </>
-            )}
+            <StatElement
+              value={`${apiSystemInfo.usersCount} users`}
+              isAdmin={user.isAdmin}
+            />
+            <StatElement
+              value={`${apiSystemInfo.journalsCount} journals`}
+              isAdmin={user.isAdmin}
+            />
+            <StatElement
+              value={`${apiSystemInfo.entriesCount} entries`}
+              isAdmin={user.isAdmin}
+            />
           </Column>
           <Column sx={{ textAlign: "right" }}>
             <Element
@@ -114,10 +102,27 @@ const Column = styled("div")`
   flex-grow: 1;
 `;
 
-const StatsContainer = styled("div")`
-  display: flex;
-  flex-direction: column;
-`;
+const StatElement: React.FC<{ value: string; isAdmin?: boolean }> = ({
+  value,
+  isAdmin,
+}) => (
+  <Element>
+    {isAdmin ? (
+      <ActionLink
+        action={{
+          label: "Admin",
+          href: "/admin",
+          key: "go-to-admin",
+          icon: null,
+        }}
+      >
+        <>{value}</>
+      </ActionLink>
+    ) : (
+      value
+    )}
+  </Element>
+);
 
 const Element: React.FC<{ children: React.ReactNode; sx?: SxProps }> = ({
   children,

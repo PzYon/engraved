@@ -416,8 +416,14 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/admin/users`, "GET", null);
   }
 
-  static async deleteAdminUser(userId: string): Promise<ICommandResult> {
-    return await ServerApi.executeRequest(`/admin/users/${userId}`, "DELETE");
+  static async deleteAdminUser(
+    userId: string,
+    confirmedUserName: string,
+  ): Promise<ICommandResult> {
+    return await ServerApi.executeRequest(`/admin/users/${userId}`, "DELETE", {
+      userId: userId,
+      confirmedUserName: confirmedUserName,
+    });
   }
 
   static async updateUserTags(tagNames: Record<string, string>): Promise<void> {
