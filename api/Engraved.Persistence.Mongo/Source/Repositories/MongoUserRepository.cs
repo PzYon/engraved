@@ -73,4 +73,9 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
 
     return users.Select(u => UserDocumentMapper.FromDocument(u)!).ToArray();
   }
+
+  public async Task DeleteUser(string userId)
+  {
+    await UsersCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>(userId));
+  }
 }

@@ -162,4 +162,9 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
   {
     return _userRepository.GetAllUsers();
   }
+
+  public Task DeleteUser(string userId)
+  {
+    return _userRepository.DeleteUser(userId);
+  }
 }

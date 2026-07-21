@@ -9,13 +9,15 @@ import { SearchPage } from "./components/overview/search/SearchPage";
 import { ScheduledPage } from "./components/overview/scheduled/ScheduledPage";
 import { SettingsPage } from "./pwa/SettingsPage";
 import {
-  createRootRoute,
+  createRootRouteWithContext,
   createRoute,
   createRouter,
   Outlet,
+  redirect,
   RouterProvider,
 } from "@tanstack/react-router";
 import { AppContextProvider } from "./AppContextProvider";
+import { useAppContext } from "./AppContext";
 import { ReactQueryProviderWrapper } from "./serverApi/reactQuery/ReactQueryProviderWrapper";
 import { PageContextProvider } from "./components/layout/pages/PageContextProvider";
 import { DialogContextProvider } from "./components/layout/dialogs/DialogContextProvider";
@@ -36,6 +38,7 @@ import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
 import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNavigation";
 import { LazyLoadSuspender } from "./components/common/LazyLoadSuspender";
 import { validateAppSearch } from "./components/common/actions/searchParamHooks";
+import { AdminPage } from "./components/admin/AdminPage";
 
 // Defined before RootLayout so the component reference is available
 const Host = styled("div")`
@@ -68,9 +71,16 @@ const RootLayout: React.FC = () => (
   </ReactQueryProviderWrapper>
 );
 
+interface IRouterContext {
+  user: IUser | undefined;
+}
+
 // Root route — shared layout for all pages. The search schema (typed, with
-// arbitrary string params passed through) lives in searchParamHooks.
-const rootRoute = createRootRoute({
+// arbitrary string params passed through) lives in searchParamHooks. Typed
+// with context so routes (e.g. adminRoute) can guard on the current user via
+// beforeLoad - see the RouterProvider context prop below for how the live
+// user gets fed into it.
+const rootRoute = createRootRouteWithContext<IRouterContext>()({
   component: RootLayout,
   notFoundComponent: () => <JournalsPage />,
   validateSearch: validateAppSearch,
@@ -154,6 +164,17 @@ const settingsRoute = createRoute({
   component: SettingsPage,
 });
 
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin",
+  beforeLoad: ({ context }) => {
+    if (!context.user?.isAdmin) {
+      throw redirect({ to: "/" });
+    }
+  },
+  component: AdminPage,
+});
+
 const routeTree = rootRoute.addChildren([
   journalsRoute,
   journalsCreateRoute,
@@ -169,9 +190,10 @@ const routeTree = rootRoute.addChildren([
   tagsRoute,
   tagRoute,
   settingsRoute,
+  adminRoute,
 ]);
 
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree, context: { user: undefined } });
 
 declare module "@tanstack/react-router" {
   interface Register {
@@ -186,7 +208,16 @@ export const App: React.FC<{ user: IUser }> = ({ user }) => {
 
   return (
     <AppContextProvider user={user}>
-      <RouterProvider router={router} />
+      <RouterProviderWithContext />
     </AppContextProvider>
   );
+};
+
+// Feeds the router's context from the live AppContext user (rather than the App component's own
+// user prop, which is only the initial value) so route guards like adminRoute's beforeLoad see
+// up-to-date admin status, e.g. right after reloadUser().
+const RouterProviderWithContext: React.FC = () => {
+  const { user } = useAppContext();
+
+  return <RouterProvider router={router} context={{ user }} />;
 };

@@ -23,6 +23,8 @@ public class UserDocument : IDocument
 
   public DateTime? LastLoginDate { get; set; }
 
+  public bool IsAdmin { get; set; }
+
   public List<string> FavoriteJournalIds { get; set; } = [];
 
   public List<UserTag> Tags { get; set; } = [];

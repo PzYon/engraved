@@ -19,4 +19,6 @@ public interface IUser
   public List<UserTag> Tags { get; set; }
 
   List<RefreshToken> RefreshTokens { get; set; }
+
+  bool IsAdmin { get; set; }
 }

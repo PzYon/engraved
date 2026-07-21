@@ -21,6 +21,8 @@ import { LoadingHandler } from "./LoadingHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IApiSystemInfo } from "./IApiSystemInfo";
+import { IAdminUserItem } from "./IAdminUserItem";
+import { IDeleteUserConfirmationResult } from "./IDeleteUserConfirmationResult";
 import { LoginHandler } from "./LoginHandler";
 import {
   IAddScheduleToEntryCommand,
@@ -409,6 +411,29 @@ export class ServerApi {
 
   static async getCurrentUser(): Promise<IUser> {
     return await ServerApi.executeRequest(`/user`, "GET", null);
+  }
+
+  static async getAdminUsersOverview(): Promise<IAdminUserItem[]> {
+    return await ServerApi.executeRequest(`/admin/users`, "GET", null);
+  }
+
+  static async requestDeleteUserConfirmation(
+    userId: string,
+  ): Promise<IDeleteUserConfirmationResult> {
+    return await ServerApi.executeRequest(
+      `/admin/users/${userId}/delete-confirmation`,
+      "POST",
+    );
+  }
+
+  static async deleteAdminUser(
+    userId: string,
+    confirmationToken: string,
+  ): Promise<ICommandResult> {
+    return await ServerApi.executeRequest(`/admin/users/${userId}`, "DELETE", {
+      userId: userId,
+      confirmationToken: confirmationToken,
+    });
   }
 
   static async updateUserTags(tagNames: Record<string, string>): Promise<void> {
