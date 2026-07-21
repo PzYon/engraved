@@ -1,3 +1,4 @@
+using Engraved.Api.Admin;
 using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Users.Delete;
@@ -12,7 +13,11 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/admin")]
 [Authorize]
-public class AdminController(Dispatcher dispatcher, Lazy<IUser> currentUser) : ControllerBase
+public class AdminController(
+  Dispatcher dispatcher,
+  Lazy<IUser> currentUser,
+  DeleteUserConfirmationStore deleteUserConfirmationStore
+) : ControllerBase
 {
   [HttpGet]
   [Route("users")]
@@ -25,15 +30,33 @@ public class AdminController(Dispatcher dispatcher, Lazy<IUser> currentUser) : C
     );
   }
 
-  [HttpDelete]
-  [Route("users/{userId}")]
-  public async Task<CommandResult> DeleteUser(string userId, [FromBody] DeleteUserCommand command)
+  // First step of the delete flow: proves the caller is an admin and hands back a short-lived,
+  // single-use token that DeleteUser then requires - see DeleteUserConfirmationStore.
+  [HttpPost]
+  [Route("users/{userId}/delete-confirmation")]
+  public DeleteUserConfirmationResult RequestDeleteConfirmation(string userId)
   {
     EnsureIsAdmin();
 
-    if (userId != command.UserId)
+    return new DeleteUserConfirmationResult { ConfirmationToken = deleteUserConfirmationStore.IssueToken(userId) };
+  }
+
+  [HttpDelete]
+  [Route("users/{userId}")]
+  public async Task<CommandResult> DeleteUser(string userId, [FromBody] DeleteUserRequest request)
+  {
+    EnsureIsAdmin();
+
+    var command = new DeleteUserCommand { UserId = userId };
+
+    if (userId != request.UserId)
     {
       throw new InvalidCommandException(command, "UserIds from URL and body do not match.");
+    }
+
+    if (!deleteUserConfirmationStore.TryConsumeToken(userId, request.ConfirmationToken))
+    {
+      throw new NotAllowedOperationException("Delete was not confirmed.");
     }
 
     return await dispatcher.Command(command);

@@ -41,7 +41,7 @@ public class DeleteUserCommandExecutorShould
 
     // when
     CommandResult result = await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-      new DeleteUserCommand { UserId = TargetUserId, ConfirmedUserName = "target@x.com" }
+      new DeleteUserCommand { UserId = TargetUserId }
     );
 
     // then
@@ -64,7 +64,7 @@ public class DeleteUserCommandExecutorShould
 
     // when
     await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-      new DeleteUserCommand { UserId = TargetUserId, ConfirmedUserName = "target@x.com" }
+      new DeleteUserCommand { UserId = TargetUserId }
     );
 
     // then
@@ -77,43 +77,9 @@ public class DeleteUserCommandExecutorShould
   {
     Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
       await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-        new DeleteUserCommand { UserId = AdminId, ConfirmedUserName = "admin@x.com" }
+        new DeleteUserCommand { UserId = AdminId }
       )
     );
-  }
-
-  [Test]
-  public async Task RejectDeletion_When_ConfirmedUserNameDoesNotMatch()
-  {
-    // given
-    await _repo.UpsertUser(new User { Id = TargetUserId, Name = "target@x.com" });
-    await _repo.UpsertJournal(new CounterJournal { Id = JournalId, UserId = TargetUserId });
-
-    // when / then
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
-      await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-        new DeleteUserCommand { UserId = TargetUserId, ConfirmedUserName = "someone-else@x.com" }
-      )
-    );
-
-    (await _repo.GetUser(TargetUserId)).Should().NotBeNull();
-    (await _repo.GetJournal(JournalId)).Should().NotBeNull();
-  }
-
-  [Test]
-  public async Task AllowDeletion_When_ConfirmedUserNameOnlyDiffersByCaseOrWhitespace()
-  {
-    // given
-    await _repo.UpsertUser(new User { Id = TargetUserId, Name = "target@x.com" });
-
-    // when
-    CommandResult result = await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-      new DeleteUserCommand { UserId = TargetUserId, ConfirmedUserName = "  TARGET@x.com  " }
-    );
-
-    // then
-    result.EntityId.Should().Be(TargetUserId);
-    (await _repo.GetUser(TargetUserId)).Should().BeNull();
   }
 
   [Test]

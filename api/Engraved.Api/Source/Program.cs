@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Engraved.Api;
+using Engraved.Api.Admin;
 using Engraved.Api.Authentication;
 using Engraved.Api.Authentication.Google;
 using Engraved.Api.Bootstrap;
@@ -92,6 +93,7 @@ builder.Services.AddTransient<RefreshTokenService>();
 builder.Services.AddTransient<RefreshHandler>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddSingleton<UserLoader>();
+builder.Services.AddSingleton<DeleteUserConfirmationStore>();
 builder.Services.AddHostedService<ScheduledNotificationJob>();
 
 PersistenceRegistration.RegisterPersistence(builder.Services, builder.Configuration, isE2ETests);

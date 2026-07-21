@@ -15,7 +15,10 @@ export const useDeleteAdminUserMutation = (
     mutationKey: queryKeysFactory.deleteAdminUser(userId),
 
     mutationFn: async () => {
-      await ServerApi.deleteAdminUser(userId, userName);
+      const { confirmationToken } =
+        await ServerApi.requestDeleteUserConfirmation(userId);
+
+      await ServerApi.deleteAdminUser(userId, confirmationToken);
     },
 
     onSuccess: async () => {

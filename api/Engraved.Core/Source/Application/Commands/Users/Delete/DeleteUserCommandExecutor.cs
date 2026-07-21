@@ -25,11 +25,6 @@ public class DeleteUserCommandExecutor(IUnrestrictedRepository unrestrictedRepos
       return new CommandResult();
     }
 
-    if (!string.Equals(command.ConfirmedUserName?.Trim(), user.Name, StringComparison.OrdinalIgnoreCase))
-    {
-      throw new NotAllowedOperationException("Confirmed user name does not match the user to delete.");
-    }
-
     // a user's journals - and their entries - die with the user; this cascade is a use-case rule
     // and therefore lives here, not in the repository (mirrors DeleteJournalCommandExecutor)
     var journalIds = await unrestrictedRepository.GetJournalIdsForUser(user.Id!);

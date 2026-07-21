@@ -22,6 +22,7 @@ import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IApiSystemInfo } from "./IApiSystemInfo";
 import { IAdminUserOverview } from "./IAdminUserOverview";
+import { IDeleteUserConfirmationResult } from "./IDeleteUserConfirmationResult";
 import { LoginHandler } from "./LoginHandler";
 import {
   IAddScheduleToEntryCommand,
@@ -416,13 +417,22 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/admin/users`, "GET", null);
   }
 
+  static async requestDeleteUserConfirmation(
+    userId: string,
+  ): Promise<IDeleteUserConfirmationResult> {
+    return await ServerApi.executeRequest(
+      `/admin/users/${userId}/delete-confirmation`,
+      "POST",
+    );
+  }
+
   static async deleteAdminUser(
     userId: string,
-    confirmedUserName: string,
+    confirmationToken: string,
   ): Promise<ICommandResult> {
     return await ServerApi.executeRequest(`/admin/users/${userId}`, "DELETE", {
       userId: userId,
-      confirmedUserName: confirmedUserName,
+      confirmationToken: confirmationToken,
     });
   }
 
