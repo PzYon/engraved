@@ -8,6 +8,8 @@ import { ListItemFooterRow } from "../overview/ListItemFooterRow";
 import { DeleteButtons } from "../common/DeleteButtons";
 import { FormatDate } from "../common/FormatDate";
 import { useDeleteAdminUserMutation } from "../../serverApi/reactQuery/mutations/useDeleteAdminUserMutation";
+import { TitleRow } from "../details/scraps/TitleRow";
+import { ReadonlyTitle } from "../overview/ReadonlyTitle";
 
 export const AdminUserListItem: React.FC<{
   user: IAdminUserOverview;
@@ -46,12 +48,18 @@ export const AdminUserListItem: React.FC<{
   ];
 
   return (
-    <Host>
-      <TitleRow>
-        <Typography sx={{ fontWeight: 200, fontSize: "1.4rem" }}>
-          {user.displayName ? `${user.displayName} · ` : ""}
-          {user.name}
-        </Typography>
+    <>
+      <TitleRow hasFocus={false} hasNoContent={true} hasTitle={true}>
+        <ReadonlyTitle
+          entity={user}
+          hasFocus={false}
+          title={
+            <>
+              {user.displayName ? `${user.displayName} · ` : ""}
+              {user.name}
+            </>
+          }
+        />
       </TitleRow>
       <ListItemFooterRow
         hasFocus={false}
@@ -75,23 +83,9 @@ export const AdminUserListItem: React.FC<{
           />
         </ConfirmContainer>
       ) : null}
-    </Host>
+    </>
   );
 };
-
-const Host = styled("div")`
-  padding: ${(p) => p.theme.spacing(2)} 0;
-  border-bottom: 1px solid ${(p) => p.theme.palette.background.default};
-
-  &:last-of-type {
-    border-bottom: none;
-  }
-`;
-
-const TitleRow = styled("div")`
-  display: flex;
-  align-items: center;
-`;
 
 const ConfirmContainer = styled("div")`
   margin-top: ${(p) => p.theme.spacing(2)};
