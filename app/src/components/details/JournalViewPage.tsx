@@ -133,6 +133,7 @@ export const JournalViewPage: React.FC = () => {
     </Page>
   );
 
+  // fallow-ignore-next-line complexity
   function getTitleActions() {
     return [
       ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
