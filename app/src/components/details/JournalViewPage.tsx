@@ -74,23 +74,7 @@ export const JournalViewPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setDateConditions, dateFilterHash]);
 
-  const titleActions = [
-    ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
-    deviceWidth !== DeviceWidth.Small
-      ? ActionFactory.toggleAddNewEntryRow(
-          showAddNewEntryRow,
-          setShowAddNewEntryRow,
-        )
-      : undefined,
-    ActionFactory.toggleNotes(showNotes, setShowNotes),
-    ActionFactory.toggleShowChart(showChart, setShowChart),
-    ActionFactory.toggleFilters(showFilters, setShowFilters, false),
-    ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
-    Object.keys(journal.thresholds ?? {}).length
-      ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
-      : undefined,
-    ...getCommonJournalActions(journal, true, user),
-  ].filter((a): a is IAction => a != null);
+  const titleActions = getTitleActions();
 
   return (
     <Page
@@ -148,4 +132,24 @@ export const JournalViewPage: React.FC = () => {
       />
     </Page>
   );
+
+  function getTitleActions() {
+    return [
+      ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
+      deviceWidth !== DeviceWidth.Small
+        ? ActionFactory.toggleAddNewEntryRow(
+            showAddNewEntryRow,
+            setShowAddNewEntryRow,
+          )
+        : undefined,
+      ActionFactory.toggleNotes(showNotes, setShowNotes),
+      ActionFactory.toggleShowChart(showChart, setShowChart),
+      ActionFactory.toggleFilters(showFilters, setShowFilters, false),
+      ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
+      Object.keys(journal.thresholds ?? {}).length
+        ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
+        : undefined,
+      ...getCommonJournalActions(journal, true, user),
+    ].filter((a): a is IAction => a != null);
+  }
 };
