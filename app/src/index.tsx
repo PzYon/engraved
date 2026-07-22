@@ -7,6 +7,8 @@ import { Bootstrapper } from "./Bootstrapper";
 import { createRoot } from "react-dom/client";
 import { ThemeAndStylesProvider } from "./theming/ThemeAndStylesProvider";
 import { ServerApi } from "./serverApi/ServerApi";
+// side-effect import: registers the service worker at startup (immediate: true)
+import "./serviceWorkerUpdater";
 
 import("./util/appInsights").then((appInsights) => {
   appInsights.setUpAppInsights();

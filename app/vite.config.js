@@ -22,8 +22,16 @@ export default () => {
       }),
       checker({ typescript: true }),
       VitePWA({
-        registerType: "autoUpdate",
-        injectRegister: "auto",
+        // "prompt" (not "autoUpdate"): a freshly deployed worker waits instead
+        // of skipping-waiting on its own, so we control exactly when the app
+        // updates + reloads (src/serviceWorkerUpdater.ts, wired to the version
+        // button). This avoids reloading the page out from under the user and
+        // makes the "new version available" button deterministic.
+        registerType: "prompt",
+        // We register the worker ourselves via virtual:pwa-register in
+        // src/serviceWorkerUpdater.ts, so the plugin must not also inject a
+        // registration script (that would register the worker twice).
+        injectRegister: false,
         // Keep our hand-written public/manifest.json (linked from index.html)
         // rather than generating one.
         manifest: false,
