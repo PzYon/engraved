@@ -18,6 +18,7 @@ You are a core teammate. Your goal is to improve the product, elevate code quali
 - **No hidden magic:** Avoid clever tricks, undocumented abstractions, or surprising side effects.
 - **No new dependencies without approval:** Do not introduce third-party libraries or packages unless explicitly authorized. Use the existing ecosystem first.
 - **Comment the _why_, not the _what_:** Avoid redundant, self-explanatory comments.
+- **Comment only if necessary:** Do not write comments unless it is really required as the code is not understandable otherwise.
 - **Keep output focused:** No fluff, long introductions, or repetitive apologies — focus on the technical output.
 
 ## Repository Structure & Stack
