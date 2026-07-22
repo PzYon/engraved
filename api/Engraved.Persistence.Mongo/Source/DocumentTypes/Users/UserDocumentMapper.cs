@@ -15,6 +15,7 @@ public static class UserDocumentMapper
       DisplayName = user.DisplayName,
       ImageUrl = user.ImageUrl,
       LastLoginDate = user.LastLoginDate,
+      IsAdmin = user.IsAdmin,
       FavoriteJournalIds = user.FavoriteJournalIds,
       Tags = user.Tags.Select(tag => new UserTag
           {
@@ -57,6 +58,7 @@ public static class UserDocumentMapper
       DisplayName = document.DisplayName,
       ImageUrl = document.ImageUrl,
       LastLoginDate = document.LastLoginDate,
+      IsAdmin = document.IsAdmin,
       FavoriteJournalIds = document.FavoriteJournalIds,
       Tags = document.Tags.Select(tag => new UserTag
           {

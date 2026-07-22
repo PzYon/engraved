@@ -102,6 +102,14 @@ export const queryKeysFactory = {
     return ["system-info"];
   },
 
+  adminUsers() {
+    return ["admin", "users"];
+  },
+
+  deleteAdminUser(userId: string) {
+    return ["admin", "users", userId, "delete"];
+  },
+
   appVersion() {
     return ["app-version"];
   },

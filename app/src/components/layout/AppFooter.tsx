@@ -8,8 +8,10 @@ import React, { useEffect, useState } from "react";
 import { FadeInContainer } from "../common/FadeInContainer";
 import { FormatDate } from "../common/FormatDate";
 import { ActionLink } from "../common/actions/ActionLink";
+import { useAppContext } from "../../AppContext";
 
 export const AppFooter: React.FC = () => {
+  const { user } = useAppContext();
   const apiSystemInfo = useApiSystemInfoQuery();
 
   const [doRender, setDoRender] = useState(false);
@@ -37,9 +39,18 @@ export const AppFooter: React.FC = () => {
       <AppContent scope="header">
         <Container>
           <Column sx={{ textAlign: "left" }}>
-            <Element>{apiSystemInfo.usersCount} users</Element>
-            <Element>{apiSystemInfo.journalsCount} journals</Element>
-            <Element>{apiSystemInfo.entriesCount} entries</Element>
+            <StatElement
+              value={`${apiSystemInfo.usersCount} users`}
+              isAdmin={user.isAdmin}
+            />
+            <StatElement
+              value={`${apiSystemInfo.journalsCount} journals`}
+              isAdmin={user.isAdmin}
+            />
+            <StatElement
+              value={`${apiSystemInfo.entriesCount} entries`}
+              isAdmin={user.isAdmin}
+            />
           </Column>
           <Column sx={{ textAlign: "right" }}>
             <Element
@@ -90,6 +101,28 @@ const Column = styled("div")`
   flex-direction: column;
   flex-grow: 1;
 `;
+
+const StatElement: React.FC<{ value: string; isAdmin?: boolean }> = ({
+  value,
+  isAdmin,
+}) => (
+  <Element>
+    {isAdmin ? (
+      <ActionLink
+        action={{
+          label: "Admin",
+          href: "/admin",
+          key: "go-to-admin",
+          icon: null,
+        }}
+      >
+        <>{value}</>
+      </ActionLink>
+    ) : (
+      value
+    )}
+  </Element>
+);
 
 const Element: React.FC<{ children: React.ReactNode; sx?: SxProps }> = ({
   children,

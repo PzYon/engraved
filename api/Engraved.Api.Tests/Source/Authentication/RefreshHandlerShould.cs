@@ -34,7 +34,7 @@ public class RefreshHandlerShould
     _refreshTokenService = new RefreshTokenService(_repository, _config, _dateService);
     _refreshHandler = new RefreshHandler(_refreshTokenService, new JwtTokenFactory(_config, _dateService));
 
-    _user = new User { Id = TestIds.OtherUserId, Name = "me@tests" };
+    _user = new User { Id = TestIds.OtherUserId, Name = "me@tests", IsAdmin = true };
     await _repository.UpsertUser(_user);
   }
 
@@ -51,6 +51,7 @@ public class RefreshHandlerShould
     result.RefreshToken.Should().NotBeNullOrEmpty();
     result.RefreshToken.Should().NotBe(refreshToken, "the refresh token must be rotated");
     result.User!.Id.Should().Be(_user.Id);
+    result.User.IsAdmin.Should().BeTrue("the user's admin flag must be preserved across a token refresh");
   }
 
   [Test]

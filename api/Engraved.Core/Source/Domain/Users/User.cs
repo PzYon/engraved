@@ -19,4 +19,6 @@ public class User : IUser
   public List<UserTag> Tags { get; set; } = [];
 
   public List<RefreshToken> RefreshTokens { get; set; } = [];
+
+  public bool IsAdmin { get; set; }
 }

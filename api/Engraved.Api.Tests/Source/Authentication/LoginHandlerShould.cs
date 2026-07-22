@@ -99,6 +99,7 @@ public class LoginHandlerShould
     result.User.ImageUrl.Should().Be(imageUrl);
     result.User.Id.Should().NotBeNull();
     result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    result.User.IsAdmin.Should().BeFalse("a brand new user is never an admin by default");
 
     var users = await _testRepository.GetAllUsers();
 
@@ -136,7 +137,8 @@ public class LoginHandlerShould
       DisplayName = displayName,
       ImageUrl = imageUrl,
       LastLoginDate = DateTime.UtcNow.AddMinutes(-12345),
-      GlobalUniqueId = globalUniqueId
+      GlobalUniqueId = globalUniqueId,
+      IsAdmin = true
     };
 
     // must ensure the journal exists as it will be loaded as favorite
@@ -157,6 +159,7 @@ public class LoginHandlerShould
     result.User.Id.Should().Be(userId);
     result.User.GlobalUniqueId.Should().Be(globalUniqueId);
     result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    result.User.IsAdmin.Should().BeTrue("the existing user's admin flag must be preserved across login");
 
     var users = await _testRepository.GetAllUsers();
 

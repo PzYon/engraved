@@ -15,6 +15,7 @@ using Engraved.Core.Application.Commands.Journals.EditPermissions;
 using Engraved.Core.Application.Commands.Journals.UpdateTags;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.CleanupTags;
+using Engraved.Core.Application.Commands.Users.Delete;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.Queries;
@@ -28,6 +29,7 @@ using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Application.Queries.Search.Related;
 using Engraved.Core.Application.Queries.SystemInfo.Get;
+using Engraved.Core.Application.Queries.Users.GetAdminOverview;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,6 +58,7 @@ public static class ExecutorRegistration
     RegisterCommand<CleanupTagsCommand, CleanupTagsCommandExecutor>(services);
     RegisterCommand<AddScheduleToJournalCommand, AddScheduleToJournalCommandExecutor>(services);
     RegisterCommand<AddScheduleToEntryCommand, AddScheduleToEntryCommandExecutor>(services);
+    RegisterCommand<DeleteUserCommand, DeleteUserCommandExecutor>(services);
   }
 
   private static void RegisterCommand<TCommand, TCommandExecutor>(IServiceCollection services)
@@ -77,6 +80,7 @@ public static class ExecutorRegistration
     RegisterQuery<SearchEntitiesResult, GetRelatedEntitiesQuery, GetRelatedEntitiesQueryExecutor>(services);
     RegisterQuery<SystemInfo, GetSystemInfoQuery, GetSystemInfoQueryExecutor>(services);
     RegisterQuery<ExportedDataResult, ExportDataQuery, ExportDataQueryExecutor>(services);
+    RegisterQuery<AdminUserItem[], GetAdminUsersOverviewQuery, GetAdminUsersOverviewQueryExecutor>(services);
   }
 
   private static void RegisterQuery<TResult, TQuery, TQueryExecutor>(IServiceCollection services)

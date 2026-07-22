@@ -89,9 +89,15 @@ public class ArchitectureShould
   {
     // The unrestricted seam is deliberately greppable so that bypassing permission scoping is always a
     // conscious choice (see IUnrestrictedRepository). Within Core, only the notification job - which
-    // legitimately runs across all users with no current user - may depend on it. A new accidental
-    // consumer (e.g. an executor) must fail this test and force a deliberate allowlist edit.
-    string[] sanctionedConsumers = ["NotificationJob"];
+    // legitimately runs across all users with no current user - and the admin use cases - which
+    // legitimately operate across all users' data on behalf of an admin - may depend on it. A new
+    // accidental consumer (e.g. an executor) must fail this test and force a deliberate allowlist edit.
+    string[] sanctionedConsumers =
+    [
+      "NotificationJob",
+      "DeleteUserCommandExecutor",
+      "GetAdminUsersOverviewQueryExecutor"
+    ];
 
     var actualConsumers = Types.InAssembly(CoreAssembly)
       .That()
