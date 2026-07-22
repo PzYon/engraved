@@ -1,23 +1,22 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { onlineManager, useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { IUpsertEntryCommand } from "../../commands/IUpsertEntryCommand";
-import { ServerApi } from "../../ServerApi";
 import { useAppContext } from "../../../AppContext";
-import { IEntry } from "../../IEntry";
 import { ICommandResult } from "../../ICommandResult";
 import { IJournalAttributeValues } from "../../IJournalAttributeValues";
 import { IJournalAttributes } from "../../IJournalAttributes";
-import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
 import { useMatchRoute } from "@tanstack/react-router";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 import { StyledLink } from "./StyledLink";
 import { getErrorAlert } from "./getErrorAlert";
-
-interface IUpsertEntryCommandVariables {
-  command: IUpsertEntryCommand;
-}
+import {
+  applyEntryUpsertToCache,
+  invalidateAfterEntryWrite,
+  IUpsertEntryVariables,
+} from "./entryMutationDefaults";
+import { generateClientId } from "../../../util/clientId";
 
 export const useUpsertEntryMutation = (
   journalId: string,
@@ -32,79 +31,75 @@ export const useUpsertEntryMutation = (
 
   const matchRoute = useMatchRoute();
 
-  const editJournalMutation = useEditJournalMutation(journalId);
-
-  return useMutation({
+  const mutation = useMutation<ICommandResult, Error, IUpsertEntryVariables>({
     mutationKey: queryKeysFactory.updateEntries(journalId, entryId ?? ""),
 
     throwOnError: false,
 
-    mutationFn: async (variables: IUpsertEntryCommandVariables) => {
-      const journalWithNewValues = journal
-        ? getJournalWithNewAttributeValues(
-            journal,
-            variables.command.journalAttributeValues ?? {},
-          )
-        : null;
+    // no mutationFn here: it comes from the mutation defaults (entryMutationDefaults), so that
+    // mutations resumed from the persisted offline outbox after a reload run the same code
 
-      if (journalWithNewValues) {
-        await editJournalMutation.mutateAsync({
-          journal: journalWithNewValues,
+    onMutate: (variables) => {
+      applyEntryUpsertToCache(queryClient, variables.command);
+
+      if (variables.queuedOffline) {
+        // the mutation is paused until the app is back online; give the queue-time feedback the
+        // success handler would otherwise give
+        setAppAlert({
+          title: "Saved offline - will be synced when reconnected",
+          type: "info",
+          relatedEntityId: variables.command.id,
         });
-      }
 
-      return await ServerApi.upsertEntry(
-        variables.command,
-        journalType.toLowerCase(),
-      );
+        onSaved?.();
+      }
     },
 
     onSuccess: async (
       result: ICommandResult,
-      variables: IUpsertEntryCommandVariables,
+      variables: IUpsertEntryVariables,
     ) => {
       const journalId = variables.command.journalId;
 
-      // Only offer a "View in journal" link when we're not already on that
-      // journal's details page (or one of its sub-routes).
-      const isOnJournalPage = matchRoute({
-        to: "/journals/details/$journalId",
-        params: { journalId },
-        fuzzy: true,
-      });
+      if (result.discarded) {
+        // the entry was deleted (e.g. on another device) while this change sat in the offline
+        // outbox; the server ignored the change instead of resurrecting the entry
+        setAppAlert({
+          title: "Entry does not exist anymore - change was discarded",
+          type: "info",
+          relatedEntityId: result.entityId,
+        });
+      } else if (!variables.queuedOffline) {
+        // Only offer a "View in journal" link when we're not already on that
+        // journal's details page (or one of its sub-routes).
+        const isOnJournalPage = matchRoute({
+          to: "/journals/details/$journalId",
+          params: { journalId },
+          fuzzy: true,
+        });
 
-      setAppAlert({
-        title: `${entryId ? "Updated" : "Added"} entry`,
-        message: !isOnJournalPage ? (
-          <>
-            <StyledLink
-              to="/journals/details/$journalId"
-              params={{ journalId }}
-              search={{ [knownQueryParams.selectedItemId]: result.entityId }}
-            >
-              View
-            </StyledLink>{" "}
-            in journal
-          </>
-        ) : null,
-        type: "success",
-        relatedEntityId: result.entityId,
-      });
+        setAppAlert({
+          title: `${entryId ? "Updated" : "Added"} entry`,
+          message: !isOnJournalPage ? (
+            <>
+              <StyledLink
+                to="/journals/details/$journalId"
+                params={{ journalId }}
+                search={{ [knownQueryParams.selectedItemId]: result.entityId }}
+              >
+                View
+              </StyledLink>{" "}
+              in journal
+            </>
+          ) : null,
+          type: "success",
+          relatedEntityId: result.entityId,
+        });
 
-      onSaved?.();
-
-      if (entryId) {
-        updateExistingEntryInCache(variables.command);
+        onSaved?.();
       }
 
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: queryKeysFactory.prefixes.journals(),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: queryKeysFactory.prefixes.entities(),
-        }),
-      ]);
+      await invalidateAfterEntryWrite(queryClient);
     },
 
     onError: (error) => {
@@ -112,35 +107,34 @@ export const useUpsertEntryMutation = (
     },
   });
 
-  function updateExistingEntryInCache(command: IUpsertEntryCommand) {
-    queryClient.setQueryData(
-      queryKeysFactory.journalEntries(journalId),
-      (entries: IEntry[]) => {
-        if (!entries) {
-          return entries;
-        }
+  return {
+    ...mutation,
+    mutate: (variables: { command: IUpsertEntryCommand }) =>
+      mutation.mutate(prepareVariables(variables.command)),
+    mutateAsync: (variables: { command: IUpsertEntryCommand }) =>
+      mutation.mutateAsync(prepareVariables(variables.command)),
+  };
 
-        return entries.map((e) =>
-          e.id === entryId ? createCacheEntry(e, command) : e,
-        );
-      },
-    );
-  }
-
-  function createCacheEntry(
-    entry: IEntry,
+  // Everything a replayed mutation needs must be captured here, in serializable variables - see
+  // entryMutationDefaults. This is also where entries get their client-generated id, so that an
+  // entry created offline has its definitive identity before ever reaching the server.
+  function prepareVariables(
     command: IUpsertEntryCommand,
-  ): IEntry {
+  ): IUpsertEntryVariables {
+    const preparedCommand: IUpsertEntryCommand = command.id
+      ? command
+      : { ...command, id: generateClientId(), isNew: true };
+
     return {
-      ...entry,
-      ...command,
-      // command.dateTime is a Date (or absent); IEntry.dateTime is an ISO
-      // string. Keep the date the user actually set instead of overwriting it
-      // with "now", and serialize as ISO to match what the server returns.
-      dateTime: command.dateTime
-        ? new Date(command.dateTime).toISOString()
-        : entry.dateTime,
-      editedOn: new Date().toISOString(),
+      command: preparedCommand,
+      journalType,
+      updatedJournal: journal
+        ? (getJournalWithNewAttributeValues(
+            journal,
+            preparedCommand.journalAttributeValues ?? {},
+          ) ?? undefined)
+        : undefined,
+      queuedOffline: !onlineManager.isOnline(),
     };
   }
 };
