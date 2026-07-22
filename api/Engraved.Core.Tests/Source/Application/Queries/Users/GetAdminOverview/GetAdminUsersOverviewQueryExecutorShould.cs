@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Queries.Users.GetAdminOverview;
 using Engraved.Core.Domain.Entries;
@@ -12,6 +14,8 @@ namespace Engraved.Core.Tests.Application.Queries.Users.GetAdminOverview;
 public class GetAdminUsersOverviewQueryExecutorShould
 {
   private const string UserId = "60703c3b0000000000000001";
+  private const string OtherUserId = "60703c3b0000000000000004";
+  private const string ThirdUserId = "60703c3b0000000000000005";
   private const string JournalId = "60703c3b0000000000000002";
   private const string OtherJournalId = "60703c3b0000000000000003";
 
@@ -65,5 +69,30 @@ public class GetAdminUsersOverviewQueryExecutorShould
     result.Should().ContainSingle();
     result[0].JournalsCount.Should().Be(0);
     result[0].EntriesCount.Should().Be(0);
+  }
+
+  [Test]
+  public async Task Return_MostRecentlyLoggedInUsersFirst()
+  {
+    // given
+    await _repo.UpsertUser(
+      new User { Id = UserId, Name = "oldest@x.com", LastLoginDate = new DateTime(2026, 1, 1) }
+    );
+    await _repo.UpsertUser(
+      new User { Id = OtherUserId, Name = "newest@x.com", LastLoginDate = new DateTime(2026, 3, 1) }
+    );
+    await _repo.UpsertUser(
+      new User { Id = ThirdUserId, Name = "never-logged-in@x.com", LastLoginDate = null }
+    );
+
+    // when
+    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(_repo).Execute(
+      new GetAdminUsersOverviewQuery()
+    );
+
+    // then
+    result.Select(i => i.Name)
+      .Should()
+      .Equal("newest@x.com", "oldest@x.com", "never-logged-in@x.com");
   }
 }
