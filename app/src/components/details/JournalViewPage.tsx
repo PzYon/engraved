@@ -19,6 +19,7 @@ import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 import { isEntryFilterApplied } from "./filters/isEntryFilterApplied";
 
+// fallow-ignore-next-line complexity
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const { user } = useAppContext();
@@ -133,7 +134,6 @@ export const JournalViewPage: React.FC = () => {
     </Page>
   );
 
-  // fallow-ignore-next-line complexity
   function getTitleActions() {
     return [
       ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
