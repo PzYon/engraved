@@ -45,6 +45,12 @@ export const MarkdownContainer = styled(BaseMarkdownContainer)`
     font-weight: normal;
   }
 
+  hr {
+    border: 0;
+    height: 1px;
+    background: ${(p) => p.theme.palette.background.default};
+  }
+
   p,
   h4,
   h5,
