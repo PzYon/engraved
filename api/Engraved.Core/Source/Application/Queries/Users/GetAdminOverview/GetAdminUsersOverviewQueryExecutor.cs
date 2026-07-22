@@ -31,7 +31,6 @@ public class GetAdminUsersOverviewQueryExecutor(IUnrestrictedRepository unrestri
       );
     }
 
-    // most recently active users first; users who never logged in (LastLoginDate null) sort last
     return items
       .OrderByDescending(i => i.LastLoginDate ?? DateTime.MinValue)
       .ToArray();
