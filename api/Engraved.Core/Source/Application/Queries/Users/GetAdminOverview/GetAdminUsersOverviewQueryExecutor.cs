@@ -31,6 +31,8 @@ public class GetAdminUsersOverviewQueryExecutor(IUnrestrictedRepository unrestri
       );
     }
 
-    return items.ToArray();
+    return items
+      .OrderByDescending(i => i.LastLoginDate ?? DateTime.MinValue)
+      .ToArray();
   }
 }
