@@ -1,6 +1,7 @@
 import SwitchAccessShortcutOutlined from "@mui/icons-material/SwitchAccessShortcutOutlined";
 import { CircularProgress, Dialog, styled, Typography } from "@mui/material";
 import React, { PropsWithChildren, ReactNode, Suspense, useState } from "react";
+import { applyNewVersion } from "../../serviceWorkerUpdater";
 
 export const LazyLoadSuspender: React.FC<PropsWithChildren> = ({
   children,
@@ -44,7 +45,7 @@ const ErrorOnLazyLoad: React.FC = () => {
 
   return (
     <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-      <Host onClick={() => location.reload()}>
+      <Host onClick={() => void applyNewVersion()}>
         <SwitchAccessShortcutOutlined
           sx={{ color: "primary.main" }}
           fontSize={"large"}

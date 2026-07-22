@@ -41,6 +41,7 @@ import {
 } from "./searchParamHooks";
 import AirplanemodeActive from "@mui/icons-material/AirplanemodeActive";
 import { IAppAlert } from "../../errorHandling/IAppAlert";
+import { applyNewVersion } from "../../../serviceWorkerUpdater";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -440,7 +441,7 @@ export class ActionFactory {
 
     return {
       icon: <SwitchAccessShortcutOutlined fontSize="small" />,
-      onClick: () => location.reload(),
+      onClick: () => void applyNewVersion(),
       label: "New version available - click to update.",
       key: "update-to-new-version",
       sx: {
