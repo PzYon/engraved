@@ -1,5 +1,5 @@
 import { useJournalViewState } from "./useJournalViewState";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useJournalContext } from "./JournalContext";
 import { getCommonJournalActions } from "../overview/getCommonJournalActions";
 import { PageSection } from "../layout/pages/PageSection";
@@ -19,6 +19,7 @@ import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 import { isEntryFilterApplied } from "./filters/isEntryFilterApplied";
 
+// fallow-ignore-next-line complexity
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const { user } = useAppContext();
@@ -61,8 +62,6 @@ export const JournalViewPage: React.FC = () => {
     footerRowMode,
   } = useJournalViewState();
 
-  const [titleActions, setTitleActions] = useState<IAction[]>([]);
-
   const showStreak = !isEntryFilterApplied(
     dateConditions,
     selectedAttributeValues,
@@ -76,45 +75,7 @@ export const JournalViewPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setDateConditions, dateFilterHash]);
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTitleActions(
-      [
-        ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
-        deviceWidth !== DeviceWidth.Small
-          ? ActionFactory.toggleAddNewEntryRow(
-              showAddNewEntryRow,
-              setShowAddNewEntryRow,
-            )
-          : undefined,
-        ActionFactory.toggleNotes(showNotes, setShowNotes),
-        ActionFactory.toggleShowChart(showChart, setShowChart),
-        ActionFactory.toggleFilters(showFilters, setShowFilters, false),
-        ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
-        Object.keys(journal.thresholds ?? {}).length
-          ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
-          : undefined,
-        ...getCommonJournalActions(journal, true, user),
-      ].filter((a): a is IAction => a != null),
-    );
-
-    return () => {
-      setTitleActions([]);
-    };
-  }, [
-    journal,
-    dateConditions,
-    selectedAttributeValues,
-    showAddNewEntryRow,
-    showNotes,
-    showFilters,
-    showChart,
-    showAgenda,
-    deviceWidth,
-    showThresholds,
-    showGroupTotals,
-    user,
-  ]);
+  const titleActions = getTitleActions();
 
   return (
     <Page
@@ -172,4 +133,24 @@ export const JournalViewPage: React.FC = () => {
       />
     </Page>
   );
+
+  function getTitleActions() {
+    return [
+      ActionFactory.toggleAgendaView(showAgenda, setShowAgenda),
+      deviceWidth !== DeviceWidth.Small
+        ? ActionFactory.toggleAddNewEntryRow(
+            showAddNewEntryRow,
+            setShowAddNewEntryRow,
+          )
+        : undefined,
+      ActionFactory.toggleNotes(showNotes, setShowNotes),
+      ActionFactory.toggleShowChart(showChart, setShowChart),
+      ActionFactory.toggleFilters(showFilters, setShowFilters, false),
+      ActionFactory.toggleGroupTotals(showGroupTotals, setShowGroupTotals),
+      Object.keys(journal.thresholds ?? {}).length
+        ? ActionFactory.toggleThresholds(showThresholds, setShowThresholds)
+        : undefined,
+      ...getCommonJournalActions(journal, true, user),
+    ].filter((a): a is IAction => a != null);
+  }
 };
