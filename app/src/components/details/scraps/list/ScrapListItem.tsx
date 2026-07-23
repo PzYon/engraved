@@ -91,7 +91,6 @@ export const ScrapListItem: React.FC<{
         <>
           <AutogrowTextField
             forwardInputRef={ref}
-            isContent={true}
             value={label}
             onChange={(event) => setLabel(event.target.value)}
             onKeyUp={keyUp}
@@ -103,7 +102,7 @@ export const ScrapListItem: React.FC<{
                 depth: listItem.depth,
               })
             }
-            sx={{ ...getSx("textbox"), pr: 1, pt: "5px !important" }}
+            sx={{ ...getSx("textbox"), pr: 1, pt: "7px !important" }}
             autoFocus={!listItem.label}
           />
           <ActionIconButtonGroup
@@ -119,7 +118,7 @@ export const ScrapListItem: React.FC<{
           />
         </>
       ) : (
-        <ReadonlyContainer sx={{ ...getSx("plain"), pt: "7px" }}>
+        <ReadonlyContainer sx={{ ...getSx("plain"), pt: "8px" }}>
           <Markdown value={label} useBasic={true}></Markdown>
         </ReadonlyContainer>
       )}
