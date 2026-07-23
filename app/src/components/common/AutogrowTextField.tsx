@@ -6,14 +6,12 @@ export const AutogrowTextField: React.FC<
     forwardInputRef?: React.ForwardedRef<HTMLInputElement>;
   }
 > = (props) => {
-  const TF = StyledTextField;
-
   // forget forwardInputRef
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { forwardInputRef: __, ...realProps } = props;
 
   return (
-    <TF
+    <StyledTextField
       inputRef={props.forwardInputRef}
       variant="standard"
       multiline={true}
