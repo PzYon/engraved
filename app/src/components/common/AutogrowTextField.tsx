@@ -3,21 +3,23 @@ import { styled, TextField, TextFieldProps } from "@mui/material";
 
 export const AutogrowTextField: React.FC<
   TextFieldProps & {
-    isContent?: boolean;
     forwardInputRef?: React.ForwardedRef<HTMLInputElement>;
   }
 > = (props) => {
-  const TF = props.isContent ? StyledTextField : StyledTitleTextField;
-
-  // forget isContent and forwardInputRef
+  // forget forwardInputRef
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { isContent: _, forwardInputRef: __, ...realProps } = props;
+  const { forwardInputRef: __, ...realProps } = props;
 
   return (
-    <TF
+    <StyledTextField
       inputRef={props.forwardInputRef}
       variant="standard"
       multiline={true}
+      slotProps={{
+        input: {
+          disableUnderline: true,
+        },
+      }}
       onKeyDown={(e: { key: string; preventDefault: () => void }) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -50,23 +52,6 @@ const StyledTextField = styled(TextField)`
       -webkit-text-fill-color: ${(p) =>
         p.theme.palette.text.primary} !important;
       color: ${(p) => p.theme.palette.text.primary} !important;
-    }
-  }
-`;
-
-const StyledTitleTextField = styled(StyledTextField)`
-  .MuiInputBase-root {
-    padding: 8px 0;
-  }
-
-  textarea {
-    &,
-    &.Mui-disabled {
-      -webkit-text-fill-color: ${(p) =>
-        p.theme.palette.primary.main} !important;
-      color: ${(p) => p.theme.palette.primary.main} !important;
-      font-size: 1.8rem;
-      font-weight: 200;
     }
   }
 `;
