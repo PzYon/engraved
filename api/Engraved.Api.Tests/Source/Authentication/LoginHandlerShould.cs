@@ -119,6 +119,7 @@ public class LoginHandlerShould
     IJournal? journal = await _testRepository.GetJournal(quickNotesId);
     journal.Should().NotBeNull();
     journal.Id.Should().Be(quickNotesId);
+    journal.UserId.Should().Be(user.Id, "the Quick Scraps journal must be owned by the new user");
   }
 
   [Test]
