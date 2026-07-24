@@ -71,13 +71,17 @@ public class LoginHandler(
     user.LastLoginDate = dateService.UtcNow;
     user.GlobalUniqueId ??= Guid.NewGuid();
 
+    // Upsert first so a brand-new user gets an Id before the Quick Scraps journal
+    // is created - otherwise the journal would be persisted with a null UserId.
+    UpsertResult result = await unrestrictedRepository.UpsertUser(user);
+    user.Id = result.EntityId;
+
     if (user.FavoriteJournalIds.Count == 0)
     {
       await EnsureQuickScraps(user);
+      await unrestrictedRepository.UpsertUser(user);
     }
 
-    UpsertResult result = await unrestrictedRepository.UpsertUser(user);
-    user.Id = result.EntityId;
     return user;
   }
 
