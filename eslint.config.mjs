@@ -19,6 +19,9 @@ export default [
       "**/obj",
       "**/playwright-report",
       "**/test-results",
+      // Operational mongosh migration scripts - run by the mongo shell, not
+      // part of the app/test source (they rely on shell globals like db/print).
+      "scripts/**",
     ],
   },
 

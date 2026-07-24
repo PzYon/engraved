@@ -6,8 +6,10 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Counter;
 using Engraved.Core.Application.Commands.Entries.Upsert.Gauge;
 using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Journals.Add;
+using Engraved.Core.Application.Commands.Journals.Delete;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.CurrentUser;
+using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Journals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +35,12 @@ public class TestDataController(
     }
 
     await loginHandler.LoginForTests(currentUserService.GetUserName());
+
+    // Start from a clean slate. Every new user gets an auto-created "Quick Scraps"
+    // journal on first login (see LoginHandler.EnsureQuickScraps). Tests seed an
+    // exact set of journals and assert on list counts/positions, so remove any
+    // pre-existing journals before seeding to keep those assertions deterministic.
+    await ClearExistingJournals();
 
     var seededJournals = new List<SeededJournal>();
 
@@ -64,6 +72,16 @@ public class TestDataController(
     }
 
     return new SeedResult { Journals = seededJournals.ToArray() };
+  }
+
+  private async Task ClearExistingJournals()
+  {
+    IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(new GetAllJournalsQuery());
+
+    foreach (IJournal journal in journals)
+    {
+      await dispatcher.Command(new DeleteJournalCommand { JournalId = journal.Id! });
+    }
   }
 
   private async Task<CommandResult> CreateJournal(SeedJournalDto journalDto)
