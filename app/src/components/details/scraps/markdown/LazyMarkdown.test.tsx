@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 import LazyMarkdown from "./LazyMarkdown";
 
@@ -43,5 +43,83 @@ describe("LazyMarkdown", () => {
     const { container } = render(<LazyMarkdown value={"**bold**"} />);
 
     expect(container.querySelector("strong")?.textContent).toBe("bold");
+  });
+
+  // The stored markdown comes from the rich text editor (@tiptap/markdown). The
+  // expectations below mirror how the editor serializes content, so the read-only
+  // view matches what the user typed:
+  //   - a hard break (Shift+Enter) is a lone "\n" inside a single paragraph
+  //   - two paragraphs are separated by "\n\n"
+  //   - each additional blank line the user adds is an empty paragraph, encoded
+  //     as an extra "\n\n" (and, from the second one on, a literal "&nbsp;" line)
+
+  it("renders a single newline as a line break, not an empty paragraph", () => {
+    const { container } = render(
+      <LazyMarkdown value={"Paragraph 1\nParagraph 2"} />,
+    );
+
+    const paragraphs = container.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraphs[0].querySelector("br")).not.toBeNull();
+    expect(paragraphs[0].innerHTML).not.toContain("&nbsp;");
+    expect(paragraphs[0].textContent).toBe("Paragraph 1Paragraph 2");
+  });
+
+  it("renders a plain paragraph break without an empty paragraph", () => {
+    const { container } = render(
+      <LazyMarkdown value={"Paragraph 1\n\nParagraph 2"} />,
+    );
+
+    const paragraphs = container.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0].textContent).toBe("Paragraph 1");
+    expect(paragraphs[1].textContent).toBe("Paragraph 2");
+    expect(container.innerHTML).not.toContain("&nbsp;");
+  });
+
+  it("treats a whitespace-only line as a plain paragraph break", () => {
+    const { container } = render(
+      <LazyMarkdown value={"Paragraph 1\n \nParagraph 2"} />,
+    );
+
+    const paragraphs = container.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0].textContent).toBe("Paragraph 1");
+    expect(paragraphs[1].textContent).toBe("Paragraph 2");
+    expect(container.innerHTML).not.toContain("&nbsp;");
+  });
+
+  it("renders one blank line (four newlines) as one visible empty paragraph", () => {
+    const { container } = render(
+      <LazyMarkdown value={"Paragraph 1\n\n\n\nParagraph 2"} />,
+    );
+
+    const paragraphs = container.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(3);
+    expect(paragraphs[0].textContent).toBe("Paragraph 1");
+    expect(paragraphs[1].innerHTML).toBe("&nbsp;");
+    expect(paragraphs[2].textContent).toBe("Paragraph 2");
+  });
+
+  it("renders two blank lines as two visible empty paragraphs", () => {
+    const { container } = render(
+      <LazyMarkdown value={"Paragraph 1\n\n\n\n&nbsp;\n\nParagraph 2"} />,
+    );
+
+    const paragraphs = container.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(4);
+    expect(paragraphs[0].textContent).toBe("Paragraph 1");
+    expect(paragraphs[1].innerHTML).toBe("&nbsp;");
+    expect(paragraphs[2].innerHTML).toBe("&nbsp;");
+    expect(paragraphs[3].textContent).toBe("Paragraph 2");
+  });
+
+  it("keeps multi-line markdown blocks (bullet list) intact", () => {
+    const { container } = render(<LazyMarkdown value={"- one\n- two"} />);
+
+    const items = container.querySelectorAll("li");
+    expect(items).toHaveLength(2);
+    expect(items[0].textContent).toBe("one");
+    expect(items[1].textContent).toBe("two");
   });
 });
