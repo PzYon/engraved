@@ -83,6 +83,6 @@
     "vitest": "4.1.10"
   },
   "overrides": {
-    "rolldown": "1.1.5"
+    "rolldown": "1.2.0"
   }
 }
