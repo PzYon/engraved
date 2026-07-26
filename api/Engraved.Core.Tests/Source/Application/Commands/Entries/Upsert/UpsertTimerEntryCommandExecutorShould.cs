@@ -141,6 +141,49 @@ public class UpsertTimerEntryCommandExecutorShould
   }
 
   [Test]
+  public async Task Create_WithClientGeneratedIdAndExplicitDates_DoesNotReDecideAgainstActiveEntry()
+  {
+    // an entry is already running ...
+    var activeEntryId = "60703c3b00000000000000e4";
+    await _testRepository.UpsertEntry(
+      new TimerEntry
+      {
+        Id = activeEntryId,
+        ParentId = JournalId,
+        StartDate = _fakeDateService.UtcNow.AddMinutes(-60)
+      }
+    );
+
+    // ... and a start decided by the client (e.g. while offline) arrives with a client-generated
+    // id and an explicit start date
+    DateTime clientStartDate = _fakeDateService.UtcNow.AddMinutes(-5);
+
+    var command = new UpsertTimerEntryCommand
+    {
+      Id = "66703c3b00000000000000e5",
+      IsNew = true,
+      JournalId = JournalId,
+      StartDate = clientStartDate
+    };
+
+    CommandResult result =
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+
+    // the command is applied as sent: the client's start date is kept (not replaced by "now" at
+    // replay time), and the already-active entry is left alone instead of being auto-stopped -
+    // "at most one open timer" is reconciled eventually, not re-decided here
+    result.EntityId.Should().Be(command.Id);
+    (await _testRepository.CountAllEntries()).Should().Be(2);
+
+    var createdEntry = await _testRepository.GetEntry(command.Id) as TimerEntry;
+    createdEntry!.StartDate.Should().BeCloseTo(clientStartDate, TimeSpan.FromMilliseconds(100));
+    createdEntry.EndDate.Should().BeNull();
+
+    var activeEntry = await _testRepository.GetEntry(activeEntryId) as TimerEntry;
+    activeEntry!.EndDate.Should().BeNull();
+  }
+
+  [Test]
   public async Task UpdateExistingEntry_ChangeExistingStartDateWhenNoEndDate()
   {
     var entryId = "60703c3b00000000000000e3";

@@ -34,7 +34,12 @@ import { ScrapsJournalType } from "../../../journalTypes/ScrapsJournalType";
 import { IScrapEntry, ScrapType } from "../../../serverApi/IScrapEntry";
 import { useItemAction } from "../../common/actions/searchParamHooks";
 import { LogBookJournalType } from "../../../journalTypes/LogBookJournalType";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  onlineManager,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { queryKeysFactory } from "../../../serverApi/reactQuery/queryKeysFactory";
 
 export const UpsertEntryAction: React.FC<{
   journal?: IJournal;
@@ -247,8 +252,20 @@ const UpsertEntryActionInternal: React.FC<{
 
       case JournalType.Timer: {
         const timerCommand = command as IUpsertTimerEntryCommand;
-        timerCommand.startDate = startDate ? new Date(startDate) : undefined;
-        timerCommand.endDate = endDate ? new Date(endDate) : undefined;
+        // the client decides and sends explicit dates instead of leaving them empty and letting
+        // the server fill in "now" at apply time: saving without dates means "start now" for a
+        // new entry and "stop now" for the running one. This keeps the command idempotent when
+        // it is replayed from the offline outbox at a later point in time.
+        timerCommand.startDate = startDate
+          ? new Date(startDate)
+          : entry
+            ? undefined
+            : new Date();
+        timerCommand.endDate = endDate
+          ? new Date(endDate)
+          : entry && !(entry as ITimerEntry).endDate
+            ? new Date()
+            : undefined;
         break;
       }
     }
@@ -270,6 +287,8 @@ const useUpsertEntryData = (
     initialEntryParentId: string | null;
   };
 
+  const queryClient = useQueryClient();
+
   const { data } = useSuspenseQuery({
     queryKey: [
       "upsert-entry-data",
@@ -290,11 +309,37 @@ const useUpsertEntryData = (
         ? params.initialEntry
         : journal.type !== JournalType.Timer
           ? null
-          : await ServerApi.getActiveEntry(journal.id ?? "");
+          : await getActiveEntry(journal);
 
       return { journal, entry };
     },
   });
 
   return data;
+
+  // The active (i.e. running) timer entry decides whether saving means start or stop. While
+  // offline the server cannot be asked, so it is derived from the cached entries instead - the
+  // client deciding over local state is exactly what makes the resulting command replayable.
+  async function getActiveEntry(journal: IJournal): Promise<IEntry | null> {
+    try {
+      return await ServerApi.getActiveEntry(journal.id ?? "");
+    } catch (e) {
+      if (onlineManager.isOnline()) {
+        throw e;
+      }
+
+      const cachedEntryLists = queryClient.getQueriesData<ITimerEntry[]>({
+        queryKey: queryKeysFactory.prefixes.journalEntries(journal.id ?? ""),
+      });
+
+      for (const [, entries] of cachedEntryLists) {
+        const activeEntry = entries?.find((en) => en.startDate && !en.endDate);
+        if (activeEntry) {
+          return activeEntry;
+        }
+      }
+
+      return null;
+    }
+  }
 };

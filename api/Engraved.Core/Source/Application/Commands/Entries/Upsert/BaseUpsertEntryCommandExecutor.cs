@@ -24,31 +24,29 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     var journal =
       await JournalCommandUtil.LoadAndValidateJournal<TJournal>(JournalRepository, command, command.JournalId);
 
-    await ValidateCommand(command, journal);
-
-    UpsertResult result = await UpsertEntry(command, journal);
-
-    await UpdateJournal(JournalRepository, DateService, journal);
-
-    return new CommandResult(result.EntityId, journal.Permissions.GetUserIdsWithAccess());
-  }
-
-  private async Task ValidateCommand(TCommand command, TJournal journal)
-  {
     EnsureCompatibleJournalType(command, journal);
+
+    TEntry? entry = await GetOrCreateNewEntry(command, journal);
+    if (entry == null)
+    {
+      // the command targets an entry that no longer exists (deleted since the client cached it,
+      // e.g. while the command sat in an offline outbox) -> discard it instead of resurrecting
+      // the deleted entry. Deliberately before the remaining validation: a discarded command must
+      // not fail on rules (like the log book's one-entry-per-day) it no longer participates in.
+      return CommandResult.CreateDiscarded(command.Id!);
+    }
 
     ValidateJournalAttributes(command, journal);
     await PerformTypeSpecificValidation(command);
-  }
-
-  private async Task<UpsertResult> UpsertEntry(TCommand command, TJournal journal)
-  {
-    TEntry entry = await GetOrCreateNewEntry(command, journal);
 
     SetCommonValues(command, entry);
     SetTypeSpecificValues(command, entry);
 
-    return await EntryRepository.UpsertEntry(entry);
+    UpsertResult result = await EntryRepository.UpsertEntry(entry);
+
+    await UpdateJournal(JournalRepository, DateService, journal);
+
+    return new CommandResult(result.EntityId, journal.Permissions.GetUserIdsWithAccess());
   }
 
   private static async Task UpdateJournal(IJournalRepository repository, IDateService dateService, TJournal journal)
@@ -123,21 +121,27 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
     }
   }
 
-  private async Task<TEntry> GetOrCreateNewEntry(TCommand command, TJournal journal)
-  {
-    return await LoadEntryById(command)
-           ?? await LoadEntryToUpdate(command, journal)
-           ?? new TEntry();
-  }
-
-  private async Task<TEntry?> LoadEntryById(TCommand command)
+  // Returns null when the command must be discarded (see Execute). Commands with an Id either
+  // update the existing entry (which doubles as the idempotent replay of a create) or - only when
+  // flagged IsNew - create it under the client-generated Id. An update whose entry is gone was
+  // deleted in the meantime and must not come back to life via the upsert.
+  private async Task<TEntry?> GetOrCreateNewEntry(TCommand command, TJournal journal)
   {
     if (!string.IsNullOrEmpty(command.Id))
     {
-      return (TEntry)(await EntryRepository.GetEntry(command.Id))!;
+      TEntry? existingEntry = (TEntry?)await EntryRepository.GetEntry(command.Id);
+      if (existingEntry != null)
+      {
+        return existingEntry;
+      }
+
+      return command.IsNew
+        ? new TEntry { Id = command.Id }
+        : null;
     }
 
-    return null;
+    return await LoadEntryToUpdate(command, journal)
+           ?? new TEntry();
   }
 
   protected InvalidCommandException CreateInvalidCommandException(TCommand command, string message)

@@ -127,6 +127,83 @@ public class UpsertGaugeEntryCommandExecutorShould
     gaugeEntry.Value.Should().Be(value);
   }
 
+  [Test]
+  public async Task Create_WithClientGeneratedId()
+  {
+    const string journalId = "60703c3b00000000000000a5";
+    await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
+
+    const string clientGeneratedId = "66703c3b00000000000000f1";
+
+    var command = new UpsertGaugeEntryCommand
+    {
+      Id = clientGeneratedId,
+      IsNew = true,
+      JournalId = journalId,
+      Value = 42
+    };
+
+    CommandResult commandResult =
+      await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(
+        command
+      );
+
+    commandResult.Discarded.Should().BeFalse();
+    commandResult.EntityId.Should().Be(clientGeneratedId);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
+    (await _testRepository.GetEntry(clientGeneratedId)).Should().NotBeNull();
+  }
+
+  [Test]
+  public async Task Create_WithClientGeneratedId_IsIdempotentOnReplay()
+  {
+    const string journalId = "60703c3b00000000000000a6";
+    await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
+
+    var command = new UpsertGaugeEntryCommand
+    {
+      Id = "66703c3b00000000000000f2",
+      IsNew = true,
+      JournalId = journalId,
+      Value = 42
+    };
+
+    var executor = new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService());
+    await executor.Execute(command);
+    CommandResult replayResult = await executor.Execute(command);
+
+    replayResult.Discarded.Should().BeFalse();
+    replayResult.EntityId.Should().Be(command.Id);
+    (await _testRepository.CountAllEntries()).Should().Be(1);
+  }
+
+  [Test]
+  public async Task Discard_UpdateOfEntryThatNoLongerExists()
+  {
+    const string journalId = "60703c3b00000000000000a7";
+    await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
+
+    // not flagged IsNew, i.e. an update - but the entry does not exist (any more)
+    var command = new UpsertGaugeEntryCommand
+    {
+      Id = "66703c3b00000000000000f3",
+      JournalId = journalId,
+      Value = 42
+    };
+
+    CommandResult commandResult =
+      await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService()).Execute(
+        command
+      );
+
+    commandResult.Discarded.Should().BeTrue();
+    commandResult.EntityId.Should().Be(command.Id);
+    (await _testRepository.CountAllEntries()).Should().Be(0);
+
+    // a discarded command must not touch the journal either
+    (await _testRepository.GetJournal(journalId))!.EditedOn.Should().BeNull();
+  }
+
   private static void AssertJournalAttributeValuesEqual(
     Dictionary<string, string[]> d1,
     Dictionary<string, string[]> d2

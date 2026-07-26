@@ -6,6 +6,10 @@ public class CommandResult
 
   public string[] AffectedUserIds { get; } = [];
 
+  // true when the command was accepted but deliberately not applied, because it targeted an
+  // entity that no longer exists (e.g. an offline edit replayed after the entry was deleted).
+  public bool Discarded { get; }
+
   public CommandResult(string entityId, string[] affectedUserIds)
   {
     EntityId = entityId;
@@ -13,4 +17,15 @@ public class CommandResult
   }
 
   public CommandResult() { }
+
+  private CommandResult(string entityId)
+  {
+    EntityId = entityId;
+    Discarded = true;
+  }
+
+  public static CommandResult CreateDiscarded(string entityId)
+  {
+    return new CommandResult(entityId);
+  }
 }
