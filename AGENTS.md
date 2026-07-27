@@ -26,8 +26,9 @@ You are a core teammate. Your goal is to improve the product, elevate code quali
 This is a monorepo:
 
 - **`/api` — .NET backend:** ASP.NET Core API targeting .NET 10.
-  - Solution projects: `Engraved.Api` (web layer), `Engraved.Core` (domain logic), `Engraved.Persistence.Mongo` (MongoDB persistence), plus matching `*.Tests` projects (NUnit).
+  - Solution projects: `Engraved.Api` (web layer), `Engraved.Core` (domain logic), `Engraved.Persistence.Mongo` (MongoDB persistence), `Engraved.Storage.Azure` (file bytes in Azure Blob Storage), plus matching `*.Tests` projects (NUnit).
   - Authentication: JWT with Google Auth integration.
+  - File storage: uploaded files live in blob storage, not the database, and the API only ever hands out short-lived SAS URLs. Locally this points at [Azurite](https://learn.microsoft.com/azure/storage/common/storage-use-azurite) (`npx azurite-blob`), which needs to be running only when working on file features.
 - **`/app` — React frontend:** TypeScript, React 19, built with Vite 8.
   - Routing: TanStack Router. Server state: TanStack Query. UI: Material UI (MUI). Rich text editing: Tiptap. Charts: Chart.js. Unit tests: Vitest.
 - **`/tests` — end-to-end tests:** Playwright tests that run against a locally served app and API.

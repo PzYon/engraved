@@ -24,6 +24,8 @@ using Engraved.Core.Application.Queries.Entries.GetActive;
 using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
 using Engraved.Core.Application.Queries.Export;
+using Engraved.Core.Application.Queries.Files.CreateUpload;
+using Engraved.Core.Application.Queries.Files.GetUrl;
 using Engraved.Core.Application.Queries.Journals.Get;
 using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Application.Queries.Search.Entities;
@@ -81,6 +83,8 @@ public static class ExecutorRegistration
     RegisterQuery<SystemInfo, GetSystemInfoQuery, GetSystemInfoQueryExecutor>(services);
     RegisterQuery<ExportedDataResult, ExportDataQuery, ExportDataQueryExecutor>(services);
     RegisterQuery<AdminUserItem[], GetAdminUsersOverviewQuery, GetAdminUsersOverviewQueryExecutor>(services);
+    RegisterQuery<CreateFileUploadResult, CreateFileUploadQuery, CreateFileUploadQueryExecutor>(services);
+    RegisterQuery<GetFileUrlResult?, GetFileUrlQuery, GetFileUrlQueryExecutor>(services);
   }
 
   private static void RegisterQuery<TResult, TQuery, TQueryExecutor>(IServiceCollection services)

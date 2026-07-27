@@ -1,4 +1,5 @@
-﻿using Engraved.Core.Domain.Schedules;
+﻿using Engraved.Core.Domain.Files;
+using Engraved.Core.Domain.Schedules;
 
 namespace Engraved.Core.Domain.Entries;
 
@@ -15,6 +16,8 @@ public abstract class BaseEntry : IEntry
   public DateTime? DateTime { get; set; }
 
   public DateTime? EditedOn { get; set; }
+
+  public FileRef[] Attachments { get; set; } = [];
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 

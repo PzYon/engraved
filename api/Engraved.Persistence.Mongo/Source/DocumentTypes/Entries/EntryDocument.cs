@@ -21,6 +21,8 @@ public abstract class EntryDocument : IUserOwnedDocument, IScheduledDocument
 
   public DateTime? EditedOn { get; set; }
 
+  public FileRefSubDocument[] Attachments { get; set; } = [];
+
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 
   public Dictionary<string, ScheduleSubDocument> Schedules { get; set; } = new();

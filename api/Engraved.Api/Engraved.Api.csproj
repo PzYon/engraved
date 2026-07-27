@@ -10,6 +10,7 @@
         <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj"/>
         <ProjectReference Include="..\Engraved.Notifications.OneSignal\Engraved.Notifications.OneSignal.csproj"/>
         <ProjectReference Include="..\Engraved.Persistence.Mongo\Engraved.Persistence.Mongo.csproj"/>
+        <ProjectReference Include="..\Engraved.Storage.Azure\Engraved.Storage.Azure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
