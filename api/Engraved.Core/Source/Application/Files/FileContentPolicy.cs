@@ -2,9 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace Engraved.Core.Application.Files;
 
-// Decides how a file may be presented to the browser. Any file type can be stored - the point of
-// attachments is that arbitrary documents can be attached - but only a known-safe set is allowed to
-// render in place; everything else downloads.
+// Decides how a file may be presented to the browser. Any file type can be stored - the point is
+// that arbitrary documents can be put on an entry - but only a known-safe set is allowed to render
+// in place; everything else downloads.
 public static class FileContentPolicy
 {
   // Types the browser renders without executing anything. SVG is deliberately absent: it is an XML

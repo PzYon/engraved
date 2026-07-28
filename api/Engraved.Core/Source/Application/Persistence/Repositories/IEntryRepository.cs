@@ -37,5 +37,5 @@ public interface IEntryRepository
 
   // Resolves the entry that owns a file. Like GetEntry this is an unscoped primitive: the caller
   // enforces read access on the parent journal (see GetFileUrlQueryExecutor).
-  Task<IEntry?> GetEntryByAttachmentId(string fileId);
+  Task<IEntry?> GetEntryByFileId(string fileId);
 }

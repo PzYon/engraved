@@ -11,10 +11,11 @@ public interface IEntry : IUserOwned, IEntity
 
   DateTime? DateTime { get; set; }
 
-  // Every file the entry owns, whether listed as an attachment or placed inline in the notes. One
-  // list means one lifecycle: deletion, quota accounting and orphan detection all read this instead
-  // of parsing the notes to work out which files are referenced.
-  FileRef[] Attachments { get; set; }
+  // Every file the entry owns. Deliberately says nothing about placement: a file listed below the
+  // entry and one placed inline in the notes are the same thing here, and where it appears is the
+  // markdown's business. One list means one lifecycle - deletion, quota accounting and orphan
+  // detection all read this instead of parsing the notes to work out which files are referenced.
+  FileRef[] Files { get; set; }
 
   Dictionary<string, string[]> JournalAttributeValues { get; set; }
 

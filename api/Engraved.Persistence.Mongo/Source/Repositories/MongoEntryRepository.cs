@@ -207,8 +207,8 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
   }
 
   // Unscoped primitive, for the same reason as GetEntry above: the caller (GetFileUrlQueryExecutor)
-  // enforces read access on the parent journal. Needs an index on "Attachments.Id".
-  public async Task<IEntry?> GetEntryByAttachmentId(string fileId)
+  // enforces read access on the parent journal. Needs an index on "Files.Id".
+  public async Task<IEntry?> GetEntryByFileId(string fileId)
   {
     if (string.IsNullOrEmpty(fileId))
     {
@@ -216,7 +216,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     }
 
     EntryDocument? document = await EntriesCollection
-      .Find(Builders<EntryDocument>.Filter.ElemMatch(d => d.Attachments, a => a.Id == fileId))
+      .Find(Builders<EntryDocument>.Filter.ElemMatch(d => d.Files, a => a.Id == fileId))
       .FirstOrDefaultAsync();
 
     return document == null

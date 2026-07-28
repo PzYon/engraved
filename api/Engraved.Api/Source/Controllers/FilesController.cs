@@ -14,7 +14,7 @@ namespace Engraved.Api.Controllers;
 [Authorize]
 public class FilesController(Dispatcher dispatcher) : ControllerBase
 {
-  // Returns the file reference to put on the entry's Attachments, a URL to upload the bytes to, and
+  // Returns the file reference to put on the entry's Files, a URL to upload the bytes to, and
   // a URL to read them back - the last one because until the entry is saved nothing references the
   // file, and GetUrl resolves permissions through the owning entry.
   [HttpPost]

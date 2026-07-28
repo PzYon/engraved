@@ -39,7 +39,7 @@ public class GetFileUrlQueryExecutorShould
   [Test]
   public async Task Return_Url_For_FileOnOwnEntry()
   {
-    await AddScrapWithAttachment(_userId);
+    await AddScrapWithFile(_userId);
 
     GetFileUrlResult? result = await Execute();
 
@@ -52,7 +52,7 @@ public class GetFileUrlQueryExecutorShould
   [Test]
   public async Task Pass_TheStoredFile_To_TheStore()
   {
-    await AddScrapWithAttachment(_userId);
+    await AddScrapWithFile(_userId);
 
     await Execute();
 
@@ -64,7 +64,7 @@ public class GetFileUrlQueryExecutorShould
   // No entry references the file, so nobody can read it. This is why the upload response hands out a
   // read URL directly: between uploading and saving the entry, there is nothing to resolve against.
   [Test]
-  public async Task Return_Null_When_FileIsNotAttachedToAnyEntry()
+  public async Task Return_Null_When_FileIsNotOnAnyEntry()
   {
     GetFileUrlResult? result = await Execute();
 
@@ -74,7 +74,7 @@ public class GetFileUrlQueryExecutorShould
   [Test]
   public async Task Return_Null_When_UserMayNotReadTheJournal()
   {
-    await AddScrapWithAttachment(_ownerUserId);
+    await AddScrapWithFile(_ownerUserId);
 
     GetFileUrlResult? result = await Execute();
 
@@ -84,7 +84,7 @@ public class GetFileUrlQueryExecutorShould
   [Test]
   public async Task Return_Url_When_JournalIsSharedReadOnly()
   {
-    await AddScrapWithAttachment(
+    await AddScrapWithFile(
       _ownerUserId,
       new PermissionDefinition { Kind = PermissionKind.Read }
     );
@@ -101,7 +101,7 @@ public class GetFileUrlQueryExecutorShould
     );
   }
 
-  private async Task AddScrapWithAttachment(string ownerId, PermissionDefinition? permissionForCurrentUser = null)
+  private async Task AddScrapWithFile(string ownerId, PermissionDefinition? permissionForCurrentUser = null)
   {
     var permissions = new UserPermissions();
 
@@ -123,8 +123,8 @@ public class GetFileUrlQueryExecutorShould
       {
         UserId = ownerId,
         ParentId = journal.EntityId,
-        Title = "with attachment",
-        Attachments =
+        Title = "with file",
+        Files =
         [
           new FileRef
           {

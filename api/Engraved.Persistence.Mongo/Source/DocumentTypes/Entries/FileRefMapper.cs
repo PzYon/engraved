@@ -4,33 +4,33 @@ namespace Engraved.Persistence.Mongo.DocumentTypes.Entries;
 
 public static class FileRefMapper
 {
-  public static FileRefSubDocument[] MapAttachments(FileRef[] attachments)
+  public static FileRefSubDocument[] MapFiles(FileRef[] files)
   {
-    return attachments
-      .Select(a => new FileRefSubDocument
+    return files
+      .Select(f => new FileRefSubDocument
         {
-          Id = a.Id,
-          FileName = a.FileName,
-          ContentType = a.ContentType,
-          Length = a.Length,
-          Width = a.Width,
-          Height = a.Height
+          Id = f.Id,
+          FileName = f.FileName,
+          ContentType = f.ContentType,
+          Length = f.Length,
+          Width = f.Width,
+          Height = f.Height
         }
       )
       .ToArray();
   }
 
-  public static FileRef[] MapAttachmentsFromDocument(FileRefSubDocument[] attachments)
+  public static FileRef[] MapFilesFromDocument(FileRefSubDocument[] files)
   {
-    return attachments
-      .Select(a => new FileRef
+    return files
+      .Select(f => new FileRef
         {
-          Id = a.Id,
-          FileName = a.FileName,
-          ContentType = a.ContentType,
-          Length = a.Length,
-          Width = a.Width,
-          Height = a.Height
+          Id = f.Id,
+          FileName = f.FileName,
+          ContentType = f.ContentType,
+          Length = f.Length,
+          Width = f.Width,
+          Height = f.Height
         }
       )
       .ToArray();

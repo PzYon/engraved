@@ -17,7 +17,7 @@ public abstract class BaseEntry : IEntry
 
   public DateTime? EditedOn { get; set; }
 
-  public FileRef[] Attachments { get; set; } = [];
+  public FileRef[] Files { get; set; } = [];
 
   public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
 

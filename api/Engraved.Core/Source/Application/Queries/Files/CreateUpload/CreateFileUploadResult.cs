@@ -4,7 +4,7 @@ namespace Engraved.Core.Application.Queries.Files.CreateUpload;
 
 public class CreateFileUploadResult
 {
-  // To be put on the entry's Attachments by the client and saved with the entry.
+  // To be put on the entry's Files by the client and saved with the entry.
   public FileRef File { get; set; } = null!;
 
   public string UploadUrl { get; set; } = null!;

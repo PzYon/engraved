@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-public class UnrestrictedMongoRepository_Attachments_Should
+public class UnrestrictedMongoRepository_Files_Should
 {
   private const string FileId = "8a1d3f9c4b2e4a7f9c0d1e2f";
 
@@ -22,24 +22,24 @@ public class UnrestrictedMongoRepository_Attachments_Should
   }
 
   [Test]
-  public async Task RoundTrip_Attachments()
+  public async Task RoundTrip_Files()
   {
-    var entryId = await AddScrapWithAttachment();
+    var entryId = await AddScrapWithFile();
 
     IEntry entry = (await _repo.GetEntry(entryId))!;
 
-    entry.Attachments.Should().HaveCount(1);
-    entry.Attachments[0].Id.Should().Be(FileId);
-    entry.Attachments[0].FileName.Should().Be("holiday.png");
-    entry.Attachments[0].ContentType.Should().Be("image/png");
-    entry.Attachments[0].Length.Should().Be(1234);
-    entry.Attachments[0].Width.Should().Be(800);
-    entry.Attachments[0].Height.Should().Be(600);
+    entry.Files.Should().HaveCount(1);
+    entry.Files[0].Id.Should().Be(FileId);
+    entry.Files[0].FileName.Should().Be("holiday.png");
+    entry.Files[0].ContentType.Should().Be("image/png");
+    entry.Files[0].Length.Should().Be(1234);
+    entry.Files[0].Width.Should().Be(800);
+    entry.Files[0].Height.Should().Be(600);
   }
 
-  // Entries written before attachments existed have no such field at all, and must keep loading.
+  // Entries written before files existed have no such field at all, and must keep loading.
   [Test]
-  public async Task Return_EmptyAttachments_For_EntriesWithoutAny()
+  public async Task Return_EmptyFiles_For_EntriesWithoutAny()
   {
     UpsertResult journal = await _repo.UpsertJournal(new ScrapsJournal());
     UpsertResult entry = await _repo.UpsertEntry(
@@ -52,31 +52,31 @@ public class UnrestrictedMongoRepository_Attachments_Should
 
     IEntry loaded = (await _repo.GetEntry(entry.EntityId))!;
 
-    loaded.Attachments.Should().BeEmpty();
+    loaded.Files.Should().BeEmpty();
   }
 
   [Test]
-  public async Task Find_TheOwningEntry_By_AttachmentId()
+  public async Task Find_TheOwningEntry_By_FileId()
   {
-    var entryId = await AddScrapWithAttachment();
+    var entryId = await AddScrapWithFile();
 
-    IEntry? entry = await _repo.GetEntryByAttachmentId(FileId);
+    IEntry? entry = await _repo.GetEntryByFileId(FileId);
 
     entry.Should().NotBeNull();
     entry!.Id.Should().Be(entryId);
   }
 
   [Test]
-  public async Task Return_Null_When_NoEntryHasTheAttachment()
+  public async Task Return_Null_When_NoEntryHasTheFile()
   {
-    await AddScrapWithAttachment();
+    await AddScrapWithFile();
 
-    IEntry? entry = await _repo.GetEntryByAttachmentId("8a1d3f9c4b2e4a7f9c0d1e2e");
+    IEntry? entry = await _repo.GetEntryByFileId("8a1d3f9c4b2e4a7f9c0d1e2e");
 
     entry.Should().BeNull();
   }
 
-  private async Task<string> AddScrapWithAttachment()
+  private async Task<string> AddScrapWithFile()
   {
     UpsertResult journal = await _repo.UpsertJournal(new ScrapsJournal());
 
@@ -84,8 +84,8 @@ public class UnrestrictedMongoRepository_Attachments_Should
       new ScrapsEntry
       {
         ParentId = journal.EntityId,
-        Title = "with attachment",
-        Attachments =
+        Title = "with file",
+        Files =
         [
           new FileRef
           {

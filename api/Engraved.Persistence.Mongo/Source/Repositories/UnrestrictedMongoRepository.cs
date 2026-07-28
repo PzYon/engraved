@@ -150,9 +150,9 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
     return _entryRepository.GetEntry(entryId);
   }
 
-  public Task<IEntry?> GetEntryByAttachmentId(string fileId)
+  public Task<IEntry?> GetEntryByFileId(string fileId)
   {
-    return _entryRepository.GetEntryByAttachmentId(fileId);
+    return _entryRepository.GetEntryByFileId(fileId);
   }
 
   public async Task WakeMeUp()
