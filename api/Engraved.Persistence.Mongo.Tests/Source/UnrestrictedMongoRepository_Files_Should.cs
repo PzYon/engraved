@@ -6,6 +6,8 @@ using Engraved.Core.Domain.Files;
 using Engraved.Core.Domain.Journals;
 using Engraved.TestUtils;
 using FluentAssertions;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
@@ -41,20 +43,26 @@ public class UnrestrictedMongoRepository_Files_Should
     entry.Files[0].Height.Should().Be(600);
   }
 
-  // Entries written before files existed have no such field at all, and must keep loading.
+  // Every entry already in the database was written before this field existed and has no Files
+  // element at all - deploying must not make them unreadable. Deliberately inserted as raw BSON:
+  // going through UpsertEntry would write "Files: []" and quietly test nothing.
   [Test]
-  public async Task Return_EmptyFiles_For_EntriesWithoutAny()
+  public async Task Load_EntriesStoredWithoutTheFilesElement()
   {
-    UpsertResult journal = await _repo.UpsertJournal(new ScrapsJournal());
-    UpsertResult entry = await _repo.UpsertEntry(
-      new ScrapsEntry
-      {
-        ParentId = journal.EntityId,
-        Title = "no files here"
-      }
-    );
+    var entryId = ObjectId.GenerateNewId();
 
-    IEntry loaded = (await _repo.GetEntry(entry.EntityId))!;
+    await _repo.Entries.Database.GetCollection<BsonDocument>("entries")
+      .InsertOneAsync(
+        new BsonDocument
+        {
+          { "_id", entryId },
+          { "_t", new BsonArray { "EntryDocument", "ScrapsEntryDocument" } },
+          { "ParentId", "60703c3b0000000000000001" },
+          { "Title", "written before files existed" }
+        }
+      );
+
+    IEntry loaded = (await _repo.GetEntry(entryId.ToString()))!;
 
     loaded.Files.Should().BeEmpty();
   }
