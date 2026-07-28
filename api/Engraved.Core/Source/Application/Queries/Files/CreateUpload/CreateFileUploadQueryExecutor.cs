@@ -36,7 +36,7 @@ public class CreateFileUploadQueryExecutor(
       Id = Guid.NewGuid().ToString("N"),
       FileName = FileContentPolicy.SanitizeFileName(query.FileName!),
       ContentType = query.ContentType!,
-      Length = query.Length,
+      ContentLength = query.ContentLength,
       Width = query.Width,
       Height = query.Height
     };
@@ -69,15 +69,15 @@ public class CreateFileUploadQueryExecutor(
       throw new InvalidQueryException(query, $"{nameof(CreateFileUploadQuery.ContentType)} must be specified.");
     }
 
-    if (query.Length <= 0)
+    if (query.ContentLength <= 0)
     {
-      throw new InvalidQueryException(query, $"{nameof(CreateFileUploadQuery.Length)} must be greater than zero.");
+      throw new InvalidQueryException(query, $"{nameof(CreateFileUploadQuery.ContentLength)} must be greater than zero.");
     }
 
     // This is the size the client claims it is about to upload. A SAS cannot cap the size of the
     // put, so a client that lies gets a signed URL anyway; the actual size has to be verified
     // against the stored blob when the owning entry is saved.
-    if (query.Length > FileSizeLimits.MaxFileSizeBytes)
+    if (query.ContentLength > FileSizeLimits.MaxFileSizeBytes)
     {
       throw new InvalidQueryException(
         query,

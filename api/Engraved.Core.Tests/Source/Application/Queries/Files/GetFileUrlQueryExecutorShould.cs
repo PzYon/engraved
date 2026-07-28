@@ -131,7 +131,7 @@ public class GetFileUrlQueryExecutorShould
             Id = FileId,
             FileName = "diagram.svg",
             ContentType = "image/svg+xml",
-            Length = 42
+            ContentLength = 42
           }
         ]
       }

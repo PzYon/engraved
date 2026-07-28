@@ -44,7 +44,7 @@ public class CreateFileUploadQueryExecutorShould
     result.File.Id.Should().NotBeNullOrEmpty();
     result.File.FileName.Should().Be("holiday.png");
     result.File.ContentType.Should().Be("image/png");
-    result.File.Length.Should().Be(1234);
+    result.File.ContentLength.Should().Be(1234);
     result.UploadUrl.Should().Contain(result.File.Id);
     result.ReadUrl.Should().Contain(result.File.Id);
   }
@@ -158,7 +158,7 @@ public class CreateFileUploadQueryExecutorShould
         JournalId = journalId,
         FileName = fileName,
         ContentType = "image/png",
-        Length = length
+        ContentLength = length
       }
     );
   }

@@ -11,7 +11,7 @@ public class CreateFileUploadQuery : IQuery
 
   public string? ContentType { get; set; }
 
-  public long Length { get; set; }
+  public long ContentLength { get; set; }
 
   public int? Width { get; set; }
 

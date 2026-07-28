@@ -12,7 +12,7 @@ public static class FileRefMapper
           Id = f.Id,
           FileName = f.FileName,
           ContentType = f.ContentType,
-          Length = f.Length,
+          ContentLength = f.ContentLength,
           Width = f.Width,
           Height = f.Height
         }
@@ -28,7 +28,7 @@ public static class FileRefMapper
           Id = f.Id,
           FileName = f.FileName,
           ContentType = f.ContentType,
-          Length = f.Length,
+          ContentLength = f.ContentLength,
           Width = f.Width,
           Height = f.Height
         }

@@ -8,7 +8,7 @@ public class FileRefSubDocument
 
   public string ContentType { get; set; } = null!;
 
-  public long Length { get; set; }
+  public long ContentLength { get; set; }
 
   public int? Width { get; set; }
 

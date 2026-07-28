@@ -32,7 +32,7 @@ public class UnrestrictedMongoRepository_Files_Should
     entry.Files[0].Id.Should().Be(FileId);
     entry.Files[0].FileName.Should().Be("holiday.png");
     entry.Files[0].ContentType.Should().Be("image/png");
-    entry.Files[0].Length.Should().Be(1234);
+    entry.Files[0].ContentLength.Should().Be(1234);
     entry.Files[0].Width.Should().Be(800);
     entry.Files[0].Height.Should().Be(600);
   }
@@ -92,7 +92,7 @@ public class UnrestrictedMongoRepository_Files_Should
             Id = FileId,
             FileName = "holiday.png",
             ContentType = "image/png",
-            Length = 1234,
+            ContentLength = 1234,
             Width = 800,
             Height = 600
           }
