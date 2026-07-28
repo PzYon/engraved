@@ -49,6 +49,19 @@ public class CreateFileUploadQueryExecutorShould
     result.ReadUrl.Should().Contain(result.File.Id);
   }
 
+  // UploadedOn is stamped when the file is accepted onto an entry, not here. A FileRef minted at
+  // upload travels out to the client and comes back at save, so a timestamp set now would be
+  // client-supplied by the time it is stored - which would make it worth less than no timestamp.
+  [Test]
+  public async Task Not_Stamp_UploadedOn()
+  {
+    var journalId = await AddJournal(_repo.CurrentUser.Value.Id!);
+
+    CreateFileUploadResult result = await Execute(journalId);
+
+    result.File.UploadedOn.Should().BeNull();
+  }
+
   [Test]
   public async Task Return_A_NewFileId_On_EveryCall()
   {

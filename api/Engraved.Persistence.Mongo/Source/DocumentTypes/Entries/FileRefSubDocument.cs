@@ -10,6 +10,8 @@ public class FileRefSubDocument
 
   public long ContentLength { get; set; }
 
+  public DateTime? UploadedOn { get; set; }
+
   public int? Width { get; set; }
 
   public int? Height { get; set; }

@@ -13,6 +13,7 @@ public static class FileRefMapper
           FileName = f.FileName,
           ContentType = f.ContentType,
           ContentLength = f.ContentLength,
+          UploadedOn = f.UploadedOn,
           Width = f.Width,
           Height = f.Height
         }
@@ -29,6 +30,7 @@ public static class FileRefMapper
           FileName = f.FileName,
           ContentType = f.ContentType,
           ContentLength = f.ContentLength,
+          UploadedOn = f.UploadedOn,
           Width = f.Width,
           Height = f.Height
         }

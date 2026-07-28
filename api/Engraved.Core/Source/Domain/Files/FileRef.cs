@@ -22,6 +22,12 @@ public class FileRef
 
   public long ContentLength { get; set; }
 
+  // Stamped by the server when the file is accepted onto an entry - never taken from the client. A
+  // FileRef travels out to the client at upload and comes back at save, so anything on it is
+  // client-supplied by the time it is persisted, and a timestamp that can be set by the caller is
+  // worse than none at all. Nullable because files stored before that stamping exists have no value.
+  public DateTime? UploadedOn { get; set; }
+
   // Intrinsic image dimensions, when the file is an image. Known for free at upload time (the client
   // already decodes the image to downscale it) and used to reserve the correct box before the image
   // loads, so entries below it don't jump. Backfilling them later would mean downloading and
