@@ -1,3 +1,13 @@
 {
-  "ignoreDependencies": ["@emotion/styled"]
+  "ignoreDependencies": ["@emotion/styled"],
+  "health": {
+    "thresholdOverrides": [
+      {
+        "files": ["app/src/components/details/scraps/ScrapContextProvider.tsx"],
+        "maxCognitive": 25,
+        "maxCrap": 57,
+        "reason": "Pre-existing debt, pinned at exactly its current values so it cannot grow. The health gate counts findings in changed files, so this component - long over the default thresholds - failed every PR that touched the file at all, including ones that improved it. These are the only two metrics it exceeds: cognitive 25 for the component, CRAP 57 for upsertScrap. One point lower on either fails, so this is a ceiling and not an exemption. Splitting the provider up is the real fix; lowering these afterwards is the point."
+      }
+    ]
+  }
 }
