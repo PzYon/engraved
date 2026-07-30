@@ -1,4 +1,5 @@
-﻿using Engraved.Core.Application.Persistence.Repositories;
+﻿using Engraved.Core.Application.Files;
+using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
 
@@ -7,7 +8,8 @@ namespace Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 public class UpsertTimerEntryCommandExecutor(
   IJournalRepository journalRepository,
   IEntryRepository entryRepository,
-  IDateService dateService
+  IDateService dateService,
+  FileAcceptor fileAcceptor
 )
   : BaseUpsertEntryCommandExecutor<
     UpsertTimerEntryCommand,
@@ -16,7 +18,8 @@ public class UpsertTimerEntryCommandExecutor(
   >(
     journalRepository,
     entryRepository,
-    dateService
+    dateService,
+    fileAcceptor
   )
 {
   protected override async Task<TimerEntry?> LoadEntryToUpdate(UpsertTimerEntryCommand command, TimerJournal journal)

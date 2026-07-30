@@ -11,6 +11,7 @@ using Engraved.Api.Jobs;
 using Engraved.Api.Settings;
 using Engraved.Core.Application;
 using Engraved.Core.Application.CurrentUser;
+using Engraved.Core.Application.Files;
 using Engraved.Core.Application.Jobs;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Domain.Notifications;
@@ -86,6 +87,18 @@ builder.Services.Configure<AuthenticationConfig>(authConfigSection);
 builder.Services.Configure<OneSignalConfig>(oneSignalConfigSection);
 builder.Services.Configure<NotificationsJobConfig>(notificationsJobConfigSection);
 builder.Services.AddTransient<IDateService, DateService>();
+
+// File ids carry a signature tying them to the user the upload was issued to, so that attaching one
+// to an entry can be checked without storing anything. Reuses the JWT secret on purpose: it is
+// already configured on both app services, and a second secret would be a second thing to keep in
+// sync for no gain.
+builder.Services.AddSingleton<IFileIdFactory>(_ => new FileIdFactory(
+    authConfigSection.Get<AuthenticationConfig>()?.JwtSecret
+    ?? throw new InvalidOperationException($"\"{nameof(AuthenticationConfig.JwtSecret)}\" must be set on the config.")
+  )
+);
+
+builder.Services.AddTransient<FileAcceptor>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 builder.Services.AddTransient<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddTransient<JwtTokenFactory>();

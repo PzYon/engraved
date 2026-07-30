@@ -11,6 +11,7 @@ namespace Engraved.Core.Application.Queries.Files.CreateUpload;
 public class CreateFileUploadQueryExecutor(
   IJournalRepository journalRepository,
   IFileStore fileStore,
+  IFileIdFactory fileIdFactory,
   Lazy<IUser> currentUser
 ) : IQueryExecutor<CreateFileUploadResult, CreateFileUploadQuery>
 {
@@ -33,7 +34,9 @@ public class CreateFileUploadQueryExecutor(
 
     var file = new FileRef
     {
-      Id = Guid.NewGuid().ToString("N"),
+      // Signed with the current user, so that attaching it to an entry later can be checked without
+      // anything having been stored here - see IFileIdFactory.
+      Id = fileIdFactory.Create(currentUser.Value.Id!),
       FileName = FileContentPolicy.SanitizeFileName(query.FileName!),
       ContentType = query.ContentType!,
       ContentLength = query.ContentLength,

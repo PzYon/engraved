@@ -85,7 +85,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -157,7 +157,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
     CommandResult entryResult = await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -189,7 +189,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -211,7 +211,7 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {

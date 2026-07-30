@@ -39,7 +39,7 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     CommandResult result =
-      await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -57,7 +57,7 @@ public class UpsertLogBookEntryCommandExecutorShould
       DateTime = _fakeDateService.UtcNow
     };
 
-    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
     ((LogBookEntry)entry).Title.Should().Be("some title");
@@ -74,7 +74,7 @@ public class UpsertLogBookEntryCommandExecutorShould
       DateTime = _fakeDateService.UtcNow
     };
 
-    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
     ((LogBookEntry)entry).Title.Should().BeNull();
@@ -91,7 +91,7 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(
+      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(
         command
       );
 
@@ -109,7 +109,7 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(
+      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(
         command
       );
 
@@ -127,7 +127,7 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(
+      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(
         command
       );
 
@@ -144,7 +144,7 @@ public class UpsertLogBookEntryCommandExecutorShould
       DateTime = new DateTime(2026, 4, 9, 13, 37, 42, DateTimeKind.Utc)
     };
 
-    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
     entry.DateTime.Should().Be(new DateTime(2026, 4, 9, 0, 0, 0, DateTimeKind.Utc));
@@ -175,7 +175,7 @@ public class UpsertLogBookEntryCommandExecutorShould
     };
 
     var func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(
+      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(
         command
       );
 
@@ -206,7 +206,7 @@ public class UpsertLogBookEntryCommandExecutorShould
       DateTime = existingDate
     };
 
-    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
     (await _testRepository.GetEntriesForJournal(JournalId)).First().Notes.Should().Be("updated notes");

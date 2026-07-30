@@ -40,7 +40,7 @@ public class UpsertTimerEntryCommandExecutorShould
     };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -58,7 +58,7 @@ public class UpsertTimerEntryCommandExecutorShould
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -87,7 +87,7 @@ public class UpsertTimerEntryCommandExecutorShould
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -127,7 +127,7 @@ public class UpsertTimerEntryCommandExecutorShould
     };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -168,7 +168,7 @@ public class UpsertTimerEntryCommandExecutorShould
     };
 
     CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService).Execute(command);
+      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);

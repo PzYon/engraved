@@ -1,7 +1,9 @@
 using Engraved.Core.Application.Commands.Journals;
+using Engraved.Core.Application.Files;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Persistence.Repositories;
 using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Files;
 using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Entries.Upsert;
@@ -9,7 +11,8 @@ namespace Engraved.Core.Application.Commands.Entries.Upsert;
 public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>(
   IJournalRepository journalRepository,
   IEntryRepository entryRepository,
-  IDateService dateService
+  IDateService dateService,
+  FileAcceptor fileAcceptor
 ) : ICommandExecutor<TCommand>
   where TCommand : BaseUpsertEntryCommand
   where TEntry : class, IEntry, new()
@@ -45,8 +48,14 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
   {
     TEntry entry = await GetOrCreateNewEntry(command, journal);
 
+    // Captured before the command is applied: which files the entry already holds is what decides
+    // whether an incoming one is new and therefore has to prove where it came from.
+    FileRef[] storedFiles = entry.Files;
+
     SetCommonValues(command, entry);
     SetTypeSpecificValues(command, entry);
+
+    entry.Files = await fileAcceptor.Accept(command.Files, storedFiles);
 
     return await EntryRepository.UpsertEntry(entry);
   }
