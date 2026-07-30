@@ -9,6 +9,7 @@ import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
 import { ICreateFileUploadResult } from "./ICreateFileUploadResult";
+import { getContentType } from "../fileStorage/fileStorageApi";
 import { IAuthResult } from "./IAuthResult";
 import { IUser } from "./IUser";
 import { getMillisecondsUntilRefresh } from "./authentication/tokenRefresh";
@@ -405,7 +406,7 @@ export class ServerApi {
     return await ServerApi.executeRequest("/files", "POST", {
       journalId,
       fileName: file.name,
-      contentType: ServerApi.getContentType(file),
+      contentType: getContentType(file),
       contentLength: file.size,
     });
   }
@@ -416,29 +417,6 @@ export class ServerApi {
     );
 
     return result.url;
-  }
-
-  // Deliberately not executeRequest: this goes to blob storage, not to our API. It must not carry
-  // our bearer token (the signed URL is the credential, and sending the token to a third party would
-  // be leaking it), and the content type has to describe the file instead of being forced to JSON.
-  static async uploadFileContent(uploadUrl: string, file: File): Promise<void> {
-    const response = await fetch(uploadUrl, {
-      method: "PUT",
-      headers: {
-        "x-ms-blob-type": "BlockBlob",
-        "Content-Type": ServerApi.getContentType(file),
-      },
-      body: file,
-    });
-
-    if (!response.ok) {
-      throw new Error(`Uploading "${file.name}" failed (${response.status}).`);
-    }
-  }
-
-  // The browser leaves this empty for types it does not recognise.
-  private static getContentType(file: File) {
-    return file.type || "application/octet-stream";
   }
 
   static async moveEntry(entryId: string, targetJournalId: string) {

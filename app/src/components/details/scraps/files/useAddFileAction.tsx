@@ -3,7 +3,7 @@ import AttachFile from "@mui/icons-material/AttachFile";
 import { useScrapContext } from "../ScrapContext";
 import { useAppContext } from "../../../../AppContext";
 import { IAction } from "../../../common/actions/IAction";
-import { uploadFile } from "./uploadFile";
+import { uploadFile } from "../../../../fileStorage/uploadFile";
 
 // Returns the action plus the file input it drives: a hidden <input type="file"> is the only way to
 // open the picker, and it has to be rendered somewhere, so the caller places it.
