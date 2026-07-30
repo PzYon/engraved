@@ -27,7 +27,7 @@ import {
 import { JournalType } from "../../../serverApi/JournalType";
 import { dateOnlyToUtc, utcToDateOnly } from "../../../util/utils";
 import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
-import { IFileRef } from "../../../serverApi/IFileRef";
+import { getFileIds, useScrapFiles } from "./files/useScrapFiles";
 
 const quickAddStorageKey = "quick-add";
 
@@ -68,6 +68,8 @@ export const ScrapContextProvider: React.FC<{
     undefined,
   );
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
+
+  const { addFile, removeFile } = useScrapFiles(setScrapToRender);
 
   // Auto-save can be turned off for an individual scrap. Defaults to enabled.
   const [isAutoSaveEnabled, setIsAutoSaveEnabled] = useState(true);
@@ -293,16 +295,8 @@ export const ScrapContextProvider: React.FC<{
               : new Date().toJSON(),
           }),
         files: scrapToRender.files ?? [],
-        addFile: (file) =>
-          setScrapToRender((prev) => ({
-            ...prev,
-            files: [...(prev.files ?? []), file],
-          })),
-        removeFile: (fileId) =>
-          setScrapToRender((prev) => ({
-            ...prev,
-            files: (prev.files ?? []).filter((f) => f.id !== fileId),
-          })),
+        addFile,
+        removeFile,
         parsedDate,
         setParsedDate,
         isEditMode,
@@ -378,12 +372,7 @@ export const ScrapContextProvider: React.FC<{
       setIsEditMode(false);
     }
 
-    if (
-      !isDirty &&
-      initialScrap.notes === notesToSave &&
-      initialScrap.title === scrapToRender.title &&
-      getFileIds(initialScrap) === getFileIds(scrapToRender)
-    ) {
+    if (hasNothingToPersist(notesToSave)) {
       return;
     }
 
@@ -399,27 +388,7 @@ export const ScrapContextProvider: React.FC<{
     }
 
     await upsertEntryMutation.mutateAsync({
-      command: {
-        id: scrapToRender.id,
-        scrapType: scrapToRender.scrapType,
-        notes: notesToSave,
-        title: titleToSave,
-        journalAttributeValues: {},
-        journalId: journalId ?? "",
-        // Always the full list: the server removes whatever is left out.
-        files: scrapToRender.files ?? [],
-        dateTime: scrapToRender.dateTime
-          ? new Date(scrapToRender.dateTime)
-          : new Date(),
-        // Preserve an existing schedule when the title (and therefore the date)
-        // was not touched - otherwise auto-save would clear it.
-        schedule: getScheduleDefinitionForUpsert(
-          parsedDate,
-          getScheduleForUser(initialScrap, user?.id ?? ""),
-          journalId,
-          scrapToRender?.id ?? "new-entry-id",
-        ),
-      } as IUpsertScrapsEntryCommand,
+      command: createUpsertCommand(notesToSave, titleToSave),
     });
 
     if (keepEditMode) {
@@ -431,6 +400,44 @@ export const ScrapContextProvider: React.FC<{
     AddNewScrapStorage.clearForJournal(
       isQuickAdd ? quickAddStorageKey : (scrapToRender.parentId ?? ""),
     );
+  }
+
+  // Nothing was touched, so saving would only bump editedOn and make every other client think the
+  // scrap changed.
+  function hasNothingToPersist(notesToSave: string | undefined) {
+    return (
+      !isDirty &&
+      initialScrap.notes === notesToSave &&
+      initialScrap.title === scrapToRender.title &&
+      getFileIds(initialScrap) === getFileIds(scrapToRender)
+    );
+  }
+
+  function createUpsertCommand(
+    notesToSave: string | undefined,
+    titleToSave: string,
+  ): IUpsertScrapsEntryCommand {
+    return {
+      id: scrapToRender.id,
+      scrapType: scrapToRender.scrapType,
+      notes: notesToSave,
+      title: titleToSave,
+      journalAttributeValues: {},
+      journalId: journalId ?? "",
+      // Always the full list: the server removes whatever is left out.
+      files: scrapToRender.files ?? [],
+      dateTime: scrapToRender.dateTime
+        ? new Date(scrapToRender.dateTime)
+        : new Date(),
+      // Preserve an existing schedule when the title (and therefore the date)
+      // was not touched - otherwise auto-save would clear it.
+      schedule: getScheduleDefinitionForUpsert(
+        parsedDate,
+        getScheduleForUser(initialScrap, user?.id ?? ""),
+        journalId,
+        scrapToRender?.id ?? "new-entry-id",
+      ),
+    } as IUpsertScrapsEntryCommand;
   }
 
   return (
@@ -488,9 +495,4 @@ function convertNotesToTargetType(
     case ScrapType.Markdown:
       return genericNotes.map((n) => "- " + n).join("\n");
   }
-}
-
-// Ids only, in order: enough to tell whether the set of files changed, and cheap to compare.
-function getFileIds(entry: { files?: IFileRef[] }) {
-  return (entry.files ?? []).map((f) => f.id).join(",");
 }
