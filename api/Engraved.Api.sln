@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.Notifications.OneS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.TestUtils", "Engraved.TestUtils\Engraved.TestUtils.csproj", "{F726CA88-C34D-4D4E-BCD3-73FB186B53D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.Storage.Azure", "Engraved.Storage.Azure\Engraved.Storage.Azure.csproj", "{18F340B5-4906-4C31-8BA5-569BE6263DDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engraved.Storage.Azure.Tests", "Engraved.Storage.Azure.Tests\Engraved.Storage.Azure.Tests.csproj", "{3DD9C978-708F-4A43-A314-E2602DD54929}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,14 @@ Global
 		{F726CA88-C34D-4D4E-BCD3-73FB186B53D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F726CA88-C34D-4D4E-BCD3-73FB186B53D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F726CA88-C34D-4D4E-BCD3-73FB186B53D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18F340B5-4906-4C31-8BA5-569BE6263DDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18F340B5-4906-4C31-8BA5-569BE6263DDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18F340B5-4906-4C31-8BA5-569BE6263DDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18F340B5-4906-4C31-8BA5-569BE6263DDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DD9C978-708F-4A43-A314-E2602DD54929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DD9C978-708F-4A43-A314-E2602DD54929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DD9C978-708F-4A43-A314-E2602DD54929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DD9C978-708F-4A43-A314-E2602DD54929}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

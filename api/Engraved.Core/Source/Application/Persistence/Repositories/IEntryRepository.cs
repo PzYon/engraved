@@ -34,4 +34,8 @@ public interface IEntryRepository
   Task DeleteEntriesForJournal(string journalId);
 
   Task<IEntry?> GetEntry(string entryId);
+
+  // Resolves the entry that owns a file. Like GetEntry this is an unscoped primitive: the caller
+  // enforces read access on the parent journal (see GetFileUrlQueryExecutor).
+  Task<IEntry?> GetEntryByFileId(string fileId);
 }

@@ -57,6 +57,7 @@ public static class EntryDocumentMapper
     document.Notes = entry.Notes;
     document.DateTime = entry.DateTime;
     document.EditedOn = entry.EditedOn;
+    document.Files = FileRefMapper.MapFiles(entry.Files);
     document.JournalAttributeValues = entry.JournalAttributeValues;
     document.Schedules = ScheduleMapper.MapSchedules(entry.Schedules);
 
@@ -117,6 +118,7 @@ public static class EntryDocumentMapper
     entry.Notes = document.Notes;
     entry.DateTime = document.DateTime;
     entry.EditedOn = document.EditedOn;
+    entry.Files = FileRefMapper.MapFilesFromDocument(document.Files);
     entry.JournalAttributeValues = document.JournalAttributeValues;
     entry.Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules);
 

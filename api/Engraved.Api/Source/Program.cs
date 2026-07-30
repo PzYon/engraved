@@ -98,6 +98,12 @@ builder.Services.AddHostedService<ScheduledNotificationJob>();
 
 PersistenceRegistration.RegisterPersistence(builder.Services, builder.Configuration, isE2ETests);
 
+FileStorageRegistration.RegisterFileStorage(
+  builder.Services,
+  builder.Configuration,
+  builder.Environment.IsDevelopment() || isE2ETests
+);
+
 builder.Services.AddSingleton(new E2ETestMode(isE2ETests));
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();

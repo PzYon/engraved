@@ -107,6 +107,11 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
     return _entryRepository.GetEntry(entryId);
   }
 
+  public Task<IEntry?> GetEntryByFileId(string fileId)
+  {
+    return _entryRepository.GetEntryByFileId(fileId);
+  }
+
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
     ScheduleMode? scheduleMode = null,

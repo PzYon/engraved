@@ -53,6 +53,11 @@ public class UserRestrictedEntryRepository(MongoEntryRepository entryRepository,
     return entryRepository.GetEntry(entryId);
   }
 
+  public Task<IEntry?> GetEntryByFileId(string fileId)
+  {
+    return entryRepository.GetEntryByFileId(fileId);
+  }
+
   public async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
     where TEntry : IEntry
   {
