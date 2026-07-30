@@ -7,6 +7,8 @@ namespace Engraved.Api.Bootstrap;
 
 public static class FileStorageRegistration
 {
+  private const string DevelopmentConnectionString = "UseDevelopmentStorage=true";
+
   public static void RegisterFileStorage(
     IServiceCollection services,
     IConfiguration configuration,
@@ -42,6 +44,13 @@ public static class FileStorageRegistration
         );
       }
     );
+
+    // The container and its CORS rules are one-off setup steps, done by hand in Azure. Against
+    // Azurite there is no reason to make anyone do them by hand, so they happen on startup.
+    if (settings.ConnectionString == DevelopmentConnectionString)
+    {
+      services.AddHostedService<DevelopmentStorageInitializer>();
+    }
   }
 
   private static string GetSigningKey(IConfiguration configuration, bool useDevelopmentDefaults)
@@ -85,7 +94,7 @@ public static class FileStorageRegistration
       throw new InvalidOperationException("App Service Config: No file storage configuration available.");
     }
 
-    settings.ConnectionString = "UseDevelopmentStorage=true";
+    settings.ConnectionString = DevelopmentConnectionString;
 
     return settings;
   }
