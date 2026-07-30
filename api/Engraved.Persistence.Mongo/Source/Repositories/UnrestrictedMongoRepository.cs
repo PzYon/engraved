@@ -155,6 +155,11 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
     return _entryRepository.GetEntryByFileId(fileId);
   }
 
+  public Task<string[]> GetFileIdsForJournal(string journalId)
+  {
+    return _entryRepository.GetFileIdsForJournal(journalId);
+  }
+
   public async Task WakeMeUp()
   {
     await _mongoDatabaseClient.UsersCollection.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>(RandomDocId));

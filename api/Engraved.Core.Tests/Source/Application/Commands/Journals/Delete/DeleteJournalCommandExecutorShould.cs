@@ -2,8 +2,10 @@ using System.Threading.Tasks;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Journals.Delete;
 using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Files;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Permissions;
+using Engraved.Core.Tests.Application.Queries.Files;
 using Engraved.TestUtils;
 using FluentAssertions;
 using NUnit.Framework;
@@ -15,12 +17,14 @@ public class DeleteJournalCommandExecutorShould
   private const string JournalId = "60703c3b0000000000000001";
   private const string UserId = "60703c3b0000000000000002";
 
+  private FakeFileStore _fileStore = null!;
   private TestMongoRepository _repo = null!;
 
   [SetUp]
   public async Task SetUp()
   {
     _repo = await Util.CreateMongoRepository();
+    _fileStore = new FakeFileStore();
   }
 
   [Test]
@@ -36,7 +40,7 @@ public class DeleteJournalCommandExecutorShould
     );
 
     // when
-    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo).Execute(
+    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo, _fileStore).Execute(
       new DeleteJournalCommand { JournalId = JournalId }
     );
 
@@ -56,7 +60,7 @@ public class DeleteJournalCommandExecutorShould
     await _repo.UpsertEntry(new CounterEntry { ParentId = JournalId });
     await _repo.UpsertEntry(new CounterEntry { ParentId = JournalId });
 
-    await new DeleteJournalCommandExecutor(_repo, _repo).Execute(
+    await new DeleteJournalCommandExecutor(_repo, _repo, _fileStore).Execute(
       new DeleteJournalCommand { JournalId = JournalId }
     );
 
@@ -64,11 +68,42 @@ public class DeleteJournalCommandExecutorShould
     (await _repo.SearchEntries(null, journalIds: [JournalId])).Should().BeEmpty();
   }
 
+  // DeleteEntriesForJournal is a bulk delete that never loads the entries, so the file ids have to
+  // be collected before it runs - otherwise every file in the journal is stranded in the store.
+  [Test]
+  public async Task DeleteTheFiles_Of_AllItsEntries()
+  {
+    await _repo.UpsertJournal(new ScrapsJournal { Id = JournalId });
+
+    await _repo.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = JournalId,
+        Title = "first",
+        Files = [new FileRef { Id = "file-one", FileName = "a.png", ContentType = "image/png" }]
+      }
+    );
+    await _repo.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = JournalId,
+        Title = "second",
+        Files = [new FileRef { Id = "file-two", FileName = "b.pdf", ContentType = "application/pdf" }]
+      }
+    );
+
+    await new DeleteJournalCommandExecutor(_repo, _repo, _fileStore).Execute(
+      new DeleteJournalCommand { JournalId = JournalId }
+    );
+
+    _fileStore.DeletedFileIds.Should().BeEquivalentTo("file-one", "file-two");
+  }
+
   [Test]
   public async Task ReturnEmptyResult_When_JournalDoesNotExist()
   {
     // when
-    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo).Execute(
+    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo, _fileStore).Execute(
       new DeleteJournalCommand { JournalId = "60703c3b0000000000000999" }
     );
 
