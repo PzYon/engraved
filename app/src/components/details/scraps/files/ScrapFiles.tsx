@@ -74,8 +74,15 @@ const Host = styled("div")`
 // instead - the same colour the separator above already uses.
 const FileChip = styled(Chip)`
   background-color: ${(p) => p.theme.palette.background.default};
+  color: ${(p) => p.theme.palette.primary.main};
 
   &:hover {
     background-color: ${(p) => p.theme.palette.background.default};
+  }
+
+  /* Both icons colour themselves rather than following the label, so they need to be told. */
+  .MuiChip-icon,
+  .MuiChip-deleteIcon {
+    color: inherit;
   }
 `;
