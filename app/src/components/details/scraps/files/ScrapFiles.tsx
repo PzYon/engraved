@@ -59,9 +59,13 @@ function formatSize(bytes: number) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
+// Separated from the content above it the same way the footer row is, so the two read as sibling
+// sections rather than the files looking like part of the scrap's body.
 const Host = styled("div")`
   display: flex;
   flex-wrap: wrap;
   gap: ${(p) => p.theme.spacing(1)};
-  margin-top: ${(p) => p.theme.spacing(1)};
+  margin-top: ${(p) => p.theme.spacing(2)};
+  padding-top: ${(p) => p.theme.spacing(1)};
+  border-top: 1px solid ${(p) => p.theme.palette.background.default};
 `;
