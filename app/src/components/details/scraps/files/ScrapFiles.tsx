@@ -17,7 +17,7 @@ export const ScrapFiles: React.FC = () => {
   return (
     <Host>
       {files.map((file) => (
-        <Chip
+        <FileChip
           key={file.id}
           icon={<AttachFile fontSize="small" />}
           label={`${file.fileName} (${formatSize(file.contentLength)})`}
@@ -68,4 +68,14 @@ const Host = styled("div")`
   margin-top: ${(p) => p.theme.spacing(2)};
   padding-top: ${(p) => p.theme.spacing(2)};
   border-top: 1px solid ${(p) => p.theme.palette.background.default};
+`;
+
+// The default chip grey is not part of the palette anywhere else, so the page background is used
+// instead - the same colour the separator above already uses.
+const FileChip = styled(Chip)`
+  background-color: ${(p) => p.theme.palette.background.default};
+
+  &:hover {
+    background-color: ${(p) => p.theme.palette.background.default};
+  }
 `;
