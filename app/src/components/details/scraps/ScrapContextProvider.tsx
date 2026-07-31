@@ -70,10 +70,8 @@ export const ScrapContextProvider: React.FC<{
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   const { addFile, removeFile } = useScrapFiles(
-    scrapToRender.files,
     setScrapToRender,
-    isEditMode,
-    () => upsertScrap(undefined, true),
+    setIsEditMode,
   );
 
   // Auto-save can be turned off for an individual scrap. Defaults to enabled.
