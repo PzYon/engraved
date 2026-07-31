@@ -233,14 +233,15 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     // Projects the field itself rather than a trimmed EntryDocument: the document type is
     // polymorphic, so a projection that drops the type discriminator cannot be deserialized back
     // into it.
-    List<FileRefSubDocument[]?> filesPerEntry = await EntriesCollection
+    List<FileRefSubDocument[]> filesPerEntry = await EntriesCollection
       .Find(Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId))
       .Project(d => d.Files)
       .ToListAsync();
 
+    // Null rather than an empty array for entries written before the field existed: a projection of
+    // a missing element has nothing to deserialize, so the property initializer never runs.
     return filesPerEntry
-      .Where(files => files != null)
-      .SelectMany(files => files!)
+      .SelectMany(files => files ?? [])
       .Select(f => f.Id)
       .ToArray();
   }
