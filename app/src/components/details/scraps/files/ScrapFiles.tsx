@@ -66,6 +66,6 @@ const Host = styled("div")`
   flex-wrap: wrap;
   gap: ${(p) => p.theme.spacing(1)};
   margin-top: ${(p) => p.theme.spacing(2)};
-  padding-top: ${(p) => p.theme.spacing(1)};
+  padding-top: ${(p) => p.theme.spacing(2)};
   border-top: 1px solid ${(p) => p.theme.palette.background.default};
 `;
