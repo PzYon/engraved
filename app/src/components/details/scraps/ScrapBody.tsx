@@ -10,6 +10,8 @@ import {
 } from "../../overview/scheduled/scheduleUtils";
 import { useDisplayModeContext } from "../../overview/overviewList/DisplayModeContext";
 import { IPropertyDefinition } from "../../common/IPropertyDefinition";
+import { ScrapFiles } from "./files/ScrapFiles";
+import { useAddFileAction } from "./files/useAddFileAction";
 
 export const ScrapBody: React.FC<{
   children: React.ReactNode;
@@ -33,6 +35,8 @@ export const ScrapBody: React.FC<{
 
   const { isCompact } = useDisplayModeContext();
 
+  const { action: addFileAction, fileInput } = useAddFileAction();
+
   return (
     <Entry
       isEditMode={isEditMode}
@@ -54,7 +58,14 @@ export const ScrapBody: React.FC<{
           : properties
       }
     >
-      {isCompact && !hasFocus && !isEditMode ? null : children}
+      {isCompact && !hasFocus && !isEditMode ? null : (
+        <>
+          {children}
+          <ScrapFiles />
+        </>
+      )}
+
+      {fileInput}
     </Entry>
   );
 
@@ -71,38 +82,43 @@ export const ScrapBody: React.FC<{
       return saveAction ? [cancelEditingAction, saveAction] : [];
     }
 
-    const allActions = [
+    return [
       ...actions,
+      addFileAction,
       ActionFactory.moveToAnotherScrap(scrapToRender),
+      ...getScheduleActions(),
+      saveAction,
+      cancelEditingAction,
+      ...getPersistedEntryActions(),
     ];
+  }
 
-    if (!isEditMode) {
-      const hasSchedule = !!getScheduleForUser(scrapToRender, user.id ?? "")
-        ?.nextOccurrence;
-
-      allActions.push(
-        ActionFactory.editEntryScheduleViaUrl(
-          scrapToRender.id ?? "",
-          hasFocus,
-          hasSchedule,
-        ),
-      );
+  // Only meaningful once the scrap exists: there is nothing to delete or to relate to before that.
+  function getPersistedEntryActions() {
+    if (!scrapToRender.id) {
+      return [];
     }
 
-    allActions.push(saveAction);
+    return [
+      ActionFactory.deleteEntry(scrapToRender, hasFocus),
+      isEditMode ? null : ActionFactory.showRelatedItems(scrapToRender.id),
+    ];
+  }
 
-    if (cancelEditingAction) {
-      allActions.push(cancelEditingAction);
+  function getScheduleActions() {
+    if (isEditMode) {
+      return [];
     }
 
-    if (scrapToRender.id) {
-      allActions.push(ActionFactory.deleteEntry(scrapToRender, hasFocus));
+    const hasSchedule = !!getScheduleForUser(scrapToRender, user.id ?? "")
+      ?.nextOccurrence;
 
-      if (!isEditMode) {
-        allActions.push(ActionFactory.showRelatedItems(scrapToRender.id));
-      }
-    }
-
-    return allActions;
+    return [
+      ActionFactory.editEntryScheduleViaUrl(
+        scrapToRender.id ?? "",
+        hasFocus,
+        hasSchedule,
+      ),
+    ];
   }
 };

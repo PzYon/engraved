@@ -11,8 +11,6 @@ import { Markdown } from "./markdown/Markdown";
 import AutoFixHigh from "@mui/icons-material/AutoFixHigh";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { TitleRow } from "./TitleRow";
-import { ScrapFiles } from "./files/ScrapFiles";
-import { useAddFileAction } from "./files/useAddFileAction";
 
 export const ScrapInner: React.FC = () => {
   const {
@@ -91,10 +89,6 @@ export const ScrapInner: React.FC = () => {
     ? [ActionFactory.toggleAutoSave(isAutoSaveEnabled, setIsAutoSaveEnabled)]
     : [];
 
-  const { action: addFileAction, fileInput } = useAddFileAction();
-
-  const editModeActions = [addFileAction, ...autoSaveActions];
-
   return (
     <div
       ref={containerRef}
@@ -146,12 +140,12 @@ export const ScrapInner: React.FC = () => {
 
       {scrapToRender.scrapType === ScrapType.List ? (
         <div style={{ marginTop: "2px" }}>
-          <ScrapList editModeActions={editModeActions} />
+          <ScrapList editModeActions={autoSaveActions} />
         </div>
       ) : (
         <ScrapMarkdown
           editModeActions={[
-            ...editModeActions,
+            ...autoSaveActions,
             {
               onClick: () => {
                 changeScrapType(
@@ -168,10 +162,6 @@ export const ScrapInner: React.FC = () => {
           ]}
         />
       )}
-
-      <ScrapFiles />
-
-      {fileInput}
     </div>
   );
 
