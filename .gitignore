@@ -6,3 +6,6 @@
 fallow-results.*
 fallow-stderr.log
 fallow-analysis-args.sh
+
+# local blob storage emulator data (npm run storage:start)
+.azurite/

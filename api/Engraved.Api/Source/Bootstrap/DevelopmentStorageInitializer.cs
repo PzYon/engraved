@@ -31,7 +31,7 @@ public class DevelopmentStorageInitializer(
       logger.LogWarning(
         e,
         "Could not prepare development storage - file uploads will fail until Azurite is running "
-        + "(npx --package azurite azurite-blob). Everything else works."
+        + "(npm run storage:start). Everything else works."
       );
     }
   }

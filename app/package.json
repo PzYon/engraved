@@ -47,6 +47,7 @@
   "scripts": {
     "start": "vite",
     "api:start": "dotnet run --project ../api/Engraved.Api/",
+    "storage:start": "npx --package azurite azurite-blob --location ./.azurite",
     "build": "vite build",
     "build:e2e": "vite build -m development",
     "build:visualize-bundle": "npx vite-bundle-visualizer",
