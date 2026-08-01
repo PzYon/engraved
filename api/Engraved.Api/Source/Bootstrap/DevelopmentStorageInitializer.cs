@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Engraved.Storage.Azure;
 
 namespace Engraved.Api.Bootstrap;
@@ -18,7 +19,23 @@ public class DevelopmentStorageInitializer(
   {
     try
     {
-      await DevelopmentStorageSetup.Ensure(serviceClient, settings.ContainerName, AllowedOrigins);
+      await serviceClient.GetBlobContainerClient(settings.ContainerName).CreateIfNotExistsAsync();
+
+      BlobServiceProperties properties = await serviceClient.GetPropertiesAsync();
+
+      properties.Cors.Clear();
+      properties.Cors.Add(
+        new BlobCorsRule
+        {
+          AllowedOrigins = string.Join(",", AllowedOrigins),
+          AllowedMethods = "GET,HEAD,PUT,OPTIONS",
+          AllowedHeaders = "*",
+          ExposedHeaders = "*",
+          MaxAgeInSeconds = 3600
+        }
+      );
+
+      await serviceClient.SetPropertiesAsync(properties);
 
       logger.LogInformation(
         "Development storage ready: container \"{ContainerName}\", CORS for {Origins}",
