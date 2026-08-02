@@ -6,7 +6,8 @@ namespace Engraved.Core.Application.Files;
 
 // A FileRef is handed to the client at upload and comes back on an entry at save, so by the time it
 // is persisted every field on it - including the id - is whatever the client chose to send. This is
-// the one place that decides which of it to believe.
+// the one place that decides which of it to believe, and the one place that knows what a save means
+// for the bytes behind it.
 public class FileAcceptor(
   IFileStore fileStore,
   IFileIdFactory fileIdFactory,
@@ -29,11 +30,26 @@ public class FileAcceptor(
       );
     }
 
-    // Files the client left out are dropped from the entry, but their blobs are deliberately not
-    // deleted here: the delete and the entry write cannot be one atomic operation, and deleting
-    // first would lose a file whenever the write then fails. Unreferenced blobs are cleaned up by
-    // the store's lifecycle rules instead.
+    // Files the client left out are dropped from the entry here, but their blobs are not: the delete
+    // and the entry write cannot be one atomic operation, and deleting first would lose a file
+    // whenever the write then fails. DeleteRemoved does it afterwards instead.
     return accepted.ToArray();
+  }
+
+  // Deletes the blobs of files that were on the entry and are not any more. Call only once the entry
+  // has been written: this order fails towards an unreferenced blob rather than towards an entry
+  // pointing at bytes that are gone, the same way the delete commands do it.
+  //
+  // A lifecycle rule cannot do this instead - these blobs are committed and so indistinguishable
+  // from live ones. Only the save that dropped them knows.
+  public async Task DeleteRemoved(FileRef[] stored, FileRef[] accepted)
+  {
+    HashSet<string> keptIds = accepted.Select(f => f.Id).ToHashSet();
+
+    foreach (FileRef file in stored.Where(f => !keptIds.Contains(f.Id)))
+    {
+      await fileStore.Delete(file.Id);
+    }
   }
 
   private async Task<FileRef> AcceptNew(FileRef file)
@@ -58,6 +74,12 @@ public class FileAcceptor(
         $"Files must not be larger than {FileSizeLimits.MaxFileSizeBytes / 1024 / 1024} MB."
       );
     }
+
+    // Before the entry is written rather than after, and deliberately so. Failing between the two
+    // then leaves a committed blob nothing references - a leak, which is recoverable - where the
+    // other order would leave a referenced blob still marked pending, and the lifecycle rule would
+    // delete a file that is in use.
+    await fileStore.MarkCommitted(file.Id);
 
     return new FileRef
     {

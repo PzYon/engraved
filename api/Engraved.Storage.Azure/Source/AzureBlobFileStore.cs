@@ -25,7 +25,9 @@ public class AzureBlobFileStore(
   {
     return await CreateSasUri(
       fileId,
-      BlobSasPermissions.Create | BlobSasPermissions.Write,
+      // Tag, because the upload marks itself pending (FileTags) and Put Blob only honours the
+      // x-ms-tags header when the SAS permits writing tags.
+      BlobSasPermissions.Create | BlobSasPermissions.Write | BlobSasPermissions.Tag,
       DateTimeOffset.UtcNow.Add(SasExpiry.UploadValidity),
       _ => { }
     );
@@ -61,6 +63,14 @@ public class AzureBlobFileStore(
   public async Task Delete(string fileId)
   {
     await containerClient.GetBlobClient(fileId).DeleteIfExistsAsync();
+  }
+
+  // Replaces the tag set rather than adding to it - there is only ever the one tag, and Set Blob
+  // Tags has no merge semantics anyway. Any failure is left to propagate: see IFileStore.
+  public async Task MarkCommitted(string fileId)
+  {
+    await containerClient.GetBlobClient(fileId)
+      .SetTagsAsync(new Dictionary<string, string> { [FileTags.StateName] = FileTags.Committed });
   }
 
   public async Task<long?> GetContentLength(string fileId)
