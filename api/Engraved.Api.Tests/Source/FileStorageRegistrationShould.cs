@@ -25,13 +25,15 @@ public class FileStorageRegistrationShould
     factory.BelongsToUser(fileId, "some-user").Should().BeTrue();
   }
 
-  // Outside development that same missing secret is a real misconfiguration and has to be loud.
+  // Outside development that same missing secret is a real misconfiguration and has to be loud. The
+  // storage settings are given explicitly so that this fails over the secret and not over the
+  // storage configuration, which is missing here too and is checked first.
   [Test]
   public void Throw_When_NoJwtSecretIsConfigured_OutsideDevelopment()
   {
-    Action register = () => Resolve<IFileIdFactory>(useDevelopmentDefaults: false);
+    Action register = () => Resolve<IFileIdFactory>(false, DevelopmentStorage);
 
-    register.Should().Throw<InvalidOperationException>();
+    register.Should().Throw<InvalidOperationException>().WithMessage("*JWT Secret*");
   }
 
   [Test]
@@ -52,8 +54,69 @@ public class FileStorageRegistrationShould
       .BeFalse();
   }
 
+  // Registration, not resolution: built lazily, an unusable connection string would first be
+  // constructed on an entry upsert and so break saving in an application that started up fine.
+  [Test]
+  public void Throw_When_TheConnectionStringCannotBeParsed()
+  {
+    Action register = () => Register(true, ("FileStorage:ConnectionString", "name=value"));
+
+    register.Should().Throw<Exception>();
+  }
+
+  // What putting the account URL into the wrong setting looks like. Without this it reaches the
+  // storage SDK, which reports it as a malformed connection string without knowing that a perfectly
+  // good endpoint was meant.
+  [Test]
+  public void Throw_When_TheConnectionStringIsAnEndpointUrl()
+  {
+    Action register = () => Register(
+      true,
+      ("FileStorage:ConnectionString", "https://engravedfiles.blob.core.windows.net")
+    );
+
+    register.Should()
+      .Throw<InvalidOperationException>()
+      .WithMessage("*FileStorage__BlobEndpoint*");
+  }
+
+  // Setting both is always a mistake: the connection string wins and the endpoint is never read, so
+  // whoever set it is not getting the managed identity they think they are.
+  [Test]
+  public void Throw_When_BothCredentialSettingsAreSet()
+  {
+    Action register = () => Register(
+      true,
+      DevelopmentStorage,
+      ("FileStorage:BlobEndpoint", "https://engravedfiles.blob.core.windows.net")
+    );
+
+    register.Should().Throw<InvalidOperationException>().WithMessage("*only one of*");
+  }
+
+  [Test]
+  public void Throw_When_TheBlobEndpointIsNotAUrl()
+  {
+    Action register = () => Register(true, ("FileStorage:BlobEndpoint", "engravedfiles"));
+
+    register.Should()
+      .Throw<InvalidOperationException>()
+      .WithMessage("*FileStorage__BlobEndpoint is not an absolute URL*");
+  }
+
+  private static (string Key, string Value) DevelopmentStorage =>
+    ("FileStorage:ConnectionString", "UseDevelopmentStorage=true");
+
   private static T Resolve<T>(bool useDevelopmentDefaults, params (string Key, string Value)[] settings)
     where T : notnull
+  {
+    return Register(useDevelopmentDefaults, settings).BuildServiceProvider().GetRequiredService<T>();
+  }
+
+  private static IServiceCollection Register(
+    bool useDevelopmentDefaults,
+    params (string Key, string Value)[] settings
+  )
   {
     var values = new Dictionary<string, string?> { ["FileStorage:ContainerName"] = "files" };
 
@@ -68,6 +131,6 @@ public class FileStorageRegistrationShould
 
     FileStorageRegistration.RegisterFileStorage(services, configuration, useDevelopmentDefaults);
 
-    return services.BuildServiceProvider().GetRequiredService<T>();
+    return services;
   }
 }
