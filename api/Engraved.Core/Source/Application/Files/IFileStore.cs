@@ -20,4 +20,9 @@ public interface IFileStore
   Task<Uri> CreateReadUrl(FileRef file);
 
   Task Delete(string fileId);
+
+  // The size the store actually holds, or null when there is no such file. The client states a size
+  // when asking for an upload URL, but a SAS cannot cap what is then put, so this is the only size
+  // that can be believed.
+  Task<long?> GetContentLength(string fileId);
 }

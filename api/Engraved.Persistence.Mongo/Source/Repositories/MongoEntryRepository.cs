@@ -215,13 +215,35 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
       throw new ArgumentNullException(nameof(fileId), "File id must be specified.");
     }
 
+    // Sorted by id so that a file id which somehow ends up on more than one entry always resolves to
+    // the same one. FileAcceptor is what should keep that from happening; this makes the outcome
+    // predictable rather than depending on which document the server happens to return first.
     EntryDocument? document = await EntriesCollection
-      .Find(Builders<EntryDocument>.Filter.ElemMatch(d => d.Files, a => a.Id == fileId))
+      .Find(Builders<EntryDocument>.Filter.ElemMatch(d => d.Files, f => f.Id == fileId))
+      .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Id))
       .FirstOrDefaultAsync();
 
     return document == null
       ? null
       : EntryDocumentMapper.FromDocument(document);
+  }
+
+  public async Task<string[]> GetFileIdsForJournal(string journalId)
+  {
+    // Projects the field itself rather than a trimmed EntryDocument: the document type is
+    // polymorphic, so a projection that drops the type discriminator cannot be deserialized back
+    // into it.
+    List<FileRefSubDocument[]> filesPerEntry = await EntriesCollection
+      .Find(Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId))
+      .Project(d => d.Files)
+      .ToListAsync();
+
+    // Null rather than an empty array for entries written before the field existed: a projection of
+    // a missing element has nothing to deserialize, so the property initializer never runs.
+    return filesPerEntry
+      .SelectMany(files => files ?? [])
+      .Select(f => f.Id)
+      .ToArray();
   }
 
   private async Task<IEntry[]> LoadData(

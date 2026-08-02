@@ -164,7 +164,7 @@ public class GetRelatedEntitiesQueryExecutorShould
     // a gauge entry has no page of its own, so it is no navigation target -
     // it must not be returned even though its notes match.
     var gaugeJournalId = await AddJournal("Numbers", JournalType.Gauge);
-    var addGaugeExecutor = new UpsertGaugeEntryCommandExecutor(_repo, _repo, _dateService);
+    var addGaugeExecutor = new UpsertGaugeEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
     await addGaugeExecutor.Execute(
       new UpsertGaugeEntryCommand
       {
@@ -214,7 +214,7 @@ public class GetRelatedEntitiesQueryExecutorShould
 
   private async Task<string> AddScrap(string journalId, string title, string? notes = null)
   {
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService);
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
     CommandResult result = await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {

@@ -1,3 +1,5 @@
+using System.Net;
+using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
@@ -59,6 +61,20 @@ public class AzureBlobFileStore(
   public async Task Delete(string fileId)
   {
     await containerClient.GetBlobClient(fileId).DeleteIfExistsAsync();
+  }
+
+  public async Task<long?> GetContentLength(string fileId)
+  {
+    try
+    {
+      Response<BlobProperties> properties = await containerClient.GetBlobClient(fileId).GetPropertiesAsync();
+
+      return properties.Value.ContentLength;
+    }
+    catch (RequestFailedException e) when (e.Status == (int) HttpStatusCode.NotFound)
+    {
+      return null;
+    }
   }
 
   private async Task<Uri> CreateSasUri(

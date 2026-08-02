@@ -8,6 +8,8 @@ import { IEditJournalCommand } from "./commands/IEditJournalCommand";
 import { envSettings } from "../env/envSettings";
 import { IApiError } from "./IApiError";
 import { ICommandResult } from "./ICommandResult";
+import { ICreateFileUploadResult } from "./ICreateFileUploadResult";
+import { getContentType } from "../fileStorage/fileStorageApi";
 import { IAuthResult } from "./IAuthResult";
 import { IUser } from "./IUser";
 import { getMillisecondsUntilRefresh } from "./authentication/tokenRefresh";
@@ -395,6 +397,26 @@ export class ServerApi {
       "DELETE",
       null,
     );
+  }
+
+  static async createFileUpload(
+    journalId: string,
+    file: File,
+  ): Promise<ICreateFileUploadResult> {
+    return await ServerApi.executeRequest("/files", "POST", {
+      journalId,
+      fileName: file.name,
+      contentType: getContentType(file),
+      contentLength: file.size,
+    });
+  }
+
+  static async getFileUrl(fileId: string): Promise<string> {
+    const result: { url: string } = await ServerApi.executeRequest(
+      `/files/${fileId}/url`,
+    );
+
+    return result.url;
   }
 
   static async moveEntry(entryId: string, targetJournalId: string) {

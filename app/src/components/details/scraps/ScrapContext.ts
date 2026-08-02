@@ -4,6 +4,7 @@ import { IParsedDate } from "../edit/parseDate";
 import { IAction } from "../../common/actions/IAction";
 import { IJournal } from "../../../serverApi/IJournal";
 import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
+import { IFileRef } from "../../../serverApi/IFileRef";
 
 export type ActionsRenderStyle = "save-only" | "none" | "all";
 
@@ -12,6 +13,9 @@ export interface IScrapContext {
   setTitle: (title: string) => void;
   notes: string | undefined;
   setNotes: (notes: string) => void;
+  files: IFileRef[];
+  addFile: (file: IFileRef) => void;
+  removeFile: (fileId: string) => void;
   date: Date;
   setDate: (date: Date | null) => void;
   parsedDate: IParsedDate | undefined;
@@ -43,6 +47,9 @@ export const ScrapContext = createContext<IScrapContext>({
   setTitle: null!,
   notes: null!,
   setNotes: null!,
+  files: null!,
+  addFile: null!,
+  removeFile: null!,
   date: null!,
   setDate: null!,
   parsedDate: null!,

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Engraved.Core.Application.Files;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Files.CreateUpload;
@@ -18,6 +19,7 @@ public class CreateFileUploadQueryExecutorShould
   private const string OtherUserName = "other@user.com";
 
   private FakeFileStore _fileStore = null!;
+  private FileIdFactory _fileIdFactory = null!;
   private string _otherUserId = null!;
   private TestUserRestrictedMongoRepository _repo = null!;
   private TestMongoRepository _seedRepo = null!;
@@ -32,6 +34,7 @@ public class CreateFileUploadQueryExecutorShould
 
     _repo = await Util.CreateUserRestrictedMongoRepository(UserName, userId, true);
     _fileStore = new FakeFileStore();
+    _fileIdFactory = new FileIdFactory("test-signing-key");
   }
 
   [Test]
@@ -47,6 +50,19 @@ public class CreateFileUploadQueryExecutorShould
     result.File.ContentLength.Should().Be(1234);
     result.UploadUrl.Should().Contain(result.File.Id);
     result.ReadUrl.Should().Contain(result.File.Id);
+  }
+
+  // The signature on the id is what proves, at save time, that this user was the one the upload was
+  // issued to - so nobody else can attach the file to an entry of their own.
+  [Test]
+  public async Task Issue_An_IdSignedForTheCurrentUser()
+  {
+    var journalId = await AddJournal(_repo.CurrentUser.Value.Id!);
+
+    CreateFileUploadResult result = await Execute(journalId);
+
+    _fileIdFactory.BelongsToUser(result.File.Id, _repo.CurrentUser.Value.Id!).Should().BeTrue();
+    _fileIdFactory.BelongsToUser(result.File.Id, _otherUserId).Should().BeFalse();
   }
 
   // UploadedOn is stamped when the file is accepted onto an entry, not here. A FileRef minted at
@@ -165,7 +181,7 @@ public class CreateFileUploadQueryExecutorShould
     string fileName = "holiday.png"
   )
   {
-    return await new CreateFileUploadQueryExecutor(_repo, _fileStore, _repo.CurrentUser).Execute(
+    return await new CreateFileUploadQueryExecutor(_repo, _fileStore, _fileIdFactory, _repo.CurrentUser).Execute(
       new CreateFileUploadQuery
       {
         JournalId = journalId,

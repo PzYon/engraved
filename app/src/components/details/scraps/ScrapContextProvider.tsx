@@ -27,6 +27,7 @@ import {
 import { JournalType } from "../../../serverApi/JournalType";
 import { dateOnlyToUtc, utcToDateOnly } from "../../../util/utils";
 import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
+import { getFileIds, useScrapFiles } from "./files/useScrapFiles";
 
 const quickAddStorageKey = "quick-add";
 
@@ -68,6 +69,11 @@ export const ScrapContextProvider: React.FC<{
   );
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
+  const { addFile, removeFile } = useScrapFiles(
+    setScrapToRender,
+    setIsEditMode,
+  );
+
   // Auto-save can be turned off for an individual scrap. Defaults to enabled.
   const [isAutoSaveEnabled, setIsAutoSaveEnabled] = useState(true);
 
@@ -86,6 +92,9 @@ export const ScrapContextProvider: React.FC<{
         journalAttributeValues: undefined,
         parentId: initialScrap.parentId,
         dateTime: new Date().toISOString(),
+        // The bytes are already uploaded by this point, so without keeping the references the draft
+        // would come back after a reload having silently lost its files.
+        files: scrapToRender.files,
       } as IScrapEntry,
     );
   }, [
@@ -97,18 +106,24 @@ export const ScrapContextProvider: React.FC<{
     scrapToRender.notes,
     scrapToRender.title,
     scrapToRender.scrapType,
+    scrapToRender.files,
   ]);
 
   // Snapshot of the last content we persisted ourselves (manual or auto save).
   // Used to recognise the echo of our own save when it comes back through the
   // query cache, so it is not mistaken for a concurrent change from another tab.
-  const lastSavedRef = useRef<{ notes: string | undefined; title: string }>(
-    undefined,
-  );
+  const lastSavedRef = useRef<{
+    notes: string | undefined;
+    title: string;
+    fileIds: string;
+  }>(undefined);
 
   const isDirty =
     initialScrap.notes !== scrapToRender.notes ||
-    initialScrap.title !== scrapToRender.title;
+    initialScrap.title !== scrapToRender.title ||
+    // Without this, attaching or removing a file would not count as a change, so auto-save would
+    // never fire for it and the work would be lost on navigating away.
+    getFileIds(initialScrap) !== getFileIds(scrapToRender);
 
   // True when a newer version of the scrap arrived (e.g. saved in another tab)
   // while we are still editing an older one. The "scrap has changed" merge
@@ -144,7 +159,8 @@ export const ScrapContextProvider: React.FC<{
     if (
       lastSavedRef.current &&
       initialScrap.notes === lastSavedRef.current.notes &&
-      initialScrap.title === lastSavedRef.current.title
+      initialScrap.title === lastSavedRef.current.title &&
+      getFileIds(initialScrap) === lastSavedRef.current.fileIds
     ) {
       setScrapToRender((prev) => ({
         ...prev,
@@ -281,6 +297,9 @@ export const ScrapContextProvider: React.FC<{
               ? (isLogBook ? dateOnlyToUtc(d) : d).toJSON()
               : new Date().toJSON(),
           }),
+        files: scrapToRender.files ?? [],
+        addFile,
+        removeFile,
         parsedDate,
         setParsedDate,
         isEditMode,
@@ -356,41 +375,23 @@ export const ScrapContextProvider: React.FC<{
       setIsEditMode(false);
     }
 
-    if (
-      !isDirty &&
-      initialScrap.notes === notesToSave &&
-      initialScrap.title === scrapToRender.title
-    ) {
+    if (hasNothingToPersist(notesToSave)) {
       return;
     }
 
     const titleToSave = parsedDate?.text ?? scrapToRender.title;
-    lastSavedRef.current = { notes: notesToSave, title: titleToSave };
+    lastSavedRef.current = {
+      notes: notesToSave,
+      title: titleToSave,
+      fileIds: getFileIds(scrapToRender),
+    };
 
     if (!keepEditMode) {
       onSuccess?.();
     }
 
     await upsertEntryMutation.mutateAsync({
-      command: {
-        id: scrapToRender.id,
-        scrapType: scrapToRender.scrapType,
-        notes: notesToSave,
-        title: titleToSave,
-        journalAttributeValues: {},
-        journalId: journalId ?? "",
-        dateTime: scrapToRender.dateTime
-          ? new Date(scrapToRender.dateTime)
-          : new Date(),
-        // Preserve an existing schedule when the title (and therefore the date)
-        // was not touched - otherwise auto-save would clear it.
-        schedule: getScheduleDefinitionForUpsert(
-          parsedDate,
-          getScheduleForUser(initialScrap, user?.id ?? ""),
-          journalId,
-          scrapToRender?.id ?? "new-entry-id",
-        ),
-      } as IUpsertScrapsEntryCommand,
+      command: createUpsertCommand(notesToSave, titleToSave),
     });
 
     if (keepEditMode) {
@@ -402,6 +403,44 @@ export const ScrapContextProvider: React.FC<{
     AddNewScrapStorage.clearForJournal(
       isQuickAdd ? quickAddStorageKey : (scrapToRender.parentId ?? ""),
     );
+  }
+
+  // Nothing was touched, so saving would only bump editedOn and make every other client think the
+  // scrap changed.
+  function hasNothingToPersist(notesToSave: string | undefined) {
+    return (
+      !isDirty &&
+      initialScrap.notes === notesToSave &&
+      initialScrap.title === scrapToRender.title &&
+      getFileIds(initialScrap) === getFileIds(scrapToRender)
+    );
+  }
+
+  function createUpsertCommand(
+    notesToSave: string | undefined,
+    titleToSave: string,
+  ): IUpsertScrapsEntryCommand {
+    return {
+      id: scrapToRender.id,
+      scrapType: scrapToRender.scrapType,
+      notes: notesToSave,
+      title: titleToSave,
+      journalAttributeValues: {},
+      journalId: journalId ?? "",
+      // Always the full list: the server removes whatever is left out.
+      files: scrapToRender.files ?? [],
+      dateTime: scrapToRender.dateTime
+        ? new Date(scrapToRender.dateTime)
+        : new Date(),
+      // Preserve an existing schedule when the title (and therefore the date)
+      // was not touched - otherwise auto-save would clear it.
+      schedule: getScheduleDefinitionForUpsert(
+        parsedDate,
+        getScheduleForUser(initialScrap, user?.id ?? ""),
+        journalId,
+        scrapToRender?.id ?? "new-entry-id",
+      ),
+    } as IUpsertScrapsEntryCommand;
   }
 
   return (
