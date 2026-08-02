@@ -59,8 +59,6 @@ function formatSize(bytes: number) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-// Separated from the content above it the same way the footer row is, so the two read as sibling
-// sections rather than the files looking like part of the scrap's body.
 const Host = styled("div")`
   display: flex;
   flex-wrap: wrap;
@@ -70,8 +68,6 @@ const Host = styled("div")`
   border-top: 1px solid ${(p) => p.theme.palette.background.default};
 `;
 
-// The default chip grey is not part of the palette anywhere else, so the page background is used
-// instead - the same colour the separator above already uses.
 const FileChip = styled(Chip)`
   background-color: ${(p) => p.theme.palette.background.default};
   color: ${(p) => p.theme.palette.primary.main};
