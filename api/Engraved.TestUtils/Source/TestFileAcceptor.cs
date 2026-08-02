@@ -48,6 +48,11 @@ public static class TestFileAcceptor
       throw new InvalidOperationException(Message);
     }
 
+    public Task MarkCommitted(string fileId)
+    {
+      throw new InvalidOperationException(Message);
+    }
+
     private const string Message =
       "This test reached the file store through TestFileAcceptor - pass a real fake store instead.";
   }

@@ -57,7 +57,13 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
 
     entry.Files = await fileAcceptor.Accept(command.Files, storedFiles);
 
-    return await EntryRepository.UpsertEntry(entry);
+    UpsertResult result = await EntryRepository.UpsertEntry(entry);
+
+    // Only once the entry no longer refers to them. Before the write, a failing write would leave
+    // the entry pointing at files that had already been deleted.
+    await fileAcceptor.DeleteRemoved(storedFiles, entry.Files);
+
+    return result;
   }
 
   private static async Task UpdateJournal(IJournalRepository repository, IDateService dateService, TJournal journal)

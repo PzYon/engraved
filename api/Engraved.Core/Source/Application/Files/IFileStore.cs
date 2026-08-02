@@ -21,6 +21,12 @@ public interface IFileStore
 
   Task Delete(string fileId);
 
+  // Marks a file as belonging to an entry. Uploads start out pending (see FileTags) and are swept up
+  // by the store if they never reach this, which is what stops a cancelled edit from leaving bytes
+  // behind forever. Must therefore be reliable: a file that is attached but stays pending would be
+  // deleted while still referenced, so failing here has to fail the save.
+  Task MarkCommitted(string fileId);
+
   // The size the store actually holds, or null when there is no such file. The client states a size
   // when asking for an upload URL, but a SAS cannot cap what is then put, so this is the only size
   // that can be believed.

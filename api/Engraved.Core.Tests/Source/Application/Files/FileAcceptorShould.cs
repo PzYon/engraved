@@ -158,8 +158,9 @@ public class FileAcceptorShould
     result[0].FileName.Should().Be("breaking.png");
   }
 
-  // Leaving a file out is how it is removed. The blob is deliberately left behind: the delete and the
-  // entry write cannot be atomic, so deleting first would lose a file whenever the write then fails.
+  // Leaving a file out is how it is removed. Accepting must not delete the blob: the delete and the
+  // entry write cannot be atomic, so deleting here would lose a file whenever the write then fails.
+  // DeleteRemoved does it once the write has succeeded.
   [Test]
   public async Task Drop_FilesTheClientLeftOut_WithoutDeletingTheBlob()
   {
@@ -168,6 +169,51 @@ public class FileAcceptorShould
     FileRef[] result = await _acceptor.Accept([], [stored]);
 
     result.Should().BeEmpty();
+    _fileStore.DeletedFileIds.Should().BeEmpty();
+  }
+
+  // Uploads arrive tagged pending and are swept up by the store if nothing ever claims them. This is
+  // what claims them, so missing it would have the lifecycle rule delete a file that is in use.
+  [Test]
+  public async Task Commit_A_NewlyAcceptedFile()
+  {
+    FileRef file = CreateUploadedFile(UserId, 1234);
+
+    await _acceptor.Accept([file], []);
+
+    _fileStore.CommittedFileIds.Should().BeEquivalentTo(file.Id);
+  }
+
+  // A file already on the entry was committed when it was first accepted, and re-committing it on
+  // every subsequent save would be a storage round trip per file per save.
+  [Test]
+  public async Task Not_Commit_A_FileAlreadyOnTheEntry()
+  {
+    FileRef stored = CreateUploadedFile(UserId, 1234);
+
+    await _acceptor.Accept([stored], [stored]);
+
+    _fileStore.CommittedFileIds.Should().BeEmpty();
+  }
+
+  [Test]
+  public async Task Delete_TheBlobsOfFilesThatWereRemoved()
+  {
+    FileRef removed = CreateUploadedFile(UserId, 1234);
+    FileRef kept = CreateUploadedFile(UserId, 5678);
+
+    await _acceptor.DeleteRemoved([removed, kept], [kept]);
+
+    _fileStore.DeletedFileIds.Should().BeEquivalentTo(removed.Id);
+  }
+
+  [Test]
+  public async Task Delete_Nothing_When_NoFileWasRemoved()
+  {
+    FileRef kept = CreateUploadedFile(UserId, 1234);
+
+    await _acceptor.DeleteRemoved([kept], [kept]);
+
     _fileStore.DeletedFileIds.Should().BeEmpty();
   }
 

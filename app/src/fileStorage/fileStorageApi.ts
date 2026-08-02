@@ -18,6 +18,12 @@ export async function putFileContent(
     headers: {
       "x-ms-blob-type": "BlockBlob",
       "Content-Type": getContentType(file),
+
+      // Marks the blob as not yet belonging to anything. Saving the entry it ends up on flips this
+      // to "committed" server-side, and a storage lifecycle rule deletes whatever is still pending
+      // after a day - which is what stops a cancelled edit from leaving the bytes behind forever.
+      // Kept in sync with FileTags.cs.
+      "x-ms-tags": "state=pending",
     },
     body: file,
   });

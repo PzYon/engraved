@@ -16,6 +16,8 @@ public class FakeFileStore : IFileStore
 
   public List<string> DeletedFileIds { get; } = [];
 
+  public List<string> CommittedFileIds { get; } = [];
+
   public void SetContentLength(string fileId, long contentLength)
   {
     _contentLengthsById[fileId] = contentLength;
@@ -36,6 +38,13 @@ public class FakeFileStore : IFileStore
   public Task Delete(string fileId)
   {
     DeletedFileIds.Add(fileId);
+
+    return Task.CompletedTask;
+  }
+
+  public Task MarkCommitted(string fileId)
+  {
+    CommittedFileIds.Add(fileId);
 
     return Task.CompletedTask;
   }
