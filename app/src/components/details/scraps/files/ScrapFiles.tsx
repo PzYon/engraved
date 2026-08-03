@@ -5,10 +5,16 @@ import { useScrapContext } from "../ScrapContext";
 import { useAppContext } from "../../../../AppContext";
 import { ServerApi } from "../../../../serverApi/ServerApi";
 import { IFileRef } from "../../../../serverApi/IFileRef";
+import { getReferencedFileIds } from "../../../../fileStorage/fileReferences";
 
 export const ScrapFiles: React.FC = () => {
-  const { files, removeFile, isEditMode } = useScrapContext();
+  const { files, removeFile, isEditMode, notes } = useScrapContext();
   const { setAppAlert } = useAppContext();
+
+  // Removing a file from an entry deletes its blob once the save goes through, so offering that for
+  // an image the text still places would destroy the bytes and leave the markdown pointing at
+  // nothing. Take it out of the text first and the chip becomes removable.
+  const placedFileIds = new Set(getReferencedFileIds(notes ?? ""));
 
   if (!files.length) {
     return null;
@@ -24,7 +30,11 @@ export const ScrapFiles: React.FC = () => {
           onClick={() => openFile(file)}
           // A chip only shows its delete affordance when onDelete is set, so this is also what keeps
           // removal out of view mode.
-          onDelete={isEditMode ? () => removeFile(file.id) : undefined}
+          onDelete={
+            isEditMode && !placedFileIds.has(file.id)
+              ? () => removeFile(file.id)
+              : undefined
+          }
           size="small"
         />
       ))}

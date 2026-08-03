@@ -114,6 +114,28 @@ describe("LazyMarkdown", () => {
     expect(paragraphs[3].textContent).toBe("Paragraph 2");
   });
 
+  // Images the markdown places by file id are resolved to a signed URL before they get here. One
+  // that arrives unresolved has no URL yet, or points at a file that is gone - either way an <img>
+  // with a src the browser cannot fetch would show a broken-image icon on first paint.
+  it("renders nothing for a file reference that was not resolved", () => {
+    const { container } = render(
+      <LazyMarkdown value={"![holiday](engraved:file/abc.signature)"} />,
+    );
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.innerHTML).not.toContain("engraved:file");
+  });
+
+  it("renders a resolved image", () => {
+    const { container } = render(
+      <LazyMarkdown value={"![holiday](https://files.example/abc?sig=x)"} />,
+    );
+
+    const image = container.querySelector("img");
+    expect(image?.getAttribute("src")).toBe("https://files.example/abc?sig=x");
+    expect(image?.getAttribute("alt")).toBe("holiday");
+  });
+
   it("keeps multi-line markdown blocks (bullet list) intact", () => {
     const { container } = render(<LazyMarkdown value={"- one\n- two"} />);
 

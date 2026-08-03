@@ -4,6 +4,7 @@ import { marked, Tokens } from "marked";
 import DOMPurify from "dompurify";
 import emojiRegex from "emoji-regex";
 import { IMarkdownProps } from "./IMarkdownProps";
+import { isFileReference } from "../../../../fileStorage/fileReferences";
 
 const regex = emojiRegex();
 
@@ -15,6 +16,17 @@ const md = marked.use({
   renderer: {
     link({ href, title, text }: Tokens.Link) {
       return `<a href="${href}" ${title ? `title="${title}"` : ""} target="_blank" rel="noopener noreferrer">${text}</a>`;
+    },
+
+    image({ href, title, text }: Tokens.Image) {
+      // A reference that still has no URL: its query has not come back yet, or the file is gone.
+      // Rendering nothing beats rendering an <img> whose src the browser cannot fetch, which would
+      // show a broken-image icon on every first paint.
+      if (isFileReference(href)) {
+        return "";
+      }
+
+      return `<img src="${href}" alt="${text}" ${title ? `title="${title}"` : ""} loading="lazy" />`;
     },
   },
   hooks: {

@@ -402,12 +402,16 @@ export class ServerApi {
   static async createFileUpload(
     journalId: string,
     file: File,
+    width?: number,
+    height?: number,
   ): Promise<ICreateFileUploadResult> {
     return await ServerApi.executeRequest("/files", "POST", {
       journalId,
       fileName: file.name,
       contentType: getContentType(file),
       contentLength: file.size,
+      width,
+      height,
     });
   }
 

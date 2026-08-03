@@ -2,6 +2,7 @@ import { css, styled } from "@mui/material";
 import { EditorContent, Extension, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
+import Image from "@tiptap/extension-image";
 import React, { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
@@ -53,8 +54,11 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   isTitle,
   showFormattingOptions,
   editModeActions,
+  onInsertImages,
 }) => {
-  const extensions = [StarterKit, Markdown];
+  // StarterKit carries no image node, so without this an image in the markdown would be dropped on
+  // the way in and lost on the next save.
+  const extensions = [StarterKit, Markdown, Image];
 
   if (isTitle) {
     extensions.push(DisableEnter);
@@ -78,6 +82,11 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
             return false;
           },
         },
+        handlePaste: (view, event) => insertImages(event.clipboardData),
+
+        handleDrop: (view, event) =>
+          insertImages((event as DragEvent).dataTransfer),
+
         handleTextInput: (view, from, to, text) => {
           if (from < 3) {
             return false;
@@ -119,6 +128,31 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   useEffect(() => {
     setGiveFocus?.(() => editor.commands?.focus());
   }, [editor, setGiveFocus]);
+
+  // Returns true only when images were actually taken, so that pasting text - or dropping anything
+  // else - still behaves exactly as it did before. The upload is not awaited here: ProseMirror needs
+  // the handled/not-handled answer synchronously, and the images are inserted once they arrive.
+  function insertImages(data: DataTransfer | null) {
+    if (!onInsertImages) {
+      return false;
+    }
+
+    const images = [...(data?.files ?? [])].filter((f) =>
+      f.type.startsWith("image/"),
+    );
+
+    if (!images.length) {
+      return false;
+    }
+
+    onInsertImages(images).then((sources) => {
+      for (const source of sources) {
+        editor.chain().focus().setImage(source).run();
+      }
+    });
+
+    return true;
+  }
 
   const [isEmpty, setIsEmpty] = useState(!editor.getText());
 
