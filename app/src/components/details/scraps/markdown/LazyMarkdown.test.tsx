@@ -136,6 +136,27 @@ describe("LazyMarkdown", () => {
     expect(image?.getAttribute("alt")).toBe("holiday");
   });
 
+  // A read URL carries the file name in a response-header override, and the storage SDK leaves the
+  // quotes around it unencoded. Interpolated into an attribute unescaped, the first of those quotes
+  // ends src early - the browser then requests a URL with no signature on it and storage answers
+  // 403, which looks exactly like the image simply not being there.
+  it("keeps a src containing quotes intact", () => {
+    const url =
+      'https://files.example/abc?rscd=inline%3B+filename%3D"holiday.webp"&rsct=image%2Fwebp&sig=abc%3D';
+
+    const { container } = render(<LazyMarkdown value={`![holiday](${url})`} />);
+
+    expect(container.querySelector("img")?.getAttribute("src")).toBe(url);
+  });
+
+  it("keeps a link href containing quotes intact", () => {
+    const url = 'https://example.com/a?name="x"&b=1';
+
+    const { container } = render(<LazyMarkdown value={`[click](${url})`} />);
+
+    expect(container.querySelector("a")?.getAttribute("href")).toBe(url);
+  });
+
   it("keeps multi-line markdown blocks (bullet list) intact", () => {
     const { container } = render(<LazyMarkdown value={"- one\n- two"} />);
 

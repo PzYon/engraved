@@ -8,6 +8,18 @@ import { isFileReference } from "../../../../fileStorage/fileReferences";
 
 const regex = emojiRegex();
 
+// These renderers build HTML by hand, so anything interpolated into an attribute has to be escaped
+// here - marked only does it for the renderers it ships. A read URL is the case that made this
+// matter: the storage SDK leaves the quotes around the filename in "rscd=inline; filename="x.webp""
+// unencoded, and one of those ends the src attribute early, cutting the signature off the URL.
+function attr(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 const md = marked.use({
   // Render a single newline inside a block as a line break. The rich text editor
   // stores a hard break (Shift+Enter) as a lone "\n", and we want it to show up
@@ -15,7 +27,7 @@ const md = marked.use({
   breaks: true,
   renderer: {
     link({ href, title, text }: Tokens.Link) {
-      return `<a href="${href}" ${title ? `title="${title}"` : ""} target="_blank" rel="noopener noreferrer">${text}</a>`;
+      return `<a href="${attr(href)}" ${title ? `title="${attr(title)}"` : ""} target="_blank" rel="noopener noreferrer">${text}</a>`;
     },
 
     image({ href, title, text }: Tokens.Image) {
@@ -26,7 +38,7 @@ const md = marked.use({
         return "";
       }
 
-      return `<img src="${href}" alt="${text}" ${title ? `title="${title}"` : ""} loading="lazy" />`;
+      return `<img src="${attr(href)}" alt="${attr(text)}" ${title ? `title="${attr(title)}"` : ""} loading="lazy" />`;
     },
   },
   hooks: {
