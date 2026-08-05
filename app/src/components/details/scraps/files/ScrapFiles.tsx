@@ -4,10 +4,10 @@ import AttachFile from "@mui/icons-material/AttachFile";
 import Image from "@mui/icons-material/Image";
 import { useScrapContext } from "../ScrapContext";
 import { useAppContext } from "../../../../AppContext";
-import { ServerApi } from "../../../../serverApi/ServerApi";
 import { IFileRef } from "../../../../serverApi/IFileRef";
 import { getReferencedFileIds } from "../../../../fileStorage/fileReferences";
 import { usePlaceImage } from "../markdown/PlaceImageContext";
+import { useFileUrl } from "../../../../fileStorage/useFileUrls";
 
 export const ScrapFiles: React.FC = () => {
   const { files, removeFile, isEditMode, notes } = useScrapContext();
@@ -15,6 +15,8 @@ export const ScrapFiles: React.FC = () => {
 
   // Only set while a markdown scrap is being edited - there is nowhere to place an image otherwise.
   const placeImage = usePlaceImage();
+
+  const getFileUrl = useFileUrl();
 
   // Removing a file from an entry deletes its blob once the save goes through, so offering that for
   // an image the text still places would destroy the bytes and leave the markdown pointing at
@@ -67,7 +69,7 @@ export const ScrapFiles: React.FC = () => {
   async function place(file: IFileRef) {
     try {
       placeImage?.({
-        src: await ServerApi.getFileUrl(file.id),
+        src: await getFileUrl(file.id),
         alt: file.fileName,
       });
     } catch {
@@ -82,7 +84,7 @@ export const ScrapFiles: React.FC = () => {
     try {
       // Asked for on demand rather than held: the URL is signed and expires, so one fetched when the
       // scrap was rendered could be dead by the time it is clicked.
-      const url = await ServerApi.getFileUrl(file.id);
+      const url = await getFileUrl(file.id);
 
       window.open(url, "_blank", "noopener,noreferrer");
     } catch {
