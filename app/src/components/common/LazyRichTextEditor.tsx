@@ -53,22 +53,22 @@ function replaceShorthand(
 // needs the handled/not-handled answer synchronously, and the images are inserted once they arrive.
 function insertDroppedImages(
   editor: Editor,
-  onInsertImages: IRichTextEditorProps["onInsertImages"],
+  images: IRichTextEditorProps["images"],
   data: DataTransfer | null,
 ) {
-  if (!onInsertImages) {
+  if (!images) {
     return false;
   }
 
-  const images = [...(data?.files ?? [])].filter((f) =>
+  const dropped = [...(data?.files ?? [])].filter((f) =>
     f.type.startsWith("image/"),
   );
 
-  if (!images.length) {
+  if (!dropped.length) {
     return false;
   }
 
-  onInsertImages(images).then((sources) => {
+  images.onDropped(dropped).then((sources) => {
     for (const source of sources) {
       editor.chain().focus().setImage(source).run();
     }
@@ -105,7 +105,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   isTitle,
   showFormattingOptions,
   editModeActions,
-  onInsertImages,
+  images,
 }) => {
   // StarterKit carries no image node, so without this an image in the markdown would be dropped on
   // the way in and lost on the next save.
@@ -157,12 +157,16 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
     [disabled],
   );
 
+  // One effect for both, because they are the same thing: handing the caller a way to drive an editor
+  // it cannot otherwise reach.
   useEffect(() => {
     setGiveFocus?.(() => editor.commands?.focus());
-  }, [editor, setGiveFocus]);
+
+    images?.setInsert((image) => editor.chain().focus().setImage(image).run());
+  }, [editor, setGiveFocus, images]);
 
   function insertImages(data: DataTransfer | null) {
-    return insertDroppedImages(editor, onInsertImages, data);
+    return insertDroppedImages(editor, images, data);
   }
 
   const [isEmpty, setIsEmpty] = useState(!editor.getText());

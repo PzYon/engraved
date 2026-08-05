@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { ActionFactory } from "../../../common/actions/ActionFactory";
 import { ScrapBody } from "../ScrapBody";
 import { useAppContext } from "../../../../AppContext";
@@ -13,6 +13,8 @@ import {
 } from "../../../../fileStorage/fileReferences";
 import { useFileUrls } from "../../../../fileStorage/useFileUrls";
 import { useUploadFile } from "../../../../fileStorage/useUploadFile";
+import { PlaceImageContext } from "./PlaceImageContext";
+import { IEditorImage } from "../../../common/IRichTextEditorProps";
 
 export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
   editModeActions = [],
@@ -39,35 +41,53 @@ export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
     [notes, fileUrls],
   );
 
+  // Held in a ref rather than passed down: the editor only exists in edit mode, and the file chips
+  // that call this are rendered by ScrapBody, below it. Kept identity-stable so that handing it to
+  // the editor does not re-run on every keystroke.
+  const insertImage = useRef<((image: IEditorImage) => void) | null>(null);
+
+  const placeImage = useCallback(
+    (image: IEditorImage) => insertImage.current?.(image),
+    [],
+  );
+
+  const [images] = useState(() => ({
+    onDropped: (imageFiles: File[]) => insertImages(imageFiles),
+    setInsert: (insert: (image: IEditorImage) => void) =>
+      (insertImage.current = insert),
+  }));
+
   return (
-    <ScrapBody
-      actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
-    >
-      {isEditMode ? (
-        <div style={{ marginTop: "10px" }}>
-          <RichTextEditor
-            initialValue={notesToRender}
-            // The editor hands back what it is showing, which is resolved URLs. Turning them back
-            // into references here is what keeps a signature out of the saved scrap - it would
-            // render for an hour and then break, on content already stored.
-            setValue={(value) =>
-              setNotes(
-                toStoredMarkdown(
-                  value,
-                  files.map((f) => f.id),
-                ),
-              )
-            }
-            autoFocus={!!title}
-            showFormattingOptions={true}
-            editModeActions={[...editModeActions]}
-            onInsertImages={insertImages}
-          />
-        </div>
-      ) : (
-        <Markdown value={notesToRender} />
-      )}
-    </ScrapBody>
+    <PlaceImageContext.Provider value={isEditMode ? placeImage : undefined}>
+      <ScrapBody
+        actions={[ActionFactory.copyValueToClipboard(notes, setAppAlert)]}
+      >
+        {isEditMode ? (
+          <div style={{ marginTop: "10px" }}>
+            <RichTextEditor
+              initialValue={notesToRender}
+              // The editor hands back what it is showing, which is resolved URLs. Turning them back
+              // into references here is what keeps a signature out of the saved scrap - it would
+              // render for an hour and then break, on content already stored.
+              setValue={(value) =>
+                setNotes(
+                  toStoredMarkdown(
+                    value,
+                    files.map((f) => f.id),
+                  ),
+                )
+              }
+              autoFocus={!!title}
+              showFormattingOptions={true}
+              editModeActions={[...editModeActions]}
+              images={images}
+            />
+          </div>
+        ) : (
+          <Markdown value={notesToRender} />
+        )}
+      </ScrapBody>
+    </PlaceImageContext.Provider>
   );
 
   // An inline image is an ordinary file that the markdown additionally places somewhere, so it goes
