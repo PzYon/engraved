@@ -1,6 +1,7 @@
 import React from "react";
-import { Chip, styled } from "@mui/material";
+import { Chip, styled, Tooltip } from "@mui/material";
 import AttachFile from "@mui/icons-material/AttachFile";
+import Image from "@mui/icons-material/Image";
 import { useScrapContext } from "../ScrapContext";
 import { useAppContext } from "../../../../AppContext";
 import { ServerApi } from "../../../../serverApi/ServerApi";
@@ -20,26 +21,44 @@ export const ScrapFiles: React.FC = () => {
     return null;
   }
 
-  return (
-    <Host>
-      {files.map((file) => (
+  return <Host>{files.map(renderChip)}</Host>;
+
+  function renderChip(file: IFileRef) {
+    // A file placed in the text and one merely attached behave differently - the placed one cannot be
+    // removed here - so they should not look identical either. The outline and the icon say which is
+    // which at a glance; the tooltip says why, for the one where it matters.
+    const isPlaced = placedFileIds.has(file.id);
+
+    return (
+      <Tooltip
+        key={file.id}
+        title={
+          isPlaced
+            ? "Shown in the text above. Delete it there to detach the file."
+            : ""
+        }
+      >
         <FileChip
-          key={file.id}
-          icon={<AttachFile fontSize="small" />}
+          icon={
+            isPlaced ? (
+              <Image fontSize="small" />
+            ) : (
+              <AttachFile fontSize="small" />
+            )
+          }
+          variant={isPlaced ? "outlined" : "filled"}
           label={`${file.fileName} (${formatSize(file.contentLength)})`}
           onClick={() => openFile(file)}
           // A chip only shows its delete affordance when onDelete is set, so this is also what keeps
           // removal out of view mode.
           onDelete={
-            isEditMode && !placedFileIds.has(file.id)
-              ? () => removeFile(file.id)
-              : undefined
+            isEditMode && !isPlaced ? () => removeFile(file.id) : undefined
           }
           size="small"
         />
-      ))}
-    </Host>
-  );
+      </Tooltip>
+    );
+  }
 
   async function openFile(file: IFileRef) {
     try {
@@ -84,6 +103,16 @@ const FileChip = styled(Chip)`
 
   &:hover {
     background-color: ${(p) => p.theme.palette.background.default};
+  }
+
+  /* Outlined marks a file the text already shows, so it reads as quieter than a plain attachment. */
+  &.MuiChip-outlined {
+    background-color: transparent;
+    border-color: ${(p) => p.theme.palette.background.default};
+
+    &:hover {
+      background-color: transparent;
+    }
   }
 
   /* Both icons colour themselves rather than following the label, so they need to be told. */
