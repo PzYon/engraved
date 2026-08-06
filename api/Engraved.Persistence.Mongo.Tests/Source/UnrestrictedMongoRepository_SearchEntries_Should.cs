@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Files;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Schedules;
 using Engraved.Persistence.Mongo.Repositories;
@@ -206,6 +208,69 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   }
 
   [Test]
+  public async Task Consider_AttachmentFileNames()
+  {
+    UpsertResult journal = await AddScrapWithAttachment("budget-2026.xlsx");
+
+    var results = await _repository.SearchEntries("budget", null, null, [journal.EntityId], 10);
+
+    results.Length.Should().Be(1);
+    results[0].Files[0].FileName.Should().Be("budget-2026.xlsx");
+  }
+
+  [Test]
+  public async Task Consider_AttachmentFileNames_OfAnyAttachedFile()
+  {
+    // A dotted path into an array of sub-documents matches when ANY element matches, so the
+    // second attachment must be found just as well as the first.
+    UpsertResult journal = await AddScrapWithAttachment("first.pdf", "second.pdf");
+
+    var results = await _repository.SearchEntries("second", null, null, [journal.EntityId], 10);
+
+    results.Length.Should().Be(1);
+  }
+
+  [Test]
+  public async Task Not_Consider_AttachmentFileNames_When_OnlyConsideringTitle()
+  {
+    // The title-only search exists to be narrow; folding attachments into it would defeat that.
+    UpsertResult journal = await AddScrapWithAttachment("budget-2026.xlsx");
+
+    var results = await _repository.SearchEntries(
+      "budget",
+      null,
+      null,
+      [journal.EntityId],
+      10,
+      null,
+      true
+    );
+
+    results.Should().BeEmpty();
+  }
+
+  [Test]
+  public async Task Not_Consider_AttachmentFileNames_When_MatchingAnyWord()
+  {
+    // Match-any-word collects candidates for "related items", which ranks them on title and notes
+    // alone - an entry matched purely by a file name would score zero there.
+    UpsertResult journal = await AddScrapWithAttachment("budget-2026.xlsx");
+
+    var results = await _repository.SearchEntries(
+      "budget",
+      null,
+      null,
+      [journal.EntityId],
+      10,
+      null,
+      false,
+      true
+    );
+
+    results.Should().BeEmpty();
+  }
+
+  [Test]
   public async Task Consider_JournalTypes_Negative()
   {
     var results = await _repository.SearchEntries(
@@ -374,6 +439,32 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     results.Length.Should().Be(2);
     ((ScrapsEntry)results[0]).Title.Should().Be("RecentUnscheduled");
     ((ScrapsEntry)results[1]).Title.Should().Be("OldButScheduled");
+  }
+
+  private async Task<UpsertResult> AddScrapWithAttachment(params string[] fileNames)
+  {
+    UpsertResult journal = await _repository.UpsertJournal(new ScrapsJournal { Name = "With Files" });
+
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = journal.EntityId,
+        ScrapType = ScrapType.Markdown,
+        Title = "Nothing to match here",
+        Files = fileNames
+          .Select(fileName => new FileRef
+            {
+              Id = MongoUtil.GenerateNewIdAsString(),
+              FileName = fileName,
+              ContentType = "application/octet-stream",
+              ContentLength = 1234
+            }
+          )
+          .ToArray()
+      }
+    );
+
+    return journal;
   }
 
   [Test]

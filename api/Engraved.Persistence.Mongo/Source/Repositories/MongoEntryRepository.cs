@@ -43,11 +43,10 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     if (!string.IsNullOrEmpty(searchText))
     {
       filters.AddRange(
-        FreeTextFilters.Build<EntryDocument>(
+        FreeTextFilters.Build(
           searchText,
           false,
-          d => d.Notes!,
-          d => ((ScrapsEntryDocument) d).Title!
+          GetFreeTextFields(onlyConsiderTitle: false, includeFileNames: true)
         )
       );
     }
@@ -106,12 +105,10 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     if (!string.IsNullOrEmpty(searchText))
     {
       filters.AddRange(
-        FreeTextFilters.Build<EntryDocument>(
+        FreeTextFilters.Build(
           searchText,
           matchAnyWord,
-          onlyConsiderTitle
-            ? [d => ((ScrapsEntryDocument) d).Title!]
-            : [d => ((ScrapsEntryDocument) d).Title!, d => d.Notes!]
+          GetFreeTextFields(onlyConsiderTitle, includeFileNames: !matchAnyWord)
         )
       );
     }
@@ -320,6 +317,33 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     );
 
     return entries;
+  }
+
+  // Attachment file names are searched alongside the text, so that a scrap can be found by what is
+  // attached to it. Two searches deliberately leave them out: the title-only search exists to be
+  // narrow, and the match-any-word search collects candidates for "related items", which ranks them
+  // on title and notes alone - an entry matched purely by a file name would score zero there.
+  private static FieldDefinition<EntryDocument>[] GetFreeTextFields(bool onlyConsiderTitle, bool includeFileNames)
+  {
+    FieldDefinition<EntryDocument> title = Field(d => ((ScrapsEntryDocument) d).Title!);
+
+    if (onlyConsiderTitle)
+    {
+      return [title];
+    }
+
+    FieldDefinition<EntryDocument> notes = Field(d => d.Notes!);
+
+    return includeFileNames
+      ? [title, notes, new StringFieldDefinition<EntryDocument>("Files.FileName")]
+      : [title, notes];
+  }
+
+  // ExpressionFieldDefinition takes an untyped LambdaExpression, so an inlined lambda has no
+  // inferable delegate type - this gives it one.
+  private static FieldDefinition<EntryDocument> Field(Expression<Func<EntryDocument, object>> expression)
+  {
+    return new ExpressionFieldDefinition<EntryDocument>(expression);
   }
 
   private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
