@@ -1,20 +1,14 @@
 import { css, styled } from "@mui/material";
-import { EditorContent, Extension, useEditor } from "@tiptap/react";
+import { Editor, EditorContent, Extension, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
+import Image from "@tiptap/extension-image";
+import { EditorView } from "@tiptap/pm/view";
 import React, { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
-import Code from "@mui/icons-material/Code";
-import FormatBold from "@mui/icons-material/FormatBold";
-import FormatItalic from "@mui/icons-material/FormatItalic";
-import FormatIndentDecrease from "@mui/icons-material/FormatIndentDecrease";
-import FormatIndentIncrease from "@mui/icons-material/FormatIndentIncrease";
-import FormatListBulleted from "@mui/icons-material/FormatListBulleted";
-import FormatQuote from "@mui/icons-material/FormatQuote";
-import FormatStrikethrough from "@mui/icons-material/FormatStrikethrough";
-import Spellcheck from "@mui/icons-material/Spellcheck";
 import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
+import { getFormattingActions } from "./formattingActions";
 
 const replacements: Record<string, string> = {
   "!!!": "‼️",
@@ -24,6 +18,64 @@ const replacements: Record<string, string> = {
 };
 
 const toReplace = Object.keys(replacements);
+
+// Turns "!!!" and friends into the single character as they are typed. Depends on nothing the
+// component holds, so it sits out here rather than nested three levels inside the editor options.
+function replaceShorthand(
+  view: EditorView,
+  from: number,
+  to: number,
+  text: string,
+) {
+  if (from < 3) {
+    return false;
+  }
+
+  const combined = view.state.doc.textBetween(from - 2, from, "") + text;
+
+  if (!toReplace.includes(combined)) {
+    return false;
+  }
+
+  view.dispatch(
+    view.state.tr.replaceWith(
+      from - 2,
+      to,
+      view.state.schema.text(replacements[combined]),
+    ),
+  );
+
+  return true;
+}
+
+// Returns true only when images were actually taken, so that pasting text - or dropping anything
+// else - still behaves exactly as it did before. The upload is deliberately not awaited: ProseMirror
+// needs the handled/not-handled answer synchronously, and the images are inserted once they arrive.
+function insertDroppedImages(
+  editor: Editor,
+  images: IRichTextEditorProps["images"],
+  data: DataTransfer | null,
+) {
+  if (!images) {
+    return false;
+  }
+
+  const dropped = [...(data?.files ?? [])].filter((f) =>
+    f.type.startsWith("image/"),
+  );
+
+  if (!dropped.length) {
+    return false;
+  }
+
+  images.onDropped(dropped).then((sources) => {
+    for (const source of sources) {
+      editor.chain().focus().setImage(source).run();
+    }
+  });
+
+  return true;
+}
 
 const DisableEnter = Extension.create({
   name: "disable-enter",
@@ -53,14 +105,19 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   isTitle,
   showFormattingOptions,
   editModeActions,
+  images,
 }) => {
-  const extensions = [StarterKit, Markdown];
+  // StarterKit carries no image node, so without this an image in the markdown would be dropped on
+  // the way in and lost on the next save.
+  const extensions = [StarterKit, Markdown, Image];
 
   if (isTitle) {
     extensions.push(DisableEnter);
   }
 
-  const editor = useEditor(
+  // Annotated rather than inferred: the paste handler below is part of this very call and passes the
+  // editor on, which without a declared type is a circular inference.
+  const editor: Editor = useEditor(
     {
       editorProps: {
         attributes: placeholder
@@ -78,28 +135,12 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
             return false;
           },
         },
-        handleTextInput: (view, from, to, text) => {
-          if (from < 3) {
-            return false;
-          }
+        handlePaste: (view, event) => insertImages(event.clipboardData),
 
-          const textBefore = view.state.doc.textBetween(from - 2, from, "");
-          const combined = textBefore + text;
+        handleDrop: (view, event) =>
+          insertImages((event as DragEvent).dataTransfer),
 
-          if (!toReplace.includes(combined)) {
-            return false;
-          }
-
-          const tr = view.state.tr.replaceWith(
-            from - 2,
-            to,
-            view.state.schema.text(replacements[combined]),
-          );
-
-          view.dispatch(tr);
-
-          return true;
-        },
+        handleTextInput: replaceShorthand,
       },
       extensions: extensions,
       content: initialValue === "" ? undefined : initialValue,
@@ -116,9 +157,17 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
     [disabled],
   );
 
+  // One effect for both, because they are the same thing: handing the caller a way to drive an editor
+  // it cannot otherwise reach.
   useEffect(() => {
     setGiveFocus?.(() => editor.commands?.focus());
-  }, [editor, setGiveFocus]);
+
+    images?.setInsert((image) => editor.chain().focus().setImage(image).run());
+  }, [editor, setGiveFocus, images]);
+
+  function insertImages(data: DataTransfer | null) {
+    return insertDroppedImages(editor, images, data);
+  }
 
   const [isEmpty, setIsEmpty] = useState(!editor.getText());
 
@@ -137,63 +186,11 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           stickToPosition="top"
           actions={[
             ...(editModeActions ?? []),
-            {
-              key: "formatting-bold",
-              icon: <FormatBold fontSize="small" />,
-              label: "Bold",
-              onClick: () => editor.chain().focus().toggleBold().run(),
-            },
-            {
-              key: "formatting-italic",
-              icon: <FormatItalic fontSize="small" />,
-              label: "Italic",
-              onClick: () => editor.chain().focus().toggleItalic().run(),
-            },
-            {
-              key: "strike",
-              icon: <FormatStrikethrough fontSize="small" />,
-              label: "Strike",
-              onClick: () => editor.chain().focus().toggleStrike().run(),
-            },
-            {
-              key: "formatting-code",
-              icon: <Code fontSize="small" />,
-              label: "Code",
-              onClick: () => editor.chain().focus().toggleCode().run(),
-            },
-            {
-              key: "quote",
-              icon: <FormatQuote fontSize="small" />,
-              label: "Quote",
-              onClick: () => editor.chain().focus().toggleBlockquote().run(),
-            },
-            {
-              key: "formatting-list",
-              icon: <FormatListBulleted fontSize="small" />,
-              label: "List",
-              onClick: () => editor.chain().focus().toggleBulletList().run(),
-            },
-            {
-              key: "formatting-indent-increase",
-              icon: <FormatIndentIncrease fontSize="small" />,
-              label: "Indent",
-              onClick: () =>
-                editor.chain().focus().sinkListItem("listItem").run(),
-            },
-            {
-              key: "formatting-indent-decrease",
-              icon: <FormatIndentDecrease fontSize="small" />,
-              label: "Unindent",
-              onClick: () =>
-                editor.chain().focus().liftListItem("listItem").run(),
-            },
-            {
-              key: "text-correction",
-              icon: <Spellcheck fontSize="small" />,
-              label: "Text correction",
-              onClick: () => setEnableSpellCheck(!enableSpellCheck),
-              isNotActive: !enableSpellCheck,
-            },
+            ...getFormattingActions(
+              editor,
+              enableSpellCheck,
+              setEnableSpellCheck,
+            ),
           ]}
         />
       ) : null}

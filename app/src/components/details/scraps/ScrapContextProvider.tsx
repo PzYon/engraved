@@ -228,11 +228,11 @@ export const ScrapContextProvider: React.FC<{
     function changeType() {
       const newNotes = convertNotesToTargetType(targetType, genericNotes);
 
-      setScrapToRender({
-        ...scrapToRender,
+      setScrapToRender((prev) => ({
+        ...prev,
         notes: newNotes,
         scrapType: targetType,
-      });
+      }));
     }
 
     if (changeTypeWithoutConfirmation || isEmpty(genericNotes)) {
@@ -281,9 +281,14 @@ export const ScrapContextProvider: React.FC<{
       return {
         journal,
         title: scrapToRender.title,
-        setTitle: (t) => setScrapToRender({ ...scrapToRender, title: t }),
+        // These update from the previous state rather than from the scrap this render closed over.
+        // The rich text editor builds its change handler once and keeps it, so the scrap it captured
+        // gets older with every edit - and writing that whole object back would undo anything
+        // changed since, which is how pasting an image put it in the notes but dropped it from the
+        // file list.
+        setTitle: (t) => setScrapToRender((prev) => ({ ...prev, title: t })),
         notes: scrapToRender.notes,
-        setNotes: (n) => setScrapToRender({ ...scrapToRender, notes: n }),
+        setNotes: (n) => setScrapToRender((prev) => ({ ...prev, notes: n })),
         // LogBook entries are date-only and stored as UTC midnight. Convert at this boundary so
         // the rest of the (local-time) UI keeps working and the shown calendar day is stable
         // regardless of the viewer's timezone.
@@ -291,12 +296,12 @@ export const ScrapContextProvider: React.FC<{
           ? utcToDateOnly(new Date(scrapToRender.dateTime))
           : new Date(scrapToRender.dateTime),
         setDate: (d) =>
-          setScrapToRender({
-            ...scrapToRender,
+          setScrapToRender((prev) => ({
+            ...prev,
             dateTime: d
               ? (isLogBook ? dateOnlyToUtc(d) : d).toJSON()
               : new Date().toJSON(),
-          }),
+          })),
         files: scrapToRender.files ?? [],
         addFile,
         removeFile,

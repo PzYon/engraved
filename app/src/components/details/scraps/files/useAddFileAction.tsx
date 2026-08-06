@@ -3,7 +3,7 @@ import AttachFile from "@mui/icons-material/AttachFile";
 import { useScrapContext } from "../ScrapContext";
 import { useAppContext } from "../../../../AppContext";
 import { IAction } from "../../../common/actions/IAction";
-import { uploadFile } from "../../../../fileStorage/uploadFile";
+import { useUploadFile } from "../../../../fileStorage/useUploadFile";
 
 // Returns the action plus the file input it drives: a hidden <input type="file"> is the only way to
 // open the picker, and it has to be rendered somewhere, so the caller places it.
@@ -13,6 +13,8 @@ export function useAddFileAction(): {
 } {
   const { addFile, journal } = useScrapContext();
   const { setAppAlert } = useAppContext();
+
+  const upload = useUploadFile();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -43,7 +45,7 @@ export function useAddFileAction(): {
         setIsUploading(true);
 
         try {
-          addFile(await uploadFile(journal.id ?? "", file));
+          addFile((await upload(journal.id ?? "", file)).file);
         } catch (error) {
           setAppAlert({
             title: `Could not upload "${file.name}".`,

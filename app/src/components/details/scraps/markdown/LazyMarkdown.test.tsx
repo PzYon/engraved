@@ -114,6 +114,49 @@ describe("LazyMarkdown", () => {
     expect(paragraphs[3].textContent).toBe("Paragraph 2");
   });
 
+  // Images the markdown places by file id are resolved to a signed URL before they get here. One
+  // that arrives unresolved has no URL yet, or points at a file that is gone - either way an <img>
+  // with a src the browser cannot fetch would show a broken-image icon on first paint.
+  it("renders nothing for a file reference that was not resolved", () => {
+    const { container } = render(
+      <LazyMarkdown value={"![holiday](engraved:file/abc.signature)"} />,
+    );
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.innerHTML).not.toContain("engraved:file");
+  });
+
+  it("renders a resolved image", () => {
+    const { container } = render(
+      <LazyMarkdown value={"![holiday](https://files.example/abc?sig=x)"} />,
+    );
+
+    const image = container.querySelector("img");
+    expect(image?.getAttribute("src")).toBe("https://files.example/abc?sig=x");
+    expect(image?.getAttribute("alt")).toBe("holiday");
+  });
+
+  // A read URL carries the file name in a response-header override, and the storage SDK leaves the
+  // quotes around it unencoded. Interpolated into an attribute unescaped, the first of those quotes
+  // ends src early - the browser then requests a URL with no signature on it and storage answers
+  // 403, which looks exactly like the image simply not being there.
+  it("keeps a src containing quotes intact", () => {
+    const url =
+      'https://files.example/abc?rscd=inline%3B+filename%3D"holiday.webp"&rsct=image%2Fwebp&sig=abc%3D';
+
+    const { container } = render(<LazyMarkdown value={`![holiday](${url})`} />);
+
+    expect(container.querySelector("img")?.getAttribute("src")).toBe(url);
+  });
+
+  it("keeps a link href containing quotes intact", () => {
+    const url = 'https://example.com/a?name="x"&b=1';
+
+    const { container } = render(<LazyMarkdown value={`[click](${url})`} />);
+
+    expect(container.querySelector("a")?.getAttribute("href")).toBe(url);
+  });
+
   it("keeps multi-line markdown blocks (bullet list) intact", () => {
     const { container } = render(<LazyMarkdown value={"- one\n- two"} />);
 

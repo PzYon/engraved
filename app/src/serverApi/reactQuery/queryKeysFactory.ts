@@ -13,6 +13,12 @@ export const queryKeysFactory = {
     return ["entry", entryId];
   },
 
+  // Not nested under the entry holding the file: the same file can be placed in more than one scrap,
+  // and a key per file lets those share one cached URL.
+  fileUrl(fileId: string) {
+    return ["file", fileId, "url"];
+  },
+
   journals(
     searchText?: string,
     journalTypes?: JournalType[],
