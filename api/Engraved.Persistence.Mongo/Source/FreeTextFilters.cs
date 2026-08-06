@@ -20,6 +20,22 @@ public static class FreeTextFilters
     params Expression<Func<T, object>>[] fieldNameExpressions
   ) where T : IDocument
   {
+    return Build(
+      searchText,
+      matchAnyWord,
+      fieldNameExpressions.Select(FieldDefinition<T> (e) => new ExpressionFieldDefinition<T>(e)).ToArray()
+    );
+  }
+
+  // Same as above, for callers that need a field a lambda cannot express: a field inside an array of
+  // sub-documents ("Files.FileName", which mongo matches when ANY element matches) can only be
+  // written as a string path - the driver turns an expression into an indexed path instead.
+  public static List<FilterDefinition<T>> Build<T>(
+    string? searchText,
+    bool matchAnyWord,
+    params FieldDefinition<T>[] fields
+  ) where T : IDocument
+  {
     if (string.IsNullOrEmpty(searchText))
     {
       return [];
@@ -36,8 +52,8 @@ public static class FreeTextFilters
             : Regex.Escape(segment);
 
           return Builders<T>.Filter.Or(
-            fieldNameExpressions.Select(exp => Builders<T>.Filter.Regex(
-                exp,
+            fields.Select(field => Builders<T>.Filter.Regex(
+                field,
                 new BsonRegularExpression(
                   new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline)
                 )

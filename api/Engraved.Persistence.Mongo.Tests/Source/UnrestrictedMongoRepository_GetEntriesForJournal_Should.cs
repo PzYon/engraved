@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Engraved.Core.Application.Persistence;
 using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Files;
 using Engraved.Core.Domain.Journals;
 using Engraved.Persistence.Mongo.Repositories;
 using Engraved.TestUtils;
@@ -201,6 +202,41 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     );
 
     entries.Length.Should().Be(1);
+  }
+
+  [Test]
+  public async Task Consider_AttachmentFileNames()
+  {
+    UpsertResult scrapsJournal = await _repository.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
+
+    await _repository.UpsertEntry(
+      new ScrapsEntry
+      {
+        ParentId = scrapsJournal.EntityId,
+        ScrapType = ScrapType.Markdown,
+        Title = "Nothing to match here",
+        Files =
+        [
+          new FileRef
+          {
+            Id = MongoUtil.GenerateNewIdAsString(),
+            FileName = "budget-2026.xlsx",
+            ContentType = "application/octet-stream",
+            ContentLength = 1234
+          }
+        ]
+      }
+    );
+
+    await AddScrap(scrapsJournal.EntityId, DateTime.Now, DateTime.Now);
+
+    var entries = await _repository.GetEntriesForJournal(
+      scrapsJournal.EntityId,
+      searchText: "budget"
+    );
+
+    entries.Length.Should().Be(1);
+    entries[0].Files[0].FileName.Should().Be("budget-2026.xlsx");
   }
 
   [Test]
