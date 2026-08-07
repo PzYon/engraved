@@ -88,16 +88,29 @@ function getHtml(value: string, useBasic?: boolean) {
 // blocks are handed to marked as usual, so multi-line constructs (lists, hard
 // breaks, ...) - which use single newlines internally - keep rendering correctly.
 function parseBlocks(value: string): string {
-  return value
+  const blocks = value
     .replace(/^[^\S\n]+$/gm, "") // treat whitespace-only lines as empty lines
-    .split(/\n\n/)
-    .map((block) => {
-      const trimmed = block.trim();
-      return trimmed === "" || trimmed === "&nbsp;"
-        ? "<p>&nbsp;</p>"
-        : md.parse(block).toString();
-    })
+    .split(/\n\n/);
+
+  // Blank lines between content are the spacing the user added, but blank lines
+  // after it are not: the editor's document always ends in a block, so leaving a
+  // list (Enter on an empty item) drops the caret into an empty paragraph that is
+  // then serialized along with the rest. Rendering that would put an empty line
+  // between the content and whatever follows it - the entry footer, usually.
+  while (blocks.length && isEmptyBlock(blocks[blocks.length - 1])) {
+    blocks.pop();
+  }
+
+  return blocks
+    .map((block) =>
+      isEmptyBlock(block) ? "<p>&nbsp;</p>" : md.parse(block).toString(),
+    )
     .join("");
+}
+
+function isEmptyBlock(block: string): boolean {
+  const trimmed = block.trim();
+  return trimmed === "" || trimmed === "&nbsp;";
 }
 
 export default LazyMarkdown;
