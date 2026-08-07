@@ -38,11 +38,25 @@ const updateServiceWorker = registerSW({
 });
 
 /**
+ * Called when an update the user asked for did not happen. The message is meant
+ * to be shown to them, so it says what to do about it rather than what broke.
+ */
+export type UpdateFailedHandler = (message: string) => void;
+
+// A worker that fetches imports while installing - ours pulls the OneSignal SDK
+// from a CDN, see vite.config.js - can be slow on a bad connection, but not this
+// slow. Past this we report instead of leaving the button looking dead.
+const installTimeoutMs = 30_000;
+
+/**
  * Update the app to the freshly deployed version and reload once the new
  * service worker controls the page. Safe to call even when service workers are
- * unavailable (falls back to a plain reload).
+ * unavailable (falls back to a plain reload). Reports through `onFailed` when
+ * the update cannot be completed, so that the caller can tell the user.
  */
-export async function applyNewVersion(): Promise<void> {
+export async function applyNewVersion(
+  onFailed?: UpdateFailedHandler,
+): Promise<void> {
   userRequestedUpdate = true;
 
   const registration = swRegistration;
@@ -69,9 +83,80 @@ export async function applyNewVersion(): Promise<void> {
     console.warn("Service worker update check failed.", error);
   }
 
-  // Fallback: if no new worker materialised (already up to date locally, or the
-  // update check failed), reload so the user is never stuck on the button.
-  if (!registration.waiting && !registration.installing) {
-    location.reload();
+  // update() resolves once the check is done, which is normally well before the
+  // worker it found has finished installing. Waiting for that here is what keeps
+  // the button from silently doing nothing: an install that fails - a throwing
+  // importScripts takes the worker straight to "redundant" - means onNeedRefresh
+  // never fires, and without this nothing would happen and nothing be reported.
+  if (registration.installing) {
+    await waitForInstall(registration.installing, onFailed);
+    return;
   }
+
+  // Installed while we were waiting on update() - activate it + reload.
+  if (registration.waiting) {
+    await updateServiceWorker(true);
+    return;
+  }
+
+  // Nothing new to install: we already run the newest worker the server offers,
+  // so a plain reload is both correct here and all we can do.
+  location.reload();
+}
+
+// Resolves once the worker has installed (onNeedRefresh then finishes the
+// update), and reports through onFailed when it dies or takes too long instead.
+function waitForInstall(
+  worker: ServiceWorker,
+  onFailed?: UpdateFailedHandler,
+): Promise<void> {
+  return new Promise((resolve) => {
+    const timeout = window.setTimeout(
+      () =>
+        finish(
+          "The new version is taking too long to install. Please try again.",
+        ),
+      installTimeoutMs,
+    );
+
+    function finish(failure?: string) {
+      window.clearTimeout(timeout);
+      worker.removeEventListener("statechange", checkState);
+
+      if (failure) {
+        console.error(
+          `Service worker update failed (state "${worker.state}").`,
+          failure,
+        );
+        onFailed?.(failure);
+      }
+
+      resolve();
+    }
+
+    function checkState() {
+      switch (worker.state) {
+        // "installed" means it is waiting to activate: onNeedRefresh has fired
+        // by now and, because the user asked for this, already triggered the
+        // skipWaiting + reload. "activated" means that is under way.
+        case "installed":
+        case "activated":
+          finish();
+          break;
+
+        // The install failed. A throwing importScripts is how that happens here.
+        case "redundant":
+          finish(
+            "The new version could not be installed - it probably could not be downloaded. Please check your connection and try again.",
+          );
+          break;
+      }
+    }
+
+    worker.addEventListener("statechange", checkState);
+
+    // The worker can have moved on between us reading registration.installing
+    // and subscribing here, in which case no further statechange is coming.
+    checkState();
+  });
 }

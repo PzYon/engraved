@@ -43,9 +43,13 @@ class LazyLoadErrorBoundaryClass extends React.Component<
 const ErrorOnLazyLoad: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
 
+  // This dialog is rendered above AppContextProvider (see App.tsx), so a failed
+  // update cannot go through the usual app alert and is shown right here.
+  const [failure, setFailure] = useState("");
+
   return (
     <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-      <Host onClick={() => void applyNewVersion()}>
+      <Host onClick={() => void applyNewVersion(setFailure)}>
         <SwitchAccessShortcutOutlined
           sx={{ color: "primary.main" }}
           fontSize={"large"}
@@ -53,6 +57,9 @@ const ErrorOnLazyLoad: React.FC = () => {
         <Typography sx={{ pt: 2, color: "primary.main" }}>
           Update available, click to reload.
         </Typography>
+        {failure ? (
+          <Typography sx={{ pt: 2, color: "error.main" }}>{failure}</Typography>
+        ) : null}
       </Host>
     </Dialog>
   );

@@ -5,9 +5,12 @@ import { useQuery } from "@tanstack/react-query";
 import { queryKeysFactory } from "./serverApi/reactQuery/queryKeysFactory";
 import { ActionFactory } from "./components/common/actions/ActionFactory";
 import { FadeInContainer } from "./components/common/FadeInContainer";
+import { useAppContext } from "./AppContext";
 
 export const VersionChecker: React.FC = () => {
   const isNewVersionAvailable = useIsNewVersionAvailableQuery();
+
+  const { setAppAlert } = useAppContext();
 
   if (!isNewVersionAvailable) {
     return null;
@@ -15,7 +18,9 @@ export const VersionChecker: React.FC = () => {
 
   return (
     <FadeInContainer doPulsate={true}>
-      <ActionIconButton action={ActionFactory.updateToNewVersion()} />
+      <ActionIconButton
+        action={ActionFactory.updateToNewVersion(setAppAlert)}
+      />
     </FadeInContainer>
   );
 };
