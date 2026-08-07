@@ -165,4 +165,53 @@ describe("LazyMarkdown", () => {
     expect(items[0].textContent).toBe("one");
     expect(items[1].textContent).toBe("two");
   });
+
+  // The editor's document always ends in a block, so the only way out of a list is
+  // Enter on an empty item - which leaves an empty paragraph behind that the editor
+  // serializes as a trailing "\n\n". Rendering it would add an empty line between
+  // the content and the entry footer.
+  it("drops a trailing empty paragraph after a list", () => {
+    const { container } = render(<LazyMarkdown value={"- one\n- two\n\n"} />);
+
+    expect(container.querySelectorAll("li")).toHaveLength(2);
+    expect(container.querySelectorAll("p")).toHaveLength(0);
+    expect(container.innerHTML).not.toContain("&nbsp;");
+  });
+
+  it("drops a trailing empty paragraph after a plain paragraph", () => {
+    const { container } = render(<LazyMarkdown value={"Paragraph 1\n\n"} />);
+
+    const paragraphs = container.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraphs[0].textContent).toBe("Paragraph 1");
+    expect(container.innerHTML).not.toContain("&nbsp;");
+  });
+
+  it("drops several trailing empty paragraphs", () => {
+    const { container } = render(
+      <LazyMarkdown value={"- one\n\n\n\n&nbsp;\n\n \n\n"} />,
+    );
+
+    expect(container.querySelectorAll("li")).toHaveLength(1);
+    expect(container.querySelectorAll("p")).toHaveLength(0);
+    expect(container.innerHTML).not.toContain("&nbsp;");
+  });
+
+  it("keeps empty paragraphs that are between content", () => {
+    const { container } = render(
+      <LazyMarkdown value={"- one\n\n\n\nafter\n\n"} />,
+    );
+
+    const paragraphs = container.querySelectorAll("p");
+    expect(container.querySelectorAll("li")).toHaveLength(1);
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0].innerHTML).toBe("&nbsp;");
+    expect(paragraphs[1].textContent).toBe("after");
+  });
+
+  it("renders nothing for markdown that is only blank lines", () => {
+    const { container } = render(<LazyMarkdown value={"\n\n&nbsp;\n\n"} />);
+
+    expect(container.querySelectorAll("p")).toHaveLength(0);
+  });
 });
