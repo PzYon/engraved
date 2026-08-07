@@ -11,8 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Identity" Version="1.17.0"/>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.26.0"/>
+        <PackageReference Include="Azure.Identity" Version="1.21.0"/>
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.29.1"/>
     </ItemGroup>
 
 </Project>
