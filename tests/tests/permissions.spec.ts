@@ -78,9 +78,6 @@ test("multiple users editing the same scrap", async ({ browser }) => {
 
   await navigateToJournalPage(bobPage, joesJournalName);
 
-  // Bob edits a scrap that belongs to Joe. Write access comes from the journal
-  // permission, not from owning the entry - this used to fail with
-  // "Entity does not belong to current user".
   const scrapAsBob = new ScrapMarkdownComponent(bobPage);
   await scrapAsBob.expectContent("Hello");
 
@@ -88,8 +85,6 @@ test("multiple users editing the same scrap", async ({ browser }) => {
   await scrapAsBob.typeAtEnd(" from Bob");
   await scrapAsBob.blurToAutoSave(true);
 
-  // Joe sees Bob's edit and is still allowed to edit the very same scrap, so
-  // editing it did not hand ownership over to Bob.
   await joePage.reload();
 
   const scrapAsJoe = new ScrapMarkdownComponent(joePage);
@@ -99,7 +94,6 @@ test("multiple users editing the same scrap", async ({ browser }) => {
   await scrapAsJoe.typeAtEnd(" and Joe");
   await scrapAsJoe.blurToAutoSave(true);
 
-  // both edits are persisted, and both users see the same scrap
   await joePage.reload();
   await scrapAsJoe.expectContent("Hello from Bob and Joe");
 
