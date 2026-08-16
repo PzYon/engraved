@@ -66,7 +66,27 @@ public class UserRestrictedEntryRepository(MongoEntryRepository entryRepository,
   public async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
     where TEntry : IEntry
   {
-    writeGuard.EnsureUserId(entry);
+    IEntry? existingEntry = string.IsNullOrEmpty(entry.Id) ? null : await entryRepository.GetEntry(entry.Id);
+
+    if (existingEntry == null)
+    {
+      writeGuard.EnsureUserId(entry);
+    }
+    else
+    {
+      // Write access to an entry comes from the parent journal, not from owning the entry, so a
+      // collaborator may update one that belongs to somebody else. Ensure we don't accidentally
+      // change the owner while doing so - same rule as for journals in
+      // UserRestrictedJournalRepository.
+      entry.UserId = existingEntry.UserId;
+
+      if (existingEntry.ParentId != entry.ParentId)
+      {
+        // the entry is being moved out of its current journal, which is a write there too
+        await writeGuard.EnsureUserHasWritePermission(existingEntry.ParentId);
+      }
+    }
+
     await writeGuard.EnsureUserHasWritePermission(entry.ParentId);
     return await entryRepository.UpsertEntry(entry);
   }

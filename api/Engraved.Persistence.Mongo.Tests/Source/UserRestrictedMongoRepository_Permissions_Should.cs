@@ -193,6 +193,43 @@ public class UserRestrictedMongoRepository_Permissions_Should
   }
 
   [Test]
+  public async Task UpsertEntry_Update_Possible_WithWritePermissions_WhenEntryIsOwnedByOtherUser()
+  {
+    var journalId = await CreateJournalForOtherUser();
+    await GiveMePermissions(journalId, PermissionKind.Write);
+    var entryId = await AddEntryForOtherUser(journalId);
+
+    // What the upsert command executor does: load the stored entry, apply the command to it, write
+    // it back. The entry therefore still carries the other user's UserId.
+    IEntry entry = (await _userRestrictedRepository.GetEntry(entryId))!;
+    entry.Notes = "edited by me";
+
+    await _userRestrictedRepository.UpsertEntry(entry);
+
+    IEntry stored = (await _repository.GetEntry(entryId))!;
+    stored.Notes.Should().Be("edited by me");
+    stored.UserId.Should().Be(_otherUserId);
+  }
+
+  [Test]
+  public async Task UpsertEntry_Move_NotPossible_WithoutWritePermissionsOnSourceJournal()
+  {
+    var otherJournalId = await CreateJournalForOtherUser();
+    var entryId = await AddEntryForOtherUser(otherJournalId);
+
+    UpsertResult myJournal = await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
+
+    IEntry entry = (await _userRestrictedRepository.GetEntry(entryId))!;
+    entry.ParentId = myJournal.EntityId;
+
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+      {
+        await _userRestrictedRepository.UpsertEntry(entry);
+      }
+    );
+  }
+
+  [Test]
   public async Task UpsertJournal_Update_NotPossible_WithNoPermissionsAtAll()
   {
     var journalId = await CreateJournalForOtherUser();
