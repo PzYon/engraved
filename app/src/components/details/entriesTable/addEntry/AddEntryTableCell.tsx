@@ -89,7 +89,11 @@ export const AddEntryTableCell: React.FC<{
         <TextField
           value={currentValue}
           onChange={(event) => {
-            updateCommandWrapped(Number(event.target.value));
+            updateCommandWrapped(
+              event.target.value === ""
+                ? undefined
+                : Number(event.target.value),
+            );
           }}
           type={"number"}
           sx={{ marginBottom: "0" }}

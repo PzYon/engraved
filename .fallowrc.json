@@ -12,6 +12,13 @@
         "files": ["app/src/components/common/LazyRichTextEditor.tsx"],
         "maxCognitive": 23,
         "reason": "Same situation as the provider above: already at cognitive 22 on main and so over the threshold before this was touched, but never reported, because the gate only counts changed files. Adding the onInsertImages prop took it to 23. The score tracks the component's prop and hook profile rather than its statements - extracting the formatting actions, the shorthand replacement and the image insertion cut it from 171 lines to 112 and moved the number not at all - so the only way under is to change the component's shape, which is worth doing on its own and not inside a feature change. Pinned at exactly 23 so it cannot grow."
+      },
+      {
+        "files": ["app/src/components/details/add/UpsertEntryAction.tsx"],
+        "maxCyclomatic": 25,
+        "maxCognitive": 29,
+        "maxCrap": 651,
+        "reason": "Third instance of the same story: UpsertEntryActionInternal sits at cyclomatic 25, cognitive 29 and CRAP 650 on main and has for a long time, so the one-line fix for #3005 in createCommand failed the gate on debt it did not create. Pinned at exactly those values, except CRAP, where the check is meets-or-exceeds rather than exceeds, so 650 would still report and 651 is the tightest ceiling available. The component is 182 lines with 12 hooks, 8 of them state, and no test covers it - CRAP 650 is 625 of untested complexity plus its cyclomatic 25, so tests would move it further than any extraction. Splitting it up, or covering it, is the real fix; this only stops it growing meanwhile. Note the file-wide scope also raises the ceiling for createCommand, which is at CRAP 72 and should come down with the same tests."
       }
     ]
   }
