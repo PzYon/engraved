@@ -240,7 +240,7 @@ const UpsertEntryActionInternal: React.FC<{
     switch (journal.type) {
       case JournalType.Gauge: {
         (command as IUpsertGaugeEntryCommand).value =
-          value !== "" && !isNaN(value as never) ? Number(value) : undefined;
+          value === "" ? undefined : Number(value);
         break;
       }
 
