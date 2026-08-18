@@ -6,12 +6,21 @@ import { registerSW } from "virtual:pwa-register";
 // location.reload() after a deploy is unreliable: the reload navigation is
 // answered by the still-active worker from the OLD precache, so the page can
 // land right back on the stale version whose lazily imported chunks were
-// deleted by the deploy ("Failed to fetch dynamically imported module").
+// deleted by the deploy ("Failed to fetch dynamically imported module"). Worse,
+// a reload never activates a worker that is waiting, so reloading again does
+// not help either - only a cache-bypassing hard reload would.
 //
-// To update deterministically we drive the service-worker lifecycle: make the
-// freshly deployed worker skipWaiting and only reload once it controls the page
-// (registerType is "prompt", so the new worker waits for our signal instead of
-// auto-activating and reloading the page out from under the user).
+// To update deterministically we drive the service-worker lifecycle ourselves:
+// install the freshly deployed worker, tell it to skipWaiting, and reload only
+// once it actually controls the page (registerType is "prompt", so the new
+// worker waits for that signal instead of activating on its own and reloading
+// the page out from under the user).
+//
+// Every step below is done by hand rather than through the callbacks of
+// virtual:pwa-register. Those are driven by workbox-window, which stops
+// listening for updates after the first one it sees in a page session and only
+// reports a waiting worker through a deferred event - both of which leave the
+// update button doing nothing at all on a page that has been open for a while.
 
 // Only activate + reload after the user explicitly asks to update. Background
 // update checks must never reload the page on their own.
@@ -19,23 +28,26 @@ let userRequestedUpdate = false;
 
 let swRegistration: ServiceWorkerRegistration | undefined;
 
-const updateServiceWorker = registerSW({
+registerSW({
   immediate: true,
   onRegisteredSW: (_swScriptUrl, registration) => {
     swRegistration = registration;
-  },
-  onNeedRefresh: () => {
-    // A newly deployed worker finished installing and is now waiting. If the
-    // user already clicked "update", activate it now; the plugin reloads the
-    // page once the new worker takes control.
-    if (userRequestedUpdate) {
-      void updateServiceWorker(true);
-    }
   },
   onRegisterError: (error) => {
     console.warn("Service worker registration failed.", error);
   },
 });
+
+// The one place that reloads once an update went through: the new worker has
+// taken over, so this navigation is answered from its precache and we get the
+// freshly deployed app rather than the old one.
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (userRequestedUpdate) {
+      location.reload();
+    }
+  });
+}
 
 /**
  * Called when an update the user asked for did not happen. The message is meant
@@ -48,6 +60,9 @@ export type UpdateFailedHandler = (message: string) => void;
 // slow. Past this we report instead of leaving the button looking dead.
 const installTimeoutMs = 30_000;
 
+// Activation is local work (no network), so it is quick or it is broken.
+const activationTimeoutMs = 10_000;
+
 /**
  * Update the app to the freshly deployed version and reload once the new
  * service worker controls the page. Safe to call even when service workers are
@@ -59,57 +74,90 @@ export async function applyNewVersion(
 ): Promise<void> {
   userRequestedUpdate = true;
 
+  const failed = (message: string) => {
+    // Leave the flag off again: a controller change we no longer expect - one
+    // triggered by another tab, say - must not reload this page behind the
+    // user's back after we told them the update did not work.
+    userRequestedUpdate = false;
+    onFailed?.(message);
+  };
+
   const registration = swRegistration;
 
   // No service worker in play (unsupported browser or registration failed):
-  // a normal reload is the best we can do.
+  // nothing can be serving us a stale precache either, so a normal reload is
+  // both safe and the best we can do.
   if (!registration) {
     location.reload();
     return;
   }
 
-  // A worker is already installed and waiting -> activate it + reload.
-  if (registration.waiting) {
-    await updateServiceWorker(true);
+  // Look for a newer worker even when one is already waiting: with two deploys
+  // since this page loaded, the waiting one is behind too, and activating it
+  // would only bring the update button straight back.
+  const failure = await installNewWorker(registration);
+
+  const waiting = registration.waiting;
+
+  if (!waiting) {
+    if (failure) {
+      failed(failure);
+      return;
+    }
+
+    // Nothing new to install: we already run the newest worker the server
+    // offers, so this reload is answered by the up-to-date precache.
+    location.reload();
     return;
   }
 
-  // Otherwise ask the browser to look for the freshly deployed worker. If one
-  // is found it installs and fires onNeedRefresh above, which finishes the
-  // update (skipWaiting -> controllerchange -> reload).
+  // Something is waiting, so even a failed check above (an offline retry, say)
+  // is not fatal - that worker is still newer than the one running the page.
+  //
+  // Hand-rolled because virtual:pwa-register only sends this when workbox-window
+  // still happens to be tracking the update. The message is the contract of the
+  // worker generated by vite-plugin-pwa in "prompt" mode, which calls
+  // skipWaiting() on receiving it - see the listener in the generated sw.js.
+  waiting.postMessage({ type: "SKIP_WAITING" });
+
+  // The reload itself is done by the controllerchange listener above; waiting
+  // for it here is what lets us tell the user when it never happens instead of
+  // leaving them on a page that silently stayed old.
+  if (!(await waitForControllerChange())) {
+    failed("The new version could not be activated. Please try again.");
+  }
+}
+
+/**
+ * Looks for a freshly deployed worker and installs it. Resolves with a message
+ * for the user when that fails, and with undefined when it worked or when there
+ * was nothing new to install.
+ */
+async function installNewWorker(
+  registration: ServiceWorkerRegistration,
+): Promise<string | undefined> {
   try {
     await registration.update();
   } catch (error) {
-    console.warn("Service worker update check failed.", error);
+    // Do NOT fall through to a reload here: an update we asked for and that
+    // failed means the old worker is still in charge, so reloading would just
+    // serve the old app again while looking like the update went through.
+    console.error("Service worker update check failed.", error);
+    return "The new version could not be downloaded. Please check your connection and try again.";
   }
 
-  // update() resolves once the check is done, which is normally well before the
-  // worker it found has finished installing. Waiting for that here is what keeps
-  // the button from silently doing nothing: an install that fails - a throwing
-  // importScripts takes the worker straight to "redundant" - means onNeedRefresh
-  // never fires, and without this nothing would happen and nothing be reported.
-  if (registration.installing) {
-    await waitForInstall(registration.installing, onFailed);
-    return;
-  }
-
-  // Installed while we were waiting on update() - activate it + reload.
-  if (registration.waiting) {
-    await updateServiceWorker(true);
-    return;
-  }
-
-  // Nothing new to install: we already run the newest worker the server offers,
-  // so a plain reload is both correct here and all we can do.
-  location.reload();
+  // update() resolves once the worker it found has been created, which is well
+  // before that worker has finished installing. Waiting for that here is what
+  // keeps the button from silently doing nothing: an install that fails - a
+  // throwing importScripts takes the worker straight to "redundant" - would
+  // otherwise leave us reporting success while nothing was updated.
+  const installing = registration.installing;
+  return installing ? await waitForInstall(installing) : undefined;
 }
 
-// Resolves once the worker has installed (onNeedRefresh then finishes the
-// update), and reports through onFailed when it dies or takes too long instead.
-function waitForInstall(
-  worker: ServiceWorker,
-  onFailed?: UpdateFailedHandler,
-): Promise<void> {
+// Resolves with a message for the user when the worker died or took too long,
+// and with undefined once it is installed and ready to be activated.
+function waitForInstall(worker: ServiceWorker): Promise<string | undefined> {
   return new Promise((resolve) => {
     const timeout = window.setTimeout(
       () =>
@@ -128,17 +176,16 @@ function waitForInstall(
           `Service worker update failed (state "${worker.state}").`,
           failure,
         );
-        onFailed?.(failure);
       }
 
-      resolve();
+      resolve(failure);
     }
 
     function checkState() {
       switch (worker.state) {
-        // "installed" means it is waiting to activate: onNeedRefresh has fired
-        // by now and, because the user asked for this, already triggered the
-        // skipWaiting + reload. "activated" means that is under way.
+        // "installed" means it is waiting to activate, which is exactly what we
+        // want: the caller sends it skipWaiting next. "activated" means someone
+        // else already did so, which is just as good.
         case "installed":
         case "activated":
           finish();
@@ -158,5 +205,31 @@ function waitForInstall(
     // The worker can have moved on between us reading registration.installing
     // and subscribing here, in which case no further statechange is coming.
     checkState();
+  });
+}
+
+// Resolves with true once the new worker controls the page (the listener above
+// then reloads), and with false when it never got that far.
+function waitForControllerChange(): Promise<boolean> {
+  return new Promise((resolve) => {
+    const timeout = window.setTimeout(() => finish(false), activationTimeoutMs);
+
+    function finish(didChange: boolean) {
+      window.clearTimeout(timeout);
+      navigator.serviceWorker.removeEventListener(
+        "controllerchange",
+        onControllerChange,
+      );
+      resolve(didChange);
+    }
+
+    function onControllerChange() {
+      finish(true);
+    }
+
+    navigator.serviceWorker.addEventListener(
+      "controllerchange",
+      onControllerChange,
+    );
   });
 }
