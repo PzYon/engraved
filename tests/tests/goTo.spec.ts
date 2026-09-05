@@ -1,4 +1,5 @@
-import { expect, test } from "../src/fixtures";
+import { expect } from "@playwright/test";
+import { test } from "../src/fixtures";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { navigateToHome } from "../src/utils/navigateTo";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
@@ -44,10 +45,7 @@ test("search in go to, click empty-state search link to open search page", async
 
   await goToPage.clickItem(0);
 
-  await expect(page).toHaveURL(
-    (url) =>
-      url.pathname === "/search" && url.searchParams.get("q") === "zzznomatch999",
-  );
+  await expect(page).toHaveURL(/\/search\?q=zzznomatch999$/);
 });
 
 test("initially shows recent journals, navigates with click", async ({
