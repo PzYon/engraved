@@ -1,3 +1,4 @@
+import { expect } from "@playwright/test";
 import { test } from "../src/fixtures";
 import { addNewJournal } from "../src/utils/addNewJournal";
 import { navigateToHome } from "../src/utils/navigateTo";
@@ -25,6 +26,26 @@ test("search in go to, use cursor down, use enter to navigate to scrap", async (
   await goToPage.selectCurrent();
 
   await scrapsJournalPage.expectPageTitle("List of QBs");
+});
+
+test("search in go to, click empty-state search link to open search page", async ({
+  page,
+}) => {
+  await addNewJournal(page, "Scraps", "List of QBs");
+
+  const scrapsJournalPage = new ScrapsJournalPage(page);
+  const goToPage = await scrapsJournalPage.navigateToGoToPage();
+  await goToPage.typeText("zzznomatch999");
+
+  await goToPage.expectNumberOfItems(1);
+  await goToPage.expectItemText(
+    0,
+    'Nothing found, would you like to search for "zzznomatch999" instead?',
+  );
+
+  await goToPage.clickItem(0);
+
+  await expect(page).toHaveURL(/\/search\?q=zzznomatch999$/);
 });
 
 test("initially shows recent journals, navigates with click", async ({
