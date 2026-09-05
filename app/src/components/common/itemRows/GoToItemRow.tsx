@@ -46,11 +46,13 @@ function getLinkTarget(url: string): {
   to: string;
   search?: Record<string, string>;
 } {
-  const parsed = new URL(url, "https://engraved.local");
-  const search = Object.fromEntries(parsed.searchParams.entries());
+  const [to, rawSearch] = url.split("?", 2);
+  const search = rawSearch
+    ? Object.fromEntries(new URLSearchParams(rawSearch).entries())
+    : undefined;
 
   return {
-    to: parsed.pathname,
-    search: Object.keys(search).length ? search : undefined,
+    to,
+    search: search && Object.keys(search).length ? search : undefined,
   };
 }
