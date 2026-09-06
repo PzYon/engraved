@@ -14,12 +14,14 @@ import { ActionIconButton } from "../common/actions/ActionIconButton";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
 import { OfflineIndicator } from "../../OfflineIndicator";
+import { SessionExpiredIndicator } from "../../serverApi/authentication/SessionExpiredIndicator";
 import { Titles } from "./Titles";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
 import { ActionLink } from "../common/actions/ActionLink";
 import { PageTabs } from "./tabs/PageTabs";
 import { useDisplayModeContext } from "../overview/overviewList/DisplayModeContext";
+import { FilterMode } from "./pages/PageContext";
 import { AppMenuLauncher } from "./menu/AppMenuLauncher";
 
 export const AppHeader: React.FC = () => {
@@ -50,12 +52,12 @@ export const AppHeader: React.FC = () => {
   const deviceWidth = useDeviceWidth();
   const isSmall = deviceWidth === DeviceWidth.Small;
 
-  const pageActions: IAction[] = filterMode
-    ? [
-        ActionFactory.toggleFilters(showFilters, setShowFilters, true),
-        ...pageActionsFromContext,
-      ]
-    : pageActionsFromContext;
+  const pageActions = getPageActions(
+    filterMode,
+    showFilters,
+    setShowFilters,
+    pageActionsFromContext,
+  );
 
   return (
     <Host>
@@ -89,6 +91,7 @@ export const AppHeader: React.FC = () => {
 
             <VersionChecker />
             <OfflineIndicator />
+            <SessionExpiredIndicator />
 
             <RefreshData />
 
@@ -135,6 +138,20 @@ export const AppHeader: React.FC = () => {
     </Host>
   );
 };
+
+function getPageActions(
+  filterMode: FilterMode,
+  showFilters: boolean,
+  setShowFilters: (showFilters: boolean) => void,
+  pageActionsFromContext: IAction[],
+): IAction[] {
+  return filterMode
+    ? [
+        ActionFactory.toggleFilters(showFilters, setShowFilters, true),
+        ...pageActionsFromContext,
+      ]
+    : pageActionsFromContext;
+}
 
 const Host = styled("div")``;
 

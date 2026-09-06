@@ -20,6 +20,7 @@ import { stringifyAttributeValues } from "./stringifyAttributeValues";
 import { IDateConditions } from "../components/details/JournalContext";
 import { IJournalThresholdDefinitions } from "./IJournalThresholdDefinitions";
 import { LoadingHandler } from "./LoadingHandler";
+import { SessionExpiryHandler } from "./SessionExpiryHandler";
 import { IGetAllEntriesQueryResult } from "./IGetAllEntriesQueryResult";
 import { ISearchEntitiesResult } from "./ISearchEntitiesResult";
 import { IApiSystemInfo } from "./IApiSystemInfo";
@@ -53,6 +54,9 @@ export class ServerApi {
 
   static loadingHandler: LoadingHandler = new LoadingHandler();
 
+  static sessionExpiryHandler: SessionExpiryHandler =
+    new SessionExpiryHandler();
+
   static e2eStorage = new StorageWrapper(localStorage);
 
   private static _jwtToken: string;
@@ -74,23 +78,56 @@ export class ServerApi {
   // De-dupes concurrent refreshes (e.g. several requests 401 at once).
   private static refreshInFlight: Promise<boolean> | null = null;
 
+  // Grace period the silent Google prompt gets before we assume it will never
+  // show and ask the user to sign in explicitly.
+  static loginPromptTimeoutMs = 6000;
+
+  private static loginPromptTimer: ReturnType<typeof setTimeout> | undefined;
+
   static setGooglePrompt(googlePrompt: () => void) {
     ServerApi.googlePrompt = googlePrompt;
   }
 
+  // Re-authenticates via Google's One Tap prompt. That prompt can silently
+  // decline to show (dismissal cooldown, blocked third-party sign-in, FedCM
+  // quiet period) and - since FedCM removed the moment notifications - nothing
+  // tells us it did. Without the timeout below the returned promise would then
+  // stay pending forever, wedging the request that triggered it, everything
+  // queued behind it in LoginHandler and the loading indicator, leaving a full
+  // page reload as the only way out (issue #3009).
+  //
+  // The promise is deliberately left open when the timeout hits: we only ask
+  // the UI to offer an explicit sign-in button. Whichever sign-in completes
+  // first - a late One Tap or that button - resolves it, and the original
+  // request is retried as usual.
   static async tryToLoginAgain(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (ServerApi.googlePrompt) {
-        ServerApi.onAuthenticated = () => resolve();
-        ServerApi.googlePrompt();
-      } else {
+      if (!ServerApi.googlePrompt) {
         reject(
           new ApiError(401, {
             message: "Failed to login again as google prompt is not available.",
           }),
         );
+        return;
       }
+
+      ServerApi.onAuthenticated = () => resolve();
+
+      ServerApi.clearLoginPromptTimeout();
+      ServerApi.loginPromptTimer = setTimeout(
+        () => ServerApi.sessionExpiryHandler.setIsExpired(true),
+        ServerApi.loginPromptTimeoutMs,
+      );
+
+      ServerApi.googlePrompt();
     });
+  }
+
+  private static clearLoginPromptTimeout() {
+    if (ServerApi.loginPromptTimer) {
+      clearTimeout(ServerApi.loginPromptTimer);
+      ServerApi.loginPromptTimer = undefined;
+    }
   }
 
   static setServerOs(os: "lin" | "win"): void {
@@ -151,6 +188,11 @@ export class ServerApi {
     ServerApi._refreshToken = authResult.refreshToken;
 
     ServerApi.scheduleTokenRefresh(authResult.expiresAt);
+
+    // Any successful authentication (silent refresh or Google) ends the
+    // expired state, so a stale "session expired" prompt never lingers.
+    ServerApi.clearLoginPromptTimeout();
+    ServerApi.sessionExpiryHandler.setIsExpired(false);
 
     ServerApi.onAuthenticated?.();
     ServerApi.onAuthenticated = null;
