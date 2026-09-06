@@ -7,7 +7,6 @@ import { registerGooglePrompt } from "./serverApi/authentication/registerGoogleP
 import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 import { CredentialResponse } from "google-one-tap";
-import { SessionExpiredDialog } from "./serverApi/authentication/SessionExpiredDialog";
 
 export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
@@ -58,12 +57,7 @@ export const Bootstrapper: React.FC = () => {
   }, []);
 
   if (user) {
-    return (
-      <>
-        <App user={user} />
-        <SessionExpiredDialog />
-      </>
-    );
+    return <App user={user} />;
   }
 
   return (

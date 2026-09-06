@@ -14,6 +14,7 @@ import { ActionIconButton } from "../common/actions/ActionIconButton";
 import { PageFilters } from "../common/search/PageFilters";
 import { VersionChecker } from "../../VersionChecker";
 import { OfflineIndicator } from "../../OfflineIndicator";
+import { SessionExpiredIndicator } from "../../serverApi/authentication/SessionExpiredIndicator";
 import { Titles } from "./Titles";
 import { ActionFactory } from "../common/actions/ActionFactory";
 import { IAction } from "../common/actions/IAction";
@@ -89,6 +90,7 @@ export const AppHeader: React.FC = () => {
 
             <VersionChecker />
             <OfflineIndicator />
+            <SessionExpiredIndicator />
 
             <RefreshData />
 

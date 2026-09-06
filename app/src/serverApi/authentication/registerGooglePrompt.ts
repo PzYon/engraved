@@ -1,6 +1,6 @@
 import { envSettings } from "../../env/envSettings";
 import { ServerApi } from "../ServerApi";
-import { CredentialResponse } from "google-one-tap";
+import { CredentialResponse, GsiButtonConfiguration } from "google-one-tap";
 
 const scriptUrl = "https://accounts.google.com/gsi/client";
 
@@ -41,11 +41,20 @@ export function registerGooglePrompt(
   return unloadGoogleScript;
 }
 
+const defaultButtonConfig: GsiButtonConfiguration = {
+  theme: "outline",
+  size: "large",
+  shape: "pill",
+};
+
 // Renders the regular Google sign-in button into the given element. Unlike
 // One Tap, a button the user clicks is never silently suppressed by the
 // browser, which makes it the reliable way back in when the silent prompt does
 // not show. Requires google.accounts.id.initialize() to have run.
-export function renderGoogleSignInButton(domElement: HTMLElement): void {
+export function renderGoogleSignInButton(
+  domElement: HTMLElement,
+  config: GsiButtonConfiguration = defaultButtonConfig,
+): void {
   if (typeof google === "undefined") {
     return;
   }
@@ -54,11 +63,7 @@ export function renderGoogleSignInButton(domElement: HTMLElement): void {
   // re-render (e.g. React strict mode) does not leave two of them behind.
   domElement.replaceChildren();
 
-  google.accounts.id.renderButton(domElement, {
-    theme: "outline",
-    size: "large",
-    shape: "pill",
-  });
+  google.accounts.id.renderButton(domElement, config);
 }
 
 function loadGoogleScript(): Promise<void> {
