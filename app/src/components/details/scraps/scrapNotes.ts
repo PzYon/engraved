@@ -43,3 +43,20 @@ export function getComparableNotes(
     ? ""
     : notesToPersist;
 }
+
+// A scrap with neither notes nor a title has nothing worth storing. A brand-new one is judged on
+// the comparable form: holding nothing but the blank line edit mode adds does not make it worth
+// creating. An existing scrap is judged on the raw notes instead, because emptiness there has to
+// be persisted - the user may have just cleared the last item.
+export function hasSomethingToSave(
+  scrapType: ScrapType,
+  notes: string | undefined,
+  title: string | undefined,
+  isNew: boolean,
+) {
+  if (title) {
+    return true;
+  }
+
+  return isNew ? !!getComparableNotes(scrapType, notes) : !!notes;
+}

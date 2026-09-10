@@ -28,7 +28,11 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { dateOnlyToUtc, utcToDateOnly } from "../../../util/utils";
 import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
 import { getFileIds, useScrapFiles } from "./files/useScrapFiles";
-import { getComparableNotes, getNotesToPersist } from "./scrapNotes";
+import {
+  getComparableNotes,
+  getNotesToPersist,
+  hasSomethingToSave,
+} from "./scrapNotes";
 
 const quickAddStorageKey = "quick-add";
 
@@ -375,13 +379,14 @@ export const ScrapContextProvider: React.FC<{
       notesToOverride ?? scrapToRender.notes,
     );
 
-    // For an existing scrap emptiness has to be persisted (the user may have just cleared it), so
-    // only a new one is dropped for holding nothing beyond the blank line edit mode adds.
-    const hasNotesToSave = scrapToRender.id
-      ? !!notesToSave
-      : !!getComparableNotes(scrapToRender.scrapType, notesToSave);
-
-    if (!hasNotesToSave && !scrapToRender.title) {
+    if (
+      !hasSomethingToSave(
+        scrapToRender.scrapType,
+        notesToSave,
+        scrapToRender.title,
+        !scrapToRender.id,
+      )
+    ) {
       return;
     }
 
