@@ -28,6 +28,11 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { dateOnlyToUtc, utcToDateOnly } from "../../../util/utils";
 import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
 import { getFileIds, useScrapFiles } from "./files/useScrapFiles";
+import {
+  getComparableNotes,
+  getNotesToPersist,
+  hasSomethingToSave,
+} from "./scrapNotes";
 
 const quickAddStorageKey = "quick-add";
 
@@ -119,7 +124,11 @@ export const ScrapContextProvider: React.FC<{
   }>(undefined);
 
   const isDirty =
-    initialScrap.notes !== scrapToRender.notes ||
+    // Compared on the persisted form: a list in edit mode always keeps one blank line, which is
+    // not content of its own. Without normalising, merely opening an empty list would count as a
+    // change - prompting on cancel and letting auto-save bump editedOn for every other client.
+    getComparableNotes(scrapToRender.scrapType, initialScrap.notes) !==
+      getComparableNotes(scrapToRender.scrapType, scrapToRender.notes) ||
     initialScrap.title !== scrapToRender.title ||
     // Without this, attaching or removing a file would not count as a change, so auto-save would
     // never fire for it and the work would be lost on navigating away.
@@ -370,7 +379,14 @@ export const ScrapContextProvider: React.FC<{
       notesToOverride ?? scrapToRender.notes,
     );
 
-    if (!notesToSave && !scrapToRender.title) {
+    if (
+      !hasSomethingToSave(
+        scrapToRender.scrapType,
+        notesToSave,
+        scrapToRender.title,
+        !scrapToRender.id,
+      )
+    ) {
       return;
     }
 
@@ -415,7 +431,8 @@ export const ScrapContextProvider: React.FC<{
   function hasNothingToPersist(notesToSave: string | undefined) {
     return (
       !isDirty &&
-      initialScrap.notes === notesToSave &&
+      getComparableNotes(scrapToRender.scrapType, initialScrap.notes) ===
+        getComparableNotes(scrapToRender.scrapType, notesToSave) &&
       initialScrap.title === scrapToRender.title &&
       getFileIds(initialScrap) === getFileIds(scrapToRender)
     );
@@ -458,29 +475,6 @@ export const ScrapContextProvider: React.FC<{
     return genericNotes.map((s) => s?.trim() ?? "").join("") === "";
   }
 };
-
-// While editing, a list always keeps at least one (possibly blank) line so the
-// user has something to type into. When that lone line is still empty on save,
-// the list is effectively empty and is persisted as such rather than storing a
-// meaningless blank item.
-function getNotesToPersist(scrapType: ScrapType, notes: string | undefined) {
-  if (scrapType !== ScrapType.List || !notes) {
-    return notes;
-  }
-
-  let items: IScrapListItem[];
-  try {
-    items = JSON.parse(notes);
-  } catch {
-    return notes;
-  }
-
-  if (items.length === 1 && !items[0]?.label?.trim()) {
-    return JSON.stringify([]);
-  }
-
-  return notes;
-}
 
 function convertNotesToTargetType(
   targetType: ScrapType,
