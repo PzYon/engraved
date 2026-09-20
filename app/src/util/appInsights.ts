@@ -13,6 +13,9 @@ export function setUpAppInsights() {
   appInsights = new ApplicationInsights({
     config: {
       connectionString: envSettings.appInsightsConnectionString,
+      // "unload" is deprecated and blocked by the browsers' default permissions policy.
+      // The SDK still hooks "pagehide" and "visibilitychange" to flush telemetry.
+      disablePageUnloadEvents: ["unload"],
     },
   });
 
