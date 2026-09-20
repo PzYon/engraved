@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@playwright/test": "1.63.0",
-    "@types/node": "24.13.3",
+    "@types/node": "24.13.4",
     "superstatic": "11.0.0"
   }
 }
