@@ -35,6 +35,7 @@ export const PageSection: React.FC<{
               color: "primary.main",
               borderBottom: "1px solid",
               borderColor: "background.default",
+              width: "100%",
             }}
           >
             {icon ? <span style={{ paddingRight: "8px" }}>{icon}</span> : null}

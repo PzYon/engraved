@@ -30,7 +30,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
             sx={{ width: "100%" }}
             autoFocus={hasFocus}
             label={label}
-            format="EEE dd.MM.yyyy"
+            format="EEE dd.MM.yy"
             value={date || null}
             showDaysOutsideCurrentMonth={true}
             onChange={(d) => {
@@ -57,7 +57,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
           </ButtonContainer>
         </FlexElement>
         {showTime ? (
-          <FlexElement>
+          <TimeFlexElement>
             <TimePicker
               ampm={false}
               format="HH:mm:ss"
@@ -81,7 +81,7 @@ const LazyDateSelector: React.FC<IDateSelectorProps> = ({
                 +5min
               </Button>
             </ButtonContainer>
-          </FlexElement>
+          </TimeFlexElement>
         ) : (
           <FlexElement>
             <DateAdjustmentButtons date={date} setDate={setDate} />
@@ -108,6 +108,10 @@ const FlexElement = styled("div")`
   flex-grow: 1;
   min-width: 100px;
   width: 100%;
+`;
+
+const TimeFlexElement = styled(FlexElement)`
+  width: 240px;
 `;
 
 export default LazyDateSelector;
