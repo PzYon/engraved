@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { App } from "./App";
 import { ServerApi } from "./serverApi/ServerApi";
 import { IAuthResult } from "./serverApi/IAuthResult";
 import { IUser } from "./serverApi/IUser";
@@ -79,13 +78,12 @@ export const Bootstrapper: React.FC = () => {
             >
               engraved.
             </Typography>
-            <Typography
-              component={TaglineContainer}
-              sx={{ textAlign: "right" }}
-            >
+            <Typography component={TaglineContainer} sx={{ fontWeight: 200 }}>
               <TaglineLine>Track what you want.</TaglineLine>
-              <TaglineLine offset={30}>Remember what you must.</TaglineLine>
-              <TaglineLine offset={60}>All Engraved in one place.</TaglineLine>
+              <TaglineLine offset={20}>Remember what you must.</TaglineLine>
+              <TaglineLine offset={40}>
+                Everything engraved. in one place.
+              </TaglineLine>
             </Typography>
           </IntroSection>
           <GoogleButtonSection>
@@ -151,7 +149,7 @@ const TaglineContainer = styled("div")`
 `;
 
 const TaglineLine = styled("div")<{ offset?: number }>`
-  padding-right: ${(p) => (p.offset ? `${p.offset}px` : "0")};
+  padding-left: ${(p) => (p.offset ? `${p.offset}px` : "0")};
 `;
 
 const GoogleButtonSection = styled("div")`
