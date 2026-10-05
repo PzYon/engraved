@@ -9,50 +9,59 @@ export const AttributeValues: React.FC<{
   attributes: IJournalAttributes;
   attributeValues: IJournalAttributeValues;
   preventOnClick?: boolean;
-}> = ({ attributes, attributeValues, preventOnClick }) => {
+  className?: string;
+}> = ({ attributes, attributeValues, preventOnClick, className }) => {
   const { palette } = useTheme();
 
   const { toggleAttributeValue } = useJournalContext();
 
   const colorByAttributeKey = getColorsByKey(attributes, palette.primary.main);
 
-  return (
-    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-      {Object.entries(attributeValues)
-        .sort()
-        .flatMap((value) => {
-          const attributeKey = value[0];
-          const valueKeys = value[1];
-          const attribute = attributes[attributeKey];
+  const sortedValues = Object.entries(attributeValues).sort();
 
-          return valueKeys.map((valueKey) => {
-            const value = attribute.values[valueKey];
-            return (
-              <Tooltip
-                key={`${attributeKey}::${valueKey}`}
-                title={attribute.name + ": " + value}
-              >
-                <Chip
-                  sx={{
-                    backgroundColor: colorByAttributeKey[attributeKey],
-                    color: "common.white",
-                    fontSize: "small",
-                    height: "22px",
-                  }}
-                  label={value}
-                  onClick={
-                    preventOnClick || !toggleAttributeValue
-                      ? undefined
-                      : () => {
-                          toggleAttributeValue(attributeKey, valueKey);
-                        }
-                  }
-                />
-              </Tooltip>
-            );
-          });
-        })}
-    </div>
+  if (sortedValues.length === 0) {
+    return null;
+  }
+
+  return (
+    <span
+      style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}
+      className={className}
+    >
+      {sortedValues.flatMap((value) => {
+        const attributeKey = value[0];
+        const valueKeys = value[1];
+        const attribute = attributes[attributeKey];
+
+        return valueKeys.map((valueKey) => {
+          const value = attribute.values[valueKey];
+          return (
+            <Tooltip
+              key={`${attributeKey}::${valueKey}`}
+              title={attribute.name + ": " + value}
+            >
+              <Chip
+                component={"span"}
+                sx={{
+                  backgroundColor: colorByAttributeKey[attributeKey],
+                  color: "common.white",
+                  fontSize: "small",
+                  height: "22px",
+                }}
+                label={value}
+                onClick={
+                  preventOnClick || !toggleAttributeValue
+                    ? undefined
+                    : () => {
+                        toggleAttributeValue(attributeKey, valueKey);
+                      }
+                }
+              />
+            </Tooltip>
+          );
+        });
+      })}
+    </span>
   );
 };
 
