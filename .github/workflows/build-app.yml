@@ -96,7 +96,7 @@ jobs:
 
       - name: Upload Fallow Results
         uses: github/codeql-action/upload-sarif@v4
-        if: always()
+        if: always() && hashFiles('fallow-results.sarif') != ''
         with:
           sarif_file: fallow-results.sarif
 
