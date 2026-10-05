@@ -2,7 +2,7 @@ import React from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IEntry } from "../../../serverApi/IEntry";
 import { AttributeValues } from "../AttributeValues";
-import { Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import { Entry } from "./Entry";
 import { ActionFactory } from "../actions/ActionFactory";
 import { getUiSettings } from "../../../util/journalUtils";
@@ -25,22 +25,35 @@ export const EntryWithValue: React.FC<{
       hasFocus={hasFocus ?? false}
       propsRenderStyle={"all"}
     >
-      <Typography component={"span"} sx={{ fontWeight: 200 }}>
-        {formatDateOnly(new Date(entry.dateTime))}
-        {": "}
-      </Typography>
+      <Container>
+        <Typography
+          className="value-container"
+          component={"span"}
+          sx={{ fontWeight: 200 }}
+        >
+          {formatDateOnly(new Date(entry.dateTime))}
+          {": "}
+          {getValue()}
+        </Typography>
 
-      <Typography component={"span"}>{getValue()} </Typography>
+        {entry.notes ? (
+          <Typography
+            className="value-container"
+            component={"span"}
+            sx={{ fontWeight: 200 }}
+          >
+            {entry.notes}
+          </Typography>
+        ) : null}
 
-      <Typography component={"span"} sx={{ fontWeight: 200 }}>
-        {entry.notes ? ` - ${entry.notes}` : ""}
-      </Typography>
-      {journal.attributes && entry.journalAttributeValues && (
-        <AttributeValues
-          attributes={journal.attributes}
-          attributeValues={entry.journalAttributeValues}
-        />
-      )}
+        {journal.attributes && entry.journalAttributeValues && (
+          <AttributeValues
+            className="value-container"
+            attributes={journal.attributes}
+            attributeValues={entry.journalAttributeValues}
+          />
+        )}
+      </Container>
     </Entry>
   );
 
@@ -57,3 +70,16 @@ export const EntryWithValue: React.FC<{
     return value;
   }
 };
+
+const Container = styled("div")`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .value-container {
+    &:not(:last-of-type)::after {
+      content: "\\00B7";
+      margin: 0 0.6rem;
+    }
+  }
+`;
