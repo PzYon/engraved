@@ -2,7 +2,7 @@ import { IDateConditions } from "../JournalContext";
 import {
   addDays,
   addMonths,
-  differenceInDays,
+  differenceInCalendarDays,
   endOfMonth,
   endOfWeek,
   endOfYear,
@@ -96,13 +96,19 @@ export function createNextDateConditions(
 
     case DateRange.Week:
     case DateRange.Custom: {
-      const diffInDays =
-        differenceInDays(currentConditions.to!, currentConditions.from!) *
-        (direction === "previous" ? -1 : 1);
+      // "to" is an inclusive day, so a range from Sunday to Saturday spans
+      // seven days although the two dates are only six days apart.
+      const numberOfDays =
+        differenceInCalendarDays(
+          currentConditions.to!,
+          currentConditions.from!,
+        ) + 1;
+
+      const offsetInDays = numberOfDays * (direction === "previous" ? -1 : 1);
 
       return {
-        from: addDays(currentConditions.from!, diffInDays),
-        to: addDays(currentConditions.to!, diffInDays),
+        from: addDays(currentConditions.from!, offsetInDays),
+        to: addDays(currentConditions.to!, offsetInDays),
       };
     }
   }
