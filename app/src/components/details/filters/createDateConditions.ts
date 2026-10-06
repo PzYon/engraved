@@ -1,11 +1,11 @@
 import { IDateConditions } from "../JournalContext";
 import {
   addDays,
+  addMonths,
   differenceInDays,
   endOfMonth,
   endOfWeek,
   endOfYear,
-  getDaysInMonth,
   startOfMonth,
   startOfWeek,
   startOfYear,
@@ -69,22 +69,14 @@ export function createNextDateConditions(
   }
 
   switch (dateFilterConfig.value) {
-    case DateRange.Month: {
-      const offset = getDaysInMonth(currentConditions.from!.getFullYear());
-
-      const newDate = addDays(
-        currentConditions.from!,
-        offset * (direction === "previous" ? -1 : 1),
-      );
-
+    case DateRange.Month:
       return createDateConditions(
         {
           dateType: "range",
           value: DateRange.Month,
         },
-        newDate,
+        addMonths(currentConditions.from!, direction === "previous" ? -1 : 1),
       );
-    }
 
     case DateRange.Year: {
       const year =
