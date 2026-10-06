@@ -32,6 +32,11 @@ export interface IScrapContext {
     keepEditMode?: boolean,
   ) => Promise<void>;
   scrapToRender: IScrapEntry;
+  // The editors only read the scrap when they are created and keep their own state from then on.
+  // This changes whenever the scrap is replaced underneath them, so keying them on it makes them
+  // start over with the new content. It deliberately does not change when a save of our own comes
+  // back, as that would tear down the editor the user is still typing in.
+  editorKey: number;
   propsRenderStyle: EntryPropsRenderStyle;
   actionsRenderStyle?: ActionsRenderStyle;
   journal: IJournal;
@@ -63,6 +68,7 @@ export const ScrapContext = createContext<IScrapContext>({
   cancelEditingAction: null!,
   upsertScrap: null!,
   scrapToRender: null!,
+  editorKey: null!,
   propsRenderStyle: null!,
   actionsRenderStyle: null!,
   journal: null!,

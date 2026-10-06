@@ -9,7 +9,6 @@ import {
   IScrapContext,
   ScrapContext,
 } from "./ScrapContext";
-import { IParsedDate } from "../edit/parseDate";
 import {
   getScheduleDefinitionForUpsert,
   getScheduleForUser,
@@ -28,6 +27,7 @@ import { JournalType } from "../../../serverApi/JournalType";
 import { dateOnlyToUtc, utcToDateOnly } from "../../../util/utils";
 import { EntryPropsRenderStyle } from "../../common/entries/EntryPropsRenderStyle";
 import { getFileIds, useScrapFiles } from "./files/useScrapFiles";
+import { useScrapToRender } from "./useScrapToRender";
 import {
   getComparableNotes,
   getNotesToPersist,
@@ -66,12 +66,16 @@ export const ScrapContextProvider: React.FC<{
 
   const isLogBook = journal?.type === JournalType.LogBook;
 
-  const [scrapToRender, setScrapToRender] = useState(initialScrap);
-  const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
+  const {
+    scrapToRender,
+    setScrapToRender,
+    parsedDate,
+    setParsedDate,
+    editorKey,
+    resetToInitialScrap,
+  } = useScrapToRender(initialScrap);
 
-  const [parsedDate, setParsedDate] = useState<IParsedDate | undefined>(
-    undefined,
-  );
+  const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
   const [hasTitleFocus, setHasTitleFocus] = useState(false);
 
   const { addFile, removeFile } = useScrapFiles(
@@ -226,10 +230,6 @@ export const ScrapContextProvider: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialScrap]);
 
-  function resetToInitialScrap() {
-    setScrapToRender(initialScrap);
-  }
-
   function changeScrapTypeInternal(
     genericNotes: string[],
     targetType: ScrapType,
@@ -346,6 +346,7 @@ export const ScrapContextProvider: React.FC<{
             ),
         upsertScrap,
         scrapToRender,
+        editorKey,
         propsRenderStyle,
         actionsRenderStyle,
         onSuccess,
@@ -362,6 +363,7 @@ export const ScrapContextProvider: React.FC<{
       isEditMode,
       isDirty,
       scrapToRender,
+      editorKey,
       propsRenderStyle,
       actionsRenderStyle,
       journal,

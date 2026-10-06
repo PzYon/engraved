@@ -15,6 +15,10 @@ export class ScrapMarkdownComponent {
     return this.getScrap().locator(".tiptap").last();
   }
 
+  private getTitleEditor() {
+    return this.getScrap().getByTestId("placeholder-Title");
+  }
+
   async dblClickToEdit() {
     if (isAndroidTest()) {
       await this.getScrap().click();
@@ -27,6 +31,39 @@ export class ScrapMarkdownComponent {
     const editor = this.getEditor();
     await editor.click();
     await this.page.keyboard.type(text);
+  }
+
+  async typeTitleAtEnd(text: string) {
+    await this.getTitleEditor().click();
+    await this.page.keyboard.press("End");
+    await this.page.keyboard.type(text);
+  }
+
+  async clickSave() {
+    await this.page.getByRole("button", { name: "Save", exact: true }).click();
+
+    await expect(this.page.getByTestId("app-alert-bar")).toContainText(
+      "Updated entry",
+    );
+  }
+
+  async cancelEditingAndDiscardChanges() {
+    await this.page
+      .getByRole("button", { name: "Stop editing and reset" })
+      .click();
+    await this.page.getByRole("button", { name: "Yeah, I'm done." }).click();
+
+    await expect(
+      this.page.getByRole("button", { name: "Save", exact: true }),
+    ).toBeHidden();
+  }
+
+  async expectEditorContent(text: string) {
+    await expect(this.getEditor()).toHaveText(text);
+  }
+
+  async expectTitleEditorContent(text: string) {
+    await expect(this.getTitleEditor()).toHaveText(text);
   }
 
   // Moves focus out of the scrap (by clicking the page title), which triggers
@@ -48,5 +85,9 @@ export class ScrapMarkdownComponent {
     }
 
     await expect(this.getScrap().getByText(text)).toBeVisible();
+  }
+
+  async expectNoContent(text: string) {
+    await expect(this.getScrap().getByText(text)).toBeHidden();
   }
 }

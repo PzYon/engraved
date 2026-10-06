@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { styled, Typography, useTheme } from "@mui/material";
+import { Palette, styled, Typography, useTheme } from "@mui/material";
 import { ScrapListItem } from "./ScrapListItem";
 import { ListItemCollection } from "./ListItemCollection";
 import { IScrapListItem } from "./IScrapListItem";
@@ -41,7 +41,7 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
     setNotes,
     isEditMode,
     upsertScrap,
-    scrapToRender,
+    editorKey,
     changeScrapType,
     hasTitleFocus,
   } = useScrapContext();
@@ -55,7 +55,7 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
       setNotes(getItemsAsJson(rawItems)),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrapToRender.editedOn]);
+  }, [editorKey]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -96,13 +96,7 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
 
       <BodyHost
         key={isEditMode.toString()}
-        style={
-          isEditMode && !hasTitleFocus
-            ? { outline: "2px solid " + palette.primary.main }
-            : isEditMode && hasTitleFocus
-              ? { outline: "2px solid " + palette.background.default }
-              : {}
-        }
+        style={getOutline(isEditMode, hasTitleFocus, palette)}
       >
         <List>
           {!isEditMode && !listItemCollection.items?.length ? (
@@ -214,6 +208,22 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
 
 function getItemsAsJson(rawItems: IScrapListItem[]) {
   return JSON.stringify(rawItems);
+}
+
+function getOutline(
+  isEditMode: boolean,
+  hasTitleFocus: boolean,
+  palette: Palette,
+) {
+  if (!isEditMode) {
+    return {};
+  }
+
+  const color = hasTitleFocus
+    ? palette.background.default
+    : palette.primary.main;
+
+  return { outline: "2px solid " + color };
 }
 
 const BodyHost = styled("div")`

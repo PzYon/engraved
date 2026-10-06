@@ -21,6 +21,7 @@ export const ScrapInner: React.FC = () => {
     notes,
     setTitle,
     scrapToRender,
+    editorKey,
     setHasTitleFocus,
     hasFocus,
     changeScrapType,
@@ -102,6 +103,7 @@ export const ScrapInner: React.FC = () => {
     >
       {isEditMode ? (
         <ParseableDate
+          key={editorKey}
           initialValue={title}
           placeholder="Title"
           isTitle={true}
