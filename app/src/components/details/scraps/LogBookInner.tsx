@@ -20,6 +20,7 @@ export const LogBookInner: React.FC = () => {
     date,
     setDate,
     scrapToRender,
+    editorKey,
     hasFocus,
     notes,
     title,
@@ -65,6 +66,7 @@ export const LogBookInner: React.FC = () => {
         <>
           <TitleEditorHost>
             <RichTextEditor
+              key={editorKey}
               initialValue={title}
               placeholder="Title"
               isTitle={true}

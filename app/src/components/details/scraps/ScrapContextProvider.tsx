@@ -67,6 +67,7 @@ export const ScrapContextProvider: React.FC<{
   const isLogBook = journal?.type === JournalType.LogBook;
 
   const [scrapToRender, setScrapToRender] = useState(initialScrap);
+  const [editorKey, setEditorKey] = useState(0);
   const [isEditMode, setIsEditMode] = useState(!scrapToRender.id);
 
   const [parsedDate, setParsedDate] = useState<IParsedDate | undefined>(
@@ -228,6 +229,12 @@ export const ScrapContextProvider: React.FC<{
 
   function resetToInitialScrap() {
     setScrapToRender(initialScrap);
+
+    // What was typed into the title is also kept as a parsed date, and that is what gets saved in
+    // place of the title. Left behind, a discarded title would come back with the next save.
+    setParsedDate(undefined);
+
+    setEditorKey((key) => key + 1);
   }
 
   function changeScrapTypeInternal(
@@ -346,6 +353,7 @@ export const ScrapContextProvider: React.FC<{
             ),
         upsertScrap,
         scrapToRender,
+        editorKey,
         propsRenderStyle,
         actionsRenderStyle,
         onSuccess,
@@ -362,6 +370,7 @@ export const ScrapContextProvider: React.FC<{
       isEditMode,
       isDirty,
       scrapToRender,
+      editorKey,
       propsRenderStyle,
       actionsRenderStyle,
       journal,

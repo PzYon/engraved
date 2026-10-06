@@ -21,8 +21,16 @@ export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
 }) => {
   const { setAppAlert } = useAppContext();
 
-  const { notes, title, setNotes, isEditMode, files, addFile, journal } =
-    useScrapContext();
+  const {
+    notes,
+    title,
+    setNotes,
+    isEditMode,
+    editorKey,
+    files,
+    addFile,
+    journal,
+  } = useScrapContext();
 
   const upload = useUploadFile();
 
@@ -65,6 +73,7 @@ export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
         {isEditMode ? (
           <div style={{ marginTop: "10px" }}>
             <RichTextEditor
+              key={editorKey}
               initialValue={notesToRender}
               // The editor hands back what it is showing, which is resolved URLs. Turning them back
               // into references here is what keeps a signature out of the saved scrap - it would

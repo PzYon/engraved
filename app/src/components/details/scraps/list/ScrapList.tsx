@@ -41,7 +41,7 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
     setNotes,
     isEditMode,
     upsertScrap,
-    scrapToRender,
+    editorKey,
     changeScrapType,
     hasTitleFocus,
   } = useScrapContext();
@@ -55,7 +55,7 @@ export const ScrapList: React.FC<{ editModeActions?: IAction[] }> = ({
       setNotes(getItemsAsJson(rawItems)),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrapToRender.editedOn]);
+  }, [editorKey]);
 
   useEffect(() => {
     if (isEditMode) {

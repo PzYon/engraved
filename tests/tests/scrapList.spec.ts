@@ -5,6 +5,7 @@ import { addNewJournal } from "../src/utils/addNewJournal";
 import { login } from "../src/utils/login";
 import { ScrapsJournalPage } from "../src/poms/scrapsJournalPage";
 import { ScrapListComponent } from "../src/poms/scrapListComponent";
+import { ScrapMarkdownComponent } from "../src/poms/scrapMarkdownComponent";
 import { isAndroidTest } from "../src/utils/isAndroidTest";
 
 const firstItemText = "My First Item";
@@ -122,6 +123,52 @@ test("auto-saves list changes when focus leaves the scrap", async ({
   await page.reload();
 
   await expect(await scrapList.getListItemByText(secondItemText)).toBeVisible();
+});
+
+test("leaves the focus where the user moved it when an auto-save comes back", async ({
+  page,
+  testData,
+}) => {
+  const { journals } = await testData.seed({
+    journals: [
+      {
+        name: "My Scraps Journal",
+        type: "Scraps",
+        entries: [{ title: "A note", notes: "Hello" }],
+      },
+    ],
+  });
+  await page.goto(`/journals/details/${journals[0].journalId}`);
+
+  const scrapList = await new ScrapsJournalPage(page).addList();
+  await scrapList.typeTitle("This is my title");
+  await scrapList.typeListItem(firstItemText);
+  await scrapList.clickSave();
+
+  await scrapList.dblClickToEdit();
+  await page.getByLabel("Add new").click();
+  await page.keyboard.type(secondItemText);
+
+  // moving on to edit another scrap is a click outside of the list, which
+  // auto-saves it. The response is awaited rather than the "Updated entry"
+  // alert: any further click closes that alert again, and on mobile it takes
+  // more than one to get into edit mode.
+  const autoSaved = page.waitForResponse(
+    (response) =>
+      response.request().method() === "POST" &&
+      response.url().includes("/api/entries/scraps"),
+  );
+
+  const note = new ScrapMarkdownComponent(page);
+  await note.dblClickToEdit();
+
+  await autoSaved;
+
+  // typed without clicking into the note again, so that this goes wherever the
+  // focus is by now: the list must not have taken it back.
+  await page.keyboard.type(" there", { delay: 50 });
+
+  await note.expectEditorContent("Hello there");
 });
 
 test("does not auto-save when auto-save is disabled for the scrap", async ({
