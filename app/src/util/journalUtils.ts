@@ -73,3 +73,9 @@ export function getDefaultAttributeValues(
     {},
   );
 }
+
+export function sortJournalsByName(journals: IJournal[]): IJournal[] {
+  return [...journals].sort((a, b) =>
+    (a.name ?? "").localeCompare(b.name ?? ""),
+  );
+}
