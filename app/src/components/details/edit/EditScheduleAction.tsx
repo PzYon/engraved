@@ -41,7 +41,6 @@ export const EditScheduleAction: React.FC<{
     hasSchedule && schedule?.nextOccurrence
       ? isAfter(new Date(), schedule.nextOccurrence)
       : false;
-  const isInFuture = hasSchedule && !isInPast;
 
   const { closeAction } = useItemAction();
 
@@ -99,7 +98,6 @@ export const EditScheduleAction: React.FC<{
         hasSchedule={hasSchedule}
         isRecurring={isRecurring}
         isInPast={isInPast}
-        isInFuture={isInFuture}
         schedule={schedule}
         entry={entry}
         journal={journal}

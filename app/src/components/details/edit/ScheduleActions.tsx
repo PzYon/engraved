@@ -18,7 +18,6 @@ export const ScheduleActions: React.FC<{
   hasSchedule: boolean;
   isRecurring: boolean;
   isInPast: boolean;
-  isInFuture: boolean;
   schedule?: ISchedule;
   entry?: IEntry;
   journal?: IJournal;
@@ -32,7 +31,6 @@ export const ScheduleActions: React.FC<{
   hasSchedule,
   isRecurring,
   isInPast,
-  isInFuture,
   schedule,
   entry,
   journal,
@@ -43,29 +41,23 @@ export const ScheduleActions: React.FC<{
 
   if (!hasSchedule) return null;
 
+  const isUpcomingRecurrence = isRecurring && !isInPast;
+
   return (
     <MainButtons>
-      {isInPast || !isRecurring ? (
+      {isUpcomingRecurrence ? (
         <Button
           sx={{ width: "100%" }}
           variant="contained"
-          onClick={() => {
-            const scheduleDefinition: IScheduleDefinition = {
-              nextOccurrence: isRecurring
-                ? (parseDate(schedule?.recurrence?.dateString ?? "").date ??
-                  null)
-                : null,
-              recurrence: schedule?.recurrence,
-              onClickUrl: entry
-                ? `${location.origin}/journals/details/${entry.parentId}/?${new URLSearchParams(getItemActionQueryParams("schedule", entry.id)).toString()}`
-                : `${location.origin}/journals/details/${journal?.id}/?${new URLSearchParams(getItemActionQueryParams("schedule", journal?.id)).toString()}`,
-            };
-
-            modifyScheduleMutation.mutate(scheduleDefinition);
-
-            closeAction();
-            overviewListContext.keepFocusAtIndex();
-          }}
+          onClick={removeSchedule}
+        >
+          Remove schedule
+        </Button>
+      ) : (
+        <Button
+          sx={{ width: "100%" }}
+          variant="contained"
+          onClick={completeSchedule}
         >
           {isRecurring ? (
             <>
@@ -80,32 +72,31 @@ export const ScheduleActions: React.FC<{
             <>Mark {entry ? "entry" : "journal"} as done</>
           )}
         </Button>
-      ) : null}
-
-      {(isInFuture || isRecurring) && !(isInPast || !isRecurring) ? (
-        <Button
-          sx={{ width: "100%" }}
-          variant="contained"
-          onClick={() => {
-            const scheduleDefinition: IScheduleDefinition = {
-              nextOccurrence: null,
-              onClickUrl: null,
-            };
-
-            modifyScheduleMutation.mutate(scheduleDefinition);
-
-            closeAction();
-          }}
-        >
-          {!isInFuture ? (
-            <>Mark {entry ? "entry" : "journal"} as done</>
-          ) : (
-            "Remove schedule"
-          )}
-        </Button>
-      ) : null}
+      )}
     </MainButtons>
   );
+
+  function removeSchedule() {
+    modifyScheduleMutation.mutate({ nextOccurrence: null, onClickUrl: null });
+
+    closeAction();
+  }
+
+  function completeSchedule() {
+    const journalId = entry ? entry.parentId : journal?.id;
+    const itemId = entry ? entry.id : journal?.id;
+
+    modifyScheduleMutation.mutate({
+      nextOccurrence: isRecurring
+        ? (parseDate(schedule?.recurrence?.dateString ?? "").date ?? null)
+        : null,
+      recurrence: schedule?.recurrence,
+      onClickUrl: `${location.origin}/journals/details/${journalId}/?${new URLSearchParams(getItemActionQueryParams("schedule", itemId)).toString()}`,
+    });
+
+    closeAction();
+    overviewListContext.keepFocusAtIndex();
+  }
 };
 
 const MainButtons = styled("div")`
@@ -113,8 +104,4 @@ const MainButtons = styled("div")`
   flex-direction: column;
   gap: 10px;
   margin-top: ${(p) => p.theme.spacing(2)};
-
-  &:empty {
-    display: none;
-  }
 `;
