@@ -97,6 +97,17 @@ jobs:
         working-directory: app
         run: npm run test --if-present
 
+      - name: Merge Fallow SARIF runs
+        if: always() && hashFiles('fallow-results.sarif') != ''
+        shell: bash
+        run: |
+          # The audit writes one SARIF run per analysis (dead code, complexity),
+          # all for the same tool, and the upload rejects several runs that
+          # share a category.
+          jq '.runs |= [{ tool: { driver: (.[0].tool.driver + { rules: (map(.tool.driver.rules) | add) }) }, results: (map(.results) | add) }]' \
+            fallow-results.sarif > fallow-results.merged.sarif
+          mv fallow-results.merged.sarif fallow-results.sarif
+
       - name: Upload Fallow Results
         uses: github/codeql-action/upload-sarif@v4
         if: always() && hashFiles('fallow-results.sarif') != ''
