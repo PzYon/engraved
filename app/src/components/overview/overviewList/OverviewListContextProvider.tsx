@@ -12,11 +12,10 @@ import {
 } from "./OverviewListContext";
 import { knownQueryParams } from "../../common/actions/searchParamHooks";
 import { useEngravedHotkeys } from "../../common/actions/useEngravedHotkeys";
-import { IJournal } from "../../../serverApi/IJournal";
-import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { useAppContext } from "../../../AppContext";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { isRichTextEditor } from "../../common/isRichTextEditor";
+import { filterOverviewItems } from "./filterOverviewItems";
 
 export const OverviewListContextProvider: React.FC<{
   items: IEntity[];
@@ -71,17 +70,7 @@ export const OverviewListContextProvider: React.FC<{
   }, [inMemorySearchText, setAppAlert]);
 
   const filteredItems = useMemo(
-    () =>
-      items.filter((f) => {
-        if (inMemorySearchText) {
-          return (
-            ((f as IJournal).name || (f as IScrapEntry).title)
-              ?.toLowerCase()
-              .indexOf((inMemorySearchText ?? "").toLowerCase()) > -1
-          );
-        }
-        return (showAll || filterItem?.(f)) ?? true;
-      }),
+    () => filterOverviewItems(items, inMemorySearchText, showAll, filterItem),
     [showAll, filterItem, inMemorySearchText, items],
   );
 
