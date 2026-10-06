@@ -5,7 +5,11 @@ import {
 import React, { useState } from "react";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IJournalThresholdDefinitions } from "../../../serverApi/IJournalThresholdDefinitions";
-import { ThresholdScope } from "./ThresholdScope";
+import {
+  createDefinitions,
+  createThresholds,
+  isComplete,
+} from "./thresholdDefinitions";
 import AddCircleOutlined from "@mui/icons-material/AddCircleOutlined";
 import RemoveCircleOutlined from "@mui/icons-material/RemoveCircleOutlined";
 import { styled } from "@mui/material";
@@ -81,42 +85,6 @@ export const EditThresholds: React.FC<{
   );
 };
 
-function createDefinitions(
-  thresholds: IJournalThresholdDefinitions | undefined,
-): IAttributeValueThresholdDefinition[] {
-  const resolvedThresholds = thresholds ?? {};
-  return Object.keys(resolvedThresholds).flatMap((attributeKey) => {
-    return Object.keys(resolvedThresholds[attributeKey]).map((x) => {
-      return {
-        attributeKey: attributeKey,
-        threshold: resolvedThresholds[attributeKey][x].value,
-        scope: resolvedThresholds[attributeKey][x].scope,
-        attributeValueKeys: [x],
-      };
-    });
-  });
-}
-
-function createThresholds(
-  thresholdDefinitions: IAttributeValueThresholdDefinition[],
-): IJournalThresholdDefinitions {
-  const thresholds: IJournalThresholdDefinitions = {};
-
-  for (const definition of thresholdDefinitions) {
-    const attrKey = definition.attributeKey ?? "-";
-    if (!thresholds[attrKey]) {
-      thresholds[attrKey] = {};
-    }
-
-    thresholds[attrKey][definition.attributeValueKeys[0] ?? "-"] = {
-      value: definition.threshold ?? 0,
-      scope: definition.scope ?? ThresholdScope.All,
-    };
-  }
-
-  return thresholds;
-}
-
 function createNewDefinition(): IAttributeValueThresholdDefinition {
   return {
     attributeKey: undefined,
@@ -125,27 +93,6 @@ function createNewDefinition(): IAttributeValueThresholdDefinition {
     scope: undefined,
     key: Math.random().toString(),
   };
-}
-
-function isComplete(definition: IAttributeValueThresholdDefinition) {
-  if (!definition.threshold || !definition.scope) {
-    return false;
-  }
-
-  if (
-    (!definition.attributeKey || definition.attributeKey === "-") &&
-    (!definition.attributeValueKeys.length ||
-      (definition.attributeValueKeys.length === 1 &&
-        definition.attributeValueKeys[0] === "-"))
-  ) {
-    return true;
-  }
-
-  if (definition.attributeKey && definition.attributeKey !== "-") {
-    return true;
-  }
-
-  return false;
 }
 
 const RowContainer = styled("div")`
