@@ -26,6 +26,7 @@ import { useRecentlyViewedJournals } from "./useRecentlyViewedJournals";
 import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IJournal } from "../../../serverApi/IJournal";
+import { sortJournalsByName } from "../../../util/journalUtils";
 
 export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
@@ -93,23 +94,13 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
         />
         <Collapse in={areFavoritesExpanded} timeout="auto" unmountOnExit>
           <List disablePadding dense>
-            {favoriteJournals
-              .sort((a, b) => {
-                const firstName = a.name?.toLowerCase() ?? "";
-                const secondName = b.name?.toLowerCase() ?? "";
-                return firstName < secondName
-                  ? -1
-                  : firstName > secondName
-                    ? 1
-                    : 0;
-              })
-              .map((journal) => (
-                <JournalAppMenuItem
-                  key={journal.id}
-                  journal={journal}
-                  close={close}
-                />
-              ))}
+            {sortJournalsByName(favoriteJournals).map((journal) => (
+              <JournalAppMenuItem
+                key={journal.id}
+                journal={journal}
+                close={close}
+              />
+            ))}
           </List>
         </Collapse>
         <AppMenuItem
