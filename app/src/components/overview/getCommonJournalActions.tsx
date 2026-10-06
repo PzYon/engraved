@@ -13,23 +13,20 @@ export function getCommonJournalActions(
     return [];
   }
 
-  const actions: IAction[] = [
+  const journalId = journal.id ?? "";
+
+  return [
     ActionFactory.addEntry(journal, enableHotkeys),
-    ActionFactory.editJournalPermissions(journal.id ?? ""),
+    ActionFactory.editJournalPermissions(journalId),
     ActionFactory.editJournalSchedule(
-      journal.id ?? "",
+      journalId,
       enableHotkeys,
       !!getScheduleForUser(journal, user.id ?? "").nextOccurrence,
     ),
+    ActionFactory.editJournal(journalId, enableHotkeys),
+    ActionFactory.deleteJournal(journalId, enableHotkeys),
+    ActionFactory.showRelatedItems(journalId),
   ];
-
-  actions.push(
-    ActionFactory.editJournal(journal.id ?? "", enableHotkeys),
-    ActionFactory.deleteJournal(journal.id ?? "", enableHotkeys),
-    ActionFactory.showRelatedItems(journal.id ?? ""),
-  );
-
-  return actions;
 }
 
 export function getCommonEditModeActions(
