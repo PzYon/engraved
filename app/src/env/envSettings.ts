@@ -10,9 +10,6 @@ export const envSettings = {
   },
   apiBaseUrlWindows: import.meta.env.VITE_API_BASE_URL,
   apiBaseUrlLinux: import.meta.env.VITE_API_BASE_URL_LINUX,
-  commitHash: import.meta.env.VITE_COMMIT_HASH,
-  version: import.meta.env.VITE_VERSION,
-  mergeDateTime: import.meta.env.VITE_MERGE_DATE_TIME,
   isDev: import.meta.env.DEV,
   appInsightsConnectionString: import.meta.env
     .VITE_APP_INSIGHTS_CONNECTING_STRING,
