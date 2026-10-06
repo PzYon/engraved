@@ -2,7 +2,7 @@ import { styled, SxProps, Typography } from "@mui/material";
 import { AppContent } from "./AppContent";
 import { useApiSystemInfoQuery } from "../../serverApi/reactQuery/queries/useApiSystemInfoQuery";
 import { ISystemInfo } from "../../serverApi/ISystemInfo";
-import { envSettings } from "../../env/envSettings";
+import { buildInfo } from "../../env/buildInfo";
 import GitHub from "@mui/icons-material/GitHub";
 import React, { useEffect, useState } from "react";
 import { FadeInContainer } from "../common/FadeInContainer";
@@ -70,14 +70,7 @@ export const AppFooter: React.FC = () => {
               />
             </Element>
             <Element>
-              <SystemInfo
-                systemInfo={{
-                  commitHash: envSettings.commitHash,
-                  version: envSettings.version,
-                  mergeDateTime: envSettings.mergeDateTime,
-                }}
-                label={"App"}
-              />
+              <SystemInfo systemInfo={buildInfo} label={"App"} />
             </Element>
             <Element>
               <SystemInfo systemInfo={apiSystemInfo} label={"API"} />

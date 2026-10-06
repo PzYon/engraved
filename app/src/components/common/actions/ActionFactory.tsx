@@ -436,21 +436,12 @@ export class ActionFactory {
     };
   }
 
-  static updateToNewVersion(
-    setAppAlert: (appAlert: IAppAlert | null) => void,
-  ): IAction {
+  static updateToNewVersion(): IAction {
     const color = "#fdff00";
 
     return {
       icon: <SwitchAccessShortcutOutlined fontSize="small" />,
-      onClick: () =>
-        void applyNewVersion((message) =>
-          setAppAlert({
-            type: "error",
-            title: "Update failed",
-            message: message,
-          }),
-        ),
+      onClick: () => void applyNewVersion(),
       label: "New version available - click to update.",
       key: "update-to-new-version",
       sx: {

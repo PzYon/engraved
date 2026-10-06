@@ -4,7 +4,7 @@ import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persi
 import { del, get, set } from "idb-keyval";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
-import { envSettings } from "../../env/envSettings";
+import { buildInfo } from "../../env/buildInfo";
 import { useAppContext } from "../../AppContext";
 
 // Keep cached data around long enough to be persisted and restored across
@@ -58,7 +58,7 @@ export const ReactQueryProviderWrapper: React.FC<{
         // (removeClient) before restoring - so one user never sees another
         // user's data restored from IndexedDB, and old-schema caches are still
         // dropped on deploy.
-        buster: `${envSettings.version ?? "dev"}:${user?.id ?? "anon"}`,
+        buster: `${buildInfo.version ?? "dev"}:${user?.id ?? "anon"}`,
       }}
     >
       {children}
