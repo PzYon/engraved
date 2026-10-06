@@ -54,13 +54,14 @@ jobs:
         id: fallow-base
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
             echo "ref=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
           else
-            # A new branch's first push has no usable "before" commit (it's the
-            # all-zero SHA), which would otherwise leave the diff base empty and
-            # make fallow scan the whole repo instead of just this branch's
-            # changes. Fall back to where this branch diverged from main.
+            # A branch is compared against where it diverged from main, not
+            # against its previous push: the audit only fails on findings that
+            # are new relative to the base, so with the previous push as base a
+            # finding that failed one run would count as inherited in the next
+            # and any follow-up push would turn the build green.
             git fetch origin main
             echo "ref=$(git merge-base HEAD origin/main)" >> "$GITHUB_OUTPUT"
           fi
@@ -68,6 +69,8 @@ jobs:
       - name: Fallow
         uses: fallow-rs/fallow@v3
         with:
+          command: audit
+          gate: new-only
           format: sarif
           annotations: false
           changed-since: ${{ steps.fallow-base.outputs.ref }}
