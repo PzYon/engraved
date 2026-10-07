@@ -8,8 +8,7 @@ export const envSettings = {
   notifications: {
     appId: import.meta.env.VITE_NOTIFICATIONS_APP_ID,
   },
-  apiBaseUrlWindows: import.meta.env.VITE_API_BASE_URL,
-  apiBaseUrlLinux: import.meta.env.VITE_API_BASE_URL_LINUX,
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
   isDev: import.meta.env.DEV,
   appInsightsConnectionString: import.meta.env
     .VITE_APP_INSIGHTS_CONNECTING_STRING,

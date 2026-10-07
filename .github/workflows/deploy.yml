@@ -45,19 +45,9 @@ jobs:
           action: "upload"
 
   deploy-api:
-    name: Deploy API (${{ matrix.platform.name }})
+    name: Deploy API
     runs-on: ubuntu-latest
     if: inputs.deploy-api == true
-
-    strategy:
-      matrix:
-        platform:
-          - name: Windows
-            app-name: engraved
-            publish-profile-secret: AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E
-          - name: Linux
-            app-name: engraved-lnx
-            publish-profile-secret: AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E_LNX
 
     environment:
       name: "Production"
@@ -69,11 +59,11 @@ jobs:
         with:
           name: api
 
-      - name: Deploy to Azure App Service (${{ matrix.platform.name }})
+      - name: Deploy to Azure App Service
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ matrix.platform.app-name }}
+          app-name: engraved-lnx
           slot-name: "Production"
-          publish-profile: ${{ secrets[matrix.platform.publish-profile-secret] }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E_LNX }}
           package: .
