@@ -1,4 +1,4 @@
-import { endOfDay, endOfMonth } from "date-fns";
+import { lastDayOfMonth } from "date-fns";
 import { DateFilterConfig } from "../edit/DateFilterConfig";
 import {
   createDateConditions,
@@ -19,7 +19,7 @@ describe("createNextDateConditions", () => {
 
     function getMonth(year: number, month: number) {
       const from = new Date(year, month, 1);
-      return { from, to: endOfMonth(from) };
+      return { from, to: lastDayOfMonth(from) };
     }
 
     it.each(allMonths)(
@@ -62,7 +62,7 @@ describe("createNextDateConditions", () => {
 
       expect(result).toEqual({
         from: new Date(2028, 1, 1),
-        to: endOfMonth(new Date(2028, 1, 29)),
+        to: new Date(2028, 1, 29),
       });
     });
   });
@@ -87,7 +87,7 @@ describe("createNextDateConditions", () => {
 
       expect(result).toEqual({
         from: new Date(2026, 9, 11),
-        to: endOfDay(new Date(2026, 9, 17)),
+        to: new Date(2026, 9, 17),
       });
     });
 
@@ -100,7 +100,7 @@ describe("createNextDateConditions", () => {
 
       expect(result).toEqual({
         from: new Date(2026, 8, 27),
-        to: endOfDay(new Date(2026, 9, 3)),
+        to: new Date(2026, 9, 3),
       });
     });
   });
@@ -245,7 +245,7 @@ describe("createDateConditions", () => {
 
     expect(result).toEqual({
       from: new Date(2026, 9, 4),
-      to: endOfDay(new Date(2026, 9, 10)),
+      to: new Date(2026, 9, 10),
     });
   });
 
@@ -257,7 +257,7 @@ describe("createDateConditions", () => {
 
     expect(result).toEqual({
       from: new Date(2026, 9, 1),
-      to: endOfDay(new Date(2026, 9, 31)),
+      to: new Date(2026, 9, 31),
     });
   });
 
@@ -269,7 +269,7 @@ describe("createDateConditions", () => {
 
     expect(result).toEqual({
       from: new Date(2026, 0, 1),
-      to: endOfDay(new Date(2026, 11, 31)),
+      to: new Date(2026, 11, 31),
     });
   });
 
