@@ -50,6 +50,27 @@ describe("calculateStreak", () => {
     expect(result!.length).toBe(1);
   });
 
+  it("should count a positive streak when the entries are not sorted", () => {
+    const result = calculateStreak(
+      [createDateOffset(1), createDateOffset(2), createDateOffset(0)],
+      "positive",
+    );
+
+    expect(result!.isStreak).toBeTruthy();
+    expect(result!.hasEntryToday).toBeTruthy();
+    expect(result!.length).toBe(3);
+  });
+
+  it("should not change the order of the entries passed in", () => {
+    const oldest = createDateOffset(2);
+    const newest = createDateOffset(0);
+    const entries = [oldest, newest];
+
+    calculateStreak(entries, "positive");
+
+    expect(entries).toEqual([oldest, newest]);
+  });
+
   it("should return correct streak count when negative", () => {
     const result = calculateStreak([createDateOffset(3)], "negative");
 
