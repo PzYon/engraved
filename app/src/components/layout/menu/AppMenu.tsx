@@ -156,12 +156,12 @@ const AppMenuItem: React.FC<{
           >
             {label}
           </ListItemText>
-          {iconEnd ? (
-            <ListItemIcon sx={{ minWidth: "40px", color: "initial" }}>
-              {iconEnd}
-            </ListItemIcon>
-          ) : null}
         </LinkOrSpan>
+        {iconEnd ? (
+          <ListItemIcon sx={{ minWidth: "40px", color: "initial" }}>
+            {iconEnd}
+          </ListItemIcon>
+        ) : null}
         {suffix}
       </ListItemButton>
     </ListItem>
@@ -201,7 +201,10 @@ const LinkOrSpan: React.FC<{
   }
 
   return (
-    <StyledLink to={targetUrl} sx={{ flexGrow: 1, alignItems: "center" }}>
+    <StyledLink
+      to={targetUrl}
+      sx={{ flexGrow: 1, alignItems: "center", alignSelf: "stretch" }}
+    >
       {children}
     </StyledLink>
   );
