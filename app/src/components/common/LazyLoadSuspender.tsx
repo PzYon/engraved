@@ -1,7 +1,7 @@
 import SwitchAccessShortcutOutlined from "@mui/icons-material/SwitchAccessShortcutOutlined";
 import { CircularProgress, Dialog, styled, Typography } from "@mui/material";
 import React, { PropsWithChildren, ReactNode, Suspense, useState } from "react";
-import { applyNewVersion } from "../../serviceWorkerUpdater";
+import { useApplyNewVersion } from "../../useApplyNewVersion";
 
 export const LazyLoadSuspender: React.FC<PropsWithChildren> = ({
   children,
@@ -42,16 +42,21 @@ class LazyLoadErrorBoundaryClass extends React.Component<
 
 const ErrorOnLazyLoad: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const { isApplying, apply } = useApplyNewVersion();
 
   return (
     <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-      <Host onClick={() => void applyNewVersion()}>
-        <SwitchAccessShortcutOutlined
-          sx={{ color: "primary.main" }}
-          fontSize={"large"}
-        />
+      <Host onClick={apply}>
+        {isApplying ? (
+          <CircularProgress enableTrackSlot size="35px" />
+        ) : (
+          <SwitchAccessShortcutOutlined
+            sx={{ color: "primary.main" }}
+            fontSize={"large"}
+          />
+        )}
         <Typography sx={{ pt: 2, color: "primary.main" }}>
-          Update available, click to reload.
+          {isApplying ? "Updating..." : "Update available, click to reload."}
         </Typography>
       </Host>
     </Dialog>

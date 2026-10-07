@@ -7,17 +7,21 @@ import { queryKeysFactory } from "./serverApi/reactQuery/queryKeysFactory";
 import { ActionFactory } from "./components/common/actions/ActionFactory";
 import { FadeInContainer } from "./components/common/FadeInContainer";
 import { isNewVersionAvailable } from "./isNewVersionAvailable";
+import { useApplyNewVersion } from "./useApplyNewVersion";
 
 export const VersionChecker: React.FC = () => {
   const isNewVersionAvailable = useIsNewVersionAvailableQuery();
+  const { isApplying, apply } = useApplyNewVersion();
 
   if (!isNewVersionAvailable) {
     return null;
   }
 
   return (
-    <FadeInContainer doPulsate={true}>
-      <ActionIconButton action={ActionFactory.updateToNewVersion()} />
+    <FadeInContainer doPulsate={!isApplying}>
+      <ActionIconButton
+        action={ActionFactory.updateToNewVersion(isApplying, apply)}
+      />
     </FadeInContainer>
   );
 };
