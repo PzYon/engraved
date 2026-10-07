@@ -147,4 +147,141 @@ describe("createNextDateConditions", () => {
       });
     });
   });
+
+  describe("year", () => {
+    const yearConfig: DateFilterConfig = {
+      dateType: "range",
+      value: DateRange.Year,
+    };
+
+    const year2026 = createDateConditions(yearConfig, new Date(2026, 9, 6));
+
+    it("should go to the next year", () => {
+      const result = createNextDateConditions("next", yearConfig, year2026);
+
+      expect(result).toEqual({
+        from: new Date(2027, 0, 1),
+        to: new Date(2027, 11, 31),
+      });
+    });
+
+    it("should go to the previous year", () => {
+      const result = createNextDateConditions("previous", yearConfig, year2026);
+
+      expect(result).toEqual({
+        from: new Date(2025, 0, 1),
+        to: new Date(2025, 11, 31),
+      });
+    });
+  });
+
+  describe("relative", () => {
+    const lastSevenDays: DateFilterConfig = { dateType: "relative", value: 7 };
+
+    const current = {
+      from: new Date(2026, 9, 1),
+      to: new Date(2026, 9, 8),
+    };
+
+    it("should continue where the range ends", () => {
+      const result = createNextDateConditions("next", lastSevenDays, current);
+
+      expect(result).toEqual({
+        from: new Date(2026, 9, 8),
+        to: new Date(2026, 9, 15),
+      });
+    });
+
+    it("should end where the range starts", () => {
+      const result = createNextDateConditions(
+        "previous",
+        lastSevenDays,
+        current,
+      );
+
+      expect(result).toEqual({
+        from: new Date(2026, 8, 24),
+        to: new Date(2026, 9, 1),
+      });
+    });
+  });
+
+  describe("all", () => {
+    it.each(["previous", "next"] as const)(
+      "should have no conditions when going to %s",
+      (direction) => {
+        const result = createNextDateConditions(
+          direction,
+          { dateType: "range", value: DateRange.All },
+          {},
+        );
+
+        expect(result).toEqual({});
+      },
+    );
+  });
+});
+
+describe("createDateConditions", () => {
+  const date = new Date(2026, 9, 6, 14, 30);
+
+  it("should go back the configured number of days for a relative filter", () => {
+    const result = createDateConditions(
+      { dateType: "relative", value: 7 },
+      date,
+    );
+
+    expect(result).toEqual({
+      from: new Date(2026, 8, 29, 14, 30),
+      to: date,
+    });
+  });
+
+  it("should cover the week from sunday to saturday", () => {
+    const result = createDateConditions(
+      { dateType: "range", value: DateRange.Week },
+      date,
+    );
+
+    expect(result).toEqual({
+      from: new Date(2026, 9, 4),
+      to: endOfDay(new Date(2026, 9, 10)),
+    });
+  });
+
+  it("should cover the whole month", () => {
+    const result = createDateConditions(
+      { dateType: "range", value: DateRange.Month },
+      date,
+    );
+
+    expect(result).toEqual({
+      from: new Date(2026, 9, 1),
+      to: endOfDay(new Date(2026, 9, 31)),
+    });
+  });
+
+  it("should cover the whole year", () => {
+    const result = createDateConditions(
+      { dateType: "range", value: DateRange.Year },
+      date,
+    );
+
+    expect(result).toEqual({
+      from: new Date(2026, 0, 1),
+      to: endOfDay(new Date(2026, 11, 31)),
+    });
+  });
+
+  it.each([DateRange.Custom, DateRange.All])(
+    "should have no conditions for range %i",
+    (range) => {
+      const result = createDateConditions(
+        { dateType: "range", value: range },
+        date,
+      );
+
+      expect(result).toEqual({});
+    },
+  );
 });
