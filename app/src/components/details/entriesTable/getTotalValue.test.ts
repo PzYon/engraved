@@ -38,6 +38,18 @@ describe("getTotalValue", () => {
     },
   );
 
+  it.each<AggregationMode>(["average", "average-by-occurrence"])(
+    "should be zero without entries (%s)",
+    (aggregationMode) => {
+      const result = getTotalValue([], aggregationMode, {});
+
+      expect(result).toEqual({
+        value: 0,
+        label: "Average from 0 occurrences",
+      });
+    },
+  );
+
   it("should divide by the number of days in the date range", () => {
     const result = getTotalValue(groups, "average-by-time", {
       from: new Date(2026, 9, 1),
