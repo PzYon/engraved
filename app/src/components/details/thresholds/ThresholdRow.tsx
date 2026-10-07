@@ -37,7 +37,7 @@ export const ThresholdRow: React.FC<{
   const [attributeValueKeys, setAttributeValueKeys] = useState<string[]>(
     definition?.attributeValueKeys ?? [],
   );
-  const [threshold, setThreshold] = useState(definition?.threshold ?? "");
+  const [threshold, setThreshold] = useState(definition?.threshold);
   const [thresholdScope, setThresholdScope] = useState(
     definition?.scope ?? ThresholdScope.Month,
   );
@@ -48,12 +48,7 @@ export const ThresholdRow: React.FC<{
         attributes={journal.attributes ?? {}}
         onChange={(k) => {
           setAttributeKey(k);
-          onChangeWrapper(
-            k,
-            attributeValueKeys,
-            Number(threshold),
-            thresholdScope,
-          );
+          onChangeWrapper(k, attributeValueKeys, threshold, thresholdScope);
         }}
         selectedAttributeKey={attributeKey}
         label={"Attribute"}
@@ -69,7 +64,7 @@ export const ThresholdRow: React.FC<{
             onChangeWrapper(
               attributeKey,
               attributesValues,
-              Number(threshold),
+              threshold,
               thresholdScope,
             );
           }}
@@ -88,12 +83,7 @@ export const ThresholdRow: React.FC<{
           onChange={(event: SelectChangeEvent) => {
             const scope = event.target.value as unknown as ThresholdScope;
             setThresholdScope(scope);
-            onChangeWrapper(
-              attributeKey,
-              attributeValueKeys,
-              Number(threshold),
-              scope,
-            );
+            onChangeWrapper(attributeKey, attributeValueKeys, threshold, scope);
           }}
           sx={{ ".MuiSelect-select": { display: "flex" } }}
         >
@@ -105,14 +95,15 @@ export const ThresholdRow: React.FC<{
       <TextField
         label={"Threshold Value"}
         type="number"
-        defaultValue={threshold}
+        defaultValue={threshold ?? ""}
         onBlur={(event) => {
-          const newThreshold = Number(event.target.value);
+          const newThreshold =
+            event.target.value === "" ? undefined : Number(event.target.value);
           setThreshold(newThreshold);
           onChangeWrapper(
             attributeKey,
             attributeValueKeys,
-            Number(newThreshold),
+            newThreshold,
             thresholdScope,
           );
         }}
@@ -123,7 +114,7 @@ export const ThresholdRow: React.FC<{
   function onChangeWrapper(
     key: string,
     valueKeys: string[],
-    threshold: number,
+    threshold: number | undefined,
     scope: ThresholdScope,
   ) {
     onChange({

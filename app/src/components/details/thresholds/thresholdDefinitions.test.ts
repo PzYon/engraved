@@ -17,6 +17,16 @@ describe("thresholdDefinitions", () => {
       expect(result).toBe(false);
     });
 
+    it("should be complete with a threshold of zero", () => {
+      const result = isComplete({
+        attributeValueKeys: [],
+        threshold: 0,
+        scope: ThresholdScope.Day,
+      });
+
+      expect(result).toBe(true);
+    });
+
     it("should be incomplete without a scope", () => {
       const result = isComplete({ attributeValueKeys: [], threshold: 5 });
 
