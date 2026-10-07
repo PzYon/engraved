@@ -3,9 +3,9 @@ import {
   addDays,
   addMonths,
   differenceInCalendarDays,
-  endOfMonth,
-  endOfWeek,
-  endOfYear,
+  lastDayOfMonth,
+  lastDayOfWeek,
+  lastDayOfYear,
   startOfMonth,
   startOfWeek,
   startOfYear,
@@ -26,21 +26,23 @@ export const createDateConditions = (
     };
   }
 
+  // "to" is the last day of a range, at midnight: the API includes that whole
+  // day by adding one to it, so the end of the day would reach into the next.
   switch (dateFilterConfig.value as DateRange) {
     case DateRange.Week:
       return {
         from: startOfWeek(date),
-        to: endOfWeek(date),
+        to: lastDayOfWeek(date),
       };
 
     case DateRange.Month:
       return {
         from: startOfMonth(date),
-        to: endOfMonth(date),
+        to: lastDayOfMonth(date),
       };
 
     case DateRange.Year:
-      return { from: startOfYear(date), to: endOfYear(date) };
+      return { from: startOfYear(date), to: lastDayOfYear(date) };
 
     case DateRange.Custom:
       return {};
