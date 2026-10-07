@@ -24,7 +24,7 @@ export function getTotalValue(
   );
 
   return {
-    value: totalValue / divisor.value,
+    value: divisor.value === 0 ? 0 : totalValue / divisor.value,
     label: divisor.label,
   };
 }
