@@ -63,8 +63,6 @@ export class ServerApi {
   private static _isE2eTest: boolean =
     ServerApi.e2eStorage.getValue<boolean>("isE2eTest") ?? false;
 
-  static serverOs: "lin" | "win" = "lin";
-
   private static googlePrompt: () => void;
 
   private static onAuthenticated: (() => void) | null;
@@ -128,14 +126,6 @@ export class ServerApi {
       clearTimeout(ServerApi.loginPromptTimer);
       ServerApi.loginPromptTimer = undefined;
     }
-  }
-
-  static setServerOs(os: "lin" | "win"): void {
-    ServerApi.serverOs = os;
-  }
-
-  static getServerOs() {
-    return ServerApi.serverOs;
   }
 
   static async wakeMeUp(): Promise<void> {
@@ -696,9 +686,7 @@ export class ServerApi {
       return "http://localhost:5072/api";
     }
 
-    return ServerApi.serverOs === "win"
-      ? envSettings.apiBaseUrlWindows
-      : envSettings.apiBaseUrlLinux;
+    return envSettings.apiBaseUrl;
   }
 
   private static printPerfData(
@@ -717,7 +705,7 @@ export class ServerApi {
     const status = response.status;
 
     console.info(
-      `ServerApi: ${method} ${url} (${ServerApi.serverOs}) [${status}]: Server ${server} + Network ${network} = Total ${total} `,
+      `ServerApi: ${method} ${url} [${status}]: Server ${server} + Network ${network} = Total ${total} `,
     );
   }
 }
