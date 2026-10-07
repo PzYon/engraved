@@ -23,7 +23,12 @@ export function calculateStreak(
     return null;
   }
 
-  const newestEntry = getNewestEntry(entries);
+  const newestFirst = [...entries].sort(
+    (a, b) =>
+      ensureDate(b.dateTime).getTime() - ensureDate(a.dateTime).getTime(),
+  );
+
+  const newestEntry = newestFirst[0];
   const isNewestToday = isToday(newestEntry.dateTime);
   const isNewestYesterday = isYesterday(newestEntry.dateTime);
 
@@ -31,7 +36,7 @@ export function calculateStreak(
     ? {
         isStreak: isNewestToday || isNewestYesterday,
         hasEntryToday: isNewestToday,
-        length: getPositiveStreakLength(entries),
+        length: getPositiveStreakLength(newestFirst),
       }
     : {
         isStreak: !isNewestToday && !isNewestYesterday,
@@ -44,28 +49,21 @@ export function calculateStreak(
       };
 }
 
-function getPositiveStreakLength(entries: { dateTime: string | Date }[]) {
+function getPositiveStreakLength(newestFirst: { dateTime: string | Date }[]) {
   let lastDate = new Date();
   let count = 0;
 
-  for (let i = 0; i < entries.length; i++) {
+  for (let i = 0; i < newestFirst.length; i++) {
     if (
-      (i === 0 && isToday(entries[0].dateTime)) ||
-      isSameDay(addDays(entries[i].dateTime, 1), lastDate)
+      (i === 0 && isToday(newestFirst[0].dateTime)) ||
+      isSameDay(addDays(newestFirst[i].dateTime, 1), lastDate)
     ) {
       count++;
-      lastDate = ensureDate(entries[i].dateTime);
+      lastDate = ensureDate(newestFirst[i].dateTime);
     } else {
       break;
     }
   }
 
   return count;
-}
-
-function getNewestEntry(entries: { dateTime: string | Date }[]) {
-  return entries.sort(
-    (a, b) =>
-      ensureDate(b.dateTime).getTime() - ensureDate(a.dateTime).getTime(),
-  )[0];
 }
