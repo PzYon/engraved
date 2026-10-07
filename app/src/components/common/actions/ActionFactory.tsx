@@ -33,7 +33,7 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { IEntry } from "../../../serverApi/IEntry";
 import { QueryClient } from "@tanstack/react-query";
 import { IAction } from "./IAction";
-import { Button, Typography } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import { DialogFormButtonContainer } from "../FormButtonContainer";
 import {
   clearAllSearchParams,
@@ -41,7 +41,6 @@ import {
 } from "./searchParamHooks";
 import AirplanemodeActive from "@mui/icons-material/AirplanemodeActive";
 import { IAppAlert } from "../../errorHandling/IAppAlert";
-import { applyNewVersion } from "../../../serviceWorkerUpdater";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -436,13 +435,19 @@ export class ActionFactory {
     };
   }
 
-  static updateToNewVersion(): IAction {
+  static updateToNewVersion(isApplying: boolean, apply: () => void): IAction {
     const color = "#fdff00";
 
     return {
-      icon: <SwitchAccessShortcutOutlined fontSize="small" />,
-      onClick: () => void applyNewVersion(),
-      label: "New version available - click to update.",
+      icon: isApplying ? (
+        <CircularProgress color="inherit" size="20px" />
+      ) : (
+        <SwitchAccessShortcutOutlined fontSize="small" />
+      ),
+      onClick: apply,
+      label: isApplying
+        ? "Updating to the new version..."
+        : "New version available - click to update.",
       key: "update-to-new-version",
       sx: {
         color: color,
