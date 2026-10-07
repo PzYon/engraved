@@ -39,7 +39,7 @@ export function createThresholds(
 }
 
 export function isComplete(definition: IAttributeValueThresholdDefinition) {
-  if (!definition.threshold || !definition.scope) {
+  if (definition.threshold === undefined || !definition.scope) {
     return false;
   }
 
