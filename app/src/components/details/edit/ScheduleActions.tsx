@@ -73,6 +73,15 @@ export const ScheduleActions: React.FC<{
           )}
         </Button>
       )}
+      {isRecurring && isInPast ? (
+        <Button
+          sx={{ width: "100%" }}
+          variant="outlined"
+          onClick={removeSchedule}
+        >
+          Clear schedule
+        </Button>
+      ) : null}
     </MainButtons>
   );
 
