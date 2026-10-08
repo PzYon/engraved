@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material";
-import { IconStyle } from "./IconStyle";
+import { iconSizesInPx, IconStyle } from "./IconStyle";
 
 export const Icon: React.FC<{
   children: React.ReactNode;
@@ -22,6 +22,7 @@ const BaseHost = styled("span")`
   }
 
   svg {
+    box-sizing: border-box;
     border-radius: 100%;
     color: ${(p) => p.theme.palette.primary.main};
   }
@@ -33,8 +34,8 @@ const LargeHost = styled(BaseHost)`
     border: 2px solid ${(p) => p.theme.palette.primary.main};
     margin-top: 9px;
     padding: 2px;
-    height: 0.8em;
-    width: 0.8em;
+    height: ${iconSizesInPx[IconStyle.Large]}px;
+    width: ${iconSizesInPx[IconStyle.Large]}px;
   }
 `;
 
@@ -42,7 +43,7 @@ const SmallHost = styled(BaseHost)`
   svg {
     border: 1px solid ${(p) => p.theme.palette.primary.main};
     padding: ${(p) => p.theme.spacing(0.5)};
-    width: 0.6em;
-    height: 0.6em;
+    width: ${iconSizesInPx[IconStyle.Small]}px;
+    height: ${iconSizesInPx[IconStyle.Small]}px;
   }
 `;
