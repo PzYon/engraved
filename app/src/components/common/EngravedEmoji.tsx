@@ -43,8 +43,6 @@ const Host = styled("span")<{
   isClickable?: boolean;
 }>`
   margin-top: -5px;
-  /* Flex instead of text-align, which would not center a glyph that is wider
-     than the box. */
   display: flex;
   justify-content: center;
   flex-shrink: 0;
