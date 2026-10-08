@@ -1,4 +1,4 @@
-import { IconStyle } from "./IconStyle";
+import { iconSizesInPx, IconStyle } from "./IconStyle";
 import { styled } from "@mui/material";
 import React from "react";
 
@@ -14,6 +14,7 @@ export const EngravedEmoji: React.FC<{
     <Host
       isClickable={isClickable}
       size={size}
+      boxWidth={iconSizesInPx[style]}
       className={`ngrvd-icon${isClickable ? " clickable" : ""}`}
     >
       {emojiChar}
@@ -38,10 +39,14 @@ function unifiedToEmoji(unified: string) {
 
 const Host = styled("span")<{
   size: number;
+  boxWidth: number;
   isClickable?: boolean;
 }>`
   margin-top: -5px;
-  display: block;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  width: ${(p) => p.boxWidth}px;
   font-size: ${(p) => p.size}px;
   cursor: ${(p) => (p.isClickable ? "pointer" : "default")};
   font-family:
