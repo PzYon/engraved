@@ -36,7 +36,15 @@ export const NavigationActionContainer: React.FC<{
           maxWidth: growWidthIfPossible ? "100%" : "500px",
         }}
       >
-        <ClickAwayListener onClickAway={closeAction} mouseEvent="onMouseUp">
+        {/* Closing on touchend would remove this panel before the browser
+            hit-tests the click it derives from the tap. Everything below the
+            panel shifts up in between, so the click lands on another element
+            than the one tapped. */}
+        <ClickAwayListener
+          onClickAway={closeAction}
+          mouseEvent="onMouseUp"
+          touchEvent={false}
+        >
           {/* Contain suspension (e.g. the add/edit-entry form's data query) to
               this panel. Without a local boundary it bubbles to the route-level
               Suspense, which would blank the whole surrounding list. */}
