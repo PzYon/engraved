@@ -29,7 +29,7 @@ export const JournalGoToItemRow: React.FC<{
               deviceWidth === DeviceWidth.Normal &&
               isTypeThatCanShowAddEntryRow(journal.type)
                 ? ActionFactory.goToJournal(journal.id ?? "", false)
-                : ActionFactory.addEntry(journal, false, () => {}, true)
+                : ActionFactory.addEntry(journal, false, onClick, true)
             }
           />
         ) : null;
