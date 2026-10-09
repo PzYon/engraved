@@ -1,6 +1,14 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { styled, SxProps } from "@mui/material";
 
+// Content should be there almost at once: it is often ready the moment it is
+// rendered (cached data), and a long fade then only makes the app feel slow.
+const fadeInMs = 150;
+
+// A pulsating element fades out and back in to draw attention, which only
+// reads as a pulse when it is slow.
+const pulsateMs = 700;
+
 export const FadeInContainer: React.FC<{
   children: ReactNode;
   doPulsate?: boolean;
@@ -21,7 +29,7 @@ export const FadeInContainer: React.FC<{
     if (doPulsate) {
       interval = window.setInterval(() => {
         setIsRendered(false);
-        window.setTimeout(() => setIsRendered(true), 700);
+        window.setTimeout(() => setIsRendered(true), pulsateMs);
       }, 15000);
     }
 
@@ -34,7 +42,11 @@ export const FadeInContainer: React.FC<{
   return (
     <ContainerSection
       data-testid={testId}
-      sx={{ ...(sx ?? {}), opacity: isRendered ? 1 : 0 }}
+      sx={{
+        ...(sx ?? {}),
+        opacity: isRendered ? 1 : 0,
+        transitionDuration: `${doPulsate ? pulsateMs : fadeInMs}ms`,
+      }}
     >
       {children}
     </ContainerSection>
@@ -42,5 +54,5 @@ export const FadeInContainer: React.FC<{
 };
 
 const ContainerSection = styled("section")`
-  transition: opacity 700ms;
+  transition-property: opacity;
 `;
