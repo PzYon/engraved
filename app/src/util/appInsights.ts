@@ -1,10 +1,10 @@
 import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { envSettings } from "../env/envSettings";
 
-let appInsights: ApplicationInsights;
+let appInsights: ApplicationInsights | undefined;
 
 export function setUpAppInsights() {
-  if (!enableAppInsights()) {
+  if (appInsights || !enableAppInsights()) {
     return;
   }
 
@@ -29,7 +29,11 @@ export function logExceptionToAppInsights(e: Error) {
     return;
   }
 
-  appInsights.trackException({
+  // The regular setup waits until the browser is idle, and an error can well
+  // be earlier than that.
+  setUpAppInsights();
+
+  appInsights?.trackException({
     exception: e,
     // consider adding some custom properties like "is mobile" or something like that...
     // customProperties: {},
