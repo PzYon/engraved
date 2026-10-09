@@ -57,7 +57,7 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
   useBasic,
 }) => {
   const html = useMemo<{ __html: string }>(
-    () => ({ __html: getHtml(value, useBasic) }),
+    () => ({ __html: getCachedHtml(value, useBasic) }),
     [value, useBasic],
   );
 
@@ -65,6 +65,35 @@ const LazyMarkdown: React.FC<IMarkdownProps> = ({
 
   return <El onClick={onClick} dangerouslySetInnerHTML={html} />;
 };
+
+// Turning markdown into HTML means parsing it and sanitizing the result, and
+// that for every title, body and list item that gets rendered. The same texts
+// come by over and over - each time a journal is opened again, or an item is
+// expanded - so what they turned into is kept. With a limit, as these are
+// texts of any size.
+const maxCachedHtmls = 500;
+const cachedHtmls = new Map<string, string>();
+
+function getCachedHtml(value: string, useBasic?: boolean) {
+  const key = (useBasic ? "basic:" : "full:") + value;
+
+  const cachedHtml = cachedHtmls.get(key);
+  if (cachedHtml !== undefined) {
+    return cachedHtml;
+  }
+
+  const html = getHtml(value, useBasic);
+
+  if (cachedHtmls.size >= maxCachedHtmls) {
+    // A Map hands out its keys in the order they were added, so this is the
+    // oldest one.
+    cachedHtmls.delete(cachedHtmls.keys().next().value!);
+  }
+
+  cachedHtmls.set(key, html);
+
+  return html;
+}
 
 function getHtml(value: string, useBasic?: boolean) {
   if (!value) {
