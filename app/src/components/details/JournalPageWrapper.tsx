@@ -9,7 +9,7 @@ export const JournalPageWrapper: React.FC = () => {
   const { journalId } = routeApi.useParams();
 
   return (
-    <JournalContextProvider journalId={journalId}>
+    <JournalContextProvider key={journalId} journalId={journalId}>
       <JournalDetails />
     </JournalContextProvider>
   );

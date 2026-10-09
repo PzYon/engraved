@@ -13,7 +13,11 @@ export const JournalContextProvider: React.FC<{
 
   const [searchText, setSearchText] = useState<string>("");
 
-  const [dateConditions, setDateConditions] = useState<IDateConditions>({});
+  // undefined until the page being shown has decided what to load, as
+  // loading entries before that would fetch all of them for nothing.
+  const [dateConditions, setDateConditions] = useState<
+    IDateConditions | undefined
+  >(undefined);
 
   const journal = useJournalQuery(journalId);
 
@@ -57,7 +61,7 @@ export const JournalContextProvider: React.FC<{
         setSelectedAttributeValues(selectedValues);
       },
       setDateConditions,
-      dateConditions,
+      dateConditions: dateConditions ?? {},
       searchText,
       setSearchText,
     };
