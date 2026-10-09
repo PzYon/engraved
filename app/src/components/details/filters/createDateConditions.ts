@@ -6,6 +6,7 @@ import {
   lastDayOfMonth,
   lastDayOfWeek,
   lastDayOfYear,
+  startOfDay,
   startOfMonth,
   startOfWeek,
   startOfYear,
@@ -19,15 +20,21 @@ export const createDateConditions = (
   dateFilterConfig: DateFilterConfig,
   date: Date,
 ): IDateConditions => {
+  // "to" is the last day of a range, at midnight: the API includes that whole
+  // day by adding one to it, so the end of the day would reach into the next.
+
+  // Whole days for a relative filter as well, and not the time of day it was
+  // created at: the conditions are part of the query key, so with the time in
+  // them no two visits of a journal would ever share cached entries.
   if (dateFilterConfig.dateType === "relative") {
+    const today = startOfDay(date);
+
     return {
-      from: subDays(date, dateFilterConfig.value as number),
-      to: date,
+      from: subDays(today, dateFilterConfig.value as number),
+      to: today,
     };
   }
 
-  // "to" is the last day of a range, at midnight: the API includes that whole
-  // day by adding one to it, so the end of the day would reach into the next.
   switch (dateFilterConfig.value as DateRange) {
     case DateRange.Week:
       return {

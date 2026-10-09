@@ -225,16 +225,26 @@ describe("createNextDateConditions", () => {
 describe("createDateConditions", () => {
   const date = new Date(2026, 9, 6, 14, 30);
 
-  it("should go back the configured number of days for a relative filter", () => {
+  it("should go back the configured number of whole days for a relative filter", () => {
     const result = createDateConditions(
       { dateType: "relative", value: 7 },
       date,
     );
 
     expect(result).toEqual({
-      from: new Date(2026, 8, 29, 14, 30),
-      to: date,
+      from: new Date(2026, 8, 29),
+      to: new Date(2026, 9, 6),
     });
+  });
+
+  it("should not depend on the time of day for a relative filter", () => {
+    const lastSevenDays: DateFilterConfig = { dateType: "relative", value: 7 };
+
+    expect(
+      createDateConditions(lastSevenDays, new Date(2026, 9, 6, 0, 0, 1)),
+    ).toEqual(
+      createDateConditions(lastSevenDays, new Date(2026, 9, 6, 23, 59, 59)),
+    );
   });
 
   it("should cover the week from sunday to saturday", () => {
