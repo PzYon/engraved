@@ -27,6 +27,11 @@
 
     <!-- fonts are self-hosted and bundled (see src/index.tsx) -->
 
+    <!-- Every start signs in with Google's script, which is only requested
+         once the app has been loaded and rendered. Opening the connection
+         now saves setting it up then. -->
+    <link rel="preconnect" href="https://accounts.google.com" />
+
     <title>engraved.</title>
   </head>
   <body>
