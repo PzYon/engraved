@@ -1,6 +1,14 @@
 import React, { useRef, useState } from "react";
-import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 import { Popover, styled } from "@mui/material";
+import { LazyLoadSuspender } from "./LazyLoadSuspender";
+
+// The picker brings its complete emoji data along, which made up about a fifth
+// of the JavaScript loaded at startup - for something that is only needed when
+// the icon of a journal is changed.
+const LazyEmojiPicker = React.lazy(() => import("./LazyEmojiPicker"));
+
+const pickerWidth = 350;
+const pickerHeight = 450;
 
 export const EmojiPickerWrapper: React.FC<{
   onEmojiClick: (emoji: string) => void;
@@ -28,22 +36,28 @@ export const EmojiPickerWrapper: React.FC<{
         disableScrollLock={true}
       >
         <EmojiPickerContainer>
-          <EmojiPicker
-            skinTonesDisabled={true}
-            previewConfig={{ showPreview: false }}
-            emojiStyle={EmojiStyle.NATIVE}
-            onEmojiClick={(e) => {
-              onEmojiClick(e.unified);
-              setIsOpen(false);
-            }}
-          />
+          <LazyLoadSuspender>
+            <LazyEmojiPicker
+              width={pickerWidth}
+              height={pickerHeight}
+              onEmojiClick={(emoji) => {
+                onEmojiClick(emoji);
+                setIsOpen(false);
+              }}
+            />
+          </LazyLoadSuspender>
         </EmojiPickerContainer>
       </Popover>
     </>
   );
 };
 
+// Reserves the room the picker needs from the start: the popover positions
+// itself once, when it opens, which is before the picker has been loaded.
 const EmojiPickerContainer = styled("div")`
+  min-width: ${pickerWidth}px;
+  min-height: ${pickerHeight}px;
+
   .epr-body * {
     font-family: ${(p) => p.theme.typography.fontFamily};
   }
