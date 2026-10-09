@@ -7,11 +7,26 @@ import { registerGooglePrompt } from "./serverApi/authentication/registerGoogleP
 import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 import { CredentialResponse } from "google-one-tap";
+import { getLastUser, setLastUser } from "./serverApi/authentication/lastUser";
+
+// Tests bring their own session, so there is nobody to remember for them.
+function getRememberedUser(): IUser | undefined {
+  const isTest =
+    ServerApi.isTestMode() ||
+    new URLSearchParams(window.location.search).has(knownQueryParams.testUser);
+
+  return isTest ? undefined : getLastUser();
+}
 
 export const Bootstrapper: React.FC = () => {
   const isInitialized = useRef(false);
 
-  const [user, setUser] = useState<IUser>();
+  // Starting out with the user of last time puts the app on screen at once,
+  // with whatever it has cached for them, instead of the welcome page for as
+  // long as signing in takes. Nothing is requested from the API until that
+  // has completed (see ServerApi.signedIn).
+  const [rememberedUser] = useState(getRememberedUser);
+  const [user, setUser] = useState<IUser | undefined>(rememberedUser);
   const googleRef = useRef<HTMLDivElement | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -24,6 +39,40 @@ export const Bootstrapper: React.FC = () => {
 
     isInitialized.current = true;
 
+    // The app is on screen already, so the silent prompt is all there is. Should
+    // that not lead anywhere, tryToLoginAgain has the header offer Google's
+    // button after a while.
+    function signInInBackground() {
+      registerGooglePrompt(onSignedIn, null)
+        .then(() => ServerApi.tryToLoginAgain())
+        .catch((error) => {
+          // Most likely offline, where the cached data is all there is anyway.
+          console.warn("Could not sign in yet.", error);
+          window.addEventListener("online", signInInBackground, { once: true });
+        });
+    }
+
+    function onSignedIn(response: CredentialResponse) {
+      setIsLoading(true);
+
+      ServerApi.authenticate(response.credential)
+        .then((authResult: IAuthResult) => {
+          setLastUser(authResult.user);
+
+          // Somebody else than the one whose data is on screen: start over, so
+          // that nothing of the previous user is left in memory.
+          if (rememberedUser && rememberedUser.id !== authResult.user.id) {
+            window.location.reload();
+            return;
+          }
+
+          setUser(authResult.user);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has(knownQueryParams.testUser)) {
       ServerApi.setUpForTests(searchParams.get(knownQueryParams.testUser)!)
@@ -31,10 +80,6 @@ export const Bootstrapper: React.FC = () => {
           setUser(r.user);
         })
         .finally(() => setIsNotVisible(false));
-      return;
-    }
-
-    if (!googleRef.current) {
       return;
     }
 
@@ -48,13 +93,21 @@ export const Bootstrapper: React.FC = () => {
       return;
     }
 
+    if (rememberedUser) {
+      signInInBackground();
+      return;
+    }
+
+    if (!googleRef.current) {
+      return;
+    }
+
     // The token is no longer persisted, so we always (re-)authenticate via
     // Google. One Tap signs the user in silently when possible and otherwise
     // renders the sign-in button.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsNotVisible(false);
-    registerGooglePrompt(onSignedIn, googleRef.current);
-  }, []);
+    registerGooglePrompt(onSignedIn, googleRef.current).catch(console.error);
+  }, [rememberedUser]);
 
   if (user) {
     return <App user={user} />;
@@ -94,18 +147,6 @@ export const Bootstrapper: React.FC = () => {
       )}
     </Host>
   );
-
-  function onSignedIn(response: CredentialResponse) {
-    setIsLoading(true);
-
-    ServerApi.authenticate(response.credential)
-      .then((authResult: IAuthResult) => {
-        setUser(authResult.user);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }
 };
 
 const Host = styled("div")<{ isNotVisible: boolean }>`
