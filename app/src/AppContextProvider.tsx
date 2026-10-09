@@ -1,6 +1,6 @@
 import { IUser } from "./serverApi/IUser";
 import React, { useMemo, useState } from "react";
-import { AppContext, IAppContext } from "./AppContext";
+import { AppAlertContext, AppContext, IAppContext } from "./AppContext";
 import { ServerApi } from "./serverApi/ServerApi";
 import { IAppAlert } from "./components/errorHandling/IAppAlert";
 
@@ -13,7 +13,6 @@ export const AppContextProvider: React.FC<{
 
   const contextValue = useMemo<IAppContext>(() => {
     return {
-      appAlert,
       setAppAlert,
       user,
       setUser,
@@ -22,9 +21,13 @@ export const AppContextProvider: React.FC<{
         setUser(reloadedUser);
       },
     };
-  }, [appAlert, user]);
+  }, [user]);
 
   return (
-    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
+    <AppContext.Provider value={contextValue}>
+      <AppAlertContext.Provider value={appAlert}>
+        {children}
+      </AppAlertContext.Provider>
+    </AppContext.Provider>
   );
 };

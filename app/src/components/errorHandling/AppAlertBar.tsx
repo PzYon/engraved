@@ -1,9 +1,10 @@
 import React from "react";
 import { Alert, AlertTitle, Snackbar, styled } from "@mui/material";
-import { useAppContext } from "../../AppContext";
+import { useAppAlert, useAppContext } from "../../AppContext";
 
 export const AppAlertBar: React.FC = () => {
-  const { appAlert, setAppAlert } = useAppContext();
+  const appAlert = useAppAlert();
+  const { setAppAlert } = useAppContext();
 
   if (!appAlert) {
     return null;
