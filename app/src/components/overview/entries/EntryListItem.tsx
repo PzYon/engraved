@@ -11,13 +11,6 @@ export const EntryListItem: React.FC<{
   index?: number;
   giveFocus?: () => void;
 }> = ({ entry, journals, hasFocus, index, giveFocus }) => {
-  return (
-    <div data-testid={`entries-list-item-${index}`}>
-      {renderEntry(entry, hasFocus ?? false)}
-      {hasFocus ? <EntrySubRoutes entry={entry} /> : null}
-    </div>
-  );
-
   function renderEntry(entry: IEntry, hasFocus: boolean) {
     const journal = journals.find((j) => j.id === entry.parentId);
 
@@ -32,4 +25,10 @@ export const EntryListItem: React.FC<{
       giveFocus,
     );
   }
+  return (
+    <div data-testid={`entries-list-item-${index}`}>
+      {renderEntry(entry, hasFocus ?? false)}
+      {hasFocus ? <EntrySubRoutes entry={entry} /> : null}
+    </div>
+  );
 };

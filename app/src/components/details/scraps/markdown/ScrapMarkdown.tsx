@@ -15,6 +15,7 @@ import { useFileUrls } from "../../../../fileStorage/useFileUrls";
 import { useUploadFile } from "../../../../fileStorage/useUploadFile";
 import { PlaceImageContext } from "./PlaceImageContext";
 import { IEditorImage } from "../../../common/IRichTextEditorProps";
+import { getUploadFailedAlert } from "../../../../fileStorage/getUploadFailedAlert";
 
 export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
   editModeActions = [],
@@ -59,6 +60,31 @@ export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
     [],
   );
 
+  // An inline image is an ordinary file that the markdown additionally places somewhere, so it goes
+  // on the entry exactly like one added from the footer. Nothing marks it as inline: where it is
+  // rendered is the markdown's business, and a second flag would be free to drift out of sync.
+  async function insertImages(imageFiles: File[]) {
+    const sources: { src: string; alt: string }[] = [];
+    // Quick add renders a scrap before a journal has been chosen.
+    const journalId = journal?.id ?? "";
+
+    for (const imageFile of imageFiles) {
+      try {
+        const uploaded = await upload(journalId, imageFile);
+
+        addFile(uploaded.file);
+
+        // The signed URL, not the reference: the editor has to show the image. It is turned back
+        // into a reference by setValue below, before anything is saved.
+        sources.push({ src: uploaded.readUrl, alt: uploaded.file.fileName });
+      } catch (error) {
+        setAppAlert(getUploadFailedAlert(imageFile, error));
+      }
+    }
+
+    return sources;
+  }
+
   const [images] = useState(() => ({
     onDropped: (imageFiles: File[]) => insertImages(imageFiles),
     setInsert: (insert: (image: IEditorImage) => void) =>
@@ -98,31 +124,4 @@ export const ScrapMarkdown: React.FC<{ editModeActions?: IAction[] }> = ({
       </ScrapBody>
     </PlaceImageContext.Provider>
   );
-
-  // An inline image is an ordinary file that the markdown additionally places somewhere, so it goes
-  // on the entry exactly like one added from the footer. Nothing marks it as inline: where it is
-  // rendered is the markdown's business, and a second flag would be free to drift out of sync.
-  async function insertImages(imageFiles: File[]) {
-    const sources: { src: string; alt: string }[] = [];
-
-    for (const imageFile of imageFiles) {
-      try {
-        const uploaded = await upload(journal.id ?? "", imageFile);
-
-        addFile(uploaded.file);
-
-        // The signed URL, not the reference: the editor has to show the image. It is turned back
-        // into a reference by setValue above, before anything is saved.
-        sources.push({ src: uploaded.readUrl, alt: uploaded.file.fileName });
-      } catch (error) {
-        setAppAlert({
-          title: `Could not upload "${imageFile.name}".`,
-          message: error instanceof Error ? error.message : undefined,
-          type: "error",
-        });
-      }
-    }
-
-    return sources;
-  }
 };

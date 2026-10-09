@@ -21,15 +21,6 @@ export const TotalValue: React.FC<{
 }) => {
   const value = getTotalValue(tableGroups, aggregationMode, dateConditions);
 
-  return (
-    <Host onClick={setNextAggregationMode}>
-      <Light>{value.label}</Light>
-      <span>
-        {journalType?.formatTotalValue?.(value.value) ?? round(value.value)}
-      </span>
-    </Host>
-  );
-
   function setNextAggregationMode() {
     switch (aggregationMode) {
       case "sum":
@@ -48,6 +39,15 @@ export const TotalValue: React.FC<{
         );
     }
   }
+
+  return (
+    <Host onClick={setNextAggregationMode}>
+      <Light>{value.label}</Light>
+      <span>
+        {journalType?.formatTotalValue?.(value.value) ?? round(value.value)}
+      </span>
+    </Host>
+  );
 };
 
 const Host = styled("div")`

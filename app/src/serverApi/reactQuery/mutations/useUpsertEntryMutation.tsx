@@ -37,6 +37,38 @@ export const useUpsertEntryMutation = (
 
   const editJournalMutation = useEditJournalMutation(journalId);
 
+  function updateExistingEntryInCache(command: IUpsertEntryCommand) {
+    queryClient.setQueryData(
+      queryKeysFactory.journalEntries(journalId),
+      (entries: IEntry[]) => {
+        if (!entries) {
+          return entries;
+        }
+
+        return entries.map((e) =>
+          e.id === entryId ? createCacheEntry(e, command) : e,
+        );
+      },
+    );
+  }
+
+  function createCacheEntry(
+    entry: IEntry,
+    command: IUpsertEntryCommand,
+  ): IEntry {
+    return {
+      ...entry,
+      ...command,
+      // command.dateTime is a Date (or absent); IEntry.dateTime is an ISO
+      // string. Keep the date the user actually set instead of overwriting it
+      // with "now", and serialize as ISO to match what the server returns.
+      dateTime: command.dateTime
+        ? new Date(command.dateTime).toISOString()
+        : entry.dateTime,
+      editedOn: new Date().toISOString(),
+    };
+  }
+
   return useMutation({
     mutationKey: queryKeysFactory.updateEntries(journalId, entryId ?? ""),
 
@@ -113,38 +145,6 @@ export const useUpsertEntryMutation = (
       setAppAlert(getErrorAlert("Failed to upsert entry", error));
     },
   });
-
-  function updateExistingEntryInCache(command: IUpsertEntryCommand) {
-    queryClient.setQueryData(
-      queryKeysFactory.journalEntries(journalId),
-      (entries: IEntry[]) => {
-        if (!entries) {
-          return entries;
-        }
-
-        return entries.map((e) =>
-          e.id === entryId ? createCacheEntry(e, command) : e,
-        );
-      },
-    );
-  }
-
-  function createCacheEntry(
-    entry: IEntry,
-    command: IUpsertEntryCommand,
-  ): IEntry {
-    return {
-      ...entry,
-      ...command,
-      // command.dateTime is a Date (or absent); IEntry.dateTime is an ISO
-      // string. Keep the date the user actually set instead of overwriting it
-      // with "now", and serialize as ISO to match what the server returns.
-      dateTime: command.dateTime
-        ? new Date(command.dateTime).toISOString()
-        : entry.dateTime,
-      editedOn: new Date().toISOString(),
-    };
-  }
 };
 
 // Returns a copy of the journal with any attribute values that are present on

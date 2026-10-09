@@ -27,8 +27,6 @@ export const ScrapFiles: React.FC = () => {
     return null;
   }
 
-  return <Host>{files.map(renderChip)}</Host>;
-
   function renderChip(file: IFileRef) {
     // A file placed in the text and one merely attached behave differently - the placed one cannot be
     // removed here - so they should not look identical either. The outline and the icon say which is
@@ -67,8 +65,12 @@ export const ScrapFiles: React.FC = () => {
   // The signed URL rather than the reference, because the editor has to show the image. Saving turns
   // it back into a reference, exactly as it does for a pasted one.
   async function place(file: IFileRef) {
+    if (!placeImage) {
+      return;
+    }
+
     try {
-      placeImage?.({
+      placeImage({
         src: await getFileUrl(file.id),
         alt: file.fileName,
       });
@@ -94,6 +96,8 @@ export const ScrapFiles: React.FC = () => {
       });
     }
   }
+
+  return <Host>{files.map(renderChip)}</Host>;
 };
 
 function getHint(isPlaced: boolean, canPlace: boolean) {
