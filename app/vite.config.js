@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
+import babel from "@rolldown/plugin-babel";
 import checker from "vite-plugin-checker";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -30,11 +31,10 @@ export default ({ mode }) => {
       port: 3000,
     },
     plugins: [
-      react({
-        babel: {
-          plugins: ["babel-plugin-react-compiler"],
-        },
-      }),
+      react(),
+      // React Compiler: @vitejs/plugin-react no longer runs Babel itself (and
+      // silently ignores a "babel" option), so the compiler needs this plugin.
+      babel({ presets: [reactCompilerPreset()] }),
       checker({ typescript: true }),
       versionFile(env.VITE_VERSION),
       VitePWA({
