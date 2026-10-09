@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 export const useJournalEntriesQuery = (
   journalId: string,
-  dateConditions: IDateConditions,
+  dateConditions: IDateConditions | undefined,
   attributeValues: Record<string, string[]>,
   searchText: string,
 ) => {
@@ -26,14 +26,14 @@ export const useJournalEntriesQuery = (
     ),
 
     queryFn: () =>
-      dateConditions
-        ? ServerApi.getJournalEntries(
-            journalId,
-            attributeValues,
-            dateConditions,
-            searchText,
-          )
-        : Promise.resolve([]),
+      ServerApi.getJournalEntries(
+        journalId,
+        attributeValues,
+        dateConditions ?? {},
+        searchText,
+      ),
+
+    enabled: !!dateConditions,
   });
 
   useEffect(() => {
