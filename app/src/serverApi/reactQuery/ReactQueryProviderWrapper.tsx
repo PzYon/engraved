@@ -1,4 +1,7 @@
-import { QueryClient } from "@tanstack/react-query";
+import {
+  defaultShouldDehydrateQuery,
+  QueryClient,
+} from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { del, get, set } from "idb-keyval";
@@ -6,6 +9,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import { buildInfo } from "../../env/buildInfo";
 import { useAppContext } from "../../AppContext";
+import { queryKeysFactory } from "./queryKeysFactory";
 
 // Keep cached data around long enough to be persisted and restored across
 // reloads (queries are garbage-collected after gcTime, and only live queries
@@ -59,6 +63,13 @@ export const ReactQueryProviderWrapper: React.FC<{
         // user's data restored from IndexedDB, and old-schema caches are still
         // dropped on deploy.
         buster: `${buildInfo.version ?? "dev"}:${user?.id ?? "anon"}`,
+        // The whole cache is serialized and written whenever something in it
+        // changes, so it should hold nothing that is of no use after a reload.
+        dehydrateOptions: {
+          shouldDehydrateQuery: (query) =>
+            defaultShouldDehydrateQuery(query) &&
+            queryKeysFactory.isWorthPersisting(query.queryKey),
+        },
       }}
     >
       {children}

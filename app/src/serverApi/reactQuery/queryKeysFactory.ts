@@ -2,11 +2,23 @@ import { IDateConditions } from "../../components/details/JournalContext";
 import { JournalType } from "../JournalType";
 
 const journals = "journals";
+const search = "search";
+const file = "file";
+const appVersion = "app-version";
+
+// What is not worth keeping across a reload: a search adds an entry for every
+// text ever typed, the URL of a file expires within the hour, and whether
+// there is a new version is asked again at every start anyway.
+const shortLivedKeys = [search, file, appVersion];
 
 export const queryKeysFactory = {
   prefixes: {
     journals: () => [journals],
-    entities: () => ["search", "entities"],
+    entities: () => [search, "entities"],
+  },
+
+  isWorthPersisting(queryKey: readonly unknown[]) {
+    return !shortLivedKeys.includes(queryKey[0] as string);
   },
 
   entry(entryId: string) {
@@ -16,7 +28,7 @@ export const queryKeysFactory = {
   // Not nested under the entry holding the file: the same file can be placed in more than one scrap,
   // and a key per file lets those share one cached URL.
   fileUrl(fileId: string) {
-    return ["file", fileId, "url"];
+    return [file, fileId, "url"];
   },
 
   journals(
@@ -83,7 +95,7 @@ export const queryKeysFactory = {
   },
 
   relatedEntities(entityId: string, entityType: "Journal" | "Entry") {
-    return ["search", "related", entityType, entityId];
+    return [search, "related", entityType, entityId];
   },
 
   entities(
@@ -94,7 +106,7 @@ export const queryKeysFactory = {
     onlyConsiderTitle = false,
   ) {
     return [
-      "search",
+      search,
       "entities",
       searchText,
       scheduledOnly,
@@ -117,7 +129,7 @@ export const queryKeysFactory = {
   },
 
   appVersion() {
-    return ["app-version"];
+    return [appVersion];
   },
 
   modifyUser() {
