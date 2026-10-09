@@ -10,7 +10,7 @@ import { IJournalAttributes } from "../../IJournalAttributes";
 import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
-import { useMatchRoute } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 import { StyledLink } from "./StyledLink";
 import { getErrorAlert } from "./getErrorAlert";
@@ -30,7 +30,10 @@ export const useUpsertEntryMutation = (
 
   const queryClient = useQueryClient();
 
-  const matchRoute = useMatchRoute();
+  // Deliberately not useMatchRoute: that hook subscribes to the router's state,
+  // and as this mutation exists once per scrap on screen, every one of them
+  // would re-render on each navigation.
+  const router = useRouter();
 
   const editJournalMutation = useEditJournalMutation(journalId);
 
@@ -67,11 +70,10 @@ export const useUpsertEntryMutation = (
 
       // Only offer a "View in journal" link when we're not already on that
       // journal's details page (or one of its sub-routes).
-      const isOnJournalPage = matchRoute({
-        to: "/journals/details/$journalId",
-        params: { journalId },
-        fuzzy: true,
-      });
+      const isOnJournalPage = router.matchRoute(
+        { to: "/journals/details/$journalId", params: { journalId } },
+        { fuzzy: true },
+      );
 
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
