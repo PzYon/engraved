@@ -1,8 +1,31 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
+import DOMPurify from "dompurify";
 import LazyMarkdown from "./LazyMarkdown";
 
 describe("LazyMarkdown", () => {
+  it("converts a text only once, however often it is rendered", () => {
+    const sanitize = vi.spyOn(DOMPurify, "sanitize");
+
+    const first = render(<LazyMarkdown value={"rendered **twice**"} />);
+    const second = render(<LazyMarkdown value={"rendered **twice**"} />);
+
+    expect(second.container.innerHTML).toBe(first.container.innerHTML);
+    expect(second.container.querySelector("strong")?.textContent).toBe("twice");
+    expect(sanitize).toHaveBeenCalledTimes(1);
+
+    sanitize.mockRestore();
+  });
+
+  it("does not mix up a text rendered inline and as a block", () => {
+    const block = render(<LazyMarkdown value={"same text"} />);
+    const inline = render(<LazyMarkdown value={"same text"} useBasic={true} />);
+
+    expect(block.container.querySelector("p")?.textContent).toBe("same text");
+    expect(inline.container.querySelector("p")).toBeNull();
+    expect(inline.container.textContent).toBe("same text");
+  });
+
   it("strips script tags from rendered markdown", () => {
     const { container } = render(
       <LazyMarkdown value={"<script>window.xss = true;</script>hello"} />,
