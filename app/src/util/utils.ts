@@ -1,5 +1,10 @@
 import { lighten } from "@mui/material";
-import { differenceInDays, format, startOfDay } from "date-fns";
+import {
+  differenceInCalendarMonths,
+  differenceInDays,
+  format,
+  startOfDay,
+} from "date-fns";
 import { IDateConditions } from "../components/details/JournalContext";
 
 export function round(n: number, decimals: number = 3): number {
@@ -64,13 +69,7 @@ export function getNumberOfDays(
   allDates: (Date | string)[],
   overrides: IDateConditions = {},
 ) {
-  // Copy before sorting so we don't reorder the caller's array in place.
-  const sorted = [...allDates].sort(
-    (a, b) => ensureDate(a).getTime() - ensureDate(b).getTime(),
-  );
-
-  const earliest = overrides.from ?? sorted[0];
-  const latest = overrides.to ?? new Date();
+  const { earliest, latest } = getDateRange(allDates, overrides);
 
   return (
     differenceInDays(
@@ -78,6 +77,27 @@ export function getNumberOfDays(
       new Date(startOfDay(earliest)),
     ) + 1
   );
+}
+
+export function getNumberOfMonths(
+  allDates: (Date | string)[],
+  overrides: IDateConditions = {},
+) {
+  const { earliest, latest } = getDateRange(allDates, overrides);
+
+  return differenceInCalendarMonths(latest, earliest) + 1;
+}
+
+function getDateRange(allDates: (Date | string)[], overrides: IDateConditions) {
+  // Copy before sorting so we don't reorder the caller's array in place.
+  const sorted = [...allDates].sort(
+    (a, b) => ensureDate(a).getTime() - ensureDate(b).getTime(),
+  );
+
+  return {
+    earliest: overrides.from ?? sorted[0],
+    latest: overrides.to ?? new Date(),
+  };
 }
 
 export function ensureDate(d: Date | string) {
