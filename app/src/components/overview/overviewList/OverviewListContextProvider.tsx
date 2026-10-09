@@ -89,7 +89,27 @@ export const OverviewListContextProvider: React.FC<{
     [filteredItems, activeItemId],
   );
 
+  // Kept in a ref, as reading it must not make the callback below depend on
+  // the URL - see the comment in there.
+  const hasItemParams =
+    searchParams.has(knownQueryParams.selectedItemId) ||
+    searchParams.has(knownQueryParams.actionKey);
+
+  const hasItemParamsRef = useRef(hasItemParams);
+
+  useEffect(() => {
+    hasItemParamsRef.current = hasItemParams;
+  }, [hasItemParams]);
+
   const removeItemParamsFromUrl = useCallback(() => {
+    // This is called on every move of the focus, and nearly always there is
+    // nothing to remove. Navigating to where we already are is not free
+    // though: the router goes through a complete load, and everything that
+    // follows its state renders along.
+    if (!hasItemParamsRef.current) {
+      return;
+    }
+
     navigate({
       to: ".",
       replace: true,
