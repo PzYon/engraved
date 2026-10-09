@@ -10,9 +10,7 @@ import { ServerApi } from "./serverApi/ServerApi";
 // side-effect import: registers the service worker at startup
 import "./serviceWorkerUpdater";
 
-import("./util/appInsights").then((appInsights) => {
-  appInsights.setUpAppInsights();
-});
+setUpAppInsightsWhenIdle();
 
 wakeUpApi();
 
@@ -30,6 +28,23 @@ function wakeUpApi() {
     .catch((error) => {
       console.warn("Failed to wake up API.", error);
     });
+}
+
+// Telemetry is not needed to show anything, so loading and starting it must
+// not compete with getting the app on screen.
+function setUpAppInsightsWhenIdle() {
+  const setUp = () => {
+    import("./util/appInsights").then((appInsights) => {
+      appInsights.setUpAppInsights();
+    });
+  };
+
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(setUp, { timeout: 10_000 });
+  } else {
+    // Safari does not know requestIdleCallback.
+    window.setTimeout(setUp, 3_000);
+  }
 }
 
 function getInitialJsx() {
