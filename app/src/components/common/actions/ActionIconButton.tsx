@@ -42,19 +42,6 @@ export const ActionIconButton: React.FC<{
     return getNoButtonIcon();
   }
 
-  return (
-    <Tooltip title={title}>
-      <IconButton
-        key={action.key}
-        {...commonProps}
-        sx={{ ...getCommonSx(), padding: actionBorderWidth }}
-        disabled={action.isDisabled}
-      >
-        {action.icon}
-      </IconButton>
-    </Tooltip>
-  );
-
   function getNoButtonIcon() {
     return (
       <Tooltip title={title}>
@@ -93,6 +80,19 @@ export const ActionIconButton: React.FC<{
       onClick: action.onClick,
     };
   }
+
+  return (
+    <Tooltip title={title}>
+      <IconButton
+        key={action.key}
+        {...commonProps}
+        sx={{ ...getCommonSx(), padding: actionBorderWidth }}
+        disabled={action.isDisabled}
+      >
+        {action.icon}
+      </IconButton>
+    </Tooltip>
+  );
 };
 
 const NoButtonIcon = styled("span")``;

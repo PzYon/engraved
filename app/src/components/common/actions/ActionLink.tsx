@@ -80,6 +80,10 @@ export const ActionLink: React.FC<{
   // navigate via root ("/") before applying the new action's params.
   const stopEvents = (e: React.SyntheticEvent) => e.stopPropagation();
 
+  function getChildren(): React.ReactElement | React.ReactNode {
+    return children ?? action.icon;
+  }
+
   return (
     <Link
       to={to}
@@ -92,8 +96,4 @@ export const ActionLink: React.FC<{
       {getChildren()}
     </Link>
   );
-
-  function getChildren(): React.ReactElement | React.ReactNode {
-    return children ?? action.icon;
-  }
 };

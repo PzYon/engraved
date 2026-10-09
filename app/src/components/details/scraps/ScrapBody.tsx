@@ -37,38 +37,6 @@ export const ScrapBody: React.FC<{
 
   const { action: addFileAction, fileInput } = useAddFileAction();
 
-  return (
-    <Entry
-      isEditMode={isEditMode}
-      hasFocus={hasFocus}
-      journal={journal}
-      entry={scrapToRender}
-      actions={getActions().filter((a): a is IAction => a != null)}
-      propsRenderStyle={propsRenderStyle}
-      noCompactFooter={!scrapToRender.id}
-      propertyOverrides={
-        parsedDate?.date
-          ? [
-              getSchedulePropertyFromSchedule({
-                nextOccurrence: parsedDate.date.toString(),
-                recurrence: parsedDate.recurrence,
-              }),
-              ...properties,
-            ]
-          : properties
-      }
-    >
-      {isCompact && !hasFocus && !isEditMode ? null : (
-        <>
-          {children}
-          <ScrapFiles />
-        </>
-      )}
-
-      {fileInput}
-    </Entry>
-  );
-
   function getActions() {
     if (actionsRenderStyle === "none") {
       return [];
@@ -121,4 +89,36 @@ export const ScrapBody: React.FC<{
       ),
     ];
   }
+
+  return (
+    <Entry
+      isEditMode={isEditMode}
+      hasFocus={hasFocus}
+      journal={journal}
+      entry={scrapToRender}
+      actions={getActions().filter((a): a is IAction => a != null)}
+      propsRenderStyle={propsRenderStyle}
+      noCompactFooter={!scrapToRender.id}
+      propertyOverrides={
+        parsedDate?.date
+          ? [
+              getSchedulePropertyFromSchedule({
+                nextOccurrence: parsedDate.date.toString(),
+                recurrence: parsedDate.recurrence,
+              }),
+              ...properties,
+            ]
+          : properties
+      }
+    >
+      {isCompact && !hasFocus && !isEditMode ? null : (
+        <>
+          {children}
+          <ScrapFiles />
+        </>
+      )}
+
+      {fileInput}
+    </Entry>
+  );
 };

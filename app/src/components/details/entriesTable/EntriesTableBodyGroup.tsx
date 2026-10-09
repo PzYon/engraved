@@ -30,6 +30,16 @@ export const EntriesTableBodyGroup: React.FC<{
     );
   }
 
+  function renderValueNode(
+    column: IEntriesTableColumnDefinition,
+    entry: IEntry,
+    isFirstRow: boolean,
+  ) {
+    return column.getValueReactNode(group, entry, isFirstRow, () =>
+      setIsCollapsed(!isCollapsed),
+    );
+  }
+
   return (
     <>
       {group.entries.map((entry, i) => (
@@ -78,14 +88,4 @@ export const EntriesTableBodyGroup: React.FC<{
       ) : null}
     </>
   );
-
-  function renderValueNode(
-    column: IEntriesTableColumnDefinition,
-    entry: IEntry,
-    isFirstRow: boolean,
-  ) {
-    return column.getValueReactNode(group, entry, isFirstRow, () =>
-      setIsCollapsed(!isCollapsed),
-    );
-  }
 };

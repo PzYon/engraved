@@ -14,6 +14,18 @@ export const EntryWithValue: React.FC<{
   entry: IEntry;
   hasFocus?: boolean;
 }> = ({ journal, entry, value, hasFocus }) => {
+  function getValue() {
+    const unit = getUiSettings(journal)?.yAxisUnit;
+    if (unit) {
+      return (
+        <>
+          {value} {unit}
+        </>
+      );
+    }
+
+    return value;
+  }
   return (
     <Entry
       journal={journal}
@@ -56,19 +68,6 @@ export const EntryWithValue: React.FC<{
       </Container>
     </Entry>
   );
-
-  function getValue() {
-    const unit = getUiSettings(journal)?.yAxisUnit;
-    if (unit) {
-      return (
-        <>
-          {value} {unit}
-        </>
-      );
-    }
-
-    return value;
-  }
 };
 
 const Container = styled("div")`

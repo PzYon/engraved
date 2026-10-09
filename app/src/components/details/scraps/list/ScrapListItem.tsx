@@ -59,72 +59,6 @@ export const ScrapListItem: React.FC<{
     [listItemsCollection, index],
   );
 
-  return (
-    <ListItem
-      sx={{
-        paddingLeft: (listItem.depth ?? 0) * 20 + "px",
-        transform: CSS.Transform.toString(transform),
-        transition,
-      }}
-      data-testid={`item-${index}:${listItem.depth ?? 0}`}
-    >
-      {isEditMode ? (
-        <span
-          ref={setNodeRef}
-          style={{ height: "20px", padding: "7px", touchAction: "none" }}
-          {...attributes}
-          {...listeners}
-        >
-          <DragIndicator fontSize="small" style={{ cursor: "pointer" }} />
-        </span>
-      ) : null}
-      <StyledCheckbox
-        checked={listItem.isCompleted ?? false}
-        onChange={(
-          _: React.ChangeEvent<HTMLInputElement>,
-          checked: boolean,
-        ) => {
-          onChange({ label, isCompleted: checked, depth: listItem.depth });
-        }}
-      />
-      {isEditMode ? (
-        <>
-          <AutogrowTextField
-            forwardInputRef={ref}
-            value={label}
-            onChange={(event) => setLabel(event.target.value)}
-            onKeyUp={keyUp}
-            onKeyDown={keyDown}
-            onBlur={() =>
-              onChange({
-                label,
-                isCompleted: listItem.isCompleted,
-                depth: listItem.depth,
-              })
-            }
-            sx={{ ...getSx("textbox"), pr: 1, pt: "7px !important" }}
-            autoFocus={!listItem.label}
-          />
-          <ActionIconButtonGroup
-            backgroundColor={"none"}
-            actions={[
-              {
-                key: "remove",
-                label: "Delete",
-                icon: <RemoveCircleOutlined fontSize="small" />,
-                onClick: () => listItemsCollection.removeItem(index),
-              },
-            ]}
-          />
-        </>
-      ) : (
-        <ReadonlyContainer sx={{ ...getSx("plain"), pt: "8px" }}>
-          <Markdown value={label} useBasic={true}></Markdown>
-        </ReadonlyContainer>
-      )}
-    </ListItem>
-  );
-
   function getSx(elementType: "plain" | "textbox") {
     const sx: SxProps & { textarea?: SxProps } = { flexGrow: 1 };
 
@@ -235,6 +169,72 @@ export const ScrapListItem: React.FC<{
       }
     }
   }
+
+  return (
+    <ListItem
+      sx={{
+        paddingLeft: (listItem.depth ?? 0) * 20 + "px",
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+      data-testid={`item-${index}:${listItem.depth ?? 0}`}
+    >
+      {isEditMode ? (
+        <span
+          ref={setNodeRef}
+          style={{ height: "20px", padding: "7px", touchAction: "none" }}
+          {...attributes}
+          {...listeners}
+        >
+          <DragIndicator fontSize="small" style={{ cursor: "pointer" }} />
+        </span>
+      ) : null}
+      <StyledCheckbox
+        checked={listItem.isCompleted ?? false}
+        onChange={(
+          _: React.ChangeEvent<HTMLInputElement>,
+          checked: boolean,
+        ) => {
+          onChange({ label, isCompleted: checked, depth: listItem.depth });
+        }}
+      />
+      {isEditMode ? (
+        <>
+          <AutogrowTextField
+            forwardInputRef={ref}
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+            onKeyUp={keyUp}
+            onKeyDown={keyDown}
+            onBlur={() =>
+              onChange({
+                label,
+                isCompleted: listItem.isCompleted,
+                depth: listItem.depth,
+              })
+            }
+            sx={{ ...getSx("textbox"), pr: 1, pt: "7px !important" }}
+            autoFocus={!listItem.label}
+          />
+          <ActionIconButtonGroup
+            backgroundColor={"none"}
+            actions={[
+              {
+                key: "remove",
+                label: "Delete",
+                icon: <RemoveCircleOutlined fontSize="small" />,
+                onClick: () => listItemsCollection.removeItem(index),
+              },
+            ]}
+          />
+        </>
+      ) : (
+        <ReadonlyContainer sx={{ ...getSx("plain"), pt: "8px" }}>
+          <Markdown value={label} useBasic={true}></Markdown>
+        </ReadonlyContainer>
+      )}
+    </ListItem>
+  );
 };
 const StyledCheckbox = styled(Checkbox)`
   padding: 5px 5px 5px 0;

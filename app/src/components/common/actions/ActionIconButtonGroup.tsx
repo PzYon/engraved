@@ -50,6 +50,26 @@ export const ActionIconButtonGroup: React.FC<{
   const finalAlignTo = alignToPosition ?? "none";
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
+  function isActionActive(action: IAction) {
+    // actions that have a URL (i.e. point to a different page) are ignored
+    // for the moment, because they might not even have an "action panel"
+    if (action.href) {
+      return false;
+    }
+
+    if (!action.search || !Object.keys(action.search).length) {
+      return false;
+    }
+
+    for (const key in action.search) {
+      if (action.search[key] !== getSearchParam(key)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   return (
     <StickTo
       isDisabled={stickToPosition === undefined || stickToPosition === "none"}
@@ -102,26 +122,6 @@ export const ActionIconButtonGroup: React.FC<{
       )}
     />
   );
-
-  function isActionActive(action: IAction) {
-    // actions that have a URL (i.e. point to a different page) are ignored
-    // for the moment, because they might not even have an "action panel"
-    if (action.href) {
-      return false;
-    }
-
-    if (!action.search || !Object.keys(action.search).length) {
-      return false;
-    }
-
-    for (const key in action.search) {
-      if (action.search[key] !== getSearchParam(key)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 };
 
 const RadiusSpacer: React.FC<{
