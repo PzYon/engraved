@@ -63,6 +63,11 @@ export const queryKeysFactory = {
     return [journals, journalId, "delete"];
   },
 
+  // Matches every list of a journal's entries, whatever it is filtered by.
+  allJournalEntries(journalId: string) {
+    return [journals, journalId, "entries"];
+  },
+
   journalEntries(
     journalId: string,
     dateConditions?: IDateConditions,

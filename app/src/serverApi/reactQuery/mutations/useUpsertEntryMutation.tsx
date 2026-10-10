@@ -37,18 +37,16 @@ export const useUpsertEntryMutation = (
 
   const editJournalMutation = useEditJournalMutation(journalId);
 
+  // Shows the change right away, without waiting for the entries to be loaded
+  // again. In every list of the journal's entries: there is one per filter,
+  // and the one on screen is hardly ever the one without any.
   function updateExistingEntryInCache(command: IUpsertEntryCommand) {
-    queryClient.setQueryData(
-      queryKeysFactory.journalEntries(journalId),
-      (entries: IEntry[]) => {
-        if (!entries) {
-          return entries;
-        }
-
-        return entries.map((e) =>
+    queryClient.setQueriesData<IEntry[]>(
+      { queryKey: queryKeysFactory.allJournalEntries(journalId) },
+      (entries) =>
+        entries?.map((e) =>
           e.id === entryId ? createCacheEntry(e, command) : e,
-        );
-      },
+        ),
     );
   }
 
