@@ -3,6 +3,7 @@ import { useAppContext } from "../../../AppContext";
 import { useMemo } from "react";
 import { UserRole } from "../../../serverApi/UserRole";
 import { IUser } from "../../../serverApi/IUser";
+import { IPermissionUser } from "../../../serverApi/IPermissionUser";
 
 export const useJournalPermissions = (
   permissions: IUserPermissions | undefined,
@@ -38,7 +39,7 @@ function getRoleForUser(
   return permissions[userId]?.userRole;
 }
 
-function getOwner(permissions: IUserPermissions): IUser | undefined {
+function getOwner(permissions: IUserPermissions): IPermissionUser | undefined {
   return Object.values(permissions).find(
     (permissionDefinition) => permissionDefinition.userRole === UserRole.Owner,
   )?.user;

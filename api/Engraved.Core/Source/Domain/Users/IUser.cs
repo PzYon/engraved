@@ -1,4 +1,6 @@
-﻿namespace Engraved.Core.Domain.Users;
+﻿using System.Text.Json.Serialization;
+
+namespace Engraved.Core.Domain.Users;
 
 public interface IUser
 {
@@ -18,6 +20,8 @@ public interface IUser
 
   public List<UserTag> Tags { get; set; }
 
+  // only ever needed to validate a refresh, so they must never leave the server
+  [JsonIgnore]
   List<RefreshToken> RefreshTokens { get; set; }
 
   bool IsAdmin { get; set; }

@@ -1,9 +1,9 @@
 import { PermissionKind } from "./PermissionKind";
-import { IUser } from "./IUser";
+import { IPermissionUser } from "./IPermissionUser";
 import { UserRole } from "./UserRole";
 
 export interface IPermissionDefinition {
   kind: PermissionKind;
-  user?: IUser;
+  user?: IPermissionUser;
   userRole?: UserRole;
 }

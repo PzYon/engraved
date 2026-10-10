@@ -20,12 +20,23 @@ public static class JournalQueryUtil
 
     var users = await repository.GetUsers(distinctUserIds);
 
-    var userById = users.ToDictionary(u => u.Id!, u => u);
+    var userById = users.ToDictionary(u => u.Id!, ToPermissionUser);
 
     return journals.Select(j => EnsureUsers(j, userById)).ToArray();
   }
 
-  private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, IUser> userById)
+  private static PermissionUser ToPermissionUser(IUser user)
+  {
+    return new PermissionUser
+    {
+      Id = user.Id,
+      Name = user.Name,
+      DisplayName = user.DisplayName,
+      ImageUrl = user.ImageUrl
+    };
+  }
+
+  private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, PermissionUser> userById)
   {
     // write all users on to object
     foreach ((var key, PermissionDefinition value) in journal.Permissions)
@@ -49,10 +60,6 @@ public static class JournalQueryUtil
         Kind = PermissionKind.Write
       }
     );
-
-    // todo: consider removing/clearing "private" data like
-    // lastLoginDate and favoriteJournalIds
-    // -> if this is done, then add a unit test for this!
 
     return journal;
   }
