@@ -9,7 +9,21 @@ import FormatListBulleted from "@mui/icons-material/FormatListBulleted";
 import FormatQuote from "@mui/icons-material/FormatQuote";
 import FormatStrikethrough from "@mui/icons-material/FormatStrikethrough";
 import Spellcheck from "@mui/icons-material/Spellcheck";
+import TextFields from "@mui/icons-material/TextFields";
 import { IAction } from "./actions/IAction";
+
+export function getTogglePlainTextAction(
+  isPlainText: boolean,
+  toggleIsPlainText: () => void,
+): IAction {
+  return {
+    key: "toggle-plain-text",
+    icon: <TextFields fontSize="small" />,
+    label: isPlainText ? "Plain text is on" : "Plain text is off",
+    onClick: toggleIsPlainText,
+    isNotActive: !isPlainText,
+  };
+}
 
 // A list, not logic: every entry is the same shape and only names a command the editor already has.
 // It lives beside the editor rather than inside it because nine inline handlers made up most of that

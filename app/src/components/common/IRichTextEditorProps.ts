@@ -20,6 +20,9 @@ export interface IRichTextEditorProps {
   isTitle?: boolean;
   // The value is then text that is kept exactly as it is, instead of markdown.
   isPlainText?: boolean;
+  // Offers switching between the two among the formatting options. The caller holds the choice, as
+  // it has to know how to read the value it gets.
+  onIsPlainTextChange?: (isPlainText: boolean) => void;
   showFormattingOptions?: boolean;
   editModeActions?: IAction[];
 
