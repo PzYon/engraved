@@ -17,6 +17,57 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { isRichTextEditor } from "../../common/isRichTextEditor";
 import { filterOverviewItems } from "./filterOverviewItems";
 
+// Returns a function that takes the selected item and its action out of the
+// URL, which closes an open action panel.
+function useRemoveItemParamsFromUrl(searchParams: URLSearchParams) {
+  const navigate = useNavigate();
+
+  // Kept in a ref, as reading it must not make the callback below depend on
+  // the URL - see the comment in there.
+  const hasItemParams =
+    searchParams.has(knownQueryParams.selectedItemId) ||
+    searchParams.has(knownQueryParams.actionKey);
+
+  const hasItemParamsRef = useRef(hasItemParams);
+
+  useEffect(() => {
+    hasItemParamsRef.current = hasItemParams;
+  }, [hasItemParams]);
+
+  return useCallback(() => {
+    // This is called on every move of the focus, and nearly always there is
+    // nothing to remove. Navigating to where we already are is not free
+    // though: the router goes through a complete load, and everything that
+    // follows its state renders along.
+    if (!hasItemParamsRef.current) {
+      return;
+    }
+
+    navigate({
+      to: ".",
+      replace: true,
+      resetScroll: false,
+      // Functional updater: compute from the router's current search instead of
+      // closing over searchString. This keeps the callback (and the memoized
+      // context value below) stable across search changes, so updating these
+      // params doesn't re-render the whole list.
+      search: (prev) => {
+        if (
+          !prev[knownQueryParams.selectedItemId] &&
+          !prev[knownQueryParams.actionKey]
+        ) {
+          return prev;
+        }
+
+        const next = { ...prev };
+        delete next[knownQueryParams.selectedItemId];
+        delete next[knownQueryParams.actionKey];
+        return next;
+      },
+    });
+  }, [navigate]);
+}
+
 export const OverviewListContextProvider: React.FC<{
   items: IEntity[];
   filterItem?: (item: IEntity) => boolean;
@@ -89,50 +140,7 @@ export const OverviewListContextProvider: React.FC<{
     [filteredItems, activeItemId],
   );
 
-  // Kept in a ref, as reading it must not make the callback below depend on
-  // the URL - see the comment in there.
-  const hasItemParams =
-    searchParams.has(knownQueryParams.selectedItemId) ||
-    searchParams.has(knownQueryParams.actionKey);
-
-  const hasItemParamsRef = useRef(hasItemParams);
-
-  useEffect(() => {
-    hasItemParamsRef.current = hasItemParams;
-  }, [hasItemParams]);
-
-  const removeItemParamsFromUrl = useCallback(() => {
-    // This is called on every move of the focus, and nearly always there is
-    // nothing to remove. Navigating to where we already are is not free
-    // though: the router goes through a complete load, and everything that
-    // follows its state renders along.
-    if (!hasItemParamsRef.current) {
-      return;
-    }
-
-    navigate({
-      to: ".",
-      replace: true,
-      resetScroll: false,
-      // Functional updater: compute from the router's current search instead of
-      // closing over searchString. This keeps the callback (and the memoized
-      // context value below) stable across search changes, so updating these
-      // params doesn't re-render the whole list.
-      search: (prev) => {
-        if (
-          !prev[knownQueryParams.selectedItemId] &&
-          !prev[knownQueryParams.actionKey]
-        ) {
-          return prev;
-        }
-
-        const next = { ...prev };
-        delete next[knownQueryParams.selectedItemId];
-        delete next[knownQueryParams.actionKey];
-        return next;
-      },
-    });
-  }, [navigate]);
+  const removeItemParamsFromUrl = useRemoveItemParamsFromUrl(searchParams);
 
   useEngravedHotkeys("*", (e) => {
     if (isRichTextEditor(e.target as HTMLElement)) {
