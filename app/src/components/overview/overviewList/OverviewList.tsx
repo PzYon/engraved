@@ -100,27 +100,15 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
                   />
                 ) : null}
 
-                <OverviewListItem
-                  showDaysBetween={showDaysBetween}
-                  onClick={() => {
-                    if (hasFocus) {
-                      return;
-                    }
-
-                    setActiveItemId(item.id ?? "");
-                    removeItemParamsFromUrl();
-                  }}
+                <OverviewListRow
                   item={item}
+                  index={index}
                   hasFocus={hasFocus}
-                >
-                  <RenderItem
-                    item={item}
-                    hasFocus={hasFocus}
-                    index={index}
-                    setActiveItemId={setActiveItemId}
-                    renderItem={renderItem}
-                  />
-                </OverviewListItem>
+                  showDaysBetween={showDaysBetween}
+                  renderItem={renderItem}
+                  setActiveItemId={setActiveItemId}
+                  removeItemParamsFromUrl={removeItemParamsFromUrl}
+                />
               </React.Fragment>
             );
           })}
@@ -143,30 +131,45 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
   );
 };
 
-const RenderItem = React.memo(
-  ({
-    item,
-    index,
-    hasFocus,
-    renderItem,
-    setActiveItemId,
-  }: {
-    item: IEntity;
-    index: number;
-    hasFocus: boolean;
-    renderItem?: (
-      item: IEntity,
-      index: number,
-      hasFocus: boolean,
-      giveFocus: () => void,
-    ) => React.ReactNode;
-    setActiveItemId: (id: string) => void;
-  }) => {
-    return renderItem?.(item, index, hasFocus, () =>
-      setActiveItemId(item.id ?? ""),
-    );
-  },
-);
+// Memoized as a whole and given nothing but stable props, so that moving the
+// focus re-renders the two rows it concerns instead of every row in the list.
+// That is also why the callbacks come in as props and not from the list
+// context, which changes with every move.
+const OverviewListRow = memo(function OverviewListRow({
+  item,
+  index,
+  hasFocus,
+  showDaysBetween,
+  renderItem,
+  setActiveItemId,
+  removeItemParamsFromUrl,
+}: {
+  item: IEntity;
+  index: number;
+  hasFocus: boolean;
+  showDaysBetween?: boolean;
+  renderItem: IOverviewListProps["renderItem"];
+  setActiveItemId: (id: string) => void;
+  removeItemParamsFromUrl: () => void;
+}) {
+  return (
+    <OverviewListItem
+      showDaysBetween={showDaysBetween}
+      onClick={() => {
+        if (hasFocus) {
+          return;
+        }
+
+        setActiveItemId(item.id ?? "");
+        removeItemParamsFromUrl();
+      }}
+      item={item}
+      hasFocus={hasFocus}
+    >
+      {renderItem(item, index, hasFocus, () => setActiveItemId(item.id ?? ""))}
+    </OverviewListItem>
+  );
+});
 
 const Host = styled("ul")`
   list-style: none;

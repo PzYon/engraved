@@ -4,6 +4,7 @@ import { useScrapContext } from "../ScrapContext";
 import { useAppContext } from "../../../../AppContext";
 import { IAction } from "../../../common/actions/IAction";
 import { useUploadFile } from "../../../../fileStorage/useUploadFile";
+import { getUploadFailedAlert } from "../../../../fileStorage/getUploadFailedAlert";
 
 // Returns the action plus the file input it drives: a hidden <input type="file"> is the only way to
 // open the picker, and it has to be rendered somewhere, so the caller places it.
@@ -18,6 +19,9 @@ export function useAddFileAction(): {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  // Quick add renders a scrap before a journal has been chosen.
+  const journalId = journal?.id ?? "";
 
   const action: IAction = {
     key: "add-file",
@@ -45,16 +49,13 @@ export function useAddFileAction(): {
         setIsUploading(true);
 
         try {
-          addFile((await upload(journal.id ?? "", file)).file);
+          const uploaded = await upload(journalId, file);
+          addFile(uploaded.file);
         } catch (error) {
-          setAppAlert({
-            title: `Could not upload "${file.name}".`,
-            message: error instanceof Error ? error.message : undefined,
-            type: "error",
-          });
-        } finally {
-          setIsUploading(false);
+          setAppAlert(getUploadFailedAlert(file, error));
         }
+
+        setIsUploading(false);
       }}
     />
   );

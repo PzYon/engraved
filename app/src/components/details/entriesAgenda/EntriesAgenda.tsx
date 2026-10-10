@@ -23,6 +23,14 @@ export const EntriesAgenda: React.FC<{
 
   const journalType = JournalTypeFactory.create(journal.type);
 
+  function getValueLabel(entry: IEntry) {
+    if (journal.type === JournalType.Timer) {
+      return getDurationAsHhMmSsFromSeconds(journalType.getValue(entry));
+    }
+
+    return journalType.getValue(entry).toString();
+  }
+
   return (
     <Paper sx={{ mt: 3, mb: 3, backgroundColor: "transparent" }}>
       {showStreak ? (
@@ -88,12 +96,4 @@ export const EntriesAgenda: React.FC<{
       ) : null}
     </Paper>
   );
-
-  function getValueLabel(entry: IEntry) {
-    if (journal.type === JournalType.Timer) {
-      return getDurationAsHhMmSsFromSeconds(journalType.getValue(entry));
-    }
-
-    return journalType.getValue(entry).toString();
-  }
 };

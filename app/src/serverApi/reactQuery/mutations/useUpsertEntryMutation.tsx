@@ -10,7 +10,7 @@ import { IJournalAttributes } from "../../IJournalAttributes";
 import { useEditJournalMutation } from "./useEditJournalMutation";
 import { JournalType } from "../../JournalType";
 import { IJournal } from "../../IJournal";
-import { useMatchRoute } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { knownQueryParams } from "../../../components/common/actions/searchParamHooks";
 import { StyledLink } from "./StyledLink";
 import { getErrorAlert } from "./getErrorAlert";
@@ -30,9 +30,44 @@ export const useUpsertEntryMutation = (
 
   const queryClient = useQueryClient();
 
-  const matchRoute = useMatchRoute();
+  // Deliberately not useMatchRoute: that hook subscribes to the router's state,
+  // and as this mutation exists once per scrap on screen, every one of them
+  // would re-render on each navigation.
+  const router = useRouter();
 
   const editJournalMutation = useEditJournalMutation(journalId);
+
+  function updateExistingEntryInCache(command: IUpsertEntryCommand) {
+    queryClient.setQueryData(
+      queryKeysFactory.journalEntries(journalId),
+      (entries: IEntry[]) => {
+        if (!entries) {
+          return entries;
+        }
+
+        return entries.map((e) =>
+          e.id === entryId ? createCacheEntry(e, command) : e,
+        );
+      },
+    );
+  }
+
+  function createCacheEntry(
+    entry: IEntry,
+    command: IUpsertEntryCommand,
+  ): IEntry {
+    return {
+      ...entry,
+      ...command,
+      // command.dateTime is a Date (or absent); IEntry.dateTime is an ISO
+      // string. Keep the date the user actually set instead of overwriting it
+      // with "now", and serialize as ISO to match what the server returns.
+      dateTime: command.dateTime
+        ? new Date(command.dateTime).toISOString()
+        : entry.dateTime,
+      editedOn: new Date().toISOString(),
+    };
+  }
 
   return useMutation({
     mutationKey: queryKeysFactory.updateEntries(journalId, entryId ?? ""),
@@ -67,11 +102,10 @@ export const useUpsertEntryMutation = (
 
       // Only offer a "View in journal" link when we're not already on that
       // journal's details page (or one of its sub-routes).
-      const isOnJournalPage = matchRoute({
-        to: "/journals/details/$journalId",
-        params: { journalId },
-        fuzzy: true,
-      });
+      const isOnJournalPage = router.matchRoute(
+        { to: "/journals/details/$journalId", params: { journalId } },
+        { fuzzy: true },
+      );
 
       setAppAlert({
         title: `${entryId ? "Updated" : "Added"} entry`,
@@ -111,38 +145,6 @@ export const useUpsertEntryMutation = (
       setAppAlert(getErrorAlert("Failed to upsert entry", error));
     },
   });
-
-  function updateExistingEntryInCache(command: IUpsertEntryCommand) {
-    queryClient.setQueryData(
-      queryKeysFactory.journalEntries(journalId),
-      (entries: IEntry[]) => {
-        if (!entries) {
-          return entries;
-        }
-
-        return entries.map((e) =>
-          e.id === entryId ? createCacheEntry(e, command) : e,
-        );
-      },
-    );
-  }
-
-  function createCacheEntry(
-    entry: IEntry,
-    command: IUpsertEntryCommand,
-  ): IEntry {
-    return {
-      ...entry,
-      ...command,
-      // command.dateTime is a Date (or absent); IEntry.dateTime is an ISO
-      // string. Keep the date the user actually set instead of overwriting it
-      // with "now", and serialize as ISO to match what the server returns.
-      dateTime: command.dateTime
-        ? new Date(command.dateTime).toISOString()
-        : entry.dateTime,
-      editedOn: new Date().toISOString(),
-    };
-  }
 };
 
 // Returns a copy of the journal with any attribute values that are present on

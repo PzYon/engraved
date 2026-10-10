@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { ActionIconButton } from "./ActionIconButton";
 import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
 import { useIsInViewport } from "../useIsInViewPort";
@@ -24,24 +24,32 @@ export const ActionIconButtonGroup: React.FC<{
   alignToPosition,
   stickToPosition,
 }) => {
-  const domElementRef = useRef<HTMLDivElement>(null);
-
   const { palette } = useTheme();
 
-  const areHeaderActionsInViewPort = useIsInViewport(domElementRef);
+  // Floating actions take over while the regular ones are scrolled out of
+  // view. Only the actions of the page do that, whereas a group like this is
+  // rendered for every item of a list - so the element being watched, the
+  // observer and the timer only exist where they are asked for.
+  const [sentinel, setSentinel] = useState<HTMLDivElement | null>(null);
+
+  const areActionsInViewPort = useIsInViewport(sentinel);
 
   const { getSearchParam } = useEngravedSearchParams();
 
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    if (!enableFloatingActions) {
+      return;
+    }
+
     const timer = window.setTimeout(() => setIsReady(true), 1000);
 
     return () => {
       window.clearTimeout(timer);
       setIsReady(false);
     };
-  }, []);
+  }, [enableFloatingActions]);
 
   if (!actions?.length) {
     return null;
@@ -50,6 +58,26 @@ export const ActionIconButtonGroup: React.FC<{
   const finalAlignTo = alignToPosition ?? "none";
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
 
+  function isActionActive(action: IAction) {
+    // actions that have a URL (i.e. point to a different page) are ignored
+    // for the moment, because they might not even have an "action panel"
+    if (action.href) {
+      return false;
+    }
+
+    if (!action.search || !Object.keys(action.search).length) {
+      return false;
+    }
+
+    for (const key in action.search) {
+      if (action.search[key] !== getSearchParam(key)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   return (
     <StickTo
       isDisabled={stickToPosition === undefined || stickToPosition === "none"}
@@ -57,7 +85,7 @@ export const ActionIconButtonGroup: React.FC<{
       render={(isStuck) => (
         <Suspense>
           <Host>
-            {!areHeaderActionsInViewPort && enableFloatingActions && isReady ? (
+            {!areActionsInViewPort && enableFloatingActions && isReady ? (
               <FloatingHeaderActions actions={actions} />
             ) : null}
             <RadiusSpacer
@@ -73,7 +101,7 @@ export const ActionIconButtonGroup: React.FC<{
               sx={{ backgroundColor: finalBackgroundColor }}
               isStuck={isStuck}
             >
-              <div ref={domElementRef} />
+              {enableFloatingActions ? <div ref={setSentinel} /> : null}
               {actions
                 .filter((a) => a !== undefined)
                 .map((action) => {
@@ -102,26 +130,6 @@ export const ActionIconButtonGroup: React.FC<{
       )}
     />
   );
-
-  function isActionActive(action: IAction) {
-    // actions that have a URL (i.e. point to a different page) are ignored
-    // for the moment, because they might not even have an "action panel"
-    if (action.href) {
-      return false;
-    }
-
-    if (!action.search || !Object.keys(action.search).length) {
-      return false;
-    }
-
-    for (const key in action.search) {
-      if (action.search[key] !== getSearchParam(key)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 };
 
 const RadiusSpacer: React.FC<{

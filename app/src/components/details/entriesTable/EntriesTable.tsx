@@ -84,11 +84,11 @@ export const EntriesTable: React.FC<{
         ? window.setInterval(updateGroups, 10000)
         : undefined;
 
-    return () => window.clearInterval(interval);
-
     function updateGroups() {
       setTableGroups(getEntriesTableGroups(entries, type));
     }
+
+    return () => window.clearInterval(interval);
   }, [journal, entries, type]);
 
   if (!tableGroups.length) {

@@ -90,6 +90,19 @@ export const ScrapInner: React.FC = () => {
     ? [ActionFactory.toggleAutoSave(isAutoSaveEnabled, setIsAutoSaveEnabled)]
     : [];
 
+  function getText() {
+    switch (scrapToRender.scrapType) {
+      case ScrapType.Markdown:
+        return notes;
+
+      case ScrapType.List:
+        return (JSON.parse(notes ?? "[]") as IScrapListItem[])[0]?.label;
+
+      default:
+        throw new Error(`Unknown scrap type ${scrapToRender.scrapType}`);
+    }
+  }
+
   return (
     <div
       ref={containerRef}
@@ -166,17 +179,4 @@ export const ScrapInner: React.FC = () => {
       )}
     </div>
   );
-
-  function getText() {
-    switch (scrapToRender.scrapType) {
-      case ScrapType.Markdown:
-        return notes;
-
-      case ScrapType.List:
-        return (JSON.parse(notes ?? "[]") as IScrapListItem[])[0]?.label;
-
-      default:
-        throw new Error(`Unknown scrap type ${scrapToRender.scrapType}`);
-    }
-  }
 };

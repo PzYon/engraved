@@ -1,28 +1,25 @@
-import { RefObject, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 // credits: https://bobbyhadz.com/blog/react-check-if-element-in-viewport
 
-export function useIsInViewport(ref: RefObject<HTMLDivElement | null>) {
+// Takes the element itself and not a ref to it, so that observing starts when
+// the element appears - and no observer is created for as long as there is none.
+export function useIsInViewport(element: Element | null) {
   const [isIntersecting, setIsIntersecting] = useState(false);
 
-  const observer = useMemo(
-    () =>
-      new IntersectionObserver(([entry]) =>
-        setIsIntersecting(entry.isIntersecting),
-      ),
-    [],
-  );
-
   useEffect(() => {
-    if (!ref.current) {
+    if (!element) {
       return;
     }
 
-    observer.observe(ref.current);
+    const observer = new IntersectionObserver(([entry]) =>
+      setIsIntersecting(entry.isIntersecting),
+    );
+
+    observer.observe(element);
 
     return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/refs
-  }, [ref.current, observer]);
+  }, [element]);
 
   return isIntersecting;
 }
