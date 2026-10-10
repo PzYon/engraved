@@ -2,12 +2,15 @@ import { Page } from "../components/layout/pages/Page";
 import { PageSection } from "../components/layout/pages/PageSection";
 import { Alert, AlertTitle, Button } from "@mui/material";
 import { ServerApi } from "../serverApi/ServerApi";
-import { optInPushNotifications, setUpOneSignal } from "../util/oneSignal";
 import { useAppContext } from "../AppContext";
 import React from "react";
 import { ManageUserTags } from "../components/overview/tags/ManageUserTags";
 import { CleanupUserTags } from "../components/overview/tags/CleanupUserTags";
 import { ExportYourData } from "./ExportYourData";
+
+// The OneSignal SDK is of use to two buttons on this page only, so it is not
+// loaded before one of them is clicked.
+const loadOneSignal = () => import("../util/oneSignal");
 
 export const SettingsPage: React.FC = () => {
   const { user, setAppAlert } = useAppContext();
@@ -27,7 +30,9 @@ export const SettingsPage: React.FC = () => {
           <Button
             variant="outlined"
             onClick={() => {
-              setUpOneSignal(user.globalUniqueId ?? "");
+              loadOneSignal().then((oneSignal) =>
+                oneSignal.setUpOneSignal(user.globalUniqueId ?? ""),
+              );
             }}
           >
             Setup OneSignal
@@ -38,7 +43,9 @@ export const SettingsPage: React.FC = () => {
           <Button
             variant="outlined"
             onClick={() => {
-              optInPushNotifications();
+              loadOneSignal().then((oneSignal) =>
+                oneSignal.optInPushNotifications(),
+              );
             }}
           >
             Enable push notifications
