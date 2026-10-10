@@ -4,10 +4,7 @@ import { EditJournalPermissionsAction } from "../../details/edit/EditJournalPerm
 import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { EditScheduleAction } from "../../details/edit/EditScheduleAction";
-import {
-  knownQueryParams,
-  useItemAction,
-} from "../../common/actions/searchParamHooks";
+import { useOpenActionKey } from "../../common/actions/searchParamHooks";
 import { NavigationActionContainer } from "../../common/actions/NavigationActionContainer";
 import { JournalType } from "../../../serverApi/JournalType";
 import { RelatedItemsAction } from "../../details/related/RelatedItemsAction";
@@ -15,13 +12,9 @@ import { RelatedItemsAction } from "../../details/related/RelatedItemsAction";
 export const JournalSubRoutes: React.FC<{
   journal: IJournal;
 }> = ({ journal }) => {
-  const { getParams } = useItemAction();
+  const openActionKey = useOpenActionKey(journal.id);
 
-  if (getParams()[knownQueryParams.selectedItemId] !== journal.id) {
-    return null;
-  }
-
-  switch (getParams()[knownQueryParams.actionKey]) {
+  switch (openActionKey) {
     case "delete":
       return (
         <NavigationActionContainer>

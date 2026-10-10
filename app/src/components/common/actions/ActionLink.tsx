@@ -2,7 +2,7 @@ import React, { CSSProperties } from "react";
 import { IAction } from "./IAction";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
-import { knownQueryParams, useEngravedSearchParams } from "./searchParamHooks";
+import { AppSearch, knownQueryParams, mergeSearch } from "./searchParamHooks";
 
 export const ActionLink: React.FC<{
   action: IAction;
@@ -13,13 +13,14 @@ export const ActionLink: React.FC<{
 
   const navigate = useNavigate();
 
-  const { getNewSearchParams } = useEngravedSearchParams();
-
   // The search params an internal link/navigation should end up with: the
   // current params merged with the action's (empty/false values are dropped by
-  // getNewSearchParams). Passed to the router as a structured object rather than
-  // a hand-built query string, so `to` stays a clean route path.
-  const getSearch = () => getNewSearchParams(action.search ?? {});
+  // mergeSearch). Passed to the router as a structured object rather than a
+  // hand-built query string, so `to` stays a clean route path. The current
+  // params are handed in by the router when it needs them: asking for them
+  // here would render every link on screen with each change of the URL.
+  const getSearch = (current: AppSearch) =>
+    mergeSearch(current, action.search ?? {});
 
   // Actions with an own href navigate to that route; actions without one only
   // tweak the search params, so they stay on the current route ("."). In both
@@ -58,11 +59,7 @@ export const ActionLink: React.FC<{
   if (isAbsoluteUrl) {
     return (
       <a
-        href={new URL(
-          // getSearch() never yields undefined values (mergeSearch drops them).
-          new URLSearchParams(getSearch() as Record<string, string>).toString(),
-          action.href,
-        ).toString()}
+        href={getExternalUrl(action)}
         style={style}
         target="_blank"
         rel="noopener noreferrer"
@@ -97,3 +94,17 @@ export const ActionLink: React.FC<{
     </Link>
   );
 };
+
+// An external link gets the params of its action and none of ours: what is in
+// the URL of the app means nothing to another site.
+function getExternalUrl(action: IAction) {
+  const url = new URL(action.href!);
+
+  for (const [key, value] of Object.entries(action.search ?? {})) {
+    if (value) {
+      url.searchParams.set(key, value);
+    }
+  }
+
+  return url.toString();
+}

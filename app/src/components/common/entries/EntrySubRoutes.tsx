@@ -6,17 +6,16 @@ import React from "react";
 import { UpsertEntryAction } from "../../details/add/UpsertEntryAction";
 import { DeleteEntryAction } from "../../details/edit/DeleteEntryAction";
 import { RelatedItemsAction } from "../../details/related/RelatedItemsAction";
-import { knownQueryParams, useItemAction } from "../actions/searchParamHooks";
+import { useOpenActionKey } from "../actions/searchParamHooks";
 import { NavigationActionContainer } from "../actions/NavigationActionContainer";
 
 export const EntrySubRoutes: React.FC<{
   entry: IEntry;
   render?: (child: React.ReactElement) => React.ReactElement;
 }> = ({ entry, render }) => {
-  const { getParams } = useItemAction();
-  const action = getParams();
+  const openActionKey = useOpenActionKey(entry.id);
 
-  if (action[knownQueryParams.selectedItemId] !== entry.id) {
+  if (!openActionKey) {
     return null;
   }
 
@@ -24,7 +23,7 @@ export const EntrySubRoutes: React.FC<{
   if (!child) return null;
 
   function getChild() {
-    switch (action[knownQueryParams.actionKey]) {
+    switch (openActionKey) {
       case "delete":
         return (
           <NavigationActionContainer>

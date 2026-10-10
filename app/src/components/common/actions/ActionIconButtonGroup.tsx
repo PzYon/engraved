@@ -4,7 +4,7 @@ import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
 import { useIsInViewport } from "../useIsInViewPort";
 import { css, styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
-import { useEngravedSearchParams } from "./searchParamHooks";
+import { AppSearch, useSearchSelection } from "./searchParamHooks";
 import { Triangle } from "../Triangle";
 import { StickTo } from "../StickTo";
 import { Position } from "./Position";
@@ -34,7 +34,13 @@ export const ActionIconButtonGroup: React.FC<{
 
   const areActionsInViewPort = useIsInViewport(sentinel);
 
-  const { getSearchParam } = useEngravedSearchParams();
+  // Which of the actions is open, and nothing else of the URL: there is a
+  // group like this for every item of a list, and all of them would render
+  // whenever any action is opened or closed otherwise.
+  const activeActionKey = useSearchSelection(
+    (search) =>
+      actions?.find((action) => action && isActionActive(action, search))?.key,
+  );
 
   const [isReady, setIsReady] = useState(false);
 
@@ -57,26 +63,6 @@ export const ActionIconButtonGroup: React.FC<{
 
   const finalAlignTo = alignToPosition ?? "none";
   const finalBackgroundColor = backgroundColor ?? palette.background.default;
-
-  function isActionActive(action: IAction) {
-    // actions that have a URL (i.e. point to a different page) are ignored
-    // for the moment, because they might not even have an "action panel"
-    if (action.href) {
-      return false;
-    }
-
-    if (!action.search || !Object.keys(action.search).length) {
-      return false;
-    }
-
-    for (const key in action.search) {
-      if (action.search[key] !== getSearchParam(key)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 
   return (
     <StickTo
@@ -109,7 +95,7 @@ export const ActionIconButtonGroup: React.FC<{
                     return <SeparatorElement key={"separator"} />;
                   }
 
-                  const isActive = isActionActive(action);
+                  const isActive = action.key === activeActionKey;
 
                   return (
                     <span key={action.key} style={{ position: "relative" }}>
@@ -131,6 +117,26 @@ export const ActionIconButtonGroup: React.FC<{
     />
   );
 };
+
+function isActionActive(action: IAction, search: AppSearch) {
+  // actions that have a URL (i.e. point to a different page) are ignored
+  // for the moment, because they might not even have an "action panel"
+  if (action.href) {
+    return false;
+  }
+
+  if (!action.search || !Object.keys(action.search).length) {
+    return false;
+  }
+
+  for (const key in action.search) {
+    if (action.search[key] !== (search[key] ?? null)) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 const RadiusSpacer: React.FC<{
   backgroundColor: string;
