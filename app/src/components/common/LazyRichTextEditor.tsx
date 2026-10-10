@@ -1,5 +1,12 @@
 import { css, styled } from "@mui/material";
-import { Editor, EditorContent, Extension, useEditor } from "@tiptap/react";
+import {
+  Editor,
+  EditorContent,
+  EditorOptions,
+  Extension,
+  Extensions,
+  useEditor,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
 import Image from "@tiptap/extension-image";
@@ -91,6 +98,45 @@ const DisableEnter = Extension.create({
   },
 });
 
+// Everything that differs between editing markdown and editing plain text, so that the component
+// picks one of the two once instead of asking which it is at every turn.
+interface IEditorMode {
+  extensions: Extensions;
+  getContent: (
+    value: string | undefined,
+  ) => Partial<Pick<EditorOptions, "content" | "contentType">>;
+  getValue: (editor: Editor) => string;
+  handleTextInput?: typeof replaceShorthand;
+  // Plain text has no place for an image.
+  getImages: (
+    images: IRichTextEditorProps["images"],
+  ) => IRichTextEditorProps["images"];
+  getFormattingActions: typeof getFormattingActions;
+}
+
+const markdownMode: IEditorMode = {
+  // StarterKit carries no image node, so without this an image in the markdown would be dropped on
+  // the way in and lost on the next save.
+  extensions: [StarterKit, Markdown, Image],
+  getContent: (value) => ({
+    content: value === "" ? undefined : value,
+    contentType: "markdown",
+  }),
+  getValue: (editor) => editor.getMarkdown(),
+  handleTextInput: replaceShorthand,
+  getImages: (images) => images,
+  getFormattingActions: getFormattingActions,
+};
+
+const plainTextMode: IEditorMode = {
+  extensions: plainTextExtensions,
+  getContent: (value) => ({ content: toPlainTextContent(value) }),
+  getValue: (editor) => editor.getText(),
+  getImages: () => undefined,
+  // None of the formatting commands exist for plain text.
+  getFormattingActions: () => [],
+};
+
 const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   setGiveFocus,
   initialValue,
@@ -109,14 +155,11 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   editModeActions,
   images: imagesFromProps,
 }) => {
-  // Plain text has no place for an image.
-  const images = isPlainText ? undefined : imagesFromProps;
+  const mode = isPlainText ? plainTextMode : markdownMode;
 
-  // StarterKit carries no image node, so without this an image in the markdown would be dropped on
-  // the way in and lost on the next save.
-  const extensions = isPlainText
-    ? [...plainTextExtensions]
-    : [StarterKit, Markdown, Image];
+  const images = mode.getImages(imagesFromProps);
+
+  const extensions = [...mode.extensions];
 
   if (isTitle) {
     extensions.push(DisableEnter);
@@ -147,20 +190,15 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
         handleDrop: (view, event) =>
           insertImages((event as DragEvent).dataTransfer),
 
-        handleTextInput: isPlainText ? undefined : replaceShorthand,
+        handleTextInput: mode.handleTextInput,
       },
       extensions: extensions,
-      ...(isPlainText
-        ? { content: toPlainTextContent(initialValue) }
-        : {
-            content: initialValue === "" ? undefined : initialValue,
-            contentType: "markdown" as const,
-          }),
+      ...mode.getContent(initialValue),
       autofocus: autoFocus ? "end" : false,
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
-        setValue(isPlainText ? editor.getText() : editor.getMarkdown());
+        setValue(mode.getValue(editor));
         setIsEmpty(!editor.getText());
       },
       editable: !disabled,
@@ -197,14 +235,11 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           stickToPosition="top"
           actions={[
             ...(editModeActions ?? []),
-            // None of the formatting commands exist for plain text.
-            ...(isPlainText
-              ? []
-              : getFormattingActions(
-                  editor,
-                  enableSpellCheck,
-                  setEnableSpellCheck,
-                )),
+            ...mode.getFormattingActions(
+              editor,
+              enableSpellCheck,
+              setEnableSpellCheck,
+            ),
           ]}
         />
       ) : null}
