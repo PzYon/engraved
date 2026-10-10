@@ -9,6 +9,7 @@ import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
 import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
 import { getFormattingActions } from "./formattingActions";
+import { plainTextExtensions, toPlainTextContent } from "./plainTextEditing";
 
 const replacements: Record<string, string> = {
   "!!!": "‼️",
@@ -103,13 +104,19 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   disabled,
   css: styles,
   isTitle,
+  isPlainText,
   showFormattingOptions,
   editModeActions,
-  images,
+  images: imagesFromProps,
 }) => {
+  // Plain text has no place for an image.
+  const images = isPlainText ? undefined : imagesFromProps;
+
   // StarterKit carries no image node, so without this an image in the markdown would be dropped on
   // the way in and lost on the next save.
-  const extensions = [StarterKit, Markdown, Image];
+  const extensions = isPlainText
+    ? [...plainTextExtensions]
+    : [StarterKit, Markdown, Image];
 
   if (isTitle) {
     extensions.push(DisableEnter);
@@ -140,16 +147,20 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
         handleDrop: (view, event) =>
           insertImages((event as DragEvent).dataTransfer),
 
-        handleTextInput: replaceShorthand,
+        handleTextInput: isPlainText ? undefined : replaceShorthand,
       },
       extensions: extensions,
-      content: initialValue === "" ? undefined : initialValue,
-      contentType: "markdown",
+      ...(isPlainText
+        ? { content: toPlainTextContent(initialValue) }
+        : {
+            content: initialValue === "" ? undefined : initialValue,
+            contentType: "markdown" as const,
+          }),
       autofocus: autoFocus ? "end" : false,
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
-        setValue(editor.getMarkdown());
+        setValue(isPlainText ? editor.getText() : editor.getMarkdown());
         setIsEmpty(!editor.getText());
       },
       editable: !disabled,
@@ -186,11 +197,14 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           stickToPosition="top"
           actions={[
             ...(editModeActions ?? []),
-            ...getFormattingActions(
-              editor,
-              enableSpellCheck,
-              setEnableSpellCheck,
-            ),
+            // None of the formatting commands exist for plain text.
+            ...(isPlainText
+              ? []
+              : getFormattingActions(
+                  editor,
+                  enableSpellCheck,
+                  setEnableSpellCheck,
+                )),
           ]}
         />
       ) : null}

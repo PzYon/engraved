@@ -18,6 +18,8 @@ export interface IRichTextEditorProps {
   onBlur?: () => void;
   css?: React.CSSProperties;
   isTitle?: boolean;
+  // The value is then text that is kept exactly as it is, instead of markdown.
+  isPlainText?: boolean;
   showFormattingOptions?: boolean;
   editModeActions?: IAction[];
 
