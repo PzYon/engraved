@@ -4,6 +4,8 @@ export const paperBorderRadius = "10px";
 
 export const actionBorderWidth = "4px";
 
+export const tooltipEnterDelayMs = 1000;
+
 const textColor = "#444444";
 const primaryColor = "#2a7b9b";
 
@@ -50,7 +52,7 @@ export const engravedTheme = createTheme({
     },
     MuiTooltip: {
       defaultProps: {
-        enterDelay: 1000,
+        enterDelay: tooltipEnterDelayMs,
       },
       styleOverrides: {
         tooltip: {
