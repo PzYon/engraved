@@ -1,4 +1,6 @@
-﻿namespace Engraved.Core.Domain.Users;
+﻿using System.Text.Json.Serialization;
+
+namespace Engraved.Core.Domain.Users;
 
 public class User : IUser
 {
@@ -18,6 +20,7 @@ public class User : IUser
 
   public List<UserTag> Tags { get; set; } = [];
 
+  [JsonIgnore]
   public List<RefreshToken> RefreshTokens { get; set; } = [];
 
   public bool IsAdmin { get; set; }

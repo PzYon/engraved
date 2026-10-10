@@ -1,6 +1,4 @@
-﻿using Engraved.Core.Domain.Users;
-
-namespace Engraved.Core.Domain.Permissions;
+﻿namespace Engraved.Core.Domain.Permissions;
 
 public class PermissionDefinition
 {
@@ -9,5 +7,5 @@ public class PermissionDefinition
   public UserRole? UserRole { get; set; }
 
   // user is null and only set before returning to client
-  public IUser? User { get; set; }
+  public PermissionUser? User { get; set; }
 }
