@@ -39,6 +39,7 @@ import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNa
 import { LazyLoadSuspender } from "./components/common/LazyLoadSuspender";
 import { validateAppSearch } from "./components/common/actions/searchParamHooks";
 import { AdminPage } from "./components/admin/AdminPage";
+import { SharedTooltipProvider } from "./components/common/tooltip/SharedTooltipProvider";
 
 // Defined before RootLayout so the component reference is available
 const Host = styled("div")`
@@ -47,28 +48,32 @@ const Host = styled("div")`
   flex-direction: column;
 `;
 
+// The tooltip provider is the outermost one, as dialogs are rendered by their
+// provider and not below it.
 const RootLayout: React.FC = () => (
-  <ReactQueryProviderWrapper>
-    <PageContextProvider>
-      <DialogContextProvider>
-        <DisplayModeContextProvider>
-          <Host>
-            <AppHeader />
-            <AppAlertBar />
-            <AppContent scope="body">
-              <AppErrorBoundary>
-                <LazyLoadSuspender>
-                  <Outlet />
-                </LazyLoadSuspender>
-              </AppErrorBoundary>
-            </AppContent>
-            <FloatingHistoryNavigation />
-            <AppFooter />
-          </Host>
-        </DisplayModeContextProvider>
-      </DialogContextProvider>
-    </PageContextProvider>
-  </ReactQueryProviderWrapper>
+  <SharedTooltipProvider>
+    <ReactQueryProviderWrapper>
+      <PageContextProvider>
+        <DialogContextProvider>
+          <DisplayModeContextProvider>
+            <Host>
+              <AppHeader />
+              <AppAlertBar />
+              <AppContent scope="body">
+                <AppErrorBoundary>
+                  <LazyLoadSuspender>
+                    <Outlet />
+                  </LazyLoadSuspender>
+                </AppErrorBoundary>
+              </AppContent>
+              <FloatingHistoryNavigation />
+              <AppFooter />
+            </Host>
+          </DisplayModeContextProvider>
+        </DialogContextProvider>
+      </PageContextProvider>
+    </ReactQueryProviderWrapper>
+  </SharedTooltipProvider>
 );
 
 interface IRouterContext {

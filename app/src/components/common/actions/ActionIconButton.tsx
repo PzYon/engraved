@@ -1,11 +1,12 @@
 import React from "react";
-import { IconButton, styled, Theme, Tooltip, useTheme } from "@mui/material";
+import { IconButton, styled, Theme, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { ActionLink } from "./ActionLink";
 import { SxProps } from "@mui/system";
 import { actionBorderWidth } from "../../../theming/engravedTheme";
 import { useEngravedHotkeys } from "./useEngravedHotkeys";
 import { getActionLabel } from "./actionUtils";
+import { useSharedTooltip } from "../tooltip/SharedTooltipContext";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
@@ -14,7 +15,7 @@ export const ActionIconButton: React.FC<{
 }> = ({ action, buttonsAsSpans, isActive }) => {
   const { palette } = useTheme();
 
-  const { title, ...commonProps } = getCommonProps();
+  const tooltipProps = useSharedTooltip(getActionLabel(action));
 
   useEngravedHotkeys(
     action.hotkey,
@@ -44,23 +45,21 @@ export const ActionIconButton: React.FC<{
 
   function getNoButtonIcon() {
     return (
-      <Tooltip title={title}>
-        <NoButtonIcon
-          key={action.key}
-          {...commonProps}
-          sx={{
-            display: "flex",
-            padding: actionBorderWidth,
-            borderRadius: "100%",
-            ":hover": {
-              backgroundColor: "rgba(0, 0, 0, 0.04)",
-            },
-            ...getCommonSx(),
-          }}
-        >
-          {action.icon}
-        </NoButtonIcon>
-      </Tooltip>
+      <NoButtonIcon
+        key={action.key}
+        {...getCommonProps()}
+        sx={{
+          display: "flex",
+          padding: actionBorderWidth,
+          borderRadius: "100%",
+          ":hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)",
+          },
+          ...getCommonSx(),
+        }}
+      >
+        {action.icon}
+      </NoButtonIcon>
     );
   }
 
@@ -75,23 +74,21 @@ export const ActionIconButton: React.FC<{
 
   function getCommonProps() {
     return {
-      title: getActionLabel(action),
       "aria-label": action.label,
       onClick: action.onClick,
+      ...tooltipProps,
     };
   }
 
   return (
-    <Tooltip title={title}>
-      <IconButton
-        key={action.key}
-        {...commonProps}
-        sx={{ ...getCommonSx(), padding: actionBorderWidth }}
-        disabled={action.isDisabled}
-      >
-        {action.icon}
-      </IconButton>
-    </Tooltip>
+    <IconButton
+      key={action.key}
+      {...getCommonProps()}
+      sx={{ ...getCommonSx(), padding: actionBorderWidth }}
+      disabled={action.isDisabled}
+    >
+      {action.icon}
+    </IconButton>
   );
 };
 
