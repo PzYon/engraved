@@ -13,6 +13,7 @@ import { FadeInContainer } from "../../common/FadeInContainer";
 import { LazyLoadSuspender } from "../../common/LazyLoadSuspender";
 import { OfflinePlaceholder } from "../../common/search/OfflinePlaceholder";
 import { useIsOffline } from "../../common/useIsOffline";
+import { useGraduallyRenderedItems } from "./useGraduallyRenderedItems";
 
 interface IOverviewListProps {
   items: IEntity[];
@@ -62,6 +63,11 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
     setShowAll,
   } = useOverviewListContext();
 
+  const itemsToRender = useGraduallyRenderedItems(
+    itemsToShow,
+    itemsToShow.findIndex((item) => item.id === activeItemId),
+  );
+
   // While offline an empty list (almost) always means the data has not been
   // cached yet - queries are paused and will resume when back online.
   const showOfflinePlaceholder =
@@ -82,7 +88,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
 
           {showOfflinePlaceholder ? <OfflinePlaceholder /> : null}
 
-          {itemsToShow.map((item, index) => {
+          {itemsToRender.map((item, index) => {
             const hasFocus = activeItemId === item.id;
 
             return (
@@ -95,7 +101,7 @@ const OverviewListInternal: React.FC<IOverviewListProps> = ({
               >
                 {showDaysBetween && index > 0 ? (
                   <DifferenceInDays
-                    lastItem={itemsToShow[index - 1] as IEntry}
+                    lastItem={itemsToRender[index - 1] as IEntry}
                     item={item as IEntry}
                   />
                 ) : null}

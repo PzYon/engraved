@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { ScrapInner } from "./ScrapInner";
 import { ActionsRenderStyle } from "./ScrapContext";
@@ -33,16 +33,6 @@ export const Scrap: React.FC<{
   changeTypeWithoutConfirmation,
   testId,
 }) => {
-  const [doRender, setDoRender] = useState(hasFocus);
-
-  useEffect(() => {
-    setTimeout(() => setDoRender(true));
-  }, []);
-
-  if (!doRender) {
-    return false;
-  }
-
   return (
     <div id={scrap.id} data-testid={testId}>
       <ScrapContextProvider
