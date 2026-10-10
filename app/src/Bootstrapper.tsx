@@ -8,6 +8,7 @@ import { CircularProgress, styled, Typography } from "@mui/material";
 import { knownQueryParams } from "./components/common/actions/searchParamHooks";
 import { CredentialResponse } from "google-one-tap";
 import { getLastUser, setLastUser } from "./serverApi/authentication/lastUser";
+import { ScratchpadDraftStorage } from "./components/scratchpad/ScratchpadDraftStorage";
 
 // Tests bring their own session, so there is nobody to remember for them.
 function getRememberedUser(): IUser | undefined {
@@ -62,6 +63,7 @@ export const Bootstrapper: React.FC = () => {
           // Somebody else than the one whose data is on screen: start over, so
           // that nothing of the previous user is left in memory.
           if (rememberedUser && rememberedUser.id !== authResult.user.id) {
+            ScratchpadDraftStorage.clear();
             window.location.reload();
             return;
           }
