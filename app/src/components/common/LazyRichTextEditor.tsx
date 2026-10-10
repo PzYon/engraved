@@ -137,6 +137,10 @@ const plainTextMode: IEditorMode = {
   getFormattingActions: () => [],
 };
 
+function getEditorMode(isPlainText: boolean | undefined) {
+  return isPlainText ? plainTextMode : markdownMode;
+}
+
 const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   setGiveFocus,
   initialValue,
@@ -155,7 +159,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   editModeActions,
   images: imagesFromProps,
 }) => {
-  const mode = isPlainText ? plainTextMode : markdownMode;
+  const mode = getEditorMode(isPlainText);
 
   const images = mode.getImages(imagesFromProps);
 
