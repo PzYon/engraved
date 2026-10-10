@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useNavigate, useRouter, useSearch } from "@tanstack/react-router";
 
 export const knownQueryParams = {
   selectedItemId: "selected-item",
@@ -73,7 +73,7 @@ export function clearAllSearchParams() {
 
 // Merge `updates` into `current`, dropping keys whose value is empty/false so
 // they disappear from the URL rather than lingering as `key=` or `key=false`.
-function mergeSearch(
+export function mergeSearch(
   current: AppSearch,
   updates: Record<string, string | undefined>,
 ): AppSearch {
@@ -99,22 +99,62 @@ function searchEquals(a: AppSearch, b: AppSearch): boolean {
   );
 }
 
+// Renders its component with every change of the URL's search. That is fine
+// for a page, but not for what is rendered once per item of a list - there,
+// follow only what is needed (useSearchSelection), or read the search when
+// something happens (useItemAction).
 function useCurrentSearch(): AppSearch {
   return useSearch({ strict: false }) as AppSearch;
 }
 
+// Follows what `select` picks from the search and nothing else: the component
+// only renders again when that changes. Meant for picking a single value, as
+// what is picked is compared as it is.
+export function useSearchSelection(
+  select: (search: AppSearch) => string | undefined,
+): string | undefined {
+  return useSearch({
+    strict: false,
+    select: (search) => select(search as AppSearch),
+  });
+}
+
+// The action that is open for the given item, if there is one.
+export function useOpenActionKey(
+  itemId: string | undefined,
+): ActionKey | undefined {
+  // validateAppSearch has made sure that an action key in the URL is a known one
+  return useSearchSelection((search) =>
+    itemId && search[knownQueryParams.selectedItemId] === itemId
+      ? search[knownQueryParams.actionKey]
+      : undefined,
+  ) as ActionKey | undefined;
+}
+
+// For acting on what is in the URL at the time something happens - a click, a
+// save. It reads the router's location at that moment and does not follow it,
+// as every scrap on screen uses this. To render according to the URL, use
+// useOpenActionKey.
 export const useItemAction = () => {
   const navigate = useNavigate();
-  const search = useCurrentSearch();
+  const router = useRouter();
+
+  const getCurrentSearch = () => router.latestLocation.search as AppSearch;
 
   return {
-    getParams: () => ({
-      [knownQueryParams.actionKey]: search[knownQueryParams.actionKey],
-      [knownQueryParams.selectedItemId]:
-        search[knownQueryParams.selectedItemId],
-    }),
+    getParams: () => {
+      const search = getCurrentSearch();
+
+      return {
+        [knownQueryParams.actionKey]: search[knownQueryParams.actionKey],
+        [knownQueryParams.selectedItemId]:
+          search[knownQueryParams.selectedItemId],
+      };
+    },
 
     closeAction: () => {
+      const search = getCurrentSearch();
+
       const hasChanges =
         !!search[knownQueryParams.actionKey] ||
         !!search[knownQueryParams.selectedItemId] ||
@@ -147,12 +187,6 @@ export const useEngravedSearchParams = () => {
     [search],
   );
 
-  const getNewSearchParams = useCallback(
-    (params: Record<string, string | undefined>): AppSearch =>
-      mergeSearch(search, params),
-    [search],
-  );
-
   const appendSearchParams = useCallback(
     (params: Record<string, string>) => {
       const next = mergeSearch(search, params);
@@ -170,7 +204,6 @@ export const useEngravedSearchParams = () => {
 
   return {
     getSearchParam,
-    getNewSearchParams,
     appendSearchParams,
   };
 };

@@ -8,7 +8,8 @@ const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }));
 
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => navigate,
-  useSearch: () => ({}),
+  useSearch: ({ select }: { select: (search: object) => unknown }) =>
+    select({}),
 }));
 
 const observe = vi.fn();
