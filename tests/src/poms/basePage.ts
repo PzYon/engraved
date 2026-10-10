@@ -2,6 +2,7 @@ import { expect, Page } from "@playwright/test";
 import { clickPageAction } from "../utils/clickPageAction";
 import { AddQuickScrapPage } from "./addQuickScrapPage";
 import { GoToPage } from "./goToPage";
+import { ScratchpadPage } from "./scratchpadPage";
 
 export abstract class BasePage {
   constructor(protected page: Page) {}
@@ -17,6 +18,11 @@ export abstract class BasePage {
   async clickAddQuickScrapAction() {
     await this.page.getByLabel("Quick Add").click();
     return new AddQuickScrapPage(this.page);
+  }
+
+  async clickScratchpadAction() {
+    await this.page.getByLabel("Scratchpad", { exact: true }).click();
+    return new ScratchpadPage(this.page);
   }
 
   async scrollToBottom() {
