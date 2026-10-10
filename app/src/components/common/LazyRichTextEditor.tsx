@@ -1,5 +1,12 @@
 import { css, styled } from "@mui/material";
-import { Editor, EditorContent, Extension, useEditor } from "@tiptap/react";
+import {
+  Editor,
+  EditorContent,
+  EditorOptions,
+  Extension,
+  Extensions,
+  useEditor,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Markdown } from "@tiptap/markdown";
 import Image from "@tiptap/extension-image";
@@ -8,7 +15,12 @@ import React, { useEffect, useState } from "react";
 import { IRichTextEditorProps } from "./IRichTextEditorProps";
 import { MarkdownContainer } from "../details/scraps/markdown/MarkdownContainer";
 import { ActionIconButtonGroup } from "./actions/ActionIconButtonGroup";
-import { getFormattingActions } from "./formattingActions";
+import {
+  getFormattingActions,
+  getTogglePlainTextAction,
+} from "./formattingActions";
+import { IAction } from "./actions/IAction";
+import { plainTextExtensions, toPlainTextContent } from "./plainTextEditing";
 
 const replacements: Record<string, string> = {
   "!!!": "‼️",
@@ -90,6 +102,98 @@ const DisableEnter = Extension.create({
   },
 });
 
+// Everything that differs between editing markdown and editing plain text, so that the component
+// picks one of the two once instead of asking which it is at every turn.
+interface IEditorMode {
+  extensions: Extensions;
+  getContent: (
+    value: string | undefined,
+  ) => Partial<Pick<EditorOptions, "content" | "contentType">>;
+  getValue: (editor: Editor) => string;
+  handleTextInput?: typeof replaceShorthand;
+  // Plain text has no place for an image.
+  getImages: (
+    images: IRichTextEditorProps["images"],
+  ) => IRichTextEditorProps["images"];
+  getFormattingActions: typeof getFormattingActions;
+}
+
+const markdownMode: IEditorMode = {
+  // StarterKit carries no image node, so without this an image in the markdown would be dropped on
+  // the way in and lost on the next save.
+  extensions: [StarterKit, Markdown, Image],
+  getContent: (value) => ({
+    content: value === "" ? undefined : value,
+    contentType: "markdown",
+  }),
+  getValue: (editor) => editor.getMarkdown(),
+  handleTextInput: replaceShorthand,
+  getImages: (images) => images,
+  getFormattingActions: getFormattingActions,
+};
+
+const plainTextMode: IEditorMode = {
+  extensions: plainTextExtensions,
+  getContent: (value) => ({ content: toPlainTextContent(value) }),
+  getValue: (editor) => editor.getText(),
+  getImages: () => undefined,
+  // None of the formatting commands exist for plain text.
+  getFormattingActions: () => [],
+};
+
+function getEditorMode(isPlainText: boolean | undefined) {
+  return isPlainText ? plainTextMode : markdownMode;
+}
+
+const EditorPlaceholder: React.FC<{
+  text: string | undefined;
+  isEditorEmpty: boolean;
+}> = ({ text, isEditorEmpty }) => {
+  if (!text || !isEditorEmpty) {
+    return null;
+  }
+
+  return (
+    <PlaceholderContainer>
+      <PlaceholderText>{text}</PlaceholderText>
+    </PlaceholderContainer>
+  );
+};
+
+const EditorToolbar: React.FC<{
+  editor: Editor;
+  mode: IEditorMode;
+  editModeActions: IAction[] | undefined;
+  enableSpellCheck: boolean;
+  setEnableSpellCheck: (enable: boolean) => void;
+  isPlainText: boolean;
+  toggleIsPlainText: () => void;
+}> = ({
+  editor,
+  mode,
+  editModeActions,
+  enableSpellCheck,
+  setEnableSpellCheck,
+  isPlainText,
+  toggleIsPlainText,
+}) => {
+  return (
+    <ActionIconButtonGroup
+      alignToPosition="top"
+      stickToPosition="top"
+      actions={[
+        ...(editModeActions ?? []),
+        getTogglePlainTextAction(isPlainText, toggleIsPlainText),
+        ...mode.getFormattingActions(
+          editor,
+          enableSpellCheck,
+          setEnableSpellCheck,
+        ),
+      ]}
+    />
+  );
+};
+
 const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   setGiveFocus,
   initialValue,
@@ -103,13 +207,23 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   disabled,
   css: styles,
   isTitle,
+  initialIsPlainText,
+  onIsPlainTextChange,
   showFormattingOptions,
   editModeActions,
-  images,
+  images: imagesFromProps,
 }) => {
-  // StarterKit carries no image node, so without this an image in the markdown would be dropped on
-  // the way in and lost on the next save.
-  const extensions = [StarterKit, Markdown, Image];
+  const [isPlainText, setIsPlainText] = useState(!!initialIsPlainText);
+
+  const mode = getEditorMode(isPlainText);
+
+  // What a newly created editor starts with. That is the value handed in, until the mode is
+  // switched: the editor is created anew then, and has to carry on with what the previous one held.
+  const [startValue, setStartValue] = useState(initialValue);
+
+  const images = mode.getImages(imagesFromProps);
+
+  const extensions = [...mode.extensions];
 
   if (isTitle) {
     extensions.push(DisableEnter);
@@ -140,21 +254,20 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
         handleDrop: (view, event) =>
           insertImages((event as DragEvent).dataTransfer),
 
-        handleTextInput: replaceShorthand,
+        handleTextInput: mode.handleTextInput,
       },
       extensions: extensions,
-      content: initialValue === "" ? undefined : initialValue,
-      contentType: "markdown",
+      ...mode.getContent(startValue),
       autofocus: autoFocus ? "end" : false,
       onFocus: () => onFocus?.(),
       onBlur: () => onBlur?.(),
       onUpdate: ({ editor }) => {
-        setValue(editor.getMarkdown());
+        setValue(mode.getValue(editor));
         setIsEmpty(!editor.getText());
       },
       editable: !disabled,
     },
-    [disabled],
+    [disabled, isPlainText],
   );
 
   // One effect for both, because they are the same thing: handing the caller a way to drive an editor
@@ -164,6 +277,14 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
 
     images?.setInsert((image) => editor.chain().focus().setImage(image).run());
   }, [editor, setGiveFocus, images]);
+
+  // The text itself is left as it is: switching only changes whether it is edited as markdown or
+  // as the characters it consists of.
+  function toggleIsPlainText() {
+    setStartValue(mode.getValue(editor));
+    setIsPlainText(!isPlainText);
+    onIsPlainTextChange?.(!isPlainText);
+  }
 
   function insertImages(data: DataTransfer | null) {
     return insertDroppedImages(editor, images, data);
@@ -175,23 +296,16 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
 
   return (
     <Host className="ngrvd-text-editor">
-      {placeholder && isEmpty ? (
-        <PlaceholderContainer>
-          <PlaceholderText>{placeholder}</PlaceholderText>
-        </PlaceholderContainer>
-      ) : null}
+      <EditorPlaceholder text={placeholder} isEditorEmpty={isEmpty} />
       {showFormattingOptions ? (
-        <ActionIconButtonGroup
-          alignToPosition="top"
-          stickToPosition="top"
-          actions={[
-            ...(editModeActions ?? []),
-            ...getFormattingActions(
-              editor,
-              enableSpellCheck,
-              setEnableSpellCheck,
-            ),
-          ]}
+        <EditorToolbar
+          editor={editor}
+          mode={mode}
+          editModeActions={editModeActions}
+          enableSpellCheck={enableSpellCheck}
+          setEnableSpellCheck={setEnableSpellCheck}
+          isPlainText={isPlainText}
+          toggleIsPlainText={toggleIsPlainText}
         />
       ) : null}
       <MarkdownContainer>

@@ -187,6 +187,9 @@ const ButtonContainer = styled("div")<{
 }>`
   flex-shrink: 1;
   display: flex;
+  // More buttons than fit next to each other would otherwise make the whole page wider than the
+  // screen, which on a phone is reached quickly.
+  flex-wrap: wrap;
   border-radius: 20px;
   margin-top: ${(p) =>
     p.stickToPosition && p.stickToPosition !== "none" ? "5px" : "0"};
