@@ -24,5 +24,9 @@ public interface IUser
   [JsonIgnore]
   List<RefreshToken> RefreshTokens { get; set; }
 
+  // served only by its own endpoints, so that it doesn't travel along with every login or refresh
+  [JsonIgnore]
+  UserScratchpad? Scratchpad { get; set; }
+
   bool IsAdmin { get; set; }
 }

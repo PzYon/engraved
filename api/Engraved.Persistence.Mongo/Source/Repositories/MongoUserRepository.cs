@@ -42,13 +42,51 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
       throw new ArgumentException("ID must be specified for existing users.");
     }
 
-    ReplaceOneResult? replaceOneResult = await UsersCollection.ReplaceOneAsync(
+    // Sets the fields rather than replacing the whole document, so that the scratchpad, which is
+    // only ever written by UpdateScratchpad, survives. Otherwise a user loaded before a scratchpad
+    // save and stored after it (e.g. when a refresh token is rotated) would undo that save.
+    BsonDocument fields = document.ToBsonDocument();
+    fields.Remove("_id");
+    fields.Remove(nameof(UserDocument.Scratchpad));
+
+    var update = new BsonDocument("$set", fields);
+    if (document.Id != ObjectId.Empty)
+    {
+      update.Add("$setOnInsert", new BsonDocument("_id", document.Id));
+    }
+
+    UpdateResult updateResult = await UsersCollection.UpdateOneAsync(
       Builders<UserDocument>.Filter.Where(d => d.Name == user.Name),
-      document,
-      new ReplaceOptions { IsUpsert = true }
+      update,
+      new UpdateOptions { IsUpsert = true }
     );
 
-    return MongoUtil.CreateUpsertResult(user.Id, replaceOneResult);
+    return MongoUtil.CreateUpsertResult(user.Id, updateResult);
+  }
+
+  public async Task<bool> UpdateScratchpad(string userId, UserScratchpad scratchpad, DateTime? lastKnownEditedOn)
+  {
+    FilterDefinitionBuilder<UserDocument> filter = Builders<UserDocument>.Filter;
+
+    // The conflict check is part of the update's filter rather than a read before it, so that no
+    // other save can sneak in between checking and writing.
+    FilterDefinition<UserDocument> notEditedSince = lastKnownEditedOn == null
+      ? filter.Eq(d => d.Scratchpad, null)
+      : filter.Not(filter.Gt(d => d.Scratchpad!.EditedOn, lastKnownEditedOn.Value));
+
+    UpdateResult result = await UsersCollection.UpdateOneAsync(
+      filter.And(MongoUtil.GetDocumentByIdFilter<UserDocument>(userId), notEditedSince),
+      Builders<UserDocument>.Update.Set(
+        d => d.Scratchpad,
+        new UserScratchpadDocument
+        {
+          Content = scratchpad.Content,
+          EditedOn = scratchpad.EditedOn
+        }
+      )
+    );
+
+    return result.MatchedCount == 1;
   }
 
   public async Task<IUser[]> GetUsers(params string[] userIds)

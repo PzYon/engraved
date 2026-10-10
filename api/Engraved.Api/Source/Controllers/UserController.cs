@@ -3,8 +3,10 @@ using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.CleanupTags;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
+using Engraved.Core.Application.Commands.Users.SaveScratchpad;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.Queries.Export;
+using Engraved.Core.Application.Queries.Users.GetScratchpad;
 using Engraved.Core.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +61,21 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
     };
 
     return await dispatcher.Command(command);
+  }
+
+  [HttpGet]
+  [Route("scratchpad")]
+  public async Task<UserScratchpad?> GetScratchpad()
+  {
+    return await dispatcher.Query<UserScratchpad?, GetScratchpadQuery>(new GetScratchpadQuery());
+  }
+
+  // Declares the derived result, as only the properties of the declared type get serialized.
+  [HttpPut]
+  [Route("scratchpad")]
+  public async Task<SaveScratchpadCommandResult> SaveScratchpad(SaveScratchpadCommand command)
+  {
+    return (SaveScratchpadCommandResult)await dispatcher.Command(command);
   }
 
   [HttpGet]

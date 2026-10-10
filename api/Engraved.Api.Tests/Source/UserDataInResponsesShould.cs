@@ -31,12 +31,13 @@ namespace Engraved.Api.Tests;
 
 // Pins which user data leaves the API: everybody with access to a shared journal sees the other
 // users on it, so those must only carry what is needed to display them, and refresh tokens must
-// not reach any client, not even their owner's.
+// not reach any client, not even their owner's. The scratchpad is only served by its own endpoint.
 public class UserDataInResponsesShould
 {
   private const string JwtSecret = "user-data-test-secret-long-enough-to-be-valid-0123456";
   private const string OwnerName = "owner@user-data.test";
   private const string ReaderName = "reader@user-data.test";
+  private const string ScratchpadContent = "owner's scratchpad";
 
   private static readonly string[] PublicUserProperties = ["id", "name", "displayName", "imageUrl"];
 
@@ -112,7 +113,7 @@ public class UserDataInResponsesShould
   }
 
   [Test]
-  public async Task Not_Expose_RefreshTokens_When_Refreshing()
+  public async Task Not_Expose_RefreshTokens_Or_Scratchpad_When_Refreshing()
   {
     using HttpClient anonymousClient = _factory.CreateClient();
 
@@ -125,6 +126,46 @@ public class UserDataInResponsesShould
     JsonElement authResult = await response.Content.ReadFromJsonAsync<JsonElement>();
     authResult.GetProperty("refreshToken").GetString().Should().NotBeNullOrEmpty();
     authResult.GetProperty("user").TryGetProperty("refreshTokens", out _).Should().BeFalse();
+    authResult.GetProperty("user").TryGetProperty("scratchpad", out _).Should().BeFalse();
+  }
+
+  [Test]
+  public async Task Not_Expose_Scratchpad_When_Returning_Current_User()
+  {
+    JsonElement user = await GetJson(_ownerClient, "/api/user");
+
+    user.TryGetProperty("scratchpad", out _).Should().BeFalse();
+    user.GetRawText().Should().NotContain(ScratchpadContent);
+  }
+
+  [Test]
+  public async Task Return_Scratchpad_From_Its_Own_Endpoint()
+  {
+    JsonElement scratchpad = await GetJson(_ownerClient, "/api/user/scratchpad");
+
+    scratchpad.GetProperty("content").GetString().Should().Be(ScratchpadContent);
+    scratchpad.GetProperty("editedOn").GetDateTime().Should().NotBe(default);
+  }
+
+  [Test]
+  public async Task Return_NoScratchpad_When_NeverSaved()
+  {
+    HttpResponseMessage response = await _readerClient.GetAsync("/api/user/scratchpad");
+
+    response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+  }
+
+  [Test]
+  public async Task Return_Conflict_When_Saving_Scratchpad_SavedElsewhere()
+  {
+    HttpResponseMessage response = await _ownerClient.PutAsJsonAsync(
+      "/api/user/scratchpad",
+      new { content = "based on nothing", lastKnownEditedOn = (DateTime?)null }
+    );
+
+    response.StatusCode.Should().Be(HttpStatusCode.Conflict);
+    (await GetJson(_ownerClient, "/api/user/scratchpad")).GetProperty("content").GetString()
+      .Should().Be(ScratchpadContent);
   }
 
   private static IEnumerable<string> GetPermissionUserProperties(JsonElement journal, string userId)
@@ -151,6 +192,12 @@ public class UserDataInResponsesShould
     var owner = new User { Name = OwnerName, LastLoginDate = DateTime.UtcNow };
     owner.Id = (await repo.UpsertUser(owner)).EntityId;
     _ownerId = owner.Id;
+
+    await repo.UpdateScratchpad(
+      _ownerId,
+      new UserScratchpad { Content = ScratchpadContent, EditedOn = DateTime.UtcNow },
+      null
+    );
 
     UpsertResult readerResult = await repo.UpsertUser(new User { Name = ReaderName });
 

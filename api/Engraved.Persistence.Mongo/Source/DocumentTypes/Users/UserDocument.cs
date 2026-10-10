@@ -30,4 +30,6 @@ public class UserDocument : IDocument
   public List<UserTag> Tags { get; set; } = [];
 
   public List<RefreshTokenDocument> RefreshTokens { get; set; } = [];
+
+  public UserScratchpadDocument? Scratchpad { get; set; }
 }

@@ -3,7 +3,9 @@ using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Journals.GetAll;
+using Engraved.Core.Application.Queries.Users.GetScratchpad;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Users;
 using Engraved.TestUtils;
 
 namespace Engraved.Core.Tests.Application;
@@ -30,6 +32,11 @@ public class TestServiceProvider(TestUserRestrictedMongoRepository repository) :
     if (serviceType == typeof(IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>))
     {
       return new SearchEntriesQueryExecutor(repository, repository, repository.CurrentUser);
+    }
+
+    if (serviceType == typeof(IQueryExecutor<UserScratchpad?, GetScratchpadQuery>))
+    {
+      return new GetScratchpadQueryExecutor(repository.CurrentUser);
     }
 
     throw new Exception($"Service of type {serviceType.FullName} is not available in {nameof(TestServiceProvider)}.");
