@@ -17,6 +17,7 @@ using Engraved.Core.Application.Commands.Users.AddJournalToFavorites;
 using Engraved.Core.Application.Commands.Users.CleanupTags;
 using Engraved.Core.Application.Commands.Users.Delete;
 using Engraved.Core.Application.Commands.Users.RemoveJournalFromFavorites;
+using Engraved.Core.Application.Commands.Users.SaveScratchpad;
 using Engraved.Core.Application.Commands.Users.UpdateTags;
 using Engraved.Core.Application.Queries;
 using Engraved.Core.Application.Queries.Entries.Get;
@@ -32,8 +33,10 @@ using Engraved.Core.Application.Queries.Search.Entities;
 using Engraved.Core.Application.Queries.Search.Related;
 using Engraved.Core.Application.Queries.SystemInfo.Get;
 using Engraved.Core.Application.Queries.Users.GetAdminOverview;
+using Engraved.Core.Application.Queries.Users.GetScratchpad;
 using Engraved.Core.Domain.Entries;
 using Engraved.Core.Domain.Journals;
+using Engraved.Core.Domain.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Engraved.Core.Application;
@@ -61,6 +64,7 @@ public static class ExecutorRegistration
     RegisterCommand<AddScheduleToJournalCommand, AddScheduleToJournalCommandExecutor>(services);
     RegisterCommand<AddScheduleToEntryCommand, AddScheduleToEntryCommandExecutor>(services);
     RegisterCommand<DeleteUserCommand, DeleteUserCommandExecutor>(services);
+    RegisterCommand<SaveScratchpadCommand, SaveScratchpadCommandExecutor>(services);
   }
 
   private static void RegisterCommand<TCommand, TCommandExecutor>(IServiceCollection services)
@@ -85,6 +89,7 @@ public static class ExecutorRegistration
     RegisterQuery<AdminUserItem[], GetAdminUsersOverviewQuery, GetAdminUsersOverviewQueryExecutor>(services);
     RegisterQuery<CreateFileUploadResult, CreateFileUploadQuery, CreateFileUploadQueryExecutor>(services);
     RegisterQuery<GetFileUrlResult?, GetFileUrlQuery, GetFileUrlQueryExecutor>(services);
+    RegisterQuery<UserScratchpad?, GetScratchpadQuery, GetScratchpadQueryExecutor>(services);
   }
 
   private static void RegisterQuery<TResult, TQuery, TQueryExecutor>(IServiceCollection services)

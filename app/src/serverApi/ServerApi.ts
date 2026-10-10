@@ -36,6 +36,8 @@ import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
 import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
 import { StorageWrapper } from "../util/StorageWrapper";
 import { IJournalCustomProps } from "./IJournalCustomProps";
+import { IScratchpad } from "./IScratchpad";
+import { ISaveScratchpadCommandResult } from "./ISaveScratchpadCommandResult";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -580,6 +582,22 @@ export class ServerApi {
     return await ServerApi.executeRequest(
       `/search/related${toQueryString(urlParams)}`,
     );
+  }
+
+  // null for a scratchpad that has never been saved.
+  static async getScratchpad(): Promise<IScratchpad | null> {
+    return await ServerApi.executeRequest(`/user/scratchpad`);
+  }
+
+  // Fails with a 409 if the scratchpad has been saved since lastKnownEditedOn.
+  static async saveScratchpad(
+    content: string,
+    lastKnownEditedOn: string | undefined,
+  ): Promise<ISaveScratchpadCommandResult> {
+    return await ServerApi.executeRequest(`/user/scratchpad`, "PUT", {
+      content,
+      lastKnownEditedOn: lastKnownEditedOn ?? null,
+    });
   }
 
   static async exportData() {

@@ -22,4 +22,18 @@ export interface ITranslations {
   edit: string;
   close: string;
   save: string;
+  cancel: string;
+  scratchpad_title: string;
+  scratchpad_placeholder: string;
+  scratchpad_status_saved: string;
+  scratchpad_status_unsaved: string;
+  scratchpad_status_saving: string;
+  scratchpad_status_failed: string;
+  scratchpad_clear: string;
+  scratchpad_clear_title: string;
+  scratchpad_clear_question: string;
+  scratchpad_conflict_title: string;
+  scratchpad_conflict_question: string;
+  scratchpad_conflict_keepMine: string;
+  scratchpad_conflict_takeTheirs: string;
 }

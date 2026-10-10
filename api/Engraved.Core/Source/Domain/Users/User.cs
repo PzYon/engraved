@@ -23,5 +23,8 @@ public class User : IUser
   [JsonIgnore]
   public List<RefreshToken> RefreshTokens { get; set; } = [];
 
+  [JsonIgnore]
+  public UserScratchpad? Scratchpad { get; set; }
+
   public bool IsAdmin { get; set; }
 }

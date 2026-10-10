@@ -163,6 +163,11 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
     return _userRepository.UpsertUser(user);
   }
 
+  public Task<bool> UpdateScratchpad(string userId, UserScratchpad scratchpad, DateTime? lastKnownEditedOn)
+  {
+    return _userRepository.UpdateScratchpad(userId, scratchpad, lastKnownEditedOn);
+  }
+
   public Task<IUser[]> GetUsers(params string[] userIds)
   {
     return _userRepository.GetUsers(userIds);
