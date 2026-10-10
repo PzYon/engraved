@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
-// How many items are added to the screen in one go. With everything an item
-// can show - text, files, a footer full of actions - ten of them are about
-// what can be rendered without the delay being felt.
-const chunkSize = 10;
+// How many items are added to the screen in one go: enough to fill the screen
+// with the first chunk, and still few enough to be rendered without the delay
+// being felt, even with everything an item can show - text, files, a footer
+// full of actions.
+export const chunkSize = 12;
 
 // Rendering an item is expensive, and a list of a hundred of them used to
 // block everything until the last one was done. So a list starts with its
