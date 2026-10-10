@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, styled } from "@mui/material";
 import { ISchedule } from "../../../serverApi/ISchedule";
 import { IEntry } from "../../../serverApi/IEntry";
 import { IJournal } from "../../../serverApi/IJournal";
 import { IScheduleDefinition } from "../../../serverApi/IScheduleDefinition";
-import { parseDate } from "./parseDate";
+import { parseDateOnDemand } from "./parseDateOnDemand";
 import {
   getItemActionQueryParams,
   useItemAction,
@@ -62,11 +62,7 @@ export const ScheduleActions: React.FC<{
           {isRecurring ? (
             <>
               Reschedule&nbsp;
-              <ScheduledInfo
-                schedule={schedule!}
-                showNextIfPassed={true}
-                showRecurrenceInfo={true}
-              />
+              <NextOccurrence schedule={schedule} />
             </>
           ) : (
             <>Mark {entry ? "entry" : "journal"} as done</>
@@ -91,13 +87,14 @@ export const ScheduleActions: React.FC<{
     closeAction();
   }
 
-  function completeSchedule() {
+  async function completeSchedule() {
     const journalId = entry ? entry.parentId : journal?.id;
     const itemId = entry ? entry.id : journal?.id;
 
     modifyScheduleMutation.mutate({
       nextOccurrence: isRecurring
-        ? (parseDate(schedule?.recurrence?.dateString ?? "").date ?? null)
+        ? ((await parseDateOnDemand(schedule?.recurrence?.dateString ?? ""))
+            .date ?? null)
         : null,
       recurrence: schedule?.recurrence,
       onClickUrl: `${location.origin}/journals/details/${journalId}/?${new URLSearchParams(getItemActionQueryParams("schedule", itemId)).toString()}`,
@@ -106,6 +103,45 @@ export const ScheduleActions: React.FC<{
     closeAction();
     overviewListContext.keepFocusAtIndex();
   }
+};
+
+// Shows when a recurring schedule comes up next. That is what its recurrence
+// ("every sat 15:00") says and not the date it has stored, which has passed
+// once the schedule is due. The date is not there right away, as the parser
+// for it is only loaded now.
+const NextOccurrence: React.FC<{ schedule: ISchedule | undefined }> = ({
+  schedule,
+}) => {
+  const [nextOccurrence, setNextOccurrence] = useState<string>();
+
+  const recurrence = schedule?.recurrence?.dateString;
+  const storedOccurrence = schedule?.nextOccurrence;
+
+  useEffect(() => {
+    if (!recurrence) {
+      return;
+    }
+
+    let isObsolete = false;
+
+    parseDateOnDemand(recurrence).then((parsed) => {
+      if (!isObsolete) {
+        setNextOccurrence(parsed.date?.toString() ?? storedOccurrence);
+      }
+    });
+
+    return () => {
+      isObsolete = true;
+    };
+  }, [recurrence, storedOccurrence]);
+
+  return (
+    <ScheduledInfo
+      schedule={{ ...schedule, nextOccurrence }}
+      noToggle={true}
+      showRecurrenceInfo={true}
+    />
+  );
 };
 
 const MainButtons = styled("div")`
