@@ -1,6 +1,7 @@
 import { css, styled, SxProps, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { IParsedDate, parseDate } from "./parseDate";
+import { IParsedDate } from "./parseDate";
+import { parseDateOnDemand } from "./parseDateOnDemand";
 import { FormatDate } from "../../common/FormatDate";
 import { DateFormat } from "../../common/dateTypes";
 import { RichTextEditor } from "../../common/RichTextEditor";
@@ -45,13 +46,13 @@ export const ParseableDate: React.FC<{
         onBlur={onBlur}
         disabled={disabled}
         placeholder={placeholder ?? "Enter date"}
-        onKeyDown={(e: KeyboardEvent) => {
+        onKeyDown={async (e: KeyboardEvent) => {
           if (e.key !== "Enter") {
             return;
           }
 
           /* eslint-disable @typescript-eslint/no-explicit-any */
-          const parsed = parseDate((e.target as any).value);
+          const parsed = await parseDateOnDemand((e.target as any).value);
           if (!parsed.date) {
             return;
           }
@@ -62,9 +63,9 @@ export const ParseableDate: React.FC<{
 
           onSelect(parsed);
         }}
-        setValue={(value) => {
+        setValue={async (value) => {
           try {
-            const parsed = parseDate(value);
+            const parsed = await parseDateOnDemand(value);
             setParsed(parsed);
             setParseError("");
             onChange(parsed);

@@ -3,15 +3,13 @@ import { DateFormat } from "../../common/dateTypes";
 import ReplayOutlined from "@mui/icons-material/ReplayOutlined";
 import { ISchedule } from "../../../serverApi/ISchedule";
 import React from "react";
-import { parseDate } from "../../details/edit/parseDate";
-import { isAfter } from "date-fns";
 import { Tooltip } from "@mui/material";
 
 export const ScheduledInfo: React.FC<{
   schedule: ISchedule;
-  showNextIfPassed?: boolean;
+  noToggle?: boolean;
   showRecurrenceInfo?: boolean;
-}> = ({ schedule, showNextIfPassed, showRecurrenceInfo }) => {
+}> = ({ schedule, noToggle, showRecurrenceInfo }) => {
   return (
     <span
       style={{
@@ -20,9 +18,9 @@ export const ScheduledInfo: React.FC<{
       }}
     >
       <FormatDate
-        value={getDateValue()}
+        value={schedule.nextOccurrence}
         dateFormat={DateFormat.relativeToNow}
-        noToggle={showNextIfPassed}
+        noToggle={noToggle}
       />
       {schedule.recurrence?.dateString && showRecurrenceInfo ? (
         <span style={{ marginLeft: "8px" }}>
@@ -38,20 +36,4 @@ export const ScheduledInfo: React.FC<{
       ) : null}
     </span>
   );
-
-  function getDateValue() {
-    if (
-      showNextIfPassed &&
-      schedule.recurrence?.dateString &&
-      schedule.nextOccurrence &&
-      isAfter(new Date(), schedule.nextOccurrence)
-    ) {
-      return (
-        parseDate(schedule.recurrence.dateString).date?.toString() ??
-        schedule.nextOccurrence
-      );
-    }
-
-    return schedule.nextOccurrence;
-  }
 };
