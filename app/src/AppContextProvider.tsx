@@ -11,6 +11,15 @@ export const AppContextProvider: React.FC<{
   const [appAlert, setAppAlert] = useState<IAppAlert | null>(null);
   const [user, setUser] = useState(initialUser);
 
+  // The user handed in changes when a sign-in completes after the app has been
+  // started with the user remembered from last time (see Bootstrapper), which
+  // is the up-to-date one from then on.
+  const [lastInitialUser, setLastInitialUser] = useState(initialUser);
+  if (lastInitialUser !== initialUser) {
+    setLastInitialUser(initialUser);
+    setUser(initialUser);
+  }
+
   const contextValue = useMemo<IAppContext>(() => {
     return {
       setAppAlert,

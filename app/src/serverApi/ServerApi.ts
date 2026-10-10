@@ -47,6 +47,10 @@ function toQueryString(params: URLSearchParams): string {
   return query ? `?${query}` : "";
 }
 
+// What may be requested before there is a session: the warm-up ping, and the
+// request that creates the session.
+const urlsNotNeedingASession = ["/wake/me/up", "/auth/google"];
+
 export class ServerApi {
   private static _loginHandler = new LoginHandler(() =>
     ServerApi.tryToLoginAgain(),
@@ -60,6 +64,15 @@ export class ServerApi {
   static e2eStorage = new StorageWrapper(localStorage);
 
   private static _jwtToken: string;
+
+  // Resolved as soon as there is a token to send. The app can be on screen
+  // before that, showing what it has cached for the user of last time (see
+  // Bootstrapper), and whatever it requests until then has to wait instead of
+  // going out unauthenticated.
+  private static resolveSignedIn: () => void;
+  private static signedIn = new Promise<void>((resolve) => {
+    ServerApi.resolveSignedIn = resolve;
+  });
   private static _isE2eTest: boolean =
     ServerApi.e2eStorage.getValue<boolean>("isE2eTest") ?? false;
 
@@ -133,7 +146,7 @@ export class ServerApi {
   }
 
   static async setUpForTests(jwtToken: string): Promise<IAuthResult> {
-    ServerApi._jwtToken = jwtToken;
+    ServerApi.setToken(jwtToken);
 
     ServerApi._isE2eTest = true;
     ServerApi.e2eStorage.setValue("isE2eTest", true);
@@ -157,7 +170,7 @@ export class ServerApi {
   }
 
   static async restoreTestSession(): Promise<IUser> {
-    ServerApi._jwtToken = ServerApi.e2eStorage.getValue<string>("e2eToken")!;
+    ServerApi.setToken(ServerApi.e2eStorage.getValue<string>("e2eToken")!);
 
     return await ServerApi.executeRequest<IUser>("/user");
   }
@@ -173,8 +186,13 @@ export class ServerApi {
     return authResult;
   }
 
+  private static setToken(jwtToken: string) {
+    ServerApi._jwtToken = jwtToken;
+    ServerApi.resolveSignedIn();
+  }
+
   private static handleAuthenticated(authResult: IAuthResult) {
-    ServerApi._jwtToken = authResult.jwtToken;
+    ServerApi.setToken(authResult.jwtToken);
     ServerApi._refreshToken = authResult.refreshToken;
 
     ServerApi.scheduleTokenRefresh(authResult.expiresAt);
@@ -597,6 +615,10 @@ export class ServerApi {
   ): Promise<T> {
     try {
       ServerApi.loadingHandler.oneMore();
+
+      if (!urlsNotNeedingASession.includes(url)) {
+        await ServerApi.signedIn;
+      }
 
       const start = performance.now();
 
