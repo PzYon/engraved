@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import LazyRichTextEditor from "./LazyRichTextEditor";
@@ -16,19 +16,18 @@ class IntersectionObserverStub {
 
 const setValue = vi.fn();
 
+const onIsPlainTextChange = vi.fn();
+
 const Editor: React.FC<{
   initialValue: string;
   initialIsPlainText?: boolean;
-  canSwitch?: boolean;
-}> = ({ initialValue, initialIsPlainText = false, canSwitch = true }) => {
-  const [isPlainText, setIsPlainText] = useState(initialIsPlainText);
-
+}> = ({ initialValue, initialIsPlainText }) => {
   return (
     <LazyRichTextEditor
       initialValue={initialValue}
       setValue={setValue}
-      isPlainText={isPlainText}
-      onIsPlainTextChange={canSwitch ? setIsPlainText : undefined}
+      initialIsPlainText={initialIsPlainText}
+      onIsPlainTextChange={onIsPlainTextChange}
       showFormattingOptions={true}
     />
   );
@@ -37,6 +36,7 @@ const Editor: React.FC<{
 describe("LazyRichTextEditor", () => {
   beforeEach(() => {
     setValue.mockClear();
+    onIsPlainTextChange.mockClear();
     vi.stubGlobal("IntersectionObserver", IntersectionObserverStub);
   });
 
@@ -86,11 +86,28 @@ describe("LazyRichTextEditor", () => {
     expect(screen.queryByLabelText("Bold")).toBeNull();
   });
 
-  it("does not offer switching unless asked to", () => {
-    render(<Editor initialValue={"text"} canSwitch={false} />);
+  it("tells the caller what it was switched to", () => {
+    render(<Editor initialValue={"text"} />);
 
-    expect(screen.queryByLabelText("Plain text is off")).toBeNull();
-    expect(screen.queryByLabelText("Bold")).toBeTruthy();
+    switchMode("Plain text is off");
+    expect(onIsPlainTextChange).toHaveBeenLastCalledWith(true);
+
+    switchMode("Plain text is on");
+    expect(onIsPlainTextChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it("can be switched without a caller that wants to know", () => {
+    render(
+      <LazyRichTextEditor
+        initialValue={"some **bold** text"}
+        setValue={setValue}
+        showFormattingOptions={true}
+      />,
+    );
+
+    switchMode("Plain text is off");
+
+    expect(getEditor().textContent).toBe("some **bold** text");
   });
 });
 

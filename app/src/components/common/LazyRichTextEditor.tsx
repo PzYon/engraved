@@ -167,7 +167,7 @@ const EditorToolbar: React.FC<{
   enableSpellCheck: boolean;
   setEnableSpellCheck: (enable: boolean) => void;
   isPlainText: boolean;
-  toggleIsPlainText: (() => void) | undefined;
+  toggleIsPlainText: () => void;
 }> = ({
   editor,
   mode,
@@ -183,9 +183,7 @@ const EditorToolbar: React.FC<{
       stickToPosition="top"
       actions={[
         ...(editModeActions ?? []),
-        ...(toggleIsPlainText
-          ? [getTogglePlainTextAction(isPlainText, toggleIsPlainText)]
-          : []),
+        getTogglePlainTextAction(isPlainText, toggleIsPlainText),
         ...mode.getFormattingActions(
           editor,
           enableSpellCheck,
@@ -209,12 +207,14 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   disabled,
   css: styles,
   isTitle,
-  isPlainText,
+  initialIsPlainText,
   onIsPlainTextChange,
   showFormattingOptions,
   editModeActions,
   images: imagesFromProps,
 }) => {
+  const [isPlainText, setIsPlainText] = useState(!!initialIsPlainText);
+
   const mode = getEditorMode(isPlainText);
 
   // What a newly created editor starts with. That is the value handed in, until the mode is
@@ -282,6 +282,7 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
   // as the characters it consists of.
   function toggleIsPlainText() {
     setStartValue(mode.getValue(editor));
+    setIsPlainText(!isPlainText);
     onIsPlainTextChange?.(!isPlainText);
   }
 
@@ -303,8 +304,8 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           editModeActions={editModeActions}
           enableSpellCheck={enableSpellCheck}
           setEnableSpellCheck={setEnableSpellCheck}
-          isPlainText={!!isPlainText}
-          toggleIsPlainText={onIsPlainTextChange && toggleIsPlainText}
+          isPlainText={isPlainText}
+          toggleIsPlainText={toggleIsPlainText}
         />
       ) : null}
       <MarkdownContainer>

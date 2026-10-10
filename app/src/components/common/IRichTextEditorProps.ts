@@ -18,10 +18,10 @@ export interface IRichTextEditorProps {
   onBlur?: () => void;
   css?: React.CSSProperties;
   isTitle?: boolean;
-  // The value is then text that is kept exactly as it is, instead of markdown.
-  isPlainText?: boolean;
-  // Offers switching between the two among the formatting options. The caller holds the choice, as
-  // it has to know how to read the value it gets.
+  // As plain text the value is kept exactly as it is, instead of being edited as markdown. This is
+  // where the editor starts: switching between the two is offered among the formatting options.
+  initialIsPlainText?: boolean;
+  // For a caller that wants to start the same way the next time.
   onIsPlainTextChange?: (isPlainText: boolean) => void;
   showFormattingOptions?: boolean;
   editModeActions?: IAction[];
