@@ -6,13 +6,10 @@ import { PageSection } from "../layout/pages/PageSection";
 import { Icon } from "../common/Icon";
 import { IconStyle } from "../common/IconStyle";
 import { RichTextEditor } from "../common/RichTextEditor";
-import { ActionFactory } from "../common/actions/ActionFactory";
-import { useAppContext } from "../../AppContext";
 import { translations } from "../../i18n/translations";
 import { useScratchpadSession } from "./useScratchpadSession";
 
 export const ScratchpadPage: React.FC = () => {
-  const { setAppAlert } = useAppContext();
   const { session, state } = useScratchpadSession();
 
   return (
@@ -40,9 +37,6 @@ export const ScratchpadPage: React.FC = () => {
             initialIsPlainText={true}
             autoFocus={true}
             showFormattingOptions={true}
-            editModeActions={[
-              ActionFactory.copyValueToClipboard(state.content, setAppAlert),
-            ]}
           />
         ) : null}
       </PageSection>
