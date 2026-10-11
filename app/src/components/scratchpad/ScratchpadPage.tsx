@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, styled, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import Assignment from "@mui/icons-material/Assignment";
 import DeleteSweepOutlined from "@mui/icons-material/DeleteSweepOutlined";
 import { Page } from "../layout/pages/Page";
@@ -17,15 +17,6 @@ import { useDialogContext } from "../layout/dialogs/DialogContext";
 import { useAppContext } from "../../AppContext";
 import { translations } from "../../i18n/translations";
 import { useScratchpadSession } from "./useScratchpadSession";
-import { ScratchpadStatus } from "./ScratchpadSession";
-
-const statusLabels: Record<ScratchpadStatus, string> = {
-  loading: "",
-  saved: translations.scratchpad_status_saved,
-  unsaved: translations.scratchpad_status_unsaved,
-  saving: translations.scratchpad_status_saving,
-  failed: translations.scratchpad_status_failed,
-};
 
 export const ScratchpadPage: React.FC = () => {
   const { setAppAlert } = useAppContext();
@@ -87,32 +78,18 @@ export const ScratchpadPage: React.FC = () => {
       tabs={[]}
     >
       <PageSection>
-        {state.status === "loading" ? null : (
-          <>
-            {isPlainText ? (
-              <RichTextEditor
-                key={state.revision}
-                initialValue={state.content}
-                setValue={(value) => session.edit(value)}
-                initialIsPlainText={true}
-                autoFocus={true}
-                placeholder={translations.scratchpad_placeholder}
-              />
-            ) : (
-              <Markdown value={state.content} />
-            )}
-            <Status variant="caption" data-testid="scratchpad-status">
-              {statusLabels[state.status]}
-            </Status>
-          </>
+        {!state.isLoaded ? null : isPlainText ? (
+          <RichTextEditor
+            key={state.revision}
+            initialValue={state.content}
+            setValue={(value) => session.edit(value)}
+            initialIsPlainText={true}
+            autoFocus={true}
+          />
+        ) : (
+          <Markdown value={state.content} />
         )}
       </PageSection>
     </Page>
   );
 };
-
-const Status = styled(Typography)`
-  display: block;
-  margin-top: ${(p) => p.theme.spacing(1)};
-  color: ${(p) => p.theme.palette.text.secondary};
-`;

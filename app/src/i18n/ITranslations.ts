@@ -24,11 +24,6 @@ export interface ITranslations {
   save: string;
   cancel: string;
   scratchpad_title: string;
-  scratchpad_placeholder: string;
-  scratchpad_status_saved: string;
-  scratchpad_status_unsaved: string;
-  scratchpad_status_saving: string;
-  scratchpad_status_failed: string;
   scratchpad_clear: string;
   scratchpad_clear_title: string;
   scratchpad_clear_question: string;

@@ -26,12 +26,6 @@ export const translations: ITranslations = {
   close: "Close",
   cancel: "Cancel",
   scratchpad_title: "Scratchpad",
-  scratchpad_placeholder: "Jot something down",
-  scratchpad_status_saved: "Saved",
-  scratchpad_status_unsaved: "Unsaved changes",
-  scratchpad_status_saving: "Saving...",
-  scratchpad_status_failed:
-    "Could not save. Your changes are kept on this device and saved with the next change.",
   scratchpad_clear: "Clear scratchpad",
   scratchpad_clear_title: "Clear scratchpad?",
   scratchpad_clear_question:

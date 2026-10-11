@@ -4,21 +4,23 @@ export class ScratchpadPage {
   constructor(private page: Page) {}
 
   private get editor() {
-    return this.page.getByTestId("placeholder-Jot something down");
+    return this.page.locator(".tiptap");
   }
 
   async typeContent(content: string) {
+    const saved = this.page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/user/scratchpad") &&
+        response.request().method() === "PUT",
+    );
+
     await this.editor.click();
     await this.editor.pressSequentially(content);
+
+    await saved;
   }
 
   async expectContent(content: string) {
     await expect(this.editor).toHaveText(content);
-  }
-
-  async expectSaved() {
-    await expect(this.page.getByTestId("scratchpad-status")).toHaveText(
-      "Saved",
-    );
   }
 }

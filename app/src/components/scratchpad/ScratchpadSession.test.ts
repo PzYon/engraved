@@ -86,7 +86,7 @@ describe("ScratchpadSession", () => {
       content: "saved",
       baseEditedOn: v1,
       isDirty: false,
-      status: "saved",
+      isLoaded: true,
     });
   });
 
@@ -100,7 +100,7 @@ describe("ScratchpadSession", () => {
     await runTimers(saveDelayMs / 2);
 
     expect(save).not.toHaveBeenCalled();
-    expect(session.getState().status).toBe("unsaved");
+    expect(session.getState().isDirty).toBe(true);
 
     await runTimers();
 
@@ -109,7 +109,6 @@ describe("ScratchpadSession", () => {
     expect(session.getState()).toMatchObject({
       baseEditedOn: v2,
       isDirty: false,
-      status: "saved",
     });
   });
 
@@ -138,7 +137,7 @@ describe("ScratchpadSession", () => {
 
     session.edit("first");
     await runTimers();
-    expect(session.getState().status).toBe("saving");
+    expect(session.getState().isSaving).toBe(true);
 
     session.edit("first and more");
     resolveFirstSave(v2);
@@ -147,7 +146,7 @@ describe("ScratchpadSession", () => {
     expect(session.getState()).toMatchObject({
       baseEditedOn: v2,
       isDirty: true,
-      status: "unsaved",
+      isSaving: false,
     });
     expect(getDraft()).toBe("first and more");
 
@@ -156,7 +155,7 @@ describe("ScratchpadSession", () => {
     expect(save).toHaveBeenLastCalledWith("first and more");
     expect(session.getState()).toMatchObject({
       baseEditedOn: v3,
-      status: "saved",
+      isDirty: false,
     });
   });
 
@@ -169,14 +168,17 @@ describe("ScratchpadSession", () => {
     session.edit("important");
     await runTimers();
 
-    expect(session.getState().status).toBe("failed");
+    expect(session.getState()).toMatchObject({
+      isDirty: true,
+      isSaving: false,
+    });
     expect(getDraft()).toBe("important");
 
     session.edit("important!");
     await runTimers();
 
     expect(save).toHaveBeenLastCalledWith("important!");
-    expect(session.getState().status).toBe("saved");
+    expect(session.getState().isDirty).toBe(false);
     expect(getDraft()).toBeUndefined();
   });
 
@@ -188,7 +190,8 @@ describe("ScratchpadSession", () => {
 
     expect(session.getState()).toMatchObject({
       content: "left over",
-      status: "unsaved",
+      isDirty: true,
+      isLoaded: true,
     });
 
     await runTimers(0);

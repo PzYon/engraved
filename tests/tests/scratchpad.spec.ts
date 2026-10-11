@@ -9,10 +9,8 @@ test("scratchpad keeps what is typed across reloads", async ({ page }) => {
 
   const scratchpadPage = new ScratchpadPage(page);
   await scratchpadPage.typeContent("Remember the milk");
-  await scratchpadPage.expectSaved();
 
   await page.reload();
 
   await scratchpadPage.expectContent("Remember the milk");
-  await scratchpadPage.expectSaved();
 });

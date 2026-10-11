@@ -1,15 +1,13 @@
 import { IScratchpad } from "../../serverApi/IScratchpad";
 import { StorageWrapper } from "../../util/StorageWrapper";
 
-export type ScratchpadStatus =
-  "loading" | "saved" | "unsaved" | "saving" | "failed";
-
 interface IScratchpadState {
   content: string;
   // When the version the content is based on was saved.
   baseEditedOn: string | undefined;
   isDirty: boolean;
-  status: ScratchpadStatus;
+  isLoaded: boolean;
+  isSaving: boolean;
   // Counts the times the content was replaced by something other than typing,
   // as an editor only takes its content when it is created.
   revision: number;
@@ -68,7 +66,8 @@ export class ScratchpadSession {
       content: draft ?? "",
       baseEditedOn: undefined,
       isDirty: draft !== undefined,
-      status: "loading",
+      isLoaded: false,
+      isSaving: false,
       revision: 0,
     };
   }
@@ -82,7 +81,7 @@ export class ScratchpadSession {
 
   receiveServerVersion(server: IScratchpad) {
     // A save under way decides on its own what the content is based on.
-    if (this.state.status === "saving") {
+    if (this.state.isSaving) {
       return;
     }
 
@@ -91,8 +90,8 @@ export class ScratchpadSession {
       return;
     }
 
-    if (this.state.status === "loading") {
-      this.update({ status: this.state.isDirty ? "unsaved" : "saved" });
+    if (!this.state.isLoaded) {
+      this.update({ isLoaded: true });
       // a draft left over from last time
       this.scheduleSave(0);
     }
@@ -103,7 +102,7 @@ export class ScratchpadSession {
       return;
     }
 
-    this.update({ content, isDirty: true, status: "unsaved" });
+    this.update({ content, isDirty: true });
     this.scheduleSave(this.dependencies.saveDelayMs);
   }
 
@@ -131,7 +130,7 @@ export class ScratchpadSession {
       content: version.content,
       baseEditedOn: version.editedOn,
       isDirty: false,
-      status: "saved",
+      isLoaded: true,
       revision: isContentReplaced
         ? this.state.revision + 1
         : this.state.revision,
@@ -150,14 +149,14 @@ export class ScratchpadSession {
   }
 
   private async save() {
-    const { content, isDirty, status } = this.state;
+    const { content, isDirty, isSaving } = this.state;
 
     // A save under way schedules the next one itself once it is done.
-    if (!isDirty || status === "saving") {
+    if (!isDirty || isSaving) {
       return;
     }
 
-    this.update({ status: "saving" });
+    this.update({ isSaving: true });
 
     try {
       const editedOn = await this.dependencies.save(content);
@@ -167,7 +166,7 @@ export class ScratchpadSession {
       this.update({
         baseEditedOn: editedOn,
         isDirty: isChangedMeanwhile,
-        status: isChangedMeanwhile ? "unsaved" : "saved",
+        isSaving: false,
       });
 
       if (isChangedMeanwhile) {
@@ -175,7 +174,7 @@ export class ScratchpadSession {
       }
     } catch {
       // Kept as a draft, and tried again with the next change.
-      this.update({ status: "failed" });
+      this.update({ isSaving: false });
     }
   }
 
