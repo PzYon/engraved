@@ -36,9 +36,4 @@ export const translations: ITranslations = {
   scratchpad_clear_title: "Clear scratchpad?",
   scratchpad_clear_question:
     "Everything in your scratchpad will be removed, on all your devices.",
-  scratchpad_conflict_title: "Scratchpad changed elsewhere",
-  scratchpad_conflict_question:
-    "Your scratchpad has been saved on another device while you had unsaved changes here. Which version do you want to keep?",
-  scratchpad_conflict_keepMine: "Keep mine",
-  scratchpad_conflict_takeTheirs: "Load the other one",
 };

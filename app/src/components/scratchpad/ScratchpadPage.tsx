@@ -18,7 +18,6 @@ import { useAppContext } from "../../AppContext";
 import { translations } from "../../i18n/translations";
 import { useScratchpadSession } from "./useScratchpadSession";
 import { ScratchpadStatus } from "./ScratchpadSession";
-import { ScratchpadConflictDialog } from "./ScratchpadConflictDialog";
 
 const statusLabels: Record<ScratchpadStatus, string> = {
   loading: "",
@@ -108,12 +107,6 @@ export const ScratchpadPage: React.FC = () => {
           </>
         )}
       </PageSection>
-
-      <ScratchpadConflictDialog
-        conflict={state.conflict}
-        keepMine={() => session.keepMine()}
-        takeTheirs={() => session.takeTheirs()}
-      />
     </Page>
   );
 };

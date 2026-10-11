@@ -589,14 +589,11 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/user/scratchpad`);
   }
 
-  // Fails with a 409 if the scratchpad has been saved since lastKnownEditedOn.
   static async saveScratchpad(
     content: string,
-    lastKnownEditedOn: string | undefined,
   ): Promise<ISaveScratchpadCommandResult> {
     return await ServerApi.executeRequest(`/user/scratchpad`, "PUT", {
       content,
-      lastKnownEditedOn: lastKnownEditedOn ?? null,
     });
   }
 

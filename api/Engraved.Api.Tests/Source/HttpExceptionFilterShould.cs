@@ -40,12 +40,6 @@ public class HttpExceptionFilterShould
   }
 
   [Test]
-  public void Map_ConflictException_To_409()
-  {
-    GetStatusCodeFor(new ConflictException("conflict")).Should().Be(409);
-  }
-
-  [Test]
   public void Map_TokenValidationException_To_401()
   {
     GetStatusCodeFor(new GoogleTokenValidationException("invalid token")).Should().Be(401);

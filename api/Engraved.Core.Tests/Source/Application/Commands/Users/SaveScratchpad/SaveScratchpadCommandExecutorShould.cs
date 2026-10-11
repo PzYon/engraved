@@ -41,7 +41,7 @@ public class SaveScratchpadCommandExecutorShould
   [Test]
   public async Task Save_And_Return_EditedOn_AsStored()
   {
-    var result = (SaveScratchpadCommandResult)await Save("hello", null);
+    var result = (SaveScratchpadCommandResult)await Save("hello");
 
     result.EditedOn.Should().Be(Now, "MongoDB keeps milliseconds only");
 
@@ -51,43 +51,31 @@ public class SaveScratchpadCommandExecutorShould
   }
 
   [Test]
-  public async Task Save_Based_On_LastSavedVersion()
+  public async Task Overwrite_PreviousSave()
   {
-    var first = (SaveScratchpadCommandResult)await Save("first", null);
+    await Save("first");
     _dateService.UtcNow = Now.AddMinutes(1);
 
-    await Save("second", first.EditedOn);
+    var result = (SaveScratchpadCommandResult)await Save("second");
 
-    (await _repo.GetUser(UserId))!.Scratchpad!.Content.Should().Be("second");
-  }
-
-  [Test]
-  public async Task Throw_Conflict_When_SavedElsewhere_InTheMeantime()
-  {
-    var first = (SaveScratchpadCommandResult)await Save("first", null);
-    _dateService.UtcNow = Now.AddMinutes(1);
-    await Save("from another device", first.EditedOn);
-    _dateService.UtcNow = Now.AddMinutes(2);
-
-    Func<Task> save = () => Save("stale", first.EditedOn);
-
-    await save.Should().ThrowAsync<ConflictException>();
-    (await _repo.GetUser(UserId))!.Scratchpad!.Content.Should().Be("from another device");
+    UserScratchpad scratchpad = (await _repo.GetUser(UserId))!.Scratchpad!;
+    scratchpad.Content.Should().Be("second");
+    scratchpad.EditedOn.Should().Be(result.EditedOn);
   }
 
   [Test]
   public async Task Throw_When_Content_IsTooLong()
   {
-    Func<Task> save = () => Save(new string('x', SaveScratchpadCommandExecutor.MaxContentLength + 1), null);
+    Func<Task> save = () => Save(new string('x', SaveScratchpadCommandExecutor.MaxContentLength + 1));
 
     await save.Should().ThrowAsync<InvalidCommandException>();
     (await _repo.GetUser(UserId))!.Scratchpad.Should().BeNull();
   }
 
-  private Task<CommandResult> Save(string content, DateTime? lastKnownEditedOn)
+  private Task<CommandResult> Save(string content)
   {
     return new SaveScratchpadCommandExecutor(_repo, _repo.CurrentUser, _dateService).Execute(
-      new SaveScratchpadCommand { Content = content, LastKnownEditedOn = lastKnownEditedOn }
+      new SaveScratchpadCommand { Content = content }
     );
   }
 }

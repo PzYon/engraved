@@ -21,10 +21,10 @@ public class UserRestrictedUserRepository(MongoUserRepository userRepository, Jo
     return await userRepository.UpsertUser(user);
   }
 
-  public async Task<bool> UpdateScratchpad(string userId, UserScratchpad scratchpad, DateTime? lastKnownEditedOn)
+  public async Task UpdateScratchpad(string userId, UserScratchpad scratchpad)
   {
     writeGuard.EnsureEntityBelongsToUser(userId);
-    return await userRepository.UpdateScratchpad(userId, scratchpad, lastKnownEditedOn);
+    await userRepository.UpdateScratchpad(userId, scratchpad);
   }
 
   public Task<IUser[]> GetUsers(params string[] userIds)

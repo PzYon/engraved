@@ -37,46 +37,23 @@ public class MongoUserRepository_Scratchpad_Should
   [Test]
   public async Task Save_FirstScratchpad()
   {
-    var isSaved = await _repository.UpdateScratchpad(_userId, Scratchpad("hello", FirstEdit), null);
+    await _repository.UpdateScratchpad(_userId, Scratchpad("hello", FirstEdit));
 
-    isSaved.Should().BeTrue();
     IUser user = (await _repository.GetUser(_userId))!;
     user.Scratchpad!.Content.Should().Be("hello");
     user.Scratchpad.EditedOn.Should().Be(FirstEdit);
   }
 
   [Test]
-  public async Task Save_When_LastKnownEditedOn_IsCurrent()
+  public async Task Overwrite_PreviousSave()
   {
-    await _repository.UpdateScratchpad(_userId, Scratchpad("first", FirstEdit), null);
+    await _repository.UpdateScratchpad(_userId, Scratchpad("first", FirstEdit));
 
-    var isSaved = await _repository.UpdateScratchpad(_userId, Scratchpad("second", SecondEdit), FirstEdit);
+    await _repository.UpdateScratchpad(_userId, Scratchpad("second", SecondEdit));
 
-    isSaved.Should().BeTrue();
-    (await _repository.GetUser(_userId))!.Scratchpad!.Content.Should().Be("second");
-  }
-
-  [Test]
-  public async Task Reject_Save_When_SavedSince_LastKnownEditedOn()
-  {
-    await _repository.UpdateScratchpad(_userId, Scratchpad("first", FirstEdit), null);
-    await _repository.UpdateScratchpad(_userId, Scratchpad("second", SecondEdit), FirstEdit);
-
-    var isSaved = await _repository.UpdateScratchpad(_userId, Scratchpad("stale", SecondEdit.AddMinutes(1)), FirstEdit);
-
-    isSaved.Should().BeFalse();
-    (await _repository.GetUser(_userId))!.Scratchpad!.Content.Should().Be("second");
-  }
-
-  [Test]
-  public async Task Reject_FirstSave_When_SavedElsewhere_Already()
-  {
-    await _repository.UpdateScratchpad(_userId, Scratchpad("elsewhere", FirstEdit), null);
-
-    var isSaved = await _repository.UpdateScratchpad(_userId, Scratchpad("here", SecondEdit), null);
-
-    isSaved.Should().BeFalse();
-    (await _repository.GetUser(_userId))!.Scratchpad!.Content.Should().Be("elsewhere");
+    UserScratchpad scratchpad = (await _repository.GetUser(_userId))!.Scratchpad!;
+    scratchpad.Content.Should().Be("second");
+    scratchpad.EditedOn.Should().Be(SecondEdit);
   }
 
   [Test]
@@ -88,7 +65,7 @@ public class MongoUserRepository_Scratchpad_Should
     user.RefreshTokens.Add(new RefreshToken { TokenHash = "hash", CreatedOn = FirstEdit, ExpiresAt = SecondEdit });
     await _repository.UpsertUser(user);
 
-    await _repository.UpdateScratchpad(_userId, Scratchpad("hello", FirstEdit), null);
+    await _repository.UpdateScratchpad(_userId, Scratchpad("hello", FirstEdit));
 
     IUser reloaded = (await _repository.GetUser(_userId))!;
     reloaded.DisplayName.Should().Be("Me");
@@ -100,7 +77,7 @@ public class MongoUserRepository_Scratchpad_Should
   public async Task LeaveScratchpad_Untouched_When_UpsertingUser_LoadedBeforeTheSave()
   {
     IUser loadedBeforeSave = (await _repository.GetUser(_userId))!;
-    await _repository.UpdateScratchpad(_userId, Scratchpad("hello", FirstEdit), null);
+    await _repository.UpdateScratchpad(_userId, Scratchpad("hello", FirstEdit));
 
     loadedBeforeSave.RefreshTokens.Add(new RefreshToken { TokenHash = "rotated" });
     await _repository.UpsertUser(loadedBeforeSave);
@@ -115,7 +92,7 @@ public class MongoUserRepository_Scratchpad_Should
   {
     var otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
 
-    await _repository.UpdateScratchpad(_userId, Scratchpad("mine", FirstEdit), null);
+    await _repository.UpdateScratchpad(_userId, Scratchpad("mine", FirstEdit));
 
     (await _repository.GetUser(otherUserId))!.Scratchpad.Should().BeNull();
   }
@@ -127,7 +104,7 @@ public class MongoUserRepository_Scratchpad_Should
     TestUserRestrictedMongoRepository restrictedRepository =
       await Util.CreateUserRestrictedMongoRepository(UserName, _userId, true);
 
-    Func<Task> save = () => restrictedRepository.UpdateScratchpad(otherUserId, Scratchpad("not mine", FirstEdit), null);
+    Func<Task> save = () => restrictedRepository.UpdateScratchpad(otherUserId, Scratchpad("not mine", FirstEdit));
 
     await save.Should().ThrowAsync<NotAllowedOperationException>();
     (await _repository.GetUser(otherUserId))!.Scratchpad.Should().BeNull();

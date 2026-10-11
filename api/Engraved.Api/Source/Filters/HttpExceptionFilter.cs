@@ -33,7 +33,6 @@ public class HttpExceptionFilter : IActionFilter
       ITokenValidationException => StatusCodes.Status401Unauthorized,
       NotAllowedOperationException => StatusCodes.Status403Forbidden,
       InvalidCommandException or InvalidQueryException => StatusCodes.Status400BadRequest,
-      ConflictException => StatusCodes.Status409Conflict,
       _ => StatusCodes.Status500InternalServerError
     };
   }

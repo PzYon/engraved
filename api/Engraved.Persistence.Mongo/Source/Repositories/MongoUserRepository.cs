@@ -64,18 +64,10 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
     return MongoUtil.CreateUpsertResult(user.Id, updateResult);
   }
 
-  public async Task<bool> UpdateScratchpad(string userId, UserScratchpad scratchpad, DateTime? lastKnownEditedOn)
+  public async Task UpdateScratchpad(string userId, UserScratchpad scratchpad)
   {
-    FilterDefinitionBuilder<UserDocument> filter = Builders<UserDocument>.Filter;
-
-    // The conflict check is part of the update's filter rather than a read before it, so that no
-    // other save can sneak in between checking and writing.
-    FilterDefinition<UserDocument> notEditedSince = lastKnownEditedOn == null
-      ? filter.Eq(d => d.Scratchpad, null)
-      : filter.Not(filter.Gt(d => d.Scratchpad!.EditedOn, lastKnownEditedOn.Value));
-
-    UpdateResult result = await UsersCollection.UpdateOneAsync(
-      filter.And(MongoUtil.GetDocumentByIdFilter<UserDocument>(userId), notEditedSince),
+    await UsersCollection.UpdateOneAsync(
+      MongoUtil.GetDocumentByIdFilter<UserDocument>(userId),
       Builders<UserDocument>.Update.Set(
         d => d.Scratchpad,
         new UserScratchpadDocument
@@ -85,8 +77,6 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
         }
       )
     );
-
-    return result.MatchedCount == 1;
   }
 
   public async Task<IUser[]> GetUsers(params string[] userIds)

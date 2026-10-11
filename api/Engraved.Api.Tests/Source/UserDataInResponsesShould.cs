@@ -155,19 +155,6 @@ public class UserDataInResponsesShould
     response.StatusCode.Should().Be(HttpStatusCode.NoContent);
   }
 
-  [Test]
-  public async Task Return_Conflict_When_Saving_Scratchpad_SavedElsewhere()
-  {
-    HttpResponseMessage response = await _ownerClient.PutAsJsonAsync(
-      "/api/user/scratchpad",
-      new { content = "based on nothing", lastKnownEditedOn = (DateTime?)null }
-    );
-
-    response.StatusCode.Should().Be(HttpStatusCode.Conflict);
-    (await GetJson(_ownerClient, "/api/user/scratchpad")).GetProperty("content").GetString()
-      .Should().Be(ScratchpadContent);
-  }
-
   private static IEnumerable<string> GetPermissionUserProperties(JsonElement journal, string userId)
   {
     return journal.GetProperty("permissions")
@@ -195,8 +182,7 @@ public class UserDataInResponsesShould
 
     await repo.UpdateScratchpad(
       _ownerId,
-      new UserScratchpad { Content = ScratchpadContent, EditedOn = DateTime.UtcNow },
-      null
+      new UserScratchpad { Content = ScratchpadContent, EditedOn = DateTime.UtcNow }
     );
 
     UpsertResult readerResult = await repo.UpsertUser(new User { Name = ReaderName });

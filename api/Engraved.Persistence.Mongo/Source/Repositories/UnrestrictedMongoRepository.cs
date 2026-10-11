@@ -43,9 +43,9 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
     return _userRepository.UpsertUser(user);
   }
 
-  public Task<bool> UpdateScratchpad(string userId, UserScratchpad scratchpad, DateTime? lastKnownEditedOn)
+  public Task UpdateScratchpad(string userId, UserScratchpad scratchpad)
   {
-    return _userRepository.UpdateScratchpad(userId, scratchpad, lastKnownEditedOn);
+    return _userRepository.UpdateScratchpad(userId, scratchpad);
   }
 
   public Task<IUser[]> GetUsers(params string[] userIds)

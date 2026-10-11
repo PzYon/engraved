@@ -25,16 +25,12 @@ public class SaveScratchpadCommandExecutor(
     var scratchpad = new UserScratchpad
     {
       Content = command.Content,
-      // MongoDB keeps milliseconds only. Returning the same value it stores lets the client hand
-      // it back unchanged as the version it knows.
+      // MongoDB keeps milliseconds only. Returning the same value it stores lets the client tell
+      // its own save apart from a later one when it loads the scratchpad again.
       EditedOn = TruncateToMilliseconds(dateService.UtcNow)
     };
 
-    var isSaved = await userRepository.UpdateScratchpad(userId, scratchpad, command.LastKnownEditedOn);
-    if (!isSaved)
-    {
-      throw new ConflictException("The scratchpad has been saved elsewhere in the meantime.");
-    }
+    await userRepository.UpdateScratchpad(userId, scratchpad);
 
     return new SaveScratchpadCommandResult(userId, scratchpad.EditedOn);
   }

@@ -8,9 +8,9 @@ public interface IUserRepository
 
   Task<UpsertResult> UpsertUser(IUser user);
 
-  // Writes nothing but the scratchpad, and only if it has not been saved since lastKnownEditedOn
-  // (null: never saved). Returns false if it has.
-  Task<bool> UpdateScratchpad(string userId, UserScratchpad scratchpad, DateTime? lastKnownEditedOn);
+  // Writes nothing but the scratchpad, so that it neither overwrites nor is overwritten by
+  // UpsertUser.
+  Task UpdateScratchpad(string userId, UserScratchpad scratchpad);
 
   Task<IUser[]> GetUsers(params string[] userIds);
 

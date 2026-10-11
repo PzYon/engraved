@@ -9,14 +9,11 @@ export const useSaveScratchpadMutation = () => {
   return useMutation({
     mutationKey: queryKeysFactory.scratchpad(),
 
-    mutationFn: (variables: {
-      content: string;
-      lastKnownEditedOn: string | undefined;
-    }) =>
-      ServerApi.saveScratchpad(variables.content, variables.lastKnownEditedOn),
+    mutationFn: (variables: { content: string }) =>
+      ServerApi.saveScratchpad(variables.content),
 
-    // A failed save, a conflict above all, is handled by whoever saves (see
-    // ScratchpadSession) rather than by replacing the page with an error.
+    // A failed save is kept as a draft and tried again (see ScratchpadSession)
+    // rather than replacing the page with an error.
     throwOnError: false,
 
     onSuccess: (result, variables) => {

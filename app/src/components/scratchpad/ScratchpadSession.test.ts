@@ -1,76 +1,66 @@
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import {
-  ConflictError,
-  reconcile,
-  ScratchpadSession,
-} from "./ScratchpadSession";
-import { ScratchpadDraftStorage } from "./ScratchpadDraftStorage";
+import { ScratchpadSession, shouldAdopt } from "./ScratchpadSession";
 
-const userId = "user-1";
 const saveDelayMs = 1000;
+const draftKey = "engraved::scratchpad-draft";
 
 const v1 = "2026-10-01T08:00:00.000Z";
 const v2 = "2026-10-01T08:01:00.000Z";
 const v3 = "2026-10-01T08:02:00.000Z";
 
-describe("reconcile", () => {
+function getDraft() {
+  const draft = localStorage.getItem(draftKey);
+  return draft === null ? undefined : JSON.parse(draft);
+}
+
+describe("shouldAdopt", () => {
   const clean = { content: "a", baseEditedOn: v1, isDirty: false };
   const dirty = { content: "mine", baseEditedOn: v1, isDirty: true };
 
   it("ignores the version the content is based on", () => {
-    expect(reconcile(dirty, { content: "a", editedOn: v1 })).toBe("unchanged");
+    expect(shouldAdopt(clean, { content: "a", editedOn: v1 })).toBe(false);
   });
 
   it("ignores a version older than the one the content is based on", () => {
     expect(
-      reconcile(
-        { ...dirty, baseEditedOn: v2 },
+      shouldAdopt(
+        { ...clean, baseEditedOn: v2 },
         { content: "old", editedOn: v1 },
       ),
-    ).toBe("unchanged");
+    ).toBe(false);
   });
 
   it("ignores a scratchpad that has never been saved", () => {
-    expect(reconcile(dirty, { content: "" })).toBe("unchanged");
+    expect(shouldAdopt(clean, { content: "" })).toBe(false);
   });
 
   it("adopts a newer version without unsaved changes", () => {
-    expect(reconcile(clean, { content: "b", editedOn: v2 })).toBe("adopt");
+    expect(shouldAdopt(clean, { content: "b", editedOn: v2 })).toBe(true);
   });
 
   it("adopts a newer version with the same content as the unsaved one", () => {
-    expect(reconcile(dirty, { content: "mine", editedOn: v2 })).toBe("adopt");
+    expect(shouldAdopt(dirty, { content: "mine", editedOn: v2 })).toBe(true);
   });
 
   it("adopts the first saved version when nothing is known yet", () => {
     expect(
-      reconcile(
+      shouldAdopt(
         { content: "", baseEditedOn: undefined, isDirty: false },
         { content: "b", editedOn: v1 },
       ),
-    ).toBe("adopt");
+    ).toBe(true);
   });
 
-  it("reports a conflict for a newer version with unsaved changes", () => {
-    expect(reconcile(dirty, { content: "theirs", editedOn: v2 })).toBe(
-      "conflict",
-    );
+  it("keeps unsaved changes over a newer version, as they are saved last", () => {
+    expect(shouldAdopt(dirty, { content: "theirs", editedOn: v2 })).toBe(false);
   });
 });
 
 describe("ScratchpadSession", () => {
-  let save: Mock<
-    (content: string, lastKnownEditedOn: string | undefined) => Promise<string>
-  >;
-  let loadServerVersion: Mock<() => void>;
+  let save: Mock<(content: string) => Promise<string>>;
 
   function createSession() {
-    return new ScratchpadSession({
-      userId,
-      save,
-      loadServerVersion,
-      saveDelayMs,
-    });
+    return new ScratchpadSession({ save, saveDelayMs });
   }
 
   async function runTimers(ms = saveDelayMs) {
@@ -81,7 +71,6 @@ describe("ScratchpadSession", () => {
     vi.useFakeTimers();
     localStorage.clear();
     save = vi.fn().mockResolvedValue(v2);
-    loadServerVersion = vi.fn<() => void>();
   });
 
   afterEach(() => {
@@ -116,7 +105,7 @@ describe("ScratchpadSession", () => {
     await runTimers();
 
     expect(save).toHaveBeenCalledTimes(1);
-    expect(save).toHaveBeenCalledWith("hi", v1);
+    expect(save).toHaveBeenCalledWith("hi");
     expect(session.getState()).toMatchObject({
       baseEditedOn: v2,
       isDirty: false,
@@ -130,15 +119,11 @@ describe("ScratchpadSession", () => {
 
     session.edit("draft");
 
-    expect(ScratchpadDraftStorage.get(userId)).toEqual({
-      userId,
-      content: "draft",
-      baseEditedOn: v1,
-    });
+    expect(getDraft()).toBe("draft");
 
     await runTimers();
 
-    expect(ScratchpadDraftStorage.get(userId)).toBeUndefined();
+    expect(getDraft()).toBeUndefined();
   });
 
   it("saves what has been typed during a save with the next one", async () => {
@@ -164,12 +149,15 @@ describe("ScratchpadSession", () => {
       isDirty: true,
       status: "unsaved",
     });
-    expect(ScratchpadDraftStorage.get(userId)?.baseEditedOn).toBe(v2);
+    expect(getDraft()).toBe("first and more");
 
     await runTimers();
 
-    expect(save).toHaveBeenLastCalledWith("first and more", v2);
-    expect(session.getState().status).toBe("saved");
+    expect(save).toHaveBeenLastCalledWith("first and more");
+    expect(session.getState()).toMatchObject({
+      baseEditedOn: v3,
+      status: "saved",
+    });
   });
 
   it("keeps the draft when a save fails and tries again with the next change", async () => {
@@ -182,25 +170,21 @@ describe("ScratchpadSession", () => {
     await runTimers();
 
     expect(session.getState().status).toBe("failed");
-    expect(ScratchpadDraftStorage.get(userId)?.content).toBe("important");
+    expect(getDraft()).toBe("important");
 
     session.edit("important!");
     await runTimers();
 
-    expect(save).toHaveBeenLastCalledWith("important!", v1);
+    expect(save).toHaveBeenLastCalledWith("important!");
     expect(session.getState().status).toBe("saved");
-    expect(ScratchpadDraftStorage.get(userId)).toBeUndefined();
+    expect(getDraft()).toBeUndefined();
   });
 
-  it("saves a draft left over from last time", async () => {
-    ScratchpadDraftStorage.set({
-      userId,
-      content: "left over",
-      baseEditedOn: v1,
-    });
+  it("saves a draft left over from last time, even over a newer version", async () => {
+    localStorage.setItem(draftKey, JSON.stringify("left over"));
 
     const session = createSession();
-    session.receiveServerVersion({ content: "saved", editedOn: v1 });
+    session.receiveServerVersion({ content: "saved elsewhere", editedOn: v1 });
 
     expect(session.getState()).toMatchObject({
       content: "left over",
@@ -209,20 +193,7 @@ describe("ScratchpadSession", () => {
 
     await runTimers(0);
 
-    expect(save).toHaveBeenCalledWith("left over", v1);
-  });
-
-  it("ignores a draft of another user", () => {
-    ScratchpadDraftStorage.set({
-      userId: "someone-else",
-      content: "not yours",
-      baseEditedOn: v1,
-    });
-
-    const session = createSession();
-    session.receiveServerVersion({ content: "saved", editedOn: v1 });
-
-    expect(session.getState().content).toBe("saved");
+    expect(save).toHaveBeenCalledWith("left over");
   });
 
   it("takes over what has been saved elsewhere when nothing is unsaved", () => {
@@ -239,97 +210,18 @@ describe("ScratchpadSession", () => {
     });
   });
 
-  describe("with changes saved elsewhere while there are unsaved ones here", () => {
-    let session: ScratchpadSession;
-
-    beforeEach(() => {
-      session = createSession();
-      session.receiveServerVersion({ content: "old", editedOn: v1 });
-      session.edit("mine");
-      session.receiveServerVersion({ content: "theirs", editedOn: v2 });
-    });
-
-    it("asks instead of dropping either", async () => {
-      expect(session.getState()).toMatchObject({
-        content: "mine",
-        conflict: { content: "theirs", editedOn: v2 },
-      });
-
-      await runTimers();
-
-      expect(save).not.toHaveBeenCalled();
-    });
-
-    it("overwrites theirs when keeping mine", async () => {
-      session.keepMine();
-      await runTimers(0);
-
-      expect(save).toHaveBeenCalledWith("mine", v2);
-      expect(session.getState()).toMatchObject({
-        content: "mine",
-        conflict: undefined,
-        status: "saved",
-      });
-    });
-
-    it("drops mine when taking theirs", async () => {
-      const { revision } = session.getState();
-
-      session.takeTheirs();
-      await runTimers();
-
-      expect(save).not.toHaveBeenCalled();
-      expect(session.getState()).toMatchObject({
-        content: "theirs",
-        baseEditedOn: v2,
-        isDirty: false,
-        conflict: undefined,
-        revision: revision + 1,
-      });
-      expect(ScratchpadDraftStorage.get(userId)).toBeUndefined();
-    });
-  });
-
-  it("asks for the version a save collided with and lets the user decide", async () => {
-    save.mockRejectedValueOnce(new ConflictError("conflict"));
-
+  it("keeps unsaved changes and saves them over what has been saved elsewhere", async () => {
     const session = createSession();
     session.receiveServerVersion({ content: "old", editedOn: v1 });
 
     session.edit("mine");
-    await runTimers();
-
-    expect(loadServerVersion).toHaveBeenCalled();
-    expect(session.getState()).toMatchObject({
-      content: "mine",
-      isDirty: true,
-      status: "unsaved",
-    });
-
     session.receiveServerVersion({ content: "theirs", editedOn: v2 });
 
-    expect(session.getState().conflict).toEqual({
-      content: "theirs",
-      editedOn: v2,
-    });
-  });
+    expect(session.getState().content).toBe("mine");
 
-  it("asks when a draft left over from last time collides with a newer version", async () => {
-    ScratchpadDraftStorage.set({
-      userId,
-      content: "left over",
-      baseEditedOn: v1,
-    });
-
-    const session = createSession();
-    session.receiveServerVersion({ content: "newer", editedOn: v2 });
     await runTimers();
 
-    expect(save).not.toHaveBeenCalled();
-    expect(session.getState()).toMatchObject({
-      content: "left over",
-      conflict: { content: "newer", editedOn: v2 },
-    });
+    expect(save).toHaveBeenCalledWith("mine");
   });
 
   it("clears the content and saves that", async () => {
@@ -340,7 +232,7 @@ describe("ScratchpadSession", () => {
     session.clear();
     await runTimers();
 
-    expect(save).toHaveBeenCalledWith("", v1);
+    expect(save).toHaveBeenCalledWith("");
     expect(session.getState()).toMatchObject({
       content: "",
       revision: revision + 1,
@@ -355,6 +247,6 @@ describe("ScratchpadSession", () => {
     session.dispose();
     await runTimers(0);
 
-    expect(save).toHaveBeenCalledWith("leaving", v1);
+    expect(save).toHaveBeenCalledWith("leaving");
   });
 });

@@ -1,18 +1,15 @@
 import { IScratchpad } from "../../serverApi/IScratchpad";
-import { ScratchpadDraftStorage } from "./ScratchpadDraftStorage";
+import { StorageWrapper } from "../../util/StorageWrapper";
 
 export type ScratchpadStatus =
   "loading" | "saved" | "unsaved" | "saving" | "failed";
 
 interface IScratchpadState {
   content: string;
-  // The saved version the content is based on.
+  // When the version the content is based on was saved.
   baseEditedOn: string | undefined;
   isDirty: boolean;
   status: ScratchpadStatus;
-  // A version saved elsewhere while there were unsaved changes here. Nothing is
-  // saved until the user has decided which of the two to keep.
-  conflict: IScratchpad | undefined;
   // Counts the times the content was replaced by something other than typing,
   // as an editor only takes its content when it is created.
   revision: number;
@@ -24,25 +21,16 @@ interface ILocalScratchpad {
   isDirty: boolean;
 }
 
-type Reconciliation = "unchanged" | "adopt" | "conflict";
-
-// What to do with a version that comes from the server.
-export function reconcile(
-  local: ILocalScratchpad,
-  server: IScratchpad,
-): Reconciliation {
-  // Covers the version the local content is based on coming back as well as an
-  // older one, e.g. from a request that was already under way when a save went
-  // out.
+// Whether a version that comes from the server replaces what is shown. With
+// unsaved changes it does not: the last save wins, and those are saved next.
+export function shouldAdopt(local: ILocalScratchpad, server: IScratchpad) {
+  // Covers the version the content is based on coming back as well as an older
+  // one, e.g. from a request that was already under way when a save went out.
   if (!isNewer(server.editedOn, local.baseEditedOn)) {
-    return "unchanged";
+    return false;
   }
 
-  if (!local.isDirty || local.content === server.content) {
-    return "adopt";
-  }
-
-  return "conflict";
+  return !local.isDirty || local.content === server.content;
 }
 
 function isNewer(editedOn: string | undefined, than: string | undefined) {
@@ -53,40 +41,34 @@ function isNewer(editedOn: string | undefined, than: string | undefined) {
   return !than || Date.parse(editedOn) > Date.parse(than);
 }
 
-export class ConflictError extends Error {}
+// What has been typed but not saved yet, so that neither a reload nor a failed
+// save loses it.
+const draftStorage = new StorageWrapper(window.localStorage);
+const draftKey = "engraved::scratchpad-draft";
 
 interface IScratchpadSessionDependencies {
-  userId: string;
-  // Resolves with the editedOn of the saved version, rejects with a
-  // ConflictError if the scratchpad has been saved since lastKnownEditedOn.
-  save: (
-    content: string,
-    lastKnownEditedOn: string | undefined,
-  ) => Promise<string>;
-  // A save was rejected because of a newer version, which has to be fetched to
-  // show it to the user. It comes back through receiveServerVersion.
-  loadServerVersion: () => void;
+  // Resolves with the editedOn of the saved version.
+  save: (content: string) => Promise<string>;
   saveDelayMs: number;
 }
 
 // Keeps what is typed in sync with the server: saves a while after typing has
-// stopped, keeps unsaved changes as a draft on the device and makes the user
-// decide when they collide with changes saved elsewhere. Not tied to React, so
-// the flow can be followed step by step.
+// stopped, keeps unsaved changes as a draft on the device and takes over what
+// has been saved elsewhere unless there is something unsaved here. Not tied to
+// React, so the flow can be followed step by step.
 export class ScratchpadSession {
   private state: IScratchpadState;
   private readonly listeners = new Set<() => void>();
   private saveTimer: ReturnType<typeof setTimeout> | undefined;
 
   constructor(private readonly dependencies: IScratchpadSessionDependencies) {
-    const draft = ScratchpadDraftStorage.get(dependencies.userId);
+    const draft = draftStorage.getValue<string>(draftKey);
 
     this.state = {
-      content: draft?.content ?? "",
-      baseEditedOn: draft?.baseEditedOn,
-      isDirty: !!draft,
+      content: draft ?? "",
+      baseEditedOn: undefined,
+      isDirty: draft !== undefined,
       status: "loading",
-      conflict: undefined,
       revision: 0,
     };
   }
@@ -99,31 +81,20 @@ export class ScratchpadSession {
   getState = () => this.state;
 
   receiveServerVersion(server: IScratchpad) {
-    const isFirst = this.state.status === "loading";
-
     // A save under way decides on its own what the content is based on.
     if (this.state.status === "saving") {
       return;
     }
 
-    switch (reconcile(this.state, server)) {
-      case "adopt":
-        this.adopt(server);
-        return;
+    if (shouldAdopt(this.state, server)) {
+      this.adopt(server);
+      return;
+    }
 
-      case "conflict":
-        this.update({
-          conflict: server,
-          status: isFirst ? "unsaved" : this.state.status,
-        });
-        return;
-
-      case "unchanged":
-        if (isFirst) {
-          this.update({ status: this.state.isDirty ? "unsaved" : "saved" });
-          // a draft left over from last time
-          this.scheduleSave(0);
-        }
+    if (this.state.status === "loading") {
+      this.update({ status: this.state.isDirty ? "unsaved" : "saved" });
+      // a draft left over from last time
+      this.scheduleSave(0);
     }
   }
 
@@ -136,28 +107,11 @@ export class ScratchpadSession {
     this.scheduleSave(this.dependencies.saveDelayMs);
   }
 
+  // Called through the session useScratchpadSession returns, which fallow does not follow.
+  // fallow-ignore-next-line unused-class-member
   clear() {
     this.edit("");
     this.update({ revision: this.state.revision + 1 });
-  }
-
-  keepMine() {
-    const { conflict } = this.state;
-    if (!conflict) {
-      return;
-    }
-
-    this.update({ conflict: undefined, baseEditedOn: conflict.editedOn });
-    this.scheduleSave(0);
-  }
-
-  takeTheirs() {
-    const { conflict } = this.state;
-    if (!conflict) {
-      return;
-    }
-
-    this.adopt(conflict);
   }
 
   // What has not been saved yet is not left to the draft alone, as nobody
@@ -178,7 +132,6 @@ export class ScratchpadSession {
       baseEditedOn: version.editedOn,
       isDirty: false,
       status: "saved",
-      conflict: undefined,
       revision: isContentReplaced
         ? this.state.revision + 1
         : this.state.revision,
@@ -197,17 +150,17 @@ export class ScratchpadSession {
   }
 
   private async save() {
-    const { content, baseEditedOn, isDirty, status, conflict } = this.state;
+    const { content, isDirty, status } = this.state;
 
     // A save under way schedules the next one itself once it is done.
-    if (!isDirty || conflict || status === "saving") {
+    if (!isDirty || status === "saving") {
       return;
     }
 
     this.update({ status: "saving" });
 
     try {
-      const editedOn = await this.dependencies.save(content, baseEditedOn);
+      const editedOn = await this.dependencies.save(content);
 
       const isChangedMeanwhile = this.state.content !== content;
 
@@ -220,13 +173,7 @@ export class ScratchpadSession {
       if (isChangedMeanwhile) {
         this.scheduleSave(this.dependencies.saveDelayMs);
       }
-    } catch (error) {
-      if (error instanceof ConflictError) {
-        this.update({ status: "unsaved" });
-        this.dependencies.loadServerVersion();
-        return;
-      }
-
+    } catch {
       // Kept as a draft, and tried again with the next change.
       this.update({ status: "failed" });
     }
@@ -234,21 +181,10 @@ export class ScratchpadSession {
 
   private update(changes: Partial<IScratchpadState>) {
     this.state = { ...this.state, ...changes };
-    this.storeDraft();
+    draftStorage.setValue(
+      draftKey,
+      this.state.isDirty ? this.state.content : null,
+    );
     this.listeners.forEach((listener) => listener());
-  }
-
-  private storeDraft() {
-    const { content, baseEditedOn, isDirty } = this.state;
-
-    if (isDirty) {
-      ScratchpadDraftStorage.set({
-        userId: this.dependencies.userId,
-        content,
-        baseEditedOn,
-      });
-    } else {
-      ScratchpadDraftStorage.clear();
-    }
   }
 }

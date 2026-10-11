@@ -32,8 +32,4 @@ export interface ITranslations {
   scratchpad_clear: string;
   scratchpad_clear_title: string;
   scratchpad_clear_question: string;
-  scratchpad_conflict_title: string;
-  scratchpad_conflict_question: string;
-  scratchpad_conflict_keepMine: string;
-  scratchpad_conflict_takeTheirs: string;
 }
