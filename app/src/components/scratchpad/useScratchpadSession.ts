@@ -3,7 +3,7 @@ import { useScratchpadQuery } from "../../serverApi/reactQuery/queries/useScratc
 import { useSaveScratchpadMutation } from "../../serverApi/reactQuery/mutations/useSaveScratchpadMutation";
 import { ScratchpadSession } from "./ScratchpadSession";
 
-const saveDelayMs = 1000;
+const saveDelayMs = 2000;
 
 export const useScratchpadSession = () => {
   const serverScratchpad = useScratchpadQuery();
