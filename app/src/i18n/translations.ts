@@ -24,10 +24,5 @@ export const translations: ITranslations = {
   add: "Add",
   edit: "Edit",
   close: "Close",
-  cancel: "Cancel",
   scratchpad_title: "Scratchpad",
-  scratchpad_clear: "Clear scratchpad",
-  scratchpad_clear_title: "Clear scratchpad?",
-  scratchpad_clear_question:
-    "Everything in your scratchpad will be removed, on all your devices.",
 };

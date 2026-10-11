@@ -97,6 +97,8 @@ export class ScratchpadSession {
     }
   }
 
+  // Called through the session useScratchpadSession returns, which fallow does not follow.
+  // fallow-ignore-next-line unused-class-member
   edit(content: string) {
     if (content === this.state.content) {
       return;
@@ -104,13 +106,6 @@ export class ScratchpadSession {
 
     this.update({ content, isDirty: true });
     this.scheduleSave(this.dependencies.saveDelayMs);
-  }
-
-  // Called through the session useScratchpadSession returns, which fallow does not follow.
-  // fallow-ignore-next-line unused-class-member
-  clear() {
-    this.edit("");
-    this.update({ revision: this.state.revision + 1 });
   }
 
   // What has not been saved yet is not left to the draft alone, as nobody

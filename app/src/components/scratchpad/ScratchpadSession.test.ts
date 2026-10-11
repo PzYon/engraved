@@ -227,21 +227,6 @@ describe("ScratchpadSession", () => {
     expect(save).toHaveBeenCalledWith("mine");
   });
 
-  it("clears the content and saves that", async () => {
-    const session = createSession();
-    session.receiveServerVersion({ content: "something", editedOn: v1 });
-    const { revision } = session.getState();
-
-    session.clear();
-    await runTimers();
-
-    expect(save).toHaveBeenCalledWith("");
-    expect(session.getState()).toMatchObject({
-      content: "",
-      revision: revision + 1,
-    });
-  });
-
   it("saves pending changes right away when disposed", async () => {
     const session = createSession();
     session.receiveServerVersion({ content: "", editedOn: v1 });

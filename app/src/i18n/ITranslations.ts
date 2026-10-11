@@ -22,9 +22,5 @@ export interface ITranslations {
   edit: string;
   close: string;
   save: string;
-  cancel: string;
   scratchpad_title: string;
-  scratchpad_clear: string;
-  scratchpad_clear_title: string;
-  scratchpad_clear_question: string;
 }
