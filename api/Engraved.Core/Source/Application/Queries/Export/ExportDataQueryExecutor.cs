@@ -1,17 +1,13 @@
 ﻿using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
-using Engraved.Core.Application.Queries.Users.GetScratchpad;
 using Engraved.Core.Domain.Journals;
 using Engraved.Core.Domain.Entries;
-using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Queries.Export;
 
 public class ExportedDataResult
 {
   public List<ExportedJournal> ExportedJournals { get; set; } = [];
-
-  public UserScratchpad? Scratchpad { get; set; }
 }
 
 public class ExportedJournal
@@ -44,9 +40,6 @@ public class ExportDataQueryExecutor(Dispatcher dispatcher) : IQueryExecutor<Exp
         }
       );
     }
-
-    exportedData.Scratchpad =
-      await dispatcher.Query<UserScratchpad?, GetScratchpadQuery>(new GetScratchpadQuery());
 
     return exportedData;
   }
