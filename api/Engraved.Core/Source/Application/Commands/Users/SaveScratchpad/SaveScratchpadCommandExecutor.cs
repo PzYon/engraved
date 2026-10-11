@@ -9,17 +9,8 @@ public class SaveScratchpadCommandExecutor(
   IDateService dateService
 ) : ICommandExecutor<SaveScratchpadCommand>
 {
-  // The scratchpad is part of the user, which is loaded with every request, so it must not be
-  // allowed to grow without bounds.
-  public const int MaxContentLength = 100_000;
-
   public async Task<CommandResult> Execute(SaveScratchpadCommand command)
   {
-    if (command.Content.Length > MaxContentLength)
-    {
-      throw new InvalidCommandException(command, $"Content must not be longer than {MaxContentLength} characters.");
-    }
-
     var userId = currentUser.Value.Id!;
 
     var scratchpad = new UserScratchpad

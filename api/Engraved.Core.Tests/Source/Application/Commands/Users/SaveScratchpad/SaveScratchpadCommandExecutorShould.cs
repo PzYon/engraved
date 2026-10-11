@@ -63,15 +63,6 @@ public class SaveScratchpadCommandExecutorShould
     scratchpad.EditedOn.Should().Be(result.EditedOn);
   }
 
-  [Test]
-  public async Task Throw_When_Content_IsTooLong()
-  {
-    Func<Task> save = () => Save(new string('x', SaveScratchpadCommandExecutor.MaxContentLength + 1));
-
-    await save.Should().ThrowAsync<InvalidCommandException>();
-    (await _repo.GetUser(UserId))!.Scratchpad.Should().BeNull();
-  }
-
   private Task<CommandResult> Save(string content)
   {
     return new SaveScratchpadCommandExecutor(_repo, _repo.CurrentUser, _dateService).Execute(

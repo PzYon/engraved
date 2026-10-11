@@ -226,15 +226,4 @@ describe("ScratchpadSession", () => {
 
     expect(save).toHaveBeenCalledWith("mine");
   });
-
-  it("saves pending changes right away when disposed", async () => {
-    const session = createSession();
-    session.receiveServerVersion({ content: "", editedOn: v1 });
-
-    session.edit("leaving");
-    session.dispose();
-    await runTimers(0);
-
-    expect(save).toHaveBeenCalledWith("leaving");
-  });
 });

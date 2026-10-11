@@ -17,8 +17,6 @@ export const useScratchpadSession = () => {
       }),
   );
 
-  useEffect(() => () => session.dispose(), [session]);
-
   useEffect(() => {
     if (serverScratchpad !== undefined) {
       session.receiveServerVersion(serverScratchpad ?? { content: "" });

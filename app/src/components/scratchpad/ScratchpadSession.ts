@@ -108,16 +108,6 @@ export class ScratchpadSession {
     this.scheduleSave(this.dependencies.saveDelayMs);
   }
 
-  // What has not been saved yet is not left to the draft alone, as nobody
-  // would see it on another device until the scratchpad is opened here again.
-  dispose() {
-    if (this.saveTimer !== undefined) {
-      clearTimeout(this.saveTimer);
-      this.saveTimer = undefined;
-      void this.save();
-    }
-  }
-
   private adopt(version: IScratchpad) {
     const isContentReplaced = version.content !== this.state.content;
 
