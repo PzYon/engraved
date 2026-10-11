@@ -144,7 +144,6 @@ public class UserDataInResponsesShould
     JsonElement scratchpad = await GetJson(_ownerClient, "/api/user/scratchpad");
 
     scratchpad.GetProperty("content").GetString().Should().Be(ScratchpadContent);
-    scratchpad.GetProperty("editedOn").GetDateTime().Should().NotBe(default);
   }
 
   [Test]
@@ -182,7 +181,7 @@ public class UserDataInResponsesShould
 
     await repo.UpdateScratchpad(
       _ownerId,
-      new UserScratchpad { Content = ScratchpadContent, EditedOn = DateTime.UtcNow }
+      new UserScratchpad { Content = ScratchpadContent }
     );
 
     UpsertResult readerResult = await repo.UpsertUser(new User { Name = ReaderName });

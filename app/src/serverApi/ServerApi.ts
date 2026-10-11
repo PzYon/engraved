@@ -37,7 +37,6 @@ import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
 import { StorageWrapper } from "../util/StorageWrapper";
 import { IJournalCustomProps } from "./IJournalCustomProps";
 import { IScratchpad } from "./IScratchpad";
-import { ISaveScratchpadCommandResult } from "./ISaveScratchpadCommandResult";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -589,9 +588,7 @@ export class ServerApi {
     return await ServerApi.executeRequest(`/user/scratchpad`);
   }
 
-  static async saveScratchpad(
-    content: string,
-  ): Promise<ISaveScratchpadCommandResult> {
+  static async saveScratchpad(content: string): Promise<void> {
     return await ServerApi.executeRequest(`/user/scratchpad`, "PUT", {
       content,
     });

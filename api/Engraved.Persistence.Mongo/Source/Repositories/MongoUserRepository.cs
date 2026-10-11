@@ -70,11 +70,7 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
       MongoUtil.GetDocumentByIdFilter<UserDocument>(userId),
       Builders<UserDocument>.Update.Set(
         d => d.Scratchpad,
-        new UserScratchpadDocument
-        {
-          Content = scratchpad.Content,
-          EditedOn = scratchpad.EditedOn
-        }
+        new UserScratchpadDocument { Content = scratchpad.Content }
       )
     );
   }

@@ -78,11 +78,7 @@ public static class UserDocumentMapper
         .ToList(),
       Scratchpad = document.Scratchpad == null
         ? null
-        : new UserScratchpad
-        {
-          Content = document.Scratchpad.Content,
-          EditedOn = document.Scratchpad.EditedOn
-        }
+        : new UserScratchpad { Content = document.Scratchpad.Content }
     };
   }
 }

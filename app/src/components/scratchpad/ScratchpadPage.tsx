@@ -7,10 +7,10 @@ import { Icon } from "../common/Icon";
 import { IconStyle } from "../common/IconStyle";
 import { RichTextEditor } from "../common/RichTextEditor";
 import { translations } from "../../i18n/translations";
-import { useScratchpadSession } from "./useScratchpadSession";
+import { useScratchpad } from "./useScratchpad";
 
 export const ScratchpadPage: React.FC = () => {
-  const { session, state } = useScratchpadSession();
+  const { isLoaded, savedContent, content, edit } = useScratchpad();
 
   return (
     <Page
@@ -29,11 +29,13 @@ export const ScratchpadPage: React.FC = () => {
       tabs={[]}
     >
       <PageSection>
-        {state.isLoaded ? (
+        {isLoaded ? (
           <RichTextEditor
-            key={state.revision}
-            initialValue={state.content}
-            setValue={(value) => session.edit(value)}
+            // The editor only takes its content when it is created, so what
+            // has been saved elsewhere needs a new one.
+            key={savedContent}
+            initialValue={content}
+            setValue={edit}
             initialIsPlainText={true}
             autoFocus={true}
             showFormattingOptions={true}

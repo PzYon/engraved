@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
-import { IScratchpad } from "../../IScratchpad";
 
 export const useSaveScratchpadMutation = () => {
   const queryClient = useQueryClient();
@@ -9,18 +8,15 @@ export const useSaveScratchpadMutation = () => {
   return useMutation({
     mutationKey: queryKeysFactory.scratchpad(),
 
-    mutationFn: (variables: { content: string }) =>
-      ServerApi.saveScratchpad(variables.content),
+    mutationFn: (content: string) => ServerApi.saveScratchpad(content),
 
-    // A failed save is kept as a draft and tried again (see ScratchpadSession)
-    // rather than replacing the page with an error.
+    // A load that is still under way would bring back the text from before
+    // this save.
+    onMutate: () =>
+      queryClient.cancelQueries({ queryKey: queryKeysFactory.scratchpad() }),
+
+    // A failed save is kept as a draft and tried again with the next change
+    // (see useScratchpad) rather than replacing the page with an error.
     throwOnError: false,
-
-    onSuccess: (result, variables) => {
-      queryClient.setQueryData<IScratchpad>(queryKeysFactory.scratchpad(), {
-        content: variables.content,
-        editedOn: result.editedOn,
-      });
-    },
   });
 };

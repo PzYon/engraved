@@ -70,12 +70,11 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
     return await dispatcher.Query<UserScratchpad?, GetScratchpadQuery>(new GetScratchpadQuery());
   }
 
-  // Declares the derived result, as only the properties of the declared type get serialized.
   [HttpPut]
   [Route("scratchpad")]
-  public async Task<SaveScratchpadCommandResult> SaveScratchpad(SaveScratchpadCommand command)
+  public async Task<CommandResult> SaveScratchpad(SaveScratchpadCommand command)
   {
-    return (SaveScratchpadCommandResult)await dispatcher.Command(command);
+    return await dispatcher.Command(command);
   }
 
   [HttpGet]

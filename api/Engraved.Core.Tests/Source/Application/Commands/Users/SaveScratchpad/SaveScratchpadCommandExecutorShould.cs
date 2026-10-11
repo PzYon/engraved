@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Engraved.Core.Application;
 using Engraved.Core.Application.Commands;
 using Engraved.Core.Application.Commands.Users.SaveScratchpad;
 using Engraved.Core.Application.Queries.Users.GetScratchpad;
@@ -15,17 +14,13 @@ public class SaveScratchpadCommandExecutorShould
 {
   private const string UserId = TestIds.UserId;
 
-  private static readonly DateTime Now = new(2026, 10, 1, 8, 0, 0, 123, DateTimeKind.Utc);
-
   private TestUserRestrictedMongoRepository _repo = null!;
-  private FakeDateService _dateService = null!;
 
   [SetUp]
   public async Task SetUp()
   {
     _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
     await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
-    _dateService = new FakeDateService(Now.AddTicks(4567));
   }
 
   [Test]
@@ -39,33 +34,26 @@ public class SaveScratchpadCommandExecutorShould
   }
 
   [Test]
-  public async Task Save_And_Return_EditedOn_AsStored()
+  public async Task Save_Content()
   {
-    var result = (SaveScratchpadCommandResult)await Save("hello");
+    await Save("hello");
 
-    result.EditedOn.Should().Be(Now, "MongoDB keeps milliseconds only");
-
-    UserScratchpad scratchpad = (await _repo.GetUser(UserId))!.Scratchpad!;
-    scratchpad.Content.Should().Be("hello");
-    scratchpad.EditedOn.Should().Be(result.EditedOn);
+    (await _repo.GetUser(UserId))!.Scratchpad!.Content.Should().Be("hello");
   }
 
   [Test]
   public async Task Overwrite_PreviousSave()
   {
     await Save("first");
-    _dateService.UtcNow = Now.AddMinutes(1);
 
-    var result = (SaveScratchpadCommandResult)await Save("second");
+    await Save("second");
 
-    UserScratchpad scratchpad = (await _repo.GetUser(UserId))!.Scratchpad!;
-    scratchpad.Content.Should().Be("second");
-    scratchpad.EditedOn.Should().Be(result.EditedOn);
+    (await _repo.GetUser(UserId))!.Scratchpad!.Content.Should().Be("second");
   }
 
   private Task<CommandResult> Save(string content)
   {
-    return new SaveScratchpadCommandExecutor(_repo, _repo.CurrentUser, _dateService).Execute(
+    return new SaveScratchpadCommandExecutor(_repo, _repo.CurrentUser).Execute(
       new SaveScratchpadCommand { Content = content }
     );
   }
