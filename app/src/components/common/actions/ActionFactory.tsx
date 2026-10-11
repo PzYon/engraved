@@ -1,4 +1,5 @@
 import AddOutlined from "@mui/icons-material/AddOutlined";
+import Assignment from "@mui/icons-material/Assignment";
 import SaveAs from "@mui/icons-material/SaveAs";
 import ClearOutlined from "@mui/icons-material/ClearOutlined";
 import Close from "@mui/icons-material/Close";
@@ -41,6 +42,7 @@ import {
 } from "./searchParamHooks";
 import AirplanemodeActive from "@mui/icons-material/AirplanemodeActive";
 import { IAppAlert } from "../../errorHandling/IAppAlert";
+import { translations } from "../../../i18n/translations";
 
 export class ActionFactory {
   static cancel(onClick: () => void): IAction {
@@ -419,6 +421,17 @@ export class ActionFactory {
       label: "Quick Add",
       sx: { color: "common.white", mr: 1 },
       href: "/quick-add",
+    };
+  }
+
+  static scratchpad(): IAction {
+    return {
+      hotkey: "alt+p",
+      key: "scratchpad",
+      icon: <Assignment fontSize="small" />,
+      label: translations.scratchpad_title,
+      sx: { color: "common.white", mr: 1 },
+      href: "/scratchpad",
     };
   }
 

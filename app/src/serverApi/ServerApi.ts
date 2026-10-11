@@ -36,6 +36,7 @@ import { ICleanupUserTagsCommandResult } from "./CleanupUserTagsResult";
 import { ICleanupUserTagsCommand } from "./ICleanupUserTagsCommand";
 import { StorageWrapper } from "../util/StorageWrapper";
 import { IJournalCustomProps } from "./IJournalCustomProps";
+import { IScratchpad } from "./IScratchpad";
 
 type HttpMethod = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
 
@@ -580,6 +581,17 @@ export class ServerApi {
     return await ServerApi.executeRequest(
       `/search/related${toQueryString(urlParams)}`,
     );
+  }
+
+  // null for a scratchpad that has never been saved.
+  static async getScratchpad(): Promise<IScratchpad | null> {
+    return await ServerApi.executeRequest(`/user/scratchpad`);
+  }
+
+  static async saveScratchpad(content: string): Promise<void> {
+    return await ServerApi.executeRequest(`/user/scratchpad`, "PUT", {
+      content,
+    });
   }
 
   static async exportData() {

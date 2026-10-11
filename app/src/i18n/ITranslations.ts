@@ -22,4 +22,5 @@ export interface ITranslations {
   edit: string;
   close: string;
   save: string;
+  scratchpad_title: string;
 }

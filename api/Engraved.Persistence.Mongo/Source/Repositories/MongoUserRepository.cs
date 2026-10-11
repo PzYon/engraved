@@ -42,13 +42,37 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
       throw new ArgumentException("ID must be specified for existing users.");
     }
 
-    ReplaceOneResult? replaceOneResult = await UsersCollection.ReplaceOneAsync(
+    // Sets the fields rather than replacing the whole document, so that the scratchpad, which is
+    // only ever written by UpdateScratchpad, survives. Otherwise a user loaded before a scratchpad
+    // save and stored after it (e.g. when a refresh token is rotated) would undo that save.
+    BsonDocument fields = document.ToBsonDocument();
+    fields.Remove("_id");
+    fields.Remove(nameof(UserDocument.Scratchpad));
+
+    var update = new BsonDocument("$set", fields);
+    if (document.Id != ObjectId.Empty)
+    {
+      update.Add("$setOnInsert", new BsonDocument("_id", document.Id));
+    }
+
+    UpdateResult updateResult = await UsersCollection.UpdateOneAsync(
       Builders<UserDocument>.Filter.Where(d => d.Name == user.Name),
-      document,
-      new ReplaceOptions { IsUpsert = true }
+      update,
+      new UpdateOptions { IsUpsert = true }
     );
 
-    return MongoUtil.CreateUpsertResult(user.Id, replaceOneResult);
+    return MongoUtil.CreateUpsertResult(user.Id, updateResult);
+  }
+
+  public async Task UpdateScratchpad(string userId, UserScratchpad scratchpad)
+  {
+    await UsersCollection.UpdateOneAsync(
+      MongoUtil.GetDocumentByIdFilter<UserDocument>(userId),
+      Builders<UserDocument>.Update.Set(
+        d => d.Scratchpad,
+        new UserScratchpadDocument { Content = scratchpad.Content }
+      )
+    );
   }
 
   public async Task<IUser[]> GetUsers(params string[] userIds)

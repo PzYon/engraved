@@ -39,6 +39,7 @@ import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNa
 import { LazyLoadSuspender } from "./components/common/LazyLoadSuspender";
 import { validateAppSearch } from "./components/common/actions/searchParamHooks";
 import { AdminPage } from "./components/admin/AdminPage";
+import { ScratchpadPage } from "./components/scratchpad/ScratchpadPage";
 
 // Defined before RootLayout so the component reference is available
 const Host = styled("div")`
@@ -140,6 +141,12 @@ const quickAddRoute = createRoute({
   component: QuickAddPage,
 });
 
+const scratchpadRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/scratchpad",
+  component: ScratchpadPage,
+});
+
 const scheduledRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/scheduled",
@@ -186,6 +193,7 @@ const routeTree = rootRoute.addChildren([
   searchRoute,
   goToRoute,
   quickAddRoute,
+  scratchpadRoute,
   scheduledRoute,
   tagsRoute,
   tagRoute,

@@ -75,7 +75,10 @@ public static class UserDocumentMapper
             CreatedOn = token.CreatedOn
           }
         )
-        .ToList()
+        .ToList(),
+      Scratchpad = document.Scratchpad == null
+        ? null
+        : new UserScratchpad { Content = document.Scratchpad.Content }
     };
   }
 }

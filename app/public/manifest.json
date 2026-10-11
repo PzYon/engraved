@@ -41,6 +41,10 @@
       "url": "/quick-add"
     },
     {
+      "name": "Scratchpad",
+      "url": "/scratchpad"
+    },
+    {
       "name": "Scheduled",
       "url": "/scheduled"
     }

@@ -9,8 +9,18 @@ public static class MongoUtil
 {
   public static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
   {
+    return CreateUpsertResult(entityId, replaceOneResult.UpsertedId);
+  }
+
+  public static UpsertResult CreateUpsertResult(string? entityId, UpdateResult updateResult)
+  {
+    return CreateUpsertResult(entityId, updateResult.UpsertedId);
+  }
+
+  private static UpsertResult CreateUpsertResult(string? entityId, BsonValue upsertedId)
+  {
     var id = (string.IsNullOrEmpty(entityId)
-      ? replaceOneResult.UpsertedId.ToString()
+      ? upsertedId.ToString()
       : entityId)!;
 
     return new UpsertResult

@@ -24,4 +24,5 @@ export const translations: ITranslations = {
   add: "Add",
   edit: "Edit",
   close: "Close",
+  scratchpad_title: "Scratchpad",
 };

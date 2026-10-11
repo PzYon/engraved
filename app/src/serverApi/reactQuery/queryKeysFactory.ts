@@ -140,4 +140,8 @@ export const queryKeysFactory = {
   modifyUser() {
     return ["user"];
   },
+
+  scratchpad() {
+    return ["scratchpad"];
+  },
 };

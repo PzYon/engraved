@@ -43,6 +43,11 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
     return _userRepository.UpsertUser(user);
   }
 
+  public Task UpdateScratchpad(string userId, UserScratchpad scratchpad)
+  {
+    return _userRepository.UpdateScratchpad(userId, scratchpad);
+  }
+
   public Task<IUser[]> GetUsers(params string[] userIds)
   {
     return _userRepository.GetUsers(userIds);

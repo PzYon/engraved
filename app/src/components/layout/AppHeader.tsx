@@ -101,6 +101,7 @@ export const AppHeader: React.FC = () => {
             <ActionIconButton action={ActionFactory.goToGlobalSearch()} />
             <ActionIconButton action={ActionFactory.goTo()} />
             <ActionIconButton action={ActionFactory.quickAdd()} />
+            <ActionIconButton action={ActionFactory.scratchpad()} />
 
             <Link to="/settings">
               <User user={user} />

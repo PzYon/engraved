@@ -19,6 +19,10 @@ export abstract class BasePage {
     return new AddQuickScrapPage(this.page);
   }
 
+  async clickScratchpadAction() {
+    await this.page.getByLabel("Scratchpad", { exact: true }).click();
+  }
+
   async scrollToBottom() {
     await this.page.evaluate(() =>
       window.scrollTo(0, document.documentElement.scrollHeight),
