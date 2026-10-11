@@ -1,9 +1,11 @@
+import Assignment from "@mui/icons-material/Assignment";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import History from "@mui/icons-material/History";
 import ListIcon from "@mui/icons-material/List";
 import ListAlt from "@mui/icons-material/ListAlt";
 import NotificationsNone from "@mui/icons-material/NotificationsNone";
+import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import Shortcut from "@mui/icons-material/Shortcut";
 import Star from "@mui/icons-material/Star";
@@ -27,6 +29,7 @@ import { ActionIconButton } from "../../common/actions/ActionIconButton";
 import { ActionFactory } from "../../common/actions/ActionFactory";
 import { IJournal } from "../../../serverApi/IJournal";
 import { sortJournalsByName } from "../../../util/journalUtils";
+import { translations } from "../../../i18n/translations";
 
 export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
   const [areFavoritesExpanded, setAreFavoritesExpanded] = useState(false);
@@ -68,15 +71,28 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
         />
         <Spacer />
         <AppMenuItem
+          targetUrl="/search"
+          label="Search"
+          iconStart={<SearchOutlined sx={{ color: "primary.main" }} />}
+          onClick={close}
+        />
+        <AppMenuItem
           targetUrl="/go-to"
           label="Go to"
           iconStart={<Shortcut sx={{ color: "primary.main" }} />}
           onClick={close}
         />
+        <Spacer />
         <AppMenuItem
-          targetUrl="/search"
-          label="Search"
-          iconStart={<SearchOutlined sx={{ color: "primary.main" }} />}
+          targetUrl="/quick-add"
+          label="Quick Add"
+          iconStart={<PlaylistAddOutlined sx={{ color: "primary.main" }} />}
+          onClick={close}
+        />
+        <AppMenuItem
+          targetUrl="/scratchpad"
+          label={translations.scratchpad_title}
+          iconStart={<Assignment sx={{ color: "primary.main" }} />}
           onClick={close}
         />
         <Spacer />
