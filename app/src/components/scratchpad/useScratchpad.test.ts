@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
 import { useScratchpad } from "./useScratchpad";
 import { IScratchpad } from "../../serverApi/IScratchpad";
@@ -36,14 +36,9 @@ function succeedSave() {
 
 describe("useScratchpad", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
     localStorage.clear();
     save.mockReset();
     scratchpad = { content: "saved" };
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
   });
 
   it("is not loaded before the scratchpad is", () => {
@@ -68,27 +63,32 @@ describe("useScratchpad", () => {
     expect(result.current.content).toBe("saved");
   });
 
-  it("saves once typing has stopped for 2 seconds", () => {
+  it("saves what has been typed, and only that", () => {
     const { result } = renderHook(() => useScratchpad());
 
-    act(() => result.current.edit("h"));
-    act(() => vi.advanceTimersByTime(1000));
     act(() => result.current.edit("hi"));
-    act(() => vi.advanceTimersByTime(1999));
 
     expect(save).not.toHaveBeenCalled();
 
-    act(() => vi.advanceTimersByTime(1));
+    act(() => result.current.save());
 
     expect(save).toHaveBeenCalledTimes(1);
     expect(save).toHaveBeenCalledWith("hi", expect.anything());
+  });
+
+  it("saves nothing when nothing has been typed", () => {
+    const { result } = renderHook(() => useScratchpad());
+
+    act(() => result.current.save());
+
+    expect(save).not.toHaveBeenCalled();
   });
 
   it("keeps what is typed as a draft until it is saved", () => {
     const { result } = renderHook(() => useScratchpad());
 
     act(() => result.current.edit("draft"));
-    act(() => vi.advanceTimersByTime(2000));
+    act(() => result.current.save());
 
     expect(getDraft()).toBe("draft");
 
@@ -97,20 +97,11 @@ describe("useScratchpad", () => {
     expect(getDraft()).toBeUndefined();
   });
 
-  it("keeps the draft when a save fails", () => {
-    const { result } = renderHook(() => useScratchpad());
-
-    act(() => result.current.edit("important"));
-    act(() => vi.advanceTimersByTime(2000));
-
-    expect(getDraft()).toBe("important");
-  });
-
   it("keeps what has been typed during a save as a draft", () => {
     const { result } = renderHook(() => useScratchpad());
 
     act(() => result.current.edit("first"));
-    act(() => vi.advanceTimersByTime(2000));
+    act(() => result.current.save());
     act(() => result.current.edit("first and more"));
 
     succeedSave();

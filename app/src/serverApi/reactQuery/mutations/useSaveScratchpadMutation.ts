@@ -15,8 +15,8 @@ export const useSaveScratchpadMutation = () => {
     onMutate: () =>
       queryClient.cancelQueries({ queryKey: queryKeysFactory.scratchpad() }),
 
-    // A failed save is kept as a draft and tried again with the next change
-    // (see useScratchpad) rather than replacing the page with an error.
+    // A failed save is kept as a draft and tried again (see useScratchpad)
+    // rather than replacing the page with an error.
     throwOnError: false,
   });
 };

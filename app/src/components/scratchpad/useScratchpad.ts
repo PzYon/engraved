@@ -1,9 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { UseMutateFunction } from "@tanstack/react-query";
 import { useScratchpadQuery } from "../../serverApi/reactQuery/queries/useScratchpadQuery";
 import { useSaveScratchpadMutation } from "../../serverApi/reactQuery/mutations/useSaveScratchpadMutation";
 import { StorageWrapper } from "../../util/StorageWrapper";
-
-const saveDelayMs = 2000;
 
 // What has been typed but not saved yet, so that neither a reload nor a failed
 // save loses it. While there is a draft, it is shown instead of what is saved
@@ -15,25 +14,28 @@ function getDraft() {
   return draftStorage.getValue<string>(draftKey);
 }
 
-// Unless more has been typed while it was saved.
-function clearDraftIfSaved(savedContent: string) {
-  if (getDraft() === savedContent) {
-    draftStorage.setValue(draftKey, null);
+function saveDraft(save: UseMutateFunction<void, Error, string>) {
+  const draft = getDraft();
+  if (draft === undefined) {
+    return;
   }
+
+  save(draft, {
+    onSuccess: () => {
+      // unless more has been typed while it was saved
+      if (getDraft() === draft) {
+        draftStorage.setValue(draftKey, null);
+      }
+    },
+  });
 }
 
 export const useScratchpad = () => {
   const scratchpad = useScratchpadQuery();
   const { mutate: save } = useSaveScratchpadMutation();
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // a draft left over from last time
-  useEffect(() => {
-    const draft = getDraft();
-    if (draft !== undefined) {
-      save(draft, { onSuccess: () => clearDraftIfSaved(draft) });
-    }
-  }, [save]);
+  useEffect(() => saveDraft(save), [save]);
 
   const savedContent =
     scratchpad === undefined ? undefined : (scratchpad?.content ?? "");
@@ -42,14 +44,7 @@ export const useScratchpad = () => {
     isLoaded: savedContent !== undefined,
     savedContent,
     content: getDraft() ?? savedContent ?? "",
-    edit: (content: string) => {
-      draftStorage.setValue(draftKey, content);
-
-      clearTimeout(saveTimeoutRef.current);
-      saveTimeoutRef.current = setTimeout(
-        () => save(content, { onSuccess: () => clearDraftIfSaved(content) }),
-        saveDelayMs,
-      );
-    },
+    edit: (content: string) => draftStorage.setValue(draftKey, content),
+    save: () => saveDraft(save),
   };
 };

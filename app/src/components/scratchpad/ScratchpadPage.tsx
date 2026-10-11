@@ -10,7 +10,7 @@ import { translations } from "../../i18n/translations";
 import { useScratchpad } from "./useScratchpad";
 
 export const ScratchpadPage: React.FC = () => {
-  const { isLoaded, savedContent, content, edit } = useScratchpad();
+  const { isLoaded, savedContent, content, edit, save } = useScratchpad();
 
   return (
     <Page
@@ -36,6 +36,7 @@ export const ScratchpadPage: React.FC = () => {
             key={savedContent}
             initialValue={content}
             setValue={edit}
+            onBlur={save}
             initialIsPlainText={true}
             autoFocus={true}
             showFormattingOptions={true}

@@ -16,6 +16,7 @@ export class ScratchpadPage {
 
     await this.editor.click();
     await this.editor.pressSequentially(content);
+    await this.editor.blur();
 
     await saved;
   }
