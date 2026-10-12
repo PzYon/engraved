@@ -19,7 +19,7 @@ import {
   ListItemText,
   styled,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
 import { JournalIcon } from "../../overview/journals/JournalIcon";
@@ -42,8 +42,20 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
 
   const viewedJournals = useRecentlyViewedJournals();
 
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // focusing the container (instead of an item) keeps the drawer's focus trap
+  // from moving the focus out of reach of the arrow key handler below
+  useEffect(() => {
+    menuRef.current?.focus();
+  }, []);
+
   return (
-    <MenuContainer>
+    <MenuContainer
+      ref={menuRef}
+      tabIndex={-1}
+      onKeyDown={(e) => moveFocusOnArrowKey(e, menuRef.current)}
+    >
       <List>
         <AppMenuItem
           targetUrl="/tags"
@@ -156,8 +168,13 @@ const AppMenuItem: React.FC<{
   suffix?: React.ReactNode;
 }> = ({ targetUrl, label, iconStart, iconEnd, onClick, suffix }) => {
   return (
-    <ListItem onClick={onClick}>
-      <ListItemButton sx={{ display: "flex" }}>
+    <ListItem>
+      <ListItemButton
+        onClick={onClick}
+        sx={{ display: "flex" }}
+        tabIndex={targetUrl ? -1 : 0}
+        {...(targetUrl ? {} : menuItemAttribute)}
+      >
         <LinkOrSpan targetUrl={targetUrl}>
           <ListItemIcon sx={{ minWidth: "40px", color: "initial" }}>
             {iconStart}
@@ -218,6 +235,7 @@ const LinkOrSpan: React.FC<{
 
   return (
     <StyledLink
+      {...menuItemAttribute}
       to={targetUrl}
       sx={{ flexGrow: 1, alignItems: "center", alignSelf: "stretch" }}
     >
@@ -226,9 +244,52 @@ const LinkOrSpan: React.FC<{
   );
 };
 
+const menuItemAttribute = { "data-app-menu-item": true };
+
+function getMenuItems(menu: HTMLElement | null): HTMLElement[] {
+  return Array.from(
+    menu?.querySelectorAll<HTMLElement>("[data-app-menu-item]") ?? [],
+  );
+}
+
+function moveFocusOnArrowKey(e: React.KeyboardEvent, menu: HTMLElement | null) {
+  if (e.key !== "ArrowDown" && e.key !== "ArrowUp") {
+    return;
+  }
+
+  // keeps global arrow key handlers (e.g. of overview lists behind the menu) from reacting as well
+  e.stopPropagation();
+  e.preventDefault();
+
+  const items = getMenuItems(menu);
+  const currentIndex = items.indexOf(document.activeElement as HTMLElement);
+  const lastIndex = items.length - 1;
+
+  const nextIndex =
+    e.key === "ArrowDown"
+      ? currentIndex < lastIndex
+        ? currentIndex + 1
+        : 0
+      : currentIndex > 0
+        ? currentIndex - 1
+        : lastIndex;
+
+  items[nextIndex]?.focus();
+}
+
 const MenuContainer = styled("div")`
   min-width: 280px;
   padding: 0;
+  outline: none;
+
+  [data-app-menu-item]:focus-visible {
+    outline: none;
+  }
+
+  .MuiListItemButton-root:has([data-app-menu-item]:focus-visible),
+  .MuiListItemButton-root[data-app-menu-item]:focus-visible {
+    background-color: ${(p) => p.theme.palette.background.default};
+  }
 
   li {
     padding: 0;
