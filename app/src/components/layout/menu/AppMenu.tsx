@@ -44,13 +44,16 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // focusing the container (instead of an item) keeps the drawer's focus trap
+  // from moving the focus out of reach of the arrow key handler below
   useEffect(() => {
-    getMenuItems(menuRef.current)[0]?.focus();
+    menuRef.current?.focus();
   }, []);
 
   return (
     <MenuContainer
       ref={menuRef}
+      tabIndex={-1}
       onKeyDown={(e) => moveFocusOnArrowKey(e, menuRef.current)}
     >
       <List>
@@ -277,6 +280,17 @@ function moveFocusOnArrowKey(e: React.KeyboardEvent, menu: HTMLElement | null) {
 const MenuContainer = styled("div")`
   min-width: 280px;
   padding: 0;
+  outline: none;
+
+  [data-app-menu-item]:focus-visible {
+    outline: none;
+  }
+
+  .MuiListItemButton-root:has([data-app-menu-item]:focus-visible),
+  .MuiListItemButton-root[data-app-menu-item]:focus-visible {
+    outline: 2px solid ${(p) => p.theme.palette.primary.main};
+    outline-offset: -2px;
+  }
 
   li {
     padding: 0;

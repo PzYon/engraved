@@ -21,15 +21,32 @@ const pressKey = (key: string) =>
 const focusedText = () => document.activeElement?.textContent;
 
 describe("AppMenu", () => {
-  it("focuses the first item when opened", () => {
+  it("has no item focused when opened", () => {
     render(<AppMenu close={vi.fn()} />);
 
+    expect(document.activeElement?.hasAttribute("data-app-menu-item")).toBe(
+      false,
+    );
+  });
+
+  it("focuses the first item on arrow down when none is focused", () => {
+    render(<AppMenu close={vi.fn()} />);
+
+    pressKey("ArrowDown");
     expect(focusedText()).toBe("Tags");
+  });
+
+  it("focuses the last item on arrow up when none is focused", () => {
+    render(<AppMenu close={vi.fn()} />);
+
+    pressKey("ArrowUp");
+    expect(focusedText()).toBe("Recently viewed");
   });
 
   it("moves the focus with the arrow keys and wraps around", () => {
     render(<AppMenu close={vi.fn()} />);
 
+    pressKey("ArrowDown");
     pressKey("ArrowDown");
     expect(focusedText()).toBe("Journals");
 
