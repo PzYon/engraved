@@ -288,8 +288,7 @@ const MenuContainer = styled("div")`
 
   .MuiListItemButton-root:has([data-app-menu-item]:focus-visible),
   .MuiListItemButton-root[data-app-menu-item]:focus-visible {
-    outline: 2px solid ${(p) => p.theme.palette.primary.main};
-    outline-offset: -2px;
+    background-color: ${(p) => p.theme.palette.background.default};
   }
 
   li {
