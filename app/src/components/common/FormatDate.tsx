@@ -32,10 +32,10 @@ const FormatDateInternal: React.FC<{
   onClick?: () => void;
 }> = ({ value, dateFormat, onClick }) => {
   // Relative labels only need to keep updating while the value is recent. Older
-  // values don't visibly change, so they don't subscribe to the shared ticker.
+  // values don't visibly change within a few minutes, so they are only
+  // refreshed when the window regains focus.
   const isRecent = differenceInHours(new Date(), getAsDate(value)) <= 2;
 
-  // Re-render on every shared tick (while recent) to refresh the relative label.
   useNow(isRecent);
 
   const title = formatDate(
