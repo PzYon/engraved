@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { Editor } from "@tiptap/react";
 import { plainTextExtensions, toPlainTextContent } from "./plainTextEditing";
 
@@ -21,7 +21,14 @@ const texts = [
   "[text](not-a-link) and ![x](y)",
 ];
 
+const editors: Editor[] = [];
+
 describe("plain text editing", () => {
+  // ProseMirror flushes DOM changes on a timer, which would otherwise fire after jsdom is gone.
+  afterEach(() => {
+    editors.splice(0).forEach((editor) => editor.destroy());
+  });
+
   it.each(texts)("keeps %j when it is loaded", (text) => {
     const editor = createEditor(text);
 
@@ -72,6 +79,8 @@ function createEditor(text?: string) {
   });
 
   editor.commands.focus("end");
+
+  editors.push(editor);
 
   return editor;
 }
