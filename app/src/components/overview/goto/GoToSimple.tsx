@@ -8,25 +8,14 @@ import { IScrapEntry } from "../../../serverApi/IScrapEntry";
 import { knownQueryParams } from "../../common/actions/searchParamHooks";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { useGoToNavigationItems } from "./useGoToNavigationItems";
-import { useEffect } from "react";
 
 const emptyListItemId = "empty-list-item-id";
 
 export const GoToSimple: React.FC<{
   searchText?: string;
   onKeyDown?: (e: KeyboardEvent) => void;
-  onClick?: () => void;
   renderBeforeList?: (selectItem: (index: number) => void) => React.ReactNode;
-  hasDataLoaded?: () => void;
-  itemLimit?: number;
-}> = ({
-  searchText,
-  onKeyDown,
-  onClick,
-  renderBeforeList,
-  hasDataLoaded,
-  itemLimit = 0,
-}) => {
+}> = ({ searchText, onKeyDown, renderBeforeList }) => {
   const goto = useGoToNavigationItems(searchText);
 
   if (!goto.isLoading && !goto.items.length && searchText) {
@@ -35,15 +24,9 @@ export const GoToSimple: React.FC<{
     });
   }
 
-  useEffect(() => {
-    hasDataLoaded?.();
-  }, [goto, hasDataLoaded]);
-
   return (
     <OverviewList
-      items={
-        itemLimit > 0 ? goto.items.filter((_, i) => i < itemLimit) : goto.items
-      }
+      items={goto.items}
       onKeyDown={onKeyDown}
       renderBeforeList={renderBeforeList}
       renderItem={(entity: IEntity, _: number, hasFocus: boolean) => {
@@ -70,11 +53,7 @@ export const GoToSimple: React.FC<{
     // if (item.entityType === "Entry") {
     if ((entity as IJournal).type) {
       return (
-        <JournalGoToItemRow
-          journal={entity as IJournal}
-          hasFocus={hasFocus}
-          onClick={onClick}
-        />
+        <JournalGoToItemRow journal={entity as IJournal} hasFocus={hasFocus} />
       );
     }
 
@@ -85,7 +64,6 @@ export const GoToSimple: React.FC<{
         )}
         scrapEntry={entity as IScrapEntry}
         hasFocus={hasFocus}
-        onClick={onClick}
       />
     );
   }
