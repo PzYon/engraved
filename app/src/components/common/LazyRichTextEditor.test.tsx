@@ -112,7 +112,7 @@ describe("LazyRichTextEditor", () => {
 });
 
 function getEditor() {
-  return screen.getByRole("textbox");
+  return screen.getByRole("textbox").querySelector(".ProseMirror")!;
 }
 
 function switchMode(label: string) {
