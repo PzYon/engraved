@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="EphemeralMongo" Version="3.2.0"/>
+        <PackageReference Include="EphemeralMongo"/>
     </ItemGroup>
 
     <!-- MongoRunnerTeardown is a [SetUpFixture] and must be compiled into each test assembly

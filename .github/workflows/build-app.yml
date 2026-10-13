@@ -12,6 +12,7 @@ jobs:
   build:
     name: Build App
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       artifact-name: app
     permissions:
@@ -79,6 +80,10 @@ jobs:
         working-directory: ./
         run: npm run lint
 
+      - name: Run tests
+        working-directory: app
+        run: npx vitest run
+
       - name: Get current time
         id: current-time
         shell: bash
@@ -92,10 +97,6 @@ jobs:
           VITE_MERGE_DATE_TIME: ${{steps.current-time.outputs.time}}
           VITE_APP_INSIGHTS_CONNECTING_STRING: ${{secrets.APP_INSIGHTS_CONNECTING_STRING}}
         run: npm run build
-
-      - name: Run tests
-        working-directory: app
-        run: npm run test --if-present
 
       - name: Merge Fallow SARIF runs
         if: always() && hashFiles('fallow-results.sarif') != ''

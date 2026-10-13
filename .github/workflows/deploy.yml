@@ -26,6 +26,7 @@ jobs:
   deploy-app:
     name: Deploy App
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: inputs.deploy-app == true
 
     steps:
@@ -47,6 +48,7 @@ jobs:
   deploy-api:
     name: Deploy API
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: inputs.deploy-api == true
 
     environment:
