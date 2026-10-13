@@ -1,7 +1,5 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import { ActionIconButton } from "./ActionIconButton";
-import { FloatingHeaderActions } from "../../layout/FloatingHeaderActions";
-import { useIsInViewport } from "../useIsInViewPort";
 import { css, styled, useTheme } from "@mui/material";
 import { IAction } from "./IAction";
 import { AppSearch, useSearchSelection } from "./searchParamHooks";
@@ -11,28 +9,18 @@ import { Position } from "./Position";
 
 export const ActionIconButtonGroup: React.FC<{
   actions: IAction[];
-  enableFloatingActions?: boolean;
   testId?: string;
   backgroundColor?: string;
   alignToPosition?: Position;
   stickToPosition?: Position;
 }> = ({
   actions,
-  enableFloatingActions,
   testId,
   backgroundColor,
   alignToPosition,
   stickToPosition,
 }) => {
   const { palette } = useTheme();
-
-  // Floating actions take over while the regular ones are scrolled out of
-  // view. Only the actions of the page do that, whereas a group like this is
-  // rendered for every item of a list - so the element being watched, the
-  // observer and the timer only exist where they are asked for.
-  const [sentinel, setSentinel] = useState<HTMLDivElement | null>(null);
-
-  const areActionsInViewPort = useIsInViewport(sentinel);
 
   // Which of the actions is open, and nothing else of the URL: there is a
   // group like this for every item of a list, and all of them would render
@@ -41,21 +29,6 @@ export const ActionIconButtonGroup: React.FC<{
     (search) =>
       actions?.find((action) => action && isActionActive(action, search))?.key,
   );
-
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    if (!enableFloatingActions) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => setIsReady(true), 1000);
-
-    return () => {
-      window.clearTimeout(timer);
-      setIsReady(false);
-    };
-  }, [enableFloatingActions]);
 
   if (!actions?.length) {
     return null;
@@ -71,9 +44,6 @@ export const ActionIconButtonGroup: React.FC<{
       render={(isStuck) => (
         <Suspense>
           <Host>
-            {!areActionsInViewPort && enableFloatingActions && isReady ? (
-              <FloatingHeaderActions actions={actions} />
-            ) : null}
             <RadiusSpacer
               backgroundColor={finalBackgroundColor}
               alignTo={finalAlignTo}
@@ -87,7 +57,6 @@ export const ActionIconButtonGroup: React.FC<{
               sx={{ backgroundColor: finalBackgroundColor }}
               isStuck={isStuck}
             >
-              {enableFloatingActions ? <div ref={setSentinel} /> : null}
               {actions
                 .filter((a) => a !== undefined)
                 .map((action) => {

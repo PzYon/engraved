@@ -9,9 +9,8 @@ import { getActionLabel } from "./actionUtils";
 
 export const ActionIconButton: React.FC<{
   action: IAction;
-  buttonsAsSpans?: boolean;
   isActive?: boolean;
-}> = ({ action, buttonsAsSpans, isActive }) => {
+}> = ({ action, isActive }) => {
   const { palette } = useTheme();
 
   const { title, ...commonProps } = getCommonProps();
@@ -36,10 +35,6 @@ export const ActionIconButton: React.FC<{
         {getNoButtonIcon()}
       </ActionLink>
     );
-  }
-
-  if (buttonsAsSpans) {
-    return getNoButtonIcon();
   }
 
   function getNoButtonIcon() {
