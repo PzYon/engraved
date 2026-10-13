@@ -124,7 +124,6 @@ export const AppHeader: React.FC = () => {
               <ActionIconButtonGroup
                 actions={pageActions}
                 testId="page-actions"
-                enableFloatingActions={true}
               />
             )}
             <PageTabs tabs={tabs} />

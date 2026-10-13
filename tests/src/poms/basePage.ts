@@ -23,12 +23,6 @@ export abstract class BasePage {
     await this.page.getByLabel("Scratchpad", { exact: true }).click();
   }
 
-  async scrollToBottom() {
-    await this.page.evaluate(() =>
-      window.scrollTo(0, document.documentElement.scrollHeight),
-    );
-  }
-
   async navigateToGoToPage() {
     await this.page.locator("body").press("Alt+.");
     return new GoToPage(this.page);
