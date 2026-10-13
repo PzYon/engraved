@@ -35,7 +35,6 @@ import { TagsPage } from "./components/overview/tags/TagsPage";
 import { TagPage } from "./components/overview/tags/TagPage";
 import { GoToPage } from "./components/overview/goto/GoToPage";
 import { QuickAddPage } from "./components/details/scraps/QuickAddPage";
-import { FloatingHistoryNavigation } from "./components/layout/FloatingHistoryNavigation";
 import { LazyLoadSuspender } from "./components/common/LazyLoadSuspender";
 import { validateAppSearch } from "./components/common/actions/searchParamHooks";
 import { AdminPage } from "./components/admin/AdminPage";
@@ -63,7 +62,6 @@ const RootLayout: React.FC = () => (
                 </LazyLoadSuspender>
               </AppErrorBoundary>
             </AppContent>
-            <FloatingHistoryNavigation />
             <AppFooter />
           </Host>
         </DisplayModeContextProvider>
