@@ -69,3 +69,27 @@ jobs:
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CF17B8AFBCD14051B9CD5C069F5E294E_LNX }}
           package: .
+
+      # The root endpoint queries the database, so a 200 means the API is up and can reach
+      # MongoDB. Retried because the app restarts after the deployment.
+      - name: Verify API health
+        shell: bash
+        env:
+          WEBAPP_URL: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+        run: |
+          if [ -z "$WEBAPP_URL" ]; then
+            echo "::error::The deploy step did not report a web app URL."
+            exit 1
+          fi
+          HEALTH_URL="${WEBAPP_URL%/}/"
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error --max-time 20 --output /dev/null "$HEALTH_URL"; then
+              echo "API is healthy (attempt $attempt)."
+              exit 0
+            fi
+            echo "API not healthy yet (attempt $attempt), retrying in 10s."
+            sleep 10
+          done
+          echo "::error::API did not become healthy at $HEALTH_URL after deployment."
+          exit 1
