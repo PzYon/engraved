@@ -1,8 +1,9 @@
 {
   "name": "engraved-app",
   "version": "0.1.0",
+  "private": true,
   "author": "PzYon",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
