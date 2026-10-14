@@ -46,11 +46,10 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: tests/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: NPM install ./tests
-        working-directory: tests
-        run: npm ci
+        run: npm ci --workspace tests --include-workspace-root
 
       - name: Check types
         working-directory: tests
@@ -61,7 +60,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('tests/package-lock.json') }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('tests/package.json') }}
 
       - name: Install Playwright chromium browser
         if: steps.playwright-cache.outputs.cache-hit != 'true'

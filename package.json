@@ -2,6 +2,10 @@
   "name": "engraved",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "app",
+    "tests"
+  ],
   "author": "PzYon",
   "license": "UNLICENSED",
   "scripts": {
