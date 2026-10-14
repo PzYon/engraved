@@ -314,7 +314,6 @@ const LazyRichTextEditor: React.FC<IRichTextEditorProps> = ({
           style={styles}
           isTitle={isTitle}
           editor={editor}
-          role="textbox"
         />
       </MarkdownContainer>
     </Host>
