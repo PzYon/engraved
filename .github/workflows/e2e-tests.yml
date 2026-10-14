@@ -49,7 +49,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: NPM install ./tests
-        run: npm ci --workspace tests
+        run: npm ci --workspace tests --include-workspace-root
 
       - name: Check types
         working-directory: tests
