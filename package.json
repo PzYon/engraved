@@ -1,8 +1,9 @@
 {
   "name": "engraved",
   "version": "0.1.0",
+  "private": true,
   "author": "PzYon",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "scripts": {
     "prepare": "husky",
     "knip": "knip",

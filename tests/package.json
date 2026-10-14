@@ -1,8 +1,9 @@
 {
   "name": "engraved-tests",
   "version": "0.1.0",
+  "private": true,
   "author": "PzYon",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "scripts": {
     "e2e:start-api": "dotnet run --project ../api/Engraved.Api/ --urls \"http://localhost:5072\" -- e2e-tests",
     "e2e:start-api:ci": "dotnet ../api-artifact/Engraved.Api.dll --urls \"http://localhost:5072\" -- e2e-tests",
