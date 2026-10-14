@@ -15,6 +15,10 @@ on:
         type: boolean
         default: false
 
+# Least privilege by default; jobs that need more raise it below.
+permissions:
+  contents: read
+
 # Cancel superseded runs on the same branch (e.g. quick successive pushes to a
 # feature branch), but never cancel a run on main so deployments finish.
 concurrency:
@@ -117,6 +121,10 @@ jobs:
     if: needs.detect-changes.outputs.code-changed == 'true'
     uses: ./.github/workflows/build-app.yml
     secrets: inherit
+    # Uploads the Fallow SARIF results to code scanning.
+    permissions:
+      contents: read
+      security-events: write
 
   e2e-tests:
     name: E2E Tests

@@ -16,6 +16,7 @@ jobs:
     outputs:
       artifact-name: app
     permissions:
+      contents: read
       security-events: write
 
     steps:
