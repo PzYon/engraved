@@ -48,4 +48,10 @@ const StyledDrawer = styled(Drawer)`
   .MuiPaper-root {
     border-radius: 0;
   }
+
+  /* keeps the items close to the launcher. unlike justify-content: flex-end,
+     an auto margin still lets the paper scroll to the top when the list overflows. */
+  .MuiDrawer-paperAnchorRight > * {
+    margin-top: auto;
+  }
 `;
