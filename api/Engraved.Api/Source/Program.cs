@@ -18,14 +18,14 @@ using Engraved.Core.Domain.Notifications;
 using Engraved.Notifications.OneSignal;
 using Microsoft.OpenApi;
 
-var isE2ETests = Environment.GetCommandLineArgs().Any(a => a == "e2e-tests");
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+var isE2ETests = E2ETestMode.IsRequested(args, builder.Environment);
 
 if (isE2ETests)
 {
   Console.WriteLine("Running for e2e tests.");
 }
-
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
   .AddControllers(options =>
