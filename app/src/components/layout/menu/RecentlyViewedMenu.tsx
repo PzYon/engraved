@@ -1,5 +1,5 @@
 import React from "react";
-import { List, ListItem, ListItemText, ListSubheader } from "@mui/material";
+import { List, ListItem, ListItemText } from "@mui/material";
 import { JournalAppMenuItem, MenuHost } from "./AppMenu";
 import { useRecentlyViewedJournals } from "./useRecentlyViewedJournals";
 
@@ -10,7 +10,7 @@ export const RecentlyViewedMenu: React.FC<{ close: () => void }> = ({
 
   return (
     <MenuHost>
-      <List dense subheader={<ListSubheader>Recently viewed</ListSubheader>}>
+      <List dense>
         {viewedJournals.length ? (
           viewedJournals.map((journal) => (
             <JournalAppMenuItem
