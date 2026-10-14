@@ -33,14 +33,14 @@ describe("RecentlyViewedMenu", () => {
     recentlyViewed.journals = [];
   });
 
-  it("lists the recently viewed journals in order, linking to their details", () => {
-    recentlyViewed.journals = [journal("b", "Second"), journal("a", "First")];
+  it("lists the most recently viewed journal last, linking to their details", () => {
+    recentlyViewed.journals = [journal("b", "Newest"), journal("a", "Older")];
 
     render(<RecentlyViewedMenu close={vi.fn()} />);
 
     const links = screen.getAllByRole("link");
-    expect(links.map((l) => l.textContent)).toEqual(["Second", "First"]);
-    expect(links[0].getAttribute("href")).toBe("/journals/details/b");
+    expect(links.map((l) => l.textContent)).toEqual(["Older", "Newest"]);
+    expect(links[1].getAttribute("href")).toBe("/journals/details/b");
   });
 
   it("shows a hint when no journals were viewed yet", () => {
@@ -62,13 +62,12 @@ describe("RecentlyViewedMenu", () => {
     expect(close).toHaveBeenCalled();
   });
 
-  it("moves the focus with the arrow keys", () => {
-    recentlyViewed.journals = [journal("b", "Second"), journal("a", "First")];
+  it("focuses the most recently viewed journal on arrow up", () => {
+    recentlyViewed.journals = [journal("b", "Newest"), journal("a", "Older")];
 
     render(<RecentlyViewedMenu close={vi.fn()} />);
-    fireEvent.keyDown(document.activeElement!, { key: "ArrowDown" });
-    fireEvent.keyDown(document.activeElement!, { key: "ArrowDown" });
+    fireEvent.keyDown(document.activeElement!, { key: "ArrowUp" });
 
-    expect(document.activeElement?.textContent).toBe("First");
+    expect(document.activeElement?.textContent).toBe("Newest");
   });
 });

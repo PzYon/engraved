@@ -12,13 +12,16 @@ export const RecentlyViewedMenu: React.FC<{ close: () => void }> = ({
     <MenuHost>
       <List dense>
         {viewedJournals.length ? (
-          viewedJournals.map((journal) => (
-            <JournalAppMenuItem
-              key={journal.id}
-              journal={journal}
-              close={close}
-            />
-          ))
+          // the most recent journal goes last, as that is closest to the launcher
+          viewedJournals
+            .toReversed()
+            .map((journal) => (
+              <JournalAppMenuItem
+                key={journal.id}
+                journal={journal}
+                close={close}
+              />
+            ))
         ) : (
           <ListItem sx={{ px: 2 }}>
             <ListItemText secondary="No journals viewed yet." />
