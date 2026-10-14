@@ -44,10 +44,9 @@ export class ScrapsJournalPage extends JournalPage {
         .last();
       await contentEditor.click();
       await contentEditor.fill(content);
-      await contentEditor.press("Alt+s");
-    } else {
-      await this.getTitleBox().press("Alt+s");
     }
+
+    await this.page.getByRole("button", { name: "Save", exact: true }).click();
 
     const appBar = this.page.getByTestId("app-alert-bar");
     await expect(appBar).toContainText("Added entry");
