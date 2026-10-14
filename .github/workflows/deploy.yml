@@ -28,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: inputs.deploy-app == true
+    permissions:
+      contents: write
 
     steps:
       - name: Download artifact from build job
@@ -45,11 +47,22 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
 
+      # Marks this commit as live, so the next run detects changes against it.
+      - name: Move deployed/app tag
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --method PATCH "repos/${{ github.repository }}/git/refs/tags/deployed/app" -f sha="${{ github.sha }}" -F force=true \
+            || gh api --method POST "repos/${{ github.repository }}/git/refs" -f ref="refs/tags/deployed/app" -f sha="${{ github.sha }}"
+
   deploy-api:
     name: Deploy API
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: inputs.deploy-api == true
+    permissions:
+      contents: write
 
     environment:
       name: "Production"
@@ -93,3 +106,12 @@ jobs:
           done
           echo "::error::API did not become healthy at $HEALTH_URL after deployment."
           exit 1
+
+      # Marks this commit as live, so the next run detects changes against it.
+      - name: Move deployed/api tag
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --method PATCH "repos/${{ github.repository }}/git/refs/tags/deployed/api" -f sha="${{ github.sha }}" -F force=true \
+            || gh api --method POST "repos/${{ github.repository }}/git/refs" -f ref="refs/tags/deployed/api" -f sha="${{ github.sha }}"

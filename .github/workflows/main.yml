@@ -32,35 +32,36 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Decides what to deploy, so main is compared against its previous push.
+      # Decides what to deploy. Each unit is compared against the commit that is
+      # live (its deployed/<unit> tag, moved by the deploy workflow), not against
+      # the previous push: otherwise a change whose run never deployed (failed,
+      # cancelled, auto-deploy disabled) would be skipped by the next run.
       - name: Detect changes
         id: changes
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" == "push" ]; then
-            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || echo "")
-          elif [ "${{ github.event_name }}" == "pull_request" ]; then
-            CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} || echo "")
-          else
-            # For workflow_dispatch, assume everything changed
+          if [ "${{ github.event_name }}" != "push" ]; then
             echo "api=true" >> $GITHUB_OUTPUT
             echo "app=true" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
-          # Check for API changes
-          if echo "$CHANGED_FILES" | grep -qE '^api/'; then
-            echo "api=true" >> $GITHUB_OUTPUT
-          else
-            echo "api=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # Check for App changes
-          if echo "$CHANGED_FILES" | grep -qE '^app/'; then
-            echo "app=true" >> $GITHUB_OUTPUT
-          else
-            echo "app=false" >> $GITHUB_OUTPUT
-          fi
+
+          # Deploys the unit when its tag is missing or the diff fails, rather
+          # than risk skipping a change.
+          detect() {
+            local unit=$1 paths=$2 changed_files
+            if ! changed_files=$(git diff --name-only "refs/tags/deployed/$unit" "${{ github.sha }}" 2>/dev/null); then
+              echo "No usable deployed/$unit tag, deploying $unit."
+              echo "$unit=true" >> $GITHUB_OUTPUT
+            elif echo "$changed_files" | grep -qE "$paths"; then
+              echo "$unit=true" >> $GITHUB_OUTPUT
+            else
+              echo "$unit=false" >> $GITHUB_OUTPUT
+            fi
+          }
+
+          detect api '^(api/|\.github/workflows/build-api\.yml$)'
+          detect app '^(app/|\.github/workflows/build-app\.yml$)'
 
       # Decides whether to build and test at all: skipped only when nothing but
       # documentation changed. A branch is compared against where it diverged
@@ -129,6 +130,8 @@ jobs:
       )
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
+    permissions:
+      contents: write
     with:
       deploy-api: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
       deploy-app: ${{ needs.detect-changes.outputs.app-changed == 'true' }}
