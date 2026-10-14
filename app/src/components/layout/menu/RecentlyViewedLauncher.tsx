@@ -51,7 +51,7 @@ const StyledDrawer = styled(Drawer)`
 
   /* keeps the items close to the launcher. unlike justify-content: flex-end,
      an auto margin still lets the paper scroll to the top when the list overflows. */
-  .MuiDrawer-paperAnchorRight > * {
+  .MuiDrawer-paper > * {
     margin-top: auto;
   }
 `;
