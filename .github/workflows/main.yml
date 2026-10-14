@@ -1,7 +1,11 @@
 name: CI/CD Pipeline
 
 on:
+  # Same-repo branches are built on push, which also covers branches without a
+  # pull request (Renovate's branch automerge relies on that). pull_request is
+  # only for pull requests from forks, whose pushes don't trigger runs here.
   push:
+  pull_request:
 
   workflow_dispatch:
     inputs:
@@ -21,6 +25,11 @@ jobs:
   # Detect which parts of the application changed
   detect-changes:
     name: Detect Changes
+    # Skips the whole pipeline for same-repo pull requests, which the push run
+    # already builds.
+    if: |
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     outputs:
       api-changed: ${{ steps.changes.outputs.api }}
