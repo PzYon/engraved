@@ -2,6 +2,10 @@
   "name": "engraved",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "app",
+    "tests"
+  ],
   "author": "PzYon",
   "license": "UNLICENSED",
   "scripts": {
@@ -43,5 +47,8 @@
     "lint-staged": "17.6.0",
     "prettier": "3.9.9",
     "typescript": "6.0.3"
+  },
+  "overrides": {
+    "rolldown": "1.2.12"
   }
 }

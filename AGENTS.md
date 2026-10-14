@@ -34,6 +34,7 @@ This is a monorepo:
 - **`/app` — React frontend:** TypeScript, React 19, built with Vite 8.
   - Routing: TanStack Router. Server state: TanStack Query. UI: Material UI (MUI). Rich text editing: Tiptap. Charts: Chart.js. Unit tests: Vitest.
 - **`/tests` — end-to-end tests:** Playwright tests that run against a locally served app and API.
+- **npm workspaces:** `app` and `tests` are workspaces of the root package, sharing one `package-lock.json`. Install once from the root (`npm ci`); add a dependency to a workspace with `npm install <pkg> --workspace app`. Use npm 11 or newer (bundled with Node 24): npm 10 crashes while resolving this dependency tree.
 
 ## Verification
 
