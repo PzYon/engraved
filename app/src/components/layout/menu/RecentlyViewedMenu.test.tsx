@@ -4,8 +4,14 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { RecentlyViewedMenu } from "./RecentlyViewedMenu";
 import { IJournal } from "../../../serverApi/IJournal";
 
+const route = vi.hoisted(() => ({
+  journalId: undefined as string | undefined,
+}));
+
 vi.mock("@tanstack/react-router", () => ({
   Link: ({ to, ...props }: { to: string }) => <a href={to} {...props} />,
+  useMatchRoute: () => () =>
+    route.journalId ? { journalId: route.journalId } : false,
 }));
 
 const recentlyViewed = vi.hoisted(() => ({ journals: [] as IJournal[] }));
@@ -31,6 +37,27 @@ const journal = (id: string, name: string) => ({ id, name }) as IJournal;
 describe("RecentlyViewedMenu", () => {
   beforeEach(() => {
     recentlyViewed.journals = [];
+    route.journalId = undefined;
+  });
+
+  it("does not list the journal currently being viewed", () => {
+    recentlyViewed.journals = [journal("b", "Current"), journal("a", "Older")];
+    route.journalId = "b";
+
+    render(<RecentlyViewedMenu close={vi.fn()} />);
+
+    expect(screen.getAllByRole("link").map((l) => l.textContent)).toEqual([
+      "Older",
+    ]);
+  });
+
+  it("shows a hint when only the current journal was viewed", () => {
+    recentlyViewed.journals = [journal("b", "Current")];
+    route.journalId = "b";
+
+    render(<RecentlyViewedMenu close={vi.fn()} />);
+
+    expect(screen.getByText("No other journals viewed yet.")).toBeDefined();
   });
 
   it("lists the most recently viewed journal last, linking to their details", () => {
