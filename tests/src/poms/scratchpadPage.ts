@@ -10,15 +10,9 @@ export class ScratchpadPage {
   }
 
   async clickSave() {
-    const saved = this.page.waitForResponse(
-      (response) =>
-        response.url().endsWith("/user/scratchpad") &&
-        response.request().method() === "PUT",
-    );
-
-    await this.page.getByLabel("Save", { exact: true }).click();
-
-    await saved;
+    await this.waitForSave(async () => {
+      await this.page.getByLabel("Save", { exact: true }).click();
+    });
   }
 
   async doubleClickContent(content: string) {
@@ -34,19 +28,25 @@ export class ScratchpadPage {
   }
 
   async deleteContent() {
+    await this.waitForSave(async () => {
+      await this.page.getByLabel("Delete", { exact: true }).click();
+      await this.page.getByRole("button", { name: "Yes, delete!" }).click();
+    });
+  }
+
+  async expectContent(content: string) {
+    await expect(this.page.getByText(content, { exact: true })).toBeVisible();
+  }
+
+  private async waitForSave(action: () => Promise<void>) {
     const saved = this.page.waitForResponse(
       (response) =>
         response.url().endsWith("/user/scratchpad") &&
         response.request().method() === "PUT",
     );
 
-    await this.page.getByLabel("Delete", { exact: true }).click();
-    await this.page.getByRole("button", { name: "Yes, delete!" }).click();
+    await action();
 
     await saved;
-  }
-
-  async expectContent(content: string) {
-    await expect(this.page.getByText(content, { exact: true })).toBeVisible();
   }
 }
