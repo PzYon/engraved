@@ -3,10 +3,6 @@ import { expect, Page } from "@playwright/test";
 export class ScratchpadPage {
   constructor(private page: Page) {}
 
-  async clickEdit() {
-    await this.page.getByLabel("Edit scrap", { exact: true }).click();
-  }
-
   async typeContent(content: string) {
     const editor = this.page.locator(".tiptap");
     await editor.click();
@@ -29,8 +25,8 @@ export class ScratchpadPage {
     await this.page.getByText(content, { exact: true }).dblclick();
   }
 
-  async expectEditor() {
-    await expect(this.page.locator(".tiptap")).toBeVisible();
+  async expectEditMode(isEditMode: boolean) {
+    await expect(this.page.locator(".tiptap")).toHaveCount(isEditMode ? 1 : 0);
   }
 
   async expectContent(content: string) {
