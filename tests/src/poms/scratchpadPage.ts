@@ -25,8 +25,25 @@ export class ScratchpadPage {
     await this.page.getByText(content, { exact: true }).dblclick();
   }
 
+  async expectEmptyEditor() {
+    await expect(this.page.locator(".tiptap")).toHaveText("");
+  }
+
   async expectEditMode(isEditMode: boolean) {
     await expect(this.page.locator(".tiptap")).toHaveCount(isEditMode ? 1 : 0);
+  }
+
+  async deleteContent() {
+    const saved = this.page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/user/scratchpad") &&
+        response.request().method() === "PUT",
+    );
+
+    await this.page.getByLabel("Delete", { exact: true }).click();
+    await this.page.getByRole("button", { name: "Yes, delete!" }).click();
+
+    await saved;
   }
 
   async expectContent(content: string) {

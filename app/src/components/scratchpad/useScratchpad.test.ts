@@ -127,6 +127,15 @@ describe("useScratchpad", () => {
     expect(getDraft()).toBe("first and more");
   });
 
+  it("clears and saves on reset", () => {
+    const { result } = renderHook(() => useScratchpad());
+
+    act(() => result.current.reset());
+
+    expect(result.current.content).toBe("");
+    expect(save).toHaveBeenCalledWith("", expect.anything());
+  });
+
   it("shows a draft instead of what has been saved and saves it", () => {
     setDraft("left over");
 

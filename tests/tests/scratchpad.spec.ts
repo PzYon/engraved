@@ -23,4 +23,11 @@ test("scratchpad opens empty for editing and keeps what is saved", async ({
 
   await scratchpadPage.doubleClickContent("Remember the milk");
   await scratchpadPage.expectEditMode(true);
+
+  await scratchpadPage.deleteContent();
+  await scratchpadPage.expectEmptyEditor();
+
+  await page.reload();
+
+  await scratchpadPage.expectEmptyEditor();
 });

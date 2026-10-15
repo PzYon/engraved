@@ -45,13 +45,19 @@ export const useScratchpad = () => {
   const savedContent =
     scratchpad === undefined ? undefined : (scratchpad?.content ?? "");
 
+  function edit(content: string) {
+    draftStorage.setValue(draftKey, content);
+    setDraft(content);
+  }
+
   return {
     isLoaded: savedContent !== undefined,
     content: draft ?? savedContent ?? "",
-    edit: (content: string) => {
-      draftStorage.setValue(draftKey, content);
-      setDraft(content);
-    },
+    edit,
     save: () => saveDraft(save, () => setDraft(undefined)),
+    reset: () => {
+      edit("");
+      saveDraft(save, () => setDraft(undefined));
+    },
   };
 };
