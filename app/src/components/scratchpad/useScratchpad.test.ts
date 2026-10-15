@@ -63,6 +63,24 @@ describe("useScratchpad", () => {
     expect(result.current.content).toBe("saved");
   });
 
+  it("shows what has been typed", () => {
+    const { result } = renderHook(() => useScratchpad());
+
+    act(() => result.current.edit("typed"));
+
+    expect(result.current.content).toBe("typed");
+  });
+
+  it("shows what has been saved again once the draft is saved", () => {
+    const { result } = renderHook(() => useScratchpad());
+
+    act(() => result.current.edit("typed"));
+    act(() => result.current.save());
+    act(() => succeedSave());
+
+    expect(result.current.content).toBe("saved");
+  });
+
   it("saves what has been typed, and only that", () => {
     const { result } = renderHook(() => useScratchpad());
 

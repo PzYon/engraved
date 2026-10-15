@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Assignment from "@mui/icons-material/Assignment";
 import { Page } from "../layout/pages/Page";
 import { PageTitle } from "../layout/pages/PageTitle";
@@ -6,11 +6,19 @@ import { PageSection } from "../layout/pages/PageSection";
 import { Icon } from "../common/Icon";
 import { IconStyle } from "../common/IconStyle";
 import { RichTextEditor } from "../common/RichTextEditor";
+import { ActionFactory } from "../common/actions/ActionFactory";
+import { ListItemFooterRow } from "../overview/ListItemFooterRow";
+import { Markdown } from "../details/scraps/markdown/Markdown";
+import { useAppContext } from "../../AppContext";
 import { translations } from "../../i18n/translations";
 import { useScratchpad } from "./useScratchpad";
 
 export const ScratchpadPage: React.FC = () => {
-  const { isLoaded, savedContent, content, edit, save } = useScratchpad();
+  const { setAppAlert } = useAppContext();
+  const { isLoaded, content, edit, save } = useScratchpad();
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const copyAction = ActionFactory.copyValueToClipboard(content, setAppAlert);
 
   return (
     <Page
@@ -28,21 +36,43 @@ export const ScratchpadPage: React.FC = () => {
       actions={[]}
       tabs={[]}
     >
-      <PageSection>
-        {isLoaded ? (
-          <RichTextEditor
-            // The editor only takes its content when it is created, so what
-            // has been saved elsewhere needs a new one.
-            key={savedContent}
-            initialValue={content}
-            setValue={edit}
-            onBlur={save}
-            initialIsPlainText={true}
-            autoFocus={true}
-            showFormattingOptions={true}
+      {isLoaded ? (
+        <PageSection>
+          {isEditMode ? (
+            <RichTextEditor
+              initialValue={content}
+              setValue={edit}
+              onBlur={save}
+              autoFocus={true}
+              showFormattingOptions={true}
+            />
+          ) : (
+            <Markdown value={content} />
+          )}
+          <ListItemFooterRow
+            properties={[]}
+            hasFocus={true}
+            actions={
+              isEditMode
+                ? [
+                    ActionFactory.save(
+                      async () => {
+                        save();
+                        setIsEditMode(false);
+                      },
+                      false,
+                      true,
+                    ),
+                    copyAction,
+                  ]
+                : [
+                    ActionFactory.editScrap(() => setIsEditMode(true), true),
+                    copyAction,
+                  ]
+            }
           />
-        ) : null}
-      </PageSection>
+        </PageSection>
+      ) : null}
     </Page>
   );
 };

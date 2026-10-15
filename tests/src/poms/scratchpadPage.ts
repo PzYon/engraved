@@ -3,25 +3,29 @@ import { expect, Page } from "@playwright/test";
 export class ScratchpadPage {
   constructor(private page: Page) {}
 
-  private get editor() {
-    return this.page.locator(".tiptap");
+  async clickEdit() {
+    await this.page.getByLabel("Edit scrap", { exact: true }).click();
   }
 
   async typeContent(content: string) {
+    const editor = this.page.locator(".tiptap");
+    await editor.click();
+    await editor.pressSequentially(content);
+  }
+
+  async clickSave() {
     const saved = this.page.waitForResponse(
       (response) =>
         response.url().endsWith("/user/scratchpad") &&
         response.request().method() === "PUT",
     );
 
-    await this.editor.click();
-    await this.editor.pressSequentially(content);
-    await this.editor.blur();
+    await this.page.getByLabel("Save", { exact: true }).click();
 
     await saved;
   }
 
   async expectContent(content: string) {
-    await expect(this.editor).toHaveText(content);
+    await expect(this.page.getByText(content, { exact: true })).toBeVisible();
   }
 }
