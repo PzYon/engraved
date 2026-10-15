@@ -38,39 +38,47 @@ export const ScratchpadPage: React.FC = () => {
     >
       {isLoaded ? (
         <PageSection>
-          {isEditMode ? (
-            <RichTextEditor
-              initialValue={content}
-              setValue={edit}
-              onBlur={save}
-              autoFocus={true}
-              showFormattingOptions={true}
+          <div
+            onClick={(e) => {
+              if (e.detail === 2) {
+                setIsEditMode(true);
+              }
+            }}
+          >
+            {isEditMode ? (
+              <RichTextEditor
+                initialValue={content}
+                setValue={edit}
+                onBlur={save}
+                autoFocus={true}
+                showFormattingOptions={true}
+              />
+            ) : (
+              <Markdown value={content} />
+            )}
+            <ListItemFooterRow
+              properties={[]}
+              hasFocus={true}
+              actions={
+                isEditMode
+                  ? [
+                      copyAction,
+                      ActionFactory.save(
+                        async () => {
+                          save();
+                          setIsEditMode(false);
+                        },
+                        false,
+                        true,
+                      ),
+                    ]
+                  : [
+                      copyAction,
+                      ActionFactory.editScrap(() => setIsEditMode(true), true),
+                    ]
+              }
             />
-          ) : (
-            <Markdown value={content} />
-          )}
-          <ListItemFooterRow
-            properties={[]}
-            hasFocus={true}
-            actions={
-              isEditMode
-                ? [
-                    ActionFactory.save(
-                      async () => {
-                        save();
-                        setIsEditMode(false);
-                      },
-                      false,
-                      true,
-                    ),
-                    copyAction,
-                  ]
-                : [
-                    ActionFactory.editScrap(() => setIsEditMode(true), true),
-                    copyAction,
-                  ]
-            }
-          />
+          </div>
         </PageSection>
       ) : null}
     </Page>

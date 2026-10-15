@@ -25,6 +25,14 @@ export class ScratchpadPage {
     await saved;
   }
 
+  async doubleClickContent(content: string) {
+    await this.page.getByText(content, { exact: true }).dblclick();
+  }
+
+  async expectEditor() {
+    await expect(this.page.locator(".tiptap")).toBeVisible();
+  }
+
   async expectContent(content: string) {
     await expect(this.page.getByText(content, { exact: true })).toBeVisible();
   }

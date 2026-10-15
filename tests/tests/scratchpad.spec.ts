@@ -17,4 +17,7 @@ test("scratchpad keeps what is saved across reloads", async ({ page }) => {
   await page.reload();
 
   await scratchpadPage.expectContent("Remember the milk");
+
+  await scratchpadPage.doubleClickContent("Remember the milk");
+  await scratchpadPage.expectEditor();
 });
