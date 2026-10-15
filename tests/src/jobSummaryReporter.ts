@@ -43,20 +43,9 @@ export default class JobSummaryReporter implements Reporter {
       "| Status | Passed | Failed | Flaky | Skipped | Duration |",
       "| --- | ---: | ---: | ---: | ---: | ---: |",
       `| ${result.status} | ${byOutcome("expected").length} | ${failed.length} | ${flaky.length} | ${byOutcome("skipped").length} | ${(result.duration / 1000).toFixed(1)}s |`,
+      ...describeTests("Failed tests", failed),
+      ...describeTests("Flaky tests", flaky),
     ];
-
-    for (const [heading, list] of [
-      ["Failed tests", failed],
-      ["Flaky tests", flaky],
-    ] as const) {
-      if (list.length) {
-        lines.push("", `#### ${heading}`, "");
-        lines.push(...list.slice(0, maxListedFailures).flatMap(describeTest));
-        if (list.length > maxListedFailures) {
-          lines.push(`…and ${list.length - maxListedFailures} more.`);
-        }
-      }
-    }
 
     appendFileSync(outputPath, lines.join("\n") + "\n\n");
   }
@@ -64,6 +53,21 @@ export default class JobSummaryReporter implements Reporter {
   printsToStdio() {
     return false;
   }
+}
+
+function describeTests(heading: string, tests: TestCase[]): string[] {
+  if (!tests.length) {
+    return [];
+  }
+
+  const omitted = tests.length - maxListedFailures;
+  return [
+    "",
+    `#### ${heading}`,
+    "",
+    ...tests.slice(0, maxListedFailures).flatMap(describeTest),
+    ...(omitted > 0 ? [`…and ${omitted} more.`] : []),
+  ];
 }
 
 function describeTest(test: TestCase): string[] {
