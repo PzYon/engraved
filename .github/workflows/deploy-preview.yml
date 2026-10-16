@@ -1,0 +1,32 @@
+name: Deploy Preview
+
+# Deploys the app built by this run to the preview Static Web App
+# (https://preview.engraved.me). There is a single preview, so the last deploy
+# wins. It runs against the production API and data.
+
+on:
+  workflow_call:
+
+jobs:
+  deploy-app:
+    name: Deploy App to Preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    environment:
+      name: "Preview"
+      url: https://preview.engraved.me
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v8
+        with:
+          name: app
+
+      - name: Deploy to Azure Static Web App
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          skip_app_build: true
+          app_location: "/"
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PREVIEW }}
+          action: "upload"
