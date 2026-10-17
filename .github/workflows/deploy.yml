@@ -32,7 +32,7 @@ jobs:
       contents: write
 
     environment:
-      name: "Production APP"
+      name: "Production App"
       url: ${{ steps.deploy-to-static-app.outputs.url }}
 
     steps:
@@ -92,7 +92,7 @@ jobs:
       - name: Verify API health
         shell: bash
         env:
-          WEBAPP_URL: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+          WEBAPP_URL: ${{ steps.deploy-to-app-service.outputs.webapp-url }}
         run: |
           if [ -z "$WEBAPP_URL" ]; then
             echo "::error::The deploy step did not report a web app URL."
