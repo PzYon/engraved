@@ -39,9 +39,11 @@ jobs:
         working-directory: app
         run: npm run types:check
 
-      - name: Knip
+      # The audit below only reports findings in changed files, so it misses
+      # code that a change elsewhere left unused. This scans the whole project.
+      - name: Fallow dead code
         working-directory: ./
-        run: npm run knip
+        run: npm run fallow
 
       - name: Determine fallow diff base
         id: fallow-base
@@ -59,7 +61,7 @@ jobs:
             echo "ref=$(git merge-base HEAD origin/main)" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Fallow
+      - name: Fallow audit
         uses: fallow-rs/fallow@v3
         with:
           command: audit
