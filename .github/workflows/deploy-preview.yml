@@ -1,8 +1,8 @@
 name: Deploy Preview
 
-# Deploys the app built by this run to the preview Static Web App
-# (https://preview.engraved.me). There is a single preview, so the last deploy
-# wins. It runs against the production API and data.
+# Deploys the app built by this run to the preview Static Web App. There is a
+# single preview, so the last deploy wins. It runs against the production API
+# and data.
 
 on:
   workflow_call:
@@ -15,7 +15,6 @@ jobs:
 
     environment:
       name: "Preview"
-      url: https://preview.engraved.me
 
     steps:
       - name: Download artifact from build job

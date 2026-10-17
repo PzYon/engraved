@@ -15,7 +15,7 @@ on:
         type: boolean
         default: false
       force-deploy-preview:
-        description: "Deploy the app to the preview environment, also from main or a Renovate branch"
+        description: "Force a deployment to the preview environment."
         required: false
         type: boolean
         default: false
