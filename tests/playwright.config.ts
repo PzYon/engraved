@@ -23,7 +23,9 @@ export default defineConfig({
   workers: isCi ? "100%" : 3,
   forbidOnly: !!isCi,
   retries: 0,
-  reporter: isCi ? [["list"], ["html"], ["github"]] : [["list"], ["html"]],
+  reporter: isCi
+    ? [["list"], ["html"], ["github"], ["./src/jobSummaryReporter.ts"]]
+    : [["list"], ["html"]],
   use: {
     baseURL: cdnBaseUrl,
     trace: "retain-on-failure",

@@ -1,4 +1,5 @@
 {
+  "entry": ["tests/src/jobSummaryReporter.ts"],
   "ignoreDependencies": ["@emotion/styled"],
   "rules": {
     "complexity-crap": "warn"

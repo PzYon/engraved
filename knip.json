@@ -7,7 +7,7 @@
       "ignoreDependencies": ["fallow"]
     },
     "tests": {
-      "entry": "tests/*.ts",
+      "entry": ["tests/*.ts", "src/jobSummaryReporter.ts"],
       "ignoreBinaries": ["dotnet"]
     }
   }

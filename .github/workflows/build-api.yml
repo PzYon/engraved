@@ -39,7 +39,14 @@ jobs:
           key: ephemeral-mongo-${{ runner.os }}
 
       - name: Run tests
-        run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+        run: >-
+          dotnet test --logger trx --results-directory TestResults --collect "XPlat Code Coverage"
+          -- "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Exclude=[Engraved.TestUtils]*"
+        working-directory: api
+
+      - name: Publish test results and coverage
+        if: ${{ !cancelled() }}
+        run: python3 ../.github/scripts/summarize-api-tests.py TestResults >> "$GITHUB_STEP_SUMMARY"
         working-directory: api
 
       - name: Get current time

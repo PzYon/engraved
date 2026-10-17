@@ -72,9 +72,29 @@ jobs:
         working-directory: ./
         run: npm run lint
 
+      # Vitest's github-actions reporter, on by default in CI, already writes
+      # the test results to the job summary.
       - name: Run tests
         working-directory: app
-        run: npx vitest run
+        run: npx vitest run --coverage
+
+      - name: Publish coverage
+        if: ${{ !cancelled() && hashFiles('app/coverage/summary.txt') != '' }}
+        working-directory: app
+        shell: bash
+        run: |
+          {
+            echo "### App coverage"
+            echo '```'
+            cat coverage/summary.txt
+            echo '```'
+            echo "<details><summary>Files not fully covered</summary>"
+            echo
+            echo '```'
+            cat coverage/files.txt
+            echo '```'
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Get current time
         id: current-time
