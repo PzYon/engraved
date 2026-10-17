@@ -39,7 +39,7 @@ Run the relevant suites before declaring a task complete.
 ```sh
 npm run prettier:fix
 npm run lint:fix
-npm run knip
+npm run fallow
 ```
 
 **Backend** — from `/api`:

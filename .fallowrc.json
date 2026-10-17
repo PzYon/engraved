@@ -1,6 +1,8 @@
 {
   "ignoreDependencies": ["@emotion/styled"],
   "rules": {
-    "complexity-crap": "warn"
+    "complexity-crap": "warn",
+    "unused-class-members": "warn",
+    "unused-enum-members": "warn"
   }
 }

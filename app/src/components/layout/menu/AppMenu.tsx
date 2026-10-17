@@ -42,20 +42,8 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
 
   const viewedJournals = useRecentlyViewedJournals();
 
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // focusing the container (instead of an item) keeps the drawer's focus trap
-  // from moving the focus out of reach of the arrow key handler below
-  useEffect(() => {
-    menuRef.current?.focus();
-  }, []);
-
   return (
-    <MenuContainer
-      ref={menuRef}
-      tabIndex={-1}
-      onKeyDown={(e) => moveFocusOnArrowKey(e, menuRef.current)}
-    >
+    <MenuHost>
       <List>
         <AppMenuItem
           targetUrl="/tags"
@@ -155,6 +143,28 @@ export const AppMenu: React.FC<{ close: () => void }> = ({ close }) => {
           </List>
         </Collapse>
       </List>
+    </MenuHost>
+  );
+};
+
+export const MenuHost: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // focusing the container (instead of an item) keeps the drawer's focus trap
+  // from moving the focus out of reach of the arrow key handler below
+  useEffect(() => {
+    menuRef.current?.focus();
+  }, []);
+
+  return (
+    <MenuContainer
+      ref={menuRef}
+      tabIndex={-1}
+      onKeyDown={(e) => moveFocusOnArrowKey(e, menuRef.current)}
+    >
+      {children}
     </MenuContainer>
   );
 };
@@ -201,7 +211,7 @@ const AppMenuItem: React.FC<{
   );
 };
 
-const JournalAppMenuItem: React.FC<{
+export const JournalAppMenuItem: React.FC<{
   journal: IJournal;
   close: () => void;
 }> = ({ journal, close }) => {

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeysFactory } from "../queryKeysFactory";
 import { ServerApi } from "../../ServerApi";
+import { IScratchpad } from "../../IScratchpad";
 
 export const useSaveScratchpadMutation = () => {
   const queryClient = useQueryClient();
@@ -14,6 +15,11 @@ export const useSaveScratchpadMutation = () => {
     // this save.
     onMutate: () =>
       queryClient.cancelQueries({ queryKey: queryKeysFactory.scratchpad() }),
+
+    onSuccess: (_, content) =>
+      queryClient.setQueryData<IScratchpad>(queryKeysFactory.scratchpad(), {
+        content,
+      }),
 
     // A failed save is kept as a draft and tried again (see useScratchpad)
     // rather than replacing the page with an error.

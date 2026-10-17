@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { UseMutateFunction } from "@tanstack/react-query";
 import { useScratchpadQuery } from "../../serverApi/reactQuery/queries/useScratchpadQuery";
 import { useSaveScratchpadMutation } from "../../serverApi/reactQuery/mutations/useSaveScratchpadMutation";
@@ -14,7 +14,10 @@ function getDraft() {
   return draftStorage.getValue<string>(draftKey);
 }
 
-function saveDraft(save: UseMutateFunction<void, Error, string>) {
+function saveDraft(
+  save: UseMutateFunction<void, Error, string>,
+  onSaved: () => void,
+) {
   const draft = getDraft();
   if (draft === undefined) {
     return;
@@ -25,6 +28,7 @@ function saveDraft(save: UseMutateFunction<void, Error, string>) {
       // unless more has been typed while it was saved
       if (getDraft() === draft) {
         draftStorage.setValue(draftKey, null);
+        onSaved();
       }
     },
   });
@@ -33,18 +37,27 @@ function saveDraft(save: UseMutateFunction<void, Error, string>) {
 export const useScratchpad = () => {
   const scratchpad = useScratchpadQuery();
   const { mutate: save } = useSaveScratchpadMutation();
+  const [draft, setDraft] = useState(getDraft);
 
   // a draft left over from last time
-  useEffect(() => saveDraft(save), [save]);
+  useEffect(() => saveDraft(save, () => setDraft(undefined)), [save]);
 
   const savedContent =
     scratchpad === undefined ? undefined : (scratchpad?.content ?? "");
 
+  function edit(content: string) {
+    draftStorage.setValue(draftKey, content);
+    setDraft(content);
+  }
+
   return {
     isLoaded: savedContent !== undefined,
-    savedContent,
-    content: getDraft() ?? savedContent ?? "",
-    edit: (content: string) => draftStorage.setValue(draftKey, content),
-    save: () => saveDraft(save),
+    content: draft ?? savedContent ?? "",
+    edit,
+    save: () => saveDraft(save, () => setDraft(undefined)),
+    reset: () => {
+      edit("");
+      saveDraft(save, () => setDraft(undefined));
+    },
   };
 };

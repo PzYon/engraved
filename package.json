@@ -10,7 +10,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "husky",
-    "knip": "knip",
+    "fallow": "fallow dead-code",
     "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,scss,md,json,html}\"",
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,md,json,html}\"",
     "lint": "eslint .",
@@ -41,9 +41,9 @@
     "eslint-plugin-playwright": "2.12.0",
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.5.7",
+    "fallow": "3.31.0",
     "globals": "17.13.0",
     "husky": "9.1.7",
-    "knip": "6.39.0",
     "lint-staged": "17.6.0",
     "prettier": "3.9.9",
     "typescript": "6.0.3"
