@@ -24,17 +24,11 @@ You are a core teammate. Your goal is to improve the product, elevate code quali
 
 ## Repository Structure & Stack
 
-This is a monorepo:
+See the [README](README.md) for what the app is, the architecture, prerequisites, local configuration and how to run everything. Points that matter specifically when changing code:
 
-- **`/api` — .NET backend:** ASP.NET Core API targeting .NET 10.
-  - Solution projects: `Engraved.Api` (web layer), `Engraved.Core` (domain logic), `Engraved.Persistence.Mongo` (MongoDB persistence), `Engraved.Storage.Azure` (file bytes in Azure Blob Storage), plus matching `*.Tests` projects (NUnit).
-  - NuGet package versions are managed centrally in `api/Directory.Packages.props`; `PackageReference` entries in `.csproj` files carry no `Version`.
-  - Authentication: JWT with Google Auth integration.
-  - File storage: uploaded files live in blob storage, not the database, and the API only ever hands out short-lived SAS URLs. Locally this points at [Azurite](https://learn.microsoft.com/azure/storage/common/storage-use-azurite) (`npm run storage:start` from `/app`), which needs to be running only when working on file features. The API creates the container and its CORS rules on startup when pointed at Azurite, so there is nothing to set up by hand. Uploads tag themselves `state=pending` and are flipped to `committed` when the entry owning them is saved, so that a lifecycle rule on the real storage account can delete the ones a cancelled edit left behind. Azurite has no lifecycle management, so locally those simply accumulate.
-- **`/app` — React frontend:** TypeScript, React 19, built with Vite 8.
-  - Routing: TanStack Router. Server state: TanStack Query. UI: Material UI (MUI). Rich text editing: Tiptap. Charts: Chart.js. Unit tests: Vitest.
-- **`/tests` — end-to-end tests:** Playwright tests that run against a locally served app and API.
-- **npm workspaces:** `app` and `tests` are workspaces of the root package, sharing one `package-lock.json`. Install once from the root (`npm ci`); add a dependency to a workspace with `npm install <pkg> --workspace app`. Use npm 11 or newer (bundled with Node 24): npm 10 crashes while resolving this dependency tree.
+- NuGet package versions are managed centrally in `api/Directory.Packages.props`; `PackageReference` entries in `.csproj` files carry no `Version`.
+- File storage: uploaded files live in blob storage, not the database, and the API only ever hands out short-lived SAS URLs. Locally this points at Azurite, which needs to be running only when working on file features. The API creates the container and its CORS rules on startup when pointed at Azurite, so there is nothing to set up by hand. Uploads tag themselves `state=pending` and are flipped to `committed` when the entry owning them is saved, so that a lifecycle rule on the real storage account can delete the ones a cancelled edit left behind. Azurite has no lifecycle management, so locally those simply accumulate.
+- npm workspaces: `app` and `tests` share one root `package-lock.json`. Install once from the root (`npm ci`); add a dependency to a workspace with `npm install <pkg> --workspace app`. Use npm 11 or newer (bundled with Node 24): npm 10 crashes while resolving this dependency tree.
 
 ## Verification
 
@@ -65,12 +59,10 @@ npm run build
 
 Note: `npm run test` starts Vitest in watch mode in interactive terminals; use `npx vitest run` for a single pass.
 
-**End-to-end** — from `/tests`; requires the API and app running locally (three processes). CI runs these on every PR; run them locally only when your change affects e2e-covered behavior:
+**End-to-end** — from `/tests`; requires MongoDB on `localhost:27017`. Playwright starts the API and app itself, or reuses them if already running (`npm run e2e:start-api`, `npm run e2e:start-app`). CI runs these on every PR; run them locally only when your change affects e2e-covered behavior:
 
 ```sh
-npm run e2e:start-api   # terminal 1
-npm run e2e:start-app   # terminal 2
-npm run e2e:run-tests   # terminal 3
+npm run e2e:run-tests
 ```
 
 ## Branches, Commits & Pull Requests
