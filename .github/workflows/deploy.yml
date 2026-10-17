@@ -31,6 +31,10 @@ jobs:
     permissions:
       contents: write
 
+    environment:
+      name: "Production App"
+      url: ${{ steps.deploy-to-static-app.outputs.url }}
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v8
@@ -38,7 +42,7 @@ jobs:
           name: app
 
       - name: Deploy to Azure Static Web App
-        id: builddeploy
+        id: deploy-to-static-app
         uses: Azure/static-web-apps-deploy@v1
         with:
           skip_app_build: true
@@ -65,8 +69,8 @@ jobs:
       contents: write
 
     environment:
-      name: "Production"
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      name: "Production API"
+      url: ${{ steps.deploy-to-app-service.outputs.webapp-url }}
 
     steps:
       - name: Download artifact from build job
@@ -75,7 +79,7 @@ jobs:
           name: api
 
       - name: Deploy to Azure App Service
-        id: deploy-to-webapp
+        id: deploy-to-app-service
         uses: azure/webapps-deploy@v3
         with:
           app-name: engraved-lnx
@@ -88,7 +92,7 @@ jobs:
       - name: Verify API health
         shell: bash
         env:
-          WEBAPP_URL: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+          WEBAPP_URL: ${{ steps.deploy-to-app-service.outputs.webapp-url }}
         run: |
           if [ -z "$WEBAPP_URL" ]; then
             echo "::error::The deploy step did not report a web app URL."
