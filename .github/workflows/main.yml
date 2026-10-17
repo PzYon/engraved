@@ -43,7 +43,6 @@ jobs:
     outputs:
       api-changed: ${{ steps.changes.outputs.api }}
       app-changed: ${{ steps.changes.outputs.app }}
-      code-changed: ${{ steps.code-changes.outputs.code }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
@@ -81,49 +80,18 @@ jobs:
           detect api '^(api/|\.github/workflows/build-api\.yml$)'
           detect app '^(app/|\.github/workflows/build-app\.yml$)'
 
-      # Decides whether to build and test at all: skipped only when nothing but
-      # documentation changed. A branch is compared against where it diverged
-      # from main, not against its previous push: otherwise a docs-only push
-      # would turn the branch green while the run that tested its code changes
-      # was cancelled as superseded.
-      - name: Detect code changes
-        id: code-changes
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" != "push" ]; then
-            echo "code=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            BASE="${{ github.event.before }}"
-          else
-            git fetch origin main
-            BASE=$(git merge-base HEAD origin/main)
-          fi
-
-          if ! CHANGED_FILES=$(git diff --name-only "$BASE" ${{ github.sha }}); then
-            echo "code=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          if [ -n "$CHANGED_FILES" ] && ! echo "$CHANGED_FILES" | grep -qvE '\.md$'; then
-            echo "Only documentation changed, skipping build and tests."
-            echo "code=false" >> $GITHUB_OUTPUT
-          else
-            echo "code=true" >> $GITHUB_OUTPUT
-          fi
-
+  # Builds run for every change, docs-only ones included: the ruleset requires
+  # the nested check names (e.g. "Build API / Build API"), which a skipped
+  # caller job never reports, so the pull request would wait forever. They
+  # still need detect-changes so they are skipped along with it.
   build-api:
     name: Build API
     needs: [ detect-changes ]
-    if: needs.detect-changes.outputs.code-changed == 'true'
     uses: ./.github/workflows/build-api.yml
 
   build-app:
     name: Build App
     needs: [ detect-changes ]
-    if: needs.detect-changes.outputs.code-changed == 'true'
     uses: ./.github/workflows/build-app.yml
     secrets: inherit
     # Uploads the Fallow SARIF results to code scanning.
