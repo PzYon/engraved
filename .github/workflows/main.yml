@@ -14,6 +14,11 @@ on:
         required: false
         type: boolean
         default: false
+      force-deploy-preview:
+        description: "Force a deployment to the preview environment."
+        required: false
+        type: boolean
+        default: false
 
 # Least privilege by default; jobs that need more raise it below.
 permissions:
@@ -152,3 +157,23 @@ jobs:
     with:
       deploy-api: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
       deploy-app: ${{ needs.detect-changes.outputs.app-changed == 'true' }}
+
+  # Every successful push to a branch other than main goes to the single preview
+  # environment, so the last push wins. Renovate branches are left out so they
+  # don't keep overwriting the preview.
+  deploy-preview:
+    name: Deploy Preview
+    needs: [ e2e-tests ]
+    if: |
+      always() &&
+      needs.e2e-tests.result == 'success' &&
+      (
+        github.event.inputs.force-deploy-preview == 'true' ||
+        (
+          github.event_name == 'push' &&
+          github.ref != 'refs/heads/main' &&
+          !startsWith(github.ref, 'refs/heads/renovate/')
+        )
+      )
+    uses: ./.github/workflows/deploy-preview.yml
+    secrets: inherit
