@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       force-deploy:
-        description: "Force a deployment even if not on main branch"
+        description: "Force a deployment even if not on main branch."
         required: false
         type: boolean
         default: false
@@ -40,6 +40,7 @@ jobs:
       github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       api-changed: ${{ steps.changes.outputs.api }}
       app-changed: ${{ steps.changes.outputs.app }}
@@ -58,8 +59,8 @@ jobs:
         shell: bash
         run: |
           if [ "${{ github.event_name }}" != "push" ]; then
-            echo "api=true" >> $GITHUB_OUTPUT
-            echo "app=true" >> $GITHUB_OUTPUT
+            echo "api=true" >> "$GITHUB_OUTPUT"
+            echo "app=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -69,11 +70,11 @@ jobs:
             local unit=$1 paths=$2 changed_files
             if ! changed_files=$(git diff --name-only "refs/tags/deployed/$unit" "${{ github.sha }}" 2>/dev/null); then
               echo "No usable deployed/$unit tag, deploying $unit."
-              echo "$unit=true" >> $GITHUB_OUTPUT
-            elif echo "$changed_files" | grep -qE "$paths"; then
-              echo "$unit=true" >> $GITHUB_OUTPUT
+              echo "$unit=true" >> "$GITHUB_OUTPUT"
+            elif grep -qE "$paths" <<< "$changed_files"; then
+              echo "$unit=true" >> "$GITHUB_OUTPUT"
             else
-              echo "$unit=false" >> $GITHUB_OUTPUT
+              echo "$unit=false" >> "$GITHUB_OUTPUT"
             fi
           }
 
@@ -110,12 +111,12 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [ detect-changes, build-api, build-app, e2e-tests ]
+    needs: [ detect-changes, e2e-tests ]
     if: |
       always() &&
       needs.e2e-tests.result == 'success' &&
       (
-        github.event.inputs.force-deploy == 'true' ||
+        inputs.force-deploy ||
         (github.ref == 'refs/heads/main' && vars.DISABLE_AUTO_DEPLOY != 'true')
       )
     uses: ./.github/workflows/deploy.yml
@@ -136,7 +137,7 @@ jobs:
       always() &&
       needs.e2e-tests.result == 'success' &&
       (
-        github.event.inputs.force-deploy-preview == 'true' ||
+        inputs.force-deploy-preview ||
         (
           github.event_name == 'push' &&
           github.ref != 'refs/heads/main' &&

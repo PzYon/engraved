@@ -2,10 +2,6 @@ name: Build API
 
 on:
   workflow_call:
-    outputs:
-      artifact-name:
-        description: "The name of the uploaded artifact"
-        value: ${{ jobs.build.outputs.artifact-name }}
   workflow_dispatch:
 
 jobs:
@@ -13,8 +9,6 @@ jobs:
     name: Build API
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    outputs:
-      artifact-name: api
 
     # note: no mongo service container is needed. The integration tests use EphemeralMongo,
     # which downloads and runs its own mongod on a random free port per test process.
@@ -23,7 +17,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v7
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: api/global.json
@@ -42,18 +36,13 @@ jobs:
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         working-directory: api
 
-      - name: Get current time
-        id: current-time
-        shell: bash
-        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
-
       - name: Publish
-        run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{env.DOTNET_ROOT}}/Engraved.Api" -p:SourceRevisionId=${{github.run_number}}+${{github.sha}}+${{steps.current-time.outputs.time}}
+        run: dotnet publish ./Engraved.Api/Engraved.Api.csproj -c Release -o "${{ env.DOTNET_ROOT }}/Engraved.Api" -p:SourceRevisionId=${{ github.run_number }}+${{ github.sha }}+$(date -u +'%Y-%m-%dT%H:%M:%SZ')
         working-directory: api
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: api
-          path: ${{env.DOTNET_ROOT}}/Engraved.Api
+          path: ${{ env.DOTNET_ROOT }}/Engraved.Api
           retention-days: 30
