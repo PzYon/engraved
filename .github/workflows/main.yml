@@ -1,11 +1,11 @@
 name: CI/CD Pipeline
 
 on:
-  # Same-repo branches are built on push, which also covers branches without a
-  # pull request (Renovate's branch automerge relies on that). pull_request is
-  # only for pull requests from forks, whose pushes don't trigger runs here.
+  # Every branch is built on push, which also covers pull requests and branches
+  # without one (Renovate's branch automerge relies on that). There is no
+  # pull_request trigger: it would only duplicate the push run for same-repo
+  # pull requests, and pull requests from forks are not expected.
   push:
-  pull_request:
 
   workflow_dispatch:
     inputs:
@@ -34,11 +34,6 @@ jobs:
   # Detect which parts of the application changed
   detect-changes:
     name: Detect Changes
-    # Skips the whole pipeline for same-repo pull requests, which the push run
-    # already builds.
-    if: |
-      github.event_name != 'pull_request' ||
-      github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -83,8 +78,7 @@ jobs:
 
   # Builds run for every change, docs-only ones included: the ruleset requires
   # the nested check names (e.g. "Build API / Build API"), which a skipped
-  # caller job never reports, so the pull request would wait forever. They
-  # still need detect-changes so they are skipped along with it.
+  # caller job never reports, so the pull request would wait forever.
   build-api:
     name: Build API
     needs: [detect-changes]
