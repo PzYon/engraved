@@ -16,7 +16,9 @@ jobs:
 
     services:
       mongo:
-        image: mongo
+        # Matches the server version of the production Cosmos DB for MongoDB
+        # account.
+        image: mongo:7.0
         ports:
           - 27017:27017
 
@@ -44,7 +46,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
 

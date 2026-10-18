@@ -38,8 +38,8 @@ In production the app is hosted on Azure Static Web Apps and the API on Azure Ap
 ## Prerequisites
 
 - [.NET SDK 10](https://dotnet.microsoft.com/download) (exact version in `api/global.json`)
-- [Node.js 24](https://nodejs.org/) with npm 11 or newer
-- [MongoDB](https://www.mongodb.com/try/download/community) on `localhost:27017`, e.g. `docker run -d -p 27017:27017 mongo`
+- [Node.js 24](https://nodejs.org/) (version in `.nvmrc`) with npm 11 or newer
+- [MongoDB](https://www.mongodb.com/try/download/community) on `localhost:27017`, e.g. `docker run -d -p 27017:27017 mongo:7.0` (production runs Cosmos DB for MongoDB 7.0)
 - Optional, only when working on file uploads: [Azurite](https://learn.microsoft.com/azure/storage/common/storage-use-azurite), started with `npm run storage:start` from `/app` (no separate install needed)
 
 Install the npm dependencies and the .NET tools (CSharpier) once from the repository root (`app` and `tests` are npm workspaces sharing one lockfile):
