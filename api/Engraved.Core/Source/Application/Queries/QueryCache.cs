@@ -116,7 +116,7 @@ public class QueryCache(
       logger.LogInformation(
         "{Key}: Cache miss (different token): {ConfigToken}",
         key,
-        configToken
+        SanitizeForLog(configToken)
       );
       value = default!;
       return false;
@@ -184,6 +184,11 @@ public class QueryCache(
   private static string GetConfigToken(IQuery query)
   {
     return JsonConvert.SerializeObject(query);
+  }
+
+  private static string SanitizeForLog(string value)
+  {
+    return value.Replace("\r", "").Replace("\n", "");
   }
 
   private void RememberQueryKeyForUser(string queryKey)
